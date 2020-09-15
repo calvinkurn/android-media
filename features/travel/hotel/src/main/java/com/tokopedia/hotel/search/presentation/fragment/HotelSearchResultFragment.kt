@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -15,7 +16,10 @@ import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.analytics.performance.PerformanceMonitoring
+import com.tokopedia.coachmark.CoachMarkBuilder
+import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
 import com.tokopedia.hotel.common.util.ErrorHandlerHotel
@@ -45,6 +49,7 @@ import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import io.hansel.pebbletracesdk.presets.UIPresets.findViewById
 import kotlinx.android.synthetic.main.fragment_hotel_search_result.*
 import javax.inject.Inject
 
@@ -64,11 +69,15 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
     private var variant = RemoteConfigInstance.getInstance().abTestPlatform.getString(ADVANCE_FILTER_EXPERIMENT_NAME,
             ADVANCE_FILTER_VARIANT_NEW_FILTER)
 
+    private lateinit var localCacheHandler: LocalCacheHandler
+
     var searchDestinationName = ""
     var searchDestinationType = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        localCacheHandler = LocalCacheHandler(context, PREFERENCES_NAME)
 
         performanceMonitoring = PerformanceMonitoring.start(TRACKING_HOTEL_SEARCH)
         val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
@@ -243,6 +252,37 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
         } else quick_filter_sort_filter.parentListener = { }
 
         quick_filter_sort_filter.show()
+        checkShouldShowCoachMark()
+    }
+
+    private fun checkShouldShowCoachMark() {
+        val shouldShowCoachMark = localCacheHandler.getBoolean(SHOW_COACH_MARK_KEY, true) && variant == ADVANCE_FILTER_VARIANT_NEW_FILTER
+        if (shouldShowCoachMark) {
+            val coachMark = CoachMarkBuilder().build().apply {
+                enableSkip = true
+                onFinishListener = {
+                    localCacheHandler.apply {
+                        putBoolean(SHOW_COACH_MARK_KEY, false)
+                        applyEditor()
+                    }
+                }
+            }
+
+            val quickFilterCoachMark = CoachMarkItem(
+                    quick_filter_sort_filter.sortFilterPrefix,
+                    getString(R.string.hotel_search_advance_filter_coachmark_title),
+                    getString(R.string.hotel_search_advance_filter_coachmark_desc)
+            )
+
+            coachMark.enableSkip = false
+            coachMark.setHighlightMargin(4)
+
+            coachMark.show(
+                    activity,
+                    HotelSearchResultFragment::class.java.simpleName,
+                    arrayListOf(quickFilterCoachMark)
+            )
+        }
     }
 
     private fun initiateAdvancedFilter(filterV2s: MutableList<FilterV2>, sort: List<Sort>) {
@@ -445,6 +485,9 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
 
         const val ARG_HOTEL_SEARCH_MODEL = "arg_hotel_search_model"
         const val ARG_FILTER_PARAM = "arg_hotel_filter_param"
+
+        const val SHOW_COACH_MARK_KEY = "hotel_quick_filter_show_coach_mark"
+        const val PREFERENCES_NAME = "hotel_quick_filter_preferences"
 
         fun createInstance(hotelSearchModel: HotelSearchModel, selectedParam: ParamFilterV2): HotelSearchResultFragment {
 

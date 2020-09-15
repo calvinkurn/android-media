@@ -139,6 +139,7 @@ class HotelSearchResultViewModel @Inject constructor(
         getSelectedFilter().forEach {
             count += if (it.name == "price") 1 else it.values.size
         }
+        if (selectedSort.displayName != defaultSort) count += 1
         return count
     }
 
