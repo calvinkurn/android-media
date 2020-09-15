@@ -17,37 +17,37 @@ import kotlin.coroutines.CoroutineContext
  */
 
 interface SubmitCommand {
-    fun send()
+    suspend fun send()
 }
 
 interface ResultCommandProcessor{
-    fun updateWidget(visitable: Visitable<*>, position: Int)
-    fun addWidget(visitable: Visitable<*>, position: Int)
-    fun deleteWidget(visitable: Visitable<*>, position: Int)
-    fun updateHomeData(homeDataModel: HomeDataModel)
+    suspend fun updateWidget(visitable: Visitable<*>, position: Int)
+    suspend fun addWidget(visitable: Visitable<*>, position: Int)
+    suspend fun deleteWidget(visitable: Visitable<*>, position: Int)
+    suspend fun updateHomeData(homeDataModel: HomeDataModel)
 }
 
 
 class AddWidgetCommand(private val visitable: Visitable<*>, private val position: Int, private val callback: ResultCommandProcessor) : SubmitCommand {
-    override fun send() {
+    override suspend fun send() {
         callback.addWidget(visitable, position)
     }
 }
 
 class UpdateHomeData(private val homeDataModel: HomeDataModel, private val callback: ResultCommandProcessor) : SubmitCommand {
-    override fun send() {
+    override suspend fun send() {
         callback.updateHomeData(homeDataModel)
     }
 }
 
 class UpdateWidgetCommand(private val visitable: Visitable<*>, private val position: Int, private val callback: ResultCommandProcessor) : SubmitCommand {
-    override fun send() {
+    override suspend fun send() {
         callback.updateWidget(visitable, position)
     }
 }
 
 class DeleteWidgetCommand(private val visitable: Visitable<*>?, private val position: Int, private val callback: ResultCommandProcessor) : SubmitCommand {
-    override fun send() {
+    override suspend fun send() {
         visitable?.let {
             callback.deleteWidget(visitable, position)
         }

@@ -229,6 +229,7 @@ open class HomeViewModel @Inject constructor(
     private var headerDataModel: HeaderDataModel? = null
 
     private val homeRateLimit = RateLimiter<String>(timeout = 3, timeUnit = TimeUnit.MINUTES)
+    private val homeVisitablesList = mutableListOf<Visitable<*>>()
 
     init {
         _isViewModelInitialized.value = Event(true)
@@ -875,18 +876,18 @@ open class HomeViewModel @Inject constructor(
                     _isRequestNetworkLiveData.postValue(Event(false))
                     val homeDataWithoutExternalComponentPair = evaluateInitialTopAdsBannerComponent(homeDataModel)
                     var homeData: HomeDataModel? = homeDataWithoutExternalComponentPair.first
-                    withContext(homeDispatcher.get().ui()){
-                        homeData = evaluateGeolocationComponent(homeData)
-                        homeData = evaluateAvailableComponent(homeData)
-                        _homeLiveData.value = homeData
+                    homeData = evaluateGeolocationComponent(homeData)
+                    homeData = evaluateAvailableComponent(homeData)
+                    homeData?.let {
+                        homeProcessor.get().sendWithQueueMethod(UpdateHomeData(homeData.copy(list = homeVisitablesList), this@HomeViewModel))
+                        getPlayBannerCarousel()
+                        getHeaderData()
+                        getReviewData()
+                        getPlayBanner()
+                        getPopularKeyword()
+                        getTopAdsBannerData(homeDataWithoutExternalComponentPair.second)
+                        _trackingLiveData.postValue(Event(_homeLiveData.value?.list?.filterIsInstance<HomeVisitable>() ?: listOf()))
                     }
-                    getPlayBannerCarousel()
-                    getHeaderData()
-                    getReviewData()
-                    getPlayBanner()
-                    getPopularKeyword()
-                    getTopAdsBannerData(homeDataWithoutExternalComponentPair.second)
-                    _trackingLiveData.postValue(Event(_homeLiveData.value?.list?.filterIsInstance<HomeVisitable>() ?: listOf()))
                 } else {
                     if (homeDataModel?.list?.size?:0 > 1) {
                         _isRequestNetworkLiveData.postValue(Event(false))
@@ -1328,7 +1329,7 @@ open class HomeViewModel @Inject constructor(
     // ============================================================================================
 // ================================ Live Data Controller ======================================
 // ============================================================================================
-    override fun updateWidget(visitable: Visitable<*>, position: Int) {
+    override suspend fun updateWidget(visitable: Visitable<*>, position: Int) {
         val newList = _homeLiveData.value?.list?.toMutableList() ?: mutableListOf()
         logChannelUpdate("Update channel: (Update widget ${visitable.javaClass.simpleName})")
         if (position != -1 && newList.isNotEmpty() && newList.size > position && newList[position]::class.java == visitable::class.java) {
@@ -1340,38 +1341,38 @@ open class HomeViewModel @Inject constructor(
                 newList[it.index] = visitable
             }
         }
-        launch (homeDispatcher.get().ui()){
+        withContext(homeDispatcher.get().ui()) {
             _homeLiveData.value = _homeLiveData.value?.copy(list = newList)
         }
     }
 
-    override fun addWidget(visitable: Visitable<*>, position: Int) {
+    override suspend fun addWidget(visitable: Visitable<*>, position: Int) {
         val newList = _homeLiveData.value?.list?.toMutableList() ?: mutableListOf()
         logChannelUpdate("Update channel: (Add widget ${visitable.javaClass.simpleName})")
         if(position == -1 || position > newList.size) newList.add(visitable)
         else newList.add(position, visitable)
-        launch (homeDispatcher.get().ui()) {
+        withContext(homeDispatcher.get().ui()) {
             _homeLiveData.value = _homeLiveData.value?.copy(list = newList)
         }
     }
 
-    override fun deleteWidget(visitable: Visitable<*>, position: Int) {
+    override suspend fun deleteWidget(visitable: Visitable<*>, position: Int) {
         val newList = _homeLiveData.value?.list?.toMutableList() ?: mutableListOf()
         logChannelUpdate("Update channel: (Remove widget ${visitable.javaClass.simpleName} | ${getVisitableId(visitable)})")
         newList.find { it::class.java == visitable::class.java
                 && getVisitableId(it) == getVisitableId(visitable)}?.let {
             newList.remove(it)
         }
-        launch (homeDispatcher.get().ui()) {
+        withContext(homeDispatcher.get().ui()) {
             _homeLiveData.value = _homeLiveData.value?.copy(list = newList)
         }
     }
 
-    override fun updateHomeData(homeDataModel: HomeDataModel) {
+    override suspend fun updateHomeData(homeDataModel: HomeDataModel) {
         logChannelUpdate("Update channel: (Update all home data) data: ${homeDataModel.list.map { it.javaClass.simpleName }}")
         var newHomeDataModel = evaluateGeolocationComponent(homeDataModel)
         newHomeDataModel = evaluateAvailableComponent(newHomeDataModel)
-        launch (homeDispatcher.get().ui()) {
+        withContext(homeDispatcher.get().ui()) {
             _homeLiveData.value = newHomeDataModel
         }
     }
