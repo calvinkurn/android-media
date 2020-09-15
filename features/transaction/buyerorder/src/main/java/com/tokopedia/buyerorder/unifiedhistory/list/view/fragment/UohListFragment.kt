@@ -22,9 +22,6 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkConst.UnifyOrder.*
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.buyerorder.R
-import com.tokopedia.buyerorder.common.util.BuyerConsts.TICKER_LABEL
-import com.tokopedia.buyerorder.common.util.BuyerConsts.TICKER_URL
-import com.tokopedia.buyerorder.detail.view.fragment.MarketPlaceDetailFragment
 import com.tokopedia.buyerorder.unifiedhistory.common.di.UohComponentInstance
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.ALL_CATEGORIES
@@ -71,6 +68,7 @@ import com.tokopedia.buyerorder.unifiedhistory.list.view.adapter.UohBottomSheetO
 import com.tokopedia.buyerorder.unifiedhistory.list.view.adapter.UohItemAdapter
 import com.tokopedia.buyerorder.unifiedhistory.list.view.viewmodel.UohListViewModel
 import com.tokopedia.datepicker.DatePickerUnify
+import com.tokopedia.datepicker.datetimepicker.DateTimePickerUnify
 import com.tokopedia.design.utils.StringUtils
 import com.tokopedia.kotlin.extensions.convertMonth
 import com.tokopedia.kotlin.extensions.getCalculatedFormattedDate
@@ -84,10 +82,6 @@ import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifycomponents.ticker.TickerCallback
-import com.tokopedia.unifycomponents.ticker.TickerData
-import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
-import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
@@ -1081,14 +1075,25 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
 
                     }
                     option.toInt() == 3 -> {
+                        val startDateStr = getCalculatedFormattedDate("dd MMM yyyy", -90)
+                        val endDateStr = Date().toFormattedString("dd MMM yyyy")
                         bottomSheetOption?.apply {
                             cl_choose_date?.visible()
-                            tf_start_date?.textFieldInput?.setText(defaultStartDateStr)
+
+                            if (defaultStartDateStr.isNotEmpty()) {
+                                tf_start_date?.textFieldInput?.setText(defaultStartDateStr)
+                            } else {
+                                tf_start_date?.textFieldInput?.setText(startDateStr)
+                            }
                             tf_start_date?.textFieldInput?.isFocusable = false
                             tf_start_date?.textFieldInput?.isClickable = true
                             tf_start_date?.textFieldInput?.setOnClickListener { showDatePicker(START_DATE) }
 
-                            tf_end_date?.textFieldInput?.setText(defaultEndDateStr)
+                            if (defaultEndDateStr.isNotEmpty()) {
+                                tf_end_date?.textFieldInput?.setText(defaultEndDateStr)
+                            } else {
+                                tf_end_date?.textFieldInput?.setText(endDateStr)
+                            }
                             tf_end_date?.textFieldInput?.isFocusable = false
                             tf_end_date?.textFieldInput?.isClickable = true
                             tf_end_date?.textFieldInput?.setOnClickListener { showDatePicker(END_DATE) }
@@ -1135,13 +1140,23 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
 
             val currentDate = Calendar.getInstance()
 
-            val splitDate: List<String>? = if (flag.equals(START_DATE, true)) {
-                paramUohOrder.createTimeStart.split('-')
+            val splitDate = if (flag.equals(START_DATE, true)) {
+                if (paramUohOrder.createTimeStart.isNotEmpty()) {
+                    paramUohOrder.createTimeStart.split('-')
+                } else {
+                    val chooseStartDate = getCalculatedFormattedDate("yyyy-MM-dd", -90)
+                    chooseStartDate.split('-')
+                }
             } else {
-                paramUohOrder.createTimeEnd.split('-')
+                if (paramUohOrder.createTimeEnd.isNotEmpty()) {
+                    paramUohOrder.createTimeEnd.split('-')
+                } else {
+                    val chooseEndDate = Date().toFormattedString("yyyy-MM-dd")
+                    chooseEndDate.split('-')
+                }
             }
 
-            splitDate?.let {
+            splitDate.let {
                 currentDate.set(it[0].toInt(), it[1].toInt()-1, it[2].toInt())
                 val datePicker = DatePickerUnify(context, minDate, currentDate, maxDate)
                 fragmentManager?.let { it1 -> datePicker.show(it1, "") }
