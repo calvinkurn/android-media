@@ -21,9 +21,22 @@ object ProductHighlightTracking : BaseTrackerConst() {
             gridName: String,
             gridPrice: String,
             gridFreeOngkirIsActive: Boolean,
-            position: Int) {
+            position: Int,
+            isTopAds: Boolean,
+            recommendationType: String) {
         getTracker().sendEnhanceEcommerceEvent(getProductHighlightClick(
-                channelId, headerName, campaignCode, persoType, categoryId, gridId, gridName, gridPrice, gridFreeOngkirIsActive, position))
+                channelId,
+                headerName,
+                campaignCode,
+                persoType,
+                categoryId,
+                gridId,
+                gridName,
+                gridPrice,
+                gridFreeOngkirIsActive,
+                isTopAds,
+                recommendationType,
+                position))
     }
 
     //componentSection
@@ -52,7 +65,7 @@ object ProductHighlightTracking : BaseTrackerConst() {
                             categoryId = channel.trackingAttributionModel.categoryId,
                             isTopAds = grid.isTopads,
                             isCarousel = false,
-                            headerName = channel.header.name,
+                            headerName = channel.channelHeader.name,
                             recommendationType = grid.recommendationType
                     )
                 })
