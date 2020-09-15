@@ -1,4 +1,3 @@
-import androidx.constraintlayout.widget.ConstraintSet.VISIBLE
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.pressBack
@@ -18,6 +17,8 @@ import com.tokopedia.entertainment.home.adapter.viewholder.CategoryEventViewHold
 import com.tokopedia.entertainment.home.adapter.viewholder.EventCarouselEventViewHolder
 import com.tokopedia.entertainment.home.adapter.viewholder.EventGridEventViewHolder
 import com.tokopedia.entertainment.home.adapter.viewholder.EventLocationEventViewHolder
+import com.tokopedia.test.application.util.setupGraphqlMockResponse
+import mock.HomeEventMockResponse
 import org.hamcrest.core.AllOf
 import org.junit.Before
 import org.junit.Rule
@@ -34,6 +35,7 @@ class HomeEventActivityTest {
     @Before
     fun setup() {
         gtmLogDBSource.deleteAll().subscribe()
+        setupGraphqlMockResponse(HomeEventMockResponse())
     }
 
     @Test

@@ -41,7 +41,7 @@ class CheckoutEventActivityTest {
     @Before
     fun setup() {
         gtmLogDBSource.deleteAll().subscribe()
-        InstrumentationAuthHelper.loginInstrumentationTestUser1(context)
+        InstrumentationAuthHelper.loginInstrumentationTestUser1()
 
     }
 
