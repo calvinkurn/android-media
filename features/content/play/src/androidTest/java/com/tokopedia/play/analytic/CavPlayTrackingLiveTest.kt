@@ -2,27 +2,23 @@ package com.tokopedia.play.analytic
 
 import android.app.Activity
 import android.app.Instrumentation
+import androidx.appcompat.widget.AppCompatTextView
 import androidx.test.espresso.Espresso
+import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
-import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers
-import androidx.test.platform.app.InstrumentationRegistry
-import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
-import com.tokopedia.analyticsdebugger.validator.core.getAnalyticsWithQuery
-import com.tokopedia.analyticsdebugger.validator.core.hasAllSuccess
 import com.tokopedia.play.R
 import com.tokopedia.play.data.PlayLiveMockModelConfig
 import com.tokopedia.play.ui.quickreply.viewholder.QuickReplyViewHolder
+import com.tokopedia.play.util.TextViewIdlingResource
 import com.tokopedia.play.view.activity.PlayActivity
+import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
-import com.tokopedia.test.application.util.setupGraphqlMockResponse
-import org.hamcrest.MatcherAssert
-import org.junit.Before
-import org.junit.Rule
+import org.junit.After
 import org.junit.Test
 
 
@@ -32,66 +28,52 @@ import org.junit.Test
  *
  * Channel Type: Live
  */
-class CavPlayTrackingLiveTest {
+class CavPlayTrackingLiveTest: BaseCavPlayTrackingTest() {
 
-    /**
-     * This class is an
-     * extension of {@link ActivityTestRule}, which initializes Espresso-Intents before each test.
-     * This rule also provides functional testing of a single Activity
-     * the Activity under test will be launched before each test annotated with @Test
-     * and before methods annotated with @Before
-     *
-     * @param initialTouchMode false because the Activity should not be placed into "touch mode" when started
-     * @param launchActivity false because the Activity will be launched manually with intent extras
-     **/
-    @get:Rule
-    val intentsTestRule = IntentsTestRule(PlayActivity::class.java, false, false)
+    override fun getFileName(): String = "tracker/content/play/play_live_analytic.json"
 
-    // context for the target application being instrumented
-    private val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
+    override fun mockModelConfig(): MockModelConfig = PlayLiveMockModelConfig()
 
-    // database that holds all the analytics every user journey
-    private val gtmLogDbSource = GtmLogDBSource(targetContext)
+    private lateinit var partnerInfo: TextViewIdlingResource
 
-    /**
-     * json file which holds valid trackers for Live Channel
-     * file: libraries/analytics_debugger/src/main/assets/tracker/content/play/play_live_analytic.json
-     **/
-    private val fileName = "tracker/content/play/play_live_analytic.json"
+    private fun setupIdlingResource() {
 
-    @Before
-    fun setUp() {
-        // delete all data in the database
-        gtmLogDbSource.deleteAll().subscribe()
+        val tvPartnerInfo = intentsTestRule.activity.findViewById<AppCompatTextView>(R.id.tv_partner_name)
+        partnerInfo = TextViewIdlingResource(tvPartnerInfo, "")
 
-        // setup mock response
-        setupGraphqlMockResponse(PlayLiveMockModelConfig())
+        IdlingRegistry.getInstance().register(*arrayOf(partnerInfo))
     }
 
     @Test
     fun runValidateTracking() {
+
         // launch play activity with dummy channel id
         intentsTestRule.launchActivity(PlayActivity.createIntent(targetContext, "43215"))
 
         // idling resource: add artificial delays to the tests
-        Thread.sleep(8000)
+        setupIdlingResource()
 
         // set login true because we need to test follow - unfollow, quick reply, and send chat
-        InstrumentationAuthHelper.loginInstrumentationTestUser1(targetContext)
+        InstrumentationAuthHelper.loginInstrumentationTestUser1()
 
         // journey
         performShop()
-        performWatchArea()
-        performFollowUnFollowShop()
-        performLikeUnLike()
-        performPinnedMessage()
+//        performWatchArea()
+//        performFollowUnFollowShop()
+//        performLikeUnLike()
+//        performPinnedMessage()
         performSendChatQuickReply()
         performClose()
 
         Thread.sleep(2000)
 
-        MatcherAssert.assertThat(getAnalyticsWithQuery(gtmLogDbSource, targetContext, fileName),
-                hasAllSuccess())
+        validateTracker()
+    }
+
+
+    @After
+    fun tearDown() {
+        IdlingRegistry.getInstance().unregister(partnerInfo)
     }
 
     private fun performShop() {

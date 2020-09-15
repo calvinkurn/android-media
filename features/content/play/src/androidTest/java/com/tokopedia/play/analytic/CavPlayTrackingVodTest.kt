@@ -7,25 +7,17 @@ import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
-import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers
-import androidx.test.platform.app.InstrumentationRegistry
-import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
-import com.tokopedia.analyticsdebugger.validator.core.getAnalyticsWithQuery
-import com.tokopedia.analyticsdebugger.validator.core.hasAllSuccess
 import com.tokopedia.play.R
 import com.tokopedia.play.data.PlayVodMockModelConfig
 import com.tokopedia.play.ui.productsheet.viewholder.ProductLineViewHolder
 import com.tokopedia.play.util.clickOnViewChild
 import com.tokopedia.play.util.orientationPortrait
 import com.tokopedia.play.view.activity.PlayActivity
+import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
-import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import com.tokopedia.variant_common.view.holder.VariantContainerViewHolder
-import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers
-import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 
 
@@ -35,45 +27,11 @@ import org.junit.Test
  *
  * Channel Type: VOD
  */
-class CavPlayTrackingVodTest {
+class CavPlayTrackingVodTest : BaseCavPlayTrackingTest() {
 
-    /**
-     * This class is an
-     * extension of {@link ActivityTestRule}, which initializes Espresso-Intents before each test.
-     * This rule also provides functional testing of a single Activity
-     * the Activity under test will be launched before each test annotated with @Test
-     * and before methods annotated with @Before
-     *
-     * @param initialTouchMode false because the Activity should not be placed into "touch mode" when started
-     * @param launchActivity false because the Activity will be launched manually with intent extras
-     **/
-    @get:Rule
-    val intentsTestRule = IntentsTestRule(PlayActivity::class.java, false, false)
+    override fun getFileName(): String = "tracker/content/play/play_vod_analytic.json"
 
-    // context for the target application being instrumented
-    private val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
-
-    // database that holds all the analytics every user journey
-    private val gtmLogDbSource = GtmLogDBSource(targetContext)
-
-    /**
-     * json file which holds valid trackers for Live Channel
-     * file: libraries/analytics_debugger/src/main/assets/tracker/content/play/play_vod_analytic.json
-     *
-     * minus:
-     * - rotate phone to full screen
-     * - buffer
-     **/
-    private val fileName = "tracker/content/play/play_vod_analytic.json"
-
-    @Before
-    fun setUp() {
-        // delete all data in the database
-        gtmLogDbSource.deleteAll().subscribe()
-
-        // setup mock response
-        setupGraphqlMockResponse(PlayVodMockModelConfig())
-    }
+    override fun mockModelConfig(): MockModelConfig = PlayVodMockModelConfig()
 
     @Test
     fun runValidateTracking() {
@@ -84,7 +42,7 @@ class CavPlayTrackingVodTest {
         Thread.sleep(8000)
 
         // set login true because we need to test follow - unfollow, quick reply, and send chat
-        InstrumentationAuthHelper.loginInstrumentationTestUser1(targetContext)
+        InstrumentationAuthHelper.loginInstrumentationTestUser1()
 
         // journey
         performCart()
@@ -95,8 +53,7 @@ class CavPlayTrackingVodTest {
 
         Thread.sleep(5000)
 
-        MatcherAssert.assertThat(getAnalyticsWithQuery(gtmLogDbSource, targetContext, fileName),
-                hasAllSuccess())
+        validateTracker()
     }
 
     private fun performCart() {

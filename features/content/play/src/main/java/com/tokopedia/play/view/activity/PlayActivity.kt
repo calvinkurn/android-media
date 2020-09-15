@@ -6,6 +6,7 @@ import android.media.AudioManager
 import android.net.Uri
 import android.os.Bundle
 import android.view.WindowManager
+import androidx.annotation.VisibleForTesting
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -170,6 +171,7 @@ class PlayActivity : BaseActivity(), PlayNewChannelInteractor, PlayNavigation {
     companion object {
         private const val PLAY_FRAGMENT_TAG = "FRAGMENT_PLAY"
 
+        @VisibleForTesting
         @TestOnly
         fun createIntent(context: Context, channelId: String) =
                 Intent(context, PlayActivity::class.java).apply {
