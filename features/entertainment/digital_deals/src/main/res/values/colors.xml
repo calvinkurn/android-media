@@ -19,4 +19,9 @@
     <color name="deal_sale_price__color">#fa591d</color>
     <color name="search_divider_color">#e5e7e9</color>
     <color name="white">#FFFFFF</color>
+    <color name="bright_red">#eb3c0d</color>
+    <color name="background_error">#D50000</color>
+    <color name="tkpd_main_green">#42b549</color>
+    <color name="grey_300">#e0e0e0</color>
+    <color name="font_black_secondary_54">#8a000000</color>
 </resources>
