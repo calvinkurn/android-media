@@ -1,6 +1,5 @@
 package com.tokopedia.vouchercreation.create.view.viewmodel
 
-import android.graphics.Bitmap
 import androidx.annotation.IntRange
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -10,23 +9,22 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.vouchercreation.common.coroutines.CoroutineDispatchers
 import com.tokopedia.vouchercreation.create.domain.model.ShopInfo
 import com.tokopedia.vouchercreation.create.domain.usecase.BasicShopInfoUseCase
 import com.tokopedia.vouchercreation.create.domain.usecase.InitiateVoucherUseCase
 import com.tokopedia.vouchercreation.create.view.enums.VoucherCreationStep
 import com.tokopedia.vouchercreation.create.view.uimodel.initiation.InitiateVoucherUiModel
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class CreateMerchantVoucherStepsViewModel @Inject constructor(
-        dispatcher: CoroutineDispatcher,
+        private val dispatchers: CoroutineDispatchers,
         private val initiateVoucherUseCase: InitiateVoucherUseCase,
         private val basicShopInfoUseCase: BasicShopInfoUseCase,
         private val userSession: UserSessionInterface
-) : BaseViewModel(dispatcher) {
+) : BaseViewModel(dispatchers.main) {
 
     private var maxPosition: Int? = null
 
@@ -83,7 +81,7 @@ class CreateMerchantVoucherStepsViewModel @Inject constructor(
     fun initiateVoucherPage() {
         launchCatchError(
                 block = {
-                    mInitiateVoucherLiveData.value = Success(withContext(Dispatchers.IO) {
+                    mInitiateVoucherLiveData.value = Success(withContext(dispatchers.io) {
                         getInitiateVoucher(false)
                     })
                 },
@@ -96,7 +94,7 @@ class CreateMerchantVoucherStepsViewModel @Inject constructor(
     fun initiateEditDuplicateVoucher(isUpdate: Boolean = false) {
         launchCatchError(
                 block = {
-                    withContext(Dispatchers.IO) {
+                    withContext(dispatchers.io) {
                         val shopInfo = async { getBasicInfo() }
                         val initiateVoucher = async { getInitiateVoucher(isUpdate) }
                         shopInfo.await().let { shopInfoModel ->
