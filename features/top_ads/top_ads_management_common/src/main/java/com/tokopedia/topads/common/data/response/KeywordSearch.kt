@@ -19,9 +19,9 @@ data class SearchData(
         @SerializedName("bid_suggest")
         val bidSuggest: Int = 0,
         @SerializedName("competition")
-        val competition: String? = "",
+        var competition: String? = "",
         @SerializedName("keyword")
-        val keyword: String? = "",
+        var keyword: String? = "",
         @SerializedName("max_win_bid")
         val maxWinBid: Int = 0,
         @SerializedName("min_bid")
@@ -33,7 +33,7 @@ data class SearchData(
         @SerializedName("source")
         val source: String? = "",
         @SerializedName("total_search")
-        val totalSearch: Int = 0,
+        var totalSearch: Int = 0,
         var onChecked:Boolean = false
 ):Parcelable {
         constructor(parcel: Parcel) : this(

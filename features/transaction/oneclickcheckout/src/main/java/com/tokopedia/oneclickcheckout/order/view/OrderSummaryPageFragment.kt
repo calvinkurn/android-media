@@ -102,6 +102,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
     private val globalError by lazy { view?.findViewById<GlobalError>(R.id.global_error) }
     private val mainContent by lazy { view?.findViewById<ConstraintLayout>(R.id.main_content) }
 
+    private val tickerOsp by lazy { view?.findViewById<Ticker>(R.id.ticker_osp) }
+
     private val onboardingCard by lazy { view?.findViewById<View>(R.id.layout_occ_onboarding) }
     private val btnOnboardingAction by lazy { view?.findViewById<Typography>(R.id.lbl_occ_onboarding_action) }
     private val lblOnboardingMessage by lazy { view?.findViewById<Typography>(R.id.lbl_occ_onboarding_message) }
@@ -471,6 +473,14 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
     }
 
     private fun showMessage(orderPreference: OrderPreference) {
+        if (orderPreference.ticker != null) {
+            tickerOsp?.tickerTitle = orderPreference.ticker.title
+            tickerOsp?.setHtmlDescription(orderPreference.ticker.message)
+            tickerOsp?.visible()
+        } else {
+            tickerOsp?.gone()
+        }
+
         val preference = orderPreference.preference
         if (preference.profileId > 0) {
             tvHeader2?.text = getString(R.string.lbl_osp_secondary_header)
