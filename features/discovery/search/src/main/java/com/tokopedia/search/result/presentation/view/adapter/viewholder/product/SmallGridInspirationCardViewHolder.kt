@@ -15,7 +15,7 @@ import com.tokopedia.search.result.presentation.view.adapter.viewholder.Inspirat
 import com.tokopedia.search.result.presentation.view.listener.InspirationCardListener
 import com.tokopedia.search.utils.ChipSpacingItemDecoration
 import com.tokopedia.search.utils.addItemDecorationIfNotExists
-import kotlinx.android.synthetic.main.search_result_product_curated_inspiration_card_layout.view.*
+import kotlinx.android.synthetic.main.search_result_product_small_grid_curated_inspiration_card_layout.view.*
 import kotlinx.android.synthetic.main.search_result_product_inspiration_card_layout.view.*
 import kotlinx.android.synthetic.main.search_result_product_small_grid_inspiration_card_layout.view.*
 
