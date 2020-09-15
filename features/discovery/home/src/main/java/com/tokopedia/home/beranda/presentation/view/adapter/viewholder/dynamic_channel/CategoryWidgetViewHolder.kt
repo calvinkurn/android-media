@@ -36,7 +36,6 @@ class CategoryWidgetViewHolder(val view: View, private val categoryListener: Hom
                 2,
                 GridLayoutManager.HORIZONTAL,
                 false)
-        LinearSnapHelper().attachToRecyclerView(recyclerView)
         if (recyclerView.itemDecorationCount == 0) {
             recyclerView.addItemDecoration(CategoryWidgetSpacingItemDecoration(
                     2,

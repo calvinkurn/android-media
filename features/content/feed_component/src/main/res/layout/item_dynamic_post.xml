@@ -42,6 +42,7 @@
 
                 <ImageView
                     android:id="@+id/authorImage"
+                    android:contentDescription="@string/content_desc_authorImage"
                     android:layout_width="@dimen/dp_32"
                     android:layout_height="@dimen/dp_32"
                     android:background="@drawable/bg_circle_gray_border"
@@ -55,6 +56,7 @@
 
                 <ImageView
                     android:id="@+id/authorBadge"
+                    android:contentDescription="@string/content_desc_authorBadge"
                     android:layout_width="@dimen/dp_14"
                     android:layout_height="@dimen/dp_14"
                     android:layout_marginStart="@dimen/dp_8"
@@ -68,6 +70,7 @@
 
                 <TextView
                     android:id="@+id/authorTitle"
+                    android:contentDescription="@string/content_desc_authorTitle"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/dp_8"
@@ -115,6 +118,7 @@
 
                 <com.tokopedia.design.component.ButtonCompat
                     android:id="@+id/headerAction"
+                    android:contentDescription="@string/content_desc_headerAction"
                     style="?android:attr/borderlessButtonStyle"
                     android:layout_width="@dimen/dp_72"
                     android:layout_height="wrap_content"
@@ -132,6 +136,7 @@
 
                 <ImageView
                     android:id="@+id/menu"
+                    android:contentDescription="@string/content_desc_menu"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingStart="@dimen/dp_16"
@@ -147,6 +152,7 @@
 
             <TextView
                 android:id="@+id/caption"
+                android:contentDescription="@string/content_desc_caption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif"

@@ -139,11 +139,11 @@ class HomeViewModelSalamWidgetUnitTest {
                 )
         )
 
-        val reminderWidget = ReminderWidget(
+        val reminderWidget = ReminderWidget("1",
                 listOf(
                         ReminderData(
                                 "tokopedia://salam",
-                                "#000000",
+                                listOf("#000000"),
                                 "Silahkan Bayar Sekarang",
                                 "1",
                                 "tokopedia.com/image.png",

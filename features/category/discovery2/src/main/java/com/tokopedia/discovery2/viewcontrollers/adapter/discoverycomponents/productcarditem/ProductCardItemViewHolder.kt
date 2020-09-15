@@ -11,6 +11,7 @@ import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.cardview.widget.CardView
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
@@ -24,6 +25,7 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewH
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.Toaster
 
 
@@ -31,7 +33,6 @@ private const val OFFICIAL_STORE = 1
 private const val GOLD_MERCHANT = 2
 private const val SOLD_PERCENTAGE_UPPER_LIMIT = 100
 private const val SOLD_PERCENTAGE_LOWER_LIMIT = 0
-
 private const val SALE_PRODUCT_STOCK = 100
 private const val PRODUCT_STOCK = 0
 
@@ -44,7 +45,6 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
     private var textViewSlashedPrice: TextView = itemView.findViewById(R.id.textViewSlashedPrice)
     private var textViewPrice: TextView = itemView.findViewById(R.id.textViewPrice)
     private var textViewShopLocation: TextView = itemView.findViewById(R.id.textViewShopLocation)
-
     private var shopBadge: ImageView = itemView.findViewById(R.id.imageViewShopBadge)
     private var imageFreeOngkirPromo: ImageView = itemView.findViewById(R.id.imageFreeOngkirPromo)
     private var productCardView: CardView = itemView.findViewById(R.id.cardViewProductCard)
@@ -56,9 +56,10 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
     private var notifyMeView: TextView = itemView.findViewById(R.id.textViewNotifyMe)
     private var linearLayoutImageRating: LinearLayout = itemView.findViewById(R.id.linearLayoutImageRating)
     private var textViewReviewCount: TextView = itemView.findViewById(R.id.textViewReviewCount)
-    private var stockHabisLabel: TextView = itemView.findViewById(R.id.labelStock)
+    private var statusLabel: Label = itemView.findViewById(R.id.statusLabel)
+    private var priceLabel: Label = itemView.findViewById(R.id.cashback_labelPromo)
+    private var outOfStockOverlay: View = itemView.findViewById(R.id.outOfStockOverlay)
     private var componentPosition: Int? = null
-
     private lateinit var productCardItemViewModel: ProductCardItemViewModel
     private var productCardName = ""
     private var context: Context? = fragment.activity
@@ -107,9 +108,7 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
                 if (needResync) {
                     (fragment as DiscoveryFragment).reSync()
                 }
-
             })
-
         }
     }
 
@@ -150,6 +149,14 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
         setPDPView(dataItem)
         showInterestedView(dataItem)
         showNotifyMe(dataItem)
+        priceLabel.initLabelGroup(dataItem.getLabelPrice())
+        showStatusLabel(dataItem)
+    }
+
+    private fun showStatusLabel(dataItem: DataItem) {
+        if(statusLabel.visibility == View.GONE){
+            statusLabel.initLabelGroup(dataItem.getLabelProductStatus())
+        }
     }
 
     private fun getDisplayMetric(context: Context?): DisplayMetrics {
@@ -159,15 +166,19 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
     }
 
     private fun showOutOfStockLabel(productStock: String?, saleStockValidation : Int = 0) {
-        when {
-            productStock.isNullOrEmpty() -> {
-                stockHabisLabel.hide()
-            }
-            productStock.toIntOrNull() == saleStockValidation -> {
-                stockHabisLabel.show()
+        when(saleStockValidation) {
+            productStock?.toIntOrNull()-> {
+                statusLabel.apply {
+                    unlockFeature = true
+                    val colorHexString = "#${Integer.toHexString(ContextCompat.getColor(context, R.color.clr_AD31353B))}"
+                    statusLabel.setLabelType(colorHexString)
+                    show()
+                }
+                outOfStockOverlay.show()
             }
             else -> {
-                stockHabisLabel.hide()
+                statusLabel.hide()
+                outOfStockOverlay.hide()
             }
         }
     }

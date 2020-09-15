@@ -21,8 +21,6 @@ android {
 }
 
 dependencies {
-    def newExoPlayerVersion = '2.11.1'
-
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.websocket)
@@ -72,8 +70,8 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.junitPlatformRunner
     testRuntimeOnly rootProject.ext.testDependencies.junitJupiterEngine
 
-    implementation "com.google.android.exoplayer:exoplayer-core:$newExoPlayerVersion"
-    implementation "com.google.android.exoplayer:exoplayer-ui:$newExoPlayerVersion"
+    implementation rootProject.ext.miscDependencies.exoPlayerCore
+    implementation rootProject.ext.miscDependencies.exoPlayerUi
 
     androidTestImplementation rootProject.ext.testDependencies.mockkAndroid
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib

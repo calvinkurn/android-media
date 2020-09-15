@@ -401,8 +401,12 @@ class VerificationFragment : BaseVerificationFragment(), IOnBackPressed {
         viewBound.pin?.pinTextField?.let { view ->
             view.post {
                 if(view.requestFocus()) {
-                    val inputMethodManager = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                    inputMethodManager.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT)
+                    context?.getSystemService(Context.INPUT_METHOD_SERVICE)?.let { inputMethodManager ->
+                        when (inputMethodManager) {
+                            is InputMethodManager -> inputMethodManager.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT)
+                            else -> {}
+                        }
+                    }
                 }
             }
         }

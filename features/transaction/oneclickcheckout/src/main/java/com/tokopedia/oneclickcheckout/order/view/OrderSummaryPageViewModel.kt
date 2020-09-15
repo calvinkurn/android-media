@@ -163,7 +163,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         OccIdlingResource.increment()
         getOccCartUseCase.execute({ orderData: OrderData ->
             orderCart = orderData.cart
-            _orderPreference = OrderPreference(orderData.onboarding, orderData.profileIndex, orderData.profileRecommendation, orderData.preference, true)
+            _orderPreference = OrderPreference(orderData.ticker, orderData.onboarding, orderData.profileIndex, orderData.profileRecommendation, orderData.preference, true)
             orderPreference.value = OccState.FirstLoad(_orderPreference)
             if (isFullRefresh) {
                 _orderShipment = OrderShipment()

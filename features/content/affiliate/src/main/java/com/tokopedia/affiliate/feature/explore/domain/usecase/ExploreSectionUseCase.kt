@@ -1,10 +1,6 @@
 package com.tokopedia.affiliate.feature.explore.domain.usecase
 
-import android.content.Context
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.affiliate.R
 import com.tokopedia.affiliate.feature.explore.data.pojo.section.ExploreSectionResponse
 import com.tokopedia.affiliate.feature.explore.domain.mapper.ExploreSectionMapper
 import com.tokopedia.graphql.GraphqlConstant
@@ -21,10 +17,38 @@ import javax.inject.Inject
  * @author by milhamj on 14/03/19.
  */
 class ExploreSectionUseCase @Inject constructor(
-        @ApplicationContext private val context: Context,
         private val graphqlUseCase: GraphqlUseCase,
         private val exploreSectionMapper: ExploreSectionMapper
 ) : UseCase<List<Visitable<*>>>() {
+
+    private val query = """
+        {
+          affiliateCPAExploreSections(limit: 5) {
+            explore_page_section {
+              type
+              title
+              subtitle
+              items {
+                title
+                subtitle
+                image
+                fav_icon
+                app_link
+                web_link
+                lite_link
+                ad_id
+                category_id
+                product_id
+                commission_value
+                commission_percent
+                commission_value_display
+                commission_percent_display
+                user_id
+              }
+            }
+          }
+        }
+    """
 
     init {
         graphqlUseCase.setCacheStrategy(
@@ -36,7 +60,6 @@ class ExploreSectionUseCase @Inject constructor(
     }
 
     override fun createObservable(requestParams: RequestParams?): Observable<List<Visitable<*>>> {
-        val query = GraphqlHelper.loadRawString(context.resources, R.raw.query_af_explore_section)
         val request = GraphqlRequest(query, ExploreSectionResponse::class.java)
 
         graphqlUseCase.clearRequest()

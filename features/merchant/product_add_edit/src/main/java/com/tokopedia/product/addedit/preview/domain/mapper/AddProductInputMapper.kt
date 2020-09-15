@@ -22,7 +22,6 @@ class AddProductInputMapper @Inject constructor() {
 
     companion object{
         const val PRICE_CURRENCY = "IDR"
-        const val STOCK_STATUS = "LIMITED"
         const val UNIT_GRAM = "GR"
         const val UNIT_KILOGRAM = "KG"
         const val UNIT_DAY = "DAY"
@@ -64,7 +63,7 @@ class AddProductInputMapper @Inject constructor() {
                 ShopParam(shopId),
                 Catalog(detailInputModel.catalogId),
                 Category(detailInputModel.categoryId),
-                ProductEtalase(),
+                null,
                 mapPictureParam(detailInputModel.imageUrlOrPathList, detailInputModel.pictureList, uploadIdList),
                 mapPreorderParam(detailInputModel.preorder),
                 mapWholesaleParam(detailInputModel.wholesaleList),
@@ -119,7 +118,7 @@ class AddProductInputMapper @Inject constructor() {
                 it.description,
                 it.fileName,
                 it.filePath,
-                it.picID,
+                "",
                 it.isFromIG == "true",
                 it.width.toInt(),
                 it.height.toInt(),
@@ -128,14 +127,14 @@ class AddProductInputMapper @Inject constructor() {
     }
 
     private fun mapSizeChart(sizecharts: PictureVariantInputModel): List<Picture>? {
-        return if (sizecharts.filePath.isEmpty()) {
+        return if (sizecharts.urlOriginal.isEmpty() && sizecharts.uploadId.isEmpty()) {
             emptyList()
         } else {
             val sizechart = Picture(
                     sizecharts.description,
                     sizecharts.fileName,
                     sizecharts.filePath,
-                    sizecharts.picID,
+                    "",
                     sizecharts.isFromIG == "true",
                     sizecharts.width.toInt(),
                     sizecharts.height.toInt(),

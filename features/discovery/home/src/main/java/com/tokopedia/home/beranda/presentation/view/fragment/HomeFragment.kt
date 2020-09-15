@@ -124,6 +124,7 @@ import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.searchbar.HomeMainToolbar
+import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo.TickerDetail
 import com.tokopedia.stickylogin.internal.StickyLoginConstant
 import com.tokopedia.stickylogin.view.StickyLoginView
@@ -149,6 +150,7 @@ import java.util.*
 import java.util.concurrent.Callable
 import java.util.concurrent.Executors
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 /**
  * @author by errysuprayogi on 11/27/17.
@@ -200,6 +202,7 @@ open class HomeFragment : BaseDaggerFragment(),
         private const val SCROLL_RECOMMEND_LIST = "recommend_list"
         private const val KEY_IS_LIGHT_THEME_STATUS_BAR = "is_light_theme_status_bar"
         private const val CLICK_TIME_INTERVAL: Long = 500
+        private const val DEFAULT_INTERVAL_HINT: Long = 1000 * 10
 
         @JvmStatic
         fun newInstance(scrollToRecommendList: Boolean): HomeFragment {
@@ -261,6 +264,7 @@ open class HomeFragment : BaseDaggerFragment(),
     private var mShowTokopointNative = false
     private var showSeeAllCard = true
     private var isShowFirstInstallSearch = false
+    private var durationAutoTransition: Long = DEFAULT_INTERVAL_HINT
     private var scrollToRecommendList = false
     private var isFeedLoaded = false
     private var startToTransitionOffset = 0
@@ -415,6 +419,7 @@ open class HomeFragment : BaseDaggerFragment(),
             showRecomendation = it.getBoolean(ConstantKey.RemoteConfigKey.APP_SHOW_RECOMENDATION_BUTTON, false)
             mShowTokopointNative = it.getBoolean(ConstantKey.RemoteConfigKey.APP_SHOW_TOKOPOINT_NATIVE, false)
             isShowFirstInstallSearch = it.getBoolean(ConstantKey.RemoteConfigKey.REMOTE_CONFIG_KEY_FIRST_INSTALL_SEARCH, false)
+            durationAutoTransition = it.getLong(ConstantKey.RemoteConfigKey.REMOTE_CONFIG_KEY_FIRST_DURATION_TRANSITION_SEARCH, DEFAULT_INTERVAL_HINT)
             showSeeAllCard = it.getBoolean(SEE_ALL_CARD, true)
         }
     }
@@ -606,6 +611,7 @@ open class HomeFragment : BaseDaggerFragment(),
             setAutoRefreshOnHome(autoRefreshFlag)
         }
         shouldPausePlay = true
+        homeMainToolbar?.startHintAnimation()
     }
 
     private fun conditionalViewModelRefresh(){
@@ -642,6 +648,7 @@ open class HomeFragment : BaseDaggerFragment(),
         if (isEnableToAutoRefresh(autoRefreshFlag)) {
             stopAutoRefreshJob(autoRefreshHandler, autoRefreshRunnable)
         }
+        homeMainToolbar?.stopHintAnimation()
     }
 
     override fun onDestroy() {
@@ -722,7 +729,7 @@ open class HomeFragment : BaseDaggerFragment(),
     }
 
     private fun observeHomeData() {
-        getHomeViewModel().homeLiveData.observe(this, Observer { data: HomeDataModel? ->
+        getHomeViewModel().homeLiveData.observe(viewLifecycleOwner, Observer { data: HomeDataModel? ->
             if (data != null) {
                 if (data.list.size > VISITABLE_SIZE_WITH_DEFAULT_BANNER) {
                     configureHomeFlag(data.homeFlag)
@@ -735,13 +742,14 @@ open class HomeFragment : BaseDaggerFragment(),
     }
 
     private fun observeUpdateNetworkStatusData() {
-        getHomeViewModel().updateNetworkLiveData.observe(this, Observer { (status) ->
+        getHomeViewModel().updateNetworkLiveData.observe(viewLifecycleOwner, Observer { (status) ->
             resetImpressionListener()
             if (status === Result.Status.SUCCESS) {
                 hideLoading()
             } else if (status === Result.Status.ERROR) {
                 hideLoading()
                 showToaster(getString(R.string.home_error_connection), TYPE_ERROR)
+                pageLoadTimeCallback?.invalidate()
             } else {
                 showLoading()
             }
@@ -749,7 +757,7 @@ open class HomeFragment : BaseDaggerFragment(),
     }
 
     private fun observeTrackingData() {
-        getHomeViewModel().trackingLiveData.observe(this, Observer<Event<List<HomeVisitable?>>> { trackingData: Event<List<HomeVisitable?>> ->
+        getHomeViewModel().trackingLiveData.observe(viewLifecycleOwner, Observer<Event<List<HomeVisitable?>>> { trackingData: Event<List<HomeVisitable?>> ->
             val homeVisitables = trackingData.getContentIfNotHandled()
             homeVisitables?.let {
                 val visitables: List<Visitable<*>> = it as List<Visitable<*>>
@@ -804,7 +812,7 @@ open class HomeFragment : BaseDaggerFragment(),
     }
 
     private fun observePlayReminder(){
-        getHomeViewModel().reminderPlayLiveData.observe(this, Observer {
+        getHomeViewModel().reminderPlayLiveData.observe(viewLifecycleOwner, Observer {
             if(it.isSuccess()){
                 showToaster(
                         if(it.data == true) getString(R.string.home_page_play_card_success_add_reminder)
@@ -851,7 +859,7 @@ open class HomeFragment : BaseDaggerFragment(),
     @VisibleForTesting
     private fun observeRequestImagePlayBanner() {
         context?.let {
-            getHomeViewModel().requestImageTestLiveData.observe(this, Observer { playCardViewModelEvent: Event<PlayCardDataModel> ->
+            getHomeViewModel().requestImageTestLiveData.observe(viewLifecycleOwner, Observer { playCardViewModelEvent: Event<PlayCardDataModel> ->
                 Glide.with(it)
                         .asBitmap()
                         .load(playCardViewModelEvent.peekContent().playCardHome?.coverUrl)
@@ -871,7 +879,7 @@ open class HomeFragment : BaseDaggerFragment(),
 
     private fun observeSalamWidget(){
         context?.let{
-            getHomeViewModel().salamWidgetLiveData.observe(this, Observer {
+            getHomeViewModel().salamWidgetLiveData.observe(viewLifecycleOwner, Observer {
                 getHomeViewModel().insertSalamWidget(it.peekContent())
             })
         }
@@ -879,7 +887,7 @@ open class HomeFragment : BaseDaggerFragment(),
 
     private fun observeRechargeRecommendation(){
         context?.let {
-            getHomeViewModel().rechargeRecommendationLiveData.observe(this, Observer {
+            getHomeViewModel().rechargeRecommendationLiveData.observe(viewLifecycleOwner, Observer {
                 getHomeViewModel().insertRechargeRecommendation(it.peekContent())
             })
         }
@@ -1419,7 +1427,7 @@ open class HomeFragment : BaseDaggerFragment(),
     private fun isFirstInstall(): Boolean {
         context?.let {
             if (!getUserSession().isLoggedIn &&
-                    isShowFirstInstallSearch) {
+                    isShowFirstInstallSearch ) {
                 sharedPrefs = it.getSharedPreferences(
                         ConstantKey.FirstInstallCache.KEY_FIRST_INSTALL_SEARCH, Context.MODE_PRIVATE)
                 var firstInstallCacheValue = sharedPrefs.getLong(
@@ -1449,12 +1457,27 @@ open class HomeFragment : BaseDaggerFragment(),
     }
 
     private fun setHint(searchPlaceholder: SearchPlaceholder) {
-        if (searchPlaceholder.data != null && searchPlaceholder.data.placeholder != null && searchPlaceholder.data.keyword != null) {
+        searchPlaceholder.data?.let { data ->
             homeMainToolbar?.setHint(
-                    searchPlaceholder.data.placeholder,
-                    searchPlaceholder.data.keyword,
-                    isFirstInstall())
+                    HintData(data.placeholder ?: "", data.keyword ?: ""),
+                    placeholderToHint(data),
+                    isFirstInstall(),
+                    shouldShowTransition(),
+                    durationAutoTransition)
         }
+    }
+
+    private fun placeholderToHint(data: SearchPlaceholder.Data): ArrayList<HintData> {
+        var hints = arrayListOf(HintData(data.placeholder ?: "", data.keyword ?: ""))
+        data.placeholders?.let { placeholders ->
+            if (placeholders.isNotEmpty()) {
+                hints = arrayListOf()
+                placeholders.forEach { placeholder ->
+                    hints.add(HintData(placeholder.placeholder ?: "", placeholder.keyword ?: ""))
+                }
+            }
+        }
+        return hints
     }
 
     private fun addImpressionToTrackingQueue(visitables: List<Visitable<*>>) {
@@ -2086,6 +2109,11 @@ open class HomeFragment : BaseDaggerFragment(),
     private fun shouldShowToaster(): Boolean {
         val abTestValue = getAbTestPlatform().getString(ConstantKey.RemoteConfigKey.AB_TEST_REVIEW_KEY, "")
         return abTestValue == ConstantKey.ABtestValue.VALUE_NEW_REVIEW_FLOW
+    }
+
+    private fun shouldShowTransition(): Boolean {
+        val abTestValue = getAbTestPlatform().getString(ConstantKey.RemoteConfigKey.AB_TEST_AUTO_TRANSITION_KEY, "")
+        return abTestValue == ConstantKey.ABtestValue.AUTO_TRANSITION_VARIANT
     }
 
 }
