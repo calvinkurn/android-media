@@ -15,6 +15,7 @@ object DeepLinkMapperEtalase {
     /**
      * @param deepLink tokopedia://shop/12345/etalase-list
      * @return tokopedia-android-internal://shop-showcase-list?shop_id=12345
+     * or will return empty string if given invalid deep link
      * */
     fun getEtalaseListInternalAppLink(deepLink: String): String {
         val uri = Uri.parse(deepLink)
