@@ -38,23 +38,18 @@ class CommonTopupBillsAnalytics {
         // Click Buy
         val clickBuyEnhanceEccomerce = with(EnhanceEccomerce) {
             DataLayer.mapOf(
-                CURRENCY_CODE, DEFAULT_CURRENCY_CODE,
+                    CURRENCY_CODE, DEFAULT_CURRENCY_CODE,
                     ADD, DataLayer.mapOf(
-                    PRODUCTS, DataLayer.listOf(DataLayer.mapOf(
-                        NAME, productName,
-                        ID, productId,
-                        PRICE, productPrice,
-                        BRAND, operatorName,
-                        CATEGORY, categoryName,
-                        VARIANT, "",
-                        QUANTITY, 1,
-                        DIMENSION_79, "",
-                        DIMENSION_81, "",
-                        DIMENSION_80, "",
-                        DIMENSION_82, "",
-                        DIMENSION_45, ""
-                    ))
-                )
+                        PRODUCTS, DataLayer.listOf(DataLayer.mapOf(
+                            NAME, productName,
+                            ID, productId,
+                            PRICE, productPrice,
+                            BRAND, operatorName,
+                            CATEGORY, categoryName,
+                            VARIANT, EMPTY,
+                            QUANTITY, 1
+                        ))
+                    )
             )
         }
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
@@ -70,26 +65,21 @@ class CommonTopupBillsAnalytics {
         // View Checkout
         val viewCheckoutEnhanceEccomerce = with(EnhanceEccomerce) {
             DataLayer.mapOf(
-                CHECKOUT, DataLayer.mapOf(
-                    ActionField.ACTION_FIELD, DataLayer.mapOf(
-                        ActionField.ACTION_FIELD_STEP, 1,
-                        ActionField.ACTION_FIELD_OPTION, ActionField.ACTION_FIELD_VIEW_CHECKOUT
-                    ),
-                    PRODUCTS, DataLayer.listOf(DataLayer.mapOf(
-                        NAME, productName,
-                        ID, productId,
-                        PRICE, productPrice,
-                        BRAND, operatorName,
-                        CATEGORY, categoryName,
-                        VARIANT, "",
-                        QUANTITY, 1,
-                        DIMENSION_79, "",
-                        DIMENSION_81, "",
-                        DIMENSION_80, "",
-                        DIMENSION_82, "",
-                        DIMENSION_45, ""
-                    ))
-                )
+                    CHECKOUT, DataLayer.mapOf(
+                        ActionField.ACTION_FIELD, DataLayer.mapOf(
+                            ActionField.ACTION_FIELD_STEP, 1,
+                            ActionField.ACTION_FIELD_OPTION, ActionField.ACTION_FIELD_VIEW_CHECKOUT
+                        ),
+                        PRODUCTS, DataLayer.listOf(DataLayer.mapOf(
+                            NAME, productName,
+                            ID, productId,
+                            PRICE, productPrice,
+                            BRAND, operatorName,
+                            CATEGORY, categoryName,
+                            VARIANT, EMPTY,
+                            QUANTITY, 1
+                        ))
+                    )
             )
         }
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
@@ -105,21 +95,21 @@ class CommonTopupBillsAnalytics {
         // Click Proceed to Payment
         val clickPaymentEnhanceEccomerce = with(EnhanceEccomerce) {
             DataLayer.mapOf(
-                CHECKOUT, DataLayer.mapOf(
-                    ActionField.ACTION_FIELD, DataLayer.mapOf(
-                        ActionField.ACTION_FIELD_STEP, 2,
-                        ActionField.ACTION_FIELD_OPTION, ActionField.ACTION_FIELD_CLICK_CHECKOUT
-                    ),
-                    PRODUCTS, DataLayer.listOf(DataLayer.mapOf(
-                        NAME, productName,
-                        ID, productId,
-                        PRICE, productPrice,
-                        BRAND, operatorName,
-                        CATEGORY, categoryName,
-                        VARIANT, "",
-                        QUANTITY, 1
-                    ))
-                )
+                    CHECKOUT, DataLayer.mapOf(
+                        ActionField.ACTION_FIELD, DataLayer.mapOf(
+                            ActionField.ACTION_FIELD_STEP, 2,
+                            ActionField.ACTION_FIELD_OPTION, ActionField.ACTION_FIELD_CLICK_CHECKOUT
+                        ),
+                        PRODUCTS, DataLayer.listOf(DataLayer.mapOf(
+                            NAME, productName,
+                            ID, productId,
+                            PRICE, productPrice,
+                            BRAND, operatorName,
+                            CATEGORY, categoryName,
+                            VARIANT, EMPTY,
+                            QUANTITY, 1
+                        ))
+                    )
             )
         }
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
