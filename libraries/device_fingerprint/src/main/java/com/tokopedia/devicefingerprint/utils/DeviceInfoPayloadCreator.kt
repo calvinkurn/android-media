@@ -66,7 +66,6 @@ class DeviceInfoPayloadCreator @Inject constructor(
                 androidId = getAndroidId(),
                 serialNumber = getSerialNumber(),
                 buildFingerprint = Build.FINGERPRINT,
-                buildSerial = getBuildSerial(),
                 buildId = Build.ID,
                 buildVersionIncremental = Build.VERSION.INCREMENTAL,
                 appVersion = Build.VERSION.RELEASE,
@@ -261,10 +260,16 @@ class DeviceInfoPayloadCreator @Inject constructor(
         var serialNumber = ""
         try {
             val c = Class.forName("android.os.SystemProperties")
-            val get = c.getMethod("get", String::class.java, String::class.java)
-            serialNumber = get.invoke(c, "sys.serialnumber", "error") as String
-            if (serialNumber == "error") {
-                serialNumber = get.invoke(c, "ril.serialnumber", "error") as String
+            val get = c.getMethod("get", String::class.java)
+            serialNumber = get.invoke(c, "sys.serialnumber") as String
+            if (serialNumber == "") {
+                serialNumber = get.invoke(c, "ril.serialnumber") as String
+            }
+            if (serialNumber == "") {
+                serialNumber = get.invoke(c, "gsm.sn1") as String
+            }
+            if (serialNumber == "") {
+                serialNumber = get.invoke(c, "ro.serialno") as String
             }
             return serialNumber
         } catch (e: Exception) {
