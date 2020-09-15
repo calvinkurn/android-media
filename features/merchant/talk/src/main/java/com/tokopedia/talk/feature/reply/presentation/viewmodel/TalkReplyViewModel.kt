@@ -113,6 +113,7 @@ class TalkReplyViewModel @Inject constructor(
                 discussionDataByQuestionIDUseCase.setParams(questionId, shopId)
                 discussionDataByQuestionIDUseCase.executeOnBackground()
             }
+            isMyShop = response.discussionDataByQuestionID.shopID == userSession.shopId
             _discussionData.postValue(Success(response))
         }) {
             _discussionData.postValue(Fail(it))
@@ -247,9 +248,5 @@ class TalkReplyViewModel @Inject constructor(
 
     fun getIsFollowing(): Boolean {
         return isFollowing
-    }
-
-    fun setIsMyShop(shopId: String) {
-        isMyShop = shopId == userSession.shopId
     }
 }

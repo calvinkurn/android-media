@@ -758,7 +758,6 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
             shopId = it.getString(PARAM_SHOP_ID, "")
             source = it.getString(PARAM_SOURCE, "")
         }
-        viewModel.setIsMyShop(shopId)
     }
 
     private fun resetTextBox() {
