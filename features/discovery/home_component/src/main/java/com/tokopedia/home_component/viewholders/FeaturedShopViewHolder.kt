@@ -43,7 +43,6 @@ class FeaturedShopViewHolder(
     override fun bind(element: FeaturedShopDataModel) {
         setHeaderComponent(element)
         initView(element)
-        setHeaderComponent(element)
     }
 
     override fun bind(element: FeaturedShopDataModel, payloads: MutableList<Any>) {

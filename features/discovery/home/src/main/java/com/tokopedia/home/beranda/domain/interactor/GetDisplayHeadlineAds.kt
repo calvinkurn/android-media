@@ -34,6 +34,11 @@ class GetDisplayHeadlineAds @Inject constructor(
                 "          full_ecs\n" +
                 "          full_url\n" +
                 "        }\n" +
+                "        badges {\n" +
+                "          image_url\n" +
+                "          show\n" +
+                "          title\n" +
+                "        }\n" +
                 "        shop {\n" +
                 "          id\n" +
                 "          name\n" +
@@ -47,7 +52,7 @@ class GetDisplayHeadlineAds @Inject constructor(
                 "          shop_is_official\n" +
                 "          is_followed\n" +
                 "          image_shop {\n" +
-                "            cover\n" +
+                "            s_url\n" +
                 "          }\n" +
                 "          product {\n" +
                 "            id\n" +
