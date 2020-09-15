@@ -30,11 +30,12 @@ class PromoCheckoutListDealsActivity : BaseSimpleActivity(), HasComponent<PromoC
     companion object {
         const val DEALS_PROMO_SCREEN_NAME = "/deals/checkoutpromo"
 
-        fun newInstance(activity: Context, isCouponActive: Boolean, promoCode: String, cartID: String, pageTracking: Int): Intent {
+        fun newInstance(activity: Context, isCouponActive: Boolean, platform: String, categoryId: String, cartID: String, pageTracking: Int): Intent {
             val intent = Intent(activity, PromoCheckoutListDealsActivity::class.java)
             val bundle = Bundle()
             bundle.putBoolean(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_COUPON_ACTIVE, isCouponActive)
-            bundle.putString(BasePromoCheckoutListFragment.EXTRA_PROMO_CODE, promoCode)
+            bundle.putString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_PLATFORM, platform)
+            bundle.putString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_CATEGORYID, categoryId)
             bundle.putString(PromoCheckoutListDealsFragment.EXTRA_CART_ID, cartID)
             bundle.putInt(BasePromoCheckoutListFragment.PAGE_TRACKING, pageTracking)
             intent.putExtras(bundle)
