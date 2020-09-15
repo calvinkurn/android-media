@@ -18,7 +18,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_title"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:layout_marginStart="@dimen/dp_topchat_10"
@@ -26,5 +26,16 @@
         app:typographyType="heading_4"
         app:typographyWeight="bold"
         tools:text="Sebagai Pembeli" />
+
+    <com.tokopedia.unifycomponents.Label
+        android:id="@+id/label_chat_setting"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginStart="@dimen/dp_topchat_6"
+        android:text="@string/seller_migration_label_seller_app_only"
+        android:visibility="gone"
+        app:labelType="general_light_green"
+        tools:visibility="visible" />
 
 </LinearLayout>
