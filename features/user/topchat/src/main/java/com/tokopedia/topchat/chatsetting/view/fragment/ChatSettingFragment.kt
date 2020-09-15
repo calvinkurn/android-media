@@ -145,6 +145,10 @@ class ChatSettingFragment : BaseListFragment<Visitable<*>, ChatSettingTypeFactor
         }
     }
 
+    override fun isNextItemDivider(adapterPosition: Int): Boolean {
+        return rVadapter?.isNextItemDivider(adapterPosition) ?: false
+    }
+
     companion object {
         const val SCREEN_NAME = "chat-setting"
 

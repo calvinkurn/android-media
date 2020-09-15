@@ -13,14 +13,14 @@ class ChatSettingListAdapter(
         return (!isNextItemDivider(position) && !isTitle(position)) || isLastItem(position)
     }
 
+    fun isNextItemDivider(position: Int): Boolean {
+        val item = visitables.getOrNull(position + 1) ?: return false
+        return item is ChatSettingDividerUiModel
+    }
+
     private fun isTitle(position: Int): Boolean {
         val item = visitables.getOrNull(position) ?: return false
         return item is ChatSettingTitleUiModel
-    }
-
-    private fun isNextItemDivider(position: Int): Boolean {
-        val item = visitables.getOrNull(position + 1) ?: return false
-        return item is ChatSettingDividerUiModel
     }
 
     private fun isLastItem(position: Int): Boolean {
