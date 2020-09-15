@@ -117,9 +117,9 @@ class ActivationPageFragment: Fragment() {
         viewModel.getShopFeature(userSession.shopId)
     }
 
-
     private fun updateShopFeature() {
         if (!CodValue) viewModel.updateShopFeature(true) else viewModel.updateShopFeature(false)
+        getShopFeature()
     }
 
 
