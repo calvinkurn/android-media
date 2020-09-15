@@ -1,13 +1,11 @@
 package com.tokopedia.play.analytic.robot
 
-import androidx.test.espresso.IdlingPolicies
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.play.view.activity.PlayActivity
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
-import java.util.concurrent.TimeUnit
 
 
 /**
@@ -24,8 +22,6 @@ internal class PlayPrepareTrackingTest {
      */
     private val gtmLogDbSource = GtmLogDBSource(targetContext)
 
-//    private var idlingResource = PlaySimpleIdlingResource()
-
     private lateinit var fileName: String
 
     fun setup(testRule: IntentsTestRule<PlayActivity>) {
@@ -33,14 +29,7 @@ internal class PlayPrepareTrackingTest {
 
         // delete all data in the database
         gtmLogDbSource.deleteAll().subscribe()
-
-//        setupIdlingResourcePolicy()
     }
-
-//    private fun setupIdlingResourcePolicy() {
-//        IdlingPolicies.setMasterPolicyTimeout(10, TimeUnit.SECONDS);
-//        IdlingPolicies.setIdlingResourceTimeout(30, TimeUnit.SECONDS);
-//    }
 
     /**
      * setup mock response
@@ -51,9 +40,6 @@ internal class PlayPrepareTrackingTest {
 
     fun launch(channelId: String) {
         intentsTestRule.launchActivity(PlayActivity.createIntent(targetContext, channelId))
-
-        // register idling resources
-//        IdlingRegistry.getInstance().register(idlingResource)
     }
 
     /**

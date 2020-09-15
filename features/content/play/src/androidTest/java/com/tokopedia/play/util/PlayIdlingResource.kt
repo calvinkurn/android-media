@@ -5,6 +5,7 @@ import androidx.test.espresso.IdlingResource
 
 /**
  * Created by mzennis on 15/09/20.
+ * idling resource: artificial delays to the tests
  */
 class ComponentIdlingResource(val play: PlayIdlingResource) : IdlingResource {
 

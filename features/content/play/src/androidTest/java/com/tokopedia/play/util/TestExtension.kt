@@ -8,19 +8,14 @@ import android.content.ContextWrapper
 import android.content.pm.ActivityInfo
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewTreeObserver
 import android.view.inputmethod.InputMethodManager
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.IdlingResource
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
-import com.tokopedia.kotlin.extensions.view.dpToPx
-import com.tokopedia.play.analytic.robot.PlayPrepareTrackingTest
 import org.hamcrest.Matcher
-import org.hamcrest.Matchers.any
 
 
 /**
