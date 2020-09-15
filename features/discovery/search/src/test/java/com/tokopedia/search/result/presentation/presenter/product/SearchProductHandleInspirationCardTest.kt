@@ -5,11 +5,13 @@ import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.SearchProductModel
+import com.tokopedia.search.result.presentation.model.InspirationCardOptionViewModel
 import com.tokopedia.search.result.presentation.model.InspirationCardViewModel
 import com.tokopedia.search.result.presentation.model.InspirationCarouselViewModel
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel
 import com.tokopedia.search.result.shop.presentation.viewmodel.shouldBeInstanceOf
 import com.tokopedia.search.shouldBe
+import com.tokopedia.search.shouldBeInstanceOf
 import io.mockk.*
 import org.junit.Test
 import rx.Subscriber
@@ -32,12 +34,12 @@ internal class SearchProductHandleInspirationCardTest: ProductListPresenterTestF
         `When Load Data`()
 
         `Then verify view set product list`()
-        `Then verify visitable list has correct inspiration card and product sequence on first page`()
+        `Then verify visitable list has correct inspiration card and product sequence on first page`(searchProductModel)
 
         `When Load More`()
 
         `Then verify view add product list`()
-        `Then verify visitable list has correct inspiration card and product sequence after load more`()
+        `Then verify visitable list has correct inspiration card and product sequence after load more`(searchProductModel)
     }
 
     private fun `Given Search Product API will return SearchProductModel with Inspiration Card`(searchProductModel: SearchProductModel) {
@@ -77,8 +79,9 @@ internal class SearchProductHandleInspirationCardTest: ProductListPresenterTestF
         }
     }
 
-    private fun `Then verify visitable list has correct inspiration card and product sequence on first page`() {
+    private fun `Then verify visitable list has correct inspiration card and product sequence on first page`(searchProductModel: SearchProductModel) {
         val visitableList = visitableListSlot.captured
+        val inspirationWidget = searchProductModel.searchInspirationWidget.data
 
         // 0 -> product
         // 1 -> product
@@ -101,9 +104,12 @@ internal class SearchProductHandleInspirationCardTest: ProductListPresenterTestF
 
         visitableList.forEachIndexed { index, visitable ->
             when (index) {
-                8 -> visitable.shouldBeInstanceOf<InspirationCardViewModel>(
-                        "visitable list at index $index should be InspirationCardViewModel"
-                )
+                8 -> {
+                    visitable.shouldBeInstanceOf<InspirationCardViewModel>(
+                            "visitable list at index $index should be InspirationCardViewModel"
+                    )
+                    (visitable as InspirationCardViewModel).assertInspirationCardViewModel(inspirationWidget[0])
+                }
                 13 -> visitable.shouldBeInstanceOf<InspirationCarouselViewModel>(
                         "visitable list at index $index should be InspirationCarouselViewModel"
                 )
@@ -112,6 +118,51 @@ internal class SearchProductHandleInspirationCardTest: ProductListPresenterTestF
                 )
             }
         }
+
+    }
+
+    private fun `Then assert visitable list contains InspirationCardViewModel`(
+            visitableList: List<Visitable<*>>,
+            searchProductModel: SearchProductModel
+    ) {
+        val inspirationWidget = searchProductModel.searchInspirationWidget.data
+
+        var index = visitableList.indexOfFirst { it is InspirationCardViewModel }
+
+        inspirationWidget.forEach {
+            val visitable = visitableList[index]
+            visitable.shouldBeInstanceOf<InspirationCardViewModel>()
+
+            val broadMatchViewModel = visitable as InspirationCardViewModel
+            broadMatchViewModel.assertInspirationCardViewModel(it)
+
+            index++
+        }
+    }
+
+    private fun InspirationCardViewModel.assertInspirationCardViewModel(inspirationWidget: SearchProductModel.InspirationCardData) {
+        title shouldBe inspirationWidget.title
+        type shouldBe inspirationWidget.type
+        position shouldBe inspirationWidget.position
+        options.size shouldBe inspirationWidget.inspiratioWidgetOptions.size
+
+        inspirationWidget.inspiratioWidgetOptions.forEachIndexed { index, inspirationWidgetOption ->
+            options[index].assertInspirationCardOptionViewModel(
+                    inspirationWidgetOption, type
+            )
+        }
+    }
+
+    private fun InspirationCardOptionViewModel.assertInspirationCardOptionViewModel(
+            inspirationWidgetOption: SearchProductModel.InspirationCardOption,
+            type: String
+    ) {
+        text shouldBe inspirationWidgetOption.text
+        img shouldBe inspirationWidgetOption.img
+        url shouldBe inspirationWidgetOption.url
+        applink shouldBe inspirationWidgetOption.applink
+        color shouldBe inspirationWidgetOption.color
+        inspirationCardType shouldBe type
     }
 
     private fun `When Load More`() {
@@ -131,8 +182,9 @@ internal class SearchProductHandleInspirationCardTest: ProductListPresenterTestF
         }
     }
 
-    private fun `Then verify visitable list has correct inspiration card and product sequence after load more`() {
+    private fun `Then verify visitable list has correct inspiration card and product sequence after load more`(searchProductModel: SearchProductModel) {
         val visitableList = visitableListSlot.captured
+        val inspirationWidget = searchProductModel.searchInspirationWidget.data
 
         // 0 -> product
         // 1 -> product
@@ -159,6 +211,9 @@ internal class SearchProductHandleInspirationCardTest: ProductListPresenterTestF
                 )
             }
         }
+        (visitableList[2] as InspirationCardViewModel).assertInspirationCardViewModel(inspirationWidget[1])
+        (visitableList[5] as InspirationCardViewModel).assertInspirationCardViewModel(inspirationWidget[2])
+        (visitableList[8] as InspirationCardViewModel).assertInspirationCardViewModel(inspirationWidget[3])
     }
 
     @Test
@@ -175,7 +230,7 @@ internal class SearchProductHandleInspirationCardTest: ProductListPresenterTestF
         `When Load More`()
 
         `Then verify view add product list`()
-        `Then verify visitable list has inspiration card after 9th product item`()
+        `Then verify visitable list has inspiration card after 9th product item`(searchProductModel)
     }
 
     private fun `Then verify inspiration card is not shown on first page`() {
@@ -200,8 +255,9 @@ internal class SearchProductHandleInspirationCardTest: ProductListPresenterTestF
         }
     }
 
-    private fun `Then verify visitable list has inspiration card after 9th product item`() {
+    private fun `Then verify visitable list has inspiration card after 9th product item`(searchProductModel: SearchProductModel) {
         val visitableList = visitableListSlot.captured
+        val inspirationWidget = searchProductModel.searchInspirationWidget.data
 
         // 0 -> product
         // 1 -> inspiration card
@@ -220,6 +276,7 @@ internal class SearchProductHandleInspirationCardTest: ProductListPresenterTestF
                 visitable.shouldBeInstanceOf<InspirationCardViewModel>(
                         "visitable list at index $index should be InspirationCardViewModel"
                 )
+                (visitable as InspirationCardViewModel).assertInspirationCardViewModel(inspirationWidget[0])
             }
             else {
                 visitable.shouldBeInstanceOf<ProductItemViewModel>(
@@ -238,16 +295,17 @@ internal class SearchProductHandleInspirationCardTest: ProductListPresenterTestF
         `When Load Data`()
 
         `Then verify view set product list`()
-        `Then verify visitable list has correct inspiration card position for search result first page without Top Ads product`()
+        `Then verify visitable list has correct inspiration card position for search result first page without Top Ads product`(searchProductModel)
 
         `When Load More`()
 
         `Then verify view add product list`()
-        `Then verify visitable list has correct inspiration card position for search result next pages without Top Ads product`()
+        `Then verify visitable list has correct inspiration card position for search result next pages without Top Ads product`(searchProductModel)
     }
 
-    private fun `Then verify visitable list has correct inspiration card position for search result first page without Top Ads product`() {
+    private fun `Then verify visitable list has correct inspiration card position for search result first page without Top Ads product`(searchProductModel: SearchProductModel) {
         val visitableList = visitableListSlot.captured
+        val inspirationWidget = searchProductModel.searchInspirationWidget.data
 
         // 0 -> product
         // 1 -> product
@@ -274,10 +332,13 @@ internal class SearchProductHandleInspirationCardTest: ProductListPresenterTestF
                 )
             }
         }
+        (visitableList[4] as InspirationCardViewModel).assertInspirationCardViewModel(inspirationWidget[0])
+        (visitableList[9] as InspirationCardViewModel).assertInspirationCardViewModel(inspirationWidget[1])
     }
 
-    private fun `Then verify visitable list has correct inspiration card position for search result next pages without Top Ads product`() {
+    private fun `Then verify visitable list has correct inspiration card position for search result next pages without Top Ads product`(searchProductModel: SearchProductModel) {
         val visitableList = visitableListSlot.captured
+        val inspirationWidget = searchProductModel.searchInspirationWidget.data
 
         // 0 -> product
         // 1 -> product
@@ -303,6 +364,7 @@ internal class SearchProductHandleInspirationCardTest: ProductListPresenterTestF
                     visitable.shouldBeInstanceOf<InspirationCardViewModel>(
                             "visitable list at index $index should be InspirationCardViewModel"
                     )
+                    (visitable as InspirationCardViewModel).assertInspirationCardViewModel(inspirationWidget[2])
                 }
                 else -> {
                     visitable.shouldBeInstanceOf<ProductItemViewModel>(
@@ -322,16 +384,17 @@ internal class SearchProductHandleInspirationCardTest: ProductListPresenterTestF
         `When Load Data`()
 
         `Then verify view set product list`()
-        `Then verify visitable list has correct inspiration card in the same position`()
+        `Then verify visitable list has correct inspiration card in the same position`(searchProductModel)
 
         `When Load More`()
 
         `Then verify view add product list`()
-        `Then verify visitable list has inspiration card and product items`()
+        `Then verify visitable list has inspiration card and product items`(searchProductModel)
     }
 
-    private fun `Then verify visitable list has correct inspiration card in the same position`() {
+    private fun `Then verify visitable list has correct inspiration card in the same position`(searchProductModel: SearchProductModel) {
         val visitableList = visitableListSlot.captured
+        val inspirationWidget = searchProductModel.searchInspirationWidget.data
 
         // 0 -> product
         // 1 -> product
@@ -372,10 +435,15 @@ internal class SearchProductHandleInspirationCardTest: ProductListPresenterTestF
                 )
             }
         }
+        (visitableList[4] as InspirationCardViewModel).assertInspirationCardViewModel(inspirationWidget[1])
+        (visitableList[5] as InspirationCardViewModel).assertInspirationCardViewModel(inspirationWidget[0])
+        (visitableList[10] as InspirationCardViewModel).assertInspirationCardViewModel(inspirationWidget[2])
+        (visitableList[13] as InspirationCardViewModel).assertInspirationCardViewModel(inspirationWidget[3])
     }
 
-    private fun `Then verify visitable list has inspiration card and product items`() {
+    private fun `Then verify visitable list has inspiration card and product items`(searchProductModel: SearchProductModel) {
         val visitableList = visitableListSlot.captured
+        val inspirationWidget = searchProductModel.searchInspirationWidget.data
 
         // 0 -> product
         // 1 -> product
@@ -402,6 +470,8 @@ internal class SearchProductHandleInspirationCardTest: ProductListPresenterTestF
                 )
             }
         }
+        (visitableList[2] as InspirationCardViewModel).assertInspirationCardViewModel(inspirationWidget[4])
+        (visitableList[7] as InspirationCardViewModel).assertInspirationCardViewModel(inspirationWidget[5])
     }
 
     @Test
@@ -413,7 +483,7 @@ internal class SearchProductHandleInspirationCardTest: ProductListPresenterTestF
         `When Load Data`()
 
         `Then verify view set product list`()
-        `Then verify visitable list has correct inspiration card in the same position as inspiration carousel`()
+        `Then verify visitable list has correct inspiration card in the same position as inspiration carousel`(searchProductModel)
 
         `When Load More`()
 
@@ -421,8 +491,9 @@ internal class SearchProductHandleInspirationCardTest: ProductListPresenterTestF
         `Then verify visitable list only has product items`()
     }
 
-    private fun  `Then verify visitable list has correct inspiration card in the same position as inspiration carousel`() {
+    private fun  `Then verify visitable list has correct inspiration card in the same position as inspiration carousel`(searchProductModel: SearchProductModel) {
         val visitableList = visitableListSlot.captured
+        val inspirationWidget = searchProductModel.searchInspirationWidget.data
 
         // 0 -> product
         // 1 -> product
@@ -461,6 +532,8 @@ internal class SearchProductHandleInspirationCardTest: ProductListPresenterTestF
                 )
             }
         }
+        (visitableList[8] as InspirationCardViewModel).assertInspirationCardViewModel(inspirationWidget[0])
+        (visitableList[13] as InspirationCardViewModel).assertInspirationCardViewModel(inspirationWidget[1])
     }
 
     private fun `Then verify visitable list only has product items`() {
