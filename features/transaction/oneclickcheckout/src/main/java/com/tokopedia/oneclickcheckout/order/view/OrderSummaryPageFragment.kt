@@ -538,36 +538,38 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
 
     private fun showOnboarding(onboarding: OccMainOnboarding) {
         view?.let {
-            val scrollview = it.findViewById<NestedScrollView>(R.id.nested_scroll_view)
-            val layoutPayment = it.findViewById<View>(R.id.layout_payment)
-            val coachMarkItems = ArrayList<CoachMarkItem>()
-            for (detailIndexed in onboarding.onboardingCoachMark.details.withIndex()) {
-                val view = when (detailIndexed.index) {
-                    0 -> it.findViewById(R.id.preference_card)
-                    1 -> it.findViewById(R.id.iv_edit_preference)
-                    2 -> it.findViewById(R.id.layout_order_preference_shipping)
-                    3 -> layoutPayment
-                    else -> null
-                }
-                coachMarkItems.add(CoachMarkItem(view, detailIndexed.value.title, detailIndexed.value.message, tintBackgroundColor = Color.WHITE))
-            }
-            val coachMark = CoachMarkBuilder().build()
-            coachMark.enableSkip = true
-            if (onboarding.onboardingCoachMark.skipButtonText.isNotEmpty()) {
-                coachMark.setSkipText(onboarding.onboardingCoachMark.skipButtonText)
-            }
-            coachMark.setShowCaseStepListener(object : CoachMark.OnShowCaseStepListener {
-                override fun onShowCaseGoTo(previousStep: Int, nextStep: Int, coachMarkItem: CoachMarkItem): Boolean {
-                    if (nextStep == 0) {
-                        scrollview.scrollTo(0, it.findViewById<View>(R.id.tv_header_2).top)
-                    } else if (nextStep == 3) {
-                        scrollview.scrollTo(0, layoutPayment.bottom)
+            it.post {
+                val scrollview = it.findViewById<NestedScrollView>(R.id.nested_scroll_view)
+                val layoutPayment = it.findViewById<View>(R.id.layout_payment)
+                val coachMarkItems = ArrayList<CoachMarkItem>()
+                for (detailIndexed in onboarding.onboardingCoachMark.details.withIndex()) {
+                    val view = when (detailIndexed.index) {
+                        0 -> it.findViewById(R.id.preference_card)
+                        1 -> it.findViewById(R.id.iv_edit_preference)
+                        2 -> it.findViewById(R.id.layout_order_preference_shipping)
+                        3 -> layoutPayment
+                        else -> null
                     }
-                    return false
+                    coachMarkItems.add(CoachMarkItem(view, detailIndexed.value.title, detailIndexed.value.message, tintBackgroundColor = Color.WHITE))
                 }
-            })
-            coachMark.show(activity, COACH_MARK_TAG, coachMarkItems)
-            orderSummaryAnalytics.eventViewOnboardingTicker()
+                val coachMark = CoachMarkBuilder().build()
+                coachMark.enableSkip = true
+                if (onboarding.onboardingCoachMark.skipButtonText.isNotEmpty()) {
+                    coachMark.setSkipText(onboarding.onboardingCoachMark.skipButtonText)
+                }
+                coachMark.setShowCaseStepListener(object : CoachMark.OnShowCaseStepListener {
+                    override fun onShowCaseGoTo(previousStep: Int, nextStep: Int, coachMarkItem: CoachMarkItem): Boolean {
+                        if (nextStep == 0) {
+                            scrollview.scrollTo(0, it.findViewById<View>(R.id.tv_header_2).top)
+                        } else if (nextStep == 3) {
+                            scrollview.scrollTo(0, layoutPayment.bottom)
+                        }
+                        return false
+                    }
+                })
+                coachMark.show(activity, COACH_MARK_TAG, coachMarkItems)
+                orderSummaryAnalytics.eventViewOnboardingTicker()
+            }
         }
     }
 

@@ -22,6 +22,8 @@ object ApplinkConsInternalDigital {
     const val CAMERA_OCR = "$INTERNAL_RECHARGE/ocr"
     const val CREDIT_CARD_TEMPLATE = "$INTERNAL_RECHARGE/cc"
     const val SMART_BILLS = "$INTERNAL_RECHARGE/bayarsekaligus"
+    const val SUBHOMEPAGE = "$INTERNAL_RECHARGE/home"
+    const val DYNAMIC_SUBHOMEPAGE = "$INTERNAL_RECHARGE/home/dynamic"
 
     const val SMARTCARD = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://$HOST_DIGITAL/smartcard?$PARAM_SMARTCARD={type}&$PARAM_BRIZZI={status}"
     const val INTERNAL_SMARTCARD_EMONEY = "$INTERNAL_DIGITAL/smartcard/emoney?$PARAM_SMARTCARD={type}"

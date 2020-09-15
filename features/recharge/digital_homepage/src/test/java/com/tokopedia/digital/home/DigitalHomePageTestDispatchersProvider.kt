@@ -1,6 +1,6 @@
 package com.tokopedia.digital.home
 
-import com.tokopedia.digital.home.presentation.Util.DigitalHomePageDispatchersProvider
+import com.tokopedia.digital.home.old.presentation.util.DigitalHomePageDispatchersProvider
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 
