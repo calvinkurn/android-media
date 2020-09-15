@@ -1348,6 +1348,7 @@ open class HomeViewModel @Inject constructor(
     override suspend fun addWidget(visitable: Visitable<*>, position: Int) {
         val newList = _homeLiveData.value?.list?.toMutableList() ?: mutableListOf()
         logChannelUpdate("Update channel: (Add widget ${visitable.javaClass.simpleName})")
+        if(newList.find { getVisitableId(it) == getVisitableId(visitable) && it::class.java == visitable::class.java } != null) return
         if(position == -1 || position > newList.size) newList.add(visitable)
         else newList.add(position, visitable)
         withContext(homeDispatcher.get().ui()) {
