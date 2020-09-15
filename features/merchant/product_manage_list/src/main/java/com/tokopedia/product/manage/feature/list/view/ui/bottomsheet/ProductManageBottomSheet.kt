@@ -88,8 +88,8 @@ class ProductManageBottomSheet(
                 add(ProductItemDivider)
 
                 when {
-                    product.isTopAds() -> add(SeeTopAds(product))
-                    !product.isEmpty() -> add(SetTopAds(product))
+                    product.hasTopAds() -> add(SeeTopAds(product))
+                    else -> add(SetTopAds(product))
                 }
 
                 add(SetCashBack(product))

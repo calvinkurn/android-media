@@ -33,5 +33,5 @@ data class ProductViewModel(
     fun isViolation(): Boolean = status == ProductStatus.VIOLATION
     fun isNotViolation(): Boolean = status != ProductStatus.VIOLATION
     fun isEmpty(): Boolean = status == ProductStatus.EMPTY || stock == 0
-    fun isTopAds(): Boolean = !isEmpty() && topAdsInfo?.isTopAds == true
+    fun hasTopAds(): Boolean = topAdsInfo?.isTopAds == true || topAdsInfo?.isAutoAds == true
 }
