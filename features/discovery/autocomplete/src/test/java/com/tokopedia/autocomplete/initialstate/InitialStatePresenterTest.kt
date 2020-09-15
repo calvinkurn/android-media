@@ -171,7 +171,7 @@ internal class InitialStatePresenterTest: InitialStatePresenterTestFixtures() {
         val visitableList = slotVisitableList.captured
 
         Assert.assertTrue(
-                (refreshVisitableList[5] as PopularSearchViewModel).list.size == (visitableList[5] as PopularSearchViewModel).list.size
+                (refreshVisitableList[6] as PopularSearchViewModel).list.size == (visitableList[6] as PopularSearchViewModel).list.size
         )
     }
 

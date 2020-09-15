@@ -179,7 +179,7 @@ class InitialStatePresenter @Inject constructor(
     }
 
     private fun MutableList<Visitable<*>>.insertRecentSearchSeeMoreButton(items: List<InitialStateItem>): MutableList<Visitable<*>> {
-        if (items.size < 5) return this
+        if (items.size < RECENT_SEARCH_SEE_MORE_LIMIT) return this
 
         val viewModel = RecentSearchSeeMoreViewModel()
         this.add(viewModel)
@@ -293,7 +293,7 @@ class InitialStatePresenter @Inject constructor(
                     removeRecentSearch()
                 }
 
-                val seeMore = totalSize < 4
+                val seeMore = totalSize < RECENT_SEARCH_SEE_MORE_LIMIT
                 if (seeMore) removeSeeMoreRecentSearch()
 
                 view.deleteRecentSearch(listVistable)
