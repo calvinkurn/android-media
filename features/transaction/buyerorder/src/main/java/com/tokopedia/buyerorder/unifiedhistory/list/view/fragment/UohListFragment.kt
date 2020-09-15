@@ -31,7 +31,6 @@ import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.ALL_DATE
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.ALL_STATUS
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.ALL_TRANSACTIONS
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.APP_LINK_TYPE
-import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.CATEGORY_BELANJA
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.CTA_ATC
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.EE_PRODUCT_ID
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.EE_PRODUCT_PRICE
@@ -48,7 +47,6 @@ import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.GQL_LS_FINI
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.GQL_LS_LACAK
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.GQL_MP_CHAT
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.GQL_MP_FINISH
-import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.GQL_MP_REJECT
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.GQL_RECHARGE_BATALKAN
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.GQL_TRACK
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.GQL_TRAIN_EMAIL
@@ -971,7 +969,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         fragmentManager?.let { bottomSheetLsFinishOrder?.show(it, getString(R.string.show_bottomsheet)) }
     }
 
-    private fun showBottomSheetSendEmail(gqlGroup: String, index: Int) {
+    private fun showBottomSheetSendEmail(gqlGroup: String, orderData: UohListOrder.Data.UohOrders.Order) {
         val viewBottomSheet = View.inflate(context, R.layout.bottomsheet_send_email, null)
         viewBottomSheet.tf_email?.textFieldInput?.addTextChangedListener(object: TextWatcher{
             override fun afterTextChanged(s: Editable?) {
@@ -1000,13 +998,13 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         })
         viewBottomSheet.btn_send_email?.setOnClickListener {
             if (gqlGroup.equals(GQL_FLIGHT_EMAIL, true)) {
-                val flightQueryParam = Gson().fromJson(orderList.orders[index].metadata.queryParams, FlightQueryParams::class.java)
+                val flightQueryParam = Gson().fromJson(orderData.metadata.queryParams, FlightQueryParams::class.java)
                 val invoiceId = flightQueryParam.invoiceId
                 val email = "${viewBottomSheet.tf_email.textFieldInput.text}"
                 uohListViewModel.doFlightResendEmail(GraphqlHelper.loadRawString(resources, R.raw.uoh_send_eticket_flight), invoiceId, email)
 
             } else if (gqlGroup.equals(GQL_TRAIN_EMAIL, true)) {
-                val trainQueryParam = Gson().fromJson(orderList.orders[index].metadata.queryParams, TrainQueryParams::class.java)
+                val trainQueryParam = Gson().fromJson(orderData.metadata.queryParams, TrainQueryParams::class.java)
                 val invoiceId = trainQueryParam.invoiceId
                 val email = "${viewBottomSheet.tf_email.textFieldInput.text}"
                 val param = TrainResendEmailParam(bookCode = invoiceId, email = email)
@@ -1196,10 +1194,10 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         } else {
             when {
                 dotMenu.actionType.equals(GQL_FLIGHT_EMAIL, true) -> {
-                    showBottomSheetSendEmail(GQL_FLIGHT_EMAIL, index)
+                    showBottomSheetSendEmail(GQL_FLIGHT_EMAIL, orderData)
                 }
                 dotMenu.actionType.equals(GQL_TRAIN_EMAIL, true) -> {
-                    showBottomSheetSendEmail(GQL_TRAIN_EMAIL, index)
+                    showBottomSheetSendEmail(GQL_TRAIN_EMAIL, orderData)
                 }
                 dotMenu.actionType.equals(GQL_MP_CHAT, true) -> {
                     RouteManager.route(context, URLDecoder.decode(dotMenu.appURL, UohConsts.UTF_8))
@@ -1326,6 +1324,14 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         resetFilter()
         refreshHandler?.startRefresh()
         userSession?.userId?.let { UohAnalytics.clickResetFilterOnEmptyFilterResult(it) }
+    }
+
+    override fun onTickerDetailInfoClicked(url: String) {
+        if (url.contains(ApplinkConst.WEBVIEW)) {
+            RouteManager.route(context, url)
+        } else {
+            RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, url))
+        }
     }
 
     override fun trackViewOrderCard(order: UohListOrder.Data.UohOrders.Order, index: Int) {

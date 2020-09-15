@@ -56,8 +56,7 @@ class UohOrderListViewHolder(itemView: View, private val actionListener: UohItem
                         val adapter = TickerPagerAdapter(it, listTickerData)
                         adapter.setPagerDescriptionClickEvent(object : TickerPagerCallback {
                             override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
-                                // TODO : cek lagi url applink nya, make sure lagi nanti
-                                RouteManager.route(it, String.format("%s?url=%s", ApplinkConst.WEBVIEW, linkUrl))
+                                actionListener?.onTickerDetailInfoClicked(linkUrl.toString())
                             }
                         })
                         itemView.ticker_info_inside_card?.setDescriptionClickEvent(object: TickerCallback {
@@ -82,7 +81,7 @@ class UohOrderListViewHolder(itemView: View, private val actionListener: UohItem
                         itemView.ticker_info_inside_card?.tickerType = UohUtils.getTickerType(it.type)
                         itemView.ticker_info_inside_card?.setDescriptionClickEvent(object : TickerCallback {
                             override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                                RouteManager.route(itemView.context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, linkUrl))
+                                actionListener?.onTickerDetailInfoClicked(linkUrl.toString())
                             }
 
                             override fun onDismiss() {
