@@ -702,7 +702,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                 val adapter = TickerPagerAdapter(it, listTickerData)
                 adapter.setPagerDescriptionClickEvent(object : TickerPagerCallback {
                     override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
-                        RouteManager.route(context, URLDecoder.decode(linkUrl.toString(), UohConsts.UTF_8))
+                        onTickerDetailInfoClicked(linkUrl.toString())
                     }
                 })
                 ticker_info?.setDescriptionClickEvent(object: TickerCallback {
@@ -727,7 +727,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                 ticker_info?.tickerType = UohUtils.getTickerType(it.type)
                 ticker_info?.setDescriptionClickEvent(object : TickerCallback {
                     override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                        RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, URLDecoder.decode(linkUrl.toString(), UohConsts.UTF_8)))
+                        onTickerDetailInfoClicked(linkUrl.toString())
                     }
 
                     override fun onDismiss() {
