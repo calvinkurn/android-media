@@ -321,11 +321,14 @@ class CartItemViewHolder constructor(itemView: View,
 
     private fun renderProductProperties(data: CartItemHolderData) {
         // Render from the last information label
-        renderProductPropertyIncidentLabel(data)
+        // Level 4
         renderProductPropertyWholesalePrice(data)
         renderProductPropertyPriceDrop(data)
         renderProductPropertyCashback(data)
 
+        // Level 5
+        renderProductPropertyIncidentLabel(data)
+        
         sendAnalyticsShowInformation(informationLabel, data.cartItemData?.originData?.productId
                 ?: "")
     }
@@ -346,11 +349,7 @@ class CartItemViewHolder constructor(itemView: View,
 
     private fun renderProductPropertyWholesalePrice(data: CartItemHolderData) {
         if (data.cartItemData?.originData?.wholesalePrice ?: 0 > 0) {
-            if (textIncidentLabel.visibility == View.VISIBLE) {
-                textWholesalePrice.text = "Harga Grosir, "
-            } else {
-                textWholesalePrice.text = "Harga Grosir"
-            }
+            textWholesalePrice.text = "Harga Grosir"
             textWholesalePrice.show()
             informationLabel.add("harga grosir")
         } else {
@@ -361,7 +360,7 @@ class CartItemViewHolder constructor(itemView: View,
     private fun renderProductPropertyPriceDrop(data: CartItemHolderData) {
         if (data.cartItemData?.originData?.initialPriceBeforeDrop ?: 0 > 0 &&
                 data.cartItemData?.originData?.initialPriceBeforeDrop ?: 0 > data.cartItemData?.originData?.pricePlan?.toInt() ?: 0) {
-            if (textIncidentLabel.visibility == View.VISIBLE || textWholesalePrice.visibility == View.VISIBLE) {
+            if (textWholesalePrice.visibility == View.VISIBLE) {
                 textPriceDrop.text = "Harga Turun, "
             } else {
                 textPriceDrop.text = "Harga Turun"
@@ -375,7 +374,7 @@ class CartItemViewHolder constructor(itemView: View,
 
     private fun renderProductPropertyCashback(data: CartItemHolderData) {
         if (data.cartItemData?.originData?.productCashBack?.isNotBlank() == true) {
-            if (textIncidentLabel.visibility == View.VISIBLE || textWholesalePrice.visibility == View.VISIBLE || textPriceDrop.visibility == View.VISIBLE) {
+            if (textWholesalePrice.visibility == View.VISIBLE || textPriceDrop.visibility == View.VISIBLE) {
                 textCashback.text = "${data.cartItemData?.originData?.cashBackInfo ?: ""}, "
             } else {
                 textCashback.text = data.cartItemData?.originData?.cashBackInfo ?: ""

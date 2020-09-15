@@ -194,19 +194,19 @@
                             tools:text=", Harga Grosir"
                             tools:visibility="visible" />
 
-                        <com.tokopedia.unifyprinciples.Typography
-                            android:id="@+id/text_incident"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@+id/text_product_name"
-                            android:paddingTop="@dimen/dp_2"
-                            android:textColor="@color/Neutral_N700_68"
-                            android:visibility="gone"
-                            app:typographyType="small"
-                            tools:text=", Campaign"
-                            tools:visibility="visible" />
-
                     </com.google.android.flexbox.FlexboxLayout>
+
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:id="@+id/text_incident"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/layout_product_info"
+                        android:paddingTop="@dimen/dp_2"
+                        android:textColor="@color/Neutral_N700_68"
+                        android:visibility="gone"
+                        app:typographyType="small"
+                        tools:text="Campaign"
+                        tools:visibility="visible" />
 
                 </RelativeLayout>
 
