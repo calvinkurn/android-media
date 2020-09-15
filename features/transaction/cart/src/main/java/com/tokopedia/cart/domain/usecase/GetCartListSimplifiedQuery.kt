@@ -25,6 +25,7 @@ fun getQueryCartRevamp(): String {
                 code
                 image
                 title
+                description
                 buttons {
                   id
                   code
