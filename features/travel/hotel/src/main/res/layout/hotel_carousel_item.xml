@@ -1,16 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_height="wrap_content"
-    android:paddingRight="@dimen/spacing_lvl3"
-    android:paddingEnd="@dimen/spacing_lvl3">
+    android:paddingRight="@dimen/spacing_lvl2"
+    android:paddingEnd="@dimen/spacing_lvl2"
+    android:paddingLeft="@dimen/spacing_lvl2"
+    android:paddingStart="@dimen/spacing_lvl2">
 
-    <com.tokopedia.unifycomponents.ImageUnify
-        android:id="@+id/hotelPromoImageCarousel"
+    <androidx.cardview.widget.CardView
+        android:id="@+id/banner_hotel_card_view"
         android:layout_width="match_parent"
-        android:layout_height="120dp"
-        android:adjustViewBounds="true"
-        />
-</LinearLayout>
+        android:layout_height="0dp"
+        app:cardCornerRadius="8dp"
+        app:layout_constraintDimensionRatio="414:139"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/hotelPromoImageCarousel"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            />
+    </androidx.cardview.widget.CardView>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

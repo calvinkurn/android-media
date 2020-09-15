@@ -6,8 +6,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewTreeObserver
 import android.widget.Toast
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -43,12 +43,10 @@ import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelDetailActivity
 import com.tokopedia.hotel.search.data.model.HotelSearchModel
 import com.tokopedia.hotel.search.presentation.activity.HotelSearchResultActivity
 import com.tokopedia.kotlin.extensions.view.loadImage
-import com.tokopedia.kotlin.extensions.view.loadImageWithoutPlaceholder
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.travelcalendar.selectionrangecalendar.SelectionRangeCalendarWidget
-import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_hotel_homepage.*
 import java.util.*
@@ -237,9 +235,12 @@ class HotelHomepageFragment : HotelBaseFragment(),
                     onDestinationNearBy(data.getDoubleExtra(HotelDestinationActivity.HOTEL_CURRENT_LOCATION_LANG, 0.0),
                             data.getDoubleExtra(HotelDestinationActivity.HOTEL_CURRENT_LOCATION_LAT, 0.0))
                 } else if (data.hasExtra(HotelDestinationActivity.HOTEL_DESTINATION_SEARCH_ID)) {
-                    onDestinationChanged(data.getStringExtra(HotelDestinationActivity.HOTEL_DESTINATION_NAME) ?: "",
-                            searchId = data.getStringExtra(HotelDestinationActivity.HOTEL_DESTINATION_SEARCH_ID) ?: "",
-                            searchType = data.getStringExtra(HotelDestinationActivity.HOTEL_DESTINATION_SEARCH_TYPE) ?: "")
+                    onDestinationChanged(data.getStringExtra(HotelDestinationActivity.HOTEL_DESTINATION_NAME)
+                            ?: "",
+                            searchId = data.getStringExtra(HotelDestinationActivity.HOTEL_DESTINATION_SEARCH_ID)
+                                    ?: "",
+                            searchType = data.getStringExtra(HotelDestinationActivity.HOTEL_DESTINATION_SEARCH_TYPE)
+                                    ?: "")
                 }
             }
         }
@@ -360,7 +361,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
 
     private fun onDestinationChanged(name: String, id: Long = 0, type: String = "", searchType: String = "",
                                      searchId: String = "", shouldTrackChanges: Boolean = true) {
-        if (shouldTrackChanges)  {
+        if (shouldTrackChanges) {
             val tempType = if (searchType.isNotEmpty()) searchType else type
             trackingHotelUtil.hotelSelectDestination(context, tempType, name, HOMEPAGE_SCREEN_NAME)
         }
@@ -450,7 +451,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
         bannerImpressionIndex.add(0)
         trackingHotelUtil.hotelBannerImpression(context, promoDataList.firstOrNull(), 0, HOMEPAGE_SCREEN_NAME)
 
-        banner_hotel_homepage_promo.onActiveIndexChangedListener = object: CarouselUnify.OnActiveIndexChangedListener {
+        banner_hotel_homepage_promo.onActiveIndexChangedListener = object : CarouselUnify.OnActiveIndexChangedListener {
             override fun onActiveIndexChanged(prev: Int, current: Int) {
                 if (!bannerImpressionIndex.contains(current)) {
                     bannerImpressionIndex.add(current)
@@ -467,11 +468,11 @@ class HotelHomepageFragment : HotelBaseFragment(),
         banner_hotel_homepage_promo.infinite = true
 
         val itemParam = { view: View, data: Any ->
-            val image = view.findViewById<ImageUnify>(R.id.hotelPromoImageCarousel)
+            val image = view.findViewById<AppCompatImageView>(R.id.hotelPromoImageCarousel)
             image.loadImage((data as TravelCollectiveBannerModel.Banner).attribute.imageUrl)
         }
-        banner_hotel_homepage_promo.addItems(R.layout.hotel_carousel_item, ArrayList(promoDataList), itemParam)
 
+        banner_hotel_homepage_promo.addItems(R.layout.hotel_carousel_item, ArrayList(promoDataList), itemParam)
         showPromoContainer()
     }
 
@@ -534,7 +535,8 @@ class HotelHomepageFragment : HotelBaseFragment(),
                 it.attribute.webUrl.isNotEmpty() -> {
                     RouteManager.route(context, it.attribute.webUrl)
                 }
-                else -> {}
+                else -> {
+                }
             }
         }
     }

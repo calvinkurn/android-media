@@ -277,15 +277,15 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
         (activity as HotelDetailActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
         detail_toolbar.navigationIcon?.setColorFilter(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Neutral_N0), PorterDuff.Mode.SRC_ATOP)
 
-        collapsing_toolbar.setExpandedTitleTextAppearance(R.style.hotelPdpExpandedToolbarLayoutTitleColor)
-        collapsing_toolbar.setCollapsedTitleTextAppearance(R.style.hotelPdpCollapsingToolbarLayoutTitleColor)
-        collapsing_toolbar.title = data.property.name
+        collapsingToolbar.setExpandedTitleTextAppearance(R.style.hotelPdpExpandedToolbarLayoutTitleColor)
+        collapsingToolbar.setCollapsedTitleTextAppearance(R.style.hotelPdpCollapsingToolbarLayoutTitleColor)
+        collapsingToolbar.title = data.property.name
 
         app_bar_layout.addOnOffsetChangedListener(object : AppBarLayout.OnOffsetChangedListener {
             var isShow = false
 
             override fun onOffsetChanged(appBarLayout: AppBarLayout, verticalOffset: Int) {
-                if (verticalOffset < -200) {
+                if (verticalOffset < COLLAPSING_TOOLBAR_OFFSET) {
                     detail_toolbar.navigationIcon?.setColorFilter(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Neutral_N700_96), PorterDuff.Mode.SRC_ATOP)
                     (activity as HotelDetailActivity).optionMenu?.setIcon(com.tokopedia.abstraction.R.drawable.ic_toolbar_overflow_level_two_black)
                     isShow = true
@@ -642,6 +642,8 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
 
         const val RESULT_ROOM_LIST = 101
         const val RESULT_REVIEW = 102
+
+        const val COLLAPSING_TOOLBAR_OFFSET = -200
 
         fun getInstance(checkInDate: String, checkOutDate: String, propertyId: Long, roomCount: Int,
                         adultCount: Int, destinationType: String, destinationName: String,
