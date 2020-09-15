@@ -1,5 +1,6 @@
 package com.tokopedia.digital_deals.view.presenter;
 
+import android.content.Context;
 import android.content.Intent;
 import android.text.TextUtils;
 
@@ -10,7 +11,8 @@ import com.google.gson.JsonParser;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.constant.IRouterConstant;
-import com.tokopedia.digital_deals.data.source.DealsUrl;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalPromo;
 import com.tokopedia.digital_deals.view.contractor.CheckoutDealContractor;
 import com.tokopedia.digital_deals.view.fragment.CheckoutHomeFragment;
 import com.tokopedia.digital_deals.view.model.Outlet;
@@ -20,7 +22,6 @@ import com.tokopedia.digital_deals.view.model.cart.CartItems;
 import com.tokopedia.digital_deals.view.model.cart.Configuration;
 import com.tokopedia.digital_deals.view.model.cart.MetaData;
 import com.tokopedia.digital_deals.view.model.response.DealsDetailsResponse;
-import com.tokopedia.loyalty.view.activity.LoyaltyActivity;
 import com.tokopedia.oms.domain.postusecase.PostPaymentUseCase;
 import com.tokopedia.oms.scrooge.ScroogePGUtil;
 import com.tokopedia.oms.view.utils.Utils;
@@ -73,8 +74,8 @@ public class CheckoutDealPresenter
 
 
     @Override
-    public void clickGoToPromo() {
-        goToLoyaltyActivity();
+    public void clickGoToPromo(Context context) {
+        goToPromoCheckOutListDealsActivity(context);
     }
 
     private JsonObject convertPackageToCartItem(PackageViewModel packageViewModel) {
@@ -104,19 +105,14 @@ public class CheckoutDealPresenter
         return requestBody;
     }
 
-
-    private void goToLoyaltyActivity() {
+    private void goToPromoCheckOutListDealsActivity(Context context) {
         JsonObject requestBody = convertPackageToCartItem(packageViewModel);
-        Intent loyaltyIntent = LoyaltyActivity.newInstanceCouponActive(getView().getActivity(),
-                        DealsUrl.AppLink.DEALS,
-                        DealsUrl.AppLink.DEALS,
-                        Utils.LOYALTY_DEFAULT_TAB);
-        loyaltyIntent.putExtra(com.tokopedia.oms.view.utils.Utils.Constants.CHECKOUTDATA, requestBody.toString());
-        loyaltyIntent.putExtra(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_PRODUCTID, packageViewModel.getDigitalProductID());
-        loyaltyIntent.putExtra(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_CATEGORYID, packageViewModel.getDigitalCategoryID());
-        getView().navigateToActivityRequest(loyaltyIntent, CheckoutHomeFragment.LOYALTY_ACTIVITY_REQUEST_CODE);
+        Intent dealsIntent = RouteManager.getIntent(context, ApplinkConstInternalPromo.PROMO_LIST_DEALS);
+        dealsIntent.putExtra(com.tokopedia.oms.view.utils.Utils.Constants.CHECKOUTDATA, requestBody.toString());
+        dealsIntent.putExtra(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_PRODUCTID, packageViewModel.getDigitalProductID());
+        dealsIntent.putExtra(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_CATEGORYID, packageViewModel.getDigitalCategoryID());
+        getView().navigateToActivityRequest(dealsIntent, CheckoutHomeFragment.LOYALTY_ACTIVITY_REQUEST_CODE);
     }
-
 
     public void getCheckoutDetails() {
         UserSession userSession = new UserSession(getView().getActivity());
