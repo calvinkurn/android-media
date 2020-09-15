@@ -36,44 +36,43 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="-3dp"
-                    android:layout_marginTop="@dimen/dp_14"
+                    android:layout_marginTop="@dimen/dp_30"
                     android:button="@drawable/ic_cart_check_box"
                     android:paddingRight="@dimen/dp_8" />
-
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/iv_product_card"
-                    android:layout_width="@dimen/dp_52"
-                    android:layout_height="@dimen/dp_52"
-                    android:layout_margin="@dimen/dp_5"
-                    android:layout_marginTop="@dimen/dp_4"
-                    android:layout_marginEnd="@dimen/dp_20"
-                    android:layout_marginRight="@dimen/dp_20"
-                    android:layout_toRightOf="@+id/cb_select_item"
-                    app:cardCornerRadius="@dimen/dp_6"
-                    app:cardElevation="@dimen/dp_0">
-
-                    <ImageView
-                        android:id="@+id/iv_image_product"
-                        android:layout_width="@dimen/dp_52"
-                        android:layout_height="@dimen/dp_52"
-                        tools:ignore="ContentDescription"
-                        tools:src="@drawable/empty_photo" />
-
-                </androidx.cardview.widget.CardView>
 
                 <RelativeLayout
                     android:id="@+id/rl_product_info"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_toEndOf="@id/iv_product_card"
-                    android:layout_toRightOf="@id/iv_product_card"
-                    android:paddingLeft="@dimen/dp_8">
+                    android:layout_toEndOf="@id/cb_select_item"
+                    android:layout_toRightOf="@id/cb_select_item">
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/iv_product_card"
+                        android:layout_width="@dimen/dp_72"
+                        android:layout_height="@dimen/dp_72"
+                        android:layout_marginLeft="@dimen/dp_12"
+                        android:layout_marginTop="@dimen/dp_4"
+                        android:layout_marginRight="@dimen/dp_10"
+                        app:cardCornerRadius="@dimen/dp_6"
+                        app:cardElevation="@dimen/dp_0">
+
+                        <ImageView
+                            android:id="@+id/iv_image_product"
+                            android:layout_width="@dimen/dp_72"
+                            android:layout_height="@dimen/dp_72"
+                            tools:ignore="ContentDescription"
+                            tools:src="@drawable/empty_photo" />
+
+                    </androidx.cardview.widget.CardView>
 
                     <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/text_product_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
+                        android:layout_toEndOf="@+id/iv_product_card"
+                        android:layout_toRightOf="@+id/iv_product_card"
                         android:ellipsize="end"
                         android:maxLines="1"
                         android:textColor="@color/Neutral_N700_96"
@@ -85,6 +84,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/text_product_name"
+                        android:layout_toEndOf="@+id/iv_product_card"
+                        android:layout_toRightOf="@+id/iv_product_card"
                         android:gravity="center_vertical"
                         android:paddingTop="@dimen/dp_2"
                         android:textColor="@color/Neutral_N700_68"
@@ -114,6 +115,8 @@
                         android:layout_below="@+id/text_product_variant"
                         android:layout_marginTop="8dp"
                         android:layout_marginRight="@dimen/dp_4"
+                        android:layout_toEndOf="@+id/iv_product_card"
+                        android:layout_toRightOf="@+id/iv_product_card"
                         android:gravity="center_vertical"
                         android:visibility="gone"
                         app:labelType="general_dark_red"
@@ -154,6 +157,8 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/text_product_price"
                         android:layout_marginTop="@dimen/dp_4"
+                        android:layout_toEndOf="@+id/iv_product_card"
+                        android:layout_toRightOf="@+id/iv_product_card"
                         android:foregroundGravity="center_vertical"
                         app:flexWrap="wrap"
                         tools:visibility="visible">
@@ -201,6 +206,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/layout_product_info"
+                        android:layout_toEndOf="@+id/iv_product_card"
+                        android:layout_toRightOf="@+id/iv_product_card"
                         android:paddingTop="@dimen/dp_2"
                         android:textColor="@color/Neutral_N700_68"
                         android:visibility="gone"
@@ -222,7 +229,8 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        tools:visibility="gone">
 
                         <com.tokopedia.unifyprinciples.Typography
                             android:id="@+id/tv_remark"
