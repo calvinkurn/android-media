@@ -46,8 +46,6 @@ class SomDetailHeaderViewHolder(itemView: View, private val actionListener: SomD
     private val somDetailLabelInfoAdapter = SomDetailLabelInfoAdapter()
     private val viewPool = RecyclerView.RecycledViewPool()
 
-    val coachMarkItems: ArrayList<CoachMarkItem> = ArrayList()
-
     @SuppressLint("Range")
     override fun bind(item: SomDetailData, position: Int) {
         if (item.dataObject is SomDetailHeader) {

@@ -1,6 +1,7 @@
 package com.tokopedia.sellerorder.waitingpaymentorder.presentation.adapter.viewholder
 
 import android.animation.LayoutTransition
+import android.animation.ValueAnimator
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.LinearInterpolator
@@ -32,6 +33,8 @@ class WaitingPaymentOrdersViewHolder(
         WaitingPaymentOrderProductsAdapter(WaitingPaymentOrderProductsAdapterTypeFactory())
     }
 
+    private var iconDropDownAnimator: ValueAnimator? = null
+
     @Suppress("NAME_SHADOWING")
     override fun bind(element: WaitingPaymentOrderUiModel?) {
         element?.let { element ->
@@ -44,8 +47,15 @@ class WaitingPaymentOrdersViewHolder(
                     setOnClickListener {
                         element.isExpanded = !element.isExpanded
                         listener.toggleCollapse(element)
+                        if (element.isExpanded) {
+                            animateIcon(0f, -180f)
+                        } else {
+                            animateIcon(-180f, 0f)
+                        }
                     }
                 }
+                iconDropDownAnimator?.end()
+                icLoadMoreDropDown.rotation = if (element.isExpanded) -180f else 0f
                 icLoadMoreDropDown.showWithCondition(element.productUiModels.size > MAX_ORDER_WHEN_COLLAPSED)
                 rvWaitingPaymentOrderProducts.apply {
                     if (adapter == null) {
@@ -60,6 +70,15 @@ class WaitingPaymentOrdersViewHolder(
                 }
             }
         }
+    }
+
+    private fun animateIcon(start: Float, end: Float) {
+        iconDropDownAnimator = ValueAnimator.ofFloat(start, end)
+        iconDropDownAnimator?.duration = RECYCLER_VIEW_ANIMATION_DURATION
+        iconDropDownAnimator?.addUpdateListener { animation ->
+            itemView.icLoadMoreDropDown.rotation = animation.animatedValue as Float
+        }
+        iconDropDownAnimator?.start()
     }
 
     @Suppress("NAME_SHADOWING")
