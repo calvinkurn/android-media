@@ -46,6 +46,9 @@ import com.tokopedia.cart.R
 import com.tokopedia.cart.data.model.response.recentview.RecentView
 import com.tokopedia.cart.domain.model.cartlist.*
 import com.tokopedia.cart.domain.model.cartlist.ActionData.Companion.ACTION_CHECKOUTBROWSER
+import com.tokopedia.cart.domain.model.cartlist.OutOfServiceData.Companion.ID_MAINTENANCE
+import com.tokopedia.cart.domain.model.cartlist.OutOfServiceData.Companion.ID_OVERLOAD
+import com.tokopedia.cart.domain.model.cartlist.OutOfServiceData.Companion.ID_TIMEOUT
 import com.tokopedia.cart.view.CartActivity.Companion.INVALID_PRODUCT_ID
 import com.tokopedia.cart.view.adapter.CartAdapter
 import com.tokopedia.cart.view.adapter.CartItemAdapter
@@ -1571,9 +1574,41 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     private fun renderCartOutOfService(outOfServiceData: OutOfServiceData) {
-        layoutGlobalError.errorTitle.text = outOfServiceData.title
-        layoutGlobalError.errorDescription.text = outOfServiceData.description
-        layoutGlobalError.errorIllustration.setImage(outOfServiceData.image, 0f)
+        when (outOfServiceData.id) {
+            ID_MAINTENANCE -> {
+                layoutGlobalError.setType(GlobalError.MAINTENANCE)
+                outOfServiceData.buttons.firstOrNull()?.let {
+                    layoutGlobalError.errorAction.text = it.message
+                }
+                layoutGlobalError.setActionClickListener {
+                    goToHome()
+                }
+            }
+            ID_OVERLOAD -> {
+                layoutGlobalError.setType(GlobalError.PAGE_FULL)
+                layoutGlobalError.setActionClickListener {
+                    refreshErrorPage()
+                }
+            }
+            ID_TIMEOUT -> {
+                layoutGlobalError.setType(GlobalError.SERVER_ERROR)
+                outOfServiceData.buttons.firstOrNull()?.let {
+                    layoutGlobalError.errorAction.text = it.message
+                }
+                layoutGlobalError.setActionClickListener {
+                    goToHome()
+                }
+            }
+        }
+        if (outOfServiceData.title.isNotBlank()) {
+            layoutGlobalError.errorTitle.text = outOfServiceData.title
+        }
+        if (outOfServiceData.description.isNotBlank()) {
+            layoutGlobalError.errorDescription.text = outOfServiceData.description
+        }
+        if (outOfServiceData.image.isNotBlank()) {
+            layoutGlobalError.errorIllustration.setImage(outOfServiceData.image, 0f)
+        }
         cartPageAnalytics.eventViewErrorPageWhenLoadCart(userSession.userId, outOfServiceData.getErrorType())
         showErrorContainer()
     }
@@ -2179,15 +2214,19 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 }
             } else {
                 layoutGlobalError.setActionClickListener {
-                    layoutGlobalError.gone()
-                    rlContent.show()
-                    refreshHandler?.isRefreshing = true
-                    cartAdapter.resetData()
-                    dPresenter.processInitialGetCartData(getCartId(), dPresenter.getCartListData() == null, false)
+                    refreshErrorPage()
                 }
             }
             layoutGlobalError.show()
         }
+    }
+
+    private fun refreshErrorPage() {
+        layoutGlobalError.gone()
+        rlContent.show()
+        refreshHandler?.isRefreshing = true
+        cartAdapter.resetData()
+        dPresenter.processInitialGetCartData(getCartId(), dPresenter.getCartListData() == null, false)
     }
 
     private fun getGlobalErrorType(throwable: Throwable): Int {
@@ -2327,9 +2366,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         layoutGlobalError.errorTitle.text = outOfServiceData.title
         layoutGlobalError.errorDescription.text = outOfServiceData.description
         layoutGlobalError.errorIllustration.setImage(outOfServiceData.image, 0f)
-        outOfServiceData.buttons.forEach {
+        outOfServiceData.buttons.firstOrNull()?.let {
             layoutGlobalError.errorAction.text = it.message
-            return@forEach
         }
         showErrorContainer()
     }

@@ -22,6 +22,7 @@ import com.tokopedia.cart.domain.model.cartlist.ActionData.Companion.ACTION_WISH
 import com.tokopedia.cart.view.adapter.CartItemAdapter
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.design.utils.CurrencyFormatUtil
+import com.tokopedia.kotlin.extensions.view.getScreenWidth
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
@@ -88,7 +89,6 @@ class CartItemViewHolder constructor(itemView: View,
 
     private val tvNoteCharCounter: TextView
     private val tvRemark: TextView
-    private val tvEllipsize: TextView
     private val divider: View
     private val rlProductAction: RelativeLayout
     private val llShopNoteSection: LinearLayout
@@ -139,7 +139,6 @@ class CartItemViewHolder constructor(itemView: View,
 
         tvNoteCharCounter = itemView.findViewById(R.id.tv_note_char_counter)
         tvRemark = itemView.findViewById(R.id.tv_remark)
-        tvEllipsize = itemView.findViewById(R.id.tv_ellipsize)
         divider = itemView.findViewById(R.id.holder_item_cart_divider)
         rlProductAction = itemView.findViewById(R.id.rl_product_action)
         llShopNoteSection = itemView.findViewById(R.id.ll_shop_note_section)
@@ -321,10 +320,13 @@ class CartItemViewHolder constructor(itemView: View,
 
     private fun renderProductProperties(data: CartItemHolderData) {
         // Render from the last information label
-        renderProductPropertyIncidentLabel(data)
+        // Level 4
         renderProductPropertyWholesalePrice(data)
         renderProductPropertyPriceDrop(data)
         renderProductPropertyCashback(data)
+
+        // Level 5
+        renderProductPropertyIncidentLabel(data)
 
         sendAnalyticsShowInformation(informationLabel, data.cartItemData?.originData?.productId
                 ?: "")
@@ -346,11 +348,7 @@ class CartItemViewHolder constructor(itemView: View,
 
     private fun renderProductPropertyWholesalePrice(data: CartItemHolderData) {
         if (data.cartItemData?.originData?.wholesalePrice ?: 0 > 0) {
-            if (textIncidentLabel.visibility == View.VISIBLE) {
-                textWholesalePrice.text = "Harga Grosir, "
-            } else {
-                textWholesalePrice.text = "Harga Grosir"
-            }
+            textWholesalePrice.text = "Harga Grosir"
             textWholesalePrice.show()
             informationLabel.add("harga grosir")
         } else {
@@ -361,7 +359,7 @@ class CartItemViewHolder constructor(itemView: View,
     private fun renderProductPropertyPriceDrop(data: CartItemHolderData) {
         if (data.cartItemData?.originData?.initialPriceBeforeDrop ?: 0 > 0 &&
                 data.cartItemData?.originData?.initialPriceBeforeDrop ?: 0 > data.cartItemData?.originData?.pricePlan?.toInt() ?: 0) {
-            if (textIncidentLabel.visibility == View.VISIBLE || textWholesalePrice.visibility == View.VISIBLE) {
+            if (textWholesalePrice.visibility == View.VISIBLE) {
                 textPriceDrop.text = "Harga Turun, "
             } else {
                 textPriceDrop.text = "Harga Turun"
@@ -375,7 +373,7 @@ class CartItemViewHolder constructor(itemView: View,
 
     private fun renderProductPropertyCashback(data: CartItemHolderData) {
         if (data.cartItemData?.originData?.productCashBack?.isNotBlank() == true) {
-            if (textIncidentLabel.visibility == View.VISIBLE || textWholesalePrice.visibility == View.VISIBLE || textPriceDrop.visibility == View.VISIBLE) {
+            if (textWholesalePrice.visibility == View.VISIBLE || textPriceDrop.visibility == View.VISIBLE) {
                 textCashback.text = "${data.cartItemData?.originData?.cashBackInfo ?: ""}, "
             } else {
                 textCashback.text = data.cartItemData?.originData?.cashBackInfo ?: ""
@@ -522,7 +520,6 @@ class CartItemViewHolder constructor(itemView: View,
                 this.etRemark.setSelection(etRemark.length())
                 this.tvLabelRemarkOption.visibility = View.GONE
                 this.tvNoteCharCounter.visibility = View.VISIBLE
-                this.tvEllipsize.visibility = View.GONE
                 tvLabelRemarkOption.setPadding(0, 0, 0, 0)
             } else {
                 // Has notes from pdp
@@ -534,11 +531,8 @@ class CartItemViewHolder constructor(itemView: View,
                 this.tvNoteCharCounter.visibility = View.GONE
                 this.tvLabelRemarkOption.text = tvLabelRemarkOption.context.getString(R.string.label_button_change_note)
                 tvLabelRemarkOption.setPadding(itemView.resources.getDimensionPixelOffset(R.dimen.dp_4), 0, 0, 0)
-                if (data.cartItemData?.updatedData?.remark?.length ?: 0 >= MAX_SHOWING_NOTES_CHAR) {
-                    this.tvEllipsize.visibility = View.VISIBLE
-                } else {
-                    this.tvEllipsize.visibility = View.GONE
-                }
+
+                setNotesWidth()
             }
             tvLabelRemarkOption.setTextColor(ContextCompat.getColor(itemView.context, R.color.light_G500))
         } else {
@@ -549,7 +543,6 @@ class CartItemViewHolder constructor(itemView: View,
             this.tvLabelRemarkOption.text = tvLabelRemarkOption.context.getString(R.string.label_button_add_note)
             this.tvLabelRemarkOption.visibility = View.VISIBLE
             this.etRemark.setText("")
-            this.tvEllipsize.visibility = View.GONE
             tvLabelRemarkOption.setTextColor(ContextCompat.getColor(itemView.context, R.color.Neutral_N700_68))
             tvLabelRemarkOption.setPadding(0, 0, 0, 0)
         }
@@ -573,6 +566,22 @@ class CartItemViewHolder constructor(itemView: View,
         })
 
         llShopNoteSection.show()
+    }
+
+    private fun setNotesWidth() {
+        val padding = itemView.resources.getDimensionPixelOffset(R.dimen.dp_16)
+        val paddingLeftRight = padding * 2
+        val remarkOptionWidth = itemView.resources.getDimensionPixelOffset(R.dimen.dp_35)
+        val screenWidth = getScreenWidth()
+        val maxNotesWidth = screenWidth - paddingLeftRight
+        val noteWidth = maxNotesWidth - remarkOptionWidth
+
+        tvRemark.measure(0, 0)
+        val currentWidth = tvRemark.measuredWidth
+        if (currentWidth >= maxNotesWidth) {
+            tvRemark.layoutParams.width = noteWidth
+            tvRemark.requestLayout()
+        }
     }
 
     private fun renderQuantity(data: CartItemHolderData, parentPosition: Int, viewHolderListener: ViewHolderListener) {
