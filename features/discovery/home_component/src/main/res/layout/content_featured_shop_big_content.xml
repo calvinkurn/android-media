@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="128dp"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     app:cardCornerRadius="@dimen/dp_8"
     app:cardElevation="@dimen/dp_4"
     app:cardPreventCornerOverlap="false"
@@ -16,12 +16,12 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:visibility="gone"
+            tools:background="@color/grey_500"
             tools:visibility="visible"
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:background="@color/background_apps" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
             android:id="@+id/featured_shop_product_logo_shop"
@@ -57,12 +57,13 @@
             app:typographyWeight="bold"
             tools:visibility="visible"/>
 
-        <com.tokopedia.unifyprinciples.Typography
+        <TextView
             android:id="@+id/featured_shop_product_shop_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:lines="2"
+            android:minLines="2"
             android:visibility="gone"
             android:textStyle="bold"
             android:layout_marginLeft="@dimen/dp_8"
@@ -72,7 +73,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/featured_shop_product_logo_shop"
-            app:typographyType="body_3"
             tools:text="Shop Name"
             tools:visibility="visible" />
 
@@ -83,10 +83,12 @@
             android:layout_marginTop="@dimen/spacing_lvl2"
             android:orientation="horizontal"
             android:visibility="gone"
-            tools:visibility="visible"
+            android:layout_marginBottom="@dimen/dp_16"
+            tools:visibility="gone"
             app:layout_constraintEnd_toStartOf="@+id/featured_shop_product_total_count"
             app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/featured_shop_product_shop_name" >
 
             <ImageView
@@ -143,7 +145,7 @@
             android:visibility="gone"
             android:textColor="@color/Neutral_N300"
             android:textSize="@dimen/sp_10"
-            tools:visibility="visible"
+            tools:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@+id/featured_shop_product_reviews"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/featured_shop_product_reviews"
@@ -172,10 +174,12 @@
             android:visibility="gone"
             android:textColor="@color/Neutral_N300"
             android:textSize="@dimen/sp_10"
+            android:layout_marginBottom="@dimen/dp_16"
             tools:visibility="visible"
             tools:text="Surabaya"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/featured_shop_product_location_icon"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/featured_shop_product_shop_name" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>
