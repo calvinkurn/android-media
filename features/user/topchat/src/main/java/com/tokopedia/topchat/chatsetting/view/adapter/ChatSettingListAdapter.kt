@@ -18,6 +18,11 @@ class ChatSettingListAdapter(
         return item is ChatSettingDividerUiModel
     }
 
+    fun isPreviousItemTitle(position: Int): Boolean {
+        val item = visitables.getOrNull(position - 1) ?: return false
+        return item is ChatSettingTitleUiModel
+    }
+
     private fun isTitle(position: Int): Boolean {
         val item = visitables.getOrNull(position) ?: return false
         return item is ChatSettingTitleUiModel

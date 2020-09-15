@@ -35,6 +35,7 @@ class ChatSettingViewHolder constructor(
         fun eventClickChatSetting(element: ItemChatSettingUiModel)
         fun goToSellerMigrationPage()
         fun isNextItemDivider(adapterPosition: Int): Boolean
+        fun isPreviousItemTitle(adapterPosition: Int): Boolean
     }
 
     override fun bind(element: ItemChatSettingUiModel) {
@@ -74,7 +75,7 @@ class ChatSettingViewHolder constructor(
     }
 
     private fun initPadding(element: ItemChatSettingUiModel) {
-        val top = if (title?.isVisible != true) {
+        val top = if (title?.isVisible != true && listener.isPreviousItemTitle(adapterPosition)) {
             paddingTopNoTitle
         } else {
             paddingTop
