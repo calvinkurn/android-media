@@ -20,6 +20,8 @@ import com.tokopedia.home_component.productcardgridcarousel.typeFactory.CommonCa
 import com.tokopedia.home_component.util.setGradientBackground
 import com.tokopedia.home_component.viewholders.adapter.FeaturedShopAdapter
 import com.tokopedia.home_component.visitable.FeaturedShopDataModel
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import kotlinx.android.synthetic.main.home_component_lego_banner.view.home_component_header_view
 import kotlinx.android.synthetic.main.home_featured_shop.view.*
 
@@ -41,8 +43,13 @@ class FeaturedShopViewHolder(
     private lateinit var adapter: FeaturedShopAdapter
 
     override fun bind(element: FeaturedShopDataModel) {
-        setHeaderComponent(element)
-        initView(element)
+        if(element.channelModel.channelGrids.isEmpty()){
+            itemView.hide()
+        } else {
+            itemView.show()
+            setHeaderComponent(element)
+            initView(element)
+        }
     }
 
     override fun bind(element: FeaturedShopDataModel, payloads: MutableList<Any>) {
