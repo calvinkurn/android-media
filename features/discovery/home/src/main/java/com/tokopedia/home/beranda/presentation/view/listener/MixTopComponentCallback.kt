@@ -35,7 +35,7 @@ class MixTopComponentCallback(val homeCategoryListener: HomeCategoryListener)
     override fun onProductCardImpressed(channel: ChannelModel, channelGrid: ChannelGrid, adapterPosition: Int, position: Int) {
         //GA
         val product = MixTopTracking.mapGridToProductTrackerComponent(
-                channelGrid, channel.id, position+1, channel.trackingAttributionModel.persoType, channel.trackingAttributionModel.categoryId)
+                channelGrid, channel.id, position+1, channel.trackingAttributionModel.persoType, channel.trackingAttributionModel.categoryId, channel.channelHeader.name)
         homeCategoryListener.getTrackingQueueObj()?.putEETracking(
                 MixTopTracking.getMixTopView(
                         listOf(product),
@@ -54,7 +54,7 @@ class MixTopComponentCallback(val homeCategoryListener: HomeCategoryListener)
     }
 
     override fun onProductCardClicked(channel: ChannelModel, channelGrid: ChannelGrid, adapterPosition: Int, position: Int, applink: String) {
-        val product = MixTopTracking.mapGridToProductTrackerComponent(channelGrid, channel.id, position+1, channel.trackingAttributionModel.persoType, channel.trackingAttributionModel.categoryId)
+        val product = MixTopTracking.mapGridToProductTrackerComponent(channelGrid, channel.id, position+1, channel.trackingAttributionModel.persoType, channel.trackingAttributionModel.categoryId, channel.channelHeader.name)
         homeCategoryListener.sendEETracking(MixTopTracking.getMixTopClick(
                 listOf(product),
                 channel.channelHeader.name,

@@ -33,6 +33,7 @@
 
                 <RadioButton
                     android:id="@+id/rb_check_address"
+                    android:contentDescription="@string/content_desc_rb_check_address"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/dp_16"
@@ -74,6 +75,7 @@
 
             <TextView
                 android:id="@+id/button_change_address"
+                android:contentDescription="@string/content_desc_button_change_address"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/v_separator"
@@ -91,6 +93,7 @@
 
     <Button
         android:id="@+id/button_add_new_address"
+        android:contentDescription="@string/content_desc_tv_button_add_new_address"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/dp_16"

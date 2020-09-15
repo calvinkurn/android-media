@@ -60,7 +60,7 @@ class ChatListNetworkModule {
 
     @ChatListScope
     @Provides
-    fun provideUserSession(@ApplicationContext context: Context): UserSession {
+    fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface {
         return UserSession(context)
     }
 
