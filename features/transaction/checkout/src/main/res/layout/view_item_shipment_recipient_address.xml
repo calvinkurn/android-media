@@ -20,6 +20,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_change_address_top"
+        android:contentDescription="@string/content_desc_tv_change_address_top"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/dp_16"

@@ -42,4 +42,10 @@
     <string name="ticker_corner_list_info">- Wajib membawa kartu mahasiswa / staff saat pengambilan pesanan \n- Pesanan dikirim dengan siCepat Regular</string>
     <string name="label_button_change_search">Ganti Pencarian</string>
 
+    <!--Content Description-->
+    <string name="content_desc_rb_check_address">radio pilih alamat</string>
+    <string name="content_desc_button_change_address">button ubah alamat</string>
+    <string name="content_desc_button_tkpd_corner">button tokopedia corner</string>
+    <string name="content_desc_tv_button_add_new_address">button tambah alamat</string>
+
 </resources>

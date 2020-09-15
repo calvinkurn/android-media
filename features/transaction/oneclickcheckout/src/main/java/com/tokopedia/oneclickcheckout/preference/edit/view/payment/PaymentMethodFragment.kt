@@ -68,6 +68,9 @@ class PaymentMethodFragment : BaseDaggerFragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
+    @Inject
+    lateinit var paymentListingUrl: String
+
     private val viewModel: PaymentMethodViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory)[PaymentMethodViewModel::class.java]
     }
@@ -156,8 +159,8 @@ class PaymentMethodFragment : BaseDaggerFragment() {
 
     private fun loadWebView(param: ListingParam) {
         this.param = param
-        val url = "${TokopediaUrl.getInstance().PAY}/v2/payment/register/listing"
-        webView?.postUrl(url, getPayload(param).toByteArray())
+//        val url = "${TokopediaUrl.getInstance().PAY}/v2/payment/register/listing"
+        webView?.postUrl(paymentListingUrl, getPayload(param).toByteArray())
         webView?.visible()
         globalError?.gone()
     }

@@ -12,6 +12,7 @@ import com.tokopedia.filter.common.data.Filter;
 import com.tokopedia.filter.common.data.Option;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.search.analytics.GeneralSearchTrackingModel;
+import com.tokopedia.search.result.presentation.model.BroadMatchItemViewModel;
 import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
 import com.tokopedia.search.result.presentation.model.InspirationCarouselViewModel;
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
@@ -169,6 +170,10 @@ public interface ProductListSectionContract {
         void openBottomSheetFilter(@Nullable DynamicFilterModel dynamicFilterModel);
 
         void setDynamicFilter(@NotNull DynamicFilterModel dynamicFilterModel);
+
+        void trackEventClickBroadMatchItem(BroadMatchItemViewModel broadMatchItemViewModel);
+
+        void redirectionStartActivity(String applink, String url);
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -215,5 +220,9 @@ public interface ProductListSectionContract {
         void onFreeOngkirOnBoardingShown();
 
         void openFilterPage(Map<String, Object> searchParameter);
+
+        void onBroadMatchItemImpressed(@NotNull BroadMatchItemViewModel broadMatchItemViewModel);
+
+        void onBroadMatchItemClick(@NotNull BroadMatchItemViewModel broadMatchItemViewModel);
     }
 }

@@ -52,10 +52,6 @@ data class ProductP1VariantChild(
         @Expose
         val campaignStatus: String? = null,
 
-        @SerializedName("isCOD")
-        @Expose
-        val isCod: Boolean? = false,
-
         @SerializedName("warehouseInfo")
         @Expose
         val warehouseInfo: ProductP1VariantWarehouse? = null
