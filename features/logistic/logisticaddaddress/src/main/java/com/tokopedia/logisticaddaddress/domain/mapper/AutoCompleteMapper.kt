@@ -11,18 +11,6 @@ import javax.inject.Inject
  */
 class AutoCompleteMapper @Inject constructor() {
 
-    /*fun mapAutoComplete(response: AutocompleteResponse): List<SuggestedPlace> {
-        val dataResponse = response.keroMapsAutocomplete.data.predictions
-        val errorCode = response.keroMapsAutocomplete.errorCode
-        return dataResponse.map {
-            SuggestedPlace(
-                    it.structuredFormatting.mainText,
-                    it.structuredFormatting.secondaryText,
-                    it.placeId,
-                    errorCode
-            )
-        }*/
-
     fun mapAutoComplete(response: AutocompleteResponse): Place {
         val errorCode = response.keroMapsAutocomplete.errorCode
         return Place().apply {
