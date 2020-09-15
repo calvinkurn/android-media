@@ -18,14 +18,14 @@ class ChatSettingMapper @Inject constructor() {
 
         // buyer sections
         if (needSectionTitle) {
-            visitables.add(ChatSettingTitleUiModel("buyer", R.drawable.ic_topchat_add_bold_grey))
+            visitables.add(ChatSettingTitleUiModel(R.string.title_topchat_as_buyer, R.drawable.ic_topchat_account_dark_grey))
         }
         visitables.addAll(gearChat.listBuyer)
         visitables.add(ChatSettingDividerUiModel())
 
         // seller sections
         if (needSectionTitle) {
-            visitables.add(ChatSettingTitleUiModel("seller", R.drawable.ic_topchat_add_bold_grey))
+            visitables.add(ChatSettingTitleUiModel(R.string.title_topchat_as_seller, R.drawable.ic_topchat_shop_dark_grey))
         }
         visitables.addAll(gearChat.listSeller)
         visitables.add(ChatSettingDividerUiModel())
