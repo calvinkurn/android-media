@@ -125,8 +125,6 @@ import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOpti
 import com.tokopedia.topads.common.data.model.DataDeposit
 import com.tokopedia.topads.common.data.model.FreeDeposit.Companion.DEPOSIT_ACTIVE
 import com.tokopedia.topads.freeclaim.data.constant.TOPADS_FREE_CLAIM_URL
-import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption
-import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceTaggingConstant
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -178,7 +176,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         override fun onSellerFeatureClicked(item: SellerFeatureUiModel) {
             when (item) {
                 is SellerFeatureUiModel.MultiEditFeatureWithDataUiModel -> goToSellerAppProductManageMultiEdit()
-                is SellerFeatureUiModel.TopAdsFeatureWithDataUiModel -> goToSellerAppTopAds(item.data as ProductViewModel)
+                is SellerFeatureUiModel.TopAdsFeatureWithDataUiModel -> goToSellerAppTopAds()
                 is SellerFeatureUiModel.SetCashbackFeatureWithDataUiModel -> goToSellerAppProductManageThenSetCashback(item.data as ProductViewModel)
                 is SellerFeatureUiModel.FeaturedProductFeatureWithDataUiModel -> goToSellerAppProductManageThenAddAsFeatured(item.data as ProductViewModel)
                 is SellerFeatureUiModel.StockReminderFeatureWithDataUiModel -> goToSellerAppSetStockReminder(item.data as ProductViewModel)
@@ -397,18 +395,9 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         goToSellerMigrationPage(SellerMigrationFeatureName.FEATURE_MULTI_EDIT, arrayListOf(appLink))
     }
 
-    private fun goToSellerAppTopAds(product: ProductViewModel) {
+    private fun goToSellerAppTopAds() {
         val firstAppLink = ApplinkConst.PRODUCT_MANAGE
-        val secondAppLink = Uri.parse(ApplinkConst.SellerApp.TOPADS_PRODUCT_CREATE).buildUpon()
-                .appendQueryParameter(TopAdsSourceTaggingConstant.PARAM_EXTRA_SHOP_ID, userSession.shopId)
-                .appendQueryParameter(TopAdsSourceTaggingConstant.PARAM_EXTRA_ITEM_ID, product.id)
-                .appendQueryParameter(TopAdsSourceTaggingConstant.PARAM_KEY_SOURCE,
-                        if (GlobalConfig.isSellerApp())
-                            TopAdsSourceOption.SA_MANAGE_LIST_PRODUCT
-                        else
-                            TopAdsSourceOption.MA_MANAGE_LIST_PRODUCT)
-                .build()
-                .toString()
+        val secondAppLink = ApplinkConst.SellerApp.TOPADS_DASHBOARD
 
         goToSellerMigrationPage(SellerMigrationFeatureName.FEATURE_TOPADS, arrayListOf(firstAppLink, secondAppLink))
     }
