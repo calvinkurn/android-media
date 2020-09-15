@@ -13,7 +13,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            android:background="@drawable/search_background_curated_cards"/>
+            android:background="@drawable/search_background_big_grid_curated_cards"/>
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/inspirationCardCuratedIcon"
@@ -53,7 +53,7 @@
             android:layout_marginBottom="@dimen/dp_8"
             android:layout_marginEnd="@dimen/dp_8"
             app:unifyButtonVariant="ghost"
-            app:unifyButtonSize="medium"
+            app:unifyButtonSize="small"
             app:unifyButtonType="main"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="parent"
