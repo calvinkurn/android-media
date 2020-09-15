@@ -216,6 +216,8 @@ object ApplinkConstInternalMarketplace {
     val USER_NOTIFICATION_SETTING = "$INTERNAL_MARKETPLACE/user-notification-setting"
 
     @JvmField
+    val CHAT_SETTING = "$INTERNAL_MARKETPLACE/chat/settings"
+    @JvmField
     val CHAT_SETTING_TEMPLATE = "$INTERNAL_MARKETPLACE/chat/settings/templatechat"
 
     //Report Product
