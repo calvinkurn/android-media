@@ -8,7 +8,6 @@ import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.topchat.R
-import com.tokopedia.topchat.chatsetting.data.uimodel.ChatSettingTitleUiModel
 import com.tokopedia.topchat.chatsetting.data.uimodel.ItemChatSettingUiModel
 import com.tokopedia.topchat.chattemplate.view.activity.TemplateChatActivity
 import com.tokopedia.unifycomponents.Label
@@ -43,7 +42,7 @@ class ChatSettingViewHolder constructor(
         initDescription(element)
         initLabel(element)
         initClickListener(element)
-        bindPadding(element)
+        initPadding(element)
     }
 
     private fun initTitle(element: ItemChatSettingUiModel) {
@@ -74,7 +73,7 @@ class ChatSettingViewHolder constructor(
         }
     }
 
-    private fun bindPadding(element: ItemChatSettingUiModel) {
+    private fun initPadding(element: ItemChatSettingUiModel) {
         val top = if (title?.isVisible != true) {
             paddingTopNoTitle
         } else {
