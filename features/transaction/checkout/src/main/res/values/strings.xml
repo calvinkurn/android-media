@@ -44,7 +44,7 @@
     <string name="label_hardcoded_courier_blackbox_ticker">Pembelian diatas pk 14:00 berpotensi dikirim hari berikutnya.</string>
     <string name="label_showcase_address_title">Alamat Pengiriman</string>
     <string name="label_showcase_address_message">Pastikan alamat pengiriman sudah sesuai dengan yang kamu inginkan</string>
-    <string name="lebal_trade_in_address_mode">Pilih Metode Pengambilan</string>
+    <string name="lebal_trade_in_address_mode">Opsi Penukaran</string>
     <string name="label_tab_trade_in_address_deliver">Antar</string>
     <string name="label_tab_trade_in_address_pickup">Titik Ambil</string>
     <string name="label_button_change_pickup_point">Ubah Titik Ambil</string>

@@ -230,7 +230,8 @@ public class RecipientAddressModel implements Parcelable {
     }
 
     public boolean isTradeIn() {
-        return isTradeIn;
+        return true;
+//        return isTradeIn;
     }
 
     public void setTradeIn(boolean tradeIn) {
@@ -238,7 +239,8 @@ public class RecipientAddressModel implements Parcelable {
     }
 
     public boolean isTradeInDropOffEnable() {
-        return isTradeInDropOffEnable;
+        return true;
+//        return isTradeInDropOffEnable;
     }
 
     public void setTradeInDropOffEnable(boolean tradeInDropOffEnable) {
