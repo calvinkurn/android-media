@@ -1,6 +1,8 @@
 package com.tokopedia.product.detail.usecase
 
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.model.CacheType
+import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.data.model.ProductInfoP3
@@ -61,8 +63,10 @@ class GetProductInfoP3UseCase @Inject constructor(private val rawQueries: Map<St
         p3Request.add(tickerRequest)
         //endregion
 
+        val cacheStrategy = if (!isUserSessionActive) GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build() else CacheStrategyUtil.getCacheStrategy(forceRefresh)
+
         try {
-            val response = graphqlRepository.getReseponse(p3Request, CacheStrategyUtil.getCacheStrategy(forceRefresh))
+            val response = graphqlRepository.getReseponse(p3Request, cacheStrategy)
 
             //region RatesEstimate
             if (response.getError(RatesEstimationModel.Response::class.java)?.isNotEmpty() != true) {
