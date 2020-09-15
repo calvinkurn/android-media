@@ -7,7 +7,6 @@ import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.presentation.model.InspirationCardOptionViewModel
 import com.tokopedia.search.result.presentation.model.InspirationCardViewModel
-import com.tokopedia.search.result.presentation.model.InspirationCarouselViewModel
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel
 import com.tokopedia.search.result.shop.presentation.viewmodel.shouldBeInstanceOf
 import com.tokopedia.search.shouldBe
@@ -20,7 +19,6 @@ private const val inspirationCardResponseFirstPage = "searchproduct/inspirationc
 private const val inspirationCardResponseOnlyPosition9 = "searchproduct/inspirationcard/in-position-9.json"
 private const val inspirationCardResponseWithoutTopAds = "searchproduct/inspirationcard/without-topads.json"
 private const val inspirationCardResponseSamePosition = "searchproduct/inspirationcard/same-position.json"
-private const val inspirationCardResponseSamePositionWithCarousel = "searchproduct/inspirationcard/same-position-with-carousel.json"
 
 internal class SearchProductHandleInspirationCardTest: ProductListPresenterTestFixtures() {
     private val visitableListSlot = slot<List<Visitable<*>>>()
@@ -96,11 +94,10 @@ internal class SearchProductHandleInspirationCardTest: ProductListPresenterTestF
         // 10 -> product
         // 11 -> product
         // 12 -> product
-        // 13 -> inspiration carousel (position 12)
+        // 13 -> product
         // 14 -> product
         // 15 -> product
-        // 16 -> product
-        visitableList.size shouldBe 16
+        visitableList.size shouldBe 15
 
         visitableList.forEachIndexed { index, visitable ->
             when (index) {
@@ -110,9 +107,6 @@ internal class SearchProductHandleInspirationCardTest: ProductListPresenterTestF
                     )
                     (visitable as InspirationCardViewModel).assertInspirationCardViewModel(inspirationWidget[0])
                 }
-                13 -> visitable.shouldBeInstanceOf<InspirationCarouselViewModel>(
-                        "visitable list at index $index should be InspirationCarouselViewModel"
-                )
                 else -> visitable.shouldBeInstanceOf<ProductItemViewModel>(
                         "visitable list at index $index should be ProductItemViewModel"
                 )
@@ -344,23 +338,17 @@ internal class SearchProductHandleInspirationCardTest: ProductListPresenterTestF
         // 1 -> product
         // 2 -> product
         // 3 -> product
-        // 4 -> inspiration carousel (position 12)
+        // 4 -> product
         // 5 -> product
-        // 6 -> product
-        // 7 -> inspiration card (position 14)
+        // 6 -> inspiration card (position 14)
+        // 7 -> product
         // 8 -> product
-        // 9 -> product
 
-        visitableList.size shouldBe 10
+        visitableList.size shouldBe 9
 
         visitableList.forEachIndexed { index, visitable ->
             when (index) {
-                4 -> {
-                    visitable.shouldBeInstanceOf<InspirationCarouselViewModel>(
-                            "visitable list at index $index should be InspirationCarouselViewModel"
-                    )
-                }
-                7 -> {
+                6 -> {
                     visitable.shouldBeInstanceOf<InspirationCardViewModel>(
                             "visitable list at index $index should be InspirationCardViewModel"
                     )
@@ -412,19 +400,13 @@ internal class SearchProductHandleInspirationCardTest: ProductListPresenterTestF
         // 13 -> inspiration card (position 10)
         // 14 -> product
         // 15 -> product
-        // 16 -> inspiration carousel (position 12)
+        // 16 -> product
         // 17 -> product
-        // 18 -> product
 
-        visitableList.size shouldBe 19
+        visitableList.size shouldBe 18
 
         visitableList.forEachIndexed { index, visitable ->
-            if (index == 16) {
-                visitable.shouldBeInstanceOf<InspirationCarouselViewModel>(
-                        "visitable list at index $index should be InspirationCarouselViewModel"
-                )
-            }
-            else if (index == 4 || index == 5 || index == 10 || index == 13) {
+            if (index == 4 || index == 5 || index == 10 || index == 13) {
                 visitable.shouldBeInstanceOf<InspirationCardViewModel>(
                         "visitable list at index $index should be InspirationCardViewModel"
                 )
@@ -472,88 +454,5 @@ internal class SearchProductHandleInspirationCardTest: ProductListPresenterTestF
         }
         (visitableList[2] as InspirationCardViewModel).assertInspirationCardViewModel(inspirationWidget[4])
         (visitableList[7] as InspirationCardViewModel).assertInspirationCardViewModel(inspirationWidget[5])
-    }
-
-    @Test
-    fun `Show inspiration card with same position with inspiration carousel`() {
-        val searchProductModel = inspirationCardResponseSamePositionWithCarousel.jsonToObject<SearchProductModel>()
-        `Given Search Product API will return SearchProductModel with Inspiration Card`(searchProductModel)
-        `Given Mechanism to save and get product position from cache`()
-
-        `When Load Data`()
-
-        `Then verify view set product list`()
-        `Then verify visitable list has correct inspiration card in the same position as inspiration carousel`(searchProductModel)
-
-        `When Load More`()
-
-        `Then verify view add product list`()
-        `Then verify visitable list only has product items`()
-    }
-
-    private fun  `Then verify visitable list has correct inspiration card in the same position as inspiration carousel`(searchProductModel: SearchProductModel) {
-        val visitableList = visitableListSlot.captured
-        val inspirationWidget = searchProductModel.searchInspirationWidget.data
-
-        // 0 -> product
-        // 1 -> product
-        // 2 -> product
-        // 3 -> product
-        // 4 -> product
-        // 5 -> product
-        // 6 -> product
-        // 7 -> product
-        // 8 -> inspiration card (position 8)
-        // 9 -> product
-        // 10 -> product
-        // 11 -> product
-        // 12 -> product
-        // 13 -> inspiration card (position 12)
-        // 14 -> inspiration carousel (position 12)
-        // 15 -> product
-        // 16 -> product
-
-        visitableList.size shouldBe 17
-
-        visitableList.forEachIndexed { index, visitable ->
-            if (index == 14) {
-                visitable.shouldBeInstanceOf<InspirationCarouselViewModel>(
-                        "visitable list at index $index should be InspirationCarouselViewModel"
-                )
-            }
-            else if (index == 8 || index == 13) {
-                visitable.shouldBeInstanceOf<InspirationCardViewModel>(
-                        "visitable list at index $index should be InspirationCardViewModel"
-                )
-            }
-            else {
-                visitable.shouldBeInstanceOf<ProductItemViewModel>(
-                        "visitable list at index $index should be ProductItemViewModel"
-                )
-            }
-        }
-        (visitableList[8] as InspirationCardViewModel).assertInspirationCardViewModel(inspirationWidget[0])
-        (visitableList[13] as InspirationCardViewModel).assertInspirationCardViewModel(inspirationWidget[1])
-    }
-
-    private fun `Then verify visitable list only has product items`() {
-        val visitableList = visitableListSlot.captured
-
-        // 0 -> product
-        // 1 -> product
-        // 2 -> product
-        // 3 -> product
-        // 4 -> product
-        // 5 -> product
-        // 6 -> product
-        // 7 -> product
-
-        visitableList.size shouldBe 8
-
-        visitableList.forEachIndexed { index, visitable ->
-            visitable.shouldBeInstanceOf<ProductItemViewModel>(
-                    "visitable list at index $index should be ProductItemViewModel"
-            )
-        }
     }
 }
