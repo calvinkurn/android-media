@@ -293,7 +293,7 @@ class InitialStatePresenter @Inject constructor(
                     removeRecentSearch()
                 }
 
-                val seeMore = totalSize < 5
+                val seeMore = totalSize < 4
                 if (seeMore) removeSeeMoreRecentSearch()
 
                 view.deleteRecentSearch(listVistable)
@@ -380,7 +380,8 @@ class InitialStatePresenter @Inject constructor(
         super.attachView(view)
     }
 
-    override fun recentSearchSeeMoreClicked(seeMore: Boolean) {
-        view.renderRecentSearch(seeMore)
+    override fun recentSearchSeeMoreClicked() {
+        removeSeeMoreRecentSearch()
+        view.renderRecentSearch()
     }
 }

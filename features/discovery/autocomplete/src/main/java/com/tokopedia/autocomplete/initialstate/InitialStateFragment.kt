@@ -153,13 +153,12 @@ class InitialStateFragment : BaseDaggerFragment(), InitialStateContract.View, In
     }
 
     override fun onRecentSearchSeeMoreClicked(item: RecentSearchSeeMoreViewModel) {
-        item.seeMore = !item.seeMore
         adapter.setSeeMoreButton(item)
-        presenter.recentSearchSeeMoreClicked(!item.seeMore)
+        presenter.recentSearchSeeMoreClicked()
     }
 
-    override fun renderRecentSearch(seeMore: Boolean) {
-        adapter.renderRecentSearch(seeMore)
+    override fun renderRecentSearch() {
+        adapter.renderRecentSearch()
     }
 
     override fun route(applink: String, searchParameter: Map<String, String>) {

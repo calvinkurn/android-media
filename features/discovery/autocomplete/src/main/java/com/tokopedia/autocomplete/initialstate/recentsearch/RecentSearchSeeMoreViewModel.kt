@@ -5,8 +5,6 @@ import com.tokopedia.autocomplete.initialstate.InitialStateTypeFactory
 
 class RecentSearchSeeMoreViewModel: Visitable<InitialStateTypeFactory> {
 
-    var seeMore = true
-
     override fun type(typeFactory: InitialStateTypeFactory): Int {
         return typeFactory.type(this)
     }

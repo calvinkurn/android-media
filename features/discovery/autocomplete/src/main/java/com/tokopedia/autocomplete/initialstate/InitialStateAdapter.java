@@ -18,7 +18,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.tokopedia.autocomplete.initialstate.InitialStateConstantKt.PAYLOAD_SEE_LESS_RECENT_SEARCH;
 import static com.tokopedia.autocomplete.initialstate.InitialStateConstantKt.PAYLOAD_SEE_MORE_RECENT_SEARCH;
 
 public class InitialStateAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
@@ -76,13 +75,12 @@ public class InitialStateAdapter extends RecyclerView.Adapter<AbstractViewHolder
 
     public void setSeeMoreButton(RecentSearchSeeMoreViewModel item) {
         int index = list.indexOf(item);
-        notifyItemChanged(index, PAYLOAD_SEE_MORE_RECENT_SEARCH);
+        list.remove(index);
+        notifyItemRemoved(index);
     }
 
-    public void renderRecentSearch(boolean seeMore) {
-        if (seeMore)
-            notifyItemChanged(getRecentSearchViewModelIndex(), PAYLOAD_SEE_MORE_RECENT_SEARCH);
-        else notifyItemChanged(getRecentSearchViewModelIndex(), PAYLOAD_SEE_LESS_RECENT_SEARCH);
+    public void renderRecentSearch() {
+        notifyItemChanged(getRecentSearchViewModelIndex(), PAYLOAD_SEE_MORE_RECENT_SEARCH);
     }
 
     private int getRecentSearchViewModelIndex() {

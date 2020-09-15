@@ -26,7 +26,7 @@ interface InitialStateContract {
 
         fun trackEventClickRecentShop(label: String, userId: String)
 
-        fun renderRecentSearch(seeMore: Boolean)
+        fun renderRecentSearch()
     }
 
     interface Presenter : CustomerPresenter<View> {
@@ -42,6 +42,6 @@ interface InitialStateContract {
 
         fun onRecentSearchItemClicked(item: BaseItemInitialStateSearch, adapterPosition: Int)
 
-        fun recentSearchSeeMoreClicked(seeMore: Boolean)
+        fun recentSearchSeeMoreClicked()
     }
 }
