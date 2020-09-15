@@ -1,5 +1,7 @@
 package com.tokopedia.developer_options.presentation.feedbackpage
 
+import android.Manifest
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Build.VERSION_CODES
@@ -11,6 +13,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import android.widget.AdapterView.OnItemSelectedListener
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.developer_options.R
@@ -58,11 +62,27 @@ class FeedbackPageFragment: Fragment() {
     private var userSession: UserSessionInterface? = null
     private var loadingDialog: LoadingDialog? = null
 
+    private val requiredPermissions: Array<String>
+        get() = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.READ_EXTERNAL_STORAGE)
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val mainView = inflater.inflate(R.layout.fragment_feedback_page, container, false)
+        if(!allPermissionsGranted()) {
+            activity?.let { ActivityCompat.requestPermissions(it, requiredPermissions, 5111) }
+        }
         initView(mainView)
         initListener()
         return mainView
+    }
+
+    private fun allPermissionsGranted(): Boolean {
+        for (permission in requiredPermissions) {
+            if (activity?.let { ContextCompat.checkSelfPermission(it, permission) } != PackageManager.PERMISSION_GRANTED) {
+                return false
+            }
+        }
+        return true
     }
 
     private fun initView(mainView: View){
