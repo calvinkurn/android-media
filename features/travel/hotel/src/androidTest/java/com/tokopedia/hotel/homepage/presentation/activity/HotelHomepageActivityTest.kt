@@ -13,22 +13,19 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.platform.app.InstrumentationRegistry
-import androidx.test.rule.ActivityTestRule
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
+import com.tokopedia.analyticsdebugger.validator.core.getAnalyticsWithQuery
+import com.tokopedia.analyticsdebugger.validator.core.hasAllSuccess
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity
 import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity.Companion.HOTEL_DESTINATION_NAME
 import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity.Companion.HOTEL_DESTINATION_SEARCH_ID
 import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity.Companion.HOTEL_DESTINATION_SEARCH_TYPE
-import com.tokopedia.hotel.homepage.presentation.activity.HotelHomepageActivity.Companion.getCallingIntent
-import com.tokopedia.hotel.homepage.presentation.activity.mock.HotelMockResponseConfig
+import com.tokopedia.hotel.homepage.presentation.activity.mock.HotelHomepageMockResponseConfig
+import com.tokopedia.hotel.search.presentation.activity.HotelSearchResultActivityTest
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
-import com.tokopedia.test.application.util.setupGraphqlMockResponseWithCheck
 import org.hamcrest.core.AllOf
-import org.junit.After
-import org.junit.Before
-import org.junit.Rule
-import org.junit.Test
+import org.junit.*
 
 
 /**
@@ -45,7 +42,7 @@ class HotelHomepageActivityTest {
 
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
-            setupGraphqlMockResponse(HotelMockResponseConfig())
+            setupGraphqlMockResponse(HotelHomepageMockResponseConfig())
         }
 
         override fun getActivityIntent(): Intent {
@@ -86,6 +83,9 @@ class HotelHomepageActivityTest {
         modifyCheckOutDate()
         modifyGuestAndRoomCount()
         clickSubmitButton()
+
+        Assert.assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_HOTEL_HOMEPAGE),
+                hasAllSuccess())
     }
 
     private fun clickSubmitButton() {
@@ -154,5 +154,9 @@ class HotelHomepageActivityTest {
     @After
     fun tearDown() {
         gtmLogDBSource.deleteAll().subscribe()
+    }
+
+    companion object {
+        private const val ANALYTIC_VALIDATOR_QUERY_HOTEL_HOMEPAGE = "tracker/travel/hotel/hotel_homepage.json"
     }
 }

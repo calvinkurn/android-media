@@ -14,7 +14,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.analytics.performance.PerformanceMonitoring
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.DeeplinkMapper.getRegisteredNavigation
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTravel
@@ -150,14 +149,15 @@ class HotelHomepageFragment : HotelBaseFragment(),
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        homepageViewModel.homepageDefaultParam.observe(this, Observer {
+        homepageViewModel.homepageDefaultParam.observe(viewLifecycleOwner, Observer {
             renderHotelParam(it)
         })
 
-        homepageViewModel.promoData.observe(this, Observer {
+        homepageViewModel.promoData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
-                    if (remoteConfig.getBoolean(RemoteConfigKey.CUSTOMER_HOTEL_SHOW_PROMO) && it.data.banners.isNotEmpty()) {
+//                    if (remoteConfig.getBoolean(RemoteConfigKey.CUSTOMER_HOTEL_SHOW_PROMO) && it.data.banners.isNotEmpty()) {
+                    if (it.data.banners.isNotEmpty()) {
                         renderHotelPromo(it.data.banners)
                     } else {
                         hidePromoContainer()
@@ -167,7 +167,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
             stopTrace()
         })
 
-        homepageViewModel.recentSearch.observe(this, Observer {
+        homepageViewModel.recentSearch.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     renderHotelLastSearch(it.data)
@@ -175,7 +175,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
             }
         })
 
-        homepageViewModel.deleteRecentSearch.observe(this, Observer {
+        homepageViewModel.deleteRecentSearch.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     if (it.data) {
