@@ -9,7 +9,7 @@
     android:paddingStart="@dimen/spacing_lvl4"
     android:paddingTop="@dimen/dp_topchat_12"
     android:paddingEnd="@dimen/spacing_lvl4"
-    android:paddingBottom="@dimen/dp_topchat_28">
+    android:paddingBottom="@dimen/dp_topchat_15">
 
     <ImageView
         android:id="@+id/ivChevron"
@@ -26,6 +26,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:includeFontPadding="true"
+        android:textColor="@color/Neutral_N700_96"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="body_2"
@@ -38,6 +39,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl1"
         android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:textColor="@color/Neutral_N700_68"
         app:layout_constraintEnd_toStartOf="@+id/ivChevron"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvTitle"
