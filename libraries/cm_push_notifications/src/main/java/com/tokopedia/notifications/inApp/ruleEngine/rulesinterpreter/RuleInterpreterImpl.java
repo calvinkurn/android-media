@@ -68,7 +68,8 @@ public class RuleInterpreterImpl implements InterfaceRuleInterpreter {
                                     if (performDeletion(inAppData)) {
                                         RepositoryManager.getInstance()
                                                 .getStorageProvider()
-                                                .deleteRecord(inAppData.id);
+                                                .deleteRecord(inAppData.id)
+                                                .subscribe();
                                     }
                                 }
                             }

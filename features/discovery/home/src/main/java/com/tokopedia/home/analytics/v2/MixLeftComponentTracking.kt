@@ -75,7 +75,10 @@ object MixLeftComponentTracking: BaseTracking()  {
                         isFreeOngkir = grid.isFreeOngkirActive,
                         persoType = channel.trackingAttributionModel.persoType,
                         categoryId = channel.trackingAttributionModel.categoryId,
-                        isTopAds = grid.isTopads
+                        isTopAds = grid.isTopads,
+                        recommendationType = grid.recommendationType,
+                        headerName = channel.channelHeader.name,
+                        isCarousel = true
                 )),
                 list = String.format(
                         Value.LIST_WITH_HEADER, "1", LIST_MIX_LEFT, channel.channelHeader.name
@@ -105,7 +108,10 @@ object MixLeftComponentTracking: BaseTracking()  {
                         isFreeOngkir = grid.isFreeOngkirActive,
                         persoType = channel.trackingAttributionModel.persoType,
                         categoryId = channel.trackingAttributionModel.categoryId,
-                        isTopAds = grid.isTopads
+                        isTopAds = grid.isTopads,
+                        recommendationType = grid.recommendationType,
+                        headerName = channel.channelHeader.name,
+                        isCarousel = true
                 )),
                 list = String.format(
                         Value.LIST_WITH_HEADER, "1", LIST_MIX_LEFT, channel.channelHeader.name
@@ -114,7 +120,7 @@ object MixLeftComponentTracking: BaseTracking()  {
                 .build()
     }
 
-    fun getMixLeftProductClick(channel: ChannelModel, grid: ChannelGrid, position: Int) : Map<String, Any> {
+    private fun getMixLeftProductClick(channel: ChannelModel, grid: ChannelGrid, position: Int) : Map<String, Any> {
         val trackingBuilder = BaseTrackingBuilder()
         return trackingBuilder.constructBasicProductClick(
                 event = Event.PRODUCT_CLICK,
@@ -136,7 +142,10 @@ object MixLeftComponentTracking: BaseTracking()  {
                                 isFreeOngkir = grid.isFreeOngkirActive,
                                 persoType = channel.trackingAttributionModel.persoType,
                                 categoryId = channel.trackingAttributionModel.categoryId,
-                                isTopAds = grid.isTopads
+                                isTopAds = grid.isTopads,
+                                recommendationType = grid.recommendationType,
+                                headerName = channel.channelHeader.name,
+                                isCarousel = true
                         )
                 ),
                 list = String.format(
