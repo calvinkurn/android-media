@@ -1,0 +1,48 @@
+[
+  {
+    "data": {
+      "rechargeGetDynamicPage": {
+        "sections": [
+          {
+            "id": 5,
+            "title": "URGENCY_WIDGET",
+            "sub_title": "",
+            "template": "URGENCY_WIDGET",
+            "app_link": "",
+            "tracking": [
+              {
+                "action": "impression",
+                "data": "{\"event\":\"view_item\",\"eventCategory\":\"digital - subhomepage\",\"eventAction\":\"impression urgency widget\",\"eventLabel\":\"non login\",\"screenName\":\"/top-up-tagihan\",\"currentSite\":\"tokopediadigitalRecharge\",\"businessUnit\":\"recharge\",\"userId\":\"17211378\",\"promotions\":[{\"item_id\":\"1\",\"item_name\":\"Hi, Hengky!\",\"creative_name\":\"https://ecs7.tokopedia.net/img/recharge/category/donasi/widget-active.png\",\"creative_slot\":\"0\"}]}"
+              }
+            ],
+            "items": [
+              {
+                "id": 1,
+                "title": "Hi, Hengky!",
+                "sub_title": "Yuk, segera bayar tagihanmu!",
+                "tracking": [
+                  {
+                    "action": "click",
+                    "data": "{\"event\":\"select_content\",\"eventCategory\":\"digital - subhomepage\",\"eventAction\":\"click urgency widget\",\"eventLabel\":\"0 - URGENCY_WIDGET - non login\",\"screenName\":\"/top-up-tagihan\",\"currentSite\":\"tokopediadigitalRecharge\",\"businessUnit\":\"recharge\",\"userId\":\"0\",\"promotions\":[{\"item_id\":\"1\",\"item_name\":\"Hi, Hengky!\",\"creative_name\":\"https://ecs7.tokopedia.net/img/recharge/category/donasi/widget-active.png\",\"creative_slot\":\"0\"}]}"
+                  }
+                ],
+                "content": "Tagihan Donasi Online sebesar Rp 150.000 sudah lewat jatuh tempo",
+                "app_link": "tokopedia://digital/form?category_id=12&client_number=141000747324&is_from_widget=true&operator_id=144&product_id=291",
+                "web_link": "https://pulsa-staging.tokopedia.com?action=init_data&client_number=141000747324&instant_checkout=false&operator_id=144&product_id=291",
+                "text_link": "Beli",
+                "media_url": "https://ecs7.tokopedia.net/img/recharge/category/donasi/widget-active.png",
+                "template": "DANGER",
+                "button_type": "transaction",
+                "label_1": "",
+                "label_2": "",
+                "label_3": "",
+                "server_date": "2020-09-09T11:58:03+07:00",
+                "due_date": "2020-08-24T23:59:59+07:00"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  }
+]

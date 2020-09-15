@@ -41,6 +41,7 @@ public class GetShipmentAddressFormSubscriber extends Subscriber<CartShipmentAdd
     public void onError(Throwable e) {
         e.printStackTrace();
         if (isReloadData) {
+            view.setHasRunningApiCall(false);
             view.hideLoading();
         } else {
             view.hideInitialLoading();
@@ -58,6 +59,7 @@ public class GetShipmentAddressFormSubscriber extends Subscriber<CartShipmentAdd
     @Override
     public void onNext(CartShipmentAddressFormData cartShipmentAddressFormData) {
         if (isReloadData) {
+            view.setHasRunningApiCall(false);
             view.resetPromoBenefit();
             view.clearTotalBenefitPromoStacking();
             view.hideLoading();

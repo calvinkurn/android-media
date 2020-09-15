@@ -41,6 +41,9 @@ class StatisticViewModelTest {
     lateinit var getLayoutUseCase: GetLayoutUseCase
 
     @RelaxedMockK
+    lateinit var getTickerUseCase: GetTickerUseCase
+
+    @RelaxedMockK
     lateinit var getUserRoleUseCase: GetUserRoleUseCase
 
     @RelaxedMockK
@@ -79,6 +82,7 @@ class StatisticViewModelTest {
 
         viewModel = StatisticViewModel(
                 userSession,
+                dagger.Lazy { getTickerUseCase },
                 dagger.Lazy { getUserRoleUseCase },
                 dagger.Lazy { getLayoutUseCase },
                 dagger.Lazy { getCardDataUseCase },
@@ -160,6 +164,50 @@ class StatisticViewModelTest {
         }
 
         assert(viewModel.widgetLayout.value is Fail)
+    }
+
+    @Test
+    fun `should success when get tickers`() = runBlocking {
+        val tickers = listOf(TickerItemUiModel())
+        val pageName = "seller-statistic"
+
+        getTickerUseCase.params = GetTickerUseCase.createParams(pageName)
+
+        coEvery {
+            getTickerUseCase.executeOnBackground()
+        } returns tickers
+
+        viewModel.getTickers()
+
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
+        coVerify {
+            getTickerUseCase.executeOnBackground()
+        }
+
+        assertEquals(Success(tickers), viewModel.tickers.value)
+    }
+
+    @Test
+    fun `should failed when get tickers then throws exception`() = runBlocking {
+        val throwable = RuntimeException("")
+        val pageName = "seller-statistic"
+
+        getTickerUseCase.params = GetTickerUseCase.createParams(pageName)
+
+        coEvery {
+            getTickerUseCase.executeOnBackground()
+        } throws throwable
+
+        viewModel.getTickers()
+
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
+        coVerify {
+            getTickerUseCase.executeOnBackground()
+        }
+
+        assert(viewModel.tickers.value is Fail)
     }
 
     @Test

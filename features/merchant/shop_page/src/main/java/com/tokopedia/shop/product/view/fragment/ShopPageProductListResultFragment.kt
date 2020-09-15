@@ -475,6 +475,10 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         }
     }
 
+    override fun getSelectedEtalaseName(): String {
+        return getSelectedEtalaseChip()
+    }
+
     private fun getProductIntent(productId: String, attribution: String?, listNameOfProduct: String): Intent? {
         return if (context != null) {
             val bundle = Bundle()
