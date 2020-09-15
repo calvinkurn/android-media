@@ -188,9 +188,9 @@ private fun Typography.setShopRatingTextWithMultipleTypeface(shopRating: String,
     val endBold = shopRating.indexOf(CLOSE_BOLD_TAG)
 
     if (startBold in 0 until endBold) {
-        val beforeBoldTag = shopRating.substring(0, startBold)
+        val beforeBoldTag = MethodChecker.fromHtml(shopRating.substring(0, startBold)).toString()
         val inBoldTag = shopRating.substring(startBold + OPEN_BOLD_TAG.length, endBold)
-        val afterBoldTag = shopRating.substring(endBold + CLOSE_BOLD_TAG.length, shopRating.length)
+        val afterBoldTag = " " + MethodChecker.fromHtml(shopRating.substring(endBold + CLOSE_BOLD_TAG.length, shopRating.length)).toString()
 
         val spannableShopRating = SpannableString(beforeBoldTag + inBoldTag + afterBoldTag)
 
