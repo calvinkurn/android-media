@@ -47,6 +47,7 @@ object UohConsts {
     const val PAGE_NAME = "bom_empty"
 
     const val TYPE_LOADER = "loader"
+    const val TYPE_TICKER = "ticker"
     const val TYPE_ORDER_LIST = "list"
     const val TYPE_EMPTY = "empty"
     const val TYPE_RECOMMENDATION_TITLE = "recommendation_title"
@@ -102,4 +103,7 @@ object UohConsts {
     const val EE_SHOP_NAME = "shop_name"
     const val RECOMMENDATION_LIST_TRACK = "/my_purchase_list - rekomendasi untuk anda"
     const val RECOMMENDATION_LIST_TOPADS_TRACK = " - product topads"
+
+
+    const val TX_ASK_SELLER = "tx_ask_seller"
 }

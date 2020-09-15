@@ -76,4 +76,7 @@ object ApplinkConstInternalOrder {
     @JvmField
     val UNIFY_ORDER_MARKETPLACE = "$INTERNAL_ORDER/unified?filter=marketplace"
 
+    @JvmField
+    val UNIFY_ORDER_MARKETPLACE_IN_PROCESS = "$INTERNAL_ORDER/unified?filter=marketplace_dalam_proses"
+
 }

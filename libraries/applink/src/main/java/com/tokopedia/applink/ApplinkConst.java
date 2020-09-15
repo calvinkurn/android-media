@@ -570,5 +570,6 @@ public interface ApplinkConst {
         String PARAM_E_TIKET = "etiket";
         String PARAM_SEMUA_TRANSAKSI = "semua_transaksi";
         String PARAM_MARKETPLACE = "marketplace";
+        String PARAM_MARKETPLACE_DALAM_PROSES = "marketplace_dalam_proses";
     }
 }

@@ -24,6 +24,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.buyerorder.R
 import com.tokopedia.buyerorder.common.util.BuyerConsts.TICKER_LABEL
 import com.tokopedia.buyerorder.common.util.BuyerConsts.TICKER_URL
+import com.tokopedia.buyerorder.detail.view.fragment.MarketPlaceDetailFragment
 import com.tokopedia.buyerorder.unifiedhistory.common.di.UohComponentInstance
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.ALL_CATEGORIES
@@ -206,6 +207,10 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                         status = SEMUA_TRANSAKSI
                         paramUohOrder.verticalCategory = PARAM_MARKETPLACE
                     }
+                    PARAM_MARKETPLACE_DALAM_PROSES -> {
+                        status = DALAM_PROSES
+                        paramUohOrder.verticalCategory = PARAM_MARKETPLACE
+                    }
                 }
                 paramUohOrder.status = status
                 currFilterType = UohConsts.TYPE_FILTER_STATUS
@@ -373,12 +378,6 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                         if (currPage == 1) {
                             loadRecommendationList()
                         }
-                    }
-
-                    if (orderList.tickers.isNotEmpty()) {
-                        renderTicker()
-                    } else {
-                        ticker_info?.gone()
                     }
                     currPage += 1
                 }
@@ -590,7 +589,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         } else {
             ChipsUnify.TYPE_SELECTED
         }
-        filter2 = SortFilterItem(UohConsts.ALL_STATUS, typeStatus, ChipsUnify.SIZE_SMALL)
+        filter2 = SortFilterItem(ALL_STATUS, typeStatus, ChipsUnify.SIZE_SMALL)
         filter2?.listener = {
             uohBottomSheetOptionAdapter = UohBottomSheetOptionAdapter(this)
             showBottomSheetFilterOptions(UohConsts.CHOOSE_FILTERS)
@@ -611,13 +610,19 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         }
         filter2?.let { chips.add(it) }
 
-        filter3 = SortFilterItem(ALL_CATEGORIES, ChipsUnify.TYPE_NORMAL, ChipsUnify.SIZE_SMALL)
+        val typeCategory = if (filterStatus.equals(PARAM_MARKETPLACE, true)) {
+            ChipsUnify.TYPE_NORMAL
+        } else {
+            ChipsUnify.TYPE_SELECTED
+        }
+
+        filter3 = SortFilterItem(ALL_CATEGORIES, typeCategory, ChipsUnify.SIZE_SMALL)
         filter3?.listener = {
             uohBottomSheetOptionAdapter = UohBottomSheetOptionAdapter(this)
             showBottomSheetFilterOptions(UohConsts.CHOOSE_CATEGORIES)
             val arrayListMap = arrayListOf<HashMap<String, String>>()
             val mapKeyDefault = HashMap<String, String>()
-            mapKeyDefault[UohConsts.ALL_CATEGORIES] = UohConsts.ALL_CATEGORIES_TRANSACTION
+            mapKeyDefault[ALL_CATEGORIES] = UohConsts.ALL_CATEGORIES_TRANSACTION
             arrayListMap.add(mapKeyDefault)
             orderList.categories.forEach { category ->
                 val mapKey = HashMap<String, String>()
@@ -626,7 +631,13 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             }
             uohBottomSheetOptionAdapter.uohItemMapKeyList = arrayListMap
             uohBottomSheetOptionAdapter.filterType = UohConsts.TYPE_FILTER_CATEGORY
-            uohBottomSheetOptionAdapter.selectedKey = currFilterCategoryKey
+
+            if (filterStatus.equals(PARAM_MARKETPLACE, true) && !isReset) {
+                uohBottomSheetOptionAdapter.selectedKey = PARAM_MARKETPLACE
+            } else {
+                uohBottomSheetOptionAdapter.selectedKey = currFilterCategoryKey
+            }
+
             uohBottomSheetOptionAdapter.isReset = isReset
             uohBottomSheetOptionAdapter.notifyDataSetChanged()
         }
@@ -677,14 +688,14 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         isFilterClicked = false
         isReset = true
         uoh_sort_filter?.resetAllFilters()
-        filter1?.title = UohConsts.ALL_DATE
-        filter2?.title = UohConsts.ALL_STATUS
-        filter3?.title = UohConsts.ALL_CATEGORIES
+        filter1?.title = ALL_DATE
+        filter2?.title = ALL_STATUS
+        filter3?.title = ALL_CATEGORIES
         paramUohOrder = UohListParam()
         setInitialValue()
     }
 
-    private fun renderTicker() {
+    /*private fun renderTicker() {
         ticker_info?.visible()
 
         if (orderList.tickers.size > 1) {
@@ -736,12 +747,17 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                 })
             }
         }
-    }
+    }*/
 
     private fun renderOrderList() {
         refreshHandler?.finishRefresh()
 
         val listOrder = arrayListOf<UohTypeData>()
+
+        if (!onLoadMore && orderList.tickers.isNotEmpty()) {
+            listOrder.add(UohTypeData(orderList, UohConsts.TYPE_TICKER))
+        }
+
         orderList.orders.forEach {
             listOrder.add(UohTypeData(it, UohConsts.TYPE_ORDER_LIST))
         }

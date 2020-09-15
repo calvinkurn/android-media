@@ -10,6 +10,7 @@ import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.TYPE_LOADER
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.TYPE_ORDER_LIST
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.TYPE_RECOMMENDATION_TITLE
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.TYPE_RECOMMENDATION_ITEM
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.TYPE_TICKER
 import com.tokopedia.buyerorder.unifiedhistory.list.data.model.UohListOrder
 import com.tokopedia.buyerorder.unifiedhistory.list.data.model.UohTypeData
 import com.tokopedia.buyerorder.unifiedhistory.list.view.adapter.viewholder.*
@@ -25,10 +26,11 @@ class UohItemAdapter : RecyclerView.Adapter<UohItemAdapter.BaseViewHolder<*>>() 
 
     companion object {
         const val LAYOUT_LOADER = 0
-        const val LAYOUT_ORDER_LIST = 1
-        const val LAYOUT_EMPTY_STATE = 2
-        const val LAYOUT_RECOMMENDATION_TITLE = 3
-        const val LAYOUT_RECOMMENDATION_LIST = 4
+        const val LAYOUT_TICKER = 1
+        const val LAYOUT_ORDER_LIST = 2
+        const val LAYOUT_EMPTY_STATE = 3
+        const val LAYOUT_RECOMMENDATION_TITLE = 4
+        const val LAYOUT_RECOMMENDATION_LIST = 5
     }
 
     interface ActionListener {
@@ -49,6 +51,10 @@ class UohItemAdapter : RecyclerView.Adapter<UohItemAdapter.BaseViewHolder<*>>() 
             LAYOUT_LOADER -> {
                 val view = LayoutInflater.from(parent.context).inflate(R.layout.uoh_loader_item, parent, false)
                 UohLoaderItemViewHolder(view)
+            }
+            LAYOUT_TICKER -> {
+                val view = LayoutInflater.from(parent.context).inflate(R.layout.uoh_ticker_item, parent, false)
+                UohTickerItemViewHolder(view, actionListener)
             }
             LAYOUT_ORDER_LIST -> {
                 val view = LayoutInflater.from(parent.context).inflate(R.layout.uoh_list_item, parent, false)
@@ -77,6 +83,7 @@ class UohItemAdapter : RecyclerView.Adapter<UohItemAdapter.BaseViewHolder<*>>() 
     override fun getItemViewType(position: Int): Int {
         return when (listTypeData[position].typeLayout) {
             TYPE_LOADER -> LAYOUT_LOADER
+            TYPE_TICKER -> LAYOUT_TICKER
             TYPE_ORDER_LIST -> LAYOUT_ORDER_LIST
             TYPE_EMPTY -> LAYOUT_EMPTY_STATE
             TYPE_RECOMMENDATION_TITLE -> LAYOUT_RECOMMENDATION_TITLE
@@ -93,6 +100,9 @@ class UohItemAdapter : RecyclerView.Adapter<UohItemAdapter.BaseViewHolder<*>>() 
         val element = listTypeData[position]
         when (holder) {
             is UohOrderListViewHolder-> {
+                holder.bind(element, position)
+            }
+            is UohTickerItemViewHolder -> {
                 holder.bind(element, position)
             }
             is UohEmptyStateViewHolder-> {

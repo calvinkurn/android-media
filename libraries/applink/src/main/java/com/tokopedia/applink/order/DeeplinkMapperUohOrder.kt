@@ -3,6 +3,7 @@ package com.tokopedia.applink.order
 import android.content.Context
 import android.net.Uri
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.ApplinkConst.MARKETPLACE_ORDER
 import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.digital.DeeplinkMapperDigital
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital
@@ -23,13 +24,14 @@ object DeeplinkMapperUohOrder {
                 || deeplink.startsWith(ApplinkConst.EVENTS_ORDER) || deeplink.startsWith(ApplinkConst.DEALS_ORDER)
                 || deeplink.startsWith(ApplinkConst.FLIGHT_ORDER) || deeplink.startsWith(ApplinkConst.GIFT_CARDS_ORDER)
                 || deeplink.startsWith(ApplinkConst.INSURANCE_ORDER) || deeplink.startsWith(ApplinkConst.MODAL_TOKO_ORDER)
-                || deeplink.startsWith(ApplinkConst.HOTEL_ORDER)) {
+                || deeplink.startsWith(ApplinkConst.HOTEL_ORDER) || deeplink.equals(ApplinkConst.ORDER_LIST, true)
+                || deeplink.startsWith(ApplinkConst.ORDER_LIST_WEBVIEW)) {
             returnedDeeplink = if (useUoh()) ApplinkConstInternalOrder.UNIFY_ORDER
             else deeplink
         } else if (deeplink.startsWith(ApplinkConst.MARKETPLACE_ORDER_SUB)) {
-            returnedDeeplink = if (useUoh()) ApplinkConstInternalOrder.UNIFY_ORDER_IN_PROCESS
+            returnedDeeplink = if (useUoh()) ApplinkConstInternalOrder.UNIFY_ORDER_MARKETPLACE_IN_PROCESS
             else deeplink
-        } else if (deeplink.startsWith(ApplinkConst.BELANJA_ORDER)) {
+        } else if (deeplink.equals(ApplinkConst.BELANJA_ORDER, true) || deeplink.equals(MARKETPLACE_ORDER, true)) {
             returnedDeeplink = if (useUoh()) ApplinkConstInternalOrder.UNIFY_ORDER_MARKETPLACE
             else deeplink
         }
