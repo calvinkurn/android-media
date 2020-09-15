@@ -3,11 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/manage"
+        android:contentDescription="@string/content_desc_manage"
         android:title="@string/label_manage"
         android:visible="false"
         app:showAsAction="always" />
     <item
         android:id="@+id/cancel"
+        android:contentDescription="@string/content_desc_cancel"
         android:title="@string/label_cancel"
         app:showAsAction="always"
         android:visible="false" />
