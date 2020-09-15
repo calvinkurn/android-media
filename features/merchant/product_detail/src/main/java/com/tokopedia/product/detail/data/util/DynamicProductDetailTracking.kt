@@ -535,16 +535,6 @@ object DynamicProductDetailTracking {
             TrackingUtil.addComponentTracker(mapEvent, productInfo, null, ProductTrackingConstant.Action.CLICK_APPLY_LEASING)
         }
 
-        fun eventSocialProfShippingClicked(productInfo: DynamicProductInfoP1?, componentTrackDataModel: ComponentTrackDataModel) {
-            val mapEvent = TrackAppUtils.gtmData(
-                    ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
-                    ProductTrackingConstant.Category.PDP,
-                    ProductTrackingConstant.Action.CLICK_SHIPPING,
-                    ""
-            )
-            TrackingUtil.addComponentTracker(mapEvent, productInfo, componentTrackDataModel, ProductTrackingConstant.Action.CLICK_SHIPPING)
-        }
-
         fun eventImageShopClicked(productInfo: DynamicProductInfoP1?, shopId: String, componentTrackDataModel: ComponentTrackDataModel) {
             if (productInfo?.basic?.productID.isNullOrEmpty()) return
             val mapEvent = TrackAppUtils.gtmData(

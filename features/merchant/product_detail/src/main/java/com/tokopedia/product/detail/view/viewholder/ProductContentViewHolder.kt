@@ -9,7 +9,7 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductContentDataModel
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.view.fragment.partialview.PartialContentView
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
-import kotlinx.android.synthetic.main.partial_product_detail_header.view.*
+import kotlinx.android.synthetic.main.item_product_content.view.*
 
 /**
  * Created by Yehezkiel on 06/05/20

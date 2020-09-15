@@ -30,17 +30,8 @@ import kotlin.math.roundToLong
  */
 class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
 
-    val socialProofMap: ProductSocialProofDataModel?
-        get() = mapOfData[ProductDetailConstant.SOCIAL_PROOF] as? ProductSocialProofDataModel
-
-    val productSocialProofPvDataModel: ProductSocialProofDataModel?
-        get() = mapOfData[ProductDetailConstant.SOCIAL_PROOF_PV] as? ProductSocialProofDataModel
-
     val miniSocialProofMap: ProductMiniSocialProofDataModel?
         get() = mapOfData[ProductDetailConstant.MINI_SOCIAL_PROOF] as? ProductMiniSocialProofDataModel
-
-    val snapShotMap: ProductSnapshotDataModel?
-        get() = mapOfData[ProductDetailConstant.PRODUCT_CONTENT_TITLE_TOP] as? ProductSnapshotDataModel
 
     val basicContentMap: ProductContentDataModel?
         get() = mapOfData[ProductDetailConstant.PRODUCT_CONTENT] as? ProductContentDataModel
@@ -87,9 +78,6 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
     val productFullfilmentMap: ProductGeneralInfoDataModel?
         get() = mapOfData[ProductDetailConstant.PRODUCT_FULLFILMENT] as? ProductGeneralInfoDataModel
 
-    val valuePropositionDataModel: ProductValuePropositionDataModel?
-        get() = mapOfData[ProductDetailConstant.VALUE_PROP] as? ProductValuePropositionDataModel
-
     val productNewVariantDataModel: VariantDataModel?
         get() = mapOfData[ProductDetailConstant.VARIANT_OPTIONS] as? VariantDataModel
 
@@ -134,9 +122,6 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
                 isRefreshing = false
             }
 
-            snapShotMap?.run {
-                data = it
-            }
             mediaMap?.run {
                 shouldRenderImageVariant = true
                 listOfMedia = DynamicProductDetailMapper.convertMediaToDataModel(it.data.media.toMutableList())
@@ -159,10 +144,6 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
                 isPm = it.data.isPowerMerchant
             }
 
-            valuePropositionDataModel?.run {
-                isOfficialStore = it.data.isOS
-            }
-
             productDiscussionMap?.run {
                 shopId = it.basic.shopID
                 talkCount = it.basic.stats.countTalk
@@ -173,16 +154,6 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
                 ratingCount = it.basic.stats.countReview
                 talkCount = it.basic.stats.countTalk
                 paymentVerifiedCount = it.basic.txStats.itemSoldPaymentVerified.toInt()
-            }
-
-            socialProofMap?.run {
-                txStats = it.basic.txStats
-                stats = it.basic.stats
-            }
-
-            productSocialProofPvDataModel?.run {
-                txStats = it.basic.txStats
-                stats = it.basic.stats
             }
 
             productInfoMap?.run {
@@ -214,7 +185,6 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
     fun updateDataTradein(context: Context?, tradeinResponse: ValidateTradeIn) {
         productTradeinMap?.run {
             basicContentMap?.shouldShowTradein = tradeinResponse.isEligible
-            snapShotMap?.shouldShowTradein = tradeinResponse.isEligible
 
             data.first().subtitle = if (tradeinResponse.usedPrice.toIntOrZero() > 0) {
                 context?.getString(R.string.text_price_holder, CurrencyFormatUtil.convertPriceValueToIdrFormat(tradeinResponse.usedPrice.toIntOrZero(), true))
@@ -245,7 +215,6 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
 
     fun updateWishlistData(isWishlisted: Boolean) {
         basicContentMap?.isWishlisted = isWishlisted
-        snapShotMap?.isWishlisted = isWishlisted
     }
 
     fun updateFulfillmentData(context: Context?, isFullfillment: Boolean) {
@@ -306,16 +275,6 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
                         ?: ""
             }
 
-            socialProofMap?.run {
-                wishlistCount = it.wishlistCount.toIntOrZero()
-                viewCount = it.productView.toIntOrZero()
-            }
-
-            productSocialProofPvDataModel?.run {
-                wishlistCount = it.wishlistCount.toIntOrZero()
-                viewCount = it.productView.toIntOrZero()
-            }
-
             miniSocialProofMap?.run {
                 wishlistCount = it.wishlistCount.toIntOrZero()
                 viewCount = it.productView.toIntOrZero()
@@ -337,12 +296,6 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
             val selectedUpcoming = upcomingData?.get(productId)
             upcomingNplData = UpcomingNplDataModel(selectedUpcoming?.upcomingType ?: "", selectedUpcoming?.ribbonCopy ?: "",
             selectedUpcoming?.startDate ?: "")
-        }
-
-        snapShotMap?.run {
-            val selectedUpcoming = upcomingData?.get(productId)
-            upcomingNplData = UpcomingNplDataModel(selectedUpcoming?.upcomingType ?: "", selectedUpcoming?.ribbonCopy ?: "",
-                    selectedUpcoming?.startDate ?: "")
         }
 
         notifyMeMap?.run {

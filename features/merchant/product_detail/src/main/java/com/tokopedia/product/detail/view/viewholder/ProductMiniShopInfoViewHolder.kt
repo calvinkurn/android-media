@@ -1,32 +1,17 @@
 package com.tokopedia.product.detail.view.viewholder
 
-import android.graphics.Color
-import android.graphics.Typeface
-import android.text.Spannable
-import android.text.style.ForegroundColorSpan
-import android.text.style.ImageSpan
-import android.text.style.StyleSpan
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.merchantvoucher.common.widget.CustomVoucherView
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductMediaDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMiniShopInfoDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductMiniSocialProofDataModel
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
-import com.tokopedia.product.detail.view.util.CustomTypeSpan
 import com.tokopedia.unifycomponents.toPx
-import kotlinx.android.synthetic.main.item_dynamic_general_info.view.*
 import kotlinx.android.synthetic.main.item_mini_shop_info.view.*
-import kotlinx.android.synthetic.main.partial_product_detail_header.view.*
 
 /**
  * Created by Yehezkiel on 20/05/20

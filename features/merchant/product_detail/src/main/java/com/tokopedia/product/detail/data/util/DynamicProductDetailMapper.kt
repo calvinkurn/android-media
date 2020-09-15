@@ -36,13 +36,6 @@ object DynamicProductDetailMapper {
                 ProductDetailConstant.SHOP_INFO -> {
                     listOfComponent.add(ProductShopInfoDataModel(type = component.type, name = component.componentName))
                 }
-                ProductDetailConstant.SOCIAL_PROOF -> {
-                    if (component.componentName == ProductDetailConstant.SOCIAL_PROOF_PV) {
-                        listOfComponent.add(ProductSocialProofDataModel(type = component.type, name = component.componentName, isSocialProofPv = true))
-                    } else {
-                        listOfComponent.add(ProductSocialProofDataModel(type = component.type, name = component.componentName, isSocialProofPv = false))
-                    }
-                }
                 ProductDetailConstant.MINI_SOCIAL_PROOF -> {
                     listOfComponent.add(ProductMiniSocialProofDataModel(type = component.type, name = component.componentName))
                 }
@@ -64,9 +57,6 @@ object DynamicProductDetailMapper {
                 ProductDetailConstant.SHOP_VOUCHER -> {
                     listOfComponent.add(ProductMerchantVoucherDataModel(type = component.type, name = component.componentName))
                 }
-                ProductDetailConstant.VALUE_PROPOSITION -> {
-                    listOfComponent.add(ProductValuePropositionDataModel(type = component.type, name = component.componentName))
-                }
                 ProductDetailConstant.VARIANT -> {
                     listOfComponent.add(VariantDataModel(type = component.type, name = component.componentName))
                 }
@@ -74,12 +64,7 @@ object DynamicProductDetailMapper {
                     listOfComponent.add(ProductMiniShopInfoDataModel(type = component.type, name = component.componentName))
                 }
                 ProductDetailConstant.PRODUCT_CONTENT -> {
-                    //Will be remove soon
-                    if (component.componentName == ProductDetailConstant.PRODUCT_CONTENT) {
-                        listOfComponent.add(ProductContentDataModel(type = component.type, name = component.componentName))
-                    } else {
-                        listOfComponent.add(ProductSnapshotDataModel(type = component.type, name = component.componentName))
-                    }
+                    listOfComponent.add(ProductContentDataModel(type = component.type, name = component.componentName))
                 }
                 ProductDetailConstant.MEDIA -> {
                     listOfComponent.add(ProductMediaDataModel(type = component.type, name = component.componentName))
@@ -108,7 +93,7 @@ object DynamicProductDetailMapper {
 
     /**
      * Combine all important data of all component to one Source of Truth
-     * Component need to combine : Snapshot/Content , Notify Me , Media
+     * Component need to combine : Content , Notify Me , Media
      * @param DynamicProductInfoP1 Source of Truth PDP
      */
     fun mapToDynamicProductDetailP1(data: PdpGetLayout): DynamicProductInfoP1 {

@@ -69,11 +69,6 @@ interface DynamicProductDetailListener {
     fun onSeeAllMerchantVoucherClick(componentTrackDataModel: ComponentTrackDataModel)
 
     /**
-     * ProductSocialProofViewHolder
-     */
-    fun onShipmentSocialProofClicked(componentTrackDataModel: ComponentTrackDataModel)
-
-    /**
      * ProductShopInfoViewHolder
      */
     fun onShopInfoClicked(itemId: Int, componentTrackDataModel: ComponentTrackDataModel)
@@ -94,7 +89,6 @@ interface DynamicProductDetailListener {
      * ProductGeneralInfoViewHolder
      */
     fun onInfoClicked(name: String, componentTrackDataModel: ComponentTrackDataModel)
-    fun onValuePropositionClicked(view: Int)
 
     /**
      * ProductRecom

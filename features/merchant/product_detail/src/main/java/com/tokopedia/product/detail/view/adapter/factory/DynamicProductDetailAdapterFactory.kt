@@ -6,8 +6,6 @@ import com.tokopedia.product.detail.data.model.datamodel.*
 import com.tokopedia.product.detail.data.model.variant.VariantDataModel
 
 interface DynamicProductDetailAdapterFactory {
-    fun type(data: ProductSnapshotDataModel): Int
-    fun type(data: ProductSocialProofDataModel): Int
     fun type(data: ProductMostHelpfulReviewDataModel): Int
     fun type(data: ProductShopInfoDataModel): Int
     fun type(data: ProductDiscussionDataModel): Int
@@ -17,7 +15,6 @@ interface DynamicProductDetailAdapterFactory {
     fun type(data: ProductMerchantVoucherDataModel): Int
     fun type(data: ProductRecommendationDataModel): Int
     fun type(data: ProductLastSeenDataModel): Int
-    fun type(data: ProductValuePropositionDataModel): Int
     fun type(data: PageErrorDataModel): Int
     fun type(data: VariantDataModel): Int
     fun type(data: ProductNotifyMeDataModel): Int
