@@ -29,6 +29,10 @@ class EventPDPTracking constructor(val userSession: UserSessionInterface, val ir
         val CURRENTSITE = "currentSite"
         val BUSINESSUNIT = "businessUnit"
         val CATEGORY = "category"
+
+        val CURRENTSITEDATA =  "tokopediadigitalevents"
+        val BUSINESSUNITDATA = "travel & entertainment"
+        val CATEGORYDATA = "events"
     }
 
     private object Ecommerce {
@@ -69,9 +73,9 @@ class EventPDPTracking constructor(val userSession: UserSessionInterface, val ir
                 Other.CLIENTID, userSession.deviceId,
                 Other.SESSIONIRIS, irisSession.getSessionId(),
                 Other.USERID, userSession.userId,
-                Other.CURRENTSITE, "tokopediadigitalevents",
-                Other.BUSINESSUNIT, "travel & entertainment",
-                Other.CATEGORY, "events"
+                Other.CURRENTSITE, Other.CURRENTSITEDATA,
+                Other.BUSINESSUNIT, Other.BUSINESSUNITDATA,
+                Other.CATEGORY, Other.CATEGORYDATA
         ))
     }
 
@@ -85,9 +89,9 @@ class EventPDPTracking constructor(val userSession: UserSessionInterface, val ir
                 Other.CLIENTID, userSession.deviceId,
                 Other.SESSIONIRIS, irisSession.getSessionId(),
                 Other.USERID, userSession.userId,
-                Other.CURRENTSITE, "tokopediadigitalevents",
-                Other.BUSINESSUNIT, "travel & entertainment",
-                Other.CATEGORY, "events"
+                Other.CURRENTSITE, Other.CURRENTSITEDATA,
+                Other.BUSINESSUNIT, Other.BUSINESSUNITDATA,
+                Other.CATEGORY, Other.CATEGORYDATA
         ))
     }
 
@@ -101,9 +105,9 @@ class EventPDPTracking constructor(val userSession: UserSessionInterface, val ir
                 Other.CLIENTID, userSession.deviceId,
                 Other.SESSIONIRIS, irisSession.getSessionId(),
                 Other.USERID, userSession.userId,
-                Other.CURRENTSITE, "tokopediadigitalevents",
-                Other.BUSINESSUNIT, "travel & entertainment",
-                Other.CATEGORY, "events"
+                Other.CURRENTSITE, Other.CURRENTSITEDATA,
+                Other.BUSINESSUNIT, Other.BUSINESSUNITDATA,
+                Other.CATEGORY, Other.CATEGORYDATA
         ))
     }
 
@@ -117,9 +121,9 @@ class EventPDPTracking constructor(val userSession: UserSessionInterface, val ir
                 Other.CLIENTID, userSession.deviceId,
                 Other.SESSIONIRIS, irisSession.getSessionId(),
                 Other.USERID, userSession.userId,
-                Other.CURRENTSITE, "tokopediadigitalevents",
-                Other.BUSINESSUNIT, "travel & entertainment",
-                Other.CATEGORY, "events"
+                Other.CURRENTSITE, Other.CURRENTSITEDATA,
+                Other.BUSINESSUNIT, Other.BUSINESSUNITDATA,
+                Other.CATEGORY, Other.CATEGORYDATA
         ))
     }
 
@@ -134,9 +138,9 @@ class EventPDPTracking constructor(val userSession: UserSessionInterface, val ir
                 Other.CLIENTID, userSession.deviceId,
                 Other.SESSIONIRIS, irisSession.getSessionId(),
                 Other.USERID, userSession.userId,
-                Other.CURRENTSITE, "tokopediadigitalevents",
-                Other.BUSINESSUNIT, "travel & entertainment",
-                Other.CATEGORY, "events",
+                Other.CURRENTSITE, Other.CURRENTSITEDATA,
+                Other.BUSINESSUNIT, Other.BUSINESSUNITDATA,
+                Other.CATEGORY, Other.CATEGORYDATA,
                 Ecommerce.KEY, DataLayer.mapOf(
                 Ecommerce.CURRENCY_CODE, "IDR",
                 Ecommerce.ADD, DataLayer.mapOf(
@@ -154,9 +158,9 @@ class EventPDPTracking constructor(val userSession: UserSessionInterface, val ir
                 Other.CLIENTID, userSession.deviceId,
                 Other.SESSIONIRIS, irisSession.getSessionId(),
                 Other.USERID, userSession.userId,
-                Other.CURRENTSITE, "tokopediadigitalevents",
-                Other.BUSINESSUNIT, "travel & entertainment",
-                Other.CATEGORY, "events",
+                Other.CURRENTSITE, Other.CURRENTSITEDATA,
+                Other.BUSINESSUNIT, Other.BUSINESSUNITDATA,
+                Other.CATEGORY, Other.CATEGORYDATA,
                 Ecommerce.KEY, DataLayer.mapOf(
                 Ecommerce.CHECKOUT, DataLayer.mapOf(
                 ActionField.KEY,DataLayer.mapOf(
@@ -177,9 +181,9 @@ class EventPDPTracking constructor(val userSession: UserSessionInterface, val ir
                 Other.CLIENTID, userSession.deviceId,
                 Other.SESSIONIRIS, irisSession.getSessionId(),
                 Other.USERID, userSession.userId,
-                Other.CURRENTSITE, "tokopediadigitalevents",
-                Other.BUSINESSUNIT, "travel & entertainment",
-                Other.CATEGORY, "events",
+                Other.CURRENTSITE, Other.CURRENTSITEDATA,
+                Other.BUSINESSUNIT, Other.BUSINESSUNITDATA,
+                Other.CATEGORY, Other.CATEGORYDATA,
                 Ecommerce.KEY, DataLayer.mapOf(
                 Ecommerce.CHECKOUT, DataLayer.mapOf(
                 ActionField.KEY,DataLayer.mapOf(

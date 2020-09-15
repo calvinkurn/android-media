@@ -3,18 +3,21 @@ package com.tokopedia.sellerhome.view.activity
 import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.core.app.NotificationManagerCompat
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.bottomnavigation.LabelVisibilityMode
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -113,10 +116,11 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
         val isRedirectedFromSellerMigration = intent?.hasExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA) ?: false ||
                 intent?.hasExtra(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME) ?: false
 
+        setupBackground()
         setupToolbar()
         setupStatusBar()
         setupNavigator()
-        setupDefaultPage()
+        setupDefaultPage(savedInstanceState != null)
         setupBottomNav()
         UpdateCheckerHelper.checkAppUpdate(this, isRedirectedFromSellerMigration)
         observeNotificationsLiveData()
@@ -195,6 +199,10 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
         return false
     }
 
+    private fun setupBackground() {
+        window.decorView.setBackgroundColor(Color.WHITE)
+    }
+
     private fun setupToolbar() {
         setSupportActionBar(sahToolbar)
 
@@ -211,20 +219,22 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
         }
     }
 
-    private fun setupDefaultPage() {
+    private fun setupDefaultPage(isSavedInstanceStateExist: Boolean) {
         if(intent?.data == null) {
             showToolbar()
-            showSellerHome()
+            showSellerHome(isSavedInstanceStateExist)
         } else {
             handleAppLink(intent)
         }
     }
 
-    private fun showSellerHome() {
+    private fun showSellerHome(isSavedInstanceStateExist: Boolean) {
         val home = FragmentType.HOME
         setCurrentFragmentType(home)
         sahBottomNav.currentItem = home
-        navigator?.start(home)
+        if (!isSavedInstanceStateExist) {
+            navigator?.start(home)
+        }
     }
 
     private fun handleAppLink(intent: Intent?) {
@@ -267,6 +277,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
     }
 
     private fun setupBottomNav() {
+        sahBottomNav.setBackgroundColor(ContextCompat.getColor(this, android.R.color.transparent))
         sahBottomNav.itemIconTintList = null
         sahBottomNav.labelVisibilityMode = LabelVisibilityMode.LABEL_VISIBILITY_LABELED
         sahBottomNav.setOnNavigationItemSelectedListener { menu ->
@@ -371,7 +382,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
         homeViewModel.shopInfo.observe(this, Observer {
             if (it is Success) {
                 navigator?.run {
-                    val shopName = it.data.shopName
+                    val shopName = MethodChecker.fromHtml(it.data.shopName).toString()
                     val shopAvatar = it.data.shopAvatar
 
                     // update userSession

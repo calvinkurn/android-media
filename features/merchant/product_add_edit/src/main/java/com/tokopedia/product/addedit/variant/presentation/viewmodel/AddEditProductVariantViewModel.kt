@@ -8,7 +8,6 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.removeFirst
-import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.HTTP_PREFIX
 import com.tokopedia.product.addedit.common.constant.ProductStatus.STATUS_ACTIVE_STRING
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.variant.data.model.GetCategoryVariantCombinationResponse
@@ -96,22 +95,8 @@ class AddEditProductVariantViewModel @Inject constructor(
 
     var isOldVariantData = false
 
-    val isSelectedVariantUnitValuesEmpty = MediatorLiveData<Boolean>().apply {
-        addSource(mSelectedVariantUnitValuesLevel1) {
-            val isVariantUnitValuesLevel1Empty = mSelectedVariantUnitValuesLevel1.value?.isEmpty()
-                    ?: true
-            val isVariantUnitValuesLevel2Empty = mSelectedVariantUnitValuesLevel2.value?.isEmpty()
-                    ?: true
-            this.value = isVariantUnitValuesLevel1Empty && isVariantUnitValuesLevel2Empty
-        }
-        addSource(mSelectedVariantUnitValuesLevel2) {
-            val isVariantUnitValuesLevel1Empty = mSelectedVariantUnitValuesLevel1.value?.isEmpty()
-                    ?: true
-            val isVariantUnitValuesLevel2Empty = mSelectedVariantUnitValuesLevel2.value?.isEmpty()
-                    ?: true
-            this.value = isVariantUnitValuesLevel1Empty && isVariantUnitValuesLevel2Empty
-        }
-    }
+    private var mIsRemovingVariant = MutableLiveData(false)
+    val isRemovingVariant: LiveData<Boolean> get() = mIsRemovingVariant
 
     private fun isInputValid(isVariantUnitValuesLevel1Empty: Boolean, isVariantUnitValuesLevel2Empty: Boolean, isSingleVariantTypeIsSelected: Boolean): Boolean {
         if (isSingleVariantTypeIsSelected && !isVariantUnitValuesLevel1Empty) return true
@@ -213,7 +198,7 @@ class AddEditProductVariantViewModel @Inject constructor(
 
     fun updateSizechart(url: String) {
         val newSizechart = PictureVariantInputModel()
-        newSizechart.filePath = url
+        newSizechart.urlOriginal = url
         mVariantSizechart.value = newSizechart
     }
 
@@ -270,6 +255,7 @@ class AddEditProductVariantViewModel @Inject constructor(
 
     fun clearProductVariant() {
         productInputModel.value?.variantInputModel?.products = emptyList()
+        productInputModel.value?.variantInputModel?.selections = emptyList()
     }
 
     fun getSelectedVariantUnit(layoutPosition: Int): Unit {
@@ -319,6 +305,7 @@ class AddEditProductVariantViewModel @Inject constructor(
     fun removeVariant() {
         val isRemoteDataHasVariant = productInputModel.value?.variantInputModel?.isRemoteDataHasVariant
                 ?: false // keep isRemoteDataHasVariant old data
+        mIsRemovingVariant.value = true
         productInputModel.value?.variantInputModel = VariantInputModel(
                 isRemoteDataHasVariant = isRemoteDataHasVariant)
         selectedVariantDetails = mutableListOf()
@@ -346,7 +333,7 @@ class AddEditProductVariantViewModel @Inject constructor(
             // get selected variant detail selected each level
             if (it.value.isNotEmpty()) {
                 variantDetailsSelected.getOrNull(level)?.let { variantDetail ->
-                    val unit = variantUnitMap.getOrElse(level) { Unit() }
+                    val unit = variantUnitMap.getOrElse(it.key) { Unit() }
                     result.add(SelectionInputModel(
                             variantDetail.variantID.toString(),
                             variantDetail.name,
@@ -474,11 +461,7 @@ class AddEditProductVariantViewModel @Inject constructor(
             )
         } else {
             // condition if updating existing product variant
-            val filePath = variantPicture.firstOrNull()?.filePath.orEmpty()
-            if (!filePath.startsWith(HTTP_PREFIX)) {
-                // condition if updating picture (the url is changed to path)
-                productVariant.pictures = variantPicture
-            }
+            productVariant.pictures = variantPicture
             productVariant
         }
     }
@@ -486,7 +469,7 @@ class AddEditProductVariantViewModel @Inject constructor(
     private fun mapVariantPhoto(variantPhoto: VariantPhoto?): List<PictureVariantInputModel> {
         return if (variantPhoto != null && variantPhoto.imageUrlOrPath.isNotEmpty()) {
             val result = PictureVariantInputModel(
-                    filePath = variantPhoto.imageUrlOrPath,
+                    filePath = variantPhoto.filePath,
                     urlOriginal = variantPhoto.imageUrlOrPath,
                     picID = variantPhoto.picID,
                     description = variantPhoto.description,
@@ -546,6 +529,13 @@ class AddEditProductVariantViewModel @Inject constructor(
         this.selectedVariantDetails.removeFirst {
             it.variantID == variantDetail.variantID
         }
+
+        // update isRemovingVariant value based on selectedVariantDetails elements
+        mIsRemovingVariant.value = this.selectedVariantDetails.isEmpty()
+    }
+
+    fun disableRemovingVariant(){
+        mIsRemovingVariant.value = false
     }
 
     fun getProductVariantPhotos(productInputModel: ProductInputModel): List<VariantPhoto> {
@@ -569,6 +559,7 @@ class AddEditProductVariantViewModel @Inject constructor(
             val photoPicID = picture?.picID.orEmpty()
             val photoDescription = picture?.description.orEmpty()
             val photoFileName = picture?.fileName.orEmpty()
+            val photoFilePath = picture?.filePath.orEmpty()
             val photoWidth = picture?.width.orZero()
             val photoHeight = picture?.height.orZero()
             val photoIsFromIG = picture?.isFromIG.orEmpty()
@@ -580,6 +571,7 @@ class AddEditProductVariantViewModel @Inject constructor(
                     photoPicID,
                     photoDescription,
                     photoFileName,
+                    photoFilePath,
                     photoWidth,
                     photoHeight,
                     photoIsFromIG,

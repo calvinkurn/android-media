@@ -54,6 +54,7 @@ object AmplificationDataSource {
                             .getInstance()
                             .storageProvider
                             .putDataToStore(cmInApp)
+                            .subscribe()
                 } catch (e: Exception) {}
             }
         }
