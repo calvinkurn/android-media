@@ -10,6 +10,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.view.inputmethod.InputMethodManager
+import androidx.test.espresso.IdlingRegistry
+import androidx.test.espresso.IdlingResource
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions.click
@@ -78,19 +80,7 @@ fun isKeyboardShown(targetContext: Context): Boolean {
 }
 
 /**
- * Perform action of waiting for a specific time.
+ * Register / unregister IdlingResource
  */
-fun waitFor(millis: Long) = object: ViewAction {
-
-    override fun getDescription(): String {
-        return "Wait for $millis milliseconds.";
-    }
-
-    override fun getConstraints(): Matcher<View> {
-        return any(View::class.java)
-    }
-
-    override fun perform(uiController: UiController?, view: View?) {
-        uiController?.loopMainThreadForAtLeast(millis)
-    }
-}
+fun register(resource: IdlingResource) = IdlingRegistry.getInstance().register(resource)
+fun unregister(resource: IdlingResource) = IdlingRegistry.getInstance().unregister(resource)

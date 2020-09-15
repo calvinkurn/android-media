@@ -1,101 +1,78 @@
 package com.tokopedia.play.analytic
 
-import android.app.Activity
-import android.app.Instrumentation
+import android.text.TextUtils
+import android.view.View
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.test.espresso.Espresso
-import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.action.ViewActions
-import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
 import androidx.test.espresso.contrib.RecyclerViewActions
-import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.intent.matcher.IntentMatchers
+import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.play.R
+import com.tokopedia.play.analytic.robot.prepare
 import com.tokopedia.play.data.PlayLiveMockModelConfig
+import com.tokopedia.play.extensions.isFullSolid
 import com.tokopedia.play.ui.quickreply.viewholder.QuickReplyViewHolder
-import com.tokopedia.play.util.TextViewIdlingResource
+import com.tokopedia.play.util.*
 import com.tokopedia.play.view.activity.PlayActivity
-import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
-import com.tokopedia.test.application.util.InstrumentationAuthHelper
-import org.junit.After
+import org.junit.Rule
 import org.junit.Test
 
 
 /**
- * Created by mzennis on 07/09/20.
- * Instrumentation Test for checking Analytics Validator in Play Viewer Module
- *
- * Channel Type: Live
+ * Created by mzennis on 14/09/20.
  */
-class CavPlayTrackingLiveTest: BaseCavPlayTrackingTest() {
+class CavPlayTrackingLiveTest {
 
-    override fun getFileName(): String = "tracker/content/play/play_live_analytic.json"
-
-    override fun mockModelConfig(): MockModelConfig = PlayLiveMockModelConfig()
-
-    private lateinit var partnerInfo: TextViewIdlingResource
-
-    private fun setupIdlingResource() {
-
-        val tvPartnerInfo = intentsTestRule.activity.findViewById<AppCompatTextView>(R.id.tv_partner_name)
-        partnerInfo = TextViewIdlingResource(tvPartnerInfo, "")
-
-        IdlingRegistry.getInstance().register(*arrayOf(partnerInfo))
-    }
+    @get:Rule
+    val intentsTestRule = IntentsTestRule(PlayActivity::class.java, false, false)
 
     @Test
-    fun runValidateTracking() {
-
-        // launch play activity with dummy channel id
-        intentsTestRule.launchActivity(PlayActivity.createIntent(targetContext, "43215"))
-
-        // idling resource: add artificial delays to the tests
-        setupIdlingResource()
-
-        // set login true because we need to test follow - unfollow, quick reply, and send chat
-        InstrumentationAuthHelper.loginInstrumentationTestUser1()
-
-        // journey
-        performShop()
-//        performWatchArea()
-//        performFollowUnFollowShop()
-//        performLikeUnLike()
-//        performPinnedMessage()
-        performSendChatQuickReply()
-        performClose()
-
-        Thread.sleep(2000)
-
-        validateTracker()
+    fun validateTrackingChannelLive() {
+        prepare {
+            setup(intentsTestRule)
+            setMockModel(PlayLiveMockModelConfig())
+            launch("1")
+            setJsonAbsolutePath("tracker/content/play/play_live_analytic.json")
+        } test {
+            fakeLogin()
+            fakeLaunch()
+            performShop()
+            performWatchArea()
+            performLike()
+            performPinnedMessage()
+            performSendChatQuickReply()
+            performClose()
+            Thread.sleep(2000)
+            validate()
+        }
     }
 
-
-    @After
-    fun tearDown() {
-        IdlingRegistry.getInstance().unregister(partnerInfo)
-    }
-
+    /**
+     * Journey
+     */
     private fun performShop() {
-        Espresso.onView(ViewMatchers.withId(R.id.tv_partner_name)).perform(ViewActions.click()) // shop
-        // fake intent activity, the destination activity will not be launched.
-        Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
+        register(idlResShopInfo)
+        Espresso.onView(ViewMatchers.withId(R.id.tv_partner_name)).perform(ViewActions.click())
+        Espresso.onView(ViewMatchers.withId(R.id.tv_follow)).perform(ViewActions.click()) // follow
+        Espresso.onView(ViewMatchers.withId(R.id.tv_follow)).perform(ViewActions.click()) // unfollow
+        unregister(idlResShopInfo)
     }
 
     private fun performWatchArea() {
         Espresso.onView(ViewMatchers.withId(R.id.v_immersive_box)).perform(ViewActions.click())
+
+        register(idlResImmersive)
+        Espresso.onView(ViewMatchers.withId(R.id.v_immersive_box)).perform(ViewActions.click())
+        unregister(idlResImmersive)
     }
 
-    private fun performFollowUnFollowShop() {
-        Espresso.onView(ViewMatchers.withId(R.id.tv_follow)).perform(ViewActions.click()) // follow
-        Thread.sleep(2000)
-        Espresso.onView(ViewMatchers.withId(R.id.tv_follow)).perform(ViewActions.click()) // unfollow
-    }
-
-    private fun performLikeUnLike() {
+    private fun performLike() {
+        register(idlResLike)
         Espresso.onView(ViewMatchers.withId(R.id.v_like_click_area)).perform(ViewActions.click()) // like
-        Thread.sleep(2000)
         Espresso.onView(ViewMatchers.withId(R.id.v_like_click_area)).perform(ViewActions.click()) // unlike
+        unregister(idlResLike)
     }
 
     private fun performPinnedMessage() {
@@ -103,18 +80,76 @@ class CavPlayTrackingLiveTest: BaseCavPlayTrackingTest() {
     }
 
     private fun performSendChatQuickReply() {
-        Espresso.onView(ViewMatchers.withId(R.id.et_chat)).perform(ViewActions.click())
+        Espresso.onView(ViewMatchers.withId(R.id.et_chat))
+                .perform(ViewActions.click())
+
         Thread.sleep(2000)
-        Espresso.onView(ViewMatchers.withId(R.id.et_chat)).perform(ViewActions.typeText("Hello"))
+
+        register(idlResKeyboard)
+        Espresso.onView(ViewMatchers.withId(R.id.et_chat))
+                .perform(ViewActions.typeText("Hello"))
+
         Espresso.onView(ViewMatchers.withId(R.id.iv_send)).perform(ViewActions.click()) // send chat
-        Thread.sleep(2000)
+
         Espresso.onView(ViewMatchers.withId(R.id.rv_quick_reply))
                 .perform(RecyclerViewActions.actionOnItemAtPosition<QuickReplyViewHolder>(0, ViewActions.click())) // send quick reply
-                .perform(closeSoftKeyboard())
-        Thread.sleep(2000)
+                .perform(ViewActions.closeSoftKeyboard())
+        unregister(idlResKeyboard)
     }
 
     private fun performClose() {
+        Thread.sleep(2000)
         Espresso.onView(ViewMatchers.withId(R.id.iv_back)).perform(ViewActions.click())
     }
+
+    /**
+     * Idling resource
+     */
+    private val idlResShopInfo by lazy { ComponentIdlingResource(
+            object : PlayIdlingResource{
+                override fun getName(): String = "clickPartnerInfo"
+
+                override fun idleState(): Boolean {
+                    val textView = intentsTestRule.activity.findViewById<AppCompatTextView>(R.id.tv_partner_name)
+                    return !TextUtils.isEmpty(textView.text.toString())
+                }
+            }
+    ) }
+
+    private val idlResLike by lazy {
+        ComponentIdlingResource(
+                object : PlayIdlingResource{
+                    override fun getName(): String = "clickLike"
+
+                    override fun idleState(): Boolean {
+                        val view = intentsTestRule.activity.findViewById<View>(R.id.v_like_click_area)
+                        return view.isClickable
+                    }
+                }
+        ) }
+
+    private val idlResKeyboard by lazy {
+        ComponentIdlingResource(
+                object : PlayIdlingResource{
+                    override fun getName(): String = "keyboard"
+
+                    override fun idleState(): Boolean {
+                        return isKeyboardShown(InstrumentationRegistry.getInstrumentation().targetContext)
+                    }
+                }
+        ) }
+
+    private val idlResImmersive by lazy {
+        ComponentIdlingResource(
+                object : PlayIdlingResource{
+                    override fun getName(): String = "clickImmersive"
+
+                    override fun idleState(): Boolean {
+                        val view = intentsTestRule.activity.findViewById<View>(R.id.v_immersive_box)
+                        return view.isFullSolid
+                    }
+                }
+        ) }
+
+
 }
