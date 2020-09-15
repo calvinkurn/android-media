@@ -55,6 +55,8 @@ class GetDisplayHeadlineAds @Inject constructor(
                 "            price_format\n" +
                 "            uri\n" +
                 "            applinks\n" +
+                "            product_rating\n" +
+                "            count_review_format\n" +
                 "            image_product{\n" +
                 "              image_url\n" +
                 "              image_click_url\n" +
