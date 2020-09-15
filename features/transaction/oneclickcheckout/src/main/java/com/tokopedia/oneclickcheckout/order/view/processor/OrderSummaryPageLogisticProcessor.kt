@@ -435,6 +435,42 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
         }
         return null
     }
+
+    fun onApplyBbo(shipping: OrderShipment, logisticPromoUiModel: LogisticPromoUiModel): Pair<OrderShipment?, OccGlobalEvent> {
+        val shippingRecommendationData = shipping.shippingRecommendationData
+        if (shippingRecommendationData != null) {
+            var logisticPromoShipping: ShippingCourierUiModel? = null
+            val shouldEnableServicePicker = shipping.isServicePickerEnable || !shipping.serviceErrorMessage.isNullOrEmpty()
+            for (shippingDurationViewModel in shippingRecommendationData.shippingDurationViewModels) {
+                if (shippingDurationViewModel.isSelected) {
+                    for (shippingCourierUiModel in shippingDurationViewModel.shippingCourierViewModelList) {
+                        shippingCourierUiModel.isSelected = false
+                    }
+                }
+                if (shippingDurationViewModel.serviceData.serviceId == logisticPromoUiModel.serviceId) {
+                    logisticPromoShipping = shippingDurationViewModel.shippingCourierViewModelList.firstOrNull { it.productData.shipperProductId == logisticPromoUiModel.shipperProductId }
+                }
+                if (shouldEnableServicePicker) {
+                    shippingDurationViewModel.isSelected = false
+                }
+            }
+            if (logisticPromoShipping != null) {
+                shippingRecommendationData.logisticPromo = shippingRecommendationData.logisticPromo.copy(isApplied = true)
+                val needPinpoint = logisticPromoShipping.productData?.error?.errorId == ErrorProductData.ERROR_PINPOINT_NEEDED
+                return Pair(
+                        shipping.copy(shippingRecommendationData = shippingRecommendationData,
+                                isServicePickerEnable = shouldEnableServicePicker,
+                                insuranceData = logisticPromoShipping.productData?.insurance,
+                                serviceErrorMessage = if (needPinpoint) OrderSummaryPageViewModel.NEED_PINPOINT_ERROR_MESSAGE else logisticPromoShipping.productData?.error?.errorMessage,
+                                needPinpoint = needPinpoint,
+                                logisticPromoTickerMessage = null,
+                                isApplyLogisticPromo = true,
+                                logisticPromoShipping = logisticPromoShipping),
+                        OccGlobalEvent.Normal)
+            }
+        }
+        return Pair(null, OccGlobalEvent.Error(errorMessage = OrderSummaryPageViewModel.FAIL_APPLY_BBO_ERROR_MESSAGE))
+    }
 }
 
 class ResultRates(

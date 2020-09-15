@@ -6,7 +6,6 @@ import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingParam
 import com.tokopedia.logisticcart.shipping.model.ShopShipment
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData.ERROR_DISTANCE_LIMIT_EXCEEDED
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData.ERROR_WEIGHT_LIMIT_EXCEEDED
 import com.tokopedia.oneclickcheckout.common.DEFAULT_LOCAL_ERROR_MESSAGE
@@ -209,11 +208,15 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             orderPromo.value = orderPromo.value.copy(state = OccButtonState.LOADING)
             val (isApplied, resultValidateUse, newGlobalEvent) = promoProcessor.validateUseLogisticPromo(generateValidateUsePromoRequestWithBbo(logisticPromoUiModel, oldCode), logisticPromoUiModel.promoCode)
             if (isApplied && resultValidateUse != null) {
-                if (!onApplyBbo(shipping, logisticPromoUiModel, resultValidateUse)) {
+                val (newShipment, _) = logisticProcessor.onApplyBbo(shipping, logisticPromoUiModel)
+                if (newShipment != null) {
+                    _orderShipment = newShipment
+                    orderShipment.value = _orderShipment
+                    validateUsePromoRevampUiModel = resultValidateUse
+                    globalEvent.value = OccGlobalEvent.Normal
                     updatePromoState(resultValidateUse.promoUiModel)
-                    globalEvent.value = OccGlobalEvent.Error(errorMessage = FAIL_APPLY_BBO_ERROR_MESSAGE)
+                    return@launch
                 }
-                return@launch
             }
             _orderShipment = shipping.copy(logisticPromoTickerMessage = if (shipping.serviceErrorMessage.isNullOrEmpty()) "Tersedia ${logisticPromoUiModel.title}" else null, isApplyLogisticPromo = false, logisticPromoShipping = null)
             orderShipment.value = _orderShipment
@@ -297,10 +300,14 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                 globalEvent.value = OccGlobalEvent.Loading
                 val (isApplied, resultValidateUse, newGlobalEvent) = promoProcessor.validateUseLogisticPromo(generateValidateUsePromoRequestWithBbo(logisticPromoUiModel), logisticPromoUiModel.promoCode)
                 if (isApplied && resultValidateUse != null) {
-                    if (!onApplyBbo(shipping, logisticPromoUiModel, resultValidateUse)) {
-                        updatePromoState(resultValidateUse.promoUiModel)
-                        globalEvent.value = OccGlobalEvent.Error(errorMessage = FAIL_APPLY_BBO_ERROR_MESSAGE)
+                    val (newShipment, newEvent) = logisticProcessor.onApplyBbo(shipping, logisticPromoUiModel)
+                    if (newShipment != null) {
+                        _orderShipment = newShipment
+                        orderShipment.value = _orderShipment
                     }
+                    validateUsePromoRevampUiModel = resultValidateUse
+                    updatePromoState(resultValidateUse.promoUiModel)
+                    globalEvent.value = newEvent
                     return@launch
                 }
                 resultValidateUse?.let {
@@ -309,40 +316,6 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                 globalEvent.value = newGlobalEvent
             }
         }
-    }
-
-    private fun onApplyBbo(shipping: OrderShipment, logisticPromoUiModel: LogisticPromoUiModel, response: ValidateUsePromoRevampUiModel): Boolean {
-        val shippingRecommendationData = shipping.shippingRecommendationData
-        if (shippingRecommendationData != null) {
-            var logisticPromoShipping: ShippingCourierUiModel? = null
-            val shouldEnableServicePicker = shipping.isServicePickerEnable || !shipping.serviceErrorMessage.isNullOrEmpty()
-            for (shippingDurationViewModel in shippingRecommendationData.shippingDurationViewModels) {
-                if (shippingDurationViewModel.isSelected) {
-                    for (shippingCourierUiModel in shippingDurationViewModel.shippingCourierViewModelList) {
-                        shippingCourierUiModel.isSelected = false
-                    }
-                }
-                if (shippingDurationViewModel.serviceData.serviceId == logisticPromoUiModel.serviceId) {
-                    logisticPromoShipping = shippingDurationViewModel.shippingCourierViewModelList.firstOrNull { it.productData.shipperProductId == logisticPromoUiModel.shipperProductId }
-                }
-                if (shouldEnableServicePicker) {
-                    shippingDurationViewModel.isSelected = false
-                }
-            }
-            if (logisticPromoShipping != null) {
-                shippingRecommendationData.logisticPromo = shippingRecommendationData.logisticPromo.copy(isApplied = true)
-                val needPinpoint = logisticPromoShipping.productData?.error?.errorId == ErrorProductData.ERROR_PINPOINT_NEEDED
-                _orderShipment = shipping.copy(shippingRecommendationData = shippingRecommendationData, isServicePickerEnable = shouldEnableServicePicker,
-                        insuranceData = logisticPromoShipping.productData?.insurance, serviceErrorMessage = if (needPinpoint) NEED_PINPOINT_ERROR_MESSAGE else logisticPromoShipping.productData?.error?.errorMessage,
-                        needPinpoint = needPinpoint, logisticPromoTickerMessage = null, isApplyLogisticPromo = true, logisticPromoShipping = logisticPromoShipping)
-                orderShipment.value = _orderShipment
-                globalEvent.value = OccGlobalEvent.Normal
-                validateUsePromoRevampUiModel = response
-                updatePromoState(response.promoUiModel)
-                return true
-            }
-        }
-        return false
     }
 
     fun updateCart() {
@@ -357,7 +330,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
 
     fun updatePreference(preference: ProfilesItemModel) {
         launch(executorDispatchers.main) {
-            var param = cartProcessor.generateUpdateCartParam(orderCart, _orderPreference, _orderShipment, _orderPayment)
+            var param = generateUpdateCartParam()
             if (param == null) {
                 globalEvent.value = OccGlobalEvent.Error(errorMessage = DEFAULT_LOCAL_ERROR_MESSAGE)
                 return@launch
@@ -385,7 +358,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             val shop = orderShop
             val pref = _orderPreference
             if (pref.isValid && _orderShipment.getRealShipperProductId() > 0) {
-                val param = cartProcessor.generateUpdateCartParam(orderCart, _orderPreference, _orderShipment, _orderPayment)
+                val param = generateUpdateCartParam()
                 if (param != null) {
                     if (validateSelectedTerm()) {
                         launch(executorDispatchers.main) {
@@ -448,7 +421,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
 
     fun updateCartPromo(onSuccess: (ValidateUsePromoRequest, PromoRequest, ArrayList<String>) -> Unit) {
         launch(executorDispatchers.main) {
-            val param = cartProcessor.generateUpdateCartParam(orderCart, _orderPreference, _orderShipment, _orderPayment)
+            val param = generateUpdateCartParam()
             if (param == null) {
                 globalEvent.value = OccGlobalEvent.Error(errorMessage = DEFAULT_LOCAL_ERROR_MESSAGE)
                 return@launch
@@ -516,7 +489,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
 
     fun chooseInstallment(selectedInstallmentTerm: OrderPaymentInstallmentTerm) {
         launch(executorDispatchers.main) {
-            var param = cartProcessor.generateUpdateCartParam(orderCart, _orderPreference, _orderShipment, _orderPayment)
+            var param = generateUpdateCartParam()
             val creditCard = _orderPayment.creditCard
             if (param == null) {
                 globalEvent.value = OccGlobalEvent.Error(errorMessage = DEFAULT_LOCAL_ERROR_MESSAGE)
@@ -555,7 +528,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
 
     fun updateCreditCard(metadata: String) {
         launch(executorDispatchers.main) {
-            var param = cartProcessor.generateUpdateCartParam(orderCart, _orderPreference, _orderShipment, _orderPayment)
+            var param = generateUpdateCartParam()
             if (param == null) {
                 globalEvent.value = OccGlobalEvent.Error(errorMessage = DEFAULT_LOCAL_ERROR_MESSAGE)
                 return@launch
