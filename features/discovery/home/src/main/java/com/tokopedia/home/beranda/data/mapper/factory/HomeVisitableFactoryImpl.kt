@@ -152,7 +152,7 @@ class HomeVisitableFactoryImpl(
                 banner = DynamicHomeChannel.Banner(title = "Toko Kecantikan", description = "Dari pembelian di kategori yang sering kamu beli", gradientColor = arrayListOf("#411C3B"), textColor = "#ffffff")
         ), 1, isCache)
         createFeaturedShopComponent(DynamicHomeChannel.Channels(
-                id="19320",
+                id="19323",
                 contextualInfo = 2,
                 header = DynamicHomeChannel.Header(name = "Toko Pilihan", applink = "http://tokopedia.com"),
                 widgetParam = "page=2&ep=cpm&item=10&src=homepage&device=desktop&template_id=3&user_id=8909923&headline_product_count=1",
