@@ -19,6 +19,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.tokopedia.search.analytics.SearchEventTracking.BUSINESS_UNIT;
+import static com.tokopedia.search.analytics.SearchEventTracking.CURRENT_SITE;
+import static com.tokopedia.search.analytics.SearchEventTracking.SEARCH;
+import static com.tokopedia.search.analytics.SearchEventTracking.TOKOPEDIA_MARKETPLACE;
 import static com.tokopedia.search.analytics.SearchTrackingConstant.CATEGORY_ID_MAPPING;
 import static com.tokopedia.search.analytics.SearchTrackingConstant.CATEGORY_NAME_MAPPING;
 import static com.tokopedia.search.analytics.SearchTrackingConstant.EVENT;
@@ -697,12 +701,15 @@ public class SearchTracking {
         );
     }
 
-    public static void trackEventImpressionBroadMatch(String keyword, String alternativeKeyword, List<Object> broadMatchItems) {
+    public static void trackEventImpressionBroadMatch(String keyword, String alternativeKeyword, String userId, List<Object> broadMatchItems) {
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(EVENT, SearchEventTracking.Event.PRODUCT_VIEW,
                         EVENT_CATEGORY,  SearchEventTracking.Category.SEARCH_RESULT,
                         EVENT_ACTION, SearchEventTracking.Action.IMPRESSION_BROAD_MATCH,
                         EVENT_LABEL, String.format("%s - %s", keyword, alternativeKeyword),
+                        CURRENT_SITE, TOKOPEDIA_MARKETPLACE,
+                        BUSINESS_UNIT, SEARCH,
+                        USER_ID, userId,
                         ECOMMERCE, DataLayer.mapOf(
                                 "currencyCode", "IDR",
                                 "impressions", DataLayer.listOf(
@@ -723,12 +730,15 @@ public class SearchTracking {
         );
     }
 
-    public static void trackEventClickBroadMatchItem(String keyword, String alternativeKeyword, List<Object> broadMatchItems) {
+    public static void trackEventClickBroadMatchItem(String keyword, String alternativeKeyword, String userId, List<Object> broadMatchItems) {
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(EVENT, SearchEventTracking.Event.PRODUCT_CLICK,
                         EVENT_CATEGORY,  SearchEventTracking.Category.SEARCH_RESULT,
                         EVENT_ACTION, SearchEventTracking.Action.CLICK_BROAD_MATCH,
                         EVENT_LABEL, String.format("%s - %s", keyword, alternativeKeyword),
+                        CURRENT_SITE, TOKOPEDIA_MARKETPLACE,
+                        BUSINESS_UNIT, SEARCH,
+                        USER_ID, userId,
                         ECOMMERCE, DataLayer.mapOf("click",
                                 DataLayer.mapOf("actionField",
                                         DataLayer.mapOf("list", "/search - broad match"),
