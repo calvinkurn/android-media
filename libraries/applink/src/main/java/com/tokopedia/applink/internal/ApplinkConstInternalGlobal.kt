@@ -73,6 +73,11 @@ object ApplinkConstInternalGlobal {
     val KEY_REDIRECT_SEAMLESS_APPLINK = "redirect_seamless"
 
     @JvmField
+    val PARAM_ENABLE_2FA = "enable_2fa"
+    @JvmField
+    val PARAM_ENABLE_SKIP_2FA = "enable_skip_2fa"
+
+    @JvmField
     val INTERNAL_GLOBAL = "${DeeplinkConstant.SCHEME_INTERNAL}://${HOST_GLOBAL}"
 
     // WithdrawActivity
