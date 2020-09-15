@@ -47,16 +47,14 @@ class WaitingPaymentOrdersViewHolder(
                     setOnClickListener {
                         element.isExpanded = !element.isExpanded
                         listener.toggleCollapse(element)
-                        if (element.isExpanded) {
-                            animateIcon(0f, -180f)
-                        } else {
-                            animateIcon(-180f, 0f)
-                        }
+                        animateDropDownIcon(element.isExpanded)
                     }
                 }
-                iconDropDownAnimator?.end()
-                icLoadMoreDropDown.rotation = if (element.isExpanded) -180f else 0f
-                icLoadMoreDropDown.showWithCondition(element.productUiModels.size > MAX_ORDER_WHEN_COLLAPSED)
+                icLoadMoreDropDown.apply {
+                    iconDropDownAnimator?.end()
+                    rotation = if (element.isExpanded) -180f else 0f
+                    showWithCondition(element.productUiModels.size > MAX_ORDER_WHEN_COLLAPSED)
+                }
                 rvWaitingPaymentOrderProducts.apply {
                     if (adapter == null) {
                         isNestedScrollingEnabled = false
@@ -72,7 +70,15 @@ class WaitingPaymentOrdersViewHolder(
         }
     }
 
-    private fun animateIcon(start: Float, end: Float) {
+    private fun animateDropDownIcon(isExpanded: Boolean) {
+        if (isExpanded) {
+            animateDropDownIconIcon(0f, -180f)
+        } else {
+            animateDropDownIconIcon(-180f, 0f)
+        }
+    }
+
+    private fun animateDropDownIconIcon(start: Float, end: Float) {
         iconDropDownAnimator = ValueAnimator.ofFloat(start, end)
         iconDropDownAnimator?.duration = RECYCLER_VIEW_ANIMATION_DURATION
         iconDropDownAnimator?.addUpdateListener { animation ->
