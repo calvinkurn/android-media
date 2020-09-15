@@ -604,10 +604,11 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         }
         filter2?.let { chips.add(it) }
 
-        val typeCategory = if (filterStatus.equals(PARAM_MARKETPLACE, true)) {
-            ChipsUnify.TYPE_NORMAL
-        } else {
+        val typeCategory = if (filterStatus.equals(PARAM_MARKETPLACE, true) ||
+                filterStatus.equals(PARAM_MARKETPLACE_DALAM_PROSES, true)) {
             ChipsUnify.TYPE_SELECTED
+        } else {
+            ChipsUnify.TYPE_NORMAL
         }
 
         filter3 = SortFilterItem(ALL_CATEGORIES, typeCategory, ChipsUnify.SIZE_SMALL)
@@ -626,7 +627,8 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             uohBottomSheetOptionAdapter.uohItemMapKeyList = arrayListMap
             uohBottomSheetOptionAdapter.filterType = UohConsts.TYPE_FILTER_CATEGORY
 
-            if (filterStatus.equals(PARAM_MARKETPLACE, true) && !isReset) {
+            if ((filterStatus.equals(PARAM_MARKETPLACE, true) ||
+                            filterStatus.equals(PARAM_MARKETPLACE_DALAM_PROSES, true)) && !isReset) {
                 uohBottomSheetOptionAdapter.selectedKey = PARAM_MARKETPLACE
             } else {
                 uohBottomSheetOptionAdapter.selectedKey = currFilterCategoryKey
@@ -638,7 +640,8 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         if (filterStatus.equals(PARAM_SEMUA_TRANSAKSI, true) && !isReset) {
             filter3?.title = ALL_CATEGORIES
 
-        } else if (filterStatus.equals(PARAM_MARKETPLACE, true) && !isReset) {
+        } else if ((filterStatus.equals(PARAM_MARKETPLACE, true) ||
+                        filterStatus.equals(PARAM_MARKETPLACE_DALAM_PROSES, true)) && !isReset) {
             filter3?.title = orderList.categories.first().label
         }
         filter3?.let { chips.add(it) }
