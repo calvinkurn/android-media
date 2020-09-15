@@ -23,13 +23,6 @@ class ChatSettingViewHolder constructor(
     private val description: Typography? = itemView?.findViewById(R.id.tvDesc)
     private val label: Label? = itemView?.findViewById(R.id.label_chat_setting)
 
-    private val paddingStart = 16.toPx()
-    private val paddingEnd = 16.toPx()
-    private val paddingTop = 12.toPx()
-    private val paddingBottom = 15.toPx()
-    private val paddingTopNoTitle = 5.toPx()
-    private val paddingBottomLastSection = 20.toPx()
-
     interface ChatSettingListener {
         fun isTabSeller(): Boolean
         fun eventClickChatSetting(element: ItemChatSettingUiModel)
@@ -92,6 +85,13 @@ class ChatSettingViewHolder constructor(
 
     companion object {
         const val TEMPLATE_CHAT_TITLE = "Template Chat"
+
+        private val paddingStart = 16.toPx()
+        private val paddingEnd = 16.toPx()
+        private val paddingTop = 12.toPx()
+        private val paddingBottom = 15.toPx()
+        private val paddingTopNoTitle = 5.toPx()
+        private val paddingBottomLastSection = 20.toPx()
 
         val LAYOUT = R.layout.item_chat_setting
     }
