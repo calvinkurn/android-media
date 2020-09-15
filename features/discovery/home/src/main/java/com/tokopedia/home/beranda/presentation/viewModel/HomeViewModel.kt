@@ -229,7 +229,6 @@ open class HomeViewModel @Inject constructor(
     private var headerDataModel: HeaderDataModel? = null
 
     private val homeRateLimit = RateLimiter<String>(timeout = 3, timeUnit = TimeUnit.MINUTES)
-    private val homeVisitablesList = mutableListOf<Visitable<*>>()
 
     init {
         _isViewModelInitialized.value = Event(true)
@@ -879,7 +878,7 @@ open class HomeViewModel @Inject constructor(
                     homeData = evaluateGeolocationComponent(homeData)
                     homeData = evaluateAvailableComponent(homeData)
                     homeData?.let {
-                        homeProcessor.get().sendWithQueueMethod(UpdateHomeData(homeData.copy(list = homeVisitablesList), this@HomeViewModel))
+                        homeProcessor.get().sendWithQueueMethod(UpdateHomeData(homeData, this@HomeViewModel))
                         getPlayBannerCarousel()
                         getHeaderData()
                         getReviewData()
