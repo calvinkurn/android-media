@@ -35,6 +35,9 @@ import com.tokopedia.discovery.common.manager.showProductCardOptions
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.exception.UserNotLoginException
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.shop.R
 import com.tokopedia.shop.analytic.OldShopPageTrackingConstant
 import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
@@ -49,8 +52,11 @@ import com.tokopedia.shop.common.constant.ShopParamConstant
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
 import com.tokopedia.shop.common.di.component.ShopComponent
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
+import com.tokopedia.shop.common.util.ShopPageProductChangeGridRemoteConfig
+import com.tokopedia.shop.common.view.listener.ShopProductChangeGridSectionListener
 import com.tokopedia.shop.product.di.component.DaggerShopProductComponent
 import com.tokopedia.shop.product.di.module.ShopProductModule
+import com.tokopedia.shop.common.util.ShopProductViewGridType
 import com.tokopedia.shop.product.view.adapter.ShopProductAdapter
 import com.tokopedia.shop.product.view.adapter.ShopProductAdapterTypeFactory
 import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener
@@ -72,8 +78,8 @@ import javax.inject.Inject
 
 class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewModel, ShopProductAdapterTypeFactory>(),
         WishListActionListener, BaseEmptyViewHolder.Callback, ShopProductClickedListener,
-        ShopProductSortFilterViewHolder.ShopProductEtalaseChipListViewHolderListener,
-        ShopProductImpressionListener, ShopProductEmptySearchListener {
+        ShopProductSortFilterViewHolder.ShopProductSortFilterViewHolderListener,
+        ShopProductImpressionListener, ShopProductEmptySearchListener, ShopProductChangeGridSectionListener {
 
     interface ShopPageProductListResultFragmentListener {
         fun onSortValueUpdated(sortValue: String)
@@ -109,6 +115,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     private var shopProductSortFilterUiModel: ShopProductSortFilterUiModel? = null
     private var keywordEmptyState = ""
     private var isEmptyState = false
+    private var remoteConfig: RemoteConfig? = null
 
     private val staggeredGridLayoutManager: StaggeredGridLayoutManager by lazy {
         StaggeredGridLayoutManager(GRID_SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL)
@@ -137,6 +144,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                 null,
                 null,
                 this,
+                this,
                 true,
                 0,
                 ShopTrackProductTypeDef.PRODUCT
@@ -164,6 +172,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        remoteConfig = FirebaseRemoteConfigImpl(context)
         arguments?.let { attribution = it.getString(ShopParamConstant.EXTRA_ATTRIBUTION, "") }
         if (savedInstanceState == null) {
             selectedEtalaseList = ArrayList()
@@ -307,8 +316,10 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         viewModel.productData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
-                    val productList = it.data.second
-                    renderProductList(productList, it.data.first)
+                    val productList = it.data.listShopProductUiModel
+                    val hasNextPage = it.data.hasNextPage
+                    val totalProductData =  it.data.totalProductData
+                    renderProductList(productList, hasNextPage, totalProductData)
                     isNeedToReloadData = false
                 }
                 is Fail -> showGetListError(it.throwable)
@@ -322,7 +333,11 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         })
     }
 
-    private fun renderProductList(productList: List<ShopProductViewModel>, hasNextPage: Boolean) {
+    private fun renderProductList(
+            productList: List<ShopProductViewModel>,
+            hasNextPage: Boolean,
+            totalProductData: Int
+    ) {
         hideLoading()
         shopProductAdapter.clearAllNonDataElement()
         if (isLoadingInitialData) {
@@ -331,6 +346,12 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
 
             if (productList.isNotEmpty()) {
                 shopProductSortFilterUiModel?.let { shopProductAdapter.setSortFilterData(it) }
+                if(ShopPageProductChangeGridRemoteConfig.isFeatureEnabled(remoteConfig)) {
+                    shopProductAdapter.addShopPageProductChangeGridSection(ShopProductChangeGridSectionUiModel(
+                            totalProductData
+                    ))
+                    changeProductListGridView(ShopProductViewGridType.SMALL_GRID)
+                }
             }
         }
 
@@ -452,6 +473,10 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                     shopId
             )
         }
+    }
+
+    override fun getSelectedEtalaseName(): String {
+        return getSelectedEtalaseChip()
     }
 
     private fun getProductIntent(productId: String, attribution: String?, listNameOfProduct: String): Intent? {
@@ -845,6 +870,8 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         loadInitialData()
     }
 
+    override fun setSortFilterMeasureHeight(measureHeight: Int) { }
+
     override fun getRecyclerViewResourceId(): Int {
         return R.id.recycler_view
     }
@@ -873,5 +900,18 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                 context,
                 "${ApplinkConst.DISCOVERY_SEARCH}?q=$keyword"
         )
+    }
+
+    private fun changeProductListGridView(gridType: ShopProductViewGridType){
+        shopProductAdapter.updateShopPageProductChangeGridSection(gridType)
+        shopProductAdapter.changeProductCardGridType(gridType)
+    }
+
+    override fun onChangeProductGridClicked(gridType: ShopProductViewGridType) {
+        val productListName =  shopProductAdapter.shopProductViewModelList.joinToString(","){
+            it.name.orEmpty()
+        }
+        shopPageTracking?.clickProductListToggle(productListName, isMyShop, customDimensionShopPage)
+        changeProductListGridView(gridType)
     }
 }

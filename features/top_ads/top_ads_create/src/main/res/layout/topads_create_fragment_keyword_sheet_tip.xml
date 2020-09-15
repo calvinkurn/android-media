@@ -25,7 +25,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/dp_8"
         android:gravity="center_vertical"
-        android:text="@string/tip_memilih_kata_kunci"
+        android:text="@string/topads_common_tip_memilih_kata_kunci"
         android:textColor="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/btn_close"

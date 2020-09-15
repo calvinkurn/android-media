@@ -91,7 +91,6 @@ public class RemoteConfigKey {
 
     public static final String ANDROID_MAIN_APP_ENABLED_OLD_PDP = "android_main_app_enabled_old_pdp";
     public static final String ANDROID_MAIN_APP_ENABLED_CACHE_PDP = "android_main_app_enabled_cache_pdp";
-    public static final String ANDROID_MAIN_APP_ENABLED_CACHE_P2_PDP = "android_main_app_enabled_cache_p2_pdp";
 
     public static final String NONB1_TTL = "app_nonb_1_ttl";
     public static final String NONB1_DESC = "app_nonb_1_dsc";
@@ -176,6 +175,7 @@ public class RemoteConfigKey {
     public static final String MAINAPP_SALAM_UMRAH = "android_main_app_enabled_umrah";
 
     public static final String ENABLE_NEW_SHOP_PAGE = "android_main_app_enable_new_shop_page";
+    public static final String ENABLE_SHOP_PAGE_CHANGE_PRODUCT_GRID_LAYOUT_FEATURE = "android_shop_page_enable_product_change_grid_layout";
 
     public static final String MAINAPP_RECHARGE_OCR = "android_mainapp_enable_ocr_emoney";
     public static final String MAINAPP_RECHARGE_SMARTCARD = "mainapp_digital_smartcard";

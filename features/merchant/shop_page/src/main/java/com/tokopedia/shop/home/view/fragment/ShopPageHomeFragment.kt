@@ -39,6 +39,9 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarouselItemDataModel
 import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarouselOverlayImageDataModel
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey.ENABLE_SHOP_PAGE_CHANGE_PRODUCT_GRID_LAYOUT_FEATURE
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopComponentHelper
 import com.tokopedia.shop.analytic.ShopPageHomeTracking
@@ -50,7 +53,10 @@ import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
 import com.tokopedia.shop.common.graphql.data.checkwishlist.CheckWishlistResult
 import com.tokopedia.shop.common.util.ShopPageExceptionHandler.ERROR_WHEN_GET_YOUTUBE_DATA
 import com.tokopedia.shop.common.util.ShopPageExceptionHandler.logExceptionToCrashlytics
+import com.tokopedia.shop.common.util.ShopPageProductChangeGridRemoteConfig
 import com.tokopedia.shop.common.util.ShopUtil
+import com.tokopedia.shop.common.view.listener.ShopProductChangeGridSectionListener
+import com.tokopedia.shop.common.view.viewmodel.ShopChangeProductGridSharedViewModel
 import com.tokopedia.shop.home.WidgetName.VIDEO
 import com.tokopedia.shop.home.di.component.DaggerShopPageHomeComponent
 import com.tokopedia.shop.home.di.module.ShopPageHomeModule
@@ -65,11 +71,12 @@ import com.tokopedia.shop.home.view.viewmodel.ShopHomeViewModel
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity
 import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageFragment
 import com.tokopedia.shop.pageheader.presentation.listener.ShopPageHomeTabPerformanceMonitoringListener
+import com.tokopedia.shop.common.util.ShopProductViewGridType
 import com.tokopedia.shop.product.view.activity.ShopProductListResultActivity
 import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener
 import com.tokopedia.shop.product.view.datamodel.ShopProductSortFilterUiModel
 import com.tokopedia.shop.product.view.viewholder.ShopProductSortFilterViewHolder
-import com.tokopedia.shop.product.view.viewmodel.ShopSortSharedViewModel
+import com.tokopedia.shop.common.view.viewmodel.ShopSortSharedViewModel
 import com.tokopedia.shop.sort.view.activity.ShopProductSortActivity
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
@@ -83,9 +90,10 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         ShopHomeVoucherViewHolder.ShopHomeVoucherViewHolderListener,
         ShopHomeEndlessProductListener,
         ShopPageHomePlayCarouselListener,
-        ShopProductSortFilterViewHolder.ShopProductEtalaseChipListViewHolderListener,
+        ShopProductSortFilterViewHolder.ShopProductSortFilterViewHolderListener,
         ShopHomeCarouselProductListener,
-        ShopHomeCampaignNplWidgetListener{
+        ShopHomeCampaignNplWidgetListener,
+        ShopProductChangeGridSectionListener {
 
     companion object {
         const val KEY_SHOP_ID = "SHOP_ID"
@@ -148,6 +156,8 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     private var sortName = ""
     private var recyclerViewTopPadding = 0
     private var shopSortSharedViewModel: ShopSortSharedViewModel? = null
+    private var shopChangeProductGridSharedViewModel: ShopChangeProductGridSharedViewModel? = null
+    private var remoteConfig: RemoteConfig? = null
 
     val isLogin: Boolean
         get() = viewModel?.isLogin ?: false
@@ -163,7 +173,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         get() = adapter as ShopHomeAdapter
 
     private val shopHomeAdapterTypeFactory by lazy {
-        ShopHomeAdapterTypeFactory(this, this, this, this, this, this, this)
+        ShopHomeAdapterTypeFactory(this, this, this, this, this, this, this, this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -174,8 +184,10 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             sortId = it.getString(SAVED_SHOP_SORT_ID, "")
             sortName = it.getString(SAVED_SHOP_SORT_NAME, "")
         }
+        remoteConfig = FirebaseRemoteConfigImpl(context)
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(ShopHomeViewModel::class.java)
         shopSortSharedViewModel = ViewModelProviders.of(requireActivity()).get(ShopSortSharedViewModel::class.java)
+        shopChangeProductGridSharedViewModel = ViewModelProvider(requireActivity()).get(ShopChangeProductGridSharedViewModel::class.java)
         customDimensionShopPage.updateCustomDimensionData(shopId, isOfficialStore, isGoldMerchant)
         staggeredGridLayoutManager = StaggeredGridLayoutManager(SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL)
     }
@@ -227,8 +239,17 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             }
         }
         observeShopSortSharedViewModel()
+        observeShopChangeProductGridSharedViewModel()
         observeLiveData()
         loadInitialData()
+    }
+
+    private fun observeShopChangeProductGridSharedViewModel() {
+        shopChangeProductGridSharedViewModel?.sharedProductGridType?.observe(viewLifecycleOwner, Observer {
+            if (!shopHomeAdapter.isLoading) {
+                changeProductListGridView(it)
+            }
+        })
     }
 
     override fun getRecyclerViewResourceId(): Int {
@@ -240,7 +261,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     }
 
     private fun observeShopSortSharedViewModel() {
-        shopSortSharedViewModel?.sharedSortData?.observe(this, Observer {
+        shopSortSharedViewModel?.sharedSortData?.observe(viewLifecycleOwner, Observer {
             if (!shopHomeAdapter.isLoading) {
                 sortId = it.first
                 sortName = it.second
@@ -271,6 +292,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         viewModel?.flush()
         shopHomeAdapter.onDestroy()
         shopSortSharedViewModel?.sharedSortData?.removeObservers(this)
+        shopChangeProductGridSharedViewModel?.sharedProductGridType?.removeObservers(this)
         super.onDestroy()
     }
 
@@ -304,7 +326,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     }
 
     private fun observeLiveData() {
-        viewModel?.shopHomeLayoutData?.observe(this, Observer {
+        viewModel?.shopHomeLayoutData?.observe(viewLifecycleOwner, Observer {
             startMonitoringPltRenderPage()
             hideLoading()
             when (it) {
@@ -319,27 +341,30 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             stopMonitoringPltRenderPage()
         })
 
-        viewModel?.initialProductListData?.observe(this, Observer {
+        viewModel?.initialProductListData?.observe(viewLifecycleOwner, Observer {
             hideLoading()
             when (it) {
                 is Success -> {
                     addProductListHeader()
-                    updateProductListData(it.data.first, it.data.second, true)
+                    if(ShopPageProductChangeGridRemoteConfig.isFeatureEnabled(remoteConfig)) {
+                        addChangeProductGridSection(it.data.totalProductData)
+                    }
+                    updateProductListData(it.data.hasNextPage, it.data.listShopProductUiModel, true)
                 }
             }
             stopPerformanceMonitor()
         })
 
-        viewModel?.newProductListData?.observe(this, Observer {
+        viewModel?.newProductListData?.observe(viewLifecycleOwner, Observer {
             hideLoading()
             when (it) {
                 is Success -> {
-                    updateProductListData(it.data.first, it.data.second, false)
+                    updateProductListData(it.data.hasNextPage, it.data.listShopProductUiModel, false)
                 }
             }
         })
 
-        viewModel?.checkWishlistData?.observe(this, Observer {
+        viewModel?.checkWishlistData?.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     onSuccessCheckWishlist(it.data)
@@ -347,7 +372,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             }
         })
 
-        viewModel?.reminderPlayLiveData?.observe(this, Observer {
+        viewModel?.reminderPlayLiveData?.observe(viewLifecycleOwner, Observer {
             when(it.second){
                 is Success -> {
                     showToastSuccess(
@@ -362,11 +387,11 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             }
         })
 
-        viewModel?.updatePlayWidgetData?.observe(this, Observer {
+        viewModel?.updatePlayWidgetData?.observe(viewLifecycleOwner, Observer {
             shopHomeAdapter.updatePlayWidget(it)
         })
 
-        viewModel?.videoYoutube?.observe(this, Observer {
+        viewModel?.videoYoutube?.observe(viewLifecycleOwner, Observer {
             val result = it.second
             when (result) {
                 is Success -> {
@@ -378,7 +403,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             }
         })
 
-        viewModel?.campaignNplRemindMeStatusData?.observe(this, Observer {
+        viewModel?.campaignNplRemindMeStatusData?.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     onSuccessGetCampaignNplRemindMeStatusData(it.data)
@@ -386,7 +411,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             }
         })
 
-        viewModel?.checkCampaignNplRemindMeStatusData?.observe(this, Observer {
+        viewModel?.checkCampaignNplRemindMeStatusData?.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     if (it.data.success) {
@@ -403,6 +428,11 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 }
             }
         })
+    }
+
+    private fun addChangeProductGridSection(totalProductData: Int) {
+        val changeProductGridUiModel = ShopHomeProductChangeGridSectionUiModel(totalProductData)
+        shopHomeAdapter.addShopPageProductChangeGridSection(changeProductGridUiModel)
     }
 
     private fun onFailCheckCampaignNplNotifyMe(campaignId: String, errorMessage: String) {
@@ -430,22 +460,19 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 data.action,
                 customDimensionShopPage
         )
-        if (isRegisterCampaign) {
-            view?.let {
-                Toaster.make(
-                        it,
-                        data.message,
-                        Snackbar.LENGTH_LONG,
-                        Toaster.TYPE_NORMAL,
-                        getString(R.string.shop_string_ok),
-                        View.OnClickListener {
-                            shopPageHomeTracking.toasterActivationClickOk(isOwner, customDimensionShopPage)
-                        }
-                )
-                shopPageHomeTracking.impressionToasterActivation(isOwner, customDimensionShopPage)
-            }
+        view?.let {
+            Toaster.make(
+                    it,
+                    data.message,
+                    Snackbar.LENGTH_LONG,
+                    Toaster.TYPE_NORMAL,
+                    getString(R.string.shop_string_ok),
+                    View.OnClickListener {
+                        shopPageHomeTracking.toasterActivationClickOk(isOwner, customDimensionShopPage)
+                    }
+            )
+            shopPageHomeTracking.impressionToasterActivation(isOwner, customDimensionShopPage)
         }
-
     }
 
     private fun onSuccessGetCampaignNplRemindMeStatusData(data: GetCampaignNotifyMeUiModel) {
@@ -706,7 +733,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         recycler_view?.smoothScrollBy(0, recyclerViewTopPadding * 2)
         staggeredGridLayoutManager?.scrollToPositionWithOffset(
                 shopHomeAdapter.shopHomeEtalaseTitlePosition,
-                stickySingleHeaderView.containerHeight
+                0
         )
     }
 
@@ -1263,6 +1290,8 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         refreshProductList()
     }
 
+    override fun setSortFilterMeasureHeight(measureHeight: Int) {}
+
     private fun refreshProductList() {
         shopHomeAdapter.removeProductList()
         shopHomeAdapter.showLoading()
@@ -1415,6 +1444,21 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
 
     private fun getNplRemindMeClickedCampaignId(): String {
         return PersistentCacheManager.instance.get(NPL_REMIND_ME_CAMPAIGN_ID, String::class.java, "").orEmpty()
+    }
+
+    private fun changeProductListGridView(gridType: ShopProductViewGridType){
+        shopHomeAdapter.updateShopPageProductChangeGridSection(gridType)
+        shopHomeAdapter.changeProductCardGridType(gridType)
+    }
+
+    override fun onChangeProductGridClicked(gridType: ShopProductViewGridType) {
+        val productListName = shopHomeAdapter.productListViewModel.joinToString(","){
+            it.name.orEmpty()
+        }
+        shopPageHomeTracking.clickProductListToggle(productListName, isOwner, customDimensionShopPage)
+        changeProductListGridView(gridType)
+        scrollToEtalaseTitlePosition()
+        shopChangeProductGridSharedViewModel?.changeSharedProductGridType(gridType)
     }
 
 }

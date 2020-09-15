@@ -47,7 +47,7 @@ class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
         const val PINNED_COMPONENT_ID = "componentID"
         const val PINNED_ACTIVE_TAB = "activeTab"
         const val PINNED_COMP_ID = "pinnedcompID"
-        const val PINNED_PRODUCT = "PinnedProduct"
+        const val PRODUCT_ID = "product_id"
 
         @JvmField
         var config: String = ""
@@ -129,7 +129,9 @@ class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
         return DiscoveryFragment.getInstance(intentData?.lastPathSegment,
                 intentData?.let { it ->
                     discoveryViewModel.getMapOfQueryParameter(it)
-                })
+                }).apply {
+            this.pageLoadTimePerformanceInterface = this@DiscoveryActivity.pageLoadTimePerformanceInterface
+        }
     }
 
     override fun getViewModelType(): Class<DiscoveryViewModel> {

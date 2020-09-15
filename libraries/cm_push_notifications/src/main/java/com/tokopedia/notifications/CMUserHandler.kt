@@ -14,6 +14,7 @@ import com.tokopedia.abstraction.constant.TkpdCache
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.notifications.common.CMNotificationCacheHandler
 import com.tokopedia.notifications.common.CMNotificationUtils
 import com.tokopedia.notifications.common.launchCatchError
 import com.tokopedia.notifications.data.model.TokenResponse
@@ -121,10 +122,7 @@ class CMUserHandler(private val mContext: Context) : CoroutineScope {
             val gAdId = googleAdId
             val appVersionName = CMNotificationUtils.getCurrentAppVersionName(mContext)
 
-            if (CMNotificationUtils.tokenUpdateRequired(mContext, token) ||
-                    CMNotificationUtils.mapTokenWithUserRequired(mContext, userId) ||
-                    CMNotificationUtils.mapTokenWithGAdsIdRequired(mContext, gAdId) ||
-                    CMNotificationUtils.mapTokenWithAppVersionRequired(mContext, appVersionName)) {
+            if (CMNotificationUtils.isTokenExpired(CMNotificationCacheHandler(mContext), token, userId, gAdId, appVersionName)) {
                 val requestParams = HashMap<String, Any>()
 
                 requestParams["macAddress"] = ""

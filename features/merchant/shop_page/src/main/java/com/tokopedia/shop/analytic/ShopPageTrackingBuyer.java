@@ -12,6 +12,8 @@ import com.tokopedia.shop.product.view.datamodel.ShopProductViewModel;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -24,18 +26,24 @@ import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.BRAND;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CATEGORY;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_ADD_ETALASE_BUTTON;
+import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_BOTTOMSHEET_DISMISS_BUTTON;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_CHAT_SELLER;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_CLOSE_FILTER;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_FOLLOW;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_MEMBERSHIP_EVENT;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_PRODUCT;
+import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_PRODUCT_LIST_TOGGLE;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_PRODUCT_SEARCH_SUGGESTION;
+import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_PROFILE;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_SEARCH;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_SEARCH_PAGE_NO_RESULT;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_SEND_CHAT;
+import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_SHARE;
+import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_SHARE_DETAIL;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_SHOP_MESSAGE;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_SHOP_PAGE;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_SHOP_PROFILE;
+import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_SHOP_SETTING;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_SHOWCASE_LIST;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_UNFOLLOW;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CURRENCY_CODE;
@@ -80,11 +88,13 @@ import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SEARCH_RESULT
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SELECTED_ETALASE_CHIP;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SELLER_ADDED_TO_FAVORITE;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SELLER_REMOVED_FROM_FAVORITE;
+import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SETTING_PAGE_SELLER;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_ID;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_LOCATION;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_NAME;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE_BUYER;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE_SELLER;
+import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PROFILE_PAGE_BUYER;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_REF;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_TYPE;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.TRY_ANOTHER_WORD;
@@ -522,6 +532,42 @@ public class ShopPageTrackingBuyer extends ShopPageTracking {
         );
     }
 
+    public void clickShareButton(CustomDimensionShopPage customDimensionShopPage) {
+        sendGeneralEvent(CLICK_SHOP_PAGE,
+                SHOP_PROFILE_PAGE_BUYER,
+                CLICK_SHARE,
+                "",
+                customDimensionShopPage);
+    }
+
+    public void clickShareButtonSellerView(CustomDimensionShopPage customDimensionShopPage) {
+        sendGeneralEvent(CLICK_SHOP_PAGE,
+                SETTING_PAGE_SELLER,
+                CLICK_SHARE,
+                "",
+                customDimensionShopPage);
+    }
+
+    public void clickCancelShareBottomsheet(CustomDimensionShopPage customDimensionShopPage, boolean isMyShop) {
+        sendGeneralEvent(
+                isMyShop ? CLICK_SHOP_SETTING : CLICK_PROFILE,
+                isMyShop ? SETTING_PAGE_SELLER : SHOP_PROFILE_PAGE_BUYER,
+                CLICK_SHARE_DETAIL,
+                CLICK_BOTTOMSHEET_DISMISS_BUTTON,
+                customDimensionShopPage
+        );
+    }
+
+    public void clickShareSocialMedia(CustomDimensionShopPage customDimensionShopPage, boolean isMyShop, String socialMediaName) {
+        sendGeneralEvent(
+                isMyShop ? CLICK_SHOP_SETTING : CLICK_PROFILE,
+                isMyShop ? SETTING_PAGE_SELLER : SHOP_PROFILE_PAGE_BUYER,
+                CLICK_SHARE_DETAIL,
+                socialMediaName,
+                customDimensionShopPage
+        );
+    }
+
     public void sendEventMembership(String eventAction) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
                 CLICK_MEMBERSHIP_EVENT,
@@ -740,5 +786,19 @@ public class ShopPageTrackingBuyer extends ShopPageTracking {
                 SHOP_TYPE, shopType,
                 PAGE_TYPE, SHOPPAGE
         ));
+    }
+
+    public void clickProductListToggle(
+            String productListName,
+            boolean isMyShop,
+            CustomDimensionShopPage customDimensionShopPage
+    ) {
+        sendGeneralEvent(
+                CLICK_SHOP_PAGE,
+                getShopPageCategory(isMyShop),
+                CLICK_PRODUCT_LIST_TOGGLE,
+                productListName,
+                customDimensionShopPage
+        );
     }
 }

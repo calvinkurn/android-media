@@ -449,14 +449,27 @@ internal class SortFilterBottomSheetViewModel {
     }
 
     fun onSortItemClick(sortItemViewModel: SortItemViewModel) {
-        sortItemViewModel.isSelected = true
+        val appliedSort = getAppliedSort(sortItemViewModel)
 
-        applySort(sortItemViewModel)
+        applySort(appliedSort)
 
         notifyViewOnSortItemClick()
     }
 
+    private fun getAppliedSort(sortItemViewModel: SortItemViewModel): SortItemViewModel {
+        if (sortItemViewModel.isSelected) {
+            val sortViewModel = sortFilterList[SORT_VIEW_POSITION]
+
+            if (sortViewModel is SortViewModel)
+                return sortViewModel.getDefaultSortItemViewModel() ?: sortItemViewModel
+        }
+
+        return sortItemViewModel
+    }
+
     private fun applySort(sortItemViewModel: SortItemViewModel) {
+        sortItemViewModel.isSelected = true
+
         val selectedSort = sortItemViewModel.sort
 
         sortApplyFilterMap.replaceWithMap(selectedSort.applyFilter.toMapParam())

@@ -29,7 +29,6 @@ import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.unifycomponents.ticker.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.vouchergame.R
 import com.tokopedia.vouchergame.common.VoucherGameAnalytics
@@ -107,7 +106,7 @@ class VoucherGameListFragment : BaseSearchListFragment<Visitable<*>,
                                 voucherGameAnalytics.categoryName = categoryName
                                 voucherGameExtraParam.categoryId.toIntOrNull()?.let { id ->
                                     rechargeAnalytics.eventOpenScreen(
-                                            userSession.isLoggedIn,
+                                            userSession.userId,
                                             categoryName,
                                             id.toString())
                                 }

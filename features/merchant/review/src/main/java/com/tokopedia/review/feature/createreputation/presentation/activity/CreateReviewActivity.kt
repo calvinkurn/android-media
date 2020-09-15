@@ -10,12 +10,15 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.review.R
+import com.tokopedia.review.common.analytics.ReviewPerformanceMonitoringListener
 import com.tokopedia.review.common.util.ReviewConstants
 import com.tokopedia.review.feature.createreputation.analytics.CreateReviewTracking
 import com.tokopedia.review.feature.createreputation.presentation.fragment.CreateReviewFragment
@@ -25,7 +28,7 @@ import com.tokopedia.tkpd.tkpdreputation.createreputation.util.ReviewTracking
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationFormActivity
 
 // ApplinkConstInternalMarketPlace.CREATE_REVIEW
-class CreateReviewActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent> {
+class CreateReviewActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>, ReviewPerformanceMonitoringListener {
 
     companion object {
         const val PARAM_RATING = "rating"
@@ -42,6 +45,7 @@ class CreateReviewActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent
     private var isEditMode = false
     private var feedbackId = 0
     private var reputationId: String = ""
+    private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
 
     override fun getNewFragment(): Fragment? {
         if(useNewPage()) {
@@ -80,13 +84,13 @@ class CreateReviewActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent
     override fun onCreate(savedInstanceState: Bundle?) {
         getDataFromApplinkOrIntent()
         getAbTestPlatform()?.fetch(null)
+        startPerformanceMonitoring()
         super.onCreate(savedInstanceState)
         intent.extras?.run {
             (applicationContext
                     .getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager)
                     .cancel(getInt(CreateReviewFragment.REVIEW_NOTIFICATION_ID))
         }
-
         supportActionBar?.elevation = 0f
     }
 
@@ -107,13 +111,70 @@ class CreateReviewActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent
             }
             if (isTaskRoot) {
                 val intent = RouteManager.getIntent(this, ApplinkConst.HOME)
-
                 setResult(Activity.RESULT_OK, intent)
                 startActivity(intent)
             } else {
                 super.onBackPressed()
             }
             finish()
+        }
+    }
+
+    override fun startPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring = PageLoadTimePerformanceCallback(
+                if(isEditMode) ReviewConstants.EDIT_REVIEW_PLT_PREPARE_METRICS else ReviewConstants.CREATE_REVIEW_PLT_PREPARE_METRICS,
+                if(isEditMode) ReviewConstants.EDIT_REVIEW_PLT_NETWORK_METRICS else ReviewConstants.CREATE_REVIEW_PLT_NETWORK_METRICS,
+                if(isEditMode) ReviewConstants.EDIT_REVIEW_PLT_RENDER_METRICS else ReviewConstants.CREATE_REVIEW_PLT_RENDER_METRICS,
+                0,
+                0,
+                0,
+                0,
+                null
+        )
+        pageLoadTimePerformanceMonitoring?.startMonitoring(if(isEditMode) ReviewConstants.EDIT_REVIEW_TRACE else ReviewConstants.CREATE_REVIEW_TRACE)
+        pageLoadTimePerformanceMonitoring?.startPreparePagePerformanceMonitoring()
+    }
+
+    override fun stopPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.let {
+            it.stopMonitoring()
+        }
+        pageLoadTimePerformanceMonitoring = null
+    }
+
+    override fun startPreparePagePerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.let {
+            it.startPreparePagePerformanceMonitoring()
+        }
+    }
+
+    override fun stopPreparePagePerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.let {
+            it.stopPreparePagePerformanceMonitoring()
+        }
+    }
+
+    override fun startNetworkRequestPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.let {
+            it.startNetworkRequestPerformanceMonitoring()
+        }
+    }
+
+    override fun stopNetworkRequestPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.let {
+            it.stopNetworkRequestPerformanceMonitoring()
+        }
+    }
+
+    override fun startRenderPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.let {
+            it.startRenderPerformanceMonitoring()
+        }
+    }
+
+    override fun stopRenderPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.let {
+            it.stopRenderPerformanceMonitoring()
         }
     }
 

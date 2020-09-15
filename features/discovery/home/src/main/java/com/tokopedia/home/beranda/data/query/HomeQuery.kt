@@ -69,6 +69,7 @@ object HomeQuery{
               perso_type
               campaignCode
               has_close_button
+              isAutoRefreshAfterExpired
               header {
                 id
                 name
@@ -106,6 +107,7 @@ object HomeQuery{
                 isOutOfStock
                 warehouseID
                 minOrder
+                recommendationType
                 shop{
                     shopID
                 }

@@ -32,9 +32,24 @@
             android:visibility="visible"
             app:layout_constraintDimensionRatio="H,1:1"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:unify_image_corner_radius = "0"/>
+            app:unify_image_corner_radius = "0"
+            tools:layout_height="300dp"
+            tools:layout_width="match_parent"/>
+
+        <View
+            android:id="@+id/outOfStockOverlay"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@color/unify_N700_44"
+            android:visibility="gone"
+            app:layout_constraintTop_toTopOf="@+id/imageProduct"
+            app:layout_constraintBottom_toBottomOf="@+id/imageProduct"
+            app:layout_constraintStart_toStartOf="@+id/imageProduct"
+            app:layout_constraintEnd_toEndOf="@+id/imageProduct"
+            tools:visibility="visible"/>
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/buttonWishlist"
@@ -42,7 +57,6 @@
             android:layout_height="@dimen/dp_28"
             android:layout_marginTop="@dimen/dp_4"
             android:layout_marginEnd="@dimen/dp_4"
-            android:layout_marginRight="@dimen/dp_4"
             android:background="@drawable/product_card_wishlist_icon_background"
             android:padding="@dimen/dp_4"
             android:scaleType="fitXY"
@@ -53,18 +67,18 @@
             tools:visibility="visible" />
 
         <com.tokopedia.unifycomponents.Label
-            android:id="@+id/labelStock"
+            android:id="@+id/statusLabel"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_20"
             android:layout_marginStart="@dimen/dp_4"
-            android:layout_marginLeft="@dimen/dp_4"
             android:layout_marginBottom="@dimen/dp_4"
-            android:text="@string/stok_habis"
+            app:labelTitle="@string/terjual_habis"
             android:visibility="gone"
+            android:gravity="center"
             app:labelType="general_dark_grey"
             app:layout_constraintBottom_toBottomOf="@id/imageProduct"
             app:layout_constraintLeft_toLeftOf="@id/imageProduct"
-            tools:text="Stok Habis"
+            tools:text="@string/terjual_habis"
             tools:visibility="visible" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -72,7 +86,6 @@
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_14"
             android:layout_marginEnd="@dimen/dp_8"
-            android:layout_marginRight="@dimen/dp_8"
             android:layout_marginBottom="@dimen/dp_4"
             android:shadowColor="@color/clr_5c000000"
             android:shadowDx="1"
@@ -91,7 +104,6 @@
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_16"
             android:layout_marginStart="@dimen/dp_8"
-            android:layout_marginLeft="@dimen/dp_8"
             android:layout_marginTop="@dimen/dp_4"
             android:visibility="gone"
             app:layout_constraintLeft_toLeftOf="@id/imageProduct"
@@ -105,7 +117,6 @@
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_16"
             android:layout_marginStart="@dimen/dp_4"
-            android:layout_marginLeft="@dimen/dp_4"
             android:ellipsize="end"
             android:gravity="center_vertical"
             android:maxLines="1"
@@ -141,17 +152,31 @@
             tools:text="Name"
             tools:visibility="visible" />
 
+        <com.tokopedia.unifycomponents.Label
+            android:id="@+id/cashback_labelPromo"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_20"
+            android:layout_marginStart="@dimen/dp_8"
+            android:layout_marginTop="@dimen/dp_4"
+            app:labelType="general_light_green"
+            app:labelTitle="@string/cashback"
+            android:visibility="gone"
+            app:layout_goneMarginTop="@dimen/dp_4"
+            app:layout_constraintStart_toStartOf="@id/imageProduct"
+            app:layout_constraintTop_toBottomOf="@id/textViewProductName"
+            tools:visibility="visible"
+            tools:text="@string/cashback" />
+
         <LinearLayout
             android:id="@+id/discountLinerLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_8"
-            android:layout_marginLeft="@dimen/dp_8"
             android:layout_marginTop="@dimen/dp_4"
             android:orientation="horizontal"
             android:visibility="visible"
             app:layout_constraintStart_toStartOf="@id/imageProduct"
-            app:layout_constraintTop_toBottomOf="@id/textViewProductName"
+            app:layout_constraintTop_toBottomOf="@id/cashback_labelPromo"
             tools:visibility="visible">
 
             <com.tokopedia.unifycomponents.Label
@@ -169,9 +194,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_4"
-                android:layout_marginLeft="@dimen/dp_4"
                 android:layout_marginEnd="@dimen/dp_8"
-                android:layout_marginRight="@dimen/dp_8"
                 android:ellipsize="end"
                 android:gravity="center_vertical"
                 android:maxLines="1"
@@ -235,7 +258,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_8"
-            android:layout_marginLeft="@dimen/dp_8"
             android:layout_marginTop="@dimen/dp_4"
             android:orientation="horizontal"
             app:layout_constraintStart_toStartOf="@id/imageProduct"
@@ -257,9 +279,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_4"
-                android:layout_marginLeft="@dimen/dp_4"
                 android:layout_marginEnd="@dimen/dp_8"
-                android:layout_marginRight="@dimen/dp_8"
                 android:ellipsize="end"
                 android:gravity="center_vertical"
                 android:maxLines="1"
@@ -278,7 +298,6 @@
             android:id="@+id/linearLayoutImageRating"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_18"
-            android:layout_marginLeft="@dimen/dp_8"
             android:layout_marginStart="@dimen/dp_8"
             android:visibility="gone"
             android:orientation="horizontal"
@@ -340,7 +359,6 @@
             android:id="@+id/textViewReviewCount"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_18"
-            android:layout_marginLeft="@dimen/dp_4"
             android:layout_marginStart="@dimen/dp_4"
             android:layout_marginTop="@dimen/dp_3"
             android:textColor="@color/product_card_review_count_text_color"
@@ -358,7 +376,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_8"
-            android:layout_marginLeft="@dimen/dp_8"
             android:layout_marginTop="@dimen/dp_8"
             android:adjustViewBounds="true"
             android:gravity="center"

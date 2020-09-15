@@ -201,6 +201,10 @@ object DeeplinkMapper {
      */
     fun getRegisteredNavigationFromHttp(context: Context, uri: Uri, deeplink: String): String {
 
+        if (deeplink.startsWithPattern(ApplinkConstInternalContent.TOKOPEDIA_BYME_HTTP) || deeplink.startsWithPattern(ApplinkConstInternalContent.TOKOPEDIA_BYME_HTTPS)) {
+            return DeeplinkMapperContent.getRegisteredNavigationContentFromHttp(deeplink)
+        }
+
         val applinkDigital = DeeplinkMapperDigital.getRegisteredNavigationFromHttpDigital(context, deeplink)
         if (applinkDigital.isNotEmpty()) {
             return applinkDigital
@@ -223,6 +227,7 @@ object DeeplinkMapper {
             DLP(logic = {_, uri, _ -> (uri.host == ReviewApplinkConst.AUTHORITY_PRODUCT && uri.pathSegments.last() == ReviewApplinkConst.PATH_REVIEW) }, targetDeeplink = { _, uri, _ -> getRegisteredNavigationProductDetailReview(uri) }),
             DLP.startWith(ApplinkConst.HOTEL) { _, _, deeplink -> deeplink },
             DLP.startWith(ApplinkConst.DIGITAL) { ctx, _, deeplink -> getRegisteredNavigationDigital(ctx, deeplink) },
+            DLP.startWith(ApplinkConst.RECHARGE) { ctx, _, deeplink -> getRegisteredNavigationDigital(ctx, deeplink) },
             DLP.startWith(ApplinkConst.DISCOVERY_SEARCH) { _, _, deeplink -> getRegisteredNavigationSearch(deeplink) },
             DLP.startWith(ApplinkConst.CART) { _, _, deeplink -> getRegisteredNavigationMarketplace(deeplink) },
             DLP.startWith(ApplinkConst.CHECKOUT) { _, _, deeplink -> getRegisteredNavigationMarketplace(deeplink) },
@@ -293,6 +298,10 @@ object DeeplinkMapper {
                     targetDeeplink = { _, uri, _ -> DeeplinkMapperMerchant.getShopPageInternalApplink(uri) }),
             DLP(logic = { _, uri, _ -> DeeplinkMapperMerchant.isShopPageHomeDeeplink(uri) },
                     targetDeeplink = { _, uri, _ -> DeeplinkMapperMerchant.getShopPageHomeInternalApplink(uri) }),
+            DLP(logic = { _, uri, deeplink -> DeeplinkMapperMerchant.isShopPageProductDeeplink(deeplink) },
+                    targetDeeplink = { _, uri, deeplink -> DeeplinkMapperMerchant.getRegisteredNavigationShopProduct(deeplink) }),
+            DLP(logic = { _, uri, deeplink -> DeeplinkMapperMerchant.isShopPageFeedDeeplink(deeplink) },
+                    targetDeeplink = { _, uri, deeplink -> DeeplinkMapperMerchant.getRegisteredNavigationShopFeed(deeplink) }),
             DLP(logic = { _, uri, _ -> DeeplinkMapperMerchant.isShopPageInfoDeeplink(uri) },
                     targetDeeplink = { _, uri, _ -> DeeplinkMapperMerchant.getShopPageInfoInternalApplink(uri) }),
             DLP(logic = { _, uri, _ -> DeeplinkMapperMerchant.isShopPageNoteDeeplink(uri) },
