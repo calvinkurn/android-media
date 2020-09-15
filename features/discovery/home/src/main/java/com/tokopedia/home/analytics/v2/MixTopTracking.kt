@@ -6,8 +6,11 @@ import com.tokopedia.home.analytics.v2.BaseTracking.Value.LIST
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.track.builder.BaseTrackerBuilder
+import com.tokopedia.track.builder.util.BaseTrackerConst
+import com.tokopedia.track.builder.util.BaseTrackerConst.Value.LIST
 
-object MixTopTracking : BaseTracking() {
+object MixTopTracking : BaseTrackerConst() {
     private class CustomAction{
         companion object {
             val IMPRESSION_ON_CAROUSEL_PRODUCT = Action.IMPRESSION_ON.format("product dynamic channel top carousel")
@@ -26,7 +29,7 @@ object MixTopTracking : BaseTracking() {
     }
 
     fun getMixTopView(products: List<Product>, headerName: String, positionOnWidgetHome: String): Map<String, Any> {
-        val trackingBuilder = BaseTrackingBuilder()
+        val trackingBuilder = BaseTrackerBuilder()
         return trackingBuilder.constructBasicProductView(
                 event = Event.PRODUCT_VIEW,
                 eventCategory = Category.HOMEPAGE,
@@ -39,7 +42,7 @@ object MixTopTracking : BaseTracking() {
 
 
     fun getMixTopViewIris(products: List<Product>, headerName: String, channelId: String, positionOnWidgetHome: String): Map<String, Any> {
-        val trackingBuilder = BaseTrackingBuilder()
+        val trackingBuilder = BaseTrackerBuilder()
         return trackingBuilder.constructBasicProductView(
                 event = Event.PRODUCT_VIEW,
                 eventCategory = Category.HOMEPAGE,
@@ -52,7 +55,7 @@ object MixTopTracking : BaseTracking() {
     }
 
     fun getMixTopClick(products: List<Product>, headerName: String, channelId: String, positionOnWidgetHome: String, campaignCode: String): Map<String, Any> {
-        val trackingBuilder = BaseTrackingBuilder()
+        val trackingBuilder = BaseTrackerBuilder()
         return trackingBuilder.constructBasicProductClick(
                 event = Event.PRODUCT_CLICK,
                 eventCategory = Category.HOMEPAGE,
