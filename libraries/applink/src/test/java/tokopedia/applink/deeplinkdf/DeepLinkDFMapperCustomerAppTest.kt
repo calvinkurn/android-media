@@ -254,33 +254,15 @@ class DeepLinkDFMapperCustomerAppTest: DeepLinkDFMapperTestFixture() {
     }
 
     @Test
-    fun `check global internal digital deal appLink then should return DF_BASE in customerapp`() {
-        val appLink = "${ApplinkConstInternalGlobal.INTERNAL_GLOBAL}/deals"
-        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_BASE)
+    fun `check global internal digital deal slug base appLink then should return DF_ENTERTAINMENT in customerapp`() {
+        val appLink = "${ApplinkConstInternalGlobal.INTERNAL_GLOBAL}/deals-slug/"
+        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_ENTERTAINMENT)
     }
 
     @Test
-    fun `check global internal digital deal slug appLink then should return DF_BASE in customerapp`() {
-        val appLink = "${ApplinkConstInternalGlobal.GLOBAL_INTERNAL_DIGITAL_DEAL_SLUG_BASE}deals/value/value"
-        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_BASE)
-    }
-
-    @Test
-    fun `check global internal digital deal category appLink then should return DF_BASE in customerapp`() {
-        val appLink = "${ApplinkConstInternalGlobal.INTERNAL_GLOBAL}/deals/category/page"
-        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_BASE)
-    }
-
-    @Test
-    fun `check global internal digital deal all brands appLink then should return DF_BASE in customerapp`() {
-        val appLink = "${ApplinkConstInternalGlobal.INTERNAL_GLOBAL}/deals-allbrands/true/"
-        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_BASE)
-    }
-
-    @Test
-    fun `check global internal digital deal brand detail appLink then should return DF_BASE in customerapp`() {
-        val appLink = "${ApplinkConstInternalGlobal.INTERNAL_GLOBAL}/deals-brand/slug/"
-        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_BASE)
+    fun `check global internal digital deal brand detail base appLink then should return DF_ENTERTAINMENT in customerapp`() {
+        val appLink = "${ApplinkConstInternalGlobal.INTERNAL_GLOBAL}/deals-brand/"
+        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_ENTERTAINMENT)
     }
 
     @Test
@@ -692,14 +674,8 @@ class DeepLinkDFMapperCustomerAppTest: DeepLinkDFMapperTestFixture() {
     }
 
     @Test
-    fun `check deals category appLink then should return DF_ENTERTAINMENT in customerapp`() {
-        val appLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://deals/category/page"
-        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_ENTERTAINMENT)
-    }
-
-    @Test
-    fun `check deals detail appLink then should return DF_ENTERTAINMENT in customerapp`() {
-        val appLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://deals/check-tokopedia"
+    fun `check deals category page appLink then should return DF_ENTERTAINMENT in customerapp`() {
+        val appLink = "${DeeplinkConstant.SCHEME_INTERNAL}://deals/category-new/page"
         assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_ENTERTAINMENT)
     }
 

@@ -7,7 +7,7 @@ import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before
 
-abstract class DeepLinkDFMapperTestFixture {
+open class DeepLinkDFMapperTestFixture {
 
     @Before
     fun setup() {
