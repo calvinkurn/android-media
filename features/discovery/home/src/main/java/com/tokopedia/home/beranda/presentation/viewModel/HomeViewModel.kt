@@ -1239,13 +1239,17 @@ open class HomeViewModel @Inject constructor(
             launchCatchError(coroutineContext, block={
                 getDisplayHeadlineAds.get().createParams(featuredShopDataModel.channelModel.widgetParam)
                 val data = getDisplayHeadlineAds.get().executeOnBackground()
-                updateWidget(UpdateLiveDataModel(ACTION_UPDATE, featuredShopDataModel.copy(
-                        channelModel = featuredShopDataModel.channelModel.copy(
-                                channelGrids = mappingTopAdsHeaderToChannelGrid(data)
-                        )
-                )))
+                if(data.isEmpty()){
+                    updateWidget(UpdateLiveDataModel(ACTION_DELETE, featuredShopDataModel, _homeLiveData.value?.list?.indexOf(visitable) ?: -1))
+                } else {
+                    updateWidget(UpdateLiveDataModel(ACTION_UPDATE, featuredShopDataModel.copy(
+                            channelModel = featuredShopDataModel.channelModel.copy(
+                                    channelGrids = mappingTopAdsHeaderToChannelGrid(data)
+                            )
+                    )))
+                }
             }){
-                it.printStackTrace()
+                updateWidget(UpdateLiveDataModel(ACTION_DELETE, featuredShopDataModel, _homeLiveData.value?.list?.indexOf(visitable) ?: -1))
             }
         }
     }

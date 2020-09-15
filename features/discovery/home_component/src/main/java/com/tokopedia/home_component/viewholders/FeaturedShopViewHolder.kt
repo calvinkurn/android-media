@@ -44,9 +44,9 @@ class FeaturedShopViewHolder(
 
     override fun bind(element: FeaturedShopDataModel) {
         if(element.channelModel.channelGrids.isEmpty()){
-            itemView.hide()
+            itemView.content_container?.hide()
         } else {
-            itemView.show()
+            itemView.content_container?.show()
             setHeaderComponent(element)
             initView(element)
         }
