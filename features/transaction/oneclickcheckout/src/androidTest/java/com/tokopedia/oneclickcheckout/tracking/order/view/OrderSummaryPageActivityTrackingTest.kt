@@ -9,8 +9,8 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
-import com.tokopedia.analyticsdebugger.validator.core.getAnalyticsWithQuery
-import com.tokopedia.analyticsdebugger.validator.core.hasAllSuccess
+import com.tokopedia.cassavatest.getAnalyticsWithQuery
+import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
 import com.tokopedia.oneclickcheckout.common.interceptor.CHECKOUT_EMPTY_STOCK_RESPONSE_PATH
 import com.tokopedia.oneclickcheckout.common.interceptor.GET_OCC_CART_PAGE_NO_PROFILE_RESPONSE_PATH
