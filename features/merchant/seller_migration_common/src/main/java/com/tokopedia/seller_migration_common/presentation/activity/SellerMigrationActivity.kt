@@ -43,7 +43,8 @@ class SellerMigrationActivity : BaseSimpleActivity() {
     override fun getScreenName(): String = "/migration-page"
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        featureName = intent.extras?.getString(SellerMigrationFragment.KEY_PARAM_FEATURE_NAME).orEmpty()
+        featureName = intent.extras?.getString(SellerMigrationFragment.KEY_PARAM_FEATURE_NAME) ?:
+                intent.data?.getQueryParameter(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME).orEmpty()
         super.onCreate(savedInstanceState)
         processAppLink()
     }
@@ -52,9 +53,6 @@ class SellerMigrationActivity : BaseSimpleActivity() {
         val openedPage = if (isSellerAppInstalled()) {
             val uri = intent.data
             if (uri != null) {
-                uri.getQueryParameter(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME)?.let { feature ->
-                    featureName = feature
-                }
                 val appLinks = ArrayList<String>(intent.extras?.getStringArrayList(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA)
                         ?: getRegisteredMigrationApplinks(featureName))
 
