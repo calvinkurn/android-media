@@ -40,4 +40,9 @@
     <string name="empty_state_description">Aktifkan pengingat supaya kamu nggak ketinggalan penawaran seru dari seller-seller Tokopedia!</string>
     <string name="discovery_bottom_sheet_filter_finish_button_text">Tampilkan produk</string>
 
+    <string name="content_desc_brand_recom_iv">image recom brand</string>
+    <string name="content_desc_promo_image">image promo carousel</string>
+    <string name="content_desc_appCompatImageView">image kupon</string>
+    <string name="content_desc_claim_btn">button klaim kupon</string>
+    <string name="content_desc_banner_image">image banner carousel</string>
 </resources>
