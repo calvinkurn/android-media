@@ -19,6 +19,8 @@ import com.google.android.exoplayer2.upstream.Loader.UnexpectedLoaderException
 import com.google.android.exoplayer2.util.Util
 import com.tokopedia.play_common.model.PlayBufferControl
 import com.tokopedia.play_common.model.PlayPlayerModel
+import com.tokopedia.play_common.player.creator.DefaultExoPlayerCreator
+import com.tokopedia.play_common.player.creator.ExoPlayerCreator
 import com.tokopedia.play_common.player.errorhandlingpolicy.PlayLoadErrorHandlingPolicy
 import com.tokopedia.play_common.player.state.ExoPlayerStateProcessorImpl
 import com.tokopedia.play_common.state.PlayVideoPrepareState
@@ -34,7 +36,10 @@ import kotlin.properties.Delegates
 /**
  * Created by jegul on 03/12/19
  */
-class PlayVideoManager private constructor(private val applicationContext: Context) {
+class PlayVideoManager private constructor(
+        private val applicationContext: Context,
+        private val exoPlayerCreator: ExoPlayerCreator
+) {
 
     /**
      * VideoPlayer shared state
@@ -314,9 +319,7 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
     private fun initVideoPlayer(playerModel: PlayPlayerModel?, bufferControl: PlayBufferControl): PlayPlayerModel {
         playerModel?.player?.removeListener(playerEventListener)
         val videoLoadControl = initCustomLoadControl(bufferControl)
-        val videoPlayer = SimpleExoPlayer.Builder(applicationContext)
-                .setLoadControl(videoLoadControl)
-                .build()
+        val videoPlayer = exoPlayerCreator.createExoPlayer(videoLoadControl)
                 .apply {
                     addListener(playerEventListener)
                     setAudioAttributes(initAudioAttributes(), true)
@@ -377,9 +380,9 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
         private var playProcessLifecycleObserver: PlayProcessLifecycleObserver? = null
 
         @JvmStatic
-        fun getInstance(context: Context): PlayVideoManager {
+        fun getInstance(context: Context, creator: ExoPlayerCreator = DefaultExoPlayerCreator(context)): PlayVideoManager {
             return INSTANCE ?: synchronized(this) {
-                val player = PlayVideoManager(context.applicationContext).also {
+                val player = PlayVideoManager(context.applicationContext, creator).also {
                     INSTANCE = it
                 }
 

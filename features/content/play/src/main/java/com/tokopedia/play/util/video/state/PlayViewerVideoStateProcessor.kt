@@ -54,7 +54,10 @@ class PlayViewerVideoStateProcessor(
                         if (state in goodStates) isFirstTime = false
 
                         when (state) {
-                            is PlayVideoState.Error -> error = state.error
+                            is PlayVideoState.Error -> {
+                                error = state.error
+                                broadcastState(PlayViewerVideoState.Error(state.error))
+                            }
                             PlayVideoState.Buffering -> {
                                 if (error == null) broadcastState(PlayViewerVideoState.Buffer(BufferSource.Unknown))
 

@@ -11,6 +11,8 @@ import com.tokopedia.play.KEY_GROUPCHAT_PREFERENCES
 import com.tokopedia.play.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.util.coroutine.DefaultCoroutineDispatcherProvider
 import com.tokopedia.play_common.player.PlayVideoManager
+import com.tokopedia.play_common.player.creator.DefaultExoPlayerCreator
+import com.tokopedia.play_common.player.creator.ExoPlayerCreator
 import com.tokopedia.play_common.util.ExoPlaybackExceptionParser
 import com.tokopedia.play_common.util.PlayVideoPlayerObserver
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -29,7 +31,11 @@ class PlayModule(val mContext: Context) {
 
     @PlayScope
     @Provides
-    fun provideTokopediaPlayPlayerInstance(@ApplicationContext ctx: Context): PlayVideoManager = PlayVideoManager.getInstance(ctx)
+    fun providerExoPlayerCreator(@ApplicationContext ctx: Context): ExoPlayerCreator = DefaultExoPlayerCreator(ctx)
+
+    @PlayScope
+    @Provides
+    fun provideTokopediaPlayPlayerInstance(@ApplicationContext ctx: Context, creator: ExoPlayerCreator): PlayVideoManager = PlayVideoManager.getInstance(ctx, creator)
 
     @PlayScope
     @Provides
