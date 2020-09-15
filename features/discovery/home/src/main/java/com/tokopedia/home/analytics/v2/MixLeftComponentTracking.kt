@@ -77,7 +77,10 @@ object MixLeftComponentTracking: BaseTrackerConst()  {
                         isFreeOngkir = grid.isFreeOngkirActive,
                         persoType = channel.trackingAttributionModel.persoType,
                         categoryId = channel.trackingAttributionModel.categoryId,
-                        isTopAds = grid.isTopads
+                        isTopAds = grid.isTopads,
+                        recommendationType = grid.recommendationType,
+                        headerName = channel.channelHeader.name,
+                        isCarousel = true
                 )),
                 list = String.format(
                         Value.LIST_WITH_HEADER, "1", LIST_MIX_LEFT, channel.channelHeader.name
@@ -107,7 +110,10 @@ object MixLeftComponentTracking: BaseTrackerConst()  {
                         isFreeOngkir = grid.isFreeOngkirActive,
                         persoType = channel.trackingAttributionModel.persoType,
                         categoryId = channel.trackingAttributionModel.categoryId,
-                        isTopAds = grid.isTopads
+                        isTopAds = grid.isTopads,
+                        recommendationType = grid.recommendationType,
+                        headerName = channel.channelHeader.name,
+                        isCarousel = true
                 )),
                 list = String.format(
                         Value.LIST_WITH_HEADER, "1", LIST_MIX_LEFT, channel.channelHeader.name
@@ -138,7 +144,10 @@ object MixLeftComponentTracking: BaseTrackerConst()  {
                                 isFreeOngkir = grid.isFreeOngkirActive,
                                 persoType = channel.trackingAttributionModel.persoType,
                                 categoryId = channel.trackingAttributionModel.categoryId,
-                                isTopAds = grid.isTopads
+                                isTopAds = grid.isTopads,
+                                recommendationType = grid.recommendationType,
+                                headerName = channel.channelHeader.name,
+                                isCarousel = true
                         )
                 ),
                 list = String.format(

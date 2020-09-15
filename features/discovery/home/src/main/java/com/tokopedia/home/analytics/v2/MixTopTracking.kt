@@ -2,6 +2,7 @@ package com.tokopedia.home.analytics.v2
 
 
 import com.tokopedia.analyticconstant.DataLayer
+import com.tokopedia.home.analytics.v2.BaseTracking.Value.LIST
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
@@ -23,7 +24,7 @@ object MixTopTracking : BaseTrackerConst() {
 
     private class CustomActionField{
         companion object {
-            val LIST_CAROUSEL_PRODUCT = LIST.format("%s", "dynamic channel top carousel - %s")
+            val LIST_CAROUSEL_PRODUCT = LIST.format("%s", "dynamic channel top carousel - product - %s")
         }
     }
 
@@ -59,7 +60,7 @@ object MixTopTracking : BaseTrackerConst() {
                 event = Event.PRODUCT_CLICK,
                 eventCategory = Category.HOMEPAGE,
                 eventAction = CustomAction.CLICK_ON_CAROUSEL_PRODUCT,
-                eventLabel = channelId + " - " + headerName,
+                eventLabel = "$channelId - $headerName",
                 list = CustomActionField.LIST_CAROUSEL_PRODUCT.format(positionOnWidgetHome, headerName),
                 products = products)
                 .appendChannelId(channelId)
@@ -71,7 +72,7 @@ object MixTopTracking : BaseTrackerConst() {
             Event.KEY, Event.CLICK_HOMEPAGE,
             Category.KEY, Category.HOMEPAGE,
             Action.KEY, CustomAction.CLICK_VIEW_ALL_CAROUSEL,
-            Label.KEY, channelId + " - " + headerName,
+            Label.KEY, "$channelId - $headerName",
             ChannelId.KEY, channelId,
             CurrentSite.KEY, CurrentSite.DEFAULT,
             Screen.KEY, Screen.DEFAULT,
@@ -84,7 +85,7 @@ object MixTopTracking : BaseTrackerConst() {
             Event.KEY, Event.CLICK_HOMEPAGE,
             Category.KEY, Category.HOMEPAGE,
             Action.KEY, CustomAction.CLICK_VIEW_ALL_CAROUSEL_CARD,
-            Label.KEY, channelId + " - " + headerName,
+            Label.KEY, "$channelId - $headerName",
             Screen.KEY, Screen.DEFAULT,
             CurrentSite.KEY, CurrentSite.DEFAULT,
             Screen.KEY, Screen.DEFAULT,
@@ -97,7 +98,7 @@ object MixTopTracking : BaseTrackerConst() {
             Event.KEY, Event.CLICK_HOMEPAGE,
             Category.KEY, Category.HOMEPAGE,
             Action.KEY, CustomAction.CLICK_BUTTON_CAROUSEL.format(buttonName),
-            Label.KEY, channelId + " - " + headerName,
+            Label.KEY, "$channelId - $headerName",
             ChannelId.KEY, channelId,
             CurrentSite.KEY, CurrentSite.DEFAULT,
             Screen.KEY, Screen.DEFAULT,
@@ -105,7 +106,7 @@ object MixTopTracking : BaseTrackerConst() {
             BusinessUnit.KEY, BusinessUnit.DEFAULT
     )
 
-    fun mapGridToProductTracker(grid: DynamicHomeChannel.Grid, channelId: String, position: Int, persoType: String, categoryId: String) = Product(
+    private fun mapGridToProductTracker(grid: DynamicHomeChannel.Grid, channelId: String, position: Int, persoType: String, categoryId: String) = Product(
             id = grid.id,
             name = grid.name,
             brand = "",
@@ -127,10 +128,10 @@ object MixTopTracking : BaseTrackerConst() {
     //home component section
 
     fun mapChannelToProductTracker(channels: ChannelModel) = channels.channelGrids.withIndex().map {
-        mapGridToProductTrackerComponent(it.value, channels.id, it.index, channels.trackingAttributionModel.persoType, channels.trackingAttributionModel.categoryId)
+        mapGridToProductTrackerComponent(it.value, channels.id, it.index, channels.trackingAttributionModel.persoType, channels.trackingAttributionModel.categoryId, channels.channelHeader.name)
     }
 
-    fun mapGridToProductTrackerComponent(grid: ChannelGrid, channelId: String, position: Int, persoType: String, categoryId: String) = Product(
+    fun mapGridToProductTrackerComponent(grid: ChannelGrid, channelId: String, position: Int, persoType: String, categoryId: String, headerName: String = "") = Product(
             id = grid.id,
             name = grid.name,
             brand = "",
@@ -142,7 +143,10 @@ object MixTopTracking : BaseTrackerConst() {
             variant = "",
             persoType = persoType,
             categoryId = categoryId,
-            isTopAds = grid.isTopads
+            isTopAds = grid.isTopads,
+            recommendationType = grid.recommendationType,
+            isCarousel = true,
+            headerName = headerName
     )
 
     fun getBackgroundClickComponent(channels: ChannelModel, userId: String = "") = DataLayer.mapOf(

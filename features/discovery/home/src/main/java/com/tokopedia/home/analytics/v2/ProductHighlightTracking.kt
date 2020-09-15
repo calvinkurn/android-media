@@ -49,7 +49,11 @@ object ProductHighlightTracking : BaseTrackerConst() {
                             channelId = channel.id,
                             isFreeOngkir = grid.isFreeOngkirActive,
                             persoType = channel.trackingAttributionModel.persoType,
-                            categoryId = channel.trackingAttributionModel.categoryId
+                            categoryId = channel.trackingAttributionModel.categoryId,
+                            isTopAds = grid.isTopads,
+                            isCarousel = false,
+                            headerName = channel.header.name,
+                            recommendationType = grid.recommendationType
                     )
                 })
                 .appendChannelId(channel.id)
@@ -67,6 +71,8 @@ object ProductHighlightTracking : BaseTrackerConst() {
             gridName: String,
             gridPrice: String,
             gridFreeOngkirIsActive: Boolean,
+            isTopAds: Boolean,
+            recommendationType: String,
             position: Int) : Map<String, Any> {
         val trackerBuilder = BaseTrackerBuilder()
         return trackerBuilder.constructBasicProductClick(
@@ -86,7 +92,11 @@ object ProductHighlightTracking : BaseTrackerConst() {
                                 channelId = channelId,
                                 isFreeOngkir = gridFreeOngkirIsActive,
                                 persoType = persoType,
-                                categoryId = categoryId
+                                categoryId = categoryId,
+                                isTopAds = isTopAds,
+                                isCarousel = false,
+                                headerName = headerName,
+                                recommendationType = recommendationType
                         )
                 ),
                 list = String.format(

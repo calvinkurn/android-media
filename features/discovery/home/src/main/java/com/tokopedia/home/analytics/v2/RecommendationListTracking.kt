@@ -19,6 +19,7 @@ object RecommendationListTracking: BaseTrackerConst(){
     private const val RECOMMENDATION_LIST_SEE_ALL_EVENT_ACTION = "click view all on dynamic channel list carousel"
     private const val RECOMMENDATION_LIST_SEE_ALL_CARD_EVENT_ACTION = "click view all card on dynamic channel list carousel"
     private const val RECOMMENDATION_LIST_CLOSE_EVENT_ACTION = "click on close dynamic channel list carousel"
+    private const val LIST_DYNAMIC_CHANNEL_LIST_CAROUSEL = "/ - p%s - dynamic channel list carousel - product - %s - %s - %s - %s"
 
     fun getRecommendationListImpression(channel: DynamicHomeChannel.Channels, isToIris: Boolean = false, userId: String): Map<String, Any> {
         val baseTracker = BaseTrackerBuilder()
@@ -39,11 +40,15 @@ object RecommendationListTracking: BaseTrackerConst(){
                             isFreeOngkir = grid.freeOngkir.isActive,
                             persoType = channel.persoType,
                             categoryId = channel.categoryID,
-                            isTopAds = grid.isTopads
+                            isTopAds = grid.isTopads,
+                            headerName = channel.header.name,
+                            isCarousel = true,
+                            recommendationType = grid.recommendationType
+
                     )
                 },
                 list = String.format(
-                        Value.LIST_WITH_HEADER, "1", RECOMMENDATION_LIST_CAROUSEL_PRODUCT, channel.header.name
+                        "/ - p%s", "1", RECOMMENDATION_LIST_CAROUSEL_PRODUCT
                 ))
                 .appendChannelId(channel.id)
                 .appendUserId(userId)
@@ -70,11 +75,15 @@ object RecommendationListTracking: BaseTrackerConst(){
                             isFreeOngkir = grid.isFreeOngkirActive,
                             persoType = channel.trackingAttributionModel.persoType,
                             categoryId = channel.trackingAttributionModel.categoryId,
-                            isTopAds = grid.isTopads
+                            isTopAds = grid.isTopads,
+                            headerName = channel.channelHeader.name,
+                            isCarousel = true,
+                            recommendationType = grid.recommendationType
+
                     )
                 },
                 list = String.format(
-                        Value.LIST_WITH_HEADER, "1", RECOMMENDATION_LIST_CAROUSEL_PRODUCT, channel.channelHeader.name
+                        "/ - p%s", "1", RECOMMENDATION_LIST_CAROUSEL_PRODUCT
                 ))
                 .appendChannelId(channel.id)
                 .appendUserId(userId)
@@ -101,11 +110,14 @@ object RecommendationListTracking: BaseTrackerConst(){
                                 isFreeOngkir = grid.freeOngkir.isActive,
                                 persoType = channel.persoType,
                                 categoryId = channel.categoryID,
-                                isTopAds = grid.isTopads
+                                isTopAds = grid.isTopads,
+                                headerName = channel.header.name,
+                                isCarousel = true,
+                                recommendationType = grid.recommendationType
                         )
                 ),
                 list = String.format(
-                        Value.LIST_WITH_HEADER, "1", RECOMMENDATION_LIST_CAROUSEL_PRODUCT, channel.header.name
+                        "/ - p%s", "1", RECOMMENDATION_LIST_CAROUSEL_PRODUCT
                 ))
                 .appendChannelId(channel.id)
                 .appendCampaignCode(channel.campaignCode)
@@ -132,11 +144,14 @@ object RecommendationListTracking: BaseTrackerConst(){
                                 isFreeOngkir = grid.isFreeOngkirActive,
                                 persoType = channel.trackingAttributionModel.persoType,
                                 categoryId = channel.trackingAttributionModel.categoryId,
-                                isTopAds = grid.isTopads
+                                isTopAds = grid.isTopads,
+                                headerName = channel.channelHeader.name,
+                                isCarousel = true,
+                                recommendationType = grid.recommendationType
                         )
                 ),
                 list = String.format(
-                        Value.LIST_WITH_HEADER, "1", RECOMMENDATION_LIST_CAROUSEL_PRODUCT, channel.channelHeader.name
+                        "/ - p%s", "1", RECOMMENDATION_LIST_CAROUSEL_PRODUCT
                 ))
                 .appendChannelId(channel.id)
                 .appendCampaignCode(channel.trackingAttributionModel.campaignCode)
