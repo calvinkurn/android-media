@@ -314,6 +314,10 @@ class ShopEditBasicInfoFragment: Fragment() {
         return shopDomainTextField.isTextFieldError
     }
 
+    private fun isSavedLocalImageUrlEmpty(): Boolean {
+        return savedLocalImageUrl.isNullOrEmpty()
+    }
+
     private fun isNameStillSame(): Boolean {
         return shopBasicDataModel?.name == shopNameTextField.textFieldInput.text.toString()
     }
@@ -331,7 +335,7 @@ class ShopEditBasicInfoFragment: Fragment() {
     }
 
     private fun isEverythingStillSame(): Boolean {
-        return isNameStillSame() && isDomainStillSame() && isTagLineStillSame() && isDescriptionStillSame()
+        return isNameStillSame() && isDomainStillSame() && isTagLineStillSame() && isDescriptionStillSame() && isSavedLocalImageUrlEmpty()
     }
 
     private fun determineSubmitButton() {
@@ -508,7 +512,7 @@ class ShopEditBasicInfoFragment: Fragment() {
         val tagLine = shopTagLineTextField.textFieldInput.text.toString()
         val desc = shopDescriptionTextField.textFieldInput.text.toString()
 
-        if (!savedLocalImageUrl.isNullOrEmpty()) {
+        if (!isSavedLocalImageUrlEmpty()) {
             viewModel.uploadShopImage(savedLocalImageUrl ?: "", name, domain, tagLine, desc)
         } else {
             viewModel.updateShopBasicData(name, domain, tagLine, desc)
