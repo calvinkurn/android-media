@@ -23,6 +23,7 @@ import kotlinx.android.synthetic.main.topads_create_fragment_product_list_sheet_
 class ProductFilterSheetList : BottomSheetUnify(){
 
     private var adapter: EtalaseAdapter? = null
+    var elementList =  mutableListOf<EtalaseViewModel>()
     private var selectedItem: ResponseEtalase.Data.ShopShowcasesByShopID.Result = ResponseEtalase.Data.ShopShowcasesByShopID.Result()
     var onItemClick: ((ResponseEtalase.Data.ShopShowcasesByShopID.Result) -> Unit)? = null
 
@@ -39,31 +40,24 @@ class ProductFilterSheetList : BottomSheetUnify(){
     }
 
     private fun initView() {
-        val elementList = mutableListOf<EtalaseViewModel>(
-                EtalaseShimerViewModel(),
-                EtalaseShimerViewModel(),
-                EtalaseShimerViewModel(),
-                EtalaseShimerViewModel(),
-                EtalaseShimerViewModel(),
-                EtalaseShimerViewModel()
-        )
+        if(elementList.isEmpty()) {
+            elementList = mutableListOf<EtalaseViewModel>(
+                    EtalaseShimerViewModel(),
+                    EtalaseShimerViewModel(),
+                    EtalaseShimerViewModel(),
+                    EtalaseShimerViewModel(),
+                    EtalaseShimerViewModel(),
+                    EtalaseShimerViewModel()
+            )
+        }
         adapter = EtalaseAdapter(EtalaseAdapterTypeFactoryImpl(this::onItemClick), elementList)
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
         recyclerView.adapter = adapter
     }
 
-    override fun show(manager: FragmentManager, tag: String?) {
-        val fragment = manager.findFragmentByTag(tag)
-        if (fragment != null) {
-            val ft = manager.beginTransaction()
-            ft.remove(fragment)
-            ft.commit()
-        }
-        super.show(manager, tag)
-    }
-
     fun updateData(data: MutableList<EtalaseViewModel>) {
+        elementList = data
         adapter?.updateData(data)
     }
 

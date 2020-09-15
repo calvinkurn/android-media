@@ -54,6 +54,7 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
     private lateinit var productListAdapter: ProductListAdapter
     private var tvToolTipText: Typography? = null
     private var imgTooltipIcon: ImageUnify? = null
+    var items = mutableListOf<EtalaseViewModel>()
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -175,12 +176,12 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
             tvToolTipText?.text = getString(R.string.tip_biaya_iklan)
 
             imgTooltipIcon = this.findViewById(R.id.tooltip_icon)
-            imgTooltipIcon?.setImageDrawable(view.context.getResDrawable(R.drawable.topads_ic_tips))
+            imgTooltipIcon?.setImageDrawable(view.context.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_tips))
         }
 
         tip_btn?.addItem(tooltipView)
         tip_btn.setOnClickListener {
-            InfoSheetProductList.newInstance(it.context).show()
+            InfoSheetProductList.newInstance().show(fragmentManager!!, "")
             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_TIPS_PRODUCT_IKLAN, "")
         }
         btn_sort.setOnClickListener {
@@ -189,6 +190,8 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         btn_filter.setOnClickListener {
             if (filterSheetProductList.getSelectedFilter().isBlank()) {
                 fetchEtalase()
+            } else {
+                filterSheetProductList.updateData(items)
             }
             filterSheetProductList.show(fragmentManager!!, "filterList")
         }
@@ -309,7 +312,7 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
     }
 
     private fun onSuccessGetEtalase(data: List<ResponseEtalase.Data.ShopShowcasesByShopID.Result>) {
-        var items = mutableListOf<EtalaseViewModel>()
+        items.clear()
         items.add(0, EtalaseItemViewModel(true, viewModel.addSemuaProduk()))
         data.forEachIndexed { index, result -> items.add(index + 1, EtalaseItemViewModel(false, result)) }
         filterSheetProductList.updateData(items)

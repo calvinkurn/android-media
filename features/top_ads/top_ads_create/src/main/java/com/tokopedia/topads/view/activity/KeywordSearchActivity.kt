@@ -24,6 +24,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager
+import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.data.response.SearchData
 import com.tokopedia.topads.common.data.util.Utils
@@ -37,9 +38,16 @@ import com.tokopedia.topads.view.fragment.KeywordAdsListFragment.Companion.PRODU
 import com.tokopedia.topads.view.fragment.KeywordAdsListFragment.Companion.SEARCH_QUERY
 import com.tokopedia.topads.view.fragment.KeywordAdsListFragment.Companion.SELECTED_KEYWORDS
 import com.tokopedia.topads.view.model.KeywordAdsViewModel
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.SearchBarUnify
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSession
+import kotlinx.android.synthetic.main.topads_create_fragment_budget_list.*
 import kotlinx.android.synthetic.main.topads_create_keyword_search_layout.*
+import kotlinx.android.synthetic.main.topads_create_keyword_search_layout.btn_next
+import kotlinx.android.synthetic.main.topads_create_keyword_search_layout.headlineList
+import kotlinx.android.synthetic.main.topads_create_keyword_search_layout.tip_btn
+import kotlinx.android.synthetic.main.topads_create_layout_keyword_list_empty_tip.view.*
 import javax.inject.Inject
 
 private const val CLICK_MANUAL_SEARCH = "click - ceklist rekomendasi kata kunci manual search"
@@ -57,6 +65,8 @@ class KeywordSearchActivity : BaseActivity(), HasComponent<CreateAdsComponent> {
     private var userID: String = ""
     private var shopID = ""
     private var manualKeywords: MutableList<SearchData> = mutableListOf()
+    private var tvToolTipText: Typography? = null
+    private var imgTooltipIcon: ImageUnify? = null
 
     override fun getComponent(): CreateAdsComponent {
         return DaggerCreateAdsComponent.builder().baseAppComponent(
@@ -81,9 +91,22 @@ class KeywordSearchActivity : BaseActivity(), HasComponent<CreateAdsComponent> {
         fetchData()
         keyword_list.adapter = adapter
         keyword_list.layoutManager = LinearLayoutManager(this)
+        val tooltipView = layoutInflater.inflate(com.tokopedia.topads.common.R.layout.tooltip_custom_view, null).apply {
+            tvToolTipText = this.findViewById(R.id.tooltip_text)
+            tvToolTipText?.text = getString(R.string.tip_biaya_iklan)
+
+            imgTooltipIcon = this.findViewById(R.id.tooltip_icon)
+            imgTooltipIcon?.setImageDrawable(view.context.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_tips))
+        }
+
+        tip_btn?.addItem(tooltipView)
         tip_btn.setOnClickListener {
             TipSheetKeywordList().show(supportFragmentManager, KeywordAdsListFragment::class.java.name)
         }
+        emptyLayout.ic_tip.setImageDrawable(getResDrawable(com.tokopedia.topads.common.R.drawable.ic_bulp_fill))
+        emptyLayout.imageView2.setImageDrawable(getResDrawable(com.tokopedia.topads.common.R.drawable.topads_create_ic_checklist))
+        emptyLayout.imageView3.setImageDrawable(getResDrawable(com.tokopedia.topads.common.R.drawable.topads_create_ic_checklist))
+        emptyLayout.imageView4.setImageDrawable(getResDrawable(com.tokopedia.topads.common.R.drawable.topads_create_ic_checklist))
         btn_next.setOnClickListener {
             val eventLabel = "$shopID - $EVENT_CLICK_SUBMIT_BUTT"
             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_SUBMIT_BUTT, eventLabel, userID)

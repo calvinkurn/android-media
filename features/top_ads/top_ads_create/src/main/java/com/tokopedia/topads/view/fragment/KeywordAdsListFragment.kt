@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
+import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.data.response.SearchData
 import com.tokopedia.topads.common.data.util.Utils
@@ -29,9 +30,17 @@ import com.tokopedia.topads.view.adapter.keyword.KeywordListAdapterTypeFactoryIm
 import com.tokopedia.topads.view.adapter.keyword.viewmodel.KeywordItemViewModel
 import com.tokopedia.topads.view.adapter.keyword.viewmodel.KeywordSelectedAdapter
 import com.tokopedia.topads.view.model.KeywordAdsViewModel
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.SearchBarUnify
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSession
+import kotlinx.android.synthetic.main.topads_create_fragment_budget_list.*
 import kotlinx.android.synthetic.main.topads_create_layout_keyword_list.*
+import kotlinx.android.synthetic.main.topads_create_layout_keyword_list.btn_next
+import kotlinx.android.synthetic.main.topads_create_layout_keyword_list.headlineList
+import kotlinx.android.synthetic.main.topads_create_layout_keyword_list.loading
+import kotlinx.android.synthetic.main.topads_create_layout_keyword_list.tip_btn
+import kotlinx.android.synthetic.main.topads_create_layout_keyword_list.txtRecommendation
 import javax.inject.Inject
 
 /**
@@ -60,6 +69,8 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
     private var selectedKeyFromSearch: ArrayList<SearchData>? = arrayListOf()
     private var userID: String = ""
     private var shopID = ""
+    private var tvToolTipText: Typography? = null
+    private var imgTooltipIcon: ImageUnify? = null
 
     companion object {
 
@@ -310,6 +321,16 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
             } else
                 gotoNextPage()
         }
+        val tooltipView = layoutInflater.inflate(com.tokopedia.topads.common.R.layout.tooltip_custom_view, null).apply {
+            tvToolTipText = this.findViewById(R.id.tooltip_text)
+            tvToolTipText?.text = getString(R.string.tip_biaya_iklan)
+
+            imgTooltipIcon = this.findViewById(R.id.tooltip_icon)
+            imgTooltipIcon?.setImageDrawable(view.context.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_tips))
+        }
+
+        tip_btn?.addItem(tooltipView)
+
         tip_btn.setOnClickListener {
             TipSheetKeywordList().show(fragmentManager!!, KeywordAdsListFragment::class.java.name)
             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_TIPS_KEYWORD, shopID, userID)

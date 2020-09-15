@@ -11,7 +11,7 @@
         android:layout_marginBottom="-6dp"
         android:orientation="vertical">
 
-        <androidx.cardview.widget.CardView
+        <com.tokopedia.unifycomponents.CardUnify
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp_16"
@@ -20,7 +20,7 @@
             android:layout_marginBottom="@dimen/dp_4"
             app:cardCornerRadius="@dimen/dp_8"
             app:cardUseCompatPadding="true"
-            app:contentPadding="@dimen/dp_16">
+            android:padding="@dimen/dp_16" >
 
             <RelativeLayout
                 android:id="@+id/card"
@@ -35,7 +35,7 @@
                     android:layout_marginBottom="@dimen/dp_8"
                     android:text="@string/anggaran_harian"
                     app:typographyType="heading_4" />
-                <Switch
+                <com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
                     android:id="@+id/toggle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -62,9 +62,9 @@
                     app:text_field_prepend_text="Rp" />
             </RelativeLayout>
 
-        </androidx.cardview.widget.CardView>
+        </com.tokopedia.unifycomponents.CardUnify>
 
-        <androidx.cardview.widget.CardView
+        <com.tokopedia.unifycomponents.CardUnify
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp_16"
@@ -73,7 +73,7 @@
             android:layout_marginBottom="@dimen/dp_16"
             app:cardCornerRadius="@dimen/dp_8"
             app:cardUseCompatPadding="true"
-            app:contentPadding="@dimen/dp_16">
+            android:padding="@dimen/dp_16">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -243,7 +243,7 @@
                         tools:text="Tidak dibatasi" />
                 </LinearLayout>
             </LinearLayout>
-        </androidx.cardview.widget.CardView>
+        </com.tokopedia.unifycomponents.CardUnify>
     </LinearLayout>
 
     <LinearLayout
@@ -259,14 +259,15 @@
             android:layout_above="@+id/btn_submit"
             android:background="@drawable/topads_bg_shader_gray" />
 
-        <Button
+        <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/btn_submit"
-            style="@style/Button.Submit.Green.Full"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginTop="@dimen/dp_16"
             android:layout_marginRight="@dimen/dp_16"
+            app:unifyButtonType="main"
+            app:unifyButtonVariant="filled"
             android:text="Iklankan" />
 
         <com.tokopedia.unifyprinciples.Typography
