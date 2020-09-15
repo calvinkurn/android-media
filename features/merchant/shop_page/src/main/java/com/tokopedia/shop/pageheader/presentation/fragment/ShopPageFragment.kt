@@ -1253,10 +1253,9 @@ class ShopPageFragment :
     }
 
     private fun setShopName() {
-        val userSession = UserSession(context)
         if(isMyShop) {
-            shopPageHeaderDataModel?.shopName = userSession.shopName
-            shopPageFragmentHeaderViewHolder.setShopName(userSession.shopName)
+            shopPageHeaderDataModel?.shopName = shopViewModel.ownerShopName
+            shopPageFragmentHeaderViewHolder.setShopName(shopViewModel.ownerShopName)
         }
     }
 

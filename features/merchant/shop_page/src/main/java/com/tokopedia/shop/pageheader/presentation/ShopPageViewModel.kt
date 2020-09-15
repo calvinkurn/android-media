@@ -88,6 +88,9 @@ class ShopPageViewModel @Inject constructor(
     val isUserSessionActive: Boolean
         get() = userSessionInterface.isLoggedIn
 
+    val ownerShopName: String
+        get() = userSessionInterface.shopName
+
     val shopPageP1Data = MutableLiveData<Result<ShopPageP1HeaderData>>()
     val shopIdFromDomainData = MutableLiveData<Result<String>>()
     val shopPageHeaderContentData = MutableLiveData<Result<ShopPageHeaderContentData>>()
