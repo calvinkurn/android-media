@@ -129,9 +129,9 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
         progressParLayout = view.findViewById(com.tokopedia.digital_deals.R.id.progress_bar_layout);
         ivRemovePromo = view.findViewById(com.tokopedia.digital_deals.R.id.iv_remove_promo);
         clPromoAmount = view.findViewById(com.tokopedia.digital_deals.R.id.cl_promo);
-        Drawable img = MethodChecker.getDrawable(getActivity(),com.tokopedia.digital_deals.R.drawable.ic_promo_code);
+        Drawable img = MethodChecker.getDrawable(getActivity(), com.tokopedia.digital_deals.R.drawable.ic_promo_code);
         tvApplyPromo.setCompoundDrawablesWithIntrinsicBounds(img, null, null, null);
-        ((Ticker)view.findViewById(R.id.ticker_info)).setTextDescription(getString(R.string.ticker_desc));
+        ((Ticker) view.findViewById(R.id.ticker_info)).setTextDescription(getString(R.string.ticker_desc));
     }
 
     private void setCardViewElevation() {
@@ -287,7 +287,7 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
             }
         } else if (v.getId() == com.tokopedia.digital_deals.R.id.tv_promocode) {
             dealsAnalytics.sendPromoCodeClickEvent(dealDetails);
-            mPresenter.clickGoToPromo();
+            mPresenter.clickGoToPromo(getContext());
         } else if (v.getId() == com.tokopedia.digital_deals.R.id.tv_no_locations) {
             fragmentCallbacks.replaceFragment(mPresenter.getOutlets(), 0);
         } else if (v.getId() == com.tokopedia.digital_deals.R.id.iv_remove_promo) {
