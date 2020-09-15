@@ -24,7 +24,7 @@ import com.tokopedia.imagepicker.R;
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
 import com.tokopedia.imagepicker.picker.gallery.widget.MediaGridInset;
 import com.tokopedia.imagepicker.picker.instagram.data.source.exception.ShouldLoginInstagramException;
-//import com.tokopedia.imagepicker.picker.instagram.di.DaggerInstagramComponent;
+import com.tokopedia.imagepicker.picker.instagram.di.DaggerInstagramComponent;
 import com.tokopedia.imagepicker.picker.instagram.di.InstagramModule;
 import com.tokopedia.imagepicker.picker.instagram.util.InstagramConstant;
 import com.tokopedia.imagepicker.picker.instagram.view.activity.InstagramLoginActivity;
@@ -121,13 +121,13 @@ public class ImagePickerInstagramFragment extends BaseListFragment<InstagramMedi
 
     @Override
     protected void initInjector() {
-//        DaggerInstagramComponent
-//                .builder()
-//                .instagramModule(new InstagramModule())
-//                .baseAppComponent(((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent())
-//                .build()
-//                .inject(this);
-//        imagePickerInstagramPresenter.attachView(this);
+        DaggerInstagramComponent
+                .builder()
+                .instagramModule(new InstagramModule())
+                .baseAppComponent(((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent())
+                .build()
+                .inject(this);
+        imagePickerInstagramPresenter.attachView(this);
     }
 
     @Override
