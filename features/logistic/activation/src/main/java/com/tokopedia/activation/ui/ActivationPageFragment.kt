@@ -14,12 +14,15 @@ import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class ActivationPageFragment: Fragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     private val viewModel: ActivationPageViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory)[ActivationPageViewModel::class.java]
@@ -50,6 +53,8 @@ class ActivationPageFragment: Fragment() {
     private var codCheckboxTnc: Typography? = null
 
     private var codButtonSave: UnifyButton? = null
+
+    private var CodValue: Boolean = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_item_activation, container, false)
@@ -94,7 +99,7 @@ class ActivationPageFragment: Fragment() {
         viewModel.shopFeature.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is ActivationPageState.Success -> {
-
+                    CodValue = it.data.value
                 }
 
                 is ActivationPageState.Fail -> {
@@ -109,13 +114,12 @@ class ActivationPageFragment: Fragment() {
     }
 
     private fun getShopFeature() {
-        //ToDo: shopId here
-        viewModel.getShopFeature("//ToDO: shopId here")
+        viewModel.getShopFeature(userSession.shopId)
     }
 
+
     private fun updateShopFeature() {
-        //ToDo: value here
-        viewModel.updateShopFeature(true)
+        if (!CodValue) viewModel.updateShopFeature(true) else viewModel.updateShopFeature(false)
     }
 
 

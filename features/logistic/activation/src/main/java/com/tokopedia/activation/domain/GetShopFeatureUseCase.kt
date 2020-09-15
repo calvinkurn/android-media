@@ -4,6 +4,7 @@ import com.tokopedia.activation.domain.mapper.GetShopFeatureMapper
 import com.tokopedia.activation.model.ShopFeatureModel
 import com.tokopedia.activation.model.response.GetShopFeatureResponse
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
@@ -22,10 +23,20 @@ class GetShopFeatureUseCase @Inject constructor(val graphqlUseCase: GraphqlUseCa
 
     override suspend fun executeOnBackground(): ShopFeatureModel {
         graphqlUseCase.setGraphqlQuery(QUERY)
-        graphqlUseCase.setRequestParams(mapOf(PARAM_TYPE to 1, PARAM_SHOP_ID to "shopId"))
+        graphqlUseCase.setRequestParams(mapOf(
+                PARAM_TYPE to useCaseRequestParams.getInt(PARAM_TYPE, 1),
+                PARAM_SHOP_ID to useCaseRequestParams.getString(PARAM_SHOP_ID, "")
+        ))
         graphqlUseCase.setTypeClass(GetShopFeatureResponse::class.java)
         val result = graphqlUseCase.executeOnBackground()
         return mapper.convertToUIModel(result.data.shopFeature.shopData)
+    }
+
+    fun generateRequestParams(shopId: String): RequestParams {
+        return RequestParams.create().apply {
+            putInt(PARAM_TYPE, 1)
+            putString(PARAM_SHOP_ID, shopId)
+        }
     }
 
     companion object {

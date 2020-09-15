@@ -22,6 +22,8 @@ class ActivationPageViewModel @Inject constructor(
     val updateShopFeature: LiveData<ActivationPageState<UpdateFeatureModel>>
         get() = _updateShopFeature
 
+    var CodValue = false
+
     fun getShopFeature(shopId: String) {
         getShopFeatureUseCase.execute(
                 { shopFeatureModel: ShopFeatureModel ->
@@ -31,7 +33,8 @@ class ActivationPageViewModel @Inject constructor(
                 {
                     throwable: Throwable ->
                     _shopFeature.value = ActivationPageState.Fail(throwable, "")
-                }
+                },
+                getShopFeatureUseCase.generateRequestParams(shopId)
         )
     }
 
@@ -43,7 +46,8 @@ class ActivationPageViewModel @Inject constructor(
                 {
                     throwable: Throwable ->
                     _updateShopFeature.value = ActivationPageState.Fail(throwable, "")
-                }
+                },
+                updateShopFeatureUseCase.generateRequestParams(value)
         )
     }
 }
