@@ -27,6 +27,8 @@ interface InitialStateContract {
         fun trackEventClickRecentShop(label: String, userId: String)
 
         fun renderRecentSearch()
+
+        fun dropKeyBoard()
     }
 
     interface Presenter : CustomerPresenter<View> {

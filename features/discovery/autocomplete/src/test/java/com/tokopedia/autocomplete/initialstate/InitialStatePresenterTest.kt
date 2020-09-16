@@ -351,7 +351,7 @@ internal class InitialStatePresenterTest: InitialStatePresenterTestFixtures() {
         `when presenter get initial state data`()
         `Then verify initial state API is called`()
         `then verify initial state impression is called`()
-        `then verify list impression data`()
+        `then verify list impression data`(false)
     }
 
     private fun `then verify initial state impression is called`() {
@@ -362,12 +362,16 @@ internal class InitialStatePresenterTest: InitialStatePresenterTestFixtures() {
         }
     }
 
-    private fun `then verify list impression data`() {
+    private fun `then verify list impression data`(seeMore: Boolean) {
         val recentViewItemList = slotRecentViewItemList.captured
         val recentSearchItemList = slotRecentSearchItemList.captured
         val popularSearchItemList = slotPopularSearchItemList.captured
 
-        val recentSearchListResponse = getDataLayerForPromo(initialStateCommonResponse[0].items)
+        var impressedItem = initialStateCommonResponse[0].items
+        if (initialStateCommonResponse[0].items.size >= RECENT_SEARCH_SEE_MORE_LIMIT && !seeMore) {
+            impressedItem = initialStateCommonResponse[0].items.take(RECENT_SEARCH_SEE_MORE_LIMIT - 1)
+        }
+        val recentSearchListResponse = getDataLayerForPromo(impressedItem)
         val recentViewListResponse = getDataLayerForRecentView(initialStateCommonResponse[1].items)
         val popularSearchListResponse = getDataLayerForPromo(initialStateCommonResponse[2].items)
 

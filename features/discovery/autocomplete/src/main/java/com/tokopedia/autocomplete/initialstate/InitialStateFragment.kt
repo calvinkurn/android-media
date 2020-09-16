@@ -11,7 +11,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.autocomplete.AutoCompleteActivity
 import com.tokopedia.autocomplete.OnScrollListenerAutocomplete
 import com.tokopedia.autocomplete.R
 import com.tokopedia.autocomplete.analytics.AppScreen
@@ -224,5 +223,9 @@ class InitialStateFragment : BaseDaggerFragment(), InitialStateContract.View, In
 
     override fun trackEventClickRecentShop(label: String, userId: String) {
         AutocompleteTracking.eventClickRecentShop(label, userId)
+    }
+
+    override fun dropKeyBoard() {
+        initialStateViewUpdateListener?.dropKeyboard()
     }
 }

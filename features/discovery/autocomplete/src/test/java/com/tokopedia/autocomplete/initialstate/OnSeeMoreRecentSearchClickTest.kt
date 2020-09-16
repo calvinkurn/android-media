@@ -25,6 +25,9 @@ internal class OnSeeMoreRecentSearchClickTest: InitialStatePresenterTestFixtures
     }
 
     private fun `Then verify renderRecentSearch is called`() {
-        verify { initialStateView.renderRecentSearch() }
+        verify {
+            initialStateView.dropKeyBoard()
+            initialStateView.renderRecentSearch()
+        }
     }
 }

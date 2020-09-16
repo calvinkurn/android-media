@@ -31,6 +31,7 @@ class InitialStatePresenter @Inject constructor(
 
     private var querySearch = ""
     private var listVistable = mutableListOf<Visitable<*>>()
+    private val recentSearchToImpress = mutableListOf<InitialStateItem>()
     private var searchParameter = HashMap<String, String>()
 
     override fun getQueryKey(): String {
@@ -77,7 +78,8 @@ class InitialStatePresenter @Inject constructor(
                         RECENT_SEARCH-> {
                             initialStateViewModel.addList(initialStateData)
                             initialStateData.items.withNotEmpty{
-                                onRecentSearchImpressed(this)
+                                recentSearchToImpress.addAll(this)
+                                onRecentSearchImpressed(false)
                             }
                         }
                         RECENT_VIEW -> {
@@ -97,7 +99,7 @@ class InitialStatePresenter @Inject constructor(
             }
 
             listVistable = getInitialStateResult(initialStateViewModel.list)
-            view.showInitialStateResult(listVistable)
+            view?.showInitialStateResult(listVistable)
         }
     }
 
@@ -106,7 +108,7 @@ class InitialStatePresenter @Inject constructor(
     }
 
     private fun onRecentViewImpressed(list: List<InitialStateItem>) {
-        view.onRecentViewImpressed(getDataLayerForRecentView(list))
+        view?.onRecentViewImpressed(getDataLayerForRecentView(list))
     }
 
     private fun getDataLayerForRecentView(list: List<InitialStateItem>): MutableList<Any> {
@@ -119,8 +121,14 @@ class InitialStatePresenter @Inject constructor(
         return dataLayerList
     }
 
-    private fun onRecentSearchImpressed(list: List<InitialStateItem>) {
-        view.onRecentSearchImpressed(getDataLayerForPromo(list))
+    private fun onRecentSearchImpressed(seeMore: Boolean) {
+        if (recentSearchToImpress.size >= RECENT_SEARCH_SEE_MORE_LIMIT && !seeMore) {
+            val impressedItem = recentSearchToImpress.take(RECENT_SEARCH_SEE_MORE_LIMIT - 1)
+            recentSearchToImpress.removeAll(impressedItem)
+            view?.onRecentSearchImpressed(getDataLayerForPromo(impressedItem))
+        } else {
+            view?.onRecentSearchImpressed(getDataLayerForPromo(recentSearchToImpress))
+        }
     }
 
     private fun getDataLayerForPromo(list: List<InitialStateItem>): MutableList<Any> {
@@ -134,7 +142,7 @@ class InitialStatePresenter @Inject constructor(
     }
 
     private fun onPopularSearchImpressed(list: List<InitialStateItem>) {
-        view.onPopularSearchImpressed(getDataLayerForPromo(list))
+        view?.onPopularSearchImpressed(getDataLayerForPromo(list))
     }
 
     private fun getInitialStateResult(list: MutableList<InitialStateData>): MutableList<Visitable<*>> {
@@ -227,7 +235,7 @@ class InitialStatePresenter @Inject constructor(
                 }
             }
 
-            view.refreshPopularSearch(listVistable)
+            view?.refreshPopularSearch(listVistable)
         }
     }
 
@@ -296,7 +304,7 @@ class InitialStatePresenter @Inject constructor(
                 val seeMore = totalSize < RECENT_SEARCH_SEE_MORE_LIMIT
                 if (seeMore) removeSeeMoreRecentSearch()
 
-                view.deleteRecentSearch(listVistable)
+                view?.deleteRecentSearch(listVistable)
             }
         }
     }
@@ -339,7 +347,7 @@ class InitialStatePresenter @Inject constructor(
                 removeRecentSearchTitle()
                 removeRecentSearch()
                 removeSeeMoreRecentSearch()
-                view.deleteRecentSearch(listVistable)
+                view?.deleteRecentSearch(listVistable)
             }
         }
     }
@@ -382,6 +390,8 @@ class InitialStatePresenter @Inject constructor(
 
     override fun recentSearchSeeMoreClicked() {
         removeSeeMoreRecentSearch()
-        view.renderRecentSearch()
+        onRecentSearchImpressed(true)
+        view?.dropKeyBoard()
+        view?.renderRecentSearch()
     }
 }
