@@ -16,7 +16,7 @@ class BidInfoItemViewHolder(val view: View, var selectedKeywords: MutableList<St
         var LAYOUT = R.layout.topads_create_layout_budget_list_item
     }
 
-    override fun bind(item: BidInfoItemViewModel, typeList: MutableList<Int>) {
+    override fun bind(item: BidInfoItemViewModel, typeList: MutableList<Int>, minBid: Int) {
         view.setOnClickListener {
             itemClicked?.invoke(adapterPosition)
         }
@@ -32,6 +32,9 @@ class BidInfoItemViewHolder(val view: View, var selectedKeywords: MutableList<St
 
                 if (selectedSuggestBid?.get(adapterPosition) != 0) {
                     view.keywordBudget.text = "Rp " + selectedSuggestBid?.get(adapterPosition).toString()
+                } else {
+                    view.keywordBudget.text = minBid.toString()
+                    selectedSuggestBid?.set(adapterPosition, minBid)
                 }
             }
         }

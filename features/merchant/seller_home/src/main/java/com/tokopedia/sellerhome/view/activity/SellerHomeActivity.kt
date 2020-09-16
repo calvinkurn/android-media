@@ -17,6 +17,7 @@ import com.google.android.material.bottomnavigation.LabelVisibilityMode
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -64,6 +65,8 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
         private const val DOUBLE_TAB_EXIT_DELAY = 2000L
 
         private const val SHOP_PAGE_PREFIX = "tokopedia://shop/"
+
+        private const val LAST_FRAGMENT_TYPE_KEY = "last_fragment"
     }
 
     @Inject lateinit var userSession: UserSessionInterface
@@ -124,7 +127,10 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
         setupToolbar()
         setupStatusBar()
         setupNavigator()
-        setupDefaultPage(savedInstanceState != null)
+
+        val initialPage = savedInstanceState?.getInt(LAST_FRAGMENT_TYPE_KEY) ?: FragmentType.HOME
+        setupDefaultPage(initialPage)
+
         setupBottomNav()
         UpdateCheckerHelper.checkAppUpdate(this, isRedirectedFromSellerMigration)
         observeNotificationsLiveData()
@@ -188,6 +194,13 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
         homeViewModel.getShopInfo()
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        navigator?.getCurrentSelectedPage()?.let { page ->
+            outState.putInt(LAST_FRAGMENT_TYPE_KEY, page)
+        }
+        super.onSaveInstanceState(outState)
+    }
+
     fun attachCallback(callback: StatusBarCallback) {
         statusBarCallback = callback
     }
@@ -228,22 +241,23 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
         }
     }
 
-    private fun setupDefaultPage(isSavedInstanceStateExist: Boolean) {
+    private fun setupDefaultPage(@FragmentType initialPageType: Int) {
         if(intent?.data == null) {
-            showToolbar()
-            showSellerHome(isSavedInstanceStateExist)
+            showToolbar(initialPageType)
+            showInitialPage(initialPageType)
         } else {
             handleAppLink(intent)
         }
     }
 
-    private fun showSellerHome(isSavedInstanceStateExist: Boolean) {
-        val home = FragmentType.HOME
-        setCurrentFragmentType(home)
-        sahBottomNav.currentItem = home
-        if (!isSavedInstanceStateExist) {
-            navigator?.start(home)
+    private fun showInitialPage(pageType: Int) {
+        setCurrentFragmentType(pageType)
+        sahBottomNav.currentItem = pageType
+
+        if (pageType == FragmentType.OTHER) {
+            hideToolbarAndStatusBar()
         }
+        navigator?.start(pageType)
     }
 
     private fun handleAppLink(intent: Intent?) {
@@ -338,7 +352,11 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
     private fun showToolbar(@FragmentType pageType: Int = FragmentType.HOME) {
         val pageTitle = navigator?.getPageTitle(pageType)
         supportActionBar?.title = pageTitle
-        sahToolbar?.show()
+        if (pageType != FragmentType.OTHER) {
+            sahToolbar?.show()
+        } else {
+            sahToolbar?.hide()
+        }
     }
 
     private fun trackClickBottomNavigation(trackingAction: String) {
@@ -360,11 +378,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
     }
 
     private fun showOtherSettingsFragment() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            statusBarBackground?.hide()
-            statusBarCallback?.setStatusBar()
-        }
-        sahToolbar?.hide()
+        hideToolbarAndStatusBar()
 
         val type = FragmentType.OTHER
         setCurrentFragmentType(type)
@@ -391,7 +405,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
         homeViewModel.shopInfo.observe(this, Observer {
             if (it is Success) {
                 navigator?.run {
-                    val shopName = it.data.shopName
+                    val shopName = MethodChecker.fromHtml(it.data.shopName).toString()
                     val shopAvatar = it.data.shopAvatar
 
                     // update userSession
@@ -428,6 +442,14 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
             this.requestStatusBarDark()
             statusBarBackground?.show()
         }
+    }
+
+    private fun hideToolbarAndStatusBar() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            statusBarBackground?.hide()
+            statusBarCallback?.setStatusBar()
+        }
+        sahToolbar?.hide()
     }
 
     private fun initPerformanceMonitoring(){

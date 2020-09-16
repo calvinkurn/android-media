@@ -6,7 +6,6 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.digital.home.model.*
 import com.tokopedia.digital.home.presentation.adapter.viewholder.*
-import com.tokopedia.digital.home.presentation.listener.OnItemBindListener
 
 class DigitalHomePageSearchTypeFactory(val onSearchCategoryClickListener: DigitalHomePageSearchViewHolder.OnSearchCategoryClickListener)
     : BaseAdapterTypeFactory() {

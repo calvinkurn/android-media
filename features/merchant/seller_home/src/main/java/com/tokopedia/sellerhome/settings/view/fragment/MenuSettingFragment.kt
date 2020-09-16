@@ -264,9 +264,10 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
             setTitle(context.getString(R.string.seller_home_logout_title))
             setMessage(context.getString(R.string.seller_home_logout_confirm))
             setPositiveButton(context.getString(R.string.seller_home_logout_button)) { dialogInterface, _ ->
-                showProgressDialog()
+                val progressDialog = showProgressDialog()
                 dialogInterface.dismiss()
                 RouteManager.route(context, ApplinkConstInternalGlobal.LOGOUT)
+                progressDialog.dismiss()
                 activity?.finish()
             }
             setNegativeButton(context.getString(R.string.seller_home_cancel)) {
@@ -276,9 +277,9 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
         }
     }
 
-    private fun showProgressDialog() {
+    private fun showProgressDialog(): ProgressDialog {
         val progressDialog = ProgressDialog(context)
-        progressDialog.apply {
+        return progressDialog.apply {
             setMessage(resources.getString(R.string.seller_home_loading))
             setTitle("")
             setCancelable(false)

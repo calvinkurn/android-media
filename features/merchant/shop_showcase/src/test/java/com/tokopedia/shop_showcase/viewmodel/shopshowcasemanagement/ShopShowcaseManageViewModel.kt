@@ -1,6 +1,7 @@
 package com.tokopedia.shop_showcase.viewmodel.shopshowcasemanagement
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.shop_showcase.coroutines.TestCoroutineDispatchers
 import com.tokopedia.shop_showcase.shop_showcase_management.data.model.DeleteShopShowcaseResponse
 import com.tokopedia.shop_showcase.shop_showcase_management.data.model.GetShopProductsResponse
 import com.tokopedia.shop_showcase.shop_showcase_management.data.model.ReorderShopShowcaseResponse
@@ -11,14 +12,14 @@ import com.tokopedia.shop_showcase.shop_showcase_management.presentation.viewmod
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
+import junit.framework.Assert.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.TestCoroutineDispatcher
+import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.mockito.ArgumentMatchers
-import org.mockito.Matchers.*
+
 
 @ExperimentalCoroutinesApi
 class ShopShowcaseManageViewModel {
@@ -41,9 +42,6 @@ class ShopShowcaseManageViewModel {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
-    private val testDispatcher by lazy {
-        TestCoroutineDispatcher()
-    }
 
     private lateinit var viewModel: ShopShowcaseListViewModel
 
@@ -56,107 +54,124 @@ class ShopShowcaseManageViewModel {
                 deleteShowcase,
                 reorderShowcase,
                 getShopShowcaseTotalProductUseCase,
-                testDispatcher
+                TestCoroutineDispatchers()
         )
     }
 
     @Test
     fun `given showcase list as a seller`() {
-        mockkObject(GetShopShowcaseListBuyerUseCase)
-        coEvery {
-            getSellerShowcaseList.executeOnBackground()
-        } returns ShopShowcaseListSellerResponse()
-        viewModel.getShopShowcaseListAsSeller()
-        coVerify {
-            getSellerShowcaseList.executeOnBackground()
+        runBlocking {
+            coEvery {
+                getSellerShowcaseList.executeOnBackground()
+            } returns ShopShowcaseListSellerResponse()
+
+            viewModel.getShopShowcaseListAsSeller()
+
+            coVerify {
+                getSellerShowcaseList.executeOnBackground()
+            }
+
+            val expectedResponse = Success(ShopShowcaseListSellerResponse())
+            val actualResponse = viewModel.getListSellerShopShowcaseResponse.value as Success<ShopShowcaseListSellerResponse>
+            assertEquals(expectedResponse, actualResponse)
         }
-        Assert.assertTrue(viewModel.getListSellerShopShowcaseResponse.value is Success)
     }
 
     @Test
     fun `given showcase list as a buyer when shopid and isowner is provided`() {
-        mockkObject(GetShopShowcaseListBuyerUseCase)
-        coEvery {
-            getBuyerShowcaseList.executeOnBackground()
-        } returns ShopShowcaseListBuyerResponse()
-        viewModel.getShopShowcaseListAsBuyer(anyString(), anyBoolean())
-        verify {
-            GetShopShowcaseListBuyerUseCase.createRequestParam(anyString(), anyBoolean())
+        runBlocking {
+            val shopId = "123456"
+            val isOwner = false
+
+            coEvery {
+                getBuyerShowcaseList.executeOnBackground()
+            } returns ShopShowcaseListBuyerResponse()
+
+            viewModel.getShopShowcaseListAsBuyer(shopId = shopId, isOwner = isOwner)
+
+            coVerify {
+                getBuyerShowcaseList.executeOnBackground()
+            }
+
+            val expectedResponse = Success(ShopShowcaseListBuyerResponse())
+            val actualResponse = viewModel.getListBuyerShopShowcaseResponse.value as Success<ShopShowcaseListBuyerResponse>
+            assertEquals(expectedResponse, actualResponse)
         }
-        Assert.assertTrue(getBuyerShowcaseList.params.parameters.isNotEmpty())
-        coVerify {
-            getBuyerShowcaseList.executeOnBackground()
-        }
-        Assert.assertTrue(viewModel.getListBuyerShopShowcaseResponse.value is Success)
     }
 
     @Test
     fun `remove showcase when showcaseid is provided`() {
-        mockkObject(DeleteShopShowcaseUseCase)
-        coEvery {
-            deleteShowcase.executeOnBackground()
-        } returns DeleteShopShowcaseResponse()
-        viewModel.removeSingleShopShowcase(anyString())
-        verify {
-            DeleteShopShowcaseUseCase.createRequestParam(anyString())
+        runBlocking {
+            val showcaseId = "123456"
+
+            coEvery {
+                deleteShowcase.executeOnBackground()
+            } returns DeleteShopShowcaseResponse()
+
+            viewModel.removeSingleShopShowcase(showcaseId)
+
+            coVerify {
+                deleteShowcase.executeOnBackground()
+            }
+
+            val expectedResponse = Success(DeleteShopShowcaseResponse())
+            val actualResponse = viewModel.deleteShopShowcaseResponse.value as Success<DeleteShopShowcaseResponse>
+            assertEquals(expectedResponse, actualResponse)
         }
-        Assert.assertTrue(deleteShowcase.params.parameters.isNotEmpty())
-        coVerify {
-            deleteShowcase.executeOnBackground()
-        }
-        Assert.assertTrue(viewModel.deleteShopShowcaseResponse.value is Success)
     }
 
     @Test
     fun `given success response when list of id is provided`() {
-        mockkObject(ReorderShopShowcaseListUseCase)
-        coEvery {
-            reorderShowcase.executeOnBackground()
-        } returns ReorderShopShowcaseResponse()
-        val anyList: List<String> = anyList()
-        viewModel.reorderShopShowcaseList(anyList)
-        verify {
-            ReorderShopShowcaseListUseCase.createRequestParam(anyList)
+        runBlocking {
+            coEvery {
+                reorderShowcase.executeOnBackground()
+            } returns ReorderShopShowcaseResponse()
+
+            val showcaseList: List<String> = listOf("123456", "987654")
+
+            viewModel.reorderShopShowcaseList(showcaseList)
+
+            coVerify {
+                reorderShowcase.executeOnBackground()
+            }
+
+            val expectedResponse = Success(ReorderShopShowcaseResponse())
+            val actualResponse = viewModel.reoderShopShowcaseResponse.value as Success<ReorderShopShowcaseResponse>
+            assertEquals(expectedResponse, actualResponse)
         }
-        Assert.assertTrue(reorderShowcase.params.parameters.isNotEmpty())
-        coEvery {
-            reorderShowcase.executeOnBackground()
-        }
-        Assert.assertTrue(viewModel.reoderShopShowcaseResponse.value is Success)
     }
 
     @Test
     fun `when get total product should return success`() {
-        mockkObject(GetShopShowcaseTotalProductUseCase)
-        coEvery {
-            getShopShowcaseTotalProductUseCase.executeOnBackground()
-        } returns GetShopProductsResponse()
+        runBlocking {
+            val shopId = "123456"
+            val page = 1
+            val perPage = 15
+            val fkeyword = ""
+            val sort = 0
+            val fmenu = "etalase"
 
-        val page = 1
-        val search = "baju"
-        val perPage = 15
-        val etalase = "pakaian"
+            coEvery {
+                getShopShowcaseTotalProductUseCase.executeOnBackground()
+            } returns GetShopProductsResponse()
 
-        val paramInput = mapOf(
-                "page" to page,
-                "fkeyword" to search,
-                "perPage" to perPage,
-                "fmenu" to etalase,
-                "sort" to ArgumentMatchers.anyInt()
-        )
+            viewModel.getTotalProduct(
+                    shopId = shopId,
+                    page = page,
+                    perPage = perPage,
+                    sortId = sort,
+                    etalase = fmenu,
+                    search = fkeyword
+            )
 
-        viewModel.getTotalProduct(ArgumentMatchers.anyString(), page, perPage, ArgumentMatchers.anyInt(), etalase, search)
+            coVerify {
+                getShopShowcaseTotalProductUseCase.executeOnBackground()
+            }
 
-        verify {
-            GetShopShowcaseTotalProductUseCase.createRequestParam(ArgumentMatchers.anyString(), paramInput)
+            val expectedResponse = Success(GetShopProductsResponse())
+            val actualResponse = viewModel.getShopProductResponse.value as Success<GetShopProductsResponse>
+            assertEquals(expectedResponse, actualResponse)
         }
-
-        Assert.assertTrue(reorderShowcase.params.parameters.isNotEmpty())
-
-        coEvery {
-            getShopShowcaseTotalProductUseCase.executeOnBackground()
-        }
-        Assert.assertTrue(viewModel.getShopProductResponse.value is Success)
     }
 
 }
