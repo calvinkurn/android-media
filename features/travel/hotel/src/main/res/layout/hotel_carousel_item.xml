@@ -1,29 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingRight="@dimen/spacing_lvl2"
-    android:paddingEnd="@dimen/spacing_lvl2"
+    android:orientation="vertical"
+    android:paddingStart="@dimen/spacing_lvl2"
     android:paddingLeft="@dimen/spacing_lvl2"
-    android:paddingStart="@dimen/spacing_lvl2">
+    android:paddingEnd="@dimen/spacing_lvl2"
+    android:paddingRight="@dimen/spacing_lvl2">
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/banner_hotel_card_view"
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/hotelPromoImageCarousel"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:cardCornerRadius="8dp"
-        app:layout_constraintDimensionRatio="414:139"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"/>
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/hotelPromoImageCarousel"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            />
-    </androidx.cardview.widget.CardView>
-
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

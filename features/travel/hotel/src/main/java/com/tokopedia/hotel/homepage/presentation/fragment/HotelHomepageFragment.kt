@@ -47,6 +47,7 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.travelcalendar.selectionrangecalendar.SelectionRangeCalendarWidget
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_hotel_homepage.*
 import java.util.*
@@ -462,14 +463,23 @@ class HotelHomepageFragment : HotelBaseFragment(),
 
         banner_hotel_homepage_promo.freeMode = false
         banner_hotel_homepage_promo.centerMode = true
-        banner_hotel_homepage_promo.autoplay = true
         banner_hotel_homepage_promo.slideToShow = 1.1f
+        banner_hotel_homepage_promo.slideToScroll = 1
+        banner_hotel_homepage_promo.autoplay = true
         banner_hotel_homepage_promo.indicatorPosition = CarouselUnify.INDICATOR_BL
         banner_hotel_homepage_promo.infinite = true
 
         val itemParam = { view: View, data: Any ->
-            val image = view.findViewById<AppCompatImageView>(R.id.hotelPromoImageCarousel)
+            val image = view.findViewById<ImageUnify>(R.id.hotelPromoImageCarousel)
             image.loadImage((data as TravelCollectiveBannerModel.Banner).attribute.imageUrl)
+
+            image.setOnClickListener {
+                onPromoClicked(data, data.position)
+            }
+        }
+
+        promoDataList.forEachIndexed { index, banner ->
+            banner.position = index
         }
 
         banner_hotel_homepage_promo.addItems(R.layout.hotel_carousel_item, ArrayList(promoDataList), itemParam)
