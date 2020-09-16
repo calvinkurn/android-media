@@ -108,40 +108,6 @@
                     tools:listitem="@layout/item_last_seen_promo_history" />
             </LinearLayout>
 
-            <LinearLayout
-                android:id="@+id/containerDealsPromo"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:visibility="gone"
-                tools:visibility="gone">
-
-                <com.tokopedia.unifyprinciples.Typography
-                    android:id="@+id/promo_checkout_deals_promo_label"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dp_16"
-                    android:layout_marginBottom="@dimen/dp_8"
-                    android:ellipsize="end"
-                    android:maxLines="2"
-                    android:text="@string/promo_title_for_this_category"
-                    android:textColor="@color/promo_checkout_catalogtitle_color"
-                    android:visibility="visible"
-                    app:typographyType="body_3" />
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recyclerViewDealsPromo"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/dp_8"
-                    android:clipToPadding="false"
-                    android:orientation="horizontal"
-                    android:paddingLeft="@dimen/dp_16"
-                    android:paddingRight="@dimen/dp_16"
-                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                    tools:listitem="@layout/item_last_seen_promo_history" />
-            </LinearLayout>
-
             <include
                 android:id="@+id/container_exchange_coupon"
                 layout="@layout/fragment_list_exchange_coupon"
