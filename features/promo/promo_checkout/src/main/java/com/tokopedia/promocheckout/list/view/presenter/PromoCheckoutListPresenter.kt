@@ -8,6 +8,7 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.promocheckout.R
+import com.tokopedia.promocheckout.common.domain.model.TravelCollectiveBanner
 import com.tokopedia.promocheckout.list.model.listcoupon.DataPromoCheckoutList
 import com.tokopedia.promocheckout.list.model.listlastseen.PromoCheckoutLastSeenModel
 import com.tokopedia.usecase.RequestParams
@@ -16,7 +17,8 @@ import java.util.HashMap
 import kotlin.collections.ArrayList
 
 class PromoCheckoutListPresenter(private val graphqlUseCase: GraphqlUseCase,
-                                 private val lastSeenPromoUseCase: GraphqlUseCase) :
+                                 private val lastSeenPromoUseCase: GraphqlUseCase,
+                                 private val dealsPromoUseCase: GraphqlUseCase) :
         BaseDaggerPresenter<PromoCheckoutListContract.View>(), PromoCheckoutListContract.Presenter {
 
     override fun getListPromo(serviceId: String, categoryId: Int, page: Int, resources: Resources) {
@@ -81,6 +83,31 @@ class PromoCheckoutListPresenter(private val graphqlUseCase: GraphqlUseCase,
                 val lastSeenPromoData = objects.getData<PromoCheckoutLastSeenModel.Response>(PromoCheckoutLastSeenModel.Response::class.java)
                 view.renderListLastSeen(lastSeenPromoData.promoModels)
             }
+        })
+    }
+
+    override fun getListTravelCollectiveBanner(resources: Resources) {
+        val variables = HashMap<String, Any>()
+        val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(resources,
+                R.raw.promo_checkout_deals), TravelCollectiveBanner.Response::class.java, variables, false)
+        dealsPromoUseCase.clearRequest()
+        dealsPromoUseCase.addRequest(graphqlRequest)
+        dealsPromoUseCase.execute(RequestParams.create(), object :Subscriber<GraphqlResponse>(){
+            override fun onNext(objects: GraphqlResponse?) {
+                val promoData = objects?.getData<TravelCollectiveBanner.Response>(TravelCollectiveBanner.Response::class.java)
+                view.renderDealsPromo(promoData!!.response.banners)
+            }
+
+            override fun onCompleted() {
+                //
+            }
+
+            override fun onError(e: Throwable) {
+                if (isViewAttached) {
+                    view.showGetListLastSeenError(e)
+                }
+            }
+
         })
     }
 
