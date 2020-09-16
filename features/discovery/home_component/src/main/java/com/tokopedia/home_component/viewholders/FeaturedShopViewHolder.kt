@@ -85,6 +85,9 @@ class FeaturedShopViewHolder(
             } catch (e: IllegalArgumentException) { }
         }
         itemView.featured_shop_background.setGradientBackground(element.channelModel.channelBanner.gradientColor)
+        itemView.featured_shop_background.setOnClickListener{
+            listener.onFeaturedShopBannerBackgroundClicked(element.channelModel)
+        }
         itemView.banner_title?.text = element.channelModel.channelBanner.title
         itemView.banner_description?.text = element.channelModel.channelBanner.description
         itemView.banner_title?.setTextColor(textColor)
@@ -122,7 +125,7 @@ class FeaturedShopViewHolder(
     }
 
     override fun onSeeMoreCardClicked(channel: ChannelModel, applink: String) {
-        listener.onSeeAllBannerClicked(channel, adapterPosition)
+        listener.onSeeAllBannerClicked(channel, applink, adapterPosition)
     }
 
     override fun onEmptyCardClicked(channel: ChannelModel, applink: String, parentPos: Int) {

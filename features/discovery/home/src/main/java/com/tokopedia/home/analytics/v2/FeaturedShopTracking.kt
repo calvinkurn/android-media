@@ -2,8 +2,10 @@ package com.tokopedia.home.analytics.v2
 
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.home.analytics.v2.BaseTracking.Event.PROMO_VIEW
+import com.tokopedia.home_component.data.DynamicHomeChannelCommon
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.home_component.model.ChannelShop
 
 object FeaturedShopTracking : BaseTracking() {
     private const val CLICK_BACKGROUND_ON_FEATURED_SHOP = "click background on dynamic channel shop"
@@ -11,11 +13,12 @@ object FeaturedShopTracking : BaseTracking() {
     private const val CLICK_VIEW_ALL_CARD_ON_FEATURED_SHOP = "click view all card on dynamic channel shop"
 
     private const val DYNAMIC_CHANNEL_SHOP = "dynamic channel shop"
+    private const val BANNER_DYNAMIC_CHANNEL_SHOP = "banner dynamic channel shop"
     private const val PROMOTION_NAME_SHOP = "/ - p%s - %s - banner - %s"
 
     fun getFeaturedShopItemImpression(channelModel: ChannelModel, channelGrid: ChannelGrid, userId: String, widgetPosition: Int, position: Int) = getBasicPromotionChannelView(
             event = PROMO_VIEW,
-            eventAction = Action.IMPRESSION_ON.format(DYNAMIC_CHANNEL_SHOP),
+            eventAction = Action.IMPRESSION_ON.format(BANNER_DYNAMIC_CHANNEL_SHOP),
             eventCategory = Category.HOMEPAGE,
             eventLabel = "",
             channelId = "",
@@ -27,7 +30,7 @@ object FeaturedShopTracking : BaseTracking() {
                 Promotion(
                         id = channelModel.id + "_" + channelGrid.id + "_" + channelModel.trackingAttributionModel.persoType+ "_" + channelModel.trackingAttributionModel.categoryId,
                         name = PROMOTION_NAME_SHOP.format(widgetPosition, DYNAMIC_CHANNEL_SHOP, channelModel.channelHeader.name),
-                        creative = channelGrid.shop.id + "-" + channelGrid.shop.shopBadgeUrl,
+                        creative = channelGrid.shop.id + "-" + getShopType(channelGrid.shop),
                         position = position.toString()
                 )
             )
@@ -35,7 +38,7 @@ object FeaturedShopTracking : BaseTracking() {
 
     private fun getFeaturedShopItemClick(channelModel: ChannelModel, channelGrid: ChannelGrid, userId: String, widgetPosition: Int, position: Int) = getBasicPromotionChannelClick(
             event = Event.PROMO_CLICK,
-            eventAction = Action.CLICK_ON.format(DYNAMIC_CHANNEL_SHOP),
+            eventAction = Action.CLICK_ON.format(BANNER_DYNAMIC_CHANNEL_SHOP),
             eventCategory = Category.HOMEPAGE,
             eventLabel = Value.FORMAT_2_ITEMS_DASH.format(channelModel.id, channelModel.channelHeader.name),
             channelId = channelModel.id,
@@ -48,7 +51,7 @@ object FeaturedShopTracking : BaseTracking() {
                     Promotion(
                             id = channelModel.id + "_" + channelGrid.id + "_" + channelModel.trackingAttributionModel.persoType+ "_" + channelModel.trackingAttributionModel.categoryId,
                             name = PROMOTION_NAME_SHOP.format(widgetPosition, DYNAMIC_CHANNEL_SHOP, channelModel.channelHeader.name),
-                            creative = channelModel.trackingAttributionModel.categoryId + "-" + channelGrid.shop.shopBadgeUrl,
+                            creative = channelModel.trackingAttributionModel.categoryId + "-" + getShopType(channelGrid.shop),
                             position = position.toString()
                     )
             ),
@@ -107,4 +110,10 @@ object FeaturedShopTracking : BaseTracking() {
             UserId.KEY, userId,
             BusinessUnit.KEY, BusinessUnit.DEFAULT
     ) as HashMap<String, Any>
+
+    private fun getShopType(shop: ChannelShop): String{
+        return if (shop.isGoldMerchant) "gold"
+        else if (shop.isOfficialStore) "os"
+        else "pm"
+    }
 }

@@ -11,7 +11,7 @@ interface FeaturedShopListener {
 
     fun onSeeAllClicked(channelModel: ChannelModel, position: Int)
 
-    fun onSeeAllBannerClicked(channelModel: ChannelModel, position: Int)
+    fun onSeeAllBannerClicked(channelModel: ChannelModel, applink: String, position: Int)
 
     fun onFeaturedShopBannerBackgroundClicked(channel: ChannelModel)
 
