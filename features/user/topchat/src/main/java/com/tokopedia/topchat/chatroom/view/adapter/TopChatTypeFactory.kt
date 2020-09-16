@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.topchat.chatroom.domain.pojo.roomsettings.RoomSettingBanner
 import com.tokopedia.topchat.chatroom.domain.pojo.roomsettings.RoomSettingFraudAlert
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.ProductCarouselListAttachmentViewHolder
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.AdapterListener
 import com.tokopedia.topchat.chatroom.view.uimodel.HeaderDateUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.ProductCarouselUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.StickerUiModel
@@ -22,7 +23,12 @@ interface TopChatTypeFactory {
 
     fun getItemViewType(visitables: List<Visitable<*>>, position: Int, default: Int): Int
 
-    fun createViewHolder(parent: ViewGroup, type: Int, productCarouselListListener: ProductCarouselListAttachmentViewHolder.Listener): AbstractViewHolder<*>
+    fun createViewHolder(
+            parent: ViewGroup,
+            type: Int,
+            productCarouselListListener: ProductCarouselListAttachmentViewHolder.Listener,
+            adapterListener: AdapterListener
+    ): AbstractViewHolder<*>
 
     fun type(roomSettingFraudAlert: RoomSettingFraudAlert): Int
 

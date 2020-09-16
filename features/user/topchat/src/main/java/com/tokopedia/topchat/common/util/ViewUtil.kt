@@ -12,6 +12,7 @@ import android.view.View.LAYER_TYPE_SOFTWARE
 import androidx.annotation.ColorRes
 import androidx.annotation.DimenRes
 import androidx.core.content.ContextCompat
+import com.tokopedia.kotlin.extensions.view.toPx
 
 
 object ViewUtil {
@@ -49,27 +50,27 @@ object ViewUtil {
         shapeDrawablePadding.left = elevationValue
         shapeDrawablePadding.right = elevationValue
 
-        val DY: Int
+        val DY: Float
         when (shadowGravity) {
             Gravity.CENTER -> {
                 shapeDrawablePadding.top = elevationValue
                 shapeDrawablePadding.bottom = elevationValue
-                DY = 0
+                DY = 0.5f.toPx()
             }
             Gravity.TOP -> {
                 shapeDrawablePadding.top = elevationValue * 2
                 shapeDrawablePadding.bottom = elevationValue
-                DY = -1 * elevationValue / 3
+                DY = -1 * elevationValue / 3f
             }
             Gravity.BOTTOM -> {
                 shapeDrawablePadding.top = elevationValue
                 shapeDrawablePadding.bottom = elevationValue * 2
-                DY = elevationValue / 3
+                DY = elevationValue / 3f
             }
             else -> {
                 shapeDrawablePadding.top = elevationValue
                 shapeDrawablePadding.bottom = elevationValue * 2
-                DY = elevationValue / 3
+                DY = elevationValue / 3f
             }
         }
 
@@ -77,7 +78,7 @@ object ViewUtil {
         shapeDrawable.setPadding(shapeDrawablePadding)
 
         shapeDrawable.paint.color = backgroundColorValue
-        shapeDrawable.paint.setShadowLayer(shadowRadiusValue, 0f, DY.toFloat(), shadowColorValue)
+        shapeDrawable.paint.setShadowLayer(shadowRadiusValue, 0f, DY, shadowColorValue)
 
         view.setLayerType(LAYER_TYPE_SOFTWARE, shapeDrawable.paint)
 

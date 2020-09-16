@@ -20,6 +20,7 @@ import com.tokopedia.topchat.chatroom.domain.pojo.roomsettings.RoomSettingBanner
 import com.tokopedia.topchat.chatroom.domain.pojo.roomsettings.RoomSettingFraudAlert
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.*
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.AttachedInvoiceViewHolder.InvoiceThumbnailListener
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.AdapterListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.CommonViewHolderListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.DeferredViewHolderAttachment
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.SearchListener
@@ -135,23 +136,31 @@ open class TopChatTypeFactoryImpl constructor(
     }
 
     // Check if chat bubble first, if not return default ViewHolder
-    override fun createViewHolder(parent: ViewGroup, type: Int, productCarouselListListener: ProductCarouselListAttachmentViewHolder.Listener): AbstractViewHolder<*> {
+    override fun createViewHolder(
+            parent: ViewGroup,
+            type: Int,
+            productCarouselListListener: ProductCarouselListAttachmentViewHolder.Listener,
+            adapterListener: AdapterListener
+    ): AbstractViewHolder<*> {
         val layoutRes = when (type) {
             ChatMessageViewHolder.TYPE_LEFT -> LeftChatMessageViewHolder.LAYOUT
             ChatMessageViewHolder.TYPE_RIGHT -> RightChatMessageViewHolder.LAYOUT
             else -> type
         }
         val view = LayoutInflater.from(parent.context).inflate(layoutRes, parent, false)
-        return createViewHolder(view, layoutRes, productCarouselListListener)
+        return createViewHolder(view, layoutRes, productCarouselListListener, adapterListener)
     }
 
     private fun createViewHolder(
             parent: View,
             type: Int,
-            productCarouselListListener: ProductCarouselListAttachmentViewHolder.Listener
+            productCarouselListListener: ProductCarouselListAttachmentViewHolder.Listener,
+            adapterListener: AdapterListener
     ): AbstractViewHolder<*> {
         return when (type) {
             ProductCarouselListAttachmentViewHolder.LAYOUT -> ProductCarouselListAttachmentViewHolder(parent, productAttachmentListener, productCarouselListListener, deferredAttachment, searchListener, commonListener)
+            LeftChatMessageViewHolder.LAYOUT -> LeftChatMessageViewHolder(parent, chatLinkHandlerListener, commonListener, adapterListener)
+            RightChatMessageViewHolder.LAYOUT -> RightChatMessageViewHolder(parent, chatLinkHandlerListener, commonListener, adapterListener)
             else -> createViewHolder(parent, type)
         }
     }
@@ -171,8 +180,6 @@ open class TopChatTypeFactoryImpl constructor(
             RoomSettingBannerViewHolder.LAYOUT -> RoomSettingBannerViewHolder(parent)
             RoomSettingFraudAlertViewHolder.LAYOUT -> RoomSettingFraudAlertViewHolder(parent, fraudAlertListener)
             TopchatImageUploadViewHolder.LAYOUT -> TopchatImageUploadViewHolder(parent, imageUploadListener)
-            LeftChatMessageViewHolder.LAYOUT -> LeftChatMessageViewHolder(parent, chatLinkHandlerListener, commonListener)
-            RightChatMessageViewHolder.LAYOUT -> RightChatMessageViewHolder(parent, chatLinkHandlerListener, commonListener)
             ImageDualAnnouncementViewHolder.LAYOUT -> ImageDualAnnouncementViewHolder(parent, imageDualAnnouncementListener)
             TopChatVoucherViewHolder.LAYOUT -> TopChatVoucherViewHolder(parent, voucherListener)
             AttachedInvoiceViewHolder.LAYOUT -> AttachedInvoiceViewHolder(parent, invoiceThumbnailListener, deferredAttachment)
