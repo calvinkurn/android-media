@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.tokopedia.tkpd">
+    package="com.tokopedia.intl">
 
     <uses-sdk tools:overrideLibrary="com.tokopedia.core"/>
 
@@ -38,8 +38,8 @@
     <uses-permission android:name="android.permission.RECORD_AUDIO"/>
 
     <application
-        android:name=".ConsumerMainApplication"
-        android:allowBackup="false"
+        android:name="com.tokopedia.tkpd.ConsumerMainApplication"
+        android:allowBackup="true"
         android:icon="@mipmap/ic_launcher_customerapp"
         android:roundIcon="@mipmap/ic_launcher_customerapp_round"
         android:label="@string/app_name"
@@ -48,6 +48,7 @@
         android:supportsRtl="true"
         android:fullBackupContent="@xml/backup_descriptor"
         android:theme="@style/Theme.Tokopedia3"
+        android:requestLegacyExternalStorage="true"
         tools:replace="name,android:label,android:hasCode,android:fullBackupContent,android:allowBackup">
         <meta-data android:name="com.facebook.sdk.AutoLogAppEventsEnabled"
            android:value="false"/>
@@ -56,10 +57,6 @@
         <meta-data
             android:name="com.google.android.gms.ads.AD_MANAGER_APP"
             android:value="true"/>
-        <meta-data
-            android:name="com.crashlytics.ApiKey"
-            android:value="d02324f74e70ffcd2dc00ab722d32baecf1884b4"
-            tools:replace="android:value"/>
         <meta-data
             android:name="APP_ID"
             android:value="@string/key_moengage"
@@ -100,7 +97,7 @@
             android:name="org.apache.http.legacy"
             android:required="false" />
         <activity
-            android:name=".ConsumerSplashScreen"
+            android:name="com.tokopedia.tkpd.ConsumerSplashScreen"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan"
@@ -132,14 +129,14 @@
         </activity>
 
         <activity
-            android:name=".FallbackActivity"
+            android:name="com.tokopedia.tkpd.FallbackActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Tokopedia3.PlainGreen">
         </activity>
 
         <activity
-            android:name=".deeplink.activity.DeepLinkActivity"
+            android:name="com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity"
             android:hardwareAccelerated="true"
             android:label="@string/title_activity_deep_link"
             android:theme="@style/Theme.White"
@@ -208,7 +205,7 @@
 
         </activity>
         <activity
-            android:name=".goldmerchant.GoldMerchantRedirectActivity"
+            android:name="com.tokopedia.tkpd.goldmerchant.GoldMerchantRedirectActivity"
             android:label="@string/label_gold_merchant"
             android:screenOrientation="portrait" >
             <intent-filter android:autoVerify="true">
@@ -234,11 +231,11 @@
 
         <provider
             android:name="com.facebook.FacebookContentProvider"
-            android:authorities="com.facebook.app.FacebookContentProviderOQcSB25ec2f92263c41b5a3d10152ace7888e"
+            android:authorities="com.facebook.app.FacebookContentProvider126665634029576"
             android:exported="true"/>
 
         <activity
-            android:name=".deeplink.DeeplinkHandlerActivity"
+            android:name="com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>
@@ -252,17 +249,7 @@
         </activity>
 
         <activity
-            android:name="com.tokopedia.otp.phoneverification.view.activity.RidePhoneNumberVerificationActivity"
-            android:label="@string/title_activity_phone_verification"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize" />
-
-        <service
-            android:name=".home.feed.data.source.cloud.AddFavoriteShopService"
-            android:exported="false"/>
-
-        <activity
-            android:name=".redirect.RedirectCreateShopActivity"
+            android:name="com.tokopedia.tkpd.redirect.RedirectCreateShopActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Tokopedia3" >
             <intent-filter>
@@ -277,21 +264,21 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".home.ReactNativeDiscoveryActivity"
+            android:name="com.tokopedia.tkpd.home.ReactNativeDiscoveryActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".thankyou.view.ReactNativeThankYouPageActivity"
+            android:name="com.tokopedia.tkpd.thankyou.view.ReactNativeThankYouPageActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".home.ReactNativeSubPromoPageActivity"
+        <activity android:name="com.tokopedia.tkpd.home.ReactNativeSubPromoPageActivity"
             android:screenOrientation="portrait" />
         <service
-            android:name=".thankyou.view.ThanksTrackerService"
+            android:name="com.tokopedia.tkpd.thankyou.view.ThanksTrackerService"
             android:permission="android.permission.BIND_JOB_SERVICE"
             android:exported="false"/>
 
         <provider
             android:name="androidx.core.content.FileProvider"
-            android:authorities="com.tokopedia.tkpd.provider"
+            android:authorities="com.tokopedia.intl.provider"
             android:grantUriPermissions="true"
             android:exported="false"
             tools:replace="android:authorities">
@@ -302,10 +289,10 @@
         </provider>
 
         <activity
-            android:name=".home.TkpdYoutubeVideoActivity"
+            android:name="com.tokopedia.tkpd.home.TkpdYoutubeVideoActivity"
             android:screenOrientation="sensor"/>
 
-        <activity android:name=".nfc.NFCHandlerActivity"
+        <activity android:name="com.tokopedia.tkpd.nfc.NFCHandlerActivity"
             android:theme="@style/Theme.White" >
             <intent-filter>
                 <action android:name="android.nfc.action.TECH_DISCOVERED" />
@@ -335,7 +322,7 @@
             </intent-filter>
         </activity>
 
-        <receiver android:name=".receiver.AppMediaButtonReceiver" >
+        <receiver android:name="com.tokopedia.tkpd.receiver.AppMediaButtonReceiver" >
             <intent-filter>
                 <action android:name="android.intent.action.MEDIA_BUTTON" />
             </intent-filter>

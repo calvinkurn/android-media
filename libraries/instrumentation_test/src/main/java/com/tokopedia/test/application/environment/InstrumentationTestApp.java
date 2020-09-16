@@ -79,7 +79,6 @@ public class InstrumentationTestApp extends BaseMainApplication
         GlobalConfig.DEBUG = true;
         GlobalConfig.VERSION_NAME = "3.66";
         SplitCompat.install(this);
-        FirebaseApp.initializeApp(this);
         FpmLogger.init(this);
         TrackApp.initTrackApp(this);
         TrackApp.getInstance().registerImplementation(TrackApp.GTM, GTMAnalytics.class);

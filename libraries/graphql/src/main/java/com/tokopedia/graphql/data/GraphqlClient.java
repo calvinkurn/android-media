@@ -15,6 +15,7 @@ import com.tokopedia.graphql.data.db.GraphqlDatabase;
 import com.tokopedia.graphql.data.source.cloud.api.GraphqlApi;
 import com.tokopedia.graphql.data.source.cloud.api.GraphqlApiSuspend;
 import com.tokopedia.graphql.data.source.cloud.api.GraphqlUrl;
+import com.tokopedia.graphql.util.BrotliKotlinCustomObject;
 import com.tokopedia.grapqhl.beta.notif.BetaInterceptor;
 import com.tokopedia.network.CommonNetwork;
 import com.tokopedia.network.NetworkRouter;
@@ -56,9 +57,20 @@ public class GraphqlClient {
     public synchronized static void init(@NonNull Context context) {
         if (sRetrofit == null) {
             UserSession userSession = new UserSession(context.getApplicationContext());
+            TkpdOkHttpBuilder tkpdOkHttpBuilder = getTkpdOkHttpBuilder(context);
+            initializeRetrofit(tkpdOkHttpBuilder, context, userSession);
+        }
+    }
+
+    public synchronized static void init(@NonNull Context context, boolean addBrotliInterceptor) {
+        if (sRetrofit == null) {
+            UserSession userSession = new UserSession(context.getApplicationContext());
 
             TkpdOkHttpBuilder tkpdOkHttpBuilder = getTkpdOkHttpBuilder(context);
-
+            //This interceptor should always be added in the end
+            if(addBrotliInterceptor){
+                tkpdOkHttpBuilder.addInterceptor(BrotliKotlinCustomObject.INSTANCE);
+            }
             if (GlobalConfig.isAllowDebuggingTools()) {
                 tkpdOkHttpBuilder.addInterceptor(new DeprecatedApiInterceptor(context.getApplicationContext()));
 
@@ -68,22 +80,25 @@ public class GraphqlClient {
                     tkpdOkHttpBuilder.addInterceptor(interceptor);
                 }
             }
-
-            sRetrofit = CommonNetwork.createRetrofit(
-                    GraphqlUrl.BASE_URL,
-                    tkpdOkHttpBuilder,
-                    new TkpdAuthInterceptor(context, (NetworkRouter) context.getApplicationContext(), userSession),
-                    new FingerprintInterceptor((NetworkRouter) context.getApplicationContext(), userSession),
-                    new StringResponseConverter(),
-                    new GsonBuilder());
-            sFingerprintManager = new FingerprintManager(userSession);
-
-            sGraphqlDatabase = GraphqlDatabase.getInstance(context);
-
-            function = new Function(context);
-
+            initializeRetrofit(tkpdOkHttpBuilder, context, userSession);
         }
     }
+
+    private static void initializeRetrofit(TkpdOkHttpBuilder tkpdOkHttpBuilder, Context context, UserSession userSession){
+        sRetrofit = CommonNetwork.createRetrofit(
+                GraphqlUrl.BASE_URL,
+                tkpdOkHttpBuilder,
+                new TkpdAuthInterceptor(context, (NetworkRouter) context.getApplicationContext(), userSession),
+                new FingerprintInterceptor((NetworkRouter) context.getApplicationContext(), userSession),
+                new StringResponseConverter(),
+                new GsonBuilder());
+        sFingerprintManager = new FingerprintManager(userSession);
+
+        sGraphqlDatabase = GraphqlDatabase.getInstance(context);
+
+        function = new Function(context);
+    }
+
 
     public static Function getFunction() {
         if (function == null) {
@@ -123,6 +138,11 @@ public class GraphqlClient {
 
         if (GlobalConfig.isAllowDebuggingTools()) {
             tkpdOkHttpBuilder.addInterceptor(new DeprecatedApiInterceptor(context.getApplicationContext()));
+            FakeResponseInterceptorProvider provider = new FakeResponseInterceptorProvider();
+            Interceptor interceptor = provider.getInterceptor(context.getApplicationContext());
+            if (interceptor != null) {
+                tkpdOkHttpBuilder.addInterceptor(interceptor);
+            }
         }
         return tkpdOkHttpBuilder;
     }

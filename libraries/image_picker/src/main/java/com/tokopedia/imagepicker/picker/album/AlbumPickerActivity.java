@@ -7,20 +7,22 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.View;
+
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.loader.app.LoaderManager;
 import androidx.loader.content.Loader;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import android.view.View;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.imagepicker.R;
-import com.tokopedia.imagepicker.picker.gallery.ImagePickerGalleryFragment;
 import com.tokopedia.imagepicker.picker.gallery.loader.AlbumLoader;
 import com.tokopedia.imagepicker.picker.gallery.model.AlbumItem;
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
+
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Created by hendry on 08/05/18.
@@ -78,22 +80,17 @@ public class AlbumPickerActivity extends BaseSimpleActivity implements LoaderMan
     @Override
     public void onResume() {
         super.onResume();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            String permission = Manifest.permission.WRITE_EXTERNAL_STORAGE;
-            if (ActivityCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED) {
-                showLoading();
-                getSupportLoaderManager().initLoader(ALBUM_LOADER_ID, null, this);
-            }
-        } else {
+        String permission = Manifest.permission.WRITE_EXTERNAL_STORAGE;
+        if (ActivityCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED) {
             showLoading();
-            getSupportLoaderManager().initLoader(ALBUM_LOADER_ID, null, this);
+            LoaderManager.getInstance(this).initLoader(ALBUM_LOADER_ID, null, this);
         }
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        getLoaderManager().destroyLoader(ALBUM_LOADER_ID);
+        LoaderManager.getInstance(this).destroyLoader(ALBUM_LOADER_ID);
     }
 
     private void showLoading() {
@@ -110,9 +107,10 @@ public class AlbumPickerActivity extends BaseSimpleActivity implements LoaderMan
         return null;
     }
 
+    @NotNull
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return AlbumLoader.createInstance(this, galleryType);
+        return AlbumLoader.newInstance(this, galleryType);
     }
 
     @Override

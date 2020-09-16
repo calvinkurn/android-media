@@ -57,7 +57,7 @@ import com.tokopedia.navigation.presentation.module.DaggerTestBerandaComponent;
 import com.tokopedia.navigation.presentation.module.TestBerandaComponent;
 import com.tokopedia.navigation.presentation.presenter.MainParentPresenter;
 import com.tokopedia.showcase.ShowCasePreference;
-import com.tokopedia.tkpd.R;
+import com.tokopedia.intl.R;
 import com.tokopedia.tkpd.rule.GuessTokopediaTestRule;
 import com.tokopedia.cart.data.model.response.CartDataListResponse;
 import com.tokopedia.usecase.RequestParams;

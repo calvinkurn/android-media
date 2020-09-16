@@ -2,8 +2,8 @@ apply plugin: 'com.android.application'
 if (project.hasProperty("auto-patch")) {
     apply plugin: 'auto-patch-plugin'
 }
+apply plugin: 'com.google.firebase.crashlytics'
 apply plugin: 'robust'
-apply plugin: 'io.fabric'
 apply plugin: 'io.hansel.preprocessor'
 apply plugin: 'com.bugsnag.android.gradle'
 
@@ -37,7 +37,6 @@ buildscript {
     repositories {
         mavenCentral()
         google()
-        maven { url 'https://maven.fabric.io/public' }
         maven { url 'https://hansel.io/maven' }
     }
     dependencies {
@@ -337,10 +336,10 @@ dependencies {
     implementation rootProject.ext.playServicesDependencies.analytics
     implementation rootProject.ext.playServicesDependencies.core
     implementation rootProject.ext.playServicesDependencies.maps
-    implementation rootProject.ext.serviceDependencies.crashlytics
 
     implementation rootProject.ext.firebase.config
     implementation rootProject.ext.firebase.messaging
+    implementation rootProject.ext.firebase.crashlytics
 
     implementation rootProject.ext.supportLibDependencies.cardViewV7
     implementation rootProject.ext.supportLibDependencies.appCompactV7

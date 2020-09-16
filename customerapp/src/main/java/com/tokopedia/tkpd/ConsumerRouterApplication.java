@@ -179,6 +179,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     private Iris mIris;
     private static final String ENABLE_ASYNC_CMPUSHNOTIF_INIT = "android_async_cmpushnotif_init";
     private static final String ENABLE_ASYNC_IRIS_INIT = "android_async_iris_init";
+    private static final String ADD_BROTLI_INTERCEPTOR = "android_add_brotli_interceptor";
 
 
     @Override
@@ -186,7 +187,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         super.onCreate();
         initialiseHansel();
         initFirebase();
-        GraphqlClient.init(getApplicationContext());
+        GraphqlClient.init(getApplicationContext(), remoteConfig.getBoolean(ADD_BROTLI_INTERCEPTOR, false));
         NetworkClient.init(getApplicationContext());
         warmUpGQLClient();
         initIris();

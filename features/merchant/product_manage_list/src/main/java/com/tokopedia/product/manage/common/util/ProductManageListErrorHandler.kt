@@ -1,12 +1,12 @@
 package com.tokopedia.product.manage.common.util
 
-import com.crashlytics.android.Crashlytics
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 
 object ProductManageListErrorHandler {
 
     fun logExceptionToCrashlytics(t: Throwable) {
         try {
-            Crashlytics.logException(t)
+            FirebaseCrashlytics.getInstance().recordException(t)
         }catch (e: IllegalStateException) {
             e.printStackTrace()
         }

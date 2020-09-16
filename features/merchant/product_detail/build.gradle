@@ -85,6 +85,7 @@ dependencies {
     implementation project(rootProject.ext.features.variantCommon)
     implementation rootProject.ext.miscDependencies.viewPager2
     implementation project(rootProject.ext.libraries.analyticAnnotationCentral)
+//implementation "com.tokopedia.annotation:central:0.0.2-xxxx"
 
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
@@ -110,9 +111,8 @@ dependencies {
     implementation(rootProject.ext.tkpdLibDependencies.showcase) {
         exclude group: "com.android.support"
     }
-    implementation (rootProject.ext.serviceDependencies.crashlytics) {
-        transitive = true
-    }
+    implementation (rootProject.ext.firebase.crashlytics) {
+        transitive = true	        }
 
     //video player
     implementation rootProject.ext.miscDependencies.exoPlayerCore
