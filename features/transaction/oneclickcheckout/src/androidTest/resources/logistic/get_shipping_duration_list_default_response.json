@@ -1,0 +1,36 @@
+[
+  {
+    "data": {
+      "ongkir_shipper_service": {
+        "services": [
+          {
+            "service_code": "service1",
+            "service_id": 1,
+            "service_duration": "Instan (3 jam)",
+            "shipper_ids": [
+              10,
+              11
+            ],
+            "spids": [
+              10,
+              20
+            ]
+          },
+          {
+            "service_code": "service2",
+            "service_id": 2,
+            "service_duration": "Reguler (2-4 hari)",
+            "shipper_ids": [
+              11,
+              12
+            ],
+            "spids": [
+              20,
+              30
+            ]
+          }
+        ]
+      }
+    }
+  }
+]

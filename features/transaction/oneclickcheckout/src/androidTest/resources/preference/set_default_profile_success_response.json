@@ -1,0 +1,14 @@
+[
+  {
+    "data": {
+      "set_default_profile_occ": {
+        "error_message": [],
+        "status": "OK",
+        "data": {
+          "success": 1,
+          "messages": []
+        }
+      }
+    }
+  }
+]

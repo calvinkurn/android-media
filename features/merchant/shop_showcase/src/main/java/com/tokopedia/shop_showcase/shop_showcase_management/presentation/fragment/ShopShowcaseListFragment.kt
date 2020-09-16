@@ -30,6 +30,7 @@ import com.tokopedia.design.text.watcher.AfterTextWatcher
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.header.HeaderUnify
+import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
 import com.tokopedia.shop_showcase.R
 import com.tokopedia.shop_showcase.ShopShowcaseInstance
 import com.tokopedia.shop_showcase.common.*
@@ -57,7 +58,8 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
         @JvmStatic
         fun createInstance(shopType: String, shopId: String?, selectedEtalaseId: String?,
                            isShowDefault: Boolean? = false, isShowZeroProduct: Boolean? = false,
-                           isMyShop: Boolean? = false, isNeedToGoToAddShowcase: Boolean? = false
+                           isMyShop: Boolean? = false, isNeedToGoToAddShowcase: Boolean? = false,
+                           isSellerNeedToHideShowcaseGroupValue: Boolean = false
         ): ShopShowcaseListFragment {
             val fragment = ShopShowcaseListFragment()
             val bundle = Bundle()
@@ -70,6 +72,8 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
             bundle.putBoolean(ShopShowcaseListParam.EXTRA_IS_MY_SHOP, isMyShop ?: false)
             bundle.putBoolean(ShopShowcaseListParam.EXTRA_IS_NEED_TO_GOTO_ADD_SHOWCASE, isNeedToGoToAddShowcase
                     ?: false)
+            bundle.putBoolean(ShopShowcaseListParam.EXTRA_IS_SELLER_NEED_TO_HIDE_SHOWCASE_GROUP_VALUE,
+                    isSellerNeedToHideShowcaseGroupValue)
             fragment.arguments = bundle
             return fragment
         }
@@ -105,6 +109,7 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
     private var shopType = ""
     private var isNeedToGoToAddShowcase = false
     private var isReorderList = false
+    private var isSellerNeedToHideShowcaseGroupValue = false
 
 
     override fun getScreenName(): String {
@@ -157,7 +162,7 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
             }
             REQUEST_EDIT_SHOWCASE_CODE -> {
                 if (resultCode == Activity.RESULT_OK) {
-                    val isSuccessEditShowcase = data?.extras?.getInt(ShopShowcaseListParam.EXTRA_EDIT_SHOWCASE_RESULT)
+                    val isSuccessEditShowcase = data?.extras?.getInt(ShopShowcaseParamConstant.EXTRA_EDIT_SHOWCASE_RESULT)
                     if (isSuccessEditShowcase == ShopShowcaseAddFragment.SUCCESS_EDIT_SHOWCASE)
                         onSuccessUpdateShowcase()
                 }
@@ -175,6 +180,7 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
             isShowZeroProduct = it.getBoolean(ShopShowcaseListParam.EXTRA_IS_SHOW_ZERO_PRODUCT)
             isMyShop = it.getBoolean(ShopShowcaseListParam.EXTRA_IS_MY_SHOP)
             isNeedToGoToAddShowcase = it.getBoolean(ShopShowcaseListParam.EXTRA_IS_NEED_TO_GOTO_ADD_SHOWCASE)
+            isSellerNeedToHideShowcaseGroupValue = it.getBoolean(ShopShowcaseListParam.EXTRA_IS_SELLER_NEED_TO_HIDE_SHOWCASE_GROUP_VALUE)
         }
         super.onCreate(savedInstanceState)
     }
@@ -310,11 +316,12 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
         val showcaseId = if (dataShowcase.type == ShowcaseType.GENERATED) dataShowcase.alias else dataShowcase.id
         activity?.run{
             val intent = Intent()
-            intent.putExtra(ShopShowcaseListParam.EXTRA_ETALASE_ID, showcaseId)
-            intent.putExtra(ShopShowcaseListParam.EXTRA_ETALASE_NAME, dataShowcase.name)
-            intent.putExtra(ShopShowcaseListParam.EXTRA_ETALASE_BADGE, dataShowcase.badge)
-            intent.putExtra(ShopShowcaseListParam.EXTRA_IS_NEED_TO_RELOAD_DATA, true)
-            intent.putExtra(ShopShowcaseListParam.EXTRA_ETALASE_TYPE, dataShowcase.type)
+            intent.putExtra(ShopShowcaseParamConstant.EXTRA_ETALASE_ID, showcaseId)
+            intent.putExtra(ShopShowcaseParamConstant.EXTRA_ETALASE_NAME, dataShowcase.name)
+            intent.putExtra(ShopShowcaseParamConstant.EXTRA_ETALASE_BADGE, dataShowcase.badge)
+            intent.putExtra(ShopShowcaseParamConstant.EXTRA_IS_NEED_TO_RELOAD_DATA, true)
+            intent.putExtra(ShopShowcaseParamConstant.EXTRA_ETALASE_TYPE, dataShowcase.type)
+
             setResult(Activity.RESULT_OK, intent)
             finish()
         }
@@ -432,9 +439,13 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
             }, 500)
         } else {
             if (!isMyShop) {
-                viewModel.getShopShowcaseListAsBuyer(shopId, false)
+                viewModel.getShopShowcaseListAsBuyer(shopId, isOwner = false)
             } else {
-                viewModel.getShopShowcaseListAsSeller()
+                if (isSellerNeedToHideShowcaseGroupValue) {
+                    viewModel.getShopShowcaseListAsBuyer(shopId, isOwner = true) // Treat as a seller
+                } else {
+                    viewModel.getShopShowcaseListAsSeller()
+                }
             }
         }
     }
@@ -522,7 +533,11 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
 
     private fun setupBuyerSellerView() {
         if (isMyShop) {
-            setupSellerView()
+            if (isSellerNeedToHideShowcaseGroupValue) {
+                setupBuyerView() // Provides seller with buyer view
+            } else {
+                setupSellerView()
+            }
         } else {
             setupBuyerView()
         }

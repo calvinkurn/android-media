@@ -29,6 +29,8 @@ dependencies {
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.libraries.devMonitoringTools)
 
+    testImplementation rootProject.ext.testDependencies.mockk
+
     implementation (rootProject.ext.serviceDependencies.crashlytics)
 }
 
@@ -40,3 +42,5 @@ project.ext {
 }
 
 apply from: '../../publish_local.gradle'
+apply from: '../../jacoco_task.gradle'
+apply from: '../../sonar_config.gradle'
