@@ -2,25 +2,20 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/category_recycler_view"
+        android:id="@+id/rv_digital_homepage_category"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:nestedScrollingEnabled="false"
-        android:layout_marginBottom="@dimen/dp_16"
-        android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginEnd="@dimen/dp_16"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
-        />
+        android:layout_marginLeft="@dimen/spacing_lvl4"
+        android:layout_marginRight="@dimen/spacing_lvl4"
+        android:nestedScrollingEnabled="false" />
 
     <include
-        android:visibility="gone"
-        android:id="@+id/categoryShimmering"
+        android:id="@+id/view_recharge_home_category_shimmering"
+        layout="@layout/content_digital_home_shimmering_category"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        layout="@layout/content_digital_home_shimmering_category"/>
+        android:visibility="gone" />
 </LinearLayout>

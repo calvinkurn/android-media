@@ -52,12 +52,12 @@ class PlayViewModel @Inject constructor(
     val observableGetChannelInfo: LiveData<NetworkResult<ChannelInfoUiModel>>
         get() = _observableGetChannelInfo
 
-    val observableStateChannelInfo: LiveData<Event<Boolean>>
-        get() = _observableStateChannelInfo
+    val observableChannelErrorEvent: LiveData<Event<Boolean>>
+        get() = _observableChannelErrorEvent
+    val observableCompleteChannelInfo: LiveData<PlayCompleteInfoUiModel>
+        get() = _observableCompleteInfo
     val observableVideoMeta: LiveData<VideoMetaUiModel>
         get() = _observableVideoMeta
-    val observableCompleteInfo: LiveData<PlayCompleteInfoUiModel>
-        get() = _observableCompleteInfo
     val observableSocketInfo: LiveData<PlaySocketInfo>
         get() = _observableSocketInfo
     val observableNewChat: LiveData<Event<PlayChatUiModel>>
@@ -129,7 +129,7 @@ class PlayViewModel @Inject constructor(
         get() = _observableProductSheetContent.value != null
 
     private val _observableCompleteInfo = MutableLiveData<PlayCompleteInfoUiModel>()
-    private val _observableStateChannelInfo = MutableLiveData<Event<Boolean>>()
+    private val _observableChannelErrorEvent = MutableLiveData<Event<Boolean>>()
     private val _observableGetChannelInfo = MutableLiveData<NetworkResult<ChannelInfoUiModel>>()
     private val _observableSocketInfo = MutableLiveData<PlaySocketInfo>()
     private val _observableChatList = MutableLiveData<MutableList<PlayChatUiModel>>()
@@ -417,7 +417,7 @@ class PlayViewModel @Inject constructor(
                 _observablePartnerInfo.value = getPartnerInfo(completeInfoUiModel.channelInfo)
 
             }) {
-                if (retryCount == 0) _observableStateChannelInfo.value = Event(false)
+                if (retryCount == 0) _observableChannelErrorEvent.value = Event(false)
                 if (retryCount++ < MAX_RETRY_CHANNEL_INFO) getChannelInfoResponse(channelId)
                 else if (it !is CancellationException) {
                     if (_observableCompleteInfo.value == null) doOnForbidden()

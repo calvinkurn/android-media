@@ -107,6 +107,7 @@ object HomeQuery{
                 isOutOfStock
                 warehouseID
                 minOrder
+                recommendationType
                 shop{
                     shopID
                 }
