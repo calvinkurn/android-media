@@ -120,10 +120,14 @@ class PlayViewerVideoStateProcessor(
                 isFirstTime && isLive
             }
             BufferSource.Unknown -> {
-                delay(2000)
+                delay(BUFFER_TO_WAITING_STATE_MAX_DURATION)
                 isFirstTime && isLive
             }
             else -> false
         }
+    }
+
+    companion object {
+        private const val BUFFER_TO_WAITING_STATE_MAX_DURATION = 4000L
     }
 }
