@@ -10,7 +10,6 @@ import com.tokopedia.play.broadcaster.data.model.ProductData
 import com.tokopedia.play.broadcaster.data.model.SerializableHydraSetupData
 import com.tokopedia.play.broadcaster.domain.model.*
 import com.tokopedia.play.broadcaster.domain.usecase.*
-import com.tokopedia.play.broadcaster.mocker.PlayBroadcastMocker
 import com.tokopedia.play.broadcaster.pusher.PlayPusher
 import com.tokopedia.play.broadcaster.pusher.state.PlayPusherInfoListener
 import com.tokopedia.play.broadcaster.pusher.state.PlayPusherNetworkState
@@ -453,37 +452,6 @@ class PlayBroadcastViewModel @Inject constructor(
     private fun retrieveBannedEvent(data: BannedUiModel) {
         scope.launch(dispatcher.main) {
             _observableBannedEvent.value = Event(data)
-        }
-    }
-
-    /**
-     * mock
-     */
-    private fun mockChatList() {
-        scope.launch(dispatcher.io) {
-            while(isActive) {
-                delay(3000)
-                onRetrievedNewChat(
-                    PlayBroadcastMocker.getMockChat()
-                )
-            }
-        }
-    }
-
-    private fun mockMetrics() {
-        scope.launch(dispatcher.io) {
-            queueNewMetrics(
-                    List(3) {
-                        PlayBroadcastMocker.getMockMetric()
-                    }
-            )
-        }
-    }
-
-    fun mockEventBanned() {
-        scope.launch(dispatcher.io) {
-            delay(20*1000)
-            retrieveBannedEvent(PlayBroadcastMocker.mockEventBanned())
         }
     }
 }
