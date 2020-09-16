@@ -18,8 +18,9 @@ class PromoCheckoutListDealsActivity : BaseSimpleActivity(), HasComponent<PromoC
         return PromoCheckoutListDealsFragment.createInstance(
                 intent?.extras?.getBoolean(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_COUPON_ACTIVE, true),
                 intent?.extras?.getString(BasePromoCheckoutListFragment.EXTRA_PROMO_CODE, ""),
-                intent?.extras?.getString(PromoCheckoutListDealsFragment.EXTRA_CART_ID, ""),
-                intent?.extras?.getInt(BasePromoCheckoutListFragment.PAGE_TRACKING, 1) ?: 1
+                intent?.extras?.getInt(PromoCheckoutListDealsFragment.EXTRA_CATEGORY_ID, 1) ?: 1,
+                intent?.extras?.getInt(BasePromoCheckoutListFragment.PAGE_TRACKING, 1) ?: 1,
+                intent?.extras?.getString(PromoCheckoutListDealsFragment.EXTRA_PRODUCTID, "")
         )
     }
 
@@ -36,7 +37,6 @@ class PromoCheckoutListDealsActivity : BaseSimpleActivity(), HasComponent<PromoC
             bundle.putBoolean(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_COUPON_ACTIVE, isCouponActive)
             bundle.putString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_PLATFORM, platform)
             bundle.putString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_CATEGORYID, categoryId)
-            bundle.putString(PromoCheckoutListDealsFragment.EXTRA_CART_ID, cartID)
             bundle.putInt(BasePromoCheckoutListFragment.PAGE_TRACKING, pageTracking)
             intent.putExtras(bundle)
             return intent
