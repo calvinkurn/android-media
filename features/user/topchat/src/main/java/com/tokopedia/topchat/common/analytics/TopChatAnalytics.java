@@ -14,7 +14,6 @@ import com.tokopedia.attachproduct.analytics.AttachProductAnalytics;
 import com.tokopedia.chat_common.data.AttachInvoiceSentViewModel;
 import com.tokopedia.chat_common.data.BannedProductAttachmentViewModel;
 import com.tokopedia.chat_common.data.ProductAttachmentViewModel;
-import com.tokopedia.iris.IrisAnalytics;
 import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.ChatOrderProgress;
 import com.tokopedia.topchat.chatroom.view.viewmodel.InvoicePreviewUiModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.QuotationUiModel;
@@ -314,7 +313,6 @@ public class TopChatAnalytics {
                 null,
                 null
         );
-        IrisAnalytics.getInstance(context).saveEvent(bundle);
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 ProductListClickBundler.KEY, bundle
         );
@@ -353,7 +351,6 @@ public class TopChatAnalytics {
                 null,
                 null
         );
-        IrisAnalytics.getInstance(context).saveEvent(bundle);
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 ProductListImpressionBundler.KEY, bundle
         );
@@ -394,7 +391,6 @@ public class TopChatAnalytics {
                 null,
                 null
         );
-        IrisAnalytics.getInstance(context).saveEvent(bundle);
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 ProductListImpressionBundler.KEY, bundle
         );
