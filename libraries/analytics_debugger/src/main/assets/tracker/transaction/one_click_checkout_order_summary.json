@@ -7,6 +7,8 @@
       "event": "begin_checkout",
       "eventAction": "view order summary page",
       "sessionIris": "{{.*}}",
+      "userId": "{{\\d+}}",
+      "paymentType": "{{.*}}",
       "items": [
         {
           "dimension81": "{{.*}}",
@@ -33,7 +35,8 @@
           "dimension82": "{{\\d+}}",
           "dimension40": "{{.*}}",
           "dimension49": "",
-          "dimension48": "{{\\d+}}"
+          "dimension48": "{{\\d+}}",
+          "dimension16": "{{.*}}"
         }
       ],
       "eventLabel": "success",
@@ -46,6 +49,8 @@
       "event": "checkout_progress",
       "eventAction": "{{click (?:bayar|pilih pembayaran)}}",
       "sessionIris": "{{.*}}",
+      "userId": "{{\\d+}}",
+      "paymentType": "{{.*}}",
       "items": [
         {
           "dimension81": "{{.*}}",
@@ -72,7 +77,9 @@
           "dimension82": "{{\\d+}}",
           "dimension40": "{{.*}}",
           "dimension49": "",
-          "dimension48": "{{\\d+}}"
+          "dimension48": "{{\\d+}}",
+          "dimension16": "{{.*}}",
+          "dimension12": "{{\\d+}}"
         }
       ],
       "eventLabel": "success",
@@ -81,7 +88,7 @@
     {
       "eventCategory": "order summary",
       "event": "viewCheckoutExpressIris",
-      "userId": "{{\\d*}}",
+      "userId": "{{\\d+}}",
       "eventAction": "view preselected courier option",
       "sessionIris": "{{.*}}",
       "eventLabel": "{{\\d+}}"

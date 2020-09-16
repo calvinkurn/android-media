@@ -18,6 +18,7 @@ import com.tokopedia.oneclickcheckout.common.interceptor.*
 import com.tokopedia.oneclickcheckout.common.robot.orderSummaryPage
 import com.tokopedia.oneclickcheckout.common.rule.FreshIdlingResourceTestRule
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageActivity
+import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import org.junit.After
 import org.junit.Assert.assertThat
 import org.junit.Before
@@ -49,6 +50,8 @@ class OrderSummaryPageActivityTrackingTest {
 
     @Before
     fun setup() {
+        InstrumentationAuthHelper.loginInstrumentationTestUser1()
+
         gtmLogDBSource.deleteAll().subscribe()
         OneClickCheckoutInterceptor.resetAllCustomResponse()
 

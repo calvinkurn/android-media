@@ -994,7 +994,15 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             if (checkoutOccGqlResponse.response.status.equals(STATUS_OK, true)) {
                 if (checkoutOccGqlResponse.response.data.success == 1 || checkoutOccGqlResponse.response.data.paymentParameter.redirectParam.url.isNotEmpty()) {
                     onSuccessCheckout(checkoutOccGqlResponse.response.data)
-                    orderSummaryAnalytics.eventClickBayarSuccess(orderTotal.value.isButtonChoosePayment, getTransactionId(checkoutOccGqlResponse.response.data.paymentParameter.redirectParam.form), generateOspEe(OrderSummaryPageEnhanceECommerce.STEP_2, OrderSummaryPageEnhanceECommerce.STEP_2_OPTION, allPromoCodes))
+                    var paymentType = _orderPreference.preference.payment.gatewayName
+                    if (paymentType.isBlank()) {
+                        paymentType = OrderSummaryPageEnhanceECommerce.DEFAULT_EMPTY_VALUE
+                    }
+                    orderSummaryAnalytics.eventClickBayarSuccess(orderTotal.value.isButtonChoosePayment,
+                            userSessionInterface.userId,
+                            getTransactionId(checkoutOccGqlResponse.response.data.paymentParameter.redirectParam.form),
+                            paymentType,
+                            generateOspEe(OrderSummaryPageEnhanceECommerce.STEP_2, OrderSummaryPageEnhanceECommerce.STEP_2_OPTION, allPromoCodes))
                 } else {
                     val error = checkoutOccGqlResponse.response.data.error
                     val errorCode = error.code
@@ -1528,7 +1536,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
 
     private fun sendViewOspEe() {
         if (!hasSentViewOspEe) {
-            orderSummaryAnalytics.eventViewOrderSummaryPage(generateOspEe(OrderSummaryPageEnhanceECommerce.STEP_1, OrderSummaryPageEnhanceECommerce.STEP_1_OPTION))
+            orderSummaryAnalytics.eventViewOrderSummaryPage(userSessionInterface.userId, _orderPreference.preference.payment.gatewayName, generateOspEe(OrderSummaryPageEnhanceECommerce.STEP_1, OrderSummaryPageEnhanceECommerce.STEP_1_OPTION))
             hasSentViewOspEe = true
         }
     }
@@ -1560,6 +1568,10 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             setShopName(orderShop.shopName)
             setShopType(orderShop.isOfficial, orderShop.isGold)
             setCategoryId(orderProduct.categoryId.toString())
+            if (step == OrderSummaryPageEnhanceECommerce.STEP_2) {
+                setShippingPrice(_orderShipment.getRealShippingPrice().toString())
+            }
+            setShippingDuration(_orderShipment.serviceDuration)
         }.build(step, option)
     }
 
