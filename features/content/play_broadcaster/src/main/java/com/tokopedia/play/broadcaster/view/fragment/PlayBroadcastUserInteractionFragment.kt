@@ -96,7 +96,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         observeChatList()
         observeMetrics()
         observeNetworkConnectionDuringLive()
-        observeEventBanned()
+        observeBannedEvent()
     }
 
     override fun onStart() {
@@ -429,9 +429,9 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         parentViewModel.observableLiveNetworkState.observe(viewLifecycleOwner, EventObserver(::handleLiveNetworkInfo))
     }
 
-    private fun observeEventBanned() {
-        parentViewModel.observableEventBanned.observe(viewLifecycleOwner,  EventObserver{ event ->
-            parentViewModel.stopPushStream(shouldNavigate = false, reasonStopped = PlayChannelStatus.Moderated)
+    private fun observeBannedEvent() {
+        parentViewModel.observableBannedEvent.observe(viewLifecycleOwner,  EventObserver{ event ->
+            parentViewModel.stopPushStream(shouldNavigate = false, reason = PlayChannelStatus.Moderated)
             showForceStopDialog(
                     title = event.title,
                     message = event.message,

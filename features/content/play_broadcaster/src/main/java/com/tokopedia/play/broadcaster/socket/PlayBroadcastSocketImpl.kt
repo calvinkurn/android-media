@@ -91,7 +91,7 @@ class PlayBroadcastSocketImpl constructor(
                         data = mapChat(webSocketResponse)
                     }
                     PlaySocketEnum.Banned.value -> {
-                        data = mapBanned(webSocketResponse)
+                        data = mapBannedEvent(webSocketResponse)
                     }
                 }
 
@@ -168,7 +168,7 @@ class PlayBroadcastSocketImpl constructor(
         return convertToModel(response.jsonObject, Chat::class.java)
     }
 
-    private fun mapBanned(response: WebSocketResponse): Banned? {
+    private fun mapBannedEvent(response: WebSocketResponse): Banned? {
         return convertToModel(response.jsonObject, Banned::class.java)
     }
 

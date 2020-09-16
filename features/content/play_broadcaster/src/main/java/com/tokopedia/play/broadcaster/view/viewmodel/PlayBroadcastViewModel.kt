@@ -88,8 +88,8 @@ class PlayBroadcastViewModel @Inject constructor(
     val observableCover = getCurrentSetupDataStore().getObservableSelectedCover()
     val observableReportDuration: LiveData<String>
         get() = _observableReportDuration
-    val observableEventBanned: LiveData<Event<BannedUiModel>>
-        get() = _observableEventBanned
+    val observableBannedEvent: LiveData<Event<BannedUiModel>>
+        get() = _observableBannedEvent
 
     val shareContents: String
         get() = _observableShareInfo.value.orEmpty()
@@ -114,7 +114,7 @@ class PlayBroadcastViewModel @Inject constructor(
     }
     private val _observableLiveInfoState = MutableLiveData<Event<BroadcastState>>()
     private val _observableReportDuration = MutableLiveData<String>()
-    private val _observableEventBanned = MutableLiveData<Event<BannedUiModel>>()
+    private val _observableBannedEvent = MutableLiveData<Event<BannedUiModel>>()
 
     init {
         _observableChatList.value = mutableListOf()
@@ -329,18 +329,18 @@ class PlayBroadcastViewModel @Inject constructor(
         }
     }
 
-    fun stopPushStream(shouldNavigate: Boolean, reasonStopped: PlayChannelStatus = PlayChannelStatus.Stop) {
+    fun stopPushStream(shouldNavigate: Boolean, reason: PlayChannelStatus = PlayChannelStatus.Stop) {
         scope.launchCatchError(block = {
             withContext(dispatcher.io) {
                 playPusher.stopPush()
                 playPusher.stopPreview()
                 playSocket.destroy()
-                updateChannelStatus(reasonStopped)
+                updateChannelStatus(reason)
             }
             _observableLiveInfoState.value = Event(BroadcastState.Stop(shouldNavigate))
         }) {
             _observableLiveInfoState.value = Event(BroadcastState.Error(it,
-                    onRetry = { this.stopPushStream(shouldNavigate, reasonStopped) }
+                    onRetry = { this.stopPushStream(shouldNavigate, reason) }
             ))
         }
     }
@@ -369,7 +369,7 @@ class PlayBroadcastViewModel @Inject constructor(
                         is LiveDuration -> restartLiveDuration(data)
                         is ProductTagging -> setSelectedProduct(PlayBroadcastUiMapper.mapProductTag(data))
                         is Chat -> retrieveNewChat(PlayBroadcastUiMapper.mapIncomingChat(data))
-                        is Banned -> retrieveBannedEvent(PlayBroadcastUiMapper.mapEventBanned(data))
+                        is Banned -> retrieveBannedEvent(PlayBroadcastUiMapper.mapBannedEvent(data))
                     }
                 }
 
@@ -452,7 +452,7 @@ class PlayBroadcastViewModel @Inject constructor(
 
     private fun retrieveBannedEvent(data: BannedUiModel) {
         scope.launch(dispatcher.main) {
-            _observableEventBanned.value = Event(data)
+            _observableBannedEvent.value = Event(data)
         }
     }
 
@@ -483,7 +483,7 @@ class PlayBroadcastViewModel @Inject constructor(
     fun mockEventBanned() {
         scope.launch(dispatcher.io) {
             delay(20*1000)
-            retrieveBannedEvent(PlayBroadcastMocker.getEventBanned())
+            retrieveBannedEvent(PlayBroadcastMocker.mockEventBanned())
         }
     }
 }

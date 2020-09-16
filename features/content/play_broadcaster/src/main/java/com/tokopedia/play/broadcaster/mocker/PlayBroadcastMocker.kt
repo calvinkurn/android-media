@@ -169,7 +169,7 @@ object PlayBroadcastMocker {
             TrafficMetricUiModel(TrafficMetricsEnum.NumberOfPaidOrders, "200")
     )
 
-    fun getEventBanned(): BannedUiModel = BannedUiModel(
+    fun mockEventBanned(): BannedUiModel = BannedUiModel(
             title = "Oops, live streaming dihentikan",
             message = "Tokomu tidak memenuhi ketentuan yang berlaku saat live streaming. Info lebih lanjut akan dikirim ke e-mail tokomu.",
             buttonTitle = "Selesai")
