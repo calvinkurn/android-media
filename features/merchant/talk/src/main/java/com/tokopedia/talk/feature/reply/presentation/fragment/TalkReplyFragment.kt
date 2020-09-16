@@ -260,7 +260,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
 
     override fun onUserDetailsClicked(userId: String, isSeller: Boolean, shopdId: String) {
         if(isSeller) {
-            goToShopPageActivity(shopId)
+            goToShopPageActivity(shopdId)
             return
         }
         goToProfileActivity(userId)
