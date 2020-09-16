@@ -811,14 +811,8 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
 
             if (shipmentCartItemModel.getShippingId() != 0 && shipmentCartItemModel.getSpId() != 0) {
                 if (!hasLoadCourier) {
-                    RecipientAddressModel tmpRecipientAddressModel;
-                    if (recipientAddressModel != null) {
-                        tmpRecipientAddressModel = recipientAddressModel;
-                    } else {
-                        tmpRecipientAddressModel = shipmentCartItemModel.getRecipientAddressModel();
-                    }
                     ShipmentDetailData tmpShipmentDetailData = ratesDataConverter.getShipmentDetailData(
-                            shipmentCartItemModel, tmpRecipientAddressModel);
+                            shipmentCartItemModel, recipientAddressModel);
 
                     boolean hasLoadCourierState = false;
                     if (saveStateType == SHIPPING_SAVE_STATE_TYPE_TRADE_IN_DROP_OFF) {

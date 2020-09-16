@@ -46,6 +46,7 @@ public class RecipientAddressModel implements Parcelable {
     private boolean isTradeIn;
     private boolean isTradeInDropOffEnable;
     private int selectedTabIndex;
+    private boolean ignoreSelectionAction;
     private String dropOffAddressName;
     private String dropOffAddressDetail;
     private LocationDataModel locationDataModel;
@@ -302,6 +303,14 @@ public class RecipientAddressModel implements Parcelable {
         this.disabledAddress = disabledAddress;
     }
 
+    public boolean isIgnoreSelectionAction() {
+        return ignoreSelectionAction;
+    }
+
+    public void setIgnoreSelectionAction(boolean ignoreSelectionAction) {
+        this.ignoreSelectionAction = ignoreSelectionAction;
+    }
+
     public boolean equalCorner(RecipientAddressModel that) {
         return getCityId().equals(that.getCityId()) &&
                 getDestinationDistrictId().equals(that.getDestinationDistrictId()) &&
@@ -409,6 +418,7 @@ public class RecipientAddressModel implements Parcelable {
         dest.writeByte(this.isTradeIn ? (byte) 1 : (byte) 0);
         dest.writeByte(this.isTradeInDropOffEnable ? (byte) 1 : (byte) 0);
         dest.writeInt(this.selectedTabIndex);
+        dest.writeByte(this.ignoreSelectionAction ? (byte) 1 : (byte) 0);
         dest.writeString(this.dropOffAddressName);
         dest.writeString(this.dropOffAddressDetail);
         dest.writeParcelable(this.locationDataModel, flags);
@@ -442,6 +452,7 @@ public class RecipientAddressModel implements Parcelable {
         this.isTradeIn = in.readByte() != 0;
         this.isTradeInDropOffEnable = in.readByte() != 0;
         this.selectedTabIndex = in.readInt();
+        this.ignoreSelectionAction = in.readByte() != 0;
         this.dropOffAddressName = in.readString();
         this.dropOffAddressDetail = in.readString();
         this.locationDataModel = in.readParcelable(LocationDataModel.class.getClassLoader());

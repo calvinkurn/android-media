@@ -23,10 +23,10 @@ import com.tokopedia.checkout.data.model.request.saveshipmentstate.ShipmentState
 import com.tokopedia.checkout.data.model.request.saveshipmentstate.ShipmentStateShopProductData;
 import com.tokopedia.checkout.data.model.response.ReleaseBookingResponse;
 import com.tokopedia.checkout.data.model.response.cod.CodResponse;
-import com.tokopedia.checkout.domain.model.changeaddress.SetShippingAddressData;
 import com.tokopedia.checkout.domain.model.cartshipmentform.CampaignTimerUi;
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.checkout.domain.model.cartsingleshipment.ShipmentCostModel;
+import com.tokopedia.checkout.domain.model.changeaddress.SetShippingAddressData;
 import com.tokopedia.checkout.domain.model.checkout.CheckoutData;
 import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressGqlUseCase;
 import com.tokopedia.checkout.domain.usecase.CheckoutGqlUseCase;
@@ -1463,9 +1463,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                             if (recipientAddressModel != null) {
                                                 recipientAddressModel.setLatitude(latitude);
                                                 recipientAddressModel.setLongitude(longitude);
-                                            } else {
-                                                shipmentCartItemModel.getRecipientAddressModel().setLatitude(latitude);
-                                                shipmentCartItemModel.getRecipientAddressModel().setLongitude(longitude);
                                             }
                                             getView().renderEditAddressSuccess(latitude, longitude);
                                         } else {
@@ -1482,8 +1479,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @NonNull
-    private RequestParams generateEditAddressRequestParams(ShipmentCartItemModel
-                                                                   shipmentCartItemModel,
+    private RequestParams generateEditAddressRequestParams(ShipmentCartItemModel shipmentCartItemModel,
                                                            String addressLatitude, String addressLongitude) {
         Map<String, String> params = getGeneratedAuthParamNetwork(null);
 
@@ -1499,17 +1495,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         String receiverName = "";
         String receiverPhone = "";
 
-        if (recipientAddressModel == null && shipmentCartItemModel != null && shipmentCartItemModel.getRecipientAddressModel() != null) {
-            addressId = shipmentCartItemModel.getRecipientAddressModel().getId();
-            addressName = shipmentCartItemModel.getRecipientAddressModel().getAddressName();
-            addressStreet = shipmentCartItemModel.getRecipientAddressModel().getStreet();
-            postalCode = shipmentCartItemModel.getRecipientAddressModel().getPostalCode();
-            districtId = shipmentCartItemModel.getRecipientAddressModel().getDestinationDistrictId();
-            cityId = shipmentCartItemModel.getRecipientAddressModel().getCityId();
-            provinceId = shipmentCartItemModel.getRecipientAddressModel().getProvinceId();
-            receiverName = shipmentCartItemModel.getRecipientAddressModel().getRecipientName();
-            receiverPhone = shipmentCartItemModel.getRecipientAddressModel().getRecipientPhoneNumber();
-        } else if (recipientAddressModel != null) {
+        if (recipientAddressModel != null) {
             addressId = recipientAddressModel.getId();
             addressName = recipientAddressModel.getAddressName();
             addressStreet = recipientAddressModel.getStreet();
@@ -1616,7 +1602,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     public void changeShippingAddress(RecipientAddressModel newRecipientAddressModel,
                                       boolean isOneClickShipment,
                                       boolean isTradeInDropOff,
-                                      boolean isHandleFallback) {
+                                      boolean isHandleFallback,
+                                      boolean reloadCheckoutPage) {
         getView().showLoading();
         List<DataChangeAddressRequest> dataChangeAddressRequests = new ArrayList<>();
         if (shipmentCartItemModelList != null) {
@@ -1633,8 +1620,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                         );
                     } else {
                         dataChangeAddressRequest.setAddressId(newRecipientAddressModel != null ?
-                                Integer.parseInt(newRecipientAddressModel.getId()) :
-                                Integer.parseInt(shipmentCartItemModel.getRecipientAddressModel().getId())
+                                Integer.parseInt(newRecipientAddressModel.getId()) : 0
                         );
                     }
                     dataChangeAddressRequests.add(dataChangeAddressRequest);
@@ -1669,7 +1655,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                             ErrorHandler.getErrorMessage(getView().getActivityContext(), e)
                                     );
                                     if (isHandleFallback) {
-                                        getView().renderChangeAddressFailed();
+                                        getView().renderChangeAddressFailed(reloadCheckoutPage);
                                     }
                                 }
                             }
@@ -1680,7 +1666,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                     getView().hideLoading();
                                     if (setShippingAddressData.isSuccess()) {
                                         getView().showToastNormal(getView().getActivityContext().getString(R.string.label_change_address_success));
-                                        getView().renderChangeAddressSuccess();
+                                        getView().renderChangeAddressSuccess(reloadCheckoutPage);
                                     } else {
                                         if (setShippingAddressData.getMessages() != null &&
                                                 setShippingAddressData.getMessages().size() > 0) {
@@ -1690,12 +1676,12 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                             }
                                             getView().showToastError(stringBuilder.toString());
                                             if (isHandleFallback) {
-                                                getView().renderChangeAddressFailed();
+                                                getView().renderChangeAddressFailed(reloadCheckoutPage);
                                             }
                                         } else {
                                             getView().showToastError(getView().getActivityContext().getString(R.string.label_change_address_failed));
                                             if (isHandleFallback) {
-                                                getView().renderChangeAddressFailed();
+                                                getView().renderChangeAddressFailed(reloadCheckoutPage);
                                             }
                                         }
                                     }

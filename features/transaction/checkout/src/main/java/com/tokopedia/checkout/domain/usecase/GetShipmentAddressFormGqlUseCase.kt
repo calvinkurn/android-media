@@ -40,8 +40,8 @@ class GetShipmentAddressFormGqlUseCase @Inject constructor(@Named(SHIPMENT_ADDRE
         graphqlUseCase.addRequest(graphqlRequest)
         return graphqlUseCase.createObservable(RequestParams.EMPTY)
                 .map {
-                    val gqlResponse = it.getData<ShipmentAddressFormGqlResponse>(ShipmentAddressFormGqlResponse::class.java)
-//                    val gqlResponse = Gson().fromJson(RESPONSE_TRADE_IN_ALL_ADDRESS, ShipmentAddressFormGqlResponse::class.java)
+//                    val gqlResponse = it.getData<ShipmentAddressFormGqlResponse>(ShipmentAddressFormGqlResponse::class.java)
+                    val gqlResponse = Gson().fromJson(RESPONSE_TRADE_IN_ALL_ADDRESS, ShipmentAddressFormGqlResponse::class.java)
                     if (gqlResponse != null) {
                         if (gqlResponse.shipmentAddressFormResponse.status == "OK") {
                             shipmentMapper.convertToShipmentAddressFormData(gqlResponse.shipmentAddressFormResponse.data)
@@ -343,7 +343,7 @@ val RESPONSE_TRADE_IN_ALL_ADDRESS = """
             }
           },
           "addresses": {
-            "active": "default_address",
+            "active": "trade_in_address",
             "disable_tabs": [],
             "data": [
               {

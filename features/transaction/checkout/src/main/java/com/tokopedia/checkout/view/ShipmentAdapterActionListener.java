@@ -1,9 +1,9 @@
 package com.tokopedia.checkout.view;
 
-import com.tokopedia.logisticdata.data.entity.address.RecipientAddressModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
 import com.tokopedia.logisticcart.shipping.model.ShopShipment;
+import com.tokopedia.logisticdata.data.entity.address.RecipientAddressModel;
 import com.tokopedia.purchase_platform.common.feature.checkout.request.DataCheckoutRequest;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel;
 
@@ -105,7 +105,7 @@ public interface ShipmentAdapterActionListener {
 
     boolean hasSelectTradeInLocation();
 
-    void onTradeInAddressTabChanged(int position);
+    void onTradeInAddressTabChanged(int addressPosition);
 
     void onClickPromoCheckout(LastApplyUiModel lastApplyUiModel);
 
