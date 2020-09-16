@@ -4,9 +4,11 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.promocheckout.R
+import com.tokopedia.promocheckout.common.domain.model.TravelCollectiveBanner
 import com.tokopedia.promocheckout.list.model.listlastseen.PromoCheckoutLastSeenModel
 
 class PromoLastSeenAdapter(var listData: MutableList<PromoCheckoutLastSeenModel>,
+                           var listDataDeals: MutableList<TravelCollectiveBanner.Banner>,
                            private val listenerLastSeen: PromoLastSeenViewHolder.ListenerLastSeen)
     : RecyclerView.Adapter<PromoLastSeenViewHolder>() {
 
@@ -16,11 +18,19 @@ class PromoLastSeenAdapter(var listData: MutableList<PromoCheckoutLastSeenModel>
     }
 
     override fun getItemCount(): Int {
-        return listData.size
+        if (listData.isNotEmpty()) {
+            return listData.size
+        } else {
+            return listDataDeals.size
+        }
     }
 
     override fun onBindViewHolder(holder: PromoLastSeenViewHolder, position: Int) {
-        holder.bind(listData[position])
+        if (listData.isNotEmpty()) {
+            holder.bind(listData[position])
+        } else if (listDataDeals.isNotEmpty()) {
+         holder.bindDeals(listDataDeals[position])
+        }
     }
 
 }
