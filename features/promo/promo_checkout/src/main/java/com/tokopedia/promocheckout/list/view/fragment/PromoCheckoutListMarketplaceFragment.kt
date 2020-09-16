@@ -194,10 +194,6 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(),
         activity?.finish()
     }
 
-    override fun renderDealsPromo(data: List<TravelCollectiveBanner.Banner>) {
-        //
-    }
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == REQUEST_CODE_DETAIL_PROMO) {
             if (resultCode == Activity.RESULT_OK) {

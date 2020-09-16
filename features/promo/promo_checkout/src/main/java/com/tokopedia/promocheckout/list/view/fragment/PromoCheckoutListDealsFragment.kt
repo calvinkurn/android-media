@@ -5,7 +5,6 @@ import com.tokopedia.abstraction.constant.IRouterConstant
 import com.tokopedia.promocheckout.common.domain.model.TravelCollectiveBanner
 import com.tokopedia.promocheckout.common.view.uimodel.DataUiModel
 import com.tokopedia.promocheckout.list.di.PromoCheckoutListComponent
-import com.tokopedia.promocheckout.list.view.adapter.PromoDealsAdapter
 import com.tokopedia.promocheckout.list.view.presenter.PromoCheckoutListContract
 import com.tokopedia.promocheckout.list.view.presenter.PromoCheckoutListDealsPresenter
 import javax.inject.Inject
@@ -19,7 +18,6 @@ class PromoCheckoutListDealsFragment() : BasePromoCheckoutListFragment(), PromoC
 
     @Inject
     lateinit var promoCheckoutListDealsPresenter: PromoCheckoutListDealsPresenter
-    private val promoDealsAdapter: PromoDealsAdapter by lazy { PromoDealsAdapter(arrayListOf(), this) }
 
     override var serviceId: String = IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.DEALS_STRING
     var categoryID: Int = 1
@@ -72,13 +70,6 @@ class PromoCheckoutListDealsFragment() : BasePromoCheckoutListFragment(), PromoC
             return promoCheckoutListMarketplaceFragment
         }
 
-    }
-
-    override fun renderDealsPromo(data: List<TravelCollectiveBanner.Banner>) {
-        promoDealsAdapter.listData.clear()
-        promoDealsAdapter.listData.addAll(data)
-        promoDealsAdapter.notifyDataSetChanged()
-        populateDealsPromo(data)
     }
 
     override fun onSuccessCheckPromo(data: DataUiModel) {

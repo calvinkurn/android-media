@@ -69,10 +69,6 @@ class PromoCheckoutListEventFragment : BasePromoCheckoutListFragment(), PromoChe
         }
     }
 
-    override fun renderDealsPromo(data: List<TravelCollectiveBanner.Banner>) {
-        //
-    }
-
     override fun onSuccessCheckPromo(data: DataUiModel) {
         val intent = Intent()
         val promoData = PromoData(data.isCoupon, data.codes[0],

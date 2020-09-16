@@ -65,10 +65,6 @@ open class PromoCheckoutListDigitalFragment : BasePromoCheckoutListFragment(), P
         if (promoCode.isNotEmpty()) promoCheckoutListDigitalPresenter.checkPromoCode(promoCode, promoDigitalModel)
     }
 
-    override fun renderDealsPromo(data: List<TravelCollectiveBanner.Banner>) {
-        //
-    }
-
     override fun onSuccessCheckPromo(data: DataUiModel) {
         trackSuccessCheckPromoCode(data)
         val intent = Intent()
