@@ -106,7 +106,8 @@
       "userId": "{{.*}}",
       "businessUnit": "travel & entertainment",
       "category": "hotel"
-    },{
+    },
+    {
       "event": "clickHotel",
       "eventCategory": "digital - native",
       "eventAction": "select destination",
@@ -118,19 +119,8 @@
       "userId": "{{.*}}",
       "businessUnit": "travel & entertainment",
       "category": "hotel"
-    }, {
-      "event": "clickHotel",
-      "eventCategory": "digital - native",
-      "eventAction": "select stay date",
-      "eventLabel": "{{hotel - .* - .*}}",
-      "screenName": "/hotel/homepage",
-      "currentSite": "tokopediadigitalhotel",
-      "clientId": "{{.*}}",
-      "sessionIris": "{{.*}}",
-      "userId": "{{.*}}",
-      "businessUnit": "travel & entertainment",
-      "category": "hotel"
-    }, {
+    },
+    {
       "event": "clickHotel",
       "eventCategory": "digital - native",
       "eventAction": "select room guest",

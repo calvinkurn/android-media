@@ -3,9 +3,12 @@ package com.tokopedia.hotel.homepage.presentation.activity
 import android.app.Activity
 import android.app.Instrumentation
 import android.content.Intent
+import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions
+import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
@@ -16,13 +19,14 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.analyticsdebugger.validator.core.getAnalyticsWithQuery
 import com.tokopedia.analyticsdebugger.validator.core.hasAllSuccess
+import com.tokopedia.banner.BannerViewPagerAdapter
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity
 import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity.Companion.HOTEL_DESTINATION_NAME
 import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity.Companion.HOTEL_DESTINATION_SEARCH_ID
 import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity.Companion.HOTEL_DESTINATION_SEARCH_TYPE
 import com.tokopedia.hotel.homepage.presentation.activity.mock.HotelHomepageMockResponseConfig
-import com.tokopedia.hotel.search.presentation.activity.HotelSearchResultActivityTest
+import com.tokopedia.hotel.homepage.presentation.adapter.viewholder.HotelLastSearchViewHolder
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.hamcrest.core.AllOf
 import org.junit.*
@@ -65,24 +69,17 @@ class HotelHomepageActivityTest {
     }
 
     @Test
-    fun testHotelHomepageBanner() {
-        slidePromoBanner()
-        clickSeeAllPromoBanner()
-        clickPromoBanner()
-    }
-
-    @Test
-    fun testClickRecentSearchWidget() {
-        clickRecentSearchWidget()
-    }
-
-    @Test
     fun testHomeLayout() {
         clickOnChangeDestination()
-        modifyCheckInCheckOutDate()
-        modifyCheckOutDate()
+//        modifyCheckInCheckOutDate()
+//        modifyCheckOutDate()
         modifyGuestAndRoomCount()
         clickSubmitButton()
+
+        slidePromoBanner()
+        clickPromoBanner()
+
+        clickRecentSearchWidget()
 
         Assert.assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_HOTEL_HOMEPAGE),
                 hasAllSuccess())
@@ -112,14 +109,14 @@ class HotelHomepageActivityTest {
         onView(AllOf.allOf(withId(R.id.image_button_plus),
                 isDescendantOfA(AllOf.allOf(withId(R.id.spv_hotel_room),
                         hasDescendant(AllOf.allOf(withId(R.id.textview_title), withText("Kamar")))))))
-                .perform(ViewActions.click())
+                .perform(click())
                 .check(matches(isDisplayed()))
         Thread.sleep(1000)
 
         onView(AllOf.allOf(withId(R.id.image_button_plus),
                 isDescendantOfA(AllOf.allOf(withId(R.id.spv_hotel_adult),
                         hasDescendant(AllOf.allOf(withId(R.id.textview_title), withText("Tamu")))))))
-                .perform(ViewActions.click())
+                .perform(click())
                 .check(matches(isDisplayed()))
         Thread.sleep(1000)
 
@@ -127,28 +124,47 @@ class HotelHomepageActivityTest {
         Thread.sleep(2000)
     }
 
-    private fun modifyCheckInCheckOutDate() {
-
-    }
-
-    private fun modifyCheckOutDate() {
-
-    }
-
     private fun slidePromoBanner() {
-
+        Thread.sleep(4000)
+        if (getBannerItemCount() > 0) {
+            onView(withId(R.id.banner_recyclerview)).check(matches(isDisplayed()))
+            Thread.sleep(1000)
+            if (getBannerItemCount() > 1)
+                onView(withId(R.id.banner_recyclerview))
+                        .perform(RecyclerViewActions.scrollToPosition<BannerViewPagerAdapter.BannerViewHolder>(
+                                getBannerItemCount() - 1))
+        } else {
+            Thread.sleep(1000)
+            onView(withId(R.id.banner_recyclerview)).check(matches(org.hamcrest.Matchers.not(isDisplayed())))
+        }
     }
 
-    private fun clickSeeAllPromoBanner() {
+    private fun getBannerItemCount(): Int {
+        val recyclerView: RecyclerView = activityRule.activity.findViewById(R.id.banner_recyclerview)
+        return recyclerView.adapter?.itemCount ?: 0
+    }
 
+    private fun getLastSearchCount(): Int {
+        val recyclerView: RecyclerView = activityRule.activity.findViewById(R.id.rv_hotel_homepage_last_search)
+        return recyclerView.adapter?.itemCount ?: 0
     }
 
     private fun clickPromoBanner() {
+        Thread.sleep(2000)
 
+        if (getBannerItemCount() > 0) {
+            onView(withId(R.id.banner_recyclerview)).perform(RecyclerViewActions
+                    .actionOnItemAtPosition<BannerViewPagerAdapter.BannerViewHolder>(0, click()))
+        }
     }
 
     private fun clickRecentSearchWidget() {
+        Thread.sleep(4000)
 
+        if (getBannerItemCount() > 0) {
+            onView(withId(R.id.rv_hotel_homepage_last_search)).perform(RecyclerViewActions
+                    .actionOnItemAtPosition<HotelLastSearchViewHolder>(0, click()))
+        }
     }
 
     @After
