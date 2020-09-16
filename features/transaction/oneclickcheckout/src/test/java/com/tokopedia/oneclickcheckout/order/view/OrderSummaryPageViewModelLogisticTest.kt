@@ -1062,6 +1062,37 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
     }
 
     @Test
+    fun `Auto Apply Logistic Promo Without Corresponding Courier`() {
+        // Given
+        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
+        orderSummaryPageViewModel._orderShipment = helper.orderShipment
+
+        every { ratesUseCase.execute(any()) } returns Observable.just(helper.shippingRecommendationData)
+        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(ValidateUsePromoRevampUiModel(PromoUiModel(voucherOrderUiModels = listOf(
+                PromoCheckoutVoucherOrdersItemUiModel(code = "bbo", messageUiModel = MessageUiModel(state = "green"))
+        )), status = "OK"))
+        orderSummaryPageViewModel.chooseLogisticPromo(helper.logisticPromo)
+
+        coEvery { updateCartOccUseCase.executeSuspend(any()) } returns UpdateCartOccGqlResponse(response = UpdateCartOccResponse(data = UpdateCartDataOcc()))
+        val shippingRecommendationData = helper.shippingRecommendationData
+        val durations = shippingRecommendationData.shippingDurationViewModels.toMutableList()
+        durations[1].shippingCourierViewModelList[0].productData.shipperProductId = 0
+        shippingRecommendationData.shippingDurationViewModels = durations
+        every { ratesUseCase.execute(any()) } returns Observable.just(shippingRecommendationData)
+
+        // When
+        orderSummaryPageViewModel.updateProduct(OrderProduct(quantity = QuantityUiModel(orderQuantity = 10)))
+        (testDispatchers.main as TestCoroutineDispatcher).advanceUntilIdle()
+
+        // Then
+        val shipping = orderSummaryPageViewModel.orderShipment.value
+        assertEquals(false, shipping.isApplyLogisticPromo)
+        assertEquals(null, shipping.logisticPromoShipping)
+        assertEquals(helper.firstCourierFirstDuration.productData.shipperProductId, shipping.getRealShipperProductId())
+        assertEquals(OccGlobalEvent.Normal, orderSummaryPageViewModel.globalEvent.value)
+    }
+
+    @Test
     fun `Auto Apply Logistic Promo Red State`() {
         // Given
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
