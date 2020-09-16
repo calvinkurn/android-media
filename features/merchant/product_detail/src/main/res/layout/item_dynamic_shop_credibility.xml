@@ -97,12 +97,11 @@
             android:id="@+id/shop_last_active"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_12"
             android:layout_marginTop="@dimen/dp_4"
+            android:layout_marginStart="@dimen/dp_12"
             android:textColor="@color/Neutral_N700_68"
             app:layout_constraintStart_toEndOf="@+id/shop_ava"
             app:layout_constraintTop_toBottomOf="@+id/shop_name"
-            app:layout_constraintBottom_toBottomOf="@+id/shop_ava"
             app:layout_goneMarginStart="@dimen/dp_0"
             app:typographyType="body_3"
             tools:text="Online 20 menit lalu" />
@@ -233,7 +232,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/shop_ava"
-            app:unifyButtonSize="medium"
+            app:unifyButtonSize="small"
             app:unifyButtonType="main"
             app:unifyButtonVariant="ghost" />
 
