@@ -1060,9 +1060,10 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
         }
     }
 
-    fun removeCartItemById(cartIds: List<String>, context: Context?) {
+    fun removeCartItemById(cartIds: List<String>, context: Context?): ArrayList<Int> {
         // Store item first before remove item to prevent ConcurrentModificationException
         val toBeRemovedData = ArrayList<Any>()
+        val toBeRemovedIndex = ArrayList<Int>()
         var disabledItemHeaderHolderData: DisabledItemHeaderHolderData? = null
         var cartItemTickerErrorHolderData: CartItemTickerErrorHolderData? = null
         var disabledAccordionHolderData: DisabledAccordionHolderData? = null
@@ -1072,6 +1073,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
         loop@ for (i in cartDataList.indices) {
             val obj = cartDataList[i]
             when (obj) {
+                // For enable / available item
                 is CartShopHolderData -> {
                     val toBeRemovedCartItemHolderData = ArrayList<CartItemHolderData>()
                     obj.shopGroupAvailableData.cartItemDataList?.let {
@@ -1087,6 +1089,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
                         }
                         if (it.size == 0) {
                             toBeRemovedData.add(obj)
+                            toBeRemovedIndex.add(i)
                         }
                     }
                 }
@@ -1103,12 +1106,14 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
                         // If item before `obj` is shop, then remove it since the shop only has one item
                         if (after !is DisabledCartItemHolderData) {
                             toBeRemovedData.add(before)
+                            toBeRemovedIndex.add(i - 1)
                             // Adjust divider visibility
                             if (after is DisabledShopHolderData) {
                                 after.showDivider = false
                             }
                         }
                         toBeRemovedData.add(obj)
+                        toBeRemovedIndex.add(i)
                     } else if (before is DisabledCartItemHolderData) {
                         // If item before `obj` is cart item, then don't remove it since the shop has more than one item
                         // Adjust divider visibility
@@ -1116,6 +1121,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
                             before.showDivider = false
                         }
                         toBeRemovedData.add(obj)
+                        toBeRemovedIndex.add(i)
                     }
 
                     // If two item before `obj` is reason item, then remove it since the reason has only one shop and the shop has only one item
@@ -1123,6 +1129,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
                     if (twoBefore is DisabledReasonHolderData) {
                         if (after !is DisabledCartItemHolderData && after !is DisabledShopHolderData) {
                             toBeRemovedData.add(twoBefore)
+                            toBeRemovedIndex.add(i - 2)
                         }
                     }
 
@@ -1199,7 +1206,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
             }
         }
 
-        notifyDataSetChanged()
+        return toBeRemovedIndex
     }
 
     fun addCartTicker(tickerAnnouncementHolderData: TickerAnnouncementHolderData) {

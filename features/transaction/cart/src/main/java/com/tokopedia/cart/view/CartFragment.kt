@@ -2554,7 +2554,10 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             resetRecentViewList()
             dPresenter.processInitialGetCartData(getCartId(), false, false)
         } else {
-            cartAdapter.removeCartItemById(deletedCartIds, context)
+            val removedIndices = cartAdapter.removeCartItemById(deletedCartIds, context)
+            removedIndices.forEach {
+                onNeedToRemoveViewItem(it)
+            }
 
             if (forceExpandCollapsedUnavailableItems && cartAdapter.allDisabledCartItemData.size > 1) {
                 collapseOrExpandDisabledItem()
@@ -2595,12 +2598,23 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             resetRecentViewList()
             dPresenter.processInitialGetCartData(getCartId(), false, false)
         } else {
-            cartAdapter.removeCartItemById(listOf(cartId), context)
+            val removedIndices = cartAdapter.removeCartItemById(listOf(cartId), context)
+            removedIndices.forEach {
+                onNeedToRemoveViewItem(it)
+            }
             dPresenter.reCalculateSubTotal(cartAdapter.allShopGroupDataList, cartAdapter.insuranceCartShops)
             setToolbarShadowVisibility(cartAdapter.allAvailableCartItemData.isEmpty())
             notifyBottomCartParent()
 
             dPresenter.processGetWishlistData()
+        }
+    }
+
+    fun onNeedToRemoveViewItem(position: Int) {
+        if (cartRecyclerView.isComputingLayout) {
+            cartRecyclerView.post { cartAdapter.notifyItemRemoved(position) }
+        } else {
+            cartAdapter.notifyItemRemoved(position)
         }
     }
 
