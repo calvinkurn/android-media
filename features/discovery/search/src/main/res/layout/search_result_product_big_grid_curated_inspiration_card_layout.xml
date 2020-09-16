@@ -49,7 +49,7 @@
             android:foreground="?attr/selectableItemBackground"
             android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
-            tools:text="@string/search_inspiration_card_curated_button"
+            android:text="@string/search_inspiration_card_curated_button"
             android:layout_marginTop="@dimen/dp_12"
             android:layout_marginBottom="@dimen/dp_8"
             android:layout_marginEnd="@dimen/dp_8"
