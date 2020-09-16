@@ -9,4 +9,6 @@ interface BroadMatchListener {
     fun onBroadMatchSeeMoreClicked(broadMatchViewModel: BroadMatchViewModel)
 
     fun onBroadMatchThreeDotsClicked(broadMatchItemViewModel: BroadMatchItemViewModel)
+
+    fun onBroadMatchItemImpressed(broadMatchItemViewModel: BroadMatchItemViewModel)
 }

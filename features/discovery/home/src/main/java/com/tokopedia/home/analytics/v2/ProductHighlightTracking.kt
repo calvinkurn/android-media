@@ -27,7 +27,11 @@ object ProductHighlightTracking : BaseTracking() {
                         channelId = channel.id,
                         isFreeOngkir = grid.freeOngkir.isActive,
                         persoType = channel.persoType,
-                        categoryId = channel.categoryID
+                        categoryId = channel.categoryID,
+                        isTopAds = grid.isTopads,
+                        isCarousel = false,
+                        headerName = channel.header.name,
+                        recommendationType = grid.recommendationType
                 )
             },
             list = String.format(
@@ -46,6 +50,8 @@ object ProductHighlightTracking : BaseTracking() {
         gridName: String,
         gridPrice: String,
         gridFreeOngkirIsActive: Boolean,
+        isTopAds: Boolean,
+        recommendationType: String,
         position: Int) = getBasicProductChannelClick(
             event = Event.PRODUCT_CLICK,
             eventCategory = Category.HOMEPAGE,
@@ -65,7 +71,11 @@ object ProductHighlightTracking : BaseTracking() {
                             channelId = channelId,
                             isFreeOngkir = gridFreeOngkirIsActive,
                             persoType = persoType,
-                            categoryId = categoryId
+                            categoryId = categoryId,
+                            isTopAds = isTopAds,
+                            isCarousel = false,
+                            headerName = headerName,
+                            recommendationType = recommendationType
                     )
             ),
             list = String.format(
@@ -83,9 +93,11 @@ object ProductHighlightTracking : BaseTracking() {
             gridName: String,
             gridPrice: String,
             gridFreeOngkirIsActive: Boolean,
+            isTopAds: Boolean,
+            recommendationType: String,
             position: Int) {
         getTracker().sendEnhanceEcommerceEvent(getProductHighlightClick(
-                channelId, headerName, campaignCode, persoType, categoryId, gridId, gridName, gridPrice, gridFreeOngkirIsActive, position))
+                channelId, headerName, campaignCode, persoType, categoryId, gridId, gridName, gridPrice, gridFreeOngkirIsActive, isTopAds, recommendationType, position))
     }
 
     //componentSection
@@ -111,7 +123,11 @@ object ProductHighlightTracking : BaseTracking() {
                             channelId = channel.id,
                             isFreeOngkir = grid.isFreeOngkirActive,
                             persoType = channel.trackingAttributionModel.persoType,
-                            categoryId = channel.trackingAttributionModel.categoryId
+                            categoryId = channel.trackingAttributionModel.categoryId,
+                            isTopAds = grid.isTopads,
+                            recommendationType = grid.recommendationType,
+                            isCarousel = false,
+                            headerName = channel.channelHeader.name
                     )
                 })
                 .appendChannelId(channel.id)
