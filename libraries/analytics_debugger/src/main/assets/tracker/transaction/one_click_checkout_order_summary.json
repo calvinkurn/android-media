@@ -183,6 +183,20 @@
       "eventAction": "{{click promo section with promo (?:applied|not applied)}}",
       "sessionIris": "{{.*}}",
       "eventLabel": "{{.*}}"
+    },
+    {
+      "eventCategory": "order summary",
+      "event": "viewCheckoutExpressIris",
+      "eventAction": "view promo already applied in order summary list",
+      "sessionIris": "{{.*}}",
+      "eventLabel": ""
+    },
+    {
+      "eventCategory": "order summary",
+      "event": "viewCheckoutExpressIris",
+      "eventAction": "{{view promo (?:released|decreased) after adjust item}}",
+      "sessionIris": "{{.*}}",
+      "eventLabel": ""
     }
   ],
   "readme": "OCC Order Summary Page Tracking"
