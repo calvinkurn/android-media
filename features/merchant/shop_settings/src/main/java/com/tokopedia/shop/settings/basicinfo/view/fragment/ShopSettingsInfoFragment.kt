@@ -39,6 +39,7 @@ import com.tokopedia.shop.settings.basicinfo.view.activity.ShopEditBasicInfoActi
 import com.tokopedia.shop.settings.basicinfo.view.activity.ShopEditScheduleActivity
 import com.tokopedia.shop.settings.basicinfo.view.viewmodel.ShopSettingsInfoViewModel
 import com.tokopedia.shop.settings.common.di.DaggerShopSettingsComponent
+import com.tokopedia.shop.settings.common.util.ShopSettingsErrorHandler
 import com.tokopedia.shop.settings.common.util.ShopTypeDef
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
@@ -227,6 +228,8 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
                     view?.let { view ->
                         Toaster.make(view, getString(R.string.error_get_shop_status), Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL)
                     }
+                    ShopSettingsErrorHandler.logMessage(it.throwable.message ?: "")
+                    ShopSettingsErrorHandler.logExceptionToCrashlytics(it.throwable)
                 }
             }
         })
@@ -278,6 +281,8 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
                     view?.let { view ->
                         Toaster.make(view, getString(R.string.error_get_os_merchant), Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL)
                     }
+                    ShopSettingsErrorHandler.logMessage(it.throwable.message ?: "")
+                    ShopSettingsErrorHandler.logExceptionToCrashlytics(it.throwable)
                 }
             }
         })
@@ -443,6 +448,8 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
         hideLoading()
         val message = ErrorHandler.getErrorMessage(context, throwable)
         NetworkErrorHelper.showEmptyState(context, view, message) { loadShopBasicData() }
+        ShopSettingsErrorHandler.logMessage(throwable.message ?: "")
+        ShopSettingsErrorHandler.logExceptionToCrashlytics(throwable)
     }
 
     private fun onSuccessUpdateShopSchedule(successMessage: String) {
@@ -457,6 +464,8 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
     private fun onErrorUpdateShopSchedule(throwable: Throwable) {
         hideSubmitLoading()
         showSnackbarErrorSubmitEdit(throwable)
+        ShopSettingsErrorHandler.logMessage(throwable.message ?: "")
+        ShopSettingsErrorHandler.logExceptionToCrashlytics(throwable)
     }
 
     private fun showSnackbarErrorSubmitEdit(throwable: Throwable) {
