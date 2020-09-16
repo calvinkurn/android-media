@@ -103,7 +103,6 @@ class TabsViewModel(val application: Application, val components: ComponentsItem
                                 this.noOfPagesLoaded = 0
                             }
                         }
-
                     }
                 }
             }

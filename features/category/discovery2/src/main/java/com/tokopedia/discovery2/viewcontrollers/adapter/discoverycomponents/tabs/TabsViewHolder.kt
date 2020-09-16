@@ -9,7 +9,6 @@ import androidx.lifecycle.Observer
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.Utils.Companion.preSelectedTab
-import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.factory.ComponentsList
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
@@ -30,6 +29,7 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) : AbstractV
 
     override fun onViewAttachedToWindow() {
         super.onViewAttachedToWindow()
+        tabsHolder.tabLayout.tabMode = TabLayout.MODE_SCROLLABLE
         tabsHolder.tabLayout.addOnTabSelectedListener(this)
         tabsViewModel.getUnifyTabLiveData().observe(fragment.viewLifecycleOwner, Observer {
             tabsHolder.tabLayout.removeAllTabs()
@@ -46,6 +46,7 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) : AbstractV
         })
 
         tabsViewModel.getColorTabComponentLiveData().observe(fragment.viewLifecycleOwner, Observer {
+            tabsHolder.tabLayout.tabMode = TabLayout.MODE_SCROLLABLE
             tabsHolder.tabLayout.removeAllTabs()
             tabsHolder.tabLayout.layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
             tabsHolder.getUnifyTabLayout().setSelectedTabIndicator(null)
