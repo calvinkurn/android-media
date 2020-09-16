@@ -169,6 +169,20 @@
       "eventAction": "view error message",
       "sessionIris": "{{.*}}",
       "eventLabel": "{{.*}}"
+    },
+    {
+      "eventCategory": "order summary",
+      "event": "clickCheckoutExpress",
+      "eventAction": "click back in order summary page",
+      "sessionIris": "{{.*}}",
+      "eventLabel": ""
+    },
+    {
+      "eventCategory": "order summary",
+      "event": "clickCheckoutExpress",
+      "eventAction": "{{click promo section with promo (?:applied|not applied)}}",
+      "sessionIris": "{{.*}}",
+      "eventLabel": "{{.*}}"
     }
   ],
   "readme": "OCC Order Summary Page Tracking"

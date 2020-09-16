@@ -1139,9 +1139,11 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             return
         }
         globalEvent.value = OccGlobalEvent.Loading
+        OccIdlingResource.increment()
         updateCartOccUseCase.execute(param, {
             globalEvent.value = OccGlobalEvent.Normal
             onSuccess(generateValidateUsePromoRequest(), generatePromoRequest(), generateBboPromoCodes())
+            OccIdlingResource.decrement()
         }, { throwable: Throwable ->
             if (throwable is MessageErrorException) {
                 globalEvent.value = OccGlobalEvent.Error(errorMessage = throwable.message
@@ -1149,6 +1151,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             } else {
                 globalEvent.value = OccGlobalEvent.Error(throwable)
             }
+            OccIdlingResource.decrement()
         })
     }
 

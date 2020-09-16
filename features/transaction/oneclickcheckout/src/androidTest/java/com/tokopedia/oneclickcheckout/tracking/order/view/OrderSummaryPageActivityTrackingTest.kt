@@ -2,6 +2,8 @@ package com.tokopedia.oneclickcheckout.tracking.order.view
 
 import android.app.Activity
 import android.app.Instrumentation.ActivityResult
+import android.content.Intent
+import androidx.test.espresso.Espresso
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.IdlingResource
 import androidx.test.espresso.intent.Intents.intending
@@ -69,6 +71,12 @@ class OrderSummaryPageActivityTrackingTest {
     fun performOrderSummaryPageTrackingActions() {
         cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_NO_PROFILE_RESPONSE_PATH
         activityRule.launchActivity(null)
+
+        // prevent press back on non-root activity
+        val activity = activityRule.activity
+        activity.startActivity(Intent(activity, OrderSummaryPageActivity::class.java))
+        Espresso.pressBack()
+
         intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
 
         orderSummaryPage {
@@ -96,6 +104,8 @@ class OrderSummaryPageActivityTrackingTest {
 
             promoInterceptor.customValidateUseResponsePath = VALIDATE_USE_PROMO_REVAMP_BBO_APPLIED_RESPONSE
             clickBboTicker()
+
+            clickButtonPromo()
 
             checkoutInterceptor.customCheckoutResponsePath = CHECKOUT_EMPTY_STOCK_RESPONSE_PATH
             pay()
