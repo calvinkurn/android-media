@@ -12,16 +12,22 @@ import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
+import androidx.viewpager.widget.ViewPager
+import androidx.viewpager2.widget.ViewPager2
+import com.google.android.material.tabs.TabLayout
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.analyticsdebugger.validator.core.getAnalyticsWithQuery
 import com.tokopedia.analyticsdebugger.validator.core.hasAllSuccess
 import com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager.CircularViewPager
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.BannerViewHolder
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.CategoryWidgetViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.PopularKeywordViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.TickerViewHolder
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.widget_business.NewBusinessViewHolder
 import com.tokopedia.home.environment.InstrumentationHomeTestActivity
 import com.tokopedia.home.mock.HomeMockResponseConfig
 import com.tokopedia.home_component.viewholders.*
@@ -44,6 +50,8 @@ private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_LIST_CAROUSEL = "tracker/ho
 private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_LEGO_BANNER = "tracker/home/lego_banner.json"
 private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_POPULAR_KEYWORD = "tracker/home/popular_keyword.json"
 private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_PRODUCT_HIGHLIGHT = "tracker/home/product_highlight.json"
+private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_CATEGORY_WIDGET = "tracker/home/category_widget.json"
+private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_BU_WIDGET = "tracker/home/bu_widget.json"
 private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_MIX_LEFT = "tracker/home/mix_left.json"
 private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_MIX_TOP = "tracker/home/mix_top.json"
 private const val TAG = "DynamicChannelComponentAnalyticsTest"
@@ -119,20 +127,25 @@ class DynamicChannelComponentAnalyticsTest {
 
         //ontesting
 
+        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_CATEGORY_WIDGET),
+                hasAllSuccess())
+
+        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_BU_WIDGET),
+                hasAllSuccess())
 
         //worked
-        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_PRODUCT_HIGHLIGHT),
-                hasAllSuccess())
-        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_TICKER),
-                hasAllSuccess())
-        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_POPULAR_KEYWORD),
-                hasAllSuccess())
-        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_MIX_LEFT),
-                hasAllSuccess())
-        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_MIX_TOP),
-                hasAllSuccess())
-        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_LEGO_BANNER),
-                hasAllSuccess())
+//        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_PRODUCT_HIGHLIGHT),
+//                hasAllSuccess())
+//        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_TICKER),
+//                hasAllSuccess())
+//        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_POPULAR_KEYWORD),
+//                hasAllSuccess())
+//        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_MIX_LEFT),
+//                hasAllSuccess())
+//        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_MIX_TOP),
+//                hasAllSuccess())
+//        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_LEGO_BANNER),
+//                hasAllSuccess())
     }
 
     private fun onFinishTest() {
@@ -199,6 +212,18 @@ class DynamicChannelComponentAnalyticsTest {
                 logTestMessage("VH $holderName")
                 clickLihatSemuaButtonIfAvailable(viewholder.itemView, holderName, i)
                 clickSingleItemOnRecyclerView(viewholder.itemView, R.id.recycleList, holderName)
+            }
+            is CategoryWidgetViewHolder -> {
+                val holderName = "CategoryWidgetViewHolder"
+                logTestMessage("VH $holderName")
+                clickLihatSemuaButtonIfAvailable(viewholder.itemView, holderName, i)
+                clickSingleItemOnRecyclerView(viewholder.itemView, R.id.recycleList, holderName)
+            }
+            is NewBusinessViewHolder -> {
+                val holderName = "NewBusinessViewHolder"
+                logTestMessage("VH $holderName")
+                clickBUWidgetTab(viewholder.itemView)
+                clickSingleItemOnRecyclerView(viewholder.itemView, R.id.recycler_view, holderName)
             }
         }
     }
@@ -376,6 +401,20 @@ class DynamicChannelComponentAnalyticsTest {
         }
     }
 
+    private fun clickBUWidgetTab(view: View) {
+        val childView = view
+        //banner item click
+        val tabPager = childView.findViewById<ViewPager2>(R.id.view_pager)
+        try {
+            Espresso.onView(withId(R.id.tab_layout)).perform(selectTabAtPosition(1))
+
+
+        } catch (e: PerformException) {
+            e.printStackTrace()
+            logTestMessage("Click FAILED BU tab pos "  + 0)
+        }
+    }
+
     private fun logTestMessage(message: String) {
         TopAdsVerificationTestReportUtil.writeTopAdsVerificatorLog(activityRule.activity, message)
         Log.d(TAG, message)
@@ -394,6 +433,24 @@ class DynamicChannelComponentAnalyticsTest {
 
             override fun describeTo(description: Description) {
                 description.appendText("should return first matching item")
+            }
+        }
+    }
+
+    fun selectTabAtPosition(tabIndex: Int): ViewAction {
+        return object : ViewAction {
+            override fun getDescription() = "with tab at index $tabIndex"
+
+            override fun getConstraints() = allOf(isDisplayed(), ViewMatchers.isAssignableFrom(TabLayout::class.java))
+
+            override fun perform(uiController: UiController, view: View) {
+                val tabLayout = view as TabLayout
+                val tabAtIndex: TabLayout.Tab = tabLayout.getTabAt(tabIndex)
+                        ?: throw PerformException.Builder()
+                                .withCause(Throwable("No tab at index $tabIndex"))
+                                .build()
+
+                tabAtIndex.select()
             }
         }
     }

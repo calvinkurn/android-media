@@ -902,6 +902,285 @@
                     }
                 },
                 {
+                    "id": 36970,
+                    "group_id": 113,
+                    "galaxy_attribution": "PG",
+                    "persona": "",
+                    "brand_id": "",
+                    "category_persona": "",
+                    "name": "Category Widget Testing",
+                    "layout": "category_widget",
+                    "type": "inspiration",
+                    "showPromoBadge": false,
+                    "categoryID": "{}",
+                    "perso_type": 1,
+                    "campaignCode": "",
+                    "has_close_button": false,
+                    "isAutoRefreshAfterExpired": false,
+                    "header": {
+                        "id": 37209,
+                        "name": "Category Widget Testing",
+                        "subtitle": "",
+                        "url": "https://www.tokopedia.com/discovery/produk-terlaris?source=homepage.category_widget.0.36970",
+                        "applink": "tokopedia://discovery/produk-terlaris?source=homepage.category_widget.0.36970",
+                        "serverTime": 0,
+                        "expiredTime": "",
+                        "backColor": "red",
+                        "backImage": "",
+                        "textColor": "#000000"
+                    },
+                    "grids": [
+                        {
+                            "id": 65,
+                            "back_color": "",
+                            "name": "Handphone & Tablet",
+                            "url": "https://www.tokopedia.com/p/handphone-tablet",
+                            "applink": "tokopedia://category/65?categoryName=Handphone+%26+Tablet",
+                            "price": "",
+                            "slashedPrice": "",
+                            "discount": "",
+                            "imageUrl": "https://ecs7.tokopedia.net/img/attachment/2020/8/24/40768394/40768394_6da6ce24-c161-4e14-960c-37795f3fc267.jpg",
+                            "label": "",
+                            "soldPercentage": 0,
+                            "attribution": "",
+                            "productClickUrl": "",
+                            "impression": "",
+                            "cashback": "",
+                            "isTopads": false,
+                            "freeOngkir": {
+                                "isActive": false,
+                                "imageUrl": ""
+                            },
+                            "productViewCountFormatted": "",
+                            "isOutOfStock": false,
+                            "warehouseID": 0,
+                            "minOrder": 0,
+                            "shop": {
+                                "shopID": 0
+                            },
+                            "labelGroup": [],
+                            "has_buy_button": false,
+                            "rating": 0,
+                            "count_review": 0,
+                            "benefit": {
+                                "type": "",
+                                "value": ""
+                            },
+                            "textColor": ""
+                        },
+                        {
+                            "id": 1758,
+                            "back_color": "",
+                            "name": "Fashion Wanita",
+                            "url": "https://www.tokopedia.com/p/fashion-wanita",
+                            "applink": "tokopedia://category/1758?categoryName=Fashion+Wanita",
+                            "price": "",
+                            "slashedPrice": "",
+                            "discount": "",
+                            "imageUrl": "https://ecs7.tokopedia.net/img/attachment/2020/8/24/40768394/40768394_732546f9-371d-45c6-a412-451ea50aa22c.jpg",
+                            "label": "",
+                            "soldPercentage": 0,
+                            "attribution": "",
+                            "productClickUrl": "",
+                            "impression": "",
+                            "cashback": "",
+                            "isTopads": false,
+                            "freeOngkir": {
+                                "isActive": false,
+                                "imageUrl": ""
+                            },
+                            "productViewCountFormatted": "",
+                            "isOutOfStock": false,
+                            "warehouseID": 0,
+                            "minOrder": 0,
+                            "shop": {
+                                "shopID": 0
+                            },
+                            "labelGroup": [],
+                            "has_buy_button": false,
+                            "rating": 0,
+                            "count_review": 0,
+                            "benefit": {
+                                "type": "",
+                                "value": ""
+                            },
+                            "textColor": ""
+                        },
+                        {
+                            "id": 1760,
+                            "back_color": "",
+                            "name": "Fashion Muslim",
+                            "url": "https://www.tokopedia.com/p/fashion-muslim",
+                            "applink": "tokopedia://category/1760?categoryName=Fashion+Muslim",
+                            "price": "",
+                            "slashedPrice": "",
+                            "discount": "",
+                            "imageUrl": "https://ecs7.tokopedia.net/img/attachment/2020/8/24/40768394/40768394_199c682c-2ff3-4c9f-8a87-d71c54520c23.jpg",
+                            "label": "",
+                            "soldPercentage": 0,
+                            "attribution": "",
+                            "productClickUrl": "",
+                            "impression": "",
+                            "cashback": "",
+                            "isTopads": false,
+                            "freeOngkir": {
+                                "isActive": false,
+                                "imageUrl": ""
+                            },
+                            "productViewCountFormatted": "",
+                            "isOutOfStock": false,
+                            "warehouseID": 0,
+                            "minOrder": 0,
+                            "shop": {
+                                "shopID": 0
+                            },
+                            "labelGroup": [],
+                            "has_buy_button": false,
+                            "rating": 0,
+                            "count_review": 0,
+                            "benefit": {
+                                "type": "",
+                                "value": ""
+                            },
+                            "textColor": ""
+                        },
+                        {
+                            "id": 61,
+                            "back_color": "",
+                            "name": "Kecantikan",
+                            "url": "https://www.tokopedia.com/p/kecantikan",
+                            "applink": "tokopedia://category/61?categoryName=Kecantikan",
+                            "price": "",
+                            "slashedPrice": "",
+                            "discount": "",
+                            "imageUrl": "https://ecs7.tokopedia.net/img/attachment/2020/8/24/40768394/40768394_01e1d7fe-ec54-4c0a-a372-0d5cc34c4b88.jpg",
+                            "label": "",
+                            "soldPercentage": 0,
+                            "attribution": "",
+                            "productClickUrl": "",
+                            "impression": "",
+                            "cashback": "",
+                            "isTopads": false,
+                            "freeOngkir": {
+                                "isActive": false,
+                                "imageUrl": ""
+                            },
+                            "productViewCountFormatted": "",
+                            "isOutOfStock": false,
+                            "warehouseID": 0,
+                            "minOrder": 0,
+                            "shop": {
+                                "shopID": 0
+                            },
+                            "labelGroup": [],
+                            "has_buy_button": false,
+                            "rating": 0,
+                            "count_review": 0,
+                            "benefit": {
+                                "type": "",
+                                "value": ""
+                            },
+                            "textColor": ""
+                        },
+                        {
+                            "id": 78,
+                            "back_color": "",
+                            "name": "Fashion Anak & Bayi",
+                            "url": "https://www.tokopedia.com/p/fashion-anak-bayi",
+                            "applink": "tokopedia://category/78?categoryName=Fashion+Anak+%26+Bayi",
+                            "price": "",
+                            "slashedPrice": "",
+                            "discount": "",
+                            "imageUrl": "https://ecs7.tokopedia.net/img/attachment/2020/8/24/40768394/40768394_920fddea-e74a-4be2-8a75-813a873116c3.jpg",
+                            "label": "",
+                            "soldPercentage": 0,
+                            "attribution": "",
+                            "productClickUrl": "",
+                            "impression": "",
+                            "cashback": "",
+                            "isTopads": false,
+                            "freeOngkir": {
+                                "isActive": false,
+                                "imageUrl": ""
+                            },
+                            "productViewCountFormatted": "",
+                            "isOutOfStock": false,
+                            "warehouseID": 0,
+                            "minOrder": 0,
+                            "shop": {
+                                "shopID": 0
+                            },
+                            "labelGroup": [],
+                            "has_buy_button": false,
+                            "rating": 0,
+                            "count_review": 0,
+                            "benefit": {
+                                "type": "",
+                                "value": ""
+                            },
+                            "textColor": ""
+                        },
+                        {
+                            "id": 62,
+                            "back_color": "",
+                            "name": "Olahraga",
+                            "url": "https://www.tokopedia.com/p/olahraga",
+                            "applink": "tokopedia://category/62?categoryName=Olahraga",
+                            "price": "",
+                            "slashedPrice": "",
+                            "discount": "",
+                            "imageUrl": "https://ecs7.tokopedia.net/img/attachment/2020/8/24/40768394/40768394_8d48c23a-3090-4c71-abfa-2c637003c1e2.jpg",
+                            "label": "",
+                            "soldPercentage": 0,
+                            "attribution": "",
+                            "productClickUrl": "",
+                            "impression": "",
+                            "cashback": "",
+                            "isTopads": false,
+                            "freeOngkir": {
+                                "isActive": false,
+                                "imageUrl": ""
+                            },
+                            "productViewCountFormatted": "",
+                            "isOutOfStock": false,
+                            "warehouseID": 0,
+                            "minOrder": 0,
+                            "shop": {
+                                "shopID": 0
+                            },
+                            "labelGroup": [],
+                            "has_buy_button": false,
+                            "rating": 0,
+                            "count_review": 0,
+                            "benefit": {
+                                "type": "",
+                                "value": ""
+                            },
+                            "textColor": ""
+                        }
+                    ],
+                    "banner": {
+                        "id": 0,
+                        "title": "",
+                        "description": "",
+                        "url": "",
+                        "back_color": "",
+                        "cta": {
+                            "type": "",
+                            "mode": "",
+                            "text": "",
+                            "coupon_code": ""
+                        },
+                        "applink": "",
+                        "text_color": "",
+                        "image_url": "",
+                        "attribution": "",
+                        "gradient_color": [
+                            "#FFFFFF"
+                        ]
+                    }
+                },
+                {
                     "id": 29555,
                     "group_id": 169,
                     "galaxy_attribution": "PG",
@@ -3253,7 +3532,21 @@
                     "attribution": "",
                     "gradient_color": ["#FFFFFF"]
                 }
-            }]
+            },
+                {
+                    "id": 7345,
+                    "name": "Home Widget",
+                    "layout": "home_widget",
+                    "type": "inspiration",
+                    "header": {
+                        "id": 7432,
+                        "name": "Home Widget",
+                        "url": "https://m.tokopedia.com/discovery/flash-sale",
+                        "applink": "tokopedia://discovery/flash-sale",
+                        "expiredTime": "",
+                        "backColor": "green",
+                        "backImage": ""
+                    }}]
         },
         "homeFlag": {
             "event_time": "",
