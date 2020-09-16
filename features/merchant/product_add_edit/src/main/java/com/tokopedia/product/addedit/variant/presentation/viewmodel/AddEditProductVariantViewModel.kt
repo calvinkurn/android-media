@@ -180,9 +180,14 @@ class AddEditProductVariantViewModel @Inject constructor(
         var sortedVariantUnitValuesMap =  selectedVariantUnitValuesMap.toSortedMap()
         var sortedSelectedVariantUnitMap =  selectedVariantUnitMap
         if (isOldVariantData) {
+            var unitValueIndex = 0
             var unitIndex = 0
+            sortedVariantUnitValuesMap = sortedMapOf()
+            selectedVariantUnitValuesMap.toSortedMap(reverseOrder()).forEach {
+                sortedVariantUnitValuesMap[unitValueIndex] = it.value
+                unitValueIndex++
+            }
             sortedSelectedVariantUnitMap = HashMap()
-            sortedVariantUnitValuesMap = selectedVariantUnitValuesMap.toSortedMap(reverseOrder())
             selectedVariantUnitMap.toSortedMap(reverseOrder()).forEach {
                 sortedSelectedVariantUnitMap[unitIndex] = it.value
                 unitIndex++
@@ -191,7 +196,7 @@ class AddEditProductVariantViewModel @Inject constructor(
 
         productInputModel.value?.variantInputModel?.apply {
             products = mapProducts(selectedVariantDetails, variantPhotos, sortedVariantUnitValuesMap)
-            selections = mapSelections(selectedVariantDetails, sortedVariantUnitValuesMap, sortedSelectedVariantUnitMap)
+            selections =  mapSelections(selectedVariantDetails, sortedVariantUnitValuesMap, sortedSelectedVariantUnitMap)
             sizecharts = mapSizechart(variantSizechart.value)
         }
     }
@@ -392,7 +397,7 @@ class AddEditProductVariantViewModel @Inject constructor(
         var level = 0
 
         // init unitValueList and variantIdList
-        variantUnitValuesMap.toSortedMap().forEach {
+        variantUnitValuesMap.forEach {
             if (it.value.isNotEmpty()) {
                 unitValueList.add(it.value)
                 variantDetails.getOrNull(level)?.let { variantDetail ->
