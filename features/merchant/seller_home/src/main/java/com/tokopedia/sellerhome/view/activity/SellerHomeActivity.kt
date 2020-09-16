@@ -160,6 +160,14 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
                     }?.let { nextDestinationApplink ->
                         putExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA, nextDestinationApplink)
                     }
+                    appLinks.any { appLink ->
+                        appLink == ApplinkConst.REPUTATION
+                    }.let { isReputation ->
+                        if(isReputation) {
+                            val GO_TO_REPUTATION_HISTORY = "GO_TO_REPUTATION_HISTORY"
+                            putExtra(GO_TO_REPUTATION_HISTORY, true)
+                        }
+                    }
                     addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                     startActivity(this)
                 }
