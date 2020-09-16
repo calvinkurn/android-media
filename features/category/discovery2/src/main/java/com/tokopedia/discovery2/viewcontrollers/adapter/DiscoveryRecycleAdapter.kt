@@ -114,7 +114,6 @@ class ComponentsDiffCallBacks : DiffUtil.ItemCallback<ComponentsItem>() {
     }
 
     override fun areContentsTheSame(oldItem: ComponentsItem, newItem: ComponentsItem): Boolean {
-//        if(oldItem.name == "tabs" && oldItem.properties?.dynamic == true) return false
         return newItem == oldItem
     }
 }
