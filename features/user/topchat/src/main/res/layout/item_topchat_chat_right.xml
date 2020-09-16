@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="@dimen/spacing_lvl2"
     android:orientation="vertical">
 
     <LinearLayout
@@ -43,7 +42,6 @@
             android:id="@+id/fxChat"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/bg_topchat_right_chat_message"
             android:paddingLeft="@dimen/spacing_lvl4"
             android:paddingTop="@dimen/dp_topchat_10"
             android:paddingRight="@dimen/spacing_lvl4"

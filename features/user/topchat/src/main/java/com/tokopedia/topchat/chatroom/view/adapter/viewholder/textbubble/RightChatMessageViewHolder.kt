@@ -1,6 +1,7 @@
 package com.tokopedia.topchat.chatroom.view.adapter.viewholder.textbubble
 
 import android.graphics.Color
+import android.view.Gravity
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -11,6 +12,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.CommonViewHolderListener
+import com.tokopedia.topchat.common.util.ViewUtil
 import com.tokopedia.unifyprinciples.Typography
 
 open class RightChatMessageViewHolder(
@@ -27,6 +29,23 @@ open class RightChatMessageViewHolder(
         super.bind(message)
         bindChatReadStatus(message)
         bindHeader(message)
+        bindBackground(message)
+    }
+
+    private fun bindBackground(message: MessageViewModel) {
+        val shadow = ViewUtil.generateBackgroundWithShadow(
+                itemView,
+                R.color.bg_topchat_right_message,
+                R.dimen.dp_topchat_20,
+                R.dimen.dp_topchat_0,
+                R.dimen.dp_topchat_20,
+                R.dimen.dp_topchat_20,
+                R.color.topchat_message_shadow,
+                R.dimen.dp_2,
+                R.dimen.dp_1,
+                Gravity.CENTER
+        )
+        fxChat?.background = shadow
     }
 
     private fun bindHeader(message: MessageViewModel) {
