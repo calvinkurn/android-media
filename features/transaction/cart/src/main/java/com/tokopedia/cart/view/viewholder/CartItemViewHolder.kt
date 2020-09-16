@@ -560,8 +560,10 @@ class CartItemViewHolder constructor(itemView: View,
 
             }
 
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-
+            override fun onTextChanged(charSequence: CharSequence?, start: Int, before: Int, count: Int) {
+                charSequence?.let {
+                    tvNoteCharCounter.setText("${charSequence.length}/${data.cartItemData?.updatedData?.maxCharRemark ?: 0}")
+                }
             }
         })
 
@@ -843,6 +845,5 @@ class CartItemViewHolder constructor(itemView: View,
 
     companion object {
         val TYPE_VIEW_ITEM_CART = R.layout.holder_item_cart_new
-        private val MAX_SHOWING_NOTES_CHAR = 20
     }
 }
