@@ -206,6 +206,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
         if (isListEmpty && flightSearchViewModel.isDoneLoadData()) {
             hideLoading()
             adapter.addElement(emptyDataViewModel)
+            if (!flightSearchViewModel.isInFilterMode) flightSearchViewModel.sendProductNotFoundTrack()
         } else {
             isLoadingInitialData = false
             if (isListEmpty) showLoading()
