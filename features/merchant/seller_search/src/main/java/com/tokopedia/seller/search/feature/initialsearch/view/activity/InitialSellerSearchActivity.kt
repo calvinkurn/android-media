@@ -1,12 +1,16 @@
 package com.tokopedia.seller.search.feature.initialsearch.view.activity
 
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.setLightStatusBar
+import com.tokopedia.kotlin.extensions.view.setStatusBarColor
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.seller.search.R
 import com.tokopedia.seller.search.common.GlobalSearchSellerComponentBuilder
@@ -46,7 +50,7 @@ class InitialSellerSearchActivity: BaseActivity(), HasComponent<InitialSearchCom
         overridePendingTransition(0, 0)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_initial_seller_search)
-        window?.decorView?.setBackgroundColor(Color.WHITE)
+        setWhiteStatusBar()
         proceed()
     }
 
@@ -133,6 +137,14 @@ class InitialSellerSearchActivity: BaseActivity(), HasComponent<InitialSearchCom
         }
         searchBarView?.mHandler?.removeCallbacksAndMessages(null)
         super.onDestroy()
+    }
+
+    private fun setWhiteStatusBar() {
+        window?.decorView?.setBackgroundColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Neutral_N0))
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            setStatusBarColor(Color.TRANSPARENT)
+            setLightStatusBar(true)
+        }
     }
 
 }
