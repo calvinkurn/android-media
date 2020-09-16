@@ -30,6 +30,5 @@
     <string name="content_desc_wishlist_checkbox">checkbox pilih wishlist</string>
     <string name="content_desc_manage">text atur</string>
     <string name="content_desc_cancel">text cancel</string>
-    <string name="content_desc_wishlist_checkbox">checkbox pilih wishlist</string>
     <string name="content_desc_delete_button">button hapus produk</string>
 </resources>
