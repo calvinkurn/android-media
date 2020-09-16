@@ -20,10 +20,11 @@ class NavigationSearchViewHolder(private val view: View,
         val LAYOUT_RES = R.layout.search_result_navigation
     }
 
-    private val adapterNavigation by lazy { ItemNavigationSearchAdapter(navigationSearchListener) }
+    private var adapterNavigation: ItemNavigationSearchAdapter? = null
 
     override fun bind(element: SellerSearchUiModel) {
-        with(view) {
+        adapterNavigation = ItemNavigationSearchAdapter(navigationSearchListener)
+        with(itemView) {
             element.takeIf { it.id == NAVIGATION }?.let { feature ->
                 tvTitleResultNavigation?.text = feature.title
                 rvResultNavigation?.apply {
@@ -36,7 +37,7 @@ class NavigationSearchViewHolder(private val view: View,
                 }
 
                 if (feature.sellerSearchList.isNotEmpty()) {
-                    adapterNavigation.submitList(feature.sellerSearchList)
+                    adapterNavigation?.submitList(feature.sellerSearchList)
                 }
             }
         }

@@ -14,12 +14,12 @@ import com.tokopedia.seller.search.feature.suggestion.view.model.sellersearch.It
 import kotlinx.android.synthetic.main.item_search_result_product.view.*
 
 class ItemProductSearchViewHolder(
-        private val itemViewProduct: View,
+        itemViewProduct: View,
         private val productSearchListener: ProductSearchListener
 ) : RecyclerView.ViewHolder(itemViewProduct) {
 
     fun bind(itemSellerSearchUiModel: ItemSellerSearchUiModel) {
-        with(itemViewProduct) {
+        with(itemView) {
             ivSearchResultProduct?.setImageUrl(itemSellerSearchUiModel.imageUrl.orEmpty())
             bindTitleText(itemSellerSearchUiModel)
             tvSearchResultProductDesc?.text = itemSellerSearchUiModel.desc
@@ -32,16 +32,18 @@ class ItemProductSearchViewHolder(
 
     private fun bindTitleText(item: ItemSellerSearchUiModel) {
         val startIndex = indexOfSearchQuery(item.title.orEmpty(), item.keyword.orEmpty())
-        if (startIndex == -1) {
-            itemViewProduct.tvSearchResultProductTitle?.text = item.title
-        } else {
-            val highlightedTitle = SpannableString(item.title)
-            highlightedTitle.safeSetSpan(TextAppearanceSpan(itemViewProduct.context, R.style.searchTextHiglight),
-                    0, startIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-            highlightedTitle.safeSetSpan(TextAppearanceSpan(itemViewProduct.context, R.style.searchTextHiglight),
-                    startIndex + item.keyword?.length.orZero(),
-                    item.title?.length.orZero(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-            itemViewProduct.tvSearchResultProductTitle?.text = highlightedTitle
+        with(itemView) {
+            if (startIndex == -1) {
+                tvSearchResultProductTitle?.text = item.title
+            } else {
+                val highlightedTitle = SpannableString(item.title)
+                highlightedTitle.safeSetSpan(TextAppearanceSpan(context, R.style.searchTextHiglight),
+                        0, startIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                highlightedTitle.safeSetSpan(TextAppearanceSpan(context, R.style.searchTextHiglight),
+                        startIndex + item.keyword?.length.orZero(),
+                        item.title?.length.orZero(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                tvSearchResultProductTitle?.text = highlightedTitle
+            }
         }
     }
 }

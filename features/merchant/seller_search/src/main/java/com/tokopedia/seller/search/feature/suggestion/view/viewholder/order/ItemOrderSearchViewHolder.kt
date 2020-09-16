@@ -18,19 +18,19 @@ import com.tokopedia.seller.search.feature.suggestion.view.model.sellersearch.It
 import kotlinx.android.synthetic.main.item_search_result_order.view.*
 
 class ItemOrderSearchViewHolder(
-        private val itemViewOrder: View,
+        itemViewOrder: View,
         private val orderSearchListener: OrderSearchListener
 ) : RecyclerView.ViewHolder(itemViewOrder) {
 
     fun bind(itemSellerSearchUiModel: ItemSellerSearchUiModel) {
-        with(itemViewOrder) {
+        with(itemView) {
             if(itemSellerSearchUiModel.imageUrl?.isBlank() == true) {
                 when (itemSellerSearchUiModel.id) {
                     INV, SHIPPING -> {
-                        ivSearchResultOrder?.setImageDrawable(ContextCompat.getDrawable(itemViewOrder.context, R.drawable.ic_invoice_seller_search))
+                        ivSearchResultOrder?.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_invoice_seller_search))
                     }
                     CUSTOMER -> {
-                        ivSearchResultOrder?.setImageDrawable(ContextCompat.getDrawable(itemViewOrder.context, R.drawable.ic_buyers))
+                        ivSearchResultOrder?.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_buyers))
                     }
                 }
             } else {
@@ -48,16 +48,18 @@ class ItemOrderSearchViewHolder(
 
     private fun bindTitleText(item: ItemSellerSearchUiModel) {
         val startIndex = indexOfSearchQuery(item.title.orEmpty(), item.keyword.orEmpty())
-        if (startIndex == -1) {
-            itemViewOrder.tvSearchResultOrderTitle?.text = item.title
-        } else {
-            val highlightedTitle = SpannableString(item.title)
-            highlightedTitle.safeSetSpan(TextAppearanceSpan(itemViewOrder.context, R.style.searchTextHiglight),
-                    0, startIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-            highlightedTitle.safeSetSpan(TextAppearanceSpan(itemViewOrder.context, R.style.searchTextHiglight),
-                    startIndex + item.keyword?.length.orZero(),
-                    item.title?.length.orZero(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-            itemViewOrder.tvSearchResultOrderTitle?.text = highlightedTitle
+        with(itemView) {
+            if (startIndex == -1) {
+                tvSearchResultOrderTitle?.text = item.title
+            } else {
+                val highlightedTitle = SpannableString(item.title)
+                highlightedTitle.safeSetSpan(TextAppearanceSpan(context, R.style.searchTextHiglight),
+                        0, startIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                highlightedTitle.safeSetSpan(TextAppearanceSpan(context, R.style.searchTextHiglight),
+                        startIndex + item.keyword?.length.orZero(),
+                        item.title?.length.orZero(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                tvSearchResultOrderTitle?.text = highlightedTitle
+            }
         }
     }
 }

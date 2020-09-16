@@ -21,10 +21,11 @@ class ProductSearchViewHolder(private val view: View,
         val LAYOUT_RES = R.layout.search_result_product
     }
 
-    private val adapterProduct by lazy { ItemProductSearchAdapter(productSearchListener) }
+    private var adapterProduct: ItemProductSearchAdapter? = null
 
     override fun bind(element: SellerSearchUiModel) {
-        with(view) {
+        adapterProduct = ItemProductSearchAdapter(productSearchListener)
+        with(itemView) {
             element.takeIf { it.id == PRODUCT }?.let { product ->
                 if (product.hasMore) {
                     tvMoreResultProduct?.apply {
@@ -48,7 +49,7 @@ class ProductSearchViewHolder(private val view: View,
                 }
 
                 if (product.sellerSearchList.isNotEmpty()) {
-                    adapterProduct.submitList(product.sellerSearchList)
+                    adapterProduct?.submitList(product.sellerSearchList)
                 }
             }
         }

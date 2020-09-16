@@ -20,10 +20,11 @@ class FaqSearchViewHolder(private val view: View,
         val LAYOUT_RES = R.layout.search_result_faq
     }
 
-    private val adapterFaq by lazy { ItemFaqSearchAdapter(faqSearchListener) }
+    private var adapterFaq: ItemFaqSearchAdapter? = null
 
     override fun bind(element: SellerSearchUiModel) {
-        with(view) {
+        adapterFaq = ItemFaqSearchAdapter(faqSearchListener)
+        with(itemView) {
             element.takeIf { it.id == FAQ }?.let { faq ->
                 if (faq.hasMore) {
                     tvMoreResultFaq?.apply {
@@ -43,7 +44,7 @@ class FaqSearchViewHolder(private val view: View,
                 }
 
                 if (faq.sellerSearchList.isNotEmpty()) {
-                    adapterFaq.submitList(faq.sellerSearchList)
+                    adapterFaq?.submitList(faq.sellerSearchList)
                 }
             }
         }

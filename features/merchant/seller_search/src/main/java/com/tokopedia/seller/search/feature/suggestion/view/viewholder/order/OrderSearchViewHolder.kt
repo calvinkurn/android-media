@@ -21,9 +21,10 @@ class OrderSearchViewHolder(private val view: View,
         val LAYOUT_RES = R.layout.search_result_order
     }
 
-    private val adapterOrder by lazy { ItemOrderSearchAdapter(orderSearchListener) }
+    private var adapterOrder: ItemOrderSearchAdapter? = null
 
     override fun bind(element: SellerSearchUiModel) {
+        adapterOrder = ItemOrderSearchAdapter(orderSearchListener)
         with(view) {
             element.takeIf { it.id == ORDER }?.let { order ->
                 if (order.hasMore) {
@@ -47,7 +48,7 @@ class OrderSearchViewHolder(private val view: View,
                 }
 
                 if (order.sellerSearchList.isNotEmpty()) {
-                    adapterOrder.submitList(order.sellerSearchList)
+                    adapterOrder?.submitList(order.sellerSearchList)
                 }
             }
         }
