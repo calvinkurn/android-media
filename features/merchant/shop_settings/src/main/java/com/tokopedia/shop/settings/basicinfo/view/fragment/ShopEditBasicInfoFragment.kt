@@ -135,6 +135,7 @@ class ShopEditBasicInfoFragment: Fragment() {
                 savedLocalImageUrl = imageUrlOrPathList[0]
             }
             needUpdatePhotoUI = true
+            determineSubmitButton()
         }
     }
 
