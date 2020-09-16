@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import android.widget.Toast
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.lifecycle.Observer
@@ -471,11 +472,13 @@ class HotelHomepageFragment : HotelBaseFragment(),
 
         val itemParam = { view: View, data: Any ->
             val image = view.findViewById<ImageUnify>(R.id.hotelPromoImageCarousel)
-            image.loadImage((data as TravelCollectiveBannerModel.Banner).attribute.imageUrl)
 
-            image.setOnClickListener {
-                onPromoClicked(data, data.position)
-            }
+            view.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+                    view.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                    image.loadImage((data as TravelCollectiveBannerModel.Banner).attribute.imageUrl)
+                }
+            })
         }
 
         promoDataList.forEachIndexed { index, banner ->
