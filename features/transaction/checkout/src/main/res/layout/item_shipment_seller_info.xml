@@ -13,17 +13,18 @@
         android:id="@+id/text_order_number"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Pesanan 1"
         android:textColor="@color/Neutral_N700_96"
+        android:paddingBottom="@dimen/dp_12"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="heading_6" />
+        app:typographyType="heading_6"
+        tools:text="Pesanan 1"
+        tools:visibility="visible" />
 
     <TextView
         android:id="@+id/tv_trade_in_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_12"
         android:background="@drawable/checkout_module_bg_trade_in"
         android:fontFamily="sans-serif"
         android:paddingLeft="@dimen/dp_8"
@@ -70,7 +71,7 @@
         android:id="@+id/tv_shop_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_12"
+        android:layout_marginTop="@dimen/dp_4"
         android:lineSpacingExtra="5sp"
         app:layout_constraintStart_toEndOf="@+id/img_shop_badge"
         app:layout_constraintTop_toBottomOf="@+id/tv_trade_in_label"

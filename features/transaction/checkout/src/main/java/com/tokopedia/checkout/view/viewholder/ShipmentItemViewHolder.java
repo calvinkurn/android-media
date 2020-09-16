@@ -462,7 +462,12 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     }
 
     private void renderShop(ShipmentCartItemModel shipmentCartItemModel) {
-        textOrderNumber.setText("Pesanan " + shipmentCartItemModel.getOrderNumber());
+        if (shipmentCartItemModel.getOrderNumber() > 0) {
+            textOrderNumber.setText("Pesanan " + shipmentCartItemModel.getOrderNumber());
+            textOrderNumber.setVisibility(View.VISIBLE);
+        } else {
+            textOrderNumber.setVisibility(View.GONE);
+        }
 
         if (!TextUtils.isEmpty(shipmentCartItemModel.getPreOrderInfo())) {
             labelPreOrder.setText(shipmentCartItemModel.getPreOrderInfo());

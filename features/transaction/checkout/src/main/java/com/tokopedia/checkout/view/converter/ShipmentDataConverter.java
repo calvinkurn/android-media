@@ -181,8 +181,12 @@ public class ShipmentDataConverter {
             shipmentCartItemModel.setAddressId(cartShipmentAddressFormData.getGroupAddress()
                     .get(0).getUserAddress().getAddressId());
 
+            int orderIndex = 0;
+            if (groupShopList.size() > 1) {
+                orderIndex = groupShopList.indexOf(groupShop) + 1;
+            }
             getShipmentItem(shipmentCartItemModel, userAddress, groupShop, cartShipmentAddressFormData.getKeroToken(),
-                    String.valueOf(cartShipmentAddressFormData.getKeroUnixTime()), hasTradeInDropOffAddress, groupShopList.indexOf(groupShop) + 1);
+                    String.valueOf(cartShipmentAddressFormData.getKeroUnixTime()), hasTradeInDropOffAddress, orderIndex);
             shipmentCartItemModel.setFulfillment(groupShop.isFulfillment());
             shipmentCartItemModel.setFulfillmentId(groupShop.getFulfillmentId());
             setCartItemModelError(shipmentCartItemModel);
@@ -212,7 +216,9 @@ public class ShipmentDataConverter {
             shipmentCartItemModel.setAllItemError(true);
         }
         shipmentCartItemModel.setErrorTitle(groupShop.getErrorMessage());
-        shipmentCartItemModel.setOrderNumber(orderIndex);
+        if (orderIndex > 0) {
+            shipmentCartItemModel.setOrderNumber(orderIndex);
+        }
         if (groupShop.getShipmentInformationData().getPreorder().isPreorder()) {
             shipmentCartItemModel.setPreOrderInfo(groupShop.getShipmentInformationData().getPreorder().getDuration());
         }
