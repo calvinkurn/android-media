@@ -36,7 +36,5 @@
     <string name="promo_verifikasi_title">Ayo verifikasi nomor HP kamu!</string>
     <string name="promo_btn_verifikasi">Verifikasi Nomor HP</string>
     <string name="promo_phone_verification_message_v2">Kamu baru bisa pakai promo ini setelah verifikasi nomor HP.</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>
