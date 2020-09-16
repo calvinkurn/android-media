@@ -25,8 +25,8 @@ open class LeftChatMessageViewHolder(
             R.dimen.dp_topchat_20,
             R.dimen.dp_topchat_20,
             R.color.topchat_message_shadow,
-            R.dimen.dp_2,
-            R.dimen.dp_1,
+            R.dimen.dp_topchat_2,
+            R.dimen.dp_topchat_1,
             Gravity.CENTER
     )
 
