@@ -16,6 +16,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.pusher.state.PlayPusherNetworkState
+import com.tokopedia.play.broadcaster.ui.model.PlayChannelStatus
 import com.tokopedia.play.broadcaster.ui.model.PlayMetricUiModel
 import com.tokopedia.play.broadcaster.ui.model.TotalLikeUiModel
 import com.tokopedia.play.broadcaster.ui.model.TotalViewUiModel
@@ -430,7 +431,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
     private fun observeEventBanned() {
         parentViewModel.observableEventBanned.observe(viewLifecycleOwner,  EventObserver{ event ->
-            stopLiveStreaming(shouldNavigate = false)
+            parentViewModel.stopPushStream(shouldNavigate = false, reasonStopped = PlayChannelStatus.Moderated)
             showForceStopDialog(
                     title = event.title,
                     message = event.message,

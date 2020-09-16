@@ -329,18 +329,18 @@ class PlayBroadcastViewModel @Inject constructor(
         }
     }
 
-    fun stopPushStream(shouldNavigate: Boolean) {
+    fun stopPushStream(shouldNavigate: Boolean, reasonStopped: PlayChannelStatus = PlayChannelStatus.Stop) {
         scope.launchCatchError(block = {
             withContext(dispatcher.io) {
                 playPusher.stopPush()
                 playPusher.stopPreview()
                 playSocket.destroy()
-                updateChannelStatus(PlayChannelStatus.Stop)
+                updateChannelStatus(reasonStopped)
             }
             _observableLiveInfoState.value = Event(BroadcastState.Stop(shouldNavigate))
         }) {
             _observableLiveInfoState.value = Event(BroadcastState.Error(it,
-                    onRetry = { this.stopPushStream(shouldNavigate) }
+                    onRetry = { this.stopPushStream(shouldNavigate, reasonStopped) }
             ))
         }
     }
@@ -369,7 +369,7 @@ class PlayBroadcastViewModel @Inject constructor(
                         is LiveDuration -> restartLiveDuration(data)
                         is ProductTagging -> setSelectedProduct(PlayBroadcastUiMapper.mapProductTag(data))
                         is Chat -> retrieveNewChat(PlayBroadcastUiMapper.mapIncomingChat(data))
-                        is Banned -> _observableEventBanned.value  = Event(PlayBroadcastUiMapper.mapEventBanned(data))
+                        is Banned -> retrieveBannedEvent(PlayBroadcastUiMapper.mapEventBanned(data))
                     }
                 }
 
@@ -450,6 +450,12 @@ class PlayBroadcastViewModel @Inject constructor(
         }
     }
 
+    private fun retrieveBannedEvent(data: BannedUiModel) {
+        scope.launch(dispatcher.main) {
+            _observableEventBanned.value = Event(data)
+        }
+    }
+
     /**
      * mock
      */
@@ -471,6 +477,13 @@ class PlayBroadcastViewModel @Inject constructor(
                         PlayBroadcastMocker.getMockMetric()
                     }
             )
+        }
+    }
+
+    fun mockEventBanned() {
+        scope.launch(dispatcher.io) {
+            delay(20*1000)
+            retrieveBannedEvent(PlayBroadcastMocker.getEventBanned())
         }
     }
 }

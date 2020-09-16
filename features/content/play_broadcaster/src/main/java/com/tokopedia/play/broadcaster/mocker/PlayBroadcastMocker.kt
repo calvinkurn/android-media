@@ -4,7 +4,6 @@ import android.graphics.Typeface
 import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.style.StyleSpan
-import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.type.StockAvailable
 import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.view.state.Selectable
@@ -169,4 +168,9 @@ object PlayBroadcastMocker {
             TrafficMetricUiModel(TrafficMetricsEnum.NumberOfAtc, "320"),
             TrafficMetricUiModel(TrafficMetricsEnum.NumberOfPaidOrders, "200")
     )
+
+    fun getEventBanned(): BannedUiModel = BannedUiModel(
+            title = "Oops, live streaming dihentikan",
+            message = "Tokomu tidak memenuhi ketentuan yang berlaku saat live streaming. Info lebih lanjut akan dikirim ke e-mail tokomu.",
+            buttonTitle = "Selesai")
 }
