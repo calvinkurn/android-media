@@ -69,18 +69,33 @@ class TalkInboxViewHolder(
     }
 
     private fun setCountAndDate(totalAnswer: Int, date: String) {
-        val counterAndDateText = when {
-            totalAnswer == 0 && isSellerView -> {
-                itemView.context.getString(R.string.inbox_total_count_empty_and_date, date)
+        with(itemView) {
+            when {
+                totalAnswer == 0 && isSellerView -> {
+                    talkInboxAnswerCount.apply {
+                        text = context.getString(R.string.inbox_total_count_empty_seller)
+                        setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_96))
+                        setWeight(Typography.BOLD)
+                    }
+                }
+                totalAnswer == 0 && !isSellerView -> {
+                    talkInboxAnswerCount.apply {
+                        text = context.getString(R.string.inbox_total_count_empty_buyer)
+                        setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_68))
+                        setWeight(Typography.REGULAR)
+                    }
+                }
+                else -> {
+                    talkInboxAnswerCount.apply {
+                        text = context.getString(R.string.inbox_total_count, totalAnswer.toString())
+                        setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_68))
+                        setWeight(Typography.REGULAR)
+                    }
+                }
             }
-            totalAnswer == 0 && !isSellerView -> {
-                itemView.context.getString(R.string.inbox_total_count_and_date, getString(R.string.inbox_no_answer), date)
-            }
-            else -> {
-                itemView.context.getString(R.string.inbox_total_count_and_date, totalAnswer.toString(), date)
-            }
+            talkInboxDate.text = context.getString(R.string.inbox_date, date)
         }
-        itemView.talkInboxAnswerCountAndDate.text = HtmlLinkHelper(itemView.context, counterAndDateText).spannedString
+
     }
 
 }
