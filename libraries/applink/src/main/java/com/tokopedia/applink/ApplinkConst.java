@@ -395,7 +395,6 @@ public interface ApplinkConst {
         String SELLER_SEARCH = "sellerapp://seller-search";
         String PLAY_BROADCASTER = "sellerapp://play-broadcaster";
         String CENTRALIZED_PROMO = "sellerapp://centralized-promo";
-        String SHOP_SETTING_MENU = "sellerapp://menu-setting";
     }
 
     interface Query {
