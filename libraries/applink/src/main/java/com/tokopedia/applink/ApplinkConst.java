@@ -38,8 +38,10 @@ public interface ApplinkConst {
     String SHOP_PRODUCT = "tokopedia://shop/{shop_id}/product";
     String SHOP_FEED = "tokopedia://shop/{shop_id}/feed";
     String SHOP_ETALASE_LIST = "tokopedia://shop/{shop_id}/etalase-list";
+    String SHOP_ETALASE_LIST_STATIC = "tokopedia://shop/etalase/list";
 
     String SHOP_SETTINGS_NOTE = "tokopedia://setting/shop/note";
+    String SHOP_SETTINGS_INFO = "tokopedia://setting/shop/info";
     String PRODUCT_INFO = "tokopedia://product/{product_id}";
     String PRODUCT_IMAGE_REVIEW = "tokopedia://product/{product_id}/imagereview";
     String PRODUCT_ADD = "tokopedia://product/add";
