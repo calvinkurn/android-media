@@ -19,7 +19,7 @@ data class Properties(
         val background: String?,
 
         @SerializedName("dynamic")
-        val dynamic: Boolean,
+        var dynamic: Boolean,
 
         @SerializedName("sticky")
         val sticky: Boolean,

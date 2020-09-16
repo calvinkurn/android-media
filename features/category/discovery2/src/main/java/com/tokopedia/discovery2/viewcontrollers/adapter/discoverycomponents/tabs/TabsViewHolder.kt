@@ -9,6 +9,7 @@ import androidx.lifecycle.Observer
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.Utils.Companion.preSelectedTab
+import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.factory.ComponentsList
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
@@ -65,21 +66,24 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) : AbstractV
 
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
         super.setUpObservers(lifecycleOwner)
-        tabsViewModel.getSyncPageLiveData().observe(fragment.viewLifecycleOwner, Observer { needResync ->
-            if (needResync) {
+        tabsViewModel.getSyncPageLiveData().observe(fragment.viewLifecycleOwner, Observer { needReSync ->
+            if (needReSync) {
                 (fragment as DiscoveryFragment).reSync()
             }
         })
     }
 
+
     override fun onTabSelected(tab: TabLayout.Tab) {
         if (tabsViewModel.setSelectedState(tab.position, true)) {
+            tabsViewModel.clearDynamicTabData()
             tabsViewModel.onTabClick()
             trackTabsGTMStatus(tab)
         }
         if (tab.customView != null && tab.customView is CustomViewCreator) {
             ((tab.customView as CustomViewCreator).viewModel as TabsItemViewModel).setSelectionTabItem(true)
         }
+
     }
 
     override fun onTabUnselected(tab: TabLayout.Tab) {

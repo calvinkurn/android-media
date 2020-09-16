@@ -5,10 +5,10 @@ import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DiscoveryResponse
 import com.tokopedia.discovery2.data.PageInfo
 import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
-import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.PINNED_ACTIVE_TAB
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.PINNED_COMP_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.PINNED_PRODUCT
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 
 
 val discoveryPageData: MutableMap<String, DiscoveryResponse> = HashMap()
@@ -35,10 +35,10 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo, private val queryP
     fun getDiscoveryComponentListWithQueryParam(components: List<ComponentsItem>): List<ComponentsItem> {
         val pinnedCompId = queryParameterMap[PINNED_COMP_ID]
         val componentList = getDiscoveryComponentList(components)
-        if(componentList.isNotEmpty() && !pinnedCompId.isNullOrEmpty()){
+        if (componentList.isNotEmpty() && !pinnedCompId.isNullOrEmpty()) {
             componentList.forEach { item ->
-                if(item.id == pinnedCompId){
-                    item.rpc_PinnedProduct= queryParameterMap[PINNED_PRODUCT]
+                if (item.id == pinnedCompId) {
+                    item.rpc_PinnedProduct = queryParameterMap[PINNED_PRODUCT]
                 }
             }
         }
@@ -75,16 +75,20 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo, private val queryP
 
     private fun parseTab(component: ComponentsItem, position: Int): List<ComponentsItem> {
         val listComponents: ArrayList<ComponentsItem> = ArrayList()
-
-        if(component.data.isNullOrEmpty()){
-            return listComponents
-        }else{
-            listComponents.add(component)
-            if (component.getComponentsItem().isNullOrEmpty()) {
-                component.setComponentsItem(DiscoveryDataMapper.mapTabsListToComponentList(component, ComponentNames.TabsItem.componentName, position, queryParameterMap[PINNED_ACTIVE_TAB]))
+        when {
+            component.properties != null && component.properties!!.dynamic -> {
+                listComponents.add(component)
+            }
+            !component.data.isNullOrEmpty() -> {
+                listComponents.add(component)
+            }
+            else -> {
+                return listComponents
             }
         }
-
+        if (component.getComponentsItem().isNullOrEmpty()) {
+            component.setComponentsItem(DiscoveryDataMapper.mapTabsListToComponentList(component, ComponentNames.TabsItem.componentName, position, queryParameterMap[PINNED_ACTIVE_TAB]))
+        }
         component.getComponentsItem()?.forEach {
             it.apply {
                 val tabData = data?.get(0)
@@ -95,6 +99,7 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo, private val queryP
                         targetComponentIdList.forEachIndexed { index, componentId ->
                             getComponent(componentId, pageInfo.identifier!!)?.let { component1 ->
                                 component1.parentComponentId = component.id
+
                                 componentsItem.add(component1)
                                 listComponents.addAll(parseComponent(component1, position))
                             }
