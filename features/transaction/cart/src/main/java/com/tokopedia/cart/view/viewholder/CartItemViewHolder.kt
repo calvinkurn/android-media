@@ -452,7 +452,7 @@ class CartItemViewHolder constructor(itemView: View,
     }
 
     private fun renderWarningMessage(data: CartItemHolderData) {
-        if (data.cartItemData?.originData?.maxOrder ?: 0 in 0..5) {
+        if (data.cartItemData?.originData?.warningMessage?.isNotBlank() == true) {
             textQtyLeft.text = data.cartItemData?.originData?.warningMessage ?: ""
             textQtyLeft.show()
             actionListener?.onCartItemShowRemainingQty(data.cartItemData?.originData?.productId
@@ -470,7 +470,7 @@ class CartItemViewHolder constructor(itemView: View,
             textProductVariant.show()
             paddingRight = itemView.resources.getDimensionPixelOffset(R.dimen.dp_4)
         } else {
-            if (data.cartItemData?.originData?.maxOrder ?: 0 in 0..5) {
+            if (data.cartItemData?.originData?.warningMessage?.isNotBlank() == true) {
                 textProductVariant.text = ""
                 textProductVariant.invisible()
             } else {
