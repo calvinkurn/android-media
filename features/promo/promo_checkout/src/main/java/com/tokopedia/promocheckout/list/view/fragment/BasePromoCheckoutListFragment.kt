@@ -28,7 +28,10 @@ import com.tokopedia.promocheckout.list.di.DaggerPromoCheckoutListComponent
 import com.tokopedia.promocheckout.list.di.PromoCheckoutListModule
 import com.tokopedia.promocheckout.list.model.listcoupon.PromoCheckoutListModel
 import com.tokopedia.promocheckout.list.model.listlastseen.PromoCheckoutLastSeenModel
-import com.tokopedia.promocheckout.list.view.adapter.*
+import com.tokopedia.promocheckout.list.view.adapter.PromoCheckoutListAdapterFactory
+import com.tokopedia.promocheckout.list.view.adapter.PromoCheckoutListViewHolder
+import com.tokopedia.promocheckout.list.view.adapter.PromoLastSeenAdapter
+import com.tokopedia.promocheckout.list.view.adapter.PromoLastSeenViewHolder
 import com.tokopedia.promocheckout.list.view.presenter.PromoCheckoutListContract
 import com.tokopedia.promocheckout.list.view.presenter.PromoCheckoutListPresenter
 import kotlinx.android.synthetic.main.fragment_promo_checkout_list.*
@@ -38,13 +41,12 @@ import javax.inject.Inject
 abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutListModel, PromoCheckoutListAdapterFactory>(),
         PromoCheckoutListContract.View,
         PromoLastSeenViewHolder.ListenerLastSeen,
-        PromoDealsViewHolder.ListenerDealsPromoCode,
         PromoCheckoutListViewHolder.ListenerTrackingCoupon {
 
     @Inject
     lateinit var promoCheckoutListPresenter: PromoCheckoutListPresenter
-    private val promoLastSeenAdapter: PromoLastSeenAdapter by lazy { PromoLastSeenAdapter(arrayListOf(), this) }
-    private val promoDealsAdapter: PromoDealsAdapter by lazy { PromoDealsAdapter(arrayListOf(), this) }
+    private val promoLastSeenAdapter: PromoLastSeenAdapter by lazy { PromoLastSeenAdapter(arrayListOf(), arrayListOf(), this) }
+
     @Inject
     lateinit var trackingPromoCheckoutUtil: TrackingPromoCheckoutUtil
     lateinit var progressDialog: ProgressDialog
@@ -100,7 +102,7 @@ abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutLis
     fun initView(view: View) {
         val dividerItemDecoration = DividerItemDecoration(context, DividerItemDecoration.HORIZONTAL)
         dividerItemDecoration.setDrawable(ContextCompat.getDrawable(context!!, R.drawable.divider_horizontal_custom_quick_filter)!!)
-        with (view.recyclerViewLastSeenPromo) {
+        with(view.recyclerViewLastSeenPromo) {
             layoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
             adapter = promoLastSeenAdapter
 
@@ -108,17 +110,9 @@ abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutLis
             addItemDecoration(dividerItemDecoration)
         }
 
-        with(view.recyclerViewDealsPromo) {
-            layoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
-            adapter = promoDealsAdapter
-
-            while (itemDecorationCount > 0) removeItemDecorationAt(0)
-            addItemDecoration(dividerItemDecoration)
-        }
-
         val linearDividerItemDecoration = DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
         linearDividerItemDecoration.setDrawable(ContextCompat.getDrawable(context!!, R.drawable.divider_vertical_list_promo)!!)
-        with (getRecyclerView(view)) {
+        with(getRecyclerView(view)) {
             while (itemDecorationCount > 0) removeItemDecorationAt(0)
             addItemDecoration(linearDividerItemDecoration)
         }
@@ -175,33 +169,26 @@ abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutLis
         super.onActivityResult(requestCode, resultCode, data)
     }
 
-    override fun renderListLastSeen(data: List<PromoCheckoutLastSeenModel>) {
-        promoLastSeenAdapter.listData.clear()
-        promoLastSeenAdapter.listData.addAll(data)
-        promoLastSeenAdapter.notifyDataSetChanged()
-        populateLastSeen()
-    }
-
-    override fun renderDealsPromo(data: List<TravelCollectiveBanner.Banner>) {
-        promoDealsAdapter.listData.clear()
-        promoDealsAdapter.listData.addAll(data)
-        promoDealsAdapter.notifyDataSetChanged()
-        populateDealsPromo(data)
-    }
-
-    protected fun populateLastSeen() {
-        if (promoLastSeenAdapter.listData.isEmpty()) {
-            containerLastSeen.visibility = View.GONE
-        } else {
-            containerLastSeen.visibility = View.VISIBLE
+    override fun renderListLastSeen(data: List<PromoCheckoutLastSeenModel>?, dataDeals: List<TravelCollectiveBanner.Banner>?) {
+        if (!data.isNullOrEmpty()) {
+            promoLastSeenAdapter.listData.clear()
+            promoLastSeenAdapter.listData.addAll(data)
+            promoLastSeenAdapter.notifyDataSetChanged()
+            populateLastSeen()
+        } else if (!dataDeals.isNullOrEmpty()) {
+            promoLastSeenAdapter.listDataDeals.clear()
+            promoLastSeenAdapter.listDataDeals.addAll(dataDeals)
+            promoLastSeenAdapter.notifyDataSetChanged()
+            promo_checkout_list_last_seen_label.text = resources.getString(R.string.promo_title_for_this_category)
+            populateLastSeen()
         }
     }
 
-    protected fun populateDealsPromo(data: List<TravelCollectiveBanner.Banner>?) {
-        if (data.isNullOrEmpty()) {
-            containerDealsPromo.visibility = View.GONE
+    protected fun populateLastSeen() {
+        if (promoLastSeenAdapter.listData.isEmpty() && promoLastSeenAdapter.listDataDeals.isEmpty()) {
+            containerLastSeen.visibility = View.GONE
         } else {
-            containerDealsPromo.visibility = View.VISIBLE
+            containerLastSeen.visibility = View.VISIBLE
         }
     }
 
