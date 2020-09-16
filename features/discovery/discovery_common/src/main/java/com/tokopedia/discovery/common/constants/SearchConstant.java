@@ -149,4 +149,10 @@ public interface SearchConstant {
         String LAYOUT_INSPIRATION_CAROUSEL_LIST = "list";
         String LAYOUT_INSPIRATION_CAROUSEL_INFO = "info";
     }
+
+    interface TopAdsComponent {
+        String TOP_ADS = "search_product_top_ads";
+        String ORGANIC_ADS = "search_product_organic_ads";
+        String BROAD_MATCH_ADS = "search_product_broad_match_ads";
+    }
 }

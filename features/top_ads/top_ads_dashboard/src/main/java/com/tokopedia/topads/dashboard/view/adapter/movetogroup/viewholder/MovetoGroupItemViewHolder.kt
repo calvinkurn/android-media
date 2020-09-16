@@ -2,6 +2,7 @@ package com.tokopedia.topads.dashboard.view.adapter.movetogroup.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes
+import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.model.CountDataItem
@@ -29,6 +30,7 @@ class MovetoGroupItemViewHolder(val view: View, var itemSelected: ((pos: Int) ->
 
     override fun bind(item: MovetoGroupItemViewModel, lastSelected: Int, countList: MutableList<CountDataItem>) {
         item.let {
+            view.img.setImageDrawable(view.context.getResDrawable(R.drawable.topads_dashboard_folder))
             view.group_title.text = it.result.groupName
             view.radio_button.isChecked = lastSelected == adapterPosition
             when (it.result.groupStatusDesc) {
@@ -41,6 +43,8 @@ class MovetoGroupItemViewHolder(val view: View, var itemSelected: ((pos: Int) ->
                 view.productCount.text = countList[adapterPosition].totalAds.toString()
                 view.key_count.text = countList[adapterPosition].totalKeywords.toString()
             }
+            view.img_total.setImageDrawable(view.context.getResDrawable(R.drawable.topads_dashboard_total))
+            view.img_key.setImageDrawable(view.context.getResDrawable(R.drawable.topads_dashboard_key))
         }
     }
 }

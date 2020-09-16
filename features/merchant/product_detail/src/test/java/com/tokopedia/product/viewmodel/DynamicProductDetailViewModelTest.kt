@@ -562,7 +562,7 @@ class DynamicProductDetailViewModelTest {
         }
 
         coVerify {
-            getProductInfoP2DataUseCase.executeOnBackground(any(), any(), any())
+            getProductInfoP2DataUseCase.executeOnBackground(any(), any())
         }
 
         coVerify {
@@ -588,7 +588,7 @@ class DynamicProductDetailViewModelTest {
         } returns ProductInfoP3()
 
         coEvery {
-            getProductInfoP2DataUseCase.executeOnBackground(any(), any(), any())
+            getProductInfoP2DataUseCase.executeOnBackground(any(), any())
         } returns ProductInfoP2UiData()
 
         coEvery {
@@ -663,7 +663,7 @@ class DynamicProductDetailViewModelTest {
         }
 
         coVerify {
-            getProductInfoP2DataUseCase.executeOnBackground(any(), any(), any())
+            getProductInfoP2DataUseCase.executeOnBackground(any(), any())
         }
 
         coVerify {

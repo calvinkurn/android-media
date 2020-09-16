@@ -41,7 +41,9 @@ import com.tokopedia.kyc_centralized.view.listener.UserIdentificationUploadImage
 import com.tokopedia.kyc_centralized.view.model.UserIdentificationStepperModel
 import com.tokopedia.kyc_centralized.view.viewmodel.UserIdentificationViewModel
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user_identification_common.KYCConstant
@@ -71,6 +73,8 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
     private var analytics: UserIdentificationCommonAnalytics? = null
     private var listRetake: ArrayList<Int> = arrayListOf()
 
+    private lateinit var remoteConfig: RemoteConfig
+
     @Inject
     lateinit var presenter: UserIdentificationUploadImage.Presenter
 
@@ -92,6 +96,8 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
         if (activity != null) {
             analytics = UserIdentificationCommonAnalytics.createInstance(activity?.intent?.getIntExtra(ApplinkConstInternalGlobal.PARAM_PROJECT_ID, 1)?: 1)
         }
+
+        remoteConfig = FirebaseRemoteConfigImpl(context)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -299,7 +305,7 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
         get() {
             try {
                 if (UserIdentificationFormActivity.isSupportedLiveness) {
-                    return RemoteConfigInstance.getInstance().abTestPlatform.getString(KYCConstant.KYC_AB_KEYWORD) != KYCConstant.KYC_AB_KEYWORD
+                    return remoteConfig.getBoolean(RemoteConfigKey.KYC_USING_SELFIE)
                 }
             } catch (e: Exception) {
                 e.printStackTrace()

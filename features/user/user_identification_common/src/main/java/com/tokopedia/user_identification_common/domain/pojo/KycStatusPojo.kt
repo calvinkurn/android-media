@@ -7,13 +7,7 @@ import java.util.*
 /**
  * @author by nisie on 15/11/18.
  */
-class KycStatusPojo {
-    @Expose
-    @SerializedName("Message")
-    var message: List<String> = ArrayList()
-
-    @Expose
-    @SerializedName("Detail")
-    var kycStatusDetailPojo = KycStatusDetailPojo()
-
-}
+data class KycStatusPojo (
+    @Expose @SerializedName("Message") var message: List<String> = ArrayList(),
+    @Expose @SerializedName("Detail") var kycStatusDetailPojo: KycStatusDetailPojo = KycStatusDetailPojo()
+)

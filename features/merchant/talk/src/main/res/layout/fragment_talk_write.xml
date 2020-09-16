@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/talkWriteScrollView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    android:fillViewport="true"
+    android:focusable="true"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/talkWriteConstraintLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.tokopedia.talk.feature.write.presentation.widget.TalkWriteHeaderWidget
+            android:id="@+id/talkWriteHeader"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/write_category_header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/layout_lvl2"
+            android:layout_marginStart="@dimen/layout_lvl2"
+            android:layout_marginEnd="@dimen/layout_lvl2"
+            android:text="@string/write_category_title"
+            app:typographyWeight="bold"
+            app:typographyType="heading_4"
+            app:layout_constraintTop_toBottomOf="@id/talkWriteHeader" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/writeCategoryChips"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="@dimen/layout_lvl2"
+            android:paddingEnd="@dimen/layout_lvl2"
+            android:layout_marginTop="@dimen/dp_12"
+            app:layout_constraintTop_toBottomOf="@id/write_category_header"/>
+
+        <com.tokopedia.talk.feature.write.presentation.widget.TalkWriteCategoryDetails
+            android:id="@+id/writeCategoryDetails"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/layout_lvl1"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@id/writeCategoryChips"/>
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/write_barrier"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:constraint_referenced_ids="writeCategoryChips, writeCategoryDetails"
+            app:barrierDirection="bottom" />
+
+        <com.tokopedia.unifycomponents.TextAreaUnify
+            android:id="@+id/writeQuestionTextArea"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/layout_lvl3"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="@id/write_category_header"
+            app:layout_constraintEnd_toEndOf="@id/write_category_header"
+            app:text_area_label="@string/write_question_placeholder"
+            app:text_area_clearable="false"
+            app:layout_constraintTop_toBottomOf="@id/write_barrier"/>
+
+        <View
+            android:id="@+id/empty_view"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/layout_lvl0"
+            android:minHeight="@dimen/layout_lvl2"
+            app:layout_constraintTop_toBottomOf="@id/writeQuestionTextArea"
+            app:layout_constraintBottom_toTopOf="@id/writeTNC" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/writeTNC"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dp_12"
+            android:paddingStart="@dimen/layout_lvl2"
+            android:paddingEnd="@dimen/layout_lvl2"
+            android:textColor="@color/Neutral_N700_32"
+            app:layout_constraintTop_toBottomOf="@id/empty_view"
+            app:typographyType="small"
+            app:layout_constraintEnd_toEndOf="@id/write_category_header"
+            app:layout_constraintStart_toStartOf="@id/write_category_header"
+            app:layout_constraintBottom_toTopOf="@id/send_button_layout" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/send_button_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <com.tokopedia.unifycomponents.UnifyButton
+                android:id="@+id/talkWriteButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/talk_send"
+                android:layout_marginStart="@dimen/layout_lvl2"
+                android:layout_marginEnd="@dimen/layout_lvl2"
+                android:layout_marginTop="@dimen/layout_lvl1"
+                android:layout_marginBottom="@dimen/layout_lvl1"
+                android:enabled="false"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <include
+            android:id="@+id/talkWriteLoading"
+            layout="@layout/partial_talk_write_shimmering"
+            android:visibility="gone"/>
+
+        <include
+            android:id="@+id/talkWriteError"
+            layout="@layout/partial_talk_connection_error"
+            android:visibility="gone" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</ScrollView>

@@ -20,7 +20,9 @@ import com.tokopedia.kyc_centralized.R
 import com.tokopedia.kyc_centralized.view.activity.UserIdentificationCameraActivity.Companion.createIntent
 import com.tokopedia.kyc_centralized.view.activity.UserIdentificationFormActivity
 import com.tokopedia.kyc_centralized.view.model.UserIdentificationStepperModel
-import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.user_identification_common.KYCConstant
 import com.tokopedia.user_identification_common.analytics.UserIdentificationCommonAnalytics
 
@@ -39,6 +41,8 @@ abstract class BaseUserIdentificationStepperFragment<T : UserIdentificationStepp
     protected var stepperModel: T? = null
     private var stepperListener: StepperListener? = null
 
+    private lateinit var remoteConfig: RemoteConfig
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (context is StepperListener) {
@@ -53,6 +57,8 @@ abstract class BaseUserIdentificationStepperFragment<T : UserIdentificationStepp
             projectId = activity?.intent?.getIntExtra(ApplinkConstInternalGlobal.PARAM_PROJECT_ID, -1)?: -1
             analytics = UserIdentificationCommonAnalytics.createInstance(projectId)
         }
+
+        remoteConfig = FirebaseRemoteConfigImpl(context)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -136,7 +142,7 @@ abstract class BaseUserIdentificationStepperFragment<T : UserIdentificationStepp
         get() {
             try {
                 if (UserIdentificationFormActivity.isSupportedLiveness) {
-                    return RemoteConfigInstance.getInstance().abTestPlatform.getString(KYCConstant.KYC_AB_KEYWORD) != KYCConstant.KYC_AB_KEYWORD
+                    return remoteConfig.getBoolean(RemoteConfigKey.KYC_USING_SELFIE)
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
