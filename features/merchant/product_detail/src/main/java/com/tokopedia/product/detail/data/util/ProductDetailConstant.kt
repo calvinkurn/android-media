@@ -171,8 +171,6 @@ object ProductDetailConstant {
     const val OVO_INACTIVE_STATUS = 1;
     const val OVO_INSUFFICIENT_BALANCE_STATUS = 2;
 
-    const val ENABLE_NEW_DISCUSSION_REMOTE_CONFIG = "android_enable_new_discussion"
-
     //SHOP
     const val ALREADY_FAVORITE_SHOP = 1
 

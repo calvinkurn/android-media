@@ -44,7 +44,10 @@ import com.tokopedia.play.view.measurement.bounds.manager.videobounds.PlayVideoB
 import com.tokopedia.play.view.measurement.bounds.manager.videobounds.VideoBoundsManager
 import com.tokopedia.play.view.measurement.scaling.PlayVideoScalingManager
 import com.tokopedia.play.view.measurement.scaling.VideoScalingManager
-import com.tokopedia.play.view.type.*
+import com.tokopedia.play.view.type.BottomInsetsState
+import com.tokopedia.play.view.type.BottomInsetsType
+import com.tokopedia.play.view.type.ScreenOrientation
+import com.tokopedia.play.view.type.VideoOrientation
 import com.tokopedia.play.view.uimodel.VideoPlayerUiModel
 import com.tokopedia.play.view.viewcomponent.*
 import com.tokopedia.play.view.viewmodel.PlayViewModel
@@ -341,7 +344,7 @@ class PlayFragment @Inject constructor(
 
     private fun setupObserve() {
         observeGetChannelInfo()
-        observeStateChannel()
+        observeChannelErrorEvent()
         observeSocketInfo()
         observeEventUserInfo()
         observeVideoMeta()
@@ -375,9 +378,10 @@ class PlayFragment @Inject constructor(
         })
     }
 
-    private fun observeStateChannel() {
-        playViewModel.observableStateChannelInfo.observe(viewLifecycleOwner, EventObserver {
-            resetMonitoring()
+    private fun observeChannelErrorEvent() {
+        playViewModel.observableChannelErrorEvent.observe(viewLifecycleOwner, EventObserver {
+            startRenderMonitoring()
+            stopRenderMonitoring()
         })
     }
 
