@@ -3,7 +3,6 @@ package com.tokopedia.digital.newcart.presentation.fragment;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -15,7 +14,6 @@ import androidx.fragment.app.FragmentManager;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.RouteManager;
@@ -47,6 +45,7 @@ import com.tokopedia.digital.newcart.presentation.compoundview.InputPriceHolderV
 import com.tokopedia.digital.newcart.presentation.contract.DigitalBaseContract;
 import com.tokopedia.digital.newcart.presentation.model.DigitalSubscriptionParams;
 import com.tokopedia.digital.utils.DeviceUtil;
+import com.tokopedia.globalerror.GlobalError;
 import com.tokopedia.network.constant.ErrorNetMessage;
 import com.tokopedia.network.utils.ErrorHandler;
 import com.tokopedia.nps.presentation.view.dialog.AppFeedbackRatingBottomSheet;
@@ -63,6 +62,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+
+import kotlin.Unit;
 
 public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Presenter> extends BaseDaggerFragment
         implements DigitalBaseContract.View,
@@ -99,6 +100,8 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
     private static final String EXTRA_STATE_PROMO_DATA = "EXTRA_STATE_PROMO_DATA";
 
     protected P presenter;
+
+    protected GlobalError errorView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -483,16 +486,27 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
             getActivity().setResult(Activity.RESULT_OK, intent);
             getActivity().finish();
         } else {
-            NetworkErrorHelper.showSnackbar(getActivity(), message);
-            Handler handler = new Handler();
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    Intent intent = new Intent();
-                    getActivity().setResult(Activity.RESULT_OK, intent);
-                    getActivity().finish();
-                }
-            }, DELAY_ERROR_SHOWING);
+            showError(message);
+        }
+    }
+
+    @Override
+    public void showError(String message) {
+        if (errorView != null) {
+            errorView.setActionClickListener(view -> {
+                errorView.setVisibility(View.GONE);
+                presenter.onViewCreated();
+//                closeView();
+                return Unit.INSTANCE;
+            });
+
+            int errorType = GlobalError.Companion.getSERVER_ERROR();
+            if (message.equals(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL)) {
+                errorType = GlobalError.Companion.getNO_CONNECTION();
+            }
+            errorView.setType(errorType);
+
+            errorView.setVisibility(View.VISIBLE);
         }
     }
 

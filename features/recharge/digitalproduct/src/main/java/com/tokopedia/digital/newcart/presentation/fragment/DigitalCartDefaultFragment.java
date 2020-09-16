@@ -83,6 +83,7 @@ public class DigitalCartDefaultFragment extends DigitalBaseCartFragment implemen
     @Override
     protected void setupView(View view) {
         progressBar = view.findViewById(R.id.progress_bar);
+        errorView = view.findViewById(R.id.view_error);
         containerLayout = view.findViewById(R.id.container);
         categoryTextView = view.findViewById(R.id.tv_category_name);
         detailHolderView = view.findViewById(R.id.view_cart_detail);
@@ -114,6 +115,12 @@ public class DigitalCartDefaultFragment extends DigitalBaseCartFragment implemen
     @Override
     public void hideFullPageLoading() {
         progressBar.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showError(String message) {
+        progressBar.setVisibility(View.GONE);
+        super.showError(message);
     }
 
     @Override
