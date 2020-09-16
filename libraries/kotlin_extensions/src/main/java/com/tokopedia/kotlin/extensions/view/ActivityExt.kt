@@ -72,9 +72,9 @@ fun Activity.setupStatusBarUnderMarshmallow() {
 
 @RequiresApi(Build.VERSION_CODES.M)
 fun Activity.setStatusBarColor(color: Int) {
-    window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-    window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
-    window.statusBarColor = color;
+    window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+    window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+    window.statusBarColor = color
 }
 
 fun Activity.getIntIntentExtra(key: String, defValue: Int): Lazy<Int> {
