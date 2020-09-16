@@ -30,7 +30,6 @@ import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
 import com.tokopedia.sellerhomecommon.utils.Utils
 import com.tokopedia.statistic.R
 import com.tokopedia.statistic.analytics.StatisticTracker
-import com.tokopedia.statistic.common.utils.DateFilterFormatUtil
 import com.tokopedia.statistic.analytics.performance.StatisticPagePerformanceTraceNameConst.BAR_CHART_WIDGET_TRACE
 import com.tokopedia.statistic.analytics.performance.StatisticPagePerformanceTraceNameConst.CARD_WIDGET_TRACE
 import com.tokopedia.statistic.analytics.performance.StatisticPagePerformanceTraceNameConst.CAROUSEL_WIDGET_TRACE
@@ -40,6 +39,8 @@ import com.tokopedia.statistic.analytics.performance.StatisticPagePerformanceTra
 import com.tokopedia.statistic.analytics.performance.StatisticPagePerformanceTraceNameConst.PROGRESS_WIDGET_TRACE
 import com.tokopedia.statistic.analytics.performance.StatisticPagePerformanceTraceNameConst.TABLE_WIDGET_TRACE
 import com.tokopedia.statistic.analytics.performance.StatisticPerformanceMonitoringListener
+import com.tokopedia.statistic.common.Const
+import com.tokopedia.statistic.common.utils.DateFilterFormatUtil
 import com.tokopedia.statistic.common.utils.logger.StatisticLogger
 import com.tokopedia.statistic.di.DaggerStatisticComponent
 import com.tokopedia.statistic.presentation.view.bottomsheet.DateFilterBottomSheet
@@ -151,6 +152,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     override fun onPause() {
         super.onPause()
         hideTooltipIfExist()
+        hideMonthPickerIfExist()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -358,6 +360,11 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
 
     private fun hideTooltipIfExist() {
         val bottomSheet = childFragmentManager.findFragmentByTag(TAG_TOOLTIP)
+        (bottomSheet as? BottomSheetUnify)?.dismiss()
+    }
+
+    private fun hideMonthPickerIfExist() {
+        val bottomSheet = childFragmentManager.findFragmentByTag(Const.BottomSheet.TAG_MONTH_PICKER)
         (bottomSheet as? BottomSheetUnify)?.dismiss()
     }
 
