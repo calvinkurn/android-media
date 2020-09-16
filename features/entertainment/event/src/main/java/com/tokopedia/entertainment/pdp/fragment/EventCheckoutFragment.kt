@@ -375,14 +375,14 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
                         Toaster.make(view, it.getString(R.string.ent_event_checkout_submit_name, it.getString(R.string.ent_event_checkout_passenger_title).toLowerCase()), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, it.getString(R.string.ent_checkout_error))
                         scroll_view_event_checkout.focusOnView(partial_event_checkout_passenger)
                         widget_event_checkout_pessangers.startAnimationWiggle()
-                    } else if (eventCheckoutAdditionalDataPackage.listForm.isEmpty() && isPackageFormActive) {
-                        Toaster.make(view, it.getString(R.string.ent_event_checkout_submit_name, it.getString(R.string.ent_checkout_data_tambahan_title).toLowerCase()), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, it.getString(R.string.ent_checkout_error))
-                        scroll_view_event_checkout.focusOnView(partial_event_checkout_additional_package)
-                        item_checkout_event_data_tambahan_package.startAnimationWiggle()
                     } else if(isAdditionalItemFormNull() && isItemFormActive){
                         Toaster.make(view, it.getString(R.string.ent_event_checkout_submit_name, it.getString(R.string.ent_checkout_data_pengunjung_title).toLowerCase()), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, it.getString(R.string.ent_checkout_error))
                         scroll_view_event_checkout.focusOnView(partial_event_checkout_additional_item)
                         getRecycleViewWidgetAnimator()
+                    } else if (eventCheckoutAdditionalDataPackage.listForm.isEmpty() && isPackageFormActive) {
+                        Toaster.make(view, it.getString(R.string.ent_event_checkout_submit_name, it.getString(R.string.ent_checkout_data_tambahan_title).toLowerCase()), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, it.getString(R.string.ent_checkout_error))
+                        scroll_view_event_checkout.focusOnView(partial_event_checkout_additional_package)
+                        item_checkout_event_data_tambahan_package.startAnimationWiggle()
                     } else {
                         progressDialog.show()
                         eventPDPTracking.onClickCheckoutButton(productDetailData, metadata.itemMap)

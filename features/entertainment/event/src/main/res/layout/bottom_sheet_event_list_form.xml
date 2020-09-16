@@ -11,17 +11,12 @@
         app:layout_constraintTop_toTopOf="parent"
         app:search_bar_show_icon="false" />
 
-    <androidx.core.widget.NestedScrollView
-        android:id="@+id/nestedListUnify"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_event_bottom_sheet_form"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/event_search_list_form">
-
-        <com.tokopedia.unifycomponents.list.ListUnify
-            android:id="@+id/list_form"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:choiceMode="singleChoice" />
-    </androidx.core.widget.NestedScrollView>
+        app:layout_constraintTop_toBottomOf="@+id/event_search_list_form"
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

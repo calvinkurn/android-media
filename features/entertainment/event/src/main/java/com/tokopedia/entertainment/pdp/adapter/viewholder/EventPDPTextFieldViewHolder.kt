@@ -38,13 +38,14 @@ class EventPDPTextFieldViewHolder(val view: View,
 
     fun bind(element: Form, position: Int) {
         with(itemView) {
+
             keyActiveBottomSheet = getKeyActive(element)
             positionActiveForm = position
-            if (position > 0) txtValue.setMargin(0, TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3), context.resources.displayMetrics).toInt(), 0, 0)
 
-            txtValue.setPlaceholder(element.helpText)
-            txtValue.textFiedlLabelText.text = element.title
             if (element.elementType.equals(ELEMENT_TEXT)) {
+                if (position > 0) txtValue.setMargin(0, TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3), context.resources.displayMetrics).toInt(), 0, 0)
+                txtValue.setPlaceholder(element.helpText)
+                txtValue.textFiedlLabelText.text = element.title
                 txtValue.textFieldInput.addTextChangedListener(object : TextWatcher {
                     override fun afterTextChanged(p0: Editable?) {}
 
@@ -78,6 +79,9 @@ class EventPDPTextFieldViewHolder(val view: View,
             if (element.value.isNotBlank() && !element.value.equals(resources.getString(R.string.ent_checkout_data_nullable_form))) {
                 if (element.elementType.equals(ELEMENT_TEXT)) txtValue.textFieldInput.setText(element.value)
                 if (element.elementType.equals(ELEMENT_LIST)) {
+                    if (position > 0) txtValue.setMargin(0, TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl1), context.resources.displayMetrics).toInt(), 0, 0)
+
+                    txtValue.setMessage(element.title)
                     val list = getList(element.value)
                     if (list.isNotEmpty()) {
                         txtValue.textFieldInput.apply {

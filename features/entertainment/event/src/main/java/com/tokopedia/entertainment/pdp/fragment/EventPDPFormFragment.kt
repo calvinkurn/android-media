@@ -5,12 +5,9 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.EditorInfo
-import android.widget.TextView
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -25,6 +22,7 @@ import com.tokopedia.entertainment.pdp.di.EventPDPComponent
 import com.tokopedia.entertainment.pdp.viewmodel.EventPDPFormViewModel
 import javax.inject.Inject
 import com.tokopedia.entertainment.pdp.activity.EventPDPFormActivity.Companion.EXTRA_URL_PDP
+import com.tokopedia.entertainment.pdp.adapter.EventFormBottomSheetAdapter
 import com.tokopedia.entertainment.pdp.adapter.EventPDPFormAdapter
 import com.tokopedia.entertainment.pdp.data.Form
 import com.tokopedia.unifycomponents.Toaster
@@ -35,24 +33,22 @@ import com.tokopedia.entertainment.pdp.adapter.EventPDPFormAdapter.Companion.REG
 import com.tokopedia.entertainment.pdp.adapter.viewholder.EventPDPTextFieldViewHolder
 import com.tokopedia.entertainment.pdp.data.checkout.AdditionalType
 import com.tokopedia.entertainment.pdp.data.checkout.EventCheckoutAdditionalData
-import com.tokopedia.entertainment.pdp.data.checkout.mapper.EventFormMapper.getSearchableList
 import com.tokopedia.entertainment.pdp.data.checkout.mapper.EventFormMapper.searchHashMap
-import com.tokopedia.entertainment.pdp.data.checkout.mapper.EventFormMapper.setListBottomSheetForm
+import com.tokopedia.entertainment.pdp.data.checkout.mapper.EventFormMapper.setListBottomSheetString
 import com.tokopedia.entertainment.pdp.listener.OnClickFormListener
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.main.bottom_sheet_event_list_form.view.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import java.io.Serializable
 
 class EventPDPFormFragment : BaseDaggerFragment(), OnClickFormListener,
-        EventPDPTextFieldViewHolder.TextFormListener {
+        EventPDPTextFieldViewHolder.TextFormListener, EventFormBottomSheetAdapter.Listener {
 
     private var urlPDP = ""
-    private var keyActiveData = ""
+    private var keyActiveBottomSheet = ""
+    private var positionActiveForm = 0
     var eventCheckoutAdditionalData = EventCheckoutAdditionalData()
+    var listTemp : LinkedHashMap<String, String> = linkedMapOf()
+    val bottomSheets = BottomSheetUnify()
 
     @Inject
     lateinit var viewModel: EventPDPFormViewModel
@@ -196,9 +192,10 @@ class EventPDPFormFragment : BaseDaggerFragment(), OnClickFormListener,
     }
 
     override fun clickBottomSheet(list: LinkedHashMap<String, String>, title: String, positionForm: Int, positionActiveBottomSheet: String) {
+        val adapterBottomSheet = EventFormBottomSheetAdapter(this)
         val view = LayoutInflater.from(context).inflate(R.layout.bottom_sheet_event_list_form, null)
-        var listTemp = list
-        val bottomSheets = BottomSheetUnify()
+        listTemp = list
+        positionActiveForm = positionForm
         bottomSheets.apply {
             isFullpage = true
             setChild(view)
@@ -206,7 +203,7 @@ class EventPDPFormFragment : BaseDaggerFragment(), OnClickFormListener,
             setCloseClickListener { bottomSheets.dismiss() }
         }
 
-        val listBottomSheet = setListBottomSheetForm(list)
+        val listBottomSheet = setListBottomSheetString(list)
 
         if (list.size > SEARCH_PAGE_LIMIT) {
             val searchTextField = view.event_search_list_form?.searchBarTextField
@@ -220,35 +217,27 @@ class EventPDPFormFragment : BaseDaggerFragment(), OnClickFormListener,
                 override fun onTextChanged(keyword: CharSequence?, p1: Int, p2: Int, p3: Int) {
                     if (keyword.toString().isEmpty()) {
                         listTemp = list
-                        view.list_form.setData(setListBottomSheetForm(list))
+                        adapterBottomSheet.setList(setListBottomSheetString(list))
                     } else {
                         listTemp = searchHashMap(keyword.toString(), list)
-                        view.list_form.setData(getSearchableList(listTemp))
+                        adapterBottomSheet.setList(setListBottomSheetString(listTemp))
                     }
                 }
             })
             searchClearButton?.setOnClickListener {
                 searchTextField?.text?.clear()
                 listTemp = list
-                view.list_form.setData(setListBottomSheetForm(list))
+                adapterBottomSheet.setList(setListBottomSheetString(list))
             }
         } else {
             view.event_search_list_form.visibility = View.GONE
         }
 
+        adapterBottomSheet.setList(listBottomSheet)
 
-        view.list_form.apply {
-            setData(listBottomSheet)
-            onLoadFinish {
-                this.setOnItemClickListener { _, _, position, _ ->
-                    keyActiveData = listTemp.getKeyByPosition(position)
-                    formAdapter.notifyItemChanged(positionForm)
-                    CoroutineScope(Dispatchers.Main).launch {
-                        delay(DELAY_CONST)
-                        bottomSheets.dismiss()
-                    }
-                }
-            }
+        view.rv_event_bottom_sheet_form.apply {
+            layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+            this.adapter = adapterBottomSheet
         }
 
         fragmentManager?.let {
@@ -272,11 +261,17 @@ class EventPDPFormFragment : BaseDaggerFragment(), OnClickFormListener,
     }
 
     override fun getKeyActive(): String {
-        return keyActiveData
+        return keyActiveBottomSheet
     }
 
     override fun getAdditionalType(): AdditionalType {
         return eventCheckoutAdditionalData.additionalType
+    }
+
+    override fun getActiveKeyPosition(position: Int) {
+        keyActiveBottomSheet = listTemp.getKeyByPosition(position)
+        formAdapter.notifyItemChanged(positionActiveForm)
+        bottomSheets.dismiss()
     }
 
     companion object {

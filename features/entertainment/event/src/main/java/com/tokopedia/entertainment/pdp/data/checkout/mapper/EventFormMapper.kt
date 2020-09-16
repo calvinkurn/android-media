@@ -46,30 +46,18 @@ object EventFormMapper {
         return formData
     }
 
-    fun setListBottomSheetForm(mapData: LinkedHashMap<String, String>): ArrayList<ListItemUnify> {
-        val array = arrayListOf<ListItemUnify>()
+    fun setListBottomSheetString(mapData: LinkedHashMap<String, String>): List<String> {
+        val listString = mutableListOf<String>()
         mapData.map {
-            val itemUnify = ListItemUnify(it.value, "")
-            itemUnify.isBold = false
-            array.add(itemUnify)
+            listString.add(it.value)
         }
-        return array
+        return listString
     }
 
     fun searchHashMap(keyword: String, mapData: LinkedHashMap<String, String>): LinkedHashMap<String, String> {
         return mapData.filter {
             it.value.contains(keyword, true)
         } as LinkedHashMap<String, String>
-    }
-
-    fun getSearchableList(mapData: LinkedHashMap<String, String>): ArrayList<ListItemUnify> {
-        val array = arrayListOf<ListItemUnify>()
-        mapData.map {
-            val itemUnify = ListItemUnify(it.value, "")
-            itemUnify.isBold = false
-            array.add(itemUnify)
-        }
-        return array
     }
 
     fun mapFormToString(list: List<Form>): List<String> {
@@ -86,25 +74,25 @@ object EventFormMapper {
         } else ""
     }
 
-    fun getFirstName(name: String): String{
+    fun getFirstName(name: String): String {
         val lastName = name.substringBeforeLast(" ")
-        return if (!lastName.isNullOrEmpty()){
+        return if (!lastName.isNullOrEmpty()) {
             lastName
         } else ""
 
     }
 
 
-    fun initialListForm(list: List<Form>, userSession:UserSessionInterface, nullableData:String):List<Form>{
-        for (i in 0..list.size-1) {
+    fun initialListForm(list: List<Form>, userSession: UserSessionInterface, nullableData: String): List<Form> {
+        for (i in 0..list.size - 1) {
             list.get(i).apply {
-                if (this.value.isNullOrEmpty()){
-                    this.value = when(this.name){
+                if (this.value.isNullOrEmpty()) {
+                    this.value = when (this.name) {
                         PASSENGER_NAME -> userSession.name
                         PASSENGER_FAMILY_NAME -> getFamilyName(userSession.name)
                         PASSENGER_FIRST_NAME -> getFirstName(userSession.name)
                         PASSENGER_EMAIL -> userSession.email
-                        PASSENGER_PHONE, PASSENGER_MOBILE ->  userSession.phoneNumber
+                        PASSENGER_PHONE, PASSENGER_MOBILE -> userSession.phoneNumber
                         else -> nullableData
                     }
                 }
@@ -114,10 +102,10 @@ object EventFormMapper {
         return list
     }
 
-    fun isEmptyForms(list: List<Form>, emptyString: String):Boolean{
+    fun isEmptyForms(list: List<Form>, emptyString: String): Boolean {
         var status = false
-        loop@for (i in 0..list.size-1){
-            if(list.get(i).value.isNullOrEmpty() || list.get(i).value.equals(emptyString)) {
+        loop@ for (i in 0..list.size - 1) {
+            if (list.get(i).value.isNullOrEmpty() || list.get(i).value.equals(emptyString)) {
                 status = true
                 break@loop
             }
