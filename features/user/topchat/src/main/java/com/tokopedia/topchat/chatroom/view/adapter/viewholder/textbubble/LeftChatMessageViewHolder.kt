@@ -24,7 +24,7 @@ open class LeftChatMessageViewHolder(
     private fun bindBackground(message: MessageViewModel) {
         val shadow = ViewUtil.generateBackgroundWithShadow(
                 itemView,
-                R.color.white,
+                com.tokopedia.unifyprinciples.R.color.Neutral_N0,
                 R.dimen.dp_topchat_0,
                 R.dimen.dp_topchat_20,
                 R.dimen.dp_topchat_20,
