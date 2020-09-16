@@ -24,9 +24,6 @@ object DynamicProductDetailMapper {
                 ProductDetailConstant.NOTIFY_ME -> {
                     listOfComponent.add(ProductNotifyMeDataModel(type = component.type, name = component.componentName))
                 }
-                ProductDetailConstant.DISCUSSION -> {
-                    listOfComponent.add(ProductDiscussionDataModel(type = component.type, name = component.componentName))
-                }
                 ProductDetailConstant.DISCUSSION_FAQ -> {
                     listOfComponent.add(ProductDiscussionMostHelpfulDataModel(type = component.type, name = component.componentName))
                 }

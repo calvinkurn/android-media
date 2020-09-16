@@ -93,5 +93,10 @@ public interface SearchEventTracking {
         String SEARCH_ATTEMPT = "Search_Attempt";
     }
 
+    String CURRENT_SITE = "currentSite";
+    String TOKOPEDIA_MARKETPLACE = "tokopediamarketplace";
+    String BUSINESS_UNIT = "businessUnit";
+    String SEARCH = "search";
+
     String NONE = "none";
 }

@@ -7,7 +7,7 @@ import com.tokopedia.discovery2.data.PageInfo
 import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.PINNED_ACTIVE_TAB
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.PINNED_COMP_ID
-import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.PINNED_PRODUCT
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.PRODUCT_ID
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 
 
@@ -37,8 +37,8 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo, private val queryP
         val componentList = getDiscoveryComponentList(components)
         if (componentList.isNotEmpty() && !pinnedCompId.isNullOrEmpty()) {
             componentList.forEach { item ->
-                if (item.id == pinnedCompId) {
-                    item.rpc_PinnedProduct = queryParameterMap[PINNED_PRODUCT]
+                if(item.id == pinnedCompId){
+                    item.rpc_PinnedProduct= queryParameterMap[PRODUCT_ID]
                 }
             }
         }
@@ -99,7 +99,6 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo, private val queryP
                         targetComponentIdList.forEachIndexed { index, componentId ->
                             getComponent(componentId, pageInfo.identifier!!)?.let { component1 ->
                                 component1.parentComponentId = component.id
-
                                 componentsItem.add(component1)
                                 listComponents.addAll(parseComponent(component1, position))
                             }

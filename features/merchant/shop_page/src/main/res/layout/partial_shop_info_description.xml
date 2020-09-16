@@ -19,6 +19,7 @@
         android:layout_marginTop="@dimen/dp_16"
         style="@style/TextView.Micro.BlackSecondary"
         android:id="@+id/shopInfoDescription"
+        android:contentDescription="@string/content_desc_shopInfoDescription"
         tools:text="@string/shop_page_label_favorite"/>
 
     <LinearLayout
