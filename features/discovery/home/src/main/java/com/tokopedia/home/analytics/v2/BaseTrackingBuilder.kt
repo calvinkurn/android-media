@@ -5,7 +5,7 @@ import com.tokopedia.analyticconstant.DataLayer
 /**
  * @author by yoasfs on 25/08/20
  */
-
+//need to be deleted after homePageTrackingv2 can implement BaseTrackerConst
 class BaseTrackingBuilder: BaseTracking(), BaseTrackingBuilderInterface {
 
     private var dataLayer: MutableMap<String, Any> = mutableMapOf()

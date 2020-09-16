@@ -128,7 +128,7 @@ class TopadsGroupFilterSheet : BottomSheetUnify() {
         lateinit var list: Array<String>
         fun newInstance(context: Context): TopadsGroupFilterSheet {
             val fragment = TopadsGroupFilterSheet()
-            fragment.dialog = BottomSheetDialog(context, R.style.CreateAdsBottomSheetDialogTheme)
+            fragment.dialog = BottomSheetDialog(context, com.tokopedia.topads.common.R.style.CreateAdsBottomSheetDialogTheme)
             fragment.dialog?.setContentView(R.layout.topads_dash_filter_bottomsheet)
             list = context.resources.getStringArray(R.array.top_ads_sort_value)
             fragment.setupView(context)

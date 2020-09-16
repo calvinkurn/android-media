@@ -23,9 +23,9 @@ object PlayBroadcastMocker {
      */
     fun getMockUnknownFollower() = List(3) {
         FollowerUiModel.Unknown(when (it) {
-            0 -> R.color.play_follower_orange
-            1 -> R.color.play_follower_blue
-            else -> R.color.play_follower_yellow
+            0 -> com.tokopedia.unifyprinciples.R.color.Yellow_Y500
+            1 -> com.tokopedia.unifyprinciples.R.color.Blue_B600
+            else -> com.tokopedia.unifyprinciples.R.color.Yellow_Y300
         })
     }
 
