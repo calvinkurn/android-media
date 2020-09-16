@@ -13,7 +13,7 @@ enum class ChannelType(val value: String) {
 
     companion object {
 
-        private val values = ChannelType.values()
+        private val values = values()
 
         fun getByValue(value: String): ChannelType {
             values.forEach {
