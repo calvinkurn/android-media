@@ -22,15 +22,13 @@ import com.tokopedia.promocheckout.common.analytics.FROM_CART
 import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil
 import com.tokopedia.promocheckout.common.data.REQUEST_CODE_PROMO_DETAIL
 import com.tokopedia.promocheckout.common.domain.CheckPromoCodeException
+import com.tokopedia.promocheckout.common.domain.model.TravelCollectiveBanner
 import com.tokopedia.promocheckout.common.view.uimodel.DataUiModel
 import com.tokopedia.promocheckout.list.di.DaggerPromoCheckoutListComponent
 import com.tokopedia.promocheckout.list.di.PromoCheckoutListModule
 import com.tokopedia.promocheckout.list.model.listcoupon.PromoCheckoutListModel
 import com.tokopedia.promocheckout.list.model.listlastseen.PromoCheckoutLastSeenModel
-import com.tokopedia.promocheckout.list.view.adapter.PromoCheckoutListAdapterFactory
-import com.tokopedia.promocheckout.list.view.adapter.PromoCheckoutListViewHolder
-import com.tokopedia.promocheckout.list.view.adapter.PromoLastSeenAdapter
-import com.tokopedia.promocheckout.list.view.adapter.PromoLastSeenViewHolder
+import com.tokopedia.promocheckout.list.view.adapter.*
 import com.tokopedia.promocheckout.list.view.presenter.PromoCheckoutListContract
 import com.tokopedia.promocheckout.list.view.presenter.PromoCheckoutListPresenter
 import kotlinx.android.synthetic.main.fragment_promo_checkout_list.*
@@ -40,11 +38,13 @@ import javax.inject.Inject
 abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutListModel, PromoCheckoutListAdapterFactory>(),
         PromoCheckoutListContract.View,
         PromoLastSeenViewHolder.ListenerLastSeen,
+        PromoDealsViewHolder.ListenerDealsPromoCode,
         PromoCheckoutListViewHolder.ListenerTrackingCoupon {
 
     @Inject
     lateinit var promoCheckoutListPresenter: PromoCheckoutListPresenter
     private val promoLastSeenAdapter: PromoLastSeenAdapter by lazy { PromoLastSeenAdapter(arrayListOf(), this) }
+    private val promoDealsAdapter: PromoDealsAdapter by lazy { PromoDealsAdapter(arrayListOf(), this) }
     @Inject
     lateinit var trackingPromoCheckoutUtil: TrackingPromoCheckoutUtil
     lateinit var progressDialog: ProgressDialog
@@ -103,10 +103,18 @@ abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutLis
         with (view.recyclerViewLastSeenPromo) {
             layoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
             adapter = promoLastSeenAdapter
+
             while (itemDecorationCount > 0) removeItemDecorationAt(0)
             addItemDecoration(dividerItemDecoration)
         }
 
+        with(view.recyclerViewDealsPromo) {
+            layoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
+            adapter = promoDealsAdapter
+
+            while (itemDecorationCount > 0) removeItemDecorationAt(0)
+            addItemDecoration(dividerItemDecoration)
+        }
 
         val linearDividerItemDecoration = DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
         linearDividerItemDecoration.setDrawable(ContextCompat.getDrawable(context!!, R.drawable.divider_vertical_list_promo)!!)
@@ -128,10 +136,6 @@ abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutLis
         } else {
             getRecyclerView(view).visibility = View.GONE
         }
-    }
-
-    fun changeTitleLastSeen() {
-        promo_checkout_list_last_seen_label.text = resources.getString(R.string.promo_title_for_this_category)
     }
 
     abstract fun onPromoCodeUse(promoCode: String)
@@ -178,11 +182,26 @@ abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutLis
         populateLastSeen()
     }
 
+    override fun renderDealsPromo(data: List<TravelCollectiveBanner.Banner>) {
+        promoDealsAdapter.listData.clear()
+        promoDealsAdapter.listData.addAll(data)
+        promoDealsAdapter.notifyDataSetChanged()
+        populateDealsPromo(data)
+    }
+
     protected fun populateLastSeen() {
         if (promoLastSeenAdapter.listData.isEmpty()) {
             containerLastSeen.visibility = View.GONE
         } else {
             containerLastSeen.visibility = View.VISIBLE
+        }
+    }
+
+    protected fun populateDealsPromo(data: List<TravelCollectiveBanner.Banner>?) {
+        if (data.isNullOrEmpty()) {
+            containerDealsPromo.visibility = View.GONE
+        } else {
+            containerDealsPromo.visibility = View.VISIBLE
         }
     }
 
