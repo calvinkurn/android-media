@@ -551,25 +551,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
 
         filter1 = SortFilterItem(UohConsts.ALL_DATE, typeDate, ChipsUnify.SIZE_SMALL)
         filter1?.listener = {
-            uohBottomSheetOptionAdapter = UohBottomSheetOptionAdapter(this)
-            showBottomSheetFilterOptions(UohConsts.CHOOSE_DATE)
-            val arrayListMap = arrayListOf<HashMap<String, String>>()
-            var i = 0
-            arrayFilterDate.forEach { optionDate ->
-                val mapKey = HashMap<String, String>()
-                mapKey["$i"] = optionDate
-                arrayListMap.add(mapKey)
-                i++
-            }
-            uohBottomSheetOptionAdapter.uohItemMapKeyList = arrayListMap
-            uohBottomSheetOptionAdapter.filterType = UohConsts.TYPE_FILTER_DATE
-            if ((filterStatus.equals(PARAM_SEMUA_TRANSAKSI, true) || filterStatus.equals(PARAM_MARKETPLACE, true)) && !isReset) {
-                uohBottomSheetOptionAdapter.selectedKey = "2"
-            } else {
-                uohBottomSheetOptionAdapter.selectedKey = currFilterDateKey
-            }
-            uohBottomSheetOptionAdapter.isReset = isReset
-            uohBottomSheetOptionAdapter.notifyDataSetChanged()
+            onClickFilterDate()
         }
         if ((filterStatus.equals(PARAM_SEMUA_TRANSAKSI, true) || filterStatus.equals(PARAM_MARKETPLACE, true)) && !isReset) {
             filter1?.title = arrayFilterDate[2]
@@ -586,19 +568,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         }
         filter2 = SortFilterItem(ALL_STATUS, typeStatus, ChipsUnify.SIZE_SMALL)
         filter2?.listener = {
-            uohBottomSheetOptionAdapter = UohBottomSheetOptionAdapter(this)
-            showBottomSheetFilterOptions(UohConsts.CHOOSE_FILTERS)
-            val arrayListMap = arrayListOf<HashMap<String, String>>()
-            orderList.filters.forEach { option ->
-                val mapKey = HashMap<String, String>()
-                mapKey[option] = option
-                arrayListMap.add(mapKey)
-            }
-            uohBottomSheetOptionAdapter.uohItemMapKeyList = arrayListMap
-            uohBottomSheetOptionAdapter.filterType = UohConsts.TYPE_FILTER_STATUS
-            uohBottomSheetOptionAdapter.selectedKey = currFilterStatusKey
-            uohBottomSheetOptionAdapter.isReset = isReset
-            uohBottomSheetOptionAdapter.notifyDataSetChanged()
+            onClickFilterStatus()
         }
         if (filterStatus.isNotEmpty() && !isReset) {
             filter2?.title = currFilterStatusLabel
@@ -614,29 +584,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
 
         filter3 = SortFilterItem(ALL_CATEGORIES, typeCategory, ChipsUnify.SIZE_SMALL)
         filter3?.listener = {
-            uohBottomSheetOptionAdapter = UohBottomSheetOptionAdapter(this)
-            showBottomSheetFilterOptions(UohConsts.CHOOSE_CATEGORIES)
-            val arrayListMap = arrayListOf<HashMap<String, String>>()
-            val mapKeyDefault = HashMap<String, String>()
-            mapKeyDefault[ALL_CATEGORIES] = UohConsts.ALL_CATEGORIES_TRANSACTION
-            arrayListMap.add(mapKeyDefault)
-            orderList.categories.forEach { category ->
-                val mapKey = HashMap<String, String>()
-                mapKey[category.value] = category.label
-                arrayListMap.add(mapKey)
-            }
-            uohBottomSheetOptionAdapter.uohItemMapKeyList = arrayListMap
-            uohBottomSheetOptionAdapter.filterType = UohConsts.TYPE_FILTER_CATEGORY
-
-            if ((filterStatus.equals(PARAM_MARKETPLACE, true) ||
-                            filterStatus.equals(PARAM_MARKETPLACE_DALAM_PROSES, true)) && !isReset) {
-                uohBottomSheetOptionAdapter.selectedKey = PARAM_MARKETPLACE
-            } else {
-                uohBottomSheetOptionAdapter.selectedKey = currFilterCategoryKey
-            }
-
-            uohBottomSheetOptionAdapter.isReset = isReset
-            uohBottomSheetOptionAdapter.notifyDataSetChanged()
+            onClickFilterCategory()
         }
         if (filterStatus.equals(PARAM_SEMUA_TRANSAKSI, true) && !isReset) {
             filter3?.title = ALL_CATEGORIES
@@ -660,9 +608,73 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             userSession?.userId?.let { it1 -> UohAnalytics.clickXChipsToClearFilter(it1) }
         }
 
-        filter1?.refChipUnify?.setChevronClickListener {  }
-        filter2?.refChipUnify?.setChevronClickListener {  }
-        filter3?.refChipUnify?.setChevronClickListener {  }
+        filter1?.refChipUnify?.setChevronClickListener { onClickFilterDate() }
+        filter2?.refChipUnify?.setChevronClickListener { onClickFilterStatus() }
+        filter3?.refChipUnify?.setChevronClickListener { onClickFilterCategory() }
+    }
+
+    private fun onClickFilterDate() {
+        uohBottomSheetOptionAdapter = UohBottomSheetOptionAdapter(this)
+        showBottomSheetFilterOptions(UohConsts.CHOOSE_DATE)
+        val arrayListMap = arrayListOf<HashMap<String, String>>()
+        var i = 0
+        arrayFilterDate.forEach { optionDate ->
+            val mapKey = HashMap<String, String>()
+            mapKey["$i"] = optionDate
+            arrayListMap.add(mapKey)
+            i++
+        }
+        uohBottomSheetOptionAdapter.uohItemMapKeyList = arrayListMap
+        uohBottomSheetOptionAdapter.filterType = UohConsts.TYPE_FILTER_DATE
+        if ((filterStatus.equals(PARAM_SEMUA_TRANSAKSI, true) || filterStatus.equals(PARAM_MARKETPLACE, true)) && !isReset) {
+            uohBottomSheetOptionAdapter.selectedKey = "2"
+        } else {
+            uohBottomSheetOptionAdapter.selectedKey = currFilterDateKey
+        }
+        uohBottomSheetOptionAdapter.isReset = isReset
+        uohBottomSheetOptionAdapter.notifyDataSetChanged()
+    }
+
+    private fun onClickFilterStatus() {
+        uohBottomSheetOptionAdapter = UohBottomSheetOptionAdapter(this)
+        showBottomSheetFilterOptions(UohConsts.CHOOSE_FILTERS)
+        val arrayListMap = arrayListOf<HashMap<String, String>>()
+        orderList.filters.forEach { option ->
+            val mapKey = HashMap<String, String>()
+            mapKey[option] = option
+            arrayListMap.add(mapKey)
+        }
+        uohBottomSheetOptionAdapter.uohItemMapKeyList = arrayListMap
+        uohBottomSheetOptionAdapter.filterType = UohConsts.TYPE_FILTER_STATUS
+        uohBottomSheetOptionAdapter.selectedKey = currFilterStatusKey
+        uohBottomSheetOptionAdapter.isReset = isReset
+        uohBottomSheetOptionAdapter.notifyDataSetChanged()
+    }
+
+    private fun onClickFilterCategory() {
+        uohBottomSheetOptionAdapter = UohBottomSheetOptionAdapter(this)
+        showBottomSheetFilterOptions(UohConsts.CHOOSE_CATEGORIES)
+        val arrayListMap = arrayListOf<HashMap<String, String>>()
+        val mapKeyDefault = HashMap<String, String>()
+        mapKeyDefault[ALL_CATEGORIES] = UohConsts.ALL_CATEGORIES_TRANSACTION
+        arrayListMap.add(mapKeyDefault)
+        orderList.categories.forEach { category ->
+            val mapKey = HashMap<String, String>()
+            mapKey[category.value] = category.label
+            arrayListMap.add(mapKey)
+        }
+        uohBottomSheetOptionAdapter.uohItemMapKeyList = arrayListMap
+        uohBottomSheetOptionAdapter.filterType = UohConsts.TYPE_FILTER_CATEGORY
+
+        if ((filterStatus.equals(PARAM_MARKETPLACE, true) ||
+                        filterStatus.equals(PARAM_MARKETPLACE_DALAM_PROSES, true)) && !isReset) {
+            uohBottomSheetOptionAdapter.selectedKey = PARAM_MARKETPLACE
+        } else {
+            uohBottomSheetOptionAdapter.selectedKey = currFilterCategoryKey
+        }
+
+        uohBottomSheetOptionAdapter.isReset = isReset
+        uohBottomSheetOptionAdapter.notifyDataSetChanged()
     }
 
     private fun resetFilter() {
@@ -1061,7 +1073,11 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             UohConsts.TYPE_FILTER_CATEGORY -> {
                 tempFilterCategoryKey = option
                 tempFilterCategoryLabel = label
-                paramUohOrder.verticalCategory = option
+                if (tempFilterCategoryKey == ALL_CATEGORIES) {
+                    paramUohOrder.verticalCategory = ""
+                } else {
+                    paramUohOrder.verticalCategory = option
+                }
                 userSession?.userId?.let { UohAnalytics.clickCategoryFilterChips(it) }
             }
         }
