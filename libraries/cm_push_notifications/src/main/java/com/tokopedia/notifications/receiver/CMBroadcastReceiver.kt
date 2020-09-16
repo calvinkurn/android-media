@@ -10,6 +10,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.commonpromo.PromoCodeAutoApplyUseCase
 import com.tokopedia.notifications.R
 import com.tokopedia.notifications.analytics.ProductAnalytics
+import com.tokopedia.notifications.analytics.ProductAnalytics.clickCollapsedBody
 import com.tokopedia.notifications.common.*
 import com.tokopedia.notifications.common.CMConstant.NotificationType.PRODUCT_NOTIIFICATION
 import com.tokopedia.notifications.common.CMConstant.PayloadKeys.ADD_TO_CART
@@ -134,7 +135,7 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
                         sendClickPushEvent(context, IrisAnalyticsEvents.PUSH_CLICKED, baseNotificationModel, CMConstant.NotificationType.GENERAL)
                     }
                     CMConstant.ReceiverAction.ACTION_PRODUCT_COLLAPSED_CLICK -> {
-                        handleCollapsedViewClick(context, intent, notificationId)
+                        handleCollapsedViewClick(context, intent, notificationId, baseNotificationModel)
                     }
                     CMConstant.ReceiverAction.ACTION_PRODUCT_CAROUSEL_LEFT_CLICK -> {
                         ProductNotification.onLeftIconClick(context.applicationContext,baseNotificationModel!!)
@@ -203,8 +204,15 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
         clearProductImages(context.applicationContext)
     }
 
-    private fun handleCollapsedViewClick(context: Context, intent: Intent, notificationId: Int) {
+    private fun handleCollapsedViewClick(
+            context: Context,
+            intent: Intent,
+            notificationId: Int,
+            baseNotificationModel: BaseNotificationModel?
+    ) {
+        val productInfo = baseNotificationModel?.productInfoList?.first()
         handleMainClick(context, intent, notificationId)
+        clickCollapsedBody(userSession.userId, baseNotificationModel, productInfo)
         clearProductImages(context.applicationContext)
     }
 
