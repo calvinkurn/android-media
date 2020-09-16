@@ -778,7 +778,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
             } else if (requestCode == REQUEST_ADD_NAME_REGISTER_PHONE && resultCode == Activity.RESULT_OK) {
                 val enable2FA = data?.extras?.getBoolean(ApplinkConstInternalGlobal.PARAM_ENABLE_2FA) ?: false
                 val enableSkip2FA = data?.extras?.getBoolean(ApplinkConstInternalGlobal.PARAM_ENABLE_SKIP_2FA) ?: false
-                if(enable2FA || enableSkip2FA){
+                if(enable2FA){
                     goToAddPin2FA(enableSkip2FA)
                 } else registerInitialViewModel.getUserInfo(isCreatePin = true)
             } else if (requestCode == REQUEST_ADD_PIN) {
