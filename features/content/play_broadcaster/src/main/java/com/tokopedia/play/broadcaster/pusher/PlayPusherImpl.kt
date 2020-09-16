@@ -56,6 +56,7 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
         try {
             mAliVcLivePusher = AlivcLivePusher()
             mAliVcLivePusher?.init(builder.context, mAliVcLivePushConfig)
+            mAliVcLivePusher?.setLivePushInfoListener(mAliVcLivePushInfoListener)
             mAliVcLivePusher?.setLivePushErrorListener(mAliVcLivePushErrorListener)
             mAliVcLivePusher?.setLivePushNetworkListener(mAliVcLivePushNetworkListener)
             mAliVcLivePusher?.setAudioDenoise(true)
@@ -238,6 +239,34 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
         override fun onSDKError(pusher: AlivcLivePusher?, pusherError: AlivcLivePushError?) {
             sendCrashlyticsLog(DefaultErrorThrowable("onSystemError ${pusherError?.msg}, lastError:${pusher?.lastError}"))
         }
+    }
+
+    private val mAliVcLivePushInfoListener  = object : AlivcLivePushInfoListener {
+        override fun onPushResumed(pusher: AlivcLivePusher?) { }
+
+        override fun onPreviewStarted(pusher: AlivcLivePusher?) {
+            mPusherListener?.onStartPreviewing()
+        }
+
+        override fun onAdjustFps(pusher: AlivcLivePusher?, curFps: Int, targetFps: Int) { }
+
+        override fun onFirstFramePreviewed(pusher: AlivcLivePusher?) { }
+
+        override fun onPushStoped(pusher: AlivcLivePusher?) { }
+
+        override fun onDropFrame(pusher: AlivcLivePusher?, countBef: Int, countAft: Int) { }
+
+        override fun onFirstAVFramePushed(pusher: AlivcLivePusher?) { }
+
+        override fun onPreviewStoped(pusher: AlivcLivePusher?) { }
+
+        override fun onAdjustBitRate(pusher: AlivcLivePusher?, curBr: Int, targetBr: Int) { }
+
+        override fun onPushStarted(pusher: AlivcLivePusher?) { }
+
+        override fun onPushPauesed(pusher: AlivcLivePusher?) { }
+
+        override fun onPushRestarted(pusher: AlivcLivePusher?) {}
     }
 
     private val mAliVcLivePushNetworkListener = object: AlivcLivePushNetworkListener {

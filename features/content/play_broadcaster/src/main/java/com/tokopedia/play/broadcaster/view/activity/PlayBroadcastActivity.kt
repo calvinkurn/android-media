@@ -123,7 +123,6 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
         initViewModel()
         setFragmentFactory()
         startPageMonitoring()
-        starPrepareMonitoring()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_play_broadcast)
         isRecreated = (savedInstanceState != null)
@@ -308,7 +307,6 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
     }
 
     private fun getConfiguration() {
-        stopPrepareMonitoring()
         startNetworkMonitoring()
         viewModel.getConfiguration()
     }
@@ -348,15 +346,16 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
      */
     private fun observeConfiguration() {
         viewModel.observableConfigInfo.observe(this, Observer { result ->
-            stopNetworkMonitoring()
             startRenderMonitoring()
             when(result) {
                 is NetworkResult.Loading -> loaderView.show()
                 is NetworkResult.Success -> {
                     loaderView.hide()
                     if (!isRecreated) handleChannelConfiguration(result.data)
+                    stopNetworkMonitoring()
                 }
                 is NetworkResult.Fail -> {
+                    invalidatePerformanceData()
                     loaderView.hide()
                     showToaster(
                             message = result.error.localizedMessage,
@@ -365,8 +364,6 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
                     )
                 }
             }
-            stopRenderMonitoring()
-            stopPageMonitoring()
         })
     }
     //endregion
@@ -540,6 +537,7 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
                 PLAY_BROADCASTER_TRACE_RENDER_PAGE
         )
         pageMonitoring.startMonitoring(PLAY_BROADCASTER_TRACE_PAGE)
+        starPrepareMonitoring()
     }
 
     private fun starPrepareMonitoring() {
@@ -551,6 +549,7 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
     }
 
     private fun startNetworkMonitoring() {
+        stopPrepareMonitoring()
         pageMonitoring.startNetworkRequestPerformanceMonitoring()
     }
 
@@ -559,6 +558,7 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
     }
 
     private fun startRenderMonitoring() {
+        stopNetworkMonitoring()
         pageMonitoring.startRenderPerformanceMonitoring()
     }
 
@@ -567,7 +567,12 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
     }
 
     private fun stopPageMonitoring() {
+        stopRenderMonitoring()
         pageMonitoring.stopMonitoring()
+    }
+
+    private fun invalidatePerformanceData() {
+        pageMonitoring.invalidate()
     }
 
     fun getPltPerformanceResultData(): PltPerformanceData? {

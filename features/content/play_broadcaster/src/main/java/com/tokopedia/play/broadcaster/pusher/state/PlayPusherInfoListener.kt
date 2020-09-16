@@ -8,6 +8,8 @@ interface PlayPusherInfoListener {
 
     fun onStart() { }
 
+    fun onStartPreviewing() { }
+
     fun onResume() { }
 
     fun onPause() { }
