@@ -92,17 +92,16 @@ class TabsViewModel(val application: Application, val components: ComponentsItem
         this.syncData.value = true
     }
 
+
     fun clearDynamicTabData() {
-        if (components.properties?.dynamic == true) {
-            components.getComponentsItem()?.let {
-                if (it.isNotEmpty()) {
-                    it[0].getComponentsItem()?.let { tabchildComponent ->
-                        if (tabchildComponent.isNotEmpty()) {
-                            getComponent(tabchildComponent[0].id, tabchildComponent[0].pageEndPoint)?.run {
-                                this.setComponentsItem(null)
-                                this.noOfPagesLoaded = 0
-                            }
-                        }
+        if (components.properties?.dynamic == true && components.getComponentsItem() != null) {
+            val parentComponent = components.getComponentsItem()!!
+            if (parentComponent.isNotEmpty() && parentComponent[0].getComponentsItem() != null) {
+                val tabChildComponent = parentComponent[0].getComponentsItem()!!
+                if (tabChildComponent.isNotEmpty()) {
+                    getComponent(tabChildComponent[0].id, tabChildComponent[0].pageEndPoint)?.run {
+                        this.setComponentsItem(null)
+                        this.noOfPagesLoaded = 0
                     }
                 }
             }
