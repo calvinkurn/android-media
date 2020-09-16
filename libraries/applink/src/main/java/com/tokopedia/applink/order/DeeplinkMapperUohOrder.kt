@@ -25,7 +25,11 @@ object DeeplinkMapperUohOrder {
                 || deeplink.startsWith(ApplinkConst.FLIGHT_ORDER) || deeplink.startsWith(ApplinkConst.GIFT_CARDS_ORDER)
                 || deeplink.startsWith(ApplinkConst.INSURANCE_ORDER) || deeplink.startsWith(ApplinkConst.MODAL_TOKO_ORDER)
                 || deeplink.startsWith(ApplinkConst.HOTEL_ORDER) || deeplink.equals(ApplinkConst.ORDER_LIST, true)
-                || deeplink.startsWith(ApplinkConst.ORDER_LIST_WEBVIEW)) {
+                || deeplink.equals(ApplinkConst.ORDER_LIST_WEBVIEW, true) || deeplink.equals(ApplinkConst.PURCHASE_ORDER, true)
+                || deeplink.equals(ApplinkConst.PURCHASE_CONFIRMED, true) || deeplink.equals(ApplinkConst.PURCHASE_PROCESSED, true)
+                || deeplink.equals(ApplinkConst.PURCHASE_SHIPPING_CONFIRM, true) || deeplink.equals(ApplinkConst.PURCHASE_SHIPPED, true)
+                || deeplink.equals(ApplinkConst.PURCHASE_DELIVERED, true) || deeplink.equals(ApplinkConst.PURCHASE_HISTORY, true)
+                || deeplink.equals(ApplinkConst.ORDER_HISTORY, true)) {
             returnedDeeplink = if (useUoh()) ApplinkConstInternalOrder.UNIFY_ORDER
             else deeplink
         } else if (deeplink.startsWith(ApplinkConst.MARKETPLACE_ORDER_SUB)) {

@@ -69,7 +69,7 @@
             app:labelType="general_dark_orange"
             tools:text="Butuh Revisi"
             android:textStyle="bold"
-            android:layout_marginEnd="@dimen/dp_12"/>
+            android:layout_marginEnd="@dimen/dp_4"/>
         
         <View
             android:id="@+id/divider_uoh_order_1"
@@ -109,8 +109,7 @@
                 android:layout_height="@dimen/dp_40"
                 app:cardCornerRadius="6dp"
                 app:cardElevation="@dimen/dp_0"
-                android:layout_marginEnd="@dimen/dp_20"
-                android:layout_marginRight="@dimen/dp_20">
+                android:layout_marginEnd="@dimen/dp_10">
 
                 <ImageView
                     android:id="@+id/iv_uoh_product"

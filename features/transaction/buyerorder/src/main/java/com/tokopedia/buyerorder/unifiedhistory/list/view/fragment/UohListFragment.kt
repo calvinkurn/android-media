@@ -1397,7 +1397,8 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         UohAnalytics.viewOrderCard(order.verticalCategory, order.userID, arrayListProducts)
     }
 
-    override fun trackMulaiBelanjaOnEmptyList() {
+    override fun onMulaiBelanjaBtnClicked() {
+        RouteManager.route(context, ApplinkConst.HOME)
         userSession?.userId?.let { UohAnalytics.clickMulaiBelanjaOnEmptyOrderList(it) }
     }
 
