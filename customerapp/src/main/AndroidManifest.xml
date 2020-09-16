@@ -6,7 +6,6 @@
     <uses-sdk tools:overrideLibrary="com.tokopedia.core"/>
 
     <uses-permission android:name="android.permission.NFC" />
-    <uses-permission android:name="android.permission.CALL_PHONE"/>
     <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
     <uses-permission android:name="android.permission.VIBRATE"/>
     <uses-permission
