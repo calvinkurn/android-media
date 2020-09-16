@@ -9,7 +9,9 @@ import com.tokopedia.talk.feature.inbox.presentation.adapter.uimodel.TalkInboxUi
 import com.tokopedia.talk.feature.inbox.presentation.adapter.viewholder.TalkInboxLoadingViewHolder
 import com.tokopedia.talk.feature.inbox.presentation.adapter.viewholder.TalkInboxViewHolder
 
-class TalkInboxAdapterTypeFactory : TalkInboxTypeFactory, BaseAdapterTypeFactory() {
+class TalkInboxAdapterTypeFactory(
+        private val isSellerView: Boolean
+) : TalkInboxTypeFactory, BaseAdapterTypeFactory() {
 
     override fun type(talkInboxUiModel: TalkInboxUiModel): Int {
         return TalkInboxViewHolder.LAYOUT
@@ -21,7 +23,7 @@ class TalkInboxAdapterTypeFactory : TalkInboxTypeFactory, BaseAdapterTypeFactory
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when(type) {
-            TalkInboxViewHolder.LAYOUT -> TalkInboxViewHolder(parent)
+            TalkInboxViewHolder.LAYOUT -> TalkInboxViewHolder(parent, isSellerView)
             TalkInboxLoadingViewHolder.LAYOUT -> TalkInboxLoadingViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }

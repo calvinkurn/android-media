@@ -8,10 +8,14 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.talk.feature.inbox.presentation.adapter.uimodel.TalkInboxUiModel
 import com.tokopedia.talk_old.R
+import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.item_talk_inbox.view.*
 
-class TalkInboxViewHolder(view: View) : AbstractViewHolder<TalkInboxUiModel>(view) {
+class TalkInboxViewHolder(
+        view: View,
+        private val isSellerView: Boolean
+) : AbstractViewHolder<TalkInboxUiModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.item_talk_inbox
@@ -65,9 +69,18 @@ class TalkInboxViewHolder(view: View) : AbstractViewHolder<TalkInboxUiModel>(vie
     }
 
     private fun setCountAndDate(totalAnswer: Int, date: String) {
-        itemView.talkInboxAnswerCountAndDate.text = itemView.context.getString(R.string.inbox_total_count_and_date,
-                if(totalAnswer == 0) getString(R.string.inbox_no_answer) else totalAnswer.toString(),
-                date)
+        val counterAndDateText = when {
+            totalAnswer == 0 && isSellerView -> {
+                itemView.context.getString(R.string.inbox_total_count_empty_and_date, date)
+            }
+            totalAnswer == 0 && !isSellerView -> {
+                itemView.context.getString(R.string.inbox_total_count_and_date, getString(R.string.inbox_no_answer), date)
+            }
+            else -> {
+                itemView.context.getString(R.string.inbox_total_count_and_date, totalAnswer.toString(), date)
+            }
+        }
+        itemView.talkInboxAnswerCountAndDate.text = HtmlLinkHelper(itemView.context, counterAndDateText).spannedString
     }
 
 }

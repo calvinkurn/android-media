@@ -71,6 +71,7 @@ class TalkInboxFragment : BaseListFragment<TalkInboxUiModel, TalkInboxAdapterTyp
 
     private var talkPerformanceMonitoringListener: TalkPerformanceMonitoringListener? = null
     private var talkInboxListener: TalkInboxListener? = null
+    private var inboxType = ""
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if(requestCode == REPLY_REQUEST_CODE) {
@@ -81,7 +82,7 @@ class TalkInboxFragment : BaseListFragment<TalkInboxUiModel, TalkInboxAdapterTyp
     }
 
     override fun getAdapterTypeFactory(): TalkInboxAdapterTypeFactory {
-        return TalkInboxAdapterTypeFactory()
+        return TalkInboxAdapterTypeFactory(inboxType == TalkInboxTab.SHOP_TAB)
     }
 
     override fun getScreenName(): String {
@@ -158,8 +159,9 @@ class TalkInboxFragment : BaseListFragment<TalkInboxUiModel, TalkInboxAdapterTyp
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
         getDataFromArgument()
+        super.onCreate(savedInstanceState)
+        viewModel.setInboxType(inboxType)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -296,7 +298,9 @@ class TalkInboxFragment : BaseListFragment<TalkInboxUiModel, TalkInboxAdapterTyp
     }
 
     private fun getDataFromArgument() {
-        arguments?.getString(TAB_PARAM)?.let { viewModel.setInboxType(it) }
+        arguments?.getString(TAB_PARAM)?.let {
+            inboxType = it
+        }
     }
 
     private fun initSortFilter() {
@@ -324,7 +328,7 @@ class TalkInboxFragment : BaseListFragment<TalkInboxUiModel, TalkInboxAdapterTyp
                 readFilter.type = ChipsUnify.TYPE_NORMAL
             }
         }
-        return arrayListOf(readFilter, unreadFilter)
+        return arrayListOf(unreadFilter, readFilter)
     }
 
     private fun selectFilter(filter: TalkInboxFilter) {

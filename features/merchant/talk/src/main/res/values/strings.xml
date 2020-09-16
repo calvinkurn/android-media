@@ -142,6 +142,7 @@
     <string name="inbox_read">Sudah Dibaca</string>
     <string name="inbox_unread">Belum Dibaca</string>
     <string name="inbox_total_count_and_date">%s jawaban • %s</string>
+    <string name="inbox_total_count_empty_and_date">&lt;b>Jawab Pertanyaan&lt;/b> • %s</string>
     <string name="inbox_no_answer">Belum ada</string>
     <string name="inbox_empty_title">Lagi nggak ada diskusi</string>
     <string name="inbox_empty_read_discussion">Semua diskusi yang sudah dibaca akan tampil di sini</string>
