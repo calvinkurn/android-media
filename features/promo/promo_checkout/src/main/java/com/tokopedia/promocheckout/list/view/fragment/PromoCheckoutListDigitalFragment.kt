@@ -6,6 +6,7 @@ import android.os.Bundle
 import com.tokopedia.abstraction.constant.IRouterConstant
 import com.tokopedia.promocheckout.analytics.PromoCheckoutAnalytics
 import com.tokopedia.promocheckout.common.data.REQUEST_CODE_PROMO_DETAIL
+import com.tokopedia.promocheckout.common.domain.model.TravelCollectiveBanner
 import com.tokopedia.promocheckout.common.util.EXTRA_PROMO_DATA
 import com.tokopedia.promocheckout.common.util.mapToStatePromoCheckout
 import com.tokopedia.promocheckout.common.view.model.PromoData
@@ -64,6 +65,10 @@ open class PromoCheckoutListDigitalFragment : BasePromoCheckoutListFragment(), P
         if (promoCode.isNotEmpty()) promoCheckoutListDigitalPresenter.checkPromoCode(promoCode, promoDigitalModel)
     }
 
+    override fun renderDealsPromo(data: List<TravelCollectiveBanner.Banner>) {
+        //
+    }
+
     override fun onSuccessCheckPromo(data: DataUiModel) {
         trackSuccessCheckPromoCode(data)
         val intent = Intent()
@@ -72,6 +77,10 @@ open class PromoCheckoutListDigitalFragment : BasePromoCheckoutListFragment(), P
         intent.putExtra(EXTRA_PROMO_DATA, promoData)
         activity?.setResult(Activity.RESULT_OK, intent)
         activity?.finish()
+    }
+
+    override fun onClickItemPromo(promoCheckoutDealsPromoCode: TravelCollectiveBanner.Banner) {
+        //
     }
 
     override fun onClickItemLastSeen(promoCheckoutLastSeenModel: PromoCheckoutLastSeenModel) {

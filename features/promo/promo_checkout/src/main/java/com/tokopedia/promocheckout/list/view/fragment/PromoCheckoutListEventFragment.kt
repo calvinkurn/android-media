@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import com.tokopedia.abstraction.constant.IRouterConstant
 import com.tokopedia.promocheckout.common.data.REQUEST_CODE_PROMO_DETAIL
+import com.tokopedia.promocheckout.common.domain.model.TravelCollectiveBanner
 import com.tokopedia.promocheckout.common.domain.model.event.EventVerifyBody
 import com.tokopedia.promocheckout.common.util.EXTRA_PROMO_DATA
 import com.tokopedia.promocheckout.common.util.mapToStatePromoCheckout
@@ -68,6 +69,10 @@ class PromoCheckoutListEventFragment : BasePromoCheckoutListFragment(), PromoChe
         }
     }
 
+    override fun renderDealsPromo(data: List<TravelCollectiveBanner.Banner>) {
+        //
+    }
+
     override fun onSuccessCheckPromo(data: DataUiModel) {
         val intent = Intent()
         val promoData = PromoData(data.isCoupon, data.codes[0],
@@ -75,6 +80,10 @@ class PromoCheckoutListEventFragment : BasePromoCheckoutListFragment(), PromoChe
         intent.putExtra(EXTRA_PROMO_DATA, promoData)
         activity?.setResult(Activity.RESULT_OK, intent)
         activity?.finish()
+    }
+
+    override fun onClickItemPromo(promoCheckoutDealsPromoCode: TravelCollectiveBanner.Banner) {
+        //
     }
 
     companion object {

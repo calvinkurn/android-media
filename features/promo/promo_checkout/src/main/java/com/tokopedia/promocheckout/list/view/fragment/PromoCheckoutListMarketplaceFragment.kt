@@ -14,6 +14,7 @@ import com.tokopedia.abstraction.constant.IRouterConstant
 import com.tokopedia.promocheckout.R
 import com.tokopedia.promocheckout.analytics.PromoCheckoutAnalytics.Companion.promoCheckoutAnalytics
 import com.tokopedia.promocheckout.common.data.entity.request.Promo
+import com.tokopedia.promocheckout.common.domain.model.TravelCollectiveBanner
 import com.tokopedia.promocheckout.common.util.*
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData
 import com.tokopedia.promocheckout.common.view.uimodel.ClashingInfoDetailUiModel
@@ -132,6 +133,7 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(),
         populateLastSeen()
     }
 
+
     override fun showListCatalogHighlight(e: Throwable) {
         populateExchangeCouponList()
     }
@@ -181,11 +183,19 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(),
         activity?.finish()
     }
 
+    override fun onClickItemPromo(promoCheckoutDealsPromoCode: TravelCollectiveBanner.Banner) {
+        //
+    }
+
     override fun onClashCheckPromo(clasingInfoDetailUiModel: ClashingInfoDetailUiModel) {
         val intent = Intent()
         intent.putExtra(EXTRA_CLASHING_DATA, clasingInfoDetailUiModel)
         activity?.setResult(RESULT_CLASHING, intent)
         activity?.finish()
+    }
+
+    override fun renderDealsPromo(data: List<TravelCollectiveBanner.Banner>) {
+        //
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

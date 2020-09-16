@@ -3,6 +3,7 @@ package com.tokopedia.promocheckout.list.view.fragment
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import com.tokopedia.promocheckout.common.domain.model.TravelCollectiveBanner
 import com.tokopedia.promocheckout.common.util.EXTRA_PROMO_DATA
 import com.tokopedia.promocheckout.common.util.mapToStatePromoCheckout
 import com.tokopedia.promocheckout.common.view.model.PromoData
@@ -27,6 +28,10 @@ open class PromoCheckoutListUmrahFragment : BasePromoCheckoutListFragment(), Pro
         if (promoCode.isNotEmpty()) promoCheckoutListUmrahPresenter.checkPromo(promoCode, totalPrice)
     }
 
+    override fun renderDealsPromo(data: List<TravelCollectiveBanner.Banner>) {
+        //
+    }
+
     override fun onSuccessCheckPromo(data: DataUiModel) {
         val intent = Intent()
         val promoData = PromoData(data.isCoupon, textInputCoupon.text.toString(),
@@ -35,6 +40,10 @@ open class PromoCheckoutListUmrahFragment : BasePromoCheckoutListFragment(), Pro
 
         activity?.setResult(Activity.RESULT_OK, intent)
         activity?.finish()
+    }
+
+    override fun onClickItemPromo(promoCheckoutDealsPromoCode: TravelCollectiveBanner.Banner) {
+        //
     }
 
     override fun loadData(page: Int) {
