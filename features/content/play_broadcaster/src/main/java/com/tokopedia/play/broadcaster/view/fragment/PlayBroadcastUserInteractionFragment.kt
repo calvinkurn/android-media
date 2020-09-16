@@ -63,7 +63,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     private lateinit var productLiveBottomSheet: PlayProductLiveBottomSheet
 
     private lateinit var exitDialog: DialogUnify
-    private lateinit var timeoutDialog: DialogUnify
+    private lateinit var forceStopDialog: DialogUnify
 
     private var toasterBottomMargin = 0
 
@@ -95,6 +95,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         observeChatList()
         observeMetrics()
         observeNetworkConnectionDuringLive()
+        observeEventBanned()
     }
 
     override fun onStart() {
@@ -250,19 +251,34 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     }
 
     private fun showDialogWhenTimeout() {
-        if (!::timeoutDialog.isInitialized) {
-            timeoutDialog = requireContext().getDialog(
-                    title = getString(R.string.play_live_broadcast_dialog_end_timeout_title),
-                    desc = getString(R.string.play_live_broadcast_dialog_end_timeout_desc),
-                    primaryCta = getString(R.string.play_live_broadcast_dialog_end_timeout_primary),
+        showForceStopDialog(
+                title = getString(R.string.play_live_broadcast_dialog_end_timeout_title),
+                message = getString(R.string.play_live_broadcast_dialog_end_timeout_desc),
+                buttonTitle = getString(R.string.play_live_broadcast_dialog_end_timeout_primary),
+                onClickListener = {
+                    analytic.clickDialogSeeReportOnLivePage(parentViewModel.channelId, parentViewModel.title)
+                }
+        )
+    }
+
+    private fun showForceStopDialog(
+            title: String,
+            message: String,
+            buttonTitle: String,
+            onClickListener: () -> Unit = { }) {
+        if (!::forceStopDialog.isInitialized) {
+            forceStopDialog = requireContext().getDialog(
+                    title = title,
+                    desc = message,
+                    primaryCta = buttonTitle,
                     primaryListener = { dialog ->
                         dialog.dismiss()
                         navigateToSummary()
-                        analytic.clickDialogSeeReportOnLivePage(parentViewModel.channelId, parentViewModel.title)
+                        onClickListener()
                     }
             )
         }
-        timeoutDialog.show()
+        forceStopDialog.show()
     }
 
     private fun showToaster(
@@ -410,6 +426,17 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
     private fun observeNetworkConnectionDuringLive() {
         parentViewModel.observableLiveNetworkState.observe(viewLifecycleOwner, EventObserver(::handleLiveNetworkInfo))
+    }
+
+    private fun observeEventBanned() {
+        parentViewModel.observableEventBanned.observe(viewLifecycleOwner,  EventObserver{ event ->
+            stopLiveStreaming(shouldNavigate = false)
+            showForceStopDialog(
+                    title = event.title,
+                    message = event.message,
+                    buttonTitle = event.buttonTitle
+            )
+        })
     }
     //endregion
 

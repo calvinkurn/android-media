@@ -90,6 +90,9 @@ class PlayBroadcastSocketImpl constructor(
                     PlaySocketEnum.Chat.value -> {
                         data = mapChat(webSocketResponse)
                     }
+                    PlaySocketEnum.Banned.value -> {
+                        data = mapBanned(webSocketResponse)
+                    }
                 }
 
                 if (data != null) {
@@ -163,6 +166,10 @@ class PlayBroadcastSocketImpl constructor(
 
     private fun mapChat(response: WebSocketResponse): Chat? {
         return convertToModel(response.jsonObject, Chat::class.java)
+    }
+
+    private fun mapBanned(response: WebSocketResponse): Banned? {
+        return convertToModel(response.jsonObject, Banned::class.java)
     }
 
     private fun <T> convertToModel(jsonElement: JsonElement?, classOfT: Class<T>): T? {

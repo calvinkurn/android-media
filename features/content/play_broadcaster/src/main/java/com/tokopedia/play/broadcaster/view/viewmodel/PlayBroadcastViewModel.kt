@@ -88,6 +88,8 @@ class PlayBroadcastViewModel @Inject constructor(
     val observableCover = getCurrentSetupDataStore().getObservableSelectedCover()
     val observableReportDuration: LiveData<String>
         get() = _observableReportDuration
+    val observableEventBanned: LiveData<Event<BannedUiModel>>
+        get() = _observableEventBanned
 
     val shareContents: String
         get() = _observableShareInfo.value.orEmpty()
@@ -112,6 +114,7 @@ class PlayBroadcastViewModel @Inject constructor(
     }
     private val _observableLiveInfoState = MutableLiveData<Event<BroadcastState>>()
     private val _observableReportDuration = MutableLiveData<String>()
+    private val _observableEventBanned = MutableLiveData<Event<BannedUiModel>>()
 
     init {
         _observableChatList.value = mutableListOf()
@@ -366,6 +369,7 @@ class PlayBroadcastViewModel @Inject constructor(
                         is LiveDuration -> restartLiveDuration(data)
                         is ProductTagging -> setSelectedProduct(PlayBroadcastUiMapper.mapProductTag(data))
                         is Chat -> retrieveNewChat(PlayBroadcastUiMapper.mapIncomingChat(data))
+                        is Banned -> _observableEventBanned.value  = Event(PlayBroadcastUiMapper.mapEventBanned(data))
                     }
                 }
 
