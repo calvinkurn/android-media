@@ -49,7 +49,8 @@ class PlayViewerVideoStateProcessor(
 
     init {
         scope.launch(dispatcher.immediate) {
-            getVideoStateFlow()
+            playVideoManager.getVideoStateFlow()
+                    .flowOn(dispatcher.immediate)
                     .collectLatest { state ->
                         if (state in goodStates) isFirstTime = false
 
@@ -100,19 +101,6 @@ class PlayViewerVideoStateProcessor(
     fun removeStateListener(listener: PlayViewerVideoStateListener) {
         mListeners.remove(listener)
     }
-
-    private fun getVideoStateFlow() = callbackFlow<PlayVideoState> {
-        val listener = object : PlayVideoManager.Listener {
-            override fun onPlayerStateChanged(state: PlayVideoState) {
-                offer(state)
-            }
-        }
-
-        playVideoManager.addListener(listener)
-
-        awaitClose { playVideoManager.removeListener(listener) }
-
-    }.flowOn(dispatcher.immediate)
 
     private fun getBufferSourceFromError(error: Throwable?): BufferSource {
         if (error == null || error !is ExoPlaybackException) return BufferSource.Unknown

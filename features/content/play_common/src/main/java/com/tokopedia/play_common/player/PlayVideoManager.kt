@@ -13,9 +13,7 @@ import com.google.android.exoplayer2.source.dash.DashMediaSource
 import com.google.android.exoplayer2.source.hls.HlsMediaSource
 import com.google.android.exoplayer2.source.smoothstreaming.SsMediaSource
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
-import com.google.android.exoplayer2.upstream.DefaultLoadErrorHandlingPolicy
 import com.google.android.exoplayer2.upstream.LoadErrorHandlingPolicy
-import com.google.android.exoplayer2.upstream.Loader.UnexpectedLoaderException
 import com.google.android.exoplayer2.util.Util
 import com.tokopedia.play_common.model.PlayBufferControl
 import com.tokopedia.play_common.model.PlayPlayerModel
@@ -29,8 +27,11 @@ import com.tokopedia.play_common.state.VideoPositionHandle
 import com.tokopedia.play_common.types.PlayVideoType
 import com.tokopedia.play_common.util.ExoPlaybackExceptionParser
 import com.tokopedia.play_common.util.PlayProcessLifecycleObserver
-import java.io.FileNotFoundException
-import java.io.IOException
+import kotlinx.coroutines.*
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlin.properties.Delegates
 
 /**
@@ -40,6 +41,9 @@ class PlayVideoManager private constructor(
         private val applicationContext: Context,
         private val exoPlayerCreator: ExoPlayerCreator
 ) {
+
+    private val perMediaJob = SupervisorJob()
+    private val scope = CoroutineScope(Dispatchers.Main.immediate)
 
     /**
      * VideoPlayer shared state
@@ -167,6 +171,19 @@ class PlayVideoManager private constructor(
         }
 
     //region public method
+    fun getVideoStateFlow() = callbackFlow<PlayVideoState> {
+        val listener = object : Listener {
+            override fun onPlayerStateChanged(state: PlayVideoState) {
+                offer(state)
+            }
+        }
+
+        addListener(listener)
+
+        awaitClose { removeListener(listener) }
+
+    }
+
     fun addListener(listener: Listener) {
         listeners.add(listener)
     }
@@ -193,6 +210,8 @@ class PlayVideoManager private constructor(
     }
 
     private fun playVideoWithUri(uri: Uri, autoPlay: Boolean = true, lastPosition: Long?, resetState: Boolean = true) {
+        doPerMediaPreparation()
+
         val mediaSource = getMediaSourceBySource(applicationContext, uri)
         videoPlayer.playWhenReady = autoPlay
         videoPlayer.prepare(mediaSource, resetState, resetState)
@@ -245,6 +264,10 @@ class PlayVideoManager private constructor(
         videoPlayer.stop()
     }
 
+    fun destroy() {
+        scope.cancel()
+    }
+
     private fun getDefaultPrepareState() = PlayVideoPrepareState.Unprepared(
             previousUri = null,
             previousType = PlayVideoType.Unknown,
@@ -252,6 +275,22 @@ class PlayVideoManager private constructor(
             resetState = true
     )
     //endregion
+
+    private fun initBufferingValidation() = scope.launch(perMediaJob) {
+        getVideoStateFlow()
+                .distinctUntilChanged()
+                .collectLatest { state ->
+                    if (state == PlayVideoState.Buffering) {
+                        delay(MAX_BUFFERING_DURATION_IN_MS)
+
+                        val prepareState = currentPrepareState
+                        if (prepareState is PlayVideoPrepareState.Prepared) {
+                            if (isVideoLive()) release() else stop(resetState = false)
+                            playUri(prepareState.uri, videoPlayer.playWhenReady)
+                        }
+                    }
+                }
+    }
 
     //region video state
     @Deprecated(message = "Use listener instead")
@@ -299,6 +338,11 @@ class PlayVideoManager private constructor(
     //endregion
 
     //region private method
+    private fun doPerMediaPreparation() {
+        perMediaJob.cancelChildren()
+        initBufferingValidation()
+    }
+
     private fun getMediaSourceBySource(context: Context, uri: Uri): MediaSource {
         val mDataSourceFactory = DefaultDataSourceFactory(context, Util.getUserAgent(context, "Tokopedia Android"))
         val errorHandlingPolicy = getErrorHandlingPolicy()
@@ -371,6 +415,7 @@ class PlayVideoManager private constructor(
     }
 
     companion object {
+        private const val MAX_BUFFERING_DURATION_IN_MS = 12 * 1000L
         private const val VIDEO_MAX_SOUND = 1f
         private const val VIDEO_MIN_SOUND = 0f
 
@@ -380,7 +425,10 @@ class PlayVideoManager private constructor(
         private var playProcessLifecycleObserver: PlayProcessLifecycleObserver? = null
 
         @JvmStatic
-        fun getInstance(context: Context, creator: ExoPlayerCreator = DefaultExoPlayerCreator(context)): PlayVideoManager {
+        fun getInstance(
+                context: Context,
+                creator: ExoPlayerCreator = DefaultExoPlayerCreator(context)
+        ): PlayVideoManager {
             return INSTANCE ?: synchronized(this) {
                 val player = PlayVideoManager(context.applicationContext, creator).also {
                     INSTANCE = it
@@ -399,6 +447,8 @@ class PlayVideoManager private constructor(
         @JvmStatic
         fun deleteInstance() = synchronized(this) {
             if (INSTANCE != null) {
+                INSTANCE!!.destroy()
+
                 playProcessLifecycleObserver?.let { ProcessLifecycleOwner.get()
                         .lifecycle.removeObserver(it) }
 
