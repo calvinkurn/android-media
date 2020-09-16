@@ -17,6 +17,19 @@ open class LeftChatMessageViewHolder(
         private val adapterListener: AdapterListener
 ) : ChatMessageViewHolder(itemView, listener, adapterListener) {
 
+    private val bg = ViewUtil.generateBackgroundWithShadow(
+            itemView,
+            com.tokopedia.unifyprinciples.R.color.Neutral_N0,
+            R.dimen.dp_topchat_0,
+            R.dimen.dp_topchat_20,
+            R.dimen.dp_topchat_20,
+            R.dimen.dp_topchat_20,
+            R.color.topchat_message_shadow,
+            R.dimen.dp_2,
+            R.dimen.dp_1,
+            Gravity.CENTER
+    )
+
     override fun bind(message: MessageViewModel) {
         super.bind(message)
         bindMessageInfo(message)
@@ -24,19 +37,7 @@ open class LeftChatMessageViewHolder(
     }
 
     private fun bindBackground(message: MessageViewModel) {
-        val shadow = ViewUtil.generateBackgroundWithShadow(
-                itemView,
-                com.tokopedia.unifyprinciples.R.color.Neutral_N0,
-                R.dimen.dp_topchat_0,
-                R.dimen.dp_topchat_20,
-                R.dimen.dp_topchat_20,
-                R.dimen.dp_topchat_20,
-                R.color.topchat_message_shadow,
-                R.dimen.dp_2,
-                R.dimen.dp_1,
-                Gravity.CENTER
-        )
-        fxChat?.background = shadow
+        fxChat?.background = bg
     }
 
     private fun bindMessageInfo(message: MessageViewModel) {

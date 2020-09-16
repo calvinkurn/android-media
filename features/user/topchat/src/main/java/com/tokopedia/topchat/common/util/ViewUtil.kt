@@ -17,7 +17,7 @@ import com.tokopedia.kotlin.extensions.view.toPx
 
 object ViewUtil {
     fun generateBackgroundWithShadow(
-            view: View,
+            view: View?,
             @ColorRes backgroundColor: Int,
             @DimenRes topLeftRadius: Int,
             @DimenRes topRightRadius: Int,
@@ -27,7 +27,8 @@ object ViewUtil {
             @DimenRes elevation: Int,
             @DimenRes shadowRadius: Int,
             shadowGravity: Int
-    ): Drawable {
+    ): Drawable? {
+        if (view == null) return null
         val topLeftRadiusValue = view.context.resources.getDimension(topLeftRadius)
         val topRightRadiusValue = view.context.resources.getDimension(topRightRadius)
         val bottomLeftRadiusValue = view.context.resources.getDimension(bottomLeftRadius)

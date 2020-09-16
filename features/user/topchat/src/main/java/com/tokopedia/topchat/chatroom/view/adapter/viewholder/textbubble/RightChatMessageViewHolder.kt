@@ -24,6 +24,18 @@ open class RightChatMessageViewHolder constructor(
     var header: LinearLayout? = itemView?.findViewById(R.id.llRoleUser)
     var headerRole: Typography? = itemView?.findViewById(R.id.tvRole)
     var smartReplyBlueDot: ImageView? = itemView?.findViewById(R.id.img_sr_blue_dot)
+    private val bg = ViewUtil.generateBackgroundWithShadow(
+            itemView,
+            R.color.bg_topchat_right_message,
+            R.dimen.dp_topchat_20,
+            R.dimen.dp_topchat_0,
+            R.dimen.dp_topchat_20,
+            R.dimen.dp_topchat_20,
+            R.color.topchat_message_shadow,
+            R.dimen.dp_2,
+            R.dimen.dp_2,
+            Gravity.CENTER
+    )
 
     override fun bind(message: MessageViewModel) {
         super.bind(message)
@@ -33,19 +45,7 @@ open class RightChatMessageViewHolder constructor(
     }
 
     private fun bindBackground(message: MessageViewModel) {
-        val shadow = ViewUtil.generateBackgroundWithShadow(
-                itemView,
-                R.color.bg_topchat_right_message,
-                R.dimen.dp_topchat_20,
-                R.dimen.dp_topchat_0,
-                R.dimen.dp_topchat_20,
-                R.dimen.dp_topchat_20,
-                R.color.topchat_message_shadow,
-                R.dimen.dp_2,
-                R.dimen.dp_2,
-                Gravity.CENTER
-        )
-        fxChat?.background = shadow
+        fxChat?.background = bg
     }
 
     private fun bindHeader(message: MessageViewModel) {
