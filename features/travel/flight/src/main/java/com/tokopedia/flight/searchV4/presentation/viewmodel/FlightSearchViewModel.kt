@@ -57,6 +57,7 @@ class FlightSearchViewModel @Inject constructor(
     var selectedSortOption: Int = TravelSortOption.CHEAPEST
     var priceFilterStatistic: Pair<Int, Int> = Pair(0, Int.MAX_VALUE)
     private var searchStatisticModel: FlightSearchStatisticModel? = null
+    private var searchNotFoundSent = false
     val isInFilterMode: Boolean
         get() {
             if (::filterModel.isInitialized) {
@@ -126,6 +127,8 @@ class FlightSearchViewModel @Inject constructor(
     }
 
     fun fetchSearchDataCloud(isReturnTrip: Boolean, delayInSeconds: Long = -1) {
+        searchNotFoundSent = false
+
         val date: String = flightSearchPassData.getDate(isReturnTrip)
         val adult = flightSearchPassData.flightPassengerModel.adult
         val child = flightSearchPassData.flightPassengerModel.children
@@ -312,8 +315,11 @@ class FlightSearchViewModel @Inject constructor(
     }
 
     fun sendProductNotFoundTrack() {
-        flightAnalytics.eventProductViewNotFound(flightSearchPassData,
-                if (userSessionInterface.isLoggedIn) userSessionInterface.userId else "")
+        if (!searchNotFoundSent) {
+            flightAnalytics.eventProductViewNotFound(flightSearchPassData,
+                    if (userSessionInterface.isLoggedIn) userSessionInterface.userId else "")
+            searchNotFoundSent = true
+        }
     }
 
     private fun deleteAllSearchData() {
