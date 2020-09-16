@@ -99,12 +99,9 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if(data != null) {
-            if(data.hasExtra(EXTRA_ADDRESS_NEW)) {
-                val newAddress = data.getParcelableExtra<SaveAddressDataModel>(EXTRA_ADDRESS_NEW)
-                finishActivity(newAddress)
-
-            }
+        if(data != null && data.hasExtra(EXTRA_ADDRESS_NEW)) {
+            val newAddress = data.getParcelableExtra<SaveAddressDataModel>(EXTRA_ADDRESS_NEW)
+            finishActivity(newAddress)
         }
     }
 
