@@ -2562,9 +2562,12 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             resetRecentViewList()
             dPresenter.processInitialGetCartData(getCartId(), false, false)
         } else {
-            val removedIndices = cartAdapter.removeCartItemById(deletedCartIds, context)
-            removedIndices.forEach {
+            val updateListResult = cartAdapter.removeCartItemById(deletedCartIds, context)
+            updateListResult.first.forEach {
                 onNeedToRemoveViewItem(it)
+            }
+            updateListResult.second.forEach {
+                onNeedToUpdateViewItem(it)
             }
 
             if (forceExpandCollapsedUnavailableItems && cartAdapter.allDisabledCartItemData.size > 1) {
@@ -2606,9 +2609,12 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             resetRecentViewList()
             dPresenter.processInitialGetCartData(getCartId(), false, false)
         } else {
-            val removedIndices = cartAdapter.removeCartItemById(listOf(cartId), context)
-            removedIndices.forEach {
+            val updateListResult = cartAdapter.removeCartItemById(listOf(cartId), context)
+            updateListResult.first.forEach {
                 onNeedToRemoveViewItem(it)
+            }
+            updateListResult.second.forEach {
+                onNeedToUpdateViewItem(it)
             }
 
             if (forceExpandCollapsedUnavailableItems && cartAdapter.allDisabledCartItemData.size > 1) {
@@ -2630,6 +2636,14 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             cartRecyclerView.post { cartAdapter.notifyItemRemoved(position) }
         } else {
             cartAdapter.notifyItemRemoved(position)
+        }
+    }
+
+    fun onNeedToUpdateViewItem(position: Int) {
+        if (cartRecyclerView.isComputingLayout) {
+            cartRecyclerView.post { cartAdapter.notifyItemChanged(position) }
+        } else {
+            cartAdapter.notifyItemChanged(position)
         }
     }
 

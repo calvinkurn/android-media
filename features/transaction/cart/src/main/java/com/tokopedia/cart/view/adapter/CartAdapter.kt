@@ -1060,10 +1060,11 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
         }
     }
 
-    fun removeCartItemById(cartIds: List<String>, context: Context?): ArrayList<Int> {
+    fun removeCartItemById(cartIds: List<String>, context: Context?): Pair<ArrayList<Int>, ArrayList<Int>> {
         // Store item first before remove item to prevent ConcurrentModificationException
         val toBeRemovedData = ArrayList<Any>()
         val toBeRemovedIndex = ArrayList<Int>()
+        val toBeUpdatedIndex = ArrayList<Int>()
         var disabledItemHeaderHolderData: DisabledItemHeaderHolderData? = null
         var cartItemTickerErrorHolderData: CartItemTickerErrorHolderData? = null
         var disabledAccordionHolderData: DisabledAccordionHolderData? = null
@@ -1081,6 +1082,9 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
                             cartItemHolderData.cartItemData?.originData?.let { data ->
                                 if (cartIds.contains(data.cartId.toString())) {
                                     toBeRemovedCartItemHolderData.add(cartItemHolderData)
+                                    if (!toBeUpdatedIndex.contains(i)) {
+                                        toBeUpdatedIndex.add(i)
+                                    }
                                 }
                             }
                         }
@@ -1206,7 +1210,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
             }
         }
 
-        return toBeRemovedIndex
+        return Pair(toBeRemovedIndex, toBeUpdatedIndex)
     }
 
     fun addCartTicker(tickerAnnouncementHolderData: TickerAnnouncementHolderData) {
