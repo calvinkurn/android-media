@@ -3,6 +3,7 @@ package com.tokopedia.digital.newcart.presentation.fragment;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -14,6 +15,7 @@ import androidx.fragment.app.FragmentManager;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.RouteManager;
@@ -73,6 +75,8 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
     private static final int REQUEST_CODE_OTP = 1001;
 
     public static final int OTP_TYPE_CHECKOUT_DIGITAL = 16;
+
+    private static final int DELAY_ERROR_SHOWING = 3000;
 
     protected CartDigitalInfoData cartDigitalInfoData;
     protected CheckoutDataParameter.Builder checkoutDataParameterBuilder;
@@ -473,10 +477,23 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
 
     @Override
     public void closeViewWithMessageAlert(String message) {
-        Intent intent = new Intent();
-        intent.putExtra(DigitalExtraParam.EXTRA_MESSAGE, message);
-        getActivity().setResult(Activity.RESULT_OK, intent);
-        getActivity().finish();
+        if (cartPassData.isFromPDP()) {
+            Intent intent = new Intent();
+            intent.putExtra(DigitalExtraParam.EXTRA_MESSAGE, message);
+            getActivity().setResult(Activity.RESULT_OK, intent);
+            getActivity().finish();
+        } else {
+            NetworkErrorHelper.showSnackbar(getActivity(), message);
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    Intent intent = new Intent();
+                    getActivity().setResult(Activity.RESULT_OK, intent);
+                    getActivity().finish();
+                }
+            }, DELAY_ERROR_SHOWING);
+        }
     }
 
     @Override

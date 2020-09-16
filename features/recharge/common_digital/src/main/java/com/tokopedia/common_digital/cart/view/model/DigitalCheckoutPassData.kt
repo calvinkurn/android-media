@@ -27,6 +27,7 @@ class DigitalCheckoutPassData() : Parcelable {
     var source: Int = 0
     var fields: HashMap<String, String>? = null
     var needGetCart: Boolean = false
+    var isFromPDP: Boolean = false
 
     constructor(parcel: Parcel) : this() {
         action = parcel.readString()
@@ -50,6 +51,7 @@ class DigitalCheckoutPassData() : Parcelable {
             fieldsParam?.run { fields = this as? HashMap<String, String> }
         }
         needGetCart = parcel.readByte() != 0.toByte()
+        isFromPDP = parcel.readByte() != 0.toByte()
     }
 
     private constructor(builder: Builder) : this() {
@@ -70,6 +72,7 @@ class DigitalCheckoutPassData() : Parcelable {
         source = builder.source
         fields = builder.fields
         needGetCart = builder.needGetCart
+        isFromPDP = builder.isFromPDP
     }
 
     class Builder {
@@ -90,6 +93,7 @@ class DigitalCheckoutPassData() : Parcelable {
         var source: Int = 0
         var fields: HashMap<String, String>? = null
         var needGetCart: Boolean = false
+        var isFromPDP: Boolean = false
 
         fun action(`val`: String): Builder {
             action = `val`
@@ -171,6 +175,11 @@ class DigitalCheckoutPassData() : Parcelable {
             return this
         }
 
+        fun isFromPDP(`val`: Boolean): Builder {
+            isFromPDP = `val`
+            return this
+        }
+
         fun fields(`val`: HashMap<String, String>): Builder {
             fields = `val`
             return this
@@ -234,6 +243,7 @@ class DigitalCheckoutPassData() : Parcelable {
         bundle.putSerializable(PARAM_FIELDS, fields)
         parcel.writeBundle(bundle)
         parcel.writeByte(if (needGetCart) 1 else 0)
+        parcel.writeByte(if (isFromPDP) 1 else 0)
     }
 
     override fun describeContents(): Int {

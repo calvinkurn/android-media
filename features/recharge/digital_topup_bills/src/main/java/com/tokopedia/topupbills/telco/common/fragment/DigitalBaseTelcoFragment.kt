@@ -74,7 +74,7 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
     }
 
     private fun subscribeUi() {
-        viewModel.selectedRecentNumber.observe(this, Observer {
+        viewModel.selectedRecentNumber.observe(viewLifecycleOwner, Observer {
             onClickItemRecentNumber(it)
         })
     }
