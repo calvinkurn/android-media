@@ -18,7 +18,7 @@ import androidx.core.content.ContextCompat;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp;
 import com.tokopedia.design.base.BaseCustomView;
 import com.tokopedia.home.account.R;
@@ -275,7 +275,7 @@ public class BuyerCardView extends BaseCustomView implements BuyerCardContract.V
     @Override
     public void showShopOpenCard() {
         sellerOpenShopCard.setOnClickListener(v -> {
-            RouteManager.route(getContext(), ApplinkConstInternalMarketplace.OPEN_SHOP);
+            RouteManager.route(getContext(), ApplinkConstInternalGlobal.LANDING_SHOP_CREATION);
             sellerMenuTracker.sendEventCreateShop();
         });
 
