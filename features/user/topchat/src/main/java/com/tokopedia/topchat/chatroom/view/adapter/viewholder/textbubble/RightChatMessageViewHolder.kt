@@ -13,7 +13,7 @@ import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.CommonViewHolderListener
 import com.tokopedia.unifyprinciples.Typography
 
-class RightChatMessageViewHolder(
+open class RightChatMessageViewHolder(
         itemView: View?,
         listener: ChatLinkHandlerListener,
         private val commonListener: CommonViewHolderListener

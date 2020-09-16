@@ -9,7 +9,7 @@ import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.CommonViewHolderListener
 import com.tokopedia.topchat.common.util.ViewUtil
 
-class LeftChatMessageViewHolder(
+open class LeftChatMessageViewHolder(
         itemView: View?,
         listener: ChatLinkHandlerListener,
         private val commonListener: CommonViewHolderListener

@@ -69,8 +69,6 @@ open class TopChatTypeFactoryImpl constructor(
         val chat = visitables[position]
         return if (chat is MessageViewModel) {
             if (chat.isSender) ChatMessageViewHolder.TYPE_RIGHT else ChatMessageViewHolder.TYPE_LEFT
-        } else if (chat is FallbackAttachmentViewModel) {
-            if (chat.isOpposite) FallbackMessageViewHolder.TYPE_LEFT else FallbackMessageViewHolder.TYPE_RIGHT
         } else {
             default
         }
@@ -145,8 +143,6 @@ open class TopChatTypeFactoryImpl constructor(
         val layoutRes = when (type) {
             ChatMessageViewHolder.TYPE_LEFT -> LeftChatMessageViewHolder.LAYOUT
             ChatMessageViewHolder.TYPE_RIGHT -> RightChatMessageViewHolder.LAYOUT
-            FallbackMessageViewHolder.TYPE_LEFT -> LeftFallbackMessageViewHolder.LAYOUT
-            FallbackMessageViewHolder.TYPE_RIGHT -> RightFallbackMessageViewHolder.LAYOUT
             else -> type
         }
         val view = LayoutInflater.from(parent.context).inflate(layoutRes, parent, false)
@@ -179,8 +175,6 @@ open class TopChatTypeFactoryImpl constructor(
             RoomSettingBannerViewHolder.LAYOUT -> RoomSettingBannerViewHolder(parent)
             RoomSettingFraudAlertViewHolder.LAYOUT -> RoomSettingFraudAlertViewHolder(parent, fraudAlertListener)
             TopchatImageUploadViewHolder.LAYOUT -> TopchatImageUploadViewHolder(parent, imageUploadListener)
-            LeftFallbackMessageViewHolder.LAYOUT -> LeftFallbackMessageViewHolder(parent, chatLinkHandlerListener)
-            RightFallbackMessageViewHolder.LAYOUT -> RightFallbackMessageViewHolder(parent, chatLinkHandlerListener)
             LeftChatMessageViewHolder.LAYOUT -> LeftChatMessageViewHolder(parent, chatLinkHandlerListener, commonListener)
             RightChatMessageViewHolder.LAYOUT -> RightChatMessageViewHolder(parent, chatLinkHandlerListener, commonListener)
             ImageDualAnnouncementViewHolder.LAYOUT -> ImageDualAnnouncementViewHolder(parent, imageDualAnnouncementListener)
