@@ -160,10 +160,10 @@ class PlayViewModelTest {
 
     @Test
     fun `test observe is liked`() {
-        val expectedModel = modelBuilder.buildLikeStateUiModel(
+        val expectedModel = NetworkResult.Success(modelBuilder.buildLikeStateUiModel(
                 isLiked = mockIsLike,
                 fromNetwork = true
-        )
+        ))
 
         playViewModel.getChannelInfo(mockChannel.channelId)
 
