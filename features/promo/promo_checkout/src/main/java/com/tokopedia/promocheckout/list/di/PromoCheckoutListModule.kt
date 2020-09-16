@@ -42,7 +42,7 @@ class PromoCheckoutListModule {
     @PromoCheckoutListScope
     @Provides
     fun providePresenter(): PromoCheckoutListPresenter {
-        return PromoCheckoutListPresenter(GraphqlUseCase(), GraphqlUseCase())
+        return PromoCheckoutListPresenter(GraphqlUseCase(), GraphqlUseCase(), GraphqlUseCase())
     }
 
     @PromoCheckoutListScope
