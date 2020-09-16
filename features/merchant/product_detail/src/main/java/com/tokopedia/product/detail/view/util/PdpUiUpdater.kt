@@ -278,11 +278,16 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
             }
 
             shopCredibility?.run {
-                shopInfo = it.shopInfo
+                shopLastActive = it.shopInfo.shopLastActive
+                shopName = it.shopInfo.shopCore.name
+                shopAva = it.shopInfo.shopAssets.avatar
+                shopLocation = it.shopInfo.location
+                shopActiveProduct = it.shopInfo.activeProduct
                 isGoApotik = it.isGoApotik
                 shopSpeed = it.shopSpeed
                 shopChatSpeed = it.shopChatSpeed.toIntOrZero()
                 shopRating = it.shopRating
+                isFavorite = it.shopInfo.favoriteData.alreadyFavorited == ProductDetailConstant.ALREADY_FAVORITE_SHOP
             }
 
             orderPriorityMap?.run {
@@ -422,6 +427,19 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
             totalQuestion = discussionMostHelpful.totalQuestion
             isShimmering = false
         }
+    }
+
+    fun successUpdateShopFollow(isFavorite: Boolean) {
+        shopInfoMap?.isFavorite = !isFavorite
+        shopInfoMap?.enableButtonFavorite = true
+
+        shopCredibility?.isFavorite = !isFavorite
+        shopCredibility?.enableButtonFavorite = true
+    }
+
+    fun failUpdateShopFollow() {
+        shopInfoMap?.enableButtonFavorite = true
+        shopCredibility?.enableButtonFavorite = true
     }
 
     private fun mapToCardModel(data: RecommendationWidget): List<ProductCardModel> {

@@ -118,6 +118,16 @@ class DynamicProductDetailAdapter(
         }
     }
 
+
+    fun <T : DynamicPdpDataModel> notifyWithPayload(data: T?, payload: Int) {
+        data?.let {
+            val indexOfData = list.indexOf(data)
+            if (indexOfData != -1) {
+                notifyItemChanged(indexOfData, payload)
+            }
+        }
+    }
+
     fun getTopAdsBannerPosition(data: TopAdsImageDataModel): Int {
         return if (data != null) {
             list.indexOf(data)
