@@ -139,4 +139,27 @@
     <string name="content_desc_img_insurance_info">image info asuransi</string>
     <string name="content_desc_cb_insurance">checkbox asuransi</string>
     <string name="content_desc_cb_insurance_disabled">checkbox asuransi disabled</string>
+    <string name="checkout_trade_in_default_address_info_description">
+        <![CDATA[
+        1. Tunggu pesananmu diproses oleh toko.<br/><br/>
+        2. Kurir akan mengantarkan pesanan ke alamatmu <b>1 hari setelah</b> pesanan diambil dari toko.<br/><br/>
+        3. Ketika sampai, kurir akan memeriksa IMEI HP lamamu untuk verifikasi.<br/><br/>
+        4. Jika IMEI sesuai dengan data Tokopedia, Tukar Tambah dinyatakan berhasil.<br/><br/>
+        5. Yay, saat itu juga kamu bisa langsung gunakan gadget barumu!<br/><br/>
+        <b>Catatan:</b> Tidak semua toko mengaktifkan dua opsi pengiriman. Gunakan opsi yang tersedia jika salah satu opsi tidak bisa dipilih.
+        ]]>
+    </string>
+    <string name="checkout_trade_in_drop_off_address_info_description">
+        <![CDATA[
+        1. Tunggu pesananmu diproses oleh toko.<br/><br/>
+        2. Kurir IndoPaket akan <b>mengantarkan pesananmu ke Indomaret</b> yang kamu pilih<br/><br/>
+        3. Kamu akan menerima pesan notifikasi dan email saat pesanan tiba di Indomaret. Kamu punya waktu 2 hari untuk proses tukar tambah.<br/><br/>
+        4. Di Indomaret, kasir akan memeriksa IMEI HP lamamu untuk verifikasi.<br/><br/>
+        5. Jika IMEI sesuai dengan data Tokopedia, Tukar Tambah dinyatakan berhasil.<br/><br/>
+        6. Yay, saat itu juga kamu bisa langsung gunakan gadget barumu!<br/><br/>
+        <b>Catatan:</b> Tidak semua toko mengaktifkan dua opsi pengiriman. Gunakan opsi yang tersedia jika salah satu opsi tidak bisa dipilih.
+        ]]>
+    </string>
+    <string name="title_trade_in_default_address">Ditukar di Alamatmu</string>
+    <string name="title_trade_in_drop_off_address">Ditukar di Indomaret</string>
 </resources>

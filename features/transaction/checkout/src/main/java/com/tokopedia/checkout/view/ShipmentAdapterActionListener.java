@@ -116,4 +116,6 @@ public interface ShipmentAdapterActionListener {
     void onCheckShippingCompletionClicked();
 
     void onShowTickerShippingCompletion();
+
+    void onClickTradeInInfo();
 }

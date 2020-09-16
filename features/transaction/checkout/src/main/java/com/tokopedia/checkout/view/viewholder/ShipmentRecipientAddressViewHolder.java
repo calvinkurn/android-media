@@ -152,6 +152,11 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
         imgButtonTradeInInfo.setVisibility(View.VISIBLE);
         separator.setVisibility(View.GONE);
         llAddOrChangeAddressContainer.setVisibility(View.GONE);
+
+        imgButtonTradeInInfo.setOnClickListener(v -> {
+            shipmentAdapterActionListener.onClickTradeInInfo();
+        });
+
         if (tabUnifyTradeInAddress.getUnifyTabLayout().getTabCount() == 0) {
             tabUnifyTradeInAddress.addNewTab(tabUnifyTradeInAddress.getContext().getString(R.string.label_tab_trade_in_address_deliver));
             tabUnifyTradeInAddress.addNewTab(tabUnifyTradeInAddress.getContext().getString(R.string.label_tab_trade_in_address_pickup));

@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.LinearSmoothScroller;
 import androidx.recyclerview.widget.RecyclerView;
@@ -2865,5 +2866,14 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void onCashbackUpdated(int amount) {
         // No-op
+    }
+
+    @Override
+    public void onClickTradeInInfo() {
+        FragmentManager fragmentManager = getFragmentManager();
+        Context context = getContext();
+        if (fragmentManager != null && context != null) {
+            TradeInInfoBottomsheetHelperKt.showTradeInInfoBottomsheet(fragmentManager, context);
+        }
     }
 }
