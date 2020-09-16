@@ -36,7 +36,6 @@ import kotlin.Unit;
 import kotlin.jvm.functions.Function0;
 import kotlin.jvm.functions.Function1;
 import okhttp3.Interceptor;
-import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 
@@ -138,11 +137,11 @@ public class GraphqlClient {
 
         if (GlobalConfig.isAllowDebuggingTools()) {
             tkpdOkHttpBuilder.addInterceptor(new DeprecatedApiInterceptor(context.getApplicationContext()));
-            FakeResponseInterceptorProvider provider = new FakeResponseInterceptorProvider();
-            Interceptor interceptor = provider.getInterceptor(context.getApplicationContext());
-            if (interceptor != null) {
-                tkpdOkHttpBuilder.addInterceptor(interceptor);
-            }
+//            FakeResponseInterceptorProvider provider = new FakeResponseInterceptorProvider();
+//            Interceptor interceptor = provider.getInterceptor(context.getApplicationContext());
+//            if (interceptor != null) {
+//                tkpdOkHttpBuilder.addInterceptor(interceptor);
+//            }
         }
         return tkpdOkHttpBuilder;
     }
