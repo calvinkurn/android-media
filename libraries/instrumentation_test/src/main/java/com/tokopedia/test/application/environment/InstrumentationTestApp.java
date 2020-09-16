@@ -12,7 +12,7 @@ import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.play.core.splitcompat.SplitCompat;
 import com.google.firebase.FirebaseApp;
 import com.google.gson.Gson;
-// import com.tkpd.remoteresourcerequest.task.ResourceDownloadManager;
+import com.tkpd.remoteresourcerequest.task.ResourceDownloadManager;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
@@ -98,10 +98,10 @@ public class InstrumentationTestApp extends BaseMainApplication
 
         super.onCreate();
 
-        /*ResourceDownloadManager
+        ResourceDownloadManager
                 .Companion.getManager()
                 .setBaseAndRelativeUrl("http://dummy.dummy", "dummy")
-                .initialize(this, R.raw.dummy_description);*/
+                .initialize(this, R.raw.dummy_description);
     }
 
     private void initAkamaiBotManager() {

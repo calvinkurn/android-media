@@ -15,7 +15,7 @@ import com.tkpd.remoteresourcerequest.task.ResourceDownloadManager;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
-// import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
+import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
 import com.tokopedia.applink.ApplinkDelegate;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.ApplinkUnsupported;
@@ -103,7 +103,7 @@ public class MyApplication extends BaseMainApplication
 
         PersistentCacheManager.init(this);
         RemoteConfigInstance.initAbTestPlatform(this);
-        // FpmLogger.init(this);
+        FpmLogger.init(this);
 
         com.tokopedia.akamai_bot_lib.UtilsKt.initAkamaiBotManager(this);
 

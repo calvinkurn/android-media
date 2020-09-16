@@ -692,60 +692,6 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         setInitialValue()
     }
 
-    /*private fun renderTicker() {
-        ticker_info?.visible()
-
-        if (orderList.tickers.size > 1) {
-            val listTickerData = arrayListOf<TickerData>()
-            orderList.tickers.forEach {
-                var desc = it.text
-                if (it.action.appUrl.isNotEmpty() && it.action.label.isNotEmpty()) {
-                    desc += " ${getString(R.string.buyer_ticker_info_selengkapnya)
-                            .replace(TICKER_URL, it.action.appUrl)
-                            .replace(TICKER_LABEL, it.action.label)}"
-                }
-                listTickerData.add(TickerData(it.title, desc, UohUtils.getTickerType(it.text), true))
-            }
-            context?.let {
-                val adapter = TickerPagerAdapter(it, listTickerData)
-                adapter.setPagerDescriptionClickEvent(object : TickerPagerCallback {
-                    override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
-                        onTickerDetailInfoClicked(linkUrl.toString())
-                    }
-                })
-                ticker_info?.setDescriptionClickEvent(object: TickerCallback {
-                    override fun onDescriptionViewClick(linkUrl: CharSequence) {}
-
-                    override fun onDismiss() {
-                    }
-
-                })
-                ticker_info?.addPagerView(adapter, listTickerData)
-            }
-        } else {
-            orderList.tickers.first().let {
-                ticker_info?.tickerTitle = it.title
-                var desc = it.text
-                if (it.action.appUrl.isNotEmpty() && it.action.label.isNotEmpty()) {
-                    desc += " ${getString(R.string.buyer_ticker_info_selengkapnya)
-                            .replace(TICKER_URL, URLDecoder.decode(it.action.appUrl, UohConsts.UTF_8))
-                            .replace(TICKER_LABEL, it.action.label)}"
-                }
-                ticker_info?.setHtmlDescription(desc)
-                ticker_info?.tickerType = UohUtils.getTickerType(it.type)
-                ticker_info?.setDescriptionClickEvent(object : TickerCallback {
-                    override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                        onTickerDetailInfoClicked(linkUrl.toString())
-                    }
-
-                    override fun onDismiss() {
-                    }
-
-                })
-            }
-        }
-    }*/
-
     private fun renderOrderList() {
         refreshHandler?.finishRefresh()
 
