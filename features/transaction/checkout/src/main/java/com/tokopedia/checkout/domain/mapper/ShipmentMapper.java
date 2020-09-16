@@ -2,29 +2,36 @@ package com.tokopedia.checkout.domain.mapper;
 
 import android.text.TextUtils;
 
-import com.tokopedia.checkout.domain.model.cartshipmentform.FreeShippingData;
-import com.tokopedia.checkout.domain.model.cartshipmentform.PreorderData;
-import com.tokopedia.checkout.domain.model.cartshipmentform.ShipmentInformationData;
-import com.tokopedia.logisticcart.shipping.model.AnalyticsProductCheckoutData;
-import com.tokopedia.logisticcart.shipping.model.CodModel;
-import com.tokopedia.logisticcart.shipping.model.ShipProd;
-import com.tokopedia.logisticcart.shipping.model.ShopShipment;
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.PromoCheckoutErrorDefault;
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyAdditionalInfoUiModel;
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyEmptyCartInfoUiModel;
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyErrorDetailUiModel;
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyMessageInfoUiModel;
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyMessageUiModel;
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel;
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUsageSummariesUiModel;
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyVoucherOrdersItemUiModel;
-import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerData;
-import com.tokopedia.purchase_platform.common.feature.tickerannouncement.Ticker;
 import com.tokopedia.checkout.data.model.response.egold.EgoldTieringData;
 import com.tokopedia.checkout.data.model.response.shipment_address_form.Addresses;
 import com.tokopedia.checkout.data.model.response.shipment_address_form.CampaignTimer;
 import com.tokopedia.checkout.data.model.response.shipment_address_form.CheckoutDisabledFeaturesKt;
 import com.tokopedia.checkout.data.model.response.shipment_address_form.ShipmentAddressFormDataResponse;
+import com.tokopedia.checkout.domain.model.cartshipmentform.AddressData;
+import com.tokopedia.checkout.domain.model.cartshipmentform.AddressesData;
+import com.tokopedia.checkout.domain.model.cartshipmentform.CampaignTimerUi;
+import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData;
+import com.tokopedia.checkout.domain.model.cartshipmentform.DisabledFeaturesDetailData;
+import com.tokopedia.checkout.domain.model.cartshipmentform.Donation;
+import com.tokopedia.checkout.domain.model.cartshipmentform.FreeShippingData;
+import com.tokopedia.checkout.domain.model.cartshipmentform.GroupAddress;
+import com.tokopedia.checkout.domain.model.cartshipmentform.GroupShop;
+import com.tokopedia.checkout.domain.model.cartshipmentform.PreorderData;
+import com.tokopedia.checkout.domain.model.cartshipmentform.Product;
+import com.tokopedia.checkout.domain.model.cartshipmentform.ProductShipment;
+import com.tokopedia.checkout.domain.model.cartshipmentform.ProductShipmentMapping;
+import com.tokopedia.checkout.domain.model.cartshipmentform.PurchaseProtectionPlanData;
+import com.tokopedia.checkout.domain.model.cartshipmentform.ServiceId;
+import com.tokopedia.checkout.domain.model.cartshipmentform.ShipmentInformationData;
+import com.tokopedia.checkout.domain.model.cartshipmentform.Shop;
+import com.tokopedia.checkout.domain.model.cartshipmentform.TradeInInfoData;
+import com.tokopedia.checkout.view.uimodel.EgoldAttributeModel;
+import com.tokopedia.checkout.view.uimodel.EgoldTieringModel;
+import com.tokopedia.logisticcart.shipping.model.AnalyticsProductCheckoutData;
+import com.tokopedia.logisticcart.shipping.model.CodModel;
+import com.tokopedia.logisticcart.shipping.model.ShipProd;
+import com.tokopedia.logisticcart.shipping.model.ShopShipment;
+import com.tokopedia.logisticdata.data.entity.address.UserAddress;
 import com.tokopedia.purchase_platform.common.feature.promo.domain.model.AdditionalInfo;
 import com.tokopedia.purchase_platform.common.feature.promo.domain.model.CartEmptyInfo;
 import com.tokopedia.purchase_platform.common.feature.promo.domain.model.Data;
@@ -34,24 +41,17 @@ import com.tokopedia.purchase_platform.common.feature.promo.domain.model.Message
 import com.tokopedia.purchase_platform.common.feature.promo.domain.model.PromoSAFResponse;
 import com.tokopedia.purchase_platform.common.feature.promo.domain.model.TrackingDetailsItem;
 import com.tokopedia.purchase_platform.common.feature.promo.domain.model.UsageSummaries;
-import com.tokopedia.checkout.domain.model.cartshipmentform.AddressesData;
-import com.tokopedia.checkout.domain.model.cartshipmentform.CampaignTimerUi;
-import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData;
-import com.tokopedia.checkout.domain.model.cartshipmentform.DataAddressData;
-import com.tokopedia.checkout.domain.model.cartshipmentform.DisabledFeaturesDetailData;
-import com.tokopedia.checkout.domain.model.cartshipmentform.Donation;
-import com.tokopedia.checkout.domain.model.cartshipmentform.GroupAddress;
-import com.tokopedia.checkout.domain.model.cartshipmentform.GroupShop;
-import com.tokopedia.checkout.domain.model.cartshipmentform.Product;
-import com.tokopedia.checkout.domain.model.cartshipmentform.ProductShipment;
-import com.tokopedia.checkout.domain.model.cartshipmentform.ProductShipmentMapping;
-import com.tokopedia.checkout.domain.model.cartshipmentform.PurchaseProtectionPlanData;
-import com.tokopedia.checkout.domain.model.cartshipmentform.ServiceId;
-import com.tokopedia.checkout.domain.model.cartshipmentform.Shop;
-import com.tokopedia.checkout.domain.model.cartshipmentform.TradeInInfoData;
-import com.tokopedia.checkout.domain.model.cartshipmentform.UserAddress;
-import com.tokopedia.checkout.view.uimodel.EgoldAttributeModel;
-import com.tokopedia.checkout.view.uimodel.EgoldTieringModel;
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.PromoCheckoutErrorDefault;
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyAdditionalInfoUiModel;
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyEmptyCartInfoUiModel;
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyErrorDetailUiModel;
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyMessageInfoUiModel;
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyMessageUiModel;
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel;
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUsageSummariesUiModel;
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyVoucherOrdersItemUiModel;
+import com.tokopedia.purchase_platform.common.feature.tickerannouncement.Ticker;
+import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerData;
 import com.tokopedia.purchase_platform.common.utils.UtilsKt;
 
 import org.jetbrains.annotations.NotNull;
@@ -111,7 +111,7 @@ public class ShipmentMapper implements IShipmentMapper {
             boolean isDisableEgold = false;
             boolean isDisablePPP = false;
             boolean isDisableDonation = false;
-            if (shipmentAddressFormDataResponse.getDisabledFeatures() != null)
+            if (shipmentAddressFormDataResponse.getDisabledFeatures() != null) {
                 for (String disabledFeature : shipmentAddressFormDataResponse.getDisabledFeatures()) {
                     switch (disabledFeature) {
                         case CheckoutDisabledFeaturesKt.dropshipper:
@@ -131,55 +131,9 @@ public class ShipmentMapper implements IShipmentMapper {
                             break;
                     }
                 }
-
-            Addresses addresses = shipmentAddressFormDataResponse.getAddresses();
-            DataAddressData dataAddressData = new DataAddressData();
-            if (addresses != null) {
-                if (addresses.getData() != null &&
-                        shipmentAddressFormDataResponse.getGroupAddress() != null &&
-                        shipmentAddressFormDataResponse.getGroupAddress().size() > 0) {
-                    com.tokopedia.checkout.data.model.response.shipment_address_form.UserAddress defaultTradeInAddress = null;
-                    for (com.tokopedia.checkout.data.model.response.shipment_address_form.Data dataAddress : addresses.getData()) {
-                        if (dataAddress.getKey().equals(AddressesData.DEFAULT_ADDRESS)) {
-                            defaultTradeInAddress = dataAddress.getValue();
-                            break;
-                        }
-                    }
-
-                    if (defaultTradeInAddress != null && addresses.getActive().equals(AddressesData.TRADE_IN_ADDRESS)) {
-                        UserAddress defaultAddressData = getUserAddress(defaultTradeInAddress);
-                        dataAddressData.setDefaultAddress(defaultAddressData);
-                    } else {
-                        com.tokopedia.checkout.data.model.response.shipment_address_form.UserAddress defaultAddress =
-                                shipmentAddressFormDataResponse.getGroupAddress().get(0).getUserAddress();
-                        UserAddress defaultAddressData = getUserAddress(defaultAddress);
-                        dataAddressData.setDefaultAddress(defaultAddressData);
-                    }
-
-                    com.tokopedia.checkout.data.model.response.shipment_address_form.UserAddress tradeInDropOffAddress = null;
-                    for (com.tokopedia.checkout.data.model.response.shipment_address_form.Data dataAddress : addresses.getData()) {
-                        if (dataAddress.getKey().equals(AddressesData.TRADE_IN_ADDRESS)) {
-                            tradeInDropOffAddress = dataAddress.getValue();
-                            break;
-                        }
-                    }
-
-                    if (tradeInDropOffAddress != null) {
-                        UserAddress tradeInAddressData = getUserAddress(tradeInDropOffAddress);
-                        dataAddressData.setTradeInAddress(tradeInAddressData);
-                    }
-                }
-            } else {
-                com.tokopedia.checkout.data.model.response.shipment_address_form.UserAddress defaultAddress =
-                        shipmentAddressFormDataResponse.getGroupAddress().get(0).getUserAddress();
-                UserAddress defaultAddressData = getUserAddress(defaultAddress);
-                dataAddressData.setDefaultAddress(defaultAddressData);
             }
 
-            AddressesData addressesData = new AddressesData();
-            addressesData.setActive(addresses.getActive() != null ? addresses.getActive() : "");
-            addressesData.setData(dataAddressData);
-
+            AddressesData addressesData = getAddressesData(shipmentAddressFormDataResponse);
             dataResult.setAddressesData(addressesData);
 
             if (shipmentAddressFormDataResponse.getTickers() != null && !shipmentAddressFormDataResponse.getTickers().isEmpty()) {
@@ -400,8 +354,8 @@ public class ShipmentMapper implements IShipmentMapper {
                     groupAddressResult.setErrorMessage(UtilsKt.convertToString(groupAddress.getErrors()));
 
                     if (groupAddress.getUserAddress() != null) {
-                        com.tokopedia.checkout.domain.model.cartshipmentform.UserAddress userAddressResult =
-                                new com.tokopedia.checkout.domain.model.cartshipmentform.UserAddress();
+                        UserAddress userAddressResult =
+                                new UserAddress();
                         userAddressResult.setStatus(groupAddress.getUserAddress().getStatus());
                         userAddressResult.setAddress(groupAddress.getUserAddress().getAddress());
                         userAddressResult.setAddress2(groupAddress.getUserAddress().getAddress2());
@@ -755,6 +709,53 @@ public class ShipmentMapper implements IShipmentMapper {
         }
 
         return dataResult;
+    }
+
+    @NotNull
+    private AddressesData getAddressesData(ShipmentAddressFormDataResponse shipmentAddressFormDataResponse) {
+        AddressesData addressesData = new AddressesData();
+
+        // Set default address for normal checkout or tradein checkout
+        AddressData addressData = new AddressData();
+        if (shipmentAddressFormDataResponse.getGroupAddress() != null &&
+                shipmentAddressFormDataResponse.getGroupAddress().size() > 0) {
+            com.tokopedia.checkout.data.model.response.shipment_address_form.UserAddress defaultAddress =
+                    shipmentAddressFormDataResponse.getGroupAddress().get(0).getUserAddress();
+            UserAddress defaultAddressData = getUserAddress(defaultAddress);
+            addressData.setDefaultAddress(defaultAddressData);
+            addressesData.setData(addressData);
+        }
+
+        // Get trade in address if available
+        Addresses addresses = shipmentAddressFormDataResponse.getAddresses();
+        if (addresses != null && !TextUtils.isEmpty(addresses.getActive()) && addresses.getData() != null) {
+            com.tokopedia.checkout.data.model.response.shipment_address_form.UserAddress tradeInDefaultAddress = null;
+            com.tokopedia.checkout.data.model.response.shipment_address_form.UserAddress tradeInDropOffAddress = null;
+
+            for (com.tokopedia.checkout.data.model.response.shipment_address_form.Data dataAddress : addresses.getData()) {
+                if (dataAddress.getKey() != null) {
+                    if (dataAddress.getKey().equals(AddressesData.DEFAULT_ADDRESS)) {
+                        tradeInDefaultAddress = dataAddress.getValue();
+                    } else if (dataAddress.getKey().equals(AddressesData.TRADE_IN_ADDRESS)) {
+                        tradeInDropOffAddress = dataAddress.getValue();
+                    }
+                }
+            }
+
+            if (tradeInDefaultAddress != null) {
+                addressData.setDefaultAddress(getUserAddress(tradeInDefaultAddress));
+            }
+
+            if (tradeInDropOffAddress != null) {
+                addressData.setTradeInAddress(getUserAddress(tradeInDropOffAddress));
+            }
+
+            addressesData.setDisableTabs(addresses.getDisableTabs());
+            addressesData.setActive(addresses.getActive() != null ? addresses.getActive() : "");
+            addressesData.setData(addressData);
+        }
+
+        return addressesData;
     }
 
     @NotNull

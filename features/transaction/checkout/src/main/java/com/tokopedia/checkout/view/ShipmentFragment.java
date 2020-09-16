@@ -413,9 +413,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     private boolean isTradeIn() {
-        return true;
-//        return getArguments() != null && getArguments().getString(ShipmentFormRequest.EXTRA_DEVICE_ID, "") != null &&
-//                getArguments().getString(ShipmentFormRequest.EXTRA_DEVICE_ID, "").length() > 0;
+        return getArguments() != null && getArguments().getString(ShipmentFormRequest.EXTRA_DEVICE_ID, "") != null &&
+                getArguments().getString(ShipmentFormRequest.EXTRA_DEVICE_ID, "").length() > 0;
     }
 
     private void initRecyclerViewData(TickerAnnouncementHolderData tickerAnnouncementHolderData,
@@ -2664,10 +2663,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public boolean isTradeInByDropOff() {
-        return true;
-//        RecipientAddressModel recipientAddressModel = shipmentAdapter.getAddressShipmentData();
-//        if (recipientAddressModel == null) return false;
-//        return recipientAddressModel.getSelectedTabIndex() == 1;
+        RecipientAddressModel recipientAddressModel = shipmentAdapter.getAddressShipmentData();
+        if (recipientAddressModel == null) return false;
+        return recipientAddressModel.getSelectedTabIndex() == 1;
     }
 
     @Override

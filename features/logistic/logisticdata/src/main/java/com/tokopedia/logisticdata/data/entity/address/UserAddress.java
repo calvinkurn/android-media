@@ -1,4 +1,4 @@
-package com.tokopedia.checkout.domain.model.cartshipmentform;
+package com.tokopedia.logisticdata.data.entity.address;
 
 import android.os.Parcel;
 import android.os.Parcelable;

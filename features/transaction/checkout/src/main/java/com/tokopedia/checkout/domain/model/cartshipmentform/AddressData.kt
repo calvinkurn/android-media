@@ -2,12 +2,13 @@ package com.tokopedia.checkout.domain.model.cartshipmentform
 
 import android.os.Parcel
 import android.os.Parcelable
+import com.tokopedia.logisticdata.data.entity.address.UserAddress
 
 /**
  * Created by Irfan Khoirul on 2019-11-07.
  */
 
-data class DataAddressData(
+data class AddressData(
         var defaultAddress: UserAddress? = null,
         var tradeInAddress: UserAddress? = null
 ) : Parcelable {
@@ -25,12 +26,12 @@ data class DataAddressData(
         return 0
     }
 
-    companion object CREATOR : Parcelable.Creator<DataAddressData> {
-        override fun createFromParcel(parcel: Parcel): DataAddressData {
-            return DataAddressData(parcel)
+    companion object CREATOR : Parcelable.Creator<AddressData> {
+        override fun createFromParcel(parcel: Parcel): AddressData {
+            return AddressData(parcel)
         }
 
-        override fun newArray(size: Int): Array<DataAddressData?> {
+        override fun newArray(size: Int): Array<AddressData?> {
             return arrayOfNulls(size)
         }
     }

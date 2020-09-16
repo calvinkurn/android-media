@@ -22,8 +22,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.tabs.TabLayout;
 import com.tokopedia.checkout.R;
-import com.tokopedia.logisticdata.data.entity.address.RecipientAddressModel;
 import com.tokopedia.checkout.view.ShipmentAdapterActionListener;
+import com.tokopedia.logisticdata.data.entity.address.RecipientAddressModel;
 import com.tokopedia.purchase_platform.common.utils.Utils;
 import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseObject;
@@ -34,6 +34,9 @@ import com.tokopedia.unifycomponents.UnifyImageButton;
 import com.tokopedia.unifyprinciples.Typography;
 
 import java.util.ArrayList;
+
+import static com.tokopedia.checkout.domain.model.cartshipmentform.AddressesData.DEFAULT_ADDRESS;
+import static com.tokopedia.checkout.domain.model.cartshipmentform.AddressesData.TRADE_IN_ADDRESS;
 
 /**
  * @author Aghny A. Putra on 02/03/18
@@ -136,12 +139,15 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
 
     private void renderTradeInAddress(RecipientAddressModel recipientAddress) {
         llTradeInInfo.setVisibility(View.VISIBLE);
-        if (recipientAddress.isTradeInDropOffEnable()) {
-            renderTradeInAddressWithTabs(recipientAddress);
-        } else {
-            renderTradeInAddressWithoutTabs(recipientAddress);
-            formatTradeInDeliveryInfo(recipientAddress);
-        }
+//        if (recipientAddress.isTradeInDropOffEnable()) {
+//            renderTradeInAddressWithTabs(recipientAddress);
+//        } else {
+//            renderTradeInAddressWithoutTabs(recipientAddress);
+//            formatTradeInDeliveryInfo(recipientAddress);
+//        }
+
+        renderTradeInAddressWithTabs(recipientAddress);
+        formatTradeInDeliveryInfo(recipientAddress);
     }
 
     private void renderTradeInAddressWithoutTabs(RecipientAddressModel recipientAddressModel) {
@@ -161,7 +167,6 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
         imgButtonTradeInInfo.setVisibility(View.VISIBLE);
         separator.setVisibility(View.GONE);
         llAddOrChangeAddressContainer.setVisibility(View.GONE);
-//        tabUnifyTradeInAddress.setVisibility(View.VISIBLE);
         if (tabUnifyTradeInAddress.getUnifyTabLayout().getTabCount() == 0) {
             tabUnifyTradeInAddress.addNewTab(tabUnifyTradeInAddress.getContext().getString(R.string.label_tab_trade_in_address_deliver));
             tabUnifyTradeInAddress.addNewTab(tabUnifyTradeInAddress.getContext().getString(R.string.label_tab_trade_in_address_pickup));
@@ -171,17 +176,18 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
             if (tabUnifyTradeInAddress.getUnifyTabLayout().getTabCount() > 0) {
                 tabUnifyTradeInAddress.getUnifyTabLayout().getTabAt(0).select();
                 renderTradeInDeliveryTab(recipientAddress);
+                setTradeInDefaultAddress();
             }
         } else {
             if (tabUnifyTradeInAddress.getUnifyTabLayout().getTabCount() > 1) {
                 tabUnifyTradeInAddress.getUnifyTabLayout().getTabAt(1).select();
                 renderTradeInPickUpTab(recipientAddress);
+                setTradeInDropOffAddress();
             }
         }
 
         chipsTradeInNormal.setOnClickListener(v -> {
-            chipsTradeInNormal.setChipType(ChipsUnify.TYPE_SELECTED);
-            chipsTradeInDropOff.setChipType(ChipsUnify.TYPE_NORMAL);
+            setTradeInDefaultAddress();
             TabLayout.Tab tab = tabUnifyTradeInAddress.getTabLayout().getTabAt(0);
             if (tab != null) {
                 tab.select();
@@ -189,15 +195,25 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
         });
 
         chipsTradeInDropOff.setOnClickListener(v -> {
-            if (recipientAddress.isTradeInDropOffEnable()) {
-                chipsTradeInDropOff.setChipType(ChipsUnify.TYPE_SELECTED);
-                chipsTradeInNormal.setChipType(ChipsUnify.TYPE_NORMAL);
-                TabLayout.Tab tab = tabUnifyTradeInAddress.getTabLayout().getTabAt(1);
-                if (tab != null) {
-                    tab.select();
-                }
+            setTradeInDropOffAddress();
+            TabLayout.Tab tab = tabUnifyTradeInAddress.getTabLayout().getTabAt(1);
+            if (tab != null) {
+                tab.select();
             }
         });
+
+        if (recipientAddress.getDisabledAddress() != null && !recipientAddress.getDisabledAddress().isEmpty()) {
+            if (recipientAddress.getDisabledAddress().contains(DEFAULT_ADDRESS)) {
+                chipsTradeInNormal.setChipType(ChipsUnify.TYPE_DISABLE);
+                chipsTradeInNormal.setClickable(false);
+                chipsTradeInNormal.setOnClickListener(null);
+            }
+            if (recipientAddress.getDisabledAddress().contains(TRADE_IN_ADDRESS)) {
+                chipsTradeInDropOff.setChipType(ChipsUnify.TYPE_DISABLE);
+                chipsTradeInDropOff.setClickable(false);
+                chipsTradeInNormal.setOnClickListener(null);
+            }
+        }
 
         tabUnifyTradeInAddress.getUnifyTabLayout().addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -223,6 +239,20 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
         });
 
         tvChangeDropOff.setOnClickListener(view -> shipmentAdapterActionListener.onChangeTradeInDropOffClicked());
+    }
+
+    private void setTradeInDefaultAddress() {
+        chipsTradeInNormal.setChipType(ChipsUnify.TYPE_SELECTED);
+        if (chipsTradeInDropOff.getChipType() != null && chipsTradeInDropOff.getChipType().equals(ChipsUnify.TYPE_SELECTED)) {
+            chipsTradeInDropOff.setChipType(ChipsUnify.TYPE_NORMAL);
+        }
+    }
+
+    private void setTradeInDropOffAddress() {
+        chipsTradeInDropOff.setChipType(ChipsUnify.TYPE_SELECTED);
+        if (chipsTradeInNormal.getChipType() != null && chipsTradeInNormal.getChipType().equals(ChipsUnify.TYPE_SELECTED)) {
+            chipsTradeInNormal.setChipType(ChipsUnify.TYPE_NORMAL);
+        }
     }
 
     private void renderTradeInPickUpTab(RecipientAddressModel recipientAddress) {
@@ -312,16 +342,9 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
     private void renderAddressOptionOnTop(RecipientAddressModel recipientAddressModel) {
         llAddOrChangeAddressContainer.setVisibility(View.GONE);
         tvChangeAddressTop.setVisibility(View.VISIBLE);
-        if (!TextUtils.isEmpty(recipientAddressModel.getDisabledMultiAddressMessage())) {
-            tvDisabledMultipleAddressInfo.setText(recipientAddressModel.getDisabledMultiAddressMessage());
-            tvDisabledMultipleAddressInfo.setVisibility(View.VISIBLE);
-            separatorBottom.setVisibility(View.VISIBLE);
-            space.setVisibility(View.GONE);
-        } else {
-            tvDisabledMultipleAddressInfo.setVisibility(View.GONE);
-            separatorBottom.setVisibility(View.GONE);
-            space.setVisibility(View.VISIBLE);
-        }
+        tvDisabledMultipleAddressInfo.setVisibility(View.GONE);
+        separatorBottom.setVisibility(View.GONE);
+        space.setVisibility(View.VISIBLE);
     }
 
     private void renderAddressOptionOnBottom() {

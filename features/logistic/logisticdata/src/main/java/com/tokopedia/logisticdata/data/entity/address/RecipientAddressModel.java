@@ -3,6 +3,8 @@ package com.tokopedia.logisticdata.data.entity.address;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.List;
+
 /**
  * @author Aghny A. Putra on 25/01/18
  */
@@ -47,8 +49,7 @@ public class RecipientAddressModel implements Parcelable {
     private String dropOffAddressName;
     private String dropOffAddressDetail;
     private LocationDataModel locationDataModel;
-
-    private String disabledMultiAddressMessage;
+    private List<String> disabledAddress;
 
     public RecipientAddressModel() {
     }
@@ -230,8 +231,7 @@ public class RecipientAddressModel implements Parcelable {
     }
 
     public boolean isTradeIn() {
-        return true;
-//        return isTradeIn;
+        return isTradeIn;
     }
 
     public void setTradeIn(boolean tradeIn) {
@@ -239,8 +239,7 @@ public class RecipientAddressModel implements Parcelable {
     }
 
     public boolean isTradeInDropOffEnable() {
-        return true;
-//        return isTradeInDropOffEnable;
+        return isTradeInDropOffEnable;
     }
 
     public void setTradeInDropOffEnable(boolean tradeInDropOffEnable) {
@@ -295,12 +294,12 @@ public class RecipientAddressModel implements Parcelable {
         this.locationDataModel = locationDataModel;
     }
 
-    public String getDisabledMultiAddressMessage() {
-        return disabledMultiAddressMessage;
+    public List<String> getDisabledAddress() {
+        return disabledAddress;
     }
 
-    public void setDisabledMultiAddressMessage(String disabledMultiAddressMessage) {
-        this.disabledMultiAddressMessage = disabledMultiAddressMessage;
+    public void setDisabledAddress(List<String> disabledAddress) {
+        this.disabledAddress = disabledAddress;
     }
 
     public boolean equalCorner(RecipientAddressModel that) {
@@ -413,7 +412,6 @@ public class RecipientAddressModel implements Parcelable {
         dest.writeString(this.dropOffAddressName);
         dest.writeString(this.dropOffAddressDetail);
         dest.writeParcelable(this.locationDataModel, flags);
-        dest.writeString(this.disabledMultiAddressMessage);
     }
 
     protected RecipientAddressModel(Parcel in) {
@@ -447,7 +445,6 @@ public class RecipientAddressModel implements Parcelable {
         this.dropOffAddressName = in.readString();
         this.dropOffAddressDetail = in.readString();
         this.locationDataModel = in.readParcelable(LocationDataModel.class.getClassLoader());
-        this.disabledMultiAddressMessage = in.readString();
     }
 
     public static final Creator<RecipientAddressModel> CREATOR = new Creator<RecipientAddressModel>() {
