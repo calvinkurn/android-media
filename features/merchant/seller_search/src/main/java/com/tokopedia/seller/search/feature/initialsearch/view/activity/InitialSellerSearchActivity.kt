@@ -1,6 +1,5 @@
 package com.tokopedia.seller.search.feature.initialsearch.view.activity
 
-import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -142,7 +141,7 @@ class InitialSellerSearchActivity: BaseActivity(), HasComponent<InitialSearchCom
     private fun setWhiteStatusBar() {
         window?.decorView?.setBackgroundColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Neutral_N0))
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            setStatusBarColor(Color.TRANSPARENT)
+            setStatusBarColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Neutral_N0))
             setLightStatusBar(true)
         }
     }
