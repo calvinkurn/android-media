@@ -60,8 +60,8 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_4"
         android:layout_marginLeft="@dimen/dp_4"
-        android:text="Dilayani Tokopedia"
-        app:labelType="general_light_green"
+        android:text="@string/label_fulfilment"
+        app:labelType="general_light_grey"
         app:layout_constraintBottom_toBottomOf="@+id/tv_shop_name"
         app:layout_constraintStart_toEndOf="@+id/tv_shop_name"
         app:layout_constraintTop_toTopOf="@+id/tv_shop_name" />
