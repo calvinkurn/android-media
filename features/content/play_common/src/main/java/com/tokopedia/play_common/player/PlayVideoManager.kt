@@ -244,11 +244,13 @@ class PlayVideoManager private constructor(
     }
 
     fun release() {
+        perMediaJob.cancelChildren()
         currentPrepareState = getDefaultPrepareState()
         videoPlayer.release()
     }
 
     fun stop(resetState: Boolean = true) {
+        perMediaJob.cancelChildren()
         val prepareState = currentPrepareState
         if (prepareState is PlayVideoPrepareState.Prepared)
             currentPrepareState = PlayVideoPrepareState.Unprepared(
