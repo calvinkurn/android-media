@@ -34,6 +34,7 @@ import org.junit.*
 
 /**
  * @author by jessica on 04/08/20
+ * Still missing hotel change date tracking validation
  */
 
 class HotelHomepageActivityTest {
@@ -71,8 +72,6 @@ class HotelHomepageActivityTest {
     @Test
     fun testHomeLayout() {
         clickOnChangeDestination()
-//        modifyCheckInCheckOutDate()
-//        modifyCheckOutDate()
         modifyGuestAndRoomCount()
         clickSubmitButton()
 
