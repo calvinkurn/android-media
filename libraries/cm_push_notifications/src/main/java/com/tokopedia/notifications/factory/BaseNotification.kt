@@ -11,6 +11,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.Color
+import android.graphics.drawable.Drawable
 import android.media.AudioAttributes
 import android.media.RingtoneManager
 import android.net.Uri
@@ -20,6 +21,8 @@ import android.text.TextUtils
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.notifications.R
 import com.tokopedia.notifications.common.CMConstant
@@ -36,7 +39,16 @@ import java.util.concurrent.TimeoutException
  */
 const val IMAGE_DOWNLOAD_TIME_OUT_SECOND  = 10L
 
-abstract class BaseNotification internal constructor(protected var context: Context, var baseNotificationModel: BaseNotificationModel) {
+interface BaseNotificationContract {
+    fun defaultIcon(): Bitmap
+    fun getBitmap(url: String?): Bitmap
+    fun loadResourceAsBitmap(resId: Int, result: (Bitmap) -> Unit)
+}
+
+abstract class BaseNotification internal constructor(
+        protected var context: Context,
+        var baseNotificationModel: BaseNotificationModel
+): BaseNotificationContract {
 
     private var cacheHandler: CMNotificationCacheHandler? = null
     val NOTIFICATION_NUMBER = 1
@@ -136,6 +148,10 @@ abstract class BaseNotification internal constructor(protected var context: Cont
             com.tokopedia.resources.common.R.mipmap.ic_launcher_customerapp
     internal val bitmapLargeIcon : Bitmap
     get() = createBitmap()
+
+    override fun defaultIcon(): Bitmap {
+        return bitmapLargeIcon
+    }
 
     private fun createBitmap() : Bitmap {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -254,7 +270,7 @@ abstract class BaseNotification internal constructor(protected var context: Cont
         builder.setVibrate(vibratePattern)
     }
 
-    internal fun getBitmap(url: String?): Bitmap {
+    override fun getBitmap(url: String?): Bitmap {
         return try {
             Glide.with(context)
                     .asBitmap()
@@ -270,6 +286,18 @@ abstract class BaseNotification internal constructor(protected var context: Cont
         } catch (e: IllegalArgumentException) {
             BitmapFactory.decodeResource(context.resources, drawableLargeIcon)
         }
+    }
+
+    override fun loadResourceAsBitmap(resId: Int, result: (Bitmap) -> Unit) {
+        Glide.with(context)
+                .asBitmap()
+                .load(resId)
+                .into(object : CustomTarget<Bitmap>() {
+                    override fun onLoadCleared(placeholder: Drawable?) {}
+                    override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                        result(resource)
+                    }
+                })
     }
 
     internal fun getActionButtonBitmap(url: String): Bitmap {
