@@ -3,7 +3,6 @@ package com.tokopedia.review.feature.createreputation.presentation.activity
 import android.app.Activity
 import android.app.NotificationManager
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -182,11 +181,15 @@ class CreateReviewActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent
         if (!::remoteConfigInstance.isInitialized) {
             remoteConfigInstance = RemoteConfigInstance(this.application)
         }
-        return remoteConfigInstance.abTestPlatform
+        return try {
+            return remoteConfigInstance.abTestPlatform
+        } catch (exception: IllegalStateException) {
+            null
+        }
     }
 
     private fun useNewPage(): Boolean {
-        val abTestValue = getAbTestPlatform()?.getString(ReviewConstants.AB_TEST_KEY, "") ?: return true
+        val abTestValue = getAbTestPlatform()?.getString(ReviewConstants.AB_TEST_KEY, "") ?: return false
         return abTestValue == ReviewConstants.NEW_REVIEW_FLOW
     }
 
