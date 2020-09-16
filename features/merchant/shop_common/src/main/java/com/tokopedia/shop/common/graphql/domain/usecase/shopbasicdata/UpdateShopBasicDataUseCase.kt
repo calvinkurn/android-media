@@ -36,9 +36,12 @@ constructor(@ApplicationContext context: Context) : UseCase<String>() {
 
                 paramKeys.forEach { key ->
                     val value = requestParams.getString(key, "")
-                    if(value.isNotEmpty()) { variables[key] = value }
+                    when (key) {
+                        TAGLINE -> variables[key] = value
+                        DESCRIPTION -> variables[key] = value
+                        else -> if(value.isNotEmpty()) { variables[key] = value }
+                    }
                 }
-
                 return variables
             }
         }

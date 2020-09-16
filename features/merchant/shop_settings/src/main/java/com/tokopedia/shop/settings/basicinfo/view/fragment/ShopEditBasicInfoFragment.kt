@@ -20,6 +20,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.design.text.watcher.AfterTextWatcher
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef
@@ -39,14 +40,16 @@ import com.tokopedia.shop.settings.basicinfo.view.activity.ShopEditBasicInfoActi
 import com.tokopedia.shop.settings.basicinfo.view.viewmodel.ShopEditBasicInfoViewModel
 import com.tokopedia.shop.settings.common.di.DaggerShopSettingsComponent
 import com.tokopedia.shop.settings.common.util.ShopTypeDef
-import com.tokopedia.shop.settings.common.util.getSpandableColorText
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_shop_edit_basic_info.*
 import kotlinx.android.synthetic.main.partial_toolbar_save_button.*
+import java.net.UnknownHostException
+import java.net.UnknownServiceException
 import javax.inject.Inject
 
 class ShopEditBasicInfoFragment: Fragment() {
@@ -132,6 +135,7 @@ class ShopEditBasicInfoFragment: Fragment() {
                 savedLocalImageUrl = imageUrlOrPathList[0]
             }
             needUpdatePhotoUI = true
+            determineSubmitButton()
         }
     }
 
@@ -161,6 +165,7 @@ class ShopEditBasicInfoFragment: Fragment() {
             override fun afterTextChanged(s: Editable) {
                 shopTagLineTextField.setMessage("")
                 shopTagLineTextField.setError(false)
+                determineSubmitButton()
             }
         })
     }
@@ -170,6 +175,7 @@ class ShopEditBasicInfoFragment: Fragment() {
             override fun afterTextChanged(s: Editable) {
                 shopDescriptionTextField.setMessage("")
                 shopDescriptionTextField.setError(false)
+                determineSubmitButton()
             }
         })
     }
@@ -256,7 +262,6 @@ class ShopEditBasicInfoFragment: Fragment() {
                 if (input.length < MIN_INPUT_LENGTH) {
                     val message = context?.getString(R.string.shop_edit_domain_too_short).orEmpty()
                     showShopDomainInputError(message)
-                    disableSaveBtn()
                     viewModel.cancelValidateShopDomain()
                 } else {
                     resetShopDomainInput()
@@ -271,33 +276,25 @@ class ShopEditBasicInfoFragment: Fragment() {
     private fun showShopNameInputError(message: String) {
         shopNameTextField.setError(true)
         shopNameTextField.setMessage(message)
-        disableSaveBtn()
+        determineSubmitButton()
     }
 
     private fun showShopDomainInputError(message: String) {
         shopDomainTextField.setError(true)
         shopDomainTextField.setMessage(message)
-        disableSaveBtn()
+        determineSubmitButton()
     }
 
     private fun resetShopNameInput() {
         shopNameTextField.setError(false)
         shopNameTextField.setMessage("")
-        if (isShopDomainTextFieldError()) {
-            disableSaveBtn()
-        } else {
-            enableSaveBtn()
-        }
+        determineSubmitButton()
     }
 
     private fun resetShopDomainInput() {
         shopDomainTextField.setError(false)
         shopDomainTextField.setMessage("")
-        if (isShopNameTextFieldError()) {
-            disableSaveBtn()
-        } else {
-            enableSaveBtn()
-        }
+        determineSubmitButton()
     }
 
     private fun disableSaveBtn() {
@@ -318,12 +315,36 @@ class ShopEditBasicInfoFragment: Fragment() {
         return shopDomainTextField.isTextFieldError
     }
 
+    private fun isSavedLocalImageUrlEmpty(): Boolean {
+        return savedLocalImageUrl.isNullOrEmpty()
+    }
+
     private fun isNameStillSame(): Boolean {
         return shopBasicDataModel?.name == shopNameTextField.textFieldInput.text.toString()
     }
 
     private fun isDomainStillSame(): Boolean {
         return shopBasicDataModel?.domain == shopDomainTextField.textFieldInput.text.toString()
+    }
+
+    private fun isTagLineStillSame(): Boolean {
+        return shopBasicDataModel?.tagline == shopTagLineTextField.textFieldInput.text.toString()
+    }
+
+    private fun isDescriptionStillSame(): Boolean {
+        return shopBasicDataModel?.description == shopDescriptionTextField.textFieldInput.text.toString()
+    }
+
+    private fun isEverythingStillSame(): Boolean {
+        return isNameStillSame() && isDomainStillSame() && isTagLineStillSame() && isDescriptionStillSame() && isSavedLocalImageUrlEmpty()
+    }
+
+    private fun determineSubmitButton() {
+        if (isEverythingStillSame() || isShopDomainTextFieldError() || isShopNameTextFieldError()) {
+            disableSaveBtn()
+        } else {
+            enableSaveBtn()
+        }
     }
 
     private fun observeLiveData() {
@@ -436,14 +457,18 @@ class ShopEditBasicInfoFragment: Fragment() {
     private fun showShopEditShopInfoTicker(data: AllowShopNameDomainChangesData) {
         val isNameAllowed = data.isNameAllowed
         val isDomainAllowed = data.isDomainAllowed
+        val reasonNameNotAllowed = data.reasonNameNotAllowed
+        val reasonDomainNotAllowed = data.reasonDomainNotAllowed
 
-        when {
-            isNameAllowed && isDomainAllowed -> showWarningTicker()
-            isNameAllowed && !isDomainAllowed -> showDomainNotAllowedTicker(data)
-            isDomainAllowed && !isNameAllowed -> showNameNotAllowedTicker(data)
-            else -> showNameAndDomainNotAllowedTicker()
+        if (reasonNameNotAllowed.isBlank() && reasonDomainNotAllowed.isBlank()) {
+            return
         }
-        shopEditTicker.show()
+        when {
+            isNameAllowed && isDomainAllowed -> showTicker(reasonNameNotAllowed, Ticker.TYPE_WARNING)
+            isNameAllowed && !isDomainAllowed -> showTicker(reasonDomainNotAllowed, Ticker.TYPE_INFORMATION)
+            isDomainAllowed && !isNameAllowed -> showTicker(reasonNameNotAllowed, Ticker.TYPE_INFORMATION)
+            else -> showTicker(reasonNameNotAllowed, Ticker.TYPE_INFORMATION)
+        }
     }
 
     private fun showShopNameDomainTextField(data: AllowShopNameDomainChangesData) {
@@ -457,40 +482,18 @@ class ShopEditBasicInfoFragment: Fragment() {
         shopDomainInput.isEnabled = isDomainAllowed
     }
 
-    private fun showWarningTicker() {
-        val description = getString(R.string.ticker_warning_can_only_change_shopname_once)
-        val readMore = getString(R.string.ticker_warning_read_more)
-        val color = ContextCompat.getColor(requireContext(), R.color.merchant_green)
-        val message = getSpandableColorText(description, readMore, color)
-        showInfoTicker(message)
-    }
-
-    private fun showDomainNotAllowedTicker(data: AllowShopNameDomainChangesData) {
-        val message = data.reasonDomainNotAllowed
-        showInfoTicker(message)
-    }
-
-    private fun showNameNotAllowedTicker(data: AllowShopNameDomainChangesData) {
-        val message = data.reasonNameNotAllowed
-        showInfoTicker(message)
-    }
-
-    private fun showNameAndDomainNotAllowedTicker() {
-        val message = getString(R.string.shop_edit_change_name_and_domain_not_allowed)
-        showInfoTicker(message)
-    }
-
-    private fun showInfoTicker(message: String) {
-        shopEditTicker.tickerType = Ticker.TYPE_INFORMATION
-        shopEditTicker.setTextDescription(message)
-    }
-
-    private fun showInfoTicker(message: CharSequence) {
-        shopEditTicker.tickerType = Ticker.TYPE_WARNING
-        shopEditTicker.setTextDescription(message)
-        shopEditTicker.setOnClickListener {
-            clickReadMore()
-        }
+    private fun showTicker(message: String, type: Int) {
+        shopEditTicker.tickerType = type
+        shopEditTicker.setHtmlDescription(message)
+        shopEditTicker.setDescriptionClickEvent(object : TickerCallback{
+            override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                if (type == Ticker.TYPE_WARNING) {
+                    clickReadMore()
+                }
+            }
+            override fun onDismiss() {}
+        })
+        shopEditTicker.show()
     }
 
     private fun initInjector() {
@@ -510,8 +513,8 @@ class ShopEditBasicInfoFragment: Fragment() {
         val tagLine = shopTagLineTextField.textFieldInput.text.toString()
         val desc = shopDescriptionTextField.textFieldInput.text.toString()
 
-        if (!savedLocalImageUrl.isNullOrEmpty()) {
-            viewModel.uploadShopImage(savedLocalImageUrl!!, name, domain, tagLine, desc)
+        if (!isSavedLocalImageUrlEmpty()) {
+            viewModel.uploadShopImage(savedLocalImageUrl ?: "", name, domain, tagLine, desc)
         } else {
             viewModel.updateShopBasicData(name, domain, tagLine, desc)
         }
@@ -555,15 +558,26 @@ class ShopEditBasicInfoFragment: Fragment() {
 
     private fun onErrorUpdateShopBasicData(throwable: Throwable) {
         hideSubmitLoading()
-        showSnackBarErrorSubmitEdit(throwable)
+        if (throwable.cause is UnknownHostException || throwable.cause is UnknownServiceException) {
+            showGlobalError()
+        } else {
+            showSnackBarErrorSubmitEdit(throwable)
+        }
         tvSave.isEnabled = true
     }
 
     private fun showShopInformation(shopBasicDataModel: ShopBasicDataModel?) {
         shopBasicDataModel?.let {
-            this.shopBasicDataModel = it
-            setUIShopBasicData(it)
-            setShopBasicData(it)
+            this.shopBasicDataModel = it.apply {
+                name = MethodChecker.fromHtml(name).toString()
+                domain = MethodChecker.fromHtml(domain).toString()
+                description = MethodChecker.fromHtml(description).toString()
+                tagline = MethodChecker.fromHtml(tagline).toString()
+            }
+            this.shopBasicDataModel?.let { model ->
+                setUIShopBasicData(model)
+                setShopBasicData(model)
+            }
             tvSave.visible()
         }
     }
@@ -619,7 +633,11 @@ class ShopEditBasicInfoFragment: Fragment() {
     }
 
     private fun onErrorUploadShopImage(throwable: Throwable) {
-        showSnackBarErrorSubmitEdit(throwable)
+        if (throwable.cause is UnknownHostException || throwable.cause is UnknownServiceException) {
+            showGlobalError()
+        } else {
+            showSnackBarErrorSubmitEdit(throwable)
+        }
     }
 
     private fun showSnackBarErrorSubmitEdit(throwable: Throwable) {
@@ -659,11 +677,23 @@ class ShopEditBasicInfoFragment: Fragment() {
             setSecondaryCTAText(getString(R.string.shop_edit_dialog_secondary_cta))
             setPrimaryCTAClickListener {
                 onSaveButtonClicked()
+                dismiss()
                 ShopSettingsTracking.clickConfirmChangeShopName(userSession.shopId, getShopType())
             }
             setSecondaryCTAClickListener {
                 dismiss()
                 ShopSettingsTracking.clickCancelChangeShopName(userSession.shopId, getShopType())
+            }
+        }.show()
+    }
+
+    private fun showGlobalError() {
+        globalError.setBackgroundColor(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Neutral_N0 ))
+        globalError.apply {
+            setType(GlobalError.NO_CONNECTION)
+            setActionClickListener {
+                onSaveButtonClicked()
+                hide()
             }
         }.show()
     }

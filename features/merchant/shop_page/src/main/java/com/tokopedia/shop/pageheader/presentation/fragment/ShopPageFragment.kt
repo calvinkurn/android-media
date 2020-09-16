@@ -54,6 +54,7 @@ import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.analytic.model.TrackShopTypeDef
 import com.tokopedia.shop.common.constant.ShopHomeType
 import com.tokopedia.shop.common.constant.ShopPageConstant
+import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.view.bottomsheet.ShopShareBottomSheet
 import com.tokopedia.shop.common.view.bottomsheet.listener.ShopShareBottomsheetListener
 import com.tokopedia.shop.common.view.model.ShopShareModel
@@ -531,6 +532,7 @@ class ShopPageFragment :
         super.onResume()
         removeTemporaryShopImage(shopImageFilePath)
         updateStickyState()
+        setShopName()
     }
 
     private fun setViewState(viewState: Int) {
@@ -712,6 +714,7 @@ class ShopPageFragment :
             shopDomain = shopPageP1Data.shopDomain
             avatar = shopPageP1Data.shopAvatar
         }
+        setShopName()
         customDimensionShopPage.updateCustomDimensionData(
                 shopId,
                 shopPageHeaderDataModel?.isOfficial ?: false,
@@ -777,6 +780,7 @@ class ShopPageFragment :
                     shopPageHeaderContentData.shopOperationalHourStatus,
                     isMyShop
             )
+            setShopName()
             view?.let { onToasterNoUploadProduct(it, getString(R.string.shop_page_product_no_upload_product), isFirstCreateShop) }
         }
     }
@@ -1245,6 +1249,13 @@ class ShopPageFragment :
         if (isFirstCreateShop) {
             Toaster.make(view, message, actionText = getString(R.string.shop_page_product_action_no_upload_product), type = Toaster.TYPE_NORMAL)
             this.isFirstCreateShop = false
+        }
+    }
+
+    private fun setShopName() {
+        if(isMyShop) {
+            shopPageHeaderDataModel?.shopName = shopViewModel.ownerShopName
+            shopPageFragmentHeaderViewHolder.setShopName(shopViewModel.ownerShopName)
         }
     }
 
