@@ -701,10 +701,12 @@ class ShopEditBasicInfoFragment: Fragment() {
     }
 
     private fun showGlobalError() {
+        tvSave.hide()
         globalError.setBackgroundColor(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Neutral_N0 ))
         globalError.apply {
             setType(GlobalError.NO_CONNECTION)
             setActionClickListener {
+                tvSave.show()
                 onSaveButtonClicked()
                 hide()
             }
