@@ -185,7 +185,8 @@
     <string name="label_wallet_activation">Aktivasi TokoCash</string>
     <string name="title_pm_card">Pengaturan Power Merchant</string>
     <string name="desc_pm_card">Kelola toko dengan fitur eksklusif</string>
-
+    <string name="title_image_quality_setting">Kualitas Media</string>
+    <string name="subtitle_image_quality_setting">Atur kualitas media yang kamu terima</string>
 
     <string name="msg_has_no_shop">Mulai dengan Tokopedia!</string>
     <string name="msg_desc_has_no_shop">Buka Toko di Tokopedia, Sekarang! <b>Mudah, Aman,</b> dan
@@ -253,6 +254,22 @@
     <string name="account_home_add_phone_message">Tambah dan verifikasi nomor ponsel terlebih dahulu sebelum membuat PIN</string>
     <string name="clear_cache">clear cache</string>
 
+    <string name="image_quality_setting_screen">Kualitas Media</string>
+    <string name="image_quality_setting_title">Atur kualitas media yang kamu terima</string>
+    <string name="image_quality_setting_subtitle">Kualitas gambar dan video produk, dan kualitas tayangan Tokopedia PLAY</string>
+
+    <string name="image_quality_low_title">Rendah</string>
+    <string name="image_quality_low_subtitle">Kualitas media kamu akan selalu rendah pada jaringan koneksi apapun.</string>
+    <string name="image_quality_low_toast">Kualitas rendah berhasil dipilih.</string>
+
+    <string name="image_quality_high_title">Tinggi</string>
+    <string name="image_quality_high_subtitle">Kualitas media kamu akan selalu tinggi pada jaringan koneksi apapun.</string>
+    <string name="image_quality_high_toast">Kualitas tinggi berhasil dipilih.</string>
+
+    <string name="image_quality_auto_title">Otomatis (rekomendasi)</string>
+    <string name="image_quality_auto_subtitle">Kualitas media akan otomatis diturunkan ketika jaringan seluler kamu 3G atau dibawahnya.</string>
+    <string name="image_quality_auto_toast">Pengaturan otomatis berhasil dipilih.</string>
+
     <!--CONTENT DESC-->
     <string name="content_desc_text_shop_name">text nama toko</string>
     <string name="content_desc_image_shop">image logo toko</string>
@@ -261,6 +278,5 @@
     <string name="content_desc_button_add_product">button tambah produk</string>
     <string name="content_desc_tv_add_product_title">text tambah produk</string>
     <string name="content_desc_text_view_title">text menu</string>
-
 
 </resources>

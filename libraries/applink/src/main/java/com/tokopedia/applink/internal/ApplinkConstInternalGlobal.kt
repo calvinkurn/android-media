@@ -501,4 +501,9 @@ object ApplinkConstInternalGlobal {
     //SeamlessActivity
     @JvmField
     val SEAMLESS_LOGIN = "${INTERNAL_GLOBAL}/login-seamless"
+
+    //Image Quality Setting Activity
+    // tokopedia-android-internal://global/image-quality-setting
+    @JvmField
+    val IMAGE_QUALITY_SETTING = "${INTERNAL_GLOBAL}/image-quality-setting"
 }
