@@ -16,8 +16,7 @@
         app:typographyType="body_3"
         android:layout_marginTop="@dimen/spacing_lvl4"
         android:layout_marginStart="@dimen/spacing_lvl4"
-        android:layout_marginLeft="@dimen/spacing_lvl4"
-        android:textColor="@color/clrAd31353b"
+        android:textColor="@color/light_N700_68"
         tools:text="Fitur"/>
 
     <androidx.recyclerview.widget.RecyclerView

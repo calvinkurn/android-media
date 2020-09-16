@@ -16,13 +16,12 @@
         app:typographyType="body_3"
         android:layout_marginTop="@dimen/spacing_lvl4"
         android:layout_marginStart="@dimen/spacing_lvl4"
-        android:layout_marginLeft="@dimen/spacing_lvl4"
-        android:textColor="@color/clrAd31353b"
+        android:textColor="@color/light_N700_68"
         tools:text="Faq"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvResultFaq"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -33,7 +32,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvMoreResultFaq"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/rvResultFaq"
@@ -45,7 +44,7 @@
         android:layout_marginLeft="@dimen/spacing_lvl4"
         android:layout_marginRight="@dimen/spacing_lvl4"
         android:layout_marginEnd="@dimen/spacing_lvl4"
-        android:textColor="@color/clr03AC0E"
+        android:textColor="@color/light_G500"
         android:visibility="gone"
         tools:visibility="visible"
         tools:text="Lihat 9 pertanyaan lainnya"/>
