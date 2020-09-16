@@ -46,6 +46,7 @@ object ProductDetailConstant {
     const val KEY_BYME = "byme"
     const val KEY_BUTTON_PRIMARY = "primary"
     const val KEY_BUTTON_PRIMARY_GREEN = "primary_green"
+    const val KEY_BUTTON_SECONDARY_GREEN = "secondary_green"
     const val KEY_BUTTON_DISABLE = "disabled"
     const val KEY_BUTTON_SECONDARY = "secondary"
     const val DEFAULT_PAGE_NUMBER = 1
