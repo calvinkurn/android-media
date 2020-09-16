@@ -624,7 +624,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
         removeWishListUseCase?.createObservable(productId, userId, wishListActionListener)
     }
 
-    override fun processAddCartToWishlist(productId: String, cartId: String, isLastItem: Boolean, source: String) {
+    override fun processAddCartToWishlist(productId: String, cartId: String, isLastItem: Boolean, source: String, forceExpandCollapsedUnavailableItems: Boolean) {
         view?.let {
             it.showProgressLoading()
 
@@ -635,7 +635,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
             requestParams.putObject(AddCartToWishlistUseCase.PARAM_ADD_CART_TO_WISHLIST_REQUEST, addCartToWishlistRequest)
 
             compositeSubscription.add(addCartToWishlistUseCase?.createObservable(requestParams)
-                    ?.subscribe(AddCartToWishlistSubscriber(it, productId, cartId, isLastItem, source)))
+                    ?.subscribe(AddCartToWishlistSubscriber(it, productId, cartId, isLastItem, source, forceExpandCollapsedUnavailableItems)))
         }
     }
 

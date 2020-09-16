@@ -1138,6 +1138,14 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     override fun onAddDisabledItemToWishlist(data: DisabledCartItemHolderData) {
         cartPageAnalytics.eventClickMoveToWishlistOnUnavailableSection(userSession.userId, data.productId, data.errorType)
         val isLastItem = cartAdapter.allCartItemData.size == 1
+
+        // If unavailable item > 1 and state is collapsed, then expand first
+        var forceExpand = false
+        if (cartAdapter.allDisabledCartItemData.size > 1 && accordionCollapseState) {
+            collapseOrExpandDisabledItem()
+            forceExpand = true
+        }
+
         dPresenter.processAddCartToWishlist(data.productId, data.cartId.toString(), isLastItem, WISHLIST_SOURCE_UNAVAILABLE_ITEM)
     }
 
@@ -2582,7 +2590,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         dPresenter.processInitialGetCartData(getCartId(), false, false)
     }
 
-    override fun onAddCartToWishlistSuccess(message: String, productId: String, cartId: String, isLastItem: Boolean, source: String) {
+    override fun onAddCartToWishlistSuccess(message: String, productId: String, cartId: String, isLastItem: Boolean, source: String, forceExpandCollapsedUnavailableItems: Boolean) {
         showToastMessageGreen(message, false)
 
         when (source) {
@@ -2602,6 +2610,13 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             removedIndices.forEach {
                 onNeedToRemoveViewItem(it)
             }
+
+            if (forceExpandCollapsedUnavailableItems && cartAdapter.allDisabledCartItemData.size > 1) {
+                collapseOrExpandDisabledItem()
+            } else {
+                cartAdapter.removeAccordionDisabledItem()
+            }
+
             dPresenter.reCalculateSubTotal(cartAdapter.allShopGroupDataList, cartAdapter.insuranceCartShops)
             setToolbarShadowVisibility(cartAdapter.allAvailableCartItemData.isEmpty())
             notifyBottomCartParent()
