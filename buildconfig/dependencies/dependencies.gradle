@@ -185,7 +185,7 @@ ext {
             messaging  : "com.google.firebase:firebase-messaging:${playServiceFirebaseMessaging}",
             config     : "com.google.firebase:firebase-config:${playServiceFirebaseRemoteConfig}",
             performance: "com.google.firebase:firebase-perf:${playServiceFirebasePerfMon}",
-            fireStore  : "com.google.firebase:firebase-firestore:${playServiceFirebaseFirestore}",
+            fireStore  : "com.google.firebase:firebase-firestore:21.5.0",
             crashlytics: "com.google.firebase:firebase-crashlytics-ktx:${firebaseCrashlyticsVersion}",
             analytics  : "com.google.firebase:firebase-analytics-ktx:${firebaseAnalyticsVersion}",
             auth       : "com.google.firebase:firebase-auth:${firebaseAuthVersion}"
