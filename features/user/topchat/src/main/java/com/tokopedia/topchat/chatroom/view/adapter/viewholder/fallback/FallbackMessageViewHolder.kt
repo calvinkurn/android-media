@@ -16,9 +16,6 @@ import com.tokopedia.topchat.chatroom.view.custom.FlexBoxChatLayout
 abstract class FallbackMessageViewHolder(itemView: View?, private val listener: ChatLinkHandlerListener)
     : BaseChatViewHolder<FallbackAttachmentViewModel>(itemView) {
 
-    open val tvRole: TextView? = itemView?.findViewById(R.id.tvRole)
-    open val tvName: TextView? = itemView?.findViewById(R.id.tvName)
-    open val llRoleUser: LinearLayout? = itemView?.findViewById(R.id.llRoleUser)
     open val fxChat: FlexBoxChatLayout? = itemView?.findViewById(R.id.fxChat)
 
     override fun bind(viewModel: FallbackAttachmentViewModel?) {

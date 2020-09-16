@@ -5,6 +5,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.view.View
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.chat_common.BaseChatToolbarActivity
@@ -12,6 +13,7 @@ import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel
 import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel.Companion.MODE_DEFAULT_GET_CHAT
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.kotlin.extensions.view.toZeroStringIfNull
+import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.fragment.TopChatRoomFragment
 import com.tokopedia.topchat.common.TopChatInternalRouter.Companion.RESULT_INBOX_CHAT_PARAM_INDEX
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
@@ -41,7 +43,8 @@ class TopChatRoomActivity : BaseChatToolbarActivity() {
     }
 
     private fun initWindowBackground() {
-        window.decorView.setBackgroundColor(Color.WHITE)
+        val color = ContextCompat.getColor(this, R.color.topchat_chatroom_background)
+        window.decorView.setBackgroundColor(color)
     }
 
     private fun initTopchatToolbar() {

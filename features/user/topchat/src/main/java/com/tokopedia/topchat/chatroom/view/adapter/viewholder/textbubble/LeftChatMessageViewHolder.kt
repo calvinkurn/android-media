@@ -1,11 +1,13 @@
 package com.tokopedia.topchat.chatroom.view.adapter.viewholder.textbubble
 
+import android.view.Gravity
 import android.view.View
 import com.tokopedia.chat_common.data.BaseChatViewModel
 import com.tokopedia.chat_common.data.MessageViewModel
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandlerListener
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.CommonViewHolderListener
+import com.tokopedia.topchat.common.util.ViewUtil
 
 class LeftChatMessageViewHolder(
         itemView: View?,
@@ -16,6 +18,23 @@ class LeftChatMessageViewHolder(
     override fun bind(message: MessageViewModel) {
         super.bind(message)
         bindMessageInfo(message)
+        bindBackground(message)
+    }
+
+    private fun bindBackground(message: MessageViewModel) {
+        val shadow = ViewUtil.generateBackgroundWithShadow(
+                itemView,
+                R.color.white,
+                R.dimen.dp_topchat_0,
+                R.dimen.dp_topchat_20,
+                R.dimen.dp_topchat_20,
+                R.dimen.dp_topchat_20,
+                R.color.topchat_message_shadow,
+                R.dimen.dp_2,
+                R.dimen.dp_1,
+                Gravity.CENTER
+        )
+        fxChat?.background = shadow
     }
 
     private fun bindMessageInfo(message: MessageViewModel) {

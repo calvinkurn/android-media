@@ -56,6 +56,14 @@ class FlexBoxChatLayout : FrameLayout {
         initConfig(context, attrs)
     }
 
+    override fun setBackground(background: Drawable?) {
+        val pl = paddingLeft
+        val pt = paddingTop
+        val pr = paddingRight
+        val pb = paddingBottom
+        super.setBackground(background)
+        setPadding(pl, pt, pr, pb)
+    }
 
     private fun initConfig(context: Context?, attrs: AttributeSet?) {
         initAttr(context, attrs)
