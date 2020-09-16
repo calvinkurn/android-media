@@ -779,7 +779,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
                 val enable2FA = data?.extras?.getBoolean(ApplinkConstInternalGlobal.PARAM_ENABLE_2FA) ?: false
                 val enableSkip2FA = data?.extras?.getBoolean(ApplinkConstInternalGlobal.PARAM_ENABLE_SKIP_2FA) ?: false
                 if(enable2FA || enableSkip2FA){
-                    goToAddPin2FA()
+                    goToAddPin2FA(enableSkip2FA)
                 } else registerInitialViewModel.getUserInfo(isCreatePin = true)
             } else if (requestCode == REQUEST_ADD_PIN) {
                 registerInitialViewModel.getUserInfo()
@@ -865,9 +865,10 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         }
     }
 
-    private fun goToAddPin2FA(){
+    private fun goToAddPin2FA(enableSkip2FA: Boolean){
         val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PIN)
         intent.putExtras(Bundle().apply {
+            putBoolean(ApplinkConstInternalGlobal.PARAM_ENABLE_SKIP_2FA, enableSkip2FA)
             putBoolean(ApplinkConstInternalGlobal.PARAM_IS_FROM_2FA, true)
             putBoolean(ApplinkConstInternalGlobal.PARAM_IS_SKIP_OTP, true)
         })
