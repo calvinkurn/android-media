@@ -207,7 +207,7 @@ class DynamicChannelComponentAnalyticsTest {
 
     private fun clickHomeBannerItemAndViewAll(view: View, itemPos: Int) {
         val childView = view
-        val seeAllButton = childView.findViewById<View>(R.id.see_all_promo)
+        val seeAllButton = childView.findViewById<View>(R.id.see_more_label)
 
         //banner item click
         val bannerViewPager = childView.findViewById<CircularViewPager>(R.id.circular_view_pager)
