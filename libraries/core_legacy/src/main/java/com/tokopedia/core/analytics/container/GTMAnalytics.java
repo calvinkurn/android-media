@@ -287,6 +287,7 @@ public class GTMAnalytics extends ContextAnalytics {
     @Override
     public void sendEnhanceEcommerceEvent(String eventName, Bundle value) {
         Bundle bundle =  addWrapperValue(value);
+        bundle = addGclIdIfNeeded(eventName, bundle);
         pushEventV5(eventName, bundle, context);
         logV5(getContext(), eventName, bundle);
         pushIris(eventName, bundle);
@@ -1094,6 +1095,20 @@ public class GTMAnalytics extends ContextAnalytics {
             case TRANSACTION:
                 values.put(KEY_GCLID, mGclid);
         }
+    }
+
+    private Bundle addGclIdIfNeeded(String eventName, Bundle values) {
+        if (null == eventName) return values;
+        switch (eventName.toLowerCase()) {
+            case FirebaseAnalytics.Event.ADD_TO_CART:
+            case ADDTOCART:
+            case FirebaseAnalytics.Event.VIEW_ITEM:
+            case VIEWPRODUCT:
+            case FirebaseAnalytics.Event.ECOMMERCE_PURCHASE:
+            case TRANSACTION:
+                values.putString(KEY_GCLID, mGclid);
+        }
+        return values;
     }
 
     public void eventOnline(String uid) {
