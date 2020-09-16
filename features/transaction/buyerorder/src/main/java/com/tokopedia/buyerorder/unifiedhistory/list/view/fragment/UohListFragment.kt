@@ -28,6 +28,7 @@ import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.ALL_CATEGOR
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.ALL_DATE
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.ALL_STATUS
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.ALL_TRANSACTIONS
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.APPLINK_BASE
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.APP_LINK_TYPE
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.CTA_ATC
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.EE_PRODUCT_ID
@@ -1307,10 +1308,14 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     }
 
     override fun onTickerDetailInfoClicked(url: String) {
-        if (url.contains(ApplinkConst.WEBVIEW)) {
+        if (url.contains(APPLINK_BASE)){
             RouteManager.route(context, url)
         } else {
-            RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, url))
+            if (url.contains(ApplinkConst.WEBVIEW)) {
+                RouteManager.route(context, url)
+            } else {
+                RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, url))
+            }
         }
     }
 
