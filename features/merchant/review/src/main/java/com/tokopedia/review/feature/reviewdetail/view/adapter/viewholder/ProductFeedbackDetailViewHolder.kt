@@ -66,6 +66,7 @@ class ProductFeedbackDetailViewHolder(private val view: View,
 
     private fun setupFeedbackReview(feedbackText: String, feedbackId: String) {
         with(itemView) {
+            replyFeedbackState?.background = ContextCompat.getDrawable(context, R.drawable.rectangle_8)
             if (feedbackText.isEmpty()) {
                 tvFeedbackReview?.text = getString(R.string.review_not_found)
                 tvFeedbackReview?.setTextColor(ContextCompat.getColor(context, R.color.light_N700_44))
