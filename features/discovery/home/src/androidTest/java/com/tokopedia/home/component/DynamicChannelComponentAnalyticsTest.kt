@@ -22,12 +22,14 @@ import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.cassavatest.getAnalyticsWithQuery
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager.CircularViewPager
+import com.tokopedia.collapsing.tab.layout.CollapsingTabLayout
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.BannerViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.CategoryWidgetViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.PopularKeywordViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.TickerViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.widget_business.NewBusinessViewHolder
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationFeedViewHolder
 import com.tokopedia.home.environment.InstrumentationHomeTestActivity
 import com.tokopedia.home.mock.HomeMockResponseConfig
 import com.tokopedia.home_component.viewholders.*
@@ -54,6 +56,7 @@ private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_CATEGORY_WIDGET = "tracker/
 private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_BU_WIDGET = "tracker/home/bu_widget.json"
 private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_MIX_LEFT = "tracker/home/mix_left.json"
 private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_MIX_TOP = "tracker/home/mix_top.json"
+private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_RECOMMENDATION_FEED_TAB = "tracker/home/recommendation_tab.json"
 private const val TAG = "DynamicChannelComponentAnalyticsTest"
 
 /**
@@ -126,11 +129,7 @@ class DynamicChannelComponentAnalyticsTest {
         //cant mock occ response
 
         //ontesting
-
-        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_CATEGORY_WIDGET),
-                hasAllSuccess())
-
-        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_BU_WIDGET),
+        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_RECOMMENDATION_FEED_TAB),
                 hasAllSuccess())
 
         //worked
@@ -145,6 +144,10 @@ class DynamicChannelComponentAnalyticsTest {
 //        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_MIX_TOP),
 //                hasAllSuccess())
 //        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_LEGO_BANNER),
+//                hasAllSuccess())
+//        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_CATEGORY_WIDGET),
+//                hasAllSuccess())
+//        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_BU_WIDGET),
 //                hasAllSuccess())
     }
 
@@ -224,6 +227,11 @@ class DynamicChannelComponentAnalyticsTest {
                 logTestMessage("VH $holderName")
                 clickBUWidgetTab(viewholder.itemView)
                 clickSingleItemOnRecyclerView(viewholder.itemView, R.id.recycler_view, holderName)
+            }
+            is HomeRecommendationFeedViewHolder -> {
+                val holderName = "HomeRecommendationFeedViewHolder"
+                logTestMessage("VH $holderName")
+                clickRecommendationFeedTab(viewholder.itemView)
             }
         }
     }
@@ -407,11 +415,22 @@ class DynamicChannelComponentAnalyticsTest {
         val tabPager = childView.findViewById<ViewPager2>(R.id.view_pager)
         try {
             Espresso.onView(withId(R.id.tab_layout)).perform(selectTabAtPosition(1))
-
-
+            logTestMessage("Click SUCCESS BU tab pos "  + 1)
         } catch (e: PerformException) {
             e.printStackTrace()
-            logTestMessage("Click FAILED BU tab pos "  + 0)
+            logTestMessage("Click FAILED BU tab pos "  + 1)
+        }
+    }
+
+    private fun clickRecommendationFeedTab(view: View) {
+        val childView = view
+        val tabPager = childView.findViewById<ViewPager>(R.id.view_pager_home_feeds)
+        try {
+            Espresso.onView(withId(R.id.tab_layout_home_feeds)).perform(selectTabAtPosition(1))
+            logTestMessage("Click SUCCESS recom tab pos "  + 1)
+        } catch (e: PerformException) {
+            e.printStackTrace()
+            logTestMessage("Click FAILED recom tab pos "  + 1)
         }
     }
 
@@ -445,6 +464,24 @@ class DynamicChannelComponentAnalyticsTest {
 
             override fun perform(uiController: UiController, view: View) {
                 val tabLayout = view as TabLayout
+                val tabAtIndex: TabLayout.Tab = tabLayout.getTabAt(tabIndex)
+                        ?: throw PerformException.Builder()
+                                .withCause(Throwable("No tab at index $tabIndex"))
+                                .build()
+
+                tabAtIndex.select()
+            }
+        }
+    }
+
+    fun selectCollapsingTabAtPosition(tabIndex: Int): ViewAction {
+        return object : ViewAction {
+            override fun getDescription() = "with tab at index $tabIndex"
+
+            override fun getConstraints() = allOf(isDisplayed(), ViewMatchers.isAssignableFrom(TabLayout::class.java))
+
+            override fun perform(uiController: UiController, view: View) {
+                val tabLayout = view as CollapsingTabLayout
                 val tabAtIndex: TabLayout.Tab = tabLayout.getTabAt(tabIndex)
                         ?: throw PerformException.Builder()
                                 .withCause(Throwable("No tab at index $tabIndex"))
