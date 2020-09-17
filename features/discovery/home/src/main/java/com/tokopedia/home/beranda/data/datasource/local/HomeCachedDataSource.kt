@@ -27,7 +27,7 @@ class HomeCachedDataSource(
         }
     }
 
-    suspend fun saveToDatabase(homeData: HomeData) {
+    suspend fun saveToDatabase(homeData: HomeData?) {
         BenchmarkHelper.beginSystraceSection(TRACE_SAVE_TO_DATABASE)
         homeDao.save(HomeRoomData(homeData = homeData))
         BenchmarkHelper.endSystraceSection()

@@ -23,10 +23,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.UseCaseIc
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.*
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.default_home_dc.ErrorPromptViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.widget_business.NewBusinessViewHolder
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.DynamicChannelLoadingViewHolder
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.EmptyBlankViewHolder
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.GeolocationPromptViewHolder
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.OvoViewHolder
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.*
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationFeedViewHolder
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedDataModel
 import com.tokopedia.home_component.HomeComponentTypeFactory
@@ -183,6 +180,10 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
         return DynamicChannelLoadingViewHolder.LAYOUT
     }
 
+    override fun type(dynamicChannelRetryModel: DynamicChannelRetryModel): Int {
+        return DynamicChannelRetryViewHolder.LAYOUT
+    }
+
     override fun type(lego4AutoDataModel: Lego4AutoDataModel): Int {
         return Lego4AutoBannerViewHolder.LAYOUT
     }
@@ -302,6 +303,7 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
                     ReminderWidgetViewHolder(view,reminderWidgetListener)
             TopadsBannerViewHolder.LAYOUT -> viewHolder = TopadsBannerViewHolder(view, listener)
             DynamicChannelLoadingViewHolder.LAYOUT -> viewHolder = DynamicChannelLoadingViewHolder(view)
+            DynamicChannelRetryViewHolder.LAYOUT -> viewHolder = DynamicChannelRetryViewHolder(view, listener)
             Lego4AutoBannerViewHolder.LAYOUT -> viewHolder =
                     Lego4AutoBannerViewHolder(
                             view,

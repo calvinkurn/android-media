@@ -452,7 +452,7 @@ open class HomeViewModel @Inject constructor(
             newHomeViewModel = evaluatePlayWidget(newHomeViewModel)
             newHomeViewModel = evaluatePlayCarouselWidget(newHomeViewModel)
             newHomeViewModel = evaluateBuWidgetData(newHomeViewModel)
-            newHomeViewModel = evaluateRecommendationSection(newHomeViewModel)
+            if (needToEvaluateRecommendation) newHomeViewModel = evaluateRecommendationSection(newHomeViewModel)
             newHomeViewModel = evaluateDynamicChannelModel(newHomeViewModel)
             newHomeViewModel = evaluatePopularKeywordComponent(newHomeViewModel)
             newHomeViewModel = evaluateTopAdsBannerComponent(newHomeViewModel)
@@ -910,7 +910,7 @@ open class HomeViewModel @Inject constructor(
                     val homeDataWithoutExternalComponentPair = evaluateInitialTopAdsBannerComponent(homeDataModel)
                     var homeData: HomeDataModel? = homeDataWithoutExternalComponentPair.first
                     homeData = evaluateGeolocationComponent(homeData)
-                    homeData = evaluateAvailableComponent(homeData, false)
+                    homeData = evaluateAvailableComponent(homeData, !(homeData?.isFirstPage?:false))
                     _homeLiveData.postValue(homeData)
                     getPlayBannerCarousel()
                     getHeaderData()
@@ -970,6 +970,9 @@ open class HomeViewModel @Inject constructor(
         getHomeDataJob = launchCatchError(coroutineContext, block = {
             homeUseCase.get().updateHomeData().collect {
                 _updateNetworkLiveData.postValue(it)
+                if (it.status === Result.Status.ERROR_PAGINATION) {
+                    removeDynamicChannelLoadingModel()
+                }
             }
         }) {
             homeRateLimit.reset(HOME_LIMITER_KEY)
@@ -1485,5 +1488,36 @@ open class HomeViewModel @Inject constructor(
 
     fun deleteHomeData() {
         launch(Dispatchers.IO) { homeUseCase.get().deleteHomeData() }
+    }
+
+    private fun removeDynamicChannelLoadingModel() {
+        val detectLoadingModel = _homeLiveData.value?.list?.find { visitable -> visitable is DynamicChannelLoadingModel }
+        val detectRetryModel = _homeLiveData.value?.list?.find { visitable -> visitable is DynamicChannelRetryModel }
+
+        (detectRetryModel as? DynamicChannelRetryModel)?.let {
+            launch(Dispatchers.Main) {
+                _homeLiveData.value?.list?.let {list ->
+                    updateWidget(UpdateLiveDataModel(ACTION_UPDATE, DynamicChannelRetryModel(false), list.indexOf(it)))
+                }
+            }
+        }
+
+        (detectLoadingModel as? DynamicChannelLoadingModel)?.let {
+            launch(Dispatchers.Main) {
+                updateWidget(UpdateLiveDataModel(ACTION_DELETE, it))
+                updateWidget(UpdateLiveDataModel(ACTION_ADD, DynamicChannelRetryModel(false)))
+            }
+        }
+    }
+
+    fun onDynamicChannelRetryClicked() {
+        launch(coroutineContext) {
+            val detectRetryModel = _homeLiveData.value?.list?.find { visitable -> visitable is DynamicChannelRetryModel }
+//            (detectRetryModel as? DynamicChannelRetryModel)?.let {
+//                updateWidget(UpdateLiveDataModel(ACTION_DELETE, it))
+//                updateWidget(UpdateLiveDataModel(ACTION_ADD, DynamicChannelLoadingModel()))
+//            }
+            refreshHomeData()
+        }
     }
 }

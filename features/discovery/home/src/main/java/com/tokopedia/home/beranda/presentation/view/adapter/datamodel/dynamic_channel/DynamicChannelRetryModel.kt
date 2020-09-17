@@ -4,8 +4,7 @@ import android.os.Bundle
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeTypeFactory
 
-class DynamicChannelLoadingModel : HomeVisitable {
-
+class DynamicChannelRetryModel(var isLoading: Boolean) : HomeVisitable {
     override fun type(adapterTypeFactory: HomeTypeFactory): Int {
         return adapterTypeFactory.type(this)
     }
@@ -39,10 +38,13 @@ class DynamicChannelLoadingModel : HomeVisitable {
     }
 
     override fun visitableId(): String? {
-        return "loadingModel"
+        return "retryModel"
     }
 
     override fun equalsWith(b: Any): Boolean {
+        if (b is DynamicChannelRetryModel) {
+            b.isLoading == isLoading
+        }
         return false
     }
 

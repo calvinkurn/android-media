@@ -35,6 +35,7 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry
@@ -743,7 +744,9 @@ open class HomeFragment : BaseDaggerFragment(),
                 hideLoading()
             } else if (status === Result.Status.ERROR) {
                 hideLoading()
-                showToaster(getString(R.string.home_error_connection), TYPE_ERROR)
+                showNetworkError(getString(R.string.home_error_connection))
+            } else if (status === Result.Status.ERROR_PAGINATION) {
+                hideLoading()
             } else {
                 showLoading()
             }
@@ -1489,11 +1492,7 @@ open class HomeFragment : BaseDaggerFragment(),
     override fun showNetworkError(message: String) {
         if (isAdded && activity != null && adapter != null) {
             if (adapter!!.itemCount > 0) {
-                if (messageSnackbar == null) {
-                    messageSnackbar = NetworkErrorHelper.createSnackbarWithAction(
-                            activity, getString(R.string.msg_network_error)) { onNetworkRetry() }
-                }
-                messageSnackbar?.showRetrySnackbar()
+                showToaster(message, TYPE_ERROR)
             } else {
                 NetworkErrorHelper.showEmptyState(activity, root, message) { onRefresh() }
             }
@@ -1545,6 +1544,10 @@ open class HomeFragment : BaseDaggerFragment(),
         } else {
             RouteManager.route(context, playBannerCarouselItemDataModel.applink)
         }
+    }
+
+    override fun onDynamicChannelRetryClicked() {
+        getHomeViewModel().onDynamicChannelRetryClicked()
     }
 
     private fun openApplink(applink: String, trackingAttribution: String) {

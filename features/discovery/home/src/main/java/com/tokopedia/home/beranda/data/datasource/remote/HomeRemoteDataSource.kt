@@ -19,7 +19,7 @@ class HomeRemoteDataSource(
         private val getDynamicChannelsUseCase: GetDynamicChannelsUseCase,
         private val getHomeDataUseCase: GetHomeDataUseCase
 ) {
-    suspend fun getHomeData(): HomeData = withContext(dispatchers.io()) {
+    suspend fun getHomeData(): HomeData? = withContext(dispatchers.io()) {
         getHomeDataUseCase.executeOnBackground()
     }
 

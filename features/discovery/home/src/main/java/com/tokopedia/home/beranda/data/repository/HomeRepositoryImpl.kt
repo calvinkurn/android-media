@@ -20,6 +20,7 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import retrofit2.Response
 import rx.Observable
+import java.net.SocketTimeoutException
 import javax.inject.Inject
 
 class HomeRepositoryImpl @Inject constructor(
@@ -43,39 +44,64 @@ class HomeRepositoryImpl @Inject constructor(
             val currentTimeMillisString = System.currentTimeMillis().toString()
             var currentToken = ""
 
-            val homeDataResponse = async { homeRemoteDataSource.getHomeData() }
-            var dynamicChannelResponse = async { homeRemoteDataSource.getDynamicChannelData(numOfChannel = 2) }
+            val homeDataResponse = async { try {
+                homeRemoteDataSource.getHomeData()
+            } catch (e: Exception) {
+                HomeData()
+            }
+            }
 
-            var homeDataCombined = HomeData()
+            var dynamicChannelResponse = async { try {
+                homeRemoteDataSource.getDynamicChannelData(numOfChannel = 2)
+            } catch (e: Exception) {
+                if (e is SocketTimeoutException && !isCacheExist) {
+                    null
+                } else {
+                    HomeChannelData()
+                }
+            } }
+
+            var homeDataCombined: HomeData? = HomeData()
 
             val homeDataResponseValue = homeDataResponse.await()
+            val dynamicChannelResponseValue = dynamicChannelResponse.await()
 
-            if (!isCacheExistForProcess) {
-                val extractPair = extractToken(dynamicChannelResponse.await())
+            if (!isCacheExistForProcess && dynamicChannelResponseValue != null) {
+                val extractPair = extractToken(dynamicChannelResponseValue)
 
-                homeDataResponseValue.dynamicHomeChannel = extractPair.second.dynamicHomeChannel
-                homeDataResponseValue.token = extractPair.first
-                homeDataResponseValue.dynamicHomeChannel.channels.forEach {
-                    it.timestamp = currentTimeMillisString
+                homeDataResponseValue?.let {
+                    it.dynamicHomeChannel = extractPair.second.dynamicHomeChannel
+                    it.token = extractPair.first
+                    it.dynamicHomeChannel.channels.forEach { channel ->
+                        channel.timestamp = currentTimeMillisString
+                    }
+                    currentToken = it.token
                 }
-                currentToken = homeDataResponseValue.token
 
                 if (homeDataResponse == null) {
                     homeCachedDataSource.saveToDatabase(homeDefaultDataSource.getDefaultHomeData())
                 } else {
                     homeCachedDataSource.saveToDatabase(homeDataResponseValue)
                 }
+            } else if (dynamicChannelResponseValue == null) {
+                emit(Result.error(Throwable()))
+                return@coroutineScope
             }
 
             if ((!isCacheExistForProcess && currentToken.isNotEmpty()) ||
                     isCacheExistForProcess) {
-                homeDataCombined = processFullPageDynamicChannel(homeDataResponseValue)
+                try {
+                    homeDataCombined = processFullPageDynamicChannel(homeDataResponseValue)
+                } catch (e: Exception) {
+                    emit(Result.errorPagination(e,null))
+                    return@coroutineScope
+                }
             }
 
-            homeDataCombined.dynamicHomeChannel.channels.forEach {
+            homeDataCombined?.dynamicHomeChannel?.channels?.forEach {
                 it.timestamp = currentTimeMillisString
             }
-            homeDataCombined.let {
+            homeDataCombined?.let {
                 emit(Result.success(null))
                 homeCachedDataSource.saveToDatabase(it)
             }
@@ -94,13 +120,15 @@ class HomeRepositoryImpl @Inject constructor(
                 useDefaultWhenEmpty = false)
     }
 
-    private suspend fun processFullPageDynamicChannel(homeDataResponse: HomeData): HomeData {
-        var dynamicChannelCompleteResponse = homeRemoteDataSource.getDynamicChannelData(numOfChannel = 0, token = homeDataResponse.token)
-        val currentChannelList = homeDataResponse.dynamicHomeChannel.channels.toMutableList()
+    private suspend fun processFullPageDynamicChannel(homeDataResponse: HomeData?): HomeData? {
+        var dynamicChannelCompleteResponse = homeRemoteDataSource.getDynamicChannelData(numOfChannel = 0, token = homeDataResponse?.token?:"")
+        val currentChannelList = homeDataResponse?.dynamicHomeChannel?.channels?.toMutableList()?: mutableListOf()
         currentChannelList.addAll(dynamicChannelCompleteResponse.dynamicHomeChannel.channels)
 
-        homeDataResponse.token = ""
-        homeDataResponse.dynamicHomeChannel.channels = currentChannelList.toList()
+        homeDataResponse?.let {
+            homeDataResponse.token = ""
+            homeDataResponse.dynamicHomeChannel.channels = currentChannelList.toList()
+        }
         return homeDataResponse
     }
 

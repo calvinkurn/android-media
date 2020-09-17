@@ -1,75 +1,11 @@
-<?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_marginStart="@dimen/dp_12"
-    android:layout_marginLeft="@dimen/dp_12"
-    android:layout_marginEnd="@dimen/dp_10"
-    android:layout_marginRight="@dimen/dp_10"
+<FrameLayout
+    android:layout_height="wrap_content"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
-
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
-        android:id="@+id/text1"
-        android:layout_width="0dp"
-        android:layout_height="@dimen/dp_8"
-        android:layout_marginTop="@dimen/dp_8"
-        app:corners="@integer/corner_radius_shimmering"
-        app:layout_constraintEnd_toStartOf="@+id/text2"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:width_weight="0.8" />
-
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
-        android:id="@+id/text2"
-        android:layout_width="100dp"
-        android:layout_height="@dimen/dp_8"
-        android:layout_marginTop="@dimen/dp_8"
-        android:scaleX="-1"
-        app:corners="@integer/corner_radius_shimmering"
-        app:width_weight="0.8"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
-
-    <com.elyeproj.loaderviewlibrary.LoaderImageView
-        android:id="@+id/image"
-        android:layout_width="0dp"
-        android:layout_height="120dp"
-        android:layout_marginTop="@dimen/dp_16"
-        app:corners="@integer/corner_radius_shimmering"
-        app:layout_constraintTop_toBottomOf="@+id/text2"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
-
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
-        android:id="@+id/text3"
-        android:layout_width="0dp"
-        android:layout_height="@dimen/dp_8"
-        android:layout_marginTop="@dimen/dp_16"
-        app:corners="@integer/corner_radius_shimmering"
-        app:layout_constraintEnd_toStartOf="@+id/text4"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/image"
-        app:width_weight="0.8" />
-
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
-        android:id="@+id/text4"
-        android:layout_width="100dp"
-        android:layout_height="@dimen/dp_8"
-        android:layout_marginTop="@dimen/dp_16"
-        android:scaleX="-1"
-        app:corners="@integer/corner_radius_shimmering"
-        app:width_weight="0.8"
-        app:layout_constraintTop_toBottomOf="@id/image"
-        app:layout_constraintEnd_toEndOf="parent"/>
-
-    <com.elyeproj.loaderviewlibrary.LoaderImageView
-        android:id="@+id/image1"
-        android:layout_width="0dp"
-        android:layout_height="240dp"
-        android:layout_marginTop="@dimen/dp_16"
-        app:corners="@integer/corner_radius_shimmering"
-        app:layout_constraintTop_toBottomOf="@+id/text3"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
-</androidx.constraintlayout.widget.ConstraintLayout>
+    android:layout_marginBottom="@dimen/dp_50"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <com.tokopedia.unifycomponents.LoaderUnify android:id="@+id/progressBar"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:visibility="visible"
+        android:layout_gravity="center_horizontal"/>
+</FrameLayout>

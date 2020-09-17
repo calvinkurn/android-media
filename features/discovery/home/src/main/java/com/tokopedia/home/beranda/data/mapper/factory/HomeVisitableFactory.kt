@@ -13,6 +13,6 @@ interface HomeVisitableFactory {
     fun addUserWalletVisitable(): HomeVisitableFactory
     fun addGeolocationVisitable(): HomeVisitableFactory
     fun addDynamicIconVisitable(): HomeVisitableFactory
-    fun addDynamicChannelVisitable(): HomeVisitableFactory
+    fun addDynamicChannelVisitable(addLoadingMore: Boolean): HomeVisitableFactory
     fun build(): List<Visitable<*>>
 }
