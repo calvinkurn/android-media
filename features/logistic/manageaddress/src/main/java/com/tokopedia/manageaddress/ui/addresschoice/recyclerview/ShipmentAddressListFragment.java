@@ -30,7 +30,6 @@ import com.tokopedia.logisticdata.data.entity.address.RecipientAddressModel;
 import com.tokopedia.logisticdata.data.entity.address.SaveAddressDataModel;
 import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.manageaddress.R;
-import com.tokopedia.manageaddress.data.analytics.AddressCornerAnalytics;
 import com.tokopedia.manageaddress.di.addresschoice.DaggerAddressChoiceComponent;
 import com.tokopedia.manageaddress.domain.mapper.AddressModelMapper;
 import com.tokopedia.manageaddress.ui.addresschoice.AddressListContract;
@@ -56,7 +55,6 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
         AddressListContract.View, SearchInputView.Listener,
         SearchInputView.ResetListener, ShipmentAddressListAdapter.ActionListener {
 
-    public static final String ARGUMENT_DISABLE_CORNER = "ARGUMENT_DISABLE_CORNER";
     public static final String ARGUMENT_ORIGIN_DIRECTION_TYPE = "ARGUMENT_ORIGIN_DIRECTION_TYPE";
     public static final int ORIGIN_DIRECTION_TYPE_FROM_MULTIPLE_ADDRESS_FORM = 1;
     public static final String EXTRA_CURRENT_ADDRESS = "CURRENT_ADDRESS";
@@ -71,8 +69,6 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     @Inject
     CheckoutAnalyticsChangeAddress checkoutAnalyticsChangeAddress;
     @Inject
-    AddressCornerAnalytics mAddressCornerAnalytics;
-    @Inject
     CheckoutAnalyticsMultipleAddress checkoutAnalyticsMultipleAddress;
     private RecyclerView mRvRecipientAddressList;
     private SearchInputView mSvAddressSearchBox;
@@ -85,7 +81,6 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     private ICartAddressChoiceActivityListener mActivityListener;
     private int maxItemPosition;
     private boolean isLoading;
-    private boolean isDisableCorner;
     private int requestType;
     private RecipientAddressModel mCurrentAddress;
     private PerformanceMonitoring chooseAddressTracePerformance;
@@ -96,7 +91,6 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     public static ShipmentAddressListFragment newInstance(RecipientAddressModel currentAddress) {
         Bundle bundle = new Bundle();
         bundle.putParcelable(EXTRA_CURRENT_ADDRESS, currentAddress);
-        bundle.putBoolean(ARGUMENT_DISABLE_CORNER, false);
         bundle.putInt(ARGUMENT_ORIGIN_DIRECTION_TYPE, ORIGIN_DIRECTION_TYPE_DEFAULT);
         ShipmentAddressListFragment shipmentAddressListFragment = new ShipmentAddressListFragment();
         shipmentAddressListFragment.setArguments(bundle);
@@ -106,7 +100,6 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     public static ShipmentAddressListFragment newInstance(RecipientAddressModel currentAddress, int requestType) {
         Bundle bundle = new Bundle();
         bundle.putParcelable(EXTRA_CURRENT_ADDRESS, currentAddress);
-        bundle.putBoolean(ARGUMENT_DISABLE_CORNER, false);
         bundle.putInt(ARGUMENT_ORIGIN_DIRECTION_TYPE, ORIGIN_DIRECTION_TYPE_DEFAULT);
         bundle.putInt(CheckoutConstant.EXTRA_TYPE_REQUEST, requestType);
         ShipmentAddressListFragment shipmentAddressListFragment = new ShipmentAddressListFragment();
@@ -114,23 +107,10 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
         return shipmentAddressListFragment;
     }
 
-    public static ShipmentAddressListFragment newInstance(RecipientAddressModel currentAddress,
-                                                          boolean isDisableCorner) {
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(EXTRA_CURRENT_ADDRESS, currentAddress);
-        bundle.putBoolean(ARGUMENT_DISABLE_CORNER, isDisableCorner);
-        bundle.putInt(ARGUMENT_ORIGIN_DIRECTION_TYPE, ORIGIN_DIRECTION_TYPE_DEFAULT);
-        ShipmentAddressListFragment shipmentAddressListFragment = new ShipmentAddressListFragment();
-        shipmentAddressListFragment.setArguments(bundle);
-        return shipmentAddressListFragment;
-    }
-
     public static ShipmentAddressListFragment newInstanceFromMultipleAddressForm
-            (RecipientAddressModel currentAddress,
-             boolean isDisableCorner) {
+            (RecipientAddressModel currentAddress) {
         Bundle bundle = new Bundle();
         bundle.putParcelable(EXTRA_CURRENT_ADDRESS, currentAddress);
-        bundle.putBoolean(ARGUMENT_DISABLE_CORNER, isDisableCorner);
         bundle.putInt(ARGUMENT_ORIGIN_DIRECTION_TYPE, ORIGIN_DIRECTION_TYPE_FROM_MULTIPLE_ADDRESS_FORM);
         ShipmentAddressListFragment shipmentAddressListFragment = new ShipmentAddressListFragment();
         shipmentAddressListFragment.setArguments(bundle);
@@ -180,7 +160,6 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
         chooseAddressTracePerformance = PerformanceMonitoring.start(CHOOSE_ADDRESS_TRACE);
         if (getArguments() != null) {
             mCurrentAddress = getArguments().getParcelable(EXTRA_CURRENT_ADDRESS);
-            isDisableCorner = getArguments().getBoolean(ARGUMENT_DISABLE_CORNER, false);
             requestType = getArguments().getInt(CheckoutConstant.EXTRA_TYPE_REQUEST, 0);
             originDirectionType = getArguments().getInt(ARGUMENT_ORIGIN_DIRECTION_TYPE, ORIGIN_DIRECTION_TYPE_DEFAULT);
         }
@@ -239,14 +218,6 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
 
         mRvRecipientAddressList.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRvRecipientAddressList.setAdapter(mAdapter);
-        if (!mAdapter.isHavingCornerAddress()) {
-            RecipientAddressModel cached = mPresenter.getLastCorner();
-            if (cached != null) {
-                mAdapter.setCorner(cached);
-            }
-        }
-        if (isDisableCorner) mAdapter.hideCornerOption();
-
         initSearchView();
         onSearchReset();
     }
@@ -265,15 +236,6 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
         mRvRecipientAddressList.setVisibility(View.VISIBLE);
         llNetworkErrorView.setVisibility(View.GONE);
         llNoResult.setVisibility(View.GONE);
-    }
-
-    @Override
-    public void onChooseCorner(@NotNull RecipientAddressModel cornerAddressModel) {
-        mCurrentAddress = cornerAddressModel;
-        mAdapter.setCorner(cornerAddressModel);
-
-        // Immediately choose the corner then go to shipment page
-        onCornerAddressClicked(cornerAddressModel, 0);
     }
 
     @Override
@@ -369,19 +331,6 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     }
 
     @Override
-    public void onCornerAddressClicked(RecipientAddressModel addressModel, int position) {
-        mPresenter.saveLastCorner(addressModel);
-        mAdapter.updateSelected(position);
-        if (mActivityListener != null && getActivity() != null) {
-            mAddressCornerAnalytics.sendChooseCornerAddress();
-            mActivityListener.finishAndSendResult(addressModel);
-        } else {
-            // Show error in case of unexpected behaviour
-            this.showError(new Throwable());
-        }
-    }
-
-    @Override
     public void onEditClick(RecipientAddressModel model) {
         checkoutAnalyticsChangeAddress.eventClickAtcCartChangeAddressClickUbahFromPilihAlamatLainnya();
         AddressModelMapper mapper = new AddressModelMapper();
@@ -470,11 +419,6 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
         }
     }
 
-    @Override
-    public void onCornerButtonClicked() {
-        mActivityListener.requestCornerList();
-    }
-
     private void openSoftKeyboard() {
         if (mInputMethodManager != null) {
             mInputMethodManager.showSoftInput(
@@ -490,7 +434,6 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     private void initSearchView() {
         mSvAddressSearchBox.getSearchTextView().setOnClickListener(onSearchViewClickListener());
         mSvAddressSearchBox.getSearchTextView().setOnTouchListener(onSearchViewTouchListener());
-
         mSvAddressSearchBox.setListener(this);
         mSvAddressSearchBox.setResetListener(this);
         mSvAddressSearchBox.setSearchHint(getString(com.tokopedia.purchase_platform.common.R.string.label_hint_search_address));
@@ -516,8 +459,6 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
 
     public interface ICartAddressChoiceActivityListener {
         void finishAndSendResult(RecipientAddressModel selectedAddressResult);
-
-        void requestCornerList();
     }
 
 }
