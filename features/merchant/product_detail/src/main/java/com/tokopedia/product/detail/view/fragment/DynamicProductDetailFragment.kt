@@ -1336,7 +1336,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     private fun openBottomSheetTopAds() {
         if (GlobalConfig.isSellerApp() && !activity?.intent?.data?.getQueryParameter(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME).isNullOrBlank() &&
-                !alreadyPerformSellerMigrationAction) {
+                !alreadyPerformSellerMigrationAction && viewModel.isShopOwner()) {
             alreadyPerformSellerMigrationAction = true
             actionButtonView.rincianTopAdsClick?.invoke()
         }
