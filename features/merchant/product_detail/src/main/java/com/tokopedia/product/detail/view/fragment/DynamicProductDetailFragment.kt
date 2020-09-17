@@ -1302,6 +1302,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             pdpUiUpdater?.updateWishlistData(it.isWishlisted)
             dynamicAdapter.notifyBasicContentWithPayloads(pdpUiUpdater?.basicContentMap, ProductDetailConstant.PAYLOAD_WISHLIST)
             dynamicAdapter.notifySnapshotWithPayloads(pdpUiUpdater?.snapShotMap, ProductDetailConstant.PAYLOAD_WISHLIST)
+            openBottomSheetTopAds()
             (activity as? ProductDetailActivity)?.stopMonitoringP2Login()
         }
     }
@@ -1330,11 +1331,14 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         viewLifecycleOwner.observe(viewModel.productInfoP3) {
             onSuccessGetDataP3(it)
             (activity as? ProductDetailActivity)?.stopMonitoringFull()
-            if (GlobalConfig.isSellerApp() && !activity?.intent?.data?.getQueryParameter(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME).isNullOrBlank() &&
-                    !alreadyPerformSellerMigrationAction) {
-                alreadyPerformSellerMigrationAction = true
-                actionButtonView.rincianTopAdsClick?.invoke()
-            }
+        }
+    }
+
+    private fun openBottomSheetTopAds() {
+        if (GlobalConfig.isSellerApp() && !activity?.intent?.data?.getQueryParameter(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME).isNullOrBlank() &&
+                !alreadyPerformSellerMigrationAction) {
+            alreadyPerformSellerMigrationAction = true
+            actionButtonView.rincianTopAdsClick?.invoke()
         }
     }
 
