@@ -383,7 +383,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                     currPage += 1
                 }
                 is Fail -> {
-                    // renderErrorOrderList(getString(R.string.error_list_title), getString(R.string.error_list_desc))
+                    context?.getString(R.string.fail_cancellation)?.let { it1 -> showToaster(it1, Toaster.TYPE_ERROR) }
                 }
             }
         })
@@ -398,9 +398,6 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                     if (recommendationList.isNotEmpty()) {
                         renderEmptyList()
                     }
-                }
-                is Fail -> {
-
                 }
             }
         })
@@ -734,13 +731,11 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
 
     private fun renderEmptyList() {
         refreshHandler?.finishRefresh()
-        val searchBarIsNotEmpty = search_bar?.searchBarTextField?.text?.isNotEmpty()
-        var searchBarEmpty = false
-        searchBarIsNotEmpty?.let { searchBarEmpty = it }
+        val searchBarIsNotEmpty = search_bar?.searchBarTextField?.text?.isNotEmpty() ?: false
 
         val emptyStatus: UohEmptyState?
         when {
-            searchBarEmpty -> {
+            searchBarIsNotEmpty -> {
                 emptyStatus = context?.let { context ->
                     view?.let { UohUtils.hideKeyBoard(context, it) }
                     ContextCompat.getDrawable(context, R.drawable.uoh_empty_search_list)?.let { drawable ->
@@ -773,20 +768,22 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             }
         }
 
-        val listRecomm = arrayListOf<UohTypeData>()
-        if (!onLoadMoreRecommendation) {
-            emptyStatus?.let { emptyState -> UohTypeData(emptyState, UohConsts.TYPE_EMPTY) }?.let { uohTypeData -> listRecomm.add(uohTypeData) }
-            listRecomm.add(UohTypeData(getString(R.string.uoh_recommendation_title), UohConsts.TYPE_RECOMMENDATION_TITLE))
-            recommendationList.first().recommendationItemList.forEach {
-                listRecomm.add(UohTypeData(it, UohConsts.TYPE_RECOMMENDATION_ITEM))
+        if (recommendationList.isNotEmpty()) {
+            val listRecomm = arrayListOf<UohTypeData>()
+            if (!onLoadMoreRecommendation) {
+                emptyStatus?.let { emptyState -> UohTypeData(emptyState, UohConsts.TYPE_EMPTY) }?.let { uohTypeData -> listRecomm.add(uohTypeData) }
+                listRecomm.add(UohTypeData(getString(R.string.uoh_recommendation_title), UohConsts.TYPE_RECOMMENDATION_TITLE))
+                recommendationList.first().recommendationItemList.forEach {
+                    listRecomm.add(UohTypeData(it, UohConsts.TYPE_RECOMMENDATION_ITEM))
+                }
+                uohItemAdapter.addList(listRecomm)
+            } else {
+                recommendationList.first().recommendationItemList.forEach {
+                    listRecomm.add(UohTypeData(it, UohConsts.TYPE_RECOMMENDATION_ITEM))
+                }
+                uohItemAdapter.appendList(listRecomm)
+                scrollRecommendationListener.updateStateAfterGetData()
             }
-            uohItemAdapter.addList(listRecomm)
-        } else {
-            recommendationList.first().recommendationItemList.forEach {
-                listRecomm.add(UohTypeData(it, UohConsts.TYPE_RECOMMENDATION_ITEM))
-            }
-            uohItemAdapter.appendList(listRecomm)
-            scrollRecommendationListener.updateStateAfterGetData()
         }
     }
 

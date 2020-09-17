@@ -31,7 +31,7 @@ class StaticBuyerModelGenerator private constructor() {
 
             if (isUseUoh) {
                 viewItems.add(MenuGridIconNotificationViewModel().apply {
-                    setItems(getUohMenu(context, accountDataModel))
+                     items = getUohMenu(context, accountDataModel)
                 })
 
                 viewItems.add(MenuListViewModel().apply {

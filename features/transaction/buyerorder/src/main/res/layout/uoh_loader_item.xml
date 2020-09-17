@@ -27,7 +27,6 @@
             android:id="@+id/loader_tv_uoh_categories"
             android:layout_width="55dp"
             android:layout_height="@dimen/dp_20"
-            android:layout_marginLeft="@dimen/dp_8"
             android:layout_marginStart="@dimen/dp_8"
             app:layout_constraintStart_toEndOf="@id/loader_ic_uoh_vertical"
             app:layout_constraintTop_toTopOf="parent"
@@ -70,9 +69,7 @@
                 android:id="@+id/loader_product_name"
                 android:layout_width="185dp"
                 android:layout_height="@dimen/dp_16"
-                android:layout_marginLeft="@dimen/dp_8"
                 android:layout_marginStart="@dimen/dp_8"
-                android:layout_toRightOf="@id/cv_uoh_product_loader"
                 android:layout_toEndOf="@id/cv_uoh_product_loader"
                 app:loader_type="rect"/>
             
@@ -82,7 +79,6 @@
                 android:layout_height="@dimen/dp_13"
                 android:layout_below="@id/loader_product_name"
                 android:layout_alignStart="@id/loader_product_name"
-                android:layout_alignLeft="@id/loader_product_name"
                 android:layout_marginTop="@dimen/dp_4"
                 app:loader_type="rect"/>
 
