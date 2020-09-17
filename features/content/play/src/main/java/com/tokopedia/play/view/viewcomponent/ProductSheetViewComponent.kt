@@ -64,7 +64,7 @@ class ProductSheetViewComponent(
     private val bottomSheetBehavior = BottomSheetBehavior.from(rootView)
 
     init {
-        findViewById<ImageView>(R.id.iv_close)
+        findViewById<ImageView>(R.id.iv_sheet_close)
                 .setOnClickListener {
                     listener.onCloseButtonClicked(this)
                 }
