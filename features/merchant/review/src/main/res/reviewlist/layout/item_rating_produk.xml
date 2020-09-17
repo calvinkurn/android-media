@@ -9,6 +9,7 @@
     android:paddingLeft="@dimen/spacing_lvl4"
     android:paddingRight="@dimen/spacing_lvl4"
     android:paddingEnd="@dimen/spacing_lvl4"
+    android:background="?selectableItemBackground"
     android:orientation="vertical">
 
     <com.tokopedia.unifycomponents.ImageUnify
@@ -28,7 +29,6 @@
         android:layout_height="wrap_content"
         android:maxLines="2"
         android:layout_marginStart="@dimen/dp_12"
-        android:layout_marginLeft="@dimen/dp_12"
         android:layout_marginTop="@dimen/spacing_lvl3"
         android:textColor="@color/clr_f531353b"
         app:layout_constraintBottom_toTopOf="@id/ivRating"
@@ -44,7 +44,6 @@
         android:layout_width="@dimen/dp_18"
         android:layout_height="@dimen/dp_18"
         android:layout_marginStart="@dimen/dp_10"
-        android:layout_marginLeft="@dimen/dp_10"
         android:layout_marginTop="@dimen/dp_4"
         app:layout_constraintBottom_toBottomOf="@id/ivItemProduct"
         app:layout_constraintStart_toEndOf="@id/ivItemProduct"
@@ -59,7 +58,6 @@
         app:typographyWeight="bold"
         android:textColor="@color/clr_f531353b"
         android:layout_marginTop="@dimen/dp_4"
-        android:layout_marginLeft="@dimen/dp_4"
         android:layout_marginStart="@dimen/dp_4"
         app:layout_constraintTop_toBottomOf="@id/tgTitleProduct"
         app:layout_constraintBottom_toBottomOf="@id/ivItemProduct"
@@ -74,7 +72,6 @@
         app:typographyWeight="reguler"
         android:textColor="@color/clr_f531353b"
         android:layout_marginTop="@dimen/dp_4"
-        android:layout_marginLeft="@dimen/dp_4"
         android:layout_marginStart="@dimen/dp_4"
         app:layout_constraintTop_toBottomOf="@id/tgTitleProduct"
         app:layout_constraintStart_toEndOf="@id/tgRatingCount"
