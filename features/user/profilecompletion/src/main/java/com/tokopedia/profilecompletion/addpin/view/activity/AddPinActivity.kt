@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.profilecompletion.R
 import com.tokopedia.profilecompletion.addpin.view.fragment.AddPinFragment
 import com.tokopedia.profilecompletion.di.DaggerProfileCompletionSettingComponent
@@ -26,6 +27,8 @@ import com.tokopedia.profilecompletion.di.ProfileCompletionSettingModule
 
 class AddPinActivity : BaseSimpleActivity(), HasComponent<ProfileCompletionSettingComponent> {
 
+    var enableBackBtn = true
+
     override fun getComponent(): ProfileCompletionSettingComponent {
         return DaggerProfileCompletionSettingComponent.builder()
                 .baseAppComponent((application as BaseMainApplication).baseAppComponent)
@@ -34,6 +37,11 @@ class AddPinActivity : BaseSimpleActivity(), HasComponent<ProfileCompletionSetti
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        intent?.extras?.run {
+            if(getBoolean(ApplinkConstInternalGlobal.PARAM_IS_FROM_2FA)){
+                enableBackBtn = getBoolean(ApplinkConstInternalGlobal.PARAM_ENABLE_SKIP_2FA, true)
+            }
+        }
         super.onCreate(savedInstanceState)
         KeyboardHandler.hideSoftKeyboard(this)
     }
@@ -59,9 +67,11 @@ class AddPinActivity : BaseSimpleActivity(), HasComponent<ProfileCompletionSetti
         toolbar = findViewById(toolbarResourceID)
         setSupportActionBar(toolbar)
         supportActionBar?.apply {
-            setHomeAsUpIndicator(R.drawable.ic_back_toolbar_profile_completion)
+            if(enableBackBtn) {
+                setHomeAsUpIndicator(R.drawable.ic_back_toolbar_profile_completion)
+            }
+            setDisplayHomeAsUpEnabled(enableBackBtn)
             setDisplayShowTitleEnabled(false)
-            setDisplayHomeAsUpEnabled(true)
             elevation = 0f
             setBackgroundDrawable(ColorDrawable(ContextCompat.getColor(this@AddPinActivity, R.color.Neutral_N0)))
         }
