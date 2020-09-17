@@ -8,7 +8,7 @@ data class MediaQualityUIModel(
 ) {
 
     companion object {
-        fun qualitySettingsMenu(): List<MediaQualityUIModel> {
+        fun settingsMenu(): List<MediaQualityUIModel> {
             return mutableListOf<MediaQualityUIModel>().apply {
                 add(MediaQualityUIModel(
                         R.string.image_quality_auto_title,
