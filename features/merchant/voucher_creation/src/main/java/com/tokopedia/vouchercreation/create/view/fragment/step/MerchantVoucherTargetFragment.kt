@@ -26,6 +26,7 @@ import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.analytics.VoucherCreationAnalyticConstant
 import com.tokopedia.vouchercreation.common.analytics.VoucherCreationTracking
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
+import com.tokopedia.vouchercreation.common.errorhandler.MvcErrorHandler
 import com.tokopedia.vouchercreation.common.utils.showErrorToaster
 import com.tokopedia.vouchercreation.create.domain.model.validation.VoucherTargetType
 import com.tokopedia.vouchercreation.create.view.enums.CreateVoucherBottomSheetType
@@ -47,6 +48,8 @@ class MerchantVoucherTargetFragment : BaseListFragment<Visitable<VoucherTargetTy
     companion object {
 
         private const val MIN_TEXTFIELD_LENGTH = 5
+
+        private const val ERROR_MESSAGE = "Error validate voucher target"
 
         @JvmStatic
         fun createInstance(onNext: (Int, String, String) -> Unit,
@@ -277,6 +280,7 @@ class MerchantVoucherTargetFragment : BaseListFragment<Visitable<VoucherTargetTy
                     is Fail -> {
                         val error = result.throwable.message.toBlankOrString()
                         view?.showErrorToaster(error)
+                        MvcErrorHandler.logToCrashlytics(result.throwable, ERROR_MESSAGE)
                     }
                 }
             })

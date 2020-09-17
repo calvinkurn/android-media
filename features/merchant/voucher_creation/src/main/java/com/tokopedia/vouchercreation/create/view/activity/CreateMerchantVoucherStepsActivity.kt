@@ -30,6 +30,7 @@ import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.analytics.VoucherCreationAnalyticConstant
 import com.tokopedia.vouchercreation.common.analytics.VoucherCreationTracking
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
+import com.tokopedia.vouchercreation.common.errorhandler.MvcErrorHandler
 import com.tokopedia.vouchercreation.common.plt.MvcPerformanceMonitoring
 import com.tokopedia.vouchercreation.common.plt.MvcPerformanceMonitoringInterface
 import com.tokopedia.vouchercreation.common.plt.MvcPerformanceMonitoringType
@@ -62,6 +63,8 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
     companion object {
         private const val PROGRESS_ATTR_TAG = "progress"
         private const val PROGRESS_DURATION = 200L
+
+        private const val ERROR_MESSAGE = "Error get voucher initial data"
 
         //These are default url for banners that we will use in case the server returned error
         const val BANNER_BASE_URL = "https://ecs7.tokopedia.net/img/merchant-coupon/banner/v3/base_image/banner.jpg"
@@ -413,6 +416,7 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
                     createMerchantVoucherViewPager?.setOnLayoutListenerReady()
                 }
                 is Fail -> {
+                    MvcErrorHandler.logToCrashlytics(result.throwable, ERROR_MESSAGE)
                     val returnIntent = Intent().apply {
                         putExtra(ERROR_INITIATE, result.throwable.message)
                     }

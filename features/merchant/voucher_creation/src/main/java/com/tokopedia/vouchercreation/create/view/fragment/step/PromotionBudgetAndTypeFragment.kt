@@ -29,6 +29,7 @@ import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.analytics.VoucherCreationAnalyticConstant
 import com.tokopedia.vouchercreation.common.analytics.VoucherCreationTracking
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
+import com.tokopedia.vouchercreation.common.errorhandler.MvcErrorHandler
 import com.tokopedia.vouchercreation.common.utils.showErrorToaster
 import com.tokopedia.vouchercreation.create.view.activity.CreateMerchantVoucherStepsActivity
 import com.tokopedia.vouchercreation.create.view.enums.VoucherImageType
@@ -45,6 +46,8 @@ import javax.inject.Inject
 class PromotionBudgetAndTypeFragment : BaseDaggerFragment() {
 
     companion object {
+        private const val ERROR_MESSAGE = "Error validate voucher type"
+
         @JvmStatic
         fun createInstance(onNext: (VoucherImageType, Int, Int) -> Unit,
                            getVoucherUiModel: () -> BannerVoucherUiModel,
@@ -181,6 +184,7 @@ class PromotionBudgetAndTypeFragment : BaseDaggerFragment() {
                         is Fail -> {
                             val error = result.throwable.message.toBlankOrString()
                             view?.showErrorToaster(error)
+                            MvcErrorHandler.logToCrashlytics(result.throwable, ERROR_MESSAGE)
                         }
                     }
                     isWaitingForShopInfo = false

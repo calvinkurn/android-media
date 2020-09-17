@@ -23,6 +23,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.consts.VoucherTypeConst
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
+import com.tokopedia.vouchercreation.common.errorhandler.MvcErrorHandler
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.getMaxStartDate
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.getMinStartDate
@@ -60,6 +61,8 @@ class VoucherPeriodBottomSheet : BottomSheetUnify() {
         private const val MINUTE_INTERVAL = 30
 
         private const val VOUCHER = "voucher"
+
+        private const val ERROR_MESSAGE = "Error change voucher period"
     }
 
     @Inject
@@ -224,6 +227,7 @@ class VoucherPeriodBottomSheet : BottomSheetUnify() {
                     }
                     is Fail -> {
                         onFailListener(result.throwable.message.toBlankOrString())
+                        MvcErrorHandler.logToCrashlytics(result.throwable, ERROR_MESSAGE)
                     }
                 }
                 btnMvcSavePeriod?.isLoading = false

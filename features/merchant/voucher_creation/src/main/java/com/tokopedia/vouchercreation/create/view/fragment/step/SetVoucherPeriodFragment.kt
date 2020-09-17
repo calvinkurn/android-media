@@ -32,6 +32,7 @@ import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.analytics.VoucherCreationAnalyticConstant
 import com.tokopedia.vouchercreation.common.analytics.VoucherCreationTracking
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
+import com.tokopedia.vouchercreation.common.errorhandler.MvcErrorHandler
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.getMaxEndDate
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.getMaxStartDate
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.getMinEndDate
@@ -85,6 +86,8 @@ class SetVoucherPeriodFragment : Fragment() {
 
         private const val COMBINED_DATE = "dd MMM yyyy HH:mm"
         private const val COMBINED_DASHED_DATE = "yyyy-MM-dd HH:mm"
+
+        private const val ERROR_MESSAGE = "Error validate voucher period"
     }
 
     private var onNext: (String, String, String, String) -> Unit = { _,_,_,_ -> }
@@ -261,6 +264,7 @@ class SetVoucherPeriodFragment : Fragment() {
                         is Fail -> {
                             val error = result.throwable.message.toBlankOrString()
                             view?.showErrorToaster(error)
+                            MvcErrorHandler.logToCrashlytics(result.throwable, ERROR_MESSAGE)
                         }
                     }
                     isWaitingForValidation = false

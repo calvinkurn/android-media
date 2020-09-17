@@ -21,6 +21,7 @@ import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.analytics.VoucherCreationAnalyticConstant
 import com.tokopedia.vouchercreation.common.analytics.VoucherCreationTracking
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
+import com.tokopedia.vouchercreation.common.errorhandler.MvcErrorHandler
 import com.tokopedia.vouchercreation.common.utils.showErrorToaster
 import com.tokopedia.vouchercreation.common.view.promotionexpense.PromotionExpenseEstimationUiModel
 import com.tokopedia.vouchercreation.common.view.textfield.vouchertype.VoucherTextFieldUiModel
@@ -40,8 +41,7 @@ import javax.inject.Inject
 
 class CashbackVoucherCreateFragment : BaseListFragment<Visitable<*>, PromotionTypeItemAdapterFactory>() {
 
-    companion object {
-        @JvmStatic
+    companion object {@JvmStatic
         fun createInstance(onNextStep: (VoucherImageType, Int, Int) -> Unit,
                            onShouldChangeBannerValue: (VoucherImageType) -> Unit,
                            context: Context,
@@ -65,6 +65,8 @@ class CashbackVoucherCreateFragment : BaseListFragment<Visitable<*>, PromotionTy
         private const val INPUT_FIELD_ADAPTER_SIZE = 1
 
         private const val TICKER_INDEX_POSITION = 0
+
+        private const val ERROR_MESSAGE = "Error validate cashback voucher"
     }
 
     private var onNextStep: (VoucherImageType, Int, Int) -> Unit = { _,_,_ -> }
@@ -399,6 +401,7 @@ class CashbackVoucherCreateFragment : BaseListFragment<Visitable<*>, PromotionTy
                         is Fail -> {
                             val error = result.throwable.message.toBlankOrString()
                             view?.showErrorToaster(error)
+                            MvcErrorHandler.logToCrashlytics(result.throwable, ERROR_MESSAGE)
                         }
                     }
                     adapter.notifyDataSetChanged()
@@ -440,6 +443,7 @@ class CashbackVoucherCreateFragment : BaseListFragment<Visitable<*>, PromotionTy
                         is Fail -> {
                             val error = result.throwable.message.toBlankOrString()
                             view?.showErrorToaster(error)
+                            MvcErrorHandler.logToCrashlytics(result.throwable, ERROR_MESSAGE)
                         }
                     }
                     adapter.notifyDataSetChanged()

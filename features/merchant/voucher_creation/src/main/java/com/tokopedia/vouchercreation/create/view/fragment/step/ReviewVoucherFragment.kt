@@ -34,6 +34,7 @@ import com.tokopedia.vouchercreation.common.analytics.VoucherCreationAnalyticCon
 import com.tokopedia.vouchercreation.common.analytics.VoucherCreationTracking
 import com.tokopedia.vouchercreation.common.consts.VoucherUrl
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
+import com.tokopedia.vouchercreation.common.errorhandler.MvcErrorHandler
 import com.tokopedia.vouchercreation.create.domain.model.CreateVoucherParam
 import com.tokopedia.vouchercreation.create.domain.model.validation.VoucherTargetType
 import com.tokopedia.vouchercreation.create.view.activity.CreateMerchantVoucherStepsActivity
@@ -94,6 +95,9 @@ class ReviewVoucherFragment : BaseDetailFragment() {
 
         private const val IS_MVC_FIRST_TIME = "is_mvc_first_time"
         private const val VOUCHER_CREATION = "voucher_creation"
+
+        private const val ERROR_CREATE = "Error create voucher"
+        private const val ERROR_UPDATE = "Error update voucher"
     }
 
     private var getVoucherReviewUiModel: () -> VoucherReviewUiModel = { VoucherReviewUiModel() }
@@ -406,6 +410,7 @@ class ReviewVoucherFragment : BaseDetailFragment() {
                             } else {
                                 failedCreateVoucherDialog?.show()
                             }
+                            MvcErrorHandler.logToCrashlytics(result.throwable, ERROR_CREATE)
                         }
                     }
                     refreshFooterButton()
@@ -435,6 +440,7 @@ class ReviewVoucherFragment : BaseDetailFragment() {
                             } else {
                                 failedCreateVoucherDialog?.show()
                             }
+                            MvcErrorHandler.logToCrashlytics(result.throwable, ERROR_UPDATE)
                         }
                     }
                 }

@@ -35,6 +35,7 @@ import com.tokopedia.vouchercreation.common.consts.VoucherStatusConst
 import com.tokopedia.vouchercreation.common.consts.VoucherTypeConst
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
 import com.tokopedia.vouchercreation.common.domain.usecase.CancelVoucherUseCase
+import com.tokopedia.vouchercreation.common.errorhandler.MvcErrorHandler
 import com.tokopedia.vouchercreation.common.plt.MvcPerformanceMonitoringListener
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.DASH_DATE_FORMAT
@@ -77,6 +78,9 @@ class VoucherDetailFragment : BaseDetailFragment() {
         private const val VOUCHER_ID_KEY = "voucher_id"
 
         private const val COPY_PROMO_CODE_LABEL = "detail_promo_code"
+
+        private const val ERROR_DETAIL = "Error get voucher detail"
+        private const val ERROR_CANCEL = "Error cancel voucher"
     }
 
     private var voucherUiModel: VoucherUiModel? = null
@@ -338,6 +342,7 @@ class VoucherDetailFragment : BaseDetailFragment() {
                     is Fail -> {
                         clearAllData()
                         renderList(listOf(ErrorDetailUiModel))
+                        MvcErrorHandler.logToCrashlytics(result.throwable, ERROR_DETAIL)
                     }
                 }
             }
@@ -359,12 +364,14 @@ class VoucherDetailFragment : BaseDetailFragment() {
                                 VoucherStatusConst.NOT_STARTED -> showCancellationFailToaster(true)
                             }
                         }
+                        MvcErrorHandler.logToCrashlytics(result.throwable, ERROR_CANCEL)
                     }
                 }
             }
             observe(viewModel.shopBasicLiveData) { result ->
-                if (result is Success) {
-                    shopBasicData = result.data
+                when(result) {
+                    is Success -> shopBasicData = result.data
+                    is Fail -> MvcErrorHandler.logToCrashlytics(result.throwable, ERROR_DETAIL)
                 }
             }
         }

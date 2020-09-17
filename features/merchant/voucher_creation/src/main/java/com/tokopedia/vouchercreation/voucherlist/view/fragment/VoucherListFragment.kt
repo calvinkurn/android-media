@@ -44,6 +44,7 @@ import com.tokopedia.vouchercreation.common.bottmsheet.voucherperiodbottomsheet.
 import com.tokopedia.vouchercreation.common.consts.VoucherStatusConst
 import com.tokopedia.vouchercreation.common.consts.VoucherTypeConst
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
+import com.tokopedia.vouchercreation.common.errorhandler.MvcErrorHandler
 import com.tokopedia.vouchercreation.common.exception.VoucherCancellationException
 import com.tokopedia.vouchercreation.common.plt.MvcPerformanceMonitoringListener
 import com.tokopedia.vouchercreation.common.utils.SharingUtil
@@ -99,6 +100,9 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
 
         private const val DOWNLOAD_REQUEST_CODE = 223
         private const val SHARE_REQUEST_CODE = 224
+
+        private const val ERROR_GET_VOUCHER = "Error get voucher list"
+        private const val ERROR_STOP_VOUCHER = "Error stop voucher list"
 
         fun newInstance(isActiveVoucher: Boolean): VoucherListFragment {
             return VoucherListFragment().apply {
@@ -988,9 +992,9 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
     }
 
     private fun setOnErrorGetVoucherList(throwable: Throwable) {
-        throwable.printStackTrace()
         clearAllData()
         renderList(listOf(ErrorStateUiModel()))
+        MvcErrorHandler.logToCrashlytics(throwable, ERROR_GET_VOUCHER)
     }
 
     private fun onSuccessUpdateVoucherPeriod() {
@@ -1029,6 +1033,7 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
                     if (result.throwable is VoucherCancellationException) {
                         showCancellationFailToaster(true, (result.throwable as? VoucherCancellationException)?.voucherId.toZeroIfNull())
                     }
+                    MvcErrorHandler.logToCrashlytics(result.throwable, ERROR_STOP_VOUCHER)
                 }
             }
         })
@@ -1043,57 +1048,62 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
                     if (result.throwable is VoucherCancellationException) {
                         showCancellationFailToaster(false, (result.throwable as? VoucherCancellationException)?.voucherId.toZeroIfNull())
                     }
+                    MvcErrorHandler.logToCrashlytics(result.throwable, ERROR_STOP_VOUCHER)
                 }
             }
         })
         mViewModel.shopBasicLiveData.observe(viewLifecycleOwner, Observer { result ->
-            if (result is Success) {
-                shopBasicData = result.data
+            when(result) {
+                is Success -> shopBasicData = result.data
+                is Fail -> MvcErrorHandler.logToCrashlytics(result.throwable, ERROR_GET_VOUCHER)
             }
         })
         mViewModel.successVoucherLiveData.observe(viewLifecycleOwner, Observer { result ->
-            if (result is Success) {
-                result.data.let { uiModel ->
-                    if (uiModel.isPublic) {
-                        view?.run {
-                            Toaster.make(this,
-                                    context?.getString(R.string.mvc_success_toaster).toBlankOrString(),
-                                    Toaster.LENGTH_LONG,
-                                    Toaster.TYPE_NORMAL,
-                                    context?.getString(R.string.mvc_oke).toBlankOrString(),
-                                    View.OnClickListener {})
-                        }
-                    } else {
-                        SuccessCreateBottomSheet.createInstance(uiModel)
-                                .setOnShareClickListener {
-                                    VoucherCreationTracking.sendCreateVoucherClickTracking(
-                                            step = VoucherCreationStep.REVIEW,
-                                            action = Click.VOUCHER_SUCCESS_SHARE_NOW,
-                                            userId = userSession.userId
-                                    )
-                                    showShareBottomSheet(uiModel)
-                                }
-                                .setOnDownloadClickListener {
-                                    VoucherCreationTracking.sendCreateVoucherClickTracking(
-                                            step = VoucherCreationStep.REVIEW,
-                                            action = Click.VOUCHER_SUCCESS_DOWNLOAD,
-                                            userId = userSession.userId
-                                    )
-                                    showDownloadBottomSheet(uiModel)
-                                }
-                                .apply {
-                                    setCloseClickListener {
+            when(result) {
+                is Success -> {
+                    result.data.let { uiModel ->
+                        if (uiModel.isPublic) {
+                            view?.run {
+                                Toaster.make(this,
+                                        context?.getString(R.string.mvc_success_toaster).toBlankOrString(),
+                                        Toaster.LENGTH_LONG,
+                                        Toaster.TYPE_NORMAL,
+                                        context?.getString(R.string.mvc_oke).toBlankOrString(),
+                                        View.OnClickListener {})
+                            }
+                        } else {
+                            SuccessCreateBottomSheet.createInstance(uiModel)
+                                    .setOnShareClickListener {
                                         VoucherCreationTracking.sendCreateVoucherClickTracking(
                                                 step = VoucherCreationStep.REVIEW,
-                                                action = Click.VOUCHER_SUCCESS_CLICK_BACK_BUTTON,
+                                                action = Click.VOUCHER_SUCCESS_SHARE_NOW,
                                                 userId = userSession.userId
                                         )
-                                        dismiss()
+                                        showShareBottomSheet(uiModel)
                                     }
-                                }
-                                .show(childFragmentManager)
+                                    .setOnDownloadClickListener {
+                                        VoucherCreationTracking.sendCreateVoucherClickTracking(
+                                                step = VoucherCreationStep.REVIEW,
+                                                action = Click.VOUCHER_SUCCESS_DOWNLOAD,
+                                                userId = userSession.userId
+                                        )
+                                        showDownloadBottomSheet(uiModel)
+                                    }
+                                    .apply {
+                                        setCloseClickListener {
+                                            VoucherCreationTracking.sendCreateVoucherClickTracking(
+                                                    step = VoucherCreationStep.REVIEW,
+                                                    action = Click.VOUCHER_SUCCESS_CLICK_BACK_BUTTON,
+                                                    userId = userSession.userId
+                                            )
+                                            dismiss()
+                                        }
+                                    }
+                                    .show(childFragmentManager)
+                        }
                     }
                 }
+                is Fail -> MvcErrorHandler.logToCrashlytics(result.throwable, ERROR_GET_VOUCHER)
             }
         })
     }
