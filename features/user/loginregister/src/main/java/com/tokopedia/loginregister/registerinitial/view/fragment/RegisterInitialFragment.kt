@@ -560,18 +560,11 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
     }
 
     private fun onSuccessGetUserInfo(profileInfoData: ProfileInfoData) {
-        if(profileInfoData.isCreatePin) {
-            activityShouldEnd = false
-            val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PIN)
-            intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_SKIP_OTP, true)
-            startActivityForResult(intent, REQUEST_ADD_PIN)
+        val CHARACTER_NOT_ALLOWED = "CHARACTER_NOT_ALLOWED"
+        if (profileInfoData.profileInfo.fullName.contains(CHARACTER_NOT_ALLOWED)) {
+            onGoToChangeName()
         } else {
-            val CHARACTER_NOT_ALLOWED = "CHARACTER_NOT_ALLOWED"
-            if (profileInfoData.profileInfo.fullName.contains(CHARACTER_NOT_ALLOWED)) {
-                onGoToChangeName()
-            } else {
-                onSuccessRegister()
-            }
+            onSuccessRegister()
         }
     }
 
@@ -867,7 +860,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         if(enable2FA){
             goToAddPin2FA(enableSkip2FA)
         } else {
-            registerInitialViewModel.getUserInfo(isCreatePin = true)
+            registerInitialViewModel.getUserInfo()
         }
     }
 

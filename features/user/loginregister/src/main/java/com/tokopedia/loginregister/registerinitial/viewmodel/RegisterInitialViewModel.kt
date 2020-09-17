@@ -203,9 +203,9 @@ class RegisterInitialViewModel @Inject constructor(
 
     }
 
-    fun getUserInfo(isCreatePin: Boolean = false) {
+    fun getUserInfo() {
         getProfileUseCase.execute(GetProfileSubscriber(userSession,
-                onSuccessGetUserInfo(isCreatePin),
+                onSuccessGetUserInfo(),
                 onFailedGetUserInfo()))
     }
 
@@ -384,9 +384,9 @@ class RegisterInitialViewModel @Inject constructor(
         }
     }
 
-    private fun onSuccessGetUserInfo(isCreatePin: Boolean): (ProfilePojo) -> Unit {
+    private fun onSuccessGetUserInfo(): (ProfilePojo) -> Unit {
         return {
-            mutableGetUserInfoResponse.value = Success(ProfileInfoData(isCreatePin, it.profileInfo))
+            mutableGetUserInfoResponse.value = Success(ProfileInfoData(it.profileInfo))
         }
     }
 
