@@ -1,15 +1,22 @@
 package com.tokopedia.seller.search.common.domain.mapper
 
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.seller.search.common.GlobalSearchSellerConstant.FAQ
+import com.tokopedia.seller.search.common.GlobalSearchSellerConstant.NAVIGATION
+import com.tokopedia.seller.search.common.GlobalSearchSellerConstant.ORDER
+import com.tokopedia.seller.search.common.GlobalSearchSellerConstant.PRODUCT
 import com.tokopedia.seller.search.common.domain.model.SellerSearchResponse
 import com.tokopedia.seller.search.feature.initialsearch.domain.model.DeleteHistoryResponse
+import com.tokopedia.seller.search.feature.initialsearch.view.model.BaseInitialSearchSeller
 import com.tokopedia.seller.search.feature.initialsearch.view.model.deletehistory.DeleteHistorySearchUiModel
 import com.tokopedia.seller.search.feature.initialsearch.view.model.initialsearch.InitialSearchUiModel
 import com.tokopedia.seller.search.feature.initialsearch.view.model.initialsearch.ItemInitialSearchUiModel
 import com.tokopedia.seller.search.feature.suggestion.domain.model.SuccessSearchResponse
 import com.tokopedia.seller.search.feature.suggestion.view.model.registersearch.RegisterSearchUiModel
 import com.tokopedia.seller.search.feature.suggestion.view.model.sellersearch.ItemSellerSearchUiModel
+import com.tokopedia.seller.search.feature.suggestion.view.model.sellersearch.OrderSellerSearchUiModel
 import com.tokopedia.seller.search.feature.suggestion.view.model.sellersearch.SellerSearchUiModel
+import com.tokopedia.seller.search.feature.suggestion.view.model.sellersearch.TitleHasMoreSellerSearchUiModel
 
 object GlobalSearchSellerMapper {
 
@@ -51,6 +58,34 @@ object GlobalSearchSellerMapper {
                 ))
             }
         }
+    }
+
+    private fun mapToSellerSearchVisitable(sellerSearch: SellerSearchResponse.SellerSearch, keyword: String): List<BaseInitialSearchSeller> {
+        return mutableListOf<BaseInitialSearchSeller>().apply {
+            sellerSearch.data.sections.map {
+                when(it.id) {
+                    ORDER -> {
+                        add(TitleHasMoreSellerSearchUiModel(title = it.title.orEmpty()))
+                        add()
+                        add(TitleHasMoreSellerSearchUiModel(it.action_title.orEmpty()))
+                    }
+                    PRODUCT -> {
+
+                    }
+                    NAVIGATION -> {
+
+                    }
+                    FAQ -> {
+
+                    }
+                    else -> {}
+                }
+            }
+        }
+    }
+
+    private fun mapToProductSellerSearchVisitable(sellerSearch: SellerSearchResponse.SellerSearch, keyword: String): OrderSellerSearchUiModel {
+        
     }
 
     fun mapToInitialSearchUiModel(sellerSearch: SellerSearchResponse.SellerSearch): InitialSearchUiModel {

@@ -4,15 +4,15 @@ import com.tokopedia.seller.search.feature.initialsearch.view.model.BaseInitialS
 import com.tokopedia.seller.search.feature.initialsearch.view.viewholder.TypeFactoryInitialSearchAdapter
 
 data class OrderSellerSearchUiModel(
-        val id: String? = "",
-        val title: String? = "",
-        val desc: String? = "",
-        val imageUrl: String? = "",
-        val appUrl: String? = "",
-        val url: String? = "",
-        val keyword: String? = "",
-        val section: String? = ""
-): BaseInitialSearchSeller {
+        override val id: String? = "",
+        override val title: String? = "",
+        override val desc: String? = "",
+        override val imageUrl: String? = "",
+        override val appUrl: String? = "",
+        override val url: String? = "",
+        override val keyword: String? = "",
+        override val section: String? = ""
+): ItemSellerSearchUiModel(), BaseInitialSearchSeller {
     override fun type(typeFactory: TypeFactoryInitialSearchAdapter): Int {
         return typeFactory.type(this)
     }
