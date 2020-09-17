@@ -77,6 +77,7 @@
 
                 <com.tokopedia.unifycomponents.UnifyImageButton
                     android:id="@+id/btn_secondary"
+                    android:contentDescription="@string/content_desc_btn_secondary"
                     android:layout_width="@dimen/dp_40"
                     android:layout_height="@dimen/dp_40"
                     android:layout_marginStart="@dimen/dp_16"
@@ -89,6 +90,7 @@
 
                 <com.tokopedia.unifycomponents.UnifyButton
                     android:id="@+id/btn_primary"
+                    android:contentDescription="@string/content_desc_btn_primary"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/dp_16"

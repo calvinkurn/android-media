@@ -222,7 +222,7 @@ open class FlightSearchActivity : BaseFlightActivity(),
     }
 
     fun showChangeSearchBottomSheet() {
-        flightAnalytics.eventChangeSearchClick()
+        flightAnalytics.eventChangeSearchClick(if (userSession.isLoggedIn) userSession.userId else "")
 
         val flightChangeSearchBottomSheet = FlightSearchUniversalBottomSheet.getInstance()
         flightChangeSearchBottomSheet.listener = this
