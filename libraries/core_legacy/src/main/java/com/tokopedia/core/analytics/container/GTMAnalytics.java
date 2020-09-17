@@ -1104,6 +1104,7 @@ public class GTMAnalytics extends ContextAnalytics {
             case ADDTOCART:
             case FirebaseAnalytics.Event.VIEW_ITEM:
             case VIEWPRODUCT:
+            case PRODUCTVIEW:
             case FirebaseAnalytics.Event.ECOMMERCE_PURCHASE:
             case TRANSACTION:
                 values.putString(KEY_GCLID, mGclid);
