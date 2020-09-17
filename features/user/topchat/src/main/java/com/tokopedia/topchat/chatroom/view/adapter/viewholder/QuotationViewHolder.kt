@@ -1,17 +1,17 @@
 package com.tokopedia.topchat.chatroom.view.adapter.viewholder
 
-import android.graphics.drawable.Drawable
+import android.view.Gravity
 import android.view.View
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.chat_common.view.adapter.viewholder.BaseChatViewHolder
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandlerListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.viewmodel.QuotationUiModel
+import com.tokopedia.topchat.common.util.ViewUtil
 import kotlinx.android.synthetic.main.item_chat_quotation.view.*
 import kotlinx.android.synthetic.main.topchat_quotation_attachment.view.*
 
@@ -22,17 +22,45 @@ class QuotationViewHolder(
 
 ) : BaseChatViewHolder<QuotationUiModel>(itemView) {
 
+    private val container: RelativeLayout? = itemView?.findViewById(R.id.quotationAttachmentContainer)
+
+    private val bgOpposite = ViewUtil.generateBackgroundWithShadow(
+            itemView,
+            com.tokopedia.unifyprinciples.R.color.Neutral_N0,
+            com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
+            com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
+            com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
+            com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
+            R.color.topchat_message_shadow,
+            R.dimen.dp_topchat_2,
+            R.dimen.dp_topchat_1,
+            Gravity.CENTER
+    )
+    private val bgSender = ViewUtil.generateBackgroundWithShadow(
+            itemView,
+            com.tokopedia.unifyprinciples.R.color.Neutral_N0,
+            com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
+            com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
+            com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
+            com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
+            R.color.topchat_message_shadow,
+            R.dimen.dp_topchat_2,
+            R.dimen.dp_topchat_1,
+            Gravity.CENTER,
+            R.color.bg_topchat_right_message,
+            R.dimen.dp_topchat_1point5
+    )
+
     interface QuotationListener {
         fun trackClickQuotation(msg: QuotationUiModel)
     }
 
     private var chatStatus: ImageView? = null
 
-    override fun bind(message: QuotationUiModel?) {
-        if (message == null) return
+    override fun bind(message: QuotationUiModel) {
         super.bind(message)
         bindViewId()
-        bindBubbleBackground()
+        bindBubbleBackground(message)
         bindBubbleAlignment(message)
         bindProductImage(message)
         bindProductTitle(message)
@@ -50,8 +78,12 @@ class QuotationViewHolder(
         }
     }
 
-    private fun bindBubbleBackground() {
-        itemView.quotationAttachmentContainer?.background = getQuotationMessageBackground()
+    private fun bindBubbleBackground(message: QuotationUiModel) {
+        if (message.isSender) {
+            container?.background = bgSender
+        } else {
+            container?.background = bgOpposite
+        }
     }
 
     private fun bindBubbleAlignment(message: QuotationUiModel) {
@@ -98,10 +130,6 @@ class QuotationViewHolder(
 
     private fun setChatRight() {
         setAlignParent(RelativeLayout.ALIGN_PARENT_RIGHT, itemView.quotationAttachmentContainer)
-    }
-
-    private fun getQuotationMessageBackground(): Drawable {
-        return MethodChecker.getDrawable(itemView.context, com.tokopedia.chat_common.R.drawable.bg_shadow_attach_product)
     }
 
     private fun setAlignParent(alignment: Int, view: View) {
