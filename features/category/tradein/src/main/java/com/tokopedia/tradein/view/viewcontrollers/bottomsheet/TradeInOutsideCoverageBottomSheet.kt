@@ -12,6 +12,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.tradein.R
 import com.tokopedia.unifycomponents.UnifyButton
+import java.net.URLEncoder
 
 class TradeInOutsideCoverageBottomSheet : BottomSheetDialogFragment() {
 
@@ -28,14 +29,14 @@ class TradeInOutsideCoverageBottomSheet : BottomSheetDialogFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.tradein_outside_coverage_bottom_sheet, container, false)
-        arguments?.getString(PRODUCT_NAME)?.let {
+        arguments?.getString(PRODUCT_NAME)?.let { productName ->
             view.findViewById<UnifyButton>(R.id.btn_similar_items).setOnClickListener {
-                RouteManager.route(context, "tokopedia://search?q=${it}&trade_id=true&shipping=25")
-                dialog?.hide()
+                RouteManager.route(context, "tokopedia://search?q=${URLEncoder.encode(productName, Charsets.UTF_8.toString())}&trade_id=true&shipping=25")
+                dialog?.dismiss()
             }
         }
         view.findViewById<UnifyButton>(R.id.btn_close).setOnClickListener {
-            dialog?.hide()
+            dialog?.dismiss()
         }
         return view
     }

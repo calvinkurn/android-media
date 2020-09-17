@@ -92,4 +92,14 @@
     <string name="tradein_tools_text">*Lakukan Tes Fungsi dan Foto HP untuk dapat harga final.</string>
     <string name="tradein_ok">OK</string>
     <string name="tradein_save_upto">Bisa hemat hingga %1$s dengan Tukar Tambah.</string>
+    <string name="tradein_congrats_message">Selamat! Kamu bisa dapatin gadget baru lebih murah dengan potongan</string>
+    <string name="tradein_detail_harga">Detail Harga</string>
+    <string name="tradein_total_product_price">Total Harga Barang</string>
+    <string name="tradein_see_simulation">Lihat Simulasi</string>
+    <string name="tradein_checking_detail">Detail Pengecekan</string>
+    <string name="tradein_price_valid_until">Harga valid hingga %1$s WIB</string>
+    <string name="tradein_minus">- %1$s</string>
+    <string name="tradein_black_market">HP Black Market</string>
+    <string name="tradein_detail_pengecekan">Detail Pengecekan</string>
+    <string name="tradein_model_with_name">Model HP : %1$s</string>
 </resources>

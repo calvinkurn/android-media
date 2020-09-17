@@ -25,13 +25,13 @@ class TradeInAddressViewModel @Inject constructor(
     fun getAddressLiveData(): LiveData<AddressResult> = addressLiveData
     fun getTradeInEligibleLiveData(): LiveData<Boolean> = isEligible
 
-    fun getAddress(origin: String, weight: Int) {
+    fun getAddress(origin: String, weight: Int, shopId : Int) {
         launchCatchError(block = {
             val address = getAddressUseCase.getAddress()
             addressLiveData.value = address
             token = address.token
             progBarVisibility.value = false
-            isJabodetabekArea(origin, weight)
+            isJabodetabekArea(origin, weight, shopId)
         }, onError = {
             it.printStackTrace()
             progBarVisibility.value = false
@@ -39,10 +39,10 @@ class TradeInAddressViewModel @Inject constructor(
         })
     }
 
-    private fun getShopInfo(origin: String, weight: Int) {
+    private fun getShopInfo(origin: String, weight: Int, shopId : Int) {
         progBarVisibility.value = true
         launchCatchError(block = {
-            val shopInfoData = shopInfoUseCase.getShopInfo(6568990)
+            val shopInfoData = shopInfoUseCase.getShopInfo(shopId)
             for (shop in shopInfoData.shopInfoByID.result[0].shipmentInfo) {
                 if (shop.shipmentID == "25") {
                     isEligible.value = true
@@ -82,15 +82,17 @@ class TradeInAddressViewModel @Inject constructor(
 
     }
 
-    private fun isJabodetabekArea(origin: String, weight: Int) {
+    private fun isJabodetabekArea(origin: String, weight: Int, shopId : Int) {
         if (addressLiveData.value?.defaultAddress?.city in array) {
             isEligible.value = true
         } else
-            getShopInfo(origin, weight)
+            getShopInfo(origin, weight, shopId)
     }
 
-    fun setAddress(address: MoneyInKeroGetAddressResponse.ResponseData.KeroGetAddress.Data) {
+    fun setAddress(address: MoneyInKeroGetAddressResponse.ResponseData.KeroGetAddress.Data, origin: String, weight: Int, shopId : Int) {
+        isEligible.value = null
         addressLiveData.value = AddressResult(address, token)
+        isJabodetabekArea(origin, weight, shopId)
     }
 
     companion object {

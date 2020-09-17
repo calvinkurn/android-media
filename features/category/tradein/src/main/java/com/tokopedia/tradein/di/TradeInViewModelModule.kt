@@ -47,4 +47,10 @@ abstract class TradeInViewModelModule {
     @ViewModelKey(TradeInInitialPriceViewModel::class)
     internal abstract fun tradeInInitialPriceViewModel(viewModel: TradeInInitialPriceViewModel): ViewModel
 
+    @Binds
+    @IntoMap
+    @TradeInScope
+    @ViewModelKey(TradeInInfoViewModel::class)
+    internal abstract fun tradeInInfoViewModel(viewModel: TradeInInfoViewModel): ViewModel
+
 }

@@ -58,7 +58,7 @@ class TradeInAddressFragment : BaseViewModelFragment<TradeInAddressViewModel>() 
 
     private fun getAddress() {
         arguments?.apply {
-            tradeInAddressViewModel.getAddress(getString(EXTRA_ORIGIN, ""), getInt(EXTRA_WEIGHT))
+            tradeInAddressViewModel.getAddress(getString(EXTRA_ORIGIN, ""), getInt(EXTRA_WEIGHT), getInt(EXTRA_SHOP_ID))
         }
     }
 
@@ -100,9 +100,11 @@ class TradeInAddressFragment : BaseViewModelFragment<TradeInAddressViewModel>() 
             } else {
                 address_valid_ticker.hide()
                 btn_continue.isEnabled = false
-                val bottomSheet = TradeInOutsideCoverageBottomSheet.newInstance(arguments?.getString(EXTRA_PRODUCT_NAME, "")
-                        ?: "")
-                bottomSheet.show(childFragmentManager, "")
+                arguments?.apply {
+                    val bottomSheet = TradeInOutsideCoverageBottomSheet.newInstance(getString(EXTRA_PRODUCT_NAME, "")
+                            ?: "")
+                    bottomSheet.show(childFragmentManager, "")
+                }
             }
         })
 
@@ -114,8 +116,8 @@ class TradeInAddressFragment : BaseViewModelFragment<TradeInAddressViewModel>() 
         })
 
         tradeInAddressViewModel.getErrorMessage().observe(this, Observer {
-            global_error.errorTitle.text = it
             global_error.setType(GlobalError.SERVER_ERROR)
+            global_error.errorDescription.text = it
             global_error.setActionClickListener {
                 getAddress()
             }
@@ -148,8 +150,11 @@ class TradeInAddressFragment : BaseViewModelFragment<TradeInAddressViewModel>() 
     private fun onResultFromRequestCodeNewAddress(data: Intent?) {
         if (data != null && data.hasExtra(EXTRA_ADDRESS_NEW)) {
             val address = data.getParcelableExtra<SaveAddressDataModel>(EXTRA_ADDRESS_NEW)
-            if (address != null)
-                tradeInAddressViewModel.setAddress(TradeInMapper.mapSavedAddressToKeroAddress(address))
+            if (address != null) {
+                arguments?.apply {
+                    tradeInAddressViewModel.setAddress(TradeInMapper.mapSavedAddressToKeroAddress(address), getString(EXTRA_ORIGIN, ""), getInt(EXTRA_WEIGHT), getInt(EXTRA_SHOP_ID))
+                }
+            }
         }
     }
 
@@ -168,8 +173,11 @@ class TradeInAddressFragment : BaseViewModelFragment<TradeInAddressViewModel>() 
                         val addressModel = data.getParcelableExtra<RecipientAddressModel>(
                                 CheckoutConstant.EXTRA_SELECTED_ADDRESS_DATA
                         )
-                        if (addressModel != null)
-                            tradeInAddressViewModel.setAddress(TradeInMapper.mapAddressToKeroAddress(addressModel))
+                        if (addressModel != null) {
+                            arguments?.apply {
+                                tradeInAddressViewModel.setAddress(TradeInMapper.mapAddressToKeroAddress(addressModel), getString(EXTRA_ORIGIN, ""), getInt(EXTRA_WEIGHT), getInt(EXTRA_SHOP_ID))
+                            }
+                        }
                     }
                 }
 
@@ -195,12 +203,14 @@ class TradeInAddressFragment : BaseViewModelFragment<TradeInAddressViewModel>() 
         private const val EXTRA_ORIGIN = "EXTRA_ORIGIN"
         private const val EXTRA_WEIGHT = "EXTRA_WEIGHT"
         private const val EXTRA_PRODUCT_NAME = "EXTRA_PRODUCT_NAME"
+        private const val EXTRA_SHOP_ID = "EXTRA_SHOP_ID"
 
-        fun getFragmentInstance(origin: String?, weight: Int, productName: String): Fragment {
+        fun getFragmentInstance(origin: String?, weight: Int, productName: String, shopId: Int): Fragment {
             val fragment = TradeInAddressFragment()
             val bundle = Bundle()
             bundle.putString(EXTRA_ORIGIN, origin)
             bundle.putInt(EXTRA_WEIGHT, weight)
+            bundle.putInt(EXTRA_SHOP_ID, shopId)
             bundle.putString(EXTRA_PRODUCT_NAME, productName)
             fragment.arguments = bundle
             return fragment

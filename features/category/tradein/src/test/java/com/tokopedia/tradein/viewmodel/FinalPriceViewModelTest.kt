@@ -52,7 +52,7 @@ class FinalPriceViewModelTest {
     @Test
     fun getDiagnosticData() {
         val deviceDataResponse: DeviceDataResponse? = null
-        coEvery { diagnosticDataUseCase.getDiagnosticData(any(), any(), any()) } returns deviceDataResponse
+        coEvery { diagnosticDataUseCase.getDiagnosticData(any(), any()) } returns deviceDataResponse
 
         finalPriceViewModel.getDiagnosticData()
 
@@ -63,7 +63,7 @@ class FinalPriceViewModelTest {
     @Test
     fun getDiagnosticDataException() {
         val exception = "Diagnostic Data Exception"
-        coEvery { diagnosticDataUseCase.getDiagnosticData(any(), any(), any()) } throws Exception(exception)
+        coEvery { diagnosticDataUseCase.getDiagnosticData(any(), any()) } throws Exception(exception)
         coEvery { finalPriceViewModel.getResource()?.getString(any()) } returns exception
 
         finalPriceViewModel.getDiagnosticData()

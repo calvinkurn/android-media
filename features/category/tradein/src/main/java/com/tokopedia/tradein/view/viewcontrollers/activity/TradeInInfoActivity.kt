@@ -3,28 +3,60 @@ package com.tokopedia.tradein.view.viewcontrollers.activity
 import android.os.Bundle
 import android.util.DisplayMetrics
 import androidx.fragment.app.Fragment
-import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelActivity
+import com.tokopedia.basemvvm.viewmodel.BaseViewModel
+import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.tradein.R
-import com.tokopedia.webview.BaseSessionWebViewFragment
+import com.tokopedia.tradein.di.DaggerTradeInComponent
+import com.tokopedia.tradein.viewmodel.TradeInInfoViewModel
+import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.layout_activity_tradein_info.*
+import javax.inject.Inject
 
-const val tradeInTNCUrl = "https://www.tokopedia.com/help/article/syarat-dan-ketentuan-tukar-tambah"
-const val blackMarketUrl = "https://www.tokopedia.com/help/article/syarat-dan-ketentuan-tukar-tambah"
 const val tradeInTNCSegment = "tradein_tnc"
 const val blackMarketSegment = "tradein_black_market"
 
-class TradeInInfoActivity : BaseSimpleActivity() {
-    override fun getNewFragment(): Fragment? {
-        return null
-    }
+class TradeInInfoActivity : BaseViewModelActivity<TradeInInfoViewModel>() {
+
+    @Inject
+    lateinit var viewModelProvider: ViewModelProvider.Factory
+    private lateinit var viewModel: TradeInInfoViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        initView()
+        init()
+        setObserver()
         handleIntent()
     }
 
-    private fun initView() {
+    private fun setObserver() {
+        viewModel.tncInfoLiveData.observe(this, Observer {
+            if (it != null) {
+                linear_layout.removeAllViews()
+                for (tnc in it.fetchTickerAndTnC.tnC) {
+                    addView(tnc)
+                }
+            }
+        })
+    }
+
+    private fun addView(tnc: String) {
+        val typography: Typography = Typography(this).apply {
+            setWeight(Typography.REGULAR)
+            setType(Typography.BODY_2)
+            setPadding(dpToPx(1).toInt(),
+                    dpToPx(1).toInt(),
+                    dpToPx( 1).toInt(),
+                    dpToPx(12).toInt())
+            text = tnc
+        }
+        linear_layout.addView(typography)
+    }
+
+    private fun init() {
         val dm = DisplayMetrics()
         windowManager.defaultDisplay.getMetrics(dm)
         root_view.minimumHeight = dm.heightPixels.minus(50)
@@ -38,12 +70,34 @@ class TradeInInfoActivity : BaseSimpleActivity() {
     }
 
     private fun handleIntent() {
-        if(intent.data?.lastPathSegment == tradeInTNCSegment) {
-            val fragment = BaseSessionWebViewFragment.newInstance(tradeInTNCUrl)
-            supportFragmentManager.beginTransaction().add(frame_layout.id, fragment).commit()
-        } else if(intent.data?.lastPathSegment == blackMarketSegment) {
-            val fragment = BaseSessionWebViewFragment.newInstance(blackMarketUrl)
-            supportFragmentManager.beginTransaction().add(frame_layout.id, fragment).commit()
+        if (intent.data?.lastPathSegment == tradeInTNCSegment) {
+            heading.text = getString(R.string.tradein_terms_and_conditions)
+            viewModel.getTNC(0)
+        } else if (intent.data?.lastPathSegment == blackMarketSegment) {
+            heading.text = getString(R.string.tradein_black_market)
+            viewModel.getTNC(1)
         }
+    }
+
+    override fun initInject() {
+        DaggerTradeInComponent.builder()
+                .baseAppComponent((application as BaseMainApplication).baseAppComponent)
+                .build().inject(this)
+    }
+
+    override fun getNewFragment(): Fragment? {
+        return null
+    }
+
+    override fun getVMFactory(): ViewModelProvider.Factory {
+        return viewModelProvider
+    }
+
+    override fun getViewModelType(): Class<TradeInInfoViewModel> {
+        return TradeInInfoViewModel::class.java
+    }
+
+    override fun setViewModel(viewModel: BaseViewModel) {
+        this.viewModel = viewModel as TradeInInfoViewModel
     }
 }

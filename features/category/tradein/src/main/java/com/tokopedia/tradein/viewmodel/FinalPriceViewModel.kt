@@ -24,11 +24,14 @@ class FinalPriceViewModel@Inject constructor(
 
     @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
     internal fun getDiagnosticData() {
+        progBarVisibility.value = true
         launchCatchError(block = {
-            deviceDiagData.value = diagnosticDataUseCase.getDiagnosticData(getResource(),tradeInParams, tradeInType)
+            deviceDiagData.value = diagnosticDataUseCase.getDiagnosticData(tradeInParams, tradeInType)
+            progBarVisibility.value = false
         }, onError = {
             it.printStackTrace()
             warningMessage.value = getResource()?.getString(com.tokopedia.abstraction.R.string.default_request_error_timeout)
+            progBarVisibility.value = false
         })
     }
 

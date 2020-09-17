@@ -84,7 +84,7 @@ class TradeInInitialPriceFragment : BaseViewModelFragment<TradeInInitialPriceVie
             } else {
                 imei_view.hide()
                 btn_continue.setOnClickListener {
-                    tradeInInitialPriceClick?.onClick(null)
+                    tradeInInitialPriceClick?.onInitialPriceClick(null)
                 }
             }
         })
@@ -97,7 +97,7 @@ class TradeInInitialPriceFragment : BaseViewModelFragment<TradeInInitialPriceVie
         btn_continue.setOnClickListener {
             when {
                 edit_text_imei.text.length == 15 -> {
-                    tradeInInitialPriceClick?.onClick(edit_text_imei.text.toString())
+                    tradeInInitialPriceClick?.onInitialPriceClick(edit_text_imei.text.toString())
                 }
                 edit_text_imei.text.isEmpty() -> {
                     typography_imei_description.text = getString(R.string.enter_the_imei_number_text)
@@ -148,7 +148,7 @@ class TradeInInitialPriceFragment : BaseViewModelFragment<TradeInInitialPriceVie
     }
 
     interface TradeInInitialPriceClick {
-        fun onClick(imei: String?)
+        fun onInitialPriceClick(imei: String?)
     }
 
     companion object {
