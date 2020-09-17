@@ -1,6 +1,8 @@
 package com.tokopedia.discovery2.viewmodel
 
 import android.content.Context
+import android.net.Uri
+import android.os.Bundle
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
@@ -15,6 +17,11 @@ import com.tokopedia.discovery2.repository.discoveryPage.DiscoveryUIConfigGQLRep
 import com.tokopedia.discovery2.usecase.CustomTopChatUseCase
 import com.tokopedia.discovery2.usecase.DiscoveryDataUseCase
 import com.tokopedia.discovery2.usecase.quickcouponusecase.QuickCouponUseCase
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.PINNED_ACTIVE_TAB
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.PINNED_COMPONENT_ID
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.PINNED_COMP_ID
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.PRODUCT_ID
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.SOURCE_QUERY
 import com.tokopedia.discovery2.viewcontrollers.activity.REACT_NATIVE
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -28,6 +35,9 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
+
+
+private const val PINNED_COMPONENT_FAIL_STATUS = -1
 
 class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: DiscoveryDataUseCase,
                                              private val discoveryUIConfigRepo: DiscoveryUIConfigGQLRepository,
@@ -54,12 +64,12 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
         get() = Dispatchers.Main + SupervisorJob()
 
 
-    fun getDiscoveryData() {
+    fun getDiscoveryData(queryParameterMap: Map<String, String?>) {
         launchCatchError(
                 block = {
                     pageLoadTimePerformanceInterface?.stopPreparePagePerformanceMonitoring()
                     pageLoadTimePerformanceInterface?.startNetworkRequestPerformanceMonitoring()
-                    val data = discoveryDataUseCase.getDiscoveryPageDataUseCase(pageIdentifier)
+                    val data = discoveryDataUseCase.getDiscoveryPageDataUseCase(pageIdentifier, queryParameterMap)
                     pageLoadTimePerformanceInterface?.stopNetworkRequestPerformanceMonitoring()
                     pageLoadTimePerformanceInterface?.startRenderPerformanceMonitoring()
                     data.let {
@@ -94,7 +104,7 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
     }
 
     private fun setPageInfo(discoPageData: DiscoveryPageData?) {
-        discoPageData?.pageInfo?.let {pageInfoData ->
+        discoPageData?.pageInfo?.let { pageInfoData ->
             pageType = pageInfoData.type ?: ""
             pagePath = pageInfoData.path ?: ""
             pageInfoData.additionalInfo = discoPageData.additionalInfo
@@ -159,5 +169,32 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
 
     fun clearPageData() {
         discoveryDataUseCase.clearPage(pageIdentifier)
+    }
+
+    fun getMapOfQueryParameter(intentUri: Uri): Map<String, String?> {
+        return mapOf(
+                SOURCE_QUERY to intentUri.getQueryParameter(SOURCE_QUERY),
+                PINNED_COMPONENT_ID to intentUri.getQueryParameter(PINNED_COMPONENT_ID),
+                PINNED_ACTIVE_TAB to intentUri.getQueryParameter(PINNED_ACTIVE_TAB),
+                PINNED_COMP_ID to intentUri.getQueryParameter(PINNED_COMP_ID),
+                PRODUCT_ID to intentUri.getQueryParameter(PRODUCT_ID)
+        )
+    }
+
+    fun scrollToPinnedComponent(listComponent: List<ComponentsItem>, pinnedComponentId: String?): Int {
+        listComponent.forEachIndexed { index, componentsItem ->
+            if (componentsItem.id == pinnedComponentId) {
+                return index
+            }
+        }
+        return PINNED_COMPONENT_FAIL_STATUS
+    }
+
+    fun getQueryParameterMapFromBundle(bundle: Bundle?): Map<String, String?> {
+        return mapOf(
+                PINNED_ACTIVE_TAB to bundle?.getString(PINNED_ACTIVE_TAB, ""),
+                PINNED_COMP_ID to bundle?.getString(PINNED_COMP_ID, ""),
+                PRODUCT_ID to bundle?.getString(PRODUCT_ID, "")
+        )
     }
 }

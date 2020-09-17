@@ -1,9 +1,11 @@
 package com.tokopedia.sellerhome.view.navigator
 
 import android.content.Context
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
+import androidx.lifecycle.Lifecycle
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.SellerHomeRouter
 import com.tokopedia.sellerhome.common.FragmentType
@@ -36,32 +38,28 @@ class SellerHomeNavigator(
     fun start(@FragmentType page: Int) {
         val transaction = fm.beginTransaction()
         val fragment = getPageFragment(page)
-        addAllPages(transaction)
+        addAllPages(fragment, transaction)
 
         fragment?.let {
-            transaction
-                .show(fragment)
-                .commit()
-
-            setSelectedPage(page)
-        }
-    }
-
-    fun showPage(@FragmentType page: Int) {
-        val transaction = fm.beginTransaction()
-        val fragment = getPageFragment(page)
-
-        fragment?.let {
-            hideCurrentPage(transaction)
-
-            transaction
-                .show(it)
-                .commit()
-
+            showFragment(it, transaction)
             setSelectedPage(page)
         }
 
         updateFragmentVisibilityHint(fragment)
+    }
+
+    fun showPage(@FragmentType page: Int) {
+        if(isActivityResumed()) {
+            val transaction = fm.beginTransaction()
+            val fragment = getPageFragment(page)
+
+            fragment?.let {
+                showFragment(it, transaction)
+                setSelectedPage(page)
+            }
+
+            updateFragmentVisibilityHint(fragment)
+        }
     }
 
     fun navigateFromAppLink(page: PageFragment) {
@@ -77,23 +75,18 @@ class SellerHomeNavigator(
 
                 when {
                     fragments.isEmpty() -> {
-                        addAllPages(transaction)
-
-                        transaction
-                            .show(selectedPage)
-                            .commit()
+                        addAllPages(selectedPage, transaction)
+                        showFragment(selectedPage, transaction)
                     }
                     currentPage != selectedPage -> {
+                        hideAllPages(transaction)
+
                         transaction
                             .remove(currentPage)
                             .add(R.id.sahContainer, selectedPage, tag)
                             .commit()
                     }
-                    else -> {
-                        transaction
-                            .show(selectedPage)
-                            .commit()
-                    }
+                    else -> showFragment(fragment, transaction)
                 }
 
                 setSelectedPage(type)
@@ -144,6 +137,10 @@ class SellerHomeNavigator(
         return currentSelectedPage == FragmentType.HOME
     }
 
+    fun getCurrentSelectedPage(): Int {
+        return currentSelectedPage ?: FragmentType.HOME
+    }
+
     private fun initFragments() {
         homeFragment = SellerHomeFragment.newInstance()
         productManageFragment = sellerHomeRouter?.getProductManageFragment(arrayListOf(), "")
@@ -151,21 +148,46 @@ class SellerHomeNavigator(
         somListFragment = sellerHomeRouter?.getSomListFragment(SomTabConst.STATUS_NEW_ORDER)
         otherSettingsFragment = OtherMenuFragment.createInstance()
 
-        addPage(homeFragment, context.getString(R.string.sah_home).orEmpty())
+        addPage(homeFragment, context.getString(R.string.sah_home))
         addPage(productManageFragment, context.getString(R.string.sah_product_list))
         addPage(chatFragment, context.getString(R.string.sah_chat))
         addPage(somListFragment, context.getString(R.string.sah_sale))
         addPage(otherSettingsFragment, context.getString(R.string.sah_sale))
     }
 
-    private fun addAllPages(transaction: FragmentTransaction) {
+    private fun addAllPages(selectedPage: Fragment?, transaction: FragmentTransaction) {
         pages.keys.forEach {
             it?.let {
                 val tag = it::class.java.simpleName
                 transaction.add(R.id.sahContainer, it, tag)
-                transaction.hide(it)
+
+                if(it != selectedPage) {
+                    transaction.setMaxLifecycle(it, Lifecycle.State.CREATED)
+                }
             }
         }
+    }
+
+    private fun showFragment(fragment: Fragment, transaction: FragmentTransaction) {
+        val tag = fragment::class.java.simpleName
+        val fragmentByTag = fm.findFragmentByTag(tag)
+        val selectedFragment = fragmentByTag ?: fragment
+        val currentState = selectedFragment.lifecycle.currentState
+        val isFragmentNotResumed = !currentState.isAtLeast(Lifecycle.State.RESUMED)
+
+        if(isFragmentNotResumed) {
+            try {
+                transaction.setMaxLifecycle(selectedFragment, Lifecycle.State.RESUMED)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+
+        hideAllPages(transaction)
+
+        transaction
+            .show(selectedFragment)
+            .commit()
     }
 
     private fun getPageFragment(@FragmentType type: Int): Fragment? {
@@ -174,7 +196,8 @@ class SellerHomeNavigator(
             FragmentType.PRODUCT -> productManageFragment
             FragmentType.CHAT -> chatFragment
             FragmentType.ORDER -> somListFragment
-            else -> otherSettingsFragment
+            FragmentType.OTHER -> otherSettingsFragment
+            else -> null
         }
     }
 
@@ -219,15 +242,16 @@ class SellerHomeNavigator(
         fragment?.let { pages[it] = title }
     }
 
-    private fun hideCurrentPage(transaction: FragmentTransaction) {
-        currentSelectedPage?.let {
-            getPageFragment(it)?.let { currentPage ->
-                transaction.hide(currentPage)
-            }
-        }
+    private fun hideAllPages(transaction: FragmentTransaction) {
+        fm.fragments.forEach { transaction.hide(it) }
     }
 
     private fun setSelectedPage(@FragmentType page: Int) {
         currentSelectedPage = page
+    }
+
+    private fun isActivityResumed(): Boolean {
+        val state = (context as? AppCompatActivity)?.lifecycle?.currentState
+        return state == Lifecycle.State.RESUMED || state == Lifecycle.State.STARTED
     }
 }

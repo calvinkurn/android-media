@@ -25,6 +25,7 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.empty_state.EmptyStateUnify
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
 import com.tokopedia.shop_showcase.R
 import com.tokopedia.shop_showcase.ShopShowcaseInstance
 import com.tokopedia.shop_showcase.common.*
@@ -43,6 +44,7 @@ import com.tokopedia.shop_showcase.shop_showcase_product_add.presentation.fragme
 import com.tokopedia.shop_showcase.shop_showcase_product_add.presentation.model.ShowcaseProduct
 import com.tokopedia.unifycomponents.*
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -518,8 +520,7 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
 
                 if (updateShowcaseNameResult is Success) {
 
-                    // check if update showcase name is success
-                    if (updateShowcaseNameResult.data.success) {
+                    if(updateShowcaseNameResult.data.success == true) {
 
                         if (appendShowcaseProductResult is Success) {
 
@@ -533,7 +534,7 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
 
                                         // everything is fine, navigate back to showcase list
                                         val intent = RouteManager.getIntent(context, ApplinkConstInternalMechant.MERCHANT_SHOP_SHOWCASE_LIST)
-                                        intent.putExtra(ShopShowcaseListParam.EXTRA_EDIT_SHOWCASE_RESULT, SUCCESS_EDIT_SHOWCASE)
+                                        intent.putExtra(ShopShowcaseParamConstant.EXTRA_EDIT_SHOWCASE_RESULT, SUCCESS_EDIT_SHOWCASE)
                                         activity?.setResult(Activity.RESULT_OK, intent)
                                         activity?.finish()
 
@@ -551,9 +552,12 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
                         }
 
                     } else {
-                        // Show error update showcase name
-                        showUnifyToaster(updateShowcaseNameResult.data.message)
+                        // Show error update name failed
+                        showUnifyToaster(updateShowcaseNameResult.data.message ?: getString(R.string.error_happens))
                     }
+                } else {
+                    // Show error use case Fail result
+                    (updateShowcaseNameResult as Fail).throwable.message?.let { message -> showUnifyToaster(message) }
                 }
             }
         }

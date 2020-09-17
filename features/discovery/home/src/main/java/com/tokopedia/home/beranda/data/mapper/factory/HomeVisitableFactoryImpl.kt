@@ -2,17 +2,16 @@ package com.tokopedia.home.beranda.data.mapper.factory
 
 import android.content.Context
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.analytics.HomePageTrackingV2
 import com.tokopedia.home.analytics.v2.CategoryWidgetTracking
 import com.tokopedia.home.analytics.v2.ProductHighlightTracking
+import com.tokopedia.home.analytics.v2.RecommendationListTracking
 import com.tokopedia.home.beranda.data.datasource.default_data_source.HomeDefaultDataSource
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.domain.model.HomeData
 import com.tokopedia.home.beranda.domain.model.HomeFlag
 import com.tokopedia.home.beranda.domain.model.Spotlight
-import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.*
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.dynamic_icon.DynamicIconSectionDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.spotlight.SpotlightDataModel
@@ -223,7 +222,7 @@ class HomeVisitableFactoryImpl(
                 DynamicHomeChannel.Channels.LAYOUT_CATEGORY_WIDGET -> {
                     createDynamicChannel(
                             channel,
-                            trackingData = CategoryWidgetTracking.getCategoryWidgetBanneImpression(
+                            trackingData = CategoryWidgetTracking.getCategoryWidgetBannerImpression(
                                     channel.grids.toList(),
                                     userSessionInterface?.userId?:"",
                                     false,
@@ -431,7 +430,7 @@ class HomeVisitableFactoryImpl(
         )
         if (!isCache) {
             trackingQueue?.putEETracking(
-                    HomePageTrackingV2.RecommendationList.getRecommendationListImpression(channel,  userId = userSessionInterface?.userId ?: "") as HashMap<String, Any>
+                    RecommendationListTracking.getRecommendationListImpression(channel,  userId = userSessionInterface?.userId ?: "") as HashMap<String, Any>
             )
         }
         return viewModel
@@ -443,12 +442,6 @@ class HomeVisitableFactoryImpl(
         val viewModel = ProductHighlightDataModel(
                 DynamicChannelComponentMapper.mapHomeChannelToComponent(channel, verticalPosition)
         )
-        if (!isCache) {
-
-            trackingQueue?.putEETracking(
-                    ProductHighlightTracking.getProductHighlightImpression(channel,  userId = userSessionInterface?.userId ?: "") as HashMap<String, Any>
-            )
-        }
         return viewModel
     }
 

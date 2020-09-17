@@ -78,6 +78,7 @@ public class RemoteConfigKey {
     public static final String IRIS_GTM_ENABLED_TOGGLE = "app_iris_gtm_enabled";
     public static final String IRIS_LOG_ENABLED_TOGGLE = "android_iris_log_enabled";
     public static final String IRIS_GTM_CONFIG_TOGGLE = "android_customer_iris_config";
+    public static final String IRIS_WORK_MANAGER_ENABLE = "android_iris_work_manager_enabled";
 
     public static final String APP_WEBVIEW_RESO_ENABLED_TOGGLE = "android_webview_resolution_enabled";
 
@@ -174,6 +175,7 @@ public class RemoteConfigKey {
     public static final String MAINAPP_SALAM_UMRAH = "android_main_app_enabled_umrah";
 
     public static final String ENABLE_NEW_SHOP_PAGE = "android_main_app_enable_new_shop_page";
+    public static final String ENABLE_SHOP_PAGE_CHANGE_PRODUCT_GRID_LAYOUT_FEATURE = "android_shop_page_enable_product_change_grid_layout";
 
     public static final String MAINAPP_RECHARGE_OCR = "android_mainapp_enable_ocr_emoney";
     public static final String MAINAPP_RECHARGE_SMARTCARD = "mainapp_digital_smartcard";
@@ -228,5 +230,7 @@ public class RemoteConfigKey {
     public static final String ENABLE_PUSH_NOTIFICATION_CHAT_SELLER = "android_sellerapp_enable_push_notif_reply_chat";
 
     public static final String NOTIFICATION_TRAY_CLEAR = "app_notif_tray_clear";
+
+    public static final String KYC_USING_SELFIE = "android_main_app_enabled_kyc_selfie";
 
 }

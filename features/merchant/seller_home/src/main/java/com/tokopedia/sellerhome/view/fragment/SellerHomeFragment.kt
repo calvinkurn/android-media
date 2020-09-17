@@ -162,13 +162,17 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         super.onResume()
         if (!isFirstLoad)
             reloadPage()
-        if (userVisibleHint)
-            SellerHomeTracking.sendScreen(screenName)
     }
 
-    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
-        super.setUserVisibleHint(isVisibleToUser)
-        if (userVisibleHint) {
+    override fun onPause() {
+        super.onPause()
+        hideTooltipIfExist()
+    }
+
+    override fun onHiddenChanged(hidden: Boolean) {
+        super.onHiddenChanged(hidden)
+
+        if(!hidden) {
             SellerHomeTracking.sendScreen(screenName)
             view?.post {
                 requestVisibleWidgetsData()
@@ -354,8 +358,9 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     override fun onTooltipClicked(tooltip: TooltipUiModel) {
         if (!isAdded || context == null) return
-        TooltipBottomSheet(requireContext(), tooltip)
-                .show(childFragmentManager, TAG_TOOLTIP)
+        val tooltipBottomSheet = (childFragmentManager.findFragmentByTag(TAG_TOOLTIP) as? TooltipBottomSheet) ?: TooltipBottomSheet.createInstance()
+        tooltipBottomSheet.init(requireContext(), tooltip)
+        tooltipBottomSheet.show(childFragmentManager, TAG_TOOLTIP)
     }
 
     override fun removeWidget(position: Int, widget: BaseWidgetUiModel<*>) {
@@ -701,7 +706,11 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     private inline fun <D : BaseDataUiModel, reified W : BaseWidgetUiModel<D>> List<D>.setOnSuccessWidgetState(widgetType: String) {
         forEach { widgetData ->
-            adapter.data.find { it.dataKey == widgetData.dataKey }?.let { widget ->
+            adapter.data.find {
+                val isSameDataKey = it.dataKey == widgetData.dataKey
+                val isSameWidgetType = it.widgetType == widgetType
+                return@find isSameDataKey && isSameWidgetType
+            }?.let { widget ->
                 if (widget is W) {
                     widget.data = widgetData
                     notifyWidgetChanged(widget)
@@ -716,7 +725,8 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     private inline fun <reified D : BaseDataUiModel, reified W : BaseWidgetUiModel<D>> Throwable.setOnErrorWidgetState(widgetType: String) {
         val message = this.message.orEmpty()
         adapter.data.forEach { widget ->
-            if (widget is W && widget.data == null && widget.isLoaded) {
+            val isSameWidgetType = widget.widgetType == widgetType
+            if (widget is W && widget.data == null && widget.isLoaded && isSameWidgetType) {
                 widget.data = D::class.java.newInstance().apply {
                     error = message
                 }
@@ -737,7 +747,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         }
     }
 
-    private fun onSuccessGetTickers(tickers: List<TickerUiModel>) {
+    private fun onSuccessGetTickers(tickers: List<TickerItemUiModel>) {
 
         fun getTickerType(hexColor: String): Int = when (hexColor) {
             context?.getString(R.string.sah_ticker_warning) -> Ticker.TYPE_WARNING

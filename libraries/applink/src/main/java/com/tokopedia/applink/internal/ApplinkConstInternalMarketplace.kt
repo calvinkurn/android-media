@@ -140,6 +140,12 @@ object ApplinkConstInternalMarketplace {
     val SHOP_PAGE_REVIEW = "$SHOP_PAGE_BASE/{shop_id}/review"
 
     @JvmField
+    val SHOP_PAGE_PRODUCT = "$SHOP_PAGE_BASE/{shop_id}/product"
+
+    @JvmField
+    val SHOP_PAGE_FEED = "$SHOP_PAGE_BASE/{shop_id}/feed"
+
+    @JvmField
     val SHOP_PAGE_PRODUCT_LIST = "$SHOP_PAGE_BASE-product-list/{shop_id}/etalase/{etalase_id}/"
 
     //ReviewShopInfoActiviy
@@ -316,4 +322,6 @@ object ApplinkConstInternalMarketplace {
     @JvmField
     val ARGS_REVIEW_ID = "ARGS_REVIEW_ID"
 
+    @JvmField
+    val ARGS_LAYOUT_ID = "layoutID"
 }

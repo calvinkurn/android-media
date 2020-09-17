@@ -29,7 +29,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 
-import com.tokopedia.core2.BuildConfig;
+import com.tokopedia.user.session.BuildConfig;
 
 import java.lang.reflect.Field;
 

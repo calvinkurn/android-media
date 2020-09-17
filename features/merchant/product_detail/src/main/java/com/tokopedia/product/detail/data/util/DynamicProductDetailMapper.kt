@@ -24,9 +24,6 @@ object DynamicProductDetailMapper {
                 ProductDetailConstant.NOTIFY_ME -> {
                     listOfComponent.add(ProductNotifyMeDataModel(type = component.type, name = component.componentName))
                 }
-                ProductDetailConstant.DISCUSSION -> {
-                    listOfComponent.add(ProductDiscussionDataModel(type = component.type, name = component.componentName))
-                }
                 ProductDetailConstant.DISCUSSION_FAQ -> {
                     listOfComponent.add(ProductDiscussionMostHelpfulDataModel(type = component.type, name = component.componentName))
                 }
@@ -98,6 +95,9 @@ object DynamicProductDetailMapper {
                         listOfComponent.add(it)
                     }
                 }
+                ProductDetailConstant.TOP_ADS -> {
+                    listOfComponent.add(TopAdsImageDataModel(type = component.type, name = component.componentName))
+                }
             }
         }
         return listOfComponent
@@ -117,13 +117,14 @@ object DynamicProductDetailMapper {
             it.type == ProductDetailConstant.MEDIA
         }?.componentData?.firstOrNull() ?: ComponentData()
 
-        val newDataWithMedia = contentData?.copy(media = mediaData.media, videos = mediaData.videos) ?: ComponentData()
+        val newDataWithMedia = contentData?.copy(media = mediaData.media, videos = mediaData.videos)
+                ?: ComponentData()
         assignIdToMedia(newDataWithMedia.media)
 
         return DynamicProductInfoP1(layoutName = data.generalName, basic = data.basicInfo, data = newDataWithMedia, pdpSession = data.pdpSession)
     }
 
-    private fun assignIdToMedia(listOfMedia: List<Media>){
+    private fun assignIdToMedia(listOfMedia: List<Media>) {
         listOfMedia.forEachIndexed { index, it ->
             it.id = (index + 1).toString()
         }
@@ -171,7 +172,7 @@ object DynamicProductDetailMapper {
 
             VariantChildCommon(productId = it.productId.toIntOrZero(), price = it.price, priceFmt = it.priceFmt, sku = it.sku, stock = stock,
                     optionIds = it.optionIds, name = it.name, url = it.url, picture = Picture(original = it.picture?.original, thumbnail = it.picture?.thumbnail),
-                    campaign = campaign, isCod = it.isCod)
+                    campaign = campaign)
         }
 
         return ProductVariantCommon(
@@ -258,6 +259,12 @@ object DynamicProductDetailMapper {
     fun getTickerInfoData(tickerData: StickyLoginTickerPojo.TickerResponse): List<StickyLoginTickerPojo.TickerDetail> {
         return tickerData.response.tickers.filter {
             it.layout != StickyLoginConstant.LAYOUT_FLOATING
+        }
+    }
+
+    fun getStickyLoginData(tickerData: StickyLoginTickerPojo.TickerResponse): StickyLoginTickerPojo.TickerDetail? {
+        return tickerData.response.tickers.find {
+            it.layout == StickyLoginConstant.LAYOUT_FLOATING
         }
     }
 

@@ -28,8 +28,8 @@ public class ProductViewModelMapper {
 
         ProductViewModel productViewModel = new ProductViewModel();
         productViewModel.setAdsModel(searchProductModel.getTopAdsModel());
-        if (isListContainItems(searchProductModel.getGlobalNavModel().getData().getGlobalNavItems())) {
-            productViewModel.setGlobalNavViewModel(convertToViewModel(searchProductModel.getGlobalNavModel()));
+        if (isListContainItems(searchProductModel.getGlobalSearchNavigation().getData().getGlobalNavItems())) {
+            productViewModel.setGlobalNavViewModel(convertToViewModel(searchProductModel.getGlobalSearchNavigation()));
         }
         productViewModel.setCpmModel(searchProductModel.getCpmModel());
         productViewModel.setRelatedViewModel(convertToRelatedViewModel(searchProductData.getRelated()));
@@ -47,7 +47,7 @@ public class ProductViewModelMapper {
             convertToInspirationCarouselViewModel(searchProductModel.getSearchInspirationCarousel())
         );
         productViewModel.setInspirationCardViewModel(
-            convertToInspirationCardViewModel(searchProductModel.getSearchInspirationCard())
+            convertToInspirationCardViewModel(searchProductModel.getSearchInspirationWidget())
         );
         productViewModel.setAdditionalParams(searchProductHeader.getAdditionalParams());
         productViewModel.setAutocompleteApplink(searchProductData.getAutocompleteApplink());
@@ -60,17 +60,17 @@ public class ProductViewModelMapper {
         return list != null && !list.isEmpty();
     }
 
-    private GlobalNavViewModel convertToViewModel(SearchProductModel.GlobalNavModel globalNavModel) {
+    private GlobalNavViewModel convertToViewModel(SearchProductModel.GlobalSearchNavigation globalSearchNavigation) {
         return new GlobalNavViewModel(
-                globalNavModel.getData().getSource(),
-                globalNavModel.getData().getTitle(),
-                globalNavModel.getData().getKeyword(),
-                globalNavModel.getData().getNavTemplate(),
-                globalNavModel.getData().getBackground(),
-                globalNavModel.getData().getSeeAllApplink(),
-                globalNavModel.getData().getSeeAllUrl(),
-                globalNavModel.getData().isShowTopAds(),
-                convertToViewModel(globalNavModel.getData().getGlobalNavItems())
+                globalSearchNavigation.getData().getSource(),
+                globalSearchNavigation.getData().getTitle(),
+                globalSearchNavigation.getData().getKeyword(),
+                globalSearchNavigation.getData().getNavTemplate(),
+                globalSearchNavigation.getData().getBackground(),
+                globalSearchNavigation.getData().getSeeAllApplink(),
+                globalSearchNavigation.getData().getSeeAllUrl(),
+                globalSearchNavigation.getData().isShowTopAds(),
+                convertToViewModel(globalSearchNavigation.getData().getGlobalNavItems())
         );
     }
 
@@ -147,7 +147,11 @@ public class ProductViewModelMapper {
                 convertOtherRelatedProductFreeOngkirToFreeOngkirViewModel(otherRelatedProduct.getFreeOngkir()),
                 otherRelatedProduct.isWishlisted(),
                 position,
-                alternativeKeyword
+                alternativeKeyword,
+                otherRelatedProduct.isOrganicAds(),
+                otherRelatedProduct.getAds().getProductViewUrl(),
+                otherRelatedProduct.getAds().getProductClickUrl(),
+                otherRelatedProduct.getAds().getProductWishlistUrl()
         );
     }
 
@@ -343,10 +347,10 @@ public class ProductViewModelMapper {
         return products;
     }
 
-    private List<InspirationCardViewModel> convertToInspirationCardViewModel(SearchProductModel.SearchInspirationCard searchInspirationCard) {
+    private List<InspirationCardViewModel> convertToInspirationCardViewModel(SearchProductModel.SearchInspirationWidget searchInspirationWidget) {
         List<InspirationCardViewModel> inspirationCardViewModel = new ArrayList<>();
 
-        for (SearchProductModel.InspirationCardData data : searchInspirationCard.getData()) {
+        for (SearchProductModel.InspirationCardData data : searchInspirationWidget.getData()) {
             inspirationCardViewModel.add(new InspirationCardViewModel(
                     data.getTitle(),
                     data.getType(),

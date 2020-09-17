@@ -4,7 +4,11 @@ import android.content.Context
 import okhttp3.Interceptor
 
 class FakeResponseInterceptorProvider {
-    fun getInterceptor(context: Context): Interceptor? {
+    fun getGqlInterceptor(context: Context): Interceptor? {
+        return null
+    }
+
+    fun getRestInterceptor(context: Context): Interceptor? {
         return null
     }
 }

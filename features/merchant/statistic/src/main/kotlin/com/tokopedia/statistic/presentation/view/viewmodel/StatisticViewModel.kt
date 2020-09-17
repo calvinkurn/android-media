@@ -15,10 +15,10 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import dagger.Lazy
 import kotlinx.coroutines.withContext
 import java.util.*
 import javax.inject.Inject
-import dagger.Lazy
 
 /**
  * Created By @ilhamsuaib on 08/06/20
@@ -26,6 +26,7 @@ import dagger.Lazy
 
 class StatisticViewModel @Inject constructor(
         private val userSession: UserSessionInterface,
+        private val getTickerUseCase: Lazy<GetTickerUseCase>,
         private val getUserRoleUseCase: Lazy<GetUserRoleUseCase>,
         private val getLayoutUseCase: Lazy<GetLayoutUseCase>,
         private val getCardDataUseCase: Lazy<GetCardDataUseCase>,
@@ -42,10 +43,13 @@ class StatisticViewModel @Inject constructor(
     companion object {
         private const val STATISTIC_PAGE_NAME = "shop-insight"
         private const val DATE_FORMAT = "dd-MM-yyyy"
+        private const val TICKER_PAGE_NAME = "seller-statistic"
     }
 
     val widgetLayout: LiveData<Result<List<BaseWidgetUiModel<*>>>>
         get() = _widgetLayout
+    val tickers: LiveData<Result<List<TickerItemUiModel>>>
+        get() = _tickers
     val userRole: LiveData<Result<List<String>>>
         get() = _userRole
     val cardWidgetData: LiveData<Result<List<CardDataUiModel>>>
@@ -67,6 +71,7 @@ class StatisticViewModel @Inject constructor(
 
     private val shopId by lazy { userSession.shopId }
     private val _widgetLayout = MutableLiveData<Result<List<BaseWidgetUiModel<*>>>>()
+    private val _tickers = MutableLiveData<Result<List<TickerItemUiModel>>>()
     private val _userRole = MutableLiveData<Result<List<String>>>()
     private val _cardWidgetData = MutableLiveData<Result<List<CardDataUiModel>>>()
     private val _lineGraphWidgetData = MutableLiveData<Result<List<LineGraphDataUiModel>>>()
@@ -79,7 +84,7 @@ class StatisticViewModel @Inject constructor(
 
     private var dynamicParameter = DynamicParameterModel()
 
-    fun setDateRange(startDate: Date, endDate: Date, filterType: String) {
+    fun setDateFilter(startDate: Date, endDate: Date, filterType: String) {
         val startDateFmt = DateTimeUtil.format(startDate.time, DATE_FORMAT)
         val endDateFmt = DateTimeUtil.format(endDate.time, DATE_FORMAT)
         this.dynamicParameter = DynamicParameterModel(
@@ -99,6 +104,18 @@ class StatisticViewModel @Inject constructor(
             _widgetLayout.postValue(result)
         }, onError = {
             _widgetLayout.postValue(Fail(it))
+        })
+    }
+
+    fun getTickers() {
+        launchCatchError(block = {
+            val result: Success<List<TickerItemUiModel>> = Success(withContext(dispatcher.io()) {
+                getTickerUseCase.get().params = GetTickerUseCase.createParams(TICKER_PAGE_NAME)
+                return@withContext getTickerUseCase.get().executeOnBackground()
+            })
+            _tickers.postValue(result)
+        }, onError = {
+            _tickers.postValue(Fail(it))
         })
     }
 

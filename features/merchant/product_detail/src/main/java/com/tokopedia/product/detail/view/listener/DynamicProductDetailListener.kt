@@ -12,6 +12,7 @@ import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductNotifyMeDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
+import com.tokopedia.product.detail.data.model.datamodel.TopAdsImageDataModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 
 interface DynamicProductDetailListener {
@@ -46,7 +47,6 @@ interface DynamicProductDetailListener {
      * ProductDiscussionViewHolder
      */
     fun onDiscussionClicked(componentTrackDataModel: ComponentTrackDataModel?)
-    fun onLastDiscussionClicked(talkId:String, componentTrackDataModel: ComponentTrackDataModel?)
     fun onDiscussionRefreshClicked()
     fun onDiscussionSendQuestionClicked(componentTrackDataModel: ComponentTrackDataModel)
     fun goToTalkReading(componentTrackDataModel: ComponentTrackDataModel, numberOfThreadsShown: String)
@@ -139,4 +139,10 @@ interface DynamicProductDetailListener {
      */
     fun onTickerGeneralClicked(tickerTitle: String, tickerType: Int, url: String, componentTrackDataModel: ComponentTrackDataModel?)
     fun onTickerShopClicked(tickerTitle: String, tickerType: Int, componentTrackDataModel: ComponentTrackDataModel?)
+
+    /**
+     * ProductTopAdsImageViewHolder
+     */
+    fun onTopAdsImageViewClicked(model: TopAdsImageDataModel, applink: String?, bannerId: String, bannerName: String)
+    fun onTopAdsImageViewImpression(model: TopAdsImageDataModel, bannerId: String, bannerName: String)
 }

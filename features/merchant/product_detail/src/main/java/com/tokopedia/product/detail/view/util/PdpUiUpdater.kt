@@ -21,6 +21,7 @@ import com.tokopedia.product.detail.data.util.getCurrencyFormatted
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.variant_common.model.VariantCategory
 import kotlin.math.roundToLong
 
@@ -50,9 +51,6 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
 
     val productInfoMap: ProductInfoDataModel?
         get() = mapOfData[ProductDetailConstant.PRODUCT_INFO] as? ProductInfoDataModel
-
-    val productDiscussionMap: ProductDiscussionDataModel?
-        get() = mapOfData[ProductDetailConstant.DISCUSSION] as? ProductDiscussionDataModel
 
     val productDiscussionMostHelpfulMap: ProductDiscussionMostHelpfulDataModel?
         get() = mapOfData[ProductDetailConstant.DISCUSSION_FAQ] as? ProductDiscussionMostHelpfulDataModel
@@ -121,6 +119,9 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
     val productByMeMap: ProductGeneralInfoDataModel?
         get() = mapOfData[ProductDetailConstant.KEY_BYME] as? ProductGeneralInfoDataModel
 
+    val topAdsImageData: TopAdsImageDataModel?
+        get() = mapOfData[ProductDetailConstant.KEY_TOP_ADS] as? TopAdsImageDataModel
+
     fun updateDataP1(context: Context?, dataP1: DynamicProductInfoP1?) {
         dataP1?.let {
             basicContentMap?.run {
@@ -158,11 +159,6 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
 
             valuePropositionDataModel?.run {
                 isOfficialStore = it.data.isOS
-            }
-
-            productDiscussionMap?.run {
-                shopId = it.basic.shopID
-                talkCount = it.basic.stats.countTalk
             }
 
             miniSocialProofMap?.run {
@@ -210,8 +206,8 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
 
     fun updateDataTradein(context: Context?, tradeinResponse: ValidateTradeIn) {
         productTradeinMap?.run {
-            basicContentMap?.shouldShowTradein = true
-            snapShotMap?.shouldShowTradein = true
+            basicContentMap?.shouldShowTradein = tradeinResponse.isEligible
+            snapShotMap?.shouldShowTradein = tradeinResponse.isEligible
 
             data.first().subtitle = if (tradeinResponse.usedPrice.toIntOrZero() > 0) {
                 context?.getString(R.string.text_price_holder, CurrencyFormatUtil.convertPriceValueToIdrFormat(tradeinResponse.usedPrice.toIntOrZero(), true))
@@ -243,11 +239,6 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
     fun updateWishlistData(isWishlisted: Boolean) {
         basicContentMap?.isWishlisted = isWishlisted
         snapShotMap?.isWishlisted = isWishlisted
-    }
-
-    fun updateBasicContentCodData(isCod: Boolean) {
-        snapShotMap?.shouldShowCod = isCod
-        basicContentMap?.shouldShowCod = isCod
     }
 
     fun updateFulfillmentData(context: Context?, isFullfillment: Boolean) {
@@ -367,10 +358,6 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
                 imageReviews = it.imageReviews
             }
 
-            productDiscussionMap?.run {
-                latestTalk = it.latestTalk
-            }
-
             mediaMap?.run {
                 shouldShowImageReview = it.imageReviews.isNotEmpty()
             }
@@ -471,5 +458,9 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
         return data.recommendationFilterChips.map {
             AnnotationChip(it)
         }
+    }
+
+    fun updateTopAdsImageData(data: ArrayList<TopAdsImageViewModel>) {
+        topAdsImageData?.data = data
     }
 }

@@ -107,7 +107,7 @@ public abstract class SellerRouterApplication extends MainApplication
         CoreNetworkRouter,
         LinkerRouter,
         SellerHomeRouter,
-        LoginRouter {
+        LoginRouter{
 
     protected RemoteConfig remoteConfig;
     private DaggerGMComponent.Builder daggerGMBuilder;
@@ -318,7 +318,7 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public void logInvalidGrant(Response response) {
-        AnalyticsLog.logInvalidGrant(this, legacyGCMHandler(), legacySessionHandler(), response.request().url().toString());
+        AnalyticsLog.logInvalidGrant(this, response.request().url().toString());
 
     }
 

@@ -10,12 +10,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import com.airbnb.lottie.LottieAnimationView
 import com.airbnb.lottie.LottieCompositionFactory
 import com.airbnb.lottie.LottieDrawable
+import com.crashlytics.android.Crashlytics
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
@@ -25,14 +27,18 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.device.info.DevicePerformanceInfo
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.imagepicker.editor.main.view.ImageEditorActivity
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.main.builder.*
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.reputation.common.view.AnimatedRatingPickerCreateReviewView
+import com.tokopedia.review.BuildConfig
 import com.tokopedia.review.R
 import com.tokopedia.review.ReviewInstance
+import com.tokopedia.review.common.analytics.ReviewPerformanceMonitoringContract
+import com.tokopedia.review.common.analytics.ReviewPerformanceMonitoringListener
 import com.tokopedia.review.common.analytics.ReviewTracking
 import com.tokopedia.review.common.data.*
 import com.tokopedia.review.common.presentation.util.ReviewScoreClickListener
@@ -48,6 +54,7 @@ import com.tokopedia.review.feature.createreputation.presentation.widget.CreateR
 import com.tokopedia.review.feature.createreputation.analytics.CreateReviewTracking
 import com.tokopedia.review.feature.createreputation.model.Reputation
 import com.tokopedia.review.feature.createreputation.presentation.viewmodel.CreateReviewViewModel
+import com.tokopedia.review.feature.inbox.common.ReviewInboxConstants
 import com.tokopedia.review.feature.ovoincentive.data.ProductRevIncentiveOvoDomain
 import com.tokopedia.review.feature.ovoincentive.presentation.bottomsheet.IncentiveOvoBottomSheet
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -56,14 +63,12 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import kotlinx.android.synthetic.main.fragment_create_review.*
 import kotlinx.android.synthetic.main.widget_create_review_text_area.*
-import kotlinx.android.synthetic.main.widget_create_review_text_area.view.*
-import kotlinx.android.synthetic.main.widget_create_review_text_area.view.createReviewEditText
 import javax.inject.Inject
 import com.tokopedia.usecase.coroutines.Fail as CoroutineFail
 import com.tokopedia.usecase.coroutines.Success as CoroutineSuccess
 
 class CreateReviewFragment : BaseDaggerFragment(),
-        ImageClickListener, TextAreaListener, ReviewScoreClickListener {
+        ImageClickListener, TextAreaListener, ReviewScoreClickListener, ReviewPerformanceMonitoringContract {
 
     companion object {
         private const val REQUEST_CODE_IMAGE = 111
@@ -89,6 +94,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
         private const val RATING_3 = 3
         private const val RATING_4 = 4
         private const val RATING_5 = 5
+        private const val SAME_ARGS_ERROR = 3
 
         fun createInstance(productId: String, reviewId: String, reviewClickAt: Int = 0, isEditMode: Boolean, feedbackId: Int) = CreateReviewFragment().also {
             it.arguments = Bundle().apply {
@@ -110,6 +116,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
     }
     private var isLowDevice = false
 
+    private var reviewPerformanceMonitoringListener: ReviewPerformanceMonitoringListener? = null
     private var shouldPlayAnimation: Boolean = true
     private var reviewClickAt: Int = 0
     private var reputationId: Int = 0
@@ -120,6 +127,42 @@ class CreateReviewFragment : BaseDaggerFragment(),
 
     lateinit var imgAnimationView: LottieAnimationView
     private var textAreaBottomSheet: CreateReviewTextAreaBottomSheet? = null
+
+    override fun stopPreparePerfomancePageMonitoring() {
+        reviewPerformanceMonitoringListener?.stopPreparePagePerformanceMonitoring()
+    }
+
+    override fun startNetworkRequestPerformanceMonitoring() {
+        reviewPerformanceMonitoringListener?.startNetworkRequestPerformanceMonitoring()
+    }
+
+    override fun stopNetworkRequestPerformanceMonitoring() {
+        reviewPerformanceMonitoringListener?.stopNetworkRequestPerformanceMonitoring()
+    }
+
+    override fun startRenderPerformanceMonitoring() {
+        reviewPerformanceMonitoringListener?.startRenderPerformanceMonitoring()
+        createReviewScrollView.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                reviewPerformanceMonitoringListener?.stopRenderPerformanceMonitoring()
+                reviewPerformanceMonitoringListener?.stopPerformanceMonitoring()
+                createReviewScrollView.viewTreeObserver.removeOnGlobalLayoutListener(this)
+            }
+        })
+    }
+
+    override fun castContextToTalkPerformanceMonitoringListener(context: Context): ReviewPerformanceMonitoringListener? {
+        return if(context is ReviewPerformanceMonitoringListener) {
+            context
+        } else {
+            null
+        }
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        reviewPerformanceMonitoringListener = castContextToTalkPerformanceMonitoringListener(context)
+    }
 
     override fun getScreenName(): String = ""
 
@@ -187,13 +230,29 @@ class CreateReviewFragment : BaseDaggerFragment(),
                     onSuccessSubmitReview()
                 }
                 is Fail -> {
-                    onFailSubmitReview()
+                    onFailSubmitReview(it.fail)
+                }
+            }
+        })
+
+        createReviewViewModel.editReviewResult.observe(viewLifecycleOwner, Observer {
+            when(it) {
+                is LoadingView -> {
+                    showLoading()
+                }
+                is Success -> {
+                    onSuccessSubmitReview()
+                }
+                is Fail -> {
+                    onFailEditReview(it.fail)
                 }
             }
         })
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        stopPreparePerfomancePageMonitoring()
+        startNetworkRequestPerformanceMonitoring()
         super.onViewCreated(view, savedInstanceState)
         isLowDevice = DevicePerformanceInfo.isLow(context)
         initCreateReviewTextArea()
@@ -273,8 +332,13 @@ class CreateReviewFragment : BaseDaggerFragment(),
 
         rv_img_review?.adapter = imageAdapter
 
-        createReviewSubmitButton.setOnClickListener {
-            submitReview()
+        createReviewSubmitButton.apply {
+            if(isEditMode) {
+                text = getString(R.string.review_create_submit_edit)
+            }
+            setOnClickListener {
+                submitReview()
+            }
         }
     }
 
@@ -292,7 +356,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
             val builder = ImagePickerBuilder(getString(R.string.image_picker_title),
                     intArrayOf(ImagePickerTabTypeDef.TYPE_CAMERA, ImagePickerTabTypeDef.TYPE_GALLERY),
                     GalleryType.IMAGE_ONLY, ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB,
-                    ImagePickerBuilder.DEFAULT_MIN_RESOLUTION, ImageRatioTypeDef.RATIO_1_1, true,
+                    ImagePickerBuilder.DEFAULT_MIN_RESOLUTION, ImageRatioTypeDef.RATIO_1_1, false,
                     ImagePickerEditorBuilder(
                             intArrayOf(ImageEditActionTypeDef.ACTION_BRIGHTNESS, ImageEditActionTypeDef.ACTION_CONTRAST,
                                     ImageEditActionTypeDef.ACTION_CROP, ImageEditActionTypeDef.ACTION_ROTATE),
@@ -307,7 +371,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
     }
 
     override fun onRemoveImageClick(item: BaseImageReviewUiModel) {
-        imageAdapter.setImageReviewData(createReviewViewModel.removeImage(item))
+        imageAdapter.setImageReviewData(createReviewViewModel.removeImage(item, isEditMode))
         if(imageAdapter.isEmpty()) {
             rv_img_review.hide()
             createReviewAddPhotoEmpty.show()
@@ -350,6 +414,9 @@ class CreateReviewFragment : BaseDaggerFragment(),
             REQUEST_CODE_IMAGE -> {
                 if (resultCode == Activity.RESULT_OK && data != null) {
                     val selectedImage = data.getStringArrayListExtra(ImagePickerActivity.PICKER_RESULT_PATHS)
+                    val originalImageUrl = data.getStringArrayListExtra(ImageEditorActivity.RESULT_PREVIOUS_IMAGE)
+                    val isEdited = data.getSerializableExtra(ImageEditorActivity.RESULT_IS_EDITTED) as ArrayList<Boolean>
+
                     createReviewViewModel.clearImageData()
 
                     CreateReviewTracking.reviewOnImageUploadTracker(
@@ -361,8 +428,8 @@ class CreateReviewFragment : BaseDaggerFragment(),
                             feedbackId.toString()
                     )
 
-                    val imageListData = createReviewViewModel.getImageList(selectedImage)
-                    if (selectedImage.isNotEmpty()) {
+                    if (!selectedImage.isNullOrEmpty()) {
+                        val imageListData = createReviewViewModel.getImageList(selectedImage, originalImageUrl, isEdited)
                         imageAdapter.setImageReviewData(imageListData)
                         rv_img_review.show()
                         createReviewAddPhotoEmpty.hide()
@@ -409,15 +476,19 @@ class CreateReviewFragment : BaseDaggerFragment(),
     }
 
     private fun onSuccessGetReviewForm(data: ProductRevGetForm) {
+        stopNetworkRequestPerformanceMonitoring()
+        startRenderPerformanceMonitoring()
         with(data.productrevGetForm) {
-            if (!validToReview) {
-                activity?.let {
-                    Toast.makeText(it, R.string.review_already_submit, Toast.LENGTH_LONG).show()
-                    finishIfRoot()
+            when {
+                !validToReview -> {
+                    finishIfRoot(false, getString(R.string.review_pending_invalid_to_review))
+                    return
                 }
-                return
+                productData.productStatus == 0 -> {
+                    finishIfRoot(false, getString(R.string.review_pending_deleted_product_error_toaster))
+                    return
+                }
             }
-
             hideShimmering()
             showLayout()
 
@@ -457,7 +528,6 @@ class CreateReviewFragment : BaseDaggerFragment(),
                     setDescriptionClickEvent(object : TickerCallback {
                         override fun onDescriptionViewClick(linkUrl: CharSequence) {
                             val bottomSheet: BottomSheetUnify = IncentiveOvoBottomSheet(data, "")
-                            bottomSheet.isFullpage = true
                             fragmentManager?.let { bottomSheet.show(it, bottomSheet.tag)}
                             bottomSheet.setCloseClickListener {
                                 ReviewTracking.onClickDismissIncentiveOvoBottomSheetTracker("")
@@ -481,6 +551,8 @@ class CreateReviewFragment : BaseDaggerFragment(),
     }
 
     private fun onSuccessGetReviewDetail(productrevGetReviewDetail: ProductrevGetReviewDetail) {
+        stopNetworkRequestPerformanceMonitoring()
+        startRenderPerformanceMonitoring()
         hideShimmering()
         with(productrevGetReviewDetail) {
             setReview(review)
@@ -625,10 +697,28 @@ class CreateReviewFragment : BaseDaggerFragment(),
         finishIfRoot(true)
     }
 
-    private fun onFailSubmitReview() {
+    private fun onFailSubmitReview(throwable: Throwable) {
         stopLoading()
         showLayout()
-        showToasterError(getString(R.string.review_create_fail_toaster))
+        showToasterError(throwable.message ?: getString(R.string.review_create_fail_toaster))
+        logToCrashlytics(throwable)
+    }
+
+    private fun onFailEditReview(throwable: Throwable) {
+        stopLoading()
+        showLayout()
+        logToCrashlytics(throwable)
+        (throwable as? MessageErrorException)?.let {
+            if(throwable.errorCode.toIntOrZero() == SAME_ARGS_ERROR) {
+                view?.let {
+                    showToasterError(throwable.message ?: getString(R.string.review_edit_fail))
+                }
+            } else {
+                showToasterError(getString(R.string.review_edit_fail))
+            }
+            return
+        }
+        showToasterError(getString(R.string.review_edit_fail))
     }
 
     private fun showShimmering() {
@@ -653,7 +743,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
 
     private fun showToasterError(message: String) {
         view?.let {
-            Toaster.build(it, message, Toaster.toasterLength, Toaster.TYPE_ERROR).show()
+            Toaster.build(it, message, Toaster.toasterLength, Toaster.TYPE_ERROR, getString(R.string.review_oke)).show()
         }
     }
 
@@ -672,7 +762,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
 
     }
 
-    private fun finishIfRoot(success: Boolean = false) {
+    private fun finishIfRoot(success: Boolean = false, errorMessage: String = "") {
         activity?.run {
             if (isTaskRoot) {
                 val intent = RouteManager.getIntent(context, ApplinkConst.HOME)
@@ -683,8 +773,11 @@ class CreateReviewFragment : BaseDaggerFragment(),
             } else {
                 val intent = Intent()
                 intent.putExtra(ReviewConstants.ARGS_RATING, reviewClickAt.toFloat())
+                intent.putExtra(ReviewInboxConstants.CREATE_REVIEW_ERROR_MESSAGE, errorMessage)
                 if (success) {
                     setResult(Activity.RESULT_OK, intent)
+                } else {
+                    setResult(Activity.RESULT_FIRST_USER, intent)
                 }
             }
             finish()
@@ -739,6 +832,14 @@ class CreateReviewFragment : BaseDaggerFragment(),
     private fun hideScoreWidgetAndDivider() {
         createReviewScoreDivider.hide()
         createReviewScore.hide()
+    }
+
+    private fun logToCrashlytics(throwable: Throwable) {
+        if (!BuildConfig.DEBUG) {
+            Crashlytics.logException(throwable)
+        } else {
+            throwable.printStackTrace()
+        }
     }
 
     fun getOrderId(): String {

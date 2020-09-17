@@ -1,8 +1,8 @@
 apply plugin: 'com.android.application'
-//if (project.hasProperty("auto-patch")) {
-//    apply plugin: 'auto-patch-plugin'
-//}
-//apply plugin: 'robust'
+if (project.hasProperty("auto-patch")) {
+    apply plugin: 'auto-patch-plugin'
+}
+apply plugin: 'robust'
 apply plugin: 'io.fabric'
 apply plugin: 'io.hansel.preprocessor'
 apply plugin: 'com.bugsnag.android.gradle'
@@ -212,6 +212,7 @@ dependencies {
     } else {
         implementation project(rootProject.ext.features.developerOptionsNoop)
     }
+    implementation rootProject.ext.tkpdInternalLibDependencies.authentication
     implementation project(rootProject.ext.features.commonDigital)
     implementation project(rootProject.ext.features.tkpdcore)
     implementation project(rootProject.ext.features.sellerorder)

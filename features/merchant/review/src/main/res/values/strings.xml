@@ -121,6 +121,7 @@
     <string name="review_create_dialog_title">Yakin nggak jadi tulis ulasan?</string>
     <string name="review_create_dialog_body">Tinggal sedikit lagi, lho. Ulasanmu tidak tersimpan jika kamu keluar halaman ini.</string>
     <string name="review_create_activity_title">Tulis Ulasan</string>
+    <string name="review_create_submit_edit">Simpan</string>
 
     <string name="review_date">• %s</string>
     <string name="review_refresh">Refresh</string>
@@ -137,6 +138,8 @@
     <string name="review_pending_no_product_empty_title">Belum ada barang untuk kamu ulas</string>
     <string name="review_pending_no_product_empty_content">Saatnya kamu belanja dan kasih ulasanmu ke jutaan orang!</string>
     <string name="review_pending_variant">Varian: %s</string>
+    <string name="review_pending_deleted_product_error_toaster">Maaf, barang ini sudah dihapus. Simpan saja ulasanmu di hati.</string>
+    <string name="review_pending_invalid_to_review">Oops, kamu tidak bisa ulas barang ini karena sudah melebihi batas waktu.</string>
 
     <string name="review_history_tab_title">Riwayat</string>
     <string name="review_history_search_bar_hint">Cari produk di sini</string>
@@ -160,12 +163,13 @@
     <string name="review_history_details_score_empty">Gimana layanan toko ini?</string>
     <string name="review_detail_score_expired">Batas waktu penilaian toko sudah habis</string>
     <string name="review_history_detail_toaster_edit_success">Ulasan berhasil diubah</string>
-    <string name="review_reputation_deadline">Kamu masih bisa ubah penilaian sebelum</string>
+    <string name="review_reputation_deadline">Kamu masih bisa ubah penilaianmu tentang toko ini.</string>
 
     <string name="review_edit_dialog_title">Yakin keluar halaman ini?</string>
     <string name="review_edit_dialog_subtitle">Ulasan yang kamu ubah tidak akan tersimpan jika keluar dari halaman ini.</string>
     <string name="review_edit_dialog_continue_writing">Lanjut Tulis Ulasan</string>
     <string name="review_edit_dialog_exit">Ya, Keluar</string>
+    <string name="review_edit_fail">Ulasan tidak tersimpan. Cek koneksi internetmu dan coba lagi, ya</string>
 
     <string name="review_seller_tab_title">Ulasan Pembeli</string>
 

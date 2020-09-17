@@ -3,8 +3,11 @@ package com.tokopedia.play
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.analytics.performance.util.PerformanceDataFileUtils
+import com.tokopedia.play.data.PlayMockModelConfig
 import com.tokopedia.play.view.activity.PlayActivity
 import com.tokopedia.test.application.TestRepeatRule
+import com.tokopedia.test.application.util.setupGraphqlMockResponseWithCheck
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
@@ -19,6 +22,11 @@ class PltPlayPerformanceTest {
 
     @get:Rule
     var testRepeatRule: TestRepeatRule = TestRepeatRule()
+
+    @Before
+    fun setup() {
+        setupGraphqlMockResponseWithCheck(PlayMockModelConfig())
+    }
 
     @Test
     fun testPageLoadTimePerformance() {
@@ -37,7 +45,6 @@ class PltPlayPerformanceTest {
     }
 
     companion object {
-
         const val TEST_CASE_PAGE_LOAD_TIME_PERFORMANCE = "play_test_case_page_load_time"
     }
 }

@@ -1,11 +1,12 @@
 {
   "readme": "Search Product P0 Tracking - General Search, Impression Organic and Top Ads, Click Organic And Top Ads",
+  "mode": "exact",
   "query" : [
     {
       "event": "clickSearch",
       "eventCategory": "top nav",
       "eventAction": "general search",
-      "eventLabel": "{{keyword: .* - treatment: .* - response: \\d*}}",
+      "eventLabel": "{{keyword: .* - treatment: .* - response: \\d* - .*}}",
       "isResultFound": "{{.*}}",
       "categoryIdMapping": "{{.*}}",
       "categoryNameMapping": "{{.*}}",

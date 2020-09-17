@@ -188,6 +188,21 @@
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
+      
+        <activity
+          android:name=".termprivacy.view.activity.TermPrivacyActivity"
+          android:label="@string/title_activity_term_and_privacy"
+          android:screenOrientation="portrait"
+          android:theme="@style/Theme.White"
+          android:windowSoftInputMode="adjustResize">
+          <intent-filter>
+            <action android:name="android.intent.action.VIEW" />
+            <category android:name="android.intent.category.DEFAULT" />
+            <category android:name="android.intent.category.BROWSABLE" />
+        
+            <data android:scheme="launch.TermPrivacy" tools:ignore="AppLinkUrlError" />
+          </intent-filter>
+        </activity>
 
         <service android:name=".seamlesslogin.RemoteService">
             <intent-filter>

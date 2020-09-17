@@ -35,6 +35,7 @@ import com.tokopedia.search.result.presentation.model.BroadMatchItemViewModel;
 import com.tokopedia.search.result.presentation.model.BroadMatchViewModel;
 import com.tokopedia.search.result.presentation.model.CpmViewModel;
 import com.tokopedia.search.result.presentation.model.FreeOngkirViewModel;
+import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
 import com.tokopedia.search.result.presentation.model.InspirationCardViewModel;
 import com.tokopedia.search.result.presentation.model.InspirationCarouselViewModel;
 import com.tokopedia.search.result.presentation.model.LabelGroupViewModel;
@@ -658,10 +659,8 @@ final class ProductListPresenter
     }
 
     private void getViewToRedirectSearch(SearchProductModel searchProductModel) {
-        if (searchProductModel.getSearchProduct().getHeader().getResponseCode().equals("9")) {
-            ProductViewModel productViewModel = createProductViewModelWithPosition(searchProductModel);
-            getViewToSendTrackingSearchAttempt(productViewModel);
-        }
+        ProductViewModel productViewModel = createProductViewModelWithPosition(searchProductModel);
+        getViewToSendTrackingSearchAttempt(productViewModel);
 
         String applink = searchProductModel.getSearchProduct().getData().getRedirection().getRedirectApplink();
         getView().redirectSearchToAnotherPage(applink);
@@ -1188,7 +1187,7 @@ final class ProductListPresenter
     private GeneralSearchTrackingModel createGeneralSearchTrackingModel(ProductViewModel productViewModel, String query, Set<String> categoryIdMapping, Set<String> categoryNameMapping) {
         return new GeneralSearchTrackingModel(
                 createGeneralSearchTrackingEventLabel(productViewModel, query),
-                !productViewModel.getProductList().isEmpty(),
+                Boolean.toString(!productViewModel.getProductList().isEmpty()),
                 StringUtils.join(categoryIdMapping, ","),
                 StringUtils.join(categoryNameMapping, ","),
                 createGeneralSearchTrackingRelatedKeyword(productViewModel)
@@ -1196,12 +1195,20 @@ final class ProductListPresenter
     }
 
     private String createGeneralSearchTrackingEventLabel(ProductViewModel productViewModel, String query) {
+        String source = getTopNavSource(productViewModel.getGlobalNavViewModel());
         return String.format(
                 SearchEventTracking.Label.KEYWORD_TREATMENT_RESPONSE,
                 query,
                 productViewModel.getKeywordProcess(),
-                productViewModel.getResponseCode()
+                productViewModel.getResponseCode(),
+                source
         );
+    }
+
+    private String getTopNavSource(GlobalNavViewModel globalNavViewModel) {
+        if (globalNavViewModel == null) return "none";
+        if (globalNavViewModel.getSource().isEmpty()) return "other";
+        return globalNavViewModel.getSource();
     }
 
     private String createGeneralSearchTrackingRelatedKeyword(ProductViewModel productViewModel) {
@@ -1441,7 +1448,8 @@ final class ProductListPresenter
                 item.getTopadsImpressionUrl(),
                 item.getProductID(),
                 item.getProductName(),
-                item.getImageUrl()
+                item.getImageUrl(),
+                SearchConstant.TopAdsComponent.TOP_ADS
         );
 
         getView().sendTopAdsGTMTrackingProductImpression(item);
@@ -1454,7 +1462,8 @@ final class ProductListPresenter
                     item.getTopadsImpressionUrl(),
                     item.getProductID(),
                     item.getProductName(),
-                    item.getImageUrl()
+                    item.getImageUrl(),
+                    SearchConstant.TopAdsComponent.ORGANIC_ADS
             );
 
         getView().sendProductImpressionTrackingEvent(item);
@@ -1478,7 +1487,8 @@ final class ProductListPresenter
                 item.getTopadsClickUrl(),
                 item.getProductID(),
                 item.getProductName(),
-                item.getImageUrl()
+                item.getImageUrl(),
+                SearchConstant.TopAdsComponent.TOP_ADS
         );
 
         getView().sendTopAdsGTMTrackingProductClick(item);
@@ -1491,7 +1501,8 @@ final class ProductListPresenter
                     item.getTopadsClickUrl(),
                     item.getProductID(),
                     item.getProductName(),
-                    item.getImageUrl()
+                    item.getImageUrl(),
+                    SearchConstant.TopAdsComponent.ORGANIC_ADS
             );
 
         getView().sendGTMTrackingProductClick(item, getUserId());
@@ -1621,6 +1632,38 @@ final class ProductListPresenter
 
     private void handleGetDynamicFilterFailed() {
         getViewToSetDynamicFilterModel(SearchFilterUtilsKt.createSearchProductDefaultFilter());
+    }
+
+    @Override
+    public void onBroadMatchItemImpressed(@NotNull BroadMatchItemViewModel broadMatchItemViewModel) {
+        if (getView() == null || !broadMatchItemViewModel.isOrganicAds()) return;
+
+        topAdsUrlHitter.hitImpressionUrl(
+                getView().getClassName(),
+                broadMatchItemViewModel.getTopAdsViewUrl(),
+                broadMatchItemViewModel.getId(),
+                broadMatchItemViewModel.getName(),
+                broadMatchItemViewModel.getImageUrl(),
+                SearchConstant.TopAdsComponent.BROAD_MATCH_ADS
+        );
+    }
+
+    @Override
+    public void onBroadMatchItemClick(@NotNull BroadMatchItemViewModel broadMatchItemViewModel) {
+        if (getView() == null) return;
+
+        getView().trackEventClickBroadMatchItem(broadMatchItemViewModel);
+        getView().redirectionStartActivity(broadMatchItemViewModel.getApplink(), broadMatchItemViewModel.getUrl());
+
+        if (broadMatchItemViewModel.isOrganicAds())
+            topAdsUrlHitter.hitClickUrl(
+                    getView().getClassName(),
+                    broadMatchItemViewModel.getTopAdsClickUrl(),
+                    broadMatchItemViewModel.getId(),
+                    broadMatchItemViewModel.getName(),
+                    broadMatchItemViewModel.getImageUrl(),
+                    SearchConstant.TopAdsComponent.BROAD_MATCH_ADS
+            );
     }
 
     @Override

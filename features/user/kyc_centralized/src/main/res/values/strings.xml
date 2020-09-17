@@ -28,7 +28,8 @@
 
     <string name="kyc_failed_title">Gagal Verifikasi</string>
     <string name="kyc_failed_text">Sistem tidak dapat membaca informasi yang terdapat di dokumen Anda.\n\nSilakan unggah ulang dokumen Anda. Pastikan foto tidak terpotong dan informasi di dalamnya terbaca jelas.</string>
-    <string name="kyc_failed_button">Verifikasi Ulang</string>
+    <string name="kyc_failed_text_with_reason">Sistem kami tidak bisa memproses foto identitasmu karena:</string>
+    <string name="kyc_failed_button">Upload Ulang</string>
 
     <string name="kyc_verified_title">Dokumen Telah Terverifikasi!</string>
     <string name="kyc_verified_text">Data yang Anda berikan telah tersimpan\ndan terlindungi dengan aman di dalam\nsistem Tokopedia.</string>
@@ -129,5 +130,7 @@
     <string name="kyc_ktp_ok_face_fail_button">Verifikasi Ulang Wajah</string>
     <string name="kyc_ktp_face_fail_button">Coba Lagi</string>
     <string name="kyc_ktp_fail_face_ok_button">Foto Ulang KTP</string>
+
+    <string name="user_identification_default_request_error_unknown">Terjadi kesalahan. Ulangi beberapa saat lagi</string>
 
 </resources>

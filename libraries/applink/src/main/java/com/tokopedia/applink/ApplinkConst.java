@@ -35,7 +35,13 @@ public interface ApplinkConst {
     String SHOP_NOTE = "tokopedia://shop/{shop_id}/note";
     String SHOP_INFO = "tokopedia://shop/{shop_id}/info";
     String SHOP_HOME = "tokopedia://shop/{shop_id}/home";
+    String SHOP_PRODUCT = "tokopedia://shop/{shop_id}/product";
+    String SHOP_FEED = "tokopedia://shop/{shop_id}/feed";
+    String SHOP_ETALASE_LIST = "tokopedia://shop/{shop_id}/etalase-list";
+    String MY_SHOP_ETALASE_LIST = "tokopedia://my-shop/etalase/list";
+
     String SHOP_SETTINGS_NOTE = "tokopedia://setting/shop/note";
+    String SHOP_SETTINGS_INFO = "tokopedia://setting/shop/info";
     String PRODUCT_INFO = "tokopedia://product/{product_id}";
     String PRODUCT_IMAGE_REVIEW = "tokopedia://product/{product_id}/imagereview";
     String PRODUCT_ADD = "tokopedia://product/add";
@@ -61,10 +67,12 @@ public interface ApplinkConst {
     String PRODUCT_TALK = "tokopedia://product/{product_id}/talk";
     String DIGITAL = "tokopedia://digital";
     String DIGITAL_PRODUCT = "tokopedia://digital/form";
+    String DIGITAL_SUBHOMEPAGE_HOME = "tokopedia://recharge/home";
     String DIGITAL_SMARTCARD = "tokopedia://digital/smartcard";
     String DIGITAL_SMARTBILLS = "tokopedia://digital/bayarsekaligus";
     String DIGITAL_CART = "tokopedia://digital/cart";
     String DIGITAL_CATEGORY = "tokopedia://digital/category";
+    String RECHARGE = "tokopedia://recharge";
     String TRAIN_HOMEPAGE = "tokopedia://kereta";
     String DISCOVERY_PAGE = "tokopedia://discovery/{page_id}";
     String REACT_DISCOVERY_PAGE = "tokopedia://reactDiscovery/{page_id}";
@@ -145,8 +153,6 @@ public interface ApplinkConst {
     String HOTEL_ORDER = "tokopedia://hotel/order";
     String HOTEL = "tokopedia://hotel";
     String TRAVEL_SUBHOMEPAGE = "tokopedia://travelentertainment";
-    String DIGITAL_RECHARGE = "tokopedia://recharge";
-    String DIGITAL_SUBHOMEPAGE_HOME = "tokopedia://recharge/home";
 
     String MARKETPLACE_ORDER = "tokopedia://belanja/order";
     String MARKETPLACE_ORDER_FILTER = "tokopedia://order/marketplace/filter/{filter_id}";
@@ -387,6 +393,8 @@ public interface ApplinkConst {
         String VOUCHER_DETAIL = "sellerapp://voucher-detail";
         String CREATE_VOUCHER = "sellerapp://create-voucher";
         String SELLER_SEARCH = "sellerapp://seller-search";
+        String PLAY_BROADCASTER = "sellerapp://play-broadcaster";
+        String CENTRALIZED_PROMO = "sellerapp://centralized-promo";
     }
 
     interface Query {

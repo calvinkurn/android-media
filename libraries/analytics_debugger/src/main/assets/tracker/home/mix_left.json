@@ -37,6 +37,7 @@
         "dimension96": "{{.*}}",
         "price": "{{\\d*.\\d*|\\d.\\d+E\\d}}",
         "dimension40": "{{.*}}",
+        "dimension84": "{{.*}}",
         "index": "{{\\d*.\\d*}}",
         "item_name": "{{.*}}",
         "item_brand": "{{.*}}",
@@ -52,7 +53,11 @@
       "eventAction": "click view all on dynamic channel left carousel",
       "sessionIris": "{{.*}}",
       "eventLabel": "{{.*}}",
-      "channelId": "{{.*}}"
+      "channelId": "{{.*}}",
+      "businessUnit": "home & browse",
+      "currentSite": "tokopediamarketplace",
+      "screenName": "/",
+      "userId": "{{.*}}"
     },
     {
       "businessUnit": "home & browse",
@@ -72,8 +77,6 @@
         "creative_slot": "{{.*}}",
         "item_id": "{{.*}}",
         "item_name": "{{.*}}",
-        "promo_code": "{{.*}}",
-        "promo_id": "{{.*}}",
         "creative_url": "{{.*}}"
       }],
       "businessUnit": "home & browse",
@@ -83,7 +86,8 @@
       "event": "view_item",
       "eventAction": "impression on banner dynamic channel left carousel",
       "sessionIris": "{{.*}}",
-      "eventLabel": "{{.*}}"
+      "eventLabel": "{{.*}}",
+      "userId": "{{.*}}"
     },
     {
       "businessUnit": "home & browse",
@@ -92,23 +96,22 @@
       "eventAction": "click on banner dynamic channel left carousel",
       "sessionIris": "{{.*}}",
       "eventLabel": "{{.*}}",
+      "shopId": "{{.*}}",
       "promotions": [{
         "creative_name": "{{.*}}",
         "creative_slot": "{{.*}}",
         "item_id": "{{.*}}",
         "item_name": "{{.*}}",
-        "promo_code": "{{.*}}",
-        "promo_id": "{{.*}}",
         "creative_url": "{{.*}}"
       }],
       "affinityLabel": "{{.*}}",
       "currentSite": "tokopediamarketplace",
       "attribution": "{{.*}}",
-      "shopId": "{{.*}}",
       "event": "select_content",
       "categoryId": "{{.*}}",
       "channelId": "{{.*}}",
-      "campaignCode": "{{.*}}"
+      "campaignCode": "{{.*}}",
+      "userId": "{{.*}}"
     }
   ]
 }

@@ -29,6 +29,13 @@ def allowDistribution() {
     return "false";
 }
 
+def isDebugTraceEnabled() {
+    if (project.hasProperty('debugTrace') && debugTrace == "true") {
+        return "true";
+    }
+    return "false";
+}
+
 def isPreInstall() {
     if (project.hasProperty('isPreInstall') && isPreInstall == "true") {
         return "true"
@@ -168,6 +175,7 @@ android {
             buildConfigField "String", "PREINSTALL_NAME", "\"\""
             buildConfigField "String", "PREINSTALL_DESC", "\"\""
             buildConfigField "String", "PREINSTALL_SITE", "\"\""
+            buildConfigField "boolean", "ENABLE_DEBUG_TRACE", isDebugTraceEnabled()
             ext.enableHansel = project.hasProperty('hanselEnableDebug')
             ext.enableCrashlytics = false
             FirebasePerformance {
@@ -199,6 +207,7 @@ android {
             buildConfigField "String", "PREINSTALL_NAME", "\"${getDynamicProperty("preInstallName")}\""
             buildConfigField "String", "PREINSTALL_DESC", "\"${getDynamicProperty("preInstallDesc")}\""
             buildConfigField "String", "PREINSTALL_SITE", "\"${getDynamicProperty("preInstallSite")}\""
+            buildConfigField "boolean", "ENABLE_DEBUG_TRACE", isDebugTraceEnabled()
             multiDexKeepFile file('multidex-config.txt')
             multiDexKeepProguard file('multidex-config.pro')
             if (allowProguard()) {
@@ -313,8 +322,6 @@ dependencies {
     implementation project(rootProject.ext.features.atc_common)
     implementation project(rootProject.ext.features.fcm_common)
     implementation project(rootProject.ext.features.discovery2)
-    implementation project(rootProject.ext.features.purchase_platform_common)
-    implementation project(rootProject.ext.features.cart)
     implementation project(rootProject.ext.features.logisticcart)
     implementation project(rootProject.ext.features.logisticdata)
     implementation project(rootProject.ext.features.chatcommon)
