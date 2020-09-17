@@ -1,15 +1,15 @@
 package com.tokopedia.play_common.viewcomponent
 
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
+import androidx.lifecycle.LifecycleOwner
 
 /**
  * Created by jegul on 31/07/20
  */
-fun <VC: IViewComponent> Fragment.viewComponent(creator: (ViewGroup) -> VC) : ViewComponentDelegate<VC> {
+fun <VC: IViewComponent> LifecycleOwner.viewComponent(creator: (ViewGroup) -> VC) : ViewComponentDelegate<VC> {
     return ViewComponentDelegate(creator)
 }
 
-fun <VC: IViewComponent> Fragment.viewComponentOrNull(creator: (ViewGroup) -> VC) : ViewComponentNullableDelegate<VC> {
+fun <VC: IViewComponent> LifecycleOwner.viewComponentOrNull(creator: (ViewGroup) -> VC) : ViewComponentNullableDelegate<VC> {
     return ViewComponentNullableDelegate(creator)
 }

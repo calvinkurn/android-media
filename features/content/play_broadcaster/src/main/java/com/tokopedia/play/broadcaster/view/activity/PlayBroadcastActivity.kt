@@ -43,12 +43,13 @@ import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastPrepareFragment
 import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastUserInteractionFragment
 import com.tokopedia.play.broadcaster.view.fragment.PlayPermissionFragment
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
-import com.tokopedia.play.broadcaster.view.partial.ActionBarPartialView
+import com.tokopedia.play.broadcaster.view.partial.ActionBarViewComponent
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play_common.util.extension.awaitResume
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.play_common.view.updatePadding
+import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.CoroutineScope
@@ -84,10 +85,22 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
     private lateinit var viewModel: PlayBroadcastViewModel
 
     private lateinit var containerSetup: FrameLayout
-    private lateinit var viewActionBar: ActionBarPartialView
     private lateinit var loaderView: LoaderUnify
     private lateinit var globalErrorView: GlobalError
     private lateinit var surfaceView: SurfaceView
+    
+    private val actionBarView by viewComponent {
+        ActionBarViewComponent(it, object : ActionBarViewComponent.Listener {
+            override fun onCameraIconClicked() {
+                viewModel.switchCamera()
+                sendClickCameraAnalytic()
+            }
+
+            override fun onCloseIconClicked() {
+                onBackPressed()
+            }
+        })
+    }
 
     private var surfaceStatus = SurfaceStatus.UNINITED
 
@@ -140,7 +153,7 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
 
     override fun onStart() {
         super.onStart()
-        viewActionBar.rootView.requestApplyInsetsWhenAttached()
+        actionBarView.rootView.requestApplyInsetsWhenAttached()
     }
 
     override fun onResume() {
@@ -207,16 +220,15 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
     }
 
     override fun setupTitle(title: String) {
-        viewActionBar.setTitle(title)
+        actionBarView.setTitle(title)
     }
 
     override fun setupCloseButton(actionTitle: String) {
-        viewActionBar.setupCloseButton(actionTitle)
+        actionBarView.setupCloseButton(actionTitle)
     }
 
     override fun showActionBar(shouldShow: Boolean) {
-        if (!::viewActionBar.isInitialized) return
-        if (shouldShow) viewActionBar.show() else viewActionBar.hide()
+        if (shouldShow) actionBarView.show() else actionBarView.hide()
     }
 
     override fun getBroadcastComponent(): PlayBroadcastComponent {
@@ -260,17 +272,6 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
     }
 
     private fun setupView() {
-        viewActionBar = ActionBarPartialView(findViewById(android.R.id.content), object : ActionBarPartialView.Listener {
-            override fun onCameraIconClicked() {
-                viewModel.switchCamera()
-                sendClickCameraAnalytic()
-            }
-
-            override fun onCloseIconClicked() {
-                onBackPressed()
-            }
-        })
-
         surfaceView.holder.addCallback(object: SurfaceHolder.Callback{
             override fun surfaceChanged(surfaceHolder: SurfaceHolder?, p1: Int, p2: Int, p3: Int) {
                 surfaceStatus = SurfaceStatus.CHANGED
@@ -292,7 +293,7 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
     }
 
     private fun setupInsets() {
-        viewActionBar.rootView.doOnApplyWindowInsets { v, insets, _, _ ->
+        actionBarView.rootView.doOnApplyWindowInsets { v, insets, _, _ ->
             v.updatePadding(top = insets.systemWindowInsetTop)
         }
     }
