@@ -18,11 +18,8 @@ import com.tokopedia.unifycomponents.Toaster.TYPE_NORMAL as TYPE_NORMAL
 
 class ImageQualitySettingFragment: BaseDaggerFragment(), ImageQualitySettingListener {
 
-    @Inject lateinit var settings: MediaQualityCacheManager
-
-    private val _adapter by lazy {
-        ImageQualitySettingAdapter(settingsMenu(), this)
-    }
+    private val _adapter by lazy { ImageQualitySettingAdapter(settingsMenu(), this) }
+    private val settings by lazy { MediaQualityCacheManager(requireContext()) }
 
     override fun onCreateView(
             inflater: LayoutInflater,
@@ -64,19 +61,7 @@ class ImageQualitySettingFragment: BaseDaggerFragment(), ImageQualitySettingList
         }
     }
 
-    override fun initInjector() {
-        /*
-        * val fcmComponent = DaggerFcmComponent.builder()
-                .fcmModule(FcmModule(requireContext()))
-                .build()
-
-        DaggerTroubleshootComponent.builder()
-                .fcmComponent(fcmComponent)
-                .troubleshootModule(TroubleshootModule(requireContext()))
-                .build()
-                .inject(this)
-                * */
-    }
+    override fun initInjector() {}
 
     override fun getScreenName(): String = SCREEN_NAME
 

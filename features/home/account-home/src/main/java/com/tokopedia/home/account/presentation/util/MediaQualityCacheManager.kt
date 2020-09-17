@@ -2,9 +2,8 @@ package com.tokopedia.home.account.presentation.util
 
 import android.content.Context
 import android.content.SharedPreferences
-import javax.inject.Inject
 
-class MediaQualityCacheManager @Inject constructor(val context: Context) {
+class MediaQualityCacheManager constructor(val context: Context) {
 
     private fun pref(): SharedPreferences {
         return context.getSharedPreferences(MEDIA_QUALITY_PREF, Context.MODE_PRIVATE)
