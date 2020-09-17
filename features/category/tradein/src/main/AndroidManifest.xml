@@ -20,16 +20,6 @@
         <activity
             android:name=".view.viewcontrollers.activity.FinalPriceActivity"
             android:label="@string/harga_final" >
-            <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data
-                    android:scheme="@string/internal_scheme"
-                    android:host="@string/host_category"
-                    android:path="@string/path_final_price"/>
-
-            </intent-filter>
         </activity>
         <activity
             android:name=".view.viewcontrollers.activity.MoneyInCheckoutActivity"
@@ -73,6 +63,10 @@
                     android:scheme="@string/internal_scheme"
                     android:host="@string/host_category"
                     android:path="@string/path_tradein_seller_check"/>
+                <data
+                    android:scheme="@string/internal_scheme"
+                    android:host="@string/host_category"
+                    android:path="@string/path_final_price"/>
             </intent-filter>
         </activity>
     </application>

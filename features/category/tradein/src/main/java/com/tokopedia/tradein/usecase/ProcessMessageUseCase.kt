@@ -8,6 +8,7 @@ import com.tokopedia.tradein.model.DeviceAttr
 import com.tokopedia.tradein.model.DeviceDiagInput
 import com.tokopedia.tradein.model.DeviceDiagInputResponse
 import com.tokopedia.tradein.model.DeviceDiagnostics
+import com.tokopedia.tradein.raw.GQL_INSERT_DEVICE_DIAG
 import com.tokopedia.tradein.repository.TradeInRepository
 import com.tokopedia.tradein.view.viewcontrollers.activity.BaseTradeInActivity.TRADEIN_OFFLINE
 import java.util.*
@@ -46,12 +47,12 @@ class ProcessMessageUseCase @Inject constructor(
         return variables
     }
 
-    private fun getQuery(resources : Resources?): String {
-        return GraphqlHelper.loadRawString(resources, R.raw.gql_insert_device_diag)
+    private fun getQuery(): String {
+        return GQL_INSERT_DEVICE_DIAG
     }
 
-    suspend fun processMessage(resources : Resources?, tradeInParams: TradeInParams, diagnostics: DeviceDiagnostics): DeviceDiagInputResponse{
+    suspend fun processMessage(tradeInParams: TradeInParams, diagnostics: DeviceDiagnostics): DeviceDiagInputResponse{
         val variables = createRequestParams(tradeInParams, diagnostics)
-        return repository.getGQLData(getQuery(resources), DeviceDiagInputResponse::class.java, variables) as DeviceDiagInputResponse
+        return repository.getGQLData(getQuery(), DeviceDiagInputResponse::class.java, variables) as DeviceDiagInputResponse
     }
 }

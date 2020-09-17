@@ -52,7 +52,7 @@ class TradeInHomeViewModel @Inject constructor(
         val diagnostics = getDiagnosticData(intent)
         tradeInParams.deviceId = diagnostics.imei
         launchCatchError(block = {
-            setDiagnoseResult(processMessageUseCase.processMessage(getResource(), tradeInParams, diagnostics), diagnostics)
+            setDiagnoseResult(processMessageUseCase.processMessage(tradeInParams, diagnostics), diagnostics)
         }, onError = {
             it.printStackTrace()
             warningMessage.value = it.localizedMessage
@@ -67,6 +67,7 @@ class TradeInHomeViewModel @Inject constructor(
                 if (homeResultData.value?.deviceDisplayName != null) {
                     result.deviceDisplayName = homeResultData.value?.deviceDisplayName
                 }
+                result.displayMessage = CurrencyFormatUtil.convertPriceValueToIdrFormat(diagnostics.tradeInPrice!!, true)
                 result.priceStatus = HomeResult.PriceState.DIAGNOSED_VALID
             } else {
                 result.priceStatus = HomeResult.PriceState.DIAGNOSED_INVALID
