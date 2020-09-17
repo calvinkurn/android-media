@@ -1,0 +1,14 @@
+[
+  {
+    "data": {
+      "update_cart_occ": {
+        "error_message": [],
+        "status": "OK",
+        "data": {
+          "messages": [],
+          "success": 1
+        }
+      }
+    }
+  }
+]

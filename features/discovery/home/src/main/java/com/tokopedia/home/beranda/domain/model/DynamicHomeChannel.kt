@@ -85,6 +85,7 @@ data class DynamicHomeChannel(
             if (grids != null) {
                 for (i in grids.indices) {
                     val grid: Grid = grids[i]
+                    val topads = if (grid.isTopads) "topads" else "non topads"
                     list.add(
                             DataLayer.mapOf(
                                     "name", grid.name,
@@ -95,7 +96,7 @@ data class DynamicHomeChannel(
                                     "brand", "none / other",
                                     "category", "none / other",
                                     "variant", "none / other",
-                                    "list", "/ - p1 - dynamic channel mix - product - $headerName - $type",
+                                    "list", "/ - p1 - dynamic channel mix - product - $topads - $type - ${grid.recommendationType} - $headerName",
                                     "position", (i + 1).toString(),
                                     "dimension83", if (grid.freeOngkir.isActive) "bebas ongkir" else "none/other",
                                     "dimension84", channelId,
@@ -118,7 +119,7 @@ data class DynamicHomeChannel(
                     "ecommerce", DataLayer.mapOf(
                     "currencyCode", "IDR",
                     "click", DataLayer.mapOf(
-                    "actionField", DataLayer.mapOf("list", "/ - p1 - lego product - " + header.name),
+                    "actionField", DataLayer.mapOf("list", "/ - p1 - lego product - product - ${grids[position].recommendationType}" + header.name),
                     "products", DataLayer.listOf(
                     DataLayer.mapOf(
                             "name", grids[position].name,
@@ -249,7 +250,7 @@ data class DynamicHomeChannel(
                             ).toString(),
                                     "brand", "none / other",
                                     "variant", "none / other",
-                                    "list", "/ - p1 - lego product - " + header.name,
+                                    "list", "/ - p1 - lego product - product - ${grid.recommendationType}" + header.name,
                                     "position", (i + 1).toString(),
                                     "dimension83", if (grid.freeOngkir.isActive) "bebas ongkir" else "none/other",
                                     "dimension84", id,
@@ -432,7 +433,10 @@ data class DynamicHomeChannel(
             val benefit: Benefit = Benefit(),
             @Expose
             @SerializedName("textColor")
-            val textColor: String = ""
+            val textColor: String = "",
+            @Expose
+            @SerializedName("recommendationType")
+            val recommendationType: String = ""
     )
 
     data class Benefit(

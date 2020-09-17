@@ -233,6 +233,7 @@ class HomeUseCaseModule {
             "              isOutOfStock\n" +
             "              warehouseID\n" +
             "              minOrder\n" +
+            "              recommendationType\n" +
             "              shop{\n" +
             "                shopID\n" +
             "               }\n" +

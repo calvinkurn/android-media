@@ -7,6 +7,7 @@ import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.analytics.HomePageTrackingV2
 import com.tokopedia.home.analytics.v2.CategoryWidgetTracking
 import com.tokopedia.home.analytics.v2.ProductHighlightTracking
+import com.tokopedia.home.analytics.v2.RecommendationListTracking
 import com.tokopedia.home.beranda.data.datasource.default_data_source.HomeDefaultDataSource
 import com.tokopedia.home.beranda.domain.model.*
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.*
@@ -350,7 +351,7 @@ class HomeDynamicChannelVisitableFactoryImpl(
         )
         if (!isCache) {
             trackingQueue?.putEETracking(
-                    HomePageTrackingV2.RecommendationList.getRecommendationListImpression(channel,  userId = userSessionInterface?.userId ?: "") as HashMap<String, Any>
+                    RecommendationListTracking.getRecommendationListImpression(channel,  userId = userSessionInterface?.userId ?: "") as HashMap<String, Any>
             )
         }
         return viewModel
@@ -362,12 +363,6 @@ class HomeDynamicChannelVisitableFactoryImpl(
         val viewModel = ProductHighlightDataModel(
                 DynamicChannelComponentMapper.mapHomeChannelToComponent(channel, verticalPosition)
         )
-        if (!isCache) {
-
-            trackingQueue?.putEETracking(
-                    ProductHighlightTracking.getProductHighlightImpression(channel,  userId = userSessionInterface?.userId ?: "") as HashMap<String, Any>
-            )
-        }
         return viewModel
     }
 
@@ -393,37 +388,6 @@ class HomeDynamicChannelVisitableFactoryImpl(
         return Lego4AutoDataModel(
                 DynamicChannelComponentMapper.mapHomeChannelToComponent(channel, verticalPosition)
         )
-    }
-
-    private fun createSpotlight(spotlight: Spotlight, isCache: Boolean) {
-        val spotlightItems: MutableList<SpotlightItemDataModel> = ArrayList()
-        for (spotlightItem in spotlight.spotlights) {
-            spotlightItems.add(SpotlightItemDataModel(
-                    spotlightItem.id,
-                    spotlightItem.title,
-                    spotlightItem.description,
-                    spotlightItem.backgroundImageUrl,
-                    spotlightItem.tagName,
-                    spotlightItem.tagNameHexcolor,
-                    spotlightItem.tagHexcolor,
-                    spotlightItem.ctaText,
-                    spotlightItem.ctaTextHexcolor,
-                    spotlightItem.url,
-                    spotlightItem.applink,
-                    spotlight.promoName,
-                    spotlight.channelId,
-                    spotlightItem.galaxyAttribution,
-                    spotlightItem.persona,
-                    spotlightItem.brandId,
-                    spotlightItem.categoryPersona
-            ))
-        }
-        val viewModel = SpotlightDataModel(spotlightItems, spotlight.channelId)
-        if (!isCache) {
-            viewModel.setTrackingData(spotlight.enhanceImpressionSpotlightHomePage)
-            viewModel.isTrackingCombined = false
-        }
-        visitableList.add(viewModel)
     }
 
     private fun mappingPlayCarouselChannel(channel: DynamicHomeChannel.Channels,

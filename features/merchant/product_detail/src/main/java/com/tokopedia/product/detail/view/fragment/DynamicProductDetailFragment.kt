@@ -91,11 +91,8 @@ import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCart
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductNotifyMeDataModel
+import com.tokopedia.product.detail.data.model.datamodel.TopAdsImageDataModel
 import com.tokopedia.product.detail.data.model.financing.FtInstallmentCalculationDataResponse
-import com.tokopedia.product.detail.data.model.datamodel.*
-import com.tokopedia.product.detail.data.model.description.DescriptionData
-import com.tokopedia.product.detail.data.model.financing.FinancingDataResponse
-import com.tokopedia.product.detail.data.model.spesification.Specification
 import com.tokopedia.product.detail.data.util.*
 import com.tokopedia.product.detail.data.util.VariantMapper.generateVariantString
 import com.tokopedia.product.detail.data.util.getCurrencyFormatted
@@ -125,8 +122,7 @@ import com.tokopedia.referral.ReferralAction
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
-import com.tokopedia.shopetalasepicker.constant.ShopParamConstant
-import com.tokopedia.shopetalasepicker.view.activity.ShopEtalasePickerActivity
+import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
 import com.tokopedia.stickylogin.internal.StickyLoginConstant
 import com.tokopedia.stickylogin.view.StickyLoginView
@@ -210,8 +206,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     private var productId: String? = null
     private var productKey: String? = null
     private var shopDomain: String? = null
-    private var shouldShowCodP1 = false
-    private var shouldShowCodP3 = false
     private var isAffiliate = false
     private var affiliateString: String? = null
     private var deeplinkUrl: String = ""
@@ -238,6 +232,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     private val adapterFactory by lazy { DynamicProductDetailAdapterFactoryImpl(this, this) }
     private val dynamicAdapter by lazy { DynamicProductDetailAdapter(adapterFactory, this) }
     private var menu: Menu? = null
+
+    private val BUNDLE = "bundle"
 
     private val tradeinDialog: ProductAccessRequestDialogFragment? by lazy {
         setupTradeinDialog()
@@ -444,8 +440,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             }
             ProductDetailConstant.REQUEST_CODE_ETALASE -> {
                 if (resultCode == Activity.RESULT_OK && data != null) {
-                    val selectedEtalaseId = data.getStringExtra(ShopParamConstant.EXTRA_ETALASE_ID)
-                    val selectedEtalaseName = data.getStringExtra(ShopParamConstant.EXTRA_ETALASE_NAME)
+                    val selectedEtalaseId = data.getStringExtra(ShopShowcaseParamConstant.EXTRA_ETALASE_ID)
+                    val selectedEtalaseName = data.getStringExtra(ShopShowcaseParamConstant.EXTRA_ETALASE_NAME)
                     val dynamicProductInfoData = viewModel.getDynamicProductInfoP1
                             ?: DynamicProductInfoP1()
                     if (dynamicProductInfoData.basic.productID.isNotEmpty() && !selectedEtalaseName.isNullOrEmpty()) {
@@ -660,9 +656,11 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         RouteManager.route(context, url)
     }
 
-    override fun onBbiInfoClick(url: String, title:String, componentTrackDataModel: ComponentTrackDataModel) {
-        DynamicProductDetailTracking.Click.eventClickCustomInfo(title, viewModel.userId, viewModel.getDynamicProductInfoP1, componentTrackDataModel)
-        goToApplink(url)
+    override fun onBbiInfoClick(url: String, title: String, componentTrackDataModel: ComponentTrackDataModel) {
+        if (url.isNotEmpty()) {
+            DynamicProductDetailTracking.Click.eventClickCustomInfo(title, viewModel.userId, viewModel.getDynamicProductInfoP1, componentTrackDataModel)
+            goToApplink(url)
+        }
     }
 
     /**
@@ -937,6 +935,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         if (usedPrice > 0) {
             goToHargaFinal()
         } else {
+            viewModel.clearCacheP2Data()
             goToTradeInHome()
         }
     }
@@ -1007,12 +1006,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             DynamicProductDetailTracking.Moengage.sendMoEngageClickDiskusi(this)
         }
 
-        disscussionClicked()
-    }
-
-    override fun onLastDiscussionClicked(talkId: String, componentTrackDataModel: ComponentTrackDataModel?) {
-        DynamicProductDetailTracking.Click.eventLastDicussionClicked(talkId, componentTrackDataModel
-                ?: ComponentTrackDataModel(), viewModel.getDynamicProductInfoP1)
         disscussionClicked()
     }
 
@@ -1141,18 +1134,12 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     private fun observeP2Other() {
         viewLifecycleOwner.observe(viewModel.p2Other) {
-            if (it.latestTalk.id.isEmpty() || remoteConfig.getBoolean(ProductDetailConstant.ENABLE_NEW_DISCUSSION_REMOTE_CONFIG, true)) {
-                dynamicAdapter.removeComponentSection(pdpUiUpdater?.productDiscussionMap)
-            } else {
-                dynamicAdapter.removeComponentSection(pdpUiUpdater?.productDiscussionMostHelpfulMap)
-            }
-
             if (it.helpfulReviews.isEmpty() && viewModel.getDynamicProductInfoP1?.basic?.stats?.countReview.orZero() == 0) {
                 dynamicAdapter.removeComponentSection(pdpUiUpdater?.productReviewMap)
             }
 
             pdpUiUpdater?.updateDataP2General(it)
-            dynamicAdapter.notifyItemComponentSections(pdpUiUpdater?.productDiscussionMostHelpfulMap, pdpUiUpdater?.productDiscussionMap, pdpUiUpdater?.productReviewMap)
+            dynamicAdapter.notifyItemComponentSections(pdpUiUpdater?.productDiscussionMostHelpfulMap, pdpUiUpdater?.productReviewMap)
             dynamicAdapter.notifyMediaWithPayload(pdpUiUpdater?.mediaMap, ProductDetailConstant.PAYLOAD_MEDIA_UPDATE_IMAGE_REVIEW)
 
             (activity as? ProductDetailActivity)?.stopMonitoringP2Other()
@@ -1495,7 +1482,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             renderVariant(viewModel.variantData)
             et_search.hint = String.format(getString(R.string.pdp_search_hint), productInfo.basic.category.name)
             pdpUiUpdater?.updateDataP1(context, productInfo)
-            shouldShowCodP1 = productInfo.data.isCOD
             actionButtonView.setButtonP1(productInfo.data.preOrder, productInfo.basic.isLeasing)
 
             if (productInfo.basic.category.isAdult) {
@@ -1613,9 +1599,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     private fun onSuccessGetDataP3(it: ProductInfoP3) {
-        shouldShowCodP3 = it.userCod
-        pdpUiUpdater?.updateBasicContentCodData(shouldShowCodP1 && shouldShowCodP3)
-
         if (it.ratesModel == null || it.ratesModel?.getServicesSize() == 0) {
             dynamicAdapter.removeComponentSection(pdpUiUpdater?.productShipingInfoMap)
         }
@@ -1626,8 +1609,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
         pdpUiUpdater?.updateDataP3(context, it)
         dynamicAdapter.notifyItemComponentSections(pdpUiUpdater?.tickerInfoMap, pdpUiUpdater?.productShipingInfoMap)
-        dynamicAdapter.notifyBasicContentWithPayloads(pdpUiUpdater?.basicContentMap, ProductDetailConstant.PAYLOAD_P3)
-        dynamicAdapter.notifySnapshotWithPayloads(pdpUiUpdater?.snapShotMap, ProductDetailConstant.PAYLOAD_P3)
     }
 
     private fun logException(t: Throwable) {
@@ -1946,8 +1927,15 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             val shopId = viewModel.getDynamicProductInfoP1?.basic?.shopID ?: ""
             if (shopId.isNotEmpty()) {
                 val etalaseId = viewModel.getDynamicProductInfoP1?.basic?.menu?.id ?: ""
-                val shopEtalasePickerIntent = ShopEtalasePickerActivity.createIntent(this,
-                        shopId, etalaseId, false, true)
+                val bundle = Bundle()
+                bundle.putString(ShopShowcaseParamConstant.EXTRA_SHOP_ID, shopId)
+                bundle.putString(ShopShowcaseParamConstant.EXTRA_ETALASE_ID, etalaseId)
+                bundle.putBoolean(ShopShowcaseParamConstant.EXTRA_IS_SHOW_DEFAULT, false)
+                bundle.putBoolean(ShopShowcaseParamConstant.EXTRA_IS_SHOW_ZERO_PRODUCT, true)
+                bundle.putBoolean(ShopShowcaseParamConstant.EXTRA_IS_SELLER_NEED_TO_HIDE_SHOWCASE_GROUP_VALUE, true)
+
+                val shopEtalasePickerIntent: Intent = RouteManager.getIntent(context, ApplinkConstInternalMechant.MERCHANT_SHOP_SHOWCASE_LIST)
+                shopEtalasePickerIntent.putExtra(BUNDLE, bundle)
                 startActivityForResult(shopEtalasePickerIntent, ProductDetailConstant.REQUEST_CODE_ETALASE)
             }
         }
@@ -2161,7 +2149,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     private fun gotoEditProduct() {
-        val id = viewModel.getDynamicProductInfoP1?.parentProductId ?: return
+        val id = viewModel.parentProductId ?: return
 
         val applink = Uri.parse(ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW)
                 .buildUpon()
@@ -2399,7 +2387,13 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     private fun showErrorVariantUnselected() {
         DynamicProductDetailTracking.Click.onVariantErrorPartialySelected(viewModel.getDynamicProductInfoP1, viewModel.buttonActionType)
         scrollToPosition(dynamicAdapter.getItemComponentIndex(pdpUiUpdater?.productNewVariantDataModel))
-        showToasterError(getString(R.string.add_to_cart_error_variant))
+        val variantErrorMessage = if (viewModel.variantData?.getVariantsIdentifier()?.isEmpty() == true) {
+            getString(R.string.add_to_cart_error_variant)
+        } else {
+            getString(R.string.add_to_cart_error_variant_builder, viewModel.variantData?.getVariantsIdentifier()
+                    ?: "")
+        }
+        showToasterError(variantErrorMessage)
     }
 
     private fun buyAfterTradeinDiagnose(deviceId: String, phoneType: String, phonePrice: String) {

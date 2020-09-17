@@ -35,6 +35,9 @@ import com.tokopedia.discovery.common.manager.showProductCardOptions
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.exception.UserNotLoginException
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.shop.R
 import com.tokopedia.shop.analytic.OldShopPageTrackingConstant
 import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
@@ -46,18 +49,18 @@ import com.tokopedia.shop.common.constant.ShopEtalaseTypeDef
 import com.tokopedia.shop.common.constant.ShopPageConstant
 import com.tokopedia.shop.common.constant.ShopPageConstant.EMPTY_PRODUCT_SEARCH_IMAGE_URL
 import com.tokopedia.shop.common.constant.ShopParamConstant
+import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
 import com.tokopedia.shop.common.di.component.ShopComponent
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
+import com.tokopedia.shop.common.util.ShopPageProductChangeGridRemoteConfig
+import com.tokopedia.shop.common.view.listener.ShopProductChangeGridSectionListener
 import com.tokopedia.shop.product.di.component.DaggerShopProductComponent
 import com.tokopedia.shop.product.di.module.ShopProductModule
+import com.tokopedia.shop.common.util.ShopProductViewGridType
 import com.tokopedia.shop.product.view.adapter.ShopProductAdapter
 import com.tokopedia.shop.product.view.adapter.ShopProductAdapterTypeFactory
 import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener
 import com.tokopedia.shop.product.view.datamodel.*
-import com.tokopedia.shop.product.view.fragment.ShopPageProductListFragment.Companion.BUNDLE_IS_SHOW_DEFAULT
-import com.tokopedia.shop.product.view.fragment.ShopPageProductListFragment.Companion.BUNDLE_IS_SHOW_ZERO_PRODUCT
-import com.tokopedia.shop.product.view.fragment.ShopPageProductListFragment.Companion.BUNDLE_SELECTED_ETALASE_ID
-import com.tokopedia.shop.product.view.fragment.ShopPageProductListFragment.Companion.BUNDLE_SHOP_ID
 import com.tokopedia.shop.product.view.listener.OnShopProductListFragmentListener
 import com.tokopedia.shop.product.view.listener.ShopProductClickedListener
 import com.tokopedia.shop.product.view.listener.ShopProductEmptySearchListener
@@ -75,8 +78,8 @@ import javax.inject.Inject
 
 class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewModel, ShopProductAdapterTypeFactory>(),
         WishListActionListener, BaseEmptyViewHolder.Callback, ShopProductClickedListener,
-        ShopProductSortFilterViewHolder.ShopProductEtalaseChipListViewHolderListener,
-        ShopProductImpressionListener, ShopProductEmptySearchListener {
+        ShopProductSortFilterViewHolder.ShopProductSortFilterViewHolderListener,
+        ShopProductImpressionListener, ShopProductEmptySearchListener, ShopProductChangeGridSectionListener {
 
     interface ShopPageProductListResultFragmentListener {
         fun onSortValueUpdated(sortValue: String)
@@ -112,6 +115,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     private var shopProductSortFilterUiModel: ShopProductSortFilterUiModel? = null
     private var keywordEmptyState = ""
     private var isEmptyState = false
+    private var remoteConfig: RemoteConfig? = null
 
     private val staggeredGridLayoutManager: StaggeredGridLayoutManager by lazy {
         StaggeredGridLayoutManager(GRID_SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL)
@@ -140,6 +144,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                 null,
                 null,
                 this,
+                this,
                 true,
                 0,
                 ShopTrackProductTypeDef.PRODUCT
@@ -167,6 +172,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        remoteConfig = FirebaseRemoteConfigImpl(context)
         arguments?.let { attribution = it.getString(ShopParamConstant.EXTRA_ATTRIBUTION, "") }
         if (savedInstanceState == null) {
             selectedEtalaseList = ArrayList()
@@ -310,8 +316,10 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         viewModel.productData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
-                    val productList = it.data.second
-                    renderProductList(productList, it.data.first)
+                    val productList = it.data.listShopProductUiModel
+                    val hasNextPage = it.data.hasNextPage
+                    val totalProductData =  it.data.totalProductData
+                    renderProductList(productList, hasNextPage, totalProductData)
                     isNeedToReloadData = false
                 }
                 is Fail -> showGetListError(it.throwable)
@@ -325,7 +333,11 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         })
     }
 
-    private fun renderProductList(productList: List<ShopProductViewModel>, hasNextPage: Boolean) {
+    private fun renderProductList(
+            productList: List<ShopProductViewModel>,
+            hasNextPage: Boolean,
+            totalProductData: Int
+    ) {
         hideLoading()
         shopProductAdapter.clearAllNonDataElement()
         if (isLoadingInitialData) {
@@ -334,6 +346,12 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
 
             if (productList.isNotEmpty()) {
                 shopProductSortFilterUiModel?.let { shopProductAdapter.setSortFilterData(it) }
+                if(ShopPageProductChangeGridRemoteConfig.isFeatureEnabled(remoteConfig)) {
+                    shopProductAdapter.addShopPageProductChangeGridSection(ShopProductChangeGridSectionUiModel(
+                            totalProductData
+                    ))
+                    changeProductListGridView(ShopProductViewGridType.SMALL_GRID)
+                }
             }
         }
 
@@ -455,6 +473,10 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                     shopId
             )
         }
+    }
+
+    override fun getSelectedEtalaseName(): String {
+        return getSelectedEtalaseChip()
     }
 
     private fun getProductIntent(productId: String, attribution: String?, listNameOfProduct: String): Intent? {
@@ -587,10 +609,11 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                     return
                 }
                 data?.let {
-                    selectedEtalaseId = data.getStringExtra(ShopParamConstant.EXTRA_ETALASE_PICKER_ETALASE_ID)
-                    selectedEtalaseName = data.getStringExtra(ShopParamConstant.EXTRA_ETALASE_PICKER_ETALASE_NAME)
-                    selectedEtalaseType = data.getIntExtra(ShopParamConstant.EXTRA_ETALASE_PICKER_ETALASE_TYPE, SELECTED_ETALASE_TYPE_DEFAULT_VALUE)
-                    needReloadData = data.getBooleanExtra(ShopParamConstant.EXTRA_IS_NEED_TO_RELOAD_DATA, false)
+                    selectedEtalaseId = data.getStringExtra(ShopShowcaseParamConstant.EXTRA_ETALASE_ID)
+                    selectedEtalaseName = data.getStringExtra(ShopShowcaseParamConstant.EXTRA_ETALASE_NAME)
+                    selectedEtalaseType = data.getIntExtra(ShopShowcaseParamConstant.EXTRA_ETALASE_TYPE, SELECTED_ETALASE_TYPE_DEFAULT_VALUE)
+                    needReloadData = data.getBooleanExtra(ShopShowcaseParamConstant.EXTRA_IS_NEED_TO_RELOAD_DATA, false)
+
                     shopPageTracking?.clickMoreMenuChip(
                             isMyShop,
                             getSelectedEtalaseChip(),
@@ -745,10 +768,11 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     private fun redirectToEtalasePicker() {
         context?.let {
             val bundle = Bundle()
-            bundle.putString(BUNDLE_SELECTED_ETALASE_ID, selectedEtalaseId)
-            bundle.putBoolean(BUNDLE_IS_SHOW_DEFAULT, true)
-            bundle.putBoolean(BUNDLE_IS_SHOW_ZERO_PRODUCT, false)
-            bundle.putString(BUNDLE_SHOP_ID, shopInfo!!.shopCore.shopID)
+            bundle.putString(ShopShowcaseParamConstant.EXTRA_SELECTED_ETALASE_ID, selectedEtalaseId)
+            bundle.putBoolean(ShopShowcaseParamConstant.EXTRA_IS_SHOW_DEFAULT, true)
+            bundle.putBoolean(ShopShowcaseParamConstant.EXTRA_IS_SHOW_ZERO_PRODUCT, false)
+            bundle.putString(ShopShowcaseParamConstant.EXTRA_SHOP_ID, shopInfo!!.shopCore.shopID)
+
             val intent = RouteManager.getIntent(context, ApplinkConstInternalMechant.MERCHANT_SHOP_SHOWCASE_LIST)
             intent.putExtra(BUNDLE, bundle)
             startActivityForResult(intent, REQUEST_CODE_ETALASE)
@@ -846,6 +870,8 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         loadInitialData()
     }
 
+    override fun setSortFilterMeasureHeight(measureHeight: Int) { }
+
     override fun getRecyclerViewResourceId(): Int {
         return R.id.recycler_view
     }
@@ -874,5 +900,18 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                 context,
                 "${ApplinkConst.DISCOVERY_SEARCH}?q=$keyword"
         )
+    }
+
+    private fun changeProductListGridView(gridType: ShopProductViewGridType){
+        shopProductAdapter.updateShopPageProductChangeGridSection(gridType)
+        shopProductAdapter.changeProductCardGridType(gridType)
+    }
+
+    override fun onChangeProductGridClicked(gridType: ShopProductViewGridType) {
+        val productListName =  shopProductAdapter.shopProductViewModelList.joinToString(","){
+            it.name.orEmpty()
+        }
+        shopPageTracking?.clickProductListToggle(productListName, isMyShop, customDimensionShopPage)
+        changeProductListGridView(gridType)
     }
 }

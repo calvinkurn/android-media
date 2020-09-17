@@ -23,12 +23,17 @@
     <string name="empty_filter_desc">Ubah filter untuk menemukan pesanan yang sesuai</string>
     <string name="empty_search_title">Hasil pencarian tidak ditemukan untuk tanggal</string>
     <string name="empty_search_desc">Gunakan kata kunci yang relevan (Nama Pembeli, No. Invoice, Tanggal belanja)</string>
-    <string name="empty_peluang_title">Tidak Ada Pesanan</string>
+    <string name="empty_peluang_title">Belum ada pesanan, nih</string>
     <string name="empty_peluang_desc">Cek Peluang dan ambil pesanan yang tidak diproses penjual lain.</string>
     <string name="error_list_title">Sedang Ada Perbaikan Sistem</string>
     <string name="error_list_desc">Mohon maaf, kami sedang ada perbaikan sistem, anda dapat mencobanya beberapa saat lagi</string>
     <string name="btn_cek_peluang">Cek Peluang</string>
     <string name="key_all_order">all_order</string>
+
+    <!--Empty state non topads user-->
+    <string name="empty_peluang_desc_non_topads_no_filter">4 dari 5 seller mendapatkan penjualan pertamanya dengan beriklan menggunakan TopAds</string>
+    <string name="empty_peluang_desc_non_topads_with_filter">Ubah filter untuk menemukan pesanan yang sesuai</string>
+    <string name="btn_cek_peluang_non_topads">Mulai Beriklan</string>
 
     <string name="title_tanggal">Tanggal</string>
     <string name="title_type">Tipe Pesanan</string>
@@ -297,4 +302,22 @@
     <string name="som_buyer_cancellation_cancel_button">Kembali</string>
     <string name="som_header_detail_ticker_cancellation">Dibatalkan karena</string>
 
+
+    <!--CONTENT DESC-->
+    <string name="content_desc_label_status_order">text status pesanan</string>
+    <string name="content_desc_label_reject">text menu</string>
+    <string name="content_desc_tf_no_resi">input nomor resi</string>
+    <string name="content_desc_label">text kurir pengiriman</string>
+    <string name="content_desc_label_choosen_courier">text kurir terpilih</string>
+    <string name="content_desc_switch_change_courier">button ganti kurir</string>
+    <string name="content_desc_btn_confirm_shipping">button konirmasi</string>
+    <string name="content_desc_tf_cancel_notes">input alasan pembatalan</string>
+    <string name="content_desc_btn_cancel_order_canceled">button batal</string>
+    <string name="content_desc_btn_cancel_order_confirmed">button ubah</string>
+    <string name="content_desc_btn_primary">button utama</string>
+    <string name="content_desc_btn_secondary">button three dots</string>
+    <string name="filter_action_button">button filter</string>
+    <string name="btn_terapkan">button terapkan</string>
+    <string name="label_radio">text status</string>
+    <string name="btn_simpan">button simpan</string>
 </resources>
