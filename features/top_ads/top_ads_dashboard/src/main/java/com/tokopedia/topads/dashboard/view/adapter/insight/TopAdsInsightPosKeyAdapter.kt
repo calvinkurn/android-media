@@ -3,6 +3,7 @@ package com.tokopedia.topads.dashboard.view.adapter.insight
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.INDEX_1
@@ -42,6 +43,7 @@ class TopAdsInsightPosKeyAdapter(private var onButtonClick: ((position: Int) -> 
         holder.view.textSearchValue.text = convertToCurrencyString((items[position].data?.get(INDEX_2)?.value as Double).toLong())
         holder.view.txtSavings.text = holder.view.resources.getString(R.string.topads_insight_item_pos_2)
         holder.view.txtSavingsValue.text = convertToCurrencyString((items[position].data?.get(INDEX_3)?.value as Double).toLong())
+        holder.view.txtpotential.background = AppCompatResources.getDrawable(holder.view.context, R.drawable.topads_text_shadow)
         holder.view.txtpotential.text = String.format(holder.view.resources.getString(R.string.topads_insight_item_pos_3), convertToCurrencyString((items[position].data?.get(INDEX_4)?.value as Double).toLong()))
         holder.view.btnTambah.text = holder.view.resources.getString(R.string.topads_insight_btn_tambah)
         holder.view.btnTambah.setOnClickListener {

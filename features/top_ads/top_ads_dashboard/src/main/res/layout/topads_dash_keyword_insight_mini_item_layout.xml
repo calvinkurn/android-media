@@ -34,7 +34,6 @@
         android:layout_height="@dimen/dp_20"
         android:layout_marginEnd="@dimen/dp_8"
         android:layout_marginRight="@dimen/dp_8"
-        android:background="@drawable/topads_insight_count"
         android:gravity="center"
         android:textColor="@color/topads_light_shadow"
         app:layout_constraintEnd_toStartOf="@id/arrow"

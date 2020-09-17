@@ -3,6 +3,7 @@ package com.tokopedia.topads.dashboard.view.adapter.insight
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.topads.dashboard.R
@@ -32,6 +33,7 @@ class TopAdsMiniKeywordInsightAdapter(var onCheck: ((pos: Int) -> Unit?)) : Recy
         holder.view.img.setImageDrawable(holder.view.context.getResDrawable(R.drawable.topads_dashboard_folder))
         holder.view.arrow.setImageDrawable(holder.view.context.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_arrow))
         holder.view.keywordName.text = items[position].name
+        holder.view.insightCount.background = AppCompatResources.getDrawable(holder.view.context, R.drawable.topads_insight_count)
         holder.view.insightCount.text = items[position].count.toString()
         holder.view.setOnClickListener {
             onCheck(position)
