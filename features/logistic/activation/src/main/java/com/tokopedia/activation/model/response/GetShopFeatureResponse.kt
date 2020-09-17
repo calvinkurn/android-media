@@ -3,11 +3,6 @@ package com.tokopedia.activation.model.response
 import com.google.gson.annotations.SerializedName
 
 class GetShopFeatureResponse (
-        @SerializedName("data")
-        var data: Data = Data()
-)
-
-data class Data(
         @SerializedName("shopFeature")
         var shopFeature: ShopFeature = ShopFeature()
 )

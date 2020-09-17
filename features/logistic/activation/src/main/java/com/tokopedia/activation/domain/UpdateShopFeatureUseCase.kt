@@ -10,32 +10,6 @@ import javax.inject.Inject
 
 class UpdateShopFeatureUseCase @Inject constructor(private val graphqlUseCase: GraphqlUseCase<UpdateShopFeatureResponse>, private val mapper: UpdateShopFeatureMapper) : UseCase <UpdateFeatureModel>() {
 
-    /*fun execute(value: Boolean, onSuccess: (String) -> Unit, onError: (Throwable) -> Unit) {
-        graphqlUseCase.setGraphqlQuery(QUERY)
-        graphqlUseCase.setRequestParams(mapOf(PARAM_TYPE to 1, PARAM_VALUE to value))
-        graphqlUseCase.setTypeClass(UpdateShopFeatureResponse::class.java)
-        graphqlUseCase.execute({response : UpdateShopFeatureResponse ->
-            onSuccess("success")
-        }, {
-            throwable: Throwable -> onError(throwable)
-        })
-    }
-*/
-    companion object {
-        const val PARAM_TYPE = "type"
-        const val PARAM_VALUE = "value"
-
-        val QUERY = """
-            mutation{
-              updateShopFeature(type: ${'$'}type, value:${'$'}value) {
-                success
-                message
-                createdId
-              }
-            }
-        """.trimIndent()
-    }
-
     override suspend fun executeOnBackground(): UpdateFeatureModel {
         graphqlUseCase.setGraphqlQuery(QUERY)
         graphqlUseCase.setRequestParams(mapOf(
@@ -52,5 +26,21 @@ class UpdateShopFeatureUseCase @Inject constructor(private val graphqlUseCase: G
             putInt(PARAM_TYPE, 1)
             putBoolean(PARAM_VALUE, value)
         }
+    }
+
+    companion object {
+        const val PARAM_TYPE = "type"
+        const val PARAM_VALUE = "value"
+
+        val QUERY = """
+            mutation updateShopFeature(${'$'}type: Int!, ${'$'}value: Boolean!)
+            {
+              updateShopFeature(type: ${'$'}type, value: ${'$'}value) {
+                success
+                message
+                createdId
+              }
+            }
+        """.trimIndent()
     }
 }

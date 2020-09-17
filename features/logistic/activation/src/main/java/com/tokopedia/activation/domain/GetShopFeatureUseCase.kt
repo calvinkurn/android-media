@@ -10,17 +10,6 @@ import javax.inject.Inject
 
 class GetShopFeatureUseCase @Inject constructor(val graphqlUseCase: GraphqlUseCase<GetShopFeatureResponse>, private val mapper: GetShopFeatureMapper) : UseCase<ShopFeatureModel>() {
 
-   /* fun execute(shopId: String, onSuccess: (String) -> Unit, onError: (Throwable) -> Unit) {
-        graphqlUseCase.setGraphqlQuery(QUERY)
-        graphqlUseCase.setRequestParams(mapOf(PARAM_TYPE to 1, PARAM_SHOP_ID to shopId))
-        graphqlUseCase.setTypeClass(GetShopFeatureResponse::class.java)
-        graphqlUseCase.execute({ response : GetShopFeatureResponse ->
-            onSuccess(SUCCESS)
-        }, {
-            throwable:  Throwable  -> onError(throwable)
-        })
-    }*/
-
     override suspend fun executeOnBackground(): ShopFeatureModel {
         graphqlUseCase.setGraphqlQuery(QUERY)
         graphqlUseCase.setRequestParams(mapOf(
@@ -29,7 +18,7 @@ class GetShopFeatureUseCase @Inject constructor(val graphqlUseCase: GraphqlUseCa
         ))
         graphqlUseCase.setTypeClass(GetShopFeatureResponse::class.java)
         val result = graphqlUseCase.executeOnBackground()
-        return mapper.convertToUIModel(result.data.shopFeature.shopData)
+        return mapper.convertToUIModel(result.shopFeature.shopData)
     }
 
     fun generateRequestParams(shopId: String): RequestParams {
@@ -46,8 +35,9 @@ class GetShopFeatureUseCase @Inject constructor(val graphqlUseCase: GraphqlUseCa
         const val SUCCESS = "success"
 
         val QUERY = """
+            query shopFeature(${"$"}type: Int!, ${"$"}shopId: String)
             {
-              shopFeature(type: ${"$"}type, shopID:${"$"}shopId) {
+              shopFeature(type: ${"$"}type, shopID: ${"$"}shopId) {
                 data{
                   title
                   type
