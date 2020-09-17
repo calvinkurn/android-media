@@ -9,7 +9,6 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.favorite.R
 import com.tokopedia.favorite.view.adapter.TopAdsShopAdapter
 import com.tokopedia.favorite.view.viewlistener.FavoriteClickListener
-import com.tokopedia.favorite.view.viewlistener.TopAdsResourceListener
 import com.tokopedia.favorite.view.viewmodel.TopAdsShopViewModel
 
 /**
@@ -17,8 +16,7 @@ import com.tokopedia.favorite.view.viewmodel.TopAdsShopViewModel
  */
 class TopAdsShopViewHolder(
         itemView: View,
-        private val favoriteClickListener: FavoriteClickListener,
-        private val topAdsResourceListener: TopAdsResourceListener
+        private val favoriteClickListener: FavoriteClickListener
 ) : AbstractViewHolder<TopAdsShopViewModel?>(itemView) {
 
     companion object {
@@ -31,7 +29,7 @@ class TopAdsShopViewHolder(
     private val context: Context = itemView.context
 
     override fun bind(element: TopAdsShopViewModel?) {
-        val topAdsShopAdapter = TopAdsShopAdapter(favoriteClickListener, topAdsResourceListener)
+        val topAdsShopAdapter = TopAdsShopAdapter(favoriteClickListener)
         val linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         recShopRecyclerView.layoutManager = linearLayoutManager
         recShopRecyclerView.setHasFixedSize(true)

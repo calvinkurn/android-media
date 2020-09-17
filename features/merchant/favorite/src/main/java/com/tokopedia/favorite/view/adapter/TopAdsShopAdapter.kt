@@ -23,9 +23,9 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.favorite.R
 import com.tokopedia.favorite.utils.TrackingConst
 import com.tokopedia.favorite.view.viewlistener.FavoriteClickListener
-import com.tokopedia.favorite.view.viewlistener.TopAdsResourceListener
 import com.tokopedia.favorite.view.viewmodel.TopAdsShopItem
 import com.tokopedia.topads.sdk.utils.ImageLoader
+import com.tokopedia.topads.sdk.utils.ImpresionTask
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.track.TrackApp
 import java.util.*
@@ -35,8 +35,7 @@ import kotlin.collections.ArrayList
  * @author by erry on 30/01/17.
  */
 class TopAdsShopAdapter(
-        private val favoriteClickListener: FavoriteClickListener?,
-        val topAdsResourceListener: TopAdsResourceListener?
+        private val favoriteClickListener: FavoriteClickListener?
 ) : RecyclerView.Adapter<TopAdsShopAdapter.ViewHolder>() {
 
     companion object {
@@ -99,7 +98,12 @@ class TopAdsShopAdapter(
                                                      target: Target<Drawable?>,
                                                      dataSource: DataSource,
                                                      isFirstResource: Boolean): Boolean {
-                            topAdsResourceListener?.onTopAdsResourceReady(className, shopItem)
+                            val coverUrl = shopItem.shopCoverUrl
+                            if (coverUrl != null
+                                    && coverUrl.contains(PATH_VIEW)
+                                    && !isFirstResource) {
+                                ImpresionTask(className).execute(coverUrl)
+                            }
                             return false
                         }
                     })

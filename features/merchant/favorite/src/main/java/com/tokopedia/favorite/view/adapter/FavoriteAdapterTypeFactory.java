@@ -7,7 +7,6 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.favorite.view.adapter.viewholders.FavoriteShopViewHolder;
 import com.tokopedia.favorite.view.adapter.viewholders.TopAdsShopViewHolder;
 import com.tokopedia.favorite.view.viewlistener.FavoriteClickListener;
-import com.tokopedia.favorite.view.viewlistener.TopAdsResourceListener;
 import com.tokopedia.favorite.view.viewmodel.FavoriteShopViewModel;
 import com.tokopedia.favorite.view.viewmodel.TopAdsShopViewModel;
 
@@ -19,11 +18,9 @@ public class FavoriteAdapterTypeFactory
         extends BaseAdapterTypeFactory implements FavoriteTypeFactory {
 
     private FavoriteClickListener favoriteClickListener;
-    private final TopAdsResourceListener topAdsResourceListener;
 
-    public FavoriteAdapterTypeFactory(FavoriteClickListener favoriteClickListener, TopAdsResourceListener topAdsResourceListener) {
+    public FavoriteAdapterTypeFactory(FavoriteClickListener favoriteClickListener) {
         this.favoriteClickListener = favoriteClickListener;
-        this.topAdsResourceListener = topAdsResourceListener;
     }
 
     @Override
@@ -42,7 +39,7 @@ public class FavoriteAdapterTypeFactory
     public AbstractViewHolder createViewHolder(View parent, int type) {
         AbstractViewHolder createViewHolder;
         if (type == TopAdsShopViewHolder.LAYOUT) {
-            createViewHolder = new TopAdsShopViewHolder(parent, favoriteClickListener, topAdsResourceListener);
+            createViewHolder = new TopAdsShopViewHolder(parent, favoriteClickListener);
         } else if (type == FavoriteShopViewHolder.LAYOUT) {
             createViewHolder = new FavoriteShopViewHolder(parent);
         } else {
