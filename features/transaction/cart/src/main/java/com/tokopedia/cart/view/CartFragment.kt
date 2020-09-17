@@ -2570,8 +2570,11 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 onNeedToUpdateViewItem(it)
             }
 
-            if (forceExpandCollapsedUnavailableItems && cartAdapter.allDisabledCartItemData.size > 1) {
-                collapseOrExpandDisabledItem()
+            // If action is on unavailable item, do collapse unavailable items if previously forced to expand (without user tap expand)
+            if (cartAdapter.allDisabledCartItemData.size > 1) {
+                if (forceExpandCollapsedUnavailableItems) {
+                    collapseOrExpandDisabledItem()
+                }
             } else {
                 cartAdapter.removeAccordionDisabledItem()
             }
@@ -2610,25 +2613,32 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             dPresenter.processInitialGetCartData(getCartId(), false, false)
         } else {
             val updateListResult = cartAdapter.removeCartItemById(listOf(cartId), context)
-            updateListResult.first.forEach {
-                onNeedToRemoveViewItem(it)
-            }
-            updateListResult.second.forEach {
-                onNeedToUpdateViewItem(it)
-            }
-
-            if (forceExpandCollapsedUnavailableItems && cartAdapter.allDisabledCartItemData.size > 1) {
-                collapseOrExpandDisabledItem()
-            } else {
-                cartAdapter.removeAccordionDisabledItem()
-            }
-
-            dPresenter.reCalculateSubTotal(cartAdapter.allShopGroupDataList, cartAdapter.insuranceCartShops)
-            setToolbarShadowVisibility(cartAdapter.allAvailableCartItemData.isEmpty())
-            notifyBottomCartParent()
+            removeLocalCartItem(updateListResult, forceExpandCollapsedUnavailableItems)
 
             dPresenter.processGetWishlistData()
         }
+    }
+
+    private fun removeLocalCartItem(updateListResult: Pair<ArrayList<Int>, ArrayList<Int>>, forceExpandCollapsedUnavailableItems: Boolean) {
+        updateListResult.first.forEach {
+            onNeedToRemoveViewItem(it)
+        }
+        updateListResult.second.forEach {
+            onNeedToUpdateViewItem(it)
+        }
+
+        // If action is on unavailable item, do collapse unavailable items if previously forced to expand (without user tap expand)
+        if (cartAdapter.allDisabledCartItemData.size > 1) {
+            if (forceExpandCollapsedUnavailableItems) {
+                collapseOrExpandDisabledItem()
+            }
+        } else {
+            cartAdapter.removeAccordionDisabledItem()
+        }
+
+        dPresenter.reCalculateSubTotal(cartAdapter.allShopGroupDataList, cartAdapter.insuranceCartShops)
+        setToolbarShadowVisibility(cartAdapter.allAvailableCartItemData.isEmpty())
+        notifyBottomCartParent()
     }
 
     fun onNeedToRemoveViewItem(position: Int) {
