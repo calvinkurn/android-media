@@ -49,7 +49,6 @@ class DigitalCartMyBillsFragment: DigitalBaseCartFragment<DigitalCartMyBillsCont
 
     override fun setupView(view: View?) {
         progressBar = view!!.findViewById<ProgressBar>(R.id.progress_bar)
-        errorView = view.findViewById(R.id.view_error)
         containerLayout = view.findViewById<RelativeLayout>(R.id.container)
         categoryTextView = view.findViewById<AppCompatTextView>(R.id.tv_category_name)
         detailHolderView = view.findViewById<DigitalCartDetailHolderView>(R.id.view_cart_detail)
