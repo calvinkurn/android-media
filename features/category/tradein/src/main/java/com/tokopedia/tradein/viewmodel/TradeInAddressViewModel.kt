@@ -20,10 +20,10 @@ class TradeInAddressViewModel @Inject constructor(
 
     private val addressLiveData = MutableLiveData<AddressResult>()
     private var token: Token? = null
-    private val isEligible = MutableLiveData<Boolean>()
+    private val isEligible : MutableLiveData<Boolean?> = MutableLiveData()
 
     fun getAddressLiveData(): LiveData<AddressResult> = addressLiveData
-    fun getTradeInEligibleLiveData(): LiveData<Boolean> = isEligible
+    fun getTradeInEligibleLiveData(): LiveData<Boolean?> = isEligible
 
     fun getAddress(origin: String, weight: Int, shopId : Int) {
         launchCatchError(block = {

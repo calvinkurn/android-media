@@ -86,7 +86,7 @@ class TradeInAddressFragment : BaseViewModelFragment<TradeInAddressViewModel>() 
         })
 
         tradeInAddressViewModel.getTradeInEligibleLiveData().observe(this, Observer {
-            if (it) {
+            if (it == true) {
                 address_valid_ticker.apply {
                     show()
                     setTextDescription(getString(R.string.tradein_ticker_continue))
@@ -97,7 +97,7 @@ class TradeInAddressFragment : BaseViewModelFragment<TradeInAddressViewModel>() 
                         }
                     }
                 }
-            } else {
+            } else if (it == false) {
                 address_valid_ticker.hide()
                 btn_continue.isEnabled = false
                 arguments?.apply {

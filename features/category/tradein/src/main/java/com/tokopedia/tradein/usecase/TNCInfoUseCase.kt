@@ -12,7 +12,7 @@ class TNCInfoUseCase @Inject constructor(
         return repository.getGQLData(GQL_FETCH_TNC, TnCInfoModel::class.java, createRequestParams(type))
     }
 
-    fun createRequestParams(shopID: Int): Map<String, Any> {
-        return mapOf("type" to shopID)
+    fun createRequestParams(type: Int): Map<String, Any> {
+        return mapOf("type" to type)
     }
 }
