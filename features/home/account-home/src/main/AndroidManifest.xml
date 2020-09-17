@@ -74,12 +74,5 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"/>
 
-        <activity
-            android:name=".presentation.activity.BuyerAccountActivity"
-            android:label="@string/account_buyer"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" />
-
     </application>
 </manifest>

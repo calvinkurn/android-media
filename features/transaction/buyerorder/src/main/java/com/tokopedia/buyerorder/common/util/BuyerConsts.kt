@@ -47,5 +47,4 @@ object BuyerConsts {
     const val TICKER_TYPE_WARNING = "warning"
 
     const val BUYER_CANCEL_REASON_SCREEN_NAME = "BuyerCancelReason"
-    const val UOH_AB_TEST_KEY = "UOH_android"
 }
