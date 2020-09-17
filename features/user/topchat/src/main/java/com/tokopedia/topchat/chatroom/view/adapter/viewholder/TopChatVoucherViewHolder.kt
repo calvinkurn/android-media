@@ -10,6 +10,7 @@ import com.tokopedia.merchantvoucher.common.widget.MerchantVoucherView
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.listener.TopChatVoucherListener
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatVoucherUiModel
+import com.tokopedia.topchat.common.util.ViewUtil
 
 /**
  * Created by Steven on 18/03/19.
@@ -22,6 +23,36 @@ class TopChatVoucherViewHolder(
     private var isOwner: Boolean = false
     private lateinit var model: TopChatVoucherUiModel
     private var merchantVoucherView: MerchantVoucherView? = itemView.findViewById(R.id.merchantVoucherView)
+    private var voucherContainer: LinearLayout? = itemView.findViewById(R.id.topchat_voucher_container)
+
+    private val bgOpposite = ViewUtil.generateBackgroundWithShadow(
+            itemView,
+            com.tokopedia.unifyprinciples.R.color.Neutral_N0,
+            R.dimen.dp_0,
+            R.dimen.dp_0,
+            R.dimen.dp_0,
+            R.dimen.dp_0,
+            R.color.topchat_message_shadow,
+            R.dimen.dp_topchat_2,
+            R.dimen.dp_topchat_1,
+            Gravity.CENTER,
+            com.tokopedia.unifyprinciples.R.color.Neutral_N0,
+            R.dimen.dp_topchat_1point5
+    )
+    private val bgSender = ViewUtil.generateBackgroundWithShadow(
+            itemView,
+            R.color.bg_topchat_right_message,
+            R.dimen.dp_0,
+            R.dimen.dp_0,
+            R.dimen.dp_0,
+            R.dimen.dp_0,
+            R.color.topchat_message_shadow,
+            R.dimen.dp_topchat_2,
+            R.dimen.dp_topchat_1,
+            Gravity.CENTER,
+            R.color.bg_topchat_right_message,
+            R.dimen.dp_topchat_1point5
+    )
 
     override fun bind(viewModel: TopChatVoucherUiModel) {
         super.bind(viewModel)
@@ -36,6 +67,16 @@ class TopChatVoucherViewHolder(
         itemView.setOnClickListener {
             data.isPublic = !viewModel.hasCtaCopy()
             voucherListener.onVoucherClicked(data)
+        }
+
+        bindBackground(viewModel)
+    }
+
+    private fun bindBackground(viewModel: TopChatVoucherUiModel) {
+        if (viewModel.isSender) {
+            merchantVoucherView?.background = bgSender
+        } else {
+            merchantVoucherView?.background = bgOpposite
         }
     }
 
@@ -53,11 +94,11 @@ class TopChatVoucherViewHolder(
     }
 
     private fun setChatLeft() {
-        itemView.findViewById<LinearLayout>(R.id.topchat_voucher_container).gravity = Gravity.START
+        voucherContainer?.gravity = Gravity.START
     }
 
     private fun setChatRight(element: TopChatVoucherUiModel) {
-        itemView.findViewById<LinearLayout>(R.id.topchat_voucher_container).gravity = Gravity.END
+        voucherContainer?.gravity = Gravity.END
     }
 
     override fun isOwner(): Boolean {

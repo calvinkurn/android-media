@@ -32,6 +32,6 @@ class TopchatMerchantVoucherView : MerchantVoucherView {
     }
 
     override fun getShadowColor(): Int {
-        return ContextCompat.getColor(context, R.color.shadow_topchat_voucher_attachment)
+        return ContextCompat.getColor(context, android.R.color.transparent)
     }
 }
