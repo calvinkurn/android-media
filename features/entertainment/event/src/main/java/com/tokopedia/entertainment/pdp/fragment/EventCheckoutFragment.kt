@@ -539,15 +539,6 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
         const val EXTRA_DATA_PESSANGER = "EXTRA_DATA_PESSANGER"
         const val EXTRA_ADDITIONAL_DATA = "EXTRA_ADDITIONAL_DATA"
 
-        const val PASSENGER_NAME = "fullname"
-        const val PASSENGER_EMAIL = "email"
-        const val PASSENGER_FIRST_NAME = "first_name"
-        const val PASSENGER_FAMILY_NAME = "family_name"
-        const val PASSENGER_GENDER = "gender"
-        const val PASSENGER_DATE_BIRTH = "date_of_birth"
-        const val PASSENGER_PHONE = "phone"
-        const val PASSENGER_MOBILE = "mobile"
-
         const val ENT_CHECKOUT_PERFORMANCE = "et_event_checkout"
 
         const val ORDER_LIST_EVENT = "/order-list"

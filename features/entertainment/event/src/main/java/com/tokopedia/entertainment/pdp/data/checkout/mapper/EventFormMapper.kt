@@ -1,22 +1,19 @@
 package com.tokopedia.entertainment.pdp.data.checkout.mapper
 
-import com.tokopedia.entertainment.pdp.adapter.EventPDPFormAdapter
+import com.tokopedia.entertainment.pdp.common.util.EventConst.ELEMENT_LIST
+import com.tokopedia.entertainment.pdp.common.util.EventConst.EMAIL_TYPE
+import com.tokopedia.entertainment.pdp.common.util.EventConst.FAMILY_NAME_TYPE
+import com.tokopedia.entertainment.pdp.common.util.EventConst.FIRST_NAME_TYPE
+import com.tokopedia.entertainment.pdp.common.util.EventConst.FULLNAME_TYPE
+import com.tokopedia.entertainment.pdp.common.util.EventConst.MOBILE_TYPE
+import com.tokopedia.entertainment.pdp.common.util.EventConst.PHONE_TYPE
 import com.tokopedia.entertainment.pdp.data.Form
 import com.tokopedia.entertainment.pdp.data.ProductDetailData
 import com.tokopedia.entertainment.pdp.data.checkout.AdditionalType
 import com.tokopedia.entertainment.pdp.data.checkout.EventCheckoutAdditionalData
 import com.tokopedia.entertainment.pdp.data.checkout.mapper.EventPackageMapper.getPackage
 import com.tokopedia.entertainment.pdp.data.checkout.mapper.EventPackageMapper.getPackageItem
-import com.tokopedia.entertainment.pdp.fragment.EventCheckoutFragment.Companion.PASSENGER_EMAIL
-import com.tokopedia.entertainment.pdp.fragment.EventCheckoutFragment.Companion.PASSENGER_FAMILY_NAME
-import com.tokopedia.entertainment.pdp.fragment.EventCheckoutFragment.Companion.PASSENGER_FIRST_NAME
-import com.tokopedia.entertainment.pdp.fragment.EventCheckoutFragment.Companion.PASSENGER_MOBILE
-import com.tokopedia.entertainment.pdp.fragment.EventCheckoutFragment.Companion.PASSENGER_NAME
-import com.tokopedia.entertainment.pdp.fragment.EventCheckoutFragment.Companion.PASSENGER_PHONE
-import com.tokopedia.unifycomponents.list.ListItemUnify
-import com.tokopedia.unifycomponents.list.ListUnify
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.ent_pdp_form_edittext_item.view.*
 
 object EventFormMapper {
     fun eventFormMapper(productDetailData: ProductDetailData, eventCheckoutAdditionalData: EventCheckoutAdditionalData): MutableList<Form> {
@@ -62,7 +59,7 @@ object EventFormMapper {
 
     fun mapFormToString(list: List<Form>): List<String> {
         return list.map {
-            if (it.elementType.equals("list"))
+            if (it.elementType.equals(ELEMENT_LIST))
                 it.valueList else it.value
         }
     }
@@ -88,11 +85,11 @@ object EventFormMapper {
             list.get(i).apply {
                 if (this.value.isNullOrEmpty()) {
                     this.value = when (this.name) {
-                        PASSENGER_NAME -> userSession.name
-                        PASSENGER_FAMILY_NAME -> getFamilyName(userSession.name)
-                        PASSENGER_FIRST_NAME -> getFirstName(userSession.name)
-                        PASSENGER_EMAIL -> userSession.email
-                        PASSENGER_PHONE, PASSENGER_MOBILE -> userSession.phoneNumber
+                        FULLNAME_TYPE -> userSession.name
+                        FAMILY_NAME_TYPE -> getFamilyName(userSession.name)
+                        FIRST_NAME_TYPE -> getFirstName(userSession.name)
+                        EMAIL_TYPE -> userSession.email
+                        PHONE_TYPE, MOBILE_TYPE -> userSession.phoneNumber
                         else -> nullableData
                     }
                 }

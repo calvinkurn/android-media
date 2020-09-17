@@ -7,14 +7,15 @@ import android.view.MotionEvent
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.entertainment.R
-import com.tokopedia.entertainment.pdp.adapter.EventPDPFormAdapter.Companion.ELEMENT_LIST
-import com.tokopedia.entertainment.pdp.adapter.EventPDPFormAdapter.Companion.ELEMENT_TEXT
-import com.tokopedia.entertainment.pdp.adapter.EventPDPFormAdapter.Companion.EMAIL_TYPE
-import com.tokopedia.entertainment.pdp.adapter.EventPDPFormAdapter.Companion.FAMILY_NAME_TYPE
-import com.tokopedia.entertainment.pdp.adapter.EventPDPFormAdapter.Companion.FIRST_NAME_TYPE
-import com.tokopedia.entertainment.pdp.adapter.EventPDPFormAdapter.Companion.FULLNAME_TYPE
-import com.tokopedia.entertainment.pdp.adapter.EventPDPFormAdapter.Companion.MOBILE_TYPE
-import com.tokopedia.entertainment.pdp.adapter.EventPDPFormAdapter.Companion.PHONE_TYPE
+import com.tokopedia.entertainment.pdp.common.util.EventConst.BLANK_LIST
+import com.tokopedia.entertainment.pdp.common.util.EventConst.ELEMENT_LIST
+import com.tokopedia.entertainment.pdp.common.util.EventConst.ELEMENT_TEXT
+import com.tokopedia.entertainment.pdp.common.util.EventConst.EMAIL_TYPE
+import com.tokopedia.entertainment.pdp.common.util.EventConst.FAMILY_NAME_TYPE
+import com.tokopedia.entertainment.pdp.common.util.EventConst.FIRST_NAME_TYPE
+import com.tokopedia.entertainment.pdp.common.util.EventConst.FULLNAME_TYPE
+import com.tokopedia.entertainment.pdp.common.util.EventConst.MOBILE_TYPE
+import com.tokopedia.entertainment.pdp.common.util.EventConst.PHONE_TYPE
 import com.tokopedia.entertainment.pdp.data.Form
 import com.tokopedia.entertainment.pdp.data.checkout.AdditionalType
 import com.tokopedia.entertainment.pdp.data.checkout.mapper.EventFormMapper.getFamilyName
@@ -134,7 +135,7 @@ class EventPDPTextFieldViewHolder(val view: View,
         if(isRequired==1) {
             val listValue: LinkedHashMap<String, String> = LinkedHashMap()
             list.map {
-                if (!it.key.equals("-1")) {
+                if (!it.key.equals(BLANK_LIST)) {
                     listValue.put(it.key, it.value)
                 }
             }

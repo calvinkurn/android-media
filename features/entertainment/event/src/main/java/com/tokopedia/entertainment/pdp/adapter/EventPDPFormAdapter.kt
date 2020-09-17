@@ -4,10 +4,12 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.entertainment.pdp.adapter.viewholder.EventPDPTextFieldViewHolder
+import com.tokopedia.entertainment.pdp.common.util.EventConst.BLANK_LIST
+import com.tokopedia.entertainment.pdp.common.util.EventConst.ELEMENT_LIST
+import com.tokopedia.entertainment.pdp.common.util.EventConst.ELEMENT_TEXT
 import com.tokopedia.entertainment.pdp.data.Form
 import com.tokopedia.entertainment.pdp.listener.OnClickFormListener
 import com.tokopedia.user.session.UserSessionInterface
-import timber.log.Timber
 import java.lang.RuntimeException
 import java.util.regex.Pattern
 
@@ -72,20 +74,7 @@ class EventPDPFormAdapter(val userSession: UserSessionInterface,
     }
 
     companion object{
-        const val FULLNAME_TYPE = "fullname"
-        const val EMAIL_TYPE = "email"
-        const val FIRST_NAME_TYPE = "first_name"
-        const val FAMILY_NAME_TYPE = "family_name"
-        const val PHONE_TYPE = "phone"
-        const val MOBILE_TYPE = "mobile"
         const val EMPTY_TYPE = 1
         const val REGEX_TYPE = 2
-
-        const val ELEMENT_TEXT = "text"
-        const val ELEMENT_LIST = "list"
-        const val TEXT_TYPE = 1
-        const val LIST_TYPE = 2
-
-        const val BLANK_LIST = "-1"
     }
 }
