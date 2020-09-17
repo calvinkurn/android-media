@@ -5,6 +5,7 @@ import com.tokopedia.notifications.common.CMConstant
 import com.tokopedia.notifications.image.downloaderFactory.ImageSizeAndTimeout
 import com.tokopedia.notifications.image.downloaderFactory.NotificationImageDownloader
 import com.tokopedia.notifications.model.BaseNotificationModel
+import timber.log.Timber
 
 class GridImageDownloader(baseNotificationModel: BaseNotificationModel) : NotificationImageDownloader(baseNotificationModel) {
     override suspend fun verifyAndUpdate() {
@@ -13,6 +14,7 @@ class GridImageDownloader(baseNotificationModel: BaseNotificationModel) : Notifi
                 if (startsWith(CMConstant.HTTP) || startsWith(CMConstant.WWW)) {
                     baseNotificationModel.type = CMConstant.NotificationType.GENERAL
                     baseNotificationModel.gridList.clear()
+                    Timber.w("${CMConstant.TimberTags.TAG}validation;reason=image_download;data=$baseNotificationModel")
                     return
                 }
             }

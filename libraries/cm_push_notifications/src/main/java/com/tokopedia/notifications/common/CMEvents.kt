@@ -147,17 +147,17 @@ object IrisAnalyticsEvents {
 
     private fun logTimber(values: HashMap<String, Any>) {
         if (values.containsKey(CAMPAIGN_ID) && TextUtils.isEmpty(values[CAMPAIGN_ID].toString()))
-            Timber.w("${CMConstant.TimberTags.TAG}CMEvents_trackEvent_no_campaignId".plus(if(values.containsKey(PUSH_TYPE)) "_push" else "_inapp").plus(";data=$values"))
+            Timber.w("${CMConstant.TimberTags.TAG}validation;reason=no_campaignId".plus(if(values.containsKey(PUSH_TYPE)) "_push" else "_inapp").plus(";data=$values"))
         else if (!values.containsKey(CAMPAIGN_ID))
-            Timber.w("${CMConstant.TimberTags.TAG}CMEvents_trackEvent_campaignId_removed".plus(if(values.containsKey(PUSH_TYPE)) "_push" else "_inapp").plus(";data=$values"))
+            Timber.w("${CMConstant.TimberTags.TAG}validation;reason=campaignId_removed".plus(if(values.containsKey(PUSH_TYPE)) "_push" else "_inapp").plus(";data=$values"))
         else if (values.containsKey(PARENT_ID) && TextUtils.isEmpty(values[PARENT_ID].toString()))
-            Timber.w("${CMConstant.TimberTags.TAG}CMEvents_trackEvent_no_parentId".plus(if(values.containsKey(PUSH_TYPE)) "_push" else "_inapp").plus(";data=$values"))
+            Timber.w("${CMConstant.TimberTags.TAG}validation;reason=no_parentId".plus(if(values.containsKey(PUSH_TYPE)) "_push" else "_inapp").plus(";data=$values"))
         else if (!values.containsKey(PARENT_ID))
-            Timber.w("${CMConstant.TimberTags.TAG}CMEvents_trackEvent_parentId_removed".plus(if(values.containsKey(PUSH_TYPE)) "_push" else "_inapp").plus(";data=$values"))
+            Timber.w("${CMConstant.TimberTags.TAG}validation;reason=parentId_removed".plus(if(values.containsKey(PUSH_TYPE)) "_push" else "_inapp").plus(";data=$values"))
         else if (values.containsKey(NOTIFICATION_ID) && TextUtils.isEmpty(values[NOTIFICATION_ID].toString()))
-            Timber.w("${CMConstant.TimberTags.TAG}CMEvents_trackEvent_no_notificationId".plus(if(values.containsKey(PUSH_TYPE)) "_push" else "_inapp").plus(";data=$values"))
+            Timber.w("${CMConstant.TimberTags.TAG}validation;reason=no_notificationId".plus(if(values.containsKey(PUSH_TYPE)) "_push" else "_inapp").plus(";data=$values"))
         else if (!values.containsKey(NOTIFICATION_ID))
-            Timber.w("${CMConstant.TimberTags.TAG}CMEvents_trackEvent_notificationId_removed".plus(if(values.containsKey(PUSH_TYPE)) "_push" else "_inapp").plus(";data=$values"))
+            Timber.w("${CMConstant.TimberTags.TAG}validation;reason=notificationId_removed".plus(if(values.containsKey(PUSH_TYPE)) "_push" else "_inapp").plus(";data=$values"))
     }
 
     private fun addBaseValues(context: Context, eventName: String, cmInApp: CMInApp): HashMap<String, Any> {

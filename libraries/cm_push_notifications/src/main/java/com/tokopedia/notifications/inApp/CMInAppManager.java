@@ -2,6 +2,7 @@ package com.tokopedia.notifications.inApp;
 
 import android.app.Activity;
 import android.app.Application;
+import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 
@@ -41,7 +42,6 @@ import static com.tokopedia.notifications.inApp.viewEngine.CmInAppConstant.TYPE_
  */
 public class CMInAppManager implements CmInAppListener, DataProvider {
 
-    private static final String TAG = "P2#CM#";
     private static CMInAppManager inAppManager;
     private Application application;
     private WeakReference<Activity> currentActivity;
@@ -170,7 +170,7 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
             // set flag if has dialog showing
             isDialogShowing = true;
         } catch (Exception e) {
-            Timber.e(e, CMConstant.TimberTags.TAG + "CMInAppManager_interstitialDialog#exception;data=" + data);
+            Timber.w( CMConstant.TimberTags.TAG + "exception;err=" + Log.getStackTraceString(e) + ";data=" + data);
             onCMInAppInflateException(data);
         }
     }
@@ -240,13 +240,13 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
                     sendEventInAppDelivered(cmInApp);
                     new CMInAppController().downloadImagesAndUpdateDB(application, cmInApp);
                 } else {
-                    Timber.w("%sCMInAppManager_handlePushPayload_application_null", TAG);
+                    Timber.w("%svalidation;reason=application_null", CMConstant.TimberTags.TAG);
                 }
             } else {
-                Timber.w("%sCMInAppManager_handlePushPayload_cmInApp_null", TAG);
+                Timber.w("%ssvalidation;reason=cmInApp_null", CMConstant.TimberTags.TAG);
             }
         } catch (Exception e) {
-            Timber.e(e,TAG + "CMInAppManager_handlePushPayload#exception;data=" + remoteMessage.getData());
+            Timber.w(CMConstant.TimberTags.TAG + "exception;err=" + Log.getStackTraceString(e) + ";data=" + remoteMessage.getData());
         }
     }
 
@@ -267,7 +267,7 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
             Activity activity = currentActivity.get();
             activity.startActivity(RouteManager.getIntent(activity, appLink));
         } else {
-            Timber.w(CMConstant.TimberTags.TAG + "CMInAppManager_onCMInAppLinkClick_no_activity;data=" + cmInApp);
+            Timber.w("%svalidation;reason=application_null_no_activity", CMConstant.TimberTags.TAG);
         }
 
         switch (elementType.getViewType()) {

@@ -10,6 +10,7 @@ import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Display;
 import android.view.Gravity;
@@ -50,7 +51,6 @@ public class ViewEngine {
     private WeakReference<Activity> activityWeakReference;
 
     private View inAppView;
-    private static final String TAG = "P2#CM#";
 
     private int resCmClose = R.id.iv_close;
     private int resCmImage = R.id.iv_cmImage;
@@ -139,7 +139,7 @@ public class ViewEngine {
             handleBackPress(view, cmInApp);
             return inAppView;
         } catch (Exception e) {
-            Timber.e(e, CMConstant.TimberTags.TAG + "ViewEngine_createView#exception;data=" + cmInApp);
+            Timber.w( CMConstant.TimberTags.TAG + "exception;err=" + Log.getStackTraceString(e) + ";data=" + cmInApp);
             inAppView = null;
             CmInAppListener listener = CMInAppManager.getCmInAppListener();
             if (listener != null) {
@@ -347,7 +347,7 @@ public class ViewEngine {
                 button.setTextSize(TypedValue.COMPLEX_UNIT_SP,
                         Float.parseFloat(size));
         } catch (NumberFormatException e) {
-            Timber.e(e, CMConstant.TimberTags.TAG + "ViewEngine_createView#exception;data=" + cmButton);
+            Timber.w( CMConstant.TimberTags.TAG + "exception;err=" + Log.getStackTraceString(e) + ";data=" + cmButton);
         }
 
         int margin[] = {0, 0, 0, 0};

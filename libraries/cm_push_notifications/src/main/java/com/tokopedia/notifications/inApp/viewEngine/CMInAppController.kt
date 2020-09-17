@@ -27,7 +27,7 @@ class CMInAppController: CoroutineScope {
                     }
                     putDataToStore(updatedCMInApp)
                 }, onError = {
-            Timber.e(it, "${CMConstant.TimberTags.TAG}CMInAppController_downloadImagesAndUpdateDB#exception;data=${cmInApp}")
+            Timber.w(it, "${CMConstant.TimberTags.TAG}exception;err=${Log.getStackTraceString(it)};data=${cmInApp}")
             Log.d("CMInAppController", it.message)
         })
 

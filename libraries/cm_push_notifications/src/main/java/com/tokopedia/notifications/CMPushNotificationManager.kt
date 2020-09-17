@@ -154,12 +154,12 @@ class CMPushNotificationManager : CoroutineScope {
                 } else if (isPushEnable) {
                     PushController(applicationContext).handleNotificationBundle(bundle)
                 } else if (!(confirmationValue.equals(CMConstant.PayloadKeys.SOURCE_VALUE) || confirmationValue.equals(CMConstant.PayloadKeys.FCM_EXTRA_CONFIRMATION_VALUE))){
-                    Timber.w("${CMConstant.TimberTags.TAG}CMPushNotificationManager_handlePushPayload#validation;reason=not_cm_source;data=${remoteMessage.data}")
+                    Timber.w("${CMConstant.TimberTags.TAG}validation;reason=not_cm_source;data=${remoteMessage.data}")
                 }
             }
         } catch (e: Exception) {
             Log.e(TAG, "CMPushNotificationManager: handlePushPayload ", e)
-            Timber.e(e, "${CMConstant.TimberTags.TAG}CMPushNotificationManager_handlePushPayload#exception;data=${remoteMessage.data}")
+            Timber.w( "${CMConstant.TimberTags.TAG}exception;err=${Log.getStackTraceString(e)};data=${remoteMessage.data}")
         }
 
     }

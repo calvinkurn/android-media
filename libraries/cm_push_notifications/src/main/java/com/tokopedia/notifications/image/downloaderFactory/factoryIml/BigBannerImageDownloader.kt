@@ -5,6 +5,7 @@ import com.tokopedia.notifications.common.CMConstant
 import com.tokopedia.notifications.image.downloaderFactory.ImageSizeAndTimeout
 import com.tokopedia.notifications.image.downloaderFactory.NotificationImageDownloader
 import com.tokopedia.notifications.model.BaseNotificationModel
+import timber.log.Timber
 
 class BigBannerImageDownloader(baseNotificationModel: BaseNotificationModel) : NotificationImageDownloader(baseNotificationModel) {
     override suspend fun verifyAndUpdate() {
@@ -12,6 +13,7 @@ class BigBannerImageDownloader(baseNotificationModel: BaseNotificationModel) : N
             (mediumQuality.startsWith(CMConstant.HTTP) || mediumQuality.startsWith(CMConstant.WWW)).let {
                 if(it) {
                     baseNotificationModel.media = null
+                    Timber.w("${CMConstant.TimberTags.TAG}validation;reason=image_download;data=$baseNotificationModel")
                 }
             }
         }

@@ -45,12 +45,12 @@ class PushController(val context: Context) : CoroutineScope {
                             onLivePushPayloadReceived(baseNotificationModel)
                         }
                     }, onError = {
-                Timber.e(it, "${CMConstant.TimberTags.TAG}PushController_handleNotificationBundle#exception;data=${bundle}")
+                Timber.w( "${CMConstant.TimberTags.TAG}exception;err=${Log.getStackTraceString(it)};data=${bundle}")
                 Log.d("PUSHController", it.message)
             })
 
         } catch (e: Exception) {
-            Timber.e(e, "${CMConstant.TimberTags.TAG}PushController_handleNotificationBundle_no_launch#exception;data=${bundle}")
+            Timber.w( "${CMConstant.TimberTags.TAG}exception;err=${Log.getStackTraceString(e)};reason=no_launch;data=${bundle}")
         }
     }
 
@@ -146,7 +146,7 @@ class PushController(val context: Context) : CoroutineScope {
             }
         } catch (e: Exception) {
             Log.d("PushController", e.message)
-            Timber.e(e, "${CMConstant.TimberTags.TAG}PushController_createAndPostNotification#exception;data=${baseNotificationModel}")
+            Timber.w( "${CMConstant.TimberTags.TAG}exception;err=${Log.getStackTraceString(e)};reason=unable_to_post_notif;data=${baseNotificationModel}")
         }
     }
 

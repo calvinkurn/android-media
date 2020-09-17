@@ -5,14 +5,17 @@ import com.tokopedia.notifications.common.CMConstant
 import com.tokopedia.notifications.image.downloaderFactory.ImageSizeAndTimeout
 import com.tokopedia.notifications.image.downloaderFactory.NotificationImageDownloader
 import com.tokopedia.notifications.model.BaseNotificationModel
+import timber.log.Timber
 
 class ActionButtonImageDownloader(baseNotificationModel: BaseNotificationModel)
     : NotificationImageDownloader(baseNotificationModel) {
 
     override suspend fun verifyAndUpdate() {
         baseNotificationModel.media?.run {
-            if (mediumQuality.startsWith(CMConstant.HTTP) || mediumQuality.startsWith(CMConstant.WWW))
+            if (mediumQuality.startsWith(CMConstant.HTTP) || mediumQuality.startsWith(CMConstant.WWW)) {
                 baseNotificationModel.media = null
+                Timber.w("${CMConstant.TimberTags.TAG}validation;reason=image_download;data=$baseNotificationModel")
+            }
         }
     }
 
