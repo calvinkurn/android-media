@@ -57,6 +57,8 @@ class HomeRepositoryImpl @Inject constructor(
             } catch (e: Exception) {
                 HomeData()
             }
+            homeCachedDataSource.saveToDatabase(homeDataResponseValue)
+
             Log.d("FikryDebug","HomeDataAwait: "+(System.currentTimeMillis()-startMillis)+" ms")
 
             val dynamicChannelResponseValue = try {
