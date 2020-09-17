@@ -1174,7 +1174,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
 
         compositeSubscription.add(
                 getWishlistUseCase?.createObservable(requestParams)
-                        ?.subscribe(GetWishlistSubscriber(view, this))
+                        ?.subscribe(GetWishlistSubscriber(view))
         )
     }
 

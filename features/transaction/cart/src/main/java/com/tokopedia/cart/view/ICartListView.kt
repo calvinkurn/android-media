@@ -86,7 +86,7 @@ interface ICartListView : CustomerView {
 
     fun renderRecentView(recentViewList: List<RecentView>?)
 
-    fun renderWishlist(wishlists: List<Wishlist>?)
+    fun renderWishlist(wishlists: List<Wishlist>?, forceReload: Boolean)
 
     fun renderRecommendation(recommendationWidget: RecommendationWidget?)
 

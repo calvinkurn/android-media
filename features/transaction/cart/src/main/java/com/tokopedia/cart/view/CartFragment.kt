@@ -1538,7 +1538,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             if (wishLists == null) {
                 dPresenter.processGetWishlistData()
             } else {
-                renderWishlist(null)
+                renderWishlist(null, false)
             }
 
             if (recommendationList == null) {
@@ -3012,20 +3012,31 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         shouldReloadRecentViewList = false
     }
 
-    override fun renderWishlist(wishlists: List<Wishlist>?) {
+    override fun renderWishlist(wishlists: List<Wishlist>?, forceReload: Boolean) {
         var cartWishlistItemHolderDataList: MutableList<CartWishlistItemHolderData> = ArrayList()
         if (this.wishLists != null) {
-            cartWishlistItemHolderDataList.addAll(this.wishLists!!)
+            if (forceReload && wishlists != null) {
+                cartWishlistItemHolderDataList = wishlistMapper.convertToViewHolderModelList(wishlists)
+            } else {
+                cartWishlistItemHolderDataList.addAll(this.wishLists!!)
+            }
         } else if (wishlists != null) {
             cartWishlistItemHolderDataList = wishlistMapper.convertToViewHolderModelList(wishlists)
         }
-        val cartSectionHeaderHolderData = CartSectionHeaderHolderData()
-        cartSectionHeaderHolderData.title = getString(R.string.checkout_module_title_wishlist)
-        cartSectionHeaderHolderData.showAllAppLink = ApplinkConst.WISHLIST
 
         val cartWishlistHolderData = CartWishlistHolderData()
         cartWishlistHolderData.wishList = cartWishlistItemHolderDataList
-        cartAdapter.addCartWishlistData(cartSectionHeaderHolderData, cartWishlistHolderData)
+
+        if (this.wishLists == null || !forceReload) {
+            val cartSectionHeaderHolderData = CartSectionHeaderHolderData()
+            cartSectionHeaderHolderData.title = getString(R.string.checkout_module_title_wishlist)
+            cartSectionHeaderHolderData.showAllAppLink = ApplinkConst.WISHLIST
+            cartAdapter.addCartWishlistData(cartSectionHeaderHolderData, cartWishlistHolderData)
+        } else {
+            val wishlistIndex = cartAdapter.updateCartWishlistData(cartWishlistHolderData)
+            onNeedToUpdateViewItem(wishlistIndex)
+        }
+
         this.wishLists = cartWishlistItemHolderDataList
     }
 

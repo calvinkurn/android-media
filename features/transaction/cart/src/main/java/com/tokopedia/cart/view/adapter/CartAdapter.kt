@@ -820,6 +820,22 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
         notifyDataSetChanged()
     }
 
+    fun updateCartWishlistData(cartWishlistHolderData: CartWishlistHolderData): Int {
+        var wishlistIndex = 0
+        for ((index, item) in cartDataList.withIndex()) {
+            if (item is CartWishlistHolderData) {
+                wishlistIndex = index
+                break
+            }
+        }
+
+        if (wishlistIndex != 0) {
+            cartDataList.set(wishlistIndex, cartWishlistHolderData)
+        }
+
+        return wishlistIndex
+    }
+
     fun addCartRecommendationData(cartSectionHeaderHolderData: CartSectionHeaderHolderData?,
                                   cartRecommendationItemHolderDataList: List<CartRecommendationItemHolderData>) {
         var recommendationIndex = 0
