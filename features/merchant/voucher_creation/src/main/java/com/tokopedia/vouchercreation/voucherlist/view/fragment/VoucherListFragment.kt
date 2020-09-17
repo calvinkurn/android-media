@@ -585,18 +585,7 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
         ShareVoucherBottomSheet.createInstance()
                 .setOnItemClickListener { socmedType ->
                     context?.run {
-                        if (socmedType != SocmedType.COPY_LINK || socmedType != SocmedType.LAINNYA) {
-                            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                                    val missingPermissions = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                                    requestPermissions(missingPermissions, SHARE_REQUEST_CODE)
-                                } else {
-                                    shareVoucher(socmedType, voucher)
-                                }
-                            } else {
-                                shareVoucher(socmedType, voucher)
-                            }
-                        }
+                        shareVoucher(socmedType, voucher)
                     }
                 }
                 .show(childFragmentManager)
