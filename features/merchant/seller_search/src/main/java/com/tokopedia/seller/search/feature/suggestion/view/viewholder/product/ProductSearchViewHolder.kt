@@ -40,7 +40,7 @@ class ProductSearchViewHolder(private val view: View,
                 }
                 tvTitleResultProduct?.text = product.title
                 rvResultProduct?.apply {
-                    layoutManager = LinearLayoutManager(view.context)
+                    layoutManager = LinearLayoutManager(context)
                     adapter = adapterProduct
                 }
 
