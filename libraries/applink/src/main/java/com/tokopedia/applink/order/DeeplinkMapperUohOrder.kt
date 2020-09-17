@@ -3,7 +3,7 @@ package com.tokopedia.applink.order
 import android.content.Context
 import android.net.Uri
 import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.ApplinkConst.MARKETPLACE_ORDER
+import com.tokopedia.applink.ApplinkConst.*
 import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.digital.DeeplinkMapperDigital
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital
@@ -32,7 +32,9 @@ object DeeplinkMapperUohOrder {
                 || deeplink.equals(ApplinkConst.ORDER_HISTORY, true)) {
             returnedDeeplink = if (useUoh()) ApplinkConstInternalOrder.UNIFY_ORDER
             else deeplink
-        } else if (deeplink.startsWith(ApplinkConst.MARKETPLACE_ORDER_SUB)) {
+        } else if (deeplink.startsWith(ApplinkConst.MARKETPLACE_ORDER_SUB) || deeplink.equals(PURCHASE_CONFIRMED, true)
+                || deeplink.equals(PURCHASE_PROCESSED, true) || deeplink.equals(PURCHASE_SHIPPING_CONFIRM, true)
+                || deeplink.equals(PURCHASE_SHIPPED, true) || deeplink.equals(PURCHASE_DELIVERED, true)) {
             returnedDeeplink = if (useUoh()) ApplinkConstInternalOrder.UNIFY_ORDER_MARKETPLACE_IN_PROCESS
             else deeplink
         } else if (deeplink.equals(ApplinkConst.BELANJA_ORDER, true) || deeplink.equals(MARKETPLACE_ORDER, true)) {
