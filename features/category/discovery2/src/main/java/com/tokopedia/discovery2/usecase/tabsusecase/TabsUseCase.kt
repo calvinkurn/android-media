@@ -15,9 +15,8 @@ class TabsUseCase @Inject constructor(private val tabsRepository: TabsRepository
         component?.let {
             tabsRepository.getDynamicTabData(componentId, pageIdentifier).component?.let { dynamicTabData ->
                 it.data = dynamicTabData.data
-                it.setComponentsItem(DiscoveryDataMapper.mapTabsListToComponentList(dynamicTabData, ComponentNames.TabsItem.componentName, 0, null))
+                it.setComponentsItem(DiscoveryDataMapper.mapTabsListToComponentList(dynamicTabData, ComponentNames.TabsItem.componentName))
             }
-
             return true
         }
         return false

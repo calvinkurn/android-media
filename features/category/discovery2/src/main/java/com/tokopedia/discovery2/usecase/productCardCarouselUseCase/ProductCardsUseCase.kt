@@ -24,7 +24,15 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
             return false
         component?.let { item ->
             val parentComponentsItem = getComponent(item.parentComponentId, pageEndPoint)
-            item.setComponentsItem(productCardsRepository.getProducts(componentId, getQueryParameterMap(PAGE_START, item.properties, parentComponentsItem?.chipSelectionData, item.selectedFilters, item.selectedSort, rpcPinnedProduct, parentComponentsItem?.data), pageEndPoint, item.name))
+            val isDynamic = item.properties?.dynamic ?: false
+            item.setComponentsItem(productCardsRepository.getProducts(
+                    if (isDynamic && !component.dynamicOriginalId.isNullOrEmpty())
+                        component.dynamicOriginalId!! else componentId,
+                    getQueryParameterMap(PAGE_START, item.properties,
+                            parentComponentsItem?.chipSelectionData,
+                            item.selectedFilters, item.selectedSort,
+                            rpcPinnedProduct, parentComponentsItem?.data),
+                    pageEndPoint, item.name))
             item.noOfPagesLoaded = 1
             return true
         }
@@ -37,10 +45,16 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
         val parentComponent = component?.parentComponentId?.let { getComponent(it, pageEndPoint) }
 
         parentComponent?.let { component1 ->
+            val isDynamic = component1.properties?.dynamic ?: false
             val parentComponentsItem = getComponent(component1.parentComponentId, pageEndPoint)
             val size = component1.getComponentsItem()?.size
-            (component1.getComponentsItem() as ArrayList<ComponentsItem>).addAll(productCardsRepository.getProducts(component1.id, getQueryParameterMap(size
-                    ?: 0, component1.properties, parentComponentsItem?.chipSelectionData, component1.selectedFilters, component1.selectedSort, data = parentComponentsItem?.data), pageEndPoint, component1.name))
+            (component1.getComponentsItem() as ArrayList<ComponentsItem>).addAll(productCardsRepository.getProducts(
+                    if (isDynamic && !component1.dynamicOriginalId.isNullOrEmpty())
+                        component1.dynamicOriginalId!! else component1.id,
+                    getQueryParameterMap(size
+                            ?: 0, component1.properties, parentComponentsItem?.chipSelectionData,
+                            component1.selectedFilters, component1.selectedSort,
+                            data = parentComponentsItem?.data), pageEndPoint, component1.name))
             return true
         }
         return false
@@ -71,9 +85,9 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
         }
 
         data?.let {
-            if (it.isNotEmpty()){
-                val item  = it[0]
-                if(item.filterKey != null && item.filterValue != null){
+            if (it.isNotEmpty()) {
+                val item = it[0]
+                if (!item.filterKey.isNullOrEmpty() && !item.filterValue.isNullOrEmpty()) {
                     queryParameterMap[RPC_FILTER_KEU + item.filterKey] = item.filterValue
                 }
             }

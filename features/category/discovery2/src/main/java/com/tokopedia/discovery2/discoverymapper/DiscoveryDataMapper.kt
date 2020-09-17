@@ -40,13 +40,13 @@ class DiscoveryDataMapper {
             return list
         }
 
-        fun mapTabsListToComponentList(component: ComponentsItem, subComponentName: String = "", position: Int, pinnedTabID: String?): ArrayList<ComponentsItem> {
+        fun mapTabsListToComponentList(component: ComponentsItem, subComponentName: String = ""): ArrayList<ComponentsItem> {
             val list = ArrayList<ComponentsItem>()
             var isSelectedFound = false
             component.data?.forEachIndexed { index, it ->
                 val id = "${TABS_ITEM}_$index"
-                if (!pinnedTabID.isNullOrEmpty()) {
-                    var pinnedActiveIndex = pinnedTabID.toIntOrZero()
+                if (!component.pinnedActiveTabId.isNullOrEmpty()) {
+                    var pinnedActiveIndex = component.pinnedActiveTabId.toIntOrZero()
                     if (pinnedActiveIndex.isMoreThanZero()) {
                         pinnedActiveIndex -= 1
                         if (index == pinnedActiveIndex) {
@@ -61,7 +61,7 @@ class DiscoveryDataMapper {
                 componentsItem.position = index
                 componentsItem.name = subComponentName
                 componentsItem.pageEndPoint = component.pageEndPoint
-                it.positionForParentItem = position
+                it.positionForParentItem = component.parentComponentPosition
                 val dataItem = mutableListOf<DataItem>()
                 dataItem.add(it)
                 componentsItem.data = dataItem

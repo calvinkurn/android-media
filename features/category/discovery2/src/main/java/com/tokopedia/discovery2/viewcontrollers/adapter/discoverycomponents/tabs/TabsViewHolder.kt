@@ -77,7 +77,7 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) : AbstractV
 
     override fun onTabSelected(tab: TabLayout.Tab) {
         if (tabsViewModel.setSelectedState(tab.position, true)) {
-            tabsViewModel.clearDynamicTabData()
+//            tabsViewModel.clearDynamicTabData()
             tabsViewModel.onTabClick()
             trackTabsGTMStatus(tab)
         }

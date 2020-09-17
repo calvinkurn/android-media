@@ -54,6 +54,7 @@ data class ComponentsItem(
         var pageEndPoint: String = "",
         var pagePath: String = "",
         var parentComponentId: String = "",
+        var parentComponentPosition: Int = 0,
         var cpmData: CpmModel? = null,
         var chipSelectionData: DataItem? = null,
         var selectedFilters: HashMap<String, String>? = null,
@@ -67,7 +68,9 @@ data class ComponentsItem(
         val filterController: FilterController = FilterController(),
         var searchParameter: SearchParameter = SearchParameter(),
         var filters: ArrayList<Filter> = ArrayList(),
-        var rpc_PinnedProduct: String? = "") {
+        var rpc_PinnedProduct: String? = "",
+        var pinnedActiveTabId: String? = "",
+        var dynamicOriginalId: String? = "") {
 
     private var componentsItem: List<ComponentsItem>? = null
 
