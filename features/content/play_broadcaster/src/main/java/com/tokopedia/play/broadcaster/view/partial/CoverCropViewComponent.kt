@@ -13,15 +13,16 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.view.widget.PlayCropImageView
 import com.tokopedia.play.broadcaster.view.widget.PlayRectCropImageOverlay
+import com.tokopedia.play_common.viewcomponent.ViewComponent
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.yalantis.ucrop.model.ExifInfo
 import com.yalantis.ucrop.util.RectUtils
 
-class CoverCropPartialView(
+class CoverCropViewComponent(
         container: ViewGroup,
         private val listener: Listener
-) : PartialView(container, R.id.cl_cover_crop) {
+) : ViewComponent(container, R.id.cl_cover_crop) {
 
     private val llImageContainer: LinearLayout = findViewById(R.id.ll_image_container)
     private val loaderImage: LoaderUnify = findViewById(R.id.loader_image)
@@ -29,14 +30,6 @@ class CoverCropPartialView(
     private val clCropAction: ConstraintLayout = findViewById(R.id.cl_crop_action)
     private val btnCropChange: UnifyButton = findViewById(R.id.btn_crop_change)
     private val btnCropAdd: UnifyButton = findViewById(R.id.btn_crop_add)
-
-    fun show() {
-        rootView.show()
-    }
-
-    fun hide() {
-        rootView.hide()
-    }
 
     fun clickAdd() {
         btnCropAdd.performClick()
@@ -107,7 +100,7 @@ class CoverCropPartialView(
     interface Listener {
 
         fun onAddButtonClicked(
-                view: CoverCropPartialView,
+                view: CoverCropViewComponent,
                 imageInputPath: String,
                 cropRect: RectF,
                 currentImageRect: RectF,
@@ -117,7 +110,7 @@ class CoverCropPartialView(
                 viewBitmap: Bitmap
         )
 
-        fun onChangeButtonClicked(view: CoverCropPartialView)
+        fun onChangeButtonClicked(view: CoverCropViewComponent)
     }
 
     companion object {

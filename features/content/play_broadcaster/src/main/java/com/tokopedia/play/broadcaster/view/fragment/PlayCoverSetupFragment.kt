@@ -40,13 +40,14 @@ import com.tokopedia.play.broadcaster.util.preference.PermissionSharedPreference
 import com.tokopedia.play.broadcaster.view.activity.PlayBroadcastActivity
 import com.tokopedia.play.broadcaster.view.custom.PlayBottomSheetHeader
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseSetupFragment
-import com.tokopedia.play.broadcaster.view.partial.CoverCropPartialView
+import com.tokopedia.play.broadcaster.view.partial.CoverCropViewComponent
 import com.tokopedia.play.broadcaster.view.partial.CoverSetupPartialView
 import com.tokopedia.play.broadcaster.view.state.Changeable
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import com.tokopedia.play.broadcaster.view.state.NotChangeable
 import com.tokopedia.play.broadcaster.view.viewmodel.DataStoreViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayCoverSetupViewModel
+import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.Toaster
 import com.yalantis.ucrop.model.ExifInfo
 import kotlinx.coroutines.*
@@ -60,7 +61,7 @@ class PlayCoverSetupFragment @Inject constructor(
         private val dispatcher: CoroutineDispatcherProvider,
         private val permissionPref: PermissionSharedPreferences,
         private val analytic: PlayBroadcastAnalytic
-) : PlayBaseSetupFragment() {
+) : PlayBaseSetupFragment(), CoverCropViewComponent.Listener {
 
     private val job = SupervisorJob()
     private val scope = CoroutineScope(dispatcher.main + job)
@@ -73,7 +74,8 @@ class PlayCoverSetupFragment @Inject constructor(
     private lateinit var bottomSheetHeader: PlayBottomSheetHeader
 
     private lateinit var coverSetupView: CoverSetupPartialView
-    private lateinit var coverCropView: CoverCropPartialView
+
+    private val coverCropView by viewComponent { CoverCropViewComponent(it, this) }
 
     private lateinit var imagePickerHelper: CoverImagePickerHelper
 
@@ -196,6 +198,34 @@ class PlayCoverSetupFragment @Inject constructor(
         getImagePickerHelper().onAttachFragment(childFragment)
     }
 
+    override fun onAddButtonClicked(view: CoverCropViewComponent, imageInputPath: String, cropRect: RectF, currentImageRect: RectF, currentScale: Float, currentAngle: Float, exifInfo: ExifInfo, viewBitmap: Bitmap) {
+        if (isGalleryPermissionGranted()) {
+            scope.launch {
+                val croppedUri = withContext(dispatcher.io) {
+                    yalantisImageCropper.cropImage(
+                            inputPath = imageInputPath,
+                            cropRect = cropRect,
+                            currentRect = currentImageRect,
+                            currentScale = currentScale,
+                            currentAngle = currentAngle,
+                            exifInfo = exifInfo,
+                            viewBitmap = viewBitmap
+                    )
+                }
+
+                viewModel.setDraftCroppedCover(croppedUri)
+                if (isEditCoverMode) shouldUploadCover(viewModel.savedCoverTitle)
+            }
+        } else requestGalleryPermission(REQUEST_CODE_PERMISSION_CROP_COVER)
+
+        analytic.clickContinueOnCroppingPage()
+    }
+
+    override fun onChangeButtonClicked(view: CoverCropViewComponent) {
+        onChangeCoverFromCropping(viewModel.source)
+        analytic.clickChangeCoverOnCroppingPage()
+    }
+
     fun setListener(listener: Listener) {
         mListener = listener
     }
@@ -257,45 +287,6 @@ class PlayCoverSetupFragment @Inject constructor(
                 }
         )
         viewLifecycleOwner.lifecycle.addObserver(coverSetupView)
-
-        coverCropView = CoverCropPartialView(view, object : CoverCropPartialView.Listener {
-            override fun onAddButtonClicked(
-                    view: CoverCropPartialView,
-                    imageInputPath: String,
-                    cropRect: RectF,
-                    currentImageRect: RectF,
-                    currentScale: Float,
-                    currentAngle: Float,
-                    exifInfo: ExifInfo,
-                    viewBitmap: Bitmap
-            ) {
-                if (isGalleryPermissionGranted()) {
-                    scope.launch {
-                        val croppedUri = withContext(dispatcher.io) {
-                            yalantisImageCropper.cropImage(
-                                    inputPath = imageInputPath,
-                                    cropRect = cropRect,
-                                    currentRect = currentImageRect,
-                                    currentScale = currentScale,
-                                    currentAngle = currentAngle,
-                                    exifInfo = exifInfo,
-                                    viewBitmap = viewBitmap
-                            )
-                        }
-
-                        viewModel.setDraftCroppedCover(croppedUri)
-                        if (isEditCoverMode) shouldUploadCover(viewModel.savedCoverTitle)
-                    }
-                } else requestGalleryPermission(REQUEST_CODE_PERMISSION_CROP_COVER)
-
-                analytic.clickContinueOnCroppingPage()
-            }
-
-            override fun onChangeButtonClicked(view: CoverCropPartialView) {
-                onChangeCoverFromCropping(viewModel.source)
-                analytic.clickChangeCoverOnCroppingPage()
-            }
-        })
     }
 
     private fun setupView() {
