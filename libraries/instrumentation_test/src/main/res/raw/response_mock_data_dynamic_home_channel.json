@@ -603,6 +603,483 @@
                     }
                 },
                 {
+                    "id": 38550,
+                    "group_id": 218,
+                    "galaxy_attribution": "PG",
+                    "persona": "",
+                    "brand_id": "",
+                    "category_persona": "",
+                    "name": "QA 4 Banners Auto - Exp 2 - L2 Cashback",
+                    "layout": "4_banners_auto",
+                    "type": "inspiration",
+                    "showPromoBadge": false,
+                    "categoryID": "{}",
+                    "perso_type": 1,
+                    "campaignCode": "",
+                    "has_close_button": false,
+                    "isAutoRefreshAfterExpired": false,
+                    "header": {
+                        "id": 38789,
+                        "name": "QA Spesial Promo Untukmu",
+                        "subtitle": "",
+                        "url": "",
+                        "applink": "",
+                        "serverTime": 0,
+                        "expiredTime": "",
+                        "backColor": "red",
+                        "backImage": "",
+                        "textColor": "#000000"
+                    },
+                    "grids": [
+                        {
+                            "id": 1768,
+                            "back_color": "#ff5c84",
+                            "name": "Atasan Wanita",
+                            "url": "https://www.tokopedia.com/rekomendasi/0/d/?ref=channel_banner&category_id=1768&search_ref=homepage.4_banners_auto.2.1768.38550&max_cashback=96",
+                            "applink": "tokopedia://rekomendasi/0/d/?ref=channel_banner&max_cashback=96&category_id=1768&search_ref=homepage.4_banners_auto.2.1768.38550",
+                            "price": "",
+                            "slashedPrice": "",
+                            "discount": "",
+                            "imageUrl": "https://ecs7.tokopedia.net/img/attachment/2020/3/18/77305583/77305583_7fc832de-911f-4c53-87e4-d9f97d7d52ed.png",
+                            "label": "",
+                            "soldPercentage": 0,
+                            "attribution": "",
+                            "productClickUrl": "",
+                            "impression": "",
+                            "cashback": "",
+                            "isTopads": false,
+                            "freeOngkir": {
+                                "isActive": false,
+                                "imageUrl": ""
+                            },
+                            "productViewCountFormatted": "",
+                            "isOutOfStock": false,
+                            "warehouseID": 0,
+                            "minOrder": 0,
+                            "shop": {
+                                "shopID": 0
+                            },
+                            "labelGroup": [],
+                            "has_buy_button": false,
+                            "rating": 0,
+                            "count_review": 0,
+                            "benefit": {
+                                "type": "Cashback Hingga",
+                                "value": "96%"
+                            },
+                            "textColor": "#FFFFFF"
+                        },
+                        {
+                            "id": 1899,
+                            "back_color": "#1aaba6",
+                            "name": "Jilbab",
+                            "url": "https://www.tokopedia.com/rekomendasi/0/d/?ref=channel_banner&max_cashback=99&category_id=1899&search_ref=homepage.4_banners_auto.2.1899.38550",
+                            "applink": "tokopedia://rekomendasi/0/d/?ref=channel_banner&search_ref=homepage.4_banners_auto.2.1899.38550&max_cashback=99&category_id=1899",
+                            "price": "",
+                            "slashedPrice": "",
+                            "discount": "",
+                            "imageUrl": "https://ecs7.tokopedia.net/img/attachment/2020/3/19/82120085/82120085_dbf48ae0-045c-46d7-a3ad-b7e10ef6f91b.png",
+                            "label": "",
+                            "soldPercentage": 0,
+                            "attribution": "",
+                            "productClickUrl": "",
+                            "impression": "",
+                            "cashback": "",
+                            "isTopads": false,
+                            "freeOngkir": {
+                                "isActive": false,
+                                "imageUrl": ""
+                            },
+                            "productViewCountFormatted": "",
+                            "isOutOfStock": false,
+                            "warehouseID": 0,
+                            "minOrder": 0,
+                            "shop": {
+                                "shopID": 0
+                            },
+                            "labelGroup": [],
+                            "has_buy_button": false,
+                            "rating": 0,
+                            "count_review": 0,
+                            "benefit": {
+                                "type": "Cashback Hingga",
+                                "value": "99%"
+                            },
+                            "textColor": "#FFFFFF"
+                        },
+                        {
+                            "id": 863,
+                            "back_color": "#1aaba6",
+                            "name": "Pendidikan",
+                            "url": "https://www.tokopedia.com/rekomendasi/0/d/?ref=channel_banner&max_cashback=95&category_id=863&search_ref=homepage.4_banners_auto.2.863.38550",
+                            "applink": "tokopedia://rekomendasi/0/d/?ref=channel_banner&max_cashback=95&category_id=863&search_ref=homepage.4_banners_auto.2.863.38550",
+                            "price": "",
+                            "slashedPrice": "",
+                            "discount": "",
+                            "imageUrl": "https://ecs7.tokopedia.net/img/attachment/2020/3/20/77305583/77305583_db19aa4e-bb1e-4cfd-a2c0-df81be5fd429.png",
+                            "label": "",
+                            "soldPercentage": 0,
+                            "attribution": "",
+                            "productClickUrl": "",
+                            "impression": "",
+                            "cashback": "",
+                            "isTopads": false,
+                            "freeOngkir": {
+                                "isActive": false,
+                                "imageUrl": ""
+                            },
+                            "productViewCountFormatted": "",
+                            "isOutOfStock": false,
+                            "warehouseID": 0,
+                            "minOrder": 0,
+                            "shop": {
+                                "shopID": 0
+                            },
+                            "labelGroup": [],
+                            "has_buy_button": false,
+                            "rating": 0,
+                            "count_review": 0,
+                            "benefit": {
+                                "type": "Cashback Hingga",
+                                "value": "95%"
+                            },
+                            "textColor": "#FFFFFF"
+                        },
+                        {
+                            "id": 3441,
+                            "back_color": "#ff8b00",
+                            "name": "Perlengkapan Cuci Piring",
+                            "url": "https://www.tokopedia.com/rekomendasi/0/d/?ref=channel_banner&max_cashback=99&category_id=3441&search_ref=homepage.4_banners_auto.2.3441.38550",
+                            "applink": "tokopedia://rekomendasi/0/d/?ref=channel_banner&max_cashback=99&category_id=3441&search_ref=homepage.4_banners_auto.2.3441.38550",
+                            "price": "",
+                            "slashedPrice": "",
+                            "discount": "",
+                            "imageUrl": "https://ecs7.tokopedia.net/img/attachment/2020/3/18/82120085/82120085_a38bd671-0d6b-433e-8e89-582315a8690a.png",
+                            "label": "",
+                            "soldPercentage": 0,
+                            "attribution": "",
+                            "productClickUrl": "",
+                            "impression": "",
+                            "cashback": "",
+                            "isTopads": false,
+                            "freeOngkir": {
+                                "isActive": false,
+                                "imageUrl": ""
+                            },
+                            "productViewCountFormatted": "",
+                            "isOutOfStock": false,
+                            "warehouseID": 0,
+                            "minOrder": 0,
+                            "shop": {
+                                "shopID": 0
+                            },
+                            "labelGroup": [],
+                            "has_buy_button": false,
+                            "rating": 0,
+                            "count_review": 0,
+                            "benefit": {
+                                "type": "Cashback Hingga",
+                                "value": "99%"
+                            },
+                            "textColor": "#FFFFFF"
+                        }
+                    ],
+                    "banner": {
+                        "id": 0,
+                        "title": "",
+                        "description": "",
+                        "url": "",
+                        "back_color": "",
+                        "cta": {
+                            "type": "",
+                            "mode": "",
+                            "text": "",
+                            "coupon_code": ""
+                        },
+                        "applink": "",
+                        "text_color": "",
+                        "image_url": "",
+                        "attribution": "",
+                        "gradient_color": [
+                            "#FFFFFF"
+                        ]
+                    }
+                },
+                {
+                    "id": 33459,
+                    "group_id": 151,
+                    "galaxy_attribution": "PG",
+                    "persona": "",
+                    "brand_id": "",
+                    "category_persona": "",
+                    "name": "Product Highlight Test",
+                    "layout": "product_highlight",
+                    "type": "inspiration",
+                    "showPromoBadge": true,
+                    "categoryID": "{}",
+                    "perso_type": 1,
+                    "campaignCode": "",
+                    "has_close_button": false,
+                    "isAutoRefreshAfterExpired": false,
+                    "header": {
+                        "id": 33698,
+                        "name": "Product Highlight Test",
+                        "subtitle": "",
+                        "url": "",
+                        "applink": "",
+                        "serverTime": 0,
+                        "expiredTime": "",
+                        "backColor": "red",
+                        "backImage": "",
+                        "textColor": "#000000"
+                    },
+                    "grids": [
+                        {
+                            "id": 1013183943,
+                            "back_color": "",
+                            "name": "[Sanghai stripe RO] blouse wanita katun stirpe navy dan hitam - Biru",
+                            "url": "https://www.tokopedia.com/fashionista-yus/sanghai-stripe-ro-blouse-wanita-katun-stirpe-navy-dan-hitam-biru",
+                            "applink": "tokopedia://product/1013183943",
+                            "price": "Rp 50.000",
+                            "slashedPrice": "",
+                            "discount": "",
+                            "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/300-square/product-1/2017/10/16/12186374/12186374_6f64f01a-e1fd-4cd0-99dd-f24b8f58f931_720_738.jpg",
+                            "label": "",
+                            "soldPercentage": 0,
+                            "attribution": "",
+                            "productClickUrl": "https://ace.tokopedia.com/r3/v2/track?category=1771&event=click&experimentVersion=v1.4&page=0&page_name=terlaris_no_ads&pid=1013183943&pos=1&recommendation=best_seller&rectype=best_seller&redirect=https://www.tokopedia.com/fashionista-yus/sanghai-stripe-ro-blouse-wanita-katun-stirpe-navy-dan-hitam-biru?catid1771=%26ref=terlaris_no_ads_pa0_po1%26src=r3best_seller&tid=qn_Y_62VQfdw5cSkOhBiQd9tyNM=&uid=3660643&unique_id=&utime=1599702306&widget=r3_widget&xdevice=android-3.90",
+                            "impression": "https://ecs7-p.tokopedia.net/img/cache/300-square/product-1/2017/10/16/12186374/12186374_6f64f01a-e1fd-4cd0-99dd-f24b8f58f931_720_738.jpg",
+                            "cashback": "",
+                            "isTopads": false,
+                            "freeOngkir": {
+                                "isActive": true,
+                                "imageUrl": "https://ecs7-p.tokopedia.net/img/ic_bebas_ongkir.png"
+                            },
+                            "productViewCountFormatted": "",
+                            "isOutOfStock": false,
+                            "warehouseID": 7475,
+                            "minOrder": 1,
+                            "shop": {
+                                "shopID": 86242
+                            },
+                            "labelGroup": [
+                                {
+                                    "title": "Cashback",
+                                    "position": "promo",
+                                    "type": "lightGreen"
+                                }
+                            ],
+                            "has_buy_button": false,
+                            "rating": 0,
+                            "count_review": 0,
+                            "benefit": {
+                                "type": "",
+                                "value": ""
+                            },
+                            "textColor": ""
+                        }
+                    ],
+                    "banner": {
+                        "id": 3911,
+                        "title": "",
+                        "description": "",
+                        "url": "",
+                        "back_color": "#ffffff",
+                        "cta": {
+                            "type": "",
+                            "mode": "",
+                            "text": "",
+                            "coupon_code": ""
+                        },
+                        "applink": "",
+                        "text_color": "#ffffff",
+                        "image_url": "",
+                        "attribution": "",
+                        "gradient_color": [
+                            "#c97de3",
+                            "#4e9985"
+                        ]
+                    }
+                },
+                {
+                    "id": 29555,
+                    "group_id": 169,
+                    "galaxy_attribution": "PG",
+                    "persona": "Parenthood,Healthy Life",
+                    "brand_id": "",
+                    "category_persona": "500,2042,69,972,146,161,980,401,1036,2013,469,1383,394,743,1318,1808,1822,1821,1863,1483",
+                    "name": "4 Banners Widget - Non Login",
+                    "layout": "lego_4_image",
+                    "type": "inspiration",
+                    "showPromoBadge": false,
+                    "categoryID": "{65,35,1759,1758,60,56,984,983}",
+                    "perso_type": 4,
+                    "campaignCode": "",
+                    "has_close_button": false,
+                    "header": {
+                        "id": 29781,
+                        "name": "Spesial Promo Untukmu",
+                        "subtitle": "",
+                        "url": "https://www.tokopedia.com/discovery/produk-baru?source=homepage.list_carousel.0.25744",
+                        "applink": "tokopedia://discovery/produk-baru?source=homepage.list_carousel.0.25744",
+                        "serverTime": 0,
+                        "expiredTime": "",
+                        "backColor": "red",
+                        "backImage": "",
+                        "textColor": "#000000"
+                    },
+                    "grids": [{
+                        "id": 158587,
+                        "back_color": "",
+                        "name": "",
+                        "url": "https://www.tokopedia.com/discovery/sayur-buah?source=home",
+                        "applink": "tokopedia://discovery/sayur-buah?source=home",
+                        "price": "",
+                        "slashedPrice": "",
+                        "discount": "",
+                        "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/300/attachment/2020/5/28/88321389/88321389_8a1a24c3-1e38-4eda-b8a3-c8cfaaaf6243.png",
+                        "label": "",
+                        "soldPercentage": 0,
+                        "attribution": "X_PG_4 BANNERS_NON LOGIN_GIZI_28 May 20",
+                        "productClickUrl": "",
+                        "impression": "",
+                        "cashback": "",
+                        "isTopads": false,
+                        "freeOngkir": {
+                            "isActive": false,
+                            "imageUrl": ""
+                        },
+                        "productViewCountFormatted": "",
+                        "isOutOfStock": false,
+                        "warehouseID": 0,
+                        "minOrder": 0,
+                        "shop": {
+                            "shopID": 0
+                        },
+                        "labelGroup": [],
+                        "has_buy_button": false,
+                        "rating": 0,
+                        "count_review": 0
+                    },
+                        {
+                            "id": 158588,
+                            "back_color": "",
+                            "name": "",
+                            "url": "https://www.tokopedia.com/discovery/sembako?source=home",
+                            "applink": "tokopedia://discovery/sembako?source=home",
+                            "price": "",
+                            "slashedPrice": "",
+                            "discount": "",
+                            "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/300/attachment/2020/5/28/88321389/88321389_af6256aa-3a9d-4c99-bcfa-4f4bc1cbe4d9.png",
+                            "label": "",
+                            "soldPercentage": 0,
+                            "attribution": "X_PG_4 BANNERS_NON LOGIN_SEMBAKO_28 May 20",
+                            "productClickUrl": "",
+                            "impression": "",
+                            "cashback": "",
+                            "isTopads": false,
+                            "freeOngkir": {
+                                "isActive": false,
+                                "imageUrl": ""
+                            },
+                            "productViewCountFormatted": "",
+                            "isOutOfStock": false,
+                            "warehouseID": 0,
+                            "minOrder": 0,
+                            "shop": {
+                                "shopID": 0
+                            },
+                            "labelGroup": [],
+                            "has_buy_button": false,
+                            "rating": 0,
+                            "count_review": 0
+                        },
+                        {
+                            "id": 158589,
+                            "back_color": "",
+                            "name": "",
+                            "url": "https://www.tokopedia.com/discovery/bumbu-masakan?source=home",
+                            "applink": "tokopedia://discovery/bumbu-masakan?source=home",
+                            "price": "",
+                            "slashedPrice": "",
+                            "discount": "",
+                            "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/300/attachment/2020/5/28/88321389/88321389_23694462-a217-4217-b1d4-efc788947789.png",
+                            "label": "",
+                            "soldPercentage": 0,
+                            "attribution": "X_PG_4 BANNERS_NON LOGIN_BUMBU MASAK_28 May 20",
+                            "productClickUrl": "",
+                            "impression": "",
+                            "cashback": "",
+                            "isTopads": false,
+                            "freeOngkir": {
+                                "isActive": false,
+                                "imageUrl": ""
+                            },
+                            "productViewCountFormatted": "",
+                            "isOutOfStock": false,
+                            "warehouseID": 0,
+                            "minOrder": 0,
+                            "shop": {
+                                "shopID": 0
+                            },
+                            "labelGroup": [],
+                            "has_buy_button": false,
+                            "rating": 0,
+                            "count_review": 0
+                        },
+                        {
+                            "id": 158590,
+                            "back_color": "",
+                            "name": "",
+                            "url": "https://www.tokopedia.com/discovery/popok-pilihan?source=home",
+                            "applink": "tokopedia://discovery/popok-pilihan?source=home",
+                            "price": "",
+                            "slashedPrice": "",
+                            "discount": "",
+                            "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/300/attachment/2020/5/28/88321389/88321389_c287b001-0b0a-4ef8-8a5c-20ccbefa61c4.png",
+                            "label": "",
+                            "soldPercentage": 0,
+                            "attribution": "X_PG_4 BANNERS_NON LOGIN_POPOK_28 May 20",
+                            "productClickUrl": "",
+                            "impression": "",
+                            "cashback": "",
+                            "isTopads": false,
+                            "freeOngkir": {
+                                "isActive": false,
+                                "imageUrl": ""
+                            },
+                            "productViewCountFormatted": "",
+                            "isOutOfStock": false,
+                            "warehouseID": 0,
+                            "minOrder": 0,
+                            "shop": {
+                                "shopID": 0
+                            },
+                            "labelGroup": [],
+                            "has_buy_button": false,
+                            "rating": 0,
+                            "count_review": 0
+                        }],
+                    "banner": {
+                        "id": 0,
+                        "title": "",
+                        "description": "",
+                        "url": "",
+                        "back_color": "",
+                        "cta": {
+                            "type": "",
+                            "mode": "",
+                            "text": "",
+                            "coupon_code": ""
+                        },
+                        "applink": "",
+                        "text_color": "",
+                        "image_url": "",
+                        "attribution": "",
+                        "gradient_color": ["#FFFFFF"]
+                    }
+                },
+                {
                 "id": 34022,
                 "group_id": 206,
                 "galaxy_attribution": "PG",
@@ -1450,244 +1927,6 @@
                     "gradient_color": ["#FFFFFF"]
                 }
             }, {
-                "id": 34105,
-                "group_id": 112,
-                "galaxy_attribution": "PG",
-                "persona": "Cook",
-                "brand_id": "",
-                "category_persona": "912,948,949,951,916,952,950,946,953,958",
-                "name": "All User Campaign #1",
-                "layout": "6_image",
-                "type": "inspiration",
-                "showPromoBadge": false,
-                "categoryID": "{}",
-                "perso_type": 1,
-                "campaignCode": "fnb00000077_comeback - sasa_01july20-31july20",
-                "has_close_button": false,
-                "header": {
-                    "id": 34344,
-                    "name": "Sasa Special Deals",
-                    "subtitle": "",
-                    "url": "https://www.tokopedia.com/discovery/sasa?source=homepage.6_image.0.34105",
-                    "applink": "tokopedia://discovery/sasa?source=homepage.6_image.0.34105",
-                    "serverTime": 0,
-                    "expiredTime": "",
-                    "backColor": "red",
-                    "backImage": "",
-                    "textColor": "#000000"
-                },
-                "grids": [{
-                    "id": 174862,
-                    "back_color": "",
-                    "name": "",
-                    "url": "https://www.tokopedia.com/discovery/sasa?source=homepage.6_image.0.34105",
-                    "applink": "tokopedia://discovery/sasa?source=homepage.6_image.0.34105",
-                    "price": "",
-                    "slashedPrice": "",
-                    "discount": "",
-                    "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/200-square/phZFtb/2020/7/22/e3cd829a-fe7d-42b5-94b1-b38be9af3e06.jpg",
-                    "label": "",
-                    "soldPercentage": 0,
-                    "attribution": "X_PG_DC1_All User_Sasa - Comeback_23 July 20",
-                    "productClickUrl": "",
-                    "impression": "",
-                    "cashback": "",
-                    "isTopads": false,
-                    "freeOngkir": {
-                        "isActive": false,
-                        "imageUrl": ""
-                    },
-                    "productViewCountFormatted": "",
-                    "isOutOfStock": false,
-                    "warehouseID": 0,
-                    "minOrder": 0,
-                    "shop": {
-                        "shopID": 0
-                    },
-                    "labelGroup": [],
-                    "has_buy_button": false,
-                    "rating": 0,
-                    "count_review": 0
-                }, {
-                    "id": 174863,
-                    "back_color": "",
-                    "name": "",
-                    "url": "https://www.tokopedia.com/discovery/sasa?source=homepage.6_image.0.34105",
-                    "applink": "tokopedia://discovery/sasa?source=homepage.6_image.0.34105",
-                    "price": "",
-                    "slashedPrice": "",
-                    "discount": "",
-                    "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/200-square/phZFtb/2020/7/22/ff0ea964-893a-4a32-9b33-da4a77f4a434.jpg",
-                    "label": "",
-                    "soldPercentage": 0,
-                    "attribution": "X_PG_DC1_All User_Sasa - Comeback_23 July 20",
-                    "productClickUrl": "",
-                    "impression": "",
-                    "cashback": "",
-                    "isTopads": false,
-                    "freeOngkir": {
-                        "isActive": false,
-                        "imageUrl": ""
-                    },
-                    "productViewCountFormatted": "",
-                    "isOutOfStock": false,
-                    "warehouseID": 0,
-                    "minOrder": 0,
-                    "shop": {
-                        "shopID": 0
-                    },
-                    "labelGroup": [],
-                    "has_buy_button": false,
-                    "rating": 0,
-                    "count_review": 0
-                }, {
-                    "id": 174864,
-                    "back_color": "",
-                    "name": "",
-                    "url": "https://www.tokopedia.com/discovery/sasa?source=homepage.6_image.0.34105",
-                    "applink": "tokopedia://discovery/sasa?source=homepage.6_image.0.34105",
-                    "price": "",
-                    "slashedPrice": "",
-                    "discount": "",
-                    "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/200-square/phZFtb/2020/7/22/721830e2-ca6e-4b6e-9e6a-1770bf9e1e07.jpg",
-                    "label": "",
-                    "soldPercentage": 0,
-                    "attribution": "X_PG_DC1_All User_Sasa - Comeback_23 July 20",
-                    "productClickUrl": "",
-                    "impression": "",
-                    "cashback": "",
-                    "isTopads": false,
-                    "freeOngkir": {
-                        "isActive": false,
-                        "imageUrl": ""
-                    },
-                    "productViewCountFormatted": "",
-                    "isOutOfStock": false,
-                    "warehouseID": 0,
-                    "minOrder": 0,
-                    "shop": {
-                        "shopID": 0
-                    },
-                    "labelGroup": [],
-                    "has_buy_button": false,
-                    "rating": 0,
-                    "count_review": 0
-                }, {
-                    "id": 174865,
-                    "back_color": "",
-                    "name": "",
-                    "url": "https://www.tokopedia.com/discovery/sasa?source=homepage.6_image.0.34105",
-                    "applink": "tokopedia://discovery/sasa?source=homepage.6_image.0.34105",
-                    "price": "",
-                    "slashedPrice": "",
-                    "discount": "",
-                    "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/200-square/phZFtb/2020/7/22/6f358b7e-f871-4183-ad47-fb44b0cb8754.jpg",
-                    "label": "",
-                    "soldPercentage": 0,
-                    "attribution": "X_PG_DC1_All User_Sasa - Comeback_23 July 20",
-                    "productClickUrl": "",
-                    "impression": "",
-                    "cashback": "",
-                    "isTopads": false,
-                    "freeOngkir": {
-                        "isActive": false,
-                        "imageUrl": ""
-                    },
-                    "productViewCountFormatted": "",
-                    "isOutOfStock": false,
-                    "warehouseID": 0,
-                    "minOrder": 0,
-                    "shop": {
-                        "shopID": 0
-                    },
-                    "labelGroup": [],
-                    "has_buy_button": false,
-                    "rating": 0,
-                    "count_review": 0
-                }, {
-                    "id": 174866,
-                    "back_color": "",
-                    "name": "",
-                    "url": "https://www.tokopedia.com/discovery/sasa?source=homepage.6_image.0.34105",
-                    "applink": "tokopedia://discovery/sasa?source=homepage.6_image.0.34105",
-                    "price": "",
-                    "slashedPrice": "",
-                    "discount": "",
-                    "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/200-square/phZFtb/2020/7/22/e080e455-3212-4480-b703-96ede5e77651.jpg",
-                    "label": "",
-                    "soldPercentage": 0,
-                    "attribution": "X_PG_DC1_All User_Sasa - Comeback_23 July 20",
-                    "productClickUrl": "",
-                    "impression": "",
-                    "cashback": "",
-                    "isTopads": false,
-                    "freeOngkir": {
-                        "isActive": false,
-                        "imageUrl": ""
-                    },
-                    "productViewCountFormatted": "",
-                    "isOutOfStock": false,
-                    "warehouseID": 0,
-                    "minOrder": 0,
-                    "shop": {
-                        "shopID": 0
-                    },
-                    "labelGroup": [],
-                    "has_buy_button": false,
-                    "rating": 0,
-                    "count_review": 0
-                }, {
-                    "id": 174867,
-                    "back_color": "",
-                    "name": "",
-                    "url": "https://www.tokopedia.com/discovery/sasa?source=homepage.6_image.0.34105",
-                    "applink": "tokopedia://discovery/sasa?source=homepage.6_image.0.34105",
-                    "price": "",
-                    "slashedPrice": "",
-                    "discount": "",
-                    "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/200-square/phZFtb/2020/7/22/1ba15a1d-bc42-4a56-ae40-72fcb5664834.jpg",
-                    "label": "",
-                    "soldPercentage": 0,
-                    "attribution": "X_PG_DC1_All User_Sasa - Comeback_23 July 20",
-                    "productClickUrl": "",
-                    "impression": "",
-                    "cashback": "",
-                    "isTopads": false,
-                    "freeOngkir": {
-                        "isActive": false,
-                        "imageUrl": ""
-                    },
-                    "productViewCountFormatted": "",
-                    "isOutOfStock": false,
-                    "warehouseID": 0,
-                    "minOrder": 0,
-                    "shop": {
-                        "shopID": 0
-                    },
-                    "labelGroup": [],
-                    "has_buy_button": false,
-                    "rating": 0,
-                    "count_review": 0
-                }],
-                "banner": {
-                    "id": 0,
-                    "title": "",
-                    "description": "",
-                    "url": "",
-                    "back_color": "",
-                    "cta": {
-                        "type": "",
-                        "mode": "",
-                        "text": "",
-                        "coupon_code": ""
-                    },
-                    "applink": "",
-                    "text_color": "",
-                    "image_url": "",
-                    "attribution": "",
-                    "gradient_color": ["#FFFFFF"]
-                }
-            }, {
                 "id": 25779,
                 "group_id": 185,
                 "galaxy_attribution": "PG",
@@ -1917,245 +2156,8 @@
                     "attribution": "",
                     "gradient_color": ["#FFFFFF", "#FFFFFF"]
                 }
-            }, {
-                "id": 34106,
-                "group_id": 146,
-                "galaxy_attribution": "PG",
-                "persona": "Beauty",
-                "brand_id": "",
-                "category_persona": "425,1077,520,500,469,1655,512,981,999,421",
-                "name": "All User Campaign #2",
-                "layout": "6_image",
-                "type": "inspiration",
-                "showPromoBadge": false,
-                "categoryID": "{}",
-                "perso_type": 1,
-                "campaignCode": "bea00000099_comeback garnier_23july20-23july20",
-                "has_close_button": false,
-                "header": {
-                    "id": 34345,
-                    "name": "Garnier Official Store",
-                    "subtitle": "",
-                    "url": "https://www.tokopedia.com/garnierofficial",
-                    "applink": "tokopedia://shop/5758559",
-                    "serverTime": 0,
-                    "expiredTime": "",
-                    "backColor": "red",
-                    "backImage": "",
-                    "textColor": "#000000"
-                },
-                "grids": [{
-                    "id": 174868,
-                    "back_color": "",
-                    "name": "",
-                    "url": "https://www.tokopedia.com/garnierofficial",
-                    "applink": "tokopedia://shop/5758559",
-                    "price": "",
-                    "slashedPrice": "",
-                    "discount": "",
-                    "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/200-square/phZFtb/2020/7/22/075303b6-fc33-4f36-bc15-ba3f7f3aa5f3.jpg",
-                    "label": "",
-                    "soldPercentage": 0,
-                    "attribution": "X_PG_DC2_All User_Ads - [Comeback] Garnier_23 July 20",
-                    "productClickUrl": "",
-                    "impression": "",
-                    "cashback": "",
-                    "isTopads": false,
-                    "freeOngkir": {
-                        "isActive": false,
-                        "imageUrl": ""
-                    },
-                    "productViewCountFormatted": "",
-                    "isOutOfStock": false,
-                    "warehouseID": 0,
-                    "minOrder": 0,
-                    "shop": {
-                        "shopID": 0
-                    },
-                    "labelGroup": [],
-                    "has_buy_button": false,
-                    "rating": 0,
-                    "count_review": 0
-                }, {
-                    "id": 174869,
-                    "back_color": "",
-                    "name": "",
-                    "url": "https://www.tokopedia.com/garnierofficial",
-                    "applink": "tokopedia://shop/5758559",
-                    "price": "",
-                    "slashedPrice": "",
-                    "discount": "",
-                    "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/200-square/phZFtb/2020/7/22/38039551-ea18-4263-b41e-2de6dd313b08.jpg",
-                    "label": "",
-                    "soldPercentage": 0,
-                    "attribution": "X_PG_DC2_All User_Ads - [Comeback] Garnier_23 July 20",
-                    "productClickUrl": "",
-                    "impression": "",
-                    "cashback": "",
-                    "isTopads": false,
-                    "freeOngkir": {
-                        "isActive": false,
-                        "imageUrl": ""
-                    },
-                    "productViewCountFormatted": "",
-                    "isOutOfStock": false,
-                    "warehouseID": 0,
-                    "minOrder": 0,
-                    "shop": {
-                        "shopID": 0
-                    },
-                    "labelGroup": [],
-                    "has_buy_button": false,
-                    "rating": 0,
-                    "count_review": 0
-                }, {
-                    "id": 174870,
-                    "back_color": "",
-                    "name": "",
-                    "url": "https://www.tokopedia.com/garnierofficial",
-                    "applink": "tokopedia://shop/5758559",
-                    "price": "",
-                    "slashedPrice": "",
-                    "discount": "",
-                    "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/200-square/phZFtb/2020/7/22/b8b1614d-16f1-462d-8375-d93170a2f6e3.jpg",
-                    "label": "",
-                    "soldPercentage": 0,
-                    "attribution": "X_PG_DC2_All User_Ads - [Comeback] Garnier_23 July 20",
-                    "productClickUrl": "",
-                    "impression": "",
-                    "cashback": "",
-                    "isTopads": false,
-                    "freeOngkir": {
-                        "isActive": false,
-                        "imageUrl": ""
-                    },
-                    "productViewCountFormatted": "",
-                    "isOutOfStock": false,
-                    "warehouseID": 0,
-                    "minOrder": 0,
-                    "shop": {
-                        "shopID": 0
-                    },
-                    "labelGroup": [],
-                    "has_buy_button": false,
-                    "rating": 0,
-                    "count_review": 0
-                }, {
-                    "id": 174871,
-                    "back_color": "",
-                    "name": "",
-                    "url": "https://www.tokopedia.com/garnierofficial",
-                    "applink": "tokopedia://shop/5758559",
-                    "price": "",
-                    "slashedPrice": "",
-                    "discount": "",
-                    "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/200-square/phZFtb/2020/7/22/e3b5de83-db36-4452-9ef8-c8d74c822a8b.jpg",
-                    "label": "",
-                    "soldPercentage": 0,
-                    "attribution": "X_PG_DC2_All User_Ads - [Comeback] Garnier_23 July 20",
-                    "productClickUrl": "",
-                    "impression": "",
-                    "cashback": "",
-                    "isTopads": false,
-                    "freeOngkir": {
-                        "isActive": false,
-                        "imageUrl": ""
-                    },
-                    "productViewCountFormatted": "",
-                    "isOutOfStock": false,
-                    "warehouseID": 0,
-                    "minOrder": 0,
-                    "shop": {
-                        "shopID": 0
-                    },
-                    "labelGroup": [],
-                    "has_buy_button": false,
-                    "rating": 0,
-                    "count_review": 0
-                }, {
-                    "id": 174872,
-                    "back_color": "",
-                    "name": "",
-                    "url": "https://www.tokopedia.com/garnierofficial",
-                    "applink": "tokopedia://shop/5758559",
-                    "price": "",
-                    "slashedPrice": "",
-                    "discount": "",
-                    "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/200-square/phZFtb/2020/7/22/f9cb94bd-d4d9-4473-b166-265fbb8bf910.jpg",
-                    "label": "",
-                    "soldPercentage": 0,
-                    "attribution": "X_PG_DC2_All User_Ads - [Comeback] Garnier_23 July 20",
-                    "productClickUrl": "",
-                    "impression": "",
-                    "cashback": "",
-                    "isTopads": false,
-                    "freeOngkir": {
-                        "isActive": false,
-                        "imageUrl": ""
-                    },
-                    "productViewCountFormatted": "",
-                    "isOutOfStock": false,
-                    "warehouseID": 0,
-                    "minOrder": 0,
-                    "shop": {
-                        "shopID": 0
-                    },
-                    "labelGroup": [],
-                    "has_buy_button": false,
-                    "rating": 0,
-                    "count_review": 0
-                }, {
-                    "id": 174873,
-                    "back_color": "",
-                    "name": "",
-                    "url": "https://www.tokopedia.com/garnierofficial",
-                    "applink": "tokopedia://shop/5758559",
-                    "price": "",
-                    "slashedPrice": "",
-                    "discount": "",
-                    "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/200-square/phZFtb/2020/7/22/1228f6d7-a7f8-4686-956d-a8caec274283.jpg",
-                    "label": "",
-                    "soldPercentage": 0,
-                    "attribution": "X_PG_DC2_All User_Ads - [Comeback] Garnier_23 July 20",
-                    "productClickUrl": "",
-                    "impression": "",
-                    "cashback": "",
-                    "isTopads": false,
-                    "freeOngkir": {
-                        "isActive": false,
-                        "imageUrl": ""
-                    },
-                    "productViewCountFormatted": "",
-                    "isOutOfStock": false,
-                    "warehouseID": 0,
-                    "minOrder": 0,
-                    "shop": {
-                        "shopID": 0
-                    },
-                    "labelGroup": [],
-                    "has_buy_button": false,
-                    "rating": 0,
-                    "count_review": 0
-                }],
-                "banner": {
-                    "id": 0,
-                    "title": "",
-                    "description": "",
-                    "url": "",
-                    "back_color": "",
-                    "cta": {
-                        "type": "",
-                        "mode": "",
-                        "text": "",
-                        "coupon_code": ""
-                    },
-                    "applink": "",
-                    "text_color": "",
-                    "image_url": "",
-                    "attribution": "",
-                    "gradient_color": ["#FFFFFF"]
-                }
-            }, {
+            },
+                {
                 "id": 26137,
                 "group_id": 184,
                 "galaxy_attribution": "PG",
@@ -2406,7 +2408,8 @@
                     "attribution": "",
                     "gradient_color": ["#FFFFFF", "#FFFFFF"]
                 }
-            }, {
+            },
+                {
                 "id": 24632,
                 "group_id": 180,
                 "galaxy_attribution": "PG",
@@ -2644,7 +2647,8 @@
                     "attribution": "",
                     "gradient_color": ["#FFFFFF"]
                 }
-            }, {
+            },
+                {
                 "id": 29555,
                 "group_id": 169,
                 "galaxy_attribution": "PG",
@@ -2663,8 +2667,8 @@
                     "id": 29781,
                     "name": "Spesial Promo Untukmu",
                     "subtitle": "",
-                    "url": "",
-                    "applink": "",
+                    "url": "https://www.tokopedia.com/discovery/produk-baru?source=homepage.list_carousel.0.25744",
+                    "applink": "tokopedia://discovery/produk-baru?source=homepage.list_carousel.0.25744",
                     "serverTime": 0,
                     "expiredTime": "",
                     "backColor": "red",
@@ -2703,7 +2707,8 @@
                     "has_buy_button": false,
                     "rating": 0,
                     "count_review": 0
-                }, {
+                },
+                    {
                     "id": 158588,
                     "back_color": "",
                     "name": "",
@@ -2735,7 +2740,8 @@
                     "has_buy_button": false,
                     "rating": 0,
                     "count_review": 0
-                }, {
+                },
+                    {
                     "id": 158589,
                     "back_color": "",
                     "name": "",
@@ -2767,7 +2773,8 @@
                     "has_buy_button": false,
                     "rating": 0,
                     "count_review": 0
-                }, {
+                },
+                    {
                     "id": 158590,
                     "back_color": "",
                     "name": "",
@@ -2960,7 +2967,8 @@
                     "attribution": "",
                     "gradient_color": ["#FFFFFF"]
                 }
-            }, {
+            },
+                {
                 "id": 34036,
                 "group_id": 37,
                 "galaxy_attribution": "PG",
@@ -3102,483 +3110,8 @@
                     "attribution": "",
                     "gradient_color": ["#FFFFFF"]
                 }
-            }, {
-                "id": 34108,
-                "group_id": 157,
-                "galaxy_attribution": "PG",
-                "persona": "Hobby",
-                "brand_id": "",
-                "category_persona": "562,1518,826,1655,1304,565,69,1312,1299,2114",
-                "name": "All User Campaign #3",
-                "layout": "6_image",
-                "type": "inspiration",
-                "showPromoBadge": false,
-                "categoryID": "{}",
-                "perso_type": 1,
-                "campaignCode": "lot00000075_promo seru serba seribu_20july20-24july20",
-                "has_close_button": false,
-                "header": {
-                    "id": 34347,
-                    "name": "Serbu Abis!",
-                    "subtitle": "",
-                    "url": "https://www.tokopedia.com/discovery/tetap-sehat-produktif?source=homepage.6_image.0.34006",
-                    "applink": "tokopedia://discovery/tetap-sehat-produktif?source=homepage.6_image.0.34006",
-                    "serverTime": 0,
-                    "expiredTime": "",
-                    "backColor": "red",
-                    "backImage": "",
-                    "textColor": "#000000"
-                },
-                "grids": [{
-                    "id": 174881,
-                    "back_color": "",
-                    "name": "",
-                    "url": "https://www.tokopedia.com/discovery/tetap-sehat-produktif?source=homepage.6_image.0.34006",
-                    "applink": "tokopedia://discovery/tetap-sehat-produktif?source=homepage.6_image.0.34006",
-                    "price": "",
-                    "slashedPrice": "",
-                    "discount": "",
-                    "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/200-square/phZFtb/2020/7/22/297abb04-fd0d-4800-a1c3-20b23a2aa662.jpg",
-                    "label": "",
-                    "soldPercentage": 0,
-                    "attribution": "X_PG_DC3_All User_Tetap Sehat \u0026 Produktif_23 July 20",
-                    "productClickUrl": "",
-                    "impression": "",
-                    "cashback": "",
-                    "isTopads": false,
-                    "freeOngkir": {
-                        "isActive": false,
-                        "imageUrl": ""
-                    },
-                    "productViewCountFormatted": "",
-                    "isOutOfStock": false,
-                    "warehouseID": 0,
-                    "minOrder": 0,
-                    "shop": {
-                        "shopID": 0
-                    },
-                    "labelGroup": [],
-                    "has_buy_button": false,
-                    "rating": 0,
-                    "count_review": 0
-                }, {
-                    "id": 174882,
-                    "back_color": "",
-                    "name": "",
-                    "url": "https://www.tokopedia.com/discovery/tetap-sehat-produktif?source=homepage.6_image.0.34006",
-                    "applink": "tokopedia://discovery/tetap-sehat-produktif?source=homepage.6_image.0.34006",
-                    "price": "",
-                    "slashedPrice": "",
-                    "discount": "",
-                    "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/200-square/phZFtb/2020/7/22/c27aefa7-13ef-40e2-aeae-a3aace2f2316.jpg",
-                    "label": "",
-                    "soldPercentage": 0,
-                    "attribution": "X_PG_DC3_All User_Tetap Sehat \u0026 Produktif_23 July 20",
-                    "productClickUrl": "",
-                    "impression": "",
-                    "cashback": "",
-                    "isTopads": false,
-                    "freeOngkir": {
-                        "isActive": false,
-                        "imageUrl": ""
-                    },
-                    "productViewCountFormatted": "",
-                    "isOutOfStock": false,
-                    "warehouseID": 0,
-                    "minOrder": 0,
-                    "shop": {
-                        "shopID": 0
-                    },
-                    "labelGroup": [],
-                    "has_buy_button": false,
-                    "rating": 0,
-                    "count_review": 0
-                }, {
-                    "id": 174883,
-                    "back_color": "",
-                    "name": "",
-                    "url": "https://www.tokopedia.com/discovery/tetap-sehat-produktif?source=homepage.6_image.0.34006",
-                    "applink": "tokopedia://discovery/tetap-sehat-produktif?source=homepage.6_image.0.34006",
-                    "price": "",
-                    "slashedPrice": "",
-                    "discount": "",
-                    "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/200-square/phZFtb/2020/7/22/6517a745-ad0f-4f1a-b16c-313356323886.jpg",
-                    "label": "",
-                    "soldPercentage": 0,
-                    "attribution": "X_PG_DC3_All User_Tetap Sehat \u0026 Produktif_23 July 20",
-                    "productClickUrl": "",
-                    "impression": "",
-                    "cashback": "",
-                    "isTopads": false,
-                    "freeOngkir": {
-                        "isActive": false,
-                        "imageUrl": ""
-                    },
-                    "productViewCountFormatted": "",
-                    "isOutOfStock": false,
-                    "warehouseID": 0,
-                    "minOrder": 0,
-                    "shop": {
-                        "shopID": 0
-                    },
-                    "labelGroup": [],
-                    "has_buy_button": false,
-                    "rating": 0,
-                    "count_review": 0
-                }, {
-                    "id": 174884,
-                    "back_color": "",
-                    "name": "",
-                    "url": "https://www.tokopedia.com/discovery/tetap-sehat-produktif?source=homepage.6_image.0.34006",
-                    "applink": "tokopedia://discovery/tetap-sehat-produktif?source=homepage.6_image.0.34006",
-                    "price": "",
-                    "slashedPrice": "",
-                    "discount": "",
-                    "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/200-square/phZFtb/2020/7/22/d1bfda56-f2ea-43f5-b725-49dfb6c3fa09.jpg",
-                    "label": "",
-                    "soldPercentage": 0,
-                    "attribution": "X_PG_DC3_All User_Tetap Sehat \u0026 Produktif_23 July 20",
-                    "productClickUrl": "",
-                    "impression": "",
-                    "cashback": "",
-                    "isTopads": false,
-                    "freeOngkir": {
-                        "isActive": false,
-                        "imageUrl": ""
-                    },
-                    "productViewCountFormatted": "",
-                    "isOutOfStock": false,
-                    "warehouseID": 0,
-                    "minOrder": 0,
-                    "shop": {
-                        "shopID": 0
-                    },
-                    "labelGroup": [],
-                    "has_buy_button": false,
-                    "rating": 0,
-                    "count_review": 0
-                }, {
-                    "id": 174885,
-                    "back_color": "",
-                    "name": "",
-                    "url": "https://www.tokopedia.com/discovery/tetap-sehat-produktif?source=homepage.6_image.0.34006",
-                    "applink": "tokopedia://discovery/tetap-sehat-produktif?source=homepage.6_image.0.34006",
-                    "price": "",
-                    "slashedPrice": "",
-                    "discount": "",
-                    "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/200-square/phZFtb/2020/7/22/8919b194-5fc1-4b44-90d2-7019713f101b.jpg",
-                    "label": "",
-                    "soldPercentage": 0,
-                    "attribution": "X_PG_DC3_All User_Tetap Sehat \u0026 Produktif_23 July 20",
-                    "productClickUrl": "",
-                    "impression": "",
-                    "cashback": "",
-                    "isTopads": false,
-                    "freeOngkir": {
-                        "isActive": false,
-                        "imageUrl": ""
-                    },
-                    "productViewCountFormatted": "",
-                    "isOutOfStock": false,
-                    "warehouseID": 0,
-                    "minOrder": 0,
-                    "shop": {
-                        "shopID": 0
-                    },
-                    "labelGroup": [],
-                    "has_buy_button": false,
-                    "rating": 0,
-                    "count_review": 0
-                }, {
-                    "id": 174886,
-                    "back_color": "",
-                    "name": "",
-                    "url": "https://www.tokopedia.com/discovery/tetap-sehat-produktif?source=homepage.6_image.0.34006",
-                    "applink": "tokopedia://discovery/tetap-sehat-produktif?source=homepage.6_image.0.34006",
-                    "price": "",
-                    "slashedPrice": "",
-                    "discount": "",
-                    "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/200-square/phZFtb/2020/7/22/b529e18b-7c63-4931-b4c6-30fda18f9a4f.jpg",
-                    "label": "",
-                    "soldPercentage": 0,
-                    "attribution": "X_PG_DC3_All User_Tetap Sehat \u0026 Produktif_23 July 20",
-                    "productClickUrl": "",
-                    "impression": "",
-                    "cashback": "",
-                    "isTopads": false,
-                    "freeOngkir": {
-                        "isActive": false,
-                        "imageUrl": ""
-                    },
-                    "productViewCountFormatted": "",
-                    "isOutOfStock": false,
-                    "warehouseID": 0,
-                    "minOrder": 0,
-                    "shop": {
-                        "shopID": 0
-                    },
-                    "labelGroup": [],
-                    "has_buy_button": false,
-                    "rating": 0,
-                    "count_review": 0
-                }],
-                "banner": {
-                    "id": 0,
-                    "title": "",
-                    "description": "",
-                    "url": "",
-                    "back_color": "",
-                    "cta": {
-                        "type": "",
-                        "mode": "",
-                        "text": "",
-                        "coupon_code": ""
-                    },
-                    "applink": "",
-                    "text_color": "",
-                    "image_url": "",
-                    "attribution": "",
-                    "gradient_color": ["#FFFFFF"]
-                }
-            }, {
-                "id": 34107,
-                "group_id": 192,
-                "galaxy_attribution": "PG",
-                "persona": "Homeliving",
-                "brand_id": "",
-                "category_persona": "1043,999,1045,1052,1270,1042,1372,1368,1038,1011",
-                "name": "All User Campaign #4",
-                "layout": "6_image",
-                "type": "inspiration",
-                "showPromoBadge": false,
-                "categoryID": "{1758,1759,1760,78,56,715,61,2133,63,62,4029,983,60,984,55,2099,578,297,65}",
-                "perso_type": 1,
-                "campaignCode": "hml00000060_homeliving salebrations july_01july20-31july20",
-                "has_close_button": false,
-                "header": {
-                    "id": 34346,
-                    "name": "Nyaman Beraktivitas",
-                    "subtitle": "",
-                    "url": "https://www.tokopedia.com/discovery/home-living-salebration?source=homepage.6_image.0.34002",
-                    "applink": "tokopedia://discovery/home-living-salebration?source=homepage.6_image.0.34002",
-                    "serverTime": 0,
-                    "expiredTime": "",
-                    "backColor": "red",
-                    "backImage": "",
-                    "textColor": "#000000"
-                },
-                "grids": [{
-                    "id": 174875,
-                    "back_color": "",
-                    "name": "",
-                    "url": "https://www.tokopedia.com/discovery/home-living-salebration?source=homepage.6_image.0.34002",
-                    "applink": "tokopedia://discovery/home-living-salebration?source=homepage.6_image.0.34002",
-                    "price": "",
-                    "slashedPrice": "",
-                    "discount": "",
-                    "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/200-square/phZFtb/2020/7/21/c143af83-972e-46d0-b9ed-3a96228f90d2.jpg",
-                    "label": "",
-                    "soldPercentage": 0,
-                    "attribution": "X_PG_DC4_All User_Tetap Nyaman di Rumah_23 July 20",
-                    "productClickUrl": "",
-                    "impression": "",
-                    "cashback": "",
-                    "isTopads": false,
-                    "freeOngkir": {
-                        "isActive": false,
-                        "imageUrl": ""
-                    },
-                    "productViewCountFormatted": "",
-                    "isOutOfStock": false,
-                    "warehouseID": 0,
-                    "minOrder": 0,
-                    "shop": {
-                        "shopID": 0
-                    },
-                    "labelGroup": [],
-                    "has_buy_button": false,
-                    "rating": 0,
-                    "count_review": 0
-                }, {
-                    "id": 174876,
-                    "back_color": "",
-                    "name": "",
-                    "url": "https://www.tokopedia.com/discovery/home-living-salebration?source=homepage.6_image.0.34002",
-                    "applink": "tokopedia://discovery/home-living-salebration?source=homepage.6_image.0.34002",
-                    "price": "",
-                    "slashedPrice": "",
-                    "discount": "",
-                    "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/200-square/phZFtb/2020/7/21/a3e398d9-1e8e-41b8-8953-fa9cbab3afb8.jpg",
-                    "label": "",
-                    "soldPercentage": 0,
-                    "attribution": "X_PG_DC4_All User_Tetap Nyaman di Rumah_23 July 20",
-                    "productClickUrl": "",
-                    "impression": "",
-                    "cashback": "",
-                    "isTopads": false,
-                    "freeOngkir": {
-                        "isActive": false,
-                        "imageUrl": ""
-                    },
-                    "productViewCountFormatted": "",
-                    "isOutOfStock": false,
-                    "warehouseID": 0,
-                    "minOrder": 0,
-                    "shop": {
-                        "shopID": 0
-                    },
-                    "labelGroup": [],
-                    "has_buy_button": false,
-                    "rating": 0,
-                    "count_review": 0
-                }, {
-                    "id": 174877,
-                    "back_color": "",
-                    "name": "",
-                    "url": "https://www.tokopedia.com/discovery/home-living-salebration?source=homepage.6_image.0.34002",
-                    "applink": "tokopedia://discovery/home-living-salebration?source=homepage.6_image.0.34002",
-                    "price": "",
-                    "slashedPrice": "",
-                    "discount": "",
-                    "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/200-square/phZFtb/2020/7/21/3f2e1c9c-7c93-4bb7-a7c9-e8005669e0f2.jpg",
-                    "label": "",
-                    "soldPercentage": 0,
-                    "attribution": "X_PG_DC4_All User_Tetap Nyaman di Rumah_23 July 20",
-                    "productClickUrl": "",
-                    "impression": "",
-                    "cashback": "",
-                    "isTopads": false,
-                    "freeOngkir": {
-                        "isActive": false,
-                        "imageUrl": ""
-                    },
-                    "productViewCountFormatted": "",
-                    "isOutOfStock": false,
-                    "warehouseID": 0,
-                    "minOrder": 0,
-                    "shop": {
-                        "shopID": 0
-                    },
-                    "labelGroup": [],
-                    "has_buy_button": false,
-                    "rating": 0,
-                    "count_review": 0
-                }, {
-                    "id": 174878,
-                    "back_color": "",
-                    "name": "",
-                    "url": "https://www.tokopedia.com/discovery/home-living-salebration?source=homepage.6_image.0.34002",
-                    "applink": "tokopedia://discovery/home-living-salebration?source=homepage.6_image.0.34002",
-                    "price": "",
-                    "slashedPrice": "",
-                    "discount": "",
-                    "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/200-square/phZFtb/2020/7/21/90506f97-1fa6-44a5-921d-b7c66104fefe.jpg",
-                    "label": "",
-                    "soldPercentage": 0,
-                    "attribution": "X_PG_DC4_All User_Tetap Nyaman di Rumah_23 July 20",
-                    "productClickUrl": "",
-                    "impression": "",
-                    "cashback": "",
-                    "isTopads": false,
-                    "freeOngkir": {
-                        "isActive": false,
-                        "imageUrl": ""
-                    },
-                    "productViewCountFormatted": "",
-                    "isOutOfStock": false,
-                    "warehouseID": 0,
-                    "minOrder": 0,
-                    "shop": {
-                        "shopID": 0
-                    },
-                    "labelGroup": [],
-                    "has_buy_button": false,
-                    "rating": 0,
-                    "count_review": 0
-                }, {
-                    "id": 174879,
-                    "back_color": "",
-                    "name": "",
-                    "url": "https://www.tokopedia.com/discovery/home-living-salebration?source=homepage.6_image.0.34002",
-                    "applink": "tokopedia://discovery/home-living-salebration?source=homepage.6_image.0.34002",
-                    "price": "",
-                    "slashedPrice": "",
-                    "discount": "",
-                    "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/200-square/phZFtb/2020/7/21/a824c7b0-20c8-443e-9685-7476f69e11b6.jpg",
-                    "label": "",
-                    "soldPercentage": 0,
-                    "attribution": "X_PG_DC4_All User_Tetap Nyaman di Rumah_23 July 20",
-                    "productClickUrl": "",
-                    "impression": "",
-                    "cashback": "",
-                    "isTopads": false,
-                    "freeOngkir": {
-                        "isActive": false,
-                        "imageUrl": ""
-                    },
-                    "productViewCountFormatted": "",
-                    "isOutOfStock": false,
-                    "warehouseID": 0,
-                    "minOrder": 0,
-                    "shop": {
-                        "shopID": 0
-                    },
-                    "labelGroup": [],
-                    "has_buy_button": false,
-                    "rating": 0,
-                    "count_review": 0
-                }, {
-                    "id": 174880,
-                    "back_color": "",
-                    "name": "",
-                    "url": "https://www.tokopedia.com/discovery/home-living-salebration?source=homepage.6_image.0.34002",
-                    "applink": "tokopedia://discovery/home-living-salebration?source=homepage.6_image.0.34002",
-                    "price": "",
-                    "slashedPrice": "",
-                    "discount": "",
-                    "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/200-square/phZFtb/2020/7/21/d183c42e-19d5-413d-880b-436a36ce3321.jpg",
-                    "label": "",
-                    "soldPercentage": 0,
-                    "attribution": "X_PG_DC4_All User_Tetap Nyaman di Rumah_23 July 20",
-                    "productClickUrl": "",
-                    "impression": "",
-                    "cashback": "",
-                    "isTopads": false,
-                    "freeOngkir": {
-                        "isActive": false,
-                        "imageUrl": ""
-                    },
-                    "productViewCountFormatted": "",
-                    "isOutOfStock": false,
-                    "warehouseID": 0,
-                    "minOrder": 0,
-                    "shop": {
-                        "shopID": 0
-                    },
-                    "labelGroup": [],
-                    "has_buy_button": false,
-                    "rating": 0,
-                    "count_review": 0
-                }],
-                "banner": {
-                    "id": 0,
-                    "title": "",
-                    "description": "",
-                    "url": "",
-                    "back_color": "",
-                    "cta": {
-                        "type": "",
-                        "mode": "",
-                        "text": "",
-                        "coupon_code": ""
-                    },
-                    "applink": "",
-                    "text_color": "",
-                    "image_url": "",
-                    "attribution": "",
-                    "gradient_color": ["#FFFFFF"]
-                }
-            }, {
+            },
+                {
                 "id": 22984,
                 "group_id": 161,
                 "galaxy_attribution": "PG",
