@@ -351,6 +351,7 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
                 it.freeShippingBadgeUrl = cartDetail.product.freeShipping.badgeUrl
             }
             it.variant = cartDetail.product.variantDescriptionDetail.variantNames.joinToString(", ")
+            it.productInformation = cartDetail.product.productInformation
             it.warningMessage = cartDetail.product.productWarningMessage
             it.slashPriceLabel = cartDetail.product.slashPriceLabel
             it.initialPriceBeforeDrop = cartDetail.product.initialPrice
