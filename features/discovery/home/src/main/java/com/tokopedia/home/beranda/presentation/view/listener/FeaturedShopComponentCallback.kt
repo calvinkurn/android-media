@@ -12,7 +12,7 @@ import java.util.HashMap
 /**
  * Created by Lukas on 09/09/20.
  */
-class FeaturedShopComponentCallback(val context: Context, private val homeCategoryListener: HomeCategoryListener) : FeaturedShopListener{
+class FeaturedShopComponentCallback(val context: Context?, private val homeCategoryListener: HomeCategoryListener) : FeaturedShopListener{
     override fun onSeeAllClicked(channelModel: ChannelModel, position: Int) {
         FeaturedShopTracking.sendFeaturedShopViewAllClick(channelModel, channelModel.id, homeCategoryListener.userId)
         RouteManager.route(context, channelModel.channelHeader.applink)
