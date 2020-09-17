@@ -13,7 +13,7 @@
     <string name="see_more_cod">&lt;a href="https://www.tokopedia.com/help/article/bayar-di-tempat#syarat-dan-ketentuan-bayar-di-tempat/"&gt;Pelajari Selengkapnya&lt;/a&gt;</string>
     <string name="tnc_checkbox_text_cod">Saya menyetujui &lt;a href="https://www.tokopedia.com/help/article/bayar-di-tempat#syarat-dan-ketentuan-bayar-di-tempat/"&gt;Syarat dan Ketentuan&lt;/a&gt; Bayar di Tempat.</string>
 
-    <string name="label_layanan">Layanan</string>
+    <string name="tile_layanan">Layanan</string>
     <string name="cod_label">Aktif</string>
     <string name="cod_button_active">Aktifkan Layanan</string>
     <string name="cod_button_inactive">Nonaktifkan Layanan</string>

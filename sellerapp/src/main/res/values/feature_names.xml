@@ -256,4 +256,5 @@
     <!-- Dynamic feature Statistic -->
     <string name="title_statistic">Statistic</string>
 
+    <string name="title_layanan">Layanan</string>
 </resources>

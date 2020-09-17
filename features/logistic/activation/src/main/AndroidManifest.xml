@@ -6,7 +6,7 @@
         android:allowBackup="true"
         android:supportsRtl="true">
         <activity android:name="com.tokopedia.activation.ui.ActivationPageActivity"
-            android:label="@string/label_layanan"
+            android:label="@string/title_layanan"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White">
             <intent-filter>
