@@ -28,7 +28,6 @@ import com.tokopedia.core.analytics.container.GTMAnalytics;
 import com.tokopedia.core.analytics.container.MoengageAnalytics;
 import com.tokopedia.core.analytics.fingerprint.LocationCache;
 import com.tokopedia.core.analytics.fingerprint.domain.model.FingerPrint;
-import com.tokopedia.core.deprecated.SessionHandler;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
 import com.tokopedia.core.gcm.model.NotificationPass;
@@ -260,23 +259,6 @@ public class InstrumentationTestApp extends BaseMainApplication
     @Override
     public void onAppsFlyerInit() {
 
-    }
-
-    @Override
-    public SessionHandler legacySessionHandler() {
-        return new SessionHandler(this) {
-
-            @Override
-            public String getLoginID() {
-                return "null";
-            }
-
-            @Override
-            public String getRefreshToken() {
-                return "null";
-            }
-
-        };
     }
 
     @Override
