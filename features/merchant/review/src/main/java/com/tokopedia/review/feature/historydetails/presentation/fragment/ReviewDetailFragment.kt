@@ -154,8 +154,10 @@ class ReviewDetailFragment : BaseDaggerFragment(),
     }
 
     override fun onBackPressed() {
-        (viewModel.reviewDetails.value as? Success)?.let {
-            ReviewDetailTracking.eventClickBack(it.data.product.productId, it.data.review.feedbackId, viewModel.getUserId())
+        if(::viewModel.isInitialized) {
+            (viewModel.reviewDetails.value as? Success)?.let {
+                ReviewDetailTracking.eventClickBack(it.data.product.productId, it.data.review.feedbackId, viewModel.getUserId())
+            }
         }
     }
 
