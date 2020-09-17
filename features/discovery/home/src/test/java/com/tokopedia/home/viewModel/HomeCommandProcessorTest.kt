@@ -44,7 +44,7 @@ class HomeCommandProcessorTest {
     fun `Test update widget`() = runBlockingTest {
         val mockVisitable = mockk<Visitable<*>>()
         var calledUpdateWidget = false
-        cocoEvery { callback.updateWidget(any(), any()) } answers {
+        coEvery { callback.updateWidget(any(), any()) } answers {
             calledUpdateWidget = true
         }
         val widgetCommand = UpdateWidgetCommand(mockVisitable, -1, callback)
