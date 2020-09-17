@@ -596,7 +596,8 @@ class CartItemViewHolder constructor(itemView: View,
         this.etQty.setText(data.cartItemData?.updatedData?.quantity.toString())
         etQty.setOnEditorActionListener { v, actionId, event ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
-                KeyboardHandler.DropKeyboard(etRemark.context, itemView)
+                etQty.clearFocus()
+                KeyboardHandler.DropKeyboard(etQty.context, itemView)
                 true
             } else false
         }

@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:foreground="?selectableItemBackground"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
     android:orientation="vertical">
 
     <include
@@ -236,8 +237,8 @@
                             android:id="@+id/tv_remark"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:maxLines="1"
                             android:ellipsize="end"
+                            android:maxLines="1"
                             android:textColor="@color/light_N700_96"
                             app:typographyType="body_3"
                             app:typographyWeight="reguler"
@@ -248,11 +249,11 @@
                             android:id="@+id/tv_label_remark_option"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            tools:text="Ubah"
                             android:text="@string/label_button_add_note"
                             android:textColor="@color/Neutral_N700_68"
                             app:typographyType="body_3"
-                            app:typographyWeight="reguler" />
+                            app:typographyWeight="reguler"
+                            tools:text="Ubah" />
 
                     </LinearLayout>
 
