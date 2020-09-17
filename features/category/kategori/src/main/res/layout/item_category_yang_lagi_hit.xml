@@ -9,6 +9,7 @@
 
     <ImageView
         android:id="@+id/item_icon"
+        android:contentDescription="@string/content_desc_item_icon"
         android:layout_width="@dimen/dp_64"
         android:layout_height="@dimen/dp_64"
         android:layout_marginTop="@dimen/dp_5"
@@ -20,6 +21,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/item_name"
+        android:contentDescription="@string/content_desc_item_name"
         android:layout_width="@dimen/dp_0"
         android:layout_height="wrap_content"
         android:ellipsize="end"

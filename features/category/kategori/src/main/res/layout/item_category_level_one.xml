@@ -9,6 +9,7 @@
 
     <ImageView
         android:id="@+id/category_imageview"
+        android:contentDescription="@string/content_desc_category_imageview"
         android:layout_width="@dimen/dp_24"
         android:layout_height="@dimen/dp_24"
         android:gravity="center"
@@ -20,6 +21,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/category_name"
+        android:contentDescription="@string/content_desc_category_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"

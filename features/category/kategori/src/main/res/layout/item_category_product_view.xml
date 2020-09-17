@@ -17,6 +17,7 @@
 
     <ImageView
         android:id="@+id/category_product_image"
+        android:contentDescription="@string/content_desc_category_product_image"
         android:layout_width="@dimen/dp_56"
         android:layout_height="@dimen/dp_56"
         android:layout_margin="@dimen/dp_6"
@@ -28,6 +29,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/category_product_name"
+        android:contentDescription="@string/content_desc_category_product_name"
         android:layout_width="@dimen/dp_0"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_8"

@@ -2,4 +2,13 @@
     <string name="kategori">kategori</string>
     <string name="belanja_screen_name">"/kategori-belanja"</string>
     <string name="label_kategori">Belanja di Tokopedia</string>
+    <string name="content_desc_category_imageview">image gambar kategori</string>
+    <string name="content_desc_category_name">text nama kategori</string>
+    <string name="content_desc_product_image">image gambar produk</string>
+    <string name="content_desc_product_name">text nama produk</string>
+    <string name="content_desc_category_product_image">image gambar produk kategori</string>
+    <string name="content_desc_category_product_name">text nama produk kategori</string>
+    <string name="content_desc_header_title">text title header</string>
+    <string name="content_desc_item_icon">image ikon barang</string>
+    <string name="content_desc_item_name">text nama barang</string>
 </resources>
