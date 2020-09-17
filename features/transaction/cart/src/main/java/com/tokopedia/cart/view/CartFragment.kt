@@ -2480,6 +2480,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     override fun updateCashback(cashback: Double) {
         cartAdapter.updateShipmentSellerCashback(cashback)
+        cartListData?.shoppingSummaryData?.sellerCashbackValue = cashback.toInt()
     }
 
     override fun showToastMessageRed(message: String, ctaText: String, ctaClickListener: View.OnClickListener?) {
