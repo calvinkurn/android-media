@@ -47,7 +47,7 @@ class EventPDPFormFragment : BaseDaggerFragment(), OnClickFormListener,
     private var keyActiveBottomSheet = ""
     private var positionActiveForm = 0
     var eventCheckoutAdditionalData = EventCheckoutAdditionalData()
-    var listTemp : LinkedHashMap<String, String> = linkedMapOf()
+    var listBottomSheetTemp : LinkedHashMap<String, String> = linkedMapOf()
     val bottomSheets = BottomSheetUnify()
 
     @Inject
@@ -194,7 +194,7 @@ class EventPDPFormFragment : BaseDaggerFragment(), OnClickFormListener,
     override fun clickBottomSheet(list: LinkedHashMap<String, String>, title: String, positionForm: Int) {
         val adapterBottomSheet = EventFormBottomSheetAdapter(this)
         val view = LayoutInflater.from(context).inflate(R.layout.bottom_sheet_event_list_form, null)
-        listTemp = list
+        listBottomSheetTemp = list
         positionActiveForm = positionForm
         bottomSheets.apply {
             isFullpage = true
@@ -214,17 +214,17 @@ class EventPDPFormFragment : BaseDaggerFragment(), OnClickFormListener,
 
                 override fun onTextChanged(keyword: CharSequence?, p1: Int, p2: Int, p3: Int) {
                     if (keyword.toString().isEmpty()) {
-                        listTemp = list
+                        listBottomSheetTemp = list
                         adapterBottomSheet.setList(setListBottomSheetString(list))
                     } else {
-                        listTemp = searchHashMap(keyword.toString(), list)
-                        adapterBottomSheet.setList(setListBottomSheetString(listTemp))
+                        listBottomSheetTemp = searchHashMap(keyword.toString(), list)
+                        adapterBottomSheet.setList(setListBottomSheetString(listBottomSheetTemp))
                     }
                 }
             })
             searchClearButton?.setOnClickListener {
                 searchTextField?.text?.clear()
-                listTemp = list
+                listBottomSheetTemp = list
                 adapterBottomSheet.setList(setListBottomSheetString(list))
             }
         } else {
@@ -267,7 +267,7 @@ class EventPDPFormFragment : BaseDaggerFragment(), OnClickFormListener,
     }
 
     override fun getActiveKeyPosition(position: Int) {
-        keyActiveBottomSheet = listTemp.getKeyByPosition(position)
+        keyActiveBottomSheet = listBottomSheetTemp.getKeyByPosition(position)
         formAdapter.notifyItemChanged(positionActiveForm)
         bottomSheets.dismiss()
     }

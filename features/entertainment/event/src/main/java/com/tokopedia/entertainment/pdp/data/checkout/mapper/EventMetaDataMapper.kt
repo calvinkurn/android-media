@@ -1,6 +1,7 @@
 package com.tokopedia.entertainment.pdp.data.checkout.mapper
 
 import com.google.gson.Gson
+import com.tokopedia.entertainment.pdp.common.util.EventConst.ELEMENT_LIST
 import com.tokopedia.entertainment.pdp.data.Form
 import com.tokopedia.entertainment.pdp.data.PackageV3
 import com.tokopedia.entertainment.pdp.data.ProductDetailData
@@ -51,7 +52,7 @@ object EventMetaDataMapper {
     }
 
     private fun getValueForm(form: Form):String{
-        return if(form.elementType.equals("list")) form.valuePosition else form.value
+        return if(form.elementType.equals(ELEMENT_LIST)) form.valuePosition else form.value
     }
 
     fun getCheckoutParam(metaDataResponse: MetaDataResponse, productDetailData: ProductDetailData, packageV3: PackageV3): CheckoutGeneralV2Params {

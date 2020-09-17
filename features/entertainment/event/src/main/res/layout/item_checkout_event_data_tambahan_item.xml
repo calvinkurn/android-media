@@ -24,7 +24,7 @@
         android:layout_marginLeft="@dimen/spacing_lvl5"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Adult 1"
+        tools:text="Adult 1"
         app:typographyType="body_1"
         app:typographyWeight="bold"
         android:textColor="@color/Neutral_N700"

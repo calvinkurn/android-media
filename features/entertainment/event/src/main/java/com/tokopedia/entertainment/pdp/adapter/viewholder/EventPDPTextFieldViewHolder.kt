@@ -45,9 +45,7 @@ class EventPDPTextFieldViewHolder(val view: View,
             if (position > 0) txtValue.setMargin(0, TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3), context.resources.displayMetrics).toInt(), 0, 0)
 
             if (element.elementType.equals(ELEMENT_TEXT)) {
-                txtValue.setPlaceholder(element.title)
-                txtValue.textFiedlLabelText.text = element.title
-                txtValue.setLabelStatic(false)
+                txtValue.textFieldWrapper.hint = element.title
                 txtValue.setMessage(element.helpText)
                 txtValue.textFieldInput.addTextChangedListener(object : TextWatcher {
                     override fun afterTextChanged(p0: Editable?) {}
