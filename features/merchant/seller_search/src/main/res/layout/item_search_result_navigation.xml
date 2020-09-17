@@ -21,7 +21,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvTitleSearchResultNav"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         app:typographyWeight="reguler"
         app:typographyType="body_2"

@@ -4,31 +4,35 @@ import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.TextAppearanceSpan
 import android.view.View
-import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.seller.search.R
 import com.tokopedia.seller.search.common.util.indexOfSearchQuery
 import com.tokopedia.seller.search.common.util.safeSetSpan
 import com.tokopedia.seller.search.feature.initialsearch.view.viewholder.NavigationSearchListener
-import com.tokopedia.seller.search.feature.suggestion.view.model.sellersearch.ItemSellerSearchUiModel
+import com.tokopedia.seller.search.feature.suggestion.view.model.sellersearch.NavigationSellerSearchUiModel
 import kotlinx.android.synthetic.main.item_search_result_navigation.view.*
 
 class ItemNavigationSearchViewHolder(
         itemViewNavigation: View,
         private val navigationSearchListener: NavigationSearchListener
-) : RecyclerView.ViewHolder(itemViewNavigation) {
+) : AbstractViewHolder<NavigationSellerSearchUiModel>(itemViewNavigation) {
 
-    fun bind(itemSellerSearchUiModel: ItemSellerSearchUiModel) {
-        bindTitleText(itemSellerSearchUiModel)
+    companion object {
+        val LAYOUT = R.layout.item_search_result_navigation
+    }
+
+    override fun bind(element: NavigationSellerSearchUiModel) {
+        bindTitleText(element)
         with(itemView){
-            tvDescSearchResultNav?.text = itemSellerSearchUiModel.desc
+            tvDescSearchResultNav?.text = element.desc
             setOnClickListener {
-                navigationSearchListener.onNavigationItemClicked(itemSellerSearchUiModel, adapterPosition)
+                navigationSearchListener.onNavigationItemClicked(element, adapterPosition)
             }
         }
     }
 
-    private fun bindTitleText(item: ItemSellerSearchUiModel) {
+    private fun bindTitleText(item: NavigationSellerSearchUiModel) {
         val startIndex = indexOfSearchQuery(item.title.orEmpty(), item.keyword.orEmpty())
         with(itemView) {
             if (startIndex == -1) {

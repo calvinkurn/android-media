@@ -7,16 +7,13 @@ import com.tokopedia.seller.search.common.GlobalSearchSellerConstant.ORDER
 import com.tokopedia.seller.search.common.GlobalSearchSellerConstant.PRODUCT
 import com.tokopedia.seller.search.common.domain.model.SellerSearchResponse
 import com.tokopedia.seller.search.feature.initialsearch.domain.model.DeleteHistoryResponse
-import com.tokopedia.seller.search.feature.initialsearch.view.model.BaseInitialSearchSeller
 import com.tokopedia.seller.search.feature.initialsearch.view.model.deletehistory.DeleteHistorySearchUiModel
 import com.tokopedia.seller.search.feature.initialsearch.view.model.initialsearch.InitialSearchUiModel
 import com.tokopedia.seller.search.feature.initialsearch.view.model.initialsearch.ItemInitialSearchUiModel
 import com.tokopedia.seller.search.feature.suggestion.domain.model.SuccessSearchResponse
+import com.tokopedia.seller.search.feature.suggestion.view.model.BaseSuggestionSearchSeller
 import com.tokopedia.seller.search.feature.suggestion.view.model.registersearch.RegisterSearchUiModel
-import com.tokopedia.seller.search.feature.suggestion.view.model.sellersearch.ItemSellerSearchUiModel
-import com.tokopedia.seller.search.feature.suggestion.view.model.sellersearch.OrderSellerSearchUiModel
-import com.tokopedia.seller.search.feature.suggestion.view.model.sellersearch.SellerSearchUiModel
-import com.tokopedia.seller.search.feature.suggestion.view.model.sellersearch.TitleHasMoreSellerSearchUiModel
+import com.tokopedia.seller.search.feature.suggestion.view.model.sellersearch.*
 
 object GlobalSearchSellerMapper {
 
@@ -30,62 +27,112 @@ object GlobalSearchSellerMapper {
         }
     }
 
-    fun mapToSellerSearchUiModel(sellerSearch: SellerSearchResponse.SellerSearch, keyword: String): List<SellerSearchUiModel> {
-        return mutableListOf<SellerSearchUiModel>().apply {
-
-            val titleList = mapToTitleListSearch(sellerSearch)
-
+    fun mapToSellerSearchVisitable(sellerSearch: SellerSearchResponse.SellerSearch, keyword: String): List<BaseSuggestionSearchSeller> {
+        return mutableListOf<BaseSuggestionSearchSeller>().apply {
             sellerSearch.data.sections.map {
-                val searchSellerList = mutableListOf<ItemSellerSearchUiModel>()
-                it.items.map { itemSearch ->
-                    searchSellerList.add(
-                            ItemSellerSearchUiModel(id = itemSearch.id, title = itemSearch.title,
-                                    desc = itemSearch.description, imageUrl = itemSearch.image_url,
-                                    url = itemSearch.url, appUrl = itemSearch.app_url, keyword = keyword,
-                                    section = it.title))
+                when (it.id) {
+                    ORDER -> {
+                        add(TitleHeaderSellerSearchUiModel(title = it.title.orEmpty()))
+                        addAll(mapToOrderSellerSearchVisitable(it.items, keyword, it.title.orEmpty()))
+                        if (it.has_more == true) {
+                            add(TitleHasMoreSellerSearchUiModel(id = it.id, title = it.action_title.orEmpty(),
+                                    appActionLink = it.app_action_link.orEmpty(), actionTitle = it.action_title.orEmpty()))
+                        }
+                        add(DividerSellerSearchUiModel(sellerSearch.data.count.orZero()))
+                    }
+                    PRODUCT -> {
+                        add(TitleHeaderSellerSearchUiModel(title = it.title.orEmpty()))
+                        addAll(mapToProductSellerSearchVisitable(it.items, keyword, it.title.orEmpty()))
+                        if (it.has_more == true) {
+                            add(TitleHasMoreSellerSearchUiModel(id = it.id, title = it.action_title.orEmpty(),
+                                    appActionLink = it.app_action_link.orEmpty(), actionTitle = it.action_title.orEmpty()))
+                        }
+                        add(DividerSellerSearchUiModel(sellerSearch.data.count.orZero()))
+                    }
+                    NAVIGATION -> {
+                        add(TitleHeaderSellerSearchUiModel(title = it.title.orEmpty()))
+                        addAll(mapToNavigationSellerSearchVisitable(it.items, keyword, it.title.orEmpty()))
+                        add(DividerSellerSearchUiModel(sellerSearch.data.count.orZero()))
+                    }
+                    FAQ -> {
+                        add(TitleHeaderSellerSearchUiModel(title = it.title.orEmpty()))
+                        addAll(mapToFaqSellerSearchVisitable(it.items, keyword, it.title.orEmpty()))
+                        when (it.has_more) {
+                            true -> {
+                                add(TitleHasMoreSellerSearchUiModel(id = it.id, title = it.action_title.orEmpty(),
+                                        appActionLink = it.app_action_link.orEmpty(), actionTitle = it.action_title.orEmpty()))
+                            }
+                            else -> {
+                                // no op
+                            }
+                        }
+                    }
+                    else -> {
+                        //no op
+                    }
                 }
+            }
+        }
+    }
 
-                add(SellerSearchUiModel(
-                        id = it.id,
-                        title = it.title,
-                        hasMore = it.has_more ?: false,
-                        count = sellerSearch.data.count.orZero(),
-                        actionTitle = it.action_title,
-                        actionLink = it.action_link,
-                        appActionLink = it.app_action_link,
-                        titleList = titleList,
-                        sellerSearchList = searchSellerList
+    private fun mapToOrderSellerSearchVisitable(sellerSearch: List<SellerSearchResponse.SellerSearch.SellerSearchData.Section.Item>,
+                                                keyword: String,
+                                                title: String): List<OrderSellerSearchUiModel> {
+        return mutableListOf<OrderSellerSearchUiModel>().apply {
+            sellerSearch.map { orderItem ->
+                add(OrderSellerSearchUiModel(
+                        id = orderItem.id, title = orderItem.title,
+                        desc = orderItem.description, imageUrl = orderItem.image_url,
+                        url = orderItem.url, appUrl = orderItem.app_url, keyword = keyword,
+                        section = title
                 ))
             }
         }
     }
 
-    private fun mapToSellerSearchVisitable(sellerSearch: SellerSearchResponse.SellerSearch, keyword: String): List<BaseInitialSearchSeller> {
-        return mutableListOf<BaseInitialSearchSeller>().apply {
-            sellerSearch.data.sections.map {
-                when(it.id) {
-                    ORDER -> {
-                        add(TitleHasMoreSellerSearchUiModel(title = it.title.orEmpty()))
-                        add()
-                        add(TitleHasMoreSellerSearchUiModel(it.action_title.orEmpty()))
-                    }
-                    PRODUCT -> {
-
-                    }
-                    NAVIGATION -> {
-
-                    }
-                    FAQ -> {
-
-                    }
-                    else -> {}
-                }
+    private fun mapToProductSellerSearchVisitable(sellerSearch: List<SellerSearchResponse.SellerSearch.SellerSearchData.Section.Item>,
+                                                  keyword: String,
+                                                  title: String): List<ProductSellerSearchUiModel> {
+        return mutableListOf<ProductSellerSearchUiModel>().apply {
+            sellerSearch.map { productItem ->
+                add(ProductSellerSearchUiModel(
+                        id = productItem.id, title = productItem.title,
+                        desc = productItem.description, imageUrl = productItem.image_url,
+                        url = productItem.url, appUrl = productItem.app_url, keyword = keyword,
+                        section = title
+                ))
             }
         }
     }
 
-    private fun mapToProductSellerSearchVisitable(sellerSearch: SellerSearchResponse.SellerSearch, keyword: String): OrderSellerSearchUiModel {
-        
+    private fun mapToNavigationSellerSearchVisitable(sellerSearch: List<SellerSearchResponse.SellerSearch.SellerSearchData.Section.Item>,
+                                                     keyword: String,
+                                                     title: String): List<NavigationSellerSearchUiModel> {
+        return mutableListOf<NavigationSellerSearchUiModel>().apply {
+            sellerSearch.map { navigationItem ->
+                add(NavigationSellerSearchUiModel(
+                        id = navigationItem.id, title = navigationItem.title,
+                        desc = navigationItem.description, imageUrl = navigationItem.image_url,
+                        url = navigationItem.url, appUrl = navigationItem.app_url, keyword = keyword,
+                        section = title
+                ))
+            }
+        }
+    }
+
+    private fun mapToFaqSellerSearchVisitable(sellerSearch: List<SellerSearchResponse.SellerSearch.SellerSearchData.Section.Item>,
+                                              keyword: String,
+                                              title: String): List<FaqSellerSearchUiModel> {
+        return mutableListOf<FaqSellerSearchUiModel>().apply {
+            sellerSearch.map { faqItem ->
+                add(FaqSellerSearchUiModel(
+                        id = faqItem.id, title = faqItem.title,
+                        desc = faqItem.description, imageUrl = faqItem.image_url,
+                        url = faqItem.url, appUrl = faqItem.app_url, keyword = keyword,
+                        section = title
+                ))
+            }
+        }
     }
 
     fun mapToInitialSearchUiModel(sellerSearch: SellerSearchResponse.SellerSearch): InitialSearchUiModel {

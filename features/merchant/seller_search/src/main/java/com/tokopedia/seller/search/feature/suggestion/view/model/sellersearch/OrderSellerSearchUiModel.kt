@@ -1,7 +1,7 @@
 package com.tokopedia.seller.search.feature.suggestion.view.model.sellersearch
 
-import com.tokopedia.seller.search.feature.initialsearch.view.model.BaseInitialSearchSeller
-import com.tokopedia.seller.search.feature.initialsearch.view.viewholder.TypeFactoryInitialSearchAdapter
+import com.tokopedia.seller.search.feature.initialsearch.view.viewholder.TypeFactorySuggestionSearchAdapter
+import com.tokopedia.seller.search.feature.suggestion.view.model.BaseSuggestionSearchSeller
 
 data class OrderSellerSearchUiModel(
         override val id: String? = "",
@@ -12,8 +12,8 @@ data class OrderSellerSearchUiModel(
         override val url: String? = "",
         override val keyword: String? = "",
         override val section: String? = ""
-): ItemSellerSearchUiModel(), BaseInitialSearchSeller {
-    override fun type(typeFactory: TypeFactoryInitialSearchAdapter): Int {
+): ItemSellerSearchUiModel(), BaseSuggestionSearchSeller {
+    override fun type(typeFactory: TypeFactorySuggestionSearchAdapter): Int {
         return typeFactory.type(this)
     }
 }

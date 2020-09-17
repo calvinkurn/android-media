@@ -1,10 +1,10 @@
 package com.tokopedia.seller.search.feature.suggestion.view.model.sellersearch
 
-import com.tokopedia.seller.search.feature.initialsearch.view.model.BaseInitialSearchSeller
-import com.tokopedia.seller.search.feature.initialsearch.view.viewholder.TypeFactoryInitialSearchAdapter
+import com.tokopedia.seller.search.feature.initialsearch.view.viewholder.TypeFactorySuggestionSearchAdapter
+import com.tokopedia.seller.search.feature.suggestion.view.model.BaseSuggestionSearchSeller
 
-class DividerSellerSearchUiModel(val count: Int): BaseInitialSearchSeller {
-    override fun type(typeFactory: TypeFactoryInitialSearchAdapter): Int {
+class DividerSellerSearchUiModel(val count: Int): BaseSuggestionSearchSeller {
+    override fun type(typeFactory: TypeFactorySuggestionSearchAdapter): Int {
         return typeFactory.type(this)
     }
 }

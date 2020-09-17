@@ -5,7 +5,7 @@ import android.text.SpannableString
 import android.text.style.TextAppearanceSpan
 import android.view.View
 import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.seller.search.R
 import com.tokopedia.seller.search.common.GlobalSearchSellerConstant.CUSTOMER
@@ -15,17 +15,22 @@ import com.tokopedia.seller.search.common.util.indexOfSearchQuery
 import com.tokopedia.seller.search.common.util.safeSetSpan
 import com.tokopedia.seller.search.feature.initialsearch.view.viewholder.OrderSearchListener
 import com.tokopedia.seller.search.feature.suggestion.view.model.sellersearch.ItemSellerSearchUiModel
+import com.tokopedia.seller.search.feature.suggestion.view.model.sellersearch.OrderSellerSearchUiModel
 import kotlinx.android.synthetic.main.item_search_result_order.view.*
 
 class ItemOrderSearchViewHolder(
         itemViewOrder: View,
         private val orderSearchListener: OrderSearchListener
-) : RecyclerView.ViewHolder(itemViewOrder) {
+): AbstractViewHolder<OrderSellerSearchUiModel>(itemViewOrder) {
 
-    fun bind(itemSellerSearchUiModel: ItemSellerSearchUiModel) {
+    companion object {
+        val LAYOUT = R.layout.item_search_result_order
+    }
+
+    override fun bind(element: OrderSellerSearchUiModel) {
         with(itemView) {
-            if(itemSellerSearchUiModel.imageUrl?.isBlank() == true) {
-                when (itemSellerSearchUiModel.id) {
+            if(element.imageUrl?.isBlank() == true) {
+                when (element.id) {
                     INV, SHIPPING -> {
                         ivSearchResultOrder?.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_invoice_seller_search))
                     }
@@ -34,14 +39,14 @@ class ItemOrderSearchViewHolder(
                     }
                 }
             } else {
-                ivSearchResultOrder?.setImageUrl(itemSellerSearchUiModel.imageUrl.orEmpty())
+                ivSearchResultOrder?.setImageUrl(element.imageUrl.orEmpty())
             }
 
-            bindTitleText(itemSellerSearchUiModel)
-            tvSearchResultOrderDesc?.text = itemSellerSearchUiModel.desc
+            bindTitleText(element)
+            tvSearchResultOrderDesc?.text = element.desc
 
             setOnClickListener {
-                orderSearchListener.onOrderItemClicked(itemSellerSearchUiModel, adapterPosition)
+                orderSearchListener.onOrderItemClicked(element, adapterPosition)
             }
         }
     }

@@ -4,28 +4,33 @@ import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.TextAppearanceSpan
 import android.view.View
-import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.seller.search.R
 import com.tokopedia.seller.search.common.util.indexOfSearchQuery
 import com.tokopedia.seller.search.common.util.safeSetSpan
 import com.tokopedia.seller.search.feature.initialsearch.view.viewholder.ProductSearchListener
 import com.tokopedia.seller.search.feature.suggestion.view.model.sellersearch.ItemSellerSearchUiModel
+import com.tokopedia.seller.search.feature.suggestion.view.model.sellersearch.ProductSellerSearchUiModel
 import kotlinx.android.synthetic.main.item_search_result_product.view.*
 
 class ItemProductSearchViewHolder(
         itemViewProduct: View,
         private val productSearchListener: ProductSearchListener
-) : RecyclerView.ViewHolder(itemViewProduct) {
+): AbstractViewHolder<ProductSellerSearchUiModel>(itemViewProduct) {
 
-    fun bind(itemSellerSearchUiModel: ItemSellerSearchUiModel) {
+    companion object {
+        val LAYOUT = R.layout.item_search_result_product
+    }
+
+    override fun bind(element: ProductSellerSearchUiModel) {
         with(itemView) {
-            ivSearchResultProduct?.setImageUrl(itemSellerSearchUiModel.imageUrl.orEmpty())
-            bindTitleText(itemSellerSearchUiModel)
-            tvSearchResultProductDesc?.text = itemSellerSearchUiModel.desc
+            ivSearchResultProduct?.setImageUrl(element.imageUrl.orEmpty())
+            bindTitleText(element)
+            tvSearchResultProductDesc?.text = element.desc
 
             setOnClickListener {
-                productSearchListener.onProductItemClicked(itemSellerSearchUiModel, adapterPosition)
+                productSearchListener.onProductItemClicked(element, adapterPosition)
             }
         }
     }
@@ -46,4 +51,5 @@ class ItemProductSearchViewHolder(
             }
         }
     }
+
 }
