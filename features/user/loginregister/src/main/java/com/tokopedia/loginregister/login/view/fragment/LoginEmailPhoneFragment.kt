@@ -71,7 +71,6 @@ import com.tokopedia.loginregister.discover.data.DiscoverItemViewModel
 import com.tokopedia.loginregister.login.di.DaggerLoginComponent
 import com.tokopedia.loginregister.login.domain.StatusFingerprint
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckData
-import com.tokopedia.loginregister.login.domain.pojo.StatusPinData
 import com.tokopedia.loginregister.login.router.LoginRouter
 import com.tokopedia.loginregister.login.view.activity.LoginActivity
 import com.tokopedia.loginregister.login.view.listener.LoginEmailPhoneContract
@@ -976,15 +975,6 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
         }
     }
 
-    override fun onSuccessGetUserInfoAddPin(): (ProfilePojo) -> Unit {
-        return {
-            if (it.profileInfo.fullName.contains(CHARACTER_NOT_ALLOWED)) {
-                onGoToChangeName()
-            } else {
-                checkAdditionalLoginOptionsAfterSQ()
-            }
-        }
-    }
 
     override fun onErrorGetUserInfo(): (Throwable) -> Unit {
         return {
@@ -1164,7 +1154,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
                 val msisdn = data.extras!!.getString(ApplinkConstInternalGlobal.PARAM_MSISDN, "")
                 goToAddNameFromRegisterPhone(uuid, msisdn)
             } else if (requestCode == REQUEST_ADD_NAME) {
-                checkAdditionalLoginOptionsAfterSQ()
+                onSuccessLogin()
             } else if (requestCode == REQUEST_ADD_NAME_REGISTER_PHONE && resultCode == Activity.RESULT_OK) {
                 isAutoLogin = true
                 isFromRegister = true
@@ -1188,12 +1178,11 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
                         if (it.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_SQ_CHECK, false)) {
                             onGoToSecurityQuestion("")
                         } else {
-                            checkAdditionalLoginOptions()
-                            checkAdditionalLoginOptions()
+                            onSuccessLogin()
                         }
                     }
                 } else {
-                    checkAdditionalLoginOptions()
+                    onSuccessLogin()
                 }
 
             } else if (requestCode == REQUEST_LOGIN_PHONE
@@ -1347,20 +1336,6 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
         }
     }
 
-    private fun checkAdditionalLoginOptions() {
-        if (isEnableFingerprint && ScanFingerprintDialog.isFingerprintAvailable(activity))
-                presenter.checkStatusFingerprint()
-        else
-            presenter.checkStatusPin(onSuccessCheckStatusPin(), onErrorCheckStatusPin())
-    }
-
-    private fun checkAdditionalLoginOptionsAfterSQ() {
-        if (isEnableFingerprint && ScanFingerprintDialog.isFingerprintAvailable(activity))
-            presenter.checkStatusFingerprint()
-        else
-            presenter.checkStatusPin(onSuccessCheckStatusPinAfterSQ(), onErrorCheckStatusPin())
-    }
-
     override fun onErrorCheckStatusFingerprint(e: Throwable) {
         dismissLoadingLogin()
         e.printStackTrace()
@@ -1381,50 +1356,6 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
         }
     }
 
-    private fun onErrorCheckStatusPin(): (Throwable) -> Unit {
-        return {
-            it.printStackTrace()
-            dismissLoadingLogin()
-            view?.run {
-                val errorMessage = ErrorHandler.getErrorMessage(context, it)
-                Toaster.showError(this, errorMessage, Snackbar.LENGTH_LONG)
-            }
-        }
-    }
-
-    private fun onSuccessCheckStatusPin(): (StatusPinData) -> Unit {
-        return {
-            dismissLoadingLogin()
-            if (!it.isRegistered &&
-                    isFromAccountPage() &&
-                    userSession.phoneNumber.isNotEmpty() &&
-                    userSession.isMsisdnVerified) {
-                val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PIN_ONBOARDING)
-                intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_SKIP_OTP, true)
-                startActivityForResult(intent, REQUEST_ADD_PIN)
-            } else {
-                onSuccessLogin()
-            }
-        }
-    }
-
-    private fun onSuccessCheckStatusPinAfterSQ(): (StatusPinData) -> Unit {
-        return {
-            dismissLoadingLogin()
-            if (!it.isRegistered &&
-                    isFromAccountPage() &&
-                    userSession.phoneNumber.isNotEmpty() &&
-                    userSession.isMsisdnVerified) {
-                activity?.run {
-                    val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PIN_ONBOARDING)
-                    intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_SKIP_OTP, true)
-                    startActivityForResult(intent, REQUEST_ADD_PIN_AFTER_SQ)
-                }
-            } else {
-                onSuccessLogin()
-            }
-        }
-    }
 
     private fun registerCheck(id: String) {
         if (id.isEmpty()) onErrorEmptyEmailPhone()
