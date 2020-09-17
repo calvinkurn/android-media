@@ -358,10 +358,6 @@ class DynamicChannelComponentAnalyticsTest {
     }
 
     private fun clickSingleItemOnRecyclerView(view: View, recyclerViewId: Int, viewComponent: String) {
-        val childView = view
-        val childRecyclerView = childView.findViewById<RecyclerView>(recyclerViewId)
-        val childItemCount = childRecyclerView.adapter?.itemCount ?: 0
-        logTestMessage("ChildCount $viewComponent: " + childItemCount + " item")
         try {
             Espresso.onView(firstView(ViewMatchers.withId(recyclerViewId)))
                     .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(0, ViewActions.click()))
