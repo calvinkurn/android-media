@@ -158,49 +158,12 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/text_product_price"
                         android:layout_marginTop="@dimen/dp_4"
+                        android:paddingTop="@dimen/dp_2"
                         android:layout_toEndOf="@+id/iv_product_card"
                         android:layout_toRightOf="@+id/iv_product_card"
                         android:foregroundGravity="center_vertical"
                         app:flexWrap="wrap"
-                        tools:visibility="visible">
-
-                        <com.tokopedia.unifyprinciples.Typography
-                            android:id="@+id/text_cashback"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@+id/text_product_name"
-                            android:paddingTop="@dimen/dp_2"
-                            android:textColor="@color/Neutral_N700_68"
-                            android:visibility="gone"
-                            app:typographyType="small"
-                            tools:text="Cashback 3%"
-                            tools:visibility="visible" />
-
-                        <com.tokopedia.unifyprinciples.Typography
-                            android:id="@+id/text_price_drop"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@+id/text_product_name"
-                            android:paddingTop="@dimen/dp_2"
-                            android:textColor="@color/Neutral_N700_68"
-                            android:visibility="gone"
-                            app:typographyType="small"
-                            tools:text=", Harga Turun"
-                            tools:visibility="visible" />
-
-                        <com.tokopedia.unifyprinciples.Typography
-                            android:id="@+id/text_wholesale_price"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@+id/text_product_name"
-                            android:paddingTop="@dimen/dp_2"
-                            android:textColor="@color/Neutral_N700_68"
-                            android:visibility="gone"
-                            app:typographyType="small"
-                            tools:text=", Harga Grosir"
-                            tools:visibility="visible" />
-
-                    </com.google.android.flexbox.FlexboxLayout>
+                        tools:visibility="visible"/>
 
                     <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/text_incident"
