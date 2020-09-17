@@ -49,7 +49,7 @@ object EventFormMapper {
     fun setListBottomSheetString(mapData: LinkedHashMap<String, String>): List<String> {
         val listString = mutableListOf<String>()
         mapData.map {
-            listString.add(it.value)
+                listString.add(it.value)
         }
         return listString
     }

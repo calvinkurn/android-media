@@ -191,7 +191,7 @@ class EventPDPFormFragment : BaseDaggerFragment(), OnClickFormListener,
         formAdapter.setList(formData)
     }
 
-    override fun clickBottomSheet(list: LinkedHashMap<String, String>, title: String, positionForm: Int, positionActiveBottomSheet: String) {
+    override fun clickBottomSheet(list: LinkedHashMap<String, String>, title: String, positionForm: Int) {
         val adapterBottomSheet = EventFormBottomSheetAdapter(this)
         val view = LayoutInflater.from(context).inflate(R.layout.bottom_sheet_event_list_form, null)
         listTemp = list
@@ -202,8 +202,6 @@ class EventPDPFormFragment : BaseDaggerFragment(), OnClickFormListener,
             setTitle(title)
             setCloseClickListener { bottomSheets.dismiss() }
         }
-
-        val listBottomSheet = setListBottomSheetString(list)
 
         if (list.size > SEARCH_PAGE_LIMIT) {
             val searchTextField = view.event_search_list_form?.searchBarTextField
@@ -233,7 +231,7 @@ class EventPDPFormFragment : BaseDaggerFragment(), OnClickFormListener,
             view.event_search_list_form.visibility = View.GONE
         }
 
-        adapterBottomSheet.setList(listBottomSheet)
+        adapterBottomSheet.setList(setListBottomSheetString(list))
 
         view.rv_event_bottom_sheet_form.apply {
             layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)

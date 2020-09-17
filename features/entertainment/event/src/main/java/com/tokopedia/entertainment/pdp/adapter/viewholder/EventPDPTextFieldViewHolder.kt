@@ -41,11 +41,13 @@ class EventPDPTextFieldViewHolder(val view: View,
 
             keyActiveBottomSheet = getKeyActive(element)
             positionActiveForm = position
+            if (position > 0) txtValue.setMargin(0, TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3), context.resources.displayMetrics).toInt(), 0, 0)
 
             if (element.elementType.equals(ELEMENT_TEXT)) {
-                if (position > 0) txtValue.setMargin(0, TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3), context.resources.displayMetrics).toInt(), 0, 0)
-                txtValue.setPlaceholder(element.helpText)
+                txtValue.setPlaceholder(element.title)
                 txtValue.textFiedlLabelText.text = element.title
+                txtValue.setLabelStatic(false)
+                txtValue.setMessage(element.helpText)
                 txtValue.textFieldInput.addTextChangedListener(object : TextWatcher {
                     override fun afterTextChanged(p0: Editable?) {}
 
@@ -53,7 +55,7 @@ class EventPDPTextFieldViewHolder(val view: View,
 
                     override fun onTextChanged(text: CharSequence?, p1: Int, p2: Int, p3: Int) {
                         if (validateRegex(text.toString(), element.validatorRegex)) {
-                            txtValue.setMessage("")
+                            txtValue.setMessage(element.helpText)
                             txtValue.setError(false)
                         } else {
                             txtValue.setMessage(element.errorMessage)
@@ -79,8 +81,6 @@ class EventPDPTextFieldViewHolder(val view: View,
             if (element.value.isNotBlank() && !element.value.equals(resources.getString(R.string.ent_checkout_data_nullable_form))) {
                 if (element.elementType.equals(ELEMENT_TEXT)) txtValue.textFieldInput.setText(element.value)
                 if (element.elementType.equals(ELEMENT_LIST)) {
-                    if (position > 0) txtValue.setMargin(0, TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl1), context.resources.displayMetrics).toInt(), 0, 0)
-
                     txtValue.setMessage(element.title)
                     val list = getList(element.value)
                     if (list.isNotEmpty()) {
@@ -102,7 +102,7 @@ class EventPDPTextFieldViewHolder(val view: View,
                                 override fun onTouch(v: View?, event: MotionEvent?): Boolean {
                                     when (event?.action) {
                                         MotionEvent.ACTION_DOWN -> {
-                                            formListener.clickBottomSheet(list, element.title, positionActiveForm, keyActiveBottomSheet)
+                                            formListener.clickBottomSheet(getListRequired(list,element.required), element.title, positionActiveForm)
                                         }
                                     }
 
@@ -129,6 +129,21 @@ class EventPDPTextFieldViewHolder(val view: View,
             return false
         }
     }
+
+    fun getListRequired(list:LinkedHashMap<String, String>, isRequired:Int):LinkedHashMap<String, String>{
+        if(isRequired==1) {
+            val listValue: LinkedHashMap<String, String> = LinkedHashMap()
+            list.map {
+                if (!it.key.equals("-1")) {
+                    listValue.put(it.key, it.value)
+                }
+            }
+            return listValue
+        } else{
+            return list
+        }
+    }
+
 
     fun getList(value: String): LinkedHashMap<String, String> {
         val listValue: LinkedHashMap<String, String> = LinkedHashMap()
