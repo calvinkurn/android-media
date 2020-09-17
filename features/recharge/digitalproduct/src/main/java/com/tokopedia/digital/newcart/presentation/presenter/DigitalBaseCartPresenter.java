@@ -156,6 +156,7 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
         attributes.setUserAgent(DeviceUtil.getUserAgentForApiCall());
         attributes.setUserId(Integer.parseInt(userSession.getUserId()));
         attributes.setProductId(getView().getProductId());
+        attributes.setOrderId(getView().getOrderId());
         attributes.setFields(fieldList);
         if (GlobalConfig.isSellerApp()) {
             attributes.setReseller(true);
