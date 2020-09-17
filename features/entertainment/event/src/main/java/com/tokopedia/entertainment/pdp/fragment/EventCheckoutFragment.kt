@@ -20,9 +20,7 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
-import com.meituan.robust.patch.annotaion.Add
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
@@ -67,7 +65,6 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.loadImageRounded
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.oms.scrooge.ScroogePGUtil
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
@@ -81,8 +78,6 @@ import kotlinx.android.synthetic.main.partial_event_checkout_footer.*
 import kotlinx.android.synthetic.main.partial_event_checkout_passenger.*
 import kotlinx.android.synthetic.main.partial_event_checkout_summary.*
 import kotlinx.android.synthetic.main.widget_event_checkout_passenger.*
-import kotlinx.android.synthetic.main.widget_event_checkout_passenger.view.*
-import okhttp3.Route
 import java.io.Serializable
 import javax.inject.Inject
 
@@ -264,8 +259,8 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
     }
 
     private fun renderPassenger(pdp: ProductDetailData) {
-        forms = initialListForm(pdp.forms,userSessionInterface, getString(R.string.ent_checkout_data_nullable_form))
-        if(!forms.isNullOrEmpty()){
+        forms = initialListForm(pdp.forms, userSessionInterface, getString(R.string.ent_checkout_data_nullable_form))
+        if (!forms.isNullOrEmpty()) {
             setPassengerData(forms)
         }
         ticker_event_checkout.setTextDescription(resources.getString(R.string.ent_event_checkout_pessanger_ticker))
@@ -337,9 +332,9 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
         }
     }
 
-    private fun updateAdditionalPackage(){
-        if(eventCheckoutAdditionalDataPackage.additionalType.equals(AdditionalType.PACKAGE_FILLED)
-                && eventCheckoutAdditionalDataPackage.listForm.isNotEmpty()){
+    private fun updateAdditionalPackage() {
+        if (eventCheckoutAdditionalDataPackage.additionalType.equals(AdditionalType.PACKAGE_FILLED)
+                && eventCheckoutAdditionalDataPackage.listForm.isNotEmpty()) {
             item_checkout_event_data_tambahan_package.gone()
             item_checkout_event_data_tambahan_package_filled.show()
             val adapter = EventCheckoutPassengerDataAdapter()
@@ -371,11 +366,11 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
                         Toaster.make(view, it.getString(R.string.ent_event_checkout_submit_name, it.getString(R.string.ent_event_checkout_passenger_title).toLowerCase()), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, it.getString(R.string.ent_checkout_error))
                         scroll_view_event_checkout.focusOnView(partial_event_checkout_passenger)
                         widget_event_checkout_pessangers.startAnimationWiggle()
-                    } else if (!forms.isNullOrEmpty() && isEmptyForms(forms,getString(R.string.ent_checkout_data_nullable_form))){
+                    } else if (!forms.isNullOrEmpty() && isEmptyForms(forms, getString(R.string.ent_checkout_data_nullable_form))) {
                         Toaster.make(view, it.getString(R.string.ent_event_checkout_submit_name, it.getString(R.string.ent_event_checkout_passenger_title).toLowerCase()), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, it.getString(R.string.ent_checkout_error))
                         scroll_view_event_checkout.focusOnView(partial_event_checkout_passenger)
                         widget_event_checkout_pessangers.startAnimationWiggle()
-                    } else if(isAdditionalItemFormNull() && isItemFormActive){
+                    } else if (isAdditionalItemFormNull() && isItemFormActive) {
                         Toaster.make(view, it.getString(R.string.ent_event_checkout_submit_name, it.getString(R.string.ent_checkout_data_pengunjung_title).toLowerCase()), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, it.getString(R.string.ent_checkout_error))
                         scroll_view_event_checkout.focusOnView(partial_event_checkout_additional_item)
                         getRecycleViewWidgetAnimator()
@@ -437,22 +432,22 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == REQUEST_CODE_FORM) {
-                data?.let {
-                    forms = data.getSerializableExtra(EXTRA_DATA_PESSANGER) as List<Form>
-                    setPassengerData(forms)
-                }
-            } else if (requestCode == REQUEST_CODE_ADDITIONAL_ITEM) {
-                data?.let {
-                    val additionalData = data.getParcelableExtra<EventCheckoutAdditionalData>(EXTRA_DATA_PESSANGER)
-                    listAdditionalItem[additionalData.position] = additionalData
-                    adapterAdditional.notifyDataSetChanged()
-                }
-            } else if (requestCode == REQUEST_CODE_ADDITIONAL_PACKAGE) {
-                data?.let {
-                    val additionalData = data.getParcelableExtra<EventCheckoutAdditionalData>(EXTRA_DATA_PESSANGER)
-                    eventCheckoutAdditionalDataPackage = additionalData
-                    updateAdditionalPackage()
+            data?.let {
+                when (requestCode) {
+                    REQUEST_CODE_FORM -> {
+                        forms = data.getSerializableExtra(EXTRA_DATA_PESSANGER) as List<Form>
+                        setPassengerData(forms)
+                    }
+                    REQUEST_CODE_ADDITIONAL_ITEM -> {
+                        val additionalData = data.getParcelableExtra<EventCheckoutAdditionalData>(EXTRA_DATA_PESSANGER)
+                        listAdditionalItem[additionalData.position] = additionalData
+                        adapterAdditional.notifyDataSetChanged()
+                    }
+                    REQUEST_CODE_ADDITIONAL_PACKAGE -> {
+                        val additionalData = data.getParcelableExtra<EventCheckoutAdditionalData>(EXTRA_DATA_PESSANGER)
+                        eventCheckoutAdditionalDataPackage = additionalData
+                        updateAdditionalPackage()
+                    }
                 }
             }
         } else if (resultCode == PAYMENT_SUCCESS) {
@@ -482,31 +477,31 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
     private fun clickAdditional(additonal: EventCheckoutAdditionalData, codeAdditional: Int) {
         context?.run {
             val intent = RouteManager.getIntent(this, "${ApplinkConstInternalEntertainment.EVENT_FORM}/$urlPDP")
-            intent.putExtra(EXTRA_ADDITIONAL_DATA,additonal)
+            intent.putExtra(EXTRA_ADDITIONAL_DATA, additonal)
             startActivityForResult(intent, codeAdditional)
         }
     }
 
-    private fun getRecycleViewWidgetAnimator(){
+    private fun getRecycleViewWidgetAnimator() {
         val itemView = rv_event_checkout_additional.layoutManager?.findViewByPosition(positionAdditionalItemFormNull())
         itemView?.startAnimationWiggle()
     }
 
-    private fun isAdditionalItemFormNull():Boolean {
+    private fun isAdditionalItemFormNull(): Boolean {
         var status = false
-        loop@ for(i in 0..listAdditionalItem.size-1){
-            if(listAdditionalItem.get(i).listForm.isNullOrEmpty()){
-                 status = true
-                 break@loop
+        loop@ for (i in 0..listAdditionalItem.size - 1) {
+            if (listAdditionalItem.get(i).listForm.isNullOrEmpty()) {
+                status = true
+                break@loop
             }
         }
         return status
     }
 
-    private fun positionAdditionalItemFormNull():Int {
+    private fun positionAdditionalItemFormNull(): Int {
         var position = 0
-        loop@ for(i in 0..listAdditionalItem.size-1){
-            if(listAdditionalItem.get(i).listForm.isNullOrEmpty()){
+        loop@ for (i in 0..listAdditionalItem.size - 1) {
+            if (listAdditionalItem.get(i).listForm.isNullOrEmpty()) {
                 position = i
                 break@loop
             }
@@ -519,11 +514,11 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
         super.onDestroyView()
     }
 
-    private fun View.startAnimationWiggle(){
-        this.startAnimation(AnimationUtils.loadAnimation(context,R.anim.anim_event_checkout_wiggle))
+    private fun View.startAnimationWiggle() {
+        this.startAnimation(AnimationUtils.loadAnimation(context, R.anim.anim_event_checkout_wiggle))
     }
 
-    private fun NestedScrollView.focusOnView(toView: View){
+    private fun NestedScrollView.focusOnView(toView: View) {
         Handler().post(Runnable {
             this.smoothScrollTo(0, toView.y.toInt())
         })

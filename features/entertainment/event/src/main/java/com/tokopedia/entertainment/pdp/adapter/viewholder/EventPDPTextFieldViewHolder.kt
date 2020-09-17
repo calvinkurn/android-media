@@ -2,7 +2,6 @@ package com.tokopedia.entertainment.pdp.adapter.viewholder
 
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.TypedValue
 import android.view.MotionEvent
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
@@ -22,6 +21,7 @@ import com.tokopedia.entertainment.pdp.data.checkout.mapper.EventFormMapper.getF
 import com.tokopedia.entertainment.pdp.data.checkout.mapper.EventFormMapper.getFirstName
 import com.tokopedia.entertainment.pdp.listener.OnClickFormListener
 import com.tokopedia.kotlin.extensions.view.setMargin
+import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.ent_pdp_form_edittext_item.view.*
 import org.json.JSONArray
@@ -42,7 +42,7 @@ class EventPDPTextFieldViewHolder(val view: View,
 
             keyActiveBottomSheet = getKeyActive(element)
             positionActiveForm = position
-            if (position > 0) txtValue.setMargin(0, TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3), context.resources.displayMetrics).toInt(), 0, 0)
+            if (position > 0) txtValue.setMargin(0, context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3).toPx().toInt(), 0, 0)
 
             if (element.elementType.equals(ELEMENT_TEXT)) {
                 txtValue.textFieldWrapper.hint = element.title
@@ -71,7 +71,7 @@ class EventPDPTextFieldViewHolder(val view: View,
                     textFormListener.getAdditionalType().equals(AdditionalType.NULL_DATA)) {
                 if (element.name == FULLNAME_TYPE) txtValue.textFieldInput.setText(userSession.name)
                 else if (element.name == FAMILY_NAME_TYPE) txtValue.textFieldInput.setText(getFamilyName(userSession.name))
-                else if(element.name == FIRST_NAME_TYPE) txtValue.textFieldInput.setText(getFirstName(userSession.name))
+                else if (element.name == FIRST_NAME_TYPE) txtValue.textFieldInput.setText(getFirstName(userSession.name))
                 else if (element.name == EMAIL_TYPE) txtValue.textFieldInput.setText(userSession.email)
                 else if (element.name == PHONE_TYPE || element.name == MOBILE_TYPE) txtValue.textFieldInput.setText(userSession.phoneNumber)
             }
@@ -87,7 +87,7 @@ class EventPDPTextFieldViewHolder(val view: View,
                             keyListener = null
 
                             val value = if (keyActiveBottomSheet.isNullOrEmpty()) {
-                               list.getValueByPosition(0)
+                                list.getValueByPosition(0)
                             } else list.get(keyActiveBottomSheet) ?: ""
 
                             val key = if (keyActiveBottomSheet.isNullOrEmpty()) {
@@ -101,7 +101,7 @@ class EventPDPTextFieldViewHolder(val view: View,
                                 override fun onTouch(v: View?, event: MotionEvent?): Boolean {
                                     when (event?.action) {
                                         MotionEvent.ACTION_DOWN -> {
-                                            formListener.clickBottomSheet(getListRequired(list,element.required), element.title, positionActiveForm)
+                                            formListener.clickBottomSheet(getListRequired(list, element.required), element.title, positionActiveForm)
                                         }
                                     }
 
@@ -129,8 +129,8 @@ class EventPDPTextFieldViewHolder(val view: View,
         }
     }
 
-    fun getListRequired(list:LinkedHashMap<String, String>, isRequired:Int):LinkedHashMap<String, String>{
-        if(isRequired==1) {
+    fun getListRequired(list: LinkedHashMap<String, String>, isRequired: Int): LinkedHashMap<String, String> {
+        if (isRequired == 1) {
             val listValue: LinkedHashMap<String, String> = LinkedHashMap()
             list.map {
                 if (!it.key.equals(BLANK_LIST)) {
@@ -138,7 +138,7 @@ class EventPDPTextFieldViewHolder(val view: View,
                 }
             }
             return listValue
-        } else{
+        } else {
             return list
         }
     }
@@ -163,10 +163,10 @@ class EventPDPTextFieldViewHolder(val view: View,
     fun LinkedHashMap<String, String>.getValueByPosition(position: Int) =
             this.values.toTypedArray()[position]
 
-    fun getKeyActive(form:Form):String{
-        return if(!textFormListener.getKeyActive().isNullOrEmpty()){
+    fun getKeyActive(form: Form): String {
+        return if (!textFormListener.getKeyActive().isNullOrEmpty()) {
             textFormListener.getKeyActive()
-        } else if (!form.valuePosition.isNullOrEmpty()){
+        } else if (!form.valuePosition.isNullOrEmpty()) {
             form.valuePosition
         } else ""
     }

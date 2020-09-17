@@ -7,18 +7,17 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.entertainment.R
 import com.tokopedia.entertainment.pdp.common.util.EventConst.ELEMENT_TEXT
 import com.tokopedia.entertainment.pdp.data.Form
-import com.tokopedia.entertainment.pdp.data.checkout.AdditionalType
 import kotlinx.android.synthetic.main.item_checkout_event_additional_item_filled.view.*
 
-class EventCheckoutAdditonalFilledAdapter : RecyclerView.Adapter<EventCheckoutAdditonalFilledAdapter.EventCheckoutAdditionalFilledViewHolder>(){
+class EventCheckoutAdditonalFilledAdapter : RecyclerView.Adapter<EventCheckoutAdditonalFilledAdapter.EventCheckoutAdditionalFilledViewHolder>() {
 
     private var listForm = emptyList<Form>()
 
     inner class EventCheckoutAdditionalFilledViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         fun bind(form: Form) {
             with(itemView) {
-                event_item_title.text = resources.getString(R.string.ent_checkout_data_tambahan_item_title,form.title)
-                event_item_value.text = resources.getString(R.string.ent_checkout_data_tambahan_item_value,if(form.elementType.equals(ELEMENT_TEXT)) form.value
+                event_item_title.text = resources.getString(R.string.ent_checkout_data_tambahan_item_title, form.title)
+                event_item_value.text = resources.getString(R.string.ent_checkout_data_tambahan_item_value, if (form.elementType.equals(ELEMENT_TEXT)) form.value
                 else form.valueList)
             }
         }
