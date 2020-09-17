@@ -370,6 +370,7 @@ barangnya gan! coy coy coy" />
                                 android:layout_width="@dimen/dp_60"
                                 android:layout_height="wrap_content"
                                 android:gravity="center_horizontal"
+                                android:imeOptions="actionDone"
                                 android:inputType="number"
                                 android:maxLength="6"
                                 android:textColor="@color/black_70"

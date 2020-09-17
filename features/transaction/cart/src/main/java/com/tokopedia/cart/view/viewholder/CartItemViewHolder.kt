@@ -589,6 +589,13 @@ class CartItemViewHolder constructor(itemView: View,
     private fun renderQuantity(data: CartItemHolderData, parentPosition: Int, viewHolderListener: ViewHolderListener) {
         val quantity = data.cartItemData?.updatedData?.quantity.toString()
         this.etQty.setText(data.cartItemData?.updatedData?.quantity.toString())
+        etQty.setOnEditorActionListener { v, actionId, event ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                KeyboardHandler.DropKeyboard(etRemark.context, itemView)
+                true
+            } else false
+        }
+
         if (quantity.isNotEmpty()) {
             this.etQty.setSelection(quantity.length)
         }
