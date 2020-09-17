@@ -72,10 +72,7 @@ class OrderSummaryPageActivityTrackingTest {
         cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_NO_PROFILE_RESPONSE_PATH
         activityRule.launchActivity(null)
 
-        // prevent press back on non-root activity
-        val activity = activityRule.activity
-        activity.startActivity(Intent(activity, OrderSummaryPageActivity::class.java))
-        Espresso.pressBack()
+        performOrderSummaryPageBackAction()
 
         intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
 
@@ -118,5 +115,12 @@ class OrderSummaryPageActivityTrackingTest {
         }
 
         assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME), hasAllSuccess())
+    }
+
+    private fun performOrderSummaryPageBackAction() {
+        // prevent press back on non-root activity
+        val activity = activityRule.activity
+        activity.startActivity(Intent(activity, OrderSummaryPageActivity::class.java))
+        Espresso.pressBack()
     }
 }
