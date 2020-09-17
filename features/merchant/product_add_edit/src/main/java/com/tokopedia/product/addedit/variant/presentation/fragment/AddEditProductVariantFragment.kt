@@ -3,10 +3,7 @@ package com.tokopedia.product.addedit.variant.presentation.fragment
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.view.KeyEvent
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -17,6 +14,8 @@ import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.header.HeaderUnify
@@ -28,6 +27,11 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.addedit.R
+import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringConstants.ADD_EDIT_PRODUCT_VARIANT_PLT_NETWORK_METRICS
+import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringConstants.ADD_EDIT_PRODUCT_VARIANT_PLT_PREPARE_METRICS
+import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringConstants.ADD_EDIT_PRODUCT_VARIANT_PLT_RENDER_METRICS
+import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringConstants.ADD_EDIT_PRODUCT_VARIANT_TRACE
+import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringListener
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.EXTRA_CACHE_MANAGER_ID
 import com.tokopedia.product.addedit.common.util.HorizontalItemDecoration
 import com.tokopedia.product.addedit.common.util.RecyclerViewItemDecoration
@@ -86,7 +90,9 @@ class AddEditProductVariantFragment :
         VariantUnitPicker.OnVariantUnitPickListener,
         VariantDataValuePicker.OnVariantUnitPickerClickListener,
         VariantPhotoAdapter.OnItemClickListener,
-        VariantDataValuePicker.OnVariantUnitValuePickListener {
+        VariantDataValuePicker.OnVariantUnitValuePickListener,
+        AddEditProductPerformanceMonitoringListener
+{
 
     companion object {
         private const val TAG_VARIANT_UNIT_PICKER = "VARIANT_UNIT_PICKER"
@@ -118,7 +124,8 @@ class AddEditProductVariantFragment :
     private var isLoggedin = ""
     private var userId = ""
     private var shopId = ""
-
+    // start PLT monitoring
+    private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
 
     override fun getScreenName(): String {
         return ""
@@ -129,6 +136,8 @@ class AddEditProductVariantFragment :
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        // start PLT monitoring
+        startPerformanceMonitoring()
         super.onCreate(savedInstanceState)
 
         val cacheManagerId = arguments?.getString(EXTRA_CACHE_MANAGER_ID)
@@ -240,6 +249,8 @@ class AddEditProductVariantFragment :
         }
 
         setupToolbarActions()
+        // stop PLT prepare monitoring
+        stopPreparePagePerformanceMonitoring()
     }
 
     override fun onVariantTypeSelected(adapterPosition: Int, variantDetail: VariantDetail) {
@@ -612,6 +623,54 @@ class AddEditProductVariantFragment :
         }
     }
 
+    override fun startPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring = PageLoadTimePerformanceCallback(
+                ADD_EDIT_PRODUCT_VARIANT_PLT_PREPARE_METRICS,
+                ADD_EDIT_PRODUCT_VARIANT_PLT_NETWORK_METRICS,
+                ADD_EDIT_PRODUCT_VARIANT_PLT_RENDER_METRICS,
+                0,
+                0,
+                0,
+                0,
+                null
+        )
+
+        pageLoadTimePerformanceMonitoring?.startMonitoring(ADD_EDIT_PRODUCT_VARIANT_TRACE)
+        pageLoadTimePerformanceMonitoring?.startPreparePagePerformanceMonitoring()
+    }
+
+    override fun stopPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.stopMonitoring()
+        pageLoadTimePerformanceMonitoring = null
+    }
+
+    override fun stopPreparePagePerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.stopPreparePagePerformanceMonitoring()
+    }
+
+    override fun startNetworkRequestPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.startNetworkRequestPerformanceMonitoring()
+    }
+
+    override fun stopNetworkRequestPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.stopNetworkRequestPerformanceMonitoring()
+    }
+
+    override fun startRenderPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.startRenderPerformanceMonitoring()
+        recyclerViewVariantType.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                stopRenderPerformanceMonitoring()
+                stopPerformanceMonitoring()
+                recyclerViewVariantType.viewTreeObserver.removeOnGlobalLayoutListener(this)
+            }
+        })
+    }
+
+    override fun stopRenderPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.stopRenderPerformanceMonitoring()
+    }
+
     private fun submitVariantInput() {
         val productInputModel = viewModel.productInputModel.value
         productInputModel?.apply {
@@ -743,6 +802,8 @@ class AddEditProductVariantFragment :
     }
 
     private fun observeGetVariantCategoryCombinationResult() {
+        // start network PLT monitoring
+        startNetworkRequestPerformanceMonitoring()
         viewModel.getVariantCategoryCombinationResult.observe(viewLifecycleOwner, Observer { result ->
             // clear adapter before rendering
             variantTypeAdapter?.setData(emptyList())
@@ -754,8 +815,14 @@ class AddEditProductVariantFragment :
                     val selectedVariantDetails = viewModel.getSelectedVariantDetails()
                     // setup the page
                     setupAddEditVariantPage(variantDataList, selectedVariantDetails)
+
+                    // continue to render PLT monitoring if success
+                    stopNetworkRequestPerformanceMonitoring()
+                    startRenderPerformanceMonitoring()
                 }
                 is Fail -> {
+                    // end monitoring if failed
+                    stopPerformanceMonitoring()
                     context?.let {
                         showGetVariantCategoryCombinationErrorToast(
                                 ErrorHandler.getErrorMessage(it, result.throwable))
