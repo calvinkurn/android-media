@@ -125,7 +125,7 @@ class OrderSummaryPageEnhanceECommerce {
         )
     }
 
-    fun setDefaultIfEmpty(value: String?): String {
+    private fun setDefaultIfEmpty(value: String?): String {
         if (value.isNullOrBlank()) {
             return DEFAULT_EMPTY_VALUE
         }
