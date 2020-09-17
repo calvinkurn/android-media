@@ -15,7 +15,6 @@ import com.tokopedia.notifications.common.CMConstant.PayloadKeys.ADD_TO_CART
 import com.tokopedia.notifications.common.CMConstant.PreDefineActionType.ATC
 import com.tokopedia.notifications.common.CMConstant.PreDefineActionType.OCC
 import com.tokopedia.notifications.common.CMConstant.ReceiverExtraData.ACTION_BUTTON_EXTRA
-import com.tokopedia.notifications.common.IrisAnalyticsEvents.sendAmplificationPushEvent
 import com.tokopedia.notifications.common.IrisAnalyticsEvents.sendPushEvent
 import com.tokopedia.notifications.data.DataManager
 import com.tokopedia.notifications.di.DaggerCMNotificationComponent
@@ -58,8 +57,6 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
             val notificationId = intent.getIntExtra(CMConstant.EXTRA_NOTIFICATION_ID, 0)
             val baseNotificationModel: BaseNotificationModel? = intent.getParcelableExtra(CMConstant.EXTRA_BASE_MODEL)
             if (action != null) {
-                sendAmplificationPushEvent(context, baseNotificationModel)
-
                 when (action) {
                     CMConstant.ReceiverAction.ACTION_ON_NOTIFICATION_DISMISS -> {
                         NotificationManagerCompat.from(context).cancel(notificationId)
@@ -416,14 +413,6 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
             context.applicationContext.startActivity(intent)
         } catch (e: ActivityNotFoundException) {
-        }
-    }
-
-    private fun sendAmplificationPushEvent(context: Context, baseNotificationModel: BaseNotificationModel?) {
-        baseNotificationModel?.let {
-            if (it.isAmplification == true) {
-                sendAmplificationPushEvent(context, IrisAnalyticsEvents.PUSH_RECEIVED, it)
-            }
         }
     }
 

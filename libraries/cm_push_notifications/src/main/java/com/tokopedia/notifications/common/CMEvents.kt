@@ -57,13 +57,13 @@ object IrisAnalyticsEvents {
     private const val AMPLIFICATION = "amplification"
 
     fun sendPushEvent(context: Context, eventName: String, baseNotificationModel: BaseNotificationModel) {
-        if (baseNotificationModel.isTest)
-            return
+        if (baseNotificationModel.isTest) return
         val irisAnalytics = IrisAnalytics(context)
-        if (irisAnalytics != null) {
-            val values = addBaseValues(context, eventName, baseNotificationModel)
-            trackEvent(context, irisAnalytics, values)
-        }
+        trackEvent(context, irisAnalytics, addBaseValues(context, eventName, baseNotificationModel).apply {
+            if (baseNotificationModel.isAmplification) {
+                put(LABEL, AMPLIFICATION)
+            }
+        })
     }
 
     fun sendPushEvent(context: Context, eventName: String, baseNotificationModel: BaseNotificationModel, elementID: String?) {
@@ -80,14 +80,6 @@ object IrisAnalyticsEvents {
             trackEvent(context, irisAnalytics, values)
         }
 
-    }
-
-    fun sendAmplificationPushEvent(context: Context, eventName: String, model: BaseNotificationModel) {
-        if (model.isTest) return
-        val irisAnalytics = IrisAnalytics(context)
-        trackEvent(context, irisAnalytics, addBaseValues(context, eventName, model).apply {
-            put(LABEL, AMPLIFICATION)
-        })
     }
 
     private fun addBaseValues(context: Context, eventName: String, baseNotificationModel: BaseNotificationModel): HashMap<String, Any> {
