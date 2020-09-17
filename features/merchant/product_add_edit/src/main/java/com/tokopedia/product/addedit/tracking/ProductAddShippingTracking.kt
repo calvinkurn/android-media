@@ -39,11 +39,11 @@ object ProductAddShippingTracking {
         })
     }
 
-    fun clickFinish(shopId: String, isSuccess: Boolean, errorName: String = "") {
+    fun clickFinish(shopId: String, isSuccess: Boolean, errorName: String = "", errorMessage: String = "") {
         if (isSuccess) {
             sendAddProductClick(SCREEN, shopId, "click finish success", "")
         } else {
-            sendAddProductClickWithoutScreen(shopId, "click finish error", errorName)
+            sendAddProductClickWithoutScreen(shopId, "click finish error", "$errorMessage - $errorName")
         }
     }
 

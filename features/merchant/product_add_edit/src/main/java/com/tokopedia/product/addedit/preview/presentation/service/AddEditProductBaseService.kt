@@ -73,6 +73,7 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
 
     abstract fun getNotificationManager(urlImageCount: Int): AddEditProductNotificationManager
     abstract fun onUploadProductImagesSuccess(uploadIdList: ArrayList<String>, variantInputModel: VariantInputModel)
+    abstract fun onUploadProductImagesFailed(errorMessage: String)
 
     override fun onCreate() {
         super.onCreate()
@@ -126,6 +127,7 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
             ErrorHandler.getErrorMessage(this, throwable)
         }
     }
+
 
     protected fun logError(requestParams: RequestParams, throwable: Throwable) {
         val errorMessage = String.format(
@@ -211,8 +213,8 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
                 AddEditProductErrorHandler.logExceptionToCrashlytics(exception)
 
                 Timber.w("P2#PRODUCT_UPLOAD#%s", message)
-
-                notificationManager?.onFailedUpload(result.message)
+                onUploadProductImagesFailed(result.message)
+                setUploadProductDataError(result.message)
                 ""
             }
         }

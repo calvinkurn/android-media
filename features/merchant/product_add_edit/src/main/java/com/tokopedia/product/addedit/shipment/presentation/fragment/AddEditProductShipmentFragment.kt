@@ -307,13 +307,6 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
         if (validateInputWeight(tfWeightAmount.getText())) {
             inputAllDataInProductInputModel()
             setFragmentResultWithBundle(REQUEST_KEY_SHIPMENT)
-            if (shipmentViewModel.isEditMode) {
-                ProductEditShippingTracking.clickFinish(shopId, true)
-            }
-        } else {
-            if (shipmentViewModel.isEditMode) {
-                ProductEditShippingTracking.clickFinish(shopId, false)
-            }
         }
     }
 
