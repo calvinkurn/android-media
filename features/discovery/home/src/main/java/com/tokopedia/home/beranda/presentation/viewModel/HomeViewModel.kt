@@ -810,10 +810,10 @@ open class HomeViewModel @Inject constructor(
                     }
                 }
                 if (!homeDataModel.isCache) {
-                    visitableMutableList.add(HomeLoadingMoreModel())
+                    if(visitableMutableList.find { it::class.java == HomeLoadingMoreModel::class.java } == null) visitableMutableList.add(HomeLoadingMoreModel())
                     getFeedTabData()
                 }
-                return homeDataModel.copy(
+                homeDataModel.copy(
                         list = visitableMutableList)
             }
         }
@@ -1094,9 +1094,9 @@ open class HomeViewModel @Inject constructor(
             homeRecommendationFeedViewModel.isNewData = true
 
             homeProcessor.get().sendWithQueueMethod(listOf(
+                AddWidgetCommand(homeRecommendationFeedViewModel, findRecommendationModel?.index ?: -1, this@HomeViewModel),
                 DeleteWidgetCommand(findLoadingModel?.value, findLoadingModel?.index ?: -1, this@HomeViewModel),
-                DeleteWidgetCommand(findRetryModel?.value, findRetryModel?.index ?: -1, this@HomeViewModel),
-                AddWidgetCommand(homeRecommendationFeedViewModel, findRecommendationModel?.index ?: -1, this@HomeViewModel)
+                DeleteWidgetCommand(findRetryModel?.value, findRetryModel?.index ?: -1, this@HomeViewModel)
             ))
 
         }){
@@ -1107,9 +1107,9 @@ open class HomeViewModel @Inject constructor(
                 data -> data.value is HomeLoadingMoreModel
             }
             homeProcessor.get().sendWithQueueMethod(listOf(
+                    AddWidgetCommand(HomeRetryModel(), -1, this@HomeViewModel),
                     DeleteWidgetCommand(findLoadingModel?.value, findLoadingModel?.index ?: -1, this@HomeViewModel),
-                    DeleteWidgetCommand(findRetryModel?.value, findRetryModel?.index ?: -1, this@HomeViewModel),
-                    AddWidgetCommand(HomeRetryModel(), -1, this@HomeViewModel)
+                    DeleteWidgetCommand(findRetryModel?.value, findRetryModel?.index ?: -1, this@HomeViewModel)
             ))
         }
     }
@@ -1359,8 +1359,7 @@ open class HomeViewModel @Inject constructor(
     override suspend fun deleteWidget(visitable: Visitable<*>, position: Int) {
         val newList = _homeLiveData.value?.list?.toMutableList() ?: mutableListOf()
         logChannelUpdate("Update channel: (Remove widget ${visitable.javaClass.simpleName} | ${getVisitableId(visitable)})")
-        newList.find { it::class.java == visitable::class.java
-                && getVisitableId(it) == getVisitableId(visitable)}?.let {
+        newList.find {getVisitableId(it) == getVisitableId(visitable)}?.let {
             newList.remove(it)
         }
         withContext(homeDispatcher.get().ui()) {
