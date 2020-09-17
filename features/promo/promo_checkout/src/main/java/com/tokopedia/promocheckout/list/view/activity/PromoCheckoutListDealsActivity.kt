@@ -20,7 +20,8 @@ class PromoCheckoutListDealsActivity : BaseSimpleActivity(), HasComponent<PromoC
                 intent?.extras?.getString(BasePromoCheckoutListFragment.EXTRA_PROMO_CODE, ""),
                 intent?.extras?.getInt(PromoCheckoutListDealsFragment.EXTRA_CATEGORY_ID, 1) ?: 1,
                 intent?.extras?.getInt(BasePromoCheckoutListFragment.PAGE_TRACKING, 1) ?: 1,
-                intent?.extras?.getString(PromoCheckoutListDealsFragment.EXTRA_PRODUCTID, "")
+                intent?.extras?.getString(PromoCheckoutListDealsFragment.EXTRA_PRODUCTID, ""),
+                intent?.extras?.getString(PromoCheckoutListDealsFragment.EXTRA_CHECKOUT_DATA, "")
         )
     }
 
