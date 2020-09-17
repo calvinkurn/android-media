@@ -111,7 +111,7 @@ class PromoCheckoutListModule {
     @PromoCheckoutListScope
     @Provides
     fun provideDealsPresenter(promoCheckoutListDealsUseCase: PromoCheckoutListDealsUseCase, dealsCheckoutMapper: DealsCheckoutMapper): PromoCheckoutListDealsPresenter {
-        return PromoCheckoutListDealsPresenter(promoCheckoutListDealsUseCase, dealsCheckoutMapper)
+        return PromoCheckoutListDealsPresenter()
     }
 
     @PromoCheckoutListScope
