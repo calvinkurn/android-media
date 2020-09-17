@@ -18,7 +18,7 @@ class HomeDataSourceModule {
     @HomeScope
     @Provides
     fun provideHomeRemoteDataSource(graphqlRepository: GraphqlRepository, dispatcher: HomeDispatcherProvider,
-    getDynamicChannelsUseCase: GetDynamicChannelsUseCase, getHomeDataUseCase: GetHomeDataUseCase) = HomeRemoteDataSource(graphqlRepository, dispatcher, getDynamicChannelsUseCase, getHomeDataUseCase)
+    getDynamicChannelsUseCase: GetDynamicChannelsUseCase, getHomeDataUseCase: GetHomeDataUseCase) = HomeRemoteDataSource(dispatcher, getDynamicChannelsUseCase, getHomeDataUseCase)
 
     @Provides
     fun provideHomeCachedDataSource(homeDao: HomeDao) = HomeCachedDataSource(homeDao)

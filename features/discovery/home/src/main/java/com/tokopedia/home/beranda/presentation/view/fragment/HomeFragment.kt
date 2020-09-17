@@ -752,6 +752,7 @@ open class HomeFragment : BaseDaggerFragment(),
                 pageLoadTimeCallback?.invalidate()
             } else if (status === Result.Status.ERROR_PAGINATION) {
                 hideLoading()
+                showNetworkError(getString(R.string.home_error_connection))
             } else {
                 showLoading()
             }

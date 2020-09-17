@@ -1,5 +1,6 @@
 package com.tokopedia.home.beranda.data.repository
 
+import android.util.Log
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home.beranda.data.datasource.default_data_source.HomeDefaultDataSource
 import com.tokopedia.home.beranda.data.datasource.local.HomeCachedDataSource
@@ -39,6 +40,7 @@ class HomeRepositoryImpl @Inject constructor(
     }
 
     override fun updateHomeData(): Flow<Result<Any>> = flow{
+        val startMillis = System.currentTimeMillis()
         coroutineScope {
             val isCacheExistForProcess = isCacheExist
             val currentTimeMillisString = System.currentTimeMillis().toString()
@@ -49,11 +51,13 @@ class HomeRepositoryImpl @Inject constructor(
 
             var homeDataCombined: HomeData? = HomeData()
 
+            Log.d("FikryDebug","FirstAsync: "+(System.currentTimeMillis()-startMillis)+" ms")
             val homeDataResponseValue = try {
                 homeDataResponse.await()
             } catch (e: Exception) {
                 HomeData()
             }
+            Log.d("FikryDebug","HomeDataAwait: "+(System.currentTimeMillis()-startMillis)+" ms")
 
             val dynamicChannelResponseValue = try {
                 dynamicChannelResponse.await()
@@ -64,6 +68,7 @@ class HomeRepositoryImpl @Inject constructor(
                     HomeChannelData()
                 }
             }
+            Log.d("FikryDebug","DynamicChannelAwait: "+(System.currentTimeMillis()-startMillis)+" ms")
 
             if (!isCacheExistForProcess && dynamicChannelResponseValue != null) {
                 val extractPair = extractToken(dynamicChannelResponseValue)
@@ -81,6 +86,7 @@ class HomeRepositoryImpl @Inject constructor(
                     homeCachedDataSource.saveToDatabase(homeDefaultDataSource.getDefaultHomeData())
                 } else {
                     homeCachedDataSource.saveToDatabase(homeDataResponseValue)
+                    Log.d("FikryDebug","SaveDatabaseFirst: "+(System.currentTimeMillis()-startMillis)+" ms")
                 }
             } else if (dynamicChannelResponseValue == null) {
                 emit(Result.error(Throwable()))
@@ -103,9 +109,10 @@ class HomeRepositoryImpl @Inject constructor(
             homeDataCombined?.let {
                 emit(Result.success(null))
                 homeCachedDataSource.saveToDatabase(it)
+                Log.d("FikryDebug","SaveDatabaseFull: "+(System.currentTimeMillis()-startMillis)+" ms")
             }
         }
-
+        Log.d("FikryDebug","End: "+(System.currentTimeMillis()-startMillis)+" ms")
     }
 
     override suspend fun onDynamicChannelExpired(groupId: String): List<Visitable<*>> {

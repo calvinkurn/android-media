@@ -8,6 +8,8 @@ import androidx.test.core.app.ApplicationProvider
 import com.google.gson.Gson
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.home.benchmark.network_request.HomeMockResponseList.getDynamicHomeChannel
+import com.tokopedia.home.benchmark.prepare_page.TestQuery.dynamicChannelQuery
+import com.tokopedia.home.benchmark.prepare_page.TestQuery.homeQuery
 import com.tokopedia.home.beranda.common.HomeDispatcherProviderImpl
 import com.tokopedia.home.beranda.data.datasource.default_data_source.HomeDefaultDataSource
 import com.tokopedia.home.beranda.data.datasource.local.HomeCachedDataSource
@@ -16,9 +18,14 @@ import com.tokopedia.home.beranda.data.datasource.local.dao.HomeDao
 import com.tokopedia.home.beranda.data.datasource.remote.GeolocationRemoteDataSource
 import com.tokopedia.home.beranda.data.datasource.remote.HomeRemoteDataSource
 import com.tokopedia.home.beranda.data.mapper.HomeDataMapper
+import com.tokopedia.home.beranda.data.mapper.HomeDynamicChannelDataMapper
+import com.tokopedia.home.beranda.data.mapper.factory.HomeDynamicChannelVisitableFactoryImpl
 import com.tokopedia.home.beranda.data.mapper.factory.HomeVisitableFactoryImpl
 import com.tokopedia.home.beranda.data.repository.HomeRepositoryImpl
 import com.tokopedia.home.beranda.data.usecase.HomeUseCase
+import com.tokopedia.home.beranda.domain.interactor.GetDynamicChannelsUseCase
+import com.tokopedia.home.beranda.domain.interactor.GetHomeDataUseCase
+import com.tokopedia.home.beranda.domain.model.HomeChannelData
 import com.tokopedia.home.beranda.domain.model.HomeData
 import com.tokopedia.home.beranda.domain.model.HomeRoomData
 import com.tokopedia.home.common.HomeAceApi
@@ -26,6 +33,7 @@ import com.tokopedia.home.mock.HomeMockResponseConfig
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import com.tokopedia.trackingoptimizer.TrackingQueue
+import com.tokopedia.user.session.UserSession
 import dagger.Lazy
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.first
@@ -57,37 +65,54 @@ class HomeBenchmarkTestNetworkRequest: CoroutineScope {
 
         @BeforeClass @JvmStatic
         fun setupComponents() {
-//            setupGraphqlMockResponse(HomeMockResponseConfig())
-//            context = ApplicationProvider.getApplicationContext<Context>()
-//            val homeDatabase = HomeDatabase.buildDatabase(context)
-//            homeDao = homeDatabase.homeDao()
-//            gson = Gson()
-//            val homeData = gson.fromJson(getDynamicHomeChannel(context), HomeData::class.java)
-//            runBlocking {
-//                homeDao.save(HomeRoomData(homeData = homeData))
-//            }
-//            val remoteConfig = FirebaseRemoteConfigImpl(context)
-//            val homeVisitableFactory = HomeVisitableFactoryImpl(null, remoteConfig, HomeDefaultDataSource())
-//            val trackingQueue = TrackingQueue(context)
-//            homeDataMapper = HomeDataMapper(context, homeVisitableFactory, trackingQueue)
-//
-//            val homeCachedDataSource = HomeCachedDataSource(homeDao)
-//            val homeRemoteDataSource = HomeRemoteDataSource(
-//                    GraphqlInteractor.getInstance().graphqlRepository,
-//                    HomeDispatcherProviderImpl(), )
-//            val geolocationRemoteDataSource: Lazy<GeolocationRemoteDataSource> = Lazy {
-//                GeolocationRemoteDataSource(HomeAceApi { Observable.just(Response.success("Test")) })
-//            }
-//            val homeRepository = HomeRepositoryImpl(
-//                    homeCachedDataSource,
-//                    homeRemoteDataSource,
-//                    HomeDefaultDataSource(),
-//                    geolocationRemoteDataSource
-//            )
-//            homeUseCase = HomeUseCase(
-//                    homeRepository,
-//                    homeDataMapper
-//            )
+            setupGraphqlMockResponse(HomeMockResponseConfig())
+            context = ApplicationProvider.getApplicationContext<Context>()
+            val homeDatabase = HomeDatabase.buildDatabase(context)
+            homeDao = homeDatabase.homeDao()
+            gson = Gson()
+            val homeData = gson.fromJson(getDynamicHomeChannel(context), HomeData::class.java)
+            runBlocking {
+                homeDao.save(HomeRoomData(homeData = homeData))
+            }
+            val remoteConfig = FirebaseRemoteConfigImpl(context)
+            val homeVisitableFactory = HomeVisitableFactoryImpl(null, remoteConfig, HomeDefaultDataSource())
+            val trackingQueue = TrackingQueue(context)
+
+            val homeCachedDataSource = HomeCachedDataSource(homeDao)
+            val userSessionInterface = UserSession(context)
+
+            val useCaseChannel = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<HomeChannelData>(GraphqlInteractor.getInstance().graphqlRepository)
+            useCaseChannel.setGraphqlQuery(dynamicChannelQuery)
+            val homeDynamicChannelDataMapper = HomeDynamicChannelDataMapper(
+                    context,
+                    HomeDynamicChannelVisitableFactoryImpl(userSessionInterface, remoteConfig, HomeDefaultDataSource()),
+                    trackingQueue
+            )
+            val getDynamicChannelUseCase = GetDynamicChannelsUseCase(
+                    useCaseChannel, homeDynamicChannelDataMapper
+            )
+
+            homeDataMapper = HomeDataMapper(context, homeVisitableFactory, trackingQueue, homeDynamicChannelDataMapper)
+
+            val useCaseHomeData = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<HomeData>(GraphqlInteractor.getInstance().graphqlRepository)
+            useCaseHomeData.setGraphqlQuery(homeQuery)
+            val getHomeDataUseCase = GetHomeDataUseCase(useCaseHomeData)
+            val homeRemoteDataSource = HomeRemoteDataSource(
+                    HomeDispatcherProviderImpl(), getDynamicChannelUseCase, getHomeDataUseCase)
+            val geolocationRemoteDataSource: Lazy<GeolocationRemoteDataSource> = Lazy {
+                GeolocationRemoteDataSource(HomeAceApi { Observable.just(Response.success("Test")) })
+            }
+            val homeRepository = HomeRepositoryImpl(
+                    homeCachedDataSource,
+                    homeRemoteDataSource,
+                    HomeDefaultDataSource(),
+                    geolocationRemoteDataSource,
+                    homeDynamicChannelDataMapper
+            )
+            homeUseCase = HomeUseCase(
+                    homeRepository,
+                    homeDataMapper
+            )
         }
     }
 
