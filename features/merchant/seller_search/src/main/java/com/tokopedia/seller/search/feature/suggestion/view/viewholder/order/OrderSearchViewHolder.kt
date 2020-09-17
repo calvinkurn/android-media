@@ -25,7 +25,7 @@ class OrderSearchViewHolder(private val view: View,
 
     override fun bind(element: SellerSearchUiModel) {
         adapterOrder = ItemOrderSearchAdapter(orderSearchListener)
-        with(view) {
+        with(itemView) {
             element.takeIf { it.id == ORDER }?.let { order ->
                 if (order.hasMore) {
                     tvMoreResultOrder?.apply {
@@ -40,7 +40,7 @@ class OrderSearchViewHolder(private val view: View,
                 }
                 tvTitleResultOrder?.text = order.title
                 rvResultOrder?.apply {
-                    layoutManager = LinearLayoutManager(view.context)
+                    layoutManager = LinearLayoutManager(context)
                     adapter = adapterOrder
                 }
                 if (adapterPosition == element.count.orZero() - 1) {

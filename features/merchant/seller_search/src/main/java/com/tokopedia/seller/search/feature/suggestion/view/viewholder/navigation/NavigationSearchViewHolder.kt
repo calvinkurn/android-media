@@ -28,7 +28,7 @@ class NavigationSearchViewHolder(private val view: View,
             element.takeIf { it.id == NAVIGATION }?.let { feature ->
                 tvTitleResultNavigation?.text = feature.title
                 rvResultNavigation?.apply {
-                    layoutManager = LinearLayoutManager(view.context)
+                    layoutManager = LinearLayoutManager(context)
                     adapter = adapterNavigation
                 }
 
