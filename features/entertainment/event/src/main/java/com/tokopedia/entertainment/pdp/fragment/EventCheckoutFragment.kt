@@ -360,30 +360,37 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
             view?.let {
                 val view = it
                 context?.let {
-                    if (!userSessionInterface.isLoggedIn) {
-                        Toaster.make(view, it.getString(R.string.ent_event_checkout_submit_login), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, it.getString(R.string.ent_checkout_error))
-                    } else if (forms.isEmpty()) {
-                        Toaster.make(view, it.getString(R.string.ent_event_checkout_submit_name, it.getString(R.string.ent_event_checkout_passenger_title).toLowerCase()), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, it.getString(R.string.ent_checkout_error))
-                        scroll_view_event_checkout.focusOnView(partial_event_checkout_passenger)
-                        widget_event_checkout_pessangers.startAnimationWiggle()
-                    } else if (!forms.isNullOrEmpty() && isEmptyForms(forms, getString(R.string.ent_checkout_data_nullable_form))) {
-                        Toaster.make(view, it.getString(R.string.ent_event_checkout_submit_name, it.getString(R.string.ent_event_checkout_passenger_title).toLowerCase()), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, it.getString(R.string.ent_checkout_error))
-                        scroll_view_event_checkout.focusOnView(partial_event_checkout_passenger)
-                        widget_event_checkout_pessangers.startAnimationWiggle()
-                    } else if (isAdditionalItemFormNull() && isItemFormActive) {
-                        Toaster.make(view, it.getString(R.string.ent_event_checkout_submit_name, it.getString(R.string.ent_checkout_data_pengunjung_title).toLowerCase()), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, it.getString(R.string.ent_checkout_error))
-                        scroll_view_event_checkout.focusOnView(partial_event_checkout_additional_item)
-                        getRecycleViewWidgetAnimator()
-                    } else if (eventCheckoutAdditionalDataPackage.listForm.isEmpty() && isPackageFormActive) {
-                        Toaster.make(view, it.getString(R.string.ent_event_checkout_submit_name, it.getString(R.string.ent_checkout_data_tambahan_title).toLowerCase()), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, it.getString(R.string.ent_checkout_error))
-                        scroll_view_event_checkout.focusOnView(partial_event_checkout_additional_package)
-                        item_checkout_event_data_tambahan_package.startAnimationWiggle()
-                    } else {
-                        progressDialog.show()
-                        eventPDPTracking.onClickCheckoutButton(productDetailData, metadata.itemMap)
-                        metadata = getPassengerMetaData(metadata, forms, listAdditionalItem, eventCheckoutAdditionalDataPackage)
-                        eventCheckoutViewModel.checkoutEvent(EventQuery.mutationEventCheckoutV2(),
-                                getCheckoutParam(metadata, productDetailData, getPackage(productDetailData, packageID)))
+                    when{
+                        !userSessionInterface.isLoggedIn -> {
+                            Toaster.make(view, it.getString(R.string.ent_event_checkout_submit_login), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, it.getString(R.string.ent_checkout_error))
+                        }
+                        forms.isEmpty() -> {
+                            Toaster.make(view, it.getString(R.string.ent_event_checkout_submit_name, it.getString(R.string.ent_event_checkout_passenger_title).toLowerCase()), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, it.getString(R.string.ent_checkout_error))
+                            scroll_view_event_checkout.focusOnView(partial_event_checkout_passenger)
+                            widget_event_checkout_pessangers.startAnimationWiggle()
+                        }
+                        !forms.isNullOrEmpty() && isEmptyForms(forms, getString(R.string.ent_checkout_data_nullable_form)) -> {
+                            Toaster.make(view, it.getString(R.string.ent_event_checkout_submit_name, it.getString(R.string.ent_event_checkout_passenger_title).toLowerCase()), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, it.getString(R.string.ent_checkout_error))
+                            scroll_view_event_checkout.focusOnView(partial_event_checkout_passenger)
+                            widget_event_checkout_pessangers.startAnimationWiggle()
+                        }
+                        isAdditionalItemFormNull() && isItemFormActive -> {
+                            Toaster.make(view, it.getString(R.string.ent_event_checkout_submit_name, it.getString(R.string.ent_checkout_data_pengunjung_title).toLowerCase()), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, it.getString(R.string.ent_checkout_error))
+                            scroll_view_event_checkout.focusOnView(partial_event_checkout_additional_item)
+                            getRecycleViewWidgetAnimator()
+                        }
+                        eventCheckoutAdditionalDataPackage.listForm.isEmpty() && isPackageFormActive -> {
+                            Toaster.make(view, it.getString(R.string.ent_event_checkout_submit_name, it.getString(R.string.ent_checkout_data_tambahan_title).toLowerCase()), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, it.getString(R.string.ent_checkout_error))
+                            scroll_view_event_checkout.focusOnView(partial_event_checkout_additional_package)
+                            item_checkout_event_data_tambahan_package.startAnimationWiggle()
+                        }
+                        else -> {
+                            progressDialog.show()
+                            eventPDPTracking.onClickCheckoutButton(productDetailData, metadata.itemMap)
+                            metadata = getPassengerMetaData(metadata, forms, listAdditionalItem, eventCheckoutAdditionalDataPackage)
+                            eventCheckoutViewModel.checkoutEvent(EventQuery.mutationEventCheckoutV2(),
+                                    getCheckoutParam(metadata, productDetailData, getPackage(productDetailData, packageID)))
+                        }
                     }
                 }
             }
