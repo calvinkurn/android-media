@@ -21,6 +21,7 @@
 
         <ImageView
             android:id="@+id/imageProduct"
+            android:contentDescription="@string/content_desc_imageProduct"
             android:layout_width="@dimen/product_card_list_image_size"
             android:layout_height="@dimen/product_card_list_image_size"
             android:adjustViewBounds="true"
@@ -130,6 +131,7 @@
 
             <ImageView
                 android:id="@+id/imageRemoveFromWishlist"
+                android:contentDescription="@string/content_desc_imageRemoveFromWishlist"
                 android:layout_width="@dimen/dp_20"
                 android:layout_height="@dimen/dp_20"
                 android:tint="@color/Neutral_N400"
@@ -139,6 +141,7 @@
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/buttonAddToCart"
+            android:contentDescription="@string/content_desc_buttonAddToCart"
             android:layout_width="@dimen/dp_0"
             android:layout_height="@dimen/product_card_button_add_to_cart_height"
             android:layout_marginLeft="@dimen/dp_8"

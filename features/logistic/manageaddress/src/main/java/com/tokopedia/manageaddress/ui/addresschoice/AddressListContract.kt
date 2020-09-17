@@ -12,8 +12,6 @@ interface AddressListContract {
 
         fun showList(list: MutableList<RecipientAddressModel>)
 
-        fun onChooseCorner(cornerAddressModel: RecipientAddressModel)
-
         fun updateList(list: MutableList<RecipientAddressModel>)
 
         fun showListEmpty()
@@ -40,8 +38,6 @@ interface AddressListContract {
         fun getAddress()
         fun searchAddress(query: String)
         fun loadMore()
-        fun saveLastCorner(model: RecipientAddressModel)
-        fun getLastCorner(): RecipientAddressModel?
     }
 
 }

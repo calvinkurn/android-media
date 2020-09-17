@@ -45,7 +45,6 @@ interface DynamicProductDetailListener {
      * ProductDiscussionViewHolder
      */
     fun onDiscussionClicked(componentTrackDataModel: ComponentTrackDataModel?)
-    fun onLastDiscussionClicked(talkId:String, componentTrackDataModel: ComponentTrackDataModel?)
     fun onDiscussionRefreshClicked()
     fun onDiscussionSendQuestionClicked(componentTrackDataModel: ComponentTrackDataModel)
     fun goToTalkReading(componentTrackDataModel: ComponentTrackDataModel, numberOfThreadsShown: String)
