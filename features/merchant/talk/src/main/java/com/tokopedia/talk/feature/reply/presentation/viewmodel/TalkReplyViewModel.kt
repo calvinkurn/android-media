@@ -100,7 +100,7 @@ class TalkReplyViewModel @Inject constructor(
             if(response.talkFollowUnfollowTalkResponse.data.isSuccess == MUTATION_SUCCESS) {
                 _followUnfollowResult.postValue(Success(response))
             } else {
-                _followUnfollowResult.postValue(Fail(Throwable(message = response.talkFollowUnfollowTalkResponse.messageError.first())))
+                _followUnfollowResult.postValue(Fail(Throwable(message = response.talkFollowUnfollowTalkResponse.messageError.firstOrNull())))
             }
         }) {
             _followUnfollowResult.postValue(Fail(it))
@@ -129,7 +129,7 @@ class TalkReplyViewModel @Inject constructor(
             if(response.talkDeleteTalk.data.isSuccess == MUTATION_SUCCESS) {
                 _deleteTalkResult.postValue(Success(response))
             } else {
-                _deleteTalkResult.postValue(Fail(Throwable(response.talkDeleteTalk.messageError.first())))
+                _deleteTalkResult.postValue(Fail(Throwable(response.talkDeleteTalk.messageError.firstOrNull())))
             }
         }) {
             _deleteTalkResult.postValue(Fail(it))
@@ -145,7 +145,7 @@ class TalkReplyViewModel @Inject constructor(
             if(response.talkDeleteComment.data.isSuccess == MUTATION_SUCCESS) {
                 _deleteCommentResult.postValue(Success(response))
             } else {
-                _deleteCommentResult.postValue(Fail(Throwable(response.talkDeleteComment.messageError.first())))
+                _deleteCommentResult.postValue(Fail(Throwable(response.talkDeleteComment.messageError.firstOrNull())))
             }
         }) {
             _deleteCommentResult.postValue(Fail(it))
@@ -165,7 +165,7 @@ class TalkReplyViewModel @Inject constructor(
             if(response.talkCreateNewComment.data.isSuccess == MUTATION_SUCCESS) {
                 _createNewCommentResult.postValue(Success(response))
             } else {
-                _createNewCommentResult.postValue(Fail(Throwable(response.talkCreateNewComment.messageError.first())))
+                _createNewCommentResult.postValue(Fail(Throwable(response.talkCreateNewComment.messageError.firstOrNull())))
             }
         }) {
             _createNewCommentResult.postValue(Fail(it))
@@ -181,7 +181,7 @@ class TalkReplyViewModel @Inject constructor(
             if(response.talkMarkCommentNotFraud.data.isSuccess == MUTATION_SUCCESS) {
                 _markCommentNotFraudResult.postValue(Success(TalkMarkCommentNotFraudSuccess(commentId)))
             } else {
-                _markCommentNotFraudResult.postValue(Fail(Throwable(response.talkMarkCommentNotFraud.messageError.first())))
+                _markCommentNotFraudResult.postValue(Fail(Throwable(response.talkMarkCommentNotFraud.messageError.firstOrNull())))
             }
         }) {
             _markCommentNotFraudResult.postValue(Fail(it))
@@ -197,7 +197,7 @@ class TalkReplyViewModel @Inject constructor(
             if(response.talkMarkNotFraud.data.isSuccess == MUTATION_SUCCESS) {
                 _markNotFraudResult.postValue(Success(response))
             } else {
-                _markNotFraudResult.postValue(Fail(Throwable(response.talkMarkNotFraud.messageError.first())))
+                _markNotFraudResult.postValue(Fail(Throwable(response.talkMarkNotFraud.messageError.firstOrNull())))
             }
         }) {
             _markNotFraudResult.postValue(Fail(it))
@@ -211,7 +211,7 @@ class TalkReplyViewModel @Inject constructor(
             if(response.talkReportTalk.data.isSuccess == MUTATION_SUCCESS) {
                 _reportTalkResult.postValue(Success(response))
             } else {
-                _reportTalkResult.postValue(Fail(Throwable(response.talkReportTalk.messageError.first())))
+                _reportTalkResult.postValue(Fail(Throwable(response.talkReportTalk.messageError.firstOrNull())))
             }
         }) {
             _reportTalkResult.postValue(Fail(it))
@@ -225,7 +225,7 @@ class TalkReplyViewModel @Inject constructor(
             if(response.talkReportComment.data.isSuccess == MUTATION_SUCCESS) {
                 _reportCommentResult.postValue(Success(response))
             } else {
-                _reportCommentResult.postValue(Fail(Throwable(response.talkReportComment.messageError.first())))
+                _reportCommentResult.postValue(Fail(Throwable(response.talkReportComment.messageError.firstOrNull())))
             }
         }) {
             _reportCommentResult.postValue(Fail(it))

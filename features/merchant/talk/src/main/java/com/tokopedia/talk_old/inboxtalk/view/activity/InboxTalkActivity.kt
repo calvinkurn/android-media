@@ -27,6 +27,7 @@ import com.tokopedia.talk_old.inboxtalk.view.adapter.InboxTalkPagerAdapter
 import com.tokopedia.talk_old.inboxtalk.view.listener.GetUnreadNotificationListener
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.activity_talk_inbox.*
+import java.lang.IllegalStateException
 import javax.inject.Inject
 
 /**
@@ -187,7 +188,11 @@ class InboxTalkActivity : BaseSimpleActivity(), HasComponent<TalkComponent>,
         if (remoteConfigInstance == null) {
             remoteConfigInstance = RemoteConfigInstance(this.application)
         }
-        return remoteConfigInstance?.abTestPlatform
+        return try {
+            remoteConfigInstance?.abTestPlatform
+        } catch (exception: IllegalStateException) {
+            null
+        }
     }
 
     private fun useNewPage(): Boolean {

@@ -258,9 +258,9 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         talkPerformanceMonitoringListener = castContextToTalkPerformanceMonitoringListener(context)
     }
 
-    override fun onUserDetailsClicked(userId: String, isSeller: Boolean, shopdId: String) {
+    override fun onUserDetailsClicked(userId: String, isSeller: Boolean, shopId: String) {
         if(isSeller) {
-            goToShopPageActivity(shopdId)
+            goToShopPageActivity(shopId)
             return
         }
         goToProfileActivity(userId)
