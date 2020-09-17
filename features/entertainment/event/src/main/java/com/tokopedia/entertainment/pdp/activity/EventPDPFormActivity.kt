@@ -28,10 +28,6 @@ class EventPDPFormActivity: BaseSimpleActivity(), HasComponent<EventPDPComponent
         toolbarForm = toolbar
     }
 
-    fun onChangeTitle(title: String){
-            toolbar.title = title
-    }
-
     override fun getNewFragment(): Fragment?  = EventPDPFormFragment.newInstance(urlPDP)
 
     override fun getComponent(): EventPDPComponent = DaggerEventPDPComponent.builder()
