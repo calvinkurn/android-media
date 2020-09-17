@@ -7,6 +7,7 @@ import java.io.FileOutputStream
 import java.io.IOException
 
 private const val FILE_DIR = "voucher_images"
+private const val MAXIMUM_FILES_IN_FOLDER = 3
 
 fun Bitmap.getSavedImageDirPath(context: Context, filename: String): String {
     val file = getSavedImageDirFile(context, filename)
@@ -15,9 +16,7 @@ fun Bitmap.getSavedImageDirPath(context: Context, filename: String): String {
 
 fun Bitmap.getSavedImageDirFile(context: Context, filename: String): File {
     val basePath = File(context.filesDir, FILE_DIR).also {
-        if (!it.exists()) {
-            it.mkdir()
-        }
+        it.checkVoucherDirectory()
     }
     val filePath = File(basePath, "${filename}.jpg")
     val fos = FileOutputStream(filePath)
@@ -34,4 +33,17 @@ fun Bitmap.getSavedImageDirFile(context: Context, filename: String): File {
         }
     }
     return filePath
+}
+
+private fun File.checkVoucherDirectory() {
+    if (exists() && isDirectory) {
+        val voucherFiles = listFiles()
+        voucherFiles?.run {
+            if (size >= MAXIMUM_FILES_IN_FOLDER) {
+                getOrNull(0)?.delete()
+            }
+        }
+    } else {
+        mkdir()
+    }
 }

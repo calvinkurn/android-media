@@ -65,8 +65,9 @@ object SharingUtil {
 
     private const val MAXIMUM_FILES_IN_FOLDER = 10
 
-    private const val AUTHORITY = "com.tokopedia.voucher_creation.provider"
+    private const val AUTHORITY = "com.tokopedia.sellerapp.provider"
 
+    @Deprecated("Use internal storage directory instead")
     private val voucherDirectoryPath by lazy {
         Environment.getExternalStorageDirectory().toString() + File.separator + VOUCHER_DIR + File.separator
     }
@@ -137,6 +138,7 @@ object SharingUtil {
      * Check if directory for saving voucher images is exist. If not, make the directory
      * Delete file(s) if there are already a lot of files inside the dir
      */
+    @Deprecated("Use FileProviderUtil File.checkVoucherDirectory() instead")
     private fun checkVoucherDirectory() {
         val fileDir = File(voucherDirectoryPath)
         if (fileDir.exists() && fileDir.isDirectory) {
