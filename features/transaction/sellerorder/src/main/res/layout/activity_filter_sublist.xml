@@ -24,6 +24,7 @@
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/btn_simpan"
+            android:contentDescription="@string/btn_simpan"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:unifyButtonVariant="filled"

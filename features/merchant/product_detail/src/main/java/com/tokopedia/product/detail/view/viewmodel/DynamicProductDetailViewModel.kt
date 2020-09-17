@@ -728,15 +728,15 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
 
     private fun getProductInfoP2DataAsync(productId: String, pdpSession: String): Deferred<ProductInfoP2UiData> {
         return async {
-            getProductInfoP2DataUseCase.executeOnBackground(GetProductInfoP2DataUseCase.createParams(productId, generatePdpSessionWithDeviceId(pdpSession)), forceRefresh)
+            getProductInfoP2DataUseCase.executeOnBackground(GetProductInfoP2DataUseCase.createParams(productId, pdpSession, generatePdpSessionWithDeviceId()), forceRefresh)
         }
     }
 
-    private fun generatePdpSessionWithDeviceId(pdpSession: String): String {
+    private fun generatePdpSessionWithDeviceId(): String {
         return if (getDynamicProductInfoP1?.data?.isTradeIn == false) {
-            pdpSession
+            ""
         } else {
-            pdpSession + ProductDetailConstant.DELIMITER_DEVICE_ID + deviceId
+            deviceId
         }
     }
 

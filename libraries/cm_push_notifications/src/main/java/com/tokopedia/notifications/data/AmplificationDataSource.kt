@@ -56,12 +56,14 @@ object AmplificationDataSource {
                     // flag if this data comes from amplification fetch API
                     cmInApp.isAmplification = true
 
-                    // delivered
+                    // storage to local storage
                     RepositoryManager
                             .getInstance()
                             .storageProvider
                             .putDataToStore(cmInApp)
                             .subscribe()
+
+                    // send amplification tracker
                     sendAmplificationInAppEvent(application, INAPP_DELIVERED, cmInApp)
                 } catch (e: Exception) {}
             }
