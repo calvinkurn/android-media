@@ -171,7 +171,7 @@ object AccountConstants {
         const val SHOP_TYPE_PM = "PM"
         const val EVENT_NAME_CLICK_NOTIF_CENTER = "clickNotifCenter"
         const val CATEGORY_NOTIF_CENTER = "notif center"
-        const val EVENT_ACTION_TS_USR_MENU = "click on notif setting from user"
+        const val EVENT_ACTION_TS_USR_MENU = "click on notif setting from setting page"
     }
 
     object MOENGAGE {
