@@ -9,20 +9,15 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.design.text.watcher.NumberTextWatcher
+import com.tokopedia.topads.common.data.response.SingleAd
 import com.tokopedia.topads.edit.R
 import com.tokopedia.topads.edit.data.param.DataSuggestions
 import com.tokopedia.topads.edit.data.response.ResponseBidInfo
 import com.tokopedia.topads.edit.di.TopAdsEditComponent
 import com.tokopedia.topads.edit.utils.Constants
 import com.tokopedia.topads.edit.utils.Constants.groupId
-import com.tokopedia.topads.edit.utils.Constants.priceBid
-import com.tokopedia.topads.edit.utils.Constants.priceDaily
 import com.tokopedia.topads.edit.view.model.EditFormDefaultViewModel
 import kotlinx.android.synthetic.main.topads_edit_without_group_layout.*
-import kotlinx.android.synthetic.main.topads_edit_without_group_layout.budget
-import kotlinx.android.synthetic.main.topads_edit_without_group_layout.daily_budget
-import kotlinx.android.synthetic.main.topads_edit_without_group_layout.radio1
-import kotlinx.android.synthetic.main.topads_edit_without_group_layout.radio_group
 import java.util.*
 import javax.inject.Inject
 import kotlin.math.abs
@@ -75,10 +70,8 @@ class EditFormWithoutGroupFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val dummyId: MutableList<Int> = mutableListOf(arguments?.getInt(groupId) ?: 0)
-        val suggestionsDefault = ArrayList<DataSuggestions>()
-        suggestionsDefault.add(DataSuggestions(Constants.PRODUCT, dummyId))
-        viewModel.getBidInfoDefault(suggestionsDefault, this::onBidSuccessSuggestion)
+        adId = arguments?.getInt(groupId) ?: 0
+        viewModel.getSingleAdInfo(arguments?.getInt(groupId) ?: 0, ::onSuccessAdInfo)
         radio_group.setOnCheckedChangeListener { buttonView, isChecked ->
             if (isChecked == radio1.id) {
                 daily_budget.visibility = View.GONE
@@ -135,8 +128,12 @@ class EditFormWithoutGroupFragment : BaseDaggerFragment() {
             }
         })
         save_butt.setOnClickListener {
+            var priceDaily = 0.0F
+            if (radio2.isChecked) {
+                priceDaily = replace(daily_budget.textFieldInput.text.toString()).toFloat()
+            }
             viewModel.editSingleAd(adId.toString(), replace(budget.textFieldInput.text.toString()).toFloat(),
-                    replace(daily_budget.textFieldInput.text.toString()).toFloat())
+                    priceDaily)
             activity?.setResult(Activity.RESULT_OK)
             activity?.finish()
         }
@@ -148,21 +145,29 @@ class EditFormWithoutGroupFragment : BaseDaggerFragment() {
 
     }
 
+    private fun onSuccessAdInfo(data: List<SingleAd>) {
+        data.firstOrNull().let {
+            budget.textFieldInput.setText(it?.priceBid.toString())
+            if (it?.priceDaily != 0) {
+                radio2.isChecked = true
+                daily_budget.textFieldInput.setText(it?.priceDaily.toString())
+
+            } else {
+                daily_budget.textFieldInput.setText((Constants.MULTIPLIER * (it.priceBid)).toString())
+            }
+            val suggestionsDefault = ArrayList<DataSuggestions>()
+            val dummyId: MutableList<Int> = mutableListOf(it?.itemID?.toInt() ?: 0)
+            suggestionsDefault.add(DataSuggestions(Constants.PRODUCT, dummyId))
+            viewModel.getBidInfoDefault(suggestionsDefault, this::onBidSuccessSuggestion)
+        }
+    }
+
     private fun actionEnable() {
         save_butt.isEnabled = validation1 == true && validation2 == true
     }
 
     private fun onBidSuccessSuggestion(data: List<ResponseBidInfo.Result.TopadsBidInfo.DataItem>) {
-        budget.textFieldInput.setText(arguments?.getInt(priceBid).toString())
-        if (arguments?.getInt(priceDaily) != 0) {
-            daily_budget.textFieldInput.setText(arguments?.getInt(priceDaily).toString())
-            radio2.isChecked = true
-        } else {
-            daily_budget.textFieldInput.setText((Constants.MULTIPLIER * (arguments?.getInt(priceBid)
-                    ?: 0)).toString())
-        }
         suggestBidPerClick = data[0].suggestionBid
-        adId = data[0].adId
         minBid = data[0].minBid
         maxBid = data[0].maxBid
         setMessageErrorField(getString(R.string.recommendated_bid_message), suggestBidPerClick, false)

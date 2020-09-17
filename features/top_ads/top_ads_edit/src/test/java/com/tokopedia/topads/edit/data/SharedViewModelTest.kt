@@ -46,14 +46,6 @@ class SharedViewModelTest {
     }
 
     @Test
-    fun setGroupName() {
-        val name = "hakuna Matata"
-        every { groupName.value } returns name
-        viewModel.setGroupName(name)
-        assertEquals(groupName.value, name)
-    }
-
-    @Test
     fun setGroupId() {
         val id = 12345
         every { groupId.value } returns id
