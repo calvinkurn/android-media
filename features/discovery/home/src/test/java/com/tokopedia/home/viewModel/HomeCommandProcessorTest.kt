@@ -3,7 +3,7 @@ package com.tokopedia.home.viewModel
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDataModel
 import com.tokopedia.home.util.*
-import io.mockk.every
+import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.test.TestCoroutineDispatcher
@@ -44,7 +44,7 @@ class HomeCommandProcessorTest {
     fun `Test update widget`() = runBlockingTest {
         val mockVisitable = mockk<Visitable<*>>()
         var calledUpdateWidget = false
-        every { callback.updateWidget(any(), any()) } answers {
+        cocoEvery { callback.updateWidget(any(), any()) } answers {
             calledUpdateWidget = true
         }
         val widgetCommand = UpdateWidgetCommand(mockVisitable, -1, callback)
@@ -56,7 +56,7 @@ class HomeCommandProcessorTest {
     fun `Test add widget`() = runBlockingTest {
         val mockVisitable = mockk<Visitable<*>>()
         var calledAddWidget = false
-        every { callback.addWidget(any(), any()) } answers {
+        coEvery { callback.addWidget(any(), any()) } answers {
             calledAddWidget = true
         }
         val widgetCommand = AddWidgetCommand(mockVisitable, -1, callback)
@@ -68,7 +68,7 @@ class HomeCommandProcessorTest {
     fun `Test remove widget`() = runBlockingTest {
         val mockVisitable = mockk<Visitable<*>>()
         var calledRemoveWidget = false
-        every { callback.deleteWidget(any(), any()) } answers {
+        coEvery { callback.deleteWidget(any(), any()) } answers {
             calledRemoveWidget = true
         }
         val widgetCommand = DeleteWidgetCommand(mockVisitable, -1, callback)
@@ -80,7 +80,7 @@ class HomeCommandProcessorTest {
     fun `Test update home data`() = runBlockingTest {
         val mockVisitable = mockk<HomeDataModel>()
         var calledUpdateHomeData = false
-        every { callback.updateHomeData(any()) } answers {
+        coEvery { callback.updateHomeData(any()) } answers {
             calledUpdateHomeData = true
         }
         val widgetCommand = UpdateHomeData(mockVisitable, callback)
@@ -92,7 +92,7 @@ class HomeCommandProcessorTest {
     fun `Test update home data but channel closed`() = runBlockingTest {
         val mockVisitable = mockk<HomeDataModel>()
         var calledUpdateHomeData = false
-        every { callback.updateHomeData(any()) } answers {
+        coEvery { callback.updateHomeData(any()) } answers {
             calledUpdateHomeData = true
         }
         val widgetCommand = UpdateHomeData(mockVisitable, callback)
@@ -105,7 +105,7 @@ class HomeCommandProcessorTest {
     fun `Test update widget but channel closed`() = runBlockingTest {
         val mockVisitable = mockk<Visitable<*>>()
         var calledUpdateWidget = false
-        every { callback.updateWidget(any(), any()) } answers {
+        coEvery { callback.updateWidget(any(), any()) } answers {
             calledUpdateWidget = true
         }
         val widgetCommand = UpdateWidgetCommand(mockVisitable, -1, callback)
@@ -118,7 +118,7 @@ class HomeCommandProcessorTest {
     fun `Test add widget but channel closed`() = runBlockingTest {
         val mockVisitable = mockk<Visitable<*>>()
         var calledAddWidget = false
-        every { callback.addWidget(any(), any()) } answers {
+        coEvery { callback.addWidget(any(), any()) } answers {
             calledAddWidget = true
         }
         val widgetCommand = AddWidgetCommand(mockVisitable, -1, callback)
@@ -131,7 +131,7 @@ class HomeCommandProcessorTest {
     fun `Test remove widget but channel closed`() = runBlockingTest {
         val mockVisitable = mockk<Visitable<*>>()
         var calledRemoveWidget = false
-        every { callback.deleteWidget(any(), any()) } answers {
+        coEvery { callback.deleteWidget(any(), any()) } answers {
             calledRemoveWidget = true
         }
         val widgetCommand = DeleteWidgetCommand(mockVisitable, -1, callback)
