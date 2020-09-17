@@ -17,7 +17,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/text_title_radio"
-        app:typographyType="body_2"
+        app:typographyType="body_1"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/layout_lvl1"
@@ -31,7 +31,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/text_subtitle_radio"
-        app:typographyType="body_3"
+        app:typographyType="body_2"
         app:typographyWeight="reguler"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"

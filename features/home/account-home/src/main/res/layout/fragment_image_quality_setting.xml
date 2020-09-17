@@ -23,7 +23,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/text_subtitle"
-        app:typographyType="body_3"
+        app:typographyType="body_2"
         app:typographyWeight="reguler"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
