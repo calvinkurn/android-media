@@ -2,6 +2,11 @@ package com.tokopedia.home.account.data.util
 
 import android.content.Context
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_CUSTOM_FILTER
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_DALAM_PROSES
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_E_TIKET
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_SEMUA_TRANSAKSI
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder.UNIFY_ORDER_STATUS
 import com.tokopedia.home.account.AccountConstants
 import com.tokopedia.home.account.AccountHomeUrl
 import com.tokopedia.home.account.R
@@ -13,11 +18,6 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 
 const val RESCENTER_BUYER = "https://m.tokopedia.com/resolution-center/inbox/buyer"
-const val UNIFY_ORDER_STATUS = "tokopedia-android-internal://order/unified?filter={customFilter}"
-const val PARAM_CUSTOM_FILTER = "{customFilter}"
-const val PARAM_DALAM_PROSES = "dalam_proses"
-const val PARAM_E_TIKET = "etiket"
-const val PARAM_SEMUA_TRANSAKSI = "semua_transaksi"
 
 class StaticBuyerModelGenerator private constructor() {
 

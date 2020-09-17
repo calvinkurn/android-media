@@ -20,6 +20,12 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_DALAM_PROSES
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_E_TIKET
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_MARKETPLACE
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_MARKETPLACE_DALAM_PROSES
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_SEMUA_TRANSAKSI
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder.SOURCE_FILTER
 import com.tokopedia.buyerorder.R
 import com.tokopedia.buyerorder.unifiedhistory.common.di.UohComponentInstance
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts
@@ -163,12 +169,6 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     private var chosenOrder: UohListOrder.Data.UohOrders.Order? = null
     private var isTyping = false
     private var isFilterClicked = false
-    private var SOURCE_FILTER = "source_filter"
-    private var PARAM_DALAM_PROSES = "dalam_proses"
-    private var PARAM_E_TIKET = "etiket"
-    private var PARAM_SEMUA_TRANSAKSI = "semua_transaksi"
-    private var PARAM_MARKETPLACE = "marketplace"
-    private var PARAM_MARKETPLACE_DALAM_PROSES = "marketplace_dalam_proses"
 
     private val uohListViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory)[UohListViewModel::class.java]

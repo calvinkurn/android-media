@@ -1,11 +1,23 @@
 package com.tokopedia.applink.internal
 
 import com.tokopedia.applink.constant.DeeplinkConstant
+import java.io.FilterReader
 
 /**
  * Created by fwidjaja on 2019-09-05.
  */
 object ApplinkConstInternalOrder {
+
+    const val UNIFIED = "unified"
+    const val FILTER = "filter"
+    const val UNIFY_ORDER_STATUS = "tokopedia-android-internal://order/unified?filter={customFilter}"
+    const val PARAM_CUSTOM_FILTER = "{customFilter}"
+    const val SOURCE_FILTER = "source_filter"
+    const val PARAM_DALAM_PROSES = "dalam_proses"
+    const val PARAM_E_TIKET = "etiket"
+    const val PARAM_SEMUA_TRANSAKSI = "semua_transaksi"
+    const val PARAM_MARKETPLACE = "marketplace"
+    const val PARAM_MARKETPLACE_DALAM_PROSES = "marketplace_dalam_proses"
 
     @JvmField
     val HOST_SELLER = "seller"
@@ -68,15 +80,12 @@ object ApplinkConstInternalOrder {
     val INVOICE = "$INTERNAL_ORDER/invoice"
 
     @JvmField
-    val UNIFY_ORDER = "$INTERNAL_ORDER/unified"
+    val UNIFY_ORDER = "$INTERNAL_ORDER/$UNIFIED"
 
     @JvmField
-    val UNIFY_ORDER_IN_PROCESS = "$INTERNAL_ORDER/unified?filter=dalam_proses"
+    val UNIFY_ORDER_MARKETPLACE = "$INTERNAL_ORDER/$UNIFIED?$FILTER=$PARAM_MARKETPLACE"
 
     @JvmField
-    val UNIFY_ORDER_MARKETPLACE = "$INTERNAL_ORDER/unified?filter=marketplace"
-
-    @JvmField
-    val UNIFY_ORDER_MARKETPLACE_IN_PROCESS = "$INTERNAL_ORDER/unified?filter=marketplace_dalam_proses"
+    val UNIFY_ORDER_MARKETPLACE_IN_PROCESS = "$INTERNAL_ORDER/$UNIFIED?$FILTER=$PARAM_MARKETPLACE_DALAM_PROSES"
 
 }

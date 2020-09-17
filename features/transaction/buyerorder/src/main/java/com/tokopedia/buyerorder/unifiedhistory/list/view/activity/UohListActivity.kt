@@ -3,6 +3,8 @@ package com.tokopedia.buyerorder.unifiedhistory.list.view.activity
 import android.net.Uri
 import android.os.Bundle
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder.FILTER
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder.SOURCE_FILTER
 import com.tokopedia.buyerorder.unifiedhistory.list.view.fragment.UohListFragment
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 
@@ -12,8 +14,6 @@ import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 
 // Uoh = Unified Order History
 class UohListActivity: BaseSimpleActivity() {
-    private var FILTER = "filter"
-    private var SOURCE_FILTER = "source_filter"
 
     override fun getNewFragment(): UohListFragment? {
         val bundle = Bundle()
