@@ -20,7 +20,7 @@ object AdaptiveImage {
         }
 
         return GlideUrl(url) {
-            mapOf(Pair("ETC", connectionType))
+            mapOf(Pair("ECT", connectionType))
         }
     }
 
