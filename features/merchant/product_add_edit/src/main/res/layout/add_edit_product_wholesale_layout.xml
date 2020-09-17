@@ -17,6 +17,7 @@
 
     <com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
         android:id="@+id/su_wholesale"
+        android:contentDescription="@string/content_desc_su_wholesale"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintRight_toRightOf="parent"

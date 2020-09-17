@@ -34,6 +34,7 @@
 
         <com.tokopedia.unifycomponents.TextFieldUnify
             android:id="@+id/tfu_duration_unit"
+            android:contentDescription="@string/content_desc_tfu_duration_unit"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/spacing_lvl4"
@@ -48,6 +49,7 @@
 
         <com.tokopedia.unifycomponents.TextFieldUnify
             android:id="@+id/tfu_duration"
+            android:contentDescription="@string/content_desc_tfu_duration"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:layout_constraintHorizontal_weight="2"
