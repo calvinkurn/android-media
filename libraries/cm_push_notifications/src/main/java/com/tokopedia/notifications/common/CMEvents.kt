@@ -52,7 +52,7 @@ object IrisAnalyticsEvents {
     private const val IS_SILENT = "is_silent"
     private const val CLICKED_ELEMENT_ID = "clicked_element_id"
     private const val INAPP_TYPE = "inapp_type"
-    private const val LABEL = "label"
+    private const val LABEL = "eventlabel"
 
     private const val AMPLIFICATION = "amplification"
 
