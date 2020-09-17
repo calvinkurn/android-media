@@ -827,11 +827,15 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         return false
     }
 
-    fun updateCart() {
+    fun updateCart(shouldValidatePrompt: Boolean = false) {
         val param = generateUpdateCartParam()
         if (param != null) {
             updateCartOccUseCase.execute(param, {
                 //do nothing
+            }, {
+                if (shouldValidatePrompt) {
+                    globalEvent.value = OccGlobalEvent.Prompt(it)
+                }
             }, {
                 //do nothing
             })
@@ -895,6 +899,8 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         updateCartOccUseCase.execute(param, {
             clearBboIfExist()
             globalEvent.value = OccGlobalEvent.TriggerRefresh()
+        }, {
+            globalEvent.value = OccGlobalEvent.Prompt(it)
         }, { throwable: Throwable ->
             if (throwable is MessageErrorException) {
                 globalEvent.value = OccGlobalEvent.Error(errorMessage = throwable.message
@@ -918,6 +924,9 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                         OccIdlingResource.increment()
                         updateCartOccUseCase.execute(param, {
                             finalValidateUse(product, shop, pref, onSuccessCheckout, skipCheckIneligiblePromo)
+                            OccIdlingResource.decrement()
+                        }, {
+                            globalEvent.value = OccGlobalEvent.Prompt(it)
                             OccIdlingResource.decrement()
                         }, { throwable: Throwable ->
                             if (throwable is MessageErrorException && throwable.message != null) {
@@ -1022,7 +1031,8 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                     }
                 }
             } else {
-                globalEvent.value = OccGlobalEvent.TriggerRefresh(errorMessage = checkoutOccData.headerMessage ?: DEFAULT_ERROR_MESSAGE)
+                globalEvent.value = OccGlobalEvent.TriggerRefresh(errorMessage = checkoutOccData.headerMessage
+                        ?: DEFAULT_ERROR_MESSAGE)
             }
             OccIdlingResource.decrement()
         }, { throwable: Throwable ->
@@ -1153,6 +1163,8 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         updateCartOccUseCase.execute(param, {
             globalEvent.value = OccGlobalEvent.Normal
             onSuccess(generateValidateUsePromoRequest(), generatePromoRequest(), generateBboPromoCodes())
+        }, {
+            globalEvent.value = OccGlobalEvent.Prompt(it)
         }, { throwable: Throwable ->
             if (throwable is MessageErrorException) {
                 globalEvent.value = OccGlobalEvent.Error(errorMessage = throwable.message
@@ -1482,6 +1494,8 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             calculateTotal()
             globalEvent.value = OccGlobalEvent.Normal
         }, {
+            globalEvent.value = OccGlobalEvent.Prompt(it)
+        }, {
             if (it is MessageErrorException) {
                 globalEvent.value = OccGlobalEvent.Error(errorMessage = it.message
                         ?: DEFAULT_ERROR_MESSAGE)
@@ -1502,6 +1516,8 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         updateCartOccUseCase.execute(param, {
             clearBboIfExist()
             globalEvent.value = OccGlobalEvent.TriggerRefresh()
+        }, {
+            globalEvent.value = OccGlobalEvent.Prompt(it)
         }, { throwable: Throwable ->
             if (throwable is MessageErrorException) {
                 globalEvent.value = OccGlobalEvent.Error(errorMessage = throwable.message
