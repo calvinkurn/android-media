@@ -52,10 +52,10 @@
             android:layout_marginTop="@dimen/spacing_lvl2"
             android:maxLines="1"
             android:paddingEnd="@dimen/spacing_lvl4"
-            android:textColor="@color/black_70"
+            android:textColor="@color/Neutral_N700_96"
             app:layout_constraintStart_toEndOf="@+id/iv_thumbnail"
             app:layout_constraintTop_toBottomOf="@+id/tv_status"
-            app:typographyType="heading_6"
+            app:typographyType="body_3"
             tools:ignore="RtlSymmetry"
             tools:text="INV/20190212/XIX/II/271200396" />
 
@@ -70,7 +70,7 @@
             android:gravity="top"
             android:includeFontPadding="false"
             android:maxLines="1"
-            android:textColor="@color/orange_red"
+            android:textColor="@color/topchat_invoice_price"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/iv_thumbnail"
