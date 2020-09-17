@@ -47,7 +47,7 @@ class HomeRepositoryImpl @Inject constructor(
             var currentToken = ""
 
             val homeDataResponse = async { homeRemoteDataSource.getHomeData() }
-            var dynamicChannelResponse = async { homeRemoteDataSource.getDynamicChannelData(numOfChannel = 2) }
+            var dynamicChannelResponse = async { homeRemoteDataSource.getDynamicChannelData(numOfChannel = 1) }
 
             var homeDataCombined: HomeData? = HomeData()
 

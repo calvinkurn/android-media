@@ -330,7 +330,6 @@ open class HomeFragment : BaseDaggerFragment(),
         injectCouponTimeBased()
         setGeolocationPermission()
         needToShowGeolocationComponent()
-        stickyContent
     }
 
 
@@ -1328,7 +1327,12 @@ open class HomeFragment : BaseDaggerFragment(),
                 fragmentCreatedForFirstTime = false
                 conditionalViewModelRefresh()
             }
+            onPageLoadTimeEnd()
         }
+    }
+
+    private fun onPageLoadTimeEnd() {
+        stickyContent
     }
 
     private fun needToShowGeolocationComponent() {
