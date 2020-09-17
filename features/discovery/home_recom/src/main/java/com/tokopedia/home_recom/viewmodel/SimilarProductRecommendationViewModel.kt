@@ -6,6 +6,9 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.home_recom.util.Response
 import com.tokopedia.home_recom.view.dispatchers.RecommendationDispatcher
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
+import com.tokopedia.recommendation_widget_common.domain.GetRecommendationFilterChips
 import com.tokopedia.recommendation_widget_common.domain.GetSingleRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
@@ -15,6 +18,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
+import kotlinx.coroutines.isActive
 import rx.Subscriber
 import javax.inject.Inject
 
@@ -28,19 +32,57 @@ open class SimilarProductRecommendationViewModel @Inject constructor(
         private val removeWishListUseCase: RemoveWishListUseCase,
         private val topAdsWishlishedUseCase: TopAdsWishlishedUseCase,
         private val singleRecommendationUseCase: GetSingleRecommendationUseCase,
+        private val getRecommendationFilterChips: GetRecommendationFilterChips,
         dispatcher: RecommendationDispatcher
 ) : BaseViewModel(dispatcher.getMainDispatcher()){
 
     private val _recommendationItem = MutableLiveData<Response<List<RecommendationItem>>>()
     val recommendationItem: LiveData<Response<List<RecommendationItem>>> get() = _recommendationItem
-
+    private val _filterChips = MutableLiveData<Response<List<RecommendationFilterChipsEntity.RecommendationFilterChip>>>()
+    val filterChips: LiveData<Response<List<RecommendationFilterChipsEntity.RecommendationFilterChip>>> get() = _filterChips
 
     fun getSimilarProductRecommendation(page: Int = 1, queryParam: String, productId: String){
-        if(page == 1 && _recommendationItem.value != null) _recommendationItem.value = null
-        if (_recommendationItem.value == null) _recommendationItem.postValue(Response.loading())
-        else _recommendationItem.postValue(Response.loadingMore(_recommendationItem.value?.data))
-        val params = singleRecommendationUseCase.getRecomParams(pageNumber = page, productIds = listOf(productId), queryParam = queryParam)
-        singleRecommendationUseCase.execute(params,object: Subscriber<List<RecommendationItem>>(){
+        launchCatchError(coroutineContext, block = {
+
+            if(page == 1 && _recommendationItem.value != null) _recommendationItem.value = null
+            if (_recommendationItem.value == null) _recommendationItem.postValue(Response.loading())
+            else _recommendationItem.postValue(Response.loadingMore(_recommendationItem.value?.data))
+
+            getRecommendationFilterChips.setParams(userId = userSessionInterface.userId.toInt(), productIDs = productId, queryParam = queryParam)
+            var filterChips = listOf<RecommendationFilterChipsEntity.RecommendationFilterChip>()
+            if(page == 1){
+                filterChips = getRecommendationFilterChips.executeOnBackground()
+            }
+            val params = singleRecommendationUseCase.getRecomParams(pageNumber = page, productIds = listOf(productId), queryParam = queryParam)
+            singleRecommendationUseCase.execute(params,object: Subscriber<List<RecommendationItem>>(){
+                override fun onNext(list: List<RecommendationItem>) {
+                    if(page == 1 && filterChips.isNotEmpty()) _filterChips.postValue(Response.success(filterChips))
+                    _recommendationItem.postValue(Response.success(combineList(_recommendationItem.value?.data
+                            ?: emptyList(), list)))
+                }
+
+                override fun onCompleted() {}
+
+                override fun onError(throwable: Throwable) {
+                    _recommendationItem.postValue(Response.error(throwable.localizedMessage, _recommendationItem.value?.data))
+
+                }
+            })
+        }){
+            if(page == 1) _filterChips.postValue(Response.error(it.localizedMessage))
+        }
+    }
+
+    fun getRecommendationFromFilterChip(filter: RecommendationFilterChipsEntity.RecommendationFilterChip){
+        val listFilter: MutableList<RecommendationFilterChipsEntity.RecommendationFilterChip> = _filterChips.value?.data?.toMutableList() ?: mutableListOf()
+        listFilter.withIndex().find { it.value.name == filter.name && it.value.value == filter.value }?.let {
+            listFilter[it.index] = it.value.copy(isActivated = !it.value.isActivated)
+            _filterChips.postValue(_filterChips.value?.copy(
+                    data = listFilter
+            ))
+        }
+        _recommendationItem.postValue(Response.loading())
+        singleRecommendationUseCase.execute(singleRecommendationUseCase.getRecomParams(queryParam = filter.value, productIds = listOf(), pageNumber = 1), object: Subscriber<List<RecommendationItem>>(){
             override fun onNext(list: List<RecommendationItem>) {
                 _recommendationItem.postValue(Response.success(combineList(_recommendationItem.value?.data
                         ?: emptyList(), list)))
@@ -51,7 +93,6 @@ open class SimilarProductRecommendationViewModel @Inject constructor(
             override fun onError(throwable: Throwable) {
                 _recommendationItem.postValue(Response.error(throwable.localizedMessage, _recommendationItem.value?.data))
             }
-
         })
     }
 
