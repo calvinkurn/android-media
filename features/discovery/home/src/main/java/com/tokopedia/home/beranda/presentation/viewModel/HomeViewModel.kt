@@ -1514,11 +1514,6 @@ open class HomeViewModel @Inject constructor(
 
     fun onDynamicChannelRetryClicked() {
         launch(coroutineContext) {
-            val detectRetryModel = _homeLiveData.value?.list?.find { visitable -> visitable is DynamicChannelRetryModel }
-//            (detectRetryModel as? DynamicChannelRetryModel)?.let {
-//                updateWidget(UpdateLiveDataModel(ACTION_DELETE, it))
-//                updateWidget(UpdateLiveDataModel(ACTION_ADD, DynamicChannelLoadingModel()))
-//            }
             refreshHomeData()
         }
     }

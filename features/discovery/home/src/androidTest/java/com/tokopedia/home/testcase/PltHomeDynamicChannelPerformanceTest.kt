@@ -29,7 +29,7 @@ class PltHomeDynamicChannelPerformanceTest {
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
             setupGraphqlMockResponseWithCheck(HomeMockResponseConfig())
-            setupTotalSizeInterceptor(listOf("homeData"))
+            setupTotalSizeInterceptor(listOf("homeData", "dynamicHomeChannel"))
             setupRemoteConfig()
         }
     }
