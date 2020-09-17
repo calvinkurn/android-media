@@ -43,7 +43,7 @@
             android:layout_marginTop="@dimen/spacing_lvl1"
             android:layout_marginRight="@dimen/spacing_lvl2"
             android:ellipsize="end"
-            android:maxLines="2"
+            android:maxLines="3"
             android:minHeight="@dimen/product_card_title_min_height"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"

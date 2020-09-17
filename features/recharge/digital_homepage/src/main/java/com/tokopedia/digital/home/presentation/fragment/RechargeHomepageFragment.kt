@@ -223,10 +223,15 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
 
     override fun onRechargeLegoBannerItemClicked(sectionID: Int, itemID: Int, itemPosition: Int) {
         if (::homeComponentsData.isInitialized) {
-            homeComponentsData.find { it.id == sectionID }?.items?.find { it.id == itemID }?.tracking?.find {
-                it.action == RechargeHomepageAnalytics.ACTION_CLICK
-            }?.run {
-                rechargeHomepageAnalytics.rechargeEnhanceEcommerceEvent(data)
+            val bannerItem = homeComponentsData.find { it.id == sectionID }?.items?.find { it.id == itemID }
+            bannerItem?.run {
+                tracking.find {
+                    it.action == RechargeHomepageAnalytics.ACTION_CLICK
+                }?.run {
+                    rechargeHomepageAnalytics.rechargeEnhanceEcommerceEvent(data)
+                }
+
+                RouteManager.route(context, applink)
             }
         }
     }
@@ -238,10 +243,15 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
 
     override fun onRechargeReminderWidgetClicked(sectionID: Int) {
         if (::homeComponentsData.isInitialized) {
-            homeComponentsData.find { it.id == sectionID }?.items?.firstOrNull()?.tracking?.find {
-                it.action == RechargeHomepageAnalytics.ACTION_CLICK
-            }?.run {
-                rechargeHomepageAnalytics.rechargeEnhanceEcommerceEvent(data)
+            val reminderData = homeComponentsData.find { it.id == sectionID }?.items?.firstOrNull()
+            reminderData?.run {
+                tracking.find {
+                    it.action == RechargeHomepageAnalytics.ACTION_CLICK
+                }?.run {
+                    rechargeHomepageAnalytics.rechargeEnhanceEcommerceEvent(data)
+                }
+
+                RouteManager.route(context, applink)
             }
         }
     }
