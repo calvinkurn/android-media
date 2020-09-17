@@ -160,7 +160,7 @@
 /features/logistic/logisticcart/                		@tokopedia/android-minionbob-dev
 /features/logistic/manageaddress/                		@tokopedia/android-minionbob-dev
 /features/logistic/editshipping/                        @tokopedia/android-minionbob-dev
-
+/features/logistic/activation/                          @tokopedia/android-minionbob-dev
 
 /features/user/chatbot/                         		@tokopedia/android-miniondarth-dev
 /features/user/chatbot_no_op/                   		@tokopedia/android-minionkevin-dev
