@@ -1,15 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:layout_marginTop="@dimen/spacing_lvl4">
 
     <ImageView
         android:id="@+id/image_radio_item"
         android:layout_width="@dimen/layout_lvl3"
         android:layout_height="@dimen/layout_lvl3"
+        android:layout_marginStart="@dimen/spacing_lvl4"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:srcCompat="@drawable/ic_radio_button_empty"/>
@@ -19,8 +21,8 @@
         app:typographyType="body_2"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/image_quality_dp11"
-        android:layout_marginRight="@dimen/spacing_lvl4"
+        android:layout_marginStart="@dimen/image_quality_dp11"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
         android:textSize="@dimen/fontSize_lvl6"
         app:layout_constraintLeft_toRightOf="@id/image_radio_item"
         app:layout_constraintRight_toRightOf="parent"
@@ -34,7 +36,7 @@
         app:typographyWeight="reguler"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
-        android:layout_marginRight="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
         android:textSize="@dimen/fontSize_lvl6"
         android:textColor="@color/setting_text_grey"
         app:layout_constraintLeft_toLeftOf="@id/text_title_radio"
