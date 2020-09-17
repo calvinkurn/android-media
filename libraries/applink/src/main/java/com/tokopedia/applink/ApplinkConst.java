@@ -555,19 +555,4 @@ public interface ApplinkConst {
             String REWARDS = "rewards";
         }
     }
-
-
-    interface UnifyOrder {
-        String PATH_UNIFY_ORDER = "unified";
-        String UNIFY_ORDER_STATUS = "tokopedia-android-internal://order/unified?filter={customFilter}";
-        String PARAM_CUSTOM_FILTER = "{customFilter}";
-        String FILTER = "filter";
-        String SOURCE_FILTER = "source_filter";
-
-        String PARAM_DALAM_PROSES = "dalam_proses";
-        String PARAM_E_TIKET = "etiket";
-        String PARAM_SEMUA_TRANSAKSI = "semua_transaksi";
-        String PARAM_MARKETPLACE = "marketplace";
-        String PARAM_MARKETPLACE_DALAM_PROSES = "marketplace_dalam_proses";
-    }
 }

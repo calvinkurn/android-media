@@ -3,12 +3,8 @@ package com.tokopedia.buyerorder.unifiedhistory.list.view.activity
 import android.net.Uri
 import android.os.Bundle
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
-import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.ApplinkConst.UnifyOrder.PATH_UNIFY_ORDER
-import com.tokopedia.applink.ApplinkConst.UnifyOrder.SOURCE_FILTER
 import com.tokopedia.buyerorder.unifiedhistory.list.view.fragment.UohListFragment
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
-import com.tokopedia.kotlin.extensions.view.toZeroStringIfNull
 
 /**
  * Created by fwidjaja on 29/06/20.
@@ -16,6 +12,9 @@ import com.tokopedia.kotlin.extensions.view.toZeroStringIfNull
 
 // Uoh = Unified Order History
 class UohListActivity: BaseSimpleActivity() {
+    private var FILTER = "filter"
+    private var SOURCE_FILTER = "source_filter"
+
     override fun getNewFragment(): UohListFragment? {
         val bundle = Bundle()
         scanPathQuery(intent.data)
@@ -27,7 +26,7 @@ class UohListActivity: BaseSimpleActivity() {
 
     private fun scanPathQuery(data: Uri?) {
         data?.let {
-            val filterStatus = it.getQueryParameter(ApplinkConst.UnifyOrder.FILTER).toEmptyStringIfNull()
+            val filterStatus = it.getQueryParameter(FILTER).toEmptyStringIfNull()
             intent.putExtra(SOURCE_FILTER, filterStatus)
         }
     }

@@ -13,6 +13,11 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 
 const val RESCENTER_BUYER = "https://m.tokopedia.com/resolution-center/inbox/buyer"
+const val UNIFY_ORDER_STATUS = "tokopedia-android-internal://order/unified?filter={customFilter}"
+const val PARAM_CUSTOM_FILTER = "{customFilter}"
+const val PARAM_DALAM_PROSES = "dalam_proses"
+const val PARAM_E_TIKET = "etiket"
+const val PARAM_SEMUA_TRANSAKSI = "semua_transaksi"
 
 class StaticBuyerModelGenerator private constructor() {
 
@@ -33,7 +38,7 @@ class StaticBuyerModelGenerator private constructor() {
                     menu = accountDataModel?.uohOrderCount?.activeTicketsText
                     menuDescription = context.getString(R.string.e_ticket_desc)
                     count = accountDataModel?.uohOrderCount?.activeTickets.toIntOrZero()
-                    applink = ApplinkConst.UnifyOrder.UNIFY_ORDER_STATUS.replace(ApplinkConst.UnifyOrder.PARAM_CUSTOM_FILTER, ApplinkConst.UnifyOrder.PARAM_E_TIKET)
+                    applink = UNIFY_ORDER_STATUS.replace(PARAM_CUSTOM_FILTER, PARAM_E_TIKET)
                     titleTrack = AccountConstants.Analytics.PEMBELI
                     sectionTrack = context.getString(R.string.title_menu_transaction)
                 })
@@ -315,7 +320,7 @@ class StaticBuyerModelGenerator private constructor() {
             gridItems.add(MenuGridIconNotificationItemViewModel(
                     R.drawable.ic_uoh_belanja,
                     accountDataModel?.uohOrderCount?.onProcessText.toString(),
-                    ApplinkConst.UnifyOrder.UNIFY_ORDER_STATUS.replace(ApplinkConst.UnifyOrder.PARAM_CUSTOM_FILTER, ApplinkConst.UnifyOrder.PARAM_DALAM_PROSES),
+                    UNIFY_ORDER_STATUS.replace(PARAM_CUSTOM_FILTER, PARAM_DALAM_PROSES),
                     accountDataModel?.uohOrderCount?.onProcess.toIntOrZero(),
                     AccountConstants.Analytics.PEMBELI,
                     context.getString(R.string.title_menu_transaction)
@@ -324,7 +329,7 @@ class StaticBuyerModelGenerator private constructor() {
             gridItems.add(MenuGridIconNotificationItemViewModel(
                     R.drawable.ic_uoh_all_transactions,
                     context.getString(R.string.title_uoh_3),
-                    ApplinkConst.UnifyOrder.UNIFY_ORDER_STATUS.replace(ApplinkConst.UnifyOrder.PARAM_CUSTOM_FILTER, ApplinkConst.UnifyOrder.PARAM_SEMUA_TRANSAKSI),
+                    UNIFY_ORDER_STATUS.replace(PARAM_CUSTOM_FILTER, PARAM_SEMUA_TRANSAKSI),
                     0,
                     AccountConstants.Analytics.PEMBELI,
                     context.getString(R.string.title_menu_transaction)

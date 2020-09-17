@@ -19,7 +19,6 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler
 import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.ApplinkConst.UnifyOrder.*
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.buyerorder.R
 import com.tokopedia.buyerorder.unifiedhistory.common.di.UohComponentInstance
@@ -27,16 +26,17 @@ import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.ALL_CATEGORIES
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.ALL_DATE
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.ALL_STATUS
-import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.SEMUA_TRANSAKSI
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.APPLINK_BASE
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.APP_LINK_TYPE
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.CTA_ATC
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.DALAM_PROSES
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.EE_PRODUCT_ID
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.EE_PRODUCT_PRICE
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.EE_QUANTITY
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.EE_SHOP_ID
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.EMAIL_MUST_NOT_BE_EMPTY
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.END_DATE
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.E_TIKET
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.FINISH_ORDER_BOTTOMSHEET_TITLE
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.FLIGHT_STATUS_OK
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.GQL_ATC
@@ -51,6 +51,7 @@ import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.GQL_TRACK
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.GQL_TRAIN_EMAIL
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.LS_LACAK_MWEB
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.REPLACE_ORDER_ID
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.SEMUA_TRANSAKSI
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.START_DATE
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.TYPE_ACTION_BUTTON_LINK
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.URL_RESO
@@ -162,6 +163,12 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     private var chosenOrder: UohListOrder.Data.UohOrders.Order? = null
     private var isTyping = false
     private var isFilterClicked = false
+    private var SOURCE_FILTER = "source_filter"
+    private var PARAM_DALAM_PROSES = "dalam_proses"
+    private var PARAM_E_TIKET = "etiket"
+    private var PARAM_SEMUA_TRANSAKSI = "semua_transaksi"
+    private var PARAM_MARKETPLACE = "marketplace"
+    private var PARAM_MARKETPLACE_DALAM_PROSES = "marketplace_dalam_proses"
 
     private val uohListViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory)[UohListViewModel::class.java]
