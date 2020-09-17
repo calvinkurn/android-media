@@ -310,6 +310,7 @@ public class ShipmentDataConverter {
         cartItemModel.setTickerMessage(product.getTickerMessage());
         cartItemModel.setVariant(product.getVariant());
         cartItemModel.setProductAlertMessage(product.getProductAlertMessage());
+        cartItemModel.setProductInformation(product.getProductInformation());
 
         if (product.getTradeInInfoData() != null && product.getTradeInInfoData().isValidTradeIn()) {
             cartItemModel.setValidTradeIn(true);

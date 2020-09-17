@@ -688,6 +688,7 @@ public class ShipmentMapper implements IShipmentMapper {
                                     }
 
                                     productResult.setProductAlertMessage(product.getProductAlertMessage());
+                                    productResult.setProductInformation(product.getProductInformation());
 
                                     if (!UtilsKt.isNullOrEmpty(product.getProductShipment())) {
                                         List<ProductShipment> productShipmentListResult = new ArrayList<>();
