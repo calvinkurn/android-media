@@ -3,8 +3,10 @@ package com.tokopedia.activation.di
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.activation.domain.mapper.GetShopFeatureMapper
+import com.tokopedia.activation.domain.mapper.ShippingEditorMapper
 import com.tokopedia.activation.domain.mapper.UpdateShopFeatureMapper
 import com.tokopedia.activation.model.response.GetShopFeatureResponse
+import com.tokopedia.activation.model.response.ShippingEditorResponse
 import com.tokopedia.activation.model.response.UpdateShopFeatureResponse
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
@@ -39,11 +41,21 @@ class ActivationPageModule {
 
     @ActivationPageScope
     @Provides
+    fun provideUpdateShopFeatureUseCase(graphqlRepository: GraphqlRepository): GraphqlUseCase<UpdateShopFeatureResponse> {
+        return GraphqlUseCase(graphqlRepository)
+    }
+
+    @ActivationPageScope
+    @Provides
     fun providesUpdateShopFeatureMapper(): UpdateShopFeatureMapper = UpdateShopFeatureMapper
 
     @ActivationPageScope
     @Provides
-    fun provideUpdateShopFeatureUseCase(graphqlRepository: GraphqlRepository): GraphqlUseCase<UpdateShopFeatureResponse> {
+    fun provideGetShippingEditorUseCase(graphqlRepository: GraphqlRepository): GraphqlUseCase<ShippingEditorResponse> {
         return GraphqlUseCase(graphqlRepository)
     }
+
+    @ActivationPageScope
+    @Provides
+    fun providesShippingEditorMapper(): ShippingEditorMapper = ShippingEditorMapper
 }

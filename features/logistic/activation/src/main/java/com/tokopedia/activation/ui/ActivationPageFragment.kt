@@ -14,28 +14,31 @@ import androidx.core.view.animation.PathInterpolatorCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tkpd.remoteresourcerequest.view.DeferredImageView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.activation.R
 import com.tokopedia.activation.di.ActivationPageComponent
 import com.tokopedia.activation.model.ActivationPageState
+import com.tokopedia.activation.model.ShippingEditorModel
 import com.tokopedia.activation.model.ShopFeatureModel
-import com.tokopedia.activation.util.ActivationPageTouchListener
-import com.tokopedia.activation.util.ICON_CHECK
-import com.tokopedia.activation.util.ICON_COD
+import com.tokopedia.activation.util.*
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.globalerror.ReponseStatus
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.unifycomponents.HtmlLinkHelper
-import com.tokopedia.unifycomponents.Label
-import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifycomponents.*
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
+import java.net.ConnectException
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 
@@ -79,6 +82,9 @@ class ActivationPageFragment: BaseDaggerFragment() {
     private var codExpandLL: LinearLayout? = null
     private var codCheckboxRL: RelativeLayout? = null
     private var codLabel: Label? = null
+    private var swipeRefreshLayout: SwipeRefreshLayout? = null
+    private var itemLayout: CardUnify? = null
+    private var globalError: GlobalError? = null
 
     private var codValue: Boolean = false
     private var expandLayout: Boolean = true
@@ -123,6 +129,9 @@ class ActivationPageFragment: BaseDaggerFragment() {
         codExpandLL = view?.findViewById(R.id.cod_expand_ll)
         codLabel = view?.findViewById(R.id.lbl_cod_activation)
         codCheckboxRL = view?.findViewById(R.id.checkbox_cod_rl)
+        swipeRefreshLayout = view?.findViewById(R.id.swipe_refresh)
+        itemLayout = view?.findViewById(R.id.item_activation_layout)
+        globalError = view?.findViewById(R.id.global_error)
 
         codIcon?.loadRemoteImageDrawable(ICON_COD)
         codTncImage1?.loadRemoteImageDrawable(ICON_CHECK)
@@ -156,15 +165,21 @@ class ActivationPageFragment: BaseDaggerFragment() {
         viewModel.shopFeature.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is ActivationPageState.Success -> {
+                    swipeRefreshLayout?.isRefreshing = false
+                    globalError?.gone()
+                    itemLayout?.visible()
                     setupView(it.data)
                 }
 
                 is ActivationPageState.Fail -> {
-
+                    swipeRefreshLayout?.isRefreshing = false
+                    if (it.throwable != null) {
+                        handleError(it.throwable)
+                    }
                 }
 
                 is ActivationPageState.Loading -> {
-
+                    swipeRefreshLayout?.isRefreshing = true
                 }
             }
         })
@@ -172,15 +187,43 @@ class ActivationPageFragment: BaseDaggerFragment() {
         viewModel.updateShopFeature.observe(viewLifecycleOwner, Observer {
             when(it) {
                 is ActivationPageState.Success -> {
+                    swipeRefreshLayout?.isRefreshing = false
+                    view?.let {
+                        if(codValue) Toaster.make(it, COD_ACTIVE_MESSAGE, type = Toaster.TYPE_NORMAL)
+                        else Toaster.make(it, COD_INACTIVE_MESSAGE, type = Toaster.TYPE_NORMAL)
+                    }
                     getShopFeature()
                 }
 
                 is ActivationPageState.Fail -> {
-
+                    swipeRefreshLayout?.isRefreshing = false
+                    if (it.throwable != null) {
+                        handleError(it.throwable)
+                    }
                 }
 
                 is ActivationPageState.Loading -> {
+                    swipeRefreshLayout?.isRefreshing = true
+                }
+            }
+        })
 
+        viewModel.activatedShipping.observe(viewLifecycleOwner, Observer {
+            when(it) {
+                is ActivationPageState.Success -> {
+                    swipeRefreshLayout?.isRefreshing = false
+                    openDialogActivationPage(it.data)
+                }
+
+                is ActivationPageState.Fail -> {
+                    swipeRefreshLayout?.isRefreshing = false
+                    if (it.throwable != null) {
+                        handleError(it.throwable)
+                    }
+                }
+
+                is ActivationPageState.Loading -> {
+                    swipeRefreshLayout?.isRefreshing = true
                 }
             }
         })
@@ -209,6 +252,7 @@ class ActivationPageFragment: BaseDaggerFragment() {
             codCheckboxRL?.gone()
             codButtonSave?.buttonVariant = UnifyButton.Variant.GHOST
             codButtonSave?.text = getString(R.string.cod_button_inactive)
+            codButtonSave?.isEnabled = true
             codButtonSave?.setOnClickListener {
                 context?.let { context ->
                     DialogUnify(context, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
@@ -233,7 +277,7 @@ class ActivationPageFragment: BaseDaggerFragment() {
             codButtonSave?.isEnabled = codCheckbox?.isChecked?: false
             codButtonSave?.text = getString(R.string.cod_button_active)
             codButtonSave?.setOnClickListener {
-                updateShopFeature()
+                validateActivatedShipping()
             }
         }
 
@@ -249,8 +293,9 @@ class ActivationPageFragment: BaseDaggerFragment() {
         viewModel.getShopFeature(userSession.shopId)
     }
 
-    private fun updateShopFeature() {
-        if (!codValue) viewModel.updateShopFeature(true) else viewModel.updateShopFeature(false)
+    private fun validateActivatedShipping(){
+        val userId = userSession.userId
+        viewModel.validateActivatedShipping(userId.toInt())
     }
 
     private fun collapse(view: View) {
@@ -298,18 +343,73 @@ class ActivationPageFragment: BaseDaggerFragment() {
         view.startAnimation(anim)
     }
 
+    private fun openDialogActivationPage(data: ShippingEditorModel) {
+        if (data.x11 == 0) {
+            context?.let { dialog ->
+                DialogUnify(dialog, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
+                    val primaryText = HtmlLinkHelper(context, getString(R.string.dialog_desciption_active)).spannedString
+                    setTitle(getString(R.string.dialog_title_active))
+                    if (primaryText != null) {
+                        setDescription(primaryText)
+                    }
+                    setPrimaryCTAText(getString(R.string.dialog_primary_button_active))
+                    setSecondaryCTAText(getString(R.string.dialog_secondary_button_active))
+                    setPrimaryCTAClickListener {
+                        viewModel.updateShopFeature(true)
+                        dismiss()
+                    }
+                    setSecondaryCTAClickListener {
+                        dismiss()
+                    }
+                }.show()
+            }
+        } else {
+            viewModel.updateShopFeature(true)
+        }
+    }
+
     private fun goToTncWebView(link: String): Boolean {
         return RouteManager.route(activity, "${ApplinkConst.WEBVIEW}?url=${link}")
     }
 
-    private fun isTncCheckboxChecked(checkBox: CheckboxUnify?): Boolean {
-        if (checkBox != null) {
-            if (checkBox.isVisible) {
-                return checkBox.isChecked
+    private fun handleError(throwable: Throwable) {
+        when (throwable) {
+            is SocketTimeoutException, is UnknownHostException, is ConnectException -> {
+                view?.let {
+                    showGlobalError(GlobalError.NO_CONNECTION)
+                }
             }
-            return true
+            is RuntimeException -> {
+                when (throwable.localizedMessage.toIntOrNull()) {
+                    ReponseStatus.GATEWAY_TIMEOUT, ReponseStatus.REQUEST_TIMEOUT -> showGlobalError(GlobalError.NO_CONNECTION)
+                    ReponseStatus.NOT_FOUND -> showGlobalError(GlobalError.PAGE_NOT_FOUND)
+                    ReponseStatus.INTERNAL_SERVER_ERROR -> showGlobalError(GlobalError.SERVER_ERROR)
+
+                    else -> {
+                        view?.let {
+                            showGlobalError(GlobalError.SERVER_ERROR)
+                            Toaster.make(it, DEFAULT_ERROR_MESSAGE, type = Toaster.TYPE_ERROR)
+                        }
+                    }
+                }
+            }
+            else -> {
+                view?.let {
+                    showGlobalError(GlobalError.SERVER_ERROR)
+                    Toaster.make(it, throwable.message
+                            ?: DEFAULT_ERROR_MESSAGE, type = Toaster.TYPE_ERROR)
+                }
+            }
         }
-        return false
+    }
+
+    private fun showGlobalError(type: Int) {
+        globalError?.setType(type)
+        globalError?.setActionClickListener {
+            viewModel.getShopFeature(userSession.shopId)
+        }
+        itemLayout?.gone()
+        globalError?.visible()
     }
 
 }
