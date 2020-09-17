@@ -3,17 +3,20 @@ package com.tokopedia.hotel.hoteldetail.presentation.activity
 import android.app.Activity
 import android.app.Instrumentation
 import android.content.Intent
+import androidx.test.espresso.Espresso
+import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.rule.IntentsTestRule
+import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
+import com.tokopedia.analyticsdebugger.validator.core.getAnalyticsWithQuery
+import com.tokopedia.analyticsdebugger.validator.core.hasAllSuccess
+import com.tokopedia.hotel.R
 import com.tokopedia.hotel.hoteldetail.presentation.activity.mock.HotelDetailMockResponseConfig
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
-import org.junit.Assert.*
-import org.junit.Before
-import org.junit.Rule
-import org.junit.Test
+import org.junit.*
 
 /**
  * @author by jessica on 16/09/20
@@ -32,7 +35,7 @@ class HotelDetailActivityTest {
 
         override fun getActivityIntent(): Intent {
             return HotelDetailActivity.getCallingIntent(context, "2023-10-10",
-            "2023-10-11", 11, 1, 1, "",
+                    "2023-10-11", 11, 1, 1, "",
                     "", true, "")
         }
     }
@@ -46,7 +49,39 @@ class HotelDetailActivityTest {
 
     @Test
     fun checkOnHotelDetailTracking() {
+        clickOnSeePhoto()
+        clickOnSeeAllReview()
+        clickSeeRoomButton()
 
+        Assert.assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_HOTEL_PDP),
+                hasAllSuccess())
+    }
+
+    private fun clickOnSeePhoto() {
+        Thread.sleep(3000)
+        Espresso.onView(ViewMatchers.withId(R.id.iv_first_photo_preview)).perform(click())
+
+        Thread.sleep(3000)
+        Espresso.onView(ViewMatchers.withId(R.id.btn_arrow_back)).perform(click())
+    }
+
+    private fun clickOnSeeAllReview() {
+        Thread.sleep(3000)
+        Espresso.onView(ViewMatchers.withId(R.id.tv_hotel_detail_all_reviews)).perform(click())
+    }
+
+    private fun clickSeeRoomButton() {
+        Thread.sleep(3000)
+        Espresso.onView(ViewMatchers.withId(R.id.btn_see_room)).perform(click())
+    }
+
+    @After
+    fun tearDown() {
+        gtmLogDBSource.deleteAll().subscribe()
+    }
+
+    companion object {
+        const val ANALYTIC_VALIDATOR_QUERY_HOTEL_PDP = "tracker/travel/hotel/hotel_pdp.json"
     }
 
 }

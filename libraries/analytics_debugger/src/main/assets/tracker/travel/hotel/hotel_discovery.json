@@ -5,128 +5,6 @@
     {
       "event": "view_item",
       "eventCategory": "digital - native",
-      "eventAction": "view hotel pdp",
-      "eventLabel": "{{hotel - .* - .* - .* - .* - .* - .*}}",
-      "screenName": "/hotel/pdp",
-      "currentSite": "tokopediadigitalhotel",
-      "clientId": "{{.*}}",
-      "sessionIris": "{{.*}}",
-      "userId": "{{.*}}",
-      "businessUnit": "travel & entertainment",
-      "item_list": "/hotel/",
-      "category": "hotel",
-      "items": [ {
-        "item_id": "{{.*}}",
-        "price": "{{\\d*.\\d*}}",
-        "dimension40": "/hotel/",
-        "index": "{{.*}}",
-        "item_name": "{{.*}}",
-        "item_brand":  "none / other",
-        "item_variant": "{{.*}}",
-        "item_category": "Hotel"
-      }
-      ]
-    },{
-      "event": "clickHotel",
-      "eventCategory": "digital - native",
-      "eventAction": "click hotel photo",
-      "eventLabel": "{{hotel - .* - .*}}",
-      "screenName": "/hotel/pdp",
-      "currentSite": "tokopediadigitalhotel",
-      "clientId": "{{.*}}",
-      "sessionIris": "{{.*}}",
-      "userId": "{{.*}}",
-      "businessUnit": "travel & entertainment",
-      "category": "hotel"
-    },
-    {
-      "event": "clickHotel",
-      "eventCategory": "digital - native",
-      "eventAction": "click hotel reviews",
-      "eventLabel": "{{hotel - .* - .*}}",
-      "screenName": "/hotel/pdp",
-      "currentSite": "tokopediadigitalhotel",
-      "clientId": "{{.*}}",
-      "sessionIris": "{{.*}}",
-      "userId": "{{.*}}",
-      "businessUnit": "travel & entertainment",
-      "category": "hotel"
-    },{
-      "event": "clickHotel",
-      "eventCategory": "digital - native",
-      "eventAction": "choose view room",
-      "eventLabel": "{{hotel - .* - .* - .* - .* - .* - .* - .*}}",
-      "screenName": "/hotel/pdp",
-      "currentSite": "tokopediadigitalhotel",
-      "clientId": "{{.*}}",
-      "sessionIris": "{{.*}}",
-      "userId": "{{.*}}",
-      "businessUnit": "travel & entertainment",
-      "category": "hotel"
-    },
-    {
-      "event": "view_item_list",
-      "eventCategory": "digital - native",
-      "eventAction": "view room list",
-      "eventLabel": "{{hotel - .* - .* - .* - .* - .* - .* - .*}}",
-      "screenName": "/hotel/roomlist",
-      "currentSite": "tokopediadigitalhotel",
-      "clientId": "{{.*}}",
-      "sessionIris": "{{.*}}",
-      "userId": "{{.*}}",
-      "businessUnit": "travel & entertainment",
-      "item_list": "/hotel/",
-      "category": "hotel",
-      "items": [ {
-        "item_id": "{{.*}}",
-        "price": "{{\\d*.\\d*}}",
-        "dimension40": "/hotel/",
-        "index": "{{.*}}",
-        "item_name": "{{.*}}",
-        "item_brand":  "none / other",
-        "item_variant": "{{.*}}",
-        "item_category": "Hotel"
-      }
-      ]
-    }, {
-      "event": "clickHotel",
-      "eventCategory": "digital - native",
-      "eventAction": "click room photo on room list",
-      "eventLabel": "{{hotel - .* - .* - .*}}",
-      "screenName": "/hotel/roomlist",
-      "currentSite": "tokopediadigitalhotel",
-      "clientId": "{{.*}}",
-      "sessionIris": "{{.*}}",
-      "userId": "{{.*}}",
-      "businessUnit": "travel & entertainment",
-      "category": "hotel"
-    }, {
-      "event": "select_content",
-      "eventCategory": "digital - native",
-      "eventAction": "click room details",
-      "eventLabel": "{{hotel - .* - .* - .* - .* - .* - .* - .*}}",
-      "screenName": "/hotel/roomlist",
-      "currentSite": "tokopediadigitalhotel",
-      "clientId": "{{.*}}",
-      "sessionIris": "{{.*}}",
-      "userId": "{{.*}}",
-      "businessUnit": "travel & entertainment",
-      "item_list": "/hotel/",
-      "category": "hotel",
-      "items": [ {
-        "item_id": "{{.*}}",
-        "price": "{{\\d*.\\d*}}",
-        "dimension40": "/hotel/",
-        "index": "{{.*}}",
-        "item_name": "{{.*}}",
-        "item_brand":  "none / other",
-        "item_variant": "{{.*}}",
-        "item_category": "Hotel"
-      }
-      ]
-    }, {
-      "event": "view_item",
-      "eventCategory": "digital - native",
       "eventAction": "view room details",
       "eventLabel": "{{hotel - .* - .* - .* - .* - .* - .* - .*}}",
       "screenName": "/hotel/roomdetails",
@@ -137,18 +15,20 @@
       "businessUnit": "travel & entertainment",
       "item_list": "/hotel/",
       "category": "hotel",
-      "items": [ {
-        "item_id": "{{.*}}",
-        "price": "{{\\d*.\\d*}}",
-        "dimension40": "/hotel/",
-        "index": "{{.*}}",
-        "item_name": "{{.*}}",
-        "item_brand":  "none / other",
-        "item_variant": "{{.*}}",
-        "item_category": "Hotel"
-      }
+      "items": [
+        {
+          "item_id": "{{.*}}",
+          "price": "{{\\d*.\\d*}}",
+          "dimension40": "/hotel/",
+          "index": "{{.*}}",
+          "item_name": "{{.*}}",
+          "item_brand": "none / other",
+          "item_variant": "{{.*}}",
+          "item_category": "Hotel"
+        }
       ]
-    }, {
+    },
+    {
       "event": "clickHotel",
       "eventCategory": "digital - native",
       "eventAction": "click room photo on room pdp",

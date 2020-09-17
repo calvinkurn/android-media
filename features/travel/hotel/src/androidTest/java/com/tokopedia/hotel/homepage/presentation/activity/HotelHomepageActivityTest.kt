@@ -160,7 +160,7 @@ class HotelHomepageActivityTest {
     private fun clickRecentSearchWidget() {
         Thread.sleep(4000)
 
-        if (getBannerItemCount() > 0) {
+        if (getLastSearchCount() > 0) {
             onView(withId(R.id.rv_hotel_homepage_last_search)).perform(RecyclerViewActions
                     .actionOnItemAtPosition<HotelLastSearchViewHolder>(0, click()))
         }
