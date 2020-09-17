@@ -456,17 +456,41 @@ class FlightHomepageViewModelTest {
     }
 
     @Test
-    fun onBannerClick_shouldSendAnalytics() {
+    fun onBannerClick_whenLoggedIn_shouldSendAnalytics() {
         // given
         val position = 0
         val bannerData = BANNER_DATA.banners[position]
+        coEvery { userSessionInterface.isLoggedIn } returns true
+        coEvery { userSessionInterface.userId } returns "dummy user id"
 
         // when
         flightHomepageViewModel.onBannerClicked(position, bannerData)
 
         // then
         verify {
-            flightAnalytics.eventPromotionClick(position + 1, bannerData)
+            flightAnalytics.eventPromotionClick(position + 1,
+                    bannerData,
+                    FlightAnalytics.Screen.HOMEPAGE,
+                    any())
+        }
+    }
+
+    @Test
+    fun onBannerClick_whenNotLoggedIn_shouldSendAnalytics() {
+        // given
+        val position = 0
+        val bannerData = BANNER_DATA.banners[position]
+        coEvery { userSessionInterface.isLoggedIn } returns false
+
+        // when
+        flightHomepageViewModel.onBannerClicked(position, bannerData)
+
+        // then
+        verify {
+            flightAnalytics.eventPromotionClick(position + 1,
+                    bannerData,
+                    FlightAnalytics.Screen.HOMEPAGE,
+                    any())
         }
     }
 
@@ -801,7 +825,7 @@ class FlightHomepageViewModelTest {
     }
 
     @Test
-    fun onSearchTicket_shouldSendAnalyticsAndDeleteSearchData() {
+    fun onSearchTicket_whenLoggedIn_shouldSendAnalyticsAndDeleteSearchData() {
         // given
         val flightSearchData = FlightSearchPassDataModel(
                 "2020-02-01", "2020-03-01", false,
@@ -825,13 +849,52 @@ class FlightHomepageViewModelTest {
                 FlightClassModel(1, "Ekonomi"),
                 "", ""
         )
+        coEvery { userSessionInterface.isLoggedIn } returns true
+        coEvery { userSessionInterface.userId } returns "dummy user id"
 
         // when
         flightHomepageViewModel.onSearchTicket(flightSearchData)
 
         // then
         coVerifySequence {
-            flightAnalytics.eventSearchClick(any())
+            flightAnalytics.eventSearchClick(any(), FlightAnalytics.Screen.HOMEPAGE, any())
+            deleteAllFlightSearch.execute()
+        }
+    }
+
+    @Test
+    fun onSearchTicket_whenNotLoggedIn_shouldSendAnalyticsAndDeleteSearchData() {
+        // given
+        val flightSearchData = FlightSearchPassDataModel(
+                "2020-02-01", "2020-03-01", false,
+                FlightPassengerModel(3, 2, 1),
+                FlightAirportModel().apply {
+                    cityCode = ""
+                    cityName = "Banda Aceh"
+                    cityId = ""
+                    cityAirports = arrayListOf()
+                    airportCode = "BTJ"
+                    airportName = "Bandara International Sultan Iskandar Muda"
+                },
+                FlightAirportModel().apply {
+                    cityCode = "JKTA"
+                    cityName = "Jakarta"
+                    cityId = ""
+                    cityAirports = arrayListOf("CGK", "HLP")
+                    airportCode = ""
+                    airportName = ""
+                },
+                FlightClassModel(1, "Ekonomi"),
+                "", ""
+        )
+        coEvery { userSessionInterface.isLoggedIn } returns false
+
+        // when
+        flightHomepageViewModel.onSearchTicket(flightSearchData)
+
+        // then
+        coVerifySequence {
+            flightAnalytics.eventSearchClick(any(), FlightAnalytics.Screen.HOMEPAGE, any())
             deleteAllFlightSearch.execute()
         }
     }
@@ -847,7 +910,7 @@ class FlightHomepageViewModelTest {
 
         // then
         verify {
-            flightAnalytics.eventOpenScreen(screenName, false)
+            flightAnalytics.eventOpenScreen(screenName)
         }
     }
 
@@ -866,12 +929,14 @@ class FlightHomepageViewModelTest {
     }
 
     @Test
-    fun validateSendTrackingPromoScrolled() {
+    fun validateSendTrackingPromoScrolledWhenLoggedIn() {
         // given
         coEvery {
             travelCollectiveBannerUseCase.execute(any(), any(), any())
         } returns Success(BANNER_DATA)
         val selectedBannerData = 0
+        coEvery { userSessionInterface.isLoggedIn } returns true
+        coEvery { userSessionInterface.userId } returns "dummy user id"
 
         // when
         flightHomepageViewModel.fetchBannerData("", false)
@@ -879,7 +944,32 @@ class FlightHomepageViewModelTest {
 
         // then
         verify {
-            flightAnalytics.eventPromoImpression(selectedBannerData, BANNER_DATA.banners[selectedBannerData])
+            flightAnalytics.eventPromoImpression(selectedBannerData,
+                    BANNER_DATA.banners[selectedBannerData],
+                    FlightAnalytics.Screen.HOMEPAGE,
+                    any())
+        }
+    }
+
+    @Test
+    fun validateSendTrackingPromoScrolledNotLoggedIn() {
+        // given
+        coEvery {
+            travelCollectiveBannerUseCase.execute(any(), any(), any())
+        } returns Success(BANNER_DATA)
+        val selectedBannerData = 0
+        coEvery { userSessionInterface.isLoggedIn } returns false
+
+        // when
+        flightHomepageViewModel.fetchBannerData("", false)
+        flightHomepageViewModel.sendTrackingPromoScrolled(selectedBannerData)
+
+        // then
+        verify {
+            flightAnalytics.eventPromoImpression(selectedBannerData,
+                    BANNER_DATA.banners[selectedBannerData],
+                    FlightAnalytics.Screen.HOMEPAGE,
+                    any())
         }
     }
 
