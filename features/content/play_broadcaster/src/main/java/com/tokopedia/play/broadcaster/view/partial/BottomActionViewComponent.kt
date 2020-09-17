@@ -12,15 +12,16 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.ui.model.ProductContentUiModel
 import com.tokopedia.play.broadcaster.ui.transition.ScaleTransition
+import com.tokopedia.play_common.viewcomponent.ViewComponent
 import com.tokopedia.unifycomponents.UnifyButton
 
 /**
  * Created by jegul on 29/05/20
  */
-class BottomActionPartialView(
+class BottomActionViewComponent(
         container: ViewGroup,
         private val listener: Listener
-) : PartialView(container, R.id.bottom_sheet_action) {
+) : ViewComponent(container, R.id.bottom_sheet_action) {
 
     private val clInventory: ConstraintLayout = findViewById(R.id.cl_inventory)
     private val ivInventory: ImageView = findViewById(R.id.iv_inventory)
@@ -50,14 +51,6 @@ class BottomActionPartialView(
             tvBadgeCount.text = productList.size.toString()
             flInventoryClickArea.setOnClickListener { listener.onInventoryIconClicked() }
         }
-    }
-
-    fun show() {
-        rootView.visible()
-    }
-
-    fun hide() {
-        rootView.gone()
     }
 
     fun setLoading(isLoading: Boolean) {

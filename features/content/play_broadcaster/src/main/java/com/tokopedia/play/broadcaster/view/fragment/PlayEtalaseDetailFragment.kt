@@ -31,11 +31,12 @@ import com.tokopedia.play.broadcaster.view.adapter.ProductSelectableAdapter
 import com.tokopedia.play.broadcaster.view.contract.ProductSetupListener
 import com.tokopedia.play.broadcaster.view.custom.PlayBottomSheetHeader
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseSetupFragment
-import com.tokopedia.play.broadcaster.view.partial.BottomActionPartialView
+import com.tokopedia.play.broadcaster.view.partial.BottomActionViewComponent
 import com.tokopedia.play.broadcaster.view.partial.SelectedProductPagePartialView
 import com.tokopedia.play.broadcaster.view.viewmodel.DataStoreViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayEtalasePickerViewModel
 import com.tokopedia.play_common.util.scroll.StopFlingScrollListener
+import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.*
 import javax.inject.Inject
@@ -64,7 +65,20 @@ class PlayEtalaseDetailFragment @Inject constructor(
     private lateinit var bottomSheetHeader: PlayBottomSheetHeader
 
     private lateinit var selectedProductPage: SelectedProductPagePartialView
-    private lateinit var bottomActionView: BottomActionPartialView
+
+    private val bottomActionView by viewComponent {
+        BottomActionViewComponent(it, object : BottomActionViewComponent.Listener {
+            override fun onInventoryIconClicked() {
+                showSelectedProductPage()
+                analytic.clickSelectedProductIcon()
+            }
+
+            override fun onNextButtonClicked() {
+                uploadProduct()
+                analytic.clickContinueOnProductBottomSheet()
+            }
+        })
+    }
 
     private var shouldLoadFirst = true
 
@@ -132,18 +146,6 @@ class PlayEtalaseDetailFragment @Inject constructor(
             override fun onProductSelectStateChanged(productId: Long, isSelected: Boolean) {
                 viewModel.selectProduct(productId, isSelected)
                 onSelectedProductChanged()
-            }
-        })
-
-        bottomActionView = BottomActionPartialView(view, object : BottomActionPartialView.Listener {
-            override fun onInventoryIconClicked() {
-                showSelectedProductPage()
-                analytic.clickSelectedProductIcon()
-            }
-
-            override fun onNextButtonClicked() {
-                uploadProduct()
-                analytic.clickContinueOnProductBottomSheet()
             }
         })
     }
