@@ -59,13 +59,13 @@ object SharingUtil {
     private const val SHARE_TYPE_TEXT = "text/plain"
     private const val SHARE_TYPE_IMAGE = "image/*"
 
-    private const val FILE_NAME_FORMAT = "mvc_%s.jpg"
+    private const val FILE_NAME_FORMAT = "mvc_%s"
 
     private const val VOUCHER_DIR = "topsellervoucher"
 
-    private const val IMAGE_LABEL = "Image"
-
     private const val MAXIMUM_FILES_IN_FOLDER = 10
+
+    private const val AUTHORITY = "com.tokopedia.voucher_creation.provider"
 
     private val voucherDirectoryPath by lazy {
         Environment.getExternalStorageDirectory().toString() + File.separator + VOUCHER_DIR + File.separator
@@ -91,16 +91,18 @@ object SharingUtil {
                     }
 
                     override fun onResourceReady(resource: Bitmap, model: Any?, target: Target<Bitmap>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
-                        val stringPath = saveImageToExternalStorage(resource)
+                        val fileName = String.format(FILE_NAME_FORMAT, System.currentTimeMillis().toString())
+                        val internalFile = resource.getSavedImageDirFile(context, fileName)
+                        val contentUri = FileProvider.getUriForFile(context, AUTHORITY, internalFile)
                         when(socmed) {
                             Socmed.INSTAGRAM -> {
-                                shareInstagramFeed(context, stringPath, messageString)
+                                shareInstagramFeed(context, contentUri, messageString)
                             }
                             Socmed.TWITTER -> {
-                                goToSocialMedia(socmed.packageString, context, stringPath, messageString)
+                                goToSocialMedia(socmed.packageString, context, contentUri, messageString)
                             }
                             else -> {
-                                goToSocialMedia(socmed.packageString, socmed.classString, context, stringPath, messageString)
+                                goToSocialMedia(socmed.packageString, socmed.classString, context, contentUri, messageString)
                             }
                         }
                         return false
@@ -110,6 +112,7 @@ object SharingUtil {
 
     }
 
+    @Deprecated("Please use getSavedImageDirFile to save images into internal storage as directly accessing external storage could impose security leaks")
     private fun saveImageToExternalStorage(imageBitmap: Bitmap): String {
         val fileName = String.format(FILE_NAME_FORMAT, System.currentTimeMillis().toString())
         checkVoucherDirectory()
@@ -150,7 +153,7 @@ object SharingUtil {
 
     private fun goToSocialMedia(@SocmedPackage packageString: String,
                                 context: Context,
-                                pathFile: String,
+                                pathFile: Uri,
                                 messageString: String? = null) {
         val intent = context.packageManager.getLaunchIntentForPackage(packageString)
         intent?.run {
@@ -158,7 +161,7 @@ object SharingUtil {
                 action = Intent.ACTION_SEND
                 setPackage(packageString)
                 try {
-                    putExtra(Intent.EXTRA_STREAM, Uri.parse(pathFile))
+                    putExtra(Intent.EXTRA_STREAM, pathFile)
                     messageString?.run {
                         putExtra(Intent.EXTRA_TEXT, this)
                     }
@@ -174,7 +177,7 @@ object SharingUtil {
     private fun goToSocialMedia(@SocmedPackage packageString: String,
                                 @SocmedClass classString: String,
                                 context: Context,
-                                pathFile: String,
+                                pathFile: Uri,
                                 messageString: String? = null) {
         val intent = context.packageManager.getLaunchIntentForPackage(packageString)
         if (intent != null) {
@@ -184,7 +187,7 @@ object SharingUtil {
                 setClassName(packageString, classString)
                 flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
                 try {
-                    putExtra(Intent.EXTRA_STREAM, Uri.parse(pathFile))
+                    putExtra(Intent.EXTRA_STREAM, pathFile)
                     messageString?.run {
                         putExtra(Intent.EXTRA_TEXT, this)
                     }
@@ -201,7 +204,7 @@ object SharingUtil {
     }
 
     private fun shareInstagramFeed(context: Context,
-                                   pathFile: String,
+                                   fileUri: Uri,
                                    messageString: String? = null) {
 
         val intent = context.packageManager.getLaunchIntentForPackage(SocmedPackage.INSTAGRAM)
@@ -212,8 +215,7 @@ object SharingUtil {
                 flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
                 setPackage(SocmedPackage.INSTAGRAM)
                 try {
-                    val mediaFile = File(pathFile)
-                    val fileUri = FileProvider.getUriForFile(context, context.applicationContext.packageName+".provider", mediaFile)
+//                    val fileUri = FileProvider.getUriForFile(context, context.applicationContext.packageName+".provider", mediaFile)
                     putExtra(Intent.EXTRA_STREAM, fileUri)
                 } catch (ex: Exception) {
                     ex.printStackTrace()
