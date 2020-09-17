@@ -44,27 +44,26 @@ class HomeRepositoryImpl @Inject constructor(
             val currentTimeMillisString = System.currentTimeMillis().toString()
             var currentToken = ""
 
-            val homeDataResponse = async { try {
-                homeRemoteDataSource.getHomeData()
+            val homeDataResponse = async { homeRemoteDataSource.getHomeData() }
+            var dynamicChannelResponse = async { homeRemoteDataSource.getDynamicChannelData(numOfChannel = 2) }
+
+            var homeDataCombined: HomeData? = HomeData()
+
+            val homeDataResponseValue = try {
+                homeDataResponse.await()
             } catch (e: Exception) {
                 HomeData()
             }
-            }
 
-            var dynamicChannelResponse = async { try {
-                homeRemoteDataSource.getDynamicChannelData(numOfChannel = 2)
+            val dynamicChannelResponseValue = try {
+                dynamicChannelResponse.await()
             } catch (e: Exception) {
                 if (e is SocketTimeoutException && !isCacheExist) {
                     null
                 } else {
                     HomeChannelData()
                 }
-            } }
-
-            var homeDataCombined: HomeData? = HomeData()
-
-            val homeDataResponseValue = homeDataResponse.await()
-            val dynamicChannelResponseValue = dynamicChannelResponse.await()
+            }
 
             if (!isCacheExistForProcess && dynamicChannelResponseValue != null) {
                 val extractPair = extractToken(dynamicChannelResponseValue)
