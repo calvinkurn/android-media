@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.otp.verification.common.DispatcherProvider
+import com.tokopedia.otp.verification.domain.data.OtpConstant
 import com.tokopedia.otp.verification.domain.data.OtpModeListData
 import com.tokopedia.otp.verification.domain.data.OtpRequestData
 import com.tokopedia.otp.verification.domain.data.OtpValidateData
@@ -76,7 +77,7 @@ class VerificationViewModel @Inject constructor(
             userIdEnc: String = "",
             accessToken: String = ""
     ) {
-        if((otpType == "148" || otpType == "149") && userIdEnc.isNotEmpty()){
+        if((otpType == OtpConstant.OtpType.AFTER_LOGIN_PHONE.toString() || otpType == OtpConstant.OtpType.RESET_PIN.toString()) && userIdEnc.isNotEmpty()){
             getVerificationMethod2FA(otpType, accessToken, userIdEnc)
         }else {
             launchCatchError(coroutineContext, {
@@ -203,7 +204,7 @@ class VerificationViewModel @Inject constructor(
             validateToken: String = "",
             userIdEnc: String = ""
     ) {
-        if((otpType == "148" || otpType == "149") && userIdEnc.isNotEmpty()){
+        if((otpType == OtpConstant.OtpType.AFTER_LOGIN_PHONE.toString() || otpType == OtpConstant.OtpType.RESET_PIN.toString()) && userIdEnc.isNotEmpty()){
             otpValidate2FA(otpType, validateToken, userIdEnc, mode, code)
         }else {
             launchCatchError(coroutineContext, {

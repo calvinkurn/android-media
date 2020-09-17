@@ -441,7 +441,7 @@ class VerificationFragment : BaseVerificationFragment(), IOnBackPressed {
 
     private fun setFooterText() {
         val spannable: Spannable
-        if(otpData.otpType == 148){
+        if(otpData.otpType == OtpConstant.OtpType.AFTER_LOGIN_PHONE){
             val message = getString(R.string.forgot_pin)
             spannable = SpannableString(message)
             setForgotPinFooterSpan(message, spannable)
