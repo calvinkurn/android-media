@@ -47,7 +47,7 @@
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/inspirationCardCuratedButton"
             android:foreground="?attr/selectableItemBackground"
-            android:layout_width="@dimen/dp_0"
+            android:layout_width="@dimen/dp_110"
             android:layout_height="wrap_content"
             android:text="@string/search_inspiration_card_curated_button"
             android:layout_marginTop="@dimen/dp_12"
