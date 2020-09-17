@@ -83,10 +83,10 @@ class ShopShowcaseListReorderAdapter(
         fun bindData(dataShowcase: ShowcaseItem, position: Int) {
             titleShowcase?.text = dataShowcase.name
 
-            if (dataShowcase.type == ShowcaseType.GENERATED) {
-                buttonMove?.visibility = View.INVISIBLE
-            } else {
+            if (dataShowcase.type == ShowcaseType.CUSTOM) {
                 buttonMove?.visibility = View.VISIBLE
+            } else {
+                buttonMove?.visibility = View.INVISIBLE
             }
 
             buttonMove?.setOnTouchListener { _, event ->
