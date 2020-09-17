@@ -1,18 +1,14 @@
 package com.tokopedia.shop_showcase.shop_showcase_management.presentation.activity
 
-import android.app.Activity
-import android.content.Context
-import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.Window
 import android.view.WindowManager
-import androidx.fragment.app.Fragment
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalMechant
+import com.tokopedia.applink.etalase.DeepLinkMapperEtalase
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
 import com.tokopedia.shop_showcase.R
 import com.tokopedia.shop_showcase.common.PageNameConstant
@@ -58,13 +54,27 @@ class ShopShowcaseListActivity : BaseActivity(), ShopShowcaseFragmentNavigation 
         }
 
         // If there is no shopId  then it's seller view
-        if (shopId == "0"){
-            shopId = userSession.shopId
+        if (shopId == "0") {
+            shopId = getShopIdFromDeepLink()
         }
 
         getShopType()
         setupInitialFragment()
         setupStatusbar()
+    }
+
+    /**
+     * @return shopId from deeplink query param.
+     * @return userSession.shopId, if shopId is null or blank or = 0
+     * */
+    private fun getShopIdFromDeepLink(): String {
+        val uri = intent.data
+        val shopId = uri?.getQueryParameter(DeepLinkMapperEtalase.PATH_SHOP_ID)
+        return if (shopId.isNullOrBlank() || shopId == "0") {
+            userSession.shopId
+        } else {
+            shopId
+        }
     }
 
     override fun navigateToPage(page: String, tag: String?, showcaseList: ArrayList<ShowcaseItem>?) {

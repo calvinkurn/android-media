@@ -442,11 +442,6 @@ class HomeVisitableFactoryImpl(
         val viewModel = ProductHighlightDataModel(
                 DynamicChannelComponentMapper.mapHomeChannelToComponent(channel, verticalPosition)
         )
-        if (!isCache) {
-            trackingQueue?.putEETracking(
-                    ProductHighlightTracking.getProductHighlightImpression(channel,  userId = userSessionInterface?.userId ?: "") as HashMap<String, Any>
-            )
-        }
         return viewModel
     }
 
