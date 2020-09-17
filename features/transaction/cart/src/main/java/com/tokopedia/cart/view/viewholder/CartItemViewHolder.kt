@@ -406,7 +406,7 @@ class CartItemViewHolder constructor(itemView: View,
         val hasPriceOriginal = data.cartItemData?.originData?.priceOriginal != 0
         val hasWholesalePrice = data.cartItemData?.originData?.wholesalePrice != 0
         val hasPriceDrop = data.cartItemData?.originData?.initialPriceBeforeDrop ?: 0 > 0 &&
-                data.cartItemData?.originData?.initialPriceBeforeDrop ?: 0 < data.cartItemData?.originData?.pricePlan?.toInt() ?: 0
+                data.cartItemData?.originData?.initialPriceBeforeDrop ?: 0 > data.cartItemData?.originData?.pricePlan?.toInt() ?: 0
         if (hasPriceOriginal || hasWholesalePrice || hasPriceDrop) {
             if (data.cartItemData?.originData?.slashPriceLabel?.isNotBlank() == true) {
                 // Slash price
@@ -436,7 +436,7 @@ class CartItemViewHolder constructor(itemView: View,
     private fun renderSlashPriceFromWholesale(data: CartItemHolderData) {
         val priceDropValue = data.cartItemData?.originData?.initialPriceBeforeDrop ?: 0
         val pricePlan = data.cartItemData?.originData?.pricePlanInt ?: 0
-        val originalPrice = if (priceDropValue > 0) priceDropValue else pricePlan
+        val originalPrice = if (priceDropValue > pricePlan) pricePlan else priceDropValue
         textSlashPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(originalPrice, false).removeDecimalSuffix()
     }
 
