@@ -2,18 +2,19 @@ package com.tokopedia.tkpd.deeplink.di.module;
 
 import android.content.Context;
 
-import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
+import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor;
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase;
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.product.detail.common.data.model.product.ProductInfo;
-import com.tokopedia.intl.R;
+import com.tokopedia.tkpd.R;
+
+import javax.inject.Named;
 
 import dagger.Module;
 import dagger.Provides;
-import javax.inject.Named;
 
 @Module
 public class GetProductModule{

@@ -4,16 +4,17 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.core.app.NotificationCompat;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.RemoteViews;
+
+import androidx.core.app.NotificationCompat;
 
 import com.moe.pushlibrary.utils.MoEHelperUtils;
 import com.moengage.core.ConfigurationProvider;
 import com.moengage.pushbase.push.PushMessageListener;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
-import com.tokopedia.intl.R;
+import com.tokopedia.tkpd.R;
 
 public class CustomPushListener extends PushMessageListener {
 

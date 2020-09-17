@@ -1,19 +1,16 @@
 package com.tokopedia.tkpd.redirect;
 
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
-import android.content.ActivityNotFoundException;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.TextView;
 
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
-import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.app.TActivity;
-import com.tokopedia.intl.R;
+import com.tokopedia.tkpd.R;
 import com.tokopedia.track.TrackApp;
 
 public class RedirectCreateShopActivity extends TActivity {
