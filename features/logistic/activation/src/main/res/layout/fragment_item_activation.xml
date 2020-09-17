@@ -6,25 +6,23 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:enabled="false">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
 
-        <ScrollView
+        <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent">
+            android:layout_height="match_parent">
 
             <include
                 android:id="@+id/item_activation_layout"
                 layout="@layout/item_activation_cod"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_margin="@dimen/dp_16"
                 app:layout_scrollFlags="scroll"/>
 
-        </ScrollView>
+        </androidx.core.widget.NestedScrollView>
 
         <com.tokopedia.globalerror.GlobalError
             android:id="@+id/global_error"
@@ -33,8 +31,6 @@
             android:gravity="center"
             android:visibility="gone" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-
+    </FrameLayout>
 
 </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>

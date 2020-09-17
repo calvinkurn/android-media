@@ -188,9 +188,9 @@ class ActivationPageFragment: BaseDaggerFragment() {
             when(it) {
                 is ActivationPageState.Success -> {
                     swipeRefreshLayout?.isRefreshing = false
-                    view?.let {
-                        if(codValue) Toaster.make(it, COD_ACTIVE_MESSAGE, type = Toaster.TYPE_NORMAL)
-                        else Toaster.make(it, COD_INACTIVE_MESSAGE, type = Toaster.TYPE_NORMAL)
+                    view?.let { view ->
+                        if(codValue) Toaster.make(view, COD_INACTIVE_MESSAGE, type = Toaster.TYPE_NORMAL)
+                        else Toaster.make(view, COD_ACTIVE_MESSAGE, type = Toaster.TYPE_NORMAL)
                     }
                     getShopFeature()
                 }
@@ -338,7 +338,7 @@ class ActivationPageFragment: BaseDaggerFragment() {
                 return true
             }
         }
-        anim.interpolator = PathInterpolatorCompat.create(0.77f, 0f, 0.175f, 1f);
+        anim.interpolator = PathInterpolatorCompat.create(0.77f, 0f, 0.175f, 1f)
         anim.duration = (targetHeight / view.context.resources.displayMetrics.density).toInt().toLong()
         view.startAnimation(anim)
     }
