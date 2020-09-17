@@ -39,6 +39,7 @@ import com.tokopedia.shop.settings.basicinfo.view.activity.ShopEditBasicInfoActi
 import com.tokopedia.shop.settings.basicinfo.view.activity.ShopEditBasicInfoActivity.Companion.EXTRA_SHOP_MODEL
 import com.tokopedia.shop.settings.basicinfo.view.viewmodel.ShopEditBasicInfoViewModel
 import com.tokopedia.shop.settings.common.di.DaggerShopSettingsComponent
+import com.tokopedia.shop.settings.common.util.ShopSettingsErrorHandler
 import com.tokopedia.shop.settings.common.util.ShopTypeDef
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
@@ -418,6 +419,8 @@ class ShopEditBasicInfoFragment: Fragment() {
                     val message = (it as Success).data.validateDomainShopName.error.message
                     showShopNameInputError(message)
                     shopDomainSuggestions.hide()
+                    ShopSettingsErrorHandler.logMessage(it.throwable.message ?: "")
+                    ShopSettingsErrorHandler.logExceptionToCrashlytics(it.throwable)
                 }
             }
         }
@@ -437,6 +440,8 @@ class ShopEditBasicInfoFragment: Fragment() {
                     val message = (it as Success).data.validateDomainShopName.error.message
                     showShopNameInputError(message)
                     shopDomainSuggestions.hide()
+                    ShopSettingsErrorHandler.logMessage(it.throwable.message ?: "")
+                    ShopSettingsErrorHandler.logExceptionToCrashlytics(it.throwable)
                 }
             }
         }
@@ -564,6 +569,8 @@ class ShopEditBasicInfoFragment: Fragment() {
             showSnackBarErrorSubmitEdit(throwable)
         }
         tvSave.isEnabled = true
+        ShopSettingsErrorHandler.logMessage(throwable.message ?: "")
+        ShopSettingsErrorHandler.logExceptionToCrashlytics(throwable)
     }
 
     private fun showShopInformation(shopBasicDataModel: ShopBasicDataModel?) {
@@ -622,6 +629,8 @@ class ShopEditBasicInfoFragment: Fragment() {
 
     private fun onErrorGetShopBasicData(throwable: Throwable) {
         showSnackBarErrorShopInfo(throwable)
+        ShopSettingsErrorHandler.logMessage(throwable.message ?: "")
+        ShopSettingsErrorHandler.logExceptionToCrashlytics(throwable)
     }
 
     private fun showSnackBarErrorShopInfo(throwable: Throwable) {
@@ -638,6 +647,8 @@ class ShopEditBasicInfoFragment: Fragment() {
         } else {
             showSnackBarErrorSubmitEdit(throwable)
         }
+        ShopSettingsErrorHandler.logMessage(throwable.message ?: "")
+        ShopSettingsErrorHandler.logExceptionToCrashlytics(throwable)
     }
 
     private fun showSnackBarErrorSubmitEdit(throwable: Throwable) {
@@ -654,6 +665,8 @@ class ShopEditBasicInfoFragment: Fragment() {
             getString(com.tokopedia.abstraction.R.string.title_try_again), View.OnClickListener {
             viewModel.getAllowShopNameDomainChanges()
         })
+        ShopSettingsErrorHandler.logMessage(throwable.message ?: "")
+        ShopSettingsErrorHandler.logExceptionToCrashlytics(throwable)
     }
 
     private fun clickReadMore() {
@@ -688,10 +701,12 @@ class ShopEditBasicInfoFragment: Fragment() {
     }
 
     private fun showGlobalError() {
+        tvSave.hide()
         globalError.setBackgroundColor(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Neutral_N0 ))
         globalError.apply {
             setType(GlobalError.NO_CONNECTION)
             setActionClickListener {
+                tvSave.show()
                 onSaveButtonClicked()
                 hide()
             }
