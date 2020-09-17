@@ -3,11 +3,13 @@ package com.tokopedia.home.analytics.v2
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.track.builder.BaseTrackerBuilder
+import com.tokopedia.track.builder.util.BaseTrackerConst
 
 /**
  * @author by yoasfs on 09/06/20
  */
-object MixLeftComponentTracking: BaseTracking()  {
+object MixLeftComponentTracking: BaseTrackerConst()  {
 
     private object CustomEvent{
         const val CLICK_HOMEPAGE = "clickHomepage"
@@ -55,7 +57,7 @@ object MixLeftComponentTracking: BaseTracking()  {
     }
 
     fun getMixLeftProductView(channel: ChannelModel, grid: ChannelGrid, position:Int): Map<String, Any> {
-        val trackingBuilder = BaseTrackingBuilder()
+        val trackingBuilder = BaseTrackerBuilder()
         return trackingBuilder.constructBasicProductView(
                 event = Event.PRODUCT_VIEW,
                 eventCategory = Category.HOMEPAGE,
@@ -88,7 +90,7 @@ object MixLeftComponentTracking: BaseTracking()  {
     }
 
     fun getMixLeftIrisProductView(channel: ChannelModel, grid: ChannelGrid, position:Int): Map<String, Any> {
-        val trackingBuilder = BaseTrackingBuilder()
+        val trackingBuilder = BaseTrackerBuilder()
         return trackingBuilder.constructBasicProductView(
                 event = Event.PRODUCT_VIEW_IRIS,
                 eventCategory = Category.HOMEPAGE,
@@ -120,8 +122,8 @@ object MixLeftComponentTracking: BaseTracking()  {
                 .build()
     }
 
-    private fun getMixLeftProductClick(channel: ChannelModel, grid: ChannelGrid, position: Int) : Map<String, Any> {
-        val trackingBuilder = BaseTrackingBuilder()
+    fun getMixLeftProductClick(channel: ChannelModel, grid: ChannelGrid, position: Int) : Map<String, Any> {
+        val trackingBuilder = BaseTrackerBuilder()
         return trackingBuilder.constructBasicProductClick(
                 event = Event.PRODUCT_CLICK,
                 eventCategory = Category.HOMEPAGE,
@@ -158,7 +160,7 @@ object MixLeftComponentTracking: BaseTracking()  {
     }
 
     fun getMixLeftBannerView(channel: ChannelModel, position: Int, userId: String): Map<String, Any> {
-        val trackingBuilder = BaseTrackingBuilder()
+        val trackingBuilder = BaseTrackerBuilder()
         return trackingBuilder.constructBasicPromotionView(
                 event = Event.PROMO_VIEW,
                 eventCategory = Category.HOMEPAGE,
@@ -176,6 +178,7 @@ object MixLeftComponentTracking: BaseTracking()  {
                                 position = position.toString()
                         )
                 ))
+                .appendUserId(userId)
                 .appendScreen(Screen.DEFAULT)
                 .appendCurrentSite(CurrentSite.DEFAULT)
                 .appendBusinessUnit(BusinessUnit.DEFAULT)
@@ -184,7 +187,7 @@ object MixLeftComponentTracking: BaseTracking()  {
 
 
     fun getMixLeftBannerClick(channel: ChannelModel, position: Int, userId: String): Map<String, Any> {
-        val trackingBuilder = BaseTrackingBuilder()
+        val trackingBuilder = BaseTrackerBuilder()
         return trackingBuilder.constructBasicPromotionClick(
                 event = Event.PROMO_CLICK,
                 eventCategory = Category.HOMEPAGE,
@@ -202,6 +205,7 @@ object MixLeftComponentTracking: BaseTracking()  {
                                 position = position.toString()
                         )
                 ))
+                .appendUserId(userId)
                 .appendCampaignCode(channel.trackingAttributionModel.campaignCode)
                 .appendChannelId(channel.id)
                 .appendCategoryId(channel.trackingAttributionModel.categoryId)

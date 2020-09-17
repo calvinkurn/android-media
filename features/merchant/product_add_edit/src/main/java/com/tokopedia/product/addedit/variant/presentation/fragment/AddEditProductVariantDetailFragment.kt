@@ -134,7 +134,7 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
         observeInputStatus()
         observeHasWholesale()
 
-        enableSkuIfExist()
+        enableSku()
         setupToolbarActions()
     }
 
@@ -237,8 +237,8 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
         })
     }
 
-    private fun enableSkuIfExist() {
-        switchUnifySku.isChecked = viewModel.hasSku
+    private fun enableSku() {
+        switchUnifySku.isChecked = true
     }
 
     private fun setupVariantDetailFields(selectedUnitValues: List<OptionInputModel>) {
