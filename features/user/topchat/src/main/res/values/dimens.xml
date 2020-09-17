@@ -33,6 +33,7 @@
 
     <dimen name="dp_topchat_0">0dp</dimen>
     <dimen name="dp_topchat_1">1dp</dimen>
+    <dimen name="dp_topchat_1point5">1.5dp</dimen>
     <dimen name="dp_topchat_2">2dp</dimen>
     <dimen name="dp_topchat_3">3dp</dimen>
     <dimen name="dp_topchat_4">4dp</dimen>

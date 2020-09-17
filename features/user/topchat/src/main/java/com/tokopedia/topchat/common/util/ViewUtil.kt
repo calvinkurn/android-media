@@ -26,7 +26,9 @@ object ViewUtil {
             @ColorRes shadowColor: Int,
             @DimenRes elevation: Int,
             @DimenRes shadowRadius: Int,
-            shadowGravity: Int
+            shadowGravity: Int,
+            @ColorRes strokeColor: Int? = null,
+            @DimenRes strokeWidth: Int? = null
     ): Drawable? {
         if (view == null) return null
         val topLeftRadiusValue = view.context.resources.getDimension(topLeftRadius)
@@ -37,6 +39,8 @@ object ViewUtil {
         val shadowRadiusValue = view.context.resources.getDimension(shadowRadius)
         val shadowColorValue = ContextCompat.getColor(view.context, shadowColor)
         val backgroundColorValue = ContextCompat.getColor(view.context, backgroundColor)
+        val strokeColorValue: Int? = strokeColor?.let { ContextCompat.getColor(view.context, strokeColor) }
+        val strokeWidthValue: Float? = strokeWidth?.let { view.context.resources.getDimension(strokeWidth) }
 
         val outerRadius = floatArrayOf(
                 topLeftRadiusValue, topLeftRadiusValue, topRightRadiusValue, topRightRadiusValue,
@@ -75,18 +79,32 @@ object ViewUtil {
             }
         }
 
-        val shapeDrawable = ShapeDrawable()
-        shapeDrawable.setPadding(shapeDrawablePadding)
-
-        shapeDrawable.paint.color = backgroundColorValue
-        shapeDrawable.paint.setShadowLayer(shadowRadiusValue, 0f, DY, shadowColorValue)
-
+        val shapeDrawable = ShapeDrawable().apply {
+            setPadding(shapeDrawablePadding)
+            paint.color = backgroundColorValue
+            paint.setShadowLayer(shadowRadiusValue, 0f, DY, shadowColorValue)
+            shape = RoundRectShape(outerRadius, null, null)
+        }
         view.setLayerType(LAYER_TYPE_SOFTWARE, shapeDrawable.paint)
+        val drawableLayer = arrayListOf<Drawable>(shapeDrawable)
+        if (strokeColorValue != null && strokeWidthValue != null) {
+            val strokeDrawable = ShapeDrawable().apply {
+                setPadding(shapeDrawablePadding)
+                paint.style = Paint.Style.STROKE
+                paint.color = strokeColorValue
+                paint.strokeWidth = strokeWidthValue
+                shape = RoundRectShape(outerRadius, null, null)
+            }
+            drawableLayer.add(strokeDrawable)
+        }
 
-        shapeDrawable.shape = RoundRectShape(outerRadius, null, null)
-
-        val drawable = LayerDrawable(arrayOf<Drawable>(shapeDrawable))
+        val drawable = LayerDrawable(drawableLayer.toTypedArray())
         drawable.setLayerInset(0, elevationValue, elevationValue, elevationValue, elevationValue)
+
+        if (strokeColor != null && strokeWidthValue != null && drawableLayer.size > 1) {
+            val strokeMargin = strokeWidthValue.toInt()
+            drawable.setLayerInset(1, elevationValue - strokeMargin, elevationValue - strokeMargin, elevationValue - strokeMargin, elevationValue - strokeMargin)
+        }
 
         return drawable
 

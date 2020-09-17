@@ -158,9 +158,10 @@ open class TopChatTypeFactoryImpl constructor(
             adapterListener: AdapterListener
     ): AbstractViewHolder<*> {
         return when (type) {
-            ProductCarouselListAttachmentViewHolder.LAYOUT -> ProductCarouselListAttachmentViewHolder(parent, productAttachmentListener, productCarouselListListener, deferredAttachment, searchListener, commonListener)
+            ProductCarouselListAttachmentViewHolder.LAYOUT -> ProductCarouselListAttachmentViewHolder(parent, productAttachmentListener, productCarouselListListener, deferredAttachment, searchListener, commonListener, adapterListener)
             LeftChatMessageViewHolder.LAYOUT -> LeftChatMessageViewHolder(parent, chatLinkHandlerListener, commonListener, adapterListener)
             RightChatMessageViewHolder.LAYOUT -> RightChatMessageViewHolder(parent, chatLinkHandlerListener, commonListener, adapterListener)
+            TopchatProductAttachmentViewHolder.LAYOUT -> TopchatProductAttachmentViewHolder(parent, productAttachmentListener, deferredAttachment, searchListener, commonListener, adapterListener)
             else -> createViewHolder(parent, type)
         }
     }
@@ -174,7 +175,6 @@ open class TopChatTypeFactoryImpl constructor(
             StickerMessageViewHolder.LAYOUT -> StickerMessageViewHolder(parent)
             HeaderDateViewHolder.LAYOUT -> HeaderDateViewHolder(parent)
             ProductAttachmentViewHolder.LAYOUT -> TopchatOldProductAttachmentViewHolder(parent, productAttachmentListener)
-            TopchatProductAttachmentViewHolder.LAYOUT -> TopchatProductAttachmentViewHolder(parent, productAttachmentListener, deferredAttachment, searchListener, commonListener)
             TopchatEmptyViewHolder.LAYOUT -> TopchatEmptyViewHolder(parent)
             QuotationViewHolder.LAYOUT -> QuotationViewHolder(parent, chatLinkHandlerListener, quotationListener)
             RoomSettingBannerViewHolder.LAYOUT -> RoomSettingBannerViewHolder(parent)

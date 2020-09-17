@@ -10,9 +10,11 @@ import android.graphics.drawable.GradientDrawable
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.BackgroundColorSpan
+import android.view.Gravity
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -23,16 +25,16 @@ import com.tokopedia.chat_common.view.adapter.viewholder.listener.ProductAttachm
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ErrorAttachment
-import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.CommonViewHolderListener
-import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.DeferredViewHolderAttachment
-import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.SearchListener
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.*
 import com.tokopedia.topchat.chatroom.view.custom.SingleProductAttachmentContainer
 import com.tokopedia.topchat.common.Constant
+import com.tokopedia.topchat.common.util.ViewUtil
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.UnifyButton
@@ -44,14 +46,15 @@ open class TopchatProductAttachmentViewHolder constructor(
         private val listener: ProductAttachmentListener,
         private val deferredAttachment: DeferredViewHolderAttachment,
         private val searchListener: SearchListener,
-        private val commonListener: CommonViewHolderListener
+        private val commonListener: CommonViewHolderListener,
+        private val adapterListener: AdapterListener
 ) : BaseChatViewHolder<ProductAttachmentViewModel>(itemView) {
 
     private var btnWishList: UnifyButton? = itemView?.findViewById(R.id.tv_wishlist)
     private var btnOcc: UnifyButton? = itemView?.findViewById(R.id.tv_occ)
     private var btnBuy: UnifyButton? = itemView?.findViewById(R.id.tv_buy)
     private var btnAtc: UnifyButton? = itemView?.findViewById(R.id.tv_atc)
-    private var cardContainer: SingleProductAttachmentContainer? = itemView?.findViewById(R.id.containerProductAttachment)
+    private var cardContainer: ConstraintLayout? = itemView?.findViewById(R.id.containerProductAttachment)
     private var label: Label? = itemView?.findViewById(R.id.lb_product_label)
     private var loadView: LoaderUnify? = itemView?.findViewById(R.id.iv_attachment_shimmer)
     private var freeShippingImage: ImageView? = itemView?.findViewById(R.id.iv_free_shipping)
@@ -64,6 +67,33 @@ open class TopchatProductAttachmentViewHolder constructor(
     private val white = "#ffffff"
     private val white2 = "#fff"
     private val labelEmptyStockColor = "#AD31353B"
+    private val bottomMarginOpposite: Float = getOppositeMargin(itemView?.context)
+    private val bgOpposite = ViewUtil.generateBackgroundWithShadow(
+            itemView,
+            com.tokopedia.unifyprinciples.R.color.Neutral_N0,
+            com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
+            com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
+            com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
+            com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
+            R.color.topchat_message_shadow,
+            R.dimen.dp_topchat_2,
+            R.dimen.dp_topchat_1,
+            Gravity.CENTER
+    )
+    private val bgSender = ViewUtil.generateBackgroundWithShadow(
+            itemView,
+            com.tokopedia.unifyprinciples.R.color.Neutral_N0,
+            com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
+            com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
+            com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
+            com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
+            R.color.topchat_message_shadow,
+            R.dimen.dp_topchat_2,
+            R.dimen.dp_topchat_1,
+            Gravity.CENTER,
+            R.color.bg_topchat_right_message,
+            R.dimen.dp_topchat_1point5
+    )
 
     override fun bind(element: ProductAttachmentViewModel, payloads: MutableList<Any>) {
         if (payloads.isEmpty()) return
@@ -102,7 +132,28 @@ open class TopchatProductAttachmentViewHolder constructor(
             bindFooter(product)
             bindPreOrderLabel(product)
             bindEmptyStockLabel(product)
+            bindBackground(product)
+            bindMargin(product)
             listener.trackSeenProduct(product)
+        }
+    }
+
+    private fun bindMargin(product: ProductAttachmentViewModel) {
+        val lp = cardContainer?.layoutParams
+        if (lp is LinearLayout.LayoutParams) {
+            if (!adapterListener.isNextItemSender(adapterPosition, product.isSender)) {
+                cardContainer?.setMargin(0, 0, 0, bottomMarginOpposite.toInt())
+            } else {
+                cardContainer?.setMargin(0, 0, 0, 0)
+            }
+        }
+    }
+
+    private fun bindBackground(product: ProductAttachmentViewModel) {
+        if (product.isSender) {
+            cardContainer?.background = bgSender
+        } else {
+            cardContainer?.background = bgOpposite
         }
     }
 
@@ -126,10 +177,12 @@ open class TopchatProductAttachmentViewHolder constructor(
     }
 
     private fun bindLayoutGravity(product: ProductAttachmentViewModel) {
-        if (product.isSender) {
-            cardContainer?.gravityRight()
-        } else {
-            cardContainer?.gravityLeft()
+        (cardContainer as? SingleProductAttachmentContainer)?.let { container ->
+            if (product.isSender) {
+                container.gravityRight()
+            } else {
+                container.gravityLeft()
+            }
         }
     }
 
@@ -443,7 +496,7 @@ open class TopchatProductAttachmentViewHolder constructor(
     }
 
     data class OccState(
-         val parentPosition: Int,
-         val childPosition: Int = -1 // for carousel
+            val parentPosition: Int,
+            val childPosition: Int = -1 // for carousel
     )
 }

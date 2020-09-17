@@ -7,6 +7,7 @@ import com.tokopedia.chat_common.data.ProductAttachmentViewModel
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ProductAttachmentListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.ProductCarouselAttachmentViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.TopchatProductAttachmentViewHolder
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.AdapterListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.CommonViewHolderListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.DeferredViewHolderAttachment
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.SearchListener
@@ -17,6 +18,7 @@ class ProductListAdapter constructor(
         private val listener: ProductAttachmentListener,
         private val deferredAttachment: DeferredViewHolderAttachment,
         private val commonListener: CommonViewHolderListener,
+        private val adapterListener: AdapterListener,
         carousel: ProductCarouselUiModel? = null
 ) : RecyclerView.Adapter<TopchatProductAttachmentViewHolder>() {
 
@@ -31,7 +33,9 @@ class ProductListAdapter constructor(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TopchatProductAttachmentViewHolder {
         val view = LayoutInflater.from(parent.context)
                 .inflate(ProductCarouselAttachmentViewHolder.LAYOUT, parent, false)
-        return ProductCarouselAttachmentViewHolder(view, listener, deferredAttachment, searchListener, commonListener)
+        return ProductCarouselAttachmentViewHolder(
+                view, listener, deferredAttachment, searchListener, commonListener, adapterListener
+        )
     }
 
     override fun onBindViewHolder(holder: TopchatProductAttachmentViewHolder, position: Int) {

@@ -13,6 +13,7 @@ import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.AdapterListener
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.getOppositeMargin
 import com.tokopedia.topchat.chatroom.view.custom.FlexBoxChatLayout
 
 abstract class ChatMessageViewHolder(
@@ -23,9 +24,7 @@ abstract class ChatMessageViewHolder(
 
     protected open val fxChat: FlexBoxChatLayout? = itemView?.findViewById(R.id.fxChat)
     protected open val msgContainer: ConstraintLayout? = itemView?.findViewById(R.id.cl_msg_container)
-    protected val bottomMarginOpposite: Float = itemView?.context?.resources?.getDimension(
-            com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2
-    ) ?: 0f
+    protected val bottomMarginOpposite: Float = getOppositeMargin(itemView?.context)
 
     override fun bind(message: MessageViewModel) {
         verifyReplyTime(message)
