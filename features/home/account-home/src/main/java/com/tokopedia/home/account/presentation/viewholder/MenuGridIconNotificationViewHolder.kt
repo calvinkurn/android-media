@@ -24,14 +24,14 @@ class MenuGridIconNotificationViewHolder(itemView: View, private val listener: A
     private val adapter: MenuGridIconNotificationAdapter = MenuGridIconNotificationAdapter(listener)
 
     override fun bind(element: MenuGridIconNotificationViewModel) {
-        if (!TextUtils.isEmpty(element.getTitle())) {
-            textTitle.text = element.getTitle()
+        if (!TextUtils.isEmpty(element.title)) {
+            textTitle.text = element.title
         }
-        if (!TextUtils.isEmpty(element.getLinkText())) {
-            textLink.text = element.getLinkText()
+        if (!TextUtils.isEmpty(element.linkText)) {
+            textLink.text = element.linkText
             textLink.setOnClickListener { listener.onMenuGridBackgroundLinkClicked(element) }
         }
-        adapter.setNewData(element.getItems())
+        adapter.setNewData(element.items)
     }
 
     companion object {

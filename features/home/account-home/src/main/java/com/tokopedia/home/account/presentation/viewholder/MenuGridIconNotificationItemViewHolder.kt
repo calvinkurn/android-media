@@ -32,19 +32,19 @@ class MenuGridIconNotificationItemViewHolder(private val context: Context, itemV
         backgroundImgView.background = ContextCompat.getDrawable(context, R.drawable.ic_uoh_all_transactions)
         backgroundImgView.layoutParams = param
         iconNotification.apply {
-                imageDrawable = ContextCompat.getDrawable(context, menuItem.getResourceId())
+                imageDrawable = ContextCompat.getDrawable(context, menuItem.resourceId)
                 setSize(40, 40)
 
-                if (menuItem.getCount() > 0) {
+                if (menuItem.count > 0) {
                     notificationRef.visible()
                     notificationGravity = Gravity.TOP or Gravity.END
                     (notificationRef.parent as FrameLayout).setBackgroundColor(Color.WHITE)
-                    notificationRef.setNotification(menuItem.getCount().toString(), NotificationUnify.COUNTER_TYPE, NotificationUnify.COLOR_TEXT_TYPE)
+                    notificationRef.setNotification(menuItem.count.toString(), NotificationUnify.COUNTER_TYPE, NotificationUnify.COLOR_TEXT_TYPE)
                 } else {
                     notificationRef.gone()
                 }
             }
-        iconDesc.text = menuItem.getDescription()
+        iconDesc.text = menuItem.description
         if (listener != null) rlCategoryGrid.setOnClickListener { listener.onMenuGridBackgroundItemClicked(menuItem) }
     }
 

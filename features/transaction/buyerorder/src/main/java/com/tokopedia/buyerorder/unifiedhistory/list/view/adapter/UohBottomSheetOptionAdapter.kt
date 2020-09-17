@@ -7,11 +7,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.buyerorder.R
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.ALL_CATEGORIES
-import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.ALL_STATUS
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.ALL_STATUS_TRANSACTION
-import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.ALL_TRANSACTIONS
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.SEMUA_TRANSAKSI
 import kotlinx.android.synthetic.main.bottomsheet_option_uoh_item.view.*
 
 /**
@@ -40,7 +37,7 @@ class UohBottomSheetOptionAdapter(private var listener: ActionListener): Recycle
         val valueMap = uohItemMapKeyList[position].values.first().toString()
         val keyMap = uohItemMapKeyList[position].keys.first().toString()
 
-        if (filterType == UohConsts.TYPE_FILTER_STATUS && valueMap.equals(ALL_TRANSACTIONS, true)) {
+        if (filterType == UohConsts.TYPE_FILTER_STATUS && valueMap.equals(SEMUA_TRANSAKSI, true)) {
             holder.itemView.label_option.text = ALL_STATUS_TRANSACTION
         } else {
             holder.itemView.label_option.text = valueMap
@@ -57,7 +54,7 @@ class UohBottomSheetOptionAdapter(private var listener: ActionListener): Recycle
             if (selectedKey.isEmpty() && selectedRadio == -1) {
                 if (filterType == UohConsts.TYPE_FILTER_DATE && keyMap == "0") {
                     holder.itemView.rb_option.isChecked = true
-                } else if (filterType == UohConsts.TYPE_FILTER_STATUS && keyMap.equals(ALL_TRANSACTIONS, true)) {
+                } else if (filterType == UohConsts.TYPE_FILTER_STATUS && keyMap.equals(SEMUA_TRANSAKSI, true)) {
                     holder.itemView.rb_option.isChecked = true
                 } else if (filterType == UohConsts.TYPE_FILTER_CATEGORY && keyMap.equals(ALL_CATEGORIES, true)) {
                     holder.itemView.rb_option.isChecked = true
@@ -76,7 +73,7 @@ class UohBottomSheetOptionAdapter(private var listener: ActionListener): Recycle
                         holder.itemView.rb_option.isChecked = true
                     }
                 } else if (filterType == UohConsts.TYPE_FILTER_STATUS) {
-                    if (valueMap == ALL_TRANSACTIONS) {
+                    if (valueMap == SEMUA_TRANSAKSI) {
                         holder.itemView.rb_option.isChecked = true
                     }
                 } else if (filterType == UohConsts.TYPE_FILTER_CATEGORY) {

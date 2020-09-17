@@ -563,9 +563,7 @@ public interface ApplinkConst {
         String PARAM_CUSTOM_FILTER = "{customFilter}";
         String FILTER = "filter";
         String SOURCE_FILTER = "source_filter";
-        String DALAM_PROSES = "Dalam Proses";
-        String E_TIKET = "E-tiket & E-voucher Aktif";
-        String SEMUA_TRANSAKSI = "Semua Transaksi";
+
         String PARAM_DALAM_PROSES = "dalam_proses";
         String PARAM_E_TIKET = "etiket";
         String PARAM_SEMUA_TRANSAKSI = "semua_transaksi";

@@ -6,7 +6,7 @@ package com.tokopedia.buyerorder.unifiedhistory.common.util
 object UohConsts {
     const val ALL_DATE = "Semua Tanggal"
     const val ALL_STATUS = "Semua Status"
-    const val ALL_TRANSACTIONS = "Semua Transaksi"
+    const val SEMUA_TRANSAKSI = "Semua Transaksi"
     const val ALL_CATEGORIES = "Semua Kategori"
     const val CHOOSE_DATE = "Pilih Tanggal"
     const val OTHERS = "Lainnya"
@@ -104,6 +104,8 @@ object UohConsts {
     const val RECOMMENDATION_LIST_TRACK = "/my_purchase_list - rekomendasi untuk anda"
     const val RECOMMENDATION_LIST_TOPADS_TRACK = " - product topads"
 
-
     const val TX_ASK_SELLER = "tx_ask_seller"
+
+    const val E_TIKET = "E-tiket & E-voucher Aktif"
+    const val DALAM_PROSES = "Dalam Proses"
 }

@@ -51,9 +51,7 @@ class BuyerAccountMapper @Inject constructor(
         val model = BuyerViewModel()
         items.add(getBuyerProfile(accountDataModel))
         items.add(getTokopediaPayModel(accountDataModel))
-        useUoh()?.let { newFlow ->
-            items.addAll(getModel(context, accountDataModel, remoteConfig, newFlow))
-        }
+        items.addAll(getModel(context, accountDataModel, remoteConfig, useUoh()))
         model.items = items
 
         return model
@@ -243,7 +241,7 @@ class BuyerAccountMapper @Inject constructor(
         }
     }
 
-    private fun useUoh(): Boolean? {
+    private fun useUoh(): Boolean {
         val remoteConfigValue = RemoteConfigInstance.getInstance().abTestPlatform.getString(UOH_AB_TEST_KEY, "")
         return remoteConfigValue == UOH_AB_TEST_VALUE
     }
