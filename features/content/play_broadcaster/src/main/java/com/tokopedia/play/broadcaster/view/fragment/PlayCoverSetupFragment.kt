@@ -271,20 +271,22 @@ class PlayCoverSetupFragment @Inject constructor(
             ) {
                 if (isGalleryPermissionGranted()) {
                     scope.launch {
-                        val croppedUri = withContext(dispatcher.io) {
-                            yalantisImageCropper.cropImage(
-                                    inputPath = imageInputPath,
-                                    cropRect = cropRect,
-                                    currentRect = currentImageRect,
-                                    currentScale = currentScale,
-                                    currentAngle = currentAngle,
-                                    exifInfo = exifInfo,
-                                    viewBitmap = viewBitmap
-                            )
-                        }
+                        try {
+                            val croppedUri = withContext(dispatcher.io) {
+                                yalantisImageCropper.cropImage(
+                                        inputPath = imageInputPath,
+                                        cropRect = cropRect,
+                                        currentRect = currentImageRect,
+                                        currentScale = currentScale,
+                                        currentAngle = currentAngle,
+                                        exifInfo = exifInfo,
+                                        viewBitmap = viewBitmap
+                                )
+                            }
 
-                        viewModel.setDraftCroppedCover(croppedUri)
-                        if (isEditCoverMode) shouldUploadCover(viewModel.savedCoverTitle)
+                            viewModel.setDraftCroppedCover(croppedUri)
+                            if (isEditCoverMode) shouldUploadCover(viewModel.savedCoverTitle)
+                        } catch (e: Throwable) {  /* Fail to crop */ }
                     }
                 } else requestGalleryPermission(REQUEST_CODE_PERMISSION_CROP_COVER)
 
