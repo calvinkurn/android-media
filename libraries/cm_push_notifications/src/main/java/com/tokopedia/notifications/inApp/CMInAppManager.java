@@ -9,10 +9,10 @@ import com.google.firebase.messaging.RemoteMessage;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.notifications.CMRouter;
 import com.tokopedia.notifications.R;
+import com.tokopedia.notifications.common.CMConstant;
 import com.tokopedia.notifications.common.IrisAnalyticsEvents;
 import com.tokopedia.notifications.inApp.ruleEngine.RulesManager;
 import com.tokopedia.notifications.inApp.ruleEngine.interfaces.DataProvider;
-import com.tokopedia.notifications.inApp.ruleEngine.repository.RepositoryManager;
 import com.tokopedia.notifications.inApp.ruleEngine.rulesinterpreter.RuleInterpreterImpl;
 import com.tokopedia.notifications.inApp.ruleEngine.storage.DataConsumerImpl;
 import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.CMInApp;
@@ -29,6 +29,8 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 
+import timber.log.Timber;
+
 import static com.tokopedia.notifications.inApp.ruleEngine.RulesUtil.Constants.RemoteConfig.KEY_CM_INAPP_END_TIME_INTERVAL;
 import static com.tokopedia.notifications.inApp.viewEngine.CmInAppBundleConvertor.HOURS_24_IN_MILLIS;
 import static com.tokopedia.notifications.inApp.viewEngine.CmInAppConstant.TYPE_INTERSTITIAL;
@@ -39,6 +41,7 @@ import static com.tokopedia.notifications.inApp.viewEngine.CmInAppConstant.TYPE_
  */
 public class CMInAppManager implements CmInAppListener, DataProvider {
 
+    private static final String TAG = "P2#CM#";
     private static CMInAppManager inAppManager;
     private Application application;
     private WeakReference<Activity> currentActivity;
@@ -167,6 +170,7 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
             // set flag if has dialog showing
             isDialogShowing = true;
         } catch (Exception e) {
+            Timber.e(e, CMConstant.TimberTags.TAG + "CMInAppManager_interstitialDialog#exception;data=" + data);
             onCMInAppInflateException(data);
         }
     }
@@ -235,9 +239,14 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
                 if (application != null) {
                     sendEventInAppDelivered(cmInApp);
                     new CMInAppController().downloadImagesAndUpdateDB(application, cmInApp);
+                } else {
+                    Timber.w("%sCMInAppManager_handlePushPayload_application_null", TAG);
                 }
+            } else {
+                Timber.w("%sCMInAppManager_handlePushPayload_cmInApp_null", TAG);
             }
         } catch (Exception e) {
+            Timber.e(e,TAG + "CMInAppManager_handlePushPayload#exception;data=" + remoteMessage.getData());
         }
     }
 
@@ -257,6 +266,8 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
         if (getCurrentActivity() != null) {
             Activity activity = currentActivity.get();
             activity.startActivity(RouteManager.getIntent(activity, appLink));
+        } else {
+            Timber.w(CMConstant.TimberTags.TAG + "CMInAppManager_onCMInAppLinkClick_no_activity;data=" + cmInApp);
         }
 
         switch (elementType.getViewType()) {
@@ -273,9 +284,9 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
         if (cmInApp == null) return;
 
         if (elementId != null) {
-            IrisAnalyticsEvents.INSTANCE.sendPushEvent(application.getApplicationContext(), eventName, cmInApp, elementId);
+            IrisAnalyticsEvents.INSTANCE.sendInAppEvent(application.getApplicationContext(), eventName, cmInApp, elementId);
         } else {
-            IrisAnalyticsEvents.INSTANCE.sendPushEvent(application.getApplicationContext(), eventName, cmInApp);
+            IrisAnalyticsEvents.INSTANCE.sendInAppEvent(application.getApplicationContext(), eventName, cmInApp);
         }
     }
 

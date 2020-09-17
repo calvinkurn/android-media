@@ -26,6 +26,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.tokopedia.notifications.R;
+import com.tokopedia.notifications.common.CMConstant;
 import com.tokopedia.notifications.inApp.CMInAppManager;
 import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.CMBackground;
 import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.CMButton;
@@ -39,6 +40,8 @@ import java.util.List;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
 
+import timber.log.Timber;
+
 /**
  * @author lalit.singh
  */
@@ -47,6 +50,7 @@ public class ViewEngine {
     private WeakReference<Activity> activityWeakReference;
 
     private View inAppView;
+    private static final String TAG = "P2#CM#";
 
     private int resCmClose = R.id.iv_close;
     private int resCmImage = R.id.iv_cmImage;
@@ -135,6 +139,7 @@ public class ViewEngine {
             handleBackPress(view, cmInApp);
             return inAppView;
         } catch (Exception e) {
+            Timber.e(e, CMConstant.TimberTags.TAG + "ViewEngine_createView#exception;data=" + cmInApp);
             inAppView = null;
             CmInAppListener listener = CMInAppManager.getCmInAppListener();
             if (listener != null) {
@@ -341,7 +346,8 @@ public class ViewEngine {
             if (size != null && TextUtils.isEmpty(size.trim()))
                 button.setTextSize(TypedValue.COMPLEX_UNIT_SP,
                         Float.parseFloat(size));
-        } catch (NumberFormatException ignored) {
+        } catch (NumberFormatException e) {
+            Timber.e(e, CMConstant.TimberTags.TAG + "ViewEngine_createView#exception;data=" + cmButton);
         }
 
         int margin[] = {0, 0, 0, 0};

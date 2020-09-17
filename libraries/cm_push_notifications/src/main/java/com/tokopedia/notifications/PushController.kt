@@ -18,6 +18,7 @@ import com.tokopedia.notifications.model.NotificationMode
 import com.tokopedia.notifications.model.NotificationStatus
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import timber.log.Timber
 import kotlin.coroutines.CoroutineContext
 
 class PushController(val context: Context) : CoroutineScope {
@@ -44,10 +45,12 @@ class PushController(val context: Context) : CoroutineScope {
                             onLivePushPayloadReceived(baseNotificationModel)
                         }
                     }, onError = {
+                Timber.e(it, "${CMConstant.TimberTags.TAG}PushController_handleNotificationBundle#exception;data=${bundle}")
                 Log.d("PUSHController", it.message)
             })
 
         } catch (e: Exception) {
+            Timber.e(e, "${CMConstant.TimberTags.TAG}PushController_handleNotificationBundle_no_launch#exception;data=${bundle}")
         }
     }
 
@@ -142,9 +145,8 @@ class PushController(val context: Context) : CoroutineScope {
                 notificationManager.notify(baseNotification.baseNotificationModel.notificationId, notification)
             }
         } catch (e: Exception) {
-            Log.d(
-                    "PushController", e.message
-            )
+            Log.d("PushController", e.message)
+            Timber.e(e, "${CMConstant.TimberTags.TAG}PushController_createAndPostNotification#exception;data=${baseNotificationModel}")
         }
     }
 

@@ -10,7 +10,6 @@ import com.tokopedia.notifications.common.CMConstant
 import com.tokopedia.notifications.common.HOURS_24_IN_MILLIS
 import com.tokopedia.notifications.common.PayloadConverter
 import com.tokopedia.notifications.inApp.CMInAppManager
-import com.tokopedia.notifications.inApp.viewEngine.CmInAppConstant
 import com.tokopedia.notifications.worker.PushWorker
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -154,10 +153,13 @@ class CMPushNotificationManager : CoroutineScope {
                     CMInAppManager.getInstance().handlePushPayload(remoteMessage)
                 } else if (isPushEnable) {
                     PushController(applicationContext).handleNotificationBundle(bundle)
+                } else if (!(confirmationValue.equals(CMConstant.PayloadKeys.SOURCE_VALUE) || confirmationValue.equals(CMConstant.PayloadKeys.FCM_EXTRA_CONFIRMATION_VALUE))){
+                    Timber.w("${CMConstant.TimberTags.TAG}CMPushNotificationManager_handlePushPayload#validation;reason=not_cm_source;data=${remoteMessage.data}")
                 }
             }
         } catch (e: Exception) {
             Log.e(TAG, "CMPushNotificationManager: handlePushPayload ", e)
+            Timber.e(e, "${CMConstant.TimberTags.TAG}CMPushNotificationManager_handlePushPayload#exception;data=${remoteMessage.data}")
         }
 
     }

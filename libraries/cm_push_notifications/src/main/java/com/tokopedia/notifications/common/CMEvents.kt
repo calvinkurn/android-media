@@ -1,6 +1,7 @@
 package com.tokopedia.notifications.common
 
 import android.content.Context
+import android.text.TextUtils
 import com.tokopedia.iris.IrisAnalytics
 import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.CMInApp
 import com.tokopedia.notifications.model.BaseNotificationModel
@@ -102,7 +103,7 @@ object IrisAnalyticsEvents {
 
     }
 
-    fun sendPushEvent(context: Context, eventName: String, cmInApp: CMInApp) {
+    fun sendInAppEvent(context: Context, eventName: String, cmInApp: CMInApp) {
         if (cmInApp.isTest)
             return
         val irisAnalytics = IrisAnalytics(context)
@@ -113,7 +114,7 @@ object IrisAnalyticsEvents {
         }
     }
 
-    fun sendPushEvent(context: Context, eventName: String, cmInApp: CMInApp, elementID: String?) {
+    fun sendInAppEvent(context: Context, eventName: String, cmInApp: CMInApp, elementID: String?) {
         if (cmInApp.isTest)
             return
         val irisAnalytics = IrisAnalytics(context)
@@ -138,9 +139,25 @@ object IrisAnalyticsEvents {
     }
 
     private fun trackEvent(context: Context, irisAnalytics: IrisAnalytics, values: HashMap<String, Any>) {
+        logTimber(values)
         if (CMNotificationUtils.isNetworkAvailable(context))
             irisAnalytics.sendEvent(values)
         else irisAnalytics.saveEvent(values)
+    }
+
+    private fun logTimber(values: HashMap<String, Any>) {
+        if (values.containsKey(CAMPAIGN_ID) && TextUtils.isEmpty(values[CAMPAIGN_ID].toString()))
+            Timber.w("${CMConstant.TimberTags.TAG}CMEvents_trackEvent_no_campaignId".plus(if(values.containsKey(PUSH_TYPE)) "_push" else "_inapp").plus(";data=$values"))
+        else if (!values.containsKey(CAMPAIGN_ID))
+            Timber.w("${CMConstant.TimberTags.TAG}CMEvents_trackEvent_campaignId_removed".plus(if(values.containsKey(PUSH_TYPE)) "_push" else "_inapp").plus(";data=$values"))
+        else if (values.containsKey(PARENT_ID) && TextUtils.isEmpty(values[PARENT_ID].toString()))
+            Timber.w("${CMConstant.TimberTags.TAG}CMEvents_trackEvent_no_parentId".plus(if(values.containsKey(PUSH_TYPE)) "_push" else "_inapp").plus(";data=$values"))
+        else if (!values.containsKey(PARENT_ID))
+            Timber.w("${CMConstant.TimberTags.TAG}CMEvents_trackEvent_parentId_removed".plus(if(values.containsKey(PUSH_TYPE)) "_push" else "_inapp").plus(";data=$values"))
+        else if (values.containsKey(NOTIFICATION_ID) && TextUtils.isEmpty(values[NOTIFICATION_ID].toString()))
+            Timber.w("${CMConstant.TimberTags.TAG}CMEvents_trackEvent_no_notificationId".plus(if(values.containsKey(PUSH_TYPE)) "_push" else "_inapp").plus(";data=$values"))
+        else if (!values.containsKey(NOTIFICATION_ID))
+            Timber.w("${CMConstant.TimberTags.TAG}CMEvents_trackEvent_notificationId_removed".plus(if(values.containsKey(PUSH_TYPE)) "_push" else "_inapp").plus(";data=$values"))
     }
 
     private fun addBaseValues(context: Context, eventName: String, cmInApp: CMInApp): HashMap<String, Any> {
