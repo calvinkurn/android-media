@@ -164,41 +164,16 @@
             tools:text="Rp200.000" />
 
         <com.google.android.flexbox.FlexboxLayout
-            android:id="@+id/rl_product_policies_layout"
+            android:id="@+id/layout_product_info"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/tv_product_price"
             android:layout_marginStart="@dimen/dp_10"
             android:layout_marginLeft="@dimen/dp_10"
+            android:paddingTop="@dimen/dp_4"
             android:layout_toRightOf="@+id/iv_product_card"
             android:foregroundGravity="center_vertical"
-            app:flexWrap="wrap">
-
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/text_cashback"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/dp_4"
-                android:layout_marginRight="@dimen/dp_4"
-                android:gravity="center_vertical"
-                android:paddingTop="@dimen/dp_4"
-                android:textColor="@color/Neutral_N700_68"
-                app:typographyType="small"
-                tools:text="Cashback 10%,"
-                tools:visibility="visible" />
-
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/text_label_incident_product_level"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:paddingTop="@dimen/dp_4"
-                android:textColor="@color/Neutral_N700_68"
-                app:typographyType="small"
-                tools:text="Cashback 10%"
-                tools:visibility="visible" />
-
-        </com.google.android.flexbox.FlexboxLayout>
+            app:flexWrap="wrap"/>
 
     </RelativeLayout>
 

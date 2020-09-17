@@ -14,6 +14,7 @@ import android.widget.TextView;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.flexbox.FlexboxLayout;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.utils.WeightFormatterUtil;
@@ -22,6 +23,8 @@ import com.tokopedia.logisticcart.shipping.model.CartItemModel;
 import com.tokopedia.purchase_platform.common.utils.Utils;
 import com.tokopedia.unifycomponents.ticker.Ticker;
 import com.tokopedia.unifyprinciples.Typography;
+
+import java.util.List;
 
 /**
  * @author Aghny A. Putra on 02/03/18
@@ -52,8 +55,7 @@ public class ShipmentCartItemViewHolder extends RecyclerView.ViewHolder {
     private TextView tvErrorShipmentItemDescription;
     private Ticker productTicker;
     private Typography mTextVariant;
-    private Typography mTextCashback;
-    private Typography mTextLabelIncidentProductLevel;
+    private FlexboxLayout mLayoutProductInfo;
 
     public ShipmentCartItemViewHolder(View itemView) {
         super(itemView);
@@ -76,8 +78,7 @@ public class ShipmentCartItemViewHolder extends RecyclerView.ViewHolder {
         tvErrorShipmentItemDescription = itemView.findViewById(R.id.tv_error_shipment_item_description);
         productTicker = itemView.findViewById(R.id.product_ticker);
         mTextVariant = itemView.findViewById(R.id.text_variant);
-        mTextCashback = itemView.findViewById(R.id.text_cashback);
-        mTextLabelIncidentProductLevel = itemView.findViewById(R.id.text_label_incident_product_level);
+        mLayoutProductInfo = itemView.findViewById(R.id.layout_product_info);
     }
 
     public void bindViewHolder(CartItemModel cartItem, ShipmentItemListener listener) {
@@ -108,30 +109,22 @@ public class ShipmentCartItemViewHolder extends RecyclerView.ViewHolder {
     }
 
     private void renderProductProperties(CartItemModel cartItemModel) {
-        // Render from the last information label
-        renderProductPropertyIncidentLabel(cartItemModel);
-        renderProductPropertyCashback(cartItemModel);
-    }
-
-    private void renderProductPropertyIncidentLabel(CartItemModel cartItemModel) {
-        if (!TextUtils.isEmpty(cartItemModel.getProductAlertMessage())) {
-            mTextLabelIncidentProductLevel.setText(cartItemModel.getProductAlertMessage());
-            mTextLabelIncidentProductLevel.setVisibility(View.VISIBLE);
-        } else {
-            mTextLabelIncidentProductLevel.setVisibility(View.GONE);
-        }
-    }
-
-    private void renderProductPropertyCashback(CartItemModel cartItemModel) {
-        if (!TextUtils.isEmpty(cartItemModel.getCashback())) {
-            if (mTextLabelIncidentProductLevel.getVisibility() == View.VISIBLE) {
-                mTextCashback.setText("Cashback " + cartItemModel.getCashback() + ", ");
-            } else {
-                mTextCashback.setText("Cashback " + cartItemModel.getCashback());
+        List<String> productInformationList = cartItemModel.getProductInformation();
+        if (productInformationList != null && !productInformationList.isEmpty()) {
+            for (int i = 0; i < productInformationList.size(); i++) {
+                Typography productInfo = new Typography(itemView.getContext());
+                productInfo.setTextColor(ContextCompat.getColor(itemView.getContext(), com.tokopedia.unifyprinciples.R.color.Neutral_N700_68));
+                productInfo.setType(Typography.SMALL);
+                if (mLayoutProductInfo.getChildCount() > 0) {
+                    productInfo.setText(", " + productInformationList.get(i));
+                } else {
+                    productInfo.setText(productInformationList.get(i));
+                }
+                mLayoutProductInfo.addView(productInfo);
             }
-            mTextCashback.setVisibility(View.VISIBLE);
+            mLayoutProductInfo.setVisibility(View.VISIBLE);
         } else {
-            mTextCashback.setVisibility(View.GONE);
+            mLayoutProductInfo.setVisibility(View.GONE);
         }
     }
 

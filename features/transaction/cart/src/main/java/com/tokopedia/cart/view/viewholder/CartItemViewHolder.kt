@@ -349,16 +349,11 @@ class CartItemViewHolder constructor(itemView: View,
     }
 
     private fun createProductInfoText(it: String): Typography {
-        val productInfo = Typography(itemView.context).apply {
-            setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_68))
+        return Typography(itemView.context).apply {
+            setTextColor(ContextCompat.getColor(itemView.context, R.color.Neutral_N700_68))
             setType(Typography.SMALL)
-            if (layoutProductInfo.childCount > 0) {
-                text = ", $it"
-            } else {
-                text = it
-            }
+            text = if (layoutProductInfo.childCount > 0) ", $it" else it
         }
-        return productInfo
     }
 
     private fun sendAnalyticsShowInformation(informationList: List<String>, productId: String) {
