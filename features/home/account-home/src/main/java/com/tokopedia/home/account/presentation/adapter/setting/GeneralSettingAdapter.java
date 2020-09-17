@@ -149,11 +149,15 @@ public class GeneralSettingAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                     .getContext()
                     .getResources()
                     .getString(R.string.title_occ_preference_setting);
+            String mediaTitle = itemView
+                    .getContext()
+                    .getResources()
+                    .getString(R.string.title_image_quality_setting);
             int boxColor = -1;
 
             if (title.equals(notificationTitle)) {
                 boxColor = com.tokopedia.unifyprinciples.R.color.Red_R400;
-            } else if (title.equals(preferenceTitle)) {
+            } else if (title.equals(preferenceTitle) || title.equals(mediaTitle)) {
                 boxColor = com.tokopedia.unifyprinciples.R.color.Red_R500;
             }
 
