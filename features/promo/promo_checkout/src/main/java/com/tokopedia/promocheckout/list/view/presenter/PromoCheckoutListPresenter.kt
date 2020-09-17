@@ -13,7 +13,7 @@ import com.tokopedia.promocheckout.list.model.listcoupon.DataPromoCheckoutList
 import com.tokopedia.promocheckout.list.model.listlastseen.PromoCheckoutLastSeenModel
 import com.tokopedia.usecase.RequestParams
 import rx.Subscriber
-import java.util.HashMap
+import java.util.*
 import kotlin.collections.ArrayList
 
 class PromoCheckoutListPresenter(private val graphqlUseCase: GraphqlUseCase,
@@ -68,7 +68,7 @@ class PromoCheckoutListPresenter(private val graphqlUseCase: GraphqlUseCase,
                 R.raw.promo_checkout_last_seen), PromoCheckoutLastSeenModel.Response::class.java, variables, false)
         lastSeenPromoUseCase.clearRequest()
         lastSeenPromoUseCase.addRequest(graphqlRequest)
-        lastSeenPromoUseCase.execute(RequestParams.create(), object : Subscriber<GraphqlResponse>() {
+        lastSeenPromoUseCase.execute(RequestParams.create(), object :Subscriber<GraphqlResponse>(){
             override fun onCompleted() {
 
             }
@@ -92,7 +92,7 @@ class PromoCheckoutListPresenter(private val graphqlUseCase: GraphqlUseCase,
                 R.raw.promo_checkout_deals), TravelCollectiveBanner.Response::class.java, variables, false)
         dealsPromoUseCase.clearRequest()
         dealsPromoUseCase.addRequest(graphqlRequest)
-        dealsPromoUseCase.execute(RequestParams.create(), object :Subscriber<GraphqlResponse>(){
+        dealsPromoUseCase.execute(RequestParams.create(), object : Subscriber<GraphqlResponse>() {
             override fun onNext(objects: GraphqlResponse?) {
                 val promoData = objects?.getData<TravelCollectiveBanner.Response>(TravelCollectiveBanner.Response::class.java)
                 view.renderListLastSeen(null, promoData?.response?.banners)
@@ -127,6 +127,6 @@ class PromoCheckoutListPresenter(private val graphqlUseCase: GraphqlUseCase,
         private val PAGE = "page"
         private val LIMIT = "limit"
         private val INCLUDE_EXTRA_INFO = "includeExtraInfo"
-        private val API_VERSION_VALUE= "2.0.0"
+        private val API_VERSION_VALUE = "2.0.0"
     }
 }
