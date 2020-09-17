@@ -65,8 +65,10 @@ class ChooseAccountFragment : BaseDaggerFragment(),
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
     @Inject
     lateinit var analytics: LoginPhoneNumberAnalytics
+
     @Named(SessionModule.SESSION_MODULE)
     @Inject
     lateinit var userSessionInterface: UserSessionInterface
@@ -207,12 +209,12 @@ class ChooseAccountFragment : BaseDaggerFragment(),
     }
 
     override fun onSelectedAccount(account: UserDetail, phone: String) {
-        if(account.challenge_2fa){
+        if (account.challenge_2fa) {
             open2FA(account, phone)
-        }else loginToken(account, phone)
+        } else loginToken(account, phone)
     }
 
-    private fun open2FA(account: UserDetail, phone: String){
+    private fun open2FA(account: UserDetail, phone: String) {
         selectedAccount = account
         selectedPhoneNo = phone
         val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.COTP)
@@ -385,9 +387,9 @@ class ChooseAccountFragment : BaseDaggerFragment(),
         if (accountList.userDetails.size == 1 && accountList.msisdn.isNotEmpty()) {
             adapter.setList(accountList.userDetails, accountList.msisdn)
             val userDetail = accountList.userDetails[0]
-            if(userDetail.challenge_2fa) {
+            if (userDetail.challenge_2fa) {
                 open2FA(userDetail, accountList.msisdn)
-            }else loginToken(userDetail, accountList.msisdn)
+            } else loginToken(userDetail, accountList.msisdn)
         } else {
             dismissLoadingProgress()
             adapter.setList(accountList.userDetails, accountList.msisdn)
@@ -406,13 +408,12 @@ class ChooseAccountFragment : BaseDaggerFragment(),
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == REQUEST_SECURITY_QUESTION && resultCode == Activity.RESULT_OK) {
             onSuccessLogin(userSessionInterface.temporaryUserId)
-        } else if (requestCode == REQUEST_CODE_PIN_CHALLENGE){
-            if(resultCode == Activity.RESULT_OK){
-                if(selectedAccount != null && !selectedPhoneNo.isNullOrEmpty())
+        } else if (requestCode == REQUEST_CODE_PIN_CHALLENGE) {
+            if (resultCode == Activity.RESULT_OK) {
+                if (selectedAccount != null && !selectedPhoneNo.isNullOrEmpty())
                     loginToken(selectedAccount, selectedPhoneNo ?: "")
             }
-        }
-        else {
+        } else {
             super.onActivityResult(requestCode, resultCode, data)
         }
     }

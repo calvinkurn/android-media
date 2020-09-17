@@ -34,7 +34,7 @@ class ChangePinViewModel @Inject constructor(
         private val userSession: UserSessionInterface,
         private val rawQueries: Map<String, String>,
         dispatcher: CoroutineDispatcher
-): BaseViewModel(dispatcher) {
+) : BaseViewModel(dispatcher) {
 
     private val mutableResetPinResponse = MutableLiveData<Result<AddChangePinData>>()
     val resetPinResponse: LiveData<Result<AddChangePinData>>
@@ -56,7 +56,7 @@ class ChangePinViewModel @Inject constructor(
     val changePinResponse: LiveData<Result<AddChangePinData>>
         get() = mutableChangePinResponse
 
-    fun validatePin(pin: String){
+    fun validatePin(pin: String) {
         rawQueries[ProfileCompletionQueryConstant.QUERY_VALIDATE_PIN]?.let { query ->
             val params = mapOf(ProfileCompletionQueryConstant.PARAM_PIN to pin)
 
@@ -105,7 +105,8 @@ class ChangePinViewModel @Inject constructor(
         )
 
     }
-    fun checkPin(pin: String){
+
+    fun checkPin(pin: String) {
         rawQueries[ProfileCompletionQueryConstant.QUERY_CHECK_PIN]?.let { query ->
             val params = mapOf(ProfileCompletionQueryConstant.PARAM_PIN to pin)
 
@@ -137,7 +138,7 @@ class ChangePinViewModel @Inject constructor(
         }
     }
 
-    fun resetPin2FA(userId: String, validateToken: String){
+    fun resetPin2FA(userId: String, validateToken: String) {
         val params = mapOf(
                 ProfileCompletionQueryConstant.PARAM_USER_ID to userId.toIntOrZero(),
                 ProfileCompletionQueryConstant.PARAM_VALIDATE_TOKEN to validateToken,
@@ -164,7 +165,7 @@ class ChangePinViewModel @Inject constructor(
         }
     }
 
-    fun resetPin(validateToken: String?){
+    fun resetPin(validateToken: String?) {
         rawQueries[ProfileCompletionQueryConstant.MUTATION_RESET_PIN]?.let { query ->
             val params = mapOf(
                     ProfileCompletionQueryConstant.PARAM_VALIDATE_TOKEN to validateToken)
@@ -196,7 +197,7 @@ class ChangePinViewModel @Inject constructor(
         }
     }
 
-    fun changePin(pin: String, pinConfirm: String, pinOld: String){
+    fun changePin(pin: String, pinConfirm: String, pinOld: String) {
         rawQueries[ProfileCompletionQueryConstant.MUTATION_UPDATE_PIN]?.let { query ->
             val params = mapOf(
                     ProfileCompletionQueryConstant.PARAM_PIN to pin,

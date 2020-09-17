@@ -77,9 +77,9 @@ class VerificationViewModel @Inject constructor(
             userIdEnc: String = "",
             accessToken: String = ""
     ) {
-        if((otpType == OtpConstant.OtpType.AFTER_LOGIN_PHONE.toString() || otpType == OtpConstant.OtpType.RESET_PIN.toString()) && userIdEnc.isNotEmpty()){
+        if ((otpType == OtpConstant.OtpType.AFTER_LOGIN_PHONE.toString() || otpType == OtpConstant.OtpType.RESET_PIN.toString()) && userIdEnc.isNotEmpty()) {
             getVerificationMethod2FA(otpType, accessToken, userIdEnc)
-        }else {
+        } else {
             launchCatchError(coroutineContext, {
                 val params = getVerificationMethodUseCase.getParams(otpType, userId, msisdn, email)
 
@@ -140,9 +140,9 @@ class VerificationViewModel @Inject constructor(
             validateToken: String = "",
             userIdEnc: String = ""
     ) {
-        if(validateToken.isNotEmpty() && userIdEnc.isNotEmpty()){
+        if (validateToken.isNotEmpty() && userIdEnc.isNotEmpty()) {
             sendOtp2FA(otpType, mode, msisdn, email, otpDigit, validateToken, userIdEnc)
-        }else {
+        } else {
             launchCatchError(coroutineContext, {
                 val params = sendOtpUseCase.getParams(otpType, mode, msisdn, email, otpDigit)
                 val data = sendOtpUseCase.getData(params).data
@@ -204,9 +204,9 @@ class VerificationViewModel @Inject constructor(
             validateToken: String = "",
             userIdEnc: String = ""
     ) {
-        if((otpType == OtpConstant.OtpType.AFTER_LOGIN_PHONE.toString() || otpType == OtpConstant.OtpType.RESET_PIN.toString()) && userIdEnc.isNotEmpty()){
+        if ((otpType == OtpConstant.OtpType.AFTER_LOGIN_PHONE.toString() || otpType == OtpConstant.OtpType.RESET_PIN.toString()) && userIdEnc.isNotEmpty()) {
             otpValidate2FA(otpType, validateToken, userIdEnc, mode, code)
-        }else {
+        } else {
             launchCatchError(coroutineContext, {
                 val params = otpValidateUseCase.getParams(code, otpType, msisdn, fpData, getSL, email, mode, signature, timeUnix, userId)
                 val data = otpValidateUseCase.getData(params).data

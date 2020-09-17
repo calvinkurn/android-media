@@ -51,10 +51,13 @@ class ChangePinFragment : BaseDaggerFragment(), CoroutineScope {
 
     @Inject
     lateinit var trackingPinUtil: TrackingPinUtil
+
     @Inject
     lateinit var userSession: UserSessionInterface
+
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
     @Inject
     lateinit var loadingDialog: LoadingDialog
 
@@ -105,7 +108,7 @@ class ChangePinFragment : BaseDaggerFragment(), CoroutineScope {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initViews()
-        if(isFrom2FA) forgotPinState()
+        if (isFrom2FA) forgotPinState()
         initObserver()
     }
 
@@ -162,10 +165,10 @@ class ChangePinFragment : BaseDaggerFragment(), CoroutineScope {
         if (pin == input) {
             if (isForgotPin && !isFrom2FA) {
                 goToVerificationActivity()
-            }else if(isFrom2FA) {
-                changePinViewModel.resetPin2FA(arguments?.getString(ApplinkConstInternalGlobal.PARAM_USER_ID) ?: "", arguments?.getString(ApplinkConstInternalGlobal.PARAM_TOKEN) ?: "")
-            }
-            else {
+            } else if (isFrom2FA) {
+                changePinViewModel.resetPin2FA(arguments?.getString(ApplinkConstInternalGlobal.PARAM_USER_ID)
+                        ?: "", arguments?.getString(ApplinkConstInternalGlobal.PARAM_TOKEN) ?: "")
+            } else {
                 showLoading()
                 changePinViewModel.changePin(pin, input, oldPin)
             }
@@ -175,8 +178,10 @@ class ChangePinFragment : BaseDaggerFragment(), CoroutineScope {
     }
 
     private fun handleInputNewPinState(input: String) {
-        if(isFrom2FA){
-            changePinViewModel.checkPin2FA(input, validateToken = arguments?.getString(ApplinkConstInternalGlobal.PARAM_TOKEN) ?: "", userId = arguments?.getString(ApplinkConstInternalGlobal.PARAM_USER_ID) ?: "")
+        if (isFrom2FA) {
+            changePinViewModel.checkPin2FA(input, validateToken = arguments?.getString(ApplinkConstInternalGlobal.PARAM_TOKEN)
+                    ?: "", userId = arguments?.getString(ApplinkConstInternalGlobal.PARAM_USER_ID)
+                    ?: "")
         } else changePinViewModel.checkPin(input)
     }
 
@@ -318,7 +323,7 @@ class ChangePinFragment : BaseDaggerFragment(), CoroutineScope {
     private fun goToSuccessPage() {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PIN_COMPLETE).apply {
             flags = Intent.FLAG_ACTIVITY_FORWARD_RESULT
-            putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, if(isFrom2FA) PinCompleteFragment.SOURCE_FORGOT_PIN_2FA else if (isForgotPin) PinCompleteFragment.SOURCE_FORGOT_PIN else PinCompleteFragment.SOURCE_CHANGE_PIN)
+            putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, if (isFrom2FA) PinCompleteFragment.SOURCE_FORGOT_PIN_2FA else if (isForgotPin) PinCompleteFragment.SOURCE_FORGOT_PIN else PinCompleteFragment.SOURCE_CHANGE_PIN)
         }
         startActivity(intent)
         activity?.finish()
@@ -330,9 +335,9 @@ class ChangePinFragment : BaseDaggerFragment(), CoroutineScope {
         else onError(Throwable())
     }
 
-    private fun onSuccessChangePin(data: AddChangePinData){
+    private fun onSuccessChangePin(data: AddChangePinData) {
         dismissLoading()
-        if(data.success) goToSuccessPage()
+        if (data.success) goToSuccessPage()
         else onError(Throwable())
     }
 
@@ -370,7 +375,7 @@ class ChangePinFragment : BaseDaggerFragment(), CoroutineScope {
         })
 
         changePinViewModel.changePinResponse.observe(viewLifecycleOwner, Observer {
-            when(it){
+            when (it) {
                 is Success -> onSuccessChangePin(it.data)
                 is Fail -> onError(it.throwable)
             }

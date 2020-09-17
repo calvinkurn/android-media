@@ -40,11 +40,11 @@ class PinCompleteFragment : BaseDaggerFragment() {
         btnComplete.setOnClickListener {
             trackingPinUtil.trackClickFinishButton()
             activity?.let {
-                if(arguments?.getInt(ApplinkConstInternalGlobal.PARAM_SOURCE) == SOURCE_FORGOT_PIN_2FA) {
+                if (arguments?.getInt(ApplinkConstInternalGlobal.PARAM_SOURCE) == SOURCE_FORGOT_PIN_2FA) {
                     val intent = Intent().putExtras(arguments!!)
                     intent.flags = Intent.FLAG_ACTIVITY_FORWARD_RESULT
                     it.setResult(Activity.RESULT_OK, intent)
-                }else it.setResult(Activity.RESULT_OK)
+                } else it.setResult(Activity.RESULT_OK)
                 it.finish()
             }
         }

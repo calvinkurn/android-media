@@ -50,8 +50,10 @@ class VerificationMethodFragment : BaseVerificationFragment(), IOnBackPressed {
 
     @Inject
     lateinit var analytics: TrackingValidatorUtil
+
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
     @Inject
     lateinit var userSession: UserSessionInterface
 
@@ -139,19 +141,19 @@ class VerificationMethodFragment : BaseVerificationFragment(), IOnBackPressed {
             if (otpModeListData.success && otpModeListData.modeList.isNotEmpty()) {
                 hideLoading()
 
-                    if (!otpData.isShowChooseMethod) {
-                        val modeList = otpModeListData.modeList.singleOrNull {
-                            it.modeText == otpData.otpMode
-                        }
+                if (!otpData.isShowChooseMethod) {
+                    val modeList = otpModeListData.modeList.singleOrNull {
+                        it.modeText == otpData.otpMode
+                    }
 
-                        if (modeList != null) {
-                            skipView(modeList)
-                        } else {
-                            showListView(otpModeListData)
-                        }
+                    if (modeList != null) {
+                        skipView(modeList)
                     } else {
                         showListView(otpModeListData)
                     }
+                } else {
+                    showListView(otpModeListData)
+                }
 
             } else if (otpModeListData.errorMessage.isEmpty()) {
                 onFailedGetVerificationMethod().invoke(MessageErrorException(otpModeListData.errorMessage))

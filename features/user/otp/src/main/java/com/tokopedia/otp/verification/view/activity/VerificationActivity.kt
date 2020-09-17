@@ -70,7 +70,7 @@ class VerificationActivity : BaseSimpleActivity(), HasComponent<VerificationComp
         KeyboardHandler.hideSoftKeyboard(this)
         val fragment = this.supportFragmentManager.findFragmentById(R.id.parent_view)
         (fragment as? IOnBackPressed)?.onBackPressed()?.let { isBackPressed ->
-            if(isBackPressed) {
+            if (isBackPressed) {
                 if (supportFragmentManager.backStackEntryCount > 1) {
                     supportFragmentManager.popBackStack()
                 } else {
@@ -126,9 +126,11 @@ class VerificationActivity : BaseSimpleActivity(), HasComponent<VerificationComp
     }
 
     private fun setupParams() {
-        otpData.userId = if(isResetPin2FA || intent?.extras?.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_FROM_2FA) == true) intent?.extras?.getString(ApplinkConstInternalGlobal.PARAM_USER_ID, "") ?: "" else userSession.userId ?: userSession.temporaryUserId
+        otpData.userId = if (isResetPin2FA || intent?.extras?.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_FROM_2FA) == true) intent?.extras?.getString(ApplinkConstInternalGlobal.PARAM_USER_ID, "")
+                ?: "" else userSession.userId ?: userSession.temporaryUserId
         otpData.otpType = intent?.extras?.getInt(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, 0) ?: 0
-        otpData.otpMode = intent?.extras?.getString(ApplinkConstInternalGlobal.PARAM_REQUEST_OTP_MODE, "") ?: ""
+        otpData.otpMode = intent?.extras?.getString(ApplinkConstInternalGlobal.PARAM_REQUEST_OTP_MODE, "")
+                ?: ""
         otpData.email = intent?.extras?.getString(ApplinkConstInternalGlobal.PARAM_EMAIL, "") ?: ""
         otpData.msisdn = intent?.extras?.getString(ApplinkConstInternalGlobal.PARAM_MSISDN, "")
                 ?: ""
@@ -154,7 +156,7 @@ class VerificationActivity : BaseSimpleActivity(), HasComponent<VerificationComp
         val fragmentTransactionManager = supportFragmentManager.beginTransaction()
 
         fragmentTransactionManager.add(parentViewResourceID, fragment, tag)
-        if(isBackAnimation)
+        if (isBackAnimation)
             fragmentTransactionManager.setCustomAnimations(R.animator.slide_in_left, 0, 0, R.animator.slide_out_right)
         else fragmentTransactionManager.setCustomAnimations(R.animator.slide_in_left, 0, 0, R.animator.slide_out_left)
         fragmentTransactionManager.addToBackStack(BACK_STACK_ROOT_TAG)
