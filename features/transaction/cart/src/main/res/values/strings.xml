@@ -55,4 +55,5 @@
 
     <string name="content_desc_go_to_courier_page_button">button beli</string>
     <string name="label_fulfilment_wording">Dilayani Tokopedia</string>
+    <string name="label_remark_title">Catatan untuk barang ini</string>
 </resources>

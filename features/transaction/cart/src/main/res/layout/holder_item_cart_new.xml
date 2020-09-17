@@ -256,6 +256,15 @@
 
                     </LinearLayout>
 
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:id="@+id/tv_label_remark_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/label_remark_title"
+                        android:textColor="@color/Neutral_N700_68"
+                        app:typographyType="body_3"
+                        app:typographyWeight="reguler" />
+
                     <androidx.appcompat.widget.AppCompatEditText
                         android:id="@+id/et_remark"
                         android:layout_width="match_parent"
