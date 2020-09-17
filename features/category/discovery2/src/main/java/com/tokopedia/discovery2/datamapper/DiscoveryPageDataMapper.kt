@@ -75,12 +75,16 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo, private val queryP
 
     private fun parseTab(component: ComponentsItem, position: Int): List<ComponentsItem> {
         val listComponents: ArrayList<ComponentsItem> = ArrayList()
-        listComponents.add(component)
-        component.data?.let { it ->
+
+        if(component.data.isNullOrEmpty()){
+            return listComponents
+        }else{
+            listComponents.add(component)
             if (component.getComponentsItem().isNullOrEmpty()) {
                 component.setComponentsItem(DiscoveryDataMapper.mapTabsListToComponentList(component, ComponentNames.TabsItem.componentName, position, queryParameterMap[PINNED_ACTIVE_TAB]))
             }
         }
+
         component.getComponentsItem()?.forEach {
             it.apply {
                 val tabData = data?.get(0)

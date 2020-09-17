@@ -9,4 +9,6 @@ data class ProductInfoP3(
         var rateEstSummarizeText: SummaryText? = null,
         var ratesModel: RatesModel? = null,
         var addressModel: AddressModel? = null,
-        var tickerInfo: List<StickyLoginTickerPojo.TickerDetail> = ArrayList())
+        var tickerInfo: List<StickyLoginTickerPojo.TickerDetail> = ArrayList(),
+        var tickerStickyLogin: StickyLoginTickerPojo.TickerDetail? = null
+)
