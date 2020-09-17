@@ -776,11 +776,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
                 dismissProgressBar()
                 it.setResult(Activity.RESULT_CANCELED)
             } else if (requestCode == REQUEST_ADD_NAME_REGISTER_PHONE && resultCode == Activity.RESULT_OK) {
-                val enable2FA = data?.extras?.getBoolean(ApplinkConstInternalGlobal.PARAM_ENABLE_2FA) ?: false
-                val enableSkip2FA = data?.extras?.getBoolean(ApplinkConstInternalGlobal.PARAM_ENABLE_SKIP_2FA) ?: false
-                if(enable2FA){
-                    goToAddPin2FA(enableSkip2FA)
-                } else registerInitialViewModel.getUserInfo(isCreatePin = true)
+                processAfterAddNameRegisterPhone(data?.extras)
             } else if (requestCode == REQUEST_ADD_PIN) {
                 registerInitialViewModel.getUserInfo()
             }
@@ -862,6 +858,16 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
                 onErrorRegister(String.format(getString(R.string.loginregister_failed_login_google),
                         e.statusCode.toString()))
             }
+        }
+    }
+
+    private fun processAfterAddNameRegisterPhone(data: Bundle?){
+        val enable2FA = data?.getBoolean(ApplinkConstInternalGlobal.PARAM_ENABLE_2FA) ?: false
+        val enableSkip2FA = data?.getBoolean(ApplinkConstInternalGlobal.PARAM_ENABLE_SKIP_2FA) ?: false
+        if(enable2FA){
+            goToAddPin2FA(enableSkip2FA)
+        } else {
+            registerInitialViewModel.getUserInfo(isCreatePin = true)
         }
     }
 
