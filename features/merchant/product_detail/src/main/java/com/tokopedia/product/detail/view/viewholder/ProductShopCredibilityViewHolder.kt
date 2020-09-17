@@ -4,7 +4,6 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.loadImageCircle
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.detail.R
@@ -15,6 +14,7 @@ import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.util.getRelativeDate
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.image.ImageUtils
 import kotlinx.android.synthetic.main.item_dynamic_shop_credibility.view.*
 
 /**
@@ -166,7 +166,7 @@ class ProductShopCredibilityViewHolder(private val view: View, private val liste
             iv_badge.setImageDrawable(drawable)
         }
 
-        shop_ava.loadImageCircle(avatar)
+        ImageUtils.loadImageCircleWithPlaceHolder(context, shop_ava, avatar)
     }
 
     private fun hideShopLoading() = with(view) {

@@ -283,6 +283,7 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
                 shopAva = it.shopInfo.shopAssets.avatar
                 shopLocation = it.shopInfo.location
                 shopActiveProduct = it.shopInfo.activeProduct
+                shopCreated = it.shopInfo.createdInfo.shopCreated
                 isGoApotik = it.isGoApotik
                 shopSpeed = it.shopSpeed
                 shopChatSpeed = it.shopChatSpeed.toIntOrZero()

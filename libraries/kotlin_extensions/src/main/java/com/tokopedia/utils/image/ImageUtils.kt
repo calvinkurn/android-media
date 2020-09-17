@@ -75,6 +75,17 @@ object ImageUtils {
         }
     }
 
+    fun loadImageCircleWithPlaceHolder(context: Context, imageView: ImageView,
+                                       url: String?) {
+        Glide.with(context)
+                .asBitmap()
+                .load(url)
+                .dontAnimate()
+                .placeholder(R.drawable.ic_loading_placeholder)
+                .error(R.drawable.ic_loading_error)
+                .into(getCircleImageViewTarget(imageView))
+    }
+
     fun loadImageRounded2(context: Context, imageview: ImageView, url: String?, radius: Float) {
         if (url != null && !url.isEmpty()) {
             Glide.with(context)
