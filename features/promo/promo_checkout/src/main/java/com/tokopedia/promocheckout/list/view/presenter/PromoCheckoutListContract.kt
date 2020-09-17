@@ -1,5 +1,6 @@
 package com.tokopedia.promocheckout.list.view.presenter
 
+import android.content.Context
 import android.content.res.Resources
 import com.tokopedia.abstraction.base.view.listener.BaseListViewListener
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
@@ -7,8 +8,6 @@ import com.tokopedia.promocheckout.common.domain.model.TravelCollectiveBanner
 import com.tokopedia.promocheckout.common.view.uimodel.DataUiModel
 import com.tokopedia.promocheckout.list.model.listcoupon.PromoCheckoutListModel
 import com.tokopedia.promocheckout.list.model.listlastseen.PromoCheckoutLastSeenModel
-import com.tokopedia.promocheckout.list.model.listpromocatalog.TokopointsCatalogHighlight
-import com.tokopedia.promocheckout.list.model.listpromolastseen.GetPromoSuggestion
 
 interface PromoCheckoutListContract {
 
@@ -20,6 +19,7 @@ interface PromoCheckoutListContract {
         fun onSuccessCheckPromo(data: DataUiModel)
         fun onErrorCheckPromo(e: Throwable)
         fun onErrorEmptyPromo()
+        override fun getContext(): Context?
     }
 
     interface Presenter : CustomerPresenter<View> {
