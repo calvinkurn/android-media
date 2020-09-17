@@ -6,6 +6,7 @@ import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.home.account.AccountConstants.Query.NEW_QUERY_BUYER_ACCOUNT_HOME
 import com.tokopedia.home.account.presentation.util.AccountHomeErrorHandler
+import com.tokopedia.home.account.revamp.Utils
 import com.tokopedia.home.account.revamp.domain.data.model.AccountDataModel
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.coroutines.UseCase
@@ -28,8 +29,10 @@ class GetBuyerAccountDataUseCase @Inject constructor(
         } else {
             var data: AccountDataModel? = gqlResponse.getData(AccountDataModel::class.java)
             if (data == null) {
+                val mapResponse = Utils.convertResponseToJson(gqlResponse)
                 data = AccountDataModel()
-                AccountHomeErrorHandler.logDataNull("GetBuyerAccountDataUseCase", Throwable("ShortcutResponse"))
+                AccountHomeErrorHandler.logDataNull("GetBuyerAccountDataUseCase",
+                        Throwable("Results : ${mapResponse[Utils.M_RESULT]} - Errors : ${mapResponse[Utils.M_ERRORS]}"))
             }
             return data
         }

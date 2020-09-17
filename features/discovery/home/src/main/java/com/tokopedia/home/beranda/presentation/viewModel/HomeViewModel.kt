@@ -633,10 +633,12 @@ open class HomeViewModel @Inject constructor(
     }
 
     fun removeViewHolderAtPosition(position: Int) {
-        val homeViewModel = _homeLiveData.value
-        val detectViewHolder = homeViewModel?.list?.get(position)
-        detectViewHolder?.let {
-            launch(coroutineContext) { updateWidget(UpdateLiveDataModel(ACTION_DELETE, it)) }
+        if(position != -1 && position < (_homeLiveData.value?.list?.size ?: 0)){
+            val homeViewModel = _homeLiveData.value
+            val detectViewHolder = homeViewModel?.list?.get(position)
+            detectViewHolder?.let {
+                launch(coroutineContext) { updateWidget(UpdateLiveDataModel(ACTION_DELETE, it)) }
+            }
         }
     }
 

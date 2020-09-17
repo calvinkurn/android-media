@@ -16,6 +16,7 @@
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/et_label_address"
+            android:contentDescription="@string/content_desc_et_label_address"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:imeOptions="actionDone"
@@ -47,6 +48,7 @@
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/et_receiver_name"
+            android:contentDescription="@string/content_desc_et_receiver_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:imeOptions="actionDone"
@@ -70,6 +72,7 @@
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/et_phone"
+            android:contentDescription="@string/content_desc_et_phone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:imeOptions="actionDone"
@@ -85,6 +88,7 @@
 
     <com.tokopedia.design.component.ButtonCompat
         android:id="@+id/btn_save_address"
+        android:contentDescription="@string/content_desc_btn_save_address"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/dp_10"

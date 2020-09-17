@@ -51,9 +51,6 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
     val productInfoMap: ProductInfoDataModel?
         get() = mapOfData[ProductDetailConstant.PRODUCT_INFO] as? ProductInfoDataModel
 
-    val productDiscussionMap: ProductDiscussionDataModel?
-        get() = mapOfData[ProductDetailConstant.DISCUSSION] as? ProductDiscussionDataModel
-
     val productDiscussionMostHelpfulMap: ProductDiscussionMostHelpfulDataModel?
         get() = mapOfData[ProductDetailConstant.DISCUSSION_FAQ] as? ProductDiscussionMostHelpfulDataModel
 
@@ -161,11 +158,6 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
 
             valuePropositionDataModel?.run {
                 isOfficialStore = it.data.isOS
-            }
-
-            productDiscussionMap?.run {
-                shopId = it.basic.shopID
-                talkCount = it.basic.stats.countTalk
             }
 
             miniSocialProofMap?.run {
@@ -363,10 +355,6 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
             productReviewMap?.run {
                 listOfReviews = it.helpfulReviews
                 imageReviews = it.imageReviews
-            }
-
-            productDiscussionMap?.run {
-                latestTalk = it.latestTalk
             }
 
             mediaMap?.run {

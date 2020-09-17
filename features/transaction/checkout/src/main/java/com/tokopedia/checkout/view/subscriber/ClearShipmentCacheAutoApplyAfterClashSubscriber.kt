@@ -14,10 +14,13 @@ class ClearShipmentCacheAutoApplyAfterClashSubscriber(val view: ShipmentContract
     }
 
     override fun onError(e: Throwable) {
-        // Nothing to do
+        view?.hideLoading()
+        view?.setHasRunningApiCall(false)
     }
 
     override fun onNext(response: ClearPromoUiModel) {
+        view?.hideLoading()
+        view?.setHasRunningApiCall(false)
         view?.showToastNormal("Ada perubahan pada promo yang kamu pakai")
     }
 

@@ -4,6 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.vouchercreation.coroutine.TestCoroutineDispatchers
 import com.tokopedia.vouchercreation.create.domain.usecase.validation.PromoCodeValidationUseCase
 import com.tokopedia.vouchercreation.create.view.uimodel.validation.PromoCodeValidation
 import io.mockk.MockKAnnotations
@@ -13,8 +14,6 @@ import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.test.TestCoroutineDispatcher
-import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -26,7 +25,6 @@ class CreatePromoCodeViewModelTest {
     @RelaxedMockK
     lateinit var promoCodeValidationUseCase: PromoCodeValidationUseCase
 
-    lateinit var testDispatcher: TestCoroutineDispatcher
     lateinit var mViewModel: CreatePromoCodeViewModel
 
     @get:Rule
@@ -35,15 +33,8 @@ class CreatePromoCodeViewModelTest {
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        testDispatcher = TestCoroutineDispatcher()
-        mViewModel = CreatePromoCodeViewModel(testDispatcher, promoCodeValidationUseCase)
+        mViewModel = CreatePromoCodeViewModel(TestCoroutineDispatchers, promoCodeValidationUseCase)
     }
-
-    @After
-    fun cleanup() {
-        testDispatcher.cleanupTestCoroutines()
-    }
-
 
     @Test
     fun `success validate promo code`() = runBlocking {
