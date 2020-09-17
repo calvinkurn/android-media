@@ -8,6 +8,7 @@ object ProductDetailCommonConstant{
     const val PARAM_SHOP_ID = "shopID"
     const val PARAM_SHOP_DOMAIN = "shopDomain"
     const val PARAM_PRODUCT_KEY = "productKey"
+    const val PARAM_DEVICE_ID = "deviceID"
     const val PARAM_WAREHOUSE_ID = "whID"
     const val PARAM_LAYOUT_ID = "layoutID"
     const val PARAM_INPUT = "input"

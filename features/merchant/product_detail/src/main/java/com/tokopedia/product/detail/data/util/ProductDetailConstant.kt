@@ -44,7 +44,6 @@ object ProductDetailConstant {
     const val KEY_OCC_BUTTON = "occ"
     const val KEY_CHAT = "chat"
     const val KEY_BYME = "byme"
-    const val DELIMITER_DEVICE_ID = "|>deviceID:"
     const val KEY_BUTTON_PRIMARY = "primary"
     const val KEY_BUTTON_DISABLE = "disabled"
     const val KEY_BUTTON_SECONDARY = "secondary"
@@ -170,8 +169,6 @@ object ProductDetailConstant {
     //OVO
     const val OVO_INACTIVE_STATUS = 1;
     const val OVO_INSUFFICIENT_BALANCE_STATUS = 2;
-
-    const val ENABLE_NEW_DISCUSSION_REMOTE_CONFIG = "android_enable_new_discussion"
 
     //SHOP
     const val ALREADY_FAVORITE_SHOP = 1

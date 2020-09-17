@@ -28,6 +28,7 @@ class InAppDataProviderSubscriber(
                             RepositoryManager.getInstance()
                                     .storageProvider
                                     .deleteRecord(inAppData.id)
+                                    .subscribe()
                         }
                     }
                 }
