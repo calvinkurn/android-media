@@ -1,6 +1,5 @@
 package com.tokopedia.discovery2.repository.tabs
 
-import android.util.Log
 import com.tokopedia.basemvvm.repository.BaseRepository
 import com.tokopedia.discovery2.data.DataResponse
 import com.tokopedia.discovery2.data.DiscoveryResponse

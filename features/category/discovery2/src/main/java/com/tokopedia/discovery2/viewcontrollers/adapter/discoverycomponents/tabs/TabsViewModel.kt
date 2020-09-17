@@ -5,9 +5,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.discovery2.data.ComponentsItem
-import com.tokopedia.discovery2.datamapper.getComponent
 import com.tokopedia.discovery2.di.DaggerDiscoveryComponent
-import com.tokopedia.discovery2.usecase.tabsusecase.TabsUseCase
+import com.tokopedia.discovery2.usecase.tabsusecase.DynamicTabsUseCase
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import kotlinx.coroutines.CoroutineScope
@@ -24,7 +23,7 @@ class TabsViewModel(val application: Application, val components: ComponentsItem
 
 
     @Inject
-    lateinit var tabsUseCase: TabsUseCase
+    lateinit var dynamicTabsUseCase: DynamicTabsUseCase
 
 
     init {
@@ -52,7 +51,7 @@ class TabsViewModel(val application: Application, val components: ComponentsItem
         components.properties?.let {
             if (components.getComponentsItem()?.size == 0 && it.dynamic) {
                 launchCatchError(block = {
-                    tabsUseCase.getTabData(components.id, components.pageEndPoint).run {
+                    dynamicTabsUseCase.getTabData(components.id, components.pageEndPoint).run {
                         updateTabItems()
                         this@TabsViewModel.syncData.value = this
                     }
@@ -92,27 +91,10 @@ class TabsViewModel(val application: Application, val components: ComponentsItem
         this.syncData.value = true
     }
 
-
-    fun clearDynamicTabData() {
-        if (components.properties?.dynamic == true && components.getComponentsItem() != null) {
-            val parentComponent = components.getComponentsItem()!!
-            if (parentComponent.isNotEmpty() && parentComponent[0].getComponentsItem() != null) {
-                val tabChildComponent = parentComponent[0].getComponentsItem()!!
-                if (tabChildComponent.isNotEmpty()) {
-                    getComponent(tabChildComponent[0].id, tabChildComponent[0].pageEndPoint)?.run {
-                        this.setComponentsItem(null)
-                        this.noOfPagesLoaded = 0
-                    }
-                }
-            }
-        }
-    }
-
     override fun initDaggerInject() {
         DaggerDiscoveryComponent.builder()
                 .baseAppComponent((application.applicationContext as BaseMainApplication).baseAppComponent)
                 .build()
                 .inject(this)
     }
-
 }

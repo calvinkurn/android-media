@@ -5,7 +5,6 @@ import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.data.Properties
 import com.tokopedia.discovery2.datamapper.getComponent
 import com.tokopedia.discovery2.repository.productcards.ProductCardsRepository
-import java.util.*
 import javax.inject.Inject
 
 class ProductCardsUseCase @Inject constructor(private val productCardsRepository: ProductCardsRepository) {
