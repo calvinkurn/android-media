@@ -31,7 +31,7 @@
     <string name="key_all_order">all_order</string>
 
     <!--Empty state non topads user-->
-    <string name="empty_peluang_desc_non_topads_no_filter">4 dari 5 seller mendapatkan penjualan pertamanya dengan beriklan menggunakan TopAds</string>
+    <string name="empty_peluang_desc_non_topads_no_filter">Ayo bikin tokomu lebih ramai pembeli dengan beriklan pakai TopAds!</string>
     <string name="empty_peluang_desc_non_topads_with_filter">Ubah filter untuk menemukan pesanan yang sesuai</string>
     <string name="btn_cek_peluang_non_topads">Mulai Beriklan</string>
 
