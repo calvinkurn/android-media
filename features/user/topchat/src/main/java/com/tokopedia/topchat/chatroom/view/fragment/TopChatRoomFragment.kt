@@ -7,6 +7,7 @@ import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -96,6 +97,7 @@ import com.tokopedia.topchat.common.analytics.ChatSettingsAnalytics
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
 import com.tokopedia.topchat.common.custom.ToolTipStickerPopupWindow
 import com.tokopedia.topchat.common.util.Utils
+import com.tokopedia.topchat.common.util.ViewUtil
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
 import com.tokopedia.unifyprinciples.Typography
@@ -179,7 +181,29 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
             bindView(it)
             initStickerView()
             initFbNewUnreadMessage()
+            initTextComposeBackground(it)
         }
+    }
+
+    private fun initTextComposeBackground(view: View) {
+        val bgComposeArea = ViewUtil.generateBackgroundWithShadow(
+                view,
+                com.tokopedia.unifyprinciples.R.color.Neutral_N0,
+                R.dimen.dp_topchat_20,
+                R.dimen.dp_topchat_20,
+                R.dimen.dp_topchat_20,
+                R.dimen.dp_topchat_20,
+                R.color.topchat_message_shadow,
+                R.dimen.dp_topchat_2,
+                R.dimen.dp_topchat_1,
+                Gravity.CENTER
+        )
+        val paddingStart = resources.getDimension(R.dimen.spacing_lvl7).toInt()
+        val paddingEnd = resources.getDimension(R.dimen.spacing_lvl8).toInt()
+        val paddingTop = resources.getDimension(R.dimen.dp_topchat_11).toInt()
+        val paddingBottom = resources.getDimension(R.dimen.dp_topchat_10).toInt()
+        composeArea?.background = bgComposeArea
+        composeArea?.setPadding(paddingStart, paddingTop, paddingEnd, paddingBottom)
     }
 
     private fun initFbNewUnreadMessage() {
