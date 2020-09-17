@@ -1098,7 +1098,7 @@ public class GTMAnalytics extends ContextAnalytics {
     }
 
     private Bundle addGclIdIfNeeded(String eventName, Bundle values) {
-        if (null == eventName) return values;
+        if (mGclid.isEmpty() || null == eventName) return values;
         switch (eventName.toLowerCase()) {
             case FirebaseAnalytics.Event.ADD_TO_CART:
             case ADDTOCART:
