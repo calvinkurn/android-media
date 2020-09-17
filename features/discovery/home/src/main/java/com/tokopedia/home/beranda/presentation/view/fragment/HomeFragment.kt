@@ -1018,7 +1018,7 @@ open class HomeFragment : BaseDaggerFragment(),
                         SalamWidgetCallback(context,getHomeViewModel(),this, getUserSession())),
                 ProductHighlightComponentCallback(this),
                 Lego4AutoBannerComponentCallback(context, this),
-                FeaturedShopComponentCallback(this)
+                FeaturedShopComponentCallback(context, this)
 
         )
         val asyncDifferConfig = AsyncDifferConfig.Builder(HomeVisitableDiffUtil())
