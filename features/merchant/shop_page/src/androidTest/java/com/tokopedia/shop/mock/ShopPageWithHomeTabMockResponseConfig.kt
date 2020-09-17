@@ -34,31 +34,7 @@ class ShopPageWithHomeTabMockResponseConfig : MockModelConfig() {
 
         addMockResponse(
                 KEY_QUERY_GET_IS_SHOP_OFFICIAL,
-                getRawString(context, R.raw.response_mock_data_get_is_shop_os_data_with_home_tab),
-                FIND_BY_CONTAINS
-        )
-
-        addMockResponse(
-                KEY_QUERY_SHOP_INFO_CORE_AND_ASSETS,
-                getRawString(context, R.raw.response_mock_data_get_shop_info_core_and_assets_with_home_tab),
-                FIND_BY_CONTAINS
-        )
-
-        addMockResponse(
-                KEY_QUERY_GET_SHOP_PAGE_HOME_TYPE,
-                getRawString(context, R.raw.response_mock_data_get_shop_page_home_type_with_home_tab),
-                FIND_BY_CONTAINS
-        )
-
-        addMockResponse(
-                KEY_QUERY_IS_SHOP_POWER_MERCHANT,
-                getRawString(context, R.raw.response_mock_data_get_is_shop_power_merchant),
-                FIND_BY_CONTAINS
-        )
-
-        addMockResponse(
-                KEY_QUERY_SHOP_INFO_TOP_CONTENT,
-                getRawString(context, R.raw.response_mock_data_get_shop_info_top_content),
+                getRawString(context, R.raw.response_mock_data_shop_page_p1_data_with_home_tab),
                 FIND_BY_CONTAINS
         )
 
@@ -71,12 +47,6 @@ class ShopPageWithHomeTabMockResponseConfig : MockModelConfig() {
         addMockResponse(
                 KEY_QUERY_GET_SHOP_PRODUCT,
                 getRawString(context, R.raw.response_mock_data_get_shop_product),
-                FIND_BY_CONTAINS
-        )
-
-        addMockResponse(
-                KEY_QUERY_WHITELIST,
-                getRawString(context, R.raw.response_mock_data_whitelist),
                 FIND_BY_CONTAINS
         )
 

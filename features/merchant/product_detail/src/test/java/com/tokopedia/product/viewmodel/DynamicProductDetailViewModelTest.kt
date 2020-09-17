@@ -35,9 +35,6 @@ import com.tokopedia.purchase_platform.common.feature.helpticket.domain.usecase.
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
-import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
-import com.tokopedia.stickylogin.domain.usecase.StickyLoginUseCase
-import com.tokopedia.stickylogin.internal.StickyLoginConstant
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
@@ -61,9 +58,6 @@ class DynamicProductDetailViewModelTest {
 
     @RelaxedMockK
     lateinit var userSessionInterface: UserSessionInterface
-
-    @RelaxedMockK
-    lateinit var stickyLoginUseCase: StickyLoginUseCase
 
     @RelaxedMockK
     lateinit var getPdpLayoutUseCase: GetPdpLayoutUseCase
@@ -133,7 +127,7 @@ class DynamicProductDetailViewModelTest {
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        spykViewModel = spyk(DynamicProductDetailViewModel(TestDispatcherProvider(), stickyLoginUseCase, getPdpLayoutUseCase, getProductInfoP2LoginUseCase, getProductInfoP2OtherUseCase, getProductInfoP2DataUseCase, getProductInfoP3UseCase, toggleFavoriteUseCase, removeWishlistUseCase, addWishListUseCase, getRecommendationUseCase,
+        spykViewModel = spyk(DynamicProductDetailViewModel(TestDispatcherProvider(), getPdpLayoutUseCase, getProductInfoP2LoginUseCase, getProductInfoP2OtherUseCase, getProductInfoP2DataUseCase, getProductInfoP3UseCase, toggleFavoriteUseCase, removeWishlistUseCase, addWishListUseCase, getRecommendationUseCase,
                 moveProductToWarehouseUseCase, moveProductToEtalaseUseCase, trackAffiliateUseCase, submitHelpTicketUseCase, updateCartCounterUseCase, addToCartUseCase, addToCartOcsUseCase, addToCartOccUseCase, toggleNotifyMeUseCase, discussionMostHelpfulUseCase, topAdsImageViewUseCase, userSessionInterface)
         )
     }
@@ -144,7 +138,7 @@ class DynamicProductDetailViewModelTest {
     }
 
     private val viewModel by lazy {
-        DynamicProductDetailViewModel(TestDispatcherProvider(), stickyLoginUseCase, getPdpLayoutUseCase, getProductInfoP2LoginUseCase, getProductInfoP2OtherUseCase, getProductInfoP2DataUseCase, getProductInfoP3UseCase, toggleFavoriteUseCase, removeWishlistUseCase, addWishListUseCase, getRecommendationUseCase,
+        DynamicProductDetailViewModel(TestDispatcherProvider(), getPdpLayoutUseCase, getProductInfoP2LoginUseCase, getProductInfoP2OtherUseCase, getProductInfoP2DataUseCase, getProductInfoP3UseCase, toggleFavoriteUseCase, removeWishlistUseCase, addWishListUseCase, getRecommendationUseCase,
                 moveProductToWarehouseUseCase, moveProductToEtalaseUseCase, trackAffiliateUseCase, submitHelpTicketUseCase, updateCartCounterUseCase, addToCartUseCase, addToCartOcsUseCase, addToCartOccUseCase, toggleNotifyMeUseCase, discussionMostHelpfulUseCase,topAdsImageViewUseCase, userSessionInterface)
     }
 
@@ -1102,72 +1096,9 @@ class DynamicProductDetailViewModelTest {
     //======================================END OF PDP SECTION=======================================//
     //==============================================================================================//
 
-    //======================================STICKY LOGIN SECTION=====================================//
-    //==============================================================================================//
-    @Test
-    fun `on call sticky login login user`() {
-        every {
-            viewModel.isUserSessionActive
-        } returns true
-
-        stickyLoginUseCase.execute({}, {})
-
-        verify(inverse = true) {
-            stickyLoginUseCase.execute({}, {})
-        }
-    }
-
-    @Test
-    fun onSuccessStickyLogin() {
-        val stickyList = StickyLoginTickerPojo(listOf(StickyLoginTickerPojo.TickerDetail(message = "", layout = StickyLoginConstant.LAYOUT_FLOATING)))
-        val data = StickyLoginTickerPojo.TickerResponse(stickyList)
-        val onError = mockk<((Throwable) -> Unit)>()
-
-        every {
-            stickyLoginUseCase.execute(captureLambda(), any())
-        } answers {
-            val onSuccess = lambda<(StickyLoginTickerPojo.TickerResponse) -> Unit>()
-            onSuccess.invoke(data)
-        }
-
-
-        viewModel.getStickyLoginContent({
-            Assert.assertEquals(it, data.response.tickers.first())
-        }, onError)
-
-        verify {
-            stickyLoginUseCase.execute(any(), any())
-        }
-    }
-
-    @Test
-    fun onErrorStickyLogin() {
-        val throwable = Throwable()
-        val onSuccess = mockk<((StickyLoginTickerPojo.TickerDetail) -> Unit)>()
-        every {
-            stickyLoginUseCase.execute(any(), captureLambda())
-        } answers {
-            val onError = lambda<(Throwable) -> Unit>()
-            onError.invoke(throwable)
-        }
-
-        viewModel.getStickyLoginContent(onSuccess, {
-            Assert.assertEquals(it, throwable)
-        })
-
-        verify {
-            stickyLoginUseCase.execute(any(), any())
-        }
-    }
-    //======================================END OF STICKY LOGIN SECTION==============================//
-    //==============================================================================================//
-
     @Test
     fun flush() {
         viewModel.flush()
-        verify {
-            stickyLoginUseCase.cancelJobs()
-        }
 
         verify {
             getPdpLayoutUseCase.cancelJobs()
