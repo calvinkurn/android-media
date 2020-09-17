@@ -23,6 +23,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.favorite.R
 import com.tokopedia.favorite.utils.TrackingConst
 import com.tokopedia.favorite.view.viewlistener.FavoriteClickListener
+import com.tokopedia.favorite.view.viewlistener.TopAdsResourceListener
 import com.tokopedia.favorite.view.viewmodel.TopAdsShopItem
 import com.tokopedia.topads.sdk.utils.ImageLoader
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
@@ -34,7 +35,8 @@ import kotlin.collections.ArrayList
  * @author by erry on 30/01/17.
  */
 class TopAdsShopAdapter(
-        private val favoriteClickListener: FavoriteClickListener?
+        private val favoriteClickListener: FavoriteClickListener?,
+        val topAdsResourceListener: TopAdsResourceListener?
 ) : RecyclerView.Adapter<TopAdsShopAdapter.ViewHolder>() {
 
     companion object {
@@ -92,13 +94,12 @@ class TopAdsShopAdapter(
                             return false
                         }
 
-                        override fun onResourceReady(resource: Drawable?, model: Any, target: Target<Drawable?>, dataSource: DataSource, isFirstResource: Boolean): Boolean {
-                            TopAdsUrlHitter(holder.getContext()).hitImpressionUrl(
-                                    className,
-                                    shopItem.shopImageUrl,
-                                    shopItem.shopId,
-                                    shopItem.shopName,
-                                    shopItem.shopImageUrl)
+                        override fun onResourceReady(resource: Drawable?,
+                                                     model: Any,
+                                                     target: Target<Drawable?>,
+                                                     dataSource: DataSource,
+                                                     isFirstResource: Boolean): Boolean {
+                            topAdsResourceListener?.onTopAdsResourceReady(className, shopItem)
                             return false
                         }
                     })

@@ -29,20 +29,24 @@ import com.tokopedia.favorite.R
 import com.tokopedia.favorite.di.component.DaggerFavoriteComponent
 import com.tokopedia.favorite.view.adapter.FavoriteAdapter
 import com.tokopedia.favorite.view.adapter.FavoriteAdapterTypeFactory
+import com.tokopedia.favorite.view.adapter.TopAdsShopAdapter
 import com.tokopedia.favorite.view.viewlistener.FavoriteClickListener
+import com.tokopedia.favorite.view.viewlistener.TopAdsResourceListener
 import com.tokopedia.favorite.view.viewmodel.FavoriteShopViewModel
 import com.tokopedia.favorite.view.viewmodel.TopAdsShopItem
 import com.tokopedia.topads.sdk.utils.ImpresionTask
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.track.TrackApp
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import java.util.*
 import javax.inject.Inject
+import kotlin.collections.HashSet
 
 /**
  * @author Kulomady on 1/20/17.
  */
-class FragmentFavorite() : BaseDaggerFragment(), FavoriteClickListener, OnRefreshListener {
+class FragmentFavorite() : BaseDaggerFragment(), FavoriteClickListener, OnRefreshListener, TopAdsResourceListener {
 
     companion object {
         val TAG = FragmentFavorite::class.java.simpleName
@@ -84,6 +88,8 @@ class FragmentFavorite() : BaseDaggerFragment(), FavoriteClickListener, OnRefres
     private var shopItemSelected: TopAdsShopItem? = null
     private var performanceMonitoring: PerformanceMonitoring? = null
     private var userSession: UserSessionInterface? = null
+
+    private val alreadyHitTopAdsUrl = HashSet<String>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         userSession = UserSession(context)
@@ -341,7 +347,7 @@ class FragmentFavorite() : BaseDaggerFragment(), FavoriteClickListener, OnRefres
     }
 
     private fun initRecyclerview() {
-        val typeFactoryForList = FavoriteAdapterTypeFactory(this)
+        val typeFactoryForList = FavoriteAdapterTypeFactory(this, this)
         val layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         favoriteAdapter = FavoriteAdapter(typeFactoryForList, ArrayList())
         val animator = DefaultItemAnimator()
@@ -376,6 +382,20 @@ class FragmentFavorite() : BaseDaggerFragment(), FavoriteClickListener, OnRefres
     private fun updateEndlessRecyclerViewListener() {
         recylerviewScrollListener.updateStateAfterGetData()
         recylerviewScrollListener.setHasNextPage(viewModel!!.hasNextPage())
+    }
+
+    override fun onTopAdsResourceReady(className: String, shopItem: TopAdsShopItem) {
+        val url = shopItem.shopImageUrl
+        if (url != null && !alreadyHitTopAdsUrl.contains(url)) {
+            alreadyHitTopAdsUrl.add(url)
+            TopAdsUrlHitter(context).hitImpressionUrl(
+                    className,
+                    shopItem.shopImageUrl,
+                    shopItem.shopId,
+                    shopItem.shopName,
+                    shopItem.shopImageUrl
+            )
+        }
     }
 
 }
