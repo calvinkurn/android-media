@@ -230,6 +230,7 @@ object DeeplinkMapper {
             DLP.exact(ApplinkConst.ORDER_LIST) { _, _, deeplink -> DeeplinkMapperUohOrder.getRegisteredNavigationUohOrder(deeplink) },
             DLP.exact(ApplinkConst.ORDER_LIST_WEBVIEW) { _, _, deeplink -> DeeplinkMapperUohOrder.getRegisteredNavigationUohOrder(deeplink) },
             DLP.exact(ApplinkConst.DIGITAL_ORDER) { _, _, deeplink -> DeeplinkMapperUohOrder.getRegisteredNavigationUohOrder(deeplink) },
+            DLP.exact(ApplinkConst.Transaction.ORDER_HISTORY) { _, _, deeplink -> DeeplinkMapperUohOrder.getRegisteredNavigationUohOrder(deeplink) },
             DLP.exact(ApplinkConst.EVENTS_ORDER) { _, _, deeplink -> DeeplinkMapperUohOrder.getRegisteredNavigationUohOrder(deeplink) },
             DLP.exact(ApplinkConst.DEALS_ORDER) { _, _, deeplink -> DeeplinkMapperUohOrder.getRegisteredNavigationUohOrder(deeplink) },
             DLP.exact(ApplinkConst.FLIGHT_ORDER) { _, _, deeplink -> DeeplinkMapperUohOrder.getRegisteredNavigationUohOrder(deeplink) },

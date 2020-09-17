@@ -21,9 +21,17 @@ import com.tokopedia.abstraction.common.utils.view.RefreshHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_DALAM_PROSES
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_DEALS
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_DIGITAL
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_EVENTS
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_E_TIKET
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_GIFTCARDS
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_HOTEL
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_INSURANCE
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_MARKETPLACE
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_MARKETPLACE_DALAM_PROSES
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_MODALTOKO
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_PESAWAT
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_SEMUA_TRANSAKSI
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.SOURCE_FILTER
 import com.tokopedia.buyerorder.R
@@ -61,6 +69,16 @@ import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.SEMUA_TRANS
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.START_DATE
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.TYPE_ACTION_BUTTON_LINK
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.URL_RESO
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.VERTICAL_CATEGORY_DEALS
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.VERTICAL_CATEGORY_DEALS_SINGLE
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.VERTICAL_CATEGORY_DIGITAL
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.VERTICAL_CATEGORY_EVENTS
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.VERTICAL_CATEGORY_FLIGHT
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.VERTICAL_CATEGORY_GIFTCARD
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.VERTICAL_CATEGORY_HOTEL
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.VERTICAL_CATEGORY_INSURANCE
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.VERTICAL_CATEGORY_KEUANGAN
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.VERTICAL_CATEGORY_MODALTOKO
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.WEB_LINK_TYPE
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.WRONG_FORMAT_EMAIL
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohUtils
@@ -211,6 +229,38 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                     PARAM_MARKETPLACE_DALAM_PROSES -> {
                         status = DALAM_PROSES
                         paramUohOrder.verticalCategory = PARAM_MARKETPLACE
+                    }
+                    PARAM_DIGITAL -> {
+                        status = SEMUA_TRANSAKSI
+                        paramUohOrder.verticalCategory = VERTICAL_CATEGORY_DIGITAL
+                    }
+                    PARAM_EVENTS -> {
+                        status = SEMUA_TRANSAKSI
+                        paramUohOrder.verticalCategory = VERTICAL_CATEGORY_EVENTS
+                    }
+                    PARAM_DEALS -> {
+                        status = SEMUA_TRANSAKSI
+                        paramUohOrder.verticalCategory = VERTICAL_CATEGORY_DEALS_SINGLE
+                    }
+                    PARAM_PESAWAT -> {
+                        status = SEMUA_TRANSAKSI
+                        paramUohOrder.verticalCategory = VERTICAL_CATEGORY_FLIGHT
+                    }
+                    PARAM_GIFTCARDS -> {
+                        status = SEMUA_TRANSAKSI
+                        paramUohOrder.verticalCategory = VERTICAL_CATEGORY_GIFTCARD
+                    }
+                    PARAM_INSURANCE -> {
+                        status = SEMUA_TRANSAKSI
+                        paramUohOrder.verticalCategory = VERTICAL_CATEGORY_INSURANCE
+                    }
+                    PARAM_MODALTOKO -> {
+                        status = SEMUA_TRANSAKSI
+                        paramUohOrder.verticalCategory = VERTICAL_CATEGORY_MODALTOKO
+                    }
+                    PARAM_HOTEL -> {
+                        status = SEMUA_TRANSAKSI
+                        paramUohOrder.verticalCategory = VERTICAL_CATEGORY_HOTEL
                     }
                 }
                 paramUohOrder.status = status
@@ -552,7 +602,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             ChipsUnify.TYPE_SELECTED
         }
 
-        filter1 = SortFilterItem(UohConsts.ALL_DATE, typeDate, ChipsUnify.SIZE_SMALL)
+        filter1 = SortFilterItem(ALL_DATE, typeDate, ChipsUnify.SIZE_SMALL)
         filter1?.listener = {
             onClickFilterDate()
         }
@@ -579,7 +629,15 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         filter2?.let { chips.add(it) }
 
         val typeCategory = if (filterStatus.equals(PARAM_MARKETPLACE, true) ||
-                filterStatus.equals(PARAM_MARKETPLACE_DALAM_PROSES, true)) {
+                filterStatus.equals(PARAM_MARKETPLACE_DALAM_PROSES, true) ||
+                filterStatus.equals(PARAM_DIGITAL, true) ||
+                filterStatus.equals(PARAM_EVENTS, true) ||
+                filterStatus.equals(PARAM_DEALS, true) ||
+                filterStatus.equals(PARAM_PESAWAT, true) ||
+                filterStatus.equals(PARAM_GIFTCARDS, true) ||
+                filterStatus.equals(PARAM_INSURANCE, true) ||
+                filterStatus.equals(PARAM_MODALTOKO, true) ||
+                filterStatus.equals(PARAM_HOTEL, true)) {
             ChipsUnify.TYPE_SELECTED
         } else {
             ChipsUnify.TYPE_NORMAL
@@ -595,6 +653,18 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         } else if ((filterStatus.equals(PARAM_MARKETPLACE, true) ||
                         filterStatus.equals(PARAM_MARKETPLACE_DALAM_PROSES, true)) && !isReset) {
             filter3?.title = orderList.categories.first().label
+
+        } else if (filterStatus.equals(PARAM_DIGITAL, true) && !isReset) {
+            filter3?.title = orderList.categories[1].label
+
+        } else if ((filterStatus.equals(PARAM_EVENTS, true) || filterStatus.equals(PARAM_DEALS, true) ||
+                filterStatus.equals(PARAM_PESAWAT, true) || filterStatus.equals(PARAM_HOTEL, true))
+                && !isReset) {
+            filter3?.title = orderList.categories[2].label
+
+        } else if ((filterStatus.equals(PARAM_GIFTCARDS, true) || filterStatus.equals(PARAM_INSURANCE, true) ||
+                filterStatus.equals(PARAM_MODALTOKO, true)) && !isReset) {
+            filter3?.title = orderList.categories[3].label
         }
         filter3?.let { chips.add(it) }
 
@@ -672,9 +742,36 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         if ((filterStatus.equals(PARAM_MARKETPLACE, true) ||
                         filterStatus.equals(PARAM_MARKETPLACE_DALAM_PROSES, true)) && !isReset) {
             uohBottomSheetOptionAdapter.selectedKey = PARAM_MARKETPLACE
+
+        } else if (filterStatus.equals(PARAM_DIGITAL, true) && !isReset) {
+            uohBottomSheetOptionAdapter.selectedKey = VERTICAL_CATEGORY_DIGITAL
+
+        } else if (filterStatus.equals(PARAM_EVENTS, true) && !isReset) {
+            uohBottomSheetOptionAdapter.selectedKey = VERTICAL_CATEGORY_DEALS
+
+        } else if (filterStatus.equals(PARAM_DEALS, true) && !isReset) {
+            uohBottomSheetOptionAdapter.selectedKey = VERTICAL_CATEGORY_DEALS
+
+        } else if (filterStatus.equals(PARAM_PESAWAT, true) && !isReset) {
+            uohBottomSheetOptionAdapter.selectedKey = VERTICAL_CATEGORY_DEALS
+
+        } else if (filterStatus.equals(PARAM_GIFTCARDS, true) && !isReset) {
+            uohBottomSheetOptionAdapter.selectedKey = VERTICAL_CATEGORY_KEUANGAN
+
+        } else if (filterStatus.equals(PARAM_INSURANCE, true) && !isReset) {
+            uohBottomSheetOptionAdapter.selectedKey = VERTICAL_CATEGORY_KEUANGAN
+
+        } else if (filterStatus.equals(PARAM_MODALTOKO, true) && !isReset) {
+            uohBottomSheetOptionAdapter.selectedKey = VERTICAL_CATEGORY_KEUANGAN
+
+        } else if (filterStatus.equals(PARAM_HOTEL, true) && !isReset) {
+            uohBottomSheetOptionAdapter.selectedKey = VERTICAL_CATEGORY_DEALS
+
         } else {
             uohBottomSheetOptionAdapter.selectedKey = currFilterCategoryKey
         }
+
+        println("++ uohBottomSheetOptionAdapter.selectedKey = ${uohBottomSheetOptionAdapter.selectedKey}")
 
         uohBottomSheetOptionAdapter.isReset = isReset
         uohBottomSheetOptionAdapter.notifyDataSetChanged()

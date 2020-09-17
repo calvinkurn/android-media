@@ -108,4 +108,14 @@ object UohConsts {
 
     const val E_TIKET = "E-tiket & E-voucher Aktif"
     const val DALAM_PROSES = "Dalam Proses"
+    const val VERTICAL_CATEGORY_DIGITAL = "air_pdam,angsuran_kredit,belajar,biaya_pendidikan,bpjs,invoicing,samsat,gas_pgn,internet_tv_kabel,iuran_properti,tagihan_cc,kartu_prakerja,listrik_pln,m_tix,pajak,paket_data,pasca_bayar,penerimaan_negara,premi_asuransi,pulsa,retribusi,roaming,streaming,telkom,uang_elektronik,upgrade_internet_tv,voucher_game,bridestory_pay,ovo"
+    const val VERTICAL_CATEGORY_DEALS = "deals,event,flight,train,hotel"
+    const val VERTICAL_CATEGORY_EVENTS = "event"
+    const val VERTICAL_CATEGORY_DEALS_SINGLE = "deals"
+    const val VERTICAL_CATEGORY_FLIGHT = "flight"
+    const val VERTICAL_CATEGORY_KEUANGAN = "mutual_fund,gold,insurance,gift_card,modal_toko"
+    const val VERTICAL_CATEGORY_GIFTCARD = "gift_card"
+    const val VERTICAL_CATEGORY_INSURANCE = "insurance"
+    const val VERTICAL_CATEGORY_MODALTOKO = "modal_toko"
+    const val VERTICAL_CATEGORY_HOTEL = "hotel"
 }
