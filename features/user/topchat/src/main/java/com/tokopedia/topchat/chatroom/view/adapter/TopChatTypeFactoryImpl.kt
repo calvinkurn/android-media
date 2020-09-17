@@ -135,6 +135,10 @@ open class TopChatTypeFactoryImpl constructor(
         return TopchatImageAnnouncementViewHolder.LAYOUT
     }
 
+    override fun type(bannedAttachmentViewModel: BannedProductAttachmentViewModel): Int {
+        return TopchatBannedProductAttachmentViewHolder.LAYOUT
+    }
+
     // Check if chat bubble first, if not return default ViewHolder
     override fun createViewHolder(
             parent: ViewGroup,
@@ -168,6 +172,7 @@ open class TopChatTypeFactoryImpl constructor(
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
+            TopchatBannedProductAttachmentViewHolder.LAYOUT -> TopchatBannedProductAttachmentViewHolder(parent, productAttachmentListener)
             TopchatImageAnnouncementViewHolder.LAYOUT -> TopchatImageAnnouncementViewHolder(parent, imageAnnouncementListener)
             BroadcastSpamHandlerViewHolder.LAYOUT -> BroadcastSpamHandlerViewHolder(parent, broadcastHandlingListener)
             TopchatLoadingModelViewHolder.LAYOUT -> TopchatLoadingModelViewHolder(parent)
