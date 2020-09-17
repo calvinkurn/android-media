@@ -453,40 +453,43 @@ class HotelHomepageFragment : HotelBaseFragment(),
         bannerImpressionIndex.add(0)
         trackingHotelUtil.hotelBannerImpression(context, promoDataList.firstOrNull(), 0, HOMEPAGE_SCREEN_NAME)
 
-        banner_hotel_homepage_promo.onActiveIndexChangedListener = object : CarouselUnify.OnActiveIndexChangedListener {
-            override fun onActiveIndexChanged(prev: Int, current: Int) {
-                if (!bannerImpressionIndex.contains(current)) {
-                    bannerImpressionIndex.add(current)
-                    trackingHotelUtil.hotelBannerImpression(context, promoDataList.getOrNull(current), current, HOMEPAGE_SCREEN_NAME)
+        banner_hotel_homepage_promo.apply {
+            freeMode = false
+            centerMode = true
+            slideToShow = 1.1f
+            slideToScroll = 1
+            autoplay = true
+            indicatorPosition = CarouselUnify.INDICATOR_BL
+            infinite = true
+            onActiveIndexChangedListener = object : CarouselUnify.OnActiveIndexChangedListener {
+                override fun onActiveIndexChanged(prev: Int, current: Int) {
+                    if (!bannerImpressionIndex.contains(current)) {
+                        bannerImpressionIndex.add(current)
+                        trackingHotelUtil.hotelBannerImpression(context, promoDataList.getOrNull(current), current, HOMEPAGE_SCREEN_NAME)
+                    }
                 }
             }
-        }
 
-        banner_hotel_homepage_promo.freeMode = false
-        banner_hotel_homepage_promo.centerMode = true
-        banner_hotel_homepage_promo.slideToShow = 1.1f
-        banner_hotel_homepage_promo.slideToScroll = 1
-        banner_hotel_homepage_promo.autoplay = true
-        banner_hotel_homepage_promo.indicatorPosition = CarouselUnify.INDICATOR_BL
-        banner_hotel_homepage_promo.infinite = true
+            val itemParam = { view: View, data: Any ->
+                data as TravelCollectiveBannerModel.Banner
 
-        val itemParam = { view: View, data: Any ->
-            val image = view.findViewById<ImageUnify>(R.id.hotelPromoImageCarousel)
-
-            view.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
-                override fun onGlobalLayout() {
-                    view.viewTreeObserver.removeOnGlobalLayoutListener(this)
-                    image.loadImage((data as TravelCollectiveBannerModel.Banner).attribute.imageUrl)
+                val image = view.findViewById<ImageUnify>(R.id.hotelPromoImageCarousel)
+                image.setOnClickListener {
+                    onPromoClicked(data, data.position)
                 }
-            })
-        }
+                view.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+                    override fun onGlobalLayout() {
+                        view.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                        image.heightRatio = BANNER_HEIGHT_RATIO
+                        image.loadImage(data.attribute.imageUrl)
+                    }
+                })
+            }
 
-        promoDataList.forEachIndexed { index, banner ->
-            banner.position = index
+            promoDataList.forEachIndexed { index, banner -> banner.position = index }
+            addItems(R.layout.hotel_carousel_item, ArrayList(promoDataList), itemParam)
+            showPromoContainer()
         }
-
-        banner_hotel_homepage_promo.addItems(R.layout.hotel_carousel_item, ArrayList(promoDataList), itemParam)
-        showPromoContainer()
     }
 
     private fun renderHotelLastSearch(data: HotelRecentSearchModel) {
@@ -568,6 +571,9 @@ class HotelHomepageFragment : HotelBaseFragment(),
         const val REQUEST_CODE_DETAIL = 103
 
         const val EXTRA_HOTEL_MODEL = "EXTRA_HOTEL_MODEL"
+
+        // banner height ratio 414:139
+        const val BANNER_HEIGHT_RATIO = 0.336f
 
         const val EXTRA_PARAM_SEARCH_ID = "param_search_id"
         const val EXTRA_PARAM_SEARCH_TYPE = "param_search_type"
