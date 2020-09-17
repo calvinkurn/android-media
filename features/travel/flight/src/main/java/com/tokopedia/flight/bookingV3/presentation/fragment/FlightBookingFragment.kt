@@ -330,7 +330,8 @@ class FlightBookingFragment : BaseDaggerFragment() {
         flightAnalytics.eventAddToCart(bookingViewModel.getSearchParam().flightClass,
                 bookingViewModel.getDepartureJourney(),
                 bookingViewModel.getReturnJourney(),
-                bookingViewModel.getFlightPriceModel().comboKey)
+                bookingViewModel.getFlightPriceModel().comboKey,
+                userSession.userId)
     }
 
     private fun sendCheckOutTracking(pid: String) {
@@ -338,7 +339,8 @@ class FlightBookingFragment : BaseDaggerFragment() {
                 bookingViewModel.getDepartureJourney(),
                 bookingViewModel.getReturnJourney(),
                 bookingViewModel.getSearchParam(),
-                bookingViewModel.getFlightPriceModel().comboKey ?: "")
+                bookingViewModel.getFlightPriceModel().comboKey,
+                userSession.userId)
 
         flightAnalytics.eventBranchCheckoutFlight(
                 "${bookingViewModel.getDepartureJourney()?.departureAirportCity}-${bookingViewModel.getDepartureJourney()?.arrivalAirportCity}",

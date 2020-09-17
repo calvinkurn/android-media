@@ -7,9 +7,7 @@ import com.tokopedia.sellerhome.domain.model.GetShopStatusResponse
 import com.tokopedia.sellerhome.domain.model.ShippingLoc
 import com.tokopedia.sellerhome.domain.usecase.GetShopLocationUseCase
 import com.tokopedia.sellerhome.domain.usecase.GetStatusShopUseCase
-import com.tokopedia.sellerhome.domain.usecase.GetTickerUseCase
 import com.tokopedia.sellerhome.utils.SellerHomeCoroutineTestDispatcher
-import com.tokopedia.sellerhome.view.model.TickerUiModel
 import com.tokopedia.sellerhomecommon.domain.model.DynamicParameterModel
 import com.tokopedia.sellerhomecommon.domain.usecase.*
 import com.tokopedia.sellerhomecommon.presentation.model.*
@@ -120,10 +118,10 @@ class SellerHomeViewModelTest {
 
     @Test
     fun `get ticker should success`() = runBlocking {
-        val tickerList = listOf(
-                TickerUiModel("", "", "", "", "", "",
-                        "", "", "", "", "", "", "")
-        )
+        val tickerList = listOf(TickerItemUiModel())
+        val pageName = "seller"
+
+        getTickerUseCase.params = GetTickerUseCase.createParams(pageName)
 
         coEvery {
             getTickerUseCase.executeOnBackground()
@@ -138,6 +136,28 @@ class SellerHomeViewModelTest {
         }
 
         assertEquals(Success(tickerList), viewModel.homeTicker.value)
+    }
+
+    @Test
+    fun `should failed when get tickers then throws exception`() = runBlocking {
+        val throwable = RuntimeException("")
+        val pageName = "seller"
+
+        getTickerUseCase.params = GetTickerUseCase.createParams(pageName)
+
+        coEvery {
+            getTickerUseCase.executeOnBackground()
+        } throws throwable
+
+        viewModel.getTicker()
+
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
+        coVerify {
+            getTickerUseCase.executeOnBackground()
+        }
+
+        assert(viewModel.homeTicker.value is Fail)
     }
 
     @Test

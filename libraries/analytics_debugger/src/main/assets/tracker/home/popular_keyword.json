@@ -25,11 +25,16 @@
         "creative_url": "{{.*}}"
       }],
       "eventCategory": "homepage",
+      "affinityLabel": "{{.*}}",
+      "attribution": "{{.*}}",
+      "shopId": "{{.*}}",
       "event": "select_content",
       "eventAction": "click on popular keyword banner",
       "sessionIris": "{{.*}}",
       "eventLabel": "{{.*}}",
-      "channelId": "{{.*}}"
+      "categoryId": "{{.*}}",
+      "channelId": "{{.*}}",
+      "campaignCode": "{{.*}}"
     },
     {
       "eventCategory": "homepage",

@@ -6,6 +6,7 @@ import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.notifications.PushController
 import com.tokopedia.notifications.R
+import com.tokopedia.notifications.common.IrisAnalyticsEvents.INAPP_DELIVERED
 import com.tokopedia.notifications.data.model.Amplification
 import com.tokopedia.notifications.data.model.AmplificationNotifier
 import com.tokopedia.notifications.domain.AmplificationUseCase
@@ -13,6 +14,7 @@ import com.tokopedia.notifications.inApp.ruleEngine.repository.RepositoryManager
 import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.CMInApp
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.abstraction.common.utils.GraphqlHelper.loadRawString as loadRaw
+import com.tokopedia.notifications.common.IrisAnalyticsEvents.sendAmplificationInAppEvent as sendAmplificationInAppEvent
 
 object AmplificationDataSource {
 
@@ -33,7 +35,7 @@ object AmplificationDataSource {
         amplificationUseCase.execute {
             val webHook = it.webhookAttributionNotifier
             pushData(application, webHook)
-            inAppData(webHook)
+            inAppData(application, webHook)
         }
     }
 
@@ -45,15 +47,24 @@ object AmplificationDataSource {
         }
     }
 
-    private fun inAppData(amplification: Amplification) {
+    private fun inAppData(application: Application, amplification: Amplification) {
         if (amplification.inAppData.isNotEmpty()) {
             amplification.inAppData.forEach {
                 try {
                     val cmInApp = Gson().fromJson(it, CMInApp::class.java)
+
+                    // flag if this data comes from amplification fetch API
+                    cmInApp.isAmplification = true
+
+                    // storage to local storage
                     RepositoryManager
                             .getInstance()
                             .storageProvider
                             .putDataToStore(cmInApp)
+                            .subscribe()
+
+                    // send amplification tracker
+                    sendAmplificationInAppEvent(application, INAPP_DELIVERED, cmInApp)
                 } catch (e: Exception) {}
             }
         }

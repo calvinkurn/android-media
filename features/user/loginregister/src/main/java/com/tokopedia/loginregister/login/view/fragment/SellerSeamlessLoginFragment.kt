@@ -115,7 +115,11 @@ class SellerSeamlessLoginFragment : BaseDaggerFragment() {
                         text = bundle.getString(SeamlessSellerConstant.KEY_SHOP_NAME)
                         setCompoundDrawablesWithIntrinsicBounds(drawableLeft, null, null, null)
                     }
-                    ImageHandler.loadImageCircle2(activity, seamless_fragment_avatar, bundle.getString(SeamlessSellerConstant.KEY_SHOP_AVATAR))
+                    context?.run {
+                        if(seamless_fragment_avatar != null) {
+                            ImageHandler.loadImageCircle2(context, seamless_fragment_avatar, bundle.getString(SeamlessSellerConstant.KEY_SHOP_AVATAR))
+                        }
+                    }
                     seamless_fragment_name?.text = bundle.getString(SeamlessSellerConstant.KEY_NAME)
                     seamless_fragment_email?.text = maskEmail(bundle.getString(SeamlessSellerConstant.KEY_EMAIL, ""))
                     hideProgressBar()

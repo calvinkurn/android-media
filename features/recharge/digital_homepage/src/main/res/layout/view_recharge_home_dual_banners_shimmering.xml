@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <include
+        android:id="@+id/view_recharge_home_dual_banners_header_shimmering"
+        layout="@layout/view_recharge_home_section_header_shimmering"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <com.elyeproj.loaderviewlibrary.LoaderImageView
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="@dimen/dual_banners_shimmering_height"
+            android:layout_marginRight="@dimen/spacing_lvl3"
+            android:layout_weight="1"
+            app:corners="16" />
+
+        <com.elyeproj.loaderviewlibrary.LoaderImageView
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="@dimen/dual_banners_shimmering_height"
+            android:layout_marginLeft="@dimen/spacing_lvl3"
+            android:layout_weight="1"
+            app:corners="16" />
+
+    </LinearLayout>
+
+</LinearLayout>

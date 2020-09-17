@@ -116,7 +116,7 @@ class MovetoGroupSheetList {
 
         fun newInstance(context: Context): MovetoGroupSheetList {
             val fragment = MovetoGroupSheetList()
-            fragment.dialog = BottomSheetDialog(context, R.style.CreateAdsBottomSheetDialogTheme)
+            fragment.dialog = BottomSheetDialog(context, com.tokopedia.topads.common.R.style.CreateAdsBottomSheetDialogTheme)
             fragment.dialog?.setContentView(R.layout.topads_dash_moveto_group_bottom_sheet)
             fragment.setupView(context)
             return fragment
