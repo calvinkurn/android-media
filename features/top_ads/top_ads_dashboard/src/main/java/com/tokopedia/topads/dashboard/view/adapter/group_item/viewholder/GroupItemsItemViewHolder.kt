@@ -99,7 +99,7 @@ class GroupItemsItemViewHolder(val view: View, var selectMode: ((select: Boolean
             view.item_card.setOnLongClickListener {
                 item.isChecked = true
                 view.check_box.isChecked = true
-                view.card_view.setBackgroundColor(ContextCompat.getColor(view.context, R.color.topads_select_color))
+                view.card_view.setBackgroundColor(ContextCompat.getColor(view.context, com.tokopedia.topads.common.R.color.topads_select_color))
                 selectMode.invoke(true)
                 true
             }

@@ -97,7 +97,7 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetShopDepositUseCase
     fun getGroupData(resources: Resources, page: Int, search: String, sort: String, status: Int?,
                      startDate: String, endDate: String, onSuccess: ((GroupItemResponse.GetTopadsDashboardGroups) -> Unit)) {
         topAdsGetGroupDataUseCase.setGraphqlQuery(GraphqlHelper.loadRawString(resources,
-                R.raw.query_get_groups_dashboard))
+                com.tokopedia.topads.common.R.raw.query_get_groups_dashboard))
         topAdsGetGroupDataUseCase.setParams(search, page, sort, status, startDate, endDate)
         topAdsGetGroupDataUseCase.executeQuerySafeMode(
                 {
