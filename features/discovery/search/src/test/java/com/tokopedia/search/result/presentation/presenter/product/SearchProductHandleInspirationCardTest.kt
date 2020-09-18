@@ -10,7 +10,6 @@ import com.tokopedia.search.result.presentation.model.InspirationCardViewModel
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel
 import com.tokopedia.search.result.shop.presentation.viewmodel.shouldBeInstanceOf
 import com.tokopedia.search.shouldBe
-import com.tokopedia.search.shouldBeInstanceOf
 import io.mockk.*
 import org.junit.Test
 import rx.Subscriber
@@ -160,7 +159,6 @@ internal class SearchProductHandleInspirationCardTest: ProductListPresenterTestF
     private fun `Then verify visitable list has correct inspiration card and product sequence after load more`(searchProductModel: SearchProductModel) {
         val visitableList = visitableListSlot.captured
         val inspirationWidget = searchProductModel.searchInspirationWidget.data
-        val inspirationCardIndex = listOf(2, 5, 8)
 
         // 0 -> product
         // 1 -> product
@@ -174,14 +172,14 @@ internal class SearchProductHandleInspirationCardTest: ProductListPresenterTestF
         // 9 -> product
         // 10 -> product
         visitableList.size shouldBe 11
-        var i = 0
+        var i = 1
 
         visitableList.forEachIndexed { index, visitable ->
             if (index == 2 || index == 5 || index == 8) {
                 visitable.shouldBeInstanceOf<InspirationCardViewModel>(
                         "visitable list at index $index should be InspirationCardViewModel"
                 )
-                (visitableList[inspirationCardIndex[i]] as InspirationCardViewModel).assertInspirationCardViewModel(inspirationWidget[i+1])
+                (visitable as InspirationCardViewModel).assertInspirationCardViewModel(inspirationWidget[i])
                 i++
             }
             else {
@@ -282,7 +280,6 @@ internal class SearchProductHandleInspirationCardTest: ProductListPresenterTestF
     private fun `Then verify visitable list has correct inspiration card position for search result first page without Top Ads product`(searchProductModel: SearchProductModel) {
         val visitableList = visitableListSlot.captured
         val inspirationWidget = searchProductModel.searchInspirationWidget.data
-        val inspirationCardIndex = listOf(4, 9)
 
         // 0 -> product
         // 1 -> product
@@ -303,7 +300,7 @@ internal class SearchProductHandleInspirationCardTest: ProductListPresenterTestF
                 visitable.shouldBeInstanceOf<InspirationCardViewModel>(
                         "visitable list at index $index should be InspirationCardViewModel"
                 )
-                (visitableList[inspirationCardIndex[i]] as InspirationCardViewModel).assertInspirationCardViewModel(inspirationWidget[i])
+                (visitable as InspirationCardViewModel).assertInspirationCardViewModel(inspirationWidget[i])
                 i++
             }
             else {
@@ -367,7 +364,6 @@ internal class SearchProductHandleInspirationCardTest: ProductListPresenterTestF
     private fun `Then verify visitable list has correct inspiration card in the same position`(searchProductModel: SearchProductModel) {
         val visitableList = visitableListSlot.captured
         val inspirationWidget = searchProductModel.searchInspirationWidget.data
-        val inspirationCardIndex = listOf(4, 5, 10, 13)
         val inspirationWidgetIndex = listOf(1, 0, 2, 3)
 
         // 0 -> product
@@ -397,7 +393,7 @@ internal class SearchProductHandleInspirationCardTest: ProductListPresenterTestF
                 visitable.shouldBeInstanceOf<InspirationCardViewModel>(
                         "visitable list at index $index should be InspirationCardViewModel"
                 )
-                (visitableList[inspirationCardIndex[i]] as InspirationCardViewModel).assertInspirationCardViewModel(inspirationWidget[inspirationWidgetIndex[i]])
+                (visitable as InspirationCardViewModel).assertInspirationCardViewModel(inspirationWidget[inspirationWidgetIndex[i]])
                 i++
             }
             else {
@@ -411,7 +407,6 @@ internal class SearchProductHandleInspirationCardTest: ProductListPresenterTestF
     private fun `Then verify visitable list has inspiration card and product items`(searchProductModel: SearchProductModel) {
         val visitableList = visitableListSlot.captured
         val inspirationWidget = searchProductModel.searchInspirationWidget.data
-        val inspirationCardIndex = listOf(2, 7)
         val inspirationWidgetIndex = listOf(4, 5)
 
         // 0 -> product
@@ -433,7 +428,7 @@ internal class SearchProductHandleInspirationCardTest: ProductListPresenterTestF
                 visitable.shouldBeInstanceOf<InspirationCardViewModel>(
                         "visitable list at index $index should be InspirationCardViewModel"
                 )
-                (visitableList[inspirationCardIndex[i]] as InspirationCardViewModel).assertInspirationCardViewModel(inspirationWidget[inspirationWidgetIndex[i]])
+                (visitable as InspirationCardViewModel).assertInspirationCardViewModel(inspirationWidget[inspirationWidgetIndex[i]])
                 i++
             }
             else {
