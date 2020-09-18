@@ -13,7 +13,6 @@ import android.widget.LinearLayout
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.chuckerteam.chucker.api.internal.ui.MainActivity
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
@@ -229,10 +228,7 @@ class ShopShowcasePickerFragment: BaseDaggerFragment(),
 
         // set listener for save picker button
         savePickerButton?.setOnClickListener {
-            val intent = Intent(activity, MainActivity::class.java).apply {
-                putExtra(ShopShowcasePickerParam.EXTRA_PICKER_SELECTED_SHOWCASE, selectedShowcase)
-            }
-            activity?.setResult(Activity.RESULT_OK, intent)
+            activity?.setResult(Activity.RESULT_OK, Intent().putExtra(ShopShowcasePickerParam.EXTRA_PICKER_SELECTED_SHOWCASE, selectedShowcase))
             activity?.finish()
         }
 
