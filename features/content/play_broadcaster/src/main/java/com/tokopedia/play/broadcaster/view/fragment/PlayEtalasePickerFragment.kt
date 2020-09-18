@@ -31,7 +31,7 @@ import com.tokopedia.play.broadcaster.view.custom.PlaySearchBar
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseEtalaseSetupFragment
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseSetupFragment
 import com.tokopedia.play.broadcaster.view.partial.BottomActionViewComponent
-import com.tokopedia.play.broadcaster.view.partial.SelectedProductPagePartialView
+import com.tokopedia.play.broadcaster.view.partial.SelectedProductPageViewComponent
 import com.tokopedia.play.broadcaster.view.viewmodel.DataStoreViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayEtalasePickerViewModel
 import com.tokopedia.play_common.viewcomponent.viewComponent
@@ -61,7 +61,14 @@ class PlayEtalasePickerFragment @Inject constructor(
     private lateinit var errorEtalase: GlobalError
     private lateinit var bottomSheetHeader : PlayBottomSheetHeader
 
-    private lateinit var selectedProductPage: SelectedProductPagePartialView
+    private val selectedProductPage by viewComponent {
+        SelectedProductPageViewComponent(view as ViewGroup, object : SelectedProductPageViewComponent.Listener {
+            override fun onProductSelectStateChanged(productId: Long, isSelected: Boolean) {
+                viewModel.selectProduct(productId, isSelected)
+                onSelectedProductChanged()
+            }
+        })
+    }
 
     private val bottomActionView by viewComponent {
         BottomActionViewComponent(view as ViewGroup, object : BottomActionViewComponent.Listener {
@@ -132,7 +139,7 @@ class PlayEtalasePickerFragment @Inject constructor(
 
     override fun onInterceptBackPressed(): Boolean {
         return when {
-            selectedProductPage.isShown -> {
+            selectedProductPage.isShown() -> {
                 selectedProductPage.hide()
                 true
             }
@@ -191,13 +198,6 @@ class PlayEtalasePickerFragment @Inject constructor(
             errorEtalase = findViewById(R.id.error_etalase)
             bottomSheetHeader = findViewById(R.id.bottom_sheet_header)
         }
-
-        selectedProductPage = SelectedProductPagePartialView(view as ViewGroup, object : SelectedProductPagePartialView.Listener {
-            override fun onProductSelectStateChanged(productId: Long, isSelected: Boolean) {
-                viewModel.selectProduct(productId, isSelected)
-                onSelectedProductChanged()
-            }
-        })
     }
 
     private fun setupView(view: View) {
@@ -272,7 +272,7 @@ class PlayEtalasePickerFragment @Inject constructor(
     }
 
     private fun showSelectedProductPage() {
-        if (selectedProductPage.isShown) {
+        if (selectedProductPage.isShown()) {
             selectedProductPage.hide()
         } else {
             selectedProductPage.setSelectedProductList(viewModel.selectedProductList)
