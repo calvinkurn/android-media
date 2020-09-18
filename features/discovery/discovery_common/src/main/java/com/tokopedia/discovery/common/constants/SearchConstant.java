@@ -164,4 +164,11 @@ public interface SearchConstant {
         String ORGANIC_ADS = "search_product_organic_ads";
         String BROAD_MATCH_ADS = "search_product_broad_match_ads";
     }
+
+    interface InspirationCard {
+        String TYPE_ANNOTATION = "annotation";
+        String TYPE_CATEGORY = "category";
+        String TYPE_GUIDED = "guided";
+        String TYPE_CURATED = "curated";
+    }
 }
