@@ -1,4 +1,4 @@
-package com.tokopedia.seller.menu.common.view.bottomsheet
+package com.tokopedia.sellerhome.settings.view.bottomsheet
 
 import android.os.Bundle
 import android.view.View
@@ -6,9 +6,9 @@ import androidx.fragment.app.FragmentManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.seller.menu.common.R
-import com.tokopedia.seller.menu.common.di.component.DaggerSellerMenuCommonComponent
-import com.tokopedia.seller.menu.common.analytics.SettingFreeShippingTracker
+import com.tokopedia.sellerhome.R
+import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
+import com.tokopedia.sellerhome.settings.analytics.SettingFreeShippingTracker
 import com.tokopedia.seller.menu.common.constant.SellerMenuFreeShippingUrl
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.main.bottom_sheet_settings_free_shipping.*
@@ -53,7 +53,7 @@ class SettingsFreeShippingBottomSheet: BottomSheetUnify() {
     }
 
     private fun initInjector() {
-        DaggerSellerMenuCommonComponent.builder()
+        DaggerSellerHomeComponent.builder()
             .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
             .build()
             .inject(this)

@@ -15,11 +15,6 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"/>
 
-    <include
-        android:id="@+id/freeShippingLayout"
-        android:visibility="gone"
-        layout="@layout/setting_partial_free_shipping" />
-
     <com.tokopedia.unifycomponents.DividerUnify
         android:layout_width="match_parent"
         android:layout_height="@dimen/setting_divider_thin"

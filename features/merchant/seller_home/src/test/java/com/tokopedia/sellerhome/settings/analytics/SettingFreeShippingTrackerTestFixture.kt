@@ -1,6 +1,5 @@
 package com.tokopedia.sellerhome.settings.analytics
 
-import com.tokopedia.seller.menu.common.analytics.SettingFreeShippingTracker
 import com.tokopedia.track.interfaces.Analytics
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.every
