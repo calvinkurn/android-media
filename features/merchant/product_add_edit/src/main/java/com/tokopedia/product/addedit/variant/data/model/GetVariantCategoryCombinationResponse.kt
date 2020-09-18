@@ -3,13 +3,13 @@ package com.tokopedia.product.addedit.variant.data.model
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-data class GetCategoryVariantCombinationResponse (
-        @SerializedName("GetCategoryVariantCombination")
+data class GetVariantCategoryCombinationResponse (
+        @SerializedName("getVariantCategoryCombination")
         @Expose
-        var getCategoryVariantCombination: GetCategoryVariantCombination = GetCategoryVariantCombination()
+        var getVariantCategoryCombination: GetVariantCategoryCombination = GetVariantCategoryCombination()
 )
 
-data class GetCategoryVariantCombination (
+data class GetVariantCategoryCombination (
         @SerializedName("header")
         @Expose
         var header: Header = Header(),

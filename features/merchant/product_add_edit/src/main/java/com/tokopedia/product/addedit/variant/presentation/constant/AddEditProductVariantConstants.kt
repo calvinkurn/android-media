@@ -20,5 +20,7 @@ class AddEditProductVariantConstants {
         const val VARIANT_TRACKER_OFF = "off"
         const val DEFAULT_IS_PRIMARY_INDEX = 0
         const val CUSTOM_VARIANT_UNIT_VALUE_ID = 0
+        const val ADD_MODE = "add"
+        const val ALL_MODE = "all"
     }
 }

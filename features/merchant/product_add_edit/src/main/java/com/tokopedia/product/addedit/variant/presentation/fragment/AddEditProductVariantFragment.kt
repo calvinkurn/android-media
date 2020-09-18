@@ -190,8 +190,9 @@ class AddEditProductVariantFragment :
             }
         }
 
+        observeIsEditMode()
         observeSizechartUrl()
-        observeGetCategoryVariantCombinationResult()
+        observeGetVariantCategoryCombinationResult()
         observeProductInputModel()
         observeInputStatus()
         observeSizechartVisibility()
@@ -805,16 +806,16 @@ class AddEditProductVariantFragment :
         }
     }
 
-    private fun observeGetCategoryVariantCombinationResult() {
+    private fun observeGetVariantCategoryCombinationResult() {
         // start network PLT monitoring
         startNetworkRequestPerformanceMonitoring()
-        viewModel.getCategoryVariantCombinationResult.observe(viewLifecycleOwner, Observer { result ->
+        viewModel.getVariantCategoryCombinationResult.observe(viewLifecycleOwner, Observer { result ->
             // clear adapter before rendering
             variantTypeAdapter?.setData(emptyList())
             when (result) {
                 is Success -> {
                     // master data from back end
-                    val variantDataList = result.data.getCategoryVariantCombination.data.variantDetails
+                    val variantDataList = result.data.getVariantCategoryCombination.data.variantDetails
                     // selected variant details
                     val selectedVariantDetails = viewModel.getSelectedVariantDetails()
                     // setup the page
@@ -828,7 +829,7 @@ class AddEditProductVariantFragment :
                     // end monitoring if failed
                     stopPerformanceMonitoring()
                     context?.let {
-                        showGetCategoryVariantCombinationErrorToast(
+                        showGetVariantCategoryCombinationErrorToast(
                                 ErrorHandler.getErrorMessage(it, result.throwable))
                     }
                 }
@@ -843,8 +844,9 @@ class AddEditProductVariantFragment :
             // set selected variant details
             viewModel.setSelectedVariantDetails(selectedVariantDetails)
             // get all variant details
-            val categoryId = productInputModel.detailInputModel.categoryId
-            viewModel.getCategoryVariantCombination(categoryId)
+            val categoryId = productInputModel.detailInputModel.categoryId.toIntOrNull()
+            val selections = productInputModel.variantInputModel.selections
+            categoryId?.run { viewModel.getVariantCategoryCombination(this, selections) }
         })
     }
 
@@ -1105,7 +1107,7 @@ class AddEditProductVariantFragment :
         }
     }
 
-    private fun showGetCategoryVariantCombinationErrorToast(errorMessage: String) {
+    private fun showGetVariantCategoryCombinationErrorToast(errorMessage: String) {
         view?.let {
             Toaster.make(it, errorMessage,
                     type = Toaster.TYPE_ERROR,
@@ -1113,8 +1115,10 @@ class AddEditProductVariantFragment :
                     duration = Snackbar.LENGTH_INDEFINITE,
                     clickListener = View.OnClickListener {
                         val categoryId = viewModel.productInputModel.value?.detailInputModel?.categoryId
+                        val selections = viewModel.productInputModel.value?.variantInputModel?.selections?: listOf()
                         categoryId?.let { id ->
-                            viewModel.getCategoryVariantCombination(id)
+                            val paramId = id.toIntOrNull()
+                            paramId?.run { viewModel.getVariantCategoryCombination(this, selections) }
                         }
                     })
         }
