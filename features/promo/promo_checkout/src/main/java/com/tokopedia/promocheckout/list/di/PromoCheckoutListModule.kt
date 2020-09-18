@@ -1,8 +1,8 @@
 package com.tokopedia.promocheckout.list.di
 
 import android.content.Context
-import com.google.gson.Gson
 import com.chuckerteam.chucker.api.ChuckerInterceptor
+import com.google.gson.Gson
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.network.NetworkRouter
@@ -12,7 +12,10 @@ import com.tokopedia.network.utils.OkHttpRetryPolicy
 import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil
 import com.tokopedia.promocheckout.common.di.PromoCheckoutModule
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase
-import com.tokopedia.promocheckout.common.domain.deals.PromoCheckoutListDealsUseCase
+import com.tokopedia.promocheckout.common.domain.deals.DealsCheckRepositoryImpl
+import com.tokopedia.promocheckout.common.domain.deals.DealsCheckoutApi
+import com.tokopedia.promocheckout.common.domain.deals.DealsCheckoutApi.Companion.BASE_URL_EVENT_DEALS
+import com.tokopedia.promocheckout.common.domain.deals.PromoCheckoutDealsRepository
 import com.tokopedia.promocheckout.common.domain.digital.DigitalCheckVoucherUseCase
 import com.tokopedia.promocheckout.common.domain.event.network_api.EventCheckoutApi
 import com.tokopedia.promocheckout.common.domain.event.network_api.EventCheckoutApi.Companion.BASE_URL_EVENT
@@ -22,7 +25,6 @@ import com.tokopedia.promocheckout.common.domain.flight.FlightCheckVoucherUseCas
 import com.tokopedia.promocheckout.common.domain.hotel.HotelCheckVoucherUseCase
 import com.tokopedia.promocheckout.common.domain.mapper.*
 import com.tokopedia.promocheckout.common.domain.umroh.UmrahCheckPromoUseCase
-import com.tokopedia.promocheckout.detail.di.PromoCheckoutDetailScope
 import com.tokopedia.promocheckout.list.view.presenter.*
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -56,12 +58,6 @@ class PromoCheckoutListModule {
     @Provides
     fun provideDigitalCheckVoucherUseCase(@ApplicationContext context: Context): DigitalCheckVoucherUseCase {
         return DigitalCheckVoucherUseCase(context, GraphqlUseCase())
-    }
-
-    @PromoCheckoutListScope
-    @Provides
-    fun providePromoCheckoutListDealsUseCase(@ApplicationContext context: Context): PromoCheckoutListDealsUseCase {
-        return PromoCheckoutListDealsUseCase(context, GraphqlUseCase())
     }
 
     @PromoCheckoutListScope
@@ -110,8 +106,8 @@ class PromoCheckoutListModule {
 
     @PromoCheckoutListScope
     @Provides
-    fun provideDealsPresenter(promoCheckoutListDealsUseCase: PromoCheckoutListDealsUseCase, dealsCheckoutMapper: DealsCheckoutMapper): PromoCheckoutListDealsPresenter {
-        return PromoCheckoutListDealsPresenter()
+    fun provideDealsPresenter(promoCheckoutListDealsUseCase: PromoCheckoutDealsRepository, compositeSubscription: CompositeSubscription): PromoCheckoutListDealsPresenter {
+        return PromoCheckoutListDealsPresenter(promoCheckoutListDealsUseCase, compositeSubscription)
     }
 
     @PromoCheckoutListScope
@@ -125,6 +121,12 @@ class PromoCheckoutListModule {
     @PromoCheckoutListScope
     fun provideRepository(eventCheckoutApi: EventCheckoutApi): EventCheckRepository {
         return EventCheckRepositoryImpl(eventCheckoutApi)
+    }
+
+    @Provides
+    @PromoCheckoutListScope
+    fun provideCheckoutLisDealsRepository(dealsCheckoutApi: DealsCheckoutApi): PromoCheckoutDealsRepository {
+        return DealsCheckRepositoryImpl(dealsCheckoutApi)
     }
 
     @PromoCheckoutListScope
@@ -182,6 +184,19 @@ class PromoCheckoutListModule {
         retrofitBuilder.client(client)
         val retrofit = retrofitBuilder.build()
         return retrofit.create(EventCheckoutApi::class.java)
+    }
+
+    @Provides
+    @PromoCheckoutListScope
+    fun provideApiServiceDeals(gson: Gson, client: OkHttpClient): DealsCheckoutApi {
+        val retrofitBuilder = Retrofit.Builder()
+                .baseUrl(BASE_URL_EVENT_DEALS)
+                .addConverterFactory(StringResponseConverter())
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+        retrofitBuilder.client(client)
+        val retrofit = retrofitBuilder.build()
+        return retrofit.create(DealsCheckoutApi::class.java)
     }
 
     @PromoCheckoutListScope
