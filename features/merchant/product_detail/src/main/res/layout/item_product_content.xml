@@ -177,7 +177,7 @@
         app:layout_constraintEnd_toStartOf="@+id/fab_detail_pdp"
         app:layout_constraintStart_toEndOf="@+id/txt_main_price"
         app:layout_constraintTop_toTopOf="@+id/txt_main_price"
-        app:srcCompat="@drawable/ic_af_byme_square" />
+        tools:srcCompat="@drawable/ic_af_byme_square" />
 
     <ImageView
         android:id="@+id/fab_detail_pdp"

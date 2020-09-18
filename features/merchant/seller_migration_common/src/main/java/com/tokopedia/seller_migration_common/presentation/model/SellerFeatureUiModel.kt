@@ -47,6 +47,11 @@ sealed class SellerFeatureUiModel(
             titleId = R.string.seller_migration_fragment_chat_tab_attach_voucher_title,
             descriptionId = R.string.seller_migration_fragment_chat_tab_attach_voucher_description)
 
+    class AutoReplyFeatureUiModel : SellerFeatureUiModel(
+            imageId = R.drawable.ic_seller_migration_template_chat,
+            titleId = R.string.seller_migration_fragment_chat_tab_auto_reply_title,
+            descriptionId = R.string.seller_migration_fragment_chat_tab_auto_reply_description)
+
     class MarketInsightFeatureUiModel : SellerFeatureUiModel(
             imageId = R.drawable.ic_seller_migration_insight,
             titleId = R.string.seller_migration_fragment_statistic_tab_market_insight_title,
