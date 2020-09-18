@@ -3,6 +3,7 @@ import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.pressBack
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
+import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
@@ -30,12 +31,16 @@ class HomeEventActivityTest {
     private val gtmLogDBSource = GtmLogDBSource(context)
 
     @get:Rule
-    var activityRule: ActivityTestRule<HomeEventActivity> = ActivityTestRule(HomeEventActivity::class.java)
+    var activityRule: ActivityTestRule<HomeEventActivity>  = object : IntentsTestRule<HomeEventActivity>(HomeEventActivity::class.java) {
+        override fun beforeActivityLaunched() {
+            super.beforeActivityLaunched()
+            setupGraphqlMockResponse(HomeEventMockResponse())
+        }
+    }
 
     @Before
     fun setup() {
         gtmLogDBSource.deleteAll().subscribe()
-        setupGraphqlMockResponse(HomeEventMockResponse())
     }
 
     @Test
