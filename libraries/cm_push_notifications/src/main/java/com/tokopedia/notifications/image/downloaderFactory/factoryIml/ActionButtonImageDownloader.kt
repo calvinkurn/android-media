@@ -14,7 +14,7 @@ class ActionButtonImageDownloader(baseNotificationModel: BaseNotificationModel)
         baseNotificationModel.media?.run {
             if (mediumQuality.startsWith(CMConstant.HTTP) || mediumQuality.startsWith(CMConstant.WWW)) {
                 baseNotificationModel.media = null
-                Timber.w("${CMConstant.TimberTags.TAG}validation;reason=image_download;data=$baseNotificationModel")
+                Timber.w("${CMConstant.TimberTags.TAG}validation;reason='image_download';data='${baseNotificationModel.toString().take(CMConstant.TimberTags.MAX_LIMIT)}'")
             }
         }
     }

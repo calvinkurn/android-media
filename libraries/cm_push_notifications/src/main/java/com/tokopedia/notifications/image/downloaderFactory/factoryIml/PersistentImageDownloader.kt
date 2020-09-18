@@ -14,7 +14,8 @@ class PersistentImageDownloader(baseNotificationModel: BaseNotificationModel) : 
             if (null == persistentButton.icon || persistentButton.icon!!.startsWith(CMConstant.HTTP) || persistentButton.icon!!.startsWith(CMConstant.WWW)) {
                 baseNotificationModel.status = NotificationStatus.COMPLETED
                 baseNotificationModel.type = CMConstant.NotificationType.DROP_NOTIFICATION
-                Timber.w("${CMConstant.TimberTags.TAG}validation;reason=image_download;data=$baseNotificationModel")
+                Timber.w("${CMConstant.TimberTags.TAG}validation;reason='image_download';data='${
+                baseNotificationModel.toString().take(CMConstant.TimberTags.MAX_LIMIT)}'")
                 return
             }
         }

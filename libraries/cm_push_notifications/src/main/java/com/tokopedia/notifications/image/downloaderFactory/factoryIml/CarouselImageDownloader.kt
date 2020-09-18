@@ -20,7 +20,8 @@ class CarouselImageDownloader(baseNotificationModel: BaseNotificationModel)
         baseNotificationModel.carouselList.removeAll(faultyCarouselList)
         if (baseNotificationModel.carouselList.isEmpty()) {
             baseNotificationModel.type = CMConstant.NotificationType.GENERAL
-            Timber.w("${CMConstant.TimberTags.TAG}validation;reason=image_download;data=$baseNotificationModel")
+            Timber.w("${CMConstant.TimberTags.TAG}validation;reason='image_download';data='${
+            baseNotificationModel.toString().take(CMConstant.TimberTags.MAX_LIMIT)}'")
         }
     }
 

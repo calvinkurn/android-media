@@ -36,7 +36,9 @@ public class CMNotificationFactory {
             //todo notify to server for Blocked Channel By User.
         } else {
             if (baseNotificationModel.getType() == null) {
-                Timber.w(CMConstant.TimberTags.TAG + "validation;reason=type_missing;data=" + baseNotificationModel);
+                Timber.w(CMConstant.TimberTags.TAG + "validation;reason='type_missing';data='" +
+                        baseNotificationModel.toString().substring(0, (Math.min(baseNotificationModel.toString().length(),
+                         CMConstant.TimberTags.MAX_LIMIT))) + "'");
                 return null;
             }
             switch (baseNotificationModel.getType()) {

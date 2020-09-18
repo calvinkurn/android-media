@@ -14,7 +14,8 @@ class ImageNotificationImageDownloader(baseNotificationModel: BaseNotificationMo
             if (mediumQuality.startsWith(CMConstant.HTTP) || mediumQuality.startsWith(CMConstant.WWW)) {
                 baseNotificationModel.media = null
                 baseNotificationModel.type = CMConstant.NotificationType.GENERAL
-                Timber.w("${CMConstant.TimberTags.TAG}validation;reason=image_download;data=$baseNotificationModel")
+                Timber.w("${CMConstant.TimberTags.TAG}validation;reason='image_download';data='${
+                baseNotificationModel.toString().take(CMConstant.TimberTags.MAX_LIMIT)}'")
             }
         }
     }

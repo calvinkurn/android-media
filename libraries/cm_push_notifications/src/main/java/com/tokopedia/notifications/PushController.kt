@@ -45,12 +45,16 @@ class PushController(val context: Context) : CoroutineScope {
                             onLivePushPayloadReceived(baseNotificationModel)
                         }
                     }, onError = {
-                Timber.w( "${CMConstant.TimberTags.TAG}exception;err=${Log.getStackTraceString(it)};data=${bundle}")
+                Timber.w( "${CMConstant.TimberTags.TAG}exception;err='${Log.getStackTraceString(it)
+                        .take(CMConstant.TimberTags.MAX_LIMIT)}';data='${bundle.toString()
+                        .take(CMConstant.TimberTags.MAX_LIMIT)}'")
                 Log.d("PUSHController", it.message)
             })
 
         } catch (e: Exception) {
-            Timber.w( "${CMConstant.TimberTags.TAG}exception;err=${Log.getStackTraceString(e)};reason=no_launch;data=${bundle}")
+            Timber.w( "${CMConstant.TimberTags.TAG}exception;err='${Log.getStackTraceString(e)
+                    .take(CMConstant.TimberTags.MAX_LIMIT)}';reason='no_launch';data='${bundle.toString()
+                    .take(CMConstant.TimberTags.MAX_LIMIT)}'")
         }
     }
 
@@ -146,7 +150,9 @@ class PushController(val context: Context) : CoroutineScope {
             }
         } catch (e: Exception) {
             Log.d("PushController", e.message)
-            Timber.w( "${CMConstant.TimberTags.TAG}exception;err=${Log.getStackTraceString(e)};reason=unable_to_post_notif;data=${baseNotificationModel}")
+            Timber.w( "${CMConstant.TimberTags.TAG}exception;err='${Log.getStackTraceString(e)
+                    .take(CMConstant.TimberTags.MAX_LIMIT)}';reason='unable_to_post_notif';data='${baseNotificationModel.toString()
+                    .take(CMConstant.TimberTags.MAX_LIMIT)}'")
         }
     }
 

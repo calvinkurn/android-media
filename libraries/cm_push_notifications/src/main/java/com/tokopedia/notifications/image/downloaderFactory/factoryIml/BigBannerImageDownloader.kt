@@ -13,7 +13,8 @@ class BigBannerImageDownloader(baseNotificationModel: BaseNotificationModel) : N
             (mediumQuality.startsWith(CMConstant.HTTP) || mediumQuality.startsWith(CMConstant.WWW)).let {
                 if(it) {
                     baseNotificationModel.media = null
-                    Timber.w("${CMConstant.TimberTags.TAG}validation;reason=image_download;data=$baseNotificationModel")
+                    Timber.w("${CMConstant.TimberTags.TAG}validation;reason='image_download';data='${
+                    baseNotificationModel.toString().take(CMConstant.TimberTags.MAX_LIMIT)}'")
                 }
             }
         }

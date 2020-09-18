@@ -14,7 +14,8 @@ class GridImageDownloader(baseNotificationModel: BaseNotificationModel) : Notifi
                 if (startsWith(CMConstant.HTTP) || startsWith(CMConstant.WWW)) {
                     baseNotificationModel.type = CMConstant.NotificationType.GENERAL
                     baseNotificationModel.gridList.clear()
-                    Timber.w("${CMConstant.TimberTags.TAG}validation;reason=image_download;data=$baseNotificationModel")
+                    Timber.w("${CMConstant.TimberTags.TAG}validation;reason='image_download';data='${
+                    baseNotificationModel.toString().take(CMConstant.TimberTags.MAX_LIMIT)}'")
                     return
                 }
             }

@@ -14,7 +14,8 @@ class VisualImageDownloader(baseNotificationModel: BaseNotificationModel) : Noti
             if (startsWith(CMConstant.HTTP) || startsWith(CMConstant.WWW)) {
                 baseNotificationModel.status = NotificationStatus.COMPLETED
                 baseNotificationModel.type = CMConstant.NotificationType.DROP_NOTIFICATION
-                Timber.w("${CMConstant.TimberTags.TAG}validation;reason=image_download_collapsed;data=$baseNotificationModel")
+                Timber.w("${CMConstant.TimberTags.TAG}validation;reason='image_download_collapsed';data='${
+                baseNotificationModel.toString().take(CMConstant.TimberTags.MAX_LIMIT)}'")
                 return
             }
         }
@@ -22,7 +23,8 @@ class VisualImageDownloader(baseNotificationModel: BaseNotificationModel) : Noti
             if (startsWith(CMConstant.HTTP) || startsWith(CMConstant.WWW)) {
                 baseNotificationModel.status = NotificationStatus.COMPLETED
                 baseNotificationModel.type = CMConstant.NotificationType.DROP_NOTIFICATION
-                Timber.w("${CMConstant.TimberTags.TAG}validation;reason=image_download_expanded;data=$baseNotificationModel")
+                Timber.w("${CMConstant.TimberTags.TAG}validation;reason='image_download_expanded';data='${
+                baseNotificationModel.toString().take(CMConstant.TimberTags.MAX_LIMIT)}'")
             }
         }
     }

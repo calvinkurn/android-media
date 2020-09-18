@@ -139,7 +139,9 @@ public class ViewEngine {
             handleBackPress(view, cmInApp);
             return inAppView;
         } catch (Exception e) {
-            Timber.w( CMConstant.TimberTags.TAG + "exception;err=" + Log.getStackTraceString(e) + ";data=" + cmInApp);
+            Timber.w( CMConstant.TimberTags.TAG + "exception;err='" + Log.getStackTraceString(e)
+                    .substring(0, (Math.min(Log.getStackTraceString(e).length(), CMConstant.TimberTags.MAX_LIMIT)))
+                    + "';data='" + cmInApp.toString().substring(0, (Math.min(cmInApp.toString().length(), CMConstant.TimberTags.MAX_LIMIT)))  + "'");
             inAppView = null;
             CmInAppListener listener = CMInAppManager.getCmInAppListener();
             if (listener != null) {
@@ -347,7 +349,9 @@ public class ViewEngine {
                 button.setTextSize(TypedValue.COMPLEX_UNIT_SP,
                         Float.parseFloat(size));
         } catch (NumberFormatException e) {
-            Timber.w( CMConstant.TimberTags.TAG + "exception;err=" + Log.getStackTraceString(e) + ";data=" + cmButton);
+            Timber.w( CMConstant.TimberTags.TAG + "exception;err='" + Log.getStackTraceString(e)
+                    .substring(0, (Math.min(Log.getStackTraceString(e).length(), CMConstant.TimberTags.MAX_LIMIT)))
+                    + "';data='" + cmButton.toString().substring(0, (Math.min(cmButton.toString().length(), CMConstant.TimberTags.MAX_LIMIT)))  + "'");
         }
 
         int margin[] = {0, 0, 0, 0};

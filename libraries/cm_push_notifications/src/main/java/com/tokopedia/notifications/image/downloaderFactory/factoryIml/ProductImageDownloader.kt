@@ -17,7 +17,8 @@ class ProductImageDownloader(baseNotificationModel: BaseNotificationModel)
                     baseNotificationModel.status = NotificationStatus.COMPLETED
                     baseNotificationModel.type = CMConstant.NotificationType.DROP_NOTIFICATION
                     baseNotificationModel.productInfoList.clear()
-                    Timber.w("${CMConstant.TimberTags.TAG}validation;reason=image_download;data=$baseNotificationModel")
+                    Timber.w("${CMConstant.TimberTags.TAG}validation;reason='image_download';data='${
+                    baseNotificationModel.toString().take(CMConstant.TimberTags.MAX_LIMIT)}'")
                     return
                 }
             }

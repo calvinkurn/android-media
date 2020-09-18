@@ -194,6 +194,7 @@ public interface CMConstant {
 
     interface TimberTags {
         String TAG = "P2#CM#";
+        int MAX_LIMIT = 1000;
     }
 
 }
