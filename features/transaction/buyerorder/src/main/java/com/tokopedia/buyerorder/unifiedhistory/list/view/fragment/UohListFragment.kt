@@ -614,7 +614,15 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         }
 
         val typeStatus = if (filterStatus.isEmpty() || filterStatus.equals(PARAM_SEMUA_TRANSAKSI, true)
-                || filterStatus.equals(PARAM_MARKETPLACE, true)) {
+                || filterStatus.equals(PARAM_MARKETPLACE, true)
+                || filterStatus.equals(PARAM_DIGITAL, true)
+                || filterStatus.equals(PARAM_EVENTS, true)
+                || filterStatus.equals(PARAM_DEALS, true)
+                || filterStatus.equals(PARAM_PESAWAT, true)
+                || filterStatus.equals(PARAM_GIFTCARDS, true)
+                || filterStatus.equals(PARAM_INSURANCE, true)
+                || filterStatus.equals(PARAM_MODALTOKO, true)
+                || filterStatus.equals(PARAM_HOTEL, true)) {
             ChipsUnify.TYPE_NORMAL
         } else {
             ChipsUnify.TYPE_SELECTED
@@ -624,7 +632,11 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             onClickFilterStatus()
         }
         if (filterStatus.isNotEmpty() && !isReset) {
-            filter2?.title = currFilterStatusLabel
+            if (filterStatus.equals(PARAM_SEMUA_TRANSAKSI, true)) {
+                filter2?.title = ALL_STATUS
+            } else {
+                filter2?.title = currFilterStatusLabel
+            }
         }
         filter2?.let { chips.add(it) }
 

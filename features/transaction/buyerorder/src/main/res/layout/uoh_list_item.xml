@@ -57,7 +57,8 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="@id/tv_uoh_date"
             app:srcCompat="@drawable/ic_kebab"
-            android:contentDescription="@string/icon_placeholder" />
+            android:contentDescription="@string/icon_placeholder"
+            android:paddingStart="@dimen/dp_4"/>
 
         <com.tokopedia.unifycomponents.Label
             android:id="@+id/label_uoh_order"
@@ -68,8 +69,7 @@
             app:layout_constraintBottom_toBottomOf="@id/iv_kebab_menu"
             app:labelType="general_dark_orange"
             tools:text="Butuh Revisi"
-            android:textStyle="bold"
-            android:layout_marginEnd="@dimen/dp_4"/>
+            android:textStyle="bold"/>
         
         <View
             android:id="@+id/divider_uoh_order_1"

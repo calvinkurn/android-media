@@ -13,16 +13,8 @@ object DeeplinkMapperUohOrder {
 
     fun getRegisteredNavigationUohOrder(deeplink: String): String {
         var returnedDeeplink = ""
-        if (deeplink.startsWith(DIGITAL_ORDER)
-                || deeplink.startsWith(EVENTS_ORDER) || deeplink.startsWith(DEALS_ORDER)
-                || deeplink.startsWith(FLIGHT_ORDER) || deeplink.startsWith(GIFT_CARDS_ORDER)
-                || deeplink.startsWith(INSURANCE_ORDER) || deeplink.startsWith(MODAL_TOKO_ORDER)
-                || deeplink.startsWith(HOTEL_ORDER) || deeplink.equals(ORDER_LIST, true)
-                || deeplink.equals(ORDER_LIST_WEBVIEW, true) || deeplink.equals(PURCHASE_ORDER, true)
-                || deeplink.equals(PURCHASE_CONFIRMED, true) || deeplink.equals(PURCHASE_PROCESSED, true)
-                || deeplink.equals(PURCHASE_SHIPPING_CONFIRM, true) || deeplink.equals(PURCHASE_SHIPPED, true)
-                || deeplink.equals(PURCHASE_DELIVERED, true) || deeplink.equals(PURCHASE_HISTORY, true)
-                || deeplink.equals(ORDER_HISTORY, true)) {
+        if (deeplink.equals(ORDER_LIST, true) || deeplink.equals(ORDER_LIST_WEBVIEW, true)
+                || deeplink.equals(PURCHASE_ORDER, true) || deeplink.equals(PURCHASE_HISTORY, true) ) {
             returnedDeeplink = if (useUoh()) ApplinkConstInternalOrder.UNIFY_ORDER
             else deeplink
 
