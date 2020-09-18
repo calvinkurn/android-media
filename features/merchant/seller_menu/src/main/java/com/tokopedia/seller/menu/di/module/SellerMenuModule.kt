@@ -17,6 +17,8 @@ import com.tokopedia.seller.menu.common.analytics.SellerMenuTracker
 import com.tokopedia.seller.menu.coroutine.CoroutineDispatchers
 import com.tokopedia.seller.menu.coroutine.CoroutineDispatchersProvider
 import com.tokopedia.seller.menu.di.scope.SellerMenuScope
+import com.tokopedia.sellerhomecommon.coroutine.SellerHomeCoroutineDispatcher
+import com.tokopedia.sellerhomecommon.coroutine.SellerHomeCoroutineDispatcherImpl
 import com.tokopedia.track.TrackApp
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -26,7 +28,8 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 
-@Module(includes = [ViewModelModule::class])
+@Module
+@SellerMenuScope
 class SellerMenuModule {
 
     @SellerMenuScope
@@ -107,5 +110,11 @@ class SellerMenuModule {
     fun provideSellerMenuTracker(userSession: UserSessionInterface): SellerMenuTracker {
         val analytics = TrackApp.getInstance().gtm
         return SellerMenuTracker(analytics, userSession)
+    }
+
+    @SellerMenuScope
+    @Provides
+    fun provideSellerHomeDispatcher(): SellerHomeCoroutineDispatcher {
+        return SellerHomeCoroutineDispatcherImpl
     }
 }

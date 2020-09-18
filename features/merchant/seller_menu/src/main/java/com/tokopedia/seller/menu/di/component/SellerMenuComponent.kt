@@ -2,6 +2,8 @@ package com.tokopedia.seller.menu.di.component
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.seller.menu.di.module.SellerMenuModule
+import com.tokopedia.seller.menu.di.module.SellerMenuUseCaseModule
+import com.tokopedia.seller.menu.di.module.ViewModelModule
 import com.tokopedia.seller.menu.di.scope.SellerMenuScope
 import com.tokopedia.seller.menu.presentation.activity.SellerMenuActivity
 import com.tokopedia.seller.menu.presentation.activity.SellerSettingsActivity
@@ -11,7 +13,11 @@ import dagger.Component
 
 @SellerMenuScope
 @Component(
-    modules = [SellerMenuModule::class],
+    modules = [
+        SellerMenuModule::class,
+        SellerMenuUseCaseModule::class,
+        ViewModelModule::class
+    ],
     dependencies = [BaseAppComponent::class]
 )
 interface SellerMenuComponent {
