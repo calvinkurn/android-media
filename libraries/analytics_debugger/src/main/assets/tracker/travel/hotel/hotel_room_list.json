@@ -10,7 +10,7 @@
       "isLoggedInStatus": "{{.*}}",
       "appsflyerId": "{{.*}}",
       "shopId": "{{.*}}",
-      "screenName": "/hotel/roomlist",
+      "screenName": "{{.*}}",
       "category": "hotel",
       "event": "openScreen",
       "userId": "{{.*}}",
@@ -29,16 +29,17 @@
       "businessUnit": "travel & entertainment",
       "item_list": "/hotel/",
       "category": "hotel",
-      "items": [ {
+      "items": [
+        {
         "item_id": "{{.*}}",
-        "price": "{{.*}}",
+        "price": "{{\\d*.\\d*}}",
         "dimension40": "/hotel/",
         "index": "{{.*}}",
         "item_name": "{{.*}}",
         "item_brand":  "none / other",
         "item_variant": "{{.*}}",
         "item_category": "Hotel"
-      }
+        }
       ]
     }, {
       "event": "clickHotel",
@@ -76,6 +77,45 @@
         "item_category": "Hotel"
       }
       ]
+    },
+    {
+      "event": "view_item",
+      "eventCategory": "digital - native",
+      "eventAction": "view room details",
+      "eventLabel": "{{hotel - .* - .* - .* - .* - .* - .* - .*}}",
+      "screenName": "/hotel/roomdetails",
+      "currentSite": "tokopediadigitalhotel",
+      "clientId": "{{.*}}",
+      "sessionIris": "{{.*}}",
+      "userId": "{{.*}}",
+      "businessUnit": "travel & entertainment",
+      "item_list": "/hotel/",
+      "category": "hotel",
+      "items": [
+        {
+          "item_id": "{{.*}}",
+          "price": "{{\\d*.\\d*}}",
+          "dimension40": "/hotel/",
+          "index": "{{.*}}",
+          "item_name": "{{.*}}",
+          "item_brand": "none / other",
+          "item_variant": "{{.*}}",
+          "item_category": "Hotel"
+        }
+      ]
+    },
+    {
+      "event": "clickHotel",
+      "eventCategory": "digital - native",
+      "eventAction": "click room photo on room pdp",
+      "eventLabel": "{{hotel - .* - .* - .*}}",
+      "screenName": "/hotel/roomdetails",
+      "currentSite": "tokopediadigitalhotel",
+      "clientId": "{{.*}}",
+      "sessionIris": "{{.*}}",
+      "userId": "{{.*}}",
+      "businessUnit": "travel & entertainment",
+      "category": "hotel"
     }
   ]
 }

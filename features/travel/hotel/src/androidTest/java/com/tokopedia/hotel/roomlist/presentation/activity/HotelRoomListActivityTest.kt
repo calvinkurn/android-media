@@ -1,21 +1,12 @@
 package com.tokopedia.hotel.roomlist.presentation.activity
 
-import android.app.Activity
-import android.app.Instrumentation
 import android.content.Intent
-import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.UiController
-import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.contrib.RecyclerViewActions
-import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.rule.IntentsTestRule
-import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
@@ -59,12 +50,10 @@ class HotelRoomListActivityTest {
     @Before
     fun setUp() {
         gtmLogDBSource.deleteAll().subscribe()
-        Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
     }
 
     @Test
     fun checkOnRoomListTrackingEvent() {
-        Thread.sleep(3000)
         clickOnSeePhoto()
         clickOnRoomViewHolder()
         assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_HOTEL_ROOM_LIST),
@@ -72,21 +61,23 @@ class HotelRoomListActivityTest {
     }
 
     private fun clickOnSeePhoto() {
-        Thread.sleep(3000)
-
+        Thread.sleep(10000)
         onView(withId(R.id.recycler_view)).perform(
                 RecyclerViewActions.actionOnItemAtPosition<RoomListViewHolder>(0, CommonActions.clickChildViewWithId(R.id.image_banner)))
 
         Thread.sleep(3000)
-        Espresso.onView(ViewMatchers.withId(R.id.btn_arrow_back)).perform(click())
+        onView(withId(R.id.btn_arrow_back)).perform(click())
     }
 
     private fun clickOnRoomViewHolder() {
         Thread.sleep(3000)
 
         if (getRoomListCount() > 0) {
-            Espresso.onView(ViewMatchers.withId(R.id.recycler_view)).perform(RecyclerViewActions
+            onView(withId(R.id.recycler_view)).perform(RecyclerViewActions
                     .actionOnItemAtPosition<RoomListViewHolder>(0, ViewActions.click()))
+
+            Thread.sleep(3000)
+            onView(withId(R.id.room_detail_images)).perform(click())
         }
     }
 

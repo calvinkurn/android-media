@@ -120,10 +120,10 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
             when (it) {
                 is Success -> {
                     if (firstTime) {
+                        firstTime = false
                         trackingHotelUtil.hotelViewRoomList(context, hotelRoomListPageModel.propertyId,
                                 hotelRoomListPageModel, it.data, ROOM_LIST_SCREEN_NAME)
                     }
-                    firstTime = false
 
                     if (!roomListViewModel.isFilter) {
                         roomListViewModel.roomList = it.data
