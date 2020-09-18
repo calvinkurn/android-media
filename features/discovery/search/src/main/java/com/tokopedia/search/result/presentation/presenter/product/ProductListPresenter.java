@@ -35,6 +35,7 @@ import com.tokopedia.search.result.presentation.model.BroadMatchItemViewModel;
 import com.tokopedia.search.result.presentation.model.BroadMatchViewModel;
 import com.tokopedia.search.result.presentation.model.CpmViewModel;
 import com.tokopedia.search.result.presentation.model.FreeOngkirViewModel;
+import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
 import com.tokopedia.search.result.presentation.model.InspirationCardViewModel;
 import com.tokopedia.search.result.presentation.model.InspirationCarouselViewModel;
 import com.tokopedia.search.result.presentation.model.LabelGroupViewModel;
@@ -1194,12 +1195,20 @@ final class ProductListPresenter
     }
 
     private String createGeneralSearchTrackingEventLabel(ProductViewModel productViewModel, String query) {
+        String source = getTopNavSource(productViewModel.getGlobalNavViewModel());
         return String.format(
                 SearchEventTracking.Label.KEYWORD_TREATMENT_RESPONSE,
                 query,
                 productViewModel.getKeywordProcess(),
-                productViewModel.getResponseCode()
+                productViewModel.getResponseCode(),
+                source
         );
+    }
+
+    private String getTopNavSource(GlobalNavViewModel globalNavViewModel) {
+        if (globalNavViewModel == null) return "none";
+        if (globalNavViewModel.getSource().isEmpty()) return "other";
+        return globalNavViewModel.getSource();
     }
 
     private String createGeneralSearchTrackingRelatedKeyword(ProductViewModel productViewModel) {

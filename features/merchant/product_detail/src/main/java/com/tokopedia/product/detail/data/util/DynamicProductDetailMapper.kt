@@ -117,13 +117,14 @@ object DynamicProductDetailMapper {
             it.type == ProductDetailConstant.MEDIA
         }?.componentData?.firstOrNull() ?: ComponentData()
 
-        val newDataWithMedia = contentData?.copy(media = mediaData.media, videos = mediaData.videos) ?: ComponentData()
+        val newDataWithMedia = contentData?.copy(media = mediaData.media, videos = mediaData.videos)
+                ?: ComponentData()
         assignIdToMedia(newDataWithMedia.media)
 
         return DynamicProductInfoP1(layoutName = data.generalName, basic = data.basicInfo, data = newDataWithMedia, pdpSession = data.pdpSession)
     }
 
-    private fun assignIdToMedia(listOfMedia: List<Media>){
+    private fun assignIdToMedia(listOfMedia: List<Media>) {
         listOfMedia.forEachIndexed { index, it ->
             it.id = (index + 1).toString()
         }
@@ -258,6 +259,12 @@ object DynamicProductDetailMapper {
     fun getTickerInfoData(tickerData: StickyLoginTickerPojo.TickerResponse): List<StickyLoginTickerPojo.TickerDetail> {
         return tickerData.response.tickers.filter {
             it.layout != StickyLoginConstant.LAYOUT_FLOATING
+        }
+    }
+
+    fun getStickyLoginData(tickerData: StickyLoginTickerPojo.TickerResponse): StickyLoginTickerPojo.TickerDetail? {
+        return tickerData.response.tickers.find {
+            it.layout == StickyLoginConstant.LAYOUT_FLOATING
         }
     }
 

@@ -283,7 +283,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         isLoadingInitialData = true
         isTopdasLoaded = false
         ticker_occ_layout.gone()
-        updateStickyContent()
         loadProductData(true)
     }
 
@@ -325,6 +324,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             trackingQueue.sendAll()
         }
     }
+
     override fun onResume() {
         super.onResume()
         reloadCartCounter()
@@ -465,7 +465,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
                 if (resultCode == Activity.RESULT_OK && viewModel.userSessionInterface.isLoggedIn) {
                     when (viewModel.talkLastAction) {
-                        is DynamicProductDetailTalkGoToWriteDiscussion -> goToWriteActivity((viewModel.variantData?.getBuyableVariantCount() ?: 0).toString())
+                        is DynamicProductDetailTalkGoToWriteDiscussion -> goToWriteActivity((viewModel.variantData?.getBuyableVariantCount()
+                                ?: 0).toString())
                         is DynamicProductDetailTalkGoToReplyDiscussion -> goToReplyActivity((viewModel.talkLastAction as DynamicProductDetailTalkGoToReplyDiscussion).questionId)
                     }
                 }
@@ -1017,9 +1018,11 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     override fun onDiscussionSendQuestionClicked(componentTrackDataModel: ComponentTrackDataModel) {
         doActionOrLogin({
-            val totalAvailableVariants = (viewModel.variantData?.getBuyableVariantCount() ?: 0).toString()
+            val totalAvailableVariants = (viewModel.variantData?.getBuyableVariantCount()
+                    ?: 0).toString()
             viewModel.getDynamicProductInfoP1?.let {
-                DynamicProductDetailTracking.Click.eventEmptyDiscussionSendQuestion(it, componentTrackDataModel, viewModel.userId, pdpUiUpdater?.productNewVariantDataModel?.isPartialySelected()?.not() ?: false, totalAvailableVariants)
+                DynamicProductDetailTracking.Click.eventEmptyDiscussionSendQuestion(it, componentTrackDataModel, viewModel.userId, pdpUiUpdater?.productNewVariantDataModel?.isPartialySelected()?.not()
+                        ?: false, totalAvailableVariants)
             }
             goToWriteActivity(totalAvailableVariants)
         })
@@ -1120,10 +1123,10 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     private fun observeTopAdsImageData() {
         viewLifecycleOwner.observe(viewModel.topAdsImageView) { data ->
             data.doSuccessOrFail({
-                if(!it.data.isNullOrEmpty()){
+                if (!it.data.isNullOrEmpty()) {
                     pdpUiUpdater?.updateTopAdsImageData(it.data)
                     dynamicAdapter.notifyTopAdsBanner(pdpUiUpdater?.topAdsImageData)
-                } else{
+                } else {
                     dynamicAdapter.removeComponentSection(pdpUiUpdater?.topAdsImageData)
                 }
             }, {
@@ -1593,7 +1596,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         }
 
         pdpUiUpdater?.updateFulfillmentData(context, viewModel.getMultiOriginByProductId().isFulfillment)
-        pdpUiUpdater?.updateDataP2(context, it, viewModel.getDynamicProductInfoP1?.basic?.productID ?: "")
+        pdpUiUpdater?.updateDataP2(context, it, viewModel.getDynamicProductInfoP1?.basic?.productID
+                ?: "")
 
         dynamicAdapter.notifyDataSetChanged()
     }
@@ -1606,6 +1610,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         if (pdpUiUpdater?.tickerInfoMap?.shouldRemoveComponent() == true) {
             dynamicAdapter.removeComponentSection(pdpUiUpdater?.tickerInfoMap)
         }
+
+        updateStickyContent(it.tickerStickyLogin)
 
         pdpUiUpdater?.updateDataP3(context, it)
         dynamicAdapter.notifyItemComponentSections(pdpUiUpdater?.tickerInfoMap, pdpUiUpdater?.productShipingInfoMap)
@@ -2187,6 +2193,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     private fun initStickyLogin(view: View) {
         stickyLoginView = view.findViewById(R.id.sticky_login_pdp)
+        updateStickyState()
         updateActionButtonShadow()
         stickyLoginView.setOnClickListener {
             goToLogin()
@@ -2205,8 +2212,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             }
             updateStickyState()
         })
-
-        updateStickyContent()
     }
 
     private fun updateStickyState() {
@@ -2241,17 +2246,14 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         }
     }
 
-    private fun updateStickyContent() {
-        viewModel.getStickyLoginContent(
-                onSuccess = {
-                    this.tickerDetail = it
-                    updateStickyState()
-                    updateActionButtonShadow()
-                },
-                onError = {
-                    stickyLoginView.visibility = View.GONE
-                }
-        )
+    private fun updateStickyContent(stickyData: StickyLoginTickerPojo.TickerDetail?) {
+        if (stickyData == null) {
+            stickyLoginView.visibility = View.GONE
+        } else {
+            this.tickerDetail = stickyData
+            updateStickyState()
+            updateActionButtonShadow()
+        }
     }
 
     private fun initBtnAction() {
@@ -2790,7 +2792,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     private fun initTradein() {
-        viewModel.deviceId = TradeInUtils.getDeviceId(context) ?: viewModel.userSessionInterface.deviceId ?: ""
+        viewModel.deviceId = TradeInUtils.getDeviceId(context)
+                ?: viewModel.userSessionInterface.deviceId ?: ""
     }
 
     private fun goToHargaFinal() {
@@ -2959,8 +2962,10 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                     Uri.parse(UriUtil.buildUri(ApplinkConstInternalGlobal.PRODUCT_TALK, it.basic.productID))
                             .buildUpon()
                             .appendQueryParameter(PARAM_APPLINK_SHOP_ID, it.basic.shopID)
-                            .appendQueryParameter(PARAM_APPLINK_IS_VARIANT_SELECTED, (pdpUiUpdater?.productNewVariantDataModel?.isPartialySelected()?.not() ?: false).toString())
-                            .appendQueryParameter(PARAM_APPLINK_AVAILABLE_VARIANT, (viewModel.variantData?.getBuyableVariantCount() ?: 0).toString())
+                            .appendQueryParameter(PARAM_APPLINK_IS_VARIANT_SELECTED, (pdpUiUpdater?.productNewVariantDataModel?.isPartialySelected()?.not()
+                                    ?: false).toString())
+                            .appendQueryParameter(PARAM_APPLINK_AVAILABLE_VARIANT, (viewModel.variantData?.getBuyableVariantCount()
+                                    ?: 0).toString())
                             .build().toString()
             )
             startActivity(intent)
@@ -2987,7 +2992,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                     Uri.parse(ApplinkConstInternalGlobal.ADD_TALK)
                             .buildUpon()
                             .appendQueryParameter(ProductDetailConstant.PARAM_PRODUCT_ID, it)
-                            .appendQueryParameter(PARAM_APPLINK_IS_VARIANT_SELECTED, (pdpUiUpdater?.productNewVariantDataModel?.isPartialySelected()?.not() ?: false).toString())
+                            .appendQueryParameter(PARAM_APPLINK_IS_VARIANT_SELECTED, (pdpUiUpdater?.productNewVariantDataModel?.isPartialySelected()?.not()
+                                    ?: false).toString())
                             .appendQueryParameter(PARAM_APPLINK_AVAILABLE_VARIANT, availableVariants)
                             .build().toString())
             startActivity(intent)

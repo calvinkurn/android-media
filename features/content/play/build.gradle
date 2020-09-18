@@ -79,7 +79,7 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.espressoIntents
 
     androidTestImplementation project(rootProject.ext.libraries.instrumentation_test)
-    androidTestImplementation project(rootProject.ext.libraries.analyticsDebugger)
+    androidTestImplementation project(rootProject.ext.libraries.cassavaTest)
 
     androidTestAnnotationProcessor rootProject.ext.miscDependencies.daggerCompiler
 }
