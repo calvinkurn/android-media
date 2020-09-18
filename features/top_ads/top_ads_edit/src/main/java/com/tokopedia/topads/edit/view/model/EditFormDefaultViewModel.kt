@@ -2,7 +2,6 @@ package com.tokopedia.topads.edit.view.model
 
 import android.os.Bundle
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.internal.ParamObject.KEYWORD
@@ -34,7 +33,7 @@ class EditFormDefaultViewModel @Inject constructor(
         private val topAdsCreateUseCase: TopAdsCreateUseCase) : BaseViewModel(dispatcher) {
 
     companion object {
-        private const val QUERY_PRODUCT = """query topAdsGetPromo(${'$'}shopID: String!, ${'$'}adID: String!) {
+        private const val QUERY_PRODUCT: String = """query topAdsGetPromo(${'$'}shopID: String!, ${'$'}adID: String!) {
             topAdsGetPromo(shopID:${'$'}shopID, adID: ${'$'}adID) {
                 data {
                     adType
@@ -141,13 +140,12 @@ class EditFormDefaultViewModel @Inject constructor(
                 })
     }
 
-    @GqlQuery("CategoryList", QUERY_PRODUCT)
     fun getSingleAdInfo(adId: Int, onSuccess: ((List<SingleAd>) -> Unit)) {
         val params = mapOf(ParamObject.SHOP_ID to userSession.shopId,
                 ParamObject.AD_ID to adId.toString())
         singleAdInfoUseCase.setTypeClass(SingleAdInFo::class.java)
         singleAdInfoUseCase.setRequestParams(params)
-        singleAdInfoUseCase.setGraphqlQuery(CategoryList.GQL_QUERY)
+        singleAdInfoUseCase.setGraphqlQuery(QUERY_PRODUCT)
         singleAdInfoUseCase.execute(
                 onSuccessGroup(onSuccess),
                 {
