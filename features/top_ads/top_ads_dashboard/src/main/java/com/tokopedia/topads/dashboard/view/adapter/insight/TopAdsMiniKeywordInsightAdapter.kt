@@ -4,7 +4,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.model.insightkey.KeywordInsightDataMain
@@ -32,9 +31,8 @@ class TopAdsMiniKeywordInsightAdapter(var onCheck: ((pos: Int) -> Unit?)) : Recy
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.view.img.setImageDrawable(holder.view.context.getResDrawable(R.drawable.topads_dashboard_folder))
         holder.view.arrow.setImageDrawable(holder.view.context.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_arrow))
-        holder.view.keywordName.text = items[position].name
-        MethodChecker.setBackground(holder.view.insightCount, MethodChecker.getDrawable(holder.view.context, R.drawable.topads_dash_graph_dot_drawable))
-        holder.view.insightCount.text = items[position].count.toString()
+        val name = items[position].name + "(" + items[position].count.toString() + ")"
+        holder.view.keywordName.text = name
         holder.view.setOnClickListener {
             onCheck(position)
         }
