@@ -1080,8 +1080,8 @@ open class HomeViewModel @Inject constructor(
             val findRetryModel = _homeLiveData.value?.list?.withIndex()?.find {
                 data -> data.value is HomeRetryModel
             }
-            val findRecommendationModel = _homeLiveData.value?.list?.withIndex()?.find {
-                data -> data.value is HomeRecommendationFeedDataModel
+            val findRecommendationModel = _homeLiveData.value?.list?.find {
+                data -> data is HomeRecommendationFeedDataModel
             }
             val findLoadingModel = _homeLiveData.value?.list?.withIndex()?.find {
                 data -> data.value is HomeLoadingMoreModel
@@ -1094,7 +1094,7 @@ open class HomeViewModel @Inject constructor(
             homeRecommendationFeedViewModel.isNewData = true
 
             homeProcessor.get().sendWithQueueMethod(listOf(
-                AddWidgetCommand(homeRecommendationFeedViewModel, findRecommendationModel?.index ?: -1, this@HomeViewModel),
+                AddWidgetCommand(homeRecommendationFeedViewModel, -1, this@HomeViewModel),
                 DeleteWidgetCommand(findLoadingModel?.value, findLoadingModel?.index ?: -1, this@HomeViewModel),
                 DeleteWidgetCommand(findRetryModel?.value, findRetryModel?.index ?: -1, this@HomeViewModel)
             ))
