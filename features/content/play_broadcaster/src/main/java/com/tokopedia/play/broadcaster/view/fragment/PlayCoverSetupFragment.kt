@@ -41,7 +41,7 @@ import com.tokopedia.play.broadcaster.view.activity.PlayBroadcastActivity
 import com.tokopedia.play.broadcaster.view.custom.PlayBottomSheetHeader
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseSetupFragment
 import com.tokopedia.play.broadcaster.view.partial.CoverCropViewComponent
-import com.tokopedia.play.broadcaster.view.partial.CoverSetupPartialView
+import com.tokopedia.play.broadcaster.view.partial.CoverSetupViewComponent
 import com.tokopedia.play.broadcaster.view.state.Changeable
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import com.tokopedia.play.broadcaster.view.state.NotChangeable
@@ -61,7 +61,7 @@ class PlayCoverSetupFragment @Inject constructor(
         private val dispatcher: CoroutineDispatcherProvider,
         private val permissionPref: PermissionSharedPreferences,
         private val analytic: PlayBroadcastAnalytic
-) : PlayBaseSetupFragment(), CoverCropViewComponent.Listener {
+) : PlayBaseSetupFragment(), CoverCropViewComponent.Listener, CoverSetupViewComponent.Listener {
 
     private val job = SupervisorJob()
     private val scope = CoroutineScope(dispatcher.main + job)
@@ -73,8 +73,23 @@ class PlayCoverSetupFragment @Inject constructor(
 
     private lateinit var bottomSheetHeader: PlayBottomSheetHeader
 
-    private lateinit var coverSetupView: CoverSetupPartialView
+    private val coverSetupView by viewComponent(isEagerInit = true) { CoverSetupViewComponent(
+            container = view as ViewGroup,
+            dataSource = object : CoverSetupViewComponent.DataSource {
+                override fun getMaxTitleCharacters(): Int {
+                    return viewModel.maxTitleChars
+                }
 
+                override fun isValidCoverTitle(coverTitle: String): Boolean {
+                    return viewModel.isValidCoverTitle(coverTitle)
+                }
+
+                override fun getCurrentCoverUri(): Uri? {
+                    return viewModel.coverUri
+                }
+            },
+            listener = this
+    ) }
     private val coverCropView by viewComponent { CoverCropViewComponent(it, this) }
 
     private lateinit var imagePickerHelper: CoverImagePickerHelper
@@ -198,6 +213,9 @@ class PlayCoverSetupFragment @Inject constructor(
         getImagePickerHelper().onAttachFragment(childFragment)
     }
 
+    /**
+     * CoverCrop View Component Listener
+     */
     override fun onAddButtonClicked(view: CoverCropViewComponent, imageInputPath: String, cropRect: RectF, currentImageRect: RectF, currentScale: Float, currentAngle: Float, exifInfo: ExifInfo, viewBitmap: Bitmap) {
         if (isGalleryPermissionGranted()) {
             scope.launch {
@@ -224,6 +242,24 @@ class PlayCoverSetupFragment @Inject constructor(
     override fun onChangeButtonClicked(view: CoverCropViewComponent) {
         onChangeCoverFromCropping(viewModel.source)
         analytic.clickChangeCoverOnCroppingPage()
+    }
+
+    /**
+     * CoverSetup View Component Listener
+     */
+    override fun onImageAreaClicked(view: CoverSetupViewComponent) {
+        viewModel.saveCover(coverSetupView.coverTitle)
+        requestGalleryPermission(REQUEST_CODE_PERMISSION_COVER_CHOOSER, isFullFlow = true)
+        analytic.clickAddCover()
+    }
+
+    override fun onNextButtonClicked(view: CoverSetupViewComponent, coverTitle: String) {
+        shouldUploadCover(coverTitle)
+        analytic.clickContinueOnAddCoverAndTitlePage()
+    }
+
+    override fun onTitleAreaHasFocus() {
+        analytic.clickAddTitle()
     }
 
     fun setListener(listener: Listener) {
@@ -253,40 +289,6 @@ class PlayCoverSetupFragment @Inject constructor(
         with(view) {
             bottomSheetHeader = findViewById(R.id.bottom_sheet_header)
         }
-
-        coverSetupView = CoverSetupPartialView(
-                container = view as ViewGroup,
-                dataSource = object : CoverSetupPartialView.DataSource {
-                    override fun getMaxTitleCharacters(): Int {
-                        return viewModel.maxTitleChars
-                    }
-
-                    override fun isValidCoverTitle(coverTitle: String): Boolean {
-                        return viewModel.isValidCoverTitle(coverTitle)
-                    }
-
-                    override fun getCurrentCoverUri(): Uri? {
-                        return viewModel.coverUri
-                    }
-                },
-                listener = object : CoverSetupPartialView.Listener {
-                    override fun onImageAreaClicked(view: CoverSetupPartialView) {
-                        viewModel.saveCover(coverSetupView.coverTitle)
-                        requestGalleryPermission(REQUEST_CODE_PERMISSION_COVER_CHOOSER, isFullFlow = true)
-                        analytic.clickAddCover()
-                    }
-
-                    override fun onNextButtonClicked(view: CoverSetupPartialView, coverTitle: String) {
-                        shouldUploadCover(coverTitle)
-                        analytic.clickContinueOnAddCoverAndTitlePage()
-                    }
-
-                    override fun onTitleAreaHasFocus() {
-                        analytic.clickAddTitle()
-                    }
-                }
-        )
-        viewLifecycleOwner.lifecycle.addObserver(coverSetupView)
     }
 
     private fun setupView() {
