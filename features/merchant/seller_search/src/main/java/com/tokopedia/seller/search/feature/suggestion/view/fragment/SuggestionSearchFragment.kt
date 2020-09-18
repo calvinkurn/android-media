@@ -142,11 +142,11 @@ class SuggestionSearchFragment : BaseDaggerFragment(),
 
     private fun stopSearchResultPagePerformanceMonitoring() {
         rvSearchSuggestionSeller?.viewTreeObserver?.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
-                    override fun onGlobalLayout() {
-                        (activity as? GlobalSearchSellerPerformanceMonitoringListener)?.finishMonitoring()
-                        rvSearchSuggestionSeller?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
-                    }
-                })
+            override fun onGlobalLayout() {
+                (activity as? GlobalSearchSellerPerformanceMonitoringListener)?.finishMonitoring()
+                rvSearchSuggestionSeller?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
+            }
+        })
     }
 
     private fun dropKeyBoard() {
