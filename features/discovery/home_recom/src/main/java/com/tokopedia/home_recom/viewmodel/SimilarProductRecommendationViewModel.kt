@@ -47,8 +47,8 @@ open class SimilarProductRecommendationViewModel @Inject constructor(
             if(page == 1 && _recommendationItem.value != null) _recommendationItem.value = null
             if (_recommendationItem.value == null) _recommendationItem.postValue(Response.loading())
             else _recommendationItem.postValue(Response.loadingMore(_recommendationItem.value?.data))
-
-            getRecommendationFilterChips.setParams(userId = userSessionInterface.userId.toInt(), productIDs = productId, queryParam = queryParam)
+            val userId: Int = if(userSessionInterface.isLoggedIn) userSessionInterface.userId.toInt() else 0
+            getRecommendationFilterChips.setParams(userId = userId, productIDs = productId, queryParam = queryParam)
             var filterChips = listOf<RecommendationFilterChipsEntity.RecommendationFilterChip>()
             if(page == 1){
                 filterChips = getRecommendationFilterChips.executeOnBackground()
@@ -70,6 +70,7 @@ open class SimilarProductRecommendationViewModel @Inject constructor(
             })
         }){
             if(page == 1) _filterChips.postValue(Response.error(it.localizedMessage))
+            _recommendationItem.postValue(Response.error(it.localizedMessage, _recommendationItem.value?.data))
         }
     }
 

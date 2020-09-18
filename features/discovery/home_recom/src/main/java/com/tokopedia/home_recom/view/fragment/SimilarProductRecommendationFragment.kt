@@ -39,6 +39,7 @@ import com.tokopedia.recommendation_widget_common.listener.RecommendationListene
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
+import kotlinx.android.synthetic.main.fragment_simillar_recommendation.view.*
 import javax.inject.Inject
 
 /**
