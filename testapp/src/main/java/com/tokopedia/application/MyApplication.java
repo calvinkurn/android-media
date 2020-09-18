@@ -28,7 +28,6 @@ import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.TkpdCoreRouter;
 import com.tokopedia.core.analytics.container.GTMAnalytics;
 import com.tokopedia.core.analytics.container.MoengageAnalytics;
-import com.tokopedia.core.deprecated.SessionHandler;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
 import com.tokopedia.core.gcm.model.NotificationPass;
@@ -69,7 +68,6 @@ public class MyApplication extends BaseMainApplication
     }
 
     GCMHandler gcmHandler;
-    SessionHandler sessionHandler;
 
     @Override
     public void onCreate() {
@@ -271,28 +269,6 @@ public class MyApplication extends BaseMainApplication
     }
 
     @Override
-    public SessionHandler legacySessionHandler() {
-        if(sessionHandler == null) {
-            com.tokopedia.user.session.UserSession userSession =
-                    new com.tokopedia.user.session.UserSession(this);
-            return sessionHandler = new SessionHandler(this) {
-                @Override
-                public String getLoginID() {
-                    return userSession.getUserId();
-                }
-
-                @Override
-                public String getRefreshToken() {
-                    return userSession.getRefreshTokenIV();
-                }
-
-            };
-        }else{
-            return sessionHandler;
-        }
-    }
-
-    @Override
     public GCMHandler legacyGCMHandler() {
         if(gcmHandler == null){
             return gcmHandler = new GCMHandler(this);
@@ -327,13 +303,13 @@ public class MyApplication extends BaseMainApplication
     }
 
     @Override
-    public void sendForceLogoutAnalytics(Response response, boolean isInvalidToken, boolean isRequestDenied) {
+    public void sendForceLogoutAnalytics(String url, boolean isInvalidToken, boolean isRequestDenied) {
 
     }
 
 
     @Override
-    public void showForceLogoutTokenDialog(String response) {
+    public void showForceLogoutTokenDialog(String path) {
 
     }
 

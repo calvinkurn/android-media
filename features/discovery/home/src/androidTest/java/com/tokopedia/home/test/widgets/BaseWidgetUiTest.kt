@@ -77,7 +77,8 @@ abstract class BaseWidgetUiTest{
             injectCouponTimeBasedUseCase = injectCouponTimeBasedUseCase,
             topAdsImageViewUseCase = topAdsImageViewUseCase,
             playToggleChannelReminderUseCase = playToggleChannelReminderUseCase,
-            getPlayBannerUseCase = getPlayBannerUseCase
+            getPlayBannerUseCase = getPlayBannerUseCase,
+            homeProcessor = mockk(relaxed = true)
     )
 
     fun <T : ViewModel> createViewModelFactory(viewModel: T): ViewModelProvider.Factory {

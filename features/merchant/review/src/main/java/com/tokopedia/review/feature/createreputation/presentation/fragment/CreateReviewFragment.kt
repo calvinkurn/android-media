@@ -17,6 +17,7 @@ import androidx.lifecycle.Observer
 import com.airbnb.lottie.LottieAnimationView
 import com.airbnb.lottie.LottieCompositionFactory
 import com.airbnb.lottie.LottieDrawable
+import com.crashlytics.android.Crashlytics
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
@@ -33,6 +34,7 @@ import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.reputation.common.view.AnimatedRatingPickerCreateReviewView
+import com.tokopedia.review.BuildConfig
 import com.tokopedia.review.R
 import com.tokopedia.review.ReviewInstance
 import com.tokopedia.review.common.analytics.ReviewPerformanceMonitoringContract
@@ -228,7 +230,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
                     onSuccessSubmitReview()
                 }
                 is Fail -> {
-                    onFailSubmitReview(it.fail.message)
+                    onFailSubmitReview(it.fail)
                 }
             }
         })
@@ -695,15 +697,17 @@ class CreateReviewFragment : BaseDaggerFragment(),
         finishIfRoot(true)
     }
 
-    private fun onFailSubmitReview(message: String?) {
+    private fun onFailSubmitReview(throwable: Throwable) {
         stopLoading()
         showLayout()
-        showToasterError(message ?: getString(R.string.review_create_fail_toaster))
+        showToasterError(throwable.message ?: getString(R.string.review_create_fail_toaster))
+        logToCrashlytics(throwable)
     }
 
     private fun onFailEditReview(throwable: Throwable) {
         stopLoading()
         showLayout()
+        logToCrashlytics(throwable)
         (throwable as? MessageErrorException)?.let {
             if(throwable.errorCode.toIntOrZero() == SAME_ARGS_ERROR) {
                 view?.let {
@@ -828,6 +832,14 @@ class CreateReviewFragment : BaseDaggerFragment(),
     private fun hideScoreWidgetAndDivider() {
         createReviewScoreDivider.hide()
         createReviewScore.hide()
+    }
+
+    private fun logToCrashlytics(throwable: Throwable) {
+        if (!BuildConfig.DEBUG) {
+            Crashlytics.logException(throwable)
+        } else {
+            throwable.printStackTrace()
+        }
     }
 
     fun getOrderId(): String {

@@ -6,6 +6,7 @@ import android.view.View
 import android.view.WindowManager
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import com.tokopedia.applink.etalase.DeepLinkMapperEtalase
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
 import com.tokopedia.shop_showcase.R
@@ -58,8 +59,8 @@ class ShopShowcaseListActivity : BaseSimpleActivity(), ShopShowcaseFragmentNavig
         }
 
         // If there is no shopId  then it's seller view
-        if (shopId == "0"){
-            shopId = userSession.shopId
+        if (shopId == "0") {
+            shopId = getShopIdFromDeepLink()
         }
 
         getShopType()
@@ -123,6 +124,20 @@ class ShopShowcaseListActivity : BaseSimpleActivity(), ShopShowcaseFragmentNavig
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+        }
+    }
+
+    /**
+     * @return shopId from deeplink query param.
+     * @return userSession.shopId, if shopId is null or blank or = 0
+     * */
+    private fun getShopIdFromDeepLink(): String {
+        val uri = intent.data
+        val shopId = uri?.getQueryParameter(DeepLinkMapperEtalase.PATH_SHOP_ID)
+        return if (shopId.isNullOrBlank() || shopId == "0") {
+            userSession.shopId
+        } else {
+            shopId
         }
     }
 

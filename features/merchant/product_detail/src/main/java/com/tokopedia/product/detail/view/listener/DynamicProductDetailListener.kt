@@ -45,7 +45,6 @@ interface DynamicProductDetailListener {
      * ProductDiscussionViewHolder
      */
     fun onDiscussionClicked(componentTrackDataModel: ComponentTrackDataModel?)
-    fun onLastDiscussionClicked(talkId:String, componentTrackDataModel: ComponentTrackDataModel?)
     fun onDiscussionRefreshClicked()
     fun onDiscussionSendQuestionClicked(componentTrackDataModel: ComponentTrackDataModel)
     fun goToTalkReading(componentTrackDataModel: ComponentTrackDataModel, numberOfThreadsShown: String)
@@ -69,11 +68,6 @@ interface DynamicProductDetailListener {
     fun onSeeAllMerchantVoucherClick(componentTrackDataModel: ComponentTrackDataModel)
 
     /**
-     * ProductSocialProofViewHolder
-     */
-    fun onShipmentSocialProofClicked(componentTrackDataModel: ComponentTrackDataModel)
-
-    /**
      * ProductShopInfoViewHolder
      */
     fun onShopInfoClicked(itemId: Int, componentTrackDataModel: ComponentTrackDataModel)
@@ -94,7 +88,6 @@ interface DynamicProductDetailListener {
      * ProductGeneralInfoViewHolder
      */
     fun onInfoClicked(name: String, componentTrackDataModel: ComponentTrackDataModel)
-    fun onValuePropositionClicked(view: Int)
 
     /**
      * ProductRecom

@@ -24,10 +24,13 @@ private const val responseCode5RelatedSearch = "${generalSearchTrackingDirectory
 private const val responseCode6RelatedSearch = "${generalSearchTrackingDirectory}response-code-6-related-search.json"
 private const val responseCode7SuggestedSearch = "${generalSearchTrackingDirectory}response-code-7-suggested-search.json"
 private const val withRedirection = "${generalSearchTrackingDirectory}with-redirection.json"
+private const val withGlobalNav = "${generalSearchTrackingDirectory}with-global-nav.json"
+private const val withGlobalNavEmptySource = "${generalSearchTrackingDirectory}with-global-nav-empty-source.json"
 
 internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestFixtures() {
 
     private val keyword = "samsung"
+    private val source = "none"
 
     private fun `Test General Search Tracking`(searchProductModel: SearchProductModel, previousKeyword: String, expectedGeneralSearchTrackingModel: GeneralSearchTrackingModel) {
         `Given Search Product Setup`(searchProductModel, previousKeyword)
@@ -101,7 +104,8 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
                         SearchEventTracking.Label.KEYWORD_TREATMENT_RESPONSE,
                         keyword,
                         searchProductModel.searchProduct.header.keywordProcess,
-                        searchProductModel.searchProduct.header.responseCode
+                        searchProductModel.searchProduct.header.responseCode,
+                        source
                 ),
                 isResultFound = true.toString(),
                 categoryIdMapping = "65",
@@ -121,7 +125,8 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
                         SearchEventTracking.Label.KEYWORD_TREATMENT_RESPONSE,
                         keyword,
                         searchProductModel.searchProduct.header.keywordProcess,
-                        searchProductModel.searchProduct.header.responseCode
+                        searchProductModel.searchProduct.header.responseCode,
+                        source
                 ),
                 isResultFound = true.toString(),
                 categoryIdMapping = "1759,1758,65",
@@ -141,7 +146,8 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
                         SearchEventTracking.Label.KEYWORD_TREATMENT_RESPONSE,
                         keyword,
                         searchProductModel.searchProduct.header.keywordProcess,
-                        searchProductModel.searchProduct.header.responseCode
+                        searchProductModel.searchProduct.header.responseCode,
+                        source
                 ),
                 isResultFound = false.toString(),
                 categoryIdMapping = "",
@@ -161,7 +167,8 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
                         SearchEventTracking.Label.KEYWORD_TREATMENT_RESPONSE,
                         keyword,
                         searchProductModel.searchProduct.header.keywordProcess,
-                        searchProductModel.searchProduct.header.responseCode
+                        searchProductModel.searchProduct.header.responseCode,
+                        source
                 ),
                 isResultFound = true.toString(),
                 categoryIdMapping = "65",
@@ -181,7 +188,8 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
                         SearchEventTracking.Label.KEYWORD_TREATMENT_RESPONSE,
                         keyword,
                         searchProductModel.searchProduct.header.keywordProcess,
-                        searchProductModel.searchProduct.header.responseCode
+                        searchProductModel.searchProduct.header.responseCode,
+                        source
                 ),
                 isResultFound = true.toString(),
                 categoryIdMapping = "1759,1758",
@@ -201,7 +209,8 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
                         SearchEventTracking.Label.KEYWORD_TREATMENT_RESPONSE,
                         keyword,
                         searchProductModel.searchProduct.header.keywordProcess,
-                        searchProductModel.searchProduct.header.responseCode
+                        searchProductModel.searchProduct.header.responseCode,
+                        source
                 ),
                 isResultFound = true.toString(),
                 categoryIdMapping = "1759,1758",
@@ -223,7 +232,8 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
                         SearchEventTracking.Label.KEYWORD_TREATMENT_RESPONSE,
                         keyword,
                         searchProductModel.searchProduct.header.keywordProcess,
-                        searchProductModel.searchProduct.header.responseCode
+                        searchProductModel.searchProduct.header.responseCode,
+                        source
                 ),
                 isResultFound = true.toString(),
                 categoryIdMapping = "1759,1758",
@@ -244,7 +254,8 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
                         SearchEventTracking.Label.KEYWORD_TREATMENT_RESPONSE,
                         keyword,
                         searchProductModel.searchProduct.header.keywordProcess,
-                        searchProductModel.searchProduct.header.responseCode
+                        searchProductModel.searchProduct.header.responseCode,
+                        source
                 ),
                 isResultFound = true.toString(),
                 categoryIdMapping = "1759,1758",
@@ -266,7 +277,8 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
                         SearchEventTracking.Label.KEYWORD_TREATMENT_RESPONSE,
                         keyword,
                         searchProductModel.searchProduct.header.keywordProcess,
-                        searchProductModel.searchProduct.header.responseCode
+                        searchProductModel.searchProduct.header.responseCode,
+                        source
                 ),
                 isResultFound = true.toString(),
                 categoryIdMapping = "1759,1758",
@@ -286,7 +298,8 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
                         SearchEventTracking.Label.KEYWORD_TREATMENT_RESPONSE,
                         keyword,
                         searchProductModel.searchProduct.header.keywordProcess,
-                        searchProductModel.searchProduct.header.responseCode
+                        searchProductModel.searchProduct.header.responseCode,
+                        source
                 ),
                 isResultFound = true.toString(),
                 categoryIdMapping = "1759,1758",
@@ -306,7 +319,52 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
                         SearchEventTracking.Label.KEYWORD_TREATMENT_RESPONSE,
                         keyword,
                         searchProductModel.searchProduct.header.keywordProcess,
-                        searchProductModel.searchProduct.header.responseCode
+                        searchProductModel.searchProduct.header.responseCode,
+                        source
+                ),
+                isResultFound = true.toString(),
+                categoryIdMapping = "65",
+                categoryNameMapping = "Handphone & Tablet",
+                relatedKeyword = "none - none"
+        )
+
+        `Test General Search Tracking`(searchProductModel, previousKeyword, expectedGeneralSearchTrackingModel)
+    }
+
+    @Test
+    fun `General Search Tracking With Global Nav`() {
+        val searchProductModel = withGlobalNav.jsonToObject<SearchProductModel>()
+        val previousKeyword = ""
+        val source =  "recharge"
+        val expectedGeneralSearchTrackingModel = GeneralSearchTrackingModel(
+                eventLabel = String.format(
+                        SearchEventTracking.Label.KEYWORD_TREATMENT_RESPONSE,
+                        keyword,
+                        searchProductModel.searchProduct.header.keywordProcess,
+                        searchProductModel.searchProduct.header.responseCode,
+                        source
+                ),
+                isResultFound = true.toString(),
+                categoryIdMapping = "65",
+                categoryNameMapping = "Handphone & Tablet",
+                relatedKeyword = "none - none"
+        )
+
+        `Test General Search Tracking`(searchProductModel, previousKeyword, expectedGeneralSearchTrackingModel)
+    }
+
+    @Test
+    fun `General Search Tracking With Global Nav Empty Source`() {
+        val searchProductModel = withGlobalNavEmptySource.jsonToObject<SearchProductModel>()
+        val previousKeyword = ""
+        val source =  "other"
+        val expectedGeneralSearchTrackingModel = GeneralSearchTrackingModel(
+                eventLabel = String.format(
+                        SearchEventTracking.Label.KEYWORD_TREATMENT_RESPONSE,
+                        keyword,
+                        searchProductModel.searchProduct.header.keywordProcess,
+                        searchProductModel.searchProduct.header.responseCode,
+                        source
                 ),
                 isResultFound = true.toString(),
                 categoryIdMapping = "65",
