@@ -5,8 +5,8 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.data.Interactor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.sellerhome.common.coroutine.SellerHomeCoroutineDispatcher
-import com.tokopedia.sellerhome.common.coroutine.SellerHomeCoroutineDispatcherImpl
+import com.tokopedia.sellerhomecommon.coroutine.SellerHomeCoroutineDispatcher
+import com.tokopedia.sellerhomecommon.coroutine.SellerHomeCoroutineDispatcherImpl
 import com.tokopedia.sellerhome.config.SellerHomeRemoteConfig
 import com.tokopedia.sellerhome.di.scope.SellerHomeScope
 import com.tokopedia.sellerhome.settings.analytics.SettingFreeShippingTracker

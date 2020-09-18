@@ -3,7 +3,7 @@ package com.tokopedia.sellerhome.view.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.sellerhome.common.coroutine.SellerHomeCoroutineDispatcher
+import com.tokopedia.sellerhomecommon.coroutine.SellerHomeCoroutineDispatcher
 import com.tokopedia.sellerhome.domain.model.GetShopStatusResponse
 import com.tokopedia.sellerhome.domain.model.ShippingLoc
 import com.tokopedia.sellerhome.domain.usecase.GetShopLocationUseCase

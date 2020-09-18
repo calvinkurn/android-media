@@ -15,7 +15,7 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.sellerhome.R
-import com.tokopedia.sellerhome.common.coroutine.SellerHomeCoroutineDispatcher
+import com.tokopedia.sellerhomecommon.coroutine.SellerHomeCoroutineDispatcher
 import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -23,7 +23,6 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
 import javax.inject.Inject
-import javax.inject.Named
 
 class CentralizedPromoViewModel @Inject constructor(
         @ApplicationContext private val context: Context,

@@ -1,6 +1,6 @@
 package com.tokopedia.sellerhome.utils
 
-import com.tokopedia.sellerhome.common.coroutine.SellerHomeCoroutineDispatcher
+import com.tokopedia.sellerhomecommon.coroutine.SellerHomeCoroutineDispatcher
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher

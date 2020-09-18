@@ -1,7 +1,7 @@
 package com.tokopedia.seller.menu.common.domain.usecase
 
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.sellerhome.common.coroutine.SellerHomeCoroutineDispatcher
+import com.tokopedia.sellerhomecommon.coroutine.SellerHomeCoroutineDispatcher
 import com.tokopedia.seller.menu.common.errorhandler.SellerMenuErrorHandler
 import com.tokopedia.seller.menu.common.view.uimodel.base.partialresponse.PartialSettingFail
 import com.tokopedia.seller.menu.common.view.uimodel.base.partialresponse.PartialSettingResponse
@@ -11,9 +11,8 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
 
-class GetAllShopInfoUseCase @Inject constructor(
+class GetAllShopInfoUseCase constructor(
         private val userSession: UserSessionInterface,
         private val balanceInfoUseCase: BalanceInfoUseCase,
         private val getShopBadgeUseCase: GetShopBadgeUseCase,

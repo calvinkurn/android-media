@@ -3,7 +3,7 @@ package com.tokopedia.sellerhome.settings.view.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.sellerhome.common.coroutine.SellerHomeCoroutineDispatcher
+import com.tokopedia.sellerhomecommon.coroutine.SellerHomeCoroutineDispatcher
 import com.tokopedia.sellerhome.common.viewmodel.NonNullLiveData
 import com.tokopedia.seller.menu.common.domain.usecase.GetAllShopInfoUseCase
 import com.tokopedia.seller.menu.common.domain.entity.OthersBalance
