@@ -38,7 +38,7 @@ class CartItemDecoration : RecyclerView.ItemDecoration() {
                     }
                     outRect.bottom = verticalSpaceHeight
                 } catch (e: Exception) {
-
+                    // No-op
                 }
             }
             is DisabledItemHeaderViewHolder -> {
