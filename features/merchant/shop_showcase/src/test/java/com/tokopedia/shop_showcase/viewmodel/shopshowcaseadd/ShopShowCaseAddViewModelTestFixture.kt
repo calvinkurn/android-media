@@ -2,6 +2,7 @@ package com.tokopedia.shop_showcase.viewmodel.shopshowcaseadd
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.LiveData
+import com.tokopedia.shop_showcase.coroutines.TestCoroutineDispatchers
 import com.tokopedia.shop_showcase.shop_showcase_add.domain.usecase.AppendShopShowcaseProductUseCase
 import com.tokopedia.shop_showcase.shop_showcase_add.domain.usecase.CreateShopShowcaseUseCase
 import com.tokopedia.shop_showcase.shop_showcase_add.domain.usecase.RemoveShopShowcaseProductUseCase
@@ -42,7 +43,7 @@ abstract class ShopShowCaseAddViewModelTestFixture {
     protected lateinit var shopShowCaseAddViewModel: ShopShowcaseAddViewModel
 
     private val testDispatcher by lazy {
-        TestCoroutineDispatcher()
+        TestCoroutineDispatchers()
     }
 
     @Before

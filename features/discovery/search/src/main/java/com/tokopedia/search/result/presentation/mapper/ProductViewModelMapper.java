@@ -156,7 +156,11 @@ public class ProductViewModelMapper {
                 convertOtherRelatedProductFreeOngkirToFreeOngkirViewModel(otherRelatedProduct.getFreeOngkir()),
                 otherRelatedProduct.isWishlisted(),
                 position,
-                alternativeKeyword
+                alternativeKeyword,
+                otherRelatedProduct.isOrganicAds(),
+                otherRelatedProduct.getAds().getProductViewUrl(),
+                otherRelatedProduct.getAds().getProductClickUrl(),
+                otherRelatedProduct.getAds().getProductWishlistUrl()
         );
     }
 

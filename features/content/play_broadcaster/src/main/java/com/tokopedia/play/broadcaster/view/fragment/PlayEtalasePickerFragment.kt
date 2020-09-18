@@ -189,6 +189,7 @@ class PlayEtalasePickerFragment @Inject constructor(
         bottomActionView = BottomActionPartialView(view as ViewGroup, object : BottomActionPartialView.Listener {
             override fun onInventoryIconClicked() {
                 showSelectedProductPage()
+                analytic.clickSelectedProductIcon()
             }
 
             override fun onNextButtonClicked() {
@@ -217,7 +218,10 @@ class PlayEtalasePickerFragment @Inject constructor(
             }
 
             override fun onSearchButtonClicked(view: PlaySearchBar, keyword: String) {
-                if (keyword.isNotEmpty()) openProductSearchPage(keyword)
+                if (keyword.isNotEmpty()) {
+                    openProductSearchPage(keyword)
+                    analytic.clickSearchBar(view.text)
+                }
                 else psbSearch.cancel()
             }
         })
