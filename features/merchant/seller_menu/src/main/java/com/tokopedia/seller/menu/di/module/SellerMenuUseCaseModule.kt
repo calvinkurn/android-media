@@ -8,7 +8,7 @@ import com.tokopedia.seller.menu.common.domain.usecase.ShopStatusTypeUseCase
 import com.tokopedia.seller.menu.common.domain.usecase.TopAdsAutoTopupUseCase
 import com.tokopedia.seller.menu.common.domain.usecase.TopAdsDashboardDepositUseCase
 import com.tokopedia.seller.menu.di.scope.SellerMenuScope
-import com.tokopedia.sellerhomecommon.coroutine.SellerHomeCoroutineDispatcher
+import com.tokopedia.seller.menu.common.coroutine.SellerHomeCoroutineDispatcher
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides

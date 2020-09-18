@@ -1,4 +1,4 @@
-package com.tokopedia.sellerhomecommon.coroutine
+package com.tokopedia.seller.menu.common.coroutine
 
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -7,7 +7,7 @@ import kotlinx.coroutines.Dispatchers
  * Created By @ilhamsuaib on 10/09/20
  */
 
-object SellerHomeCoroutineDispatcherImpl : SellerHomeCoroutineDispatcher {
+object SellerHomeCoroutineDispatcherImpl : com.tokopedia.seller.menu.common.coroutine.SellerHomeCoroutineDispatcher {
 
     override fun io(): CoroutineDispatcher = Dispatchers.IO
 

@@ -17,8 +17,8 @@ import com.tokopedia.seller.menu.common.analytics.SellerMenuTracker
 import com.tokopedia.seller.menu.coroutine.CoroutineDispatchers
 import com.tokopedia.seller.menu.coroutine.CoroutineDispatchersProvider
 import com.tokopedia.seller.menu.di.scope.SellerMenuScope
-import com.tokopedia.sellerhomecommon.coroutine.SellerHomeCoroutineDispatcher
-import com.tokopedia.sellerhomecommon.coroutine.SellerHomeCoroutineDispatcherImpl
+import com.tokopedia.seller.menu.common.coroutine.SellerHomeCoroutineDispatcher
+import com.tokopedia.seller.menu.common.coroutine.SellerHomeCoroutineDispatcherImpl
 import com.tokopedia.track.TrackApp
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface

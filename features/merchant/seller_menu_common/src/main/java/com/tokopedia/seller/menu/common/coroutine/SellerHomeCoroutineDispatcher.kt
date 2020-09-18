@@ -1,4 +1,4 @@
-package com.tokopedia.sellerhomecommon.coroutine
+package com.tokopedia.seller.menu.common.coroutine
 
 import kotlinx.coroutines.CoroutineDispatcher
 
