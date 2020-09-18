@@ -73,23 +73,30 @@ class PlayCoverSetupFragment @Inject constructor(
 
     private lateinit var bottomSheetHeader: PlayBottomSheetHeader
 
-    private val coverSetupView by viewComponent(isEagerInit = true) { CoverSetupViewComponent(
-            container = view as ViewGroup,
-            dataSource = object : CoverSetupViewComponent.DataSource {
-                override fun getMaxTitleCharacters(): Int {
-                    return viewModel.maxTitleChars
-                }
+    private val coverSetupView by viewComponent(
+            isEagerInit = true,
+            creator = {
+                CoverSetupViewComponent(
+                        container = view as ViewGroup,
+                        dataSource = object : CoverSetupViewComponent.DataSource {
+                            override fun getMaxTitleCharacters(): Int {
+                                return viewModel.maxTitleChars
+                            }
 
-                override fun isValidCoverTitle(coverTitle: String): Boolean {
-                    return viewModel.isValidCoverTitle(coverTitle)
-                }
+                            override fun isValidCoverTitle(coverTitle: String): Boolean {
+                                return viewModel.isValidCoverTitle(coverTitle)
+                            }
 
-                override fun getCurrentCoverUri(): Uri? {
-                    return viewModel.coverUri
-                }
+                            override fun getCurrentCoverUri(): Uri? {
+                                return viewModel.coverUri
+                            }
+                        },
+                        listener = this
+                )
             },
-            listener = this
-    ) }
+            onDestroy = { viewModel.saveCover(it.coverTitle) }
+    )
+
     private val coverCropView by viewComponent { CoverCropViewComponent(it, this) }
 
     private lateinit var imagePickerHelper: CoverImagePickerHelper
@@ -203,7 +210,6 @@ class PlayCoverSetupFragment @Inject constructor(
 
     override fun onDestroyView() {
         super.onDestroyView()
-        viewModel.saveCover(coverSetupView.coverTitle)
         job.cancelChildren()
     }
 

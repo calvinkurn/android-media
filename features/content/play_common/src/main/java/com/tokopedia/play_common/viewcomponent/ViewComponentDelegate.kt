@@ -13,11 +13,11 @@ import kotlin.reflect.KProperty
 class ViewComponentDelegate<VC: IViewComponent>(
         owner: LifecycleOwner,
         private val isEagerInit: Boolean,
-        private val viewComponentCreator: (container: ViewGroup) -> VC
+        private val viewComponentCreator: (container: ViewGroup) -> VC,
+        private val onDestroy: (VC) -> Unit
 ) : ReadOnlyProperty<LifecycleOwner, VC> {
 
     private var viewComponent: VC? = null
-    private var mIsOnDestroyCalled: Boolean = false
 
     init {
         if (isEagerInit)
@@ -72,10 +72,6 @@ class ViewComponentDelegate<VC: IViewComponent>(
     private fun LifecycleOwner.safeAddObserver(observer: LifecycleObserver) {
         if (this is Fragment) {
             viewLifecycleOwnerLiveData.observe(this, Observer { viewLifecycleOwner ->
-                if (mIsOnDestroyCalled) {
-                    viewComponent = null
-                    mIsOnDestroyCalled = false
-                }
                 viewLifecycleOwner.lifecycle.addObserver(observer)
             })
         } else {
@@ -102,7 +98,8 @@ class ViewComponentDelegate<VC: IViewComponent>(
         fun onDestroy() {
             owner.lifecycle.removeObserver(this)
 
-            mIsOnDestroyCalled = true
+            viewComponent?.let { onDestroy(it) }
+            viewComponent = null
         }
     }
 }
