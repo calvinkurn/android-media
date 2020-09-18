@@ -747,7 +747,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         }
     }
 
-    private fun onSuccessGetTickers(tickers: List<TickerUiModel>) {
+    private fun onSuccessGetTickers(tickers: List<TickerItemUiModel>) {
 
         fun getTickerType(hexColor: String): Int = when (hexColor) {
             context?.getString(R.string.sah_ticker_warning) -> Ticker.TYPE_WARNING

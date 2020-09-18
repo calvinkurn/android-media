@@ -127,7 +127,6 @@ object VariantMapper {
         )
 
         val data = oldData.data.copy(
-                isCOD = newData?.isCod ?: false,
                 isWishlist = newData?.isWishlist ?: false,
                 campaign = newCampaign,
                 price = newPrice,

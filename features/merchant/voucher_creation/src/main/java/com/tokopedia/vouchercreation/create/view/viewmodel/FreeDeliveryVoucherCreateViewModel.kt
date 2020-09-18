@@ -9,19 +9,18 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
+import com.tokopedia.vouchercreation.common.coroutines.CoroutineDispatchers
 import com.tokopedia.vouchercreation.create.domain.usecase.validation.FreeDeliveryValidationUseCase
 import com.tokopedia.vouchercreation.create.view.enums.PromotionType
 import com.tokopedia.vouchercreation.create.view.enums.VoucherImageType
 import com.tokopedia.vouchercreation.create.view.uimodel.validation.FreeDeliveryValidation
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class FreeDeliveryVoucherCreateViewModel @Inject constructor(
-        dispatcher: CoroutineDispatcher,
+        private val dispatchers: CoroutineDispatchers,
         private val freeDeliveryValidationUseCase: FreeDeliveryValidationUseCase
-) : BaseViewModel(dispatcher) {
+) : BaseViewModel(dispatchers.main) {
 
     private val mFreeDeliveryAmountLiveData = MutableLiveData<Int>()
     private val mMinimumPurchaseLiveData = MutableLiveData<Int>()
@@ -124,7 +123,7 @@ class FreeDeliveryVoucherCreateViewModel @Inject constructor(
                 mVoucherQuotaLiveData.value?.let { quota ->
                     launchCatchError(
                             block = {
-                                mFreeDeliveryValidationLiveData.value = Success(withContext(Dispatchers.IO) {
+                                mFreeDeliveryValidationLiveData.value = Success(withContext(dispatchers.io) {
                                     freeDeliveryValidationUseCase.params = FreeDeliveryValidationUseCase.createRequestParam(benefitIdr, minPurchase, quota)
                                     freeDeliveryValidationUseCase.executeOnBackground()
                                 })

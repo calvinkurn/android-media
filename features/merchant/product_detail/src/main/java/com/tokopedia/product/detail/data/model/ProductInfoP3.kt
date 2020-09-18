@@ -8,6 +8,5 @@ import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
 data class ProductInfoP3(
         var rateEstSummarizeText: SummaryText? = null,
         var ratesModel: RatesModel? = null,
-        var userCod: Boolean = false,
         var addressModel: AddressModel? = null,
         var tickerInfo: List<StickyLoginTickerPojo.TickerDetail> = ArrayList())

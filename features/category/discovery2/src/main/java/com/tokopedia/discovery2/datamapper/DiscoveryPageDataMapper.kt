@@ -8,7 +8,7 @@ import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.PINNED_ACTIVE_TAB
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.PINNED_COMP_ID
-import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.PINNED_PRODUCT
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.PRODUCT_ID
 
 
 val discoveryPageData: MutableMap<String, DiscoveryResponse> = HashMap()
@@ -38,7 +38,7 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo, private val queryP
         if(componentList.isNotEmpty() && !pinnedCompId.isNullOrEmpty()){
             componentList.forEach { item ->
                 if(item.id == pinnedCompId){
-                    item.rpc_PinnedProduct= queryParameterMap[PINNED_PRODUCT]
+                    item.rpc_PinnedProduct= queryParameterMap[PRODUCT_ID]
                 }
             }
         }

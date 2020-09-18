@@ -17,7 +17,7 @@
     <string name="label_total_discount">Total Diskon</string>
     <string name="promo_format" formatted="false">-%s</string>
     <string name="label_item_count_summary_with_format">Total Harga (%d Barang)</string>
-    <string name="label_item_count_purchase_protection">Proteksi Produk (%d Barang)</string>
+    <string name="label_item_count_purchase_protection">Proteksi Produk (%d Proteksi)</string>
     <string name="emas_checkout_desc" formatted="false"><![CDATA[%s <b>%s</b>]]></string>
     <string name="text_tos_agreement">syarat dan ketentuan asuransi</string>
     <string name="message_tos_agreement">Dengan membayar, saya menyetujui syarat dan ketentuan asuransi</string>

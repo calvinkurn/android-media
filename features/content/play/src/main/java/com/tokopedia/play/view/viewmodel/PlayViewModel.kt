@@ -66,7 +66,7 @@ class PlayViewModel @Inject constructor(
         get() = _observableChatList
     val observableTotalLikes: LiveData<TotalLikeUiModel>
         get() = _observableTotalLikes
-    val observableLikeState: LiveData<LikeStateUiModel>
+    val observableLikeState: LiveData<NetworkResult<LikeStateUiModel>>
         get() = _observableLikeState
     val observableTotalViews: LiveData<TotalViewUiModel>
         get() = _observableTotalViews
@@ -134,7 +134,7 @@ class PlayViewModel @Inject constructor(
     private val _observableSocketInfo = MutableLiveData<PlaySocketInfo>()
     private val _observableChatList = MutableLiveData<MutableList<PlayChatUiModel>>()
     private val _observableTotalLikes = MutableLiveData<TotalLikeUiModel>()
-    private val _observableLikeState = MutableLiveData<LikeStateUiModel>()
+    private val _observableLikeState = MutableLiveData<NetworkResult<LikeStateUiModel>>()
     private val _observableTotalViews = MutableLiveData<TotalViewUiModel>()
     private val _observablePartnerInfo = MutableLiveData<PartnerInfoUiModel>()
     private val _observableQuickReply = MutableLiveData<QuickReplyUiModel>()
@@ -450,7 +450,7 @@ class PlayViewModel @Inject constructor(
     }
 
     fun changeLikeCount(shouldLike: Boolean) {
-        _observableLikeState.value = LikeStateUiModel(isLiked = shouldLike, fromNetwork = false)
+        _observableLikeState.value = NetworkResult.Success(LikeStateUiModel(isLiked = shouldLike, fromNetwork = false))
         val currentTotalLike = _observableTotalLikes.value ?: TotalLikeUiModel.empty()
         if (!hasWordsOrDotsRegex.containsMatchIn(currentTotalLike.totalLikeFormatted)) {
             var finalTotalLike = currentTotalLike.totalLike + (if (shouldLike) 1 else -1)
@@ -613,8 +613,9 @@ class PlayViewModel @Inject constructor(
                 )
                 getIsLikeUseCase.executeOnBackground()
             }
-            _observableLikeState.value = LikeStateUiModel(isLiked, fromNetwork = true)
+            _observableLikeState.value = NetworkResult.Success(LikeStateUiModel(isLiked, fromNetwork = true))
         } catch (e: Exception) {
+            _observableLikeState.value = NetworkResult.Fail(e)
         }
     }
 

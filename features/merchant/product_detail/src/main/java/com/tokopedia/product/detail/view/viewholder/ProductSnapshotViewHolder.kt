@@ -36,7 +36,6 @@ class ProductSnapshotViewHolder(private val view: View,
             }
             header?.updateWishlist(element.isWishlisted, listener.shouldShowWishlist())
             header?.renderTradein(element.showTradeIn())
-            header?.renderCod(element.showCod())
         }
     }
 
@@ -48,7 +47,6 @@ class ProductSnapshotViewHolder(private val view: View,
 
         when (payloads[0] as Int) {
             ProductDetailConstant.PAYLOAD_WISHLIST -> header?.updateWishlist(element.isWishlisted, listener.shouldShowWishlist())
-            ProductDetailConstant.PAYLOAD_P3 -> header?.renderCod(element.showCod())
         }
     }
 

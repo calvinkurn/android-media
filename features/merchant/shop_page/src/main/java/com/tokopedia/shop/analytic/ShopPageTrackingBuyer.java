@@ -12,6 +12,8 @@ import com.tokopedia.shop.product.view.datamodel.ShopProductViewModel;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -30,6 +32,7 @@ import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_CLOSE_F
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_FOLLOW;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_MEMBERSHIP_EVENT;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_PRODUCT;
+import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_PRODUCT_LIST_TOGGLE;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_PRODUCT_SEARCH_SUGGESTION;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_PROFILE;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_SEARCH;
@@ -783,5 +786,19 @@ public class ShopPageTrackingBuyer extends ShopPageTracking {
                 SHOP_TYPE, shopType,
                 PAGE_TYPE, SHOPPAGE
         ));
+    }
+
+    public void clickProductListToggle(
+            String productListName,
+            boolean isMyShop,
+            CustomDimensionShopPage customDimensionShopPage
+    ) {
+        sendGeneralEvent(
+                CLICK_SHOP_PAGE,
+                getShopPageCategory(isMyShop),
+                CLICK_PRODUCT_LIST_TOGGLE,
+                productListName,
+                customDimensionShopPage
+        );
     }
 }

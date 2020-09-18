@@ -17,6 +17,7 @@ import com.google.android.material.bottomnavigation.LabelVisibilityMode
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -381,7 +382,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
         homeViewModel.shopInfo.observe(this, Observer {
             if (it is Success) {
                 navigator?.run {
-                    val shopName = it.data.shopName
+                    val shopName = MethodChecker.fromHtml(it.data.shopName).toString()
                     val shopAvatar = it.data.shopAvatar
 
                     // update userSession
