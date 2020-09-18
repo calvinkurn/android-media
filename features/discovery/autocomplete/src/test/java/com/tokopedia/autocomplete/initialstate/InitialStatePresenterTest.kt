@@ -62,6 +62,14 @@ internal class InitialStatePresenterTest: InitialStatePresenterTestFixtures() {
         Assert.assertTrue(visitableList[4] is PopularSearchTitleViewModel)
         Assert.assertTrue(visitableList[5] is PopularSearchViewModel)
         Assert.assertTrue(visitableList.size == 6)
+
+        `Then verify RecentSearchViewModel only have 3 items`(visitableList[3] as RecentSearchViewModel)
+    }
+
+    private fun `Then verify RecentSearchViewModel only have 3 items`(viewModel: RecentSearchViewModel) {
+        assert(viewModel.list.size == 3) {
+            "RecentSearchViewModel should only have 3 items, actual size is ${viewModel.list.size}"
+        }
     }
 
     @Test

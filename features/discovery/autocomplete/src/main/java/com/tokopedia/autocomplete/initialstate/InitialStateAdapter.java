@@ -73,7 +73,7 @@ public class InitialStateAdapter extends RecyclerView.Adapter<AbstractViewHolder
         }
     }
 
-    public void setSeeMoreButton(RecentSearchSeeMoreViewModel item) {
+    public void removeSeeMoreButton(RecentSearchSeeMoreViewModel item) {
         int index = list.indexOf(item);
         list.remove(index);
         notifyItemRemoved(index);
