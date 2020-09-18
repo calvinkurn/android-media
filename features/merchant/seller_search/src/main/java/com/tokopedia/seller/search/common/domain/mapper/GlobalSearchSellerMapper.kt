@@ -52,19 +52,21 @@ object GlobalSearchSellerMapper {
                                     appActionLink = it.app_action_link.orEmpty(), actionTitle = it.action_title.orEmpty()))
                         }
                         val isVisibleDivider = countItem < sellerSearch.data.count.orZero()
-                        add(DividerSellerSearchUiModel(isVisibleDivider))                    }
+                        add(DividerSellerSearchUiModel(isVisibleDivider))
+                    }
                     NAVIGATION -> {
                         add(TitleHeaderSellerSearchUiModel(title = it.title.orEmpty()))
                         addAll(mapToNavigationSellerSearchVisitable(it.items, keyword, it.title.orEmpty()))
                         countItem += mapToNavigationSellerSearchVisitable(it.items, keyword, it.title.orEmpty()).size
                         val isVisibleDivider = countItem < sellerSearch.data.count.orZero()
-                        add(DividerSellerSearchUiModel(isVisibleDivider))                    }
+                        add(DividerSellerSearchUiModel(isVisibleDivider))
+                    }
                     FAQ -> {
                         add(TitleHeaderSellerSearchUiModel(title = it.title.orEmpty()))
                         addAll(mapToFaqSellerSearchVisitable(it.items, keyword, it.title.orEmpty()))
                         if (it.has_more == true) {
-                                add(TitleHasMoreSellerSearchUiModel(id = it.id, title = it.action_title.orEmpty(),
-                                        appActionLink = it.app_action_link.orEmpty(), actionTitle = it.action_title.orEmpty()))
+                            add(TitleHasMoreSellerSearchUiModel(id = it.id, title = it.action_title.orEmpty(),
+                                    appActionLink = it.app_action_link.orEmpty(), actionTitle = it.action_title.orEmpty()))
                         }
                     }
                 }
