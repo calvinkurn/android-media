@@ -26,7 +26,6 @@ import com.tokopedia.seller.search.feature.suggestion.view.viewmodel.SuggestionS
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.initial_search_fragment.*
 import kotlinx.android.synthetic.main.suggestion_search_fragment.*
 import javax.inject.Inject
 
@@ -142,11 +141,10 @@ class SuggestionSearchFragment : BaseDaggerFragment(),
     }
 
     private fun stopSearchResultPagePerformanceMonitoring() {
-        rvSearchSuggestionSeller?.viewTreeObserver
-                ?.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+        rvSearchSuggestionSeller?.viewTreeObserver?.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
                     override fun onGlobalLayout() {
                         (activity as? GlobalSearchSellerPerformanceMonitoringListener)?.finishMonitoring()
-                        rvSearchHistorySeller.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                        rvSearchSuggestionSeller?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
                     }
                 })
     }
