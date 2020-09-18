@@ -6,6 +6,7 @@ import android.util.Log
 import com.tokopedia.analyticsdebugger.debugger.IrisLogger
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.iris.IrisAnalytics
+import com.tokopedia.iris.WhiteList.CM_REALTIME_EVENT_LIST
 import com.tokopedia.iris.data.db.IrisDb
 import com.tokopedia.iris.data.db.dao.TrackingDao
 import com.tokopedia.iris.data.db.mapper.TrackingMapper
@@ -93,7 +94,7 @@ class TrackingRepository(
         }
     }
 
-    suspend fun sendSingleEvent(data: String, session: Session): Boolean {
+    suspend fun sendSingleEvent(data: String, session: Session, eventName: String?): Boolean {
         try {
             val dataRequest = TrackingMapper().transformSingleEvent(data, session.getSessionId(),
                     userSession.userId, userSession.deviceId)
@@ -102,12 +103,18 @@ class TrackingRepository(
             val isSuccessFul = response.isSuccessful
             if (!isSuccessFul) {
                 Timber.e("P1#IRIS_REALTIME_ERROR#not_success;data='${data.take(ERROR_MAX_LENGTH).trim()}'")
-                saveEvent(data, session)
+                eventName?.let {
+                    if (CM_REALTIME_EVENT_LIST.contains(it))
+                        saveEvent(data, session)
+                }
             }
             return isSuccessFul
         } catch (e: Exception) {
             Timber.e("P1#IRIS_REALTIME_ERROR#exception;data='${data.take(ERROR_MAX_LENGTH).trim()}';err='${Log.getStackTraceString(e).take(ERROR_MAX_LENGTH).trim()}'")
-            saveEvent(data, session)
+            eventName?.let {
+                if (CM_REALTIME_EVENT_LIST.contains(it))
+                    saveEvent(data, session)
+            }
             return false
         }
     }

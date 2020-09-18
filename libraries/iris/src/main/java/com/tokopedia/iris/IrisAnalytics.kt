@@ -148,7 +148,7 @@ class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
         if (cache.isEnabled()) {
             launch(coroutineContext) {
                 val trackingRepository = TrackingRepository(context)
-                trackingRepository.sendSingleEvent(gson.toJson(map), session)
+                trackingRepository.sendSingleEvent(gson.toJson(map), session, map["event"] as? String)
             }
         }
     }
