@@ -8,7 +8,9 @@ import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
+import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.seller_migration_common.R
@@ -108,3 +110,13 @@ fun Fragment.setupBottomSheetFeedSellerMigration(goToCreateAffiliate: () -> Unit
         bottomSheet.show(it, "")
     }
 }
+
+fun getRegisteredMigrationApplinks(@SellerMigrationFeatureName featureName: String): ArrayList<String> =
+    when(featureName) {
+        SellerMigrationFeatureName.FEATURE_CHAT_SETTING -> {
+            arrayListOf(
+                ApplinkConstInternalSellerapp.SELLER_HOME_CHAT,
+                ApplinkConstInternalMarketplace.CHAT_SETTING)
+        }
+        else -> arrayListOf()
+    }
