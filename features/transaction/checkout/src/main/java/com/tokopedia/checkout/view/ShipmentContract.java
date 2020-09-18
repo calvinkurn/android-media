@@ -144,6 +144,8 @@ public interface ShipmentContract {
         void updateButtonPromoCheckout(PromoUiModel promoUiModel);
 
         void resetCourier(ShipmentCartItemModel shipmentCartItemModel);
+
+        void setHasRunningApiCall(boolean hasRunningApiCall);
     }
 
     interface AnalyticsActionListener {

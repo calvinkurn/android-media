@@ -89,7 +89,7 @@ class TopadsSelectActionSheet {
 
         fun newInstance(context: Context, activeStatus: Int, groupName: String): TopadsSelectActionSheet {
             val fragment = TopadsSelectActionSheet()
-            fragment.dialog = BottomSheetDialog(context, R.style.CreateAdsBottomSheetDialogTheme)
+            fragment.dialog = BottomSheetDialog(context, com.tokopedia.topads.common.R.style.CreateAdsBottomSheetDialogTheme)
             fragment.dialog?.setContentView(R.layout.topads_dash_select_action_on_group_bottomsheet)
             fragment.setupView(context, activeStatus, groupName)
             return fragment

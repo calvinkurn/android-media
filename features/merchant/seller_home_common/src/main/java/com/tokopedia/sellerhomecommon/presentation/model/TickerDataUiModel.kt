@@ -7,5 +7,5 @@ package com.tokopedia.sellerhomecommon.presentation.model
 data class TickerDataUiModel(
         override val dataKey: String = "",
         override var error: String = "",
-        val tickers: List<TickerItemUiModel> = emptyList()
+        var tickers: List<TickerItemUiModel> = emptyList()
 ) : BaseDataUiModel

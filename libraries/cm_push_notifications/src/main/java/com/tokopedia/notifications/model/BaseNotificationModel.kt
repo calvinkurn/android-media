@@ -141,7 +141,10 @@ data class BaseNotificationModel(
         var webHookParam: String? = null,
 
         @ColumnInfo(name = "notificationProductType")
-        var notificationProductType: String? = null
+        var notificationProductType: String? = null,
+
+        @ColumnInfo(name = "is_amplification")
+        var isAmplification: Boolean = false
 
 ) : Parcelable {
 

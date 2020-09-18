@@ -36,6 +36,10 @@ class AddressListRobot {
     fun clickBack() {
         onView(withId(R.id.btn_back)).perform(click())
     }
+
+    fun clickAddButton() {
+        onView(withId(R.id.btn_add)).perform(click())
+    }
 }
 
 fun shippingDurationPage(func: ShippingDurationRobot.() -> Unit) = ShippingDurationRobot().apply(func)

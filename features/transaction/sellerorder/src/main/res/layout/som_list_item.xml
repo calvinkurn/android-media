@@ -17,6 +17,7 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/label_status_order"
+            android:contentDescription="@string/content_desc_label_status_order"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_32"
             android:gravity="center"
