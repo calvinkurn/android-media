@@ -126,8 +126,11 @@ class VerificationActivity : BaseSimpleActivity(), HasComponent<VerificationComp
     }
 
     private fun setupParams() {
-        otpData.userId = if (isResetPin2FA || intent?.extras?.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_FROM_2FA) == true) intent?.extras?.getString(ApplinkConstInternalGlobal.PARAM_USER_ID, "")
-                ?: "" else userSession.userId ?: userSession.temporaryUserId
+        if(isResetPin2FA || intent?.extras?.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_FROM_2FA) == true) {
+            otpData.userId = intent?.extras?.getString(ApplinkConstInternalGlobal.PARAM_USER_ID, "") ?: ""
+        }else {
+            otpData.userId = userSession.userId ?: userSession.temporaryUserId
+        }
         otpData.otpType = intent?.extras?.getInt(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, 0) ?: 0
         otpData.otpMode = intent?.extras?.getString(ApplinkConstInternalGlobal.PARAM_REQUEST_OTP_MODE, "")
                 ?: ""

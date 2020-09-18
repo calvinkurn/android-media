@@ -44,7 +44,9 @@ class PinCompleteFragment : BaseDaggerFragment() {
                     val intent = Intent().putExtras(arguments!!)
                     intent.flags = Intent.FLAG_ACTIVITY_FORWARD_RESULT
                     it.setResult(Activity.RESULT_OK, intent)
-                } else it.setResult(Activity.RESULT_OK)
+                } else {
+                    it.setResult(Activity.RESULT_OK)
+                }
                 it.finish()
             }
         }

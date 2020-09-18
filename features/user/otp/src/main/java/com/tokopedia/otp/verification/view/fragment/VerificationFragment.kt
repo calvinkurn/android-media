@@ -511,9 +511,8 @@ class VerificationFragment : BaseVerificationFragment(), IOnBackPressed {
                 object : ClickableSpan() {
                     override fun onClick(view: View) {
                         val data = otpData
-                        data.otpType = 149
+                        data.otpType = OtpConstant.OtpType.RESET_PIN
                         data.otpMode = ""
-//                        data.msisdn =
                         (activity as VerificationActivity).goToMethodPageResetPin(data)
                     }
 

@@ -117,14 +117,18 @@ class VerificationMethodFragment : BaseVerificationFragment(), IOnBackPressed {
 
     private fun getVerificationMethod() {
         showLoading()
-        viewmodel.getVerificationMethod(
-                otpType = otpData.otpType.toString(),
-                userId = otpData.userId,
-                msisdn = otpData.msisdn,
-                email = otpData.email,
-                userIdEnc = otpData.userIdEnc,
-                accessToken = otpData.accessToken
-        )
+        val otpType = otpData.otpType.toString()
+        if ((otpType == OtpConstant.OtpType.AFTER_LOGIN_PHONE.toString() || otpType == OtpConstant.OtpType.RESET_PIN.toString())
+                && otpData.userIdEnc.isNotEmpty()) {
+            viewmodel.getVerificationMethod2FA(otpType, otpData.accessToken, otpData.userIdEnc)
+        } else {
+            viewmodel.getVerificationMethod(
+                    otpType = otpType,
+                    userId = otpData.userId,
+                    msisdn = otpData.msisdn,
+                    email = otpData.email
+            )
+        }
     }
 
     private fun initObserver() {

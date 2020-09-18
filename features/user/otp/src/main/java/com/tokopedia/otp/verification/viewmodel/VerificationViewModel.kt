@@ -43,13 +43,13 @@ class VerificationViewModel @Inject constructor(
         get() = _otpValidateResult
 
 
-    private fun getVerificationMethod2FA(
+    fun getVerificationMethod2FA(
             otpType: String,
-            ValidateToken: String,
-            UserIDEnc: String
+            validateToken: String,
+            userIdEnc: String
     ) {
         launchCatchError(coroutineContext, {
-            val params = getVerificationMethodUseCase2FA.getParams2FA(otpType, ValidateToken, UserIDEnc)
+            val params = getVerificationMethodUseCase2FA.getParams2FA(otpType, validateToken, userIdEnc)
 
             val data = getVerificationMethodUseCase2FA.getData(params).data
             when {
@@ -73,32 +73,26 @@ class VerificationViewModel @Inject constructor(
             otpType: String,
             userId: String,
             msisdn: String = "",
-            email: String = "",
-            userIdEnc: String = "",
-            accessToken: String = ""
+            email: String = ""
     ) {
-        if ((otpType == OtpConstant.OtpType.AFTER_LOGIN_PHONE.toString() || otpType == OtpConstant.OtpType.RESET_PIN.toString()) && userIdEnc.isNotEmpty()) {
-            getVerificationMethod2FA(otpType, accessToken, userIdEnc)
-        } else {
-            launchCatchError(coroutineContext, {
-                val params = getVerificationMethodUseCase.getParams(otpType, userId, msisdn, email)
+        launchCatchError(coroutineContext, {
+            val params = getVerificationMethodUseCase.getParams(otpType, userId, msisdn, email)
 
-                val data = getVerificationMethodUseCase.getData(params).data
-                when {
-                    data.success -> {
-                        _getVerificationMethodResult.value = Success(data)
-                    }
-                    data.errorMessage.isNotEmpty() -> {
-                        _getVerificationMethodResult.postValue(Fail(MessageErrorException(data.errorMessage)))
-                    }
-                    else -> {
-                        _getVerificationMethodResult.postValue(Fail(Throwable()))
-                    }
+            val data = getVerificationMethodUseCase.getData(params).data
+            when {
+                data.success -> {
+                    _getVerificationMethodResult.value = Success(data)
                 }
-            }, {
-                _getVerificationMethodResult.postValue(Fail(it))
-            })
-        }
+                data.errorMessage.isNotEmpty() -> {
+                    _getVerificationMethodResult.postValue(Fail(MessageErrorException(data.errorMessage)))
+                }
+                else -> {
+                    _getVerificationMethodResult.postValue(Fail(Throwable()))
+                }
+            }
+        }, {
+            _getVerificationMethodResult.postValue(Fail(it))
+        })
     }
 
     @JvmOverloads

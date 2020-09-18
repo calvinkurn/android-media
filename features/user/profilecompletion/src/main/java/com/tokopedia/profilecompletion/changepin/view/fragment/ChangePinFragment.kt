@@ -182,7 +182,9 @@ class ChangePinFragment : BaseDaggerFragment(), CoroutineScope {
             changePinViewModel.checkPin2FA(input, validateToken = arguments?.getString(ApplinkConstInternalGlobal.PARAM_TOKEN)
                     ?: "", userId = arguments?.getString(ApplinkConstInternalGlobal.PARAM_USER_ID)
                     ?: "")
-        } else changePinViewModel.checkPin(input)
+        } else {
+            changePinViewModel.checkPin(input)
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -323,7 +325,12 @@ class ChangePinFragment : BaseDaggerFragment(), CoroutineScope {
     private fun goToSuccessPage() {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PIN_COMPLETE).apply {
             flags = Intent.FLAG_ACTIVITY_FORWARD_RESULT
-            putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, if (isFrom2FA) PinCompleteFragment.SOURCE_FORGOT_PIN_2FA else if (isForgotPin) PinCompleteFragment.SOURCE_FORGOT_PIN else PinCompleteFragment.SOURCE_CHANGE_PIN)
+            val source = when {
+                isFrom2FA -> PinCompleteFragment.SOURCE_FORGOT_PIN_2FA
+                isForgotPin -> PinCompleteFragment.SOURCE_FORGOT_PIN
+                else -> PinCompleteFragment.SOURCE_CHANGE_PIN
+            }
+            putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, source)
         }
         startActivity(intent)
         activity?.finish()
