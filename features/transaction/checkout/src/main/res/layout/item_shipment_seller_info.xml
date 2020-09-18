@@ -81,7 +81,7 @@
         tools:visibility="visible" />
 
     <com.google.android.flexbox.FlexboxLayout
-        android:id="@+id/layout_product_info"
+        android:id="@+id/layout_shop_info"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_4"
