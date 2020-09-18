@@ -50,6 +50,8 @@ object ApplinkConstInternalGlobal {
     val PARAM_KTP_PATH = "ktpPath"
     @JvmField
     val PARAM_FACE_PATH = "facePath"
+    @JvmField
+    val PARAM_RESULT_STATUS = "resultStatus"
 
     @JvmField
     val PARAM_IS_FROM_2FA = "isFromTwoFactor"
@@ -273,6 +275,11 @@ object ApplinkConstInternalGlobal {
     // tokopedia-android-internal://global/cotp
     @JvmField
     val COTP = "$INTERNAL_GLOBAL/cotp"
+
+    // RecieverNotifActivity
+    // tokopedia-android-internal://global/otp-push-notif-reciever
+    @JvmField
+    val OTP_PUSH_NOTIF_RECIEVER = "$INTERNAL_GLOBAL/otp-push-notif-reciever"
 
     // ChangePhoneNumberWarningActivity
     // tokopedia-android-internal://global/change-phone-number

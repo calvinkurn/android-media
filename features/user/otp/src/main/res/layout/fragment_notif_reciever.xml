@@ -1,18 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/Neutral_N0">
 
-    <ImageView
+    <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/image_phone_bell"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/otp_dp_14"
+        android:src="@drawable/ic_phone_bell"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_phone_bell" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/text_title"
@@ -21,7 +23,7 @@
         android:layout_marginLeft="@dimen/spacing_lvl4"
         android:layout_marginTop="@dimen/spacing_lvl4"
         android:layout_marginRight="@dimen/spacing_lvl4"
-        android:text="Apakah kamu berusaha untuk login dengan perangkat lain?"
+        android:text="Apakah kamu ingin masuk ke Tokopedia dari perangkat ini?"
         android:textAlignment="center"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -29,15 +31,15 @@
         app:typographyType="heading_2"
         app:typographyWeight="bold" />
 
-    <ImageView
+    <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/image_phone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/spacing_lvl4"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:src="@drawable/ic_phone_otp"
         app:layout_constraintBottom_toBottomOf="@+id/text_device"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="@id/text_device_title"
-        app:srcCompat="@drawable/ic_phone_otp" />
+        app:layout_constraintTop_toTopOf="@id/text_device_title" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/text_device_title"
@@ -59,22 +61,22 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/otp_dp_14"
         android:layout_marginEnd="@dimen/spacing_lvl4"
-        android:text="Samsung Galaxy Note 9 (Aplikasi)"
         app:layout_constraintLeft_toRightOf="@id/image_phone"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/text_device_title"
         app:typographyType="body_2"
-        app:typographyWeight="reguler" />
+        app:typographyWeight="reguler"
+        tools:text="Samsung Galaxy Note 9 (Aplikasi)" />
 
-    <ImageView
+    <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/image_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/spacing_lvl4"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:src="@drawable/ic_time_otp"
         app:layout_constraintBottom_toBottomOf="@+id/text_time"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/text_time_title"
-        app:srcCompat="@drawable/ic_time_otp" />
+        app:layout_constraintTop_toTopOf="@+id/text_time_title" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/text_time_title"
@@ -96,22 +98,22 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/otp_dp_14"
         android:layout_marginEnd="@dimen/spacing_lvl4"
-        android:text="Senin 4 Februari 2019, 13:03 WIB"
         app:layout_constraintLeft_toRightOf="@id/image_phone"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/text_time_title"
         app:typographyType="body_2"
-        app:typographyWeight="reguler" />
+        app:typographyWeight="reguler"
+        tools:text="Senin 4 Februari 2019, 13:03 WIB" />
 
-    <ImageView
+    <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/image_location"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/spacing_lvl4"
+        android:src="@drawable/ic_location_otp"
         app:layout_constraintBottom_toBottomOf="@+id/text_location"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/text_location_title"
-        app:srcCompat="@drawable/ic_location_otp" />
+        app:layout_constraintTop_toTopOf="@+id/text_location_title" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/text_location_title"
@@ -133,12 +135,12 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/otp_dp_14"
         android:layout_marginEnd="@dimen/spacing_lvl4"
-        android:text="Jakarta, ID • 201.141.663.888"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/image_location"
         app:layout_constraintTop_toBottomOf="@id/text_location_title"
         app:typographyType="body_2"
-        app:typographyWeight="reguler" />
+        app:typographyWeight="reguler"
+        tools:text="Jakarta, ID • 201.141.663.888" />
 
 
     <com.tokopedia.unifyprinciples.Typography
@@ -148,7 +150,7 @@
         android:layout_marginLeft="@dimen/spacing_lvl4"
         android:layout_marginTop="@dimen/spacing_lvl5"
         android:layout_marginRight="@dimen/spacing_lvl4"
-        android:text="Jika ini bukan kamu, akunmu sedang dalam bahaya. Laporkan sekarang dengan klik tombol di bawah."
+        android:text="Jika ini bukan perangkatmu, segera tingkatkan keamanan akun dengan tolak akses."
         android:textColor="@color/otp_grey_text"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -174,9 +176,9 @@
         android:id="@+id/btn_yes"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/otp_dp_6"
+        android:layout_marginStart="@dimen/otp_dp_6"
         android:layout_marginTop="@dimen/spacing_lvl5"
-        android:layout_marginRight="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
         android:text="Terima Akses"
         app:layout_constraintLeft_toRightOf="@+id/btn_no"
         app:layout_constraintRight_toRightOf="parent"

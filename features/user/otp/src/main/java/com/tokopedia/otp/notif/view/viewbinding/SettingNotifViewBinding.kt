@@ -12,12 +12,10 @@ import com.tokopedia.otp.common.abstraction.BaseOtpViewBinding
 
 class SettingNotifViewBinding : BaseOtpViewBinding() {
 
-    override val layoutResId: Int = R.layout.fragment_verification_method
-
-    var containerView: View? = null
+    override val layoutResId: Int = R.layout.fragment_notif_setting
 
     override fun inflate(layoutInflater: LayoutInflater, container: ViewGroup?): View =
             layoutInflater.inflate(layoutResId, container, false).apply {
-                containerView = findViewById(R.id.container)
+                // add view
             }
 }

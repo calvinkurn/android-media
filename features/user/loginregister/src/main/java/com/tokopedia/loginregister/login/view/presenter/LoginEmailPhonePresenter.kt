@@ -11,10 +11,7 @@ import com.tokopedia.loginfingerprint.utils.crypto.Cryptography
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.domain.usecase.DynamicBannerUseCase
 import com.tokopedia.loginregister.discover.usecase.DiscoverUseCase
-import com.tokopedia.loginregister.login.domain.RegisterCheckUseCase
-import com.tokopedia.loginregister.login.domain.StatusFingerprint
-import com.tokopedia.loginregister.login.domain.StatusFingerprintUseCase
-import com.tokopedia.loginregister.login.domain.StatusPinUseCase
+import com.tokopedia.loginregister.login.domain.*
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.login.domain.pojo.StatusPinData
 import com.tokopedia.loginregister.login.view.listener.LoginEmailPhoneContract
@@ -52,6 +49,7 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
                                                    private val statusPinUseCase: StatusPinUseCase,
                                                    private val dynamicBannerUseCase: DynamicBannerUseCase,
                                                    private val statusFingerprintUseCase: StatusFingerprintUseCase,
+                                                   private val registerPushNotifUseCase: RegisterPushNotifUseCase,
                                                    private val fingerprintPreferenceHelper: FingerprintSetting,
                                                    private var cryptographyUtils: Cryptography?,
                                                    @Named(SESSION_MODULE)
@@ -324,6 +322,13 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
         }, onError = {
             view.onGetDynamicBannerError(it)
         })
+    }
+
+    fun registerPushNotif(publicKey: String, signature: String, datetime: String) {
+        registerPushNotifUseCase.executeCoroutines(
+                publicKey,
+                signature,
+                datetime, )
     }
 
     override fun detachView() {

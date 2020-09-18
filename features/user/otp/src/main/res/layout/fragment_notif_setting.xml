@@ -3,27 +3,27 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/Neutral_N0">
 
     <com.tokopedia.unifycomponents.ImageUnify
-        android:id="@+id/imageUnify"
+        android:id="@+id/main_image"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/layout_lvl3"
         android:adjustViewBounds="true"
-        android:src="@drawable/phone_otp_push_notif"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/typography"
+        android:id="@+id/text_subtitle_desc"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/spacing_lvl4"
         android:text="Kamu bisa masuk ke akunmu dengan melakukan verifikasi lewat notifikasi yang dikirim ke perangkat terdaftar"
         android:textAlignment="center"
-        app:layout_constraintTop_toBottomOf="@+id/imageUnify"
+        app:layout_constraintTop_toBottomOf="@+id/main_image"
         app:typographyType="body_3"
         app:typographyWeight="reguler"
         tools:layout_editor_absoluteX="16dp" />
@@ -34,24 +34,35 @@
         android:layout_height="@dimen/layout_lvl1"
         android:layout_marginTop="@dimen/spacing_lvl4"
         android:background="@color/Neutral_N50"
-        app:layout_constraintTop_toBottomOf="@+id/typography" />
+        app:layout_constraintTop_toBottomOf="@+id/text_subtitle_desc" />
 
     <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
+        android:id="@+id/switch_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        app:layout_constraintBottom_toBottomOf="@+id/switch_layout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/view" />
 
     <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/text_switch_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_marginBottom="@dimen/spacing_lvl4"
         android:text="Aktifkan Masuk Lewat Notifikasi"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/view"
-        android:layout_margin="@dimen/spacing_lvl2"
-        app:typographyWeight="bold"
-        app:typographyType="body_2"/>
+        app:typographyType="body_2"
+        app:typographyWeight="bold" />
 
-
+    <FrameLayout
+        android:id="@+id/switch_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        app:layout_constraintTop_toBottomOf="@id/text_switch_title" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
