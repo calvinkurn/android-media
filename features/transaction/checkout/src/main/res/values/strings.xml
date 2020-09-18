@@ -140,4 +140,5 @@
     <string name="content_desc_cb_insurance">checkbox asuransi</string>
     <string name="content_desc_cb_insurance_disabled">checkbox asuransi disabled</string>
     <string name="label_fulfilment">Dilayani Tokopedia</string>
+    <string name="label_order_counter">Pesanan %d</string>
 </resources>

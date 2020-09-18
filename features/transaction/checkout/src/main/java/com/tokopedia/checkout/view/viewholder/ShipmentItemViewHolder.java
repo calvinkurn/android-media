@@ -462,7 +462,8 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
 
     private void renderShop(ShipmentCartItemModel shipmentCartItemModel) {
         if (shipmentCartItemModel.getOrderNumber() > 0) {
-            textOrderNumber.setText("Pesanan " + shipmentCartItemModel.getOrderNumber());
+            String orderlabel = String.format(itemView.getContext().getString(R.string.label_order_counter), shipmentCartItemModel.getOrderNumber());
+            textOrderNumber.setText(orderlabel);
             textOrderNumber.setVisibility(View.VISIBLE);
         } else {
             textOrderNumber.setVisibility(View.GONE);
@@ -545,6 +546,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private void renderProductProperties(CartItemModel cartItemModel) {
         List<String> productInformationList = cartItemModel.getProductInformation();
         if (productInformationList != null && !productInformationList.isEmpty()) {
+            layoutProductInfo.removeAllViews();
             for (int i = 0; i < productInformationList.size(); i++) {
                 Typography productInfo = new Typography(itemView.getContext());
                 productInfo.setTextColor(ContextCompat.getColor(itemView.getContext(), com.tokopedia.unifyprinciples.R.color.Neutral_N700_68));
