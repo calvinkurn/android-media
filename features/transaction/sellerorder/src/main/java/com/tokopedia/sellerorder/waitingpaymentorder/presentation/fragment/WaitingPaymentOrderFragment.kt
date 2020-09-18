@@ -35,7 +35,6 @@ import com.tokopedia.sellerorder.waitingpaymentorder.presentation.model.WaitingP
 import com.tokopedia.sellerorder.waitingpaymentorder.presentation.viewmodel.WaitingPaymentOrderViewModel
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
-import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
@@ -173,7 +172,6 @@ class WaitingPaymentOrderFragment : BaseListFragment<Visitable<WaitingPaymentOrd
     }
 
     private fun setupViews() {
-        setupTicker()
         setupRecyclerView()
         setupSwipeRefreshLayout()
         setupCheckAndSetStockButton()
@@ -231,21 +229,6 @@ class WaitingPaymentOrderFragment : BaseListFragment<Visitable<WaitingPaymentOrd
         }
     }
 
-    private fun setupTicker() {
-        with(tickerWaitingPaymentOrder) {
-            setHtmlDescription(getString(R.string.som_waiting_payment_orders_ticker_description))
-            setDescriptionClickEvent(object : TickerCallback {
-                override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                    showTipsBottomSheet()
-                }
-
-                override fun onDismiss() {
-                    // no op
-                }
-            })
-        }
-    }
-
     private fun showTipsBottomSheet() {
         bottomSheetTips.show(childFragmentManager, TAG_BOTTOM_SHEET)
     }
@@ -254,12 +237,20 @@ class WaitingPaymentOrderFragment : BaseListFragment<Visitable<WaitingPaymentOrd
         waitingPaymentOrderViewModel.waitingPaymentOrderUiModelResult.observe(viewLifecycleOwner, Observer { result ->
             when (result) {
                 is Success -> {
-                    val newItems = ArrayList<Visitable<WaitingPaymentOrderAdapterTypeFactory>>(result.data)
+                    val newItems = ArrayList<Visitable<WaitingPaymentOrderAdapterTypeFactory>>(
+                            result.data.map { newItem ->
+                                val oldItem = adapter.data.find { oldItem ->
+                                    oldItem is WaitingPaymentOrderUiModel && newItem.orderId == oldItem.orderId
+                                }
+
+                                newItem.isExpanded = (oldItem as? WaitingPaymentOrderUiModel)?.isExpanded
+                                        ?: false
+                                newItem
+                            }
+                    )
                     if (isLoadingInitialData) {
-                        // add ticker
                         newItems.add(0, createTicker())
                         (adapter as WaitingPaymentOrderAdapter).updateProducts(newItems)
-//                        animateTickerEnter()
                         animateCheckAndSetStockButtonEnter()
                     } else {
                         hideLoading()
@@ -271,7 +262,6 @@ class WaitingPaymentOrderFragment : BaseListFragment<Visitable<WaitingPaymentOrd
                 is Fail -> {
                     showGetListError(result.throwable)
                     if (isLoadingInitialData) {
-//                        animateTickerLeave()
                         animateCheckAndSetStockButtonLeave()
                     }
                 }
@@ -299,38 +289,6 @@ class WaitingPaymentOrderFragment : BaseListFragment<Visitable<WaitingPaymentOrd
         rvWaitingPaymentOrder.addOneTimeGlobalLayoutListener {
             (rvWaitingPaymentOrder).smoothScrollToPosition(adapter.dataSize - 1)
         }
-    }
-
-    private fun animateTicker(from: Float, to: Float): ValueAnimator {
-        val animator = ValueAnimator.ofFloat(from, to)
-        animator.duration = TICKER_ENTER_LEAVE_ANIMATION_DURATION
-        animator.addUpdateListener { valueAnimator ->
-            tickerWaitingPaymentOrder.translationY = valueAnimator.animatedValue as Float
-        }
-        animator.start()
-        return animator
-    }
-
-    private fun animateTickerEnter() {
-        if (tickerWaitingPaymentOrder.visibility != View.VISIBLE ||
-                tickerWaitingPaymentOrder.translationY != 0f) {
-            tickerWaitingPaymentOrder.visible()
-            animateTicker(-tickerWaitingPaymentOrder.height.toFloat(), 0f)
-        }
-    }
-
-    private fun animateTickerLeave() {
-        animateTicker(0f, -tickerWaitingPaymentOrder.height.toFloat()).addListener(object : Animator.AnimatorListener {
-            override fun onAnimationRepeat(animation: Animator?) {}
-
-            override fun onAnimationEnd(animation: Animator?) {
-                tickerWaitingPaymentOrder.gone()
-            }
-
-            override fun onAnimationCancel(animation: Animator?) {}
-
-            override fun onAnimationStart(animation: Animator?) {}
-        })
     }
 
     private fun animateCheckAndSetStockButton(from: Float, to: Float): ValueAnimator {
