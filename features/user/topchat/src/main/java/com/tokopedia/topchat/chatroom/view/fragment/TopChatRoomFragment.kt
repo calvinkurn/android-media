@@ -198,8 +198,8 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
                 R.dimen.dp_topchat_1,
                 Gravity.CENTER
         )
-        val paddingStart = resources.getDimension(R.dimen.spacing_lvl7).toInt()
-        val paddingEnd = resources.getDimension(R.dimen.spacing_lvl8).toInt()
+        val paddingStart = resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl7).toInt()
+        val paddingEnd = resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl8).toInt()
         val paddingTop = resources.getDimension(R.dimen.dp_topchat_11).toInt()
         val paddingBottom = resources.getDimension(R.dimen.dp_topchat_10).toInt()
         composeArea?.background = bgComposeArea
