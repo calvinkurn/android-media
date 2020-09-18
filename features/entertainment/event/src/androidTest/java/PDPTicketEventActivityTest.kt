@@ -14,6 +14,9 @@ import com.tokopedia.analyticsdebugger.validator.core.hasAllSuccess
 import com.tokopedia.entertainment.R
 import com.tokopedia.entertainment.pdp.activity.EventPDPTicketActivity
 import com.tokopedia.entertainment.pdp.adapter.viewholder.PackageParentViewHolder
+import com.tokopedia.test.application.util.setupGraphqlMockResponse
+import mock.PDPEventMockResponse
+import mock.PDPTicketEventMockResponse
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -37,6 +40,11 @@ class PDPTicketEventActivityTest{
                     }
                     return intent
                 }
+
+                override fun beforeActivityLaunched() {
+                    super.beforeActivityLaunched()
+                    setupGraphqlMockResponse(PDPTicketEventMockResponse())
+                }
             }
 
     @Before
@@ -53,13 +61,12 @@ class PDPTicketEventActivityTest{
         click_beli()
 
         ViewMatchers.assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ENTERTAINMENT_EVENT_PDP_TICKET_VALIDATOR_QUERY), hasAllSuccess())
-
-
     }
 
     fun click_package(){
         val rvInteraction = onView(withId(R.id.recycler_viewParent)).check(matches(isDisplayed()))
         rvInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<PackageParentViewHolder>(0,click()))
+        Thread.sleep(3000)
     }
 
     fun click_quantity(){
@@ -69,11 +76,13 @@ class PDPTicketEventActivityTest{
         val addQuantiryinteraction = onView(withId(R.id.quantity_editor_add))
         addQuantiryinteraction.perform(click())
         addQuantiryinteraction.perform(click())
+        Thread.sleep(3000)
 
     }
 
     fun click_beli(){
         onView(withId(R.id.pilihTicketBtn)).perform(click())
+        Thread.sleep(3000)
     }
 
     companion object {

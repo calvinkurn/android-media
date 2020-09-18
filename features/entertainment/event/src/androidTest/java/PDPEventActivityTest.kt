@@ -41,12 +41,16 @@ class PDPEventActivityTest {
                     }
                     return intent
                 }
+
+                override fun beforeActivityLaunched() {
+                    super.beforeActivityLaunched()
+                    setupGraphqlMockResponse(PDPEventMockResponse())
+                }
             }
 
     @Before
     fun setup() {
         gtmLogDBSource.deleteAll().subscribe()
-        setupGraphqlMockResponse(PDPEventMockResponse())
     }
 
 
