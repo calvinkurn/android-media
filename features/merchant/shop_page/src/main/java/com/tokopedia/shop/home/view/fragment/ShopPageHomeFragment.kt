@@ -1002,8 +1002,14 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     }
 
     override fun onReminderClick(playBannerCarouselItemDataModel: PlayBannerCarouselItemDataModel, position: Int) {
-        if(isLogin) viewModel?.setToggleReminderPlayBanner(playBannerCarouselItemDataModel.channelId, playBannerCarouselItemDataModel.remindMe, position)
-        else redirectToLoginPage()
+        if(isLogin) {
+            viewModel?.setToggleReminderPlayBanner(playBannerCarouselItemDataModel.channelId, playBannerCarouselItemDataModel.remindMe, position)
+        }
+        else {
+            // reset remind icon
+            adapter.notifyItemChanged(position, Bundle().apply { putBoolean(UPDATE_REMIND_ME_PLAY, true) })
+            redirectToLoginPage()
+        }
     }
 
     override fun onPlayBannerSeeMoreClick(appLink: String) {
