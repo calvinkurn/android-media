@@ -11,6 +11,7 @@
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/appCompatImageViewDouble"
+        android:contentDescription="@string/content_desc_appCompatImageViewDouble"
         android:layout_width="@dimen/dp_0"
         android:layout_height="@dimen/dp_0"
         android:scaleType="fitXY"
@@ -27,7 +28,6 @@
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/appCompatImageView"
-        android:contentDescription="@string/content_desc_appCompatImageView"
         android:layout_width="@dimen/dp_0"
         android:layout_height="@dimen/dp_0"
         android:scaleType="fitXY"

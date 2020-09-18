@@ -24,6 +24,7 @@
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/imageProduct"
+            android:contentDescription="@string/content_desc_imageProduct"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:adjustViewBounds="true"
@@ -132,6 +133,7 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/textViewProductName"
+            android:contentDescription="@string/content_desc_textViewProductName"
             android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_8"
@@ -177,6 +179,7 @@
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/textViewSlashedPrice"
+                android:contentDescription="@string/content_desc_textViewSlashedPrice"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_4"
@@ -199,6 +202,7 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/textViewPrice"
+            android:contentDescription="@string/content_desc_textViewPrice"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_8"
@@ -256,6 +260,7 @@
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/imageViewShopBadge"
+                android:contentDescription="@string/content_desc_imageShopBadge"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/dp_18"
                 android:paddingTop="@dimen/dp_1"
@@ -265,6 +270,7 @@
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/textViewShopLocation"
+                android:contentDescription="@string/content_desc_textViewShopLocation"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_4"
@@ -366,6 +372,7 @@
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/imageFreeOngkirPromo"
+            android:contentDescription="@string/content_desc_imageFreeOngkirPromo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_8"
