@@ -102,8 +102,8 @@ object ViewUtil {
         drawable.setLayerInset(0, elevationValue, elevationValue, elevationValue, elevationValue)
 
         if (strokeColor != null && strokeWidthValue != null && drawableLayer.size > 1) {
-            val strokeMargin = strokeWidthValue.toInt()
-            drawable.setLayerInset(1, elevationValue - strokeMargin, elevationValue - strokeMargin, elevationValue - strokeMargin, elevationValue - strokeMargin)
+            val strokeMargin = strokeWidthValue.toInt() / 2
+            drawable.setLayerInset(1, strokeMargin, strokeMargin, strokeMargin, strokeMargin)
         }
 
         return drawable

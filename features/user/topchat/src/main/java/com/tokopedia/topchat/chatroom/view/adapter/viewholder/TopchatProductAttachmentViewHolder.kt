@@ -92,7 +92,7 @@ open class TopchatProductAttachmentViewHolder constructor(
             R.dimen.dp_topchat_1,
             Gravity.CENTER,
             R.color.bg_topchat_right_message,
-            R.dimen.dp_topchat_1point5
+            getStrokeWidthSenderDimenRes()
     )
 
     override fun bind(element: ProductAttachmentViewModel, payloads: MutableList<Any>) {
