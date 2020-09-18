@@ -371,5 +371,5 @@ class AutoAdsWidgetCommon(context: Context, attrs: AttributeSet?) : CardUnify(co
     }
 
     private fun getComponent(context: Context): TopAdsCommonComponent = DaggerTopAdsCommonComponent.builder()
-            .baseAppComponent((context as BaseMainApplication).baseAppComponent).topAdsCommonModule(TopAdsCommonModule(context)).build()
+            .baseAppComponent((context.applicationContext as BaseMainApplication).baseAppComponent).topAdsCommonModule(TopAdsCommonModule(context)).build()
 }
