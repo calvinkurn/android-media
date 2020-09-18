@@ -31,6 +31,9 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
         const val SHOP_TYPE_OFFICIAL_STORE = "official_store"
         const val SHOP_TYPE_GOLD_MERCHANT = "gold_merchant"
         const val SHOP_TYPE_REGULER = "reguler"
+
+        const val DEFAULT_WORDING_SHOW_MORE = "Tampilkan Semua"
+        const val DEFAULT_WORDING_SHOW_LESS = "Tampilkan Lebih Sedikit"
     }
 
     fun convertToCartItemDataList(cartDataListResponse: CartDataListResponse): CartListData {
@@ -43,10 +46,10 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
         cartListData.unavailableGroupData = mapUnavailableGroupData(cartDataListResponse)
         cartListData.showLessUnavailableDataWording = cartDataListResponse.unavailableSectionAction.find {
             return@find it.id == ACTION_SHOWLESS
-        }?.message ?: "Tampilkan Lebih Sedikit"
+        }?.message ?: DEFAULT_WORDING_SHOW_LESS
         cartListData.showMoreUnavailableDataWording = cartDataListResponse.unavailableSectionAction.find {
             return@find it.id == ACTION_SHOWMORE
-        }?.message ?: "Tampilkan Semua"
+        }?.message ?: DEFAULT_WORDING_SHOW_MORE
         cartListData.isPromoCouponActive = cartDataListResponse.isCouponActive == 1
 
         var errorCount = 0
