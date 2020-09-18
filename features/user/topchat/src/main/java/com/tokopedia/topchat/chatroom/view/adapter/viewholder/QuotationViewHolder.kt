@@ -2,12 +2,10 @@ package com.tokopedia.topchat.chatroom.view.adapter.viewholder
 
 import android.view.Gravity
 import android.view.View
-import android.widget.ImageView
 import android.widget.RelativeLayout
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.chat_common.view.adapter.viewholder.BaseChatViewHolder
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandlerListener
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.viewmodel.QuotationUiModel
@@ -55,11 +53,8 @@ class QuotationViewHolder(
         fun trackClickQuotation(msg: QuotationUiModel)
     }
 
-    private var chatStatus: ImageView? = null
-
     override fun bind(message: QuotationUiModel) {
         super.bind(message)
-        bindViewId()
         bindBubbleBackground(message)
         bindBubbleAlignment(message)
         bindProductImage(message)
@@ -70,12 +65,6 @@ class QuotationViewHolder(
 
     override fun alwaysShowTime(): Boolean {
         return true
-    }
-
-    private fun bindViewId() {
-        with(itemView) {
-            chatStatus = findViewById(R.id.chat_status)
-        }
     }
 
     private fun bindBubbleBackground(message: QuotationUiModel) {
@@ -92,7 +81,6 @@ class QuotationViewHolder(
             bindChatReadStatus(message)
         } else {
             setChatLeft()
-            bindChatStatusImage()
         }
     }
 
@@ -118,10 +106,6 @@ class QuotationViewHolder(
             listener.trackClickQuotation(message)
             chatLinkHandlerListener.onGoToWebView(message.url, message.url)
         }
-    }
-
-    private fun bindChatStatusImage() {
-        chatStatus?.hide()
     }
 
     private fun setChatLeft() {
