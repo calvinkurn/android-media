@@ -35,6 +35,7 @@ class AttachedInvoiceViewHolder(
     private val invoiceId: TextView? = itemView.findViewById(R.id.tv_invoice_id)
     private val price: TextView? = itemView.findViewById(R.id.tv_price)
     private var loadView: LoaderUnify? = itemView.findViewById(R.id.loader_invoice)
+    private val radiusInvoice: Float = itemView.context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
 
     private val bgOpposite = ViewUtil.generateBackgroundWithShadow(
             itemView,
@@ -146,7 +147,7 @@ class AttachedInvoiceViewHolder(
     private fun bindViewWithModel(viewModel: AttachInvoiceSentViewModel) {
         val labelType = getLabelType(viewModel.statusId)
 
-        ImageHandler.loadImageRounded2(itemView.context, thumbnail, viewModel.imageUrl)
+        ImageHandler.loadImageRounded2(itemView.context, thumbnail, viewModel.imageUrl, radiusInvoice)
         status?.text = viewModel.status
         status?.setLabelType(labelType)
         invoiceId?.text = viewModel.invoiceId
