@@ -58,10 +58,10 @@ class ShopShowcaseListAdapter (
         fun bindData(dataShowcase: ShowcaseItem, position: Int) {
             titleShowcase?.text = dataShowcase.name
 
-            if (dataShowcase.type == ShowcaseType.GENERATED || !isMyShop) {
-                buttonMenuMore?.visibility = View.INVISIBLE
-            } else {
+            if (dataShowcase.type == ShowcaseType.CUSTOM && isMyShop) {
                 buttonMenuMore?.visibility = View.VISIBLE
+            } else {
+                buttonMenuMore?.visibility = View.INVISIBLE
             }
 
             if(dataShowcase.type ==  ShowcaseType.CAMPAIGN){

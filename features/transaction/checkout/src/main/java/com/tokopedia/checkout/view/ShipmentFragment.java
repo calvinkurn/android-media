@@ -2254,6 +2254,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void onProcessToPaymentCod() {
+        showLoading();
         shipmentAdapter.checkDropshipperValidation(REQUEST_CODE_COD);
     }
 
