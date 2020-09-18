@@ -1139,10 +1139,11 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         viewLifecycleOwner.observe(viewModel.p2Other) {
             if (it.helpfulReviews.isEmpty() && viewModel.getDynamicProductInfoP1?.basic?.stats?.countReview.orZero() == 0) {
                 dynamicAdapter.removeComponentSection(pdpUiUpdater?.productReviewMap)
+                dynamicAdapter.removeComponentSection(pdpUiUpdater?.productReviewOldMap)
             }
 
             pdpUiUpdater?.updateDataP2General(it)
-            dynamicAdapter.notifyItemComponentSections(pdpUiUpdater?.productDiscussionMostHelpfulMap, pdpUiUpdater?.productReviewMap)
+            dynamicAdapter.notifyItemComponentSections(pdpUiUpdater?.productDiscussionMostHelpfulMap, pdpUiUpdater?.productReviewMap, pdpUiUpdater?.productReviewOldMap)
             dynamicAdapter.notifyMediaWithPayload(pdpUiUpdater?.mediaMap, ProductDetailConstant.PAYLOAD_MEDIA_UPDATE_IMAGE_REVIEW)
 
             (activity as? ProductDetailActivity)?.stopMonitoringP2Other()

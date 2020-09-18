@@ -46,6 +46,9 @@ object DynamicProductDetailMapper {
                 ProductDetailConstant.MOST_HELPFUL_REVIEW -> {
                     listOfComponent.add(ProductMostHelpfulReviewDataModel(type = component.type, name = component.componentName))
                 }
+                ProductDetailConstant.REVIEW -> {
+                    listOfComponent.add(ProductMostHelpfulReviewDataModel(type = component.type, name = component.componentName))
+                }
                 ProductDetailConstant.INFO -> {
                     val contentData = component.componentData.firstOrNull()
                     val content = if (contentData?.content?.isEmpty() == true) listOf(Content()) else contentData?.content

@@ -163,6 +163,8 @@
     <string name="ongkir_pattern_string_dynamic_pdp"><![CDATA[%1s <br>ke <b>%2s</b>]]></string>
     <string name="review_counter">• %1$d ulasan</string>
     <string name="label_see_all_with_counter">Lainnya \n %2$d</string>
+    <string name="review_out_of_total_reviews">dari %d ulasan</string>
+    <string name="review_author">oleh &lt;b>%s&lt;/b></string>
 
     <string name="ft_label_without_credit_card">Tanpa Kartu Kredit</string>
     <string name="ft_label_with_credit_card">Dengan Kartu Kredit</string>

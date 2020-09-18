@@ -54,8 +54,11 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
     val productDiscussionMostHelpfulMap: ProductDiscussionMostHelpfulDataModel?
         get() = mapOfData[ProductDetailConstant.DISCUSSION_FAQ] as? ProductDiscussionMostHelpfulDataModel
 
-    val productReviewMap: ProductMostHelpfulReviewDataModel?
+    val productReviewOldMap: ProductMostHelpfulReviewDataModel?
         get() = mapOfData[ProductDetailConstant.MOST_HELPFUL_REVIEW] as? ProductMostHelpfulReviewDataModel
+
+    val productReviewMap: ProductMostHelpfulReviewDataModel?
+        get() = mapOfData[ProductDetailConstant.REVIEW] as? ProductMostHelpfulReviewDataModel
 
     val productTradeinMap: ProductGeneralInfoDataModel?
         get() = mapOfData[ProductDetailConstant.TRADE_IN] as? ProductGeneralInfoDataModel
@@ -188,6 +191,11 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
             }
 
             productReviewMap?.run {
+                totalRating = it.basic.stats.countReview
+                ratingScore = it.basic.stats.rating
+            }
+
+            productReviewOldMap?.run {
                 totalRating = it.basic.stats.countReview
                 ratingScore = it.basic.stats.rating
             }
@@ -353,6 +361,11 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
     fun updateDataP2General(data: ProductInfoP2Other?) {
         data?.let {
             productReviewMap?.run {
+                listOfReviews = it.helpfulReviews
+                imageReviews = it.imageReviews
+            }
+
+            productReviewOldMap?.run {
                 listOfReviews = it.helpfulReviews
                 imageReviews = it.imageReviews
             }
