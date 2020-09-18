@@ -125,15 +125,6 @@ class TroubleshootViewModelTest {
         verify { messagingManager.onNewToken(token) }
     }
 
-    @Test fun `it should push notification of device is disabled`() {
-        every { notificationCompat.isNotificationEnabled() } returns false
-
-        viewModel.deviceSetting()
-
-        verify { deviceSetting.onChanged(any()) }
-        assertThat(viewModel.deviceSetting.value, instanceOf(Fail::class.java))
-    }
-
     @Test fun `it should get high importance notification channel correctly`() {
         val expectedValue = Success(DeviceSettingState.High)
 
@@ -158,19 +149,6 @@ class TroubleshootViewModelTest {
 
         verify { deviceSetting.onChanged(expectedValue) }
         viewModel.deviceSetting isEqualsTo expectedValue
-    }
-
-    @Test fun `it should get off status of notification channel`() {
-        val expectedValue = Fail(Throwable(""))
-
-        every { notificationCompat.isNotificationEnabled() } returns true
-        every { notificationChannel.hasNotificationChannel() } returns true
-        every { notificationChannel.isNotificationChannelEnabled() } returns false
-
-        viewModel.deviceSetting()
-
-        verify { deviceSetting.onChanged(expectedValue) }
-        assertThat(viewModel.deviceSetting.value, instanceOf(Fail::class.java))
     }
 
     @Test fun `it should get none of notification channel`() {
