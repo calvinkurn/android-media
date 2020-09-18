@@ -10,7 +10,7 @@ import com.tokopedia.usecase.UseCase
 import rx.Observable
 import java.util.*
 
-class RefreshPopularSearchUseCase(
+class RefreshInitialStateUseCase(
         private val initialStateRepository: InitialStateRepository
 ) : UseCase<List<InitialStateData>>() {
 

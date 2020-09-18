@@ -2,11 +2,13 @@ package com.tokopedia.autocomplete.initialstate
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.autocomplete.initialstate.dynamic.DynamicInitialStateSearchViewModel
+import com.tokopedia.autocomplete.initialstate.dynamic.DynamicInitialStateTitleViewModel
 import com.tokopedia.autocomplete.initialstate.popularsearch.PopularSearchTitleViewModel
 import com.tokopedia.autocomplete.initialstate.popularsearch.PopularSearchViewModel
 import com.tokopedia.autocomplete.initialstate.recentsearch.RecentSearchTitleViewModel
 import com.tokopedia.autocomplete.initialstate.recentsearch.RecentSearchViewModel
-import com.tokopedia.autocomplete.initialstate.recentview.ReecentViewTitleViewModel
+import com.tokopedia.autocomplete.initialstate.recentview.RecentViewTitleViewModel
 import com.tokopedia.autocomplete.initialstate.recentview.RecentViewViewModel
 
 interface InitialStateTypeFactory {
@@ -21,7 +23,11 @@ interface InitialStateTypeFactory {
 
     fun type(viewModel: RecentSearchTitleViewModel): Int
 
-    fun type(viewModel: ReecentViewTitleViewModel): Int
+    fun type(viewModel: RecentViewTitleViewModel): Int
+
+    fun type(viewModel: DynamicInitialStateSearchViewModel): Int
+
+    fun type(viewModelInitialState: DynamicInitialStateTitleViewModel): Int
 
     fun createViewHolder(view: View, viewType: Int): AbstractViewHolder<*>
 }
