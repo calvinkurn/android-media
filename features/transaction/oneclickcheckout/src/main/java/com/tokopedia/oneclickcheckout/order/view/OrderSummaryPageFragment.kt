@@ -15,7 +15,6 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCallback
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -94,7 +93,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
     lateinit var userSession: UserSessionInterface
 
     private val viewModel: OrderSummaryPageViewModel by lazy {
-        ViewModelProviders.of(this, viewModelFactory)[OrderSummaryPageViewModel::class.java]
+        ViewModelProvider(this, viewModelFactory)[OrderSummaryPageViewModel::class.java]
     }
 
     private var orderPreference: OrderPreference? = null
