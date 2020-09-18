@@ -29,46 +29,43 @@ object GlobalSearchSellerMapper {
 
     fun mapToSellerSearchVisitable(sellerSearch: SellerSearchResponse.SellerSearch, keyword: String): List<BaseSuggestionSearchSeller> {
         return mutableListOf<BaseSuggestionSearchSeller>().apply {
-            sellerSearch.data.sections.map {
+            var countItem = 0
+            sellerSearch.data.sections.forEach {
                 when (it.id) {
                     ORDER -> {
                         add(TitleHeaderSellerSearchUiModel(title = it.title.orEmpty()))
                         addAll(mapToOrderSellerSearchVisitable(it.items, keyword, it.title.orEmpty()))
+                        countItem += mapToOrderSellerSearchVisitable(it.items, keyword, it.title.orEmpty()).size
                         if (it.has_more == true) {
                             add(TitleHasMoreSellerSearchUiModel(id = it.id, title = it.action_title.orEmpty(),
                                     appActionLink = it.app_action_link.orEmpty(), actionTitle = it.action_title.orEmpty()))
                         }
-                        add(DividerSellerSearchUiModel(sellerSearch.data.count.orZero()))
+                        val isVisibleDivider = countItem < sellerSearch.data.count.orZero()
+                        add(DividerSellerSearchUiModel(isVisibleDivider))
                     }
                     PRODUCT -> {
                         add(TitleHeaderSellerSearchUiModel(title = it.title.orEmpty()))
                         addAll(mapToProductSellerSearchVisitable(it.items, keyword, it.title.orEmpty()))
+                        countItem += mapToProductSellerSearchVisitable(it.items, keyword, it.title.orEmpty()).size
                         if (it.has_more == true) {
                             add(TitleHasMoreSellerSearchUiModel(id = it.id, title = it.action_title.orEmpty(),
                                     appActionLink = it.app_action_link.orEmpty(), actionTitle = it.action_title.orEmpty()))
                         }
-                        add(DividerSellerSearchUiModel(sellerSearch.data.count.orZero()))
-                    }
+                        val isVisibleDivider = countItem < sellerSearch.data.count.orZero()
+                        add(DividerSellerSearchUiModel(isVisibleDivider))                    }
                     NAVIGATION -> {
                         add(TitleHeaderSellerSearchUiModel(title = it.title.orEmpty()))
                         addAll(mapToNavigationSellerSearchVisitable(it.items, keyword, it.title.orEmpty()))
-                        add(DividerSellerSearchUiModel(sellerSearch.data.count.orZero()))
-                    }
+                        countItem += mapToNavigationSellerSearchVisitable(it.items, keyword, it.title.orEmpty()).size
+                        val isVisibleDivider = countItem < sellerSearch.data.count.orZero()
+                        add(DividerSellerSearchUiModel(isVisibleDivider))                    }
                     FAQ -> {
                         add(TitleHeaderSellerSearchUiModel(title = it.title.orEmpty()))
                         addAll(mapToFaqSellerSearchVisitable(it.items, keyword, it.title.orEmpty()))
-                        when (it.has_more) {
-                            true -> {
+                        if (it.has_more == true) {
                                 add(TitleHasMoreSellerSearchUiModel(id = it.id, title = it.action_title.orEmpty(),
                                         appActionLink = it.app_action_link.orEmpty(), actionTitle = it.action_title.orEmpty()))
-                            }
-                            else -> {
-                                // no op
-                            }
                         }
-                    }
-                    else -> {
-                        //no op
                     }
                 }
             }
