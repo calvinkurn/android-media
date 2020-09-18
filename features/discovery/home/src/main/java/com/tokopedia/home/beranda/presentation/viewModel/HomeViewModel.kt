@@ -878,7 +878,9 @@ open class HomeViewModel @Inject constructor(
                     homeData = evaluateGeolocationComponent(homeData)
                     homeData = evaluateAvailableComponent(homeData)
                     homeData?.let {
-                        homeProcessor.get().sendWithQueueMethod(UpdateHomeData(homeData, this@HomeViewModel))
+                        withContext(homeDispatcher.get().ui()){ 
+                            _homeLiveData.value = homeData
+                        }
                         getPlayBannerCarousel()
                         getHeaderData()
                         getReviewData()
