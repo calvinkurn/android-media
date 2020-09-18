@@ -73,7 +73,7 @@ class PlayBannerCardViewHolder(
                         creativeName = dataModel.coverUrl,
                         bannerId = playCarouselCardDataModel?.channel?.id ?: "",
                         userId = listener.userId,
-                        position = playCarouselCardDataModel?.channel?.brandId ?: "1",
+                        position = position.toString(),
                         positionFold = if((playCarouselCardDataModel?.position ?: -1) <= 2) "0" else "1"
                 )
         )
@@ -91,7 +91,7 @@ class PlayBannerCardViewHolder(
                 creativeName = dataModel.coverUrl,
                 bannerId = playCarouselCardDataModel?.channel?.id ?: "",
                 userId = listener.userId,
-                position = (position+1).toString(),
+                position = position.toString(),
                 positionFold = if((playCarouselCardDataModel?.position ?: -1) <= 2) "0" else "1"
         ))
     }
@@ -102,13 +102,13 @@ class PlayBannerCardViewHolder(
                     PlayWidgetCarouselTracking.getClickRemoveRemind(
                             channelId = dataModel.channelId,
                             userId = listener.userId,
-                            notifierId = (position + 1).toString()
+                            notifierId = position.toString()
                     )
                 } else {
                     PlayWidgetCarouselTracking.getClickAddRemind(
                             channelId = dataModel.channelId,
                             userId = listener.userId,
-                            notifierId = (position + 1).toString()
+                            notifierId = position.toString()
                     )
                 }
         )
