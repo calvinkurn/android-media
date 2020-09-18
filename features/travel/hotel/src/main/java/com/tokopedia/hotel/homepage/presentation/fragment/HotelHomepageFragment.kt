@@ -6,7 +6,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import android.widget.Toast
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -14,11 +16,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.analytics.performance.PerformanceMonitoring
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.DeeplinkMapper.getRegisteredNavigation
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTravel
-import com.tokopedia.banner.Indicator
+import com.tokopedia.carousel.CarouselUnify
 import com.tokopedia.common.travel.data.entity.TravelCollectiveBannerModel
 import com.tokopedia.common.travel.data.entity.TravelRecentSearchModel
 import com.tokopedia.common.travel.utils.TravelDateUtil
@@ -42,16 +43,17 @@ import com.tokopedia.hotel.homepage.presentation.widget.HotelRoomAndGuestBottomS
 import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelDetailActivity
 import com.tokopedia.hotel.search.data.model.HotelSearchModel
 import com.tokopedia.hotel.search.presentation.activity.HotelSearchResultActivity
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.travelcalendar.selectionrangecalendar.SelectionRangeCalendarWidget
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_hotel_homepage.*
 import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 /**
  * @author by furqan on 28/03/19
@@ -150,11 +152,11 @@ class HotelHomepageFragment : HotelBaseFragment(),
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        homepageViewModel.homepageDefaultParam.observe(this, Observer {
+        homepageViewModel.homepageDefaultParam.observe(viewLifecycleOwner, Observer {
             renderHotelParam(it)
         })
 
-        homepageViewModel.promoData.observe(this, Observer {
+        homepageViewModel.promoData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     if (remoteConfig.getBoolean(RemoteConfigKey.CUSTOMER_HOTEL_SHOW_PROMO) && it.data.banners.isNotEmpty()) {
@@ -167,7 +169,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
             stopTrace()
         })
 
-        homepageViewModel.recentSearch.observe(this, Observer {
+        homepageViewModel.recentSearch.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     renderHotelLastSearch(it.data)
@@ -175,7 +177,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
             }
         })
 
-        homepageViewModel.deleteRecentSearch.observe(this, Observer {
+        homepageViewModel.deleteRecentSearch.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     if (it.data) {
@@ -193,7 +195,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
         hotelHomepageModel.roomCount = hotelPropertyDefaultHome.totalRoom
         hotelHomepageModel.adultCount = hotelPropertyDefaultHome.totalGuest
         onDestinationChanged(hotelPropertyDefaultHome.label, searchId = hotelPropertyDefaultHome.searchId,
-                searchType = hotelPropertyDefaultHome.searchType)
+                searchType = hotelPropertyDefaultHome.searchType, shouldTrackChanges = false)
     }
 
     override fun onErrorRetryClicked() {
@@ -235,9 +237,12 @@ class HotelHomepageFragment : HotelBaseFragment(),
                     onDestinationNearBy(data.getDoubleExtra(HotelDestinationActivity.HOTEL_CURRENT_LOCATION_LANG, 0.0),
                             data.getDoubleExtra(HotelDestinationActivity.HOTEL_CURRENT_LOCATION_LAT, 0.0))
                 } else if (data.hasExtra(HotelDestinationActivity.HOTEL_DESTINATION_SEARCH_ID)) {
-                    onDestinationChanged(data.getStringExtra(HotelDestinationActivity.HOTEL_DESTINATION_NAME) ?: "",
-                            searchId = data.getStringExtra(HotelDestinationActivity.HOTEL_DESTINATION_SEARCH_ID) ?: "",
-                            searchType = data.getStringExtra(HotelDestinationActivity.HOTEL_DESTINATION_SEARCH_TYPE) ?: "")
+                    onDestinationChanged(data.getStringExtra(HotelDestinationActivity.HOTEL_DESTINATION_NAME)
+                            ?: "",
+                            searchId = data.getStringExtra(HotelDestinationActivity.HOTEL_DESTINATION_SEARCH_ID)
+                                    ?: "",
+                            searchType = data.getStringExtra(HotelDestinationActivity.HOTEL_DESTINATION_SEARCH_TYPE)
+                                    ?: "")
                 }
             }
         }
@@ -356,9 +361,12 @@ class HotelHomepageFragment : HotelBaseFragment(),
         renderView()
     }
 
-    private fun onDestinationChanged(name: String, id: Long = 0, type: String = "", searchType: String = "", searchId: String = "") {
-        val tempType = if (searchType.isNotEmpty()) searchType else type
-        trackingHotelUtil.hotelSelectDestination(context, tempType, name, HOMEPAGE_SCREEN_NAME)
+    private fun onDestinationChanged(name: String, id: Long = 0, type: String = "", searchType: String = "",
+                                     searchId: String = "", shouldTrackChanges: Boolean = true) {
+        if (shouldTrackChanges) {
+            val tempType = if (searchType.isNotEmpty()) searchType else type
+            trackingHotelUtil.hotelSelectDestination(context, tempType, name, HOMEPAGE_SCREEN_NAME)
+        }
 
         hotelHomepageModel.locName = name
         hotelHomepageModel.locId = id
@@ -439,53 +447,48 @@ class HotelHomepageFragment : HotelBaseFragment(),
         homepageViewModel.getRecentSearch(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_recent_search))
     }
 
+    val bannerImpressionIndex: HashSet<Int> = hashSetOf()
+
     private fun renderHotelPromo(promoDataList: List<TravelCollectiveBannerModel.Banner>) {
-        showPromoContainer()
+        bannerImpressionIndex.add(0)
+        trackingHotelUtil.hotelBannerImpression(context, promoDataList.firstOrNull(), 0, HOMEPAGE_SCREEN_NAME)
 
-        for ((index, promo) in promoDataList.withIndex()) {
-            trackingHotelUtil.hotelBannerImpression(context, promo, index, HOMEPAGE_SCREEN_NAME)
-        }
-        banner_hotel_homepage_promo.setBannerIndicator(Indicator.GREEN)
-
-        banner_hotel_homepage_promo.setOnPromoScrolledListener { }
-
-        banner_hotel_homepage_promo.setOnPromoClickListener { position ->
-            onPromoClicked(promoDataList.getOrNull(position)
-                    ?: TravelCollectiveBannerModel.Banner(), position)
-
-            if (RouteManager.isSupportApplink(context, promoDataList.getOrNull(position)?.attribute?.appUrl
-                            ?: "")) {
-                RouteManager.route(context, promoDataList.getOrNull(position)?.attribute?.appUrl
-                        ?: "")
-            } else if (!getRegisteredNavigation(context!!, promoDataList.getOrNull(position)?.attribute?.appUrl
-                            ?: "").isEmpty()) {
-                RouteManager.route(context, getRegisteredNavigation(context!!, promoDataList.getOrNull(position)?.attribute?.appUrl
-                        ?: ""))
-            } else if ((promoDataList.getOrNull(position)?.attribute?.webUrl ?: "").isNotEmpty()) {
-                RouteManager.route(context, promoDataList.getOrNull(position)?.attribute?.webUrl)
+        banner_hotel_homepage_promo.apply {
+            freeMode = false
+            centerMode = true
+            slideToShow = 1.1f
+            slideToScroll = 1
+            autoplay = true
+            indicatorPosition = CarouselUnify.INDICATOR_BL
+            infinite = true
+            onActiveIndexChangedListener = object : CarouselUnify.OnActiveIndexChangedListener {
+                override fun onActiveIndexChanged(prev: Int, current: Int) {
+                    if (!bannerImpressionIndex.contains(current)) {
+                        bannerImpressionIndex.add(current)
+                        trackingHotelUtil.hotelBannerImpression(context, promoDataList.getOrNull(current), current, HOMEPAGE_SCREEN_NAME)
+                    }
+                }
             }
-        }
 
-        renderBannerView(promoDataList)
-    }
+            val itemParam = { view: View, data: Any ->
+                data as TravelCollectiveBannerModel.Banner
 
-    private fun renderBannerView(bannerList: List<TravelCollectiveBannerModel.Banner>) {
-        showPromoContainer()
-        val promoUrls = ArrayList<String>()
-        for ((_, _, attribute) in bannerList) {
-            promoUrls.add(attribute.imageUrl)
-        }
+                val image = view.findViewById<ImageUnify>(R.id.hotelPromoImageCarousel)
+                image.setOnClickListener {
+                    onPromoClicked(data, data.position)
+                }
+                view.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+                    override fun onGlobalLayout() {
+                        view.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                        image.heightRatio = BANNER_HEIGHT_RATIO
+                        image.loadImage(data.attribute.imageUrl)
+                    }
+                })
+            }
 
-        banner_hotel_homepage_promo.customWidth = resources.getDimensionPixelSize(R.dimen.hotel_banner_width)
-        banner_hotel_homepage_promo.customHeight = resources.getDimensionPixelSize(R.dimen.hotel_banner_height)
-        banner_hotel_homepage_promo.setPromoList(promoUrls)
-        banner_hotel_homepage_promo.buildView()
-        banner_hotel_homepage_promo.bannerSeeAll.hide()
-        banner_hotel_homepage_promo.bannerIndicator.hide()
-        if (bannerList.size > 1) {
-            banner_hotel_homepage_promo.bannerIndicator.show()
-        } else {
-            banner_hotel_homepage_promo.bannerIndicator.hide()
+            promoDataList.forEachIndexed { index, banner -> banner.position = index }
+            addItems(R.layout.hotel_carousel_item, ArrayList(promoDataList), itemParam)
+            showPromoContainer()
         }
     }
 
@@ -535,8 +538,23 @@ class HotelHomepageFragment : HotelBaseFragment(),
         hotel_container_promo.visibility = View.GONE
     }
 
-    private fun onPromoClicked(promo: TravelCollectiveBannerModel.Banner, position: Int) {
-        trackingHotelUtil.hotelClickBanner(context, promo, position, HOMEPAGE_SCREEN_NAME)
+    private fun onPromoClicked(promo: TravelCollectiveBannerModel.Banner?, position: Int) {
+        promo?.let {
+            trackingHotelUtil.hotelClickBanner(context, it, position, HOMEPAGE_SCREEN_NAME)
+            when {
+                RouteManager.isSupportApplink(context, it.attribute.appUrl) -> {
+                    RouteManager.route(context, it.attribute.appUrl)
+                }
+                getRegisteredNavigation(context!!, it.attribute.appUrl).isNotEmpty() -> {
+                    RouteManager.route(context, getRegisteredNavigation(context!!, it.attribute.appUrl))
+                }
+                it.attribute.webUrl.isNotEmpty() -> {
+                    RouteManager.route(context, it.attribute.webUrl)
+                }
+                else -> {
+                }
+            }
+        }
     }
 
     private fun showHotelLastSearchContainer() {
@@ -553,6 +571,9 @@ class HotelHomepageFragment : HotelBaseFragment(),
         const val REQUEST_CODE_DETAIL = 103
 
         const val EXTRA_HOTEL_MODEL = "EXTRA_HOTEL_MODEL"
+
+        // banner height ratio 414:139
+        const val BANNER_HEIGHT_RATIO = 0.336f
 
         const val EXTRA_PARAM_SEARCH_ID = "param_search_id"
         const val EXTRA_PARAM_SEARCH_TYPE = "param_search_type"

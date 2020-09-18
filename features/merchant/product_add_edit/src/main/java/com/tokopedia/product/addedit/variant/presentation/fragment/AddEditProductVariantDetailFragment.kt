@@ -3,18 +3,23 @@ package com.tokopedia.product.addedit.variant.presentation.fragment
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.view.WindowManager
+import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.product.addedit.R
+import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringConstants
+import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringConstants.ADD_EDIT_PRODUCT_VARIANT_DETAIL_PLT_NETWORK_METRICS
+import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringConstants.ADD_EDIT_PRODUCT_VARIANT_DETAIL_PLT_PREPARE_METRICS
+import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringConstants.ADD_EDIT_PRODUCT_VARIANT_DETAIL_PLT_RENDER_METRICS
+import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringConstants.ADD_EDIT_PRODUCT_VARIANT_DETAIL_TRACE
+import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringListener
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_PRODUCT_INPUT_MODEL
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
@@ -45,7 +50,9 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
         VariantDetailFieldsViewHolder.OnStockInputTextChangedListener,
         MultipleVariantEditSelectBottomSheet.MultipleVariantEditListener,
         SelectVariantMainBottomSheet.SelectVariantMainListener,
-        VariantDetailFieldsViewHolder.OnSkuInputTextChangedListener {
+        VariantDetailFieldsViewHolder.OnSkuInputTextChangedListener,
+        AddEditProductPerformanceMonitoringListener
+{
 
     companion object {
         fun createInstance(cacheManagerId: String): Fragment {
@@ -64,6 +71,8 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
     lateinit var userSession: UserSessionInterface
 
     private var variantDetailFieldsAdapter: VariantDetailFieldsAdapter? = null
+    // PLT Monitoring
+    private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
 
     override fun getScreenName(): String {
         return ""
@@ -74,6 +83,8 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        // start PLT Monitoring
+        startPerformanceMonitoring()
         super.onCreate(savedInstanceState)
 
         val cacheManagerId = arguments?.getString(AddEditProductConstants.EXTRA_CACHE_MANAGER_ID)
@@ -134,8 +145,12 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
         observeInputStatus()
         observeHasWholesale()
 
-        enableSkuIfExist()
+        enableSku()
         setupToolbarActions()
+
+        // stop PLT monitoring when all view prepared/ no network call
+        stopPreparePagePerformanceMonitoring()
+        stopPerformanceMonitoring()
     }
 
     override fun onHeaderClicked(headerPosition:Int): Boolean {
@@ -206,6 +221,47 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
         sendTrackerSaveMainVariant(combination)
     }
 
+    override fun startPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring = PageLoadTimePerformanceCallback(
+                ADD_EDIT_PRODUCT_VARIANT_DETAIL_PLT_PREPARE_METRICS,
+                ADD_EDIT_PRODUCT_VARIANT_DETAIL_PLT_NETWORK_METRICS,
+                ADD_EDIT_PRODUCT_VARIANT_DETAIL_PLT_RENDER_METRICS,
+                0,
+                0,
+                0,
+                0,
+                null
+        )
+
+        pageLoadTimePerformanceMonitoring?.startMonitoring(ADD_EDIT_PRODUCT_VARIANT_DETAIL_TRACE)
+        pageLoadTimePerformanceMonitoring?.startPreparePagePerformanceMonitoring()
+    }
+
+    override fun stopPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.stopMonitoring()
+        pageLoadTimePerformanceMonitoring = null
+    }
+
+    override fun stopPreparePagePerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.stopPreparePagePerformanceMonitoring()
+    }
+
+    override fun startNetworkRequestPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.startNetworkRequestPerformanceMonitoring()
+    }
+
+    override fun stopNetworkRequestPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.stopNetworkRequestPerformanceMonitoring()
+    }
+
+    override fun startRenderPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.startRenderPerformanceMonitoring()
+    }
+
+    override fun stopRenderPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.stopRenderPerformanceMonitoring()
+    }
+
     private fun observeSelectedVariantSize() {
         viewModel.selectedVariantSize.observe(this, Observer { size ->
             // clear old elements before rendering new elements
@@ -237,8 +293,8 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
         })
     }
 
-    private fun enableSkuIfExist() {
-        switchUnifySku.isChecked = viewModel.hasSku
+    private fun enableSku() {
+        switchUnifySku.isChecked = true
     }
 
     private fun setupVariantDetailFields(selectedUnitValues: List<OptionInputModel>) {

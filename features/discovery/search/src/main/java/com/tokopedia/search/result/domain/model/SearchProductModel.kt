@@ -210,8 +210,14 @@ data class SearchProductModel(
 
             @SerializedName("freeOngkir")
             @Expose
-            val freeOngkir: OtherRelatedProductFreeOngkir = OtherRelatedProductFreeOngkir()
-    )
+            val freeOngkir: OtherRelatedProductFreeOngkir = OtherRelatedProductFreeOngkir(),
+
+            @SerializedName("ads")
+            @Expose
+            val ads: ProductAds = ProductAds()
+    ) {
+            fun isOrganicAds(): Boolean = ads.id.isNotEmpty()
+    }
 
     data class OtherRelatedProductShop(
             @SerializedName("city")

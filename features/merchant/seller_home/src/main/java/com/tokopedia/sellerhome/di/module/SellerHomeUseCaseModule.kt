@@ -115,4 +115,11 @@ class SellerHomeUseCaseModule {
     ): GetBarChartDataUseCase {
         return GetBarChartDataUseCase(gqlRepository, mapper)
     }
+
+    @SellerHomeScope
+    @Provides
+    fun provideGetTickerUseCase(
+            gqlRepository: GraphqlRepository,
+            mapper: TickerMapper
+    ): GetTickerUseCase = GetTickerUseCase(gqlRepository, mapper)
 }

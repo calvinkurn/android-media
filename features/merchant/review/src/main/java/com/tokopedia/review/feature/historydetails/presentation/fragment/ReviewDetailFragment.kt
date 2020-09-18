@@ -326,7 +326,7 @@ class ReviewDetailFragment : BaseDaggerFragment(),
                     }
                     !isLocked -> {
                         setShopName(shopName)
-                        setEditableScore(score, lockTime)
+                        setEditableScore(score)
                         hideLoading()
                         show()
                     }

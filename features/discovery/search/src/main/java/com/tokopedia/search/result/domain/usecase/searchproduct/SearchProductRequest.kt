@@ -71,6 +71,12 @@ private const val ACE_SEARCH_PRODUCT_QUERY = """
                                 isActive
                                 imgUrl
                             }
+                            ads {
+                                id
+                                productClickUrl
+                                productWishlistUrl
+                                productViewUrl
+                            }
                         }
                     }
                 }
