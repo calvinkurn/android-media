@@ -76,11 +76,14 @@ class DynamicProductDetailAdapter(
 
     fun notifyRecomAdapter(productRecommendationDataModel: ProductRecommendationDataModel?) {
         val index = list.indexOf(productRecommendationDataModel)
+        if(index != -1) return
         notifyItemChanged(index)
     }
 
     fun notifyFilterRecommendation(productRecommendationDataModel: ProductRecommendationDataModel){
-        notifyItemChanged(list.indexOf(productRecommendationDataModel), Bundle().apply {
+        val index = list.indexOf(productRecommendationDataModel)
+        if(index == -1) return
+        notifyItemChanged(index, Bundle().apply {
             putBoolean(ProductRecommendationViewHolder.KEY_UPDATE_FILTER_RECOM, true)
         })
     }
