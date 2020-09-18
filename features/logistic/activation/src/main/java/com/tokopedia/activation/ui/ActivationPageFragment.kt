@@ -15,7 +15,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.tkpd.remoteresourcerequest.view.DeferredImageView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.activation.R
 import com.tokopedia.activation.di.ActivationPageComponent
@@ -55,7 +54,7 @@ class ActivationPageFragment: BaseDaggerFragment() {
     }
 
     private val animationDuration: Long = 300
-    private var codIcon: DeferredImageView? = null
+    private var codIcon: ImageView? = null
     private var codTitleText: Typography? = null
     private var codDescText: Typography? = null
     private var codImageExtend: ImageView? = null
@@ -65,13 +64,13 @@ class ActivationPageFragment: BaseDaggerFragment() {
 
     private var codTncTitle: Typography? = null
 
-    private var codTncImage1: DeferredImageView? = null
+    private var codTncImage1: ImageView? = null
     private var codTncDesc1: Typography? = null
 
-    private var codTncImage2: DeferredImageView? = null
+    private var codTncImage2: ImageView? = null
     private var codTncDesc2: Typography? = null
 
-    private var codTncImage3: DeferredImageView? = null
+    private var codTncImage3: ImageView? = null
     private var codTncDesc3: Typography? = null
 
     private var codSeeMore: Typography? = null
@@ -133,11 +132,6 @@ class ActivationPageFragment: BaseDaggerFragment() {
         swipeRefreshLayout = view?.findViewById(R.id.swipe_refresh)
         itemLayout = view?.findViewById(R.id.item_activation_layout)
         globalError = view?.findViewById(R.id.global_error)
-
-        codIcon?.loadRemoteImageDrawable(ICON_COD)
-        codTncImage1?.loadRemoteImageDrawable(ICON_CHECK)
-        codTncImage2?.loadRemoteImageDrawable(ICON_CHECK)
-        codTncImage3?.loadRemoteImageDrawable(ICON_CHECK)
 
         if(expandLayout) {
             codExpandLL?.show()

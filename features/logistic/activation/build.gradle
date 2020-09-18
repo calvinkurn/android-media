@@ -19,16 +19,14 @@ buildscript {
 
 dependencies {
     implementation project(rootProject.ext.libraries.tkpdabstraction)
-    implementation project(rootProject.ext.libraries.baseList)
     implementation project(rootProject.ext.libraries.applink)
+    implementation project(rootProject.ext.libraries.graphql)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
-    implementation project(rootProject.ext.libraries.remoteResourceRequest)
 
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.dialog
     implementation rootProject.ext.unifyDependencies.global_error
-    implementation project(rootProject.ext.libraries.graphql)
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
@@ -39,7 +37,6 @@ dependencies {
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.miscDependencies.dagger
-    implementation rootProject.ext.debugToolsDependencies.chuck
     kapt rootProject.ext.miscDependencies.daggerCompiler
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
@@ -53,6 +50,6 @@ project.ext {
 }
 
 apply from: '../../../publish_local.gradle'
-apply from: '../../../jacoco_task.gradle'
+//apply from: '../../../jacoco_task.gradle'
 //apply from: '../../../sonar_config.gradle'
 

@@ -19,14 +19,14 @@
             app:layout_constraintStart_toStartOf="parent"
             android:padding="@dimen/dp_16">
 
-            <com.tkpd.remoteresourcerequest.view.DeferredImageView
+            <ImageView
                 android:id="@+id/cod_icon"
                 android:layout_width="@dimen/dp_32"
                 android:layout_height="@dimen/dp_32"
                 android:padding="@dimen/dp_2"
                 android:visibility="visible"
                 tools:visibility="visible"
-                app:remoteFileName="cod_icon.png"/>
+                app:srcCompat="@drawable/ic_cod_logo"/>
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/cod_title_text"
@@ -71,7 +71,7 @@
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
                 android:padding="@dimen/dp_3"
-                app:srcCompat="@drawable/ic_arrow_up_grey_cod"
+                app:srcCompat="@drawable/ic_arrow_up_cod"
                 android:visibility="visible"
                 tools:visibility="visible"
                 android:contentDescription="@string/desc_cod_layout_extend"/>
@@ -139,7 +139,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_16">
 
-                <com.tkpd.remoteresourcerequest.view.DeferredImageView
+                <ImageView
                     android:id="@+id/check_icon_1"
                     android:layout_width="@dimen/dp_16"
                     android:layout_height="@dimen/dp_12"
@@ -147,7 +147,7 @@
                     tools:visibility="visible"
                     android:layout_marginStart="@dimen/dp_18"
                     android:layout_centerVertical="true"
-                    app:remoteFileName="check.png"/>
+                    app:srcCompat="@drawable/ic_check_cod"/>
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/tnc_decs_1"
@@ -166,7 +166,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_16">
 
-                <com.tkpd.remoteresourcerequest.view.DeferredImageView
+                <ImageView
                     android:id="@+id/check_icon_2"
                     android:layout_width="@dimen/dp_16"
                     android:layout_height="@dimen/dp_12"
@@ -174,7 +174,7 @@
                     tools:visibility="visible"
                     android:layout_marginStart="@dimen/dp_18"
                     android:layout_centerVertical="true"
-                    app:remoteFileName="check.png"/>
+                    app:srcCompat="@drawable/ic_check_cod"/>
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/tnc_decs_2"
@@ -193,7 +193,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_16">
 
-                <com.tkpd.remoteresourcerequest.view.DeferredImageView
+                <ImageView
                     android:id="@+id/check_icon_3"
                     android:layout_width="@dimen/dp_16"
                     android:layout_height="@dimen/dp_12"
@@ -201,7 +201,7 @@
                     tools:visibility="visible"
                     android:layout_marginStart="@dimen/dp_18"
                     android:layout_centerVertical="true"
-                    app:remoteFileName="check.png"/>
+                    app:srcCompat="@drawable/ic_check_cod"/>
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/tnc_decs_3"
