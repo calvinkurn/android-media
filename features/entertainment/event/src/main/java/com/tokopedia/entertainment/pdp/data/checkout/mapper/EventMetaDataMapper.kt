@@ -33,7 +33,7 @@ object EventMetaDataMapper {
         val passengerForm = PassengerForm(passengerInformation)
 
         for (itemMap in metaDataResponse.itemMap) {
-            if(itemMap.passengerForms.isNullOrEmpty()) {
+                itemMap.passengerForms.clear()
                 itemMap.passengerForms.add(passengerForm)
                 if (!listAdditionalDataItems.isNullOrEmpty()) {
                     for (additionalItem in listAdditionalDataItems) {
@@ -47,7 +47,6 @@ object EventMetaDataMapper {
                         }
                     }
                 }
-            }
         }
 
         return metaDataResponse
