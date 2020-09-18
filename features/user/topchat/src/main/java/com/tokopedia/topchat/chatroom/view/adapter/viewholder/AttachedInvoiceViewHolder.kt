@@ -35,7 +35,7 @@ class AttachedInvoiceViewHolder(
     private val invoiceId: TextView? = itemView.findViewById(R.id.tv_invoice_id)
     private val price: TextView? = itemView.findViewById(R.id.tv_price)
     private var loadView: LoaderUnify? = itemView.findViewById(R.id.loader_invoice)
-    private val radiusInvoice: Float = itemView.context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
+    private val radiusInvoice: Float = itemView.context.resources.getDimension(R.dimen.dp_topchat_6)
 
     private val bgOpposite = ViewUtil.generateBackgroundWithShadow(
             itemView,
