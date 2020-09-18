@@ -56,5 +56,9 @@ data class PromoData(var typePromo: Int = 0,
         val TYPE_COUPON = 1
         @JvmField
         val VALUE_COUPON = 1
+        @JvmField
+        val VOUCHER_RESULT_CODE = 12
+        @JvmField
+        val COUPON_RESULT_CODE = 15
     }
 }
