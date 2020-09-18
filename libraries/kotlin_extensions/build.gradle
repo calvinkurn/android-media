@@ -6,6 +6,8 @@ dependencies {
     implementation rootProject.ext.networkDependencies.glide
     implementation rootProject.ext.miscDependencies.coroutineCore
     implementation rootProject.ext.miscDependencies.coroutineAndroid
+
+    testImplementation rootProject.ext.testDependencies.junit
 }
 
 project.ext {
