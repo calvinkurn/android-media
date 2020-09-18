@@ -21,7 +21,7 @@ object FeaturedShopTracking : BaseTracking() {
             eventAction = Action.IMPRESSION_ON.format(BANNER_DYNAMIC_CHANNEL_SHOP),
             eventCategory = Category.HOMEPAGE,
             eventLabel = "",
-            channelId = "",
+            channelId = channelModel.id,
             screen = "/",
             currentSite = CurrentSite.DEFAULT,
             businessUnit = BusinessUnit.DEFAULT,
