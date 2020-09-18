@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.sellerhome.common.coroutine.SellerHomeCoroutineDispatcher
-import com.tokopedia.sellerhome.domain.model.GetShopStatusResponse
 import com.tokopedia.sellerhome.domain.model.ShippingLoc
 import com.tokopedia.sellerhome.domain.usecase.GetShopLocationUseCase
 import com.tokopedia.sellerhomecommon.common.const.DateFilterType
