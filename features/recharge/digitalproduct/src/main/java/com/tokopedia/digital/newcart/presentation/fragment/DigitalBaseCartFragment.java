@@ -496,7 +496,6 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
             errorView.setActionClickListener(view -> {
                 errorView.setVisibility(View.GONE);
                 presenter.onViewCreated();
-//                closeView();
                 return Unit.INSTANCE;
             });
 
