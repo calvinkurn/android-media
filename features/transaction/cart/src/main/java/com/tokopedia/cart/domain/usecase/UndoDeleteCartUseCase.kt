@@ -16,12 +16,12 @@ class UndoDeleteCartUseCase @Inject constructor(private val graphqlUseCase: Grap
                                                 private val schedulers: ExecutorSchedulers) : UseCase<UndoDeleteCartData>() {
 
     companion object {
-        // Todo : adjust query & param
         const val PARAM_UNDO_REMOVE_CART_REQUEST = "PARAM_UNDO_REMOVE_CART_REQUEST"
 
         private const val PARAM_KEY_LANG = "lang"
         private const val PARAM_VALUE_ID = "id"
         private const val PARAM_KEY_CART_IDS = "cartIds"
+        private const val STATUS_OK = "OK"
     }
 
     override fun createObservable(requestParams: RequestParams?): Observable<UndoDeleteCartData> {
@@ -37,30 +37,27 @@ class UndoDeleteCartUseCase @Inject constructor(private val graphqlUseCase: Grap
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
 
-        return Observable.just(UndoDeleteCartData())
-                .flatMap {
-                    graphqlUseCase.createObservable(RequestParams.EMPTY)
-                            .map {
-                                val undoDeleteCartGqlResponse = it.getData<UndoDeleteCartGqlResponse>(UndoDeleteCartGqlResponse::class.java)
-                                val undoDeleteCartData = UndoDeleteCartData()
-                                if (undoDeleteCartGqlResponse != null) {
-                                    undoDeleteCartData.isSuccess = undoDeleteCartGqlResponse.undoDeleteCartDataResponse.status == "OK"
-                                    undoDeleteCartData.message = if (undoDeleteCartGqlResponse.undoDeleteCartDataResponse.status == "OK") {
-                                        if (undoDeleteCartGqlResponse.undoDeleteCartDataResponse.data.message.isNotEmpty()) {
-                                            undoDeleteCartGqlResponse.undoDeleteCartDataResponse.data.message[0]
-                                        } else {
-                                            ""
-                                        }
-                                    } else {
-                                        if (undoDeleteCartGqlResponse.undoDeleteCartDataResponse.errorMessage.isNotEmpty()) {
-                                            undoDeleteCartGqlResponse.undoDeleteCartDataResponse.errorMessage[0]
-                                        } else {
-                                            ""
-                                        }
-                                    }
-                                }
-                                undoDeleteCartData
+        return graphqlUseCase.createObservable(RequestParams.EMPTY)
+                .map {
+                    val undoDeleteCartGqlResponse = it.getData<UndoDeleteCartGqlResponse>(UndoDeleteCartGqlResponse::class.java)
+                    val undoDeleteCartData = UndoDeleteCartData()
+                    if (undoDeleteCartGqlResponse != null) {
+                        undoDeleteCartData.isSuccess = undoDeleteCartGqlResponse.undoDeleteCartDataResponse.status == STATUS_OK
+                        undoDeleteCartData.message = if (undoDeleteCartGqlResponse.undoDeleteCartDataResponse.status == STATUS_OK) {
+                            if (undoDeleteCartGqlResponse.undoDeleteCartDataResponse.data.message.isNotEmpty()) {
+                                undoDeleteCartGqlResponse.undoDeleteCartDataResponse.data.message[0]
+                            } else {
+                                ""
                             }
+                        } else {
+                            if (undoDeleteCartGqlResponse.undoDeleteCartDataResponse.errorMessage.isNotEmpty()) {
+                                undoDeleteCartGqlResponse.undoDeleteCartDataResponse.errorMessage[0]
+                            } else {
+                                ""
+                            }
+                        }
+                    }
+                    undoDeleteCartData
                 }
                 .subscribeOn(schedulers.io)
                 .observeOn(schedulers.main)
