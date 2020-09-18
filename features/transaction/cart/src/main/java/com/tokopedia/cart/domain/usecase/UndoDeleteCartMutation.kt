@@ -12,9 +12,7 @@ fun getUndoDeleteCartMutation(): String {
               data {
                 cart_ids
               }
-              __typename
             }
-            __typename
           }
         }
     """.trimIndent()

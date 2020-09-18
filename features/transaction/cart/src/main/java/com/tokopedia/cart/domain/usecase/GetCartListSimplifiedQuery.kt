@@ -246,34 +246,6 @@ fun getQueryCartRevamp(): String {
                         badge_url
                       }
                       booking_stock
-                      product_variant {
-                        parent_id
-                        default_child
-                        variant {
-                          product_variant_id
-                          variant_id
-                          variant_unit_id
-                          name
-                          identifier
-                          unit_name
-                          position
-                          option {
-                            product_variant_option_id
-                            variant_unit_value_id
-                            value
-                            picture {
-                              url
-                              url200
-                              picture_detail {
-                                file_name
-                                file_path
-                                width
-                                height
-                              }
-                            }
-                          }
-                        }
-                      }
                       is_product_volume_weight
                       initial_price
                       initial_price_fmt
@@ -519,34 +491,6 @@ fun getQueryCartRevamp(): String {
                         badge_url
                       }
                       booking_stock
-                      product_variant {
-                        parent_id
-                        default_child
-                        variant {
-                          product_variant_id
-                          variant_id
-                          variant_unit_id
-                          name
-                          identifier
-                          unit_name
-                          position
-                          option {
-                            product_variant_option_id
-                            variant_unit_value_id
-                            value
-                            picture {
-                              url
-                              url200
-                              picture_detail {
-                                file_name
-                                file_path
-                                width
-                                height
-                              }
-                            }
-                          }
-                        }
-                      }
                       is_product_volume_weight
                       initial_price
                       initial_price_fmt
@@ -596,7 +540,8 @@ fun getQueryCartRevamp(): String {
               total_product_count,
               total_product_error,
               global_coupon_attr {
-                description, quantity_label
+                description, 
+                quantity_label
               },
               global_checkbox_state,
               tickers {
@@ -604,7 +549,8 @@ fun getQueryCartRevamp(): String {
                 message
                 page
               },
-              hashed_email, promo {
+              hashed_email,
+              promo {
                 last_apply {
                   data {
                     global_success
@@ -704,10 +650,6 @@ fun getQueryCartRevamp(): String {
                   title
                   description
                 }
-              }, customer_data {
-                name
-                email
-                phone
               }
             }
           }
