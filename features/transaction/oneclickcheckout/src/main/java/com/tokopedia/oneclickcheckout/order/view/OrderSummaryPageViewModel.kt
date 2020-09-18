@@ -1372,10 +1372,14 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         if (currentState == OccButtonState.NORMAL && (!shouldButtonStateEnable(shipping))) {
             currentState = OccButtonState.DISABLE
         }
-        if (payment.errorTickerMessage.isNotEmpty()) {
+        if (payment.errorTickerMessage.isNotEmpty() && !payment.isEnableNextButton) {
             _orderPayment = payment.copy(isCalculationError = false)
             orderPayment.value = _orderPayment
-            orderTotal.value = orderTotal.value.copy(orderCost = orderCost, paymentErrorMessage = payment.errorTickerMessage, buttonType = OccButtonType.CHOOSE_PAYMENT, buttonState = currentState)
+            if (payment.isDisablePayButton) {
+                orderTotal.value = orderTotal.value.copy(orderCost = orderCost, paymentErrorMessage = payment.errorTickerMessage, buttonType = OccButtonType.PAY, buttonState = OccButtonState.DISABLE)
+            } else {
+                orderTotal.value = orderTotal.value.copy(orderCost = orderCost, paymentErrorMessage = payment.errorTickerMessage, buttonType = OccButtonType.CHOOSE_PAYMENT, buttonState = currentState)
+            }
         } else if (payment.errorMessage.message.isNotEmpty() && payment.errorMessage.button.text.isNotEmpty()) {
             if (currentState == OccButtonState.NORMAL) {
                 currentState = OccButtonState.DISABLE
@@ -1384,24 +1388,36 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             orderPayment.value = _orderPayment
             orderTotal.value = orderTotal.value.copy(orderCost = orderCost, paymentErrorMessage = null, buttonType = OccButtonType.PAY, buttonState = currentState)
         } else if (payment.minimumAmount > subtotal) {
+            //todo ask how to validate this?
             orderTotal.value = orderTotal.value.copy(orderCost = orderCost,
                     paymentErrorMessage = "Belanjaanmu kurang dari min. transaksi ${payment.gatewayName} (${CurrencyFormatUtil.convertPriceValueToIdrFormat(payment.minimumAmount, false).removeDecimalSuffix()}). Silahkan pilih pembayaran lain.",
                     buttonType = OccButtonType.CHOOSE_PAYMENT, buttonState = currentState)
             _orderPayment = payment.copy(isCalculationError = true)
             orderPayment.value = _orderPayment
         } else if (payment.maximumAmount > 0 && payment.maximumAmount < subtotal) {
+            //todo ask how to validate this?
             orderTotal.value = orderTotal.value.copy(orderCost = orderCost,
                     paymentErrorMessage = "Belanjaanmu melebihi limit transaksi ${payment.gatewayName} (${CurrencyFormatUtil.convertPriceValueToIdrFormat(payment.maximumAmount, false).removeDecimalSuffix()}). Silahkan pilih pembayaran lain.",
                     buttonType = OccButtonType.CHOOSE_PAYMENT, buttonState = currentState)
             _orderPayment = payment.copy(isCalculationError = true)
             orderPayment.value = _orderPayment
         } else if (payment.gatewayCode.contains(OVO_GATEWAY_CODE) && subtotal > payment.walletAmount) {
-            orderTotal.value = orderTotal.value.copy(orderCost = orderCost,
-                    paymentErrorMessage = OVO_INSUFFICIENT_ERROR_MESSAGE,
-                    buttonType = OccButtonType.CHOOSE_PAYMENT, buttonState = currentState)
+            if (payment.isEnableNextButton) {
+                orderTotal.value = orderTotal.value.copy(orderCost = orderCost,
+                        paymentErrorMessage = OVO_INSUFFICIENT_CONTINUE_MESSAGE,
+                        buttonType = OccButtonType.CONTINUE, buttonState = currentState)
+            } else {
+                orderTotal.value = orderTotal.value.copy(orderCost = orderCost,
+                        paymentErrorMessage = OVO_INSUFFICIENT_ERROR_MESSAGE,
+                        buttonType = OccButtonType.CHOOSE_PAYMENT, buttonState = currentState)
+            }
             _orderPayment = payment.copy(isCalculationError = true)
             orderPayment.value = _orderPayment
             orderSummaryAnalytics.eventViewErrorMessage(OrderSummaryAnalytics.ERROR_ID_PAYMENT_OVO_BALANCE)
+        } else if (payment.errorTickerMessage.isNotEmpty() && payment.isEnableNextButton) {
+            _orderPayment = payment.copy(isCalculationError = false)
+            orderPayment.value = _orderPayment
+            orderTotal.value = orderTotal.value.copy(orderCost = orderCost, paymentErrorMessage = payment.errorTickerMessage, buttonType = OccButtonType.CONTINUE, buttonState = currentState)
         } else {
             if (payment.creditCard.selectedTerm?.isError == true && currentState == OccButtonState.NORMAL) {
                 currentState = OccButtonState.DISABLE
@@ -1623,6 +1639,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
 
         const val OVO_GATEWAY_CODE = "OVO"
         const val OVO_INSUFFICIENT_ERROR_MESSAGE = "OVO Cash kamu tidak cukup. Silahkan pilih pembayaran lain."
+        const val OVO_INSUFFICIENT_CONTINUE_MESSAGE = "OVO Cash kamu tidak cukup. Silahkan klik Lanjutkan untuk top up."
 
         const val INSTALLMENT_INVALID_MIN_AMOUNT = "Oops, tidak bisa bayar dengan cicilan karena min. pembeliannya kurang."
 

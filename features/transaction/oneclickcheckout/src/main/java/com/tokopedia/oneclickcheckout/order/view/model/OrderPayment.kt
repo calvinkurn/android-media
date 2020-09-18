@@ -17,7 +17,9 @@ data class OrderPayment(
         val metadata: String = "",
         val creditCard: OrderPaymentCreditCard = OrderPaymentCreditCard(),
         val errorMessage: OrderPaymentErrorMessage = OrderPaymentErrorMessage(),
-        val errorTickerMessage: String = ""
+        val errorTickerMessage: String = "",
+        val isEnableNextButton: Boolean = false,
+        val isDisablePayButton: Boolean = false
 ) {
     fun isError(): Boolean {
         return isCalculationError || errorMessage.message.isNotEmpty() || errorTickerMessage.isNotEmpty()
