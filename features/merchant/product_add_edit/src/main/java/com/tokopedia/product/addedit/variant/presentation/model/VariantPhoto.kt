@@ -6,6 +6,7 @@ data class VariantPhoto(
         var picID: String = "",
         var description: String = "",
         var fileName: String = "",
+        var filePath: String = "",
         var width: Long = 0,
         var height: Long = 0,
         var isFromIG: String = "",

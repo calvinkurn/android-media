@@ -36,9 +36,11 @@ class TalkReplyHeaderViewHolder(view: View,
             showQuestionWithCondition(isMasked, question, maskedContent)
             showKebabWithConditions(allowReport, allowDelete, onKebabClickedListener)
             showFollowWithCondition(allowFollow, isFollowed, talkReplyHeaderListener)
-            showProfilePictureAndNameWithCondition(element.userThumbnail, element.userName, element.userId.toString())
+            showProfilePictureAndNameWithCondition(element.userThumbnail, element.userId.toString())
             showHeaderDateWithCondition(date)
+            showUserNameWithCondition(element.userName, element.isMyQuestion)
             itemView.apply {
+                replyHeaderDate.text = context.getString(R.string.reply_dot_builder, date)
                 replyHeaderTNC.text = HtmlLinkHelper(context, getString(R.string.reply_header_tnc)).spannedString
                 replyHeaderTNC.setCustomMovementMethod { talkReplyHeaderListener.onTermsAndConditionsClicked() }
             }
@@ -54,7 +56,7 @@ class TalkReplyHeaderViewHolder(view: View,
         }
     }
 
-    private fun showProfilePictureAndNameWithCondition(userThumbnail: String, userName: String, userId: String) = with(itemView) {
+    private fun showProfilePictureAndNameWithCondition(userThumbnail: String, userId: String) = with(itemView) {
         replyUserImage?.shouldShowWithAction(userThumbnail.isNotEmpty()) {
             replyUserImage?.apply {
                 loadImage(userThumbnail)
@@ -62,13 +64,6 @@ class TalkReplyHeaderViewHolder(view: View,
                     threadListener.goToProfilePage(userId)
                 }
                 show()
-            }
-        }
-
-        replyUserName?.apply {
-            text = userName
-            setOnClickListener {
-                threadListener.goToProfilePage(userId)
             }
         }
     }
@@ -100,6 +95,15 @@ class TalkReplyHeaderViewHolder(view: View,
                 return super.onTouchEvent(widget, buffer, event);
             }
         }
+    }
+
+    private fun showUserNameWithCondition(userName: String, isMyQuestion: Boolean) = with(itemView) {
+        replyUserName.text = userName
+        if (isMyQuestion) {
+            labelMyQuestion.show()
+            return
+        }
+        labelMyQuestion.hide()
     }
 
     private fun showQuestionWithCondition(isMasked: Boolean, question: String, maskedContent: String) {

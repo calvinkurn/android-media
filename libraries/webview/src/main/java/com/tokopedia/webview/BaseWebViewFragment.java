@@ -3,6 +3,7 @@ package com.tokopedia.webview;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -13,8 +14,6 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.CookieManager;
-import android.webkit.CookieSyncManager;
 import android.webkit.GeolocationPermissions;
 import android.webkit.JavascriptInterface;
 import android.webkit.PermissionRequest;
@@ -488,8 +487,9 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         public void onPageFinished(WebView view, String url) {
             super.onPageFinished(view, url);
             String title = view.getTitle();
-            if (view.getContext() instanceof BaseSimpleWebViewActivity) {
-                BaseSimpleWebViewActivity activity = (BaseSimpleWebViewActivity) view.getContext();
+            Activity activityInstance = getActivity();
+            if (activityInstance instanceof BaseSimpleWebViewActivity) {
+                BaseSimpleWebViewActivity activity = (BaseSimpleWebViewActivity) activityInstance;
                 String activityTitle = activity.getWebViewTitle();
                 if (TextUtils.isEmpty(activityTitle) || activityTitle.equals(DEFAULT_TITLE)) {
                     if (activity.getShowTitleBar()) {
@@ -500,31 +500,29 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
                         activity.updateTitle(title);
                     }
                 }
-            } else if (view.getContext() instanceof BaseSimpleActivity) {
-                ActionBar actionBar = ((AppCompatActivity) view.getContext()).getSupportActionBar();
+            } else if (activityInstance != null && !activityInstance.isFinishing() && activityInstance instanceof BaseSimpleActivity) {
+                ActionBar actionBar = ((AppCompatActivity) activityInstance).getSupportActionBar();
                 if (actionBar != null) {
                     if (isHelpUrl(url) && !title.isEmpty()) {
                         actionBar.setTitle(title);
                     } else {
-                        String activityExtraTitle = getExtraTitle();
+                        String activityExtraTitle = getExtraTitle(activityInstance);
                         if (!TextUtils.isEmpty(activityExtraTitle)) {
                             actionBar.setTitle(activityExtraTitle);
                         } else {
-                            actionBar.setTitle(getString(R.string.tokopedia));
+                            actionBar.setTitle(activityInstance.getString(R.string.tokopedia));
                         }
                     }
                 }
             }
         }
 
-        private String getExtraTitle() {
-            Activity activity = getActivity();
-            if (activity != null) {
+        private String getExtraTitle(Context context) {
+            if (context != null && isAdded()) {
+                Activity activity = (Activity) context;
                 return activity.getIntent().getStringExtra(ConstantKt.KEY_TITLE);
-            } else
-                return "";
+            } else return "";
         }
-
 
         @Nullable
         @Override

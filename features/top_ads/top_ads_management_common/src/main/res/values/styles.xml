@@ -32,4 +32,20 @@
         <item name="android:textAllCaps">false</item>
         <item name="android:textStyle">bold</item>
     </style>
+
+    <style name="SheetTitleStyle">
+        <item name="typographyType">body_3</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="typographyWeight">bold</item>
+        <item name="android:layout_marginTop">@dimen/dp_16</item>
+
+    </style>
+
+    <style name="SheetDescStyle">
+        <item name="typographyType">body_3</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_marginTop">@dimen/dp_4</item>
+    </style>
 </resources>

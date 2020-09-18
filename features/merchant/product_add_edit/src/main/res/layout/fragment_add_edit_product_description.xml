@@ -60,6 +60,7 @@
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/btnNext"
+            android:contentDescription="@string/content_desc_btnNext"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/spacing_lvl4"

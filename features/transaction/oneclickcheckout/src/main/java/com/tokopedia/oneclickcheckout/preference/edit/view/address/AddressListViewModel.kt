@@ -7,6 +7,7 @@ import com.tokopedia.logisticdata.data.entity.address.Token
 import com.tokopedia.logisticdata.domain.model.AddressListModel
 import com.tokopedia.logisticdata.domain.usecase.GetAddressCornerUseCase
 import com.tokopedia.oneclickcheckout.common.dispatchers.ExecutorDispatchers
+import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
 import com.tokopedia.oneclickcheckout.common.view.model.Failure
 import com.tokopedia.oneclickcheckout.common.view.model.OccState
 import kotlinx.coroutines.launch
@@ -33,11 +34,13 @@ class AddressListViewModel @Inject constructor(private val useCase: GetAddressCo
 
     fun searchAddress(query: String) {
         _addressList.value = OccState.Loading
+        OccIdlingResource.increment()
         compositeSubscription.add(
                 useCase.getAll(query)
                         .subscribe(object : rx.Observer<AddressListModel> {
                             override fun onError(e: Throwable?) {
                                 _addressList.value = OccState.Failed(Failure(e))
+                                OccIdlingResource.decrement()
                             }
 
                             override fun onNext(t: AddressListModel) {
@@ -47,7 +50,7 @@ class AddressListViewModel @Inject constructor(private val useCase: GetAddressCo
                             }
 
                             override fun onCompleted() {
-                                //do nothing
+                                OccIdlingResource.decrement()
                             }
                         })
         )
@@ -55,6 +58,7 @@ class AddressListViewModel @Inject constructor(private val useCase: GetAddressCo
 
     fun logicSelection(addressListModel: AddressListModel) {
         launch {
+            OccIdlingResource.increment()
             withContext(dispatcher.default) {
                 val addressList = addressListModel.listAddress
                 for (item in addressList) {
@@ -70,6 +74,7 @@ class AddressListViewModel @Inject constructor(private val useCase: GetAddressCo
             }
             this@AddressListViewModel.addressListModel = addressListModel
             _addressList.value = OccState.Success(addressListModel)
+            OccIdlingResource.decrement()
         }
     }
 

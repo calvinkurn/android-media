@@ -22,4 +22,6 @@ abstract class BaseOccInterceptor : Interceptor {
                 .addHeader("content-type", "application/json")
                 .build()
     }
+
+    abstract fun resetInterceptor()
 }

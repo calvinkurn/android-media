@@ -268,6 +268,7 @@ class TopAdsDashGroupFragment : BaseDaggerFragment() {
     private fun onSuccessGroupResult(response: GroupItemResponse.GetTopadsDashboardGroups) {
         totalCount = response.meta.page.total
         totalPage = (totalCount / response.meta.page.perPage) + 1
+        recyclerviewScrollListener.updateStateAfterGetData()
         loader.visibility = View.GONE
         response.data.forEach {
             groupIds.add(it.groupId.toString())

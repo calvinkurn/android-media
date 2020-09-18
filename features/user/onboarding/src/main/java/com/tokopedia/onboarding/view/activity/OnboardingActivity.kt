@@ -26,8 +26,10 @@ import com.tokopedia.onboarding.view.fragment.OnboardingFragment
 import com.tokopedia.onboarding.view.viewmodel.DynamicOnboardingViewModel
 import com.tokopedia.onboarding.view.viewmodel.DynamicOnboardingViewModel.Companion.JOB_WAS_CANCELED
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import java.lang.Exception
 import javax.inject.Inject
 
 /**
@@ -90,6 +92,7 @@ class OnboardingActivity : BaseSimpleActivity(), HasComponent<OnboardingComponen
         initObserver()
         loadTime = System.currentTimeMillis()
         viewModel.getData()
+        fetchAbTesting()
     }
 
     override fun onBackPressed() {
@@ -158,5 +161,12 @@ class OnboardingActivity : BaseSimpleActivity(), HasComponent<OnboardingComponen
                 .beginTransaction()
                 .replace(parentViewResourceID, fragment, tagFragment)
                 .commit()
+    }
+
+    private fun fetchAbTesting() {
+        RemoteConfigInstance.getInstance().abTestPlatform.fetch(object : RemoteConfig.Listener{
+            override fun onComplete(remoteConfig: RemoteConfig?) {}
+            override fun onError(e: Exception?) {}
+        })
     }
 }

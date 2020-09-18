@@ -1,11 +1,13 @@
 package com.tokopedia.sellerhome.settings.view.uimodel.base
 
+import androidx.annotation.DrawableRes
+import androidx.annotation.LayoutRes
 import com.tokopedia.sellerhome.R
 
 
-sealed class ShopType(val shopTypeLayoutRes: Int,
-                      val shopTypeHeaderRes: Int,
-                      val shopTypeHeaderIconRes: Int = 0) {
+sealed class ShopType(@LayoutRes val shopTypeLayoutRes: Int,
+                      @DrawableRes val shopTypeHeaderRes: Int,
+                      @DrawableRes val shopTypeHeaderIconRes: Int? = null) {
 
     companion object {
         val REGULAR_MERCHANT_LAYOUT = R.layout.setting_shop_status_regular

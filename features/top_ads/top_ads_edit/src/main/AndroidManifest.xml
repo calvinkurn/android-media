@@ -40,6 +40,12 @@
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="adjustPan" />
 
+        <activity
+            android:name=".view.activity.KeywordSearchActivity"
+            android:theme="@style/Theme.White"
+            android:windowSoftInputMode="adjustPan" />
+
+
         <activity android:name=".view.activity.EditFormWithoutGroupActivity"
             android:label="@string/topads_common_title_product_ad_edit"
             android:theme="@style/Theme.White"

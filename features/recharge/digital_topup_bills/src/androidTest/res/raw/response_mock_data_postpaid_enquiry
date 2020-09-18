@@ -1,0 +1,31 @@
+[
+  {
+    "data": {
+      "status": "OK",
+      "enquiry": {
+        "attributes": {
+          "UserID": "19016871",
+          "ProductID": "559",
+          "ClientNumber": "081232323232",
+          "Title": "Detail Pembayaran",
+          "Price": "Rp 2.000",
+          "PricePlain": 2000,
+          "mainInfo": [
+            {
+              "label": "Nomor Telepon",
+              "value": "081232323232"
+            },
+            {
+              "label": "Nama",
+              "value": "Tokopedia User"
+            },
+            {
+              "label": "Total Bayar",
+              "value": "Rp 2.000"
+            }
+          ]
+        }
+      }
+    }
+  }
+]

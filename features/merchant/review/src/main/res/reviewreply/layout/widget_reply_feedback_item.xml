@@ -21,7 +21,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl4"
-        android:textColor="@color/clr_f531353b"
+        android:textColor="@color/light_N700_96"
         app:layout_constraintEnd_toStartOf="@+id/tvFeedbackDate"
         app:layout_constraintStart_toStartOf="@+id/ivRatingFeedback"
         app:layout_constraintTop_toBottomOf="@+id/ivRatingFeedback"
@@ -31,7 +31,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvFeedbackDate"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl2"
         android:layout_marginEnd="@dimen/spacing_lvl4"
@@ -43,14 +43,14 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvFeedbackReview"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginLeft="@dimen/spacing_lvl4"
         android:layout_marginTop="@dimen/spacing_lvl3"
         android:layout_marginEnd="@dimen/spacing_lvl4"
         android:layout_marginRight="@dimen/spacing_lvl4"
-        android:textColor="@color/clr_f531353b"
+        android:textColor="@color/light_N700_96"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvFeedbackDate"
@@ -60,7 +60,7 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvItemAttachmentFeedback"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl4"
         android:clipChildren="false"
@@ -85,10 +85,10 @@
     <View
         android:id="@+id/replyFeedbackState"
         android:layout_width="@dimen/spacing_lvl2"
-        android:layout_height="0dp"
+        android:layout_height="@dimen/layout_lvl0"
         android:layout_marginStart="@dimen/spacing_lvl4"
+        tools:background="@drawable/rectangle_8"
         android:layout_marginTop="@dimen/spacing_lvl4"
-        android:background="@drawable/rectangle_8"
         app:layout_constraintBottom_toBottomOf="@+id/tvReplyComment"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/dividerFeedbackReply" />
@@ -99,7 +99,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginTop="@dimen/spacing_lvl4"
-        android:textColor="@color/clr_f531353b"
+        android:textColor="@color/light_N700_96"
         app:layout_constraintStart_toEndOf="@id/replyFeedbackState"
         app:layout_constraintTop_toBottomOf="@id/dividerFeedbackReply"
         app:typographyType="body_3"
@@ -113,7 +113,7 @@
         android:layout_marginStart="@dimen/spacing_lvl2"
         android:layout_marginTop="@dimen/spacing_lvl4"
         android:layout_marginEnd="@dimen/spacing_lvl4"
-        android:textColor="@color/clr_ad31353b"
+        android:textColor="@color/light_N700_68"
         app:layout_constraintStart_toEndOf="@id/tvReplyUser"
         app:layout_constraintTop_toBottomOf="@id/dividerFeedbackReply"
         app:typographyType="body_3"
@@ -132,7 +132,7 @@
         android:paddingEnd="@dimen/spacing_lvl2"
         android:paddingRight="@dimen/spacing_lvl2"
         android:text="@string/label_edit"
-        android:textColor="@color/clr_03ac0e"
+        android:textColor="@color/light_G500"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/dividerFeedbackReply"
         app:typographyType="body_3"
@@ -140,7 +140,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvReplyComment"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginLeft="@dimen/spacing_lvl4"

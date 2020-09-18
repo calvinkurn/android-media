@@ -14,6 +14,7 @@
         app:layout_constraintTop_toTopOf="parent"/>
 
     <ScrollView
+        android:id="@+id/reviewDetailScrollView"
         android:layout_width="match_parent"
         android:layout_height="@dimen/layout_lvl0"
         app:layout_constraintBottom_toBottomOf="parent"

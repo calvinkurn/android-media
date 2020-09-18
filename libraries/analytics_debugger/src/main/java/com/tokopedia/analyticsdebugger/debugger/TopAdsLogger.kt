@@ -27,7 +27,8 @@ class TopAdsLogger private constructor(private val context: Context) : TopAdsLog
                       sourceName: String,
                       productId: String,
                       productName: String,
-                      imageUrl: String) {
+                      imageUrl: String,
+                      componentName: String) {
         try {
             val topAdsLogModel = TopAdsLogModel()
             topAdsLogModel.url = url
@@ -36,6 +37,7 @@ class TopAdsLogger private constructor(private val context: Context) : TopAdsLog
             topAdsLogModel.productId = productId
             topAdsLogModel.productName = productName
             topAdsLogModel.imageUrl = imageUrl
+            topAdsLogModel.componentName = componentName
 
             dbSource.insertAll(topAdsLogModel).subscribeOn(Schedulers.io()).unsubscribeOn(Schedulers.io()).subscribe(defaultSubscriber())
 
@@ -101,7 +103,8 @@ class TopAdsLogger private constructor(private val context: Context) : TopAdsLog
                                   sourceName: String,
                                   productId: String,
                                   productName: String,
-                                  imageUrl: String) {
+                                  imageUrl: String,
+                                  componentName: String) {
 
                 }
 

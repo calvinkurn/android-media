@@ -77,7 +77,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
         private const val GO_TO_REPUTATION_HISTORY = "GO_TO_REPUTATION_HISTORY"
         private const val EXTRA_SHOP_ID = "EXTRA_SHOP_ID"
 
-        private const val ERROR_GET_SETTING_SHOP_INFO = "Error when get shop info in other setting."
+        const val ERROR_GET_SETTING_SHOP_INFO = "Error when get shop info in other setting."
 
         @JvmStatic
         fun createInstance(): OtherMenuFragment = OtherMenuFragment()
@@ -431,15 +431,15 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
         }
         populateAdapterData()
         recycler_view.layoutManager = LinearLayoutManager(context)
-        context?.let { otherMenuViewHolder = OtherMenuViewHolder(view, it, this, this, freeShippingTracker)}
+        context?.let { otherMenuViewHolder = OtherMenuViewHolder(view, it, this, this, freeShippingTracker, userSession)}
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (isDefaultDarkStatusBar) {
                 activity?.requestStatusBarDark()
             } else {
                 activity?.requestStatusBarLight()
             }
-            observeRecyclerViewScrollListener()
         }
+        observeRecyclerViewScrollListener()
     }
 
     private fun setupOffset() {
@@ -452,14 +452,12 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
         statusInfoTransitionOffset = statusBarHeight ?: HEIGHT_OFFSET
     }
 
-    @RequiresApi(Build.VERSION_CODES.M)
     private fun observeRecyclerViewScrollListener() {
         this.otherMenuScrollView.setOnScrollChangeListener(NestedScrollView.OnScrollChangeListener { scrollView, _, _, _, _ ->
             calculateSearchBarView(scrollView.scrollY)
         })
     }
 
-    @RequiresApi(Build.VERSION_CODES.M)
     private fun calculateSearchBarView(offset: Int) {
         val endToTransitionOffset = startToTransitionOffset + statusInfoTransitionOffset
         val maxTransitionOffset = endToTransitionOffset - startToTransitionOffset
@@ -472,11 +470,17 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
                 setDarkStatusBar()
                 otherMenuViewModel.setIsStatusBarInitialState(false)
             }
+            shopStatusHeader?.gone()
+            shopStatusHeaderIcon?.gone()
+            bg_white_other_menu?.gone()
         } else {
             if (!isInitialStatusBar) {
                 setLightStatusBar()
                 otherMenuViewModel.setIsStatusBarInitialState(true)
             }
+            shopStatusHeader?.visible()
+            shopStatusHeaderIcon?.visible()
+            bg_white_other_menu?.visible()
         }
     }
 

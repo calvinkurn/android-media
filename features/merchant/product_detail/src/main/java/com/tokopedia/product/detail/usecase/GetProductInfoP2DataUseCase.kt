@@ -1,8 +1,14 @@
 package com.tokopedia.product.detail.usecase
 
+import com.tokopedia.graphql.FingerprintManager
+import com.tokopedia.graphql.GraphqlCacheManager
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.GraphqlClient
+import com.tokopedia.graphql.data.model.CacheType
+import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.data.model.ProductInfoP2Data
@@ -10,24 +16,31 @@ import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
 import com.tokopedia.product.detail.view.util.CacheStrategyUtil
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import timber.log.Timber
 import javax.inject.Inject
+import kotlin.coroutines.CoroutineContext
 
 /**
  * Created by Yehezkiel on 20/07/20
  */
-class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlRepository: GraphqlRepository) : UseCase<ProductInfoP2UiData>() {
+class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlRepository: GraphqlRepository) : UseCase<ProductInfoP2UiData>(), CoroutineScope {
+
+    override val coroutineContext: CoroutineContext get() = Dispatchers.Main + SupervisorJob()
 
     companion object {
-        fun createParams(productId: String, pdpSession: String): RequestParams =
+        fun createParams(productId: String, pdpSession: String, deviceId: String): RequestParams =
                 RequestParams.create().apply {
                     putString(ProductDetailCommonConstant.PARAM_PRODUCT_ID, productId)
                     putString(ProductDetailCommonConstant.PARAM_PDP_SESSION, pdpSession)
+                    putString(ProductDetailCommonConstant.PARAM_DEVICE_ID, deviceId)
                 }
 
         val QUERY = """
-        query GetPdpGetData(${'$'}productID: String, ${'$'}pdpSession: String) {
-          pdpGetData(productID: ${'$'}productID, pdpSession: ${'$'}pdpSession) {
+        query GetPdpGetData(${'$'}productID: String,${'$'}deviceID: String, ${'$'}pdpSession: String) {
+          pdpGetData(productID: ${'$'}productID,deviceID: ${'$'}deviceID, pdpSession: ${'$'}pdpSession) {
             error {
               Code
               Message
@@ -317,14 +330,16 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
         }""".trimIndent()
     }
 
+    private var mCacheManager: GraphqlCacheManager? = null
+    private var mFingerprintManager: FingerprintManager? = null
+    private var cacheStrategy: GraphqlCacheStrategy = GraphqlCacheStrategy.Builder(CacheType.NONE).build()
+
     private var requestParams: RequestParams = RequestParams.EMPTY
     private var forceRefresh: Boolean = false
-    private var enableCache: Boolean = false
 
-    suspend fun executeOnBackground(requestParams: RequestParams, forceRefresh: Boolean, enableCache: Boolean): ProductInfoP2UiData {
+    suspend fun executeOnBackground(requestParams: RequestParams, forceRefresh: Boolean): ProductInfoP2UiData {
         this.requestParams = requestParams
         this.forceRefresh = forceRefresh
-        this.enableCache = enableCache
         return executeOnBackground()
     }
 
@@ -332,9 +347,10 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
         var p2UiData = ProductInfoP2UiData()
         val p2DataRequest = GraphqlRequest(QUERY,
                 ProductInfoP2Data.Response::class.java, requestParams.parameters)
+        val cacheStrategy = CacheStrategyUtil.getCacheStrategy(forceRefresh)
 
         try {
-            val gqlResponse = graphqlRepository.getReseponse(listOf(p2DataRequest), CacheStrategyUtil.getCacheStrategy(if (enableCache) forceRefresh else true))
+            val gqlResponse = graphqlRepository.getReseponse(listOf(p2DataRequest), cacheStrategy)
             val successData = gqlResponse.getData<ProductInfoP2Data.Response>(ProductInfoP2Data.Response::class.java)
             val errorData: List<GraphqlError>? = gqlResponse.getError(ProductInfoP2Data.Response::class.java)
 
@@ -372,5 +388,29 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
             p2UiData.productFinancingCalculationData = productFinancingCalculationData
         }
         return p2UiData
+    }
+
+    fun clearCache() {
+        launchCatchError(Dispatchers.IO, block = {
+            initCacheManager()
+            if (mCacheManager != null && mFingerprintManager != null) {
+                val request = GraphqlRequest(QUERY, ProductInfoP2Data.Response::class.java, requestParams.parameters)
+                mCacheManager!!.delete(mFingerprintManager!!.generateFingerPrint(
+                        request.toString(),
+                        cacheStrategy.isSessionIncluded))
+
+            }
+        }) {
+            it.printStackTrace()
+        }
+    }
+
+    private fun initCacheManager() {
+        if (mCacheManager == null) {
+            mCacheManager = GraphqlCacheManager()
+        }
+        if (mFingerprintManager == null) {
+            mFingerprintManager = GraphqlClient.getFingerPrintManager()
+        }
     }
 }

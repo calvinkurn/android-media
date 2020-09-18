@@ -6,7 +6,14 @@ object KeywordSearchHintQuery {
     val query = """
         query universe_placeholder($firstInstall: Boolean){
             universe_placeholder(navsource:"home", first_install:$firstInstall){
-                data { placeholder keyword }
+                data { 
+                    placeholder 
+                    keyword 
+                    placeholder_list {
+                        placeholder
+                        keyword
+                    }
+                }
             }
         }
     """.trimIndent()

@@ -43,13 +43,17 @@ public class AffiliateTrackingActivity extends BaseActivity implements AffContra
         handleIntent();
     }
 
+    /**
+     * Applink example
+     * tokopedia-android-internal://affiliate/tracking/{by_me_username}
+     */
     private void handleIntent() {
         try {
             Uri data = getIntent().getData();
             if (data != null && data.isHierarchical()) {
                 List<String> path = new ArrayList<>();
-                String affName = data.getPathSegments().get(0);
-                for (int i = 1; i < data.getPathSegments().size(); i++) {
+                String affName = data.getPathSegments().get(1);
+                for (int i = 2; i < data.getPathSegments().size(); i++) {
                     path.add(data.getPathSegments().get(i));
                 }
                 presenter.getTrackingUrl(affName, TextUtils.join("/", path));

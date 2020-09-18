@@ -54,12 +54,6 @@ class AddEditProductDescriptionViewModel @Inject constructor(
         }
         return false
     }
-    val hasWholesale: Boolean get() {
-        productInputModel.value?.apply {
-            return detailInputModel.wholesaleList.isNotEmpty()
-        }
-        return false
-    }
 
     private val _videoYoutubeNew = MutableLiveData<Pair<Int, Result<YoutubeVideoDetailModel>>>()
     val videoYoutube: MediatorLiveData<Pair<Int, Result<YoutubeVideoDetailModel>>> = MediatorLiveData()

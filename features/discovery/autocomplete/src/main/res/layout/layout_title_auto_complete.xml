@@ -8,6 +8,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/titleTextView"
+        android:contentDescription="@string/content_desc_titleTextView"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_22"
         android:layout_centerVertical="true"
@@ -21,6 +22,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/actionDeleteButton"
+        android:contentDescription="@string/content_desc_actionDeleteButton"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_18"
         android:layout_alignParentEnd="true"
@@ -38,6 +40,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/actionRefreshButton"
+        android:contentDescription="@string/content_desc_actionRefreshButton"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_18"
         android:layout_alignParentEnd="true"

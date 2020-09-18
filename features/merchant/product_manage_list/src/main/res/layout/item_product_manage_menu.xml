@@ -2,6 +2,7 @@
 <com.tokopedia.unifyprinciples.Typography xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/textMenu"
+    android:contentDescription="@string/content_desc_textMenu"
     android:textColor="@color/product_manage_title_color"
     android:paddingTop="@dimen/product_manage_vertical_spacing"
     android:paddingBottom="@dimen/product_manage_vertical_spacing"

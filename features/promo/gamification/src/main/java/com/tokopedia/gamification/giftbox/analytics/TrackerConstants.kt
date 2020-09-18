@@ -48,4 +48,5 @@ object GiftBoxLabel {
     const val REWARDS_SUMMARY = "rewards summary"
     const val CAMPAIGN_OVER = "campaign over"
     const val NO_REWARD = "no reward"
+    const val INTERNET_CONN_ERROR = "internet connection error"
 }

@@ -21,14 +21,15 @@ object TalkReplyMapper {
                     maskedContent,
                     userThumbnail,
                     userName,
-                    userId)
+                    userId,
+                    questionState.isYours)
         }
     }
 
-    fun mapDiscussionDataResponseToTalkReplyModels(discussionDataByQuestionIDResponseWrapper: DiscussionDataByQuestionIDResponseWrapper): List<TalkReplyUiModel> {
+    fun mapDiscussionDataResponseToTalkReplyModels(discussionDataByQuestionIDResponseWrapper: DiscussionDataByQuestionIDResponseWrapper, userId:String): List<TalkReplyUiModel> {
         val result = mutableListOf<TalkReplyUiModel>()
         discussionDataByQuestionIDResponseWrapper.discussionDataByQuestionID.question.answer.forEach {
-            result.add(TalkReplyUiModel(it, discussionDataByQuestionIDResponseWrapper.discussionDataByQuestionID.shopID))
+            result.add(TalkReplyUiModel(it, discussionDataByQuestionIDResponseWrapper.discussionDataByQuestionID.shopID, it.userId == userId))
         }
         return result
     }
