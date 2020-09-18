@@ -56,7 +56,7 @@ class PlayVideoFragment @Inject constructor(
 
     private val blurUtil: ImageBlurUtil by lifecycleBound (
             creator = { ImageBlurUtil(it.requireContext()) },
-            onDestroy = { blurUtil.close() }
+            onDestroy = { it.close() }
     )
 
     private val cornerRadius = 16f.dpToPx()
