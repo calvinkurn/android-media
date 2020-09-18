@@ -31,7 +31,7 @@ class InitialStatePresenter @Inject constructor(
 
     private var querySearch = ""
     private var listVistable = mutableListOf<Visitable<*>>()
-    private val recentSearchToImpress = mutableListOf<InitialStateItem>()
+    private val recentSearchToImpress = mutableListOf<Any>()
     private var searchParameter = HashMap<String, String>()
 
     override fun getQueryKey(): String {
@@ -78,7 +78,7 @@ class InitialStatePresenter @Inject constructor(
                         RECENT_SEARCH-> {
                             initialStateViewModel.addList(initialStateData)
                             initialStateData.items.withNotEmpty{
-                                recentSearchToImpress.addAll(this)
+                                recentSearchToImpress.addAll(getDataLayerForPromo(this))
                                 onRecentSearchImpressed(false)
                             }
                         }
@@ -125,9 +125,9 @@ class InitialStatePresenter @Inject constructor(
         if (recentSearchToImpress.size >= RECENT_SEARCH_SEE_MORE_LIMIT && !seeMore) {
             val impressedItem = recentSearchToImpress.take(RECENT_SEARCH_SEE_MORE_LIMIT - 1)
             recentSearchToImpress.removeAll(impressedItem)
-            view?.onRecentSearchImpressed(getDataLayerForPromo(impressedItem))
+            view?.onRecentSearchImpressed(impressedItem)
         } else {
-            view?.onRecentSearchImpressed(getDataLayerForPromo(recentSearchToImpress))
+            view?.onRecentSearchImpressed(recentSearchToImpress)
         }
     }
 
