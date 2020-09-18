@@ -4,12 +4,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.seller.search.R
+import com.tokopedia.seller.search.common.plt.GlobalSearchSellerPerformanceMonitoringListener
 import com.tokopedia.seller.search.common.util.OnScrollListenerAutocomplete
 import com.tokopedia.seller.search.common.util.addWWWPrefix
 import com.tokopedia.seller.search.feature.analytics.SellerSearchTracking
@@ -24,6 +26,7 @@ import com.tokopedia.seller.search.feature.suggestion.view.viewmodel.SuggestionS
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.android.synthetic.main.initial_search_fragment.*
 import kotlinx.android.synthetic.main.suggestion_search_fragment.*
 import javax.inject.Inject
 
@@ -42,12 +45,11 @@ class SuggestionSearchFragment : BaseDaggerFragment(),
 
     private val suggestionSearchAdapter by lazy { SuggestionSearchAdapter(searchSellerAdapterTypeFactory) }
 
-    private var suggestionViewUpdateListener: SuggestionViewUpdateListener? = null
-
     private val viewModel: SuggestionSearchViewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(SuggestionSearchViewModel::class.java)
     }
 
+    private var suggestionViewUpdateListener: SuggestionViewUpdateListener? = null
     private var searchKeyword = ""
     private var shopId = ""
     private var userId = ""
@@ -85,9 +87,11 @@ class SuggestionSearchFragment : BaseDaggerFragment(),
 
     private fun observeLiveData() {
         viewModel.getSellerSearch.observe(viewLifecycleOwner, Observer {
+            (activity as? GlobalSearchSellerPerformanceMonitoringListener)?.startRenderPerformanceMonitoring()
             when (it) {
                 is Success -> {
                     setSuggestionSearch(it.data)
+                    stopSearchResultPagePerformanceMonitoring()
                 }
             }
         })
@@ -133,13 +137,22 @@ class SuggestionSearchFragment : BaseDaggerFragment(),
             clearAllElements()
             addLoading()
         }
+        (activity as? GlobalSearchSellerPerformanceMonitoringListener)?.startNetworkPerformanceMonitoring()
         viewModel.getSellerSearch(keyword = searchKeyword, shopId = shopId)
     }
 
+    private fun stopSearchResultPagePerformanceMonitoring() {
+        rvSearchSuggestionSeller?.viewTreeObserver
+                ?.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+                    override fun onGlobalLayout() {
+                        (activity as? GlobalSearchSellerPerformanceMonitoringListener)?.finishMonitoring()
+                        rvSearchHistorySeller.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                    }
+                })
+    }
+
     private fun dropKeyBoard() {
-        if (activity != null && activity is InitialSellerSearchActivity) {
-            (activity as InitialSellerSearchActivity).dropKeyboardSuggestion()
-        }
+        (activity as? InitialSellerSearchActivity)?.dropKeyboardSuggestion()
     }
 
     private fun startActivityFromAutoComplete(appLink: String) {
