@@ -6,6 +6,6 @@ import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
 interface PromoCheckoutListDealsContract {
 
     interface Presenter : CustomerPresenter<PromoCheckoutListContract.View> {
-        fun getType(product: Type)
+        fun processCheckDealPromoCode(promoCode: String, flag: Boolean, requestParams: JsonObject)
     }
 }
