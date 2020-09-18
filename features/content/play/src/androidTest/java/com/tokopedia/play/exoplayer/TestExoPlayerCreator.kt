@@ -1,4 +1,4 @@
-package com.tokopedia.play
+package com.tokopedia.play.exoplayer
 
 import android.content.Context
 import com.google.android.exoplayer2.*
