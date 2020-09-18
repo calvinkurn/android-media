@@ -2,16 +2,12 @@ package com.tokopedia.autocomplete.initialstate
 
 import com.tokopedia.autocomplete.initialstate.dynamic.DynamicInitialStateSearchViewModel
 import com.tokopedia.autocomplete.initialstate.dynamic.DynamicInitialStateTitleViewModel
-import com.tokopedia.autocomplete.initialstate.data.InitialStateUniverse
 import com.tokopedia.autocomplete.initialstate.popularsearch.PopularSearchTitleViewModel
 import com.tokopedia.autocomplete.initialstate.popularsearch.PopularSearchViewModel
-import com.tokopedia.autocomplete.initialstate.recentsearch.RecentSearchSeeMoreViewModel
 import com.tokopedia.autocomplete.initialstate.recentsearch.RecentSearchTitleViewModel
 import com.tokopedia.autocomplete.initialstate.recentsearch.RecentSearchViewModel
 import com.tokopedia.autocomplete.initialstate.recentview.RecentViewTitleViewModel
 import com.tokopedia.autocomplete.initialstate.recentview.RecentViewViewModel
-import com.tokopedia.autocomplete.jsonToObject
-import io.mockk.confirmVerified
 import io.mockk.every
 import io.mockk.verify
 import org.junit.Assert
@@ -26,18 +22,11 @@ internal class InitialStatePresenterTest: InitialStatePresenterTestFixtures() {
         `Then verify initial state API is called`()
     }
 
-    private fun `given initial state use case capture request params`() {
-        every { getInitialStateUseCase.execute(any(), any()) }.answers {
-            secondArg<Subscriber<List<InitialStateData>>>().onStart()
-            secondArg<Subscriber<List<InitialStateData>>>().onNext(initialStateCommonResponse)
-        }
-    }
-
-    private fun `when presenter get initial state data`() {
+    private fun `When presenter get initial state data`() {
         initialStatePresenter.getInitialStateData()
     }
 
-    private fun `then verify initial state API is called`() {
+    private fun `Then verify initial state API is called`() {
         verify { getInitialStateUseCase.execute(any(), any()) }
     }
 
@@ -67,7 +56,16 @@ internal class InitialStatePresenterTest: InitialStatePresenterTestFixtures() {
         Assert.assertTrue(visitableList[6] is DynamicInitialStateTitleViewModel)
         Assert.assertTrue(visitableList[7] is DynamicInitialStateSearchViewModel)
         Assert.assertTrue(visitableList.size == 8)
+
+        `Then verify RecentSearchViewModel only have 3 items`(visitableList[3] as RecentSearchViewModel)
     }
+
+    private fun `Then verify RecentSearchViewModel only have 3 items`(viewModel: RecentSearchViewModel) {
+        assert(viewModel.list.size == 3) {
+            "RecentSearchViewModel should only have 3 items, actual size is ${viewModel.list.size}"
+        }
+    }
+
 
     @Test
     fun `Test fail to get initial state data`() {

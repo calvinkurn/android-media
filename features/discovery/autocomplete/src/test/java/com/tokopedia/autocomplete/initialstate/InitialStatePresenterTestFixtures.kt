@@ -2,9 +2,6 @@ package com.tokopedia.autocomplete.initialstate
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.autocomplete.initialstate.data.InitialStateUniverse
-import com.tokopedia.autocomplete.initialstate.popularsearch.RefreshPopularSearchUseCase
-import com.tokopedia.autocomplete.jsonToObject
-import com.tokopedia.autocomplete.initialstate.data.InitialStateUniverse
 import com.tokopedia.autocomplete.jsonToObject
 import com.tokopedia.usecase.UseCase
 import com.tokopedia.user.session.UserSessionInterface

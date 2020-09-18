@@ -2,7 +2,6 @@ package com.tokopedia.autocomplete.initialstate
 
 import com.tokopedia.autocomplete.initialstate.data.InitialStateUniverse
 import com.tokopedia.autocomplete.jsonToObject
-import io.mockk.slot
 import io.mockk.verify
 import org.junit.Test
 
