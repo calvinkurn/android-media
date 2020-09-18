@@ -14,6 +14,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.ui.model.TrafficMetricUiModel
 import com.tokopedia.play.broadcaster.view.adapter.TrafficMetricReportAdapter
+import com.tokopedia.play_common.viewcomponent.ViewComponent
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifyprinciples.Typography
 
@@ -21,9 +22,9 @@ import com.tokopedia.unifyprinciples.Typography
 /**
  * Created by mzennis on 18/06/20.
  */
-class SummaryInfoPartialView(
+class SummaryInfoViewComponent(
         container: ViewGroup
-) : PartialView(container, R.id.layout_summary_content) {
+) : ViewComponent(container, R.id.layout_summary_content) {
 
     val animationOffset = container.resources.getInteger(R.integer.play_summary_layout_animation_offset).toFloat()
     val animationDuration = container.resources.getInteger(R.integer.play_summary_layout_animation_duration_ms).toLong()

@@ -64,7 +64,7 @@ class PlayEtalaseDetailFragment @Inject constructor(
     private lateinit var errorEmptyProduct: GlobalError
     private lateinit var bottomSheetHeader: PlayBottomSheetHeader
 
-    private val selectedProductPage by viewComponent {
+    private val selectedProductPageView by viewComponent {
         SelectedProductPageViewComponent(view as ViewGroup, object : SelectedProductPageViewComponent.Listener {
             override fun onProductSelectStateChanged(productId: Long, isSelected: Boolean) {
                 viewModel.selectProduct(productId, isSelected)
@@ -131,8 +131,8 @@ class PlayEtalaseDetailFragment @Inject constructor(
     }
 
     override fun onInterceptBackPressed(): Boolean {
-        return if (selectedProductPage.isShown()) {
-            selectedProductPage.hide()
+        return if (selectedProductPageView.isShown()) {
+            selectedProductPageView.hide()
             true
         } else false
     }
@@ -219,11 +219,11 @@ class PlayEtalaseDetailFragment @Inject constructor(
     }
 
     private fun showSelectedProductPage() {
-        if (selectedProductPage.isShown()) {
-            selectedProductPage.hide()
+        if (selectedProductPageView.isShown()) {
+            selectedProductPageView.hide()
         } else {
-            selectedProductPage.setSelectedProductList(viewModel.selectedProductList)
-            selectedProductPage.show()
+            selectedProductPageView.setSelectedProductList(viewModel.selectedProductList)
+            selectedProductPageView.show()
         }
     }
 
@@ -310,7 +310,7 @@ class PlayEtalaseDetailFragment @Inject constructor(
     private fun observeSelectedProducts() {
         viewModel.observableSelectedProducts.observe(viewLifecycleOwner, Observer {
             bottomActionView.setupBottomActionWithProducts(it)
-            selectedProductPage.onSelectedProductsUpdated(it)
+            selectedProductPageView.onSelectedProductsUpdated(it)
         })
     }
 
