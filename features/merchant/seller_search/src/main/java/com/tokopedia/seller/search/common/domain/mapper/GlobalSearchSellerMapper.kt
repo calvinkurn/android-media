@@ -59,7 +59,8 @@ object GlobalSearchSellerMapper {
                         addAll(mapToNavigationSellerSearchVisitable(it.items, keyword, it.title.orEmpty()))
                         countItem += mapToNavigationSellerSearchVisitable(it.items, keyword, it.title.orEmpty()).size
                         val isVisibleDivider = countItem < sellerSearch.data.count.orZero()
-                        add(DividerSellerSearchUiModel(isVisibleDivider))                    }
+                        add(DividerSellerSearchUiModel(isVisibleDivider))
+                    }
                     FAQ -> {
                         add(TitleHeaderSellerSearchUiModel(title = it.title.orEmpty()))
                         addAll(mapToFaqSellerSearchVisitable(it.items, keyword, it.title.orEmpty()))
