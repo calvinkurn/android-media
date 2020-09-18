@@ -36,7 +36,6 @@ class TopAdsDetailSheet : BottomSheetUnify() {
     private var adId: String = "0"
     private var category: Int = 0
     private var adType: String = "1"
-    private var adPriceBid: Int = 0
     private var currentAutoAdsStatus = 100
 
     @Inject
@@ -120,17 +119,17 @@ class TopAdsDetailSheet : BottomSheetUnify() {
 
         editAd.setOnClickListener {
             if (category == TYPE_MANUAL) {
-                val intent = if (groupId == SINGE_AD) {
-                    RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_EDIT_WITHOUT_GROUP).apply {
+                if (groupId == SINGLE_AD) {
+                    val intent = RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_EDIT_WITHOUT_GROUP).apply {
                         putExtra(GROUPID, adId.toInt())
-                        putExtra(PRICEBID, adPriceBid)
                     }
+                    startActivityForResult(intent, EDIT_WITHOUT_GROUP_REQUEST_CODE)
                 } else {
-                    RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_EDIT_ADS)?.apply {
+                    val intent = RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_EDIT_ADS)?.apply {
                         putExtra(GROUPID, groupId)
                     }
+                    startActivity(intent)
                 }
-                startActivity(intent)
 
             } else if (category == TYPE_AUTO) {
                 if (adId.toInt() > 0 && adType == AD_TYPE_PRODUCT) {
@@ -163,15 +162,12 @@ class TopAdsDetailSheet : BottomSheetUnify() {
 
     private fun onSuccessGroupId(data: List<AdData>) {
         data.firstOrNull().let {
-            groupId = it?.groupID ?: SINGE_AD
+            groupId = it?.groupID ?: SINGLE_AD
             btn_switch?.isChecked = it?.status == STATUS_ACTIVE || it?.status == STATUS_TIDAK_TAMPIL
             txtBudget?.text = String.format(getString(R.string.topads_detail_budget), it?.priceBid)
-            adPriceBid = it?.priceBid ?: 0
-
         }
-
         viewModel.getGroupProductData(resources, groupId.toInt(), ::onSuccessProductInfo)
-        if (groupId == SINGE_AD && category != TYPE_AUTO) {
+        if (groupId == SINGLE_AD && category != TYPE_AUTO) {
             singleAd.visibility = View.VISIBLE
             txtBudget.visibility = View.GONE
             createGroup.setOnClickListener {
@@ -209,11 +205,12 @@ class TopAdsDetailSheet : BottomSheetUnify() {
         private const val STATUS_TIDAK_TAMPIL = "2"
         private const val AD_TYPE_PRODUCT = "1"
         private const val LOAD_DATA_SHEET = 2
-        private const val SINGE_AD = "0"
+        private const val SINGLE_AD = "0"
         private const val TYPE_MANUAL = 3
         private const val TYPE_AUTO = 4
         private const val PRICEBID = "price_bid"
         private const val TOPADS_BOTTOM_SHEET_TAG = "SORT_FILTER_BOTTOM_SHEET_TAG"
+        private const val EDIT_WITHOUT_GROUP_REQUEST_CODE = 47
         fun newInstance(): TopAdsDetailSheet = TopAdsDetailSheet()
 
     }
