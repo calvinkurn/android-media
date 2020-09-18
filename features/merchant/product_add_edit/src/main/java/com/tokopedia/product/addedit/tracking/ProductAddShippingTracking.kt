@@ -48,10 +48,6 @@ object ProductAddShippingTracking {
         }
     }
 
-    fun oopsConnectionPageScreen(userId: String, serverStatus: String, errorName: String) {
-        sendAddProductImpression(userId, "impression add product error", "server error - $serverStatus - $errorName")
-    }
-
     fun uploadImageFailed(userId: String, errorName: String) {
         sendAddProductImpression(userId, "impression add product error", "validation error - (Upload Image) $errorName")
     }

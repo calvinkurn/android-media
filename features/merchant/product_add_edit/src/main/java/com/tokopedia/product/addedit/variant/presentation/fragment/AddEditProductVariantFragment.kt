@@ -1,6 +1,7 @@
 package com.tokopedia.product.addedit.variant.presentation.fragment
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.KeyEvent
@@ -36,7 +37,9 @@ import com.tokopedia.product.addedit.imagepicker.view.activity.SizechartPickerEd
 import com.tokopedia.product.addedit.imagepicker.view.activity.VariantPhotoPickerActivity
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_PRODUCT_INPUT_MODEL
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
+import com.tokopedia.product.addedit.tracking.ProductAddStepperTracking
 import com.tokopedia.product.addedit.tracking.ProductAddVariantTracking
+import com.tokopedia.product.addedit.tracking.ProductEditStepperTracking
 import com.tokopedia.product.addedit.tracking.ProductEditVariantTracking
 import com.tokopedia.product.addedit.variant.data.model.Unit
 import com.tokopedia.product.addedit.variant.data.model.UnitValue
@@ -758,6 +761,9 @@ class AddEditProductVariantFragment :
                     context?.let {
                         showGetCategoryVariantCombinationErrorToast(
                                 ErrorHandler.getErrorMessage(it, result.throwable))
+                        viewModel.isEditMode.value?.let { isEditMode ->
+                            trackOopsConnectionPageScreen(isEditMode, result.throwable, it)
+                        }
                     }
                 }
             }
@@ -1102,6 +1108,22 @@ class AddEditProductVariantFragment :
     private fun trackRemoveVariantUnitValueEvent(isEditMode: Boolean, eventLabel: String, shopId: String) {
         if (isEditMode) ProductEditVariantTracking.removeVariantUnitValue(eventLabel, shopId)
         else ProductAddVariantTracking.removeVariantUnitValue(eventLabel, shopId)
+    }
+
+    private fun trackOopsConnectionPageScreen(isEditMode: Boolean, throwable: Throwable, context: Context) {
+        val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
+        val errorThrowable = throwable.message ?: ""
+        if (isEditMode) {
+            ProductEditStepperTracking.oopsConnectionPageScreen(
+                    userId,
+                    errorMessage,
+                    errorThrowable)
+        } else {
+            ProductAddStepperTracking.oopsConnectionPageScreen(
+                    userId,
+                    errorMessage,
+                    errorThrowable)
+        }
     }
 
     private fun setupToolbarActions() {

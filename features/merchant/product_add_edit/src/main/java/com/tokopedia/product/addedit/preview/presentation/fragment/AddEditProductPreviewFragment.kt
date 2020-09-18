@@ -825,6 +825,15 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                 }
                 is Fail -> {
                     context?.let {
+                        val isEditing = viewModel.isEditing.value ?: false
+                        val errorMessage = ErrorHandler.getErrorMessage(context, result.throwable)
+                        val errorThrowable = result.throwable.message ?: ""
+                        if (isEditing) {
+                            ProductEditStepperTracking.oopsConnectionPageScreen(
+                                    userSession.userId,
+                                    errorMessage,
+                                    errorThrowable)
+                        }
                         showGetProductErrorToast(ErrorHandler.getErrorMessage(it, result.throwable))
                         AddEditProductErrorHandler.logExceptionToCrashlytics(result.throwable)
                     }
