@@ -561,7 +561,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
 
     fun addNotAvailableShop(disabledShopHolderData: DisabledShopHolderData) {
         var showDivider = false
-        if (cartDataList[cartDataList.size - 1] !is DisabledReasonHolderData) {
+        if (cartDataList.size > 0 && cartDataList[cartDataList.size - 1] !is DisabledReasonHolderData) {
             showDivider = true
         }
         disabledShopHolderData.showDivider = showDivider
@@ -1116,7 +1116,11 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
 
                 // For disabled / unavailable item, also delete other item (shop, unavailable reason, unavailable header, accordion) if needed
                 is DisabledCartItemHolderData -> if (cartIds.contains(obj.cartId.toString())) {
-                    val before = cartDataList[i - 1]
+                    if (i < 1) {
+                        continue@loop
+                    }
+                    val indexBefore = i - 1
+                    val before = cartDataList[indexBefore]
                     var after: Any? = null
                     if (i + 1 < cartDataList.size) {
                         after = cartDataList[i + 1]
@@ -1126,7 +1130,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
                         // If item before `obj` is shop, then remove it since the shop only has one item
                         if (after !is DisabledCartItemHolderData) {
                             toBeRemovedData.add(before)
-                            toBeRemovedIndex.add(i - 1)
+                            toBeRemovedIndex.add(indexBefore)
                             // Adjust divider visibility
                             if (after is DisabledShopHolderData) {
                                 after.showDivider = false
@@ -1145,11 +1149,15 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
                     }
 
                     // If two item before `obj` is reason item, then remove it since the reason has only one shop and the shop has only one item
-                    val twoBefore = cartDataList[i - 2]
+                    if (i < 2) {
+                        continue@loop
+                    }
+                    val indexTwoBefore = i - 2
+                    val twoBefore = cartDataList[indexTwoBefore]
                     if (twoBefore is DisabledReasonHolderData) {
                         if (after !is DisabledCartItemHolderData && after !is DisabledShopHolderData) {
                             toBeRemovedData.add(twoBefore)
-                            toBeRemovedIndex.add(i - 2)
+                            toBeRemovedIndex.add(indexTwoBefore)
                         }
                     }
 

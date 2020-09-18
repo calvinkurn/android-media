@@ -218,18 +218,20 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         private var FLAG_BEGIN_SHIPMENT_PROCESS = false
         private var FLAG_SHOULD_CLEAR_RECYCLERVIEW = false
         private var FLAG_IS_CART_EMPTY = false
-        private val HAS_ELEVATION = 12
-        private val NO_ELEVATION = 0
-        private val CART_TRACE = "mp_cart"
-        private val CART_ALL_TRACE = "mp_cart_all"
-        private val CART_PAGE = "cart"
-        private val NAVIGATION_PDP = 64728
-        private val NAVIGATION_PROMO = 7451
-        private val NAVIGATION_SHIPMENT = 983
-        private val ADVERTISINGID = "ADVERTISINGID"
-        private val KEY_ADVERTISINGID = "KEY_ADVERTISINGID"
-        private val WISHLIST_SOURCE_AVAILABLE_ITEM = "WISHLIST_SOURCE_AVAILABLE_ITEM"
-        private val WISHLIST_SOURCE_UNAVAILABLE_ITEM = "WISHLIST_SOURCE_UNAVAILABLE_ITEM"
+
+        const val HAS_ELEVATION = 12
+        const val NO_ELEVATION = 0
+        const val CART_TRACE = "mp_cart"
+        const val CART_ALL_TRACE = "mp_cart_all"
+        const val CART_PAGE = "cart"
+        const val NAVIGATION_PDP = 64728
+        const val NAVIGATION_PROMO = 7451
+        const val NAVIGATION_SHIPMENT = 983
+        const val ADVERTISINGID = "ADVERTISINGID"
+        const val KEY_ADVERTISINGID = "KEY_ADVERTISINGID"
+        const val WISHLIST_SOURCE_AVAILABLE_ITEM = "WISHLIST_SOURCE_AVAILABLE_ITEM"
+        const val WISHLIST_SOURCE_UNAVAILABLE_ITEM = "WISHLIST_SOURCE_UNAVAILABLE_ITEM"
+        const val WORDING_GO_TO_HOMEPAGE = "Kembali ke Homepage"
 
         @JvmStatic
         fun newInstance(bundle: Bundle?, args: String): CartFragment {
@@ -947,12 +949,20 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     override fun onCartItemProductClicked(cartItemData: CartItemData) {
         sendAnalyticsOnClickProductNameCartItem(cartItemData.originData?.productName ?: "")
-        startActivityForResult(RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, cartItemData.originData?.productId), NAVIGATION_PDP)
+        cartItemData.originData?.productId?.let {
+            goToPdp(it)
+        }
     }
 
     override fun onDisabledCartItemProductClicked(cartItemData: CartItemData) {
         sendAnalyticsOnClickProductNameCartItem(cartItemData.originData?.productName ?: "")
-        startActivityForResult(RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, cartItemData.originData?.productId), NAVIGATION_PDP)
+        cartItemData.originData?.productId?.let {
+            goToPdp(it)
+        }
+    }
+
+    private fun goToPdp(productId: String) {
+        startActivityForResult(RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId), NAVIGATION_PDP)
     }
 
     override fun onClickShopNow() {
@@ -1178,10 +1188,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     private fun onProductClicked(productId: String) {
-        activity?.let {
-            val intent = RouteManager.getIntent(it, ApplinkConst.PRODUCT_INFO, productId)
-            startActivityForResult(intent, NAVIGATION_PDP)
-        }
+        goToPdp(productId)
     }
 
     override fun onWishlistProductClicked(productId: String) {
@@ -2216,7 +2223,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             val errorType = getGlobalErrorType(throwable)
             layoutGlobalError.setType(errorType)
             if (errorType == GlobalError.SERVER_ERROR) {
-                layoutGlobalError.errorAction.text = "Kembali ke Homepage"
+                layoutGlobalError.errorAction.text = WORDING_GO_TO_HOMEPAGE
                 layoutGlobalError.setActionClickListener {
                     goToHome()
                 }
@@ -2552,10 +2559,11 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     override fun onDeleteCartDataSuccess(deletedCartIds: List<String>, removeAllItems: Boolean, forceExpandCollapsedUnavailableItems: Boolean) {
+        val message = String.format(getString(R.string.message_product_already_deleted), deletedCartIds.size)
         if (deletedCartIds.size > 1) {
-            showToastMessageGreen("${deletedCartIds.size} barang telah dihapus")
+            showToastMessageGreen(message)
         } else {
-            showToastMessageGreen("${deletedCartIds.size} barang telah dihapus", "Batalkan", View.OnClickListener { onUndoDeleteClicked(deletedCartIds) })
+            showToastMessageGreen(message, getString(R.string.toaster_cta_cancel), View.OnClickListener { onUndoDeleteClicked(deletedCartIds) })
         }
 
         if (removeAllItems) {

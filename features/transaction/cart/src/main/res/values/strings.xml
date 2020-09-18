@@ -52,9 +52,10 @@
     <string name="label_action_snackbar_close">Tutup</string>
     <string name="label_action_snackbar_retry">Coba lagi</string>
     <string name="cart_module_label_summary_transaction">Ringkasan Belanja</string>
-
     <string name="content_desc_go_to_courier_page_button">button beli</string>
     <string name="label_fulfilment_wording">Dilayani Tokopedia</string>
     <string name="label_remark_title">Catatan untuk barang ini</string>
     <string name="label_wholesale_product">Harga Grosir</string>
+    <string name="message_product_already_deleted">%d barang telah dihapus</string>
+    <string name="toaster_cta_cancel">Batalkan</string>
 </resources>
