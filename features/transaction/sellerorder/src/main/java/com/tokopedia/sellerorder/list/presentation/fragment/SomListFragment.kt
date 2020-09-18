@@ -27,6 +27,7 @@ import com.tokopedia.applink.sellerhome.AppLinkMapperSellerHome
 import com.tokopedia.coachmark.CoachMark
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
+import com.tokopedia.coachmark.CoachMarkPreference
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.quickfilter.QuickFilterItem
 import com.tokopedia.design.quickfilter.custom.CustomViewQuickFilterItem
@@ -183,7 +184,10 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     private var userNotAllowedDialog: DialogUnify? = null
 
     companion object {
-        private const val TAG_COACHMARK = "coachMarks"
+        private const val TAG_COACHMARK_FILTER = "coachMarksFilter"
+        private const val TAG_COACHMARK_SEARCH = "coachMarksSearch"
+        private const val TAG_COACHMARK_PRODUCTS = "coachMarksProducts"
+        private const val TAG_COACHMARK_WAITING_PAYMENT = "coachMarksWaitingPayment"
         private const val REQUEST_FILTER = 2888
         private const val ERROR_GET_TICKERS = "Error when get tickers in seller order list page."
         private const val ERROR_GET_FILTER = "Error when get filters in seller order list page."
@@ -688,6 +692,8 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                 is Success -> {
                     if (!onLoadMore) {
                         renderWaitingForPaymentCard()
+                        showCoachMarkSearch()
+                        showCoachMarkWaitingPayment()
                     }
                     orderList = it.data
                     nextOrderId = orderList.cursorOrderId
@@ -709,9 +715,9 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                             }
                         } else {
                             renderEmptyOrderList()
-                            showCoachMarkProductsEmpty()
                         }
                     }
+                    showCoachMarkFilter()
                     renderCoachMark()
                 }
                 is Fail -> {
@@ -723,7 +729,10 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     }
 
     private fun renderCoachMark() {
-        coachMark.show(activity, TAG_COACHMARK, ArrayList(coachMarkToShow))
+        coachMark.show(activity, "", ArrayList(coachMarkToShow))
+        coachMark.onFinishListener = {
+            coachMarkToShow.clear()
+        }
     }
 
     private fun renderOrderList() {
@@ -787,27 +796,40 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         }
     }
 
-    private fun showCoachMarkProducts() {
-        if (!coachMark.hasShown(activity, TAG_COACHMARK) && !GlobalConfig.isSellerApp()) {
-            coachMarkToShow.add(coachMarkSearch)
-            showCoachMarkWaitingPayment()
-            coachMarkToShow.add(coachMarkProduct)
-            coachMarkToShow.add(coachMarkFilter)
+    private fun showCoachMarkSearch() {
+        context?.let { context ->
+            if (!coachMark.hasShown(activity, TAG_COACHMARK_SEARCH) && !GlobalConfig.isSellerApp()) {
+                CoachMarkPreference.setShown(context, TAG_COACHMARK_SEARCH, true)
+                coachMarkToShow.add(coachMarkSearch)
+            }
         }
     }
 
-    private fun showCoachMarkProductsEmpty() {
-        if (!coachMark.hasShown(activity, TAG_COACHMARK) && !GlobalConfig.isSellerApp()) {
-            coachMarkToShow.add(coachMarkSearch)
-            showCoachMarkWaitingPayment()
-            coachMarkToShow.add(coachMarkFilter)
+    private fun showCoachMarkProducts() {
+        context?.let { context ->
+            if (!coachMark.hasShown(activity, TAG_COACHMARK_PRODUCTS) && !GlobalConfig.isSellerApp()) {
+                CoachMarkPreference.setShown(context, TAG_COACHMARK_PRODUCTS, true)
+                coachMarkToShow.add(coachMarkProduct)
+            }
+        }
+    }
+
+    private fun showCoachMarkFilter() {
+        context?.let { context ->
+            if (!coachMark.hasShown(activity, TAG_COACHMARK_FILTER) && !GlobalConfig.isSellerApp()) {
+                CoachMarkPreference.setShown(context, TAG_COACHMARK_FILTER, true)
+                coachMarkToShow.add(coachMarkFilter)
+            }
         }
     }
 
     private fun showCoachMarkWaitingPayment() {
-        if (!coachMark.hasShown(activity, TAG_COACHMARK) &&
-                somWaitingPaymentButton.visibility == View.VISIBLE) {
-            coachMarkToShow.addAll(coachMarkWaitingPaymentButton)
+        context?.let { context ->
+            if (!coachMark.hasShown(activity, TAG_COACHMARK_WAITING_PAYMENT) &&
+                    somWaitingPaymentButton.visibility == View.VISIBLE) {
+                CoachMarkPreference.setShown(context, TAG_COACHMARK_WAITING_PAYMENT, true)
+                coachMarkToShow.addAll(coachMarkWaitingPaymentButton)
+            }
         }
     }
 
