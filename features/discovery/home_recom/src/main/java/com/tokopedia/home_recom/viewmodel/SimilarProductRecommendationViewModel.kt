@@ -18,7 +18,6 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
-import kotlinx.coroutines.isActive
 import rx.Subscriber
 import javax.inject.Inject
 
@@ -74,19 +73,18 @@ open class SimilarProductRecommendationViewModel @Inject constructor(
         }
     }
 
-    fun getRecommendationFromFilterChip(filter: RecommendationFilterChipsEntity.RecommendationFilterChip){
+    fun getRecommendationFromFilterChip(filter: RecommendationFilterChipsEntity.RecommendationFilterChip, queryParam: String){
         val listFilter: MutableList<RecommendationFilterChipsEntity.RecommendationFilterChip> = _filterChips.value?.data?.toMutableList() ?: mutableListOf()
         listFilter.withIndex().find { it.value.name == filter.name && it.value.value == filter.value }?.let {
             listFilter[it.index] = it.value.copy(isActivated = !it.value.isActivated)
             _filterChips.postValue(_filterChips.value?.copy(
-                    data = listFilter
+                    data = selectOrDeselectAnnotationChip(listFilter, filter.name, !it.value.isActivated)
             ))
         }
         _recommendationItem.postValue(Response.loading())
-        singleRecommendationUseCase.execute(singleRecommendationUseCase.getRecomParams(queryParam = filter.value, productIds = listOf(), pageNumber = 1), object: Subscriber<List<RecommendationItem>>(){
+        singleRecommendationUseCase.execute(singleRecommendationUseCase.getRecomParams(queryParam = queryParam + filter.value, productIds = listOf(), pageNumber = 1), object: Subscriber<List<RecommendationItem>>(){
             override fun onNext(list: List<RecommendationItem>) {
-                _recommendationItem.postValue(Response.success(combineList(_recommendationItem.value?.data
-                        ?: emptyList(), list)))
+                _recommendationItem.postValue(Response.success(list))
             }
 
             override fun onCompleted() {}
@@ -95,6 +93,16 @@ open class SimilarProductRecommendationViewModel @Inject constructor(
                 _recommendationItem.postValue(Response.error(throwable.localizedMessage, _recommendationItem.value?.data))
             }
         })
+    }
+
+    private fun selectOrDeselectAnnotationChip(filterData: List<RecommendationFilterChipsEntity.RecommendationFilterChip>?, name: String, isActivated: Boolean): List<RecommendationFilterChipsEntity.RecommendationFilterChip>{
+        return filterData?.map {
+            it.copy(
+                isActivated =
+                name == it.name
+                        && isActivated
+            )
+        } ?: listOf()
     }
 
     /**

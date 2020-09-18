@@ -92,12 +92,13 @@ open class SimilarProductRecommendationFragment : BaseListFragment<SimilarProduc
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_recommendation, container, false)
+        return inflater.inflate(R.layout.fragment_simillar_recommendation, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         context?.let { trackingQueue = TrackingQueue(it) }
+        view.filter_chip_recyclerview?.adapter = filterChipAdapter
         RecommendationPageTracking.sendScreenSimilarProductRecommendationPage("/rekomendasi/d", ref, productId)
         getRecyclerView(view)?.apply {
             if(this is VerticalRecyclerView) clearItemDecoration()
@@ -118,6 +119,7 @@ open class SimilarProductRecommendationFragment : BaseListFragment<SimilarProduc
                                 }
                             }
                         }
+                        clearAllData()
                         renderList(mapDataModel(it.data ?: emptyList()), true)
                     }
                 }
@@ -254,7 +256,7 @@ open class SimilarProductRecommendationFragment : BaseListFragment<SimilarProduc
     }
 
     override fun loadData(page: Int) {
-        recommendationViewModel.getSimilarProductRecommendation(page, source, productId)
+        recommendationViewModel.getSimilarProductRecommendation(page, ref, productId)
     }
 
     override fun hasInitialSwipeRefresh(): Boolean {
@@ -341,7 +343,7 @@ open class SimilarProductRecommendationFragment : BaseListFragment<SimilarProduc
 
     override fun onFilterAnnotationClicked(filterChip: RecommendationFilterChipsEntity.RecommendationFilterChip, position: Int) {
         SimilarProductRecommendationTracking.eventUserClickAnnotationChip(filterChip.value)
-        recommendationViewModel.getRecommendationFromFilterChip(filterChip)
+        recommendationViewModel.getRecommendationFromFilterChip(filterChip, ref)
     }
 
     /**
