@@ -22,7 +22,6 @@ import com.tokopedia.play.di.PlayModule
 import com.tokopedia.play.util.observer.PlayVideoUtilObserver
 import com.tokopedia.play.view.contract.PlayNavigation
 import com.tokopedia.play.view.contract.PlayNewChannelInteractor
-import com.tokopedia.play.view.fragment.PlayErrorFragment
 import com.tokopedia.play.view.fragment.PlayFragment
 import com.tokopedia.play.view.type.ScreenOrientation
 import com.tokopedia.play_common.util.PlayVideoPlayerObserver

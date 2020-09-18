@@ -116,14 +116,21 @@ class EditFormAdActivity : BaseActivity(), HasComponent<TopAdsEditComponent>, Sa
         dialog.setPrimaryCTAText(getString(R.string.simpan))
         dialog.setSecondaryCTAText(getString(R.string.topads_edit_keluar))
         dialog.setPrimaryCTAClickListener {
+            dialog.dismiss()
+            setButton(false)
             getDataFromChildFragments()
         }
         dialog.setSecondaryCTAClickListener {
             dialog.dismiss()
+            setButton(true)
             if (!dismiss)
                 super.onBackPressed()
         }
         dialog.show()
+    }
+
+    private fun setButton(shouldEnable:Boolean) {
+        btn_submit.isEnabled = shouldEnable
     }
 
     override fun setButtonState() {

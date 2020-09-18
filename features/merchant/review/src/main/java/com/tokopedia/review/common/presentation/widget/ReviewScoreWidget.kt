@@ -30,26 +30,26 @@ class ReviewScoreWidget : BaseCustomView {
 
     private var currentScore = 0
 
-    fun setEditableScore(score: Int, lockTime: String = "") {
+    fun setEditableScore(score: Int) {
         currentScore = score
         when (score) {
             ReviewConstants.REPUTATION_SCORE_BAD -> {
                 this.reviewEditableBadSmiley.apply {
                     showActiveBad()
                 }
-                setDeadline(lockTime)
+                setDeadline()
             }
             ReviewConstants.REPUTATION_SCORE_MEDIOCRE -> {
                 this.reviewEditableMediocreSmiley.apply {
                     showActiveMediocre()
                 }
-                setDeadline(lockTime)
+                setDeadline()
             }
             ReviewConstants.REPUTATION_SCORE_EXCELLENT -> {
                 this.reviewEditableExcellentSmiley.apply {
                     showActiveExcellent()
                 }
-                setDeadline(lockTime)
+                setDeadline()
             }
             else -> {
                 setEmptyScore()
@@ -147,7 +147,6 @@ class ReviewScoreWidget : BaseCustomView {
         reviewScoreLoadingSmiley.show()
         reviewScoreLoadingText.show()
         reviewScoreDeadlineLabel.hide()
-        reviewScoreDeadline.hide()
         reviewEditableExcellentSmiley.hide()
         reviewEditableMediocreSmiley.hide()
         reviewEditableBadSmiley.hide()
@@ -164,14 +163,8 @@ class ReviewScoreWidget : BaseCustomView {
         this.reviewEditableExcellentSmiley.deactivateExcellent(true)
     }
 
-    private fun setDeadline(deadline: String) {
-        if (deadline.isNotBlank()) {
-            this.reviewScoreDeadline.apply {
-                text = deadline
-                show()
-            }
-            this.reviewScoreDeadlineLabel.show()
-        }
+    private fun setDeadline() {
+        this.reviewScoreDeadlineLabel.show()
     }
 
     private fun setEmptyScore() {

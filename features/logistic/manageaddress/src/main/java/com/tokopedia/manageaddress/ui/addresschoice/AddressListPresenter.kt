@@ -1,12 +1,9 @@
 package com.tokopedia.manageaddress.ui.addresschoice
 
-import com.tokopedia.cachemanager.PersistentCacheManager
-import com.tokopedia.logisticdata.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticdata.domain.model.AddressListModel
 import com.tokopedia.logisticdata.domain.usecase.GetAddressCornerUseCase
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsChangeAddress
 import rx.Subscriber
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 const val EMPTY_STRING: String = ""
@@ -68,15 +65,6 @@ class AddressListPresenter @Inject constructor(
                             mView?.updateList(result.listAddress.toMutableList())
                         }, { e -> mView?.showError(e) }, {}
                 )
-    }
-
-    override fun saveLastCorner(model: RecipientAddressModel) {
-        PersistentCacheManager.instance.put("last_chosen_corner", model, TimeUnit.DAYS.toMillis(7))
-    }
-
-    override fun getLastCorner(): RecipientAddressModel? {
-        return PersistentCacheManager.instance.get(
-                "last_chosen_corner", RecipientAddressModel::class.java, null)
     }
 
     private fun getAddressHandler(query: String): Subscriber<AddressListModel> =
