@@ -21,6 +21,10 @@ interface InitialStateContract {
         fun trackEventClickRecentSearch(label: String, adapterPosition: Int)
 
         fun trackEventClickRecentShop(label: String, userId: String)
+
+        fun renderRecentSearch()
+
+        fun dropKeyBoard()
     }
 
     interface Presenter : CustomerPresenter<View> {
@@ -37,5 +41,7 @@ interface InitialStateContract {
         fun getQueryKey(): String
 
         fun onRecentSearchItemClicked(item: BaseItemInitialStateSearch, adapterPosition: Int)
+
+        fun recentSearchSeeMoreClicked()
     }
 }

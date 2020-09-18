@@ -11,10 +11,7 @@ import com.tokopedia.autocomplete.initialstate.popularsearch.PopularSearchTitleV
 import com.tokopedia.autocomplete.initialstate.popularsearch.PopularSearchTitleViewModel
 import com.tokopedia.autocomplete.initialstate.popularsearch.PopularSearchViewHolder
 import com.tokopedia.autocomplete.initialstate.popularsearch.PopularSearchViewModel
-import com.tokopedia.autocomplete.initialstate.recentsearch.RecentSearchTitleViewHolder
-import com.tokopedia.autocomplete.initialstate.recentsearch.RecentSearchTitleViewModel
-import com.tokopedia.autocomplete.initialstate.recentsearch.RecentSearchViewHolder
-import com.tokopedia.autocomplete.initialstate.recentsearch.RecentSearchViewModel
+import com.tokopedia.autocomplete.initialstate.recentsearch.*
 import com.tokopedia.autocomplete.initialstate.recentview.RecentViewViewModel
 import com.tokopedia.autocomplete.initialstate.recentview.RecentViewTitleViewHolder
 import com.tokopedia.autocomplete.initialstate.recentview.RecentViewViewHolder
@@ -47,6 +44,10 @@ class InitialStateAdapterTypeFactory(
         return RecentViewViewHolder.LAYOUT
     }
 
+    override fun type(viewModelInitialState: RecentSearchSeeMoreViewModel): Int {
+        return RecentSearchSeeMoreViewHolder.LAYOUT
+    }
+
     override fun type(viewModel: DynamicInitialStateSearchViewModel): Int {
         return DynamicInitialStateViewHolder.LAYOUT
     }
@@ -63,6 +64,7 @@ class InitialStateAdapterTypeFactory(
             PopularSearchTitleViewHolder.LAYOUT -> PopularSearchTitleViewHolder(parent, clickListener)
             RecentSearchTitleViewHolder.LAYOUT -> RecentSearchTitleViewHolder(parent, clickListener)
             RecentViewTitleViewHolder.LAYOUT -> RecentViewTitleViewHolder(parent)
+            RecentSearchSeeMoreViewHolder.LAYOUT -> RecentSearchSeeMoreViewHolder(parent, clickListener)
             DynamicInitialStateTitleViewHolder.LAYOUT -> DynamicInitialStateTitleViewHolder(parent, clickListener)
             DynamicInitialStateViewHolder.LAYOUT -> DynamicInitialStateViewHolder(parent, clickListener)
             else -> super.createViewHolder(parent, type)
