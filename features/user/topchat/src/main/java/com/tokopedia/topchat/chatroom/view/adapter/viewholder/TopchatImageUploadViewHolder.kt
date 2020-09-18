@@ -16,12 +16,8 @@ class TopchatImageUploadViewHolder(itemView: View?, listener: ImageUploadListene
     override fun alwaysShowTime() = true
     override fun useWhiteReadStatus() = true
     override fun getImageId() = R.id.image
-    override fun getChatNameId() = R.id.name
-    override fun getLabelId() = R.id.label
-    override fun getDotId() = R.id.dot
     override fun getProgressBarSendImageId() = R.id.progress_bar
     override fun getLeftActionId() = R.id.left_action
-    override fun getReadStatusId() = R.id.chat_status
     override fun getChatBalloonId() = R.id.fl_image_container
 
     private val bgOpposite = ViewUtil.generateBackgroundWithShadow(
