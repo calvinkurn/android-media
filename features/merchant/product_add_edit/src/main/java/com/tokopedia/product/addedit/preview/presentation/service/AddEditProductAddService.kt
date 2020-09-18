@@ -4,12 +4,10 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant
 import com.tokopedia.product.addedit.common.util.AddEditProductNotificationManager
 import com.tokopedia.product.addedit.draft.domain.usecase.DeleteProductDraftUseCase
@@ -86,7 +84,7 @@ open class AddEditProductAddService : AddEditProductBaseService() {
     }
 
     override fun onUploadProductImagesFailed(errorMessage: String) {
-        Log.e("add upload", errorMessage)
+        ProductAddShippingTracking.uploadImageFailed(userSession.shopId, errorMessage)
     }
 
     override fun getNotificationManager(urlImageCount: Int): AddEditProductNotificationManager {

@@ -1,6 +1,7 @@
 package com.tokopedia.product.addedit.tracking
 
 import com.tokopedia.product.addedit.tracking.ProductAddEditTracking.sendEditProductClick
+import com.tokopedia.product.addedit.tracking.ProductAddEditTracking.sendEditProductImpression
 
 object ProductEditShippingTracking {
 
@@ -26,6 +27,14 @@ object ProductEditShippingTracking {
         } else {
             "kilogram"
         })
+    }
+
+    fun oopsConnectionPageScreen(userId: String, serverStatus: String, errorName: String) {
+        sendEditProductImpression(userId, "impression add product error", "server error - $serverStatus - $errorName")
+    }
+
+    fun uploadImageFailed(userId: String, errorName: String) {
+        sendEditProductImpression(userId, "impression add product error", "validation error - (Upload Image) $errorName")
     }
 
     fun clickFinish(shopId: String, isSuccess: Boolean, errorName: String = "", errorMessage: String = "") {

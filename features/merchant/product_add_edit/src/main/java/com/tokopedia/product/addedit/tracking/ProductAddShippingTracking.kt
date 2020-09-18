@@ -5,6 +5,7 @@ import com.tokopedia.iris.IrisAnalytics
 import com.tokopedia.product.addedit.tracking.ProductAddEditTracking.KEY_SHOP_ID
 import com.tokopedia.product.addedit.tracking.ProductAddEditTracking.sendAddProductClick
 import com.tokopedia.product.addedit.tracking.ProductAddEditTracking.sendAddProductClickWithoutScreen
+import com.tokopedia.product.addedit.tracking.ProductAddEditTracking.sendAddProductImpression
 
 object ProductAddShippingTracking {
     const val SCREEN = "/addproductpage - shipping"
@@ -45,6 +46,14 @@ object ProductAddShippingTracking {
         } else {
             sendAddProductClickWithoutScreen(shopId, "click finish error", "$errorMessage - $errorName")
         }
+    }
+
+    fun oopsConnectionPageScreen(userId: String, serverStatus: String, errorName: String) {
+        sendAddProductImpression(userId, "impression add product error", "server error - $serverStatus - $errorName")
+    }
+
+    fun uploadImageFailed(userId: String, errorName: String) {
+        sendAddProductImpression(userId, "impression add product error", "validation error - (Upload Image) $errorName")
     }
 
     fun redirectToShopPage(context: Context, shopId: String) {

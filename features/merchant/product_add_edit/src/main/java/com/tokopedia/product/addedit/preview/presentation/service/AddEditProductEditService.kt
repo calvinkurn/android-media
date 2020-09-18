@@ -4,7 +4,6 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
@@ -82,7 +81,7 @@ class AddEditProductEditService : AddEditProductBaseService() {
     }
 
     override fun onUploadProductImagesFailed(errorMessage: String) {
-        Log.e("edit upload", errorMessage)
+        ProductEditShippingTracking.uploadImageFailed(userSession.shopId, errorMessage)
     }
 
     override fun getNotificationManager(urlImageCount: Int): AddEditProductNotificationManager {
