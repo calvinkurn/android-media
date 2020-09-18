@@ -37,8 +37,11 @@ public interface ApplinkConst {
     String SHOP_HOME = "tokopedia://shop/{shop_id}/home";
     String SHOP_PRODUCT = "tokopedia://shop/{shop_id}/product";
     String SHOP_FEED = "tokopedia://shop/{shop_id}/feed";
+    String SHOP_ETALASE_LIST = "tokopedia://shop/{shop_id}/etalase-list";
+    String MY_SHOP_ETALASE_LIST = "tokopedia://my-shop/etalase/list";
 
     String SHOP_SETTINGS_NOTE = "tokopedia://setting/shop/note";
+    String SHOP_SETTINGS_INFO = "tokopedia://setting/shop/info";
     String PRODUCT_INFO = "tokopedia://product/{product_id}";
     String PRODUCT_IMAGE_REVIEW = "tokopedia://product/{product_id}/imagereview";
     String PRODUCT_ADD = "tokopedia://product/add";
@@ -391,6 +394,7 @@ public interface ApplinkConst {
         String CREATE_VOUCHER = "sellerapp://create-voucher";
         String SELLER_SEARCH = "sellerapp://seller-search";
         String PLAY_BROADCASTER = "sellerapp://play-broadcaster";
+        String CENTRALIZED_PROMO = "sellerapp://centralized-promo";
     }
 
     interface Query {

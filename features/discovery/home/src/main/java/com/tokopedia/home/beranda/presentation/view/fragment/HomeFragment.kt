@@ -59,14 +59,11 @@ import com.tokopedia.home.analytics.HomePageTrackingV2.HomeBanner.getBannerClick
 import com.tokopedia.home.analytics.HomePageTrackingV2.HomeBanner.getBannerImpression
 import com.tokopedia.home.analytics.HomePageTrackingV2.HomeBanner.getOverlayBannerClick
 import com.tokopedia.home.analytics.HomePageTrackingV2.HomeBanner.getOverlayBannerImpression
-import com.tokopedia.home.analytics.HomePageTrackingV2.RecommendationList.getAddToCartOnDynamicListCarousel
-import com.tokopedia.home.analytics.HomePageTrackingV2.RecommendationList.getAddToCartOnDynamicListCarouselHomeComponent
-import com.tokopedia.home.analytics.HomePageTrackingV2.RecommendationList.getCloseClickOnDynamicListCarousel
-import com.tokopedia.home.analytics.HomePageTrackingV2.RecommendationList.getRecommendationListImpression
 import com.tokopedia.home.analytics.HomePageTrackingV2.SprintSale.getSprintSaleImpression
 import com.tokopedia.home.analytics.v2.CategoryWidgetTracking
 import com.tokopedia.home.analytics.v2.LegoBannerTracking
 import com.tokopedia.home.analytics.v2.PopularKeywordTracking
+import com.tokopedia.home.analytics.v2.RecommendationListTracking
 import com.tokopedia.home.beranda.di.BerandaComponent
 import com.tokopedia.home.beranda.di.DaggerBerandaComponent
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
@@ -783,7 +780,7 @@ open class HomeFragment : BaseDaggerFragment(),
                 showToaster(getString(R.string.home_error_connection), TYPE_ERROR)
             } else {
                 val dataMap = data as Map<*, *>
-                sendEETracking(getAddToCartOnDynamicListCarousel(
+                sendEETracking(RecommendationListTracking.getAddToCartOnDynamicListCarousel(
                         (dataMap[HomeViewModel.CHANNEL] as DynamicHomeChannel.Channels?)!!,
                         (dataMap[HomeViewModel.GRID] as DynamicHomeChannel.Grid?)!!,
                         dataMap[HomeViewModel.POSITION] as Int,
@@ -801,7 +798,7 @@ open class HomeFragment : BaseDaggerFragment(),
                 showToaster(getString(R.string.home_error_connection), TYPE_ERROR)
             } else {
                 val dataMap = data as Map<*, *>
-                sendEETracking(getAddToCartOnDynamicListCarouselHomeComponent(
+                sendEETracking(RecommendationListTracking.getAddToCartOnDynamicListCarouselHomeComponent(
                         (dataMap[HomeViewModel.CHANNEL] as ChannelModel),
                         (dataMap[HomeViewModel.GRID] as ChannelGrid),
                         dataMap[HomeViewModel.POSITION] as Int,
@@ -1526,11 +1523,6 @@ open class HomeFragment : BaseDaggerFragment(),
         getHomeViewModel().getDynamicChannelData(dynamicChannelDataModel, position)
     }
 
-    override fun onBuyAgainCloseChannelClick(channel: DynamicHomeChannel.Channels, position: Int) {
-        getHomeViewModel().onCloseBuyAgain(channel.id, position)
-        TrackApp.getInstance().gtm.sendGeneralEvent(getCloseClickOnDynamicListCarousel(channel, getHomeViewModel().getUserId()))
-    }
-
     private fun onActionLinkClicked(actionLink: String, trackingAttribution: String = "") {
         val now = System.currentTimeMillis()
         if (now - mLastClickTime < CLICK_TIME_INTERVAL) {
@@ -2065,7 +2057,7 @@ open class HomeFragment : BaseDaggerFragment(),
             )
             DynamicChannelViewHolder.TYPE_GIF_BANNER -> putEEToIris(
                     HomePageTracking.getEnhanceImpressionPromoGifBannerDC(channel))
-            DynamicChannelViewHolder.TYPE_RECOMMENDATION_LIST -> putEEToIris(getRecommendationListImpression(channel, true, viewModel.get().getUserId()) as HashMap<String, Any>)
+            DynamicChannelViewHolder.TYPE_RECOMMENDATION_LIST -> putEEToIris(RecommendationListTracking.getRecommendationListImpression(channel, true, viewModel.get().getUserId()) as HashMap<String, Any>)
             DynamicChannelViewHolder.TYPE_CATEGORY_WIDGET -> putEEToIris(CategoryWidgetTracking.getCategoryWidgetBannerImpression(
                     channel.grids.toList(),
                     getHomeViewModel().getUserId(),

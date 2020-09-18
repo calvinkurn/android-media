@@ -19,10 +19,8 @@ import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.play.*
 import com.tokopedia.play.di.DaggerPlayComponent
 import com.tokopedia.play.di.PlayModule
-import com.tokopedia.play.util.observer.PlayVideoUtilObserver
 import com.tokopedia.play.view.contract.PlayNavigation
 import com.tokopedia.play.view.contract.PlayNewChannelInteractor
-import com.tokopedia.play.view.fragment.PlayErrorFragment
 import com.tokopedia.play.view.fragment.PlayFragment
 import com.tokopedia.play.view.type.ScreenOrientation
 import com.tokopedia.play_common.util.PlayVideoPlayerObserver
@@ -37,9 +35,6 @@ class PlayActivity : BaseActivity(), PlayNewChannelInteractor, PlayNavigation {
 
     @Inject
     lateinit var playLifecycleObserver: PlayVideoPlayerObserver
-
-    @Inject
-    lateinit var playVideoUtilObserver: PlayVideoUtilObserver
 
     @Inject
     lateinit var fragmentFactory: FragmentFactory
@@ -105,7 +100,6 @@ class PlayActivity : BaseActivity(), PlayNewChannelInteractor, PlayNavigation {
 
     private fun setupPage() {
         lifecycle.addObserver(playLifecycleObserver)
-        lifecycle.addObserver(playVideoUtilObserver)
     }
 
     private fun setupView(channelId: String?) {

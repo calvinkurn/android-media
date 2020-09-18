@@ -167,6 +167,11 @@ internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
 
         freeOngkirViewModel.isActive shouldBe otherRelatedProduct.freeOngkir.isActive
         freeOngkirViewModel.imageUrl shouldBe otherRelatedProduct.freeOngkir.imageUrl
+
+        isOrganicAds shouldBe otherRelatedProduct.ads.id.isNotEmpty()
+        topAdsViewUrl shouldBe otherRelatedProduct.ads.productViewUrl
+        this.topAdsClickUrl shouldBe otherRelatedProduct.ads.productClickUrl
+        topAdsWishlistUrl shouldBe otherRelatedProduct.ads.productWishlistUrl
     }
 
     private fun `Then assert tracking event impression broad match`(visitableList: List<Visitable<*>>) {

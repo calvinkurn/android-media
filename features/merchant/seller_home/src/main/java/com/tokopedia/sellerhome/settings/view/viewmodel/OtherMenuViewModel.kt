@@ -8,6 +8,7 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.sellerhome.common.coroutine.SellerHomeCoroutineDispatcher
 import com.tokopedia.sellerhome.common.viewmodel.NonNullLiveData
 import com.tokopedia.sellerhome.settings.domain.usecase.GetAllShopInfoUseCase
 import com.tokopedia.sellerhome.settings.view.uimodel.base.partialresponse.PartialSettingSuccessInfoType
@@ -22,12 +23,12 @@ import kotlinx.coroutines.*
 import javax.inject.Inject
 import javax.inject.Named
 class OtherMenuViewModel @Inject constructor(
-    @Named("Main") dispatcher: CoroutineDispatcher,
+    private val dispatcher: SellerHomeCoroutineDispatcher,
     private val getAllShopInfoUseCase: GetAllShopInfoUseCase,
     private val getShopFreeShippingInfoUseCase: GetShopFreeShippingInfoUseCase,
     private val userSession: UserSessionInterface,
     private val remoteConfig: FirebaseRemoteConfigImpl
-): BaseViewModel(dispatcher) {
+): BaseViewModel(dispatcher.main()) {
 
     companion object {
         private const val DELAY_TIME = 5000L
@@ -68,7 +69,7 @@ class OtherMenuViewModel @Inject constructor(
         if(freeShippingDisabled || inTransitionPeriod) return
 
         launchCatchError(block = {
-            val isFreeShippingActive = withContext(Dispatchers.IO) {
+            val isFreeShippingActive = withContext(dispatcher.io()) {
                 val userId = userSession.userId.toIntOrZero()
                 val shopId = userSession.shopId.toIntOrZero()
                 val params = GetShopFreeShippingStatusUseCase.createRequestParams(userId, listOf(shopId))
@@ -82,7 +83,7 @@ class OtherMenuViewModel @Inject constructor(
     private fun getAllShopInfoData() {
         launchCatchError(block = {
             _settingShopInfoLiveData.value = Success(
-                    withContext(Dispatchers.IO) {
+                    withContext(dispatcher.io()) {
                         with(getAllShopInfoUseCase.executeOnBackground()) {
                             if (first is PartialSettingSuccessInfoType || second is PartialSettingSuccessInfoType) {
                                 SettingShopInfoUiModel(first, second, userSession)

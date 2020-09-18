@@ -306,7 +306,7 @@ class BuyerAccountFragment : BaseAccountFragment(), FragmentListener {
     override fun onProductRecommendationClicked(product: RecommendationItem, adapterPosition: Int, widgetTitle: String) {
         sendProductClickTracking(product, adapterPosition, widgetTitle)
         activity?.let {
-            if (product.isTopAds) TopAdsUrlHitter(it).hitClickUrl(it::class.qualifiedName, product.clickUrl, product.productId.toString(), product.name, product.imageUrl)
+            if (product.isTopAds) TopAdsUrlHitter(it).hitClickUrl(it::class.qualifiedName, product.clickUrl, product.productId.toString(), product.name, product.imageUrl, COMPONENT_NAME_TOP_ADS)
         }
 
         RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, product.productId.toString()).run {
@@ -318,7 +318,7 @@ class BuyerAccountFragment : BaseAccountFragment(), FragmentListener {
     override fun onProductRecommendationImpression(product: RecommendationItem, adapterPosition: Int) {
         sendProductImpressionTracking(getTrackingQueue(), product, adapterPosition)
         activity?.let {
-            if (product.isTopAds) TopAdsUrlHitter(it).hitImpressionUrl(it::class.qualifiedName, product.trackerImageUrl, product.productId.toString(), product.name, product.imageUrl)
+            if (product.isTopAds) TopAdsUrlHitter(it).hitImpressionUrl(it::class.qualifiedName, product.trackerImageUrl, product.productId.toString(), product.name, product.imageUrl, COMPONENT_NAME_TOP_ADS)
         }
     }
 
@@ -496,6 +496,8 @@ class BuyerAccountFragment : BaseAccountFragment(), FragmentListener {
         private const val className: String = "com.tokopedia.home.account.presentation.fragment.BuyerAccountFragment"
 
         private val DEFAULT_SPAN_COUNT = 2
+
+        private const val COMPONENT_NAME_TOP_ADS = "Account Home Recommendation Top Ads"
 
         fun newInstance(): Fragment {
             val fragment = BuyerAccountFragment()

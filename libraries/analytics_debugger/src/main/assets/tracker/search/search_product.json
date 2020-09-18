@@ -6,7 +6,7 @@
       "event": "clickSearch",
       "eventCategory": "top nav",
       "eventAction": "general search",
-      "eventLabel": "{{keyword: .* - treatment: .* - response: \\d*}}",
+      "eventLabel": "{{keyword: .* - treatment: .* - response: \\d* - .*}}",
       "isResultFound": "{{.*}}",
       "categoryIdMapping": "{{.*}}",
       "categoryNameMapping": "{{.*}}",

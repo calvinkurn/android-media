@@ -57,7 +57,7 @@ open class PageLoadTimePerformanceCallback(
 
     override fun startPreparePagePerformanceMonitoring() {
         if (preparePageDuration == 0L) {
-            beginSystraceSection("PageLoadTime.preparePage$traceName")
+            beginAsyncSystraceSection("PageLoadTime.AsyncPreparePage$traceName",11)
             preparePageDuration = System.currentTimeMillis()
         }
     }
@@ -67,13 +67,13 @@ open class PageLoadTimePerformanceCallback(
             preparePageDuration = System.currentTimeMillis() - preparePageDuration
             performanceMonitoring?.putMetric(tagPrepareDuration, preparePageDuration)
             isPrepareDone = true
-            endSystraceSection()
+            endAsyncSystraceSection("PageLoadTime.AsyncPreparePage$traceName",11)
         }
     }
 
     override fun startNetworkRequestPerformanceMonitoring() {
         if (requestNetworkDuration == 0L) {
-            beginSystraceSection("PageLoadTime.networkRequest$traceName")
+            beginAsyncSystraceSection("PageLoadTime.AsyncNetworkRequest$traceName",22)
             requestNetworkDuration = System.currentTimeMillis()
         }
     }
@@ -83,13 +83,13 @@ open class PageLoadTimePerformanceCallback(
             requestNetworkDuration = System.currentTimeMillis() - requestNetworkDuration
             performanceMonitoring?.putMetric(tagNetworkRequestDuration, requestNetworkDuration)
             isNetworkDone = true
-            endSystraceSection()
+            endAsyncSystraceSection("PageLoadTime.AsyncNetworkRequest$traceName",22)
         }
     }
 
     override fun startRenderPerformanceMonitoring() {
         if (renderDuration == 0L) {
-            beginSystraceSection("PageLoadTime.renderPage$traceName")
+            beginAsyncSystraceSection("PageLoadTime.AsyncRenderPage$traceName",33)
             renderDuration = System.currentTimeMillis()
         }
     }
@@ -99,7 +99,19 @@ open class PageLoadTimePerformanceCallback(
             renderDuration = System.currentTimeMillis() - renderDuration
             performanceMonitoring?.putMetric(tagRenderDuration, renderDuration)
             isRenderDone = true
-            endSystraceSection()
+            endAsyncSystraceSection("PageLoadTime.AsyncRenderPage$traceName",33)
+        }
+    }
+
+    fun beginAsyncSystraceSection(methodName: String, cookie: Int) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && GlobalConfig.DEBUG) {
+            Trace.beginAsyncSection(methodName, cookie)
+        }
+    }
+
+    fun endAsyncSystraceSection(methodName: String, cookie: Int) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && GlobalConfig.DEBUG) {
+            Trace.endAsyncSection(methodName, cookie)
         }
     }
 
