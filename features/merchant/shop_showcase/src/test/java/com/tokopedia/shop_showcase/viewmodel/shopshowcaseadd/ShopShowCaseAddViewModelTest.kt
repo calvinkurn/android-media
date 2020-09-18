@@ -15,6 +15,7 @@ import io.mockk.coVerify
 import io.mockk.mockkObject
 import io.mockk.verify
 import junit.framework.TestCase.assertTrue
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
 import org.mockito.ArgumentMatchers.anyString
@@ -27,6 +28,8 @@ class ShopShowCaseAddViewModelTest : ShopShowCaseAddViewModelTestFixture() {
             mockkObject(CreateShopShowcaseUseCase)
             onCreateShopShowCase_thenReturn()
             shopShowCaseAddViewModel.addShopShowcase(AddShopShowcaseParam())
+
+            shopShowCaseAddViewModel.coroutineContext[Job]?.children?.forEach { it.join() }
 
             verifySuccessCreateShopShowCaseCalled()
 
@@ -46,7 +49,7 @@ class ShopShowCaseAddViewModelTest : ShopShowCaseAddViewModelTestFixture() {
             getProductListFilter.fkeyword = "baju"
             shopShowCaseAddViewModel.getSelectedProductList(filter = getProductListFilter)
 
-            assertTrue(shopShowCaseAddViewModel.loaderState.value == true)
+            shopShowCaseAddViewModel.coroutineContext[Job]?.children?.forEach { it.join() }
 
             verifySuccessGetSelectedProductListUseCaseCalled(getProductListFilter)
 
@@ -63,6 +66,8 @@ class ShopShowCaseAddViewModelTest : ShopShowCaseAddViewModelTestFixture() {
             mockkObject(RemoveShopShowcaseProductUseCase)
             onUpdateShopShowCase_thenReturn()
             shopShowCaseAddViewModel.updateShopShowcase(UpdateShopShowcaseParam(), AppendShowcaseProductParam(), RemoveShowcaseProductParam())
+
+            shopShowCaseAddViewModel.coroutineContext[Job]?.children?.forEach { it.join() }
 
             verifySuccessUpdateShopShowCaseUseCaseCalled()
 
@@ -93,7 +98,7 @@ class ShopShowCaseAddViewModelTest : ShopShowCaseAddViewModelTestFixture() {
     }
 
     private fun verifySuccessGetSelectedProductListUseCaseCalled(getProductListFilter: GetProductListFilter) {
-        verify(timeout = 5000L) { GetProductListUseCase.createRequestParams(anyString(), getProductListFilter) }
+        verify { GetProductListUseCase.createRequestParams(anyString(), getProductListFilter) }
         coVerify { getProductListUseCase.executeOnBackground() }
     }
 

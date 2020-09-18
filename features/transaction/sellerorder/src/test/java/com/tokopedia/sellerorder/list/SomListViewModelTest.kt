@@ -4,22 +4,22 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.sellerorder.SomTestDispatcherProvider
 import com.tokopedia.sellerorder.common.domain.usecase.SomGetUserRoleUseCase
 import com.tokopedia.sellerorder.common.presenter.model.SomGetUserRoleUiModel
+import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.list.data.model.*
-import com.tokopedia.sellerorder.list.domain.list.SomGetFilterListUseCase
-import com.tokopedia.sellerorder.list.domain.list.SomGetOrderListUseCase
-import com.tokopedia.sellerorder.list.domain.list.SomGetOrderStatusListUseCase
-import com.tokopedia.sellerorder.list.domain.list.SomGetTickerListUseCase
+import com.tokopedia.sellerorder.list.domain.list.*
 import com.tokopedia.sellerorder.list.presentation.viewmodel.SomListViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import io.mockk.MockKAnnotations
-import io.mockk.coEvery
+import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
+import java.lang.reflect.Field
 
 /**
  * Created by fwidjaja on 2020-05-07.
@@ -53,11 +53,20 @@ class SomListViewModelTest {
     @RelaxedMockK
     lateinit var somGetUserRoleUseCase: SomGetUserRoleUseCase
 
+    @RelaxedMockK
+    lateinit var topAdsGetShopInfoUseCase: SomTopAdsGetShopInfoUseCase
+
+    private lateinit var topAdsGetShopInfoField: Field
+    private lateinit var getTopAdsGetShopInfoJobField: Field
+
+    private val shopID: Int = 123456
+
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
         somListViewModel = SomListViewModel(dispatcher, somGetTickerListUseCase,
-                somGetOrderStatusListUseCase, somGetFilterListUseCase, somGetOrderListUseCase, somGetUserRoleUseCase)
+                somGetOrderStatusListUseCase, somGetFilterListUseCase, somGetOrderListUseCase,
+                somGetUserRoleUseCase, topAdsGetShopInfoUseCase)
 
         val ticker1 = SomListTicker.Data.OrderTickers.Tickers(123)
         val ticker2 = SomListTicker.Data.OrderTickers.Tickers(456)
@@ -78,6 +87,13 @@ class SomListViewModelTest {
         val order2 = SomListOrder.Data.OrderList.Order("456")
         val order3 = SomListOrder.Data.OrderList.Order("789")
         listOrder = listOf(order1, order2, order3)
+
+        topAdsGetShopInfoField = SomListViewModel::class.java.getDeclaredField("topAdsGetShopInfo").apply {
+            isAccessible = true
+        }
+        getTopAdsGetShopInfoJobField = SomListViewModel::class.java.getDeclaredField("getTopAdsGetShopInfoJob").apply {
+            isAccessible = true
+        }
     }
 
     // ticker_list
@@ -217,47 +233,54 @@ class SomListViewModelTest {
 
     // order_list
     @Test
-    fun getOrderListData_shouldReturnSuccess() {
-        //given
+    fun getOrderListData_shouldReturnSuccessAndWaitForTopAdsGetInfo() = runBlocking {
+        val topAdsGetShopInfoResult = Success(SomTopAdsGetShopInfoResponse.Data.TopAdsGetShopInfo.SomTopAdsShopInfo())
+        coEvery {
+            topAdsGetShopInfoUseCase.execute(shopID)
+        } returns topAdsGetShopInfoResult
+
         coEvery {
             somGetOrderListUseCase.execute(any())
         } returns Success(SomListOrder.Data.OrderList(-1, listOrder))
 
-        //when
-        somListViewModel.loadOrderList(SomListOrderParam())
+        somListViewModel.loadTopAdsShopInfo(shopID)
+        somListViewModel.loadOrderList(SomListOrderParam(), true)
 
-        //then
+        somListViewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
         assert(somListViewModel.orderListResult.value is Success)
         assert((somListViewModel.orderListResult.value as Success<SomListOrder.Data.OrderList>).data.orders[0].orderId == "123")
+        assert(topAdsGetShopInfoField.get(somListViewModel) == topAdsGetShopInfoResult)
     }
 
     @Test
     fun getOrderListData_shouldReturnFail() {
-        //given
         coEvery {
             somGetOrderListUseCase.execute(any())
         } returns Fail(Throwable())
 
-        //when
-        somListViewModel.loadOrderList(SomListOrderParam())
+        somListViewModel.loadOrderList(SomListOrderParam(), true)
 
-        //then
         assert(somListViewModel.orderListResult.value is Fail)
     }
 
     @Test
-    fun getOrderListData_shouldNotReturnEmpty() {
-        //given
+    fun getOrderListData_shouldNotReturnEmptyAndWaitForTopAdsGetInfo() {
+        val topAdsGetShopInfoResult = Success(SomTopAdsGetShopInfoResponse.Data.TopAdsGetShopInfo.SomTopAdsShopInfo())
+        coEvery {
+            topAdsGetShopInfoUseCase.execute(shopID)
+        } returns topAdsGetShopInfoResult
+
         coEvery {
             somGetOrderListUseCase.execute(any())
         } returns Success(SomListOrder.Data.OrderList(-1, listOrder))
 
-        //when
-        somListViewModel.loadOrderList(SomListOrderParam())
+        somListViewModel.loadTopAdsShopInfo(shopID)
+        somListViewModel.loadOrderList(SomListOrderParam(), true)
 
-        //then
         assert(somListViewModel.orderListResult.value is Success)
         assert((somListViewModel.orderListResult.value as Success<SomListOrder.Data.OrderList>).data.orders.isNotEmpty())
+        assert(topAdsGetShopInfoField.get(somListViewModel) == topAdsGetShopInfoResult)
     }
 
     @Test
@@ -286,5 +309,107 @@ class SomListViewModelTest {
 
         //then
         assert(somListViewModel.userRoleResult.value is Fail)
+    }
+
+    @Test
+    fun loadTopAdsShopInfo_shouldReturnSuccess() {
+        coEvery {
+            topAdsGetShopInfoUseCase.execute(shopID)
+        } returns Success(SomTopAdsGetShopInfoResponse.Data.TopAdsGetShopInfo.SomTopAdsShopInfo())
+
+        somListViewModel.loadTopAdsShopInfo(shopID)
+
+        coVerify {
+            topAdsGetShopInfoUseCase.execute(shopID)
+        }
+
+        assert(topAdsGetShopInfoField.get(somListViewModel) != null)
+        assert(topAdsGetShopInfoField.get(somListViewModel) is Success<*>)
+    }
+
+    @Test
+    fun loadTopAdsShopInfo_shouldNeverSendRequestWhenAnotherLoadTopAdsShopInfoRequestIsOnProgress() {
+        val getTopAdsGetShopInfoJob = mockk<Job>()
+        getTopAdsGetShopInfoJobField.set(somListViewModel, getTopAdsGetShopInfoJob)
+
+        coEvery {
+            topAdsGetShopInfoUseCase.execute(shopID)
+        } returns Success(SomTopAdsGetShopInfoResponse.Data.TopAdsGetShopInfo.SomTopAdsShopInfo())
+
+        every {
+            getTopAdsGetShopInfoJob.isCompleted
+        } returns false
+
+        somListViewModel.loadTopAdsShopInfo(shopID)
+
+        coVerify(inverse = true) {
+            topAdsGetShopInfoUseCase.execute(shopID)
+        }
+    }
+
+    @Test
+    fun loadTopAdsShopInfo_shouldReturnFail() {
+        coEvery {
+            topAdsGetShopInfoUseCase.execute(shopID)
+        } returns Fail(Throwable())
+
+        somListViewModel.loadTopAdsShopInfo(shopID)
+
+        coVerify {
+            topAdsGetShopInfoUseCase.execute(shopID)
+        }
+
+        assert(topAdsGetShopInfoField.get(somListViewModel) != null)
+        assert(topAdsGetShopInfoField.get(somListViewModel) is Fail)
+    }
+
+    @Test
+    fun isTopAdsActive_shouldReturnFalseWhenUserHasNoProduct() {
+        topAdsGetShopInfoField.set(
+                somListViewModel,
+                Success(SomTopAdsGetShopInfoResponse.Data.TopAdsGetShopInfo.SomTopAdsShopInfo(SomConsts.TOPADS_NO_PRODUCT)))
+        val result = somListViewModel.isTopAdsActive()
+        assert(!result)
+    }
+
+    @Test
+    fun isTopAdsActive_shouldReturnFalseWhenUserHasNoTopadsProduct() {
+        topAdsGetShopInfoField.set(
+                somListViewModel,
+                Success(SomTopAdsGetShopInfoResponse.Data.TopAdsGetShopInfo.SomTopAdsShopInfo(SomConsts.TOPADS_NO_ADS)))
+        val result = somListViewModel.isTopAdsActive()
+        assert(!result)
+    }
+
+    @Test
+    fun isTopAdsActive_shouldReturnTrueWhenUserUseManualAds() {
+        topAdsGetShopInfoField.set(
+                somListViewModel,
+                Success(SomTopAdsGetShopInfoResponse.Data.TopAdsGetShopInfo.SomTopAdsShopInfo(SomConsts.TOPADS_MANUAL_ADS)))
+        val result = somListViewModel.isTopAdsActive()
+        assert(result)
+    }
+
+    @Test
+    fun isTopAdsActive_shouldReturnTrueWhenUserUseAutoAds() {
+        topAdsGetShopInfoField.set(
+                somListViewModel,
+                Success(SomTopAdsGetShopInfoResponse.Data.TopAdsGetShopInfo.SomTopAdsShopInfo(SomConsts.TOPADS_AUTO_ADS)))
+        val result = somListViewModel.isTopAdsActive()
+        assert(result)
+    }
+
+    @Test
+    fun isTopAdsActive_shouldReturnFalseWhenNoTopAdsGetShopInfoResult() {
+        topAdsGetShopInfoField.set(somListViewModel, null)
+        val result = somListViewModel.isTopAdsActive()
+        assert(!result)
+    }
+
+    @Test
+    fun isTopAdsActive_shouldReturnFalseWhenTopAdsGetShopInfoResultIsFail() {
+        topAdsGetShopInfoField.set(somListViewModel, Fail(Throwable()))
+        val result = somListViewModel.isTopAdsActive()
+        assert(!result)
     }
 }

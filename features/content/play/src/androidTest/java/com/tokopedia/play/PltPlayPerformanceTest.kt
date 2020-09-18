@@ -3,6 +3,7 @@ package com.tokopedia.play
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.analytics.performance.util.PerformanceDataFileUtils
+import com.tokopedia.play.data.PlayMockModelConfig
 import com.tokopedia.play.view.activity.PlayActivity
 import com.tokopedia.test.application.TestRepeatRule
 import com.tokopedia.test.application.util.setupGraphqlMockResponseWithCheck

@@ -1,0 +1,54 @@
+{
+  "chatListMessage": {
+    "list": [
+      {
+        "msgID": 995725418,
+        "messageKey": "user-2684597~shop-5238789",
+        "attributes": {
+          "contact": {
+            "id": 5238789,
+            "role": "shop",
+            "domain": "legowati",
+            "name": "legowati 123 &amp; jojo",
+            "shopStatus": 1,
+            "tag": "Penjual",
+            "thumbnail": "https://imagerouter.tokopedia.com/image/v1/s/5238789/shop_xs_thumbnail/desktop"
+          },
+          "lastReplyMessage": "legowati lagi &amp; ada promo bebas ongkir hingga Rp 40.000 loh! Dengan min transaksi Rp 50.000 melalui semua metode pembayaran, kamu dapat menikmati bebas ongkir sebanyak 5x transaksi dalam sehari. Tunggu apa lagi? Yuk belanja sekarang!",
+          "lastReplyTimeStr": "1589369864487",
+          "readStatus": 2,
+          "unreads": 0,
+          "unreadsreply": 0,
+          "fraudStatus": 0,
+          "pinStatus": 0,
+          "isReplyByTopbot": true
+        }
+      },
+      {
+        "msgID": 881275955,
+        "messageKey": "user-2684597~shop-2288160",
+        "attributes": {
+          "contact": {
+            "id": 2288160,
+            "role": "shop",
+            "domain": "enfa",
+            "name": "Enfa A+ Official Store",
+            "shopStatus": 1,
+            "tag": "Penjual",
+            "thumbnail": "https://imagerouter.tokopedia.com/image/v1/s/2288160/shop_xs_thumbnail/desktop"
+          },
+          "lastReplyMessage": "Smart Celebration Enfa up to 60% + Hadiah Eksklusif, Hanya Hari Ini! Hi Moms, Menjaga Daya Tahan Tubuh si Kecil sangat penting untuk Mengoptimalkan Cerdasnya. Mari kita perkuat daya tahan tubuh si Kecil dengan minum susu Enfagrow A+ setiap hari.",
+          "lastReplyTimeStr": "1589365033329",
+          "readStatus": 1,
+          "unreads": 1,
+          "unreadsreply": 20,
+          "fraudStatus": 0,
+          "pinStatus": 0
+        }
+      }
+    ],
+    "hasNext": false,
+    "pagingNext": true,
+    "showTimeMachine": 0
+  }
+}

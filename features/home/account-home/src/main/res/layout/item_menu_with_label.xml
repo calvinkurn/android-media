@@ -10,6 +10,7 @@
 
     <TextView
         android:id="@+id/text_view_title"
+        android:contentDescription="@string/content_desc_text_view_title"
         style="@style/TextView.Title"
         android:layout_width="0dp"
         android:layout_marginBottom="@dimen/dp_2"

@@ -160,6 +160,15 @@
                     android:pathPattern=".*"
                     android:scheme="https"/>
 
+                <data
+                    android:host="tokopedia.by"
+                    android:pathPattern="/.*"
+                    android:scheme="https" />
+                <data
+                    android:host="tokopedia.by"
+                    android:pathPattern="/.*"
+                    android:scheme="http" />
+
             </intent-filter>
 
         </activity>

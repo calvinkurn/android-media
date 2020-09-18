@@ -203,6 +203,10 @@ public class SearchActivity extends BaseActivity
     private void configureTabLayout() {
         if (container == null) return;
 
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP) return;
+
+        container.loadLayoutDescription(R.xml.tab_layout_scene);
+        container.setTransition(R.id.searchMotionTabStart, R.id.searchMotionTabEnd);
         container.setTransitionListener(getContainerTransitionListener());
     }
 

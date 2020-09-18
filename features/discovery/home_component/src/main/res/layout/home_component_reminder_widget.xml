@@ -64,7 +64,7 @@
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toLeftOf="@id/btn_reminder_recommendation"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/bg_reminder" />
+                app:srcCompat="@drawable/bg_reminder_neutral" />
 
             <ImageView
                 android:id="@+id/ic_reminder_recommendation_product"

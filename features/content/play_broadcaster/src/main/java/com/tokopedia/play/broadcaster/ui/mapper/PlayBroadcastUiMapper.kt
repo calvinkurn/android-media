@@ -179,8 +179,7 @@ object PlayBroadcastUiMapper {
             channelId = channel.basic.channelId,
             title = channel.basic.title,
             description = channel.basic.description,
-            ingestUrl = channel.medias.firstOrNull()?.ingestUrl.orEmpty(),
-//            ingestUrl = LOCAL_RTMP_URL, // TODO remove mock
+            ingestUrl = channel.medias.firstOrNull { it.id == channel.basic.activeMediaID }?.ingestUrl.orEmpty(),
             coverUrl = channel.basic.coverUrl,
             status = PlayChannelStatus.getByValue(channel.basic.status.id)
     )

@@ -48,9 +48,6 @@ import com.tokopedia.purchase_platform.common.feature.helpticket.domain.usecase.
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
-import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
-import com.tokopedia.stickylogin.domain.usecase.StickyLoginUseCase
-import com.tokopedia.stickylogin.internal.StickyLoginConstant
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.usecase.RequestParams
@@ -76,7 +73,6 @@ import timber.log.Timber
 import javax.inject.Inject
 
 open class DynamicProductDetailViewModel @Inject constructor(private val dispatcher: DynamicProductDetailDispatcherProvider,
-                                                             private val stickyLoginUseCase: StickyLoginUseCase,
                                                              private val getPdpLayoutUseCase: GetPdpLayoutUseCase,
                                                              private val getProductInfoP2LoginUseCase: GetProductInfoP2LoginUseCase,
                                                              private val getProductInfoP2OtherUseCase: GetProductInfoP2OtherUseCase,
@@ -172,6 +168,8 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     var buttonActionType: Int = 0
     var buttonActionText: String = ""
     var tradeinDeviceId: String = ""
+    // used only for bringing product id to edit product
+    var parentProductId: String? = null
     var shippingMinimumPrice: Int = getDynamicProductInfoP1?.basic?.getDefaultOngkirInt() ?: 30000
     var talkLastAction: DynamicProductDetailTalkLastAction? = null
     private var forceRefresh: Boolean = false
@@ -207,7 +205,6 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
 
     override fun flush() {
         super.flush()
-        stickyLoginUseCase.cancelJobs()
         getPdpLayoutUseCase.cancelJobs()
         getProductInfoP2LoginUseCase.cancelJobs()
         getProductInfoP2OtherUseCase.cancelJobs()
@@ -304,30 +301,6 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         return listOf()
     }
 
-    fun getStickyLoginContent(onSuccess: (StickyLoginTickerPojo.TickerDetail) -> Unit, onError: ((Throwable) -> Unit)?) {
-        if (!isUserSessionActive) {
-            stickyLoginUseCase.setParams(StickyLoginConstant.Page.PDP)
-            stickyLoginUseCase.execute(
-                    onSuccess = {
-                        if (it.response.tickers.isNotEmpty()) {
-                            for (tickerDetail in it.response.tickers) {
-                                if (tickerDetail.layout == StickyLoginConstant.LAYOUT_FLOATING) {
-                                    onSuccess.invoke(tickerDetail)
-                                    return@execute
-                                }
-                            }
-                            onError?.invoke(Throwable(""))
-                        } else {
-                            onError?.invoke(Throwable(""))
-                        }
-                    },
-                    onError = {
-                        onError?.invoke(it)
-                    }
-            )
-        }
-    }
-
     fun getProductP1(productParams: ProductParams, refreshPage: Boolean = false, isAffiliate: Boolean = false, layoutId: String = "") {
         launchCatchError(block = {
             shopDomain = productParams.shopDomain
@@ -341,6 +314,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                 }
 
                 variantData = if (getDynamicProductInfoP1?.isProductVariant() == false) null else it.variantData
+                parentProductId = it.layoutData.parentProductId
 
                 //Create tradein params
                 assignTradeinParams()
@@ -465,7 +439,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         val domain = shopDomain ?: getShopInfo().shopCore.domain
         val origin = if (getMultiOriginByProductId().isFulfillment) getMultiOriginByProductId().getOrigin() else null
 
-        return getProductInfoP3(productInfo.basic.getWeightUnit(), domain, origin, productInfo.shouldShowCod)
+        return getProductInfoP3(productInfo.basic.getWeightUnit(), domain, origin)
     }
 
     private fun updateShippingValue(shippingPriceValue: Int?) {
@@ -725,21 +699,21 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
 
     private fun getProductInfoP2DataAsync(productId: String, pdpSession: String): Deferred<ProductInfoP2UiData> {
         return async {
-            getProductInfoP2DataUseCase.executeOnBackground(GetProductInfoP2DataUseCase.createParams(productId, generatePdpSessionWithDeviceId(pdpSession)), forceRefresh)
+            getProductInfoP2DataUseCase.executeOnBackground(GetProductInfoP2DataUseCase.createParams(productId, pdpSession, generatePdpSessionWithDeviceId()), forceRefresh)
         }
     }
 
-    private fun generatePdpSessionWithDeviceId(pdpSession: String): String {
+    private fun generatePdpSessionWithDeviceId(): String {
         return if (getDynamicProductInfoP1?.data?.isTradeIn == false) {
-            pdpSession
+            ""
         } else {
-            pdpSession + ProductDetailConstant.DELIMITER_DEVICE_ID + deviceId
+            deviceId
         }
     }
 
-    private suspend fun getProductInfoP3(weight: Float, shopDomain: String?, origin: String?, needRequestCod: Boolean): ProductInfoP3 {
+    private suspend fun getProductInfoP3(weight: Float, shopDomain: String?, origin: String?): ProductInfoP3 {
         return getProductInfoP3UseCase.executeOnBackground(
-                GetProductInfoP3UseCase.createParams(weight, shopDomain, origin, needRequestCod),
+                GetProductInfoP3UseCase.createParams(weight, shopDomain, origin),
                 forceRefresh,
                 isUserSessionActive)
     }

@@ -408,9 +408,7 @@ class ReviewVoucherFragment : BaseDetailFragment() {
                             }
                         }
                     }
-                    with(adapter) {
-                        notifyItemChanged(data.indexOf(buttonUiModel))
-                    }
+                    refreshFooterButton()
                     loadingDialog?.dismiss()
                 }
                 isWaitingForResult = false

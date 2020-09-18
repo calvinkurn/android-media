@@ -11,6 +11,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.base.view.adapter.viewholders.HideViewHolder
 import com.tokopedia.chat_common.data.*
 import com.tokopedia.chat_common.view.adapter.BaseChatTypeFactoryImpl
+import com.tokopedia.chat_common.view.adapter.viewholder.ImageAnnouncementViewHolder
 import com.tokopedia.chat_common.view.adapter.viewholder.ProductAttachmentViewHolder
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandlerListener
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageAnnouncementListener
@@ -40,7 +41,7 @@ import com.tokopedia.topchat.chatroom.view.viewmodel.QuotationUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatVoucherUiModel
 
 open class TopChatTypeFactoryImpl constructor(
-        imageAnnouncementListener: ImageAnnouncementListener,
+        private val imageAnnouncementListener: ImageAnnouncementListener,
         private val chatLinkHandlerListener: ChatLinkHandlerListener,
         private val imageUploadListener: ImageUploadListener,
         private val productAttachmentListener: ProductAttachmentListener,
@@ -135,6 +136,10 @@ open class TopChatTypeFactoryImpl constructor(
         return TopchatLoadingModelViewHolder.LAYOUT
     }
 
+    override fun type(imageAnnouncementViewModel: ImageAnnouncementViewModel): Int {
+        return TopchatImageAnnouncementViewHolder.LAYOUT
+    }
+
     // Check if chat bubble first, if not return default ViewHolder
     override fun createViewHolder(parent: ViewGroup, type: Int, productCarouselListListener: ProductCarouselListAttachmentViewHolder.Listener): AbstractViewHolder<*> {
         val layoutRes = when (type) {
@@ -161,6 +166,7 @@ open class TopChatTypeFactoryImpl constructor(
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
+            TopchatImageAnnouncementViewHolder.LAYOUT -> TopchatImageAnnouncementViewHolder(parent, imageAnnouncementListener)
             BroadcastSpamHandlerViewHolder.LAYOUT -> BroadcastSpamHandlerViewHolder(parent, broadcastHandlingListener)
             TopchatLoadingModelViewHolder.LAYOUT -> TopchatLoadingModelViewHolder(parent)
             TopchatLoadingMoreViewHolder.LAYOUT -> TopchatLoadingMoreViewHolder(parent)

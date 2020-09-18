@@ -540,6 +540,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                                @Nullable String deviceId,
                                                @Nullable String leasingId) {
         if (isReloadData) {
+            getView().setHasRunningApiCall(true);
             getView().showLoading();
         } else {
             getView().showInitialLoading();
@@ -665,7 +666,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                 String deviceId,
                                 String cornerId,
                                 String leasingId) {
-        getView().showLoading();
         removeErrorShopProduct();
         CheckoutRequest checkoutRequest = generateCheckoutRequest(null, hasInsurance,
                 shipmentDonationModel != null && shipmentDonationModel.isChecked() ? 1 : 0, leasingId
@@ -681,6 +681,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             );
         } else {
             getView().hideLoading();
+            getView().setHasRunningApiCall(false);
             getView().showToastError(getView().getActivityContext().getString(R.string.message_error_checkout_empty));
         }
     }
@@ -888,20 +889,22 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
             @Override
             public void onError(Throwable e) {
+                getView().hideLoading();
                 Timber.d(e);
                 String errorMessage = e.getMessage();
                 if (!(e instanceof CartResponseErrorException || e instanceof AkamaiErrorException)) {
                     errorMessage = com.tokopedia.network.utils.ErrorHandler.getErrorMessage(getView().getActivityContext(), e);
                 }
                 analyticsActionListener.sendAnalyticsChoosePaymentMethodFailed(errorMessage);
+                getView().setHasRunningApiCall(false);
                 getView().showToastError(errorMessage);
                 processInitialLoadCheckoutPage(true, isOneClickShipment, isTradeIn, true, false, cornerId, deviceId, leasingId);
             }
 
             @Override
             public void onNext(CheckoutData checkoutData) {
+                getView().setHasRunningApiCall(false);
                 ShipmentPresenter.this.checkoutData = checkoutData;
-                getView().hideLoading();
                 if (!checkoutData.isError()) {
                     getView().triggerSendEnhancedEcommerceCheckoutAnalyticAfterCheckoutSuccess(checkoutData.getTransactionId());
                     if (isPurchaseProtectionPage) {
@@ -912,12 +915,15 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                     }
                     getView().renderCheckoutCartSuccess(checkoutData);
                 } else if (checkoutData.getErrorReporter() != null && checkoutData.getErrorReporter().getEligible()) {
+                    getView().hideLoading();
                     getView().renderCheckoutCartErrorReporter(checkoutData);
                 } else if (checkoutData.getPriceValidationData() != null && checkoutData.getPriceValidationData().isUpdated() &&
                         checkoutData.getPriceValidationData().getMessage() != null) {
+                    getView().hideLoading();
                     getView().renderCheckoutPriceUpdated(checkoutData.getPriceValidationData());
                 } else {
                     analyticsActionListener.sendAnalyticsChoosePaymentMethodFailed(checkoutData.getErrorMessage());
+                    getView().hideLoading();
                     if (checkoutData.getErrorMessage() != null && !checkoutData.getErrorMessage().isEmpty()) {
                         getView().renderCheckoutCartError(checkoutData.getErrorMessage());
                     } else {
@@ -1329,7 +1335,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         RequestParams requestParams = RequestParams.create();
         requestParams.putObject(SaveShipmentStateGqlUseCase.PARAM_CART_DATA_OBJECT, param);
 
-        getView().showLoading();
         compositeSubscription.add(saveShipmentStateGqlUseCase.createObservable(requestParams)
                 .subscribe(new SaveShipmentStateSubscriber()));
     }
@@ -1418,6 +1423,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                     LocationPass locationPass) {
         if (getView() != null) {
             getView().showLoading();
+            getView().setHasRunningApiCall(true);
             RequestParams requestParams = generateEditAddressRequestParams(shipmentCartItemModel, latitude, longitude);
             compositeSubscription.add(
                     editAddressUseCase.createObservable(requestParams)
@@ -1434,6 +1440,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                 public void onError(Throwable e) {
                                     Timber.d(e);
                                     if (getView() != null) {
+                                        getView().setHasRunningApiCall(false);
                                         getView().hideLoading();
                                         getView().showToastError(ErrorHandler.getErrorMessage(getView().getActivityContext(), e));
                                     }
@@ -1442,6 +1449,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                 @Override
                                 public void onNext(String stringResponse) {
                                     if (getView() != null) {
+                                        getView().setHasRunningApiCall(false);
                                         getView().hideLoading();
                                         JSONObject response = null;
                                         String messageError = null;
@@ -1590,7 +1598,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         }
 
         if (notEligiblePromoCodes.size() > 0) {
-            getView().showLoading();
             clearCacheAutoApplyStackUseCase.setParams(ClearCacheAutoApplyStackUseCase.Companion.getPARAM_VALUE_MARKETPLACE(), notEligiblePromoCodes);
             compositeSubscription.add(
                     clearCacheAutoApplyStackUseCase.createObservable(RequestParams.create())
@@ -1604,6 +1611,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     public void cancelAutoApplyPromoStackAfterClash(ArrayList<String> promoCodesToBeCleared) {
         setCouponStateChanged(true);
         getView().showLoading();
+        getView().setHasRunningApiCall(true);
         clearCacheAutoApplyStackUseCase.setParams(ClearCacheAutoApplyStackUseCase.Companion.getPARAM_VALUE_MARKETPLACE(), promoCodesToBeCleared);
         compositeSubscription.add(
                 clearCacheAutoApplyStackUseCase.createObservable(RequestParams.create()).subscribe(
@@ -1618,6 +1626,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                       boolean isTradeInDropOff,
                                       boolean isHandleFallback) {
         getView().showLoading();
+        getView().setHasRunningApiCall(true);
         List<DataChangeAddressRequest> dataChangeAddressRequests = new ArrayList<>();
         if (shipmentCartItemModelList != null) {
             for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
@@ -1664,6 +1673,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                             public void onError(Throwable e) {
                                 if (getView() != null) {
                                     getView().hideLoading();
+                                    getView().setHasRunningApiCall(false);
                                     Timber.d(e);
                                     getView().showToastError(
                                             ErrorHandler.getErrorMessage(getView().getActivityContext(), e)
@@ -1678,6 +1688,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                             public void onNext(SetShippingAddressData setShippingAddressData) {
                                 if (getView() != null) {
                                     getView().hideLoading();
+                                    getView().setHasRunningApiCall(false);
                                     if (setShippingAddressData.isSuccess()) {
                                         getView().showToastNormal(getView().getActivityContext().getString(R.string.label_change_address_success));
                                         getView().renderChangeAddressSuccess();
@@ -1843,7 +1854,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         CheckoutRequest checkoutRequest = generateCheckoutRequest(null, hasInsurance,
                 shipmentDonationModel != null && shipmentDonationModel.isChecked() ? 1 : 0, leasingId
         );
-        getView().showLoading();
         codCheckoutUseCase.clearRequest();
         codCheckoutUseCase.addRequest(codCheckoutUseCase.getRequest(checkoutRequest, isOneClickShipment));
         codCheckoutUseCase.execute(new Subscriber<GraphqlResponse>() {
@@ -1854,6 +1864,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
             @Override
             public void onError(Throwable e) {
+                getView().setHasRunningApiCall(false);
                 Timber.d(e);
                 mTrackerCod.eventClickBayarDiTempatShipmentNotSuccessIncomplete();
                 processInitialLoadCheckoutPage(true, isOneClickShipment, isTradeIn, true, false, null, deviceId, leasingId);
@@ -1861,9 +1872,10 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
             @Override
             public void onNext(GraphqlResponse graphqlResponse) {
-                getView().hideLoading();
+                getView().setHasRunningApiCall(false);
                 CodResponse response = graphqlResponse.getData(CodResponse.class);
                 if (getView() == null || !response.getValidateCheckoutCod().getHeader().getErrorCode().equals("200")) {
+                    getView().hideLoading();
                     mTrackerCod.eventClickBayarDiTempatShipmentNotSuccessIncomplete();
                     processInitialLoadCheckoutPage(true, isOneClickShipment, isTradeIn, true, false, null, deviceId, leasingId);
                     getView().showToastError("");
@@ -1877,6 +1889,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                         getView().navigateToCodConfirmationPage(data, checkoutRequest);
                     } else {
                         // show bottomsheet error indicating cod ineligibility
+                        getView().hideLoading();
                         mTrackerCod.eventClickBayarDiTempatShipmentNotSuccessIneligible();
                         getView().showBottomSheetError(data.getErrorMessage());
                     }
@@ -1957,6 +1970,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     @Override
     public void processSubmitHelpTicket(CheckoutData checkoutData) {
         getView().showLoading();
+        getView().setHasRunningApiCall(true);
         RequestParams requestParams = RequestParams.create();
         SubmitHelpTicketRequest submitHelpTicketRequest = new SubmitHelpTicketRequest();
         submitHelpTicketRequest.setApiJsonResponse(checkoutData.getJsonResponse());
@@ -1976,12 +1990,14 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                     public void onError(Throwable e) {
                         Timber.d(e);
                         getView().hideLoading();
+                        getView().setHasRunningApiCall(false);
                         getView().showToastError(ErrorHandler.getErrorMessage(getView().getActivityContext(), e));
                     }
 
                     @Override
                     public void onNext(SubmitTicketResult submitTicketResult) {
                         getView().hideLoading();
+                        getView().setHasRunningApiCall(false);
                         if (submitTicketResult.getStatus()) {
                             getView().renderSubmitHelpTicketSuccess(submitTicketResult);
                         } else {

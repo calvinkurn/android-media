@@ -1,5 +1,7 @@
 package com.tokopedia.troubleshooter.notification.ui.activity
 
+import android.graphics.Color
+import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.fragment.app.Fragment
@@ -13,6 +15,11 @@ class TroubleshootActivity : BaseSimpleActivity() {
 
     override fun getNewFragment(): Fragment? {
         return TroubleshootFragment()
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        window.decorView.setBackgroundColor(Color.WHITE)
+        super.onCreate(savedInstanceState)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

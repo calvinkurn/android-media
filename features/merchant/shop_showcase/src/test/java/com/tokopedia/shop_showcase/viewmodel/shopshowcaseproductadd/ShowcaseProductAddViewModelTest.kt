@@ -10,6 +10,7 @@ import io.mockk.coVerify
 import io.mockk.mockkObject
 import io.mockk.verify
 import junit.framework.TestCase.assertTrue
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
 import org.mockito.ArgumentMatchers
@@ -26,7 +27,7 @@ class ShowcaseProductAddViewModelTest : ShowcaseProductAddViewModelTestFixture()
             getProductListFilter.fkeyword = "baju"
             showcaseProductAddViewModel.getProductList(filter = getProductListFilter)
 
-            assertTrue(showcaseProductAddViewModel.fetchingState.value == true)
+            showcaseProductAddViewModel.coroutineContext[Job]?.children?.forEach { it.join() }
 
             verifySuccessGetSelectedProductListUseCaseCalled(getProductListFilter)
 
@@ -45,7 +46,7 @@ class ShowcaseProductAddViewModelTest : ShowcaseProductAddViewModelTestFixture()
             getProductListFilter.fkeyword = "baju"
             showcaseProductAddViewModel.getProductList(filter = getProductListFilter, isLoadMore = true)
 
-            assertTrue(showcaseProductAddViewModel.loadingState.value == true)
+            showcaseProductAddViewModel.coroutineContext[Job]?.children?.forEach { it.join() }
 
             verifySuccessGetSelectedProductListUseCaseCalled(getProductListFilter)
 
@@ -63,7 +64,7 @@ class ShowcaseProductAddViewModelTest : ShowcaseProductAddViewModelTestFixture()
 
 
     private fun verifySuccessGetSelectedProductListUseCaseCalled(getProductListFilter: GetProductListFilter) {
-        verify(timeout = 5000L) { GetProductListUseCase.createRequestParams(ArgumentMatchers.anyString(), getProductListFilter) }
+        verify { GetProductListUseCase.createRequestParams(ArgumentMatchers.anyString(), getProductListFilter) }
         coVerify { getProductListUseCase.executeOnBackground() }
     }
 }

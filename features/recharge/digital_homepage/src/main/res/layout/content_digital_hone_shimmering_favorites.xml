@@ -1,82 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:padding="@dimen/dp_16"
-    android:orientation="vertical">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical"
+    android:padding="@dimen/spacing_lvl4">
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:layout_width="150dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/dp_16"
-        app:corners="@integer/travel_subhomepage_shimmering_corner" />
+        android:layout_height="@dimen/layout_lvl1"
+        android:layout_marginBottom="@dimen/spacing_lvl5"
+        app:corners="@integer/section_shimmering_corner" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
+        android:paddingBottom="@dimen/spacing_lvl3"
         android:weightSum="5">
 
-        <LinearLayout
-            android:layout_width="0dp"
+        <include
+            layout="@layout/content_digital_hone_shimmering_category_item"
+            android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center_horizontal">
+            android:layout_weight="1" />
 
-            <com.elyeproj.loaderviewlibrary.LoaderImageView
-                android:layout_width="@dimen/dp_40"
-                android:layout_height="@dimen/dp_40"
-                app:corners="@integer/travel_subhomepage_shimmering_corner" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="0dp"
+        <include
+            layout="@layout/content_digital_hone_shimmering_category_item"
+            android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center_horizontal">
+            android:layout_weight="1" />
 
-            <com.elyeproj.loaderviewlibrary.LoaderImageView
-                android:layout_width="@dimen/dp_40"
-                android:layout_height="@dimen/dp_40"
-                app:corners="@integer/travel_subhomepage_shimmering_corner" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="0dp"
+        <include
+            layout="@layout/content_digital_hone_shimmering_category_item"
+            android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center_horizontal">
+            android:layout_weight="1" />
 
-            <com.elyeproj.loaderviewlibrary.LoaderImageView
-                android:layout_width="@dimen/dp_40"
-                android:layout_height="@dimen/dp_40"
-                app:corners="@integer/travel_subhomepage_shimmering_corner" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="0dp"
+        <include
+            layout="@layout/content_digital_hone_shimmering_category_item"
+            android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center_horizontal">
+            android:layout_weight="1" />
 
-            <com.elyeproj.loaderviewlibrary.LoaderImageView
-                android:layout_width="@dimen/dp_40"
-                android:layout_height="@dimen/dp_40"
-                app:corners="@integer/travel_subhomepage_shimmering_corner" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="0dp"
+        <include
+            layout="@layout/content_digital_hone_shimmering_category_item"
+            android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center_horizontal">
-
-            <com.elyeproj.loaderviewlibrary.LoaderImageView
-                android:layout_width="@dimen/dp_40"
-                android:layout_height="@dimen/dp_40"
-                app:corners="@integer/travel_subhomepage_shimmering_corner" />
-        </LinearLayout>
+            android:layout_weight="1" />
     </LinearLayout>
 </LinearLayout>
