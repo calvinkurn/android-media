@@ -2,6 +2,7 @@ package com.tokopedia.utils.image
 
 import android.content.Context
 import com.bumptech.glide.load.model.GlideUrl
+import com.bumptech.glide.load.model.LazyHeaders
 import com.tokopedia.utils.network.NetworkManager
 
 object AdaptiveImage {
@@ -20,9 +21,10 @@ object AdaptiveImage {
             else -> networkState
         }
 
-        return GlideUrl(url) {
-            mapOf(Pair("ECT", connectionType))
-        }
+        return GlideUrl(url, LazyHeaders.Builder()
+                .addHeader("ECT", connectionType)
+                .build()
+        )
     }
 
 }
