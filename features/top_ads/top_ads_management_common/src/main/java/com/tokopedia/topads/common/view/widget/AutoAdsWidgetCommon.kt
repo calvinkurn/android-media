@@ -1,8 +1,7 @@
-package com.tokopedia.topads.auto.view.widget
+package com.tokopedia.topads.common.view.widget
 
 import android.app.Activity
 import android.content.Context
-import android.content.Intent
 import android.os.Build
 import android.text.Spannable
 import android.text.SpannableString
@@ -20,33 +19,31 @@ import androidx.appcompat.content.res.AppCompatResources
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds.TOPADS_BUY_CREDIT
-import com.tokopedia.topads.auto.R
-import com.tokopedia.topads.common.data.model.AutoAdsParam
-import com.tokopedia.topads.auto.di.AutoAdsComponent
-import com.tokopedia.topads.auto.di.DaggerAutoAdsComponent
-import com.tokopedia.topads.auto.di.module.AutoAdsQueryModule
-import com.tokopedia.topads.auto.internal.NonDeliveryReason
-import com.tokopedia.topads.auto.view.activity.EditBudgetAutoAdsActivity
-import com.tokopedia.topads.auto.view.factory.AutoAdsWidgetViewModelFactory
-import com.tokopedia.topads.auto.view.fragment.AutoAdsBaseBudgetFragment
-import com.tokopedia.topads.auto.view.sheet.ManualAdsConfirmationSheet
-import com.tokopedia.topads.auto.view.viewmodel.AutoAdsWidgetViewModel
+import com.tokopedia.topads.common.R
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.data.internal.AutoAdsStatus
+import com.tokopedia.topads.common.data.internal.NonDeliveryReason
+import com.tokopedia.topads.common.data.model.AutoAdsParam
+import com.tokopedia.topads.common.di.DaggerTopAdsCommonComponent
+import com.tokopedia.topads.common.di.TopAdsCommonComponent
+import com.tokopedia.topads.common.di.module.TopAdsCommonModule
+import com.tokopedia.topads.common.view.AutoAdsWidgetViewModelCommon
+import com.tokopedia.topads.common.view.sheet.ManualAdsConfirmationSheet
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.topads_auto_edit_status_active_widget.view.*
-
+import kotlinx.android.synthetic.main.topads_common_auto_edit_status_active_widget.view.*
 import javax.inject.Inject
 
 /**
- * Created by Pika on 16/5/20.
+ * Created by Pika on 17/9/20.
  */
 
 private const val CLICK_TAMBHA_STOK = "click - tambah stok"
@@ -57,37 +54,45 @@ private const val CLICK_SETTING_ICON = "click - settings icon"
 private const val ENTRY_FROM_DETAIL_SHEET = 2
 private const val ENTRY_FROM_EDIT_PAGE = 1
 
-class AutoAdsWidget(context: Context, attrs: AttributeSet?) : CardUnify(context, attrs) {
+class AutoAdsWidgetCommon(context: Context, attrs: AttributeSet?) : CardUnify(context, attrs) {
 
     @Inject
     lateinit var userSession: UserSessionInterface
-
     @Inject
-    lateinit var factory: AutoAdsWidgetViewModelFactory
+    lateinit var viewModelFactory: ViewModelProvider.Factory
     private var baseLayout: FrameLayout? = null
     private var entryPoint: Int = 0
     private var currentBudget = 0
-    val requestType = "auto_ads"
-    val source = "update_auto_ads"
-    private val TOPUP_LINK = " TopUp Sekarang"
-    private val MANAGE_PRODUCT = " Tambah Stok"
-    private val MERCHANT_SETTING = " Cek Status"
-    private val EDIT_ADS = " Tambah Anggaran"
-    private val MANAGE_PRODUCT_LINK = "tokopedia://seller/product/manage"
-    private val MERCHANT_SETTING_LINK = "tokopedia-android-internal://marketplace/shop-settings-info"
     private val outOfDailyBudget = 0
     private val outOfCredit = 1
     private val merchantClosed = 2
     private val outOfStock = 3
     private val AUTO_ADS_DISABLED = 111
 
+    private val viewModelProvider by lazy {
+        ViewModelProviders.of(context as BaseActivity, viewModelFactory)
+    }
     private val widgetViewModel by lazy {
-        ViewModelProviders.of(context as BaseActivity, factory).get(AutoAdsWidgetViewModel::class.java)
+        viewModelProvider.get(AutoAdsWidgetViewModelCommon::class.java)
     }
 
     init {
         initView(context)
         renderUI()
+    }
+    companion object{
+        private const val TOGGLE_OFF = "toggle_off"
+        private const val CHANNEL = "topchat"
+        private const val SOURCE = "sellerapp_autoads_creation"
+        private const val requestType = "auto_ads"
+        private const val source = "update_auto_ads"
+        private const val TOPUP_LINK = " TopUp Sekarang"
+        private const val MANAGE_PRODUCT = " Tambah Stok"
+        private const val MERCHANT_SETTING = " Cek Status"
+        private const val EDIT_ADS = " Tambah Anggaran"
+        private const val MANAGE_PRODUCT_LINK = "tokopedia://seller/product/manage"
+        private const val MERCHANT_SETTING_LINK = "tokopedia-android-internal://marketplace/shop-settings-info"
+
     }
 
     private fun renderUI() {
@@ -128,7 +133,7 @@ class AutoAdsWidget(context: Context, attrs: AttributeSet?) : CardUnify(context,
 
     private fun setShopInactiveView() {
         val view = LayoutInflater.from(context).inflate(
-                R.layout.topads_auto_edit_status_merchantclosed_widget,
+                R.layout.topads_common_auto_edit_status_merchantclosed_widget,
                 this,
                 false
         )
@@ -146,7 +151,7 @@ class AutoAdsWidget(context: Context, attrs: AttributeSet?) : CardUnify(context,
 
     private fun setOutOfBudgetView() {
         val view = LayoutInflater.from(context).inflate(
-                R.layout.topads_auto_edit_status_outofdaily_budget,
+                R.layout.topads_common_auto_edit_status_outofdaily_budget,
                 this,
                 false
         )
@@ -155,9 +160,9 @@ class AutoAdsWidget(context: Context, attrs: AttributeSet?) : CardUnify(context,
         getDrwableforNotDeliverd(view)
         val desc = view.findViewById<TextView>(R.id.status_desc)
         if (entryPoint == 1) {
-            desc.text = resources.getString(R.string.autoads_outofbudget_desc_edit)
+            desc.text = resources.getString(R.string.topads_common_autoads_outofbudget_desc_edit)
         } else {
-            desc.text = resources.getString(R.string.autoads_outofbudget_desc)
+            desc.text = resources.getString(R.string.topads_common_autoads_outofbudget_desc)
             setSpannable(EDIT_ADS, view, outOfDailyBudget)
         }
         setSwitchAction(view)
@@ -165,7 +170,7 @@ class AutoAdsWidget(context: Context, attrs: AttributeSet?) : CardUnify(context,
 
     private fun setOutOfStockView() {
         val view = LayoutInflater.from(context).inflate(
-                R.layout.topads_auto_edit_status_outofstock_widget,
+                R.layout.topads_common_auto_edit_status_outofstock_widget,
                 this,
                 false
         )
@@ -246,7 +251,7 @@ class AutoAdsWidget(context: Context, attrs: AttributeSet?) : CardUnify(context,
 
     private fun setNoBalanceView() {
         val view = LayoutInflater.from(context).inflate(
-                R.layout.topads_auto_edit_status_outofcredit_widget,
+                R.layout.topads_common_auto_edit_status_outofcredit_widget,
                 this,
                 false
         )
@@ -266,24 +271,24 @@ class AutoAdsWidget(context: Context, attrs: AttributeSet?) : CardUnify(context,
 
     private fun setInProgress() {
         val view = LayoutInflater.from(context).inflate(
-                R.layout.topads_auto_edit_status_progress_widget,
+                R.layout.topads_common_auto_edit_status_progress_widget,
                 this,
                 false
         )
         val imgBg = view.findViewById<ConstraintLayout>(R.id.auto_ad_status_image)
-        imgBg.background = AppCompatResources.getDrawable(context, R.drawable.topads_blue_bg)
+        imgBg.background = AppCompatResources.getDrawable(context, R.drawable.topads_common_blue_bg)
         baseLayout?.removeAllViews()
         baseLayout?.addView(view)
     }
 
     private fun setInProgressInactive() {
         val view = LayoutInflater.from(context).inflate(
-                R.layout.topads_auto_edit_status_progress_widget,
+                R.layout.topads_common_auto_edit_status_progress_widget,
                 this,
                 false
         )
         val imgBg = view.findViewById<ConstraintLayout>(R.id.auto_ad_status_image)
-        imgBg.background = AppCompatResources.getDrawable(context, R.drawable.topads_blue_bg)
+        imgBg.background = AppCompatResources.getDrawable(context, R.drawable.topads_common_blue_bg)
         view.findViewById<TextView>(R.id.status_desc).
         text = context.getString(R.string.autoads_inprogress_deactivate_desc)
         baseLayout?.removeAllViews()
@@ -292,12 +297,12 @@ class AutoAdsWidget(context: Context, attrs: AttributeSet?) : CardUnify(context,
 
     private fun setActive(dailyUsage: Int) {
         val view = LayoutInflater.from(context).inflate(
-                R.layout.topads_auto_edit_status_active_widget,
+                R.layout.topads_common_auto_edit_status_active_widget,
                 this,
                 false
         )
         val imgBg = view.findViewById<ConstraintLayout>(R.id.auto_ad_status_image)
-        val drawable = AppCompatResources.getDrawable(context, R.drawable.topads_green_bg)
+        val drawable = AppCompatResources.getDrawable(context, R.drawable.topads_common_green_bg)
         baseLayout?.removeAllViews()
         baseLayout?.addView(view)
         view.let { it ->
@@ -336,17 +341,17 @@ class AutoAdsWidget(context: Context, attrs: AttributeSet?) : CardUnify(context,
     }
 
     private fun startEditActivity() {
-        val intent = Intent(context, EditBudgetAutoAdsActivity::class.java)
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_EDIT_AUTOADS)
         (context as BaseActivity).startActivityForResult(intent, AUTO_ADS_DISABLED)
     }
 
     private fun switchToManual() {
         widgetViewModel.postAutoAds(AutoAdsParam(AutoAdsParam.Input(
-                AutoAdsBaseBudgetFragment.TOGGLE_OFF,
-                AutoAdsBaseBudgetFragment.CHANNEL,
+                TOGGLE_OFF,
+                CHANNEL,
                 currentBudget,
                 userSession.shopId.toInt(),
-                AutoAdsBaseBudgetFragment.SOURCE))
+                SOURCE))
         )
     }
 
@@ -358,13 +363,13 @@ class AutoAdsWidget(context: Context, attrs: AttributeSet?) : CardUnify(context,
     private fun initView(context: Context) {
         try {
             getComponent(context).inject(this)
-            View.inflate(context, R.layout.topads_autoads_edit_base_widget, this)
+            View.inflate(context, R.layout.topads_common_autoads_edit_base_widget, this)
             baseLayout = findViewById(R.id.base_layout)
         } catch (e: Exception) {
             e.printStackTrace()
         }
     }
 
-    private fun getComponent(context: Context): AutoAdsComponent = DaggerAutoAdsComponent.builder()
-            .baseAppComponent((context.applicationContext as BaseMainApplication).baseAppComponent).autoAdsQueryModule(AutoAdsQueryModule(context)).build()
+    private fun getComponent(context: Context): TopAdsCommonComponent = DaggerTopAdsCommonComponent.builder()
+            .baseAppComponent((context.applicationContext as BaseMainApplication).baseAppComponent).topAdsCommonModule(TopAdsCommonModule(context)).build()
 }

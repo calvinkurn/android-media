@@ -60,8 +60,16 @@
     <string name="topads_common_product">Produck (%d)</string>
     <string name="topads_common_kata_kunci_neg">Kata Kunci Negatif (%d)</string>
     <string name="topads_dash_group_item_progress_status"> dari Rp %d</string>
-
-
+    <string name="topads_common_autoads_outofbudget_desc_edit">Anggaran Harian Habis. Naikan anggaran untuk mulai tampil lagi.</string>
+    <string name="topads_common_autoads_outofbudget_desc">Iklan tidak tampil karena anggaran harian habis.</string>
+    <string name="autoads_inprogress_desc">Tunggu ya, proses pembuatan iklanmu membutuhkan waktu.</string>
+    <string name="autoads_inprogress_deactivate_desc">Tunggu ya, Iklan Otomatis kamu akan dinonaktifkan sesaat lagi.</string>
+    <string name="autoads_outofstock_desc">Iklan tidak tampil karena stok barang habis.</string>
+    <string name="autoads_outofcredit_desc">Iklan tidak tampil karena kredit kurang.</string>
+    <string name="autoads_merchant_closed_desc">Iklan tidak tampil karena toko sedang tutup.</string>
+    <string name="autoads_outofcredit_desc_edit">Iklan tidak tampil kredit tidak mencukupi.</string>
+    <string name="autoads_outofbudget_desc_edit">Anggaran Harian Habis. Naikan anggaran untuk mulai tampil lagi.</string>
+    <string name="autoads_outofbudget_desc">Iklan tidak tampil karena anggaran harian habis.</string>
     <!--keyword -->
     <string name="topads_common_keyword_info_sheet_title">Info tips kata kunci</string>
     <string name="topads_common_keyword_info_sheet_desc_1">Pilih kata kunci yang sesuai dengan produkmu. Kata kunci memungkinkan iklanmu tampil sesuai dengan kata yang dicari oleh calon pembeli.</string>
@@ -108,5 +116,15 @@
     <string name="topads_common_search_hint_activity">Cari kata kunci di sini</string>
     <string name="topads_common_new_manual_key">Kata kunci &lt;b>%s&lt;/b> tidak tersedia. </string>
     <string name="topads_common_tambah_button">Tambahkan</string>
+    <string name="confirmation_switch_manual_description">Dengan Iklan Otomatis, pasti lebih mudah dan cepat untuk promosikan produkmu di halaman teratas.</string>
+    <string name="confirmation_switch_manual">Yakin beralih dari Iklan Otomatis?</string>
+    <string name="gunakan_iklan_manual">Mulai Iklan Manual</string>
+    <string name="cancel_btn">Batalkan</string>
+    <string name="iklan_otomatis">Iklan Otomatis</string>
+    <string name="ads_inprogress">\u25CF Dalam Proses</string>
+    <string name="ads_not_delivered">\u25CF Tidak tampil</string>
+    <string name="ads_active">\u25CF Aktif</string>
+    <string name="anggaran_harian">Anggaran harian</string>
+
 
 </resources>

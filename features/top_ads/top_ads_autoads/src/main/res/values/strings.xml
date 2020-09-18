@@ -9,11 +9,9 @@
     <string name="banyak_pengunjung">Banyak Pengunjung</string>
     <string name="jangkau_lebih_banyak_calon_pembeli_seluruh_indonesia_untuk_tokomu_dengan_iklan_otomatis">Jangkau lebih banyak calon pembeli seluruh Indonesia untuk tokomu dengan iklan otomatis</string>
     <string name="beriklan_dengan_topads">Beriklan dengan TopAds</string>
-    <string name="iklan_otomatis">Iklan Otomatis</string>
     <string name="sistem_cerdas_iklan_otomatis_akan_npromosikan_produkmu_lebih_efektif">Sistem cerdas Iklan Otomatis akan promosikan produkmu lebih efektif.</string>
     <string name="potensi_iklan_tayang">Potensi iklan tayang</string>
     <string name="kali_per_hari">kali per hari</string>
-    <string name="anggaran_harian">Anggaran harian</string>
     <string name="mulai_iklan_otomatis">Mulai Iklan Otomatis</string>
     <string name="buat_iklan_manual">Buat Iklan Manual</string>
     <string name="tambah_produk_ads">Tambah Produk</string>
@@ -39,10 +37,7 @@
     <string name="got_it">Got it!</string>
     <string name="nonatifkan_iklan_otomatis">Nonaktifkan Iklan Otomatis</string>
     <string name="gunakan_iklan_otomatis">Gunakan Iklan Otomatis</string>
-    <string name="ads_active">\u25CF Aktif</string>
     <string name="ads_deactive">\u25CF Tidak Aktif</string>
-    <string name="ads_inprogress">\u25CF Dalam Proses</string>
-    <string name="ads_not_delivered">\u25CF Tidak tampil</string>
     <string name="saatnya_beriklan_mudah_dan_efektif">Saatnya beriklan mudah dan efektif</string>
     <string name="akan_aktif_dalam_beberapa_menit">Akan aktif dalam beberapa menit…</string>
     <string name="ya_saya_mau">Ya, Saya Mau!</string>
@@ -71,11 +66,6 @@
     <string name="budget_range">Anggaran Harian</string>
     <string name="auto_ads_creation">Buat Iklan Otomatis</string>
     <string name="info_text">Sistem TopAds melindungi iklanmu dari klik yang tidak valid. Info Selengkapnya</string>
-    <string name="confirmation_switch_manual_description">Dengan Iklan Otomatis, pasti lebih mudah dan cepat untuk promosikan produkmu di halaman teratas.</string>
-    <string name="confirmation_switch_manual">Yakin beralih dari Iklan Otomatis?</string>
-    <string name="gunakan_iklan_manual">Mulai Iklan Manual</string>
-    <string name="cancel_btn">Batalkan</string>
-
 
     <!-- Auto ads status widget-->
     <string name="autoads_inprogress_desc">Tunggu ya, proses pembuatan iklanmu membutuhkan waktu.</string>
