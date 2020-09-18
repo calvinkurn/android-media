@@ -62,12 +62,11 @@ class PlayBannerCardViewHolder(
     }
 
     override fun onItemClick(dataModel: PlayBannerCarouselItemDataModel, position: Int) {
-        val autoPlay = if(playCarouselCardDataModel?.playBannerCarouselDataModel?.isAutoPlay == true) "success" else "false"
         listener.sendEETracking(
                 PlayWidgetCarouselTracking.getClickBanner(
                         channelId = dataModel.channelId,
                         channelName = dataModel.channelTitle,
-                        autoPlay = autoPlay,
+                        autoPlay = playCarouselCardDataModel?.playBannerCarouselDataModel?.isAutoPlay.toString(),
                         shopId = dataModel.partnerId,
                         widgetPosition = adapterPosition.toString(),
                         creativeName = dataModel.coverUrl,
@@ -81,11 +80,10 @@ class PlayBannerCardViewHolder(
     }
 
     override fun onItemImpress(dataModel: PlayBannerCarouselItemDataModel, position: Int) {
-        val autoPlay = if(playCarouselCardDataModel?.playBannerCarouselDataModel?.isAutoPlay == true) "success" else "false"
         listener.putEEToTrackingQueue(PlayWidgetCarouselTracking.getImpressionBanner(
                 channelId = dataModel.channelId,
                 channelName = dataModel.channelTitle,
-                autoPlay = autoPlay,
+                autoPlay = playCarouselCardDataModel?.playBannerCarouselDataModel?.isAutoPlay.toString(),
                 shopId = dataModel.partnerId,
                 widgetPosition = adapterPosition.toString(),
                 creativeName = dataModel.coverUrl,
