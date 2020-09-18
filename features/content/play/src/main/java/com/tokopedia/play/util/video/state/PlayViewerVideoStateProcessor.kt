@@ -51,44 +51,7 @@ class PlayViewerVideoStateProcessor(
         scope.launch(dispatcher.immediate) {
             playVideoManager.getVideoStateFlow()
                     .flowOn(dispatcher.immediate)
-                    .collectLatest { state ->
-                        if (state in goodStates) isFirstTime = false
-
-                        when (state) {
-                            is PlayVideoState.Error -> {
-                                error = state.error
-                                broadcastState(PlayViewerVideoState.Error(state.error))
-                            }
-                            PlayVideoState.Buffering -> {
-                                if (error == null) broadcastState(PlayViewerVideoState.Buffer(BufferSource.Unknown))
-
-                                val bufferSource = getBufferSourceFromError(error)
-                                val isLive = channelTypeSource().isLive
-                                broadcastState(
-                                        if (isWaitingState(bufferSource, isLive)) {
-                                            yield()
-                                            PlayViewerVideoState.Waiting
-                                        }
-                                        else PlayViewerVideoState.Buffer(
-                                                if (isLive) bufferSource
-                                                else BufferSource.Viewer
-                                        )
-                                )
-                            }
-                            PlayVideoState.Playing -> {
-                                error = null
-                                broadcastState(PlayViewerVideoState.Play)
-                            }
-                            PlayVideoState.Pause -> {
-                                error = null
-                                broadcastState(PlayViewerVideoState.Pause)
-                            }
-                            PlayVideoState.Ended -> {
-                                error = null
-                                broadcastState(PlayViewerVideoState.End)
-                            }
-                        }
-                    }
+                    .collectLatest(::handleState)
         }
     }
 
@@ -124,6 +87,45 @@ class PlayViewerVideoStateProcessor(
                 isFirstTime && isLive
             }
             else -> false
+        }
+    }
+
+    private suspend fun handleState(state: PlayVideoState) {
+        if (state in goodStates) isFirstTime = false
+
+        when (state) {
+            is PlayVideoState.Error -> {
+                error = state.error
+                broadcastState(PlayViewerVideoState.Error(state.error))
+            }
+            PlayVideoState.Buffering -> {
+                if (error == null) broadcastState(PlayViewerVideoState.Buffer(BufferSource.Unknown))
+
+                val bufferSource = getBufferSourceFromError(error)
+                val isLive = channelTypeSource().isLive
+                broadcastState(
+                        if (isWaitingState(bufferSource, isLive)) {
+                            yield()
+                            PlayViewerVideoState.Waiting
+                        }
+                        else PlayViewerVideoState.Buffer(
+                                if (isLive) bufferSource
+                                else BufferSource.Viewer
+                        )
+                )
+            }
+            PlayVideoState.Playing -> {
+                error = null
+                broadcastState(PlayViewerVideoState.Play)
+            }
+            PlayVideoState.Pause -> {
+                error = null
+                broadcastState(PlayViewerVideoState.Pause)
+            }
+            PlayVideoState.Ended -> {
+                error = null
+                broadcastState(PlayViewerVideoState.End)
+            }
         }
     }
 
