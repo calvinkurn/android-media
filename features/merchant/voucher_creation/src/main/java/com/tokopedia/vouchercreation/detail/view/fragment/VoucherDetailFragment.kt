@@ -81,6 +81,9 @@ class VoucherDetailFragment : BaseDetailFragment() {
 
         private const val ERROR_DETAIL = "Error get voucher detail"
         private const val ERROR_CANCEL = "Error cancel voucher"
+        private const val ERROR_DOWNLOAD = "Error download voucher"
+        private const val ERROR_SECURITY = "Error security when download voucher"
+        private const val ERROR_URI = "Error uri arguments when download voucher"
     }
 
     private var voucherUiModel: VoucherUiModel? = null
@@ -651,8 +654,16 @@ class VoucherDetailFragment : BaseDetailFragment() {
         val missingPermissions = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE)
         activity?.let {
             ActivityCompat.requestPermissions(it, missingPermissions, DOWNLOAD_REQUEST_CODE)
-            val helper = DownloadHelper(it, uri, System.currentTimeMillis().toString(), null)
-            helper.downloadFile { true }
+            try {
+                val helper = DownloadHelper(it, uri, System.currentTimeMillis().toString(), null)
+                helper.downloadFile { true }
+            } catch (se: SecurityException) {
+                MvcErrorHandler.logToCrashlytics(se, ERROR_SECURITY)
+            } catch (iae: IllegalArgumentException) {
+                MvcErrorHandler.logToCrashlytics(iae, ERROR_URI)
+            } catch (ex: Exception) {
+                MvcErrorHandler.logToCrashlytics(ex, ERROR_DOWNLOAD)
+            }
         }
     }
 
