@@ -7,6 +7,7 @@ object ImageAssets {
 
 object AppScreen {
     const val ADD_SHOP_SHOWCASE_SCREEN = "Add Shop Showcase Screen"
+    const val SHOP_SHOWCASE_PICKER_SCREEN = "Shop Showcase Picker Screen"
 }
 
 object PageNameConstant {
@@ -35,6 +36,12 @@ object ShopShowcaseEditParam {
     const val EXTRA_SHOWCASE_ID = "SHOWCASE_ID"
     const val EXTRA_SHOWCASE_NAME = "SHOWCASE_NAME"
     const val EXTRA_IS_ACTION_EDIT = "IS_ACTION_EDIT"
+}
+
+object ShopShowcasePickerParam {
+    const val EXTRA_SHOP_ID = "SHOP_ID"
+    const val EXTRA_IS_MY_SHOP = "EXTRA_IS_MY_SHOP"
+    const val EXTRA_PICKER_SELECTED_SHOWCASE = "EXTRA_PICKER_SELECTED_SHOWCASE"
 }
 
 object ShowcaseType {
