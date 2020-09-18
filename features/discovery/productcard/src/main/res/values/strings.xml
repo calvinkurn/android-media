@@ -21,4 +21,5 @@
     <string name="content_desc_imageShopBadge">image shop badge</string>
     <string name="content_desc_textViewShopLocation">text shop location</string>
     <string name="content_desc_imageFreeOngkirPromo">image bebas ongkir</string>
+    <string name="content_desc_imageShopRating">image shop rating</string>
 </resources>
