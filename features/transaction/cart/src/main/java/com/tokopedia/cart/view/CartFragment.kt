@@ -46,6 +46,9 @@ import com.tokopedia.cart.R
 import com.tokopedia.cart.data.model.response.recentview.RecentView
 import com.tokopedia.cart.domain.model.cartlist.*
 import com.tokopedia.cart.domain.model.cartlist.ActionData.Companion.ACTION_CHECKOUTBROWSER
+import com.tokopedia.cart.domain.model.cartlist.ButtonData.Companion.ID_HOMEPAGE
+import com.tokopedia.cart.domain.model.cartlist.ButtonData.Companion.ID_RETRY
+import com.tokopedia.cart.domain.model.cartlist.ButtonData.Companion.ID_START_SHOPPING
 import com.tokopedia.cart.domain.model.cartlist.OutOfServiceData.Companion.ID_MAINTENANCE
 import com.tokopedia.cart.domain.model.cartlist.OutOfServiceData.Companion.ID_OVERLOAD
 import com.tokopedia.cart.domain.model.cartlist.OutOfServiceData.Companion.ID_TIMEOUT
@@ -1588,31 +1591,24 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     private fun renderCartOutOfService(outOfServiceData: OutOfServiceData) {
         when (outOfServiceData.id) {
-            ID_MAINTENANCE -> {
-                layoutGlobalError.setType(GlobalError.MAINTENANCE)
-                outOfServiceData.buttons.firstOrNull()?.let {
-                    layoutGlobalError.errorAction.text = it.message
-                }
-                layoutGlobalError.setActionClickListener {
-                    goToHome()
-                }
-            }
-            ID_OVERLOAD -> {
-                layoutGlobalError.setType(GlobalError.PAGE_FULL)
-                layoutGlobalError.setActionClickListener {
-                    refreshErrorPage()
-                }
-            }
-            ID_TIMEOUT -> {
+            ID_MAINTENANCE, ID_TIMEOUT, ID_OVERLOAD -> {
                 layoutGlobalError.setType(GlobalError.SERVER_ERROR)
-                outOfServiceData.buttons.firstOrNull()?.let {
-                    layoutGlobalError.errorAction.text = it.message
-                }
-                layoutGlobalError.setActionClickListener {
-                    goToHome()
+                outOfServiceData.buttons.firstOrNull()?.let { buttonData ->
+                    layoutGlobalError.errorAction.text = buttonData.message
+                    layoutGlobalError.setActionClickListener {
+                        when (buttonData.id) {
+                            ID_START_SHOPPING, ID_HOMEPAGE -> {
+                                goToHome()
+                            }
+                            ID_RETRY -> {
+                                refreshErrorPage()
+                            }
+                        }
+                    }
                 }
             }
         }
+
         if (outOfServiceData.title.isNotBlank()) {
             layoutGlobalError.errorTitle.text = outOfServiceData.title
         }
@@ -1622,8 +1618,10 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         if (outOfServiceData.image.isNotBlank()) {
             layoutGlobalError.errorIllustration.setImage(outOfServiceData.image, 0f)
         }
-        cartPageAnalytics.eventViewErrorPageWhenLoadCart(userSession.userId, outOfServiceData.getErrorType())
+
         showErrorContainer()
+
+        cartPageAnalytics.eventViewErrorPageWhenLoadCart(userSession.userId, outOfServiceData.getErrorType())
     }
 
     private fun renderCartNotEmpty(cartListData: CartListData) {
@@ -2239,7 +2237,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         rlContent.show()
         refreshHandler?.isRefreshing = true
         cartAdapter.resetData()
-        dPresenter.processInitialGetCartData(getCartId(), dPresenter.getCartListData() == null, false)
+        dPresenter.processInitialGetCartData(getCartId(), true, false)
     }
 
     private fun getGlobalErrorType(throwable: Throwable): Int {
@@ -2376,13 +2374,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     override fun renderErrorToShipmentForm(outOfServiceData: OutOfServiceData) {
-        layoutGlobalError.errorTitle.text = outOfServiceData.title
-        layoutGlobalError.errorDescription.text = outOfServiceData.description
-        layoutGlobalError.errorIllustration.setImage(outOfServiceData.image, 0f)
-        outOfServiceData.buttons.firstOrNull()?.let {
-            layoutGlobalError.errorAction.text = it.message
-        }
-        showErrorContainer()
+        renderCartOutOfService(outOfServiceData)
     }
 
     override fun onHiddenChanged(hidden: Boolean) {
