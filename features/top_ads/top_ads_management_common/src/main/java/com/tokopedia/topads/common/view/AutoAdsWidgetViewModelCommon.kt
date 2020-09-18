@@ -22,12 +22,13 @@ import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import org.json.JSONException
+import javax.inject.Inject
 
 /**
  * Created by Pika on 18/9/20.
  */
 
-class AutoAdsWidgetViewModelCommon(
+class AutoAdsWidgetViewModelCommon @Inject constructor(
         private val dispatcher: CoroutineDispatcher,
         private val repository: GraphqlRepository,
         @ActivityContext private val context: Context

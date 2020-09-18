@@ -60,7 +60,7 @@
         app:tickerType="announcement"
         tools:visibility="visible" />
 
-    <com.tokopedia.topads.common.view.widget.AutoAdsWidget
+    <com.tokopedia.topads.common.view.widget.AutoAdsWidgetCommon
         android:id="@+id/autoads_widget"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

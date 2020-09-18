@@ -15,7 +15,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.topads.common.data.internal.AutoAdsStatus
 import com.tokopedia.topads.common.data.response.nongroupItem.WithoutGroupDataItem
-import com.tokopedia.topads.common.view.widget.AutoAdsWidget
+import com.tokopedia.topads.common.view.widget.AutoAdsWidgetCommon
 import com.tokopedia.topads.detail_sheet.data.AdData
 import com.tokopedia.topads.detail_sheet.di.DaggerTopAdsSheetComponent
 import com.tokopedia.topads.detail_sheet.di.TopAdsSheetComponent
@@ -31,7 +31,7 @@ import javax.inject.Inject
 class TopAdsDetailSheet : BottomSheetUnify() {
 
     private var groupId: String = "0"
-    private val autoAdsWidget: AutoAdsWidget?
+    private val autoAdsWidget: AutoAdsWidgetCommon?
         get() = autoads_widget
     private var adId: String = "0"
     private var category: Int = 0
