@@ -41,6 +41,7 @@ class InstantPaymentFragment : ThankYouBaseFragment() {
     override fun getLoadingView(): View? = loadingView
 
     override fun getRecommendationContainer(): LinearLayout? = recommendationContainer
+    override fun getFeatureListingContainer(): LinearLayout? = featureListingContainer
 
     override fun onThankYouPageDataReLoaded(data: ThanksPageData) {
         //not reuquired

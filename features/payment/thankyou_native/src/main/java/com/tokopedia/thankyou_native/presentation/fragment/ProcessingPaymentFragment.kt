@@ -33,6 +33,7 @@ class ProcessingPaymentFragment : ThankYouBaseFragment() {
     }
 
     override fun getRecommendationContainer(): LinearLayout? = recommendationContainer
+    override fun getFeatureListingContainer(): LinearLayout? = featureListingContainer
 
     override fun bindThanksPageDataToUI(thanksPageData: ThanksPageData) {
         paymentType = PaymentTypeMapper.getPaymentTypeByStr(thanksPageData.paymentType)

@@ -40,5 +40,4 @@ class ThanksPageDataViewModel @Inject constructor(
         super.onCleared()
     }
 
-
 }

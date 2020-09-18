@@ -1,0 +1,15 @@
+query validateEngineRequest($request: String!){
+  validateEngineRequest(request:$request){
+    success
+    error_code
+    message
+    data{
+      title
+      description
+      items {
+        id
+        detail
+      }
+    }
+  }
+}

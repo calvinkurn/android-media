@@ -39,6 +39,7 @@ import javax.inject.Inject
 abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectListener {
 
     abstract fun getRecommendationContainer(): LinearLayout?
+    abstract fun getFeatureListingContainer(): LinearLayout?
     abstract fun bindThanksPageDataToUI(thanksPageData: ThanksPageData)
     abstract fun getLoadingView(): View?
     abstract fun onThankYouPageDataReLoaded(data: ThanksPageData)
