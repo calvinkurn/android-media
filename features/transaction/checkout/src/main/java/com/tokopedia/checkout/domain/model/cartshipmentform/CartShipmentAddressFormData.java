@@ -5,6 +5,7 @@ import android.os.Parcelable;
 
 import com.tokopedia.checkout.view.uimodel.EgoldAttributeModel;
 import com.tokopedia.logisticcart.shipping.model.CodModel;
+import com.tokopedia.purchase_platform.common.feature.button.ABTestButton;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.PromoCheckoutErrorDefault;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel;
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerData;
@@ -43,6 +44,7 @@ public class CartShipmentAddressFormData implements Parcelable {
     private PromoCheckoutErrorDefault promoCheckoutErrorDefault;
     private boolean isOpenPrerequisiteSite;
     private boolean isEligibleNewShippingExperience;
+    private ABTestButton abTestButton;
 
     public boolean isHasError() {
         return hasError;
@@ -248,6 +250,14 @@ public class CartShipmentAddressFormData implements Parcelable {
         isEligibleNewShippingExperience = eligibleNewShippingExperience;
     }
 
+    public ABTestButton getAbTestButton() {
+        return abTestButton;
+    }
+
+    public void setAbTestButton(ABTestButton abTestButton) {
+        this.abTestButton = abTestButton;
+    }
+
     public CartShipmentAddressFormData() {
     }
 
@@ -276,6 +286,7 @@ public class CartShipmentAddressFormData implements Parcelable {
         promoCheckoutErrorDefault = in.readParcelable(PromoCheckoutErrorDefault.class.getClassLoader());
         isOpenPrerequisiteSite = in.readByte() != 0;
         isEligibleNewShippingExperience = in.readByte() != 0;
+        abTestButton = in.readParcelable(ABTestButton.class.getClassLoader());
     }
 
     @Override
@@ -304,6 +315,7 @@ public class CartShipmentAddressFormData implements Parcelable {
         dest.writeParcelable(promoCheckoutErrorDefault, flags);
         dest.writeByte((byte) (isOpenPrerequisiteSite ? 1 : 0));
         dest.writeByte((byte) (isEligibleNewShippingExperience ? 1 : 0));
+        dest.writeParcelable(abTestButton, flags);
     }
 
     @Override
