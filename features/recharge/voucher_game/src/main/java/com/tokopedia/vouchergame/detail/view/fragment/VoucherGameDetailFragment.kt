@@ -233,7 +233,8 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
     override fun processMenuDetail(data: TopupBillsMenuDetail) {
         super.processMenuDetail(data)
         if (data.catalog.label.isNotEmpty()) {
-            voucherGameAnalytics.categoryName = data.catalog.label
+            categoryName = data.catalog.label
+            voucherGameAnalytics.categoryName = categoryName
             (activity as? BaseSimpleActivity)?.updateTitle(data.catalog.label)
         }
     }

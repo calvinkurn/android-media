@@ -20,49 +20,35 @@ import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStat
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.main.bottom_sheet_product_manage.view.*
 
-class ProductManageBottomSheet(
-        container: View? = null,
-        listener: ProductMenuListener? = null,
-        sellerFeatureCarouselListener: SellerFeatureCarousel.SellerFeatureClickListener,
-        private val fm: FragmentManager? = null
-) : BottomSheetUnify() {
+class ProductManageBottomSheet : BottomSheetUnify() {
 
     companion object {
         @LayoutRes
         private val LAYOUT = R.layout.bottom_sheet_product_manage
         private val TAG: String = ProductManageBottomSheet::class.java.simpleName
+
+        fun createInstance(): ProductManageBottomSheet {
+            return ProductManageBottomSheet().apply {
+                clearContentPadding = true
+            }
+        }
     }
 
+    private var menuAdapterListener: ProductMenuListener? = null
+    private var sellerFeatureCarouselListener: SellerFeatureCarousel.SellerFeatureClickListener? = null
     private var menuAdapter: ProductMenuAdapter? = null
     private var sellerFeatureCarousel: SellerFeatureCarousel? = null
+    private var product: ProductViewModel? = null
+    private var isPowerMerchantOrOfficialStore: Boolean = false
 
-    init {
-        if (container != null && listener != null && fm != null) {
-            val itemView = LayoutInflater.from(container?.context)
-                    .inflate(LAYOUT, (container as ViewGroup), false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        setupChildView(inflater, container)
+        return super.onCreateView(inflater, container, savedInstanceState)
+    }
 
-            val menuList = itemView.menuList
-            val menuTitle = itemView.context
-                    .getString(R.string.product_manage_bottom_sheet_title)
-
-            menuAdapter = ProductMenuAdapter(listener)
-            menuList.adapter = menuAdapter
-
-            setTitle(menuTitle)
-            setChild(itemView)
-
-            sellerFeatureCarousel = itemView.sellerFeatureCarousel
-
-            sellerFeatureCarousel?.run {
-                if (!GlobalConfig.isSellerApp()) {
-                    show()
-                    setListener(sellerFeatureCarouselListener)
-                    this.addItemDecoration()
-                }
-            }
-
-            clearContentPadding = true
-        }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setupView()
     }
 
     override fun onViewStateRestored(savedInstanceState: Bundle?) {
@@ -70,6 +56,52 @@ class ProductManageBottomSheet(
         savedInstanceState?.run {
             parentFragment?.childFragmentManager?.beginTransaction()?.remove(this@ProductManageBottomSheet)?.commit()
         }
+    }
+
+    private fun setupView() = view?.run {
+        setupMenuAdapter()
+        setupSellerCarousel()
+    }
+
+    private fun setupMenuAdapter() = view?.run {
+        menuAdapterListener?.let {
+            val menuList = menuList
+            menuAdapter = ProductMenuAdapter(it)
+            menuList.adapter = menuAdapter
+        }
+
+        product?.let { product ->
+            val menu = createProductManageMenu(product, isPowerMerchantOrOfficialStore)
+
+            if (!GlobalConfig.isSellerApp()) {
+                sellerFeatureCarousel?.setItems(listOf(
+                        SellerFeatureUiModel.MultiEditFeatureWithDataUiModel(product),
+                        SellerFeatureUiModel.TopAdsFeatureWithDataUiModel(product),
+                        SellerFeatureUiModel.SetCashbackFeatureWithDataUiModel(product),
+                        SellerFeatureUiModel.FeaturedProductFeatureWithDataUiModel(product),
+                        SellerFeatureUiModel.StockReminderFeatureWithDataUiModel(product)
+                ))
+            }
+
+            menuAdapter?.clearAllElements()
+            menuAdapter?.addElement(menu)
+        }
+    }
+
+    private fun setupSellerCarousel() = view?.sellerFeatureCarousel?.run {
+        this@ProductManageBottomSheet.sellerFeatureCarousel = this
+        if (!GlobalConfig.isSellerApp()) {
+            show()
+            setListener(sellerFeatureCarouselListener)
+            this.addItemDecoration()
+        }
+    }
+
+    private fun setupChildView(inflater: LayoutInflater, container: ViewGroup?) {
+        val itemView = inflater.inflate(LAYOUT, container)
+        val menuTitle = itemView.context.getString(R.string.product_manage_bottom_sheet_title)
+        setTitle(menuTitle)
+        setChild(itemView)
     }
 
     private fun createProductManageMenu(product: ProductViewModel, isPowerMerchantOrOfficialStore: Boolean): List<ProductMenuViewModel> {
@@ -96,22 +128,18 @@ class ProductManageBottomSheet(
         }
     }
 
-    fun show(product: ProductViewModel, isPowerMerchantOrOfficialStore: Boolean) {
-        val menu = createProductManageMenu(product, isPowerMerchantOrOfficialStore)
+    fun init(
+            productMenuListener: ProductMenuListener,
+            sellerFeatureCarouselListener: SellerFeatureCarousel.SellerFeatureClickListener
+    ) {
 
-        if (!GlobalConfig.isSellerApp()) {
-            sellerFeatureCarousel?.setItems(listOf(
-                    SellerFeatureUiModel.MultiEditFeatureWithDataUiModel(product),
-                    SellerFeatureUiModel.TopAdsFeatureWithDataUiModel(product),
-                    SellerFeatureUiModel.SetCashbackFeatureWithDataUiModel(product),
-                    SellerFeatureUiModel.FeaturedProductFeatureWithDataUiModel(product),
-                    SellerFeatureUiModel.StockReminderFeatureWithDataUiModel(product)
-            ))
-        }
+        this.menuAdapterListener = productMenuListener
+        this.sellerFeatureCarouselListener = sellerFeatureCarouselListener
+    }
 
-        menuAdapter?.clearAllElements()
-        menuAdapter?.addElement(menu)
-
-        fm?.let { show(it, TAG) }
+    fun show(fm: FragmentManager, product: ProductViewModel, isPowerMerchantOrOfficialStore: Boolean) {
+        this.product = product
+        this.isPowerMerchantOrOfficialStore = isPowerMerchantOrOfficialStore
+        show(fm, TAG)
     }
 }

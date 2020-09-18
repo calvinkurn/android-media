@@ -6,9 +6,9 @@ package com.tokopedia.sellerhomecommon.presentation.model
 
 data class TickerItemUiModel(
         val redirectUrl: String = "",
-        val state: String = "",
-        val expireTime: String = "",
+        val color: String = "",
         val id: String = "",
         val message: String = "",
-        val title: String = ""
+        val title: String = "",
+        val type: Int = 0
 )

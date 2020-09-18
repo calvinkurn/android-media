@@ -62,6 +62,8 @@ interface CommonTopupBillsEventTracking {
             const val DIMENSION_80 = "dimension80"
             const val DIMENSION_81 = "dimension81"
             const val DIMENSION_82 = "dimension82"
+
+            const val EMPTY = "none/other"
         }
     }
 

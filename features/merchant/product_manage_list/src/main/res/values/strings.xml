@@ -286,17 +286,25 @@
 
     <string name="courier_option">Atur Layanan Kurir</string>
 
-    //content desc
-    <string name="content_desc_btnEditPrice">button edit price</string>
-    <string name="content_desc_btnEditStock">button edit stock</string>
+    <!--content desc-->
+    <string name="content_desc_btnEditPrice">button ubah harga</string>
+    <string name="content_desc_btnEditStock">button ubah stok</string>
     <string name="content_desc_btnMoreOptions">button three dots more options</string>
     <string name="content_desc_textMenu">text menu atur</string>
-    <string name="content_desc_textTitle">text title</string>
-    <string name="content_desc_textPrice">text price</string>
-    <string name="content_desc_textStockCount">text stock</string>
+    <string name="content_desc_textTitle">text judul produk</string>
+    <string name="content_desc_textPrice">text harga</string>
+    <string name="content_desc_textStockCount">text stok</string>
     <string name="content_desc_labelActive">text status active</string>
     <string name="content_desc_labelInactive">text status inactive</string>
-    <string name="content_desc_labelVariant">text product variant</string>
-    <string name="content_desc_add_product_menu">text add new product</string>
-    <string name="content_desc_tv_add_product_title">text add new product without variant</string>
+    <string name="content_desc_labelVariant">text varian</string>
+    <string name="content_desc_add_product_menu">text tambah produk</string>
+    <string name="content_desc_tv_add_product_title">text tambah produk tanpa varian</string>
+    <string name="content_desc_textMultipleSelect">text pilih sekaligus</string>
+    <string name="content_desc_quickEditPriceTextField">input harga</string>
+    <string name="content_desc_quickEditPriceSaveButton">button simpan harga</string>
+    <string name="content_desc_quickEditStockActivateSwitch">button switch status produk</string>
+    <string name="content_desc_quickEditStockQuantityEditor">input stok</string>
+    <string name="content_desc_quickEditStockSaveButton">button simpan stok</string>
+    <string name="content_desc_checkBoxSelect">checkbox produk</string>
+    <string name="content_desc_btnMultiEdit">button atur sekaligus</string>
 </resources>

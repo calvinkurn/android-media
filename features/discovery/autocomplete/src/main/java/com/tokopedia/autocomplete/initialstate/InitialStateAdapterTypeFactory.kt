@@ -3,6 +3,10 @@ package com.tokopedia.autocomplete.initialstate
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.autocomplete.initialstate.dynamic.DynamicInitialStateSearchViewModel
+import com.tokopedia.autocomplete.initialstate.dynamic.DynamicInitialStateTitleViewHolder
+import com.tokopedia.autocomplete.initialstate.dynamic.DynamicInitialStateTitleViewModel
+import com.tokopedia.autocomplete.initialstate.dynamic.DynamicInitialStateViewHolder
 import com.tokopedia.autocomplete.initialstate.popularsearch.PopularSearchTitleViewHolder
 import com.tokopedia.autocomplete.initialstate.popularsearch.PopularSearchTitleViewModel
 import com.tokopedia.autocomplete.initialstate.popularsearch.PopularSearchViewHolder
@@ -11,7 +15,7 @@ import com.tokopedia.autocomplete.initialstate.recentsearch.*
 import com.tokopedia.autocomplete.initialstate.recentview.RecentViewViewModel
 import com.tokopedia.autocomplete.initialstate.recentview.RecentViewTitleViewHolder
 import com.tokopedia.autocomplete.initialstate.recentview.RecentViewViewHolder
-import com.tokopedia.autocomplete.initialstate.recentview.ReecentViewTitleViewModel
+import com.tokopedia.autocomplete.initialstate.recentview.RecentViewTitleViewModel
 
 class InitialStateAdapterTypeFactory(
         private val clickListener: InitialStateItemClickListener
@@ -24,7 +28,7 @@ class InitialStateAdapterTypeFactory(
         return RecentSearchTitleViewHolder.LAYOUT
     }
 
-    override fun type(viewModel: ReecentViewTitleViewModel): Int {
+    override fun type(viewModel: RecentViewTitleViewModel): Int {
         return RecentViewTitleViewHolder.LAYOUT
     }
 
@@ -44,6 +48,14 @@ class InitialStateAdapterTypeFactory(
         return RecentSearchSeeMoreViewHolder.LAYOUT
     }
 
+    override fun type(viewModel: DynamicInitialStateSearchViewModel): Int {
+        return DynamicInitialStateViewHolder.LAYOUT
+    }
+
+    override fun type(viewModel: DynamicInitialStateTitleViewModel): Int {
+        return DynamicInitialStateTitleViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
             PopularSearchViewHolder.LAYOUT -> PopularSearchViewHolder(parent, clickListener)
@@ -53,6 +65,8 @@ class InitialStateAdapterTypeFactory(
             RecentSearchTitleViewHolder.LAYOUT -> RecentSearchTitleViewHolder(parent, clickListener)
             RecentViewTitleViewHolder.LAYOUT -> RecentViewTitleViewHolder(parent)
             RecentSearchSeeMoreViewHolder.LAYOUT -> RecentSearchSeeMoreViewHolder(parent, clickListener)
+            DynamicInitialStateTitleViewHolder.LAYOUT -> DynamicInitialStateTitleViewHolder(parent, clickListener)
+            DynamicInitialStateViewHolder.LAYOUT -> DynamicInitialStateViewHolder(parent, clickListener)
             else -> super.createViewHolder(parent, type)
         }
     }

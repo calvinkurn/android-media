@@ -97,8 +97,8 @@ class InitialStateFragment : BaseDaggerFragment(), InitialStateContract.View, In
         return AppScreen.SCREEN_UNIVERSEARCH
     }
 
-    override fun showInitialStateResult(initialStateVisitableList: List<Visitable<*>>) {
-        notifyAdapter(initialStateVisitableList)
+    override fun showInitialStateResult(list: List<Visitable<*>>) {
+        notifyAdapter(list)
     }
 
     private fun notifyAdapter(list: List<Visitable<*>>) {
@@ -111,14 +111,6 @@ class InitialStateFragment : BaseDaggerFragment(), InitialStateContract.View, In
 
     private fun stopTracePerformanceMonitoring() {
         performanceMonitoring?.stopTrace()
-    }
-
-    override fun refreshPopularSearch(list: List<Visitable<*>>) {
-        notifyAdapter(list)
-    }
-
-    override fun deleteRecentSearch(list: List<Visitable<*>>) {
-        notifyAdapter(list)
     }
 
     override fun onViewStateRestored(savedInstanceState: Bundle?) {
@@ -187,13 +179,13 @@ class InitialStateFragment : BaseDaggerFragment(), InitialStateContract.View, In
         presenter.deleteAllRecentSearch()
     }
 
-    override fun onRefreshPopularSearch() {
-        refreshPopularSearch()
+    override fun onRefreshPopularSearch(featureId: String) {
+        refreshPopularSearch(featureId)
     }
 
-    private fun refreshPopularSearch() {
+    private fun refreshPopularSearch(featureId: String) {
         AutocompleteTracking.eventClickRefreshPopularSearch()
-        presenter.refreshPopularSearch()
+        presenter.refreshPopularSearch(featureId)
     }
 
     fun setSearchParameter(searchParameter: HashMap<String, String> ) {
@@ -202,6 +194,10 @@ class InitialStateFragment : BaseDaggerFragment(), InitialStateContract.View, In
 
     fun setInitialStateViewUpdateListener(initialStateViewUpdateListener: InitialStateViewUpdateListener) {
         this.initialStateViewUpdateListener = initialStateViewUpdateListener
+    }
+
+    override fun onRefreshDynamicSection(featureId: String) {
+        presenter.refreshDynamicSection(featureId)
     }
 
     override fun onRecentViewImpressed(list: List<Any>) {

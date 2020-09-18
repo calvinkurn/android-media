@@ -15,17 +15,6 @@ class DynamicProductDetailAdapter(
         val listener: DynamicProductDetailListener
 ) : BaseListAdapter<DynamicPdpDataModel, DynamicProductDetailAdapterFactoryImpl>(adapterTypeFactory) {
 
-    fun notifySnapshotWithPayloads(snapshotData: ProductSnapshotDataModel?, payload: Int? = null) {
-        snapshotData?.let {
-            val indexOfSnapshot = list.indexOf(it)
-            if (payload != null) {
-                notifyItemChanged(indexOfSnapshot, payload)
-            } else {
-                notifyItemChanged(indexOfSnapshot)
-            }
-        }
-    }
-
     fun notifyBasicContentWithPayloads(contentData: ProductContentDataModel?, payload: Int? = null) {
         contentData?.let {
             val indexOfContent = list.indexOf(it)

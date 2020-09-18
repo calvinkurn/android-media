@@ -327,6 +327,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
         setCheckoutPassData(enquiryData)
         postpaidClientNumberWidget.showEnquiryResultPostpaid(enquiryData)
 
+        price = enquiryData.enquiry.attributes.pricePlain
         buyWidget.setTotalPrice(enquiryData.enquiry.attributes.price)
         buyWidget.setVisibilityLayout(true)
     }
@@ -371,6 +372,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
                 }
                 operatorSelected?.run {
                     operatorName = operator.attributes.name
+                    productName = operatorName
                     when (inputNumberActionType) {
                         InputNumberActionType.MANUAL -> {
                             topupAnalytics.eventInputNumberManual(categoryId, operatorName)
