@@ -40,15 +40,6 @@ class GetChatSettingUseCase @Inject constructor(
                     }
                 }
         )
-//        gqlUseCase.apply {
-//            setTypeClass(ChatGearChatListResponse::class.java)
-//            setGraphqlQuery(query)
-//            execute({ result ->
-//                onSuccess(result)
-//            }, { error ->
-//                onError(error)
-//            })
-//        }
     }
 
     private val query = """
