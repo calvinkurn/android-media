@@ -67,7 +67,7 @@
     <string name="notif_us_ticker_error">Belum ada Informasi jenis push yang kamu aktifkan.</string>
     <string name="notif_us_ticker_warning">Kamu belum mengaktifkan push notification untuk %1$s jenis info.</string>
     <string name="notif_dv_none_ticker_warning">Ada kategori push notification Tokopedia yang belum aktif di HP.</string>
-    <string name="notif_dv_low_ticker_warning">Pilih \'Suara dan pup-up\' atau \'Kepenting Tinggi\' di pengaturan kategori notifikasi HP-mu.</string>
+    <string name="notif_dv_low_ticker_warning">Pilih \'Suara dan pop-up\' atau \'Kepentingan Tinggi\' di pengaturan notifikasi HP-mu.</string>
     <string name="notif_rn_ticker_warning">HP-mu dalam Mode Getar atau Mode Sunyi dan tidak bisa menyetel bunyi notifikasi.</string>
 
     <string name="notif_clear_cache_warning">Peringatan</string>
