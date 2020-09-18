@@ -135,7 +135,8 @@ class SellerMigrationFragment : Fragment(), SellerFeatureCarousel.RecyclerViewLi
             SellerMigrationFeatureName.FEATURE_SET_CASHBACK -> {
                 0
             }
-            SellerMigrationFeatureName.FEATURE_TEMPLATE_CHAT, SellerMigrationFeatureName.FEATURE_SELLER_CHAT -> {
+            SellerMigrationFeatureName.FEATURE_TEMPLATE_CHAT, SellerMigrationFeatureName.FEATURE_SELLER_CHAT,
+            SellerMigrationFeatureName.FEATURE_CHAT_SETTING -> {
                 1
             }
             SellerMigrationFeatureName.FEATURE_REVIEW_TEMPLATE_AND_STATISTICS -> {

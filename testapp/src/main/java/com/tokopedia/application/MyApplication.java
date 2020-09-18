@@ -303,13 +303,13 @@ public class MyApplication extends BaseMainApplication
     }
 
     @Override
-    public void sendForceLogoutAnalytics(Response response, boolean isInvalidToken, boolean isRequestDenied) {
+    public void sendForceLogoutAnalytics(String url, boolean isInvalidToken, boolean isRequestDenied) {
 
     }
 
 
     @Override
-    public void showForceLogoutTokenDialog(String response) {
+    public void showForceLogoutTokenDialog(String path) {
 
     }
 
