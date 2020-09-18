@@ -38,7 +38,6 @@ import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import java.util.*
 import javax.inject.Inject
-import kotlin.collections.HashSet
 
 /**
  * @author Kulomady on 1/20/17.
@@ -85,8 +84,6 @@ class FragmentFavorite() : BaseDaggerFragment(), FavoriteClickListener, OnRefres
     private var shopItemSelected: TopAdsShopItem? = null
     private var performanceMonitoring: PerformanceMonitoring? = null
     private var userSession: UserSessionInterface? = null
-
-    private val alreadyHitTopAdsUrl = HashSet<String>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         userSession = UserSession(context)
