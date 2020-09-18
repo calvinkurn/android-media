@@ -42,7 +42,7 @@
         app:layout_constraintRight_toLeftOf="@id/cardPromo"
         app:layout_constraintTop_toBottomOf="@id/textTitle"
         app:menuDescription="@string/seller_menu_shop_statistics_description"
-        app:menuIcon="@drawable/ic_seller_menu_statistics"
+        app:menuIcon="@drawable/ic_seller_migration_review_statistic"
         app:menuTitle="@string/seller_menu_shop_statistics" />
 
     <com.tokopedia.seller.menu.common.view.widget.SellerMenuFeatureCard
@@ -69,7 +69,7 @@
         app:layout_constraintRight_toLeftOf="@id/cardFintech"
         app:layout_constraintTop_toBottomOf="@id/cardStatistics"
         app:menuDescription="@string/seller_menu_feed_and_play_description"
-        app:menuIcon="@drawable/ic_seller_menu_tokopedia_play"
+        app:menuIcon="@drawable/ic_seller_migration_tokopedia_play"
         app:menuTitle="@string/seller_menu_feed_and_play" />
 
     <com.tokopedia.seller.menu.common.view.widget.SellerMenuFeatureCard
@@ -82,6 +82,6 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/cardPromo"
         app:menuDescription="@string/seller_menu_financial_service_description"
-        app:menuIcon="@drawable/ic_seller_menu_fintech"
+        app:menuIcon="@drawable/ic_seller_migration_saldo_prio"
         app:menuTitle="@string/seller_menu_financial_service" />
 </androidx.constraintlayout.widget.ConstraintLayout>

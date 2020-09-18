@@ -19,7 +19,7 @@
         android:textAllCaps="true"
         app:typographyType="body_3"
         app:typographyWeight="bold"
-        tools:drawableLeft="@drawable/ic_seller_menu_statistics"
+        tools:drawableLeft="@drawable/ic_seller_migration_review_statistic"
         tools:text="statistik toko" />
 
     <com.tokopedia.unifyprinciples.Typography
