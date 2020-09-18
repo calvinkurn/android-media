@@ -328,8 +328,8 @@ class CartItemViewHolder constructor(itemView: View,
             layoutProductInfo.removeAllViews()
             productInformationList.forEach {
                 var tmpLabel = it
-                if (tmpLabel.toLowerCase(Locale.getDefault()).contains("cashback")) {
-                    tmpLabel = "cashback"
+                if (tmpLabel.toLowerCase(Locale.getDefault()).contains(LABEL_CASHBACK)) {
+                    tmpLabel = LABEL_CASHBACK
                 }
                 informationLabel.add(tmpLabel.toLowerCase(Locale.getDefault()))
 
@@ -433,7 +433,7 @@ class CartItemViewHolder constructor(itemView: View,
                 ?: 0, false).removeDecimalSuffix()
         labelSlashPricePercentage.text = data.cartItemData?.originData?.slashPriceLabel
         labelSlashPricePercentage.show()
-        informationLabel.add("label diskon")
+        informationLabel.add(LABEL_DISCOUNT)
     }
 
     private fun renderWarningMessage(data: CartItemHolderData) {
@@ -841,5 +841,8 @@ class CartItemViewHolder constructor(itemView: View,
 
     companion object {
         val TYPE_VIEW_ITEM_CART = R.layout.holder_item_cart_new
+
+        const val LABEL_CASHBACK = "cashback"
+        const val LABEL_DISCOUNT = "label diskon"
     }
 }
