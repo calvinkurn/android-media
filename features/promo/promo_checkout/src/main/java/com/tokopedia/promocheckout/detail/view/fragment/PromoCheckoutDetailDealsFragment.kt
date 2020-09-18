@@ -13,10 +13,9 @@ import com.tokopedia.promocheckout.common.util.EXTRA_PROMO_DATA
 import com.tokopedia.promocheckout.common.util.mapToStatePromoCheckout
 import com.tokopedia.promocheckout.common.view.model.PromoData
 import com.tokopedia.promocheckout.common.view.uimodel.DataUiModel
-import com.tokopedia.promocheckout.common.view.uimodel.PromoDigitalModel
 import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
 import com.tokopedia.promocheckout.detail.di.PromoCheckoutDetailComponent
-import com.tokopedia.promocheckout.detail.view.activity.PromoCheckoutDetailDigitalActivity
+import com.tokopedia.promocheckout.detail.view.activity.PromoCheckoutDetailDealsActivity
 import com.tokopedia.promocheckout.detail.view.presenter.PromoCheckoutDetailDealsPresenter
 import com.tokopedia.user.session.UserSession
 import timber.log.Timber
@@ -26,7 +25,6 @@ class PromoCheckoutDetailDealsFragment : BasePromoCheckoutDetailFragment() {
     @Inject
     lateinit var promoCheckoutDetailDealsPresenter: PromoCheckoutDetailDealsPresenter
 
-    lateinit var promoDigitalModel: PromoDigitalModel
     lateinit var promoCheckoutDetailComponent: PromoCheckoutDetailComponent
     var checkoutData: String = ""
 
@@ -42,8 +40,8 @@ class PromoCheckoutDetailDealsFragment : BasePromoCheckoutDetailFragment() {
     }
 
     fun initView() {
-        promoCheckoutDetailComponent = (activity as PromoCheckoutDetailDigitalActivity).getComponent()
-        //promoCheckoutDetailComponent.inject(this)
+        promoCheckoutDetailComponent = (activity as PromoCheckoutDetailDealsActivity).getComponent()
+        promoCheckoutDetailComponent.inject(this)
         promoCheckoutDetailDealsPresenter.attachView(this)
     }
 
@@ -105,14 +103,14 @@ class PromoCheckoutDetailDealsFragment : BasePromoCheckoutDetailFragment() {
         val EXTRA_IS_USE = "EXTRA_IS_USE"
         val EXTRA_CHECKOUT_DATA = "checkoutdata"
 
-        fun createInstance(codeCoupon: String, isUse: Boolean, checkoutData: String?): PromoCheckoutDetailDigitalFragment {
-            val promoCheckoutDetailFragment = PromoCheckoutDetailDigitalFragment()
+        fun createInstance(codeCoupon: String, isUse: Boolean, checkoutData: String?): PromoCheckoutDetailDealsFragment {
+            val promoCheckoutDetailDealsFragment = PromoCheckoutDetailDealsFragment()
             val bundle = Bundle()
             bundle.putString(EXTRA_KUPON_CODE, codeCoupon)
             bundle.putBoolean(EXTRA_IS_USE, isUse)
             bundle.putString(EXTRA_CHECKOUT_DATA, checkoutData ?: "")
-            promoCheckoutDetailFragment.arguments = bundle
-            return promoCheckoutDetailFragment
+            promoCheckoutDetailDealsFragment.arguments = bundle
+            return promoCheckoutDetailDealsFragment
         }
     }
 }
