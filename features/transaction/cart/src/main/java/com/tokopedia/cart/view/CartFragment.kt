@@ -719,22 +719,20 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         val toBeDeletedCartItemDataList = getAllSelectedCartDataList()
         val allCartItemDataList = cartAdapter.allCartItemData
         if (toBeDeletedCartItemDataList?.isNotEmpty() == true) {
-            if (toBeDeletedCartItemDataList.isNotEmpty()) {
-                val dialog = getMultipleItemsDialogDeleteConfirmation(toBeDeletedCartItemDataList.size)
-                dialog?.setPrimaryCTAClickListener {
-                    if (toBeDeletedCartItemDataList.isNotEmpty()) {
-                        dPresenter.processDeleteCartItem(allCartItemDataList, toBeDeletedCartItemDataList, false, true)
-                        sendAnalyticsOnClickConfirmationRemoveCartSelectedNoAddToWishList(
-                                dPresenter.generateDeleteCartDataAnalytics(toBeDeletedCartItemDataList)
-                        )
-                    }
-                    dialog.dismiss()
+            val dialog = getMultipleItemsDialogDeleteConfirmation(toBeDeletedCartItemDataList.size)
+            dialog?.setPrimaryCTAClickListener {
+                if (toBeDeletedCartItemDataList.isNotEmpty()) {
+                    dPresenter.processDeleteCartItem(allCartItemDataList, toBeDeletedCartItemDataList, false, true)
+                    sendAnalyticsOnClickConfirmationRemoveCartSelectedNoAddToWishList(
+                            dPresenter.generateDeleteCartDataAnalytics(toBeDeletedCartItemDataList)
+                    )
                 }
-                dialog?.setSecondaryCTAClickListener {
-                    dialog.dismiss()
-                }
-                dialog?.show()
+                dialog.dismiss()
             }
+            dialog?.setSecondaryCTAClickListener {
+                dialog.dismiss()
+            }
+            dialog?.show()
         } else {
             showToastMessageRed(getString(R.string.message_delete_empty_selection))
         }
