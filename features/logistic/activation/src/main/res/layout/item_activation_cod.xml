@@ -155,7 +155,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/dp_16"
                     android:layout_marginEnd="@dimen/dp_16"
-                    android:text="Syarat pertamaadaadad adada asdasd adasdas dadasdada adasdasd Syarat pertamaadaadad adada asdasd adasdas dadasdada adasdasd"
+                    android:text="@string/tnc_desc"
                     app:typographyType="body_3"
                     android:layout_toEndOf="@id/check_icon_1"/>
 
@@ -182,7 +182,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/dp_16"
                     android:layout_marginEnd="@dimen/dp_16"
-                    android:text="Syarat pertamaadaadad adada asdasd adasdas dadasdada adasdasd Syarat pertamaadaadad adada asdasd adasdas dadasdada adasdasd"
+                    android:text="@string/tnc_desc"
                     app:typographyType="body_3"
                     android:layout_toEndOf="@id/check_icon_2"/>
 
@@ -209,7 +209,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/dp_16"
                     android:layout_marginEnd="@dimen/dp_16"
-                    android:text="Syarat pertamaadaadad adada asdasd adasdas dadasdada adasdasd Syarat pertamaadaadad adada asdasd adasdas dadasdada adasdasd"
+                    android:text="@string/tnc_desc"
                     app:typographyType="body_3"
                     android:layout_toEndOf="@id/check_icon_3"/>
 
@@ -221,7 +221,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_16"
                 android:layout_marginTop="@dimen/dp_16"
-                android:text="Pelajari Selengkapnya"
+                android:text="@string/see_more"
                 app:typographyType="body_3"/>
 
             <View
@@ -235,7 +235,8 @@
                 android:id="@+id/checkbox_cod_rl"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_16">
+                android:layout_marginTop="@dimen/dp_16"
+                android:visibility="gone">
 
                 <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
                     android:id="@+id/cb_tnc"
@@ -250,7 +251,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/dp_10"
                     android:layout_marginEnd="@dimen/dp_16"
-                    android:text="Saya menyetujui blablabla"
+                    android:text="@string/tnc_desc"
                     app:typographyType="body_3"
                     android:layout_toEndOf="@id/cb_tnc"/>
 
@@ -270,6 +271,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/checkbox_tnc"
                 app:layout_constraintVertical_bias="1"
+                app:unifyButtonVariant="ghost"
                 android:enabled="false"/>
 
             </LinearLayout>

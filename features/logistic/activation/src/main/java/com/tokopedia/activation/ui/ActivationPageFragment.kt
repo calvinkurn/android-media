@@ -187,7 +187,6 @@ class ActivationPageFragment: BaseDaggerFragment() {
         viewModel.updateShopFeature.observe(viewLifecycleOwner, Observer {
             when(it) {
                 is ActivationPageState.Success -> {
-                    swipeRefreshLayout?.isRefreshing = false
                     view?.let { view ->
                         if(codValue) Toaster.make(view, COD_INACTIVE_MESSAGE, type = Toaster.TYPE_NORMAL)
                         else Toaster.make(view, COD_ACTIVE_MESSAGE, type = Toaster.TYPE_NORMAL)
@@ -211,7 +210,6 @@ class ActivationPageFragment: BaseDaggerFragment() {
         viewModel.activatedShipping.observe(viewLifecycleOwner, Observer {
             when(it) {
                 is ActivationPageState.Success -> {
-                    swipeRefreshLayout?.isRefreshing = false
                     openDialogActivationPage(it.data)
                 }
 
@@ -345,6 +343,7 @@ class ActivationPageFragment: BaseDaggerFragment() {
 
     private fun openDialogActivationPage(data: ShippingEditorModel) {
         if (data.x11 == 0) {
+            swipeRefreshLayout?.isRefreshing = false
             context?.let { dialog ->
                 DialogUnify(dialog, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
                     val primaryText = HtmlLinkHelper(context, getString(R.string.dialog_desciption_active)).spannedString
