@@ -952,7 +952,7 @@ open class HomeViewModel @Inject constructor(
     private fun initChannel(){
         logChannelUpdate("init channel")
         jobChannel?.cancelChildren()
-        jobChannel = launch (homeDispatcher.get().ui()){
+        jobChannel = launch (homeDispatcher.get().io()){
             updateChannel()
         }
     }
@@ -1388,7 +1388,7 @@ open class HomeViewModel @Inject constructor(
                 data.homeData?.let { homeData ->
                     var homeDataModel = evaluateGeolocationComponent(homeData)
                     homeDataModel = evaluateAvailableComponent(homeDataModel, data.needToEvaluateRecommendation)
-                        _homeLiveData.value = homeDataModel
+                        _homeLiveData.postValue(homeDataModel)
                 }
             } else {
                 val newList = _homeLiveData.value?.list?.toMutableList()
@@ -1419,7 +1419,7 @@ open class HomeViewModel @Inject constructor(
                                 }
                             }
                         }
-                        _homeLiveData.value = _homeLiveData.value?.copy(list = newList)
+                        _homeLiveData.postValue(_homeLiveData.value?.copy(list = newList))
                     }
                 }
             }

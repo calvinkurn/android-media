@@ -735,6 +735,7 @@ open class HomeFragment : BaseDaggerFragment(),
                     setData(data.list as List<Visitable<*>>, data.isCache)
                 } else if (!data.isCache) {
                     showToaster(getString(R.string.home_error_connection), TYPE_ERROR)
+                    pageLoadTimeCallback?.invalidate()
                 }
             }
         })
