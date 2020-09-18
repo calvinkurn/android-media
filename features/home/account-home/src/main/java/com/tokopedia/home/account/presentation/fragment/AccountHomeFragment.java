@@ -24,21 +24,16 @@ import com.tokopedia.abstraction.common.utils.DisplayMetricUtils;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.component.badge.BadgeView;
-import com.tokopedia.home.account.AccountConstants;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.analytics.AccountAnalytics;
 import com.tokopedia.home.account.di.component.AccountHomeComponent;
 import com.tokopedia.home.account.di.component.DaggerAccountHomeComponent;
 import com.tokopedia.home.account.presentation.AccountHome;
 import com.tokopedia.home.account.presentation.activity.GeneralSettingActivity;
-import com.tokopedia.home.account.presentation.adapter.AccountFragmentItem;
 import com.tokopedia.home.account.presentation.adapter.AccountHomePagerAdapter;
 import com.tokopedia.home.account.presentation.listener.BaseAccountView;
 import com.tokopedia.navigation_common.listener.AllNotificationListener;
 import com.tokopedia.navigation_common.listener.FragmentListener;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -47,8 +42,6 @@ import javax.inject.Inject;
  */
 public class AccountHomeFragment extends TkpdBaseV4Fragment implements
         AccountHome.View, AllNotificationListener, FragmentListener {
-
-    public static final int SELLER_TAB_INDEX = 1;
 
     @Inject
     AccountHome.Presenter presenter;
@@ -87,18 +80,6 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
     }
 
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-
-        setPage();
-
-        if (getArguments() != null && getArguments().containsKey(AccountConstants.ACCOUNT_TAB)) {
-            String param = getArguments().getString(AccountConstants.ACCOUNT_TAB);
-            presenter.openTabByParam(param);
-        }
-    }
-
-    @Override
     public void onResume() {
         super.onResume();
         presenter.sendUserAttributeTracker();
@@ -108,29 +89,6 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
         if (!hidden) presenter.sendUserAttributeTracker();
-    }
-
-    public void setPage() {
-        if (getContext() != null) {
-            List<AccountFragmentItem> fragmentItems = new ArrayList<>();
-
-            AccountFragmentItem item = new AccountFragmentItem();
-            item.setFragment(BuyerAccountFragment.Companion.newInstance());
-            item.setTitle(getContext().getString(R.string.label_account_buyer));
-            fragmentItems.add(item);
-
-            item = new AccountFragmentItem();
-            item.setFragment(SellerAccountFragment.Companion.newInstance());
-            item.setTitle(getContext().getString(R.string.label_account_seller));
-            fragmentItems.add(item);
-
-            adapter.setItems(fragmentItems);
-        }
-    }
-
-    @Override
-    public void openSellerTab() {
-        viewPager.setCurrentItem(SELLER_TAB_INDEX);
     }
 
     @Override
