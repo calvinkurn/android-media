@@ -2,6 +2,7 @@ package com.tokopedia.home.beranda.data.mapper.factory
 
 import android.content.Context
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.analytics.HomePageTrackingV2
 import com.tokopedia.home.analytics.v2.CategoryWidgetTracking
@@ -150,15 +151,9 @@ class HomeVisitableFactoryImpl(
                 contextualInfo = 1,
                 header = DynamicHomeChannel.Header(name = "Toko Pilihan", applink = "http://tokopedia.com"),
                 widgetParam = "page=1&ep=cpm&item=10&src=homepage&device=desktop&template_id=3&user_id=8909923&headline_product_count=1",
-                banner = DynamicHomeChannel.Banner(title = "Toko Kecantikan", description = "Dari pembelian di kategori yang sering kamu beli", gradientColor = arrayListOf("#411C3B"), textColor = "#ffffff")
+                categoryID = "123",
+                banner = DynamicHomeChannel.Banner(title = "Toko Kecantikan", description = "Dari pembelian di kategori yang sering kamu beli", gradientColor = arrayListOf("#411C3B"), textColor = "#ffffff", applink = ApplinkConst.WISHLIST)
         ), 1, isCache)
-        createFeaturedShopComponent(DynamicHomeChannel.Channels(
-                id="19323",
-                contextualInfo = 2,
-                header = DynamicHomeChannel.Header(name = "Toko Pilihan", applink = "http://tokopedia.com"),
-                widgetParam = "page=2&ep=cpm&item=10&src=homepage&device=desktop&template_id=3&user_id=8909923&headline_product_count=1",
-                banner = DynamicHomeChannel.Banner(title = "Toko Kecantikan", description = "Dari pembelian di kategori yang sering kamu beli", gradientColor = arrayListOf("#411C3B"), textColor = "#ffffff")
-        ), 2, isCache)
         dynamicChannelList.forEachIndexed { index, channel ->
             val position = index+1
             setDynamicChannelPromoName(position, channel)

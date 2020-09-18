@@ -8,7 +8,7 @@ import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.model.ChannelShop
 
 object FeaturedShopTracking : BaseTracking() {
-    private const val CLICK_BACKGROUND_ON_FEATURED_SHOP = "click background on dynamic channel shop"
+    private const val CLICK_BACKGROUND_ON_FEATURED_SHOP = "click on background dynamic channel shop"
     private const val CLICK_VIEW_ALL_ON_FEATURED_SHOP = "click view all on dynamic channel shop"
     private const val CLICK_VIEW_ALL_CARD_ON_FEATURED_SHOP = "click view all card on dynamic channel shop"
 
@@ -26,7 +26,7 @@ object FeaturedShopTracking : BaseTracking() {
             currentSite = CurrentSite.DEFAULT,
             businessUnit = BusinessUnit.DEFAULT,
             userId = userId,
-            promotionObject = listOf(
+            promotions = listOf(
                 Promotion(
                         id = channelModel.id + "_" + channelGrid.id + "_" + channelModel.trackingAttributionModel.persoType+ "_" + channelModel.trackingAttributionModel.categoryId,
                         name = PROMOTION_NAME_SHOP.format(widgetPosition, DYNAMIC_CHANNEL_SHOP, channelModel.channelHeader.name),
