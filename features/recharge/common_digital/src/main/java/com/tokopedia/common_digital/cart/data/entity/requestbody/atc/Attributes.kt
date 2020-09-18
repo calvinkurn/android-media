@@ -19,7 +19,7 @@ class Attributes {
     var productId: Int = 0
     @SerializedName("order_id")
     @Expose
-    var orderId: Int = 0
+    var orderId: Int? = null
     @SerializedName("device_id")
     @Expose
     var deviceId: Int = 0
