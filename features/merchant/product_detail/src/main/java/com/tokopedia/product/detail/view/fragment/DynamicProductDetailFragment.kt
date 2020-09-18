@@ -147,7 +147,7 @@ import javax.inject.Inject
 
 /**
  * Separator Rule
- * Without separator : ProductValuePropositionViewHolder, ProductSocialProofViewHolder, ProoductSocialProofPvViewHolder, ProductSnapshotViewHolder
+ * Without separator : ProductSnapshotViewHolder
  * Bottom separator : ProductVariantViewHolder, ProductNotifyMeViewHolder
  * Top separator : All of the view holder except above
  */
@@ -223,7 +223,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     private var isAutoSelectVariant = false
 
     //View
-    private lateinit var bottomSheet: ValuePropositionBottomSheet
     private lateinit var varToolbar: Toolbar
     private lateinit var actionButtonView: PartialButtonActionView
     private lateinit var stickyLoginView: StickyLoginView
@@ -480,7 +479,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                     val isWishlisted = data.getBooleanExtra(ImagePreviewPdpActivity.RESPONSE_CODE_IMAGE_RPEVIEW, false)
                     pdpUiUpdater?.updateWishlistData(isWishlisted)
                     dynamicAdapter.notifyBasicContentWithPayloads(pdpUiUpdater?.basicContentMap, ProductDetailConstant.PAYLOAD_WISHLIST)
-                    dynamicAdapter.notifySnapshotWithPayloads(pdpUiUpdater?.snapShotMap, ProductDetailConstant.PAYLOAD_WISHLIST)
                 }
             }
             ProductDetailConstant.REQUEST_CODE_SHOP_INFO -> {
@@ -584,11 +582,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 DynamicProductDetailTracking.Click.eventClickProductDescriptionReadMore(viewModel.getDynamicProductInfoP1, componentTrackDataModel)
             }
         }
-    }
-
-    override fun onShipmentSocialProofClicked(componentTrackDataModel: ComponentTrackDataModel) {
-        DynamicProductDetailTracking.Click.eventSocialProfShippingClicked(viewModel.getDynamicProductInfoP1, componentTrackDataModel)
-        onShipmentClicked()
     }
 
     /**
@@ -916,8 +909,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     override fun onImageClicked(position: Int) {
-        val isWishlisted = pdpUiUpdater?.basicContentMap?.isWishlisted
-                ?: pdpUiUpdater?.snapShotMap?.isWishlisted ?: false
+        val isWishlisted = pdpUiUpdater?.basicContentMap?.isWishlisted ?: false
         val dynamicProductInfoData = viewModel.getDynamicProductInfoP1 ?: DynamicProductInfoP1()
         activity?.let {
             val intent = ImagePreviewPdpActivity.createIntent(it, dynamicProductInfoData.basic.productID, isWishlisted,
@@ -949,7 +941,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     override fun showAlertCampaignEnded() {
         dynamicAdapter.notifyBasicContentWithPayloads(pdpUiUpdater?.basicContentMap, null)
-        dynamicAdapter.notifySnapshotWithPayloads(pdpUiUpdater?.snapShotMap, null)
         activity?.let {
             Dialog(it, Dialog.Type.LONG_PROMINANCE).apply {
                 setTitle(getString(R.string.campaign_expired_title))
@@ -1063,42 +1054,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     private fun goToReviewImagePreview() {
         val productId = viewModel.getDynamicProductInfoP1?.basic?.getProductId() ?: 0
         ImageReviewGalleryActivity.moveTo(activity, productId)
-    }
-
-    /**
-     * Value Proposition Clicked
-     */
-    override fun onValuePropositionClicked(view: Int) {
-        val title: String
-        val desc: String
-        val url: String
-        when (view) {
-            R.id.container_ready -> {
-                title = getString(R.string.value_proposition_title_ready)
-                desc = getString(R.string.value_proposition_desc_ready)
-                url = ProductDetailConstant.URL_VALUE_PROPOSITION_READY
-            }
-            R.id.container_ori -> {
-                title = getString(R.string.value_proposition_title_original)
-                desc = getString(R.string.value_proposition_desc_original)
-                url = ProductDetailConstant.URL_VALUE_PROPOSITION_ORI
-            }
-            R.id.container_guarantee_7_days -> {
-                title = getString(R.string.value_proposition_title_guarantee_7_days)
-                desc = getString(R.string.value_proposition_desc_guarantee_7_days)
-                url = ProductDetailConstant.URL_VALUE_PROPOSITION_GUARANTEE_7_DAYS
-            }
-            else -> {
-                title = getString(R.string.value_proposition_title_guarantee)
-                desc = getString(R.string.value_proposition_desc_guarantee)
-                url = ProductDetailConstant.URL_VALUE_PROPOSITION_GUARANTEE
-            }
-        }
-
-        bottomSheet = ValuePropositionBottomSheet.newInstance(title, desc, url)
-        fragmentManager?.let {
-            bottomSheet.show(it, "pdp_bs")
-        }
     }
 
     private fun observeData() {
@@ -1218,7 +1173,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         dynamicAdapter.notifyMediaWithPayload(pdpUiUpdater?.mediaMap, ProductDetailConstant.PAYLOAD_UPDATE_IMAGE)
         dynamicAdapter.notifyGeneralInfo(pdpUiUpdater?.productFullfilmentMap)
         dynamicAdapter.notifyBasicContentWithPayloads(pdpUiUpdater?.basicContentMap, null)
-        dynamicAdapter.notifySnapshotWithPayloads(pdpUiUpdater?.snapShotMap, null)
         dynamicAdapter.notifyVariantSection(pdpUiUpdater?.productNewVariantDataModel, ProductDetailConstant.PAYLOAD_VARIANT_COMPONENT)
         dynamicAdapter.notifyNotifyMe(pdpUiUpdater?.notifyMeMap, null)
     }
@@ -1295,7 +1249,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             actionButtonView.setTopAdsButton(hasTopAds())
             pdpUiUpdater?.updateWishlistData(it.isWishlisted)
             dynamicAdapter.notifyBasicContentWithPayloads(pdpUiUpdater?.basicContentMap, ProductDetailConstant.PAYLOAD_WISHLIST)
-            dynamicAdapter.notifySnapshotWithPayloads(pdpUiUpdater?.snapShotMap, ProductDetailConstant.PAYLOAD_WISHLIST)
             (activity as? ProductDetailActivity)?.stopMonitoringP2Login()
         }
     }
@@ -2123,7 +2076,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         showToastSuccess(getString(R.string.msg_success_remove_wishlist))
         pdpUiUpdater?.updateWishlistData(false)
         dynamicAdapter.notifyBasicContentWithPayloads(pdpUiUpdater?.basicContentMap, ProductDetailConstant.PAYLOAD_WISHLIST)
-        dynamicAdapter.notifySnapshotWithPayloads(pdpUiUpdater?.snapShotMap, ProductDetailConstant.PAYLOAD_WISHLIST)
         sendIntentResultWishlistChange(productId ?: "", false)
     }
 
@@ -2135,7 +2087,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         showToastSuccess(getString(R.string.msg_success_add_wishlist))
         pdpUiUpdater?.updateWishlistData(true)
         dynamicAdapter.notifyBasicContentWithPayloads(pdpUiUpdater?.basicContentMap, ProductDetailConstant.PAYLOAD_WISHLIST)
-        dynamicAdapter.notifySnapshotWithPayloads(pdpUiUpdater?.snapShotMap, ProductDetailConstant.PAYLOAD_WISHLIST)
         DynamicProductDetailTracking.Branch.eventBranchAddToWishlist(viewModel.getDynamicProductInfoP1, (UserSession(activity)).userId, pdpUiUpdater?.productInfoMap?.data?.find { content ->
             content.row == "bottom"
         }?.listOfContent?.firstOrNull()?.subtitle ?: "")
