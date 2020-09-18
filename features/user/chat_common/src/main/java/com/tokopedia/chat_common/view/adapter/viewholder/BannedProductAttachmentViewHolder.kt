@@ -16,12 +16,12 @@ import com.tokopedia.unifycomponents.toPx
 open class BannedProductAttachmentViewHolder(itemView: View?, val listener: ProductAttachmentListener)
     : BaseChatViewHolder<BannedProductAttachmentViewModel>(itemView) {
 
-    protected var container: ConstraintLayout? = null
-    private var warning: Ticker? = null
-    private var name: TextView? = null
-    private var price: TextView? = null
-    private var btnBuy: UnifyButton? = null
-    private var image: ImageView? = null
+    protected open var container: ConstraintLayout? = null
+    protected open var warning: Ticker? = null
+    protected open var name: TextView? = null
+    protected open var price: TextView? = null
+    protected open var btnBuy: UnifyButton? = null
+    protected open var image: ImageView? = null
 
     init {
         container = itemView?.findViewById(R.id.bubble_product)

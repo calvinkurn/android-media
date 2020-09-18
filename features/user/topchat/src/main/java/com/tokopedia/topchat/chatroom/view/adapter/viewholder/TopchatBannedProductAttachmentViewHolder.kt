@@ -2,15 +2,27 @@ package com.tokopedia.topchat.chatroom.view.adapter.viewholder
 
 import android.view.Gravity
 import android.view.View
+import android.widget.ImageView
+import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.chat_common.data.BannedProductAttachmentViewModel
 import com.tokopedia.chat_common.view.adapter.viewholder.BannedProductAttachmentViewHolder
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ProductAttachmentListener
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.common.util.ViewUtil
+import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifycomponents.ticker.Ticker
 
 class TopchatBannedProductAttachmentViewHolder(
         itemView: View?, listener: ProductAttachmentListener
 ) : BannedProductAttachmentViewHolder(itemView, listener) {
+
+    override var container: ConstraintLayout? = itemView?.findViewById(R.id.bubble_product)
+    override var warning: Ticker? = itemView?.findViewById(R.id.banned_warning)
+    override var name: TextView? = itemView?.findViewById(R.id.product_name)
+    override var price: TextView? = itemView?.findViewById(R.id.product_price)
+    override var btnBuy: UnifyButton? = itemView?.findViewById(R.id.btn_buy)
+    override var image: ImageView? = itemView?.findViewById(R.id.product_image)
 
     private val bgOpposite = ViewUtil.generateBackgroundWithShadow(
             itemView,
