@@ -15,7 +15,6 @@ class TopchatImageUploadViewHolder(itemView: View?, listener: ImageUploadListene
 
     override fun alwaysShowTime() = true
     override fun useWhiteReadStatus() = true
-    override fun getDateId() = R.id.tvDate
     override fun getImageId() = R.id.image
     override fun getChatNameId() = R.id.name
     override fun getLabelId() = R.id.label
