@@ -5,14 +5,16 @@ import android.graphics.Typeface
 import android.text.TextPaint
 import android.text.style.TypefaceSpan
 
-class CustomTypefaceSpan(family: String?, private val newType: Typeface): TypefaceSpan(family) {
+class CustomTypefaceSpan(family: String?, private val newType: Typeface, private val color: Int): TypefaceSpan(family) {
 
     override fun updateDrawState(ds: TextPaint) {
         applyCustomTypeFace(ds, newType)
+        ds.color = color
     }
 
     override fun updateMeasureState(paint: TextPaint) {
         applyCustomTypeFace(paint, newType)
+        paint.color = color
     }
 
     private fun applyCustomTypeFace(paint: Paint, tf: Typeface) {
