@@ -384,8 +384,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     override fun onStart() {
         super.onStart()
-        // Check if currently not refreshing and not ATC external flow
-        if (refreshHandler?.isRefreshing == false && !isAtcExternalFlow()) {
+        // Check if currently not refreshing, not ATC external flow and not on error state
+        if (refreshHandler?.isRefreshing == false && !isAtcExternalFlow() && layoutGlobalError.visibility != View.VISIBLE) {
             if (!::cartAdapter.isInitialized || (::cartAdapter.isInitialized && cartAdapter.itemCount == 0)) {
                 dPresenter.processInitialGetCartData(getCartId(), cartListData == null, true)
             }
