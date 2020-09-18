@@ -53,6 +53,7 @@ object ImageUtils {
                     .load(glideUrl)
                     .placeholder(R.drawable.ic_loading_placeholder)
                     .dontAnimate()
+                    .signature(ObjectKey(System.currentTimeMillis().toString()))
                     .error(error)
                     .into(imageview)
         } else {

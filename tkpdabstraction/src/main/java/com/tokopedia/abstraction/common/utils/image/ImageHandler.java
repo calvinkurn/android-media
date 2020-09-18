@@ -309,6 +309,7 @@ public class ImageHandler {
                     .load(glideUrl)
                     .placeholder(R.drawable.loading_page)
                     .dontAnimate()
+                    .signature(new ObjectKey(String.valueOf(System.currentTimeMillis())))
                     .error(error)
                     .into(imageview);
         } else {
