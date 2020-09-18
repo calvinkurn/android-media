@@ -87,6 +87,7 @@ import com.tokopedia.purchase_platform.common.constant.CartConstant.PARAM_DEFAUL
 import com.tokopedia.purchase_platform.common.constant.CartConstant.STATE_RED
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.Companion.RESULT_CODE_COUPON_STATE_CHANGED
 import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
+import com.tokopedia.purchase_platform.common.feature.button.ABTestButton
 import com.tokopedia.purchase_platform.common.feature.insurance.InsuranceItemActionListener
 import com.tokopedia.purchase_platform.common.feature.insurance.request.UpdateInsuranceProductApplicationDetails
 import com.tokopedia.purchase_platform.common.feature.insurance.response.InsuranceCartDigitalProduct
@@ -1514,6 +1515,10 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
     }
 
+    private fun renderAbTestButton(button: ABTestButton) {
+        btnToShipment.buttonType = button.getUnifyButtonType()
+    }
+
     override fun renderInitialGetCartListDataSuccess(cartListData: CartListData?) {
         recommendationPage = 1
         cartListData?.let {
@@ -1523,6 +1528,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             }
 
             sendAnalyticsScreenName(screenName)
+
+            renderAbTestButton(cartListData.abTestButton)
 
             endlessRecyclerViewScrollListener.resetState()
             refreshHandler?.finishRefresh()
