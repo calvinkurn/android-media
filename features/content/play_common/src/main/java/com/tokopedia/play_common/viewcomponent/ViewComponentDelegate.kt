@@ -1,8 +1,6 @@
 package com.tokopedia.play_common.viewcomponent
 
 import android.app.Activity
-import android.os.Handler
-import android.os.Looper
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.*
@@ -19,6 +17,7 @@ class ViewComponentDelegate<VC: IViewComponent>(
 ) : ReadOnlyProperty<LifecycleOwner, VC> {
 
     private var viewComponent: VC? = null
+    private var mIsOnDestroyCalled: Boolean = false
 
     init {
         if (isEagerInit)
@@ -58,7 +57,7 @@ class ViewComponentDelegate<VC: IViewComponent>(
     private fun getOrCreateValue(owner: LifecycleOwner): VC = synchronized(this@ViewComponentDelegate) {
         viewComponent?.let { return it }
 
-        owner.safeAddObserver(getOnDestroyLifecycleObserver(owner))
+        owner.safeAddObserver(getViewComponentLifecycleObserver(owner))
 
         val lifecycleOwner = getValidLifecycleOwner(owner)
 
@@ -73,6 +72,10 @@ class ViewComponentDelegate<VC: IViewComponent>(
     private fun LifecycleOwner.safeAddObserver(observer: LifecycleObserver) {
         if (this is Fragment) {
             viewLifecycleOwnerLiveData.observe(this, Observer { viewLifecycleOwner ->
+                if (mIsOnDestroyCalled) {
+                    viewComponent = null
+                    mIsOnDestroyCalled = false
+                }
                 viewLifecycleOwner.lifecycle.addObserver(observer)
             })
         } else {
@@ -93,17 +96,13 @@ class ViewComponentDelegate<VC: IViewComponent>(
         }
     }
 
-    private fun getOnDestroyLifecycleObserver(owner: LifecycleOwner) = object : LifecycleObserver {
-
-        private val mainHandler = Handler(Looper.getMainLooper())
+    private fun getViewComponentLifecycleObserver(owner: LifecycleOwner) = object : LifecycleObserver {
 
         @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
         fun onDestroy() {
             owner.lifecycle.removeObserver(this)
 
-            mainHandler.post {
-                viewComponent = null
-            }
+            mIsOnDestroyCalled = true
         }
     }
 }
