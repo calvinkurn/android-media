@@ -47,9 +47,6 @@ import com.tokopedia.purchase_platform.common.feature.helpticket.domain.usecase.
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
-import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
-import com.tokopedia.stickylogin.domain.usecase.StickyLoginUseCase
-import com.tokopedia.stickylogin.internal.StickyLoginConstant
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.usecase.RequestParams
@@ -75,7 +72,6 @@ import timber.log.Timber
 import javax.inject.Inject
 
 open class DynamicProductDetailViewModel @Inject constructor(private val dispatcher: DynamicProductDetailDispatcherProvider,
-                                                             private val stickyLoginUseCase: StickyLoginUseCase,
                                                              private val getPdpLayoutUseCase: GetPdpLayoutUseCase,
                                                              private val getProductInfoP2LoginUseCase: GetProductInfoP2LoginUseCase,
                                                              private val getProductInfoP2OtherUseCase: GetProductInfoP2OtherUseCase,
@@ -208,7 +204,6 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
 
     override fun flush() {
         super.flush()
-        stickyLoginUseCase.cancelJobs()
         getPdpLayoutUseCase.cancelJobs()
         getProductInfoP2LoginUseCase.cancelJobs()
         getProductInfoP2OtherUseCase.cancelJobs()
@@ -303,30 +298,6 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
             return listOfUpdateImage
         }
         return listOf()
-    }
-
-    fun getStickyLoginContent(onSuccess: (StickyLoginTickerPojo.TickerDetail) -> Unit, onError: ((Throwable) -> Unit)?) {
-        if (!isUserSessionActive) {
-            stickyLoginUseCase.setParams(StickyLoginConstant.Page.PDP)
-            stickyLoginUseCase.execute(
-                    onSuccess = {
-                        if (it.response.tickers.isNotEmpty()) {
-                            for (tickerDetail in it.response.tickers) {
-                                if (tickerDetail.layout == StickyLoginConstant.LAYOUT_FLOATING) {
-                                    onSuccess.invoke(tickerDetail)
-                                    return@execute
-                                }
-                            }
-                            onError?.invoke(Throwable(""))
-                        } else {
-                            onError?.invoke(Throwable(""))
-                        }
-                    },
-                    onError = {
-                        onError?.invoke(it)
-                    }
-            )
-        }
     }
 
     fun getProductP1(productParams: ProductParams, refreshPage: Boolean = false, isAffiliate: Boolean = false, layoutId: String = "") {

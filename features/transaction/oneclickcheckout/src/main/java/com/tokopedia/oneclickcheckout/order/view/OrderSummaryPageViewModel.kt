@@ -1013,7 +1013,15 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             if (checkoutOccData.status.equals(STATUS_OK, true)) {
                 if (checkoutOccData.result.success == 1 || checkoutOccData.result.paymentParameter.redirectParam.url.isNotEmpty()) {
                     onSuccessCheckout(checkoutOccData.result)
-                    orderSummaryAnalytics.eventClickBayarSuccess(orderTotal.value.isButtonChoosePayment, getTransactionId(checkoutOccData.result.paymentParameter.redirectParam.form), generateOspEe(OrderSummaryPageEnhanceECommerce.STEP_2, OrderSummaryPageEnhanceECommerce.STEP_2_OPTION, allPromoCodes))
+                    var paymentType = _orderPreference.preference.payment.gatewayName
+                    if (paymentType.isBlank()) {
+                        paymentType = OrderSummaryPageEnhanceECommerce.DEFAULT_EMPTY_VALUE
+                    }
+                    orderSummaryAnalytics.eventClickBayarSuccess(orderTotal.value.isButtonChoosePayment,
+                            userSessionInterface.userId,
+                            getTransactionId(checkoutOccData.result.paymentParameter.redirectParam.form),
+                            paymentType,
+                            generateOspEe(OrderSummaryPageEnhanceECommerce.STEP_2, OrderSummaryPageEnhanceECommerce.STEP_2_OPTION, allPromoCodes))
                 } else {
                     val error = checkoutOccData.result.error
                     val errorCode = error.code
@@ -1160,11 +1168,14 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             return
         }
         globalEvent.value = OccGlobalEvent.Loading
+        OccIdlingResource.increment()
         updateCartOccUseCase.execute(param, {
             globalEvent.value = OccGlobalEvent.Normal
             onSuccess(generateValidateUsePromoRequest(), generatePromoRequest(), generateBboPromoCodes())
+            OccIdlingResource.decrement()
         }, {
             globalEvent.value = OccGlobalEvent.Prompt(it)
+            OccIdlingResource.decrement()
         }, { throwable: Throwable ->
             if (throwable is MessageErrorException) {
                 globalEvent.value = OccGlobalEvent.Error(errorMessage = throwable.message
@@ -1172,6 +1183,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             } else {
                 globalEvent.value = OccGlobalEvent.Error(throwable)
             }
+            OccIdlingResource.decrement()
         })
     }
 
@@ -1568,7 +1580,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
 
     private fun sendViewOspEe() {
         if (!hasSentViewOspEe) {
-            orderSummaryAnalytics.eventViewOrderSummaryPage(generateOspEe(OrderSummaryPageEnhanceECommerce.STEP_1, OrderSummaryPageEnhanceECommerce.STEP_1_OPTION))
+            orderSummaryAnalytics.eventViewOrderSummaryPage(userSessionInterface.userId, _orderPreference.preference.payment.gatewayName, generateOspEe(OrderSummaryPageEnhanceECommerce.STEP_1, OrderSummaryPageEnhanceECommerce.STEP_1_OPTION))
             hasSentViewOspEe = true
         }
     }
@@ -1600,6 +1612,10 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             setShopName(orderShop.shopName)
             setShopType(orderShop.isOfficial, orderShop.isGold)
             setCategoryId(orderProduct.categoryId.toString())
+            if (step == OrderSummaryPageEnhanceECommerce.STEP_2) {
+                setShippingPrice(_orderShipment.getRealShippingPrice().toString())
+            }
+            setShippingDuration(_orderShipment.serviceDuration)
         }.build(step, option)
     }
 

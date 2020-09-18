@@ -83,7 +83,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         assertEquals(OccState.FirstLoad(OrderPreference(profileIndex = "", profileRecommendation = "", isValid = true)), orderSummaryPageViewModel.orderPreference.value)
         assertEquals(OccGlobalEvent.Normal, orderSummaryPageViewModel.globalEvent.value)
         verify(exactly = 1) {
-            orderSummaryAnalytics.eventViewOrderSummaryPage(any())
+            orderSummaryAnalytics.eventViewOrderSummaryPage(any(), any(), any())
         }
         verify(inverse = true) { ratesUseCase.execute(any()) }
     }
@@ -101,7 +101,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
 
         // Then
         verify(exactly = 1) {
-            orderSummaryAnalytics.eventViewOrderSummaryPage(any())
+            orderSummaryAnalytics.eventViewOrderSummaryPage(any(), any(), any())
         }
     }
 
@@ -119,7 +119,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         assertEquals(OccState.Failed(Failure(response)), orderSummaryPageViewModel.orderPreference.value)
         assertEquals(OccGlobalEvent.Normal, orderSummaryPageViewModel.globalEvent.value)
         verify(inverse = true) {
-            orderSummaryAnalytics.eventViewOrderSummaryPage(any())
+            orderSummaryAnalytics.eventViewOrderSummaryPage(any(), any(), any())
         }
         verify(inverse = true) { ratesUseCase.execute(any()) }
     }
@@ -210,7 +210,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
                 orderSummaryPageViewModel.orderShipment.value)
         assertEquals(OccGlobalEvent.Normal, orderSummaryPageViewModel.globalEvent.value)
         verify(exactly = 1) {
-            orderSummaryAnalytics.eventViewOrderSummaryPage(any())
+            orderSummaryAnalytics.eventViewOrderSummaryPage(any(), any(), any())
         }
         assertEquals(cart, orderSummaryPageViewModel.orderCart)
         assertEquals(1, orderSummaryPageViewModel.getCurrentShipperId())
