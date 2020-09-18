@@ -3,13 +3,13 @@ package com.tokopedia.activation.model.response
 import com.google.gson.annotations.SerializedName
 
 class UpdateShopFeatureResponse(
-        @SerializedName("data")
+        @SerializedName("updateShopFeature")
         var data: UpdateShopFeature = UpdateShopFeature()
 )
 
 data class UpdateShopFeature(
         @SerializedName("success")
-        var success: String = "",
+        var success: Boolean = false,
         @SerializedName("message")
         var message: String = "",
         @SerializedName("createdId")

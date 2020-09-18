@@ -22,6 +22,7 @@ import com.tokopedia.activation.di.ActivationPageComponent
 import com.tokopedia.activation.model.ActivationPageState
 import com.tokopedia.activation.model.ShippingEditorModel
 import com.tokopedia.activation.model.ShopFeatureModel
+import com.tokopedia.activation.model.UpdateFeatureModel
 import com.tokopedia.activation.util.*
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -187,11 +188,7 @@ class ActivationPageFragment: BaseDaggerFragment() {
         viewModel.updateShopFeature.observe(viewLifecycleOwner, Observer {
             when(it) {
                 is ActivationPageState.Success -> {
-                    view?.let { view ->
-                        if(codValue) Toaster.make(view, COD_INACTIVE_MESSAGE, type = Toaster.TYPE_NORMAL)
-                        else Toaster.make(view, COD_ACTIVE_MESSAGE, type = Toaster.TYPE_NORMAL)
-                    }
-                    getShopFeature()
+                    openDialogCoverageValidation(it.data)
                 }
 
                 is ActivationPageState.Fail -> {
@@ -255,7 +252,7 @@ class ActivationPageFragment: BaseDaggerFragment() {
                 context?.let { context ->
                     DialogUnify(context, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
                         setTitle(getString(R.string.dialog_title_inactive))
-                        setDescription(getString(R.string.dialog_desciption_inactive))
+                        setDescription(getString(R.string.dialog_description_inactive))
                         setPrimaryCTAText(getString(R.string.dialog_primary_button_inactive))
                         setSecondaryCTAText(getString(R.string.dialog_secondary_button_inactive))
                         setPrimaryCTAClickListener {
@@ -346,7 +343,7 @@ class ActivationPageFragment: BaseDaggerFragment() {
             swipeRefreshLayout?.isRefreshing = false
             context?.let { dialog ->
                 DialogUnify(dialog, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
-                    val primaryText = HtmlLinkHelper(context, getString(R.string.dialog_desciption_active)).spannedString
+                    val primaryText = HtmlLinkHelper(context, getString(R.string.dialog_description_active)).spannedString
                     setTitle(getString(R.string.dialog_title_active))
                     if (primaryText != null) {
                         setDescription(primaryText)
@@ -364,6 +361,28 @@ class ActivationPageFragment: BaseDaggerFragment() {
             }
         } else {
             viewModel.updateShopFeature(true)
+        }
+    }
+
+    private fun openDialogCoverageValidation(data: UpdateFeatureModel) {
+        if(!data.success) {
+            swipeRefreshLayout?.isRefreshing = false
+            context?.let {
+                DialogUnify(it, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE).apply {
+                    setTitle(getString(R.string.dialog_title_coverage))
+                    setDescription(getString(R.string.dialog_description_coverage))
+                    setPrimaryCTAText(getString(R.string.dialog_button_coverage))
+                    setPrimaryCTAClickListener {
+                        dismiss()
+                    }
+                }.show()
+            }
+        } else {
+            view?.let { view ->
+                if (codValue) Toaster.make(view, COD_INACTIVE_MESSAGE, type = Toaster.TYPE_NORMAL)
+                else Toaster.make(view, COD_ACTIVE_MESSAGE, type = Toaster.TYPE_NORMAL)
+            }
+            getShopFeature()
         }
     }
 
