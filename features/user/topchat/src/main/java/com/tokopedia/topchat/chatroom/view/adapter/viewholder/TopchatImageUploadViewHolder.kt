@@ -8,6 +8,7 @@ import com.tokopedia.chat_common.data.ImageUploadViewModel
 import com.tokopedia.chat_common.view.adapter.viewholder.ImageUploadViewHolder
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageUploadListener
 import com.tokopedia.topchat.R
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.getStrokeWidthSenderDimenRes
 import com.tokopedia.topchat.common.util.ViewUtil
 
 class TopchatImageUploadViewHolder(itemView: View?, listener: ImageUploadListener)
@@ -32,7 +33,7 @@ class TopchatImageUploadViewHolder(itemView: View?, listener: ImageUploadListene
             R.dimen.dp_topchat_1,
             Gravity.CENTER,
             com.tokopedia.unifyprinciples.R.color.Neutral_N0,
-            R.dimen.dp_topchat_1point5
+            getStrokeWidthSenderDimenRes()
     )
     private val bgSender = ViewUtil.generateBackgroundWithShadow(
             itemView,
@@ -46,7 +47,7 @@ class TopchatImageUploadViewHolder(itemView: View?, listener: ImageUploadListene
             R.dimen.dp_topchat_1,
             Gravity.CENTER,
             R.color.bg_topchat_right_message,
-            R.dimen.dp_topchat_1point5
+            getStrokeWidthSenderDimenRes()
     )
 
     private val imageRadius = itemView?.context?.resources?.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)

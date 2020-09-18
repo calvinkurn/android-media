@@ -8,6 +8,7 @@ import com.tokopedia.chat_common.view.adapter.viewholder.BaseChatViewHolder
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.merchantvoucher.common.widget.MerchantVoucherView
 import com.tokopedia.topchat.R
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.getStrokeWidthSenderDimenRes
 import com.tokopedia.topchat.chatroom.view.listener.TopChatVoucherListener
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatVoucherUiModel
 import com.tokopedia.topchat.common.util.ViewUtil
@@ -37,7 +38,7 @@ class TopChatVoucherViewHolder(
             R.dimen.dp_topchat_1,
             Gravity.CENTER,
             com.tokopedia.unifyprinciples.R.color.Neutral_N0,
-            R.dimen.dp_topchat_1point5
+            getStrokeWidthSenderDimenRes()
     )
     private val bgSender = ViewUtil.generateBackgroundWithShadow(
             itemView,
@@ -51,7 +52,7 @@ class TopChatVoucherViewHolder(
             R.dimen.dp_topchat_1,
             Gravity.CENTER,
             R.color.bg_topchat_right_message,
-            R.dimen.dp_topchat_1point5
+            getStrokeWidthSenderDimenRes()
     )
 
     override fun bind(viewModel: TopChatVoucherUiModel) {

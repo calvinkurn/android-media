@@ -9,6 +9,7 @@ import com.tokopedia.chat_common.data.BannedProductAttachmentViewModel
 import com.tokopedia.chat_common.view.adapter.viewholder.BannedProductAttachmentViewHolder
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ProductAttachmentListener
 import com.tokopedia.topchat.R
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.getStrokeWidthSenderDimenRes
 import com.tokopedia.topchat.common.util.ViewUtil
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
@@ -48,7 +49,7 @@ class TopchatBannedProductAttachmentViewHolder(
             R.dimen.dp_topchat_1,
             Gravity.CENTER,
             R.color.bg_topchat_right_message,
-            R.dimen.dp_topchat_1point5
+            getStrokeWidthSenderDimenRes()
     )
 
     private val padding = itemView?.context?.resources?.getDimension(R.dimen.dp_topchat_12)?.toInt()

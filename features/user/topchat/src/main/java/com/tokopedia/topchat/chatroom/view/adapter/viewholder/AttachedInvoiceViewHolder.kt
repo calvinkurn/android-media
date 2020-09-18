@@ -17,6 +17,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ErrorAttachment
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.DeferredViewHolderAttachment
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.getStrokeWidthSenderDimenRes
 import com.tokopedia.topchat.common.util.ViewUtil
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.LoaderUnify
@@ -59,7 +60,7 @@ class AttachedInvoiceViewHolder(
             R.dimen.dp_topchat_1,
             Gravity.CENTER,
             R.color.bg_topchat_right_message,
-            R.dimen.dp_topchat_1point5
+            getStrokeWidthSenderDimenRes()
     )
 
     interface InvoiceThumbnailListener {

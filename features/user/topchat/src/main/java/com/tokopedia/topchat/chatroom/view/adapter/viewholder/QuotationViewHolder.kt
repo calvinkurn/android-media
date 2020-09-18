@@ -8,6 +8,7 @@ import com.tokopedia.chat_common.view.adapter.viewholder.BaseChatViewHolder
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandlerListener
 import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.topchat.R
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.getStrokeWidthSenderDimenRes
 import com.tokopedia.topchat.chatroom.view.viewmodel.QuotationUiModel
 import com.tokopedia.topchat.common.util.ViewUtil
 import kotlinx.android.synthetic.main.item_chat_quotation.view.*
@@ -46,7 +47,7 @@ class QuotationViewHolder(
             R.dimen.dp_topchat_1,
             Gravity.CENTER,
             R.color.bg_topchat_right_message,
-            R.dimen.dp_topchat_1point5
+            getStrokeWidthSenderDimenRes()
     )
 
     interface QuotationListener {
