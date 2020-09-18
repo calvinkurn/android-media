@@ -53,7 +53,6 @@ class TimerSprintSaleItemViewModel(val application: Application, val components:
     }
 
     fun startTimer() {
-
         val timerData: String? = if (isFutureSale()) {
             components.data?.get(0)?.startDate
         } else {
