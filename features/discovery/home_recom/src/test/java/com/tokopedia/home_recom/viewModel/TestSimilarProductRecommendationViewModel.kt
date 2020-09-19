@@ -3,6 +3,7 @@ package com.tokopedia.home_recom.viewModel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.home_recom.util.RecommendationDispatcherTest
 import com.tokopedia.home_recom.viewmodel.SimilarProductRecommendationViewModel
+import com.tokopedia.recommendation_widget_common.domain.GetRecommendationFilterChips
 import com.tokopedia.recommendation_widget_common.domain.GetSingleRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
@@ -30,6 +31,7 @@ class TestSimilarProductRecommendationViewModel {
     private val addWishListUseCase = mockk<AddWishListUseCase>(relaxed = true)
     private val removeWishListUseCase = mockk<RemoveWishListUseCase>(relaxed = true)
     private val topAdsWishlishedUseCase = mockk<TopAdsWishlishedUseCase>(relaxed = true)
+    private val getRecommendationFilterChips = mockk<GetRecommendationFilterChips>(relaxed = true)
 
     private val viewModel = SimilarProductRecommendationViewModel(
             dispatcher = RecommendationDispatcherTest(),
@@ -37,7 +39,8 @@ class TestSimilarProductRecommendationViewModel {
             topAdsWishlishedUseCase = topAdsWishlishedUseCase,
             removeWishListUseCase = removeWishListUseCase,
             addWishListUseCase = addWishListUseCase,
-            userSessionInterface = userSession
+            userSessionInterface = userSession,
+            getRecommendationFilterChips = getRecommendationFilterChips
     )
     private val recommendation = RecommendationItem(productId = 1234)
 
