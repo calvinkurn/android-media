@@ -1,12 +1,10 @@
 package com.tokopedia.promocheckout.common.domain.mapper
 
-import com.tokopedia.promocheckout.common.domain.model.TravelCollectiveBanner
 import com.tokopedia.promocheckout.common.domain.model.deals.DealsVerifyResponse
 import com.tokopedia.promocheckout.common.view.uimodel.DataUiModel
 import com.tokopedia.promocheckout.common.view.uimodel.MessageUiModel
-import javax.inject.Inject
 
-object DealsCheckoutMapper{
+object DealsCheckoutMapper {
 
     fun mapData(data: DealsVerifyResponse): DataUiModel {
         return DataUiModel(
