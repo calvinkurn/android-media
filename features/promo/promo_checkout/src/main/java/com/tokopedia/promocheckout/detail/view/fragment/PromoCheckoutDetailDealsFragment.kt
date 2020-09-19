@@ -17,6 +17,7 @@ import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
 import com.tokopedia.promocheckout.detail.di.PromoCheckoutDetailComponent
 import com.tokopedia.promocheckout.detail.view.activity.PromoCheckoutDetailDealsActivity
 import com.tokopedia.promocheckout.detail.view.presenter.PromoCheckoutDetailDealsPresenter
+import com.tokopedia.promocheckout.list.view.fragment.PromoCheckoutListDealsFragment
 import com.tokopedia.user.session.UserSession
 import timber.log.Timber
 import javax.inject.Inject
@@ -60,6 +61,7 @@ class PromoCheckoutDetailDealsFragment : BasePromoCheckoutDetailFragment() {
         var requestBody: JsonObject? = null
         val jsonElement: JsonElement = JsonParser().parse(checkoutData).asJsonObject
         requestBody = jsonElement.asJsonObject
+        requestBody.addProperty("promocode", codeCoupon)
         promoCheckoutDetailDealsPresenter.processCheckDealPromoCode(codeCoupon, false, requestBody)
     }
 
@@ -74,7 +76,7 @@ class PromoCheckoutDetailDealsFragment : BasePromoCheckoutDetailFragment() {
 
     override fun onSuccessCheckPromo(data: DataUiModel) {
         val intent = Intent()
-        val promoData = PromoData(PromoData.TYPE_COUPON, data.codes[0],
+        val promoData = PromoData(PromoData.COUPON_RESULT_CODE, data.codes[0],
                 data.message.text, data.titleDescription, state = data.message.state.mapToStatePromoCheckout())
         intent.putExtra(EXTRA_PROMO_DATA, promoData)
         activity?.setResult(PromoData.COUPON_RESULT_CODE, intent)
@@ -99,7 +101,6 @@ class PromoCheckoutDetailDealsFragment : BasePromoCheckoutDetailFragment() {
     }
 
     companion object {
-        val EXTRA_KUPON_CODE = "EXTRA_KUPON_CODE"
         val EXTRA_IS_USE = "EXTRA_IS_USE"
         val EXTRA_CHECKOUT_DATA = "checkoutdata"
 
