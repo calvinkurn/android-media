@@ -261,9 +261,9 @@ class AutoAdsWidgetCommon(context: Context, attrs: AttributeSet?) : CardUnify(co
         val desc = view.findViewById<TextView>(R.id.status_desc)
         view.let {
             if (entryPoint == ENTRY_FROM_EDIT_PAGE)
-                desc.text = resources.getString(R.string.autoads_outofcredit_desc_edit)
+                desc.text = resources.getString(R.string.topads_common_autoads_outofcredit_desc_edit)
             else
-                desc.text = resources.getString(R.string.autoads_outofcredit_desc)
+                desc.text = resources.getString(R.string.topads_common_autoads_outofcredit_desc)
         }
         setSpannable(TOPUP_LINK, view, outOfCredit)
         setSwitchAction(view)
@@ -290,7 +290,7 @@ class AutoAdsWidgetCommon(context: Context, attrs: AttributeSet?) : CardUnify(co
         val imgBg = view.findViewById<ConstraintLayout>(R.id.auto_ad_status_image)
         imgBg.background = AppCompatResources.getDrawable(context, R.drawable.topads_common_blue_bg)
         view.findViewById<TextView>(R.id.status_desc).
-        text = context.getString(R.string.autoads_inprogress_deactivate_desc)
+        text = context.getString(R.string.topads_common_autoads_inprogress_deactivate_desc)
         baseLayout?.removeAllViews()
         baseLayout?.addView(view)
     }

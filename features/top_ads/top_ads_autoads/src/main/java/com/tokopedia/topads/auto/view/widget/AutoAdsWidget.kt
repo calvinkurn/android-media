@@ -141,7 +141,7 @@ class AutoAdsWidget(context: Context, attrs: AttributeSet?) : CardUnify(context,
 
     private fun getDrwableforNotDeliverd(view: View) {
         val imgBg = view.findViewById<ConstraintLayout>(R.id.auto_ad_status_image)
-        imgBg.background = AppCompatResources.getDrawable(context, R.drawable.topads_common_orange_bg)
+        imgBg.background = AppCompatResources.getDrawable(context, com.tokopedia.topads.common.R.drawable.topads_common_orange_bg)
     }
 
     private fun setOutOfBudgetView() {
