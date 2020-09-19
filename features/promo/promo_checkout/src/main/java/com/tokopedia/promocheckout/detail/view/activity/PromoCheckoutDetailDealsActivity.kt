@@ -30,11 +30,12 @@ class PromoCheckoutDetailDealsActivity : BaseSimpleActivity(), HasComponent<Prom
     }
 
     companion object {
-        fun newInstance(context: Context?, codeCoupon: String, isUse: Boolean, requestBody: JsonObject): Intent {
+        fun newInstance(context: Context?, codeCoupon: String, isUse: Boolean, checkoutData: String): Intent {
             val intent = Intent(context, PromoCheckoutDetailDealsActivity::class.java)
             val bundle = Bundle()
             bundle.putString(BasePromoCheckoutDetailFragment.EXTRA_KUPON_CODE, codeCoupon)
             bundle.putBoolean(BasePromoCheckoutDetailFragment.EXTRA_IS_USE, isUse)
+            bundle.putString(EXTRA_CHECKOUT_DATA, checkoutData)
             intent.putExtras(bundle)
             return intent
         }
