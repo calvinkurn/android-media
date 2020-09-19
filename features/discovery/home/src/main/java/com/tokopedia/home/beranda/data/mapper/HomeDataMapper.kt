@@ -15,20 +15,24 @@ class HomeDataMapper(
         private val trackingQueue: TrackingQueue,
         private val homeDynamicChannelDataMapper: HomeDynamicChannelDataMapper
 ) {
-    fun mapToHomeViewModel(homeData: HomeData?, isCache: Boolean): HomeDataModel{
+    fun mapToHomeViewModel(homeData: HomeData?, isCache: Boolean, showGeolocation: Boolean = true): HomeDataModel{
         BenchmarkHelper.beginSystraceSection(TRACE_MAP_TO_HOME_VIEWMODEL)
         if (homeData == null) return HomeDataModel(isCache = isCache)
         val addLoadingMore = homeData.token.isNotEmpty()
-        val list: List<Visitable<*>> = homeVisitableFactory.buildVisitableList(
+        val factory: HomeVisitableFactory = homeVisitableFactory.buildVisitableList(
                 homeData, isCache, trackingQueue, context, homeDynamicChannelDataMapper)
                 .addBannerVisitable()
                 .addTickerVisitable()
                 .addUserWalletVisitable()
                 .addDynamicIconVisitable()
-                .addGeolocationVisitable()
+
+        if (showGeolocation) factory.addGeolocationVisitable()
+
+        factory.addGeolocationVisitable()
                 .addDynamicChannelVisitable(addLoadingMore)
                 .build()
+
         BenchmarkHelper.endSystraceSection()
-        return HomeDataModel(homeData.homeFlag, list, isCache, addLoadingMore)
+        return HomeDataModel(homeData.homeFlag, factory.build(), isCache, addLoadingMore)
     }
 }

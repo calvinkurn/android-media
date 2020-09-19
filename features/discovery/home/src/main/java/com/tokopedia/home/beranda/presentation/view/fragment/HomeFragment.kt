@@ -485,7 +485,7 @@ open class HomeFragment : BaseDaggerFragment(),
                                 context,
                                 HomeVisitableFactoryImpl(getUserSession(), remoteConfig, HomeDefaultDataSource()), trackingQueueObj,
                                 HomeDynamicChannelDataMapper(context, HomeDynamicChannelVisitableFactoryImpl(getUserSession(), remoteConfig, HomeDefaultDataSource()), trackingQueueObj))
-                        val dataVisitable = mapper.mapToHomeViewModel(cacheData, true)
+                        val dataVisitable = mapper.mapToHomeViewModel(cacheData, true, false)
                         if (needToPerformanceMonitoring(dataVisitable.list) && getPageLoadTimeCallback() != null) {
                             /**
                              * Add one time global layout listener for first time lay-out which will trigger
