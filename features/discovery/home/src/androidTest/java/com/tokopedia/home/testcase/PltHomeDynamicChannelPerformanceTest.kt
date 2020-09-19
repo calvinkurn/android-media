@@ -49,8 +49,8 @@ class PltHomeDynamicChannelPerformanceTest {
 
     @Before
     fun deleteDatabase() {
-        activityRule. activity.deleteDatabase("HomeCache.db")
-        deleteSharedPreferenceCache()
+//        activityRule. activity.deleteDatabase("HomeCache.db")
+//        deleteSharedPreferenceCache()
     }
 
     private fun deleteSharedPreferenceCache() {
@@ -64,8 +64,8 @@ class PltHomeDynamicChannelPerformanceTest {
     fun testPageLoadTimePerformance() {
         waitForData()
         savePLTPerformanceResultData(TEST_CASE_PAGE_LOAD_TIME_PERFORMANCE)
-        activityRule.activity.deleteDatabase("HomeCache.db")
-        deleteSharedPreferenceCache()
+//        activityRule.activity.deleteDatabase("HomeCache.db")
+//        deleteSharedPreferenceCache()
         activityRule.activity.finishAndRemoveTask()
         Thread.sleep(1000)
     }
