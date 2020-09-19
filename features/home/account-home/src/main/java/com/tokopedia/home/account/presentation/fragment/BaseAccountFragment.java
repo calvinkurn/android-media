@@ -219,7 +219,13 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
 
     @Override
     public void onMenuGridBackgroundItemClicked(@NotNull MenuGridIconNotificationItemViewModel item) {
-        sendTracking(item.getTitleTrack(), item.getSectionTrack(), item.getDescription());
+        if (item.getDescription().equalsIgnoreCase(AccountConstants.TITLE_UOH_MENUNGGU_PEMBAYARAN)) {
+            accountAnalytics.clickMenungguPembayaranUoh(userSession.getUserId());
+        } else if (item.getDescription().equalsIgnoreCase(AccountConstants.TITLE_UOH_DALAM_PROSES)) {
+            accountAnalytics.clickDalamProsesUoh(userSession.getUserId());
+        } else if (item.getDescription().equalsIgnoreCase(AccountConstants.TITLE_UOH_SEMUA_TRANSAKSI)) {
+            accountAnalytics.clickSemuaTransaksiUoh(userSession.getUserId());
+        }
         openApplink(item.getApplink());
     }
 

@@ -310,7 +310,7 @@ class StaticBuyerModelGenerator private constructor() {
 
             gridItems.add(MenuGridIconNotificationItemViewModel(
                     R.drawable.ic_uoh_menunggu_pembayaran,
-                    context.getString(R.string.title_uoh_1),
+                    AccountConstants.TITLE_UOH_MENUNGGU_PEMBAYARAN,
                     ApplinkConst.PMS,
                     accountDataModel?.notifications?.buyerOrder?.paymentStatus?.toInt(10) ?: 0,
                     AccountConstants.Analytics.PEMBELI,
@@ -328,7 +328,7 @@ class StaticBuyerModelGenerator private constructor() {
 
             gridItems.add(MenuGridIconNotificationItemViewModel(
                     R.drawable.ic_uoh_all_transactions,
-                    context.getString(R.string.title_uoh_3),
+                    AccountConstants.TITLE_UOH_SEMUA_TRANSAKSI,
                     UNIFY_ORDER_STATUS.replace(PARAM_CUSTOM_FILTER, PARAM_SEMUA_TRANSAKSI),
                     0,
                     AccountConstants.Analytics.PEMBELI,

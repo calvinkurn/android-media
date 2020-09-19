@@ -128,7 +128,9 @@
                 app:typographyWeight="bold"
                 app:typographyType="heading_5"
                 android:textColor="@color/tkpd_transaction_font_title_recharge_widget"
-                tools:text="Kartu Nama Standar"/>
+                tools:text="Kartu Nama Standar"
+                android:ellipsize="end"
+                android:maxLines="1"/>
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_uoh_product_desc"
