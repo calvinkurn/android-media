@@ -38,7 +38,7 @@ class DynamicChannelRetryModel(var isLoading: Boolean) : HomeVisitable {
     }
 
     override fun visitableId(): String? {
-        return "retryModel"
+        return DynamicChannelDataModel::class.java.simpleName
     }
 
     override fun equalsWith(b: Any): Boolean {

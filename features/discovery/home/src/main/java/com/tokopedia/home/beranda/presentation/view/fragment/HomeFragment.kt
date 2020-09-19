@@ -33,9 +33,9 @@ import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.google.android.gms.location.LocationServices
 import com.google.android.material.snackbar.Snackbar
+import com.google.gson.Gson
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry
@@ -65,9 +65,17 @@ import com.tokopedia.home.analytics.v2.CategoryWidgetTracking
 import com.tokopedia.home.analytics.v2.LegoBannerTracking
 import com.tokopedia.home.analytics.v2.PopularKeywordTracking
 import com.tokopedia.home.analytics.v2.RecommendationListTracking
+import com.tokopedia.home.beranda.data.datasource.default_data_source.HomeDefaultDataSource
+import com.tokopedia.home.beranda.data.datasource.local.HomeCacheDataConst.HOME_CACHE_DATA_VALUE_KEY
+import com.tokopedia.home.beranda.data.datasource.local.HomeCacheDataConst.SHARED_PREF_HOME_DATA_CACHE_KEY
+import com.tokopedia.home.beranda.data.mapper.HomeDataMapper
+import com.tokopedia.home.beranda.data.mapper.HomeDynamicChannelDataMapper
+import com.tokopedia.home.beranda.data.mapper.factory.HomeDynamicChannelVisitableFactoryImpl
+import com.tokopedia.home.beranda.data.mapper.factory.HomeVisitableFactoryImpl
 import com.tokopedia.home.beranda.di.BerandaComponent
 import com.tokopedia.home.beranda.di.DaggerBerandaComponent
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
+import com.tokopedia.home.beranda.domain.model.HomeData
 import com.tokopedia.home.beranda.domain.model.HomeFlag
 import com.tokopedia.home.beranda.domain.model.SearchPlaceholder
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel
@@ -88,7 +96,6 @@ import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterF
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.HomeRecyclerDecoration
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.PopularKeywordViewHolder.PopularKeywordListener
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.TickerViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationFeedViewHolder
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
 import com.tokopedia.home.beranda.presentation.view.customview.NestedRecyclerView
@@ -284,7 +291,8 @@ open class HomeFragment : BaseDaggerFragment(),
     private var autoRefreshHandler = Handler()
     private var autoRefreshRunnable: TimerRunnable = TimerRunnable(listener = this)
     private var serverOffsetTime: Long = 0L
-
+    private var sharedPrefCache : SharedPreferences? = null
+    private val gson = Gson()
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -324,6 +332,10 @@ open class HomeFragment : BaseDaggerFragment(),
         fragmentCreatedForFirstTime = true
         searchBarTransitionRange = resources.getDimensionPixelSize(R.dimen.home_searchbar_transition_range)
         startToTransitionOffset = resources.getDimensionPixelSize(R.dimen.banner_background_height) / 2
+        sharedPrefCache = context?.getSharedPreferences(
+                SHARED_PREF_HOME_DATA_CACHE_KEY,
+                Context.MODE_PRIVATE
+        )
     }
 
     fun callSubordinateTasks() {
@@ -457,8 +469,41 @@ open class HomeFragment : BaseDaggerFragment(),
         fetchRemoteConfig()
         setupStatusBar()
         setupHomeRecyclerView()
+        consumeSharedPreferenceCache()
         initEggDragListener()
         return view
+    }
+
+    private fun consumeSharedPreferenceCache() {
+        sharedPrefCache?.let {
+            val cacheJson = it.getString(HOME_CACHE_DATA_VALUE_KEY, null)
+            cacheJson?.let {
+                context?.let { context->
+                    getTrackingQueueObj()?.let { trackingQueueObj->
+                        val cacheData = gson.fromJson(cacheJson, HomeData::class.java)
+                        val mapper = HomeDataMapper(
+                                context,
+                                HomeVisitableFactoryImpl(getUserSession(), remoteConfig, HomeDefaultDataSource()), trackingQueueObj,
+                                HomeDynamicChannelDataMapper(context, HomeDynamicChannelVisitableFactoryImpl(getUserSession(), remoteConfig, HomeDefaultDataSource()), trackingQueueObj))
+                        val dataVisitable = mapper.mapToHomeViewModel(cacheData, true)
+                        if (needToPerformanceMonitoring(dataVisitable.list) && getPageLoadTimeCallback() != null) {
+                            /**
+                             * Add one time global layout listener for first time lay-out which will trigger
+                             * onGlobalLayout
+                             */
+                            homeRecyclerView?.addOneTimeGlobalLayoutListener {
+                                /**
+                                 * Call start render, since we have cache then we start to render something
+                                 */
+                                pageLoadTimeCallback?.startRenderPerformanceMonitoring()
+                                setOnRecyclerViewLayoutReady(true)
+                                adapter?.submitList(dataVisitable.list)
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private val afterInflationCallable: Callable<Any?>
@@ -468,10 +513,8 @@ open class HomeFragment : BaseDaggerFragment(),
             null
         }
 
-    private fun setupHomeRecyclerView() { //giving recyclerview larger cache to prevent lag, we can implement this because home dc content
-//is finite
+    private fun setupHomeRecyclerView() {
         homeRecyclerView?.setItemViewCacheSize(20)
-//        homeRecyclerView?.itemAnimator = null
         if (homeRecyclerView?.itemDecorationCount == 0) {
             homeRecyclerView?.addItemDecoration(HomeRecyclerDecoration(resources.getDimensionPixelSize(R.dimen.home_recyclerview_item_spacing)))
         }
@@ -732,7 +775,7 @@ open class HomeFragment : BaseDaggerFragment(),
             if (data != null) {
                 if (data.list.size > VISITABLE_SIZE_WITH_DEFAULT_BANNER) {
                     configureHomeFlag(data.homeFlag)
-                    setData(data.list as List<Visitable<*>>, data.isCache)
+                    setData(data.list, data.isCache)
                 } else if (!data.isCache) {
                     showToaster(getString(R.string.home_error_connection), TYPE_ERROR)
                     pageLoadTimeCallback?.invalidate()

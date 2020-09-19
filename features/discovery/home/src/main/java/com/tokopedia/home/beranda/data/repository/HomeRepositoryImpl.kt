@@ -1,21 +1,22 @@
 package com.tokopedia.home.beranda.data.repository
 
-import android.util.Log
+import android.content.Context
+import android.content.SharedPreferences
+import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home.beranda.data.datasource.default_data_source.HomeDefaultDataSource
+import com.tokopedia.home.beranda.data.datasource.local.HomeCacheDataConst.HOME_CACHE_DATA_VALUE_KEY
+import com.tokopedia.home.beranda.data.datasource.local.HomeCacheDataConst.SHARED_PREF_HOME_DATA_CACHE_KEY
 import com.tokopedia.home.beranda.data.datasource.local.HomeCachedDataSource
 import com.tokopedia.home.beranda.data.datasource.remote.*
 import com.tokopedia.home.beranda.data.mapper.HomeDynamicChannelDataMapper
-import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.domain.model.HomeChannelData
 import com.tokopedia.home.beranda.domain.model.HomeData
 import com.tokopedia.home.beranda.helper.Result
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelDataModel
+import com.tokopedia.home.beranda.helper.copy
 import dagger.Lazy
-import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
@@ -29,10 +30,20 @@ class HomeRepositoryImpl @Inject constructor(
         private val homeRemoteDataSource: HomeRemoteDataSource,
         private val homeDefaultDataSource: HomeDefaultDataSource,
         private val geolocationRemoteDataSource: Lazy<GeolocationRemoteDataSource>,
-        private val homeDynamicChannelDataMapper: HomeDynamicChannelDataMapper
+        private val homeDynamicChannelDataMapper: HomeDynamicChannelDataMapper,
+        private val applicationContext: Context?
 ): HomeRepository {
 
+    val CHANNEL_LIMIT_FOR_PAGINATION = 1
     var isCacheExist = false
+    var sharedPrefCache: SharedPreferences? = null
+
+    init {
+        sharedPrefCache = applicationContext?.getSharedPreferences(
+                SHARED_PREF_HOME_DATA_CACHE_KEY,
+                Context.MODE_PRIVATE
+        )
+    }
 
     override fun getHomeData(): Flow<HomeData?> = homeCachedDataSource.getCachedHomeData().map {
         isCacheExist = it != null
@@ -40,25 +51,21 @@ class HomeRepositoryImpl @Inject constructor(
     }
 
     override fun updateHomeData(): Flow<Result<Any>> = flow{
-        val startMillis = System.currentTimeMillis()
         coroutineScope {
             val isCacheExistForProcess = isCacheExist
             val currentTimeMillisString = System.currentTimeMillis().toString()
             var currentToken = ""
 
             val homeDataResponse = async { homeRemoteDataSource.getHomeData() }
-            var dynamicChannelResponse = async { homeRemoteDataSource.getDynamicChannelData(numOfChannel = 1) }
+            val dynamicChannelResponse = async { homeRemoteDataSource.getDynamicChannelData(numOfChannel = CHANNEL_LIMIT_FOR_PAGINATION) }
 
             var homeDataCombined: HomeData? = HomeData()
 
-            Log.d("FikryDebug","FirstAsync: "+(System.currentTimeMillis()-startMillis)+" ms")
             val homeDataResponseValue = try {
                 homeDataResponse.await()
             } catch (e: Exception) {
                 HomeData()
             }
-
-            Log.d("FikryDebug","HomeDataAwait: "+(System.currentTimeMillis()-startMillis)+" ms")
 
             val dynamicChannelResponseValue = try {
                 dynamicChannelResponse.await()
@@ -69,8 +76,10 @@ class HomeRepositoryImpl @Inject constructor(
                     HomeChannelData()
                 }
             }
-            Log.d("FikryDebug","DynamicChannelAwait: "+(System.currentTimeMillis()-startMillis)+" ms")
 
+            /**
+             * Proceed to pagination mechanism if cache is not exist
+             */
             if (!isCacheExistForProcess && dynamicChannelResponseValue != null) {
                 val extractPair = extractToken(dynamicChannelResponseValue)
 
@@ -83,17 +92,22 @@ class HomeRepositoryImpl @Inject constructor(
                     currentToken = it.token
                 }
 
-                if (homeDataResponse == null) {
+                if (homeDataResponseValue == null) {
                     homeCachedDataSource.saveToDatabase(homeDefaultDataSource.getDefaultHomeData())
                 } else {
                     homeCachedDataSource.saveToDatabase(homeDataResponseValue)
-                    Log.d("FikryDebug","SaveDatabaseFirst: "+(System.currentTimeMillis()-startMillis)+" ms")
                 }
             } else if (dynamicChannelResponseValue == null) {
                 emit(Result.error(Throwable()))
                 return@coroutineScope
             }
 
+            /**
+             * Proceed to full request dynamic channel
+             * - if there is token and cache is not exist
+             * - if cache is exist
+             *
+             */
             if ((!isCacheExistForProcess && currentToken.isNotEmpty()) ||
                     isCacheExistForProcess) {
                 try {
@@ -110,10 +124,25 @@ class HomeRepositoryImpl @Inject constructor(
             homeDataCombined?.let {
                 emit(Result.success(null))
                 homeCachedDataSource.saveToDatabase(it)
-                Log.d("FikryDebug","SaveDatabaseFull: "+(System.currentTimeMillis()-startMillis)+" ms")
+                saveToSharedPreference(it)
             }
         }
-        Log.d("FikryDebug","End: "+(System.currentTimeMillis()-startMillis)+" ms")
+    }
+
+    private fun saveToSharedPreference(it: HomeData) {
+        val copyChannel = it.dynamicHomeChannel.channels.copy()
+
+        val copyHomeDataForCache = it.copy()
+        if (copyChannel.isNotEmpty()) {
+            copyHomeDataForCache.dynamicHomeChannel.channels = copyChannel.subList(0, CHANNEL_LIMIT_FOR_PAGINATION)
+        }
+        sharedPrefCache?.let {
+            with(it.edit()) {
+                val gson = Gson()
+                putString(HOME_CACHE_DATA_VALUE_KEY, gson.toJson(copyHomeDataForCache))
+                apply()
+            }
+        }
     }
 
     override suspend fun onDynamicChannelExpired(groupId: String): List<Visitable<*>> {
@@ -137,22 +166,6 @@ class HomeRepositoryImpl @Inject constructor(
             homeDataResponse.dynamicHomeChannel.channels = currentChannelList.toList()
         }
         return homeDataResponse
-    }
-
-    private suspend fun processFirstPageDynamicChannel(dynamicChannelResponse: Deferred<HomeChannelData>, homeDataResponse: Deferred<HomeData>, currentToken: String): String {
-        var currentToken1 = currentToken
-        val extractPair = extractToken(dynamicChannelResponse.await())
-
-        val homeDataResponseValue = homeDataResponse.await()
-        homeDataResponseValue.dynamicHomeChannel = extractPair.second.dynamicHomeChannel
-        homeDataResponseValue.token = extractPair.first
-        currentToken1 = homeDataResponseValue.token
-        if (homeDataResponse == null) {
-            homeCachedDataSource.saveToDatabase(homeDefaultDataSource.getDefaultHomeData())
-        } else {
-            homeCachedDataSource.saveToDatabase(homeDataResponseValue)
-        }
-        return currentToken1
     }
 
     override fun sendGeolocationInfo(): Observable<Response<String>> = geolocationRemoteDataSource.get().sendGeolocationInfo()

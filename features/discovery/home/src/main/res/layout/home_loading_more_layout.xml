@@ -5,15 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center_horizontal">
-
-<!--    <ProgressBar-->
-<!--        android:id="@+id/homeLoadingProgressBar"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        style="@style/Widget.AppCompat.ProgressBar"-->
-<!--        android:visibility="visible"-->
-<!--        android:padding="@dimen/padding_small"-->
-<!--        android:layout_centerInParent="true" />-->
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

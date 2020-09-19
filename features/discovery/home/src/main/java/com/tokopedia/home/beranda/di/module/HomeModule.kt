@@ -31,7 +31,6 @@ import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
 import dagger.Module
 import dagger.Provides
-import javax.inject.Named
 
 @Module(includes = [
     HomeDataSourceModule::class,
@@ -59,13 +58,15 @@ class HomeModule {
                        homeRemoteDataSource: HomeRemoteDataSource,
                        homeCachedDataSource: HomeCachedDataSource,
                        homeDefaultDataSource: HomeDefaultDataSource,
-                       dynamicChannelDataMapper: HomeDynamicChannelDataMapper
+                       dynamicChannelDataMapper: HomeDynamicChannelDataMapper,
+                       @ApplicationContext context: Context
     ): HomeRepository = HomeRepositoryImpl(
             homeCachedDataSource,
             homeRemoteDataSource,
             homeDefaultDataSource,
             geolocationRemoteDataSource,
-            dynamicChannelDataMapper)
+            dynamicChannelDataMapper,
+            context)
 
     @HomeScope
     @Provides

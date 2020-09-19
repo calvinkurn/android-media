@@ -107,7 +107,8 @@ class HomeBenchmarkTestNetworkRequest: CoroutineScope {
                     homeRemoteDataSource,
                     HomeDefaultDataSource(),
                     geolocationRemoteDataSource,
-                    homeDynamicChannelDataMapper
+                    homeDynamicChannelDataMapper,
+                    context
             )
             homeUseCase = HomeUseCase(
                     homeRepository,
