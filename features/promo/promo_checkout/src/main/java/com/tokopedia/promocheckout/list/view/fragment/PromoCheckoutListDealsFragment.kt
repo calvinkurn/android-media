@@ -34,7 +34,6 @@ class PromoCheckoutListDealsFragment() : BasePromoCheckoutListFragment(), PromoC
     override var serviceId: String = IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.DEALS_STRING
     var categoryID: Int = 1
     var checkoutData: String = ""
-    var dealsVerify = DealsVerifyBody()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,8 +47,8 @@ class PromoCheckoutListDealsFragment() : BasePromoCheckoutListFragment(), PromoC
         if (checkoutData.isNotBlank() || checkoutData.length > 0) {
             val jsonElement: JsonElement = JsonParser().parse(checkoutData)
             requestBody = jsonElement.asJsonObject
-            dealsVerify.promocode = promoCode
-            promoCheckoutListDealsPresenter.processCheckDealPromoCode(promoCode, false, requestBody)
+            requestBody.addProperty(PROMOCODE, promoCode)
+            promoCheckoutListDealsPresenter.processCheckDealPromoCode(false, requestBody)
         }
     }
 
@@ -63,12 +62,9 @@ class PromoCheckoutListDealsFragment() : BasePromoCheckoutListFragment(), PromoC
     }
 
     open fun navigateToPromoDetail(promoCheckoutListModel: PromoCheckoutListModel?) {
-        var requestBody: JsonObject? = null
-        val jsonElement: JsonElement = JsonParser().parse(checkoutData).asJsonObject
-        requestBody = jsonElement.asJsonObject
         startActivityForResult(PromoCheckoutDetailDealsActivity.newInstance(
                 activity, promoCheckoutListModel?.code
-                ?: "", false, requestBody), REQUEST_CODE_PROMO_DETAIL)
+                ?: "", false, checkoutData), REQUEST_CODE_PROMO_DETAIL)
     }
 
     override fun onSuccessCheckPromo(data: DataUiModel) {
@@ -77,8 +73,8 @@ class PromoCheckoutListDealsFragment() : BasePromoCheckoutListFragment(), PromoC
                 data.message.text, data.titleDescription, state = data.message.state.mapToStatePromoCheckout())
         intent.putExtra(EXTRA_PROMO_DATA, promoData)
         intent.putExtra(VOUCHER_CODE, data.codes[0])
-        intent.putExtra(VOUCHER_MESSAGE, data.titleDescription)
-        intent.putExtra(VOUCHER_AMOUNT, data.discountAmount)
+        intent.putExtra(VOUCHER_MESSAGE, data.message.text)
+        intent.putExtra(VOUCHER_DISCOUNT_AMOUNT, data.discountAmount)
         activity?.setResult(PromoData.VOUCHER_RESULT_CODE, intent)
         activity?.finish()
     }
@@ -103,10 +99,12 @@ class PromoCheckoutListDealsFragment() : BasePromoCheckoutListFragment(), PromoC
 
         val EXTRA_CATEGORY_ID = "EXTRA_CATEGORYID"
         val EXTRA_PRODUCTID = "EXTRA_PRODUCTID"
+        val VOUCHER_DISCOUNT_AMOUNT = "VOUCHER_DISCOUNT_AMOUNT"
         val EXTRA_CHECKOUT_DATA = "checkoutdata"
         val VOUCHER_CODE = "voucher_code"
         val VOUCHER_MESSAGE = "voucher_message"
         val VOUCHER_AMOUNT = "voucher_amount"
+        val PROMOCODE = "promocode"
 
         fun createInstance(isCouponActive: Boolean?, promoCode: String?, categoryId: Int?, pageTracking: Int?, productId: String?, checkoutData: String?): PromoCheckoutListDealsFragment {
             val promoCheckoutListMarketplaceFragment = PromoCheckoutListDealsFragment()
