@@ -20,6 +20,7 @@ object AccountConstants {
     const val TITLE_UOH_MENUNGGU_PEMBAYARAN = "Menunggu Pembayaran"
     const val TITLE_UOH_DALAM_PROSES = "Dalam Proses"
     const val TITLE_UOH_SEMUA_TRANSAKSI = "Semua Transaksi"
+    const val TITLE_UOH_ETICKET = "E-tiket & E-voucher Aktif"
 
     object Navigation {
         const val SEE_ALL = "lihat_semua"

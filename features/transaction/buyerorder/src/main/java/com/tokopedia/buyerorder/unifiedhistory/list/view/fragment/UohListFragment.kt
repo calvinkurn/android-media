@@ -38,6 +38,7 @@ import com.tokopedia.buyerorder.R
 import com.tokopedia.buyerorder.unifiedhistory.common.di.UohComponentInstance
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.ALL_CATEGORIES
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.ALL_CATEGORIES_TRANSACTION
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.ALL_DATE
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.ALL_STATUS
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.APPLINK_BASE
@@ -709,6 +710,10 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             arrayListMap.add(mapKey)
             i++
         }
+        tempFilterType = UohConsts.TYPE_FILTER_DATE
+        if (tempFilterDateLabel.isEmpty()) tempFilterDateLabel = "0"
+        if (tempFilterDateKey.isEmpty()) tempFilterDateKey = "0"
+
         uohBottomSheetOptionAdapter.uohItemMapKeyList = arrayListMap
         uohBottomSheetOptionAdapter.filterType = UohConsts.TYPE_FILTER_DATE
         if ((filterStatus.equals(PARAM_SEMUA_TRANSAKSI, true) || filterStatus.equals(PARAM_MARKETPLACE, true)) && !isReset) {
@@ -729,6 +734,10 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             mapKey[option] = option
             arrayListMap.add(mapKey)
         }
+        tempFilterType = UohConsts.TYPE_FILTER_STATUS
+        if (tempFilterStatusLabel.isEmpty()) tempFilterStatusLabel = SEMUA_TRANSAKSI
+        if (tempFilterStatusKey.isEmpty()) tempFilterStatusKey = SEMUA_TRANSAKSI
+
         uohBottomSheetOptionAdapter.uohItemMapKeyList = arrayListMap
         uohBottomSheetOptionAdapter.filterType = UohConsts.TYPE_FILTER_STATUS
         uohBottomSheetOptionAdapter.selectedKey = currFilterStatusKey
@@ -741,7 +750,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         showBottomSheetFilterOptions(UohConsts.CHOOSE_CATEGORIES)
         val arrayListMap = arrayListOf<HashMap<String, String>>()
         val mapKeyDefault = HashMap<String, String>()
-        mapKeyDefault[ALL_CATEGORIES] = UohConsts.ALL_CATEGORIES_TRANSACTION
+        mapKeyDefault[ALL_CATEGORIES] = ALL_CATEGORIES_TRANSACTION
         arrayListMap.add(mapKeyDefault)
         orderList.categories.forEach { category ->
             val mapKey = HashMap<String, String>()
@@ -750,6 +759,9 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         }
         uohBottomSheetOptionAdapter.uohItemMapKeyList = arrayListMap
         uohBottomSheetOptionAdapter.filterType = UohConsts.TYPE_FILTER_CATEGORY
+        tempFilterType = UohConsts.TYPE_FILTER_CATEGORY
+        if (tempFilterCategoryLabel.isEmpty()) tempFilterCategoryLabel = ALL_CATEGORIES_TRANSACTION
+        if (tempFilterCategoryKey.isEmpty()) tempFilterCategoryKey = ALL_CATEGORIES
 
         if ((filterStatus.equals(PARAM_MARKETPLACE, true) ||
                         filterStatus.equals(PARAM_MARKETPLACE_DALAM_PROSES, true)) && !isReset) {
@@ -782,9 +794,6 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         } else {
             uohBottomSheetOptionAdapter.selectedKey = currFilterCategoryKey
         }
-
-        println("++ uohBottomSheetOptionAdapter.selectedKey = ${uohBottomSheetOptionAdapter.selectedKey}")
-
         uohBottomSheetOptionAdapter.isReset = isReset
         uohBottomSheetOptionAdapter.notifyDataSetChanged()
     }
@@ -927,7 +936,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                             filter1?.type = ChipsUnify.TYPE_NORMAL
                         }
                         var dateOption = ""
-                        if (currFilterDateKey.toInt() == 3) {
+                        if (currFilterDateKey.isNotEmpty() && currFilterDateKey.toInt() == 3) {
                             if (paramUohOrder.createTimeStart.isNotEmpty() && paramUohOrder.createTimeEnd.isNotEmpty()) {
                                 val splitStartDate = paramUohOrder.createTimeStart.split('-')
                                 val splitEndDate = paramUohOrder.createTimeEnd.split('-')
@@ -1119,58 +1128,60 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             UohConsts.TYPE_FILTER_DATE -> {
                 tempFilterDateKey = option
                 tempFilterDateLabel = label
-                when {
-                    option.toInt() == 0 -> {
-                        bottomSheetOption?.apply {
-                            cl_choose_date?.gone()
-                        }
-                        paramUohOrder.createTimeStart = ""
-                        paramUohOrder.createTimeEnd = ""
-
-                    }
-                    option.toInt() == 1 -> {
-                        bottomSheetOption?.apply {
-                            cl_choose_date?.gone()
-                        }
-                        val startDate = getCalculatedFormattedDate("yyyy-MM-dd", -30)
-                        val endDate= Date().toFormattedString("yyyy-MM-dd")
-                        paramUohOrder.createTimeStart = startDate
-                        paramUohOrder.createTimeEnd = endDate
-
-                    }
-                    option.toInt() == 2 -> {
-                        bottomSheetOption?.apply {
-                            cl_choose_date?.gone()
-                        }
-                        val startDate = getCalculatedFormattedDate("yyyy-MM-dd", -90)
-                        val endDate= Date().toFormattedString("yyyy-MM-dd")
-                        paramUohOrder.createTimeStart = startDate
-                        paramUohOrder.createTimeEnd = endDate
-
-                    }
-                    option.toInt() == 3 -> {
-                        val startDateStr = getCalculatedFormattedDate("dd MMM yyyy", -90)
-                        val endDateStr = Date().toFormattedString("dd MMM yyyy")
-                        bottomSheetOption?.apply {
-                            cl_choose_date?.visible()
-
-                            if (defaultStartDateStr.isNotEmpty()) {
-                                tf_start_date?.textFieldInput?.setText(defaultStartDateStr)
-                            } else {
-                                tf_start_date?.textFieldInput?.setText(startDateStr)
+                if (option.isNotEmpty()) {
+                    when {
+                        option.toInt() == 0 -> {
+                            bottomSheetOption?.apply {
+                                cl_choose_date?.gone()
                             }
-                            tf_start_date?.textFieldInput?.isFocusable = false
-                            tf_start_date?.textFieldInput?.isClickable = true
-                            tf_start_date?.textFieldInput?.setOnClickListener { showDatePicker(START_DATE) }
+                            paramUohOrder.createTimeStart = ""
+                            paramUohOrder.createTimeEnd = ""
 
-                            if (defaultEndDateStr.isNotEmpty()) {
-                                tf_end_date?.textFieldInput?.setText(defaultEndDateStr)
-                            } else {
-                                tf_end_date?.textFieldInput?.setText(endDateStr)
+                        }
+                        option.toInt() == 1 -> {
+                            bottomSheetOption?.apply {
+                                cl_choose_date?.gone()
                             }
-                            tf_end_date?.textFieldInput?.isFocusable = false
-                            tf_end_date?.textFieldInput?.isClickable = true
-                            tf_end_date?.textFieldInput?.setOnClickListener { showDatePicker(END_DATE) }
+                            val startDate = getCalculatedFormattedDate("yyyy-MM-dd", -30)
+                            val endDate= Date().toFormattedString("yyyy-MM-dd")
+                            paramUohOrder.createTimeStart = startDate
+                            paramUohOrder.createTimeEnd = endDate
+
+                        }
+                        option.toInt() == 2 -> {
+                            bottomSheetOption?.apply {
+                                cl_choose_date?.gone()
+                            }
+                            val startDate = getCalculatedFormattedDate("yyyy-MM-dd", -90)
+                            val endDate= Date().toFormattedString("yyyy-MM-dd")
+                            paramUohOrder.createTimeStart = startDate
+                            paramUohOrder.createTimeEnd = endDate
+
+                        }
+                        option.toInt() == 3 -> {
+                            val startDateStr = getCalculatedFormattedDate("dd MMM yyyy", -90)
+                            val endDateStr = Date().toFormattedString("dd MMM yyyy")
+                            bottomSheetOption?.apply {
+                                cl_choose_date?.visible()
+
+                                if (defaultStartDateStr.isNotEmpty()) {
+                                    tf_start_date?.textFieldInput?.setText(defaultStartDateStr)
+                                } else {
+                                    tf_start_date?.textFieldInput?.setText(startDateStr)
+                                }
+                                tf_start_date?.textFieldInput?.isFocusable = false
+                                tf_start_date?.textFieldInput?.isClickable = true
+                                tf_start_date?.textFieldInput?.setOnClickListener { showDatePicker(START_DATE) }
+
+                                if (defaultEndDateStr.isNotEmpty()) {
+                                    tf_end_date?.textFieldInput?.setText(defaultEndDateStr)
+                                } else {
+                                    tf_end_date?.textFieldInput?.setText(endDateStr)
+                                }
+                                tf_end_date?.textFieldInput?.isFocusable = false
+                                tf_end_date?.textFieldInput?.isClickable = true
+                                tf_end_date?.textFieldInput?.setOnClickListener { showDatePicker(END_DATE) }
+                            }
                         }
                     }
                 }
@@ -1201,19 +1212,25 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             val minDate = Calendar.getInstance()
 
             val resultMinDate = orderList.dateLimit.split('-')
-            minDate.set(Calendar.YEAR, resultMinDate[0].toInt())
-            minDate.set(Calendar.MONTH, resultMinDate[1].toInt())
-            minDate.set(Calendar.DATE, resultMinDate[2].toInt())
+            if (resultMinDate.isNotEmpty()) {
+                minDate.set(Calendar.YEAR, resultMinDate[0].toInt())
+                minDate.set(Calendar.MONTH, resultMinDate[1].toInt())
+                minDate.set(Calendar.DATE, resultMinDate[2].toInt())
+            }
             val maxDate = Calendar.getInstance()
             val isEndDateFilled = paramUohOrder.createTimeEnd.isNotEmpty()
             if (isEndDateFilled && flag.equals(START_DATE, true)) {
                 val splitEndDate = paramUohOrder.createTimeEnd.split('-')
-                maxDate.set(splitEndDate[0].toInt(), splitEndDate[1].toInt() - 1, splitEndDate[2].toInt())
+                if (splitEndDate.isNotEmpty()) {
+                    maxDate.set(splitEndDate[0].toInt(), splitEndDate[1].toInt() - 1, splitEndDate[2].toInt())
+                }
             }
             val isStartDateFilled = paramUohOrder.createTimeStart.isNotEmpty()
             if (isStartDateFilled && flag.equals(END_DATE, true)) {
                 val splitStartDate = paramUohOrder.createTimeStart.split('-')
-                minDate.set(splitStartDate[0].toInt(), splitStartDate[1].toInt() - 1, splitStartDate[2].toInt())
+                if (splitStartDate.isNotEmpty()) {
+                    minDate.set(splitStartDate[0].toInt(), splitStartDate[1].toInt() - 1, splitStartDate[2].toInt())
+                }
             }
 
             val currentDate = Calendar.getInstance()
@@ -1234,36 +1251,38 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                 }
             }
 
-            splitDate.let {
-                currentDate.set(it[0].toInt(), it[1].toInt()-1, it[2].toInt())
-                val datePicker = DatePickerUnify(context, minDate, currentDate, maxDate)
-                fragmentManager?.let { it1 -> datePicker.show(it1, "") }
-                datePicker.datePickerButton.setOnClickListener {
-                    val resultDate = datePicker.getDate()
-                    val monthInt = resultDate[1]+1
-                    var monthStr = monthInt.toString()
-                    if (monthStr.length == 1) monthStr = "0$monthStr"
+            if (splitDate.isNotEmpty()) {
+                splitDate.let {
+                    currentDate.set(it[0].toInt(), it[1].toInt()-1, it[2].toInt())
+                    val datePicker = DatePickerUnify(context, minDate, currentDate, maxDate)
+                    fragmentManager?.let { it1 -> datePicker.show(it1, "") }
+                    datePicker.datePickerButton.setOnClickListener {
+                        val resultDate = datePicker.getDate()
+                        val monthInt = resultDate[1]+1
+                        var monthStr = monthInt.toString()
+                        if (monthStr.length == 1) monthStr = "0$monthStr"
 
-                    var dateStr = resultDate[0].toString()
-                    if (dateStr.length == 1) dateStr = "0$dateStr"
+                        var dateStr = resultDate[0].toString()
+                        if (dateStr.length == 1) dateStr = "0$dateStr"
 
-                    if (flag.equals(START_DATE, true)) {
-                        paramUohOrder.createTimeStart = "${resultDate[2]}-$monthStr-$dateStr"
-                        bottomSheetOption?.tf_start_date?.textFieldInput?.setText("$dateStr ${convertMonth(resultDate[1])} ${resultDate[2]}")
-                        defaultStartDateStr = "$dateStr ${convertMonth(resultDate[1])} ${resultDate[2]}"
-                    } else {
-                        paramUohOrder.createTimeEnd = "${resultDate[2]}-$monthStr-$dateStr"
-                        bottomSheetOption?.tf_end_date?.textFieldInput?.setText("$dateStr ${convertMonth(resultDate[1])} ${resultDate[2]}")
-                        defaultEndDateStr = "$dateStr ${convertMonth(resultDate[1])} ${resultDate[2]}"
+                        if (flag.equals(START_DATE, true)) {
+                            paramUohOrder.createTimeStart = "${resultDate[2]}-$monthStr-$dateStr"
+                            bottomSheetOption?.tf_start_date?.textFieldInput?.setText("$dateStr ${convertMonth(resultDate[1])} ${resultDate[2]}")
+                            defaultStartDateStr = "$dateStr ${convertMonth(resultDate[1])} ${resultDate[2]}"
+                        } else {
+                            paramUohOrder.createTimeEnd = "${resultDate[2]}-$monthStr-$dateStr"
+                            bottomSheetOption?.tf_end_date?.textFieldInput?.setText("$dateStr ${convertMonth(resultDate[1])} ${resultDate[2]}")
+                            defaultEndDateStr = "$dateStr ${convertMonth(resultDate[1])} ${resultDate[2]}"
+                        }
+                        datePicker.dismiss()
                     }
-                    datePicker.dismiss()
+                    if (flag.equals(START_DATE, true)) {
+                        datePicker.setTitle(getString(R.string.uoh_custom_start_date))
+                    } else {
+                        datePicker.setTitle(getString(R.string.uoh_custom_end_date))
+                    }
+                    datePicker.setCloseClickListener { datePicker.dismiss() }
                 }
-                if (flag.equals(START_DATE, true)) {
-                    datePicker.setTitle(getString(R.string.uoh_custom_start_date))
-                } else {
-                    datePicker.setTitle(getString(R.string.uoh_custom_end_date))
-                }
-                datePicker.setCloseClickListener { datePicker.dismiss() }
             }
         }
     }
@@ -1425,7 +1444,9 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                 button.actionType.equals(GQL_RECHARGE_BATALKAN, true) -> {
                     currIndexNeedUpdate = index
                     orderIdNeedUpdated = order.orderUUID
-                    uohListViewModel.doRechargeSetFail(GraphqlHelper.loadRawString(resources, R.raw.recharge_set_fail), order.verticalID.toInt())
+                    if (order.verticalID.isNotEmpty()) {
+                        uohListViewModel.doRechargeSetFail(GraphqlHelper.loadRawString(resources, R.raw.recharge_set_fail), order.verticalID.toInt())
+                    }
                 }
             }
         }

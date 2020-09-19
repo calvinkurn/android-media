@@ -69,6 +69,7 @@ import static com.tokopedia.home.account.AccountConstants.Analytics.EVENT_CATEGO
 import static com.tokopedia.home.account.AccountConstants.Analytics.PEMBELI;
 import static com.tokopedia.home.account.AccountConstants.Analytics.PENJUAL;
 import static com.tokopedia.home.account.AccountConstants.Analytics.PROFILE;
+import static com.tokopedia.home.account.AccountConstants.TITLE_UOH_ETICKET;
 import static com.tokopedia.home.account.constant.SettingConstant.POWER_MERCHANT_URL;
 import static com.tokopedia.home.account.data.util.StaticBuyerModelGeneratorKt.RESCENTER_BUYER;
 import static com.tokopedia.home.account.AccountConstants.Analytics.SECTION_OTHER_FEATURE;
@@ -275,7 +276,11 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
 
     @Override
     public void onMenuListClicked(MenuListViewModel item) {
-        sendTracking(item.getTitleTrack(), item.getSectionTrack(), item.getMenu());
+        if (item.getMenu().equalsIgnoreCase(TITLE_UOH_ETICKET)) {
+            accountAnalytics.clickEticketEvoucherUoh(userSession.getUserId());
+        } else {
+            sendTracking(item.getTitleTrack(), item.getSectionTrack(), item.getMenu());
+        }
         openApplink(item.getApplink());
     }
 
