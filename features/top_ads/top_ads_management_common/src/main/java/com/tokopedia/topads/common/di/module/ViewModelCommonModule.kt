@@ -17,7 +17,7 @@ import dagger.multibindings.IntoMap
 
 @Module
 @TopAdsCommonScope
-abstract class ViewModelModule {
+abstract class ViewModelCommonModule {
 
     @Binds
     internal abstract fun bindViewModelFactory(viewModelFactory: ViewModelFactory): ViewModelProvider.Factory

@@ -5,7 +5,6 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.topads.common.data.response.TopAdsAutoAdsData
 import com.tokopedia.topads.common.data.model.AutoAdsParam
-import com.tokopedia.topads.auto.data.network.response.NonDeliveryResponse
 import com.tokopedia.topads.common.data.response.TopAdsAutoAds
 import com.tokopedia.topads.auto.di.AutoAdsDispatcherProvider
 import com.tokopedia.topads.auto.view.AutoAdsTestDispatcherProvider

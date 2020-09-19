@@ -30,7 +30,6 @@ import com.tokopedia.topads.common.data.model.AutoAdsParam
 import com.tokopedia.topads.auto.di.AutoAdsComponent
 import com.tokopedia.topads.auto.di.DaggerAutoAdsComponent
 import com.tokopedia.topads.auto.di.module.AutoAdsQueryModule
-import com.tokopedia.topads.auto.internal.NonDeliveryReason
 import com.tokopedia.topads.auto.view.activity.EditBudgetAutoAdsActivity
 import com.tokopedia.topads.auto.view.factory.AutoAdsWidgetViewModelFactory
 import com.tokopedia.topads.auto.view.fragment.AutoAdsBaseBudgetFragment
@@ -38,6 +37,7 @@ import com.tokopedia.topads.auto.view.sheet.ManualAdsConfirmationSheet
 import com.tokopedia.topads.auto.view.viewmodel.AutoAdsWidgetViewModel
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.data.internal.AutoAdsStatus
+import com.tokopedia.topads.common.data.internal.NonDeliveryReason
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
 import com.tokopedia.user.session.UserSessionInterface
@@ -141,7 +141,7 @@ class AutoAdsWidget(context: Context, attrs: AttributeSet?) : CardUnify(context,
 
     private fun getDrwableforNotDeliverd(view: View) {
         val imgBg = view.findViewById<ConstraintLayout>(R.id.auto_ad_status_image)
-        imgBg.background = AppCompatResources.getDrawable(context, com.tokopedia.topads.common.R.drawable.topads_common_orange_bg)
+        imgBg.background = AppCompatResources.getDrawable(context, R.drawable.topads_orange_bg)
     }
 
     private fun setOutOfBudgetView() {

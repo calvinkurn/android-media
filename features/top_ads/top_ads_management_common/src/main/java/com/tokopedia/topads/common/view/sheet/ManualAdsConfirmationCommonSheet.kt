@@ -7,7 +7,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.tokopedia.topads.common.R
 
-class ManualAdsConfirmationSheet {
+class ManualAdsConfirmationCommonSheet {
 
     private var dialog: BottomSheetDialog? = null
     private var closeButton: View? = null
@@ -51,8 +51,8 @@ class ManualAdsConfirmationSheet {
 
     companion object {
 
-        fun newInstance(context: Context, manualClick: () -> Unit): ManualAdsConfirmationSheet {
-            val fragment = ManualAdsConfirmationSheet()
+        fun newInstance(context: Context, manualClick: () -> Unit): ManualAdsConfirmationCommonSheet {
+            val fragment = ManualAdsConfirmationCommonSheet()
             fragment.dialog = BottomSheetDialog(context, R.style.CreateAdsBottomSheetDialogTheme)
             fragment.dialog?.setContentView(R.layout.topads_common_autoads_bottom_sheet_layout_confirmation_manual_ads)
             fragment.closeButton = fragment.dialog?.findViewById(com.tokopedia.design.R.id.btn_close)

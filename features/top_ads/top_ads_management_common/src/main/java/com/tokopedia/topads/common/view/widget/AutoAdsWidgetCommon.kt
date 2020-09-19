@@ -35,7 +35,7 @@ import com.tokopedia.topads.common.di.DaggerTopAdsCommonComponent
 import com.tokopedia.topads.common.di.TopAdsCommonComponent
 import com.tokopedia.topads.common.di.module.TopAdsCommonModule
 import com.tokopedia.topads.common.view.AutoAdsWidgetViewModelCommon
-import com.tokopedia.topads.common.view.sheet.ManualAdsConfirmationSheet
+import com.tokopedia.topads.common.view.sheet.ManualAdsConfirmationCommonSheet
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
 import com.tokopedia.user.session.UserSessionInterface
@@ -229,7 +229,7 @@ class AutoAdsWidgetCommon(context: Context, attrs: AttributeSet?) : CardUnify(co
                 setting.visibility = View.GONE
                 switch.visibility = View.VISIBLE
                 switch.setOnClickListener {
-                    val manual = ManualAdsConfirmationSheet.newInstance(context as BaseActivity, ::switchToManual)
+                    val manual = ManualAdsConfirmationCommonSheet.newInstance(context as BaseActivity, ::switchToManual)
                     manual.show()
                     manual.dismissed = { switch.isChecked = true }
                 }
@@ -320,7 +320,7 @@ class AutoAdsWidgetCommon(context: Context, attrs: AttributeSet?) : CardUnify(co
                     setting.visibility = View.GONE
                     it.btn_switch.visibility = View.VISIBLE
                     it.btn_switch.setOnClickListener {
-                        val man = ManualAdsConfirmationSheet.newInstance(context as BaseActivity, ::switchToManual)
+                        val man = ManualAdsConfirmationCommonSheet.newInstance(context as BaseActivity, ::switchToManual)
                         man.show()
                         man.dismissed = { it.btn_switch.isChecked = true }
                     }
