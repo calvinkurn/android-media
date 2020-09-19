@@ -35,6 +35,7 @@ import com.tokopedia.vouchercreation.common.consts.VoucherStatusConst
 import com.tokopedia.vouchercreation.common.consts.VoucherTypeConst
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
 import com.tokopedia.vouchercreation.common.domain.usecase.CancelVoucherUseCase
+import com.tokopedia.vouchercreation.common.errorhandler.MvcError
 import com.tokopedia.vouchercreation.common.errorhandler.MvcErrorHandler
 import com.tokopedia.vouchercreation.common.plt.MvcPerformanceMonitoringListener
 import com.tokopedia.vouchercreation.common.utils.*
@@ -78,9 +79,6 @@ class VoucherDetailFragment : BaseDetailFragment(), DownloadHelper.DownloadHelpe
 
         private const val ERROR_DETAIL = "Error get voucher detail"
         private const val ERROR_CANCEL = "Error cancel voucher"
-        private const val ERROR_DOWNLOAD = "Error download voucher"
-        private const val ERROR_SECURITY = "Error security when download voucher"
-        private const val ERROR_URI = "Error uri arguments when download voucher"
     }
 
     private var voucherUiModel: VoucherUiModel? = null
@@ -659,19 +657,19 @@ class VoucherDetailFragment : BaseDetailFragment(), DownloadHelper.DownloadHelpe
                 val helper = DownloadHelper(it, uri, System.currentTimeMillis().toString(), this)
                 helper.downloadFile { true }
             } catch (se: SecurityException) {
-                MvcErrorHandler.logToCrashlytics(se, ERROR_SECURITY)
+                MvcErrorHandler.logToCrashlytics(se, MvcError.ERROR_SECURITY)
                 view?.showDownloadActionTicker(
                         isSuccess = false,
                         isInternetProblem = false
                 )
             } catch (iae: IllegalArgumentException) {
-                MvcErrorHandler.logToCrashlytics(iae, ERROR_URI)
+                MvcErrorHandler.logToCrashlytics(iae, MvcError.ERROR_URI)
                 view?.showDownloadActionTicker(
                         isSuccess = false,
                         isInternetProblem = false
                 )
             } catch (ex: Exception) {
-                MvcErrorHandler.logToCrashlytics(ex, ERROR_DOWNLOAD)
+                MvcErrorHandler.logToCrashlytics(ex, MvcError.ERROR_DOWNLOAD)
                 view?.showDownloadActionTicker(false)
             }
         }

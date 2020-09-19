@@ -44,6 +44,7 @@ import com.tokopedia.vouchercreation.common.bottmsheet.voucherperiodbottomsheet.
 import com.tokopedia.vouchercreation.common.consts.VoucherStatusConst
 import com.tokopedia.vouchercreation.common.consts.VoucherTypeConst
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
+import com.tokopedia.vouchercreation.common.errorhandler.MvcError
 import com.tokopedia.vouchercreation.common.errorhandler.MvcErrorHandler
 import com.tokopedia.vouchercreation.common.exception.VoucherCancellationException
 import com.tokopedia.vouchercreation.common.plt.MvcPerformanceMonitoringListener
@@ -104,9 +105,6 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
 
         private const val ERROR_GET_VOUCHER = "Error get voucher list"
         private const val ERROR_STOP_VOUCHER = "Error stop voucher list"
-        private const val ERROR_DOWNLOAD = "Error download voucher"
-        private const val ERROR_SECURITY = "Error security when download voucher"
-        private const val ERROR_URI = "Error uri arguments when download voucher"
 
         fun newInstance(isActiveVoucher: Boolean): VoucherListFragment {
             return VoucherListFragment().apply {
@@ -1203,19 +1201,19 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
                 val helper = DownloadHelper(it, uri, System.currentTimeMillis().toString(), null)
                 helper.downloadFile { true }
             } catch (se: SecurityException) {
-                MvcErrorHandler.logToCrashlytics(se, ERROR_SECURITY)
+                MvcErrorHandler.logToCrashlytics(se, MvcError.ERROR_SECURITY)
                 view?.showDownloadActionTicker(
                         isSuccess = false,
                         isInternetProblem = false
                 )
             } catch (iae: IllegalArgumentException) {
-                MvcErrorHandler.logToCrashlytics(iae, ERROR_URI)
+                MvcErrorHandler.logToCrashlytics(iae, MvcError.ERROR_URI)
                 view?.showDownloadActionTicker(
                         isSuccess = false,
                         isInternetProblem = false
                 )
             } catch (ex: Exception) {
-                MvcErrorHandler.logToCrashlytics(ex, ERROR_DOWNLOAD)
+                MvcErrorHandler.logToCrashlytics(ex, MvcError.ERROR_DOWNLOAD)
                 view?.showDownloadActionTicker(false)
             }
             val helper = DownloadHelper(it, uri, System.currentTimeMillis().toString(), this@VoucherListFragment)
