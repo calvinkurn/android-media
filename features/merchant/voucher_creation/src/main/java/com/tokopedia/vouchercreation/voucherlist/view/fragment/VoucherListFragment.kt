@@ -49,6 +49,7 @@ import com.tokopedia.vouchercreation.common.exception.VoucherCancellationExcepti
 import com.tokopedia.vouchercreation.common.plt.MvcPerformanceMonitoringListener
 import com.tokopedia.vouchercreation.common.utils.SharingUtil
 import com.tokopedia.vouchercreation.common.utils.Socmed
+import com.tokopedia.vouchercreation.common.utils.showDownloadActionTicker
 import com.tokopedia.vouchercreation.common.utils.showErrorToaster
 import com.tokopedia.vouchercreation.create.domain.model.validation.VoucherTargetType
 import com.tokopedia.vouchercreation.create.view.activity.CreateMerchantVoucherStepsActivity
@@ -103,6 +104,9 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
 
         private const val ERROR_GET_VOUCHER = "Error get voucher list"
         private const val ERROR_STOP_VOUCHER = "Error stop voucher list"
+        private const val ERROR_DOWNLOAD = "Error download voucher"
+        private const val ERROR_SECURITY = "Error security when download voucher"
+        private const val ERROR_URI = "Error uri arguments when download voucher"
 
         fun newInstance(isActiveVoucher: Boolean): VoucherListFragment {
             return VoucherListFragment().apply {
@@ -469,7 +473,9 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
         loadInitialData()
     }
 
-    override fun onDownloadComplete() {}
+    override fun onDownloadComplete() {
+        view?.showDownloadActionTicker(true)
+    }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
@@ -1193,6 +1199,25 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
     @RequiresPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
     private fun downloadFiles(uri: String) {
         activity?.let {
+            try {
+                val helper = DownloadHelper(it, uri, System.currentTimeMillis().toString(), null)
+                helper.downloadFile { true }
+            } catch (se: SecurityException) {
+                MvcErrorHandler.logToCrashlytics(se, ERROR_SECURITY)
+                view?.showDownloadActionTicker(
+                        isSuccess = false,
+                        isInternetProblem = false
+                )
+            } catch (iae: IllegalArgumentException) {
+                MvcErrorHandler.logToCrashlytics(iae, ERROR_URI)
+                view?.showDownloadActionTicker(
+                        isSuccess = false,
+                        isInternetProblem = false
+                )
+            } catch (ex: Exception) {
+                MvcErrorHandler.logToCrashlytics(ex, ERROR_DOWNLOAD)
+                view?.showDownloadActionTicker(false)
+            }
             val helper = DownloadHelper(it, uri, System.currentTimeMillis().toString(), this@VoucherListFragment)
             helper.downloadFile { true }
         }

@@ -37,12 +37,9 @@ import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationCo
 import com.tokopedia.vouchercreation.common.domain.usecase.CancelVoucherUseCase
 import com.tokopedia.vouchercreation.common.errorhandler.MvcErrorHandler
 import com.tokopedia.vouchercreation.common.plt.MvcPerformanceMonitoringListener
-import com.tokopedia.vouchercreation.common.utils.DateTimeUtils
+import com.tokopedia.vouchercreation.common.utils.*
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.DASH_DATE_FORMAT
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.HOUR_FORMAT
-import com.tokopedia.vouchercreation.common.utils.SharingUtil
-import com.tokopedia.vouchercreation.common.utils.Socmed
-import com.tokopedia.vouchercreation.common.utils.showErrorToaster
 import com.tokopedia.vouchercreation.create.domain.model.validation.VoucherTargetType
 import com.tokopedia.vouchercreation.create.view.activity.CreateMerchantVoucherStepsActivity
 import com.tokopedia.vouchercreation.create.view.enums.VoucherCreationStep
@@ -62,7 +59,7 @@ import javax.inject.Inject
  * Created By @ilhamsuaib on 30/04/20
  */
 
-class VoucherDetailFragment : BaseDetailFragment() {
+class VoucherDetailFragment : BaseDetailFragment(), DownloadHelper.DownloadHelperListener {
 
     companion object {
         fun newInstance(voucherId: Int): VoucherDetailFragment = VoucherDetailFragment().apply {
@@ -328,6 +325,10 @@ class VoucherDetailFragment : BaseDetailFragment() {
             }
             else -> return
         }
+    }
+
+    override fun onDownloadComplete() {
+        view?.showDownloadActionTicker(true)
     }
 
     private fun observeLiveData() {
@@ -655,14 +656,23 @@ class VoucherDetailFragment : BaseDetailFragment() {
         activity?.let {
             ActivityCompat.requestPermissions(it, missingPermissions, DOWNLOAD_REQUEST_CODE)
             try {
-                val helper = DownloadHelper(it, uri, System.currentTimeMillis().toString(), null)
+                val helper = DownloadHelper(it, uri, System.currentTimeMillis().toString(), this)
                 helper.downloadFile { true }
             } catch (se: SecurityException) {
                 MvcErrorHandler.logToCrashlytics(se, ERROR_SECURITY)
+                view?.showDownloadActionTicker(
+                        isSuccess = false,
+                        isInternetProblem = false
+                )
             } catch (iae: IllegalArgumentException) {
                 MvcErrorHandler.logToCrashlytics(iae, ERROR_URI)
+                view?.showDownloadActionTicker(
+                        isSuccess = false,
+                        isInternetProblem = false
+                )
             } catch (ex: Exception) {
                 MvcErrorHandler.logToCrashlytics(ex, ERROR_DOWNLOAD)
+                view?.showDownloadActionTicker(false)
             }
         }
     }
