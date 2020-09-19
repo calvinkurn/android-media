@@ -2,7 +2,7 @@ package com.tokopedia.topads.data.response
 
 import com.google.gson.annotations.SerializedName
 
-data class TopAdsAutoAds(
+data class TopAdsAutoAdsCreate(
 
         @SerializedName("data")
         val data: Response.TopAdsAutoAdsData = Response.TopAdsAutoAdsData(),
@@ -12,7 +12,7 @@ data class TopAdsAutoAds(
 ) {
     data class Response(
             @SerializedName(value = "topAdsGetAutoAds", alternate = ["topAdsPostAutoAds"])
-            val autoAds: TopAdsAutoAds
+            val autoAds: TopAdsAutoAdsCreate
     ) {
         data class TopAdsAutoAdsData(
 
