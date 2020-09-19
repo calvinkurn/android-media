@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -45,7 +46,7 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
     public static int LOYALTY_ACTIVITY_REQUEST_CODE = 12345;
     private static final String SCREEN_NAME = "/digital/deals/checkout";
 
-    private ConstraintLayout clPromoApplied;
+    private RelativeLayout rlPromoApplied;
     private ConstraintLayout baseMainContent;
     private ConstraintLayout clPromoAmount;
     private ViewGroup mainContent;
@@ -62,7 +63,7 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
     private TextView tvNumberLocations;
     private TextView tvVoucherCode;
     private TextView tvDiscount;
-    private TextView tvApplyPromo;
+    private RelativeLayout rvApplyPromo;
     private TextView tvNumberVouchers;
     private TextView tvAmount;
     private EditText etEmailID;
@@ -115,22 +116,21 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
         tvAmount = view.findViewById(com.tokopedia.digital_deals.R.id.tv_total_amount);
         tvExpiryDate = view.findViewById(com.tokopedia.digital_deals.R.id.tv_expiry_date);
         tvNumberLocations = view.findViewById(com.tokopedia.digital_deals.R.id.tv_no_locations);
-        tvVoucherCode = view.findViewById(com.tokopedia.digital_deals.R.id.tv_voucher_code);
-        tvDiscount = view.findViewById(com.tokopedia.digital_deals.R.id.amount_of_cashback);
+        tvVoucherCode = view.findViewById(R.id.tv_amount);
+        tvDiscount = view.findViewById(R.id.tv_desc_coupon);
         tvNumberVouchers = view.findViewById(com.tokopedia.digital_deals.R.id.tv_number_vouchers);
         etEmailID = view.findViewById(com.tokopedia.digital_deals.R.id.tv_email);
         paymentMethod = view.findViewById(com.tokopedia.digital_deals.R.id.cl_btn_payment);
         setCardViewElevation();
         tvPaymentMethod = view.findViewById(com.tokopedia.digital_deals.R.id.ll_select_payment_method);
-        tvApplyPromo = view.findViewById(com.tokopedia.digital_deals.R.id.tv_promocode);
-        clPromoApplied = view.findViewById(com.tokopedia.digital_deals.R.id.cl_promo_applied);
+        rvApplyPromo = view.findViewById(com.tokopedia.digital_deals.R.id.rv_promocode);
+        rlPromoApplied = view.findViewById(com.tokopedia.digital_deals.R.id.cl_promo_applied);
         baseMainContent = view.findViewById(com.tokopedia.digital_deals.R.id.base_main_content);
         mainContent = view.findViewById(com.tokopedia.digital_deals.R.id.main_content);
         progressParLayout = view.findViewById(com.tokopedia.digital_deals.R.id.progress_bar_layout);
-        ivRemovePromo = view.findViewById(com.tokopedia.digital_deals.R.id.iv_remove_promo);
+        ivRemovePromo = view.findViewById(R.id.iv_remove_promo);
         clPromoAmount = view.findViewById(com.tokopedia.digital_deals.R.id.cl_promo);
         Drawable img = MethodChecker.getDrawable(getActivity(), com.tokopedia.digital_deals.R.drawable.ic_promo_code);
-        tvApplyPromo.setCompoundDrawablesWithIntrinsicBounds(img, null, null, null);
         ((Ticker) view.findViewById(R.id.ticker_info)).setTextDescription(getString(R.string.ticker_desc));
     }
 
@@ -205,7 +205,7 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
                     , dealDetails.getOutlets().size()));
         }
         tvPaymentMethod.setOnClickListener(this);
-        tvApplyPromo.setOnClickListener(this);
+        rvApplyPromo.setOnClickListener(this);
         tvNumberLocations.setOnClickListener(this);
         ivRemovePromo.setOnClickListener(this);
         baseMainContent.setVisibility(View.VISIBLE);
@@ -238,8 +238,9 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
 
     @Override
     public void showPromoSuccessMessage(String text, String message, long discountAmount) {
-        tvApplyPromo.setVisibility(View.GONE);
-        clPromoApplied.setVisibility(View.VISIBLE);
+        rvApplyPromo.setVisibility(View.GONE);
+        rlPromoApplied.setVisibility(View.VISIBLE);
+        tvDiscount.setVisibility(View.VISIBLE);
         tvDiscount.setText(message);
         tvVoucherCode.setText(text);
         promoApplied = true;
@@ -285,7 +286,7 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
                 dealsAnalytics.sendEcommercePayment(dealDetails.getCategoryId(), dealDetails.getId(), quantity, dealDetails.getSalesPrice(),
                         dealDetails.getDisplayName(), dealDetails.getBrand().getTitle(), promoApplied);
             }
-        } else if (v.getId() == com.tokopedia.digital_deals.R.id.tv_promocode) {
+        } else if (v.getId() == com.tokopedia.digital_deals.R.id.rv_promocode) {
             dealsAnalytics.sendPromoCodeClickEvent(dealDetails);
             mPresenter.clickGoToPromo(getContext());
         } else if (v.getId() == com.tokopedia.digital_deals.R.id.tv_no_locations) {
@@ -293,8 +294,8 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
         } else if (v.getId() == com.tokopedia.digital_deals.R.id.iv_remove_promo) {
             promoApplied = false;
             mPresenter.updatePromoCode("");
-            tvApplyPromo.setVisibility(View.VISIBLE);
-            clPromoApplied.setVisibility(View.GONE);
+            rvApplyPromo.setVisibility(View.VISIBLE);
+            rlPromoApplied.setVisibility(View.GONE);
             clPromoAmount.setVisibility(View.GONE);
             mPresenter.updateAmount(0);
         }
