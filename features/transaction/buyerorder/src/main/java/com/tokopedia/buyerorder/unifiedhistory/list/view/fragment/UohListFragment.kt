@@ -188,6 +188,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     private var chosenOrder: UohListOrder.Data.UohOrders.Order? = null
     private var isTyping = false
     private var isFilterClicked = false
+    private var isFirstLoad = false
 
     private val uohListViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory)[UohListViewModel::class.java]
@@ -205,6 +206,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         userSession = UserSession(context)
+        isFirstLoad = true
         if (arguments?.getString(SOURCE_FILTER) != null) {
             filterStatus = arguments?.getString(SOURCE_FILTER).toString()
             if (filterStatus.isNotEmpty()) {
@@ -711,13 +713,17 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             i++
         }
         tempFilterType = UohConsts.TYPE_FILTER_DATE
-        if (tempFilterDateLabel.isEmpty()) tempFilterDateLabel = "0"
+        if (tempFilterDateLabel.isEmpty()) tempFilterDateLabel = ALL_DATE
         if (tempFilterDateKey.isEmpty()) tempFilterDateKey = "0"
 
         uohBottomSheetOptionAdapter.uohItemMapKeyList = arrayListMap
         uohBottomSheetOptionAdapter.filterType = UohConsts.TYPE_FILTER_DATE
         if ((filterStatus.equals(PARAM_SEMUA_TRANSAKSI, true) || filterStatus.equals(PARAM_MARKETPLACE, true)) && !isReset) {
-            uohBottomSheetOptionAdapter.selectedKey = "2"
+            if (tempFilterDateKey == "0" && isFirstLoad) {
+                uohBottomSheetOptionAdapter.selectedKey = "2"
+            } else {
+                uohBottomSheetOptionAdapter.selectedKey = tempFilterDateKey
+            }
         } else {
             uohBottomSheetOptionAdapter.selectedKey = currFilterDateKey
         }
@@ -980,6 +986,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                     }
                 }
                 bottomSheetOption?.dismiss()
+                isFirstLoad = false
                 refreshHandler?.startRefresh()
             }
         }
