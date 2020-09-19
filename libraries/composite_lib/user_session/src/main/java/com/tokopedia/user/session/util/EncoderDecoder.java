@@ -74,7 +74,6 @@ public class EncoderDecoder {
 		}
 		catch (Exception e) {
 			e.printStackTrace();
-			return text;
 		}
 		return decode_result;
 	}

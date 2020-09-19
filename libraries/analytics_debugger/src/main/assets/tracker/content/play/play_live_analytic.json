@@ -1,0 +1,92 @@
+{
+  "readme": "Play Viewer - Analytics Channel Live",
+  "mode": "exact",
+  "query": [
+    {
+      "event": "openScreen",
+      "networkSpeed": "{{.*}}",
+      "clientId": "{{.*}}",
+      "isLoggedInStatus": "{{true|false}}",
+      "appsflyerId": "{{.*}}",
+      "shopId": "{{.*}}",
+      "screenName": "{{/group-chat-room/\\d+/(vod|live)}}",
+      "userId": "{{.*}}",
+      "sessionIris": "{{.*}}"
+    },
+    {
+      "eventAction": "leave room",
+      "event": "clickBack",
+      "eventCategory": "groupchat room",
+      "eventLabel": "{{\\d+ - \\d+ - (vod|live)}}",
+      "sessionIris": "{{.*}}"
+    },
+    {
+      "eventAction": "click - shop",
+      "event": "clickGroupChat",
+      "eventCategory": "groupchat room",
+      "eventLabel": "{{\\d+ - \\d+ - (vod|live)}}",
+      "sessionIris": "{{.*}}"
+    },
+    {
+      "eventAction": "{{click (follow|unfollow) shop}}",
+      "event": "clickGroupChat",
+      "eventCategory": "groupchat room",
+      "eventLabel": "{{\\d+ - \\d+ - (vod|live)}}",
+      "sessionIris": "{{.*}}"
+    },
+    {
+      "eventAction": "click watch area",
+      "event": "clickGroupChat",
+      "eventCategory": "groupchat room",
+      "eventLabel": "{{\\d+ - (vod|live) - (portrait|landscape)}}",
+      "sessionIris": "{{.*}}",
+      "screenName": "{{/group-chat-room/\\d+/(vod|live)}}",
+      "currentSite": "{{.*}}",
+      "clientId": "{{.*}}",
+      "userId": "{{.*}}",
+      "businessUnit": "play"
+    },
+    {
+      "eventAction": "click on admin pinned message",
+      "event": "clickGroupChat",
+      "eventCategory": "groupchat room",
+      "eventLabel": "{{\\d+ - .+ - .+ - (live|vod)}}",
+      "sessionIris": "{{.*}}"
+    },
+    {
+      "eventAction": "click like",
+      "event": "clickGroupChat",
+      "eventCategory": "groupchat room",
+      "eventLabel": "{{\\d+ - (live|vod)}}",
+      "sessionIris": "{{.*}}"
+    },
+    {
+      "eventAction": "click unlike",
+      "event": "clickGroupChat",
+      "eventCategory": "groupchat room",
+      "eventLabel": "{{\\d+ - (live|vod)}}",
+      "sessionIris": "{{.*}}"
+    },
+    {
+      "eventAction": "click on quick reply component",
+      "event": "clickGroupChat",
+      "eventCategory": "groupchat room",
+      "eventLabel": "{{\\d+}}",
+      "sessionIris": "{{.*}}"
+    },
+    {
+      "eventAction": "click on button send",
+      "event": "clickGroupChat",
+      "eventCategory": "groupchat room",
+      "eventLabel": "{{\\d+}}",
+      "sessionIris": "{{.*}}"
+    },
+    {
+      "eventAction": "click on play button video",
+      "event": "clickGroupChat",
+      "eventCategory": "groupchat room",
+      "eventLabel": "{{\\d+ - (live|vod)}}",
+      "sessionIris": "{{.*}}"
+    }
+  ]
+}

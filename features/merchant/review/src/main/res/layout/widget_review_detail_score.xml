@@ -116,20 +116,6 @@
         app:layout_constraintTop_toBottomOf="@id/smiley_barrier"
         app:typographyType="body_3"
         tools:visibility="visible" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/reviewScoreDeadline"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_lvl2"
-        android:layout_marginLeft="@dimen/spacing_lvl2"
-        android:textColor="@color/Neutral_N700_68"
-        android:visibility="gone"
-        app:layout_constraintStart_toEndOf="@id/reviewScoreDeadlineLabel"
-        app:layout_constraintTop_toTopOf="@id/reviewScoreDeadlineLabel"
-        app:typographyType="body_3"
-        app:typographyWeight="bold"
-        tools:visibility="visible" />
     
     <com.elyeproj.loaderviewlibrary.LoaderImageView
         android:id="@+id/reviewScoreLoadingSmiley"

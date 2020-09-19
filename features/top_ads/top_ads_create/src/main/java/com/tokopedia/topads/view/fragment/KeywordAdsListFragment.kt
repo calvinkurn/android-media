@@ -133,6 +133,9 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         STAGE = stepperModel?.STAGE ?: 0
+        if (STAGE == 0) {
+            keywordSelectedAdapter.items.clear()
+        }
         val list = stepperModel?.selectedProductIds!!
         val productId = list.joinToString(",")
         keywordListAdapter.items.clear()
@@ -219,12 +222,30 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
     }
 
     private fun onEmptySuggestion() {
+        startLoading(false)
         STAGE = 1
         setBtnText()
-        tip_btn.visibility = View.GONE
-        headlineList.visibility = View.GONE
-        emptyLayout.visibility = View.VISIBLE
+        if (stepperModel?.STAGE == 1) {
+            if(stepperModel?.selectedKeywordStage?.isNotEmpty() != false)
+                restorePrevState()
+        }
+        if(keywordSelectedAdapter.items.isEmpty() && selectedKeyFromSearch?.isEmpty()!= false) {
+            setEmptyView(true)
+        }
         showSelectMessage()
+    }
+
+    private fun setEmptyView(empty: Boolean) {
+        if(empty){
+            tip_btn.visibility = View.GONE
+            headlineList.visibility = View.GONE
+            emptyLayout.visibility = View.VISIBLE
+
+        }else{
+            tip_btn.visibility = View.VISIBLE
+            headlineList.visibility = View.VISIBLE
+            emptyLayout.visibility = View.GONE
+        }
     }
 
     override fun initiateStepperModel() {
@@ -383,6 +404,8 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
                 for (item in dataFromSearch!!) {
                     selectedKeyFromSearch?.add(item)
                 }
+                if(selectedKeyFromSearch?.isNotEmpty()!=false)
+                    setEmptyView(false)
                 if (STAGE == 0)
                     gotoNextStage()
                 else {
@@ -393,11 +416,13 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
     }
 
     private fun addSearchItems() {
+        emptyLayout?.visibility = View.GONE
         val list: MutableList<KeywordDataItem> = mapSearchDataToModel()
         if (list.isNotEmpty()) {
             keywordSelectedAdapter.items.addAll(list)
             sortListSelected()
         }
+        showSelectMessage()
     }
 
     private fun getTotalChosenKeywords(): MutableList<KeywordDataItem> {

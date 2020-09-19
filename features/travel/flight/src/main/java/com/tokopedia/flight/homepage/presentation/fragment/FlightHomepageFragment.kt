@@ -293,7 +293,11 @@ class FlightHomepageFragment : BaseDaggerFragment(), FlightSearchFormView.Flight
             } else {
                 resources.getDimensionPixelSize(R.dimen.banner_width)
             }
-            flightHomepageBanner.customHeight = resources.getDimensionPixelSize(R.dimen.banner_height)
+            flightHomepageBanner.customHeight = if (bannerWidthInPixels > 0) {
+                measureBannerHeightBasedOnRatio()
+            } else {
+                resources.getDimensionPixelSize(R.dimen.banner_height)
+            }
             flightHomepageBanner.setBannerSeeAllTextColor(resources.getColor(com.tokopedia.unifycomponents.R.color.Green_G500))
             flightHomepageBanner.setBannerIndicator(Indicator.GREEN)
             flightHomepageBanner.setOnPromoScrolledListener { position ->
@@ -485,7 +489,14 @@ class FlightHomepageFragment : BaseDaggerFragment(), FlightSearchFormView.Flight
                 REQUEST_CODE_SEARCH)
     }
 
+    private fun measureBannerHeightBasedOnRatio(): Int =
+            (bannerWidthInPixels * BANNER_HEIGHT_RATIO / BANNER_WIDTH_RATIO).toInt()
+
     companion object {
+        // Banner Ratio = 414 : 139
+        private const val BANNER_WIDTH_RATIO = 414f
+        private const val BANNER_HEIGHT_RATIO = 139f
+
         private const val TAG_DEPARTURE_CALENDAR = "flightCalendarDeparture"
         private const val TAG_RETURN_CALENDAR = "flightCalendarReturn"
 

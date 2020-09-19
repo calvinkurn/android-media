@@ -240,6 +240,7 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
             SettingConstant.SETTING_NOTIFICATION_ID -> {
                 RouteManager.route(context, ApplinkConstInternalMarketplace.USER_NOTIFICATION_SETTING)
                 accountAnalytics.eventClickSetting(NOTIFICATION)
+                accountAnalytics.eventTroubleshooterClicked()
             }
             SettingConstant.SETTING_TNC_ID -> {
                 accountAnalytics.eventClickSetting(TERM_CONDITION)

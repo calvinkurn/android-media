@@ -6,7 +6,7 @@ import com.tokopedia.logisticaddaddress.data.query.AutoCompleteQuery
 import com.tokopedia.logisticaddaddress.domain.executor.SchedulerProvider
 import com.tokopedia.logisticaddaddress.domain.mapper.AutoCompleteMapper
 import com.tokopedia.logisticaddaddress.domain.model.autocomplete.AutocompleteResponse
-import com.tokopedia.logisticdata.data.autocomplete.SuggestedPlace
+import com.tokopedia.logisticdata.data.autocomplete.Place
 import com.tokopedia.network.exception.MessageErrorException
 import rx.Observable
 import javax.inject.Inject
@@ -17,7 +17,7 @@ class AutoCompleteUseCase
         private val scheduler: SchedulerProvider,
         private val mapper: AutoCompleteMapper) {
 
-    fun execute(query: String): Observable<List<SuggestedPlace>> {
+    fun execute(query: String): Observable<Place> {
         val param = mapOf("param" to query)
         val gqlRequest = GraphqlRequest(AutoCompleteQuery.keroAutoCompleteGeocode, AutocompleteResponse::class.java, param)
         gql.clearRequest()

@@ -94,7 +94,6 @@ public class MigratedUserSession {
     protected void internalSetString(String prefName, String keyName, String value) {
         SharedPreferences sharedPrefs = context.getSharedPreferences(prefName, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPrefs.edit();
-        value = EncoderDecoder.Encrypt(value, UserSession.KEY_IV);
         editor.putString(keyName, value);
         editor.apply();
     }
@@ -105,8 +104,6 @@ public class MigratedUserSession {
         String oldKeyName = EncoderDecoder.Decrypt(keyName, UserSession.KEY_IV);
 
         String oldValue = internalGetString(oldprefName, oldKeyName, defValue);
-        if (oldValue != null && !oldValue.isEmpty())
-            oldValue = EncoderDecoder.Decrypt(oldValue, UserSession.KEY_IV);
 
         if(!IS_ENABLE)
             return oldValue;
