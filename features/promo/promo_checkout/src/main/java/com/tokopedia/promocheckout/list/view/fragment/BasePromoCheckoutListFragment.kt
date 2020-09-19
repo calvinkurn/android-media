@@ -20,6 +20,7 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.promocheckout.R
 import com.tokopedia.promocheckout.common.analytics.FROM_CART
 import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil
+import com.tokopedia.promocheckout.common.data.REQUEST_CODE_PROMO_DEALS
 import com.tokopedia.promocheckout.common.data.REQUEST_CODE_PROMO_DETAIL
 import com.tokopedia.promocheckout.common.domain.CheckPromoCodeException
 import com.tokopedia.promocheckout.common.domain.model.TravelCollectiveBanner
@@ -165,6 +166,9 @@ abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutLis
         if (requestCode == REQUEST_CODE_PROMO_DETAIL && resultCode == Activity.RESULT_OK) {
             activity?.setResult(Activity.RESULT_OK, data)
             activity?.finish()
+        } else if (requestCode == REQUEST_CODE_PROMO_DETAIL && resultCode == REQUEST_CODE_PROMO_DEALS) {
+            activity?.setResult(REQUEST_CODE_PROMO_DEALS, data)
+            activity?.finish()
         }
         super.onActivityResult(requestCode, resultCode, data)
     }
@@ -185,10 +189,16 @@ abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutLis
     }
 
     protected fun populateLastSeen() {
-        if (promoLastSeenAdapter.listData.isEmpty() && promoLastSeenAdapter.listDataDeals.isEmpty()) {
-            containerLastSeen.visibility = View.GONE
-        } else {
+        if (promoLastSeenAdapter.listData.isNotEmpty()) {
             containerLastSeen.visibility = View.VISIBLE
+        } else if (promoLastSeenAdapter.listDataDeals.isNotEmpty()) {
+            promoLastSeenAdapter.listDataDeals.map {
+                if (it.attributes.promoCode.isBlank() || it.attributes.promoCode.equals("-")) {
+                    containerLastSeen.visibility = View.GONE
+                } else {
+                    containerLastSeen.visibility = View.VISIBLE
+                }
+            }
         }
     }
 
