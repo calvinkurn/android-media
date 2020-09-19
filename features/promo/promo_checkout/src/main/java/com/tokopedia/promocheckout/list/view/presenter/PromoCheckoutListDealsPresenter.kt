@@ -17,7 +17,7 @@ class PromoCheckoutListDealsPresenter(
         private val compositeSubscription: CompositeSubscription
 ) : BaseDaggerPresenter<PromoCheckoutListContract.View>(), PromoCheckoutListDealsContract.Presenter {
 
-    override fun processCheckDealPromoCode(promoCode: String, flag: Boolean, requestParams: JsonObject) {
+    override fun processCheckDealPromoCode(flag: Boolean, requestParams: JsonObject) {
         compositeSubscription.add(
                 repository.postVerify(false, requestParams)
                         .subscribeOn(Schedulers.io())
@@ -45,5 +45,10 @@ class PromoCheckoutListDealsPresenter(
 
                         })
         )
+    }
+
+    override fun detachView() {
+        compositeSubscription.unsubscribe()
+        super.detachView()
     }
 }
