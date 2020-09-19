@@ -77,4 +77,11 @@ class PromoCheckoutDetailDealsPresenter(private val getDetailCouponMarketplaceUs
                         })
         )
     }
+
+    override fun detachView() {
+        getDetailCouponMarketplaceUseCase.unsubscribe()
+        clearCacheAutoApplyStackUseCase.unsubscribe()
+        compositeSubscription.unsubscribe()
+        super.detachView()
+    }
 }
