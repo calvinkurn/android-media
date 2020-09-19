@@ -82,7 +82,7 @@ class ProductRecommendationViewHolder(
                 view.seeMoreRecom.hide()
             }
             view.seeMoreRecom.setOnClickListener {
-                listener.onSeeAllRecomClicked(pageName, seeMoreAppLink, getComponentTrackData(element))
+                listener.onSeeAllRecomClicked(pageName, seeMoreAppLink + (element.filterData?.find { it.recommendationFilterChip.isActivated } ?: ""), getComponentTrackData(element))
             }
             initAdapter(element, this, element.cardModel, getComponentTrackData(element))
         }
