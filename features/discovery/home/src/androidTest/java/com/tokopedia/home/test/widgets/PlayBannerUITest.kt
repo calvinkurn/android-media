@@ -365,6 +365,7 @@ class PlayBannerUITest : BaseWidgetUiTest(){
             injectCouponTimeBasedUseCase = injectCouponTimeBasedUseCase,
             topAdsImageViewUseCase = topAdsImageViewUseCase,
             playToggleChannelReminderUseCase = playToggleChannelReminderUseCase,
-            getPlayBannerUseCase = getPlayBannerUseCase
+            getPlayBannerUseCase = getPlayBannerUseCase,
+            homeProcessor = mockk()
     )
 }

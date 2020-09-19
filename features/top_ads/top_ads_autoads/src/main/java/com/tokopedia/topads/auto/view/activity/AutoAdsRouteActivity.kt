@@ -72,7 +72,6 @@ class AutoAdsRouteActivity : AutoAdsBaseActivity() {
     }
 
     private fun noProduct() {
-        startActivity(Intent(this@AutoAdsRouteActivity, EmptyProductActivity::class.java))
     }
 
     private fun noAds() {
