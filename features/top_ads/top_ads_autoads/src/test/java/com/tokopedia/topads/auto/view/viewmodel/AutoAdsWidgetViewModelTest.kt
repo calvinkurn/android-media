@@ -10,6 +10,7 @@ import com.tokopedia.topads.auto.di.AutoAdsDispatcherProvider
 import com.tokopedia.topads.auto.view.AutoAdsTestDispatcherProvider
 import com.tokopedia.topads.auto.view.RequestHelper
 import com.tokopedia.topads.auto.view.fragment.AutoAdsBaseBudgetFragment
+import com.tokopedia.topads.common.data.response.NonDeliveryResponse
 import com.tokopedia.topads.common.data.util.Utils
 import io.mockk.*
 import kotlinx.coroutines.Dispatchers
