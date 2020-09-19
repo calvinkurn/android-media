@@ -27,6 +27,7 @@ import com.tokopedia.shop_showcase.ShopShowcaseInstance
 import com.tokopedia.shop_showcase.common.AppScreen
 import com.tokopedia.shop_showcase.common.ImageAssets
 import com.tokopedia.shop_showcase.common.ShopShowcasePickerParam
+import com.tokopedia.shop_showcase.common.ShopShowcasePickerType
 import com.tokopedia.shop_showcase.shop_showcase_management.data.model.ShowcaseList.ShowcaseItem
 import com.tokopedia.shop_showcase.shop_showcase_management.data.model.ShowcaseList.ShowcaseItemPicker
 import com.tokopedia.shop_showcase.shop_showcase_management.di.DaggerShopShowcaseManagementComponent
@@ -56,11 +57,12 @@ class ShopShowcasePickerFragment: BaseDaggerFragment(),
     companion object {
 
         @JvmStatic
-        fun createInstance(shopId: String?, isMyShop: Boolean): ShopShowcasePickerFragment {
+        fun createInstance(shopId: String?, isMyShop: Boolean, pickerType: String): ShopShowcasePickerFragment {
             val fragment = ShopShowcasePickerFragment()
             val extraData = Bundle()
             extraData.putString(ShopShowcasePickerParam.EXTRA_SHOP_ID, shopId)
             extraData.putBoolean(ShopShowcasePickerParam.EXTRA_IS_MY_SHOP, isMyShop)
+            extraData.putString(ShopShowcasePickerParam.EXTRA_PICKER_TYPE, pickerType)
             fragment.arguments = extraData
             return fragment
         }
@@ -137,6 +139,7 @@ class ShopShowcasePickerFragment: BaseDaggerFragment(),
     private var showcaseList: List<ShowcaseItem> = listOf()
     private var isMyShop = false
     private var shopId: String = ""
+    private var pickerType: String = ""
     private var selectedShowcase: ShowcaseItemPicker? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -144,6 +147,7 @@ class ShopShowcasePickerFragment: BaseDaggerFragment(),
         arguments?.let {
             shopId = it.getString(ShopShowcasePickerParam.EXTRA_SHOP_ID, "")
             isMyShop = it.getBoolean(ShopShowcasePickerParam.EXTRA_IS_MY_SHOP)
+            pickerType = it.getString(ShopShowcasePickerParam.EXTRA_PICKER_TYPE, ShopShowcasePickerType.RADIO)
         }
     }
 
@@ -239,7 +243,7 @@ class ShopShowcasePickerFragment: BaseDaggerFragment(),
     }
 
     private fun initRecyclerView() {
-        showcasePickerAdapter = ShopShowcasePickerAdapter(this)
+        showcasePickerAdapter = ShopShowcasePickerAdapter(this, pickerType)
         rv_list_etalase_picker?.apply {
             setHasFixedSize(true)
             layoutManager = linearLayoutManager

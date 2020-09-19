@@ -42,6 +42,12 @@ object ShopShowcasePickerParam {
     const val EXTRA_SHOP_ID = "SHOP_ID"
     const val EXTRA_IS_MY_SHOP = "EXTRA_IS_MY_SHOP"
     const val EXTRA_PICKER_SELECTED_SHOWCASE = "EXTRA_PICKER_SELECTED_SHOWCASE"
+    const val EXTRA_PICKER_TYPE = "EXTRA_PICKER_TYPE"
+}
+
+object ShopShowcasePickerType {
+    const val CHECKBOX = "showcase_checkbox_picker"
+    const val RADIO = "showcase_radio_picker"
 }
 
 object ShowcaseType {

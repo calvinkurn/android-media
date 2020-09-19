@@ -6,8 +6,8 @@ import android.view.View
 import android.view.WindowManager
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import com.tokopedia.applink.etalase.DeepLinkMapperEtalase
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.applink.etalase.DeepLinkMapperEtalase
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
 import com.tokopedia.shop_showcase.R
 import com.tokopedia.shop_showcase.common.PageNameConstant
@@ -41,7 +41,7 @@ class ShopShowcaseListActivity : BaseSimpleActivity(), ShopShowcaseFragmentNavig
     private var isShowZeroProduct: Boolean = true
     private var shopType = ShopType.REGULAR
     private var isNeedToGoToAddShowcase: Boolean = false
-    private var isNeedToOpenShowcasePicker: Boolean = false
+    private var isNeedToOpenShowcasePicker: String = ""
     private var isNeedToOpenReorder: Boolean = false
     private var isSellerNeedToHideShowcaseGroupValue: Boolean = false
     private var listShowcase: ArrayList<ShowcaseItem>? = arrayListOf()
@@ -55,7 +55,7 @@ class ShopShowcaseListActivity : BaseSimpleActivity(), ShopShowcaseFragmentNavig
             isShowZeroProduct = bundle.getBoolean(ShopShowcaseParamConstant.EXTRA_IS_SHOW_ZERO_PRODUCT, true)
             isSellerNeedToHideShowcaseGroupValue = bundle.getBoolean(ShopShowcaseParamConstant.EXTRA_IS_SELLER_NEED_TO_HIDE_SHOWCASE_GROUP_VALUE, false)
             isNeedToGoToAddShowcase = bundle.getBoolean(IS_NEED_TOGO_TO_ADD_PAGE, false)
-            isNeedToOpenShowcasePicker = bundle.getBoolean(IS_NEED_TO_OPEN_SHOWCASE_PICKER, false)
+            isNeedToOpenShowcasePicker = bundle.getString(IS_NEED_TO_OPEN_SHOWCASE_PICKER, "")
         }
 
         // If there is no shopId  then it's seller view
@@ -78,8 +78,8 @@ class ShopShowcaseListActivity : BaseSimpleActivity(), ShopShowcaseFragmentNavig
 
     override fun getNewFragment(): Fragment? {
         return when {
-            isNeedToOpenShowcasePicker -> {
-                ShopShowcasePickerFragment.createInstance(shopId, isMyShop())
+            isNeedToOpenShowcasePicker.isNotEmpty() -> {
+                ShopShowcasePickerFragment.createInstance(shopId, isMyShop(), isNeedToOpenShowcasePicker)
             }
             isNeedToOpenReorder -> {
                 ShopShowcaseListReorderFragment.createInstance(
