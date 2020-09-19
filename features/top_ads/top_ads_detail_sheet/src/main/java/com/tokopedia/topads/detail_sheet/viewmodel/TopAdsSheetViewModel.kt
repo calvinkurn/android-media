@@ -4,6 +4,7 @@ import android.content.res.Resources
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.response.TopAdsAutoAds
@@ -34,7 +35,7 @@ class TopAdsSheetViewModel @Inject constructor(
     val autoAdsData = MutableLiveData<TopAdsAutoAdsData>()
 
     companion object {
-        const val GROUP_REQUEST :String = """query topAdsGetPromo(${'$'}shopID: String!, ${'$'}adID: String!) { 
+        const val GROUP_REQUEST = """query topAdsGetPromo(${'$'}shopID: String!, ${'$'}adID: String!) { 
             topAdsGetPromo(shopID: ${'$'}shopID, adID: ${'$'}adID) {
               data { 
                 adID 
@@ -91,12 +92,13 @@ class TopAdsSheetViewModel @Inject constructor(
                 })
     }
 
+    @GqlQuery("CategoryList", GROUP_REQUEST)
     fun getGroupId(shopId: String, adId: String, onSuccess: ((List<AdData>) -> Unit)) {
         val params = mapOf(ParamObject.SHOP_ID to shopId,
                 ParamObject.AD_ID to adId)
         topAdsGetGroupIdUseCase.setTypeClass(AdInfo::class.java)
         topAdsGetGroupIdUseCase.setRequestParams(params)
-        topAdsGetGroupIdUseCase.setGraphqlQuery(GROUP_REQUEST)
+        topAdsGetGroupIdUseCase.setGraphqlQuery(CategoryList.GQL_QUERY)
         topAdsGetGroupIdUseCase.execute(
                 onSuccessGroup(onSuccess),
                 onError()
