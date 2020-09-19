@@ -56,13 +56,10 @@ import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.Job
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import retrofit2.Response
 import rx.Subscriber
 import rx.android.schedulers.AndroidSchedulers
@@ -1454,26 +1451,25 @@ open class HomeViewModel @Inject constructor(
         if(GlobalConfig.DEBUG) Timber.tag(this.javaClass.simpleName).e(message)
     }
 
-    fun deleteHomeData() {
-        launch(Dispatchers.IO) { homeUseCase.get().deleteHomeData() }
-    }
-
     private fun removeDynamicChannelLoadingModel() {
-        val detectLoadingModel = _homeLiveData.value?.list?.find { visitable -> visitable is DynamicChannelLoadingModel }
-        val detectRetryModel = _homeLiveData.value?.list?.find { visitable -> visitable is DynamicChannelRetryModel }
+        val currentList = _homeLiveData.value?.list
+        currentList?.let {
+            val detectLoadingModel = _homeLiveData.value?.list?.find { visitable -> visitable is DynamicChannelLoadingModel }
+            val detectRetryModel = _homeLiveData.value?.list?.find { visitable -> visitable is DynamicChannelRetryModel }
 
-        (detectRetryModel as? DynamicChannelRetryModel)?.let {
-            launch(Dispatchers.Main) {
-                _homeLiveData.value?.list?.let {list ->
-                    updateWidget(UpdateLiveDataModel(ACTION_UPDATE, DynamicChannelRetryModel(false), list.indexOf(it)))
+            (detectRetryModel as? DynamicChannelRetryModel)?.let {
+                launch(Dispatchers.Main) {
+                    _homeLiveData.value?.list?.let {list ->
+                        updateWidget(DynamicChannelRetryModel(false), list.indexOf(it))
+                    }
                 }
             }
-        }
 
-        (detectLoadingModel as? DynamicChannelLoadingModel)?.let {
-            launch(Dispatchers.Main) {
-                updateWidget(UpdateLiveDataModel(ACTION_DELETE, it))
-                updateWidget(UpdateLiveDataModel(ACTION_ADD, DynamicChannelRetryModel(false)))
+            (detectLoadingModel as? DynamicChannelLoadingModel)?.let {
+                launch(Dispatchers.Main) {
+                    deleteWidget(it, currentList.indexOf(it))
+                    addWidget(DynamicChannelRetryModel(false), currentList.size)
+                }
             }
         }
     }
