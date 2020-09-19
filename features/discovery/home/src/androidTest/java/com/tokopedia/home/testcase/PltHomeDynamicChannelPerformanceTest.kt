@@ -1,8 +1,11 @@
 package com.tokopedia.home.testcase
 
+import android.content.Context
+import android.content.SharedPreferences
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.analytics.performance.util.PerformanceDataFileUtils.writePLTPerformanceFile
+import com.tokopedia.home.beranda.data.datasource.local.HomeCacheDataConst
 import com.tokopedia.home.environment.InstrumentationHomeTestActivity
 import com.tokopedia.home.mock.HomeMockResponseConfig
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -47,6 +50,14 @@ class PltHomeDynamicChannelPerformanceTest {
     @Before
     fun deleteDatabase() {
         activityRule. activity.deleteDatabase("HomeCache.db")
+        deleteSharedPreferenceCache()
+    }
+
+    private fun deleteSharedPreferenceCache() {
+        val sharedPrefCache: SharedPreferences? = activityRule.activity.getSharedPreferences(
+                HomeCacheDataConst.SHARED_PREF_HOME_DATA_CACHE_KEY, Context.MODE_PRIVATE
+        )
+        sharedPrefCache?.edit()?.clear()?.apply()
     }
 
     @Test
@@ -54,6 +65,7 @@ class PltHomeDynamicChannelPerformanceTest {
         waitForData()
         savePLTPerformanceResultData(TEST_CASE_PAGE_LOAD_TIME_PERFORMANCE)
         activityRule.activity.deleteDatabase("HomeCache.db")
+        deleteSharedPreferenceCache()
         activityRule.activity.finishAndRemoveTask()
         Thread.sleep(1000)
     }
