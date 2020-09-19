@@ -219,13 +219,15 @@ public class ShipmentDataConverter {
         if (orderIndex > 0) {
             shipmentCartItemModel.setOrderNumber(orderIndex);
         }
-        if (groupShop.getShipmentInformationData().getPreorder().isPreorder()) {
-            shipmentCartItemModel.setPreOrderInfo(groupShop.getShipmentInformationData().getPreorder().getDuration());
+        if (groupShop.getShipmentInformationData() != null) {
+            if (groupShop.getShipmentInformationData().getPreorder().isPreorder()) {
+                shipmentCartItemModel.setPreOrderInfo(groupShop.getShipmentInformationData().getPreorder().getDuration());
+            }
+            if (groupShop.getShipmentInformationData().getFreeShipping().getEligible()) {
+                shipmentCartItemModel.setFreeShippingBadgeUrl(groupShop.getShipmentInformationData().getFreeShipping().getBadgeUrl());
+            }
+            shipmentCartItemModel.setShopLocation(groupShop.getShipmentInformationData().getShopLocation());
         }
-        if (groupShop.getShipmentInformationData().getFreeShipping().getEligible()) {
-            shipmentCartItemModel.setFreeShippingBadgeUrl(groupShop.getShipmentInformationData().getFreeShipping().getBadgeUrl());
-        }
-        shipmentCartItemModel.setShopLocation(groupShop.getShipmentInformationData().getShopLocation());
 
         Shop shop = groupShop.getShop();
         shipmentCartItemModel.setShopId(shop.getShopId());
