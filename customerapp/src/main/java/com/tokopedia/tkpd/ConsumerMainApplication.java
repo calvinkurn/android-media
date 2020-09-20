@@ -52,6 +52,8 @@ import com.tokopedia.dev_monitoring_tools.session.SessionActivityLifecycleCallba
 import com.tokopedia.dev_monitoring_tools.ui.JankyFrameActivityLifecycleCallbacks;
 import com.tokopedia.developer_options.stetho.StethoUtil;
 import com.tokopedia.device.info.DeviceInfo;
+import com.tokopedia.intl.BuildConfig;
+import com.tokopedia.intl.R;
 import com.tokopedia.intl.R;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 import com.tokopedia.notifications.data.AmplificationDataSource;
