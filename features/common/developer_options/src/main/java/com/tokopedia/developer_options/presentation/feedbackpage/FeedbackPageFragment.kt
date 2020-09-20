@@ -16,7 +16,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import android.widget.AdapterView.OnItemSelectedListener
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.tokopedia.config.GlobalConfig
@@ -82,7 +81,7 @@ class FeedbackPageFragment: Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val mainView = inflater.inflate(R.layout.fragment_feedback_page, container, false)
         if(!allPermissionsGranted()) {
-            activity?.let { ActivityCompat.requestPermissions(it, requiredPermissions, 5111) }
+            requestPermissions(requiredPermissions, 5111)
         }
         initView(mainView)
         initListener()
