@@ -1,11 +1,16 @@
 package com.tokopedia.developer_options.presentation.feedbackpage
 
 import android.Manifest
+import android.content.ContentResolver
 import android.content.pm.PackageManager
+import android.database.Cursor
 import android.net.Uri
 import android.os.Build
 import android.os.Build.VERSION_CODES
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.provider.MediaStore
 import android.text.TextUtils
 import android.util.Log
 import android.view.LayoutInflater
@@ -22,6 +27,7 @@ import com.tokopedia.developer_options.api.*
 import com.tokopedia.developer_options.presentation.feedbackpage.dialog.LoadingDialog
 import com.tokopedia.developer_options.presentation.preference.Preferences
 import com.tokopedia.screenshot_observer.Screenshot
+import com.tokopedia.screenshot_observer.ScreenshotData
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import okhttp3.MediaType
@@ -48,6 +54,15 @@ class FeedbackPageFragment: Fragment() {
     private lateinit var compositeSubscription: CompositeSubscription
     private lateinit var myPreferences: Preferences
     private lateinit var screenshot: Screenshot
+
+    private val PROJECTION = arrayOf(
+            MediaStore.Images.Media._ID,
+            MediaStore.Images.Media.DISPLAY_NAME,
+            MediaStore.Images.Media.DATA
+    )
+
+    private val FILE_NAME_PREFIX = "screenshot"
+    private val PATH_SCREENSHOT = "screenshots/"
 
     private var deviceInfo: String = ""
     private var androidVersion: String = ""
@@ -102,8 +117,10 @@ class FeedbackPageFragment: Fragment() {
 
         uriImage = arguments?.getParcelable("EXTRA_URI_IMAGE")
         Log.d("IMAGE_URI", uriImage.toString())
-        imageView.setImageURI(uriImage)
-
+        if (allPermissionsGranted()) {
+            val screenshotData = uriImage?.let { handleItem(it) }
+            imageView.setImageURI(Uri.parse(screenshotData?.path))
+        }
 
         /*screenshot = context?.contentResolver?.let {
             Screenshot(it, object : Screenshot.Listener {
@@ -204,6 +221,46 @@ class FeedbackPageFragment: Fragment() {
             }
         }
 
+    }
+
+    private fun handleItem(uri: Uri): ScreenshotData? {
+        val contentResolver: ContentResolver = requireContext().contentResolver
+        var result: ScreenshotData? = null
+        var cursor: Cursor? = null
+        try {
+            cursor = contentResolver.query(uri, PROJECTION, null, null, null)
+            if (cursor != null && cursor.moveToFirst()) {
+                val screenshotData = generateScreenshotDataFromCursor(cursor)
+                if (screenshotData != null) {
+                    Handler(Looper.getMainLooper()).post {
+                       result = screenshotData
+                    }
+                }
+            }
+        } finally {
+            cursor?.close()
+        }
+        return result
+    }
+
+
+    private fun generateScreenshotDataFromCursor(cursor: Cursor): ScreenshotData? {
+        val id = cursor.getLong(cursor.getColumnIndex(MediaStore.Images.Media._ID))
+        val fileName = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DISPLAY_NAME))
+        val path = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA))
+        return if (isPathScreenshot(path) && isFileScreenshot(fileName)) {
+            ScreenshotData(id, fileName, path)
+        } else {
+            null
+        }
+    }
+
+    private fun isFileScreenshot(fileName: String): Boolean {
+        return fileName.toLowerCase().startsWith(FILE_NAME_PREFIX)
+    }
+
+    private fun isPathScreenshot(path: String): Boolean {
+        return path.toLowerCase().contains(PATH_SCREENSHOT)
     }
 
     private fun submitFeedback(email: String, page: String, desc: String, issueType: String, actualResult: String, expectedResult: String) {

@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.Application
 import android.content.ContentResolver
 import android.database.ContentObserver
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.HandlerThread
@@ -22,7 +23,7 @@ open class Screenshot(contentResolver: ContentResolver, listener: Listener) : Ap
         mHandlerThread.start()
         mHandler = Handler(mHandlerThread.looper)
         mContentResolver = contentResolver
-        mContentObserver = ScreenshotObserver(mHandler, contentResolver, listener)
+        mContentObserver = ScreenshotObserver(mHandler, listener)
         mListener = listener
     }
 
@@ -39,7 +40,7 @@ open class Screenshot(contentResolver: ContentResolver, listener: Listener) : Ap
     }
 
     interface Listener {
-        fun onScreenShotTaken(screenshotData: ScreenshotData?)
+        fun onScreenShotTaken(uri: Uri?)
     }
 
     override fun onActivityPaused(activity: Activity) {

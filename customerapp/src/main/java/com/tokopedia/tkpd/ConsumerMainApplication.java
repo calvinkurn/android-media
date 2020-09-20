@@ -52,7 +52,6 @@ import com.tokopedia.dev_monitoring_tools.session.SessionActivityLifecycleCallba
 import com.tokopedia.dev_monitoring_tools.ui.JankyFrameActivityLifecycleCallbacks;
 import com.tokopedia.developer_options.stetho.StethoUtil;
 import com.tokopedia.device.info.DeviceInfo;
-import com.tokopedia.intl.BuildConfig;
 import com.tokopedia.intl.R;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 import com.tokopedia.notifications.data.AmplificationDataSource;
@@ -62,7 +61,6 @@ import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform;
 import com.tokopedia.screenshot_observer.Screenshot;
-import com.tokopedia.screenshot_observer.ScreenshotData;
 import com.tokopedia.shakedetect.ShakeDetectManager;
 import com.tokopedia.shakedetect.ShakeSubscriber;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
@@ -155,8 +153,8 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
         registerActivityLifecycleCallbacks(new Screenshot(getApplicationContext().getContentResolver(), new Screenshot.Listener() {
             @Override
-            public void onScreenShotTaken(ScreenshotData screenshotData) {
-                openFeedbackForm(screenshotData);
+            public void onScreenShotTaken(Uri uri) {
+                openFeedbackForm(uri);
             }
         }));
 
@@ -319,10 +317,10 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         getApplicationContext().startActivity(intent);
     }
 
-    private void openFeedbackForm(ScreenshotData screenshotData) {
+    private void openFeedbackForm(Uri uri) {
         Intent intent = RouteManager.getIntent(getApplicationContext(), ApplinkConst.FEEDBACK_FORM);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.putExtra("EXTRA_URI_IMAGE", Uri.parse(screenshotData.getPath()));
+        intent.putExtra("EXTRA_URI_IMAGE", uri);
         getApplicationContext().startActivity(intent);
     }
 
