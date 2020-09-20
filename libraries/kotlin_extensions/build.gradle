@@ -7,10 +7,6 @@ dependencies {
     implementation rootProject.ext.miscDependencies.coroutineCore
     implementation rootProject.ext.miscDependencies.coroutineAndroid
 
-    testImplementation rootProject.ext.testDependencies.junit
-    androidTestImplementation(rootProject.ext.testDependencies.androidTestRunner) {
-        exclude module: 'support-annotations'
-    }
 }
 
 project.ext {
