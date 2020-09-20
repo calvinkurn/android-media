@@ -36,6 +36,12 @@ data class Properties(
         @SerializedName("type")
         val type: String,
 
+        @SerializedName("limit_number")
+        val limitNumber: String = "20",
+
+        @SerializedName("limit_product")
+        val limitProduct: Boolean,
+
         @SerializedName("target_id")
         val targetId: String?
 

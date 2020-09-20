@@ -187,7 +187,7 @@ public class ShipmentMapper implements IShipmentMapper {
 
             if (shipmentAddressFormDataResponse.getTickers() != null && !shipmentAddressFormDataResponse.getTickers().isEmpty()) {
                 Ticker ticker = shipmentAddressFormDataResponse.getTickers().get(0);
-                dataResult.setTickerData(new TickerData(ticker.getId(), ticker.getMessage(), ticker.getPage()));
+                dataResult.setTickerData(new TickerData(ticker.getId(), ticker.getMessage(), ticker.getPage(), ticker.getTitle()));
             }
 
             if (!isDisableEgold) {

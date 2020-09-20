@@ -5,6 +5,7 @@ import android.graphics.Typeface.NORMAL
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.annotation.DrawableRes
 import androidx.annotation.LayoutRes
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -46,6 +47,24 @@ class ChatItemListViewHolder(
 
     private val menu = LongClickMenu()
 
+    override fun bind(element: ItemChatListPojo, payloads: MutableList<Any>) {
+        super.bind(element, payloads)
+        when (getFirstPayload(payloads)) {
+            PAYLOAD_READ_STATE -> bindReadState(element)
+            PAYLOAD_TYPING_STATE -> bindTypingState()
+            PAYLOAD_STOP_TYPING_STATE -> bindMessageState(element)
+            PAYLOAD_UPDATE_PIN_STATUS -> bindPin(element)
+            PAYLOAD_NEW_INCOMING_CHAT -> bindNewIncomingChat(element)
+            else -> bind(element)
+        }
+    }
+
+    private fun bindNewIncomingChat(element: ItemChatListPojo) {
+        bindTimeStamp(element)
+        bindMessageState(element)
+        bindSmartReplyIndicator(element)
+    }
+
     override fun bind(element: ItemChatListPojo) {
         bindItemChatClick(element)
         bindItemChatLongClick(element)
@@ -65,16 +84,6 @@ class ChatItemListViewHolder(
         } else {
             smartReplyIndicator?.hide()
             bindReadState(element)
-        }
-    }
-
-    override fun bind(element: ItemChatListPojo, payloads: MutableList<Any>) {
-        super.bind(element, payloads)
-        when (getFirstPayload(payloads)) {
-            PAYLOAD_READ_STATE -> bindReadState(element)
-            PAYLOAD_TYPING_STATE -> bindTypingState()
-            PAYLOAD_STOP_TYPING_STATE -> bindMessageState(element)
-            else -> bind(element)
         }
     }
 
@@ -138,7 +147,19 @@ class ChatItemListViewHolder(
                 getString(R.string.menu_mark_as_read) -> markAsRead(element)
                 getString(R.string.menu_mark_as_unread) -> markAsUnRead(element)
             }
+            when (itemMenus.icon) {
+                R.drawable.ic_topchat_unpin_chat -> unpinChat(element)
+                R.drawable.ic_topchat_pin_chat -> pinChat(element)
+            }
         }
+    }
+
+    private fun unpinChat(element: ItemChatListPojo) {
+        listener.pinUnpinChat(element, adapterPosition, false)
+    }
+
+    private fun pinChat(element: ItemChatListPojo) {
+        listener.pinUnpinChat(element, adapterPosition, true)
     }
 
     private fun delete(element: ItemChatListPojo) {
@@ -215,6 +236,18 @@ class ChatItemListViewHolder(
             val markAsRead = getString(R.string.menu_mark_as_read)
             val markAsUnread = getString(R.string.menu_mark_as_unread)
 
+            var pinText: String = ""
+            @DrawableRes val pinDrawable: Int
+
+            if (element.isPinned) {
+                pinText = getString(R.string.menu_unpin_chat)
+                pinDrawable = R.drawable.ic_topchat_unpin_chat
+            } else {
+                pinText = getString(R.string.menu_pin_chat)
+                pinDrawable = R.drawable.ic_topchat_pin_chat
+            }
+            menus.add(Menus.ItemMenus(pinText, pinDrawable))
+
             if (element.hasUnreadItem()) {
                 menus.add(Menus.ItemMenus(markAsRead, R.drawable.ic_chat_read_filled_grey))
             } else {
@@ -279,6 +312,8 @@ class ChatItemListViewHolder(
         const val PAYLOAD_READ_STATE = 8796
         const val PAYLOAD_TYPING_STATE = 3207
         const val PAYLOAD_STOP_TYPING_STATE = 5431
+        const val PAYLOAD_UPDATE_PIN_STATUS = 5432
+        const val PAYLOAD_NEW_INCOMING_CHAT = 5433
 
         const val BUYER_TAG = "Pengguna"
         const val SELLER_TAG = "Penjual"

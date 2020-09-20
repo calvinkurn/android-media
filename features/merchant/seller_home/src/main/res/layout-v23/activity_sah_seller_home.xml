@@ -8,7 +8,6 @@
         android:id="@+id/statusBarBackground"
         android:layout_width="match_parent"
         android:layout_height="@dimen/sah_status_bar_height"
-        android:background="@color/white"
         android:elevation="@dimen/sah_status_bar_elevation" />
 
     <com.tokopedia.sellerhome.view.widget.toolbar.SellerHomeToolbar
@@ -16,7 +15,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/statusBarBackground"
-        android:background="@color/Neutral_N0"
         android:minHeight="?attr/actionBarSize" />
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -26,6 +24,19 @@
         android:layout_below="@id/sahToolbar"
         android:layout_above="@+id/sahBottomNav"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/sah_dimen_4dp"
+        android:background="@drawable/sah_shadow"
+        android:layout_below="@id/sahToolbar"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/sah_dimen_4dp"
+        android:background="@drawable/sah_shadow"
+        android:rotation="@integer/shadow_inverted_rotation"
+        android:layout_above="@id/sahBottomNav"/>
 
     <com.tokopedia.design.component.BottomNavigation
         android:id="@+id/sahBottomNav"

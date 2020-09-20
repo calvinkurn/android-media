@@ -45,7 +45,6 @@
     <string name="title_liveness_detection">Liveness Detection</string>
 
     <!-- Dynamic feature for Groupchat-->
-    <string name="groupchat_app_name">Play</string>
     <string name="play_broadcaster_app_name">Play Broadcaster</string>
 
     <!--    Change Phone Number-->

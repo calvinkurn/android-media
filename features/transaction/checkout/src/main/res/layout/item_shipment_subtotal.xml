@@ -27,6 +27,7 @@
 
         <ImageView
             android:id="@+id/iv_detail_option_chevron"
+            android:contentDescription="@string/content_desc_iv_detail_option_chevron"
             android:layout_width="@dimen/dp_10"
             android:layout_height="@dimen/dp_10"
             android:layout_alignParentEnd="true"
@@ -88,6 +89,7 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_total_item_price"
+            android:contentDescription="@string/content_desc_tv_total_item_price_subtotal"
             style="@style/TextSmallMediumBlack70"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -112,6 +114,7 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_shipping_fee_price"
+            android:contentDescription="@string/content_desc_tv_shipping_fee_price_subtotal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
@@ -134,6 +137,7 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_insurance_fee_price"
+            android:contentDescription="@string/content_desc_tv_insurance_fee_price_subtotal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"

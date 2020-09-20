@@ -1,5 +1,6 @@
 package com.tokopedia.review.feature.inbox.container.presentation.fragment
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -14,6 +15,8 @@ import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.review.R
 import com.tokopedia.review.ReviewInstance
+import com.tokopedia.review.common.analytics.ReviewPerformanceMonitoringContract
+import com.tokopedia.review.common.analytics.ReviewPerformanceMonitoringListener
 import com.tokopedia.review.common.util.OnBackPressedListener
 import com.tokopedia.review.feature.inbox.container.analytics.ReviewInboxContainerTracking
 import com.tokopedia.review.feature.inbox.container.data.ReviewInboxTabs
@@ -24,7 +27,7 @@ import com.tokopedia.review.feature.inbox.container.presentation.viewmodel.Revie
 import kotlinx.android.synthetic.main.fragment_review_inbox_container.*
 import javax.inject.Inject
 
-class ReviewInboxContainerFragment : BaseDaggerFragment(), HasComponent<ReviewInboxContainerComponent>, OnBackPressedListener {
+class ReviewInboxContainerFragment : BaseDaggerFragment(), HasComponent<ReviewInboxContainerComponent>, OnBackPressedListener, ReviewPerformanceMonitoringContract {
 
     companion object {
         const val PENDING_TAB_INDEX = 0
@@ -44,6 +47,7 @@ class ReviewInboxContainerFragment : BaseDaggerFragment(), HasComponent<ReviewIn
     lateinit var viewModel: ReviewInboxContainerViewModel
 
     private var previouslySelectedTab = 0
+    private var reviewPerformanceMonitoringListener: ReviewPerformanceMonitoringListener? = null
 
     override fun getScreenName(): String {
         return ""
@@ -62,12 +66,43 @@ class ReviewInboxContainerFragment : BaseDaggerFragment(), HasComponent<ReviewIn
         }
     }
 
+    override fun stopPreparePerfomancePageMonitoring() {
+        reviewPerformanceMonitoringListener?.stopPreparePagePerformanceMonitoring()
+    }
+
+    override fun startNetworkRequestPerformanceMonitoring() {
+        reviewPerformanceMonitoringListener?.startNetworkRequestPerformanceMonitoring()
+    }
+
+    override fun stopNetworkRequestPerformanceMonitoring() {
+        reviewPerformanceMonitoringListener?.stopNetworkRequestPerformanceMonitoring()
+    }
+
+    override fun startRenderPerformanceMonitoring() {
+        // No Op
+    }
+
+    override fun castContextToTalkPerformanceMonitoringListener(context: Context): ReviewPerformanceMonitoringListener? {
+        return if(context is ReviewPerformanceMonitoringListener) {
+            context
+        } else {
+            null
+        }
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        reviewPerformanceMonitoringListener = castContextToTalkPerformanceMonitoringListener(context)
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
         return inflater.inflate(R.layout.fragment_review_inbox_container, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        stopPreparePerfomancePageMonitoring()
+        startNetworkRequestPerformanceMonitoring()
         super.onViewCreated(view, savedInstanceState)
         if (GlobalConfig.isSellerApp()) {
             val reviewSellerBundle = Bundle()
@@ -88,7 +123,9 @@ class ReviewInboxContainerFragment : BaseDaggerFragment(), HasComponent<ReviewIn
 
 
     override fun onBackPressed() {
-        ReviewInboxContainerTracking.eventOnClickBackButton(viewModel.getUserId())
+        if(::viewModel.isInitialized) {
+            ReviewInboxContainerTracking.eventOnClickBackButton(viewModel.getUserId())
+        }
     }
 
     private fun setupSellerAdapter(bundle: Bundle) {

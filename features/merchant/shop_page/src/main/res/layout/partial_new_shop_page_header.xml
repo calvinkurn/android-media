@@ -90,6 +90,7 @@
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/shop_page_main_profile_image"
+            android:contentDescription="@string/content_desc_shop_page_main_profile_image"
             android:layout_width="@dimen/layout_lvl7"
             android:layout_height="@dimen/layout_lvl7"
             android:layout_marginStart="@dimen/spacing_lvl4"
@@ -102,6 +103,7 @@
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/shop_page_main_profile_badge"
+            android:contentDescription="@string/content_desc_shop_page_main_profile_badge"
             android:layout_width="@dimen/layout_lvl3"
             android:layout_height="@dimen/layout_lvl3"
             android:adjustViewBounds="true"
@@ -110,6 +112,7 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/shop_page_main_profile_name"
+            android:contentDescription="@string/content_desc_shop_page_main_profile_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_12"
@@ -142,6 +145,7 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/shop_page_main_profile_location"
+            android:contentDescription="@string/content_desc_shop_page_main_profile_location"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_lvl2"
@@ -175,6 +179,7 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/shop_page_main_profile_follower"
+            android:contentDescription="@string/content_desc_shop_page_main_profile_follower"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_lvl2"
@@ -196,6 +201,7 @@
 
         <com.tokopedia.unifycomponents.Label
             android:id="@+id/shop_page_main_profile_free_ongkir"
+            android:contentDescription="@string/content_desc_shop_page_main_profile_free_ongkir"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
@@ -210,6 +216,7 @@
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/image_view_shop_reputation_badge"
+            android:contentDescription="@string/content_desc_image_view_shop_reputation_badge"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_16"
             android:layout_marginStart="@dimen/dp_12"
@@ -226,6 +233,7 @@
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/shop_page_follow_unfollow_button"
+            android:contentDescription="@string/content_desc_shop_page_follow_unfollow_button"
             android:layout_width="@dimen/dp_80"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/spacing_lvl4"

@@ -56,6 +56,10 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
     val submitReviewResult: LiveData<ReviewViewState<Boolean>>
         get() = _submitReviewResult
 
+    private val _editReviewResult = MutableLiveData<ReviewViewState<Boolean>>()
+    val editReviewResult: LiveData<ReviewViewState<Boolean>>
+        get() = _editReviewResult
+
     fun submitReview(reputationId: Int, productId: Int, shopId: Int, reputationScore: Int = 0, rating: Int,
                      reviewText: String = "", isAnonymous: Boolean = false) {
         _submitReviewResult.postValue(LoadingView())
@@ -249,13 +253,13 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
             }
             if(response.productrevSuccessIndicator != null) {
                 if(response.productrevSuccessIndicator.success) {
-                    _submitReviewResult.postValue(Success(response.productrevSuccessIndicator.success))
+                    _editReviewResult.postValue(Success(response.productrevSuccessIndicator.success))
                 } else {
-                    _submitReviewResult.postValue(Fail(Throwable()))
+                    _editReviewResult.postValue(Fail(Throwable()))
                 }
             }
         }) {
-            _submitReviewResult.postValue(Fail(it))
+            _editReviewResult.postValue(Fail(it))
         }
     }
 
@@ -279,13 +283,13 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
             }
             if(response.productrevSuccessIndicator != null) {
                 if(response.productrevSuccessIndicator.success) {
-                    _submitReviewResult.postValue(Success(response.productrevSuccessIndicator.success))
+                    _editReviewResult.postValue(Success(response.productrevSuccessIndicator.success))
                 } else {
-                    _submitReviewResult.postValue(Fail(Throwable()))
+                    _editReviewResult.postValue(Fail(Throwable()))
                 }
             }
         }) {
-            _submitReviewResult.postValue(Fail(it))
+            _editReviewResult.postValue(Fail(it))
         }
     }
 

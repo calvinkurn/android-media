@@ -44,7 +44,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.remoteConfig)
     implementation project(rootProject.ext.libraries.iris)
     implementation project(rootProject.ext.libraries.analytics)
-    implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
+    implementation project(rootProject.ext.libraries.graphql)
 
     if (rootProject.ext.debugToolsEnabled) {
         implementation project(rootProject.ext.libraries.analyticsDebugger)
@@ -60,18 +60,15 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.global_error
     implementation rootProject.ext.unifyDependencies.coach_mark
 
-    implementation project(rootProject.ext.libraries.graphql)
+    implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
     implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.cacheapi
-    implementation rootProject.ext.tkpdInternalLibDependencies.williamchart
-    implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
 
     testImplementation rootProject.ext.testDependencies.archCoreTesting
-    implementation rootProject.ext.debugToolsDependencies.chuck
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation rootProject.ext.testDependencies.mockitorCore
     testImplementation rootProject.ext.testDependencies.mockk

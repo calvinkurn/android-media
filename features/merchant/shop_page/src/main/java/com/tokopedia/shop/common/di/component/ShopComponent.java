@@ -88,4 +88,10 @@ public interface ShopComponent {
 
     @ShopPageContext
     Context provideActivityContext();
+
+    @Named(GQLQueryNamedConstant.SHOP_INFO_FOR_TOP_CONTENT)
+    String getGqlShopInfoForTopContent();
+
+    @Named(GQLQueryNamedConstant.SHOP_INFO_FOR_CORE_AND_ASSETS)
+    String getGqlShopInfoForCoreAndAssets();
 }

@@ -5,14 +5,6 @@ if (project.hasProperty("enable-shrinkresource")) {
     apply from: "$rootProject.projectDir/buildconfig/appcompile/enable-shrinkresource.gradle"
 }
 apply plugin: 'com.google.firebase.firebase-perf'
-
-if (hasProperty('buildScan')) {
-    buildScan {
-        termsOfServiceUrl = 'https://gradle.com/terms-of-service'
-        termsOfServiceAgree = 'yes'
-    }
-}
-
 apply plugin: 'io.hansel.preprocessor'
 
 apply from: '../tools/dynamic_feature_inclusion.gradle'
@@ -24,6 +16,13 @@ def isProduction() {
 
 def allowDistribution() {
     if (project.hasProperty('tkpdBuildType') && tkpdBuildType == "hockeyapp") {
+        return "true";
+    }
+    return "false";
+}
+
+def isDebugTraceEnabled() {
+    if (project.hasProperty('debugTrace') && debugTrace == "true") {
         return "true";
     }
     return "false";
@@ -168,6 +167,7 @@ android {
             buildConfigField "String", "PREINSTALL_NAME", "\"\""
             buildConfigField "String", "PREINSTALL_DESC", "\"\""
             buildConfigField "String", "PREINSTALL_SITE", "\"\""
+            buildConfigField "boolean", "ENABLE_DEBUG_TRACE", isDebugTraceEnabled()
             ext.enableHansel = project.hasProperty('hanselEnableDebug')
             ext.enableCrashlytics = false
             FirebasePerformance {
@@ -181,7 +181,7 @@ android {
             if (devMode()) {
                 signingConfig signingConfigs.debug
             }
-            debuggable = isDebugable(project).toBoolean()
+            debuggable = project.hasProperty('enableDebug') && enableDebug == "true"
             ext.enableHansel = !project.hasProperty('hanselDisableRelease')
 
             if (isFirebasePerformanceLogEnabled().toBoolean()) {
@@ -199,6 +199,7 @@ android {
             buildConfigField "String", "PREINSTALL_NAME", "\"${getDynamicProperty("preInstallName")}\""
             buildConfigField "String", "PREINSTALL_DESC", "\"${getDynamicProperty("preInstallDesc")}\""
             buildConfigField "String", "PREINSTALL_SITE", "\"${getDynamicProperty("preInstallSite")}\""
+            buildConfigField "boolean", "ENABLE_DEBUG_TRACE", isDebugTraceEnabled()
             multiDexKeepFile file('multidex-config.txt')
             multiDexKeepProguard file('multidex-config.pro')
             if (allowProguard()) {
@@ -313,8 +314,6 @@ dependencies {
     implementation project(rootProject.ext.features.atc_common)
     implementation project(rootProject.ext.features.fcm_common)
     implementation project(rootProject.ext.features.discovery2)
-    implementation project(rootProject.ext.features.purchase_platform_common)
-    implementation project(rootProject.ext.features.cart)
     implementation project(rootProject.ext.features.logisticcart)
     implementation project(rootProject.ext.features.logisticdata)
     implementation project(rootProject.ext.features.chatcommon)

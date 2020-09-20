@@ -40,4 +40,8 @@ class AddToDbUseCase(val repository: GqlRepository) : BaseUseCase<GqlRepository>
             throw either.a
         }
     }
+
+    fun deleteRecord(id:Int){
+        repository.delete(id)
+    }
 }

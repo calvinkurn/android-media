@@ -9,13 +9,12 @@
     android:paddingTop="@dimen/dp_16"
     android:paddingEnd="@dimen/dp_24">
 
-    <ImageView
+    <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/img"
         android:layout_width="@dimen/dp_16"
         android:layout_height="@dimen/dp_16"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/topads_dashboard_folder" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/keywordName"

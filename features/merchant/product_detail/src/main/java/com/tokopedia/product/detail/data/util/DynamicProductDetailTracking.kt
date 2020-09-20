@@ -377,17 +377,6 @@ object DynamicProductDetailTracking {
             TrackingUtil.addComponentTracker(mapEvent, productInfo, componentTrackDataModel, recomSeeAllAction)
         }
 
-        fun eventLastDicussionClicked(talkId: String, componentTrackDataModel: ComponentTrackDataModel, productInfo: DynamicProductInfoP1?) {
-            val mapEvent = TrackAppUtils.gtmData(
-                    ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
-                    ProductTrackingConstant.Category.PDP,
-                    ProductTrackingConstant.Action.CLICK_LAST_DISCUSSION,
-                    talkId
-            )
-
-            TrackingUtil.addComponentTracker(mapEvent, productInfo, componentTrackDataModel, "Click")
-        }
-
         fun eventCategoryClicked(categoryId: String, categoryName: String, productInfo: DynamicProductInfoP1?, componentTrackDataModel: ComponentTrackDataModel) {
             val mapEvent = TrackAppUtils.gtmData(
                     ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
@@ -533,16 +522,6 @@ object DynamicProductDetailTracking {
                     variant
             )
             TrackingUtil.addComponentTracker(mapEvent, productInfo, null, ProductTrackingConstant.Action.CLICK_APPLY_LEASING)
-        }
-
-        fun eventSocialProfShippingClicked(productInfo: DynamicProductInfoP1?, componentTrackDataModel: ComponentTrackDataModel) {
-            val mapEvent = TrackAppUtils.gtmData(
-                    ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
-                    ProductTrackingConstant.Category.PDP,
-                    ProductTrackingConstant.Action.CLICK_SHIPPING,
-                    ""
-            )
-            TrackingUtil.addComponentTracker(mapEvent, productInfo, componentTrackDataModel, ProductTrackingConstant.Action.CLICK_SHIPPING)
         }
 
         fun eventImageShopClicked(productInfo: DynamicProductInfoP1?, shopId: String, componentTrackDataModel: ComponentTrackDataModel) {
@@ -873,13 +852,13 @@ object DynamicProductDetailTracking {
             TrackingUtil.addComponentTracker(mapEvent, productInfo, componentTrackDataModel, ProductTrackingConstant.Action.CLICK_THREAD_DETAIL_DISCUSSION)
         }
 
-        fun eventEmptyDiscussionSendQuestion(productInfo: DynamicProductInfoP1?, componentTrackDataModel: ComponentTrackDataModel?, userId: String, isVariantSelected: Boolean) {
+        fun eventEmptyDiscussionSendQuestion(productInfo: DynamicProductInfoP1?, componentTrackDataModel: ComponentTrackDataModel?, userId: String, isVariantSelected: Boolean, totalAvailableVariants: String) {
             val mapEvent = TrackingUtil.addDiscussionParams(
                     TrackAppUtils.gtmData(
                             ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
                             ProductTrackingConstant.Category.PDP,
                             ProductTrackingConstant.Action.CLICK_SEND_QUESTION,
-                            String.format(ProductTrackingConstant.Label.DISCUSSION_EMPTY_QUESTION, isVariantSelected)),
+                            String.format(ProductTrackingConstant.Label.DISCUSSION_EMPTY_QUESTION, isVariantSelected, totalAvailableVariants)),
                     userId
             )
 

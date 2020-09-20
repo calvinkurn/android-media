@@ -1,10 +1,10 @@
 package com.tokopedia.topads.product.view.presenter;
 
-import com.tokopedia.topads.common.model.request.DataRequest;
 import com.tokopedia.topads.auto.data.AutoAdsUseCase;
-import com.tokopedia.topads.auto.data.entity.TopAdsAutoAdsData;
 import com.tokopedia.topads.common.data.internal.AutoAdsStatus;
+import com.tokopedia.topads.common.data.response.TopAdsAutoAdsData;
 import com.tokopedia.topads.common.domain.interactor.TopAdsDatePickerInteractor;
+import com.tokopedia.topads.common.model.request.DataRequest;
 import com.tokopedia.topads.common.view.presenter.TopAdsBaseListPresenter;
 import com.tokopedia.topads.dashboard.constant.SortTopAdsOption;
 import com.tokopedia.topads.dashboard.constant.TopAdsNetworkConstant;
@@ -125,7 +125,7 @@ public class TopAdsProductAdListPresenter extends TopAdsBaseListPresenter<TopAds
         autoAdsUseCase.unsubscribe();
     }
 
-    private boolean autoAdsIsActive(int status){
+    private boolean autoAdsIsActive(int status) {
         return (status == AutoAdsStatus.STATUS_ACTIVE
                 || status == AutoAdsStatus.STATUS_IN_PROGRESS_ACTIVE
                 || status == AutoAdsStatus.STATUS_IN_PROGRESS_AUTOMANAGE
@@ -180,7 +180,7 @@ public class TopAdsProductAdListPresenter extends TopAdsBaseListPresenter<TopAds
                         if (isViewAttached()) {
                             boolean hasNextData = listPageDataResponse.getPage().getPerPage() * page < listPageDataResponse.getPage().getTotal();
                             getView().onSearchLoaded(listPageDataResponse.getData(), hasNextData);
-                            if(listPageDataResponse.isAutoAds()) {
+                            if (listPageDataResponse.isAutoAds()) {
                                 getView().onAutoAdsActive();
                             } else {
                                 getView().onAutoAdsInactive();

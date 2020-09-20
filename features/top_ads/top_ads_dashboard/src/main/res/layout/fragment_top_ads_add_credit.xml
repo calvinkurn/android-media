@@ -14,7 +14,7 @@
         android:paddingTop="12dp">
     </androidx.recyclerview.widget.RecyclerView>
 
-    <Button
+    <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/button_submit"
         style="@style/Button.Submit.Orange"
         android:layout_width="match_parent"

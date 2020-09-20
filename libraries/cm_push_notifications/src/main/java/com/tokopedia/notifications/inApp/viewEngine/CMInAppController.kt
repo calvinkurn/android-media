@@ -31,7 +31,7 @@ class CMInAppController: CoroutineScope {
     }
 
     private fun putDataToStore(inAppData: CMInApp) {
-        RepositoryManager.getInstance().storageProvider.putDataToStore(inAppData)
+        RepositoryManager.getInstance().storageProvider.putDataToStore(inAppData).subscribe()
     }
 
 }

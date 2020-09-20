@@ -40,9 +40,9 @@
     <string name="apply_credit">Ajukan Kredit</string>
     <string name="buy">Beli</string>
     <string name="promo_hourly">Promo Perjam</string>
-    <string name="promote_topads">Iklankan</string>
+    <string name="promote_topads">Iklankan Produk</string>
     <string name="edit_product_text">Ubah Produk</string>
-    <string name="rincian_topads">Rincian Iklan</string>
+    <string name="rincian_topads">Lihat Performa Iklan</string>
     <string name="no_stock">Stok Kosong</string>
     <string name="stock_habis">Stok Habis</string>
     <string name="action_preorder">PreOrder</string>
@@ -96,7 +96,6 @@
     <string name="title_most_helpful_review">Ulasan Paling Membantu</string>
     <string name="label_see_all_review">Lihat Semua Ulasan (%1$s)</string>
     <string name="title_latest_talk">Diskusi Terakhir</string>
-    <string name="label_see_all_talk">Lihat Semua Diskusi (%1$s)</string>
     <string name="title_other_product">Produk Lainnya dari Toko Ini</string>
     <string name="title_topads_product">Produk Terkait dengan Barang Ini</string>
     <string name="pdp_title_recommended_product">Produk Rekomendasi</string>
@@ -138,14 +137,6 @@
     <string name="label_no_description">TIDAK ADA DESKRIPSI</string>
 
     <string name="value_proposition_learn_more">Pelajari Selengkapnya</string>
-    <string name="value_proposition_title_guarantee">Garansi Harga Termurah</string>
-    <string name="value_proposition_title_guarantee_7_days">Garansi 7 Hari</string>
-    <string name="value_proposition_desc_guarantee_7_days">Barang rusak, hilang saat pengiriman, atau tidak sesuai deskripsi? Laporkan segera dan kami akan kembalikan uangmu.</string>
-    <string name="value_proposition_desc_guarantee">Dapatkan harga termurah di Official Store Tokopedia. Kami akan ganti 2x selisih harga jika kamu menemukan yang lebih murah di Official Store platform lain.</string>
-    <string name="value_proposition_title_ready">Pasti ready</string>
-    <string name="value_proposition_desc_ready">Stok barang di Official Store dijamin tersedia. Transaksi dibatalkan penjual? Kami akan beri kamu cashback sebagai kompensasi.</string>
-    <string name="value_proposition_title_original">Pasti ori</string>
-    <string name="value_proposition_desc_original">Semua barang di Official Store Tokopedia dijamin asli. Kalau terbukti palsu, uangmu akan dikembalikan 2x lipat.</string>
     <string name="recom_go_to_wishlist">Lihat Wishlist</string>
     <string name="atc_done_add_product_success">Barang berhasil ditambahkan</string>
     <string name="atc_done_add_product_success_button">Berhasil ditambahkan</string>
@@ -196,6 +187,7 @@
 
     //Variant section
     <string name="add_to_cart_error_variant">Oops, kamu wajib pilih varian.</string>
+    <string name="add_to_cart_error_variant_builder">Oops, pilih %s dulu, ya</string>
     <string name="variant_failed_load">Varian gagal ditampilkan</string>
     <string name="variant_failed_load_description">Klik ikon di samping untuk coba lagi.</string>
     <string name="product_refresh">Refresh</string>
@@ -323,7 +315,5 @@
     <string name="content_desc_btn_buy_now">button beli</string>
     <string name="content_desc_btn_add_to_cart">button tambah keranjang</string>
     <string name="content_desc_img_pdp_video">image product</string>
-    <string name="content_desc_txtChipVariant">text varian</string>
-    <string name="content_desc_promoChipVariant">text varian promo</string>
 
 </resources>
