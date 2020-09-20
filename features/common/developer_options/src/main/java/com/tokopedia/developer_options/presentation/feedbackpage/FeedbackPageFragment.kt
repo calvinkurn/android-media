@@ -91,7 +91,9 @@ class FeedbackPageFragment: Fragment() {
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if(grantResults.size == 1) {
+        Log.d("grant_result_size", grantResults.size.toString())
+        //do more validation here
+        if(grantResults.size == requiredPermissions.size) {
             initImageUri()
         }
     }
