@@ -28,8 +28,7 @@ class HomeDataMapper(
 
         if (showGeolocation) factory.addGeolocationVisitable()
 
-        factory.addGeolocationVisitable()
-                .addDynamicChannelVisitable(addLoadingMore)
+        factory.addDynamicChannelVisitable(addLoadingMore)
                 .build()
 
         BenchmarkHelper.endSystraceSection()

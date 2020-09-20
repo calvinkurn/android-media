@@ -942,7 +942,7 @@ open class HomeFragment : BaseDaggerFragment(),
     private fun setData(data: List<Visitable<*>>, isCache: Boolean) {
         if(!data.isEmpty()) {
             if (needToPerformanceMonitoring(data) && getPageLoadTimeCallback() != null) {
-                setOnRecyclerViewLayoutReady(false);
+                setOnRecyclerViewLayoutReady(isCache)
             }
             adapter?.submitList(data)
             adjustTickerLayout()
