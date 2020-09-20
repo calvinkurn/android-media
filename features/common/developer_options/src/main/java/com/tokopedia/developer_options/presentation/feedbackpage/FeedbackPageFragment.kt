@@ -8,8 +8,6 @@ import android.net.Uri
 import android.os.Build
 import android.os.Build.VERSION_CODES
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.provider.MediaStore
 import android.text.TextUtils
 import android.util.Log
@@ -232,9 +230,7 @@ class FeedbackPageFragment: Fragment() {
             if (cursor != null && cursor.moveToFirst()) {
                 val screenshotData = generateScreenshotDataFromCursor(cursor)
                 if (screenshotData != null) {
-                    Handler(Looper.getMainLooper()).post {
-                       result = screenshotData
-                    }
+                    result = screenshotData
                 }
             }
         } finally {
