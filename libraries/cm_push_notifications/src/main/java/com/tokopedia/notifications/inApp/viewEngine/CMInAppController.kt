@@ -30,7 +30,6 @@ class CMInAppController: CoroutineScope {
             Timber.w(it, "${CMConstant.TimberTags.TAG}exception;err='${Log.getStackTraceString(it)
                     .take(CMConstant.TimberTags.MAX_LIMIT)}';data='${cmInApp.toString()
                     .take(CMConstant.TimberTags.MAX_LIMIT)}'")
-            Log.d("CMInAppController", it.message)
         })
 
     }

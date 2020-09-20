@@ -48,7 +48,6 @@ class PushController(val context: Context) : CoroutineScope {
                 Timber.w( "${CMConstant.TimberTags.TAG}exception;err='${Log.getStackTraceString(it)
                         .take(CMConstant.TimberTags.MAX_LIMIT)}';data='${bundle.toString()
                         .take(CMConstant.TimberTags.MAX_LIMIT)}'")
-                Log.d("PUSHController", it.message)
             })
 
         } catch (e: Exception) {
@@ -149,7 +148,6 @@ class PushController(val context: Context) : CoroutineScope {
                 notificationManager.notify(baseNotification.baseNotificationModel.notificationId, notification)
             }
         } catch (e: Exception) {
-            Log.d("PushController", e.message)
             Timber.w( "${CMConstant.TimberTags.TAG}exception;err='${Log.getStackTraceString(e)
                     .take(CMConstant.TimberTags.MAX_LIMIT)}';reason='unable_to_post_notif';data='${baseNotificationModel.toString()
                     .take(CMConstant.TimberTags.MAX_LIMIT)}'")

@@ -159,7 +159,6 @@ class CMPushNotificationManager : CoroutineScope {
                 }
             }
         } catch (e: Exception) {
-            Log.e(TAG, "CMPushNotificationManager: handlePushPayload ", e)
             Timber.w( "${CMConstant.TimberTags.TAG}exception;err='${Log.getStackTraceString(e)
                     .take(CMConstant.TimberTags.MAX_LIMIT)}';data='${dataString.take(CMConstant.TimberTags.MAX_LIMIT)}'")
         }
