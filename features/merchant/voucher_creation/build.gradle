@@ -22,6 +22,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.imageuploader)
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.libraries.trackingOptimizer)
+    implementation project(rootProject.ext.libraries.permissionchecker)
 
     implementation rootProject.ext.miscDependencies.viewPager2
     implementation rootProject.ext.miscDependencies.loaderviewlibrary

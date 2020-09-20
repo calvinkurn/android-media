@@ -6,7 +6,6 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.Rect
-import android.os.Build
 import android.os.Bundle
 import android.view.*
 import android.view.inputmethod.EditorInfo
@@ -26,6 +25,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.util.DownloadHelper
+import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.url.TokopediaUrl
@@ -56,7 +56,6 @@ import com.tokopedia.vouchercreation.create.domain.model.validation.VoucherTarge
 import com.tokopedia.vouchercreation.create.view.activity.CreateMerchantVoucherStepsActivity
 import com.tokopedia.vouchercreation.create.view.enums.VoucherCreationStep
 import com.tokopedia.vouchercreation.detail.view.activity.VoucherDetailActivity
-import com.tokopedia.vouchercreation.detail.view.fragment.VoucherDetailFragment
 import com.tokopedia.vouchercreation.voucherlist.domain.model.ShopBasicDataResult
 import com.tokopedia.vouchercreation.voucherlist.domain.model.VoucherSort
 import com.tokopedia.vouchercreation.voucherlist.model.ui.*
@@ -119,6 +118,9 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
 
     @Inject
     lateinit var userSession: UserSessionInterface
+
+    @Inject
+    lateinit var permissionCheckerHelper: PermissionCheckerHelper
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -659,15 +661,25 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
         DownloadVoucherBottomSheet.createInstance(voucher.image, voucher.imageSquare, userSession.userId)
                 .setOnDownloadClickListener { voucherList ->
                     activity?.run {
-                        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
-                                && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                            val missingPermissions = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                            requestPermissions(missingPermissions, VoucherDetailFragment.DOWNLOAD_REQUEST_CODE)
-                        } else {
-                            voucherList.forEach {
-                                downloadFiles(it.downloadVoucherType.imageUrl)
-                            }
-                        }
+                        permissionCheckerHelper.checkPermission(this,
+                                PermissionCheckerHelper.Companion.PERMISSION_WRITE_EXTERNAL_STORAGE,
+                                object : PermissionCheckerHelper.PermissionCheckListener {
+                                    override fun onPermissionDenied(permissionText: String) {
+                                        permissionCheckerHelper.onPermissionDenied(this@run, permissionText)
+                                    }
+
+                                    override fun onNeverAskAgain(permissionText: String) {
+                                        permissionCheckerHelper.onNeverAskAgain(this@run, permissionText)
+                                    }
+
+                                    override fun onPermissionGranted() {
+                                        if (ActivityCompat.checkSelfPermission(this@run, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                                            voucherList.forEach {
+                                                downloadFiles(it.downloadVoucherType.imageUrl)
+                                            }
+                                        }
+                                    }
+                                })
                     }
                     VoucherCreationTracking.sendVoucherListClickTracking(
                             action = Click.DOWNLOAD_VOUCHER,
@@ -1216,8 +1228,6 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
                 MvcErrorHandler.logToCrashlytics(ex, MvcError.ERROR_DOWNLOAD)
                 view?.showDownloadActionTicker(false)
             }
-            val helper = DownloadHelper(it, uri, System.currentTimeMillis().toString(), this@VoucherListFragment)
-            helper.downloadFile { true }
         }
     }
 

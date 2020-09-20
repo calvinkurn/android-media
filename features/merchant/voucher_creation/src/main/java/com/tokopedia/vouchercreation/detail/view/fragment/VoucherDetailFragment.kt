@@ -2,7 +2,6 @@ package com.tokopedia.vouchercreation.detail.view.fragment
 
 import android.Manifest
 import android.content.pm.PackageManager
-import android.os.Build
 import android.os.Bundle
 import android.view.*
 import androidx.annotation.RequiresPermission
@@ -18,6 +17,7 @@ import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.kotlin.util.DownloadHelper
+import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.usecase.coroutines.Fail
@@ -89,6 +89,9 @@ class VoucherDetailFragment : BaseDetailFragment(), DownloadHelper.DownloadHelpe
 
     @Inject
     lateinit var userSession: UserSessionInterface
+
+    @Inject
+    lateinit var permissionCheckerHelper: PermissionCheckerHelper
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -294,15 +297,25 @@ class VoucherDetailFragment : BaseDetailFragment(), DownloadHelper.DownloadHelpe
                 userSession.userId)
                 .setOnDownloadClickListener { voucherList ->
                     activity?.run {
-                        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
-                                && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                            val missingPermissions = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                            requestPermissions(missingPermissions, DOWNLOAD_REQUEST_CODE)
-                        } else {
-                            voucherList.forEach {
-                                downloadFiles(it.downloadVoucherType.imageUrl)
-                            }
-                        }
+                        permissionCheckerHelper.checkPermission(this,
+                                PermissionCheckerHelper.Companion.PERMISSION_WRITE_EXTERNAL_STORAGE,
+                                object : PermissionCheckerHelper.PermissionCheckListener {
+                                    override fun onPermissionDenied(permissionText: String) {
+                                        permissionCheckerHelper.onPermissionDenied(this@run, permissionText)
+                                    }
+
+                                    override fun onNeverAskAgain(permissionText: String) {
+                                        permissionCheckerHelper.onNeverAskAgain(this@run, permissionText)
+                                    }
+
+                                    override fun onPermissionGranted() {
+                                        if (ActivityCompat.checkSelfPermission(this@run, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                                            voucherList.forEach {
+                                                downloadFiles(it.downloadVoucherType.imageUrl)
+                                            }
+                                        }
+                                    }
+                                })
                     }
                 }
                 .show(childFragmentManager)
