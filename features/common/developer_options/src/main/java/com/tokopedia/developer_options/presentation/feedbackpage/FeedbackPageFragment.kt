@@ -89,6 +89,13 @@ class FeedbackPageFragment: Fragment() {
         return mainView
     }
 
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if(grantResults.size == 1) {
+            initImageUri()
+        }
+    }
+
     private fun allPermissionsGranted(): Boolean {
         for (permission in requiredPermissions) {
             if (activity?.let { ContextCompat.checkSelfPermission(it, permission) } != PackageManager.PERMISSION_GRANTED) {
@@ -115,10 +122,7 @@ class FeedbackPageFragment: Fragment() {
 
         uriImage = arguments?.getParcelable("EXTRA_URI_IMAGE")
         Log.d("IMAGE_URI", uriImage.toString())
-        if (allPermissionsGranted()) {
-            val screenshotData = uriImage?.let { handleItem(it) }
-            imageView.setImageURI(Uri.parse(screenshotData?.path))
-        }
+        initImageUri()
 
         /*screenshot = context?.contentResolver?.let {
             Screenshot(it, object : Screenshot.Listener {
@@ -140,6 +144,13 @@ class FeedbackPageFragment: Fragment() {
         userSession = UserSession(activity)
         initData()
 
+    }
+
+    private fun initImageUri() {
+        if (allPermissionsGranted()) {
+            val screenshotData = uriImage?.let { handleItem(it) }
+            imageView.setImageURI(Uri.parse(screenshotData?.path))
+        }
     }
 
     private fun initData() {
@@ -309,6 +320,7 @@ class FeedbackPageFragment: Fragment() {
                     }
                 })
     }
+
 
     private fun requestMapper(email: String, page: String, desc: String, issueType: String, actualResult: String, expectedResult: String): FeedbackRequest {
         val affectedVersion = if (GlobalConfig.isSellerApp()) "SA-$appVersion" else "MA-$appVersion"
