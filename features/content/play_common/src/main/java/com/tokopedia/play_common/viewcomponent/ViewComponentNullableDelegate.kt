@@ -12,11 +12,10 @@ import kotlin.reflect.KProperty
 class ViewComponentNullableDelegate<VC: IViewComponent>(
         owner: LifecycleOwner,
         isEagerInit: Boolean,
-        viewComponentCreator: (container: ViewGroup) -> VC,
-        onDestroy: (VC) -> Unit
+        viewComponentCreator: (container: ViewGroup) -> VC
 ) : ReadOnlyProperty<Fragment, VC?> {
 
-    private val nonNullDelegate = ViewComponentDelegate(owner, isEagerInit, viewComponentCreator, onDestroy)
+    private val nonNullDelegate = ViewComponentDelegate(owner, isEagerInit, viewComponentCreator)
 
     override fun getValue(thisRef: Fragment, property: KProperty<*>): VC? {
         return try {

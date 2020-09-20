@@ -12,12 +12,12 @@ import kotlin.reflect.KProperty
  */
 class ViewComponentDelegate<VC: IViewComponent>(
         owner: LifecycleOwner,
-        private val isEagerInit: Boolean,
-        private val viewComponentCreator: (container: ViewGroup) -> VC,
-        private val onDestroy: (VC) -> Unit
+        isEagerInit: Boolean,
+        private val viewComponentCreator: (container: ViewGroup) -> VC
 ) : ReadOnlyProperty<LifecycleOwner, VC> {
 
     private var viewComponent: VC? = null
+    private var mLifecycleOwner: LifecycleOwner? = null
 
     init {
         if (isEagerInit)
@@ -27,10 +27,10 @@ class ViewComponentDelegate<VC: IViewComponent>(
     }
 
     override fun getValue(thisRef: LifecycleOwner, property: KProperty<*>): VC {
+        if (getValidLifecycleOwner(thisRef) != mLifecycleOwner) releaseViewComponent()
         viewComponent?.let { return it }
 
-        return if (!isEagerInit) getOrCreateValue(thisRef)
-        else throw IllegalStateException("ViewComponent is eager init but has not been initialized")
+        return getOrCreateValue(thisRef)
     }
 
     private fun getValidLifecycleOwner(owner: LifecycleOwner): LifecycleOwner {
@@ -55,11 +55,13 @@ class ViewComponentDelegate<VC: IViewComponent>(
     }
 
     private fun getOrCreateValue(owner: LifecycleOwner): VC = synchronized(this@ViewComponentDelegate) {
+        if (getValidLifecycleOwner(owner) != mLifecycleOwner) releaseViewComponent()
         viewComponent?.let { return it }
 
-        owner.safeAddObserver(getViewComponentLifecycleObserver(owner))
-
         val lifecycleOwner = getValidLifecycleOwner(owner)
+        mLifecycleOwner = lifecycleOwner
+
+        lifecycleOwner.safeAddObserver(getViewComponentLifecycleObserver(owner))
 
         val lifecycle = lifecycleOwner.lifecycle
         if (!lifecycle.currentState.isAtLeast(Lifecycle.State.INITIALIZED)) {
@@ -67,6 +69,10 @@ class ViewComponentDelegate<VC: IViewComponent>(
         }
 
         return lifecycleOwner.createView(viewComponentCreator, getRootView(owner))
+    }
+
+    private fun releaseViewComponent() = synchronized(this@ViewComponentDelegate) {
+        viewComponent = null
     }
 
     private fun LifecycleOwner.safeAddObserver(observer: LifecycleObserver) {
@@ -98,8 +104,7 @@ class ViewComponentDelegate<VC: IViewComponent>(
         fun onDestroy() {
             owner.lifecycle.removeObserver(this)
 
-            viewComponent?.let { onDestroy(it) }
-            viewComponent = null
+            viewComponent?.rootView?.post { releaseViewComponent() }
         }
     }
 }

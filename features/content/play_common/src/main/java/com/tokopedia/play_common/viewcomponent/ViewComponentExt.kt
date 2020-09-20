@@ -10,28 +10,12 @@ fun <VC: IViewComponent> LifecycleOwner.viewComponent(
         isEagerInit: Boolean = false,
         creator: (ViewGroup) -> VC
 ) : ViewComponentDelegate<VC> {
-    return viewComponent(isEagerInit, creator, {})
-}
-
-fun <VC: IViewComponent> LifecycleOwner.viewComponent(
-        isEagerInit: Boolean = false,
-        creator: (ViewGroup) -> VC,
-        onDestroy: (VC) -> Unit = {}
-) : ViewComponentDelegate<VC> {
-    return ViewComponentDelegate(owner = this, isEagerInit = isEagerInit, viewComponentCreator = creator, onDestroy = onDestroy)
+    return ViewComponentDelegate(owner = this, isEagerInit = isEagerInit, viewComponentCreator = creator)
 }
 
 fun <VC: IViewComponent> LifecycleOwner.viewComponentOrNull(
         isEagerInit: Boolean = false,
         creator: (ViewGroup) -> VC
 ) : ViewComponentNullableDelegate<VC> {
-    return viewComponentOrNull(isEagerInit, creator, {})
-}
-
-fun <VC: IViewComponent> LifecycleOwner.viewComponentOrNull(
-        isEagerInit: Boolean = false,
-        creator: (ViewGroup) -> VC,
-        onDestroy: (VC) -> Unit = {}
-) : ViewComponentNullableDelegate<VC> {
-    return ViewComponentNullableDelegate(owner = this, isEagerInit = isEagerInit, viewComponentCreator = creator, onDestroy = onDestroy)
+    return ViewComponentNullableDelegate(owner = this, isEagerInit = isEagerInit, viewComponentCreator = creator)
 }
