@@ -722,7 +722,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             if (tempFilterDateKey == "0" && isFirstLoad) {
                 uohBottomSheetOptionAdapter.selectedKey = "2"
             } else {
-                uohBottomSheetOptionAdapter.selectedKey = tempFilterDateKey
+                uohBottomSheetOptionAdapter.selectedKey = currFilterDateKey
             }
         } else {
             uohBottomSheetOptionAdapter.selectedKey = currFilterDateKey
