@@ -379,10 +379,10 @@ class FeedbackPageFragment: Fragment() {
 
     companion object {
         @JvmStatic
-        fun newInstance(extra: Bundle) : FeedbackPageFragment {
+        fun newInstance(uri: Uri) : FeedbackPageFragment {
             return FeedbackPageFragment().apply {
                 arguments = Bundle().apply {
-                    putParcelable("EXTRA_URI_IMAGE", extra.getParcelable("EXTRA_URI_IMAGE"))
+                    putParcelable("EXTRA_URI_IMAGE", uri)
                 }
             }
         }
