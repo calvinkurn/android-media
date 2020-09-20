@@ -943,17 +943,16 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                         }
                         var dateOption = ""
                         if (currFilterDateKey.isNotEmpty() && currFilterDateKey.toInt() == 3) {
-                            if (paramUohOrder.createTimeStart.isNotEmpty() || paramUohOrder.createTimeEnd.isNotEmpty()) {
-                                if (paramUohOrder.createTimeStart.isEmpty()) {
-                                    paramUohOrder.createTimeStart = getCalculatedFormattedDate("yyyy-MM-dd", -90)
-                                } else if (paramUohOrder.createTimeEnd.isEmpty()) {
-                                    paramUohOrder.createTimeEnd = Date().toFormattedString("yyyy-MM-dd")
-                                }
-                                val splitStartDate = paramUohOrder.createTimeStart.split('-')
-                                val splitEndDate = paramUohOrder.createTimeEnd.split('-')
-                                dateOption = "${splitStartDate[2]}/${splitStartDate[1]}/${splitStartDate[0]} - ${splitEndDate[2]}/${splitEndDate[1]}/${splitEndDate[0]}"
-                                filter1?.title = dateOption
+                            if (paramUohOrder.createTimeStart.isEmpty()) {
+                                paramUohOrder.createTimeStart = getCalculatedFormattedDate("yyyy-MM-dd", -90)
                             }
+                            if (paramUohOrder.createTimeEnd.isEmpty()) {
+                                paramUohOrder.createTimeEnd = Date().toFormattedString("yyyy-MM-dd")
+                            }
+                            val splitStartDate = paramUohOrder.createTimeStart.split('-')
+                            val splitEndDate = paramUohOrder.createTimeEnd.split('-')
+                            dateOption = "${splitStartDate[2]}/${splitStartDate[1]}/${splitStartDate[0]} - ${splitEndDate[2]}/${splitEndDate[1]}/${splitEndDate[0]}"
+                            filter1?.title = dateOption
                         } else {
                             dateOption = currFilterDateLabel
 
