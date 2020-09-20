@@ -1002,9 +1002,6 @@ open class HomeViewModel @Inject constructor(
 
     fun getDynamicChannelData(dynamicChannelDataModel: DynamicChannelDataModel, position: Int){
         launchCatchError(coroutineContext, block = {
-            getDynamicChannelsUseCase.get().setParams(dynamicChannelDataModel.channel?.groupId ?: "")
-            val data = getDynamicChannelsUseCase.get().executeOnBackground()
-
             val visitableList = homeUseCase.get().onDynamicChannelExpired(
                     dynamicChannelDataModel.channel?.groupId?:"")
 
@@ -1029,9 +1026,6 @@ open class HomeViewModel @Inject constructor(
 
     fun getDynamicChannelData(visitable: Visitable<*>, channelModel: ChannelModel, position: Int){
         launchCatchError(coroutineContext, block = {
-            getDynamicChannelsUseCase.get().setParams(channelModel.groupId)
-            val data = getDynamicChannelsUseCase.get().executeOnBackground()
-
             val visitableList = homeUseCase.get().onDynamicChannelExpired(channelModel.groupId)
 
             if(visitableList.isEmpty()){
