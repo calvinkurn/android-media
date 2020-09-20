@@ -44,7 +44,9 @@ private fun renderSeparatorBenefit(cartListData: CartListData, view: View) {
 private fun renderSellerCashback(cartListData: CartListData, view: View) {
     if (cartListData.shoppingSummaryData.sellerCashbackValue > 0) {
         view.text_total_cashback_value?.apply {
-            text = CurrencyFormatUtil.convertPriceValueToIdrFormat(cartListData.shoppingSummaryData.sellerCashbackValue, false).removeDecimalSuffix()
+            text = CurrencyFormatUtil.convertPriceValueToIdrFormat(cartListData.shoppingSummaryData.sellerCashbackValue, false)
+                    .replace("Rp","")
+                    .removeDecimalSuffix()
             visibility = View.VISIBLE
         }
         view.text_total_cashback_title?.apply {
@@ -64,7 +66,9 @@ private fun renderSellerCashback(cartListData: CartListData, view: View) {
 private fun renderPromo(cartListData: CartListData, view: View) {
     if (cartListData.shoppingSummaryData.promoValue > 0) {
         view.text_total_promo_value?.apply {
-            text = CurrencyFormatUtil.convertPriceValueToIdrFormat(cartListData.shoppingSummaryData.promoValue, false).removeDecimalSuffix()
+            text = CurrencyFormatUtil.convertPriceValueToIdrFormat(cartListData.shoppingSummaryData.promoValue, false)
+                    .replace("Rp","")
+                    .removeDecimalSuffix()
             visibility = View.VISIBLE
         }
         view.text_total_promo_title?.apply {

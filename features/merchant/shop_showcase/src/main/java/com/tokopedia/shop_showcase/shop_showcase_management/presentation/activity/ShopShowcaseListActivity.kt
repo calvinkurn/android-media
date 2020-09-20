@@ -1,18 +1,15 @@
 package com.tokopedia.shop_showcase.shop_showcase_management.presentation.activity
 
-import android.app.Activity
-import android.content.Context
-import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.Window
 import android.view.WindowManager
-import androidx.fragment.app.Fragment
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalMechant
+import com.tokopedia.applink.etalase.DeepLinkMapperEtalase
+import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
 import com.tokopedia.shop_showcase.R
 import com.tokopedia.shop_showcase.common.PageNameConstant
 import com.tokopedia.shop_showcase.common.ShopShowcaseFragmentNavigation
@@ -26,11 +23,7 @@ import com.tokopedia.user.session.UserSessionInterface
 class ShopShowcaseListActivity : BaseActivity(), ShopShowcaseFragmentNavigation {
 
     companion object {
-        const val SHOP_ID = "shopId"
-        const val IS_SHOW_ZERO_PRODUCT = "isShowZeroProduct"
-        const val IS_SHOW_DEFAULT = "isShowDefault"
         const val IS_NEED_TOGO_TO_ADD_PAGE = "isNeedToGoToAddShowcase"
-        const val SELECTED_ETALASE_ID = "selectedEtalaseId"
         const val REQUEST_CODE_ADD_ETALASE = 289
     }
 
@@ -44,6 +37,7 @@ class ShopShowcaseListActivity : BaseActivity(), ShopShowcaseFragmentNavigation 
     private var isShowZeroProduct: Boolean = true
     private var shopType = ShopType.REGULAR
     private var isNeedToGoToAddShowcase: Boolean = false
+    private var isSellerNeedToHideShowcaseGroupValue: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,16 +45,17 @@ class ShopShowcaseListActivity : BaseActivity(), ShopShowcaseFragmentNavigation 
 
         val bundle = intent.getBundleExtra("bundle")
         if (bundle != null) {
-            shopId = bundle.getString(SHOP_ID, "0").toString()
-            selectedEtalaseId = bundle.getString(SELECTED_ETALASE_ID, "0").toString()
-            isShowDefault = bundle.getBoolean(IS_SHOW_DEFAULT, true)
-            isShowZeroProduct = bundle.getBoolean(IS_SHOW_ZERO_PRODUCT, true)
+            shopId = bundle.getString(ShopShowcaseParamConstant.EXTRA_SHOP_ID, "0").toString()
+            selectedEtalaseId = bundle.getString(ShopShowcaseParamConstant.EXTRA_SELECTED_ETALASE_ID, "0").toString()
+            isShowDefault = bundle.getBoolean(ShopShowcaseParamConstant.EXTRA_IS_SHOW_DEFAULT, true)
+            isShowZeroProduct = bundle.getBoolean(ShopShowcaseParamConstant.EXTRA_IS_SHOW_ZERO_PRODUCT, true)
+            isSellerNeedToHideShowcaseGroupValue = bundle.getBoolean(ShopShowcaseParamConstant.EXTRA_IS_SELLER_NEED_TO_HIDE_SHOWCASE_GROUP_VALUE, false)
             isNeedToGoToAddShowcase = bundle.getBoolean(IS_NEED_TOGO_TO_ADD_PAGE, false)
         }
 
         // If there is no shopId  then it's seller view
-        if (shopId == "0"){
-            shopId = userSession.shopId
+        if (shopId == "0") {
+            shopId = getShopIdFromDeepLink()
         }
 
         getShopType()
@@ -68,11 +63,32 @@ class ShopShowcaseListActivity : BaseActivity(), ShopShowcaseFragmentNavigation 
         setupStatusbar()
     }
 
+    /**
+     * @return shopId from deeplink query param.
+     * @return userSession.shopId, if shopId is null or blank or = 0
+     * */
+    private fun getShopIdFromDeepLink(): String {
+        val uri = intent.data
+        val shopId = uri?.getQueryParameter(DeepLinkMapperEtalase.PATH_SHOP_ID)
+        return if (shopId.isNullOrBlank() || shopId == "0") {
+            userSession.shopId
+        } else {
+            shopId
+        }
+    }
+
     override fun navigateToPage(page: String, tag: String?, showcaseList: ArrayList<ShowcaseItem>?) {
         if (page == PageNameConstant.SHOWCASE_LIST_PAGE) {
             val fragmentShowcaseList = ShopShowcaseListFragment.createInstance(
-                    shopType, shopId, selectedEtalaseId, isShowDefault,
-                    isShowZeroProduct, isMyShop(), isNeedToGoToAddShowcase)
+                    shopType = shopType,
+                    shopId = shopId,
+                    selectedEtalaseId = selectedEtalaseId,
+                    isShowDefault = isShowDefault,
+                    isShowZeroProduct = isShowZeroProduct,
+                    isMyShop = isMyShop(),
+                    isNeedToGoToAddShowcase = isNeedToGoToAddShowcase,
+                    isSellerNeedToHideShowcaseGroupValue = isSellerNeedToHideShowcaseGroupValue
+            )
             navigateToOtherFragment(fragmentShowcaseList, null)
         } else if (page == PageNameConstant.SHOWCASE_LIST_REORDER_PAGE) {
             isNeedToGoToAddShowcase = false
@@ -96,8 +112,15 @@ class ShopShowcaseListActivity : BaseActivity(), ShopShowcaseFragmentNavigation 
 
     private fun setupInitialFragment() {
         val fragmentShowcaseList = ShopShowcaseListFragment.createInstance(
-                shopType, shopId, selectedEtalaseId, isShowDefault,
-                isShowZeroProduct, isMyShop(), isNeedToGoToAddShowcase)
+                shopType = shopType,
+                shopId = shopId,
+                selectedEtalaseId = selectedEtalaseId,
+                isShowDefault = isShowDefault,
+                isShowZeroProduct = isShowZeroProduct,
+                isMyShop = isMyShop(),
+                isNeedToGoToAddShowcase = isNeedToGoToAddShowcase,
+                isSellerNeedToHideShowcaseGroupValue = isSellerNeedToHideShowcaseGroupValue
+        )
         val transaction = supportFragmentManager.beginTransaction()
         transaction.replace(R.id.shop_showcase_container, fragmentShowcaseList).commit()
     }

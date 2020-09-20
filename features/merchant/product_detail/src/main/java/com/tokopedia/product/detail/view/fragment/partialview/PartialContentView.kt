@@ -189,11 +189,6 @@ class PartialContentView(private val view: View,
         text_stock_available.show()
     }
 
-    fun renderCod(showCod: Boolean) = with(view) {
-        cod_header_container.showWithCondition(showCod)
-        cod_header_container.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable(view.context, R.drawable.ic_cod_white), null, null, null)
-    }
-
     fun renderTradein(showTradein: Boolean) = with(view) {
         tradein_header_container.showWithCondition(showTradein)
         tradein_header_container.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable(view.context, R.drawable.tradein_white), null, null, null)

@@ -13,17 +13,18 @@
         android:id="@+id/text_order_number"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Pesanan 1"
         android:textColor="@color/Neutral_N700_96"
+        android:paddingBottom="@dimen/dp_12"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="heading_6" />
+        app:typographyType="heading_6"
+        tools:text="Pesanan 1"
+        tools:visibility="visible" />
 
     <TextView
         android:id="@+id/tv_trade_in_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_12"
         android:background="@drawable/checkout_module_bg_trade_in"
         android:fontFamily="sans-serif"
         android:paddingLeft="@dimen/dp_8"
@@ -60,8 +61,8 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_4"
         android:layout_marginLeft="@dimen/dp_4"
-        android:text="Dilayani Tokopedia"
-        app:labelType="general_light_green"
+        android:text="@string/label_fulfilment"
+        app:labelType="general_light_grey"
         app:layout_constraintBottom_toBottomOf="@+id/tv_shop_name"
         app:layout_constraintStart_toEndOf="@+id/tv_shop_name"
         app:layout_constraintTop_toTopOf="@+id/tv_shop_name" />
@@ -70,7 +71,7 @@
         android:id="@+id/tv_shop_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_12"
+        android:layout_marginTop="@dimen/dp_4"
         android:lineSpacingExtra="5sp"
         app:layout_constraintStart_toEndOf="@+id/img_shop_badge"
         app:layout_constraintTop_toBottomOf="@+id/tv_trade_in_label"
@@ -80,7 +81,7 @@
         tools:visibility="visible" />
 
     <com.google.android.flexbox.FlexboxLayout
-        android:id="@+id/layout_product_info"
+        android:id="@+id/layout_shop_info"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_4"

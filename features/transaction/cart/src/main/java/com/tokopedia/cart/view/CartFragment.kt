@@ -46,6 +46,9 @@ import com.tokopedia.cart.R
 import com.tokopedia.cart.data.model.response.recentview.RecentView
 import com.tokopedia.cart.domain.model.cartlist.*
 import com.tokopedia.cart.domain.model.cartlist.ActionData.Companion.ACTION_CHECKOUTBROWSER
+import com.tokopedia.cart.domain.model.cartlist.ButtonData.Companion.ID_HOMEPAGE
+import com.tokopedia.cart.domain.model.cartlist.ButtonData.Companion.ID_RETRY
+import com.tokopedia.cart.domain.model.cartlist.ButtonData.Companion.ID_START_SHOPPING
 import com.tokopedia.cart.domain.model.cartlist.OutOfServiceData.Companion.ID_MAINTENANCE
 import com.tokopedia.cart.domain.model.cartlist.OutOfServiceData.Companion.ID_OVERLOAD
 import com.tokopedia.cart.domain.model.cartlist.OutOfServiceData.Companion.ID_TIMEOUT
@@ -84,6 +87,7 @@ import com.tokopedia.purchase_platform.common.constant.CartConstant.PARAM_DEFAUL
 import com.tokopedia.purchase_platform.common.constant.CartConstant.STATE_RED
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.Companion.RESULT_CODE_COUPON_STATE_CHANGED
 import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
+import com.tokopedia.purchase_platform.common.feature.button.ABTestButton
 import com.tokopedia.purchase_platform.common.feature.insurance.InsuranceItemActionListener
 import com.tokopedia.purchase_platform.common.feature.insurance.request.UpdateInsuranceProductApplicationDetails
 import com.tokopedia.purchase_platform.common.feature.insurance.response.InsuranceCartDigitalProduct
@@ -218,18 +222,20 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         private var FLAG_BEGIN_SHIPMENT_PROCESS = false
         private var FLAG_SHOULD_CLEAR_RECYCLERVIEW = false
         private var FLAG_IS_CART_EMPTY = false
-        private val HAS_ELEVATION = 12
-        private val NO_ELEVATION = 0
-        private val CART_TRACE = "mp_cart"
-        private val CART_ALL_TRACE = "mp_cart_all"
-        private val CART_PAGE = "cart"
-        private val NAVIGATION_PDP = 64728
-        private val NAVIGATION_PROMO = 7451
-        private val NAVIGATION_SHIPMENT = 983
-        private val ADVERTISINGID = "ADVERTISINGID"
-        private val KEY_ADVERTISINGID = "KEY_ADVERTISINGID"
-        private val WISHLIST_SOURCE_AVAILABLE_ITEM = "WISHLIST_SOURCE_AVAILABLE_ITEM"
-        private val WISHLIST_SOURCE_UNAVAILABLE_ITEM = "WISHLIST_SOURCE_UNAVAILABLE_ITEM"
+
+        const val HAS_ELEVATION = 12
+        const val NO_ELEVATION = 0
+        const val CART_TRACE = "mp_cart"
+        const val CART_ALL_TRACE = "mp_cart_all"
+        const val CART_PAGE = "cart"
+        const val NAVIGATION_PDP = 64728
+        const val NAVIGATION_PROMO = 7451
+        const val NAVIGATION_SHIPMENT = 983
+        const val ADVERTISINGID = "ADVERTISINGID"
+        const val KEY_ADVERTISINGID = "KEY_ADVERTISINGID"
+        const val WISHLIST_SOURCE_AVAILABLE_ITEM = "WISHLIST_SOURCE_AVAILABLE_ITEM"
+        const val WISHLIST_SOURCE_UNAVAILABLE_ITEM = "WISHLIST_SOURCE_UNAVAILABLE_ITEM"
+        const val WORDING_GO_TO_HOMEPAGE = "Kembali ke Homepage"
 
         @JvmStatic
         fun newInstance(bundle: Bundle?, args: String): CartFragment {
@@ -384,8 +390,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     override fun onStart() {
         super.onStart()
-        // Check if currently not refreshing and not ATC external flow
-        if (refreshHandler?.isRefreshing == false && !isAtcExternalFlow()) {
+        // Check if currently not refreshing, not ATC external flow and not on error state
+        if (refreshHandler?.isRefreshing == false && !isAtcExternalFlow() && layoutGlobalError.visibility != View.VISIBLE) {
             if (!::cartAdapter.isInitialized || (::cartAdapter.isInitialized && cartAdapter.itemCount == 0)) {
                 dPresenter.processInitialGetCartData(getCartId(), cartListData == null, true)
             }
@@ -717,22 +723,20 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         val toBeDeletedCartItemDataList = getAllSelectedCartDataList()
         val allCartItemDataList = cartAdapter.allCartItemData
         if (toBeDeletedCartItemDataList?.isNotEmpty() == true) {
-            if (toBeDeletedCartItemDataList.isNotEmpty()) {
-                val dialog = getMultipleItemsDialogDeleteConfirmation(toBeDeletedCartItemDataList.size)
-                dialog?.setPrimaryCTAClickListener {
-                    if (toBeDeletedCartItemDataList.isNotEmpty()) {
-                        dPresenter.processDeleteCartItem(allCartItemDataList, toBeDeletedCartItemDataList, false, true)
-                        sendAnalyticsOnClickConfirmationRemoveCartSelectedNoAddToWishList(
-                                dPresenter.generateDeleteCartDataAnalytics(toBeDeletedCartItemDataList)
-                        )
-                    }
-                    dialog.dismiss()
+            val dialog = getMultipleItemsDialogDeleteConfirmation(toBeDeletedCartItemDataList.size)
+            dialog?.setPrimaryCTAClickListener {
+                if (toBeDeletedCartItemDataList.isNotEmpty()) {
+                    dPresenter.processDeleteCartItem(allCartItemDataList, toBeDeletedCartItemDataList, false, true)
+                    sendAnalyticsOnClickConfirmationRemoveCartSelectedNoAddToWishList(
+                            dPresenter.generateDeleteCartDataAnalytics(toBeDeletedCartItemDataList)
+                    )
                 }
-                dialog?.setSecondaryCTAClickListener {
-                    dialog.dismiss()
-                }
-                dialog?.show()
+                dialog.dismiss()
             }
+            dialog?.setSecondaryCTAClickListener {
+                dialog.dismiss()
+            }
+            dialog?.show()
         } else {
             showToastMessageRed(getString(R.string.message_delete_empty_selection))
         }
@@ -947,12 +951,20 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     override fun onCartItemProductClicked(cartItemData: CartItemData) {
         sendAnalyticsOnClickProductNameCartItem(cartItemData.originData?.productName ?: "")
-        startActivityForResult(RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, cartItemData.originData?.productId), NAVIGATION_PDP)
+        cartItemData.originData?.productId?.let {
+            goToPdp(it)
+        }
     }
 
     override fun onDisabledCartItemProductClicked(cartItemData: CartItemData) {
         sendAnalyticsOnClickProductNameCartItem(cartItemData.originData?.productName ?: "")
-        startActivityForResult(RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, cartItemData.originData?.productId), NAVIGATION_PDP)
+        cartItemData.originData?.productId?.let {
+            goToPdp(it)
+        }
+    }
+
+    private fun goToPdp(productId: String) {
+        startActivityForResult(RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId), NAVIGATION_PDP)
     }
 
     override fun onClickShopNow() {
@@ -1138,6 +1150,14 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     override fun onAddDisabledItemToWishlist(data: DisabledCartItemHolderData) {
         cartPageAnalytics.eventClickMoveToWishlistOnUnavailableSection(userSession.userId, data.productId, data.errorType)
         val isLastItem = cartAdapter.allCartItemData.size == 1
+
+        // If unavailable item > 1 and state is collapsed, then expand first
+        var forceExpand = false
+        if (cartAdapter.allDisabledCartItemData.size > 1 && accordionCollapseState) {
+            collapseOrExpandDisabledItem()
+            forceExpand = true
+        }
+
         dPresenter.processAddCartToWishlist(data.productId, data.cartId.toString(), isLastItem, WISHLIST_SOURCE_UNAVAILABLE_ITEM)
     }
 
@@ -1170,10 +1190,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     private fun onProductClicked(productId: String) {
-        activity?.let {
-            val intent = RouteManager.getIntent(it, ApplinkConst.PRODUCT_INFO, productId)
-            startActivityForResult(intent, NAVIGATION_PDP)
-        }
+        goToPdp(productId)
     }
 
     override fun onWishlistProductClicked(productId: String) {
@@ -1498,6 +1515,10 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
     }
 
+    private fun renderAbTestButton(button: ABTestButton) {
+        btnToShipment.buttonType = button.getUnifyButtonType()
+    }
+
     override fun renderInitialGetCartListDataSuccess(cartListData: CartListData?) {
         recommendationPage = 1
         cartListData?.let {
@@ -1507,6 +1528,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             }
 
             sendAnalyticsScreenName(screenName)
+
+            renderAbTestButton(cartListData.abTestButton)
 
             endlessRecyclerViewScrollListener.resetState()
             refreshHandler?.finishRefresh()
@@ -1530,7 +1553,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             if (wishLists == null) {
                 dPresenter.processGetWishlistData()
             } else {
-                renderWishlist(null)
+                renderWishlist(null, false)
             }
 
             if (recommendationList == null) {
@@ -1575,31 +1598,24 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     private fun renderCartOutOfService(outOfServiceData: OutOfServiceData) {
         when (outOfServiceData.id) {
-            ID_MAINTENANCE -> {
-                layoutGlobalError.setType(GlobalError.MAINTENANCE)
-                outOfServiceData.buttons.firstOrNull()?.let {
-                    layoutGlobalError.errorAction.text = it.message
-                }
-                layoutGlobalError.setActionClickListener {
-                    goToHome()
-                }
-            }
-            ID_OVERLOAD -> {
-                layoutGlobalError.setType(GlobalError.PAGE_FULL)
-                layoutGlobalError.setActionClickListener {
-                    refreshErrorPage()
-                }
-            }
-            ID_TIMEOUT -> {
+            ID_MAINTENANCE, ID_TIMEOUT, ID_OVERLOAD -> {
                 layoutGlobalError.setType(GlobalError.SERVER_ERROR)
-                outOfServiceData.buttons.firstOrNull()?.let {
-                    layoutGlobalError.errorAction.text = it.message
-                }
-                layoutGlobalError.setActionClickListener {
-                    goToHome()
+                outOfServiceData.buttons.firstOrNull()?.let { buttonData ->
+                    layoutGlobalError.errorAction.text = buttonData.message
+                    layoutGlobalError.setActionClickListener {
+                        when (buttonData.id) {
+                            ID_START_SHOPPING, ID_HOMEPAGE -> {
+                                goToHome()
+                            }
+                            ID_RETRY -> {
+                                refreshErrorPage()
+                            }
+                        }
+                    }
                 }
             }
         }
+
         if (outOfServiceData.title.isNotBlank()) {
             layoutGlobalError.errorTitle.text = outOfServiceData.title
         }
@@ -1609,8 +1625,10 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         if (outOfServiceData.image.isNotBlank()) {
             layoutGlobalError.errorIllustration.setImage(outOfServiceData.image, 0f)
         }
-        cartPageAnalytics.eventViewErrorPageWhenLoadCart(userSession.userId, outOfServiceData.getErrorType())
+
         showErrorContainer()
+
+        cartPageAnalytics.eventViewErrorPageWhenLoadCart(userSession.userId, outOfServiceData.getErrorType())
     }
 
     private fun renderCartNotEmpty(cartListData: CartListData) {
@@ -2208,7 +2226,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             val errorType = getGlobalErrorType(throwable)
             layoutGlobalError.setType(errorType)
             if (errorType == GlobalError.SERVER_ERROR) {
-                layoutGlobalError.errorAction.text = "Kembali ke Homepage"
+                layoutGlobalError.errorAction.text = WORDING_GO_TO_HOMEPAGE
                 layoutGlobalError.setActionClickListener {
                     goToHome()
                 }
@@ -2226,7 +2244,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         rlContent.show()
         refreshHandler?.isRefreshing = true
         cartAdapter.resetData()
-        dPresenter.processInitialGetCartData(getCartId(), dPresenter.getCartListData() == null, false)
+        dPresenter.processInitialGetCartData(getCartId(), true, false)
     }
 
     private fun getGlobalErrorType(throwable: Throwable): Int {
@@ -2363,13 +2381,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     override fun renderErrorToShipmentForm(outOfServiceData: OutOfServiceData) {
-        layoutGlobalError.errorTitle.text = outOfServiceData.title
-        layoutGlobalError.errorDescription.text = outOfServiceData.description
-        layoutGlobalError.errorIllustration.setImage(outOfServiceData.image, 0f)
-        outOfServiceData.buttons.firstOrNull()?.let {
-            layoutGlobalError.errorAction.text = it.message
-        }
-        showErrorContainer()
+        renderCartOutOfService(outOfServiceData)
     }
 
     override fun onHiddenChanged(hidden: Boolean) {
@@ -2472,6 +2484,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     override fun updateCashback(cashback: Double) {
         cartAdapter.updateShipmentSellerCashback(cashback)
+        cartListData?.shoppingSummaryData?.sellerCashbackValue = cashback.toInt()
     }
 
     override fun showToastMessageRed(message: String, ctaText: String, ctaClickListener: View.OnClickListener?) {
@@ -2543,10 +2556,11 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     override fun onDeleteCartDataSuccess(deletedCartIds: List<String>, removeAllItems: Boolean, forceExpandCollapsedUnavailableItems: Boolean) {
+        val message = String.format(getString(R.string.message_product_already_deleted), deletedCartIds.size)
         if (deletedCartIds.size > 1) {
-            showToastMessageGreen("${deletedCartIds.size} barang telah dihapus")
+            showToastMessageGreen(message)
         } else {
-            showToastMessageGreen("${deletedCartIds.size} barang telah dihapus", "Batalkan", View.OnClickListener { onUndoDeleteClicked(deletedCartIds) })
+            showToastMessageGreen(message, getString(R.string.toaster_cta_cancel), View.OnClickListener { onUndoDeleteClicked(deletedCartIds) })
         }
 
         if (removeAllItems) {
@@ -2554,10 +2568,19 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             resetRecentViewList()
             dPresenter.processInitialGetCartData(getCartId(), false, false)
         } else {
-            cartAdapter.removeCartItemById(deletedCartIds, context)
+            val updateListResult = cartAdapter.removeCartItemById(deletedCartIds, context)
+            updateListResult.first.forEach {
+                onNeedToRemoveViewItem(it)
+            }
+            updateListResult.second.forEach {
+                onNeedToUpdateViewItem(it)
+            }
 
-            if (forceExpandCollapsedUnavailableItems && cartAdapter.allDisabledCartItemData.size > 1) {
-                collapseOrExpandDisabledItem()
+            // If action is on unavailable item, do collapse unavailable items if previously forced to expand (without user tap expand)
+            if (cartAdapter.allDisabledCartItemData.size > 1) {
+                if (forceExpandCollapsedUnavailableItems) {
+                    collapseOrExpandDisabledItem()
+                }
             } else {
                 cartAdapter.removeAccordionDisabledItem()
             }
@@ -2579,7 +2602,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         dPresenter.processInitialGetCartData(getCartId(), false, false)
     }
 
-    override fun onAddCartToWishlistSuccess(message: String, productId: String, cartId: String, isLastItem: Boolean, source: String) {
+    override fun onAddCartToWishlistSuccess(message: String, productId: String, cartId: String, isLastItem: Boolean, source: String, forceExpandCollapsedUnavailableItems: Boolean) {
         showToastMessageGreen(message, false)
 
         when (source) {
@@ -2595,12 +2618,48 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             resetRecentViewList()
             dPresenter.processInitialGetCartData(getCartId(), false, false)
         } else {
-            cartAdapter.removeCartItemById(listOf(cartId), context)
-            dPresenter.reCalculateSubTotal(cartAdapter.allShopGroupDataList, cartAdapter.insuranceCartShops)
-            setToolbarShadowVisibility(cartAdapter.allAvailableCartItemData.isEmpty())
-            notifyBottomCartParent()
+            val updateListResult = cartAdapter.removeCartItemById(listOf(cartId), context)
+            removeLocalCartItem(updateListResult, forceExpandCollapsedUnavailableItems)
 
             dPresenter.processGetWishlistData()
+        }
+    }
+
+    private fun removeLocalCartItem(updateListResult: Pair<ArrayList<Int>, ArrayList<Int>>, forceExpandCollapsedUnavailableItems: Boolean) {
+        updateListResult.first.forEach {
+            onNeedToRemoveViewItem(it)
+        }
+        updateListResult.second.forEach {
+            onNeedToUpdateViewItem(it)
+        }
+
+        // If action is on unavailable item, do collapse unavailable items if previously forced to expand (without user tap expand)
+        if (cartAdapter.allDisabledCartItemData.size > 1) {
+            if (forceExpandCollapsedUnavailableItems) {
+                collapseOrExpandDisabledItem()
+            }
+        } else {
+            cartAdapter.removeAccordionDisabledItem()
+        }
+
+        dPresenter.reCalculateSubTotal(cartAdapter.allShopGroupDataList, cartAdapter.insuranceCartShops)
+        setToolbarShadowVisibility(cartAdapter.allAvailableCartItemData.isEmpty())
+        notifyBottomCartParent()
+    }
+
+    fun onNeedToRemoveViewItem(position: Int) {
+        if (cartRecyclerView.isComputingLayout) {
+            cartRecyclerView.post { cartAdapter.notifyItemRemoved(position) }
+        } else {
+            cartAdapter.notifyItemRemoved(position)
+        }
+    }
+
+    fun onNeedToUpdateViewItem(position: Int) {
+        if (cartRecyclerView.isComputingLayout) {
+            cartRecyclerView.post { cartAdapter.notifyItemChanged(position) }
+        } else {
+            cartAdapter.notifyItemChanged(position)
         }
     }
 
@@ -2959,20 +3018,31 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         shouldReloadRecentViewList = false
     }
 
-    override fun renderWishlist(wishlists: List<Wishlist>?) {
+    override fun renderWishlist(wishlists: List<Wishlist>?, forceReload: Boolean) {
         var cartWishlistItemHolderDataList: MutableList<CartWishlistItemHolderData> = ArrayList()
         if (this.wishLists != null) {
-            cartWishlistItemHolderDataList.addAll(this.wishLists!!)
+            if (forceReload && wishlists != null) {
+                cartWishlistItemHolderDataList = wishlistMapper.convertToViewHolderModelList(wishlists)
+            } else {
+                cartWishlistItemHolderDataList.addAll(this.wishLists!!)
+            }
         } else if (wishlists != null) {
             cartWishlistItemHolderDataList = wishlistMapper.convertToViewHolderModelList(wishlists)
         }
-        val cartSectionHeaderHolderData = CartSectionHeaderHolderData()
-        cartSectionHeaderHolderData.title = getString(R.string.checkout_module_title_wishlist)
-        cartSectionHeaderHolderData.showAllAppLink = ApplinkConst.WISHLIST
 
         val cartWishlistHolderData = CartWishlistHolderData()
         cartWishlistHolderData.wishList = cartWishlistItemHolderDataList
-        cartAdapter.addCartWishlistData(cartSectionHeaderHolderData, cartWishlistHolderData)
+
+        if (this.wishLists == null || !forceReload) {
+            val cartSectionHeaderHolderData = CartSectionHeaderHolderData()
+            cartSectionHeaderHolderData.title = getString(R.string.checkout_module_title_wishlist)
+            cartSectionHeaderHolderData.showAllAppLink = ApplinkConst.WISHLIST
+            cartAdapter.addCartWishlistData(cartSectionHeaderHolderData, cartWishlistHolderData)
+        } else {
+            val wishlistIndex = cartAdapter.updateCartWishlistData(cartWishlistHolderData)
+            onNeedToUpdateViewItem(wishlistIndex)
+        }
+
         this.wishLists = cartWishlistItemHolderDataList
     }
 

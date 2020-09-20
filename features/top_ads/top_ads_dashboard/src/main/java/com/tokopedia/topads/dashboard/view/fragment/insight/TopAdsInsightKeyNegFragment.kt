@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.DATA_INSIGHT
@@ -59,6 +60,7 @@ class TopAdsInsightKeyNegFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         adapter = TopAdsInsightNegKeyAdapter(this::butttonClicked)
         setView()
+        toolTip.setImageDrawable(context?.getResDrawable(R.drawable.topads_dash_info_tooltip))
         toolTip.setOnClickListener {
             val sheet = InsightKeyBottomSheet.createInstance(1)
             sheet.show(fragmentManager!!, "")

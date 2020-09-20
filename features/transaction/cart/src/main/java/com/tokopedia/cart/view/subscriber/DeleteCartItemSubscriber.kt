@@ -44,7 +44,7 @@ class DeleteCartItemSubscriber(private val view: ICartListView?,
                 view.onDeleteCartDataSuccess(toBeDeletedCartIds, removeAllItems, forceExpandCollapsedUnavailableItems)
 
                 val params = view.generateGeneralParamValidateUse()
-                if ((view.checkHitValidateUseIsNeeded(params))) {
+                if (!removeAllItems && (view.checkHitValidateUseIsNeeded(params))) {
                     view.showPromoCheckoutStickyButtonLoading()
                     presenter.doUpdateCartAndValidateUse(params)
                 }

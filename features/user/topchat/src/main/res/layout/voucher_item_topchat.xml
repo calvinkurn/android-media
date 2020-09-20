@@ -6,8 +6,6 @@
     android:gravity="start"
     android:orientation="vertical">
 
-    <include layout="@layout/item_chatcommon_chat_header" />
-
     <com.tokopedia.topchat.chatroom.view.customview.TopchatMerchantVoucherView
         android:id="@+id/merchantVoucherView"
         android:layout_width="270dp"

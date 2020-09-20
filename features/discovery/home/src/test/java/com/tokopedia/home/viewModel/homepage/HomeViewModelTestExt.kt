@@ -57,7 +57,8 @@ fun createHomeViewModel(
         getSalamWidgetUseCase: GetSalamWidgetUseCase = mockk(relaxed = true),
         declineSalamWidgetUseCase: DeclineSalamWIdgetUseCase = mockk{ mockk(relaxed = true)},
         declineRechargeRecommendationUseCase: DeclineRechargeRecommendationUseCase = mockk(relaxed = true),
-        topadsImageViewUseCase: TopAdsImageViewUseCase = mockk(relaxed = true)
+        topadsImageViewUseCase: TopAdsImageViewUseCase = mockk(relaxed = true),
+        dispatcher: TestDispatcherProvider = TestDispatcherProvider()
 ): HomeViewModel{
 
 
@@ -73,7 +74,7 @@ fun createHomeViewModel(
             getPlayCardHomeUseCase = Lazy{getPlayLiveDynamicUseCase},
             getRecommendationTabUseCase = Lazy{getRecommendationTabUseCase},
             getWalletBalanceUseCase = Lazy{getCoroutineWalletBalanceUseCase},
-            homeDispatcher = Lazy{TestDispatcherProvider()},
+            homeDispatcher = Lazy{ dispatcher },
             homeUseCase = Lazy{ getHomeUseCase },
             popularKeywordUseCase = Lazy{getPopularKeywordUseCase},
             sendGeolocationInfoUseCase = Lazy{getSendGeolocationInfoUseCase},

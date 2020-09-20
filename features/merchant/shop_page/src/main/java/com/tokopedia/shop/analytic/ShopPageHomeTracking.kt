@@ -974,4 +974,18 @@ class ShopPageHomeTracking(
         )
         sendDataLayerEvent(eventMap)
     }
+
+    fun clickProductListToggle(
+            productListName: String,
+            isMyShop: Boolean,
+            customDimensionShopPage: CustomDimensionShopPage
+    ) {
+        sendGeneralEvent(
+                CLICK_SHOP_PAGE,
+                getShopPageCategory(isMyShop),
+                CLICK_PRODUCT_LIST_TOGGLE,
+                productListName,
+                customDimensionShopPage
+        )
+    }
 }

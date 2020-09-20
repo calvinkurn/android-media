@@ -78,7 +78,7 @@ interface ICartListView : CustomerView {
 
     fun onUndoDeleteCartDataSuccess(undoDeleteCartData: UndoDeleteCartData)
 
-    fun onAddCartToWishlistSuccess(message: String, productId: String, cartId: String, isLastItem: Boolean, source: String)
+    fun onAddCartToWishlistSuccess(message: String, productId: String, cartId: String, isLastItem: Boolean, source: String, forceExpandCollapsedUnavailableItems: Boolean)
 
     fun stopCartPerformanceTrace()
 
@@ -86,7 +86,7 @@ interface ICartListView : CustomerView {
 
     fun renderRecentView(recentViewList: List<RecentView>?)
 
-    fun renderWishlist(wishlists: List<Wishlist>?)
+    fun renderWishlist(wishlists: List<Wishlist>?, forceReload: Boolean)
 
     fun renderRecommendation(recommendationWidget: RecommendationWidget?)
 

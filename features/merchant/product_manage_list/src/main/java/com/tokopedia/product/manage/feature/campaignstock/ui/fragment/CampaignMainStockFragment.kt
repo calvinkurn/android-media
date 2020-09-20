@@ -5,17 +5,24 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.product.manage.ProductManageInstance
 import com.tokopedia.product.manage.R
+import com.tokopedia.product.manage.feature.campaignstock.di.DaggerCampaignStockComponent
 import com.tokopedia.product.manage.feature.campaignstock.ui.adapter.typefactory.CampaignStockAdapterTypeFactory
 import com.tokopedia.product.manage.feature.campaignstock.ui.adapter.typefactory.CampaignStockTypeFactory
 import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.uimodel.ActiveProductSwitchUiModel
 import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.uimodel.SellableStockProductUIModel
 import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.uimodel.StockTickerInfoUiModel
 import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.uimodel.TotalStockEditorUiModel
+import com.tokopedia.product.manage.feature.campaignstock.ui.viewmodel.CampaignMainStockViewModel
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
+import javax.inject.Inject
 
 class CampaignMainStockFragment: BaseListFragment<Visitable<CampaignStockTypeFactory>, CampaignStockAdapterTypeFactory>() {
 
@@ -43,6 +50,13 @@ class CampaignMainStockFragment: BaseListFragment<Visitable<CampaignStockTypeFac
         private const val EXTRA_SELLABLE_PRODUCT_LIST = "extra_sellable"
     }
 
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    private val mViewModel: CampaignMainStockViewModel by lazy {
+        ViewModelProvider(this, viewModelFactory).get(CampaignMainStockViewModel::class.java)
+    }
+
     private val isVariant by lazy {
         arguments?.getBoolean(EXTRA_IS_VARIANT) ?: false
     }
@@ -58,11 +72,20 @@ class CampaignMainStockFragment: BaseListFragment<Visitable<CampaignStockTypeFac
     private val sellableProductList by lazy {
         arguments?.getParcelableArrayList<SellableStockProductUIModel>(EXTRA_SELLABLE_PRODUCT_LIST)?.toList().orEmpty()
     }
+    
+    private val variantStockWarningTicker by lazy {
+        StockTickerInfoUiModel(false, sellableProductList.any { it.stock.toIntOrZero() == 0 })
+    }
 
     private var campaignStockListener: CampaignStockListener? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_campaign_stock_tab, container, false)
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        observeVariantStock()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -81,11 +104,23 @@ class CampaignMainStockFragment: BaseListFragment<Visitable<CampaignStockTypeFac
 
     override fun getScreenName(): String = ""
 
-    override fun initInjector() {}
+    override fun initInjector() {
+        activity?.run {
+            DaggerCampaignStockComponent.builder()
+                    .productManageComponent(ProductManageInstance.getComponent(application))
+                    .build()
+                    .inject(this@CampaignMainStockFragment)
+        }
+    }
 
     override fun loadData(page: Int) {}
 
     override fun getRecyclerViewResourceId(): Int = R.id.rv_campaign_stock
+
+    override fun onDestroyView() {
+        mViewModel.shouldDisplayVariantStockWarningLiveData.removeObservers(viewLifecycleOwner)
+        super.onDestroyView()
+    }
 
     private fun setupView(view: View) {
         view.setBackgroundColor(Color.TRANSPARENT)
@@ -94,8 +129,7 @@ class CampaignMainStockFragment: BaseListFragment<Visitable<CampaignStockTypeFac
 
     private fun setupAdapterModels(isVariant: Boolean) {
         if (isVariant) {
-            val variantList = mutableListOf<Visitable<CampaignStockTypeFactory>>(
-                    StockTickerInfoUiModel(false)).apply {
+            val variantList = mutableListOf<Visitable<CampaignStockTypeFactory>>(variantStockWarningTicker).apply {
                 addAll(sellableProductList)
             }
             renderList(variantList)
@@ -105,7 +139,12 @@ class CampaignMainStockFragment: BaseListFragment<Visitable<CampaignStockTypeFac
                     TotalStockEditorUiModel(stockCount.orZero())
             ))
         }
+    }
 
+    private fun observeVariantStock() {
+        mViewModel.shouldDisplayVariantStockWarningLiveData.observe(viewLifecycleOwner, Observer {
+            showVariantWarningTickerWithCondition(it)
+        })
     }
 
     private fun onTotalStockChanged(totalStock: Int) {
@@ -117,11 +156,23 @@ class CampaignMainStockFragment: BaseListFragment<Visitable<CampaignStockTypeFac
     }
 
     private fun onVariantStockChanged(productId: String, stock: Int) {
+        mViewModel.setVariantStock(productId, stock)
         campaignStockListener?.onVariantStockChanged(productId, stock)
     }
 
     private fun onVariantStatusChanged(productId: String, status: ProductStatus) {
         campaignStockListener?.onVariantStatusChanged(productId, status)
+    }
+
+    private fun showVariantWarningTickerWithCondition(shouldShowWarning: Boolean) {
+        adapter.data.indexOf(variantStockWarningTicker).let { warningIndex ->
+            (adapter.data.getOrNull(warningIndex) as? StockTickerInfoUiModel)?.run {
+                if (hasEmptyVariantStock != shouldShowWarning) {
+                    hasEmptyVariantStock = shouldShowWarning
+                    adapter.notifyItemChanged(warningIndex)
+                }
+            }
+        }
     }
 
 }

@@ -20,6 +20,7 @@ class AddCartToWishlistUseCase @Inject constructor(private val graphqlUseCase: G
 
         private const val PARAM = "params"
         private const val PARAM_KEY_CART_IDS = "cart_ids"
+        private const val STATUS_OK = "OK"
     }
 
     override fun createObservable(requestParams: RequestParams?): Observable<AddCartToWishlistData> {
@@ -32,31 +33,28 @@ class AddCartToWishlistUseCase @Inject constructor(private val graphqlUseCase: G
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
 
-        return Observable.just(AddCartToWishlistData())
-                .flatMap {
-                    graphqlUseCase.createObservable(RequestParams.EMPTY)
-                            .map {
-                                val addCartToWishlistGqlResponse = it.getData<AddCartToWishlistGqlResponse>(AddCartToWishlistGqlResponse::class.java)
-                                val addCartToWishlistData = AddCartToWishlistData()
-                                if (addCartToWishlistGqlResponse != null) {
-                                    addCartToWishlistData.isSuccess = addCartToWishlistGqlResponse.addCartToWishlistDataResponse.status == "OK"
-                                    addCartToWishlistData.message = if (addCartToWishlistGqlResponse.addCartToWishlistDataResponse.status == "OK") {
-                                        if (addCartToWishlistGqlResponse.addCartToWishlistDataResponse.data.message.isNotEmpty()) {
-                                            addCartToWishlistGqlResponse.addCartToWishlistDataResponse.data.message[0]
-                                        } else {
-                                            ""
-                                        }
-                                    } else {
-                                        if (addCartToWishlistGqlResponse.addCartToWishlistDataResponse.errorMessage.isNotEmpty()) {
-                                            addCartToWishlistGqlResponse.addCartToWishlistDataResponse.errorMessage[0]
-                                        } else {
-                                            ""
-                                        }
-                                    }
-                                }
-
-                                addCartToWishlistData
+        return graphqlUseCase.createObservable(RequestParams.EMPTY)
+                .map {
+                    val addCartToWishlistGqlResponse = it.getData<AddCartToWishlistGqlResponse>(AddCartToWishlistGqlResponse::class.java)
+                    val addCartToWishlistData = AddCartToWishlistData()
+                    if (addCartToWishlistGqlResponse != null) {
+                        addCartToWishlistData.isSuccess = addCartToWishlistGqlResponse.addCartToWishlistDataResponse.status == STATUS_OK
+                        addCartToWishlistData.message = if (addCartToWishlistGqlResponse.addCartToWishlistDataResponse.status == STATUS_OK) {
+                            if (addCartToWishlistGqlResponse.addCartToWishlistDataResponse.data.message.isNotEmpty()) {
+                                addCartToWishlistGqlResponse.addCartToWishlistDataResponse.data.message[0]
+                            } else {
+                                ""
                             }
+                        } else {
+                            if (addCartToWishlistGqlResponse.addCartToWishlistDataResponse.errorMessage.isNotEmpty()) {
+                                addCartToWishlistGqlResponse.addCartToWishlistDataResponse.errorMessage[0]
+                            } else {
+                                ""
+                            }
+                        }
+                    }
+
+                    addCartToWishlistData
                 }
                 .subscribeOn(schedulers.io)
                 .observeOn(schedulers.main)

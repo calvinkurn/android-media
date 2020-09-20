@@ -2,6 +2,7 @@ package com.tokopedia.topads.dashboard.view.adapter.non_group_item.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes
+import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.model.nongroupItem.WithoutGroupDataItem
 import com.tokopedia.topads.dashboard.view.adapter.non_group_item.viewmodel.NonGroupItemsEmptyViewModel
@@ -29,6 +30,7 @@ class NonGroupItemsEmptyViewHolder(val view: View) : NonGroupItemsViewHolder<Non
                 view.text_title.text = view.context.getString(R.string.topads_dash_non_group_no_search_result_title)
                 view.text_desc.text = view.context.getString(R.string.topads_empty_on_search_desc)
             }
+            view.image_empty.setImageDrawable(view.context.getResDrawable(com.tokopedia.topads.common.R.drawable.ill_no_product))
         }
     }
 

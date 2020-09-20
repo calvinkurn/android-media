@@ -561,7 +561,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
 
     fun addNotAvailableShop(disabledShopHolderData: DisabledShopHolderData) {
         var showDivider = false
-        if (cartDataList[cartDataList.size - 1] !is DisabledReasonHolderData) {
+        if (cartDataList.size > 0 && cartDataList[cartDataList.size - 1] !is DisabledReasonHolderData) {
             showDivider = true
         }
         disabledShopHolderData.showDivider = showDivider
@@ -820,6 +820,22 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
         notifyDataSetChanged()
     }
 
+    fun updateCartWishlistData(cartWishlistHolderData: CartWishlistHolderData): Int {
+        var wishlistIndex = 0
+        for ((index, item) in cartDataList.withIndex()) {
+            if (item is CartWishlistHolderData) {
+                wishlistIndex = index
+                break
+            }
+        }
+
+        if (wishlistIndex != 0) {
+            cartDataList.set(wishlistIndex, cartWishlistHolderData)
+        }
+
+        return wishlistIndex
+    }
+
     fun addCartRecommendationData(cartSectionHeaderHolderData: CartSectionHeaderHolderData?,
                                   cartRecommendationItemHolderDataList: List<CartRecommendationItemHolderData>) {
         var recommendationIndex = 0
@@ -1060,9 +1076,11 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
         }
     }
 
-    fun removeCartItemById(cartIds: List<String>, context: Context?) {
+    fun removeCartItemById(cartIds: List<String>, context: Context?): Pair<ArrayList<Int>, ArrayList<Int>> {
         // Store item first before remove item to prevent ConcurrentModificationException
         val toBeRemovedData = ArrayList<Any>()
+        val toBeRemovedIndex = ArrayList<Int>()
+        val toBeUpdatedIndex = ArrayList<Int>()
         var disabledItemHeaderHolderData: DisabledItemHeaderHolderData? = null
         var cartItemTickerErrorHolderData: CartItemTickerErrorHolderData? = null
         var disabledAccordionHolderData: DisabledAccordionHolderData? = null
@@ -1072,6 +1090,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
         loop@ for (i in cartDataList.indices) {
             val obj = cartDataList[i]
             when (obj) {
+                // For enable / available item
                 is CartShopHolderData -> {
                     val toBeRemovedCartItemHolderData = ArrayList<CartItemHolderData>()
                     obj.shopGroupAvailableData.cartItemDataList?.let {
@@ -1079,6 +1098,9 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
                             cartItemHolderData.cartItemData?.originData?.let { data ->
                                 if (cartIds.contains(data.cartId.toString())) {
                                     toBeRemovedCartItemHolderData.add(cartItemHolderData)
+                                    if (!toBeUpdatedIndex.contains(i)) {
+                                        toBeUpdatedIndex.add(i)
+                                    }
                                 }
                             }
                         }
@@ -1087,13 +1109,18 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
                         }
                         if (it.size == 0) {
                             toBeRemovedData.add(obj)
+                            toBeRemovedIndex.add(i)
                         }
                     }
                 }
 
                 // For disabled / unavailable item, also delete other item (shop, unavailable reason, unavailable header, accordion) if needed
                 is DisabledCartItemHolderData -> if (cartIds.contains(obj.cartId.toString())) {
-                    val before = cartDataList[i - 1]
+                    if (i < 1) {
+                        continue@loop
+                    }
+                    val indexBefore = i - 1
+                    val before = cartDataList[indexBefore]
                     var after: Any? = null
                     if (i + 1 < cartDataList.size) {
                         after = cartDataList[i + 1]
@@ -1103,12 +1130,14 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
                         // If item before `obj` is shop, then remove it since the shop only has one item
                         if (after !is DisabledCartItemHolderData) {
                             toBeRemovedData.add(before)
+                            toBeRemovedIndex.add(indexBefore)
                             // Adjust divider visibility
                             if (after is DisabledShopHolderData) {
                                 after.showDivider = false
                             }
                         }
                         toBeRemovedData.add(obj)
+                        toBeRemovedIndex.add(i)
                     } else if (before is DisabledCartItemHolderData) {
                         // If item before `obj` is cart item, then don't remove it since the shop has more than one item
                         // Adjust divider visibility
@@ -1116,13 +1145,19 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
                             before.showDivider = false
                         }
                         toBeRemovedData.add(obj)
+                        toBeRemovedIndex.add(i)
                     }
 
                     // If two item before `obj` is reason item, then remove it since the reason has only one shop and the shop has only one item
-                    val twoBefore = cartDataList[i - 2]
+                    if (i < 2) {
+                        continue@loop
+                    }
+                    val indexTwoBefore = i - 2
+                    val twoBefore = cartDataList[indexTwoBefore]
                     if (twoBefore is DisabledReasonHolderData) {
                         if (after !is DisabledCartItemHolderData && after !is DisabledShopHolderData) {
                             toBeRemovedData.add(twoBefore)
+                            toBeRemovedIndex.add(indexTwoBefore)
                         }
                     }
 
@@ -1199,7 +1234,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
             }
         }
 
-        notifyDataSetChanged()
+        return Pair(toBeRemovedIndex, toBeUpdatedIndex)
     }
 
     fun addCartTicker(tickerAnnouncementHolderData: TickerAnnouncementHolderData) {

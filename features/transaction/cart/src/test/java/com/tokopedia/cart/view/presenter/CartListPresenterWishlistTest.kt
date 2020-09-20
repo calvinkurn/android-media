@@ -99,7 +99,7 @@ object CartListPresenterWishlistTest : Spek({
 
             Then("should render wishlist") {
                 verify {
-                    view.renderWishlist(response.gqlWishList?.wishlistDataList)
+                    view.renderWishlist(response.gqlWishList?.wishlistDataList, true)
                 }
             }
 
@@ -130,7 +130,7 @@ object CartListPresenterWishlistTest : Spek({
 
             Then("should not render wishlist") {
                 verify(inverse = true) {
-                    view.renderWishlist(response.gqlWishList?.wishlistDataList)
+                    view.renderWishlist(response.gqlWishList?.wishlistDataList, false)
                 }
             }
 

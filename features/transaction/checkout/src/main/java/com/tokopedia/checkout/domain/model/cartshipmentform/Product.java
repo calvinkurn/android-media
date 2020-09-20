@@ -58,6 +58,7 @@ public class Product implements Parcelable {
     private String tickerMessage;
     private String variant;
     private String productAlertMessage;
+    private List<String> productInformation;
 
     private AnalyticsProductCheckoutData analyticsProductCheckoutData;
 
@@ -421,6 +422,14 @@ public class Product implements Parcelable {
         this.productAlertMessage = productAlertMessage;
     }
 
+    public List<String> getProductInformation() {
+        return productInformation;
+    }
+
+    public void setProductInformation(List<String> productInformation) {
+        this.productInformation = productInformation;
+    }
+
     public Product() {
     }
 
@@ -431,103 +440,107 @@ public class Product implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeByte(this.isError ? (byte) 1 : (byte) 0);
-        dest.writeString(this.errorMessage);
-        dest.writeString(this.errorMessageDescription);
-        dest.writeLong(this.cartId);
-        dest.writeInt(this.productId);
-        dest.writeString(this.productName);
-        dest.writeString(this.productPriceFmt);
-        dest.writeInt(this.productPrice);
-        dest.writeInt(this.productOriginalPrice);
-        dest.writeInt(this.productWholesalePrice);
-        dest.writeString(this.productWholesalePriceFmt);
-        dest.writeString(this.productWeightFmt);
-        dest.writeInt(this.productWeight);
-        dest.writeInt(this.productCondition);
-        dest.writeString(this.productUrl);
-        dest.writeString(this.freeReturnLogo);
-        dest.writeByte(this.productReturnable ? (byte) 1 : (byte) 0);
-        dest.writeByte(this.productIsFreeReturns ? (byte) 1 : (byte) 0);
-        dest.writeByte(this.productIsPreorder ? (byte) 1 : (byte) 0);
-        dest.writeInt(this.preOrderDurationDay);
-        dest.writeString(this.productCashback);
-        dest.writeInt(this.productMinOrder);
-        dest.writeInt(this.productInvenageValue);
-        dest.writeInt(this.productSwitchInvenage);
-        dest.writeInt(this.productPriceCurrency);
-        dest.writeString(this.productImageSrc200Square);
-        dest.writeString(this.productNotes);
-        dest.writeInt(this.productQuantity);
-        dest.writeInt(this.productMenuId);
-        dest.writeByte(this.productFinsurance ? (byte) 1 : (byte) 0);
-        dest.writeByte(this.productFcancelPartial ? (byte) 1 : (byte) 0);
-        dest.writeTypedList(this.productShipment);
-        dest.writeTypedList(this.productShipmentMapping);
-        dest.writeInt(this.productCatId);
-        dest.writeInt(this.productCatalogId);
-        dest.writeParcelable(this.purchaseProtectionPlanData, flags);
-        dest.writeString(this.productPreOrderInfo);
-        dest.writeParcelable(this.tradeInInfoData, flags);
-        dest.writeByte(this.freeShipping ? (byte) 1 : (byte) 0);
-        dest.writeString(this.freeShippingBadgeUrl);
-        dest.writeByte(this.showTicker ? (byte) 1 : (byte) 0);
-        dest.writeString(this.tickerMessage);
-        dest.writeString(this.variant);
-        dest.writeString(this.productAlertMessage);
+        dest.writeByte((byte) (isError ? 1 : 0));
+        dest.writeString(errorMessage);
+        dest.writeString(errorMessageDescription);
+        dest.writeLong(cartId);
+        dest.writeInt(productId);
+        dest.writeString(productName);
+        dest.writeString(productPriceFmt);
+        dest.writeInt(productPrice);
+        dest.writeInt(productOriginalPrice);
+        dest.writeInt(productWholesalePrice);
+        dest.writeString(productWholesalePriceFmt);
+        dest.writeString(productWeightFmt);
+        dest.writeInt(productWeight);
+        dest.writeInt(productCondition);
+        dest.writeString(productUrl);
+        dest.writeString(freeReturnLogo);
+        dest.writeByte((byte) (productReturnable ? 1 : 0));
+        dest.writeByte((byte) (productIsFreeReturns ? 1 : 0));
+        dest.writeByte((byte) (productIsPreorder ? 1 : 0));
+        dest.writeInt(preOrderDurationDay);
+        dest.writeString(productCashback);
+        dest.writeInt(productMinOrder);
+        dest.writeInt(productInvenageValue);
+        dest.writeInt(productSwitchInvenage);
+        dest.writeInt(productPriceCurrency);
+        dest.writeString(productImageSrc200Square);
+        dest.writeString(productNotes);
+        dest.writeInt(productQuantity);
+        dest.writeInt(productMenuId);
+        dest.writeByte((byte) (productFinsurance ? 1 : 0));
+        dest.writeByte((byte) (productFcancelPartial ? 1 : 0));
+        dest.writeTypedList(productShipment);
+        dest.writeTypedList(productShipmentMapping);
+        dest.writeInt(productCatId);
+        dest.writeInt(productCatalogId);
+        dest.writeParcelable(purchaseProtectionPlanData, flags);
+        dest.writeString(productPreOrderInfo);
+        dest.writeParcelable(tradeInInfoData, flags);
+        dest.writeByte((byte) (freeShipping ? 1 : 0));
+        dest.writeString(freeShippingBadgeUrl);
+        dest.writeByte((byte) (showTicker ? 1 : 0));
+        dest.writeString(tickerMessage);
+        dest.writeString(variant);
+        dest.writeString(productAlertMessage);
+        dest.writeStringList(productInformation);
+        dest.writeParcelable(analyticsProductCheckoutData, flags);
     }
 
     protected Product(Parcel in) {
-        this.isError = in.readByte() != 0;
-        this.errorMessage = in.readString();
-        this.errorMessageDescription = in.readString();
-        this.cartId = in.readLong();
-        this.productId = in.readInt();
-        this.productName = in.readString();
-        this.productPriceFmt = in.readString();
-        this.productPrice = in.readInt();
-        this.productOriginalPrice = in.readInt();
-        this.productWholesalePrice = in.readInt();
-        this.productWholesalePriceFmt = in.readString();
-        this.productWeightFmt = in.readString();
-        this.productWeight = in.readInt();
-        this.productCondition = in.readInt();
-        this.productUrl = in.readString();
-        this.freeReturnLogo = in.readString();
-        this.productReturnable = in.readByte() != 0;
-        this.productIsFreeReturns = in.readByte() != 0;
-        this.productIsPreorder = in.readByte() != 0;
-        this.preOrderDurationDay = in.readInt();
-        this.productCashback = in.readString();
-        this.productMinOrder = in.readInt();
-        this.productInvenageValue = in.readInt();
-        this.productSwitchInvenage = in.readInt();
-        this.productPriceCurrency = in.readInt();
-        this.productImageSrc200Square = in.readString();
-        this.productNotes = in.readString();
-        this.productQuantity = in.readInt();
-        this.productMenuId = in.readInt();
-        this.productFinsurance = in.readByte() != 0;
-        this.productFcancelPartial = in.readByte() != 0;
-        this.productShipment = in.createTypedArrayList(ProductShipment.CREATOR);
-        this.productShipmentMapping = in.createTypedArrayList(ProductShipmentMapping.CREATOR);
-        this.productCatId = in.readInt();
-        this.productCatalogId = in.readInt();
-        this.purchaseProtectionPlanData = in.readParcelable(PurchaseProtectionPlanData.class.getClassLoader());
-        this.productPreOrderInfo = in.readString();
-        this.tradeInInfoData = in.readParcelable(TradeInInfoData.class.getClassLoader());
-        this.freeShipping = in.readByte() != 0;
-        this.freeShippingBadgeUrl = in.readString();
-        this.showTicker = in.readByte() != 0;
-        this.tickerMessage = in.readString();
-        this.variant = in.readString();
-        this.productAlertMessage = in.readString();
+        isError = in.readByte() != 0;
+        errorMessage = in.readString();
+        errorMessageDescription = in.readString();
+        cartId = in.readLong();
+        productId = in.readInt();
+        productName = in.readString();
+        productPriceFmt = in.readString();
+        productPrice = in.readInt();
+        productOriginalPrice = in.readInt();
+        productWholesalePrice = in.readInt();
+        productWholesalePriceFmt = in.readString();
+        productWeightFmt = in.readString();
+        productWeight = in.readInt();
+        productCondition = in.readInt();
+        productUrl = in.readString();
+        freeReturnLogo = in.readString();
+        productReturnable = in.readByte() != 0;
+        productIsFreeReturns = in.readByte() != 0;
+        productIsPreorder = in.readByte() != 0;
+        preOrderDurationDay = in.readInt();
+        productCashback = in.readString();
+        productMinOrder = in.readInt();
+        productInvenageValue = in.readInt();
+        productSwitchInvenage = in.readInt();
+        productPriceCurrency = in.readInt();
+        productImageSrc200Square = in.readString();
+        productNotes = in.readString();
+        productQuantity = in.readInt();
+        productMenuId = in.readInt();
+        productFinsurance = in.readByte() != 0;
+        productFcancelPartial = in.readByte() != 0;
+        productShipment = in.createTypedArrayList(ProductShipment.CREATOR);
+        productShipmentMapping = in.createTypedArrayList(ProductShipmentMapping.CREATOR);
+        productCatId = in.readInt();
+        productCatalogId = in.readInt();
+        purchaseProtectionPlanData = in.readParcelable(PurchaseProtectionPlanData.class.getClassLoader());
+        productPreOrderInfo = in.readString();
+        tradeInInfoData = in.readParcelable(TradeInInfoData.class.getClassLoader());
+        freeShipping = in.readByte() != 0;
+        freeShippingBadgeUrl = in.readString();
+        showTicker = in.readByte() != 0;
+        tickerMessage = in.readString();
+        variant = in.readString();
+        productAlertMessage = in.readString();
+        productInformation = in.createStringArrayList();
+        analyticsProductCheckoutData = in.readParcelable(AnalyticsProductCheckoutData.class.getClassLoader());
     }
 
     public static final Creator<Product> CREATOR = new Creator<Product>() {
         @Override
-        public Product createFromParcel(Parcel source) {
-            return new Product(source);
+        public Product createFromParcel(Parcel in) {
+            return new Product(in);
         }
 
         @Override
@@ -535,4 +548,5 @@ public class Product implements Parcelable {
             return new Product[size];
         }
     };
+
 }

@@ -2,7 +2,7 @@
     <string name="app_name">purchase_platform_common</string>
     <string name="promo_funnel_label">Makin hemat pakai promo</string>
     <string name="label_note_for_seller">Catatan untuk Penjual (Opsional)</string>
-    <string name="label_button_add_note">Ada catatan tambahan untuk produk ini?</string>
+    <string name="label_button_add_note">Tulis catatan untuk barang ini</string>
     <string name="note_counter_format" formatted="false">%d/%d</string>
     <string name="product_invenage_remaining_stock">$less_than_count</string>
     <string name="product_invenage_in_other_cart">$pita_by_user_count</string>

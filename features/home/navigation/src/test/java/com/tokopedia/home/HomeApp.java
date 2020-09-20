@@ -52,11 +52,6 @@ public class HomeApp extends BaseMainApplication implements GlobalNavRouter, Net
     }
 
     @Override
-    public Fragment getCartFragment(Bundle bundle) {
-        return null;
-    }
-
-    @Override
     public Fragment getOfficialStoreFragment(Bundle bundle) {
         return null;
     }
@@ -64,16 +59,6 @@ public class HomeApp extends BaseMainApplication implements GlobalNavRouter, Net
     @Override
     public ApplicationUpdate getAppUpdate(Context context) {
         return mock(ApplicationUpdate.class);
-    }
-
-    @Override
-    public int getCartCount(Context context) {
-        return 0;
-    }
-
-    @Override
-    public void setCartCount(Context context, int count) {
-
     }
 
     @Override

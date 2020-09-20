@@ -133,6 +133,9 @@ public class Product {
     @SerializedName("product_alert_message")
     @Expose
     private String productAlertMessage;
+    @SerializedName("product_information")
+    @Expose
+    private List<String> productInformation;
 
     public String getProductCategory() {
         return productCategory;
@@ -296,5 +299,9 @@ public class Product {
 
     public String getProductAlertMessage() {
         return productAlertMessage;
+    }
+
+    public List<String> getProductInformation() {
+        return productInformation;
     }
 }

@@ -29,6 +29,7 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.flexbox.FlexboxLayout;
 import com.google.android.material.textfield.TextInputLayout;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.checkout.R;
@@ -155,8 +156,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private Typography tvTradeInShippingPriceTitle;
     private Typography tvTradeInShippingPriceDetail;
     private Typography textVariant;
-    private Typography textCashback;
-    private Typography textLabelIncidentProductLevel;
+    private FlexboxLayout layoutProductInfo;
 
     private TextView tvTradeInLabel;
 
@@ -281,8 +281,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         labelPreOrder = itemView.findViewById(R.id.label_pre_order);
         labelIncidentShopLevel = itemView.findViewById(R.id.label_incident_shop_level);
         textVariant = itemView.findViewById(R.id.text_variant);
-        textCashback = itemView.findViewById(R.id.text_cashback);
-        textLabelIncidentProductLevel = itemView.findViewById(R.id.text_label_incident_product_level);
+        layoutProductInfo = itemView.findViewById(R.id.layout_product_info);
 
         //priority
         llPrioritas = itemView.findViewById(R.id.ll_prioritas);
@@ -439,7 +438,13 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     }
 
     private void renderShop(ShipmentCartItemModel shipmentCartItemModel) {
-        textOrderNumber.setText("Pesanan " + shipmentCartItemModel.getOrderNumber());
+        if (shipmentCartItemModel.getOrderNumber() > 0) {
+            String orderlabel = String.format(itemView.getContext().getString(R.string.label_order_counter), shipmentCartItemModel.getOrderNumber());
+            textOrderNumber.setText(orderlabel);
+            textOrderNumber.setVisibility(View.VISIBLE);
+        } else {
+            textOrderNumber.setVisibility(View.GONE);
+        }
 
         if (!TextUtils.isEmpty(shipmentCartItemModel.getPreOrderInfo())) {
             labelPreOrder.setText(shipmentCartItemModel.getPreOrderInfo());
@@ -516,30 +521,23 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     }
 
     private void renderProductProperties(CartItemModel cartItemModel) {
-        // Render from the last information label
-        renderProductPropertyIncidentLabel(cartItemModel);
-        renderProductPropertyCashback(cartItemModel);
-    }
-
-    private void renderProductPropertyIncidentLabel(CartItemModel cartItemModel) {
-        if (!TextUtils.isEmpty(cartItemModel.getProductAlertMessage())) {
-            textLabelIncidentProductLevel.setText(cartItemModel.getProductAlertMessage());
-            textLabelIncidentProductLevel.setVisibility(View.VISIBLE);
-        } else {
-            textLabelIncidentProductLevel.setVisibility(View.GONE);
-        }
-    }
-
-    private void renderProductPropertyCashback(CartItemModel cartItemModel) {
-        if (!TextUtils.isEmpty(cartItemModel.getCashback())) {
-            if (textLabelIncidentProductLevel.getVisibility() == View.VISIBLE) {
-                textCashback.setText("Cashback " + cartItemModel.getCashback() + ", ");
-            } else {
-                textCashback.setText("Cashback " + cartItemModel.getCashback());
+        List<String> productInformationList = cartItemModel.getProductInformation();
+        if (productInformationList != null && !productInformationList.isEmpty()) {
+            layoutProductInfo.removeAllViews();
+            for (int i = 0; i < productInformationList.size(); i++) {
+                Typography productInfo = new Typography(itemView.getContext());
+                productInfo.setTextColor(ContextCompat.getColor(itemView.getContext(), com.tokopedia.unifyprinciples.R.color.Neutral_N700_68));
+                productInfo.setType(Typography.SMALL);
+                if (layoutProductInfo.getChildCount() > 0) {
+                    productInfo.setText(", " + productInformationList.get(i));
+                } else {
+                    productInfo.setText(productInformationList.get(i));
+                }
+                layoutProductInfo.addView(productInfo);
             }
-            textCashback.setVisibility(View.VISIBLE);
+            layoutProductInfo.setVisibility(View.VISIBLE);
         } else {
-            textCashback.setVisibility(View.GONE);
+            layoutProductInfo.setVisibility(View.GONE);
         }
     }
 

@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:foreground="?selectableItemBackground"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
     android:orientation="vertical">
 
     <include
@@ -157,49 +158,12 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/text_product_price"
                         android:layout_marginTop="@dimen/dp_4"
+                        android:paddingTop="@dimen/dp_2"
                         android:layout_toEndOf="@+id/iv_product_card"
                         android:layout_toRightOf="@+id/iv_product_card"
                         android:foregroundGravity="center_vertical"
                         app:flexWrap="wrap"
-                        tools:visibility="visible">
-
-                        <com.tokopedia.unifyprinciples.Typography
-                            android:id="@+id/text_cashback"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@+id/text_product_name"
-                            android:paddingTop="@dimen/dp_2"
-                            android:textColor="@color/Neutral_N700_68"
-                            android:visibility="gone"
-                            app:typographyType="small"
-                            tools:text="Cashback 3%"
-                            tools:visibility="visible" />
-
-                        <com.tokopedia.unifyprinciples.Typography
-                            android:id="@+id/text_price_drop"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@+id/text_product_name"
-                            android:paddingTop="@dimen/dp_2"
-                            android:textColor="@color/Neutral_N700_68"
-                            android:visibility="gone"
-                            app:typographyType="small"
-                            tools:text=", Harga Turun"
-                            tools:visibility="visible" />
-
-                        <com.tokopedia.unifyprinciples.Typography
-                            android:id="@+id/text_wholesale_price"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@+id/text_product_name"
-                            android:paddingTop="@dimen/dp_2"
-                            android:textColor="@color/Neutral_N700_68"
-                            android:visibility="gone"
-                            app:typographyType="small"
-                            tools:text=", Harga Grosir"
-                            tools:visibility="visible" />
-
-                    </com.google.android.flexbox.FlexboxLayout>
+                        tools:visibility="visible"/>
 
                     <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/text_incident"
@@ -236,8 +200,8 @@
                             android:id="@+id/tv_remark"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:maxLines="1"
                             android:ellipsize="end"
+                            android:maxLines="1"
                             android:textColor="@color/light_N700_96"
                             app:typographyType="body_3"
                             app:typographyWeight="reguler"
@@ -248,13 +212,22 @@
                             android:id="@+id/tv_label_remark_option"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            tools:text="Ubah"
                             android:text="@string/label_button_add_note"
                             android:textColor="@color/Neutral_N700_68"
                             app:typographyType="body_3"
-                            app:typographyWeight="reguler" />
+                            app:typographyWeight="reguler"
+                            tools:text="Ubah" />
 
                     </LinearLayout>
+
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:id="@+id/tv_label_remark_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/label_remark_title"
+                        android:textColor="@color/Neutral_N700_68"
+                        app:typographyType="body_3"
+                        app:typographyWeight="reguler" />
 
                     <androidx.appcompat.widget.AppCompatEditText
                         android:id="@+id/et_remark"
@@ -341,7 +314,7 @@ barangnya gan! coy coy coy" />
                                 android:layout_gravity="center_vertical"
                                 android:ellipsize="end"
                                 android:maxLines="1"
-                                android:text="Pindahkan ke Wishlist"
+                                android:text="@string/label_move_to_wishlist"
                                 android:textColor="@color/Neutral_N700_68"
                                 app:typographyType="body_3" />
 
@@ -370,6 +343,7 @@ barangnya gan! coy coy coy" />
                                 android:layout_width="@dimen/dp_60"
                                 android:layout_height="wrap_content"
                                 android:gravity="center_horizontal"
+                                android:imeOptions="actionDone"
                                 android:inputType="number"
                                 android:maxLength="6"
                                 android:textColor="@color/black_70"

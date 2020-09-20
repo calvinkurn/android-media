@@ -9,6 +9,7 @@ import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import static com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.CustomDimension;
@@ -1122,7 +1123,7 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
         Map<String, Object> gtmData = getGtmData(
                 EventName.CLICK_ATC,
                 EventCategory.CART,
-                EventAction.CLICK_ACCORDION_ON_UNAVAILABLE_PRODUCT.replace("%s", buttonWording.toLowerCase()),
+                EventAction.CLICK_ACCORDION_ON_UNAVAILABLE_PRODUCT.replace("%s", buttonWording.toLowerCase(Locale.getDefault())),
                 ""
         );
         gtmData.put(ExtraKey.USER_ID, userId);

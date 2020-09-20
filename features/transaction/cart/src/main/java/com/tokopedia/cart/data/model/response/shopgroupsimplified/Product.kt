@@ -10,6 +10,8 @@ import java.util.*
 data class Product(
         @SerializedName("variant_description_detail")
         val variantDescriptionDetail: VariantDescriptionDetail = VariantDescriptionDetail(),
+        @SerializedName("product_information")
+        val productInformation: List<String> = emptyList(),
         @SerializedName("parent_id")
         val parentId: Int = 0,
         @SerializedName("product_id")

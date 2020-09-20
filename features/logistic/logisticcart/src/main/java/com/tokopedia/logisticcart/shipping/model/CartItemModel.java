@@ -6,6 +6,8 @@ import android.os.Parcelable;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
+import java.util.List;
+
 /**
  * @author Aghny A. Putra on 25/01/18
  */
@@ -65,6 +67,7 @@ public class CartItemModel implements Parcelable {
     private int newDevicePrice;
     private int oldDevicePrice;
 
+    private List<String> productInformation;
     private String productAlertMessage;
     private boolean isWholesalePrice;
 
@@ -436,6 +439,14 @@ public class CartItemModel implements Parcelable {
 
     public void setWholesalePrice(boolean wholesalePrice) {
         isWholesalePrice = wholesalePrice;
+    }
+
+    public List<String> getProductInformation() {
+        return productInformation;
+    }
+
+    public void setProductInformation(List<String> productInformation) {
+        this.productInformation = productInformation;
     }
 
     public CartItemModel() {

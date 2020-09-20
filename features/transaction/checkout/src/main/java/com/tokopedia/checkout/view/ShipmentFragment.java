@@ -230,6 +230,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     private HashSet<ShipmentSelectionStateData> shipmentSelectionStateDataHashSet = new HashSet<>();
     private boolean hasInsurance = false;
     private boolean isInsuranceEnabled = false;
+    private boolean hasRunningApiCall = false;
     private ArrayList<String> bboPromoCodes = new ArrayList<>();
 
     private Subscription delayScrollToFirstShopSubscription;
@@ -305,6 +306,12 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
+    public void onStop() {
+        super.onStop();
+        hideLoading();
+    }
+
+    @Override
     public void onDestroyView() {
         super.onDestroyView();
         if (delayScrollToFirstShopSubscription != null) {
@@ -345,6 +352,18 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     public void onResume() {
         super.onResume();
         checkCampaignTimer();
+        restoreProgressLoading();
+    }
+
+    private void restoreProgressLoading() {
+        if (hasRunningApiCall) {
+            showLoading();
+        }
+    }
+
+    @Override
+    public void setHasRunningApiCall(boolean hasRunningApiCall) {
+        this.hasRunningApiCall = hasRunningApiCall;
     }
 
     @Override
@@ -611,14 +630,16 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void showLoading() {
-        if (progressDialogNormal != null && !progressDialogNormal.isShowing())
+        if (progressDialogNormal != null && !progressDialogNormal.isShowing()) {
             progressDialogNormal.show();
+        }
     }
 
     @Override
     public void hideLoading() {
-        if (progressDialogNormal != null && progressDialogNormal.isShowing())
+        if (progressDialogNormal != null && progressDialogNormal.isShowing()) {
             progressDialogNormal.dismiss();
+        }
         swipeToRefresh.setEnabled(false);
     }
 
@@ -1606,6 +1627,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 }
 
                 if (hasRedStatePromo) {
+                    hasRunningApiCall = false;
+                    hideLoading();
                     showToastError(errorMessage);
                     sendAnalyticsPromoRedState();
                 } else {
@@ -1613,6 +1636,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 }
             }
         } else if (shipmentData != null && !result) {
+            hasRunningApiCall = false;
+            hideLoading();
             sendAnalyticsDropshipperNotComplete();
             if (requestCode == REQUEST_CODE_COD) {
                 mTrackerCod.eventClickBayarDiTempatShipmentNotSuccessIncomplete();
@@ -1627,6 +1652,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 onNeedUpdateViewItem(errorPosition);
             }
         } else if (shipmentData == null) {
+            hasRunningApiCall = false;
+            hideLoading();
             if (isTradeIn()) {
                 checkoutAnalyticsCourierSelection.eventClickBayarCourierNotComplete();
             }
@@ -2162,6 +2189,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void onProcessToPayment() {
+        showLoading();
         shipmentAdapter.checkDropshipperValidation(REQUEST_CODE_NORMAL_CHECKOUT);
     }
 

@@ -34,10 +34,11 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Compa
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.PINNED_ACTIVE_TAB
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.PINNED_COMPONENT_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.PINNED_COMP_ID
-import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.PINNED_PRODUCT
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.PRODUCT_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.SOURCE_QUERY
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.lihatsemua.LihatSemuaViewHolder
 import com.tokopedia.discovery2.viewcontrollers.customview.CustomTopChatView
 import com.tokopedia.discovery2.viewcontrollers.customview.StickyHeadRecyclerView
 import com.tokopedia.discovery2.viewmodel.DiscoveryViewModel
@@ -60,10 +61,11 @@ import javax.inject.Inject
 
 private const val LOGIN_REQUEST_CODE = 35769
 private const val MOBILE_VERIFICATION_REQUEST_CODE = 35770
+const val PAGE_REFRESH_LOGIN = 35771
 private const val SCROLL_TOP_DIRECTION = -1
 private const val DEFAULT_SCROLL_POSITION = 0
 
-class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshListener, View.OnClickListener {
+class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshListener, View.OnClickListener, LihatSemuaViewHolder.OnLihatSemuaClickListener {
 
     private lateinit var discoveryViewModel: DiscoveryViewModel
     private lateinit var mDiscoveryFab: CustomTopChatView
@@ -86,15 +88,13 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
     private var openScreenStatus = false
     private var pinnedAlreadyScrolled = false
 
-    @JvmField
-    @Inject
     var pageLoadTimePerformanceInterface: PageLoadTimePerformanceInterface? = null
 
     @Inject
     lateinit var trackingQueue: TrackingQueue
 
     companion object {
-        fun getInstance(endPoint: String?, queryParameterMap: Map<String, String?>?): Fragment {
+        fun getInstance(endPoint: String?, queryParameterMap: Map<String, String?>?): DiscoveryFragment {
             val bundle = Bundle()
             val fragment = DiscoveryFragment()
             if (!endPoint.isNullOrEmpty()) {
@@ -105,7 +105,7 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
                 bundle.putString(PINNED_COMPONENT_ID, queryParameterMap[PINNED_COMPONENT_ID])
                 bundle.putString(PINNED_ACTIVE_TAB, queryParameterMap[PINNED_ACTIVE_TAB])
                 bundle.putString(PINNED_COMP_ID, queryParameterMap[PINNED_COMP_ID])
-                bundle.putString(PINNED_PRODUCT, queryParameterMap[PINNED_PRODUCT])
+                bundle.putString(PRODUCT_ID, queryParameterMap[PRODUCT_ID])
             }
             fragment.arguments = bundle
             return fragment
@@ -331,6 +331,10 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
     }
 
     override fun onRefresh() {
+        refreshPage()
+    }
+
+    private fun refreshPage() {
         trackingQueue.sendAll()
         getDiscoveryAnalytics().clearProductViewIds()
         discoveryViewModel.clearPageData()
@@ -365,6 +369,11 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
                     discoveryBaseViewModel?.isPhoneVerificationSuccess(true)
                 } else {
                     discoveryBaseViewModel?.isPhoneVerificationSuccess(false)
+                }
+            }
+            PAGE_REFRESH_LOGIN -> {
+                if (resultCode == Activity.RESULT_OK) {
+                    refreshPage()
                 }
             }
         }
@@ -442,5 +451,13 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
     override fun onStop() {
         super.onStop()
         openScreenStatus = false
+    }
+
+    override fun onProductCardHeaderClick(componentsItem: ComponentsItem) {
+        getDiscoveryAnalytics().trackHeaderSeeAllClick(isUserLoggedIn(), componentsItem)
+    }
+
+    override fun onLihatSemuaClick(data: DataItem) {
+        getDiscoveryAnalytics().trackLihatSemuaClick(data.name)
     }
 }

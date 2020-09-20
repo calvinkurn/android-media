@@ -102,7 +102,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
     set(value) {
         field = value
         // Get operator name for tracking
-        operatorName = getOperatorData(value)?.attributes?.name?.toLowerCase(Locale.getDefault()) ?: ""
+        operatorName = getOperatorData(value)?.attributes?.name ?: ""
     }
     private var selectedProduct: RechargeGeneralProductSelectData? = null
         set(value) {
@@ -846,7 +846,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         with (data.catalog) {
             (activity as? BaseSimpleActivity)?.updateTitle(label)
             rechargeAnalytics.eventOpenScreen(
-                    userSession.isLoggedIn,
+                    userSession.userId,
                     categoryName,
                     categoryId.toString())
         }

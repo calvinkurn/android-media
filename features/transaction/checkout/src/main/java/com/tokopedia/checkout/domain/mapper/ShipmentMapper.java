@@ -2,6 +2,25 @@ package com.tokopedia.checkout.domain.mapper;
 
 import android.text.TextUtils;
 
+import com.tokopedia.checkout.domain.model.cartshipmentform.FreeShippingData;
+import com.tokopedia.checkout.domain.model.cartshipmentform.PreorderData;
+import com.tokopedia.checkout.domain.model.cartshipmentform.ShipmentInformationData;
+import com.tokopedia.logisticcart.shipping.model.AnalyticsProductCheckoutData;
+import com.tokopedia.logisticcart.shipping.model.CodModel;
+import com.tokopedia.logisticcart.shipping.model.ShipProd;
+import com.tokopedia.logisticcart.shipping.model.ShopShipment;
+import com.tokopedia.purchase_platform.common.feature.button.ABTestButton;
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.PromoCheckoutErrorDefault;
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyAdditionalInfoUiModel;
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyEmptyCartInfoUiModel;
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyErrorDetailUiModel;
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyMessageInfoUiModel;
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyMessageUiModel;
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel;
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUsageSummariesUiModel;
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyVoucherOrdersItemUiModel;
+import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerData;
+import com.tokopedia.purchase_platform.common.feature.tickerannouncement.Ticker;
 import com.tokopedia.checkout.data.model.response.egold.EgoldTieringData;
 import com.tokopedia.checkout.data.model.response.shipment_address_form.Addresses;
 import com.tokopedia.checkout.data.model.response.shipment_address_form.CampaignTimer;
@@ -97,6 +116,7 @@ public class ShipmentMapper implements IShipmentMapper {
             dataResult.setIneligiblePromoDialogEnabled(shipmentAddressFormDataResponse.isIneligiblePromoDialogEnabled());
             dataResult.setOpenPrerequisiteSite(shipmentAddressFormDataResponse.isOpenPrerequisiteSite());
             dataResult.setEligibleNewShippingExperience(shipmentAddressFormDataResponse.isEligibleNewShippingExperience());
+            dataResult.setAbTestButton(new ABTestButton(shipmentAddressFormDataResponse.getAbTestButton().getEnable()));
 
             if (shipmentAddressFormDataResponse.getDisabledFeatures() != null &&
                     shipmentAddressFormDataResponse.getDisabledFeatures().contains(CheckoutDisabledFeaturesKt.multiAddress) &&
@@ -138,7 +158,7 @@ public class ShipmentMapper implements IShipmentMapper {
 
             if (shipmentAddressFormDataResponse.getTickers() != null && !shipmentAddressFormDataResponse.getTickers().isEmpty()) {
                 Ticker ticker = shipmentAddressFormDataResponse.getTickers().get(0);
-                dataResult.setTickerData(new TickerData(ticker.getId(), ticker.getMessage(), ticker.getPage()));
+                dataResult.setTickerData(new TickerData(ticker.getId(), ticker.getMessage(), ticker.getPage(), ticker.getTitle()));
             }
 
             if (!isDisableEgold) {
@@ -642,6 +662,7 @@ public class ShipmentMapper implements IShipmentMapper {
                                     }
 
                                     productResult.setProductAlertMessage(product.getProductAlertMessage());
+                                    productResult.setProductInformation(product.getProductInformation());
 
                                     if (!UtilsKt.isNullOrEmpty(product.getProductShipment())) {
                                         List<ProductShipment> productShipmentListResult = new ArrayList<>();

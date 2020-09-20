@@ -44,24 +44,28 @@ class DynamicLegoBannerViewHolder(itemView: View,
     }
 
     private fun setGrids(element: DynamicLegoBannerDataModel) {
-        val recyclerView: RecyclerView = itemView.findViewById(R.id.recycleList)
-        val defaultSpanCount = getRecyclerViewDefaultSpanCount(element)
-        setViewportImpression(element)
+        if (element.channelModel.channelGrids.isNotEmpty()) {
+            val recyclerView: RecyclerView = itemView.findViewById(R.id.recycleList)
+            val defaultSpanCount = getRecyclerViewDefaultSpanCount(element)
+            setViewportImpression(element)
 
-        parentRecyclerViewPool?.let { recyclerView.setRecycledViewPool(parentRecyclerViewPool) }
-        recyclerView.setHasFixedSize(true)
-        if (recyclerView.itemDecorationCount == 0) recyclerView.addItemDecoration(
-                GridSpacingItemDecoration(defaultSpanCount, 0, true))
+            parentRecyclerViewPool?.let { recyclerView.setRecycledViewPool(parentRecyclerViewPool) }
+            recyclerView.setHasFixedSize(true)
+            if (recyclerView.itemDecorationCount == 0) recyclerView.addItemDecoration(
+                    GridSpacingItemDecoration(defaultSpanCount, 0, true))
 
-        recyclerView.layoutManager = GridLayoutManager(
-                itemView.context,
-                defaultSpanCount,
-                GridLayoutManager.VERTICAL, false)
+            recyclerView.layoutManager = GridLayoutManager(
+                    itemView.context,
+                    defaultSpanCount,
+                    GridLayoutManager.VERTICAL, false)
 
-        recyclerView.adapter = LegoItemAdapter(
-                legoListener,
-                element.channelModel,
-                adapterPosition+1)
+            recyclerView.adapter = LegoItemAdapter(
+                    legoListener,
+                    element.channelModel,
+                    adapterPosition + 1)
+        } else {
+            legoListener?.getDynamicLegoBannerData(element.channelModel)
+        }
     }
 
     private fun setViewportImpression(element: DynamicLegoBannerDataModel) {

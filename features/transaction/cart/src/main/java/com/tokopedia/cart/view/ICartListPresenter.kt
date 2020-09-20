@@ -67,7 +67,7 @@ interface ICartListPresenter {
 
     fun processRemoveFromWishlist(productId: String, userId: String, wishListActionListener: WishListActionListener)
 
-    fun processAddCartToWishlist(productId: String, cartId: String, isLastItem: Boolean, source: String)
+    fun processAddCartToWishlist(productId: String, cartId: String, isLastItem: Boolean, source: String, forceExpandCollapsedUnavailableItems: Boolean = false)
 
     fun setHasPerformChecklistChange(hasChangeState: Boolean)
 

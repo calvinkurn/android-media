@@ -540,6 +540,7 @@ public interface ConstantTransactionAnalytics {
     interface ExtraKey {
         String USER_ID = "userId";
         String PROMO_CODE = "promoCode";
+        String PAYMENT_TYPE = "paymentType";
     }
 
     interface ScreenName {

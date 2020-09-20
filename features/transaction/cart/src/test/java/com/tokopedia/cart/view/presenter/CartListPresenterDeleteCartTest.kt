@@ -101,7 +101,7 @@ object CartListPresenterDeleteCartTest : Spek({
 
             Then("should render success") {
                 verify {
-                    view.onDeleteCartDataSuccess(arrayListOf("0"), true)
+                    view.onDeleteCartDataSuccess(arrayListOf("0"), true, false)
                 }
             }
         }
@@ -128,7 +128,7 @@ object CartListPresenterDeleteCartTest : Spek({
 
             Then("should success delete") {
                 verify {
-                    view.onDeleteCartDataSuccess(arrayListOf("0"), false)
+                    view.onDeleteCartDataSuccess(arrayListOf("0"), false, false)
                 }
             }
         }
@@ -155,7 +155,7 @@ object CartListPresenterDeleteCartTest : Spek({
 
             Then("should success delete") {
                 verify {
-                    view.onDeleteCartDataSuccess(arrayListOf("0"), false)
+                    view.onDeleteCartDataSuccess(arrayListOf("0"), false, false)
                 }
             }
         }

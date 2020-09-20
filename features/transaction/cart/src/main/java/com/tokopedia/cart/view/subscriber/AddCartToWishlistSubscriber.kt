@@ -9,7 +9,8 @@ class AddCartToWishlistSubscriber(private val view: ICartListView?,
                                   private val productId: String,
                                   private val cartId: String,
                                   private val isLastItem: Boolean,
-                                  private val source: String) : Subscriber<AddCartToWishlistData>() {
+                                  private val source: String,
+                                  private val forceExpandCollapsedUnavailableItems: Boolean) : Subscriber<AddCartToWishlistData>() {
     override fun onCompleted() {
 
     }
@@ -26,7 +27,7 @@ class AddCartToWishlistSubscriber(private val view: ICartListView?,
         view?.let { view ->
             view.hideProgressLoading()
             if (data.isSuccess) {
-                view.onAddCartToWishlistSuccess(data.message, productId, cartId, isLastItem, source)
+                view.onAddCartToWishlistSuccess(data.message, productId, cartId, isLastItem, source, forceExpandCollapsedUnavailableItems)
             } else {
                 view.showToastMessageRed(data.message ?: "")
             }

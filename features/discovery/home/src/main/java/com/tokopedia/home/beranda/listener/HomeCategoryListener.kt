@@ -109,8 +109,6 @@ interface HomeCategoryListener {
 
     fun updateExpiredChannel(dynamicChannelDataModel: DynamicChannelDataModel, position: Int)
 
-    fun onBuyAgainCloseChannelClick(channel: DynamicHomeChannel.Channels, position: Int)
-
     fun removeViewHolderAtPosition(position: Int)
 
     fun onPlayBannerCarouselRefresh(playCarouselCardDataModel: PlayCarouselCardDataModel, position: Int)

@@ -1,6 +1,7 @@
 package com.tokopedia.sellerhomecommon.presentation.view.viewholder
 
 import android.view.View
+import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
@@ -54,14 +55,20 @@ class TickerViewHolder(
             })
         }
 
-        removeTickerIfEmpty(element)
+        hideTickerIfEmpty(element)
     }
 
-    private fun removeTickerIfEmpty(element: TickerWidgetUiModel) {
+    private fun hideTickerIfEmpty(element: TickerWidgetUiModel) {
         val isEmpty = element.data?.tickers.isNullOrEmpty()
-        if (isEmpty) {
-            listener.removeWidget(adapterPosition, element)
+        val height0dp = 0
+
+        val tickerHeight = if (isEmpty) {
+            height0dp
+        } else {
+            ViewGroup.LayoutParams.WRAP_CONTENT
         }
+        itemView.layoutParams.height = tickerHeight
+        itemView.requestLayout()
     }
 
     interface Listener : BaseViewHolderListener

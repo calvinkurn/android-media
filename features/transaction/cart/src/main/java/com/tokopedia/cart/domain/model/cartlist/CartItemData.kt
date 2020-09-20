@@ -89,6 +89,7 @@ data class CartItemData(
             var warningMessage: String = "", // eg : sisa 3
             var slashPriceLabel: String = "",
             var initialPriceBeforeDrop: Int = 0,
+            var productInformation: List<String> = emptyList(),
             var productAlertMessage: String = ""
     ) : Parcelable
 
