@@ -469,7 +469,9 @@ open class HomeFragment : BaseDaggerFragment(),
         fetchRemoteConfig()
         setupStatusBar()
         setupHomeRecyclerView()
-        consumeSharedPreferenceCache()
+        if (getRemoteConfig().getBoolean(RemoteConfigKey.HOME_ENABLE_SHARED_PREF_CACHE)) {
+            consumeSharedPreferenceCache()
+        }
         initEggDragListener()
         return view
     }

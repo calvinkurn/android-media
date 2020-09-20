@@ -60,14 +60,16 @@ class HomeModule {
                        homeCachedDataSource: HomeCachedDataSource,
                        homeDefaultDataSource: HomeDefaultDataSource,
                        dynamicChannelDataMapper: HomeDynamicChannelDataMapper,
-                       @ApplicationContext context: Context
+                       @ApplicationContext context: Context,
+                       remoteConfig: RemoteConfig
     ): HomeRepository = HomeRepositoryImpl(
             homeCachedDataSource,
             homeRemoteDataSource,
             homeDefaultDataSource,
             geolocationRemoteDataSource,
             dynamicChannelDataMapper,
-            context)
+            context,
+            remoteConfig)
 
     @HomeScope
     @Provides

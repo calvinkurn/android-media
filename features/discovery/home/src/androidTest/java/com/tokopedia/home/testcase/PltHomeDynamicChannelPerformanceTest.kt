@@ -42,6 +42,7 @@ class PltHomeDynamicChannelPerformanceTest {
                 InstrumentationRegistry.getInstrumentation().context
         )
         remoteConfig.setString(RemoteConfigKey.ENABLE_ASYNC_HOME_SNDSCR, "true")
+        remoteConfig.setString(RemoteConfigKey.HOME_ENABLE_PAGINATION, "true")
     }
 
     @get:Rule

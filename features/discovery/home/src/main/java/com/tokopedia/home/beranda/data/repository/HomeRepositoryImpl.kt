@@ -14,6 +14,8 @@ import com.tokopedia.home.beranda.domain.model.HomeChannelData
 import com.tokopedia.home.beranda.domain.model.HomeData
 import com.tokopedia.home.beranda.helper.Result
 import com.tokopedia.home.beranda.helper.copy
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import dagger.Lazy
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
@@ -31,10 +33,11 @@ class HomeRepositoryImpl @Inject constructor(
         private val homeDefaultDataSource: HomeDefaultDataSource,
         private val geolocationRemoteDataSource: Lazy<GeolocationRemoteDataSource>,
         private val homeDynamicChannelDataMapper: HomeDynamicChannelDataMapper,
-        private val applicationContext: Context?
+        private val applicationContext: Context?,
+        private val remoteConfig: RemoteConfig
 ): HomeRepository {
 
-    val CHANNEL_LIMIT_FOR_PAGINATION = 1
+    var CHANNEL_LIMIT_FOR_PAGINATION = 1
     var isCacheExist = false
     var sharedPrefCache: SharedPreferences? = null
 
@@ -52,6 +55,12 @@ class HomeRepositoryImpl @Inject constructor(
 
     override fun updateHomeData(): Flow<Result<Any>> = flow{
         coroutineScope {
+            /**
+             * Remote config to disable pagination by request with param 0
+             */
+            if (!remoteConfig.getBoolean(RemoteConfigKey.HOME_ENABLE_PAGINATION)) {
+                CHANNEL_LIMIT_FOR_PAGINATION = 0
+            }
             val isCacheExistForProcess = isCacheExist
             val currentTimeMillisString = System.currentTimeMillis().toString()
             var currentToken = ""

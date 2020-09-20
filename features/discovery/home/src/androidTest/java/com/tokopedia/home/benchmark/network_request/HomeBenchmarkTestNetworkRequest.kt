@@ -38,7 +38,6 @@ import dagger.Lazy
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.single
 import org.junit.BeforeClass
 import org.junit.Rule
 import org.junit.Test
@@ -108,7 +107,8 @@ class HomeBenchmarkTestNetworkRequest: CoroutineScope {
                     HomeDefaultDataSource(),
                     geolocationRemoteDataSource,
                     homeDynamicChannelDataMapper,
-                    context
+                    context,
+                    remoteConfig
             )
             homeUseCase = HomeUseCase(
                     homeRepository,
