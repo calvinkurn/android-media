@@ -20,7 +20,6 @@
             android:textSize="@dimen/fontSize_lvl4"
             android:lines="1"
             android:gravity="center_vertical"
-            android:inputType="text"
             android:hint="@string/email"
             app:backgroundTint="@color/Green_G500"
             app:layout_constraintTop_toTopOf="parent"
@@ -72,7 +71,6 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_lvl4"
             android:textSize="@dimen/fontSize_lvl4"
-            android:lines="5"
             android:maxLines="10"
             android:inputType="textMultiLine"
             android:hint="@string/step_to_reproduce"
@@ -86,7 +84,6 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_lvl4"
             android:textSize="@dimen/fontSize_lvl4"
-            android:lines="5"
             android:maxLines="10"
             android:inputType="textMultiLine"
             android:hint="@string/actual_result"
@@ -100,7 +97,6 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_lvl4"
             android:textSize="@dimen/fontSize_lvl4"
-            android:lines="5"
             android:maxLines="10"
             android:inputType="textMultiLine"
             android:hint="@string/expected_result"
@@ -110,12 +106,14 @@
 
         <ImageView
             android:id="@+id/image_feedback"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/dp_80"
+            android:layout_height="@dimen/dp_120"
+            android:layout_marginTop="@dimen/dp_16"
             app:layout_constraintTop_toBottomOf="@+id/expected_result"
             app:layout_constraintLeft_toRightOf="parent"
             app:layout_constraintRight_toLeftOf="parent"
-            android:background="@color/colorAccent"/>
+            android:background="@color/white"
+            android:visibility="gone"/>
 
         <FrameLayout
             android:id="@+id/submit_button"

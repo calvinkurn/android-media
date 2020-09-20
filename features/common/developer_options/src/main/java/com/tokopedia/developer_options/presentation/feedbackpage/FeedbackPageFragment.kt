@@ -148,9 +148,12 @@ class FeedbackPageFragment: Fragment() {
     }
 
     private fun initImageUri() {
-        if (allPermissionsGranted()) {
+        if (allPermissionsGranted() && uriImage != null) {
             val screenshotData = uriImage?.let { handleItem(it) }
+            imageView.visibility = View.VISIBLE
             imageView.setImageURI(Uri.parse(screenshotData?.path))
+        } else {
+            imageView.visibility = View.GONE
         }
     }
 
