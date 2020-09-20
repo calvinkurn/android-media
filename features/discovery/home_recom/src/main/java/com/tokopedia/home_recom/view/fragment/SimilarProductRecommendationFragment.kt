@@ -343,7 +343,7 @@ open class SimilarProductRecommendationFragment : BaseListFragment<SimilarProduc
 
     override fun onFilterAnnotationClicked(filterChip: RecommendationFilterChipsEntity.RecommendationFilterChip, position: Int) {
         SimilarProductRecommendationTracking.eventUserClickAnnotationChip(filterChip.value)
-        recommendationViewModel.getRecommendationFromFilterChip(filterChip, ref)
+        recommendationViewModel.getRecommendationFromFilterChip(filterChip, source)
     }
 
     /**
