@@ -13,6 +13,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
+import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.slot
@@ -47,6 +48,7 @@ class TestSimilarProductRecommendationViewModel {
     @Test
     fun `get success data from network`(){
         val slot = slot<Subscriber<List<RecommendationItem>>>()
+        coEvery { getRecommendationFilterChips.executeOnBackground() } returns listOf()
         every { getSingleRecommendationUseCase.getRecomParams(any(), any(), any()) } returns RequestParams()
         every { getSingleRecommendationUseCase.execute(any(), capture(slot)) } answers {
             slot.captured.onNext(listOf(
@@ -60,6 +62,7 @@ class TestSimilarProductRecommendationViewModel {
     @Test
     fun `get error timeout data from network`(){
         val slot = slot<Subscriber<List<RecommendationItem>>>()
+        coEvery { getRecommendationFilterChips.executeOnBackground() } returns listOf()
         every { getSingleRecommendationUseCase.getRecomParams(any(), any(), any()) } returns RequestParams()
         every { getSingleRecommendationUseCase.execute(any(), capture(slot)) } answers {
             slot.captured.onError(TimeoutException())
@@ -72,6 +75,7 @@ class TestSimilarProductRecommendationViewModel {
     fun `get success add wishlist from network`(){
         var status: Boolean? = null
         val slot = slot<WishListActionListener>()
+        coEvery { getRecommendationFilterChips.executeOnBackground() } returns listOf()
         every { addWishListUseCase.createObservable(any(), any(), capture(slot)) } answers {
             slot.captured.onSuccessAddWishlist(recommendation.productId.toString())
         }
@@ -85,6 +89,7 @@ class TestSimilarProductRecommendationViewModel {
     fun `get error add wishlist from network`(){
         var status: Boolean? = null
         val slot = slot<WishListActionListener>()
+        coEvery { getRecommendationFilterChips.executeOnBackground() } returns listOf()
         every { addWishListUseCase.createObservable(any(), any(), capture(slot)) } answers {
             slot.captured.onErrorAddWishList("", recommendation.productId.toString())
         }
@@ -100,7 +105,7 @@ class TestSimilarProductRecommendationViewModel {
         val slot = slot<Subscriber<WishlistModel>>()
         val mockWishlistModel = mockk<WishlistModel>(relaxed = true)
         val mockData = mockk<WishlistModel.Data>(relaxed = true)
-
+        coEvery { getRecommendationFilterChips.executeOnBackground() } returns listOf()
         every { mockWishlistModel.data } returns mockData
         every { mockData.isSuccess } returns true
         every { topAdsWishlishedUseCase.execute(any(), capture(slot)) } answers {
@@ -116,7 +121,7 @@ class TestSimilarProductRecommendationViewModel {
     fun `get error add topads wishlist from network`(){
         var status: Boolean? = null
         val slot = slot<Subscriber<WishlistModel>>()
-
+        coEvery { getRecommendationFilterChips.executeOnBackground() } returns listOf()
         every { topAdsWishlishedUseCase.execute(any(), capture(slot)) } answers {
             slot.captured.onError(mockk())
         }
@@ -130,6 +135,7 @@ class TestSimilarProductRecommendationViewModel {
     fun `get success remove wishlist from network`(){
         var status: Boolean? = null
         val slot = slot<WishListActionListener>()
+        coEvery { getRecommendationFilterChips.executeOnBackground() } returns listOf()
         every { removeWishListUseCase.createObservable(any(), any(), capture(slot)) } answers {
             slot.captured.onSuccessRemoveWishlist(recommendation.productId.toString())
         }
@@ -143,6 +149,7 @@ class TestSimilarProductRecommendationViewModel {
     fun `get error remove wishlist from network`(){
         var status: Boolean? = null
         val slot = slot<WishListActionListener>()
+        coEvery { getRecommendationFilterChips.executeOnBackground() } returns listOf()
         every { removeWishListUseCase.createObservable(any(), any(), capture(slot)) } answers {
             slot.captured.onErrorRemoveWishlist("", recommendation.productId.toString())
         }
