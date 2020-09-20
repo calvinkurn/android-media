@@ -50,6 +50,7 @@ include "features:logistic:logisticdata"
 include "features:logistic:logisticorder"
 include "features:logistic:logisticcart"
 include "features:logistic:editshipping"
+include "features:logistic:activation"
 
 include "features:merchant:inbox_reputation"
 include "features:merchant:gold_merchant"

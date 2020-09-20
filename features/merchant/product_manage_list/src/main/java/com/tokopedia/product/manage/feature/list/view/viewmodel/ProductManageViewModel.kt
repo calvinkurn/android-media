@@ -36,10 +36,12 @@ import com.tokopedia.product.manage.feature.quickedit.variant.presentation.data.
 import com.tokopedia.product.manage.feature.quickedit.variant.domain.EditProductVariantUseCase
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.Product
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
+import com.tokopedia.shop.common.data.source.cloud.query.param.option.ExtraInfo
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOption
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.SortOption
 import com.tokopedia.shop.common.domain.interactor.GQLGetProductListUseCase
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
+import com.tokopedia.shop.common.domain.interactor.GetShopInfoTopAdsUseCase
 import com.tokopedia.topads.common.data.model.DataDeposit
 import com.tokopedia.topads.common.domain.interactor.TopAdsGetShopDepositGraphQLUseCase
 import com.tokopedia.usecase.coroutines.Fail
@@ -57,6 +59,7 @@ import javax.inject.Inject
 class ProductManageViewModel @Inject constructor(
     private val editPriceUseCase: EditPriceUseCase,
     private val gqlGetShopInfoUseCase: GQLGetShopInfoUseCase,
+    private val getShopInfoTopAdsUseCase: GetShopInfoTopAdsUseCase,
     private val userSessionInterface: UserSessionInterface,
     private val topAdsGetShopDepositGraphQLUseCase: TopAdsGetShopDepositGraphQLUseCase,
     private val popupManagerAddProductUseCase: PopupManagerAddProductUseCase,
@@ -108,6 +111,8 @@ class ProductManageViewModel @Inject constructor(
         get() = _editVariantStockResult
     val productFiltersTab: LiveData<Result<GetFilterTabResult>>
         get() = _productFiltersTab
+    val onClickPromoTopAds: LiveData<TopAdsPage>
+        get() = _onClickPromoTopAds
 
     private val _viewState = MutableLiveData<ViewState>()
     private val _productListResult = MutableLiveData<Result<List<ProductViewModel>>>()
@@ -125,6 +130,8 @@ class ProductManageViewModel @Inject constructor(
     private val _editVariantPriceResult = MutableLiveData<Result<EditVariantResult>>()
     private val _editVariantStockResult = MutableLiveData<Result<EditVariantResult>>()
     private val _productFiltersTab = MutableLiveData<Result<GetFilterTabResult>>()
+    private val _topAdsInfo = MutableLiveData<TopAdsInfo>()
+    private val _onClickPromoTopAds = MutableLiveData<TopAdsPage>()
 
     private var getProductListJob: Job? = null
     private var getFilterTabJob: Job? = null
@@ -147,6 +154,20 @@ class ProductManageViewModel @Inject constructor(
             _shopInfoResult.value = Success(status)
         }) {
             _shopInfoResult.value = Fail(it)
+        }
+    }
+
+    fun getTopAdsInfo() {
+        launchCatchError(block = {
+            _topAdsInfo.value = withContext(dispatchers.io) {
+                val shopId = userSessionInterface.shopId.toIntOrZero()
+                val requestParams = GetShopInfoTopAdsUseCase.createRequestParams(shopId)
+                val topAdsInfo = getShopInfoTopAdsUseCase.execute(requestParams)
+
+                TopAdsInfo(topAdsInfo.isTopAds(), topAdsInfo.isAutoAds())
+            }
+        }) {
+            _topAdsInfo.value = TopAdsInfo(isTopAds = false, isAutoAds = false)
         }
     }
 
@@ -216,7 +237,8 @@ class ProductManageViewModel @Inject constructor(
         launchCatchError(block = {
             val productList = withContext(dispatchers.io) {
                 if(withDelay) { delay(REQUEST_DELAY) }
-                val requestParams = GQLGetProductListUseCase.createRequestParams(shopId, filterOptions, sortOption)
+                val extraInfo = listOf(ExtraInfo.TOPADS)
+                val requestParams = GQLGetProductListUseCase.createRequestParams(shopId, filterOptions, sortOption, extraInfo)
                 val getProductList = getProductListUseCase.execute(requestParams)
                 val productListResponse = getProductList.productList
                 productListResponse?.data
@@ -478,6 +500,23 @@ class ProductManageViewModel @Inject constructor(
     fun toggleMultiSelect() {
         val multiSelectEnabled = _toggleMultiSelect.value == true
         _toggleMultiSelect.value = !multiSelectEnabled
+    }
+
+    fun onPromoTopAdsClicked(productId: String) {
+        val topAdsInfo = _topAdsInfo.value
+
+        if(topAdsInfo != null) {
+            val shopHasTopAds = topAdsInfo.isTopAds
+            val shopHasAutoAds = topAdsInfo.isAutoAds
+
+            _onClickPromoTopAds.value = when {
+                shopHasAutoAds -> TopAdsPage.AutoAds(productId)
+                shopHasTopAds -> TopAdsPage.ManualAds(productId)
+                else -> TopAdsPage.OnBoarding(productId)
+            }
+        } else {
+            _onClickPromoTopAds.value = TopAdsPage.OnBoarding(productId)
+        }
     }
 
     fun detachView() {
