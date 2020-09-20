@@ -30,7 +30,6 @@ object TopAdsDashboardConstant {
     const val ACTION_DELETE = "delete"
     const val SOURCE_DASH = "dashboard"
     const val ACTION_MOVE = "move_group"
-    const val AD_ID = "ads"
     const val TIDAK_DIBATASI = "Tidak Dibatasi"
     const val GROUP_ID = "group_id"
     const val PRICE_SPEND = "price_spent"

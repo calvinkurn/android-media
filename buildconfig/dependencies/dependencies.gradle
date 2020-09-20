@@ -96,7 +96,7 @@ ext {
 
     unifyIconVersion = '0.0.4'
     unifyPrinciplesVersion = '1.2.0'
-    unifyComponentsVersion = '1.1.45'
+    unifyComponentsVersion = '1.1.46'
     unifyCoachMarkVersion = '1.2.6'
     unifyCalendarVersion = '1.0.2'
     unifyBannerVersion = '1.0.4'
@@ -114,10 +114,6 @@ ext {
     gradlePlugin = [
             crashlytics   : "io.fabric.tools:gradle:${crashlyticsGradleVersion}",
             googleServices: "com.google.gms:google-services:${googleServiceGradleVersion}"
-    ]
-
-    monitoringDependencies = [
-            bugSnag       : "com.bugsnag:bugsnag-android:4.22.3"
     ]
 
     networkDependencies = [

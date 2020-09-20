@@ -65,6 +65,7 @@ public class ShippingCourierViewHolder extends RecyclerView.ViewHolder {
 
         if (shippingCourierUiModel.getProductData().getCodProductData() != null) {
             /*cod label*/
+            codLabel.setText(shippingCourierUiModel.getProductData().getCodProductData().getCodText());
             codLabel.setVisibility(shippingCourierUiModel.getProductData().getCodProductData().
                     getIsCodAvailable() == COD_ENABLE_VALUE? View.VISIBLE : View.GONE );
         }

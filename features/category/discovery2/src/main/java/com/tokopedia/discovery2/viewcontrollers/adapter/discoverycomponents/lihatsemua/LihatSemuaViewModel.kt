@@ -6,13 +6,13 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 
-class LihatSemuaViewModel(val application: Application, componentData: ComponentsItem, val position: Int) : DiscoveryBaseViewModel() {
+class LihatSemuaViewModel(val application: Application, val componentData: ComponentsItem, val position: Int) : DiscoveryBaseViewModel() {
     private val itemData: MutableLiveData<ComponentsItem> = MutableLiveData()
-
-    init {
-        itemData.value = componentData
-    }
 
     fun getComponentData(): LiveData<ComponentsItem> = itemData
 
+    override fun onAttachToViewHolder() {
+        super.onAttachToViewHolder()
+        itemData.value = componentData
+    }
 }

@@ -19,4 +19,5 @@ interface ChatListItemListener {
     fun trackDeleteChat(element: ItemChatListPojo)
     fun isTabSeller(): Boolean
     fun getSupportChildFragmentManager(): FragmentManager
+    fun pinUnpinChat(element: ItemChatListPojo, position: Int, isPinChat: Boolean = true)
 }

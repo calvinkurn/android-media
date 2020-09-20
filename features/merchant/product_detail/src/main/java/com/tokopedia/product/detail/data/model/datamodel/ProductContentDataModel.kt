@@ -15,7 +15,6 @@ data class ProductContentDataModel(
         var isWishlisted: Boolean = false,
 
         //Ribbon Data
-        var shouldShowCod: Boolean = false,
         var shouldShowTradein: Boolean = false,
         var isAllowManage: Int = 0,
 
@@ -35,10 +34,6 @@ data class ProductContentDataModel(
 
     fun showTradeIn(): Boolean {
         return shouldShowTradein && data?.data?.campaign?.shouldShowRibbonCampaign == false && !isUpcomingNplType()
-    }
-
-    fun showCod(): Boolean {
-        return shouldShowCod && !shouldShowTradein && data?.data?.campaign?.shouldShowRibbonCampaign == false && !isUpcomingNplType()
     }
 
     override fun type(typeFactory: DynamicProductDetailAdapterFactory): Int {

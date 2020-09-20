@@ -31,15 +31,16 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
     override val coroutineContext: CoroutineContext get() = Dispatchers.Main + SupervisorJob()
 
     companion object {
-        fun createParams(productId: String, pdpSession: String): RequestParams =
+        fun createParams(productId: String, pdpSession: String, deviceId: String): RequestParams =
                 RequestParams.create().apply {
                     putString(ProductDetailCommonConstant.PARAM_PRODUCT_ID, productId)
                     putString(ProductDetailCommonConstant.PARAM_PDP_SESSION, pdpSession)
+                    putString(ProductDetailCommonConstant.PARAM_DEVICE_ID, deviceId)
                 }
 
         val QUERY = """
-        query GetPdpGetData(${'$'}productID: String, ${'$'}pdpSession: String) {
-          pdpGetData(productID: ${'$'}productID, pdpSession: ${'$'}pdpSession) {
+        query GetPdpGetData(${'$'}productID: String,${'$'}deviceID: String, ${'$'}pdpSession: String) {
+          pdpGetData(productID: ${'$'}productID,deviceID: ${'$'}deviceID, pdpSession: ${'$'}pdpSession) {
             error {
               Code
               Message

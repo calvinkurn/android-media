@@ -1,0 +1,18 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.tokopedia.topchat"
+    android:versionCode="1"
+    android:versionName="1.0.0">
+
+    <application
+        android:debuggable="true"
+        android:label="Chat"
+        tools:ignore="HardcodedDebugMode"
+        tools:replace="android:debuggable,android:label">
+
+        <activity
+            android:name="com.tokopedia.topchat.stub.chatlist.activity.ChatListActivityStub"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
+    </application>
+</manifest>

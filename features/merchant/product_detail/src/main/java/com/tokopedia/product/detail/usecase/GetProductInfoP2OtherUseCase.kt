@@ -8,8 +8,6 @@ import com.tokopedia.product.detail.data.model.ProductInfoP2Other
 import com.tokopedia.product.detail.data.model.review.Review
 import com.tokopedia.product.detail.data.model.talk.DiscussionMostHelpful
 import com.tokopedia.product.detail.data.model.talk.DiscussionMostHelpfulResponseWrapper
-import com.tokopedia.product.detail.data.model.talk.Talk
-import com.tokopedia.product.detail.data.model.talk.TalkList
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
 import com.tokopedia.product.detail.di.RawQueryKeyConstant
 import com.tokopedia.product.detail.view.util.CacheStrategyUtil
@@ -57,17 +55,13 @@ class GetProductInfoP2OtherUseCase @Inject constructor(private val rawQueries: M
         //endregion
 
         //region Discussion/Talk
-        val latestTalkParams = generateProductIdParam(productId)
-        val latestTalkRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_GET_LATEST_TALK],
-                TalkList.Response::class.java, latestTalkParams)
-
         val discussionMostHelpfulParams = generateDiscussionMosthelpfulParam(productId.toString(), shopId.toString())
         val discussionMostHelpfulRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_DISCUSSION_MOST_HELPFUL],
                 DiscussionMostHelpfulResponseWrapper::class.java, discussionMostHelpfulParams)
         //endregion
 
 
-        val requests = mutableListOf(imageReviewRequest, helpfulReviewRequest, latestTalkRequest, discussionMostHelpfulRequest)
+        val requests = mutableListOf(imageReviewRequest, helpfulReviewRequest, discussionMostHelpfulRequest)
 
         try {
             val gqlResponse = graphqlRepository.getReseponse(requests, CacheStrategyUtil.getCacheStrategy(forceRefresh))
@@ -86,13 +80,7 @@ class GetProductInfoP2OtherUseCase @Inject constructor(private val rawQueries: M
             }
             //endregion
 
-            //region Discussion/Talk
-            if (gqlResponse.getError(TalkList.Response::class.java)?.isNotEmpty() != true) {
-                gqlResponse.doActionIfNotNull<TalkList.Response> {
-                    p2GeneralData.latestTalk = it.result.data.talks.firstOrNull() ?: Talk()
-                }
-            }
-
+            //region Discussion
             if (gqlResponse.getError(DiscussionMostHelpfulResponseWrapper::class.java)?.isNotEmpty() != true) {
                 gqlResponse.doActionIfNotNull<DiscussionMostHelpfulResponseWrapper> {
                     p2GeneralData.discussionMostHelpful = it.discussionMostHelpful
