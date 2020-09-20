@@ -7,8 +7,12 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 class FeedbackPageActivity : BaseSimpleActivity() {
 
     override fun getNewFragment(): Fragment? {
-        val uri: Uri = intent.getParcelableExtra("EXTRA_URI_IMAGE")
-        return FeedbackPageFragment.newInstance(uri)
+        var fragment: FeedbackPageFragment? = null
+        if (intent.extras != null) {
+            val uri: Uri = intent.getParcelableExtra("EXTRA_URI_IMAGE")
+            fragment = FeedbackPageFragment.newInstance(uri)
+        }
+        return fragment
     }
 
 }
