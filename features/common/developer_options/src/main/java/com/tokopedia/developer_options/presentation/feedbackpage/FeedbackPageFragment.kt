@@ -10,6 +10,8 @@ import android.os.Build
 import android.os.Build.VERSION_CODES
 import android.os.Bundle
 import android.provider.MediaStore
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -52,15 +54,6 @@ class FeedbackPageFragment: Fragment() {
     private lateinit var compositeSubscription: CompositeSubscription
     private lateinit var myPreferences: Preferences
     private lateinit var tvImage: Typography
-
-    private val PROJECTION = arrayOf(
-            MediaStore.Images.Media._ID,
-            MediaStore.Images.Media.DISPLAY_NAME,
-            MediaStore.Images.Media.DATA
-    )
-
-    private val FILE_NAME_PREFIX = "screenshot"
-    private val PATH_SCREENSHOT = "screenshots/"
 
     private var deviceInfo: String = ""
     private var androidVersion: String = ""
@@ -193,6 +186,12 @@ class FeedbackPageFragment: Fragment() {
             }
         }
 
+        email.addTextChangedListener(setWrapperWatcher(et_email_wrapper))
+        affectedPage.addTextChangedListener(setWrapperWatcher(et_affected_page_wrapper))
+        journey.addTextChangedListener(setWrapperWatcher(et_str_wrapper))
+        actualResult.addTextChangedListener(setWrapperWatcher(et_actual_result_wrapper))
+        expectedResult.addTextChangedListener(setWrapperWatcher(et_expected_result_wrapper))
+
         submitButton.setOnClickListener {
             val emailText= email.text.toString()
             val affectedPageText = affectedPage.text.toString()
@@ -213,7 +212,7 @@ class FeedbackPageFragment: Fragment() {
 
             if(journeyText.isEmpty()) {
                 validate = false
-                setWrapperError(et_str_wrapper, "Affected Page should not be empty" )
+                setWrapperError(et_str_wrapper, "Step to Reproduce should not be empty" )
             }
 
             if(actualResultText.isEmpty()) {
@@ -242,6 +241,26 @@ class FeedbackPageFragment: Fragment() {
             wrapper.setErrorEnabled(true)
             wrapper.setHint("")
             wrapper.error = s
+        }
+    }
+
+    private fun setWrapperWatcher(wrapper: TextInputLayout): TextWatcher {
+        return object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
+                //no-op
+            }
+
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                if (s.isNotEmpty()) {
+                    setWrapperError(wrapper, null)
+                }
+            }
+
+            override fun afterTextChanged(text: Editable) {
+                if (text.isNotEmpty()) {
+                    setWrapperError(wrapper, null)
+                }
+            }
         }
     }
 
@@ -418,5 +437,13 @@ class FeedbackPageFragment: Fragment() {
                 }
             }
         }
+
+        private val FILE_NAME_PREFIX = "screenshot"
+        private val PATH_SCREENSHOT = "screenshots/"
+        private val PROJECTION = arrayOf(
+                MediaStore.Images.Media._ID,
+                MediaStore.Images.Media.DISPLAY_NAME,
+                MediaStore.Images.Media.DATA
+        )
     }
 }
