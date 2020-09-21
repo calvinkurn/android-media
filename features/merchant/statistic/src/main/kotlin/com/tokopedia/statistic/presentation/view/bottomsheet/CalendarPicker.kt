@@ -152,8 +152,12 @@ class CalendarPicker : BottomSheetUnify() {
         calendar.time = selected
         calendar.firstDayOfWeek = Calendar.MONDAY
         calendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY)
-        val firstDateOfWeek = calendar.time
-        val lastDateOfWeek = Date(firstDateOfWeek.time + m6Day)
+        val firstDateOfWeek = if (calendar.time.time < minDate.time) {
+            minDate
+        } else {
+            calendar.time
+        }
+        val lastDateOfWeek = Date(calendar.time.time + m6Day)
         return Pair(firstDateOfWeek, lastDateOfWeek)
     }
 
