@@ -13,11 +13,11 @@
     <string name="remote_config_edit_placeholder">Input new value here</string>
     <string name="remote_config_edit_btn_save">Save</string>
     <string name="category">Category</string>
-    <string name="email">Email</string>
+    <string name="email">Tokopedia Email</string>
     <string name="step_to_reproduce">Step to Reproduce</string>
     <string name="actual_result">Actual Result</string>
     <string name="expected_result">Expected Result</string>
-    <string name="affected_page">Affected Page</string>
+    <string name="page">Page</string>
     <string name="btn_submit_feedback_page">Submit</string>
     <string name="tokopedia_email">\@tokopedia.com</string>
 

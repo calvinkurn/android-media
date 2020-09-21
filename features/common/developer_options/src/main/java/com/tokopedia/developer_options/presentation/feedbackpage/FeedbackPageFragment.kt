@@ -44,7 +44,7 @@ class FeedbackPageFragment: Fragment() {
 
     private lateinit var bugType : Spinner
     private lateinit var email: EditText
-    private lateinit var affectedPage: EditText
+    private lateinit var page: EditText
     private lateinit var journey: EditText
     private lateinit var actualResult: EditText
     private lateinit var expectedResult: EditText
@@ -103,7 +103,7 @@ class FeedbackPageFragment: Fragment() {
     private fun initView(mainView: View){
         email =  mainView.findViewById(R.id.email)
         bugType = mainView.findViewById(R.id.spinner_bug_type)
-        affectedPage = mainView.findViewById(R.id.affected_page)
+        page = mainView.findViewById(R.id.page)
         journey = mainView.findViewById(R.id.step_to_reproduce)
         actualResult = mainView.findViewById(R.id.actual_result)
         expectedResult = mainView.findViewById(R.id.expected_result)
@@ -192,14 +192,14 @@ class FeedbackPageFragment: Fragment() {
         }
 
         email.addTextChangedListener(setWrapperWatcher(et_email_wrapper))
-        affectedPage.addTextChangedListener(setWrapperWatcher(et_affected_page_wrapper))
+        page.addTextChangedListener(setWrapperWatcher(et_affected_page_wrapper))
         journey.addTextChangedListener(setWrapperWatcher(et_str_wrapper))
         actualResult.addTextChangedListener(setWrapperWatcher(et_actual_result_wrapper))
         expectedResult.addTextChangedListener(setWrapperWatcher(et_expected_result_wrapper))
 
         submitButton.setOnClickListener {
             val emailText= email.text.toString()
-            val affectedPageText = affectedPage.text.toString()
+            val affectedPageText = page.text.toString()
             val journeyText = journey.text.toString()
             val actualResultText = actualResult.text.toString()
             val expectedResultText = expectedResult.text.toString()
@@ -212,7 +212,8 @@ class FeedbackPageFragment: Fragment() {
 
             if (affectedPageText.isEmpty()) {
                 validate = false
-                setWrapperError(et_affected_page_wrapper, "Affected Page should not be empty" )
+                setWrapperError(et_affected_page_wrapper, "" +
+                        "Page should not be empty" )
             }
 
             if(journeyText.isEmpty()) {
