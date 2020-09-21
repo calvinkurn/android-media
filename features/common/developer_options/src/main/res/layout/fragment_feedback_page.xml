@@ -65,14 +65,16 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tokopedia_separator"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_toEndOf="@id/et_email_wrapper"
                 android:layout_alignBottom="@id/et_email_wrapper"
                 android:layout_alignTop="@id/et_email_wrapper"
-                android:layout_marginTop="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_20"
                 android:textSize="@dimen/sp_14"
-                android:text="@string/tokopedia_email"/>
+                android:text="@string/tokopedia_email"
+                app:typographyType="body_3"/>
 
         </RelativeLayout>
 
