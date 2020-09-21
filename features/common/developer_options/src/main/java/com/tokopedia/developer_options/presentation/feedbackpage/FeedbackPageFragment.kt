@@ -10,8 +10,6 @@ import android.os.Build
 import android.os.Build.VERSION_CODES
 import android.os.Bundle
 import android.provider.MediaStore
-import android.text.TextUtils
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -25,8 +23,8 @@ import com.tokopedia.developer_options.R
 import com.tokopedia.developer_options.api.*
 import com.tokopedia.developer_options.presentation.feedbackpage.dialog.LoadingDialog
 import com.tokopedia.developer_options.presentation.preference.Preferences
-import com.tokopedia.screenshot_observer.Screenshot
 import com.tokopedia.screenshot_observer.ScreenshotData
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_feedback_page.*
@@ -53,7 +51,7 @@ class FeedbackPageFragment: Fragment() {
     private lateinit var feedbackApi: FeedbackApi
     private lateinit var compositeSubscription: CompositeSubscription
     private lateinit var myPreferences: Preferences
-    private lateinit var screenshot: Screenshot
+    private lateinit var tvImage: Typography
 
     private val PROJECTION = arrayOf(
             MediaStore.Images.Media._ID,
@@ -93,7 +91,6 @@ class FeedbackPageFragment: Fragment() {
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        Log.d("grant_result_size", grantResults.size.toString())
         //do more validation here
         if(grantResults.size == requiredPermissions.size) {
             initImageUri()
@@ -118,6 +115,7 @@ class FeedbackPageFragment: Fragment() {
         expectedResult = mainView.findViewById(R.id.expected_result)
         imageView = mainView.findViewById(R.id.image_feedback)
         submitButton = mainView.findViewById(R.id.submit_button)
+        tvImage = mainView.findViewById(R.id.image_feedback_tv)
 
         feedbackApi = ApiClient.getAPIService()
         compositeSubscription = CompositeSubscription()
@@ -125,17 +123,7 @@ class FeedbackPageFragment: Fragment() {
         loadingDialog = context?.let { LoadingDialog(it) }
 
         uriImage = arguments?.getParcelable("EXTRA_URI_IMAGE")
-        Log.d("IMAGE_URI", uriImage.toString())
         initImageUri()
-
-        /*screenshot = context?.contentResolver?.let {
-            Screenshot(it, object : Screenshot.Listener {
-                override fun onScreenShotTaken(screenshotData: ScreenshotData?) {
-                    uriImage = Uri.parse(screenshotData?.path)
-                    imageView.setImageURI(uriImage)
-                }
-            })
-        }!!*/
 
         context?.let { ArrayAdapter.createFromResource(it,
                 R.array.bug_type_array,
@@ -154,9 +142,11 @@ class FeedbackPageFragment: Fragment() {
         if (allPermissionsGranted() && uriImage != null) {
             val screenshotData = uriImage?.let { handleItem(it) }
             imageView.visibility = View.VISIBLE
+            tvImage.visibility = View.VISIBLE
             imageView.setImageURI(Uri.parse(screenshotData?.path))
         } else {
             imageView.visibility = View.GONE
+            tvImage.visibility = View.GONE
         }
     }
 
@@ -209,27 +199,36 @@ class FeedbackPageFragment: Fragment() {
             val journeyText = journey.text.toString()
             val actualResultText = actualResult.text.toString()
             val expectedResultText = expectedResult.text.toString()
+            var validate = true
 
-            when {
-                TextUtils.isEmpty(emailText) -> {
-                    setWrapperError(et_email_wrapper, "Email should not be empty" )
-                }
-                TextUtils.isEmpty(affectedPageText) -> {
-                    setWrapperError(et_affected_page_wrapper, "Issue should not be empty" )
-                }
-                TextUtils.isEmpty(journeyText) -> {
-                    setWrapperError(et_str_wrapper, "Affected Page should not be empty" )
-                }
-                TextUtils.isEmpty(actualResultText) -> {
-                    setWrapperError(et_actual_result_wrapper, "Actual Result should not be empty" )
-                }
-                TextUtils.isEmpty(expectedResultText) -> {
-                    setWrapperError(et_expected_result_wrapper, "Expected Result not be empty" )
-                }
-                else -> {
-                    val issueType = bugType.selectedItem.toString()
-                    submitFeedback(emailText, affectedPageText, journeyText, issueType, actualResultText, expectedResultText)
-                }
+            if (emailText.isEmpty()) {
+                validate = false
+                setWrapperError(et_email_wrapper, "Email should not be empty" )
+            }
+
+            if (affectedPageText.isEmpty()) {
+                validate = false
+                setWrapperError(et_affected_page_wrapper, "Affected Page should not be empty" )
+            }
+
+            if(journeyText.isEmpty()) {
+                validate = false
+                setWrapperError(et_str_wrapper, "Affected Page should not be empty" )
+            }
+
+            if(actualResultText.isEmpty()) {
+                validate = false
+                setWrapperError(et_actual_result_wrapper, "Actual Result should not be empty" )
+            }
+
+            if(expectedResultText.isEmpty()) {
+                validate = false
+                setWrapperError(et_expected_result_wrapper, "Expected Result not be empty" )
+            }
+
+            if(validate) {
+                val issueType = bugType.selectedItem.toString()
+                submitFeedback(emailText, affectedPageText, journeyText, issueType, actualResultText, expectedResultText)
             }
         }
 
@@ -403,6 +402,7 @@ class FeedbackPageFragment: Fragment() {
     }
 
     private fun goToTicketCreatedActivity(ticketLink: String) {
+        activity?.finish()
         Intent(context, TicketCreatedActivity::class.java).apply {
             putExtra("EXTRA_IS_TICKET_LINK", ticketLink)
             startActivityForResult(this, 1212)

@@ -6,7 +6,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
-    <ImageView
+    <com.tkpd.remoteresourcerequest.view.DeferredImageView
         android:id="@+id/iv_ticket_created"
         android:layout_width="@dimen/dp_280"
         android:layout_height="@dimen/dp_140"

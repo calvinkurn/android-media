@@ -10,13 +10,14 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
+import com.tkpd.remoteresourcerequest.view.DeferredImageView
 import com.tokopedia.developer_options.R
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
 
 class TicketCreatedFragment: Fragment() {
 
-    private lateinit var imageCreated: ImageView
+    private lateinit var imageCreated: DeferredImageView
     private lateinit var tickerLink: Typography
     private lateinit var imageCopy: ImageView
 
@@ -33,8 +34,8 @@ class TicketCreatedFragment: Fragment() {
 
         val issueId = arguments?.getString("EXTRA_IS_TICKET_LINK")
 
+        imageCreated.loadRemoteImageDrawable(ADDRESS_INVALID)
         tickerLink.text = "https://tokopedia.atlassian.net/browse/$issueId"
-
         imageCopy.setOnClickListener {
             onTextCopied(mainView, "label", tickerLink.text.toString())
         }
@@ -57,6 +58,8 @@ class TicketCreatedFragment: Fragment() {
                 }
             }
         }
+
+        private const val ADDRESS_INVALID = "ic_invalid_location.png"
     }
 
 }

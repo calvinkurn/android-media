@@ -41,9 +41,11 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginTop="@dimen/dp_16"
+            android:layout_marginLeft="@dimen/dp_8"
             app:layout_constraintTop_toBottomOf="@id/et_email_wrapper"
             app:layout_constraintStart_toStartOf="parent"
-            android:text="@string/bug_type" />
+            android:text="@string/bug_type"
+            app:typographyType="body_3"/>
 
 
         <com.google.android.material.textfield.TextInputLayout
@@ -116,7 +118,7 @@
             style="@style/HintTextInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_8"
+            android:layout_marginTop="@dimen/dp_16"
             app:layout_constraintTop_toBottomOf="@id/et_str_wrapper"
             app:layout_constraintStart_toStartOf="parent"
             android:hint="@string/actual_result">
@@ -140,6 +142,7 @@
             style="@style/HintTextInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_16"
             app:layout_constraintTop_toBottomOf="@id/et_actual_result_wrapper"
             app:layout_constraintStart_toStartOf="parent"
             android:hint="@string/expected_result">
@@ -158,6 +161,16 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/image_feedback_tv"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/dp_16"
+            app:layout_constraintTop_toBottomOf="@id/et_expected_result_wrapper"
+            app:layout_constraintStart_toStartOf="parent"
+            android:text="Attachment"
+            app:typographyType="body_3"/>
+
         <ImageView
             android:id="@+id/image_feedback"
             android:layout_width="@dimen/dp_180"
@@ -167,7 +180,7 @@
             app:layout_constraintLeft_toRightOf="parent"
             app:layout_constraintRight_toLeftOf="parent"
             android:background="@color/white"
-            android:visibility="gone"/>
+            android:visibility="visible"/>
 
         <FrameLayout
             android:id="@+id/submit_button"
