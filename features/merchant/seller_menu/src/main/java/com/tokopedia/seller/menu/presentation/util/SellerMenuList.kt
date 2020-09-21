@@ -99,7 +99,7 @@ object SellerMenuList {
                 },
                 SellerMenuItemUiModel(
                         context.getString(R.string.setting_menu_tokopedia_care),
-                        R.drawable.ic_tokopedia_care,
+                        R.drawable.ic_icon_tokopedia_care,
                         ApplinkConst.CONTACT_US_NATIVE,
                         type = MenuItemType.TOKOPEDIA_CARE,
                         eventActionSuffix = SettingTrackingConstant.TOKOPEDIA_CARE),
