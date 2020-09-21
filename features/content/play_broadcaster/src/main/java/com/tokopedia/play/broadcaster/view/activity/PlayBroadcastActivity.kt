@@ -575,6 +575,7 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
         pageMonitoring.invalidate()
     }
 
+    @TestOnly
     fun getPltPerformanceResultData(): PltPerformanceData? {
         return pageMonitoring.getPltPerformanceData()
     }

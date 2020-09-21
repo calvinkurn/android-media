@@ -23,7 +23,7 @@ import org.junit.Test
 class PltPlayBroadcasterPerformanceTest {
 
     @get:Rule
-    var activityRule: ActivityTestRule<PlayBroadcastActivity> = ActivityTestRule(PlayBroadcastActivity::class.java, false, false)
+    var activityRule: ActivityTestRule<PlayBroadcastActivity> = ActivityTestRule(PlayBroadcastActivity::class.java, false, true)
 
     @get:Rule
     var testRepeatRule: TestRepeatRule = TestRepeatRule()
@@ -31,16 +31,15 @@ class PltPlayBroadcasterPerformanceTest {
     @Before
     fun setup() {
         setupGraphqlMockResponse(PrepareModelConfig())
-
-        val context = InstrumentationRegistry.getInstrumentation().targetContext
-        activityRule.launchActivity(PlayBroadcastActivity.createIntent(context))
         fakeLogin()
-
         IdlingRegistry.getInstance().register(idlingResource)
     }
 
     @Test
     fun testPageLoadTimePerformance() {
+//        val context = InstrumentationRegistry.getInstrumentation().targetContext
+//        activityRule.launchActivity(PlayBroadcastActivity.createIntent(context))
+
         activityRule.activity.getPltPerformanceResultData()?.let { data->
             PerformanceDataFileUtils.writePLTPerformanceFile(
                     activityRule.activity,
@@ -51,7 +50,7 @@ class PltPlayBroadcasterPerformanceTest {
 
     @After
     fun tearDown() {
-        activityRule.activity.finishAndRemoveTask()
+//        activityRule.activity.finishAndRemoveTask()
         IdlingRegistry.getInstance().unregister(idlingResource)
     }
 

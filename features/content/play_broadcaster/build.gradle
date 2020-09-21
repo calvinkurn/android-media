@@ -1,6 +1,5 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
-apply from: "../../../compile-instrument-test.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
 android {
@@ -17,10 +16,6 @@ android {
         multiDexEnabled true
         testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
     }
-
-    packagingOptions {
-        pickFirst  'META-INF/*'
-    }
 }
 
 buildscript {
@@ -34,7 +29,9 @@ buildscript {
 }
 
 dependencies {
-    implementation fileTree(include: ['*.jar', '*.aar'], dir: 'libs')
+//    implementation files('libs/AlivcCore.jar')
+//    compileOnly files('libs/AlivcReporter.aar')
+    api files('libs/live-pusher-3.3.6.aar')
 
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.libraries.applink)
@@ -97,7 +94,11 @@ dependencies {
     testRuntimeOnly rootProject.ext.testDependencies.junitJupiterEngine
 
     androidTestImplementation project(rootProject.ext.libraries.instrumentation_test), {
+        exclude group: 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
+        exclude group: 'org.jetbrains.kotlin:kotlin-reflect'
         exclude group: 'org.jetbrains.kotlin:kotlin-stdlib-jdk7'
+        exclude group: 'com.google.android.gms'
+        exclude group: 'com.google.firebase'
     }
 }
 
