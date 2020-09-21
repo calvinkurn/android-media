@@ -82,6 +82,9 @@ val RESPONSE_TRADE_IN_ALL_ADDRESS = """
           "donation_checkbox_status": false,
           "open_prerequisite_site": false,
           "eligible_new_shipping_experience": true,
+          "ab_test_button": {
+            "enable": false
+          },
           "group_address": [
             {
               "errors": [],
@@ -492,6 +495,9 @@ val RESPONSE_TRADE_IN_DEFAULT_ADDRESS = """
           "donation_checkbox_status": false,
           "open_prerequisite_site": false,
           "eligible_new_shipping_experience": true,
+          "ab_test_button": {
+            "enable": false
+          }, 
           "group_address": [
             {
               "errors": [],
@@ -754,7 +760,7 @@ val RESPONSE_TRADE_IN_DEFAULT_ADDRESS = """
           },
           "addresses": {
             "active": "default_address",
-            "disable_tabs": ["trade_in_address"],
+            "disable_tabs": [],
             "data": [
               {
                 "key": "default_address",
@@ -875,6 +881,9 @@ val RESPONSE_TRADE_IN_DROP_OFF_ADDRESS = """
           "donation_checkbox_status": false,
           "open_prerequisite_site": false,
           "eligible_new_shipping_experience": true,
+          "ab_test_button": {
+            "enable": false
+          },
           "group_address": [
             {
               "errors": [],

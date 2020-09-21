@@ -165,4 +165,7 @@
     </string>
     <string name="title_trade_in_default_address">Ditukar di Alamatmu</string>
     <string name="title_trade_in_drop_off_address">Ditukar di Indomaret</string>
+    <string name="label_drop_off_empty_title">Cari Indomaret, yuk!</string>
+    <string name="label_drop_off_empty_description">Aktifkan dulu lokasimu untuk bisa cari Indomaret terdekat</string>
+    <string name="label_drop_off_cta">Cari Indomaret</string>
 </resources>
