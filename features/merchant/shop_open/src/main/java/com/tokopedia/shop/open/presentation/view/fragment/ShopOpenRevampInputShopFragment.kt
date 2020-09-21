@@ -240,7 +240,9 @@ class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
                     }
                 }
                 is Fail -> {
-                    validateShopName(true, (it as Success).data.validateDomainShopName.error.message)
+                    it.throwable.message?.let { message ->
+                        validateShopName(true, message)
+                    }
                 }
             }
         })
@@ -259,7 +261,9 @@ class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
                     }
                 }
                 is Fail -> {
-                    validateDomainName(true, (it as Success).data.validateDomainShopName.error.message)
+                    it.throwable.message?.let { message ->
+                        validateDomainName(true, message)
+                    }
                 }
             }
         })
