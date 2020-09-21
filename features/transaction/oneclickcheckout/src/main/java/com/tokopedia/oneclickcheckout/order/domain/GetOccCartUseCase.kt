@@ -216,7 +216,7 @@ class GetOccCartUseCase @Inject constructor(val context: Context, val graphqlUse
         return OrderPayment(payment.enable != 0, false, payment.gatewayCode, payment.gatewayName,
                 payment.image, payment.description, payment.minimumAmount, payment.maximumAmount, payment.fee, payment.walletAmount,
                 payment.metadata, mapPaymentCreditCard(payment.creditCard, data), mapPaymentErrorMessage(payment.errorMessage), data.errorTicker,
-                payment.isEnableNextButton, payment.isDisablePayButton, false)
+                payment.isEnableNextButton, payment.isDisablePayButton, payment.isOvoOnlyCampaign)
     }
 
     private fun mapPaymentErrorMessage(errorMessage: PaymentErrorMessage): OrderPaymentErrorMessage {

@@ -1401,7 +1401,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             orderPayment.value = _orderPayment
             orderTotal.value = orderTotal.value.copy(orderCost = orderCost, paymentErrorMessage = null, buttonType = OccButtonType.PAY, buttonState = currentState)
         } else if (payment.minimumAmount > subtotal) {
-            if (payment.isCampaignOvoOnly) {
+            if (payment.isOvoOnlyCampaign) {
                 if (currentState == OccButtonState.NORMAL) {
                     currentState = OccButtonState.DISABLE
                 }
@@ -1418,7 +1418,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                 orderPayment.value = _orderPayment
             }
         } else if (payment.maximumAmount > 0 && payment.maximumAmount < subtotal) {
-            if (payment.isCampaignOvoOnly) {
+            if (payment.isOvoOnlyCampaign) {
                 if (currentState == OccButtonState.NORMAL) {
                     currentState = OccButtonState.DISABLE
                 }
@@ -1440,7 +1440,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             orderPayment.value = _orderPayment
             orderTotal.value = orderTotal.value.copy(orderCost = orderCost, paymentErrorMessage = payment.errorTickerMessage, buttonType = OccButtonType.CONTINUE, buttonState = currentState)
         } else if (payment.gatewayCode.contains(OVO_GATEWAY_CODE) && subtotal > payment.walletAmount) {
-            if (payment.isCampaignOvoOnly) {
+            if (payment.isOvoOnlyCampaign) {
                 orderTotal.value = orderTotal.value.copy(orderCost = orderCost,
                         paymentErrorMessage = OVO_INSUFFICIENT_CONTINUE_MESSAGE,
                         buttonType = OccButtonType.CONTINUE, buttonState = currentState)

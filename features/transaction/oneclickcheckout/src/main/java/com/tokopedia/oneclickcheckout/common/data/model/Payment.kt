@@ -38,7 +38,9 @@ data class Payment(
         @SerializedName("is_enable_next_button")
         val isEnableNextButton: Boolean = false,
         @SerializedName("is_disable_pay_button")
-        val isDisablePayButton: Boolean = false
+        val isDisablePayButton: Boolean = false,
+        @SerializedName("is_ovo_only_campaign")
+        val isOvoOnlyCampaign: Boolean = false
 )
 
 data class PaymentErrorMessage(
