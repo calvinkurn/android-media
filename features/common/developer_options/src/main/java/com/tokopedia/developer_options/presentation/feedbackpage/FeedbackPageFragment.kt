@@ -190,12 +190,12 @@ class FeedbackPageFragment: Fragment() {
                 //no-op
             }
         }
-
+/*
         email.addTextChangedListener(setWrapperWatcher(et_email_wrapper))
         page.addTextChangedListener(setWrapperWatcher(et_affected_page_wrapper))
         journey.addTextChangedListener(setWrapperWatcher(et_str_wrapper))
         actualResult.addTextChangedListener(setWrapperWatcher(et_actual_result_wrapper))
-        expectedResult.addTextChangedListener(setWrapperWatcher(et_expected_result_wrapper))
+        expectedResult.addTextChangedListener(setWrapperWatcher(et_expected_result_wrapper))*/
 
         submitButton.setOnClickListener {
             val emailText= email.text.toString()
