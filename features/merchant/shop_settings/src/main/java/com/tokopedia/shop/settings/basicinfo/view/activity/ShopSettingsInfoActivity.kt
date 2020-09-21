@@ -5,7 +5,6 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
@@ -33,7 +32,7 @@ class ShopSettingsInfoActivity : BaseSimpleActivity() {
         val remoteConfig = FirebaseRemoteConfigImpl(this)
         val isOldShopSettings = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_OLD_SHOP_SETTINGS, false)
 
-        if(!GlobalConfig.isSellerApp() || isOldShopSettings) {
+        if(isOldShopSettings) {
             val intent = OldShopSettingsInfoActivity.createIntent(this)
             startActivity(intent)
             finish()
