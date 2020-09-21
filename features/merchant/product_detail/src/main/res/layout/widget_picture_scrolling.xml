@@ -70,7 +70,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginBottom="@dimen/spacing_lvl3"
+        android:layout_marginBottom="@dimen/spacing_lvl4"
         app:indicator_type="CIRCLE" />
 
     <com.tokopedia.unifyprinciples.Typography
