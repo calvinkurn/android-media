@@ -1,4 +1,4 @@
-package com.tokopedia.product.detail
+package com.tokopedia.product.detail.topads
 
 import android.app.Activity
 import android.app.Instrumentation
@@ -15,6 +15,7 @@ import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.platform.app.InstrumentationRegistry
+import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.view.activity.ProductDetailActivity
 import com.tokopedia.product.detail.view.viewholder.ProductRecommendationViewHolder
 import com.tokopedia.test.application.assertion.topads.TopAdsAssertion
