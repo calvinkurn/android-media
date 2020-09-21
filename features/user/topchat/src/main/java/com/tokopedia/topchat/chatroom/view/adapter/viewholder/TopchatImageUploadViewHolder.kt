@@ -37,7 +37,7 @@ class TopchatImageUploadViewHolder(itemView: View?, listener: ImageUploadListene
     )
     private val bgSender = ViewUtil.generateBackgroundWithShadow(
             itemView,
-            com.tokopedia.unifyprinciples.R.color.Neutral_N0,
+            R.color.bg_topchat_right_message,
             com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
             com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
             com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
