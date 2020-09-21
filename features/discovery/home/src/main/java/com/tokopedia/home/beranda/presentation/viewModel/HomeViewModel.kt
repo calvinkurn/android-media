@@ -1237,16 +1237,15 @@ open class HomeViewModel @Inject constructor(
                 getDisplayHeadlineAds.get().createParams(featuredShopDataModel.channelModel.widgetParam)
                 val data = getDisplayHeadlineAds.get().executeOnBackground()
                 if(data.isEmpty()){
-                    updateWidget(UpdateLiveDataModel(ACTION_DELETE, featuredShopDataModel, _homeLiveData.value?.list?.indexOf(visitable) ?: -1))
+                    homeProcessor.get().sendWithQueueMethod(DeleteWidgetCommand(featuredShopDataModel, _homeLiveData.value?.list?.indexOf(visitable) ?: -1, this@HomeViewModel))
                 } else {
-                    updateWidget(UpdateLiveDataModel(ACTION_UPDATE, featuredShopDataModel.copy(
+                    homeProcessor.get().sendWithQueueMethod(UpdateWidgetCommand(featuredShopDataModel.copy(
                             channelModel = featuredShopDataModel.channelModel.copy(
                                     channelGrids = mappingTopAdsHeaderToChannelGrid(data)
-                            )
-                    )))
+                            )), _homeLiveData.value?.list?.indexOf(visitable) ?: -1, this@HomeViewModel))
                 }
             }){
-                updateWidget(UpdateLiveDataModel(ACTION_DELETE, featuredShopDataModel, _homeLiveData.value?.list?.indexOf(visitable) ?: -1))
+                homeProcessor.get().sendWithQueueMethod(DeleteWidgetCommand(featuredShopDataModel, _homeLiveData.value?.list?.indexOf(visitable) ?: -1, this))
             }
         }
     }
