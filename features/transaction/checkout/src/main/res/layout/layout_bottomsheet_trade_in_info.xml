@@ -19,8 +19,11 @@
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/img_trade_in_info"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="210dp"
+            android:layout_height="160dp"
+            android:paddingTop="@dimen/dp_16"
+            android:paddingBottom="@dimen/dp_16"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tab_trade_in_info"
             app:typographyType="body_2" />
