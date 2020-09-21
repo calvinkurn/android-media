@@ -86,6 +86,7 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
 
     }
 
+
     override fun onPause() {
         super.onPause()
         digitalRecomTrackingQueue?.sendAll()
@@ -99,6 +100,7 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
         else {
             bindThanksPageDataToUI(thanksPageData)
             observeViewModel()
+            thanksPageDataViewModel.getFeatureEngine()
             addRecommendation()
         }
     }
