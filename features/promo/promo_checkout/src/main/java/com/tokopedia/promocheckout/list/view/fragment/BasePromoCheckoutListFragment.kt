@@ -192,11 +192,17 @@ abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutLis
         if (promoLastSeenAdapter.listData.isNotEmpty()) {
             containerLastSeen.visibility = View.VISIBLE
         } else if (promoLastSeenAdapter.listDataDeals.isNotEmpty()) {
-            promoLastSeenAdapter.listDataDeals.map {
+            val promoCodeBlank = mutableListOf<Boolean>()
+            promoLastSeenAdapter.listDataDeals.forEach {
                 if (it.attributes.promoCode.isBlank() || it.attributes.promoCode.equals("-")) {
-                    containerLastSeen.visibility = View.GONE
+                    promoCodeBlank.add(true)
                 } else {
-                    containerLastSeen.visibility = View.VISIBLE
+                    promoCodeBlank.add(false)
+                }
+                if (promoCodeBlank.contains(false)) {
+                        containerLastSeen.visibility = View.VISIBLE
+                } else {
+                    containerLastSeen.visibility = View.GONE
                 }
             }
         }
