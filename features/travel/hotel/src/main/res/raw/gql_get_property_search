@@ -79,5 +79,21 @@ query PropertySearch($data:PropertySearchRequest!){
           displayName
         }
       }
+      filters {
+              type
+              name
+              displayName
+              options
+              image {
+                  light
+                  dark
+              }
+          }
+      quickFilter {
+           name
+           displayName
+           values
+           selected
+       }
     }
 }

@@ -20,7 +20,7 @@ import com.tokopedia.discovery2.usecase.quickcouponusecase.QuickCouponUseCase
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.PINNED_ACTIVE_TAB
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.PINNED_COMPONENT_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.PINNED_COMP_ID
-import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.PINNED_PRODUCT
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.PRODUCT_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.SOURCE_QUERY
 import com.tokopedia.discovery2.viewcontrollers.activity.REACT_NATIVE
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -177,7 +177,7 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
                 PINNED_COMPONENT_ID to intentUri.getQueryParameter(PINNED_COMPONENT_ID),
                 PINNED_ACTIVE_TAB to intentUri.getQueryParameter(PINNED_ACTIVE_TAB),
                 PINNED_COMP_ID to intentUri.getQueryParameter(PINNED_COMP_ID),
-                PINNED_PRODUCT to intentUri.getQueryParameter(PINNED_PRODUCT)
+                PRODUCT_ID to intentUri.getQueryParameter(PRODUCT_ID)
         )
     }
 
@@ -194,7 +194,7 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
         return mapOf(
                 PINNED_ACTIVE_TAB to bundle?.getString(PINNED_ACTIVE_TAB, ""),
                 PINNED_COMP_ID to bundle?.getString(PINNED_COMP_ID, ""),
-                PINNED_PRODUCT to bundle?.getString(PINNED_PRODUCT, "")
+                PRODUCT_ID to bundle?.getString(PRODUCT_ID, "")
         )
     }
 }

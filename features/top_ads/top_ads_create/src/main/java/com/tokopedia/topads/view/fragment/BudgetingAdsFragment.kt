@@ -52,8 +52,9 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
     private var maxSuggestKeyword = 0
     private var suggestBidPerClick = 0
     private var isEnable = false
-    private var userID:String = ""
+    private var userID: String = ""
     private var shopID = ""
+
     companion object {
         private const val MAX_BID = "max"
         private const val MIN_BID = "min"
@@ -77,7 +78,7 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(BudgetingAdsViewModel::class.java)
-        bidInfoAdapter = BidInfoAdapter(BidInfoAdapterTypeFactoryImpl(stepperModel!!.selectedKeywords, stepperModel!!.selectedSuggestBid, this::onClickItem))
+        bidInfoAdapter = BidInfoAdapter(BidInfoAdapterTypeFactoryImpl(stepperModel?.selectedKeywords, stepperModel?.selectedSuggestBid, this::onClickItem))
         activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
     }
 
@@ -86,9 +87,9 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
     }
 
     private fun onClickItem(pos: Int) {
-        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_SETUP_KEY, shopID,userID)
+        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_SETUP_KEY, shopID, userID)
         val sheet = TopAdsEditKeywordBidSheet.createInstance(prepareBundle(pos))
-        sheet.show(fragmentManager!!, "")
+        sheet.show(childFragmentManager, "")
         sheet.onSaved = { bid, type, position ->
             bidInfoAdapter.typeList[position] = type
             (bidInfoAdapter.items[position] as BidInfoItemViewModel).data.suggestionBid = bid.toInt()
@@ -98,6 +99,7 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
         sheet.onDelete = { position ->
             stepperModel?.selectedKeywords?.removeAt(position)
             stepperModel?.selectedSuggestBid?.removeAt(position)
+            bidInfoAdapter.typeList.removeAt(position)
             bidInfoAdapter.items.removeAt(position)
             bidInfoAdapter.notifyItemRemoved(position)
         }
@@ -108,7 +110,7 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
         val bundle = Bundle()
         bundle.putInt(MAX_BID, (bidInfoAdapter.items[pos] as BidInfoItemViewModel).data.maxBid)
         bundle.putInt(MIN_BID, (bidInfoAdapter.items[pos] as BidInfoItemViewModel).data.minBid)
-        bundle.putInt(SUGGESTION_BID, stepperModel?.selectedSuggestBid?.get(pos)!!)
+        bundle.putInt(SUGGESTION_BID, stepperModel?.selectedSuggestBid?.get(pos) ?: 0)
         bundle.putString(KEYWORD_NAME, stepperModel?.selectedKeywords?.get(pos))
         if ((bidInfoAdapter.items[pos] as BidInfoItemViewModel).data.keywordType == SPECIFIC_TYPE) {
             bundle.putInt(CURRENT_KEY_TYPE, EXACT_POSITIVE)
@@ -167,7 +169,7 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        if (stepperModel?.selectedKeywordType?.isNotEmpty()!!) {
+        if (stepperModel?.selectedKeywordType?.isNotEmpty() != false) {
             setRestoreValue()
         }
         val dummyId: MutableList<Int> = mutableListOf()
@@ -211,6 +213,7 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
     }
 
     private fun onEmptySuggestion() {
+        headlineList?.visibility = View.GONE
         bidInfoAdapter.items.add(BidInfoEmptyViewModel())
         bidInfoAdapter.notifyDataSetChanged()
     }
@@ -221,6 +224,7 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
         }
         minSuggestKeyword = data[0].minBid
         maxSuggestKeyword = data[0].maxBid
+        bidInfoAdapter.setMinimumBid(minSuggestKeyword)
         bidInfoAdapter.notifyDataSetChanged()
         loading.visibility = View.GONE
         updateString()
@@ -233,20 +237,21 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        headlineList?.visibility = View.VISIBLE
+        loading?.visibility = View.VISIBLE
         userID = UserSession(view.context).userId
         shopID = UserSession(view.context).shopId
-        loading.visibility = View.VISIBLE
         btn_next?.setOnClickListener {
             gotoNextPage()
         }
 
         tip_btn?.setOnClickListener {
             TipSheetBudgetList.newInstance(it.context).show()
-            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_TIPS_BIAYA_IKLAN, shopID,userID)
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_TIPS_BIAYA_IKLAN, shopID, userID)
         }
 
         budget?.textFieldInput?.setOnFocusChangeListener { v, hasFocus ->
-            if(hasFocus){
+            if (hasFocus) {
                 val eventLabel = "$shopID - $EVENT_CLICK_BUDGET"
                 TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_BUDGET, eventLabel, userID)
             }

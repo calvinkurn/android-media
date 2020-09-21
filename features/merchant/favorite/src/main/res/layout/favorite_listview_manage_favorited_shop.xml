@@ -38,7 +38,6 @@
                 android:id="@+id/image_badge"
                 android:layout_width="12dp"
                 android:layout_height="12dp"
-                tool:src="@drawable/ic_shop_gold"
                 android:layout_marginRight="@dimen/margin_vs"
                 android:layout_marginEnd="@dimen/margin_vs"
                 android:visibility="gone">

@@ -123,7 +123,9 @@ class ReviewInboxContainerFragment : BaseDaggerFragment(), HasComponent<ReviewIn
 
 
     override fun onBackPressed() {
-        ReviewInboxContainerTracking.eventOnClickBackButton(viewModel.getUserId())
+        if(::viewModel.isInitialized) {
+            ReviewInboxContainerTracking.eventOnClickBackButton(viewModel.getUserId())
+        }
     }
 
     private fun setupSellerAdapter(bundle: Bundle) {

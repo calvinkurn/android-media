@@ -416,8 +416,12 @@ class VerificationFragment : BaseVerificationFragment(), IOnBackPressed {
         viewBound.pin?.pinTextField?.let { view ->
             view.post {
                 if(view.requestFocus()) {
-                    val inputMethodManager = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                    inputMethodManager.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT)
+                    context?.getSystemService(Context.INPUT_METHOD_SERVICE)?.let { inputMethodManager ->
+                        when (inputMethodManager) {
+                            is InputMethodManager -> inputMethodManager.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT)
+                            else -> {}
+                        }
+                    }
                 }
             }
         }
@@ -440,30 +444,32 @@ class VerificationFragment : BaseVerificationFragment(), IOnBackPressed {
     }
 
     private fun setFooterText() {
-        val spannable: Spannable
-        if(otpData.otpType == OtpConstant.OtpType.AFTER_LOGIN_PHONE){
+        context?.let {
+            val spannable: Spannable
+            if(otpData.otpType == OtpConstant.OtpType.AFTER_LOGIN_PHONE){
             val message = getString(R.string.forgot_pin)
             spannable = SpannableString(message)
             setForgotPinFooterSpan(message, spannable)
         }
         else if (modeListData.modeText == OtpConstant.OtpMode.PIN ||
-                modeListData.modeText == OtpConstant.OtpMode.GOOGLE_AUTH) {
-            val message = getString(R.string.login_with_other_method)
-            spannable = SpannableString(message)
-            setOtherMethodPinFooterSpan(message, spannable)
-        } else if (otpData.canUseOtherMethod) {
-            val message = getString(R.string.validation_resend_email_or_with_other_method)
-            spannable = SpannableString(message)
-            setResendOtpFooterSpan(message, spannable)
-            setOtherMethodFooterSpan(message, spannable)
-        } else {
-            val message = getString(R.string.validation_resend_email)
-            spannable = SpannableString(message)
-            setResendOtpFooterSpan(message, spannable)
+                    modeListData.modeText == OtpConstant.OtpMode.GOOGLE_AUTH) {
+                val message = it.getString(R.string.login_with_other_method)
+                spannable = SpannableString(message)
+                setOtherMethodPinFooterSpan(message, spannable)
+            } else if (otpData.canUseOtherMethod) {
+                val message = it.getString(R.string.validation_resend_email_or_with_other_method)
+                spannable = SpannableString(message)
+                setResendOtpFooterSpan(message, spannable)
+                setOtherMethodFooterSpan(message, spannable)
+            } else {
+                val message = it.getString(R.string.validation_resend_email)
+                spannable = SpannableString(message)
+                setResendOtpFooterSpan(message, spannable)
+            }
+            viewBound.pin?.pinMessageView?.visible()
+            viewBound.pin?.pinMessageView?.movementMethod = LinkMovementMethod.getInstance()
+            viewBound.pin?.pinMessageView?.setText(spannable, TextView.BufferType.SPANNABLE)
         }
-        viewBound.pin?.pinMessageView?.visible()
-        viewBound.pin?.pinMessageView?.movementMethod = LinkMovementMethod.getInstance()
-        viewBound.pin?.pinMessageView?.setText(spannable, TextView.BufferType.SPANNABLE)
     }
 
     private fun setResendOtpFooterSpan(message: String, spannable: Spannable) {

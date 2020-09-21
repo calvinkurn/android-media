@@ -20,27 +20,10 @@ class LineChartConfig : BaseChartConfig() {
         fun create(lambda: LineChartConfig.() -> Unit) = LineChartConfig().apply(lambda).build()
     }
 
-    private var chartLineWidth: Float = 1f
-    private var chartLineColor: Int = Color.parseColor(ChartColor.DEFAULT_LINE_COLOR)
     private var chartLineMode: Int = LineChartView.LINE_MODE_LINEAR
-    private var chartFillColor: Int = Color.parseColor(ChartColor.DEFAULT_LINE_CHART_FILL_COLOR)
     private var chartDotColor: Int = Color.parseColor(ChartColor.DEFAULT_LINE_CHART_DOT_COLOR)
-    private var fillDrawable: Drawable? = null
-    private var isChartFillEnabled: Boolean = true
     private var isChartDotEnabled: Boolean = false
     private var isChartDotHoleEnabled: Boolean = false
-
-    fun chartLineWidth(lambda: () -> Float) {
-        chartLineWidth = lambda()
-    }
-
-    fun chartLineColor(lambda: () -> Int) {
-        chartLineColor = lambda()
-    }
-
-    fun chartFillColor(lambda: () -> Int) {
-        chartFillColor = lambda()
-    }
 
     /**
      * chartLineMode can be set to LineChartView.LINE_MODE_LINEAR or LineChartView.LINE_MODE_CURVE
@@ -51,14 +34,6 @@ class LineChartConfig : BaseChartConfig() {
 
     fun chartDotColor(lambda: () -> Int) {
         chartDotColor = lambda()
-    }
-
-    fun fillDrawable(lambda: () -> Drawable) {
-        fillDrawable = lambda()
-    }
-
-    fun chartFillEnabled(lambda: () -> Boolean) {
-        isChartFillEnabled = lambda()
     }
 
     fun chartDotEnabled(lambda: () -> Boolean) {
@@ -80,13 +55,8 @@ class LineChartConfig : BaseChartConfig() {
                 xAxisConfig = xAxis,
                 yAxisConfig = yAxis,
                 tooltip = tooltip,
-                chartLineWidth = chartLineWidth,
-                chartLineColor = chartLineColor,
                 chartLineMode = chartLineMode,
-                chartFillColor = chartFillColor,
                 chartDotColor = chartDotColor,
-                fillDrawable = fillDrawable,
-                isChartFillEnabled = isChartFillEnabled,
                 isChartDotEnabled = isChartDotEnabled,
                 isChartDotHoleEnabled = isChartDotHoleEnabled
         )

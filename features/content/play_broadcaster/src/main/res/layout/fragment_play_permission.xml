@@ -77,9 +77,9 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/play_permit_spacing"
             android:background="@android:color/transparent"
+            android:scaleType="centerInside"
             app:layout_constraintBottom_toTopOf="@+id/divider"
             app:layout_constraintStart_toStartOf="parent"
-            android:scaleType="centerInside"
             app:srcCompat="@drawable/ic_play_action_camera_white" />
 
         <androidx.appcompat.widget.AppCompatTextView
@@ -99,9 +99,11 @@
             android:id="@+id/tv_permit_check_camera"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/layout_lvl3"
+            android:gravity="center"
             android:text="@string/play_permit_active"
             android:textColor="@color/dark_G500"
             android:textSize="@dimen/fontSize_lvl2"
+            app:layout_constraintBottom_toBottomOf="@+id/text_permit_allow_camera"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/text_permit_allow_camera" />
 
@@ -142,6 +144,7 @@
             android:id="@+id/tv_permit_check_mic"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/layout_lvl3"
+            android:gravity="center"
             android:text="@string/play_permit_active"
             android:textColor="@color/dark_G500"
             android:textSize="@dimen/fontSize_lvl2"

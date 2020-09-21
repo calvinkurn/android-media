@@ -71,7 +71,6 @@
 /features/merchant/seller_migration_common/             @tokopedia/android-minionstuart-dev
 /features/merchant/seller_active_common/                @tokopedia/android-minionstuart-dev
 /features/merchant/shop_common/                         @tokopedia/android-minionstuart-dev
-/features/merchant/shop_etalase_picker/                 @tokopedia/android-minionstuart-dev
 /features/merchant/shop_open/                           @tokopedia/android-minionstuart-dev
 /features/merchant/shop_showcase/                       @tokopedia/android-minionstuart-dev
 /features/merchant/shop_page/                           @tokopedia/android-minionstuart-dev
@@ -161,7 +160,7 @@
 /features/logistic/logisticcart/                		@tokopedia/android-minionbob-dev
 /features/logistic/manageaddress/                		@tokopedia/android-minionbob-dev
 /features/logistic/editshipping/                        @tokopedia/android-minionbob-dev
-
+/features/logistic/activation/                          @tokopedia/android-minionbob-dev
 
 /features/user/chatbot/                         		@tokopedia/android-miniondarth-dev
 /features/user/chatbot_no_op/                   		@tokopedia/android-minionkevin-dev

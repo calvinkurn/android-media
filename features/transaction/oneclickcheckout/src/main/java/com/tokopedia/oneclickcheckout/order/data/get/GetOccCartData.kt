@@ -2,10 +2,13 @@ package com.tokopedia.oneclickcheckout.order.data.get
 
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.purchase_platform.common.feature.promo.domain.model.PromoSAFResponse
+import com.tokopedia.purchase_platform.common.feature.tickerannouncement.Ticker
 
 data class GetOccCartData(
         @SerializedName("messages")
         val messages: CartMessages = CartMessages(),
+        @SerializedName("tickers")
+        val tickers: List<Ticker> = emptyList(),
         @SerializedName("ticker_message")
         val tickerMessage: OccTickerMessage = OccTickerMessage(),
         @SerializedName("occ_main_onboarding")

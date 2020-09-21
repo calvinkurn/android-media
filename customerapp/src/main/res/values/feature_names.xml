@@ -49,7 +49,7 @@
     <string name="title_liveness_detection">Liveness Detection</string>
 
     <!-- Dynamic feature for Groupchat-->
-    <string name="groupchat_app_name">Play</string>
+    <string name="title_groupchat_df">Play</string>
 
     <!--    Change Phone Number-->
     <string name="change_phone_number_app_module_name">changephonenumber</string>
@@ -208,6 +208,7 @@
 
 
     <!--Dynamic feature for affiliate-->
+    <string name="title_affiliate_df">Affiliate</string>
     <string name="title_af_affiliate">Affiliate</string>
     <string name="title_affiliate">Affiliate</string>
     <string name="title_af_dashboard">Pencapaian Saya</string>
