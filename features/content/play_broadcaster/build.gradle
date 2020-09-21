@@ -16,6 +16,30 @@ android {
         multiDexEnabled true
         testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
     }
+    sourceSets {
+        main {
+            java.srcDirs = ['src/main/java']
+            resources.srcDirs = ['src/main/java']
+            aidl.srcDirs = ['src/main/java']
+            renderscript.srcDirs = ['src/main/java']
+            res.srcDirs = ['src/main/res']
+            assets.srcDirs = ['assets', 'src/main/assets', 'src/main/assets/']
+        }
+        String sharedTestDir = 'src/sharedTest/java'
+        test {
+            java.srcDir sharedTestDir
+        }
+        androidTest {
+            java.srcDir sharedTestDir
+        }
+    }
+    lintOptions {
+        checkReleaseBuilds false
+        abortOnError false
+    }
+    packagingOptions {
+        exclude 'META-INF/**'
+    }
 }
 
 buildscript {
@@ -29,9 +53,7 @@ buildscript {
 }
 
 dependencies {
-//    implementation files('libs/AlivcCore.jar')
-//    compileOnly files('libs/AlivcReporter.aar')
-    api files('libs/live-pusher-3.3.6.aar')
+    implementation fileTree(include: ['*.jar', '*.aar'], dir: 'libs')
 
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.libraries.applink)

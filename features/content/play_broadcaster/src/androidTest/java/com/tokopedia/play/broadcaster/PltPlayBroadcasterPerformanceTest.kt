@@ -37,8 +37,8 @@ class PltPlayBroadcasterPerformanceTest {
 
     @Test
     fun testPageLoadTimePerformance() {
-//        val context = InstrumentationRegistry.getInstrumentation().targetContext
-//        activityRule.launchActivity(PlayBroadcastActivity.createIntent(context))
+        val context = InstrumentationRegistry.getInstrumentation().targetContext
+        activityRule.launchActivity(PlayBroadcastActivity.createIntent(context))
 
         activityRule.activity.getPltPerformanceResultData()?.let { data->
             PerformanceDataFileUtils.writePLTPerformanceFile(
@@ -50,7 +50,7 @@ class PltPlayBroadcasterPerformanceTest {
 
     @After
     fun tearDown() {
-//        activityRule.activity.finishAndRemoveTask()
+        activityRule.activity.finishAndRemoveTask()
         IdlingRegistry.getInstance().unregister(idlingResource)
     }
 
