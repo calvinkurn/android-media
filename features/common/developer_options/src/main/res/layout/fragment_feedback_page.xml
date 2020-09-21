@@ -2,7 +2,6 @@
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
@@ -43,7 +42,7 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/et_email_wrapper"
                 style="@style/HintTextInputLayout"
-                android:layout_width="@dimen/dp_120"
+                android:layout_width="@dimen/dp_290"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_8"
                 app:layout_constraintTop_toTopOf="parent"
@@ -52,7 +51,7 @@
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/email"
-                    android:layout_width="@dimen/dp_120"
+                    android:layout_width="@dimen/dp_290"
                     android:layout_height="wrap_content"
                     android:imeOptions="actionDone"
                     android:inputType="text"
@@ -72,7 +71,7 @@
                 android:layout_alignBottom="@id/et_email_wrapper"
                 android:layout_alignTop="@id/et_email_wrapper"
                 android:layout_marginTop="@dimen/dp_20"
-                android:textSize="@dimen/sp_14"
+                android:textSize="@dimen/sp_16"
                 android:text="@string/tokopedia_email"
                 app:typographyType="body_3"/>
 

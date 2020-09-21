@@ -177,7 +177,8 @@ class FeedbackPageFragment: Fragment() {
             if (loginEmail.contains("@tokopedia.com") && savedEmail == null) {
                 email.setText(topedEmail?.let { loginEmail.substring(0, it) })
             } else {
-                email.setText(topedEmail?.let { savedEmail?.substring(0, it) })
+                val cacheEmail = savedEmail?.lastIndexOf(separator)
+                email.setText(cacheEmail?.let { savedEmail.substring(0, it) })
             }
         }
 
