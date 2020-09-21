@@ -11,7 +11,6 @@ import com.tokopedia.abstraction.constant.IRouterConstant
 import com.tokopedia.promocheckout.R
 import com.tokopedia.promocheckout.common.data.REQUEST_CODE_PROMO_DETAIL
 import com.tokopedia.promocheckout.common.domain.model.TravelCollectiveBanner
-import com.tokopedia.promocheckout.common.domain.model.deals.DealsVerifyBody
 import com.tokopedia.promocheckout.common.util.EXTRA_PROMO_DATA
 import com.tokopedia.promocheckout.common.util.mapToStatePromoCheckout
 import com.tokopedia.promocheckout.common.view.model.PromoData
@@ -38,12 +37,14 @@ class PromoCheckoutListDealsFragment() : BasePromoCheckoutListFragment(), PromoC
     override var serviceId: String = IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.DIGITAL_STRING
     var categoryID: Int = 1
     var checkoutData: String = ""
+    var promoCodeApplied: String? = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         categoryID = arguments?.getInt(EXTRA_CATEGORY_ID, 1) ?: 1
         checkoutData = arguments?.getString(EXTRA_CHECKOUT_DATA) ?: ""
         promoCheckoutListDealsPresenter.attachView(this)
+        promoCodeApplied = arguments?.getString(EXTRA_PROMO_CODE) ?: ""
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -128,7 +129,6 @@ class PromoCheckoutListDealsFragment() : BasePromoCheckoutListFragment(), PromoC
         val EXTRA_CHECKOUT_DATA = "checkoutdata"
         val VOUCHER_CODE = "voucher_code"
         val VOUCHER_MESSAGE = "voucher_message"
-        val VOUCHER_AMOUNT = "voucher_amount"
         val PROMOCODE = "promocode"
 
         fun createInstance(isCouponActive: Boolean?, promoCode: String?, categoryId: Int?, pageTracking: Int?, productId: String?, checkoutData: String?): PromoCheckoutListDealsFragment {
