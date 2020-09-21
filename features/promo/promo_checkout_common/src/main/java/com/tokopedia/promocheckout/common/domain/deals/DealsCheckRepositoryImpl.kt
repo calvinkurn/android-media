@@ -5,9 +5,10 @@ import com.tokopedia.promocheckout.common.domain.model.deals.DealsVerifyResponse
 import rx.Observable
 import javax.inject.Inject
 
-class DealsCheckRepositoryImpl @Inject constructor(val dealsCheckoutApi: DealsCheckoutApi) : PromoCheckoutDealsRepository {
+class DealsCheckRepositoryImpl @Inject constructor(private val dealsCheckoutApi: DealsCheckoutApi) : PromoCheckoutDealsRepository {
+
     override fun postVerify(book: Boolean, requestBody: JsonObject): Observable<DealsVerifyResponse> {
-        return dealsCheckoutApi.postVerify(createMapParam(false), requestBody)
+        return dealsCheckoutApi.postVerify(createMapParam(book), requestBody)
     }
 
     fun createMapParam(book: Boolean): HashMap<String, Boolean> {
