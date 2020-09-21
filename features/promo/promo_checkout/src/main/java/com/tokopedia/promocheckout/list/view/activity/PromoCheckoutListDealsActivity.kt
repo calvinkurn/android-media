@@ -21,8 +21,7 @@ class PromoCheckoutListDealsActivity : BaseSimpleActivity(), HasComponent<PromoC
                 intent?.extras?.getInt(PromoCheckoutListDealsFragment.EXTRA_CATEGORY_ID, 1) ?: 1,
                 intent?.extras?.getInt(BasePromoCheckoutListFragment.PAGE_TRACKING, 1) ?: 1,
                 intent?.extras?.getString(PromoCheckoutListDealsFragment.EXTRA_PRODUCTID, ""),
-                intent?.extras?.getString(PromoCheckoutListDealsFragment.EXTRA_CHECKOUT_DATA, "")
-        )
+                intent?.extras?.getString(PromoCheckoutListDealsFragment.EXTRA_CHECKOUT_DATA, ""))
     }
 
     override fun getComponent(): PromoCheckoutListComponent {
@@ -30,9 +29,7 @@ class PromoCheckoutListDealsActivity : BaseSimpleActivity(), HasComponent<PromoC
     }
 
     companion object {
-        const val DEALS_PROMO_SCREEN_NAME = "/deals/checkoutpromo"
-
-        fun newInstance(activity: Context, isCouponActive: Boolean, platform: String, categoryId: String, cartID: String, pageTracking: Int): Intent {
+        fun newInstance(activity: Context, isCouponActive: Boolean, platform: String, categoryId: String, pageTracking: Int): Intent {
             val intent = Intent(activity, PromoCheckoutListDealsActivity::class.java)
             val bundle = Bundle()
             bundle.putBoolean(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_COUPON_ACTIVE, isCouponActive)
