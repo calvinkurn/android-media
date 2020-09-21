@@ -1231,21 +1231,21 @@ open class HomeViewModel @Inject constructor(
     }
 
     private fun getDisplayTopAdsHeader(){
-        _homeLiveData.value?.list?.find { it is FeaturedShopDataModel }?.let { visitable ->
-            val featuredShopDataModel = visitable as FeaturedShopDataModel
+        _homeLiveData.value?.list?.withIndex()?.filter { it.value is FeaturedShopDataModel }?.forEach { indexed ->
+            val featuredShopDataModel = indexed.value as FeaturedShopDataModel
             launchCatchError(coroutineContext, block={
                 getDisplayHeadlineAds.get().createParams(featuredShopDataModel.channelModel.widgetParam)
                 val data = getDisplayHeadlineAds.get().executeOnBackground()
                 if(data.isEmpty()){
-                    homeProcessor.get().sendWithQueueMethod(DeleteWidgetCommand(featuredShopDataModel, _homeLiveData.value?.list?.indexOf(visitable) ?: -1, this@HomeViewModel))
+                    homeProcessor.get().sendWithQueueMethod(DeleteWidgetCommand(featuredShopDataModel, indexed.index, this@HomeViewModel))
                 } else {
                     homeProcessor.get().sendWithQueueMethod(UpdateWidgetCommand(featuredShopDataModel.copy(
                             channelModel = featuredShopDataModel.channelModel.copy(
                                     channelGrids = mappingTopAdsHeaderToChannelGrid(data)
-                            )), _homeLiveData.value?.list?.indexOf(visitable) ?: -1, this@HomeViewModel))
+                            )), indexed.index, this@HomeViewModel))
                 }
             }){
-                homeProcessor.get().sendWithQueueMethod(DeleteWidgetCommand(featuredShopDataModel, _homeLiveData.value?.list?.indexOf(visitable) ?: -1, this))
+                homeProcessor.get().sendWithQueueMethod(DeleteWidgetCommand(featuredShopDataModel, indexed.index, this))
             }
         }
     }
