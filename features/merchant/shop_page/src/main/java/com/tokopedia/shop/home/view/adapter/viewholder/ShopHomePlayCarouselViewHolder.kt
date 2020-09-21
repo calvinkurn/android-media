@@ -68,7 +68,7 @@ class ShopHomePlayCarouselViewHolder(
                 playCarouselCardDataModel?.playBannerCarouselDataModel?.isAutoPlay.toString(),
                 playCarouselCardDataModel?.widgetId ?: "",
                 isFoldPosition(adapterPosition),
-                position + 1
+                position
         )
     }
 
@@ -78,7 +78,7 @@ class ShopHomePlayCarouselViewHolder(
                 playCarouselCardDataModel?.playBannerCarouselDataModel?.isAutoPlay.toString(),
                 playCarouselCardDataModel?.widgetId ?: "",
                 isFoldPosition(adapterPosition),
-                position + 1
+                position
         )
     }
 

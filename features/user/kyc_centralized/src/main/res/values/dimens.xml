@@ -23,4 +23,12 @@
     <dimen name="kyc_centralized_17sp">17sp</dimen>
 
     <dimen name="kyc_centralized_1">1px</dimen>
+
+    <dimen name="kyc_status_image_width">288dp</dimen>
+    <dimen name="kyc_status_image_height">210dp</dimen>
+
+    <dimen name="useridentification_124dp">124dp</dimen>
+    <dimen name="useridentification_35dp">35dp</dimen>
+
+    <dimen name="useridentification_6sp">6sp</dimen>
 </resources>

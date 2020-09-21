@@ -38,6 +38,7 @@ object SettingTrackingConstant {
     const val SETTINGS = "settings"
     const val BACK_ARROW = "back arrow"
     const val SHOP_SETTING = "shop settings"
+    const val COD_ACTIVATION_SETTING = "cod activation settings"
     const val ACCOUNT_SETTING = "account settings"
     const val APP_SETTING = "app settings"
     const val APPLICATION_SETTING = "application settings"

@@ -13,6 +13,7 @@ import android.text.style.ForegroundColorSpan
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.content.res.AppCompatResources
@@ -25,11 +26,10 @@ import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds.TOPADS_BUY_CREDIT
 import com.tokopedia.topads.auto.R
-import com.tokopedia.topads.auto.data.network.param.AutoAdsParam
+import com.tokopedia.topads.common.data.model.AutoAdsParam
 import com.tokopedia.topads.auto.di.AutoAdsComponent
 import com.tokopedia.topads.auto.di.DaggerAutoAdsComponent
 import com.tokopedia.topads.auto.di.module.AutoAdsQueryModule
-import com.tokopedia.topads.auto.internal.NonDeliveryReason
 import com.tokopedia.topads.auto.view.activity.EditBudgetAutoAdsActivity
 import com.tokopedia.topads.auto.view.factory.AutoAdsWidgetViewModelFactory
 import com.tokopedia.topads.auto.view.fragment.AutoAdsBaseBudgetFragment
@@ -37,6 +37,7 @@ import com.tokopedia.topads.auto.view.sheet.ManualAdsConfirmationSheet
 import com.tokopedia.topads.auto.view.viewmodel.AutoAdsWidgetViewModel
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.data.internal.AutoAdsStatus
+import com.tokopedia.topads.common.data.internal.NonDeliveryReason
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
 import com.tokopedia.user.session.UserSessionInterface
@@ -53,6 +54,8 @@ private const val CLICK_TOP_UP_KREDIT = "click - top up kredit"
 private const val CLICK_CEK_STATUS = "click - cek status"
 private const val CLICK_TINGA_KATLAN = "click - tingkatkan"
 private const val CLICK_SETTING_ICON = "click - settings icon"
+private const val ENTRY_FROM_DETAIL_SHEET = 2
+private const val ENTRY_FROM_EDIT_PAGE = 1
 
 class AutoAdsWidget(context: Context, attrs: AttributeSet?) : CardUnify(context, attrs) {
 
@@ -61,8 +64,8 @@ class AutoAdsWidget(context: Context, attrs: AttributeSet?) : CardUnify(context,
 
     @Inject
     lateinit var factory: AutoAdsWidgetViewModelFactory
-    private var baseLayout: ConstraintLayout? = null
-    private var fromEdit: Int = 0
+    private var baseLayout: FrameLayout? = null
+    private var entryPoint: Int = 0
     private var currentBudget = 0
     val requestType = "auto_ads"
     val source = "update_auto_ads"
@@ -110,7 +113,7 @@ class AutoAdsWidget(context: Context, attrs: AttributeSet?) : CardUnify(context,
             AutoAdsStatus.STATUS_ACTIVE -> setActive(dailyUsage)
             AutoAdsStatus.STATUS_IN_PROGRESS_ACTIVE -> setInProgress()
             AutoAdsStatus.STATUS_IN_PROGRESS_AUTOMANAGE -> setInProgress()
-            AutoAdsStatus.STATUS_IN_PROGRESS_INACTIVE -> setInProgress()
+            AutoAdsStatus.STATUS_IN_PROGRESS_INACTIVE -> setInProgressInactive()
         }
     }
 
@@ -151,7 +154,7 @@ class AutoAdsWidget(context: Context, attrs: AttributeSet?) : CardUnify(context,
         baseLayout?.addView(view)
         getDrwableforNotDeliverd(view)
         val desc = view.findViewById<TextView>(R.id.status_desc)
-        if (fromEdit == 1) {
+        if (entryPoint == 1) {
             desc.text = resources.getString(R.string.autoads_outofbudget_desc_edit)
         } else {
             desc.text = resources.getString(R.string.autoads_outofbudget_desc)
@@ -216,19 +219,27 @@ class AutoAdsWidget(context: Context, attrs: AttributeSet?) : CardUnify(context,
         val switch = view.findViewById<SwitchUnify>(R.id.btn_switch)
         val setting = view.findViewById<ImageView>(R.id.setting)
         switch.isChecked = true
-        if (fromEdit == 1) {
-            setting.visibility = View.GONE
-            switch.visibility = View.VISIBLE
-            switch.setOnClickListener {
-                val manual = ManualAdsConfirmationSheet.newInstance(context as BaseActivity, ::switchToManual)
-                manual.show()
-                manual.dismissed = { switch.isChecked = true }
+        when (entryPoint) {
+            ENTRY_FROM_EDIT_PAGE -> {
+                setting.visibility = View.GONE
+                switch.visibility = View.VISIBLE
+                switch.setOnClickListener {
+                    val manual = ManualAdsConfirmationSheet.newInstance(context as BaseActivity, ::switchToManual)
+                    manual.show()
+                    manual.dismissed = { switch.isChecked = true }
+                }
             }
-        } else {
-            switch.visibility = View.INVISIBLE
-            setting.setOnClickListener {
-                startEditActivity()
-                TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsDashboardEvent(CLICK_SETTING_ICON, "")
+            ENTRY_FROM_DETAIL_SHEET -> {
+                switch.visibility = View.INVISIBLE
+                setting.visibility = View.INVISIBLE
+
+            }
+            else -> {
+                switch.visibility = View.INVISIBLE
+                setting.setOnClickListener {
+                    startEditActivity()
+                    TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsDashboardEvent(CLICK_SETTING_ICON, "")
+                }
             }
         }
     }
@@ -244,7 +255,7 @@ class AutoAdsWidget(context: Context, attrs: AttributeSet?) : CardUnify(context,
         getDrwableforNotDeliverd(view)
         val desc = view.findViewById<TextView>(R.id.status_desc)
         view.let {
-            if (fromEdit == 1)
+            if (entryPoint == ENTRY_FROM_EDIT_PAGE)
                 desc.text = resources.getString(R.string.autoads_outofcredit_desc_edit)
             else
                 desc.text = resources.getString(R.string.autoads_outofcredit_desc)
@@ -261,6 +272,20 @@ class AutoAdsWidget(context: Context, attrs: AttributeSet?) : CardUnify(context,
         )
         val imgBg = view.findViewById<ConstraintLayout>(R.id.auto_ad_status_image)
         imgBg.background = AppCompatResources.getDrawable(context, R.drawable.topads_blue_bg)
+        baseLayout?.removeAllViews()
+        baseLayout?.addView(view)
+    }
+
+    private fun setInProgressInactive() {
+        val view = LayoutInflater.from(context).inflate(
+                R.layout.topads_auto_edit_status_progress_widget,
+                this,
+                false
+        )
+        val imgBg = view.findViewById<ConstraintLayout>(R.id.auto_ad_status_image)
+        imgBg.background = AppCompatResources.getDrawable(context, R.drawable.topads_blue_bg)
+        view.findViewById<TextView>(R.id.status_desc).
+        text = context.getString(R.string.autoads_inprogress_deactivate_desc)
         baseLayout?.removeAllViews()
         baseLayout?.addView(view)
     }
@@ -285,19 +310,26 @@ class AutoAdsWidget(context: Context, attrs: AttributeSet?) : CardUnify(context,
                 progress_bar.progress = dailyUsage
             }
             it.btn_switch.isChecked = true
-            if (fromEdit == 1) {
-                setting.visibility = View.GONE
-                it.btn_switch.visibility = View.VISIBLE
-                it.btn_switch.setOnClickListener {
-                    val man = ManualAdsConfirmationSheet.newInstance(context as BaseActivity, ::switchToManual)
-                    man.show()
-                    man.dismissed = { it.btn_switch.isChecked = true }
+            when (entryPoint) {
+                ENTRY_FROM_EDIT_PAGE -> {
+                    setting.visibility = View.GONE
+                    it.btn_switch.visibility = View.VISIBLE
+                    it.btn_switch.setOnClickListener {
+                        val man = ManualAdsConfirmationSheet.newInstance(context as BaseActivity, ::switchToManual)
+                        man.show()
+                        man.dismissed = { it.btn_switch.isChecked = true }
+                    }
                 }
-            } else {
-                it.btn_switch.visibility = View.INVISIBLE
-                it.setting.setOnClickListener {
-                    startEditActivity()
-                    TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsDashboardEvent(CLICK_SETTING_ICON, "")
+                ENTRY_FROM_DETAIL_SHEET -> {
+                    it.setting.visibility = View.INVISIBLE
+                    it.btn_switch.visibility = View.INVISIBLE
+                }
+                else -> {
+                    it.btn_switch.visibility = View.INVISIBLE
+                    it.setting.setOnClickListener {
+                        startEditActivity()
+                        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsDashboardEvent(CLICK_SETTING_ICON, "")
+                    }
                 }
             }
         }
@@ -319,7 +351,7 @@ class AutoAdsWidget(context: Context, attrs: AttributeSet?) : CardUnify(context,
     }
 
     fun loadData(fromEdit: Int) {
-        this.fromEdit = fromEdit
+        this.entryPoint = fromEdit
         widgetViewModel.getAutoAdsStatus(userSession.shopId.toInt())
     }
 
@@ -328,7 +360,7 @@ class AutoAdsWidget(context: Context, attrs: AttributeSet?) : CardUnify(context,
             getComponent(context).inject(this)
             View.inflate(context, R.layout.topads_autoads_edit_base_widget, this)
             baseLayout = findViewById(R.id.base_layout)
-        }catch(e:Exception){
+        } catch (e: Exception) {
             e.printStackTrace()
         }
     }

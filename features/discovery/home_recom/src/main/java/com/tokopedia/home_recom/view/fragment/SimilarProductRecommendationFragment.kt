@@ -3,14 +3,15 @@ package com.tokopedia.home_recom.view.fragment
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.listener.EndlessLayoutManagerListener
@@ -30,18 +31,21 @@ import com.tokopedia.home_recom.model.datamodel.SimilarProductRecommendationData
 import com.tokopedia.home_recom.model.datamodel.SimilarProductRecommendationItemDataModel
 import com.tokopedia.home_recom.view.adapter.SimilarProductRecommendationAdapter
 import com.tokopedia.home_recom.view.adapter.SimilarProductRecommendationTypeFactoryImpl
+import com.tokopedia.home_recom.view.adapter.SimilarRecommendationFilterAdapter
 import com.tokopedia.home_recom.viewmodel.SimilarProductRecommendationViewModel
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
+import kotlinx.android.synthetic.main.fragment_simillar_recommendation.view.*
 import javax.inject.Inject
 
 /**
  * Created by Lukas on 26/08/19
  */
-open class SimilarProductRecommendationFragment : BaseListFragment<SimilarProductRecommendationDataModel, SimilarProductRecommendationTypeFactoryImpl>(), RecommendationListener {
+open class SimilarProductRecommendationFragment : BaseListFragment<SimilarProductRecommendationDataModel, SimilarProductRecommendationTypeFactoryImpl>(), RecommendationListener, SimilarRecommendationFilterAdapter.FilterChipListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -49,6 +53,7 @@ open class SimilarProductRecommendationFragment : BaseListFragment<SimilarProduc
     private val viewModelProvider by lazy{ ViewModelProviders.of(this, viewModelFactory) }
     private val recommendationViewModel by lazy { viewModelProvider.get(SimilarProductRecommendationViewModel::class.java) }
     private val adapter by lazy { SimilarProductRecommendationAdapter(adapterFactory) }
+    private val filterChipAdapter by lazy { SimilarRecommendationFilterAdapter(this) }
     private val staggeredGrid by lazy { StaggeredGridLayoutManager(SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL) }
     private var trackingQueue: TrackingQueue? = null
     private var ref: String = ""
@@ -86,9 +91,14 @@ open class SimilarProductRecommendationFragment : BaseListFragment<SimilarProduc
         }
     }
 
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.fragment_simillar_recommendation, container, false)
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         context?.let { trackingQueue = TrackingQueue(it) }
+        view.filter_chip_recyclerview?.adapter = filterChipAdapter
         RecommendationPageTracking.sendScreenSimilarProductRecommendationPage("/rekomendasi/d", ref, productId)
         getRecyclerView(view)?.apply {
             if(this is VerticalRecyclerView) clearItemDecoration()
@@ -109,9 +119,16 @@ open class SimilarProductRecommendationFragment : BaseListFragment<SimilarProduc
                                 }
                             }
                         }
+                        clearAllData()
                         renderList(mapDataModel(it.data ?: emptyList()), true)
                     }
                 }
+            }
+        })
+
+        recommendationViewModel.filterChips.observe(viewLifecycleOwner, Observer {
+            if(it.status.isSuccess()){
+                it.data?.let { data -> filterChipAdapter.submitFilter(data) }
             }
         })
     }
@@ -246,6 +263,10 @@ open class SimilarProductRecommendationFragment : BaseListFragment<SimilarProduc
         return true
     }
 
+    override fun getRecyclerViewResourceId(): Int {
+        return com.tokopedia.home_recom.R.id.recycler_view
+    }
+
     override fun getRecyclerViewLayoutManager(): RecyclerView.LayoutManager {
         return staggeredGrid
     }
@@ -314,6 +335,15 @@ open class SimilarProductRecommendationFragment : BaseListFragment<SimilarProduc
                 this,
                 createProductCardOptionsModel(item, position[0])
         )
+    }
+
+    /**
+     * Filter chip listener
+     */
+
+    override fun onFilterAnnotationClicked(filterChip: RecommendationFilterChipsEntity.RecommendationFilterChip, position: Int) {
+        SimilarProductRecommendationTracking.eventUserClickAnnotationChip(filterChip.value)
+        recommendationViewModel.getRecommendationFromFilterChip(filterChip, source)
     }
 
     /**
