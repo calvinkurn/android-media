@@ -318,7 +318,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         }
     }
 
-    fun updateCart() {
+    fun updateCart(shouldValidatePrompt: Boolean = false) {
         launch(executorDispatchers.main) {
             cartProcessor.updateCartIgnoreResult(orderCart, _orderPreference, _orderShipment, _orderPayment)
         }
@@ -566,7 +566,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
 
     private fun sendViewOspEe() {
         if (!hasSentViewOspEe) {
-            orderSummaryAnalytics.eventViewOrderSummaryPage(generateOspEeBody().build(OrderSummaryPageEnhanceECommerce.STEP_1, OrderSummaryPageEnhanceECommerce.STEP_1_OPTION))
+            orderSummaryAnalytics.eventViewOrderSummaryPage(userSessionInterface.userId, _orderPreference.preference.payment.gatewayName, generateOspEe(OrderSummaryPageEnhanceECommerce.STEP_1, OrderSummaryPageEnhanceECommerce.STEP_1_OPTION))
             hasSentViewOspEe = true
         }
     }
@@ -598,6 +598,24 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             setShopName(orderShop.shopName)
             setShopType(orderShop.isOfficial, orderShop.isGold)
             setCategoryId(orderProduct.categoryId.toString())
+            if (step == OrderSummaryPageEnhanceECommerce.STEP_2) {
+                setShippingPrice(_orderShipment.getRealShippingPrice().toString())
+            }
+            setShippingDuration(_orderShipment.serviceDuration)
+        }.build(step, option)
+    }
+
+    private fun getTransactionId(query: String): String {
+        val keyLength = TRANSACTION_ID_KEY.length
+        val keyIndex = query.indexOf(TRANSACTION_ID_KEY)
+        if (keyIndex > -1 && query[keyIndex + keyLength] == '=') {
+            val nextAmpersand = query.indexOf('&', keyIndex)
+            val end = if (nextAmpersand > -1) nextAmpersand else query.length
+            val start = keyIndex + keyLength + 1
+
+            if (end > start) {
+                return query.substring(start, end)
+            }
         }
     }
 
@@ -622,6 +640,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
 
         const val OVO_GATEWAY_CODE = "OVO"
         const val OVO_INSUFFICIENT_ERROR_MESSAGE = "OVO Cash kamu tidak cukup. Silahkan pilih pembayaran lain."
+        const val OVO_INSUFFICIENT_CONTINUE_MESSAGE = "OVO Cash kamu tidak cukup. Silahkan klik Lanjutkan untuk top up."
 
         const val INSTALLMENT_INVALID_MIN_AMOUNT = "Oops, tidak bisa bayar dengan cicilan karena min. pembeliannya kurang."
 

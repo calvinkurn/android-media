@@ -34,16 +34,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".view.activity.AutoAdsActivatedActivity"
-            android:label="@string/autoads_iklan_otomatis"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" />
-        <activity
-            android:name=".view.activity.EmptyProductActivity"
-            android:label="@string/autoads_iklan_otomatis"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" />
-        <activity
             android:name=".view.activity.EditBudgetAutoAdsActivity"
             android:label="@string/autoads_pengaturan_iklan"
             android:screenOrientation="portrait"
@@ -74,8 +64,6 @@
                 android:host="@string/host_topads"
                 android:path="@string/path_autoads_onboarding"/>
         </intent-filter></activity>
-        <activity
-            android:name=".view.activity.ConfirmationDialogActivity" />
     </application>
 
 </manifest>

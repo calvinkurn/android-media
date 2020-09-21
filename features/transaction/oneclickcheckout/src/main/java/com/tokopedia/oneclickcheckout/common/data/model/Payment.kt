@@ -34,7 +34,11 @@ data class Payment(
         @SerializedName("error_message")
         val errorMessage: PaymentErrorMessage = PaymentErrorMessage(),
         @SerializedName("ticker_message")
-        val tickerMessage: String = ""
+        val tickerMessage: String = "",
+        @SerializedName("is_enable_next_button")
+        val isEnableNextButton: Boolean = false,
+        @SerializedName("is_disable_pay_button")
+        val isDisablePayButton: Boolean = false
 )
 
 data class PaymentErrorMessage(

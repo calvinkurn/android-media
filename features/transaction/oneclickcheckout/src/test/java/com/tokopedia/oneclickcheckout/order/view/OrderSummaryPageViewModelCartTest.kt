@@ -85,7 +85,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         assertEquals(OccState.FirstLoad(OrderPreference(profileIndex = "", profileRecommendation = "", isValid = true)), orderSummaryPageViewModel.orderPreference.value)
         assertEquals(OccGlobalEvent.Normal, orderSummaryPageViewModel.globalEvent.value)
         verify(exactly = 1) {
-            orderSummaryAnalytics.eventViewOrderSummaryPage(any())
+            orderSummaryAnalytics.eventViewOrderSummaryPage(any(), any(), any())
         }
         verify(inverse = true) { ratesUseCase.execute(any()) }
     }
@@ -103,7 +103,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
 
         // Then
         verify(exactly = 1) {
-            orderSummaryAnalytics.eventViewOrderSummaryPage(any())
+            orderSummaryAnalytics.eventViewOrderSummaryPage(any(), any(), any())
         }
     }
 
@@ -121,7 +121,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         assertEquals(OccState.Failed(Failure(response)), orderSummaryPageViewModel.orderPreference.value)
         assertEquals(OccGlobalEvent.Normal, orderSummaryPageViewModel.globalEvent.value)
         verify(inverse = true) {
-            orderSummaryAnalytics.eventViewOrderSummaryPage(any())
+            orderSummaryAnalytics.eventViewOrderSummaryPage(any(), any(), any())
         }
         verify(inverse = true) { ratesUseCase.execute(any()) }
     }
@@ -212,7 +212,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
                 orderSummaryPageViewModel.orderShipment.value)
         assertEquals(OccGlobalEvent.Normal, orderSummaryPageViewModel.globalEvent.value)
         verify(exactly = 1) {
-            orderSummaryAnalytics.eventViewOrderSummaryPage(any())
+            orderSummaryAnalytics.eventViewOrderSummaryPage(any(), any(), any())
         }
         assertEquals(cart, orderSummaryPageViewModel.orderCart)
         assertEquals(1, orderSummaryPageViewModel.getCurrentShipperId())
@@ -375,6 +375,23 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
     }
 
     @Test
+    fun `Update Preference Got Prompt`() {
+        // Given
+        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
+        orderSummaryPageViewModel._orderShipment = helper.orderShipment
+        val occPrompt = OccPrompt()
+        every { updateCartOccUseCase.execute(any(), any(), any(),any()) } answers {
+            (thirdArg() as ((OccPrompt) -> Unit)).invoke(occPrompt)
+        }
+
+        // When
+        orderSummaryPageViewModel.updatePreference(ProfilesItemModel())
+
+        // Then
+        assertEquals(OccGlobalEvent.Prompt(occPrompt), orderSummaryPageViewModel.globalEvent.value)
+    }
+
+    @Test
     fun `Update Preference Failed`() {
         // Given
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
@@ -442,6 +459,32 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         // Then
         assertEquals(term2.copy(isSelected = true), orderSummaryPageViewModel.orderPayment.value.creditCard.selectedTerm)
         assertEquals(listOf(term1.copy(isSelected = false), term2.copy(isSelected = true)), orderSummaryPageViewModel.orderPayment.value.creditCard.availableTerms)
+    }
+
+    @Test
+    fun `Choose Installment Got Prompt`() {
+        // Given
+        var preference = helper.preference
+        preference = preference.copy(payment = preference.payment.copy(metadata = """
+            {
+                "express_checkout_param" : {"installment_term": "1"}
+            }
+        """.trimIndent()))
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
+        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = preference, isValid = true)
+        val term1 = OrderPaymentInstallmentTerm(term = 1, isEnable = true, isSelected = true)
+        val term2 = OrderPaymentInstallmentTerm(term = 2, isEnable = true, isSelected = false)
+        orderSummaryPageViewModel._orderPayment = OrderPayment(isEnable = true, creditCard = OrderPaymentCreditCard(availableTerms = listOf(term1, term2), selectedTerm = term1))
+        val occPrompt = OccPrompt()
+        every { updateCartOccUseCase.execute(any(), any(), any(), any()) } answers {
+            (thirdArg() as ((OccPrompt) -> Unit)).invoke(occPrompt)
+        }
+
+        // When
+        orderSummaryPageViewModel.chooseInstallment(term2)
+
+        // Then
+        assertEquals(OccGlobalEvent.Prompt(occPrompt), orderSummaryPageViewModel.globalEvent.value)
     }
 
     @Test
@@ -569,6 +612,45 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel.updateCreditCard("")
 
         // Then
-        coVerify(inverse = true) { updateCartOccUseCase.executeSuspend(any()) }
+        verify(inverse = true) { updateCartOccUseCase.execute(any(), any(), any(), any()) }
+    }
+
+    @Test
+    fun `Update Credit Card Got Prompt`() {
+        // Given
+        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
+        val metadata = "metadata"
+        val occPrompt = OccPrompt()
+        every { updateCartOccUseCase.execute(match { it.profile.metadata == metadata }, any(), any(), any()) } answers {
+            (thirdArg() as ((OccPrompt) -> Unit)).invoke(occPrompt)
+        }
+
+        // When
+        orderSummaryPageViewModel.updateCreditCard(metadata)
+
+        // Then
+        assertEquals(OccGlobalEvent.Prompt(occPrompt), orderSummaryPageViewModel.globalEvent.value)
+    }
+
+    @Test
+    fun `Final Update Got Prompt`() {
+        // Given
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
+        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
+        orderSummaryPageViewModel._orderShipment = helper.orderShipment
+        val occPrompt = OccPrompt()
+        every { updateCartOccUseCase.execute(any(), any(), any(), any()) } answers {
+            (thirdArg() as ((OccPrompt) -> Unit)).invoke(occPrompt)
+        }
+
+        // When
+        var isSuccess = false
+        orderSummaryPageViewModel.finalUpdate({
+            isSuccess = true
+        }, false)
+
+        // Then
+        assertEquals(OccGlobalEvent.Prompt(occPrompt), orderSummaryPageViewModel.globalEvent.value)
+        assertEquals(false, isSuccess)
     }
 }

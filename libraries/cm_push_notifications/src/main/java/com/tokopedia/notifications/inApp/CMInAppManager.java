@@ -104,12 +104,23 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
                 sendEventInAppPrepared(cmInApp);
                 showDialog(cmInApp);
                 dataConsumed(cmInApp);
+                sendAmplificationEventInAppRead(cmInApp);
             }
         }
     }
 
     private void sendEventInAppPrepared(CMInApp cmInApp) {
         sendPushEvent(cmInApp, IrisAnalyticsEvents.INAPP_PREREAD, null);
+    }
+
+    private void sendAmplificationEventInAppRead(CMInApp cmInApp) {
+        if (cmInApp.isAmplification()) {
+            IrisAnalyticsEvents.INSTANCE.sendAmplificationInAppEvent(
+                    application.getApplicationContext(),
+                    IrisAnalyticsEvents.INAPP_READ,
+                    cmInApp
+            );
+        }
     }
 
     @Override

@@ -155,6 +155,24 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
     }
 
     @Test
+    fun `Update Cart Promo Got Prompt`() {
+        // Given
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
+        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
+        orderSummaryPageViewModel._orderShipment = helper.orderShipment
+        val occPrompt = OccPrompt()
+        every { updateCartOccUseCase.execute(any(), any(), any(), any()) } answers {
+            (thirdArg() as ((OccPrompt) -> Unit)).invoke(occPrompt)
+        }
+
+        // When
+        orderSummaryPageViewModel.updateCartPromo { _, _, _ -> }
+
+        // Then
+        assertEquals(OccGlobalEvent.Prompt(occPrompt), orderSummaryPageViewModel.globalEvent.value)
+    }
+
+    @Test
     fun `Update Cart Promo Error`() {
         // Given
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
