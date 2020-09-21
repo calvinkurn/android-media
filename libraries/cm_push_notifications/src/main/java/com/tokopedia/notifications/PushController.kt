@@ -149,7 +149,7 @@ class PushController(val context: Context) : CoroutineScope {
             }
         } catch (e: Exception) {
             Timber.w( "${CMConstant.TimberTags.TAG}exception;err='${Log.getStackTraceString(e)
-                    .take(CMConstant.TimberTags.MAX_LIMIT)}';reason='unable_to_post_notif';data='${baseNotificationModel.toString()
+                    .take(CMConstant.TimberTags.MAX_LIMIT)}';data='${baseNotificationModel.toString()
                     .take(CMConstant.TimberTags.MAX_LIMIT)}'")
         }
     }
