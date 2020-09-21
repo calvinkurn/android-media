@@ -1,8 +1,11 @@
 package com.tokopedia.play.broadcaster.socket
 
+import com.crashlytics.android.Crashlytics
 import com.google.gson.Gson
 import com.google.gson.JsonElement
+import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.play.broadcaster.domain.model.*
 import com.tokopedia.play.broadcaster.util.extension.sendCrashlyticsLog
 import com.tokopedia.url.TokopediaUrl
@@ -10,6 +13,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.websocket.*
 import okhttp3.WebSocket
 import rx.subscriptions.CompositeSubscription
+import java.lang.reflect.Type
 
 
 /**
@@ -31,6 +35,8 @@ class PlayBroadcastSocketImpl constructor(
             maxRetries = DEFAULT_MAX_RETRIES,
             pingInterval = DEFAULT_PING
     )
+
+    private val newMetricListType: Type = object: TypeToken<List<Metric>>(){}.type
 
     override fun config(minReconnectDelay: Int, maxRetries: Int, pingInterval: Long) {
         this.config = SocketConfiguration(minReconnectDelay, maxRetries, pingInterval)
@@ -81,8 +87,11 @@ class PlayBroadcastSocketImpl constructor(
                     PlaySocketEnum.LiveStats.value -> {
                         data = mapLiveStats(webSocketResponse)
                     }
-                    PlaySocketEnum.Metric.value -> {
-                        data = mapMetric(webSocketResponse)
+//                    PlaySocketEnum.Metric.value -> {
+//                        data = mapMetric(webSocketResponse)
+//                    }
+                    PlaySocketEnum.NewMetric.value -> {
+                        data = mapNewMetric(webSocketResponse)
                     }
                     PlaySocketEnum.ProductTag.value -> {
                         data = mapProductTag(webSocketResponse)
@@ -149,6 +158,10 @@ class PlayBroadcastSocketImpl constructor(
         return convertToModel(response.jsonObject, Metric::class.java)
     }
 
+    private fun mapNewMetric(response: WebSocketResponse): NewMetricList {
+        return NewMetricList(convertToModel(response.jsonArray, newMetricListType) ?: emptyList())
+    }
+
     private fun mapTotalView(response: WebSocketResponse): TotalView? {
         return convertToModel(response.jsonObject, TotalView::class.java)
     }
@@ -172,5 +185,20 @@ class PlayBroadcastSocketImpl constructor(
             sendCrashlyticsLog(e)
         }
         return null
+    }
+
+    private fun <T> convertToModel(jsonElement: JsonElement?, typeOfT: Type): T? {
+        try {
+            return gson.fromJson(jsonElement, typeOfT)
+        } catch (e: Exception) {
+            if (!GlobalConfig.DEBUG) {
+                Crashlytics.log(0, TAG, e.localizedMessage)
+            }
+        }
+        return null
+    }
+
+    companion object {
+        private const val TAG = "PlayBroadcastSocketImpl"
     }
 }

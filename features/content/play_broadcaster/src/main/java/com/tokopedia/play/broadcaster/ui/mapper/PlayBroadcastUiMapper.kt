@@ -5,6 +5,7 @@ import android.net.Uri
 import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.style.StyleSpan
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.play.broadcaster.data.model.ProductData
 import com.tokopedia.play.broadcaster.domain.model.*
@@ -104,15 +105,13 @@ object PlayBroadcastUiMapper {
 
     fun mapTotalLike(totalLike: TotalLike): TotalLikeUiModel = TotalLikeUiModel(totalLike.totalLikeFmt)
 
-    fun mapMetricList(metric: Metric): MutableList<PlayMetricUiModel> {
-        val metricList = mutableListOf<PlayMetricUiModel>()
-        if (metric.newParticipant.firstSentence.isNotEmpty())
-            metricList.add(mapMetric(metric.newParticipant))
-        if (metric.pdpVisitor.firstSentence.isNotEmpty())
-            metricList.add(mapMetric(metric.pdpVisitor))
-        if (metric.shopVisitor.firstSentence.isNotEmpty())
-            metricList.add(mapMetric(metric.shopVisitor))
-        return metricList
+    fun mapNewMetricList(metric: NewMetricList): List<PlayMetricUiModel> = metric.metricList.map {
+        PlayMetricUiModel(
+                iconUrl = it.icon,
+                spannedSentence = MethodChecker.fromHtml(it.sentence),
+                type = it.metricType,
+                interval = it.interval
+        )
     }
 
     fun mapProductTag(productTag: ProductTagging): List<ProductData> = productTag.productList.map {
@@ -122,18 +121,6 @@ object PlayBroadcastUiMapper {
                 imageUrl = it.imageUrl,
                 originalImageUrl = it.imageUrl,
                 stock = if (it.isAvailable) StockAvailable(it.quantity) else OutOfStock
-        )
-    }
-
-    private fun mapMetric(data: Metric.MetricData): PlayMetricUiModel {
-        val firstSentence = data.firstSentence
-        val secondSentence = data.secondSentence
-        val fullSentence = "$firstSentence $secondSentence"
-        return PlayMetricUiModel(
-                firstSentence = firstSentence,
-                secondSentence = secondSentence,
-                fullSentence = fullSentence,
-                interval = data.interval
         )
     }
 

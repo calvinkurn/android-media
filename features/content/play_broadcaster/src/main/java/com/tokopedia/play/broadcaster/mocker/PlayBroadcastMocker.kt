@@ -4,7 +4,7 @@ import android.graphics.Typeface
 import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.style.StyleSpan
-import com.tokopedia.play.broadcaster.R
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.play.broadcaster.type.StockAvailable
 import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.view.state.Selectable
@@ -140,14 +140,11 @@ object PlayBroadcastMocker {
     }
 
     fun getMockMetric(): PlayMetricUiModel {
-        val firstSentence = "${Random.nextInt(1, 10)} Penonton"
-        val secondSentence = listOf("Bergabung", "Mengunjungi tokomu", "Melihat produkmu").random()
-        val fullSentence = "$firstSentence $secondSentence"
         return PlayMetricUiModel(
-                firstSentence = firstSentence,
-                secondSentence = secondSentence,
-                fullSentence = fullSentence,
-                interval = 5000
+                iconUrl = "https://img.icons8.com/pastel-glyph/2x/shopping-cart--v2.png",
+                spannedSentence = MethodChecker.fromHtml("Kamu <font color='#FF0000'><b>membeli</b> produk</font> ini yang keren banget itu loh waw yay astaga ini produk gila abis sih kerennya ampun dah"),
+                type = "new_participant",
+                interval = 3000
         )
     }
 

@@ -360,7 +360,7 @@ class PlayBroadcastViewModel @Inject constructor(
             playSocket.socketInfoListener(object : PlaySocketInfoListener{
                 override fun onReceive(data: PlaySocketType) {
                     when(data) {
-                        is Metric -> queueNewMetrics(PlayBroadcastUiMapper.mapMetricList(data))
+                        is NewMetricList -> queueNewMetrics(PlayBroadcastUiMapper.mapNewMetricList(data))
                         is TotalView -> _observableTotalView.value = PlayBroadcastUiMapper.mapTotalView(data)
                         is TotalLike -> _observableTotalLike.value = PlayBroadcastUiMapper.mapTotalLike(data)
                         is LiveDuration -> restartLiveDuration(data)
@@ -463,7 +463,7 @@ class PlayBroadcastViewModel @Inject constructor(
     private fun mockMetrics() {
         scope.launch(dispatcher.io) {
             queueNewMetrics(
-                    List(3) {
+                    List(10) {
                         PlayBroadcastMocker.getMockMetric()
                     }
             )
