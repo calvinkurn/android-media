@@ -664,13 +664,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                     result.throwable.setOnErrorWidgetState<D, BaseWidgetUiModel<D>>(type)
                 }
             }
-            if (!performanceMonitoringSellerHomePltCompleted) {
-                performanceMonitoringSellerHomePltCompleted = true
-                recyclerView.addOneTimeGlobalLayoutListener {
-                    stopPerformanceMonitoringSellerHomeLayout()
-                    stopHomeLayoutRenderMonitoring()
-                }
-            }
             stopSellerHomeFragmentWidgetPerformanceMonitoring(type)
         })
     }
@@ -689,6 +682,13 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     }
 
     private inline fun <D : BaseDataUiModel, reified W : BaseWidgetUiModel<D>> List<D>.setOnSuccessWidgetState(widgetType: String) {
+        if (!performanceMonitoringSellerHomePltCompleted) {
+            performanceMonitoringSellerHomePltCompleted = true
+            recyclerView.addOneTimeGlobalLayoutListener {
+                stopPerformanceMonitoringSellerHomeLayout()
+                stopHomeLayoutRenderMonitoring()
+            }
+        }
         forEach { widgetData ->
             adapter.data.find {
                 val isSameDataKey = it.dataKey == widgetData.dataKey
