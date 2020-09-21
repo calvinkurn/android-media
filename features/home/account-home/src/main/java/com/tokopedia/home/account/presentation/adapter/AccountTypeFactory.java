@@ -14,7 +14,6 @@ import com.tokopedia.home.account.presentation.viewholder.AccountLoadingMoreView
 import com.tokopedia.home.account.presentation.viewholder.AccountRecommendationTitleViewHolder;
 import com.tokopedia.home.account.presentation.viewholder.BuyerCardViewHolder;
 import com.tokopedia.home.account.presentation.viewholder.InfoCardViewHolder;
-import com.tokopedia.home.account.presentation.viewholder.LabelledMenuListViewHolder;
 import com.tokopedia.home.account.presentation.viewholder.MenuGridIconNotificationViewHolder;
 import com.tokopedia.home.account.presentation.viewholder.MenuGridViewHolder;
 import com.tokopedia.home.account.presentation.viewholder.MenuListViewHolder;
@@ -25,7 +24,6 @@ import com.tokopedia.home.account.presentation.viewholder.TokopediaPayViewHolder
 import com.tokopedia.home.account.presentation.viewmodel.AccountRecommendationTitleViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.BuyerCardViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.InfoCardViewModel;
-import com.tokopedia.home.account.presentation.viewmodel.LabelledMenuListUiModel;
 import com.tokopedia.home.account.presentation.viewmodel.MenuGridIconNotificationViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.MenuGridViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.MenuListViewModel;
