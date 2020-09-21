@@ -63,6 +63,7 @@ class FeedbackPageFragment: Fragment() {
     private var sessionToken: String = ""
     private var fcmToken: String = ""
     private var loginState: String = ""
+    private var emailTokopedia: String = ""
     private var uriImage: Uri? = null
 
     private var userSession: UserSessionInterface? = null
@@ -168,13 +169,17 @@ class FeedbackPageFragment: Fragment() {
     }
 
     private fun initListener() {
+        val separator = "@"
+        val loginEmail = userSession?.email
+        val topedEmail = loginEmail?.lastIndexOf(separator)
         val savedEmail = myPreferences.getSubmitFlag(userSession?.userId.toString())
-        if (savedEmail != null) {
-            email.setText(savedEmail)
-        } else {
-            email.setText(userSession?.email)
+        if (loginEmail != null) {
+            if (loginEmail.contains("@tokopedia.com") && savedEmail == null) {
+                email.setText(topedEmail?.let { loginEmail.substring(0, it) })
+            } else {
+                email.setText(savedEmail)
+            }
         }
-
 
         bugType.onItemSelectedListener = object : OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View, position: Int, id: Long) {
@@ -227,7 +232,8 @@ class FeedbackPageFragment: Fragment() {
 
             if(validate) {
                 val issueType = bugType.selectedItem.toString()
-                submitFeedback(emailText, affectedPageText, journeyText, issueType, actualResultText, expectedResultText)
+                emailTokopedia = "$emailText@tokopedia.com"
+                submitFeedback(emailTokopedia, affectedPageText, journeyText, issueType, actualResultText, expectedResultText)
             }
         }
 

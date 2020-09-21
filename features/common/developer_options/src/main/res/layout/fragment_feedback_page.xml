@@ -12,29 +12,69 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/et_email_wrapper"
-            style="@style/HintTextInputLayout"
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/image_feedback_tv"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_8"
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/dp_16"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            android:hint="@string/email">
+            android:text="Attachment"
+            app:typographyType="body_3"
+            android:visibility="gone"/>
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/email"
-                android:layout_width="match_parent"
+        <ImageView
+            android:id="@+id/image_feedback"
+            android:layout_width="@dimen/dp_180"
+            android:layout_height="@dimen/dp_240"
+            android:layout_marginTop="@dimen/dp_16"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toRightOf="parent"
+            app:layout_constraintRight_toLeftOf="parent"
+            android:background="@color/white"
+            android:visibility="gone"/>
+
+        <RelativeLayout
+            android:id="@+id/email_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_constraintTop_toBottomOf="@id/image_feedback">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/et_email_wrapper"
+                style="@style/HintTextInputLayout"
+                android:layout_width="@dimen/dp_120"
                 android:layout_height="wrap_content"
-                android:imeOptions="actionDone"
-                android:inputType="text"
-                android:maxLines="1"
-                android:overScrollMode="always"
-                android:scrollbarStyle="insideInset"
-                android:scrollbars="vertical"
-                android:textSize="@dimen/sp_14"/>
+                android:layout_marginTop="@dimen/dp_8"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                android:hint="@string/email">
 
-        </com.google.android.material.textfield.TextInputLayout>
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/email"
+                    android:layout_width="@dimen/dp_120"
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionDone"
+                    android:inputType="text"
+                    android:maxLines="1"
+                    android:overScrollMode="always"
+                    android:scrollbarStyle="insideInset"
+                    android:scrollbars="vertical"
+                    android:textSize="@dimen/sp_14"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/et_email_wrapper"
+                android:layout_alignBottom="@id/et_email_wrapper"
+                android:layout_alignTop="@id/et_email_wrapper"
+                android:layout_marginTop="@dimen/dp_16"
+                android:textSize="@dimen/sp_14"
+                android:text="@string/tokopedia_email"/>
+
+        </RelativeLayout>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_bug_type"
@@ -42,9 +82,9 @@
             android:layout_height="match_parent"
             android:layout_marginTop="@dimen/dp_16"
             android:layout_marginLeft="@dimen/dp_8"
-            app:layout_constraintTop_toBottomOf="@id/et_email_wrapper"
+            app:layout_constraintTop_toBottomOf="@id/email_layout"
             app:layout_constraintStart_toStartOf="parent"
-            android:text="@string/bug_type"
+            android:text="@string/category"
             app:typographyType="body_3"/>
 
 
@@ -55,7 +95,7 @@
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@id/tv_bug_type"
             app:layout_constraintStart_toStartOf="parent"
-            android:hint="@string/bug_type">
+            android:hint="@string/category">
 
             <Spinner
                 android:id="@+id/spinner_bug_type"
@@ -161,34 +201,13 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/image_feedback_tv"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="@dimen/dp_16"
-            app:layout_constraintTop_toBottomOf="@id/et_expected_result_wrapper"
-            app:layout_constraintStart_toStartOf="parent"
-            android:text="Attachment"
-            app:typographyType="body_3"/>
-
-        <ImageView
-            android:id="@+id/image_feedback"
-            android:layout_width="@dimen/dp_180"
-            android:layout_height="@dimen/dp_240"
-            android:layout_marginTop="@dimen/dp_16"
-            app:layout_constraintTop_toBottomOf="@+id/et_expected_result_wrapper"
-            app:layout_constraintLeft_toRightOf="parent"
-            app:layout_constraintRight_toLeftOf="parent"
-            android:background="@color/white"
-            android:visibility="visible"/>
-
         <FrameLayout
             android:id="@+id/submit_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:animateLayoutChanges="true"
             android:layout_marginTop="@dimen/dp_16"
-            app:layout_constraintTop_toBottomOf="@id/image_feedback"
+            app:layout_constraintTop_toBottomOf="@id/et_expected_result_wrapper"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent">
 
