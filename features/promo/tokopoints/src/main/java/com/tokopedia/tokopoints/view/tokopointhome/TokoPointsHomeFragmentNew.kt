@@ -346,7 +346,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
                 if (link.startsWith(CommonConstant.TickerMapKeys.TOKOPEDIA)) {
                     RouteManager.route(context, link)
                 } else {
-                    RouteManager.route(context, String.format("%s?url=%", ApplinkConst.WEBVIEW, link))
+                    openWebView(link)
                 }
                 AnalyticsTrackerUtil.sendEvent(context,
                         AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,

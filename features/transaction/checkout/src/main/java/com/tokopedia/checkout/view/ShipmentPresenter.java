@@ -1960,9 +1960,17 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
             @Override
             public void onNext(GraphqlResponse graphqlResponse) {
+                if (getView() == null) return;
+
                 getView().setHasRunningApiCall(false);
                 CodResponse response = graphqlResponse.getData(CodResponse.class);
-                if (getView() == null || !response.getValidateCheckoutCod().getHeader().getErrorCode().equals("200")) {
+                if (response == null) {
+                    getView().hideLoading();
+                    getView().showToastError("");
+                    return;
+                }
+
+                if (!response.getValidateCheckoutCod().getHeader().getErrorCode().equals("200")) {
                     getView().hideLoading();
                     mTrackerCod.eventClickBayarDiTempatShipmentNotSuccessIncomplete();
                     processInitialLoadCheckoutPage(true, isOneClickShipment, isTradeIn, true, false, null, deviceId, leasingId);
