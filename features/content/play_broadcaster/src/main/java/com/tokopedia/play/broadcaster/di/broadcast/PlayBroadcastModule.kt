@@ -11,6 +11,8 @@ import com.tokopedia.play.broadcaster.pusher.PlayPusherBuilder
 import com.tokopedia.play.broadcaster.socket.PlayBroadcastSocket
 import com.tokopedia.play.broadcaster.socket.PlayBroadcastSocket.Companion.KEY_GROUP_CHAT_PREFERENCES
 import com.tokopedia.play.broadcaster.socket.PlayBroadcastSocketImpl
+import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
+import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastUiMapper
 import com.tokopedia.play.broadcaster.util.coroutine.CommonCoroutineDispatcherProvider
 import com.tokopedia.play.broadcaster.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.user.session.UserSession
@@ -56,6 +58,22 @@ class PlayBroadcastModule(val mContext: Context) {
     @Provides
     fun providePlayBroadcastAnalytic(userSession: UserSessionInterface): PlayBroadcastAnalytic {
         return PlayBroadcastAnalytic(userSession)
+    }
+
+    @PlayBroadcastScope
+    @Provides
+    fun providePlayBroadcastMapper(): PlayBroadcastMapper {
+        return PlayBroadcastUiMapper()
+
+        /**
+         * If you want configurable
+         */
+//        return PlayBroadcastConfigurableMapper(PlayBroadcastUiMapper(), PlayBroadcastMockMapper())
+
+        /**
+         * If you want mock
+         */
+//        return PlayBroadcastMockMapper()
     }
 
 }

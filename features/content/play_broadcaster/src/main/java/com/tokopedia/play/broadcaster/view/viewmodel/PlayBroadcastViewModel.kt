@@ -10,14 +10,13 @@ import com.tokopedia.play.broadcaster.data.model.ProductData
 import com.tokopedia.play.broadcaster.data.model.SerializableHydraSetupData
 import com.tokopedia.play.broadcaster.domain.model.*
 import com.tokopedia.play.broadcaster.domain.usecase.*
-import com.tokopedia.play.broadcaster.mocker.PlayBroadcastMocker
 import com.tokopedia.play.broadcaster.pusher.PlayPusher
 import com.tokopedia.play.broadcaster.pusher.state.PlayPusherInfoListener
 import com.tokopedia.play.broadcaster.pusher.state.PlayPusherNetworkState
 import com.tokopedia.play.broadcaster.socket.PlayBroadcastSocket
 import com.tokopedia.play.broadcaster.socket.PlaySocketInfoListener
 import com.tokopedia.play.broadcaster.socket.PlaySocketType
-import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastUiMapper
+import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
 import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
 import com.tokopedia.play.broadcaster.util.coroutine.CoroutineDispatcherProvider
@@ -46,7 +45,8 @@ class PlayBroadcastViewModel @Inject constructor(
         private val getSocketCredentialUseCase: GetSocketCredentialUseCase,
         private val dispatcher: CoroutineDispatcherProvider,
         private val userSession: UserSessionInterface,
-        private val playSocket: PlayBroadcastSocket
+        private val playSocket: PlayBroadcastSocket,
+        private val playBroadcastMapper: PlayBroadcastMapper
 ) : ViewModel() {
 
     private val job: Job = SupervisorJob()
@@ -135,7 +135,7 @@ class PlayBroadcastViewModel @Inject constructor(
                 return@withContext getConfigurationUseCase.executeOnBackground()
             }
 
-            val configUiModel = PlayBroadcastUiMapper.mapConfiguration(config)
+            val configUiModel = playBroadcastMapper.mapConfiguration(config)
             setChannelId(configUiModel.channelId)
 
             if (configUiModel.channelType == ChannelType.Unknown) createChannel() // create channel when there are no channel exist
@@ -193,15 +193,15 @@ class PlayBroadcastViewModel @Inject constructor(
                 getChannelUseCase.params = GetChannelUseCase.createParams(channelId)
                 return@withContext getChannelUseCase.executeOnBackground()
             }
-            val channelInfo = PlayBroadcastUiMapper.mapChannelInfo(channel)
+            val channelInfo = playBroadcastMapper.mapChannelInfo(channel)
             _observableChannelInfo.value = NetworkResult.Success(channelInfo)
 
             setChannelId(channelInfo.channelId)
             setChannelInfo(channelInfo)
-            setSelectedProduct(PlayBroadcastUiMapper.mapChannelProductTags(channel.productTags))
-            setSelectedCover(PlayBroadcastUiMapper.mapCover(getCurrentSetupDataStore().getSelectedCover(), channel.basic.coverUrl, channel.basic.title))
+            setSelectedProduct(playBroadcastMapper.mapChannelProductTags(channel.productTags))
+            setSelectedCover(playBroadcastMapper.mapCover(getCurrentSetupDataStore().getSelectedCover(), channel.basic.coverUrl, channel.basic.title))
 
-            generateShareLink(PlayBroadcastUiMapper.mapShareInfo(channel))
+            generateShareLink(playBroadcastMapper.mapShareInfo(channel))
 
             null
         } catch (err: Throwable) {
@@ -360,12 +360,12 @@ class PlayBroadcastViewModel @Inject constructor(
             playSocket.socketInfoListener(object : PlaySocketInfoListener{
                 override fun onReceive(data: PlaySocketType) {
                     when(data) {
-                        is NewMetricList -> queueNewMetrics(PlayBroadcastUiMapper.mapNewMetricList(data))
-                        is TotalView -> _observableTotalView.value = PlayBroadcastUiMapper.mapTotalView(data)
-                        is TotalLike -> _observableTotalLike.value = PlayBroadcastUiMapper.mapTotalLike(data)
+                        is NewMetricList -> queueNewMetrics(playBroadcastMapper.mapNewMetricList(data))
+                        is TotalView -> _observableTotalView.value = playBroadcastMapper.mapTotalView(data)
+                        is TotalLike -> _observableTotalLike.value = playBroadcastMapper.mapTotalLike(data)
                         is LiveDuration -> restartLiveDuration(data)
-                        is ProductTagging -> setSelectedProduct(PlayBroadcastUiMapper.mapProductTag(data))
-                        is Chat -> retrieveNewChat(PlayBroadcastUiMapper.mapIncomingChat(data))
+                        is ProductTagging -> setSelectedProduct(playBroadcastMapper.mapProductTag(data))
+                        is Chat -> retrieveNewChat(playBroadcastMapper.mapIncomingChat(data))
                     }
                 }
 
@@ -406,7 +406,7 @@ class PlayBroadcastViewModel @Inject constructor(
 
     private fun restartLiveDuration(duration: LiveDuration) {
         scope.launchCatchError(block = {
-            val durationUiModel = PlayBroadcastUiMapper.mapLiveDuration(duration)
+            val durationUiModel = playBroadcastMapper.mapLiveDuration(duration)
             playPusher.restartStreamDuration(durationUiModel.remaining)
         }) { }
     }
@@ -443,30 +443,6 @@ class PlayBroadcastViewModel @Inject constructor(
             PlayShareWrapper.generateShareLink(shareUiModel) {
                 _observableShareInfo.value = it
             }
-        }
-    }
-
-    /**
-     * mock
-     */
-    private fun mockChatList() {
-        scope.launch(dispatcher.io) {
-            while(isActive) {
-                delay(3000)
-                onRetrievedNewChat(
-                    PlayBroadcastMocker.getMockChat()
-                )
-            }
-        }
-    }
-
-    private fun mockMetrics() {
-        scope.launch(dispatcher.io) {
-            queueNewMetrics(
-                    List(10) {
-                        PlayBroadcastMocker.getMockMetric()
-                    }
-            )
         }
     }
 }
