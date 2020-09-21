@@ -538,15 +538,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         super.renderList(widgets)
 
         if (isFirstLoad) {
-            val visibleWidgets = mutableListOf<BaseWidgetUiModel<*>>()
-            adapter.data.forEachIndexed { _, widget ->
-                if (!widget.isLoaded) {
-                    if (widget.widgetType == WidgetType.CARD) {
-                        visibleWidgets.add(widget)
-                    }
-                }
-            }
-            if (visibleWidgets.isNotEmpty()) getWidgetsData(visibleWidgets)
+            loadCardWidgetsData()
             recyclerView.post {
                 requestVisibleWidgetsData()
             }
@@ -556,6 +548,10 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         }
 
         setProgressBarVisibility(false)
+    }
+
+    private fun loadCardWidgetsData() {
+        getCardData(adapter.data.filter { !it.isLoaded && it.widgetType == WidgetType.CARD })
     }
 
     private fun getWidgetsData(widgets: List<BaseWidgetUiModel<*>>) {
