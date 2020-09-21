@@ -5,9 +5,9 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.inflateLayout
+import com.tokopedia.shop.common.constant.ShowcasePickerType
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.shop_showcase.R
-import com.tokopedia.shop_showcase.common.ShopShowcasePickerType
 import com.tokopedia.shop_showcase.shop_showcase_management.data.model.ShowcaseList.ShowcaseItem
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 import com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
@@ -35,7 +35,7 @@ class ShopShowcasePickerAdapter(
 
     override fun onBindViewHolder(holder: ShopShowcasePickerViewHolder, position: Int) {
         holder.bind(showcaseList[position])
-        if(pickerType == ShopShowcasePickerType.RADIO)
+        if(pickerType == ShowcasePickerType.RADIO)
             holder.btnRadioPicker?.isChecked = (lastSelectedRadioPosition == position)
         else
             holder.btnCheckboxPicker?.isChecked = (lastSelectedCheckboxPosition == position)
@@ -61,7 +61,7 @@ class ShopShowcasePickerAdapter(
         fun bind(item: ShowcaseItem) {
             tvShowcaseName?.text = item.name
 
-            if(pickerType == ShopShowcasePickerType.RADIO) {
+            if(pickerType == ShowcasePickerType.RADIO) {
                 btnRadioPicker?.visible()
                 itemView.setOnClickListener {
                     lastSelectedRadioPosition = adapterPosition
