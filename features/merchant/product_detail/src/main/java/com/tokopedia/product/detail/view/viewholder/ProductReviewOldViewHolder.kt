@@ -82,9 +82,9 @@ class ProductReviewOldViewHolder(val view: View, val listener: DynamicProductDet
     private fun getComponentTrackData(data: ProductMostHelpfulReviewDataModel): ComponentTrackDataModel =
             ComponentTrackDataModel(data.type, data.name, adapterPosition + 1)
 
-    private fun renderMostHelpfulReview(reviews: List<Review>, componentTrackDataModel: ComponentTrackDataModel) {
+    private fun renderMostHelpfulReview(reviews: List<Review>?, componentTrackDataModel: ComponentTrackDataModel) {
         with(view) {
-            if (reviews.isEmpty()) {
+            if (reviews.isNullOrEmpty()) {
                 container_most_helpful_review.gone()
             } else {
                 val reviewData = reviews.first()

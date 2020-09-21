@@ -30,6 +30,12 @@ class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetail
 
     override fun bind(element: ProductMostHelpfulReviewDataModel?) {
         element?.let {
+            if(it.imageReviews == null && it.listOfReviews == null) {
+                showShimmering()
+                return
+            }
+            hideShimmering()
+            showTitle()
             val componentData = getComponentTrackData(it)
             view.addOnImpressionListener(element.impressHolder) {
                 listener.onImpressComponent(componentData)
@@ -38,7 +44,7 @@ class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetail
             it.imageReviews?.let { images ->
                 renderImageReview(images, element.totalRating, element.ratingScore, componentData)
             }
-            val reviewData = it.listOfReviews.firstOrNull()
+            val reviewData = it.listOfReviews?.firstOrNull()
             reviewData?.let { review ->
                 setReviewStars(review)
                 setReviewAuthor(reviewData)
@@ -48,9 +54,24 @@ class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetail
         }
     }
 
+    private fun showShimmering() {
+        view.review_shimmering.show()
+    }
+
+    private fun hideShimmering() {
+        view.review_shimmering.hide()
+    }
+
+    private fun showTitle() {
+        view.txt_review_title.show()
+    }
+
     private fun setSeeAllReviewClickListener(componentData: ComponentTrackDataModel) {
-        view.txt_see_all_partial.setOnClickListener {
-            listener.onSeeAllTextView(componentData)
+        view.txt_see_all_partial.apply {
+            setOnClickListener {
+                listener.onSeeAllTextView(componentData)
+            }
+            show()
         }
     }
 
@@ -82,6 +103,7 @@ class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetail
     private fun setReviewStars(reviewData: Review) {
         view.apply {
             ImageHandler.loadImageRounded2(context, rating_review_pdp, RatingView.getRatingDrawable(reviewData.productRating), 0f)
+            rating_review_pdp.show()
         }
     }
 

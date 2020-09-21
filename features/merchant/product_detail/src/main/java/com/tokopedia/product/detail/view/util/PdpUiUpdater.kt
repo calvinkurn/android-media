@@ -371,7 +371,7 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
             }
 
             mediaMap?.run {
-                shouldShowImageReview = it.imageReviews.isNotEmpty()
+                shouldShowImageReview = it.imageReviews?.isNotEmpty() ?: false
             }
 
             productDiscussionMostHelpfulMap?.run {
