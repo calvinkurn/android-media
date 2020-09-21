@@ -46,9 +46,4 @@ class PromoCheckoutListDealsPresenter(
                         })
         )
     }
-
-    override fun detachView() {
-        compositeSubscription.unsubscribe()
-        super.detachView()
-    }
 }
