@@ -206,7 +206,6 @@ class PlayCoverSetupFragment @Inject constructor(
 
     override fun onDestroyView() {
         super.onDestroyView()
-        viewModel.saveCover(coverSetupView.coverTitle)
         job.cancelChildren()
     }
 
@@ -263,6 +262,10 @@ class PlayCoverSetupFragment @Inject constructor(
 
     override fun onTitleAreaHasFocus() {
         analytic.clickAddTitle()
+    }
+
+    override fun onViewDestroyed(view: CoverSetupViewComponent) {
+        viewModel.saveCover(view.coverTitle)
     }
 
     fun setListener(listener: Listener) {

@@ -25,6 +25,7 @@ import com.tokopedia.play.broadcaster.util.extension.isLocal
 import com.tokopedia.play.broadcaster.util.extension.setTextFieldColor
 import com.tokopedia.play_common.util.KeyboardWatcher
 import com.tokopedia.play_common.viewcomponent.ViewComponent
+import com.tokopedia.play_common.viewcomponent.ViewComponentListener
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.UnifyButton
 
@@ -107,6 +108,7 @@ class CoverSetupViewComponent(
     fun onDestroy() {
         keyboardWatcher.unlisten(rootView)
         etCoverTitle.clearFocus()
+        listener.onViewDestroyed(this)
     }
 
     fun getBottomActionView() = clCropButton
@@ -272,7 +274,7 @@ class CoverSetupViewComponent(
         slCropParent.setOnTouchListener { _, _ -> true }
     }
 
-    interface Listener {
+    interface Listener : ViewComponentListener<CoverSetupViewComponent> {
 
         fun onImageAreaClicked(view: CoverSetupViewComponent)
         fun onNextButtonClicked(view: CoverSetupViewComponent, coverTitle: String)

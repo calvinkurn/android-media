@@ -27,7 +27,6 @@ class ViewComponentDelegate<VC: IViewComponent>(
     }
 
     override fun getValue(thisRef: LifecycleOwner, property: KProperty<*>): VC {
-        if (getValidLifecycleOwner(thisRef) != mLifecycleOwner) releaseViewComponent()
         viewComponent?.let { return it }
 
         return getOrCreateValue(thisRef)
@@ -55,7 +54,6 @@ class ViewComponentDelegate<VC: IViewComponent>(
     }
 
     private fun getOrCreateValue(owner: LifecycleOwner): VC = synchronized(this@ViewComponentDelegate) {
-        if (getValidLifecycleOwner(owner) != mLifecycleOwner) releaseViewComponent()
         viewComponent?.let { return it }
 
         val lifecycleOwner = getValidLifecycleOwner(owner)
@@ -104,7 +102,7 @@ class ViewComponentDelegate<VC: IViewComponent>(
         fun onDestroy() {
             owner.lifecycle.removeObserver(this)
 
-            viewComponent?.rootView?.post { releaseViewComponent() }
+            releaseViewComponent()
         }
     }
 }
