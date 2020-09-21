@@ -1,0 +1,15 @@
+mutation($input: TopAdsPostAutoAdsParam!){
+  topAdsPostAutoAds(input:$input){
+    data {
+      shop_id
+      status
+      status_desc
+      daily_budget
+      daily_usage
+      info {
+        reason
+        message
+      }
+    }
+  }
+}

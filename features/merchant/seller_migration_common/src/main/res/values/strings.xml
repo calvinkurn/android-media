@@ -13,7 +13,7 @@
     <string name="seller_migration_generic_ticker_content">Nikmati kendali penuh bertransaksi dengan fitur penjual di aplikasi Tokopedia Seller. &lt;a href="#"&gt;Pelajari Selengkapnya&lt;/a&gt;</string>
     <string name="seller_migration_generic_bottom_sheet_title">Berjualan jadi lebih mudah dengan aplikasi Tokopedia Seller</string>
     <string name="seller_migration_generic_bottom_sheet_set_stock_description">Atur stok dan terima pesanan dengan cepat dan mudah</string>
-    <string name="seller_migration_generic_bottom_sheet_reply_chat_description">Balas chat pembelimu di mana saja, kapan saja</string>
+    <string name="seller_migration_generic_bottom_sheet_reply_chat_description">Balas chat pembeli di mana saja, kapan saja</string>
     <string name="seller_migration_generic_bottom_sheet_promotion_and_ads_description">Pasang promosi dan iklan untuk memajukan bisnismu dengan fitur seperti TopAds, Voucher Toko, Broadcast Chat dan lainnya</string>
 
     <string name="seller_migration_chat_ticker_title">Cepat balas chat di aplikasi Tokopedia Seller</string>
@@ -89,6 +89,8 @@
     <string name="seller_migration_fragment_chat_tab_template_chat_description">Atur pesan cepat untuk langsung balas chat dari pembeli.</string>
     <string name="seller_migration_fragment_chat_tab_attach_voucher_title">LAMPIRKAN VOUCHER</string>
     <string name="seller_migration_fragment_chat_tab_attach_voucher_description">Kirim voucher tokomu ke pembeli via pesan chat.</string>
+    <string name="seller_migration_fragment_chat_tab_auto_reply_title">BALASAN OTOMATIS</string>
+    <string name="seller_migration_fragment_chat_tab_auto_reply_description">Balas chat dari pembeli berdasarkan pengaturan yang telah kamu tentukan.</string>
 
     <!--    seller migration review seller features-->
     <string name="seller_migration_fragment_review_tab_template_review_title">TEMPLATE ULASAN</string>

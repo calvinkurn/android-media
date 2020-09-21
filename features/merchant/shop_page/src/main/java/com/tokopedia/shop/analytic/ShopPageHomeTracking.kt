@@ -429,7 +429,7 @@ class ShopPageHomeTracking(
                 EVENT to PROMO_VIEW,
                 EVENT_CATEGORY to SHOP_PAGE_BUYER,
                 EVENT_ACTION to IMPRESSION_SGC_CHANNEL,
-                EVENT_LABEL to "view channel - $shopId - $channelId - $positionWidget - $autoPlay",
+                EVENT_LABEL to "view channel - $shopId - $channelId - $positionChannel - $positionWidget - $autoPlay",
                 USER_ID to userId,
                 ECOMMERCE to mapOf(
                         PROMO_VIEW to mapOf(
@@ -462,7 +462,7 @@ class ShopPageHomeTracking(
                 EVENT to PROMO_CLICK,
                 EVENT_CATEGORY to SHOP_PAGE_BUYER,
                 EVENT_ACTION to CLICK,
-                EVENT_LABEL to "click channel - $shopId - $channelId - $positionWidget - $autoPlay",
+                EVENT_LABEL to "click channel - $shopId - $channelId - $positionChannel - $positionWidget - $autoPlay",
                 USER_ID to userId,
                 ECOMMERCE to mapOf(
                         PROMO_CLICK to mapOf(

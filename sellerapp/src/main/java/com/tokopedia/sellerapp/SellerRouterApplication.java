@@ -284,9 +284,9 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public void showForceLogoutTokenDialog(String response) {
-        ServerErrorHandler.showForceLogoutDialog();
-        ServerErrorHandler.sendForceLogoutTokenAnalytics(response);
+    public void showForceLogoutTokenDialog(String path) {
+        ServerErrorHandler.showForceLogoutDialog(path);
+        ServerErrorHandler.sendForceLogoutTokenAnalytics(path);
     }
 
     @Override
@@ -438,9 +438,9 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public void sendForceLogoutAnalytics(Response response, boolean isInvalidToken,
+    public void sendForceLogoutAnalytics(String url, boolean isInvalidToken,
                                          boolean isRequestDenied) {
-        ServerErrorHandler.sendForceLogoutAnalytics(response.request().url().toString(), isInvalidToken, isRequestDenied);
+        ServerErrorHandler.sendForceLogoutAnalytics(url, isInvalidToken, isRequestDenied);
     }
 
     @Override
