@@ -4,8 +4,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.inflateLayout
+import com.tokopedia.shop.common.constant.ShowcasePickerType
 import com.tokopedia.shop_showcase.R
-import com.tokopedia.shop_showcase.common.ShopShowcasePickerType
 import com.tokopedia.shop_showcase.shop_showcase_management.data.model.ShowcaseList.ShowcaseItem
 import com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
 import kotlinx.android.synthetic.main.shop_showcase_item_picker.view.*
@@ -51,7 +51,7 @@ class ShopShowcasePickerAdapter(
         fun bind(item: ShowcaseItem) {
             tvShowcaseName?.text = item.name
 
-            if(pickerType == ShopShowcasePickerType.RADIO) {
+            if(pickerType == ShowcasePickerType.RADIO) {
                 itemView.setOnClickListener {
                     lastSelectedPosition = adapterPosition
                     notifyDataSetChanged()

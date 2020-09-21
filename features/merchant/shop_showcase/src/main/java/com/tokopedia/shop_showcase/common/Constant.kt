@@ -38,18 +38,6 @@ object ShopShowcaseEditParam {
     const val EXTRA_IS_ACTION_EDIT = "IS_ACTION_EDIT"
 }
 
-object ShopShowcasePickerParam {
-    const val EXTRA_SHOP_ID = "SHOP_ID"
-    const val EXTRA_IS_MY_SHOP = "EXTRA_IS_MY_SHOP"
-    const val EXTRA_PICKER_SELECTED_SHOWCASE = "EXTRA_PICKER_SELECTED_SHOWCASE"
-    const val EXTRA_PICKER_TYPE = "EXTRA_PICKER_TYPE"
-}
-
-object ShopShowcasePickerType {
-    const val CHECKBOX = "showcase_checkbox_picker"
-    const val RADIO = "showcase_radio_picker"
-}
-
 object ShowcaseType {
     const val GENERATED: Int = -1
     const val CAMPAIGN: Int = -2

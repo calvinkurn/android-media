@@ -1,4 +1,4 @@
-package com.tokopedia.shop_showcase.shop_showcase_management.data.model.ShowcaseList
+package com.tokopedia.shop.common.data.model
 
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize

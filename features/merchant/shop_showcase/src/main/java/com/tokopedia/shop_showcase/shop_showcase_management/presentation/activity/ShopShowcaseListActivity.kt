@@ -12,6 +12,7 @@ import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
 import com.tokopedia.shop_showcase.R
 import com.tokopedia.shop_showcase.common.PageNameConstant
 import com.tokopedia.shop_showcase.common.ShopShowcaseFragmentNavigation
+import com.tokopedia.shop_showcase.common.ShopShowcaseListParam
 import com.tokopedia.shop_showcase.common.ShopType
 import com.tokopedia.shop_showcase.shop_showcase_management.data.model.ShowcaseList.ShowcaseItem
 import com.tokopedia.shop_showcase.shop_showcase_management.presentation.fragment.ShopShowcaseListFragment
@@ -23,8 +24,6 @@ import com.tokopedia.user.session.UserSessionInterface
 class ShopShowcaseListActivity : BaseSimpleActivity(), ShopShowcaseFragmentNavigation {
 
     companion object {
-        const val IS_NEED_TOGO_TO_ADD_PAGE = "isNeedToGoToAddShowcase"
-        const val IS_NEED_TO_OPEN_SHOWCASE_PICKER = "isNeedToOpenShowcasePicker"
         const val REQUEST_CODE_ADD_ETALASE = 289
 
         val ACTIVITY_LAYOUT = R.layout.activity_shop_showcase_list_container
@@ -54,8 +53,8 @@ class ShopShowcaseListActivity : BaseSimpleActivity(), ShopShowcaseFragmentNavig
             isShowDefault = bundle.getBoolean(ShopShowcaseParamConstant.EXTRA_IS_SHOW_DEFAULT, true)
             isShowZeroProduct = bundle.getBoolean(ShopShowcaseParamConstant.EXTRA_IS_SHOW_ZERO_PRODUCT, true)
             isSellerNeedToHideShowcaseGroupValue = bundle.getBoolean(ShopShowcaseParamConstant.EXTRA_IS_SELLER_NEED_TO_HIDE_SHOWCASE_GROUP_VALUE, false)
-            isNeedToGoToAddShowcase = bundle.getBoolean(IS_NEED_TOGO_TO_ADD_PAGE, false)
-            isNeedToOpenShowcasePicker = bundle.getString(IS_NEED_TO_OPEN_SHOWCASE_PICKER, "")
+            isNeedToGoToAddShowcase = bundle.getBoolean(ShopShowcaseListParam.EXTRA_IS_NEED_TO_GOTO_ADD_SHOWCASE, false)
+            isNeedToOpenShowcasePicker = bundle.getString(ShopShowcaseParamConstant.EXTRA_IS_NEED_TO_OPEN_SHOWCASE_PICKER, "")
         }
 
         // If there is no shopId  then it's seller view
