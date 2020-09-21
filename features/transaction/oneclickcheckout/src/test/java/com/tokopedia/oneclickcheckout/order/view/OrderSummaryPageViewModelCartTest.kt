@@ -16,7 +16,9 @@ import com.tokopedia.oneclickcheckout.common.view.model.OccGlobalEvent
 import com.tokopedia.oneclickcheckout.common.view.model.OccState
 import com.tokopedia.oneclickcheckout.common.view.model.preference.ProfilesItemModel
 import com.tokopedia.oneclickcheckout.order.data.get.OccMainOnboarding
-import com.tokopedia.oneclickcheckout.order.data.update.*
+import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccCartRequest
+import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccProfileRequest
+import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccRequest
 import com.tokopedia.oneclickcheckout.order.view.model.*
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import com.tokopedia.usecase.RequestParams
@@ -230,7 +232,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
 
         every { ratesUseCase.execute(any()) } returns Observable.just(helper.shippingRecommendationData)
-        coEvery { updateCartOccUseCase.executeSuspend(any()) } returns UpdateCartOccGqlResponse(UpdateCartOccResponse(data = UpdateCartDataOcc()))
+        coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
 
         // When
         orderSummaryPageViewModel.updateProduct(OrderProduct(quantity = QuantityUiModel(orderQuantity = 10)))
@@ -323,7 +325,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
         orderSummaryPageViewModel._orderShipment = helper.orderShipment
-        coEvery { updateCartOccUseCase.executeSuspend(any()) } returns UpdateCartOccGqlResponse(UpdateCartOccResponse(data = UpdateCartDataOcc()))
+        coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
 
         // When
         orderSummaryPageViewModel.updateCart()
@@ -365,7 +367,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         // Given
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
         orderSummaryPageViewModel._orderShipment = helper.orderShipment
-        coEvery { updateCartOccUseCase.executeSuspend(any()) } returns UpdateCartOccGqlResponse(UpdateCartOccResponse(data = UpdateCartDataOcc()))
+        coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
 
         // When
         orderSummaryPageViewModel.updatePreference(ProfilesItemModel())
@@ -380,9 +382,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
         orderSummaryPageViewModel._orderShipment = helper.orderShipment
         val occPrompt = OccPrompt()
-        every { updateCartOccUseCase.execute(any(), any(), any(),any()) } answers {
-            (thirdArg() as ((OccPrompt) -> Unit)).invoke(occPrompt)
-        }
+        coEvery { updateCartOccUseCase.executeSuspend(any()) } returns occPrompt
 
         // When
         orderSummaryPageViewModel.updatePreference(ProfilesItemModel())
@@ -451,7 +451,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         val term1 = OrderPaymentInstallmentTerm(term = 1, isEnable = true, isSelected = true)
         val term2 = OrderPaymentInstallmentTerm(term = 2, isEnable = true, isSelected = false)
         orderSummaryPageViewModel._orderPayment = OrderPayment(isEnable = true, creditCard = OrderPaymentCreditCard(availableTerms = listOf(term1, term2), selectedTerm = term1))
-        coEvery { updateCartOccUseCase.executeSuspend(any()) } returns UpdateCartOccGqlResponse(UpdateCartOccResponse(data = UpdateCartDataOcc()))
+        coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
 
         // When
         orderSummaryPageViewModel.chooseInstallment(term2)
@@ -476,9 +476,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         val term2 = OrderPaymentInstallmentTerm(term = 2, isEnable = true, isSelected = false)
         orderSummaryPageViewModel._orderPayment = OrderPayment(isEnable = true, creditCard = OrderPaymentCreditCard(availableTerms = listOf(term1, term2), selectedTerm = term1))
         val occPrompt = OccPrompt()
-        every { updateCartOccUseCase.execute(any(), any(), any(), any()) } answers {
-            (thirdArg() as ((OccPrompt) -> Unit)).invoke(occPrompt)
-        }
+        coEvery { updateCartOccUseCase.executeSuspend(any()) } returns occPrompt
 
         // When
         orderSummaryPageViewModel.chooseInstallment(term2)
@@ -563,7 +561,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         // Given
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
         val metadata = "metadata"
-        coEvery { updateCartOccUseCase.executeSuspend(match { it.profile.metadata == metadata }) } returns UpdateCartOccGqlResponse(UpdateCartOccResponse(data = UpdateCartDataOcc()))
+        coEvery { updateCartOccUseCase.executeSuspend(match { it.profile.metadata == metadata }) } returns null
 
         // When
         orderSummaryPageViewModel.updateCreditCard(metadata)
@@ -621,9 +619,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
         val metadata = "metadata"
         val occPrompt = OccPrompt()
-        every { updateCartOccUseCase.execute(match { it.profile.metadata == metadata }, any(), any(), any()) } answers {
-            (thirdArg() as ((OccPrompt) -> Unit)).invoke(occPrompt)
-        }
+        coEvery { updateCartOccUseCase.executeSuspend(any()) } returns occPrompt
 
         // When
         orderSummaryPageViewModel.updateCreditCard(metadata)
@@ -639,9 +635,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
         orderSummaryPageViewModel._orderShipment = helper.orderShipment
         val occPrompt = OccPrompt()
-        every { updateCartOccUseCase.execute(any(), any(), any(), any()) } answers {
-            (thirdArg() as ((OccPrompt) -> Unit)).invoke(occPrompt)
-        }
+        coEvery { updateCartOccUseCase.executeSuspend(any()) } returns occPrompt
 
         // When
         var isSuccess = false

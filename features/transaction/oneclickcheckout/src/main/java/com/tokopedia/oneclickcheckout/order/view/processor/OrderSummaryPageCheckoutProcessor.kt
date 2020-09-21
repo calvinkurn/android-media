@@ -13,6 +13,7 @@ import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageViewModel
 import com.tokopedia.oneclickcheckout.order.view.bottomsheet.ErrorCheckoutBottomSheet
 import com.tokopedia.oneclickcheckout.order.view.model.*
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -51,6 +52,7 @@ class OrderSummaryPageCheckoutProcessor @Inject constructor(private val checkout
                            pref: OrderPreference,
                            orderShipment: OrderShipment,
                            orderTotal: OrderTotal,
+                           userId: String,
                            orderSummaryPageEnhanceECommerce: OrderSummaryPageEnhanceECommerce): Pair<CheckoutOccResult?, OccGlobalEvent?> {
         OccIdlingResource.increment()
         val result = withContext(executorDispatchers.io) {
@@ -88,9 +90,18 @@ class OrderSummaryPageCheckoutProcessor @Inject constructor(private val checkout
                 val checkoutOccData = checkoutOccUseCase.executeSuspend(param)
                 if (checkoutOccData.status.equals(STATUS_OK, true)) {
                     if (checkoutOccData.result.success == 1 || checkoutOccData.result.paymentParameter.redirectParam.url.isNotEmpty()) {
+                        var paymentType = pref.preference.payment.gatewayName
+                        if (paymentType.isBlank()) {
+                            paymentType = OrderSummaryPageEnhanceECommerce.DEFAULT_EMPTY_VALUE
+                        }
                         orderSummaryAnalytics.eventClickBayarSuccess(orderTotal.isButtonChoosePayment,
+                                userId,
                                 getTransactionId(checkoutOccData.result.paymentParameter.redirectParam.form),
-                                orderSummaryPageEnhanceECommerce.apply { setPromoCode(allPromoCodes) }.build(OrderSummaryPageEnhanceECommerce.STEP_2, OrderSummaryPageEnhanceECommerce.STEP_2_OPTION)
+                                paymentType,
+                                orderSummaryPageEnhanceECommerce.apply {
+                                    setPromoCode(allPromoCodes)
+                                    setShippingPrice(orderShipment.getRealShippingPrice().toString())
+                                }.build(OrderSummaryPageEnhanceECommerce.STEP_2, OrderSummaryPageEnhanceECommerce.STEP_2_OPTION)
                         )
                         checkoutOccData.result to null
                     } else {

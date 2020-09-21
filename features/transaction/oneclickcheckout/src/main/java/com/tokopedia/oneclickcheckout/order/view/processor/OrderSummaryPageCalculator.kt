@@ -39,7 +39,10 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
         if (currentState == OccButtonState.NORMAL && (!shouldButtonStateEnable(shipping, orderCart))) {
             currentState = OccButtonState.DISABLE
         }
-        if (payment.errorTickerMessage.isNotEmpty()) {
+        if (payment.errorTickerMessage.isNotEmpty() && !payment.isEnableNextButton) {
+            if (payment.isDisablePayButton) {
+                return payment.copy(isCalculationError = false) to orderTotal.copy(orderCost = orderCost, paymentErrorMessage = payment.errorTickerMessage, buttonType = OccButtonType.PAY, buttonState = OccButtonState.DISABLE)
+            }
             return payment.copy(isCalculationError = false) to orderTotal.copy(orderCost = orderCost, paymentErrorMessage = payment.errorTickerMessage, buttonType = OccButtonType.CHOOSE_PAYMENT, buttonState = currentState)
         }
         if (payment.errorMessage.message.isNotEmpty() && payment.errorMessage.button.text.isNotEmpty()) {
@@ -57,6 +60,10 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
             return payment.copy(isCalculationError = true) to orderTotal.copy(orderCost = orderCost,
                     paymentErrorMessage = "Belanjaanmu melebihi limit transaksi ${payment.gatewayName} (${CurrencyFormatUtil.convertPriceValueToIdrFormat(payment.maximumAmount, false).removeDecimalSuffix()}). Silahkan pilih pembayaran lain.",
                     buttonType = OccButtonType.CHOOSE_PAYMENT, buttonState = currentState)
+        }
+        if (payment.errorTickerMessage.isNotEmpty() && payment.isEnableNextButton) {
+            // OVO only campaign & OVO is not active
+            return payment.copy(isCalculationError = false) to orderTotal.copy(orderCost = orderCost, paymentErrorMessage = payment.errorTickerMessage, buttonType = OccButtonType.CONTINUE, buttonState = currentState)
         }
         if (payment.gatewayCode.contains(OrderSummaryPageViewModel.OVO_GATEWAY_CODE) && subtotal > payment.walletAmount) {
             orderSummaryAnalytics.eventViewErrorMessage(OrderSummaryAnalytics.ERROR_ID_PAYMENT_OVO_BALANCE)

@@ -132,7 +132,10 @@ class OrderSummaryPageCartProcessor @Inject constructor(private val atcOccExtern
         OccIdlingResource.increment()
         val result = withContext(executorDispatchers.io) {
             try {
-                updateCartOccUseCase.executeSuspend(param)
+                val prompt = updateCartOccUseCase.executeSuspend(param)
+                if (prompt != null) {
+                    return@withContext false to OccGlobalEvent.Prompt(prompt)
+                }
                 return@withContext true to OccGlobalEvent.TriggerRefresh()
             } catch (t: Throwable) {
                 if (t is MessageErrorException) {
@@ -150,7 +153,10 @@ class OrderSummaryPageCartProcessor @Inject constructor(private val atcOccExtern
         OccIdlingResource.increment()
         val result = withContext(executorDispatchers.io) {
             try {
-                updateCartOccUseCase.executeSuspend(param)
+                val prompt = updateCartOccUseCase.executeSuspend(param)
+                if (prompt != null) {
+                    return@withContext false to OccGlobalEvent.Prompt(prompt)
+                }
                 return@withContext true to OccGlobalEvent.Normal
             } catch (t: Throwable) {
                 if (t is MessageErrorException) {
@@ -168,7 +174,10 @@ class OrderSummaryPageCartProcessor @Inject constructor(private val atcOccExtern
         OccIdlingResource.increment()
         val result = withContext(executorDispatchers.io) {
             try {
-                updateCartOccUseCase.executeSuspend(param)
+                val prompt = updateCartOccUseCase.executeSuspend(param)
+                if (prompt != null) {
+                    return@withContext false to OccGlobalEvent.Prompt(prompt)
+                }
                 return@withContext true to OccGlobalEvent.Loading
             } catch (t: Throwable) {
                 if (t is MessageErrorException) {
