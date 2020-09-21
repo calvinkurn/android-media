@@ -43,7 +43,7 @@ class PDPTicketEventActivityTest{
 
                 override fun beforeActivityLaunched() {
                     super.beforeActivityLaunched()
-                    setupGraphqlMockResponse(PDPTicketEventMockResponse())
+                    //setupGraphqlMockResponse(PDPTicketEventMockResponse())
                 }
             }
 
