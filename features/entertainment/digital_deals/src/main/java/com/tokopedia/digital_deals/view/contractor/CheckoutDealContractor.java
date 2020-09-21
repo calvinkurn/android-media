@@ -48,5 +48,9 @@ public class CheckoutDealContractor {
 
         void clickGoToPromo(Context context);
 
+        void clickGoToDetailPromo(Context context, String couponCode);
+
+        void clickGotToListPromoApplied(Context context, String promoCode);
+
     }
 }
