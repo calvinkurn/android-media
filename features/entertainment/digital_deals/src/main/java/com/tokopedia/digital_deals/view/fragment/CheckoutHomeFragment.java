@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -46,6 +47,7 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
     public static int LOYALTY_ACTIVITY_REQUEST_CODE = 12345;
     private static final String SCREEN_NAME = "/digital/deals/checkout";
 
+    private LinearLayout llContentApplieed;
     private RelativeLayout rlPromoApplied;
     private ConstraintLayout baseMainContent;
     private ConstraintLayout clPromoAmount;
@@ -71,6 +73,8 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
     private DealFragmentCallbacks fragmentCallbacks;
     private ImageView ivRemovePromo;
     private int quantity;
+    private String couponCode;
+    private String voucherCode;
 
     @Inject
     CheckoutDealPresenter mPresenter;
@@ -129,6 +133,7 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
         mainContent = view.findViewById(com.tokopedia.digital_deals.R.id.main_content);
         progressParLayout = view.findViewById(com.tokopedia.digital_deals.R.id.progress_bar_layout);
         ivRemovePromo = view.findViewById(R.id.iv_remove_promo);
+        llContentApplieed = view.findViewById(R.id.layout_content);
         clPromoAmount = view.findViewById(com.tokopedia.digital_deals.R.id.cl_promo);
         Drawable img = MethodChecker.getDrawable(getActivity(), com.tokopedia.digital_deals.R.drawable.ic_promo_code);
         ((Ticker) view.findViewById(R.id.ticker_info)).setTextDescription(getString(R.string.ticker_desc));
@@ -210,6 +215,8 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
         ivRemovePromo.setOnClickListener(this);
         baseMainContent.setVisibility(View.VISIBLE);
         paymentMethod.setVisibility(View.VISIBLE);
+        rlPromoApplied.setOnClickListener(this);
+        llContentApplieed.setOnClickListener(this);
     }
 
 
@@ -298,6 +305,17 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
             rlPromoApplied.setVisibility(View.GONE);
             clPromoAmount.setVisibility(View.GONE);
             mPresenter.updateAmount(0);
+            if (couponCode != null) {
+                couponCode = "";
+            } else if (voucherCode != null) {
+                voucherCode = "";
+            }
+        } else if (v.getId() == R.id.layout_content) {
+            if (couponCode != null) {
+                mPresenter.clickGoToDetailPromo(getContext(), couponCode);
+            } else if (voucherCode != null) {
+                mPresenter.clickGotToListPromoApplied(getContext(), voucherCode);
+            }
         }
     }
 
@@ -315,12 +333,14 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
             hideProgressBar();
             switch (resultCode) {
                 case IRouterConstant.LoyaltyModule.ResultLoyaltyActivity.VOUCHER_RESULT_CODE:
+                    voucherCode = data.getExtras().getString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.VOUCHER_CODE);
                     mPresenter.updatePromoCode(data.getExtras().getString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.VOUCHER_CODE));
                     showPromoSuccessMessage(data.getExtras().getString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.VOUCHER_CODE)
                             , data.getExtras().getString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.VOUCHER_MESSAGE)
                             , data.getExtras().getLong(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.VOUCHER_DISCOUNT_AMOUNT));
                     break;
                 case IRouterConstant.LoyaltyModule.ResultLoyaltyActivity.COUPON_RESULT_CODE:
+                    couponCode = data.getExtras().getString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.COUPON_CODE);
                     mPresenter.updatePromoCode(data.getExtras().getString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.COUPON_CODE));
                     showPromoSuccessMessage(data.getExtras().getString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.COUPON_CODE)
                             , data.getExtras().getString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.COUPON_MESSAGE)
