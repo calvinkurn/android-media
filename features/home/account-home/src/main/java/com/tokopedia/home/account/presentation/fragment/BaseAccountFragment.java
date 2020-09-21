@@ -36,6 +36,8 @@ import com.tokopedia.home.account.presentation.util.AccountByMeHelper;
 import com.tokopedia.home.account.presentation.view.SeeAllView;
 import com.tokopedia.home.account.presentation.viewmodel.BuyerCardViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.InfoCardViewModel;
+import com.tokopedia.home.account.presentation.viewmodel.MenuGridIconNotificationItemViewModel;
+import com.tokopedia.home.account.presentation.viewmodel.MenuGridIconNotificationViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.MenuGridItemViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.MenuGridViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.MenuListViewModel;
@@ -60,7 +62,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import static com.tokopedia.affiliatecommon.AffiliateCommonConstantKt.DISCOVERY_BY_ME;
-import static com.tokopedia.gm.common.constant.GMCommonConstantKt.POWER_MERCHANT_URL;
 import static com.tokopedia.home.account.AccountConstants.Analytics.AKUN_SAYA;
 import static com.tokopedia.home.account.AccountConstants.Analytics.BY_ME_CURATION;
 import static com.tokopedia.home.account.AccountConstants.Analytics.CLICK;
@@ -68,7 +69,11 @@ import static com.tokopedia.home.account.AccountConstants.Analytics.EVENT_CATEGO
 import static com.tokopedia.home.account.AccountConstants.Analytics.PEMBELI;
 import static com.tokopedia.home.account.AccountConstants.Analytics.PENJUAL;
 import static com.tokopedia.home.account.AccountConstants.Analytics.PROFILE;
+import static com.tokopedia.home.account.AccountConstants.TITLE_UOH_ETICKET;
+import static com.tokopedia.home.account.constant.SettingConstant.POWER_MERCHANT_URL;
 import static com.tokopedia.home.account.data.util.StaticBuyerModelGeneratorKt.RESCENTER_BUYER;
+import static com.tokopedia.home.account.AccountConstants.Analytics.SECTION_OTHER_FEATURE;
+import static com.tokopedia.home.account.AccountConstants.TOP_SELLER_APPLICATION_PACKAGE;
 import static com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_SALDO_SPLIT;
 
 /**
@@ -136,7 +141,7 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
             RouteManager.route(getContext(), ApplinkConstInternalTopAds.TOPADS_DASHBOARD_CUSTOMER);
         } else if (applink.equals(AccountConstants.Navigation.TRAIN_ORDER_LIST)) {
             goToTrainOrderListIntent();
-        } else if (applink.equals(RESCENTER_BUYER) || applink.equals(SettingConstant.RESCENTER_SELLER)) {
+        } else if (applink.equals(SettingConstant.RESCENTER_BUYER) || applink.equals(SettingConstant.RESCENTER_SELLER)) {
             return true;
         }
 
@@ -214,7 +219,25 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
     }
 
     @Override
+    public void onMenuGridBackgroundItemClicked(@NotNull MenuGridIconNotificationItemViewModel item) {
+        if (item.getDescription().equalsIgnoreCase(AccountConstants.TITLE_UOH_MENUNGGU_PEMBAYARAN)) {
+            accountAnalytics.clickMenungguPembayaranUoh(userSession.getUserId());
+        } else if (item.getDescription().equalsIgnoreCase(AccountConstants.TITLE_UOH_DALAM_PROSES)) {
+            accountAnalytics.clickDalamProsesUoh(userSession.getUserId());
+        } else if (item.getDescription().equalsIgnoreCase(AccountConstants.TITLE_UOH_SEMUA_TRANSAKSI)) {
+            accountAnalytics.clickSemuaTransaksiUoh(userSession.getUserId());
+        }
+        openApplink(item.getApplink());
+    }
+
+    @Override
     public void onMenuGridLinkClicked(MenuGridViewModel item) {
+        sendTracking(item.getTitleTrack(), item.getSectionTrack(), item.getLinkText());
+        openApplink(item.getApplinkUrl());
+    }
+
+    @Override
+    public void onMenuGridBackgroundLinkClicked(@NotNull MenuGridIconNotificationViewModel item) {
         sendTracking(item.getTitleTrack(), item.getSectionTrack(), item.getLinkText());
         openApplink(item.getApplinkUrl());
     }
@@ -253,7 +276,11 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
 
     @Override
     public void onMenuListClicked(MenuListViewModel item) {
-        sendTracking(item.getTitleTrack(), item.getSectionTrack(), item.getMenu());
+        if (item.getMenu().equalsIgnoreCase(TITLE_UOH_ETICKET)) {
+            accountAnalytics.clickEticketEvoucherUoh(userSession.getUserId());
+        } else {
+            sendTracking(item.getTitleTrack(), item.getSectionTrack(), item.getMenu());
+        }
         openApplink(item.getApplink());
     }
 
