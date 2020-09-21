@@ -116,7 +116,11 @@ class ReviewDetailActivity : BaseSimpleActivity(), ReviewPerformanceMonitoringLi
         if (!::remoteConfigInstance.isInitialized) {
             remoteConfigInstance = RemoteConfigInstance(this.application)
         }
-        return remoteConfigInstance.abTestPlatform
+        return try {
+            return remoteConfigInstance.abTestPlatform
+        } catch (exception: IllegalStateException) {
+            null
+        }
     }
 
     private fun useNewPage(): Boolean {

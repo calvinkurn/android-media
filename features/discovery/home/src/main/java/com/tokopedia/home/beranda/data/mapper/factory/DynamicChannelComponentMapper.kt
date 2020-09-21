@@ -48,6 +48,7 @@ object DynamicChannelComponentMapper {
                         channel.showPromoBadge,
                         channel.hasCloseButton,
                         ServerTimeOffsetUtil.getServerTimeOffsetFromUnix(channel.header.serverTimeUnix),
+                        channel.timestamp,
                         channel.isAutoRefreshAfterExpired
                 ),
                 trackingAttributionModel = TrackingAttributionModel(

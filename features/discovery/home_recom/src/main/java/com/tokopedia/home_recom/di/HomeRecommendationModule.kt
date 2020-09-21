@@ -11,6 +11,8 @@ import com.tokopedia.home_recom.domain.usecases.GetPrimaryProductUseCase
 import com.tokopedia.home_recom.model.entity.PrimaryProductEntity
 import com.tokopedia.home_recom.view.dispatchers.RecommendationDispatcher
 import com.tokopedia.home_recom.view.dispatchers.RecommendationDispatcherImpl
+import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
+import com.tokopedia.recommendation_widget_common.domain.GetRecommendationFilterChips
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.GetSingleRecommendationUseCase
 import com.tokopedia.topads.sdk.di.TopAdsWishlistModule
@@ -64,7 +66,7 @@ class HomeRecommendationModule {
 
     @Provides
     @HomeRecommendationScope
-    fun provideGetPrimaryProductUseCase(@ApplicationContext context: Context, graphqlRepository: GraphqlRepository, userSessionInterface: UserSessionInterface): GetPrimaryProductUseCase {
+    fun provideGetPrimaryProductUseCase(@ApplicationContext context: Context, graphqlRepository: GraphqlRepository): GetPrimaryProductUseCase {
         val query = GraphqlHelper.loadRawString(context.resources, R.raw.gql_primary_product)
         val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<PrimaryProductEntity>(graphqlRepository)
         useCase.setGraphqlQuery(query)
@@ -78,4 +80,10 @@ class HomeRecommendationModule {
             GraphqlHelper.loadRawString(context.resources,
                     com.tokopedia.atc_common.R.raw.mutation_add_to_cart)
 
+    @Provides
+    @HomeRecommendationScope
+    fun provideGetRecommendationFilterChips(graphqlRepository: GraphqlRepository): GetRecommendationFilterChips{
+        val graphql = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<RecommendationFilterChipsEntity>(graphqlRepository)
+        return GetRecommendationFilterChips(graphql)
+    }
 }

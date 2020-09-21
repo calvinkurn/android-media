@@ -110,6 +110,7 @@ ext {
             logisticcart                    : ":features:logistic:logisticcart",
             manageaddress                   : ":features:logistic:manageaddress",
             editshipping                    : ":features:logistic:editshipping",
+            activation                      : ":features:logistic:activation",
 
             goldMerchant                    : ":features:merchant:gold_merchant",
             goldMerchantCommon              : ":features:merchant:gold_merchant_common",
@@ -227,7 +228,6 @@ ext {
             topchat                         : ":features:user:topchat",
             orderhistory                    : ":features:user:orderhistory",
             updateinactivephone             : ":features:user:updateinactivephone",
-            userIdentification              : ":features:user:user_identification",
             seamlesslogin                   : ":features:user:seamless_login",
             managename                      : ":features:user:managename",
             stickyLogin                     : ":features:user:stickylogin",

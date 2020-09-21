@@ -67,6 +67,7 @@
     <string name="setting_menu_location_and_shipment">LOKASI DAN PENGIRIMAN</string>
     <string name="setting_menu_add_and_shop_location">Tambah dan Ubah Lokasi Toko</string>
     <string name="setting_menu_set_shipment_method">Atur Layanan Pengiriman</string>
+    <string name="setting_menu_set_activation_page_cod">Layanan Bayar di Tempat</string>
     <string name="setting_menu_exclusive_feature">FITUR EKSKLUSIF</string>
     <string name="setting_menu_account_setting">Pengaturan akun</string>
     <string name="setting_menu_self_profile">Profil Diri</string>
