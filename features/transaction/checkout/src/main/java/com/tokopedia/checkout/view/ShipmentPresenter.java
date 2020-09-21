@@ -1634,10 +1634,12 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                         dataChangeAddressRequest.setAddressId(newRecipientAddressModel != null ?
                                 newRecipientAddressModel.getLocationDataModel().getAddrId() : 0
                         );
+                        dataChangeAddressRequest.setIndomaret(true);
                     } else {
                         dataChangeAddressRequest.setAddressId(newRecipientAddressModel != null ?
                                 Integer.parseInt(newRecipientAddressModel.getId()) : 0
                         );
+                        dataChangeAddressRequest.setIndomaret(false);
                     }
                     dataChangeAddressRequests.add(dataChangeAddressRequest);
                 }

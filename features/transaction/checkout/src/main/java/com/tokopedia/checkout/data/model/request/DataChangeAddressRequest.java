@@ -29,6 +29,10 @@ public class DataChangeAddressRequest {
     @Expose
     private int quantity;
 
+    @SerializedName("is_indomaret")
+    @Expose
+    private boolean isIndomaret;
+
     public void setCartIdStr(String cartIdStr) {
         this.cartIdStr = cartIdStr;
     }
@@ -47,5 +51,9 @@ public class DataChangeAddressRequest {
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
+    }
+
+    public void setIndomaret(boolean indomaret) {
+        isIndomaret = indomaret;
     }
 }
