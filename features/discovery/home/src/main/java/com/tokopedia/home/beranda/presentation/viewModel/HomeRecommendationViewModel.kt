@@ -22,7 +22,7 @@ class HomeRecommendationViewModel @Inject constructor(
     private val loadingModel = HomeRecommendationLoading()
     private val loadMoreModel = HomeRecommendationLoadMore()
 
-    private var topAdsBannerNextPageToken = ""
+    var topAdsBannerNextPageToken = ""
 
     fun loadInitialPage(tabName: String, recommendationId: Int,count: Int){
         _homeRecommendationLiveData.postValue(HomeRecommendationDataModel(homeRecommendations = listOf(loadingModel)))

@@ -1565,6 +1565,10 @@ open class HomeFragment : BaseDaggerFragment(),
         }
     }
 
+    override fun getTopAdsBannerNextPageToken(): String {
+        return getHomeViewModel().currentTopAdsBannerToken
+    }
+
     private fun openApplink(applink: String, trackingAttribution: String) {
         var applink = applink
         if (!TextUtils.isEmpty(applink)) {
