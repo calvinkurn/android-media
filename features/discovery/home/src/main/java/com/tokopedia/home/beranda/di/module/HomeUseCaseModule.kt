@@ -197,6 +197,8 @@ class HomeUseCaseModule {
             "          has_close_button\n" +
             "          isAutoRefreshAfterExpired\n" +
             "          token\n" +
+            "          widgetParam\n" +
+            "          contextualInfo\n" +
             "          header {\n" +
             "            id\n" +
             "            name\n" +
