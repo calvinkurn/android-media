@@ -60,6 +60,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
+        android:visibility="gone"
         android:layout_margin="@dimen/dp_16"/>
 
     <com.tokopedia.unifycomponents.PageControl
@@ -70,7 +71,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         android:layout_marginBottom="@dimen/spacing_lvl3"
-        app:indicator_type="OVAL" />
+        app:indicator_type="CIRCLE" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/imageFromUser"
