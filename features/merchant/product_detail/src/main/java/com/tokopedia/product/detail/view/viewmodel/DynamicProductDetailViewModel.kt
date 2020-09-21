@@ -572,7 +572,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                         val recomFilter = recomFilterDeferred.await()
                         val recomData = recomDataDeferred.await()
 
-                        if(recomData.isNotEmpty()){
+                        if(recomData.isNotEmpty() && recomData.first().recommendationItemList.isNotEmpty()){
                             val recomWidget = recomData.first().copy(
                                     recommendationFilterChips = recomFilter
                             )
