@@ -1,0 +1,30 @@
+package com.tokopedia.media.loader
+
+import android.content.Context
+import com.bumptech.glide.load.model.GlideUrl
+import com.bumptech.glide.load.model.LazyHeaders
+import com.tokopedia.media.loader.data.QualitySettingsManager
+import com.tokopedia.media.loader.network.NetworkManager
+import com.tokopedia.media.loader.utils.HEADERS_ECT
+import com.tokopedia.media.loader.utils.HIGH_QUALITY
+import com.tokopedia.media.loader.utils.LOW_QUALITY
+
+object UrlBuilder {
+
+    fun urlBuilder(context: Context, url: String): GlideUrl {
+        val networkState = NetworkManager.state(context) // adaptive network state
+        val settings = QualitySettingsManager(context) // get configuration quality setting state
+
+        val connectionType = when(settings.qualitySettings()) {
+            1 -> LOW_QUALITY // 2g / 3g
+            2 -> HIGH_QUALITY // 4g / wifi
+            else -> networkState
+        }
+
+        return GlideUrl(url, LazyHeaders.Builder()
+                .addHeader(HEADERS_ECT, connectionType)
+                .build()
+        )
+    }
+
+}
