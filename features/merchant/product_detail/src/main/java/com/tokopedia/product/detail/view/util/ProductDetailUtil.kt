@@ -2,10 +2,7 @@ package com.tokopedia.product.detail.view.util
 
 import android.content.Context
 import android.graphics.Typeface
-import android.text.Spannable
-import android.text.SpannableString
-import android.text.Spanned
-import android.text.TextPaint
+import android.text.*
 import android.text.style.ClickableSpan
 import android.text.style.StyleSpan
 import android.view.View
@@ -18,6 +15,7 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.data.model.description.DescriptionData
+import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifyprinciples.getTypeface
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -28,16 +26,27 @@ import java.util.concurrent.TimeUnit
 object ProductDetailUtil {
 
     private const val MAX_CHAR = 150
-    private const val MORE_DESCRIPTION = "<font color='#42b549'>Selengkapnya</font>"
+    private const val MORE_DESCRIPTION_OLD = "<font color='#42b549'>Selengkapnya</font>"
 
-    fun reviewDescFormatter(review: String): Spanned {
+    fun reviewDescFormatterOld(review: String): Spanned {
         return if (MethodChecker.fromHtml(review).length > MAX_CHAR) {
             val subDescription = MethodChecker.fromHtml(review).toString().substring(0, MAX_CHAR)
             MethodChecker
                     .fromHtml(subDescription.replace("(\r\n|\n)".toRegex(), "<br />") + "... "
-                            + MORE_DESCRIPTION)
+                            + MORE_DESCRIPTION_OLD)
         } else {
             MethodChecker.fromHtml(review)
+        }
+    }
+
+    fun reviewDescFormatter(context: Context, review: String): CharSequence? {
+        val formattedText = HtmlLinkHelper(context, review).spannedString ?: ""
+        return if(formattedText.length > MAX_CHAR) {
+            val subDescription = formattedText.substring(0, MAX_CHAR)
+            HtmlLinkHelper(context, subDescription.replace("(\r\n|\n)".toRegex(), "<br />") + "... " + context.getString(R.string.review_expand)).spannedString
+        }
+        else {
+            formattedText
         }
     }
 

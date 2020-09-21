@@ -110,7 +110,7 @@ class ProductReviewOldViewHolder(val view: View, val listener: DynamicProductDet
                 txt_date_user_pdp.text = MethodChecker.fromHtml(
                         view.context.getString(R.string.date_review_pattern, reviewData.reviewCreateTime, "<b>" + reviewData.user.fullName + "</b>"))
                 txt_desc_review_pdp.maxLines = 4
-                txt_desc_review_pdp.text = ProductDetailUtil.reviewDescFormatter(reviewData.message)
+                txt_desc_review_pdp.text = ProductDetailUtil.reviewDescFormatterOld(reviewData.message)
 
                 txt_desc_review_pdp.setOnClickListener {
                     txt_desc_review_pdp.maxLines = Integer.MAX_VALUE

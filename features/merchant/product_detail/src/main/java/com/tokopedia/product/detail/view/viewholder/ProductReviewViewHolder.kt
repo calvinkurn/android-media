@@ -1,6 +1,7 @@
 package com.tokopedia.product.detail.view.viewholder
 
 import android.view.View
+import androidx.recyclerview.widget.GridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -16,15 +17,21 @@ import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.util.ProductDetailUtil
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import kotlinx.android.synthetic.main.item_dynamic_review.view.*
+import kotlinx.android.synthetic.main.item_dynamic_review.view.image_review_list
 import kotlinx.android.synthetic.main.item_dynamic_review.view.rating_review_pdp
+import kotlinx.android.synthetic.main.item_dynamic_review.view.review_count
+import kotlinx.android.synthetic.main.item_dynamic_review.view.review_rating
 import kotlinx.android.synthetic.main.item_dynamic_review.view.txt_date_user_pdp
 import kotlinx.android.synthetic.main.item_dynamic_review.view.txt_desc_review_pdp
+import kotlinx.android.synthetic.main.item_dynamic_review.view.txt_review_title
+import kotlinx.android.synthetic.main.item_dynamic_review.view.txt_see_all_partial
 
 class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetailListener) :
         AbstractViewHolder<ProductMostHelpfulReviewDataModel>(view) {
 
     companion object {
         const val MAX_LINES_REVIEW_DESCRIPTION = 3
+        const val IS_NEW_VIEW_HOLDER = true
         val LAYOUT = R.layout.item_dynamic_review
     }
 
@@ -82,21 +89,27 @@ class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetail
             false
         }
 
-        view.image_review_list.adapter = ImageReviewAdapter(imageReviews.toMutableList(), showSeeAll, listener::onImageReviewClick, listener::onSeeAllLastItemImageReview,
-                componentTrackDataModel)
-
         with(view) {
-            txt_see_all_partial.setOnClickListener {
-                listener.onSeeAllTextView(componentTrackDataModel)
+            review_count.apply {
+                text = context.getString(R.string.review_out_of_total_reviews, totalRating)
+                show()
             }
-            review_count.text = context.getString(R.string.review_out_of_total_reviews, totalRating)
-            review_rating.setCompoundDrawablesWithIntrinsicBounds(null, null, MethodChecker.getDrawable(context, R.drawable.ic_rating_gold), null)
-            review_rating.text = ratingScore.toString()
+            review_rating.apply {
+                setCompoundDrawablesWithIntrinsicBounds(null, null, MethodChecker.getDrawable(context, R.drawable.ic_rating_gold), null)
+                text = ratingScore.toString()
+                show()
+            }
 
-            if (imageReviews.isNotEmpty())
-                image_review_list.visible()
-            else
-                image_review_list.gone()
+            if (imageReviews.isNotEmpty()) {
+                image_review_list.apply {
+                    adapter = ImageReviewAdapter(imageReviews.toMutableList(), showSeeAll, listener::onImageReviewClick, listener::onSeeAllLastItemImageReview,
+                            componentTrackDataModel, IS_NEW_VIEW_HOLDER)
+                    show()
+                    layoutManager = GridLayoutManager(context, 5)
+                }
+                return
+            }
+            image_review_list.gone()
         }
     }
 
@@ -132,7 +145,7 @@ class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetail
         }
         view.txt_desc_review_pdp.apply {
             maxLines = MAX_LINES_REVIEW_DESCRIPTION
-            text = ProductDetailUtil.reviewDescFormatter(reviewData.message)
+            text = ProductDetailUtil.reviewDescFormatter(context, reviewData.message)
             setOnClickListener {
                 maxLines = Integer.MAX_VALUE
                 text = reviewData.message
