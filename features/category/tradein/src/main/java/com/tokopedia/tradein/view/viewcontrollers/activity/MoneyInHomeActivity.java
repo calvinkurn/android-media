@@ -1,4 +1,4 @@
-package com.tokopedia.tradein.view.viewcontrollers;
+package com.tokopedia.tradein.view.viewcontrollers.activity;
 
 import android.Manifest;
 import android.app.Activity;
@@ -38,6 +38,7 @@ import com.tokopedia.iris.IrisAnalytics;
 import com.tokopedia.tradein.R;
 import com.tokopedia.tradein.TradeInGTMConstants;
 import com.tokopedia.common_tradein.model.TradeInParams;
+import com.tokopedia.tradein.view.viewcontrollers.bottomsheet.TradeInImeiHelpBottomSheet;
 import com.tokopedia.tradein.viewmodel.HomeResult;
 import com.tokopedia.tradein.viewmodel.TradeInHomeViewModel;
 import com.tokopedia.tradein.Constants;
@@ -53,9 +54,9 @@ import java.util.HashMap;
 
 import timber.log.Timber;
 
-import static com.tokopedia.tradein.view.viewcontrollers.FinalPriceActivity.PARAM_TRADEIN_PHONE_TYPE;
+import static com.tokopedia.tradein.view.viewcontrollers.activity.FinalPriceActivity.PARAM_TRADEIN_PHONE_TYPE;
 
-public class TradeInHomeActivity extends BaseTradeInActivity<TradeInHomeViewModel> implements IAccessRequestListener, Laku6TradeIn.TradeInListener {
+public class MoneyInHomeActivity extends BaseTradeInActivity<TradeInHomeViewModel> implements IAccessRequestListener, Laku6TradeIn.TradeInListener {
 
 
     private TextView mTvPriceElligible;
@@ -127,7 +128,7 @@ public class TradeInHomeActivity extends BaseTradeInActivity<TradeInHomeViewMode
     private Laku6TradeIn laku6TradeIn;
 
     public static Intent getIntent(Context context) {
-        return new Intent(context, TradeInHomeActivity.class);
+        return new Intent(context, MoneyInHomeActivity.class);
     }
 
     @Override
@@ -382,7 +383,7 @@ public class TradeInHomeActivity extends BaseTradeInActivity<TradeInHomeViewMode
 
     @Override
     protected int getLayoutRes() {
-        return R.layout.layout_activity_tradeinhome;
+        return R.layout.money_in_home_activity;
     }
 
     @Override

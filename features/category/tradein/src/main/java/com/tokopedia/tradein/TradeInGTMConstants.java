@@ -33,8 +33,11 @@ public class TradeInGTMConstants {
     public static final String ACTION_CLICK_PILIH_PEMBAYARAN = "click pilih pembayaran";
     public static final String ACTION_CLICK_UBAH_KURIR = "click ubah kurir button";
     public static final String ACTION_CLICK_UBAH_WAKTU = "click ubah waktu button";
+    public static final String ACTION_CLICK = "click";
+    public static final String ACTION_POP_UP = "pop up";
 
     public static final String VIEW_PRICE_RANGE_PAGE = "view price range page";
+    public static final String OPEN_SCREEN = "openScreen";
 
     public static final String BERI_IZIN_PENG_HP = "beri izin pengecekan hp";
 
@@ -56,5 +59,20 @@ public class TradeInGTMConstants {
     public static final String CATEGORY_MONEYIN_PRICERANGE_PAGE ="money in price range page";
     public static final String CATEGORY_MONEYIN_COURIER_SELECTION ="courier selection money in";
     public static final String CATEGORY_MONEYIN_COURIER_SELECTION_DROP ="courier selection money in-drop";
+
+    public static final String KEY_SCREEN_NAME ="screenName";
+    public static final String KEY_CURRENT_SITE ="currentSite";
+    public static final String KEY_USER_ID ="userId";
+    public static final String KEY_BUSINESS_UNIT ="businessUnit";
+    public static final String KEY_LOGGED_IN ="isLoggedInStatus";
+
+    public static final String CURRENT_SITE ="tokopediamarketplace";
+    public static final String BUSINESS_UNIT ="trade-in";
+    public static final String TRADE_IN_EDUCATIONAL_PAGE ="trade in educational page";
+    public static final String TRADE_IN_COVERAGE_PAGE ="trade in coverage area check";
+    public static final String TRADE_IN_START_PAGE ="trade in start page";
+    public static final String TRADE_IN_FINAL_PAGE ="harga final trade in";
+    public static final String TRADE_IN_INITIAL_PRICE_PAGE ="trade in - initial price page";
+    public static final String TRADE_IN_FINAL_PRICE_PAGE ="trade in - final price page";
 
 }

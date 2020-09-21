@@ -1,4 +1,4 @@
-package com.tokopedia.tradein.view.viewcontrollers
+package com.tokopedia.tradein.view.viewcontrollers.bottomsheet
 
 import android.os.Bundle
 import androidx.constraintlayout.widget.ConstraintLayout
