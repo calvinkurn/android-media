@@ -4,10 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.sellerhome.common.coroutine.SellerHomeCoroutineDispatcher
-import com.tokopedia.sellerhome.domain.model.GetShopStatusResponse
 import com.tokopedia.sellerhome.domain.model.ShippingLoc
 import com.tokopedia.sellerhome.domain.usecase.GetShopLocationUseCase
-import com.tokopedia.sellerhome.domain.usecase.GetStatusShopUseCase
 import com.tokopedia.sellerhomecommon.common.const.DateFilterType
 import com.tokopedia.sellerhomecommon.domain.model.DynamicParameterModel
 import com.tokopedia.sellerhomecommon.domain.usecase.*
@@ -27,7 +25,6 @@ import javax.inject.Inject
  */
 
 class SellerHomeViewModel @Inject constructor(
-        private val getShopStatusUseCase: Lazy<GetStatusShopUseCase>,
         private val userSession: Lazy<UserSessionInterface>,
         private val getTickerUseCase: Lazy<GetTickerUseCase>,
         private val getLayoutUseCase: Lazy<GetLayoutUseCase>,
@@ -62,7 +59,6 @@ class SellerHomeViewModel @Inject constructor(
     }
 
     private val _homeTicker = MutableLiveData<Result<List<TickerItemUiModel>>>()
-    private val _shopStatus = MutableLiveData<Result<GetShopStatusResponse>>()
     private val _widgetLayout = MutableLiveData<Result<List<BaseWidgetUiModel<*>>>>()
     private val _shopLocation = MutableLiveData<Result<ShippingLoc>>()
     private val _cardWidgetData = MutableLiveData<Result<List<CardDataUiModel>>>()
@@ -76,8 +72,6 @@ class SellerHomeViewModel @Inject constructor(
 
     val homeTicker: LiveData<Result<List<TickerItemUiModel>>>
         get() = _homeTicker
-    val shopStatus: LiveData<Result<GetShopStatusResponse>>
-        get() = _shopStatus
     val widgetLayout: LiveData<Result<List<BaseWidgetUiModel<*>>>>
         get() = _widgetLayout
     val shopLocation: LiveData<Result<ShippingLoc>>
@@ -109,11 +103,6 @@ class SellerHomeViewModel @Inject constructor(
         }, onError = {
             _homeTicker.postValue(Fail(it))
         })
-    }
-
-    fun getShopStatus() = executeCall(_shopStatus) {
-        getShopStatusUseCase.get().params = GetStatusShopUseCase.createRequestParams(userSession.get().shopId)
-        getShopStatusUseCase.get().executeOnBackground()
     }
 
     fun getWidgetLayout() {
