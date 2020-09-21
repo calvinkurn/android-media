@@ -392,8 +392,8 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="@dimen/dp_10"
                                 android:layout_marginLeft="@dimen/dp_10"
-                                android:layout_toStartOf="@+id/imageCloseGlobal"
-                                android:layout_toLeftOf="@+id/imageCloseGlobal"
+                                android:layout_toStartOf="@+id/iv_remove_promo"
+                                android:layout_toLeftOf="@+id/iv_remove_promo"
                                 android:orientation="vertical"
                                 android:paddingTop="@dimen/dp_10"
                                 android:paddingBottom="@dimen/dp_10">
