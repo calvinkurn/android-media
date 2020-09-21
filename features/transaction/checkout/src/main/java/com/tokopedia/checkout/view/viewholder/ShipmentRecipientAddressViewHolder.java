@@ -1,23 +1,13 @@
 package com.tokopedia.checkout.view.viewholder;
 
-import android.text.Spannable;
-import android.text.SpannableString;
-import android.text.Spanned;
-import android.text.TextPaint;
 import android.text.TextUtils;
-import android.text.method.LinkMovementMethod;
-import android.text.style.ClickableSpan;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Space;
-import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.tabs.TabLayout;
@@ -56,11 +46,9 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
     private Typography tvRecipientName;
     private Typography tvRecipientAddress;
     private Typography tvRecipientPhone;
-    private TextView tvRecipientChangeAddress;
     private TabsUnify tabUnifyTradeInAddress;
     private RelativeLayout layoutAddressNormal;
     private ConstraintLayout layoutAddressDropOff;
-    private LinearLayout llAddOrChangeAddressContainer;
     private Typography tvShipmentAddress;
     private UnifyImageButton imgButtonTradeInInfo;
     private View separator;
@@ -68,7 +56,6 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
     private Typography tvDropOffAddressDescription;
     private Typography tvChangeDropOff;
     private ImageView imgPinpoint;
-    private Typography tvDisabledMultipleAddressInfo;
     private Typography tvChangeAddressTop;
     private View separatorBottom;
     private Space space;
@@ -90,11 +77,9 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
         tvRecipientName = itemView.findViewById(com.tokopedia.logisticdata.R.id.tv_recipient_name);
         tvRecipientAddress = itemView.findViewById(com.tokopedia.logisticdata.R.id.tv_recipient_address);
         tvRecipientPhone = itemView.findViewById(com.tokopedia.logisticdata.R.id.tv_recipient_phone);
-        tvRecipientChangeAddress = itemView.findViewById(R.id.tv_change_recipient_address);
         tabUnifyTradeInAddress = itemView.findViewById(R.id.tab_unify_trade_in_address);
         layoutAddressNormal = itemView.findViewById(R.id.layout_address_normal);
         layoutAddressDropOff = itemView.findViewById(R.id.layout_address_drop_off);
-        llAddOrChangeAddressContainer = itemView.findViewById(R.id.ll_add_or_change_address_container);
         tvShipmentAddress = itemView.findViewById(R.id.tv_shipment_address);
         imgButtonTradeInInfo = itemView.findViewById(R.id.img_button_trade_in_info);
         separator = itemView.findViewById(R.id.separator);
@@ -102,7 +87,6 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
         tvDropOffAddressDescription = itemView.findViewById(R.id.tv_drop_off_address_description);
         tvChangeDropOff = itemView.findViewById(R.id.tv_change_drop_off);
         imgPinpoint = itemView.findViewById(R.id.img_pinpoint);
-        tvDisabledMultipleAddressInfo = itemView.findViewById(R.id.tv_disabled_multiple_address_info);
         tvChangeAddressTop = itemView.findViewById(R.id.tv_change_address_top);
         separatorBottom = itemView.findViewById(R.id.separator_bottom);
         space = itemView.findViewById(R.id.space);
@@ -113,23 +97,18 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
     }
 
     public void bindViewHolder(RecipientAddressModel recipientAddress,
-                               ArrayList<ShowCaseObject> showCaseObjectList,
-                               String cartIds) {
-        renderBaseAddress(recipientAddress, cartIds);
+                               ArrayList<ShowCaseObject> showCaseObjectList) {
+        renderChangeAddress(recipientAddress);
         if (recipientAddress.isTradeIn()) {
-            renderAddressOptionOnBottom();
             renderTradeInAddressWithTabs(recipientAddress);
         } else {
-            renderAddressOptionOnTop(recipientAddress);
             renderNormalAddress(recipientAddress);
         }
 
         setShowCase(rlRecipientAddressLayout, showCaseObjectList);
     }
 
-    private void renderBaseAddress(RecipientAddressModel recipientAddress, String cartIds) {
-        tvRecipientChangeAddress.setOnClickListener(v -> shipmentAdapterActionListener.onChangeAddress());
-        tvChangeAddressTop.setOnClickListener(v -> shipmentAdapterActionListener.onChangeAddress());
+    private void renderBaseAddress() {
     }
 
     private void setShowCase(ViewGroup viewGroup, ArrayList<ShowCaseObject> showCaseObjectList) {
@@ -146,7 +125,6 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
         tvShipmentAddress.setType(Typography.HEADING_5);
         imgButtonTradeInInfo.setVisibility(View.VISIBLE);
         separator.setVisibility(View.GONE);
-        llAddOrChangeAddressContainer.setVisibility(View.GONE);
 
         imgButtonTradeInInfo.setOnClickListener(v -> {
             shipmentAdapterActionListener.onClickTradeInInfo();
@@ -248,7 +226,6 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
     private void renderTradeInPickUpTab(RecipientAddressModel recipientAddress) {
         layoutAddressNormal.setVisibility(View.GONE);
         layoutAddressDropOff.setVisibility(View.VISIBLE);
-        llAddOrChangeAddressContainer.setVisibility(View.GONE);
         if (TextUtils.isEmpty(recipientAddress.getDropOffAddressName())) {
             tvDropOffAddressTitle.setVisibility(View.GONE);
             tvDropOffAddressDescription.setVisibility(View.GONE);
@@ -277,7 +254,6 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
     private void renderTradeInDeliveryTab(RecipientAddressModel recipientAddress) {
         layoutAddressDropOff.setVisibility(View.GONE);
         layoutAddressNormal.setVisibility(View.VISIBLE);
-        llAddOrChangeAddressContainer.setVisibility(View.VISIBLE);
         renderBasicAddress(recipientAddress);
     }
 
@@ -312,23 +288,14 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
                 + recipientAddress.getRecipientPhoneNumber();
     }
 
-    private void renderAddressOptionOnTop(RecipientAddressModel recipientAddressModel) {
-        llAddOrChangeAddressContainer.setVisibility(View.GONE);
-        tvChangeAddressTop.setVisibility(View.VISIBLE);
-        tvDisabledMultipleAddressInfo.setVisibility(View.GONE);
+    private void renderChangeAddress(RecipientAddressModel recipientAddress) {
         separatorBottom.setVisibility(View.GONE);
         space.setVisibility(View.VISIBLE);
-    }
-
-    private void renderAddressOptionOnBottom() {
-        llAddOrChangeAddressContainer.setVisibility(View.VISIBLE);
-        tvChangeAddressTop.setVisibility(View.GONE);
-        tvDisabledMultipleAddressInfo.setVisibility(View.GONE);
-        separatorBottom.setVisibility(View.GONE);
-        if (shipmentAdapterActionListener.isTradeInByDropOff()) {
-            space.setVisibility(View.VISIBLE);
+        if (recipientAddress.getSelectedTabIndex() == 0) {
+            tvChangeAddressTop.setVisibility(View.VISIBLE);
+            tvChangeAddressTop.setOnClickListener(v -> shipmentAdapterActionListener.onChangeAddress());
         } else {
-            space.setVisibility(View.GONE);
+            tvChangeAddressTop.setVisibility(View.GONE);
         }
     }
 

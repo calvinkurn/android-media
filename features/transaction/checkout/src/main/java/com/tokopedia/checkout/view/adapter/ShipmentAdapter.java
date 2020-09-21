@@ -217,7 +217,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             ((ShipmentNotifierViewHolder) holder).bind((ShipmentNotifierModel) data);
         } else if (viewType == ShipmentRecipientAddressViewHolder.ITEM_VIEW_RECIPIENT_ADDRESS) {
             ((ShipmentRecipientAddressViewHolder) holder).bindViewHolder((RecipientAddressModel) data,
-                    showCaseObjectList, cartIds);
+                    showCaseObjectList);
         } else if (viewType == ShipmentItemViewHolder.ITEM_VIEW_SHIPMENT_ITEM) {
             ((ShipmentItemViewHolder) holder).bindViewHolder(
                     (ShipmentCartItemModel) data, shipmentDataList, recipientAddressModel,
