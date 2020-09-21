@@ -16,30 +16,6 @@ android {
         multiDexEnabled true
         testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
     }
-    sourceSets {
-        main {
-            java.srcDirs = ['src/main/java']
-            resources.srcDirs = ['src/main/java']
-            aidl.srcDirs = ['src/main/java']
-            renderscript.srcDirs = ['src/main/java']
-            res.srcDirs = ['src/main/res']
-            assets.srcDirs = ['assets', 'src/main/assets', 'src/main/assets/']
-        }
-        String sharedTestDir = 'src/sharedTest/java'
-        test {
-            java.srcDir sharedTestDir
-        }
-        androidTest {
-            java.srcDir sharedTestDir
-        }
-    }
-    lintOptions {
-        checkReleaseBuilds false
-        abortOnError false
-    }
-    packagingOptions {
-        exclude 'META-INF/**'
-    }
 }
 
 buildscript {
@@ -53,8 +29,6 @@ buildscript {
 }
 
 dependencies {
-    implementation fileTree(include: ['*.jar', '*.aar'], dir: 'libs')
-
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.tkpdabstraction)
@@ -106,6 +80,12 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.dialog
     implementation rootProject.ext.unifyDependencies.global_error
+
+    implementation 'com.alivc.component.encoder:AlivcCore:1.0'
+    implementation 'com.aliyun.clientinforeport:AlivcReporter:1.0@aar'
+    implementation ('com.alivc.videochat:live-pusher:1.0@aar') {
+        exclude group: 'com.alivc'
+    }
 
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.assertJCore
