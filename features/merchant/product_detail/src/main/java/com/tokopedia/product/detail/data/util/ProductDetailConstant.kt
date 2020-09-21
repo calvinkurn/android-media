@@ -120,7 +120,6 @@ object ProductDetailConstant {
     const val PRODUCT_PROTECTION = "protection"
     const val VALUE_PROP = "value_prop"
     const val PRODUCT_CONTENT = "product_content"
-    const val PRODUCT_CONTENT_TITLE_TOP = "product_content_title_top"
     const val MEDIA = "product_media"
     const val BY_ME = "byme"
     const val TOP_ADS = "banner_ads"

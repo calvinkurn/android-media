@@ -144,8 +144,8 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
 
             miniSocialProofMap?.run {
                 rating = it.basic.stats.rating
-                ratingCount = it.basic.stats.countReview
-                talkCount = it.basic.stats.countTalk
+                ratingCount = it.basic.stats.countReview.toIntOrZero()
+                talkCount = it.basic.stats.countTalk.toIntOrZero()
                 paymentVerifiedCount = it.basic.txStats.itemSoldPaymentVerified.toInt()
             }
 
@@ -160,7 +160,7 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
             }
 
             productReviewMap?.run {
-                totalRating = it.basic.stats.countReview
+                totalRating = it.basic.stats.countReview.toIntOrZero()
                 ratingScore = it.basic.stats.rating
             }
 
@@ -374,7 +374,7 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
     }
 
     private fun mapToCardModel(data: RecommendationWidget?): List<ProductCardModel> {
-        if(data == null) return listOf()
+        if (data == null) return listOf()
         return data.recommendationItemList.map {
             ProductCardModel(
                     slashedPrice = it.slashedPrice,
@@ -407,7 +407,7 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
         }
     }
 
-    private fun mapToAnnotateChip(data: RecommendationWidget): List<AnnotationChip>{
+    private fun mapToAnnotateChip(data: RecommendationWidget): List<AnnotationChip> {
         return data.recommendationFilterChips.map {
             AnnotationChip(it)
         }
