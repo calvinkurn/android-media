@@ -1146,7 +1146,7 @@ final class ProductListPresenter
         for (Filter filter : quickFilterData.getFilter()) {
             List<Option> options = filter.getOptions();
             quickFilterOptionList.addAll(options);
-            sortFilterItems.addAll(convertToSortFilterItem(options));
+            sortFilterItems.addAll(convertToSortFilterItem(filter.getTitle(), options));
         }
 
         if (sortFilterItems.size() > 0) {
@@ -1155,16 +1155,16 @@ final class ProductListPresenter
         }
     }
 
-    private List<SortFilterItem> convertToSortFilterItem(List<Option> options) {
+    private List<SortFilterItem> convertToSortFilterItem(String title, List<Option> options) {
         List<SortFilterItem> list = new ArrayList<>();
         for (Option option : options) {
-            list.add(createSortFilterItem(option));
+            list.add(createSortFilterItem(title, option));
         }
         return list;
     }
 
-    private SortFilterItem createSortFilterItem(Option option) {
-        SortFilterItem item = new SortFilterItem(option.getName(), () -> Unit.INSTANCE);
+    private SortFilterItem createSortFilterItem(String title, Option option) {
+        SortFilterItem item = new SortFilterItem(title, () -> Unit.INSTANCE);
 
         setSortFilterItemListener(item, option);
         setSortFilterItemState(item, option);
