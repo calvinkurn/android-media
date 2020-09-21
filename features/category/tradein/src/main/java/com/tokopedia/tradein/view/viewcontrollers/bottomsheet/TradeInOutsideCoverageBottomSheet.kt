@@ -1,6 +1,7 @@
 package com.tokopedia.tradein.view.viewcontrollers.bottomsheet
 
 import android.app.Dialog
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,10 +12,13 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.tradein.R
+import com.tokopedia.tradein.TradeInAnalytics
 import com.tokopedia.unifycomponents.UnifyButton
 import java.net.URLEncoder
 
 class TradeInOutsideCoverageBottomSheet : BottomSheetDialogFragment() {
+
+    var tradeInAnalytics: TradeInAnalytics? = null
 
     companion object {
         private const val PRODUCT_NAME = "PRODUCT_NAME"
@@ -31,11 +35,13 @@ class TradeInOutsideCoverageBottomSheet : BottomSheetDialogFragment() {
         val view = inflater.inflate(R.layout.tradein_outside_coverage_bottom_sheet, container, false)
         arguments?.getString(PRODUCT_NAME)?.let { productName ->
             view.findViewById<UnifyButton>(R.id.btn_similar_items).setOnClickListener {
+                tradeInAnalytics?.clickCoverageAreaSimilarItems()
                 RouteManager.route(context, "tokopedia://search?q=${URLEncoder.encode(productName, Charsets.UTF_8.toString())}&trade_id=true&shipping=25")
                 dialog?.dismiss()
             }
         }
         view.findViewById<UnifyButton>(R.id.btn_close).setOnClickListener {
+            tradeInAnalytics?.clickCoverageAreaCloseSheet()
             dialog?.dismiss()
         }
         return view

@@ -10,6 +10,7 @@ import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelActivity
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.tradein.R
+import com.tokopedia.tradein.TradeInAnalytics
 import com.tokopedia.tradein.di.DaggerTradeInComponent
 import com.tokopedia.tradein.viewmodel.TradeInInfoViewModel
 import com.tokopedia.unifyprinciples.Typography
@@ -23,6 +24,9 @@ class TradeInInfoActivity : BaseViewModelActivity<TradeInInfoViewModel>() {
 
     @Inject
     lateinit var viewModelProvider: ViewModelProvider.Factory
+    @Inject
+    lateinit var tradeInAnalytics: TradeInAnalytics
+
     private lateinit var viewModel: TradeInInfoViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -36,6 +40,10 @@ class TradeInInfoActivity : BaseViewModelActivity<TradeInInfoViewModel>() {
         viewModel.tncInfoLiveData.observe(this, Observer {
             if (it != null) {
                 linear_layout.removeAllViews()
+                if (intent.data?.lastPathSegment == tradeInTNCSegment)
+                    tradeInAnalytics.viewEducationalTNC()
+                else if (intent.data?.lastPathSegment == blackMarketSegment)
+                    tradeInAnalytics.viewEducationalBlackMarket()
                 for (tnc in it.fetchTickerAndTnC.tnC) {
                     addView(tnc)
                 }
@@ -72,9 +80,11 @@ class TradeInInfoActivity : BaseViewModelActivity<TradeInInfoViewModel>() {
     private fun handleIntent() {
         if (intent.data?.lastPathSegment == tradeInTNCSegment) {
             heading.text = getString(R.string.tradein_terms_and_conditions)
+            tradeInAnalytics.clickEducationalTNC()
             viewModel.getTNC(0)
         } else if (intent.data?.lastPathSegment == blackMarketSegment) {
             heading.text = getString(R.string.tradein_black_market)
+            tradeInAnalytics.clickEducationalBlackMarket()
             viewModel.getTNC(1)
         }
     }

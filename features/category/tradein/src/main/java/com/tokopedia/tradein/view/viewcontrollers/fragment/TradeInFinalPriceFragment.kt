@@ -15,6 +15,7 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tradein.R
+import com.tokopedia.tradein.TradeInAnalytics
 import com.tokopedia.tradein.di.DaggerTradeInComponent
 import com.tokopedia.tradein.di.TradeInComponent
 import com.tokopedia.tradein.model.DeviceAttr
@@ -33,6 +34,8 @@ class TradeInFinalPriceFragment : BaseViewModelFragment<FinalPriceViewModel>() {
     lateinit var viewModelProvider: ViewModelProvider.Factory
     private lateinit var viewModel: FinalPriceViewModel
     private var tradeInHargaFinalClick: TradeInHargaFinalClick? = null
+    @Inject
+    lateinit var tradeInAnalytics: TradeInAnalytics
 
     override fun initInject() {
         getComponent().inject(this)
@@ -48,6 +51,7 @@ class TradeInFinalPriceFragment : BaseViewModelFragment<FinalPriceViewModel>() {
         super.onCreate(savedInstanceState)
         setUpObservers()
         viewModel.getDiagnosticData()
+        tradeInAnalytics.openFinalPricePage()
     }
 
     private fun setUpObservers() {
@@ -93,6 +97,7 @@ class TradeInFinalPriceFragment : BaseViewModelFragment<FinalPriceViewModel>() {
         }
         deviceReview.addAll(dataResponse.deviceReview)
         checking_details.setOnClickListener {
+            tradeInAnalytics.clickFinalPriceCheckDetails()
             val bottomSheet = TradeInFinalPriceDetailsBottomSheet.newInstance(deviceReview)
             bottomSheet.show(childFragmentManager, "")
         }

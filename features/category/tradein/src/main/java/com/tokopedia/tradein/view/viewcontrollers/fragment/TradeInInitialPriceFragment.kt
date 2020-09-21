@@ -19,17 +19,21 @@ import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tradein.R
+import com.tokopedia.tradein.TradeInAnalytics
 import com.tokopedia.tradein.di.DaggerTradeInComponent
 import com.tokopedia.tradein.di.TradeInComponent
 import com.tokopedia.tradein.view.viewcontrollers.bottomsheet.TradeInImeiHelpBottomSheet.Companion.newInstance
 import com.tokopedia.tradein.viewmodel.TradeInInitialPriceViewModel
 import kotlinx.android.synthetic.main.tradein_initial_price_fragment.*
+import java.util.*
 import javax.inject.Inject
 
 class TradeInInitialPriceFragment : BaseViewModelFragment<TradeInInitialPriceViewModel>() {
 
     @Inject
     lateinit var viewModelProvider: ViewModelProvider.Factory
+    @Inject
+    lateinit var tradeInAnalytics: TradeInAnalytics
     private lateinit var tradeInInitialPriceViewModel: TradeInInitialPriceViewModel
     private var tradeInInitialPriceClick: TradeInInitialPriceClick? = null
 
@@ -71,6 +75,7 @@ class TradeInInitialPriceFragment : BaseViewModelFragment<TradeInInitialPriceVie
         typography_imei_help.setOnClickListener {
             val tradeInImeiHelpBottomSheet = newInstance()
             tradeInImeiHelpBottomSheet.show(childFragmentManager, "")
+            tradeInAnalytics.clickInitialPriceImeiBottomSheet()
         }
         iv_back.setOnClickListener {
             activity?.onBackPressed()
@@ -94,16 +99,22 @@ class TradeInInitialPriceFragment : BaseViewModelFragment<TradeInInitialPriceVie
         imei_view.show()
         no_imei.hide()
         no_imei_value.hide()
+        edit_text_imei.setOnFocusChangeListener { _, hasFocus ->
+            if(hasFocus)
+                tradeInAnalytics.clickInitialPriceInputImei()
+        }
         btn_continue.setOnClickListener {
             when {
                 edit_text_imei.text.length == 15 -> {
                     tradeInInitialPriceClick?.onInitialPriceClick(edit_text_imei.text.toString())
                 }
                 edit_text_imei.text.isEmpty() -> {
+                    tradeInAnalytics.clickInitialPriceImeiNoInput()
                     typography_imei_description.text = getString(R.string.enter_the_imei_number_text)
                     typography_imei_description.setTextColor(MethodChecker.getColor(context, R.color.tradein_hint_red))
                 }
                 else -> {
+                    tradeInAnalytics.clickInitialPriceImeiWrongInput()
                     typography_imei_description.text = getString(R.string.wrong_imei_string)
                     typography_imei_description.setTextColor(MethodChecker.getColor(context, R.color.tradein_hint_red))
                 }

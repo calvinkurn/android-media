@@ -21,6 +21,7 @@ import com.tokopedia.logisticdata.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticdata.data.entity.address.SaveAddressDataModel
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
 import com.tokopedia.tradein.R
+import com.tokopedia.tradein.TradeInAnalytics
 import com.tokopedia.tradein.di.DaggerTradeInComponent
 import com.tokopedia.tradein.di.TradeInComponent
 import com.tokopedia.tradein.mapper.TradeInMapper
@@ -38,6 +39,8 @@ private const val TRADEIN_INITIAL_PRICE = "tokopedia://category/tradein_initial_
 class TradeInAddressFragment : BaseViewModelFragment<TradeInAddressViewModel>() {
     @Inject
     lateinit var viewModelProvider: ViewModelProvider.Factory
+    @Inject
+    lateinit var tradeInAnalytics: TradeInAnalytics
     private lateinit var tradeInAddressViewModel: TradeInAddressViewModel
 
     override fun initInject() {
@@ -71,6 +74,7 @@ class TradeInAddressFragment : BaseViewModelFragment<TradeInAddressViewModel>() 
         iv_back.setOnClickListener {
             activity?.onBackPressed()
         }
+        tradeInAnalytics.openCoverageAreaCheck()
     }
 
     private fun setUpObservers() {
@@ -93,6 +97,7 @@ class TradeInAddressFragment : BaseViewModelFragment<TradeInAddressViewModel>() 
                     btn_continue.apply {
                         isEnabled = true
                         setOnClickListener {
+                            tradeInAnalytics.clickCoverageAreaContinue()
                             RouteManager.route(context, TRADEIN_INITIAL_PRICE)
                         }
                     }
@@ -101,8 +106,10 @@ class TradeInAddressFragment : BaseViewModelFragment<TradeInAddressViewModel>() 
                 address_valid_ticker.hide()
                 btn_continue.isEnabled = false
                 arguments?.apply {
+                    tradeInAnalytics.viewCoverageAreaBottomSheet()
                     val bottomSheet = TradeInOutsideCoverageBottomSheet.newInstance(getString(EXTRA_PRODUCT_NAME, "")
                             ?: "")
+                    bottomSheet.tradeInAnalytics = tradeInAnalytics
                     bottomSheet.show(childFragmentManager, "")
                 }
             }
@@ -132,6 +139,7 @@ class TradeInAddressFragment : BaseViewModelFragment<TradeInAddressViewModel>() 
                 + defaultAddress.cityName + ", "
                 + defaultAddress.provinceName)
         change_address.setOnClickListener {
+            tradeInAnalytics.clickChangeAddress()
             val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.CHECKOUT_ADDRESS_SELECTION)
             intent.putExtra(CheckoutConstant.EXTRA_TYPE_REQUEST, CheckoutConstant.TYPE_REQUEST_SELECT_ADDRESS_FROM_COMPLETE_LIST)
             startActivityForResult(intent, CheckoutConstant.REQUEST_CODE_CHECKOUT_ADDRESS)
@@ -155,13 +163,6 @@ class TradeInAddressFragment : BaseViewModelFragment<TradeInAddressViewModel>() 
                     tradeInAddressViewModel.setAddress(TradeInMapper.mapSavedAddressToKeroAddress(address), getString(EXTRA_ORIGIN, ""), getInt(EXTRA_WEIGHT), getInt(EXTRA_SHOP_ID))
                 }
             }
-        }
-    }
-
-    fun setPermissionDeniedUI() {
-        btn_continue.text = getString(R.string.tradein_return)
-        btn_continue.setOnClickListener {
-            activity?.finish()
         }
     }
 

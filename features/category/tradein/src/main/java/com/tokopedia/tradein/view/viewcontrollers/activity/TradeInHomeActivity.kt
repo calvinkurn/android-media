@@ -30,6 +30,7 @@ import com.tokopedia.iris.IrisAnalytics.Companion.getInstance
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.tradein.Constants
 import com.tokopedia.tradein.R
+import com.tokopedia.tradein.TradeInAnalytics
 import com.tokopedia.tradein.TradeInGTMConstants
 import com.tokopedia.tradein.di.DaggerTradeInComponent
 import com.tokopedia.tradein.view.viewcontrollers.activity.BaseTradeInActivity.TRADEIN_OFFLINE
@@ -54,12 +55,17 @@ class TradeInHomeActivity : BaseViewModelActivity<TradeInHomeViewModel>(),
 
     @Inject
     lateinit var viewModelProvider: ViewModelProvider.Factory
+
+    @Inject
+    lateinit var tradeInAnalytics: TradeInAnalytics
+
     private lateinit var viewModel: TradeInHomeViewModel
     private var isFirstTime = true
     private lateinit var laku6TradeIn: Laku6TradeIn
     private lateinit var currentFragment: Fragment
     private var inputImei = false
     private var maxPrice: String = "-"
+    private var minPrice: String = "-"
     private var isEligibleForTradein: Boolean = false
     private var notEligibleMessage: String = ""
     private var deviceDisplayName: String? = null
@@ -85,17 +91,17 @@ class TradeInHomeActivity : BaseViewModelActivity<TradeInHomeViewModel>(),
                 val cekFisik = TradeInGTMConstants.CEK_FISIK_TRADE_IN
                 val cekFungsi = TradeInGTMConstants.CEK_FUNGSI_TRADE_IN
                 val cekFisikResult = TradeInGTMConstants.CEK_FISIK_RESULT_TRADE_IN
-//                if (TradeInGTMConstants.CEK_FISIK == page) {
-//                    if (TradeInGTMConstants.CLICK_SALIN == action || TradeInGTMConstants.CLICK_SOCIAL_SHARE == action)
-//                        sendGeneralEvent(clickEvent,
-//                                cekFisik, action, value)
-//                } else if (TradeInGTMConstants.CEK_FUNGSI_TRADE_IN == page) {
-//                    sendGeneralEvent(clickEvent,
-//                            cekFungsi, action, value)
-//                } else if (TradeInGTMConstants.CEK_FISIK_RESULT_TRADE_IN == page) {
-//                    sendGeneralEvent(viewEvent,
-//                            cekFisikResult, action, value)
-//                }
+                if (TradeInGTMConstants.CEK_FISIK == page) {
+                    if (TradeInGTMConstants.CLICK_SALIN == action || TradeInGTMConstants.CLICK_SOCIAL_SHARE == action)
+                        tradeInAnalytics.sendGeneralEvent(TradeInGTMConstants.ACTION_CLICK_TRADEIN,
+                                cekFisik, action, value)
+                } else if (TradeInGTMConstants.CEK_FUNGSI_TRADE_IN == page) {
+                    tradeInAnalytics.sendGeneralEvent(TradeInGTMConstants.ACTION_CLICK_TRADEIN,
+                            cekFungsi, action, value)
+                } else if (TradeInGTMConstants.CEK_FISIK_RESULT_TRADE_IN == page) {
+                    tradeInAnalytics.sendGeneralEvent(TradeInGTMConstants.ACTION_VIEW_TRADEIN,
+                            cekFisikResult, action, value)
+                }
             }
         }
     }
@@ -119,6 +125,7 @@ class TradeInHomeActivity : BaseViewModelActivity<TradeInHomeViewModel>(),
                     }
                 }
                 RouteManager.route(this, TRADEIN_DISCOVERY_INFO)
+                tradeInAnalytics.openEducationalScreen()
             }
         })
         viewModel.homeResultData.observe(this, Observer { homeResult: HomeResult ->
@@ -132,6 +139,7 @@ class TradeInHomeActivity : BaseViewModelActivity<TradeInHomeViewModel>(),
                     PriceState.DIAGNOSED_VALID -> {
                         isEligibleForTradein = true
                         maxPrice = homeResult.displayMessage
+                        minPrice = homeResult.minPrice?.toString() ?: "-"
                         sendIrisEvent(if (homeResult.maxPrice != null) homeResult.maxPrice else 0, if (homeResult.minPrice != null) homeResult.minPrice else 0)
                         intent?.data?.lastPathSegment?.let { last ->
                             if (last == TRADEIN_INITIAL_PRICE) {
@@ -146,6 +154,7 @@ class TradeInHomeActivity : BaseViewModelActivity<TradeInHomeViewModel>(),
                     PriceState.NOT_DIAGNOSED -> {
                         isEligibleForTradein = true
                         maxPrice = homeResult.displayMessage
+                        minPrice = homeResult.minPrice?.toString() ?: "-"
                         sendIrisEvent(if (homeResult.maxPrice != null) homeResult.maxPrice else 0, if (homeResult.minPrice != null) homeResult.minPrice else 0)
                         if (inputImei) {
                             laku6TradeIn.startGUITest()
@@ -181,7 +190,8 @@ class TradeInHomeActivity : BaseViewModelActivity<TradeInHomeViewModel>(),
                         supportFragmentManager.beginTransaction()
                                 .replace(R.id.tradein_parent_view, currentFragment, "")
                                 .commit()
-                    } else -> {
+                    }
+                    else -> {
                         currentFragment = TradeInInitialPriceFragment
                                 .getFragmentInstance(productName, productImage,
                                         CurrencyFormatUtil.convertPriceValueToIdrFormat(newPrice, true),
@@ -192,6 +202,11 @@ class TradeInHomeActivity : BaseViewModelActivity<TradeInHomeViewModel>(),
                                 .addToBackStack("")
                                 .commit()
                         (currentFragment as TradeInInitialPriceFragment).setListener(this@TradeInHomeActivity)
+                        tradeInAnalytics.viewInitialPricePage(
+                                deviceDisplayName ?: "none/other"
+                                , minPrice
+                                , maxPrice
+                                , productId.toString())
                     }
                 }
             }
@@ -210,7 +225,7 @@ class TradeInHomeActivity : BaseViewModelActivity<TradeInHomeViewModel>(),
 
     private fun addFinalPriceFragment() {
         progress_bar_layout.hide()
-        if(currentFragment is TradeInFinalPriceFragment)
+        if (currentFragment is TradeInFinalPriceFragment)
             return
         currentFragment = TradeInFinalPriceFragment.getFragmentInstance(deviceDisplayName, viewModel.tradeInParams)
         supportFragmentManager.beginTransaction()
@@ -226,9 +241,10 @@ class TradeInHomeActivity : BaseViewModelActivity<TradeInHomeViewModel>(),
     override fun onResume() {
         super.onResume()
         intent.data?.lastPathSegment?.let {
-            if (it == TRADEIN && !isFirstTime)
+            if (it == TRADEIN && !isFirstTime) {
                 finish()
-            else
+                tradeInAnalytics.clickEducationalBackButton()
+            } else
                 isFirstTime = false
         }
     }
@@ -251,6 +267,8 @@ class TradeInHomeActivity : BaseViewModelActivity<TradeInHomeViewModel>(),
             else {
                 setFragment()
             }
+            if (it == TRADEIN_SELLER_CHECK)
+                tradeInAnalytics.clickEducationalTradeIn()
         }
     }
 
@@ -307,6 +325,7 @@ class TradeInHomeActivity : BaseViewModelActivity<TradeInHomeViewModel>(),
     }
 
     override fun onInitialPriceClick(imei: String?) {
+        tradeInAnalytics.clickInitialPriceContinueButton()
         if (imei != null) {
             inputImei = true
             viewModel.tradeInParams.deviceId = imei
@@ -384,9 +403,15 @@ class TradeInHomeActivity : BaseViewModelActivity<TradeInHomeViewModel>(),
 
     override fun onBackPressed() {
         if (supportFragmentManager.backStackEntryCount > 0) {
+            if(currentFragment is TradeInInitialPriceFragment)
+                tradeInAnalytics.initialPricePageBackButtonClick(viewModel.tradeInParams.productId.toString())
+            else if (currentFragment is TradeInFinalPriceFragment)
+                tradeInAnalytics.clickFinalPriceBack()
             supportFragmentManager.popBackStack()
             currentFragment = Fragment()
         } else {
+            if (currentFragment is TradeInFinalPriceFragment)
+                tradeInAnalytics.clickFinalPriceBack()
             super.onBackPressed()
         }
     }
