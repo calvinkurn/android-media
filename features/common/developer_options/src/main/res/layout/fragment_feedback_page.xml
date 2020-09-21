@@ -12,21 +12,13 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/tv_feedback"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Ceritakan masalahmu di sini "
-            android:textColor="@color/black"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"/>
-
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/et_email_wrapper"
             style="@style/HintTextInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/tv_feedback"
+            android:layout_marginTop="@dimen/dp_8"
+            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             android:hint="@string/email">
 
@@ -44,13 +36,22 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_bug_type"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/dp_16"
+            app:layout_constraintTop_toBottomOf="@id/et_email_wrapper"
+            app:layout_constraintStart_toStartOf="parent"
+            android:text="@string/bug_type" />
+
+
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/et_bug_wrapper"
             style="@style/HintTextInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_16"
-            app:layout_constraintTop_toBottomOf="@id/et_email_wrapper"
+            app:layout_constraintTop_toBottomOf="@id/tv_bug_type"
             app:layout_constraintStart_toStartOf="parent"
             android:hint="@string/bug_type">
 
@@ -62,37 +63,12 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
-       <!-- <LinearLayout
-            android:id="@+id/bug_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintTop_toBottomOf="@id/et_email_wrapper"
-            app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginTop="@dimen/dp_16"
-            android:weightSum="5">
-
-            <TextView
-                android:id="@+id/bug_type"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="3"
-                style="@style/TextView.Title.Bold"
-                android:text="@string/bug_type"/>
-
-            <Spinner
-                android:id="@+id/spinner_bug_type"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="2" />
-
-        </LinearLayout>-->
-
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/et_affected_page_wrapper"
             style="@style/HintTextInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_8"
             app:layout_constraintTop_toBottomOf="@id/et_bug_wrapper"
             app:layout_constraintStart_toStartOf="parent"
             android:hint="@string/affected_page">
@@ -116,6 +92,7 @@
             style="@style/HintTextInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_8"
             app:layout_constraintTop_toBottomOf="@id/et_affected_page_wrapper"
             app:layout_constraintStart_toStartOf="parent"
             android:hint="@string/step_to_reproduce">
@@ -125,7 +102,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:imeOptions="actionDone"
-                android:inputType="text"
+                android:inputType="textMultiLine"
                 android:maxLines="10"
                 android:overScrollMode="always"
                 android:scrollbarStyle="insideInset"
@@ -139,6 +116,7 @@
             style="@style/HintTextInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_8"
             app:layout_constraintTop_toBottomOf="@id/et_str_wrapper"
             app:layout_constraintStart_toStartOf="parent"
             android:hint="@string/actual_result">
@@ -148,7 +126,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:imeOptions="actionDone"
-                android:inputType="text"
+                android:inputType="textMultiLine"
                 android:maxLines="10"
                 android:overScrollMode="always"
                 android:scrollbarStyle="insideInset"
@@ -171,7 +149,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:imeOptions="actionDone"
-                android:inputType="text"
+                android:inputType="textMultiLine"
                 android:maxLines="10"
                 android:overScrollMode="always"
                 android:scrollbarStyle="insideInset"

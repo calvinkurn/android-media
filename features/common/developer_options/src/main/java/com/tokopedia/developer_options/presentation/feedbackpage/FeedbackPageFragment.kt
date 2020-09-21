@@ -311,7 +311,8 @@ class FeedbackPageFragment: Fragment() {
     }
 
     private fun sendUriImage(issueKey: String) {
-        val file = File(uriImage?.path)
+        val screenshotData = uriImage?.let { handleItem(it) }
+        val file = File(screenshotData?.path)
         val requestFile: RequestBody = RequestBody.create(MediaType.parse("multipart/form-data"), file)
         val fileData = MultipartBody.Part.createFormData("file", file.name, requestFile)
 

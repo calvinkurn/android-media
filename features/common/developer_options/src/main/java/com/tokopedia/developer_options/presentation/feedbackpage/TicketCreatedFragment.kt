@@ -9,7 +9,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.fragment.app.Fragment
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.developer_options.R
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
 
 class TicketCreatedFragment: Fragment() {
@@ -31,18 +33,18 @@ class TicketCreatedFragment: Fragment() {
 
         val issueId = arguments?.getString("EXTRA_IS_TICKET_LINK")
 
-        tickerLink.text = "/$issueId"
+        tickerLink.text = "https://tokopedia.atlassian.net/browse/$issueId"
 
         imageCopy.setOnClickListener {
-            onTextCopied("label", tickerLink.toString())
+            onTextCopied(mainView, "label", tickerLink.text.toString())
         }
 
     }
 
-    fun onTextCopied(label: String, str: String) {
+    private fun onTextCopied(view: View, label: String, str: String) {
         val clipboardManager = context?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         clipboardManager.setPrimaryClip(ClipData.newPlainText(label, str))
-        //Toaster
+        Toaster.make(view, "Text berhasil di copy", Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL)
     }
 
     companion object {

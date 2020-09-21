@@ -26,13 +26,12 @@
         android:layout_marginLeft="@dimen/dp_40"
         android:layout_marginTop="@dimen/dp_12"
         android:layout_marginRight="@dimen/dp_40"
-        android:gravity="center"
         android:text="Link ticket"
         android:textColor="@color/black"
         app:layout_constraintTop_toBottomOf="@id/iv_ticket_created"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:typographyType="heading_3" />
+        app:typographyType="body_3"/>
 
     <ImageView
         android:id="@+id/copy_ticket"
