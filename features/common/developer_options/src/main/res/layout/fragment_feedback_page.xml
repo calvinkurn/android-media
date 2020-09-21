@@ -12,7 +12,30 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <androidx.appcompat.widget.AppCompatEditText
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/et_email_wrapper"
+            style="@style/HintTextInputLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:hint="@string/email">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/email"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:imeOptions="actionDone"
+                android:inputType="text"
+                android:maxLines="1"
+                android:overScrollMode="always"
+                android:scrollbarStyle="insideInset"
+                android:scrollbars="vertical"
+                android:textSize="@dimen/sp_14"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!--<androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -23,14 +46,14 @@
             android:hint="@string/email"
             app:backgroundTint="@color/Green_G500"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"/>
+            app:layout_constraintStart_toStartOf="parent"/>-->
 
         <LinearLayout
             android:id="@+id/bug_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            app:layout_constraintTop_toBottomOf="@id/email"
+            app:layout_constraintTop_toBottomOf="@id/et_email_wrapper"
             app:layout_constraintStart_toStartOf="parent"
             android:layout_marginTop="@dimen/dp_16"
             android:weightSum="5">
@@ -106,8 +129,8 @@
 
         <ImageView
             android:id="@+id/image_feedback"
-            android:layout_width="@dimen/dp_80"
-            android:layout_height="@dimen/dp_120"
+            android:layout_width="@dimen/dp_180"
+            android:layout_height="@dimen/dp_240"
             android:layout_marginTop="@dimen/dp_16"
             app:layout_constraintTop_toBottomOf="@+id/expected_result"
             app:layout_constraintLeft_toRightOf="parent"

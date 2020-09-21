@@ -18,6 +18,7 @@ import android.widget.*
 import android.widget.AdapterView.OnItemSelectedListener
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import com.google.android.material.textfield.TextInputLayout
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.developer_options.R
 import com.tokopedia.developer_options.api.*
@@ -27,6 +28,7 @@ import com.tokopedia.screenshot_observer.Screenshot
 import com.tokopedia.screenshot_observer.ScreenshotData
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.android.synthetic.main.fragment_feedback_page.*
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -206,10 +208,10 @@ class FeedbackPageFragment: Fragment() {
             val journeyText = journey.text.toString()
             val actualResultText = actualResult.text.toString()
             val expectedResultText = expectedResult.text.toString()
+
             when {
                 TextUtils.isEmpty(emailText) -> {
-                    Toast.makeText(context,
-                            "Email should not be empty", Toast.LENGTH_SHORT).show()
+                    setWrapperError(et_email_wrapper, "Email harus diisi " )
                 }
                 TextUtils.isEmpty(affectedPageText) -> {
                     Toast.makeText(context,
@@ -234,6 +236,17 @@ class FeedbackPageFragment: Fragment() {
             }
         }
 
+    }
+
+    private fun setWrapperError(wrapper: TextInputLayout, s: String?) {
+        if (s.isNullOrBlank()) {
+            wrapper.error = s
+            wrapper.setErrorEnabled(false)
+        } else {
+            wrapper.setErrorEnabled(true)
+            wrapper.setHint("")
+            wrapper.error = s
+        }
     }
 
     private fun handleItem(uri: Uri): ScreenshotData? {
