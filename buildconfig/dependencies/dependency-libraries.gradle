@@ -55,7 +55,6 @@ ext {
             dynamicFeatures         : ":libraries:dynamic_features",
             encryption              : ":libraries:encryption",
             fingerprint             : ":libraries:fingerprint",
-            graphView               : ":libraries:graph_view",
             graphql                 : ":libraries:graphql",
             imagePicker             : ":libraries:image_picker",
             imagePreview            : ":libraries:image_preview",
