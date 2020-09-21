@@ -7,7 +7,6 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.promocheckout.common.domain.deals.PromoCheckoutDealsRepository
 import com.tokopedia.promocheckout.common.domain.mapper.DealsCheckoutMapper
-import com.tokopedia.promocheckout.common.domain.model.deals.DealsVerifyBody
 import com.tokopedia.promocheckout.common.domain.model.deals.DealsVerifyResponse
 import com.tokopedia.promocheckout.detail.domain.GetDetailCouponMarketplaceUseCase
 import com.tokopedia.promocheckout.detail.model.DataPromoCheckoutDetail
@@ -19,7 +18,7 @@ import rx.subscriptions.CompositeSubscription
 class PromoCheckoutDetailDealsPresenter(private val getDetailCouponMarketplaceUseCase: GetDetailCouponMarketplaceUseCase,
                                         private val clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase,
                                         private val dealsCheckRepository: PromoCheckoutDealsRepository,
-                                        private val compositeSubscription: CompositeSubscription):
+                                        private val compositeSubscription: CompositeSubscription) :
         BaseDaggerPresenter<PromoCheckoutDetailContract.View>(), PromoCheckoutDetailDealsContract.Presenter {
 
     override fun getDetailPromo(slug: String) {
@@ -48,9 +47,9 @@ class PromoCheckoutDetailDealsPresenter(private val getDetailCouponMarketplaceUs
                 })
     }
 
-    override fun processCheckDealPromoCode(promoCode: String, flag: Boolean, requestParams: JsonObject) {
+    override fun processCheckDealPromoCode(promoCode: String, flag: Boolean, requestBody: JsonObject) {
         compositeSubscription.add(
-                dealsCheckRepository.postVerify(false, requestParams)
+                dealsCheckRepository.postVerify(flag, requestBody)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(object : Subscriber<DealsVerifyResponse>() {
