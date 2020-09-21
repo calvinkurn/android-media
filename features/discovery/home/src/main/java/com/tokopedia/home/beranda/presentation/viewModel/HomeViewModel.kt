@@ -1185,9 +1185,9 @@ open class HomeViewModel @Inject constructor(
                                 updateWidget(UpdateLiveDataModel(ACTION_ADD,
                                         newTopAdsModel, it.key))
                             }
+                            currentTopAdsBannerToken = it.value.topAdsImageViewModel?.nextPageToken?:""
                         }
                     }
-                    currentTopAdsBannerToken = results[0].nextPageToken?:""
                 }
             }){
                 it.printStackTrace()
