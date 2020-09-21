@@ -1,20 +1,26 @@
 package com.tokopedia.play.broadcaster
 
+import android.app.Application
 import android.view.View
+import androidx.test.espresso.Espresso
+import androidx.test.espresso.Espresso.onIdle
+import androidx.test.espresso.IdlingPolicies
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.IdlingResource
+import androidx.test.espresso.idling.CountingIdlingResource
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.analytics.performance.util.PerformanceDataFileUtils
 import com.tokopedia.play.broadcaster.view.activity.PlayBroadcastActivity
 import com.tokopedia.test.application.TestRepeatRule
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
-import com.tokopedia.test.application.util.setupGraphqlMockResponse
+import com.tokopedia.test.application.util.setupGraphqlMockResponseWithCheck
 import com.tokopedia.unifycomponents.UnifyButton
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import java.util.concurrent.TimeUnit
 
 
 /**
@@ -28,18 +34,26 @@ class PltPlayBroadcasterPerformanceTest {
     @get:Rule
     var testRepeatRule: TestRepeatRule = TestRepeatRule()
 
+    private val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
+
+    private val idlingResourceLogin: CountingIdlingResource = CountingIdlingResource(IDLING_RESOURCE)
+
     @Before
     fun setup() {
-        setupGraphqlMockResponse(PrepareModelConfig())
+        IdlingPolicies.setMasterPolicyTimeout(1, TimeUnit.MINUTES)
+        IdlingPolicies.setIdlingResourceTimeout(1, TimeUnit.MINUTES)
+
+        setupGraphqlMockResponseWithCheck(PrepareModelConfig())
+        InstrumentationAuthHelper.loginToAnUser(targetContext.applicationContext as Application, idlingResourceLogin)
+        IdlingRegistry.getInstance().register(idlingResourceLogin)
     }
 
     @Test
     fun testPageLoadTimePerformance() {
-        val context = InstrumentationRegistry.getInstrumentation().targetContext
-        intentsTestRule.launchActivity(PlayBroadcastActivity.createIntent(context))
-        fakeLogin()
-        IdlingRegistry.getInstance().register(idlingResource)
-
+        onIdle()
+        intentsTestRule.launchActivity(PlayBroadcastActivity.createIntent(targetContext))
+        IdlingRegistry.getInstance().register(idlingResourceInit)
+        onIdle()
         intentsTestRule.activity.getPltPerformanceResultData()?.let { data->
             PerformanceDataFileUtils.writePLTPerformanceFile(
                     intentsTestRule.activity,
@@ -51,14 +65,11 @@ class PltPlayBroadcasterPerformanceTest {
     @After
     fun tearDown() {
         intentsTestRule.activity.finishAndRemoveTask()
-        IdlingRegistry.getInstance().unregister(idlingResource)
+        IdlingRegistry.getInstance().unregister(idlingResourceLogin)
+        IdlingRegistry.getInstance().unregister(idlingResourceInit)
     }
 
-    private fun fakeLogin() {
-        InstrumentationAuthHelper.loginInstrumentationTestUser1()
-    }
-
-    private val idlingResource: IdlingResource by lazy {
+    private val idlingResourceInit: IdlingResource by lazy {
         object : IdlingResource {
             override fun getName(): String = "prepare"
 
@@ -79,5 +90,6 @@ class PltPlayBroadcasterPerformanceTest {
 
     companion object {
         const val TEST_CASE_PAGE_LOAD_TIME_PERFORMANCE = "play_broadcaster_test_case_page_load_time"
+        const val IDLING_RESOURCE = "play_broadcaster_fake_login"
     }
 }
