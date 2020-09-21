@@ -114,9 +114,6 @@ fun GetBusinessWidgetTab.givenGetBusinessWidgetTabUseCaseReturn(homeWidget: Home
     coEvery { executeOnBackground() } returns homeWidget
 }
 
-fun GetDynamicChannelsUseCase.givenGetDynamicChannelsUseCase(dynamicChannelDataModels: List<DynamicChannelDataModel>) {
-    coEvery { executeOnBackground() } returns dynamicChannelDataModels
-}
 fun GetDynamicChannelsUseCase.givenGetDynamicChannelsUseCaseThrowReturn() {
     coEvery { executeOnBackground() } throws TimeoutException()
 }
@@ -163,6 +160,10 @@ fun HomeUseCase.givenGetHomeDataReturn(homeDataModel: HomeDataModel, newHomeData
         emit(homeDataModel)
         emit(newHomeDataModel)
     }
+}
+
+fun HomeUseCase.givenGetDynamicChannelsUseCase(dynamicChannelDataModels: List<DynamicChannelDataModel>) {
+    coEvery { onDynamicChannelExpired(any()) } returns dynamicChannelDataModels
 }
 
 fun InjectCouponTimeBasedUseCase.givenInjectCouponTimeBasedUseCaseReturn(setInjectCouponTimeBased: SetInjectCouponTimeBased) {

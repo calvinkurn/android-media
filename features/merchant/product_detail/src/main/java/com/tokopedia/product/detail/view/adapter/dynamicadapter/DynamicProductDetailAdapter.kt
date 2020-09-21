@@ -1,5 +1,6 @@
 package com.tokopedia.product.detail.view.adapter.dynamicadapter
 
+import android.os.Bundle
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
@@ -62,16 +63,18 @@ class DynamicProductDetailAdapter(
         }
     }
 
-    fun notifyRecomAdapter(listOfData: List<ProductRecommendationDataModel>?) {
-        listOfData?.run {
-            forEach {
-                if (it.isRecomenDataEmpty) {
-                    clearElement(it)
-                } else {
-                    notifyItemChanged(list.indexOf(it))
-                }
-            }
+    fun notifyRecomAdapter(productRecommendationDataModel: ProductRecommendationDataModel?) {
+        productRecommendationDataModel?.let{productRecommendationDataModel->
+            val index = list.indexOf(productRecommendationDataModel)
+            if(index != -1) notifyItemChanged(index)
         }
+    }
+
+    fun notifyFilterRecommendation(productRecommendationDataModel: ProductRecommendationDataModel){
+        val index = list.indexOf(productRecommendationDataModel)
+        if(index != -1) notifyItemChanged(index, Bundle().apply {
+            putBoolean(ProductRecommendationViewHolder.KEY_UPDATE_FILTER_RECOM, true)
+        })
     }
 
     fun removeRecommendation(listOfData: List<ProductRecommendationDataModel>?) {
@@ -139,8 +142,11 @@ class DynamicProductDetailAdapter(
 
     override fun onViewAttachedToWindow(holder: AbstractViewHolder<out Visitable<*>>) {
         super.onViewAttachedToWindow(holder)
-        if (holder is ProductRecommendationViewHolder) {
-            listener.loadTopads()
+        if (holder is ProductRecommendationViewHolder &&
+                holder.adapterPosition < visitables.size &&
+                visitables[holder.adapterPosition] is ProductRecommendationDataModel &&
+                (visitables[holder.adapterPosition] as ProductRecommendationDataModel).recomWidgetData == null) {
+            listener.loadTopads((visitables[holder.adapterPosition] as ProductRecommendationDataModel).name)
         }
     }
 }

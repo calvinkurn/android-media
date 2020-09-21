@@ -16,6 +16,7 @@ import com.tokopedia.home.account.presentation.viewholder.AddProductViewHolder;
 import com.tokopedia.home.account.presentation.viewholder.BuyerCardViewHolder;
 import com.tokopedia.home.account.presentation.viewholder.InfoCardViewHolder;
 import com.tokopedia.home.account.presentation.viewholder.LabelledMenuListViewHolder;
+import com.tokopedia.home.account.presentation.viewholder.MenuGridIconNotificationViewHolder;
 import com.tokopedia.home.account.presentation.viewholder.MenuGridViewHolder;
 import com.tokopedia.home.account.presentation.viewholder.MenuListViewHolder;
 import com.tokopedia.home.account.presentation.viewholder.MenuTitleViewHolder;
@@ -32,6 +33,7 @@ import com.tokopedia.home.account.presentation.viewmodel.AddProductViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.BuyerCardViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.InfoCardViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.LabelledMenuListUiModel;
+import com.tokopedia.home.account.presentation.viewmodel.MenuGridIconNotificationViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.MenuGridViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.MenuListViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.MenuTitleViewModel;
@@ -68,6 +70,8 @@ public class AccountTypeFactory extends BaseAdapterTypeFactory {
             return new MenuTitleViewHolder(parent);
         } else if (type == MenuGridViewHolder.LAYOUT) {
             return new MenuGridViewHolder(parent, listener);
+        } else if (type == MenuGridIconNotificationViewHolder.Companion.getLAYOUT()) {
+            return new MenuGridIconNotificationViewHolder(parent, listener);
         } else if (type == LabelledMenuListViewHolder.Companion.getLAYOUT()) {
             return new LabelledMenuListViewHolder(parent, listener);
         } else if (type == MenuListViewHolder.LAYOUT) {
@@ -116,6 +120,10 @@ public class AccountTypeFactory extends BaseAdapterTypeFactory {
 
     public int type(MenuGridViewModel vm) {
         return MenuGridViewHolder.LAYOUT;
+    }
+
+    public int type(MenuGridIconNotificationViewModel vm) {
+        return MenuGridIconNotificationViewHolder.Companion.getLAYOUT();
     }
 
     public int type(MenuListViewModel vm) {
