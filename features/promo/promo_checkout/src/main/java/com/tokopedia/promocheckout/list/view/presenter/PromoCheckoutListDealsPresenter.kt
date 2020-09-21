@@ -18,13 +18,14 @@ class PromoCheckoutListDealsPresenter(
 ) : BaseDaggerPresenter<PromoCheckoutListContract.View>(), PromoCheckoutListDealsContract.Presenter {
 
     override fun processCheckDealPromoCode(flag: Boolean, requestParams: JsonObject) {
+        view.showProgressLoading()
         compositeSubscription.add(
                 repository.postVerify(false, requestParams)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(object : Subscriber<DealsVerifyResponse>() {
                             override fun onNext(objects: DealsVerifyResponse) {
-                                view.showProgressLoading()
+                                view.hideProgressLoading()
                                 if (objects.message_error.isNotEmpty()) {
                                     view.onErrorCheckPromo(MessageErrorException(objects.data.message))
                                 } else {
