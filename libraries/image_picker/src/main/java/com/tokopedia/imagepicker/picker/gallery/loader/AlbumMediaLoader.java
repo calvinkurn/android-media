@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore;
 
+import androidx.annotation.Nullable;
 import androidx.loader.content.CursorLoader;
 
 import com.tokopedia.imagepicker.picker.gallery.internal.entity.Album;
@@ -112,11 +113,11 @@ public class AlbumMediaLoader extends CursorLoader {
         super(context, QUERY_URI, PROJECTION, selection, selectionArgs, ORDER_BY);
     }
 
-    public static CursorLoader newInstance(Context context, Album album, int galleryType) {
+    public static CursorLoader newInstance(Context context, @Nullable Album album, int galleryType) {
         String selection;
         String[] selectionArgs;
 
-        if (album.isAll()) {
+        if (album == null || album.isAll()) {
             if (galleryType == GalleryType.GIF_ONLY) {
                 selection = SELECTION_ALL_FOR_GIF;
                 selectionArgs = getSelectionArgsForGifType(

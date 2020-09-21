@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.LayoutInflater;
@@ -27,7 +26,6 @@ import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.design.label.LabelView;
 import com.tokopedia.imagepicker.R;
-import com.tokopedia.imagepicker.common.util.FileUtils;
 import com.tokopedia.imagepicker.picker.album.AlbumPickerActivity;
 import com.tokopedia.imagepicker.picker.gallery.adapter.AlbumMediaAdapter;
 import com.tokopedia.imagepicker.picker.gallery.internal.entity.Album;
@@ -39,8 +37,6 @@ import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
 import com.tokopedia.imagepicker.picker.gallery.widget.MediaGridInset;
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerInterface;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 
 import static com.tokopedia.imagepicker.picker.album.AlbumPickerActivity.EXTRA_ALBUM_ITEM;
@@ -273,7 +269,7 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
         }
     }
 
-    private void onAlbumLoaded(AlbumItem albumItem) {
+    private void onAlbumLoaded(@Nullable AlbumItem albumItem) {
         if (albumItem == null) {
             albumItem = new AlbumItem(ALBUM_ID_ALL, null, null, 0);
         }
