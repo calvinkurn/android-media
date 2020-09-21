@@ -22,7 +22,6 @@ import javax.inject.Inject
 class OrderSummaryPageCartProcessor @Inject constructor(private val atcOccExternalUseCase: AddToCartOccExternalUseCase,
                                                         private val getOccCartUseCase: GetOccCartUseCase,
                                                         private val updateCartOccUseCase: UpdateCartOccUseCase,
-                                                        private val orderSummaryAnalytics: OrderSummaryAnalytics,
                                                         private val executorDispatchers: ExecutorDispatchers) {
 
     suspend fun atcOcc(productId: String): OccGlobalEvent {
