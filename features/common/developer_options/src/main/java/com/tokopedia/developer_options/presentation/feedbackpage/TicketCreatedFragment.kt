@@ -12,12 +12,15 @@ import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
 import com.tkpd.remoteresourcerequest.view.DeferredImageView
 import com.tokopedia.developer_options.R
+import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
 
 class TicketCreatedFragment: Fragment() {
 
     private lateinit var imageCreated: DeferredImageView
+    private lateinit var ticketText1: Typography
+    private lateinit var ticketText2: Typography
     private lateinit var tickerLink: Typography
     private lateinit var imageCopy: ImageView
 
@@ -29,12 +32,16 @@ class TicketCreatedFragment: Fragment() {
 
     private fun initView(mainView: View) {
         imageCreated = mainView.findViewById(R.id.iv_ticket_created)
+        ticketText1 = mainView.findViewById(R.id.ticket_text_1)
+        ticketText2 = mainView.findViewById(R.id.ticket_text_2)
         tickerLink = mainView.findViewById(R.id.ticket_url)
         imageCopy = mainView.findViewById(R.id.copy_ticket)
 
-        val issueId = arguments?.getString("EXTRA_IS_TICKET_LINK")
+        val issueId = arguments?.getString(EXTRA_IS_TICKET_LINK)
 
         imageCreated.loadRemoteImageDrawable(ADDRESS_INVALID)
+        ticketText1.text = context?.let { HtmlLinkHelper(it, getString(R.string.ticket_text_1)).spannedString }
+        ticketText2.text = context?.let { HtmlLinkHelper(it, getString(R.string.ticket_text_2)).spannedString }
         tickerLink.text = "https://tokopedia.atlassian.net/browse/$issueId"
         imageCopy.setOnClickListener {
             onTextCopied(mainView, "label", tickerLink.text.toString())
@@ -54,7 +61,7 @@ class TicketCreatedFragment: Fragment() {
         fun newInstance(extra: Bundle): TicketCreatedFragment {
             return TicketCreatedFragment().apply {
                 arguments = Bundle().apply {
-                    putString("EXTRA_IS_TICKET_LINK", extra.getString("EXTRA_IS_TICKET_LINK"))
+                    putString(EXTRA_IS_TICKET_LINK, extra.getString(EXTRA_IS_TICKET_LINK))
                 }
             }
         }

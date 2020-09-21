@@ -116,7 +116,7 @@ class FeedbackPageFragment: Fragment() {
         myPreferences = Preferences(context)
         loadingDialog = context?.let { LoadingDialog(it) }
 
-        uriImage = arguments?.getParcelable("EXTRA_URI_IMAGE")
+        uriImage = arguments?.getParcelable(EXTRA_URI_IMAGE)
         initImageUri()
 
         context?.let { ArrayAdapter.createFromResource(it,
@@ -152,11 +152,11 @@ class FeedbackPageFragment: Fragment() {
                 .forEach { codeName = it.name }
 
         when {
-            codeName.startsWith("M") -> { codeName = "MARSHMALLOW" }
-            codeName.startsWith("N") -> { codeName = "NOUGAT" }
-            codeName.startsWith("O") -> { codeName = "OREO" }
-            codeName.startsWith("P") -> { codeName = "PIE" }
-            codeName.startsWith("Q") -> { codeName = "ANDROID 10" }
+            codeName.startsWith("M") -> { codeName = getString(R.string.marshmallow) }
+            codeName.startsWith("N") -> { codeName = getString(R.string.nougat) }
+            codeName.startsWith("O") -> { codeName = getString(R.string.oreo) }
+            codeName.startsWith("P") -> { codeName = getString(R.string.pie) }
+            codeName.startsWith("Q") -> { codeName = getString(R.string.android10) }
         }
 
         deviceInfo = (StringBuilder().append(Build.MANUFACTURER).append(" ").append(Build.MODEL).toString())
@@ -208,28 +208,27 @@ class FeedbackPageFragment: Fragment() {
 
             if (emailText.isEmpty()) {
                 validate = false
-                setWrapperError(et_email_wrapper, "Email should not be empty" )
+                setWrapperError(et_email_wrapper, getString(R.string.warning_email) )
             }
 
             if (affectedPageText.isEmpty()) {
                 validate = false
-                setWrapperError(et_affected_page_wrapper, "" +
-                        "Page should not be empty" )
+                setWrapperError(et_affected_page_wrapper, getString(R.string.warning_page) )
             }
 
             if(journeyText.isEmpty()) {
                 validate = false
-                setWrapperError(et_str_wrapper, "Step to Reproduce should not be empty" )
+                setWrapperError(et_str_wrapper, getString(R.string.warning_str) )
             }
 
             if(actualResultText.isEmpty()) {
                 validate = false
-                setWrapperError(et_actual_result_wrapper, "Actual Result should not be empty" )
+                setWrapperError(et_actual_result_wrapper, getString(R.string.warning_actual) )
             }
 
             if(expectedResultText.isEmpty()) {
                 validate = false
-                setWrapperError(et_expected_result_wrapper, "Expected Result not be empty" )
+                setWrapperError(et_expected_result_wrapper, getString(R.string.warning_expected) )
             }
 
             if(validate) {
@@ -244,10 +243,10 @@ class FeedbackPageFragment: Fragment() {
     private fun setWrapperError(wrapper: TextInputLayout, s: String?) {
         if (s.isNullOrBlank()) {
             wrapper.error = s
-            wrapper.setErrorEnabled(false)
+            wrapper.isErrorEnabled = false
         } else {
-            wrapper.setErrorEnabled(true)
-            wrapper.setHint("")
+            wrapper.isErrorEnabled = true
+            wrapper.hint = ""
             wrapper.error = s
         }
     }
@@ -348,7 +347,6 @@ class FeedbackPageFragment: Fragment() {
                 .subscribe(object : Subscriber<List<ImageResponse>>(){
                     override fun onNext(t: List<ImageResponse>?) {
                         loadingDialog?.dismiss()
-                        Toast.makeText(activity, issueKey, Toast.LENGTH_SHORT).show()
                         goToTicketCreatedActivity(issueKey)
 //                        activity?.finish()
                     }
@@ -431,7 +429,7 @@ class FeedbackPageFragment: Fragment() {
     private fun goToTicketCreatedActivity(ticketLink: String) {
         activity?.finish()
         Intent(context, TicketCreatedActivity::class.java).apply {
-            putExtra("EXTRA_IS_TICKET_LINK", ticketLink)
+            putExtra(EXTRA_IS_TICKET_LINK, ticketLink)
             startActivityForResult(this, 1212)
         }
     }
@@ -441,7 +439,7 @@ class FeedbackPageFragment: Fragment() {
         fun newInstance(uri: Uri?) : FeedbackPageFragment {
             return FeedbackPageFragment().apply {
                 arguments = Bundle().apply {
-                    putParcelable("EXTRA_URI_IMAGE", uri)
+                    putParcelable(EXTRA_URI_IMAGE, uri)
                 }
             }
         }

@@ -10,7 +10,7 @@ class FeedbackPageActivity : BaseSimpleActivity() {
         var uriData: Uri?
         val uri = intent.data
         uriData = if (uri != null) {
-            intent.getParcelableExtra("EXTRA_URI_IMAGE")
+            intent.getParcelableExtra(EXTRA_URI_IMAGE)
         } else {
             null
         }
