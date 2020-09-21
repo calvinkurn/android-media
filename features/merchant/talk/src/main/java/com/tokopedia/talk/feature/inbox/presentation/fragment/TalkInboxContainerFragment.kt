@@ -21,6 +21,7 @@ import com.tokopedia.talk_old.R
 import com.tokopedia.unifycomponents.TabsUnify
 import com.tokopedia.unifycomponents.setCounter
 import com.tokopedia.unifycomponents.setCustomText
+import com.tokopedia.unifycomponents.setNotification
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_talk_inbox_container.*
 import javax.inject.Inject
@@ -74,14 +75,10 @@ class TalkInboxContainerFragment : BaseDaggerFragment(), HasComponent<TalkInboxC
     }
 
     override fun updateUnreadCounter(sellerUnread: Int, buyerUnread: Int) {
-        if(sellerUnread != 0) {
-            sellerUnreadCount = sellerUnread
-            talkInboxTabs.tabLayout.getTabAt(SELLER_TAB_INDEX)?.setCounter(sellerUnread)
-        }
-        if(buyerUnread != 0) {
-            buyerUnreadCount = buyerUnread
-            talkInboxTabs.tabLayout.getTabAt(BUYER_TAB_INDEX)?.setCounter(buyerUnread)
-        }
+        sellerUnreadCount = sellerUnread
+        talkInboxTabs.tabLayout.getTabAt(SELLER_TAB_INDEX)?.setNotification(sellerUnread > 0)
+        buyerUnreadCount = buyerUnread
+        talkInboxTabs.tabLayout.getTabAt(BUYER_TAB_INDEX)?.setNotification(buyerUnread > 0)
     }
 
     private fun setupViewPager() {
