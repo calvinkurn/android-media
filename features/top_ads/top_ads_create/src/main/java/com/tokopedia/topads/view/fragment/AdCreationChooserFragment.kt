@@ -97,7 +97,7 @@ class AdCreationChooserFragment : BaseDaggerFragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        viewModel.autoAdsData.observe(this, Observer {
+        viewModel.autoAdsData.observe(viewLifecycleOwner, Observer {
             viewModel.getAutoAdsStatus(this::onSuccessAutoAds)
 
         })
