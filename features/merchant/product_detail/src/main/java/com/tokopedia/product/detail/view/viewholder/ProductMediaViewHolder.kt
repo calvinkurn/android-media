@@ -26,7 +26,7 @@ class ProductMediaViewHolder(private val view: View,
     override fun bind(element: ProductMediaDataModel) {
         with(view) {
             viewMediaPager.shouldRenderViewPager = element.shouldRefreshViewPagger
-            viewMediaPager.renderData(element.listOfMedia, listener::onImageClicked, listener::onSwipePicture, listener.getProductFragmentManager(), getComponentTrackData(element),
+            viewMediaPager.renderData(element.listOfMedia, element, listener::onImageClicked, listener::onSwipePicture, listener.getProductFragmentManager(), getComponentTrackData(element),
                     listener::onImageClickedTrack, listener.getLifecycleFragment())
 
             element.shouldRefreshViewPagger = false
