@@ -577,10 +577,12 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                                     recommendationFilterChips = recomFilter
                             )
                             _loadTopAdsProduct.postValue(recomWidget.asSuccess())
+                        }else {
+                            _loadTopAdsProduct.postValue(Throwable(pageName).asFail())
                         }
                     }
                 } catch (e: Throwable) {
-                    _loadTopAdsProduct.value = e.asFail()
+                    _loadTopAdsProduct.value = Throwable(pageName).asFail()
                 }
             }
         }
