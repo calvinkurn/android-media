@@ -19,9 +19,9 @@
           "dimension40": "{{.*}}",
           "index": "{{.*}}",
           "item_name": "{{.*}}",
-          "item_brand": "none / other",
-          "item_variant": "none / other",
-          "item_category": "none / other"
+          "item_brand": "{{.*}}",
+          "item_variant": "{{.*}}",
+          "item_category": "{{.*}}"
         }
       ],
       "eventLabel": "{{.*}}"

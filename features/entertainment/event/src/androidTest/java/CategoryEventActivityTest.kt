@@ -14,7 +14,9 @@ import com.tokopedia.entertainment.R
 import com.tokopedia.entertainment.search.activity.EventCategoryActivity
 import com.tokopedia.entertainment.search.adapter.viewholder.CategoryTextBubbleAdapter
 import com.tokopedia.entertainment.search.adapter.viewholder.EventGridAdapter
+import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import kotlinx.android.synthetic.main.ent_search_fragment.*
+import mock.CategoryEventMockResponse
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -37,7 +39,7 @@ class CategoryEventActivityTest {
 
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
-            //setupGraphqlMockResponse(HomeEventMockResponse())
+            setupGraphqlMockResponse(CategoryEventMockResponse())
         }
     }
 
@@ -49,15 +51,21 @@ class CategoryEventActivityTest {
     @Test
     fun validateCategoryTest(){
         Thread.sleep(5000)
+        impressionProduct()
         clickProduct()
         clickCategory()
         ViewMatchers.assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ENTERTAINMENT_EVENT_CATEGORY_VALIDATOR_QUERY), hasAllSuccess())
 
     }
 
+    fun impressionProduct(){
+        onView(withId(R.id.recycler_viewParent)).perform(RecyclerViewActions.scrollToPosition<EventGridAdapter.EventGridViewHolder>(7))
+        Thread.sleep(3000)
+    }
+
     fun clickProduct(){
         onView(withId(R.id.recycler_viewParent)).perform(RecyclerViewActions.actionOnItemAtPosition<EventGridAdapter.EventGridViewHolder>(0, ViewActions.click()))
-        Thread.sleep(5000)
+        Thread.sleep(3000)
         onView(ViewMatchers.isRoot()).perform(ViewActions.pressBack())
     }
 
