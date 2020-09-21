@@ -52,7 +52,7 @@ class PushController(val context: Context) : CoroutineScope {
 
         } catch (e: Exception) {
             Timber.w( "${CMConstant.TimberTags.TAG}exception;err='${Log.getStackTraceString(e)
-                    .take(CMConstant.TimberTags.MAX_LIMIT)}';reason='no_launch';data='${bundle.toString()
+                    .take(CMConstant.TimberTags.MAX_LIMIT)}';data='${bundle.toString()
                     .take(CMConstant.TimberTags.MAX_LIMIT)}'")
         }
     }
