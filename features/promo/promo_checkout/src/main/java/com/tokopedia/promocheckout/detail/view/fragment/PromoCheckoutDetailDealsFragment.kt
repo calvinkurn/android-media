@@ -79,6 +79,9 @@ class PromoCheckoutDetailDealsFragment : BasePromoCheckoutDetailFragment() {
         val promoData = PromoData(PromoData.COUPON_RESULT_CODE, data.codes[0],
                 data.message.text, data.titleDescription, state = data.message.state.mapToStatePromoCheckout())
         intent.putExtra(EXTRA_PROMO_DATA, promoData)
+        intent.putExtra(COUPON_CODE, data.codes[0])
+        intent.putExtra(COUPON_MESSAGE, data.message.text)
+        intent.putExtra(COUPON_AMOUNT, data.discountAmount)
         activity?.setResult(PromoData.COUPON_RESULT_CODE, intent)
         activity?.finish()
     }
@@ -103,6 +106,9 @@ class PromoCheckoutDetailDealsFragment : BasePromoCheckoutDetailFragment() {
     companion object {
         val EXTRA_IS_USE = "EXTRA_IS_USE"
         val EXTRA_CHECKOUT_DATA = "checkoutdata"
+        val COUPON_MESSAGE = "coupon_message"
+        val COUPON_AMOUNT = "coupon_amount"
+        val COUPON_CODE = "coupon_code"
 
         fun createInstance(codeCoupon: String, isUse: Boolean, checkoutData: String?): PromoCheckoutDetailDealsFragment {
             val promoCheckoutDetailDealsFragment = PromoCheckoutDetailDealsFragment()
