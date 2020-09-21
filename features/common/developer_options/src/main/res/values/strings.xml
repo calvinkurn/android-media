@@ -35,6 +35,7 @@
     <string name="oreo">OREO</string>
     <string name="pie">PIE</string>
     <string name="android10">ANDROID 10</string>
+    <string name="copy_success">Text telah tersalin</string>
 
     <string-array name="bug_type_array">
         <item>Crash</item>

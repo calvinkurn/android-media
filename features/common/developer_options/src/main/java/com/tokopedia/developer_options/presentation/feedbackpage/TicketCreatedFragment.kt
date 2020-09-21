@@ -52,7 +52,7 @@ class TicketCreatedFragment: Fragment() {
     private fun onTextCopied(view: View, label: String, str: String) {
         val clipboardManager = context?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         clipboardManager.setPrimaryClip(ClipData.newPlainText(label, str))
-        Toaster.make(view, "Text berhasil di copy", Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL)
+        Toaster.make(view, getString(R.string.copy_success), Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL)
     }
 
     companion object {
