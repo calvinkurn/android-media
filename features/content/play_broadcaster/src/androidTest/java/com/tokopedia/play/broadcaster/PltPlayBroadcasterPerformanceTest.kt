@@ -1,6 +1,7 @@
 package com.tokopedia.play.broadcaster
 
 import android.view.View
+import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.IdlingResource
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
@@ -37,9 +38,7 @@ class PltPlayBroadcasterPerformanceTest {
         val context = InstrumentationRegistry.getInstrumentation().targetContext
         intentsTestRule.launchActivity(PlayBroadcastActivity.createIntent(context))
         fakeLogin()
-//        IdlingRegistry.getInstance().register(idlingResource)
-
-        Thread.sleep(10000)
+        IdlingRegistry.getInstance().register(idlingResource)
 
         intentsTestRule.activity.getPltPerformanceResultData()?.let { data->
             PerformanceDataFileUtils.writePLTPerformanceFile(
@@ -52,7 +51,7 @@ class PltPlayBroadcasterPerformanceTest {
     @After
     fun tearDown() {
         intentsTestRule.activity.finishAndRemoveTask()
-//        IdlingRegistry.getInstance().unregister(idlingResource)
+        IdlingRegistry.getInstance().unregister(idlingResource)
     }
 
     private fun fakeLogin() {
