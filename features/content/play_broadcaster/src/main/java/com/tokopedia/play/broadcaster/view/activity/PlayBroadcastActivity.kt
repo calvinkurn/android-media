@@ -29,6 +29,7 @@ import com.tokopedia.play.broadcaster.di.provider.PlayBroadcastComponentProvider
 import com.tokopedia.play.broadcaster.ui.model.ChannelType
 import com.tokopedia.play.broadcaster.ui.model.ConfigurationUiModel
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
+import com.tokopedia.play.broadcaster.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.broadcaster.util.deviceinfo.DeviceInfoUtil
 import com.tokopedia.play.broadcaster.util.extension.channelNotFound
 import com.tokopedia.play.broadcaster.util.extension.getDialog
@@ -44,12 +45,18 @@ import com.tokopedia.play.broadcaster.view.fragment.PlayPermissionFragment
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.partial.ActionBarPartialView
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
+import com.tokopedia.play_common.util.extension.awaitResume
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.play_common.view.updatePadding
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.Toaster
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancelChildren
+import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.coroutines.CoroutineContext
 
 /**
  * Created by mzennis on 19/05/20.
@@ -64,6 +71,15 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
 
     @Inject
     lateinit var analytic: PlayBroadcastAnalytic
+
+    @Inject
+    lateinit var dispatcher: CoroutineDispatcherProvider
+
+    private val job = SupervisorJob()
+    private val scope = object: CoroutineScope {
+        override val coroutineContext: CoroutineContext
+            get() = job + dispatcher.mainImmediate
+    }
 
     private lateinit var viewModel: PlayBroadcastViewModel
 
@@ -148,12 +164,15 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
     override fun onDestroy() {
         viewModel.destroyPushStream()
         super.onDestroy()
+        job.cancelChildren()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putString(CHANNEL_ID, viewModel.channelId)
-        outState.putString(CHANNEL_TYPE, channelType.value)
+        try {
+            outState.putString(CHANNEL_ID, viewModel.channelId)
+            outState.putString(CHANNEL_TYPE, channelType.value)
+        } catch (e: Throwable) {}
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
@@ -285,7 +304,7 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
     private fun populateSavedState(savedInstanceState: Bundle) {
         val channelId = savedInstanceState.getString(CHANNEL_ID)
         val channelType = savedInstanceState.getString(CHANNEL_TYPE)
-        channelId?.let {viewModel.setChannelId(it)}
+        channelId?.let { viewModel.setChannelId(it) }
         channelType?.let {
             this.channelType = ChannelType.getByValue(it)
         }
@@ -353,6 +372,7 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
     }
 
     private fun configureChannelType(channelType: ChannelType) {
+        if (isRecreated) return
         showActionBar(true)
         if (channelType == ChannelType.Pause) {
             showDialogContinueLiveStreaming()
@@ -371,8 +391,8 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
                     override fun onRequestPermissionResult(): PermissionStatusHandler {
                         return {
                             if (isGranted(Manifest.permission.CAMERA)) startPreview()
-                            if (isAllGranted()) configureChannelType(channelType)
-                            else showPermissionPage()
+                            if (isAllGranted()) doWhenResume { configureChannelType(channelType) }
+                            else doWhenResume { showPermissionPage() }
                         }
                     }
 
@@ -487,6 +507,13 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
                 is PlayBeforeLiveFragment -> analytic.clickSwitchCameraOnFinalSetupPage()
                 is PlayBroadcastUserInteractionFragment -> analytic.clickSwitchCameraOnLivePage(viewModel.channelId, viewModel.title)
             }
+        }
+    }
+
+    private fun doWhenResume(block: () -> Unit) {
+        scope.launch {
+            awaitResume()
+            block()
         }
     }
 

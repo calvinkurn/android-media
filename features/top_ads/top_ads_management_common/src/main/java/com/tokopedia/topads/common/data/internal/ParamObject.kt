@@ -56,4 +56,6 @@ object ParamObject {
     const val SEARCH_TERM = "search_term"
     const val NEXT_CURSOR = "next_cursor"
     const val LIMIT = "limit"
+    const val ADS = "ads"
+    const val ACTION = "action"
 }

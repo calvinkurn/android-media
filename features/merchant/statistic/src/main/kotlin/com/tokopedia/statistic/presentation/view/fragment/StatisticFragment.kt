@@ -30,7 +30,6 @@ import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
 import com.tokopedia.sellerhomecommon.utils.Utils
 import com.tokopedia.statistic.R
 import com.tokopedia.statistic.analytics.StatisticTracker
-import com.tokopedia.statistic.common.utils.DateFilterFormatUtil
 import com.tokopedia.statistic.analytics.performance.StatisticPagePerformanceTraceNameConst.BAR_CHART_WIDGET_TRACE
 import com.tokopedia.statistic.analytics.performance.StatisticPagePerformanceTraceNameConst.CARD_WIDGET_TRACE
 import com.tokopedia.statistic.analytics.performance.StatisticPagePerformanceTraceNameConst.CAROUSEL_WIDGET_TRACE
@@ -40,6 +39,8 @@ import com.tokopedia.statistic.analytics.performance.StatisticPagePerformanceTra
 import com.tokopedia.statistic.analytics.performance.StatisticPagePerformanceTraceNameConst.PROGRESS_WIDGET_TRACE
 import com.tokopedia.statistic.analytics.performance.StatisticPagePerformanceTraceNameConst.TABLE_WIDGET_TRACE
 import com.tokopedia.statistic.analytics.performance.StatisticPerformanceMonitoringListener
+import com.tokopedia.statistic.common.Const
+import com.tokopedia.statistic.common.utils.DateFilterFormatUtil
 import com.tokopedia.statistic.common.utils.logger.StatisticLogger
 import com.tokopedia.statistic.di.DaggerStatisticComponent
 import com.tokopedia.statistic.presentation.view.bottomsheet.DateFilterBottomSheet
@@ -148,6 +149,12 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
             StatisticTracker.sendScreen(screenName)
     }
 
+    override fun onPause() {
+        super.onPause()
+        hideTooltipIfExist()
+        hideMonthPickerIfExist()
+    }
+
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
         if (!getRegularMerchantStatus()) {
@@ -184,8 +191,9 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
 
     override fun onTooltipClicked(tooltip: TooltipUiModel) {
         if (!isAdded || context == null) return
-        TooltipBottomSheet(requireContext(), tooltip)
-                .show(this@StatisticFragment.childFragmentManager, TAG_TOOLTIP)
+        val tooltipBottomSheet = (childFragmentManager.findFragmentByTag(TAG_TOOLTIP) as? TooltipBottomSheet) ?: TooltipBottomSheet.createInstance()
+        tooltipBottomSheet.init(requireContext(), tooltip)
+        tooltipBottomSheet.show(childFragmentManager, TAG_TOOLTIP)
     }
 
     override fun removeWidget(position: Int, widget: BaseWidgetUiModel<*>) {
@@ -352,6 +360,11 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
 
     private fun hideTooltipIfExist() {
         val bottomSheet = childFragmentManager.findFragmentByTag(TAG_TOOLTIP)
+        (bottomSheet as? BottomSheetUnify)?.dismiss()
+    }
+
+    private fun hideMonthPickerIfExist() {
+        val bottomSheet = childFragmentManager.findFragmentByTag(Const.BottomSheet.TAG_MONTH_PICKER)
         (bottomSheet as? BottomSheetUnify)?.dismiss()
     }
 

@@ -15,17 +15,12 @@ import com.tokopedia.flight.common.util.FlightAnalytics
 import com.tokopedia.flight.common.view.BaseFlightActivity
 import com.tokopedia.flight.searchV4.presentation.model.FlightPriceModel
 import com.tokopedia.flight.searchV4.presentation.model.FlightSearchPassDataModel
-import com.tokopedia.user.session.UserSessionInterface
-import javax.inject.Inject
 
 /**
  * @author by jessica on 2019-10-23
  */
 
 class FlightBookingActivity : BaseFlightActivity(), HasComponent<FlightBookingComponent> {
-
-    lateinit var userSession: UserSessionInterface
-        @Inject set
 
     override fun getNewFragment(): Fragment {
         val departureId = intent.getStringExtra(EXTRA_FLIGHT_DEPARTURE_ID)

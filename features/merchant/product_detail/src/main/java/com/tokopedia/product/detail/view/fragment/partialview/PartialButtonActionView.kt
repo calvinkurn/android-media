@@ -18,7 +18,7 @@ import kotlinx.android.synthetic.main.partial_layout_button_action.view.*
 class PartialButtonActionView private constructor(val view: View,
                                                   private val listener: View.OnClickListener)
     : View.OnClickListener by listener {
-    var promoTopAdsClick: (() -> Unit)? = null
+    var advertiseProductClick: (() -> Unit)? = null
     var rincianTopAdsClick: (() -> Unit)? = null
     var buyNowClick: ((String) -> Unit)? = null
     var addToCartClick: ((String) -> Unit)? = null
@@ -131,6 +131,16 @@ class PartialButtonActionView private constructor(val view: View,
                 this.buttonType = UnifyButton.Type.MAIN
                 this.isEnabled = false
             }
+            ProductDetailConstant.KEY_BUTTON_PRIMARY_GREEN -> {
+                this.buttonVariant = UnifyButton.Variant.FILLED
+                this.buttonType = UnifyButton.Type.MAIN
+                this.isEnabled = true
+            }
+            ProductDetailConstant.KEY_BUTTON_SECONDARY_GREEN -> {
+                this.buttonVariant = UnifyButton.Variant.GHOST
+                this.buttonType = UnifyButton.Type.MAIN
+                this.isEnabled = true
+            }
             else -> {
                 this.buttonVariant = UnifyButton.Variant.GHOST
                 this.buttonType = UnifyButton.Type.TRANSACTION
@@ -221,15 +231,12 @@ class PartialButtonActionView private constructor(val view: View,
             btn_empty_stock.hide()
             btn_topchat.hide()
             seller_button_container.show()
-            btn_top_ads.buttonVariant = UnifyButton.Variant.GHOST
             if (hasTopAdsActive) {
                 btn_top_ads.setOnClickListener { rincianTopAdsClick?.invoke() }
                 btn_top_ads.text = context.getString(R.string.rincian_topads)
-                btn_top_ads.buttonType = UnifyButton.Type.ALTERNATE
             } else {
-                btn_top_ads.setOnClickListener { promoTopAdsClick?.invoke() }
+                btn_top_ads.setOnClickListener { advertiseProductClick?.invoke() }
                 btn_top_ads.text = context.getString(R.string.promote_topads)
-                btn_top_ads.buttonType = UnifyButton.Type.TRANSACTION
             }
             btn_edit_product.setOnClickListener(this@PartialButtonActionView)
         }
