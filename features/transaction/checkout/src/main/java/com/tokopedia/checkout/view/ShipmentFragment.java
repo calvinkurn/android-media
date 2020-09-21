@@ -2703,11 +2703,15 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
         RecipientAddressModel recipientAddressModel = shipmentAdapter.getAddressShipmentData();
         if (recipientAddressModel.getSelectedTabIndex() == RecipientAddressModel.TAB_ACTIVE_ADDRESS_DEFAULT) {
-            shipmentPresenter.changeShippingAddress(recipientAddressModel, true, false, true, false);
             checkoutAnalyticsCourierSelection.eventClickJemputTab();
+            if (recipientAddressModel.getLocationDataModel() != null) {
+                shipmentPresenter.changeShippingAddress(recipientAddressModel, true, false, true, false);
+            }
         } else {
-            shipmentPresenter.changeShippingAddress(recipientAddressModel, true, true, true, false);
             checkoutAnalyticsCourierSelection.eventClickDropOffTab();
+            if (recipientAddressModel.getLocationDataModel() != null) {
+                shipmentPresenter.changeShippingAddress(recipientAddressModel, true, true, true, false);
+            }
         }
     }
 
