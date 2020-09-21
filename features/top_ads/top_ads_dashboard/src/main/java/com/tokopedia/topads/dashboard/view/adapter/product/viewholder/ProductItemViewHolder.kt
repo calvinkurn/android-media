@@ -7,7 +7,7 @@ import com.tokopedia.design.image.ImageLoader
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.STATUS_ACTIVE
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.STATUS_TIDAK_TAMPIL
-import com.tokopedia.topads.dashboard.data.model.nongroupItem.WithoutGroupDataItem
+import com.tokopedia.topads.common.data.response.nongroupItem.WithoutGroupDataItem
 import com.tokopedia.topads.dashboard.view.adapter.product.viewmodel.ProductItemViewModel
 import kotlinx.android.synthetic.main.topads_dash_item_non_group_card.view.*
 

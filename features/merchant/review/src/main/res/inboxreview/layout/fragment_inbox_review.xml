@@ -23,7 +23,6 @@
             android:layout_marginEnd="@dimen/spacing_lvl4"
             android:layout_marginRight="@dimen/spacing_lvl4"
             android:layout_marginTop="@dimen/spacing_lvl4"
-            android:layout_alignParentTop="true"
             app:layout_scrollFlags="scroll|enterAlways"
             app:closeButtonVisibility="visible"
             app:tickerType="information"
@@ -34,12 +33,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_lvl4"
-            android:layout_marginLeft="@dimen/spacing_lvl4"
-            android:layout_marginTop="@dimen/spacing_lvl4"
+            android:paddingTop="@dimen/spacing_lvl3"
             android:paddingBottom="@dimen/spacing_lvl3"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"
             app:sort_filter_relationship="AND"
             app:sort_filter_type="quick" />
 
@@ -59,7 +56,7 @@
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvInboxReview"
-                android:layout_width="0dp"
+                android:layout_width="@dimen/layout_lvl0"
                 android:layout_height="wrap_content"
                 android:clipChildren="false"
                 android:clipToPadding="false"

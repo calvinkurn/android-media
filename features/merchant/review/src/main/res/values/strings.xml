@@ -163,13 +163,13 @@
     <string name="review_history_details_score_empty">Gimana layanan toko ini?</string>
     <string name="review_detail_score_expired">Batas waktu penilaian toko sudah habis</string>
     <string name="review_history_detail_toaster_edit_success">Ulasan berhasil diubah</string>
-    <string name="review_reputation_deadline">Kamu masih bisa ubah penilaian sebelum</string>
+    <string name="review_reputation_deadline">Kamu masih bisa ubah penilaianmu tentang toko ini.</string>
 
     <string name="review_edit_dialog_title">Yakin keluar halaman ini?</string>
     <string name="review_edit_dialog_subtitle">Ulasan yang kamu ubah tidak akan tersimpan jika keluar dari halaman ini.</string>
     <string name="review_edit_dialog_continue_writing">Lanjut Tulis Ulasan</string>
     <string name="review_edit_dialog_exit">Ya, Keluar</string>
-    <string name="review_edit_fail">Ulasan tidak tersiimpan. Cek koneksi internetmu dan coba lagi, ya</string>
+    <string name="review_edit_fail">Ulasan tidak tersimpan. Cek koneksi internetmu dan coba lagi, ya</string>
 
     <string name="review_seller_tab_title">Ulasan Pembeli</string>
 

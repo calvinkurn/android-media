@@ -25,6 +25,7 @@ import com.tokopedia.deals.common.analytics.DealsAnalytics
 import com.tokopedia.deals.common.listener.*
 import com.tokopedia.deals.common.model.LoadingMoreUnifyModel
 import com.tokopedia.deals.common.ui.activity.DealsBaseActivity
+import com.tokopedia.deals.common.ui.adapter.DealsProductCardAdapter
 import com.tokopedia.deals.common.ui.dataview.*
 import com.tokopedia.deals.common.ui.fragment.DealsBaseFragment
 import com.tokopedia.deals.common.ui.viewmodel.DealsBaseViewModel
@@ -113,10 +114,14 @@ class DealsCategoryFragment : DealsBaseFragment(),
     private fun handleRanderList(list: List<DealsBaseItemDataView>) {
         val nextPage = list.size >= DEFAULT_MIN_ITEMS
         if (list.size == INITIAL_SIZE_BASE_ITEM_VIEW) {
+            var isNotEmpty = false
             list.map {
                 if (it.isLoaded) {
-                    renderList(list, nextPage)
+                    isNotEmpty = true
                 }
+            }
+            if (isNotEmpty == true) {
+                renderList(list, nextPage)
             }
         } else {
             renderList(list, nextPage)
@@ -189,7 +194,7 @@ class DealsCategoryFragment : DealsBaseFragment(),
                         else -> outRect.top = 0
                     }
                     outRect.bottom = if (isInTheFirstRow(position + 2, totalSpanCount)) resources.getInteger(R.integer.twenty_four).toPx() else resources.getInteger(R.integer.four).toPx()
-                    outRect.left = if (isFirstInRow(position + 2, totalSpanCount)) resources.getInteger(R.integer.two).toPx() else resources.getInteger(R.integer.twenty_four).toPx()
+                    outRect.left = if (isFirstInRow(position + 2, totalSpanCount)) resources.getInteger(R.integer.two).toPx() else resources.getInteger(R.integer.sixteen).toPx()
                     outRect.right = if (isFirstInRow(position + 2, totalSpanCount))resources.getInteger(R.integer.sixteen).toPx() else resources.getInteger(R.integer.two).toPx()
                 }
             }

@@ -19,6 +19,7 @@ import java.lang.Exception
 class KeywordSearchAdapter(private val onChecked: (() -> Unit)) : RecyclerView.Adapter<KeywordSearchAdapter.ViewHolder>() {
 
     var items: MutableList<SearchData> = mutableListOf()
+
     inner class ViewHolder(val view: View) : RecyclerView.ViewHolder(view)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -45,35 +46,48 @@ class KeywordSearchAdapter(private val onChecked: (() -> Unit)) : RecyclerView.A
 
         holder.view.keyword_name.text = items[holder.adapterPosition].keyword
         try {
-            holder.view.keyword_count.text = Utils.convertToCurrencyString(items[position].totalSearch.toLong())
+            if (items[holder.adapterPosition].totalSearch == -1) {
+                holder.view.keyword_count.text = "  -  "
+
+            } else
+                holder.view.keyword_count.text = Utils.convertToCurrencyString(items[holder.adapterPosition].totalSearch.toLong())
         } catch (e: Exception) {
             holder.view.keyword_count.text = items[holder.adapterPosition].totalSearch.toString()
         }
+        holder.view.checkBox.setOnCheckedChangeListener(null)
+        holder.view.checkBox.isChecked = items[holder.adapterPosition].onChecked
+
         holder.view.setOnClickListener {
             holder.view.checkBox.isChecked = !holder.view.checkBox.isChecked
         }
         holder.view.checkBox.setOnCheckedChangeListener { buttonView, isChecked ->
-            if(holder.adapterPosition!=RecyclerView.NO_POSITION) {
+            if (holder.adapterPosition != RecyclerView.NO_POSITION) {
                 items[holder.adapterPosition].onChecked = isChecked
                 onChecked.invoke()
             }
         }
-        when (items[holder.adapterPosition].competition) {
-            KeywordItemViewHolder.LOW -> {
-                holder.view.keywordCompetition.setLabelType(Label.GENERAL_DARK_GREEN)
-                holder.view.keywordCompetition.setLabel(holder.view.resources.getString(R.string.topads_common_keyword_competition_low))
-            }
+        if ((items[holder.adapterPosition].competition ?: "").isEmpty()) {
+            holder.view.keywordCompetition.setLabel(holder.view.resources.getString(R.string.topads_common_keyword_competition_low))
+            holder.view.keywordCompetition.visibility = View.INVISIBLE
 
-            KeywordItemViewHolder.MEDIUM -> {
-                holder.view.keywordCompetition.setLabelType(Label.GENERAL_DARK_ORANGE)
-                holder.view.keywordCompetition.setLabel(holder.view.resources.getString(R.string.topads_common_keyword_competition_moderation))
-            }
+        } else {
+            when (items[holder.adapterPosition].competition) {
+                KeywordItemViewHolder.LOW -> {
+                    holder.view.keywordCompetition.setLabelType(Label.GENERAL_DARK_GREEN)
+                    holder.view.keywordCompetition.setLabel(holder.view.resources.getString(R.string.topads_common_keyword_competition_low))
+                }
 
-            KeywordItemViewHolder.HIGH -> {
-                holder.view.keywordCompetition.setLabelType(Label.GENERAL_DARK_RED)
-                holder.view.keywordCompetition.setLabel(holder.view.resources.getString(R.string.topads_common_keyword_competition_high))
-            }
+                KeywordItemViewHolder.MEDIUM -> {
+                    holder.view.keywordCompetition.setLabelType(Label.GENERAL_DARK_ORANGE)
+                    holder.view.keywordCompetition.setLabel(holder.view.resources.getString(R.string.topads_common_keyword_competition_moderation))
+                }
 
+                KeywordItemViewHolder.HIGH -> {
+                    holder.view.keywordCompetition.setLabelType(Label.GENERAL_DARK_RED)
+                    holder.view.keywordCompetition.setLabel(holder.view.resources.getString(R.string.topads_common_keyword_competition_high))
+                }
+
+            }
         }
     }
 

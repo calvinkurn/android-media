@@ -2,6 +2,7 @@ package com.tokopedia.topads.dashboard.view.activity
 
 import android.os.Bundle
 import android.view.View
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -74,6 +75,7 @@ class TopAdsKeywordInsightsActivity : BaseActivity(), HasComponent<TopAdsDashboa
         setContentView(R.layout.topads_dash_insight_key_activity_base_layout)
         topAdsInsightPresenter.attachView(this)
         topAdsInsightPresenter.getInsight(resources)
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
         tabUnify.getUnifyTabLayout().addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 view_pager.setCurrentItem(tab?.position?:0, true)

@@ -85,13 +85,10 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <data
-                    android:host="tokopedia.by"
-                    android:pathPattern="/.*"
-                    android:scheme="https" />
-                <data
-                    android:host="tokopedia.by"
-                    android:pathPattern="/.*"
-                    android:scheme="http" />
+                    android:host="@string/host_affiliate"
+                    android:pathPattern="@string/path_af_byme_tracking"
+                    android:scheme="@string/internal_scheme" />
+
             </intent-filter>
         </activity>
     </application>

@@ -51,11 +51,12 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+
 /**
  * @author by nisie on 8/10/17.
  */
 
-public class  InboxReputationActivity extends BaseActivity implements HasComponent, InboxReputationListener {
+public class InboxReputationActivity extends BaseActivity implements HasComponent, InboxReputationListener {
 
     public static final String GO_TO_REPUTATION_HISTORY = "GO_TO_REPUTATION_HISTORY";
     public static final String IS_DIRECTLY_GO_TO_RATING = "is_directly_go_to_rating";
@@ -96,7 +97,7 @@ public class  InboxReputationActivity extends BaseActivity implements HasCompone
         userSession = new UserSession(this);
         reputationTracking = new ReputationTracking();
         super.onCreate(savedInstanceState);
-        if(useNewPage()) {
+        if (useNewPage() && !GlobalConfig.isSellerApp()) {
             startActivity(ReviewInboxActivity.Companion.createNewInstance(this));
             finish();
         }
@@ -114,13 +115,13 @@ public class  InboxReputationActivity extends BaseActivity implements HasCompone
         toolbar = findViewById(R.id.toolbar);
 
         setupToolbar();
-        sellerReputationFragment = SellerReputationFragment.createInstance();
-        if(GlobalConfig.isSellerApp()) {
+        if (GlobalConfig.isSellerApp()) {
             reviewSellerFragment = RatingProductFragment.Companion.createInstance();
             Bundle reviewSellerBundle = new Bundle();
             reviewSellerBundle.putBoolean(IS_DIRECTLY_GO_TO_RATING, !goToReputationHistory);
             reviewSellerFragment.setArguments(reviewSellerBundle);
             inboxReviewFragment = InboxReviewFragment.Companion.createInstance();
+            sellerReputationFragment = SellerReputationFragment.createInstance();
         }
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(indicator.getUnifyTabLayout()));
         indicator.getUnifyTabLayout().addOnTabSelectedListener(new GlobalMainTabSelectedListener(viewPager, this) {
@@ -131,10 +132,10 @@ public class  InboxReputationActivity extends BaseActivity implements HasCompone
                     canFireTracking = true;
                     return;
                 }
-                if(!GlobalConfig.isSellerApp()) {
+                if (!GlobalConfig.isSellerApp()) {
                     reputationTracking.onTabReviewSelectedTracker(tab.getPosition());
                 }
-                if(tickerTitle != null) {
+                if (tickerTitle != null) {
                     reputationTracking.onSuccessGetIncentiveOvoTracker(tickerTitle, ReputationTrackingConstant.WAITING_REVIEWED);
                 }
             }
@@ -147,11 +148,11 @@ public class  InboxReputationActivity extends BaseActivity implements HasCompone
                     .title_tab_my_review));
         }
 
-        if(GlobalConfig.isSellerApp()) {
-            if(reviewSellerFragment != null) {
+        if (GlobalConfig.isSellerApp()) {
+            if (reviewSellerFragment != null) {
                 indicator.addNewTab(getString(R.string.title_rating_product));
             }
-            if(inboxReviewFragment != null) {
+            if (inboxReviewFragment != null) {
                 indicator.addNewTab(getString(R.string.title_review_inbox));
             }
         }
@@ -168,7 +169,7 @@ public class  InboxReputationActivity extends BaseActivity implements HasCompone
         }
 
         sectionAdapter = new SectionsPagerAdapter(getSupportFragmentManager(), getFragmentList(), indicator.getUnifyTabLayout());
-        viewPager.setOffscreenPageLimit(OFFSCREEN_PAGE_LIMIT);
+        viewPager.setOffscreenPageLimit(getFragmentList().size());
         viewPager.setAdapter(sectionAdapter);
 
         if (goToReputationHistory) {
