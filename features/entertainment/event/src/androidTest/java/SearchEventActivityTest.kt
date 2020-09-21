@@ -16,7 +16,9 @@ import com.tokopedia.entertainment.search.activity.EventSearchActivity
 import com.tokopedia.entertainment.search.adapter.SearchEventViewHolder
 import com.tokopedia.entertainment.search.adapter.viewholder.SearchEventListViewHolder
 import com.tokopedia.entertainment.search.adapter.viewholder.SearchLocationListViewHolder
+import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import kotlinx.android.synthetic.main.ent_search_fragment.*
+import mock.SearchEventMockResponse
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -29,7 +31,7 @@ class SearchEventActivityTest {
     var activityRule: ActivityTestRule<EventSearchActivity> = object : IntentsTestRule<EventSearchActivity>(EventSearchActivity::class.java) {
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
-            //setupGraphqlMockResponse(HomeEventMockResponse())
+
         }
     }
 
@@ -50,8 +52,11 @@ class SearchEventActivityTest {
     }
 
     fun search_keyword(){
+        setupGraphqlMockResponse(SearchEventMockResponse())
+        Thread.sleep(3000)
         onView(withId(com.tokopedia.unifycomponents.R.id.searchbar_textfield)).perform(click())
         onView(withId(com.tokopedia.unifycomponents.R.id.searchbar_textfield)).perform(typeText("Hong Kong"))
+
         Thread.sleep(5000)
     }
 
