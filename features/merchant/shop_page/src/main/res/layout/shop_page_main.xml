@@ -33,10 +33,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_gravity="center_vertical"
-                android:text="@string/text_your_shop"
-                android:textColor="@color/clr_f531353b"
                 android:layout_marginEnd="@dimen/dp_12"
                 android:layout_marginRight="@dimen/dp_12"
+                android:text="@string/text_your_shop"
+                android:textColor="@color/clr_f531353b"
                 app:typographyType="heading_4" />
 
             <androidx.appcompat.widget.LinearLayoutCompat
@@ -100,8 +100,8 @@
                 android:id="@+id/appBarLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:elevation="0dp"
-                android:background="@null">
+                android:background="@null"
+                app:elevation="0dp">
 
                 <include
                     layout="@layout/partial_new_shop_page_header"
@@ -116,8 +116,8 @@
                     style="@style/TabBar.White"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:layout_scrollFlags="enterAlways"
                     android:background="@drawable/bg_tab_layout_shop_page"
+                    app:layout_scrollFlags="enterAlways"
                     app:tabIndicator="@drawable/tab_indicator_shop_page"
                     app:tabMode="fixed" />
 
@@ -130,6 +130,7 @@
                 app:can_swipe="false"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
+            <include layout="@layout/bottom_sheet_layout" />
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/button_chat"

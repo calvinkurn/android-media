@@ -22,11 +22,6 @@ sealed class SellerFeatureUiModel(
             titleId = R.string.seller_migration_fragment_product_tab_featured_product_title,
             descriptionId = R.string.seller_migration_fragment_product_tab_featured_product_description)
 
-    class ImportInstagramFeatureUiModel : SellerFeatureUiModel(
-            imageId = R.drawable.ic_seller_migration_import_instagram,
-            titleId = R.string.seller_migration_fragment_product_tab_instagram_import_title,
-            descriptionId = R.string.seller_migration_fragment_product_tab_instagram_import_description)
-
     class MultiEditFeatureUiModel : SellerFeatureUiModel(
             imageId = R.drawable.ic_seller_migration_multi_edit,
             titleId = R.string.seller_migration_fragment_product_tab_multi_edit_title,
@@ -134,11 +129,35 @@ sealed class SellerFeatureUiModel(
             descriptionId = R.string.seller_migration_product_manage_set_variant_description,
             data = data)
 
-    class ImportInstagramFeatureWithDataUiModel(data: Any) : SellerFeatureUiModel(
-            imageId = R.drawable.ic_seller_migration_import_instagram,
-            titleId = R.string.seller_migration_fragment_product_tab_instagram_import_title,
-            descriptionId = R.string.seller_migration_fragment_product_tab_instagram_import_description,
-            data = data)
+    class PostFeedDataUiModel: SellerFeatureUiModel(
+            imageId = R.drawable.ic_seller_migration_feed,
+            titleId = R.string.seller_migration_fragment_feed_play_tab_post_feed_title,
+            descriptionId = R.string.seller_migration_fragment_feed_play_tab_post_feed_description
+    )
+
+    class LiveVideoDataUiModel: SellerFeatureUiModel(
+            imageId = R.drawable.ic_seller_migration_tokopedia_play,
+            titleId = R.string.seller_migration_fragment_feed_play_tab_live_video_title,
+            descriptionId = R.string.seller_migration_fragment_feed_play_tab_live_video_description
+    )
+
+    class ShopCapitalDataUiModel: SellerFeatureUiModel(
+            imageId = R.drawable.ic_seller_migration_modal_toko,
+            titleId = R.string.seller_migration_fragment_financial_service_tab_shop_capital_title,
+            descriptionId = R.string.seller_migration_fragment_financial_service_tab_shop_capital_description
+    )
+
+    class PriorityBalanceDataUiModel: SellerFeatureUiModel(
+            imageId = R.drawable.ic_seller_migration_saldo_prio,
+            titleId = R.string.seller_migration_fragment_financial_service_tab_priority_balance_title,
+            descriptionId = R.string.seller_migration_fragment_financial_service_tab_priority_balance_description
+    )
+
+    class BroadcastChatUiModel: SellerFeatureUiModel(
+            imageId = R.drawable.ic_seller_migration_template_chat,
+            titleId = R.string.seller_migration_tab_ads_broadcast_chat_title,
+            descriptionId = R.string.seller_migration_tab_ads_broadcast_chat_description
+    )
 
     override fun type(typeFactory: SellerFeatureAdapterTypeFactory): Int {
         return typeFactory.type(this)
