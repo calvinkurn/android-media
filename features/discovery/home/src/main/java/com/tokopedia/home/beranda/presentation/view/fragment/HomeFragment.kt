@@ -1277,11 +1277,11 @@ open class HomeFragment : BaseDaggerFragment(),
                 }
             }
             REQUEST_CODE_REVIEW -> {
-                if(shouldShowToaster()) {
-                    showToasterReviewSuccess()
-                }
                 adapter?.notifyDataSetChanged()
                 if (resultCode == Activity.RESULT_OK) {
+                    if(shouldShowToaster()) {
+                        showToasterReviewSuccess()
+                    }
                     getHomeViewModel().onRemoveSuggestedReview()
                 }
             }

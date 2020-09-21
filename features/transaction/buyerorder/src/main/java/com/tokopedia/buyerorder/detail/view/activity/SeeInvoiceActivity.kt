@@ -1,16 +1,17 @@
 package com.tokopedia.buyerorder.detail.view.activity
 
 import android.annotation.TargetApi
+import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.print.PrintAttributes
-import android.print.PrintDocumentAdapter
 import android.print.PrintManager
 import android.view.Menu
 import android.view.MenuItem
 import android.webkit.WebView
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.buyerorder.R
 import com.tokopedia.buyerorder.detail.data.Invoice
@@ -67,19 +68,21 @@ class SeeInvoiceActivity : BaseSimpleWebViewActivity() {
     @TargetApi(Build.VERSION_CODES.KITKAT)
     private fun onPrintClicked(webView: WebView?) {
         webView?.let {
-            val printManager = getSystemService(Context.PRINT_SERVICE) as PrintManager
+            val printManager = ContextCompat.getSystemService(this, PrintManager::class.java)
             val jobName = getString(R.string.app_name) + " Document"
-            val printAdapter: PrintDocumentAdapter
-            printAdapter = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            val printAdapter = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 it.createPrintDocumentAdapter(jobName)
             } else {
                 it.createPrintDocumentAdapter()
             }
-
             val prinAttr = PrintAttributes.Builder()
                     .setMediaSize(PrintAttributes.MediaSize.ISO_A4)
                     .build()
-            printManager.print(jobName, printAdapter, prinAttr)
+            try {
+                printManager?.print(jobName, printAdapter, prinAttr)
+            } catch (e: ActivityNotFoundException) {
+                e.printStackTrace()
+            }
         }
     }
 

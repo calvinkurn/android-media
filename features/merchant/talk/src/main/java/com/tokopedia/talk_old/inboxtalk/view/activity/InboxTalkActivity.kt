@@ -14,6 +14,10 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform
+import com.tokopedia.talk.common.constants.TalkConstants
+import com.tokopedia.talk.feature.inbox.presentation.activity.TalkInboxActivity
 import com.tokopedia.talk_old.R
 import com.tokopedia.talk_old.common.analytics.TalkAnalytics
 import com.tokopedia.talk_old.common.di.DaggerTalkComponent
@@ -23,6 +27,7 @@ import com.tokopedia.talk_old.inboxtalk.view.adapter.InboxTalkPagerAdapter
 import com.tokopedia.talk_old.inboxtalk.view.listener.GetUnreadNotificationListener
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.activity_talk_inbox.*
+import java.lang.IllegalStateException
 import javax.inject.Inject
 
 /**
@@ -41,6 +46,8 @@ class InboxTalkActivity : BaseSimpleActivity(), HasComponent<TalkComponent>,
     lateinit var analytics : TalkAnalytics
 
     private lateinit var titles: Array<String>
+
+    private var remoteConfigInstance: RemoteConfigInstance? = null
 
     companion object {
 
@@ -66,8 +73,13 @@ class InboxTalkActivity : BaseSimpleActivity(), HasComponent<TalkComponent>,
 
     override fun onCreate(savedInstanceState: Bundle?) {
         initInjector()
+        getAbTestPlatform()?.fetch(null)
         super.onCreate(savedInstanceState)
-
+        if (useNewPage()) {
+            startActivity(TalkInboxActivity.createIntent(this))
+            finish()
+            return
+        }
         initPagerAdapter()
 
     }
@@ -179,5 +191,21 @@ class InboxTalkActivity : BaseSimpleActivity(), HasComponent<TalkComponent>,
                 }
             }
         }
+    }
+
+    private fun getAbTestPlatform(): AbTestPlatform? {
+        if (remoteConfigInstance == null) {
+            remoteConfigInstance = RemoteConfigInstance(this.application)
+        }
+        return try {
+            remoteConfigInstance?.abTestPlatform
+        } catch (exception: IllegalStateException) {
+            null
+        }
+    }
+
+    private fun useNewPage(): Boolean {
+        val remoteConfigValue = getAbTestPlatform()?.getString(TalkConstants.AB_TEST_INBOX_KEY)
+        return remoteConfigValue?.isNotBlank() ?: false
     }
 }

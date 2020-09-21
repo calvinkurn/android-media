@@ -15,6 +15,10 @@ object AccountConstants {
     const val SALDO_QUERY = "saldo_query"
     const val REWARD_SHORTCUT_QUERY= "reward_shortcut_query"
     const val SHOP_LOCATION_QUERY = "query_shop_location"
+    const val TITLE_UOH_MENUNGGU_PEMBAYARAN = "Menunggu Pembayaran"
+    const val TITLE_UOH_DALAM_PROSES = "Dalam Proses"
+    const val TITLE_UOH_SEMUA_TRANSAKSI = "Semua Transaksi"
+    const val TITLE_UOH_ETICKET = "E-tiket & E-voucher Aktif"
 
     object Navigation {
         const val SEE_ALL = "lihat_semua"
@@ -95,6 +99,10 @@ object AccountConstants {
         const val EVENT_CLICK_SAMPAI = "clickRegister"
         const val EVENT_CATEGORY_SAMPAI = "register tokopedia corner"
         const val EVENT_ACTION_SAMPAI = "click button daftar"
+        const val EVENT_ACTION_MENUNGGU_PEMBAYARAN = "click on button menunggu pembayaran"
+        const val EVENT_ACTION_SEMUA_TRANSAKSI = "click on button semua transaksi"
+        const val EVENT_ACTION_DALAM_PROSES = "click on button dalam proses"
+        const val EVENT_ACTION_ETICKET_EVOUCHER = "click on e-tiket & e-voucher aktif"
         const val OVO_PAY_LATER_CATEGORY = "fin - android main screen"
         const val OVO_PAY_LATER_CLICK = "ovo - pay later click"
         const val OVO_PAY_LATER_LABEL = "success - %s"
@@ -111,6 +119,7 @@ object AccountConstants {
         const val EVENT_CATEGORY_ACCOUNT_PAGE_BUYER = "account page - buyer"
         const val EVENT_ACTION_IMPRESSION_PRODUCT_RECOMMENDATION = "impression - product recommendation"
         const val CURRENCY_CODE = "currencyCode"
+        const val CURRENT_SITE = "currentSite"
         const val IDR = "IDR"
         const val IMPRESSIONS = "impressions"
         const val DATA_NAME = "name"
@@ -170,6 +179,11 @@ object AccountConstants {
         const val EVENT_NAME_CLICK_NOTIF_CENTER = "clickNotifCenter"
         const val CATEGORY_NOTIF_CENTER = "notif center"
         const val EVENT_ACTION_TS_USR_MENU = "click on notif setting from setting page"
+        const val USER_BELI = "user/beli"
+        const val TOKOPEDIA_MARKETPLACE = "tokopediamarketplace"
+        const val USER_ID = "userId"
+        const val BUSINESS_UNIT = "businessUnit"
+        const val USER_PLATFORM = "user platform"
     }
 
     object MOENGAGE {
