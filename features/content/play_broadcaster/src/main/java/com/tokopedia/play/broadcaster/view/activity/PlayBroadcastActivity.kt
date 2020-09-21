@@ -352,7 +352,7 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
                 is NetworkResult.Success -> {
                     loaderView.hide()
                     if (!isRecreated) handleChannelConfiguration(result.data)
-                    stopNetworkMonitoring()
+                    stopPageMonitoring()
                 }
                 is NetworkResult.Fail -> {
                     invalidatePerformanceData()
