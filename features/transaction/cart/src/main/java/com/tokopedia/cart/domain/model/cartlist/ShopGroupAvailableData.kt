@@ -35,7 +35,11 @@ data class ShopGroupAvailableData(
         // Total data which is calculated from cartItemDataList
         var totalPrice: Long = 0,
         var totalCashback: Long = 0,
-        var totalItem: Int = 0
+        var totalItem: Int = 0,
+
+        var preOrderInfo: String = "",
+        var freeShippingBadgeUrl: String = "",
+        var incidentInfo: String = ""
 
 ) : Parcelable {
 
