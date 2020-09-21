@@ -78,6 +78,16 @@ public class CheckoutDealPresenter
         goToPromoCheckOutListDealsActivity(context);
     }
 
+    @Override
+    public void clickGoToDetailPromo(Context context, String couponCode) {
+        goToPromoCheckoutDetailDealsActivity(context, couponCode);
+    }
+
+    @Override
+    public void clickGotToListPromoApplied(Context context, String promoCode) {
+        goToPromoCheckoutListDealsActivity(context, promoCode);
+    }
+
     private JsonObject convertPackageToCartItem(PackageViewModel packageViewModel) {
         Configuration config = new Configuration();
         config.setPrice(packageViewModel.getSalesPrice());
@@ -103,6 +113,25 @@ public class CheckoutDealPresenter
         JsonElement jsonElement = new JsonParser().parse(new Gson().toJson(cart));
         JsonObject requestBody = jsonElement.getAsJsonObject();
         return requestBody;
+    }
+
+    private void goToPromoCheckoutDetailDealsActivity(Context context, String couponCode) {
+        JsonObject requestBody = convertPackageToCartItem(packageViewModel);
+        Intent dealsIntent = RouteManager.getIntent(context, ApplinkConstInternalPromo.PROMO_DETAIL_DEALS);
+        dealsIntent.putExtra(com.tokopedia.oms.view.utils.Utils.Constants.CHECKOUTDATA, requestBody.toString());
+        dealsIntent.putExtra(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.COUPON_EXTRA_IS_USE, true);
+        dealsIntent.putExtra(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_KUPON_CODE, couponCode);
+        getView().navigateToActivityRequest(dealsIntent, CheckoutHomeFragment.LOYALTY_ACTIVITY_REQUEST_CODE);
+    }
+
+    private void goToPromoCheckoutListDealsActivity(Context context, String promoCode) {
+        JsonObject requestBody = convertPackageToCartItem(packageViewModel);
+        Intent dealsIntent = RouteManager.getIntent(context, ApplinkConstInternalPromo.PROMO_LIST_DEALS);
+        dealsIntent.putExtra(com.tokopedia.oms.view.utils.Utils.Constants.CHECKOUTDATA, requestBody.toString());
+        dealsIntent.putExtra(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_PRODUCTID, packageViewModel.getDigitalProductID());
+        dealsIntent.putExtra(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_CATEGORYID, packageViewModel.getDigitalCategoryID());
+        dealsIntent.putExtra(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_PROMO_CODE, promoCode);
+        getView().navigateToActivityRequest(dealsIntent, CheckoutHomeFragment.LOYALTY_ACTIVITY_REQUEST_CODE);
     }
 
     private void goToPromoCheckOutListDealsActivity(Context context) {
