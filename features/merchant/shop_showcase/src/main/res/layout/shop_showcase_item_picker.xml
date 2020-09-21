@@ -58,7 +58,22 @@
         app:layout_constraintVertical_bias="0"
         app:bold="false"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        />
+
+    <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
+        android:id="@+id/btn_checkbox_showcase_picker"
+        app:bold="false"
+        app:unify_checkbox_type="type_default"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="@dimen/dp_10"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0"
+        android:visibility="gone"
+        />
 
     <View
         android:id="@+id/view_line_separator"
