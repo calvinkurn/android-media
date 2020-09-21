@@ -1,6 +1,7 @@
 package com.tokopedia.sellerhome.settings.domain.usecase
 
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.sellerhome.common.coroutine.SellerHomeCoroutineDispatcher
 import com.tokopedia.sellerhome.common.errorhandler.SellerHomeErrorHandler
 import com.tokopedia.sellerhome.settings.view.fragment.OtherMenuFragment
 import com.tokopedia.sellerhome.settings.view.uimodel.base.partialresponse.PartialSettingFail
@@ -21,8 +22,9 @@ class GetAllShopInfoUseCase @Inject constructor(
         private val getShopTotalFollowersUseCase: GetShopTotalFollowersUseCase,
         private val shopStatusTypeUseCase: ShopStatusTypeUseCase,
         private val topAdsAutoTopupUseCase: TopAdsAutoTopupUseCase,
-        private val topAdsDashboardDepositUseCase: TopAdsDashboardDepositUseCase)
-    : UseCase<Pair<PartialSettingResponse, PartialSettingResponse>>(){
+        private val topAdsDashboardDepositUseCase: TopAdsDashboardDepositUseCase,
+        private val dispatcher: SellerHomeCoroutineDispatcher
+) : UseCase<Pair<PartialSettingResponse, PartialSettingResponse>>(){
 
     override suspend fun executeOnBackground(): Pair<PartialSettingResponse, PartialSettingResponse> = coroutineScope {
         with(userSession) {
@@ -33,7 +35,7 @@ class GetAllShopInfoUseCase @Inject constructor(
     }
 
     private suspend fun getPartialShopInfoData(shopId: Int): PartialSettingResponse {
-        return withContext(Dispatchers.IO) {
+        return withContext(dispatcher.io()) {
             try {
                 shopStatusTypeUseCase.params = ShopStatusTypeUseCase.createRequestParams(shopId)
                 getShopTotalFollowersUseCase.params = GetShopTotalFollowersUseCase.createRequestParams(shopId)
@@ -50,7 +52,7 @@ class GetAllShopInfoUseCase @Inject constructor(
     }
 
     private suspend fun getPartialTopAdsData(shopId: String): PartialSettingResponse {
-        return withContext(Dispatchers.IO) {
+        return withContext(dispatcher.io()) {
             try {
                 topAdsDashboardDepositUseCase.params = TopAdsDashboardDepositUseCase.createRequestParams(shopId.toInt())
                 topAdsAutoTopupUseCase.params = TopAdsAutoTopupUseCase.createRequestParams(shopId)

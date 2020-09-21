@@ -8,6 +8,7 @@
 
     <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
         android:id="@+id/checkBoxSelect"
+        android:contentDescription="@string/content_desc_checkBoxSelect"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/product_manage_checkbox_select_horizontal_spacing"
@@ -33,6 +34,22 @@
         app:layout_constraintTop_toTopOf="parent"
         app:unify_image_corner_radius="6"
         app:unify_image_type="rect" />
+
+    <ImageView
+        android:id="@+id/imageTopAds"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl7"
+        android:layout_marginLeft="@dimen/spacing_lvl7"
+        android:layout_marginTop="@dimen/spacing_lvl7"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/imageProduct"
+        app:layout_constraintLeft_toLeftOf="@id/imageProduct"
+        app:layout_constraintRight_toRightOf="@id/imageProduct"
+        app:layout_constraintTop_toTopOf="@id/imageProduct"
+        app:srcCompat="@drawable/ic_product_manage_topads_dark"
+        tools:ignore="ContentDescription"
+        tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/textTitle"

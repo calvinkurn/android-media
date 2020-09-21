@@ -22,6 +22,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.topads.sdk.R
 import com.tokopedia.topads.sdk.base.Config
@@ -126,7 +127,7 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                     shop_badge.visibility = View.GONE
                 }
             }
-            shop_name?.text = cpmData?.cpm?.cpmShop?.name
+            shop_name?.text = MethodChecker.fromHtml(cpmData?.cpm?.cpmShop?.name)
             description?.text = cpmData?.cpm?.cpmShop?.slogan
 
             val shopdetail = findViewById<View>(R.id.shop_detail)

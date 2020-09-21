@@ -59,6 +59,10 @@ class VideoViewComponent(
         }
     }
 
+    fun hideThumbnail() {
+        ivThumbnail.hide()
+    }
+
     private fun configureVideoLayout(screenOrientation: ScreenOrientation, videoOrientation: VideoOrientation) {
 
         fun configureVideo() {

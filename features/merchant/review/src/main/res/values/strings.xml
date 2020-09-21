@@ -169,7 +169,7 @@
     <string name="review_edit_dialog_subtitle">Ulasan yang kamu ubah tidak akan tersimpan jika keluar dari halaman ini.</string>
     <string name="review_edit_dialog_continue_writing">Lanjut Tulis Ulasan</string>
     <string name="review_edit_dialog_exit">Ya, Keluar</string>
-    <string name="review_edit_fail">Ulasan tidak tersiimpan. Cek koneksi internetmu dan coba lagi, ya</string>
+    <string name="review_edit_fail">Ulasan tidak tersimpan. Cek koneksi internetmu dan coba lagi, ya</string>
 
     <string name="review_seller_tab_title">Ulasan Pembeli</string>
 

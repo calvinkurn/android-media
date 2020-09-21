@@ -32,6 +32,18 @@ abstract class TalkReplyViewModelTestFixture {
     lateinit var talkCreateNewCommentUseCase: TalkCreateNewCommentUseCase
 
     @RelaxedMockK
+    lateinit var talkMarkNotFraudUseCase: TalkMarkNotFraudUseCase
+
+    @RelaxedMockK
+    lateinit var talkMarkCommentNotFraudUseCase: TalkMarkCommentNotFraudUseCase
+
+    @RelaxedMockK
+    lateinit var talkReportTalkUseCase: TalkReportTalkUseCase
+
+    @RelaxedMockK
+    lateinit var talkReportCommentUseCase: TalkReportCommentUseCase
+
+    @RelaxedMockK
     lateinit var userSession: UserSessionInterface
 
     @get:Rule
@@ -47,6 +59,10 @@ abstract class TalkReplyViewModelTestFixture {
                 talkDeleteTalkUseCase,
                 talkDeleteCommentUseCase,
                 talkCreateNewCommentUseCase,
+                talkMarkNotFraudUseCase,
+                talkMarkCommentNotFraudUseCase,
+                talkReportTalkUseCase,
+                talkReportCommentUseCase,
                 userSession,
                 TestCoroutineDispatchers)
     }
