@@ -1,11 +1,14 @@
 package com.tokopedia.promocheckout.list.view.fragment
 
+import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import com.tokopedia.abstraction.constant.IRouterConstant
+import com.tokopedia.promocheckout.R
 import com.tokopedia.promocheckout.common.data.REQUEST_CODE_PROMO_DETAIL
 import com.tokopedia.promocheckout.common.domain.model.TravelCollectiveBanner
 import com.tokopedia.promocheckout.common.domain.model.deals.DealsVerifyBody
@@ -19,6 +22,7 @@ import com.tokopedia.promocheckout.list.model.listcoupon.PromoCheckoutListModel
 import com.tokopedia.promocheckout.list.view.presenter.PromoCheckoutListContract
 import com.tokopedia.promocheckout.list.view.presenter.PromoCheckoutListDealsPresenter
 import kotlinx.android.synthetic.main.fragment_promo_checkout_list.*
+import timber.log.Timber
 import javax.inject.Inject
 
 
@@ -31,7 +35,7 @@ class PromoCheckoutListDealsFragment() : BasePromoCheckoutListFragment(), PromoC
     @Inject
     lateinit var promoCheckoutListDealsPresenter: PromoCheckoutListDealsPresenter
 
-    override var serviceId: String = IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.DEALS_STRING
+    override var serviceId: String = IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.DIGITAL_STRING
     var categoryID: Int = 1
     var checkoutData: String = ""
 
@@ -40,6 +44,15 @@ class PromoCheckoutListDealsFragment() : BasePromoCheckoutListFragment(), PromoC
         categoryID = arguments?.getInt(EXTRA_CATEGORY_ID, 1) ?: 1
         checkoutData = arguments?.getString(EXTRA_CHECKOUT_DATA) ?: ""
         promoCheckoutListDealsPresenter.attachView(this)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        if (promoCodeApplied != null) {
+            textInputCoupon.setText(promoCodeApplied)
+        }
+        progressDialog = ProgressDialog(activity)
+        progressDialog.setMessage(getString(R.string.title_loading))
     }
 
     override fun onPromoCodeUse(promoCode: String) {
@@ -81,6 +94,18 @@ class PromoCheckoutListDealsFragment() : BasePromoCheckoutListFragment(), PromoC
 
     override fun initInjector() {
         getComponent(PromoCheckoutListComponent::class.java).inject(this)
+    }
+
+    override fun hideProgressLoading() {
+        progressDialog?.hide()
+    }
+
+    override fun showProgressLoading() {
+        try {
+            progressDialog?.show()
+        } catch (exception: UnsupportedOperationException) {
+            Timber.d(exception)
+        }
     }
 
     override fun onDestroyView() {
