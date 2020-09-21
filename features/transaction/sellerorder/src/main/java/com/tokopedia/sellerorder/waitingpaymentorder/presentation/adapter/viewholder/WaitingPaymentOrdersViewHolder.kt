@@ -11,6 +11,7 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.waitingpaymentorder.presentation.adapter.WaitingPaymentOrderProductsAdapter
 import com.tokopedia.sellerorder.waitingpaymentorder.presentation.adapter.typefactory.WaitingPaymentOrderProductsAdapterTypeFactory
+import com.tokopedia.sellerorder.waitingpaymentorder.presentation.model.RecyclerViewItemChanges
 import com.tokopedia.sellerorder.waitingpaymentorder.presentation.model.WaitingPaymentOrderUiModel
 import kotlinx.android.synthetic.main.item_waiting_payment_orders.view.*
 
@@ -26,7 +27,7 @@ class WaitingPaymentOrdersViewHolder(
     companion object {
         val LAYOUT = R.layout.item_waiting_payment_orders
         const val MAX_ORDER_WHEN_COLLAPSED = 5
-        const val RECYCLER_VIEW_ANIMATION_DURATION = 250L
+        const val RECYCLER_VIEW_ANIMATION_DURATION = 300L
     }
 
     private val adapter: WaitingPaymentOrderProductsAdapter by lazy {
@@ -44,11 +45,7 @@ class WaitingPaymentOrdersViewHolder(
                 tvToggleCollapseMoreProducts.apply {
                     showWithCondition(element.productUiModels.size > MAX_ORDER_WHEN_COLLAPSED)
                     updateToggleCollapseText(element.isExpanded)
-                    setOnClickListener {
-                        element.isExpanded = !element.isExpanded
-                        listener.toggleCollapse(element)
-                        animateDropDownIcon(element.isExpanded)
-                    }
+                    setLoadUnloadMoreClickListener(element.isExpanded, element.productUiModels)
                 }
                 icLoadMoreDropDown.apply {
                     iconDropDownAnimator?.end()
@@ -58,15 +55,37 @@ class WaitingPaymentOrdersViewHolder(
                 rvWaitingPaymentOrderProducts.apply {
                     if (adapter == null) {
                         isNestedScrollingEnabled = false
-                        itemAnimator?.addDuration = RECYCLER_VIEW_ANIMATION_DURATION
-                        itemAnimator?.removeDuration = RECYCLER_VIEW_ANIMATION_DURATION
-                        itemAnimator?.changeDuration = RECYCLER_VIEW_ANIMATION_DURATION
-                        itemAnimator?.moveDuration = RECYCLER_VIEW_ANIMATION_DURATION
                         adapter = this@WaitingPaymentOrdersViewHolder.adapter
                     }
                     this@WaitingPaymentOrdersViewHolder.adapter.updateProducts(getShownProducts(element.isExpanded, element.productUiModels))
                 }
             }
+        }
+    }
+
+    @Suppress("NAME_SHADOWING")
+    override fun bind(element: WaitingPaymentOrderUiModel?, payloads: MutableList<Any>) {
+        val changes = payloads.getOrNull(0)
+        if (changes !is RecyclerViewItemChanges<*>) return
+        val oldData = changes.oldData as WaitingPaymentOrderUiModel
+        val newData = changes.newData as WaitingPaymentOrderUiModel
+
+        if (oldData.isExpanded != newData.isExpanded) {
+            itemView.rvWaitingPaymentOrderProducts.addOneTimeGlobalLayoutListener {
+                (itemView as ViewGroup).layoutTransition.disableTransitionType(LayoutTransition.CHANGING)
+            }
+            setLoadUnloadMoreClickListener(newData.isExpanded, newData.productUiModels)
+        }
+    }
+
+    private fun setLoadUnloadMoreClickListener(isExpanded: Boolean, productUiModels: List<WaitingPaymentOrderUiModel.ProductUiModel>) {
+        itemView.setOnClickListener {
+            (itemView as ViewGroup).layoutTransition.enableTransitionType(LayoutTransition.CHANGING)
+            itemView.layoutTransition.setInterpolator(LayoutTransition.CHANGING, LinearInterpolator())
+            this@WaitingPaymentOrdersViewHolder.adapter.updateProducts(getShownProducts(!isExpanded, productUiModels))
+            listener.toggleCollapse(adapterPosition, !isExpanded)
+            animateDropDownIcon(!isExpanded)
+            updateToggleCollapseText(!isExpanded)
         }
     }
 
@@ -87,20 +106,6 @@ class WaitingPaymentOrdersViewHolder(
         iconDropDownAnimator?.start()
     }
 
-    @Suppress("NAME_SHADOWING")
-    override fun bind(element: WaitingPaymentOrderUiModel?, payloads: MutableList<Any>) {
-        element?.let { element ->
-            if (payloads.getOrNull(0) !is Boolean) return
-            (itemView as ViewGroup).layoutTransition.enableTransitionType(LayoutTransition.CHANGING)
-            itemView.layoutTransition.setInterpolator(LayoutTransition.CHANGING, LinearInterpolator())
-            itemView.rvWaitingPaymentOrderProducts.addOneTimeGlobalLayoutListener {
-                itemView.layoutTransition.disableTransitionType(LayoutTransition.CHANGING)
-            }
-            this@WaitingPaymentOrdersViewHolder.adapter.updateProducts(getShownProducts(element.isExpanded, element.productUiModels))
-            updateToggleCollapseText(element.isExpanded)
-        }
-    }
-
     private fun getShownProducts(isExpanded: Boolean, productUiModels: List<WaitingPaymentOrderUiModel.ProductUiModel>): List<WaitingPaymentOrderUiModel.ProductUiModel> {
         return if (isExpanded) {
             productUiModels
@@ -118,6 +123,6 @@ class WaitingPaymentOrdersViewHolder(
     }
 
     interface LoadUnloadMoreProductClickListener {
-        fun toggleCollapse(waitingPaymentOrderUiModel: WaitingPaymentOrderUiModel)
+        fun toggleCollapse(position: Int, isExpanded: Boolean)
     }
 }

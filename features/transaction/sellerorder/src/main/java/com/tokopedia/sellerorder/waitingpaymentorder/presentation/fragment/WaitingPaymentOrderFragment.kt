@@ -51,9 +51,7 @@ class WaitingPaymentOrderFragment : BaseListFragment<Visitable<WaitingPaymentOrd
 
     companion object {
         const val TAG_BOTTOM_SHEET = "bottom_sheet"
-        const val RECYCLER_VIEW_ANIMATION_DURATION = 300L
         const val BUTTON_ENTER_LEAVE_ANIMATION_DURATION = 300L
-        const val TICKER_ENTER_LEAVE_ANIMATION_DURATION = 300L
     }
 
     @Inject
@@ -167,8 +165,8 @@ class WaitingPaymentOrderFragment : BaseListFragment<Visitable<WaitingPaymentOrd
         }
     }
 
-    override fun toggleCollapse(waitingPaymentOrderUiModel: WaitingPaymentOrderUiModel) {
-        (adapter as WaitingPaymentOrderAdapter).toggleCollapse(waitingPaymentOrderUiModel)
+    override fun toggleCollapse(position: Int, isExpanded: Boolean) {
+        (adapter as WaitingPaymentOrderAdapter).toggleCollapse(position, isExpanded)
     }
 
     private fun setupViews() {
@@ -215,10 +213,6 @@ class WaitingPaymentOrderFragment : BaseListFragment<Visitable<WaitingPaymentOrd
         context?.run {
             with(rvWaitingPaymentOrder) {
                 isNestedScrollingEnabled = true
-                itemAnimator?.addDuration = RECYCLER_VIEW_ANIMATION_DURATION
-                itemAnimator?.removeDuration = RECYCLER_VIEW_ANIMATION_DURATION
-                itemAnimator?.changeDuration = RECYCLER_VIEW_ANIMATION_DURATION
-                itemAnimator?.moveDuration = RECYCLER_VIEW_ANIMATION_DURATION
                 addOnScrollListener(object : RecyclerView.OnScrollListener() {
                     override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                         super.onScrolled(recyclerView, dx, dy)

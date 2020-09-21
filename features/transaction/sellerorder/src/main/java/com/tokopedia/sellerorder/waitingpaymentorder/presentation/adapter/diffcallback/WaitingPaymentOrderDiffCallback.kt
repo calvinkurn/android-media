@@ -2,6 +2,9 @@ package com.tokopedia.sellerorder.waitingpaymentorder.presentation.adapter.diffc
 
 import androidx.recyclerview.widget.DiffUtil
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.sellerorder.waitingpaymentorder.presentation.model.RecyclerViewItemChanges
+import com.tokopedia.sellerorder.waitingpaymentorder.presentation.model.WaitingPaymentOrderUiModel
+import com.tokopedia.sellerorder.waitingpaymentorder.presentation.model.WaitingPaymentTickerUiModel
 
 /**
  * Created by yusuf.hendrawan on 2020-09-07.
@@ -12,7 +15,8 @@ class WaitingPaymentOrderDiffCallback(
         private val newList: List<Visitable<*>>
 ) : DiffUtil.Callback() {
     override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        return oldList[oldItemPosition] == newList[newItemPosition]
+        return isTheSameTicker(oldList[oldItemPosition], newList[newItemPosition]) ||
+                isTheSameOrder(oldList[oldItemPosition], newList[newItemPosition])
     }
 
     override fun getOldListSize(): Int {
@@ -24,8 +28,18 @@ class WaitingPaymentOrderDiffCallback(
     }
 
     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        val oldItem = oldList[oldItemPosition]
-        val newItem = newList[newItemPosition]
-        return oldItem == newItem
+        return oldList[oldItemPosition] == newList[newItemPosition]
     }
+
+    override fun getChangePayload(oldItemPosition: Int, newItemPosition: Int): Any? {
+        return RecyclerViewItemChanges(oldList[oldItemPosition], newList[newItemPosition])
+    }
+
+    private fun isTheSameTicker(oldItem: Visitable<*>, newItem: Visitable<*>) =
+            oldItem is WaitingPaymentTickerUiModel && newItem is WaitingPaymentTickerUiModel &&
+                    oldItem == newItem
+
+    private fun isTheSameOrder(oldItem: Visitable<*>, newItem: Visitable<*>) =
+            oldItem is WaitingPaymentOrderUiModel && newItem is WaitingPaymentOrderUiModel &&
+                    oldItem.orderId == newItem.orderId
 }
