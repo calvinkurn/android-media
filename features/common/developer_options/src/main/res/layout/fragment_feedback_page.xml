@@ -12,12 +12,21 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <TextView
+            android:id="@+id/tv_feedback"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Ceritakan masalahmu di sini "
+            android:textColor="@color/black"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"/>
+
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/et_email_wrapper"
             style="@style/HintTextInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_feedback"
             app:layout_constraintStart_toStartOf="parent"
             android:hint="@string/email">
 
@@ -35,20 +44,25 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!--<androidx.appcompat.widget.AppCompatEditText
-            android:id="@+id/email"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/et_bug_wrapper"
+            style="@style/HintTextInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_lvl4"
-            android:textSize="@dimen/fontSize_lvl4"
-            android:lines="1"
-            android:gravity="center_vertical"
-            android:hint="@string/email"
-            app:backgroundTint="@color/Green_G500"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"/>-->
+            android:layout_marginTop="@dimen/dp_16"
+            app:layout_constraintTop_toBottomOf="@id/et_email_wrapper"
+            app:layout_constraintStart_toStartOf="parent"
+            android:hint="@string/bug_type">
 
-        <LinearLayout
+            <Spinner
+                android:id="@+id/spinner_bug_type"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="2" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+       <!-- <LinearLayout
             android:id="@+id/bug_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -72,67 +86,106 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="2" />
 
-        </LinearLayout>
+        </LinearLayout>-->
 
-        <androidx.appcompat.widget.AppCompatEditText
-            android:id="@+id/affected_page"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/et_affected_page_wrapper"
+            style="@style/HintTextInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_lvl4"
-            android:textSize="@dimen/fontSize_lvl4"
-            android:lines="1"
-            android:gravity="center_vertical"
-            android:inputType="text"
-            android:hint="@string/affected_page"
-            app:backgroundTint="@color/Green_G500"
-            app:layout_constraintTop_toBottomOf="@id/bug_layout"
-            app:layout_constraintStart_toStartOf="parent"/>
+            app:layout_constraintTop_toBottomOf="@id/et_bug_wrapper"
+            app:layout_constraintStart_toStartOf="parent"
+            android:hint="@string/affected_page">
 
-        <androidx.appcompat.widget.AppCompatEditText
-            android:id="@+id/step_to_reproduce"
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/affected_page"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:imeOptions="actionDone"
+                android:inputType="text"
+                android:maxLines="1"
+                android:overScrollMode="always"
+                android:scrollbarStyle="insideInset"
+                android:scrollbars="vertical"
+                android:textSize="@dimen/sp_14"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/et_str_wrapper"
+            style="@style/HintTextInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_lvl4"
-            android:textSize="@dimen/fontSize_lvl4"
-            android:maxLines="10"
-            android:inputType="textMultiLine"
-            android:hint="@string/step_to_reproduce"
-            app:backgroundTint="@color/Green_G500"
-            app:layout_constraintTop_toBottomOf="@id/affected_page"
-            app:layout_constraintStart_toStartOf="parent"/>
+            app:layout_constraintTop_toBottomOf="@id/et_affected_page_wrapper"
+            app:layout_constraintStart_toStartOf="parent"
+            android:hint="@string/step_to_reproduce">
 
-        <androidx.appcompat.widget.AppCompatEditText
-            android:id="@+id/actual_result"
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/step_to_reproduce"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:imeOptions="actionDone"
+                android:inputType="text"
+                android:maxLines="10"
+                android:overScrollMode="always"
+                android:scrollbarStyle="insideInset"
+                android:scrollbars="vertical"
+                android:textSize="@dimen/sp_14"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/et_actual_result_wrapper"
+            style="@style/HintTextInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_lvl4"
-            android:textSize="@dimen/fontSize_lvl4"
-            android:maxLines="10"
-            android:inputType="textMultiLine"
-            android:hint="@string/actual_result"
-            app:backgroundTint="@color/Green_G500"
-            app:layout_constraintTop_toBottomOf="@id/step_to_reproduce"
-            app:layout_constraintStart_toStartOf="parent"/>
+            app:layout_constraintTop_toBottomOf="@id/et_str_wrapper"
+            app:layout_constraintStart_toStartOf="parent"
+            android:hint="@string/actual_result">
 
-        <androidx.appcompat.widget.AppCompatEditText
-            android:id="@+id/expected_result"
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/actual_result"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:imeOptions="actionDone"
+                android:inputType="text"
+                android:maxLines="10"
+                android:overScrollMode="always"
+                android:scrollbarStyle="insideInset"
+                android:scrollbars="vertical"
+                android:textSize="@dimen/sp_14"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/et_expected_result_wrapper"
+            style="@style/HintTextInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_lvl4"
-            android:textSize="@dimen/fontSize_lvl4"
-            android:maxLines="10"
-            android:inputType="textMultiLine"
-            android:hint="@string/expected_result"
-            app:backgroundTint="@color/Green_G500"
-            app:layout_constraintTop_toBottomOf="@id/actual_result"
-            app:layout_constraintStart_toStartOf="parent"/>
+            app:layout_constraintTop_toBottomOf="@id/et_actual_result_wrapper"
+            app:layout_constraintStart_toStartOf="parent"
+            android:hint="@string/expected_result">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/expected_result"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:imeOptions="actionDone"
+                android:inputType="text"
+                android:maxLines="10"
+                android:overScrollMode="always"
+                android:scrollbarStyle="insideInset"
+                android:scrollbars="vertical"
+                android:textSize="@dimen/sp_14"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
 
         <ImageView
             android:id="@+id/image_feedback"
             android:layout_width="@dimen/dp_180"
             android:layout_height="@dimen/dp_240"
             android:layout_marginTop="@dimen/dp_16"
-            app:layout_constraintTop_toBottomOf="@+id/expected_result"
+            app:layout_constraintTop_toBottomOf="@+id/et_expected_result_wrapper"
             app:layout_constraintLeft_toRightOf="parent"
             app:layout_constraintRight_toLeftOf="parent"
             android:background="@color/white"

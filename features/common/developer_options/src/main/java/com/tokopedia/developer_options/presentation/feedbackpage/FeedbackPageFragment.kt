@@ -2,6 +2,7 @@ package com.tokopedia.developer_options.presentation.feedbackpage
 
 import android.Manifest
 import android.content.ContentResolver
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.database.Cursor
 import android.net.Uri
@@ -211,23 +212,19 @@ class FeedbackPageFragment: Fragment() {
 
             when {
                 TextUtils.isEmpty(emailText) -> {
-                    setWrapperError(et_email_wrapper, "Email harus diisi " )
+                    setWrapperError(et_email_wrapper, "Email should not be empty" )
                 }
                 TextUtils.isEmpty(affectedPageText) -> {
-                    Toast.makeText(context,
-                            "Issue should not be empty", Toast.LENGTH_SHORT).show()
+                    setWrapperError(et_affected_page_wrapper, "Issue should not be empty" )
                 }
                 TextUtils.isEmpty(journeyText) -> {
-                    Toast.makeText(context,
-                            "Affected Page should not be empty", Toast.LENGTH_SHORT).show()
+                    setWrapperError(et_str_wrapper, "Affected Page should not be empty" )
                 }
                 TextUtils.isEmpty(actualResultText) -> {
-                    Toast.makeText(context,
-                            "Actual Result should not be empty", Toast.LENGTH_SHORT).show()
+                    setWrapperError(et_actual_result_wrapper, "Actual Result should not be empty" )
                 }
                 TextUtils.isEmpty(expectedResultText) -> {
-                    Toast.makeText(context,
-                            "Expected Result should not be empty", Toast.LENGTH_SHORT).show()
+                    setWrapperError(et_expected_result_wrapper, "Expected Result not be empty" )
                 }
                 else -> {
                     val issueType = bugType.selectedItem.toString()
@@ -296,7 +293,8 @@ class FeedbackPageFragment: Fragment() {
                         .subscribe(object : Subscriber<FeedbackResponse>() {
                             override fun onNext(t: FeedbackResponse) {
                                 myPreferences.setSubmitFlag(email, userSession?.userId.toString())
-                                sendUriImage(t.key)
+                                if (uriImage != null) sendUriImage(t.key)
+                                else goToTicketCreatedActivity(t.key)
                             }
 
                             override fun onCompleted() {
@@ -324,7 +322,8 @@ class FeedbackPageFragment: Fragment() {
                     override fun onNext(t: List<ImageResponse>?) {
                         loadingDialog?.dismiss()
                         Toast.makeText(activity, issueKey, Toast.LENGTH_SHORT).show()
-                        activity?.finish()
+                        goToTicketCreatedActivity(issueKey)
+//                        activity?.finish()
                     }
 
                     override fun onCompleted() {
@@ -400,6 +399,13 @@ class FeedbackPageFragment: Fragment() {
                         name = affectedVersion
                 ))
         ))
+    }
+
+    private fun goToTicketCreatedActivity(ticketLink: String) {
+        Intent(context, TicketCreatedActivity::class.java).apply {
+            putExtra("EXTRA_IS_TICKET_LINK", ticketLink)
+            startActivityForResult(this, 1212)
+        }
     }
 
     companion object {

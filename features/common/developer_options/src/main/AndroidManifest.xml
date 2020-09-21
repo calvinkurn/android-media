@@ -49,6 +49,15 @@
             android:exported="false"/>
 
         <receiver android:name=".notification.ReviewNotificationUpdateExample" />
+
+        <activity
+            android:name=".presentation.feedbackpage.TicketCreatedActivity"
+            android:exported="true"
+            android:hardwareAccelerated="true"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"
+            android:windowSoftInputMode="adjustResize" />
+
     </application>
 
 </manifest>
