@@ -14,14 +14,12 @@ import javax.inject.Inject
 class RegisterPushNotifUseCase @Inject constructor(
         private val rawQueries: Map<String, String>,
         graphqlRepository: GraphqlRepository
-): GraphqlUseCase<RegisterPushNotifPojo>(graphqlRepository) {
+) : GraphqlUseCase<RegisterPushNotifPojo>(graphqlRepository) {
 
     fun executeCoroutines(
             publicKey: String,
             signature: String,
-            datetime: String,
-            onSuccess: (RegisterPushNotifData) -> Unit,
-            onError: (Throwable) -> Unit
+            datetime: String
     ) {
         rawQueries[LoginQueryConstant.QUERY_REGISTER_PUSH_NOTIF]?.let { query ->
             setRequestParams(mapOf(
@@ -31,9 +29,7 @@ class RegisterPushNotifUseCase @Inject constructor(
             ))
             setTypeClass(RegisterPushNotifPojo::class.java)
             setGraphqlQuery(query)
-            execute({
-                onSuccess(it.data)
-            }, onError)
+            execute({}, {})
         }
     }
 

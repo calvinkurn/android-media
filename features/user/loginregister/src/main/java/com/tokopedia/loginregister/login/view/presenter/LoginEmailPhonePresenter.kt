@@ -324,21 +324,15 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
         })
     }
 
-    fun registerPushNotif(publicKey: String, signature: String, datetime: String) {
-        registerPushNotifUseCase.executeCoroutines(
-                publicKey,
-                signature,
-                datetime, )
-    }
+    override fun registerPushNotif() {
+        val signature = cryptographyUtils?.generateFingerprintSignature(userSession.userId, userSession.deviceId)
+        signature?.let {
+            registerPushNotifUseCase.executeCoroutines(
+                    cryptographyUtils?.getPublicKey() ?: "",
+                    it.signature,
+                    it.datetime
+            )
+        }
 
-    override fun detachView() {
-        super.detachView()
-        registerCheckUseCase.cancelJobs()
-        statusPinUseCase.cancelJobs()
-        discoverUseCase.unsubscribe()
-        registerValidationUseCase.unsubscribe()
-        loginTokenUseCase.unsubscribe()
-        getProfileUseCase.unsubscribe()
-        tickerInfoUseCase.unsubscribe()
     }
 }

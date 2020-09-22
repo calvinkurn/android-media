@@ -75,6 +75,7 @@ class CryptographyUtils: Cryptography {
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (keyStore?.getCertificate(BiometricConstant.FINGERPRINT) == null || keyStore.getCertificate(BiometricConstant.FINGERPRINT).publicKey == null) {
                 val keyPairGenerator = KeyPairGenerator.getInstance(KeyProperties.KEY_ALGORITHM_RSA, BiometricConstant.ANDROID_KEY_STORE)
+                keyPairGenerator.initialize(4096)
                 val builder = KeyGenParameterSpec.Builder(BiometricConstant.FINGERPRINT,
                         KeyProperties.PURPOSE_SIGN)
                         .setDigests(KeyProperties.DIGEST_SHA1)

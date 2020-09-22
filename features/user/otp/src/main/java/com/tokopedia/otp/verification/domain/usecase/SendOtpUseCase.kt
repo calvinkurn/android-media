@@ -6,6 +6,7 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.otp.common.DispatcherProvider
+import com.tokopedia.otp.common.abstraction.BaseOtpUseCase
 import com.tokopedia.otp.verification.domain.data.OtpRequestPojo
 import com.tokopedia.otp.verification.domain.query.OtpRequestQuery
 import kotlinx.coroutines.withContext
@@ -18,7 +19,7 @@ import javax.inject.Inject
 class SendOtpUseCase @Inject constructor(
         private val graphqlRepository: GraphqlRepository,
         dispatcher: DispatcherProvider
-) : BaseVerificationUseCase<OtpRequestPojo>(dispatcher) {
+) : BaseOtpUseCase<OtpRequestPojo>(dispatcher) {
 
     @JvmOverloads
     fun getParams(

@@ -1,4 +1,4 @@
-package com.tokopedia.otp.verification.domain.usecase
+package com.tokopedia.otp.common.abstraction
 
 import com.tokopedia.otp.common.DispatcherProvider
 import kotlinx.coroutines.Job
@@ -9,7 +9,7 @@ import kotlin.coroutines.CoroutineContext
  * Created by Ade Fulki on 03/06/20.
  */
 
-abstract class BaseVerificationUseCase<out T>(dispatcherProvider: DispatcherProvider) {
+abstract class BaseOtpUseCase<out T>(dispatcherProvider: DispatcherProvider) {
 
     protected var job: Job = SupervisorJob()
 
