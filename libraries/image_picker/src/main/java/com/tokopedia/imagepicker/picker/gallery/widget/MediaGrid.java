@@ -13,12 +13,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.tokopedia.imagepicker.R;
 import com.tokopedia.imagepicker.picker.gallery.model.MediaItem;
-import com.tokopedia.utils.image.ImageUtil;
 
-import java.io.File;
 import java.util.ArrayList;
-
-import kotlin.Pair;
 
 /**
  * Created by hangnadi on 5/29/17.

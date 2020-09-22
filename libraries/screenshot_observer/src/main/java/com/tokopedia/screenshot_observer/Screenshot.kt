@@ -1,13 +1,18 @@
 package com.tokopedia.screenshot_observer
 
+import android.app.Activity
+import android.app.Application
 import android.content.ContentResolver
 import android.database.ContentObserver
+import android.net.Uri
+import android.os.Bundle
 import android.os.Handler
 import android.os.HandlerThread
 import android.provider.MediaStore
+import com.tokopedia.config.GlobalConfig
 
 
-open class Screenshot(contentResolver: ContentResolver, listener: Listener) {
+open class Screenshot(contentResolver: ContentResolver, listener: Listener) : Application.ActivityLifecycleCallbacks {
     private val mHandlerThread: HandlerThread = HandlerThread("ScreenshotObserver")
     private val mHandler: Handler
     private val mContentResolver: ContentResolver
@@ -18,7 +23,7 @@ open class Screenshot(contentResolver: ContentResolver, listener: Listener) {
         mHandlerThread.start()
         mHandler = Handler(mHandlerThread.looper)
         mContentResolver = contentResolver
-        mContentObserver = ScreenshotObserver(mHandler, contentResolver, listener)
+        mContentObserver = ScreenshotObserver(mHandler, listener)
         mListener = listener
     }
 
@@ -35,7 +40,34 @@ open class Screenshot(contentResolver: ContentResolver, listener: Listener) {
     }
 
     interface Listener {
-        fun onScreenShotTaken(screenshotData: ScreenshotData?)
+        fun onScreenShotTaken(uri: Uri?)
+    }
+
+    override fun onActivityPaused(activity: Activity) {
+        if (!GlobalConfig.isSellerApp()) {
+            unregister()
+        }
+    }
+
+    override fun onActivityStarted(activity: Activity) {
+    }
+
+    override fun onActivityDestroyed(activity: Activity) {
+    }
+
+    override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {
+    }
+
+    override fun onActivityStopped(activity: Activity) {
+    }
+
+    override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
+    }
+
+    override fun onActivityResumed(activity: Activity) {
+        if (!GlobalConfig.isSellerApp()) {
+            register()
+        }
     }
 
 

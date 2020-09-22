@@ -2,12 +2,13 @@ package com.tokopedia.imagepicker.picker.gallery.adapter;
 
 import android.content.Context;
 import android.database.Cursor;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.tokopedia.imagepicker.R;
 import com.tokopedia.imagepicker.picker.gallery.model.MediaItem;

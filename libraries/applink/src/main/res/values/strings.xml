@@ -16,7 +16,7 @@
     <string name="path_dev_opt" translatable="false">/dev-opts</string>
 
     <!--Feedback Form-->
-    <string name="internal_feedback" translatable="false">internal-feedback</string>eh
+    <string name="internal_feedback" translatable="false">internal-feedback</string>
 
     <!--Shop Settings-->
     <string name="shop_settings_title">Pengaturan Toko</string>

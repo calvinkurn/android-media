@@ -2,11 +2,9 @@ package com.tokopedia.common.network.domain;
 
 import android.content.Context;
 
-import com.tokopedia.common.network.BuildConfig;
 import com.tokopedia.common.network.data.ObservableFactory;
 import com.tokopedia.common.network.data.model.RestRequest;
 import com.tokopedia.common.network.data.model.RestResponse;
-import com.tokopedia.kotlin.util.ContainNullException;
 import com.tokopedia.kotlin.util.NullCheckerKt;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
@@ -16,7 +14,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import kotlin.Unit;
 import okhttp3.Interceptor;
 import rx.Observable;
 import rx.functions.Func1;
