@@ -44,6 +44,7 @@ import com.tokopedia.play.view.measurement.bounds.manager.videobounds.PlayVideoB
 import com.tokopedia.play.view.measurement.bounds.manager.videobounds.VideoBoundsManager
 import com.tokopedia.play.view.measurement.scaling.PlayVideoScalingManager
 import com.tokopedia.play.view.measurement.scaling.VideoScalingManager
+import com.tokopedia.play.view.monitoring.PlayPltPerformanceCallback
 import com.tokopedia.play.view.type.BottomInsetsState
 import com.tokopedia.play.view.type.BottomInsetsType
 import com.tokopedia.play.view.type.ScreenOrientation
@@ -64,7 +65,8 @@ import javax.inject.Inject
  * Created by jegul on 29/11/19
  */
 class PlayFragment @Inject constructor(
-        private val viewModelFactory: ViewModelProvider.Factory
+        private val viewModelFactory: ViewModelProvider.Factory,
+        private val pageMonitoring: PlayPltPerformanceCallback
 ) :
         TkpdBaseV4Fragment(),
         PlayOrientationListener,
@@ -91,7 +93,6 @@ class PlayFragment @Inject constructor(
         FragmentErrorViewComponent(channelId, it, R.id.fl_global_error, childFragmentManager)
     }
 
-    private lateinit var pageMonitoring: PageLoadTimePerformanceInterface
     private lateinit var playViewModel: PlayViewModel
 
     private val channelId: String
@@ -122,8 +123,8 @@ class PlayFragment @Inject constructor(
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setOrientation()
-        setupPageMonitoring()
         playViewModel = ViewModelProvider(this, viewModelFactory).get(PlayViewModel::class.java)
+        playViewModel.getChannelInfo(channelId)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -147,7 +148,6 @@ class PlayFragment @Inject constructor(
         super.onResume()
         orientationManager.enable()
         stopPrepareMonitoring()
-        startNetworkMonitoring()
         playViewModel.getChannelInfo(channelId)
         view?.postDelayed({
             view?.let { registerKeyboardListener(it) }
@@ -380,8 +380,7 @@ class PlayFragment @Inject constructor(
 
     private fun observeChannelErrorEvent() {
         playViewModel.observableChannelErrorEvent.observe(viewLifecycleOwner, EventObserver {
-            startRenderMonitoring()
-            stopRenderMonitoring()
+            resetMonitoring()
         })
     }
 
@@ -451,18 +450,8 @@ class PlayFragment @Inject constructor(
     /**
      * Performance Monitoring
      */
-    private fun setupPageMonitoring() {
-        if (activity != null && activity is PlayActivity) {
-            pageMonitoring = (activity as PlayActivity).getPageMonitoring()
-        }
-    }
-
     private fun stopPrepareMonitoring() {
         pageMonitoring.stopPreparePagePerformanceMonitoring()
-    }
-
-    private fun startNetworkMonitoring() {
-        pageMonitoring.startNetworkRequestPerformanceMonitoring()
     }
 
     private fun stopNetworkMonitoring() {

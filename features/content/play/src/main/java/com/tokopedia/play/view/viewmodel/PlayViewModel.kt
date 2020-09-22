@@ -21,6 +21,7 @@ import com.tokopedia.play.util.event.Event
 import com.tokopedia.play.util.video.state.PlayViewerVideoState
 import com.tokopedia.play.util.video.state.PlayViewerVideoStateListener
 import com.tokopedia.play.util.video.state.PlayViewerVideoStateProcessor
+import com.tokopedia.play.view.monitoring.PlayPltPerformanceCallback
 import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.*
 import com.tokopedia.play.view.uimodel.mapper.PlayUiMapper
@@ -48,7 +49,8 @@ class PlayViewModel @Inject constructor(
         private val getProductTagItemsUseCase: GetProductTagItemsUseCase,
         private val playSocket: PlaySocket,
         private val userSession: UserSessionInterface,
-        private val dispatchers: CoroutineDispatcherProvider
+        private val dispatchers: CoroutineDispatcherProvider,
+        private val pageMonitoring: PlayPltPerformanceCallback
 ) : PlayBaseViewModel(dispatchers.main) {
 
     /**
@@ -404,6 +406,7 @@ class PlayViewModel @Inject constructor(
 
     fun getChannelInfo(channelId: String) {
 
+        pageMonitoring.startNetworkRequestPerformanceMonitoring()
         var retryCount = 0
 
         fun getChannelInfoResponse(channelId: String){
@@ -455,7 +458,7 @@ class PlayViewModel @Inject constructor(
 
         if (!isFreezeOrBanned) {
             _observableGetChannelInfo.value = NetworkResult.Loading
-            getChannelInfoResponse(channelId)
+            if (channelInfoJob?.isActive != true) getChannelInfoResponse(channelId)
         }
     }
 
