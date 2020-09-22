@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import com.tokopedia.seller.menu.common.R
 import com.tokopedia.unifycomponents.CardUnify
+import com.tokopedia.unifycomponents.setImage
 import kotlinx.android.synthetic.main.layout_seller_menu_feature_card.view.*
 
 class SellerMenuFeatureCard(context: Context, attrs: AttributeSet) : CardUnify(context, attrs) {
@@ -28,7 +29,7 @@ class SellerMenuFeatureCard(context: Context, attrs: AttributeSet) : CardUnify(c
         textDescription.text = description
 
         icon?.let {
-            textTitle.setCompoundDrawablesWithIntrinsicBounds(it, null, null, null)
+            imageFeature.setImageDrawable(it)
         }
 
         styledAttrs.recycle()
