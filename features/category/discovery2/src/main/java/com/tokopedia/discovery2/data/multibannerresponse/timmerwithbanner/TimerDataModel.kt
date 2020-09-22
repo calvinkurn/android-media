@@ -6,5 +6,5 @@ data class TimerDataModel(
         var hours: Int = 0,
         var minutes: Int = 0,
         var seconds: Int = 0,
-        var milliSeconds: Int? = null
+        var timeFinish: Boolean = false
 )

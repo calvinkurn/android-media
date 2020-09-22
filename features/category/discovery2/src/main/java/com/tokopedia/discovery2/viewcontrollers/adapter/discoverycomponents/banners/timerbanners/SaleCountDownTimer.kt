@@ -14,7 +14,7 @@ class SaleCountDownTimer(millisInFuture: Long, countDownInterval: Long = 1000,
     private var days = 0
 
     override fun onTick(millisUntilFinished: Long) {
-        Log.d("millisUntilFinished", millisUntilFinished.toString())
+        timeDiffModel.timeFinish = false
         if (isCurrentTimer) {
             var seconds = (millisUntilFinished / 1000f).roundToInt()
             var minutes = seconds / 60
@@ -26,7 +26,6 @@ class SaleCountDownTimer(millisInFuture: Long, countDownInterval: Long = 1000,
             }
             minutes %= 60
             seconds %= 60
-
             if (showDays) timeDiffModel.days = days
             timeDiffModel.hours = hours
             timeDiffModel.minutes = minutes
@@ -41,7 +40,7 @@ class SaleCountDownTimer(millisInFuture: Long, countDownInterval: Long = 1000,
         timeDiffModel.hours = 0
         timeDiffModel.minutes = 0
         timeDiffModel.seconds = 0
-        timeDiffModel.milliSeconds = 0
+        timeDiffModel.timeFinish = true
         getTimerData.invoke(timeDiffModel)
     }
 }

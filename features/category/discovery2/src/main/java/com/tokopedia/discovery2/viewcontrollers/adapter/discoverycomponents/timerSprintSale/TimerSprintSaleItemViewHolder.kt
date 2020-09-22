@@ -7,6 +7,7 @@ import androidx.lifecycle.Observer
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.Utils
+import com.tokopedia.discovery2.data.multibannerresponse.timmerwithbanner.TimerDataModel
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
@@ -34,20 +35,18 @@ class TimerSprintSaleItemViewHolder(itemView: View, private val fragment: Fragme
                 }
             })
             timerSprintSaleItemViewModel.getTimerData().observe(it, Observer { timerData ->
-                if (timerData.hours == 0 && timerData.minutes == 0 && timerData.seconds == 0 && timerData.milliSeconds == 0) {
+                if (timerData.timeFinish) {
+                    timerSprintSaleItemViewModel.stopTimer()
                     setTimerType()
                     timerSprintSaleItemViewModel.handleSaleEndSates()
                 }
-                tvHours.text = String.format(TIME_DISPLAY_FORMAT, timerData.hours)
-                tvMinutes.text = String.format(TIME_DISPLAY_FORMAT, timerData.minutes)
-                tvSeconds.text = String.format(TIME_DISPLAY_FORMAT, timerData.seconds)
-
+                setTimerTime(timerData)
             })
-
             timerSprintSaleItemViewModel.refreshPage().observe(it, Observer { refreshPage ->
-                if (refreshPage) (fragment as DiscoveryFragment).onRefresh()
+                if (refreshPage) {
+                    (fragment as DiscoveryFragment).onRefresh()
+                }
             })
-
             timerSprintSaleItemViewModel.getSyncPageLiveData().observe(it, Observer { needResync ->
                 if (needResync) {
                     (fragment as DiscoveryFragment).reSync()
@@ -65,6 +64,7 @@ class TimerSprintSaleItemViewHolder(itemView: View, private val fragment: Fragme
             Utils.isSaleOver(timerSprintSaleItemViewModel.getEndDate()) -> {
                 backgroundView.background = MethodChecker.getDrawable(itemView.context, R.drawable.discovery_timer_sale_grey_background)
                 tvTitle.text = itemView.context.getString(R.string.discovery_sale_has_ended)
+                setTimerTime(null)
                 timerSprintSaleItemViewModel.checkUpcomingSaleTimer()
             }
             else -> {
@@ -74,6 +74,17 @@ class TimerSprintSaleItemViewHolder(itemView: View, private val fragment: Fragme
         }
     }
 
+    private fun setTimerTime(timerData: TimerDataModel?) {
+        if (timerData == null) {
+            tvHours.text = String.format(TIME_DISPLAY_FORMAT, 0)
+            tvMinutes.text = String.format(TIME_DISPLAY_FORMAT, 0)
+            tvSeconds.text = String.format(TIME_DISPLAY_FORMAT, 0)
+        } else {
+            tvHours.text = String.format(TIME_DISPLAY_FORMAT, timerData.hours)
+            tvMinutes.text = String.format(TIME_DISPLAY_FORMAT, timerData.minutes)
+            tvSeconds.text = String.format(TIME_DISPLAY_FORMAT, timerData.seconds)
+        }
+    }
 
     override fun removeObservers(lifecycleOwner: LifecycleOwner?) {
         super.removeObservers(lifecycleOwner)

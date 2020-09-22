@@ -90,7 +90,7 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo, private val queryP
             it.apply {
                 val tabData = data?.get(0)
                 if (tabData?.isSelected!!) {
-                    var saleTabStatus = checkSaleTimer(this)
+                    val saleTabStatus = checkSaleTimer(this)
                     val targetComponentIdList = tabData.targetComponentId?.split(",")?.map { it.trim() }
                     if (!targetComponentIdList.isNullOrEmpty()) {
                         val componentsItem: ArrayList<ComponentsItem> = ArrayList()
@@ -101,10 +101,10 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo, private val queryP
                                 listComponents.addAll(parseComponent(component1, position))
                             }
                         }
-                        if(saleTabStatus){
-                            val loisgt = handleProductState(this, ComponentNames.SaleEndState.componentName)
-                            componentsItem.addAll(loisgt)
-                            listComponents.addAll(loisgt)
+                        if (saleTabStatus) {
+                            val componentList = handleProductState(this, ComponentNames.SaleEndState.componentName)
+                            componentsItem.addAll(componentList)
+                            listComponents.addAll(componentList)
                         }
                         this.setComponentsItem(componentsItem)
                     }
@@ -113,18 +113,6 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo, private val queryP
             }
         }
         return listComponents
-    }
-
-
-    private fun handleProductState(component: ComponentsItem, componentName: String): ArrayList<ComponentsItem> {
-        val productState: ArrayList<ComponentsItem> = ArrayList()
-        productState.add(ComponentsItem(name = componentName).apply {
-            pageEndPoint = component.pageEndPoint
-            parentComponentId = component.id
-            id = componentName
-            discoveryPageData[this.pageEndPoint]?.componentMap?.set(this.id, this)
-        })
-        return productState
     }
 
     private fun checkSaleTimer(tab: ComponentsItem): Boolean {
@@ -138,10 +126,8 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo, private val queryP
                             if (componentItem.name == ComponentNames.TimerSprintSale.componentName) {
                                 if (!componentItem.data.isNullOrEmpty() && Utils.isSaleOver(componentItem.data!![0].endDate
                                                 ?: "")) {
-                                    if (!data.isNullOrEmpty()) {
-                                        data!![0].targetComponentId = componentId
-                                        return true
-                                    }
+                                    data!![0].targetComponentId = componentId
+                                    return true
                                 }
                             }
                         }
@@ -174,16 +160,17 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo, private val queryP
         return listComponents
     }
 
-//    private fun handleProductState(component: ComponentsItem, componentName: String): ArrayList<ComponentsItem> {
-//        val productState: ArrayList<ComponentsItem> = ArrayList()
-//        productState.add(ComponentsItem(name = componentName).apply {
-//            pageEndPoint = component.pageEndPoint
-//            parentComponentId = component.id
-//            id = componentName
-//            discoveryPageData[this.pageEndPoint]?.componentMap?.set(this.id, this)
-//        })
-//        return productState
-//    }
+    private fun handleProductState(component: ComponentsItem, componentName: String): ArrayList<ComponentsItem> {
+        val productState: ArrayList<ComponentsItem> = ArrayList()
+        productState.add(ComponentsItem(name = componentName).apply {
+            pageEndPoint = component.pageEndPoint
+            parentComponentId = component.id
+            id = componentName
+            discoveryPageData[this.pageEndPoint]?.componentMap?.set(this.id, this)
+        })
+        return productState
+    }
+
 }
 
 fun getComponent(componentId: String, pageName: String): ComponentsItem? {

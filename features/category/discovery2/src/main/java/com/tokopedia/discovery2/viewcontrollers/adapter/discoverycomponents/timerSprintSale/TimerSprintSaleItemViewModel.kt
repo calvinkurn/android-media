@@ -31,7 +31,7 @@ class TimerSprintSaleItemViewModel(val application: Application, val components:
 
     fun getComponentLiveData() = componentData
     fun refreshPage(): LiveData<Boolean> = needPageRefresh
-    fun getTimerData() = mutableTimeDiffModel
+    fun getTimerData(): LiveData<TimerDataModel> = mutableTimeDiffModel
 
     fun handleSaleEndSates() {
         when {
@@ -50,34 +50,36 @@ class TimerSprintSaleItemViewModel(val application: Application, val components:
             getComponent(tabItem.parentComponentId, pageEndPoint)?.let { tabs ->
                 tabs.data?.let { tabItem ->
                     if (tabItem.size >= 2 && !tabItem[1].targetComponentId.isNullOrEmpty()) {
-
                         val targetComponentIdList = tabItem[1].targetComponentId?.split(",")?.map { it.trim() }
                         if (!targetComponentIdList.isNullOrEmpty()) {
                             targetComponentIdList.forEach { componentId ->
                                 getComponent(componentId, pageEndPoint)?.let { componentItem ->
-                                    if (componentItem.name == ComponentNames.TimerSprintSale.componentName) {
-
-
-                                        if (!componentItem.data.isNullOrEmpty() && Utils.isFutureSale(componentItem.data?.get(0)?.startDate
-                                                        ?: "")) {
-                                            val currentSystemTime = Calendar.getInstance().time
-                                            val parsedEndDate = Utils.parseData(componentItem.data?.get(0)?.startDate)
-                                            parsedEndDate?.let {
-                                                val saleTimeMillis = parsedEndDate.time - currentSystemTime.time
-                                                if (saleTimeMillis > 0) {
-                                                    timerWithBannerCounter = SaleCountDownTimer(saleTimeMillis, elapsedTime, false) { timerData ->
-                                                        if (timerData.hours == 0 && timerData.minutes == 0 && timerData.seconds == 0 && timerData.milliSeconds == 0) {
-                                                            needPageRefresh.value = true
-                                                        }
-                                                    }
-                                                    timerWithBannerCounter?.start()
-                                                }
-                                            }
-                                        }
-                                    }
+                                    checkForTimerComponent(componentItem)
                                 }
                             }
                         }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun checkForTimerComponent(componentItem: ComponentsItem) {
+        if (componentItem.name == ComponentNames.TimerSprintSale.componentName) {
+            if (!componentItem.data.isNullOrEmpty() && Utils.isFutureSale(componentItem.data!![0].startDate
+                            ?: "")) {
+                val currentSystemTime = Calendar.getInstance().time
+                val parsedEndDate = Utils.parseData(componentItem.data!![0].startDate)
+                parsedEndDate?.let {
+                    val saleTimeMillis = parsedEndDate.time - currentSystemTime.time
+                    if (saleTimeMillis > 0) {
+                        timerWithBannerCounter = SaleCountDownTimer(saleTimeMillis, elapsedTime, false) { timerData ->
+                            if (timerData.timeFinish) {
+                                stopTimer()
+                                needPageRefresh.value = true
+                            }
+                        }
+                        timerWithBannerCounter?.start()
                     }
                 }
             }
@@ -97,8 +99,9 @@ class TimerSprintSaleItemViewModel(val application: Application, val components:
             if (parsedEndDate != null) {
                 val saleTimeMillis = parsedEndDate.time - currentSystemTime.time
                 if (saleTimeMillis > 0) {
-                    timerWithBannerCounter = SaleCountDownTimer(saleTimeMillis, elapsedTime) {
-                        mutableTimeDiffModel.value = it
+                    timerWithBannerCounter = SaleCountDownTimer(saleTimeMillis, elapsedTime) { timerData ->
+                        if (timerData.timeFinish) stopTimer()
+                        mutableTimeDiffModel.value = timerData
                     }
                     timerWithBannerCounter?.start()
                 }
@@ -106,13 +109,9 @@ class TimerSprintSaleItemViewModel(val application: Application, val components:
         }
     }
 
-    // TODO Cancel countdown timer on viewHolder destroy
     fun stopTimer() {
-        if (timerWithBannerCounter != null) {
-            timerWithBannerCounter?.cancel()
-        }
+        timerWithBannerCounter?.cancel()
     }
-
 
     fun getStartDate(): String {
         if (!components.data.isNullOrEmpty()) {
@@ -127,5 +126,4 @@ class TimerSprintSaleItemViewModel(val application: Application, val components:
         }
         return ""
     }
-
 }
