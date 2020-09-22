@@ -1,9 +1,7 @@
 package com.tokopedia.play.broadcaster.view.activity
 
 import android.Manifest
-import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.view.SurfaceHolder
 import android.view.SurfaceView
@@ -21,7 +19,6 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.analytics.performance.util.PltPerformanceData
-import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
@@ -585,11 +582,5 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
         private const val CHANNEL_TYPE = "channel_type"
         private const val REQUEST_PERMISSION_CODE = 3298
         const val RESULT_PERMISSION_CODE = 3297
-
-        @TestOnly
-        fun createIntent(context: Context) =
-                Intent(context, PlayBroadcastActivity::class.java).apply {
-                    data = Uri.parse(ApplinkConstInternalContent.INTERNAL_PLAY_BROADCASTER)
-                }
     }
 }

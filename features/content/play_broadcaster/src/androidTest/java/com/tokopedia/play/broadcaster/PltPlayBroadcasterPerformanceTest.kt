@@ -1,8 +1,9 @@
 package com.tokopedia.play.broadcaster
 
 import android.app.Application
+import android.content.Intent
+import android.net.Uri
 import android.view.View
-import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onIdle
 import androidx.test.espresso.IdlingPolicies
 import androidx.test.espresso.IdlingRegistry
@@ -11,6 +12,7 @@ import androidx.test.espresso.idling.CountingIdlingResource
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.analytics.performance.util.PerformanceDataFileUtils
+import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.play.broadcaster.view.activity.PlayBroadcastActivity
 import com.tokopedia.test.application.TestRepeatRule
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
@@ -51,7 +53,9 @@ class PltPlayBroadcasterPerformanceTest {
     @Test
     fun testPageLoadTimePerformance() {
         onIdle()
-        intentsTestRule.launchActivity(PlayBroadcastActivity.createIntent(targetContext))
+        intentsTestRule.launchActivity(Intent(targetContext, PlayBroadcastActivity::class.java).apply {
+            data = Uri.parse(ApplinkConstInternalContent.INTERNAL_PLAY_BROADCASTER)
+        })
         IdlingRegistry.getInstance().register(idlingResourceInit)
         onIdle()
         intentsTestRule.activity.getPltPerformanceResultData()?.let { data->
