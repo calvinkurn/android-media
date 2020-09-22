@@ -257,4 +257,7 @@
     <string name="title_statistic">Statistic</string>
 
     <string name="title_layanan">Layanan</string>
+
+    <!-- Seller Menu -->
+    <string name="title_seller_menu">Toko Saya</string>
 </resources>
