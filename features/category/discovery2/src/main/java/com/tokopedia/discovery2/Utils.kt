@@ -22,6 +22,7 @@ const val LABEL_PRICE = "price"
 const val LABEL_GIMMICK = "gimmick"
 const val LABEL_INTEGRITY = "integrity"
 const val LABEL_SHIPPING = "shipping"
+const val PDP_APPLINK = "tokopedia://product/"
 
 class Utils {
 
