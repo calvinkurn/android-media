@@ -8,7 +8,7 @@
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/iv_empty_state"
         android:layout_width="@dimen/dp_280"
-        android:layout_height="142dp"
+        android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginLeft="@dimen/dp_40"
         android:layout_marginTop="@dimen/dp_72"

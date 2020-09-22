@@ -198,7 +198,7 @@ class AddressListFragment : BaseDaggerFragment(), AddressListItemAdapter.onSelec
         textSearchError = view?.findViewById(R.id.text_search_error)
         globalErrorLayout = view?.findViewById(R.id.global_error)
 
-        ImageHandler.LoadImage(ivEmptyState, EMPTY_STATE_PICT_URL)
+        ivEmptyState?.setImageUrl(EMPTY_STATE_PICT_URL)
     }
 
     private fun goBack() {
