@@ -11,9 +11,6 @@ import org.json.JSONException;
 import java.util.Map;
 
 import rx.Completable;
-import rx.Observable;
-import rx.Observer;
-import rx.Subscription;
 import rx.functions.Action0;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
@@ -41,9 +38,6 @@ public class AppsflyerEventValidation {
         switch (eventName) {
             case AFInAppEventType.PURCHASE:
                 validatePurchase(eventName, data);
-                break;
-            case AF_KEY_CRITEO:
-
                 break;
             case AFInAppEventType.ADD_TO_CART:
                 validateAddToCart(eventName, data);
