@@ -100,29 +100,29 @@ class AddEditProductDescriptionFragment:
     }
 
     override fun onDeleteClicked(videoLinkModel: VideoLinkModel, position: Int) {
+        if (descriptionViewModel.isEditMode) {
+            ProductEditDescriptionTracking.clickRemoveVideoLink(shopId)
+        } else {
+            ProductAddDescriptionTracking.clickRemoveVideoLink(shopId)
+        }
         if (position >= 0 && position < adapter.dataSize) {
-            if (descriptionViewModel.isEditMode) {
-                ProductEditDescriptionTracking.clickRemoveVideoLink(shopId)
-            } else {
-                ProductAddDescriptionTracking.clickRemoveVideoLink(shopId)
-            }
             adapter.data.removeAt(position)
             adapter.notifyItemRemoved(position)
-            with(descriptionViewModel) {
-                for (i in position until adapter.dataSize) {
-                    adapter.data.getOrNull(i)?.run {
-                        isFetchingVideoData[i] = false
-                        urlToFetch[i] = inputUrl
-                        if (fetchedUrl[i + 1].orEmpty() != inputUrl) {
-                            onTextChanged(urlToFetch[i].orEmpty(), i)
-                        }
+        }
+        with(descriptionViewModel) {
+            for (i in position until adapter.dataSize) {
+                adapter.data.getOrNull(i)?.run {
+                    isFetchingVideoData[i] = false
+                    urlToFetch[i] = inputUrl
+                    if (fetchedUrl[i + 1].orEmpty() != inputUrl) {
+                        onTextChanged(urlToFetch[i].orEmpty(), i)
                     }
                 }
             }
-            textViewAddVideo.visibility =
-                    if (adapter.dataSize < MAX_VIDEOS) View.VISIBLE else View.GONE
-            updateSaveButtonStatus()
         }
+        textViewAddVideo.visibility =
+                if (adapter.dataSize < MAX_VIDEOS) View.VISIBLE else View.GONE
+        updateSaveButtonStatus()
     }
 
     override fun onTextChanged(url: String, position: Int) {
