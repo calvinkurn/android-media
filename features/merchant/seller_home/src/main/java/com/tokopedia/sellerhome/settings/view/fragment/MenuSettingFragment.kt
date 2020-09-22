@@ -20,15 +20,16 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
-import com.tokopedia.sellerhome.settings.analytics.*
-import com.tokopedia.sellerhome.settings.view.typefactory.OtherMenuAdapterTypeFactory
-import com.tokopedia.sellerhome.settings.view.uimodel.DividerUiModel
-import com.tokopedia.sellerhome.settings.view.uimodel.IndentedSettingTitleUiModel
-import com.tokopedia.sellerhome.settings.view.uimodel.MenuItemUiModel
-import com.tokopedia.sellerhome.settings.view.uimodel.SettingTitleMenuUiModel
-import com.tokopedia.sellerhome.settings.view.uimodel.base.DividerType
-import com.tokopedia.sellerhome.settings.view.uimodel.base.SettingShopInfoImpressionTrackable
-import com.tokopedia.sellerhome.settings.view.uimodel.base.SettingUiModel
+import com.tokopedia.seller.menu.common.analytics.*
+import com.tokopedia.seller.menu.common.view.typefactory.OtherMenuAdapterTypeFactory
+import com.tokopedia.seller.menu.common.view.uimodel.DividerUiModel
+import com.tokopedia.seller.menu.common.view.uimodel.IndentedSettingTitleUiModel
+import com.tokopedia.seller.menu.common.view.uimodel.MenuItemUiModel
+import com.tokopedia.seller.menu.common.view.uimodel.SettingTitleMenuUiModel
+import com.tokopedia.seller.menu.common.view.uimodel.base.DividerType
+import com.tokopedia.seller.menu.common.view.uimodel.base.SettingShopInfoImpressionTrackable
+import com.tokopedia.seller.menu.common.view.uimodel.base.SettingUiModel
+import com.tokopedia.seller.menu.common.analytics.SettingTrackingListener
 import com.tokopedia.sellerhome.settings.view.uimodel.menusetting.OtherSettingsUiModel
 import com.tokopedia.url.TokopediaUrl.Companion.getInstance
 import com.tokopedia.user.session.UserSessionInterface
@@ -149,6 +150,11 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
                         clickApplink = ApplinkConst.SELLER_SHIPPING_EDITOR,
                         settingTypeInfix = SettingTrackingConstant.SHOP_SETTING,
                         trackingAlias = trackingAliasHashMap[resources.getString(R.string.setting_menu_set_shipment_method)]),
+                DividerUiModel(DividerType.THIN_INDENTED),
+                MenuItemUiModel(
+                        resources.getString(R.string.setting_menu_set_activation_page_cod),
+                        clickApplink = ApplinkConst.SELLER_COD_ACTIVATION,
+                        settingTypeInfix = SettingTrackingConstant.COD_ACTIVATION_SETTING),
                 DividerUiModel(DividerType.THICK),
                 SettingTitleMenuUiModel(resources.getString(R.string.setting_menu_account_setting), R.drawable.ic_account),
                 MenuItemUiModel(

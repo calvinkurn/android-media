@@ -1,6 +1,7 @@
 package com.tokopedia.play.broadcaster.ui.viewholder
 
 import android.content.Context
+import android.os.Build
 import android.view.View
 import android.widget.TextView
 import androidx.recyclerview.widget.GridLayoutManager
@@ -68,6 +69,8 @@ class PlayEtalaseViewHolder(itemView: View, private val listener: Listener) : Ba
 
     private fun setupProductPreview(productPreviewMap: Map<Int, List<ProductContentUiModel>>, totalProduct: Int) {
         if (productPreviewMap.isEmpty()) {
+            if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.M) return
+
             val totalProductValidated = min(MAX_PREVIEW, max(MIN_PREVIEW, totalProduct))
             productPreviewAdapter.setItemsAndAnimateChanges(List(totalProductValidated) { ProductLoadingUiModel })
         } else {

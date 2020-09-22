@@ -51,6 +51,7 @@ import com.tokopedia.play.view.viewmodel.PlayInteractionViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play.view.wrapper.InteractionEvent
 import com.tokopedia.play.view.wrapper.LoginStateEvent
+import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play_common.util.event.EventObserver
@@ -565,13 +566,16 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun observeLikeContent() {
-        playViewModel.observableLikeState.observe(viewLifecycleOwner, object : Observer<LikeStateUiModel> {
+        playViewModel.observableLikeState.observe(viewLifecycleOwner, object : Observer<NetworkResult<LikeStateUiModel>> {
             private var isFirstTime = true
-            override fun onChanged(likeModel: LikeStateUiModel) {
+            override fun onChanged(result: NetworkResult<LikeStateUiModel>) {
                 likeView.setEnabled(true)
-                likeView.playLikeAnimation(likeModel.isLiked, !likeModel.fromNetwork && !isFirstTime)
 
-                isFirstTime = false
+                if (result is NetworkResult.Success) {
+                    val likeModel = result.data
+                    likeView.playLikeAnimation(likeModel.isLiked, !likeModel.fromNetwork && !isFirstTime)
+                    isFirstTime = false
+                }
             }
         })
     }
