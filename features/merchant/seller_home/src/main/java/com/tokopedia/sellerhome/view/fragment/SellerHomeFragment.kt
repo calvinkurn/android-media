@@ -141,8 +141,8 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         hideTooltipIfExist()
         setupView()
 
-        observeShopLocationLiveData()
         observeWidgetLayoutLiveData()
+        observeShopLocationLiveData()
         observeWidgetData(sellerHomeViewModel.cardWidgetData, WidgetType.CARD)
         observeWidgetData(sellerHomeViewModel.lineGraphWidgetData, WidgetType.LINE_GRAPH)
         observeWidgetData(sellerHomeViewModel.progressWidgetData, WidgetType.PROGRESS)
@@ -538,7 +538,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         super.renderList(widgets)
 
         if (isFirstLoad) {
-            loadCardWidgetsData()
+            loadCardWidgetsData(widgets)
             recyclerView.post {
                 requestVisibleWidgetsData()
             }
@@ -550,8 +550,8 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         setProgressBarVisibility(false)
     }
 
-    private fun loadCardWidgetsData() {
-        getCardData(adapter.data.filter { !it.isLoaded && it.widgetType == WidgetType.CARD })
+    private fun loadCardWidgetsData(widgets: List<BaseWidgetUiModel<*>>) {
+        getCardData(widgets.filter { !it.isLoaded && it.widgetType == WidgetType.CARD })
     }
 
     private fun getWidgetsData(widgets: List<BaseWidgetUiModel<*>>) {
