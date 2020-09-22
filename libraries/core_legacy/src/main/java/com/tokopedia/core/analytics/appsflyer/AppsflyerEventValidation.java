@@ -1,10 +1,13 @@
 package com.tokopedia.core.analytics.appsflyer;
 
 import android.text.TextUtils;
+
 import com.appsflyer.AFInAppEventParameterName;
 import com.appsflyer.AFInAppEventType;
+
 import org.json.JSONArray;
 import org.json.JSONException;
+
 import java.util.Map;
 
 import rx.Observable;
@@ -22,13 +25,13 @@ public class AppsflyerEventValidation {
 
     public static String TAG = "P2#APPSFLYER_VALIDATION#";
 
-    public void validateAppsflyerData(String eventName, Map<String, Object> data){
+    public void validateAppsflyerData(String eventName, Map<String, Object> data) {
 
-        Observable.just(eventName,data)
+        Observable.just(eventName, data)
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .map(it -> {
-                   validateData(eventName,data);
+                    validateData(eventName, data);
                     return true;
                 })
                 .subscribe(new Observer<Boolean>() {
@@ -52,7 +55,7 @@ public class AppsflyerEventValidation {
     private void validateData(String eventName, Map<String, Object> data) {
         switch (eventName) {
             case AFInAppEventType.PURCHASE:
-                validatePurchase(eventName,data);
+                validatePurchase(eventName, data);
                 break;
             case AF_KEY_CRITEO:
 
@@ -64,7 +67,7 @@ public class AppsflyerEventValidation {
         }
     }
 
-    private void validatePurchase(String eventName, Map<String, Object> eventValue){
+    private void validatePurchase(String eventName, Map<String, Object> eventValue) {
         try {
             validatePaymentId(String.valueOf(eventValue.get(AFInAppEventParameterName.RECEIPT_ID)), String.valueOf(eventValue.get(AFInAppEventType.ORDER_ID)));
             validateRevenue(String.valueOf(eventValue.get(AFInAppEventParameterName.REVENUE)));
@@ -76,19 +79,22 @@ public class AppsflyerEventValidation {
             validateProductCategory(String.valueOf(eventValue.get(AF_KEY_CATEGORY_NAME)));
             validateContentType(eventName, String.valueOf(eventValue.get(AFInAppEventParameterName.CONTENT_TYPE)));
             validateContent(eventName, String.valueOf(eventValue.get(AFInAppEventParameterName.CONTENT)));
-        }catch (Exception e){
+        } catch (Exception e) {
             logging("validation;reason=exception in validate purchase event;ex=$e;data=$eventValue");
         }
     }
 
-    private void validateAddToCart(String eventName, Map<String, Object> eventValue){
-        validateQuantity(eventName, String.valueOf(eventValue.get(AFInAppEventParameterName.QUANTITY)));
-        validateContentId(eventName, String.valueOf(eventValue.get(AFInAppEventParameterName.CONTENT_ID)));
-        validateCurrency(String.valueOf(eventValue.get(AFInAppEventParameterName.CURRENCY)));
-        validateCategory(eventName,String.valueOf(eventValue.get("category")));
-        validateContentType(eventName, String.valueOf(eventValue.get(AFInAppEventParameterName.CONTENT_TYPE)));
-        validateContent(eventName, String.valueOf(eventValue.get(AFInAppEventParameterName.CONTENT)));
-
+    private void validateAddToCart(String eventName, Map<String, Object> eventValue) {
+        try {
+            validateQuantity(eventName, String.valueOf(eventValue.get(AFInAppEventParameterName.QUANTITY)));
+            validateContentId(eventName, String.valueOf(eventValue.get(AFInAppEventParameterName.CONTENT_ID)));
+            validateCurrency(String.valueOf(eventValue.get(AFInAppEventParameterName.CURRENCY)));
+            validateCategory(eventName, String.valueOf(eventValue.get("category")));
+            validateContentType(eventName, String.valueOf(eventValue.get(AFInAppEventParameterName.CONTENT_TYPE)));
+            validateContent(eventName, String.valueOf(eventValue.get(AFInAppEventParameterName.CONTENT)));
+        } catch (Exception e) {
+            logging("validation;reason=exception in validate AddToCart event;ex=$e;data=$eventValue");
+        }
     }
 
     private void validatePaymentId(String paymentId, String orderID) {
@@ -101,7 +107,7 @@ public class AppsflyerEventValidation {
     }
 
     private void validateRevenue(String revenuePrice) {
-        double price =convertToDouble(revenuePrice,"revenue");
+        double price = convertToDouble(revenuePrice, "revenue");
         if (price <= 0) {
             logging("validation;reason=revenue_blank;revenue=$revenuePrice");
         }
@@ -109,7 +115,7 @@ public class AppsflyerEventValidation {
 
 
     private void validateShipping(String shippingPrice) {
-        double price =convertToDouble(shippingPrice,"shippingPrice");
+        double price = convertToDouble(shippingPrice, "shippingPrice");
         if (price <= 0) {
             logging("validation;reason=shippingPrice_blank;shipping_price=$shippingPrice");
         }
@@ -120,13 +126,13 @@ public class AppsflyerEventValidation {
         logging("error;reason=exceptionStringToDouble;err=$ex;type=$type");
     }
 
-    private void validateQuantity(String eventName,String quantity) {
-        if (convertToDouble(quantity,eventName +" quantity" ) <= 0) {
+    private void validateQuantity(String eventName, String quantity) {
+        if (convertToDouble(quantity, eventName + " quantity") <= 0) {
             logging("validation;reason=quantity is 0;eventName-$eventName;quantity=$quantity");
         }
     }
 
-    private void validateContentId(String eventName,String ids) {
+    private void validateContentId(String eventName, String ids) {
         if (TextUtils.isEmpty(ids)) {
             logging("validation;reason=ContentId-product id is empty; eventName=$eventName");
         }
@@ -138,7 +144,7 @@ public class AppsflyerEventValidation {
         }
     }
 
-    private void validateCategory(String eventName, String category){
+    private void validateCategory(String eventName, String category) {
         if (TextUtils.isEmpty(category)) {
             logging("validation;reason=category is empty; eventName=$eventName");
         }
@@ -205,7 +211,7 @@ public class AppsflyerEventValidation {
             result = Double.valueOf(value);
         } catch (NumberFormatException ex) {
             ex.printStackTrace();
-             exceptionStringToDouble("" + ex.getMessage(),type +"="+ value);
+            exceptionStringToDouble("" + ex.getMessage(), type + "=" + value);
         }
         return result;
     }
