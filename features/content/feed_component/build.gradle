@@ -17,6 +17,25 @@ buildscript {
     }
 }
 
+android {
+    packagingOptions {
+        exclude 'META-INF/**'
+    }
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+    defaultConfig {
+        multiDexEnabled true
+    }
+    defaultConfig {
+        if (project.hasProperty("benchmark")) {
+            testInstrumentationRunner 'com.tokopedia.test.application.environment.TkpdAndroidBenchmarkTestRunner'
+        } else {
+            testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
+        }
+    }
+}
+
 dependencies {
     implementation project(rootProject.ext.libraries.adapterDelegate)
     implementation project(rootProject.ext.libraries.tkpddesign)
@@ -59,6 +78,11 @@ dependencies {
     implementation (rootProject.ext.serviceDependencies.crashlytics) {
         transitive = true
     }
+
+    androidTestImplementation project(rootProject.ext.libraries.instrumentation_test)
+    androidTestImplementation rootProject.ext.testDependencies.benchmark
+    androidTestImplementation rootProject.ext.testDependencies.testCoreKtx
+
 }
 
 project.ext {
