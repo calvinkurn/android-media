@@ -32,7 +32,7 @@ class PltHomeDynamicChannelPerformanceTest {
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
             setupGraphqlMockResponseWithCheck(HomeMockResponseConfig())
-            setupTotalSizeInterceptor(listOf("homeData", "dynamicHomeChannel"))
+            setupTotalSizeInterceptor(listOf("homeData", "getDynamicChannel"))
             setupRemoteConfig()
         }
     }
@@ -72,7 +72,7 @@ class PltHomeDynamicChannelPerformanceTest {
     }
 
     private fun waitForData() {
-        Thread.sleep(10000)
+        Thread.sleep(1000000)
     }
 
     private fun savePLTPerformanceResultData(tag: String) {
