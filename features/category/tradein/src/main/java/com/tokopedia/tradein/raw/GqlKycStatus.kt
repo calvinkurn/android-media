@@ -1,5 +1,7 @@
-query kycStatus($projectID:Int){
-  kycStatus(projectID:$projectID){
+package com.tokopedia.tradein.raw
+
+const val GQL_KYC_STATUS: String = """query kycStatus(${'$'}projectID:Int){
+  kycStatus(projectID:${'$'}projectID){
     Message
     Detail{
       IsSuccess
@@ -12,4 +14,4 @@ query kycStatus($projectID:Int){
       UpdateTime
     }
   }
-}
+}"""

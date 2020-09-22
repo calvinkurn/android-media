@@ -47,6 +47,9 @@ public class TradeInParams implements Parcelable {
     private int remainingPrice;
     private int useKyc;
     private int isEligible;
+    private String origin;
+    private String productImage;
+    private int weight;
 
     public int getProductId() {
         return productId;
@@ -176,6 +179,30 @@ public class TradeInParams implements Parcelable {
         this.widgetString = widgetString;
     }
 
+    public String getOrigin() {
+        return origin;
+    }
+
+    public void setOrigin(String origin) {
+        this.origin = origin;
+    }
+
+    public String getProductImage() {
+        return productImage;
+    }
+
+    public void setProductImage(String productImage) {
+        this.productImage = productImage;
+    }
+
+    public int getWeight() {
+        return weight;
+    }
+
+    public void setWeight(int weight) {
+        this.weight = weight;
+    }
+
     public TradeInParams() {
     }
 
@@ -186,37 +213,47 @@ public class TradeInParams implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(this.productId);
-        dest.writeInt(this.shopId);
-        dest.writeInt(this.categoryId);
-        dest.writeInt(this.userId);
-        dest.writeString(this.deviceId);
-        dest.writeInt(this.newprice);
-        dest.writeInt(isPreorder ? 1 : 0);
-        dest.writeInt(isOnCampaign ? 1 : 0);
-        dest.writeString(this.productName);
-        dest.writeInt(this.usedPrice);
-        dest.writeInt(this.remainingPrice);
-        dest.writeInt(this.useKyc);
-        dest.writeInt(this.isEligible);
-        dest.writeString(this.widgetString);
+        dest.writeInt(productId);
+        dest.writeInt(shopId);
+        dest.writeInt(categoryId);
+        dest.writeInt(userId);
+        dest.writeString(deviceId);
+        dest.writeInt(newprice);
+        dest.writeByte((byte) (isPreorder ? 1 : 0));
+        dest.writeByte((byte) (isOnCampaign ? 1 : 0));
+        dest.writeInt(tradeInType);
+        dest.writeInt(modelID);
+        dest.writeString(widgetString);
+        dest.writeString(productName);
+        dest.writeInt(usedPrice);
+        dest.writeInt(remainingPrice);
+        dest.writeInt(useKyc);
+        dest.writeInt(isEligible);
+        dest.writeString(origin);
+        dest.writeString(productImage);
+        dest.writeInt(weight);
     }
 
     protected TradeInParams(Parcel in) {
-        this.productId = in.readInt();
-        this.shopId = in.readInt();
-        this.categoryId = in.readInt();
-        this.userId = in.readInt();
-        this.deviceId = in.readString();
-        this.newprice = in.readInt();
-        this.isPreorder = in.readInt() != 0;
-        this.isOnCampaign = in.readInt() != 0;
-        this.productName = in.readString();
-        this.usedPrice = in.readInt();
-        this.remainingPrice = in.readInt();
-        this.useKyc = in.readInt();
-        this.isEligible = in.readInt();
-        this.widgetString = in.readString();
+        productId = in.readInt();
+        shopId = in.readInt();
+        categoryId = in.readInt();
+        userId = in.readInt();
+        deviceId = in.readString();
+        newprice = in.readInt();
+        isPreorder = in.readByte() != 0;
+        isOnCampaign = in.readByte() != 0;
+        tradeInType = in.readInt();
+        modelID = in.readInt();
+        widgetString = in.readString();
+        productName = in.readString();
+        usedPrice = in.readInt();
+        remainingPrice = in.readInt();
+        useKyc = in.readInt();
+        isEligible = in.readInt();
+        origin = in.readString();
+        productImage = in.readString();
+        weight = in.readInt();
     }
 
     public static final Creator<TradeInParams> CREATOR = new Creator<TradeInParams>() {

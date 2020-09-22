@@ -431,6 +431,11 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                     val phoneType = data.getStringExtra(TradeInParams.PARAM_PHONE_TYPE)
                             ?: "none/other"
                     val phonePrice = data.getStringExtra(TradeInParams.PARAM_PHONE_PRICE)
+                    DynamicProductDetailTracking.TradeIn.eventAddToCartFinalPrice(phoneType,
+                            phonePrice,
+                            deviceId,
+                            viewModel.userId,
+                            viewModel.getDynamicProductInfoP1)
                     buyAfterTradeinDiagnose(deviceId, phoneType, phonePrice)
                 }
             }

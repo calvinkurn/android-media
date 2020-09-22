@@ -8,16 +8,16 @@ import com.google.gson.Gson
 import com.laku6.tradeinsdk.api.Laku6TradeIn
 import com.tokopedia.common_tradein.model.TradeInParams
 import com.tokopedia.common_tradein.model.ValidateTradePDP
-import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.tradein.Constants
 import com.tokopedia.tradein.model.DeviceDiagInputResponse
 import com.tokopedia.tradein.model.DeviceDiagnostics
 import com.tokopedia.tradein.usecase.CheckMoneyInUseCase
 import com.tokopedia.tradein.usecase.ProcessMessageUseCase
-import com.tokopedia.tradein.view.viewcontrollers.BaseTradeInActivity.TRADEIN_MONEYIN
-import com.tokopedia.tradein.view.viewcontrollers.BaseTradeInActivity.TRADEIN_OFFLINE
+import com.tokopedia.tradein.view.viewcontrollers.activity.BaseTradeInActivity.TRADEIN_MONEYIN
+import com.tokopedia.tradein.view.viewcontrollers.activity.BaseTradeInActivity.TRADEIN_OFFLINE
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.currency.CurrencyFormatUtil
 import org.json.JSONException
 import org.json.JSONObject
 import javax.inject.Inject
@@ -52,7 +52,7 @@ class TradeInHomeViewModel @Inject constructor(
         val diagnostics = getDiagnosticData(intent)
         tradeInParams.deviceId = diagnostics.imei
         launchCatchError(block = {
-            setDiagnoseResult(processMessageUseCase.processMessage(getResource(), tradeInParams, diagnostics), diagnostics)
+            setDiagnoseResult(processMessageUseCase.processMessage(tradeInParams, diagnostics), diagnostics)
         }, onError = {
             it.printStackTrace()
             warningMessage.value = it.localizedMessage
@@ -67,6 +67,7 @@ class TradeInHomeViewModel @Inject constructor(
                 if (homeResultData.value?.deviceDisplayName != null) {
                     result.deviceDisplayName = homeResultData.value?.deviceDisplayName
                 }
+                result.displayMessage = CurrencyFormatUtil.convertPriceValueToIdrFormat(diagnostics.tradeInPrice!!, true)
                 result.priceStatus = HomeResult.PriceState.DIAGNOSED_VALID
             } else {
                 result.priceStatus = HomeResult.PriceState.DIAGNOSED_INVALID
@@ -103,7 +104,7 @@ class TradeInHomeViewModel @Inject constructor(
                     setHomeResultData(jsonObject)
                 } else {
                     val result = HomeResult()
-                    result.run {
+                    result.apply {
                         isSuccess = true
                         priceStatus = HomeResult.PriceState.MONEYIN_ERROR
                         displayMessage = validateResponse.message
@@ -198,7 +199,12 @@ class TradeInHomeViewModel @Inject constructor(
         laku6TradeIn.getMinMaxPrice(this)
     }
 
+    fun getIMEI(laku6TradeIn: Laku6TradeIn, imei:String?){
+        laku6TradeIn.checkImeiValidation(this, imei)
+    }
+
     fun setDeviceId(deviceId: String?) {
         tradeInParams.deviceId = deviceId
     }
+
 }
