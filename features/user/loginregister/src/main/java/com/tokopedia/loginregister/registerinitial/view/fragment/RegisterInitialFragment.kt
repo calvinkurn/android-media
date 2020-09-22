@@ -770,7 +770,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
                 it.setResult(Activity.RESULT_CANCELED)
             } else if (requestCode == REQUEST_ADD_NAME_REGISTER_PHONE && resultCode == Activity.RESULT_OK) {
                 processAfterAddNameRegisterPhone(data?.extras)
-            } else if (requestCode == REQUEST_ADD_PIN && resultCode == Activity.RESULT_OK) {
+            } else if (requestCode == REQUEST_ADD_PIN) {
                 registerInitialViewModel.getUserInfo()
             }
             else if (requestCode == REQUEST_VERIFY_PHONE_TOKOCASH
