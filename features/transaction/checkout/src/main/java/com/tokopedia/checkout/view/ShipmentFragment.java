@@ -615,17 +615,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 ConstantTransactionAnalytics.EventAction.VIEW_CHECKOUT_PAGE,
                 ConstantTransactionAnalytics.EventLabel.SUCCESS,
                 getCheckoutLeasingId());
-
-        sendEESGTMv5(dataCheckoutRequests, 2, "checkout page loaded", "",
-                ConstantTransactionAnalytics.EventAction.VIEW_CHECKOUT_PAGE, ConstantTransactionAnalytics.EventLabel.SUCCESS);
-    }
-
-    private void sendEESGTMv5(List<DataCheckoutRequest> dataCheckoutRequests, int step, String option,
-                              String transactionId, String eventAction, String eventLabel) {
-        int isDonation = shipmentPresenter.getShipmentDonationModel() != null && shipmentPresenter.getShipmentDonationModel().isChecked() ? 1 : 0;
-        CheckoutRequest checkoutRequest = shipmentPresenter.generateCheckoutRequest(
-                dataCheckoutRequests, hasInsurance, isDonation, getCheckoutLeasingId()
-        );
     }
 
     @Override
@@ -1529,9 +1518,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     ConstantTransactionAnalytics.EventAction.CLICK_ALL_COURIER_SELECTED,
                     "",
                     getCheckoutLeasingId());
-
-            sendEESGTMv5(dataCheckoutRequests, 3, "data validation", "",
-                    ConstantTransactionAnalytics.EventAction.CLICK_ALL_COURIER_SELECTED, ConstantTransactionAnalytics.EventLabel.SUCCESS);
         }
     }
 
@@ -2481,9 +2467,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 isTradeIn() ? ConstantTransactionAnalytics.EventAction.CLICK_BAYAR : ConstantTransactionAnalytics.EventAction.CLICK_PILIH_METODE_PEMBAYARAN,
                 ConstantTransactionAnalytics.EventLabel.SUCCESS,
                 getCheckoutLeasingId());
-
-        sendEESGTMv5(dataCheckoutRequests, 4, "click payment option button", transactionId,
-                ConstantTransactionAnalytics.EventAction.CLICK_PILIH_METODE_PEMBAYARAN, ConstantTransactionAnalytics.EventLabel.SUCCESS);
     }
 
     @Override
