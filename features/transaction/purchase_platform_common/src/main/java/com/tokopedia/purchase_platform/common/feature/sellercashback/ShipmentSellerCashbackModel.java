@@ -6,18 +6,19 @@ package com.tokopedia.purchase_platform.common.feature.sellercashback;
 
 public class ShipmentSellerCashbackModel {
 
-    private String sellerCashback;
+    private int sellerCashback;
+    private String sellerCashbackFmt;
     private boolean visible;
 
     public ShipmentSellerCashbackModel() {
     }
 
-    public String getSellerCashback() {
-        return sellerCashback;
+    public String getSellerCashbackFmt() {
+        return sellerCashbackFmt;
     }
 
-    public void setSellerCashback(String sellerCashback) {
-        this.sellerCashback = sellerCashback;
+    public void setSellerCashbackFmt(String sellerCashbackFmt) {
+        this.sellerCashbackFmt = sellerCashbackFmt;
     }
 
     public boolean isVisible() {
@@ -28,4 +29,11 @@ public class ShipmentSellerCashbackModel {
         this.visible = visible;
     }
 
+    public int getSellerCashback() {
+        return sellerCashback;
+    }
+
+    public void setSellerCashback(int sellerCashback) {
+        this.sellerCashback = sellerCashback;
+    }
 }
