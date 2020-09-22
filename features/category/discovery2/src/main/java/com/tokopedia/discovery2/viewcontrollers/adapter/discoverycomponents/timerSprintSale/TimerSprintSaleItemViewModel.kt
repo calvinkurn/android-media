@@ -99,9 +99,9 @@ class TimerSprintSaleItemViewModel(val application: Application, val components:
             if (parsedEndDate != null) {
                 val saleTimeMillis = parsedEndDate.time - currentSystemTime.time
                 if (saleTimeMillis > 0) {
-                    timerWithBannerCounter = SaleCountDownTimer(saleTimeMillis, elapsedTime) { timerData ->
-                        if (timerData.timeFinish) stopTimer()
-                        mutableTimeDiffModel.value = timerData
+                    timerWithBannerCounter = SaleCountDownTimer(saleTimeMillis, elapsedTime) { timerModel ->
+                        if (timerModel.timeFinish) stopTimer()
+                        mutableTimeDiffModel.value = timerModel
                     }
                     timerWithBannerCounter?.start()
                 }
