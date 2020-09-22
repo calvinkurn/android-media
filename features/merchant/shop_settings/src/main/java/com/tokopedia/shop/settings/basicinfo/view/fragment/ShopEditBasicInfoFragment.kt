@@ -18,6 +18,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.text.watcher.AfterTextWatcher
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
@@ -460,19 +461,23 @@ class ShopEditBasicInfoFragment: Fragment() {
     }
 
     private fun showShopEditShopInfoTicker(data: AllowShopNameDomainChangesData) {
-        val isNameAllowed = data.isNameAllowed
-        val isDomainAllowed = data.isDomainAllowed
-        val reasonNameNotAllowed = data.reasonNameNotAllowed
-        val reasonDomainNotAllowed = data.reasonDomainNotAllowed
+        if (GlobalConfig.isSellerApp()) {
+            val isNameAllowed = data.isNameAllowed
+            val isDomainAllowed = data.isDomainAllowed
+            val reasonNameNotAllowed = data.reasonNameNotAllowed
+            val reasonDomainNotAllowed = data.reasonDomainNotAllowed
 
-        if (reasonNameNotAllowed.isBlank() && reasonDomainNotAllowed.isBlank()) {
-            return
-        }
-        when {
-            isNameAllowed && isDomainAllowed -> showTicker(reasonNameNotAllowed, Ticker.TYPE_WARNING)
-            isNameAllowed && !isDomainAllowed -> showTicker(reasonDomainNotAllowed, Ticker.TYPE_INFORMATION)
-            isDomainAllowed && !isNameAllowed -> showTicker(reasonNameNotAllowed, Ticker.TYPE_INFORMATION)
-            else -> showTicker(reasonNameNotAllowed, Ticker.TYPE_INFORMATION)
+            if (reasonNameNotAllowed.isBlank() && reasonDomainNotAllowed.isBlank()) {
+                return
+            }
+            when {
+                isNameAllowed && isDomainAllowed -> showTicker(reasonNameNotAllowed, Ticker.TYPE_WARNING)
+                isNameAllowed && !isDomainAllowed -> showTicker(reasonDomainNotAllowed, Ticker.TYPE_INFORMATION)
+                isDomainAllowed && !isNameAllowed -> showTicker(reasonNameNotAllowed, Ticker.TYPE_INFORMATION)
+                else -> showTicker(reasonNameNotAllowed, Ticker.TYPE_INFORMATION)
+            }
+        } else {
+            showTicker(getString(R.string.shop_edit_ticker_wording_for_customer_app), Ticker.TYPE_INFORMATION)
         }
     }
 
@@ -483,8 +488,13 @@ class ShopEditBasicInfoFragment: Fragment() {
         val shopNameInput = shopNameTextField.textFieldInput
         val shopDomainInput = shopDomainTextField.textFieldInput
 
-        shopNameInput.isEnabled = isNameAllowed
-        shopDomainInput.isEnabled = isDomainAllowed
+        if (GlobalConfig.isSellerApp()) {
+            shopNameInput.isEnabled = isNameAllowed
+            shopDomainInput.isEnabled = isDomainAllowed
+        } else {
+            shopNameInput.isEnabled = false
+            shopDomainInput.isEnabled = false
+        }
     }
 
     private fun showTicker(message: String, type: Int) {

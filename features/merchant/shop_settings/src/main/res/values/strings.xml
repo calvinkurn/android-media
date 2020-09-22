@@ -164,6 +164,7 @@
     <string name="shop_edit_dialog_description">Perubahan nama dan domain akan mempengaruhi tingkat pencarian tokomu.</string>
     <string name="shop_edit_dialog_primary_cta">Ya, Ubah</string>
     <string name="shop_edit_dialog_secondary_cta">Batal</string>
+    <string name="shop_edit_ticker_wording_for_customer_app">Kamu hanya bisa ubah nama/domain tokomu di aplikasi Tokopedia Seller.</string>
 
     <string name="error_get_os_merchant">Error getting OS merchant type. Please retry</string>
     <string name="error_get_shop_status">Error getting shop status. Please retry</string>
