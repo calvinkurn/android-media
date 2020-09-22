@@ -73,6 +73,10 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
         this.inputFieldSize = inputFieldSize
     }
 
+    fun resetCollapsedFields() {
+        this.collapsedFields = 0
+    }
+
     fun increaseCollapsedFields(inputFieldSize: Int) {
         collapsedFields += inputFieldSize
     }
