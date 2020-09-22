@@ -191,8 +191,8 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
         super.onSaveInstanceState(outState)
     }
 
-    override fun onStop() {
-        super.onStop()
+    override fun onDestroy() {
+        super.onDestroy()
         navigator?.cleanupNavigator()
     }
 
