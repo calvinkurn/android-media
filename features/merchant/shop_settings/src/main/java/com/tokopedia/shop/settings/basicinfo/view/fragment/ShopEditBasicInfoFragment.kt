@@ -573,11 +573,7 @@ class ShopEditBasicInfoFragment: Fragment() {
 
     private fun onErrorUpdateShopBasicData(throwable: Throwable) {
         hideSubmitLoading()
-        if (throwable.cause is UnknownHostException || throwable.cause is UnknownServiceException) {
-            showGlobalError()
-        } else {
-            showSnackBarErrorSubmitEdit(throwable)
-        }
+        showSnackBarErrorSubmitEdit(throwable)
         tvSave.isEnabled = true
         ShopSettingsErrorHandler.logMessage(throwable.message ?: "")
         ShopSettingsErrorHandler.logExceptionToCrashlytics(throwable)
@@ -652,11 +648,7 @@ class ShopEditBasicInfoFragment: Fragment() {
     }
 
     private fun onErrorUploadShopImage(throwable: Throwable) {
-        if (throwable.cause is UnknownHostException || throwable.cause is UnknownServiceException) {
-            showGlobalError()
-        } else {
-            showSnackBarErrorSubmitEdit(throwable)
-        }
+        showSnackBarErrorSubmitEdit(throwable)
         ShopSettingsErrorHandler.logMessage(throwable.message ?: "")
         ShopSettingsErrorHandler.logExceptionToCrashlytics(throwable)
     }
@@ -710,16 +702,10 @@ class ShopEditBasicInfoFragment: Fragment() {
         }.show()
     }
 
-    private fun showGlobalError() {
-        tvSave.hide()
-        globalError.setBackgroundColor(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Neutral_N0 ))
-        globalError.apply {
-            setType(GlobalError.NO_CONNECTION)
-            setActionClickListener {
-                tvSave.show()
-                onSaveButtonClicked()
-                hide()
-            }
-        }.show()
+    private fun showGlobalError(message: String) {
+        Toaster.make(container, message, Snackbar.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
+                getString(com.tokopedia.abstraction.R.string.title_try_again), View.OnClickListener {
+            onSaveButtonClicked()
+        })
     }
 }
