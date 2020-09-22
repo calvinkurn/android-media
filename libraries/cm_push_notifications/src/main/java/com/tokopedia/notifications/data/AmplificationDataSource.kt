@@ -45,7 +45,7 @@ object AmplificationDataSource {
 
         /*
         * preventing multiple fetching of amplification data
-        * check based-on `hasChecked` and `next_fetch` from payload
+        * check based-on `next_fetch` from payload
         * */
         if (currentTime <= cacheManager.getNextFetch()) {
             return
