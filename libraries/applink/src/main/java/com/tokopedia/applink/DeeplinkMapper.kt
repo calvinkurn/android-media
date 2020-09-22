@@ -3,7 +3,6 @@ package com.tokopedia.applink
 import android.content.Context
 import android.net.Uri
 import chatbot.DeeplinkMapperChatbot.getChatbotDeeplink
-import com.tokopedia.applink.digitaldeals.DeeplinkMapperDeals.getRegisteredNavigationDeals
 import com.tokopedia.applink.Hotlist.DeeplinkMapperHotlist.getRegisteredHotlist
 import com.tokopedia.applink.category.DeeplinkMapperCategory.getRegisteredCategoryNavigation
 import com.tokopedia.applink.category.DeeplinkMapperCategory.getRegisteredNavigationCatalog
@@ -16,6 +15,7 @@ import com.tokopedia.applink.content.DeeplinkMapperContent.getKolDeepLink
 import com.tokopedia.applink.content.DeeplinkMapperContent.getRegisteredNavigationContent
 import com.tokopedia.applink.digital.DeeplinkMapperDigital
 import com.tokopedia.applink.digital.DeeplinkMapperDigital.getRegisteredNavigationDigital
+import com.tokopedia.applink.digitaldeals.DeeplinkMapperDeals.getRegisteredNavigationDeals
 import com.tokopedia.applink.entertaiment.DeeplinkMapperEntertainment.getRegisteredNavigationEvents
 import com.tokopedia.applink.etalase.DeepLinkMapperEtalase
 import com.tokopedia.applink.feed.DeepLinkMapperFeed.getRegisteredFeed
@@ -38,6 +38,7 @@ import com.tokopedia.applink.merchant.DeeplinkMapperMerchant.getRegisteredNaviga
 import com.tokopedia.applink.merchant.DeeplinkMapperMerchant.getRegisteredNavigationReputation
 import com.tokopedia.applink.merchant.DeeplinkMapperMerchant.getRegisteredNavigationShopReview
 import com.tokopedia.applink.merchant.DeeplinkMapperMerchant.isShopReview
+import com.tokopedia.applink.order.DeeplinkMapperUohOrder
 import com.tokopedia.applink.order.DeeplinkMapperOrder.getRegisteredNavigationMainAppSellerAwbChange
 import com.tokopedia.applink.order.DeeplinkMapperOrder.getRegisteredNavigationMainAppSellerAwbInvalid
 import com.tokopedia.applink.order.DeeplinkMapperOrder.getRegisteredNavigationMainAppSellerComplaint
@@ -224,6 +225,30 @@ object DeeplinkMapper {
             DLP(logic = { _, _, deeplink -> deeplink.startsWith(ApplinkConst.TOP_CHAT, true) && AppLinkMapperSellerHome.shouldRedirectToSellerApp(deeplink) },
                     targetDeeplink = { _, _, deeplink -> AppLinkMapperSellerHome.getTopChatAppLink(deeplink) }),
             DLP(logic = {_, uri, _ -> (uri.host == ReviewApplinkConst.AUTHORITY_PRODUCT && uri.pathSegments.last() == ReviewApplinkConst.PATH_REVIEW) }, targetDeeplink = { _, uri, _ -> getRegisteredNavigationProductDetailReview(uri) }),
+            DLP.exact(ApplinkConst.BELANJA_ORDER) { _, _, deeplink-> DeeplinkMapperUohOrder.getRegisteredNavigationUohOrder(deeplink) },
+            DLP.exact(ApplinkConst.MARKETPLACE_ORDER) { _, _, deeplink-> DeeplinkMapperUohOrder.getRegisteredNavigationUohOrder(deeplink) },
+            DLP.startWith(ApplinkConst.MARKETPLACE_ORDER_SUB) { _, _, deeplink -> DeeplinkMapperUohOrder.getRegisteredNavigationUohOrder(deeplink) },
+            DLP.exact(ApplinkConst.ORDER_LIST) { _, _, deeplink -> DeeplinkMapperUohOrder.getRegisteredNavigationUohOrder(deeplink) },
+            DLP.exact(ApplinkConst.ORDER_LIST_WEBVIEW) { _, _, deeplink -> DeeplinkMapperUohOrder.getRegisteredNavigationUohOrder(deeplink) },
+            DLP.exact(ApplinkConst.DIGITAL_ORDER) { _, _, deeplink -> DeeplinkMapperUohOrder.getRegisteredNavigationUohOrder(deeplink) },
+            DLP.exact(ApplinkConst.Transaction.ORDER_HISTORY) { _, _, deeplink -> DeeplinkMapperUohOrder.getRegisteredNavigationUohOrder(deeplink) },
+            DLP.exact(ApplinkConst.EVENTS_ORDER) { _, _, deeplink -> DeeplinkMapperUohOrder.getRegisteredNavigationUohOrder(deeplink) },
+            DLP.exact(ApplinkConst.DEALS_ORDER) { _, _, deeplink -> DeeplinkMapperUohOrder.getRegisteredNavigationUohOrder(deeplink) },
+            DLP.exact(ApplinkConst.FLIGHT_ORDER) { _, _, deeplink -> DeeplinkMapperUohOrder.getRegisteredNavigationUohOrder(deeplink) },
+            DLP.exact(ApplinkConst.GIFT_CARDS_ORDER) { _, _, deeplink -> DeeplinkMapperUohOrder.getRegisteredNavigationUohOrder(deeplink) },
+            DLP.exact(ApplinkConst.INSURANCE_ORDER) { _, _, deeplink -> DeeplinkMapperUohOrder.getRegisteredNavigationUohOrder(deeplink) },
+            DLP.exact(ApplinkConst.MODAL_TOKO_ORDER) { _, _, deeplink -> DeeplinkMapperUohOrder.getRegisteredNavigationUohOrder(deeplink) },
+            DLP.exact(ApplinkConst.HOTEL_ORDER) { _, _, deeplink -> DeeplinkMapperUohOrder.getRegisteredNavigationUohOrder(deeplink) },
+            DLP.exact(ApplinkConst.ORDER_LIST) { _, _, deeplink -> DeeplinkMapperUohOrder.getRegisteredNavigationUohOrder(deeplink) },
+            DLP.exact(ApplinkConst.ORDER_LIST_WEBVIEW) { _, _, deeplink -> DeeplinkMapperUohOrder.getRegisteredNavigationUohOrder(deeplink) },
+            DLP.exact(ApplinkConst.PURCHASE_ORDER) { _, _, deeplink -> DeeplinkMapperUohOrder.getRegisteredNavigationUohOrder(deeplink) },
+            DLP.exact(ApplinkConst.PURCHASE_CONFIRMED) { _, _, deeplink -> DeeplinkMapperUohOrder.getRegisteredNavigationUohOrder(deeplink) },
+            DLP.exact(ApplinkConst.PURCHASE_PROCESSED) { _, _, deeplink -> DeeplinkMapperUohOrder.getRegisteredNavigationUohOrder(deeplink) },
+            DLP.exact(ApplinkConst.PURCHASE_SHIPPING_CONFIRM) { _, _, deeplink -> DeeplinkMapperUohOrder.getRegisteredNavigationUohOrder(deeplink) },
+            DLP.exact(ApplinkConst.PURCHASE_SHIPPED) { _, _, deeplink -> DeeplinkMapperUohOrder.getRegisteredNavigationUohOrder(deeplink) },
+            DLP.exact(ApplinkConst.PURCHASE_DELIVERED) { _, _, deeplink -> DeeplinkMapperUohOrder.getRegisteredNavigationUohOrder(deeplink) },
+            DLP.exact(ApplinkConst.PURCHASE_HISTORY) { _, _, deeplink -> DeeplinkMapperUohOrder.getRegisteredNavigationUohOrder(deeplink) },
+            DLP.exact(ApplinkConst.ORDER_HISTORY) { _, _, deeplink -> DeeplinkMapperUohOrder.getRegisteredNavigationUohOrder(deeplink) },
             DLP.startWith(ApplinkConst.HOTEL) { _, _, deeplink -> deeplink },
             DLP.startWith(ApplinkConst.DIGITAL) { ctx, _, deeplink -> getRegisteredNavigationDigital(ctx, deeplink) },
             DLP.startWith(ApplinkConst.RECHARGE) { ctx, _, deeplink -> getRegisteredNavigationDigital(ctx, deeplink) },
@@ -333,6 +358,7 @@ object DeeplinkMapper {
                     }),
             DLP.exact(ApplinkConst.POWER_MERCHANT_SUBSCRIBE, ApplinkConstInternalMarketplace.POWER_MERCHANT_SUBSCRIBE),
             DLP.exact(ApplinkConst.SELLER_SHIPPING_EDITOR, ApplinkConstInternalMarketplace.SHOP_SETTINGS_SHIPPING),
+            DLP.exact(ApplinkConst.SELLER_COD_ACTIVATION, ApplinkConstInternalMarketplace.SHOP_SETTINGS_COD),
             DLP.exact(ApplinkConst.SETTING_PROFILE, ApplinkConstInternalGlobal.SETTING_PROFILE),
             DLP.exact(ApplinkConst.ADD_CREDIT_CARD, ApplinkConstInternalPayment.PAYMENT_ADD_CREDIT_CARD),
             DLP.exact(ApplinkConst.SETTING_NOTIFICATION, ApplinkConstInternalMarketplace.USER_NOTIFICATION_SETTING),
@@ -370,7 +396,8 @@ object DeeplinkMapper {
             DLP.exact(ApplinkConst.THANK_YOU_PAGE_NATIVE, ApplinkConstInternalPayment.PAYMENT_THANK_YOU_PAGE),
             DLP.exact(ApplinkConst.PROFILE_COMPLETION, ApplinkConstInternalGlobal.PROFILE_COMPLETION),
             DLP.exact(ApplinkConst.MERCHANT_VOUCHER_LIST, ApplinkConstInternalSellerapp.VOUCHER_LIST),
-            DLP.exact(ApplinkConst.NOTIFICATION_TROUBLESHOOTER, ApplinkConstInternalGlobal.PUSH_NOTIFICATION_TROUBLESHOOTER)
+            DLP.exact(ApplinkConst.NOTIFICATION_TROUBLESHOOTER, ApplinkConstInternalGlobal.PUSH_NOTIFICATION_TROUBLESHOOTER),
+            DLP.exact(ApplinkConst.PROFILE_COMPLETION, ApplinkConstInternalGlobal.PROFILE_COMPLETION)
     ).toMutableList()
 
     /**

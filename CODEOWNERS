@@ -1,13 +1,13 @@
 /features/content/affiliate/            				@tokopedia/android-miniondave-dev
 /features/content/affiliate_common/     				@tokopedia/android-miniondave-dev
-/features/content/createpost/           				@tokopedia/android-miniondarth-dev
-/features/content/explore/              				@tokopedia/android-miniondarth-dev
-/features/content/feed/                 				@tokopedia/android-miniondarth-dev
-/features/content/interest_pick/        				@tokopedia/android-miniondarth-dev
-/features/content/kol/                  				@tokopedia/android-miniondarth-dev
-/features/content/kol_common/           				@tokopedia/android-miniondarth-dev
-/features/content/profile/              				@tokopedia/android-miniondarth-dev
-/features/content/feed_component/       				@tokopedia/android-miniondarth-dev
+/features/content/createpost/           				@tokopedia/android-minionskywalker-dev
+/features/content/explore/              				@tokopedia/android-minionskywalker-dev
+/features/content/feed/                 				@tokopedia/android-minionskywalker-dev
+/features/content/interest_pick/        				@tokopedia/android-minionskywalker-dev
+/features/content/kol/                  				@tokopedia/android-minionskywalker-dev
+/features/content/kol_common/           				@tokopedia/android-minionskywalker-dev
+/features/content/profile/              				@tokopedia/android-minionskywalker-dev
+/features/content/feed_component/       				@tokopedia/android-minionskywalker-dev
 /features/category/       				                @tokopedia/android-miniondarth-dev
 /features/discovery2/       				            @tokopedia/android-miniondarth-dev
 /features/user/groupchat/                       		@tokopedia/android-miniondave-dev
@@ -34,7 +34,7 @@
 /features/content/play/                                 @tokopedia/android-miniondave-dev
 /features/content/play_common/                          @tokopedia/android-miniondave-dev
 /features/content/play_broadcaster/                     @tokopedia/android-miniondave-dev
-/features/content/interest_pick_common                  @tokopedia/android-miniondarth-dev
+/features/content/interest_pick_common                  @tokopedia/android-minionskywalker-dev
 /features/discovery/discovery_common                    @tokopedia/android-miniondave-dev
 /features/discovery/recommendation_widget_common        @tokopedia/android-miniondave-dev
 /features/discovery/carousel_productcard                @tokopedia/android-miniondave-dev
@@ -99,6 +99,8 @@
 
 /features/merchant/seller_home/                         @tokopedia/android-minionstuart-dev
 /features/merchant/seller_home_common/                  @tokopedia/android-minionstuart-dev
+/features/merchant/seller_menu/                         @tokopedia/android-minionstuart-dev
+/features/merchant/seller_menu_common/                  @tokopedia/android-minionstuart-dev
 /features/merchant/seller_onboarding/                   @tokopedia/android-minionstuart-dev
 /features/merchant/seller_home_drawer/                  @tokopedia/android-minionstuart-dev
 /libraries/kotlin_extensions/                           @tokopedia/android-minionstuart-dev
@@ -159,7 +161,7 @@
 /features/logistic/logisticcart/                		@tokopedia/android-minionbob-dev
 /features/logistic/manageaddress/                		@tokopedia/android-minionbob-dev
 /features/logistic/editshipping/                        @tokopedia/android-minionbob-dev
-
+/features/logistic/activation/                          @tokopedia/android-minionbob-dev
 
 /features/user/chatbot/                         		@tokopedia/android-miniondarth-dev
 /features/user/chatbot_no_op/                   		@tokopedia/android-minionkevin-dev
