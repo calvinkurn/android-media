@@ -57,6 +57,7 @@ object UohAnalytics {
     private const val PRODUCT_CLICK = "productClick"
     private const val ADD_TO_CART = "addToCart"
     private const val VIEW_ORDER_CARD = "view order card {business_unit}"
+    private const val EVENT_LABEL_RECOMMENDATION = "Rekomendasi Untuk Anda"
     private const val VIEW_RECOMMENDATION = "impression - product recommendation"
     private const val CLICK_RECOMMENDATION = "click - product recommendation"
     private const val CLICK_ATC_RECOMMENDATION = "click add to cart on my purchase list page"
@@ -343,7 +344,7 @@ object UohAnalytics {
             putString(EVENT, PRODUCT_VIEW)
             putString(EVENT_CATEGORY, PURCHASE_LIST_EVENT_CATEGORY)
             putString(EVENT_ACTION, VIEW_RECOMMENDATION)
-            putString(EVENT_LABEL, "")
+            putString(EVENT_LABEL, EVENT_LABEL_RECOMMENDATION)
             putParcelable(ECOMMERCE, eCommerce)
         }
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(PRODUCT_VIEW, bundle)
@@ -364,7 +365,7 @@ object UohAnalytics {
             putString(EVENT, PRODUCT_CLICK)
             putString(EVENT_CATEGORY, PURCHASE_LIST_EVENT_CATEGORY)
             putString(EVENT_ACTION, CLICK_RECOMMENDATION)
-            putString(EVENT_LABEL, "")
+            putString(EVENT_LABEL, EVENT_LABEL_RECOMMENDATION)
             putParcelable(ECOMMERCE, eCommerce)
         }
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(PRODUCT_CLICK, bundle)
@@ -382,7 +383,7 @@ object UohAnalytics {
             putString(EVENT, ADD_TO_CART)
             putString(EVENT_CATEGORY, PURCHASE_LIST_EVENT_CATEGORY)
             putString(EVENT_ACTION, CLICK_ATC_RECOMMENDATION)
-            putString(EVENT_LABEL, "")
+            putString(EVENT_LABEL, EVENT_LABEL_RECOMMENDATION)
             putParcelable(ECOMMERCE, eCommerce)
         }
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(ADD_TO_CART, bundle)

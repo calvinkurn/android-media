@@ -288,6 +288,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
 
     override fun onRefresh(view: View?) {
         onLoadMore = false
+        isFetchRecommendation = false
         onLoadMoreRecommendation = false
         currPage = 1
         currRecommendationListPage = 1
