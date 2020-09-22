@@ -30,7 +30,12 @@ public class ProductViewModelMapper {
         this.shopRatingABTestStrategy = shopRatingABTestStrategy;
     }
 
-    public ProductViewModel convertToProductViewModel(int lastProductItemPositionFromCache, SearchProductModel searchProductModel, boolean useRatingString) {
+    public ProductViewModel convertToProductViewModel(
+            int lastProductItemPositionFromCache,
+            SearchProductModel searchProductModel,
+            boolean useRatingString,
+            String pageTitle
+    ) {
         SearchProductModel.SearchProduct aceSearchProduct = searchProductModel.getSearchProduct();
         SearchProductModel.SearchProductHeader searchProductHeader = aceSearchProduct.getHeader();
         SearchProductModel.SearchProductData searchProductData = aceSearchProduct.getData();
@@ -42,7 +47,9 @@ public class ProductViewModelMapper {
         }
         productViewModel.setCpmModel(searchProductModel.getCpmModel());
         productViewModel.setRelatedViewModel(convertToRelatedViewModel(searchProductData.getRelated()));
-        productViewModel.setProductList(convertToProductItemViewModelList(lastProductItemPositionFromCache, searchProductData.getProductList(), useRatingString));
+        productViewModel.setProductList(convertToProductItemViewModelList(
+                lastProductItemPositionFromCache, searchProductData.getProductList(), useRatingString, pageTitle
+        ));
         productViewModel.setAdsModel(searchProductModel.getTopAdsModel());
         productViewModel.setTickerModel(createTickerModel(searchProductData));
         productViewModel.setSuggestionModel(createSuggestionModel(searchProductData));
@@ -190,20 +197,30 @@ public class ProductViewModelMapper {
         return new FreeOngkirViewModel(freeOngkir.isActive(), freeOngkir.getImageUrl());
     }
 
-    private List<ProductItemViewModel> convertToProductItemViewModelList(int lastProductItemPositionFromCache, List<SearchProductModel.Product> productModels, boolean useRatingString) {
+    private List<ProductItemViewModel> convertToProductItemViewModelList(
+            int lastProductItemPositionFromCache,
+            List<SearchProductModel.Product> productModels,
+            boolean useRatingString,
+            String pageTitle
+    ) {
         List<ProductItemViewModel> productItemList = new ArrayList<>();
 
         int position = lastProductItemPositionFromCache;
 
         for (SearchProductModel.Product productModel : productModels) {
             position++;
-            productItemList.add(convertToProductItem(productModel, position, useRatingString));
+            productItemList.add(convertToProductItem(productModel, position, useRatingString, pageTitle));
         }
 
         return productItemList;
     }
 
-    private ProductItemViewModel convertToProductItem(SearchProductModel.Product productModel, int position, boolean useRatingString) {
+    private ProductItemViewModel convertToProductItem(
+            SearchProductModel.Product productModel,
+            int position,
+            boolean useRatingString,
+            String pageTitle
+    ) {
         ProductItemViewModel productItem = new ProductItemViewModel();
         productItem.setProductID(productModel.getId());
         productItem.setWarehouseID(productModel.getWarehouseIdDefault());
@@ -236,6 +253,7 @@ public class ProductViewModelMapper {
         productItem.setTopadsImpressionUrl(productModel.getAds().getProductViewUrl());
         productItem.setTopadsClickUrl(productModel.getAds().getProductClickUrl());
         productItem.setTopadsWishlistUrl(productModel.getAds().getProductWishlistUrl());
+        productItem.setPageTitle(pageTitle);
 
         if (shopRatingABTestStrategy != null) {
             shopRatingABTestStrategy.processShopRatingVariant(productModel, productItem);

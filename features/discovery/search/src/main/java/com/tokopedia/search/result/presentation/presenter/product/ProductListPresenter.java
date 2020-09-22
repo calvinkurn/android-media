@@ -45,8 +45,10 @@ import com.tokopedia.search.result.presentation.model.ProductViewModel;
 import com.tokopedia.search.result.presentation.model.RecommendationItemViewModel;
 import com.tokopedia.search.result.presentation.model.RecommendationTitleViewModel;
 import com.tokopedia.search.result.presentation.model.RelatedViewModel;
+import com.tokopedia.search.result.presentation.model.SearchProductTitleViewModel;
 import com.tokopedia.search.result.presentation.model.SuggestionViewModel;
 import com.tokopedia.search.utils.SearchFilterUtilsKt;
+import com.tokopedia.search.utils.SearchKotlinExtKt;
 import com.tokopedia.search.utils.UrlParamUtils;
 import com.tokopedia.sortfilter.SortFilterItem;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
@@ -133,6 +135,9 @@ final class ProductListPresenter
     private String responseCode = "";
     private int topAdsCount = 1;
     private ShopRatingABTestStrategy shopRatingABTestStrategy = null;
+    private String navSource = "";
+    private String pageId = "";
+    private String pageTitle = "";
 
     private List<Visitable> productList;
     private List<InspirationCarouselViewModel> inspirationCarouselViewModel;
@@ -444,7 +449,7 @@ final class ProductListPresenter
 
             ProductViewModelMapper mapper = new ProductViewModelMapper(shopRatingABTestStrategy);
             ProductViewModel productViewModel = mapper
-                    .convertToProductViewModel(lastProductItemPositionFromCache, searchProductModel, useRatingString);
+                    .convertToProductViewModel(lastProductItemPositionFromCache, searchProductModel, useRatingString, pageTitle);
 
             saveLastProductItemPositionToCache(lastProductItemPositionFromCache, productViewModel.getProductList());
 
@@ -493,6 +498,9 @@ final class ProductListPresenter
 
     private List<Visitable> createProductItemVisitableList(ProductViewModel productViewModel) {
         List<Visitable> list = new ArrayList<>(productViewModel.getProductList());
+
+        if (isLocalSearch()) return list;
+
         int j = 0;
         for (int i = 0; i < productViewModel.getTotalItem(); i++) {
             try {
@@ -539,6 +547,12 @@ final class ProductListPresenter
             }
         }
         return list;
+    }
+
+    private boolean isLocalSearch() {
+        return navSource != null
+                && navSource.equals("campaign")
+                && !textIsEmpty(pageId);
     }
 
     private int convertCountReviewFormatToInt(String countReviewFormat) {
@@ -602,6 +616,10 @@ final class ProductListPresenter
     @Override
     public void loadData(Map<String, Object> searchParameter) {
         checkViewAttached();
+
+        setNavSource(SearchKotlinExtKt.getValueString(searchParameter, SearchApiConst.NAVSOURCE));
+        setPageId(SearchKotlinExtKt.getValueString(searchParameter, SearchApiConst.SRP_PAGE_ID));
+        setPageTitle(SearchKotlinExtKt.getValueString(searchParameter, SearchApiConst.SRP_PAGE_TITLE));
 
         Map<String, String> additionalParams = getAdditionalParamsMap();
         if (searchParameter == null || additionalParams == null) return;
@@ -760,7 +778,7 @@ final class ProductListPresenter
 
         ProductViewModelMapper mapper = new ProductViewModelMapper(shopRatingABTestStrategy);
         ProductViewModel productViewModel = mapper
-                .convertToProductViewModel(lastProductItemPositionFromCache, searchProductModel, useRatingString);
+                .convertToProductViewModel(lastProductItemPositionFromCache, searchProductModel, useRatingString, pageTitle);
 
         saveLastProductItemPositionToCache(lastProductItemPositionFromCache, productViewModel.getProductList());
 
@@ -777,6 +795,18 @@ final class ProductListPresenter
 
     private void setRelatedViewModel(RelatedViewModel relatedViewModel) {
         this.relatedViewModel = relatedViewModel;
+    }
+
+    private void setNavSource(String navSource) {
+        this.navSource = navSource;
+    }
+
+    private void setPageId(String pageId) {
+        this.pageId = pageId;
+    }
+
+    private void setPageTitle(String pageTitle) {
+        this.pageTitle = pageTitle;
     }
 
     private void getViewToHandleEmptyProductList(SearchProductModel.SearchProduct searchProduct, ProductViewModel productViewModel) {
@@ -860,6 +890,8 @@ final class ProductListPresenter
     }
 
     private void getViewToShowRecommendationItem() {
+        if (isLocalSearch()) return;
+
         getView().addLoading();
         recommendationUseCase.execute(
                 recommendationUseCase.getRecomParams(1, DEFAULT_VALUE_X_SOURCE, SEARCH_PAGE_NAME_RECOMMENDATION, new ArrayList<>()),
@@ -898,6 +930,8 @@ final class ProductListPresenter
             getView().showAdultRestriction();
         }
 
+        addPageTitle(list);
+
         boolean isGlobalNavWidgetAvailable
                 = productViewModel.getGlobalNavViewModel() != null && enableGlobalNavWidget;
 
@@ -922,7 +956,7 @@ final class ProductListPresenter
             getView().trackEventImpressionBannedProducts(false);
         }
 
-        if (productViewModel.getCpmModel() != null && shouldShowCpmShop(productViewModel)) {
+        if (productViewModel.getCpmModel() != null && shouldShowCpmShop(productViewModel) && !isLocalSearch()) {
             if (!isGlobalNavWidgetAvailable || productViewModel.getGlobalNavViewModel().getIsShowTopAds()) {
                 CpmViewModel cpmViewModel = new CpmViewModel();
                 cpmViewModel.setCpmModel(productViewModel.getCpmModel());
@@ -956,6 +990,12 @@ final class ProductListPresenter
         }
 
         getView().stopTracePerformanceMonitoring();
+    }
+
+    private void addPageTitle(List<Visitable> list) {
+        if (pageTitle == null || pageTitle.isEmpty()) return;
+
+        list.add(new SearchProductTitleViewModel(pageTitle));
     }
 
     private boolean shouldShowSuggestion(ProductViewModel productViewModel) {
@@ -1238,14 +1278,24 @@ final class ProductListPresenter
                 query,
                 productViewModel.getKeywordProcess(),
                 productViewModel.getResponseCode(),
-                source
+                source,
+                getNavSourceForGeneralSearchTracking(),
+                getPageTitleForGeneralSearchTracking()
         );
     }
 
     private String getTopNavSource(GlobalNavViewModel globalNavViewModel) {
-        if (globalNavViewModel == null) return "none";
-        if (globalNavViewModel.getSource().isEmpty()) return "other";
+        if (globalNavViewModel == null) return SearchEventTracking.NONE;
+        if (globalNavViewModel.getSource().isEmpty()) return SearchEventTracking.OTHER;
         return globalNavViewModel.getSource();
+    }
+
+    private String getNavSourceForGeneralSearchTracking() {
+        return textIsEmpty(navSource) ? SearchEventTracking.NONE : navSource;
+    }
+
+    private String getPageTitleForGeneralSearchTracking() {
+        return textIsEmpty(pageTitle) ? SearchEventTracking.NONE : pageTitle;
     }
 
     private String createGeneralSearchTrackingRelatedKeyword(ProductViewModel productViewModel) {

@@ -31,3 +31,9 @@ internal fun String?.decodeQueryParameter(): String {
 
     return "$path?$queryParameterEncoded"
 }
+
+internal fun Map<String, Any>?.getValueString(key: String): String {
+    this ?: return ""
+
+    return get(key)?.toString() ?: ""
+}
