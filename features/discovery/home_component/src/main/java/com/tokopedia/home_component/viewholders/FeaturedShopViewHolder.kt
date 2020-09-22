@@ -57,24 +57,20 @@ class FeaturedShopViewHolder(
     }
 
     private fun initView(element: FeaturedShopDataModel) {
-        initRecycleView()
         initItems(element)
     }
 
-    private fun initRecycleView() {
-        parentRecyclerViewPool?.let { itemView.dc_banner_rv?.setRecycledViewPool(parentRecyclerViewPool) }
-    }
-
     private fun initItems(element: FeaturedShopDataModel) {
-        val typeFactoryImpl = CommonCarouselProductCardTypeFactoryImpl(element.channelModel)
-        val listData = mutableListOf<Visitable<*>>()
-        val productDataList = convertDataToProductData(element.channelModel)
-        listData.addAll(productDataList)
-
-        if(element.channelModel.channelGrids.size > 1 && element.channelModel.channelHeader.applink.isNotEmpty())
-            listData.add(CarouselSeeMorePdpDataModel(element.channelModel.channelHeader.applink, element.channelModel.channelHeader.backImage, this))
-        adapter = FeaturedShopAdapter(listData, typeFactoryImpl)
-        itemView.dc_banner_rv?.adapter = adapter
+        if(!this::adapter.isInitialized) {
+            val typeFactoryImpl = CommonCarouselProductCardTypeFactoryImpl(element.channelModel)
+            val listData = mutableListOf<Visitable<*>>()
+            val productDataList = convertDataToProductData(element.channelModel)
+            listData.addAll(productDataList)
+            if (element.channelModel.channelGrids.size > 1 && element.channelModel.channelHeader.applink.isNotEmpty())
+                listData.add(CarouselSeeMorePdpDataModel(element.channelModel.channelHeader.applink, element.channelModel.channelHeader.backImage, this))
+            adapter = FeaturedShopAdapter(listData, typeFactoryImpl)
+            itemView.dc_banner_rv?.adapter = adapter
+        }
     }
 
     private fun setHeaderComponent(element: FeaturedShopDataModel) {
