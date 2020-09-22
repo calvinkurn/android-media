@@ -1,5 +1,5 @@
 {
-  "readme": "Hotel Room List",
+  "readme": "Hotel Room List & Room Details",
   "mode": "exact",
   "query": [
     {
@@ -26,8 +26,7 @@
         "item_category": "Hotel"
       }
       ]
-    },
-    {
+    }, {
       "networkSpeed": "{{.*}}",
       "businessUnit": "travel & entertainment",
       "clientId": "{{.*}}",
@@ -40,7 +39,8 @@
       "event": "openScreen",
       "userId": "{{.*}}",
       "sessionIris": "{{.*}}"
-    },{
+    },
+    {
       "event": "clickHotel",
       "eventCategory": "digital - native",
       "eventAction": "click room photo on room list",
@@ -115,6 +115,50 @@
       "userId": "{{.*}}",
       "businessUnit": "travel & entertainment",
       "category": "hotel"
+    },
+    {
+      "event": "add_to_cart",
+      "eventCategory": "digital - native",
+      "eventAction": "choose room",
+      "eventLabel": "{{hotel - .* - .* - .* - .* - .* - .* - .*}}",
+      "screenName": "/hotel/roomlist",
+      "currentSite": "tokopediadigitalhotel",
+      "clientId": "{{.*}}",
+      "sessionIris": "{{.*}}",
+      "userId": "{{.*}}",
+      "businessUnit": "travel & entertainment",
+      "category": "hotel",
+      "items": [ {
+        "quantity": "{{.*}}",
+        "item_id": "{{.*}}",
+        "price": "{{\\d*.\\d*}}",
+        "item_name": "{{.*}}",
+        "item_variant": "{{.*}}",
+        "item_category": "Hotel"
+      }
+      ]
+    },
+    {
+      "event": "add_to_cart",
+      "eventCategory": "digital - native",
+      "eventAction": "choose room details pdp",
+      "eventLabel": "{{hotel - .* - .* - .* - .* - .* - .* - .*}}",
+      "screenName": "/hotel/roomdetails",
+      "currentSite": "tokopediadigitalhotel",
+      "clientId": "{{.*}}",
+      "sessionIris": "{{.*}}",
+      "userId": "{{.*}}",
+      "businessUnit": "travel & entertainment",
+      "category": "hotel",
+      "items": [ {
+        "quantity": "{{.*}}",
+        "item_id": "{{.*}}",
+        "price": "{{\\d*.\\d*}}",
+        "item_name": "{{.*}}",
+        "item_variant": "{{.*}}",
+        "item_category": "Hotel"
+      }
+      ]
     }
   ]
 }

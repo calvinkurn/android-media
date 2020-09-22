@@ -17,7 +17,15 @@ class HotelRoomListResponseConfig : MockModelConfig() {
                 InstrumentationMockHelper.getRawString(context, R.raw.response_mock_get_room_list),
                 FIND_BY_CONTAINS
         )
+        addMockResponse(
+                KEY_QUERY_HOTEL_ATC,
+                InstrumentationMockHelper.getRawString(context, R.raw.response_mock_hotel_add_to_cart),
+                FIND_BY_CONTAINS
+        )
         return this
     }
 
+    companion object {
+        const val KEY_QUERY_HOTEL_ATC = "propertyAddToCart"
+    }
 }
