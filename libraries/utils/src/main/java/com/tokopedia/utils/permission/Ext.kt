@@ -1,4 +1,4 @@
-package com.tokopedia.permissionchecker
+package com.tokopedia.utils.permission
 
 import androidx.fragment.app.FragmentActivity
 

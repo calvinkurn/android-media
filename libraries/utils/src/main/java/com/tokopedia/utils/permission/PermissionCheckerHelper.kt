@@ -1,4 +1,4 @@
-package com.tokopedia.permissionchecker
+package com.tokopedia.utils.permission
 
 import android.Manifest
 import android.app.Activity
@@ -11,15 +11,16 @@ import androidx.core.content.ContextCompat
 import androidx.appcompat.app.AppCompatActivity
 import android.widget.Toast
 import com.tokopedia.design.component.Dialog
-import com.tokopedia.permissionchecker.PermissionCheckerHelper.Companion
-import com.tokopedia.permissionchecker.PermissionCheckerHelper.Companion.PERMISSION_ACCESS_COARSE_LOCATION
-import com.tokopedia.permissionchecker.PermissionCheckerHelper.Companion.PERMISSION_ACCESS_FINE_LOCATION
-import com.tokopedia.permissionchecker.PermissionCheckerHelper.Companion.PERMISSION_CAMERA
-import com.tokopedia.permissionchecker.PermissionCheckerHelper.Companion.PERMISSION_READ_CONTACT
-import com.tokopedia.permissionchecker.PermissionCheckerHelper.Companion.PERMISSION_READ_EXTERNAL_STORAGE
-import com.tokopedia.permissionchecker.PermissionCheckerHelper.Companion.PERMISSION_RECORD_AUDIO
-import com.tokopedia.permissionchecker.PermissionCheckerHelper.Companion.PERMISSION_WRITE_EXTERNAL_STORAGE
+import com.tokopedia.utils.permission.PermissionCheckerHelper.Companion
+import com.tokopedia.utils.permission.PermissionCheckerHelper.Companion.PERMISSION_ACCESS_COARSE_LOCATION
+import com.tokopedia.utils.permission.PermissionCheckerHelper.Companion.PERMISSION_ACCESS_FINE_LOCATION
+import com.tokopedia.utils.permission.PermissionCheckerHelper.Companion.PERMISSION_CAMERA
+import com.tokopedia.utils.permission.PermissionCheckerHelper.Companion.PERMISSION_READ_CONTACT
+import com.tokopedia.utils.permission.PermissionCheckerHelper.Companion.PERMISSION_READ_EXTERNAL_STORAGE
+import com.tokopedia.utils.permission.PermissionCheckerHelper.Companion.PERMISSION_RECORD_AUDIO
+import com.tokopedia.utils.permission.PermissionCheckerHelper.Companion.PERMISSION_WRITE_EXTERNAL_STORAGE
 import org.jetbrains.annotations.NotNull
+import com.tokopedia.utils.R
 
 /**
  * @author by nisie on 28/11/18.
@@ -273,6 +274,7 @@ class PermissionCheckerHelper {
                                 permissionText: String, listener: PermissionCheckListener,
                                 rationaleText : String) {
 
+        // todo: change to dialog unify and remove tkpddesign dependency
         val dialog = Dialog(activity, Dialog.Type.PROMINANCE)
         dialog.setTitle(activity.getString(TEXT_TITLE))
         dialog.setDesc(getNeedPermissionMessage(activity, permissionText, rationaleText))

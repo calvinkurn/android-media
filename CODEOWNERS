@@ -265,7 +265,6 @@
 /libraries/dynamic_features/							@tokopedia/android-core-dev
 /libraries/encryption/							        @tokopedia/android-core-dev
 /libraries/fingerprint/									@tokopedia/android-core-dev
-/libraries/graph_view/									@tokopedia/android-core-dev
 /libraries/graphql/									    @tokopedia/android-core-dev
 /libraries/image_picker/								@tokopedia/android-core-dev
 /libraries/image_preview/								@tokopedia/android-core-dev
@@ -283,7 +282,6 @@
 /libraries/mapviewer/								    @tokopedia/android-core-dev
 /libraries/mediauploader/			                    @tokopedia/android-core-dev
 /libraries/oms/											@tokopedia/android-core-dev
-/libraries/permissionchecker/							@tokopedia/android-core-dev
 /libraries/pre_release_inspector/			            @tokopedia/android-core-dev
 /libraries/pre_release_inspector_no_op/					@tokopedia/android-core-dev
 /libraries/product_photo_adapter/                       @tokopedia/android-minionstuart-dev
@@ -292,7 +290,6 @@
 /libraries/react_native/								@tokopedia/android-core-dev
 /libraries/remote_config/								@tokopedia/android-core-dev
 /libraries/remoteresourcerequest/						@tokopedia/android-core-dev
-/libraries/sharedata/									@tokopedia/android-core-dev
 /libraries/shake_detect/					            @tokopedia/android-core-dev
 /libraries/smart_recycler_diffutil_helper/			    @tokopedia/android-core-dev
 /libraries/track/										@tokopedia/android-gatekeeperanalytic-dev

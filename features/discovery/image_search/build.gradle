@@ -27,7 +27,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.baseList)
     implementation project(rootProject.ext.libraries.imagePicker)
     implementation project(rootProject.ext.libraries.remoteConfig)
-    implementation project(rootProject.ext.libraries.permissionchecker)
+    implementation project(rootProject.ext.libraries.utils)
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.features.topAdsSdk)
     implementation project(rootProject.ext.features.discoveryCommon)

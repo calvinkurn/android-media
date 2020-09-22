@@ -63,13 +63,11 @@ import com.tokopedia.loginregister.registerinitial.viewmodel.RegisterInitialView
 import com.tokopedia.loginregister.ticker.domain.pojo.TickerInfoPojo
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.otp.verification.domain.data.OtpConstant
-import com.tokopedia.permissionchecker.PermissionCheckerHelper
+import com.tokopedia.utils.permission.PermissionCheckerHelper
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.sessioncommon.data.LoginTokenPojo
 import com.tokopedia.sessioncommon.data.Token.Companion.GOOGLE_API_KEY
 import com.tokopedia.sessioncommon.data.loginphone.ChooseTokoCashAccountViewModel
-import com.tokopedia.sessioncommon.data.profile.ProfileInfo
 import com.tokopedia.sessioncommon.di.SessionModule.SESSION_MODULE
 import com.tokopedia.sessioncommon.view.forbidden.activity.ForbiddenActivity
 import com.tokopedia.track.TrackApp
