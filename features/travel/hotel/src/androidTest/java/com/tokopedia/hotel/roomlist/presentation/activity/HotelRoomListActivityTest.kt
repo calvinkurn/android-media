@@ -54,6 +54,7 @@ class HotelRoomListActivityTest {
 
     @Test
     fun checkOnRoomListTrackingEvent() {
+        Thread.sleep(6000)
         clickOnSeePhoto()
         clickOnRoomViewHolder()
         assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_HOTEL_ROOM_LIST),
@@ -61,12 +62,14 @@ class HotelRoomListActivityTest {
     }
 
     private fun clickOnSeePhoto() {
-        Thread.sleep(10000)
+        Thread.sleep(3000)
         onView(withId(R.id.recycler_view)).perform(
                 RecyclerViewActions.actionOnItemAtPosition<RoomListViewHolder>(0, CommonActions.clickChildViewWithId(R.id.image_banner)))
 
         Thread.sleep(3000)
         onView(withId(R.id.btn_arrow_back)).perform(click())
+
+        Thread.sleep(3000)
     }
 
     private fun clickOnRoomViewHolder() {

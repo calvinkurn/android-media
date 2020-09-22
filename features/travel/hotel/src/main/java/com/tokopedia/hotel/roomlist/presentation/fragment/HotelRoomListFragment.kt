@@ -119,12 +119,6 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
         roomListViewModel.roomListResult.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             when (it) {
                 is Success -> {
-                    if (firstTime) {
-                        firstTime = false
-                        trackingHotelUtil.hotelViewRoomList(context, hotelRoomListPageModel.propertyId,
-                                hotelRoomListPageModel, it.data, ROOM_LIST_SCREEN_NAME)
-                    }
-
                     if (!roomListViewModel.isFilter) {
                         roomListViewModel.roomList = it.data
                         showFilterRecyclerView(it.data.size > 0)
@@ -133,6 +127,11 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
                     clearAllData()
                     roomList = it.data
                     renderList(roomList, false)
+                    if (firstTime) {
+                        firstTime = false
+                        trackingHotelUtil.hotelViewRoomList(context, hotelRoomListPageModel.propertyId,
+                                hotelRoomListPageModel, it.data, ROOM_LIST_SCREEN_NAME)
+                    }
                 }
                 is Fail -> {
                     showGetListError(it.throwable)

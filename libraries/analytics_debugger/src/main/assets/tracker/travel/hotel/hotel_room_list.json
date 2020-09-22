@@ -1,21 +1,7 @@
 {
-  "readme": "Hotel homepage",
+  "readme": "Hotel Room List",
   "mode": "exact",
   "query": [
-    {
-      "networkSpeed": "{{.*}}",
-      "businessUnit": "travel & entertainment",
-      "clientId": "{{.*}}",
-      "currentSite": "tokopediadigitalhotel",
-      "isLoggedInStatus": "{{.*}}",
-      "appsflyerId": "{{.*}}",
-      "shopId": "{{.*}}",
-      "screenName": "{{.*}}",
-      "category": "hotel",
-      "event": "openScreen",
-      "userId": "{{.*}}",
-      "sessionIris": "{{.*}}"
-    },
     {
       "event": "view_item_list",
       "eventCategory": "digital - native",
@@ -29,19 +15,32 @@
       "businessUnit": "travel & entertainment",
       "item_list": "/hotel/",
       "category": "hotel",
-      "items": [
-        {
+      "items": [ {
         "item_id": "{{.*}}",
-        "price": "{{\\d*.\\d*}}",
+        "price": "{{.*}}",
         "dimension40": "/hotel/",
         "index": "{{.*}}",
         "item_name": "{{.*}}",
         "item_brand":  "none / other",
         "item_variant": "{{.*}}",
         "item_category": "Hotel"
-        }
+      }
       ]
-    }, {
+    },
+    {
+      "networkSpeed": "{{.*}}",
+      "businessUnit": "travel & entertainment",
+      "clientId": "{{.*}}",
+      "currentSite": "tokopediadigitalhotel",
+      "isLoggedInStatus": "{{.*}}",
+      "appsflyerId": "{{.*}}",
+      "shopId": "{{.*}}",
+      "screenName": "{{.*}}",
+      "category": "hotel",
+      "event": "openScreen",
+      "userId": "{{.*}}",
+      "sessionIris": "{{.*}}"
+    },{
       "event": "clickHotel",
       "eventCategory": "digital - native",
       "eventAction": "click room photo on room list",
