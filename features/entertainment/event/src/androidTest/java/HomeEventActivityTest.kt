@@ -93,7 +93,7 @@ class HomeEventActivityTest {
     }
 
     fun impression_banner() {
-        onView(withId(R.id.banner_recyclerview)).perform(RecyclerViewActions.scrollToPosition<BannerViewPagerAdapter.BannerViewHolder>(0))
+        onView(withId(R.id.banner_recyclerview)).perform(RecyclerViewActions.scrollToPosition<BannerViewPagerAdapter.BannerViewHolder>(1))
     }
 
     fun click_banner() {
