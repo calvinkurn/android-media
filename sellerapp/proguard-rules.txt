@@ -437,6 +437,3 @@
 
 -keep class com.alibaba.livecloud.** { *; }
 -keep class com.alivc.** { *; }
-
- # -- unify component
- -keep class com.tokopedia.unifycomponents.TextFieldUnify.** { *; }
