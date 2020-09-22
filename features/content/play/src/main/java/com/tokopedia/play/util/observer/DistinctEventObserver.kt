@@ -1,6 +1,5 @@
-package com.tokopedia.play.util.event
+package com.tokopedia.play.util.observer
 
-import com.tokopedia.play.util.observer.DistinctObserver
 import com.tokopedia.play_common.util.event.Event
 
 /**
