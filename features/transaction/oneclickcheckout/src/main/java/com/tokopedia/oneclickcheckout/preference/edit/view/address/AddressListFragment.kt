@@ -17,7 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.globalerror.GlobalError
@@ -45,7 +45,7 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 
-class AddressListFragment : BaseDaggerFragment(), AddressListItemAdapter.onSelectedListener {
+class AddressListFragment : BaseDaggerFragment(), AddressListItemAdapter.OnSelectedListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -57,7 +57,8 @@ class AddressListFragment : BaseDaggerFragment(), AddressListItemAdapter.onSelec
         ViewModelProvider(this, viewModelFactory)[AddressListViewModel::class.java]
     }
 
-    private val adapter = AddressListItemAdapter(this)
+    private var adapter: AddressListItemAdapter? = null
+    private var endlessScrollListener: EndlessRecyclerViewScrollListener? = null
 
     private var searchAddress: SearchBarUnify? = null
     private var addressListRv: RecyclerView? = null
@@ -106,15 +107,32 @@ class AddressListFragment : BaseDaggerFragment(), AddressListItemAdapter.onSelec
             if (parent.getAddressId() > 0) {
                 viewModel.selectedId = parent.getAddressId().toString()
             }
+            val shippingParam = parent.getShippingParam()
+            if (shippingParam != null) {
+                viewModel.destinationLongitude = shippingParam.destinationLongitude
+                viewModel.destinationLatitude = shippingParam.destinationLatitude
+                viewModel.destinationDistrict = shippingParam.destinationDistrictId
+                viewModel.destinationPostalCode = shippingParam.destinationPostalCode
+            }
         }
 
         viewModel.addressList.observe(viewLifecycleOwner, Observer {
             when (it) {
-                is OccState.Success -> {
+                is OccState.FirstLoad -> {
                     swipeRefreshLayout?.isRefreshing = false
                     globalErrorLayout?.gone()
                     setEmptyState(it.data.listAddress.isEmpty(), viewModel.savedQuery.isEmpty())
-                    adapter.setData(it.data.listAddress)
+                    addressListRv?.scrollToPosition(0)
+                    adapter?.setData(it.data.listAddress, it.data.hasNext ?: false)
+                    endlessScrollListener?.resetState()
+                    endlessScrollListener?.setHasNextPage(it.data.hasNext ?: false)
+                    validateButton()
+                }
+
+                is OccState.Success -> {
+                    adapter?.setData(it.data.listAddress, it. data.hasNext ?: false)
+                    endlessScrollListener?.updateStateAfterGetData()
+                    endlessScrollListener?.setHasNextPage(it.data.hasNext ?: false)
                     validateButton()
                 }
 
@@ -134,11 +152,10 @@ class AddressListFragment : BaseDaggerFragment(), AddressListItemAdapter.onSelec
         super.onViewCreated(view, savedInstanceState)
         initHeader()
         initView()
+        initRecyclerView()
+        initSearchView()
         initViewModel()
         initSearch()
-        addressListRv?.adapter = adapter
-        addressListRv?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-        initSearchView()
     }
 
     private fun setEmptyState(isEmpty: Boolean, isFirstLoad: Boolean) {
@@ -199,6 +216,22 @@ class AddressListFragment : BaseDaggerFragment(), AddressListItemAdapter.onSelec
         globalErrorLayout = view?.findViewById(R.id.global_error)
 
         ivEmptyState?.setImageUrl(EMPTY_STATE_PICT_URL)
+    }
+
+    private fun initRecyclerView() {
+        adapter = AddressListItemAdapter(this)
+        addressListRv?.adapter = adapter
+        val linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        addressListRv?.layoutManager = linearLayoutManager
+        addressListRv?.clearOnScrollListeners()
+        endlessScrollListener = object : EndlessRecyclerViewScrollListener(linearLayoutManager) {
+            override fun onLoadMore(page: Int, totalItemsCount: Int) {
+                viewModel.loadMore()
+            }
+        }
+        endlessScrollListener?.let {
+            addressListRv?.addOnScrollListener(it)
+        }
     }
 
     private fun goBack() {
@@ -364,6 +397,7 @@ class AddressListFragment : BaseDaggerFragment(), AddressListItemAdapter.onSelec
     private fun showGlobalError(type: Int) {
         globalErrorLayout?.setType(type)
         globalErrorLayout?.setActionClickListener {
+            searchAddress?.searchBarTextField?.setText("")
             viewModel.searchAddress("")
         }
         searchAddress?.gone()
