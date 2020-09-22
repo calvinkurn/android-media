@@ -21,7 +21,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.text.watcher.AfterTextWatcher
 import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef
@@ -700,12 +699,5 @@ class ShopEditBasicInfoFragment: Fragment() {
                 ShopSettingsTracking.clickCancelChangeShopName(userSession.shopId, getShopType())
             }
         }.show()
-    }
-
-    private fun showGlobalError(message: String) {
-        Toaster.make(container, message, Snackbar.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
-                getString(com.tokopedia.abstraction.R.string.title_try_again), View.OnClickListener {
-            onSaveButtonClicked()
-        })
     }
 }
