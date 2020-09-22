@@ -76,7 +76,7 @@ class BigGridInspirationCardViewHolder(
 
     private fun bindCuratedIcon(element: InspirationCardOptionViewModel) {
         itemView.bigGridCardViewInspirationCard?.inspirationCardCuratedIcon?.shouldShowWithAction(element.img.isNotEmpty()) {
-            ImageHandler.loadImageWithoutPlaceholderAndError(itemView.bigGridCardViewInspirationCard?.inspirationCardCuratedIcon, element.img)
+            ImageHandler.loadImageFitCenter(itemView.context, itemView.bigGridCardViewInspirationCard?.inspirationCardCuratedIcon, element.img)
         }
     }
 

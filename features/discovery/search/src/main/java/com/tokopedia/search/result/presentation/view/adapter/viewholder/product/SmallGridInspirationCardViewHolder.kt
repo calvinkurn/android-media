@@ -70,7 +70,7 @@ class SmallGridInspirationCardViewHolder(
 
     private fun bindCuratedIcon(element: InspirationCardOptionViewModel) {
         itemView.smallGridCardViewInspirationCard?.inspirationCardCuratedIcon?.shouldShowWithAction(element.img.isNotEmpty()) {
-            ImageHandler.loadImageWithoutPlaceholderAndError(itemView.smallGridCardViewInspirationCard?.inspirationCardCuratedIcon, element.img)
+            ImageHandler.loadImageFitCenter(itemView.context, itemView.smallGridCardViewInspirationCard?.inspirationCardCuratedIcon, element.img)
         }
     }
 
