@@ -51,9 +51,9 @@ class CategoryEventActivityTest {
     @Test
     fun validateCategoryTest(){
         Thread.sleep(5000)
+        clickCategory()
         impressionProduct()
         clickProduct()
-        clickCategory()
         ViewMatchers.assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ENTERTAINMENT_EVENT_CATEGORY_VALIDATOR_QUERY), hasAllSuccess())
 
     }

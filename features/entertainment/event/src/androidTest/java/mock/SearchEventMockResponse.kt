@@ -8,7 +8,7 @@ import com.tokopedia.test.application.util.InstrumentationMockHelper
 class SearchEventMockResponse : MockModelConfig(){
 
     companion object{
-        const val KEY_EVENT_CHILD = "event_search"
+        const val KEY_EVENT_CHILD = "event_location_search"
     }
 
     override fun createMockModel(context: Context): MockModelConfig {

@@ -8,7 +8,7 @@ import com.tokopedia.test.application.util.InstrumentationMockHelper
 class CategoryEventMockResponse : MockModelConfig(){
 
     companion object{
-        const val KEY_EVENT_CHILD = "event_child_category"
+        const val KEY_EVENT_CHILD = "event_search"
     }
 
     override fun createMockModel(context: Context): MockModelConfig {
