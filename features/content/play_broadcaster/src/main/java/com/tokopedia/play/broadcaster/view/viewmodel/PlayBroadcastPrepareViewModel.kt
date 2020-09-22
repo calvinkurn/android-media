@@ -9,9 +9,9 @@ import com.tokopedia.play.broadcaster.domain.usecase.GetLiveFollowersDataUseCase
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastUiMapper
 import com.tokopedia.play.broadcaster.ui.model.FollowerDataUiModel
 import com.tokopedia.play.broadcaster.ui.model.LiveStreamInfoUiModel
-import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
-import com.tokopedia.play.broadcaster.ui.model.result.map
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
+import com.tokopedia.play_common.model.result.NetworkResult
+import com.tokopedia.play_common.model.result.map
 import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
