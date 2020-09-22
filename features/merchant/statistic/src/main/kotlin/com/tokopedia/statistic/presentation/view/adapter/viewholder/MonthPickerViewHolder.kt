@@ -12,6 +12,7 @@ import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
 import com.tokopedia.statistic.R
+import com.tokopedia.statistic.common.Const
 import com.tokopedia.statistic.presentation.view.bottomsheet.DateFilterBottomSheet
 import com.tokopedia.statistic.presentation.view.model.DateFilterItem
 import kotlinx.android.synthetic.main.item_stc_month_picker.view.*
@@ -130,7 +131,7 @@ class MonthPickerViewHolder(
             }
 
             dismissDateFilterBottomSheet()
-            show(fm, element.label)
+            show(fm, Const.BottomSheet.TAG_MONTH_PICKER)
         }
     }
 

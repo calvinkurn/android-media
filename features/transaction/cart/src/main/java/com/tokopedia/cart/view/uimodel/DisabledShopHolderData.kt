@@ -7,6 +7,7 @@ package com.tokopedia.cart.view.uimodel
 data class DisabledShopHolderData(
         var shopId: String = "",
         var shopName: String = "",
-        var shopLocation: String = "",
-        var errorLabel: String = ""
+        var shopBadgeUrl: String = "",
+        var isFulfillment: Boolean = false,
+        var showDivider: Boolean = false
 )

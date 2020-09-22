@@ -56,13 +56,10 @@ import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.Job
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import retrofit2.Response
 import rx.Subscriber
 import rx.android.schedulers.AndroidSchedulers
@@ -185,6 +182,10 @@ open class HomeViewModel @Inject constructor(
         get() = _isRequestNetworkLiveData
     private val _isRequestNetworkLiveData = MutableLiveData<Event<Boolean>>(null)
 
+    val isStartToRenderDynamicChannel: LiveData<Event<Boolean>>
+        get() = _isStartToRenderDynamicChannel
+    private val _isStartToRenderDynamicChannel = MutableLiveData<Event<Boolean>>(Event(false))
+
     private val _salamWidgetLiveData = MutableLiveData<Event<SalamWidget>>()
     val salamWidgetLiveData: LiveData<Event<SalamWidget>> get() = _salamWidgetLiveData
 
@@ -229,6 +230,8 @@ open class HomeViewModel @Inject constructor(
     private var headerDataModel: HeaderDataModel? = null
 
     private val homeRateLimit = RateLimiter<String>(timeout = 3, timeUnit = TimeUnit.MINUTES)
+
+    private var homeToken = ""
 
     init {
         _isViewModelInitialized.value = Event(true)
@@ -425,19 +428,33 @@ open class HomeViewModel @Inject constructor(
         }
     }
 
-    private fun evaluateAvailableComponent(homeDataModel: HomeDataModel?): HomeDataModel? {
+    private fun evaluateAvailableComponent(homeDataModel: HomeDataModel?, needToEvaluateRecommendation:Boolean = true): HomeDataModel? {
         homeDataModel?.let {
             var newHomeViewModel = homeDataModel
+            newHomeViewModel = evaluateGeolocationComponent(newHomeViewModel)
             if(isNeedShowGeoLocation) newHomeViewModel = onRemoveSuggestedReview(it)
             newHomeViewModel = evaluatePlayWidget(newHomeViewModel)
             newHomeViewModel = evaluatePlayCarouselWidget(newHomeViewModel)
             newHomeViewModel = evaluateBuWidgetData(newHomeViewModel)
-            newHomeViewModel = evaluateRecommendationSection(newHomeViewModel)
+            if (needToEvaluateRecommendation) newHomeViewModel = evaluateRecommendationSection(newHomeViewModel)
+            newHomeViewModel = evaluateDynamicChannelModel(newHomeViewModel)
             newHomeViewModel = evaluatePopularKeywordComponent(newHomeViewModel)
             newHomeViewModel = evaluateTopAdsBannerComponent(newHomeViewModel)
             return newHomeViewModel
         }
         return homeDataModel
+    }
+
+    private fun evaluateDynamicChannelModel(newHomeViewModel: HomeDataModel?): HomeDataModel? {
+        newHomeViewModel?.let {
+            val getDynamicChannelModelComponent = it.list.filterIsInstance(HomeComponentVisitable::class.java)
+            if (getDynamicChannelModelComponent.isEmpty()) {
+                val list = it.list.toMutableList()
+                list.add(DynamicChannelLoadingModel())
+                return newHomeViewModel.copy(list = list)
+            }
+        }
+        return newHomeViewModel
     }
 
     private fun evaluateGeolocationComponent(homeDataModel: HomeDataModel?): HomeDataModel? {
@@ -817,6 +834,8 @@ open class HomeViewModel @Inject constructor(
                         list = visitableMutableList)
             }
         }
+        if (detectHomeRecom == null) getFeedTabData()
+
         return homeDataModel
     }
 
@@ -876,11 +895,9 @@ open class HomeViewModel @Inject constructor(
                     val homeDataWithoutExternalComponentPair = evaluateInitialTopAdsBannerComponent(homeDataModel)
                     var homeData: HomeDataModel? = homeDataWithoutExternalComponentPair.first
                     homeData = evaluateGeolocationComponent(homeData)
-                    homeData = evaluateAvailableComponent(homeData)
+                    homeData = evaluateAvailableComponent(homeData, !(homeData?.isFirstPage?:false))
                     homeData?.let {
-                        withContext(homeDispatcher.get().ui()){ 
-                            _homeLiveData.value = homeData
-                        }
+                        _homeLiveData.postValue(homeData)
                         getPlayBannerCarousel()
                         getHeaderData()
                         getReviewData()
@@ -924,6 +941,9 @@ open class HomeViewModel @Inject constructor(
         getHomeDataJob = launchCatchError(coroutineContext, block = {
             homeUseCase.get().updateHomeData().collect {
                 _updateNetworkLiveData.postValue(it)
+                if (it.status === Result.Status.ERROR_PAGINATION) {
+                    removeDynamicChannelLoadingModel()
+                }
             }
         }) {
             homeRateLimit.reset(HOME_LIMITER_KEY)
@@ -982,9 +1002,10 @@ open class HomeViewModel @Inject constructor(
 
     fun getDynamicChannelData(dynamicChannelDataModel: DynamicChannelDataModel, position: Int){
         launchCatchError(coroutineContext, block = {
-            getDynamicChannelsUseCase.get().setParams(dynamicChannelDataModel.channel?.groupId ?: "")
-            val data = getDynamicChannelsUseCase.get().executeOnBackground()
-            if(data.isEmpty()){
+            val visitableList = homeUseCase.get().onDynamicChannelExpired(
+                    dynamicChannelDataModel.channel?.groupId?:"")
+
+            if(visitableList.isEmpty()) {
                 homeProcessor.get().sendWithQueueMethod(DeleteWidgetCommand(dynamicChannelDataModel, position, this@HomeViewModel))
             } else {
                 var lastIndex = position
@@ -993,10 +1014,10 @@ open class HomeViewModel @Inject constructor(
                     lastIndex = _homeLiveData.value?.list?.indexOf(dynamicChannelDataModel) ?: -1
                 }
                 homeProcessor.get().sendWithQueueMethod(DeleteWidgetCommand(dynamicChannelDataModel, lastIndex, this@HomeViewModel))
-                data.reversed().forEach {
+                visitableList.reversed().forEach {
                     homeProcessor.get().sendWithQueueMethod(AddWidgetCommand(it, lastIndex, this@HomeViewModel))
                 }
-                _trackingLiveData.postValue(Event(data.filterIsInstance(HomeVisitable::class.java)))
+                _trackingLiveData.postValue(Event(visitableList.filterIsInstance(HomeVisitable::class.java)))
             }
         }){
             homeProcessor.get().sendWithQueueMethod(DeleteWidgetCommand(dynamicChannelDataModel, position, this))
@@ -1005,9 +1026,9 @@ open class HomeViewModel @Inject constructor(
 
     fun getDynamicChannelData(visitable: Visitable<*>, channelModel: ChannelModel, position: Int){
         launchCatchError(coroutineContext, block = {
-            getDynamicChannelsUseCase.get().setParams(channelModel.groupId)
-            val data = getDynamicChannelsUseCase.get().executeOnBackground()
-            if(data.isEmpty()){
+            val visitableList = homeUseCase.get().onDynamicChannelExpired(channelModel.groupId)
+
+            if(visitableList.isEmpty()){
                 homeProcessor.get().sendWithQueueMethod(DeleteWidgetCommand(visitable, position, this@HomeViewModel))
             } else {
                 var lastIndex = position
@@ -1016,10 +1037,10 @@ open class HomeViewModel @Inject constructor(
                     lastIndex = _homeLiveData.value?.list?.indexOf(visitable) ?: -1
                 }
                 homeProcessor.get().sendWithQueueMethod(DeleteWidgetCommand(visitable, lastIndex, this@HomeViewModel))
-                data.reversed().forEach {
+                visitableList.reversed().forEach {
                     homeProcessor.get().sendWithQueueMethod(AddWidgetCommand(it, lastIndex, this@HomeViewModel))
                 }
-                _trackingLiveData.postValue(Event(data.filterIsInstance(HomeVisitable::class.java)))
+                _trackingLiveData.postValue(Event(visitableList.filterIsInstance(HomeVisitable::class.java)))
             }
         }){
             homeProcessor.get().sendWithQueueMethod(DeleteWidgetCommand(visitable, position, this))
@@ -1424,4 +1445,32 @@ open class HomeViewModel @Inject constructor(
         if(GlobalConfig.DEBUG) Timber.tag(this.javaClass.simpleName).e(message)
     }
 
+    private fun removeDynamicChannelLoadingModel() {
+        val currentList = _homeLiveData.value?.list
+        currentList?.let {
+            val detectLoadingModel = _homeLiveData.value?.list?.find { visitable -> visitable is DynamicChannelLoadingModel }
+            val detectRetryModel = _homeLiveData.value?.list?.find { visitable -> visitable is DynamicChannelRetryModel }
+
+            (detectRetryModel as? DynamicChannelRetryModel)?.let {
+                launch(Dispatchers.Main) {
+                    _homeLiveData.value?.list?.let {list ->
+                        updateWidget(DynamicChannelRetryModel(false), list.indexOf(it))
+                    }
+                }
+            }
+
+            (detectLoadingModel as? DynamicChannelLoadingModel)?.let {
+                launch(Dispatchers.Main) {
+                    deleteWidget(it, currentList.indexOf(it))
+                    addWidget(DynamicChannelRetryModel(false), currentList.size)
+                }
+            }
+        }
+    }
+
+    fun onDynamicChannelRetryClicked() {
+        launch(coroutineContext) {
+            refreshHomeData()
+        }
+    }
 }

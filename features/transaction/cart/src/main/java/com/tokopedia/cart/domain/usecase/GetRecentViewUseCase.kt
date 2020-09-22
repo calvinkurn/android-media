@@ -24,7 +24,8 @@ class GetRecentViewUseCase @Inject constructor(val schedulers: ExecutorScheduler
                 BLACKLISTPRODUCTIDS to params.getString(PARAM_PRODUCT_IDS, "")
         )
 
-        val graphqlRequest = GraphqlRequest(QUERY, GqlRecentViewResponse::class.java, variables)
+        val query = getRecentViewQuery()
+        val graphqlRequest = GraphqlRequest(query, GqlRecentViewResponse::class.java, variables)
         val graphqlUseCase = GraphqlUseCase()
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
@@ -46,29 +47,4 @@ class GetRecentViewUseCase @Inject constructor(val schedulers: ExecutorScheduler
         val PARAM_USER_ID = "PARAM_USER_ID"
         val PARAM_PRODUCT_IDS = "PARAM_PRODUCT_IDS"
     }
-
-    val QUERY = """
-        query recent_view(${'$'}userID: Int, ${'$'}filter: Filter){
-          get_recent_view(userID: ${'$'}userID, filter: ${'$'}filter){
-            items{
-              product_id,
-              product_name,
-              product_price,
-              shop_url,
-              product_rating,
-              product_review_count,
-              product_image,
-              shop_id,
-              shop_name,
-              shop_location,
-              badges {
-                title
-                image_url
-              }
-              wishlist
-            }
-          }
-        }
-    """.trimIndent()
-
 }

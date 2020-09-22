@@ -7,6 +7,6 @@ import com.google.gson.annotations.SerializedName
  */
 
 data class ShopGroupSimplifiedGqlResponse(
-        @SerializedName("shop_group_simplified")
-        val shopGroupSimplifiedResponse: ShopGroupSimplifiedResponse
+        @SerializedName("cart_revamp")
+        val shopGroupSimplifiedResponse: ShopGroupSimplifiedResponse = ShopGroupSimplifiedResponse()
 )
