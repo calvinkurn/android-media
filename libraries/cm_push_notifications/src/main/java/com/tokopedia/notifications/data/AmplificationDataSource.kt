@@ -26,12 +26,6 @@ object AmplificationDataSource {
         )
     }
 
-    private fun nextFetch(time: Long): Long {
-        val currentTime = System.currentTimeMillis()
-        val secondToMilis = TimeUnit.SECONDS.toMillis(time)
-        return currentTime + secondToMilis
-    }
-
     @JvmStatic fun invoke(application: Application) {
         val cacheManager = NextFetchCacheManager(application)
         val currentTime = System.currentTimeMillis()
@@ -95,6 +89,12 @@ object AmplificationDataSource {
                 } catch (e: Exception) {}
             }
         }
+    }
+
+    private fun nextFetch(time: Long): Long {
+        val currentTime = System.currentTimeMillis()
+        val secondToMilis = TimeUnit.SECONDS.toMillis(time)
+        return currentTime + secondToMilis
     }
 
 }
