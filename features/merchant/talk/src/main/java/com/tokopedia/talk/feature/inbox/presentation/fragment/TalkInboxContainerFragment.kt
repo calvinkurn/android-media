@@ -31,6 +31,7 @@ class TalkInboxContainerFragment : BaseDaggerFragment(), HasComponent<TalkInboxC
     companion object {
         const val SELLER_TAB_INDEX = 0
         const val BUYER_TAB_INDEX = 1
+        const val HIDE_TAB_COUNTER = -1
         fun createNewInstance(): TalkInboxContainerFragment {
             return TalkInboxContainerFragment()
         }
@@ -76,9 +77,9 @@ class TalkInboxContainerFragment : BaseDaggerFragment(), HasComponent<TalkInboxC
 
     override fun updateUnreadCounter(sellerUnread: Int, buyerUnread: Int) {
         sellerUnreadCount = sellerUnread
-        talkInboxTabs.tabLayout.getTabAt(SELLER_TAB_INDEX)?.setNotification(sellerUnread > 0)
+        talkInboxTabs.tabLayout.getTabAt(SELLER_TAB_INDEX)?.setCounter(if(sellerUnread > 0) sellerUnread else HIDE_TAB_COUNTER)
         buyerUnreadCount = buyerUnread
-        talkInboxTabs.tabLayout.getTabAt(BUYER_TAB_INDEX)?.setNotification(buyerUnread > 0)
+        talkInboxTabs.tabLayout.getTabAt(BUYER_TAB_INDEX)?.setCounter(if(buyerUnread > 0) buyerUnread else HIDE_TAB_COUNTER)
     }
 
     private fun setupViewPager() {
