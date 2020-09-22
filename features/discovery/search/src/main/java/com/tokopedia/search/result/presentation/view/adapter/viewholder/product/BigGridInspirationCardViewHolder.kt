@@ -17,14 +17,8 @@ import com.tokopedia.search.result.presentation.view.listener.InspirationCardLis
 import com.tokopedia.search.utils.ChipSpacingItemDecoration
 import com.tokopedia.search.utils.addItemDecorationIfNotExists
 import kotlinx.android.synthetic.main.search_result_product_big_grid_curated_inspiration_card_layout.view.*
-import kotlinx.android.synthetic.main.search_result_product_big_grid_curated_inspiration_card_layout.view.inspirationCardCurated
-import kotlinx.android.synthetic.main.search_result_product_big_grid_curated_inspiration_card_layout.view.inspirationCardCuratedBackground
-import kotlinx.android.synthetic.main.search_result_product_big_grid_curated_inspiration_card_layout.view.inspirationCardCuratedButton
-import kotlinx.android.synthetic.main.search_result_product_big_grid_curated_inspiration_card_layout.view.inspirationCardCuratedIcon
-import kotlinx.android.synthetic.main.search_result_product_big_grid_curated_inspiration_card_layout.view.inspirationCardCuratedTitle
 import kotlinx.android.synthetic.main.search_result_product_big_grid_inspiration_card_layout.view.*
 import kotlinx.android.synthetic.main.search_result_product_inspiration_card_layout.view.*
-import kotlinx.android.synthetic.main.search_result_product_small_grid_curated_inspiration_card_layout.view.*
 
 class BigGridInspirationCardViewHolder(
         itemView: View,
