@@ -152,6 +152,7 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
         }
 
         chipsTradeInNormal.setOnClickListener(v -> {
+            shipmentAdapterActionListener.onSwapInUserAddress();
             TabLayout.Tab tab = tabUnifyTradeInAddress.getTabLayout().getTabAt(0);
             if (tab != null) {
                 recipientAddress.setIgnoreSelectionAction(false);
@@ -161,6 +162,7 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
         });
 
         chipsTradeInDropOff.setOnClickListener(v -> {
+            shipmentAdapterActionListener.onClickSwapInIndomaret();
             TabLayout.Tab tab = tabUnifyTradeInAddress.getTabLayout().getTabAt(1);
             if (tab != null) {
                 recipientAddress.setIgnoreSelectionAction(false);

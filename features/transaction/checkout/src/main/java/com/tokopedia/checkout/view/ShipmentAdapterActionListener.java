@@ -118,4 +118,8 @@ public interface ShipmentAdapterActionListener {
     void onShowTickerShippingCompletion();
 
     void onClickTradeInInfo();
+
+    void onClickSwapInIndomaret();
+
+    void onSwapInUserAddress();
 }

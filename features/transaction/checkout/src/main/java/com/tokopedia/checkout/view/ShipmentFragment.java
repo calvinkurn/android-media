@@ -358,6 +358,14 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         restoreProgressLoading();
     }
 
+    public void onBackPressed() {
+        checkoutAnalyticsCourierSelection.eventClickAtcCourierSelectionClickBackArrow();
+        if (isTradeIn()) {
+            checkoutTradeInAnalytics.eventTradeInClickBackButton(isTradeInByDropOff());
+        }
+        releaseBookingIfAny();
+    }
+
     private void restoreProgressLoading() {
         if (hasRunningApiCall) {
             showLoading();
@@ -1285,6 +1293,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     public void onChangeAddress() {
         sendAnalyticsOnClickChangeAddress();
         sendAnalyticsOnClickChooseOtherAddressShipment();
+        if (isTradeIn()) {
+            checkoutTradeInAnalytics.eventTradeInClickChangeAddress();
+        }
         Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalMarketplace.CHECKOUT_ADDRESS_SELECTION);
         intent.putExtra(CheckoutConstant.EXTRA_CURRENT_ADDRESS, shipmentPresenter.getRecipientAddressModel());
         intent.putExtra(CheckoutConstant.EXTRA_TYPE_REQUEST, CheckoutConstant.TYPE_REQUEST_SELECT_ADDRESS_FROM_COMPLETE_LIST);
@@ -1786,11 +1797,17 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         }
         if (checked) sendAnalyticsOnClickTopDonation();
         checkoutAnalyticsCourierSelection.eventClickCheckboxDonation(checked);
+        if (isTradeIn()) {
+            checkoutTradeInAnalytics.eventTradeInClickDonationOption(isTradeInByDropOff(), checked);
+        }
     }
 
     @Override
     public void onEgoldChecked(boolean checked) {
         shipmentAdapter.updateEgold(checked);
+        if (isTradeIn()) {
+            checkoutTradeInAnalytics.eventTradeInClickEgoldOption(isTradeInByDropOff(), checked);
+        }
     }
 
     @Override
@@ -1810,7 +1827,13 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void onStart() {
         super.onStart();
-        sendAnalyticsScreenName(getScreenName());
+        Activity activity = getActivity();
+        if (activity != null) {
+            sendAnalyticsScreenName(getScreenName());
+            if (isTradeIn()) {
+                checkoutTradeInAnalytics.sendOpenScreenName(isTradeInByDropOff(), activity);
+            }
+        }
     }
 
     @Override
@@ -1943,6 +1966,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             });
             tooltip.show();
         }
+
+        if (isTradeIn()) {
+            checkoutTradeInAnalytics.eventTradeInClickCourierGetOutOfCoverageError(isTradeInByDropOff());
+        }
     }
 
     @Override
@@ -2000,6 +2027,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                                          RecipientAddressModel recipientAddressModel,
                                          int cartPosition) {
         sendAnalyticsOnClickChangeDurationShipmentRecommendation();
+        if (isTradeIn()) {
+            checkoutTradeInAnalytics.eventTradeInClickCourierOption(isTradeInByDropOff());
+        }
         showShippingDurationBottomsheet(shipmentCartItemModel, recipientAddressModel, cartPosition);
     }
 
@@ -2629,7 +2659,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void onChangeTradeInDropOffClicked() {
-        checkoutTradeInAnalytics.eventClickUbahTitikDropoffButton();
+        checkoutTradeInAnalytics.eventTradeInClickPilihIndomaret();
         startActivityForResult(RouteManager.getIntent(getActivity(), ApplinkConstInternalLogistic.DROPOFF_PICKER),
                 LogisticConstant.REQUEST_CODE_PICK_DROP_OFF_TRADE_IN);
     }
@@ -2764,6 +2794,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         intent.putStringArrayListExtra(com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_BBO_PROMO_CODES, bboPromoCodes);
 
         startActivityForResult(intent, REQUEST_CODE_PROMO);
+
+        if (isTradeIn()) {
+            checkoutTradeInAnalytics.eventTradeInClickPromo(isTradeInByDropOff());
+        }
     }
 
     @Override
@@ -2905,10 +2939,21 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void onClickTradeInInfo() {
+        checkoutTradeInAnalytics.eventTradeInClickInformation(isTradeInByDropOff());
         FragmentManager fragmentManager = getFragmentManager();
         Context context = getContext();
         if (fragmentManager != null && context != null) {
             TradeInInfoBottomsheetHelperKt.showTradeInInfoBottomsheet(fragmentManager, context);
         }
+    }
+
+    @Override
+    public void onClickSwapInIndomaret() {
+        checkoutTradeInAnalytics.eventTradeInClickTukarDiIndomaret();
+    }
+
+    @Override
+    public void onSwapInUserAddress() {
+        checkoutTradeInAnalytics.eventTradeInClickTukarDiAlamatmu();
     }
 }

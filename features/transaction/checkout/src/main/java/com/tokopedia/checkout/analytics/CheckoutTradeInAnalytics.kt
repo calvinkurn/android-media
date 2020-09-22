@@ -22,9 +22,6 @@ class CheckoutTradeInAnalytics constructor(val userId: String) : TransactionAnal
         const val SCREEN_NAME_NORMAL_ADDRESS = "trade in - checkout page - tukar di alamatmu"
         const val SCREEN_NAME_DROP_OFF_ADDRESS = "trade in - checkout page - titik ambil"
 
-        const val SELECTED_TAB_NORMAL_ADDRESS = 0;
-        const val SELECTED_TAB_DROP_OFF_ADDRESS = 1;
-
         // Event Category
         const val EVENT_CATEGORY_SELF_PICKUP_ADDRESS_SELECTION_TRADE_IN = "self pickup address selection trade in"
 
@@ -117,44 +114,38 @@ class CheckoutTradeInAnalytics constructor(val userId: String) : TransactionAnal
     }
 
     // Trade in revamp (2.0)
-    fun sendTradeInCheckoutTracker(screen: Int, gtmData: MutableMap<String, Any>) {
+    fun sendTradeInCheckoutTracker(isDropOff: Boolean, gtmData: MutableMap<String, Any>) {
         gtmData[KEY_BUSINESS_UNIT] = VALUE_TRADE_IN
         gtmData[KEY_CURRENT_SITE] = VALUE_TOKOPEDIA_MARKETPLACE
         gtmData[KEY_USER_ID] = userId
-        when (screen) {
-            SELECTED_TAB_NORMAL_ADDRESS -> {
-                gtmData[KEY_SCREEN_NAME] = SCREEN_NAME_NORMAL_ADDRESS
-            }
-            SELECTED_TAB_DROP_OFF_ADDRESS -> {
-                gtmData[KEY_SCREEN_NAME] = SCREEN_NAME_DROP_OFF_ADDRESS
-            }
+        if (isDropOff) {
+            gtmData[KEY_SCREEN_NAME] = SCREEN_NAME_DROP_OFF_ADDRESS
+        } else {
+            gtmData[KEY_SCREEN_NAME] = SCREEN_NAME_NORMAL_ADDRESS
         }
 
         sendGeneralEvent(gtmData)
     }
 
     // 28, 39
-    fun sendOpenScreenName(screen: Int, activity: Activity) {
+    fun sendOpenScreenName(isDropOff: Boolean, activity: Activity) {
         val gtmData = mutableMapOf<String, String>()
         gtmData[KEY_BUSINESS_UNIT] = VALUE_TRADE_IN
         gtmData[KEY_CURRENT_SITE] = VALUE_TOKOPEDIA_MARKETPLACE
         gtmData[KEY_USER_ID] = userId
 
         var screenName = ""
-        when (screen) {
-            SELECTED_TAB_NORMAL_ADDRESS -> {
-                screenName = SCREEN_NAME_NORMAL_ADDRESS
-            }
-            SELECTED_TAB_DROP_OFF_ADDRESS -> {
-                screenName = SCREEN_NAME_DROP_OFF_ADDRESS
-            }
+        if (isDropOff) {
+            screenName = SCREEN_NAME_DROP_OFF_ADDRESS
+        } else {
+            screenName = SCREEN_NAME_NORMAL_ADDRESS
         }
-
+        
         sendScreenName(activity, screenName, gtmData)
     }
 
     // 29, 40
-    fun eventTradeInClickBackButton(screen: Int) {
+    fun eventTradeInClickBackButton(isDropOff: Boolean) {
         val gtmData = getGtmData(
                 CLICK_TRADEIN,
                 EVENT_CATEGORY_SELF_PICKUP_ADDRESS_SELECTION_TRADE_IN,
@@ -162,11 +153,11 @@ class CheckoutTradeInAnalytics constructor(val userId: String) : TransactionAnal
                 ""
         )
 
-        sendTradeInCheckoutTracker(screen, gtmData)
+        sendTradeInCheckoutTracker(isDropOff, gtmData)
     }
 
     // 30, 41
-    fun eventTradeInClickInformation(screen: Int) {
+    fun eventTradeInClickInformation(isDropOff: Boolean) {
         val gtmData = getGtmData(
                 CLICK_TRADEIN,
                 EVENT_CATEGORY_SELF_PICKUP_ADDRESS_SELECTION_TRADE_IN,
@@ -174,11 +165,11 @@ class CheckoutTradeInAnalytics constructor(val userId: String) : TransactionAnal
                 EVENT_LABEL_OPSI_PENUKARAN
         )
 
-        sendTradeInCheckoutTracker(screen, gtmData)
+        sendTradeInCheckoutTracker(isDropOff, gtmData)
     }
 
     // 31
-    fun eventTradeInClickTukarDiIndomaret(screen: Int) {
+    fun eventTradeInClickTukarDiIndomaret() {
         val gtmData = getGtmData(
                 CLICK_TRADEIN,
                 EVENT_CATEGORY_SELF_PICKUP_ADDRESS_SELECTION_TRADE_IN,
@@ -186,11 +177,11 @@ class CheckoutTradeInAnalytics constructor(val userId: String) : TransactionAnal
                 EVENT_LABEL_INDOMARET
         )
 
-        sendTradeInCheckoutTracker(screen, gtmData)
+        sendTradeInCheckoutTracker(false, gtmData)
     }
 
     // 32
-    fun eventTradeInClickChangeAddress(screen: Int) {
+    fun eventTradeInClickChangeAddress() {
         val gtmData = getGtmData(
                 CLICK_TRADEIN,
                 EVENT_CATEGORY_SELF_PICKUP_ADDRESS_SELECTION_TRADE_IN,
@@ -198,11 +189,11 @@ class CheckoutTradeInAnalytics constructor(val userId: String) : TransactionAnal
                 ""
         )
 
-        sendTradeInCheckoutTracker(screen, gtmData)
+        sendTradeInCheckoutTracker(false, gtmData)
     }
 
     // 33, 45
-    fun eventTradeInClickCourierOption(screen: Int) {
+    fun eventTradeInClickCourierOption(isDropOff: Boolean) {
         val gtmData = getGtmData(
                 CLICK_TRADEIN,
                 EVENT_CATEGORY_SELF_PICKUP_ADDRESS_SELECTION_TRADE_IN,
@@ -210,11 +201,11 @@ class CheckoutTradeInAnalytics constructor(val userId: String) : TransactionAnal
                 ""
         )
 
-        sendTradeInCheckoutTracker(screen, gtmData)
+        sendTradeInCheckoutTracker(isDropOff, gtmData)
     }
 
     // 34, 46
-    fun eventTradeInClickDonationOption(screen: Int, tick: Boolean) {
+    fun eventTradeInClickDonationOption(isDropOff: Boolean, tick: Boolean) {
         val gtmData = getGtmData(
                 CLICK_TRADEIN,
                 EVENT_CATEGORY_SELF_PICKUP_ADDRESS_SELECTION_TRADE_IN,
@@ -222,11 +213,11 @@ class CheckoutTradeInAnalytics constructor(val userId: String) : TransactionAnal
                 ""
         )
 
-        sendTradeInCheckoutTracker(screen, gtmData)
+        sendTradeInCheckoutTracker(isDropOff, gtmData)
     }
 
     // 35, 47
-    fun eventTradeInClickEgoldOption(screen: Int, tick: Boolean) {
+    fun eventTradeInClickEgoldOption(isDropOff: Boolean, tick: Boolean) {
         val gtmData = getGtmData(
                 CLICK_TRADEIN,
                 EVENT_CATEGORY_SELF_PICKUP_ADDRESS_SELECTION_TRADE_IN,
@@ -234,11 +225,11 @@ class CheckoutTradeInAnalytics constructor(val userId: String) : TransactionAnal
                 ""
         )
 
-        sendTradeInCheckoutTracker(screen, gtmData)
+        sendTradeInCheckoutTracker(isDropOff, gtmData)
     }
 
     // 36, 48
-    fun eventTradeInClickPromo(screen: Int) {
+    fun eventTradeInClickPromo(isDropOff: Boolean) {
         val gtmData = getGtmData(
                 CLICK_TRADEIN,
                 EVENT_CATEGORY_SELF_PICKUP_ADDRESS_SELECTION_TRADE_IN,
@@ -246,11 +237,11 @@ class CheckoutTradeInAnalytics constructor(val userId: String) : TransactionAnal
                 ""
         )
 
-        sendTradeInCheckoutTracker(screen, gtmData)
+        sendTradeInCheckoutTracker(isDropOff, gtmData)
     }
 
     // 38
-    fun eventTradeInClickCourierGetOutOfCoverageError(screen: Int) {
+    fun eventTradeInClickCourierGetOutOfCoverageError(isDropOff: Boolean) {
         val gtmData = getGtmData(
                 CLICK_TRADEIN,
                 EVENT_CATEGORY_SELF_PICKUP_ADDRESS_SELECTION_TRADE_IN,
@@ -258,11 +249,11 @@ class CheckoutTradeInAnalytics constructor(val userId: String) : TransactionAnal
                 EVENT_LABEL_OUT_OF_COVERAGE
         )
 
-        sendTradeInCheckoutTracker(screen, gtmData)
+        sendTradeInCheckoutTracker(isDropOff, gtmData)
     }
 
     // 42
-    fun eventTradeInClickTukarDiAlamatmu(screen: Int) {
+    fun eventTradeInClickTukarDiAlamatmu() {
         val gtmData = getGtmData(
                 CLICK_TRADEIN,
                 EVENT_CATEGORY_SELF_PICKUP_ADDRESS_SELECTION_TRADE_IN,
@@ -270,11 +261,11 @@ class CheckoutTradeInAnalytics constructor(val userId: String) : TransactionAnal
                 ""
         )
 
-        sendTradeInCheckoutTracker(screen, gtmData)
+        sendTradeInCheckoutTracker(true, gtmData)
     }
 
     // 43
-    fun eventTradeInClickPilihIndomaret(screen: Int) {
+    fun eventTradeInClickPilihIndomaret() {
         val gtmData = getGtmData(
                 CLICK_TRADEIN,
                 EVENT_CATEGORY_SELF_PICKUP_ADDRESS_SELECTION_TRADE_IN,
@@ -282,7 +273,7 @@ class CheckoutTradeInAnalytics constructor(val userId: String) : TransactionAnal
                 EVENT_LABEL_INDOMARET
         )
 
-        sendTradeInCheckoutTracker(screen, gtmData)
+        sendTradeInCheckoutTracker(true, gtmData)
     }
 
     // Notes :
