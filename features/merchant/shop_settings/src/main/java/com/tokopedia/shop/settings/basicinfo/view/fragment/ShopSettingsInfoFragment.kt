@@ -221,7 +221,9 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
                     if (shopStatusData.isRegularMerchantOrPending()) {
                         showRegularMerchantMembership(shopStatusData)
                     } else {
-                        showPowerMerchant()
+                        if (!userSession.isShopOfficialStore) {
+                            showPowerMerchant()
+                        }
                     }
                 }
                 is Fail -> {
