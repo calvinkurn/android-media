@@ -7,7 +7,7 @@ import com.tokopedia.play.broadcaster.domain.usecase.GetProductsInEtalaseUseCase
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastUiMapper
 import com.tokopedia.play.broadcaster.ui.model.SearchSuggestionUiModel
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
-import com.tokopedia.play.broadcaster.util.coroutine.CoroutineDispatcherProvider
+import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.BroadcastChannel

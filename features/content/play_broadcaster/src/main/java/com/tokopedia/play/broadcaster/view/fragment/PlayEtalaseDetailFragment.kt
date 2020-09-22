@@ -22,7 +22,6 @@ import com.tokopedia.play.broadcaster.ui.model.ProductLoadingUiModel
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
 import com.tokopedia.play.broadcaster.ui.model.result.PageResultState
 import com.tokopedia.play.broadcaster.ui.viewholder.ProductSelectableViewHolder
-import com.tokopedia.play.broadcaster.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.broadcaster.util.extension.doOnPreDraw
 import com.tokopedia.play.broadcaster.util.extension.productEtalaseEmpty
 import com.tokopedia.play.broadcaster.util.extension.showToaster
@@ -35,6 +34,7 @@ import com.tokopedia.play.broadcaster.view.partial.BottomActionViewComponent
 import com.tokopedia.play.broadcaster.view.partial.SelectedProductPageViewComponent
 import com.tokopedia.play.broadcaster.view.viewmodel.DataStoreViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayEtalasePickerViewModel
+import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play_common.util.scroll.StopFlingScrollListener
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.Toaster

@@ -7,7 +7,6 @@ import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.domain.PostAddToCartUseCase
-import com.tokopedia.play.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.util.event.Event
 import com.tokopedia.play.view.type.BottomInsetsType
 import com.tokopedia.play.view.type.DiscountedPrice
@@ -19,6 +18,7 @@ import com.tokopedia.play.view.uimodel.VariantSheetUiModel
 import com.tokopedia.play.view.wrapper.InteractionEvent
 import com.tokopedia.play.view.wrapper.LoginStateEvent
 import com.tokopedia.play.view.wrapper.PlayResult
+import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.variant_common.use_case.GetProductVariantUseCase
 import com.tokopedia.variant_common.util.VariantCommonMapper

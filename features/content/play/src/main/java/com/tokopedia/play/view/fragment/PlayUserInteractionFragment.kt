@@ -27,7 +27,6 @@ import com.tokopedia.play.gesture.PlayClickTouchListener
 import com.tokopedia.play.ui.toolbar.model.PartnerFollowAction
 import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.util.PlayFullScreenHelper
-import com.tokopedia.play.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.util.event.DistinctEventObserver
 import com.tokopedia.play.util.event.EventObserver
 import com.tokopedia.play.util.observer.DistinctObserver
@@ -38,13 +37,13 @@ import com.tokopedia.play.view.contract.PlayFragmentContract
 import com.tokopedia.play.view.contract.PlayNavigation
 import com.tokopedia.play.view.contract.PlayOrientationListener
 import com.tokopedia.play.view.measurement.ScreenOrientationDataSource
-import com.tokopedia.play.view.measurement.layout.DynamicLayoutManager
-import com.tokopedia.play.view.measurement.layout.PlayDynamicLayoutManager
 import com.tokopedia.play.view.measurement.bounds.manager.chatlistheight.ChatHeightMapKey
 import com.tokopedia.play.view.measurement.bounds.manager.chatlistheight.ChatListHeightManager
 import com.tokopedia.play.view.measurement.bounds.manager.chatlistheight.PlayChatListHeightManager
 import com.tokopedia.play.view.measurement.bounds.provider.videobounds.PlayVideoBoundsProvider
 import com.tokopedia.play.view.measurement.bounds.provider.videobounds.VideoBoundsProvider
+import com.tokopedia.play.view.measurement.layout.DynamicLayoutManager
+import com.tokopedia.play.view.measurement.layout.PlayDynamicLayoutManager
 import com.tokopedia.play.view.measurement.scaling.PlayVideoScalingManager
 import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.*
@@ -54,6 +53,7 @@ import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play.view.wrapper.InteractionEvent
 import com.tokopedia.play.view.wrapper.LoginStateEvent
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
+import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play_common.util.extension.awaitMeasured
 import com.tokopedia.play_common.util.extension.recreateView
 import com.tokopedia.play_common.view.doOnApplyWindowInsets

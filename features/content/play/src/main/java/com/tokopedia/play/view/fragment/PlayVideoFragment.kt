@@ -13,7 +13,6 @@ import com.tokopedia.play.R
 import com.tokopedia.play.analytic.VideoAnalyticHelper
 import com.tokopedia.play.extensions.isAnyShown
 import com.tokopedia.play.util.blur.ImageBlurUtil
-import com.tokopedia.play.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.util.event.DistinctEventObserver
 import com.tokopedia.play.util.observer.DistinctObserver
 import com.tokopedia.play.util.video.state.BufferSource
@@ -31,6 +30,7 @@ import com.tokopedia.play.view.viewmodel.PlayVideoViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play_common.lifecycle.lifecycleBound
 import com.tokopedia.play_common.lifecycle.whenLifecycle
+import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.dpToPx
 import kotlinx.coroutines.CoroutineScope
