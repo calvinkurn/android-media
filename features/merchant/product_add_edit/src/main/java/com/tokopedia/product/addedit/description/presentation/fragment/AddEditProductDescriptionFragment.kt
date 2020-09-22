@@ -100,7 +100,7 @@ class AddEditProductDescriptionFragment:
     }
 
     override fun onDeleteClicked(videoLinkModel: VideoLinkModel, position: Int) {
-        if (position < 0 && position > adapter.dataSize) {
+        if (position >= 0 && position < adapter.dataSize) {
             if (descriptionViewModel.isEditMode) {
                 ProductEditDescriptionTracking.clickRemoveVideoLink(shopId)
             } else {
