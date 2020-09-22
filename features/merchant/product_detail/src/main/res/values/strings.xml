@@ -318,4 +318,6 @@
     <string name="content_desc_btn_add_to_cart">button tambah keranjang</string>
     <string name="content_desc_img_pdp_video">image product</string>
 
+    <string name="double_string_builder">%1s %2s</string>
+
 </resources>
