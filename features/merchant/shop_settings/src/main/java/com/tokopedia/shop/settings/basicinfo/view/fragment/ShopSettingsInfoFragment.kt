@@ -39,8 +39,10 @@ import com.tokopedia.shop.settings.basicinfo.view.activity.ShopEditBasicInfoActi
 import com.tokopedia.shop.settings.basicinfo.view.activity.ShopEditScheduleActivity
 import com.tokopedia.shop.settings.basicinfo.view.viewmodel.ShopSettingsInfoViewModel
 import com.tokopedia.shop.settings.common.di.DaggerShopSettingsComponent
+import com.tokopedia.shop.settings.common.util.FORMAT_DAY_DATE
 import com.tokopedia.shop.settings.common.util.ShopSettingsErrorHandler
 import com.tokopedia.shop.settings.common.util.ShopTypeDef
+import com.tokopedia.shop.settings.common.util.toReadableString
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -277,7 +279,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
                         val expiration = osData.data.expiredDate
 
                         if (errMessage.isEmpty() && isOS) {
-                            showOfficialStore(expiration) // Set userSession isOS?
+                            showOfficialStore(toReadableString(FORMAT_DAY_DATE, expiration)) // Set userSession isOS?
                         }
                     }
                 }
