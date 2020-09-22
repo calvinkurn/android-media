@@ -31,7 +31,7 @@ class SearchEventActivityTest {
     var activityRule: ActivityTestRule<EventSearchActivity> = object : IntentsTestRule<EventSearchActivity>(EventSearchActivity::class.java) {
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
-
+            setupGraphqlMockResponse(SearchEventMockResponse())
         }
     }
 
@@ -52,7 +52,6 @@ class SearchEventActivityTest {
     }
 
     fun search_keyword(){
-        setupGraphqlMockResponse(SearchEventMockResponse())
         Thread.sleep(3000)
         onView(withId(com.tokopedia.unifycomponents.R.id.searchbar_textfield)).perform(click())
         onView(withId(com.tokopedia.unifycomponents.R.id.searchbar_textfield)).perform(typeText("Hong Kong"))
