@@ -2,8 +2,9 @@ package com.tokopedia.sellerhome.settings.domain.usecase
 
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.sellerhome.settings.domain.entity.OtherBalanceResponse
-import com.tokopedia.sellerhome.settings.domain.entity.OthersBalance
+import com.tokopedia.seller.menu.common.domain.entity.OtherBalanceResponse
+import com.tokopedia.seller.menu.common.domain.entity.OthersBalance
+import com.tokopedia.seller.menu.common.domain.usecase.BalanceInfoUseCase
 import com.tokopedia.sellerhome.utils.TestHelper
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
@@ -49,10 +50,10 @@ class OthersBalanceInfoUseCaseTest {
 
         val successResponse = TestHelper.createSuccessResponse<OtherBalanceResponse>(SUCCESS_RESPONSE)
         val successShopInfo =
-                OthersBalance(
-                        sellerBalance = 100000f,
-                        buyerBalance = 100000f
-                )
+            OthersBalance(
+                sellerBalance = 100000f,
+                buyerBalance = 100000f
+            )
 
         coEvery {
             gqlRepository.getReseponse(any(), any())
