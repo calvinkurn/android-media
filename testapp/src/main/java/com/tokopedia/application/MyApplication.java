@@ -7,7 +7,8 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.widget.Toast;
-
+import com.tokopedia.url.TokopediaUrl;
+import com.tokopedia.url.Env;
 import androidx.appcompat.app.AppCompatDelegate;
 
 import com.google.android.gms.security.ProviderInstaller;
@@ -83,7 +84,7 @@ public class MyApplication extends BaseMainApplication
         com.tokopedia.config.GlobalConfig.DEBUG = BuildConfig.DEBUG;
         com.tokopedia.config.GlobalConfig.ENABLE_DISTRIBUTION = BuildConfig.ENABLE_DISTRIBUTION;
 
-        // for staging-only
+//         for staging-only
 //        TokopediaUrl.Companion.setEnvironment(this, Env.STAGING);
 //        TokopediaUrl.Companion.deleteInstance();
 //        TokopediaUrl.Companion.init(this);
@@ -303,13 +304,13 @@ public class MyApplication extends BaseMainApplication
     }
 
     @Override
-    public void sendForceLogoutAnalytics(Response response, boolean isInvalidToken, boolean isRequestDenied) {
+    public void sendForceLogoutAnalytics(String url, boolean isInvalidToken, boolean isRequestDenied) {
 
     }
 
 
     @Override
-    public void showForceLogoutTokenDialog(String response) {
+    public void showForceLogoutTokenDialog(String path) {
 
     }
 

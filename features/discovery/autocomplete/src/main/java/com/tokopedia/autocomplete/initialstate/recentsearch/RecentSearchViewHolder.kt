@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.autocomplete.R
 import com.tokopedia.autocomplete.initialstate.InitialStateItemClickListener
+import com.tokopedia.autocomplete.initialstate.PAYLOAD_SEE_MORE_RECENT_SEARCH
 import kotlinx.android.synthetic.main.layout_recyclerview_autocomplete.view.*
 
 class RecentSearchViewHolder(
@@ -30,6 +31,15 @@ class RecentSearchViewHolder(
     }
 
     override fun bind(element: RecentSearchViewModel) {
-        adapter.setData(element.list)
+        adapter.setData(element.list, element.seeMore)
+    }
+
+    override fun bind(element: RecentSearchViewModel?, payloads: MutableList<Any>) {
+        payloads.getOrNull(0) ?: return
+
+        element?.let{
+            element.seeMore = payloads[0] == PAYLOAD_SEE_MORE_RECENT_SEARCH
+            adapter.setData(element.list, element.seeMore)
+        }
     }
 }

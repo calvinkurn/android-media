@@ -13,7 +13,7 @@ data class RecommendationListCarouselDataModel(
 
     override fun equalsWith(b: Any?): Boolean {
         return if (b is RecommendationListCarouselDataModel) {
-            channelModel == b.channelModel
+            channelModel.channelConfig.createdTimeMillis == b.channelModel.channelConfig.createdTimeMillis
         } else false
     }
 
