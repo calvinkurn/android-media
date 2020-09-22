@@ -60,9 +60,15 @@ class BigGridInspirationCardViewHolder(
     private fun setCuratedLayout(element: InspirationCardViewModel) {
         val option = element.options.firstOrNull() ?: return
 
+        bindCuratedBackground()
         bindCuratedIcon(option)
         bindCuratedTitle(option)
         bindCuratedListener(option)
+    }
+
+    private fun bindCuratedBackground() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) itemView.inspirationCardCuratedBackground?.visibility = View.VISIBLE
+        else itemView.inspirationCardCuratedBackground?.visibility = View.GONE
     }
 
     private fun bindCuratedIcon(element: InspirationCardOptionViewModel) {
