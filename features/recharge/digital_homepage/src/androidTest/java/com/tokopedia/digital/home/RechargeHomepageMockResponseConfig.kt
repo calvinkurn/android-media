@@ -5,9 +5,10 @@ import com.tokopedia.digital.home.test.R
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.util.InstrumentationMockHelper.getRawString
 
-class DigitalHomepageMockResponseConfig: MockModelConfig() {
+class RechargeHomepageMockResponseConfig: MockModelConfig() {
     companion object {
         const val KEY_QUERY_SKELETON = "rechargeGetDynamicPageSkeleton"
+        const val KEY_QUERY_SEARCH = "rechargeCatalogMenu"
 
         var KEY_CONTAINS_SECTION_BANNER = """"sectionIDs": [
         1
@@ -43,47 +44,51 @@ class DigitalHomepageMockResponseConfig: MockModelConfig() {
     override fun createMockModel(context: Context): MockModelConfig {
         addMockResponse(
                 KEY_QUERY_SKELETON,
-                getRawString(context, R.raw.digital_homepage_skeleton_mock_response),
+                getRawString(context, R.raw.recharge_homepage_skeleton_mock_response),
+                FIND_BY_CONTAINS)
+        addMockResponse(
+                KEY_QUERY_SEARCH,
+                getRawString(context, R.raw.recharge_homepage_search_category_mock_response),
                 FIND_BY_CONTAINS)
         addMockResponse(
                 KEY_CONTAINS_SECTION_BANNER,
-                getRawString(context, R.raw.digital_homepage_banner_mock_response),
+                getRawString(context, R.raw.recharge_homepage_banner_mock_response),
                 FIND_BY_CONTAINS)
         addMockResponse(
                 KEY_CONTAINS_SECTION_FAVORITE,
-                getRawString(context, R.raw.digital_homepage_favorite_mock_response),
+                getRawString(context, R.raw.recharge_homepage_favorite_mock_response),
                 FIND_BY_CONTAINS)
         addMockResponse(
                 KEY_CONTAINS_SECTION_CATEGORY,
-                getRawString(context, R.raw.digital_homepage_category_mock_response),
+                getRawString(context, R.raw.recharge_homepage_category_mock_response),
                 FIND_BY_CONTAINS)
         addMockResponse(
                 KEY_CONTAINS_SECTION_TRUST_MARK,
-                getRawString(context, R.raw.digital_homepage_trustmark_mock_response),
+                getRawString(context, R.raw.recharge_homepage_trustmark_mock_response),
                 FIND_BY_CONTAINS)
-//        addMockResponse(
-//                KEY_CONTAINS_SECTION_REMINDER,
-//                getRawString(context, R.raw.digital_homepage_reminder_mock_response),
-//                FIND_BY_CONTAINS)
+        addMockResponse(
+                KEY_CONTAINS_SECTION_REMINDER,
+                getRawString(context, R.raw.recharge_homepage_reminder_widget_mock_response),
+                FIND_BY_CONTAINS)
         addMockResponse(
                 KEY_CONTAINS_SECTION_DUAL_BANNERS,
-                getRawString(context, R.raw.digital_homepage_dual_banners_mock_response),
+                getRawString(context, R.raw.recharge_homepage_dual_banners_mock_response),
                 FIND_BY_CONTAINS)
         addMockResponse(
                 KEY_CONTAINS_SECTION_LEGO_BANNERS,
-                getRawString(context, R.raw.digital_homepage_lego_banners_mock_response),
+                getRawString(context, R.raw.recharge_homepage_lego_banners_mock_response),
                 FIND_BY_CONTAINS)
         addMockResponse(
                 KEY_CONTAINS_SECTION_PRODUCT_CARDS,
-                getRawString(context, R.raw.digital_homepage_product_cards_mock_response),
+                getRawString(context, R.raw.recharge_homepage_product_cards_mock_response),
                 FIND_BY_CONTAINS)
         addMockResponse(
                 KEY_CONTAINS_SECTION_SINGLE_BANNER,
-                getRawString(context, R.raw.digital_homepage_single_banner_mock_response),
+                getRawString(context, R.raw.recharge_homepage_single_banner_mock_response),
                 FIND_BY_CONTAINS)
         addMockResponse(
                 KEY_CONTAINS_SECTION_PRODUCT_BANNER,
-                getRawString(context, R.raw.digital_homepage_product_banner_mock_response),
+                getRawString(context, R.raw.recharge_homepage_product_banner_mock_response),
                 FIND_BY_CONTAINS)
         return this
     }

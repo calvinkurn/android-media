@@ -12,7 +12,7 @@
             "tracking": [
               {
                 "action": "impression",
-                "data": "{\"event\":\"view_item\",\"eventCategory\":\"digital - subhomepage - topup \\u0026 tagihan\",\"eventAction\":\"impression countdown single banner\",\"eventLabel\":\"\",\"screenName\":\"\",\"currentSite\":\"\",\"businessUnit\":\"digital\",\"userId\":\"0\",\"promotions\":[{\"item_id\":\"472\",\"item_name\":\"Mandiri Tunas Finance\",\"creative_name\":\"https://images-staging.tokopedia.net/img/AtBaCW/2020/7/24/e7eea1a9-66b3-4d46-8eb5-2ddd3155e1e1.png\",\"creative_slot\":\"0\"}]}"
+                "data": "{\"event\":\"view_item\",\"eventCategory\":\"digital - subhomepage\",\"eventAction\":\"impression countdown single banner\",\"eventLabel\":\"non login\",\"screenName\":\"/top-up-tagihan\",\"currentSite\":\"tokopediadigitalRecharge\",\"businessUnit\":\"recharge\",\"userId\":\"0\",\"promotions\":[{\"item_id\":\"472\",\"item_name\":\"Mandiri Tunas Finance\",\"creative_name\":\"https://images-staging.tokopedia.net/img/AtBaCW/2020/7/24/e7eea1a9-66b3-4d46-8eb5-2ddd3155e1e1.png\",\"creative_slot\":\"0\"}]}"
               }
             ],
             "items": [
@@ -23,7 +23,7 @@
                 "tracking": [
                   {
                     "action": "click",
-                    "data": "{\"event\":\"select_content\",\"eventCategory\":\"digital - subhomepage - topup \\u0026 tagihan\",\"eventAction\":\"click countdown single banner\",\"eventLabel\":\"0 - Penawaran Spesial\",\"screenName\":\"\",\"currentSite\":\"\",\"businessUnit\":\"digital\",\"userId\":\"0\",\"promotions\":[{\"item_id\":\"472\",\"item_name\":\"Mandiri Tunas Finance\",\"creative_name\":\"https://images-staging.tokopedia.net/img/AtBaCW/2020/7/24/e7eea1a9-66b3-4d46-8eb5-2ddd3155e1e1.png\",\"creative_slot\":\"0\"}]}"
+                    "data": "{\"event\":\"select_content\",\"eventCategory\":\"digital - subhomepage\",\"eventAction\":\"click countdown single banner\",\"eventLabel\":\"0 - Penawaran Spesial - non login\",\"screenName\":\"/top-up-tagihan\",\"currentSite\":\"tokopediadigitalRecharge\",\"businessUnit\":\"recharge\",\"userId\":\"0\",\"promotions\":[{\"item_id\":\"472\",\"item_name\":\"Mandiri Tunas Finance\",\"creative_name\":\"https://images-staging.tokopedia.net/img/AtBaCW/2020/7/24/e7eea1a9-66b3-4d46-8eb5-2ddd3155e1e1.png\",\"creative_slot\":\"0\"}]}"
                   }
                 ],
                 "content": "",
