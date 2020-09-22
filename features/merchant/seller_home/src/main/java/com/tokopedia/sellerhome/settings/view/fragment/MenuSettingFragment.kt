@@ -149,6 +149,11 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
                         clickApplink = ApplinkConst.SELLER_SHIPPING_EDITOR,
                         settingTypeInfix = SettingTrackingConstant.SHOP_SETTING,
                         trackingAlias = trackingAliasHashMap[resources.getString(R.string.setting_menu_set_shipment_method)]),
+                DividerUiModel(DividerType.THIN_INDENTED),
+                MenuItemUiModel(
+                        resources.getString(R.string.setting_menu_set_activation_page_cod),
+                        clickApplink = ApplinkConst.SELLER_COD_ACTIVATION,
+                        settingTypeInfix = SettingTrackingConstant.COD_ACTIVATION_SETTING),
                 DividerUiModel(DividerType.THICK),
                 SettingTitleMenuUiModel(resources.getString(R.string.setting_menu_account_setting), R.drawable.ic_account),
                 MenuItemUiModel(
@@ -263,9 +268,10 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
             setTitle(context.getString(R.string.seller_home_logout_title))
             setMessage(context.getString(R.string.seller_home_logout_confirm))
             setPositiveButton(context.getString(R.string.seller_home_logout_button)) { dialogInterface, _ ->
-                showProgressDialog()
+                val progressDialog = showProgressDialog()
                 dialogInterface.dismiss()
                 RouteManager.route(context, ApplinkConstInternalGlobal.LOGOUT)
+                progressDialog.dismiss()
                 activity?.finish()
             }
             setNegativeButton(context.getString(R.string.seller_home_cancel)) {
@@ -275,9 +281,9 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
         }
     }
 
-    private fun showProgressDialog() {
+    private fun showProgressDialog(): ProgressDialog {
         val progressDialog = ProgressDialog(context)
-        progressDialog.apply {
+        return progressDialog.apply {
             setMessage(resources.getString(R.string.seller_home_loading))
             setTitle("")
             setCancelable(false)

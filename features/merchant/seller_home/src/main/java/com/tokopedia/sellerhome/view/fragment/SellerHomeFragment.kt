@@ -36,11 +36,9 @@ import com.tokopedia.sellerhome.common.SellerHomePerformanceMonitoringConstant.S
 import com.tokopedia.sellerhome.common.SellerHomePerformanceMonitoringConstant.SELLER_HOME_POST_LIST_TRACE
 import com.tokopedia.sellerhome.common.SellerHomePerformanceMonitoringConstant.SELLER_HOME_PROGRESS_TRACE
 import com.tokopedia.sellerhome.common.SellerHomePerformanceMonitoringConstant.SELLER_HOME_TABLE_TRACE
-import com.tokopedia.sellerhome.common.ShopStatus
 import com.tokopedia.sellerhome.common.exception.SellerHomeException
 import com.tokopedia.sellerhome.config.SellerHomeRemoteConfig
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
-import com.tokopedia.sellerhome.domain.model.GetShopStatusResponse
 import com.tokopedia.sellerhome.domain.model.PROVINCE_ID_EMPTY
 import com.tokopedia.sellerhome.domain.model.ShippingLoc
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity
@@ -154,7 +152,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         observeWidgetData(sellerHomeViewModel.pieChartWidgetData, WidgetType.PIE_CHART)
         observeWidgetData(sellerHomeViewModel.barChartWidgetData, WidgetType.BAR_CHART)
         observeTickerLiveData()
-        observeShopStatusLiveData()
         context?.let { UpdateShopActiveService.startService(it) }
     }
 
@@ -245,13 +242,14 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         swipeRefreshLayout.setOnRefreshListener {
             reloadPage()
             showNotificationBadge()
-            sellerHomeViewModel.getShopStatus()
             sellerHomeListener?.getShopInfo()
         }
 
         sahGlobalError.setActionClickListener {
             reloadPage()
         }
+
+        setViewBackground()
     }
 
     /**
@@ -641,32 +639,13 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         sellerHomeViewModel.getTicker()
     }
 
-    private fun observeShopStatusLiveData() {
-        sellerHomeViewModel.shopStatus.observe(viewLifecycleOwner, Observer {
-            if (it is Success)
-                setOnSuccessGetShopStatus(it.data)
-        })
-        sellerHomeViewModel.getShopStatus()
-    }
-
-    private fun setOnSuccessGetShopStatus(goldPmOsStatus: GetShopStatusResponse) = view?.run {
-        val mShopStatus = goldPmOsStatus.result.data
-        val shopStatus: ShopStatus = when {
-            mShopStatus.isOfficialStore() -> ShopStatus.OFFICIAL_STORE
-            mShopStatus.isPowerMerchantActive() || mShopStatus.isPowerMerchantIdle() -> ShopStatus.POWER_MERCHANT
-            else -> ShopStatus.REGULAR_MERCHANT
-        }
-
-        when (shopStatus) {
-            ShopStatus.OFFICIAL_STORE -> {
-                viewBgShopStatus.setBackgroundResource(R.drawable.sah_shop_state_bg_official_store)
-            }
-            ShopStatus.POWER_MERCHANT -> {
-                viewBgShopStatus.setBackgroundResource(R.drawable.sah_shop_state_bg_power_merchant)
-            }
-            else -> {
-                viewBgShopStatus.setBackgroundColor(context.getResColor(android.R.color.transparent))
-            }
+    private fun setViewBackground() = view?.run {
+        val isOfficialStore = userSession.isShopOfficialStore
+        val isPowerMerchant = userSession.isPowerMerchantIdle || userSession.isGoldMerchant
+        when {
+            isOfficialStore -> viewBgShopStatus.setBackgroundResource(R.drawable.sah_shop_state_bg_official_store)
+            isPowerMerchant -> viewBgShopStatus.setBackgroundResource(R.drawable.sah_shop_state_bg_power_merchant)
+            else -> viewBgShopStatus.setBackgroundColor(context.getResColor(android.R.color.transparent))
         }
     }
 

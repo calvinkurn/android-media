@@ -5,7 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     app:text_field_input_type="text"
-    app:text_field_label_static="true"
     android:maxLines="1"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 

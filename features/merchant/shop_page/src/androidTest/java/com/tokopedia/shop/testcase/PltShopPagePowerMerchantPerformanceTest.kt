@@ -2,6 +2,7 @@ package com.tokopedia.shop.testcase
 
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.test.application.TestRepeatRule
 import com.tokopedia.shop.environment.InstrumentationShopPageTestActivity
@@ -14,12 +15,6 @@ import com.tokopedia.analytics.performance.util.PerformanceDataFileUtils
 import com.tokopedia.analytics.performance.util.PltPerformanceData
 import com.tokopedia.shop.mock.ShopPageWithoutHomeTabMockResponseConfig
 import com.tokopedia.shop.mock.ShopPageWithoutHomeTabMockResponseConfig.Companion.KEY_QUERY_GET_IS_SHOP_OFFICIAL
-import com.tokopedia.shop.mock.ShopPageWithoutHomeTabMockResponseConfig.Companion.KEY_QUERY_GET_SHOP_PAGE_HOME_TYPE
-import com.tokopedia.shop.mock.ShopPageWithoutHomeTabMockResponseConfig.Companion.KEY_QUERY_GET_SHOP_PRODUCT
-import com.tokopedia.shop.mock.ShopPageWithoutHomeTabMockResponseConfig.Companion.KEY_QUERY_IS_SHOP_POWER_MERCHANT
-import com.tokopedia.shop.mock.ShopPageWithoutHomeTabMockResponseConfig.Companion.KEY_QUERY_SHOP_INFO_CORE_AND_ASSETS
-import com.tokopedia.shop.mock.ShopPageWithoutHomeTabMockResponseConfig.Companion.KEY_QUERY_SHOP_INFO_TOP_CONTENT
-import com.tokopedia.shop.mock.ShopPageWithoutHomeTabMockResponseConfig.Companion.KEY_QUERY_WHITELIST
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity
 import com.tokopedia.test.application.util.TokopediaGraphqlInstrumentationTestHelper
 import com.tokopedia.test.application.environment.interceptor.size.GqlNetworkAnalyzerInterceptor
@@ -51,16 +46,7 @@ class PltShopPagePowerMerchantPerformanceTest {
         context = InstrumentationRegistry.getInstrumentation().targetContext
         context?.let {
             setupGraphqlMockResponseWithCheck(ShopPageWithoutHomeTabMockResponseConfig())
-            setupTotalSizeInterceptor(listOf(
-                    KEY_QUERY_GET_SHOP_PRODUCT,
-                    KEY_QUERY_GET_IS_SHOP_OFFICIAL,
-                    KEY_QUERY_SHOP_INFO_CORE_AND_ASSETS,
-                    KEY_QUERY_GET_SHOP_PAGE_HOME_TYPE,
-                    KEY_QUERY_IS_SHOP_POWER_MERCHANT,
-                    KEY_QUERY_SHOP_INFO_TOP_CONTENT,
-                    KEY_QUERY_WHITELIST
-            ))
-
+            setupTotalSizeInterceptor(listOf(KEY_QUERY_GET_IS_SHOP_OFFICIAL))
             val intent = Intent()
             intent.putExtra(ShopPageActivity.SHOP_ID, SAMPLE_SHOP_ID)
             activityRule.launchActivity(intent)

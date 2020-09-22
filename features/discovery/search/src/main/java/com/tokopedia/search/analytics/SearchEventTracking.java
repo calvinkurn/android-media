@@ -79,7 +79,7 @@ public interface SearchEventTracking {
         String KEYWORD_PRODUCT_ID = "Keyword: %s - product id: %s";
         String TOPADS = "topads";
         String GENERAL = "general";
-        String KEYWORD_TREATMENT_RESPONSE = "keyword: %s - treatment: %s - response: %s";
+        String KEYWORD_TREATMENT_RESPONSE = "keyword: %s - treatment: %s - response: %s - %s";
     }
 
     interface MOENGAGE {
@@ -92,6 +92,11 @@ public interface SearchEventTracking {
     interface EventMoEngage {
         String SEARCH_ATTEMPT = "Search_Attempt";
     }
+
+    String CURRENT_SITE = "currentSite";
+    String TOKOPEDIA_MARKETPLACE = "tokopediamarketplace";
+    String BUSINESS_UNIT = "businessUnit";
+    String SEARCH = "search";
 
     String NONE = "none";
 }
