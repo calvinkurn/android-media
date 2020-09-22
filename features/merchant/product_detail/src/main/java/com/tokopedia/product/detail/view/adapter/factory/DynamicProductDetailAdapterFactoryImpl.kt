@@ -31,7 +31,7 @@ class DynamicProductDetailAdapterFactoryImpl(private val listener: DynamicProduc
     }
 
     override fun type(data: ProductMostHelpfulReviewDataModel): Int {
-        if(data.type == ProductDetailConstant.REVIEW) {
+        if (data.type == ProductDetailConstant.REVIEW) {
             return ProductReviewViewHolder.LAYOUT
         }
         return ProductReviewOldViewHolder.LAYOUT
@@ -108,7 +108,6 @@ class DynamicProductDetailAdapterFactoryImpl(private val listener: DynamicProduc
             ProductGeneralInfoViewHolder.LAYOUT -> ProductGeneralInfoViewHolder(view, listener)
             ProductReviewViewHolder.LAYOUT -> ProductReviewViewHolder(view, listener)
             ProductReviewOldViewHolder.LAYOUT -> ProductReviewOldViewHolder(view, listener)
-            ProductValuePropositionViewHolder.LAYOUT -> ProductValuePropositionViewHolder(view, listener)
             ProductShimmeringViewHolder.LAYOUT -> ProductShimmeringViewHolder(view)
             PageErrorViewHolder.LAYOUT -> PageErrorViewHolder(view, listener)
             ProductVariantViewHolder.LAYOUT -> ProductVariantViewHolder(view, variantListener, listener)

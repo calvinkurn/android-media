@@ -25,28 +25,30 @@ import java.util.concurrent.TimeUnit
 
 object ProductDetailUtil {
 
-    private const val MAX_CHAR = 150
+    private const val MAX_CHAR_OLD = 150
+    private const val MAX_CHAR = 140
     private const val MORE_DESCRIPTION_OLD = "<font color='#42b549'>Selengkapnya</font>"
+    private const val ALLOW_CLICK = true
 
-    fun reviewDescFormatterOld(review: String): Spanned {
-        return if (MethodChecker.fromHtml(review).length > MAX_CHAR) {
-            val subDescription = MethodChecker.fromHtml(review).toString().substring(0, MAX_CHAR)
-            MethodChecker
+    fun reviewDescFormatterOld(review: String): Pair<Spanned, Boolean> {
+        return if (MethodChecker.fromHtml(review).length > MAX_CHAR_OLD) {
+            val subDescription = MethodChecker.fromHtml(review).toString().substring(0, MAX_CHAR_OLD)
+            Pair(MethodChecker
                     .fromHtml(subDescription.replace("(\r\n|\n)".toRegex(), "<br />") + "... "
-                            + MORE_DESCRIPTION_OLD)
+                            + MORE_DESCRIPTION_OLD), ALLOW_CLICK)
         } else {
-            MethodChecker.fromHtml(review)
+            Pair(MethodChecker.fromHtml(review), !ALLOW_CLICK)
         }
     }
 
-    fun reviewDescFormatter(context: Context, review: String): CharSequence? {
+    fun reviewDescFormatter(context: Context, review: String): Pair<CharSequence?, Boolean> {
         val formattedText = HtmlLinkHelper(context, review).spannedString ?: ""
         return if(formattedText.length > MAX_CHAR) {
             val subDescription = formattedText.substring(0, MAX_CHAR)
-            HtmlLinkHelper(context, subDescription.replace("(\r\n|\n)".toRegex(), "<br />") + "... " + context.getString(R.string.review_expand)).spannedString
+            Pair(HtmlLinkHelper(context, subDescription.replace("(\r\n|\n)".toRegex(), "<br />") + "... " + context.getString(R.string.review_expand)).spannedString, ALLOW_CLICK)
         }
         else {
-            formattedText
+            Pair(formattedText, !ALLOW_CLICK)
         }
     }
 

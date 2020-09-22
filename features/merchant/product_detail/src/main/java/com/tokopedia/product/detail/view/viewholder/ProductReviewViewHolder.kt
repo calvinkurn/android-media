@@ -2,6 +2,7 @@ package com.tokopedia.product.detail.view.viewholder
 
 import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -37,7 +38,7 @@ class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetail
 
     override fun bind(element: ProductMostHelpfulReviewDataModel?) {
         element?.let {
-            if(it.imageReviews == null && it.listOfReviews == null) {
+            if (it.imageReviews == null && it.listOfReviews == null) {
                 showShimmering()
                 return
             }
@@ -129,7 +130,7 @@ class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetail
 
     private fun setReviewVariant(review: Review) {
         if (review.productVariantReview.variantTitle.isNotEmpty()) {
-            view.txt_variant_review_pdp.apply{
+            view.txt_variant_review_pdp.apply {
                 show()
                 text = review.productVariantReview.variantTitle
             }
@@ -139,16 +140,19 @@ class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetail
     }
 
     private fun setReviewDescription(reviewData: Review) {
-        if(reviewData.message.isEmpty()) {
+        if (reviewData.message.isEmpty()) {
             view.txt_desc_review_pdp.hide()
             return
         }
         view.txt_desc_review_pdp.apply {
             maxLines = MAX_LINES_REVIEW_DESCRIPTION
-            text = ProductDetailUtil.reviewDescFormatter(context, reviewData.message)
-            setOnClickListener {
-                maxLines = Integer.MAX_VALUE
-                text = reviewData.message
+            val formattingResult = ProductDetailUtil.reviewDescFormatter(context, reviewData.message)
+            text = formattingResult.first
+            if(formattingResult.second) {
+                setOnClickListener {
+                    maxLines = Integer.MAX_VALUE
+                    text = reviewData.message
+                }
             }
             show()
         }
