@@ -221,7 +221,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
                     if (shopStatusData.isRegularMerchantOrPending()) {
                         showRegularMerchantMembership(shopStatusData)
                     } else {
-                        showPowerMerchant(shopStatusData)
+                        showPowerMerchant()
                     }
                 }
                 is Fail -> {
@@ -397,14 +397,13 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun showPowerMerchant(shopStatusModel: ShopStatusModel) {
+    private fun showPowerMerchant() {
         container_power_merchant.visibility = View.VISIBLE
         container_regular_merchant.visibility = View.GONE
         container_official_store.visibility = View.GONE
         iv_logo_power_merchant.visibility = View.VISIBLE
         iv_logo_power_merchant.setImageResource(com.tokopedia.gm.common.R.drawable.ic_power_merchant)
         tv_power_merchant_type.text = getString(com.tokopedia.design.R.string.label_power_merchant)
-        tv_power_merchant_expiration.text = "Berlaku hingga ${shopStatusModel.powerMerchant.expiredTime}"
     }
 
     private fun showOfficialStore(expirationDate: String) {
