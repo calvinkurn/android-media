@@ -38,7 +38,9 @@ class SellerHomeNavigator(
     fun start(@FragmentType page: Int) {
         val transaction = fm.beginTransaction()
         val fragment = getPageFragment(page)
-        addAllPages(fragment, transaction)
+        if (fm.fragments.isEmpty()) {
+            addAllPages(fragment, transaction)
+        }
 
         fragment?.let {
             showFragment(it, transaction)
