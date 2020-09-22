@@ -67,7 +67,10 @@ class BigGridInspirationCardViewHolder(
     }
 
     private fun bindCuratedBackground() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) itemView.inspirationCardCuratedBackground?.visibility = View.VISIBLE
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
+            itemView.inspirationCardCuratedBackground?.setBackgroundResource(R.drawable.search_background_layer_big_grid_curated_cards)
+            itemView.inspirationCardCuratedBackground?.visibility = View.VISIBLE
+        }
         else itemView.inspirationCardCuratedBackground?.visibility = View.GONE
     }
 
