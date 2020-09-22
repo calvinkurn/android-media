@@ -60,7 +60,7 @@ object AmplificationDataSource {
             pushData(application, webHook)
             inAppData(application, webHook)
 
-            // save
+            // save `next_fetch` time data
             val nextFetchTime = webHook.nextFetch.toLong()
             cacheManager.saveNextFetch(nextFetch(nextFetchTime))
         }
