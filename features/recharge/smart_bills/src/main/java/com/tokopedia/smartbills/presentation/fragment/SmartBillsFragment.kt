@@ -104,7 +104,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        viewModel.statementMonths.observe(this, Observer {
+        viewModel.statementMonths.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     val ongoingMonth = it.data.firstOrNull { monthItem -> monthItem.isOngoing }
@@ -129,7 +129,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
             }
         })
 
-        viewModel.statementBills.observe(this, Observer {
+        viewModel.statementBills.observe(viewLifecycleOwner, Observer {
             performanceMonitoring.stopTrace()
 
             view_smart_bills_shimmering.hide()
@@ -167,7 +167,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
             }
         })
 
-        viewModel.multiCheckout.observe(this, Observer {
+        viewModel.multiCheckout.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     // Check if all items' transaction succeeds; if they do, navigate to payment
@@ -179,7 +179,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
                         intent.putExtra(PaymentConstant.EXTRA_PARAMETER_TOP_PAY_DATA, paymentPassData)
                         startActivityForResult(intent, PaymentConstant.REQUEST_CODE)
                     } else { // Else, show error message in affected items
-                        smartBillsAnalytics.clickPayFailed()
+                        smartBillsAnalytics.clickPayFailed(adapter.dataSize, adapter.checkedDataList.size)
 
                         NetworkErrorHelper.showRedSnackbar(activity, getString(R.string.smart_bills_checkout_error))
 
@@ -198,7 +198,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
                     }
                 }
                 is Fail -> {
-                    smartBillsAnalytics.clickPayFailed()
+                    smartBillsAnalytics.clickPayFailed(adapter.dataSize, adapter.checkedDataList.size)
                     var throwable = it.throwable
                     if (throwable.message == SmartBillsViewModel.MULTI_CHECKOUT_EMPTY_REQUEST) {
                         throwable = MessageErrorException(getString(R.string.smart_bills_checkout_error))
@@ -436,7 +436,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
                 }
             }
 
-            smartBillsAnalytics.clickPay(adapter.checkedDataList)
+            smartBillsAnalytics.clickPay(adapter.checkedDataList, adapter.dataSize)
 
             viewModel.runMultiCheckout(
                     viewModel.createMultiCheckoutParams(adapter.checkedDataList, userSession)
