@@ -13,10 +13,8 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
-import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
-import com.tokopedia.seller_migration_common.presentation.activity.SellerMigrationActivity
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.topchat.chatsetting.analytic.ChatSettingAnalytic
 import com.tokopedia.topchat.chatsetting.data.uimodel.ItemChatSettingUiModel
 import com.tokopedia.topchat.chatsetting.di.ChatSettingComponent
@@ -126,24 +124,12 @@ class ChatSettingFragment : BaseListFragment<Visitable<*>, ChatSettingTypeFactor
         return false
     }
 
-    override fun isTabSeller(): Boolean {
-        return viewModel.isSeller
+    override fun isSeller(): Boolean {
+        return viewModel.isSeller && GlobalConfig.isSellerApp()
     }
 
     override fun eventClickChatSetting(element: ItemChatSettingUiModel) {
         analytic.eventClickChatSetting(element)
-    }
-
-    override fun goToSellerMigrationPage() {
-        context?.run {
-            val intent = SellerMigrationActivity.createIntent(
-                    context = this,
-                    featureName = SellerMigrationFeatureName.FEATURE_TEMPLATE_CHAT,
-                    screenName = SCREEN_NAME,
-                    appLinks = arrayListOf(ApplinkConstInternalSellerapp.SELLER_HOME_CHAT, ApplinkConstInternalMarketplace.CHAT_SETTING_TEMPLATE),
-                    isStackBuilder = false)
-            startActivity(intent)
-        }
     }
 
     override fun isNextItemDivider(adapterPosition: Int): Boolean {
