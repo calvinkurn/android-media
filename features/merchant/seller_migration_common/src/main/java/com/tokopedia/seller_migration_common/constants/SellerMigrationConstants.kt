@@ -14,4 +14,9 @@ object SellerMigrationConstants {
     const val APP_DATE_SELLER_MIGRATION = "android_mainapp_seller_migration_date"
     const val SELLER_MIGRATION_KEY_AUTO_LOGIN = "is_auto_login"
     const val SELLER_MIGRATION_KEY_AUTO_ANCHOR_ACCOUNT_SHOP = "is_auto_anchor"
+
+    const val URL_PROMO_ICON = "https://ecs7.tokopedia.net/android/sellermigration/ic_promo.png"
+    const val URL_PLAY_ICON = "https://ecs7.tokopedia.net/android/sellermigration/ic_tokopedia_play.png"
+    const val URL_STATISTICS_ICON = "https://ecs7.tokopedia.net/android/sellermigration/ic_statistics_review.png"
+    const val URL_FINANCE_ICON = "https://ecs7.tokopedia.net/android/sellermigration/ic_saldo_prio.png"
 }
