@@ -36,6 +36,7 @@ import com.tokopedia.cachemanager.SaveInstanceCacheManager;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.analytics.CheckoutAnalyticsMacroInsurance;
 import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection;
+import com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics;
 import com.tokopedia.checkout.analytics.CornerAnalytics;
 import com.tokopedia.checkout.domain.model.cartshipmentform.CampaignTimerUi;
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData;
@@ -215,6 +216,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     CornerAnalytics mTrackerCorner;
     @Inject
     UserSessionInterface userSessionInterface;
+    @Inject
+    CheckoutTradeInAnalytics checkoutTradeInAnalytics;
 
     SaveInstanceCacheManager saveInstanceCacheManager;
     TickerAnnouncementHolderData savedTickerAnnouncementModel;
@@ -525,7 +528,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             }
         }
         if (isTradeIn()) {
-            checkoutAnalyticsCourierSelection.eventViewCheckoutPageTradeIn();
+            checkoutTradeInAnalytics.eventViewCheckoutPageTradeIn();
         }
 
         shipmentAdapter.addShipmentButtonPaymentModel(shipmentButtonPaymentModel);
@@ -875,7 +878,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void sendAnalyticsChoosePaymentMethodFailed(String errorMessage) {
         if (isTradeIn()) {
-            checkoutAnalyticsCourierSelection.eventClickBayarTradeInFailed();
+            checkoutTradeInAnalytics.eventClickBayarTradeInFailed();
         }
         checkoutAnalyticsCourierSelection.eventClickAtcCourierSelectionClickPilihMetodePembayaranNotSuccess(errorMessage);
     }
@@ -1320,7 +1323,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         sendAnalyticsOnClickChooseShipmentDurationOnShipmentRecomendation(isBlackbox);
         showShippingDurationBottomsheet(shipmentCartItemModel, recipientAddressModel, cartPosition);
         if (isTradeIn()) {
-            checkoutAnalyticsCourierSelection.eventClickButtonPilihDurasi();
+            checkoutTradeInAnalytics.eventClickButtonPilihDurasi();
         }
     }
 
@@ -1655,7 +1658,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             hasRunningApiCall = false;
             hideLoading();
             if (isTradeIn()) {
-                checkoutAnalyticsCourierSelection.eventClickBayarCourierNotComplete();
+                checkoutTradeInAnalytics.eventClickBayarCourierNotComplete();
             }
             sendAnalyticsCourierNotComplete();
             if (requestCode == REQUEST_CODE_COD) {
@@ -1842,7 +1845,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                                           ServiceData serviceData, boolean flagNeedToSetPinpoint,
                                           boolean isDurationClick, boolean isClearPromo) {
         if (isTradeIn()) {
-            checkoutAnalyticsCourierSelection.eventClickKurirTradeIn(serviceData.getServiceName());
+            checkoutTradeInAnalytics.eventClickKurirTradeIn(serviceData.getServiceName());
         }
         sendAnalyticsOnClickChecklistShipmentRecommendationDuration(serviceData.getServiceName());
         // Has courier promo means that one of duration has promo, not always current selected duration.
@@ -2178,7 +2181,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void onClickChangePhoneNumber(RecipientAddressModel recipientAddressModel) {
         if (getActivity() != null) {
-            checkoutAnalyticsCourierSelection.eventClickGantiNomor(isTradeIn());
+            checkoutTradeInAnalytics.eventClickGantiNomor(isTradeIn());
             Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalMarketplace.CHECKOUT);
             intent.putExtra(CheckoutConstant.EXTRA_CURRENT_ADDRESS, shipmentPresenter.getRecipientAddressModel());
             intent.putExtra(CheckoutConstant.EXTRA_DISTRICT_RECOMMENDATION_TOKEN, shipmentPresenter.getKeroToken());
@@ -2626,7 +2629,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void onChangeTradeInDropOffClicked() {
-        checkoutAnalyticsCourierSelection.eventClickUbahTitikDropoffButton();
+        checkoutTradeInAnalytics.eventClickUbahTitikDropoffButton();
         startActivityForResult(RouteManager.getIntent(getActivity(), ApplinkConstInternalLogistic.DROPOFF_PICKER),
                 LogisticConstant.REQUEST_CODE_PICK_DROP_OFF_TRADE_IN);
     }
@@ -2703,12 +2706,12 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
         RecipientAddressModel recipientAddressModel = shipmentAdapter.getAddressShipmentData();
         if (recipientAddressModel.getSelectedTabIndex() == RecipientAddressModel.TAB_ACTIVE_ADDRESS_DEFAULT) {
-            checkoutAnalyticsCourierSelection.eventClickJemputTab();
+            checkoutTradeInAnalytics.eventClickJemputTab();
             if (recipientAddressModel.getLocationDataModel() != null) {
                 shipmentPresenter.changeShippingAddress(recipientAddressModel, true, false, true, false);
             }
         } else {
-            checkoutAnalyticsCourierSelection.eventClickDropOffTab();
+            checkoutTradeInAnalytics.eventClickDropOffTab();
             if (recipientAddressModel.getLocationDataModel() != null) {
                 shipmentPresenter.changeShippingAddress(recipientAddressModel, true, true, true, false);
             }
