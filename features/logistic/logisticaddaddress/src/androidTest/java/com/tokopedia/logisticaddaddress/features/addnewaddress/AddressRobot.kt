@@ -46,6 +46,36 @@ class AddressRobot {
         onView(withId(R.id.btn_choose_location)).perform(click())
     }
 
+    fun clickCity() {
+        onView(withId(R.id.et_kota_kecamatan_mismatch)).perform(click())
+    }
+
+    fun searchCityWithKeyword(keyword: String) {
+        onView(withId(R.id.et_search_district_recommendation))
+                .check(matches(isDisplayed()))
+                .perform(typeText(keyword), closeSoftKeyboard())
+        Thread.sleep(500L)
+    }
+
+    fun selectFirstCityItem() {
+        onView(withId(R.id.rv_list_district))
+                .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(0, click()))
+    }
+
+    fun zipCode() {
+        onView(withId(R.id.et_kode_pos_mismatch)).perform(click())
+    }
+
+    fun selectFirstZipCode() {
+        onView(withId(R.id.rv_kodepos_chips_mismatch))
+                .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(0, click()))
+    }
+
+    fun address(address: String) {
+        onView(withId(R.id.et_alamat_mismatch))
+                .perform(typeText(address), closeSoftKeyboard())
+    }
+
     fun receiver(receiver: String) {
         onView(withId(R.id.et_receiver_name))
                 .perform(typeText(receiver), closeSoftKeyboard())
