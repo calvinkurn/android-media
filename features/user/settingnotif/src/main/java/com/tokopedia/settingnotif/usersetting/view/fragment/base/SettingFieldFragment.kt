@@ -19,8 +19,8 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.network.constant.ErrorNetMessage.MESSAGE_ERROR_SERVER
+import com.tokopedia.seller_migration_common.analytics.SellerMigrationTracking
 import com.tokopedia.settingnotif.R
 import com.tokopedia.settingnotif.usersetting.analytics.NotifSettingAnalytics.trackTroubleshooterClicked
 import com.tokopedia.settingnotif.usersetting.data.pojo.NotificationActivation
@@ -160,6 +160,7 @@ abstract class SettingFieldFragment : BaseListFragment<Visitable<*>,
     }
 
     override fun onItemClicked() {
+        SellerMigrationTracking.trackClickNotificationSeller(userSession.userId.orEmpty())
         activity?.let {
             (it as ParentActivity).openPushNotificationFiled()
         }
