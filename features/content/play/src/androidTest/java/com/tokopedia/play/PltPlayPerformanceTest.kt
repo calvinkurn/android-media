@@ -1,5 +1,7 @@
 package com.tokopedia.play
 
+import android.content.Intent
+import android.net.Uri
 import android.text.TextUtils
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.test.espresso.Espresso.onIdle
@@ -8,10 +10,11 @@ import androidx.test.espresso.IdlingResource
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.analytics.performance.util.PerformanceDataFileUtils
+import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.play.data.PlayMockModelConfig
 import com.tokopedia.play.view.activity.PlayActivity
 import com.tokopedia.test.application.TestRepeatRule
-import com.tokopedia.test.application.util.setupGraphqlMockResponseWithCheck
+import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -29,16 +32,18 @@ class PltPlayPerformanceTest {
     @get:Rule
     var testRepeatRule: TestRepeatRule = TestRepeatRule()
 
-    private val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
 
     @Before
     fun setup() {
-        setupGraphqlMockResponseWithCheck(PlayMockModelConfig())
+        setupGraphqlMockResponse(PlayMockModelConfig())
     }
 
     @Test
     fun testPageLoadTimePerformance() {
-        intentsTestRule.launchActivity(PlayActivity.createIntent(targetContext, "10708"))
+        val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
+        intentsTestRule.launchActivity(Intent(targetContext, PlayActivity::class.java).apply {
+            data = Uri.parse("${ApplinkConstInternalContent.INTERNAL_PLAY}/10708")
+        })
         IdlingRegistry.getInstance().register(idlingResource)
 
         onIdle()
