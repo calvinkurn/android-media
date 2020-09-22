@@ -8,6 +8,8 @@ import com.tokopedia.test.application.util.InstrumentationMockHelper.getRawStrin
 class HomeMockResponseConfig: MockModelConfig() {
     companion object {
         const val KEY_QUERY_DYNAMIC_HOME_CHANNEL = "homeData"
+        const val KEY_QUERY_DYNAMIC_HOME_CHANNEL_ONLY = "getDynamicChannel"
+
         const val KEY_QUERY_DYNAMIC_HOME_POPULAR_KEYWORD = "popular_keywords"
         const val KEY_QUERY_DYNAMIC_HOME_SUCCESS_OCC = "add_to_cart_occ"
         const val KEY_CONTAINS_WIDGET_TAB = "widget_tab"
@@ -21,6 +23,11 @@ class HomeMockResponseConfig: MockModelConfig() {
         addMockResponse(
                 KEY_QUERY_DYNAMIC_HOME_CHANNEL,
                 getRawString(context, R.raw.response_mock_data_dynamic_home_channel),
+                FIND_BY_QUERY_NAME)
+
+        addMockResponse(
+                KEY_QUERY_DYNAMIC_HOME_CHANNEL_ONLY,
+                getRawString(context, R.raw.response_mock_data_dynamic_home_channel_only),
                 FIND_BY_QUERY_NAME)
 
         addMockResponse(
