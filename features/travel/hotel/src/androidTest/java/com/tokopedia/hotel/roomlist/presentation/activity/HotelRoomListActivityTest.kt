@@ -38,6 +38,7 @@ class HotelRoomListActivityTest {
 
                 override fun beforeActivityLaunched() {
                     super.beforeActivityLaunched()
+                    gtmLogDBSource.deleteAll().subscribe()
                     setupGraphqlMockResponse(HotelRoomListResponseConfig())
                 }
 
@@ -46,11 +47,6 @@ class HotelRoomListActivityTest {
                             "2020-12-16", 1, 0, 1, "Region Id", "Hotel A")
                 }
             }
-
-    @Before
-    fun setUp() {
-        gtmLogDBSource.deleteAll().subscribe()
-    }
 
     @Test
     fun checkOnRoomListTrackingEvent() {
@@ -77,7 +73,7 @@ class HotelRoomListActivityTest {
 
         if (getRoomListCount() > 0) {
             onView(withId(R.id.recycler_view)).perform(RecyclerViewActions
-                    .actionOnItemAtPosition<RoomListViewHolder>(0, ViewActions.click()))
+                    .actionOnItemAtPosition<RoomListViewHolder>(0, click()))
 
             Thread.sleep(3000)
             onView(withId(R.id.room_detail_images)).perform(click())
