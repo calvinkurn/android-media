@@ -147,7 +147,7 @@ public class AppsflyerEventValidation {
 
     private void validateProductCategory(String productCategory) {
         if (TextUtils.isEmpty(productCategory)) {
-            logging("validation;reason=Product_Category_blank");
+            logging("validation;reason=ProductCategory_blank");
         } else {
             try {
                 JSONArray productCatList = new JSONArray(productCategory);
@@ -163,7 +163,7 @@ public class AppsflyerEventValidation {
 
     private void validateContentType(String eventName, String contentType) {
         if (!AF_VALUE_PRODUCTTYPE.equals(contentType)) {
-            logging("validation;reason=currency_invalid;eventName=$eventName;ContentType=$contentType");
+            logging("validation;reason=contentType_invalid;eventName=$eventName;ContentType=$contentType");
         }
     }
 
