@@ -33,6 +33,8 @@ class PartialContentView(private val view: View,
         val basic = product.basic
         val campaign = data.campaign
 
+        txt_main_price.contentDescription = context.getString(R.string.content_desc_txt_main_price) + data.price.value
+        product_name.contentDescription = context.getString(R.string.content_desc_product_name) + MethodChecker.fromHtml(data.name)
         product_name.text = MethodChecker.fromHtml(data.name)
 
         img_free_ongkir.shouldShowWithAction(data.isFreeOngkir.isActive) {
