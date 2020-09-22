@@ -10,9 +10,11 @@ import org.json.JSONException;
 
 import java.util.Map;
 
+import rx.Completable;
 import rx.Observable;
 import rx.Observer;
 import rx.Subscription;
+import rx.functions.Action0;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
@@ -27,29 +29,12 @@ public class AppsflyerEventValidation {
 
     public void validateAppsflyerData(String eventName, Map<String, Object> data) {
 
-        Observable.just(eventName, data)
-                .subscribeOn(Schedulers.io())
-                .unsubscribeOn(Schedulers.io())
-                .map(it -> {
-                    validateData(eventName, data);
-                    return true;
-                })
-                .subscribe(new Observer<Boolean>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onNext(Boolean aBoolean) {
-
-                    }
-                });
+        Completable.fromAction(new Action0() {
+            @Override
+            public void call() {
+                validateData(eventName, data);
+            }
+        }).subscribeOn(Schedulers.io()).subscribe();
     }
 
     private void validateData(String eventName, Map<String, Object> data) {
