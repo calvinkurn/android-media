@@ -206,7 +206,7 @@ public class AppsflyerAnalytics extends ContextAnalytics {
     @Override
     public void sendTrackEvent(String eventName, Map<String, Object> eventValue) {
         AppsFlyerLib.getInstance().trackEvent(getContext(), eventName, eventValue);
-        new AppsflyerEventValidation().validateData(eventName,eventValue);
+        new AppsflyerEventValidation().validateAppsflyerData(eventName,eventValue);
     }
 
     public void sendDeeplinkData(Activity activity) {

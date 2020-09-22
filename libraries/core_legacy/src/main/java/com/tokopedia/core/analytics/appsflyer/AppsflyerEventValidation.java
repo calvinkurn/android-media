@@ -6,6 +6,11 @@ import com.appsflyer.AFInAppEventType;
 import org.json.JSONArray;
 import org.json.JSONException;
 import java.util.Map;
+
+import rx.Observable;
+import rx.Observer;
+import rx.Subscription;
+import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
 public class AppsflyerEventValidation {
@@ -17,16 +22,43 @@ public class AppsflyerEventValidation {
 
     public static String TAG = "P2#APPSFLYER_VALIDATION#";
 
-    public void validateData(String eventName, Map<String, Object> eventValue) {
+    public void validateAppsflyerData(String eventName, Map<String, Object> data){
+
+        Observable.just(eventName,data)
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .map(it -> {
+                   validateData(eventName,data);
+                    return true;
+                })
+                .subscribe(new Observer<Boolean>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(Boolean aBoolean) {
+
+                    }
+                });
+    }
+
+    private void validateData(String eventName, Map<String, Object> data) {
         switch (eventName) {
             case AFInAppEventType.PURCHASE:
-                validatePurchase(eventName,eventValue);
+                validatePurchase(eventName,data);
                 break;
             case AF_KEY_CRITEO:
 
                 break;
             case AFInAppEventType.ADD_TO_CART:
-                validateAddToCart(eventName, eventValue);
+                validateAddToCart(eventName, data);
                 break;
 
         }
@@ -166,78 +198,6 @@ public class AppsflyerEventValidation {
         }
     }
 
-    //
-    private void logging(String log) {
-        Timber.w(TAG + log);
-    }
-//
-//
-//
-//    val orderIds: MutableList<String> = arrayListOf()
-//
-//    val afValue: MutableMap<String, Any> = mutableMapOf()
-//    var quantity = 0
-//    val productList: MutableList<String> = arrayListOf()
-//    val productIds: MutableList<String> = arrayListOf()
-//    val productCategory: MutableList<String> = arrayListOf()
-//    val productArray = JSONArray()
-//
-//    var shipping = 0f
-//
-//    thanksPageData.shopOrder.forEach { shopOrder ->
-//            orderIds.add(shopOrder.orderId)
-//        shipping += shopOrder.shippingAmount
-//        shopOrder.purchaseItemList.forEach { productItem ->
-//                val productObj: org.json.JSONObject = org.json.JSONObject()
-//            productIds.add(productItem.productId)
-//            productList.add(productItem.productName)
-//            productCategory.add(productItem.category)
-//            productObj.put(ParentTrackingKey.KEY_ID, productItem.productId)
-//            productObj.put(ParentTrackingKey.KEY_QTY, productItem.quantity)
-//            quantity += productItem.quantity
-//            productArray.put(productObj)
-//        }
-//    }
-//
-//    afValue[AFInAppEventParameterName.REVENUE] = thanksPageData.amount
-//    afValue[AFInAppEventParameterName.CONTENT_ID] = productIds
-//    afValue[AFInAppEventParameterName.QUANTITY] = quantity
-//    afValue[AFInAppEventParameterName.RECEIPT_ID] = thanksPageData.paymentID
-//    afValue[AFInAppEventType.ORDER_ID] = orderIds
-//    afValue[ParentTrackingKey.AF_SHIPPING_PRICE] = shipping
-//    afValue[ParentTrackingKey.AF_PURCHASE_SITE] = when(ThankPageTypeMapper.getThankPageType(thanksPageData)){
-//        MarketPlaceThankPage -> MARKET_PLACE
-//                    else -> DIGITAL
-//    }
-//    afValue[AFInAppEventParameterName.CURRENCY] = ParentTrackingKey.VALUE_IDR
-//    afValue[ParentTrackingKey.AF_VALUE_PRODUCTTYPE] = productList
-//    afValue[ParentTrackingKey.AF_KEY_CATEGORY_NAME] = productCategory
-//    afValue[AFInAppEventParameterName.CONTENT_TYPE] = ParentTrackingKey.AF_VALUE_PRODUCTTYPE
-//
-//    val criteoAfValue: Map<String, Any> = java.util.HashMap(afValue)
-//            if (productArray.length() > 0) {
-//        val afContent: String = productArray.toString()
-//        afValue[AFInAppEventParameterName.CONTENT] = afContent
-//    }
-//                TrackApp.getInstance().appsFlyer.sendTrackEvent(AFInAppEventType.PURCHASE, afValue)
-//            TrackApp.getInstance().appsFlyer.sendTrackEvent(ParentTrackingKey.AF_KEY_CRITEO, criteoAfValue)
-
-
-//val jsonArrayAfContent = JSONArray()
-//        .put(JSONObject()
-//                .put(AF_PARAM_CONTENT_ID, addToCartRequest.productId.toString())
-//                .put(AF_PARAM_CONTENT_QUANTITY, addToCartRequest.quantity));
-//            TrackApp.getInstance().appsFlyer.sendEvent(AFInAppEventType.ADD_TO_CART,
-//            mutableMapOf<String, Any>(
-//    AFInAppEventParameterName.CONTENT_ID to addToCartRequest.productId.toString(),
-//    AFInAppEventParameterName.CONTENT_TYPE to AF_VALUE_CONTENT_TYPE,
-//    AFInAppEventParameterName.DESCRIPTION to addToCartRequest.productName,
-//    AFInAppEventParameterName.CURRENCY to AF_VALUE_CURRENCY,
-//    AFInAppEventParameterName.QUANTITY to addToCartRequest.quantity,
-//    AFInAppEventParameterName.PRICE to addToCartRequest.price.replace("[^0-9]".toRegex(), ""),
-//    AF_PARAM_CATEGORY to addToCartRequest.category,
-//    AFInAppEventParameterName.CONTENT to jsonArrayAfContent.toString())
-//            )
 
     private double convertToDouble(String value, String type) {
         double result = 0;
@@ -248,5 +208,9 @@ public class AppsflyerEventValidation {
              exceptionStringToDouble("" + ex.getMessage(),type +"="+ value);
         }
         return result;
+    }
+
+    private void logging(String log) {
+        Timber.w(TAG + log);
     }
 }
