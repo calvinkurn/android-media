@@ -9,17 +9,16 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.pusher.state.PlayPusherNetworkState
+import com.tokopedia.play.broadcaster.ui.model.PlayChannelStatus
 import com.tokopedia.play.broadcaster.ui.model.PlayMetricUiModel
 import com.tokopedia.play.broadcaster.ui.model.TotalLikeUiModel
 import com.tokopedia.play.broadcaster.ui.model.TotalViewUiModel
-import com.tokopedia.play.broadcaster.util.error.DefaultNetworkThrowable
 import com.tokopedia.play.broadcaster.util.extension.getDialog
 import com.tokopedia.play.broadcaster.util.extension.showToaster
 import com.tokopedia.play.broadcaster.util.share.PlayShareWrapper
@@ -29,9 +28,8 @@ import com.tokopedia.play.broadcaster.view.custom.PlayStatInfoView
 import com.tokopedia.play.broadcaster.view.custom.PlayTimerCountDown
 import com.tokopedia.play.broadcaster.view.custom.PlayTimerView
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
+import com.tokopedia.play.broadcaster.view.fragment.loading.LoadingDialogFragment
 import com.tokopedia.play.broadcaster.view.partial.ChatListPartialView
-import com.tokopedia.play.broadcaster.view.state.BroadcastState
-import com.tokopedia.play.broadcaster.view.state.BroadcastTimerState
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.util.event.EventObserver
@@ -63,9 +61,11 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     private lateinit var productLiveBottomSheet: PlayProductLiveBottomSheet
 
     private lateinit var exitDialog: DialogUnify
-    private lateinit var timeoutDialog: DialogUnify
+    private lateinit var forceStopDialog: DialogUnify
 
     private var toasterBottomMargin = 0
+
+    private lateinit var loadingFragment: LoadingDialogFragment
 
     override fun getScreenName(): String = "Play Broadcast Interaction"
 
@@ -88,13 +88,14 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        observeLiveInfo()
-        observeLiveDuration()
+//        observeLiveInfo()
+//        observeLiveDuration()
         observeTotalViews()
         observeTotalLikes()
         observeChatList()
         observeMetrics()
-        observeNetworkConnectionDuringLive()
+//        observeNetworkConnectionDuringLive()
+        observeBannedEvent()
     }
 
     override fun onStart() {
@@ -250,19 +251,34 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     }
 
     private fun showDialogWhenTimeout() {
-        if (!::timeoutDialog.isInitialized) {
-            timeoutDialog = requireContext().getDialog(
-                    title = getString(R.string.play_live_broadcast_dialog_end_timeout_title),
-                    desc = getString(R.string.play_live_broadcast_dialog_end_timeout_desc),
-                    primaryCta = getString(R.string.play_live_broadcast_dialog_end_timeout_primary),
+        showForceStopDialog(
+                title = getString(R.string.play_live_broadcast_dialog_end_timeout_title),
+                message = getString(R.string.play_live_broadcast_dialog_end_timeout_desc),
+                buttonTitle = getString(R.string.play_live_broadcast_dialog_end_timeout_primary),
+                onClickListener = {
+                    analytic.clickDialogSeeReportOnLivePage(parentViewModel.channelId, parentViewModel.title)
+                }
+        )
+    }
+
+    private fun showForceStopDialog(
+            title: String,
+            message: String,
+            buttonTitle: String,
+            onClickListener: () -> Unit = { }) {
+        if (!::forceStopDialog.isInitialized) {
+            forceStopDialog = requireContext().getDialog(
+                    title = title,
+                    desc = message,
+                    primaryCta = buttonTitle,
                     primaryListener = { dialog ->
                         dialog.dismiss()
                         navigateToSummary()
-                        analytic.clickDialogSeeReportOnLivePage(parentViewModel.channelId, parentViewModel.title)
+                        onClickListener()
                     }
             )
         }
-        timeoutDialog.show()
+        forceStopDialog.show()
     }
 
     private fun showToaster(
@@ -340,35 +356,49 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         }
     }
 
+    private fun getLoadingFragment(): LoadingDialogFragment {
+        if (!::loadingFragment.isInitialized) {
+            val setupClass = LoadingDialogFragment::class.java
+            val fragmentFactory = childFragmentManager.fragmentFactory
+            loadingFragment = fragmentFactory.instantiate(requireContext().classLoader, setupClass.name) as LoadingDialogFragment
+        }
+        return loadingFragment
+    }
+
+    private fun showLoading(isLoading: Boolean) {
+        if (isLoading) getLoadingFragment().show(childFragmentManager)
+        else getLoadingFragment().dismiss()
+    }
+
     //region observe
     /**
      * Observe
      */
-    private fun observeLiveInfo() {
-        parentViewModel.observableLiveInfoState.observe(viewLifecycleOwner, EventObserver{
-            when (it) {
-                is BroadcastState.Init -> startCountDown()
-                is BroadcastState.Stop -> if (it.shouldNavigate) navigateToSummary()
-                is BroadcastState.Error -> {
-                    if (it.error is DefaultNetworkThrowable)
-                        showToaster(
-                                message = it.error.localizedMessage,
-                                type = Toaster.TYPE_ERROR,
-                                duration = Toaster.LENGTH_INDEFINITE,
-                                actionLabel = getString(R.string.play_broadcast_try_again),
-                                actionListener = View.OnClickListener { view-> it.onRetry() }
-                        )
-                    else {
-                        if (GlobalConfig.DEBUG) showToaster(
-                                message = it.error.localizedMessage,
-                                type = Toaster.TYPE_ERROR,
-                                duration = Toaster.LENGTH_SHORT
-                        )
-                    }
-                }
-            }
-        })
-    }
+//    private fun observeLiveInfo() {
+//        parentViewModel.observableLiveInfoState.observe(viewLifecycleOwner, EventObserver{
+//            when (it) {
+//                is BroadcastState.Init -> startCountDown()
+//                is BroadcastState.Stop -> if (it.shouldNavigate) navigateToSummary()
+//                is BroadcastState.Error -> {
+//                    if (it.error is DefaultNetworkThrowable)
+//                        showToaster(
+//                                message = it.error.localizedMessage,
+//                                type = Toaster.TYPE_ERROR,
+//                                duration = Toaster.LENGTH_INDEFINITE,
+//                                actionLabel = getString(R.string.play_broadcast_try_again),
+//                                actionListener = View.OnClickListener { view-> it.onRetry() }
+//                        )
+//                    else {
+//                        if (GlobalConfig.DEBUG) showToaster(
+//                                message = it.error.localizedMessage,
+//                                type = Toaster.TYPE_ERROR,
+//                                duration = Toaster.LENGTH_SHORT
+//                        )
+//                    }
+//                }
+//            }
+//        })
+//    }
 
     private fun observeTotalViews() {
         parentViewModel.observableTotalView.observe(viewLifecycleOwner, Observer(::setTotalView))
@@ -378,20 +408,20 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         parentViewModel.observableTotalLike.observe(viewLifecycleOwner, Observer(::setTotalLike))
     }
 
-    private fun observeLiveDuration() {
-        parentViewModel.observableLiveDuration.observe(viewLifecycleOwner, EventObserver {
-            when(it)  {
-                is BroadcastTimerState.Active -> showCounterDuration(it.remainingTime)
-                is BroadcastTimerState.AlmostFinish -> showTimeRemaining(it.minutesLeft)
-                is BroadcastTimerState.Finish -> {
-                    stopLiveStreaming(shouldNavigate = false)
-                    showDialogWhenTimeout()
-                    analytic.viewDialogSeeReportOnLivePage(parentViewModel.channelId, parentViewModel.title)
-                }
-                is BroadcastTimerState.ReachMaximumPauseDuration -> stopLiveStreaming(shouldNavigate = true)
-            }
-        })
-    }
+//    private fun observeLiveDuration() {
+//        parentViewModel.observableLiveDuration.observe(viewLifecycleOwner, EventObserver {
+//            when(it)  {
+//                is BroadcastTimerState.Active -> showCounterDuration(it.remainingTime)
+//                is BroadcastTimerState.AlmostFinish -> showTimeRemaining(it.minutesLeft)
+//                is BroadcastTimerState.Finish -> {
+//                    stopLiveStreaming(shouldNavigate = false)
+//                    showDialogWhenTimeout()
+//                    analytic.viewDialogSeeReportOnLivePage(parentViewModel.channelId, parentViewModel.title)
+//                }
+//                is BroadcastTimerState.ReachMaximumPauseDuration -> stopLiveStreaming(shouldNavigate = true)
+//            }
+//        })
+//    }
 
     private fun observeChatList() {
         parentViewModel.observableChatList.observe(viewLifecycleOwner, object : Observer<List<PlayChatUiModel>> {
@@ -408,8 +438,19 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         parentViewModel.observableNewMetrics.observe(viewLifecycleOwner, EventObserver(::setNewMetrics))
     }
 
-    private fun observeNetworkConnectionDuringLive() {
-        parentViewModel.observableLiveNetworkState.observe(viewLifecycleOwner, EventObserver(::handleLiveNetworkInfo))
+//    private fun observeNetworkConnectionDuringLive() {
+//        parentViewModel.observableLiveNetworkState.observe(viewLifecycleOwner, EventObserver(::handleLiveNetworkInfo))
+//    }
+
+    private fun observeBannedEvent() {
+        parentViewModel.observableBannedEvent.observe(viewLifecycleOwner,  EventObserver{ event ->
+            parentViewModel.stopPushStream(shouldNavigate = false, reason = PlayChannelStatus.Moderated)
+            showForceStopDialog(
+                    title = event.title,
+                    message = event.message,
+                    buttonTitle = event.buttonTitle
+            )
+        })
     }
     //endregion
 

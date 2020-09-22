@@ -43,6 +43,11 @@ class PlayBroadcastModule(val mContext: Context) {
     }
 
     @Provides
+    fun provideNewPlayPusher(@ApplicationContext context: Context): com.tokopedia.play.broadcaster.pusher.apsara.PlayPusher {
+        return com.tokopedia.play.broadcaster.pusher.apsara.PlayPusherImpl(context)
+    }
+
+    @Provides
     fun providePlaySocket(userSession: UserSessionInterface, cacheHandler: LocalCacheHandler): PlayBroadcastSocket {
         return PlayBroadcastSocketImpl(userSession, cacheHandler)
     }
