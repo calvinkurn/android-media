@@ -306,15 +306,11 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
     }
 
     public void sendEnhancedECommerceCheckout(Map<String, Object> cartMap,
-                                              String irisSessionId,
+                                              Map<String, String> tradeInCustomDimension,
                                               String transactionId,
-                                              boolean isTradeIn,
+                                              String eventCategory,
                                               String eventAction,
                                               String eventLabel) {
-        String eventCategory = EventCategory.COURIER_SELECTION;
-        if (isTradeIn) {
-            eventCategory = EventCategory.COURIER_SELECTION_TRADE_IN;
-        }
         Map<String, Object> dataLayer = DataLayer.mapOf(
                 ConstantTransactionAnalytics.Key.EVENT, EventName.CHECKOUT,
                 ConstantTransactionAnalytics.Key.EVENT_CATEGORY, eventCategory,
@@ -323,6 +319,9 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
                 ConstantTransactionAnalytics.Key.E_COMMERCE, cartMap,
                 ConstantTransactionAnalytics.Key.CURRENT_SITE, ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
         );
+        if (tradeInCustomDimension != null && tradeInCustomDimension.size() > 0) {
+            dataLayer.putAll(tradeInCustomDimension);
+        }
         if (!TextUtils.isEmpty(transactionId)) {
             dataLayer.put(ConstantTransactionAnalytics.Key.PAYMENT_ID, transactionId);
         }
@@ -908,7 +907,7 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
         );
     }
 
-    public void eventViewPromoLogisticTickerDisable(String promoCode){
+    public void eventViewPromoLogisticTickerDisable(String promoCode) {
         sendEventCategoryActionLabel(
                 EventName.VIEW_COURIER_IRIS,
                 EventCategory.COURIER_SELECTION,

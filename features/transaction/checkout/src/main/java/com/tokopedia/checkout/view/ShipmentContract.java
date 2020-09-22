@@ -155,7 +155,9 @@ public interface ShipmentContract {
         void sendAnalyticsChoosePaymentMethodCourierNotComplete();
 
         void sendEnhancedEcommerceAnalyticsCheckout(Map<String, Object> stringObjectMap,
+                                                    Map<String, String> tradeInCustomDimension,
                                                     String transactionId,
+                                                    String eventCategory,
                                                     String eventAction,
                                                     String eventLabel);
 
@@ -300,9 +302,13 @@ public interface ShipmentContract {
         boolean isShowOnboarding();
 
         void triggerSendEnhancedEcommerceCheckoutAnalytics(List<DataCheckoutRequest> dataCheckoutRequests,
+                                                           Map<String, String> tradeInCustomDimension,
                                                            boolean hasInsurance,
-                                                           String step, String eventAction,
-                                                           String eventLabel, String leasingId);
+                                                           String step,
+                                                           String eventCategory,
+                                                           String eventAction,
+                                                           String eventLabel,
+                                                           String leasingId);
 
         List<DataCheckoutRequest> updateEnhancedEcommerceCheckoutAnalyticsDataLayerShippingData(String cartString, String shippingDuration, String shippingPrice, String courierName);
 

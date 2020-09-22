@@ -397,8 +397,10 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
     @Override
     public void triggerSendEnhancedEcommerceCheckoutAnalytics(List<DataCheckoutRequest> dataCheckoutRequests,
+                                                              Map<String, String> tradeInCustomDimension,
                                                               boolean hasInsurance,
                                                               String step,
+                                                              String eventCategory,
                                                               String eventAction,
                                                               String eventLabel,
                                                               String leasingId) {
@@ -411,7 +413,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             if (checkoutData != null) {
                 transactionId = checkoutData.getTransactionId();
             }
-            analyticsActionListener.sendEnhancedEcommerceAnalyticsCheckout(eeDataLayer, transactionId, eventAction, eventLabel);
+            analyticsActionListener.sendEnhancedEcommerceAnalyticsCheckout(
+                    eeDataLayer, tradeInCustomDimension, transactionId, eventCategory, eventAction, eventLabel
+            );
         }
     }
 

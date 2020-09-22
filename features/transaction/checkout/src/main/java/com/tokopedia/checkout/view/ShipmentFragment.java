@@ -135,6 +135,7 @@ import com.tokopedia.utils.time.TimeHelper;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -149,6 +150,15 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
+import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.EVENT_ACTION_PILUH_PEMBAYARAN_INDOMARET;
+import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.EVENT_ACTION_PILUH_PEMBAYARAN_NORMAL;
+import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.EVENT_CATEGORY_SELF_PICKUP_ADDRESS_SELECTION_TRADE_IN;
+import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.KEY_BUSINESS_UNIT;
+import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.KEY_SCREEN_NAME;
+import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.KEY_USER_ID;
+import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.SCREEN_NAME_DROP_OFF_ADDRESS;
+import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.SCREEN_NAME_NORMAL_ADDRESS;
+import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.VALUE_TRADE_IN;
 import static com.tokopedia.logisticcart.cod.view.CodActivity.EXTRA_COD_DATA;
 import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.PARAM_CHECKOUT;
 import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.PARAM_DEFAULT;
@@ -610,8 +620,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         List<DataCheckoutRequest> dataCheckoutRequests = shipmentPresenter.updateEnhancedEcommerceCheckoutAnalyticsDataLayerPromoData(shipmentAdapter.getShipmentCartItemModelList());
         shipmentPresenter.triggerSendEnhancedEcommerceCheckoutAnalytics(
                 dataCheckoutRequests,
+                null,
                 hasInsurance,
                 EnhancedECommerceActionField.STEP_2,
+                ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
                 ConstantTransactionAnalytics.EventAction.VIEW_CHECKOUT_PAGE,
                 ConstantTransactionAnalytics.EventLabel.SUCCESS,
                 getCheckoutLeasingId());
@@ -1024,18 +1036,13 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void sendEnhancedEcommerceAnalyticsCheckout(Map<String, Object> stringObjectMap,
+                                                       Map<String, String> tradeInCustomDimension,
                                                        String transactionId,
+                                                       String eventCategory,
                                                        String eventAction,
                                                        String eventLabel) {
-        String sessionId = "";
-        Context context = getContext();
-        if (context != null) {
-            IrisSession irisSession = new IrisSession(context);
-            sessionId = irisSession.getSessionId();
-
-        }
         checkoutAnalyticsCourierSelection.sendEnhancedECommerceCheckout(
-                stringObjectMap, sessionId, transactionId, isTradeIn(), eventAction, eventLabel
+                stringObjectMap, tradeInCustomDimension, transactionId, eventCategory, eventAction, eventLabel
         );
         checkoutAnalyticsCourierSelection.flushEnhancedECommerceCheckout();
     }
@@ -1513,8 +1520,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             List<DataCheckoutRequest> dataCheckoutRequests = shipmentPresenter.updateEnhancedEcommerceCheckoutAnalyticsDataLayerPromoData(shipmentAdapter.getShipmentCartItemModelList());
             shipmentPresenter.triggerSendEnhancedEcommerceCheckoutAnalytics(
                     dataCheckoutRequests,
+                    null,
                     hasInsurance,
                     EnhancedECommerceActionField.STEP_3,
+                    ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
                     ConstantTransactionAnalytics.EventAction.CLICK_ALL_COURIER_SELECTED,
                     "",
                     getCheckoutLeasingId());
@@ -2460,12 +2469,32 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void triggerSendEnhancedEcommerceCheckoutAnalyticAfterCheckoutSuccess(String transactionId) {
         List<DataCheckoutRequest> dataCheckoutRequests = shipmentPresenter.updateEnhancedEcommerceCheckoutAnalyticsDataLayerPromoData(shipmentAdapter.getShipmentCartItemModelList());
+
+        String eventCategory = ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION;
+        String eventAction = ConstantTransactionAnalytics.EventAction.CLICK_PILIH_METODE_PEMBAYARAN;
+        String eventLabel = ConstantTransactionAnalytics.EventLabel.SUCCESS;
+        Map<String, String> tradeInCustomDimension = new HashMap<>();
+        if (isTradeIn()) {
+            eventCategory = EVENT_CATEGORY_SELF_PICKUP_ADDRESS_SELECTION_TRADE_IN;
+            tradeInCustomDimension.put(KEY_USER_ID, userSessionInterface.getUserId());
+            tradeInCustomDimension.put(KEY_BUSINESS_UNIT, VALUE_TRADE_IN);
+            if (isTradeInByDropOff()) {
+                eventAction = EVENT_ACTION_PILUH_PEMBAYARAN_INDOMARET;
+                tradeInCustomDimension.put(KEY_SCREEN_NAME, SCREEN_NAME_DROP_OFF_ADDRESS);
+            } else {
+                eventAction = EVENT_ACTION_PILUH_PEMBAYARAN_NORMAL;
+                tradeInCustomDimension.put(KEY_SCREEN_NAME, SCREEN_NAME_NORMAL_ADDRESS);
+            }
+        }
+
         shipmentPresenter.triggerSendEnhancedEcommerceCheckoutAnalytics(
                 dataCheckoutRequests,
+                tradeInCustomDimension,
                 hasInsurance,
                 EnhancedECommerceActionField.STEP_4,
-                isTradeIn() ? ConstantTransactionAnalytics.EventAction.CLICK_BAYAR : ConstantTransactionAnalytics.EventAction.CLICK_PILIH_METODE_PEMBAYARAN,
-                ConstantTransactionAnalytics.EventLabel.SUCCESS,
+                eventCategory,
+                eventAction,
+                eventLabel,
                 getCheckoutLeasingId());
     }
 
