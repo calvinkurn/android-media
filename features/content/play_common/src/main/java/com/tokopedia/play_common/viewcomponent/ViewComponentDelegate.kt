@@ -17,7 +17,6 @@ class ViewComponentDelegate<VC: IViewComponent>(
 ) : ReadOnlyProperty<LifecycleOwner, VC> {
 
     private var viewComponent: VC? = null
-    private var mLifecycleOwner: LifecycleOwner? = null
 
     init {
         if (isEagerInit)
@@ -57,9 +56,8 @@ class ViewComponentDelegate<VC: IViewComponent>(
         viewComponent?.let { return it }
 
         val lifecycleOwner = getValidLifecycleOwner(owner)
-        mLifecycleOwner = lifecycleOwner
 
-        lifecycleOwner.safeAddObserver(getViewComponentLifecycleObserver(owner))
+        lifecycleOwner.safeAddObserver(getViewComponentLifecycleObserver(lifecycleOwner))
 
         val lifecycle = lifecycleOwner.lifecycle
         if (!lifecycle.currentState.isAtLeast(Lifecycle.State.INITIALIZED)) {
@@ -92,7 +90,7 @@ class ViewComponentDelegate<VC: IViewComponent>(
 
         @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
         fun onDestroy() {
-            owner.lifecycle.removeObserver(this)
+            getValidLifecycleOwner(owner).lifecycle.removeObserver(this)
         }
     }
 
@@ -100,7 +98,7 @@ class ViewComponentDelegate<VC: IViewComponent>(
 
         @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
         fun onDestroy() {
-            owner.lifecycle.removeObserver(this)
+            getValidLifecycleOwner(owner).lifecycle.removeObserver(this)
 
             releaseViewComponent()
         }
