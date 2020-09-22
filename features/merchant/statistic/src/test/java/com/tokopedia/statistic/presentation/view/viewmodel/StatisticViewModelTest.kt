@@ -6,12 +6,14 @@ import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.sellerhomecommon.domain.model.DynamicParameterModel
 import com.tokopedia.sellerhomecommon.domain.usecase.*
 import com.tokopedia.sellerhomecommon.presentation.model.*
-import com.tokopedia.statistic.presentation.domain.usecase.GetUserRoleUseCase
+import com.tokopedia.statistic.domain.usecase.GetUserRoleUseCase
 import com.tokopedia.statistic.utils.TestConst
 import com.tokopedia.statistic.utils.TestDispatchersProvider
+import com.tokopedia.statistic.view.viewmodel.StatisticViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import dagger.Lazy
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -82,17 +84,17 @@ class StatisticViewModelTest {
 
         viewModel = StatisticViewModel(
                 userSession,
-                dagger.Lazy { getTickerUseCase },
-                dagger.Lazy { getUserRoleUseCase },
-                dagger.Lazy { getLayoutUseCase },
-                dagger.Lazy { getCardDataUseCase },
-                dagger.Lazy { getLineGraphDataUseCase },
-                dagger.Lazy { getProgressDataUseCase },
-                dagger.Lazy { getPostDataUseCase },
-                dagger.Lazy { getCarouselDataUseCase },
-                dagger.Lazy { getTableDataUseCase },
-                dagger.Lazy { getPieChartDataUseCase },
-                dagger.Lazy { getBarChartDataUseCase },
+                Lazy { getTickerUseCase },
+                Lazy { getUserRoleUseCase },
+                Lazy { getLayoutUseCase },
+                Lazy { getCardDataUseCase },
+                Lazy { getLineGraphDataUseCase },
+                Lazy { getProgressDataUseCase },
+                Lazy { getPostDataUseCase },
+                Lazy { getCarouselDataUseCase },
+                Lazy { getTableDataUseCase },
+                Lazy { getPieChartDataUseCase },
+                Lazy { getBarChartDataUseCase },
                 TestDispatchersProvider
         )
 

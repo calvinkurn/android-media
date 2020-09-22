@@ -4,7 +4,7 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.statistic.di.module.StatisticModule
 import com.tokopedia.statistic.di.module.StatisticUseCaseModule
 import com.tokopedia.statistic.di.module.StatisticViewModelModule
-import com.tokopedia.statistic.presentation.view.fragment.StatisticFragment
+import com.tokopedia.statistic.view.fragment.StatisticFragment
 import dagger.Component
 
 /**
