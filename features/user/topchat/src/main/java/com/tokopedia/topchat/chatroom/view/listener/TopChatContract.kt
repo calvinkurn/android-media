@@ -210,5 +210,10 @@ interface TopChatContract {
                 onSuccess: (AddToCartDataModel) -> Unit,
                 onError: (Throwable) -> Unit
         )
+
+        fun getBackground(
+                onSuccess: (String, Boolean) -> Unit,
+                onError: (Throwable) -> Unit
+        )
     }
 }

@@ -108,6 +108,7 @@ class TopChatRoomPresenter @Inject constructor(
         private val chatAttachmentUseCase: ChatAttachmentUseCase,
         private val chatToggleBlockChat: ChatToggleBlockChatUseCase,
         private val addToCartOccUseCase: AddToCartOccUseCase,
+        private val chatBackgroundUseCase: ChatBackgroundUseCase,
         private val sharedPref: SharedPreferences,
         private val dispatchers: TopchatCoroutineContextProvider
 ) : BaseChatPresenter<TopChatContract.View>(userSession, topChatRoomWebSocketMessageMapper),
@@ -885,6 +886,13 @@ class TopChatRoomPresenter @Inject constructor(
                     onError(it)
                 }
         )
+    }
+
+    override fun getBackground(
+            onSuccess: (String, Boolean) -> Unit,
+            onError: (Throwable) -> Unit
+    ) {
+        chatBackgroundUseCase.getBackground(onSuccess, onError)
     }
 
     private fun onSuccessGetAttachments(attachments: ArrayMap<String, Attachment>) {
