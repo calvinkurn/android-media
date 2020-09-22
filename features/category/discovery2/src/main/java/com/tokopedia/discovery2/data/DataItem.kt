@@ -43,7 +43,7 @@ data class DataItem(
         var isSelected: Boolean = false,
 
         @SerializedName("end_date")
-        var endDate: String? = "",
+        val endDate: String? = "",
 
         @SerializedName("button_applink")
         val buttonApplink: String? = "",
@@ -106,7 +106,7 @@ data class DataItem(
         val description: String? = "",
 
         @SerializedName("start_date")
-        var startDate: String? = "",
+        val startDate: String? = "",
 
         @SerializedName("left_margin_mobile")
         val leftMarginMobile: String? = "0",
