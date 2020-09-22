@@ -49,6 +49,8 @@ interface PlayPusher {
      */
     fun addMaxPauseDuration(durationInMillis: Long)
 
+    fun getTimeElapsed(): String
+
     /**
      * add listener to timer
      */
@@ -57,5 +59,5 @@ interface PlayPusher {
     /**
      * add listener to pusher
      */
-    fun addPlayPusherInfoListener(listener: ApsaraLivePusherInfoListener)
+    fun addPlayPusherInfoListener(listener: PlayPusherInfoListener)
 }

@@ -15,8 +15,11 @@ class PlayPusherImpl(@ApplicationContext private val mContext: Context) : PlayPu
     private val mApsaraLivePusher = ApsaraLivePusher(mContext)
     private var mTimerDuration: PlayPusherTimer? = null
 
+    private var mPlayPusherInfoListener: PlayPusherInfoListener? = null
+
     override fun init() {
         mApsaraLivePusher.init()
+        mApsaraLivePusher.mApsaraLivePusherInfoListener = mApsaraLivePusherInfoListener
     }
 
     override fun startPreview(surfaceView: SurfaceView) {
@@ -83,12 +86,46 @@ class PlayPusherImpl(@ApplicationContext private val mContext: Context) : PlayPu
         this.mTimerDuration?.pauseDuration = durationInMillis
     }
 
+    override fun getTimeElapsed(): String = this.mTimerDuration?.getTimeElapsed().orEmpty()
+
     override fun addPlayPusherTimerListener(listener: PlayPusherTimerListener) {
         this.mTimerDuration?.callback = listener
     }
 
-    override fun addPlayPusherInfoListener(listener: ApsaraLivePusherInfoListener) {
-        this.mApsaraLivePusher.mApsaraLivePusherInfoListener = listener
+    override fun addPlayPusherInfoListener(listener: PlayPusherInfoListener) {
+        this.mPlayPusherInfoListener = listener
     }
 
+    private val mApsaraLivePusherInfoListener = object : ApsaraLivePusherInfoListener {
+        override fun onStarted() {
+            mTimerDuration?.start()
+            mPlayPusherInfoListener?.onStarted()
+        }
+
+        override fun onPushed(activeStatus: ApsaraLivePusherActiveStatus) {
+            mPlayPusherInfoListener?.onPushed(activeStatus)
+        }
+
+        override fun onResumed() {
+            mTimerDuration?.resume()
+        }
+
+        override fun onPaused() {
+            mPlayPusherInfoListener?.onPaused()
+            mTimerDuration?.pause()
+        }
+
+        override fun onStop() {
+            mPlayPusherInfoListener?.onStop()
+            mTimerDuration?.stop()
+        }
+
+        override fun onRestarted() {
+            mPlayPusherInfoListener?.onRestarted()
+        }
+
+        override fun onError(errorStatus: ApsaraLivePusherErrorStatus) {
+            mPlayPusherInfoListener?.onError(errorStatus)
+        }
+    }
 }
