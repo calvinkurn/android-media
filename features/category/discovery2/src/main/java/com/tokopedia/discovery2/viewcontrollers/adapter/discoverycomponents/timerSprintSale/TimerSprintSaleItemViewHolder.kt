@@ -6,6 +6,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.discovery2.R
+import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
@@ -21,23 +22,8 @@ class TimerSprintSaleItemViewHolder(itemView: View, private val fragment: Fragme
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         timerSprintSaleItemViewModel = discoveryBaseViewModel as TimerSprintSaleItemViewModel
-
-        when {
-            timerSprintSaleItemViewModel.isFutureSale() -> {
-                backgroundView.background = MethodChecker.getDrawable(itemView.context, R.drawable.discovery_timer_sale_blue_background)
-                tvTitle.text = itemView.context.getString(R.string.discovery_sale_begins_in)
-            }
-            timerSprintSaleItemViewModel.isSaleOver() -> {
-                backgroundView.background = MethodChecker.getDrawable(itemView.context, R.drawable.discovery_timer_sale_grey_background)
-                tvTitle.text = itemView.context.getString(R.string.discovery_sale_has_ended)
-            }
-            else -> {
-                backgroundView.background = MethodChecker.getDrawable(itemView.context, R.drawable.discovery_timer_sale_red_background)
-                tvTitle.text = itemView.context.getString(R.string.discovery_sale_ends_in)
-            }
-        }
+        setTimerType()
     }
-
 
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
         lifecycleOwner?.let {
@@ -47,14 +33,47 @@ class TimerSprintSaleItemViewHolder(itemView: View, private val fragment: Fragme
                     sendSprintSaleTimerTrack()
                 }
             })
-
             timerSprintSaleItemViewModel.getTimerData().observe(it, Observer { timerData ->
+                if (timerData.hours == 0 && timerData.minutes == 0 && timerData.seconds == 0 && timerData.milliSeconds == 0) {
+                    setTimerType()
+                    timerSprintSaleItemViewModel.handleSaleEndSates()
+                }
                 tvHours.text = String.format(TIME_DISPLAY_FORMAT, timerData.hours)
                 tvMinutes.text = String.format(TIME_DISPLAY_FORMAT, timerData.minutes)
                 tvSeconds.text = String.format(TIME_DISPLAY_FORMAT, timerData.seconds)
+
+            })
+
+            timerSprintSaleItemViewModel.refreshPage().observe(it, Observer { refreshPage ->
+                if (refreshPage) (fragment as DiscoveryFragment).onRefresh()
+            })
+
+            timerSprintSaleItemViewModel.getSyncPageLiveData().observe(it, Observer { needResync ->
+                if (needResync) {
+                    (fragment as DiscoveryFragment).reSync()
+                }
             })
         }
     }
+
+    private fun setTimerType() {
+        when {
+            Utils.isFutureSale(timerSprintSaleItemViewModel.getStartDate()) -> {
+                backgroundView.background = MethodChecker.getDrawable(itemView.context, R.drawable.discovery_timer_sale_blue_background)
+                tvTitle.text = itemView.context.getString(R.string.discovery_sale_begins_in)
+            }
+            Utils.isSaleOver(timerSprintSaleItemViewModel.getEndDate()) -> {
+                backgroundView.background = MethodChecker.getDrawable(itemView.context, R.drawable.discovery_timer_sale_grey_background)
+                tvTitle.text = itemView.context.getString(R.string.discovery_sale_has_ended)
+                timerSprintSaleItemViewModel.checkUpcomingSaleTimer()
+            }
+            else -> {
+                backgroundView.background = MethodChecker.getDrawable(itemView.context, R.drawable.discovery_timer_sale_red_background)
+                tvTitle.text = itemView.context.getString(R.string.discovery_sale_ends_in)
+            }
+        }
+    }
+
 
     override fun removeObservers(lifecycleOwner: LifecycleOwner?) {
         super.removeObservers(lifecycleOwner)

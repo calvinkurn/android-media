@@ -1,14 +1,15 @@
 package com.tokopedia.discovery2.datamapper
 
 import com.tokopedia.discovery2.ComponentNames
+import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DiscoveryResponse
 import com.tokopedia.discovery2.data.PageInfo
 import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
-import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.PINNED_ACTIVE_TAB
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.PINNED_COMP_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.PRODUCT_ID
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 
 
 val discoveryPageData: MutableMap<String, DiscoveryResponse> = HashMap()
@@ -35,10 +36,10 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo, private val queryP
     fun getDiscoveryComponentListWithQueryParam(components: List<ComponentsItem>): List<ComponentsItem> {
         val pinnedCompId = queryParameterMap[PINNED_COMP_ID]
         val componentList = getDiscoveryComponentList(components)
-        if(componentList.isNotEmpty() && !pinnedCompId.isNullOrEmpty()){
+        if (componentList.isNotEmpty() && !pinnedCompId.isNullOrEmpty()) {
             componentList.forEach { item ->
-                if(item.id == pinnedCompId){
-                    item.rpc_PinnedProduct= queryParameterMap[PRODUCT_ID]
+                if (item.id == pinnedCompId) {
+                    item.rpc_PinnedProduct = queryParameterMap[PRODUCT_ID]
                 }
             }
         }
@@ -76,9 +77,9 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo, private val queryP
     private fun parseTab(component: ComponentsItem, position: Int): List<ComponentsItem> {
         val listComponents: ArrayList<ComponentsItem> = ArrayList()
 
-        if(component.data.isNullOrEmpty()){
+        if (component.data.isNullOrEmpty()) {
             return listComponents
-        }else{
+        } else {
             listComponents.add(component)
             if (component.getComponentsItem().isNullOrEmpty()) {
                 component.setComponentsItem(DiscoveryDataMapper.mapTabsListToComponentList(component, ComponentNames.TabsItem.componentName, position, queryParameterMap[PINNED_ACTIVE_TAB]))
@@ -89,6 +90,7 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo, private val queryP
             it.apply {
                 val tabData = data?.get(0)
                 if (tabData?.isSelected!!) {
+                    var saleTabStatus = checkSaleTimer(this)
                     val targetComponentIdList = tabData.targetComponentId?.split(",")?.map { it.trim() }
                     if (!targetComponentIdList.isNullOrEmpty()) {
                         val componentsItem: ArrayList<ComponentsItem> = ArrayList()
@@ -99,6 +101,11 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo, private val queryP
                                 listComponents.addAll(parseComponent(component1, position))
                             }
                         }
+                        if(saleTabStatus){
+                            val loisgt = handleProductState(this, ComponentNames.SaleEndState.componentName)
+                            componentsItem.addAll(loisgt)
+                            listComponents.addAll(loisgt)
+                        }
                         this.setComponentsItem(componentsItem)
                     }
 
@@ -106,6 +113,43 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo, private val queryP
             }
         }
         return listComponents
+    }
+
+
+    private fun handleProductState(component: ComponentsItem, componentName: String): ArrayList<ComponentsItem> {
+        val productState: ArrayList<ComponentsItem> = ArrayList()
+        productState.add(ComponentsItem(name = componentName).apply {
+            pageEndPoint = component.pageEndPoint
+            parentComponentId = component.id
+            id = componentName
+            discoveryPageData[this.pageEndPoint]?.componentMap?.set(this.id, this)
+        })
+        return productState
+    }
+
+    private fun checkSaleTimer(tab: ComponentsItem): Boolean {
+        tab.apply {
+            if (!data.isNullOrEmpty()) {
+                val tabData = data!![0]
+                val targetComponentIdList = tabData.targetComponentId?.split(",")?.map { it.trim() }
+                if (!targetComponentIdList.isNullOrEmpty()) {
+                    targetComponentIdList.forEach { componentId ->
+                        getComponent(componentId, pageInfo.identifier!!)?.let { componentItem ->
+                            if (componentItem.name == ComponentNames.TimerSprintSale.componentName) {
+                                if (!componentItem.data.isNullOrEmpty() && Utils.isSaleOver(componentItem.data!![0].endDate
+                                                ?: "")) {
+                                    if (!data.isNullOrEmpty()) {
+                                        data!![0].targetComponentId = componentId
+                                        return true
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return false
     }
 
     private fun parseProductVerticalList(component: ComponentsItem): List<ComponentsItem> {
@@ -130,16 +174,16 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo, private val queryP
         return listComponents
     }
 
-    private fun handleProductState(component: ComponentsItem, componentName: String): ArrayList<ComponentsItem> {
-        val productState: ArrayList<ComponentsItem> = ArrayList()
-        productState.add(ComponentsItem(name = componentName).apply {
-            pageEndPoint = component.pageEndPoint
-            parentComponentId = component.id
-            id = componentName
-            discoveryPageData[this.pageEndPoint]?.componentMap?.set(this.id, this)
-        })
-        return productState
-    }
+//    private fun handleProductState(component: ComponentsItem, componentName: String): ArrayList<ComponentsItem> {
+//        val productState: ArrayList<ComponentsItem> = ArrayList()
+//        productState.add(ComponentsItem(name = componentName).apply {
+//            pageEndPoint = component.pageEndPoint
+//            parentComponentId = component.id
+//            id = componentName
+//            discoveryPageData[this.pageEndPoint]?.componentMap?.set(this.id, this)
+//        })
+//        return productState
+//    }
 }
 
 fun getComponent(componentId: String, pageName: String): ComponentsItem? {

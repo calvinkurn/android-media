@@ -40,5 +40,8 @@
     <string name="empty_state_description">Aktifkan pengingat supaya kamu nggak ketinggalan penawaran seru dari seller-seller Tokopedia!</string>
     <string name="discovery_bottom_sheet_filter_finish_button_text">Tampilkan produk</string>
     <string name="cashback">Cashback</string>
+    <string name="ongoing_end_title">Yaah, Kejar Diskon udah selesai</string>
+    <string name="ongoing_end_description">Jangan sedih, ya. Banyak produk dan promo menarik dapat kamu temukan di Kejar Diskon selanjutnya!</string>
+    <string name="ongoing_end_button">Lanjut Belanja</string>
 
 </resources>

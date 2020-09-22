@@ -17,6 +17,7 @@ class LihatFlashSaleTimerViewModel(val application: Application, componentData: 
     private val saleWidgetData: MutableLiveData<ComponentsItem> = MutableLiveData()
     private var timeCounter: SaleCountDownTimer? = null
     private val elapsedTime: Long = 1000
+    private val mutableTimeDiffModel: MutableLiveData<TimerDataModel> = MutableLiveData()
 
     init {
         saleWidgetData.value = componentData
@@ -33,7 +34,9 @@ class LihatFlashSaleTimerViewModel(val application: Application, componentData: 
             val saleTimeMillis = parsedEndDate.time - currentSystemTime.time
 
             if (saleTimeMillis > 0) {
-                timeCounter = SaleCountDownTimer(saleTimeMillis, elapsedTime)
+                timeCounter = SaleCountDownTimer(saleTimeMillis, elapsedTime){
+                    mutableTimeDiffModel.value = it
+                }
                 timeCounter?.start()
             }
         }
@@ -54,9 +57,7 @@ class LihatFlashSaleTimerViewModel(val application: Application, componentData: 
         timeCounter?.cancel()
     }
 
-    fun getTimerData(): LiveData<TimerDataModel> {
-        return timeCounter?.mutableTimeDiffModel ?: MutableLiveData()
-    }
+    fun getTimerData() = mutableTimeDiffModel
 
     fun onLihatSemuaClicked(context: Context) {
         navigate(context, saleWidgetData.value?.data?.get(0)?.btnApplink)

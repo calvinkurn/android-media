@@ -25,7 +25,7 @@ data class DataItem(
         val value: String? = "",
 
         @SerializedName("target_component_id")
-        val targetComponentId: String? = "",
+        var targetComponentId: String? = "",
 
         @SerializedName("background_image")
         val backgroundImage: String? = "",
@@ -43,7 +43,7 @@ data class DataItem(
         var isSelected: Boolean = false,
 
         @SerializedName("end_date")
-        val endDate: String? = "",
+        var endDate: String? = "",
 
         @SerializedName("button_applink")
         val buttonApplink: String? = "",
@@ -106,7 +106,7 @@ data class DataItem(
         val description: String? = "",
 
         @SerializedName("start_date")
-        val startDate: String? = "",
+        var startDate: String? = "",
 
         @SerializedName("left_margin_mobile")
         val leftMarginMobile: String? = "0",
