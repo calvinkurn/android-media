@@ -121,6 +121,8 @@ class ApsaraLivePusher(@ApplicationContext private val mContext: Context) {
         } catch (e: Exception) {
             sendCrashlyticsLog(e)
         }
+        mApsaraLivePusherStatus = ApsaraLivePusherStatus.Stop
+        mApsaraLivePusherInfoListener?.onStop()
     }
 
     fun resume() {
@@ -228,6 +230,7 @@ class ApsaraLivePusher(@ApplicationContext private val mContext: Context) {
             }
             mApsaraLivePusherStatus = ApsaraLivePusherStatus.Live(activeStatus)
             mApsaraLivePusherInfoListener?.onPushed(activeStatus)
+            mApsaraLivePusherInfoListener?.onStarted()
         }
 
         override fun onPushPauesed(pusher: AlivcLivePusher?) {
@@ -243,11 +246,10 @@ class ApsaraLivePusher(@ApplicationContext private val mContext: Context) {
             }
             mApsaraLivePusherStatus = ApsaraLivePusherStatus.Live(activeStatus)
             mApsaraLivePusherInfoListener?.onPushed(activeStatus)
+            mApsaraLivePusherInfoListener?.onResumed()
         }
 
         override fun onPushStoped(pusher: AlivcLivePusher?) {
-            mApsaraLivePusherStatus = ApsaraLivePusherStatus.Stop
-            mApsaraLivePusherInfoListener?.onStop()
         }
 
         override fun onPushRestarted(pusher: AlivcLivePusher?) {
