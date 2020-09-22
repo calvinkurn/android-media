@@ -115,7 +115,8 @@ abstract class BaseTrackerConst {
             val quantity: String = "",
             val headerName: String = "",
             val isCarousel: Boolean? = null,
-            val recommendationType: String = "")
+            val recommendationType: String = "",
+            val shopId:String = "")
 
     object Ecommerce {
         const val KEY = "ecommerce"
@@ -154,6 +155,10 @@ abstract class BaseTrackerConst {
         private const val KEY_DIMENSION_11 = "dimension11"
         private const val KEY_DIMENSION_40 = "dimension40"
         private const val KEY_DIMENSION_45 = "dimension45"
+        private const val KEY_DIMENSION_79 = "dimension79"
+        private const val KEY_DIMENSION_80 = "dimension80"
+        private const val KEY_DIMENSION_81 = "dimension81"
+        private const val KEY_DIMENSION_82 = "dimension82"
         private const val KEY_DIMENSION_83 = "dimension83"
         private const val KEY_DIMENSION_84 = "dimension84"
         private const val KEY_DIMENSION_96 = "dimension96"
@@ -269,6 +274,10 @@ abstract class BaseTrackerConst {
                 map[KEY_LIST] = newList
             }
             if(product.cartId.isNotEmpty()) map[KEY_DIMENSION_45] = product.cartId
+            if(product.cartId.isNotEmpty()) map[KEY_DIMENSION_79] = product.shopId
+            if(product.cartId.isNotEmpty()) map[KEY_DIMENSION_80] = NONE
+            if(product.cartId.isNotEmpty()) map[KEY_DIMENSION_81] = ""
+            if(product.cartId.isNotEmpty()) map[KEY_DIMENSION_82] = NONE
             if(product.quantity.isNotEmpty()) map[KEY_QUANTITY] = product.quantity
             return map
         }

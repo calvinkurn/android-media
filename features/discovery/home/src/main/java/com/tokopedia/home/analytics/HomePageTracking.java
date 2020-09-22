@@ -1375,7 +1375,7 @@ public class HomePageTracking {
                 EVENT, PROMO_CLICK,
                 EVENT_CATEGORY, CATEGORY_HOME_PAGE,
                 EVENT_ACTION, EVENT_ACTION_CLICK_ON_DYNAMIC_ICON,
-                EVENT_LABEL, LABEL_EMPTY,
+                EVENT_LABEL, homeIconItem.getName(),
                 ATTRIBUTION, homeIconItem.getGalaxyAttribution(),
                 AFFINITY_LABEL, homeIconItem.getPersona(),
                 GALAXY_CATEGORY_ID, homeIconItem.getCategoryPersona(),

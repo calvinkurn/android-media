@@ -52,6 +52,9 @@ object RecommendationListTracking: BaseTrackerConst(){
                 ))
                 .appendChannelId(channel.id)
                 .appendUserId(userId)
+                .appendScreen(Screen.DEFAULT)
+                .appendCurrentSite(CurrentSite.DEFAULT)
+                .appendBusinessUnit(BusinessUnit.DEFAULT)
                 .build()
     }
 
@@ -87,6 +90,9 @@ object RecommendationListTracking: BaseTrackerConst(){
                 ))
                 .appendChannelId(channel.id)
                 .appendUserId(userId)
+                .appendScreen(Screen.DEFAULT)
+                .appendCurrentSite(CurrentSite.DEFAULT)
+                .appendBusinessUnit(BusinessUnit.DEFAULT)
                 .build()
     }
 
@@ -122,6 +128,9 @@ object RecommendationListTracking: BaseTrackerConst(){
                 .appendChannelId(channel.id)
                 .appendCampaignCode(channel.campaignCode)
                 .appendUserId(userId)
+                .appendScreen(Screen.DEFAULT)
+                .appendCurrentSite(CurrentSite.DEFAULT)
+                .appendBusinessUnit(BusinessUnit.DEFAULT)
                 .build()
     }
 
@@ -156,6 +165,9 @@ object RecommendationListTracking: BaseTrackerConst(){
                 .appendChannelId(channel.id)
                 .appendCampaignCode(channel.trackingAttributionModel.campaignCode)
                 .appendUserId(userId)
+                .appendScreen(Screen.DEFAULT)
+                .appendCurrentSite(CurrentSite.DEFAULT)
+                .appendBusinessUnit(BusinessUnit.DEFAULT)
                 .build()
     }
 
@@ -173,7 +185,10 @@ object RecommendationListTracking: BaseTrackerConst(){
                 Category.KEY, Category.HOMEPAGE,
                 Action.KEY, RECOMMENDATION_LIST_SEE_ALL_EVENT_ACTION,
                 Label.KEY, Label.FORMAT_2_ITEMS.format(channelId, headerName),
-                UserId.KEY, userId
+                Screen.KEY, Screen.DEFAULT,
+                UserId.KEY, userId,
+                CurrentSite.KEY, CurrentSite.DEFAULT,
+                BusinessUnit.KEY, BusinessUnit.DEFAULT
         ) as HashMap<String, Any>
     }
 
@@ -212,7 +227,8 @@ object RecommendationListTracking: BaseTrackerConst(){
             Label.KEY, Label.FORMAT_2_ITEMS.format(channel.id, channel.channelHeader.name),
             Screen.KEY, Screen.DEFAULT,
             UserId.KEY, userId,
-            CurrentSite.KEY, CurrentSite.DEFAULT
+            CurrentSite.KEY, CurrentSite.DEFAULT,
+            BusinessUnit.KEY, BusinessUnit.DEFAULT
     )
 
     fun getAddToCartOnDynamicListCarousel(channel: DynamicHomeChannel.Channels, grid: DynamicHomeChannel.Grid, position: Int, cartId: String, quantity: String = "0", userId: String = "") = DataLayer.mapOf(
@@ -225,6 +241,7 @@ object RecommendationListTracking: BaseTrackerConst(){
             CurrentSite.KEY, CurrentSite.DEFAULT,
             UserId.KEY, userId,
             Label.CHANNEL_LABEL, channel.id,
+            BusinessUnit.KEY, BusinessUnit.DEFAULT,
             Ecommerce.KEY, Ecommerce.getEcommerceProductAddToCart(
             products = listOf(
                     Product(
@@ -241,7 +258,8 @@ object RecommendationListTracking: BaseTrackerConst(){
                             categoryId = channel.categoryID,
                             isTopAds = grid.isTopads,
                             quantity = quantity,
-                            cartId = cartId
+                            cartId = cartId,
+                            shopId = channel.brandId
                     )
             ),
             list = String.format(
@@ -277,7 +295,8 @@ object RecommendationListTracking: BaseTrackerConst(){
                             categoryId = channel.trackingAttributionModel.categoryId,
                             isTopAds = grid.isTopads,
                             quantity = quantity,
-                            cartId = cartId
+                            cartId = cartId,
+                            shopId = channel.trackingAttributionModel.brandId
                     )
             ),
             list = String.format(
