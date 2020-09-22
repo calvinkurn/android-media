@@ -1,5 +1,6 @@
 package com.tokopedia.search.result.presentation.view.adapter.viewholder.product
 
+import android.os.Build
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
@@ -16,8 +17,14 @@ import com.tokopedia.search.result.presentation.view.listener.InspirationCardLis
 import com.tokopedia.search.utils.ChipSpacingItemDecoration
 import com.tokopedia.search.utils.addItemDecorationIfNotExists
 import kotlinx.android.synthetic.main.search_result_product_big_grid_curated_inspiration_card_layout.view.*
+import kotlinx.android.synthetic.main.search_result_product_big_grid_curated_inspiration_card_layout.view.inspirationCardCurated
+import kotlinx.android.synthetic.main.search_result_product_big_grid_curated_inspiration_card_layout.view.inspirationCardCuratedBackground
+import kotlinx.android.synthetic.main.search_result_product_big_grid_curated_inspiration_card_layout.view.inspirationCardCuratedButton
+import kotlinx.android.synthetic.main.search_result_product_big_grid_curated_inspiration_card_layout.view.inspirationCardCuratedIcon
+import kotlinx.android.synthetic.main.search_result_product_big_grid_curated_inspiration_card_layout.view.inspirationCardCuratedTitle
 import kotlinx.android.synthetic.main.search_result_product_big_grid_inspiration_card_layout.view.*
 import kotlinx.android.synthetic.main.search_result_product_inspiration_card_layout.view.*
+import kotlinx.android.synthetic.main.search_result_product_small_grid_curated_inspiration_card_layout.view.*
 
 class BigGridInspirationCardViewHolder(
         itemView: View,
@@ -53,9 +60,15 @@ class BigGridInspirationCardViewHolder(
     private fun setCuratedLayout(element: InspirationCardViewModel) {
         val option = element.options.firstOrNull() ?: return
 
+        bindCuratedBackground()
         bindCuratedIcon(option)
         bindCuratedTitle(option)
         bindCuratedListener(option)
+    }
+
+    private fun bindCuratedBackground() {
+//        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) itemView.inspirationCardCuratedBackground?.visibility = View.VISIBLE
+//        else itemView.inspirationCardCuratedBackground?.visibility = View.GONE
     }
 
     private fun bindCuratedIcon(element: InspirationCardOptionViewModel) {

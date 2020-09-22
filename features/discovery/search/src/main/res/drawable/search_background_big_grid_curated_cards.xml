@@ -13,8 +13,8 @@
           android:endY="41.5"
           android:endX="259.5"
           android:type="linear">
-        <item android:offset="0" android:color="#FFCCEBFF"/>
-        <item android:offset="1" android:color="#00FFFFFF"/>
+        <item android:offset="0" android:color="@color/search_product_curated_cards_background_1"/>
+        <item android:offset="1" android:color="@color/search_product_curated_cards_background_2"/>
       </gradient>
     </aapt:attr>
   </path>
@@ -27,8 +27,8 @@
           android:endY="50.2175"
           android:endX="297.722"
           android:type="linear">
-        <item android:offset="0" android:color="#FFEBFFEF"/>
-        <item android:offset="1" android:color="#CCFFFFFF"/>
+        <item android:offset="0" android:color="@color/search_product_curated_cards_background_3"/>
+        <item android:offset="1" android:color="@color/search_product_curated_cards_background_4"/>
       </gradient>
     </aapt:attr>
   </path>
@@ -43,8 +43,8 @@
           android:endY="38.999832"
           android:endX="316.99985"
           android:type="linear">
-        <item android:offset="0" android:color="#FFFFFFFF"/>
-        <item android:offset="1" android:color="#FFCCEBFF"/>
+        <item android:offset="0" android:color="@color/search_product_curated_cards_background_5"/>
+        <item android:offset="1" android:color="@color/search_product_curated_cards_background_1"/>
       </gradient>
     </aapt:attr>
   </path>
@@ -59,14 +59,14 @@
           android:endY="17.500538"
           android:endX="246.00003"
           android:type="linear">
-        <item android:offset="0" android:color="#7FCCEBFF"/>
-        <item android:offset="1" android:color="#CCFFFFFF"/>
+        <item android:offset="0" android:color="@color/search_product_curated_cards_background_6"/>
+        <item android:offset="1" android:color="@color/search_product_curated_cards_background_4"/>
       </gradient>
     </aapt:attr>
   </path>
   <path
       android:strokeWidth="1"
       android:pathData="M310,10m-21.5,0a21.5,21.5 0,1 1,43 0a21.5,21.5 0,1 1,-43 0"
-      android:fillColor="#00000000"
-      android:strokeColor="#ffffff"/>
+      android:fillColor="@color/transparent"
+      android:strokeColor="@color/white"/>
 </vector>

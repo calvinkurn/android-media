@@ -13,22 +13,22 @@
           android:endY="42.5"
           android:endX="91.5"
           android:type="linear">
-        <item android:offset="0" android:color="#FFCCEBFF"/>
-        <item android:offset="1" android:color="#00FFFFFF"/>
+        <item android:offset="0" android:color="@color/search_product_curated_cards_background_1"/>
+        <item android:offset="1" android:color="@color/search_product_curated_cards_background_2"/>
       </gradient>
     </aapt:attr>
   </path>
   <path
       android:pathData="M0,1h160v48h-160z">
     <aapt:attr name="android:fillColor">
-      <gradient 
+      <gradient
           android:startY="0.999997"
           android:startX="149.5"
           android:endY="49"
           android:endX="141.5"
           android:type="linear">
-        <item android:offset="0" android:color="#FFEBFFEF"/>
-        <item android:offset="1" android:color="#CCFFFFFF"/>
+        <item android:offset="0" android:color="@color/search_product_curated_cards_background_3"/>
+        <item android:offset="1" android:color="@color/search_product_curated_cards_background_4"/>
       </gradient>
     </aapt:attr>
   </path>
@@ -37,14 +37,14 @@
       android:strokeAlpha="0.902623"
       android:fillAlpha="0.3610492">
     <aapt:attr name="android:fillColor">
-      <gradient 
+      <gradient
           android:startY="1.499798"
           android:startX="151.00009"
           android:endY="39.999836"
           android:endX="148.99985"
           android:type="linear">
-        <item android:offset="0" android:color="#FFFFFFFF"/>
-        <item android:offset="1" android:color="#FFCCEBFF"/>
+        <item android:offset="0" android:color="@color/search_product_curated_cards_background_5"/>
+        <item android:offset="1" android:color="@color/search_product_curated_cards_background_1"/>
       </gradient>
     </aapt:attr>
   </path>
@@ -53,20 +53,20 @@
       android:strokeAlpha="0.9"
       android:fillAlpha="0.9">
     <aapt:attr name="android:fillColor">
-      <gradient 
+      <gradient
           android:startY="1.5571222E-4"
           android:startX="137.49985"
           android:endY="18.500551"
           android:endX="78.00003"
           android:type="linear">
-        <item android:offset="0" android:color="#7FCCEBFF"/>
-        <item android:offset="1" android:color="#CCFFFFFF"/>
+        <item android:offset="0" android:color="@color/search_product_curated_cards_background_6"/>
+        <item android:offset="1" android:color="@color/search_product_curated_cards_background_4"/>
       </gradient>
     </aapt:attr>
   </path>
   <path
       android:strokeWidth="1"
       android:pathData="M142,11m-21.5,0a21.5,21.5 0,1 1,43 0a21.5,21.5 0,1 1,-43 0"
-      android:fillColor="#00000000"
-      android:strokeColor="#ffffff"/>
+      android:fillColor="@color/transparent"
+      android:strokeColor="@color/white"/>
 </vector>

@@ -34,4 +34,11 @@
 
     <color name="cart_count_color">#ef144a</color>
     <color name="search_text_view_color">#F531353B</color>
+
+    <color name="search_product_curated_cards_background_1">#FFCCEBFF</color>
+    <color name="search_product_curated_cards_background_2">#00FFFFFF</color>
+    <color name="search_product_curated_cards_background_3">#FFEBFFEF</color>
+    <color name="search_product_curated_cards_background_4">#CCFFFFFF</color>
+    <color name="search_product_curated_cards_background_5">#FFFFFFFF</color>
+    <color name="search_product_curated_cards_background_6">#7FCCEBFF</color>
 </resources>
