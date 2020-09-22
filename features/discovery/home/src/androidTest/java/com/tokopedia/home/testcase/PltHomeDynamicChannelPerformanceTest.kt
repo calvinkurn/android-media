@@ -72,7 +72,7 @@ class PltHomeDynamicChannelPerformanceTest {
     }
 
     private fun waitForData() {
-        Thread.sleep(1000000)
+        Thread.sleep(10000)
     }
 
     private fun savePLTPerformanceResultData(tag: String) {
