@@ -63,7 +63,6 @@ dependencies {
     implementation project(rootProject.ext.features.atc_common)
     implementation project(rootProject.ext.features.purchase_platform_common)
     implementation project(rootProject.ext.features.promoCheckoutCommon)
-    implementation project(rootProject.ext.features.commonPayment)
     implementation project(rootProject.ext.features.navigationCommon)
     implementation project(rootProject.ext.features.wishlistCommon)
     implementation project(rootProject.ext.features.recommendationWidgetCommon)
