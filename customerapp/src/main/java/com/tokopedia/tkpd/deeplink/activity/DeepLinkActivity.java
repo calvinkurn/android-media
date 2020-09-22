@@ -22,7 +22,7 @@ import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.intl.R;
+import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.deeplink.listener.DeepLinkView;
 import com.tokopedia.tkpd.deeplink.presenter.DeepLinkPresenter;
 import com.tokopedia.tkpd.deeplink.presenter.DeepLinkPresenterImpl;

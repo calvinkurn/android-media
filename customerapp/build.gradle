@@ -29,6 +29,13 @@ def allowDistribution() {
     return "false";
 }
 
+def isDebugTraceEnabled() {
+    if (project.hasProperty('debugTrace') && debugTrace == "true") {
+        return "true";
+    }
+    return "false";
+}
+
 def isPreInstall() {
     if (project.hasProperty('isPreInstall') && isPreInstall == "true") {
         return "true"
@@ -93,6 +100,7 @@ buildscript {
     dependencies {
         classpath rootProject.ext.gradlePlugin.crashlytics
         classpath rootProject.ext.miscDependencies.hansel
+        classpath rootProject.ext.gradlePlugin.googleServices
     }
 }
 ext.lintchecks = [
@@ -168,8 +176,8 @@ android {
             buildConfigField "String", "PREINSTALL_NAME", "\"\""
             buildConfigField "String", "PREINSTALL_DESC", "\"\""
             buildConfigField "String", "PREINSTALL_SITE", "\"\""
+            buildConfigField "boolean", "ENABLE_DEBUG_TRACE", isDebugTraceEnabled()
             ext.enableHansel = project.hasProperty('hanselEnableDebug')
-            ext.enableCrashlytics = false
             FirebasePerformance {
                 // Set this flag to 'false' to disable @AddTrace annotation processing and
                 // automatic HTTP/S network request monitoring
@@ -199,6 +207,7 @@ android {
             buildConfigField "String", "PREINSTALL_NAME", "\"${getDynamicProperty("preInstallName")}\""
             buildConfigField "String", "PREINSTALL_DESC", "\"${getDynamicProperty("preInstallDesc")}\""
             buildConfigField "String", "PREINSTALL_SITE", "\"${getDynamicProperty("preInstallSite")}\""
+            buildConfigField "boolean", "ENABLE_DEBUG_TRACE", isDebugTraceEnabled()
             multiDexKeepFile file('multidex-config.txt')
             multiDexKeepProguard file('multidex-config.pro')
             if (allowProguard()) {
@@ -215,7 +224,7 @@ android {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         multiDexEnabled = true
-        applicationId "com.tokopedia.intl"
+        applicationId "com.tokopedia.tkpd"
         versionCode getTkpdVersionCode()
         versionName getTkpdVersionName()
         vectorDrawables.useSupportLibrary = vectorDrawable
@@ -313,8 +322,6 @@ dependencies {
     implementation project(rootProject.ext.features.atc_common)
     implementation project(rootProject.ext.features.fcm_common)
     implementation project(rootProject.ext.features.discovery2)
-    implementation project(rootProject.ext.features.purchase_platform_common)
-    implementation project(rootProject.ext.features.cart)
     implementation project(rootProject.ext.features.logisticcart)
     implementation project(rootProject.ext.features.logisticdata)
     implementation project(rootProject.ext.features.chatcommon)
@@ -442,6 +449,7 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation project(rootProject.ext.libraries.akamaiBotLib)
     implementation rootProject.ext.tkpdInternalLibDependencies.williamchart
+    implementation rootProject.ext.playServicesDependencies.measurementApi
 
     if (rootProject.ext.debugToolsEnabled) {
         implementation rootProject.ext.tkpdInternalLibDependencies.fakeresponse

@@ -1,0 +1,45 @@
+{
+  "readme": "Flight Homepage Tracking with Priority P1, separated with other priority level because currently we focused the instrument test with client analytics validator for tracking with priority P0 and P1",
+  "mode": "exact",
+  "query": [
+    {
+      "event": "clickSearch",
+      "eventAction": "click search flight",
+      "eventCategory": "digital - flight",
+      "eventLabel": "{{flight - .*-.* - .* - \\d*-\\d*-\\d* - .* - .*}}",
+      "sessionIris": "{{.*}}"
+    },
+    {
+      "event": "view_item",
+      "eventAction": "banner impression",
+      "eventCategory": "digital - flight",
+      "eventLabel": "{{flight - \\d* - .*}}",
+      "sessionIris": "{{.*}}",
+      "promotions": [
+        {
+          "item_id": "{{.*}}",
+          "item_name": "{{.* - slider banner}}",
+          "creative_slot": "{{\\d*}}",
+          "creative_name": "{{.*}}",
+          "creative_url": "{{.*}}"
+        }
+      ]
+    },
+    {
+      "event": "select_content",
+      "eventAction": "click banner",
+      "eventCategory": "digital - flight",
+      "eventLabel": "{{flight - \\d* - .*}}",
+      "sessionIris": "{{.*}}",
+      "promotions": [
+        {
+          "item_id": "{{.*}}",
+          "item_name": "{{.* - slider banner}}",
+          "creative_slot": "{{\\d*}}",
+          "creative_name": "{{.*}}",
+          "creative_url": "{{.*}}"
+        }
+      ]
+    }
+  ]
+}

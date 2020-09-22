@@ -2,6 +2,7 @@ package com.tokopedia.topchat.chatlist.pojo
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.topchat.chatlist.adapter.viewholder.ChatItemListViewHolder
 
 /**
@@ -38,6 +39,7 @@ data class ItemChatAttributesPojo(
 
 ) {
 
+
     // Constructor to create new chat item if it is not on the list
     constructor(
             lastReplyMessage: String,
@@ -52,5 +54,9 @@ data class ItemChatAttributesPojo(
             fraudStatus = 0,
             pinStatus = 0,
             contact = contact
-    )
+    ) {
+        lastReplyTimestamp = lastReplyTimeStr.toLongOrZero()
+    }
+
+    var lastReplyTimestamp: Long = 0
 }

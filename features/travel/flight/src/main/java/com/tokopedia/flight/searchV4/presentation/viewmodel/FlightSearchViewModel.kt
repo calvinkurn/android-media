@@ -77,10 +77,12 @@ class FlightSearchViewModel @Inject constructor(
 
     val progress = MutableLiveData<Int>()
     private var isSearchViewSent: Boolean = false
+    private var isSearchImpressionSent: Boolean = false
 
     init {
         progress.value = DEFAULT_PROGRESS_VALUE
         isSearchViewSent = false
+        isSearchImpressionSent = false
         fetchTickerData()
     }
 
@@ -255,6 +257,14 @@ class FlightSearchViewModel @Inject constructor(
             if (it >= MAX_PROGRESS && !isSearchViewSent) {
                 flightAnalytics.eventSearchView(flightSearchPassData, true)
                 isSearchViewSent = true
+            }
+            if (it >= MAX_PROGRESS && !isSearchImpressionSent) {
+                journeyList.value?.let { journeyResult ->
+                    if (journeyResult is Success) {
+                        flightAnalytics.eventProductViewEnchanceEcommerce(flightSearchPassData, journeyResult.data)
+                        isSearchImpressionSent = true
+                    }
+                }
             }
             return it >= MAX_PROGRESS
         }

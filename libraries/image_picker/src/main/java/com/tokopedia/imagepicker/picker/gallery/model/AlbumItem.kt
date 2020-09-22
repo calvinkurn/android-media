@@ -13,7 +13,7 @@ import kotlinx.android.parcel.Parcelize
  * Created by hangnadi on 5/22/17.
  */
 @Parcelize
-class AlbumItem(private val mId: String, val coverPath: Uri, val displayName: String, var count: Long) : Parcelable {
+class AlbumItem(private val mId: String, val coverPath: Uri?, val displayName: String?, var count: Long) : Parcelable {
     fun getmId(): String {
         return mId
     }
@@ -25,7 +25,7 @@ class AlbumItem(private val mId: String, val coverPath: Uri, val displayName: St
     fun getDisplayName(context: Context): String {
         return if (isAll) {
             context.getString(R.string.album_name_all)
-        } else displayName
+        } else displayName?: ""
     }
 
     val isAll: Boolean

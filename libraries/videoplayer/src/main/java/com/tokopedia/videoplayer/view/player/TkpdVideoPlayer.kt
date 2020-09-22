@@ -163,15 +163,15 @@ class TkpdVideoPlayer: Fragment(), ControllerListener {
             }
         }
 
-        override fun onPlayerError(error: ExoPlaybackException?) {
+        override fun onPlayerError(error: ExoPlaybackException) {
             callback?.onPlayerError(PlayerException.ExoPlayer)
         }
     })
 
     private fun initPlayer(source: Uri, protocol: VideoSourceProtocol) {
         try {
-            playerOptions = ExoPlayerFactory.newSimpleInstance(context,
-                    DefaultRenderersFactory(context),
+            playerOptions = ExoPlayerFactory.newSimpleInstance(requireContext(),
+                    DefaultRenderersFactory(requireContext()),
                     DefaultTrackSelector(),
                     DefaultLoadControl())
 

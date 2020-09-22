@@ -6,7 +6,7 @@ import android.content.res.Resources;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
-import com.tokopedia.intl.R;
+import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.payment.MonthlyBuyerBase;
 
 import java.io.BufferedReader;

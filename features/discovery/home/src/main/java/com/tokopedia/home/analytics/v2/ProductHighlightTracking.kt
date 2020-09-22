@@ -1,6 +1,7 @@
 package com.tokopedia.home.analytics.v2
 
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
+import com.tokopedia.home_component.model.ChannelModel
 
 object ProductHighlightTracking : BaseTracking() {
     private const val EVENT_ACTION_IMPRESSION_PRODUCT_DYNAMIC_CHANNEL_HERO = "impression on product dynamic channel hero"
@@ -86,4 +87,38 @@ object ProductHighlightTracking : BaseTracking() {
         getTracker().sendEnhanceEcommerceEvent(getProductHighlightClick(
                 channelId, headerName, campaignCode, persoType, categoryId, gridId, gridName, gridPrice, gridFreeOngkirIsActive, position))
     }
+
+    //componentSection
+    fun getProductHighlightImpression(channel: ChannelModel, userId: String = "", isToIris: Boolean = false): Map<String, Any> {
+        val trackingBuilder = BaseTrackingBuilder()
+        return trackingBuilder.constructBasicProductView(
+                event = if(isToIris) Event.PRODUCT_VIEW_IRIS else Event.PRODUCT_VIEW,
+                eventCategory = Category.HOMEPAGE,
+                eventAction = EVENT_ACTION_IMPRESSION_PRODUCT_DYNAMIC_CHANNEL_HERO,
+                eventLabel = Label.NONE,
+                list = String.format(
+                        Value.LIST_WITH_HEADER, "1", PRODUCT_DYNAMIC_CHANNEL_HERO, channel.channelHeader.name
+                ),
+                products = channel.channelGrids.mapIndexed { index, grid ->
+                    Product(
+                            name = grid.name,
+                            id = grid.id,
+                            productPrice = convertRupiahToInt(grid.price).toString(),
+                            brand = Value.NONE_OTHER,
+                            category = Value.NONE_OTHER,
+                            variant = Value.NONE_OTHER,
+                            productPosition = (index + 1).toString(),
+                            channelId = channel.id,
+                            isFreeOngkir = grid.isFreeOngkirActive,
+                            persoType = channel.trackingAttributionModel.persoType,
+                            categoryId = channel.trackingAttributionModel.categoryId
+                    )
+                })
+                .appendChannelId(channel.id)
+                .appendUserId(userId)
+                .build()
+    }
+
+
+    //end componentSection
 }

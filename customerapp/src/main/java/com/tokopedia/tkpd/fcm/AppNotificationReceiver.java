@@ -2,26 +2,20 @@ package com.tokopedia.tkpd.fcm;
 
 import android.app.Application;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.firebase.messaging.RemoteMessage;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.moengage.push.PushManager;
-import com.tokopedia.abstraction.constant.TkpdState;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
-import com.tokopedia.core.gcm.utils.ActivitiesLifecycleCallbacks;
 import com.tokopedia.fcmcommon.FirebaseMessagingManagerImpl;
 import com.tokopedia.notifications.CMPushNotificationManager;
-import com.tokopedia.pushnotif.ApplinkNotificationHelper;
 import com.tokopedia.pushnotif.PushNotification;
-import com.tokopedia.pushnotif.data.model.ApplinkNotificationModel;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
-import com.tokopedia.intl.BuildConfig;
+import com.tokopedia.tkpd.BuildConfig;
 import com.tokopedia.tkpd.ConsumerMainApplication;
 import com.tokopedia.user.session.UserSession;
 

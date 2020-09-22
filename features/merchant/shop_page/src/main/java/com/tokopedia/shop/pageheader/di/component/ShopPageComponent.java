@@ -19,10 +19,4 @@ public interface ShopPageComponent {
 
     void inject(ShopPageFragment shopPageFragment);
 
-    @Named(GQLQueryNamedConstant.GET_IS_OFFICIAL)
-    String getGqlIsShopOsQuery();
-
-    @Named(GQLQueryNamedConstant.GET_IS_POWER_MERCHANT)
-    String getGqlIsShopPowerMerchantQuery();
-
 }

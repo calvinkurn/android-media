@@ -181,13 +181,13 @@ class VerificationFragment : BaseVerificationFragment(), IOnBackPressed {
     }
 
     private fun initObserver() {
-        viewModel.sendOtpResult.observe(this, Observer {
+        viewModel.sendOtpResult.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> onSuccessSendOtp().invoke(it.data)
                 is Fail -> onFailedSendOtp().invoke(it.throwable)
             }
         })
-        viewModel.otpValidateResult.observe(this, Observer {
+        viewModel.otpValidateResult.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> onSuccessOtpValidate().invoke(it.data)
                 is Fail -> onFailedOtpValidate().invoke(it.throwable)
@@ -401,8 +401,12 @@ class VerificationFragment : BaseVerificationFragment(), IOnBackPressed {
         viewBound.pin?.pinTextField?.let { view ->
             view.post {
                 if(view.requestFocus()) {
-                    val inputMethodManager = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                    inputMethodManager.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT)
+                    context?.getSystemService(Context.INPUT_METHOD_SERVICE)?.let { inputMethodManager ->
+                        when (inputMethodManager) {
+                            is InputMethodManager -> inputMethodManager.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT)
+                            else -> {}
+                        }
+                    }
                 }
             }
         }
@@ -425,25 +429,27 @@ class VerificationFragment : BaseVerificationFragment(), IOnBackPressed {
     }
 
     private fun setFooterText() {
-        val spannable: Spannable
-        if (modeListData.modeText == OtpConstant.OtpMode.PIN ||
-                modeListData.modeText == OtpConstant.OtpMode.GOOGLE_AUTH) {
-            val message = getString(R.string.login_with_other_method)
-            spannable = SpannableString(message)
-            setOtherMethodPinFooterSpan(message, spannable)
-        } else if (otpData.canUseOtherMethod) {
-            val message = getString(R.string.validation_resend_email_or_with_other_method)
-            spannable = SpannableString(message)
-            setResendOtpFooterSpan(message, spannable)
-            setOtherMethodFooterSpan(message, spannable)
-        } else {
-            val message = getString(R.string.validation_resend_email)
-            spannable = SpannableString(message)
-            setResendOtpFooterSpan(message, spannable)
+        context?.let {
+            val spannable: Spannable
+            if (modeListData.modeText == OtpConstant.OtpMode.PIN ||
+                    modeListData.modeText == OtpConstant.OtpMode.GOOGLE_AUTH) {
+                val message = it.getString(R.string.login_with_other_method)
+                spannable = SpannableString(message)
+                setOtherMethodPinFooterSpan(message, spannable)
+            } else if (otpData.canUseOtherMethod) {
+                val message = it.getString(R.string.validation_resend_email_or_with_other_method)
+                spannable = SpannableString(message)
+                setResendOtpFooterSpan(message, spannable)
+                setOtherMethodFooterSpan(message, spannable)
+            } else {
+                val message = it.getString(R.string.validation_resend_email)
+                spannable = SpannableString(message)
+                setResendOtpFooterSpan(message, spannable)
+            }
+            viewBound.pin?.pinMessageView?.visible()
+            viewBound.pin?.pinMessageView?.movementMethod = LinkMovementMethod.getInstance()
+            viewBound.pin?.pinMessageView?.setText(spannable, TextView.BufferType.SPANNABLE)
         }
-        viewBound.pin?.pinMessageView?.visible()
-        viewBound.pin?.pinMessageView?.movementMethod = LinkMovementMethod.getInstance()
-        viewBound.pin?.pinMessageView?.setText(spannable, TextView.BufferType.SPANNABLE)
     }
 
     private fun setResendOtpFooterSpan(message: String, spannable: Spannable) {

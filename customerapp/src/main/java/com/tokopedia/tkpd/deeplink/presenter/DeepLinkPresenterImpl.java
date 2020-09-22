@@ -9,8 +9,6 @@ import android.text.TextUtils;
 import com.appsflyer.AppsFlyerConversionListener;
 import com.appsflyer.AppsFlyerLib;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
-import com.tokopedia.phoneverification.view.activity.PhoneVerificationActivationActivity;
-import com.tokopedia.tkpd.deeplink.utils.URLParser;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.DeepLinkChecker;
@@ -34,13 +32,12 @@ import com.tokopedia.core.analytics.nishikino.model.Authenticated;
 import com.tokopedia.core.analytics.nishikino.model.Campaign;
 import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity;
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase;
 import com.tokopedia.network.data.model.response.ResponseV4ErrorException;
 import com.tokopedia.product.detail.common.data.model.product.ProductInfo;
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoByDomainUseCase;
-import com.tokopedia.intl.R;
+import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
 import com.tokopedia.tkpd.deeplink.di.component.DaggerDeeplinkComponent;
 import com.tokopedia.tkpd.deeplink.di.component.DeeplinkComponent;
@@ -190,7 +187,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                 case DeepLinkChecker.PRODUCT:
                     keepActivityOn = true;
                     if (linkSegment.size() >= 2
-                            && (linkSegment.get(1).equals("info") || isEtalase(linkSegment) || isShopHome(linkSegment) || isShopReview(linkSegment))) {
+                            && (linkSegment.get(1).equals("info") || isEtalase(linkSegment) || isShopHome(linkSegment) || isShopReview(linkSegment) || isShopProduct(linkSegment) || isShopFeed(linkSegment))) {
                         openShopInfo(linkSegment, uriData, defaultBundle);
                         screenName = AppScreen.SCREEN_SHOP_INFO;
                     } else {
@@ -527,6 +524,16 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                                     bundle,
                                     ApplinkConst.SHOP_REVIEW,
                                     shopId);
+                        }else if (isShopProduct(linkSegment)) {
+                            RouteManager.route(context,
+                                    bundle,
+                                    ApplinkConst.SHOP_PRODUCT,
+                                    shopId);
+                        }else if (isShopFeed(linkSegment)) {
+                            RouteManager.route(context,
+                                    bundle,
+                                    ApplinkConst.SHOP_FEED,
+                                    shopId);
                         } else {
                             Intent intent = RouteManager.getIntent(context, ApplinkConst.SHOP, shopId);
                             intent.putExtras(bundle);
@@ -562,6 +569,16 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     private boolean isShopReview(List<String> linkSegment) {
         String lastSegment = linkSegment.get(linkSegment.size() - 1);
         return lastSegment.equalsIgnoreCase("review");
+    }
+
+    private boolean isShopProduct(List<String> linkSegment) {
+        String lastSegment = linkSegment.get(linkSegment.size() - 1);
+        return lastSegment.equalsIgnoreCase("product");
+    }
+
+    private boolean isShopFeed(List<String> linkSegment) {
+        String lastSegment = linkSegment.get(linkSegment.size() - 1);
+        return lastSegment.equalsIgnoreCase("feed");
     }
 
     private void openHomeRecommendation(final List<String> linkSegment, final Uri uriData, Bundle bundle) {

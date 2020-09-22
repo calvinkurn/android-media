@@ -55,7 +55,6 @@ class ProductAdsListViewModelTest {
         }
         viewModel.productList("key", "123", "", "", 1, 1,
                 { _: List<ResponseProductList.Result.TopadsGetListProduct.Data>, b: Boolean -> }, {}, {})
-
         verify {
             getProductUseCase.executeQuerySafeMode(any(), any())
         }

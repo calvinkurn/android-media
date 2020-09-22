@@ -604,11 +604,12 @@ public class FlightAnalytics {
                                 departureTrip.getDepartureAirport(),
                                 departureTrip.getArrivalAirport()),
                         ECOMMERCE, DataLayer.mapOf(
-                                CURRENCY_CODE, DEFAULT_CURRENCY_CODE,
-                                "actionField", DataLayer.mapOf("step", 1,
-                                        "option", Category.BOOKING_NEXT),
-                                "products", DataLayer.listOf(
-                                        products.toArray(new Object[products.size()])
+                                "checkout", DataLayer.mapOf(
+                                        CURRENCY_CODE, DEFAULT_CURRENCY_CODE,
+                                        "actionField", DataLayer.mapOf(
+                                                "step", "1",
+                                                "option", Category.BOOKING_NEXT),
+                                        "products", products
                                 )
                         )
                 )
@@ -681,11 +682,11 @@ public class FlightAnalytics {
 
         products.add(DataLayer.mapOf(
                 EnhanceEccomerce.NAME, name,
-                EnhanceEccomerce.PRICE, String.valueOf(totalPriceAdult + totalPriceChild + totalPriceInfant),
+                EnhanceEccomerce.PRICE, totalPriceAdult + totalPriceChild + totalPriceInfant,
                 EnhanceEccomerce.ID, (comboKey != null && !comboKey.isEmpty()) ? comboKey : flightViewModel.getId(),
                 EnhanceEccomerce.BRAND, flightViewModel.getRouteList().get(0).getAirlineName(),
                 EnhanceEccomerce.CATEGORY, Label.FLIGHT,
-                EnhanceEccomerce.QUANTITY, String.valueOf(flightViewModel.getCountAdult() + flightViewModel.getCountChild() + flightViewModel.getCountInfant()),
+                EnhanceEccomerce.QUANTITY, flightViewModel.getCountAdult() + flightViewModel.getCountChild() + flightViewModel.getCountInfant(),
                 EnhanceEccomerce.DIMENSION66, FlightDateUtil.formatDate(FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, FlightDateUtil.YYYYMMDD, flightViewModel.getRouteList().get(0).getDepartureTimestamp()),
                 EnhanceEccomerce.DIMENSION67, isOneWay ? "oneway" : "roundtrip",
                 EnhanceEccomerce.DIMENSION68, flightClass,

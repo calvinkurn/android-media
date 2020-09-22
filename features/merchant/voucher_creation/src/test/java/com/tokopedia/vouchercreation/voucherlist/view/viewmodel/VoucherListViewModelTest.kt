@@ -7,6 +7,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.vouchercreation.common.domain.usecase.CancelVoucherUseCase
+import com.tokopedia.vouchercreation.coroutine.TestCoroutineDispatchers
 import com.tokopedia.vouchercreation.detail.domain.usecase.VoucherDetailUseCase
 import com.tokopedia.vouchercreation.voucherlist.domain.model.ShopBasicDataResult
 import com.tokopedia.vouchercreation.voucherlist.domain.usecase.GetVoucherListUseCase
@@ -17,7 +18,6 @@ import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -60,13 +60,13 @@ class VoucherListViewModelTest {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
-    @RelaxedMockK
-    lateinit var mViewModel: VoucherListViewModel
+    private lateinit var mViewModel: VoucherListViewModel
 
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        mViewModel = VoucherListViewModel(getVoucherListUseCase, getNotStartedVoucherListUseCase, cancelVoucherUseCase, shopBasicDataUseCase, voucherDetailUseCase, testDispatcher)
+
+        mViewModel = VoucherListViewModel(getVoucherListUseCase, getNotStartedVoucherListUseCase, cancelVoucherUseCase, shopBasicDataUseCase, voucherDetailUseCase, TestCoroutineDispatchers)
 
         with(mViewModel) {
             successVoucherLiveData.observeForever(successVoucherObserver)
@@ -78,17 +78,12 @@ class VoucherListViewModelTest {
 
     @After
     fun cleanup() {
-        testDispatcher.cleanupTestCoroutines()
         with(mViewModel) {
             successVoucherLiveData.removeObserver(successVoucherObserver)
             stopVoucherResponseLiveData.removeObserver(stopVoucherResponseObserver)
             cancelVoucherResponseLiveData.observeForever(cancelVoucherResponseObserver)
             localVoucherListLiveData.removeObserver(localVoucherListObserver)
         }
-    }
-
-    private val testDispatcher by lazy {
-        TestCoroutineDispatcher()
     }
 
     @Test
@@ -217,9 +212,11 @@ class VoucherListViewModelTest {
 
             coVerify {
                 shopBasicDataUseCase wasNot Called
-                getVoucherListUseCase.executeOnBackground()
             }
-
+            coVerify {
+                getVoucherListUseCase.executeOnBackground()
+                getNotStartedVoucherListUseCase.executeOnBackground()
+            }
             assert(voucherList.value is Fail)
         }
     }

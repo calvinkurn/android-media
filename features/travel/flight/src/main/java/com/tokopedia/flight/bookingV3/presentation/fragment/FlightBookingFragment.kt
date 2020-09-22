@@ -171,7 +171,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        bookingViewModel.flightCartResult.observe(this, Observer {
+        bookingViewModel.flightCartResult.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     if (layout_loading.isVisible) launchLoadingPageJob.cancel()
@@ -190,39 +190,39 @@ class FlightBookingFragment : BaseDaggerFragment() {
             else if (bookingViewModel.getDepartureJourney() != null) hideShimmering()
         })
 
-        bookingViewModel.flightPromoResult.observe(this, Observer {
+        bookingViewModel.flightPromoResult.observe(viewLifecycleOwner, Observer {
             renderAutoApplyPromo(it)
         })
 
-        bookingViewModel.profileResult.observe(this, Observer {
+        bookingViewModel.profileResult.observe(viewLifecycleOwner, Observer {
             if (it is Success) renderProfileData(it.data)
         })
 
-        bookingViewModel.flightPassengersData.observe(this, Observer {
+        bookingViewModel.flightPassengersData.observe(viewLifecycleOwner, Observer {
             renderPassengerData(it)
         })
 
-        bookingViewModel.flightPriceData.observe(this, Observer {
+        bookingViewModel.flightPriceData.observe(viewLifecycleOwner, Observer {
             renderPriceData(it)
         })
 
-        bookingViewModel.flightOtherPriceData.observe(this, Observer {
+        bookingViewModel.flightOtherPriceData.observe(viewLifecycleOwner, Observer {
             renderOtherPriceData(it)
         })
 
-        bookingViewModel.flightAmenityPriceData.observe(this, Observer {
+        bookingViewModel.flightAmenityPriceData.observe(viewLifecycleOwner, Observer {
             renderAmenityPriceData(it)
         })
 
-        bookingViewModel.errorToastMessageData.observe(this, Observer {
+        bookingViewModel.errorToastMessageData.observe(viewLifecycleOwner, Observer {
             if (it == 0) showLoadingDialog() else renderErrorToast(it)
         })
 
-        bookingViewModel.flightCheckoutResult.observe(this, Observer {
+        bookingViewModel.flightCheckoutResult.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
-                    navigateToTopPay(it.data)
                     sendCheckOutTracking(it.data.parameter.pid)
+                    navigateToTopPay(it.data)
                 }
                 is Fail -> {
                     showErrorDialog(mapThrowableToFlightError(it.throwable.message
@@ -232,7 +232,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
             if (bookingViewModel.isStillLoading) showLoadingDialog() else hideShimmering()
         })
 
-        bookingViewModel.flightVerifyResult.observe(this, Observer {
+        bookingViewModel.flightVerifyResult.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     it.data.data.cartItems[0]?.let { cart ->

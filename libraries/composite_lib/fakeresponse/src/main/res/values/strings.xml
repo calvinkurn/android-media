@@ -3,7 +3,9 @@
     <string name="gql_save">Save</string>
     <string name="gql_reset">Reset</string>
     <string name="gql_export">Export</string>
+    <string name="gql_delete">Delete</string>
     <string name="gql_import">Import</string>
+    <string name="gql_sort_by">Sort by</string>
     <string name="gql_search">Search</string>
     <string name="gql_share">Share</string>
     <string name="gql_send">Send</string>
@@ -11,6 +13,8 @@
     <string name="gql_rest_text">REST</string>
     <string name="gql_chuck_text">CHUCK</string>
     <string name="gql_paste_text">Paste text</string>
+    <string name="gql_time_ascending">Time Asc</string>
+    <string name="gql_default">Default</string>
     <string name="gql_clear_records">Clear records</string>
     <string name="gql_add_record">Add gql record</string>
     <string name="gql_add_rest_record">Add rest record</string>

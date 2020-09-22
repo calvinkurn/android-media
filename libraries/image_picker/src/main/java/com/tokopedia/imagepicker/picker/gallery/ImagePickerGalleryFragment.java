@@ -269,7 +269,7 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
         }
     }
 
-    private void onAlbumLoaded(AlbumItem albumItem) {
+    private void onAlbumLoaded(@Nullable AlbumItem albumItem) {
         if (albumItem == null) {
             albumItem = new AlbumItem(ALBUM_ID_ALL, null, null, 0);
         }

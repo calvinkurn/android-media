@@ -56,11 +56,11 @@ class DetailInvoiceMapper(val thanksPageData: ThanksPageData) {
             when (it.itemName) {
                 PaymentDeductionKey.TOTAL_SHIPPING_DISCOUNT -> totalShippingDiscountStr = it.amountStr
                 PaymentDeductionKey.TOTAL_DISCOUNT -> totalDiscountStr = it.amountStr
-                PaymentDeductionKey.REWARDS_POINT -> paymentModeMapList.add(PaymentModeMap(it.itemDesc, it.amountStr))
+                PaymentDeductionKey.REWARDS_POINT -> paymentModeMapList.add(PaymentModeMap(it.itemDesc, it.amountStr, null))
                 PaymentDeductionKey.CASH_BACK_OVO_POINT -> benefitMapList.add(BenefitMap(it.itemDesc, it.amountStr))
+                PaymentDeductionKey.POTENTIAL_CASH_BACK -> benefitMapList.add(BenefitMap(it.itemDesc, it.amountStr, true))
             }
         }
-        visitableList.add(PaymentMethodModel(thanksPageData.gatewayName))
         val invoiceSummery = InvoiceSummery(
                 totalItemCount = totalItemCount.toString(),
                 totalPriceStr = CurrencyFormatUtil.convertPriceValue(totalPrice.toDouble(), false),
@@ -80,7 +80,7 @@ class DetailInvoiceMapper(val thanksPageData: ThanksPageData) {
         }
 
         thanksPageData.paymentDetails?.forEach { paymentDetail ->
-            paymentModeMapList.add(PaymentModeMap(paymentDetail.gatewayName, paymentDetail.amountStr))
+            paymentModeMapList.add(PaymentModeMap(paymentDetail.gatewayName, paymentDetail.amountStr, paymentDetail.gatewayCode))
         }
 
         val paymentInfo = PaymentInfo(thanksPageData.amountStr, paymentModeList = paymentModeMapList)
@@ -104,7 +104,7 @@ class DetailInvoiceMapper(val thanksPageData: ThanksPageData) {
             var totalProductProtectionForShop = 0.0
             shopOrder.purchaseItemList.forEach { purchasedItem ->
                 orderedItemList.add(OrderedItem(purchasedItem.productName, purchasedItem.quantity,
-                        purchasedItem.priceStr, purchasedItem.totalPriceStr))
+                        purchasedItem.priceStr, purchasedItem.totalPriceStr, purchasedItem.isBBIProduct))
                 totalProductProtectionForShop += purchasedItem.productPlanProtection
             }
 
@@ -158,4 +158,5 @@ object PaymentDeductionKey {
     const val TOTAL_DISCOUNT = "total_discount"
     const val REWARDS_POINT = "rewards_point"
     const val CASH_BACK_OVO_POINT = "cashback"
+    const val POTENTIAL_CASH_BACK = "potential_cashback"
 }

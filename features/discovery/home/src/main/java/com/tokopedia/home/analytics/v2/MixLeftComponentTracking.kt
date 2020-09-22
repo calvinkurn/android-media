@@ -84,13 +84,14 @@ object MixLeftComponentTracking: BaseTracking()  {
                 .build()
     }
 
-    fun getMixLeftIrisProductView(channel: ChannelModel) = getBasicProductChannelView(
-            event = Event.PRODUCT_VIEW_IRIS,
-            eventCategory = Category.HOMEPAGE,
-            eventAction = IMPRESSION_MIX_LEFT,
-            eventLabel = channel.id + " - " + channel.channelHeader.name,
-            products = channel.channelGrids.mapIndexed { index, grid ->
-                Product(
+    fun getMixLeftIrisProductView(channel: ChannelModel, grid: ChannelGrid, position:Int): Map<String, Any> {
+        val trackingBuilder = BaseTrackingBuilder()
+        return trackingBuilder.constructBasicProductView(
+                event = Event.PRODUCT_VIEW_IRIS,
+                eventCategory = Category.HOMEPAGE,
+                eventAction = IMPRESSION_MIX_LEFT,
+                eventLabel = channel.id + " - " + channel.channelHeader.name,
+                products =  listOf(Product(
                         name = grid.name,
                         id = grid.id,
                         productPrice = convertRupiahToInt(
@@ -99,19 +100,19 @@ object MixLeftComponentTracking: BaseTracking()  {
                         brand = Value.NONE_OTHER,
                         category = Value.NONE_OTHER,
                         variant = Value.NONE_OTHER,
-                        productPosition = (index + 1).toString(),
+                        productPosition = (position + 1).toString(),
                         channelId = channel.id,
                         isFreeOngkir = grid.isFreeOngkirActive,
                         persoType = channel.trackingAttributionModel.persoType,
                         categoryId = channel.trackingAttributionModel.categoryId,
                         isTopAds = grid.isTopads
-                )
-            },
-            list = String.format(
-                    Value.LIST_WITH_HEADER, "1", LIST_MIX_LEFT, channel.channelHeader.name
-            ),
-            channelId = channel.id
-    )
+                )),
+                list = String.format(
+                        Value.LIST_WITH_HEADER, "1", LIST_MIX_LEFT, channel.channelHeader.name
+                ))
+                .appendChannelId(channel.id)
+                .build()
+    }
 
     fun getMixLeftProductClick(channel: ChannelModel, grid: ChannelGrid, position: Int) : Map<String, Any> {
         val trackingBuilder = BaseTrackingBuilder()

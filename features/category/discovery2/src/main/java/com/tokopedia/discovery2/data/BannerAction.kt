@@ -4,6 +4,6 @@ enum class BannerAction {
     APPLINK,
     CODE,
     LOCAL_CALENDAR,
-    PUSH_NOTIFIER
-
+    PUSH_NOTIFIER,
+    LOGIN
 }

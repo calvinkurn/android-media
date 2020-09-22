@@ -13,7 +13,6 @@ data class ProductSnapshotDataModel(
 
         var isAllowManage: Int = 0,
         var isWishlisted: Boolean = false,
-        var shouldShowCod: Boolean = false,
         var shouldShowTradein: Boolean = false,
 
         //Upcoming section
@@ -33,9 +32,5 @@ data class ProductSnapshotDataModel(
 
     fun showTradeIn(): Boolean {
         return shouldShowTradein && data?.data?.campaign?.shouldShowRibbonCampaign == false && !isUpcomingNplType()
-    }
-
-    fun showCod(): Boolean {
-        return shouldShowCod && !shouldShowTradein && data?.data?.campaign?.shouldShowRibbonCampaign == false && !isUpcomingNplType()
     }
 }

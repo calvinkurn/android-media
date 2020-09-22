@@ -186,7 +186,7 @@ internal fun Dialog.updateNavigationBarColor(@ColorRes colorRes: Int, useDarkIco
 
 internal fun sendCrashlyticsLog(throwable: Throwable) {
     try {
-        FirebaseCrashlytics.getInstance().recordException(PlayBroadcasterException(message))
+        FirebaseCrashlytics.getInstance().recordException(throwable)
     } catch (e: Exception) {
     }
 }

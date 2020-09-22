@@ -230,15 +230,12 @@ class AddEditProductDescriptionFragment:
         }
 
         tvAddVariant.setOnClickListener {
-            if (descriptionViewModel.isEditMode) {
-                ProductEditDescriptionTracking.clickAddProductVariant(shopId)
-            } else {
-                ProductAddDescriptionTracking.clickAddProductVariant(shopId)
-            }
+            sendClickAddProductVariant()
             showVariantDialog()
         }
 
         tvEditVariant.setOnClickListener {
+            sendClickAddProductVariant()
             showVariantDialog()
         }
 
@@ -277,6 +274,14 @@ class AddEditProductDescriptionFragment:
         hideKeyboardWhenTouchOutside()
         observeProductInputModel()
         observeProductVideo()
+    }
+
+    private fun sendClickAddProductVariant() {
+        if (descriptionViewModel.isEditMode) {
+            ProductEditDescriptionTracking.clickAddProductVariant(shopId)
+        } else {
+            ProductAddDescriptionTracking.clickAddProductVariant(shopId)
+        }
     }
 
     override fun onDestroyView() {
@@ -339,14 +344,6 @@ class AddEditProductDescriptionFragment:
             setFragmentResultWithBundle(REQUEST_KEY_ADD_MODE, dataBackPressed)
         } else {
             setFragmentResultWithBundle(REQUEST_KEY_DESCRIPTION)
-        }
-    }
-
-    fun onBackPressed() {
-        if (descriptionViewModel.isEditMode) {
-            ProductEditDescriptionTracking.clickBack(shopId)
-        } else {
-            ProductAddDescriptionTracking.clickBack(shopId)
         }
     }
 

@@ -9,6 +9,10 @@ import com.tokopedia.common.topupbills.widget.TopupBillsRecentTransactionWidget
 import com.tokopedia.topupbills.telco.common.adapter.TelcoRecentNumbersAdapter
 import org.jetbrains.annotations.NotNull
 
+/**
+ * override layout manager recycler view with vertical version of recent transaction
+ */
+
 class DigitalTelcoRecentTransactionWidget @JvmOverloads constructor(@NotNull context: Context, attrs: AttributeSet? = null,
                                                                     defStyleAttr: Int = 0)
     : TopupBillsRecentTransactionWidget(context, attrs, defStyleAttr) {

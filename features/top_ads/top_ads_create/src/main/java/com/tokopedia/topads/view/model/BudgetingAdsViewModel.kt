@@ -19,6 +19,7 @@ import com.tokopedia.topads.common.data.internal.ParamObject.SHOP_Id
 import com.tokopedia.topads.common.data.internal.ParamObject.SOURCE
 import com.tokopedia.topads.common.data.internal.ParamObject.SOURCE_VALUE
 import com.tokopedia.topads.common.data.internal.ParamObject.SUGGESTION
+import com.tokopedia.topads.data.response.BidInfoDataItem
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -37,7 +38,7 @@ class BudgetingAdsViewModel @Inject constructor(
         private val repository: GraphqlRepository) : BaseViewModel(dispatcher) {
 
 
-    fun getBidInfo(suggestions: List<DataSuggestions>, onSuccess: (List<ResponseBidInfo.Result.TopadsBidInfo.DataItem>) -> Unit, onError: ((Throwable) -> Unit), onEmpty: (() -> Unit)) {
+    fun getBidInfo(suggestions: List<DataSuggestions>, onSuccess: (List<BidInfoDataItem>) -> Unit, onEmpty: (() -> Unit)) {
 
         launchCatchError(
                 block = {
@@ -61,12 +62,12 @@ class BudgetingAdsViewModel @Inject constructor(
 
                 },
                 onError = {
-                    onError(it)
+                    it.printStackTrace()
                 }
         )
     }
 
-    fun getBidInfoDefault(suggestions: List<DataSuggestions>, onSuccess: (List<ResponseBidInfo.Result.TopadsBidInfo.DataItem>) -> Unit, onError: ((Throwable) -> Unit), onEmpty: (() -> Unit)) {
+    fun getBidInfoDefault(suggestions: List<DataSuggestions>, onSuccess: (List<BidInfoDataItem>) -> Unit) {
 
         launchCatchError(
                 block = {
@@ -81,16 +82,12 @@ class BudgetingAdsViewModel @Inject constructor(
                         repository.getReseponse(listOf(request), cacheStrategy)
                     }
                     data.getSuccessData<ResponseBidInfo.Result>().let {
-                        if (it.topadsBidInfo.data.isEmpty()) {
-                            onEmpty()
-                        } else {
-                            onSuccess(it.topadsBidInfo.data)
-                        }
+                        onSuccess(it.topadsBidInfo.data)
                     }
 
                 },
                 onError = {
-                    onError(it)
+                    it.printStackTrace()
                 })
     }
 }

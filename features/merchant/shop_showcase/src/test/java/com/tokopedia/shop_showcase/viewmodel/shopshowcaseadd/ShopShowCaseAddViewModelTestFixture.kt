@@ -39,7 +39,6 @@ abstract class ShopShowCaseAddViewModelTestFixture {
     @RelaxedMockK
     lateinit var userSession: UserSessionInterface
 
-
     protected lateinit var shopShowCaseAddViewModel: ShopShowcaseAddViewModel
 
     private val testDispatcher by lazy {

@@ -79,4 +79,8 @@
     <string name="saldolock_tickerDescription">Karena belum membayar tagihan pinjaman Modal Toko selama %s hari. Bayar Sekarang</string>
     <string name="tkpd_design_accept">Setuju</string>
 
+
+    //content-desc
+    <string name="content_desc_edit_text_search">input search</string>
+
 </resources>

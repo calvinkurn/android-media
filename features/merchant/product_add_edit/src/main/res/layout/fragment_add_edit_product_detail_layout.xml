@@ -155,6 +155,7 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/btn_submit"
+            android:contentDescription="@string/content_desc_btn_submit"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_40"
             android:layout_marginStart="@dimen/spacing_lvl4"
@@ -171,6 +172,7 @@
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_submit_text"
+                android:contentDescription="@string/content_desc_tv_submit_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/action_continue"

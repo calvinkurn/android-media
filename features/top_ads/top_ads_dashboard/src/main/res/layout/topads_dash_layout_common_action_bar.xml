@@ -6,13 +6,14 @@
     android:layout_height="@dimen/dp_44"
     android:background="@color/topads_actionbar_black">
 
-    <ImageButton
+    <com.tokopedia.unifycomponents.UnifyImageButton
         android:id="@+id/close_butt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_16"
         android:layout_marginLeft="@dimen/dp_16"
         android:background="@color/transparent"
+        app:unifyImageButtonVariant="image"
         android:tint="@color/topads_action_bar_image"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -58,7 +59,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="heading_6" />
 
-    <ImageButton
+    <com.tokopedia.unifycomponents.UnifyImageButton
         android:id="@+id/delete"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -66,6 +67,7 @@
         android:layout_marginRight="@dimen/dp_16"
         android:background="@android:color/transparent"
         android:tint="@color/topads_action_bar_image"
+        app:unifyImageButtonVariant="image"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"

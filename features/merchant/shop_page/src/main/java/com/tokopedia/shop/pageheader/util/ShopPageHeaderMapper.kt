@@ -6,18 +6,18 @@ import com.tokopedia.shop.common.graphql.data.isshoppowermerchant.GetIsShopPower
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.pageheader.ShopPageHeaderConstant.SHOP_PAGE_POWER_MERCHANT_ACTIVE
 import com.tokopedia.shop.pageheader.data.model.ShopPageGetHomeType
-import com.tokopedia.shop.pageheader.data.model.ShopPageP1Data
+import com.tokopedia.shop.pageheader.presentation.uimodel.ShopPageP1HeaderData
 
 object ShopPageHeaderMapper {
 
-    fun mapToShopPageP1Data(
+    fun mapToShopPageP1HeaderData(
             shopInfoOsData: GetIsShopOfficialStore,
             shopInfoGoldData: GetIsShopPowerMerchant,
             shopInfoTopContentData: ShopInfo,
             shopPageHomeTypeData: ShopPageGetHomeType,
             shopInfoShopCoreShopAssetsData: ShopInfo,
             feedWhitelistData: Whitelist
-    ) = ShopPageP1Data(
+    ) = ShopPageP1HeaderData(
             shopInfoOsData.data.isOfficial,
             shopInfoGoldData.data.powerMerchant.status == SHOP_PAGE_POWER_MERCHANT_ACTIVE,
             shopInfoTopContentData.topContent.topUrl,

@@ -114,7 +114,6 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
 
         switchUnifySku.setOnCheckedChangeListener { _, isChecked ->
             viewModel.updateSkuVisibilityStatus(isVisible = isChecked)
-            variantDetailFieldsAdapter?.updateSkuVisibilityStatus(viewModel.getAvailableFields(), isChecked)
             sendTrackerClickSKUToggleData(isChecked)
         }
 
