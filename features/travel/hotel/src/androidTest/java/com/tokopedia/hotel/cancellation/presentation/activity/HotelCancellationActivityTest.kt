@@ -1,12 +1,18 @@
 package com.tokopedia.hotel.cancellation.presentation.activity
 
+import android.app.Activity
+import android.app.Instrumentation
 import android.content.Intent
-import androidx.test.espresso.Espresso.onData
+import android.view.View
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.UiController
+import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
+import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.platform.app.InstrumentationRegistry
@@ -18,7 +24,9 @@ import com.tokopedia.hotel.cancellation.presentation.activity.mock.HotelCancella
 import com.tokopedia.hotel.cancellation.presentation.adapter.HotelCancellationReasonAdapter
 import com.tokopedia.test.application.espresso_component.CommonActions
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
-import org.hamcrest.Matchers.anything
+import org.hamcrest.Matcher
+import org.hamcrest.Matchers
+import org.hamcrest.core.AllOf
 import org.junit.After
 import org.junit.Assert
 import org.junit.Rule
@@ -79,11 +87,31 @@ class HotelCancellationActivityTest {
     }
 
     private fun clickOnDoneButton() {
+        Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
+
         Thread.sleep(5000)
-        onData(anything()).inAdapterView(withId(R.id.hotel_cancellation_confirmation_button_layout))
-                .atPosition(0)
-                .onChildView(withText("Cari hotel lainnya"))
-                .check(matches(isDisplayed()))
+        onView(withTagStringValue("Cari hotel lainnya")).check(matches(isDisplayed())).perform(forceClick())
+    }
+
+    private fun withTagStringValue(tagStringValue: String): Matcher<View> {
+        return withTagValue(Matchers.`is`(tagStringValue))
+    }
+
+    private fun forceClick(): ViewAction? {
+        return object : ViewAction {
+            override fun getConstraints(): Matcher<View> {
+                return AllOf.allOf(isClickable(), isEnabled(), isDisplayed())
+            }
+
+            override fun getDescription(): String {
+                return "force click"
+            }
+
+            override fun perform(uiController: UiController, view: View) {
+                view.performClick() // perform click without checking view coordinates.
+                uiController.loopMainThreadUntilIdle()
+            }
+        }
     }
 
     @After

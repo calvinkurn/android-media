@@ -3,6 +3,7 @@ package com.tokopedia.hotel.homepage.presentation.activity
 import android.app.Activity
 import android.app.Instrumentation
 import android.content.Intent
+import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions
@@ -20,6 +21,7 @@ import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.analyticsdebugger.validator.core.getAnalyticsWithQuery
 import com.tokopedia.analyticsdebugger.validator.core.hasAllSuccess
 import com.tokopedia.banner.BannerViewPagerAdapter
+import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity
 import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity.Companion.HOTEL_DESTINATION_NAME
@@ -28,8 +30,12 @@ import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity.Co
 import com.tokopedia.hotel.homepage.presentation.activity.mock.HotelHomepageMockResponseConfig
 import com.tokopedia.hotel.homepage.presentation.adapter.viewholder.HotelLastSearchViewHolder
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
+import org.hamcrest.BaseMatcher
+import org.hamcrest.Description
+import org.hamcrest.Matcher
 import org.hamcrest.core.AllOf
 import org.junit.*
+import java.util.*
 
 
 /**
@@ -72,6 +78,7 @@ class HotelHomepageActivityTest {
     @Test
     fun testHomeLayout() {
         clickOnChangeDestination()
+        changeDate()
         modifyGuestAndRoomCount()
         clickSubmitButton()
 
@@ -163,6 +170,47 @@ class HotelHomepageActivityTest {
         if (getLastSearchCount() > 0) {
             onView(withId(R.id.rv_hotel_homepage_last_search)).perform(RecyclerViewActions
                     .actionOnItemAtPosition<HotelLastSearchViewHolder>(0, click()))
+        }
+    }
+
+    private fun changeDate() {
+        Thread.sleep(3000)
+        onView(withId(R.id.tv_hotel_homepage_checkout_date)).perform(click())
+
+        Thread.sleep(3000)
+        val cal = Calendar.getInstance()
+        cal.time = TravelDateUtil.addTimeToSpesificDate(TravelDateUtil.getCurrentCalendar().time,
+                Calendar.DATE, 2)
+        var tomorrowDate = cal[Calendar.DATE]
+        tomorrowDate = 1
+
+        if (tomorrowDate > 1) {
+            onView(getElementFromMatchAtPosition(withText(tomorrowDate.toString()), 0)).perform(click())
+        } else {
+            onView(getElementFromMatchAtPosition(withText(tomorrowDate.toString()), 2)).perform(click())
+        }
+    }
+
+    fun getElementFromMatchAtPosition(
+            matcher: Matcher<View>,
+            position: Int
+    ): Matcher<View?>? {
+        return object : BaseMatcher<View?>() {
+            var counter = 0
+            override fun matches(item: Any): Boolean {
+                if (matcher.matches(item)) {
+                    if (counter == position) {
+                        counter++
+                        return true
+                    }
+                    counter++
+                }
+                return false
+            }
+
+            override fun describeTo(description: Description) {
+                description.appendText("Element at hierarchy position $position")
+            }
         }
     }
 
