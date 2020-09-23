@@ -82,5 +82,9 @@ data class AccountDataModel(
         @Expose
         var saldo: DepositDataModel = DepositDataModel(),
 
+        @SerializedName("uohOrderCount")
+        @Expose
+        var uohOrderCount: UohCounterDataModel = UohCounterDataModel(),
+
         var shortcutResponse: ShortcutResponse = ShortcutResponse()
 )

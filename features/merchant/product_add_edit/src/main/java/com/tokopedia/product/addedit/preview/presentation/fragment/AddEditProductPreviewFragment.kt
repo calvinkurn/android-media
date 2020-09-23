@@ -706,11 +706,7 @@ class AddEditProductPreviewFragment:
                 context?.let {
                     val validateMessage = viewModel.validateProductInput(productInputModel.detailInputModel)
                     if (validateMessage.isEmpty()) {
-                        context?.apply {
-                            val saveInstanceCacheManager = SaveInstanceCacheManager(this, true)
-                            saveInstanceCacheManager.put(EXTRA_PRODUCT_INPUT_MODEL, productInputModel)
-                            AddEditProductAddService.startService(this, saveInstanceCacheManager.id ?: "")
-                        }
+                        startProductAddService(productInputModel)
                         activity?.finish()
                     } else {
                         view?.let { Toaster.make(it, validateMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR) }
@@ -1068,7 +1064,7 @@ class AddEditProductPreviewFragment:
     }
 
     @SuppressLint("WrongConstant")
-    private fun createImagePickerBuilder(selectedImagePathList: ArrayList<String>?): ImagePickerBuilder {
+    private fun createImagePickerBuilder(selectedImagePathList: ArrayList<String>): ImagePickerBuilder {
 
         val title = getString(R.string.action_pick_photo)
 

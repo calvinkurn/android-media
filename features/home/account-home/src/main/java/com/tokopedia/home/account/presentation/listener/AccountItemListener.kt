@@ -26,7 +26,11 @@ interface AccountItemListener {
 
     fun onMenuGridItemClicked(item: MenuGridItemViewModel)
 
+    fun onMenuGridBackgroundItemClicked(item: MenuGridIconNotificationItemViewModel)
+
     fun onMenuGridLinkClicked(item: MenuGridViewModel)
+
+    fun onMenuGridBackgroundLinkClicked(item: MenuGridIconNotificationViewModel)
 
     fun onInfoCardClicked(item: InfoCardViewModel, adapterPosition: Int)
 

@@ -2015,7 +2015,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             ShipmentDetailData shipmentDetailData = getShipmentDetailData(shipmentCartItemModel,
                     recipientAddressModel);
             int codHistory = -1;
-            if (shipmentPresenter.getCodData() != null && shipmentPresenter.getCodData().isCod()) {
+            if (shipmentPresenter.getCodData() != null) {
                 codHistory = shipmentPresenter.getCodData().getCounterCod();
             }
             if (shipmentDetailData != null) {
@@ -2204,6 +2204,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void onProcessToPaymentCod() {
+        showLoading();
         shipmentAdapter.checkDropshipperValidation(REQUEST_CODE_COD);
     }
 

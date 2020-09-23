@@ -41,7 +41,7 @@ internal class DynamicInitialStateTest: InitialStatePresenterTestFixtures() {
         val visitableList = slotVisitableList.captured
 
         Assert.assertTrue(
-                (refreshVisitableList[7] as DynamicInitialStateSearchViewModel).list.size == (visitableList[7] as DynamicInitialStateSearchViewModel).list.size
+                (refreshVisitableList[8] as DynamicInitialStateSearchViewModel).list.size == (visitableList[8] as DynamicInitialStateSearchViewModel).list.size
         )
     }
 

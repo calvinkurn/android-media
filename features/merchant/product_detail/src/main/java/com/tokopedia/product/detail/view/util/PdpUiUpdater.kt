@@ -19,6 +19,7 @@ import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.data.util.getCurrencyFormatted
 import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.variant_common.model.VariantCategory
@@ -339,24 +340,19 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
         }
     }
 
-    fun updateRecomData(data: List<RecommendationWidget>) {
-        listProductRecomMap?.run {
-            forEach {
-                when (it.name) {
-                    ProductDetailConstant.PDP_1 -> {
-                        fillRecomData(it, data, 0)
-                    }
-                    ProductDetailConstant.PDP_2 -> {
-                        fillRecomData(it, data, 1)
-                    }
-                    ProductDetailConstant.PDP_3 -> {
-                        fillRecomData(it, data, 2)
-                    }
-                    ProductDetailConstant.PDP_4 -> {
-                        fillRecomData(it, data, 3)
-                    }
-                }
-            }
+    fun updateRecommendationData(data: RecommendationWidget): ProductRecommendationDataModel?{
+        return listProductRecomMap?.find { it.name == data.pageName }?.apply {
+            recomWidgetData = data
+            cardModel = mapToCardModel(data)
+            filterData = mapToAnnotateChip(data)
+        }
+    }
+
+    fun updateFilterRecommendationData(data: ProductRecommendationDataModel): ProductRecommendationDataModel?{
+        return listProductRecomMap?.find { it.recomWidgetData?.pageName == data.recomWidgetData?.pageName }?.apply {
+            filterData = data.filterData
+            recomWidgetData = data.recomWidgetData
+            cardModel = mapToCardModel(data.recomWidgetData)
         }
     }
 
@@ -377,7 +373,8 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
         }
     }
 
-    private fun mapToCardModel(data: RecommendationWidget): List<ProductCardModel> {
+    private fun mapToCardModel(data: RecommendationWidget?): List<ProductCardModel> {
+        if(data == null) return listOf()
         return data.recommendationItemList.map {
             ProductCardModel(
                     slashedPrice = it.slashedPrice,
@@ -410,10 +407,9 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
         }
     }
 
-    private fun fillRecomData(dataModel: ProductRecommendationDataModel, recomWidget: List<RecommendationWidget>, position: Int) {
-        recomWidget.getOrNull(position)?.let { recom ->
-            dataModel.recomWidgetData = recom
-            dataModel.cardModel = mapToCardModel(recom)
+    private fun mapToAnnotateChip(data: RecommendationWidget): List<AnnotationChip>{
+        return data.recommendationFilterChips.map {
+            AnnotationChip(it)
         }
     }
 
