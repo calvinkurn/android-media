@@ -26,6 +26,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
@@ -45,6 +46,7 @@ class FlightSearchViewModel @Inject constructor(
         private val flightSearchStatisticUseCase: FlightSearchStatisticsUseCase,
         private val flightAnalytics: FlightAnalytics,
         private val flightSearchCache: FlightSearchCache,
+        private val userSessionInterface: UserSessionInterface,
         private val dispatcherProvider: TravelDispatcherProvider)
     : BaseViewModel(dispatcherProvider.io()) {
 
@@ -55,6 +57,7 @@ class FlightSearchViewModel @Inject constructor(
     var selectedSortOption: Int = TravelSortOption.CHEAPEST
     var priceFilterStatistic: Pair<Int, Int> = Pair(0, Int.MAX_VALUE)
     private var searchStatisticModel: FlightSearchStatisticModel? = null
+    private var searchNotFoundSent = false
     val isInFilterMode: Boolean
         get() {
             if (::filterModel.isInitialized) {
@@ -124,6 +127,8 @@ class FlightSearchViewModel @Inject constructor(
     }
 
     fun fetchSearchDataCloud(isReturnTrip: Boolean, delayInSeconds: Long = -1) {
+        searchNotFoundSent = false
+
         val date: String = flightSearchPassData.getDate(isReturnTrip)
         val adult = flightSearchPassData.flightPassengerModel.adult
         val child = flightSearchPassData.flightPassengerModel.children
@@ -233,9 +238,13 @@ class FlightSearchViewModel @Inject constructor(
     fun onSearchItemClicked(journeyModel: FlightJourneyModel? = null, adapterPosition: Int = -1, selectedId: String = "") {
         if (selectedId.isEmpty()) {
             if (adapterPosition == -1) {
-                flightAnalytics.eventSearchProductClickFromList(flightSearchPassData, journeyModel)
+                flightAnalytics.eventSearchProductClickFromList(flightSearchPassData, journeyModel,
+                        FlightAnalytics.Screen.SEARCH,
+                        if (userSessionInterface.isLoggedIn) userSessionInterface.userId else "")
             } else {
-                flightAnalytics.eventSearchProductClickFromList(flightSearchPassData, journeyModel, adapterPosition)
+                flightAnalytics.eventSearchProductClickFromList(flightSearchPassData, journeyModel,
+                        adapterPosition, FlightAnalytics.Screen.SEARCH,
+                        if (userSessionInterface.isLoggedIn) userSessionInterface.userId else "")
             }
             journeyModel?.let {
                 deleteFlightReturnSearch { getOnNextDeleteReturnFunction(it) }
@@ -261,7 +270,9 @@ class FlightSearchViewModel @Inject constructor(
             if (it >= MAX_PROGRESS && !isSearchImpressionSent) {
                 journeyList.value?.let { journeyResult ->
                     if (journeyResult is Success) {
-                        flightAnalytics.eventProductViewEnchanceEcommerce(flightSearchPassData, journeyResult.data)
+                        flightAnalytics.eventProductViewEnchanceEcommerce(flightSearchPassData, journeyResult.data,
+                                FlightAnalytics.Screen.SEARCH,
+                                if (userSessionInterface.isLoggedIn) userSessionInterface.userId else "")
                         isSearchImpressionSent = true
                     }
                 }
@@ -294,12 +305,21 @@ class FlightSearchViewModel @Inject constructor(
     }
 
     fun sendQuickFilterTrack(filterName: String) {
-        flightAnalytics.eventQuickFilterClick(filterName)
+        flightAnalytics.eventQuickFilterClick(filterName,
+                if (userSessionInterface.isLoggedIn) userSessionInterface.userId else "")
     }
 
     fun sendDetailClickTrack(journeyModel: FlightJourneyModel, adapterPosition: Int) {
         flightAnalytics.eventSearchDetailClick(journeyModel, adapterPosition)
         flightAnalytics.eventProductDetailImpression(journeyModel, adapterPosition)
+    }
+
+    fun sendProductNotFoundTrack() {
+        if (!searchNotFoundSent) {
+            flightAnalytics.eventProductViewNotFound(flightSearchPassData,
+                    if (userSessionInterface.isLoggedIn) userSessionInterface.userId else "")
+            searchNotFoundSent = true
+        }
     }
 
     private fun deleteAllSearchData() {

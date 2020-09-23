@@ -2,8 +2,6 @@ package com.tokopedia.checkout.data.model.response.shipment_address_form;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.cart.data.model.response.FreeReturns;
-import com.tokopedia.checkout.data.model.response.WholesalePrice;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -129,6 +127,15 @@ public class Product {
     @SerializedName("product_ticker")
     @Expose
     private ProductTicker productTicker;
+    @SerializedName("variant_description_detail")
+    @Expose
+    private VariantDescriptionDetail variantDescriptionDetail;
+    @SerializedName("product_alert_message")
+    @Expose
+    private String productAlertMessage;
+    @SerializedName("product_information")
+    @Expose
+    private List<String> productInformation;
 
     public String getProductCategory() {
         return productCategory;
@@ -286,4 +293,15 @@ public class Product {
         return productTicker;
     }
 
+    public VariantDescriptionDetail getVariantDescriptionDetail() {
+        return variantDescriptionDetail;
+    }
+
+    public String getProductAlertMessage() {
+        return productAlertMessage;
+    }
+
+    public List<String> getProductInformation() {
+        return productInformation;
+    }
 }

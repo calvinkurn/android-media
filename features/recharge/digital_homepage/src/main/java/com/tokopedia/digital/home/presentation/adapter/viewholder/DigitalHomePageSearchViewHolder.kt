@@ -5,18 +5,11 @@ import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.style.StyleSpan
 import android.view.View
-import androidx.recyclerview.widget.GridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.digital.home.R
-import com.tokopedia.digital.home.model.DigitalHomePageFavoritesModel
 import com.tokopedia.digital.home.model.DigitalHomePageSearchCategoryModel
-import com.tokopedia.digital.home.presentation.adapter.adapter.DigitalItemFavoriteAdapter
-import com.tokopedia.digital.home.presentation.listener.OnItemBindListener
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
-import com.tokopedia.kotlin.extensions.view.show
-import kotlinx.android.synthetic.main.layout_digital_home_favorites.view.*
-import kotlinx.android.synthetic.main.layout_digital_home_search_category_item.view.*
+import kotlinx.android.synthetic.main.view_recharge_home_search_category_item.view.*
 
 class DigitalHomePageSearchViewHolder(itemView: View?, private val onSearchCategoryClickListener: OnSearchCategoryClickListener) :
         AbstractViewHolder<DigitalHomePageSearchCategoryModel>(itemView) {
@@ -39,7 +32,7 @@ class DigitalHomePageSearchViewHolder(itemView: View?, private val onSearchCateg
     }
 
     companion object {
-        val LAYOUT = R.layout.layout_digital_home_search_category_item
+        val LAYOUT = R.layout.view_recharge_home_search_category_item
     }
 
     interface OnSearchCategoryClickListener {

@@ -12,8 +12,7 @@ import com.tokopedia.topads.common.data.internal.ParamObject.PAGE
 import com.tokopedia.topads.common.data.internal.ParamObject.QUERY_INPUT
 import com.tokopedia.topads.common.data.internal.ParamObject.SORT
 import com.tokopedia.topads.common.data.internal.ParamObject.START_DATE
-import com.tokopedia.topads.common.data.internal.ParamObject.STATUS
-import com.tokopedia.topads.dashboard.data.model.groupitem.GroupStatisticsResponse
+import com.tokopedia.topads.common.data.response.groupitem.GroupStatisticsResponse
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 

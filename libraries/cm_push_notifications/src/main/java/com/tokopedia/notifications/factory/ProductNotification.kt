@@ -46,9 +46,7 @@ internal class ProductNotification(
 
         val collapsedView = RemoteViews(context.applicationContext.packageName, R.layout.cm_layout_collapsed)
         setCollapseViewData(collapsedView)
-
-        val expandedView = RemoteViews(context.applicationContext.packageName,
-                R.layout.cm_layout_product_expand)
+        val expandedView = RemoteViews(context.applicationContext.packageName, R.layout.cm_layout_product_expand)
         setExpandViewData(expandedView, currentProductInfo, productImage)
         builder.setStyle(NotificationCompat.DecoratedCustomViewStyle())
                 .setCustomContentView(collapsedView)
@@ -69,6 +67,7 @@ internal class ProductNotification(
         }
         remoteView.setTextViewText(R.id.tv_collapse_title, spanStr(baseNotificationModel.title))
         remoteView.setTextViewText(R.id.tv_collapsed_message, spanStr(baseNotificationModel.message))
+        remoteView.setOnClickPendingIntent(R.id.collapseMainView, getCollapsedPendingIntent())
     }
 
     private fun setExpandViewData(remoteView: RemoteViews, currentProductInfo: ProductInfo, bitmap: Bitmap?) {
@@ -93,6 +92,7 @@ internal class ProductNotification(
         }
 
         remoteView.setTextViewText(R.id.tv_currentPrice, spanStr(currentProductInfo.productCurrentPrice))
+        remoteView.setOnClickPendingIntent(R.id.ll_expandedProductView, getProductPendingIntent(currentProductInfo))
 
         addLeftCarouselButton(remoteView)
         addRightCarouselButton(remoteView)
@@ -104,11 +104,6 @@ internal class ProductNotification(
     }
 
     private fun productStockCard(remoteView: RemoteViews, product: ProductInfo) {
-        // collapse
-        remoteView.setOnClickPendingIntent(R.id.collapseMainView, getCollapsedPendingIntent())
-
-        // expand
-        remoteView.setOnClickPendingIntent(R.id.ll_expandedProductView, getProductPendingIntent(product))
         remoteView.setTextViewText(R.id.tv_productButton, spanStr(product.productButtonMessage))
         remoteView.setTextViewText(R.id.tv_productMessage, spanStr(product.productMessage))
 
@@ -141,9 +136,6 @@ internal class ProductNotification(
                 baseNotificationModel,
                 product
         )
-
-        // collapse
-        remoteView.setOnClickPendingIntent(R.id.collapseMainView, getProductPendingIntent(product))
 
         // expand
         val actionButton = product.actionButton[baseNotificationModel.carouselIndex]

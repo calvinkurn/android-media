@@ -6,11 +6,13 @@ import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartExternalUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
+import com.tokopedia.cart.data.model.request.AddCartToWishlistRequest
 import com.tokopedia.cart.data.model.request.RemoveCartRequest
+import com.tokopedia.cart.data.model.request.UndoDeleteCartRequest
 import com.tokopedia.cart.data.model.request.UpdateCartRequest
 import com.tokopedia.cart.domain.model.cartlist.CartItemData
 import com.tokopedia.cart.domain.model.cartlist.CartListData
-import com.tokopedia.cart.domain.model.cartlist.UpdateAndValidateUseData
+import com.tokopedia.cart.domain.model.updatecart.UpdateAndValidateUseData
 import com.tokopedia.cart.domain.usecase.*
 import com.tokopedia.cart.view.analytics.EnhancedECommerceActionFieldData
 import com.tokopedia.cart.view.analytics.EnhancedECommerceClickData
@@ -54,9 +56,11 @@ import kotlin.collections.HashMap
 
 class CartListPresenter @Inject constructor(private val getCartListSimplifiedUseCase: GetCartListSimplifiedUseCase?,
                                             private val deleteCartUseCase: DeleteCartUseCase?,
+                                            private val undoDeleteCartUseCase: UndoDeleteCartUseCase?,
                                             private val updateCartUseCase: UpdateCartUseCase?,
                                             private val compositeSubscription: CompositeSubscription,
                                             private val addWishListUseCase: AddWishListUseCase?,
+                                            private val addCartToWishlistUseCase: AddCartToWishlistUseCase?,
                                             private val removeWishListUseCase: RemoveWishListUseCase?,
                                             private val updateAndReloadCartUseCase: UpdateAndReloadCartUseCase?,
                                             private val userSessionInterface: UserSessionInterface,
@@ -90,8 +94,6 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
     companion object {
         private val PERCENTAGE = 100.0f
 
-        private val PARAM_GLOBAL = "global"
-
         val ITEM_CHECKED_ALL_WITHOUT_CHANGES = 0
         val ITEM_CHECKED_ALL_WITH_CHANGES = 1
         val ITEM_CHECKED_PARTIAL_SHOP = 3
@@ -109,6 +111,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
     override fun detachView() {
         compositeSubscription.unsubscribe()
         addWishListUseCase?.unsubscribe()
+        addCartToWishlistUseCase?.unsubscribe()
         removeWishListUseCase?.unsubscribe()
         getRecommendationUseCase?.unsubscribe()
         getInsuranceCartUseCase?.unsubscribe()
@@ -235,7 +238,8 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
     override fun processDeleteCartItem(allCartItemData: List<CartItemData>,
                                        removedCartItems: List<CartItemData>,
                                        addWishList: Boolean,
-                                       removeInsurance: Boolean) {
+                                       removeInsurance: Boolean,
+                                       forceExpandCollapsedUnavailableItems: Boolean) {
         view?.let {
             it.showProgressLoading()
 
@@ -255,7 +259,22 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
 
             compositeSubscription.add(deleteCartUseCase?.createObservable(requestParams)
                     ?.subscribe(DeleteCartItemSubscriber(view, this, toBeDeletedCartIds,
-                            removeAllItem, removeInsurance)))
+                            removeAllItem, removeInsurance, forceExpandCollapsedUnavailableItems)))
+        }
+    }
+
+    override fun processUndoDeleteCartItem(cartIds: List<String>) {
+        view?.let {
+            it.showProgressLoading()
+
+            val undoDeleteCartRequest = UndoDeleteCartRequest()
+            undoDeleteCartRequest.cartIds = cartIds
+
+            val requestParams = RequestParams.create()
+            requestParams.putObject(UndoDeleteCartUseCase.PARAM_UNDO_REMOVE_CART_REQUEST, undoDeleteCartRequest)
+
+            compositeSubscription.add(undoDeleteCartUseCase?.createObservable(requestParams)
+                    ?.subscribe(UndoDeleteCartItemSubscriber(it)))
         }
     }
 
@@ -322,6 +341,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
 
     override fun reCalculateSubTotal(dataList: List<CartShopHolderData>, insuranceCartShopsArrayList: ArrayList<InsuranceCartShops>) {
         var totalItemQty = 0
+        var subtotalBeforeSlashedPrice = 0.0
         var subtotalPrice = 0.0
         var subtotalCashback = 0.0
 
@@ -337,7 +357,8 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
         // Calculate total total item, price and cashback for marketplace product
         val returnValueMarketplaceProduct = calculatePriceMarketplaceProduct(allCartItemDataList)
         totalItemQty += returnValueMarketplaceProduct.first
-        subtotalPrice += returnValueMarketplaceProduct.second
+        subtotalBeforeSlashedPrice += returnValueMarketplaceProduct.second.first
+        subtotalPrice += returnValueMarketplaceProduct.second.second
         subtotalCashback += returnValueMarketplaceProduct.third
 
         // Calculate total item and price for insurance product
@@ -348,14 +369,10 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
 
         view?.updateCashback(subtotalCashback)
 
-        var totalPriceString = "-"
-        if (subtotalPrice > 0) {
-            totalPriceString = CurrencyFormatUtil.convertPriceValueToIdrFormat(subtotalPrice.toLong(), false).removeDecimalSuffix()
-        }
         val selectAllItem = view?.getAllAvailableCartDataList()?.size == allCartItemDataList.size + errorProductCount &&
                 allCartItemDataList.size > 0 && insuranceChecked
         val unSelectAllItem = allCartItemDataList.size == 0
-        view?.renderDetailInfoSubTotal(totalItemQty.toString(), totalPriceString, selectAllItem, unSelectAllItem, dataList.isEmpty())
+        view?.renderDetailInfoSubTotal(totalItemQty.toString(), subtotalBeforeSlashedPrice, subtotalPrice, selectAllItem, unSelectAllItem, dataList.isEmpty())
     }
 
     private fun getAvailableCartItemDataList(dataList: List<CartShopHolderData>): ArrayList<CartItemHolderData> {
@@ -416,7 +433,8 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
     }
 
     private fun calculatePriceWholesaleProduct(originData: CartItemData.OriginData,
-                                               itemQty: Int): Pair<Double, Double> {
+                                               itemQty: Int): Triple<Double, Double, Double> {
+        var subtotalBeforeSlashedPrice = 0.0
         var subTotalWholesalePrice = 0.0
         var subtotalWholesaleCashback = 0.0
 
@@ -430,6 +448,8 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
                 val wholesalePriceFormatted = CurrencyFormatUtil.convertPriceValueToIdrFormat(
                         wholesalePriceData.prdPrc, false).removeDecimalSuffix()
                 originData.wholesalePriceFormatted = wholesalePriceFormatted
+                originData.wholesalePrice = wholesalePriceData.prdPrc
+                subtotalBeforeSlashedPrice = itemQty * originData.wholesalePrice.toDouble()
                 break
             }
         }
@@ -437,12 +457,17 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
         if (!hasCalculateWholesalePrice) {
             if (itemQty > wholesalePriceDataList[wholesalePriceDataList.size - 1].prdPrc) {
                 subTotalWholesalePrice = (itemQty * wholesalePriceDataList[wholesalePriceDataList.size - 1].prdPrc).toDouble()
+                val wholesalePrice = wholesalePriceDataList[wholesalePriceDataList.size - 1].prdPrc
                 val wholesalePriceFormatted = CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                        wholesalePriceDataList[wholesalePriceDataList.size - 1].prdPrc, false).removeDecimalSuffix()
+                        wholesalePrice, false).removeDecimalSuffix()
                 originData.wholesalePriceFormatted = wholesalePriceFormatted
+                originData.wholesalePrice = wholesalePrice
+                subtotalBeforeSlashedPrice = itemQty * originData.wholesalePrice.toDouble()
             } else {
                 subTotalWholesalePrice = itemQty * originData.pricePlan
                 originData.wholesalePriceFormatted = null
+                originData.wholesalePrice = 0
+                subtotalBeforeSlashedPrice = itemQty * originData.pricePlan
             }
         }
 
@@ -453,17 +478,19 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
             subtotalWholesaleCashback = cashbackPercentage / PERCENTAGE * subTotalWholesalePrice
         }
 
-        return Pair(subTotalWholesalePrice, subtotalWholesaleCashback)
+        return Triple(subtotalBeforeSlashedPrice, subTotalWholesalePrice, subtotalWholesaleCashback)
     }
 
     private fun calculatePriceNormalProduct(originData: CartItemData.OriginData,
                                             itemQty: Int,
                                             parentId: String,
                                             cartItemParentIdMap: HashMap<String, CartItemData>,
+                                            subtotalBeforeSlashedPrice: Double,
                                             subtotalPrice: Double,
                                             subtotalCashback: Double,
-                                            cartItemHolderData: CartItemHolderData): Pair<Double, Double> {
+                                            cartItemHolderData: CartItemHolderData): Triple<Double, Double, Double> {
 
+        var tmpSubtotalBeforeSlashedPrice = subtotalBeforeSlashedPrice
         var tmpSubTotalPrice = subtotalPrice
         var tmpSubtotalCashback = subtotalCashback
 
@@ -477,6 +504,13 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
                 val itemCashback = cashbackPercentage / PERCENTAGE * itemPrice
                 tmpSubtotalCashback += itemCashback
             }
+
+            if (originData.priceOriginal > 0) {
+                tmpSubtotalBeforeSlashedPrice += (itemQty * originData.priceOriginal)
+            } else {
+                tmpSubtotalBeforeSlashedPrice += itemPrice
+            }
+
             tmpSubTotalPrice += itemPrice
             originData.wholesalePriceFormatted = null
             cartItemHolderData.cartItemData?.let {
@@ -484,16 +518,18 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
             }
         }
 
-        return Pair(tmpSubTotalPrice, tmpSubtotalCashback)
+        return Triple(tmpSubtotalBeforeSlashedPrice, tmpSubTotalPrice, tmpSubtotalCashback)
     }
 
-    private fun calculatePriceMarketplaceProduct(allCartItemDataList: ArrayList<CartItemHolderData>): Triple<Int, Double, Double> {
+    private fun calculatePriceMarketplaceProduct(allCartItemDataList: ArrayList<CartItemHolderData>): Triple<Int, Pair<Double, Double>, Double> {
         var totalItemQty = 0
+        var subtotalBeforeSlashedPrice = 0.0
         var subtotalPrice = 0.0
         var subtotalCashback = 0.0
 
-        val subtotalWholesaleCashbackMap = HashMap<String, Double>()
+        val subtotalWholesaleBeforeSlashedPriceMap = HashMap<String, Double>()
         val subtotalWholesalePriceMap = HashMap<String, Double>()
+        val subtotalWholesaleCashbackMap = HashMap<String, Double>()
         val cartItemParentIdMap = HashMap<String, CartItemData>()
 
         for (cartItemHolderData in allCartItemDataList) {
@@ -517,18 +553,28 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
                     // Calculate price and cashback for wholesale marketplace product
                     val returnValueWholesaleProduct = calculatePriceWholesaleProduct(it, itemQty)
 
+                    if (!subtotalWholesaleBeforeSlashedPriceMap.containsKey(parentId)) {
+                        subtotalWholesaleBeforeSlashedPriceMap[parentId] = returnValueWholesaleProduct.first
+                    }
                     if (!subtotalWholesalePriceMap.containsKey(parentId)) {
-                        subtotalWholesalePriceMap[parentId] = returnValueWholesaleProduct.first
+                        subtotalWholesalePriceMap[parentId] = returnValueWholesaleProduct.second
                     }
                     if (!subtotalWholesaleCashbackMap.containsKey(parentId)) {
-                        subtotalWholesaleCashbackMap[parentId] = returnValueWholesaleProduct.second
+                        subtotalWholesaleCashbackMap[parentId] = returnValueWholesaleProduct.third
                     }
                 } else {
                     // Calculate price and cashback for normal marketplace product
-                    val returnValueNormalProduct = calculatePriceNormalProduct(it, itemQty, parentId, cartItemParentIdMap, subtotalPrice, subtotalCashback, cartItemHolderData)
-                    subtotalPrice = returnValueNormalProduct.first
-                    subtotalCashback = returnValueNormalProduct.second
+                    val returnValueNormalProduct = calculatePriceNormalProduct(it, itemQty, parentId, cartItemParentIdMap, subtotalBeforeSlashedPrice, subtotalPrice, subtotalCashback, cartItemHolderData)
+                    subtotalBeforeSlashedPrice = returnValueNormalProduct.first
+                    subtotalPrice = returnValueNormalProduct.second
+                    subtotalCashback = returnValueNormalProduct.third
                 }
+            }
+        }
+
+        if (subtotalWholesaleBeforeSlashedPriceMap.isNotEmpty()) {
+            for ((_, value) in subtotalWholesaleBeforeSlashedPriceMap) {
+                subtotalBeforeSlashedPrice += value
             }
         }
 
@@ -544,7 +590,8 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
             }
         }
 
-        return Triple(totalItemQty, subtotalPrice, subtotalCashback)
+        val pricePair = Pair(subtotalBeforeSlashedPrice, subtotalPrice)
+        return Triple(totalItemQty, pricePair, subtotalCashback)
     }
 
     private fun calculatePriceInsuranceProduct(insuranceCartShopsArrayList: ArrayList<InsuranceCartShops>): Pair<Int, Double> {
@@ -575,6 +622,21 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
 
     override fun processRemoveFromWishlist(productId: String, userId: String, wishListActionListener: WishListActionListener) {
         removeWishListUseCase?.createObservable(productId, userId, wishListActionListener)
+    }
+
+    override fun processAddCartToWishlist(productId: String, cartId: String, isLastItem: Boolean, source: String, forceExpandCollapsedUnavailableItems: Boolean) {
+        view?.let {
+            it.showProgressLoading()
+
+            val addCartToWishlistRequest = AddCartToWishlistRequest()
+            addCartToWishlistRequest.cartIds = listOf(cartId)
+
+            val requestParams = RequestParams.create()
+            requestParams.putObject(AddCartToWishlistUseCase.PARAM_ADD_CART_TO_WISHLIST_REQUEST, addCartToWishlistRequest)
+
+            compositeSubscription.add(addCartToWishlistUseCase?.createObservable(requestParams)
+                    ?.subscribe(AddCartToWishlistSubscriber(it, productId, cartId, isLastItem, source, forceExpandCollapsedUnavailableItems)))
+        }
     }
 
     // ANALYTICS COMMON
@@ -1112,7 +1174,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
 
         compositeSubscription.add(
                 getWishlistUseCase?.createObservable(requestParams)
-                        ?.subscribe(GetWishlistSubscriber(view, this))
+                        ?.subscribe(GetWishlistSubscriber(view))
         )
     }
 

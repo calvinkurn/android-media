@@ -17,4 +17,5 @@ interface PinpointMapView : CustomerView {
     fun showOutOfReachDialog()
     fun showUndetectedDialog()
     fun showLocationNotFoundCTA()
+    fun goToAddNewAddressNegative()
 }
