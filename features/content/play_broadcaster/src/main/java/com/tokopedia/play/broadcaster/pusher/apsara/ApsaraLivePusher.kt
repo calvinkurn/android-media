@@ -22,7 +22,7 @@ class ApsaraLivePusher(@ApplicationContext private val mContext: Context) {
     private val mApsaraLivePusherConfig = ApsaraLivePusherConfig().apply {
         setCameraType(AlivcLivePushCameraTypeEnum.CAMERA_TYPE_FRONT)
 
-        // Keep the default value to set the screen orientation to portrait
+        // set the screen orientation to portrait
         setPreviewOrientation(AlivcPreviewOrientationEnum.ORIENTATION_PORTRAIT)
 
         // indicates that the stream ingest SDK crops the video to fit the screen for a preview.
@@ -42,8 +42,11 @@ class ApsaraLivePusher(@ApplicationContext private val mContext: Context) {
         // configure mirroring
         setPushMirror(true)
 
-        // indicates the fluency-first mode in which the stream ingest SDK sets the bitrate to prioritize the fluency of video streams.
-        qualityMode = AlivcQualityModeEnum.QM_FLUENCY_FIRST
+        // the custom mode in which the stream ingest SDK sets the bitrate based on the custom bitrate settings
+        qualityMode = AlivcQualityModeEnum.QM_CUSTOM
+        setTargetVideoBitrate(1200) // Set the target bitrate to 1200 Kbit/s.
+        setMinVideoBitrate(400) // Set the minimum bitrate to 400 Kbit/s.
+        setInitialVideoBitrate(900) // Set the initial bitrate to 900 Kbit/s.
     }
 
     var mApsaraLivePusherInfoListener: ApsaraLivePusherInfoListener? = null
@@ -72,8 +75,6 @@ class ApsaraLivePusher(@ApplicationContext private val mContext: Context) {
     fun startPreview(surfaceView: SurfaceView) {
         if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.CAMERA)
                 == PackageManager.PERMISSION_DENIED) {
-            if (GlobalConfig.DEBUG)
-                throw IllegalStateException("android.permission.CAMERA not granted")
             return
         }
         try {
@@ -130,9 +131,6 @@ class ApsaraLivePusher(@ApplicationContext private val mContext: Context) {
             mAliVcLivePusher?.resumeAsync()
         } catch (e: Exception) {
             sendCrashlyticsLog(e)
-            if (GlobalConfig.DEBUG) {
-                e.printStackTrace()
-            }
         }
     }
 
@@ -141,9 +139,6 @@ class ApsaraLivePusher(@ApplicationContext private val mContext: Context) {
             mAliVcLivePusher?.pause()
         } catch (e: Exception) {
             sendCrashlyticsLog(e)
-            if (GlobalConfig.DEBUG) {
-                e.printStackTrace()
-            }
         }
     }
 
@@ -234,11 +229,15 @@ class ApsaraLivePusher(@ApplicationContext private val mContext: Context) {
         }
 
         override fun onPushPauesed(pusher: AlivcLivePusher?) {
+            if (mApsaraLivePusherStatus !is ApsaraLivePusherStatus.Live) return
+
             mApsaraLivePusherStatus = ApsaraLivePusherStatus.Pause
             mApsaraLivePusherInfoListener?.onPaused()
         }
 
         override fun onPushResumed(pusher: AlivcLivePusher?) {
+            if (mApsaraLivePusherStatus !is ApsaraLivePusherStatus.Pause) return
+
             val activeStatus = if (mApsaraLivePusherStatus is ApsaraLivePusherStatus.Error) {
                 ApsaraLivePusherActiveStatus.Recover
             } else {
