@@ -10,12 +10,12 @@ import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.promocheckout.R
 import com.tokopedia.promocheckout.list.model.listcoupon.DataPromoCheckoutList
 import com.tokopedia.promocheckout.list.model.listlastseen.PromoCheckoutLastSeenModel
+import com.tokopedia.promocheckout.list.model.listtravelcollectivebanner.PromoChekoutDealsBannerModel
 import com.tokopedia.promocheckout.list.view.presenter.PromoCheckoutListPresenter.Mapper.mapToLastSeen
 import com.tokopedia.usecase.RequestParams
 import rx.Subscriber
 import java.util.*
 import kotlin.collections.ArrayList
-import com.tokopedia.common.travel.data.entity.TravelCollectiveBannerModel
 
 class PromoCheckoutListPresenter(private val graphqlUseCase: GraphqlUseCase,
                                  private val lastSeenPromoUseCase: GraphqlUseCase,
@@ -90,12 +90,12 @@ class PromoCheckoutListPresenter(private val graphqlUseCase: GraphqlUseCase,
     override fun getListTravelCollectiveBanner(resources: Resources) {
         val variables = HashMap<String, Any>()
         val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(resources,
-                R.raw.promo_checkout_deals), TravelCollectiveBannerModel.Response::class.java, variables, false)
+                R.raw.promo_checkout_deals), PromoChekoutDealsBannerModel.Response::class.java, variables, false)
         dealsPromoUseCase.clearRequest()
         dealsPromoUseCase.addRequest(graphqlRequest)
         dealsPromoUseCase.execute(RequestParams.create(), object : Subscriber<GraphqlResponse>() {
             override fun onNext(objects: GraphqlResponse) {
-                val promoData = objects.getData<TravelCollectiveBannerModel.Response>(TravelCollectiveBannerModel.Response::class.java)
+                val promoData = objects.getData<PromoChekoutDealsBannerModel.Response>(PromoChekoutDealsBannerModel.Response::class.java)
                 if (!promoData.response.banners.isNullOrEmpty()) view.changeTitle(resources.getString(R.string.promo_title_for_this_category))
                 val data = mapToLastSeen(promoData.response.banners)
                 view.renderListLastSeen(data)
@@ -114,7 +114,7 @@ class PromoCheckoutListPresenter(private val graphqlUseCase: GraphqlUseCase,
     }
 
     object Mapper {
-        fun mapToLastSeen(data: List<TravelCollectiveBannerModel.Banner>?): List<PromoCheckoutLastSeenModel> {
+        fun mapToLastSeen(data: List<PromoChekoutDealsBannerModel.Banner>?): List<PromoCheckoutLastSeenModel> {
             val mapResult = mutableListOf<PromoCheckoutLastSeenModel>()
             data?.forEachIndexed { index, banner ->
                 if (!banner.attribute.promoCode.isBlank() && !banner.attribute.promoCode.equals("-")) {
