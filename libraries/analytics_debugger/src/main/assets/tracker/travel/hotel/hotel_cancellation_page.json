@@ -62,18 +62,6 @@
       "userId": "{{.*}}",
       "businessUnit": "travel & entertainment",
       "category": "hotel"
-    },{
-      "event": "clickHotel",
-      "eventCategory": "digital - native",
-      "eventAction": "click on cancellation result page",
-      "eventLabel": "{{hotel - .*}}",
-      "screenName": "/hotel/ordercancelresult",
-      "currentSite": "tokopediadigitalhotel",
-      "clientId": "{{.*}}",
-      "sessionIris": "{{.*}}",
-      "userId": "{{.*}}",
-      "businessUnit": "travel & entertainment",
-      "category": "hotel"
     }
   ]
 }
