@@ -905,7 +905,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             minOrder = productMinOrderField.getTextIntOrZero()
             sku = productSkuField.getText()
             imageUrlOrPathList = viewModel.productPhotoPaths
-            if (productPictureList.isNullOrEmpty()) pictureList = productPictureList ?: listOf()
+            if (!productPictureList.isNullOrEmpty()) pictureList = productPictureList ?: listOf()
             if (productCategoryId.isNotBlank()) categoryId = productCategoryId
             if (productCategoryName.isNotBlank()) categoryName = productCategoryName
             preorder.apply {
