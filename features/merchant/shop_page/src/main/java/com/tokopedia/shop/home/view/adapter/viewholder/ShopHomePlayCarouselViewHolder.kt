@@ -23,8 +23,6 @@ class ShopHomePlayCarouselViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_shop_home_play_carousel
-        private const val IS_AUTO_PLAY_SUCCESS = "success"
-        private const val IS_AUTO_PLAY_FAILED = "failed"
         const val ON_PAUSE = "on_pause"
         const val ON_RESUME = "on_resume"
         const val ON_DESTROY = "on_resume"
@@ -90,7 +88,7 @@ class ShopHomePlayCarouselViewHolder(
     }
 
     override fun onReminderClick(dataModel: PlayBannerCarouselItemDataModel, position: Int) {
-        listener.onReminderClick(dataModel, position)
+        listener.onReminderClick(dataModel, adapterPosition)
     }
 
     override fun onSeeMoreClick(dataModel: PlayBannerCarouselDataModel) {
