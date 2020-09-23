@@ -48,6 +48,7 @@ import com.tokopedia.product.detail.view.util.asThrowable
 import com.tokopedia.purchase_platform.common.feature.helpticket.data.request.SubmitHelpTicketRequest
 import com.tokopedia.purchase_platform.common.feature.helpticket.domain.model.SubmitTicketResult
 import com.tokopedia.purchase_platform.common.feature.helpticket.domain.usecase.SubmitHelpTicketUseCase
+import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationFilterChips
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
@@ -556,26 +557,26 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                     withContext(dispatcher.io()) {
                         val productIds = arrayListOf(getDynamicProductInfoP1?.basic?.productID ?: "")
                         val productIdsString = TextUtils.join(",", productIds) ?: ""
-                        getRecommendationFilterChips.setParams(
-                                userId = if(userSessionInterface.userId.isEmpty()) 0 else userSessionInterface.userId.toInt(),
-                                pageName = pageName,
-                                productIDs = productIdsString,
-                                xSource = ProductDetailConstant.DEFAULT_X_SOURCE
-                        )
-                        val recomFilterDeferred = async { getRecommendationFilterChips.executeOnBackground() }
+                        val recomFilterList = mutableListOf<RecommendationFilterChipsEntity.RecommendationFilterChip>()
+                        if(pageName == PDP_3) {
+                            getRecommendationFilterChips.setParams(
+                                    userId = if (userSessionInterface.userId.isEmpty()) 0 else userSessionInterface.userId.toInt(),
+                                    pageName = pageName,
+                                    productIDs = productIdsString,
+                                    xSource = ProductDetailConstant.DEFAULT_X_SOURCE
+                            )
+                            recomFilterList.addAll(getRecommendationFilterChips.executeOnBackground())
+                        }
 
-                        val recomDataDeferred = async { getRecommendationUseCase.createObservable(getRecommendationUseCase.getRecomParams(
+                        val recomData = getRecommendationUseCase.createObservable(getRecommendationUseCase.getRecomParams(
                                 pageNumber = ProductDetailConstant.DEFAULT_PAGE_NUMBER,
                                 pageName = pageName,
                                 productIds = productIds
-                        )).toBlocking().first() }
-
-                        val recomData = recomDataDeferred.await()
+                        )).toBlocking().first()
 
                         if(recomData.isNotEmpty() && recomData.first().recommendationItemList.isNotEmpty()){
-                            val recomFilter = if(pageName == PDP_3) recomFilterDeferred.await() else listOf()
                             val recomWidget = recomData.first().copy(
-                                    recommendationFilterChips = recomFilter
+                                    recommendationFilterChips = recomFilterList
                             )
                             _loadTopAdsProduct.postValue(recomWidget.asSuccess())
                         }else {
