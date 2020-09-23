@@ -9,6 +9,7 @@ data class TnCInfoModel(
 ) {
     data class FetchTickerAndTnC(
         @SerializedName("TnC")
-        val tnC: List<String>
+        val tnC: List<String>,
+        var type : Int = 0
     )
 }

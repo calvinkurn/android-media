@@ -34,7 +34,7 @@ import javax.inject.Inject
 private const val PINPOINT_ACTIVITY_REQUEST_CODE = 1302
 private const val KERO_TOKEN = "token"
 private const val EXTRA_ADDRESS_NEW = "EXTRA_ADDRESS_NEW"
-private const val TRADEIN_INITIAL_PRICE = "tokopedia://category/tradein_initial_price"
+private const val TRADEIN_INITIAL_PRICE = "tokopedia://category/tradein/initial_price"
 
 class TradeInAddressFragment : BaseViewModelFragment<TradeInAddressViewModel>() {
     @Inject
@@ -202,7 +202,7 @@ class TradeInAddressFragment : BaseViewModelFragment<TradeInAddressViewModel>() 
         private const val EXTRA_PRODUCT_NAME = "EXTRA_PRODUCT_NAME"
         private const val EXTRA_SHOP_ID = "EXTRA_SHOP_ID"
 
-        fun getFragmentInstance(origin: String?, weight: Int, productName: String, shopId: Int): Fragment {
+        fun getFragmentInstance(origin: String?, weight: Int, productName: String?, shopId: Int): Fragment {
             val fragment = TradeInAddressFragment()
             val bundle = Bundle()
             bundle.putString(EXTRA_ORIGIN, origin)

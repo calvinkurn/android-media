@@ -292,6 +292,7 @@ public interface ApplinkConst {
     String POWER_MERCHANT_SUBSCRIBE = "tokopedia://power_merchant/subscribe";
 
     String CATEGORY = "tokopedia://category";
+    String TRADEIN = "tokopedia://category/tradein";
     String QRSCAN = "tokopedia://scanqr";
     String OVOP2PTRANSFERFORM = "tokopedia-android-internal://ovop2ptransfer?phone";
     String OVOP2PTRANSFERFORM_SHORT = "tokopedia-android-internal://ovop2ptransfer";

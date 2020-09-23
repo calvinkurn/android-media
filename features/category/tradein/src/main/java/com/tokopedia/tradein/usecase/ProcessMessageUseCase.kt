@@ -1,9 +1,7 @@
 package com.tokopedia.tradein.usecase
 
-import android.content.res.Resources
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.common_tradein.model.TradeInParams
-import com.tokopedia.tradein.R
+import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.tradein.model.DeviceAttr
 import com.tokopedia.tradein.model.DeviceDiagInput
 import com.tokopedia.tradein.model.DeviceDiagInputResponse
@@ -14,6 +12,7 @@ import com.tokopedia.tradein.view.viewcontrollers.activity.BaseTradeInActivity.T
 import java.util.*
 import javax.inject.Inject
 
+@GqlQuery("GqlInsertDeviceDiag",GQL_INSERT_DEVICE_DIAG)
 class ProcessMessageUseCase @Inject constructor(
         private val repository: TradeInRepository)  {
 
@@ -48,7 +47,7 @@ class ProcessMessageUseCase @Inject constructor(
     }
 
     private fun getQuery(): String {
-        return GQL_INSERT_DEVICE_DIAG
+        return GqlInsertDeviceDiag.GQL_QUERY
     }
 
     suspend fun processMessage(tradeInParams: TradeInParams, diagnostics: DeviceDiagnostics): DeviceDiagInputResponse{

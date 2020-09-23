@@ -90,16 +90,21 @@ class TradeInHomeActivity : BaseViewModelActivity<TradeInHomeViewModel>(),
                 val cekFisik = TradeInGTMConstants.CEK_FISIK_TRADE_IN
                 val cekFungsi = TradeInGTMConstants.CEK_FUNGSI_TRADE_IN
                 val cekFisikResult = TradeInGTMConstants.CEK_FISIK_RESULT_TRADE_IN
-                if (TradeInGTMConstants.CEK_FISIK == page) {
-                    if (TradeInGTMConstants.CLICK_SALIN == action || TradeInGTMConstants.CLICK_SOCIAL_SHARE == action)
+                when (page) {
+                    TradeInGTMConstants.CEK_FISIK -> {
+                        when (action) {
+                            TradeInGTMConstants.CLICK_SALIN, TradeInGTMConstants.CLICK_SOCIAL_SHARE -> tradeInAnalytics.sendGeneralEvent(TradeInGTMConstants.ACTION_CLICK_TRADEIN,
+                                    cekFisik, action, value)
+                        }
+                    }
+                    TradeInGTMConstants.CEK_FUNGSI_TRADE_IN -> {
                         tradeInAnalytics.sendGeneralEvent(TradeInGTMConstants.ACTION_CLICK_TRADEIN,
-                                cekFisik, action, value)
-                } else if (TradeInGTMConstants.CEK_FUNGSI_TRADE_IN == page) {
-                    tradeInAnalytics.sendGeneralEvent(TradeInGTMConstants.ACTION_CLICK_TRADEIN,
-                            cekFungsi, action, value)
-                } else if (TradeInGTMConstants.CEK_FISIK_RESULT_TRADE_IN == page) {
-                    tradeInAnalytics.sendGeneralEvent(TradeInGTMConstants.ACTION_VIEW_TRADEIN,
-                            cekFisikResult, action, value)
+                                cekFungsi, action, value)
+                    }
+                    TradeInGTMConstants.CEK_FISIK_RESULT_TRADE_IN -> {
+                        tradeInAnalytics.sendGeneralEvent(TradeInGTMConstants.ACTION_VIEW_TRADEIN,
+                                cekFisikResult, action, value)
+                    }
                 }
             }
         }
@@ -172,7 +177,8 @@ class TradeInHomeActivity : BaseViewModelActivity<TradeInHomeViewModel>(),
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_PHONE_STATE,
                     Manifest.permission.READ_EXTERNAL_STORAGE,
                     Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                    Manifest.permission.CAMERA),
+                    Manifest.permission.CAMERA,
+                    Manifest.permission.VIBRATE),
                     BaseTradeInActivity.MY_PERMISSIONS_REQUEST_READ_PHONE_STATE)
         } else {
             viewModel.getMaxPrice(laku6TradeIn, TRADEIN_OFFLINE)
@@ -418,8 +424,8 @@ class TradeInHomeActivity : BaseViewModelActivity<TradeInHomeViewModel>(),
     companion object {
         private const val TRADEIN = "tradein"
         private const val FINAL_PRICE = "host_final_price"
-        private const val TRADEIN_SELLER_CHECK = "tradein_seller_check"
-        private const val TRADEIN_INITIAL_PRICE = "tradein_initial_price"
+        private const val TRADEIN_SELLER_CHECK = "seller_check"
+        private const val TRADEIN_INITIAL_PRICE = "initial_price"
         private const val TRADEIN_INITIAL_FRAGMENT = "TRADEIN_INITIAL_FRAGMENT"
         private const val TRADEIN_FINAL_PRICE_FRAGMENT = "TRADEIN_FINAL_PRICE_FRAGMENT"
     }

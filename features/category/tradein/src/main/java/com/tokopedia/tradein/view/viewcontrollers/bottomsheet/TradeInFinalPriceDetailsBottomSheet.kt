@@ -39,13 +39,14 @@ class TradeInFinalPriceDetailsBottomSheet: BottomSheetDialogFragment() {
     private fun init() {
         linear_layout.removeAllViews()
         arguments?.getStringArrayList(DEVICE_REVIEW)?.let {
+            val textSize = 14.0f
             for(review in it){
                 val doubleTextView = DoubleTextView(activity, LinearLayout.HORIZONTAL)
                 doubleTextView.apply {
                     setTopText(review.substringBefore(":"))
-                    setTopTextSize(14.0f)
+                    setTopTextSize(textSize)
                     setTopTextColor(MethodChecker.getColor(context, R.color.tradein_clr_AD31353B))
-                    setBottomTextSize(14.0f)
+                    setBottomTextSize(textSize)
                     setBottomTextColor(MethodChecker.getColor(context, com.tokopedia.design.R.color.clr_f531353b))
                     setBottomTextStyle("bold")
                     setBottomText(review.substringAfter(":"))

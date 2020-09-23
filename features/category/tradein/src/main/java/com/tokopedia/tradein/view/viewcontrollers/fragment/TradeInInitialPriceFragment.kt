@@ -172,7 +172,7 @@ class TradeInInitialPriceFragment : BaseViewModelFragment<TradeInInitialPriceVie
         private const val EXTRA_IS_ELIGIBLE = "EXTRA_IS_ELIGIBLE"
         private const val EXTRA_NOT_ELIGIBLE_MESSAGE = "EXTRA_NOT_ELIGIBLE_MESSAGE"
 
-        fun getFragmentInstance(productName: String, productImage: String, productPrice: String, deviceId: String?, maxPrice: String, isEligible: Boolean, notEligibleMessage: String): Fragment {
+        fun getFragmentInstance(productName: String?, productImage: String?, productPrice: String, deviceId: String?, maxPrice: String, isEligible: Boolean, notEligibleMessage: String): Fragment {
             val fragment = TradeInInitialPriceFragment()
             val bundle = Bundle()
             bundle.putString(EXTRA_PRODUCT_NAME, productName)
