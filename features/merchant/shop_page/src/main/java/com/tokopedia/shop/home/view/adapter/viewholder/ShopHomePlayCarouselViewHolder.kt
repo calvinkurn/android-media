@@ -56,7 +56,7 @@ class ShopHomePlayCarouselViewHolder(
                  bundle.containsKey(ShopPageHomeFragment.UPDATE_REMIND_ME_PLAY) -> {
                     element?.playBannerCarouselDataModel?.let{ playCarouselCardDataModel ->
                         if(bundle.containsKey(ShopPageHomeFragment.UPDATE_REMIND_ME_PLAY)){
-                            playCarouselCardDataModel.channelList.find { it.getId() == bundle.getString(ShopPageHomeFragment.UPDATE_REMIND_ME_PLAY) && it is PlayBannerCarouselItemDataModel}?.let{
+                            playCarouselCardDataModel.channelList.find { it.getId() == bundle.getString(ShopPageHomeFragment.UPDATE_REMIND_ME_PLAY_ID) && it is PlayBannerCarouselItemDataModel}?.let{
                                 (it as PlayBannerCarouselItemDataModel).remindMe = !it.remindMe
                             }
                         }
