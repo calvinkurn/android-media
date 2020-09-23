@@ -1,7 +1,6 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.banners.timerbanners
 
 import android.os.CountDownTimer
-import android.util.Log
 import com.tokopedia.discovery2.data.multibannerresponse.timmerwithbanner.TimerDataModel
 import kotlin.math.roundToInt
 
@@ -30,7 +29,6 @@ class SaleCountDownTimer(millisInFuture: Long, countDownInterval: Long = 1000,
             timeDiffModel.hours = hours
             timeDiffModel.minutes = minutes
             timeDiffModel.seconds = seconds
-            Log.d("Days", "days: " + days + " hours: " + hours + " minute: " + minutes + " seconds: " + seconds)
             getTimerData.invoke(timeDiffModel)
         }
     }
