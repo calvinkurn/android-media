@@ -72,7 +72,6 @@ class ProductRecommendationViewHolder(
                         }
                     })
                     view.chip_filter_recyclerview?.adapter = annotationChipAdapter
-                    initAdapter(element, this, element.cardModel, getComponentTrackData(element))
                 }
                 annotationChipAdapter?.submitList(element.filterData ?: listOf())
                 view.loadingRecom.gone()
@@ -83,6 +82,7 @@ class ProductRecommendationViewHolder(
                 } else {
                     view.seeMoreRecom.hide()
                 }
+                initAdapter(element, this, element.cardModel, getComponentTrackData(element))
                 view.seeMoreRecom.setOnClickListener {
                     listener.onSeeAllRecomClicked(pageName, seeMoreAppLink + (element.filterData?.find { it.recommendationFilterChip.isActivated }?.recommendationFilterChip?.value
                             ?: ""), getComponentTrackData(element))
