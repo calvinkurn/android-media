@@ -8,6 +8,7 @@ import android.view.View
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.data.ComponentsItem
@@ -42,7 +43,11 @@ class LihatFlashSaleTimerViewHolder(itemView: View, private val fragment: Fragme
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         lihatFlashSaleTimerViewModel = discoveryBaseViewModel as LihatFlashSaleTimerViewModel
         lihatSemuaTextView.setOnClickListener(this)
+    }
 
+
+    override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
+        super.setUpObservers(lifecycleOwner)
         lihatFlashSaleTimerViewModel.getComponentData().observe(fragment.viewLifecycleOwner, Observer { componentItem ->
             if (!componentItem.data.isNullOrEmpty()) {
                 setTimerUI(componentItem, HOURS)
@@ -58,6 +63,14 @@ class LihatFlashSaleTimerViewHolder(itemView: View, private val fragment: Fragme
             minutesTextView.text = String.format(TIME_DISPLAY_FORMAT, it.minutes)
             secondsTextView.text = String.format(TIME_DISPLAY_FORMAT, it.seconds)
         })
+    }
+
+    override fun removeObservers(lifecycleOwner: LifecycleOwner?) {
+        super.removeObservers(lifecycleOwner)
+        lifecycleOwner?.let { it ->
+            lihatFlashSaleTimerViewModel.getComponentData().removeObservers(it)
+            lihatFlashSaleTimerViewModel.getTimerData().removeObservers(it)
+        }
     }
 
     private fun setTimerUI(componentItem: ComponentsItem?, timeType: Int) {

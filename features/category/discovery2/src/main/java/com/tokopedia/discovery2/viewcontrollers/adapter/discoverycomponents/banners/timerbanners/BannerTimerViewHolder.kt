@@ -10,6 +10,7 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.discovery2.R
@@ -51,6 +52,13 @@ class BannerTimerViewHolder(private val customItemView: View, val fragment: Frag
         constraintSet.setDimensionRatio(bannerImageView.id, "H, $viewWidth : $viewHeight")
         constraintSet.applyTo(constraintLayout)
 
+        constraintLayout.setOnClickListener {
+            bannerTimerViewModel.onBannerClicked(it.context)
+        }
+    }
+
+    override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
+        super.setUpObservers(lifecycleOwner)
         bannerTimerViewModel.getComponentData().observe(fragment.viewLifecycleOwner, Observer { componentItem ->
             if (!componentItem.data.isNullOrEmpty()) {
                 ImageHandler.LoadImage(bannerImageView, componentItem.data?.get(0)?.backgroundUrlMobile)
@@ -69,9 +77,13 @@ class BannerTimerViewHolder(private val customItemView: View, val fragment: Frag
             minutesTextView.text = String.format(TIME_DISPLAY_FORMAT, it.minutes)
             secondsTextView.text = String.format(TIME_DISPLAY_FORMAT, it.seconds)
         })
+    }
 
-        constraintLayout.setOnClickListener {
-            bannerTimerViewModel.onBannerClicked(it.context)
+    override fun removeObservers(lifecycleOwner: LifecycleOwner?) {
+        super.removeObservers(lifecycleOwner)
+        lifecycleOwner?.let { it ->
+            bannerTimerViewModel.getComponentData().removeObservers(it)
+            bannerTimerViewModel.getTimerData().removeObservers(it)
         }
     }
 

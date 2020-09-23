@@ -55,4 +55,9 @@ class BannerTimerViewModel(val application: Application, components: ComponentsI
             navigate(context, it.applinks)
         }
     }
+
+    override fun onStop() {
+        stopTimer()
+        super.onStop()
+    }
 }

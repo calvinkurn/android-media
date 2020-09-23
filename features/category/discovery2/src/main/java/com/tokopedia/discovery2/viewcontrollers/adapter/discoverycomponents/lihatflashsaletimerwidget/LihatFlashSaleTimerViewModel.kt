@@ -62,4 +62,9 @@ class LihatFlashSaleTimerViewModel(val application: Application, componentData: 
     fun onLihatSemuaClicked(context: Context) {
         navigate(context, saleWidgetData.value?.data?.get(0)?.btnApplink)
     }
+
+    override fun onStop() {
+        stopTimer()
+        super.onStop()
+    }
 }

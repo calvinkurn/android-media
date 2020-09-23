@@ -27,6 +27,7 @@ class TimerSprintSaleItemViewHolder(itemView: View, private val fragment: Fragme
     }
 
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
+        super.setUpObservers(lifecycleOwner)
         lifecycleOwner?.let {
             timerSprintSaleItemViewModel.getComponentLiveData().observe(it, Observer { componentItem ->
                 if (!componentItem.data.isNullOrEmpty()) {
@@ -105,4 +106,5 @@ class TimerSprintSaleItemViewHolder(itemView: View, private val fragment: Fragme
     companion object {
         const val TIME_DISPLAY_FORMAT = "%1$02d"
     }
+
 }

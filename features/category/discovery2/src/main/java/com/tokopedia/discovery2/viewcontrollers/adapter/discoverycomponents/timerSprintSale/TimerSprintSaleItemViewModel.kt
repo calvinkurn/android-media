@@ -126,4 +126,9 @@ class TimerSprintSaleItemViewModel(val application: Application, val components:
         }
         return ""
     }
+
+    override fun onStop() {
+        stopTimer()
+        super.onStop()
+    }
 }
