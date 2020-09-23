@@ -16,9 +16,6 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListCheckableAdapter
 import com.tokopedia.abstraction.base.view.adapter.holder.BaseCheckableViewHolder
-import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
-import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
-import com.tokopedia.abstraction.base.view.adapter.viewholders.EmptyResultViewHolder
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
@@ -104,7 +101,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        viewModel.statementMonths.observe(this, Observer {
+        viewModel.statementMonths.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     val ongoingMonth = it.data.firstOrNull { monthItem -> monthItem.isOngoing }
@@ -129,7 +126,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
             }
         })
 
-        viewModel.statementBills.observe(this, Observer {
+        viewModel.statementBills.observe(viewLifecycleOwner, Observer {
             performanceMonitoring.stopTrace()
 
             view_smart_bills_shimmering.hide()
@@ -167,7 +164,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
             }
         })
 
-        viewModel.multiCheckout.observe(this, Observer {
+        viewModel.multiCheckout.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     // Check if all items' transaction succeeds; if they do, navigate to payment
@@ -269,7 +266,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
 
                 smart_bills_checkout_view.listener = this
                 smart_bills_checkout_view.setBuyButtonLabel(getString(R.string.smart_bills_checkout_view_button_label))
-                setTotalPrice()
+                updateCheckoutView()
 
                 loadInitialData()
             }
@@ -351,7 +348,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
             smartBillsAnalytics.clickUntickBill(item)
             totalPrice -= item.amount.toInt()
         }
-        setTotalPrice()
+        updateCheckoutView()
 
         cb_smart_bills_select_all.isChecked = adapter.totalChecked == adapter.dataSize
     }
@@ -361,7 +358,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
         adapter.toggleAllItems(value)
 
         totalPrice = if (value) maximumPrice else 0
-        setTotalPrice()
+        updateCheckoutView()
     }
 
     private fun showOnboarding() {
@@ -414,7 +411,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
         }
     }
 
-    private fun setTotalPrice() {
+    private fun updateCheckoutView() {
         if (totalPrice >= 0) {
             val totalPriceString = if (totalPrice > 0) {
                 CurrencyFormatUtil.convertPriceValueToIdrFormat(totalPrice, true)
@@ -422,6 +419,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
                 getString(R.string.smart_bills_no_item_price)
             }
             smart_bills_checkout_view.setTotalPrice(totalPriceString)
+            smart_bills_checkout_view.getCheckoutButton().isEnabled = totalPrice > 0
         }
     }
 
