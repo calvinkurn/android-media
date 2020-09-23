@@ -171,7 +171,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
                 return executePostCreateSequence();
             }
         };
-        Weaver.Companion.executeWeaveCoRoutineWithFirebase(postWeave, RemoteConfigKey.ENABLE_SEQ2_ASYNC, context);
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(postWeave, RemoteConfigKey.ENABLE_POST_SEQ_ASYNC_SELLERAPP, context);
     }
 
     @NotNull
