@@ -1,8 +1,9 @@
 package com.tokopedia.media.loader
 
 import android.widget.ImageView
-import com.tokopedia.media.loader.UrlBuilder.urlBuilder
-import com.tokopedia.media.loader.data.Properties
+import com.tokopedia.media.loader.common.UrlBuilder.urlBuilder
+import com.tokopedia.media.loader.common.Properties
+import com.tokopedia.media.loader.utils.DEFAULT_ROUNDED
 
 fun ImageView.loadImage(url: Any) = call(url, Properties())
 
@@ -10,7 +11,7 @@ inline fun ImageView.loadImage(url: Any, properties: Properties.() -> Unit) = ca
 
 inline fun ImageView.loadImageRounded(
         url: Any,
-        rounded: Float,
+        rounded: Float = DEFAULT_ROUNDED,
         configuration: Properties.() -> Unit = {
             Properties().apply {
                 roundedRadius = rounded
