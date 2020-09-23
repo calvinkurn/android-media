@@ -4,7 +4,6 @@ import android.graphics.Color
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.R
@@ -31,8 +30,7 @@ import kotlinx.android.synthetic.main.home_featured_shop.view.*
 class FeaturedShopViewHolder(
         itemView: View,
         private val listener: FeaturedShopListener,
-        private val homeComponentListener: HomeComponentListener?,
-        private val parentRecyclerViewPool: RecyclerView.RecycledViewPool? = null
+        private val homeComponentListener: HomeComponentListener?
 ) : AbstractViewHolder<FeaturedShopDataModel>(itemView), CommonProductCardCarouselListener {
 
     companion object {

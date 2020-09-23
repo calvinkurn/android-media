@@ -318,8 +318,7 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
             FeaturedShopViewHolder.LAYOUT -> viewHolder = FeaturedShopViewHolder(
                     view,
                     featuredShopListener,
-                    homeComponentListener,
-                    parentRecycledViewPool
+                    homeComponentListener
             )
             else -> viewHolder = super.createViewHolder(view, type)
         }
