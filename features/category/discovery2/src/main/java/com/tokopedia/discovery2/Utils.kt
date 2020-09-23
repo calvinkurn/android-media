@@ -94,7 +94,7 @@ class Utils {
         }
 
         fun isSaleOver(saleEndDate: String): Boolean {
-            if (saleEndDate.isEmpty()) return false
+            if (saleEndDate.isEmpty()) return true
             val currentSystemTime = Calendar.getInstance().time
             val parsedDate = parseData(saleEndDate)
             return if (parsedDate != null) {
