@@ -160,10 +160,10 @@ class AddressListViewModelTest {
     }
 
     @Test
-    fun `Load More Address Success`() {
+    fun `Load More Address Success With No Next Page`() {
         val token = Token()
         val listAddress = arrayListOf<RecipientAddressModel>()
-        for (i in 0..10) {
+        for (i in 0..9) {
             listAddress.add(RecipientAddressModel().apply {
                 id = i.toString()
             })
@@ -171,12 +171,51 @@ class AddressListViewModelTest {
         val response = AddressListModel(token = token, listAddress = listAddress)
         every { getAddressCornerUseCase.execute(any()) } returns Observable.just(response)
         addressListViewModel.searchAddress("")
-        every { getAddressCornerUseCase.loadMore(any(), any()) } returns Observable.just(AddressListModel(listAddress = listOf(RecipientAddressModel().apply {
+        val additionalAddress = RecipientAddressModel().apply {
             id = "11"
-        })))
+        }
+        every { getAddressCornerUseCase.loadMore(any(), any()) } returns Observable.just(AddressListModel(token = token, listAddress = listOf(additionalAddress)))
 
         addressListViewModel.loadMore()
 
-        assertEquals(OccState.Success(response), addressListViewModel.addressList.value)
+        assertEquals(OccState.Success(response.copy(hasNext = false, listAddress = listAddress + additionalAddress)), addressListViewModel.addressList.value)
+    }
+
+    @Test
+    fun `Load More Address Success With Has Next Page`() {
+        val token = Token()
+        val listAddress = arrayListOf<RecipientAddressModel>()
+        for (i in 0..9) {
+            listAddress.add(RecipientAddressModel().apply {
+                id = i.toString()
+            })
+        }
+        val response = AddressListModel(token = token, listAddress = listAddress)
+        every { getAddressCornerUseCase.execute(any()) } returns Observable.just(response)
+        addressListViewModel.searchAddress("")
+        every { getAddressCornerUseCase.loadMore(any(), any()) } returns Observable.just(AddressListModel(token = token, listAddress = listAddress))
+
+        addressListViewModel.loadMore()
+
+        assertEquals(OccState.Success(response.copy(hasNext = true, listAddress = listAddress + listAddress)), addressListViewModel.addressList.value)
+    }
+
+    @Test
+    fun `Load More Address Failed`() {
+        val token = Token()
+        val listAddress = arrayListOf<RecipientAddressModel>()
+        for (i in 0..9) {
+            listAddress.add(RecipientAddressModel().apply {
+                id = i.toString()
+            })
+        }
+        every { getAddressCornerUseCase.execute(any()) } returns Observable.just(AddressListModel(token = token, listAddress = listAddress))
+        addressListViewModel.searchAddress("")
+        val response = Throwable()
+        every { getAddressCornerUseCase.loadMore(any(), any()) } returns Observable.error(response)
+
+        addressListViewModel.loadMore()
+
+        assertEquals(OccState.Failed(Failure(response)), addressListViewModel.addressList.value)
     }
 }
