@@ -18,25 +18,7 @@ class PromoLastSeenViewHolder(val view : View, private val listenerLastSeen: Lis
             view.layoutPromoLastSeen.visibility = View.VISIBLE
         }
     }
-
-    fun bindDeals(data: TravelCollectiveBanner.Banner) {
-        view.setOnClickListener { listenerLastSeen.onClickItemPromo(data) }
-
-        if (data.attributes.promoCode.isNotEmpty()) {
-            view.voucherCode.text = data.attributes.promoCode
-            view.descPromo.text = data.attributes.description.toUpperCase()
-        }
-
-
-        if (data.attributes.promoCode.isEmpty()) {
-            view.layoutPromoLastSeen.visibility = View.GONE
-        } else {
-            view.layoutPromoLastSeen.visibility = View.VISIBLE
-        }
-    }
-
     interface ListenerLastSeen{
         fun onClickItemLastSeen(promoCheckoutLastSeenModel: PromoCheckoutLastSeenModel)
-        fun onClickItemPromo(promoCheckoutDealsPromoCode: TravelCollectiveBanner.Banner)
     }
 }
