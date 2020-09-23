@@ -51,7 +51,7 @@ class BannerEventViewHolder(itemView: View, val analytic:EventHomePageTracking):
     override fun onPromoClick(p: Int) {
         el?.let {
             analytic.clickBanner(it.layout.items.get(p), p)
-//            RouteManager.route(context, it.layout.items.get(p).url)
+            RouteManager.route(context, it.layout.items.get(p).url)
         }
     }
 

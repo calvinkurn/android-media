@@ -1,8 +1,13 @@
+import android.app.Activity
+import android.app.Instrumentation
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.pressBack
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
+import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.matcher.IntentMatchers
+import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.platform.app.InstrumentationRegistry
@@ -21,6 +26,7 @@ import com.tokopedia.entertainment.home.adapter.viewholder.EventLocationEventVie
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import mock.HomeEventMockResponse
 import org.hamcrest.core.AllOf
+import org.hamcrest.core.IsNot
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -34,13 +40,14 @@ class HomeEventActivityTest {
     var activityRule: ActivityTestRule<HomeEventActivity>  = object : IntentsTestRule<HomeEventActivity>(HomeEventActivity::class.java) {
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
+            gtmLogDBSource.deleteAll().subscribe()
             setupGraphqlMockResponse(HomeEventMockResponse())
         }
     }
 
     @Before
     fun setup() {
-        gtmLogDBSource.deleteAll().subscribe()
+        //Intents.intending(anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
     }
 
     @Test
@@ -98,6 +105,7 @@ class HomeEventActivityTest {
 
     fun click_banner() {
         val viewInteraction = onView(withId(R.id.banner_recyclerview)).check(matches(isDisplayed()))
+        //Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
         viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<BannerViewPagerAdapter.BannerViewHolder>(0, click()))
     }
 

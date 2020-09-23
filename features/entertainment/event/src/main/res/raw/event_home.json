@@ -1630,9 +1630,9 @@
                 "location": "",
                 "schedule": "01/01/1970",
                 "app_url": "",
-                "url": "https://www.tokopedia.com/events/search?tags=&child_category_ids=6&time=&start_date=",
+                "url": "",
                 "is_promo": 1,
-                "seo_url": "https://www.tokopedia.com/events/search?tags=&child_category_ids=6&time=&start_date="
+                "seo_url": ""
               },
               {
                 "id": "100491",
@@ -1646,7 +1646,7 @@
                 "location": "",
                 "schedule": "01/01/1970",
                 "app_url": "",
-                "url": "https://docs.google.com/forms/d/e/1FAIpQLSfIJxScHHHkxxWk9W6ND5yCTppwbyb1ZVnFhuXn6ge-W1XQ3A/viewform?usp=sf_link",
+                "url": "",
                 "is_promo": 1,
                 "seo_url": "https://docs.google.com/forms/d/e/1FAIpQLSfIJxScHHHkxxWk9W6ND5yCTppwbyb1ZVnFhuXn6ge-W1XQ3A/viewform?usp=sf_link"
               }
