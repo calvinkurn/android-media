@@ -48,7 +48,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.libraries.remoteConfig)
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
-
+    implementation project(rootProject.ext.features.commonTravel)
 }
 
 project.ext {
