@@ -23,7 +23,6 @@ import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil
 import com.tokopedia.promocheckout.common.data.REQUEST_CODE_PROMO_DEALS
 import com.tokopedia.promocheckout.common.data.REQUEST_CODE_PROMO_DETAIL
 import com.tokopedia.promocheckout.common.domain.CheckPromoCodeException
-import com.tokopedia.promocheckout.common.domain.model.TravelCollectiveBanner
 import com.tokopedia.promocheckout.common.view.uimodel.DataUiModel
 import com.tokopedia.promocheckout.list.di.DaggerPromoCheckoutListComponent
 import com.tokopedia.promocheckout.list.di.PromoCheckoutListModule
@@ -46,7 +45,7 @@ abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutLis
 
     @Inject
     lateinit var promoCheckoutListPresenter: PromoCheckoutListPresenter
-    private val promoLastSeenAdapter: PromoLastSeenAdapter by lazy { PromoLastSeenAdapter(arrayListOf(), arrayListOf(), this) }
+    private val promoLastSeenAdapter: PromoLastSeenAdapter by lazy { PromoLastSeenAdapter(arrayListOf(), this) }
 
     @Inject
     lateinit var trackingPromoCheckoutUtil: TrackingPromoCheckoutUtil
@@ -89,6 +88,12 @@ abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutLis
             trackingPromoCheckoutUtil.cartClickCoupon(promoCheckoutListModel?.code ?: "")
         } else {
             trackingPromoCheckoutUtil.checkoutClickCoupon(promoCheckoutListModel?.code ?: "")
+        }
+    }
+
+    override fun changeTitle(title: String) {
+        if (!title.isNullOrBlank()) {
+            promo_checkout_list_last_seen_label.setText(title)
         }
     }
 
@@ -173,17 +178,11 @@ abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutLis
         super.onActivityResult(requestCode, resultCode, data)
     }
 
-    override fun renderListLastSeen(data: List<PromoCheckoutLastSeenModel>?, dataDeals: List<TravelCollectiveBanner.Banner>?) {
+    override fun renderListLastSeen(data: List<PromoCheckoutLastSeenModel>) {
         if (!data.isNullOrEmpty()) {
             promoLastSeenAdapter.listData.clear()
             promoLastSeenAdapter.listData.addAll(data)
             promoLastSeenAdapter.notifyDataSetChanged()
-            populateLastSeen()
-        } else if (!dataDeals.isNullOrEmpty()) {
-            promoLastSeenAdapter.listDataDeals.clear()
-            promoLastSeenAdapter.listDataDeals.addAll(dataDeals)
-            promoLastSeenAdapter.notifyDataSetChanged()
-            promo_checkout_list_last_seen_label.text = resources.getString(R.string.promo_title_for_this_category)
             populateLastSeen()
         }
     }
@@ -191,20 +190,8 @@ abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutLis
     protected fun populateLastSeen() {
         if (promoLastSeenAdapter.listData.isNotEmpty()) {
             containerLastSeen.visibility = View.VISIBLE
-        } else if (promoLastSeenAdapter.listDataDeals.isNotEmpty()) {
-            val promoCodeBlank = mutableListOf<Boolean>()
-            promoLastSeenAdapter.listDataDeals.forEach {
-                if (it.attributes.promoCode.isBlank() || it.attributes.promoCode.equals("-")) {
-                    promoCodeBlank.add(true)
-                } else {
-                    promoCodeBlank.add(false)
-                }
-                if (promoCodeBlank.contains(false)) {
-                        containerLastSeen.visibility = View.VISIBLE
-                } else {
-                    containerLastSeen.visibility = View.GONE
-                }
-            }
+        } else {
+            containerLastSeen.visibility = View.GONE
         }
     }
 
