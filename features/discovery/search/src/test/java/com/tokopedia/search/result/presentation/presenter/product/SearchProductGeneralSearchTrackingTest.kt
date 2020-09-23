@@ -357,14 +357,13 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
     fun `General Search Tracking With Global Nav`() {
         val searchProductModel = withGlobalNav.jsonToObject<SearchProductModel>()
         val previousKeyword = ""
-        val source = "recharge"
         val expectedGeneralSearchTrackingModel = GeneralSearchTrackingModel(
                 eventLabel = String.format(
                         SearchEventTracking.Label.KEYWORD_TREATMENT_RESPONSE,
                         keyword,
                         searchProductModel.searchProduct.header.keywordProcess,
                         searchProductModel.searchProduct.header.responseCode,
-                        source,
+                        searchProductModel.globalSearchNavigation.data.source,
                         NONE,
                         NONE
                 ),
