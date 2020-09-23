@@ -118,10 +118,7 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
     }
 
     private fun convertToVoucher(item: Reply): Visitable<*> {
-        var temp = item.attachment?.attributes
-
-        val pojo = GsonBuilder().create().fromJson<TopChatVoucherPojo>(MethodChecker.fromHtml(temp).toString(),
-                TopChatVoucherPojo::class.java)
+        val pojo = GsonBuilder().create().fromJson<TopChatVoucherPojo>(item.attachment?.attributes, TopChatVoucherPojo::class.java)
         val voucher = pojo.voucher
         var voucherType = MerchantVoucherType(voucher.voucherType, "")
         var voucherAmount = MerchantVoucherAmount(voucher.amountType, voucher.amount)
