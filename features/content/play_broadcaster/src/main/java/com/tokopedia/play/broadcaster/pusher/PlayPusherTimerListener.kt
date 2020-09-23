@@ -1,4 +1,4 @@
-package com.tokopedia.play.broadcaster.pusher.timer
+package com.tokopedia.play.broadcaster.pusher
 
 
 /**
