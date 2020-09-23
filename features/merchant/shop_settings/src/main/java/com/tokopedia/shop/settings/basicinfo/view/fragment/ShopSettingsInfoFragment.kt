@@ -39,8 +39,7 @@ import com.tokopedia.shop.settings.basicinfo.view.activity.ShopEditBasicInfoActi
 import com.tokopedia.shop.settings.basicinfo.view.activity.ShopEditScheduleActivity
 import com.tokopedia.shop.settings.basicinfo.view.viewmodel.ShopSettingsInfoViewModel
 import com.tokopedia.shop.settings.common.di.DaggerShopSettingsComponent
-import com.tokopedia.shop.settings.common.util.ShopSettingsErrorHandler
-import com.tokopedia.shop.settings.common.util.ShopTypeDef
+import com.tokopedia.shop.settings.common.util.*
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -221,7 +220,11 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
                     if (shopStatusData.isRegularMerchantOrPending()) {
                         showRegularMerchantMembership(shopStatusData)
                     } else {
-                        showPowerMerchant(shopStatusData)
+                        shopBasicDataModel?.isOfficialStore?.let { isOfficialStore ->
+                            if (!isOfficialStore) {
+                                showPowerMerchant()
+                            }
+                        }
                     }
                 }
                 is Fail -> {
@@ -273,7 +276,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
                         val expiration = osData.data.expiredDate
 
                         if (errMessage.isEmpty() && isOS) {
-                            showOfficialStore(expiration) // Set userSession isOS?
+                            showOfficialStore(dateFormatToBeReadable(expiration, OS_FORMAT_DATE, FORMAT_DAY_DATE) ?: "") // Set userSession isOS?
                         }
                     }
                 }
@@ -397,14 +400,13 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun showPowerMerchant(shopStatusModel: ShopStatusModel) {
+    private fun showPowerMerchant() {
         container_power_merchant.visibility = View.VISIBLE
         container_regular_merchant.visibility = View.GONE
         container_official_store.visibility = View.GONE
         iv_logo_power_merchant.visibility = View.VISIBLE
         iv_logo_power_merchant.setImageResource(com.tokopedia.gm.common.R.drawable.ic_power_merchant)
         tv_power_merchant_type.text = getString(com.tokopedia.design.R.string.label_power_merchant)
-        tv_power_merchant_expiration.text = "Berlaku hingga ${shopStatusModel.powerMerchant.expiredTime}"
     }
 
     private fun showOfficialStore(expirationDate: String) {

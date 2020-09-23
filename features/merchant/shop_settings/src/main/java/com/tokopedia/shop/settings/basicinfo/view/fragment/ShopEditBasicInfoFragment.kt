@@ -18,9 +18,9 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.text.watcher.AfterTextWatcher
 import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef
@@ -460,19 +460,23 @@ class ShopEditBasicInfoFragment: Fragment() {
     }
 
     private fun showShopEditShopInfoTicker(data: AllowShopNameDomainChangesData) {
-        val isNameAllowed = data.isNameAllowed
-        val isDomainAllowed = data.isDomainAllowed
-        val reasonNameNotAllowed = data.reasonNameNotAllowed
-        val reasonDomainNotAllowed = data.reasonDomainNotAllowed
+        if (GlobalConfig.isSellerApp()) {
+            val isNameAllowed = data.isNameAllowed
+            val isDomainAllowed = data.isDomainAllowed
+            val reasonNameNotAllowed = data.reasonNameNotAllowed
+            val reasonDomainNotAllowed = data.reasonDomainNotAllowed
 
-        if (reasonNameNotAllowed.isBlank() && reasonDomainNotAllowed.isBlank()) {
-            return
-        }
-        when {
-            isNameAllowed && isDomainAllowed -> showTicker(reasonNameNotAllowed, Ticker.TYPE_WARNING)
-            isNameAllowed && !isDomainAllowed -> showTicker(reasonDomainNotAllowed, Ticker.TYPE_INFORMATION)
-            isDomainAllowed && !isNameAllowed -> showTicker(reasonNameNotAllowed, Ticker.TYPE_INFORMATION)
-            else -> showTicker(reasonNameNotAllowed, Ticker.TYPE_INFORMATION)
+            if (reasonNameNotAllowed.isBlank() && reasonDomainNotAllowed.isBlank()) {
+                return
+            }
+            when {
+                isNameAllowed && isDomainAllowed -> showTicker(reasonNameNotAllowed, Ticker.TYPE_WARNING)
+                isNameAllowed && !isDomainAllowed -> showTicker(reasonDomainNotAllowed, Ticker.TYPE_INFORMATION)
+                isDomainAllowed && !isNameAllowed -> showTicker(reasonNameNotAllowed, Ticker.TYPE_INFORMATION)
+                else -> showTicker(reasonNameNotAllowed, Ticker.TYPE_INFORMATION)
+            }
+        } else {
+            showTicker(getString(R.string.shop_edit_ticker_wording_for_customer_app), Ticker.TYPE_INFORMATION)
         }
     }
 
@@ -483,8 +487,13 @@ class ShopEditBasicInfoFragment: Fragment() {
         val shopNameInput = shopNameTextField.textFieldInput
         val shopDomainInput = shopDomainTextField.textFieldInput
 
-        shopNameInput.isEnabled = isNameAllowed
-        shopDomainInput.isEnabled = isDomainAllowed
+        if (GlobalConfig.isSellerApp()) {
+            shopNameInput.isEnabled = isNameAllowed
+            shopDomainInput.isEnabled = isDomainAllowed
+        } else {
+            shopNameInput.isEnabled = false
+            shopDomainInput.isEnabled = false
+        }
     }
 
     private fun showTicker(message: String, type: Int) {
@@ -563,11 +572,7 @@ class ShopEditBasicInfoFragment: Fragment() {
 
     private fun onErrorUpdateShopBasicData(throwable: Throwable) {
         hideSubmitLoading()
-        if (throwable.cause is UnknownHostException || throwable.cause is UnknownServiceException) {
-            showGlobalError()
-        } else {
-            showSnackBarErrorSubmitEdit(throwable)
-        }
+        showSnackBarErrorSubmitEdit(throwable)
         tvSave.isEnabled = true
         ShopSettingsErrorHandler.logMessage(throwable.message ?: "")
         ShopSettingsErrorHandler.logExceptionToCrashlytics(throwable)
@@ -642,11 +647,7 @@ class ShopEditBasicInfoFragment: Fragment() {
     }
 
     private fun onErrorUploadShopImage(throwable: Throwable) {
-        if (throwable.cause is UnknownHostException || throwable.cause is UnknownServiceException) {
-            showGlobalError()
-        } else {
-            showSnackBarErrorSubmitEdit(throwable)
-        }
+        showSnackBarErrorSubmitEdit(throwable)
         ShopSettingsErrorHandler.logMessage(throwable.message ?: "")
         ShopSettingsErrorHandler.logExceptionToCrashlytics(throwable)
     }
@@ -696,19 +697,6 @@ class ShopEditBasicInfoFragment: Fragment() {
             setSecondaryCTAClickListener {
                 dismiss()
                 ShopSettingsTracking.clickCancelChangeShopName(userSession.shopId, getShopType())
-            }
-        }.show()
-    }
-
-    private fun showGlobalError() {
-        tvSave.hide()
-        globalError.setBackgroundColor(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Neutral_N0 ))
-        globalError.apply {
-            setType(GlobalError.NO_CONNECTION)
-            setActionClickListener {
-                tvSave.show()
-                onSaveButtonClicked()
-                hide()
             }
         }.show()
     }
