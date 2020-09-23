@@ -10,18 +10,19 @@ import kotlin.math.max
 /**
  * Created by mzennis on 25/05/20.
  */
-class PlayPusherTimer(val context: Context) {
+class PlayPusherTimer(val context: Context,
+                      duration: Long) {
 
-    constructor(context: Context,
-                duration: Long) : this(context) {
-        setupDuration(duration)
-        this.mMaxDuration = mDuration
-    }
 
     var callback: PlayPusherTimerListener? = null
     var timeoutList: List<Timeout> = Timeout.Default()
     var pauseDuration: Long? = null
     var mMaxDuration: Long = 0L
+
+    init {
+        setupDuration(duration)
+        this.mMaxDuration = duration
+    }
 
     private var mDuration: Long = 0L
     private var mRemainingMillis: Long = 0L

@@ -379,7 +379,8 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     }
 
     private fun showLoading(isLoading: Boolean) {
-        if (isLoading) getLoadingFragment().show(childFragmentManager)
+        if (!getLoadingFragment().isAdded) return
+        if (isLoading && !getLoadingFragment().isVisible)  getLoadingFragment().show(childFragmentManager)
         else getLoadingFragment().dismiss()
     }
 
