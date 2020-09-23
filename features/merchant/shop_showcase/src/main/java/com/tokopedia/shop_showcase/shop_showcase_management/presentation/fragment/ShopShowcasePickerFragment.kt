@@ -28,6 +28,7 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
 import com.tokopedia.shop.common.constant.ShowcasePickerType
 import com.tokopedia.shop.common.data.model.ShowcaseItemPicker
+import com.tokopedia.shop.common.data.model.ShowcaseItemPickerProduct
 import com.tokopedia.shop_showcase.R
 import com.tokopedia.shop_showcase.ShopShowcaseInstance
 import com.tokopedia.shop_showcase.common.*
@@ -58,7 +59,15 @@ class ShopShowcasePickerFragment: BaseDaggerFragment(),
     companion object {
 
         @JvmStatic
-        fun createInstance(shopId: String?, isMyShop: Boolean, shopType: String, pickerType: String, preSelectionShowcaseList: ArrayList<ShowcaseItemPicker>?): ShopShowcasePickerFragment {
+        fun createInstance(
+                shopId: String?,
+                isMyShop: Boolean,
+                shopType: String,
+                pickerType: String,
+                preSelectionShowcaseList: ArrayList<ShowcaseItemPicker>?,
+                productId: String,
+                productName: String
+        ): ShopShowcasePickerFragment {
             val fragment = ShopShowcasePickerFragment()
             val extraData = Bundle()
             extraData.putString(ShopShowcaseParamConstant.EXTRA_SHOP_ID, shopId)
@@ -66,6 +75,8 @@ class ShopShowcasePickerFragment: BaseDaggerFragment(),
             extraData.putString(ShopShowcaseParamConstant.EXTRA_SHOP_TYPE, shopType)
             extraData.putString(ShopShowcaseParamConstant.EXTRA_PICKER_TYPE, pickerType)
             extraData.putParcelableArrayList(ShopShowcaseParamConstant.EXTRA_PRE_SELECTED_SHOWCASE_PICKER, preSelectionShowcaseList)
+            extraData.putString(ShopShowcaseParamConstant.EXTRA_PICKER_PRODUCT_ID, productId)
+            extraData.putString(ShopShowcaseParamConstant.EXTRA_PICKER_PRODUCT_NAME, productName)
             fragment.arguments = extraData
             return fragment
         }
@@ -153,6 +164,9 @@ class ShopShowcasePickerFragment: BaseDaggerFragment(),
     private var pickerType: String = ""
     private var newCreatedShowcaseId: String = ""
     private var selectedShowcase: ShowcaseItemPicker? = null
+    private var selectedProduct: ShowcaseItemPickerProduct? = null
+    private var _productId: String = ""
+    private var _productName: String = ""
     private var selectedShowcaseList: ArrayList<ShowcaseItemPicker>? = null
     private var preSelectedShowcaseList: ArrayList<ShowcaseItemPicker>? = null
     private var addShowcaseBottomSheet: BottomSheetUnify? = null
@@ -165,6 +179,8 @@ class ShopShowcasePickerFragment: BaseDaggerFragment(),
             shopId = it.getString(ShopShowcaseParamConstant.EXTRA_SHOP_ID, "")
             isMyShop = it.getBoolean(ShopShowcaseParamConstant.EXTRA_IS_MY_SHOP)
             shopType = it.getString(ShopShowcaseParamConstant.EXTRA_SHOP_TYPE, "")
+            _productId = it.getString(ShopShowcaseParamConstant.EXTRA_PICKER_PRODUCT_ID, "")
+            _productName = it.getString(ShopShowcaseParamConstant.EXTRA_PICKER_PRODUCT_NAME, "")
             pickerType = it.getString(ShopShowcaseParamConstant.EXTRA_PICKER_TYPE, ShowcasePickerType.RADIO)
             if(pickerType == ShowcasePickerType.CHECKBOX) {
                 selectedShowcaseList = arrayListOf()
@@ -172,6 +188,12 @@ class ShopShowcasePickerFragment: BaseDaggerFragment(),
                 if(preSelectedShowcaseList == null)
                     preSelectedShowcaseList = arrayListOf()
             }
+        }
+
+        ShowcaseItemPickerProduct().apply {
+            productId = _productId
+            productName = _productName
+            selectedProduct = this
         }
     }
 
@@ -273,12 +295,14 @@ class ShopShowcasePickerFragment: BaseDaggerFragment(),
 
         // set listener for save picker button
         savePickerButton?.setOnClickListener {
-            val resultIntent = if(pickerType == ShowcasePickerType.RADIO) {
-                Intent().putExtra(ShopShowcaseParamConstant.EXTRA_PICKER_SELECTED_SHOWCASE, selectedShowcase)
+            val intent = Intent()
+            if(pickerType == ShowcasePickerType.RADIO) {
+                intent.putExtra(ShopShowcaseParamConstant.EXTRA_PICKER_SELECTED_SHOWCASE, selectedShowcase)
+                intent.putExtra(ShopShowcaseParamConstant.EXTRA_PICKER_PRODUCT, selectedProduct)
             } else {
-                Intent().putExtra(ShopShowcaseParamConstant.EXTRA_PICKER_SELECTED_SHOWCASE, selectedShowcaseList)
+                intent.putExtra(ShopShowcaseParamConstant.EXTRA_PICKER_SELECTED_SHOWCASE, selectedShowcaseList)
             }
-            activity?.setResult(Activity.RESULT_OK, resultIntent)
+            activity?.setResult(Activity.RESULT_OK, intent)
             activity?.finish()
         }
 
