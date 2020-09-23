@@ -858,6 +858,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         val enable2FA = data?.getBoolean(ApplinkConstInternalGlobal.PARAM_ENABLE_2FA) ?: false
         val enableSkip2FA = data?.getBoolean(ApplinkConstInternalGlobal.PARAM_ENABLE_SKIP_2FA) ?: false
         if(enable2FA){
+            activityShouldEnd = false
             goToAddPin2FA(enableSkip2FA)
         } else {
             registerInitialViewModel.getUserInfo()
