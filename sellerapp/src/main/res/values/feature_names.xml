@@ -260,4 +260,5 @@
 
     <!-- Seller Menu -->
     <string name="title_seller_menu">Toko Saya</string>
+    <string name="title_seller_settings">Pengaturan Toko</string>
 </resources>
