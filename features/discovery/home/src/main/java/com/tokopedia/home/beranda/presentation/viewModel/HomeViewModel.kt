@@ -1182,7 +1182,7 @@ open class HomeViewModel @Inject constructor(
                                 val newTopAdsModel = it.value.copy(topAdsImageViewModel = topAdsImageViewModel)
                                 homeProcessor.get().sendWithQueueMethod(AddWidgetCommand(newTopAdsModel, it.key, this@HomeViewModel))
                             }
-                            currentTopAdsBannerToken = it.value.topAdsImageViewModel?.nextPageToken?:""
+                            currentTopAdsBannerToken = topAdsImageViewModel.nextPageToken?:""
                         }
                     }
                 }
