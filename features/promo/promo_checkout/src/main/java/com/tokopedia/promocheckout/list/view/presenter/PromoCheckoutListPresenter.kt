@@ -11,10 +11,12 @@ import com.tokopedia.promocheckout.R
 import com.tokopedia.promocheckout.common.domain.model.TravelCollectiveBanner
 import com.tokopedia.promocheckout.list.model.listcoupon.DataPromoCheckoutList
 import com.tokopedia.promocheckout.list.model.listlastseen.PromoCheckoutLastSeenModel
+import com.tokopedia.promocheckout.list.view.presenter.PromoCheckoutListPresenter.Mapper.mapToLastSeen
 import com.tokopedia.usecase.RequestParams
 import rx.Subscriber
 import java.util.*
 import kotlin.collections.ArrayList
+import com.tokopedia.common.travel.data.entity.TravelCollectiveBannerModel
 
 class PromoCheckoutListPresenter(private val graphqlUseCase: GraphqlUseCase,
                                  private val lastSeenPromoUseCase: GraphqlUseCase,
@@ -68,7 +70,7 @@ class PromoCheckoutListPresenter(private val graphqlUseCase: GraphqlUseCase,
                 R.raw.promo_checkout_last_seen), PromoCheckoutLastSeenModel.Response::class.java, variables, false)
         lastSeenPromoUseCase.clearRequest()
         lastSeenPromoUseCase.addRequest(graphqlRequest)
-        lastSeenPromoUseCase.execute(RequestParams.create(), object :Subscriber<GraphqlResponse>(){
+        lastSeenPromoUseCase.execute(RequestParams.create(), object : Subscriber<GraphqlResponse>() {
             override fun onCompleted() {
 
             }
@@ -81,7 +83,7 @@ class PromoCheckoutListPresenter(private val graphqlUseCase: GraphqlUseCase,
 
             override fun onNext(objects: GraphqlResponse) {
                 val lastSeenPromoData = objects.getData<PromoCheckoutLastSeenModel.Response>(PromoCheckoutLastSeenModel.Response::class.java)
-                view.renderListLastSeen(lastSeenPromoData.promoModels, null)
+                view.renderListLastSeen(lastSeenPromoData.promoModels)
             }
         })
     }
@@ -89,13 +91,15 @@ class PromoCheckoutListPresenter(private val graphqlUseCase: GraphqlUseCase,
     override fun getListTravelCollectiveBanner(resources: Resources) {
         val variables = HashMap<String, Any>()
         val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(resources,
-                R.raw.promo_checkout_deals), TravelCollectiveBanner.Response::class.java, variables, false)
+                R.raw.promo_checkout_deals), TravelCollectiveBannerModel.Response::class.java, variables, false)
         dealsPromoUseCase.clearRequest()
         dealsPromoUseCase.addRequest(graphqlRequest)
         dealsPromoUseCase.execute(RequestParams.create(), object : Subscriber<GraphqlResponse>() {
-            override fun onNext(objects: GraphqlResponse?) {
-                val promoData = objects?.getData<TravelCollectiveBanner.Response>(TravelCollectiveBanner.Response::class.java)
-                view.renderListLastSeen(null, promoData?.response?.banners)
+            override fun onNext(objects: GraphqlResponse) {
+                val promoData = objects.getData<TravelCollectiveBannerModel.Response>(TravelCollectiveBannerModel.Response::class.java)
+                if (!promoData.response.banners.isNullOrEmpty()) view.changeTitle(resources.getString(R.string.promo_title_for_this_category))
+                val data = mapToLastSeen(promoData.response.banners)
+                view.renderListLastSeen(data)
             }
 
             override fun onCompleted() {
@@ -109,6 +113,24 @@ class PromoCheckoutListPresenter(private val graphqlUseCase: GraphqlUseCase,
             }
 
         })
+    }
+
+    object Mapper {
+        fun mapToLastSeen(data: List<TravelCollectiveBanner.Banner>?): List<PromoCheckoutLastSeenModel> {
+            val mapResult = mutableListOf<PromoCheckoutLastSeenModel>()
+            data?.forEachIndexed { index, banner ->
+                if (!banner.attributes.promoCode.isBlank() && !banner.attributes.promoCode.equals("-")) {
+                    val dataMapper = PromoCheckoutLastSeenModel(
+                            id = banner.id.toInt(),
+                            title = banner.attributes.description,
+                            promoCode = banner.attributes.promoCode,
+                            subtitle = banner.product
+                    )
+                    mapResult.add(dataMapper)
+                }
+            }
+            return mapResult
+        }
     }
 
     override fun detachView() {
