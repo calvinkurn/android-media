@@ -6,9 +6,9 @@ import com.tokopedia.media.loader.data.Properties
 
 fun ImageView.loadImage(url: Any) = call(url, Properties())
 
-fun ImageView.loadImage(url: Any, configuration: Properties.() -> Unit) = call(url, Properties().apply(configuration))
+inline fun ImageView.loadImage(url: Any, properties: Properties.() -> Unit) = call(url, Properties().apply(properties))
 
-fun ImageView.loadImageRounded(
+inline fun ImageView.loadImageRounded(
         url: Any,
         rounded: Float,
         configuration: Properties.() -> Unit = {
@@ -19,13 +19,15 @@ fun ImageView.loadImageRounded(
     call(url, Properties().apply(configuration))
 }
 
-private fun ImageView.call(url: Any, configuration: Properties) {
-    builder(if (url is String) urlBuilder(context, url) else url, configuration)
+@PublishedApi
+internal fun ImageView.call(url: Any, properties: Properties) {
+    builder(if (url is String) urlBuilder(context, url) else url, properties)
 }
 
-private fun ImageView.builder(url: Any, configuration: Properties) {
+@PublishedApi
+internal fun ImageView.builder(url: Any, properties: Properties) {
     val imageView = this
-    with(configuration) {
+    with(properties) {
         MediaGlide(imageView, url)
                 .isRounded(isRounded, roundedRadius)
                 .showPlaceHolder(placeHolder)
