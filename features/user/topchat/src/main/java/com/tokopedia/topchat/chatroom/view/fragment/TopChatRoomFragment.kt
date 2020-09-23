@@ -245,19 +245,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
     }
 
     private fun setupBackground() {
-        presenter.getBackground(
-                { url, shouldChange ->
-                    // TODO: Fix this
-                    Glide.with(context!!)
-                            .load(url)
-                            .dontAnimate()
-                            .diskCacheStrategy(DiskCacheStrategy.DATA)
-                            .into(chatBackground!!)
-                },
-                {
-
-                }
-        )
+        presenter.getBackground()
     }
 
     override fun onClickOccFromProductAttachment(product: ProductAttachmentViewModel, position: Int) {
@@ -719,6 +707,17 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
 
     override fun removeBroadcastHandler() {
         adapter.removeBroadcastHandler()
+    }
+
+    override fun renderBackground(url: String) {
+        chatBackground?.let {
+            Glide.with(it.context)
+                    .load(url)
+                    .centerInside()
+                    .dontAnimate()
+                    .diskCacheStrategy(DiskCacheStrategy.DATA)
+                    .into(it)
+        }
     }
 
     private fun getFirstVisibleItemPosition(): Int? {

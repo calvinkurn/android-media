@@ -888,11 +888,22 @@ class TopChatRoomPresenter @Inject constructor(
         )
     }
 
-    override fun getBackground(
-            onSuccess: (String, Boolean) -> Unit,
-            onError: (Throwable) -> Unit
-    ) {
-        chatBackgroundUseCase.getBackground(onSuccess, onError)
+    override fun getBackground() {
+        chatBackgroundUseCase.getBackground(::onLoadBackgroundFromCache, ::onSuccessLoadBackground, ::onErrorLoadBackground)
+    }
+
+    private fun onLoadBackgroundFromCache(url: String) {
+        view?.renderBackground(url)
+    }
+
+    private fun onSuccessLoadBackground(url: String, needToUpdate: Boolean) {
+        if (needToUpdate) {
+            view?.renderBackground(url)
+        }
+    }
+
+    private fun onErrorLoadBackground(throwable: Throwable) {
+        throwable.printStackTrace()
     }
 
     private fun onSuccessGetAttachments(attachments: ArrayMap<String, Attachment>) {

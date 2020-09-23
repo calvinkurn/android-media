@@ -73,6 +73,8 @@ interface TopChatContract {
         fun hideUnreadMessage()
 
         fun removeBroadcastHandler()
+
+        fun renderBackground(url: String)
     }
 
     interface Presenter : BaseChatContract.Presenter<View> {
@@ -211,9 +213,6 @@ interface TopChatContract {
                 onError: (Throwable) -> Unit
         )
 
-        fun getBackground(
-                onSuccess: (String, Boolean) -> Unit,
-                onError: (Throwable) -> Unit
-        )
+        fun getBackground()
     }
 }
