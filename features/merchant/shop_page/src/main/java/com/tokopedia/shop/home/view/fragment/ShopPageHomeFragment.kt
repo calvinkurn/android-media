@@ -3,6 +3,7 @@ package com.tokopedia.shop.home.view.fragment
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -49,6 +50,7 @@ import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPageAttribution
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPageProduct
 import com.tokopedia.shop.common.constant.ShopParamConstant
+import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
 import com.tokopedia.shop.common.graphql.data.checkwishlist.CheckWishlistResult
 import com.tokopedia.shop.common.util.ShopPageExceptionHandler.ERROR_WHEN_GET_YOUTUBE_DATA
 import com.tokopedia.shop.common.util.ShopPageExceptionHandler.logExceptionToCrashlytics
@@ -111,10 +113,6 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         private const val REQUEST_CODE_SORT = 301
         private const val REQUEST_CODE_PLAY_ROOM = 256
         private const val REQUEST_CODE_USER_LOGIN = 101
-        const val BUNDLE_SELECTED_ETALASE_ID = "selectedEtalaseId"
-        const val BUNDLE_IS_SHOW_DEFAULT = "isShowDefault"
-        const val BUNDLE_IS_SHOW_ZERO_PRODUCT = "isShowZeroProduct"
-        const val BUNDLE_SHOP_ID = "shopId"
         const val BUNDLE = "bundle"
         const val REGISTER_VALUE = "REGISTER"
         const val UNREGISTER_VALUE = "UNREGISTER"
@@ -339,6 +337,13 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 is Fail -> {
                     onErrorGetShopHomeLayoutData(it.throwable)
                     stopPerformanceMonitor()
+                    val throwable = it.throwable
+                    ShopUtil.logTimberWarning(
+                            "SHOP_PAGE_HOME_TAB_WIDGET_ERROR",
+                            "shop_id='${shopId}';" +
+                                    "error_message='${ErrorHandler.getErrorMessage(context, throwable)}'" +
+                                    ";error_trace='${Log.getStackTraceString(throwable)}'"
+                    )
                 }
             }
             stopMonitoringPltRenderPage()
@@ -676,9 +681,10 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 if (shopHomeAdapter.isLoading) {
                     return
                 }
-                val etalaseId = data.getStringExtra(ShopParamConstant.EXTRA_ETALASE_PICKER_ETALASE_ID)
-                val etalaseName = data.getStringExtra(ShopParamConstant.EXTRA_ETALASE_PICKER_ETALASE_NAME)
-                val isNeedToReloadData = data.getBooleanExtra(ShopParamConstant.EXTRA_IS_NEED_TO_RELOAD_DATA, false)
+
+                val etalaseId = data.getStringExtra(ShopShowcaseParamConstant.EXTRA_ETALASE_ID)
+                val etalaseName = data.getStringExtra(ShopShowcaseParamConstant.EXTRA_ETALASE_NAME)
+                val isNeedToReloadData = data.getBooleanExtra(ShopShowcaseParamConstant.EXTRA_IS_NEED_TO_RELOAD_DATA, false)
                 shopPageHomeTracking.clickMoreMenuChip(
                         isOwner,
                         etalaseName,
@@ -693,6 +699,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                         "",
                         shopRef
                 )
+
                 intent.putExtra(ShopParamConstant.EXTRA_IS_NEED_TO_RELOAD_DATA, isNeedToReloadData)
                 startActivity(intent)
             }
@@ -1003,7 +1010,14 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     }
 
     override fun onReminderClick(playBannerCarouselItemDataModel: PlayBannerCarouselItemDataModel, position: Int) {
-        viewModel?.setToggleReminderPlayBanner(playBannerCarouselItemDataModel.channelId, playBannerCarouselItemDataModel.remindMe, position)
+        if(isLogin) {
+            viewModel?.setToggleReminderPlayBanner(playBannerCarouselItemDataModel.channelId, playBannerCarouselItemDataModel.remindMe, position)
+        }
+        else {
+            // reset remind icon
+            adapter.notifyItemChanged(position, Bundle().apply { putBoolean(UPDATE_REMIND_ME_PLAY, true) })
+            redirectToLoginPage()
+        }
     }
 
     override fun onPlayBannerSeeMoreClick(appLink: String) {
@@ -1254,10 +1268,11 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     private fun redirectToEtalasePicker() {
         context?.let {
             val bundle = Bundle()
-            bundle.putString(BUNDLE_SELECTED_ETALASE_ID, "")
-            bundle.putBoolean(BUNDLE_IS_SHOW_DEFAULT, true)
-            bundle.putBoolean(BUNDLE_IS_SHOW_ZERO_PRODUCT, false)
-            bundle.putString(BUNDLE_SHOP_ID, shopId)
+            bundle.putString(ShopShowcaseParamConstant.EXTRA_SELECTED_ETALASE_ID, "")
+            bundle.putBoolean(ShopShowcaseParamConstant.EXTRA_IS_SHOW_DEFAULT, true)
+            bundle.putBoolean(ShopShowcaseParamConstant.EXTRA_IS_SHOW_ZERO_PRODUCT, false)
+            bundle.putString(ShopShowcaseParamConstant.EXTRA_SHOP_ID, shopId)
+
             val intent = RouteManager.getIntent(context, ApplinkConstInternalMechant.MERCHANT_SHOP_SHOWCASE_LIST)
             intent.putExtra(BUNDLE, bundle)
             startActivityForResult(intent, REQUEST_CODE_ETALASE)

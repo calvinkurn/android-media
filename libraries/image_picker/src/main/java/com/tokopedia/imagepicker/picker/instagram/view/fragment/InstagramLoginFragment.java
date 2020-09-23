@@ -24,7 +24,7 @@ import android.widget.ProgressBar;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.imagepicker.R;
-//import com.tokopedia.imagepicker.picker.instagram.di.DaggerInstagramComponent;
+import com.tokopedia.imagepicker.picker.instagram.di.DaggerInstagramComponent;
 import com.tokopedia.imagepicker.picker.instagram.di.InstagramModule;
 import com.tokopedia.imagepicker.picker.instagram.util.InstagramConstant;
 import com.tokopedia.imagepicker.picker.instagram.view.presenter.InstagramLoginPresenter;
@@ -88,12 +88,12 @@ public class InstagramLoginFragment extends BaseDaggerFragment{
 
     @Override
     protected void initInjector() {
-//        DaggerInstagramComponent
-//                .builder()
-//                .instagramModule(new InstagramModule())
-//                .baseAppComponent(((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent())
-//                .build()
-//                .inject(this);
+        DaggerInstagramComponent
+                .builder()
+                .instagramModule(new InstagramModule())
+                .baseAppComponent(((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent())
+                .build()
+                .inject(this);
     }
 
 

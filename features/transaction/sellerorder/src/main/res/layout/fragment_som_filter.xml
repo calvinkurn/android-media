@@ -139,6 +139,7 @@
 
             <RelativeLayout
                 android:id="@+id/rl_status"
+                android:contentDescription="@string/filter_action_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/divider_1"
@@ -296,6 +297,7 @@
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/btn_terapkan"
+            android:contentDescription="@string/btn_terapkan"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:unifyButtonVariant="filled"

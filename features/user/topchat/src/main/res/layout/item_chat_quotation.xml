@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:paddingLeft="@dimen/dp_topchat_15"
-    android:paddingTop="@dimen/dp_topchat_1"
-    android:paddingRight="@dimen/dp_topchat_15"
-    android:paddingBottom="@dimen/chatcommon_1dp">
+    android:layout_height="wrap_content">
 
     <LinearLayout
         android:id="@+id/llChatHeaderContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/dp_topchat_15"
+        android:paddingTop="@dimen/dp_topchat_1"
+        android:paddingRight="@dimen/dp_topchat_15"
+        android:paddingBottom="@dimen/chatcommon_1dp">
 
         <include layout="@layout/item_chatcommon_chat_header" />
     </LinearLayout>
@@ -21,5 +21,7 @@
         layout="@layout/topchat_quotation_attachment"
         android:layout_width="@dimen/dp_topchat_240"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/llChatHeaderContainer" />
+        android:layout_below="@+id/llChatHeaderContainer"
+        android:layout_marginStart="@dimen/dp_topchat_12"
+        android:layout_marginEnd="@dimen/dp_topchat_12" />
 </RelativeLayout>
