@@ -486,4 +486,8 @@
         <key>android_gql_connection_warm_up</key>
         <value>false</value>
     </entry>
+    <entry>
+        <key>android_post_seq_async_sellerapp</key>
+        <value>true</value>
+    </entry>
 </defaultsMap>
