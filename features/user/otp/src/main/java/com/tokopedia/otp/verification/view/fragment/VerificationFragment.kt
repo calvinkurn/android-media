@@ -63,12 +63,16 @@ class VerificationFragment : BaseVerificationFragment(), IOnBackPressed {
 
     @Inject
     lateinit var analytics: TrackingValidatorUtil
+
     @Inject
     lateinit var verificationPref: VerificationPref
+
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
     @Inject
     lateinit var smsBroadcastReceiver: SmsBroadcastReceiver
+
     @Inject
     lateinit var smsRetrieverClient: SmsRetrieverClient
 
@@ -103,7 +107,7 @@ class VerificationFragment : BaseVerificationFragment(), IOnBackPressed {
         initView()
         initObserver()
         if (!(modeListData.modeText == OtpConstant.OtpMode.PIN ||
-                modeListData.modeText == OtpConstant.OtpMode.GOOGLE_AUTH)) {
+                        modeListData.modeText == OtpConstant.OtpMode.GOOGLE_AUTH)) {
             smsRetrieverClient.startSmsRetriever()
             sendOtp()
         }
@@ -124,7 +128,7 @@ class VerificationFragment : BaseVerificationFragment(), IOnBackPressed {
 
     override fun onPause() {
         super.onPause()
-        if(::smsBroadcastReceiver.isInitialized) activity?.unregisterReceiver(smsBroadcastReceiver)
+        if (::smsBroadcastReceiver.isInitialized) activity?.unregisterReceiver(smsBroadcastReceiver)
         hideKeyboard()
     }
 
@@ -278,7 +282,7 @@ class VerificationFragment : BaseVerificationFragment(), IOnBackPressed {
                             putString(ApplinkConstInternalGlobal.PARAM_SOURCE, otpData.source)
                             putString(ApplinkConstInternalGlobal.PARAM_OTP_CODE, viewBound.pin?.value.toString())
                         }
-                        if((activity as VerificationActivity).isResetPin2FA){
+                        if ((activity as VerificationActivity).isResetPin2FA) {
                             val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.CHANGE_PIN).apply {
                                 bundle.putBoolean(ApplinkConstInternalGlobal.PARAM_IS_FROM_2FA, true)
                                 bundle.putString(ApplinkConstInternalGlobal.PARAM_TOKEN, otpValidateData.validateToken)
@@ -287,7 +291,7 @@ class VerificationFragment : BaseVerificationFragment(), IOnBackPressed {
                             }
                             intent.flags = Intent.FLAG_ACTIVITY_FORWARD_RESULT
                             activity.startActivity(intent)
-                        }else {
+                        } else {
                             activity.setResult(Activity.RESULT_OK, Intent().putExtras(bundle))
                         }
                         activity.finish()
@@ -415,11 +419,12 @@ class VerificationFragment : BaseVerificationFragment(), IOnBackPressed {
     private fun showKeyboard() {
         viewBound.pin?.pinTextField?.let { view ->
             view.post {
-                if(view.requestFocus()) {
+                if (view.requestFocus()) {
                     context?.getSystemService(Context.INPUT_METHOD_SERVICE)?.let { inputMethodManager ->
                         when (inputMethodManager) {
                             is InputMethodManager -> inputMethodManager.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT)
-                            else -> {}
+                            else -> {
+                            }
                         }
                     }
                 }
@@ -446,12 +451,11 @@ class VerificationFragment : BaseVerificationFragment(), IOnBackPressed {
     private fun setFooterText() {
         context?.let {
             val spannable: Spannable
-            if(otpData.otpType == OtpConstant.OtpType.AFTER_LOGIN_PHONE){
-            val message = getString(R.string.forgot_pin)
-            spannable = SpannableString(message)
-            setForgotPinFooterSpan(message, spannable)
-        }
-        else if (modeListData.modeText == OtpConstant.OtpMode.PIN ||
+            if (otpData.otpType == OtpConstant.OtpType.AFTER_LOGIN_PHONE) {
+                val message = getString(R.string.forgot_pin)
+                spannable = SpannableString(message)
+                setForgotPinFooterSpan(message, spannable)
+            } else if (modeListData.modeText == OtpConstant.OtpMode.PIN ||
                     modeListData.modeText == OtpConstant.OtpMode.GOOGLE_AUTH) {
                 val message = it.getString(R.string.login_with_other_method)
                 spannable = SpannableString(message)
@@ -478,7 +482,7 @@ class VerificationFragment : BaseVerificationFragment(), IOnBackPressed {
         val start = message.indexOf(otpMsg)
         val end = start + otpMsg.length
 
-        if(start < 0 || end < 0) {
+        if (start < 0 || end < 0) {
             return
         }
 

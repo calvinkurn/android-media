@@ -211,7 +211,9 @@ class ChooseAccountFragment : BaseDaggerFragment(),
     override fun onSelectedAccount(account: UserDetail, phone: String) {
         if (account.challenge2Fa) {
             open2FA(account, phone)
-        } else loginToken(account, phone)
+        } else {
+            loginToken(account, phone)
+        }
     }
 
     private fun open2FA(account: UserDetail, phone: String) {
@@ -412,8 +414,9 @@ class ChooseAccountFragment : BaseDaggerFragment(),
             onSuccessLogin(userSessionInterface.temporaryUserId)
         } else if (requestCode == REQUEST_CODE_PIN_CHALLENGE) {
             if (resultCode == Activity.RESULT_OK) {
-                if (selectedAccount != null && !selectedPhoneNo.isNullOrEmpty())
+                if (selectedAccount != null && !selectedPhoneNo.isNullOrEmpty()) {
                     loginToken(selectedAccount, selectedPhoneNo ?: "")
+                }
             }
         } else {
             super.onActivityResult(requestCode, resultCode, data)

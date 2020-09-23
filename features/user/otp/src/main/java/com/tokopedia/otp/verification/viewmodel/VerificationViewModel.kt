@@ -157,7 +157,7 @@ class VerificationViewModel @Inject constructor(
         }
     }
 
-    private fun otpValidate2FA(
+    fun otpValidate2FA(
             otpType: String,
             validateToken: String,
             userIdEnc: String,
