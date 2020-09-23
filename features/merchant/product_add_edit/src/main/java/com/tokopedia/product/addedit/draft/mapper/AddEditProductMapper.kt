@@ -68,6 +68,7 @@ object AddEditProductMapper {
         productDraft.detailInputModel.wholesaleList = productInputModel.detailInputModel.wholesaleList.map { wholeSale ->
             DraftWholeSaleInputModel(wholeSale.price, wholeSale.quantity)
         }
+        productDraft.detailInputModel.status = productInputModel.detailInputModel.status
         productDraft.descriptionInputModel.apply {
             productDescription = productInputModel.descriptionInputModel.productDescription
             val videoLinkList = mutableListOf<VideoLinkListModel>()
@@ -116,6 +117,7 @@ object AddEditProductMapper {
         productInputModel.detailInputModel.wholesaleList = productDraft.detailInputModel.wholesaleList.map { wholeSale ->
             WholeSaleInputModel(wholeSale.price, wholeSale.quantity)
         }
+        productInputModel.detailInputModel.status = productDraft.detailInputModel.status
         productInputModel.descriptionInputModel.apply {
             productDescription = productDraft.descriptionInputModel.productDescription
             val videoLinkList = mutableListOf<VideoLinkModel>()
