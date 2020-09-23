@@ -96,6 +96,7 @@ ext {
     // Sort and categorize alphabetically by folder name
     app = [
             customerapp: ":customerapp",
+            customerapp_pro: ":customerapp_pro",
             sellerapp  : ":sellerapp"
     ]
 
