@@ -307,7 +307,6 @@
     <string name="content_desc_title_info">text info produk %1s</string>
     <string name="content_desc_desc_info">text deskripsi info produk %1s</string>
     <string name="content_desc_label_see_detail_product_descr">text lihat deskripsi produk</string>
-    <string name="content_desc_txt_product_descr">text content deskripsi produk</string>
     <string name="content_desc_title_product_desc_label">text header deskripsi produk</string>
     <string name="content_desc_title_product_info_label">text header informasi produk</string>
     <string name="content_desc_btnAddToWishlist">button tambahkan ke wishlist</string>
