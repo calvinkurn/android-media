@@ -3,21 +3,19 @@
   "mode": "exact",
   "query": [
     {
-      "event": "add_to_cart",
-      "eventAction": "add to cart",
-      "eventCategory": "digital - flight",
-      "eventLabel": "{{flight - .*-.*}}",
-      "sessionIris": "{{.*}}",
-      "screenName": "/flight/booking",
-      "currentSite": "tokopediadigitalflight",
-      "clientId": "{{.*}}",
-      "userId": "{{.*}}",
       "businessUnit": "travel & entertainment",
+      "clientId": "{{.*}}",
+      "eventCategory": "digital - flight",
+      "currentSite": "tokopediadigitalflight",
+      "screenName": "/flight/booking",
       "category": "flight",
-      "checkout_option": "click next on customer page",
+      "event": "add_to_cart",
+      "userId": "{{.*}}",
+      "eventAction": "add to cart",
+      "sessionIris": "{{.*}}",
       "items": [
         {
-          "quantity": "{{\\d*}}",
+          "quantity": "{{\\d*.\\d*}}",
           "item_id": "{{.*}}",
           "item_name": "{{.*-.*}}",
           "dimension70": "{{true|false}}",
@@ -36,23 +34,25 @@
           "dimension68": "{{.*}}",
           "item_variant": "{{\\d* - \\d* - \\d*}}"
         }
-      ]
+      ],
+      "eventLabel": "{{flight - .*-.*}}"
     },
     {
-      "event": "begin_checkout",
-      "eventAction": "click next on customer page",
-      "eventCategory": "digital - flight",
-      "eventLabel": "{{flight - .*-.*}}",
-      "sessionIris": "{{.*}}",
-      "screenName": "/flight/booking",
-      "currentSite": "tokopediadigitalflight",
-      "clientId": "{{.*}}",
-      "userId": "{{.*}}",
       "businessUnit": "travel & entertainment",
+      "clientId": "{{.*}}",
+      "eventCategory": "digital - flight",
+      "screenName": "/flight/booking",
+      "userId": "{{.*}}",
+      "eventAction": "click next on customer page",
+      "sessionIris": "{{.*}}",
+      "eventLabel": "{{flight - .*-.*}}",
+      "checkout_step": "1",
+      "currentSite": "tokopediadigitalflight",
       "category": "flight",
+      "event": "begin_checkout",
       "items": [
         {
-          "quantity": "{{\\d*}}",
+          "quantity": "{{\\d*.\\d*}}",
           "item_id": "{{.*}}",
           "item_name": "{{.*-.*}}",
           "dimension70": "{{true|false}}",
@@ -71,7 +71,8 @@
           "dimension68": "{{.*}}",
           "item_variant": "{{\\d* - \\d* - \\d*}}"
         }
-      ]
+      ],
+      "checkout_option": "click next on customer page"
     }
   ]
 }
