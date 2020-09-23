@@ -2,11 +2,9 @@ package com.tokopedia.sellerhome.view.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.sellerhome.common.coroutine.SellerHomeCoroutineDispatcher
-import com.tokopedia.sellerhome.domain.model.GetShopStatusResponse
+import com.tokopedia.seller.menu.common.coroutine.SellerHomeCoroutineDispatcher
 import com.tokopedia.sellerhome.domain.model.ShippingLoc
 import com.tokopedia.sellerhome.domain.usecase.GetShopLocationUseCase
-import com.tokopedia.sellerhome.domain.usecase.GetStatusShopUseCase
 import com.tokopedia.sellerhome.utils.SellerHomeCoroutineTestDispatcher
 import com.tokopedia.sellerhomecommon.domain.model.DynamicParameterModel
 import com.tokopedia.sellerhomecommon.domain.usecase.*
@@ -35,9 +33,6 @@ import org.mockito.Matchers.anyString
 
 @ExperimentalCoroutinesApi
 class SellerHomeViewModelTest {
-
-    @RelaxedMockK
-    lateinit var getShopStatusUseCase: GetStatusShopUseCase
 
     @RelaxedMockK
     lateinit var userSession: UserSessionInterface
@@ -89,7 +84,6 @@ class SellerHomeViewModelTest {
         testDispatcher = SellerHomeCoroutineTestDispatcher
 
         viewModel = SellerHomeViewModel(
-                dagger.Lazy { getShopStatusUseCase },
                 dagger.Lazy { userSession },
                 dagger.Lazy { getTickerUseCase },
                 dagger.Lazy { getLayoutUseCase },
@@ -158,64 +152,6 @@ class SellerHomeViewModelTest {
         }
 
         assert(viewModel.homeTicker.value is Fail)
-    }
-
-    @Test
-    fun `get shop status should success`() = runBlocking {
-        val shopStatus = GetShopStatusResponse()
-        val shopId = "123456"
-
-        getShopStatusUseCase.params = GetStatusShopUseCase.createRequestParams(shopId)
-
-        every {
-            userSession.shopId
-        } returns shopId
-
-        coEvery {
-            getShopStatusUseCase.executeOnBackground()
-        } returns shopStatus
-
-        viewModel.getShopStatus()
-
-        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
-        coVerify {
-            userSession.shopId
-        }
-        coVerify {
-            getShopStatusUseCase.executeOnBackground()
-        }
-
-        assertEquals(Success(shopStatus), viewModel.shopStatus.value)
-    }
-
-    @Test
-    fun `get shop status should failed`() = runBlocking {
-        val throwable = MessageErrorException("error")
-        val shopId = "123456"
-
-        getShopStatusUseCase.params = GetStatusShopUseCase.createRequestParams("123456")
-
-        every {
-            userSession.shopId
-        } returns shopId
-
-        coEvery {
-            getShopStatusUseCase.executeOnBackground()
-        } throws throwable
-
-        viewModel.getShopStatus()
-
-        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
-
-        coVerify {
-            userSession.shopId
-        }
-
-        coEvery {
-            getShopStatusUseCase.executeOnBackground()
-        }
-
-        assert(viewModel.shopStatus.value is Fail)
     }
 
     @Test

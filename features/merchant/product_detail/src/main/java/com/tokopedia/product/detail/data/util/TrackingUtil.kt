@@ -9,7 +9,6 @@ import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.product.Category
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
-import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.track.TrackApp
 import com.tokopedia.unifycomponents.ticker.Ticker
 
@@ -122,15 +121,6 @@ object TrackingUtil {
             }
         }
         return TextUtils.join("/", list)
-    }
-
-
-    fun getEnhanceShopType(goldOS: ShopInfo.GoldOS?): String {
-        return when {
-            goldOS?.isOfficial == 1 -> "official_store"
-            goldOS?.isGold == 1 -> "gold_merchant"
-            else -> "regular"
-        }
     }
 
     fun getFormattedPrice(price: Int): String {
