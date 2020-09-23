@@ -833,12 +833,12 @@ final class ProductListPresenter
 
     private boolean isBroadMatchNeedTopSeparator() {
         int broadMatchPosition = relatedViewModel.getPosition();
-        return broadMatchPosition == 0 || broadMatchPosition > 1;
+        return (broadMatchPosition == 0 || broadMatchPosition > 1) && !responseCode.equals("4");
     }
 
     private boolean isBroadMatchNeedBottomSeparator() {
         int broadMatchPosition = relatedViewModel.getPosition();
-        return broadMatchPosition >= 1;
+        return broadMatchPosition >= 1 && !responseCode.equals("4");
     }
 
     private void trackBroadMatchImpression() {

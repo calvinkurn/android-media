@@ -2,7 +2,7 @@
 <View
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/searchProductSeparator"
-    android:paddingTop="@dimen/dp_16"
+    android:layout_marginTop="@dimen/dp_16"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/dp_8"
+    android:layout_height="@dimen/dp_24"
     android:background="@color/Neutral_N50"/>
