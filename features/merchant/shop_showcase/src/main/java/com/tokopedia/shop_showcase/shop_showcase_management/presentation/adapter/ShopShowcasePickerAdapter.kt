@@ -15,7 +15,7 @@ class ShopShowcasePickerAdapter(
         private val pickerType: String
 ): RecyclerView.Adapter<ShopShowcasePickerAdapter.ShopShowcasePickerViewHolder>() {
 
-    private var lastSelectedPosition = 0
+    private var lastSelectedPosition: Int = -1
     private var showcaseList: List<ShowcaseItem> = listOf()
 
 
