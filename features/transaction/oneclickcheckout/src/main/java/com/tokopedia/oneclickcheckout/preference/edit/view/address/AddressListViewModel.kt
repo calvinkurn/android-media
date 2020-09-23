@@ -44,6 +44,7 @@ class AddressListViewModel @Inject constructor(private val useCase: GetAddressCo
                             override fun onError(e: Throwable?) {
                                 _addressList.value = OccState.Failed(Failure(e))
                                 OccIdlingResource.decrement()
+                                isLoadingMore = false
                             }
 
                             override fun onNext(t: AddressListModel) {
