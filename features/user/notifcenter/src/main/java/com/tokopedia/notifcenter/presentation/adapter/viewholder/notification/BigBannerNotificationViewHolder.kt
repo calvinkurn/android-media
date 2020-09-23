@@ -29,7 +29,7 @@ class BigBannerNotificationViewHolder(
         }
 
         contentImageBanner2.shouldShowWithAction(imageUrl.isNotEmpty()) {
-            contentImageBanner.loadImageRounded(imageUrl, 10f)
+            contentImageBanner2.loadImageRounded(imageUrl, 10f)
         }
     }
 
