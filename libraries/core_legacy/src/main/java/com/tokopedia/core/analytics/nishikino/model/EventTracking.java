@@ -4,7 +4,6 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.tokopedia.core.analytics.AppEventTracking;
-import com.tokopedia.core.deprecated.SessionHandler;
 
 import java.util.HashMap;
 import java.util.Map;
