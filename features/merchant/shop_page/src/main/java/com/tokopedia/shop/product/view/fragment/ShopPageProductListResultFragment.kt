@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -57,6 +58,7 @@ import com.tokopedia.shop.common.view.listener.ShopProductChangeGridSectionListe
 import com.tokopedia.shop.product.di.component.DaggerShopProductComponent
 import com.tokopedia.shop.product.di.module.ShopProductModule
 import com.tokopedia.shop.common.util.ShopProductViewGridType
+import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.product.view.adapter.ShopProductAdapter
 import com.tokopedia.shop.product.view.adapter.ShopProductAdapterTypeFactory
 import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener
@@ -303,14 +305,32 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         viewModel.shopInfoResp.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> onSuccessGetShopInfo(it.data)
-                is Fail -> onErrorGetShopInfo(it.throwable)
+                is Fail -> {
+                    onErrorGetShopInfo(it.throwable)
+                    val throwable = it.throwable
+                    ShopUtil.logTimberWarning(
+                            "SHOP_PAGE_PRODUCT_RESULT_SHOP_INFO_ERROR",
+                            "shop_id='${shopId}';" +
+                                    "error_message='${com.tokopedia.network.utils.ErrorHandler.getErrorMessage(context, throwable)}'" +
+                                    ";error_trace='${Log.getStackTraceString(throwable)}'"
+                    )
+                }
             }
         })
 
         viewModel.shopSortFilterData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> onSuccessGetSortFilterData(it.data)
-                is Fail -> showGetListError(it.throwable)
+                is Fail -> {
+                    showGetListError(it.throwable)
+                    val throwable = it.throwable
+                    ShopUtil.logTimberWarning(
+                            "SHOP_PAGE_PRODUCT_RESULT_SHOP_FILTER_DATA_ERROR",
+                            "shop_id='${shopId}';" +
+                                    "error_message='${com.tokopedia.network.utils.ErrorHandler.getErrorMessage(context, throwable)}'" +
+                                    ";error_trace='${Log.getStackTraceString(throwable)}'"
+                    )
+                }
             }
         })
         viewModel.productData.observe(viewLifecycleOwner, Observer {

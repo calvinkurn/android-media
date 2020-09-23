@@ -25,6 +25,7 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
 import com.tokopedia.shop.common.constant.ShowcasePickerType
 import com.tokopedia.shop.common.data.model.ShowcaseItemPicker
+import com.tokopedia.shop.common.data.model.ShowcaseItemPickerProduct
 import com.tokopedia.shop_showcase.R
 import com.tokopedia.shop_showcase.ShopShowcaseInstance
 import com.tokopedia.shop_showcase.common.AppScreen
@@ -57,12 +58,20 @@ class ShopShowcasePickerFragment: BaseDaggerFragment(),
     companion object {
 
         @JvmStatic
-        fun createInstance(shopId: String?, isMyShop: Boolean, pickerType: String): ShopShowcasePickerFragment {
+        fun createInstance(
+                shopId: String?,
+                isMyShop: Boolean,
+                pickerType: String,
+                productId: String,
+                productName: String
+        ): ShopShowcasePickerFragment {
             val fragment = ShopShowcasePickerFragment()
             val extraData = Bundle()
             extraData.putString(ShopShowcaseParamConstant.EXTRA_SHOP_ID, shopId)
             extraData.putBoolean(ShopShowcaseParamConstant.EXTRA_IS_MY_SHOP, isMyShop)
             extraData.putString(ShopShowcaseParamConstant.EXTRA_PICKER_TYPE, pickerType)
+            extraData.putString(ShopShowcaseParamConstant.EXTRA_PICKER_PRODUCT_ID, productId)
+            extraData.putString(ShopShowcaseParamConstant.EXTRA_PICKER_PRODUCT_NAME, productName)
             fragment.arguments = extraData
             return fragment
         }
@@ -140,6 +149,9 @@ class ShopShowcasePickerFragment: BaseDaggerFragment(),
     private var shopId: String = ""
     private var pickerType: String = ""
     private var selectedShowcase: ShowcaseItemPicker? = null
+    private var selectedProduct: ShowcaseItemPickerProduct? = null
+    private var _productId: String = ""
+    private var _productName: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -147,6 +159,14 @@ class ShopShowcasePickerFragment: BaseDaggerFragment(),
             shopId = it.getString(ShopShowcaseParamConstant.EXTRA_SHOP_ID, "")
             isMyShop = it.getBoolean(ShopShowcaseParamConstant.EXTRA_IS_MY_SHOP)
             pickerType = it.getString(ShopShowcaseParamConstant.EXTRA_PICKER_TYPE, ShowcasePickerType.RADIO)
+            _productId = it.getString(ShopShowcaseParamConstant.EXTRA_PICKER_PRODUCT_ID, "")
+            _productName = it.getString(ShopShowcaseParamConstant.EXTRA_PICKER_PRODUCT_NAME, "")
+        }
+
+        ShowcaseItemPickerProduct().apply {
+            productId = _productId
+            productName = _productName
+            selectedProduct = this
         }
     }
 
@@ -231,7 +251,11 @@ class ShopShowcasePickerFragment: BaseDaggerFragment(),
 
         // set listener for save picker button
         savePickerButton?.setOnClickListener {
-            activity?.setResult(Activity.RESULT_OK, Intent().putExtra(ShopShowcaseParamConstant.EXTRA_PICKER_SELECTED_SHOWCASE, selectedShowcase))
+            val intent = Intent()
+            intent.putExtra(ShopShowcaseParamConstant.EXTRA_PICKER_SELECTED_SHOWCASE, selectedShowcase)
+            intent.putExtra(ShopShowcaseParamConstant.EXTRA_PICKER_PRODUCT, selectedProduct)
+
+            activity?.setResult(Activity.RESULT_OK, intent)
             activity?.finish()
         }
 
