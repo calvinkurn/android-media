@@ -1234,6 +1234,14 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
             }
         }
 
+        cartItemTickerErrorHolderData?.let {
+            toBeUpdatedIndex.add(cartDataList.indexOf(it))
+        }
+
+        disabledItemHeaderHolderData?.let {
+            toBeUpdatedIndex.add(cartDataList.indexOf(it))
+        }
+
         return Pair(toBeRemovedIndex, toBeUpdatedIndex)
     }
 
