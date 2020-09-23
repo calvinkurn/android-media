@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.res.Resources
 import com.tokopedia.abstraction.base.view.listener.BaseListViewListener
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
-import com.tokopedia.promocheckout.common.domain.model.TravelCollectiveBanner
 import com.tokopedia.promocheckout.common.view.uimodel.DataUiModel
 import com.tokopedia.promocheckout.list.model.listcoupon.PromoCheckoutListModel
 import com.tokopedia.promocheckout.list.model.listlastseen.PromoCheckoutLastSeenModel
@@ -14,12 +13,13 @@ interface PromoCheckoutListContract {
     interface View : BaseListViewListener<PromoCheckoutListModel> {
         fun showProgressLoading()
         fun hideProgressLoading()
-        fun renderListLastSeen(data: List<PromoCheckoutLastSeenModel>?, dataDeals: List<TravelCollectiveBanner.Banner>?)
+        fun renderListLastSeen(data: List<PromoCheckoutLastSeenModel>)
         fun showGetListLastSeenError(e: Throwable)
         fun onSuccessCheckPromo(data: DataUiModel)
         fun onErrorCheckPromo(e: Throwable)
         fun onErrorEmptyPromo()
         override fun getContext(): Context?
+        fun changeTitle(title: String)
     }
 
     interface Presenter : CustomerPresenter<View> {
