@@ -47,6 +47,7 @@ class RecommendationListCarouselViewHolder(itemView: View,
     }
 
     override fun bind(element: RecommendationListCarouselDataModel) {
+        isCacheData = element.isCache
         val listCarouselTitle = itemView.findViewById<Typography>(R.id.list_carousel_title)
         val listCarouselDescription = itemView.findViewById<Typography>(R.id.list_carousel_description)
         val listCarouselView = itemView.findViewById<View>(R.id.list_carousel_view)

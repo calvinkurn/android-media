@@ -35,6 +35,7 @@ class Lego4AutoBannerViewHolder (itemView: View,
     private var isCacheData = false
 
     override fun bind(element: Lego4AutoDataModel) {
+        isCacheData = element.isCache
         setHeaderComponent(element)
         initView(element)
     }

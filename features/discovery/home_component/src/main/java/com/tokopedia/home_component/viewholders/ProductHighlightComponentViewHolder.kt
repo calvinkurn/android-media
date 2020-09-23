@@ -34,6 +34,7 @@ class ProductHighlightComponentViewHolder(
     }
 
     override fun bind(element: ProductHighlightDataModel?) {
+        isCacheData = element?.isCache ?: false
         element?.let {
             setDealsChannelInfo(it)
             setDealsProductGrid(it.channelModel)

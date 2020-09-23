@@ -77,6 +77,7 @@ class MixTopComponentViewHolder(
     override val coroutineContext = masterJob + Dispatchers.Main
 
     override fun bind(element: MixTopDataModel) {
+        isCacheData = element.isCache
         mappingView(element.channelModel)
         setHeaderComponent(element = element)
         if (!isCacheData) {
