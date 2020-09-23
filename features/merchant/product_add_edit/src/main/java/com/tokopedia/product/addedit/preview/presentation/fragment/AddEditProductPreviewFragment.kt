@@ -1064,7 +1064,7 @@ class AddEditProductPreviewFragment:
     }
 
     @SuppressLint("WrongConstant")
-    private fun createImagePickerBuilder(selectedImagePathList: ArrayList<String>?): ImagePickerBuilder {
+    private fun createImagePickerBuilder(selectedImagePathList: ArrayList<String>): ImagePickerBuilder {
 
         val title = getString(R.string.action_pick_photo)
 

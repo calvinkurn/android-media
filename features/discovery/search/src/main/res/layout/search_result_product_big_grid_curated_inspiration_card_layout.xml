@@ -13,8 +13,7 @@
             android:layout_height="@dimen/dp_48"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            android:background="@drawable/search_background_big_grid_curated_cards"/>
+            app:layout_constraintRight_toRightOf="parent"/>
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/inspirationCardCuratedIcon"

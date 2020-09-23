@@ -191,6 +191,11 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
         super.onSaveInstanceState(outState)
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        navigator?.cleanupNavigator()
+    }
+
     fun attachCallback(callback: StatusBarCallback) {
         statusBarCallback = callback
     }
