@@ -8,7 +8,7 @@ import com.tokopedia.media.loader.utils.DEFAULT_ROUNDED
 
 open class Properties {
     var isRounded: Boolean = false
-    var rounded: Float = DEFAULT_ROUNDED
+    var roundedRadius: Float = DEFAULT_ROUNDED
     var animate: Boolean = false
     var signature: Key = ObjectKey(System.currentTimeMillis().toString())
     var error: Any = R.drawable.ic_media_default_error
