@@ -15,7 +15,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 
-import com.google.android.material.appbar.AppBarLayout;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils;
@@ -41,7 +40,6 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
 
     @Inject
     AccountHome.Presenter presenter;
-    private AppBarLayout appBarLayout;
     private BadgeView badgeViewInbox;
     private BadgeView badgeViewNotification;
     private ImageButton menuNotification;
@@ -99,7 +97,6 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
     private void initView(View view) {
         setToolbar(view);
         accountAnalytics = new AccountAnalytics(getActivity());
-        appBarLayout = view.findViewById(R.id.app_bar_layout);
         onNotificationChanged(counterNumber, 0);
         showBuyerPage();
     }
@@ -157,11 +154,7 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
     }
 
     @Override
-    public void onScrollToTop() {
-        if (appBarLayout != null) {
-            appBarLayout.setExpanded(true);
-        }
-    }
+    public void onScrollToTop() {}
 
     @Override
     public boolean isLightThemeStatusBar() {
