@@ -45,6 +45,7 @@ class TalkInboxContainerFragment : BaseDaggerFragment(), HasComponent<TalkInboxC
 
     private var sellerUnreadCount = 0
     private var buyerUnreadCount = 0
+    private var isFirstTimeEnterPage = true
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
@@ -80,6 +81,25 @@ class TalkInboxContainerFragment : BaseDaggerFragment(), HasComponent<TalkInboxC
         talkInboxTabs.tabLayout.getTabAt(SELLER_TAB_INDEX)?.setCounter(if(sellerUnread > 0) sellerUnread else HIDE_TAB_COUNTER)
         buyerUnreadCount = buyerUnread
         talkInboxTabs.tabLayout.getTabAt(BUYER_TAB_INDEX)?.setCounter(if(buyerUnread > 0) buyerUnread else HIDE_TAB_COUNTER)
+        if(isFirstTimeEnterPage) {
+            isFirstTimeEnterPage = false
+            when {
+                sellerUnreadCount > 0 && buyerUnreadCount == 0 -> {
+                    selectSellerTab()
+                }
+                else -> {
+                    selectBuyerTab()
+                }
+            }
+        }
+    }
+
+    private fun selectSellerTab() {
+        talkInboxViewPager.currentItem = SELLER_TAB_INDEX
+    }
+
+    private fun selectBuyerTab() {
+        talkInboxViewPager.currentItem = BUYER_TAB_INDEX
     }
 
     private fun setupViewPager() {
