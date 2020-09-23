@@ -100,12 +100,14 @@ class CarouselFeaturedShopViewHolder (
     }
 
     private fun setRating(rating: Int, reviewCount: String){
-        itemView.featured_shop_product_reviews?.show()
-        itemView.featured_shop_product_total_count?.show()
-        itemView.featured_shop_product_location_icon?.hide()
-        itemView.featured_shop_product_location_name?.hide()
-        itemView.featured_shop_product_total_count?.text = "($reviewCount)"
-        setImageRating(rating)
+        if(rating > 0) {
+            itemView.featured_shop_product_reviews?.show()
+            itemView.featured_shop_product_total_count?.show()
+            itemView.featured_shop_product_location_icon?.hide()
+            itemView.featured_shop_product_location_name?.hide()
+            itemView.featured_shop_product_total_count?.text = "($reviewCount)"
+            setImageRating(rating)
+        }
     }
 
     private fun setImageRating(rating: Int){
