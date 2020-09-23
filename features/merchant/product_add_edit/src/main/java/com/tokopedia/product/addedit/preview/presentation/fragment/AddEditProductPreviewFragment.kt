@@ -218,6 +218,7 @@ class AddEditProductPreviewFragment:
     }
 
     private fun saveProductToDraft() {
+        if (isAdding()) viewModel.updateProductStatus(true)
         viewModel.productInputModel.value?.let {
             viewModel.saveProductDraft(AddEditProductMapper.mapProductInputModelDetailToDraft(it), it.draftId, false)
         }
@@ -332,7 +333,7 @@ class AddEditProductPreviewFragment:
         }
 
         productStatusSwitch?.setOnClickListener {
-            val isChecked = if (isAdding()) true else productStatusSwitch?.isChecked ?: false
+            val isChecked = productStatusSwitch?.isChecked ?: false
             viewModel.updateProductStatus(isChecked)
             // track switch status on click
             if (isChecked && isEditing()) {
