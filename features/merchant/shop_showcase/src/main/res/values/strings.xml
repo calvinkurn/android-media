@@ -50,4 +50,6 @@
     <string name="bottomsheet_add_showcase_textfield_hint_text">Tulis nama etalase yang kamu inginkan.</string>
     <string name="max_selected_showcase_text">Produk ini sudah ada di 10 etalase.</string>
     <string name="max_total_showcase_error_text">Etalase kamu sudah penuh. Gunakan etalase yang tersedia untuk produk ini.</string>
+    <string name="empty_state_picker_description">Ayo, tambah etalase agar memudahkan pembeli cari produk di tokomu.</string>
+    <string name="empty_state_picker_title_text">Kamu belum ada etalase</string>
 </resources>
