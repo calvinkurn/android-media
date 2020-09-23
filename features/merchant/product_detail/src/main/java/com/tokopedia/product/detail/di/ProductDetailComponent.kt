@@ -15,7 +15,6 @@ import dagger.Component
     ProductDetailModule::class,
     ViewModelModule::class,
     GqlRawQueryModule::class,
-    ProductReportModule::class,
     ProductWarehouseModule::class,
     ProductWishlistModule::class],
         dependencies = [BaseAppComponent::class])
