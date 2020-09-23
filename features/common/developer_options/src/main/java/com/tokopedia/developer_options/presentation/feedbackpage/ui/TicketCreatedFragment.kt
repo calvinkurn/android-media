@@ -1,4 +1,4 @@
-package com.tokopedia.developer_options.presentation.feedbackpage
+package com.tokopedia.developer_options.presentation.feedbackpage.ui
 
 import android.content.ClipData
 import android.content.ClipboardManager
@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
 import com.tkpd.remoteresourcerequest.view.DeferredImageView
 import com.tokopedia.developer_options.R
+import com.tokopedia.developer_options.presentation.feedbackpage.utils.EXTRA_IS_TICKET_LINK
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography

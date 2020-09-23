@@ -1,4 +1,4 @@
-package com.tokopedia.developer_options.presentation.feedbackpage
+package com.tokopedia.developer_options.presentation.feedbackpage.ui
 
 import android.Manifest
 import android.content.ContentResolver
@@ -18,12 +18,16 @@ import android.view.ViewGroup
 import android.widget.*
 import android.widget.AdapterView.OnItemSelectedListener
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.Fragment
 import com.google.android.material.textfield.TextInputLayout
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.developer_options.R
-import com.tokopedia.developer_options.api.*
+import com.tokopedia.developer_options.api.ApiClient
+import com.tokopedia.developer_options.api.FeedbackApi
+import com.tokopedia.developer_options.api.request.FeedbackFormRequest
+import com.tokopedia.developer_options.presentation.feedbackpage.di.FeedbackPageComponent
 import com.tokopedia.developer_options.presentation.feedbackpage.dialog.LoadingDialog
+import com.tokopedia.developer_options.presentation.feedbackpage.utils.EXTRA_URI_IMAGE
 import com.tokopedia.developer_options.presentation.preference.Preferences
 import com.tokopedia.screenshot_observer.ScreenshotData
 import com.tokopedia.unifyprinciples.Typography
@@ -33,14 +37,15 @@ import kotlinx.android.synthetic.main.fragment_feedback_page.*
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
-import rx.Subscriber
-import rx.android.schedulers.AndroidSchedulers
-import rx.schedulers.Schedulers
 import rx.subscriptions.CompositeSubscription
 import java.io.File
+import javax.inject.Inject
 
 
-class FeedbackPageFragment: Fragment() {
+class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View {
+
+    @Inject
+    lateinit var feedbackPagePresenter: FeedbackPagePresenter
 
     private lateinit var bugType : Spinner
     private lateinit var email: EditText
@@ -83,6 +88,12 @@ class FeedbackPageFragment: Fragment() {
         return mainView
     }
 
+    override fun getScreenName(): String = ""
+
+    override fun initInjector() {
+        getComponent(FeedbackPageComponent::class.java).inject(this)
+    }
+
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         //do more validation here
@@ -110,6 +121,7 @@ class FeedbackPageFragment: Fragment() {
         imageView = mainView.findViewById(R.id.image_feedback)
         submitButton = mainView.findViewById(R.id.submit_button)
         tvImage = mainView.findViewById(R.id.image_feedback_tv)
+        feedbackPagePresenter.attachView(this)
 
         feedbackApi = ApiClient.getAPIService()
         compositeSubscription = CompositeSubscription()
@@ -234,7 +246,8 @@ class FeedbackPageFragment: Fragment() {
             if(validate) {
                 val issueType = bugType.selectedItem.toString()
                 emailTokopedia = "$emailText@tokopedia.com"
-                submitFeedback(emailTokopedia, affectedPageText, journeyText, issueType, actualResultText, expectedResultText)
+                feedbackPagePresenter.sendFeedbackForm(requestMapper(emailTokopedia, affectedPageText, journeyText, issueType, actualResultText, expectedResultText))
+//                submitFeedback(emailTokopedia, affectedPageText, journeyText, issueType, actualResultText, expectedResultText)
             }
         }
 
@@ -308,6 +321,7 @@ class FeedbackPageFragment: Fragment() {
     private fun isPathScreenshot(path: String): Boolean {
         return path.toLowerCase().contains(PATH_SCREENSHOT)
     }
+/*
 
     private fun submitFeedback(email: String, page: String, desc: String, issueType: String, actualResult: String, expectedResult: String) {
         loadingDialog?.show()
@@ -334,8 +348,9 @@ class FeedbackPageFragment: Fragment() {
                         })
         )
     }
+*/
 
-    private fun sendUriImage(issueKey: String) {
+    /*private fun sendUriImage(issueKey: String) {
         val screenshotData = uriImage?.let { handleItem(it) }
         val file = File(screenshotData?.path)
         val requestFile: RequestBody = RequestBody.create(MediaType.parse("multipart/form-data"), file)
@@ -360,10 +375,32 @@ class FeedbackPageFragment: Fragment() {
                         Toast.makeText(activity, e.toString(), Toast.LENGTH_SHORT).show()
                     }
                 })
+    }*/
+
+    private fun requestMapper(email: String, page: String, journey: String, issueType: String, actualResult: String, expectedResult: String): FeedbackFormRequest {
+        val affectedVersion = if (GlobalConfig.isSellerApp()) "SA-$appVersion" else "MA-$appVersion"
+        return FeedbackFormRequest(
+                platformID = 2,
+                //this should be user email
+                email = email,
+                appVersion = appVersion + affectedVersion,
+                bundleVersion = versionCode,
+                device = deviceInfo,
+                os = androidVersion,
+                tokopediaUserID = userId,
+                tokopediaEmail = email,
+                sessionToken = sessionToken,
+                fcmToken = "",
+                loginState = "login",
+                lastAccessedPage = page,
+                category = 1,
+                journey = journey,
+                actual = actualResult,
+                expected = expectedResult
+        )
     }
 
-
-    private fun requestMapper(email: String, page: String, desc: String, issueType: String, actualResult: String, expectedResult: String): FeedbackRequest {
+   /* private fun requestMapper(email: String, page: String, desc: String, issueType: String, actualResult: String, expectedResult: String): FeedbackRequest {
         val affectedVersion = if (GlobalConfig.isSellerApp()) "SA-$appVersion" else "MA-$appVersion"
         return FeedbackRequest(Fields(
                 summary = "[INTERNAL-FEEDBACK] {$email} {$page}",
@@ -408,8 +445,8 @@ class FeedbackPageFragment: Fragment() {
                         id = "11200"
                 )),
                 customfield_10253 = Customfield_10253(
-                        /*value = "Release Candidate",
-                        id = "11209"*/
+                        *//*value = "Release Candidate",
+                        id = "11209"*//*
                         //Temporary
                         value = "In Development",
                         id = "11208"
@@ -424,14 +461,56 @@ class FeedbackPageFragment: Fragment() {
                         name = affectedVersion
                 ))
         ))
-    }
+    }*/
 
-    private fun goToTicketCreatedActivity(ticketLink: String) {
+    /*private fun goToTicketCreatedActivity(ticketLink: String) {
         activity?.finish()
         Intent(context, TicketCreatedActivity::class.java).apply {
             putExtra(EXTRA_IS_TICKET_LINK, ticketLink)
             startActivityForResult(this, 1212)
         }
+    }*/
+
+
+    override fun showLoadingDialog() {
+        if (loadingDialog != null) {
+            loadingDialog?.show()
+        }
+    }
+
+    override fun hideLoadingDialog() {
+        if (loadingDialog != null) {
+            loadingDialog?.hide()
+        }
+    }
+
+    override fun setSubmitFlag() {
+        myPreferences.setSubmitFlag(emailTokopedia, userSession?.userId.toString())
+    }
+
+    override fun checkUriImage(feedbackId: Int?) {
+        if (uriImage != null) feedbackPagePresenter.sendAttachment(feedbackId, checkUriImage())
+        else goToTicketCreatedActivity()
+    }
+
+    override fun goToTicketCreatedActivity() {
+        activity?.finish()
+        Intent(context, TicketCreatedActivity::class.java).apply {
+            startActivityForResult(this, 1212)
+        }
+    }
+
+    override fun showError(throwable: Throwable) {
+        Toast.makeText(activity, throwable.toString(), Toast.LENGTH_SHORT).show()
+    }
+
+    private fun checkUriImage(): MultipartBody.Part {
+        val screenshotData = uriImage?.let { handleItem(it) }
+        val file = File(screenshotData?.path)
+        val requestFile: RequestBody = RequestBody.create(MediaType.parse("multipart/form-data"), file)
+        val fileData = MultipartBody.Part.createFormData("file", file.name, requestFile)
+
+        return fileData
     }
 
     companion object {

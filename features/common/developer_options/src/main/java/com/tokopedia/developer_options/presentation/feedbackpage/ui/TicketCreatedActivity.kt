@@ -1,4 +1,4 @@
-package com.tokopedia.developer_options.presentation.feedbackpage
+package com.tokopedia.developer_options.presentation.feedbackpage.ui
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -10,7 +10,8 @@ class TicketCreatedActivity : BaseSimpleActivity() {
         var fragment: TicketCreatedFragment? = null
         if (intent.extras != null) {
             val bundle = intent.extras
-            fragment = TicketCreatedFragment.newInstance(bundle?: Bundle())
+            fragment = TicketCreatedFragment.newInstance(bundle
+                    ?: Bundle())
         }
         return fragment
     }
