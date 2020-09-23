@@ -147,8 +147,8 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
 
             miniSocialProofMap?.run {
                 rating = it.basic.stats.rating
-                ratingCount = it.basic.stats.countReview
-                talkCount = it.basic.stats.countTalk
+                ratingCount = it.basic.stats.countReview.toIntOrZero()
+                talkCount = it.basic.stats.countTalk.toIntOrZero()
                 paymentVerifiedCount = it.basic.txStats.itemSoldPaymentVerified.toInt()
             }
 
@@ -163,12 +163,12 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
             }
 
             productReviewMap?.run {
-                totalRating = it.basic.stats.countReview
+                totalRating = it.basic.stats.countReview.toIntOrZero()
                 ratingScore = it.basic.stats.rating
             }
 
             productReviewOldMap?.run {
-                totalRating = it.basic.stats.countReview
+                totalRating = it.basic.stats.countReview.toIntOrZero()
                 ratingScore = it.basic.stats.rating
             }
 
