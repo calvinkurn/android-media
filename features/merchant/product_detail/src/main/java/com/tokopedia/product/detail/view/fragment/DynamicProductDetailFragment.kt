@@ -24,7 +24,6 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.airbnb.lottie.LottieAnimationView
@@ -189,7 +188,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private val viewModel by lazy {
-        ViewModelProviders.of(this, viewModelFactory).get(DynamicProductDetailViewModel::class.java)
+        ViewModelProvider(this, viewModelFactory).get(DynamicProductDetailViewModel::class.java)
     }
 
     //Listener function
