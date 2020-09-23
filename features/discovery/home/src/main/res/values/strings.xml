@@ -102,4 +102,6 @@
     <string name="content_desc_see_all_button">text dynamic channel lihat semua</string>
     <string name="content_desc_count_down">text dynamic channel count down</string>
     <string name="content_desc_channel_subtitle">text dynamic channel subtitle</string>
+
+    <string name="home_page_retry_dynamic_channel">Coba Lagi</string>
 </resources>

@@ -2,6 +2,12 @@ package com.tokopedia.logisticdata.data.autocomplete
 
 sealed class AutoCompleteVisitable
 
+
+data class Place(
+        var data: List<SuggestedPlace> = listOf(),
+        var errorCode: Int = 0
+) : AutoCompleteVisitable()
+
 data class SuggestedPlace(
         val mainText: String = "",
         val secondaryText: String = "",

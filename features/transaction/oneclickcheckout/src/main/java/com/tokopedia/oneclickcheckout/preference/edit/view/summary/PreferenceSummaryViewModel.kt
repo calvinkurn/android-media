@@ -3,6 +3,7 @@ package com.tokopedia.oneclickcheckout.preference.edit.view.summary
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
 import com.tokopedia.oneclickcheckout.common.view.model.Failure
 import com.tokopedia.oneclickcheckout.common.view.model.OccState
 import com.tokopedia.oneclickcheckout.common.view.model.preference.ProfilesItemModel
@@ -61,12 +62,15 @@ class PreferenceSummaryViewModel @Inject constructor(private val getPreferenceBy
 
     fun getPreferenceDetail(profileId: Int, addressId: Int, serviceId: Int, gatewayCode: String, metadata: String) {
         _preference.value = OccState.Loading
+        OccIdlingResource.increment()
         getPreferenceByIdUseCase.execute(
                 { profilesItemModel: ProfilesItemModel ->
                     _preference.value = OccState.Success(profilesItemModel)
+                    OccIdlingResource.decrement()
                 },
                 { throwable: Throwable ->
                     _preference.value = OccState.Failed(Failure(throwable))
+                    OccIdlingResource.decrement()
                 },
                 getPreferenceByIdUseCase.generateRequestParams(profileId, addressId, serviceId, gatewayCode, metadata))
     }
@@ -75,35 +79,44 @@ class PreferenceSummaryViewModel @Inject constructor(private val getPreferenceBy
         val value = _preference.value
         if (value is OccState.Success) {
             _editResult.value = OccState.Loading
+            OccIdlingResource.increment()
             deletePreferenceUseCase.execute(id,
                     { message: String ->
                         _editResult.value = OccState.Success(message)
+                        OccIdlingResource.decrement()
                     },
                     { throwable: Throwable ->
                         _editResult.value = OccState.Failed(Failure(throwable))
+                        OccIdlingResource.decrement()
                     })
         }
     }
 
     fun createPreference(addressId: Int, serviceId: Int, gatewayCode: String, paymentQuery: String, isDefaultProfileChecked: Boolean, fromFlow: Int) {
         _editResult.value = OccState.Loading
+        OccIdlingResource.increment()
         createPreferenceUseCase.execute(CreatePreferenceRequest(addressId, serviceId, gatewayCode, paymentQuery, isDefaultProfileChecked, fromFlow),
                 { message: String ->
                     _editResult.value = OccState.Success(message)
+                    OccIdlingResource.decrement()
                 },
                 { throwable: Throwable ->
                     _editResult.value = OccState.Failed(Failure(throwable))
+                    OccIdlingResource.decrement()
                 })
     }
 
     fun updatePreference(profileId: Int, addressId: Int, serviceId: Int, gatewayCode: String, paymentQuery: String, isDefaultProfileChecked: Boolean, fromFlow: Int) {
         _editResult.value = OccState.Loading
+        OccIdlingResource.increment()
         updatePreferenceUseCase.execute(UpdatePreferenceRequest(profileId, addressId, serviceId, gatewayCode, paymentQuery, isDefaultProfileChecked, fromFlow),
                 { message: String ->
                     _editResult.value = OccState.Success(message)
+                    OccIdlingResource.decrement()
                 },
                 { throwable: Throwable ->
                     _editResult.value = OccState.Failed(Failure(throwable))
+                    OccIdlingResource.decrement()
                 })
     }
 }

@@ -8,7 +8,7 @@ import com.tokopedia.analyticsdebugger.validator.Utils
 
 internal typealias JsonMap = Map<String, Any>
 
-internal fun JsonMap.toDefaultValidator() = Validator(
+fun JsonMap.toDefaultValidator() = Validator(
         Utils.getAnalyticsName(this),
         this
 )
@@ -19,7 +19,7 @@ internal fun JsonMap.toJson(): String =
                 .create()
                 .toJson(this)
 
-internal fun String.toJsonMap(): JsonMap {
+fun String.toJsonMap(): JsonMap {
     val jsonType = object : TypeToken<Map<String, Any>>() {}.type
     return Gson().fromJson(this, jsonType)
 }
@@ -28,8 +28,8 @@ internal fun GtmLogDB.toUiModel() = GtmLogUi(
         this.id, this.data, this.name, this.category, this.timestamp
 )
 
-internal fun Map<String, Any>.getQueryMap(): List<Map<String, Any>> {
+fun Map<String, Any>.getQueryMap(): List<Map<String, Any>> {
     return this["query"] as List<Map<String, Any>>
 }
 
-internal fun Map<String, Any>.getMode(): String = this["mode"] as String
+fun Map<String, Any>.getMode(): String = this["mode"] as String

@@ -1,0 +1,48 @@
+[
+  {
+    "data": {
+      "one_click_checkout": {
+        "header": {
+          "process_time": "",
+          "reason": "",
+          "error_code": "",
+          "messages" : []
+        },
+        "data": {
+          "success": 1,
+          "error": {
+            "code": "",
+            "image_url": "",
+            "message": "",
+            "additional_info": {
+              "price_validation": {
+                "is_updated": "",
+                "message": {
+                  "title": "",
+                  "desc": "",
+                  "action": ""
+                },
+                "tracker_data": {
+                  "product_changes_type": "",
+                  "campaign_type": "",
+                  "product_ids": ""
+                }
+              }
+            }
+          },
+          "payment_parameter": {
+            "callback_url": "",
+            "payload": "",
+            "redirect_param": {
+              "url": "https://www.tokopedia.com/payment",
+              "gateway": "",
+              "method": "POST",
+              "form": "transaction_id=123"
+            }
+          }
+        },
+        "status": "OK"
+      }
+    }
+  }
+]
