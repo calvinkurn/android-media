@@ -9,8 +9,8 @@ class CarouselEmptyCardViewHolder(view: View): AbstractViewHolder<CarouselEmptyC
 
     override fun bind(element: CarouselEmptyCardDataModel?) {
         itemView.setOnClickListener(null)
-        element?.channel?.channelBanner?.applink?.let{ url ->
-            if(url.isNotBlank()) itemView.setOnClickListener {
+        element?.applink?.let{ url ->
+            if(url.isNotEmpty()) itemView.setOnClickListener {
                 element.listener.onEmptyCardClicked(element.channel, url, element.parentPosition)
             }
         }

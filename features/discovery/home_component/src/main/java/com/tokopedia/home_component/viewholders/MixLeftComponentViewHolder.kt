@@ -141,9 +141,7 @@ class MixLeftComponentViewHolder (itemView: View,
         recyclerView.layoutManager = layoutManager
         val typeFactoryImpl = CommonCarouselProductCardTypeFactoryImpl(channel)
         val listData = mutableListOf<Visitable<*>>()
-        if (channel.channelBanner.applink.isNotEmpty()) {
-            listData.add(CarouselEmptyCardDataModel(channel, adapterPosition, this))
-        }
+        listData.add(CarouselEmptyCardDataModel(channel, adapterPosition, this))
         val productDataList = convertDataToProductData(channel)
         listData.addAll(productDataList)
 
