@@ -13,6 +13,7 @@ import org.junit.Test
 
 internal class ResetSortAndFilterTest: SortFilterBottomSheetViewModelTestFixtures() {
 
+    private var dynamicFilterModel = "dynamic-filter-model-common.json".jsonToObject<DynamicFilterModel>()
     private val updatedViewPositionList = mutableListOf<Int>()
     private val updateViewPositionListObserver = EventObserver<Int> {
         updatedViewPositionList.add(it)
@@ -28,13 +29,12 @@ internal class ResetSortAndFilterTest: SortFilterBottomSheetViewModelTestFixture
 
     @Test
     fun `Reset without active filter or sort should not do anything (edge cases)`() {
-        val dynamicFilterModel = "dynamic-filter-model-common.json".jsonToObject<DynamicFilterModel>()
         `Given SortFilterBottomSheet view is already created`(mapOf(), dynamicFilterModel)
 
         `When reset sort and filter and applied`()
 
         `Then assert no update view in position`()
-        `Then assert map parameter is as expected`(mapOf(SearchApiConst.OB to SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_SORT))
+        `Then assert map parameter is as expected`(mapOf(dynamicFilterModel.getSortKey() to dynamicFilterModel.defaultSortValue))
         `Then assert button reset visibility`(false)
         `Then assert filter view is expanded`()
     }
@@ -54,7 +54,6 @@ internal class ResetSortAndFilterTest: SortFilterBottomSheetViewModelTestFixture
     fun `Reset should remove all filters`() {
         observeUpdateViewInPositionLiveData()
 
-        val dynamicFilterModel = "dynamic-filter-model-common.json".jsonToObject<DynamicFilterModel>()
         val mapParameter = createMapWithVariousFilters(dynamicFilterModel)
         `Given SortFilterBottomSheet view is already created`(mapParameter, dynamicFilterModel)
 
@@ -79,16 +78,21 @@ internal class ResetSortAndFilterTest: SortFilterBottomSheetViewModelTestFixture
             it[SearchApiConst.FCITY] = locationFilter.options[0].value + OPTION_SEPARATOR + locationFilter.options[2].value
             it[SearchApiConst.PMIN] = minPriceFilterValue
             it[SearchApiConst.PMAX] = maxPriceFilterValue
-            it[SearchApiConst.OB] = SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_SORT
+            it[dynamicFilterModel.getSortKey()] = dynamicFilterModel.defaultSortValue
         }
     }
 
-    private fun `Then assert reset functionality`(updatedViewPositionList: List<Int>, expectedIsApplyButtonVisible: Boolean) {
+    private fun `Then assert reset functionality`(
+            updatedViewPositionList: List<Int>,
+            expectedIsApplyButtonVisible: Boolean
+    ) {
         `Then assert sort filter view is reset`()
         `Then assert updated view position`(updatedViewPositionList)
         `Then assert button reset visibility`(false)
         `Then assert button apply visibility`(expectedIsApplyButtonVisible)
-        `Then assert map parameter is as expected`(mapOf(SearchApiConst.Q to "samsung", SearchApiConst.OB to SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_SORT))
+        `Then assert map parameter is as expected`(
+                mapOf(SearchApiConst.Q to "samsung", dynamicFilterModel.getSortKey() to dynamicFilterModel.defaultSortValue)
+        )
         `Then assert selected filter map is as expected`(emptyMap())
         `Then assert selected sort map is as expected`(emptyMap())
         `Then assert selected sort name`("")
@@ -107,7 +111,7 @@ internal class ResetSortAndFilterTest: SortFilterBottomSheetViewModelTestFixture
 
     private fun SortViewModel.assertSortIsReset() {
         sortItemViewModelList.forEach {
-            val expectedIsSelected = it.sort.value == SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_SORT
+            val expectedIsSelected = it.sort.value == dynamicFilterModel.defaultSortValue
             assert(it.isSelected == expectedIsSelected) {
                 "Sort item ${it.sort.name} is selected should be $expectedIsSelected."
             }
@@ -151,24 +155,39 @@ internal class ResetSortAndFilterTest: SortFilterBottomSheetViewModelTestFixture
     fun `Reset should set sort parameter as default sort`() {
         observeUpdateViewInPositionLiveData()
 
-        val dynamicFilterModel = "dynamic-filter-model-common.json".jsonToObject<DynamicFilterModel>()
-        val sortItem = dynamicFilterModel.data.sort.find { it.value != SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_SORT }!!
-        val mapParameter = mapOf(SearchApiConst.Q to "samsung", SearchApiConst.OB to sortItem.value)
+        `Test reset to set default sort`()
+
+        unObserveUpdateViewInPositionLiveData()
+    }
+
+    @Test
+    fun `Reset should set sort parameter as default sort with key order by`() {
+        observeUpdateViewInPositionLiveData()
+
+        dynamicFilterModel = "dynamic-filter-model-sort-key-orderby.json".jsonToObject()
+
+        `Test reset to set default sort`()
+
+        unObserveUpdateViewInPositionLiveData()
+    }
+
+    private fun `Test reset to set default sort`() {
+        dynamicFilterModel.defaultSortValue = "9"
+        val sortItem = dynamicFilterModel.data.sort.find { it.value != dynamicFilterModel.defaultSortValue }!!
+        val mapParameter = mapOf(SearchApiConst.Q to "samsung", sortItem.key to sortItem.value)
+
         `Given SortFilterBottomSheet view is already created`(mapParameter, dynamicFilterModel)
 
         `When reset sort and filter and applied`()
 
         `Then assert reset functionality`(listOf(0), true)
-
-        unObserveUpdateViewInPositionLiveData()
     }
 
     @Test
     fun `Reset after sort with apply filter - should remove all filters and set default sort`() {
         observeUpdateViewInPositionLiveData()
 
-        val mapParameter = mapOf(SearchApiConst.Q to "samsung", SearchApiConst.OB to SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_SORT)
-        val dynamicFilterModel = "dynamic-filter-model-common.json".jsonToObject<DynamicFilterModel>()
+        val mapParameter = mapOf(SearchApiConst.Q to "samsung", dynamicFilterModel.getSortKey() to dynamicFilterModel.defaultSortValue)
         `Given SortFilterBottomSheet view is already created`(mapParameter, dynamicFilterModel)
 
         val clickedSort = this.sortFilterList!!.getUnselectedSortWithApplyFilter()
@@ -185,8 +204,7 @@ internal class ResetSortAndFilterTest: SortFilterBottomSheetViewModelTestFixture
     fun `Reset after apply filter - should remove all filters and set default sort`() {
         observeUpdateViewInPositionLiveData()
 
-        val mapParameter = mapOf(SearchApiConst.Q to "samsung", SearchApiConst.OB to SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_SORT)
-        val dynamicFilterModel = "dynamic-filter-model-common.json".jsonToObject<DynamicFilterModel>()
+        val mapParameter = mapOf(SearchApiConst.Q to "samsung", dynamicFilterModel.getSortKey() to dynamicFilterModel.defaultSortValue)
         `Given SortFilterBottomSheet view is already created`(mapParameter, dynamicFilterModel)
 
         val filterViewModel = this.sortFilterList!!.findFilterViewModel(dynamicFilterModel.data.filter[0])!!
@@ -204,8 +222,7 @@ internal class ResetSortAndFilterTest: SortFilterBottomSheetViewModelTestFixture
     fun `Reset after apply price range filter - should remove all filters and set default sort`() {
         observeUpdateViewInPositionLiveData()
 
-        val mapParameter = mapOf(SearchApiConst.Q to "samsung", SearchApiConst.OB to SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_SORT)
-        val dynamicFilterModel = "dynamic-filter-model-common.json".jsonToObject<DynamicFilterModel>()
+        val mapParameter = mapOf(SearchApiConst.Q to "samsung", dynamicFilterModel.getSortKey() to dynamicFilterModel.defaultSortValue)
         `Given SortFilterBottomSheet view is already created`(mapParameter, dynamicFilterModel)
 
         val priceFilterViewModel = this.sortFilterList!!.findAndReturn<PriceFilterViewModel>()!!
@@ -224,8 +241,7 @@ internal class ResetSortAndFilterTest: SortFilterBottomSheetViewModelTestFixture
     fun `Reset after apply minimum price filter text box - should remove all filters and set default sort`() {
         observeUpdateViewInPositionLiveData()
 
-        val mapParameter = mapOf(SearchApiConst.Q to "samsung", SearchApiConst.OB to SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_SORT)
-        val dynamicFilterModel = "dynamic-filter-model-common.json".jsonToObject<DynamicFilterModel>()
+        val mapParameter = mapOf(SearchApiConst.Q to "samsung", dynamicFilterModel.getSortKey() to dynamicFilterModel.defaultSortValue)
         `Given SortFilterBottomSheet view is already created`(mapParameter, dynamicFilterModel)
 
         val priceFilterViewModel = this.sortFilterList!!.findAndReturn<PriceFilterViewModel>()!!
@@ -242,8 +258,7 @@ internal class ResetSortAndFilterTest: SortFilterBottomSheetViewModelTestFixture
     fun `Reset after apply maximum price filter text box - should remove all filters and set default sort`() {
         observeUpdateViewInPositionLiveData()
 
-        val mapParameter = mapOf(SearchApiConst.Q to "samsung", SearchApiConst.OB to SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_SORT)
-        val dynamicFilterModel = "dynamic-filter-model-common.json".jsonToObject<DynamicFilterModel>()
+        val mapParameter = mapOf(SearchApiConst.Q to "samsung", dynamicFilterModel.getSortKey() to dynamicFilterModel.defaultSortValue)
         `Given SortFilterBottomSheet view is already created`(mapParameter, dynamicFilterModel)
 
         val priceFilterViewModel = this.sortFilterList!!.findAndReturn<PriceFilterViewModel>()!!
