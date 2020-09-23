@@ -8,7 +8,6 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.promocheckout.R
-import com.tokopedia.promocheckout.common.domain.model.TravelCollectiveBanner
 import com.tokopedia.promocheckout.list.model.listcoupon.DataPromoCheckoutList
 import com.tokopedia.promocheckout.list.model.listlastseen.PromoCheckoutLastSeenModel
 import com.tokopedia.promocheckout.list.view.presenter.PromoCheckoutListPresenter.Mapper.mapToLastSeen
@@ -116,14 +115,14 @@ class PromoCheckoutListPresenter(private val graphqlUseCase: GraphqlUseCase,
     }
 
     object Mapper {
-        fun mapToLastSeen(data: List<TravelCollectiveBanner.Banner>?): List<PromoCheckoutLastSeenModel> {
+        fun mapToLastSeen(data: List<TravelCollectiveBannerModel.Banner>?): List<PromoCheckoutLastSeenModel> {
             val mapResult = mutableListOf<PromoCheckoutLastSeenModel>()
             data?.forEachIndexed { index, banner ->
-                if (!banner.attributes.promoCode.isBlank() && !banner.attributes.promoCode.equals("-")) {
+                if (!banner.attribute.promoCode.isBlank() && !banner.attribute.promoCode.equals("-")) {
                     val dataMapper = PromoCheckoutLastSeenModel(
                             id = banner.id.toInt(),
-                            title = banner.attributes.description,
-                            promoCode = banner.attributes.promoCode,
+                            title = banner.attribute.description,
+                            promoCode = banner.attribute.promoCode,
                             subtitle = banner.product
                     )
                     mapResult.add(dataMapper)
