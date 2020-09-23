@@ -34,10 +34,11 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Compa
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.PINNED_ACTIVE_TAB
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.PINNED_COMPONENT_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.PINNED_COMP_ID
-import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.PINNED_PRODUCT
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.PRODUCT_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.SOURCE_QUERY
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.lihatsemua.LihatSemuaViewHolder
 import com.tokopedia.discovery2.viewcontrollers.customview.CustomTopChatView
 import com.tokopedia.discovery2.viewcontrollers.customview.StickyHeadRecyclerView
 import com.tokopedia.discovery2.viewmodel.DiscoveryViewModel
@@ -64,7 +65,7 @@ const val PAGE_REFRESH_LOGIN = 35771
 private const val SCROLL_TOP_DIRECTION = -1
 private const val DEFAULT_SCROLL_POSITION = 0
 
-class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshListener, View.OnClickListener {
+class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshListener, View.OnClickListener, LihatSemuaViewHolder.OnLihatSemuaClickListener {
 
     private lateinit var discoveryViewModel: DiscoveryViewModel
     private lateinit var mDiscoveryFab: CustomTopChatView
@@ -104,7 +105,7 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
                 bundle.putString(PINNED_COMPONENT_ID, queryParameterMap[PINNED_COMPONENT_ID])
                 bundle.putString(PINNED_ACTIVE_TAB, queryParameterMap[PINNED_ACTIVE_TAB])
                 bundle.putString(PINNED_COMP_ID, queryParameterMap[PINNED_COMP_ID])
-                bundle.putString(PINNED_PRODUCT, queryParameterMap[PINNED_PRODUCT])
+                bundle.putString(PRODUCT_ID, queryParameterMap[PRODUCT_ID])
             }
             fragment.arguments = bundle
             return fragment
@@ -450,5 +451,13 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
     override fun onStop() {
         super.onStop()
         openScreenStatus = false
+    }
+
+    override fun onProductCardHeaderClick(componentsItem: ComponentsItem) {
+        getDiscoveryAnalytics().trackHeaderSeeAllClick(isUserLoggedIn(), componentsItem)
+    }
+
+    override fun onLihatSemuaClick(data: DataItem) {
+        getDiscoveryAnalytics().trackLihatSemuaClick(data.name)
     }
 }

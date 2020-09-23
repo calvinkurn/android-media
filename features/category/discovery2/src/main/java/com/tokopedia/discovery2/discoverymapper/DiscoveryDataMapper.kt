@@ -70,7 +70,7 @@ class DiscoveryDataMapper {
             }
 
             if (!isSelectedFound) {
-                list[0].data?.get(0)?.isSelected = true
+                list.getOrNull(0)?.data?.getOrNull(0)?.isSelected = true
             }
             return list
         }

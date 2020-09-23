@@ -94,7 +94,6 @@
     <string name="autoads_selanjutnya">Selanjutnya</string>
     <string name="autoads_coba_iklan">Coba Iklan Otomatis</string>
     <string name="autoads_skip">"Skip</string>
-
-
+    <string name="autoads_inprogress_deactivate_desc">Tunggu ya, Iklan Otomatis kamu akan dinonaktifkan sesaat lagi.</string>
 
 </resources>

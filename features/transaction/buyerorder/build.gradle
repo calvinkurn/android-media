@@ -25,6 +25,8 @@ dependencies {
     implementation project(rootProject.ext.features.sessioncommon)
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.features.logisticdata)
+    implementation project(rootProject.ext.features.recommendationWidgetCommon)
+
     implementation project(rootProject.ext.libraries.fingerprint)
     implementation project(rootProject.ext.libraries.linker)
     implementation project(rootProject.ext.libraries.applink)
@@ -36,7 +38,6 @@ dependencies {
     implementation project(rootProject.ext.libraries.commonNetwork)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.libraries.webview)
-    implementation project(rootProject.ext.features.recommendationWidgetCommon)
     implementation project(rootProject.ext.features.productCard)
     implementation project(rootProject.ext.features.atc_common)
     implementation project(rootProject.ext.libraries.trackingOptimizer)
@@ -48,6 +49,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.global_error
     implementation rootProject.ext.unifyDependencies.dialog
+    implementation rootProject.ext.unifyDependencies.sortFilter
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
@@ -79,6 +81,11 @@ dependencies {
     }
     implementation rootProject.ext.unifyDependencies.datepicker
     implementation rootProject.ext.supportLibDependencies.constraintLayout
+
+    testImplementation rootProject.ext.testDependencies.mockk
+    implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk8
+    testImplementation rootProject.ext.testDependencies.archCoreTesting
+    testImplementation rootProject.ext.testDependencies.androidxTest
 }
 
 project.ext {
