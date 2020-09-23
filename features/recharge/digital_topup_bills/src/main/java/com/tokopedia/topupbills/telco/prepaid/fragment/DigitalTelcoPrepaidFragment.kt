@@ -103,7 +103,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
     }
 
     private fun subscribeUi() {
-        sharedModelPrepaid.productCatalogItem.observe(this, Observer {
+        sharedModelPrepaid.productCatalogItem.observe(viewLifecycleOwner, Observer {
             if (isProductExist(it)) {
                 sharedModelPrepaid.setVisibilityTotalPrice(true)
                 telco_buy_widget.setTotalPrice(it.attributes.price)
@@ -116,27 +116,27 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
             }
         })
 
-        sharedModelPrepaid.productAutoCheckout.observe(this, Observer {
+        sharedModelPrepaid.productAutoCheckout.observe(viewLifecycleOwner, Observer {
             if (!isExpressCheckout) {
                 setupCheckoutData()
                 processTransaction()
             }
         })
 
-        sharedModelPrepaid.showTotalPrice.observe(this, Observer {
+        sharedModelPrepaid.showTotalPrice.observe(viewLifecycleOwner, Observer {
             it?.run {
                 buyWidget.setVisibilityLayout(it)
             }
         })
 
-        sharedModelPrepaid.selectedFilter.observe(this, Observer {
+        sharedModelPrepaid.selectedFilter.observe(viewLifecycleOwner, Observer {
             if (operatorId.isNotEmpty()) {
                 sharedModelPrepaid.getCatalogProductList(GraphqlHelper.loadRawString(activity?.resources,
                         R.raw.query_catalog_product_telco), menuId, operatorId, it)
             }
         })
 
-        sharedModelPrepaid.expandView.observe(this, Observer {
+        sharedModelPrepaid.expandView.observe(viewLifecycleOwner, Observer {
             if (it) telcoClientNumberWidget.setVisibleResultNumber(false)
             else telcoClientNumberWidget.setVisibleResultNumber(true)
         })
@@ -618,20 +618,13 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
 
     private fun generateCheckoutPassData(inputNumber: String, promoStatus: String,
                                          categoryId: String, operatorId: String, productId: String) {
-        checkoutPassData = DigitalCheckoutPassData.Builder()
-                .action(DigitalCheckoutPassData.DEFAULT_ACTION)
+        checkoutPassData = getDefaultCheckoutPassDataBuilder()
                 .categoryId(categoryId)
                 .clientNumber(inputNumber)
-                .instantCheckout("0")
                 .isPromo(promoStatus)
                 .operatorId(operatorId)
                 .productId(productId)
                 .utmCampaign(categoryId)
-                .utmContent(GlobalConfig.VERSION_NAME)
-                .idemPotencyKey(userSession.userId.generateRechargeCheckoutToken())
-                .utmSource(DigitalCheckoutPassData.UTM_SOURCE_ANDROID)
-                .utmMedium(DigitalCheckoutPassData.UTM_MEDIUM_WIDGET)
-                .voucherCodeCopied("")
                 .build()
     }
 

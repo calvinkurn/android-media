@@ -1,7 +1,6 @@
 package com.tokopedia.oneclickcheckout.order.view.model
 
 data class OccPrompt(
-        val from: Int = 0,
         val type: String = "",
         val title: String = "",
         val description: String = "",
@@ -9,9 +8,6 @@ data class OccPrompt(
         val buttons: List<OccPromptButton> = emptyList()
 ) {
     companion object {
-        const val FROM_CART = 0
-        const val FROM_CHECKOUT = 1
-
         const val TYPE_DIALOG = "dialog_box"
         const val TYPE_BOTTOM_SHEET = "bottom_sheet"
     }
@@ -38,6 +34,7 @@ data class OccPromptButton(
     companion object {
         const val ACTION_OPEN = "open"
         const val ACTION_RELOAD = "reload"
+        const val ACTION_RETRY = "retry"
 
         const val COLOR_PRIMARY = "primary"
     }

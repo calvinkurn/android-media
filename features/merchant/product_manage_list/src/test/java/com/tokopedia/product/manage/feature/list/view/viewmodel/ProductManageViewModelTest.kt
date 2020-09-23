@@ -2,6 +2,10 @@ package com.tokopedia.product.manage.feature.list.view.viewmodel
 
 import android.accounts.NetworkErrorException
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.product.manage.common.list.data.model.filter.ProductListMetaData
+import com.tokopedia.product.manage.common.list.data.model.filter.ProductListMetaResponse
+import com.tokopedia.product.manage.common.list.data.model.filter.ProductListMetaWrapper
+import com.tokopedia.product.manage.common.list.data.model.filter.Tab
 import com.tokopedia.product.manage.data.createEditVariantResult
 import com.tokopedia.product.manage.data.createProduct
 import com.tokopedia.product.manage.data.createProductViewModel

@@ -366,7 +366,7 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
         orderSummaryPageViewModel._orderShipment = helper.orderShipment
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
         every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(ValidateUsePromoRevampUiModel())
-        val prompt = OccPrompt(OccPrompt.FROM_CHECKOUT, OccPrompt.TYPE_DIALOG)
+        val prompt = OccPrompt(OccPrompt.TYPE_DIALOG)
         coEvery { checkoutOccUseCase.executeSuspend(any()) } returns CheckoutOccData(status = STATUS_OK, result = CheckoutOccResult(success = 0, prompt = prompt))
 
         // When

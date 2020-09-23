@@ -17,7 +17,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.globalerror.GlobalError
@@ -198,7 +197,7 @@ class AddressListFragment : BaseDaggerFragment(), AddressListItemAdapter.onSelec
         textSearchError = view?.findViewById(R.id.text_search_error)
         globalErrorLayout = view?.findViewById(R.id.global_error)
 
-        ImageHandler.LoadImage(ivEmptyState, EMPTY_STATE_PICT_URL)
+        ivEmptyState?.setImageUrl(EMPTY_STATE_PICT_URL)
     }
 
     private fun goBack() {

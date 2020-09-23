@@ -1,9 +1,0 @@
-query shopInfoByID ($shopID: Int!){
-    shopInfoByID(input:{shopIDs:[$shopID], fields:["other-shiploc"]}) {
-        result {
-            shippingLoc {
-                provinceID
-            }
-        }
-    }
-}

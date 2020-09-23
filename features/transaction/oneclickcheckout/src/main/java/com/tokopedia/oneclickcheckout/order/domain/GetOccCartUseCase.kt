@@ -210,7 +210,7 @@ class GetOccCartUseCase @Inject constructor(val context: Context, val graphqlUse
         return OrderPayment(payment.enable != 0, false, payment.gatewayCode, payment.gatewayName,
                 payment.image, payment.description, payment.minimumAmount, payment.maximumAmount, payment.fee, payment.walletAmount,
                 payment.metadata, mapPaymentCreditCard(payment.creditCard, data), mapPaymentErrorMessage(payment.errorMessage), data.errorTicker,
-                payment.isEnableNextButton, payment.isDisablePayButton)
+                payment.isEnableNextButton, payment.isDisablePayButton, payment.isOvoOnlyCampaign)
     }
 
     private fun mapPaymentErrorMessage(errorMessage: PaymentErrorMessage): OrderPaymentErrorMessage {
@@ -265,7 +265,7 @@ class GetOccCartUseCase @Inject constructor(val context: Context, val graphqlUse
     }
 
     private fun mapPrompt(promptResponse: OccPromptResponse): OccPrompt {
-        return OccPrompt(OccPrompt.FROM_CART, promptResponse.type.toLowerCase(Locale.ROOT), promptResponse.title,
+        return OccPrompt(promptResponse.type.toLowerCase(Locale.ROOT), promptResponse.title,
                 promptResponse.description, promptResponse.imageUrl, promptResponse.buttons.map {
             OccPromptButton(it.text, it.link, it.action.toLowerCase(Locale.ROOT), it.color.toLowerCase(Locale.ROOT))
         })

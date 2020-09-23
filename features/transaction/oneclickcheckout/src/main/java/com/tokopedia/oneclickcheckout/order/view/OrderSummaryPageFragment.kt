@@ -1,6 +1,7 @@
 package com.tokopedia.oneclickcheckout.order.view
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
@@ -13,6 +14,7 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.widget.NestedScrollView
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -979,70 +981,81 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
     private fun showPrompt(prompt: OccPrompt) {
         val ctx = context ?: return
         if (prompt.type == OccPrompt.TYPE_DIALOG) {
-            val actionType = if (prompt.buttons.size > 1) DialogUnify.HORIZONTAL_ACTION else DialogUnify.SINGLE_ACTION
-            val dialogUnify = DialogUnify(ctx, actionType, DialogUnify.NO_IMAGE)
-            dialogUnify.apply {
-                setTitle(prompt.title)
-                setDescription(prompt.description)
-                prompt.getPrimaryButton()?.also { primaryButton ->
-                    setPrimaryCTAText(primaryButton.text)
-                    setPrimaryCTAClickListener { onDialogPromptButtonClicked(dialogUnify, prompt, primaryButton) }
-                    prompt.getSecondButton(primaryButton)?.also { secondaryButton ->
-                        setSecondaryCTAText(secondaryButton.text)
-                        setSecondaryCTAClickListener { onDialogPromptButtonClicked(dialogUnify, prompt, secondaryButton) }
-                    }
-                }
-                setOverlayClose(false)
-                setCancelable(false)
-            }.show()
+            showDialogPrompt(prompt, ctx)
         } else if (prompt.type == OccPrompt.TYPE_BOTTOM_SHEET) {
-            fragmentManager?.let {
-                val bottomSheetUnify = BottomSheetUnify()
-                bottomSheetUnify.apply {
-                    showCloseIcon = true
-                    val child = View.inflate(ctx, R.layout.bottom_sheet_error_checkout, null)
-                    child.findViewById<EmptyStateUnify>(R.id.es_checkout).apply {
-                        setImageUrl(prompt.imageUrl)
-                        setTitle(prompt.title)
-                        setDescription(prompt.description)
-                        prompt.getPrimaryButton()?.also { primaryButton ->
-                            setPrimaryCTAText(primaryButton.text)
-                            setPrimaryCTAClickListener { onBottomSheetPromptButtonClicked(bottomSheetUnify, prompt, primaryButton) }
-                            prompt.getSecondButton(primaryButton)?.also { secondaryButton ->
-                                setSecondaryCTAText(secondaryButton.text)
-                                setSecondaryCTAClickListener { onBottomSheetPromptButtonClicked(bottomSheetUnify, prompt, secondaryButton) }
-                            }
-                        }
-                    }
-                    setChild(child)
-                }.show(it, null)
-            }
+            val fm = fragmentManager ?: return
+            showBottomSheetPrompt(prompt, fm, ctx)
         }
     }
 
-    private fun onDialogPromptButtonClicked(dialog: DialogUnify, prompt: OccPrompt, button: OccPromptButton) {
-        if (button.action == OccPromptButton.ACTION_OPEN) {
-            RouteManager.route(context, button.link)
-            activity?.finish()
-        } else if (button.action == OccPromptButton.ACTION_RELOAD) {
-            dialog.dismiss()
-            if (prompt.from == OccPrompt.FROM_CART) {
+    private fun showDialogPrompt(prompt: OccPrompt, ctx: Context) {
+        val actionType = if (prompt.buttons.size > 1) DialogUnify.HORIZONTAL_ACTION else DialogUnify.SINGLE_ACTION
+        val dialogUnify = DialogUnify(ctx, actionType, DialogUnify.NO_IMAGE)
+        dialogUnify.apply {
+            setTitle(prompt.title)
+            setDescription(prompt.description)
+            prompt.getPrimaryButton()?.also { primaryButton ->
+                setPrimaryCTAText(primaryButton.text)
+                setPrimaryCTAClickListener { onDialogPromptButtonClicked(dialogUnify, primaryButton) }
+                prompt.getSecondButton(primaryButton)?.also { secondaryButton ->
+                    setSecondaryCTAText(secondaryButton.text)
+                    setSecondaryCTAClickListener { onDialogPromptButtonClicked(dialogUnify, secondaryButton) }
+                }
+            }
+            setOverlayClose(false)
+            setCancelable(false)
+        }.show()
+    }
+
+    private fun onDialogPromptButtonClicked(dialog: DialogUnify, button: OccPromptButton) {
+        when (button.action) {
+            OccPromptButton.ACTION_OPEN -> {
+                RouteManager.route(context, button.link)
+                activity?.finish()
+            }
+            OccPromptButton.ACTION_RELOAD -> {
+                dialog.dismiss()
                 refresh()
-            } else if (prompt.from == OccPrompt.FROM_CHECKOUT) {
+            }
+            OccPromptButton.ACTION_RETRY -> {
                 viewModel.finalUpdate(onSuccessCheckout(), false)
             }
         }
     }
 
-    private fun onBottomSheetPromptButtonClicked(bottomSheet: BottomSheetUnify, prompt: OccPrompt, button: OccPromptButton) {
-        if (button.action == OccPromptButton.ACTION_OPEN) {
-            RouteManager.route(context, button.link)
-            activity?.finish()
-        } else if (button.action == OccPromptButton.ACTION_RELOAD) {
-            bottomSheet.dismiss()
-            if (prompt.from == OccPrompt.FROM_CART) {
+    private fun showBottomSheetPrompt(prompt: OccPrompt, fm: FragmentManager, ctx: Context) {
+        val bottomSheetUnify = BottomSheetUnify()
+        bottomSheetUnify.apply {
+            showCloseIcon = true
+            val child = View.inflate(ctx, R.layout.bottom_sheet_error_checkout, null)
+            child.findViewById<EmptyStateUnify>(R.id.es_checkout).apply {
+                setImageUrl(prompt.imageUrl)
+                setTitle(prompt.title)
+                setDescription(prompt.description)
+                prompt.getPrimaryButton()?.also { primaryButton ->
+                    setPrimaryCTAText(primaryButton.text)
+                    setPrimaryCTAClickListener { onBottomSheetPromptButtonClicked(bottomSheetUnify, primaryButton) }
+                    prompt.getSecondButton(primaryButton)?.also { secondaryButton ->
+                        setSecondaryCTAText(secondaryButton.text)
+                        setSecondaryCTAClickListener { onBottomSheetPromptButtonClicked(bottomSheetUnify, secondaryButton) }
+                    }
+                }
+            }
+            setChild(child)
+        }.show(fm, null)
+    }
+
+    private fun onBottomSheetPromptButtonClicked(bottomSheet: BottomSheetUnify, button: OccPromptButton) {
+        when (button.action) {
+            OccPromptButton.ACTION_OPEN -> {
+                RouteManager.route(context, button.link)
+                activity?.finish()
+            }
+            OccPromptButton.ACTION_RELOAD -> {
+                bottomSheet.dismiss()
                 refresh()
-            } else if (prompt.from == OccPrompt.FROM_CHECKOUT) {
+            }
+            OccPromptButton.ACTION_RETRY -> {
                 viewModel.finalUpdate(onSuccessCheckout(), false)
             }
         }

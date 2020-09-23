@@ -19,7 +19,9 @@ data class OrderPayment(
         val errorMessage: OrderPaymentErrorMessage = OrderPaymentErrorMessage(),
         val errorTickerMessage: String = "",
         val isEnableNextButton: Boolean = false,
-        val isDisablePayButton: Boolean = false
+        val isDisablePayButton: Boolean = false,
+        // flag to determine continue using ovo flow
+        val isOvoOnlyCampaign: Boolean = false
 ) {
     fun isError(): Boolean {
         return isCalculationError || errorMessage.message.isNotEmpty() || errorTickerMessage.isNotEmpty()
