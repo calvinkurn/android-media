@@ -1,5 +1,6 @@
 package com.tokopedia.shop.home.view.adapter.viewholder
 
+import android.os.Bundle
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -43,19 +44,25 @@ class ShopHomePlayCarouselViewHolder(
 
     override fun bind(element: ShopHomePlayCarouselUiModel?, payloads: MutableList<Any>) {
         if(payloads.isNotEmpty()){
+            val bundle = payloads.first() as Bundle
             when {
-                payloads.contains(ON_DESTROY) -> {
+                bundle.containsKey(ON_DESTROY) -> {
                     itemView.play_banner_carousel?.onDestroy()
                 }
-                payloads.contains(ON_RESUME) -> {
+                bundle.containsKey(ON_RESUME) -> {
                     itemView.play_banner_carousel?.onResume()
                 }
-                payloads.contains(ON_PAUSE) -> {
+                bundle.containsKey(ON_PAUSE) -> {
                     itemView.play_banner_carousel?.onPause()
                 }
-                payloads.contains(ShopPageHomeFragment.UPDATE_REMIND_ME_PLAY) -> {
-                    element?.playBannerCarouselDataModel?.let{
-                        itemView.play_banner_carousel?.setItem(it)
+                 bundle.containsKey(ShopPageHomeFragment.UPDATE_REMIND_ME_PLAY) -> {
+                    element?.playBannerCarouselDataModel?.let{ playCarouselCardDataModel ->
+                        if(bundle.containsKey(ShopPageHomeFragment.UPDATE_REMIND_ME_PLAY)){
+                            playCarouselCardDataModel.channelList.find { it.getId() == bundle.getString(ShopPageHomeFragment.UPDATE_REMIND_ME_PLAY) && it is PlayBannerCarouselItemDataModel}?.let{
+                                (it as PlayBannerCarouselItemDataModel).remindMe = !it.remindMe
+                            }
+                        }
+                        itemView.play_banner_carousel?.setItem(playCarouselCardDataModel)
                     }
                 }
             }
