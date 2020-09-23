@@ -17,8 +17,7 @@
         app:layout_constraintWidth_percent="0.22"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        tools:src="@drawable/ic_seller_migration_focus_selling"/>
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_item_seller_migration_account_title"
