@@ -50,7 +50,7 @@ const val SEARCHBAR_NEW_NAME = "com.tokopedia.unifycomponents.SearchBarUnify"
 //TabsUnifyDetector
 const val TABS_ISSUE_ID = "TabsUnifyUsage"
 const val TABS_ACTUAL_SHORT_NAME = "Tabs"
-const val TAB_LAYOUT_ACTUAL_SHORT_NAME = "Tabs"
+const val TAB_LAYOUT_ACTUAL_SHORT_NAME = "TabLayout"
 const val TABS_FIX_SHORT_NAME = "TabsUnify"
 const val TABS_OLD_NAME = "com.tokopedia.design.component.Tabs"
 const val TAB_LAYOUT_OLD_NAME = "com.google.android.material.tabs.TabLayout"
@@ -72,8 +72,3 @@ const val IMAGE_BUTTON_ISSUE_ID = "UnifyImageButtonUsage"
 const val IMAGE_BUTTON_OLD_SHORT_NAME = "ImageButton"
 const val IMAGE_BUTTON_NEW_SHORT_NAME = "ImageButtonUnify"
 const val IMAGE_BUTTON_NEW_NAME = "com.tokopedia.unifycomponents.UnifyImageButton"
-
-
-
-
-
