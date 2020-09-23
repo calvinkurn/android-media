@@ -20,6 +20,7 @@ import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProduc
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.tracking.ProductAddShippingTracking
 import com.tokopedia.product.addedit.variant.presentation.model.VariantInputModel
+import com.tokopedia.usecase.RequestParams
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -60,7 +61,7 @@ open class AddEditProductAddService : AddEditProductBaseService() {
     }
 
     private fun saveProductToDraft() {
-        launch {
+        launchCatchError(block = {
             saveProductDraftUseCase.params = SaveProductDraftUseCase.createRequestParams(
                     mapProductInputModelDetailToDraft(productInputModel),
                     productInputModel.draftId, false)
@@ -73,7 +74,10 @@ open class AddEditProductAddService : AddEditProductBaseService() {
             val variantInputModel = productInputModel.variantInputModel
             // (2)
             uploadProductImages(detailInputModel.imageUrlOrPathList, variantInputModel)
-        }
+        },
+        onError = { throwable ->
+            logError(RequestParams.EMPTY, throwable)
+        })
     }
 
     override fun onUploadProductImagesSuccess(
@@ -118,11 +122,9 @@ open class AddEditProductAddService : AddEditProductBaseService() {
             }
             // (4)
             clearProductDraft()
-            delay(NOTIFICATION_CHANGE_DELAY)
             setUploadProductDataSuccess()
             ProductAddShippingTracking.clickFinish(shopId, true)
         }, onError = { throwable ->
-            delay(NOTIFICATION_CHANGE_DELAY)
             val errorMessage = getErrorMessage(throwable)
             setUploadProductDataError(errorMessage)
             ProductAddShippingTracking.clickFinish(shopId, false, errorMessage)

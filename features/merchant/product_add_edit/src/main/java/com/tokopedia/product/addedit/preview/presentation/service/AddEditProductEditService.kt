@@ -122,10 +122,8 @@ class AddEditProductEditService : AddEditProductBaseService() {
             }
             // (4)
             clearProductDraft()
-            delay(NOTIFICATION_CHANGE_DELAY)
             setUploadProductDataSuccess()
         }, onError = { throwable ->
-            delay(NOTIFICATION_CHANGE_DELAY)
             setUploadProductDataError(getErrorMessage(throwable))
 
             logError(productEditUseCase.params, throwable)
