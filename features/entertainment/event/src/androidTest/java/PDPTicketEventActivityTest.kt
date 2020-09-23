@@ -33,7 +33,7 @@ class PDPTicketEventActivityTest{
                     val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
                     val intent = Intent(targetContext, EventPDPTicketActivity::class.java).apply {
                         putExtra(EventPDPTicketActivity.EXTRA_URL_PDP, "doolive-ala-carte-booking-36116")
-                        putExtra(EventPDPTicketActivity.SELECTED_DATE,"1598806800")
+                        putExtra(EventPDPTicketActivity.SELECTED_DATE,"1900534740")
                         putExtra(EventPDPTicketActivity.START_DATE,"")
                         putExtra(EventPDPTicketActivity.END_DATE,"")
 
@@ -43,14 +43,10 @@ class PDPTicketEventActivityTest{
 
                 override fun beforeActivityLaunched() {
                     super.beforeActivityLaunched()
-                    //setupGraphqlMockResponse(PDPTicketEventMockResponse())
+                    setupGraphqlMockResponse(PDPTicketEventMockResponse())
+                    gtmLogDBSource.deleteAll().subscribe()
                 }
             }
-
-    @Before
-    fun setup() {
-        gtmLogDBSource.deleteAll().subscribe()
-    }
 
 
     @Test

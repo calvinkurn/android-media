@@ -1,3 +1,4 @@
+import android.app.Instrumentation
 import android.content.Intent
 import android.view.View
 import android.view.View.VISIBLE
@@ -5,6 +6,8 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.intent.Intents.intending
+import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.platform.app.InstrumentationRegistry
@@ -69,9 +72,10 @@ class PDPEventActivityTest {
     }
 
     fun click_check_ticket() {
-        val viewCalendarInteraction = onView(getElementFromMatchAtPosition(allOf(withText("23"), withId(com.tokopedia.calendar.R.id.day)
-        ), 0)).check(matches(isDisplayed()))
-        viewCalendarInteraction.perform(click())
+        intending(anyIntent()).respondWith(Instrumentation.ActivityResult(0, null))
+
+        onView(getElementFromMatchAtPosition(withText("23"), 0)).check(matches(isDisplayed()))
+        onView(getElementFromMatchAtPosition(withText("23"), 0)).perform(click())
     }
 
     private fun getElementFromMatchAtPosition(

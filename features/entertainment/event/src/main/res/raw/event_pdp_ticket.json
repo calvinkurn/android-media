@@ -80,7 +80,7 @@
           "sale_end_time": "2020-09-26 14:00:00",
           "date_range": false,
           "dates": [
-            "1601053200"
+            "1900534740"
           ],
           "packages": [
             {
@@ -94,9 +94,9 @@
               "start_date": "1598806800",
               "sales_price": "50000",
               "dates": [
-                "1601053200"
+                "1900534740"
               ],
-              "end_date": "1601128800",
+              "end_date": "1900534740",
               "package_items": [
                 {
                   "id": "7608",
@@ -115,37 +115,12 @@
                   "provider_status": "SOLD OUT",
                   "status": 1,
                   "dates": [
-                    "1601053200"
+                    "1900534740"
                   ],
                   "min_qty": "1",
                   "max_qty": "4",
                   "start_date": "1598806800",
-                  "end_date": "1600534740",
-                  "provider_custom_text": ""
-                },
-                {
-                  "id": "7609",
-                  "product_id": "40281",
-                  "product_package_id": "2624",
-                  "provider_schedule_id": "37538-1-5",
-                  "provider_ticket_id": "102486-1-5",
-                  "name": "Regular",
-                  "description": "",
-                  "tnc": "",
-                  "convenience_fee": "0",
-                  "mrp": "75000",
-                  "sales_price": "75000",
-                  "available": "800",
-                  "provider_meta_data": "{\"id_ticket\":102486,\"id_ticket_type\":91739,\"ticket_type\":\"Regular\",\"description\":\"\",\"start_sale\":\"2020-08-31 00:00:00\",\"end_sale\":\"2020-09-26 21:00:00\",\"price\":75000,\"quantity\":800,\"available\":true,\"available_qty\":551,\"ticket_seating_chart\":false,\"ticket_color\":\"#000000\",\"hold_end_date\":null,\"hold_message\":null,\"status_ticket\":1,\"status_ticket_name\":\"ACTIVE\",\"tags\":[],\"max_buy_qty\":4}",
-                  "provider_status": "ACTIVE",
-                  "status": 1,
-                  "dates": [
-                    "1601053200"
-                  ],
-                  "min_qty": "1",
-                  "max_qty": "4",
-                  "start_date": "1598806800",
-                  "end_date": "1601128800",
+                  "end_date": "1900534740",
                   "provider_custom_text": ""
                 }
               ]

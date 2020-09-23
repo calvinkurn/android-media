@@ -9,7 +9,6 @@ class PDPTicketEventMockResponse : MockModelConfig(){
 
     companion object{
         const val KEY_QUERY_PDP_V3 = "event_product_detail_v3"
-        const val KEY_QUERY_SECTION = "event_content_by_id"
         const val KEY_TRAVEL_HOLIDAY = "TravelGetHoliday"
     }
 
