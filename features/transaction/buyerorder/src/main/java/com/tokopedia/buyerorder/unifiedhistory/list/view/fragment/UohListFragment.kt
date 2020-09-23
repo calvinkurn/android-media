@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.gson.Gson
 import com.google.gson.JsonArray
+import com.google.gson.JsonObject
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
@@ -1568,7 +1569,21 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         }
     }
 
-    override fun trackAddToCartRecommendation(recommendationItem: RecommendationItem) {
+    override fun atcRecommendationItem(recommendationItem: RecommendationItem) {
+        val jsonArrayAtc = JsonArray()
+        val atcJsonObject = JsonObject()
+        atcJsonObject.addProperty(UohConsts.PRODUCT_ID, recommendationItem.productId)
+        atcJsonObject.addProperty(UohConsts.SHOP_ID, recommendationItem.shopId)
+        atcJsonObject.addProperty(UohConsts.QUANTITY, recommendationItem.quantity)
+        atcJsonObject.addProperty(UohConsts.NOTES, "")
+        jsonArrayAtc.add(atcJsonObject)
+        uohListViewModel.doAtc(GraphqlHelper.loadRawString(resources, R.raw.buy_again), jsonArrayAtc)
+
+        // analytics
+        trackAtcRecommendationItem(recommendationItem)
+    }
+
+    private fun trackAtcRecommendationItem(recommendationItem: RecommendationItem) {
         val product = ECommerceAddRecommendation.Add.ActionField.Product(
                 name = recommendationItem.name,
                 id = recommendationItem.productId.toString(),
