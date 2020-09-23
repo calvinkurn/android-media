@@ -1,4 +1,4 @@
-`package com.tokopedia.tkpd
+package com.tokopedia.tkpd
 
 import android.content.Intent
 import android.os.Bundle
