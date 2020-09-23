@@ -54,7 +54,7 @@ class AddressRobot {
         onView(withId(R.id.et_search_district_recommendation))
                 .check(matches(isDisplayed()))
                 .perform(typeText(keyword), closeSoftKeyboard())
-        Thread.sleep(500L)
+        Thread.sleep(750L)
     }
 
     fun selectFirstCityItem() {
