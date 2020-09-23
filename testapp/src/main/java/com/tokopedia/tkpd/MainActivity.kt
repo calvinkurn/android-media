@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd
+`package com.tokopedia.tkpd
 
 import android.content.Intent
 import android.os.Bundle
@@ -101,7 +101,5 @@ class MainActivity : AppCompatActivity() {
          * RouteManager.route(this, ApplinkConstInternalMarketplace.SHOP_SETTINGS)
          * LEAVE THIS EMPTY AS DEFAULT!!
          * */
-//        startActivity(Intent(this, HomeActivity::class.java))
-        RouteManager.route(this, "https://www.tokopedia.com/otsuka")
     }
 }
