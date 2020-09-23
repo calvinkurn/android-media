@@ -45,6 +45,7 @@ import com.tokopedia.search.result.presentation.model.ProductViewModel;
 import com.tokopedia.search.result.presentation.model.RecommendationItemViewModel;
 import com.tokopedia.search.result.presentation.model.RecommendationTitleViewModel;
 import com.tokopedia.search.result.presentation.model.RelatedViewModel;
+import com.tokopedia.search.result.presentation.model.SeparatorViewModel;
 import com.tokopedia.search.result.presentation.model.SuggestionViewModel;
 import com.tokopedia.search.utils.SearchFilterUtilsKt;
 import com.tokopedia.search.utils.UrlParamUtils;
@@ -813,6 +814,8 @@ final class ProductListPresenter
 
     private void addBroadMatchToVisitableList(List<Visitable> visitableList) {
         if (suggestionViewModel != null && !textIsEmpty(suggestionViewModel.getSuggestionText())) {
+            if (isBroadMatchNeedTopSeparator()) visitableList.add(new SeparatorViewModel());
+
             visitableList.add(suggestionViewModel);
 
             suggestionViewModel = null;
@@ -822,8 +825,20 @@ final class ProductListPresenter
             visitableList.addAll(relatedViewModel.getBroadMatchViewModelList());
             trackBroadMatchImpression();
 
+            if (isBroadMatchNeedBottomSeparator()) visitableList.add(new SeparatorViewModel());
+
             relatedViewModel = null;
         }
+    }
+
+    private boolean isBroadMatchNeedTopSeparator() {
+        int broadMatchPosition = relatedViewModel.getPosition();
+        return broadMatchPosition == 0 || broadMatchPosition > 1;
+    }
+
+    private boolean isBroadMatchNeedBottomSeparator() {
+        int broadMatchPosition = relatedViewModel.getPosition();
+        return broadMatchPosition >= 1;
     }
 
     private void trackBroadMatchImpression() {
