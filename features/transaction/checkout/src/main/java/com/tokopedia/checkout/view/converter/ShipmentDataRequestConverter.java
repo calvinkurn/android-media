@@ -39,7 +39,6 @@ public class ShipmentDataRequestConverter {
         if (shipmentCartItemModels != null && shipmentCartItemModels.size() > 0) {
             List<ShopProductCheckoutRequest> shopProductCheckoutRequestList = new ArrayList<>();
             if (recipientAddress != null) {
-                // Single address
                 for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModels) {
                     if (shipmentCartItemModel.getSelectedShipmentDetailData() != null) {
                         shopProductCheckoutRequestList.add(getProductCheckoutRequest(shipmentCartItemModel, isTradeInPickup));
@@ -48,23 +47,6 @@ public class ShipmentDataRequestConverter {
                     }
                 }
                 requestData.setCheckoutRequestData(createCheckoutRequestData(shopProductCheckoutRequestList, recipientAddress));
-            } else {
-                // Multiple address
-                List<DataCheckoutRequest> checkoutRequestData = new ArrayList<>();
-                for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModels) {
-                    shopProductCheckoutRequestList.add(getProductCheckoutRequest(shipmentCartItemModel, isTradeInPickup));
-                }
-
-                for (int i = 0; i < shopProductCheckoutRequestList.size(); i++) {
-                    DataCheckoutRequest.Builder dataCheckoutRequestBuilder = new DataCheckoutRequest.Builder();
-                    List<ShopProductCheckoutRequest> shopProductCheckoutRequests = new ArrayList<>();
-                    shopProductCheckoutRequests.add(shopProductCheckoutRequestList.get(i));
-                    dataCheckoutRequestBuilder.shopProducts(shopProductCheckoutRequests);
-                    dataCheckoutRequestBuilder.addressId(Integer.parseInt(shipmentCartItemModels.get(i).getRecipientAddressModel().getId()));
-                    checkoutRequestData.add(dataCheckoutRequestBuilder.build());
-                }
-
-                requestData.setCheckoutRequestData(checkoutRequestData);
             }
         }
 

@@ -16,12 +16,15 @@ import com.alivc.live.pusher.SurfaceStatus
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
+import com.tokopedia.analytics.performance.util.PltPerformanceData
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.broadcaster.R
-import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
+import com.tokopedia.play.broadcaster.analytic.*
 import com.tokopedia.play.broadcaster.di.broadcast.DaggerPlayBroadcastComponent
 import com.tokopedia.play.broadcaster.di.broadcast.PlayBroadcastComponent
 import com.tokopedia.play.broadcaster.di.broadcast.PlayBroadcastModule
@@ -55,6 +58,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.launch
+import org.jetbrains.annotations.TestOnly
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
@@ -109,11 +113,13 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
             Manifest.permission.RECORD_AUDIO)
     private val permissionHelper by lazy { PermissionHelperImpl(this) }
 
+    private lateinit var pageMonitoring: PageLoadTimePerformanceInterface
+
     override fun onCreate(savedInstanceState: Bundle?) {
         inject()
         initViewModel()
         setFragmentFactory()
-
+        startPageMonitoring()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_play_broadcast)
         isRecreated = (savedInstanceState != null)
@@ -298,6 +304,7 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
     }
 
     private fun getConfiguration() {
+        startNetworkMonitoring()
         viewModel.getConfiguration()
     }
 
@@ -336,13 +343,16 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
      */
     private fun observeConfiguration() {
         viewModel.observableConfigInfo.observe(this, Observer { result ->
+            startRenderMonitoring()
             when(result) {
                 is NetworkResult.Loading -> loaderView.show()
                 is NetworkResult.Success -> {
                     loaderView.hide()
                     if (!isRecreated) handleChannelConfiguration(result.data)
+                    stopPageMonitoring()
                 }
                 is NetworkResult.Fail -> {
+                    invalidatePerformanceData()
                     loaderView.hide()
                     showToaster(
                             message = result.error.localizedMessage,
@@ -515,6 +525,56 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
             awaitResume()
             block()
         }
+    }
+
+    private fun startPageMonitoring() {
+        pageMonitoring = PageLoadTimePerformanceCallback(
+                PLAY_BROADCASTER_TRACE_PREPARE_PAGE,
+                PLAY_BROADCASTER_TRACE_REQUEST_NETWORK,
+                PLAY_BROADCASTER_TRACE_RENDER_PAGE
+        )
+        pageMonitoring.startMonitoring(PLAY_BROADCASTER_TRACE_PAGE)
+        starPrepareMonitoring()
+    }
+
+    private fun starPrepareMonitoring() {
+        pageMonitoring.startPreparePagePerformanceMonitoring()
+    }
+
+    private fun stopPrepareMonitoring() {
+        pageMonitoring.stopPreparePagePerformanceMonitoring()
+    }
+
+    private fun startNetworkMonitoring() {
+        stopPrepareMonitoring()
+        pageMonitoring.startNetworkRequestPerformanceMonitoring()
+    }
+
+    private fun stopNetworkMonitoring() {
+        pageMonitoring.stopNetworkRequestPerformanceMonitoring()
+    }
+
+    private fun startRenderMonitoring() {
+        stopNetworkMonitoring()
+        pageMonitoring.startRenderPerformanceMonitoring()
+    }
+
+    private fun stopRenderMonitoring() {
+        pageMonitoring.stopRenderPerformanceMonitoring()
+    }
+
+    private fun stopPageMonitoring() {
+        stopRenderMonitoring()
+        pageMonitoring.stopMonitoring()
+    }
+
+    private fun invalidatePerformanceData() {
+        pageMonitoring.invalidate()
+    }
+
+    @TestOnly
+    fun getPltPerformanceResultData(): PltPerformanceData? {
+        return pageMonitoring.getPltPerformanceData()
     }
 
     companion object {

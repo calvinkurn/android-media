@@ -108,6 +108,8 @@ dependencies {
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.lottie
 
+    implementation project(rootProject.ext.features.sellerMigrationCommon)
+
     implementation rootProject.ext.networkDependencies.glide
     implementation(rootProject.ext.miscDependencies.ucrop) {
         exclude group: 'com.android.support'

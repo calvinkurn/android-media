@@ -311,7 +311,7 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter<IProductDigita
         }
         getView().stopTrace();
         renderCheckETollBalance();
-        renderCheckPulsa();
+//        renderCheckPulsa();
     }
 
     @Override
