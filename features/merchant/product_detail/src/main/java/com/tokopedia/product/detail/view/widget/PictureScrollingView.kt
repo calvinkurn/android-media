@@ -41,6 +41,7 @@ class PictureScrollingView @JvmOverloads constructor(
                    componentTrackData: ComponentTrackDataModel? = null, onPictureClickTrackListener: ((ComponentTrackDataModel?) -> Unit)? = null,
                    lifecycle: Lifecycle) {
         if (!::pagerAdapter.isInitialized) {
+            setPageControl(media)
             pdp_view_pager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
                 var lastPosition = 0
                 override fun onPageSelected(position: Int) {
