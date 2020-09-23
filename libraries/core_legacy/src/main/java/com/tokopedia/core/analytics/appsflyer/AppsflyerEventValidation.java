@@ -59,7 +59,7 @@ public class AppsflyerEventValidation {
             validateContentType(eventName, String.valueOf(eventValue.get(AFInAppEventParameterName.CONTENT_TYPE)));
             validateContent(eventName, String.valueOf(eventValue.get(AFInAppEventParameterName.CONTENT)));
         } catch (Exception e) {
-            logging("validation;reason=exception_validatePurchase;ex=$e;data=$eventValue");
+            logging("error;reason=exception_validatePurchase;ex=$e;data=$eventValue");
         }
     }
 
@@ -72,7 +72,7 @@ public class AppsflyerEventValidation {
             validateContentType(eventName, String.valueOf(eventValue.get(AFInAppEventParameterName.CONTENT_TYPE)));
             validateContent(eventName, String.valueOf(eventValue.get(AFInAppEventParameterName.CONTENT)));
         } catch (Exception e) {
-            logging("validation;reason=exception_validateAddToCart;ex=$e;data=$eventValue");
+            logging("error;reason=exception_validateAddToCart;ex=$e;data=$eventValue");
         }
     }
 
@@ -139,7 +139,7 @@ public class AppsflyerEventValidation {
                     logging("validation;reason=product_array_invalid; productList=$productList");
                 }
             } catch (JSONException e) {
-                logging("validation;reason=productList_array_exception; productList=$productList");
+                logging("error;reason=productList_array_exception; productList=$productList");
             }
 
         }
@@ -155,7 +155,7 @@ public class AppsflyerEventValidation {
                     logging("validation;reason=productCategory_array_invalid; productCategory=$productCategory");
                 }
             } catch (JSONException e) {
-                logging("validation;reason=productCategory_array_exception; productCategory=$productCategory");
+                logging("error;reason=productCategory_array_exception; productCategory=$productCategory");
             }
 
         }
@@ -177,7 +177,7 @@ public class AppsflyerEventValidation {
                     logging("validation;reason=content_array_invalid; eventName=$eventName; content=$content");
                 }
             } catch (JSONException e) {
-                logging("validation;reason=content_array_exception; eventName=$eventName;content=$content");
+                logging("error;reason=content_array_exception; eventName=$eventName;content=$content");
             }
 
         }
