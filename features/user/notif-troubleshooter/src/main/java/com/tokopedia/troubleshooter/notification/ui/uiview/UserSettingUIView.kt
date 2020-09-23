@@ -11,7 +11,7 @@ data class UserSettingUIView(
         ): UserSettingUIView {
             return UserSettingUIView().apply {
                 totalOn = first.totalOn + second.totalOn
-                notifications = second.notifications + second.notifications
+                notifications = first.notifications + second.notifications
             }
         }
     }
