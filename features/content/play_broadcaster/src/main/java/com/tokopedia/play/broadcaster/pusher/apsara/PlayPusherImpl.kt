@@ -5,6 +5,10 @@ import android.view.SurfaceView
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.play.broadcaster.pusher.timer.PlayPusherTimer
 import com.tokopedia.play.broadcaster.pusher.timer.PlayPusherTimerListener
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 
 
 /**
@@ -12,26 +16,38 @@ import com.tokopedia.play.broadcaster.pusher.timer.PlayPusherTimerListener
  */
 class PlayPusherImpl(@ApplicationContext private val mContext: Context) : PlayPusher {
 
-    private val mApsaraLivePusher = ApsaraLivePusher(mContext)
+    private val pusherJob = SupervisorJob()
+    private val scope = CoroutineScope(Dispatchers.Main.immediate + pusherJob)
+
+    private val mApsaraLivePusher: ApsaraLivePusher = ApsaraLivePusher(mContext)
     private var mTimerDuration: PlayPusherTimer? = null
 
     private var mPlayPusherInfoListener: PlayPusherInfoListener? = null
+    private var mPlayPusherTimerListener: PlayPusherTimerListener? = null
 
     override fun init() {
-        mApsaraLivePusher.init()
-        mApsaraLivePusher.mApsaraLivePusherInfoListener = mApsaraLivePusherInfoListener
+        scope.launch {
+            mApsaraLivePusher.init()
+            mApsaraLivePusher.mApsaraLivePusherInfoListener = mApsaraLivePusherInfoListener
+        }
     }
 
     override fun startPreview(surfaceView: SurfaceView) {
-        mApsaraLivePusher.startPreview(surfaceView)
+        scope.launch {
+            mApsaraLivePusher.startPreview(surfaceView)
+        }
     }
 
     override fun stopPreview() {
-        mApsaraLivePusher.stopPreview()
+        scope.launch {
+            mApsaraLivePusher.stopPreview()
+        }
     }
 
     override fun startPush(ingestUrl: String) {
-        mApsaraLivePusher.startPush(ingestUrl)
+        scope.launch {
+            mApsaraLivePusher.startPush(ingestUrl)
+        }
     }
 
     /**
@@ -41,23 +57,32 @@ class PlayPusherImpl(@ApplicationContext private val mContext: Context) : PlayPu
      *  and restarts all resources of the AlivcLivePusher object, including preview frames and ingest streams.
       */
     override fun restartPush() {
-        mApsaraLivePusher.restartPush()
+        scope.launch(Dispatchers.IO) {
+            mApsaraLivePusher.restartPush()
+        }
     }
 
     override fun stopPush() {
         mApsaraLivePusher.stopPush()
+        mTimerDuration?.stop()
     }
 
     override fun switchCamera() {
-        mApsaraLivePusher.switchCamera()
+        scope.launch(Dispatchers.IO) {
+            mApsaraLivePusher.switchCamera()
+        }
     }
 
     override fun resume() {
-        mApsaraLivePusher.resume()
+        scope.launch(Dispatchers.IO) {
+            mApsaraLivePusher.resume()
+        }
     }
 
     override fun pause() {
-        mApsaraLivePusher.pause()
+        scope.launch(Dispatchers.IO) {
+            mApsaraLivePusher.pause()
+        }
     }
 
     override fun destroy() {
@@ -68,6 +93,7 @@ class PlayPusherImpl(@ApplicationContext private val mContext: Context) : PlayPu
         if (this.mTimerDuration == null) {
             this.mTimerDuration = PlayPusherTimer(mContext, durationInMillis)
         }
+        this.mTimerDuration?.callback = mPlayPusherTimerListener
     }
 
     override fun addMaxStreamDuration(durationInMillis: Long) {
@@ -79,17 +105,13 @@ class PlayPusherImpl(@ApplicationContext private val mContext: Context) : PlayPu
     }
 
     override fun addMaxPauseDuration(durationInMillis: Long) {
-        if (this.mTimerDuration == null) {
-            this.mTimerDuration = PlayPusherTimer(mContext)
-        }
-
         this.mTimerDuration?.pauseDuration = durationInMillis
     }
 
     override fun getTimeElapsed(): String = this.mTimerDuration?.getTimeElapsed().orEmpty()
 
     override fun addPlayPusherTimerListener(listener: PlayPusherTimerListener) {
-        this.mTimerDuration?.callback = listener
+        this.mPlayPusherTimerListener = listener
     }
 
     override fun addPlayPusherInfoListener(listener: PlayPusherInfoListener) {
@@ -98,34 +120,47 @@ class PlayPusherImpl(@ApplicationContext private val mContext: Context) : PlayPu
 
     private val mApsaraLivePusherInfoListener = object : ApsaraLivePusherInfoListener {
         override fun onStarted() {
-            mTimerDuration?.start()
-            mPlayPusherInfoListener?.onStarted()
+            scope.launch {
+                mTimerDuration?.start()
+                mPlayPusherInfoListener?.onStarted()
+            }
         }
 
         override fun onPushed(activeStatus: ApsaraLivePusherActiveStatus) {
-            mPlayPusherInfoListener?.onPushed(activeStatus)
+            scope.launch {
+                mPlayPusherInfoListener?.onPushed(activeStatus)
+            }
         }
 
         override fun onResumed() {
-            mTimerDuration?.resume()
+            scope.launch {
+                mTimerDuration?.resume()
+            }
         }
 
         override fun onPaused() {
-            mPlayPusherInfoListener?.onPaused()
-            mTimerDuration?.pause()
+            scope.launch {
+                mPlayPusherInfoListener?.onPaused()
+                mTimerDuration?.pause()
+            }
         }
 
         override fun onStop() {
-            mPlayPusherInfoListener?.onStop()
-            mTimerDuration?.stop()
+            scope.launch {
+                mPlayPusherInfoListener?.onStop()
+            }
         }
 
         override fun onRestarted() {
-            mPlayPusherInfoListener?.onRestarted()
+            scope.launch {
+                mPlayPusherInfoListener?.onRestarted()
+            }
         }
 
         override fun onError(errorStatus: ApsaraLivePusherErrorStatus) {
-            mPlayPusherInfoListener?.onError(errorStatus)
+           scope.launch {
+               mPlayPusherInfoListener?.onError(errorStatus)
+           }
         }
     }
 }

@@ -75,8 +75,6 @@ class PlayBroadcastViewModel @Inject constructor(
         get() = _observableLiveDurationState
     val observableLiveInfoState: LiveData<LivePusherState>
         get() = _observableLivePusherState
-//    val observableLiveNetworkState: LiveData<Event<PlayPusherNetworkState>>
-//        get() = _observableLiveNetworkState
     val observableChatList: LiveData<out List<PlayChatUiModel>>
         get() = _observableChatList
     val observableNewChat: LiveData<Event<PlayChatUiModel>>
@@ -89,7 +87,7 @@ class PlayBroadcastViewModel @Inject constructor(
     val observableCover = getCurrentSetupDataStore().getObservableSelectedCover()
     val observableReportDuration: LiveData<String>
         get() = _observableReportDuration
-    val observableBannedEvent: LiveData<Event<BannedUiModel>>
+    val observableBannedEvent: LiveData<Event<EventUiModel>>
         get() = _observableBannedEvent
 
     val shareContents: String
@@ -111,7 +109,7 @@ class PlayBroadcastViewModel @Inject constructor(
     private val _observableLivePusherState = MutableLiveData<LivePusherState>()
     private val _observableLiveDurationState = MutableLiveData<Event<LivePusherTimerState>>()
     private val _observableReportDuration = MutableLiveData<String>()
-    private val _observableBannedEvent = MutableLiveData<Event<BannedUiModel>>()
+    private val _observableBannedEvent = MutableLiveData<Event<EventUiModel>>()
 
     init {
         _observableChatList.value = mutableListOf()
@@ -230,37 +228,35 @@ class PlayBroadcastViewModel @Inject constructor(
      * Apsara integration
      */
     fun initPushStream() {
-        scope.launch(dispatcher.io) {
-            playPusher.init()
-            playPusher.addPlayPusherInfoListener(object : PlayPusherInfoListener {
-                override fun onStarted() {
-                    startWebSocket()
-                }
+        playPusher.init()
+        playPusher.addPlayPusherInfoListener(object : PlayPusherInfoListener {
+            override fun onStarted() {
+                startWebSocket()
+            }
 
-                override fun onPushed(activeStatus: ApsaraLivePusherActiveStatus) {
-                    updateChannelStatus(PlayChannelStatus.Live)
-                    _observableLivePusherState.value = LivePusherState.Started(activeStatus)
-                }
+            override fun onPushed(activeStatus: ApsaraLivePusherActiveStatus) {
+                updateChannelStatus(PlayChannelStatus.Live)
+                _observableLivePusherState.value = LivePusherState.Started(activeStatus)
+            }
 
-                override fun onPaused() {
-                    updateChannelStatus(PlayChannelStatus.Pause)
-                }
+            override fun onPaused() {
+                updateChannelStatus(PlayChannelStatus.Pause)
+            }
 
-                override fun onStop() {
-                    retrievedReportDuration(playPusher.getTimeElapsed())
-                    playSocket.destroy()
-                }
+            override fun onStop() {
+                retrievedReportDuration(playPusher.getTimeElapsed())
+                playSocket.destroy()
+            }
 
-                override fun onRestarted() {
-                    updateChannelStatus(PlayChannelStatus.Live)
-                }
+            override fun onRestarted() {
+                updateChannelStatus(PlayChannelStatus.Live)
+            }
 
-                override fun onError(errorStatus: ApsaraLivePusherErrorStatus) {
-                    _observableLivePusherState.value = LivePusherState.Error(errorStatus)
-                }
+            override fun onError(errorStatus: ApsaraLivePusherErrorStatus) {
+                _observableLivePusherState.value = LivePusherState.Error(errorStatus)
+            }
 
-            })
-        }
+        })
         playPusher.addPlayPusherTimerListener(object : PlayPusherTimerListener {
             override fun onCountDownActive(timeLeft: String) {
                 _observableLiveDurationState.value = Event(LivePusherTimerState.Active(timeLeft))
@@ -271,6 +267,7 @@ class PlayBroadcastViewModel @Inject constructor(
             }
 
             override fun onCountDownFinish() {
+                // TODO check whether banned event is handled or not
                 _observableLiveDurationState.value = Event(LivePusherTimerState.Finish)
                 stopPushStream()
             }
@@ -283,21 +280,15 @@ class PlayBroadcastViewModel @Inject constructor(
     }
 
     fun switchCamera() {
-        scope.launch(dispatcher.io) {
-            playPusher.switchCamera()
-        }
+        playPusher.switchCamera()
     }
 
     fun startPreview(surfaceView: SurfaceView) {
-        scope.launch(dispatcher.io) {
-            playPusher.startPreview(surfaceView)
-        }
+        playPusher.startPreview(surfaceView)
     }
 
     fun stopPreview() {
-        scope.launch(dispatcher.io) {
-            playPusher.stopPreview()
-        }
+        playPusher.stopPreview()
     }
 
     fun setFirstTimeLiveStreaming() {
@@ -306,47 +297,38 @@ class PlayBroadcastViewModel @Inject constructor(
 
     fun startPushStream() {
         _observableLivePusherState.value = LivePusherState.Connecting
-
-        scope.launch(dispatcher.io) {
-            playPusher.startPush(ingestUrl)
-        }
+        playPusher.startPush(ingestUrl)
     }
 
     fun resumePushStream() {
-        _observableLivePusherState.value = LivePusherState.Connecting
-
-        scope.launch(dispatcher.io) {
-            playPusher.resume()
-        }
+        playPusher.resume()
     }
 
     fun pausePushStream() {
-        scope.launch(dispatcher.io) {
-            playPusher.pause()
-        }
+        playPusher.pause()
     }
 
     fun restartPushStream() {
-        scope.launch(dispatcher.io) {
-            playPusher.restartPush()
-        }
+        playPusher.restartPush()
     }
 
     fun stopPushStream(shouldNavigate: Boolean = false, channelStatus: PlayChannelStatus = PlayChannelStatus.Stop) {
         _observableLivePusherState.value = LivePusherState.Connecting
 
-        scope.launch(dispatcher.io) {
-            playPusher.stopPush()
-            playPusher.stopPreview()
-            playPusher.destroy()
+        scope.launch {
+            withContext(dispatcher.io) {
+                playPusher.stopPush()
+                playPusher.stopPreview()
+                playPusher.destroy()
 
-            updateChannelStatus(channelStatus)
+                updateChannelStatus(channelStatus)
+            }
             _observableLivePusherState.value = LivePusherState.Stopped(shouldNavigate)
         }
     }
 
     fun destroyPushStream() {
-        scope.launch(dispatcher.io) {
+        scope.launch {
             playPusher.destroy()
             playSocket.destroy()
         }
@@ -457,7 +439,7 @@ class PlayBroadcastViewModel @Inject constructor(
         }
     }
 
-    private fun retrieveBannedEvent(data: BannedUiModel) {
+    private fun retrieveBannedEvent(data: EventUiModel) {
         scope.launch(dispatcher.main) {
             stopPushStream(channelStatus = PlayChannelStatus.Moderated)
             _observableBannedEvent.value = Event(data)

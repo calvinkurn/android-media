@@ -85,9 +85,6 @@ class PlayPusherImplNoop(private val builder: PlayPusherBuilder) : PlayPusher {
 
     //TODO("for testing only")
     override fun addMaxPauseDuration(durationInMillis: Long) {
-        if (this.mTimer == null)
-            this.mTimer = PlayPusherTimer(builder.context)
-
         this.mTimer?.pauseDuration = durationInMillis
         this.mTimer?.callback = mPlayPusherTimerListener
     }
