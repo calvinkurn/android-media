@@ -290,9 +290,9 @@ class FeedViewModel @Inject constructor(private val baseDispatcher: FeedDispatch
 
     fun doTopAdsTracker(url: String, shopId: String, shopName: String, imageUrl: String, isClick: Boolean) {
         if (isClick) {
-//            sendTopAdsUseCase.hitClick(url, shopId, shopName, imageUrl)
+            sendTopAdsUseCase.hitClick(url, shopId, shopName, imageUrl)
         } else {
-//            sendTopAdsUseCase.hitImpressions(url, shopId, shopName, imageUrl)
+            sendTopAdsUseCase.hitImpressions(url, shopId, shopName, imageUrl)
         }
     }
 
