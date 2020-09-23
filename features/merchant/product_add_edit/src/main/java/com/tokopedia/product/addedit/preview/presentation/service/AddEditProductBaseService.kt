@@ -153,7 +153,12 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
 
     private fun logErrorUploadImage(throwable: Throwable) {
         val message = throwable.message ?: ""
-        val exception = AddEditProductUploadException(message, throwable)
+        val errorMessage = String.format(
+                "\"Error upload image.\",\"userId: %s\",\"userEmail: %s \",\"errorMessage: %s\"",
+                userSession.userId,
+                userSession.email,
+                message)
+        val exception = AddEditProductUploadException(errorMessage, throwable)
 
         AddEditProductErrorHandler.logExceptionToCrashlytics(exception)
         Timber.w("P2#PRODUCT_UPLOAD#%s", message)
@@ -220,7 +225,7 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
 
         // check picture availability
         if (!filePath.exists()) {
-            val message = "Gambar tidak ditemukan"
+            val message = UploaderUseCase.FILE_NOT_FOUND
             throw Exception(message)
         }
 

@@ -23,6 +23,7 @@ import com.tokopedia.product.addedit.preview.presentation.model.ProductInputMode
 import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.SelectionInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.VariantInputModel
+import com.tokopedia.usecase.RequestParams
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -64,7 +65,7 @@ class AddEditProductEditService : AddEditProductBaseService() {
     }
 
     private fun saveProductToDraft() {
-        launch {
+        launchCatchError(block = {
             productDraftId = withContext(Dispatchers.IO){
                 saveProductDraftUseCase.params = SaveProductDraftUseCase.createRequestParams(
                         mapProductInputModelDetailToDraft(productInputModel),
@@ -72,11 +73,14 @@ class AddEditProductEditService : AddEditProductBaseService() {
                 saveProductDraftUseCase.executeOnBackground()
             }
 
+            // (2)
             val detailInputModel = productInputModel.detailInputModel
             val variantInputModel = productInputModel.variantInputModel
-            // (2)
             uploadProductImages(detailInputModel.imageUrlOrPathList, variantInputModel)
-        }
+        },
+        onError = { throwable ->
+            logError(RequestParams.EMPTY, throwable)
+        })
     }
 
     override fun onUploadProductImagesSuccess(uploadIdList: ArrayList<String>, variantInputModel: VariantInputModel) {

@@ -56,6 +56,7 @@ open class AddEditProductAddService : AddEditProductBaseService() {
 
         val saveInstanceCacheManager = SaveInstanceCacheManager(this, cacheId)
         productInputModel = saveInstanceCacheManager.get(AddEditProductPreviewConstants.EXTRA_PRODUCT_INPUT_MODEL, ProductInputModel::class.java) ?: ProductInputModel()
+
         // (1)
         saveProductToDraft()
     }
@@ -70,9 +71,9 @@ open class AddEditProductAddService : AddEditProductBaseService() {
                 saveProductDraftUseCase.executeOnBackground()
             }
 
+            // (2)
             val detailInputModel = productInputModel.detailInputModel
             val variantInputModel = productInputModel.variantInputModel
-            // (2)
             uploadProductImages(detailInputModel.imageUrlOrPathList, variantInputModel)
         },
         onError = { throwable ->
