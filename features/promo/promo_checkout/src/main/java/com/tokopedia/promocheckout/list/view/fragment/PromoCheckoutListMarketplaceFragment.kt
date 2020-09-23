@@ -183,10 +183,6 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(),
         activity?.finish()
     }
 
-    override fun onClickItemPromo(promoCheckoutDealsPromoCode: TravelCollectiveBanner.Banner) {
-        //
-    }
-
     override fun onClashCheckPromo(clasingInfoDetailUiModel: ClashingInfoDetailUiModel) {
         val intent = Intent()
         intent.putExtra(EXTRA_CLASHING_DATA, clasingInfoDetailUiModel)

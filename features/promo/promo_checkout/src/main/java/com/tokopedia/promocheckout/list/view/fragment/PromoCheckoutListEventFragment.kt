@@ -78,10 +78,6 @@ class PromoCheckoutListEventFragment : BasePromoCheckoutListFragment(), PromoChe
         activity?.finish()
     }
 
-    override fun onClickItemPromo(promoCheckoutDealsPromoCode: TravelCollectiveBanner.Banner) {
-        //
-    }
-
     companion object {
         const val EXTRA_EVENT_CATEGORY_ID = "EXTRA_EVENT_CATEGORY_ID"
         const val EXTRA_EVENT_VERIFY = "EXTRA_EVENT_VERIFY"

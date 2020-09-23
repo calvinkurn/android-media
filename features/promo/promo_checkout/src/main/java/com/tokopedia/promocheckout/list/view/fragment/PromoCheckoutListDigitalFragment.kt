@@ -75,10 +75,6 @@ open class PromoCheckoutListDigitalFragment : BasePromoCheckoutListFragment(), P
         activity?.finish()
     }
 
-    override fun onClickItemPromo(promoCheckoutDealsPromoCode: TravelCollectiveBanner.Banner) {
-        //
-    }
-
     override fun onClickItemLastSeen(promoCheckoutLastSeenModel: PromoCheckoutLastSeenModel) {
         textInputCoupon.setText(promoCheckoutLastSeenModel.promoCode)
         promoCheckoutAnalytics.clickDigitalLastSeenPromo(promoCheckoutLastSeenModel.promoCode, userSession.userId)

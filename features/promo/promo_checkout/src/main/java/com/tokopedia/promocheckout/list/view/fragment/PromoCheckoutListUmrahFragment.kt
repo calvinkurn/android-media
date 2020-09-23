@@ -38,10 +38,6 @@ open class PromoCheckoutListUmrahFragment : BasePromoCheckoutListFragment(), Pro
         activity?.finish()
     }
 
-    override fun onClickItemPromo(promoCheckoutDealsPromoCode: TravelCollectiveBanner.Banner) {
-        //
-    }
-
     override fun loadData(page: Int) {
         hideLoading()
         showEmpty()
