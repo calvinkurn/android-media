@@ -814,8 +814,6 @@ final class ProductListPresenter
 
     private void addBroadMatchToVisitableList(List<Visitable> visitableList) {
         if (suggestionViewModel != null && !textIsEmpty(suggestionViewModel.getSuggestionText())) {
-            if (isBroadMatchNeedTopSeparator()) visitableList.add(new SeparatorViewModel());
-
             visitableList.add(suggestionViewModel);
 
             suggestionViewModel = null;
@@ -825,20 +823,8 @@ final class ProductListPresenter
             visitableList.addAll(relatedViewModel.getBroadMatchViewModelList());
             trackBroadMatchImpression();
 
-            if (isBroadMatchNeedBottomSeparator()) visitableList.add(new SeparatorViewModel());
-
             relatedViewModel = null;
         }
-    }
-
-    private boolean isBroadMatchNeedTopSeparator() {
-        int broadMatchPosition = relatedViewModel.getPosition();
-        return (broadMatchPosition == 0 || broadMatchPosition > 1) && !responseCode.equals("4");
-    }
-
-    private boolean isBroadMatchNeedBottomSeparator() {
-        int broadMatchPosition = relatedViewModel.getPosition();
-        return broadMatchPosition >= 1 && !responseCode.equals("4");
     }
 
     private void trackBroadMatchImpression() {
@@ -1091,7 +1077,10 @@ final class ProductListPresenter
     }
 
     private void processBroadMatchAtBottom(@NotNull SearchProductModel.SearchProduct searchProduct, List<Visitable> list) {
-        if (isLastPage(searchProduct)) addBroadMatchToVisitableList(list);
+        if (isLastPage(searchProduct)) {
+            list.add(new SeparatorViewModel());
+            addBroadMatchToVisitableList(list);
+        }
     }
 
     private boolean isLastPage(@NotNull SearchProductModel.SearchProduct searchProduct) {
@@ -1102,7 +1091,9 @@ final class ProductListPresenter
 
     private void processBroadMatchAtTop(List<Visitable> list) {
         List<Visitable> broadMatchVisitableList = new ArrayList<>();
+
         addBroadMatchToVisitableList(broadMatchVisitableList);
+        broadMatchVisitableList.add(new SeparatorViewModel());
 
         list.addAll(list.indexOf(productList.get(0)), broadMatchVisitableList);
     }
@@ -1111,7 +1102,10 @@ final class ProductListPresenter
         if (productList.size() < broadMatchPosition) return;
 
         List<Visitable> broadMatchVisitableList = new ArrayList<>();
+
+        broadMatchVisitableList.add(new SeparatorViewModel());
         addBroadMatchToVisitableList(broadMatchVisitableList);
+        broadMatchVisitableList.add(new SeparatorViewModel());
 
         Visitable productItemAtBroadMatchPosition = productList.get(broadMatchPosition - 1);
         int broadMatchIndex = list.indexOf(productItemAtBroadMatchPosition) + 1;
