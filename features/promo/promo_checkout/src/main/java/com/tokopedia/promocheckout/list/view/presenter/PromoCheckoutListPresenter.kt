@@ -102,7 +102,6 @@ class PromoCheckoutListPresenter(private val graphqlUseCase: GraphqlUseCase,
             }
 
             override fun onCompleted() {
-                //
             }
 
             override fun onError(e: Throwable) {

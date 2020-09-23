@@ -63,7 +63,6 @@ class PromoCheckoutDetailDealsPresenter(private val getDetailCouponMarketplaceUs
                             }
 
                             override fun onCompleted() {
-                                //
                             }
 
                             override fun onError(e: Throwable) {

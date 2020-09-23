@@ -34,7 +34,6 @@ class PromoCheckoutListDealsPresenter(
                             }
 
                             override fun onCompleted() {
-                                //
                             }
 
                             override fun onError(e: Throwable) {
