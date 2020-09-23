@@ -4,11 +4,11 @@ import com.google.gson.annotations.SerializedName
 
 data class FeatureEngineResponse(
         @SerializedName("validateEngineRequest")
-        val validateEngineRequest: ValidateEngineRequest
+        val validateEngineResponse: ValidateEngineResponse
 
 )
 
-data class ValidateEngineRequest(
+data class ValidateEngineResponse(
         @SerializedName("success")
         val success: Boolean,
         @SerializedName("error_code")

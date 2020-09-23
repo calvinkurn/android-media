@@ -30,6 +30,6 @@ class GqlQueryModule {
     @Provides
     @Named(GQL_FEATURE_ENGINE_REQUEST)
     fun provideFeatureEngineQuery(@ApplicationContext context: Context): String =
-            GraphqlHelper.loadRawString(context.resources, R.raw.gql_thanks_special_feature)
+            GraphqlHelper.loadRawString(context.resources, R.raw.gql_thanks_validate_engine)
 
 }

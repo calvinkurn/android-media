@@ -25,6 +25,7 @@ import com.tokopedia.thankyou_native.presentation.activity.ThankYouPageActivity
 import com.tokopedia.thankyou_native.presentation.helper.DialogHelper
 import com.tokopedia.thankyou_native.presentation.helper.OnDialogRedirectListener
 import com.tokopedia.thankyou_native.presentation.viewModel.ThanksPageDataViewModel
+import com.tokopedia.thankyou_native.presentation.views.FeatureListView
 import com.tokopedia.thankyou_native.recommendation.presentation.view.IRecommendationView
 import com.tokopedia.thankyou_native.recommendation.presentation.view.MarketPlaceRecommendation
 import com.tokopedia.thankyou_native.recommendationdigital.presentation.view.DigitalRecommendation
@@ -39,7 +40,7 @@ import javax.inject.Inject
 abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectListener {
 
     abstract fun getRecommendationContainer(): LinearLayout?
-    abstract fun getFeatureListingContainer(): LinearLayout?
+    abstract fun getFeatureListingContainer(): FeatureListView?
     abstract fun bindThanksPageDataToUI(thanksPageData: ThanksPageData)
     abstract fun getLoadingView(): View?
     abstract fun onThankYouPageDataReLoaded(data: ThanksPageData)
@@ -95,6 +96,7 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        getFeatureListingContainer()?.gone()
         if (!::thanksPageData.isInitialized)
             activity?.finish()
         else {
@@ -156,9 +158,20 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
     }
 
     private fun observeViewModel() {
-        thanksPageDataViewModel.thanksPageDataResultLiveData.observe(this, Observer {
+        thanksPageDataViewModel.thanksPageDataResultLiveData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> onThankYouPageDataReLoaded(it.data)
+                is Fail -> onThankYouPageDataLoadingFail(it.throwable)
+            }
+        })
+        thanksPageDataViewModel.featureEngineDataLiveData.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> {
+                    if (it.data.success && !it.data.engineData.featureEngineItem.isNullOrEmpty()) {
+                        getFeatureListingContainer()?.visible()
+                        getFeatureListingContainer()?.addData(it.data.engineData)
+                    }
+                }
                 is Fail -> onThankYouPageDataLoadingFail(it.throwable)
             }
         })
@@ -278,7 +291,7 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
 
     override fun gotoOrderList(applink: String) {
         try {
-            if(applink.isNullOrBlank()){
+            if (applink.isNullOrBlank()) {
                 gotoOrderList()
             } else {
                 thankYouPageAnalytics.get()

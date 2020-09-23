@@ -4,7 +4,7 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.thankyou_native.GQL_FEATURE_ENGINE_REQUEST
 import com.tokopedia.thankyou_native.domain.model.FeatureEngineResponse
-import com.tokopedia.thankyou_native.domain.model.ValidateEngineRequest
+import com.tokopedia.thankyou_native.domain.model.ValidateEngineResponse
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -13,15 +13,15 @@ class FeatureEngineRequestUseCase @Inject constructor(
         graphqlRepository: GraphqlRepository)
     : GraphqlUseCase<FeatureEngineResponse>(graphqlRepository) {
 
-    fun getFeatureEngineData(onSuccess: (ValidateEngineRequest) -> Unit,
-                         onError: (Throwable) -> Unit) {
+    fun getFeatureEngineData(onSuccess: (ValidateEngineResponse) -> Unit,
+                             onError: (Throwable) -> Unit) {
         try {
             this.setTypeClass(FeatureEngineResponse::class.java)
             this.setRequestParams(getRequestParams())
             this.setGraphqlQuery(query)
             this.execute(
                     { result ->
-                        onSuccess(result.validateEngineRequest)
+                        onSuccess(result.validateEngineResponse)
                     }, { error ->
                 onError(error)
             }

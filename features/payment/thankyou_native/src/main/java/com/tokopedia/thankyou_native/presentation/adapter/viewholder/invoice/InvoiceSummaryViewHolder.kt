@@ -1,4 +1,4 @@
-package com.tokopedia.thankyou_native.presentation.adapter.viewholder
+package com.tokopedia.thankyou_native.presentation.adapter.viewholder.invoice
 
 import android.view.View
 import android.widget.TextView

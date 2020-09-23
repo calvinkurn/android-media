@@ -1,11 +1,10 @@
 package com.tokopedia.thankyou_native.presentation.viewModel
 
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.thankyou_native.di.qualifier.CoroutineMainDispatcher
-import com.tokopedia.thankyou_native.domain.model.FeatureEngineData
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
+import com.tokopedia.thankyou_native.domain.model.ValidateEngineResponse
 import com.tokopedia.thankyou_native.domain.usecase.FeatureEngineRequestUseCase
 import com.tokopedia.thankyou_native.domain.usecase.ThanksPageDataUseCase
 import com.tokopedia.usecase.coroutines.Fail
@@ -20,7 +19,7 @@ class ThanksPageDataViewModel @Inject constructor(
         @CoroutineMainDispatcher dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
 
     val thanksPageDataResultLiveData = MutableLiveData<Result<ThanksPageData>>()
-    val featureEngineDataLiveData = MutableLiveData<Result<FeatureEngineData>>()
+    val featureEngineDataLiveData = MutableLiveData<Result<ValidateEngineResponse>>()
 
     fun getThanksPageData(paymentId: Long, merchant: String) {
         thanksPageDataUseCase.cancelJobs()
@@ -37,10 +36,12 @@ class ThanksPageDataViewModel @Inject constructor(
         featureEngineRequestUseCase.cancelJobs()
         featureEngineRequestUseCase.getFeatureEngineData(
                 {
-                    Log.d("ThanksPageDataViewModel", it.toString())
+                    if (it.success) {
+                        featureEngineDataLiveData.postValue(Success(it))
+                    }
                 },
                 {
-
+                    featureEngineDataLiveData.postValue(Fail(it))
                 }
         )
     }

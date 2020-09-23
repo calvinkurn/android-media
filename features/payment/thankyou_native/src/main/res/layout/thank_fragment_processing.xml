@@ -255,13 +255,10 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/btnCheckPaymentStatus" />
 
-            <LinearLayout
+            <com.tokopedia.thankyou_native.presentation.views.FeatureListView
                 android:id="@+id/featureListingContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:paddingBottom="@dimen/spacing_lvl3"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/view_divider_5" />
 
             <LinearLayout
