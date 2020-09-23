@@ -42,10 +42,11 @@ class GetCardDataUseCase(
                 dataKey: List<String>,
                 dynamicParameter: DynamicParameterModel
         ): RequestParams = RequestParams.create().apply {
+            val jsonParams = dynamicParameter.toJsonString()
             val dataKeys = dataKey.map {
                 DataKeyModel(
                         key = it,
-                        jsonParams = dynamicParameter.toJsonString()
+                        jsonParams = jsonParams
                 )
             }
             putObject(DATA_KEYS, dataKeys)
