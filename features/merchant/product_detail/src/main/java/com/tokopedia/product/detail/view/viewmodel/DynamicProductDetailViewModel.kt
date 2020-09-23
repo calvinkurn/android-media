@@ -39,6 +39,7 @@ import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.ADS_COUNT
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.DIMEN_ID
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PAGE_SOURCE
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_3
 import com.tokopedia.product.detail.usecase.*
 import com.tokopedia.product.detail.view.util.DynamicProductDetailDispatcherProvider
 import com.tokopedia.product.detail.view.util.asFail
@@ -569,10 +570,10 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                                 productIds = productIds
                         )).toBlocking().first() }
 
-                        val recomFilter = recomFilterDeferred.await()
                         val recomData = recomDataDeferred.await()
 
                         if(recomData.isNotEmpty() && recomData.first().recommendationItemList.isNotEmpty()){
+                            val recomFilter = if(pageName == PDP_3) recomFilterDeferred.await() else listOf()
                             val recomWidget = recomData.first().copy(
                                     recommendationFilterChips = recomFilter
                             )

@@ -38,7 +38,7 @@ class ProductRecommendationViewHolder(
     private var annotationChipAdapter: AnnotationChipFilterAdapter? = null
 
     override fun bind(element: ProductRecommendationDataModel) {
-        if(element.recomWidgetData == null) {
+        if(element.recomWidgetData == null || element.recomWidgetData?.recommendationItemList?.isEmpty() == true) {
             view.rvProductRecom.gone()
             view.visible()
             view.loadingRecom.visible()
@@ -47,7 +47,7 @@ class ProductRecommendationViewHolder(
                 view.addOnImpressionListener(element.impressHolder) {
                     listener.onImpressComponent(getComponentTrackData(element))
                 }
-                if (annotationChipAdapter == null) {
+                if (annotationChipAdapter == null && element.filterData?.isNotEmpty() == true) {
                     annotationChipAdapter = AnnotationChipFilterAdapter(object : AnnotationChipListener {
                         override fun onFilterAnnotationClicked(annotationChip: AnnotationChip, position: Int) {
                             annotationChipAdapter?.submitList(
@@ -75,8 +75,8 @@ class ProductRecommendationViewHolder(
                 }
                 annotationChipAdapter?.submitList(element.filterData ?: listOf())
                 initAdapter(element, this, element.cardModel, getComponentTrackData(element))
-                view.loadingRecom.gone()
                 view.rvProductRecom.show()
+                view.loadingRecom.gone()
                 view.titleRecom.text = title
                 if (seeMoreAppLink.isNotEmpty()) {
                     view.seeMoreRecom.show()
