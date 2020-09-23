@@ -996,10 +996,10 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             setDescription(prompt.description)
             prompt.getPrimaryButton()?.also { primaryButton ->
                 setPrimaryCTAText(primaryButton.text)
-                setPrimaryCTAClickListener { onDialogPromptButtonClicked(dialogUnify, prompt, primaryButton) }
+                setPrimaryCTAClickListener { onDialogPromptButtonClicked(dialogUnify, primaryButton) }
                 prompt.getSecondButton(primaryButton)?.also { secondaryButton ->
                     setSecondaryCTAText(secondaryButton.text)
-                    setSecondaryCTAClickListener { onDialogPromptButtonClicked(dialogUnify, prompt, secondaryButton) }
+                    setSecondaryCTAClickListener { onDialogPromptButtonClicked(dialogUnify, secondaryButton) }
                 }
             }
             setOverlayClose(false)
@@ -1007,15 +1007,17 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         }.show()
     }
 
-    private fun onDialogPromptButtonClicked(dialog: DialogUnify, prompt: OccPrompt, button: OccPromptButton) {
-        if (button.action == OccPromptButton.ACTION_OPEN) {
-            RouteManager.route(context, button.link)
-            activity?.finish()
-        } else if (button.action == OccPromptButton.ACTION_RELOAD) {
-            dialog.dismiss()
-            if (prompt.from == OccPrompt.FROM_CART) {
+    private fun onDialogPromptButtonClicked(dialog: DialogUnify, button: OccPromptButton) {
+        when (button.action) {
+            OccPromptButton.ACTION_OPEN -> {
+                RouteManager.route(context, button.link)
+                activity?.finish()
+            }
+            OccPromptButton.ACTION_RELOAD -> {
+                dialog.dismiss()
                 refresh()
-            } else if (prompt.from == OccPrompt.FROM_CHECKOUT) {
+            }
+            OccPromptButton.ACTION_RETRY -> {
                 viewModel.finalUpdate(onSuccessCheckout(), false)
             }
         }
@@ -1032,10 +1034,10 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                 setDescription(prompt.description)
                 prompt.getPrimaryButton()?.also { primaryButton ->
                     setPrimaryCTAText(primaryButton.text)
-                    setPrimaryCTAClickListener { onBottomSheetPromptButtonClicked(bottomSheetUnify, prompt, primaryButton) }
+                    setPrimaryCTAClickListener { onBottomSheetPromptButtonClicked(bottomSheetUnify, primaryButton) }
                     prompt.getSecondButton(primaryButton)?.also { secondaryButton ->
                         setSecondaryCTAText(secondaryButton.text)
-                        setSecondaryCTAClickListener { onBottomSheetPromptButtonClicked(bottomSheetUnify, prompt, secondaryButton) }
+                        setSecondaryCTAClickListener { onBottomSheetPromptButtonClicked(bottomSheetUnify, secondaryButton) }
                     }
                 }
             }
@@ -1043,15 +1045,17 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         }.show(fm, null)
     }
 
-    private fun onBottomSheetPromptButtonClicked(bottomSheet: BottomSheetUnify, prompt: OccPrompt, button: OccPromptButton) {
-        if (button.action == OccPromptButton.ACTION_OPEN) {
-            RouteManager.route(context, button.link)
-            activity?.finish()
-        } else if (button.action == OccPromptButton.ACTION_RELOAD) {
-            bottomSheet.dismiss()
-            if (prompt.from == OccPrompt.FROM_CART) {
+    private fun onBottomSheetPromptButtonClicked(bottomSheet: BottomSheetUnify, button: OccPromptButton) {
+        when (button.action) {
+            OccPromptButton.ACTION_OPEN -> {
+                RouteManager.route(context, button.link)
+                activity?.finish()
+            }
+            OccPromptButton.ACTION_RELOAD -> {
+                bottomSheet.dismiss()
                 refresh()
-            } else if (prompt.from == OccPrompt.FROM_CHECKOUT) {
+            }
+            OccPromptButton.ACTION_RETRY -> {
                 viewModel.finalUpdate(onSuccessCheckout(), false)
             }
         }

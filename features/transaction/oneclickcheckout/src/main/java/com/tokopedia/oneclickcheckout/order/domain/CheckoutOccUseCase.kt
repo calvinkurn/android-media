@@ -38,7 +38,7 @@ class CheckoutOccUseCase @Inject constructor(private val graphqlUseCase: Graphql
                                         response.data.paymentParameter.redirectParam.form
                                 )
                         ),
-                        OccPrompt(OccPrompt.FROM_CHECKOUT, response.data.prompt.type.toLowerCase(Locale.ROOT),
+                        OccPrompt(response.data.prompt.type.toLowerCase(Locale.ROOT),
                                 response.data.prompt.title, response.data.prompt.description, response.data.prompt.imageUrl,
                                 response.data.prompt.buttons.map {
                                     OccPromptButton(it.text, it.link, it.action.toLowerCase(Locale.ROOT), it.color.toLowerCase(Locale.ROOT))

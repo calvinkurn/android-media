@@ -40,7 +40,7 @@ class UpdateCartOccUseCase @Inject constructor(private val graphqlUseCase: Graph
     }
 
     private fun mapPrompt(promptResponse: OccPromptResponse): OccPrompt {
-        return OccPrompt(OccPrompt.FROM_CART, promptResponse.type.toLowerCase(Locale.ROOT), promptResponse.title,
+        return OccPrompt(promptResponse.type.toLowerCase(Locale.ROOT), promptResponse.title,
                 promptResponse.description, promptResponse.imageUrl, promptResponse.buttons.map {
             OccPromptButton(it.text, it.link, it.action.toLowerCase(Locale.ROOT), it.color.toLowerCase(Locale.ROOT))
         })
