@@ -131,6 +131,9 @@ class ChatItemListViewHolder(
             chat.markAsRead()
             listener.decreaseNotificationCounter()
             bindSmartReplyIndicator(chat)
+            if (chat.hasLabel()) {
+                bindMessageState(chat)
+            }
         }
 
         listener.chatItemClicked(chat, adapterPosition)

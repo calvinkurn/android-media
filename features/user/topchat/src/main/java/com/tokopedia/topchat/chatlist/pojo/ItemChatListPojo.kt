@@ -40,6 +40,10 @@ data class ItemChatListPojo(
         return typeFactory.type(this)
     }
 
+    fun hasLabel(): Boolean {
+        return label.isNotEmpty()
+    }
+
     fun hasUnreadItem(): Boolean {
         attributes?.let {
             return it.readStatus == ChatItemListViewHolder.STATE_CHAT_UNREAD
