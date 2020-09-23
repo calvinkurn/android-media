@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.gson.Gson
 import com.google.gson.JsonArray
+import com.google.gson.JsonObject
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
@@ -288,6 +289,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
 
     override fun onRefresh(view: View?) {
         onLoadMore = false
+        isFetchRecommendation = false
         onLoadMoreRecommendation = false
         currPage = 1
         currRecommendationListPage = 1
@@ -1038,6 +1040,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
 
             btn_ajukan_komplain?.setOnClickListener {
                 RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, URL_RESO.replace(REPLACE_ORDER_ID, orderId)))
+                userSession?.userId?.let { it1 -> UohAnalytics.clickAjukanKomplainOnBottomSheetFinishTransaction(it1) }
             }
         }
 
@@ -1114,6 +1117,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                 val param = TrainResendEmailParam(bookCode = invoiceId, email = email)
                 uohListViewModel.doTrainResendEmail(GraphqlHelper.loadRawString(resources, R.raw.uoh_send_eticket_train), param)
             }
+            userSession?.userId?.let { it1 -> UohAnalytics.clickKirimOnBottomSheetSendEmail(it1, orderData.verticalCategory) }
         }
 
         viewBottomSheet.btn_ls_kembali?.setOnClickListener {
@@ -1565,7 +1569,21 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         }
     }
 
-    override fun trackAddToCartRecommendation(recommendationItem: RecommendationItem) {
+    override fun atcRecommendationItem(recommendationItem: RecommendationItem) {
+        val jsonArrayAtc = JsonArray()
+        val atcJsonObject = JsonObject()
+        atcJsonObject.addProperty(UohConsts.PRODUCT_ID, recommendationItem.productId)
+        atcJsonObject.addProperty(UohConsts.SHOP_ID, recommendationItem.shopId)
+        atcJsonObject.addProperty(UohConsts.QUANTITY, recommendationItem.quantity)
+        atcJsonObject.addProperty(UohConsts.NOTES, "")
+        jsonArrayAtc.add(atcJsonObject)
+        uohListViewModel.doAtc(GraphqlHelper.loadRawString(resources, R.raw.buy_again), jsonArrayAtc)
+
+        // analytics
+        trackAtcRecommendationItem(recommendationItem)
+    }
+
+    private fun trackAtcRecommendationItem(recommendationItem: RecommendationItem) {
         val product = ECommerceAddRecommendation.Add.ActionField.Product(
                 name = recommendationItem.name,
                 id = recommendationItem.productId.toString(),
