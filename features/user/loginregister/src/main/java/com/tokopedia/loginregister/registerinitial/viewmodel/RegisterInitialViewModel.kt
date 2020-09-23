@@ -110,6 +110,10 @@ class RegisterInitialViewModel @Inject constructor(
     val getUserInfoResponse: LiveData<Result<ProfileInfoData>>
         get() = mutableGetUserInfoResponse
 
+    private val mutableGetUserInfoAfterAddPinResponse = MutableLiveData<Result<ProfileInfoData>>()
+    val getUserInfoAfterAddPinResponse: LiveData<Result<ProfileInfoData>>
+        get() = mutableGetUserInfoAfterAddPinResponse
+
     private val mutableGetTickerInfoResponse = MutableLiveData<Result<List<TickerInfoPojo>>>()
     val getTickerInfoResponse: LiveData<Result<List<TickerInfoPojo>>>
         get() = mutableGetTickerInfoResponse
@@ -207,6 +211,12 @@ class RegisterInitialViewModel @Inject constructor(
         getProfileUseCase.execute(GetProfileSubscriber(userSession,
                 onSuccessGetUserInfo(),
                 onFailedGetUserInfo()))
+    }
+
+    fun getUserInfoAfterAddPin() {
+        getProfileUseCase.execute(GetProfileSubscriber(userSession,
+                onSuccessGetUserInfoAfterAddPin(),
+                onFailedGetUserInfoAfterAddPin()))
     }
 
     fun getTickerInfo() {
@@ -393,6 +403,18 @@ class RegisterInitialViewModel @Inject constructor(
     private fun onFailedGetUserInfo(): (Throwable) -> Unit {
         return {
             mutableGetUserInfoResponse.value = Fail(it)
+        }
+    }
+
+    private fun onSuccessGetUserInfoAfterAddPin(): (ProfilePojo) -> Unit {
+        return {
+            mutableGetUserInfoAfterAddPinResponse.value = Success(ProfileInfoData(it.profileInfo))
+        }
+    }
+
+    private fun onFailedGetUserInfoAfterAddPin(): (Throwable) -> Unit {
+        return {
+            mutableGetUserInfoAfterAddPinResponse.value = Fail(it)
         }
     }
 
