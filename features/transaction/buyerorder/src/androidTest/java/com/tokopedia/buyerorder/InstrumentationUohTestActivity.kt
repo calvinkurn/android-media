@@ -12,8 +12,7 @@ import com.tokopedia.analytics.performance.fpi.FpiPerformanceData
 import com.tokopedia.analytics.performance.fpi.FragmentFramePerformanceIndexMonitoring
 import com.tokopedia.analytics.performance.util.*
 import com.tokopedia.buyerorder.unifiedhistory.list.view.fragment.UohListFragment
-import com.tokopedia.home.test.R
-import com.tokopedia.home.beranda.presentation.view.fragment.HomeFragment
+import com.tokopedia.buyerorder.test.R
 import com.tokopedia.home.beranda.presentation.view.listener.FramePerformanceIndexInterface
 import com.tokopedia.navigation_common.listener.HomePerformanceMonitoringListener
 import com.tokopedia.navigation_common.listener.MainParentStatusBarListener
@@ -56,21 +55,21 @@ class InstrumentationUohTestActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         startHomePerformanceMonitoring()
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_home_test)
+        setContentView(R.layout.activity_uoh_test)
 
         val uohListFragment: Fragment = UohListFragment()
         initializeFragmentFramePerformanceIndex(uohListFragment)
         val fragmentTransaction = supportFragmentManager
                 .beginTransaction()
         fragmentTransaction
-                .replace(R.id.container_home, homeFragment)
+                .replace(R.id.container_uoh, uohListFragment)
         fragmentTransaction.addToBackStack(null)
         fragmentTransaction.commit()
     }
 
-    private fun initializeFragmentFramePerformanceIndex(homeFragment: Fragment) {
-        if (homeFragment is FramePerformanceIndexInterface) {
-            fragmentFramePerformanceIndexMonitoring = homeFragment.framePerformanceIndexData
+    private fun initializeFragmentFramePerformanceIndex(uohListFragment: Fragment) {
+        if (uohListFragment is FramePerformanceIndexInterface) {
+            fragmentFramePerformanceIndexMonitoring = uohListFragment.framePerformanceIndexData
         }
     }
 
