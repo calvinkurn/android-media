@@ -15,3 +15,6 @@ const val HEADERS_ECT = "ECT"
 * */
 const val LOW_QUALITY = "2g"
 const val HIGH_QUALITY = "4g"
+
+// default rounded
+const val DEFAULT_ROUNDED = 5.0f
