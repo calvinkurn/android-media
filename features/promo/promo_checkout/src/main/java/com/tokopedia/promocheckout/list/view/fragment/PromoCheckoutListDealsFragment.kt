@@ -18,6 +18,7 @@ import com.tokopedia.promocheckout.common.view.uimodel.DataUiModel
 import com.tokopedia.promocheckout.detail.view.activity.PromoCheckoutDetailDealsActivity
 import com.tokopedia.promocheckout.list.di.PromoCheckoutListComponent
 import com.tokopedia.promocheckout.list.model.listcoupon.PromoCheckoutListModel
+import com.tokopedia.promocheckout.list.model.listlastseen.PromoCheckoutLastSeenModel
 import com.tokopedia.promocheckout.list.view.presenter.PromoCheckoutListContract
 import com.tokopedia.promocheckout.list.view.presenter.PromoCheckoutListDealsPresenter
 import kotlinx.android.synthetic.main.fragment_promo_checkout_list.*
@@ -66,8 +67,8 @@ class PromoCheckoutListDealsFragment() : BasePromoCheckoutListFragment(), PromoC
         }
     }
 
-    override fun onClickItemPromo(promoCheckoutDealsPromoCode: TravelCollectiveBanner.Banner) {
-        textInputCoupon.setText(promoCheckoutDealsPromoCode.attributes.promoCode)
+    override fun onClickItemLastSeen(promoCheckoutLastSeenModel: PromoCheckoutLastSeenModel) {
+        textInputCoupon.setText(promoCheckoutLastSeenModel.promoCode)
     }
 
     override fun onItemClicked(promoCheckoutListModel: PromoCheckoutListModel?) {
@@ -91,6 +92,12 @@ class PromoCheckoutListDealsFragment() : BasePromoCheckoutListFragment(), PromoC
         intent.putExtra(VOUCHER_DISCOUNT_AMOUNT, data.discountAmount)
         activity?.setResult(PromoData.VOUCHER_RESULT_CODE, intent)
         activity?.finish()
+    }
+
+    override fun changeTitle(title: String) {
+        if (!title.isNullOrBlank()) {
+            promo_checkout_list_last_seen_label.setText(title)
+        }
     }
 
     override fun initInjector() {
