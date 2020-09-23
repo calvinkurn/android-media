@@ -1169,8 +1169,8 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
                 isAutoLogin = true
                 isFromRegister = true
                 showLoading(true)
-                presenter.getUserInfo()
-                onGoToWelcomeNewUserPage()
+                activityShouldEnd = false
+                processAfterAddNameRegisterPhone(data?.extras)
             } else if (requestCode == REQUEST_LOGIN_PHONE
                     && resultCode == Activity.RESULT_OK
                     && data != null
@@ -1206,6 +1206,8 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
                 onSuccessLogin()
             } else if (requestCode == REQUEST_COTP_PHONE_VERIFICATION && resultCode == Activity.RESULT_OK) {
                 onSuccessLogin()
+            } else if (requestCode == REQUEST_ADD_PIN_AFTER_REGISTER_PHONE && resultCode == Activity.RESULT_OK) {
+                presenter.getUserInfo()
             } else {
                 dismissLoadingLogin()
                 super.onActivityResult(requestCode, resultCode, data)
@@ -1218,6 +1220,26 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
             val intent = RouteManager.getIntent(context, ApplinkConst.DISCOVERY_NEW_USER)
             startActivity(intent)
         }
+    }
+
+    private fun processAfterAddNameRegisterPhone(data: Bundle?){
+        val enable2FA = data?.getBoolean(ApplinkConstInternalGlobal.PARAM_ENABLE_2FA) ?: false
+        val enableSkip2FA = data?.getBoolean(ApplinkConstInternalGlobal.PARAM_ENABLE_SKIP_2FA) ?: false
+        if(enable2FA){
+            goToAddPin2FA(enableSkip2FA)
+        } else {
+            presenter.getUserInfo()
+        }
+    }
+
+    private fun goToAddPin2FA(enableSkip2FA: Boolean){
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PIN)
+        intent.putExtras(Bundle().apply {
+            putBoolean(ApplinkConstInternalGlobal.PARAM_ENABLE_SKIP_2FA, enableSkip2FA)
+            putBoolean(ApplinkConstInternalGlobal.PARAM_IS_FROM_2FA, true)
+            putBoolean(ApplinkConstInternalGlobal.PARAM_IS_SKIP_OTP, true)
+        })
+        startActivityForResult(intent, REQUEST_ADD_PIN_AFTER_REGISTER_PHONE)
     }
 
     private fun isFromAccountPage(): Boolean = source == SOURCE_ACCOUNT
@@ -1570,6 +1592,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
         const val REQUEST_ADD_PIN_AFTER_SQ = 119
         private val REQUEST_OTP_VALIDATE = 120
         private val REQUEST_PENDING_OTP_VALIDATE = 121
+        const val REQUEST_ADD_PIN_AFTER_REGISTER_PHONE = 122
 
         private const val PHONE_TYPE = "phone"
         private const val EMAIL_TYPE = "email"
