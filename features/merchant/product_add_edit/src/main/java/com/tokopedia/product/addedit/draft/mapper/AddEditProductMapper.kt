@@ -56,8 +56,8 @@ object AddEditProductMapper {
         productDraft.detailInputModel.price = productInputModel.detailInputModel.price
         productDraft.detailInputModel.stock = productInputModel.detailInputModel.stock
         productDraft.detailInputModel.minOrder = productInputModel.detailInputModel.minOrder
-        productDraft.detailInputModel.condition = productInputModel.detailInputModel.sku
-        productDraft.detailInputModel.sku = productInputModel.detailInputModel.condition
+        productDraft.detailInputModel.condition = productInputModel.detailInputModel.condition
+        productDraft.detailInputModel.sku = productInputModel.detailInputModel.sku
         productDraft.detailInputModel.imageUrlOrPathList = productInputModel.detailInputModel.imageUrlOrPathList
         productDraft.detailInputModel.pictureList = mapProductInputModelPictureListToDraftPictureList(productInputModel.detailInputModel.pictureList)
         productDraft.detailInputModel.preorder.apply {
@@ -103,8 +103,8 @@ object AddEditProductMapper {
             price = productDraft.detailInputModel.price
             stock = productDraft.detailInputModel.stock
             minOrder = productDraft.detailInputModel.minOrder
-            condition = productDraft.detailInputModel.sku
-            sku = productDraft.detailInputModel.condition
+            condition = productDraft.detailInputModel.condition
+            sku = productDraft.detailInputModel.sku
             imageUrlOrPathList = productDraft.detailInputModel.imageUrlOrPathList
             pictureList = mapDraftPictureListToProductInputModelPictureList(productDraft.detailInputModel.pictureList)
         }

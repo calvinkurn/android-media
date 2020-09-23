@@ -332,7 +332,7 @@ class AddEditProductPreviewFragment:
         }
 
         productStatusSwitch?.setOnClickListener {
-            val isChecked = productStatusSwitch?.isChecked ?: false
+            val isChecked = if (isAdding()) true else productStatusSwitch?.isChecked ?: false
             viewModel.updateProductStatus(isChecked)
             // track switch status on click
             if (isChecked && isEditing()) {
