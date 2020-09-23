@@ -31,13 +31,9 @@ class SearchEventActivityTest {
     var activityRule: ActivityTestRule<EventSearchActivity> = object : IntentsTestRule<EventSearchActivity>(EventSearchActivity::class.java) {
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
+            gtmLogDBSource.deleteAll().subscribe()
             setupGraphqlMockResponse(SearchEventMockResponse())
         }
-    }
-
-    @Before
-    fun setup() {
-        gtmLogDBSource.deleteAll().subscribe()
     }
 
     @Test

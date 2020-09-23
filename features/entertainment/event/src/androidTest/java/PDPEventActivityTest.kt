@@ -18,6 +18,9 @@ import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import kotlinx.android.synthetic.main.partial_event_pdp_price.*
 import mock.PDPEventMockResponse
+import org.hamcrest.BaseMatcher
+import org.hamcrest.Description
+import org.hamcrest.Matcher
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.endsWith
 import org.hamcrest.core.AllOf
@@ -44,21 +47,17 @@ class PDPEventActivityTest {
 
                 override fun beforeActivityLaunched() {
                     super.beforeActivityLaunched()
+                    gtmLogDBSource.deleteAll().subscribe()
                     setupGraphqlMockResponse(PDPEventMockResponse())
                 }
             }
-
-    @Before
-    fun setup() {
-        gtmLogDBSource.deleteAll().subscribe()
-    }
 
 
     @Test
     fun validatePDPEvent() {
         Thread.sleep(5000)
         click_lanjutkan_ticket()
-        //click_check_ticket()
+        click_check_ticket()
         assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ENTERTAINMENT_EVENT_PDP_VALIDATOR_QUERY), hasAllSuccess())
 
     }
@@ -70,9 +69,33 @@ class PDPEventActivityTest {
     }
 
     fun click_check_ticket() {
-        val viewCalendarInteraction = onView(allOf(withId(R.id.calendar_grid), hasSibling(withText("Agustus 2020")), withClassName(endsWith("CalendarGridView"))))
+        val viewCalendarInteraction = onView(getElementFromMatchAtPosition(allOf(withText("23"), withId(com.tokopedia.calendar.R.id.day)
+        ), 0)).check(matches(isDisplayed()))
         viewCalendarInteraction.perform(click())
     }
+
+    private fun getElementFromMatchAtPosition(
+            matcher: Matcher<View>,
+            position: Int
+    ): Matcher<View?>? {
+        return object : BaseMatcher<View?>() {
+            var counter = 0
+            override fun matches(item: Any): Boolean {
+                if (matcher.matches(item)) {
+                    if (counter == position) {
+                        counter++
+                        return true
+                    }
+                    counter++
+                }
+                return false
+            }
+            override fun describeTo(description: Description) {
+                description.appendText("Element at hierarchy position $position")
+            }
+        }
+    }
+
 
     companion object {
         private const val ENTERTAINMENT_EVENT_PDP_VALIDATOR_QUERY = "tracker/event/pdpeventcheck.json"

@@ -39,13 +39,9 @@ class CategoryEventActivityTest {
 
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
+            gtmLogDBSource.deleteAll().subscribe()
             setupGraphqlMockResponse(CategoryEventMockResponse())
         }
-    }
-
-    @Before
-    fun setup() {
-        gtmLogDBSource.deleteAll().subscribe()
     }
 
     @Test

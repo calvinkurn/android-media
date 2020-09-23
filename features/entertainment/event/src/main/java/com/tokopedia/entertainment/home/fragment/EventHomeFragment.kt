@@ -128,7 +128,7 @@ class EventHomeFragment : BaseDaggerFragment(), FragmentView, MenuSheet.ItemClic
 
     private fun onSuccessGetData(data: List<HomeEventItem<*>>) {
         shimering_layout.visibility = View.GONE
-        //analytics.openHomeEvent()
+        analytics.openHomeEvent()
         homeAdapter.setItems(data)
         performanceMonitoring.stopTrace()
         swipe_refresh_layout?.isRefreshing = false
