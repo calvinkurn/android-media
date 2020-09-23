@@ -5,8 +5,6 @@ import com.tokopedia.product.detail.view.activity.ProductFullDescriptionTabActiv
 import com.tokopedia.product.detail.view.activity.ProductInstallmentActivity
 import com.tokopedia.product.detail.view.fragment.DynamicProductDetailFragment
 import com.tokopedia.product.detail.view.widget.AddToCartDoneBottomSheet
-import com.tokopedia.product.report.di.ProductReportModule
-import com.tokopedia.product.report.view.dialog.ReportDialogFragment
 import com.tokopedia.product.warehouse.di.ProductWarehouseModule
 import dagger.Component
 
@@ -19,7 +17,6 @@ import dagger.Component
     ProductWishlistModule::class],
         dependencies = [BaseAppComponent::class])
 interface ProductDetailComponent {
-    fun inject(fragment: ReportDialogFragment)
     fun inject(fragment: DynamicProductDetailFragment)
     fun inject(activity: ProductInstallmentActivity)
     fun inject(bottomSheetFragment: AddToCartDoneBottomSheet)
