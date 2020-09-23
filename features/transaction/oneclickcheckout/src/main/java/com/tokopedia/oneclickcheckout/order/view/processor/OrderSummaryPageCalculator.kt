@@ -40,6 +40,7 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
             currentState = OccButtonState.DISABLE
         }
         if (payment.errorTickerMessage.isNotEmpty() && !payment.isEnableNextButton) {
+            // scrooge down
             if (payment.isDisablePayButton) {
                 return payment.copy(isCalculationError = false) to orderTotal.copy(orderCost = orderCost, paymentErrorMessage = payment.errorTickerMessage, buttonType = OccButtonType.PAY, buttonState = OccButtonState.DISABLE)
             }
@@ -52,11 +53,27 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
             return payment.copy(isCalculationError = false) to orderTotal.copy(orderCost = orderCost, paymentErrorMessage = null, buttonType = OccButtonType.PAY, buttonState = currentState)
         }
         if (payment.minimumAmount > subtotal) {
+            if (payment.isOvoOnlyCampaign) {
+                if (currentState == OccButtonState.NORMAL) {
+                    currentState = OccButtonState.DISABLE
+                }
+                return payment.copy(isCalculationError = true) to orderTotal.copy(orderCost = orderCost,
+                        paymentErrorMessage = "Belanjaanmu kurang dari min. transaksi ${payment.gatewayName} (${CurrencyFormatUtil.convertPriceValueToIdrFormat(payment.minimumAmount, false).removeDecimalSuffix()}).",
+                        buttonType = OccButtonType.PAY, buttonState = currentState)
+            }
             return payment.copy(isCalculationError = true) to orderTotal.copy(orderCost = orderCost,
                     paymentErrorMessage = "Belanjaanmu kurang dari min. transaksi ${payment.gatewayName} (${CurrencyFormatUtil.convertPriceValueToIdrFormat(payment.minimumAmount, false).removeDecimalSuffix()}). Silahkan pilih pembayaran lain.",
                     buttonType = OccButtonType.CHOOSE_PAYMENT, buttonState = currentState)
         }
         if (payment.maximumAmount > 0 && payment.maximumAmount < subtotal) {
+            if (payment.isOvoOnlyCampaign) {
+                if (currentState == OccButtonState.NORMAL) {
+                    currentState = OccButtonState.DISABLE
+                }
+                return payment.copy(isCalculationError = true) to orderTotal.copy(orderCost = orderCost,
+                        paymentErrorMessage = "Belanjaanmu melebihi limit transaksi ${payment.gatewayName} (${CurrencyFormatUtil.convertPriceValueToIdrFormat(payment.maximumAmount, false).removeDecimalSuffix()}).",
+                        buttonType = OccButtonType.PAY, buttonState = currentState)
+            }
             return payment.copy(isCalculationError = true) to orderTotal.copy(orderCost = orderCost,
                     paymentErrorMessage = "Belanjaanmu melebihi limit transaksi ${payment.gatewayName} (${CurrencyFormatUtil.convertPriceValueToIdrFormat(payment.maximumAmount, false).removeDecimalSuffix()}). Silahkan pilih pembayaran lain.",
                     buttonType = OccButtonType.CHOOSE_PAYMENT, buttonState = currentState)
@@ -67,6 +84,11 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
         }
         if (payment.gatewayCode.contains(OrderSummaryPageViewModel.OVO_GATEWAY_CODE) && subtotal > payment.walletAmount) {
             orderSummaryAnalytics.eventViewErrorMessage(OrderSummaryAnalytics.ERROR_ID_PAYMENT_OVO_BALANCE)
+            if (payment.isOvoOnlyCampaign) {
+                return payment.copy(isCalculationError = true) to orderTotal.copy(orderCost = orderCost,
+                        paymentErrorMessage = OrderSummaryPageViewModel.OVO_INSUFFICIENT_CONTINUE_MESSAGE,
+                        buttonType = OccButtonType.CONTINUE, buttonState = currentState)
+            }
             return payment.copy(isCalculationError = true) to orderTotal.copy(orderCost = orderCost,
                     paymentErrorMessage = OrderSummaryPageViewModel.OVO_INSUFFICIENT_ERROR_MESSAGE,
                     buttonType = OccButtonType.CHOOSE_PAYMENT, buttonState = currentState)

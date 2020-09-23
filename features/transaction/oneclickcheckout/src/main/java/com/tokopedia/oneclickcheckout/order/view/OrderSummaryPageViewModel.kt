@@ -602,21 +602,6 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         }
     }
 
-    private fun getTransactionId(query: String): String {
-        val keyLength = TRANSACTION_ID_KEY.length
-        val keyIndex = query.indexOf(TRANSACTION_ID_KEY)
-        if (keyIndex > -1 && query[keyIndex + keyLength] == '=') {
-            val nextAmpersand = query.indexOf('&', keyIndex)
-            val end = if (nextAmpersand > -1) nextAmpersand else query.length
-            val start = keyIndex + keyLength + 1
-
-            if (end > start) {
-                return query.substring(start, end)
-            }
-        }
-        return ""
-    }
-
     fun consumeForceShowOnboarding() {
         val onboarding = _orderPreference.onboarding
         if (onboarding.isForceShowCoachMark) {
