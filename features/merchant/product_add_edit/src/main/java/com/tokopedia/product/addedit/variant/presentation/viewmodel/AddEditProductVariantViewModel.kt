@@ -321,6 +321,7 @@ class AddEditProductVariantViewModel @Inject constructor(
     }
 
     fun removeVariant() {
+        mIsRemovingVariant.value = true
         val isRemoteDataHasVariant = productInputModel.value?.variantInputModel?.isRemoteDataHasVariant
                 ?: false // keep isRemoteDataHasVariant old data
         // keep the selections before being cleared

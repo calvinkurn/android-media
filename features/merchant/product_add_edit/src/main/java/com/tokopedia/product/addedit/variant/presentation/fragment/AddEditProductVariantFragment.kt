@@ -903,7 +903,7 @@ class AddEditProductVariantFragment :
 
     private fun observeisRemovingVariant() {
         viewModel.isRemovingVariant.observe(viewLifecycleOwner, Observer {
-            buttonSave.text =  if (it) {
+            buttonSave.text = if (it) {
                 getString(com.tokopedia.product.addedit.R.string.action_variant_save)
             } else {
                 getString(com.tokopedia.product.addedit.R.string.action_variant_next)
