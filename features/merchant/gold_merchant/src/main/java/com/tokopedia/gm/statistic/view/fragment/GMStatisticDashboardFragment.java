@@ -83,7 +83,6 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        fetchAbTestRemoteConfig();
         datePickerPresenter.clearDatePickerSetting();
     }
 
@@ -330,16 +329,5 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
     @Override
     public void onBottomSheetButtonClicked() {
         RouteManager.route(getContext(), ApplinkConstInternalGlobal.WEBVIEW, URL_POWER_MERCHANT_SCORE_TIPS);
-    }
-
-    private void fetchAbTestRemoteConfig() {
-        if (getActivity() != null) {
-            String variantName = "StatsOverApp";
-            String variant = RemoteConfigInstance.getInstance().getABTestPlatform().getString(variantName, "");
-            if (variantName.equals(variant)) {
-                RouteManager.route(getActivity(), ApplinkConstInternalMechant.MERCHANT_STATISTIC_DASHBOARD);
-                getActivity().finish();
-            }
-        }
     }
 }
