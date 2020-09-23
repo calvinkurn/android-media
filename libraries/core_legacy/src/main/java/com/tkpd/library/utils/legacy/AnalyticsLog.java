@@ -23,9 +23,7 @@ public class AnalyticsLog {
     private static final String EVENT_CLICK_LOGOUT = "clickLogout";
     private static final String CATEGORY_FORCE_LOGOUT = "force logout";
 
-
-
-    public static void logForceLogout(Context context, String url, boolean isInvalidToken, boolean isRequestDenied) {
+    public static void logForceLogout(Context context, String url, boolean isInvalidToken, boolean isRequestDenied, String type) {
         String baseUrl = getBaseUrl(url);
         GCMHandler gcmHandler = new GCMHandler(context);
         UserSession userSession = new UserSession(context);
@@ -43,6 +41,7 @@ public class AnalyticsLog {
                 + " DeviceModel=" + Build.MODEL
                 + " DeviceId=" + "'" + gcmHandler.getRegistrationId() + "'"
                 + " Environment=" + isStaging(baseUrl)
+                + " RefreshType= " + "'" + type + "'"
 
         );
 
@@ -62,8 +61,6 @@ public class AnalyticsLog {
             );
         }
     }
-
-
 
     public static void logForceLogoutToken(Context context, String url) {
         String baseUrl = getBaseUrl(url);
@@ -92,8 +89,6 @@ public class AnalyticsLog {
                 "get invalid token"
         );
     }
-
-
 
     public static void logNetworkError(Context context, String url, int errorCode) {
         String baseUrl = getBaseUrl(url);
@@ -134,8 +129,6 @@ public class AnalyticsLog {
         return baseUrl.contains("staging") ? "Staging" : "Production";
     }
 
-
-
     public static void logNotification(Context context, String userId, String notificationId, String notificationCode) {
         RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
         if (remoteConfig.getBoolean(RemoteConfigKey.NOTIFICATION_LOGGER, false)) {
@@ -153,8 +146,6 @@ public class AnalyticsLog {
             e.printStackTrace();
         }
     }
-
-
 
     public static void logInvalidGrant(Context context, String url) {
         String baseUrl = getBaseUrl(url);
