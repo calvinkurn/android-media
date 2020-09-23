@@ -101,5 +101,7 @@ class MainActivity : AppCompatActivity() {
          * RouteManager.route(this, ApplinkConstInternalMarketplace.SHOP_SETTINGS)
          * LEAVE THIS EMPTY AS DEFAULT!!
          * */
+//        startActivity(Intent(this, HomeActivity::class.java))
+        RouteManager.route(this, "https://www.tokopedia.com/otsuka")
     }
 }

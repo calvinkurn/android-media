@@ -1,6 +1,7 @@
 package com.tokopedia.tkpd
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
@@ -9,7 +10,9 @@ import androidx.appcompat.app.AppCompatActivity
 import com.chuckerteam.chucker.api.Chucker
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.application.MyApplication
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.authentication.AuthHelper
+import com.tokopedia.home.HomeActivity
 import com.tokopedia.network.refreshtoken.EncoderDecoder
 import com.tokopedia.tkpd.helper.logout
 import com.tokopedia.tkpd.network.DataSource
@@ -162,5 +165,6 @@ class OldMainActivity : AppCompatActivity() {
          * RouteManager.route(this, ApplinkConstInternalMarketplace.SHOP_SETTINGS)
          * LEAVE THIS EMPTY AS DEFAULT!!
          * */
+        RouteManager.route(this, "https://www.tokopedia.com/otsuka")
     }
 }
