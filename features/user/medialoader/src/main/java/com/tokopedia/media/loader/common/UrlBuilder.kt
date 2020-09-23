@@ -1,4 +1,4 @@
-package com.tokopedia.media.loader
+package com.tokopedia.media.loader.common
 
 import android.content.Context
 import com.bumptech.glide.load.model.GlideUrl

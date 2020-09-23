@@ -1,4 +1,4 @@
-package com.tokopedia.media.loader.data
+package com.tokopedia.media.loader.common
 
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.Key
@@ -8,8 +8,8 @@ import com.tokopedia.media.loader.utils.DEFAULT_ROUNDED
 
 data class Properties(
         var isRounded: Boolean = false,
+        var isAnimate: Boolean = false,
         var roundedRadius: Float = DEFAULT_ROUNDED,
-        var animate: Boolean = false,
         var signature: Key = ObjectKey(System.currentTimeMillis().toString()),
         var error: Any = R.drawable.ic_media_default_error,
         var placeHolder: Any = R.drawable.ic_media_default_placeholder,

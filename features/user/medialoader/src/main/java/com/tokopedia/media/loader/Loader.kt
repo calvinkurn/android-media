@@ -33,7 +33,7 @@ internal fun ImageView.builder(url: Any, properties: Properties) {
                 .isRounded(isRounded, roundedRadius)
                 .showPlaceHolder(placeHolder)
                 .cacheStrategy(cacheStrategy)
-                .isAnimate(animate)
+                .isAnimate(isAnimate)
                 .showError(error)
                 .build()
     }

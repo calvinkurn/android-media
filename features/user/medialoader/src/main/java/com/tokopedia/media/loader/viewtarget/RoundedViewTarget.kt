@@ -1,4 +1,4 @@
-package com.tokopedia.media.loader.bitmap
+package com.tokopedia.media.loader.viewtarget
 
 import android.graphics.Bitmap
 import android.widget.ImageView

@@ -3,8 +3,8 @@ package com.tokopedia.media.loader
 import android.graphics.drawable.Drawable
 import android.widget.ImageView
 import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.tokopedia.media.loader.bitmap.RoundedViewTarget
 import com.tokopedia.media.loader.module.GlideApp
+import com.tokopedia.media.loader.viewtarget.RoundedViewTarget
 
 internal data class MediaGlide(val imageView: ImageView?, val url: Any?) {
 
