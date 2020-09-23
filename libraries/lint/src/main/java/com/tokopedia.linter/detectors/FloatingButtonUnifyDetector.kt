@@ -51,5 +51,4 @@ class FloatingButtonUnifyDetector : Detector(), XmlScanner {
         context.report(ISSUE, location = context.getElementLocation(element),
                 message = USAGE_ERROR_MESSAGE_FORMAT.format(FLOATING_BUTTON_FIX_SHORT_NAME), quickfixData = materialFloatingButtonUnify)
     }
-
 }

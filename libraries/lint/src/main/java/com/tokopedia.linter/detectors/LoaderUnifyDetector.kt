@@ -41,5 +41,4 @@ class LoaderUnifyDetector : Detector(), XmlScanner {
         context.report(ISSUE, location = context.getElementLocation(element),
                 message = USAGE_ERROR_MESSAGE_FORMAT.format(PROGRESSBAR_NEW_NAME_SHORT), quickfixData = loaderUnify)
     }
-
 }
