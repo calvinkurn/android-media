@@ -34,6 +34,8 @@ import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.data.pojo.FeedTabs
 import com.tokopedia.feedplus.domain.model.feed.WhitelistDomain
 import com.tokopedia.feedplus.view.adapter.FeedPlusTabAdapter
+import com.tokopedia.feedplus.view.analytics.FeedToolBarAnalytics
+import com.tokopedia.feedplus.view.customview.FeedMainToolbar
 import com.tokopedia.feedplus.view.di.DaggerFeedContainerComponent
 import com.tokopedia.feedplus.view.presenter.FeedPlusContainerViewModel
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
@@ -52,7 +54,7 @@ import javax.inject.Inject
  * @author by milhamj on 25/07/18.
  */
 
-class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNotificationListener {
+class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNotificationListener, FeedMainToolbar.OnToolBarClickListener {
 
     companion object {
         const val TOOLBAR_GRADIENT = 1
@@ -69,6 +71,9 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
 
     @Inject
     internal lateinit var affiliatePreference: AffiliatePreference
+
+    @Inject
+    lateinit var toolBarAnalytics: FeedToolBarAnalytics
 
     val KEY_IS_LIGHT_THEME_STATUS_BAR = "is_light_theme_status_bar"
     private var mainParentStatusBarListener: MainParentStatusBarListener? = null
@@ -107,13 +112,13 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel.tabResp.observe(this, Observer {
+        viewModel.tabResp.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> onSuccessGetTab(it.data)
                 is Fail -> onErrorGetTab(it.throwable)
             }
         })
-        viewModel.whitelistResp.observe(this, Observer {
+        viewModel.whitelistResp.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> renderFab(it.data)
                 is Fail -> onErrorGetWhitelist(it.throwable)
@@ -235,6 +240,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
             fab_feed.setOnClickListener { onGoToLogin() }
         }
         setAdapter()
+        toolbar?.setToolBarClickListener(this)
         onNotificationChanged(badgeNumberNotification, badgeNumberInbox) // notify badge after toolbar created
         feed_appbar.addOnOffsetChangedListener(object : AppBarLayout.OnOffsetChangedListener {
             override fun onOffsetChanged(appBarLayout: AppBarLayout?, verticalOffset: Int) {
@@ -483,5 +489,17 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         super.onViewStateRestored(savedInstanceState)
         isLightThemeStatusBar = savedInstanceState?.getBoolean(KEY_IS_LIGHT_THEME_STATUS_BAR)
                 ?: false
+    }
+
+    override fun onImageSearchClick() {
+        toolBarAnalytics.eventClickSearch()
+    }
+
+    override fun onInboxButtonClick() {
+        toolBarAnalytics.eventClickInbox()
+    }
+
+    override fun onNotificationClick() {
+        toolBarAnalytics.eventClickNotification()
     }
 }

@@ -105,8 +105,10 @@ class AddEditProductDescriptionFragment:
         } else {
             ProductAddDescriptionTracking.clickRemoveVideoLink(shopId)
         }
-        adapter.data.removeAt(position)
-        adapter.notifyItemRemoved(position)
+        if (position >= 0 && position < adapter.dataSize) {
+            adapter.data.removeAt(position)
+            adapter.notifyItemRemoved(position)
+        }
         with(descriptionViewModel) {
             for (i in position until adapter.dataSize) {
                 adapter.data.getOrNull(i)?.run {

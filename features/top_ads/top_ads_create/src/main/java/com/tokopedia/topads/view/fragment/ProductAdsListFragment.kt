@@ -228,15 +228,23 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         if (promotedGroup.checkedRadioButtonId == R.id.promoted) {
             stepperModel?.selectedPromo = getSelectedProduct()
             stepperModel?.adIdsPromo = getSelectedProductAdId()
-            stepperModel?.selectedProductIds = (getSelectedProduct() + stepperModel?.selectedNonPromo!!).toMutableList()
-            stepperModel?.adIds = ((getSelectedProductAdId() + stepperModel?.adIdsNonPromo!!).toMutableList())
+            stepperModel?.selectedNonPromo?.let {
+                stepperModel?.selectedProductIds = (getSelectedProduct() + it).toMutableList()
+            }
+            stepperModel?.adIdsNonPromo?.let {
+                stepperModel?.adIds = ((getSelectedProductAdId() + it).toMutableList())
+            }
         } else {
             stepperModel?.selectedNonPromo = getSelectedProduct()
             stepperModel?.adIdsNonPromo = getSelectedProductAdId()
-            stepperModel?.selectedProductIds = (getSelectedProduct() + stepperModel?.selectedPromo!!).toMutableList()
-            stepperModel?.adIds = ((getSelectedProductAdId() + stepperModel?.adIdsPromo!!).toMutableList())
+            stepperModel?.selectedPromo?.let {
+                stepperModel?.selectedProductIds = (getSelectedProduct() + it).toMutableList()
+            }
+            stepperModel?.adIdsPromo?.let {
+                stepperModel?.adIds = ((getSelectedProductAdId() + it).toMutableList())
+            }
         }
-        var count = stepperModel?.selectedProductIds!!.size
+        val count = stepperModel?.selectedProductIds?.size?:0
         select_product_info.text = String.format(getString(R.string.format_selected_produk), count)
         btn_next.isEnabled = count > 0
     }
@@ -271,8 +279,11 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         if (productListAdapter.items.isEmpty()) {
             productListAdapter.items.addAll(mutableListOf(ProductEmptyViewModel()))
         }
-        if (productListAdapter.items[0] !is ProductEmptyViewModel)
-            productListAdapter.setSelectedList(stepperModel?.selectedProductIds!!)
+        if (productListAdapter.items[0] !is ProductEmptyViewModel){
+            stepperModel?.selectedProductIds?.let {
+                productListAdapter.setSelectedList(it)
+            }
+        }
         val count = stepperModel?.selectedProductIds?.size ?: 0
         select_product_info.text = String.format(getString(R.string.format_selected_produk), count)
         btn_next.isEnabled = count > 0
