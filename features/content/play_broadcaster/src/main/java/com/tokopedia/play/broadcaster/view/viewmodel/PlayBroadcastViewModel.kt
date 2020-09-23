@@ -87,8 +87,6 @@ class PlayBroadcastViewModel @Inject constructor(
     val observableCover = getCurrentSetupDataStore().getObservableSelectedCover()
     val observableReportDuration: LiveData<String>
         get() = _observableReportDuration
-    val observableBannedEvent: LiveData<Event<EventUiModel>>
-        get() = _observableBannedEvent
 
     val shareContents: String
         get() = _observableShareInfo.value.orEmpty()
@@ -109,7 +107,6 @@ class PlayBroadcastViewModel @Inject constructor(
     private val _observableLivePusherState = MutableLiveData<LivePusherState>()
     private val _observableLiveDurationState = MutableLiveData<Event<LivePusherTimerState>>()
     private val _observableReportDuration = MutableLiveData<String>()
-    private val _observableBannedEvent = MutableLiveData<Event<EventUiModel>>()
 
     init {
         _observableChatList.value = mutableListOf()
@@ -267,7 +264,6 @@ class PlayBroadcastViewModel @Inject constructor(
             }
 
             override fun onCountDownFinish() {
-                // TODO check whether banned event is handled or not
                 _observableLiveDurationState.value = Event(LivePusherTimerState.Finish)
                 stopPushStream()
             }
@@ -312,26 +308,24 @@ class PlayBroadcastViewModel @Inject constructor(
         playPusher.restartPush()
     }
 
-    fun stopPushStream(shouldNavigate: Boolean = false, channelStatus: PlayChannelStatus = PlayChannelStatus.Stop) {
+    fun stopPushStream(shouldNavigate: Boolean = false) {
         _observableLivePusherState.value = LivePusherState.Connecting
 
         scope.launch {
             withContext(dispatcher.io) {
                 playPusher.stopPush()
                 playPusher.stopPreview()
-                playPusher.destroy()
+                destroyPushStream()
 
-                updateChannelStatus(channelStatus)
+                updateChannelStatus(PlayChannelStatus.Stop)
             }
             _observableLivePusherState.value = LivePusherState.Stopped(shouldNavigate)
         }
     }
 
     fun destroyPushStream() {
-        scope.launch {
-            playPusher.destroy()
-            playSocket.destroy()
-        }
+        playPusher.destroy()
+        playSocket.destroy()
     }
 
     fun setChannelId(channelId: String) {
@@ -357,7 +351,6 @@ class PlayBroadcastViewModel @Inject constructor(
                             is LiveDuration -> restartLiveDuration(data)
                             is ProductTagging -> setSelectedProduct(PlayBroadcastUiMapper.mapProductTag(data))
                             is Chat -> retrieveNewChat(PlayBroadcastUiMapper.mapIncomingChat(data))
-                            is Banned -> retrieveBannedEvent(PlayBroadcastUiMapper.mapBannedEvent(data))
                         }
                     }
 
@@ -436,13 +429,6 @@ class PlayBroadcastViewModel @Inject constructor(
             PlayShareWrapper.generateShareLink(shareUiModel) {
                 _observableShareInfo.value = it
             }
-        }
-    }
-
-    private fun retrieveBannedEvent(data: EventUiModel) {
-        scope.launch(dispatcher.main) {
-            stopPushStream(channelStatus = PlayChannelStatus.Moderated)
-            _observableBannedEvent.value = Event(data)
         }
     }
 }

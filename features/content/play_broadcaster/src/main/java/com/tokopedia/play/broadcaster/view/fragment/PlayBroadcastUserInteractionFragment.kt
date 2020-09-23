@@ -16,7 +16,6 @@ import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.pusher.apsara.ApsaraLivePusherActiveStatus
 import com.tokopedia.play.broadcaster.pusher.apsara.ApsaraLivePusherErrorStatus
-import com.tokopedia.play.broadcaster.ui.model.PlayChannelStatus
 import com.tokopedia.play.broadcaster.ui.model.PlayMetricUiModel
 import com.tokopedia.play.broadcaster.ui.model.TotalLikeUiModel
 import com.tokopedia.play.broadcaster.ui.model.TotalViewUiModel
@@ -101,7 +100,6 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         observeTotalLikes()
         observeChatList()
         observeMetrics()
-        observeBannedEvent()
     }
 
     override fun onStart() {
@@ -426,16 +424,6 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
     private fun observeMetrics() {
         parentViewModel.observableNewMetrics.observe(viewLifecycleOwner, EventObserver(::setNewMetrics))
-    }
-
-    private fun observeBannedEvent() {
-        parentViewModel.observableBannedEvent.observe(viewLifecycleOwner,  EventObserver{ event ->
-            showForceStopDialog(
-                    title = event.title,
-                    message = event.message,
-                    buttonTitle = event.buttonTitle
-            )
-        })
     }
     //endregion
 

@@ -27,7 +27,6 @@ class UpdateChannelUseCase @Inject constructor(
             return it
         }
         throw DefaultErrorThrowable()
-//        return ChannelId("test")
     }
 
     fun setQueryParams(queryParams: QueryParams) {

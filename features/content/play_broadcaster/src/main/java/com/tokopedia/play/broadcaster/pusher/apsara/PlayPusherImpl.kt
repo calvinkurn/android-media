@@ -5,10 +5,7 @@ import android.view.SurfaceView
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.play.broadcaster.pusher.timer.PlayPusherTimer
 import com.tokopedia.play.broadcaster.pusher.timer.PlayPusherTimerListener
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 
 
 /**
@@ -86,7 +83,9 @@ class PlayPusherImpl(@ApplicationContext private val mContext: Context) : PlayPu
     }
 
     override fun destroy() {
-        mApsaraLivePusher.destroy()
+        scope.launch(Dispatchers.IO) {
+            mApsaraLivePusher.destroy()
+        }
     }
 
     override fun addStreamDuration(durationInMillis: Long) {

@@ -234,10 +234,4 @@ object PlayBroadcastUiMapper {
             name = chat.user.name,
             isSelfMessage = false
     )
-
-    fun mapBannedEvent(banned: Banned): EventUiModel = EventUiModel(
-            title = banned.title,
-            message = banned.reason,
-            buttonTitle = banned.btnText
-    )
 }
