@@ -218,11 +218,6 @@ class AddEditProductPreviewFragment:
     }
 
     private fun saveProductToDraft() {
-        if (isDrafting()) {
-            productStatusSwitch?.isChecked?.let {
-                viewModel.updateProductStatus(it)
-            }
-        }
         viewModel.productInputModel.value?.let {
             viewModel.saveProductDraft(AddEditProductMapper.mapProductInputModelDetailToDraft(it), it.draftId, false)
         }
@@ -363,11 +358,6 @@ class AddEditProductPreviewFragment:
                         activity?.finish()
                     }
                 } else {
-                    if (isDrafting()) {
-                        productStatusSwitch?.isChecked?.let {
-                            viewModel.updateProductStatus(it)
-                        }
-                    }
                     viewModel.productInputModel.value?.let { productInputModel ->
                         startProductAddService(productInputModel)
                         activity?.setResult(RESULT_OK)
