@@ -5,7 +5,6 @@ import android.content.Intent
 import android.os.Bundle
 import com.tokopedia.abstraction.constant.IRouterConstant
 import com.tokopedia.promocheckout.common.data.REQUEST_CODE_PROMO_DETAIL
-import com.tokopedia.promocheckout.common.domain.model.TravelCollectiveBanner
 import com.tokopedia.promocheckout.common.domain.model.event.EventVerifyBody
 import com.tokopedia.promocheckout.common.util.EXTRA_PROMO_DATA
 import com.tokopedia.promocheckout.common.util.mapToStatePromoCheckout

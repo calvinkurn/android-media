@@ -14,7 +14,6 @@ import com.tokopedia.abstraction.constant.IRouterConstant
 import com.tokopedia.promocheckout.R
 import com.tokopedia.promocheckout.analytics.PromoCheckoutAnalytics.Companion.promoCheckoutAnalytics
 import com.tokopedia.promocheckout.common.data.entity.request.Promo
-import com.tokopedia.promocheckout.common.domain.model.TravelCollectiveBanner
 import com.tokopedia.promocheckout.common.util.*
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData
 import com.tokopedia.promocheckout.common.view.uimodel.ClashingInfoDetailUiModel
@@ -46,6 +45,7 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(),
         PromoCheckOutExchangeCouponAdapter.ListenerCouponExchange {
 
     private var containerParent: ViewGroup? = null
+
     @Inject
     lateinit var promoCheckoutListMarketplacePresenter: PromoCheckoutListMarketplacePresenter
     val marketplacePromoLastSeenAdapter: MarketplacePromoLastSeenAdapter by lazy { MarketplacePromoLastSeenAdapter(arrayListOf(), this) }
@@ -132,7 +132,6 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(),
         marketplacePromoLastSeenAdapter.notifyDataSetChanged()
         populateLastSeen()
     }
-
 
     override fun showListCatalogHighlight(e: Throwable) {
         populateExchangeCouponList()
