@@ -47,15 +47,13 @@ class TradeInFinalPriceFragment : BaseViewModelFragment<FinalPriceViewModel>() {
                     .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
                     .build()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setUpObservers()
-        viewModel.getDiagnosticData()
-        tradeInAnalytics.openFinalPricePage()
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        init()
     }
 
     private fun setUpObservers() {
-        viewModel.deviceDiagData.observe(this, Observer {
+        viewModel.deviceDiagData.observe(viewLifecycleOwner, Observer {
             if (it != null && it.isEligible == true)
                 renderDetails(it)
             else {
@@ -69,14 +67,14 @@ class TradeInFinalPriceFragment : BaseViewModelFragment<FinalPriceViewModel>() {
             }
         })
 
-        viewModel.getProgBarVisibility().observe(this, Observer {
+        viewModel.getProgBarVisibility().observe(viewLifecycleOwner, Observer {
             if (it)
                 progress_bar_layout.show()
             else
                 progress_bar_layout.hide()
         })
 
-        viewModel.getWarningMessage().observe(this, Observer {
+        viewModel.getWarningMessage().observe(viewLifecycleOwner, Observer {
             global_error.show()
             global_error.setType(GlobalError.SERVER_ERROR)
             global_error.errorDescription.text = it
@@ -106,11 +104,6 @@ class TradeInFinalPriceFragment : BaseViewModelFragment<FinalPriceViewModel>() {
         }
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        init()
-    }
-
     private fun init() {
         iv_back.setOnClickListener {
             activity?.onBackPressed()
@@ -121,6 +114,9 @@ class TradeInFinalPriceFragment : BaseViewModelFragment<FinalPriceViewModel>() {
             product_price.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(viewModel.tradeInParams?.newPrice
                     ?: 0, true)
         }
+        setUpObservers()
+        viewModel.getDiagnosticData()
+        tradeInAnalytics.openFinalPricePage()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

@@ -58,7 +58,7 @@
                 android:paddingStart="@dimen/dp_12"
                 android:paddingEnd="@dimen/dp_12"
                 android:text="@string/tradein_step1_of_4"
-                android:textColor="@color/clr_AD31353B"
+                android:textColor="@color/tradein_clr_AD31353B"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toRightOf="@id/iv_back"
                 app:layout_constraintRight_toRightOf="parent"
@@ -100,7 +100,7 @@
             android:layout_marginTop="@dimen/spacing_lvl3"
             android:paddingLeft="@dimen/spacing_lvl4"
             android:paddingRight="@dimen/spacing_lvl4"
-            android:textColor="@color/clr_AD31353B"
+            android:textColor="@color/tradein_clr_AD31353B"
             app:typographyType="body_3"
             tools:text="Tokopedia Tower Ciputra World 2, Jl. Prof. DR. Satrio No.Kav. 11, RT 12, DKI Jakarta, Jakarta Selatan, Setiabudi 12560" />
 

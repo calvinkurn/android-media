@@ -41,7 +41,7 @@ import com.tokopedia.common_tradein.model.TradeInParams;
 import com.tokopedia.tradein.view.viewcontrollers.bottomsheet.TradeInImeiHelpBottomSheet;
 import com.tokopedia.tradein.viewmodel.HomeResult;
 import com.tokopedia.tradein.viewmodel.TradeInHomeViewModel;
-import com.tokopedia.tradein.Constants;
+import com.tokopedia.tradein.TradeinConstants;
 import com.tokopedia.design.dialog.IAccessRequestListener;
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel;
 import com.tokopedia.unifyprinciples.Typography;
@@ -224,7 +224,7 @@ public class MoneyInHomeActivity extends BaseTradeInActivity<TradeInHomeViewMode
                             finish();
                         });
 
-                        showDeviceNotElligiblePopup(R.string.not_elligible_price_high);
+                        showDeviceNotElligiblePopup(R.string.tradein_not_elligible_price_high);
                         mTvNotUpto.setVisibility(View.GONE);
                         mTvModelName.setText(homeResult.getDeviceDisplayName());
                         mTvInitialPrice.setText(homeResult.getDisplayMessage());
@@ -285,7 +285,7 @@ public class MoneyInHomeActivity extends BaseTradeInActivity<TradeInHomeViewMode
             }
         }));
         tradeInHomeViewModel.getAskUserLogin().observe(this, (userLoginStatus -> {
-            if (userLoginStatus != null && userLoginStatus == Constants.LOGIN_REQUIRED) {
+            if (userLoginStatus != null && userLoginStatus == TradeinConstants.LOGIN_REQUIRED) {
                 navigateToActivityRequest(RouteManager.getIntent(this, ApplinkConst.LOGIN), LOGIN_REQUEST);
             } else {
                 showPermissionDialog();
@@ -335,11 +335,11 @@ public class MoneyInHomeActivity extends BaseTradeInActivity<TradeInHomeViewMode
     }
 
     private void getPriceFromSDK(Context context) {
-        String campaignId = Constants.CAMPAIGN_ID_PROD;
-        if (Constants.LAKU6_BASEURL.equals(Constants.LAKU6_BASEURL_STAGING))
-            campaignId = Constants.CAMPAIGN_ID_STAGING;
+        String campaignId = TradeinConstants.CAMPAIGN_ID_PROD;
+        if (TradeinConstants.LAKU6_BASEURL.equals(TradeinConstants.LAKU6_BASEURL_STAGING))
+            campaignId = TradeinConstants.CAMPAIGN_ID_STAGING;
         laku6TradeIn = Laku6TradeIn.getInstance(context, campaignId,
-                Constants.APPID, Constants.APIKEY, Constants.LAKU6_BASEURL, TRADEIN_TEST_TYPE, AuthKey.SAFETYNET_KEY_TRADE_IN);
+                TradeinConstants.APPID, TradeinConstants.APIKEY, TradeinConstants.LAKU6_BASEURL, TRADEIN_TEST_TYPE, AuthKey.SAFETYNET_KEY_TRADE_IN);
         requestPermission();
     }
 

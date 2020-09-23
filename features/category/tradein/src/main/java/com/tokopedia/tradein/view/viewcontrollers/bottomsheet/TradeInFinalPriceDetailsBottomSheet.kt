@@ -44,7 +44,7 @@ class TradeInFinalPriceDetailsBottomSheet: BottomSheetDialogFragment() {
                 doubleTextView.apply {
                     setTopText(review.substringBefore(":"))
                     setTopTextSize(14.0f)
-                    setTopTextColor(MethodChecker.getColor(context, R.color.clr_AD31353B))
+                    setTopTextColor(MethodChecker.getColor(context, R.color.tradein_clr_AD31353B))
                     setBottomTextSize(14.0f)
                     setBottomTextColor(MethodChecker.getColor(context, com.tokopedia.design.R.color.clr_f531353b))
                     setBottomTextStyle("bold")

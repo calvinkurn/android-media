@@ -9,7 +9,7 @@ import com.laku6.tradeinsdk.api.Laku6TradeIn
 import com.tokopedia.common_tradein.model.TradeInParams
 import com.tokopedia.common_tradein.model.ValidateTradePDP
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.tradein.Constants
+import com.tokopedia.tradein.TradeinConstants
 import com.tokopedia.tradein.model.DeviceDiagInputResponse
 import com.tokopedia.tradein.model.DeviceDiagnostics
 import com.tokopedia.tradein.usecase.CheckMoneyInUseCase
@@ -42,9 +42,9 @@ class TradeInHomeViewModel @Inject constructor(
 
     fun checkLogin() {
         if (!userSession.isLoggedIn)
-            askUserLogin.value = Constants.LOGIN_REQUIRED
+            askUserLogin.value = TradeinConstants.LOGIN_REQUIRED
         else {
-            askUserLogin.value = Constants.LOGEED_IN
+            askUserLogin.value = TradeinConstants.LOGEED_IN
         }
     }
 

@@ -1,5 +1,11 @@
 package com.tokopedia.tradein.usecase
 
+import com.tokopedia.tradein.TradeinConstants.UseCase.KEY_DESTINATION
+import com.tokopedia.tradein.TradeinConstants.UseCase.KEY_ORIGIN
+import com.tokopedia.tradein.TradeinConstants.UseCase.KEY_SPID
+import com.tokopedia.tradein.TradeinConstants.UseCase.KEY_TRADEIN
+import com.tokopedia.tradein.TradeinConstants.UseCase.KEY_WEIGHT
+import com.tokopedia.tradein.TradeinConstants.UseCase.SP_ID
 import com.tokopedia.tradein.model.RatesV3DataModel
 import com.tokopedia.tradein.raw.GQL_RATES_V3
 import com.tokopedia.tradein.repository.TradeInRepository
@@ -14,11 +20,11 @@ class RatesV3UseCase @Inject constructor(
 
     fun createRequestParams(weight: String, destination: String, origin: String): Map<String, Any> {
         return mapOf(
-                "spids" to "48",
-                "tradeIn" to 2,
-                "weight" to weight,
-                "destination" to destination,
-                "origin" to origin
+                KEY_SPID to SP_ID,
+                KEY_TRADEIN to 2,
+                KEY_WEIGHT to weight,
+                KEY_DESTINATION to destination,
+                KEY_ORIGIN to origin
         )
     }
 }

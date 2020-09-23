@@ -83,7 +83,7 @@ class TradeInInitialPriceFragment : BaseViewModelFragment<TradeInInitialPriceVie
     }
 
     private fun setUpObservers() {
-        tradeInInitialPriceViewModel.imeiStateLiveData.observe(this, Observer { showImei: Boolean ->
+        tradeInInitialPriceViewModel.imeiStateLiveData.observe(viewLifecycleOwner, Observer { showImei: Boolean ->
             if (showImei) {
                 handleImei()
             } else {
@@ -149,7 +149,8 @@ class TradeInInitialPriceFragment : BaseViewModelFragment<TradeInInitialPriceVie
     private fun setMaxPrice(maxPrice: String) {
         max_price_value.text = maxPrice
         val spannableString = SpannableString(getString(R.string.tradein_save_upto, maxPrice))
-        spannableString.setSpan(StyleSpan(Typeface.BOLD), 18, 18 + maxPrice.length, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
+        val start = 18
+        spannableString.setSpan(StyleSpan(Typeface.BOLD), start, start + maxPrice.length, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
         save_upto.text = spannableString
     }
 

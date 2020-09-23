@@ -1,5 +1,8 @@
 package com.tokopedia.tradein.usecase
 
+import com.tokopedia.tradein.TradeinConstants.UseCase.KEY_FIELDS
+import com.tokopedia.tradein.TradeinConstants.UseCase.KEY_SHOP_IDS
+import com.tokopedia.tradein.TradeinConstants.UseCase.SHIPMENT
 import com.tokopedia.tradein.model.ShopInfoDataModel
 import com.tokopedia.tradein.raw.GQL_GET_SHOP_INFO
 import com.tokopedia.tradein.repository.TradeInRepository
@@ -13,7 +16,7 @@ class ShopInfoUseCase @Inject constructor(
     }
 
     fun createRequestParams(shopID: Int): Map<String, Any> {
-        return mapOf("shopIds" to shopID,
-                "fields" to "shipment")
+        return mapOf(KEY_SHOP_IDS to shopID,
+                KEY_FIELDS to SHIPMENT)
     }
 }
