@@ -1,5 +1,8 @@
 package com.tokopedia.developer_options.api
 
+import com.tokopedia.developer_options.api.request.FeedbackFormRequest
+import com.tokopedia.developer_options.api.response.CategoriesResponse
+import com.tokopedia.developer_options.api.response.FeedbackFormResponse
 import okhttp3.MultipartBody
 import retrofit2.http.*
 import rx.Observable
@@ -15,4 +18,17 @@ interface FeedbackApi {
             "Accept: application/json",
             "X-Atlassian-Token: no-check" )
     fun getImageResponse(@Url url: String, @Part file: MultipartBody.Part) : Observable<List<ImageResponse>>
+
+    @GET("/api/v1/feedback/form/")
+    fun getCategories(): Observable<CategoriesResponse>
+
+    @POST("/api/v1/feedback/create/")
+    fun crateFeedbackForm(feedbackRequest: FeedbackFormRequest): Observable<FeedbackFormResponse>
+
+    @Multipart
+    @POST
+    fun uploadAttachment(@Url url: String, key: String, @Part file: MultipartBody.Part): Observable<String>
+
+    @POST
+    fun commitData(@Url url: String): Observable<String>
 }
