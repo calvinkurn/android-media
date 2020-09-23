@@ -639,6 +639,18 @@ final class ProductListPresenter
         searchProductFirstPageUseCase.execute(requestParams, getLoadDataSubscriber(requestParams.getParameters()));
     }
 
+    private void setNavSource(String navSource) {
+        this.navSource = navSource;
+    }
+
+    private void setPageId(String pageId) {
+        this.pageId = pageId;
+    }
+
+    private void setPageTitle(String pageTitle) {
+        this.pageTitle = pageTitle;
+    }
+
     private boolean checkShouldEnrichWithAdditionalParams(Map<String, String> additionalParams) {
         return getView().isAnyFilterActive() && additionalParams != null;
     }
@@ -795,18 +807,6 @@ final class ProductListPresenter
 
     private void setRelatedViewModel(RelatedViewModel relatedViewModel) {
         this.relatedViewModel = relatedViewModel;
-    }
-
-    private void setNavSource(String navSource) {
-        this.navSource = navSource;
-    }
-
-    private void setPageId(String pageId) {
-        this.pageId = pageId;
-    }
-
-    private void setPageTitle(String pageTitle) {
-        this.pageTitle = pageTitle;
     }
 
     private void getViewToHandleEmptyProductList(SearchProductModel.SearchProduct searchProduct, ProductViewModel productViewModel) {
