@@ -6,7 +6,7 @@ package com.tokopedia.play.broadcaster.pusher.apsara
  */
 sealed class ApsaraLivePusherStatus {
     object Idle : ApsaraLivePusherStatus()
-    data class Live(val activeStatus: ApsaraLivePusherActiveStatus) : ApsaraLivePusherStatus()
+    object Live : ApsaraLivePusherStatus()
     object Pause : ApsaraLivePusherStatus()
     object Stop : ApsaraLivePusherStatus()
     object Restart : ApsaraLivePusherStatus()
@@ -14,5 +14,3 @@ sealed class ApsaraLivePusherStatus {
 }
 
 enum class ApsaraLivePusherErrorStatus { NetworkPoor, NetworkLoss, ConnectFailed, ReconnectFailed, SystemError }
-
-enum class ApsaraLivePusherActiveStatus { Normal, Recover }

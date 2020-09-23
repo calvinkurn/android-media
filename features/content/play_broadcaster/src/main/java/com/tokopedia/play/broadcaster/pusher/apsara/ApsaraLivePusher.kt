@@ -7,7 +7,6 @@ import android.view.SurfaceView
 import androidx.core.app.ActivityCompat
 import com.alivc.live.pusher.*
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.play.broadcaster.util.extension.sendCrashlyticsLog
 
 
@@ -185,7 +184,7 @@ class ApsaraLivePusher(@ApplicationContext private val mContext: Context) {
 
         override fun onConnectFail(pusher: AlivcLivePusher?) {
             mApsaraLivePusherStatus = ApsaraLivePusherStatus.Error(ApsaraLivePusherErrorStatus.ConnectFailed)
-            mApsaraLivePusherInfoListener?.onError(ApsaraLivePusherErrorStatus.NetworkLoss)
+            mApsaraLivePusherInfoListener?.onError(ApsaraLivePusherErrorStatus.ConnectFailed)
             mAliVcLivePusher?.reconnectPushAsync(mIngestUrl)
         }
 
@@ -195,6 +194,8 @@ class ApsaraLivePusher(@ApplicationContext private val mContext: Context) {
 
         override fun onReconnectSucceed(pusher: AlivcLivePusher?) {
             // Indicates that a reconnection is successful.
+            mApsaraLivePusherStatus = ApsaraLivePusherStatus.Live
+            mApsaraLivePusherInfoListener?.onRecovered()
         }
 
         override fun onPushURLAuthenticationOverdue(pusher: AlivcLivePusher?): String {
@@ -218,13 +219,8 @@ class ApsaraLivePusher(@ApplicationContext private val mContext: Context) {
         }
 
         override fun onPushStarted(pusher: AlivcLivePusher?) {
-            val activeStatus = if (mApsaraLivePusherStatus is ApsaraLivePusherStatus.Error) {
-                ApsaraLivePusherActiveStatus.Recover
-            } else {
-                ApsaraLivePusherActiveStatus.Normal
-            }
-            mApsaraLivePusherStatus = ApsaraLivePusherStatus.Live(activeStatus)
-            mApsaraLivePusherInfoListener?.onPushed(activeStatus)
+            mApsaraLivePusherStatus = ApsaraLivePusherStatus.Live
+            mApsaraLivePusherInfoListener?.onPushed()
             mApsaraLivePusherInfoListener?.onStarted()
         }
 
@@ -238,13 +234,8 @@ class ApsaraLivePusher(@ApplicationContext private val mContext: Context) {
         override fun onPushResumed(pusher: AlivcLivePusher?) {
             if (mApsaraLivePusherStatus !is ApsaraLivePusherStatus.Pause) return
 
-            val activeStatus = if (mApsaraLivePusherStatus is ApsaraLivePusherStatus.Error) {
-                ApsaraLivePusherActiveStatus.Recover
-            } else {
-                ApsaraLivePusherActiveStatus.Normal
-            }
-            mApsaraLivePusherStatus = ApsaraLivePusherStatus.Live(activeStatus)
-            mApsaraLivePusherInfoListener?.onPushed(activeStatus)
+            mApsaraLivePusherStatus = ApsaraLivePusherStatus.Live
+            mApsaraLivePusherInfoListener?.onPushed()
             mApsaraLivePusherInfoListener?.onResumed()
         }
 

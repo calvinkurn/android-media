@@ -1,6 +1,5 @@
 package com.tokopedia.play.broadcaster.view.state
 
-import com.tokopedia.play.broadcaster.pusher.apsara.ApsaraLivePusherActiveStatus
 import com.tokopedia.play.broadcaster.pusher.apsara.ApsaraLivePusherErrorStatus
 
 
@@ -9,7 +8,8 @@ import com.tokopedia.play.broadcaster.pusher.apsara.ApsaraLivePusherErrorStatus
  */
 sealed class LivePusherState {
     object Connecting : LivePusherState()
-    data class Started(val activeStatus: ApsaraLivePusherActiveStatus) : LivePusherState()
+    object Started : LivePusherState()
+    object Recovered : LivePusherState()
     data class Stopped(val shouldNavigate: Boolean) : LivePusherState()
     data class Error(val errorStatus: ApsaraLivePusherErrorStatus) : LivePusherState()
 }

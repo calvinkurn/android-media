@@ -83,9 +83,7 @@ class PlayPusherImpl(@ApplicationContext private val mContext: Context) : PlayPu
     }
 
     override fun destroy() {
-        scope.launch(Dispatchers.IO) {
-            mApsaraLivePusher.destroy()
-        }
+        mApsaraLivePusher.destroy()
     }
 
     override fun addStreamDuration(durationInMillis: Long) {
@@ -125,9 +123,9 @@ class PlayPusherImpl(@ApplicationContext private val mContext: Context) : PlayPu
             }
         }
 
-        override fun onPushed(activeStatus: ApsaraLivePusherActiveStatus) {
+        override fun onPushed() {
             scope.launch {
-                mPlayPusherInfoListener?.onPushed(activeStatus)
+                mPlayPusherInfoListener?.onPushed()
             }
         }
 
@@ -153,6 +151,12 @@ class PlayPusherImpl(@ApplicationContext private val mContext: Context) : PlayPu
         override fun onRestarted() {
             scope.launch {
                 mPlayPusherInfoListener?.onRestarted()
+            }
+        }
+
+        override fun onRecovered() {
+            scope.launch {
+                mPlayPusherInfoListener?.onRecovered()
             }
         }
 

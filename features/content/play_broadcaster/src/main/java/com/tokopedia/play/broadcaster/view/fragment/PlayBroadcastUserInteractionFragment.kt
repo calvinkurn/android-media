@@ -14,7 +14,6 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
-import com.tokopedia.play.broadcaster.pusher.apsara.ApsaraLivePusherActiveStatus
 import com.tokopedia.play.broadcaster.pusher.apsara.ApsaraLivePusherErrorStatus
 import com.tokopedia.play.broadcaster.ui.model.PlayMetricUiModel
 import com.tokopedia.play.broadcaster.ui.model.TotalLikeUiModel
@@ -318,17 +317,14 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         if (!isVisible) return
         when (state) {
             is LivePusherState.Connecting -> showLoading(true)
-            is LivePusherState.Started -> {
-                showLoading(false)
-                if (state.activeStatus == ApsaraLivePusherActiveStatus.Recover) {
-                    showToaster(message = getString(R.string.play_live_broadcast_network_recover),
-                            type = Toaster.TYPE_NORMAL)
-                }
-            }
+            is LivePusherState.Started -> showLoading(false)
             is LivePusherState.Stopped -> {
                 showLoading(false)
                  if (state.shouldNavigate) navigateToSummary()
             }
+            is LivePusherState.Recovered -> showToaster(
+                    message = getString(R.string.play_live_broadcast_network_recover),
+                    type = Toaster.TYPE_NORMAL)
             is LivePusherState.Error -> {
                 showLoading(false)
                 handleLivePushError(state.errorStatus)
@@ -347,13 +343,15 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             ApsaraLivePusherErrorStatus.NetworkLoss -> {
                 val errorMessage = getString(R.string.play_live_broadcast_network_loss)
                 showToaster(message = getString(R.string.play_live_broadcast_network_loss),
-                        type = Toaster.TYPE_ERROR)
+                        type = Toaster.TYPE_ERROR,
+                        duration = Toaster.LENGTH_INDEFINITE)
                 analytic.viewErrorOnLivePage(parentViewModel.channelId, parentViewModel.title, errorMessage)
             }
             ApsaraLivePusherErrorStatus.ConnectFailed, ApsaraLivePusherErrorStatus.ReconnectFailed -> {
                 val errorMessage = getString(R.string.play_live_broadcast_connect_fail)
                 showToaster(message = getString(R.string.play_live_broadcast_connect_fail),
-                        type = Toaster.TYPE_ERROR)
+                        type = Toaster.TYPE_ERROR,
+                        duration = Toaster.LENGTH_INDEFINITE)
                 analytic.viewErrorOnLivePage(parentViewModel.channelId, parentViewModel.title, errorMessage)
             }
             ApsaraLivePusherErrorStatus.SystemError -> {

@@ -6,10 +6,11 @@ package com.tokopedia.play.broadcaster.pusher.apsara
  */
 interface ApsaraLivePusherInfoListener {
     fun onStarted()
-    fun onPushed(activeStatus: ApsaraLivePusherActiveStatus)
+    fun onPushed()
     fun onResumed()
     fun onPaused()
     fun onStop()
     fun onRestarted()
+    fun onRecovered()
     fun onError(errorStatus: ApsaraLivePusherErrorStatus)
 }

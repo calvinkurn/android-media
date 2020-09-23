@@ -10,7 +10,6 @@ import com.tokopedia.play.broadcaster.data.model.ProductData
 import com.tokopedia.play.broadcaster.data.model.SerializableHydraSetupData
 import com.tokopedia.play.broadcaster.domain.model.*
 import com.tokopedia.play.broadcaster.domain.usecase.*
-import com.tokopedia.play.broadcaster.pusher.apsara.ApsaraLivePusherActiveStatus
 import com.tokopedia.play.broadcaster.pusher.apsara.ApsaraLivePusherErrorStatus
 import com.tokopedia.play.broadcaster.pusher.PlayPusher
 import com.tokopedia.play.broadcaster.pusher.PlayPusherInfoListener
@@ -231,9 +230,9 @@ class PlayBroadcastViewModel @Inject constructor(
                 startWebSocket()
             }
 
-            override fun onPushed(activeStatus: ApsaraLivePusherActiveStatus) {
+            override fun onPushed() {
                 updateChannelStatus(PlayChannelStatus.Live)
-                _observableLivePusherState.value = LivePusherState.Started(activeStatus)
+                _observableLivePusherState.value = LivePusherState.Started
             }
 
             override fun onPaused() {
@@ -247,6 +246,10 @@ class PlayBroadcastViewModel @Inject constructor(
 
             override fun onRestarted() {
                 updateChannelStatus(PlayChannelStatus.Live)
+            }
+
+            override fun onRecovered() {
+                _observableLivePusherState.value = LivePusherState.Recovered
             }
 
             override fun onError(errorStatus: ApsaraLivePusherErrorStatus) {
