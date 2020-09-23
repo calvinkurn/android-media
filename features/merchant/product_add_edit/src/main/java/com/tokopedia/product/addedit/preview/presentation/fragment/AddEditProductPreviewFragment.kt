@@ -218,7 +218,11 @@ class AddEditProductPreviewFragment:
     }
 
     private fun saveProductToDraft() {
-        if (isDrafting()) viewModel.updateProductStatus(true)
+        if (isDrafting()) {
+            productStatusSwitch?.isChecked?.let {
+                viewModel.updateProductStatus(it)
+            }
+        }
         viewModel.productInputModel.value?.let {
             viewModel.saveProductDraft(AddEditProductMapper.mapProductInputModelDetailToDraft(it), it.draftId, false)
         }
