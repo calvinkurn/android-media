@@ -3,6 +3,7 @@ package com.tokopedia.topchat.chatroom.view.adapter.viewholder
 import android.graphics.Color
 import android.view.Gravity
 import android.view.View
+import android.widget.ImageView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.chat_common.data.ImageUploadViewModel
 import com.tokopedia.chat_common.view.adapter.viewholder.ImageUploadViewHolder
@@ -70,6 +71,7 @@ class TopchatImageUploadViewHolder(itemView: View?, listener: ImageUploadListene
 
     override fun bindImageAttachment(element: ImageUploadViewModel) {
         changeHourColor(Color.WHITE)
+        attachment?.scaleType = ImageView.ScaleType.CENTER_CROP
         if (element.isDummy) {
             setVisibility(progressBarSendImage, View.VISIBLE)
             ImageHandler.loadImageRounded2(
