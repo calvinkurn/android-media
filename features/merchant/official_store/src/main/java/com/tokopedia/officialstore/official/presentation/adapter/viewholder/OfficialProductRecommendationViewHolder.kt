@@ -4,6 +4,7 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.officialstore.R
+import com.tokopedia.officialstore.common.OfficialStoreConstant
 import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.ProductRecommendationViewModel
 import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.productcard.ProductCardModel
@@ -51,7 +52,7 @@ class OfficialProductRecommendationViewHolder(
                     )
             )
 
-            setImageProductViewHintListener(element.productItem, object: ViewHintListener {
+            setImageProductViewHintListener(element.productItem, object : ViewHintListener {
                 override fun onViewHint() {
                     if (element.productItem.isTopAds) {
                         context?.run {
@@ -76,7 +77,8 @@ class OfficialProductRecommendationViewHolder(
                                 element.productItem.clickUrl,
                                 element.productItem.productId.toString(),
                                 element.productItem.name,
-                                element.productItem.imageUrl
+                                element.productItem.imageUrl,
+                                OfficialStoreConstant.TopAdsComponent.OS_RECOM_TOP_ADS
                         )
                     }
                 }

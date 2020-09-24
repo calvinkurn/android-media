@@ -27,6 +27,8 @@ import org.junit.*
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.rule.IntentsTestRule
+import com.tokopedia.officialstore.official.presentation.dynamic_channel.DynamicChannelMixLeftViewHolder
+import com.tokopedia.officialstore.official.presentation.dynamic_channel.DynamicChannelMixTopViewHolder
 
 /**
  * Created by DevAra
@@ -93,6 +95,12 @@ class OSTopAdsVerificationTest {
             }
             is MixLeftComponentViewHolder -> {
                 clickOnEachItemRecyclerView(viewHolder.itemView, R.id.rv_product, 0)
+            }
+            is DynamicChannelMixLeftViewHolder -> {
+                clickOnEachItemRecyclerView(viewHolder.itemView, R.id.rv_product, 0)
+            }
+            is DynamicChannelMixTopViewHolder -> {
+                clickOnEachItemRecyclerView(viewHolder.itemView, R.id.dc_banner_rv, 0)
             }
             is OfficialProductRecommendationViewHolder -> {
                 Espresso.onView(withId(R.id.recycler_view))
