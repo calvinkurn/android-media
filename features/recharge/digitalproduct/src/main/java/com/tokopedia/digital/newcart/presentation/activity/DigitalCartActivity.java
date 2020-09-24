@@ -37,6 +37,7 @@ public class DigitalCartActivity extends BaseSimpleActivity implements HasCompon
     private DigitalCheckoutPassData processIntentDataCheckoutFromApplink(Context context, Uri uriData) {
         DigitalCheckoutPassData passData = new DigitalCheckoutPassData();
         passData.setCategoryId(uriData.getQueryParameter(DigitalCheckoutPassData.Companion.getPARAM_CATEGORY_ID()));
+        passData.setOrderId(uriData.getQueryParameter(DigitalCheckoutPassData.Companion.getPARAM_ORDER_ID()));
         passData.setClientNumber(uriData.getQueryParameter(DigitalCheckoutPassData.Companion.getPARAM_CLIENT_NUMBER()));
         passData.setOperatorId(uriData.getQueryParameter(DigitalCheckoutPassData.Companion.getPARAM_OPERATOR_ID()));
         passData.setProductId(uriData.getQueryParameter(DigitalCheckoutPassData.Companion.getPARAM_PRODUCT_ID()));

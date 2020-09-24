@@ -20,5 +20,5 @@ object TalkInboxTrackingConstants {
     const val EVENT_ACTION_CLICK_TAB = "${TalkTrackingConstants.EVENT_ACTION_CLICK} %s tab"
     const val EVENT_LABEL_CLICK_TAB = "shop id:%s;count unread messages:%s;"
     const val TAB_SELLER = "seller"
-    const val TAB_BUYER = "buyer"
+    const val TAB_BUYER = "user"
 }
