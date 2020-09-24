@@ -64,7 +64,7 @@ class ShopShowcasePickerAdapter(
     }
 
     companion object {
-        const val MAX_SELECTED_SHOWCASE = 2
+        const val MAX_SELECTED_SHOWCASE = 10
         private const val ENABLE_TEXT_OPACITY = 1f
         private const val DISABLE_TEXT_OPACITY = 0.3f
     }
