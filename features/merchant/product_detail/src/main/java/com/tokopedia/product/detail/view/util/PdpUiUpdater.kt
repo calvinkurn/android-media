@@ -341,11 +341,15 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
     }
 
     fun updateRecommendationData(data: RecommendationWidget): ProductRecommendationDataModel?{
-        return listProductRecomMap?.find { it.name == data.pageName }?.apply {
+        return listProductRecomMap?.find { data.pageName.contains(it.name) }?.apply {
             recomWidgetData = data
             cardModel = mapToCardModel(data)
             filterData = mapToAnnotateChip(data)
         }
+    }
+
+    fun getRecommendationData(pageName: String): List<ProductRecommendationDataModel>?{
+        return listProductRecomMap?.filter { pageName.contains(it.name) }
     }
 
     fun updateFilterRecommendationData(data: ProductRecommendationDataModel): ProductRecommendationDataModel?{
