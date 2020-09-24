@@ -7,12 +7,10 @@ import android.content.Intent
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
-import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.HTTP_PREFIX
 import com.tokopedia.product.addedit.common.util.AddEditProductNotificationManager
-import com.tokopedia.product.addedit.description.presentation.model.DescriptionInputModel
-import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.draft.domain.usecase.DeleteProductDraftUseCase
 import com.tokopedia.product.addedit.draft.domain.usecase.SaveProductDraftUseCase
 import com.tokopedia.product.addedit.draft.mapper.AddEditProductMapper.mapProductInputModelDetailToDraft
@@ -20,13 +18,8 @@ import com.tokopedia.product.addedit.preview.domain.usecase.ProductEditUseCase
 import com.tokopedia.product.addedit.preview.presentation.activity.AddEditProductPreviewActivity
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
-import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
-import com.tokopedia.product.addedit.variant.presentation.model.SelectionInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.VariantInputModel
-import com.tokopedia.usecase.RequestParams
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 /**
@@ -61,25 +54,32 @@ class AddEditProductEditService : AddEditProductBaseService() {
         }
 
         // (1)
-        saveProductToDraft()
+        saveProductToDraftAsync()
     }
 
-    private fun saveProductToDraft() {
+    private fun saveProductToDraftAsync() {
         launchCatchError(block = {
-            productDraftId = withContext(Dispatchers.IO){
-                saveProductDraftUseCase.params = SaveProductDraftUseCase.createRequestParams(
-                        mapProductInputModelDetailToDraft(productInputModel),
-                        productInputModel.draftId, false)
-                saveProductDraftUseCase.executeOnBackground()
-            }
+            asyncCatchError( coroutineContext,
+                    block = {
+                        saveProductDraftUseCase.params = SaveProductDraftUseCase.createRequestParams(
+                                mapProductInputModelDetailToDraft(productInputModel),
+                                productInputModel.draftId, false)
+                        saveProductDraftUseCase.executeOnBackground()
+                    },
+                    onError = { throwable ->
+                        logErrorDraft(throwable)
+                        0L
+                    }
+            ).await().let {
+                productDraftId = it ?: 0L
 
-            // (2)
-            val detailInputModel = productInputModel.detailInputModel
-            val variantInputModel = productInputModel.variantInputModel
-            uploadProductImages(detailInputModel.imageUrlOrPathList, variantInputModel)
-        },
-        onError = { throwable ->
-            logError(RequestParams.EMPTY, throwable)
+                // (2)
+                val detailInputModel = productInputModel.detailInputModel
+                val variantInputModel = productInputModel.variantInputModel
+                uploadProductImages(detailInputModel.imageUrlOrPathList, variantInputModel)
+            }
+        }, onError = { throwable ->
+            logErrorDraft(throwable)
         })
     }
 

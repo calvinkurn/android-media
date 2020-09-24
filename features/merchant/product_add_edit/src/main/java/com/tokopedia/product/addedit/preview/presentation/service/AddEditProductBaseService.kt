@@ -146,8 +146,8 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
                 getErrorMessage(throwable),
                 URLEncoder.encode(gson.toJson(requestParams), REQUEST_ENCODE))
         val exception = AddEditProductUploadException(errorMessage, throwable)
-        AddEditProductErrorHandler.logExceptionToCrashlytics(exception)
 
+        AddEditProductErrorHandler.logExceptionToCrashlytics(exception)
         Timber.w("P2#PRODUCT_UPLOAD#%s", errorMessage)
     }
 
@@ -155,6 +155,19 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
         val message = throwable.message ?: ""
         val errorMessage = String.format(
                 "\"Error upload image.\",\"userId: %s\",\"userEmail: %s \",\"errorMessage: %s\"",
+                userSession.userId,
+                userSession.email,
+                message)
+        val exception = AddEditProductUploadException(errorMessage, throwable)
+
+        AddEditProductErrorHandler.logExceptionToCrashlytics(exception)
+        Timber.w("P2#PRODUCT_UPLOAD#%s", message)
+    }
+
+    protected fun logErrorDraft(throwable: Throwable) {
+        val message = throwable.message ?: ""
+        val errorMessage = String.format(
+                "\"Error saving draft.\",\"userId: %s\",\"userEmail: %s \",\"errorMessage: %s\"",
                 userSession.userId,
                 userSession.email,
                 message)

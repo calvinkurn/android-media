@@ -7,8 +7,8 @@ import android.content.Intent
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant
 import com.tokopedia.product.addedit.common.util.AddEditProductNotificationManager
 import com.tokopedia.product.addedit.draft.domain.usecase.DeleteProductDraftUseCase
@@ -20,10 +20,7 @@ import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProduc
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.tracking.ProductAddShippingTracking
 import com.tokopedia.product.addedit.variant.presentation.model.VariantInputModel
-import com.tokopedia.usecase.RequestParams
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 /**
@@ -58,26 +55,32 @@ open class AddEditProductAddService : AddEditProductBaseService() {
         productInputModel = saveInstanceCacheManager.get(AddEditProductPreviewConstants.EXTRA_PRODUCT_INPUT_MODEL, ProductInputModel::class.java) ?: ProductInputModel()
 
         // (1)
-        saveProductToDraft()
+        saveProductToDraftAsync()
     }
 
-    private fun saveProductToDraft() {
+    private fun saveProductToDraftAsync() {
         launchCatchError(block = {
-            saveProductDraftUseCase.params = SaveProductDraftUseCase.createRequestParams(
-                    mapProductInputModelDetailToDraft(productInputModel),
-                    productInputModel.draftId, false)
+            asyncCatchError( coroutineContext,
+                    block = {
+                        saveProductDraftUseCase.params = SaveProductDraftUseCase.createRequestParams(
+                                mapProductInputModelDetailToDraft(productInputModel),
+                                productInputModel.draftId, false)
+                        saveProductDraftUseCase.executeOnBackground()
+                    },
+                    onError = { throwable ->
+                        logErrorDraft(throwable)
+                        0L
+                    }
+            ).await().let {
+                productDraftId = it ?: 0L
 
-            productDraftId = withContext(Dispatchers.IO){
-                saveProductDraftUseCase.executeOnBackground()
+                // (2)
+                val detailInputModel = productInputModel.detailInputModel
+                val variantInputModel = productInputModel.variantInputModel
+                uploadProductImages(detailInputModel.imageUrlOrPathList, variantInputModel)
             }
-
-            // (2)
-            val detailInputModel = productInputModel.detailInputModel
-            val variantInputModel = productInputModel.variantInputModel
-            uploadProductImages(detailInputModel.imageUrlOrPathList, variantInputModel)
-        },
-        onError = { throwable ->
-            logError(RequestParams.EMPTY, throwable)
+        }, onError = { throwable ->
+            logErrorDraft(throwable)
         })
     }
 
