@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.promocheckout.R
 import com.tokopedia.promocheckout.list.model.listlastseen.PromoCheckoutLastSeenModel
 
-class PromoLastSeenAdapter(var listData: MutableList<PromoCheckoutLastSeenModel>,
+class PromoLastSeenAdapter(var listData: MutableList<PromoCheckoutLastSeenModel>, var isDeals: Boolean,
                            private val listenerLastSeen: PromoLastSeenViewHolder.ListenerLastSeen)
     : RecyclerView.Adapter<PromoLastSeenViewHolder>() {
 
@@ -20,7 +20,7 @@ class PromoLastSeenAdapter(var listData: MutableList<PromoCheckoutLastSeenModel>
     }
 
     override fun onBindViewHolder(holder: PromoLastSeenViewHolder, position: Int) {
-        holder.bind(listData[position])
+        holder.bind(listData[position], isDeals)
     }
 
 }
