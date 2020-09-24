@@ -45,6 +45,11 @@ data class ProductInfo(
         @Expose
         var productMessage: String,
 
+        @SerializedName("stockMessage")
+        @ColumnInfo(name = "stockMessage")
+        @Expose
+        var stockMessage: String,
+
         @SerializedName("buttonTxt")
         @ColumnInfo(name = "buttonTxt")
         @Expose
@@ -79,6 +84,11 @@ data class ProductInfo(
         @ColumnInfo(name = CMConstant.PayloadKeys.REVIEW_SCORE)
         @Expose
         var reviewScore: String? = "",
+
+        @SerializedName(CMConstant.PayloadKeys.REVIEW_NUMBER)
+        @ColumnInfo(name = CMConstant.PayloadKeys.REVIEW_NUMBER)
+        @Expose
+        var reviewNumber: String? = "",
 
         @SerializedName(CMConstant.PayloadKeys.ACTION_BUTTON)
         @ColumnInfo(name = CMConstant.PayloadKeys.ACTION_BUTTON)

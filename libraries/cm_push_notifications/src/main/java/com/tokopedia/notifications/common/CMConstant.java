@@ -126,6 +126,7 @@ public interface CMConstant {
         String FREE_DELIVERY = "bebasOngkir";
         String STOCK_AVAILABLE = "stockAvailable";
         String REVIEW_SCORE = "reviewScore";
+        String REVIEW_NUMBER = "reviewNumber";
     }
 
     interface NotificationProductType {

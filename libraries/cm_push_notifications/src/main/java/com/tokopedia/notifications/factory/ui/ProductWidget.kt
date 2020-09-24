@@ -15,6 +15,8 @@ import com.tokopedia.notifications.model.ActionButton
 import com.tokopedia.notifications.model.BaseNotificationModel
 import com.tokopedia.notifications.model.ProductInfo
 import com.tokopedia.user.session.UserSession
+import com.tokopedia.notifications.common.CMConstant.PreDefineActionType.ATC as TYPE_ATC
+import com.tokopedia.notifications.common.CMConstant.PreDefineActionType.OCC as TYPE_OCC
 import com.tokopedia.notifications.common.CMNotificationUtils.getSpannedTextFromStr as spanStr
 import com.tokopedia.notifications.common.CarouselUtilities.loadImageFromStorage as loadImage
 
@@ -98,24 +100,24 @@ internal open class ProductWidget(
 
     private fun productV1Card(view: RemoteViews) {
         view.setOnClickPendingIntent(R.id.ll_expandedProductView, contract.productDetailIntent(product))
-        view.setTextViewText(R.id.tv_productButton, spanStr(product.productButtonMessage))
+        view.setTextViewText(R.id.btn_occ, spanStr(product.productButtonMessage))
     }
 
     private fun productV2Card(view: RemoteViews) {
-        val actionButton = product.actionButton[model.carouselIndex]
-
         // set pending intent of product image and content
         view.setOnClickPendingIntent(R.id.iv_productImage, contract.productDetailIntent(product))
         view.setOnClickPendingIntent(R.id.ll_content, contract.productDetailIntent(product))
 
         // action button
         if (product.actionButton.size == 1) {
-            val pendingIntent = contract.actionButtonIntent(actionButton)
-            view.setTextViewText(R.id.tv_productButton, actionButton.text)
-            view.setOnClickPendingIntent(R.id.tv_productButton, pendingIntent)
+            val actionButton = product.actionButton.first()
+            singleActionButtonVisibility(view, actionButton)
+            actionButtonField(view, actionButton)
         } else if (product.actionButton.size > 1) {
-            view.setViewVisibility(R.id.tv_productButton, View.GONE)
-            multipleActionButton(view)
+            view.setViewVisibility(R.id.view_button, View.VISIBLE)
+            product.actionButton.forEach {
+                actionButtonField(view, it)
+            }
         }
 
         freeOngkirIcon(view) // free ongkir icon
@@ -126,12 +128,26 @@ internal open class ProductWidget(
         ProductAnalytics.impressionExpanded(userSession.userId, model, product)
     }
 
-    private fun multipleActionButton(view: RemoteViews) {
-        view.setViewVisibility(R.id.view_button, View.VISIBLE)
-        product.actionButton.forEach {
-            when (it.type) {
-                CMConstant.PreDefineActionType.ATC -> mainActionButton(view, it)
-                CMConstant.PreDefineActionType.OCC -> secondActionButton(view, it)
+    private fun singleActionButtonVisibility(view: RemoteViews, actionButton: ActionButton) {
+        when (actionButton.type) {
+            TYPE_ATC -> view.setViewVisibility(R.id.btn_occ, View.GONE)
+            TYPE_OCC -> view.setViewVisibility(R.id.btn_atc, View.GONE)
+        }
+    }
+
+    private fun actionButtonField(view: RemoteViews, actionButton: ActionButton) {
+        val pendingIntent = contract.actionButtonIntent(actionButton)
+        when (actionButton.type) {
+            TYPE_ATC -> {
+                view.setTextViewText(R.id.btn_atc, actionButton.text)
+                base.loadResourceAsBitmap(R.drawable.cm_ic_star_review) {
+                    view.setImageViewBitmap(R.id.btn_atc, it)
+                }
+                view.setOnClickPendingIntent(R.id.btn_atc, pendingIntent)
+            }
+            TYPE_OCC -> {
+                view.setTextViewText(R.id.btn_occ, actionButton.text)
+                view.setOnClickPendingIntent(R.id.btn_occ, pendingIntent)
             }
         }
     }
@@ -142,7 +158,7 @@ internal open class ProductWidget(
 
         view.setViewVisibility(R.id.widget_review, View.VISIBLE)
         view.setTextViewText(R.id.txt_review, product.reviewScore)
-        view.setTextViewText(R.id.txt_count_review, "(${product.reviewScore})")
+        view.setTextViewText(R.id.txt_count_review, "(${product.reviewNumber})")
 
         base.loadResourceAsBitmap(R.drawable.cm_ic_star_review) {
             view.setImageViewBitmap(R.id.img_star, it)
@@ -164,7 +180,7 @@ internal open class ProductWidget(
         if (product.productMessage.isEmpty()) {
             view.setViewVisibility(R.id.tv_stock, View.GONE)
         } else {
-            view.setTextViewText(R.id.tv_stock, spanStr(product.productMessage))
+            view.setTextViewText(R.id.tv_stock, spanStr(product.stockMessage))
         }
     }
 
@@ -199,18 +215,6 @@ internal open class ProductWidget(
                 view.setViewVisibility(R.id.ivArrowRight, View.VISIBLE)
             }
         }
-    }
-
-    private fun mainActionButton(view: RemoteViews, button: ActionButton) {
-        view.setInt(R.id.btn_first, SET_BACKGROUND_RESOURCE, R.color.deep_orange_500)
-        view.setTextColor(R.id.btn_first, ContextCompat.getColor(context, R.color.white))
-        view.setTextViewText(R.id.btn_first, button.text)
-    }
-
-    private fun secondActionButton(view: RemoteViews, button: ActionButton) {
-        view.setInt(R.id.btn_second, SET_BACKGROUND_RESOURCE, R.color.white)
-        view.setTextColor(R.id.btn_second, ContextCompat.getColor(context, R.color.deep_orange_500))
-        view.setTextViewText(R.id.btn_second, button.text)
     }
 
     interface ProductContract {

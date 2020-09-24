@@ -41,6 +41,11 @@ data class ActionButton(
         @Expose
         var type: String? = "",
 
+        @SerializedName(CMConstant.PayloadKeys.ICON)
+        @ColumnInfo(name = CMConstant.PayloadKeys.ICON)
+        @Expose
+        var icon: String? = "",
+
         @SerializedName(CMConstant.PayloadKeys.ADD_TO_CART)
         @ColumnInfo(name = CMConstant.PayloadKeys.ADD_TO_CART)
         @Expose
@@ -53,6 +58,7 @@ data class ActionButton(
             parcel.readParcelable(PreDefineActions::class.java.classLoader),
             parcel.readString(),
             parcel.readString(),
+            parcel.readString(),
             parcel.readParcelable(AddToCart::class.java.classLoader))
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -62,6 +68,7 @@ data class ActionButton(
         parcel.writeParcelable(pdActions, flags)
         parcel.writeString(element_id)
         parcel.writeString(type)
+        parcel.writeString(icon)
         parcel.writeParcelable(addToCart, flags)
     }
 
