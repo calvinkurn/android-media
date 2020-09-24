@@ -89,11 +89,7 @@ import com.tokopedia.product.detail.common.data.model.product.Video
 import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
 import com.tokopedia.product.detail.data.model.ProductInfoP3
 import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneAddedProductDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
-import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductNotifyMeDataModel
-import com.tokopedia.product.detail.data.model.datamodel.TopAdsImageDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
+import com.tokopedia.product.detail.data.model.datamodel.*
 import com.tokopedia.product.detail.data.model.financing.FtInstallmentCalculationDataResponse
 import com.tokopedia.product.detail.data.util.*
 import com.tokopedia.product.detail.data.util.VariantMapper.generateVariantString
@@ -823,14 +819,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 ?: ComponentTrackDataModel(),
                 reviewId)
         context?.let { ImageReviewGalleryActivity.moveTo(it, ArrayList(listOfImages), position) }
-    }
-
-    /**
-     * ProductMediaViewHolder
-     */
-    override fun onImageReviewMediaClicked(componentTrackDataModel: ComponentTrackDataModel) {
-        DynamicProductDetailTracking.Click.eventClickReviewImageMedia(viewModel.getDynamicProductInfoP1, componentTrackDataModel, viewModel.userId)
-        goToReviewImagePreview()
     }
 
     /**
