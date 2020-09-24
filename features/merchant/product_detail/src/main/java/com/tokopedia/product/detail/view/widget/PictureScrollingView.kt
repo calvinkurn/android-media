@@ -70,7 +70,7 @@ class PictureScrollingView @JvmOverloads constructor(
 
     fun updateImage(listOfImage: List<MediaDataModel>?) {
         pagerAdapter.setData(listOfImage ?: listOf())
-        resetViewPagerToFirstPosition()
+        resetViewPagerToFirstPosition(listOfImage?.size ?: 0)
     }
 
     private fun setPageControl(media: List<MediaDataModel>?) {
@@ -92,7 +92,9 @@ class PictureScrollingView @JvmOverloads constructor(
             media.toMutableList()
     }
 
-    private fun resetViewPagerToFirstPosition() {
+    private fun resetViewPagerToFirstPosition(countIndicator: Int) {
+        imageSliderPageControl?.setIndicator(countIndicator)
+        imageSliderPageControl?.setCurrentIndicator(0)
         pdp_view_pager.setCurrentItem(0, false)
     }
 
