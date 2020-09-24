@@ -168,7 +168,7 @@ data class Reply(
     }
 
     fun isBroadCast(): Boolean {
-        return blastId != 0
+        return blastId > 0
     }
 
 }
