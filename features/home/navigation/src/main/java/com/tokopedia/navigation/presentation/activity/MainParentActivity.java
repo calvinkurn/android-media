@@ -327,7 +327,7 @@ public class MainParentActivity extends BaseActivity implements
             }
         };
         Weaver.Companion.executeWeaveCoRoutineWithFirebase(firstTimeWeave, RemoteConfigKey.ENABLE_ASYNC_FIRSTTIME_EVENT, getContext());
-        showSelectedPage();
+        if (!presenter.get().isFirstTimeUser()) showSelectedPage();
         checkAppUpdateAndInApp();
         checkApplinkCouponCode(getIntent());
         bottomNavigation = findViewById(R.id.bottom_navbar);
