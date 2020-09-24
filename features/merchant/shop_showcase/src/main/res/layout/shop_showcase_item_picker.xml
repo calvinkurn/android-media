@@ -60,6 +60,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"
+        android:clickable="false"
         />
 
     <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
@@ -72,6 +73,7 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0"
+        android:clickable="false"
         android:visibility="gone"
         />
 

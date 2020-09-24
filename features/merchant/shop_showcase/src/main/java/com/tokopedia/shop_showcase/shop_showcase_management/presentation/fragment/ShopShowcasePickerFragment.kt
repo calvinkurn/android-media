@@ -11,13 +11,16 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.cardview.widget.CardView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.design.text.watcher.AfterTextWatcher
@@ -115,7 +118,11 @@ class ShopShowcasePickerFragment: BaseDaggerFragment(),
     }
 
     private val headerUnify by lazy {
-        view?.findViewById<HeaderUnify>(R.id.showcase_picker_toolbar)
+        view?.findViewById<HeaderUnify>(R.id.showcase_picker_toolbar)?.apply {
+            setNavigationOnClickListener {
+                activity?.onBackPressed()
+            }
+        }
     }
 
     private val searchBar by lazy {
@@ -130,8 +137,16 @@ class ShopShowcasePickerFragment: BaseDaggerFragment(),
         view?.findViewById<EmptyStateUnify>(R.id.picker_checkbox_empty_state)
     }
 
+    private val emptyStateHint by lazy {
+        view?.findViewById<ConstraintLayout>(R.id.empty_state_picker_checkbox_hint)
+    }
+
     private val emptyStateImage by lazy {
         view?.findViewById<ImageView>(R.id.img_empty_state)
+    }
+
+    private val tvEmptyStateHint by lazy {
+        view?.findViewById<TextView>(R.id.tv_empty_state_hint)
     }
 
     private val savePickerButton by lazy {
@@ -172,6 +187,8 @@ class ShopShowcasePickerFragment: BaseDaggerFragment(),
     private var addShowcaseBottomSheet: BottomSheetUnify? = null
     private var textFieldAddShowcaseBottomSheet: TextFieldUnify? = null
     private var buttonAddShowcaseBottomSheet: UnifyButton? = null
+    private var showcaseNameHint: String = ""
+    private var totalCheckedShowcase: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -237,7 +254,7 @@ class ShopShowcasePickerFragment: BaseDaggerFragment(),
         component?.inject(this)
     }
 
-    override fun onPickerItemClicked(item: ShowcaseItem) {
+    override fun onPickerItemClicked(item: ShowcaseItem, totalCheckedItem: Int) {
         val itemPicker = ShowcaseItemPicker().apply {
             showcaseId = item.id
             showcaseName = item.name
@@ -250,6 +267,7 @@ class ShopShowcasePickerFragment: BaseDaggerFragment(),
             } else {
                 selectedShowcaseList?.remove(itemPicker)
             }
+            totalCheckedShowcase = totalCheckedItem
             renderButtonCounter(selectedShowcaseList?.size)
         }
     }
@@ -285,9 +303,15 @@ class ShopShowcasePickerFragment: BaseDaggerFragment(),
                     }
                     if(filteredList.size.isMoreThanZero()) {
                         showSearchEmptyStateRadioPicker(false)
-                        showcasePickerAdapter?.updateDataSet(ArrayList(filteredList))
+                        showSearchEmptyStateHint(false)
+                        showcasePickerAdapter?.updateDataSet(ArrayList(filteredList), totalChecked = totalCheckedShowcase)
                     } else {
-                        showSearchEmptyStateRadioPicker(true)
+                        if(pickerType == ShowcasePickerType.RADIO)
+                            showSearchEmptyStateRadioPicker(true)
+                        else {
+                            showcaseNameHint = keyword.toString()
+                            showSearchEmptyStateHint(true, showcaseNameHint)
+                        }
                     }
                 }
             }
@@ -324,6 +348,13 @@ class ShopShowcasePickerFragment: BaseDaggerFragment(),
                 showAddShowcaseBottomSheet()
             }
         }
+
+        // set listener for hint
+        emptyStateHint?.setOnClickListener {
+            if(pickerType == ShowcasePickerType.CHECKBOX) {
+                showAddShowcaseBottomSheet(showcaseNameHint)
+            }
+        }
     }
 
 
@@ -353,7 +384,7 @@ class ShopShowcasePickerFragment: BaseDaggerFragment(),
         }
     }
 
-    private fun showAddShowcaseBottomSheet() {
+    private fun showAddShowcaseBottomSheet(showcaseNameHint: String = "") {
         if(shopType == ShopType.REGULAR && showcaseList.size >= MAX_TOTAL_SHOWCASE_REGULAR_MERCHANT) {
             showToaster(getString(R.string.max_total_showcase_error_text), Toaster.TYPE_NORMAL)
         }
@@ -365,6 +396,10 @@ class ShopShowcasePickerFragment: BaseDaggerFragment(),
             context?.let {
                 setupAddShowcaseBottomSheet(it)
             }
+            if(showcaseNameHint.isNotEmpty()) {
+                // set hint to bottomsheet textfield
+                textFieldAddShowcaseBottomSheet?.textFieldInput?.text = Editable.Factory.getInstance().newEditable(showcaseNameHint)
+            }
             fragmentManager?.let {
                 addShowcaseBottomSheet?.show(it, "")
             }
@@ -374,7 +409,8 @@ class ShopShowcasePickerFragment: BaseDaggerFragment(),
     private fun initRecyclerView() {
         showcasePickerAdapter = ShopShowcasePickerAdapter(this, pickerType)
         if(preSelectedShowcaseList?.size.isMoreThanZero()) {
-            showcasePickerAdapter?.updateDataSet(preSelectedShowcase = preSelectedShowcaseList?.toList())
+            preSelectedShowcaseList?.size?.let { totalCheckedShowcase += it }
+            showcasePickerAdapter?.updateDataSet(preSelectedShowcase = preSelectedShowcaseList?.toList(), totalChecked = totalCheckedShowcase)
             preSelectedShowcaseList?.let { selectedShowcaseList?.addAll(it) }
             renderButtonCounter(selectedShowcaseList?.size)
         }
@@ -406,9 +442,7 @@ class ShopShowcasePickerFragment: BaseDaggerFragment(),
     }
 
     private fun createShowcase(showcaseName: String) {
-        shopShowcasePickerViewModel.addShopShowcase(AddShopShowcaseParam().apply {
-            name = showcaseName
-        })
+        shopShowcasePickerViewModel.addShopShowcase(AddShopShowcaseParam(name = showcaseName))
     }
 
     private fun observeCreateShowcase() {
@@ -417,6 +451,7 @@ class ShopShowcasePickerFragment: BaseDaggerFragment(),
                 is Success -> {
                     if(it.data.success) {
                         addShowcaseBottomSheet?.dismiss()
+                        searchBar?.searchBarTextField?.text?.clear()
                         newCreatedShowcaseId = it.data.createdId
                         loadShowcaseList()
                     } else {
@@ -448,16 +483,26 @@ class ShopShowcasePickerFragment: BaseDaggerFragment(),
                        if(showcaseList.size.isMoreThanZero()) {
                            showEmptyStatePickerList(false)
                            // checked new created showcase, if showcaseId is not equal to zero
-                           if(newCreatedShowcaseId.isNotEmpty()) {
+                           if(totalCheckedShowcase < ShopShowcasePickerAdapter.MAX_SELECTED_SHOWCASE && newCreatedShowcaseId.isNotEmpty()) {
                                showcaseList.map { showcaseItem ->
                                    if(showcaseItem.id == newCreatedShowcaseId) {
                                        showcaseItem.isChecked = true
                                        selectedShowcaseList?.add(ShowcaseItemPicker(showcaseItem.id, showcaseItem.name))
                                        renderButtonCounter(selectedShowcaseList?.size)
+                                       totalCheckedShowcase += 1
                                    }
                                }
                            }
-                           showcasePickerAdapter?.updateDataSet(newList = showcaseList)
+                           // check previous selected showcase
+                           if(selectedShowcaseList?.size.isMoreThanZero()) {
+                               showcaseList.forEach { item ->
+                                   selectedShowcaseList?.forEach { selectedItem ->
+                                       if(item.id == selectedItem.showcaseId)
+                                           item.isChecked = true
+                                   }
+                               }
+                           }
+                           showcasePickerAdapter?.updateDataSet(newList = showcaseList, totalChecked = totalCheckedShowcase)
                        } else {
                            showEmptyStatePickerList(true)
                        }
@@ -522,6 +567,17 @@ class ShopShowcasePickerFragment: BaseDaggerFragment(),
         }
     }
 
+    private fun showSearchEmptyStateHint(state: Boolean, hint: String = "") {
+        if(state) {
+            tvEmptyStateHint?.text = MethodChecker.fromHtml(String.format(getString(R.string.empty_state_hint_text), hint))
+            emptyStateHint?.visible()
+            rvPicker?.gone()
+        } else {
+            emptyStateHint?.gone()
+            rvPicker?.visible()
+        }
+    }
+
     private fun showSearchEmptyStateRadioPicker(state: Boolean) {
         if(state) {
             ImageHandler.loadImage(context, emptyStateImage, ImageAssets.SEARCH_SHOWCASE_NOT_FOUND, null)
@@ -563,6 +619,7 @@ class ShopShowcasePickerFragment: BaseDaggerFragment(),
             searchBar?.gone()
             emptyState?.gone()
             emptyStatePicker?.gone()
+            emptyStateHint?.gone()
             addShowcaseButton?.gone()
         } else {
             loaderUnify?.gone()

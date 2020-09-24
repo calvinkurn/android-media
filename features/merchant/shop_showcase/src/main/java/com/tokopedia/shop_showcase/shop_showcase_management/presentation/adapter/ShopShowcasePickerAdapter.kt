@@ -23,6 +23,7 @@ class ShopShowcasePickerAdapter(
         private val pickerType: String
 ): RecyclerView.Adapter<ShopShowcasePickerAdapter.ShopShowcasePickerViewHolder>() {
 
+    private var totalCheckedItem = 0
     private var lastSelectedRadioPosition = -1
     private var showcaseList: List<ShowcaseItem> = listOf()
     private var preSelectedShowcaseList: List<ShowcaseItemPicker> = listOf()
@@ -43,7 +44,7 @@ class ShopShowcasePickerAdapter(
             holder.btnRadioPicker?.isChecked = (lastSelectedRadioPosition == position)
     }
 
-    fun updateDataSet(newList: List<ShowcaseItem> = listOf(), preSelectedShowcase: List<ShowcaseItemPicker>? = listOf()) {
+    fun updateDataSet(newList: List<ShowcaseItem> = listOf(), preSelectedShowcase: List<ShowcaseItemPicker>? = listOf(), totalChecked: Int = 0) {
         if(preSelectedShowcase?.size.isMoreThanZero()) {
             preSelectedShowcase?.let {
                 preSelectedShowcaseList = it
@@ -58,15 +59,14 @@ class ShopShowcasePickerAdapter(
                 }
             }
         }
+        totalCheckedItem = totalChecked
         notifyDataSetChanged()
     }
 
-    private fun getCheckedItem(): Int {
-        showcaseList.filter {
-            it.isChecked
-        }.let { filteredList ->
-            return filteredList.size
-        }
+    companion object {
+        const val MAX_SELECTED_SHOWCASE = 2
+        private const val ENABLE_TEXT_OPACITY = 1f
+        private const val DISABLE_TEXT_OPACITY = 0.3f
     }
 
     inner class ShopShowcasePickerViewHolder(view: View): RecyclerView.ViewHolder(view) {
@@ -80,9 +80,6 @@ class ShopShowcasePickerAdapter(
         private val tvShowcaseName: TextView? by lazy {
             itemView.tv_showcase_name
         }
-        private val enableTextOpacity = 1f
-        private val disableTextOpacity = 0.3f
-        private val maxSelectedShowcase = 10
 
         fun bind(item: ShowcaseItem) {
             tvShowcaseName?.text = item.name
@@ -92,12 +89,12 @@ class ShopShowcasePickerAdapter(
                 itemView.setOnClickListener {
                     lastSelectedRadioPosition = adapterPosition
                     notifyDataSetChanged()
-                    listener.onPickerItemClicked(item)
+                    listener.onPickerItemClicked(item, totalCheckedItem)
                 }
                 btnRadioPicker?.skipAnimation()
             } else {
                 btnCheckboxPicker?.visible()
-                if(getCheckedItem() >= maxSelectedShowcase) {
+                if(totalCheckedItem >= MAX_SELECTED_SHOWCASE) {
                     if(item.isChecked) {
                         setDisableState(itemView.context, false)
                     } else {
@@ -108,12 +105,14 @@ class ShopShowcasePickerAdapter(
                 }
                 btnCheckboxPicker?.isChecked = item.isChecked
                 itemView.setOnClickListener {
-                    if(!item.isChecked && getCheckedItem() >= maxSelectedShowcase) {
+                    if(!item.isChecked && totalCheckedItem >= MAX_SELECTED_SHOWCASE) {
                         listener.onPickerMaxSelectedShowcase()
                     } else {
                         item.isChecked = !item.isChecked
                         btnCheckboxPicker?.isChecked = item.isChecked
-                        listener.onPickerItemClicked(item)
+                        if(item.isChecked) totalCheckedItem += 1
+                        else totalCheckedItem -= 1
+                        listener.onPickerItemClicked(item, totalCheckedItem)
                         notifyDataSetChanged()
                     }
                 }
@@ -127,18 +126,18 @@ class ShopShowcasePickerAdapter(
         private fun setDisableState(ctx: Context, state: Boolean) {
             if(state) {
                 tvShowcaseName?.setTextColor(ContextCompat.getColor(ctx, R.color.showcase_picker_disable_color))
-                tvShowcaseName?.alpha = disableTextOpacity
+                tvShowcaseName?.alpha = DISABLE_TEXT_OPACITY
                 btnCheckboxPicker?.isEnabled = false
             } else {
                 tvShowcaseName?.setTextColor(Color.BLACK)
-                tvShowcaseName?.alpha = enableTextOpacity
+                tvShowcaseName?.alpha = ENABLE_TEXT_OPACITY
                 btnCheckboxPicker?.isEnabled = true
             }
         }
     }
 
     interface PickerClickListener {
-        fun onPickerItemClicked(item: ShowcaseItem)
+        fun onPickerItemClicked(item: ShowcaseItem, totalCheckedItem: Int)
         fun onPickerMaxSelectedShowcase()
     }
 }

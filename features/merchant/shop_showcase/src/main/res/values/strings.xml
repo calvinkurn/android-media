@@ -52,4 +52,6 @@
     <string name="max_total_showcase_error_text">Etalase kamu sudah penuh. Gunakan etalase yang tersedia untuk produk ini.</string>
     <string name="empty_state_picker_description">Ayo, tambah etalase agar memudahkan pembeli cari produk di tokomu.</string>
     <string name="empty_state_picker_title_text">Kamu belum ada etalase</string>
+    <string name="empty_state_hint_text">Tambah &lt;b>\"%1$s\"&lt;/b></string>
+    <string name="new_showcase_hint_button_content_desc">new_showcase_hint_button</string>
 </resources>
