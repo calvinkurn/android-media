@@ -40,14 +40,14 @@ class StatusViewHolder(
 
     private fun success() {
         pgLoader?.hide()
-        imgStatus?.loadImageDrawable(R.drawable.ic_ts_notif_status_passed)
         txtStatus?.text = context.getString(R.string.notif_status_checked)
+        imgStatus?.loadImageDrawable(R.drawable.ic_ts_notif_status_passed)
     }
 
     private fun warning() {
         pgLoader?.hide()
-        imgStatus?.loadImageDrawable(R.drawable.ic_ts_notif_status_warning)
         txtStatus?.text = context.getString(R.string.notif_status_warning)
+        imgStatus?.loadImageDrawable(R.drawable.ic_ts_notif_status_warning)
     }
 
     companion object {
