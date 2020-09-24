@@ -99,18 +99,18 @@ class DynamicChannelComponentAnalyticsTest {
         addDebugEnd()
     }
 
-//    @Test
-//    fun testDCHomeLogin() {
-//        initTestWithLogin()
-//
-//        doActivityTest()
-//
-//        doHomeCassavaLoginTest()
-//
-//        onFinishTest()
-//
-//        addDebugEnd()
-//    }
+    @Test
+    fun testDCHomeLogin() {
+        initTestWithLogin()
+
+        doActivityTest()
+
+        doHomeCassavaLoginTest()
+
+        onFinishTest()
+
+        addDebugEnd()
+    }
 
     private fun initTest() {
         waitForData()
