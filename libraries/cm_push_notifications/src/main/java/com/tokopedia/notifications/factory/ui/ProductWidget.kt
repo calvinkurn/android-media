@@ -19,6 +19,7 @@ import com.tokopedia.notifications.common.CMConstant.PreDefineActionType.ATC as 
 import com.tokopedia.notifications.common.CMConstant.PreDefineActionType.OCC as TYPE_OCC
 import com.tokopedia.notifications.common.CMNotificationUtils.getSpannedTextFromStr as spanStr
 import com.tokopedia.notifications.common.CarouselUtilities.loadImageFromStorage as loadImage
+import com.tokopedia.notifications.common.CarouselUtilities.loadImageFromStorage as loadCacheImage
 
 
 internal open class ProductWidget(
@@ -139,7 +140,7 @@ internal open class ProductWidget(
         when (actionButton.type) {
             TYPE_ATC -> {
                 view.setOnClickPendingIntent(R.id.btn_atc, pendingIntent)
-                base.loadResourceAsBitmap(R.drawable.cm_ic_star_review) {
+                loadCacheImage(actionButton.actionButtonIcon)?.let {
                     view.setImageViewBitmap(R.id.btn_atc, it)
                 }
             }
@@ -156,7 +157,7 @@ internal open class ProductWidget(
 
         view.setViewVisibility(R.id.widget_review, View.VISIBLE)
         view.setTextViewText(R.id.txt_review, product.reviewScore)
-        view.setTextViewText(R.id.txt_count_review, "(${product.reviewNumber})")
+        view.setTextViewText(R.id.txt_count_review, "(${product.reviewNumber?: "0"})")
 
         base.loadResourceAsBitmap(R.drawable.cm_ic_star_review) {
             view.setImageViewBitmap(R.id.img_star, it)
@@ -168,7 +169,7 @@ internal open class ProductWidget(
             view.setViewVisibility(R.id.img_campaign, View.GONE)
         } else {
             view.setViewVisibility(R.id.img_campaign, View.VISIBLE)
-            CarouselUtilities.loadImageFromStorage(product.freeOngkirIcon)?.let {
+            loadCacheImage(product.freeOngkirIcon)?.let {
                 view.setImageViewBitmap(R.id.img_campaign, it)
             }
         }

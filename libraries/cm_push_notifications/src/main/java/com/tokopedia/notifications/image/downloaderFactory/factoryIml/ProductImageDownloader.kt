@@ -2,6 +2,7 @@ package com.tokopedia.notifications.image.downloaderFactory.factoryIml
 
 import android.content.Context
 import com.tokopedia.notifications.common.CMConstant
+import com.tokopedia.notifications.common.CMConstant.PreDefineActionType.ATC
 import com.tokopedia.notifications.image.downloaderFactory.ImageSizeAndTimeout
 import com.tokopedia.notifications.image.downloaderFactory.NotificationImageDownloader
 import com.tokopedia.notifications.model.BaseNotificationModel
@@ -27,19 +28,17 @@ class ProductImageDownloader(baseNotificationModel: BaseNotificationModel)
 
     override suspend fun downloadAndVerify(context: Context): BaseNotificationModel? {
         baseNotificationModel.productInfoList.forEach { productInfo ->
-            val productImage = downloadAndStore(
-                    context,
-                    productInfo.productImage,
-                    ImageSizeAndTimeout.PRODUCT_IMAGE
-            )
-            val freeOngkirIcon = downloadAndStore(
-                    context,
-                    productInfo.freeOngkirIcon,
-                    ImageSizeAndTimeout.FREE_ONGKIR
-            )
+            val getCartIcon = productInfo.actionButton.mapNotNull { it.actionButtonIcon }.first { it.isNotEmpty() }
+
+            val productImage = downloadAndStore(context, productInfo.productImage, ImageSizeAndTimeout.PRODUCT_IMAGE)
+            val freeOngkirIcon = downloadAndStore(context, productInfo.freeOngkirIcon, ImageSizeAndTimeout.FREE_ONGKIR)
+            val cartIcon = downloadAndStore(context, getCartIcon, ImageSizeAndTimeout.ATC)
 
             productImage?.let { productInfo.productImage = it }
             freeOngkirIcon?.let { productInfo.freeOngkirIcon = it }
+            cartIcon?.let { productInfo.actionButton.first{ button ->
+                button.actionButtonIcon == ATC
+            }.actionButtonIcon = it }
         }
         verifyAndUpdate()
         return baseNotificationModel
