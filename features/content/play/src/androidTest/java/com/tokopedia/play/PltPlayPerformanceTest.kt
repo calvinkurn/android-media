@@ -14,7 +14,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.play.data.PlayMockModelConfig
 import com.tokopedia.play.view.activity.PlayActivity
 import com.tokopedia.test.application.TestRepeatRule
-import com.tokopedia.test.application.util.setupGraphqlMockResponse
+import com.tokopedia.test.application.util.setupGraphqlMockResponseWithCheck
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -35,7 +35,7 @@ class PltPlayPerformanceTest {
 
     @Before
     fun setup() {
-        setupGraphqlMockResponse(PlayMockModelConfig())
+        setupGraphqlMockResponseWithCheck(PlayMockModelConfig())
     }
 
     @Test
