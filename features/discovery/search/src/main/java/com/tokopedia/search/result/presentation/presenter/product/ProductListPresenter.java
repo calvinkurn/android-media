@@ -45,6 +45,7 @@ import com.tokopedia.search.result.presentation.model.ProductViewModel;
 import com.tokopedia.search.result.presentation.model.RecommendationItemViewModel;
 import com.tokopedia.search.result.presentation.model.RecommendationTitleViewModel;
 import com.tokopedia.search.result.presentation.model.RelatedViewModel;
+import com.tokopedia.search.result.presentation.model.SeparatorViewModel;
 import com.tokopedia.search.result.presentation.model.SuggestionViewModel;
 import com.tokopedia.search.utils.SearchFilterUtilsKt;
 import com.tokopedia.search.utils.UrlParamUtils;
@@ -1076,7 +1077,10 @@ final class ProductListPresenter
     }
 
     private void processBroadMatchAtBottom(@NotNull SearchProductModel.SearchProduct searchProduct, List<Visitable> list) {
-        if (isLastPage(searchProduct)) addBroadMatchToVisitableList(list);
+        if (isLastPage(searchProduct)) {
+            list.add(new SeparatorViewModel());
+            addBroadMatchToVisitableList(list);
+        }
     }
 
     private boolean isLastPage(@NotNull SearchProductModel.SearchProduct searchProduct) {
@@ -1087,7 +1091,9 @@ final class ProductListPresenter
 
     private void processBroadMatchAtTop(List<Visitable> list) {
         List<Visitable> broadMatchVisitableList = new ArrayList<>();
+
         addBroadMatchToVisitableList(broadMatchVisitableList);
+        broadMatchVisitableList.add(new SeparatorViewModel());
 
         list.addAll(list.indexOf(productList.get(0)), broadMatchVisitableList);
     }
@@ -1096,7 +1102,10 @@ final class ProductListPresenter
         if (productList.size() < broadMatchPosition) return;
 
         List<Visitable> broadMatchVisitableList = new ArrayList<>();
+
+        broadMatchVisitableList.add(new SeparatorViewModel());
         addBroadMatchToVisitableList(broadMatchVisitableList);
+        broadMatchVisitableList.add(new SeparatorViewModel());
 
         Visitable productItemAtBroadMatchPosition = productList.get(broadMatchPosition - 1);
         int broadMatchIndex = list.indexOf(productItemAtBroadMatchPosition) + 1;
