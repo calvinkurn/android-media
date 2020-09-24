@@ -43,21 +43,30 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
                 var replyIndex = 0
                 while (replyIndex < chatItemPojoByDate.replies.size) {
                     val chatDateTime = chatItemPojoByDate.replies[replyIndex]
-                    if (hasAttachment(chatDateTime)) {
-                        val nextItem = chatItemPojoByDate.replies.getOrNull(replyIndex + 1)
-                        if (nextItem != null && chatDateTime.isMultipleProductAttachment(nextItem)) {
-                            val products = mergeProduct(replyIndex, chatItemPojoByDate.replies, chatDateTime.isBroadCast())
+                    val nextItem = chatItemPojoByDate.replies.getOrNull(replyIndex + 1)
+                    when {
+                        // Merge product bubble
+                        hasAttachment(chatDateTime) && chatDateTime.isAlsoProductAttachment(nextItem) -> {
+                            val products = mergeProduct(
+                                    replyIndex,
+                                    chatItemPojoByDate.replies,
+                                    chatDateTime.isBroadCast()
+                            )
                             val carouselProducts = createCarouselProduct(chatDateTime, products)
                             listChat.add(carouselProducts)
                             replyIndex += products.size
-                        } else {
+                        }
+                        // usual attachment
+                        hasAttachment(chatDateTime) -> {
                             listChat.add(mapAttachment(chatDateTime))
                             replyIndex++
                         }
-                    } else {
-                        val textMessage = convertToMessageViewModel(chatDateTime)
-                        listChat.add(textMessage)
-                        replyIndex++
+                        // text message
+                        else -> {
+                            val textMessage = convertToMessageViewModel(chatDateTime)
+                            listChat.add(textMessage)
+                            replyIndex++
+                        }
                     }
                 }
             }
