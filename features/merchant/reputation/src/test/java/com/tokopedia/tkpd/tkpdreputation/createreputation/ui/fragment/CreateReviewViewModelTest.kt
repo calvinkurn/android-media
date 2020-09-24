@@ -7,7 +7,7 @@ import com.tokopedia.tkpd.tkpdreputation.createreputation.model.ProductRevGetFor
 import com.tokopedia.tkpd.tkpdreputation.createreputation.model.ProductRevIncentiveOvo
 import com.tokopedia.tkpd.tkpdreputation.createreputation.usecase.GetProductIncentiveOvo
 import com.tokopedia.tkpd.tkpdreputation.createreputation.usecase.GetProductReputationForm
-import com.tokopedia.tkpd.tkpdreputation.inbox.data.repository.ReputationRepository
+import com.tokopedia.review.feature.inbox.buyerreview.data.repository.ReputationRepository
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview.SendReviewSubmitUseCase
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview.SendReviewUseCase
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview.SendReviewValidateUseCase
@@ -61,7 +61,7 @@ class  CreateReviewViewModelTest {
     lateinit var getProductReputationForm: GetProductReputationForm
 
     @RelaxedMockK
-    lateinit var reputationRepository: ReputationRepository
+    lateinit var reputationRepository: com.tokopedia.review.feature.inbox.buyerreview.data.repository.ReputationRepository
 
     private val sendReviewWithoutImageUseCase: SendReviewValidateUseCase by lazy {
         spyk(SendReviewValidateUseCase(reputationRepository))

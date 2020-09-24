@@ -14,7 +14,7 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.ImageUploadPreviewA
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.fragment.ImageUploadPreviewFragment;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.listener.ImageUploadPreviewFragmentView;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ImageUpload;
-import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.sendreview.SendReviewPass;
+import com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel.sendreview.SendReviewPass;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.ArrayList;

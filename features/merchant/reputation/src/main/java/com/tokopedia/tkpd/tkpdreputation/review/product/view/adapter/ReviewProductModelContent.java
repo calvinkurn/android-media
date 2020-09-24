@@ -3,7 +3,7 @@ package com.tokopedia.tkpd.tkpdreputation.review.product.view.adapter;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ImageAttachmentViewModel;
+import com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel.inboxdetail.ImageAttachmentViewModel;
 
 import java.util.List;
 

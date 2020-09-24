@@ -1,6 +1,6 @@
 package com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview
 
-import com.tokopedia.tkpd.tkpdreputation.inbox.data.repository.ReputationRepository
+import com.tokopedia.review.feature.inbox.buyerreview.data.repository.ReputationRepository
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.sendreview.SendReviewSubmitDomain
 import com.tokopedia.usecase.RequestParams
 import io.mockk.MockKAnnotations
@@ -19,7 +19,7 @@ import rx.Observable
 class SendReviewSubmitUseCaseTest {
 
     @RelaxedMockK
-    lateinit var reputationRepository: ReputationRepository
+    lateinit var reputationRepository: com.tokopedia.review.feature.inbox.buyerreview.data.repository.ReputationRepository
 
     @RelaxedMockK
     lateinit var requestParams: RequestParams

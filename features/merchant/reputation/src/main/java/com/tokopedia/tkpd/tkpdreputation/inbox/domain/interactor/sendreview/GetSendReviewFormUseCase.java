@@ -1,7 +1,7 @@
 package com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview;
 
 import com.tokopedia.cachemanager.PersistentCacheManager;
-import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.sendreview.SendReviewPass;
+import com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel.sendreview.SendReviewPass;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 

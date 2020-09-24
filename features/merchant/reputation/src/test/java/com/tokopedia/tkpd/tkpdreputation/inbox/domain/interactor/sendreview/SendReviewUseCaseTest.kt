@@ -1,9 +1,8 @@
 package com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview
 
-import com.tokopedia.tkpd.tkpdreputation.inbox.data.repository.ReputationRepository
-import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.sendreview.SendReviewDomain
+import com.tokopedia.review.feature.inbox.buyerreview.data.repository.ReputationRepository
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.sendreview.SendReviewValidateDomain
-import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ImageUpload
+import com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel.inboxdetail.ImageUpload
 import com.tokopedia.tkpd.tkpdreputation.uploadimage.domain.interactor.GenerateHostUseCase
 import com.tokopedia.tkpd.tkpdreputation.uploadimage.domain.interactor.UploadImageUseCase
 import com.tokopedia.usecase.RequestParams
@@ -22,7 +21,7 @@ import rx.Observable
 class SendReviewUseCaseTest {
 
     @RelaxedMockK
-    lateinit var reputationRepository: ReputationRepository
+    lateinit var reputationRepository: com.tokopedia.review.feature.inbox.buyerreview.data.repository.ReputationRepository
 
     private val sendReviewValidateUseCase by lazy {
         SendReviewValidateUseCase(reputationRepository)

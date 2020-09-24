@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import com.tokopedia.tkpd.tkpdreputation.R;
-import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ReviewTips;
+import com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel.inboxdetail.ReviewTips;
 
 import java.util.ArrayList;
 

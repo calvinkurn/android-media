@@ -7,67 +7,25 @@ import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor;
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository;
 import com.tokopedia.network.NetworkRouter;
-import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
-import com.tokopedia.tkpd.tkpdreputation.analytic.ReputationTracking;
-import com.tokopedia.tkpd.tkpdreputation.data.mapper.DeleteReviewResponseMapper;
-import com.tokopedia.tkpd.tkpdreputation.data.mapper.GetLikeDislikeMapper;
-import com.tokopedia.tkpd.tkpdreputation.data.mapper.LikeDislikeMapper;
-import com.tokopedia.tkpd.tkpdreputation.data.mapper.ReportReviewMapper;
-import com.tokopedia.tkpd.tkpdreputation.domain.interactor.DeleteReviewResponseUseCase;
-import com.tokopedia.tkpd.tkpdreputation.domain.interactor.GetLikeDislikeReviewUseCase;
-import com.tokopedia.tkpd.tkpdreputation.domain.interactor.LikeDislikeReviewUseCase;
-import com.tokopedia.tkpd.tkpdreputation.domain.interactor.ReportReviewUseCase;
-import com.tokopedia.tkpd.tkpdreputation.inbox.data.factory.ReputationFactory;
-import com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper.FaveShopMapper;
-import com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper.InboxReputationDetailMapper;
-import com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper.InboxReputationMapper;
-import com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper.ReplyReviewMapper;
-import com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper.SendReviewSubmitMapper;
-import com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper.SendReviewValidateMapper;
-import com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper.SendSmileyReputationMapper;
-import com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper.ShopFavoritedMapper;
-import com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper.SkipReviewMapper;
-import com.tokopedia.tkpd.tkpdreputation.inbox.data.repository.ReputationRepository;
-import com.tokopedia.tkpd.tkpdreputation.inbox.data.repository.ReputationRepositoryImpl;
-import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inbox.GetCacheInboxReputationUseCase;
-import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inbox.GetFirstTimeInboxReputationUseCase;
-import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inbox.GetInboxReputationUseCase;
-import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inboxdetail.CheckShopFavoritedUseCase;
-import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inboxdetail.FavoriteShopUseCase;
-import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inboxdetail.GetInboxReputationDetailUseCase;
-import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inboxdetail.GetReviewUseCase;
-import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inboxdetail.SendReplyReviewUseCase;
-import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inboxdetail.SendSmileyReputationUseCase;
-import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview.EditReviewSubmitUseCase;
-import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview.EditReviewUseCase;
-import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview.EditReviewValidateUseCase;
-import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview.GetSendReviewFormUseCase;
-import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview.SendReviewSubmitUseCase;
-import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview.SendReviewUseCase;
-import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview.SendReviewValidateUseCase;
-import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview.SetReviewFormCacheUseCase;
-import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview.SkipReviewUseCase;
-import com.tokopedia.tkpd.tkpdreputation.network.ReputationService;
-import com.tokopedia.tkpd.tkpdreputation.network.product.ReviewActService;
-import com.tokopedia.tkpd.tkpdreputation.network.product.ReviewProductService;
-import com.tokopedia.tkpd.tkpdreputation.network.shop.FaveShopActService;
-import com.tokopedia.tkpd.tkpdreputation.network.shop.ReputationActService;
-import com.tokopedia.tkpd.tkpdreputation.network.shop.ShopService;
-import com.tokopedia.tkpd.tkpdreputation.network.tome.TomeService;
-import com.tokopedia.tkpd.tkpdreputation.network.uploadimage.GenerateHostActService;
-import com.tokopedia.tkpd.tkpdreputation.network.uploadimage.UploadImageService;
-import com.tokopedia.tkpd.tkpdreputation.review.product.domain.ReviewProductGetHelpfulUseCase;
-import com.tokopedia.tkpd.tkpdreputation.review.product.domain.ReviewProductGetListUseCase;
-import com.tokopedia.tkpd.tkpdreputation.review.product.domain.ReviewProductGetRatingUseCase;
-import com.tokopedia.tkpd.tkpdreputation.review.product.view.ReviewProductListMapper;
-import com.tokopedia.tkpd.tkpdreputation.review.product.view.presenter.ReviewProductPresenter;
-import com.tokopedia.tkpd.tkpdreputation.uploadimage.data.factory.ImageUploadFactory;
-import com.tokopedia.tkpd.tkpdreputation.uploadimage.data.mapper.GenerateHostMapper;
-import com.tokopedia.tkpd.tkpdreputation.uploadimage.data.mapper.UploadImageMapper;
-import com.tokopedia.tkpd.tkpdreputation.uploadimage.data.repository.ImageUploadRepository;
-import com.tokopedia.tkpd.tkpdreputation.uploadimage.data.repository.ImageUploadRepositoryImpl;
-import com.tokopedia.tkpd.tkpdreputation.uploadimage.domain.interactor.GenerateHostUseCase;
-import com.tokopedia.tkpd.tkpdreputation.uploadimage.domain.interactor.UploadImageUseCase;
+import com.tokopedia.review.feature.inbox.buyerreview.analytics.ReputationTracking;
+import com.tokopedia.review.feature.inbox.buyerreview.data.factory.ReputationFactory;
+import com.tokopedia.review.feature.inbox.buyerreview.data.mapper.InboxReputationDetailMapper;
+import com.tokopedia.review.feature.inbox.buyerreview.data.mapper.InboxReputationMapper;
+import com.tokopedia.review.feature.inbox.buyerreview.data.mapper.ReportReviewMapper;
+import com.tokopedia.review.feature.inbox.buyerreview.data.mapper.SendSmileyReputationMapper;
+import com.tokopedia.review.feature.inbox.buyerreview.data.repository.ReputationRepository;
+import com.tokopedia.review.feature.inbox.buyerreview.data.repository.ReputationRepositoryImpl;
+import com.tokopedia.review.feature.inbox.buyerreview.domain.interactor.inbox.GetCacheInboxReputationUseCase;
+import com.tokopedia.review.feature.inbox.buyerreview.domain.interactor.inbox.GetFirstTimeInboxReputationUseCase;
+import com.tokopedia.review.feature.inbox.buyerreview.domain.interactor.inbox.GetInboxReputationUseCase;
+import com.tokopedia.review.feature.inbox.buyerreview.domain.interactor.inboxdetail.GetInboxReputationDetailUseCase;
+import com.tokopedia.review.feature.inbox.buyerreview.domain.interactor.inboxdetail.GetReviewUseCase;
+import com.tokopedia.review.feature.inbox.buyerreview.domain.interactor.inboxdetail.SendSmileyReputationUseCase;
+import com.tokopedia.review.feature.inbox.buyerreview.domain.interactor.report.ReportReviewUseCase;
+import com.tokopedia.review.feature.inbox.buyerreview.network.ReputationService;
+import com.tokopedia.review.feature.inbox.buyerreview.network.product.ReviewProductService;
+import com.tokopedia.review.feature.inbox.buyerreview.network.shop.ReputationActService;
+import com.tokopedia.review.feature.inbox.buyerreview.network.tome.TomeService;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -82,7 +40,7 @@ import kotlinx.coroutines.Dispatchers;
  * @author by nisie on 8/11/17.
  */
 
-@Module(includes = {ReputationRawModule.class})
+@Module
 public class ReputationModule {
 
     @ReputationScope
@@ -137,9 +95,6 @@ public class ReputationModule {
             InboxReputationMapper inboxReputationMapper,
             InboxReputationDetailMapper inboxReputationDetailMapper,
             SendSmileyReputationMapper sendSmileyReputationMapper,
-            SendReviewValidateMapper sendReviewValidateMapper,
-            SendReviewSubmitMapper sendReviewSubmitMapper,
-            SkipReviewMapper skipReviewMapper,
             ShopFavoritedMapper shopFavoritedMapper,
             ReportReviewMapper reportReviewMapper,
             PersistentCacheManager persistentCacheManager,
@@ -152,9 +107,7 @@ public class ReputationModule {
             ReviewProductService reviewProductService,
             UserSessionInterface userSession) {
         return new ReputationFactory(tomeService, reputationService, inboxReputationMapper,
-                inboxReputationDetailMapper, sendSmileyReputationMapper,
-                sendReviewValidateMapper, sendReviewSubmitMapper,
-                skipReviewMapper, reportReviewMapper,
+                inboxReputationDetailMapper, sendSmileyReputationMapper, reportReviewMapper,
                 shopFavoritedMapper,
                 persistentCacheManager,
                 faveShopActService,
@@ -310,152 +263,6 @@ public class ReputationModule {
         return new SendSmileyReputationUseCase(reputationRepository);
     }
 
-
-    @ReputationScope
-    @Provides
-    SendReviewValidateMapper provideSendReviewValidateMapper() {
-        return new SendReviewValidateMapper();
-    }
-
-
-    @ReputationScope
-    @Provides
-    SendReviewValidateUseCase
-    provideSendReviewValidateUseCase(ReputationRepository reputationRepository) {
-        return new SendReviewValidateUseCase(reputationRepository);
-    }
-
-    @ReputationScope
-    @Provides
-    SendReviewUseCase
-    provideSendReviewUseCase(SendReviewValidateUseCase sendReviewValidateUseCase,
-                             GenerateHostUseCase generateHostUseCase,
-                             UploadImageUseCase uploadImageUseCase,
-                             SendReviewSubmitUseCase sendReviewSubmitUseCase
-    ) {
-        return new SendReviewUseCase(
-                sendReviewValidateUseCase,
-                generateHostUseCase,
-                uploadImageUseCase,
-                sendReviewSubmitUseCase
-        );
-    }
-
-    @ReputationScope
-    @Provides
-    GetSendReviewFormUseCase
-    provideGetSendReviewFormUseCase(PersistentCacheManager persistentCacheManager) {
-        return new GetSendReviewFormUseCase(persistentCacheManager);
-    }
-
-    @ReputationScope
-    @Provides
-    SetReviewFormCacheUseCase
-    provideSetReviewFormCacheUseCase(PersistentCacheManager persistentCacheManager) {
-        return new SetReviewFormCacheUseCase(persistentCacheManager);
-    }
-
-    @ReputationScope
-    @Provides
-    UploadImageUseCase
-    provideUploadImageUseCase(ImageUploadRepository imageUploadRepository,
-                              UserSessionInterface userSession,
-                              @ApplicationContext Context context) {
-        return new UploadImageUseCase(imageUploadRepository, userSession, context);
-    }
-
-    @ReputationScope
-    @Provides
-    GenerateHostUseCase
-    provideGenerateHostUseCase(ImageUploadRepository imageUploadRepository) {
-        return new GenerateHostUseCase(imageUploadRepository);
-    }
-
-    @ReputationScope
-    @Provides
-    ImageUploadRepository
-    provideImageUploadRepository(ImageUploadFactory imageUploadFactory) {
-        return new ImageUploadRepositoryImpl(imageUploadFactory);
-    }
-
-    @ReputationScope
-    @Provides
-    ImageUploadFactory
-    provideImageUploadFactory(GenerateHostActService generateHostActService,
-                              UploadImageService uploadImageService,
-                              GenerateHostMapper generateHostMapper,
-                              UploadImageMapper uploadImageMapper,
-                              UserSessionInterface userSession) {
-        return new ImageUploadFactory(generateHostActService,
-                uploadImageService,
-                generateHostMapper,
-                uploadImageMapper,
-                userSession);
-    }
-
-    @ReputationScope
-    @Provides
-    GenerateHostMapper
-    provideGenerateHostMapper(@ApplicationContext Context context) {
-        return new GenerateHostMapper(context);
-    }
-
-    @ReputationScope
-    @Provides
-    UploadImageMapper
-    provideUploadImageMapper(@ApplicationContext Context context) {
-        return new UploadImageMapper(context);
-    }
-
-    @ReputationScope
-    @Provides
-    SendReviewSubmitUseCase
-    provideSendReviewSubmitUseCase(ReputationRepository reputationRepository) {
-        return new SendReviewSubmitUseCase(reputationRepository);
-    }
-
-    @ReputationScope
-    @Provides
-    SendReviewSubmitMapper provideSendReviewSubmitMapper() {
-        return new SendReviewSubmitMapper();
-    }
-
-
-    @ReputationScope
-    @Provides
-    SkipReviewUseCase provideSkipReviewUseCase(ReputationRepository reputationRepository) {
-        return new SkipReviewUseCase(reputationRepository);
-    }
-
-
-    @ReputationScope
-    @Provides
-    SkipReviewMapper provideSkipReviewMapper() {
-        return new SkipReviewMapper();
-    }
-
-    @ReputationScope
-    @Provides
-    EditReviewValidateUseCase provideEditReviewValidateUseCase(ReputationRepository reputationRepository) {
-        return new EditReviewValidateUseCase(reputationRepository);
-    }
-
-    @ReputationScope
-    @Provides
-    EditReviewSubmitUseCase provideEditReviewSubmitUseCase(ReputationRepository reputationRepository) {
-        return new EditReviewSubmitUseCase(reputationRepository);
-    }
-
-    @ReputationScope
-    @Provides
-    EditReviewUseCase provideEditReviewUseCase(EditReviewValidateUseCase editReviewValidateUseCase,
-                                               GenerateHostUseCase generateHostUseCase,
-                                               UploadImageUseCase uploadImageUseCase,
-                                               EditReviewSubmitUseCase editReviewSubmitUseCase) {
-        return new EditReviewUseCase(editReviewValidateUseCase, generateHostUseCase,
-                uploadImageUseCase, editReviewSubmitUseCase);
-    }
-
     @ReputationScope
     @Provides
     ReportReviewMapper provideReportReviewMapper() {
@@ -490,28 +297,8 @@ public class ReputationModule {
 
     @ReputationScope
     @Provides
-    FavoriteShopUseCase provideFavoriteShopUseCase(
-            ReputationRepository reputationRepository
-    ) {
-        return new FavoriteShopUseCase(reputationRepository);
-    }
-
-    @ReputationScope
-    @Provides
     FaveShopMapper provideFaveShopMapper() {
         return new FaveShopMapper();
-    }
-
-    @ReputationScope
-    @Provides
-    DeleteReviewResponseUseCase provideDeleteReviewResponseUseCase(ReputationRepository reputationRepository) {
-        return new DeleteReviewResponseUseCase(reputationRepository);
-    }
-
-    @ReputationScope
-    @Provides
-    DeleteReviewResponseMapper provideDeleteReviewResponseMapper() {
-        return new DeleteReviewResponseMapper();
     }
 
     @ReputationScope

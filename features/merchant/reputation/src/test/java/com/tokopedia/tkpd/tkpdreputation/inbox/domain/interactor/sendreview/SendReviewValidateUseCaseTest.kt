@@ -1,6 +1,6 @@
 package com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview
 
-import com.tokopedia.tkpd.tkpdreputation.inbox.data.repository.ReputationRepository
+import com.tokopedia.review.feature.inbox.buyerreview.data.repository.ReputationRepository
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.sendreview.SendReviewValidateDomain
 import com.tokopedia.usecase.RequestParams
 import io.mockk.MockKAnnotations
@@ -24,7 +24,7 @@ class SendReviewValidateUseCaseTest {
     lateinit var requestParams: RequestParams
 
     @RelaxedMockK
-    lateinit var reputationRepository: ReputationRepository
+    lateinit var reputationRepository: com.tokopedia.review.feature.inbox.buyerreview.data.repository.ReputationRepository
 
     private val sendReviewValidateUseCase by lazy {
         SendReviewValidateUseCase(reputationRepository)

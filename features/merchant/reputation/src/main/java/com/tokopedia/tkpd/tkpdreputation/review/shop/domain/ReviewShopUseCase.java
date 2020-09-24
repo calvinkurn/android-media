@@ -5,7 +5,6 @@ import com.tokopedia.tkpd.tkpdreputation.domain.interactor.GetLikeDislikeReviewU
 import com.tokopedia.tkpd.tkpdreputation.domain.model.GetLikeDislikeReviewDomain;
 import com.tokopedia.tkpd.tkpdreputation.domain.model.LikeDislikeListDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.repository.ReputationRepository;
-import com.tokopedia.tkpd.tkpdreputation.review.product.data.model.reviewlist.DataResponseReviewProduct;
 import com.tokopedia.tkpd.tkpdreputation.review.product.data.model.reviewlist.DataResponseReviewShop;
 import com.tokopedia.tkpd.tkpdreputation.review.product.data.model.reviewlist.Review;
 import com.tokopedia.usecase.RequestParams;

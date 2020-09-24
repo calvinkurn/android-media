@@ -1,6 +1,5 @@
 package com.tokopedia.tkpd.tkpdreputation.data.mapper;
 
-import android.content.Context;
 import android.text.TextUtils;
 import com.tokopedia.abstraction.common.network.response.TokopediaWsV4Response;
 import com.tokopedia.tkpd.tkpdreputation.data.pojo.DeleteReviewResponsePojo;

@@ -14,7 +14,6 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.tkpd.tkpdreputation.createreputation.ui.fragment.CreateReviewFragmentOld
 import com.tokopedia.tkpd.tkpdreputation.createreputation.util.ReviewTracking
-import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationFormActivity
 
 // ApplinkConstInternalMarketPlace.CREATE_REVIEW
 class CreateReviewActivityOld : BaseSimpleActivity(), HasComponent<BaseAppComponent> {

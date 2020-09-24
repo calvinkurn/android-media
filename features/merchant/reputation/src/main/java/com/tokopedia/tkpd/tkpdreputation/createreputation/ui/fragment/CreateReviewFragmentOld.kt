@@ -55,9 +55,9 @@ import com.tokopedia.tkpd.tkpdreputation.createreputation.util.LoadingView
 import com.tokopedia.tkpd.tkpdreputation.createreputation.util.Success
 import com.tokopedia.tkpd.tkpdreputation.di.DaggerReputationComponent
 import com.tokopedia.tkpd.tkpdreputation.di.ReputationModule
-import com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper.IncentiveOvoMapper
-import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationFormActivity.ARGS_RATING
-import com.tokopedia.tkpd.tkpdreputation.inbox.view.bottomsheet.IncentiveOvoBottomSheet
+import com.tokopedia.review.feature.inbox.buyerreview.data.mapper.IncentiveOvoMapper
+import com.tokopedia.review.feature.inbox.buyerreview.view.activity.InboxReputationFormActivity.ARGS_RATING
+import com.tokopedia.review.feature.inbox.buyerreview.view.bottomsheet.IncentiveOvoBottomSheet
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.TickerCallback
@@ -396,7 +396,7 @@ class CreateReviewFragmentOld : BaseDaggerFragment(), OnAddImageClickListener {
                 setHtmlDescription(ticker.subtitle)
                 setDescriptionClickEvent(object : TickerCallback {
                     override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                        val bottomSheet: BottomSheetUnify = IncentiveOvoBottomSheet(IncentiveOvoMapper.mapIncentiveOvoReviewtoIncentiveOvoInbox(data), "")
+                        val bottomSheet: BottomSheetUnify = IncentiveOvoBottomSheet(com.tokopedia.review.feature.inbox.buyerreview.data.mapper.IncentiveOvoMapper.mapIncentiveOvoReviewtoIncentiveOvoInbox(data), "")
                         fragmentManager?.let { bottomSheet.show(it, bottomSheet.tag)}
                         reviewTracker.onClickReadSkIncentiveOvoTracker(tickerTitle, "")
                     }

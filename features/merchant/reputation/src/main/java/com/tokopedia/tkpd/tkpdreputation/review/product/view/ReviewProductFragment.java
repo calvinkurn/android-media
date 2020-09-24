@@ -32,9 +32,8 @@ import com.tokopedia.tkpd.tkpdreputation.analytic.ReputationTracking;
 import com.tokopedia.tkpd.tkpdreputation.di.DaggerReputationComponent;
 import com.tokopedia.tkpd.tkpdreputation.di.ReputationModule;
 import com.tokopedia.tkpd.tkpdreputation.domain.model.LikeDislikeDomain;
-import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.DeleteReviewResponseDomain;
-import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationReportActivity;
-import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ImageUpload;
+import com.tokopedia.review.feature.inbox.buyerreview.domain.model.inboxdetail.DeleteReviewResponseDomain;
+import com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel.inboxdetail.ImageUpload;
 import com.tokopedia.tkpd.tkpdreputation.review.product.data.model.reviewstarcount.DataResponseReviewStarCount;
 import com.tokopedia.tkpd.tkpdreputation.review.product.data.model.reviewstarcount.DetailReviewStarCount;
 import com.tokopedia.tkpd.tkpdreputation.review.product.view.adapter.ReviewProductAdapter;
@@ -295,10 +294,7 @@ public class ReviewProductFragment extends BaseListFragment<ReviewProductModel, 
 
     @Override
     public void onGoToReportReview(String shopId, String reviewId, int adapterPosition) {
-        startActivity(InboxReputationReportActivity.getCallingIntent(
-                getActivity(),
-                Integer.valueOf(shopId),
-                reviewId));
+        //TODO Redirect to InboxReputationReportActivity using internal applink
     }
 
     @Override

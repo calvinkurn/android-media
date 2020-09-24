@@ -1,6 +1,6 @@
 package com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.sendreview;
 
-import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ImageUpload;
+import com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel.inboxdetail.ImageUpload;
 
 import java.util.ArrayList;
 

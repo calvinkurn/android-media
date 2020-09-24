@@ -37,7 +37,6 @@ dependencies {
 
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.features.productManageItem)
-    implementation project(rootProject.ext.features.reputation)
     implementation project(rootProject.ext.features.reputationCommon)
     implementation project(rootProject.ext.features.shopCommon)
 
@@ -55,6 +54,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.libraries.mediauploader)
     implementation project(rootProject.ext.libraries.remoteConfig)
+    implementation project(rootProject.ext.features.sellerMigrationCommon)
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.track)
@@ -70,6 +70,10 @@ dependencies {
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.miscDependencies.viewPager2
 
+    implementation(rootProject.ext.miscDependencies.facebook) {
+        exclude group: 'com.android.support'
+    }
+
     implementation rootProject.ext.networkDependencies.glide
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
@@ -81,9 +85,11 @@ dependencies {
     }
 
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
+    implementation rootProject.ext.tkpdInternalLibDependencies.authentication
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation rootProject.ext.tkpdInternalLibDependencies.network
+    implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation rootProject.ext.tkpdInternalLibDependencies.williamchart
