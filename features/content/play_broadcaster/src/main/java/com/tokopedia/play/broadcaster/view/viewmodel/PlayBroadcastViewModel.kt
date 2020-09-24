@@ -70,7 +70,7 @@ class PlayBroadcastViewModel @Inject constructor(
         get() = _observableTotalView
     val observableTotalLike: LiveData<TotalLikeUiModel>
         get() = _observableTotalLike
-    val observableLiveDuration: LiveData<Event<BroadcastTimerState>>
+    val observableLiveDuration: LiveData<BroadcastTimerState>
         get() = _observableLiveDuration
     val observableLiveInfoState: LiveData<Event<BroadcastState>>
         get() = _observableLiveInfoState
@@ -88,6 +88,8 @@ class PlayBroadcastViewModel @Inject constructor(
     val observableCover = getCurrentSetupDataStore().getObservableSelectedCover()
     val observableReportDuration: LiveData<String>
         get() = _observableReportDuration
+    val observableEvent: LiveData<EventUiModel>
+        get() = _observableEvent
 
     val shareContents: String
         get() = _observableShareInfo.value.orEmpty()
@@ -96,7 +98,7 @@ class PlayBroadcastViewModel @Inject constructor(
     private val _observableChannelInfo = MutableLiveData<NetworkResult<ChannelInfoUiModel>>()
     private val _observableTotalView = MutableLiveData<TotalViewUiModel>()
     private val _observableTotalLike = MutableLiveData<TotalLikeUiModel>()
-    private val _observableLiveDuration = MutableLiveData<Event<BroadcastTimerState>>()
+    private val _observableLiveDuration = MutableLiveData<BroadcastTimerState>()
     private val _observableChatList = MutableLiveData<MutableList<PlayChatUiModel>>()
     private val _observableNewMetrics = MutableLiveData<Event<List<PlayMetricUiModel>>>()
     private val _observableShareInfo = MutableLiveData<String>()
@@ -112,6 +114,7 @@ class PlayBroadcastViewModel @Inject constructor(
     }
     private val _observableLiveInfoState = MutableLiveData<Event<BroadcastState>>()
     private val _observableReportDuration = MutableLiveData<String>()
+    private val _observableEvent = MutableLiveData<EventUiModel>()
 
     init {
         _observableChatList.value = mutableListOf()
@@ -234,16 +237,16 @@ class PlayBroadcastViewModel @Inject constructor(
             playPusher.create()
             playPusher.addPusherInfoListener(object : PlayPusherInfoListener{
                 override fun onTimerActive(remainingTime: String) {
-                    _observableLiveDuration.value = Event(BroadcastTimerState.Active(remainingTime))
+                    _observableLiveDuration.value = BroadcastTimerState.Active(remainingTime)
                 }
                 override fun onTimerAlmostFinish(minutesUntilFinished: Long) {
-                    _observableLiveDuration.value = Event(BroadcastTimerState.AlmostFinish(minutesUntilFinished))
+                    _observableLiveDuration.value = BroadcastTimerState.AlmostFinish(minutesUntilFinished)
                 }
                 override fun onTimerFinish() {
-                    _observableLiveDuration.value = Event(BroadcastTimerState.Finish)
+                    if (_observableEvent.value?.freeze == false) _observableLiveDuration.value = BroadcastTimerState.Finish
                 }
                 override fun onReachMaximumPauseDuration() {
-                    _observableLiveDuration.value = Event(BroadcastTimerState.ReachMaximumPauseDuration)
+                    _observableLiveDuration.value = BroadcastTimerState.ReachMaximumPauseDuration
                 }
                 override fun onStop(timeElapsed: String) {
                     retrievedReportDuration(timeElapsed)
@@ -366,6 +369,11 @@ class PlayBroadcastViewModel @Inject constructor(
                         is LiveDuration -> restartLiveDuration(data)
                         is ProductTagging -> setSelectedProduct(PlayBroadcastUiMapper.mapProductTag(data))
                         is Chat -> retrieveNewChat(PlayBroadcastUiMapper.mapIncomingChat(data))
+                        is Freeze -> {
+                            if (_observableLiveDuration.value !is BroadcastTimerState.Finish) {
+                                _observableEvent.value = PlayBroadcastUiMapper.mapFreezeEvent(data)
+                            }
+                        }
                     }
                 }
 

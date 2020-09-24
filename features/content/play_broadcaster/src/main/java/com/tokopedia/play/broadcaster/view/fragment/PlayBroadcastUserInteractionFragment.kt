@@ -95,6 +95,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         observeChatList()
         observeMetrics()
         observeNetworkConnectionDuringLive()
+        observeEvent()
     }
 
     override fun onStart() {
@@ -379,7 +380,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     }
 
     private fun observeLiveDuration() {
-        parentViewModel.observableLiveDuration.observe(viewLifecycleOwner, EventObserver {
+        parentViewModel.observableLiveDuration.observe(viewLifecycleOwner, Observer {
             when(it)  {
                 is BroadcastTimerState.Active -> showCounterDuration(it.remainingTime)
                 is BroadcastTimerState.AlmostFinish -> showTimeRemaining(it.minutesLeft)
@@ -410,6 +411,15 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
     private fun observeNetworkConnectionDuringLive() {
         parentViewModel.observableLiveNetworkState.observe(viewLifecycleOwner, EventObserver(::handleLiveNetworkInfo))
+    }
+
+    private fun observeEvent() {
+        parentViewModel.observableEvent.observe(viewLifecycleOwner, Observer {
+            if (it.freeze) {
+                stopLiveStreaming(shouldNavigate = false)
+                showDialogWhenTimeout()
+            }
+        })
     }
     //endregion
 
