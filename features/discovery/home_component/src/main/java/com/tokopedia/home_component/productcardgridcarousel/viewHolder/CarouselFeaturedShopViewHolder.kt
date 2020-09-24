@@ -75,14 +75,14 @@ class CarouselFeaturedShopViewHolder (
             Glide.with(itemView)
                     .load(imageUrl)
                     .circleCrop()
-                    .placeholder(R.drawable.placeholder_grey)
+                    .placeholder(R.drawable.placeholder_rounded_grey)
                     .into(itemView.featured_shop_product_logo_shop)
         }
     }
 
     private fun setShopBadge(imageUrl: String){
         itemView.featured_shop_product_shop_badge?.shouldShowWithAction(imageUrl.isNotBlank()){
-            itemView.featured_shop_product_shop_badge?.loadImage(imageUrl, R.drawable.placeholder_grey)
+            itemView.featured_shop_product_shop_badge?.loadImage(imageUrl, R.drawable.placeholder_rounded_grey)
         }
     }
 
