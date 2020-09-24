@@ -27,9 +27,12 @@ class HotelFilterBottomSheets : BottomSheetUnify() {
 
     var adapter = HotelSearchResultFilterV2Adapter()
 
+    var isAdvanceFilter = false
+
     fun setFilter(filter: List<FilterV2>): HotelFilterBottomSheets = this.apply { filters = filter }
     fun setSelected(paramFilterV2: List<ParamFilterV2>): HotelFilterBottomSheets = this.apply { selectedFilters = paramFilterV2.toMutableList() }
     fun setSubmitFilterListener(listener: SubmitFilterListener): HotelFilterBottomSheets = this.apply { this.listener = listener }
+    fun setIsAdvanceFilter(isAdvancedFilter: Boolean): HotelFilterBottomSheets = this.apply { this.isAdvanceFilter = isAdvancedFilter }
 
     init {
         setTitle("Filter")
@@ -58,16 +61,18 @@ class HotelFilterBottomSheets : BottomSheetUnify() {
         recyclerView.clearItemDecoration()
 
         adapter.filters = filters
+        filters.forEach {
+            adapter.onSelectedFilterChanged(it.name, it.optionSelected.toMutableList())
+        }
+
+        adapter.isSelectionWithOverflowLayout = isAdvanceFilter
         recyclerView.adapter = adapter
 
         setAction("Reset") {
-            for (i in 0 until recyclerView.childCount) {
-                val viewHolder = recyclerView.findViewHolderForAdapterPosition(i)
-                viewHolder?.let {
-                    it as HotelSearchResultFilterV2Adapter.FilterBaseViewHolder
-                    it.resetSelection()
-                }
-            }
+            filters.forEach { it.optionSelected = listOf() }
+            adapter.filters = filters
+            adapter.selectedFilter = hashMapOf()
+            adapter.notifyDataSetChanged()
         }
 
         val submitButton = view.findViewById<UnifyButton>(R.id.hotel_filter_submit_button)

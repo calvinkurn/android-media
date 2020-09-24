@@ -203,9 +203,12 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
                     .setSubmitFilterListener(this)
                     .setSelected(searchResultviewModel.getSelectedFilter())
                     .setFilter(filterV2s)
+                    .setIsAdvanceFilter(isShowAdvancedFilter())
             filterBottomSheet.show(childFragmentManager, javaClass.simpleName)
         }
     }
+
+    private fun isShowAdvancedFilter() = variant == ADVANCE_FILTER_VARIANT_NEW_FILTER
 
     private var quickFilters: List<QuickFilter> = listOf()
 
@@ -242,7 +245,7 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
             }
         }
 
-        if (variant == ADVANCE_FILTER_VARIANT_NEW_FILTER) {
+        if (isShowAdvancedFilter()) {
             val param: CoordinatorLayout.LayoutParams = bottom_action_view.layoutParams as CoordinatorLayout.LayoutParams
             param.behavior = null
             bottom_action_view.hide()
@@ -256,7 +259,7 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
     }
 
     private fun checkShouldShowCoachMark() {
-        val shouldShowCoachMark = localCacheHandler.getBoolean(SHOW_COACH_MARK_KEY, true) && variant == ADVANCE_FILTER_VARIANT_NEW_FILTER
+        val shouldShowCoachMark = localCacheHandler.getBoolean(SHOW_COACH_MARK_KEY, true) && isShowAdvancedFilter()
         if (shouldShowCoachMark) {
             val coachMark = CoachMarkBuilder().build().apply {
                 enableSkip = true
@@ -306,6 +309,7 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
                 .setSubmitFilterListener(this)
                 .setSelected(selectedFilter)
                 .setFilter(filterV2s)
+                .setIsAdvanceFilter(isShowAdvancedFilter())
         filterBottomSheet.show(childFragmentManager, javaClass.simpleName)
     }
 
@@ -398,7 +402,7 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
 
     override fun onSubmitFilter(selectedFilter: MutableList<ParamFilterV2>) {
         bottom_action_view.visibility = View.GONE
-        if (variant == ADVANCE_FILTER_VARIANT_NEW_FILTER) {
+        if (isShowAdvancedFilter()) {
             var sortIndex: Int? = null
             selectedFilter.forEachIndexed { index, it ->
                 if (it.name == FILTER_TYPE_SORT) {

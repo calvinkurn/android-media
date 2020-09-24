@@ -46,16 +46,15 @@ class FilterSortViewHolder(view: View, val listener: OnSelectedFilterChangedList
                     .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
                     .build()
 
-            hotel_filter_selection_rv.addItemDecoration(SpaceItemDecoration(resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl1), LinearLayoutManager.HORIZONTAL))
+            while (hotel_filter_selection_rv.itemDecorationCount > 0) {
+                hotel_filter_selection_rv.removeItemDecorationAt(0)
+            }
+            hotel_filter_selection_rv.addItemDecoration(SpaceItemDecoration(resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl1),
+                    LinearLayoutManager.HORIZONTAL))
+
             hotel_filter_selection_rv.adapter = adapter
             adapter.updateItems(hotelFilterItems, filter.optionSelected.toSet())
         }
-    }
-
-    override fun resetSelection() {
-        listener.onSelectedFilterChanged(filterName, mutableListOf(defaultOption))
-        adapter.selectedItems = mutableSetOf(defaultOption)
-        adapter.notifyDataSetChanged()
     }
 
     override fun onSelectedFilterChanged(selectedItems: List<String>) {

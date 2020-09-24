@@ -21,6 +21,7 @@ class HotelSearchResultFilterV2Adapter: RecyclerView.Adapter<HotelSearchResultFi
         field = value
         notifyDataSetChanged()
     }
+    var isSelectionWithOverflowLayout = false
 
     var selectedFilter = hashMapOf<String, List<String>>()
 
@@ -32,7 +33,7 @@ class HotelSearchResultFilterV2Adapter: RecyclerView.Adapter<HotelSearchResultFi
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FilterBaseViewHolder {
         return when (viewType) {
             SELECTION_VIEW_TYPE -> {
-                FilterSelectionViewHolder(parent.inflateLayout(FilterSelectionViewHolder.LAYOUT), this)
+                FilterSelectionViewHolder(parent.inflateLayout(FilterSelectionViewHolder.LAYOUT), this, isSelectionWithOverflowLayout)
             }
             OPEN_RANGE_VIEW_TYPE -> {
                 FilterOpenRangeViewHolder(parent.inflateLayout(FilterOpenRangeViewHolder.LAYOUT), this)
@@ -44,7 +45,7 @@ class HotelSearchResultFilterV2Adapter: RecyclerView.Adapter<HotelSearchResultFi
                 FilterSortViewHolder(parent.inflateLayout(FilterSortViewHolder.LAYOUT), this)
             }
             else -> {
-                FilterSelectionViewHolder(parent.inflateLayout(FilterSelectionViewHolder.LAYOUT), this)
+                FilterSelectionViewHolder(parent.inflateLayout(FilterSelectionViewHolder.LAYOUT), this, isSelectionWithOverflowLayout)
             }
         }
     }
@@ -68,7 +69,6 @@ class HotelSearchResultFilterV2Adapter: RecyclerView.Adapter<HotelSearchResultFi
     abstract class FilterBaseViewHolder(view: View): RecyclerView.ViewHolder(view) {
         abstract var filterName: String
         abstract fun bind(filter: FilterV2)
-        abstract fun resetSelection()
     }
 
     companion object {
