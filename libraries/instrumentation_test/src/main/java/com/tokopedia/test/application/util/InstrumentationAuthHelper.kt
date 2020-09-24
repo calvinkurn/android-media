@@ -41,6 +41,14 @@ object InstrumentationAuthHelper {
         }
     }
 
+    fun clearUserSession() {
+        userSessionLogout {
+            userId = ""
+            email = ""
+            accessTokenBearer = ""
+        }
+    }
+
     private fun userSession(
             context: Context = InstrumentationRegistry.getInstrumentation().targetContext,
             action: UserSession.() -> Unit
@@ -49,6 +57,21 @@ object InstrumentationAuthHelper {
             val userSession = UserSession(context)
 
             userSession.setIsLogin(true)
+            userSession.action()
+        }
+        catch (throwable: Throwable) {
+            throwable.printStackTrace()
+        }
+    }
+
+    private fun userSessionLogout(
+            context: Context = InstrumentationRegistry.getInstrumentation().targetContext,
+            action: UserSession.() -> Unit
+    ) {
+        try {
+            val userSession = UserSession(context)
+
+            userSession.setIsLogin(false)
             userSession.action()
         }
         catch (throwable: Throwable) {

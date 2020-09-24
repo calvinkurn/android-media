@@ -35,6 +35,7 @@ import com.tokopedia.home.mock.HomeMockResponseConfig
 import com.tokopedia.home_component.viewholders.*
 import com.tokopedia.test.application.assertion.topads.TopAdsVerificationTestReportUtil
 import com.tokopedia.test.application.espresso_component.CommonActions
+import com.tokopedia.test.application.util.InstrumentationAuthHelper.clearUserSession
 import com.tokopedia.test.application.util.InstrumentationAuthHelper.loginInstrumentationTestUser1
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.hamcrest.BaseMatcher
@@ -87,7 +88,7 @@ class DynamicChannelComponentAnalyticsTest {
     }
 
     @Test
-    fun testDCHome() {
+    fun testDCHomeNotLogin() {
         initTest()
 
         doActivityTest()
@@ -112,12 +113,15 @@ class DynamicChannelComponentAnalyticsTest {
         addDebugEnd()
     }
 
+
+
     private fun initTest() {
+        clearUserSession()
         waitForData()
     }
 
     private fun initTestWithLogin() {
-        waitForData()
+        initTest()
         loginInstrumentationTestUser1()
     }
 
@@ -144,6 +148,8 @@ class DynamicChannelComponentAnalyticsTest {
         waitForData()
         //need improvement
 
+//        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_TICKER),
+//                hasAllSuccess())
 //        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_HOMEPAGE_SCREEN),
 //                hasAllSuccess())
 //        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_HOMEPAGE_BANNER),
@@ -158,8 +164,6 @@ class DynamicChannelComponentAnalyticsTest {
 
         //worked
         assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_PRODUCT_HIGHLIGHT),
-                hasAllSuccess())
-        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_TICKER),
                 hasAllSuccess())
         assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_POPULAR_KEYWORD),
                 hasAllSuccess())
@@ -267,6 +271,7 @@ class DynamicChannelComponentAnalyticsTest {
             is HomeRecommendationFeedViewHolder -> {
                 val holderName = "HomeRecommendationFeedViewHolder"
                 logTestMessage("VH $holderName")
+                waitForData()
                 clickRecommendationFeedTab(viewholder.itemView)
                 CommonActions.clickOnEachItemRecyclerView(viewholder.itemView, R.id.home_feed_fragment_recycler_view, 0)
             }
