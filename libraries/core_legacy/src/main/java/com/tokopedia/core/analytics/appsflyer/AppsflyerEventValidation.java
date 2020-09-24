@@ -53,13 +53,13 @@ public class AppsflyerEventValidation {
             validateShipping(String.valueOf(eventValue.get(AF_SHIPPING_PRICE)));
             validateQuantity(eventName, String.valueOf(eventValue.get(AFInAppEventParameterName.QUANTITY)));
             validateContentId(eventName, String.valueOf(eventValue.get(AFInAppEventParameterName.CONTENT_ID)));
-            validateCurrency(String.valueOf(eventValue.get(AFInAppEventParameterName.CURRENCY)));
+            validateCurrency(eventName, String.valueOf(eventValue.get(AFInAppEventParameterName.CURRENCY)));
             validateProductList(String.valueOf(eventValue.get(AF_VALUE_PRODUCTTYPE)));
             validateProductCategory(String.valueOf(eventValue.get(AF_KEY_CATEGORY_NAME)));
             validateContentType(eventName, String.valueOf(eventValue.get(AFInAppEventParameterName.CONTENT_TYPE)));
             validateContent(eventName, String.valueOf(eventValue.get(AFInAppEventParameterName.CONTENT)));
         } catch (Exception e) {
-            logging("error;reason=exception_validatePurchase;ex=$e;data=$eventValue");
+            logging("error;reason=exception_validatePurchase;data='$eventValue';ex='$e'");
         }
     }
 
@@ -67,28 +67,28 @@ public class AppsflyerEventValidation {
         try {
             validateQuantity(eventName, String.valueOf(eventValue.get(AFInAppEventParameterName.QUANTITY)));
             validateContentId(eventName, String.valueOf(eventValue.get(AFInAppEventParameterName.CONTENT_ID)));
-            validateCurrency(String.valueOf(eventValue.get(AFInAppEventParameterName.CURRENCY)));
+            validateCurrency(eventName ,String.valueOf(eventValue.get(AFInAppEventParameterName.CURRENCY)));
             validateCategory(eventName, String.valueOf(eventValue.get("category")));
             validateContentType(eventName, String.valueOf(eventValue.get(AFInAppEventParameterName.CONTENT_TYPE)));
             validateContent(eventName, String.valueOf(eventValue.get(AFInAppEventParameterName.CONTENT)));
         } catch (Exception e) {
-            logging("error;reason=exception_validateAddToCart;ex=$e;data=$eventValue");
+            logging("error;reason=exception_validateAddToCart;data='$eventValue';ex='$e'");
         }
     }
 
     private void validatePaymentId(String paymentId, String orderID) {
         if (TextUtils.isEmpty(paymentId)) {
-            logging("validation;reason=paymentId_blank;order_id=$orderID");
+            logging("validation;reason=paymentId_blank;eventName='';data='$orderID'");
         }
         if (TextUtils.isEmpty(orderID)) {
-            logging("validation;reason=orderId_blank;payment_id=$paymentId");
+            logging("validation;reason=orderId_blank;eventName='';data='$paymentId'");
         }
     }
 
     private void validateRevenue(String revenuePrice) {
         double price = convertToDouble(revenuePrice, "revenue");
         if (price <= 0) {
-            logging("validation;reason=revenue_blank;revenue=$revenuePrice");
+            logging("validation;reason=revenue_blank;eventName='';data='$revenuePrice'");
         }
     }
 
@@ -96,50 +96,50 @@ public class AppsflyerEventValidation {
     private void validateShipping(String shippingPrice) {
         double price = convertToDouble(shippingPrice, "shippingPrice");
         if (price <= 0) {
-            logging("validation;reason=shippingPrice_blank;shipping_price=$shippingPrice");
+            logging("validation;reason=shippingPrice_blank;eventName='';data='$shippingPrice'");
         }
     }
 
 
     private void exceptionStringToDouble(String ex, String type) {
-        logging("error;reason=exceptionStringToDouble;err=$ex;type=$type");
+        logging("error;reason=exceptionStringToDouble;data='$type';err='$ex'");
     }
 
     private void validateQuantity(String eventName, String quantity) {
         if (convertToDouble(quantity, eventName + " quantity") <= 0) {
-            logging("validation;reason=quantity_is_0;eventName=$eventName;quantity=$quantity");
+            logging("validation;reason=quantity_is_0;eventName='$eventName';data='$quantity'");
         }
     }
 
     private void validateContentId(String eventName, String ids) {
         if (TextUtils.isEmpty(ids)) {
-            logging("validation;reason=ContentId_blank; eventName=$eventName");
+            logging("validation;reason=ContentId_blank;eventName='$eventName';data=''");
         }
     }
 
-    private void validateCurrency(String currency) {
+    private void validateCurrency(String eventName,String currency) {
         if (!VALUE_IDR.equals(currency)) {
-            logging("validation;reason=currency_invalid;currency=$currency");
+            logging("validation;reason=currency_invalid;eventName='$eventName';data='$currency'");
         }
     }
 
     private void validateCategory(String eventName, String category) {
         if (TextUtils.isEmpty(category)) {
-            logging("validation;reason=category_blank; eventName=$eventName");
+            logging("validation;reason=category_blank; eventName='$eventName';data=''");
         }
     }
 
     private void validateProductList(String productList) {
         if (TextUtils.isEmpty(productList)) {
-            logging("validation;reason=product_list_blank");
+            logging("validation;reason=product_list_blank;eventName='';data=''");
         } else {
             try {
                 JSONArray productarray = new JSONArray(productList);
                 if (productarray.length() < 1) {
-                    logging("validation;reason=product_array_invalid; productList=$productList");
+                    logging("validation;reason=product_array_invalid; eventName='';data='$productList'");
                 }
             } catch (JSONException e) {
-                logging("error;reason=productList_array_exception; productList=$productList");
+                logging("error;reason=productList_array_exception; eventName='';data='$productList'");
             }
 
         }
@@ -147,15 +147,15 @@ public class AppsflyerEventValidation {
 
     private void validateProductCategory(String productCategory) {
         if (TextUtils.isEmpty(productCategory)) {
-            logging("validation;reason=ProductCategory_blank");
+            logging("validation;reason=ProductCategory_blank;eventName='';data=''");
         } else {
             try {
                 JSONArray productCatList = new JSONArray(productCategory);
                 if (productCatList.length() < 1) {
-                    logging("validation;reason=productCategory_array_invalid; productCategory=$productCategory");
+                    logging("validation;reason=productCategory_array_invalid; eventName='';data='$productCategory'");
                 }
             } catch (JSONException e) {
-                logging("error;reason=productCategory_array_exception; productCategory=$productCategory");
+                logging("error;reason=productCategory_array_exception; eventName='';data='$productCategory'");
             }
 
         }
@@ -163,21 +163,21 @@ public class AppsflyerEventValidation {
 
     private void validateContentType(String eventName, String contentType) {
         if (!AF_VALUE_PRODUCTTYPE.equals(contentType)) {
-            logging("validation;reason=contentType_invalid;eventName=$eventName;ContentType=$contentType");
+            logging("validation;reason=contentType_invalid;eventName='$eventName';data='$contentType'");
         }
     }
 
     private void validateContent(String eventName, String content) {
         if (TextUtils.isEmpty(content)) {
-            logging("validation;reason=content_array_blank; eventName=$eventName");
+            logging("validation;reason=content_array_blank; eventName='$eventName' data=''");
         } else {
             try {
                 JSONArray contentarray = new JSONArray(content);
                 if (contentarray.length() < 1) {
-                    logging("validation;reason=content_array_invalid; eventName=$eventName; content=$content");
+                    logging("validation;reason=content_array_invalid; eventName='$eventName'; data='$content'");
                 }
             } catch (JSONException e) {
-                logging("error;reason=content_array_exception; eventName=$eventName;content=$content");
+                logging("error;reason=content_array_exception; eventName='$eventName';data='$content'");
             }
 
         }
