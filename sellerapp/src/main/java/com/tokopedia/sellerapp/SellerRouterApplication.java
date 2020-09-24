@@ -38,10 +38,6 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.SessionRefresh;
 import com.tokopedia.design.component.BottomSheets;
 import com.tokopedia.developer_options.config.DevOptConfig;
-import com.tokopedia.gm.GMModuleRouter;
-import com.tokopedia.gm.common.di.component.DaggerGMComponent;
-import com.tokopedia.gm.common.di.component.GMComponent;
-import com.tokopedia.gm.common.di.module.GMModule;
 import com.tokopedia.inboxreputation.presentation.activity.InboxReputationActivity;
 import com.tokopedia.iris.IrisAnalytics;
 import com.tokopedia.linker.interfaces.LinkerRouter;
@@ -98,7 +94,7 @@ import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
  */
 
 public abstract class SellerRouterApplication extends MainApplication
-        implements TkpdCoreRouter, GMModuleRouter, TopAdsModuleRouter,
+        implements TkpdCoreRouter, TopAdsModuleRouter,
         AbstractionRouter,
         ApplinkRouter,
         NetworkRouter,
@@ -110,8 +106,6 @@ public abstract class SellerRouterApplication extends MainApplication
         LoginRouter{
 
     protected RemoteConfig remoteConfig;
-    private DaggerGMComponent.Builder daggerGMBuilder;
-    private GMComponent gmComponent;
     private TopAdsComponent topAdsComponent;
     private DaggerShopComponent.Builder daggerShopBuilder;
     private ShopComponent shopComponent;
@@ -141,7 +135,6 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     private void initializeDagger() {
-        daggerGMBuilder = DaggerGMComponent.builder().gMModule(new GMModule());
         daggerShopBuilder = DaggerShopComponent.builder().shopModule(new ShopModule());
     }
 
@@ -156,13 +149,6 @@ public abstract class SellerRouterApplication extends MainApplication
         if(tetraDebugger != null) {
             tetraDebugger.setUserId(userId);
         }
-    }
-
-    public GMComponent getGMComponent() {
-        if (gmComponent == null) {
-            gmComponent = daggerGMBuilder.appComponent(getApplicationComponent()).build();
-        }
-        return gmComponent;
     }
 
     @Override
@@ -241,22 +227,10 @@ public abstract class SellerRouterApplication extends MainApplication
         return deepLinkDelegate.supportsUri(appLinks);
     }
 
-    @Override
-    public Observable<DataDeposit> getDataDeposit(String shopId) {
-        GetDepositTopAdsUseCase getDepositTopAdsUseCase = getTopAdsComponent().getDepositTopAdsUseCase();
-        return getDepositTopAdsUseCase.getExecuteObservable(GetDepositTopAdsUseCase.createRequestParams(shopId));
-    }
-
     @NonNull
     @Override
     public Intent getSplashScreenIntent(@NonNull Context context) {
         return new Intent(context, SplashScreenActivity.class);
-    }
-
-    @Override
-    public void goToTopAdsDashboard(Activity activity) {
-        Intent intent = new Intent(activity, TopAdsDashboardActivity.class);
-        activity.startActivity(intent);
     }
 
     @Override

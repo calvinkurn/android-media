@@ -291,10 +291,6 @@ object ApplinkConstInternalMarketplace {
     @JvmField
     val PRODUCT_DRAFT_LIST = "$INTERNAL_MARKETPLACE/product-draft-list"
 
-    // GMStatisticDashboardActivity
-    @JvmField
-    val GOLD_MERCHANT_STATISTIC_DASHBOARD = "$INTERNAL_MARKETPLACE/gold-merchant-statistic-dashboard"
-
     //MitraToppersDashboardActivity
     @JvmField
     val MITRA_TOPPERS_DASHBOARD = "$INTERNAL_MARKETPLACE/mitra-toppers-dashboard"

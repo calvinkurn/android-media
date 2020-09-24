@@ -22,7 +22,7 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
 import com.tokopedia.kotlin.extensions.view.hide
@@ -118,7 +118,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
             shouldMoveToShopPage = this.startsWith(SHOP_PAGE_PREFIX)
             shouldMoveToBalance = this == ApplinkConstInternalGlobal.SALDO_DEPOSIT
             shouldMoveToFinancialService = this == ApplinkConst.LAYANAN_FINANSIAL
-            shouldMoveToStatistics = this == ApplinkConstInternalMarketplace.GOLD_MERCHANT_STATISTIC_DASHBOARD
+            shouldMoveToStatistics = this == ApplinkConstInternalMechant.MERCHANT_STATISTIC_DASHBOARD
         }
         val isRedirectedFromSellerMigration = intent?.hasExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA) ?: false ||
                 intent?.hasExtra(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME) ?: false
@@ -155,7 +155,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
                                     it != ApplinkConstInternalSellerapp.CENTRALIZED_PROMO &&
                                     !it.startsWith(SHOP_PAGE_PREFIX) &&
                                     it != ApplinkConstInternalGlobal.SALDO_DEPOSIT &&
-                                    it != ApplinkConstInternalMarketplace.GOLD_MERCHANT_STATISTIC_DASHBOARD &&
+                                    it != ApplinkConstInternalMechant.MERCHANT_STATISTIC_DASHBOARD &&
                                     it != ApplinkConst.LAYANAN_FINANSIAL
                     }?.let { nextDestinationApplink ->
                         putExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA, nextDestinationApplink)
