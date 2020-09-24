@@ -54,6 +54,7 @@ public interface IRouterConstant {
             int VOUCHER_TAB = 0;
             int COUPON_TAB = 1;
 
+            String IS_CANCEL = "IS_CANCEL";
 
         }
 
