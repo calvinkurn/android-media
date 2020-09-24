@@ -61,7 +61,8 @@ class OfficialProductRecommendationViewHolder(
                                     element.productItem.trackerImageUrl,
                                     element.productItem.productId.toString(),
                                     element.productItem.name,
-                                    element.productItem.imageUrl
+                                    element.productItem.imageUrl,
+                                    OfficialStoreConstant.TopAdsComponent.OS_RECOM_TOP_ADS
                             )
                         }
                     }
