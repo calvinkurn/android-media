@@ -162,7 +162,7 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageType
 
         if (getTotalPrice(hashItemMap) != EMPTY_QTY) {
             setTotalPrice(getRupiahFormat(getTotalPrice(hashItemMap)))
-            showViewBottom(!isError)
+            showViewBottom(isError)
         } else {
             showViewBottom(false)
         }
