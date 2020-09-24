@@ -20,14 +20,13 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="horizontal"
-            android:layout_above="@+id/view_button"
             android:weightSum="10">
 
             <RelativeLayout
                 android:id="@+id/ll_productImage"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="4">
+                android:layout_weight="5">
 
                 <!--Don't convert these image to Vector: Strictly Prohibited-->
                 <ImageView
@@ -43,7 +42,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_marginStart="@dimen/dp_16"
-                android:layout_weight="6">
+                android:layout_weight="5">
 
                 <TextView
                     android:id="@+id/tv_stock"
@@ -158,13 +157,10 @@
                     tools:visibility="visible" />
 
                 <LinearLayout
-                    android:id="@+id/view_button"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_8"
                     android:layout_alignParentBottom="true"
-                    android:visibility="gone"
-                    tools:visibility="visible"
                     android:orientation="horizontal">
 
                     <TextView

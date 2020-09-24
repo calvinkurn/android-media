@@ -114,7 +114,6 @@ internal open class ProductWidget(
             singleActionButtonVisibility(view, actionButton)
             actionButtonField(view, actionButton)
         } else if (product.actionButton.size > 1) {
-            view.setViewVisibility(R.id.view_button, View.VISIBLE)
             product.actionButton.forEach {
                 actionButtonField(view, it)
             }
@@ -139,11 +138,10 @@ internal open class ProductWidget(
         val pendingIntent = contract.actionButtonIntent(actionButton)
         when (actionButton.type) {
             TYPE_ATC -> {
-                view.setTextViewText(R.id.btn_atc, actionButton.text)
+                view.setOnClickPendingIntent(R.id.btn_atc, pendingIntent)
                 base.loadResourceAsBitmap(R.drawable.cm_ic_star_review) {
                     view.setImageViewBitmap(R.id.btn_atc, it)
                 }
-                view.setOnClickPendingIntent(R.id.btn_atc, pendingIntent)
             }
             TYPE_OCC -> {
                 view.setTextViewText(R.id.btn_occ, actionButton.text)
@@ -177,7 +175,7 @@ internal open class ProductWidget(
     }
 
     private fun productStock(view: RemoteViews) {
-        if (product.productMessage.isEmpty()) {
+        if (product.stockMessage.isNullOrEmpty()) {
             view.setViewVisibility(R.id.tv_stock, View.GONE)
         } else {
             view.setTextViewText(R.id.tv_stock, spanStr(product.stockMessage))
