@@ -1,19 +1,14 @@
 package com.tokopedia.home.beranda.data.repository
 
 import android.content.Context
-import android.content.SharedPreferences
-import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home.beranda.data.datasource.default_data_source.HomeDefaultDataSource
-import com.tokopedia.home.beranda.data.datasource.local.HomeCacheDataConst.HOME_CACHE_DATA_VALUE_KEY
-import com.tokopedia.home.beranda.data.datasource.local.HomeCacheDataConst.SHARED_PREF_HOME_DATA_CACHE_KEY
 import com.tokopedia.home.beranda.data.datasource.local.HomeCachedDataSource
 import com.tokopedia.home.beranda.data.datasource.remote.*
 import com.tokopedia.home.beranda.data.mapper.HomeDynamicChannelDataMapper
 import com.tokopedia.home.beranda.domain.model.HomeChannelData
 import com.tokopedia.home.beranda.domain.model.HomeData
 import com.tokopedia.home.beranda.helper.Result
-import com.tokopedia.home.beranda.helper.copy
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import dagger.Lazy
@@ -39,14 +34,6 @@ class HomeRepositoryImpl @Inject constructor(
 
     var CHANNEL_LIMIT_FOR_PAGINATION = 1
     var isCacheExist = false
-    var sharedPrefCache: SharedPreferences? = null
-
-    init {
-        sharedPrefCache = applicationContext?.getSharedPreferences(
-                SHARED_PREF_HOME_DATA_CACHE_KEY,
-                Context.MODE_PRIVATE
-        )
-    }
 
     override fun getHomeData(): Flow<HomeData?> = homeCachedDataSource.getCachedHomeData().map {
         isCacheExist = it != null
@@ -121,35 +108,17 @@ class HomeRepositoryImpl @Inject constructor(
                     isCacheExistForProcess) {
                 try {
                     homeDataCombined = processFullPageDynamicChannel(homeDataResponseValue)
+                    homeDataCombined?.dynamicHomeChannel?.channels?.forEach {
+                        it.timestamp = currentTimeMillisString
+                    }
+                    homeDataCombined?.let {
+                        emit(Result.success(null))
+                        homeCachedDataSource.saveToDatabase(it)
+                    }
                 } catch (e: Exception) {
                     emit(Result.errorPagination(e,null))
                     return@coroutineScope
                 }
-            }
-
-            homeDataCombined?.dynamicHomeChannel?.channels?.forEach {
-                it.timestamp = currentTimeMillisString
-            }
-            homeDataCombined?.let {
-                emit(Result.success(null))
-                homeCachedDataSource.saveToDatabase(it)
-                saveToSharedPreference(it)
-            }
-        }
-    }
-
-    private fun saveToSharedPreference(it: HomeData) {
-        val copyChannel = it.dynamicHomeChannel.channels.copy()
-
-        val copyHomeDataForCache = it.copy()
-        if (copyChannel.isNotEmpty()) {
-            copyHomeDataForCache.dynamicHomeChannel.channels = copyChannel.subList(0, CHANNEL_LIMIT_FOR_PAGINATION)
-        }
-        sharedPrefCache?.let {
-            with(it.edit()) {
-                val gson = Gson()
-                putString(HOME_CACHE_DATA_VALUE_KEY, gson.toJson(copyHomeDataForCache))
-                apply()
             }
         }
     }
