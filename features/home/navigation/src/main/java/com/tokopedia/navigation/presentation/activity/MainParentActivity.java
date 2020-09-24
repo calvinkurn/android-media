@@ -330,7 +330,6 @@ public class MainParentActivity extends BaseActivity implements
         showSelectedPage();
         checkAppUpdateAndInApp();
         checkApplinkCouponCode(getIntent());
-        showSelectedPage();
         bottomNavigation = findViewById(R.id.bottom_navbar);
         populateBottomNavigationView();
         bottomNavigation.setMenuClickListener(this);
@@ -609,6 +608,7 @@ public class MainParentActivity extends BaseActivity implements
         Weaver.Companion.executeWeaveCoRoutineWithFirebase(checkAppSignatureWeave, RemoteConfigKey.ENABLE_ASYNC_CHECKAPPSIGNATURE, getContext());
 
         if (currentFragment != null) configureStatusBarBasedOnFragment(currentFragment);
+        showSelectedPage();
     }
 
     private void clearNotification() {
