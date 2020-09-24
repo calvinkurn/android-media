@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.rule.ActivityTestRule
 import androidx.test.rule.GrantPermissionRule
+import com.tokopedia.buyerorder.unifiedhistory.list.view.activity.UohListActivity
 import com.tokopedia.buyerorder.unifiedhistory.list.view.adapter.viewholder.UohRecommendationItemViewHolder
 import com.tokopedia.test.application.environment.callback.TopAdsVerificatorInterface
 import com.tokopedia.test.application.espresso_component.CommonActions.clickOnEachItemRecyclerView
@@ -28,7 +29,7 @@ class UohTopAdsVerificationTest {
     var grantPermissionRule: GrantPermissionRule = GrantPermissionRule.grant(Manifest.permission.WRITE_EXTERNAL_STORAGE)
 
     @get:Rule
-    var activityRule = object: ActivityTestRule<InstrumentationUohTestActivity>(InstrumentationUohTestActivity::class.java) {
+    var activityRule = object: ActivityTestRule<UohListActivity>(UohListActivity::class.java) {
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
             loginInstrumentationTestTopAdsUser()
