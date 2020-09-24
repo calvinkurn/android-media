@@ -10,8 +10,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginStart="@dimen/dp_6"
-        android:padding="@dimen/dp_6"
+        android:layout_marginEnd="@dimen/dp_4"
+        android:paddingStart="@dimen/dp_8"
+        android:paddingEnd="@dimen/dp_8"
+        android:paddingTop="@dimen/dp_7"
+        android:paddingBottom="@dimen/dp_7"
         android:background="@drawable/bg_border_pdp">
 
     <com.tokopedia.unifyprinciples.Typography
@@ -20,6 +23,7 @@
         android:layout_height="wrap_content"
         app:typographyType="body_3"
         app:typographyWeight="bold"
+        android:drawablePadding="@dimen/dp_4"
         tools:text="Diskusi" />
 
     <com.tokopedia.unifyprinciples.Typography

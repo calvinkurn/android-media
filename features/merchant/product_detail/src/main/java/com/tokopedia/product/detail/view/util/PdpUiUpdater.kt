@@ -146,7 +146,7 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
                 rating = it.basic.stats.rating
                 ratingCount = it.basic.stats.countReview.toIntOrZero()
                 talkCount = it.basic.stats.countTalk.toIntOrZero()
-                paymentVerifiedCount = it.basic.txStats.itemSoldPaymentVerified.toInt()
+                paymentVerifiedCount = it.basic.txStats.itemSoldPaymentVerified.toIntOrZero()
             }
 
             productInfoMap?.run {
