@@ -50,14 +50,14 @@ class UohTopAdsVerificationTest {
     }
 
     @Test
-    fun testTopAdsHome() {
+    fun testTopAdsUoh() {
         waitForData()
 
         val uohRecyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.rv_order_list)
         val itemCount = uohRecyclerView.adapter?.itemCount?:0
 
         for (i in 0 until itemCount) {
-            scrollHomeRecyclerViewToPosition(uohRecyclerView, i)
+            scrollUohRecyclerViewToPosition(uohRecyclerView, i)
             checkProductOnDynamicChannel(uohRecyclerView, i)
         }
         topAdsAssertion?.assert()
@@ -75,7 +75,7 @@ class UohTopAdsVerificationTest {
         Thread.sleep(5000)
     }
 
-    private fun scrollHomeRecyclerViewToPosition(homeRecyclerView: RecyclerView, position: Int) {
+    private fun scrollUohRecyclerViewToPosition(homeRecyclerView: RecyclerView, position: Int) {
         val layoutManager = homeRecyclerView.layoutManager as LinearLayoutManager
         activityRule.runOnUiThread { layoutManager.scrollToPositionWithOffset(position, 0) }
     }
