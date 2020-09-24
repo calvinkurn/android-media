@@ -140,7 +140,7 @@ internal open class ProductWidget(
         when (actionButton.type) {
             TYPE_ATC -> {
                 view.setOnClickPendingIntent(R.id.btn_atc, pendingIntent)
-                loadCacheImage(actionButton.actionButtonIcon)?.let {
+                base.loadResourceAsBitmap(R.drawable.cm_ic_cart) {
                     view.setImageViewBitmap(R.id.btn_atc, it)
                 }
             }

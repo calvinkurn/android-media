@@ -2,12 +2,12 @@ package com.tokopedia.notifications.image.downloaderFactory.factoryIml
 
 import android.content.Context
 import com.tokopedia.notifications.common.CMConstant
-import com.tokopedia.notifications.common.CMConstant.PreDefineActionType.ATC
-import com.tokopedia.notifications.image.downloaderFactory.ImageSizeAndTimeout
 import com.tokopedia.notifications.image.downloaderFactory.NotificationImageDownloader
 import com.tokopedia.notifications.model.BaseNotificationModel
 import com.tokopedia.notifications.model.NotificationStatus
 import timber.log.Timber
+import com.tokopedia.notifications.image.downloaderFactory.ImageSizeAndTimeout.FREE_ONGKIR
+import com.tokopedia.notifications.image.downloaderFactory.ImageSizeAndTimeout.PRODUCT_IMAGE
 
 class ProductImageDownloader(baseNotificationModel: BaseNotificationModel)
     : NotificationImageDownloader(baseNotificationModel) {
@@ -27,18 +27,12 @@ class ProductImageDownloader(baseNotificationModel: BaseNotificationModel)
     }
 
     override suspend fun downloadAndVerify(context: Context): BaseNotificationModel? {
-        baseNotificationModel.productInfoList.forEach { productInfo ->
-            val getCartIcon = productInfo.actionButton.mapNotNull { it.actionButtonIcon }.first { it.isNotEmpty() }
+        baseNotificationModel.productInfoList.forEach { product ->
+            val productImage = downloadAndStore(context, product.productImage, PRODUCT_IMAGE)
+            val freeOngkirIcon = downloadAndStore(context, product.freeOngkirIcon, FREE_ONGKIR)
 
-            val productImage = downloadAndStore(context, productInfo.productImage, ImageSizeAndTimeout.PRODUCT_IMAGE)
-            val freeOngkirIcon = downloadAndStore(context, productInfo.freeOngkirIcon, ImageSizeAndTimeout.FREE_ONGKIR)
-            val cartIcon = downloadAndStore(context, getCartIcon, ImageSizeAndTimeout.ATC)
-
-            productImage?.let { productInfo.productImage = it }
-            freeOngkirIcon?.let { productInfo.freeOngkirIcon = it }
-            cartIcon?.let { productInfo.actionButton.first{ button ->
-                button.actionButtonIcon == ATC
-            }.actionButtonIcon = it }
+            productImage?.let { product.productImage = it }
+            freeOngkirIcon?.let { product.freeOngkirIcon = it }
         }
         verifyAndUpdate()
         return baseNotificationModel
