@@ -16,10 +16,6 @@ class NextFetchCacheManager constructor(val context: Context) {
         return preferences.getLong(KEY_INTERVAL_FETCH, 0)
     }
 
-    fun isExist(key: String): Boolean {
-        return preferences.contains(key)
-    }
-
     companion object {
         private const val AMPLIFICATION_PREF = "amplification_pref"
         private const val KEY_INTERVAL_FETCH = "key_amplification_interval"
