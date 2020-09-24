@@ -12,8 +12,6 @@ import com.tokopedia.core.base.di.component.AppComponent;
  */
 public interface TkpdCoreRouter {
 
-    void resetAddProductCache(Context context);
-
     Intent getHomeIntent(Context context);
 
     void onLogout(AppComponent appComponent);
