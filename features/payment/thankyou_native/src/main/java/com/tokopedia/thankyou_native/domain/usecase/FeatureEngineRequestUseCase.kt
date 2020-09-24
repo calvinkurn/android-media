@@ -1,5 +1,6 @@
 package com.tokopedia.thankyou_native.domain.usecase
 
+import com.google.gson.Gson
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.thankyou_native.GQL_FEATURE_ENGINE_REQUEST
@@ -33,23 +34,14 @@ class FeatureEngineRequestUseCase @Inject constructor(
     }
 
     private fun getRequestParams(merchantCode: String, profileCode: String, amount: Long): Map<String, Any> {
-        return mapOf(PARAM_REQUEST to FeatureEngineRequest(
+        return mapOf(PARAM_REQUEST to Gson().toJson(FeatureEngineRequest(
                 merchantCode, "TEST_DEFAULT", 1, 2,
                 FeatureEngineRequestParameters("300000"),
                 FeatureEngineRequestOperators(),
-                FeatureEngineRequestThresholds()
-        ))
+                FeatureEngineRequestThresholds())))
     }
 
     companion object {
         const val PARAM_REQUEST = "request"
     }
 }
-
-
-/*
-*
-*
-*     private fun getRequestParams(): Map<String, Any> {
-        return mapOf(PARAM_REQUEST to "{\"merchant_code\": \"tokopedia\",\"profile_code\": \"TEST_DEFAULT\",\"engine_id\": 1,\"limit\": 2,\"parameters\": {\"amount\":\"300000\"},\"operators\":{},\"thresholds\":{}}")
-*/
