@@ -68,6 +68,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
 
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
     }
 
     @Override
