@@ -373,20 +373,22 @@ public class BranchWrapper implements WrapperInterface {
         String utmSource;
         String utmCampaign;
         String utmMedium;
+        String utmTerm;
         utmSource = referringParams.optString(LinkerConstants.UTM_SOURCE);
         if(!TextUtils.isEmpty(utmSource)){
             utmCampaign = referringParams.optString(LinkerConstants.UTM_CAMPAIGN);
             utmMedium = referringParams.optString(LinkerConstants.UTM_MEDIUM);
+            utmTerm = referringParams.optString(LinkerConstants.UTM_TERM);
         }else{
             utmSource = referringParams.optString(LinkerConstants.BRANCH_UTM_SOURCE);
             utmCampaign = referringParams.optString(LinkerConstants.BRANCH_CAMPAIGN);
             utmMedium = referringParams.optString(LinkerConstants.BRANCH_UTM_MEDIUM);
         }
-        sendCampaignTOGTM(context,utmSource,utmCampaign,utmMedium);
+        sendCampaignTOGTM(context,utmSource,utmCampaign,utmMedium, utmTerm);
     }
 
 
-    private void sendCampaignTOGTM(Context context, String utmSource,String utmCampaign,String utmMedium){
+    private void sendCampaignTOGTM(Context context, String utmSource,String utmCampaign,String utmMedium,String utmTerm){
         if(context==null) return;
         RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
         if (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_BRANCH_UTM_SUPPORT) &&
@@ -396,6 +398,9 @@ public class BranchWrapper implements WrapperInterface {
             param.put(LinkerConstants.UTM_SOURCE, utmSource);
             param.put(LinkerConstants.UTM_CAMPAIGN, utmCampaign);
             param.put(LinkerConstants.UTM_MEDIUM, utmMedium);
+            if(!TextUtils.isEmpty(utmTerm)){
+                param.put(LinkerConstants.UTM_TERM, utmTerm);
+            }
 
             TrackApp.getInstance().getGTM().sendCampaign(param);
         }
