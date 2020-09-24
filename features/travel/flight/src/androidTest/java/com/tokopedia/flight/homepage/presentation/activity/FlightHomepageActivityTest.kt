@@ -15,9 +15,9 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.runner.AndroidJUnit4
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
+import com.tokopedia.banner.BannerViewPagerAdapter
 import com.tokopedia.cassavatest.getAnalyticsWithQuery
 import com.tokopedia.cassavatest.hasAllSuccess
-import com.tokopedia.banner.BannerViewPagerAdapter
 import com.tokopedia.flight.R
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.hamcrest.Matchers
@@ -94,6 +94,38 @@ class FlightHomepageActivityTest {
     private fun getBannerItemCount(): Int {
         val recyclerView: RecyclerView = activityRule.activity.findViewById(R.id.banner_recyclerview) as RecyclerView
         return recyclerView.adapter?.itemCount ?: 0
+    }
+
+    @Test
+    fun validateFlightHomepageAnalyticsP2AndBelow() {
+        departureAirport()
+        arrivalAirport()
+
+        Thread.sleep(3000)
+    }
+
+    private fun departureAirport() {
+        Thread.sleep(1000)
+
+        // click on flight departure airport to open bottom sheet to select airport
+        onView(withId(R.id.tvFlightOriginAirport)).perform(click())
+        Thread.sleep(2000)
+
+        // click on Padang, to set Padang as Departure Airport
+        onView(withText("Padang, Indonesia")).perform(click())
+        Thread.sleep(1000)
+    }
+
+    private fun arrivalAirport() {
+        Thread.sleep(1000)
+
+        // click on flight departure airport to open bottom sheet to select airport
+        onView(withId(R.id.tvFlightOriginAirport)).perform(click())
+        Thread.sleep(2000)
+
+        // click on Padang, to set Padang as Departure Airport
+        onView(withText("Padang, Indonesia")).perform(click())
+        Thread.sleep(1000)
     }
 
     companion object {
