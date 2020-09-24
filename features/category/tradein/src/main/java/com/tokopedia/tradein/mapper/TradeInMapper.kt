@@ -8,7 +8,7 @@ class TradeInMapper {
 
     companion object {
         fun mapAddressToKeroAddress(addressModel: RecipientAddressModel): Data {
-            addressModel.apply {
+            with(addressModel) {
                 return Data(
                         id.toInt(),
                         addressName,
@@ -35,7 +35,7 @@ class TradeInMapper {
         }
 
         fun mapSavedAddressToKeroAddress(addressDataModel: SaveAddressDataModel) : Data {
-            addressDataModel.apply {
+            with(addressDataModel) {
                 return Data(id, title, address1, address2, cityId,
                         "", "", districtId, selectedDistrict, true,
                         true, true, latitude, longitude, phone, postalCode,

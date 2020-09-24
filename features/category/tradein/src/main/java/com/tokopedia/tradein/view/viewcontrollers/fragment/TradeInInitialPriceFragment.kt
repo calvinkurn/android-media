@@ -159,6 +159,11 @@ class TradeInInitialPriceFragment : BaseViewModelFragment<TradeInInitialPriceVie
         btn_continue.isEnabled = true
     }
 
+    fun setWrongImei(error: String) {
+        typography_imei_description.text = error
+        typography_imei_description.setTextColor(MethodChecker.getColor(context, R.color.tradein_hint_red))
+    }
+
     interface TradeInInitialPriceClick {
         fun onInitialPriceClick(imei: String?)
     }
