@@ -401,7 +401,7 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
                         messageUiModel = MessageUiModel(state = "red")
                 ))))
         every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(response)
-        orderSummaryPageViewModel.lastValidateUsePromoRequest = ValidateUsePromoRequest()
+        orderSummaryPageViewModel.lastValidateUsePromoRequest = ValidateUsePromoRequest(mutableListOf("promo"))
         orderSummaryPageViewModel.validateUsePromoRevampUiModel = response.copy(promoUiModel = response.promoUiModel.copy(messageUiModel = MessageUiModel(state = "green")))
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
 
@@ -426,7 +426,7 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
                         messageUiModel = MessageUiModel(state = "red")
                 ))))
         every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(response)
-        orderSummaryPageViewModel.lastValidateUsePromoRequest = ValidateUsePromoRequest()
+        orderSummaryPageViewModel.lastValidateUsePromoRequest = ValidateUsePromoRequest(mutableListOf("promo"))
         orderSummaryPageViewModel.validateUsePromoRevampUiModel = response.copy(promoUiModel = response.promoUiModel.copy(messageUiModel = MessageUiModel(state = "green")))
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
 
@@ -451,7 +451,7 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
                         messageUiModel = MessageUiModel(state = "red")
                 ))))
         every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(response)
-        orderSummaryPageViewModel.lastValidateUsePromoRequest = ValidateUsePromoRequest()
+        orderSummaryPageViewModel.lastValidateUsePromoRequest = ValidateUsePromoRequest(mutableListOf("promo"))
         orderSummaryPageViewModel.validateUsePromoRevampUiModel = response.copy(promoUiModel = response.promoUiModel.copy(messageUiModel = MessageUiModel(state = "green")))
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
 

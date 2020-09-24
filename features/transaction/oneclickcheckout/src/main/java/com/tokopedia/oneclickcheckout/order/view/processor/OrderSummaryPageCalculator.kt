@@ -23,7 +23,6 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
     suspend fun calculateTotal(orderCart: OrderCart, _orderPreference: OrderPreference, shipping: OrderShipment, validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel?, _orderPayment: OrderPayment, orderTotal: OrderTotal): Pair<OrderPayment, OrderTotal> {
         OccIdlingResource.increment()
         val result = withContext(executorDispatchers.default) {
-//            val orderTotal = total.copy(buttonState = if (shouldButtonStateEnable(shipping, orderCart)) OccButtonState.NORMAL else OccButtonState.DISABLE)
             val quantity = orderCart.product.quantity
             var payment = _orderPayment
             if (quantity.orderQuantity <= 0 || !_orderPreference.isValid) {
