@@ -125,7 +125,7 @@ public class AppsflyerEventValidation {
 
     private void validateCategory(String eventName, String category) {
         if (TextUtils.isEmpty(category)) {
-            logging("validation;reason=category_blank; eventName='$eventName';data=''");
+            logging("validation;reason=category_blank;eventName='$eventName';data=''");
         }
     }
 
@@ -136,10 +136,10 @@ public class AppsflyerEventValidation {
             try {
                 JSONArray productarray = new JSONArray(productList);
                 if (productarray.length() < 1) {
-                    logging("validation;reason=product_array_invalid; eventName='';data='$productList'");
+                    logging("validation;reason=product_array_invalid;eventName='';data='$productList'");
                 }
             } catch (JSONException e) {
-                logging("error;reason=productList_array_exception; eventName='';data='$productList'");
+                logging("error;reason=productList_array_exception;eventName='';data='$productList'");
             }
 
         }
@@ -152,10 +152,10 @@ public class AppsflyerEventValidation {
             try {
                 JSONArray productCatList = new JSONArray(productCategory);
                 if (productCatList.length() < 1) {
-                    logging("validation;reason=productCategory_array_invalid; eventName='';data='$productCategory'");
+                    logging("validation;reason=productCategory_array_invalid;eventName='';data='$productCategory'");
                 }
             } catch (JSONException e) {
-                logging("error;reason=productCategory_array_exception; eventName='';data='$productCategory'");
+                logging("error;reason=productCategory_array_exception;eventName='';data='$productCategory'");
             }
 
         }
@@ -169,15 +169,15 @@ public class AppsflyerEventValidation {
 
     private void validateContent(String eventName, String content) {
         if (TextUtils.isEmpty(content)) {
-            logging("validation;reason=content_array_blank; eventName='$eventName' data=''");
+            logging("validation;reason=content_array_blank;eventName='$eventName'data=''");
         } else {
             try {
                 JSONArray contentarray = new JSONArray(content);
                 if (contentarray.length() < 1) {
-                    logging("validation;reason=content_array_invalid; eventName='$eventName'; data='$content'");
+                    logging("validation;reason=content_array_invalid;eventName='$eventName';data='$content'");
                 }
             } catch (JSONException e) {
-                logging("error;reason=content_array_exception; eventName='$eventName';data='$content'");
+                logging("error;reason=content_array_exception;eventName='$eventName';data='$content'");
             }
 
         }
