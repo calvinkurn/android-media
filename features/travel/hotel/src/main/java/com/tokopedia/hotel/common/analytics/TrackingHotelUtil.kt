@@ -37,11 +37,13 @@ class TrackingHotelUtil {
         }
     }
 
-    fun hotelBannerImpression(context: Context?, hotelPromoEntity: TravelCollectiveBannerModel.Banner, position: Int, screenName: String) {
-        val map = getTrackingMapWithHeader(context, screenName) as MutableMap<String, Any>
-        map.addGeneralEvent(PROMO_VIEW, BANNER_IMPRESSION, "$HOTEL_LABEL - ${hotelPromoEntity.id}")
-        map[ECOMMERCE_LABEL] = DataLayer.mapOf(PROMO_VIEW, DataLayer.mapOf(PROMOTIONS_LABEL, getBannerList(hotelPromoEntity, position)))
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
+    fun hotelBannerImpression(context: Context?, hotelPromoEntity: TravelCollectiveBannerModel.Banner?, position: Int, screenName: String) {
+        hotelPromoEntity?.let {
+            val map = getTrackingMapWithHeader(context, screenName) as MutableMap<String, Any>
+            map.addGeneralEvent(PROMO_VIEW, BANNER_IMPRESSION, "$HOTEL_LABEL - ${it.id}")
+            map[ECOMMERCE_LABEL] = DataLayer.mapOf(PROMO_VIEW, DataLayer.mapOf(PROMOTIONS_LABEL, getBannerList(hotelPromoEntity, position)))
+            TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
+        }
     }
 
     fun hotelClickBanner(context: Context?, hotelPromoEntity: TravelCollectiveBannerModel.Banner, position: Int, screenName: String) {

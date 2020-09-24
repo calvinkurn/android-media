@@ -31,15 +31,22 @@ public class AccessTokenRefresh {
     private static final String ACCESS_TOKEN = "access_token";
     private static final String GRANT_TYPE = "grant_type";
     private static final String REFRESH_TOKEN = "refresh_token";
+    private static final String PATH = "path";
 
     public String refreshToken(Context context, UserSessionInterface userSession, NetworkRouter
             networkRouter) {
+        return refreshToken(context, userSession, networkRouter, "/");
+    }
+
+    public String refreshToken(Context context, UserSessionInterface userSession, NetworkRouter
+            networkRouter, String path) {
 
         Map<String, String> params = new HashMap<>();
 
         params.put(ACCESS_TOKEN, userSession.getAccessToken());
         params.put(GRANT_TYPE, REFRESH_TOKEN);
         params.put(REFRESH_TOKEN, EncoderDecoder.Decrypt(userSession.getFreshToken(), userSession.getRefreshTokenIV()));
+        params.put(PATH, path);
 
         Call<String> responseCall = getRetrofit(context, userSession, networkRouter).create(AccountsBasicApi.class).getTokenSynchronous(params);
 
@@ -50,7 +57,7 @@ public class AccessTokenRefresh {
 
             if (response.errorBody() != null) {
                 tokenResponseError = response.errorBody().string();
-                checkShowForceLogout(tokenResponseError, networkRouter);
+                checkShowForceLogout(tokenResponseError, networkRouter, path);
             } else if (response.body() != null) {
                 tokenResponse = response.body();
             } else {
@@ -100,9 +107,9 @@ public class AccessTokenRefresh {
         return responseString.toLowerCase().contains(FORCE_LOGOUT);
     }
 
-    protected void checkShowForceLogout(String response, NetworkRouter networkRouter) {
+    protected void checkShowForceLogout(String response, NetworkRouter networkRouter, String path) {
         if (isRequestDenied(response)) {
-            networkRouter.showForceLogoutTokenDialog(response);
+            networkRouter.showForceLogoutTokenDialog(path);
         }
     }
 }
