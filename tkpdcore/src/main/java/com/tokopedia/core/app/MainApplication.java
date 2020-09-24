@@ -5,6 +5,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Build;
 
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.multidex.MultiDex;
 
 import com.crashlytics.android.Crashlytics;
@@ -47,6 +48,9 @@ public abstract class MainApplication extends MainRouterApplication{
     private String MAINAPP_ADDGAIDTO_BRANCH = "android_addgaid_to_branch";
     private static final String ENABLE_ASYNC_REMOTECONFIG_MAINAPP_INIT = "android_async_remoteconfig_mainapp_init";
 
+    static {
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+    }
 
     public static MainApplication getInstance() {
         return instance;
