@@ -2691,9 +2691,9 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         when (requestCode) {
             NAVIGATION_SHIPMENT -> onResultFromRequestCodeCartShipment(resultCode, data)
             NAVIGATION_PDP -> {
-                refreshHandler?.isRefreshing = true
-                resetRecentViewList()
                 if (refreshCartAfterBackFromPdp) {
+                    refreshHandler?.isRefreshing = true
+                    resetRecentViewList()
                     dPresenter.processInitialGetCartData(getCartId(), cartListData == null, true)
                 }
             }
