@@ -32,15 +32,6 @@
         <attr name="ls_content_text_size" format="dimension"/>
     </declare-styleable>
 
-    <declare-styleable name="VerticalLabelView">
-        <attr name="vlv_title" format="string" />
-        <attr name="vlv_title_text_size" format="dimension" />
-        <attr name="vlv_title_color" format="color" />
-        <attr name="vlv_content" format="string" />
-        <attr name="vlv_content_color" format="color" />
-        <attr name="vlv_content_text_size" format="dimension"/>
-    </declare-styleable>
-
     <declare-styleable name="CircleProgress">
         <attr name="circle_progress" format="integer" />
         <attr name="circle_max" format="integer" />
