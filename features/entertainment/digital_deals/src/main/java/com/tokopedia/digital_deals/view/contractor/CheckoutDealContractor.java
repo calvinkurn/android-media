@@ -30,7 +30,7 @@ public class CheckoutDealContractor {
 
         android.view.View getRootView();
 
-        void showPromoSuccessMessage(String text, String message, long discountAmount);
+        void showPromoSuccessMessage(String text, String message, long discountAmount, Boolean isCancel);
 
         void updateAmount(String s);
 
