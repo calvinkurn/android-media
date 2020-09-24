@@ -10,5 +10,5 @@ import com.google.gson.annotations.SerializedName
 class CheckKtpStatusPojo {
     @Expose
     @SerializedName("ocrIsKTP")
-    var ktpStatus: KtpStatusPojo? = null
+    var ktpStatus: KtpStatusPojo = KtpStatusPojo()
 }

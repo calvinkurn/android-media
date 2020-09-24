@@ -100,6 +100,7 @@ class SearchProductFirstPageGqlUseCase(
             query QuickFilter(${'$'}query: String!, ${'$'}params: String!) {
                 quick_filter(query: ${'$'}query, extraParams: ${'$'}params) {
                     filter {
+                        title
                         options {
                             name
                             key

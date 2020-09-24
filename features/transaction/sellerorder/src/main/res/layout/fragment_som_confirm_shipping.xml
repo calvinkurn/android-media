@@ -18,6 +18,7 @@
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/btn_confirm_shipping"
+            android:contentDescription="@string/content_desc_btn_confirm_shipping"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:unifyButtonVariant="filled"
@@ -30,6 +31,7 @@
 
     <com.tokopedia.unifycomponents.TextFieldUnify
         android:id="@+id/tf_no_resi"
+        android:contentDescription="@string/content_desc_tf_no_resi"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_16"
@@ -49,6 +51,7 @@
 
     <com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
         android:id="@+id/switch_change_courier"
+        android:contentDescription="@string/content_desc_switch_change_courier"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
@@ -87,6 +90,7 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/label_choosen_courier"
+            android:contentDescription="@string/content_desc_label_choosen_courier"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintEnd_toStartOf="@id/iv_choose_courier"
