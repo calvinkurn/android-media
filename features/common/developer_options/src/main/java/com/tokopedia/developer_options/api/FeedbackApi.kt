@@ -4,6 +4,7 @@ import com.tokopedia.developer_options.api.request.FeedbackFormRequest
 import com.tokopedia.developer_options.api.response.CategoriesResponse
 import com.tokopedia.developer_options.api.response.FeedbackFormResponse
 import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.http.*
 import rx.Observable
 
@@ -27,7 +28,7 @@ interface FeedbackApi {
 
     @Multipart
     @POST
-    fun uploadAttachment(@Url url: String, @Part("Key") key: String, @Part file: MultipartBody.Part): Observable<String>
+    fun uploadAttachment(@Url url: String, @Part("Key") key: RequestBody, @Part file: MultipartBody.Part): Observable<String>
 
     @POST
     fun commitData(@Url url: String): Observable<String>

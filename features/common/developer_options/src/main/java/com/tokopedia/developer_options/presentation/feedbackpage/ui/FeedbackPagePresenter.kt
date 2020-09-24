@@ -6,7 +6,9 @@ import com.tokopedia.developer_options.api.FeedbackApi
 import com.tokopedia.developer_options.api.request.FeedbackFormRequest
 import com.tokopedia.developer_options.api.response.CategoriesResponse
 import com.tokopedia.developer_options.api.response.FeedbackFormResponse
+import okhttp3.MediaType
 import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import rx.Subscriber
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
@@ -66,7 +68,8 @@ class FeedbackPagePresenter(private val compositeSubscription: CompositeSubscrip
     }
 
     override fun sendAttachment(feedbackId: Int?, filedata: MultipartBody.Part) {
-        feedbackApi.uploadAttachment("/api/v1/feedback/$feedbackId/upload-attachment", "file", filedata)
+        val requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), "file")
+        feedbackApi.uploadAttachment("/api/v1/feedback/$feedbackId/upload-attachment", requestFile, filedata)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(object : Subscriber<String>() {

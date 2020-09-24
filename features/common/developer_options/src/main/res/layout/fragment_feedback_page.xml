@@ -16,10 +16,10 @@
             android:id="@+id/image_feedback_tv"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_8"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            android:text="@string/attachment"
+            android:text="Attachment"
             app:typographyType="body_3"
             app:typographyWeight="bold"
             android:visibility="gone"/>
@@ -35,7 +35,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/image_feedback_tv"
             android:visibility="gone"
-            tools:listitem="@layout/item_image_chooser" />
+            tools:listitem="@layout/item_image_chooser_feedback" />
 
         <ImageView
             android:id="@+id/image_feedback"
@@ -65,7 +65,7 @@
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/email"
-                    android:layout_width="@dimen/dp_290"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:imeOptions="actionDone"
                     android:inputType="text"
@@ -81,7 +81,7 @@
                 android:id="@+id/tokopedia_separator"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_toEndOf="@id/et_email_wrapper"
+                android:layout_alignParentEnd="true"
                 android:layout_alignBottom="@id/et_email_wrapper"
                 android:layout_alignTop="@id/et_email_wrapper"
                 android:layout_marginTop="@dimen/dp_20"

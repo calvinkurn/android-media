@@ -383,7 +383,7 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View {
                 platformID = 2,
                 //this should be user email
                 email = email,
-                appVersion = appVersion + affectedVersion,
+                appVersion =  affectedVersion,
                 bundleVersion = versionCode,
                 device = deviceInfo,
                 os = androidVersion,
