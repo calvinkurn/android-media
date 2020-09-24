@@ -15,6 +15,7 @@ import com.tokopedia.promocheckout.common.util.mapToStatePromoCheckout
 import com.tokopedia.promocheckout.common.view.model.PromoData
 import com.tokopedia.promocheckout.common.view.uimodel.DataUiModel
 import com.tokopedia.promocheckout.detail.view.activity.PromoCheckoutDetailDealsActivity
+import com.tokopedia.promocheckout.detail.view.fragment.PromoCheckoutDetailDealsFragment
 import com.tokopedia.promocheckout.list.di.PromoCheckoutListComponent
 import com.tokopedia.promocheckout.list.model.listcoupon.PromoCheckoutListModel
 import com.tokopedia.promocheckout.list.model.listlastseen.PromoCheckoutLastSeenModel
@@ -57,12 +58,15 @@ class PromoCheckoutListDealsFragment() : BasePromoCheckoutListFragment(), PromoC
     }
 
     override fun onPromoCodeUse(promoCode: String) {
-        var requestBody: JsonObject? = null
-        if (checkoutData.isNotBlank() || checkoutData.length > 0) {
-            val jsonElement: JsonElement = JsonParser().parse(checkoutData)
-            requestBody = jsonElement.asJsonObject
-            requestBody.addProperty(PROMOCODE, promoCode)
-            promoCheckoutListDealsPresenter.processCheckDealPromoCode(false, requestBody)
+        if (promoCheckoutListDealsPresenter.isViewAttached) promoCheckoutListDealsPresenter.attachView(this)
+        if (promoCode.isNotEmpty()) {
+            var requestBody: JsonObject? = null
+            if (checkoutData.isNotBlank() || checkoutData.length > 0) {
+                val jsonElement: JsonElement = JsonParser().parse(checkoutData)
+                requestBody = jsonElement.asJsonObject
+                requestBody.addProperty(PROMOCODE, promoCode)
+                promoCheckoutListDealsPresenter.processCheckDealPromoCode(false, requestBody)
+            }
         }
     }
 
@@ -85,6 +89,7 @@ class PromoCheckoutListDealsFragment() : BasePromoCheckoutListFragment(), PromoC
         val intent = Intent()
         val promoData = PromoData(PromoData.VOUCHER_RESULT_CODE, data.codes[0],
                 data.message.text, data.titleDescription, state = data.message.state.mapToStatePromoCheckout())
+        intent.putExtra(PromoCheckoutDetailDealsFragment.IS_CANCEL, true)
         intent.putExtra(EXTRA_PROMO_DATA, promoData)
         intent.putExtra(VOUCHER_CODE, data.codes[0])
         intent.putExtra(VOUCHER_MESSAGE, data.message.text)
