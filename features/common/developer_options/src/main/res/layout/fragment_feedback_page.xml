@@ -56,8 +56,9 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/et_email_wrapper"
                 style="@style/HintTextInputLayout"
-                android:layout_width="@dimen/dp_290"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_toLeftOf="@id/tokopedia_separator"
                 android:layout_marginTop="@dimen/dp_8"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
