@@ -56,13 +56,11 @@ object ApplinkConstInternalMarketplace {
     @JvmField
     val ONE_CLICK_CHECKOUT = "$INTERNAL_MARKETPLACE/one-click-checkout"
 
-    // ProductDetailActivity
-    @JvmField
-    val PRODUCT_ADD_ITEM = "$INTERNAL_MARKETPLACE/product-add-item"
     // CategoryPickerActivity
     @JvmField
     val PRODUCT_CATEGORY_PICKER = "$INTERNAL_MARKETPLACE/product-category-picker/{id}/"
 
+    // ProductDetailActivity
     @JvmField
     val PRODUCT_DETAIL = "$INTERNAL_MARKETPLACE/product-detail/{id}/"
     @JvmField
@@ -71,8 +69,11 @@ object ApplinkConstInternalMarketplace {
     val PRODUCT_DETAIL_DOMAIN = "$INTERNAL_MARKETPLACE/product-detail/{shop_domain}/{product_key}/"
     @JvmField
     val PRODUCT_DETAIL_DOMAIN_WITH_AFFILIATE = "$INTERNAL_MARKETPLACE/product-detail/{shop_domain}/{product_key}/?aff={affiliate_string}"
+
+    // ProductManageActivity
     @JvmField
     val PRODUCT_MANAGE_LIST = "$INTERNAL_MARKETPLACE/product-manage-list"
+
     // ReviewProductActivity, "x_prd_nm" = productName
     @JvmField
     val PRODUCT_REVIEW = "$INTERNAL_MARKETPLACE/product/{id}/review"
