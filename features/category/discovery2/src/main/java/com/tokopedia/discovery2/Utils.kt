@@ -89,7 +89,6 @@ class Utils {
             queryParameterMap[IDENTIFIER] = pageIdentifier
             queryParameterMap[DEVICE] = DEVICE_VALUE
             queryParameterMap[COMPONENT_ID] = componentId
-//            queryParameterMap[FILTERS]  = "componentID=70935&targetcompID=70935&embedCategory=true&category_id=3816"
 
             rpcDiscoQuery?.let { map ->
                 val queryString = StringBuilder()
