@@ -13,7 +13,6 @@ import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageViewModel
 import com.tokopedia.oneclickcheckout.order.view.bottomsheet.ErrorCheckoutBottomSheet
 import com.tokopedia.oneclickcheckout.order.view.model.*
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
-import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -84,7 +83,7 @@ class OrderSummaryPageCheckoutProcessor @Inject constructor(private val checkout
                                     promos = shopPromos
                             )
                     )
-            )), promos = checkoutPromos, mode = if (orderTotal.isButtonChoosePayment) 1 else 0))
+            )), promos = checkoutPromos, mode = if (orderTotal.isButtonPay) 0 else 1))
 
             try {
                 val checkoutOccData = checkoutOccUseCase.executeSuspend(param)

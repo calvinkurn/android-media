@@ -53,6 +53,7 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
                 return@withContext payment.copy(isCalculationError = false) to orderTotal.copy(orderCost = orderCost, paymentErrorMessage = payment.errorTickerMessage, buttonType = OccButtonType.CHOOSE_PAYMENT, buttonState = currentState)
             }
             if (payment.errorMessage.message.isNotEmpty() && payment.errorMessage.button.text.isNotEmpty()) {
+                // cc expired/deleted
                 if (currentState == OccButtonState.NORMAL) {
                     currentState = OccButtonState.DISABLE
                 }
