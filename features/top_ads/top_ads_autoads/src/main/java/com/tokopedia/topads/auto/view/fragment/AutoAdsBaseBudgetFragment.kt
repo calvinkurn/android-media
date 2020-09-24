@@ -19,7 +19,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
 import com.tokopedia.design.text.watcher.NumberTextWatcher
 import com.tokopedia.topads.auto.R
-import com.tokopedia.topads.auto.data.network.param.AutoAdsParam
 import com.tokopedia.topads.auto.data.network.response.EstimationResponse
 import com.tokopedia.topads.auto.data.network.response.TopadsBidInfo
 import com.tokopedia.topads.auto.di.AutoAdsComponent
@@ -30,6 +29,7 @@ import com.tokopedia.topads.auto.view.widget.RangeSeekBar
 import com.tokopedia.topads.common.activity.NoCreditActivity
 import com.tokopedia.topads.common.activity.SuccessActivity
 import com.tokopedia.topads.common.data.internal.AutoAdsStatus
+import com.tokopedia.topads.common.data.model.AutoAdsParam
 import com.tokopedia.topads.common.getSellerMigrationFeatureName
 import com.tokopedia.topads.common.getSellerMigrationRedirectionApplinks
 import com.tokopedia.topads.common.isFromPdpSellerMigration

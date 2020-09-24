@@ -3,6 +3,7 @@ package com.tokopedia.shop.home.view.fragment
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -336,6 +337,13 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 is Fail -> {
                     onErrorGetShopHomeLayoutData(it.throwable)
                     stopPerformanceMonitor()
+                    val throwable = it.throwable
+                    ShopUtil.logTimberWarning(
+                            "SHOP_PAGE_HOME_TAB_WIDGET_ERROR",
+                            "shop_id='${shopId}';" +
+                                    "error_message='${ErrorHandler.getErrorMessage(context, throwable)}'" +
+                                    ";error_trace='${Log.getStackTraceString(throwable)}'"
+                    )
                 }
             }
             stopMonitoringPltRenderPage()
@@ -1002,7 +1010,14 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     }
 
     override fun onReminderClick(playBannerCarouselItemDataModel: PlayBannerCarouselItemDataModel, position: Int) {
-        viewModel?.setToggleReminderPlayBanner(playBannerCarouselItemDataModel.channelId, playBannerCarouselItemDataModel.remindMe, position)
+        if(isLogin) {
+            viewModel?.setToggleReminderPlayBanner(playBannerCarouselItemDataModel.channelId, playBannerCarouselItemDataModel.remindMe, position)
+        }
+        else {
+            // reset remind icon
+            adapter.notifyItemChanged(position, Bundle().apply { putBoolean(UPDATE_REMIND_ME_PLAY, true) })
+            redirectToLoginPage()
+        }
     }
 
     override fun onPlayBannerSeeMoreClick(appLink: String) {

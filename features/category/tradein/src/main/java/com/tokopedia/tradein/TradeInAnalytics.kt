@@ -2,7 +2,30 @@ package com.tokopedia.tradein
 
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.interfaces.Analytics
-import com.tokopedia.tradein.TradeInGTMConstants.*
+import com.tokopedia.tradein.TradeInGTMConstants.ACTION_CLICK
+import com.tokopedia.tradein.TradeInGTMConstants.ACTION_CLICK_TRADEIN
+import com.tokopedia.tradein.TradeInGTMConstants.ACTION_POP_UP
+import com.tokopedia.tradein.TradeInGTMConstants.ACTION_VIEW_TRADEIN_IRIS
+import com.tokopedia.tradein.TradeInGTMConstants.BUSINESS_UNIT
+import com.tokopedia.tradein.TradeInGTMConstants.CURRENT_SITE
+import com.tokopedia.tradein.TradeInGTMConstants.EVENT
+import com.tokopedia.tradein.TradeInGTMConstants.EVENT_ACTION
+import com.tokopedia.tradein.TradeInGTMConstants.EVENT_CATEGORY
+import com.tokopedia.tradein.TradeInGTMConstants.EVENT_LABEL
+import com.tokopedia.tradein.TradeInGTMConstants.KEY_BUSINESS_UNIT
+import com.tokopedia.tradein.TradeInGTMConstants.KEY_SCREEN_NAME
+import com.tokopedia.tradein.TradeInGTMConstants.KEY_CURRENT_SITE
+import com.tokopedia.tradein.TradeInGTMConstants.KEY_LOGGED_IN
+import com.tokopedia.tradein.TradeInGTMConstants.KEY_USER_ID
+import com.tokopedia.tradein.TradeInGTMConstants.OPEN_SCREEN
+import com.tokopedia.tradein.TradeInGTMConstants.PRODUCT_ID
+import com.tokopedia.tradein.TradeInGTMConstants.TRADE_IN_COVERAGE_PAGE
+import com.tokopedia.tradein.TradeInGTMConstants.TRADE_IN_EDUCATIONAL_PAGE
+import com.tokopedia.tradein.TradeInGTMConstants.TRADE_IN_FINAL_PAGE
+import com.tokopedia.tradein.TradeInGTMConstants.TRADE_IN_FINAL_PRICE_PAGE
+import com.tokopedia.tradein.TradeInGTMConstants.TRADE_IN_INITIAL_PRICE_PAGE
+import com.tokopedia.tradein.TradeInGTMConstants.TRADE_IN_START_PAGE
+
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 

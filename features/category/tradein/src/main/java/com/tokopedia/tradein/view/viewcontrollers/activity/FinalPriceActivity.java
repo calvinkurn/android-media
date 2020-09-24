@@ -23,7 +23,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalCategory;
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic;
 import com.tokopedia.common_tradein.model.TradeInParams;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
-import com.tokopedia.tradein.Constants;
+import com.tokopedia.tradein.TradeinConstants;
 import com.tokopedia.tradein.R;
 import com.tokopedia.tradein.TradeInGTMConstants;
 import com.tokopedia.tradein.model.DeviceAttr;
@@ -297,7 +297,7 @@ public class FinalPriceActivity extends BaseTradeInActivity<FinalPriceViewModel>
         if (TRADEIN_TYPE == TRADEIN_MONEYIN) {
             viewModel.getAddress();
         } else {
-            Intent intent = new Intent(Constants.ACTION_GO_TO_SHIPMENT);
+            Intent intent = new Intent(TradeinConstants.ACTION_GO_TO_SHIPMENT);
             intent.putExtra(TradeInParams.PARAM_DEVICE_ID, deviceId);
             intent.putExtra(TradeInParams.PARAM_PHONE_TYPE, phoneType);
             intent.putExtra(TradeInParams.PARAM_PHONE_PRICE, price);

@@ -45,7 +45,7 @@
                 android:paddingEnd="@dimen/dp_24"
                 android:paddingRight="@dimen/dp_24"
                 android:paddingBottom="@dimen/dp_12"
-                android:text="@string/not_elligible_price_high"
+                android:text="@string/tradein_not_elligible_price_high"
                 android:textColor="@color/black_70"
                 android:textSize="@dimen/sp_11"
                 android:visibility="gone"

@@ -40,9 +40,9 @@ class TradeInInfoActivity : BaseViewModelActivity<TradeInInfoViewModel>() {
         viewModel.tncInfoLiveData.observe(this, Observer {
             if (it != null) {
                 linear_layout.removeAllViews()
-                if (intent.data?.lastPathSegment == tradeInTNCSegment)
+                if (it.fetchTickerAndTnC.type == 0)
                     tradeInAnalytics.viewEducationalTNC()
-                else if (intent.data?.lastPathSegment == blackMarketSegment)
+                else
                     tradeInAnalytics.viewEducationalBlackMarket()
                 for (tnc in it.fetchTickerAndTnC.tnC) {
                     addView(tnc)

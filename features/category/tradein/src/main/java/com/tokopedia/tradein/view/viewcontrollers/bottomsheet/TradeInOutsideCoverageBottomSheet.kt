@@ -36,7 +36,7 @@ class TradeInOutsideCoverageBottomSheet : BottomSheetDialogFragment() {
         arguments?.getString(PRODUCT_NAME)?.let { productName ->
             view.findViewById<UnifyButton>(R.id.btn_similar_items).setOnClickListener {
                 tradeInAnalytics?.clickCoverageAreaSimilarItems()
-                RouteManager.route(context, "tokopedia://search?q=${URLEncoder.encode(productName, Charsets.UTF_8.toString())}&trade_id=true&shipping=25")
+                RouteManager.route(context, getString(R.string.tradein_search_deeplink, URLEncoder.encode(productName, Charsets.UTF_8.toString())))
                 dialog?.dismiss()
             }
         }

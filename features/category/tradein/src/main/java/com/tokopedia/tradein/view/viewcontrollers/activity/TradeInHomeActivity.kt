@@ -28,10 +28,11 @@ import com.tokopedia.common_tradein.model.TradeInParams
 import com.tokopedia.common_tradein.utils.TradeInUtils
 import com.tokopedia.iris.IrisAnalytics.Companion.getInstance
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.tradein.Constants
+import com.tokopedia.tradein.TradeinConstants
 import com.tokopedia.tradein.R
 import com.tokopedia.tradein.TradeInAnalytics
 import com.tokopedia.tradein.TradeInGTMConstants
+import com.tokopedia.tradein.TradeinConstants.Deeplink.TRADEIN_DISCOVERY_INFO_URL
 import com.tokopedia.tradein.di.DaggerTradeInComponent
 import com.tokopedia.tradein.view.viewcontrollers.activity.BaseTradeInActivity.TRADEIN_OFFLINE
 import com.tokopedia.tradein.view.viewcontrollers.fragment.TradeInAddressFragment
@@ -47,8 +48,6 @@ import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
-const val TRADEIN_DISCOVERY_INFO = "tokopedia://discovery/tukar-tambah-edukasi"
-
 class TradeInHomeActivity : BaseViewModelActivity<TradeInHomeViewModel>(),
         TradeInInitialPriceFragment.TradeInInitialPriceClick,
         TradeInFinalPriceFragment.TradeInHargaFinalClick {
@@ -62,7 +61,7 @@ class TradeInHomeActivity : BaseViewModelActivity<TradeInHomeViewModel>(),
     private lateinit var viewModel: TradeInHomeViewModel
     private var isFirstTime = true
     private lateinit var laku6TradeIn: Laku6TradeIn
-    private lateinit var currentFragment: Fragment
+    private var currentFragment: Fragment = Fragment()
     private var inputImei = false
     private var maxPrice: String = "-"
     private var minPrice: String = "-"
@@ -91,16 +90,21 @@ class TradeInHomeActivity : BaseViewModelActivity<TradeInHomeViewModel>(),
                 val cekFisik = TradeInGTMConstants.CEK_FISIK_TRADE_IN
                 val cekFungsi = TradeInGTMConstants.CEK_FUNGSI_TRADE_IN
                 val cekFisikResult = TradeInGTMConstants.CEK_FISIK_RESULT_TRADE_IN
-                if (TradeInGTMConstants.CEK_FISIK == page) {
-                    if (TradeInGTMConstants.CLICK_SALIN == action || TradeInGTMConstants.CLICK_SOCIAL_SHARE == action)
+                when (page) {
+                    TradeInGTMConstants.CEK_FISIK -> {
+                        when (action) {
+                            TradeInGTMConstants.CLICK_SALIN, TradeInGTMConstants.CLICK_SOCIAL_SHARE -> tradeInAnalytics.sendGeneralEvent(TradeInGTMConstants.ACTION_CLICK_TRADEIN,
+                                    cekFisik, action, value)
+                        }
+                    }
+                    TradeInGTMConstants.CEK_FUNGSI_TRADE_IN -> {
                         tradeInAnalytics.sendGeneralEvent(TradeInGTMConstants.ACTION_CLICK_TRADEIN,
-                                cekFisik, action, value)
-                } else if (TradeInGTMConstants.CEK_FUNGSI_TRADE_IN == page) {
-                    tradeInAnalytics.sendGeneralEvent(TradeInGTMConstants.ACTION_CLICK_TRADEIN,
-                            cekFungsi, action, value)
-                } else if (TradeInGTMConstants.CEK_FISIK_RESULT_TRADE_IN == page) {
-                    tradeInAnalytics.sendGeneralEvent(TradeInGTMConstants.ACTION_VIEW_TRADEIN,
-                            cekFisikResult, action, value)
+                                cekFungsi, action, value)
+                    }
+                    TradeInGTMConstants.CEK_FISIK_RESULT_TRADE_IN -> {
+                        tradeInAnalytics.sendGeneralEvent(TradeInGTMConstants.ACTION_VIEW_TRADEIN,
+                                cekFisikResult, action, value)
+                    }
                 }
             }
         }
@@ -114,7 +118,7 @@ class TradeInHomeActivity : BaseViewModelActivity<TradeInHomeViewModel>(),
 
     private fun setObservers() {
         viewModel.askUserLogin.observe(this, Observer {
-            if (it != null && it == Constants.LOGIN_REQUIRED) {
+            if (it != null && it == TradeinConstants.LOGIN_REQUIRED) {
                 startActivityForResult(RouteManager.getIntent(this, ApplinkConst.LOGIN), BaseTradeInActivity.LOGIN_REQUEST)
             } else {
                 intent?.data?.lastPathSegment?.let { last ->
@@ -124,7 +128,7 @@ class TradeInHomeActivity : BaseViewModelActivity<TradeInHomeViewModel>(),
                         return@Observer
                     }
                 }
-                RouteManager.route(this, TRADEIN_DISCOVERY_INFO)
+                RouteManager.route(this, TRADEIN_DISCOVERY_INFO_URL)
                 tradeInAnalytics.openEducationalScreen()
             }
         })
@@ -134,7 +138,7 @@ class TradeInHomeActivity : BaseViewModelActivity<TradeInHomeViewModel>(),
             } else {
                 when (homeResult.priceStatus) {
                     PriceState.DIAGNOSED_INVALID -> {
-                        notEligibleMessage = getString(R.string.not_elligible_price_high)
+                        notEligibleMessage = getString(R.string.tradein_not_elligible_price_high)
                     }
                     PriceState.DIAGNOSED_VALID -> {
                         isEligibleForTradein = true
@@ -173,7 +177,8 @@ class TradeInHomeActivity : BaseViewModelActivity<TradeInHomeViewModel>(),
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_PHONE_STATE,
                     Manifest.permission.READ_EXTERNAL_STORAGE,
                     Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                    Manifest.permission.CAMERA),
+                    Manifest.permission.CAMERA,
+                    Manifest.permission.VIBRATE),
                     BaseTradeInActivity.MY_PERMISSIONS_REQUEST_READ_PHONE_STATE)
         } else {
             viewModel.getMaxPrice(laku6TradeIn, TRADEIN_OFFLINE)
@@ -257,10 +262,10 @@ class TradeInHomeActivity : BaseViewModelActivity<TradeInHomeViewModel>(),
     }
 
     private fun init() {
-        var campaignId = Constants.CAMPAIGN_ID_PROD
-        if (Constants.LAKU6_BASEURL == Constants.LAKU6_BASEURL_STAGING) campaignId = Constants.CAMPAIGN_ID_STAGING
+        var campaignId = TradeinConstants.CAMPAIGN_ID_PROD
+        if (TradeinConstants.LAKU6_BASEURL == TradeinConstants.LAKU6_BASEURL_STAGING) campaignId = TradeinConstants.CAMPAIGN_ID_STAGING
         laku6TradeIn = Laku6TradeIn.getInstance(this, campaignId,
-                Constants.APPID, Constants.APIKEY, Constants.LAKU6_BASEURL, BaseTradeInActivity.TRADEIN_EXCHANGE, AuthKey.SAFETYNET_KEY_TRADE_IN)
+                TradeinConstants.APPID, TradeinConstants.APIKEY, TradeinConstants.LAKU6_BASEURL, BaseTradeInActivity.TRADEIN_EXCHANGE, AuthKey.SAFETYNET_KEY_TRADE_IN)
         intent.data?.lastPathSegment?.let {
             if (it == TRADEIN_SELLER_CHECK || it == FINAL_PRICE)
                 askPermissions()
@@ -336,7 +341,7 @@ class TradeInHomeActivity : BaseViewModelActivity<TradeInHomeViewModel>(),
     }
 
     override fun onHargaFinalClick(deviceId: String?, price: String) {
-        val intent = Intent(Constants.ACTION_GO_TO_SHIPMENT)
+        val intent = Intent(TradeinConstants.ACTION_GO_TO_SHIPMENT)
         intent.putExtra(TradeInParams.PARAM_DEVICE_ID, deviceId)
         intent.putExtra(TradeInParams.PARAM_PHONE_TYPE, deviceDisplayName?.toLowerCase(Locale.getDefault()))
         intent.putExtra(TradeInParams.PARAM_PHONE_PRICE, price)
@@ -419,8 +424,8 @@ class TradeInHomeActivity : BaseViewModelActivity<TradeInHomeViewModel>(),
     companion object {
         private const val TRADEIN = "tradein"
         private const val FINAL_PRICE = "host_final_price"
-        private const val TRADEIN_SELLER_CHECK = "tradein_seller_check"
-        private const val TRADEIN_INITIAL_PRICE = "tradein_initial_price"
+        private const val TRADEIN_SELLER_CHECK = "seller_check"
+        private const val TRADEIN_INITIAL_PRICE = "initial_price"
         private const val TRADEIN_INITIAL_FRAGMENT = "TRADEIN_INITIAL_FRAGMENT"
         private const val TRADEIN_FINAL_PRICE_FRAGMENT = "TRADEIN_FINAL_PRICE_FRAGMENT"
     }

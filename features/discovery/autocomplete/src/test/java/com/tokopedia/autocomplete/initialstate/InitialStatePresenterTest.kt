@@ -56,7 +56,16 @@ internal class InitialStatePresenterTest: InitialStatePresenterTestFixtures() {
         Assert.assertTrue(visitableList[6] is DynamicInitialStateTitleViewModel)
         Assert.assertTrue(visitableList[7] is DynamicInitialStateSearchViewModel)
         Assert.assertTrue(visitableList.size == 8)
+
+        `Then verify RecentSearchViewModel only have 3 items`(visitableList[3] as RecentSearchViewModel)
     }
+
+    private fun `Then verify RecentSearchViewModel only have 3 items`(viewModel: RecentSearchViewModel) {
+        assert(viewModel.list.size == 3) {
+            "RecentSearchViewModel should only have 3 items, actual size is ${viewModel.list.size}"
+        }
+    }
+
 
     @Test
     fun `Test fail to get initial state data`() {

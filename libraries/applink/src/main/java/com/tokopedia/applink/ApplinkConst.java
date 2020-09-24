@@ -154,7 +154,9 @@ public interface ApplinkConst {
     String HOTEL = "tokopedia://hotel";
     String TRAVEL_SUBHOMEPAGE = "tokopedia://travelentertainment";
 
-    String MARKETPLACE_ORDER = "tokopedia://belanja/order";
+    String MARKETPLACE_ORDER = "tokopedia://marketplace/order";
+    String BELANJA_ORDER = "tokopedia://belanja/order";
+    String MARKETPLACE_ORDER_SUB = "tokopedia://order/marketplace/filter";
     String MARKETPLACE_ORDER_FILTER = "tokopedia://order/marketplace/filter/{filter_id}";
 
     String MARKETPLACE_WAITING_CONFIRMATION = "tokopedia://order/marketplace/filter/5";
@@ -184,6 +186,7 @@ public interface ApplinkConst {
     String SELLER_TRANSACTION = "tokopedia://seller";
     String SELLER_CENTER = "tokopedia://seller/seller-center";
     String SELLER_SHIPPING_EDITOR = "tokopedia://seller/setting/shipping-editor";
+    String SELLER_COD_ACTIVATION = "tokopedia://seller/setting/cod-activation";
     String CONTACT_US = "tokopedia://contact-us";
     String CONTACT_US_NATIVE = "tokopedia://contactus";
 
@@ -289,6 +292,7 @@ public interface ApplinkConst {
     String POWER_MERCHANT_SUBSCRIBE = "tokopedia://power_merchant/subscribe";
 
     String CATEGORY = "tokopedia://category";
+    String TRADEIN = "tokopedia://category/tradein";
     String QRSCAN = "tokopedia://scanqr";
     String OVOP2PTRANSFERFORM = "tokopedia-android-internal://ovop2ptransfer?phone";
     String OVOP2PTRANSFERFORM_SHORT = "tokopedia-android-internal://ovop2ptransfer";
@@ -374,6 +378,7 @@ public interface ApplinkConst {
         String TOPADS_AUTO_TOPUP = "sellerapp://topads/auto-topup";
         String TOPADS_PRODUCT_CREATE = "sellerapp://topads/create";
         String TOPADS_CREATE_ADS = "sellerapp://topads/create-ads";
+        String TOPADS_CREATE_ONBOARDING = "sellerapp://topads/creation-onboard";
         String TOPADS_CREATE_AUTO_ADS = "sellerapp://topads/create-autoads";
         String TOPADS_EDIT_AUTO_ADS = "sellerapp://topads/edit-autoads";
         String TOPADS_CREDIT_HISTORY = "sellerapp://topads/history-credit";
@@ -557,5 +562,4 @@ public interface ApplinkConst {
             String REWARDS = "rewards";
         }
     }
-
 }

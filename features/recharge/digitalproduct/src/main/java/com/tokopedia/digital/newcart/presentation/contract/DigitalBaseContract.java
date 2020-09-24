@@ -120,6 +120,8 @@ public interface DigitalBaseContract {
         void successCancelVoucherCart();
 
         void failedCancelVoucherCart(Throwable message);
+
+        void showError(String message);
     }
 
     interface Presenter<T extends View> extends CustomerPresenter<T>{

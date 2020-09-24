@@ -2,14 +2,14 @@ package com.tokopedia.tradein.mapper
 
 import com.tokopedia.logisticdata.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticdata.data.entity.address.SaveAddressDataModel
-import com.tokopedia.tradein.model.MoneyInKeroGetAddressResponse
+import com.tokopedia.tradein.model.MoneyInKeroGetAddressResponse.ResponseData.KeroGetAddress.Data
 
 class TradeInMapper {
 
     companion object {
-        fun mapAddressToKeroAddress(addressModel: RecipientAddressModel): MoneyInKeroGetAddressResponse.ResponseData.KeroGetAddress.Data {
+        fun mapAddressToKeroAddress(addressModel: RecipientAddressModel): Data {
             addressModel.apply {
-                return MoneyInKeroGetAddressResponse.ResponseData.KeroGetAddress.Data(
+                return Data(
                         id.toInt(),
                         addressName,
                         street,
@@ -34,9 +34,9 @@ class TradeInMapper {
             }
         }
 
-        fun mapSavedAddressToKeroAddress(addressDataModel: SaveAddressDataModel) : MoneyInKeroGetAddressResponse.ResponseData.KeroGetAddress.Data {
+        fun mapSavedAddressToKeroAddress(addressDataModel: SaveAddressDataModel) : Data {
             addressDataModel.apply {
-                return MoneyInKeroGetAddressResponse.ResponseData.KeroGetAddress.Data(id, title, address1, address2, cityId,
+                return Data(id, title, address1, address2, cityId,
                         "", "", districtId, selectedDistrict, true,
                         true, true, latitude, longitude, phone, postalCode,
                         provinceId, "", receiverName, 1)

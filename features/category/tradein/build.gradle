@@ -32,7 +32,6 @@ dependencies {
     implementation project(rootProject.ext.features.logisticcart)
     implementation project(rootProject.ext.features.logisticdata)
     implementation project(rootProject.ext.features.purchase_platform_common)
-    implementation project(rootProject.ext.libraries.webview)
     implementation project(rootProject.ext.libraries.utils)
     implementation project(rootProject.ext.features.buyerorder)
 
@@ -44,6 +43,8 @@ dependencies {
     implementation project(rootProject.ext.libraries.graphql)
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
+    implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
+    kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.miscDependencies.loaderviewlibrary

@@ -34,7 +34,7 @@ import javax.inject.Inject
 private const val PINPOINT_ACTIVITY_REQUEST_CODE = 1302
 private const val KERO_TOKEN = "token"
 private const val EXTRA_ADDRESS_NEW = "EXTRA_ADDRESS_NEW"
-private const val TRADEIN_INITIAL_PRICE = "tokopedia://category/tradein_initial_price"
+private const val TRADEIN_INITIAL_PRICE = "tokopedia://category/tradein/initial_price"
 
 class TradeInAddressFragment : BaseViewModelFragment<TradeInAddressViewModel>() {
     @Inject
@@ -53,12 +53,6 @@ class TradeInAddressFragment : BaseViewModelFragment<TradeInAddressViewModel>() 
                     .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
                     .build()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setUpObservers()
-        getAddress()
-    }
-
     private fun getAddress() {
         arguments?.apply {
             tradeInAddressViewModel.getAddress(getString(EXTRA_ORIGIN, ""), getInt(EXTRA_WEIGHT), getInt(EXTRA_SHOP_ID))
@@ -75,10 +69,12 @@ class TradeInAddressFragment : BaseViewModelFragment<TradeInAddressViewModel>() 
             activity?.onBackPressed()
         }
         tradeInAnalytics.openCoverageAreaCheck()
+        setUpObservers()
+        getAddress()
     }
 
     private fun setUpObservers() {
-        tradeInAddressViewModel.getAddressLiveData().observe(this, Observer {
+        tradeInAddressViewModel.getAddressLiveData().observe(viewLifecycleOwner, Observer {
             if (it.defaultAddress != null) {
                 setAddress(it.defaultAddress)
             } else {
@@ -89,7 +85,7 @@ class TradeInAddressFragment : BaseViewModelFragment<TradeInAddressViewModel>() 
             }
         })
 
-        tradeInAddressViewModel.getTradeInEligibleLiveData().observe(this, Observer {
+        tradeInAddressViewModel.getTradeInEligibleLiveData().observe(viewLifecycleOwner, Observer {
             if (it == true) {
                 address_valid_ticker.apply {
                     show()
@@ -134,10 +130,10 @@ class TradeInAddressFragment : BaseViewModelFragment<TradeInAddressViewModel>() 
 
     private fun setAddress(defaultAddress: MoneyInKeroGetAddressResponse.ResponseData.KeroGetAddress.Data) {
         address_name.text = defaultAddress.addrName
-        address.text = (defaultAddress.address1 + ", "
-                + defaultAddress.districtName + ", "
-                + defaultAddress.cityName + ", "
-                + defaultAddress.provinceName)
+        address.text = StringBuilder().append(defaultAddress.address1).append(", ")
+                .append(defaultAddress.districtName).append(", ")
+                .append(defaultAddress.cityName).append(", ")
+                .append(defaultAddress.provinceName)
         change_address.setOnClickListener {
             tradeInAnalytics.clickChangeAddress()
             val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.CHECKOUT_ADDRESS_SELECTION)
@@ -206,7 +202,7 @@ class TradeInAddressFragment : BaseViewModelFragment<TradeInAddressViewModel>() 
         private const val EXTRA_PRODUCT_NAME = "EXTRA_PRODUCT_NAME"
         private const val EXTRA_SHOP_ID = "EXTRA_SHOP_ID"
 
-        fun getFragmentInstance(origin: String?, weight: Int, productName: String, shopId: Int): Fragment {
+        fun getFragmentInstance(origin: String?, weight: Int, productName: String?, shopId: Int): Fragment {
             val fragment = TradeInAddressFragment()
             val bundle = Bundle()
             bundle.putString(EXTRA_ORIGIN, origin)

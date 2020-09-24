@@ -37,14 +37,6 @@
           "title": "samsung",
           "label": "keyword",
           "shortcut_url": "https://shortcut"
-        },
-        {
-          "template": "list_single_line",
-          "applink": "tokopedia://search?q=iphone&source=universe&st=product",
-          "url": "/search?q=iphone&source=universe&st=product",
-          "title": "iphone",
-          "label": "keyword",
-          "shortcut_url": "https://shortcut"
         }
       ]
     },

@@ -14,7 +14,9 @@ class TradeInInfoViewModel @Inject constructor(
 
     fun getTNC(type: Int) {
         launchCatchError(block = {
-            tncInfoLiveData.value = tNCInfoUseCase.getTNCInfo(type)
+            val tncInfo = tNCInfoUseCase.getTNCInfo(type)
+            tncInfo.fetchTickerAndTnC.type = type
+            tncInfoLiveData.value = tncInfo
             progBarVisibility.value = false
         }, onError = {
             it.printStackTrace()

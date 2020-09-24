@@ -7,6 +7,7 @@ object ImageAssets {
 
 object AppScreen {
     const val ADD_SHOP_SHOWCASE_SCREEN = "Add Shop Showcase Screen"
+    const val SHOP_SHOWCASE_PICKER_SCREEN = "Shop Showcase Picker Screen"
 }
 
 object PageNameConstant {

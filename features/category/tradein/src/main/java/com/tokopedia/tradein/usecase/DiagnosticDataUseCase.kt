@@ -1,6 +1,7 @@
 package com.tokopedia.tradein.usecase
 
 import com.tokopedia.common_tradein.model.TradeInParams
+import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.tradein.model.DeviceDataResponse
 import com.tokopedia.tradein.model.DeviceDiagGQL
 import com.tokopedia.tradein.model.DeviceDiagParams
@@ -11,6 +12,7 @@ import com.tokopedia.tradein.repository.TradeInRepository
 import java.lang.reflect.Type
 import javax.inject.Inject
 
+@GqlQuery("GqlGetDeviceDiag", GQL_GET_DEVICE_DIAG)
 class DiagnosticDataUseCase @Inject constructor(
         private val repository: TradeInRepository) {
 
@@ -36,7 +38,7 @@ class DiagnosticDataUseCase @Inject constructor(
 
     fun getQueries(tradeInParams: TradeInParams?): MutableList<String> {
         val queries: MutableList<String> = ArrayList()
-        queries.add(GQL_GET_DEVICE_DIAG)
+        queries.add(GqlGetDeviceDiag.GQL_QUERY)
         if (tradeInParams?.isUseKyc == 1) {
             queries.add(GQL_KYC_STATUS)
         }
