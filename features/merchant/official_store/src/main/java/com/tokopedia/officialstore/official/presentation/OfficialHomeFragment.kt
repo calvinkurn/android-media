@@ -511,12 +511,16 @@ class OfficialHomeFragment :
     }
 
     override fun onProductClick(item: RecommendationItem, layoutType: String?, vararg position: Int) {
-        lastClickLayoutType = layoutType
-        if (position.size > 1) {
-            lastParentPosition = position[0]
-            goToPDP(item, position[1])
-        } else {
-            goToPDP(item, position[0])
+        try {
+            lastClickLayoutType = layoutType
+            if (position.size > 1) {
+                lastParentPosition = position[0]
+                goToPDP(item, position[1])
+            } else {
+                goToPDP(item, position[0])
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 

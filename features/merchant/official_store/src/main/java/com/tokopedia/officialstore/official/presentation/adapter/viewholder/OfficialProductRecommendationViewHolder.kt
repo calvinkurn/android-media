@@ -10,7 +10,6 @@ import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 
-
 class OfficialProductRecommendationViewHolder(
         view: View,
         val recommendationListener: RecommendationListener
@@ -70,7 +69,6 @@ class OfficialProductRecommendationViewHolder(
             })
 
             setOnClickListener {
-                element.listener.onProductClick(element.productItem, element.productItem.type, adapterPosition)
                 if (element.productItem.isTopAds) {
                     context?.run {
                         TopAdsUrlHitter(className).hitClickUrl(
@@ -82,6 +80,7 @@ class OfficialProductRecommendationViewHolder(
                         )
                     }
                 }
+                element.listener.onProductClick(element.productItem, element.productItem.type, adapterPosition)
             }
 
             setThreeDotsOnClickListener {
