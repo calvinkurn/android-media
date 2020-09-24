@@ -13,16 +13,14 @@ import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers
-import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.espresso.matcher.ViewMatchers.withText
+import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
-import com.tokopedia.analyticsdebugger.validator.core.getAnalyticsWithQuery
-import com.tokopedia.analyticsdebugger.validator.core.hasAllSuccess
+import com.tokopedia.cassavatest.getAnalyticsWithQuery
+import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity
 import com.tokopedia.hotel.search.data.model.HotelSearchModel
-import com.tokopedia.hotel.search.data.model.params.ParamFilterV2
 import com.tokopedia.hotel.search.presentation.activity.mock.HotelSearchMockResponseConfig
 import com.tokopedia.hotel.search.presentation.adapter.HotelOptionMenuAdapter
 import com.tokopedia.hotel.search.presentation.adapter.viewholder.SearchPropertyViewHolder
@@ -30,9 +28,9 @@ import com.tokopedia.hotel.search.presentation.fragment.HotelSearchResultFragmen
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.hamcrest.core.AllOf
 import org.junit.After
-import org.junit.Assert.*
 import org.junit.Rule
 import org.junit.Test
+import org.junit.Assert.assertThat
 
 /**
  * @author by jessica on 07/08/20
@@ -80,12 +78,17 @@ class HotelSearchResultActivityTest {
 
     @Test
     fun validateChangeSearchTracking() {
+        clickQuickFilterChips()
         clickOnSortAndFilter()
         clickOnChangeDestination()
         validateHotelSearchPageTracking()
 
-        assertThat(getAnalyticsWithQuery(gtmLogDBSource, targetContext, ANALYTIC_VALIDATOR_QUERY_HOTEL_DISCO),
-                hasAllSuccess())
+        assertThat(getAnalyticsWithQuery(gtmLogDBSource, targetContext, ANALYTIC_VALIDATOR_QUERY_HOTEL_DISCO), hasAllSuccess())
+    }
+
+    private fun clickQuickFilterChips() {
+        Thread.sleep(4000)
+        onView(AllOf.allOf(withText("Hygiene Verified"), isDescendantOfA(withId(R.id.sort_filter_items)))).perform(click())
     }
 
     private fun clickOnSortAndFilter() {

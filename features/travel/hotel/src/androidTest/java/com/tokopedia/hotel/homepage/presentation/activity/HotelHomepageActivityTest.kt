@@ -7,7 +7,7 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions
-import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents.intended
@@ -18,9 +18,10 @@ import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
-import com.tokopedia.analyticsdebugger.validator.core.getAnalyticsWithQuery
-import com.tokopedia.analyticsdebugger.validator.core.hasAllSuccess
+import com.tokopedia.cassavatest.getAnalyticsWithQuery
+import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.banner.BannerViewPagerAdapter
+import com.tokopedia.carousel.CarouselUnify
 import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity
@@ -133,21 +134,17 @@ class HotelHomepageActivityTest {
     private fun slidePromoBanner() {
         Thread.sleep(4000)
         if (getBannerItemCount() > 0) {
-            onView(withId(R.id.banner_recyclerview)).check(matches(isDisplayed()))
+            onView(withId(R.id.banner_hotel_homepage_promo)).check(matches(isDisplayed()))
             Thread.sleep(1000)
-            if (getBannerItemCount() > 1)
-                onView(withId(R.id.banner_recyclerview))
-                        .perform(RecyclerViewActions.scrollToPosition<BannerViewPagerAdapter.BannerViewHolder>(
-                                getBannerItemCount() - 1))
         } else {
             Thread.sleep(1000)
-            onView(withId(R.id.banner_recyclerview)).check(matches(org.hamcrest.Matchers.not(isDisplayed())))
+            onView(withId(R.id.banner_hotel_homepage_promo)).check(matches(org.hamcrest.Matchers.not(isDisplayed())))
         }
     }
 
     private fun getBannerItemCount(): Int {
-        val recyclerView: RecyclerView = activityRule.activity.findViewById(R.id.banner_recyclerview)
-        return recyclerView.adapter?.itemCount ?: 0
+        val carouselUnify: CarouselUnify = activityRule.activity.findViewById(R.id.banner_hotel_homepage_promo)
+        return carouselUnify.indicatorCount.toInt()
     }
 
     private fun getLastSearchCount(): Int {
@@ -159,8 +156,8 @@ class HotelHomepageActivityTest {
         Thread.sleep(2000)
 
         if (getBannerItemCount() > 0) {
-            onView(withId(R.id.banner_recyclerview)).perform(RecyclerViewActions
-                    .actionOnItemAtPosition<BannerViewPagerAdapter.BannerViewHolder>(0, click()))
+            onView(withId(R.id.hotelHomepageScrollView)).perform(swipeUp())
+            onView(withId(R.id.banner_hotel_homepage_promo)).perform(click())
         }
     }
 
@@ -182,7 +179,6 @@ class HotelHomepageActivityTest {
         cal.time = TravelDateUtil.addTimeToSpesificDate(TravelDateUtil.getCurrentCalendar().time,
                 Calendar.DATE, 2)
         var tomorrowDate = cal[Calendar.DATE]
-        tomorrowDate = 1
 
         if (tomorrowDate > 1) {
             onView(getElementFromMatchAtPosition(withText(tomorrowDate.toString()), 0)).perform(click())
