@@ -1,6 +1,5 @@
 package com.tokopedia.promocheckout.detail.view.fragment
 
-import android.app.Activity
 import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
@@ -13,11 +12,9 @@ import com.tokopedia.promocheckout.common.util.EXTRA_PROMO_DATA
 import com.tokopedia.promocheckout.common.util.mapToStatePromoCheckout
 import com.tokopedia.promocheckout.common.view.model.PromoData
 import com.tokopedia.promocheckout.common.view.uimodel.DataUiModel
-import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
 import com.tokopedia.promocheckout.detail.di.PromoCheckoutDetailComponent
 import com.tokopedia.promocheckout.detail.view.activity.PromoCheckoutDetailDealsActivity
 import com.tokopedia.promocheckout.detail.view.presenter.PromoCheckoutDetailDealsPresenter
-import com.tokopedia.promocheckout.list.view.fragment.PromoCheckoutListDealsFragment
 import com.tokopedia.user.session.UserSession
 import timber.log.Timber
 import javax.inject.Inject
@@ -68,9 +65,8 @@ class PromoCheckoutDetailDealsFragment : BasePromoCheckoutDetailFragment() {
     override fun onClickCancel() {
         super.onClickCancel()
         val intent = Intent()
-        val promoData = PromoData(PromoData.TYPE_COUPON, state = TickerCheckoutView.State.EMPTY)
-        intent.putExtra(EXTRA_PROMO_DATA, promoData)
-        activity?.setResult(Activity.RESULT_OK, intent)
+        intent.putExtra(IS_CANCEL, true)
+        activity?.setResult(PromoData.COUPON_RESULT_CODE, intent)
         activity?.finish()
     }
 
@@ -82,6 +78,7 @@ class PromoCheckoutDetailDealsFragment : BasePromoCheckoutDetailFragment() {
         intent.putExtra(COUPON_CODE, data.codes[0])
         intent.putExtra(COUPON_MESSAGE, data.message.text)
         intent.putExtra(COUPON_AMOUNT, data.discountAmount)
+        intent.putExtra(IS_CANCEL, false)
         activity?.setResult(PromoData.COUPON_RESULT_CODE, intent)
         activity?.finish()
     }
@@ -109,6 +106,7 @@ class PromoCheckoutDetailDealsFragment : BasePromoCheckoutDetailFragment() {
         val COUPON_MESSAGE = "coupon_message"
         val COUPON_AMOUNT = "coupon_amount"
         val COUPON_CODE = "coupon_code"
+        val IS_CANCEL = "IS_CANCEL"
 
         fun createInstance(codeCoupon: String, isUse: Boolean, checkoutData: String?): PromoCheckoutDetailDealsFragment {
             val promoCheckoutDetailDealsFragment = PromoCheckoutDetailDealsFragment()
