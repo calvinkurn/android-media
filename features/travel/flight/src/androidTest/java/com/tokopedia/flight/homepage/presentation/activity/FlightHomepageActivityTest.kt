@@ -120,11 +120,11 @@ class FlightHomepageActivityTest {
         Thread.sleep(1000)
 
         // click on flight departure airport to open bottom sheet to select airport
-        onView(withId(R.id.tvFlightOriginAirport)).perform(click())
+        onView(withId(R.id.tvFlightDestinationAirport)).perform(click())
         Thread.sleep(2000)
 
         // click on Padang, to set Padang as Departure Airport
-        onView(withText("Padang, Indonesia")).perform(click())
+        onView(withText("Palembang, Indonesia")).perform(click())
         Thread.sleep(1000)
     }
 
