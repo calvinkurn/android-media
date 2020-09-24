@@ -15,7 +15,6 @@ import com.tokopedia.test.application.assertion.topads.TopAdsAssertion
 import com.tokopedia.test.application.environment.callback.TopAdsVerificatorInterface
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupTopAdsDetector
-import org.hamcrest.Matchers.allOf
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -87,7 +86,7 @@ class CartTopAdsVerificationTest {
 
     private fun clickProductRecommendationItem(cartRecyclerView: RecyclerView, i: Int) {
         try {
-            Espresso.onView(allOf(ViewMatchers.withId(cartRecyclerView.id), ViewMatchers.isDisplayingAtLeast(50)))
+            Espresso.onView(ViewMatchers.withId(cartRecyclerView.id))
                     .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(i, ViewActions.click()))
         } catch (e: PerformException) {
             e.printStackTrace()
