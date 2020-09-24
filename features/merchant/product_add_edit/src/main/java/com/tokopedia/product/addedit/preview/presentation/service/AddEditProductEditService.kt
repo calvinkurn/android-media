@@ -17,6 +17,7 @@ import com.tokopedia.product.addedit.draft.mapper.AddEditProductMapper.mapProduc
 import com.tokopedia.product.addedit.preview.domain.usecase.ProductEditUseCase
 import com.tokopedia.product.addedit.preview.presentation.activity.AddEditProductPreviewActivity
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.TITLE_ERROR_SAVING_DRAFT
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.VariantInputModel
 import kotlinx.coroutines.Dispatchers
@@ -67,7 +68,7 @@ class AddEditProductEditService : AddEditProductBaseService() {
                         saveProductDraftUseCase.executeOnBackground()
                     },
                     onError = { throwable ->
-                        logErrorDraft(throwable)
+                        logError(TITLE_ERROR_SAVING_DRAFT, throwable)
                         0L
                     }
             ).await().let {
@@ -79,7 +80,7 @@ class AddEditProductEditService : AddEditProductBaseService() {
                 uploadProductImages(detailInputModel.imageUrlOrPathList, variantInputModel)
             }
         }, onError = { throwable ->
-            logErrorDraft(throwable)
+            logError(TITLE_ERROR_SAVING_DRAFT, throwable)
         })
     }
 

@@ -29,5 +29,7 @@ class AddEditProductPreviewConstants {
         const val BUNDLE_PRODUCT_ID = "productId"
         const val BUNDLE_IS_PRODUCT_DUPLICATE = "isProductDuplicate"
         const val DELAY_CLOSE_ACTIVITY = 300L
+        const val TITLE_ERROR_UPLOAD_IMAGE = "Error upload image"
+        const val TITLE_ERROR_SAVING_DRAFT = "Error saving draft"
     }
 }

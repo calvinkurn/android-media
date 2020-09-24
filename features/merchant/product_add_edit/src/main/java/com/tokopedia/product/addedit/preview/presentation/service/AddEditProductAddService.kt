@@ -17,6 +17,7 @@ import com.tokopedia.product.addedit.draft.mapper.AddEditProductMapper.mapProduc
 import com.tokopedia.product.addedit.preview.domain.usecase.ProductAddUseCase
 import com.tokopedia.product.addedit.preview.presentation.activity.AddEditProductPreviewActivity
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.TITLE_ERROR_SAVING_DRAFT
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.tracking.ProductAddShippingTracking
 import com.tokopedia.product.addedit.variant.presentation.model.VariantInputModel
@@ -68,7 +69,7 @@ open class AddEditProductAddService : AddEditProductBaseService() {
                         saveProductDraftUseCase.executeOnBackground()
                     },
                     onError = { throwable ->
-                        logErrorDraft(throwable)
+                        logError(TITLE_ERROR_SAVING_DRAFT, throwable)
                         0L
                     }
             ).await().let {
@@ -80,7 +81,7 @@ open class AddEditProductAddService : AddEditProductBaseService() {
                 uploadProductImages(detailInputModel.imageUrlOrPathList, variantInputModel)
             }
         }, onError = { throwable ->
-            logErrorDraft(throwable)
+            logError(TITLE_ERROR_SAVING_DRAFT, throwable)
         })
     }
 

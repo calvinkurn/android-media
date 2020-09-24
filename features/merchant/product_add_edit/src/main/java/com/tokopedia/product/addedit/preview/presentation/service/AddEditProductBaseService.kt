@@ -27,6 +27,7 @@ import com.tokopedia.product.addedit.preview.domain.mapper.AddProductInputMapper
 import com.tokopedia.product.addedit.preview.domain.mapper.EditProductInputMapper
 import com.tokopedia.product.addedit.preview.domain.usecase.ProductAddUseCase
 import com.tokopedia.product.addedit.preview.domain.usecase.ProductEditUseCase
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.TITLE_ERROR_UPLOAD_IMAGE
 import com.tokopedia.product.addedit.variant.presentation.model.PictureVariantInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.ProductVariantInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.VariantInputModel
@@ -34,10 +35,8 @@ import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import timber.log.Timber
 import java.io.File
-import java.lang.Exception
 import java.net.URLEncoder
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
@@ -123,7 +122,7 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
             }
         }, onError = { throwable ->
             setUploadProductDataError(throwable.localizedMessage ?: "")
-            logErrorUploadImage(throwable)
+            logError(TITLE_ERROR_UPLOAD_IMAGE, throwable)
         })
     }
 
@@ -151,23 +150,11 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
         Timber.w("P2#PRODUCT_UPLOAD#%s", errorMessage)
     }
 
-    private fun logErrorUploadImage(throwable: Throwable) {
+    protected fun logError(title: String, throwable: Throwable) {
         val message = throwable.message ?: ""
         val errorMessage = String.format(
-                "\"Error upload image.\",\"userId: %s\",\"userEmail: %s \",\"errorMessage: %s\"",
-                userSession.userId,
-                userSession.email,
-                message)
-        val exception = AddEditProductUploadException(errorMessage, throwable)
-
-        AddEditProductErrorHandler.logExceptionToCrashlytics(exception)
-        Timber.w("P2#PRODUCT_UPLOAD#%s", message)
-    }
-
-    protected fun logErrorDraft(throwable: Throwable) {
-        val message = throwable.message ?: ""
-        val errorMessage = String.format(
-                "\"Error saving draft.\",\"userId: %s\",\"userEmail: %s \",\"errorMessage: %s\"",
+                "\"%s.\",\"userId: %s\",\"userEmail: %s \",\"errorMessage: %s\"",
+                title,
                 userSession.userId,
                 userSession.email,
                 message)
