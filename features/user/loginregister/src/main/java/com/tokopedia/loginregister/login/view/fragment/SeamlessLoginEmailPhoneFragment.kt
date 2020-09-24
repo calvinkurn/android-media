@@ -94,7 +94,9 @@ class SeamlessLoginEmailPhoneFragment: LoginEmailPhoneFragment() {
                 arguments?.run {
                     intent.putExtras(this)
                 }
-                startActivityForResult(intent, REQUEST_SEAMLESS_LOGIN)
+                activity?.let {
+                    startActivityForResult(intent, REQUEST_SEAMLESS_LOGIN)
+                }
             }
         }else {
             RouteManager.route(context, ApplinkConst.LOGIN)
