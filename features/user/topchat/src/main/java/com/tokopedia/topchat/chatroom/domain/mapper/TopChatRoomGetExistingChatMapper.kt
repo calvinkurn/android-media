@@ -17,6 +17,7 @@ import com.tokopedia.topchat.chatroom.domain.pojo.ImageDualAnnouncementPojo
 import com.tokopedia.topchat.chatroom.domain.pojo.QuotationAttributes
 import com.tokopedia.topchat.chatroom.domain.pojo.TopChatVoucherPojo
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.attr.StickerAttributesResponse
+import com.tokopedia.topchat.chatroom.view.uimodel.BroadCastUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.HeaderDateUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.ProductCarouselUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.StickerUiModel
@@ -45,6 +46,16 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
                     val chatDateTime = chatItemPojoByDate.replies[replyIndex]
                     val nextItem = chatItemPojoByDate.replies.getOrNull(replyIndex + 1)
                     when {
+                        // Merge broadcast bubble
+                        chatDateTime.isBroadCast() && chatDateTime.isAlsoBroadcast(nextItem) -> {
+                            val broadcast = mergeBroadcast(
+                                    replyIndex,
+                                    chatItemPojoByDate.replies
+                            )
+                            val broadcastUiModel = createBroadCastUiModel(chatDateTime, broadcast.first)
+                            listChat.add(broadcastUiModel)
+                            replyIndex += broadcast.second
+                        }
                         // Merge product bubble
                         hasAttachment(chatDateTime) && chatDateTime.isAlsoProductAttachment(nextItem) -> {
                             val products = mergeProduct(
@@ -72,6 +83,33 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
             }
         }
         return listChat
+    }
+
+    private fun createBroadCastUiModel(chatDateTime: Reply, first: List<Visitable<*>>): BroadCastUiModel {
+        return BroadCastUiModel()
+    }
+
+    private fun mergeBroadcast(index: Int, replies: List<Reply>): Pair<List<Visitable<*>>, Int> {
+        val broadcast = mutableListOf<Visitable<*>>()
+        var idx = index
+        while (idx < replies.size) {
+            val reply = replies[idx]
+            val nextReply = replies.getOrNull(idx + 1)
+            if (reply.isProductAttachment() && reply.isAlsoProductAttachment(nextReply)) {
+                val products = mergeProduct(idx, replies, reply.isBroadCast())
+                val carouselProducts = createCarouselProduct(reply, products)
+                broadcast.add(carouselProducts)
+                idx += products.size
+            } else if (reply.isBroadCast()) {
+                val product = mapAttachment(reply)
+                broadcast.add(product)
+                idx++
+            } else {
+                break
+            }
+        }
+        val totalToSkip = idx - index
+        return Pair(broadcast, totalToSkip)
     }
 
     private fun createHeaderDate(chatItemPojo: ChatRepliesItem): Visitable<*> {
