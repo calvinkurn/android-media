@@ -15,13 +15,11 @@ import com.tokopedia.entertainment.R
 import com.tokopedia.entertainment.pdp.activity.EventPDPTicketActivity
 import com.tokopedia.entertainment.pdp.adapter.viewholder.PackageParentViewHolder
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
-import mock.PDPEventMockResponse
 import mock.PDPTicketEventMockResponse
-import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-class PDPTicketEventActivityTest{
+class PDPTicketEventActivityTest {
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
     private val gtmLogDBSource = GtmLogDBSource(context)
@@ -33,9 +31,9 @@ class PDPTicketEventActivityTest{
                     val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
                     val intent = Intent(targetContext, EventPDPTicketActivity::class.java).apply {
                         putExtra(EventPDPTicketActivity.EXTRA_URL_PDP, "doolive-ala-carte-booking-36116")
-                        putExtra(EventPDPTicketActivity.SELECTED_DATE,"1900534740")
-                        putExtra(EventPDPTicketActivity.START_DATE,"")
-                        putExtra(EventPDPTicketActivity.END_DATE,"")
+                        putExtra(EventPDPTicketActivity.SELECTED_DATE, "1900534740")
+                        putExtra(EventPDPTicketActivity.START_DATE, "")
+                        putExtra(EventPDPTicketActivity.END_DATE, "")
 
                     }
                     return intent
@@ -43,9 +41,10 @@ class PDPTicketEventActivityTest{
 
                 override fun beforeActivityLaunched() {
                     super.beforeActivityLaunched()
-                    setupGraphqlMockResponse(PDPTicketEventMockResponse())
                     gtmLogDBSource.deleteAll().subscribe()
+                    setupGraphqlMockResponse(PDPTicketEventMockResponse())
                 }
+
             }
 
 
@@ -59,13 +58,13 @@ class PDPTicketEventActivityTest{
         ViewMatchers.assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ENTERTAINMENT_EVENT_PDP_TICKET_VALIDATOR_QUERY), hasAllSuccess())
     }
 
-    fun click_package(){
+    fun click_package() {
         val rvInteraction = onView(withId(R.id.recycler_viewParent)).check(matches(isDisplayed()))
-        rvInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<PackageParentViewHolder>(0,click()))
+        rvInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<PackageParentViewHolder>(0, click()))
         Thread.sleep(3000)
     }
 
-    fun click_quantity(){
+    fun click_quantity() {
         val pilihInteraction = onView(withId(R.id.txtPilih_ticket))
         pilihInteraction.perform(click())
 
@@ -76,7 +75,7 @@ class PDPTicketEventActivityTest{
 
     }
 
-    fun click_beli(){
+    fun click_beli() {
         onView(withId(R.id.pilihTicketBtn)).perform(click())
         Thread.sleep(3000)
     }
