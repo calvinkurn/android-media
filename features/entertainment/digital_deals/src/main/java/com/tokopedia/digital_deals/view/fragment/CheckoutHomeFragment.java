@@ -270,11 +270,18 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
     }
 
     @Override
-    public void showPromoSuccessMessage(String text, String message, long discountAmount) {
-        tickerApplyPromo.setState(TickerPromoStackingCheckoutView.State.ACTIVE);
-        tickerApplyPromo.setTitle(text);
-        tickerApplyPromo.setDesc(message);
-        promoApplied = true;
+    public void showPromoSuccessMessage(String text, String message, long discountAmount, Boolean isCancel) {
+        if (isCancel) {
+            tickerApplyPromo.setState(TickerPromoStackingCheckoutView.State.EMPTY);
+            promoApplied = false;
+            tickerApplyPromo.setTitle("");
+            tickerApplyPromo.setDesc("");
+        } else  {
+            tickerApplyPromo.setState(TickerPromoStackingCheckoutView.State.ACTIVE);
+            tickerApplyPromo.setTitle(text);
+            tickerApplyPromo.setDesc(message);
+            promoApplied = true;
+        }
         if (discountAmount != 0) {
             clPromoAmount.setVisibility(View.VISIBLE);
             TextView view = getRootView().findViewById(com.tokopedia.digital_deals.R.id.tv_promo_discount);
@@ -339,14 +346,16 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
                     mPresenter.updatePromoCode(data.getExtras().getString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.VOUCHER_CODE));
                     showPromoSuccessMessage(data.getExtras().getString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.VOUCHER_CODE)
                             , data.getExtras().getString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.VOUCHER_MESSAGE)
-                            , data.getExtras().getLong(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.VOUCHER_DISCOUNT_AMOUNT));
+                            , data.getExtras().getLong(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.VOUCHER_DISCOUNT_AMOUNT)
+                            , data.getExtras().getBoolean(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.IS_CANCEL));
                     break;
                 case IRouterConstant.LoyaltyModule.ResultLoyaltyActivity.COUPON_RESULT_CODE:
                     couponCode = data.getExtras().getString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.COUPON_CODE);
                     mPresenter.updatePromoCode(data.getExtras().getString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.COUPON_CODE));
                     showPromoSuccessMessage(data.getExtras().getString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.COUPON_CODE)
                             , data.getExtras().getString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.COUPON_MESSAGE)
-                            , data.getExtras().getLong(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.COUPON_DISCOUNT_AMOUNT));
+                            , data.getExtras().getLong(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.COUPON_DISCOUNT_AMOUNT)
+                            , data.getExtras().getBoolean(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.IS_CANCEL));
                     break;
                 default:
                     break;
