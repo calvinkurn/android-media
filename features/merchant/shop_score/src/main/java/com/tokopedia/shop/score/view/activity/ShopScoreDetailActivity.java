@@ -3,7 +3,10 @@ package com.tokopedia.shop.score.view.activity;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
+import android.os.Bundle;
 
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -29,6 +32,11 @@ public class ShopScoreDetailActivity extends BaseSimpleActivity implements ShopS
     }
 
     @Override
+    protected int getToolbarResourceID() {
+        return R.id.toolbar;
+    }
+
+    @Override
     public String getScreenName() {
         return AppScreen.SCREEN_SELLER_SHOP_SCORE;
     }
@@ -51,6 +59,20 @@ public class ShopScoreDetailActivity extends BaseSimpleActivity implements ShopS
         }
         inflateFragment(fragment, false, ShopScoreDetailFragment.TAG);
         return null;
+    }
+
+    @Override
+    protected void setupStatusBar() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            getWindow().setStatusBarColor(ContextCompat.getColor(this, com.tokopedia.abstraction.R.color.tkpdabstraction_green_600));
+        }
+        getWindow().getDecorView().setSystemUiVisibility(0);
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        updateTitle(getString(R.string.shop_score_title));
     }
 
     private void inflateFragment(Fragment fragment, boolean isAddToBackStack, String tag) {
