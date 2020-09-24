@@ -130,7 +130,7 @@ class HomeVisitableFactoryImpl(
     override fun addDynamicChannelVisitable(addLoadingMore: Boolean): HomeVisitableFactory {
         homeData?.let {
             val data = dynamicChannelDataMapper?.mapToDynamicChannelDataModel(
-                    HomeChannelData(it.dynamicHomeChannel), false, addLoadingMore)
+                    HomeChannelData(it.dynamicHomeChannel), isCache, addLoadingMore)
             data?.let { it1 -> visitableList.addAll(it1) }
         }
         return this
