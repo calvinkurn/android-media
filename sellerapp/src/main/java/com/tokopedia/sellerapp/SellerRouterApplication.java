@@ -46,9 +46,6 @@ import com.tokopedia.phoneverification.PhoneVerificationRouter;
 import com.tokopedia.product.manage.feature.list.view.fragment.ProductManageSellerFragment;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
-import com.tokopedia.seller.shop.common.di.component.DaggerShopComponent;
-import com.tokopedia.seller.shop.common.di.component.ShopComponent;
-import com.tokopedia.seller.shop.common.di.module.ShopModule;
 import com.tokopedia.sellerapp.deeplink.DeepLinkActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkDelegate;
 import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
@@ -99,14 +96,11 @@ public abstract class SellerRouterApplication extends MainApplication
 
     protected RemoteConfig remoteConfig;
     private TopAdsComponent topAdsComponent;
-    private DaggerShopComponent.Builder daggerShopBuilder;
-    private ShopComponent shopComponent;
     private TetraDebugger tetraDebugger;
 
     @Override
     public void onCreate() {
         super.onCreate();
-        initializeDagger();
         initializeRemoteConfig();
         initResourceDownloadManager();
         initIris();
@@ -124,10 +118,6 @@ public abstract class SellerRouterApplication extends MainApplication
 
     private void initializeRemoteConfig() {
         remoteConfig = new FirebaseRemoteConfigImpl(this);
-    }
-
-    private void initializeDagger() {
-        daggerShopBuilder = DaggerShopComponent.builder().shopModule(new ShopModule());
     }
 
     private void initTetraDebugger() {

@@ -90,8 +90,6 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.seller.purchase.detail.activity.OrderHistoryActivity;
-import com.tokopedia.seller.shop.common.di.component.DaggerShopComponent;
-import com.tokopedia.seller.shop.common.di.component.ShopComponent;
 import com.tokopedia.tkpd.applink.ApplinkUnsupportedImpl;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.fcm.AppNotificationReceiver;
@@ -165,8 +163,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     private DaggerReactNativeComponent.Builder daggerReactNativeBuilder;
     private OmsComponent omsComponent;
-    private DaggerShopComponent.Builder daggerShopBuilder;
-    private ShopComponent shopComponent;
     private ReactNativeComponent reactNativeComponent;
     private TokopointComponent tokopointComponent;
 
