@@ -1584,18 +1584,27 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     }
 
     private fun trackAtcRecommendationItem(recommendationItem: RecommendationItem) {
-        val product = ECommerceAddRecommendation.Add.ActionField.Product(
-                name = recommendationItem.name,
-                id = recommendationItem.productId.toString(),
-                price = recommendationItem.price,
-                category = recommendationItem.categoryBreadcrumbs,
-                quantity = recommendationItem.quantity.toString(),
-                dimension45 = recommendationItem.cartId
+        val productId = recommendationItem.productId.toString()
+        val productName = recommendationItem.name
+        val productPrice = recommendationItem.price
+        val productCategory = recommendationItem.categoryBreadcrumbs
+        val qty = recommendationItem.quantity.toString()
+        val imageUrl = recommendationItem.imageUrl
+        val cartId = recommendationItem.cartId
+        val isTopAds = recommendationItem.isTopAds
+        val url = "${recommendationItem.clickUrl}&click_source=ATC_direct_click";
 
-        )
+        val product = ECommerceAddRecommendation.Add.ActionField.Product(
+                name = productName,
+                id = productId,
+                price = productPrice,
+                category = productCategory,
+                quantity = qty,
+                dimension45 = cartId)
         val arrayListProduct = arrayListOf<ECommerceAddRecommendation.Add.ActionField.Product>()
         arrayListProduct.add(product)
 
-        UohAnalytics.productAtcRecommendation(listProduct = arrayListProduct, isTopads = recommendationItem.isTopAds)
+        UohAnalytics.productAtcRecommendation(listProduct = arrayListProduct, isTopads = isTopAds)
+        if (isTopAds) activity?.let { TopAdsUrlHitter(it).hitClickUrl(UohListFragment::class.qualifiedName, url, productId, productName, imageUrl) }
     }
 }
