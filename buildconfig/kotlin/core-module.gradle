@@ -55,4 +55,9 @@ dependencies {
     }
     implementation rootProject.ext.miscDependencies.gson
     implementation rootProject.ext.miscDependencies.robust
+
+    testImplementation rootProject.ext.testDependencies.junit
+    androidTestImplementation(rootProject.ext.testDependencies.androidTestRunner) {
+        exclude module: 'support-annotations'
+    }
 }
