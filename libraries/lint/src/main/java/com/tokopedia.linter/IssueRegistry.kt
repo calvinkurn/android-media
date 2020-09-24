@@ -1,19 +1,26 @@
-
 package com.tokopedia.linter
 
 import com.android.tools.lint.client.api.IssueRegistry
 import com.android.tools.lint.detector.api.CURRENT_API
-import com.android.tools.lint.detector.api.Issue
-import com.tokopedia.linter.detectors.CoreResourcesDetector
-import com.tokopedia.linter.detectors.SetColourDetector
-import com.tokopedia.linter.detectors.TypographyDetector
+import com.tokopedia.linter.detectors.*
 
 class IssueRegistry : IssueRegistry() {
-    override val issues: List<Issue>
+    override val issues
         get() = listOf(
-                SetColourDetector.ISSUE,
+                BottomSheetUnifyDetector.ISSUE,
                 CoreResourcesDetector.ISSUE,
-                TypographyDetector.ISSUE
+                DatePickerUnifyDetector.ISSUE,
+                DialogUnifyDetector.ISSUE,
+                FloatingButtonUnifyDetector.ISSUE,
+                LoaderUnifyDetector.ISSUE,
+                SearchBarUnifyDetector.ISSUE,
+                SetColourDetector.ISSUE,
+                TabsUnifyDetector.ISSUE,
+                TabsUnifyDetector.TAB_LAYOUT_ISSUE,
+                ToasterDetector.ISSUE,
+                TypographyDetector.ISSUE,
+                UnifyButtonDetector.ISSUE,
+                UnifyImageButtonDetector.ISSUE
         )
 
     override val minApi: Int
