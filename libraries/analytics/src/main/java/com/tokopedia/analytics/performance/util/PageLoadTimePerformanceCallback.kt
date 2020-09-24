@@ -22,7 +22,6 @@ open class PageLoadTimePerformanceCallback(
     var isNetworkDone = false
     var isRenderDone = false
     var traceName = ""
-    var calcDurationDone = false
 
     override fun getPltPerformanceData(): PltPerformanceData {
         return PltPerformanceData(
@@ -52,10 +51,7 @@ open class PageLoadTimePerformanceCallback(
         if (!isNetworkDone) requestNetworkDuration = 0
 
         performanceMonitoring?.stopTrace()
-        if (!calcDurationDone) {
-            overallDuration = System.currentTimeMillis() - overallDuration
-            calcDurationDone = true
-        }
+        overallDuration = System.currentTimeMillis() - overallDuration
         stopMethodTracing(traceName);
     }
 

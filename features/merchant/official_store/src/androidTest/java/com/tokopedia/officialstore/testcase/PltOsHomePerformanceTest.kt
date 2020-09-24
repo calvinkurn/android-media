@@ -41,7 +41,7 @@ class PltOsHomePerformanceTest {
     fun testPageLoadTimePerformance() {
         waitForData()
         savePLTPerformanceResultData(TEST_CASE_PAGE_LOAD_TIME_PERFORMANCE)
-//        TokopediaGraphqlInstrumentationTestHelper.deleteAllDataInDb()
+        TokopediaGraphqlInstrumentationTestHelper.deleteAllDataInDb()
         activityRule.activity.finishAndRemoveTask()
     }
 
