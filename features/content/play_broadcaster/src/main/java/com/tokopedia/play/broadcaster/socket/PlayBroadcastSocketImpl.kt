@@ -14,7 +14,6 @@ import rx.subscriptions.CompositeSubscription
 
 /**
  * Created by mzennis on 24/05/20.
- *
  * https://tokopedia.atlassian.net/wiki/spaces/CN/pages/601065014/New+Chat+Room+Socket+Contract
  */
 class PlayBroadcastSocketImpl constructor(
