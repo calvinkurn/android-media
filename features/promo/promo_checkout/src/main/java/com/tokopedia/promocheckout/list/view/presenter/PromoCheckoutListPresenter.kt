@@ -82,7 +82,7 @@ class PromoCheckoutListPresenter(private val graphqlUseCase: GraphqlUseCase,
 
             override fun onNext(objects: GraphqlResponse) {
                 val lastSeenPromoData = objects.getData<PromoCheckoutLastSeenModel.Response>(PromoCheckoutLastSeenModel.Response::class.java)
-                view.renderListLastSeen(lastSeenPromoData.promoModels)
+                view.renderListLastSeen(lastSeenPromoData.promoModels, false)
             }
         })
     }
@@ -98,7 +98,7 @@ class PromoCheckoutListPresenter(private val graphqlUseCase: GraphqlUseCase,
                 val promoData = objects.getData<PromoChekoutDealsBannerModel.Response>(PromoChekoutDealsBannerModel.Response::class.java)
                 if (!promoData.response.banners.isNullOrEmpty()) view.changeTitle(resources.getString(R.string.promo_title_for_this_category))
                 val data = mapToLastSeen(promoData.response.banners)
-                view.renderListLastSeen(data)
+                view.renderListLastSeen(data, true)
             }
 
             override fun onCompleted() {
