@@ -1,6 +1,6 @@
 package com.tokopedia.flight.bookingV3.presentation.activity
 
-import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
@@ -72,14 +72,14 @@ class FlightBookingActivity : BaseFlightActivity(), HasComponent<FlightBookingCo
         private const val EXTRA_FLIGHT_ARRIVAL_TERM = "EXTRA_FLIGHT_ARRIVAL_TERM"
         private const val EXTRA_PRICE = "EXTRA_PRICE"
 
-        fun getCallingIntent(activity: Activity,
+        fun getCallingIntent(context: Context,
                              passDataModel: FlightSearchPassDataModel,
                              departureId: String,
                              departureTerm: String,
                              priceModel: FlightPriceModel,
                              returnId: String = "",
                              returnTerm: String = ""): Intent {
-            val intent = Intent(activity, FlightBookingActivity::class.java)
+            val intent = Intent(context, FlightBookingActivity::class.java)
             intent.putExtra(EXTRA_FLIGHT_DEPARTURE_ID, departureId)
             intent.putExtra(EXTRA_PASS_SEARCH_DATA, passDataModel)
             intent.putExtra(EXTRA_FLIGHT_ARRIVAL_ID, returnId)
