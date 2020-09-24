@@ -373,7 +373,7 @@ public class BranchWrapper implements WrapperInterface {
         String utmSource;
         String utmCampaign;
         String utmMedium;
-        String utmTerm;
+        String utmTerm = null;
         utmSource = referringParams.optString(LinkerConstants.UTM_SOURCE);
         if(!TextUtils.isEmpty(utmSource)){
             utmCampaign = referringParams.optString(LinkerConstants.UTM_CAMPAIGN);
