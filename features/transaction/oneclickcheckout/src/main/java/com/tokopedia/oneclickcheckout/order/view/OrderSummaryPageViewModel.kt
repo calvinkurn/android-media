@@ -1007,7 +1007,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                                 promos = shopPromos
                         )
                 )
-        )), promos = checkoutPromos, mode = if (orderTotal.value.isButtonChoosePayment) 1 else 0))
+        )), promos = checkoutPromos, mode = if (orderTotal.value.isButtonPay) 0 else 1))
         OccIdlingResource.increment()
         checkoutOccUseCase.execute(param, { checkoutOccData: CheckoutOccData ->
             if (checkoutOccData.status.equals(STATUS_OK, true)) {
