@@ -18,7 +18,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingStart="@dimen/dp_16"
-        android:paddingTop="@dimen/dp_16"
+        android:paddingTop="@dimen/dp_12"
         android:paddingEnd="@dimen/dp_16"
         android:visibility="gone"
         tools:visibility="visible">
@@ -128,7 +128,7 @@
             android:id="@+id/shop_info_container_1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_12"
             android:layout_marginEnd="@dimen/dp_12"
             android:gravity="center"
             android:orientation="horizontal"
