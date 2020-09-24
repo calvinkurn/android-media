@@ -107,6 +107,9 @@ class CarouselFeaturedShopViewHolder (
             itemView.featured_shop_product_location_name?.hide()
             itemView.featured_shop_product_total_count?.text = "($reviewCount)"
             setImageRating(rating)
+        } else {
+            itemView.featured_shop_product_reviews?.visibility = View.INVISIBLE
+            itemView.featured_shop_product_total_count?.visibility = View.INVISIBLE
         }
     }
 
