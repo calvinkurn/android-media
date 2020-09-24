@@ -102,7 +102,7 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
         else {
             bindThanksPageDataToUI(thanksPageData)
             observeViewModel()
-            thanksPageDataViewModel.getFeatureEngine()
+            thanksPageDataViewModel.getFeatureEngine(thanksPageData)
             addRecommendation()
         }
     }

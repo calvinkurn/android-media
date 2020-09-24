@@ -25,7 +25,7 @@ class FeatureListView @JvmOverloads constructor(
     private val APP_LINK_URL_FORMAT = "%s?url=%s"
 
     private val layout = R.layout.thank_feature_listing
-    lateinit var recyclerView: RecyclerView
+    private lateinit var recyclerView: RecyclerView
 
 
     val adapter: FeatureListingAdapter by lazy(LazyThreadSafetyMode.NONE) {
