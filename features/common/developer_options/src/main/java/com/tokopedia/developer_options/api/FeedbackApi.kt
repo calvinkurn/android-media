@@ -22,7 +22,7 @@ interface FeedbackApi {
     @GET("/api/v1/feedback/form")
     fun getCategories(): Observable<CategoriesResponse>
 
-    @POST("/api/v1/feedback/create/")
+    @POST("/api/v1/feedback/create")
     fun createFeedbackForm(@Body feedbackRequest: FeedbackFormRequest): Observable<FeedbackFormResponse>
 
     @Multipart
