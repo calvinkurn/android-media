@@ -48,7 +48,7 @@ data class ProductInfo(
         @SerializedName("stockMessage")
         @ColumnInfo(name = "stockMessage")
         @Expose
-        var stockMessage: String,
+        var stockMessage: String? = "",
 
         @SerializedName("buttonTxt")
         @ColumnInfo(name = "buttonTxt")

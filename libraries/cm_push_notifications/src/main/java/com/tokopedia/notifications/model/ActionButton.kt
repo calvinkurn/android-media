@@ -41,11 +41,6 @@ data class ActionButton(
         @Expose
         var type: String? = "",
 
-        @SerializedName(CMConstant.PayloadKeys.ICON)
-        @ColumnInfo(name = CMConstant.PayloadKeys.ICON)
-        @Expose
-        var icon: String? = "",
-
         @SerializedName(CMConstant.PayloadKeys.ADD_TO_CART)
         @ColumnInfo(name = CMConstant.PayloadKeys.ADD_TO_CART)
         @Expose
