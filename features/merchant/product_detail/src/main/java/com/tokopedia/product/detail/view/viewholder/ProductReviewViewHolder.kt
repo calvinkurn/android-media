@@ -2,13 +2,13 @@ package com.tokopedia.product.detail.view.viewholder
 
 import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.gallery.customview.RatingView
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMostHelpfulReviewDataModel
@@ -18,14 +18,6 @@ import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.util.ProductDetailUtil
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import kotlinx.android.synthetic.main.item_dynamic_review.view.*
-import kotlinx.android.synthetic.main.item_dynamic_review.view.image_review_list
-import kotlinx.android.synthetic.main.item_dynamic_review.view.rating_review_pdp
-import kotlinx.android.synthetic.main.item_dynamic_review.view.review_count
-import kotlinx.android.synthetic.main.item_dynamic_review.view.review_rating
-import kotlinx.android.synthetic.main.item_dynamic_review.view.txt_date_user_pdp
-import kotlinx.android.synthetic.main.item_dynamic_review.view.txt_desc_review_pdp
-import kotlinx.android.synthetic.main.item_dynamic_review.view.txt_review_title
-import kotlinx.android.synthetic.main.item_dynamic_review.view.txt_see_all_partial
 
 class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetailListener) :
         AbstractViewHolder<ProductMostHelpfulReviewDataModel>(view) {
@@ -40,6 +32,7 @@ class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetail
         element?.let {
             if (it.imageReviews == null && it.listOfReviews == null) {
                 showShimmering()
+                hideAllOtherElements()
                 return
             }
             hideShimmering()
@@ -58,7 +51,9 @@ class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetail
                 setReviewAuthor(reviewData)
                 setReviewVariant(review)
                 setReviewDescription(review)
+                return
             }
+            hideMostHelpfulElements()
         }
     }
 
@@ -96,7 +91,7 @@ class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetail
                 show()
             }
             review_rating.apply {
-                setCompoundDrawablesWithIntrinsicBounds(null, null, MethodChecker.getDrawable(context, R.drawable.ic_rating_gold), null)
+                setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable(context, R.drawable.ic_review_rating_star), null, null, null)
                 text = ratingScore.toString()
                 show()
             }
@@ -115,9 +110,9 @@ class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetail
     }
 
     private fun setReviewStars(reviewData: Review) {
-        view.apply {
-            ImageHandler.loadImageRounded2(context, rating_review_pdp, RatingView.getRatingDrawable(reviewData.productRating), 0f)
-            rating_review_pdp.show()
+        view.rating_review_pdp.apply {
+            setImageDrawable(MethodChecker.getDrawable(context, getRatingDrawable(reviewData.productRating)))
+            show()
         }
     }
 
@@ -160,4 +155,39 @@ class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetail
 
     private fun getComponentTrackData(data: ProductMostHelpfulReviewDataModel): ComponentTrackDataModel =
             ComponentTrackDataModel(data.type, data.name, adapterPosition + 1)
+
+    private fun getRatingDrawable(param: Int): Int {
+        return when (param) {
+            0 -> R.drawable.ic_rating_star_zero
+            1 -> R.drawable.ic_star_one
+            2 -> R.drawable.ic_rating_star_two
+            3 -> R.drawable.ic_gold_star_three
+            4 -> R.drawable.ic_gold_star_four
+            5 -> R.drawable.ic_gold_star_five
+            else -> com.tokopedia.gallery.R.drawable.ic_gold_star_none
+        }
+    }
+
+    private fun hideAllOtherElements() {
+        view.apply {
+            txt_review_title.hide()
+            txt_see_all_partial.hide()
+            review_rating.hide()
+            review_count.hide()
+            image_review_list.hide()
+            rating_review_pdp.hide()
+            txt_date_user_pdp.hide()
+            txt_variant_review_pdp.hide()
+            txt_desc_review_pdp.hide()
+        }
+    }
+
+    private fun hideMostHelpfulElements() {
+        view.apply {
+            rating_review_pdp.hide()
+            txt_desc_review_pdp.hide()
+            txt_variant_review_pdp.hide()
+            txt_date_user_pdp.hide()
+        }
+    }
 }
