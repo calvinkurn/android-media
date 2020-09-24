@@ -95,7 +95,7 @@ class ProductMiniSocialProofViewHolder(private val view: View, private val liste
                 view.isClickable = true
                 view.setOnClickListener { listener.onDiscussionClicked(componentTrackDataModel) }
                 firstSocialProofTxt?.run {
-                    text = view.context.getString(R.string.product_detail_discussion)
+                    text = view.context.getString(R.string.product_detail_discussion_label)
                 }
                 firstSocialProofValue?.run {
                     text = view.context.getString(R.string.bracket_formated, value.second.productThousandFormatted())
