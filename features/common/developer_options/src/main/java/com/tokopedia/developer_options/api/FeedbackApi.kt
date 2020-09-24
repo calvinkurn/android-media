@@ -19,15 +19,15 @@ interface FeedbackApi {
             "X-Atlassian-Token: no-check" )
     fun getImageResponse(@Url url: String, @Part file: MultipartBody.Part) : Observable<List<ImageResponse>>
 
-    @GET("/api/v1/feedback/form/")
+    @GET("/api/v1/feedback/form")
     fun getCategories(): Observable<CategoriesResponse>
 
     @POST("/api/v1/feedback/create/")
-    fun crateFeedbackForm(feedbackRequest: FeedbackFormRequest): Observable<FeedbackFormResponse>
+    fun createFeedbackForm(@Body feedbackRequest: FeedbackFormRequest): Observable<FeedbackFormResponse>
 
     @Multipart
     @POST
-    fun uploadAttachment(@Url url: String, key: String, @Part file: MultipartBody.Part): Observable<String>
+    fun uploadAttachment(@Url url: String, @Part("Key") key: String, @Part file: MultipartBody.Part): Observable<String>
 
     @POST
     fun commitData(@Url url: String): Observable<String>

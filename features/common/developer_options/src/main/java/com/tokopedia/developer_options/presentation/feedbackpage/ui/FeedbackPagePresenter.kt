@@ -41,7 +41,7 @@ class FeedbackPagePresenter(private val compositeSubscription: CompositeSubscrip
     override fun sendFeedbackForm(feedbackFormRequest: FeedbackFormRequest) {
         view.showLoadingDialog()
         compositeSubscription.add(
-                feedbackApi.crateFeedbackForm(feedbackFormRequest)
+                feedbackApi.createFeedbackForm(feedbackFormRequest)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(object : Subscriber<FeedbackFormResponse>() {
