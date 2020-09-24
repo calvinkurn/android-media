@@ -573,6 +573,12 @@ class TopChatViewStateImpl constructor(
         }
     }
 
+    override fun updateTemplateState() {
+        if (!templateRecyclerView.isVisible && templateAdapter.hasTemplateChat()) {
+            showTemplateChat()
+        }
+    }
+
     fun setTemplate(
             listTemplate: List<Visitable<Any>>?,
             isLastMessageBroadcast: Boolean = false,

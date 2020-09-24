@@ -695,8 +695,9 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
         }
     }
 
-    override fun removeBroadcastHandler() {
+    override fun onSendAndReceiveMessage() {
         adapter.removeBroadcastHandler()
+        getViewState().updateTemplateState()
     }
 
     private fun getFirstVisibleItemPosition(): Int? {
@@ -756,7 +757,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
             )
         } else {
             sendMessage()
-            removeBroadcastHandler()
+            onSendAndReceiveMessage()
         }
     }
 
@@ -833,7 +834,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
 
     private fun sendSticker(sticker: Sticker?) {
         if (sticker == null) return
-        removeBroadcastHandler()
+        onSendAndReceiveMessage()
         val startTime = SendableViewModel.generateStartTime()
         presenter.sendAttachmentsAndSticker(
                 messageId,

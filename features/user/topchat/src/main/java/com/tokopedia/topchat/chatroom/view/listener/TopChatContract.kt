@@ -72,7 +72,7 @@ interface TopChatContract {
 
         fun hideUnreadMessage()
 
-        fun removeBroadcastHandler()
+        fun onSendAndReceiveMessage()
     }
 
     interface Presenter : BaseChatContract.Presenter<View> {
