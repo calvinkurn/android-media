@@ -56,4 +56,5 @@ dependencies {
     implementation project(rootProject.ext.features.topAdsDashboard)
     implementation project(rootProject.ext.features.sellerorder)
     implementation project(rootProject.ext.features.editshipping)
+    implementation project(rootProject.ext.features.shopScore)
 }

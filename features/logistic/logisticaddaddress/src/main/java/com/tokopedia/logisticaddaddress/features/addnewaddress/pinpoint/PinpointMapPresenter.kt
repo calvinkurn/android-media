@@ -7,6 +7,7 @@ import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.locationmanager.DeviceLocation
 import com.tokopedia.locationmanager.LocationDetectorHelper
 import com.tokopedia.logisticaddaddress.R
+import com.tokopedia.logisticaddaddress.common.AddressConstants.CIRCUIT_BREAKER_ON_CODE
 import com.tokopedia.logisticaddaddress.di.addnewaddress.AddNewAddressScope
 import com.tokopedia.logisticaddaddress.domain.mapper.DistrictBoundaryMapper
 import com.tokopedia.logisticaddaddress.domain.usecase.DistrictBoundaryUseCase
@@ -42,7 +43,11 @@ class PinpointMapPresenter @Inject constructor(private val getDistrictUseCase: G
                 .execute(placeId)
                 .subscribe(object : Subscriber<GetDistrictDataUiModel>() {
                     override fun onNext(model: GetDistrictDataUiModel) {
-                        view.onSuccessPlaceGetDistrict(model)
+                        if (model.errorCode == CIRCUIT_BREAKER_ON_CODE) {
+                            view.goToAddNewAddressNegative()
+                        } else {
+                            view.onSuccessPlaceGetDistrict(model)
+                        }
                     }
 
                     override fun onCompleted() {
@@ -69,6 +74,8 @@ class PinpointMapPresenter @Inject constructor(private val getDistrictUseCase: G
                         {
                             if (it.messageError.isEmpty()) {
                                 view?.onSuccessAutofill(it.data)
+                            } else if (it.errorCode == CIRCUIT_BREAKER_ON_CODE){
+                                view?.goToAddNewAddressNegative()
                             } else {
                                 val msg = it.messageError[0]
                                 when {

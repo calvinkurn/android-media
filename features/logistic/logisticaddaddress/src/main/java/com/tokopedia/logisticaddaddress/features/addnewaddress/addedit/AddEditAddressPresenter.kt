@@ -92,7 +92,7 @@ class AddEditAddressPresenter
         autoCompleteUseCase.execute(query)
                 .subscribe(
                         { modelList ->
-                            getDistrict(modelList.first().placeId)
+                            getDistrict(modelList.data.first().placeId)
                         }, { t -> Timber.d(t) }, {})
     }
 
