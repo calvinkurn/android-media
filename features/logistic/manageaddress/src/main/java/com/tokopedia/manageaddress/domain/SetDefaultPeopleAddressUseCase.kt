@@ -1,6 +1,7 @@
 package com.tokopedia.manageaddress.domain
 
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.manageaddress.R
 import com.tokopedia.manageaddress.domain.response.SetDefaultPeopleAddressGqlResponse
 import com.tokopedia.manageaddress.util.ManageAddressConstant.DEFAULT_ERROR_MESSAGE
 import com.tokopedia.manageaddress.util.ManageAddressConstant.STATUS_OK
