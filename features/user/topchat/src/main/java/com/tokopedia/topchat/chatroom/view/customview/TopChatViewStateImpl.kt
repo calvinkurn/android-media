@@ -573,15 +573,30 @@ class TopChatViewStateImpl constructor(
         }
     }
 
-    fun setTemplate(listTemplate: List<Visitable<Any>>?) {
+    fun setTemplate(
+            listTemplate: List<Visitable<Any>>?,
+            isLastMessageBroadcast: Boolean = false,
+            amIBuyer: Boolean = true
+    ) {
+        val isLastMsgFromBroadcastAndIamBuyer = isLastMessageBroadcast && amIBuyer
         templateRecyclerView.visibility = View.GONE
         listTemplate?.let {
             templateAdapter.list = listTemplate
-            templateRecyclerView.showWithCondition(templateAdapter.hasTemplateChat())
-            if (attachmentPreviewContainer.isVisible) {
-                addBottomPaddingTemplateChat(8.toPx())
+            if (templateAdapter.hasTemplateChat() && !isLastMsgFromBroadcastAndIamBuyer) {
+                showTemplateChat()
+            } else {
+                hideTemplateChat()
             }
         }
+    }
+
+    private fun showTemplateChat() {
+        templateRecyclerView.show()
+        addBottomPaddingTemplateChat(8.toPx())
+    }
+
+    private fun hideTemplateChat() {
+        templateRecyclerView.hide()
     }
 
     fun addTemplateString(message: String) {
