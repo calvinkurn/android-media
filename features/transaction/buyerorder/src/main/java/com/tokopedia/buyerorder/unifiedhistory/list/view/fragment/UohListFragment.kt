@@ -1597,5 +1597,6 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         arrayListProduct.add(product)
 
         UohAnalytics.productAtcRecommendation(listProduct = arrayListProduct, isTopads = recommendationItem.isTopAds)
+        if (recommendationItem.isTopAds) activity?.let { TopAdsUrlHitter(it).hitClickUrl(UohListFragment::class.qualifiedName, recommendationItem.clickUrl, recommendationItem.productId.toString(), recommendationItem.name, recommendationItem.imageUrl) }
     }
 }
