@@ -25,7 +25,6 @@ import com.tokopedia.favorite.utils.TrackingConst
 import com.tokopedia.favorite.view.viewlistener.FavoriteClickListener
 import com.tokopedia.favorite.view.viewmodel.TopAdsShopItem
 import com.tokopedia.topads.sdk.utils.ImageLoader
-import com.tokopedia.topads.sdk.utils.ImpresionTask
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.track.TrackApp
 import java.util.*
@@ -40,6 +39,10 @@ class TopAdsShopAdapter(
 
     companion object {
         private const val className = "com.tokopedia.favorite.view.adapter.TopAdsShopAdapter"
+
+        fun mainContentDescription(position: Int): String {
+            return "top-ads-item-main-content-$position"
+        }
     }
 
     protected var anim: ScaleAnimation? = null
@@ -67,9 +70,20 @@ class TopAdsShopAdapter(
         val shopItem = data[position]
         holder.shopName.text = Html.fromHtml(shopItem.shopName)
         holder.shopLocation.text = Html.fromHtml(shopItem.shopLocation)
-        imageLoader?.loadImage(shopItem.shopImageUrl, shopItem.shopImageEcs, holder.shopIcon)
+        imageLoader?.loadImage(shopItem.shopImageEcs, null, holder.shopIcon)
+
+        shopItem.shopImageUrl?.let {
+            TopAdsUrlHitter(holder.itemView.context).hitImpressionUrl(
+                    className,
+                    shopItem.shopImageUrl,
+                    shopItem.shopId,
+                    shopItem.shopName,
+                    shopItem.shopImageUrl)
+        }
+
         setShopCover(holder, shopItem)
         setFavorite(holder, shopItem)
+        holder.mainContent.contentDescription = mainContentDescription(position)
         holder.mainContent.setOnClickListener(onShopClicked(shopItem))
         holder.favButton.setOnClickListener(
                 if (shopItem.isFav) null else onFavClicked(holder, shopItem)
@@ -102,7 +116,13 @@ class TopAdsShopAdapter(
                             if (coverUrl != null
                                     && coverUrl.contains(PATH_VIEW)
                                     && !isFirstResource) {
-                                ImpresionTask(className).execute(coverUrl)
+                                TopAdsUrlHitter(holder.itemView.context).hitImpressionUrl(
+                                        className,
+                                        coverUrl,
+                                        shopItem.shopId,
+                                        shopItem.shopName,
+                                        shopItem.shopImageUrl)
+//                                ImpresionTask(className).execute(coverUrl)
                             }
                             return false
                         }
