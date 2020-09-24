@@ -936,6 +936,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
         processImagePathToUpload(data)?.let { model ->
             remoteConfig?.getBoolean(RemoteConfigKey.TOPCHAT_COMPRESS).let {
                 if (it == null || it == false) {
+                    onSendAndReceiveMessage()
                     presenter.startUploadImages(model)
                 } else {
                     presenter.startCompressImages(model)
