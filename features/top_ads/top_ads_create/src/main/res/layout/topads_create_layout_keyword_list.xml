@@ -226,6 +226,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/btn_next"
         app:typographyType="heading_6"
+        app:typographyWeight="reguler"
         tools:text="@string/format_selected_keyword" />
 
     <include

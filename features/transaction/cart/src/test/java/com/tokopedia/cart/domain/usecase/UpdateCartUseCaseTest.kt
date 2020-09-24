@@ -8,7 +8,7 @@ import com.tokopedia.cart.data.model.response.updatecart.UpdateCartGqlResponse
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
-import com.tokopedia.cart.domain.model.cartlist.UpdateCartData
+import com.tokopedia.cart.domain.model.updatecart.UpdateCartData
 import com.tokopedia.usecase.RequestParams
 import io.mockk.every
 import io.mockk.mockk
@@ -55,11 +55,10 @@ object UpdateCartUseCaseTest : Spek({
         Scenario("failure with error messages") {
 
             val errorMessage = "Something went wrong"
-            val errorMessage2 = "Something went wrong2"
 
             val result = HashMap<Type, Any>()
             result[UpdateCartGqlResponse::class.java] = UpdateCartGqlResponse(
-                    UpdateCartDataResponse(data = Data(status = false), error = arrayListOf(errorMessage, errorMessage2), status = "ERROR"))
+                    UpdateCartDataResponse(data = Data(status = false, error = errorMessage), status = "ERROR"))
             val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
             Given("mock response") {

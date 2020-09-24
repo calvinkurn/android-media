@@ -60,7 +60,11 @@ fun <T> MutableList<T>.swap(index1: Int, index2: Int) {
 }
 
 fun <T> MutableList<T>.goToFirst(index: Int) {
-    val tmp = this[index]
-    this.removeAt(index)
-    this.add(0, tmp)
+    this.moveTo(index, 0)
+}
+
+fun <T> MutableList<T>.moveTo(fromPosition: Int, toPosition: Int) {
+    val tmp = this[fromPosition]
+    this.removeAt(fromPosition)
+    this.add(toPosition, tmp)
 }
