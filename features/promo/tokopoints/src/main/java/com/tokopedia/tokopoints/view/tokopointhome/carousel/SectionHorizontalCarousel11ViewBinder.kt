@@ -1,4 +1,4 @@
-package com.tokopedia.tokopoints.view.tokopointhome
+package com.tokopedia.tokopoints.view.tokopointhome.carousel
 
 import android.text.TextUtils
 import android.view.LayoutInflater
@@ -13,11 +13,10 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokopoints.R
-import com.tokopedia.tokopoints.view.adapter.CarouselItemDecoration
 import com.tokopedia.tokopoints.view.adapter.CarouselItemDecorationNew
-import com.tokopedia.tokopoints.view.adapter.NonCarouselItemDecoration
 import com.tokopedia.tokopoints.view.adapter.SectionCarouselAdapter
 import com.tokopedia.tokopoints.view.model.section.SectionContent
+import com.tokopedia.tokopoints.view.tokopointhome.SectionItemViewBinder
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil
 import com.tokopedia.tokopoints.view.util.CommonConstant
 import com.tokopedia.tokopoints.view.util.convertDpToPixel
@@ -25,7 +24,7 @@ import com.tokopedia.tokopoints.view.util.convertDpToPixel
 class SectionHorizontalCarousel11ViewBinder()
     : SectionItemViewBinder<SectionContent, SectionHorizontalCarousel11VH>(
         SectionContent::class.java) {
-    override fun createViewHolder(parent: ViewGroup): RecyclerView.ViewHolder {
+    override fun createViewHolder(parent: ViewGroup): SectionHorizontalCarousel11VH {
         return SectionHorizontalCarousel11VH(
                 LayoutInflater.from(parent.context).inflate(getSectionItemType(), parent, false))
     }

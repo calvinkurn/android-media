@@ -1,17 +1,18 @@
-package com.tokopedia.tokopoints.view.tokopointhome
+package com.tokopedia.tokopoints.view.tokopointhome.header
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.view.model.rewardtopsection.TokopediaRewardTopSection
+import com.tokopedia.tokopoints.view.tokopointhome.SectionItemViewBinder
+import com.tokopedia.tokopoints.view.tokopointhome.TokoPointsHomeFragmentNew
 import com.tokopedia.unifycomponents.NotificationUnify
 
 class TopSectionViewBinder(val block: TokopediaRewardTopSection?, val tokoPointsHomeFragmentNew: TokoPointsHomeFragmentNew,
                            val toolbarItemList: MutableList<NotificationUnify>)
     : SectionItemViewBinder<TokopediaRewardTopSection, TopSectionVH>(
         TokopediaRewardTopSection::class.java) {
-    override fun createViewHolder(parent: ViewGroup): RecyclerView.ViewHolder {
+    override fun createViewHolder(parent: ViewGroup): TopSectionVH {
         return TopSectionVH(
                 LayoutInflater.from(parent.context).inflate(getSectionItemType(), parent, false), tokoPointsHomeFragmentNew, toolbarItemList)
     }

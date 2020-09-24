@@ -1,4 +1,4 @@
-package com.tokopedia.tokopoints.view.tokopointhome
+package com.tokopedia.tokopoints.view.tokopointhome.ticker
 
 import android.view.View
 import android.widget.TextView

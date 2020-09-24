@@ -1,4 +1,4 @@
-package com.tokopedia.tokopoints.view.tokopointhome
+package com.tokopedia.tokopoints.view.tokopointhome.category
 
 import android.view.LayoutInflater
 import android.view.View
@@ -13,14 +13,14 @@ import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.view.adapter.NonCarouselItemDecoration
 import com.tokopedia.tokopoints.view.adapter.SectionCategoryAdapter
 import com.tokopedia.tokopoints.view.model.section.SectionContent
+import com.tokopedia.tokopoints.view.tokopointhome.SectionItemViewBinder
 import com.tokopedia.tokopoints.view.util.convertDpToPixel
-import kotlinx.android.synthetic.main.tp_layout_section_category_parent.view.*
 
 class SectionVerticalCategoryViewBinder()
     : SectionItemViewBinder<SectionContent, SectionVerticalCategoryVH>(
         SectionContent::class.java) {
 
-    override fun createViewHolder(parent: ViewGroup): RecyclerView.ViewHolder {
+    override fun createViewHolder(parent: ViewGroup): SectionVerticalCategoryVH {
         return SectionVerticalCategoryVH(
                 LayoutInflater.from(parent.context).inflate(getSectionItemType(), parent, false))
     }

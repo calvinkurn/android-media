@@ -7,23 +7,22 @@ import com.tokopedia.tokopoints.view.model.section.SectionContent
 import com.tokopedia.tokopoints.view.util.CommonConstant
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 
-class SectionAdapter(private val viewBinders: Map<String, SectionItemBinder>,
-                     val sectionList: ArrayList<Any>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class SectionAdapter(private val viewBinders: Map<String, SectionItemBinder>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
+    private val sectionList: ArrayList<Any> = ArrayList()
     private val viewTypeToBinders = viewBinders.mapKeys { it.value.getSectionItemType() }
 
     private fun getViewBinder(viewType: Int): SectionItemBinder = viewTypeToBinders.getValue(viewType)
 
     override fun getItemViewType(position: Int): Int {
-        return when {
-            position == 0 -> {
-                viewBinders.getValue(CommonConstant.SectionLayoutType.TOPHEADER).getSectionItemType()
-            }
-            (sectionList[position] as SectionContent).layoutType == CommonConstant.SectionLayoutType.BANNER -> {
-                viewBinders.getValue((sectionList[position] as SectionContent).layoutBannerAttr.bannerType).getSectionItemType()
-            }
-            else -> {
-                viewBinders.getValue((sectionList[position] as SectionContent).layoutType).getSectionItemType()
+        return if (position == 0) {
+            viewBinders.getValue(CommonConstant.SectionLayoutType.TOPHEADER).getSectionItemType()
+        } else {
+            val item = sectionList[position] as SectionContent
+            if (item.layoutType == CommonConstant.SectionLayoutType.BANNER) {
+                viewBinders.getValue(item.layoutBannerAttr.bannerType).getSectionItemType()
+            } else {
+                viewBinders.getValue(item.layoutType).getSectionItemType()
             }
         }
     }
@@ -36,17 +35,12 @@ class SectionAdapter(private val viewBinders: Map<String, SectionItemBinder>,
         return getViewBinder(getItemViewType(position)).bindViewHolder(sectionList.get(position), holder)
     }
 
-    override fun onViewRecycled(holder: RecyclerView.ViewHolder) {
-        getViewBinder(holder.itemViewType).onViewRecycled(holder)
-        super.onViewRecycled(holder)
-    }
-
-    override fun onViewDetachedFromWindow(holder: RecyclerView.ViewHolder) {
-        getViewBinder(holder.itemViewType).onViewDetachedFromWindow(holder)
-        super.onViewDetachedFromWindow(holder)
-    }
-
     override fun getItemCount(): Int {
         return sectionList.size
+    }
+
+    fun addItem(data: ArrayList<Any>) {
+        sectionList.addAll(data)
+        notifyDataSetChanged()
     }
 }

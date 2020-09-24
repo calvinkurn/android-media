@@ -6,15 +6,15 @@
     android:layout_height="wrap_content"
     android:layout_marginTop="@dimen/dp_8"
     android:background="@color/white">
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/text_title"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:lineSpacingExtra="6sp"
-        android:textColor="#f531353b"
-        android:textSize="@dimen/sp_13"
-        android:textStyle="bold"
+        android:textColor="@color/tp_loyalty_color"
+        app:typographyType="heading_4"
         android:layout_marginLeft="@dimen/dp_16"
+        app:typographyWeight="bold"
         android:visibility="gone"
         app:layout_constraintHeight_default="wrap"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -23,14 +23,14 @@
         app:layout_constraintWidth_default="wrap"
         tools:text="Huge News!" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:layout_marginRight="@dimen/dp_16"
         android:id="@+id/text_see_all"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:text="Lihat Semua"
         android:textColor="@color/medium_green"
-        android:textSize="16sp"
+        app:typographyType="heading_4"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_default="wrap"
@@ -38,15 +38,15 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintWidth_default="wrap" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:layout_marginLeft="@dimen/dp_16"
         android:id="@+id/text_sub_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_4"
         android:lineSpacingExtra="6sp"
-        android:textColor="#8f000000"
-        android:textSize="12sp"
+        android:textColor="@color/tp_subtitle_color_topads"
+        app:typographyType="body_3"
         android:visibility="gone"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintStart_toStartOf="parent"

@@ -1,15 +1,15 @@
-package com.tokopedia.tokopoints.view.tokopointhome
+package com.tokopedia.tokopoints.view.tokopointhome.banner
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.view.model.section.SectionContent
+import com.tokopedia.tokopoints.view.tokopointhome.SectionItemViewBinder
 
 class SectionVerticalBanner11ViewBinder  ()
     : SectionItemViewBinder<SectionContent, SectionVerticalBanner11VH>(
         SectionContent::class.java){
-    override fun createViewHolder(parent: ViewGroup): RecyclerView.ViewHolder {
+    override fun createViewHolder(parent: ViewGroup): SectionVerticalBanner11VH {
         return SectionVerticalBanner11VH(
                 LayoutInflater.from(parent.context).inflate(getSectionItemType(), parent, false))
     }

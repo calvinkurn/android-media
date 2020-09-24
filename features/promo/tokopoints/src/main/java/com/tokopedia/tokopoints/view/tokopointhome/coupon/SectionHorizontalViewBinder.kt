@@ -1,11 +1,10 @@
-package com.tokopedia.tokopoints.view.tokopointhome
+package com.tokopedia.tokopoints.view.tokopointhome.coupon
 
-import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.view.model.section.SectionContent
+import com.tokopedia.tokopoints.view.tokopointhome.SectionItemViewBinder
 
 class SectionHorizontalViewBinder()
     : SectionItemViewBinder<SectionContent, SectionHorizontalViewHolder>(
@@ -21,13 +20,5 @@ class SectionHorizontalViewBinder()
     }
 
     override fun getSectionItemType() : Int= R.layout.tp_layout_generic_carousal
-
- /*   // Saving the present instance of the recyclerview every time before the nested recyclerview is detached or the view get recycled
-    fun saveInstanceState(viewHolder: SectionHorizontalViewHolder) {
-        if (viewHolder.adapterPosition == RecyclerView.NO_POSITION) {
-            return
-        }
-        recyclerViewManagerState = viewHolder.getLayoutManagerState()
-    }*/
 
 }

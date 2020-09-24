@@ -238,7 +238,7 @@ public class CatalogListCarouselAdapter extends RecyclerView.Adapter<CatalogList
             item.put("creative", data.getTitle());
             item.put("promo_code", data.getBaseCode());
 
-            Map<String, Object> promotions = new HashMap<>();
+            HashMap<String, Object> promotions = new HashMap<>();
             promotions.put("promotions", Arrays.asList(item));
 
 
@@ -258,7 +258,7 @@ public class CatalogListCarouselAdapter extends RecyclerView.Adapter<CatalogList
         item.put("creative", data.getTitle());
         item.put("promo_code", data.getBaseCode());
 
-        Map<String, Object> promotions = new HashMap<>();
+        HashMap<String, Object> promotions = new HashMap<>();
         promotions.put("promotions", Arrays.asList(item));
 
 

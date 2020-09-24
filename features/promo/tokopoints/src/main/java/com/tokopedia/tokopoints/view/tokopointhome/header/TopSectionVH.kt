@@ -1,4 +1,4 @@
-package com.tokopedia.tokopoints.view.tokopointhome
+package com.tokopedia.tokopoints.view.tokopointhome.header
 
 import android.graphics.Color
 import android.graphics.PorterDuff

@@ -1,10 +1,9 @@
-package com.tokopedia.tokopoints.view.tokopointhome
+package com.tokopedia.tokopoints.view.tokopointhome.column
 
 import android.text.TextUtils
 import android.view.View
 import android.widget.TextView
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
@@ -15,8 +14,7 @@ import com.tokopedia.tokopoints.view.model.section.SectionContent
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil
 import com.tokopedia.tokopoints.view.util.CommonConstant
 
-class SectionVerticalColumn31VH(val view: View) : RecyclerView.ViewHolder(view) {
-
+class SectionVerticalColumn11VH(val view: View) : RecyclerView.ViewHolder(view) {
     fun bind(content: SectionContent) {
 
         if (content?.sectionTitle == null || content.layoutBannerAttr == null) {
@@ -41,12 +39,12 @@ class SectionVerticalColumn31VH(val view: View) : RecyclerView.ViewHolder(view) 
             view.findViewById<View>(R.id.text_sub_title).visibility = View.VISIBLE
             (view.findViewById<View>(R.id.text_sub_title) as TextView).text = content.sectionSubTitle
         }
-
         val rvCarousel: RecyclerView = view.findViewById(R.id.rv_column)
-        rvCarousel.layoutManager = GridLayoutManager(view.context, 3,GridLayoutManager.VERTICAL, false)
-        rvCarousel.adapter = SectionColumnAdapter(content.layoutBannerAttr.imageList, CommonConstant.BannerType.COLUMN_3_1_BY_1)
-    }
+        rvCarousel.layoutManager = GridLayoutManager(view.context, 2, GridLayoutManager.VERTICAL, false)
+        rvCarousel.setHasFixedSize(true)
+        rvCarousel.adapter = SectionColumnAdapter(content.layoutBannerAttr.imageList, CommonConstant.BannerType.COLUMN_2_3_BY_4)
 
+    }
 
     fun handledClick(appLink: String?, webLink: String?, action: String?, label: String?) {
         try {

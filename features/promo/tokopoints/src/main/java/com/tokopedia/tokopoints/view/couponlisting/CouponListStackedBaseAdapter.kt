@@ -139,12 +139,13 @@ class CouponListStackedBaseAdapter(private val mPresenter: CouponLisitingStacked
                 val promoView = HashMap<String, Map<String, List<Map<String, String?>>>>()
                 promoView["promoView"] = promotions
 
-                AnalyticsTrackerUtil.sendECommerceEvent(vh.value.context,
-                        AnalyticsTrackerUtil.EventKeys.EVENT_VIEW_PROMO,
-                        AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS_KUPON_SAYA,
-                        AnalyticsTrackerUtil.ActionKeys.VIEW_MY_COUPON,
-                        data.title, promoView)
-
+                data.title?.let {
+                    AnalyticsTrackerUtil.sendECommerceEvent(vh.value.context,
+                            AnalyticsTrackerUtil.EventKeys.EVENT_VIEW_PROMO,
+                            AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS_KUPON_SAYA,
+                            AnalyticsTrackerUtil.ActionKeys.VIEW_MY_COUPON,
+                            it, promoView)
+                }
                 vh.isVisited = true
             }
         }
@@ -165,11 +166,13 @@ class CouponListStackedBaseAdapter(private val mPresenter: CouponLisitingStacked
         val promoClick = HashMap<String, Map<String, List<Map<String, String?>>>>()
         promoClick["promoView"] = promotions
 
-        AnalyticsTrackerUtil.sendECommerceEvent(context,
-                AnalyticsTrackerUtil.EventKeys.EVENT_VIEW_PROMO,
-                AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS_KUPON_SAYA,
-                AnalyticsTrackerUtil.ActionKeys.CLICK_COUPON,
-                data.title, promoClick)
+        data.title?.let {
+            AnalyticsTrackerUtil.sendECommerceEvent(context,
+                    AnalyticsTrackerUtil.EventKeys.EVENT_VIEW_PROMO,
+                    AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS_KUPON_SAYA,
+                    AnalyticsTrackerUtil.ActionKeys.CLICK_COUPON,
+                    data.title, promoClick)
+        }
     }
 
     override fun getItemViewHolder(parent: ViewGroup, inflater: LayoutInflater, viewType: Int): BaseVH {

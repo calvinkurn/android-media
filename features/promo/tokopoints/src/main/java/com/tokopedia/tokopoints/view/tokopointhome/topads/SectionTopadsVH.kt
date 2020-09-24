@@ -1,4 +1,4 @@
-package com.tokopedia.tokopoints.view.tokopointhome
+package com.tokopedia.tokopoints.view.tokopointhome.topads
 
 import android.text.TextUtils
 import android.view.View
@@ -90,6 +90,7 @@ class SectionTopadsVH(val view: View) : RecyclerView.ViewHolder(view) {
                     })
                 } else {
                     hideView()
+
                 }
             }
 

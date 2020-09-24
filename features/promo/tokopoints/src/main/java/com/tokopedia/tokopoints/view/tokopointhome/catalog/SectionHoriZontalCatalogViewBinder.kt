@@ -1,15 +1,16 @@
-package com.tokopedia.tokopoints.view.tokopointhome
+package com.tokopedia.tokopoints.view.tokopointhome.catalog
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.view.model.section.SectionContent
+import com.tokopedia.tokopoints.view.tokopointhome.SectionItemViewBinder
+import com.tokopedia.tokopoints.view.tokopointhome.TokoPointsHomeViewModel
 
 class SectionHoriZontalCatalogViewBinder( val mPresenter: TokoPointsHomeViewModel)
     : SectionItemViewBinder<SectionContent, SectionHorizontalCatalogVH>(
         SectionContent::class.java) {
-    override fun createViewHolder(parent: ViewGroup): RecyclerView.ViewHolder {
+    override fun createViewHolder(parent: ViewGroup): SectionHorizontalCatalogVH {
         return SectionHorizontalCatalogVH(
                 LayoutInflater.from(parent.context).inflate(getSectionItemType(), parent, false), mPresenter)
     }

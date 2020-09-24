@@ -1,4 +1,4 @@
-package com.tokopedia.tokopoints.view.tokopointhome
+package com.tokopedia.tokopoints.view.tokopointhome.carousel
 
 import android.text.TextUtils
 import android.view.LayoutInflater
@@ -10,45 +10,41 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokopoints.R
-import com.tokopedia.tokopoints.view.adapter.CarouselItemDecoration
 import com.tokopedia.tokopoints.view.adapter.CarouselItemDecorationNew
-import com.tokopedia.tokopoints.view.adapter.NonCarouselItemDecoration
 import com.tokopedia.tokopoints.view.adapter.SectionCarouselAdapter
 import com.tokopedia.tokopoints.view.model.section.SectionContent
+import com.tokopedia.tokopoints.view.tokopointhome.SectionItemViewBinder
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil
 import com.tokopedia.tokopoints.view.util.CommonConstant
 import com.tokopedia.tokopoints.view.util.convertDpToPixel
 
-class SectionHorizontalCarousel21ViewBinder()
-    : SectionItemViewBinder<SectionContent, SectionHorizontalCarousel21VH>(
+class SectionVerticalCarousel31ViewBinder()
+    : SectionItemViewBinder<SectionContent, SectionHorizontalCarousel31VH>(
         SectionContent::class.java) {
-    override fun createViewHolder(parent: ViewGroup): RecyclerView.ViewHolder {
-        return SectionHorizontalCarousel21VH(
+    override fun createViewHolder(parent: ViewGroup): SectionHorizontalCarousel31VH {
+        return SectionHorizontalCarousel31VH(
                 LayoutInflater.from(parent.context).inflate(getSectionItemType(), parent, false))
     }
 
-    override fun bindViewHolder(model: SectionContent, viewHolder: SectionHorizontalCarousel21VH) {
+    override fun bindViewHolder(model: SectionContent, viewHolder: SectionHorizontalCarousel31VH) {
         viewHolder.bind(model)
     }
 
-    override fun getSectionItemType() = R.layout.tp_layout_carousel21
-
+    override fun getSectionItemType() = R.layout.tp_layout_carousel
 }
 
-class SectionHorizontalCarousel21VH(val view: View) : RecyclerView.ViewHolder(view) {
+class SectionHorizontalCarousel31VH(val view: View) : RecyclerView.ViewHolder(view) {
     fun bind(content: SectionContent) {
 
         if (content?.sectionTitle == null || content.layoutBannerAttr == null) {
-            view.hide()
+            view.visibility = View.GONE
             return
         }
         ImageHandler.loadBackgroundImage(view, content.backgroundImgURLMobile)
         if (!content.cta.isEmpty) {
-            val btnSeeAll = view.findViewById<TextView>(R.id.text_see_all_21)
-            btnSeeAll.show()
+            val btnSeeAll = view.findViewById<TextView>(R.id.text_see_all_carousel)
+            btnSeeAll.visibility = View.VISIBLE
             btnSeeAll.text = content.cta.text
             btnSeeAll.setOnClickListener { v: View? ->
                 handledClick(content.cta.appLink, content.cta.url,
@@ -56,20 +52,20 @@ class SectionHorizontalCarousel21VH(val view: View) : RecyclerView.ViewHolder(vi
             }
         }
         if (!TextUtils.isEmpty(content.sectionTitle)) {
-            view.findViewById<View>(R.id.text_title_21).show()
-            (view.findViewById<View>(R.id.text_title_21) as TextView).text = content.sectionTitle
+            view.findViewById<View>(R.id.text_title_carousel).visibility = View.VISIBLE
+            (view.findViewById<View>(R.id.text_title_carousel) as TextView).text = content.sectionTitle
         }
         if (!TextUtils.isEmpty(content.sectionSubTitle)) {
-            view.findViewById<View>(R.id.text_sub_title_21).show()
-            (view.findViewById<View>(R.id.text_sub_title_21) as TextView).text = content.sectionSubTitle
+            view.findViewById<View>(R.id.text_sub_title_carousel).visibility = View.VISIBLE
+            (view.findViewById<View>(R.id.text_sub_title_carousel) as TextView).text = content.sectionSubTitle
         }
 
-        val rvCarousel: RecyclerView = view.findViewById(R.id.rv_carousel_21)
+        val rvCarousel: RecyclerView = view.findViewById(R.id.rv_carousel_31)
         rvCarousel.layoutManager = LinearLayoutManager(view.context, LinearLayoutManager.HORIZONTAL, false)
         if (rvCarousel?.itemDecorationCount == 0) {
             rvCarousel?.addItemDecoration(CarouselItemDecorationNew(convertDpToPixel(10, rvCarousel.context),convertDpToPixel(20, rvCarousel.context)))
         }
-        rvCarousel.adapter = SectionCarouselAdapter(content.layoutBannerAttr.imageList, CommonConstant.BannerType.CAROUSEL_2_1)
+        rvCarousel.adapter = SectionCarouselAdapter(content.layoutBannerAttr.imageList, CommonConstant.BannerType.CAROUSEL_3_1)
 
     }
 

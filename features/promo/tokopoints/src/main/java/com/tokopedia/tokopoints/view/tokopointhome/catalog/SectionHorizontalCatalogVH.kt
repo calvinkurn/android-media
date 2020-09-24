@@ -1,4 +1,4 @@
-package com.tokopedia.tokopoints.view.tokopointhome
+package com.tokopedia.tokopoints.view.tokopointhome.catalog
 
 import android.text.TextUtils
 import android.view.View
@@ -12,6 +12,7 @@ import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.view.adapter.CatalogListCarouselAdapter
 import com.tokopedia.tokopoints.view.adapter.NonCarouselItemDecoration
 import com.tokopedia.tokopoints.view.model.section.SectionContent
+import com.tokopedia.tokopoints.view.tokopointhome.TokoPointsHomeViewModel
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil
 import com.tokopedia.tokopoints.view.util.convertDpToPixel
 import com.tokopedia.unifycomponents.TimerUnify
@@ -52,7 +53,14 @@ class SectionHorizontalCatalogVH(val view: View, val mPresenter: TokoPointsHomeV
             view.findViewById<View>(R.id.text_sub_title_column).visibility = View.VISIBLE
             (view.findViewById<View>(R.id.text_sub_title_column) as TextView).text = content.sectionSubTitle
         }
+
+        val viewPool = RecyclerView.RecycledViewPool()
+
         val rvCarousel: RecyclerView = view.findViewById(R.id.rv_column)
+        rvCarousel?.isDrawingCacheEnabled = true
+        rvCarousel?.drawingCacheQuality = View.DRAWING_CACHE_QUALITY_HIGH
+        rvCarousel.setItemViewCacheSize(20)
+        rvCarousel?.setRecycledViewPool(viewPool)
         rvCarousel.layoutManager = LinearLayoutManager(view.context, LinearLayoutManager.HORIZONTAL, false)
         if (rvCarousel.itemDecorationCount == 0) {
             rvCarousel.addItemDecoration(NonCarouselItemDecoration(convertDpToPixel(16, rvCarousel.context)))

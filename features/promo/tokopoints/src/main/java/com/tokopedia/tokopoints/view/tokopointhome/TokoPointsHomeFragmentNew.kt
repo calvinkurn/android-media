@@ -41,6 +41,22 @@ import com.tokopedia.tokopoints.view.model.rewardintro.TokopediaRewardIntroPage
 import com.tokopedia.tokopoints.view.model.rewardtopsection.DynamicActionListItem
 import com.tokopedia.tokopoints.view.model.rewardtopsection.TokopediaRewardTopSection
 import com.tokopedia.tokopoints.view.model.section.SectionContent
+import com.tokopedia.tokopoints.view.tokopointhome.banner.SectionVerticalBanner11ViewBinder
+import com.tokopedia.tokopoints.view.tokopointhome.banner.SectionVerticalBanner21ViewBinder
+import com.tokopedia.tokopoints.view.tokopointhome.banner.SectionVerticalBanner31ViewBinder
+import com.tokopedia.tokopoints.view.tokopointhome.carousel.SectionHorizontalCarousel21ViewBinder
+import com.tokopedia.tokopoints.view.tokopointhome.carousel.SectionVerticalCarousel31ViewBinder
+import com.tokopedia.tokopoints.view.tokopointhome.catalog.SectionHoriZontalCatalogViewBinder
+import com.tokopedia.tokopoints.view.tokopointhome.category.SectionVerticalCategoryViewBinder
+import com.tokopedia.tokopoints.view.tokopointhome.column.SectionVerticalColumn211ViewBinder
+import com.tokopedia.tokopoints.view.tokopointhome.column.SectionVerticalColumn234ViewBinder
+import com.tokopedia.tokopoints.view.tokopointhome.column.SectionVerticalColumn311ViewBinder
+import com.tokopedia.tokopoints.view.tokopointhome.carousel.SectionHorizontalCarousel11ViewBinder
+import com.tokopedia.tokopoints.view.tokopointhome.coupon.SectionHorizontalViewBinder
+import com.tokopedia.tokopoints.view.tokopointhome.header.TopSectionVH
+import com.tokopedia.tokopoints.view.tokopointhome.header.TopSectionViewBinder
+import com.tokopedia.tokopoints.view.tokopointhome.ticker.SectionTickerViewBinder
+import com.tokopedia.tokopoints.view.tokopointhome.topads.SectionTopadsViewBinder
 import com.tokopedia.tokopoints.view.util.*
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.NotificationUnify
@@ -55,14 +71,7 @@ typealias SectionItemBinder = SectionItemViewBinder<Any, RecyclerView.ViewHolder
  * */
 class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.View, View.OnClickListener, TokopointPerformanceMonitoringListener, TopSectionVH.CardRuntimeHeightListener {
     private var mContainerMain: ViewFlipper? = null
-    private var mTextMembershipValue: TextView? = null
-    private var mTargetText: TextView? = null
-    private var mTextPointsBottom: TextView? = null
-    private var mTextMembershipLabel: TextView? = null
-    private var mImgEgg: ImageView? = null
-    private var mImgBackground: ImageView? = null
     private var mPagerPromos: RecyclerView? = null
-    private var mRvDynamicLinks: RecyclerView? = null
 
     @Inject
     lateinit var viewFactory: ViewModelFactory
@@ -74,35 +83,19 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
     private var statusBarBgView: View? = null
     private var tokoPointToolbar: TokoPointToolbar? = null
     private var serverErrorView: ServerErrorView? = null
-    private var rewardsPointLayout: CardUnify? = null
-    private var ivPointStack: AppCompatImageView? = null
-    private var dynamicAction: DynamicItemActionView? = null
     lateinit var appBarHeader: AppBarLayout
     private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
     private val dynamicItem = "dynamicItem"
     private val toolbarItemList = mutableListOf<NotificationUnify>()
     private var adapter: SectionAdapter? = null
-    val viewBinders = mutableMapOf<String, SectionItemBinder>()
-    val sectionList: ArrayList<Any> = ArrayList()
+    private val viewBinders = mutableMapOf<String, SectionItemBinder>()
+    private val sectionList: ArrayList<Any> = ArrayList()
     lateinit var sectionListViewBinder: SectionHorizontalViewBinder
 
     override fun onCreate(savedInstanceState: Bundle?) {
         startPerformanceMonitoring()
         super.onCreate(savedInstanceState)
-/*
-        sectionListViewBinder = SectionHorizontalViewBinder(savedInstanceState?.getParcelable(
-                BUNDLE_KEY_LAYOUT_HORIZONTAL_LIST_STATE))*/
     }
-
-/*    override fun onSaveInstanceState(outState: Bundle) {
-        if (::sectionListViewBinder.isInitialized) {
-            outState.putParcelable(
-                    BUNDLE_KEY_LAYOUT_HORIZONTAL_LIST_STATE,
-                    sectionListViewBinder.recyclerViewManagerState
-            )
-        }
-        super.onSaveInstanceState(outState)
-    }*/
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.tp_home_layout_container, container, false)
@@ -205,7 +198,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
             tokoPointToolbar?.hideToolbarIcon()
     }
 
-    private fun addRewardIntroObserver() = mPresenter.rewardIntroData.observe(this, Observer {
+    private fun addRewardIntroObserver() = mPresenter.rewardIntroData.observe(viewLifecycleOwner, Observer {
         it?.let {
             when (it) {
                 is Success -> {
@@ -215,7 +208,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         }
     })
 
-    private fun addTokopointDetailObserver() = mPresenter.tokopointDetailLiveData.observe(this, androidx.lifecycle.Observer {
+    private fun addTokopointDetailObserver() = mPresenter.tokopointDetailLiveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
         it?.let {
             when (it) {
                 is Loading -> showLoading()
@@ -234,14 +227,13 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         }
     })
 
-    private fun addRedeemCouponObserver() = mPresenter.onRedeemCouponLiveData.observe(this, androidx.lifecycle.Observer {
+    private fun addRedeemCouponObserver() = mPresenter.onRedeemCouponLiveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
         it?.let { RouteManager.route(context, it) }
     })
 
     override fun onSuccessResponse(data: TokopediaRewardTopSection?, sections: List<SectionContent>) {
         mContainerMain?.displayedChild = CONTAINER_DATA
         addDynamicToolbar(data?.dynamicActionList)
-        // renderToolbarWithHeader(data)
         renderExploreSectionTab(sections, data)
     }
 
@@ -255,22 +247,11 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
     private fun initViews(view: View) {
         coordinatorLayout = view.findViewById(R.id.container)
         mContainerMain = view.findViewById(R.id.container_main)
-        mTextMembershipValue = view.findViewById(R.id.text_membership_value)
-        mTargetText = view.findViewById(R.id.tv_targetText)
-        mTextMembershipLabel = view.findViewById(R.id.text_membership_label)
-        mImgEgg = view.findViewById(R.id.img_egg)
         mPagerPromos = view.findViewById(R.id.view_pager_promos)
-        //  mPagerPromos?.disableScroll(true)
-        mTextPointsBottom = view.findViewById(R.id.text_my_points_value_bottom)
-        mImgBackground = view.findViewById(R.id.img_bg_header)
         appBarHeader = view.findViewById(R.id.app_bar)
         statusBarBgView = view.findViewById(R.id.status_bar_bg)
         tokoPointToolbar = view.findViewById(R.id.toolbar_tokopoint)
         serverErrorView = view.findViewById(R.id.server_error_view)
-        rewardsPointLayout = view.findViewById(R.id.card_point)
-        ivPointStack = view.findViewById(R.id.img_points_stack)
-        dynamicAction = view.findViewById(R.id.dynamic_widget)
-        // cardTierInfo = view.findViewById(R.id.container_target)
 
         setStatusBarViewHeight()
     }
@@ -341,7 +322,6 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
 
             for (sectionContent in sections) {
                 if (sectionContent.layoutCouponAttr != null && sectionContent.layoutCouponAttr.couponList != null && !sectionContent.layoutCouponAttr.couponList.isEmpty()) {
-
                     sectionListViewBinder = SectionHorizontalViewBinder()
                     @Suppress("UNCHECKED_CAST")
                     viewBinders.put(
@@ -386,10 +366,6 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
                             sectionTopAdsViewBinder as SectionItemBinder)
                     sectionList.add(sectionContent)
 
-                }
-                if (sectionContent.layoutBannerAttr == null
-                        || sectionContent.layoutBannerAttr.bannerType == null) {
-                    continue
                 }
                 when (sectionContent.layoutBannerAttr.bannerType) {
                     CommonConstant.BannerType.BANNER_2_1 -> {
@@ -476,11 +452,16 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
                 }
             }
 
-            adapter = SectionAdapter(viewBinders, sectionList)
 
+            adapter = SectionAdapter(viewBinders)
+            adapter?.addItem(sectionList)
+            adapter?.setHasStableIds(true)
             mPagerPromos?.apply {
                 layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.VERTICAL, false)
             }
+            mPagerPromos?.setItemViewCacheSize(20)
+            mPagerPromos?.isDrawingCacheEnabled = true
+            mPagerPromos?.drawingCacheQuality = View.DRAWING_CACHE_QUALITY_HIGH;
             if (mPagerPromos?.adapter == null) {
                 mPagerPromos?.adapter = adapter
             }
@@ -640,7 +621,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
     }
 
     private fun setOnRecyclerViewLayoutReady() {
-        mRvDynamicLinks?.viewTreeObserver
+        mPagerPromos?.viewTreeObserver
                 ?.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
                     override fun onGlobalLayout() {
                         if (pageLoadTimePerformanceMonitoring != null) {
@@ -648,7 +629,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
                             stopPerformanceMonitoring()
                         }
                         pageLoadTimePerformanceMonitoring = null
-                        mRvDynamicLinks?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
+                        mPagerPromos?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
                     }
                 })
     }

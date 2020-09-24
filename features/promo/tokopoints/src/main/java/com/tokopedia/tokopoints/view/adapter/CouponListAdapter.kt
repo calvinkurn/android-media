@@ -19,8 +19,8 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.view.coupondetail.CouponDetailActivity.Companion.getCouponDetail
 import com.tokopedia.tokopoints.view.model.CouponValueEntity
+import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil
 import com.tokopedia.tokopoints.view.util.CommonConstant
-import com.tokopedia.tokopoints.view.util.convertDpToPixel
 import java.util.*
 
 class CouponListAdapter(private val mItems: MutableList<CouponValueEntity>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -30,8 +30,12 @@ class CouponListAdapter(private val mItems: MutableList<CouponValueEntity>) : Re
     inner class HeaderViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         init {
             itemView.setOnClickListener { v: View ->
-                // Do whatever you want on clicking the item
                 RouteManager.route(v.context, ApplinkConstInternalPromo.TOKOPOINTS_COUPON)
+                AnalyticsTrackerUtil.sendEvent(itemView.context,
+                        AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
+                        AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
+                        AnalyticsTrackerUtil.ActionKeys.CLICK_SEE_ALL_COUPON, ""
+                )
             }
         }
     }
@@ -82,14 +86,14 @@ class CouponListAdapter(private val mItems: MutableList<CouponValueEntity>) : Re
 
     override fun onBindViewHolder(pHolder: RecyclerView.ViewHolder, position: Int) {
 
-    /*    val params = pHolder.itemView.getLayoutParams() as ViewGroup.MarginLayoutParams
-        if (position == 0) {
-            params.setMargins(pHolder.itemView.context.resources.getDimensionPixelSize(R.dimen.tp_margin_normal), 0, 0, 0)
-        } else if (position == mItems.size + 1) {
-            params.setMargins(0, 0, pHolder.itemView.context.resources.getDimensionPixelSize(R.dimen.tp_margin_normal), 0)
-        } else {
-            params.setMargins(pHolder.itemView.context.resources.getDimensionPixelSize(R.dimen.tp_margin_normal), 0, 0, 0)
-        }*/
+        /*    val params = pHolder.itemView.getLayoutParams() as ViewGroup.MarginLayoutParams
+            if (position == 0) {
+                params.setMargins(pHolder.itemView.context.resources.getDimensionPixelSize(R.dimen.tp_margin_normal), 0, 0, 0)
+            } else if (position == mItems.size + 1) {
+                params.setMargins(0, 0, pHolder.itemView.context.resources.getDimensionPixelSize(R.dimen.tp_margin_normal), 0)
+            } else {
+                params.setMargins(pHolder.itemView.context.resources.getDimensionPixelSize(R.dimen.tp_margin_normal), 0, 0, 0)
+            }*/
 
         if (position > 0) {
             val item = mItems!![position - 1]

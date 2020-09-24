@@ -1,4 +1,4 @@
-package com.tokopedia.tokopoints.view.tokopointhome
+package com.tokopedia.tokopoints.view.tokopointhome.banner
 
 import android.text.TextUtils
 import android.view.View
@@ -15,7 +15,7 @@ import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil
 import com.tokopedia.tokopoints.view.util.CommonConstant
 import java.util.HashMap
 
-class SectionVerticalBanner31VH(val view: View) : RecyclerView.ViewHolder(view) {
+class SectionVerticalBanner21VH(val view: View) : RecyclerView.ViewHolder(view) {
     fun bind(content: SectionContent) {
         if (content.sectionTitle == null || content.layoutBannerAttr == null) {
             view.visibility = View.GONE

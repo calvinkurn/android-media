@@ -7,7 +7,8 @@
     android:background="@color/white"
     android:paddingTop="@dimen/dp_16"
     android:paddingBottom="@dimen/dp_16">
-    <TextView
+
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/text_title_carousel"
         android:layout_width="@dimen/dp_160"
         android:layout_height="wrap_content"
@@ -15,9 +16,9 @@
         android:ellipsize="end"
         android:lineSpacingExtra="6sp"
         android:maxLines="2"
-        android:textColor="#f531353b"
-        android:textSize="@dimen/sp_16"
-        android:textStyle="bold"
+        android:textColor="@color/tp_loyalty_color"
+        app:typographyType="heading_4"
+        app:typographyWeight="bold"
         android:visibility="gone"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -41,15 +42,15 @@
         app:unify_timer_text_color="#FF5C84"
         tools:visibility="visible" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/text_see_all_carousel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/dp_14"
         android:layout_marginRight="@dimen/dp_14"
         android:textColor="@color/medium_green"
-        android:textSize="@dimen/sp_13"
-        android:textStyle="bold"
+        app:typographyType="heading_5"
+        app:typographyWeight="bold"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -57,14 +58,14 @@
         tools:text="Lihat Semua"
         tools:visibility="visible" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/text_sub_title_carousel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_4"
-        android:lineSpacingExtra="6sp"
-        android:textColor="#8f000000"
-        android:textSize="12sp"
+        android:lineSpacingExtra="@dimen/sp_6"
+        android:textColor="@color/tp_subtitle_color_topads"
+        app:typographyType="heading_6"
         app:layout_constraintLeft_toLeftOf="@+id/text_title_carousel"
         app:layout_constraintStart_toStartOf="@+id/text_title_carousel"
         app:layout_constraintTop_toBottomOf="@+id/text_title_carousel"
