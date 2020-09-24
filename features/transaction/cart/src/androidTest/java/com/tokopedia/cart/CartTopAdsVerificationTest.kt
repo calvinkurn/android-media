@@ -94,8 +94,8 @@ class CartTopAdsVerificationTest {
         }
     }
 
-    private fun scrollCartRecyclerViewToPosition(buyerRecyclerView: RecyclerView, position: Int) {
-        val layoutManager = buyerRecyclerView.layoutManager as GridLayoutManager
+    private fun scrollCartRecyclerViewToPosition(cartRecyclerView: RecyclerView, position: Int) {
+        val layoutManager = cartRecyclerView.layoutManager as GridLayoutManager
         activityRule.runOnUiThread { layoutManager.scrollToPositionWithOffset(position, 0) }
     }
 
