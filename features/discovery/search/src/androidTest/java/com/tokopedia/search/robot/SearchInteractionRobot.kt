@@ -16,6 +16,7 @@ import com.tokopedia.search.getProductListAdapter
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel
 import com.tokopedia.search.result.presentation.view.activity.SearchActivity
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.ProductItemViewHolder
+import com.tokopedia.test.application.environment.interceptor.size.GqlNetworkAnalyzerInterceptor
 
 internal class SearchInteractionRobot(
         private val idlingResources: List<IdlingResource?> = listOf(),
@@ -80,7 +81,8 @@ internal class SearchInteractionRobot(
                     searchActivity,
                     TEST_CASE_PAGE_LOAD_TIME_SEARCH_PERFORMANCE,
                     it,
-                    dataSource
+                    dataSource,
+                    GqlNetworkAnalyzerInterceptor.getNetworkData()
             )
         }
     }

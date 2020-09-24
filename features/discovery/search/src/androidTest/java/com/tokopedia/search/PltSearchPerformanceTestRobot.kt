@@ -23,6 +23,7 @@ class PltSearchPerformanceTestRobot {
         prepare {
             usingRule(activityRule)
             mockResponseWithCheck()
+            recordResponseSize()
         } search {
             withKeyword("samsung")
         } interact {

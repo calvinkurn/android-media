@@ -12,6 +12,7 @@ import com.tokopedia.test.application.util.InstrumentationAuthHelper.loginInstru
 import com.tokopedia.test.application.util.InstrumentationMockHelper.getRawString
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import com.tokopedia.test.application.util.setupGraphqlMockResponseWithCheck
+import com.tokopedia.test.application.util.setupTotalSizeInterceptor
 
 internal class PrepareSearchRobot {
 
@@ -32,6 +33,10 @@ internal class PrepareSearchRobot {
         setupGraphqlMockResponseWithCheck {
             addMockResponse("SearchProduct", getRawString(context, R.raw.search_product_common_response), FIND_BY_CONTAINS)
         }
+    }
+
+    fun recordResponseSize() {
+        setupTotalSizeInterceptor(listOf("SearchProduct"))
     }
 
     fun deleteAllTrackingRecord() {
