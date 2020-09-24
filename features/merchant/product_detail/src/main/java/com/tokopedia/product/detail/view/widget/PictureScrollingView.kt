@@ -94,7 +94,6 @@ class PictureScrollingView @JvmOverloads constructor(
 
     private fun resetViewPagerToFirstPosition(countIndicator: Int) {
         imageSliderPageControl?.setIndicator(countIndicator)
-        imageSliderPageControl?.setCurrentIndicator(0)
         pdp_view_pager.setCurrentItem(0, false)
     }
 
