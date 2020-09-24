@@ -10,10 +10,10 @@ import com.tokopedia.play.broadcaster.data.model.ProductData
 import com.tokopedia.play.broadcaster.data.model.SerializableHydraSetupData
 import com.tokopedia.play.broadcaster.domain.model.*
 import com.tokopedia.play.broadcaster.domain.usecase.*
-import com.tokopedia.play.broadcaster.pusher.apsara.ApsaraLivePusherErrorStatus
 import com.tokopedia.play.broadcaster.pusher.PlayPusher
 import com.tokopedia.play.broadcaster.pusher.PlayPusherInfoListener
 import com.tokopedia.play.broadcaster.pusher.PlayPusherTimerListener
+import com.tokopedia.play.broadcaster.pusher.apsara.ApsaraLivePusherErrorStatus
 import com.tokopedia.play.broadcaster.socket.PlayBroadcastSocket
 import com.tokopedia.play.broadcaster.socket.PlaySocketInfoListener
 import com.tokopedia.play.broadcaster.socket.PlaySocketType
@@ -205,18 +205,16 @@ class PlayBroadcastViewModel @Inject constructor(
     }
 
     private fun updateChannelStatus(status: PlayChannelStatus) {
-        scope.launch {
-            withContext(dispatcher.io) {
-                updateChannelUseCase.apply {
-                    setQueryParams(
-                            UpdateChannelUseCase.createUpdateStatusRequest(
-                                    channelId = channelId,
-                                    authorId = userSession.shopId,
-                                    status = status
-                            )
-                    )
-                }.executeOnBackground()
-            }
+        scope.launch(dispatcher.io) {
+            updateChannelUseCase.apply {
+                setQueryParams(
+                        UpdateChannelUseCase.createUpdateStatusRequest(
+                                channelId = channelId,
+                                authorId = userSession.shopId,
+                                status = status
+                        )
+                )
+            }.executeOnBackground()
         }
     }
 
@@ -319,7 +317,6 @@ class PlayBroadcastViewModel @Inject constructor(
                 playPusher.stopPush()
                 playPusher.stopPreview()
                 destroyPushStream()
-
                 updateChannelStatus(PlayChannelStatus.Stop)
             }
             _observableLivePusherState.value = LivePusherState.Stopped(shouldNavigate)
