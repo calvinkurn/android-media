@@ -66,14 +66,13 @@ class FeedbackPagePresenter(private val compositeSubscription: CompositeSubscrip
     }
 
     override fun sendAttachment(feedbackId: Int?, filedata: MultipartBody.Part) {
-        feedbackApi.uploadAttachment("/api/v1/$feedbackId/upload-attachment", "file", filedata)
+        feedbackApi.uploadAttachment("/api/v1/feedback/$feedbackId/upload-attachment", "file", filedata)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(object : Subscriber<String>() {
                     override fun onNext(t: String?) {
                         view.hideLoadingDialog()
                         commitData(feedbackId)
-                        view.goToTicketCreatedActivity()
                     }
 
                     override fun onCompleted() {
@@ -92,12 +91,12 @@ class FeedbackPagePresenter(private val compositeSubscription: CompositeSubscrip
 
 
     override fun commitData(feedbackId: Int?) {
-        feedbackApi.commitData("api/v1/$feedbackId/commit")
+        feedbackApi.commitData("api/v1/feedback/$feedbackId/commit")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(object : Subscriber<String>() {
                     override fun onNext(t: String?) {
-                        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                        view.goToTicketCreatedActivity()
                     }
 
                     override fun onCompleted() {

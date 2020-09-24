@@ -490,7 +490,7 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View {
 
     override fun checkUriImage(feedbackId: Int?) {
         if (uriImage != null) feedbackPagePresenter.sendAttachment(feedbackId, checkUriImage())
-        else goToTicketCreatedActivity()
+        else feedbackPagePresenter.commitData(feedbackId)
     }
 
     override fun goToTicketCreatedActivity() {

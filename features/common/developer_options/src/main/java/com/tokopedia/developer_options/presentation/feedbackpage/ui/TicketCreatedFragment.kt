@@ -38,15 +38,15 @@ class TicketCreatedFragment: Fragment() {
         tickerLink = mainView.findViewById(R.id.ticket_url)
         imageCopy = mainView.findViewById(R.id.copy_ticket)
 
-        val issueId = arguments?.getString(EXTRA_IS_TICKET_LINK)
+//        val issueId = arguments?.getString(EXTRA_IS_TICKET_LINK)
 
         imageCreated.loadRemoteImageDrawable(ADDRESS_INVALID)
         ticketText1.text = context?.let { HtmlLinkHelper(it, getString(R.string.ticket_text_1)).spannedString }
         ticketText2.text = context?.let { HtmlLinkHelper(it, getString(R.string.ticket_text_2)).spannedString }
-        tickerLink.text = "https://tokopedia.atlassian.net/browse/$issueId"
-        imageCopy.setOnClickListener {
-            onTextCopied(mainView, "label", tickerLink.text.toString())
-        }
+//        tickerLink.text = "https://tokopedia.atlassian.net/browse/$issueId"
+//        imageCopy.setOnClickListener {
+//            onTextCopied(mainView, "label", tickerLink.text.toString())
+//        }
 
     }
 
