@@ -9,4 +9,7 @@ data class OrderTotal(
 
     val isButtonChoosePayment: Boolean
         get() = buttonType == OccButtonType.CHOOSE_PAYMENT
+
+    val isButtonPay: Boolean
+        get() = buttonType == OccButtonType.PAY
 }

@@ -28,7 +28,7 @@ class SellerMenuFeatureCard(context: Context, attrs: AttributeSet) : CardUnify(c
         textDescription.text = description
 
         icon?.let {
-            textTitle.setCompoundDrawablesWithIntrinsicBounds(it, null, null, null)
+            imageFeature.setImageDrawable(it)
         }
 
         styledAttrs.recycle()
