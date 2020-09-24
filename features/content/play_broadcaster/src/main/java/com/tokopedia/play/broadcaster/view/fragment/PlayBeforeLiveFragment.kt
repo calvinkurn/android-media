@@ -21,6 +21,7 @@ import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
 import com.tokopedia.play.broadcaster.data.model.SerializableHydraSetupData
+import com.tokopedia.play.broadcaster.ui.model.LiveStreamInfoUiModel
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
 import com.tokopedia.play.broadcaster.util.extension.getDialog
 import com.tokopedia.play.broadcaster.util.extension.showToaster
@@ -33,7 +34,6 @@ import com.tokopedia.play.broadcaster.view.fragment.edit.CoverEditFragment
 import com.tokopedia.play.broadcaster.view.fragment.edit.EditCoverTitleBottomSheet
 import com.tokopedia.play.broadcaster.view.fragment.edit.ProductEditFragment
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
-import com.tokopedia.play.broadcaster.view.state.LivePusherState
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastPrepareViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
@@ -104,7 +104,6 @@ class PlayBeforeLiveFragment @Inject constructor(
         observeCreateChannel()
         observeProductList()
         observeCover()
-        observeLiveInfo()
     }
 
     override fun onStart() {
@@ -210,7 +209,9 @@ class PlayBeforeLiveFragment @Inject constructor(
             when (it) {
                 NetworkResult.Loading -> btnStartLive.setLoading(true)
                 is NetworkResult.Success -> {
-                    parentViewModel.startPushStream()
+                    openBroadcastLivePage(it.data)
+                    btnStartLive.setLoading(false)
+                    parentViewModel.startCountDown()
                 }
                 is NetworkResult.Fail -> {
                     showToaster(
@@ -223,10 +224,6 @@ class PlayBeforeLiveFragment @Inject constructor(
             }
         })
     }
-
-    private fun observeLiveInfo() {
-        parentViewModel.observableLiveInfoState.observe(viewLifecycleOwner, Observer(::handleLiveInfoState))
-    }
     //endregion
 
     private fun populateSavedData(savedInstanceState: Bundle) {
@@ -235,25 +232,10 @@ class PlayBeforeLiveFragment @Inject constructor(
         setupData?.let { parentViewModel.setHydraSetupData(setupData) }
     }
 
-    private fun handleLiveInfoState(state: LivePusherState) {
-        if (!isVisible) return
-        when (state) {
-            is LivePusherState.Started -> {
-                openBroadcastLivePage()
-                btnStartLive.setLoading(false)
-                parentViewModel.setFirstTimeLiveStreaming()
-            }
-            is LivePusherState.Error -> {
-                showToaster(message = getString(R.string.play_live_broadcast_connect_fail),
-                        type = Toaster.TYPE_ERROR)
-            }
-        }
-    }
-
-    private fun openBroadcastLivePage() {
+    private fun openBroadcastLivePage(liveStreamInfo: LiveStreamInfoUiModel) {
         broadcastCoordinator.navigateToFragment(PlayBroadcastUserInteractionFragment::class.java,
                 Bundle().apply {
-                    putBoolean(PlayBroadcastUserInteractionFragment.KEY_START_COUNTDOWN, true)
+                    putString(PlayBroadcastUserInteractionFragment.KEY_INGEST_URL, liveStreamInfo.ingestUrl)
                 })
         analytic.openBroadcastScreen(parentViewModel.channelId)
     }

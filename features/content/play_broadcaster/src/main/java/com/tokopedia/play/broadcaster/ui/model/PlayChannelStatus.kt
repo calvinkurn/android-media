@@ -6,7 +6,9 @@ package com.tokopedia.play.broadcaster.ui.model
  * https://tokopedia.atlassian.net/wiki/spaces/CN/pages/844006102/Broadcaster+Constants+-+Status+Types
  */
 enum class PlayChannelStatus(val value: String) {
+    Deleted("-1"),
     Draft("0"),
+    Active("1"),
     Live("2"),
     Pause("3"),
     Stop("4"),

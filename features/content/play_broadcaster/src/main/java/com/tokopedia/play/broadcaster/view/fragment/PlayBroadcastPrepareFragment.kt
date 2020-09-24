@@ -27,6 +27,7 @@ import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupBottomS
 import com.tokopedia.play.broadcaster.view.contract.SetupResultListener
 import com.tokopedia.play.broadcaster.view.custom.PlayShareFollowerView
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
+import com.tokopedia.play.broadcaster.view.fragment.loading.LoadingDialogFragment
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastPrepareViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
@@ -50,6 +51,8 @@ class PlayBroadcastPrepareFragment @Inject constructor(
     private lateinit var btnSetup: UnifyButton
     private lateinit var followerView: PlayShareFollowerView
     private lateinit var tvTermsCondition: TextView
+
+    private lateinit var loadingFragment: LoadingDialogFragment
 
     private val isFirstStreaming: Boolean
         get() = parentViewModel.isFirstStreaming
@@ -181,6 +184,20 @@ class PlayBroadcastPrepareFragment @Inject constructor(
         broadcastCoordinator.navigateToFragment(
                 fragmentClass = PlayBeforeLiveFragment::class.java
         )
+    }
+
+    private fun getLoadingFragment(): LoadingDialogFragment {
+        if (!::loadingFragment.isInitialized) {
+            val setupClass = LoadingDialogFragment::class.java
+            val fragmentFactory = childFragmentManager.fragmentFactory
+            loadingFragment = fragmentFactory.instantiate(requireContext().classLoader, setupClass.name) as LoadingDialogFragment
+        }
+        return loadingFragment
+    }
+
+    private fun showLoading(isLoading: Boolean) {
+        if (isLoading) getLoadingFragment().show(childFragmentManager)
+        else getLoadingFragment().dismiss()
     }
 
     //region observe

@@ -235,7 +235,7 @@ object PlayBroadcastUiMapper {
             isSelfMessage = false
     )
 
-    fun mapBannedEvent(banned: Banned): EventUiModel = EventUiModel(
+    fun mapBannedEvent(banned: Banned): BannedUiModel = BannedUiModel(
             title = banned.title,
             message = banned.reason,
             buttonTitle = banned.btnText

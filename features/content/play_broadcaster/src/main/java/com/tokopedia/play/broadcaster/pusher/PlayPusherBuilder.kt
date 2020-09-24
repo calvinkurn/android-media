@@ -90,9 +90,9 @@ class PlayPusherBuilder(@ApplicationContext var context: Context) {
         this.pushMirror = pushMirror
     }
 
-//    fun build() = if (DeviceInfoUtil.isDeviceSupported()) {
-//        PlayPusherImpl(this)
-//    } else {
-//        PlayPusherImplNoop(this)
-//    }
+    fun build() = if (DeviceInfoUtil.isDeviceSupported()) {
+        PlayPusherImpl(this)
+    } else {
+        PlayPusherImplNoop(this)
+    }
 }
