@@ -30,7 +30,8 @@ class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUse
                                                          private val orderSummaryAnalytics: OrderSummaryAnalytics,
                                                          private val executorDispatchers: ExecutorDispatchers) {
 
-    suspend fun validateUsePromo(validateUsePromoRequest: ValidateUsePromoRequest, lastValidateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel?): ValidateUsePromoRevampUiModel? {
+    suspend fun validateUsePromo(validateUsePromoRequest: ValidateUsePromoRequest, lastValidateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel?): Pair<Boolean, ValidateUsePromoRevampUiModel?> {
+        if (!hasPromo(validateUsePromoRequest)) return true to null
         OccIdlingResource.increment()
         val resultValidateUse = withContext(executorDispatchers.io) {
             try {
@@ -50,9 +51,9 @@ class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUse
                 } else if (lastValidateUsePromoRevampUiModel != null && result.promoUiModel.benefitSummaryInfoUiModel.finalBenefitAmount < lastValidateUsePromoRevampUiModel.promoUiModel.benefitSummaryInfoUiModel.finalBenefitAmount) {
                     orderSummaryAnalytics.eventViewPromoDecreasedOrReleased(false)
                 }
-                return@withContext result
+                return@withContext true to result
             } catch (t: Throwable) {
-                return@withContext null
+                return@withContext false to null
             }
         }
         OccIdlingResource.decrement()
@@ -230,6 +231,10 @@ class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUse
             return arrayListOf(shipping.logisticPromoViewModel.promoCode)
         }
         return ArrayList()
+    }
+
+    fun hasPromo(validateUsePromoRequest: ValidateUsePromoRequest): Boolean {
+        return validateUsePromoRequest.codes.isNotEmpty() || validateUsePromoRequest.orders.first()?.codes?.isNotEmpty() == true
     }
 
     private fun checkIneligiblePromo(validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel, orderCart: OrderCart): Pair<Boolean, OccGlobalEvent> {

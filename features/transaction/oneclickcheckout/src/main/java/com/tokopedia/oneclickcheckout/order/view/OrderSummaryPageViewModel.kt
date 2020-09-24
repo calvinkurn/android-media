@@ -124,11 +124,11 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     fun updateProduct(product: OrderProduct, shouldReloadRates: Boolean = true) {
         orderCart.product = product
         if (shouldReloadRates) {
-            calculateTotal()
             if (!product.quantity.isStateError) {
                 orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.LOADING)
                 debounce()
             }
+            calculateTotal()
         }
     }
 
@@ -160,14 +160,14 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             _orderShipment = result.orderShipment
             orderShipment.value = _orderShipment
             sendViewOspEe()
+            sendPreselectedCourierOption(result.preselectedSpId)
             if (result.orderShipment.serviceErrorMessage.isNullOrEmpty()) {
                 validateUsePromo()
             } else {
                 orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.DISABLE)
                 sendViewShippingErrorMessage(result.shippingErrorId)
+                calculateTotal()
             }
-            sendPreselectedCourierOption(result.preselectedSpId)
-            calculateTotal()
         }
     }
 
@@ -246,7 +246,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             clearBboIfExist()
             _orderShipment = it
             orderShipment.value = _orderShipment
-            calculateTotal()
+//            calculateTotal()
             validateUsePromo()
         }
     }
@@ -378,9 +378,10 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     }
 
     private fun finalValidateUse(product: OrderProduct, shop: OrderShop, pref: OrderPreference, onSuccessCheckout: (CheckoutOccResult) -> Unit, skipCheckIneligiblePromo: Boolean) {
-        if (!skipCheckIneligiblePromo) {
+        val validateUsePromoRequest = generateValidateUsePromoRequest()
+        if (!skipCheckIneligiblePromo && promoProcessor.hasPromo(validateUsePromoRequest)) {
             launch(executorDispatchers.main) {
-                val (resultValidateUse, isSuccess, newGlobalEvent) = promoProcessor.finalValidateUse(generateValidateUsePromoRequest(), orderCart)
+                val (resultValidateUse, isSuccess, newGlobalEvent) = promoProcessor.finalValidateUse(validateUsePromoRequest, orderCart)
                 if (resultValidateUse != null) {
                     validateUsePromoRevampUiModel = resultValidateUse
                     updatePromoState(resultValidateUse.promoUiModel)
@@ -459,13 +460,17 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         launch(executorDispatchers.main) {
             orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.LOADING)
             orderPromo.value = orderPromo.value.copy(state = OccButtonState.LOADING)
-            val resultValidateUse = promoProcessor.validateUsePromo(generateValidateUsePromoRequest(), validateUsePromoRevampUiModel)
-            if (resultValidateUse == null) {
+            val (isSuccess, resultValidateUse) = promoProcessor.validateUsePromo(generateValidateUsePromoRequest(), validateUsePromoRevampUiModel)
+            if (!isSuccess) {
                 orderPromo.value = orderPromo.value.copy(state = OccButtonState.DISABLE)
                 orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.DISABLE)
-            } else {
+            } else if (resultValidateUse != null) {
                 validateUsePromoRevampUiModel = resultValidateUse
                 updatePromoState(resultValidateUse.promoUiModel)
+            } else {
+                orderPromo.value = orderPromo.value.copy(state = OccButtonState.NORMAL)
+                orderTotal.value = orderTotal.value.copy(buttonState = if (shouldButtonStateEnable(_orderShipment)) OccButtonState.NORMAL else OccButtonState.DISABLE)
+                calculateTotal()
             }
         }
     }
