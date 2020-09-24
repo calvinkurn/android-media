@@ -56,7 +56,7 @@ class AddNewAddressTest {
 
     @Test
     fun addAddressUserFunnel_PassedAnalyticsTest() {
-        val query = getJsonDataFromAsset(context, "tracker/logistic/cvr_user_funnel.json")
+        val query = getJsonDataFromAsset(context, "{\n  \"mode\": \"subset\",\n  \"query\": [\n    {\n      \"screenName\": \"/user/address/create\"\n    },\n    {\n      \"eventCategory\": \"cart change address\",\n      \"eventAction\": \"click address suggestion from suggestion list\",\n      \"eventLabel\": \"logistic\"\n    },\n    {\n      \"eventCategory\": \"cart change address\",\n      \"eventAction\": \"click button pilih lokasi ini\",\n      \"eventLabel\": \"success - logistic\"\n    },\n    {\n      \"eventCategory\": \"cart change address\",\n      \"eventAction\": \"click button pilih lokasi\",\n      \"eventLabel\": \"logistic\"\n    },\n    {\n      \"eventCategory\": \"cart change address positive\",\n      \"event\": \"clickAddress\",\n      \"eventAction\": \"click field nama penerima\",\n      \"eventLabel\": \"logistic\"\n    },\n    {\n      \"eventCategory\": \"cart change address positive\",\n      \"event\": \"clickAddress\",\n      \"eventAction\": \"click field no ponsel\",\n      \"eventLabel\": \"logistic\"\n    },\n    {\n      \"eventCategory\": \"cart change address\",\n      \"eventAction\": \"click button simpan\",\n      \"eventLabel\": \"positive success - logistic\"\n    }\n  ],\n  \"readme\": \"Logistic Add Address user funnel, also verifies CVR. STR: Create New Address from User Settings\"\n}")
                 ?: throw AssertionError("Validator Query not found")
         val screenName = "/user/address/create"
         addAddress {
@@ -73,7 +73,7 @@ class AddNewAddressTest {
 
     @Test
     fun addAddressCartFunnel_PassedAnalyticsTest() {
-        val query = getJsonDataFromAsset(context, "tracker/logistic/cvr_cart_funnel.json")
+        val query = getJsonDataFromAsset(context, "{\n  \"mode\": \"subset\",\n  \"query\": [\n    {\n      \"screenName\": \"/cart/address/create\"\n    },\n    {\n      \"eventCategory\": \"cart change address\",\n      \"eventAction\": \"click address suggestion from suggestion list\",\n      \"eventLabel\": \"logistic\"\n    },\n    {\n      \"eventCategory\": \"cart change address\",\n      \"eventAction\": \"click button pilih lokasi ini\",\n      \"eventLabel\": \"success - logistic\"\n    },\n    {\n      \"eventCategory\": \"cart change address\",\n      \"eventAction\": \"click button pilih lokasi\",\n      \"eventLabel\": \"logistic\"\n    },\n    {\n      \"eventCategory\": \"cart change address positive\",\n      \"event\": \"clickAddress\",\n      \"eventAction\": \"click field nama penerima\",\n      \"eventLabel\": \"logistic\"\n    },\n    {\n      \"eventCategory\": \"cart change address positive\",\n      \"event\": \"clickAddress\",\n      \"eventAction\": \"click field no ponsel\",\n      \"eventLabel\": \"logistic\"\n    },\n    {\n      \"eventCategory\": \"cart change address\",\n      \"eventAction\": \"click button simpan\",\n      \"eventLabel\": \"positive success - logistic\"\n    }\n  ],\n  \"readme\": \"Logistic Add Address cart funnel Tracking, also verifies CVR. STR: Create New Address from Cart Address Choice\"\n}")
                 ?: throw AssertionError("Validator Query not found")
         val screenName = "/cart/address/create"
         addAddress {
@@ -90,7 +90,7 @@ class AddNewAddressTest {
 
     @Test
     fun addAddressNewUserFunnel_PassedAnalyticsTest() {
-        val query = getJsonDataFromAsset(context, "tracker/logistic/cvr_new_user_funnel.json")
+        val query = getJsonDataFromAsset(context, "{\n  \"mode\": \"subset\",\n  \"query\": [\n    {\n      \"screenName\": \"/user/address/create/cart\"\n    },\n    {\n      \"eventCategory\": \"cart change address\",\n      \"eventAction\": \"click address suggestion from suggestion list\",\n      \"eventLabel\": \"logistic\"\n    },\n    {\n      \"eventCategory\": \"cart change address\",\n      \"eventAction\": \"click button pilih lokasi ini\",\n      \"eventLabel\": \"success - logistic\"\n    },\n    {\n      \"eventCategory\": \"cart change address\",\n      \"eventAction\": \"click button pilih lokasi\",\n      \"eventLabel\": \"logistic\"\n    },\n    {\n      \"eventCategory\": \"cart change address positive\",\n      \"event\": \"clickAddress\",\n      \"eventAction\": \"click field nama penerima\",\n      \"eventLabel\": \"logistic\"\n    },\n    {\n      \"eventCategory\": \"cart change address positive\",\n      \"event\": \"clickAddress\",\n      \"eventAction\": \"click field no ponsel\",\n      \"eventLabel\": \"logistic\"\n    },\n    {\n      \"eventCategory\": \"cart change address\",\n      \"eventAction\": \"click button simpan\",\n      \"eventLabel\": \"positive success - logistic\"\n    }\n  ],\n  \"readme\": \"Logistic Add Address new user funnel, also verifies CVR. STR: Go to checkout while user does not have any address \"\n}")
                 ?: throw AssertionError("Validator Query not found")
         val screenName = "/user/address/create/cart"
         addAddress {

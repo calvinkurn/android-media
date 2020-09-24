@@ -52,5 +52,5 @@
       "eventLabel": "negative success - logistic"
     }
   ],
-  "readme": "CVR Logistic Add Address user funnel. STR: Create New Address from User Settings"
+  "readme": "Logistic Add Address user funnel, also verifies CVR. STR: Create New Address from User Settings"
 }

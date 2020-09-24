@@ -2,7 +2,7 @@
   "mode": "subset",
   "query": [
     {
-      "screenName": "/cart/address/create"
+      "screenName": "/user/address/create/cart"
     },
     {
       "eventCategory": "cart change address negative",
@@ -38,7 +38,6 @@
       "eventCategory": "cart change address negative",
       "event": "clickAddress",
       "eventAction": "click field nama penerima",
-      "sessionIris": "{{.*}}",
       "eventLabel": "logistic"
     },
     {
@@ -53,5 +52,5 @@
       "eventLabel": "negative success - logistic"
     }
   ],
-  "readme": "CVR Logistic Add Address cart funnel. STR: Create New Address from Cart Address Choice"
+  "readme": "Logistic Add Address new user funnel, also verifies CVR. STR: Go to checkout while user does not have any address "
 }

@@ -37,5 +37,5 @@
       "eventLabel": "positive success - logistic"
     }
   ],
-  "readme": "CVR Logistic Add Address new user funnel. STR: Go to checkout while user does not have any address "
+  "readme": "Logistic Add Address new user funnel, also verifies CVR. STR: Go to checkout while user does not have any address "
 }
