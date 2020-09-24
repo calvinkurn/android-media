@@ -216,6 +216,8 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
             @Override
             public void onResetPromoDiscount() {
                 setupPromoTicker(TickerCheckoutView.State.EMPTY, "", "");
+                promoApplied = false;
+                mPresenter.updatePromoCode("");
             }
 
             @Override
@@ -230,6 +232,8 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
             @Override
             public void onDisablePromoDiscount() {
                 setupPromoTicker(TickerCheckoutView.State.EMPTY, "", "");
+                promoApplied = false;
+                mPresenter.updatePromoCode("");
             }
         });
     }
@@ -272,6 +276,7 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
     @Override
     public void showPromoSuccessMessage(String text, String message, long discountAmount, Boolean isCancel) {
         if (isCancel) {
+            mPresenter.updatePromoCode("");
             tickerApplyPromo.setState(TickerPromoStackingCheckoutView.State.EMPTY);
             promoApplied = false;
             tickerApplyPromo.setTitle("");
