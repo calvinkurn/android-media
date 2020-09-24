@@ -80,7 +80,7 @@ class OrderSummaryPageActivityTrackingTest {
             clickOnboardingInfo()
             closeBottomSheet()
 
-            cartInterceptor.customGetOccCartResponsePath = null
+            cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_LAST_APPLY_RESPONSE_PATH
             promoInterceptor.customValidateUseResponsePath = VALIDATE_USE_PROMO_REVAMP_CASHBACK_FULL_APPLIED_RESPONSE
             clickAddPreferenceForNewBuyer()
 

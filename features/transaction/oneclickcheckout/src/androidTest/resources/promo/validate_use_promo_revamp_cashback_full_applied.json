@@ -15,7 +15,7 @@
           },
           "success": true,
           "codes": [
-            "TESTINGTHR1B3A5T8AW"
+            "TESTACK25"
           ],
           "promo_code_id": 0,
           "title_description": "Cashback Hingga Rp100.000",
@@ -46,7 +46,7 @@
               "benefit_product_details": []
             },
             {
-              "code": "TESTINGTHR1B3A5T8AW",
+              "code": "TESTACK25",
               "type": "",
               "order_id": 1,
               "unique_id": "480176-0-2034-4678943",
@@ -117,7 +117,7 @@
           "tracking_details": [
             {
               "product_id": 15147773,
-              "promo_codes_tracking": "TESTINGTHR1B",
+              "promo_codes_tracking": "TESTACK25",
               "promo_details_tracking": "G:1:10000:green"
             }
           ],
