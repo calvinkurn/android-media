@@ -8,10 +8,10 @@ import javax.inject.Inject
 
 class DynamicTabsUseCase @Inject constructor(private val tabsRepository: TabsRepository) {
 
-    suspend fun getTabData(componentId: String, pageIdentifier: String): Boolean {
+    suspend fun getTabData(componentId: String, pageIdentifier: String, rpcDiscoquery: Map<String, String?>?): Boolean {
         val component = getComponent(componentId, pageIdentifier)
         component?.let {
-            tabsRepository.getDynamicTabData(componentId, pageIdentifier).component?.let { dynamicTabData ->
+            tabsRepository.getDynamicTabData(componentId, pageIdentifier, rpcDiscoquery).component?.let { dynamicTabData ->
                 it.data = dynamicTabData.data
                 it.setComponentsItem(DiscoveryDataMapper.mapTabsListToComponentList(dynamicTabData, ComponentNames.TabsItem.componentName))
             }

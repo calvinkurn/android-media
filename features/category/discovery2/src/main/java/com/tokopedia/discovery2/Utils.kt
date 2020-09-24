@@ -3,6 +3,7 @@ package com.tokopedia.discovery2
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import java.net.URLDecoder
 import kotlin.math.floor
 
 
@@ -41,6 +42,11 @@ class Utils {
         private const val SEJUTA_TEXT = "jt orang"
         private const val SEMILIAR_TEXT = "M orang"
         var preSelectedTab = -1
+        private const val IDENTIFIER = "identifier"
+        private const val COMPONENT_ID = "component_id"
+        private const val DEVICE = "device"
+        private const val DEVICE_VALUE = "Android"
+        private const val FILTERS = "filters"
 
 
         fun extractDimension(url: String?, dimension: String = "height"): Int? {
@@ -76,6 +82,28 @@ class Utils {
             } else {
                 "${convertedValue.toInt()} $text $notifyMeText"
             }
+        }
+
+        fun getQueryMap(componentId: String, pageIdentifier: String, rpcDiscoQuery: Map<String, String?>?): Map<String, Any> {
+            val queryParameterMap = mutableMapOf<String, Any>()
+            queryParameterMap[IDENTIFIER] = pageIdentifier
+            queryParameterMap[DEVICE] = DEVICE_VALUE
+            queryParameterMap[COMPONENT_ID] = componentId
+//            queryParameterMap[FILTERS]  = "componentID=70935&targetcompID=70935&embedCategory=true&category_id=3816"
+
+            rpcDiscoQuery?.let { map ->
+                val queryString = StringBuilder()
+                map.forEach { (key, value) ->
+                    if (!value.isNullOrEmpty()) {
+                        if (queryString.isNotEmpty()) {
+                            queryString.append('&')
+                        }
+                        queryString.append(key).append('=').append(value)
+                    }
+                }
+                if (queryString.isNotEmpty()) queryParameterMap[FILTERS] = queryString.toString()
+            }
+            return queryParameterMap
         }
     }
 }

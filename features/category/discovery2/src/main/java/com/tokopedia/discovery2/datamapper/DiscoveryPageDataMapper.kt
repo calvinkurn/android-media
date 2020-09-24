@@ -5,41 +5,41 @@ import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DiscoveryResponse
 import com.tokopedia.discovery2.data.PageInfo
 import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
-import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.PINNED_ACTIVE_TAB
-import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.PINNED_COMP_ID
-import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.PRODUCT_ID
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.ACTIVE_TAB
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.TARGET_COMP_ID
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 
 
 val discoveryPageData: MutableMap<String, DiscoveryResponse> = HashMap()
-val DYNAMIC_COMPONENT_IDENTIFER = "dynamic_"
+const val DYNAMIC_COMPONENT_IDENTIFIER = "dynamic_"
 
 fun mapDiscoveryResponseToPageData(discoveryResponse: DiscoveryResponse, queryParameterMap: Map<String, String?>): DiscoveryPageData {
     val pageInfo = discoveryResponse.pageInfo
     val discoveryPageData = DiscoveryPageData(pageInfo, discoveryResponse.additionalInfo)
     val discoveryDataMapper = DiscoveryPageDataMapper(pageInfo, queryParameterMap)
-    discoveryPageData.components = discoveryDataMapper.getDiscoveryComponentListWithQueryParam(discoveryResponse.components.filter {
-        pageInfo.identifier?.let { identifier ->
-            it.pageEndPoint = identifier
-        }
-        pageInfo.path?.let { path ->
-            it.pagePath = path
-        }
-        discoveryResponse.componentMap[it.id] = it
-        it.renderByDefault
-    })
+    if (!discoveryResponse.components.isNullOrEmpty()) {
+        discoveryPageData.components = discoveryDataMapper.getDiscoveryComponentListWithQueryParam(discoveryResponse.components.filter {
+            pageInfo.identifier?.let { identifier ->
+                it.pageEndPoint = identifier
+            }
+            pageInfo.path?.let { path ->
+                it.pagePath = path
+            }
+            discoveryResponse.componentMap[it.id] = it
+            it.renderByDefault
+        })
+    }
     return discoveryPageData
 }
 
 class DiscoveryPageDataMapper(private val pageInfo: PageInfo, private val queryParameterMap: Map<String, String?>) {
-
     fun getDiscoveryComponentListWithQueryParam(components: List<ComponentsItem>): List<ComponentsItem> {
-        val pinnedCompId = queryParameterMap[PINNED_COMP_ID]
+        val targetCompId = queryParameterMap[TARGET_COMP_ID] ?: ""
         val componentList = getDiscoveryComponentList(components)
-        if (componentList.isNotEmpty() && !pinnedCompId.isNullOrEmpty()) {
+        if (componentList.isNotEmpty() && targetCompId.isNotEmpty()) {
             componentList.forEach { item ->
-                if (item.id == pinnedCompId) {
-                    item.rpc_PinnedProduct = queryParameterMap[PRODUCT_ID]
+                if (item.id == targetCompId) {
+                    item.rpc_discoQuery = queryParameterMap
                 }
             }
         }
@@ -77,7 +77,7 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo, private val queryP
     private fun parseTab(component: ComponentsItem, position: Int): List<ComponentsItem> {
         val listComponents: ArrayList<ComponentsItem> = ArrayList()
         val isDynamicTabs = component.properties?.dynamic ?: false
-        component.pinnedActiveTabId = queryParameterMap[PINNED_ACTIVE_TAB]
+        component.pinnedActiveTabId = queryParameterMap[ACTIVE_TAB]
         component.parentComponentPosition = position
         when {
             isDynamicTabs -> {
@@ -99,7 +99,7 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo, private val queryP
                     val tabData = data!![0]
                     if (tabData.isSelected) {
                         val targetComponentIdList = tabData.targetComponentId?.split(",")?.map {
-                            if (isDynamicTabs) DYNAMIC_COMPONENT_IDENTIFER + index + it.trim() else it.trim()
+                            if (isDynamicTabs) DYNAMIC_COMPONENT_IDENTIFIER + index + it.trim() else it.trim()
                         }
                         if (!targetComponentIdList.isNullOrEmpty()) {
                             val tabsChildComponentsItemList: ArrayList<ComponentsItem> = ArrayList()
@@ -128,7 +128,7 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo, private val queryP
     private fun handleDynamicTabsComponents(targetedComponentId: String, tabItemIndex: Int, tabComponent: ComponentsItem): ComponentsItem? {
         var tabChildComponentsItem: ComponentsItem? = null
         val pageIdentity = pageInfo.identifier ?: ""
-        val originalComponentId = targetedComponentId.removePrefix("$DYNAMIC_COMPONENT_IDENTIFER$tabItemIndex")
+        val originalComponentId = targetedComponentId.removePrefix("$DYNAMIC_COMPONENT_IDENTIFIER$tabItemIndex")
         if (getComponent(targetedComponentId, pageIdentity) == null) {
             getComponent(originalComponentId, pageIdentity)?.let { component1 ->
                 component1.copy().apply {
@@ -170,19 +170,20 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo, private val queryP
                 listComponents.addAll(getDiscoveryComponentList(it))
             }
             if (component.getComponentsItem()?.size.isMoreThanZero() && component.getComponentsItem()?.size?.rem(component.componentsPerPage) == 0) {
-                listComponents.addAll(handleProductState(component, ComponentNames.LoadMore.componentName))
+                listComponents.addAll(handleProductState(component, ComponentNames.LoadMore.componentName, queryParameterMap))
             } else if (component.getComponentsItem()?.size == 0) {
-                listComponents.addAll(handleProductState(component, ComponentNames.ProductListEmptyState.componentName))
+                listComponents.addAll(handleProductState(component, ComponentNames.ProductListEmptyState.componentName, queryParameterMap))
             }
         }
         return listComponents
     }
 
-    private fun handleProductState(component: ComponentsItem, componentName: String): ArrayList<ComponentsItem> {
+    private fun handleProductState(component: ComponentsItem, componentName: String, queryParameterMap: Map<String, String?>): ArrayList<ComponentsItem> {
         val productState: ArrayList<ComponentsItem> = ArrayList()
         productState.add(ComponentsItem(name = componentName).apply {
             pageEndPoint = component.pageEndPoint
             parentComponentId = component.id
+            rpc_discoQuery = queryParameterMap
             id = componentName
             discoveryPageData[this.pageEndPoint]?.componentMap?.set(this.id, this)
         })

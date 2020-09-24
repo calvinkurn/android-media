@@ -51,7 +51,7 @@ class TabsViewModel(val application: Application, val components: ComponentsItem
         components.properties?.let {
             if (components.getComponentsItem()?.size == 0 && it.dynamic) {
                 launchCatchError(block = {
-                    dynamicTabsUseCase.getTabData(components.id, components.pageEndPoint).run {
+                    dynamicTabsUseCase.getTabData(components.id, components.pageEndPoint, components.rpc_discoQuery).run {
                         updateTabItems()
                         this@TabsViewModel.syncData.value = this
                     }
