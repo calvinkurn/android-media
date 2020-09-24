@@ -84,11 +84,11 @@ class TalkInboxContainerFragment : BaseDaggerFragment(), HasComponent<TalkInboxC
         if(isFirstTimeEnterPage) {
             isFirstTimeEnterPage = false
             when {
-                sellerUnreadCount > 0 && buyerUnreadCount == 0 -> {
-                    selectSellerTab()
+                buyerUnreadCount > 0 && sellerUnreadCount == 0 -> {
+                    selectBuyerTab()
                 }
                 else -> {
-                    selectBuyerTab()
+                    selectSellerTab()
                 }
             }
         }
