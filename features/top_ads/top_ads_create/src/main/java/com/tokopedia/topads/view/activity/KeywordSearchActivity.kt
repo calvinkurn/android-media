@@ -96,7 +96,7 @@ class KeywordSearchActivity : BaseActivity(), HasComponent<CreateAdsComponent> {
             tvToolTipText?.text = getString(R.string.tip_biaya_iklan)
 
             imgTooltipIcon = this.findViewById(R.id.tooltip_icon)
-            imgTooltipIcon?.setImageDrawable(view.context.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_tips))
+            imgTooltipIcon?.setImageDrawable(this.context.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_tips))
         }
 
         tip_btn?.addItem(tooltipView)
