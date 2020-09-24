@@ -110,6 +110,8 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.archCoreTesting
     androidTestImplementation project(rootProject.ext.libraries.analyticsDebugger)
     implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk7
+    androidTestImplementation project(rootProject.ext.libraries.cassavaTest)
+
 }
 
 project.ext {
