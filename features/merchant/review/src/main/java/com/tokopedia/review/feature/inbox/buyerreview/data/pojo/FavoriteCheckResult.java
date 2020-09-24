@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.tkpdreputation.shopreputation.domain.pojo;
+package com.tokopedia.review.feature.inbox.buyerreview.data.pojo;
 
 import com.google.gson.annotations.SerializedName;
 

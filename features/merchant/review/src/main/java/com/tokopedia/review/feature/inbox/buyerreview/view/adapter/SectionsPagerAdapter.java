@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter;
+package com.tokopedia.review.feature.inbox.buyerreview.view.adapter;
 
 import android.text.TextUtils;
 

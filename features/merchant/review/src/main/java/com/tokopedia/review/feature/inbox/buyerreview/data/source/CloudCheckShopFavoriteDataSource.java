@@ -1,9 +1,9 @@
 package com.tokopedia.review.feature.inbox.buyerreview.data.source;
 
-import com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper.ShopFavoritedMapper;
+import com.tokopedia.review.feature.inbox.buyerreview.data.mapper.ShopFavoritedMapper;
 import com.tokopedia.review.feature.inbox.buyerreview.domain.interactor.inboxdetail.CheckShopFavoritedUseCase;
 import com.tokopedia.review.feature.inbox.buyerreview.domain.model.inboxdetail.CheckShopFavoriteDomain;
-import com.tokopedia.tkpd.tkpdreputation.network.tome.TomeService;
+import com.tokopedia.review.feature.inbox.buyerreview.network.tome.TomeService;
 import com.tokopedia.usecase.RequestParams;
 
 import rx.Observable;

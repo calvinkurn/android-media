@@ -2,6 +2,7 @@ package com.tokopedia.review.feature.inbox.buyerreview.data.factory;
 
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.review.feature.inbox.buyerreview.data.mapper.DeleteReviewResponseMapper;
+import com.tokopedia.review.feature.inbox.buyerreview.data.mapper.FaveShopMapper;
 import com.tokopedia.review.feature.inbox.buyerreview.data.mapper.InboxReputationDetailMapper;
 import com.tokopedia.review.feature.inbox.buyerreview.data.mapper.InboxReputationMapper;
 import com.tokopedia.review.feature.inbox.buyerreview.data.mapper.ReplyReviewMapper;
@@ -17,7 +18,6 @@ import com.tokopedia.review.feature.inbox.buyerreview.data.source.CloudReportRev
 import com.tokopedia.review.feature.inbox.buyerreview.data.source.CloudSendSmileyReputationDataSource;
 import com.tokopedia.review.feature.inbox.buyerreview.data.source.LocalInboxReputationDataSource;
 import com.tokopedia.review.feature.inbox.buyerreview.network.ReputationService;
-import com.tokopedia.review.feature.inbox.buyerreview.network.product.ReviewProductService;
 import com.tokopedia.review.feature.inbox.buyerreview.network.shop.FaveShopActService;
 import com.tokopedia.review.feature.inbox.buyerreview.network.tome.TomeService;
 import com.tokopedia.user.session.UserSessionInterface;
