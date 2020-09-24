@@ -60,7 +60,7 @@ class ForgotPasswordActivity : BaseSimpleActivity(), HasComponent<ManagePassword
         getAbTestPlatform()?.fetch(null)
 
         if (isDirectToWebView) {
-            RouteManager.route(this, String.format("%s?url=%s", ApplinkConst.WEBVIEW, urlResetPassword()))
+            RouteManager.route(this, String.format("%s?titlebar=false&url=%s", ApplinkConst.WEBVIEW, urlResetPassword()))
             finish()
             return
         }
