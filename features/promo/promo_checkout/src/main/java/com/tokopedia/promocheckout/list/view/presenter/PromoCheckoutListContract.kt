@@ -13,7 +13,7 @@ interface PromoCheckoutListContract {
     interface View : BaseListViewListener<PromoCheckoutListModel> {
         fun showProgressLoading()
         fun hideProgressLoading()
-        fun renderListLastSeen(data: List<PromoCheckoutLastSeenModel>)
+        fun renderListLastSeen(data: List<PromoCheckoutLastSeenModel>, isDeals: Boolean)
         fun showGetListLastSeenError(e: Throwable)
         fun onSuccessCheckPromo(data: DataUiModel)
         fun onErrorCheckPromo(e: Throwable)
