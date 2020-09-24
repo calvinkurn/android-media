@@ -1,7 +1,6 @@
 package com.tokopedia.cart
 
 import android.Manifest
-import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso
@@ -14,14 +13,13 @@ import androidx.test.rule.GrantPermissionRule
 import com.tokopedia.cart.view.viewholder.CartRecommendationViewHolder
 import com.tokopedia.test.application.assertion.topads.TopAdsAssertion
 import com.tokopedia.test.application.environment.callback.TopAdsVerificatorInterface
-import com.tokopedia.test.application.espresso_component.CommonActions.clickOnEachItemRecyclerView
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupTopAdsDetector
+import org.hamcrest.Matchers.allOf
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.hamcrest.Matchers.allOf
 
 class CartTopAdsVerificationTest {
 
@@ -71,38 +69,28 @@ class CartTopAdsVerificationTest {
 
         for (i in 0 until itemCount) {
             scrollCartRecyclerViewToPosition(cartRecyclerView, i)
-            checkProductRecommendation(cartRecyclerView, i)
+            checkItemType(cartRecyclerView, i)
         }
+
+        waitForData()
 
         topAdsAssertion?.assert()
     }
 
-    private fun checkProductRecommendation(cartRecyclerView: RecyclerView, i: Int) {
+    private fun checkItemType(cartRecyclerView: RecyclerView, i: Int) {
         when (cartRecyclerView.findViewHolderForAdapterPosition(i)) {
             is CartRecommendationViewHolder -> {
-                waitForData()
-                clickOnEachItemRecyclerView(
-                        activityRule.activity.findViewById(com.tokopedia.cart.test.R.id.parent_view_cart),
-                        cartRecyclerView.id,
-                        20
-                )
+                clickProductRecommendationItem(cartRecyclerView, i)
             }
         }
     }
 
-    private fun clickOnEachItemRecyclerView(view: View, recyclerViewId: Int, fixedItemPositionLimit: Int) {
-        val childRecyclerView: RecyclerView = view.findViewById(recyclerViewId)
-        var childItemCount = childRecyclerView.adapter!!.itemCount
-        if (fixedItemPositionLimit > 0) {
-            childItemCount = fixedItemPositionLimit
-        }
-        for (i in 0 until childItemCount) {
-            try {
-                Espresso.onView(allOf(ViewMatchers.withId(recyclerViewId), ViewMatchers.isDisplayingAtLeast(10)))
-                        .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(i, ViewActions.click()))
-            } catch (e: PerformException) {
-                e.printStackTrace()
-            }
+    private fun clickProductRecommendationItem(cartRecyclerView: RecyclerView, i: Int) {
+        try {
+            Espresso.onView(allOf(ViewMatchers.withId(cartRecyclerView.id), ViewMatchers.isDisplayingAtLeast(50)))
+                    .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(i, ViewActions.click()))
+        } catch (e: PerformException) {
+            e.printStackTrace()
         }
     }
 
