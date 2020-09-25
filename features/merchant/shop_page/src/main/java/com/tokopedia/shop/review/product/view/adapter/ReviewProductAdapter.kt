@@ -7,7 +7,6 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
  */
 class ReviewProductAdapter<T : ReviewProductModel?, F : ReviewProductTypeFactoryAdapter?> : BaseListAdapter<T, F> {
     constructor(baseListAdapterTypeFactory: F) : super(baseListAdapterTypeFactory) {}
-    constructor(baseListAdapterTypeFactory: F, onAdapterInteractionListener: OnAdapterInteractionListener<T>?) : super(baseListAdapterTypeFactory, onAdapterInteractionListener) {}
 
     fun updateLikeStatus(likeStatus: Int, totalLike: Int, reviewId: String?) {
         var i = 0

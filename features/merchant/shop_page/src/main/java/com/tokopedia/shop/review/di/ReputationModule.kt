@@ -10,7 +10,6 @@ import com.tokopedia.shop.review.shop.data.mapper.DeleteReviewResponseMapper
 import com.tokopedia.shop.review.shop.data.mapper.GetLikeDislikeMapper
 import com.tokopedia.shop.review.shop.data.mapper.LikeDislikeMapper
 import com.tokopedia.shop.review.shop.data.network.ReputationService
-import com.tokopedia.shop.review.shop.data.network.ReviewActService
 import com.tokopedia.shop.review.shop.data.network.ReviewProductService
 import com.tokopedia.shop.review.shop.domain.DeleteReviewResponseUseCase
 import com.tokopedia.shop.review.shop.domain.GetLikeDislikeReviewUseCase
@@ -80,16 +79,6 @@ class ReputationModule {
     @Provides
     fun provideReviewProductService(@ApplicationContext context: Context?, networkRouter: NetworkRouter?, userSession: UserSession?): ReviewProductService {
         return ReviewProductService(
-                context,
-                networkRouter,
-                userSession
-        )
-    }
-
-    @ReputationScope
-    @Provides
-    fun provideReviewActService(@ApplicationContext context: Context?, networkRouter: NetworkRouter?, userSession: UserSession?): ReviewActService {
-        return ReviewActService(
                 context,
                 networkRouter,
                 userSession

@@ -10,18 +10,12 @@ open class Review {
     @SerializedName("reputation_id")
     @Expose
     var reputationId = 0
-    @SerializedName("review_title")
-    @Expose
-    var reviewTitle: String? = null
     @SerializedName("review_message")
     @Expose
     var reviewMessage: String? = null
     @SerializedName("product_rating")
     @Expose
     var productRating = 0
-    @SerializedName("product_rating_description")
-    @Expose
-    var productRatingDescription: String? = null
     @SerializedName("review_create_time")
     @Expose
     var reviewCreateTime: ReviewCreateTime? = null

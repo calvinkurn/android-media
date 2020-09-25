@@ -22,7 +22,6 @@ import java.util.*
  * Created by zulfikarrahman on 1/16/18.
  */
 open class ReviewProductContentViewHolder(itemView: View, private val viewListener: ListenerReviewHolder) : AbstractViewHolder<ReviewProductModelContent>(itemView) {
-    var isReplyOpened = false
     private val reviewerName: TextView
     private val reviewTime: TextView
     private val reviewAttachment: RecyclerView
@@ -248,7 +247,6 @@ open class ReviewProductContentViewHolder(itemView: View, private val viewListen
         const val UNLIKE_STATUS = 3
         const val LIKE_STATUS_ACTIVE = 1
         const val WIB = "WIB"
-        const val TARGET = "WIB"
         private const val MENU_REPORT = 102
         private const val MENU_DELETE = 103
     }
