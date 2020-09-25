@@ -96,22 +96,23 @@
         android:layout_width="wrap_content"
         android:layout_height="@dimen/layout_lvl2"
         android:layout_marginStart="@dimen/layout_lvl2"
+        android:layout_marginTop="@dimen/dp_12"
         android:visibility="gone"
-        app:layout_constraintTop_toTopOf="@id/txt_date_user_pdp"
-        app:layout_constraintBottom_toBottomOf="@id/txt_date_user_pdp"
         app:layout_constraintLeft_toLeftOf="parent"
-        tools:srcCompat="@drawable/ic_gold_star_five"
-        tools:visibility="visible"/>
+        app:layout_constraintTop_toBottomOf="@id/image_review_list"
+        tools:srcCompat="@drawable/ic_rating_star_five"
+        tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/txt_date_user_pdp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_lvl2"
-        android:layout_marginTop="@dimen/dp_12"
+        android:layout_marginStart="@dimen/dp_5"
         android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@id/image_review_list"
-        app:layout_constraintStart_toEndOf="@id/rating_review_pdp"
+        app:layout_constraintBottom_toBottomOf="@id/rating_review_pdp"
+        app:layout_constraintStart_toEndOf="@+id/rating_review_pdp"
+        app:layout_constraintTop_toTopOf="@id/rating_review_pdp"
+        android:gravity="center"
         app:typographyType="body_3"
         tools:text="oleh Karinananana von Ziegezar"
         tools:visibility="visible" />
@@ -127,7 +128,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/rating_review_pdp"
         app:typographyType="body_3"
-        tools:visibility="visible"
+        tools:visibility="gone"
         tools:text="Variant: Maroon pad with headrest 256 kilobyte" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -135,8 +136,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/layout_lvl2"
+        android:layout_marginEnd="@dimen/dp_16"
         android:layout_marginTop="@dimen/spacing_lvl2"
         android:visibility="gone"
+        app:layout_goneMarginTop="@dimen/dp_8"
         app:layout_constraintTop_toBottomOf="@+id/txt_variant_review_pdp"
         app:typographyType="body_2"
         android:textColor="@color/Neutral_N700_96"
