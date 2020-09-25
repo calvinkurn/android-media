@@ -89,7 +89,7 @@ class PromoCheckoutListDealsFragment() : BasePromoCheckoutListFragment(), PromoC
         val intent = Intent()
         val promoData = PromoData(PromoData.VOUCHER_RESULT_CODE, data.codes[0],
                 data.message.text, data.titleDescription, state = data.message.state.mapToStatePromoCheckout())
-        intent.putExtra(PromoCheckoutDetailDealsFragment.IS_CANCEL, true)
+        intent.putExtra(PromoCheckoutDetailDealsFragment.IS_CANCEL, false)
         intent.putExtra(EXTRA_PROMO_DATA, promoData)
         intent.putExtra(VOUCHER_CODE, data.codes[0])
         intent.putExtra(VOUCHER_MESSAGE, data.message.text)
