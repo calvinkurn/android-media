@@ -21,7 +21,7 @@ class WaitingPaymentOrderTipsViewHolder(itemView: View?) : AbstractViewHolder<Wa
     override fun bind(element: WaitingPaymentOrderTipsUiModel?) {
         element?.let { element ->
             with(itemView) {
-                ivWaitingOrderTips.setImage(element.icon, 0f)
+                ivWaitingOrderTips.setImage(element.iconUrl, 0f)
                 tvWaitingOrderTipsDescription.text = element.description.parseAsHtml()
             }
         }

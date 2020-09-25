@@ -9,14 +9,20 @@ import com.tokopedia.sellerorder.waitingpaymentorder.presentation.model.WaitingP
  */
 
 class WaitingPaymentOrderTipsDataProvider {
+
+    companion object {
+        private const val URL_IMAGE_WAITING_PAYMENT_ORDER_TIPS_BEST_SELLING = "https://ecs7.tokopedia.net/android/others/ic_waiting_payment_order_tips_best_selling.png"
+        private const val URL_IMAGE_WAITING_PAYMENT_ORDER_TIPS_EMPTY_STOCK = "https://ecs7.tokopedia.net/android/others/ic_waiting_payment_order_tips_empty_stock.png"
+    }
+
     fun provideData(context: Context): List<WaitingPaymentOrderTipsUiModel> {
         return listOf(
                 WaitingPaymentOrderTipsUiModel(
-                        icon = R.drawable.ic_waiting_payment_order_tips_best_selling,
+                        iconUrl = URL_IMAGE_WAITING_PAYMENT_ORDER_TIPS_BEST_SELLING,
                         description = context.getString(R.string.bottomsheet_waiting_payment_tips_best_selling_description)
                 ),
                 WaitingPaymentOrderTipsUiModel(
-                        icon = R.drawable.ic_waiting_payment_order_tips_empty_stock,
+                        iconUrl = URL_IMAGE_WAITING_PAYMENT_ORDER_TIPS_EMPTY_STOCK,
                         description = context.getString(R.string.bottomsheet_waiting_payment_tips_empty_stock_description)
                 )
         )

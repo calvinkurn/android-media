@@ -9,7 +9,7 @@ import com.tokopedia.sellerorder.waitingpaymentorder.presentation.adapter.typefa
  */
 
 data class WaitingPaymentOrderTipsUiModel(
-        val icon: Int,
+        val iconUrl: String,
         val description: String
 ): Visitable<WaitingPaymentOrderTipsTypeFactory> {
     override fun type(typeFactory: WaitingPaymentOrderTipsTypeFactory?): Int {
