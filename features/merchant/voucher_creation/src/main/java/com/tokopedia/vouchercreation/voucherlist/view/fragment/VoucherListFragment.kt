@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.Rect
+import android.os.Build
 import android.os.Bundle
 import android.view.*
 import android.view.inputmethod.EditorInfo
@@ -477,20 +478,10 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
         view?.showDownloadActionTicker(true)
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (grantResults.size == 1 && requestCode == DOWNLOAD_REQUEST_CODE) {
-            if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
-                Toast.makeText(activity, getString(R.string.mvc_storage_permission_enabled_needed), Toast.LENGTH_LONG).show()
-            } else {
-                downloadImagesAction()
-                downloadImagesAction = {}
-            }
-        }
-        if (grantResults.size == 1 && requestCode == SHARE_REQUEST_CODE) {
-            if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
-                Toast.makeText(activity, getString(R.string.mvc_storage_permission_enabled_needed), Toast.LENGTH_LONG).show()
-            }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            permissionCheckerHelper.onRequestPermissionsResult(context, requestCode, permissions, grantResults)
         }
     }
 
@@ -666,6 +657,7 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
                                 object : PermissionCheckerHelper.PermissionCheckListener {
                                     override fun onPermissionDenied(permissionText: String) {
                                         permissionCheckerHelper.onPermissionDenied(this@run, permissionText)
+                                        view?.let { Toaster.make(it,getString(R.string.mvc_storage_permission_enabled_needed), Toast.LENGTH_LONG) }
                                     }
 
                                     override fun onNeverAskAgain(permissionText: String) {
