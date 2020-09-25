@@ -18,9 +18,6 @@ public interface IRouterConstant {
             String EXTRA_SELECTED_TAB = "EXTRA_SELECTED_TAB";
             String EXTRA_CART_ID = "EXTRA_CART_ID";
             String EXTRA_PRODUCTID = "EXTRA_PRODUCTID";
-            String EXTRA_PROMO_CODE = "EXTRA_PROMO_CODE";
-            String COUPON_EXTRA_IS_USE = "EXTRA_IS_USE";
-            String EXTRA_KUPON_CODE = "EXTRA_KUPON_CODE";
             String EXTRA_CATEGORYID = "EXTRA_CATEGORYID";
             String EXTRA_TRAIN_RESERVATION_ID = "EXTRA_TRAIN_RESERVATION_ID";
             String EXTRA_TRAIN_RESERVATION_CODE = "EXTRA_TRAIN_RESERVATION_CODE";
@@ -54,7 +51,6 @@ public interface IRouterConstant {
             int VOUCHER_TAB = 0;
             int COUPON_TAB = 1;
 
-            String IS_CANCEL = "IS_CANCEL";
 
         }
 
