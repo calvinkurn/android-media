@@ -299,21 +299,20 @@ class PermissionCheckerHelper {
 
         val activity: Activity = fragment.activity as Activity
 
-        val dialog = PermissionDialog(activity)
+        val dialog = DialogUnify(activity, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
         dialog.setTitle(fragment.getString(TEXT_TITLE))
-        dialog.setDesc(getNeedPermissionMessage(fragment.requireContext(), permissionText, rationaleText))
-        dialog.setBtnOk(fragment.getString(TEXT_OK))
-        dialog.setBtnCancel(fragment.getString(TEXT_CANCEL))
-        dialog.alertDialog.setCancelable(true)
-        dialog.alertDialog.setCanceledOnTouchOutside(true)
-        dialog.setOnOkClickListener(View.OnClickListener {
+        dialog.setDescription(getNeedPermissionMessage(fragment.requireContext(), permissionText, rationaleText))
+        dialog.setPrimaryCTAText(fragment.getString(TEXT_OK))
+        dialog.setSecondaryCTAText(fragment.getString(TEXT_CANCEL))
+        dialog.setCancelable(true)
+        dialog.setPrimaryCTAClickListener {
             dialog.dismiss()
             requestPermissions(activity, permissions, REQUEST_PERMISSION_CODE)
-        })
-        dialog.setOnCancelClickListener(View.OnClickListener {
+        }
+        dialog.setSecondaryCTAClickListener {
             listener.onPermissionDenied(permissionText)
             dialog.dismiss()
-        })
+        }
         dialog.show()
     }
 
