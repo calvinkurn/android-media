@@ -1354,6 +1354,22 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         return (orderShipment.isValid() && orderShipment.serviceErrorMessage.isNullOrEmpty() && orderShop.errors.isEmpty() && !orderProduct.quantity.isStateError)
     }
 
+    private fun generateMinimumAmountPaymentErrorMessage(gatewayName: String, minimumAmount: Long, isEnableChooseOtherPaymentMethod: Boolean): String {
+        var message = "$MINIMUM_AMOUNT_ERROR_MESSAGE $gatewayName (${CurrencyFormatUtil.convertPriceValueToIdrFormat(minimumAmount, false).removeDecimalSuffix()})."
+        if (isEnableChooseOtherPaymentMethod) {
+            message += CHOOSE_OTHER_PAYMENT_METHOD_MESSAGE
+        }
+        return message
+    }
+
+    private fun generateMaximumAmountPaymentErrorMessage(gatewayName: String, maximumAmount: Long, isEnableChooseOtherPaymentMethod: Boolean): String {
+        var message = "$MAXIMUM_AMOUNT_ERROR_MESSAGE $gatewayName (${CurrencyFormatUtil.convertPriceValueToIdrFormat(maximumAmount, false).removeDecimalSuffix()})."
+        if (isEnableChooseOtherPaymentMethod) {
+            message += CHOOSE_OTHER_PAYMENT_METHOD_MESSAGE
+        }
+        return message
+    }
+
     fun updatePromoState(promoUiModel: PromoUiModel) {
         orderPromo.value = orderPromo.value.copy(lastApply = LastApplyUiMapper.mapValidateUsePromoUiModelToLastApplyUiModel(promoUiModel), state = OccButtonState.NORMAL)
         orderTotal.value = orderTotal.value.copy(buttonState = if (shouldButtonStateEnable(_orderShipment)) OccButtonState.NORMAL else OccButtonState.DISABLE)
@@ -1407,13 +1423,13 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                     currentState = OccButtonState.DISABLE
                 }
                 orderTotal.value = orderTotal.value.copy(orderCost = orderCost,
-                        paymentErrorMessage = "Belanjaanmu kurang dari min. transaksi ${payment.gatewayName} (${CurrencyFormatUtil.convertPriceValueToIdrFormat(payment.minimumAmount, false).removeDecimalSuffix()}).",
+                        paymentErrorMessage = generateMinimumAmountPaymentErrorMessage(payment.gatewayName, payment.minimumAmount, false),
                         buttonType = OccButtonType.PAY, buttonState = currentState)
                 _orderPayment = payment.copy(isCalculationError = true)
                 orderPayment.value = _orderPayment
             } else {
                 orderTotal.value = orderTotal.value.copy(orderCost = orderCost,
-                        paymentErrorMessage = "Belanjaanmu kurang dari min. transaksi ${payment.gatewayName} (${CurrencyFormatUtil.convertPriceValueToIdrFormat(payment.minimumAmount, false).removeDecimalSuffix()}). Silahkan pilih pembayaran lain.",
+                        paymentErrorMessage = generateMinimumAmountPaymentErrorMessage(payment.gatewayName, payment.minimumAmount, true),
                         buttonType = OccButtonType.CHOOSE_PAYMENT, buttonState = currentState)
                 _orderPayment = payment.copy(isCalculationError = true)
                 orderPayment.value = _orderPayment
@@ -1424,13 +1440,13 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                     currentState = OccButtonState.DISABLE
                 }
                 orderTotal.value = orderTotal.value.copy(orderCost = orderCost,
-                        paymentErrorMessage = "Belanjaanmu melebihi limit transaksi ${payment.gatewayName} (${CurrencyFormatUtil.convertPriceValueToIdrFormat(payment.maximumAmount, false).removeDecimalSuffix()}).",
+                        paymentErrorMessage = generateMaximumAmountPaymentErrorMessage(payment.gatewayName, payment.maximumAmount, false),
                         buttonType = OccButtonType.PAY, buttonState = currentState)
                 _orderPayment = payment.copy(isCalculationError = true)
                 orderPayment.value = _orderPayment
             } else {
                 orderTotal.value = orderTotal.value.copy(orderCost = orderCost,
-                        paymentErrorMessage = "Belanjaanmu melebihi limit transaksi ${payment.gatewayName} (${CurrencyFormatUtil.convertPriceValueToIdrFormat(payment.maximumAmount, false).removeDecimalSuffix()}). Silahkan pilih pembayaran lain.",
+                        paymentErrorMessage = generateMaximumAmountPaymentErrorMessage(payment.gatewayName, payment.maximumAmount, true),
                         buttonType = OccButtonType.CHOOSE_PAYMENT, buttonState = currentState)
                 _orderPayment = payment.copy(isCalculationError = true)
                 orderPayment.value = _orderPayment
@@ -1679,6 +1695,11 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         const val OVO_GATEWAY_CODE = "OVO"
         const val OVO_INSUFFICIENT_ERROR_MESSAGE = "OVO Cash kamu tidak cukup. Silahkan pilih pembayaran lain."
         const val OVO_INSUFFICIENT_CONTINUE_MESSAGE = "OVO Cash kamu tidak cukup. Silahkan klik Lanjutkan untuk top up."
+
+        const val MINIMUM_AMOUNT_ERROR_MESSAGE = "Belanjaanmu kurang dari min. transaksi"
+        const val MAXIMUM_AMOUNT_ERROR_MESSAGE = "Belanjaanmu melebihi limit transaksi"
+
+        const val CHOOSE_OTHER_PAYMENT_METHOD_MESSAGE = " Silahkan pilih pembayaran lain."
 
         const val INSTALLMENT_INVALID_MIN_AMOUNT = "Oops, tidak bisa bayar dengan cicilan karena min. pembeliannya kurang."
 

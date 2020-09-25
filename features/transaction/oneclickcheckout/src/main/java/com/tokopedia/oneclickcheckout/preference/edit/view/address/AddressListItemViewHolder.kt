@@ -17,6 +17,8 @@ class AddressListItemViewHolder(itemView: View, private val listener: AddressLis
 
     companion object {
         val LAYOUT = R.layout.card_address_list
+
+        private const val MAIN_ADDRESS_STATUS = 2
     }
 
     private val addressType = itemView.findViewById<Typography>(R.id.address_type)
@@ -46,7 +48,7 @@ class AddressListItemViewHolder(itemView: View, private val listener: AddressLis
     }
 
     private fun setPrimary(data: RecipientAddressModel) {
-        if (data.addressStatus == 2) {
+        if (data.addressStatus == MAIN_ADDRESS_STATUS) {
             lblMainAddress.visible()
         } else {
             lblMainAddress.gone()
