@@ -500,6 +500,6 @@
     </entry>
     <entry>
         <key>android_post_seq_async_sellerapp</key>
-        <value>false</value>
+        <value>true</value>
     </entry>
 </defaultsMap>
