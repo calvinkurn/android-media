@@ -61,7 +61,7 @@ public class CMInApp {
     @Expose
     @ColumnInfo(name = "s")
     @SerializedName("s")
-    public String screen = "*";
+    public String screen = "*"; //todo Rahul
 
     @Expose
     @SerializedName("d")
@@ -107,6 +107,9 @@ public class CMInApp {
 
     @ColumnInfo(name = "is_interacted")
     private boolean isInteracted = false;
+
+    @ColumnInfo(name = "customValues")
+    private String customValues = "";
 
     public CMInApp(){}
 
@@ -269,5 +272,13 @@ public class CMInApp {
 
     public void setInteracted(boolean interacted) {
         isInteracted = interacted;
+    }
+
+    public void setCustomValues(String customValues) {
+        this.customValues = customValues;
+    }
+
+    public String getCustomValues() {
+        return customValues;
     }
 }

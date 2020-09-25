@@ -15,6 +15,7 @@ public class RulesUtil {
         interface Payload {
             String NOTIFICATION_ID = "notificationId";
             String NOTIFICATION_TYPE = "notificationType";
+            String CUSTOM_VALUES = "customValues";
             String CAMPAIGN_ID = "campaignId";
             String CAMPAIGN_USER_TOKEN = "campaignUserToken";
             String PARENT_ID = "parentId";
@@ -24,7 +25,7 @@ public class RulesUtil {
             String CANCELLABLE = "d";
             String IS_TEST = "isTest";
             String PERST_ON = "perstOn";
-            String SCREEN_NAME = "s";
+            String SCREEN_NAME = "ss";
             String UI = "ui";
         }
     }

@@ -2,17 +2,23 @@ package com.tokopedia.notifications.inApp;
 
 import android.app.Activity;
 import android.app.Application;
+import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.FrameLayout;
 
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+
 import com.google.firebase.messaging.RemoteMessage;
+import com.tokopedia.abstraction.base.view.listener.FragmentLifecycleObserver;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.notifications.CMRouter;
+import com.tokopedia.notifications.FragmentObserver;
 import com.tokopedia.notifications.R;
 import com.tokopedia.notifications.common.IrisAnalyticsEvents;
 import com.tokopedia.notifications.inApp.ruleEngine.RulesManager;
 import com.tokopedia.notifications.inApp.ruleEngine.interfaces.DataProvider;
-import com.tokopedia.notifications.inApp.ruleEngine.repository.RepositoryManager;
 import com.tokopedia.notifications.inApp.ruleEngine.rulesinterpreter.RuleInterpreterImpl;
 import com.tokopedia.notifications.inApp.ruleEngine.storage.DataConsumerImpl;
 import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.CMInApp;
@@ -23,14 +29,18 @@ import com.tokopedia.notifications.inApp.viewEngine.CmInAppBundleConvertor;
 import com.tokopedia.notifications.inApp.viewEngine.CmInAppListener;
 import com.tokopedia.notifications.inApp.viewEngine.ElementType;
 import com.tokopedia.notifications.inApp.viewEngine.ViewEngine;
+import com.tokopedia.promotionstarget.data.notification.NotificationEntryType;
+import com.tokopedia.promotionstarget.domain.presenter.GratificationPresenter;
+
+import org.json.JSONObject;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
 
-import androidx.annotation.NonNull;
-
+import static com.tokopedia.notifications.common.CMConstant.EXTRA_BASE_MODEL;
 import static com.tokopedia.notifications.inApp.ruleEngine.RulesUtil.Constants.RemoteConfig.KEY_CM_INAPP_END_TIME_INTERVAL;
 import static com.tokopedia.notifications.inApp.viewEngine.CmInAppBundleConvertor.HOURS_24_IN_MILLIS;
+import static com.tokopedia.notifications.inApp.viewEngine.CmInAppConstant.TYPE_GRATIF;
 import static com.tokopedia.notifications.inApp.viewEngine.CmInAppConstant.TYPE_INTERSTITIAL;
 import static com.tokopedia.notifications.inApp.viewEngine.CmInAppConstant.TYPE_INTERSTITIAL_IMAGE_ONLY;
 
@@ -45,11 +55,13 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
     private CmInAppListener cmInAppListener;
     private final Object lock = new Object();
     private List<String> excludeScreenList;
+    private FragmentObserver fragmentObserver;
+    private GratificationPresenter gratificationPresenter;
 
     /*
-    * This flag is used for validation of the dialog to be displayed.
-    * This is useful for avoiding InApp dialog appearing more than once.
-    * */
+     * This flag is used for validation of the dialog to be displayed.
+     * This is useful for avoiding InApp dialog appearing more than once.
+     * */
     private Boolean isDialogShowing = false;
 
     static {
@@ -68,6 +80,7 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
     public void init(@NonNull Application application) {
         this.application = application;
         this.cmInAppListener = this;
+        gratificationPresenter = new GratificationPresenter(application);
         RulesManager.initRuleEngine(application, new RuleInterpreterImpl(), new DataConsumerImpl());
         initInAppManager();
     }
@@ -80,20 +93,27 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
 
     private void initInAppManager() {
         application.registerActivityLifecycleCallbacks(new CMActivityLifeCycle(this));
+        fragmentObserver = new FragmentObserver(this);
+        FragmentLifecycleObserver.INSTANCE.registerCallback(fragmentObserver);
     }
 
     private void updateCurrentActivity(Activity activity) {
         currentActivity = new WeakReference<>(activity);
     }
 
-    private void showInAppNotification() {
-        if (excludeScreenList != null && excludeScreenList.contains(currentActivity.get().getClass().getName()))
+    private void showInAppNotification(String name) {
+        if (excludeScreenList != null && excludeScreenList.contains(name))
             return;
         RulesManager.getInstance().checkValidity(
-                currentActivity.get().getClass().getName(),
+                name,
                 0L,
                 this
         );
+    }
+
+    private void showPopupFromPush(Bundle bundle, String name) {
+        String gratificationId = bundle.getString("gratificationId");
+        gratificationPresenter.showGratificationInApp(currentActivity, gratificationId, NotificationEntryType.PUSH);
     }
 
     @Override
@@ -119,6 +139,7 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
 
     /**
      * legacy dialog
+     *
      * @param cmInApp
      */
     private void showLegacyDialog(CMInApp cmInApp) {
@@ -144,6 +165,7 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
 
     /**
      * dialog for interstitial and interstitialImg
+     *
      * @param data
      */
     private void interstitialDialog(CMInApp data) {
@@ -160,12 +182,30 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
         }
     }
 
+    private void showGratifDialog(CMInApp data) {
+        if (getCurrentActivity() == null) return;
+
+        try {
+            String customValues = data.getCustomValues();
+            JSONObject json = new JSONObject(customValues);
+            String gratificationId = json.getString("gratificationId");
+            gratificationPresenter.showGratificationInApp(currentActivity, gratificationId,NotificationEntryType.ORGANIC);
+
+            // set flag if has dialog showing
+            isDialogShowing = true;
+        } catch (Exception e) {
+            onCMInAppInflateException(data);
+        }
+    }
+
     private void showDialog(CMInApp data) {
         switch (data.getType()) {
             case TYPE_INTERSTITIAL_IMAGE_ONLY:
             case TYPE_INTERSTITIAL:
                 interstitialDialog(data);
                 break;
+            case TYPE_GRATIF:
+                showGratifDialog(data);
             default:
                 showLegacyDialog(data);
                 break;
@@ -192,9 +232,51 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
         if (application == null) application = activity.getApplication();
         updateCurrentActivity(activity);
 
-        if (!isDialogShowing) {
-            showInAppNotification();
+        //todo Rahul - add logic to parse and show push - popup
+
+        boolean canShowPopupFromPush = false;
+        Bundle bundle = activity.getIntent().getExtras();
+        if (bundle != null) {
+            boolean isComingFromPush = bundle.keySet().contains(EXTRA_BASE_MODEL);
+            if (isComingFromPush) {
+                String gratificationId = bundle.getString("gratificationId"); //todo Remove hardcoding
+                canShowPopupFromPush = !(TextUtils.isEmpty(gratificationId));
+            }
         }
+
+        if (!isDialogShowing) {
+            if (canShowPopupFromPush) {
+                showPopupFromPush(bundle, currentActivity.get().getClass().getName());
+            } else {
+                showInAppNotification(currentActivity.get().getClass().getName());
+            }
+        }
+    }
+
+    public void onFragmentStart(Fragment fragment) {
+
+        if (!isDialogShowing) {
+            showInAppNotification(fragment.getClass().getName());
+        }
+    }
+
+    public void onFragmentSelected(Fragment fragment) {
+
+        if (!isDialogShowing) {
+            showInAppNotification(fragment.getClass().getName());
+        }
+    }
+
+    public void onFragmentStop(Fragment fragment) {
+        //todo Rahul - need to stop showning dialog - ask lalit
+    }
+
+    public void onFragmentUnSelected(Fragment fragment) {
+        //todo Rahul
+    }
+
+    public void onFragmentDestroyed(Fragment fragment) {
+        //todo Rahul
     }
 
     public void onActivityStopInternal(Activity activity) {

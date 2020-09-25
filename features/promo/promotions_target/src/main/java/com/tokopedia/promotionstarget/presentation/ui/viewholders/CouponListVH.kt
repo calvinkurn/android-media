@@ -7,7 +7,7 @@ import com.tokopedia.promotionstarget.R
 import com.tokopedia.promotionstarget.data.coupon.GetCouponDetail
 import com.tokopedia.promotionstarget.presentation.loadImageGlide
 
-class CouponListVH(itemView: View) : RecyclerView.ViewHolder(itemView) {
+open class CouponListVH(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
     companion object {
         fun getLayout() = R.layout.t_promo_item_coupons

@@ -1,0 +1,11 @@
+package com.tokopedia.abstraction.base.view.listener
+
+import androidx.fragment.app.Fragment
+
+interface FragmentLifecycleCallback{
+    fun onFragmentStart(fragment: Fragment)
+    fun onFragmentStop(fragment: Fragment)
+    fun onFragmentSelected(fragment: Fragment)
+    fun onFragmentUnSelected(fragment: Fragment)
+    fun onFragmentDestroyed(fragment: Fragment)
+}

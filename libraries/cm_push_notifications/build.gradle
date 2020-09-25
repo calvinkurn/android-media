@@ -48,6 +48,7 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.kotlinSupport
     implementation rootProject.ext.miscDependencies.coroutineCore
     implementation rootProject.ext.networkDependencies.glide
+    implementation project(rootProject.ext.features.promotionsTarget)
     implementation (rootProject.ext.playServicesDependencies.ads){
         exclude group: 'com.android.support'
     }

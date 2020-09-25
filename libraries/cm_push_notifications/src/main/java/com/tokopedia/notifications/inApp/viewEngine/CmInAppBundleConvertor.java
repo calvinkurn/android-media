@@ -66,6 +66,9 @@ public class CmInAppBundleConvertor {
             if (map.containsKey(RulesUtil.Constants.Payload.NOTIFICATION_TYPE))
                 cmInApp.setType(map.get(RulesUtil.Constants.Payload.NOTIFICATION_TYPE));
 
+            if (map.containsKey(RulesUtil.Constants.Payload.CUSTOM_VALUES))
+                cmInApp.setCustomValues(map.get(RulesUtil.Constants.Payload.CUSTOM_VALUES));
+
             if (map.containsKey(RulesUtil.Constants.Payload.SCREEN_NAME))
                 cmInApp.setScreen(map.get(RulesUtil.Constants.Payload.SCREEN_NAME));
             else
