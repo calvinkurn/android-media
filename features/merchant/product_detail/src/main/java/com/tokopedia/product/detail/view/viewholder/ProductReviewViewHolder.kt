@@ -159,12 +159,12 @@ class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetail
     private fun getRatingDrawable(param: Int): Int {
         return when (param) {
             0 -> R.drawable.ic_rating_star_zero
-            1 -> R.drawable.ic_star_one
+            1 -> R.drawable.ic_rating_star_one
             2 -> R.drawable.ic_rating_star_two
-            3 -> R.drawable.ic_gold_star_three
-            4 -> R.drawable.ic_gold_star_four
-            5 -> R.drawable.ic_gold_star_five
-            else -> com.tokopedia.gallery.R.drawable.ic_gold_star_none
+            3 -> R.drawable.ic_rating_star_three
+            4 -> R.drawable.ic_rating_star_four
+            5 -> R.drawable.ic_rating_star_five
+            else -> R.drawable.ic_rating_star_zero
         }
     }
 

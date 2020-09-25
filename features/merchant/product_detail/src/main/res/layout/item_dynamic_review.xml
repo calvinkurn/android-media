@@ -114,7 +114,7 @@
         app:layout_constraintStart_toEndOf="@id/rating_review_pdp"
         app:typographyType="body_3"
         tools:text="oleh Karinananana von Ziegezar"
-        tools:visibility="visible"/>
+        tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/txt_variant_review_pdp"
