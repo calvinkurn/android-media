@@ -5,6 +5,8 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.sellerorder.common.SomDispatcherProvider
+import com.tokopedia.sellerorder.common.util.SomConsts.KEY_WAITING_PAYMENT_ORDER_LIST_PAGING_RESULT
+import com.tokopedia.sellerorder.common.util.SomConsts.KEY_WAITING_PAYMENT_ORDER_LIST_RESULT
 import com.tokopedia.sellerorder.waitingpaymentorder.domain.GetWaitingPaymentOrderUseCase
 import com.tokopedia.sellerorder.waitingpaymentorder.domain.model.WaitingPaymentOrderRequestParam
 import com.tokopedia.sellerorder.waitingpaymentorder.presentation.model.Paging
@@ -34,9 +36,9 @@ class WaitingPaymentOrderViewModel @Inject constructor(
         launchCatchError(block = {
             val result = getWaitingPaymentOrderUseCase.execute(param)
             _waitingPaymentOrderResult.postValue(Success(
-                    (result[WaitingPaymentOrderUiModel::class.java.simpleName] as? List<WaitingPaymentOrderUiModel>).orEmpty()
+                    (result[KEY_WAITING_PAYMENT_ORDER_LIST_RESULT] as? List<WaitingPaymentOrderUiModel>).orEmpty()
             ))
-            paging = (result[Paging::class.java.simpleName] as? Paging) ?: paging
+            paging = (result[KEY_WAITING_PAYMENT_ORDER_LIST_PAGING_RESULT] as? Paging) ?: paging
         }, onError = {
             _waitingPaymentOrderResult.postValue(Fail(it))
         })

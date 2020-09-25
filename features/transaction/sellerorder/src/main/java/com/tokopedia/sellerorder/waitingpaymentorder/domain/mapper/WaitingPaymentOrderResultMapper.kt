@@ -1,5 +1,7 @@
 package com.tokopedia.sellerorder.waitingpaymentorder.domain.mapper
 
+import com.tokopedia.sellerorder.common.util.SomConsts.KEY_WAITING_PAYMENT_ORDER_LIST_PAGING_RESULT
+import com.tokopedia.sellerorder.common.util.SomConsts.KEY_WAITING_PAYMENT_ORDER_LIST_RESULT
 import com.tokopedia.sellerorder.waitingpaymentorder.domain.model.WaitingPaymentOrderResponse
 import com.tokopedia.sellerorder.waitingpaymentorder.presentation.model.Paging
 import com.tokopedia.sellerorder.waitingpaymentorder.presentation.model.WaitingPaymentOrderUiModel
@@ -12,7 +14,7 @@ import javax.inject.Inject
 class WaitingPaymentOrderResultMapper @Inject constructor() {
     fun mapDomainToModelData(result: WaitingPaymentOrderResponse.Data.WaitingPaymentOrder): Map<String, Any> {
         return mapOf(
-                WaitingPaymentOrderUiModel::class.java.simpleName to result.orders.map {
+                KEY_WAITING_PAYMENT_ORDER_LIST_RESULT to result.orders.map {
                     WaitingPaymentOrderUiModel(
                             orderId = it.orderId,
                             paymentDeadline = it.paymentDeadline,
@@ -29,7 +31,7 @@ class WaitingPaymentOrderResultMapper @Inject constructor() {
                             isExpanded = false
                     )
                 },
-                Paging::class.java.simpleName to Paging(
+                KEY_WAITING_PAYMENT_ORDER_LIST_PAGING_RESULT to Paging(
                         nextPaymentDeadline = result.cursorPaymentDeadline
                 )
         )
