@@ -8,11 +8,11 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
-import com.tokopedia.sellerhome.common.coroutine.SellerHomeCoroutineDispatcher
+import com.tokopedia.seller.menu.common.coroutine.SellerHomeCoroutineDispatcher
 import com.tokopedia.sellerhome.common.viewmodel.NonNullLiveData
-import com.tokopedia.sellerhome.settings.domain.usecase.GetAllShopInfoUseCase
-import com.tokopedia.sellerhome.settings.view.uimodel.base.partialresponse.PartialSettingSuccessInfoType
-import com.tokopedia.sellerhome.settings.view.uimodel.shopinfo.SettingShopInfoUiModel
+import com.tokopedia.seller.menu.common.domain.usecase.GetAllShopInfoUseCase
+import com.tokopedia.seller.menu.common.view.uimodel.base.partialresponse.PartialSettingSuccessInfoType
+import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.SettingShopInfoUiModel
 import com.tokopedia.shop.common.domain.interactor.GetShopFreeShippingInfoUseCase
 import com.tokopedia.shop.common.domain.interactor.GetShopFreeShippingStatusUseCase
 import com.tokopedia.usecase.coroutines.Fail
@@ -21,7 +21,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
 import javax.inject.Inject
-import javax.inject.Named
+
 class OtherMenuViewModel @Inject constructor(
     private val dispatcher: SellerHomeCoroutineDispatcher,
     private val getAllShopInfoUseCase: GetAllShopInfoUseCase,

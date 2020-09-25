@@ -94,6 +94,7 @@ dependencies {
     implementation project(rootProject.ext.features.shopShowcase)
     implementation project(rootProject.ext.features.voucherCreation)
     implementation project(rootProject.ext.features.sellerSearch)
+    implementation project(rootProject.ext.features.activation)
     implementation project(rootProject.ext.features.createpost)
     implementation project(rootProject.ext.features.kol)
     implementation project(rootProject.ext.features.notifTroubleshooter)
@@ -101,4 +102,5 @@ dependencies {
 //    Merchant
     implementation project(rootProject.ext.features.shopPage)
     implementation project(rootProject.ext.features.statistic)
+    implementation project(rootProject.ext.features.sellerMenu)
 }

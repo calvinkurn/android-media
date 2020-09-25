@@ -56,7 +56,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
-class AddToCartDoneBottomSheet :
+open class AddToCartDoneBottomSheet :
         BottomSheetDialogFragment(),
         AddToCartDoneAddedProductViewHolder.AddToCartDoneAddedProductListener,
         HasComponent<ProductDetailComponent>,
@@ -97,6 +97,13 @@ class AddToCartDoneBottomSheet :
 
     fun setDismissListener(dismissListener: BottomSheetDismissListener) {
         this.dismissListener = dismissListener
+    }
+
+    fun getRecyclerView(): RecyclerView? {
+        if(::recyclerView.isInitialized) {
+            return recyclerView
+        }
+        return null
     }
 
     private fun configView(parentView: View) {

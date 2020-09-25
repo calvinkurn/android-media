@@ -22,7 +22,6 @@ import com.tokopedia.topads.edit.di.TopAdsEditComponent
 import com.tokopedia.topads.edit.utils.Constants.BUDGET_LIMITED
 import com.tokopedia.topads.edit.utils.Constants.DAILY_BUDGET
 import com.tokopedia.topads.edit.utils.Constants.DEBOUNCE_CONST
-import com.tokopedia.topads.edit.utils.Constants.GROUPKEY
 import com.tokopedia.topads.edit.utils.Constants.GROUP_ID
 import com.tokopedia.topads.edit.utils.Constants.GROUP_NAME
 import com.tokopedia.topads.edit.utils.Constants.MULTIPLIER
@@ -56,6 +55,7 @@ class EditGroupAdFragment : BaseDaggerFragment() {
     private var productId: MutableList<String> = mutableListOf()
     private var groupId: Int? = 0
     private var priceDaily = 0
+    private var groupName:String = ""
     private val viewModelProvider by lazy {
         ViewModelProviders.of(this, viewModelFactory)
     }
@@ -98,6 +98,8 @@ class EditGroupAdFragment : BaseDaggerFragment() {
     }
 
     private fun onSuccessGroupInfo(data: GroupInfoResponse.TopAdsGetPromoGroup.Data) {
+        groupName = data.groupName
+        group_name?.textFieldInput?.setText(data.groupName)
         budget?.textFieldInput?.setText(data.priceBid.toString())
         priceDaily = data.priceDaily
         if (priceDaily != 0) {
@@ -164,7 +166,7 @@ class EditGroupAdFragment : BaseDaggerFragment() {
     }
 
     private fun onErrorGroupName(error: String) {
-        if (group_name?.textFieldInput?.text.toString() != arguments?.getString(GROUPKEY)) {
+        if (group_name?.textFieldInput?.text.toString() != groupName) {
             group_name?.setError(true)
             validation1 = false
             actionEnable()
@@ -178,9 +180,10 @@ class EditGroupAdFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        groupId = arguments?.getString(GROUP_ID)?.toInt()
-        sharedViewModel.setGroupName(arguments?.getString(GROUPKEY) ?: " ")
-        sharedViewModel.setGroupId(arguments?.getString(GROUP_ID)?.toInt() ?: 0)
+        if(arguments?.getString(GROUP_ID)?.isNotEmpty()!!) {
+            groupId = arguments?.getString(GROUP_ID)?.toInt()
+            sharedViewModel.setGroupId(arguments?.getString(GROUP_ID)?.toInt() ?: 0)
+        }
         if (btnUnlimitedBudget.isChecked) {
             daily_budget?.visibility = View.GONE
         }
@@ -255,7 +258,6 @@ class EditGroupAdFragment : BaseDaggerFragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        group_name?.textFieldInput?.setText(arguments?.getString(GROUPKEY))
         viewModel.getGroupInfo(groupId.toString(), this::onSuccessGroupInfo)
         sharedViewModel.getProuductIds().observe(viewLifecycleOwner, Observer {
             productId = it
@@ -282,7 +284,7 @@ class EditGroupAdFragment : BaseDaggerFragment() {
             dataMap[DAILY_BUDGET] = getCurrentDailyBudget()
             dataMap[GROUP_ID] = groupId
             dataMap[BUDGET_LIMITED] = btnUnlimitedBudget.isChecked
-            dataMap[NAME_EDIT] = group_name?.textFieldInput?.text?.toString() != arguments?.getString(GROUPKEY)
+            dataMap[NAME_EDIT] = group_name?.textFieldInput?.text?.toString() != groupName
         } catch (e: NumberFormatException) {
         }
         return dataMap

@@ -48,4 +48,5 @@
     <color name="detail_text_color">#31353b</color>
     <color name="green_template">#f3fef3</color>
     <color name="gray_disable_button_text">#31353B</color>
+    <color name="gray_product_desc">#AD31353B</color>
 </resources>
