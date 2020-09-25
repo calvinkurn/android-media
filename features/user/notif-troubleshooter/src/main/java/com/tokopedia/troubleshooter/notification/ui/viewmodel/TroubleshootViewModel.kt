@@ -140,8 +140,13 @@ class TroubleshootViewModel @Inject constructor(
 
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     override fun deviceSetting() {
+        if (!notificationCompat.isNotificationEnabled()) {
+            _deviceSetting.value = Fail(Throwable(""))
+            return
+        }
+
         if (notificationChannel.hasNotificationChannel()) {
-            // check status
+            // check status channel
             if (notificationChannel.isNotificationChannelEnabled()) {
                 _deviceSetting.value = Fail(Throwable(""))
                 return
