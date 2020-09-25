@@ -125,6 +125,7 @@ import kotlinx.android.synthetic.main.bottomsheet_send_email.*
 import kotlinx.android.synthetic.main.bottomsheet_send_email.view.*
 import kotlinx.android.synthetic.main.fragment_uoh_list.*
 import kotlinx.coroutines.*
+import java.lang.Exception
 import java.net.URLDecoder
 import java.text.SimpleDateFormat
 import java.util.*
@@ -1586,18 +1587,27 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     }
 
     private fun doChatSeller(appUrl: String, order: UohListOrder.Data.UohOrders.Order) {
-        val parser = JsonParser()
-        val queryParams: JsonObject = parser.parse(order.metadata.queryParams).asJsonObject
+        var invoiceCode = ""
+        var invoiceUrl = ""
+
+        try {
+            val parser = JsonParser()
+            val queryParams: JsonObject = parser.parse(order.metadata.queryParams).asJsonObject
+            invoiceCode = queryParams.get(QUERY_PARAM_INVOICE).asString
+            invoiceUrl = queryParams.get(QUERY_PARAM_INVOICE_URL).asString
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
 
         val intent = RouteManager.getIntent(context, URLDecoder.decode(appUrl, UohConsts.UTF_8))
         intent.putExtra(ApplinkConst.Chat.INVOICE_ID, order.verticalID)
-        intent.putExtra(ApplinkConst.Chat.INVOICE_CODE, queryParams.get(QUERY_PARAM_INVOICE).asString)
+        intent.putExtra(ApplinkConst.Chat.INVOICE_CODE, invoiceCode)
         if (order.metadata.products.isNotEmpty()) {
             intent.putExtra(ApplinkConst.Chat.INVOICE_TITLE, order.metadata.products.first().title)
             intent.putExtra(ApplinkConst.Chat.INVOICE_IMAGE_URL, order.metadata.products.first().imageURL)
         }
         intent.putExtra(ApplinkConst.Chat.INVOICE_DATE, order.metadata.paymentDateStr)
-        intent.putExtra(ApplinkConst.Chat.INVOICE_URL, queryParams.get(QUERY_PARAM_INVOICE_URL).asString)
+        intent.putExtra(ApplinkConst.Chat.INVOICE_URL, invoiceUrl)
         intent.putExtra(ApplinkConst.Chat.INVOICE_STATUS_ID, order.verticalStatus)
         intent.putExtra(ApplinkConst.Chat.INVOICE_STATUS, order.metadata.status.label)
         intent.putExtra(ApplinkConst.Chat.INVOICE_TOTAL_AMOUNT, order.metadata.totalPrice.value)
