@@ -8,8 +8,8 @@
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/ivWaitingOrderTips"
-        android:layout_width="56dp"
-        android:layout_height="56dp" />
+        android:layout_width="@dimen/waiting_order_tips_icon_size"
+        android:layout_height="@dimen/waiting_order_tips_icon_size" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvWaitingOrderTipsDescription"

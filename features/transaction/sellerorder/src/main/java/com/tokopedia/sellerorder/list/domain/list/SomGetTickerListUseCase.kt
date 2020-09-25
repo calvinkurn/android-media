@@ -36,7 +36,7 @@ class SomGetTickerListUseCase @Inject constructor(private val useCase: GraphqlUs
     }
 
     companion object {
-        val QUERY = """
+        private val QUERY = """
             query OrderTickers(${'$'}input:OrderTickersArgs!) {
              orderTickers(input:${'$'}input) {
                 user_id

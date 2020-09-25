@@ -326,4 +326,7 @@
 
     <string name="btn_waiting_payment_check_and_set_Stock"><![CDATA[Cek & Atur Stok]]></string>
     <string name="btn_reload">Muat Ulang</string>
+
+    <string name="label_payment_deadline">Batas Pembayaran:</string>
+    <string name="label_buyer_and_place_name">Pembeli:</string>
 </resources>

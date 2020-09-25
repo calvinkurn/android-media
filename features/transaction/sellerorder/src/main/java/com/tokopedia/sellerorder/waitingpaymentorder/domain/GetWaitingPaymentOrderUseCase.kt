@@ -26,70 +26,12 @@ class GetWaitingPaymentOrderUseCase @Inject constructor(
         return mapper.mapDomainToModelData(useCase.executeOnBackground().waitingPaymentOrder)
     }
 
-//    suspend fun execute(param: WaitingPaymentOrderRequestParam): Map<String, Any> {
-//        return when (Random.nextInt(1, 3)) {
-//            1 -> mapper.mapDomainToModelData(generateDummyData(param))
-//            2 -> throw Exception("Wkwk iseng aja si")
-//            else -> mapper.mapDomainToModelData(generateEmptyData(param))
-//        }
-//    }
-//
-//    private fun generateEmptyData(param: WaitingPaymentOrderRequestParam): WaitingPaymentOrderResponse.Data.WaitingPaymentOrder {
-//        return WaitingPaymentOrderResponse.Data.WaitingPaymentOrder(
-//                totalDataPerBatch = 5,
-//                cursorPaymentDeadline = 0L,
-//                orders = emptyList()
-//        )
-//    }
-//
-//    private fun generateDummyData(param: WaitingPaymentOrderRequestParam): WaitingPaymentOrderResponse.Data.WaitingPaymentOrder {
-//        val randomProductCount = (Math.random() * 15).toInt() + 1
-//        return WaitingPaymentOrderResponse.Data.WaitingPaymentOrder(
-//                totalDataPerBatch = 5,
-//                cursorPaymentDeadline = Random.nextLong(),
-//                orders = createDummyOrders(5, randomProductCount)
-//        )
-//    }
-//
-//    private fun createDummyOrders(numOfOrder: Int, randomProductCount: Int): List<WaitingPaymentOrderResponse.Data.WaitingPaymentOrder.Order> {
-//        val orders = arrayListOf<WaitingPaymentOrderResponse.Data.WaitingPaymentOrder.Order>()
-//        for (i in 0 until numOfOrder) {
-//            orders.add(
-//                    WaitingPaymentOrderResponse.Data.WaitingPaymentOrder.Order(
-//                            orderId = Random.nextInt().toString(),
-//                            paymentDeadline = "${(Math.random() * 30.0).toInt() + 1} Sep, 2020",
-//                            buyerNameAndPlace = "Y******n (Jakarta Selatan)",
-//                            products = createDummyProducts(randomProductCount)
-//                    )
-//            )
-//        }
-//
-//        return orders
-//    }
-//
-//    private fun createDummyProducts(randomProductCount: Int): List<WaitingPaymentOrderResponse.Data.WaitingPaymentOrder.Order.Product> {
-//        val productUiModels = arrayListOf<WaitingPaymentOrderResponse.Data.WaitingPaymentOrder.Order.Product>()
-//        for (i in 0 until randomProductCount) {
-//            productUiModels.add(
-//                    WaitingPaymentOrderResponse.Data.WaitingPaymentOrder.Order.Product(
-//                            id = Random.nextInt().toString(),
-//                            name = "ProductUiModel ${Random.nextInt(1, 100)}",
-//                            picture = "https://ichef.bbci.co.uk/news/976/cpsprodpb/12A9B/production/_111434467_gettyimages-1143489763.jpg",
-//                            quantity = Random.nextInt(1, 20),
-//                            price = "Rp. ${Random.nextInt(1, 10)}.${Random.nextInt(100, 999)}"
-//                    )
-//            )
-//        }
-//
-//        return productUiModels
-//    }
-//
     private fun generateParam(param: WaitingPaymentOrderRequestParam): Map<String, Any?> {
         return mapOf(SomConsts.PARAM_INPUT to param)
     }
 
     companion object {
-        val QUERY = """
+        private val QUERY = """
             query OrderListWaitingPayment(${'$'}input:OrderListWaitingPaymentRequest!) {
               orderListWaitingPayment(input:${'$'}input) {
                 list {
