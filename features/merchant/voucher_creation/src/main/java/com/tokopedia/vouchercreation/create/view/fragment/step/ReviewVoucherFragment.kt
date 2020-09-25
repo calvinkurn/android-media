@@ -47,6 +47,7 @@ import com.tokopedia.vouchercreation.create.view.enums.VoucherTargetCardType
 import com.tokopedia.vouchercreation.create.view.fragment.bottomsheet.GeneralExpensesInfoBottomSheetFragment
 import com.tokopedia.vouchercreation.create.view.fragment.bottomsheet.TermsAndConditionBottomSheetFragment
 import com.tokopedia.vouchercreation.create.view.fragment.bottomsheet.VoucherDisplayBottomSheetFragment
+import com.tokopedia.vouchercreation.create.view.painter.SquareVoucherPainter
 import com.tokopedia.vouchercreation.create.view.painter.VoucherPreviewPainter
 import com.tokopedia.vouchercreation.create.view.uimodel.initiation.BannerBaseUiModel
 import com.tokopedia.vouchercreation.create.view.uimodel.initiation.PostBaseUiModel
@@ -98,6 +99,7 @@ class ReviewVoucherFragment : BaseDetailFragment() {
 
         private const val ERROR_CREATE = "Error create voucher"
         private const val ERROR_UPDATE = "Error update voucher"
+        private const val ERROR_DRAW = "Error drawing voucher"
     }
 
     private var getVoucherReviewUiModel: () -> VoucherReviewUiModel = { VoucherReviewUiModel() }
@@ -200,6 +202,8 @@ class ReviewVoucherFragment : BaseDetailFragment() {
     private val impressHolder = ImpressHolder()
 
     private var isWaitingForResult = false
+
+    private var postVoucherUiModel: PostVoucherUiModel? = null
 
     private var squareVoucherBitmap: Bitmap? = null
         set(value){
@@ -443,6 +447,8 @@ class ReviewVoucherFragment : BaseDetailFragment() {
                             MvcErrorHandler.logToCrashlytics(result.throwable, ERROR_UPDATE)
                         }
                     }
+                    refreshFooterButton()
+                    loadingDialog?.dismiss()
                 }
                 isWaitingForResult = false
             }
@@ -467,10 +473,6 @@ class ReviewVoucherFragment : BaseDetailFragment() {
             voucherInfoSection = getVoucherInfoSection(targetType, voucherName, displayedPromoCode, true)
 
             val reviewInfoList = mutableListOf(
-                    with(voucherReviewUiModel) {
-
-                        getVoucherPreviewSection(voucherType, voucherName, shopAvatarUrl, shopName, displayedPromoCode, postDisplayedDate)
-                    },
                     voucherInfoSection,
                     DividerUiModel(DividerUiModel.THIN),
                     getVoucherBenefitSection(voucherType, minPurchase, voucherQuota, true),
@@ -483,6 +485,12 @@ class ReviewVoucherFragment : BaseDetailFragment() {
                             context?.getString(R.string.mvc_review_agreement).toBlankOrString(),
                             context?.getString(R.string.mvc_review_terms).toBlankOrString())
             )
+
+            with(voucherReviewUiModel) {
+                postVoucherUiModel = getVoucherPreviewSection(voucherType, voucherName, shopAvatarUrl, shopName, displayedPromoCode, postDisplayedDate).also {
+                    reviewInfoList.add(0, it)
+                }
+            }
 
             isPromoCodeEligible = true
 
@@ -527,7 +535,7 @@ class ReviewVoucherFragment : BaseDetailFragment() {
 
     private fun createVoucher() {
         getBannerBitmap()?.let startCheck@ { bannerBitmap ->
-            squareVoucherBitmap?.let { squareBitmap ->
+            getSquareVoucherBitmap { squareBitmap ->
                 viewModel.createVoucher(
                         bannerBitmap,
                         squareBitmap,
@@ -543,8 +551,8 @@ class ReviewVoucherFragment : BaseDetailFragment() {
             drawNullBanner()
         } else {
             getBannerBitmap()?.let { bannerBitmap ->
-                squareVoucherBitmap?.let { squareBitmap ->
-                    getVoucherId()?.let { voucherId ->
+                getVoucherId()?.let { voucherId ->
+                    getSquareVoucherBitmap { squareBitmap ->
                         viewModel.updateVoucher(
                                 bannerBitmap,
                                 squareBitmap,
@@ -567,16 +575,7 @@ class ReviewVoucherFragment : BaseDetailFragment() {
         failedCreateVoucherDialog?.dismiss()
         loadingDialog?.show()
         isWaitingForResult = true
-        getBannerBitmap()?.let { bannerBitmap ->
-            squareVoucherBitmap?.let { squareBitmap ->
-                viewModel.createVoucher(
-                        bannerBitmap,
-                        squareBitmap,
-                        CreateVoucherParam.mapToParam(
-                                getVoucherReviewUiModel(), getToken()
-                        ))
-            }
-        }
+        createVoucher()
     }
 
     private fun onDialogRequestHelp() {
@@ -655,6 +654,41 @@ class ReviewVoucherFragment : BaseDetailFragment() {
                 (adapter.data[index] as? FooterButtonUiModel)?.isLoading = false
                 notifyItemChanged(index)
             }
+        }
+    }
+
+    /**
+     * This method is used to create reliable voucher image every time square voucher bitmap is needed.
+     */
+    private fun getSquareVoucherBitmap(onSuccessGetBitmap: (Bitmap) -> Unit) {
+        context?.run {
+            Glide.with(this)
+                    .asDrawable()
+                    .load(getPostBaseUiModel().postBaseUrl)
+                    .signature(ObjectKey(System.currentTimeMillis().toString()))
+                    .listener(object : RequestListener<Drawable> {
+                        override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
+                            refreshFooterButton()
+                            loadingDialog?.dismiss()
+                            failedCreateVoucherDialog?.show()
+                            e?.run {
+                                MvcErrorHandler.logToCrashlytics(this, ERROR_DRAW)
+                            }
+                            return false
+                        }
+
+                        override fun onResourceReady(resource: Drawable, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+                            activity?.runOnUiThread {
+                                val bitmap = resource.toBitmap()
+                                val painter = SquareVoucherPainter(this@run, bitmap, onSuccessGetBitmap)
+                                postVoucherUiModel?.let {
+                                    painter.drawInfo(it)
+                                }
+                            }
+                            return false
+                        }
+                    })
+                    .submit()
         }
     }
 
