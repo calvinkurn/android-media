@@ -129,7 +129,7 @@ class PromoCheckoutListDealsFragment() : BasePromoCheckoutListFragment(), PromoC
         if (isCouponActive) {
             promoCheckoutListPresenter.getListPromo(serviceId, categoryID, page, resources)
         }
-        promoCheckoutListPresenter.getListTravelCollectiveBanner(resources)
+        promoCheckoutListDealsPresenter.getListTravelCollectiveBanner(resources)
     }
 
     companion object {

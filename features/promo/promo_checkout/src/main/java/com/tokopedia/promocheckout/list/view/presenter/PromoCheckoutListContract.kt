@@ -25,6 +25,5 @@ interface PromoCheckoutListContract {
     interface Presenter : CustomerPresenter<View> {
         fun getListPromo(serviceId: String, categoryId: Int, page: Int, resources: Resources)
         fun getListLastSeen(categoryIDs: List<Int>, resources: Resources)
-        fun getListTravelCollectiveBanner(resources: Resources)
     }
 }

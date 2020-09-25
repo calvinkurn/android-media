@@ -44,7 +44,7 @@ class PromoCheckoutListModule {
     @PromoCheckoutListScope
     @Provides
     fun providePresenter(): PromoCheckoutListPresenter {
-        return PromoCheckoutListPresenter(GraphqlUseCase(), GraphqlUseCase(), GraphqlUseCase())
+        return PromoCheckoutListPresenter(GraphqlUseCase(), GraphqlUseCase())
     }
 
     @PromoCheckoutListScope
@@ -106,8 +106,8 @@ class PromoCheckoutListModule {
 
     @PromoCheckoutListScope
     @Provides
-    fun provideDealsPresenter(promoCheckoutListDealsUseCase: PromoCheckoutDealsRepository, compositeSubscription: CompositeSubscription): PromoCheckoutListDealsPresenter {
-        return PromoCheckoutListDealsPresenter(promoCheckoutListDealsUseCase, compositeSubscription)
+    fun provideDealsPresenter(promoCheckoutListDealsUseCase: PromoCheckoutDealsRepository, compositeSubscription: CompositeSubscription, graphqlUseCase: GraphqlUseCase): PromoCheckoutListDealsPresenter {
+        return PromoCheckoutListDealsPresenter(promoCheckoutListDealsUseCase, compositeSubscription, graphqlUseCase)
     }
 
     @PromoCheckoutListScope
