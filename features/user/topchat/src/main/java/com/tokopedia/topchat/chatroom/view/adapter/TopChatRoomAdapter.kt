@@ -17,6 +17,7 @@ import com.tokopedia.topchat.chatroom.view.adapter.util.ChatRoomDiffUtil
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.BroadcastSpamHandlerViewHolder.Companion.PAYLOAD_UPDATE_STATE
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.ProductCarouselListAttachmentViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.TopchatProductAttachmentViewHolder
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.AdapterListener
 import com.tokopedia.topchat.chatroom.view.uimodel.HeaderDateUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.ProductCarouselUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.BroadcastSpamHandlerUiModel
@@ -27,7 +28,8 @@ import com.tokopedia.topchat.chatroom.view.viewmodel.BroadcastSpamHandlerUiModel
 class TopChatRoomAdapter(
         private val context: Context?,
         private val adapterTypeFactory: TopChatTypeFactoryImpl
-) : BaseChatAdapter(adapterTypeFactory), ProductCarouselListAttachmentViewHolder.Listener {
+) : BaseChatAdapter(adapterTypeFactory), ProductCarouselListAttachmentViewHolder.Listener,
+        AdapterListener {
 
     private val productCarouselState: ArrayMap<Int, Parcelable> = ArrayMap()
     private var bottomMostHeaderDate: HeaderDateUiModel? = null
@@ -43,7 +45,7 @@ class TopChatRoomAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder<out Visitable<*>> {
-        return adapterTypeFactory.createViewHolder(parent, viewType, this)
+        return adapterTypeFactory.createViewHolder(parent, viewType, this, this)
     }
 
     override fun saveProductCarouselState(position: Int, state: Parcelable?) {
@@ -58,6 +60,12 @@ class TopChatRoomAdapter(
 
     override fun addElement(visitables: MutableList<out Visitable<Any>>?) {
         addTopData(visitables)
+    }
+
+    override fun isNextItemSender(adapterPosition: Int, isSender: Boolean): Boolean {
+        val nextItem = visitables.getOrNull(adapterPosition - 1) as? SendableViewModel
+                ?: return true
+        return isSender == nextItem.isSender
     }
 
     fun showRetryFor(model: ImageUploadViewModel, b: Boolean) {

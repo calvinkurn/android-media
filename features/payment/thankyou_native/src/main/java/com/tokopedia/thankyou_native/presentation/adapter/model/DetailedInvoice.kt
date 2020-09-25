@@ -54,15 +54,10 @@ data class BenefitMap(
 
 data class PaymentModeMap(
         val paymentModeStr: String,
-        val paidAmountStr: String
+        val paidAmountStr: String,
+        val gatewayCode: String?
 )
 
-data class PaymentMethodModel(val paymentMethodStr : String) : Visitable<InvoiceTypeFactory>{
-    override fun type(typeFactory: InvoiceTypeFactory): Int {
-        return typeFactory.type(this)
-    }
-
-}
 
 class PurchasedProductTag : Visitable<InvoiceTypeFactory> {
     override fun type(typeFactory: InvoiceTypeFactory): Int {

@@ -54,6 +54,12 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
     protected var listMenu = mutableListOf<TelcoTabItem>()
     protected var operatorData: TelcoCatalogPrefixSelect = TelcoCatalogPrefixSelect(RechargeCatalogPrefixSelect())
 
+    override var categoryId: Int = 0
+        set(value) {
+            field = value
+            categoryName = topupAnalytics.getCategoryName(value)
+        }
+
     @Inject
     lateinit var permissionCheckerHelper: PermissionCheckerHelper
     @Inject
@@ -68,7 +74,7 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
     }
 
     private fun subscribeUi() {
-        viewModel.selectedRecentNumber.observe(this, Observer {
+        viewModel.selectedRecentNumber.observe(viewLifecycleOwner, Observer {
             onClickItemRecentNumber(it)
         })
     }

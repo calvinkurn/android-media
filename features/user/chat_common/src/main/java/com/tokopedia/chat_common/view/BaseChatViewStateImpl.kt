@@ -43,7 +43,7 @@ open class BaseChatViewStateImpl(
     protected lateinit var rootView: ViewGroup
     protected lateinit var recyclerView: RecyclerView
     protected lateinit var replyEditText: EditText
-    protected lateinit var replyBox: RelativeLayout
+    protected lateinit var replyBox: ViewGroup
     protected lateinit var actionBox: LinearLayout
     protected lateinit var sendButton: View
     protected lateinit var notifier: View
@@ -141,7 +141,7 @@ open class BaseChatViewStateImpl(
 
     }
 
-   override fun loadAvatar(avatarUrl: String) {
+    override fun loadAvatar(avatarUrl: String) {
         val avatar = toolbar.findViewById<ImageView>(R.id.user_avatar)
         ImageHandler.loadImageCircle2(avatar.context, avatar, avatarUrl,
                 R.drawable.ic_default_avatar)

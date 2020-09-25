@@ -57,6 +57,7 @@ internal class SearchProductRedirectionTest: ProductListPresenterTestFixtures() 
 
             verifyShowLoading(productListView)
 
+            productListView.sendTrackingGTMEventSearchAttempt(any())
             productListView.redirectSearchToAnotherPage(redirectApplink)
 
             verifyHideLoading(productListView)
@@ -67,29 +68,5 @@ internal class SearchProductRedirectionTest: ProductListPresenterTestFixtures() 
         val startFrom = productListPresenter.startFrom
 
         startFrom shouldBe SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_ROWS.toInt()
-    }
-
-    @Test
-    fun `Load Data Success With Redirection Response Code 9`() {
-        val searchProductModel = "searchproduct/redirection/redirection-response-code-9.json".jsonToObject<SearchProductModel>()
-        `Given Search Product API will return SearchProductModel with redirection`(searchProductModel)
-
-        `When Load Data`()
-
-        `Then verify use case request params START should be 0`()
-        `Then verify view interaction for redirection with response code 9`(searchProductModel.searchProduct.data.redirection.redirectApplink)
-    }
-
-    private fun `Then verify view interaction for redirection with response code 9`(redirectApplink: String) {
-        verifyOrder {
-            productListView.isAnyFilterActive
-
-            verifyShowLoading(productListView)
-
-            productListView.sendTrackingGTMEventSearchAttempt(any())
-            productListView.redirectSearchToAnotherPage(redirectApplink)
-
-            verifyHideLoading(productListView)
-        }
     }
 }

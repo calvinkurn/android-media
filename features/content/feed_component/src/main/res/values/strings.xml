@@ -78,4 +78,10 @@
 
     <string name="feed_header_time_format" formatted="false">%s • %s</string>
 
+    <string name="content_desc_authorImage">image profil</string>
+    <string name="content_desc_authorBadge">image badge</string>
+    <string name="content_desc_authorTitle">text nama toko</string>
+    <string name="content_desc_headerAction">button action</string>
+    <string name="content_desc_menu">button menu</string>
+    <string name="content_desc_caption">text caption</string>
 </resources>

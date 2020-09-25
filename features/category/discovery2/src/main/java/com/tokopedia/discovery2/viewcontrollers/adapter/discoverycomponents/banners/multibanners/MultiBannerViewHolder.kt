@@ -10,7 +10,6 @@ import androidx.lifecycle.Observer
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalTestApp
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.DataItem
@@ -103,7 +102,7 @@ class MultiBannerViewHolder(private val customItemView: View, val fragment: Frag
     }
 
     private fun sendImpressionEventForBanners(data: List<DataItem>) {
-        (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackBannerImpression(data)
+        (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackBannerImpression(data, multiBannerViewModel.getComponentPosition())
     }
 
     private fun checkSubscriptionStatus(position: Int) {
@@ -112,7 +111,7 @@ class MultiBannerViewHolder(private val customItemView: View, val fragment: Frag
 
     private fun setClickOnBanners(itemData: DataItem, index: Int) {
         bannersItemList[index].bannerImageView.setOnClickListener {
-            multiBannerViewModel.onBannerClicked(index)
+            multiBannerViewModel.onBannerClicked(index, context)
             (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackBannerClick(itemData, index)
         }
     }
