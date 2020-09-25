@@ -45,7 +45,7 @@ abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutLis
 
     @Inject
     lateinit var promoCheckoutListPresenter: PromoCheckoutListPresenter
-    private val promoLastSeenAdapter: PromoLastSeenAdapter by lazy { PromoLastSeenAdapter(arrayListOf(), false, this) }
+    private val promoLastSeenAdapter: PromoLastSeenAdapter by lazy { PromoLastSeenAdapter(arrayListOf(),this) }
 
     @Inject
     lateinit var trackingPromoCheckoutUtil: TrackingPromoCheckoutUtil
@@ -180,19 +180,11 @@ abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutLis
 
     override fun renderListLastSeen(data: List<PromoCheckoutLastSeenModel>, isDeals: Boolean) {
         if (!data.isNullOrEmpty()) {
-            if (isDeals) {
-                promoLastSeenAdapter.listData.clear()
-                promoLastSeenAdapter.listData.addAll(data)
-                promoLastSeenAdapter.isDeals = isDeals
-                promoLastSeenAdapter.notifyDataSetChanged()
-                populateLastSeen()
-            } else {
-                promoLastSeenAdapter.listData.clear()
-                promoLastSeenAdapter.listData.addAll(data)
-                promoLastSeenAdapter.isDeals = false
-                promoLastSeenAdapter.notifyDataSetChanged()
-                populateLastSeen()
-            }
+            promoLastSeenAdapter.listData.clear()
+            promoLastSeenAdapter.listData.addAll(data)
+            promoLastSeenAdapter.isDeals = isDeals
+            promoLastSeenAdapter.notifyDataSetChanged()
+            populateLastSeen()
         }
     }
 
