@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.utils.R
 import com.tokopedia.utils.permission.PermissionCheckerHelper.Companion
 import com.tokopedia.utils.permission.PermissionCheckerHelper.Companion.PERMISSION_ACCESS_COARSE_LOCATION
@@ -275,21 +276,20 @@ class PermissionCheckerHelper {
                                 rationaleText: String) {
 
         // todo: change to dialog unify and remove tkpddesign dependency
-        val dialog = PermissionDialog(activity)
+        val dialog = DialogUnify(activity, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
         dialog.setTitle(activity.getString(TEXT_TITLE))
-        dialog.setDesc(getNeedPermissionMessage(activity, permissionText, rationaleText))
-        dialog.setBtnOk(activity.getString(TEXT_OK))
-        dialog.setBtnCancel(activity.getString(TEXT_CANCEL))
-        dialog.alertDialog.setCancelable(true)
-        dialog.alertDialog.setCanceledOnTouchOutside(true)
-        dialog.setOnOkClickListener(View.OnClickListener {
-            requestPermissions(activity, permissions, REQUEST_PERMISSION_CODE)
+        dialog.setDescription(getNeedPermissionMessage(activity, permissionText, rationaleText))
+        dialog.setPrimaryCTAText(activity.getString(TEXT_OK))
+        dialog.setSecondaryCTAText(activity.getString(TEXT_CANCEL))
+        dialog.setCancelable(true)
+        dialog.setPrimaryCTAClickListener {
             dialog.dismiss()
-        })
-        dialog.setOnCancelClickListener(View.OnClickListener {
+            requestPermissions(activity, permissions, REQUEST_PERMISSION_CODE)
+        }
+        dialog.setSecondaryCTAClickListener {
             listener.onPermissionDenied(permissionText)
             dialog.dismiss()
-        })
+        }
         dialog.show()
     }
 
@@ -307,8 +307,8 @@ class PermissionCheckerHelper {
         dialog.alertDialog.setCancelable(true)
         dialog.alertDialog.setCanceledOnTouchOutside(true)
         dialog.setOnOkClickListener(View.OnClickListener {
-            requestPermissions(activity, permissions, REQUEST_PERMISSION_CODE)
             dialog.dismiss()
+            requestPermissions(activity, permissions, REQUEST_PERMISSION_CODE)
         })
         dialog.setOnCancelClickListener(View.OnClickListener {
             listener.onPermissionDenied(permissionText)
