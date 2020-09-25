@@ -195,6 +195,7 @@ public class AppsflyerAnalytics extends ContextAnalytics {
 
     public void sendEvent(String eventName, Map<String, Object> eventValue) {
         AppsFlyerLib.getInstance().trackEvent(getContext(), eventName, eventValue);
+        new AppsflyerEventValidation().validateAppsflyerData(eventName,eventValue);
     }
 
     //aliasing
