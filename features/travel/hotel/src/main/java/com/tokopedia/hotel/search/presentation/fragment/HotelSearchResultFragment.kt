@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.widget.AppCompatImageView
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -402,6 +401,8 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
 
     override fun onSubmitFilter(selectedFilter: MutableList<ParamFilterV2>) {
         bottom_action_view.visibility = View.GONE
+        trackingHotelUtil.clickSubmitFilterOnBottomSheet(context, SEARCH_SCREEN_NAME, selectedFilter)
+
         if (isShowAdvancedFilter()) {
             var sortIndex: Int? = null
             selectedFilter.forEachIndexed { index, it ->
@@ -416,7 +417,6 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
                 selectedFilter.removeAt(index)
             }
         }
-        trackingHotelUtil.clickSubmitFilterOnBottomSheet(context, SEARCH_SCREEN_NAME, selectedFilter)
         searchResultviewModel.addFilter(selectedFilter)
     }
 
