@@ -210,6 +210,9 @@ data class DynamicHomeChannelCommon(
             @SerializedName("rating")
             var rating: Int = 0,
             @Expose
+            @SerializedName("rating_float")
+            var ratingFloat: Float = 0f,
+            @Expose
             @SerializedName("count_review")
             val countReview: Int = 0,
             @Expose

@@ -426,6 +426,8 @@ data class DynamicHomeChannel(
             val hasBuyButton: Boolean = false,
             @SerializedName("rating")
             var rating: Int = 0,
+            @SerializedName("rating_float")
+            var ratingFloat: Float = 0f,
             @SerializedName("count_review")
             val countReview: Int = 0,
             @Expose

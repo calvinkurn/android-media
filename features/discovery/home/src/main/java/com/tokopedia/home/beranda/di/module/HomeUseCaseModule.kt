@@ -244,6 +244,7 @@ class HomeUseCaseModule {
             "              }\n" +
             "              has_buy_button\n" +
             "              rating\n" +
+            "              rating_float\n" +
             "              count_review\n" +
             "              benefit {\n" +
             "                 type\n" +

@@ -5,9 +5,11 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecommendationListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationItemDataModel
+import com.tokopedia.home_component.util.ConstantABTesting
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.smart_recycler_helper.SmartAbstractViewHolder
 import com.tokopedia.smart_recycler_helper.SmartListener
 
@@ -38,8 +40,9 @@ class HomeRecommendationItemViewHolder(itemView: View) : SmartAbstractViewHolder
                             productImageUrl = element.product.imageUrl,
                             isTopAds = element.product.isTopads,
                             discountPercentage = if (element.product.discountPercentage > 0) "${element.product.discountPercentage}%" else "",
-                            reviewCount = element.product.countReview,
-                            ratingCount = element.product.rating,
+                            ratingCount = if(RemoteConfigInstance.getInstance().abTestPlatform.getString(ConstantABTesting.EXPERIMENT_NAME) == ConstantABTesting.EXPERIMENT_RATING_ONLY) element.product.rating else 0,
+                            reviewCount = if(RemoteConfigInstance.getInstance().abTestPlatform.getString(ConstantABTesting.EXPERIMENT_NAME) == ConstantABTesting.EXPERIMENT_RATING_ONLY) element.product.countReview else 0,
+                            countSoldRating = if(RemoteConfigInstance.getInstance().abTestPlatform.getString(ConstantABTesting.EXPERIMENT_NAME) == ConstantABTesting.EXPERIMENT_SALES_RATING) element.product.ratingFloat.toString() else "",
                             shopLocation = element.product.shop.city,
                             isWishlistVisible = true,
                             isWishlisted = element.product.isWishlist,

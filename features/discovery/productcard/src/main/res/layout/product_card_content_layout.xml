@@ -299,6 +299,32 @@
         tools:text="Terjual 122"
         tools:visibility="gone" />
 
+    <LinearLayout
+        android:id="@+id/salesAndRating"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/product_card_text_view_integrity_height"
+        android:layout_marginTop="@dimen/product_card_text_view_integrity_margin_top"
+        android:visibility="gone"
+        tools:visibility="visible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textViewShopLocation">
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/textViewSales"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/product_card_text_view_integrity_height"
+            android:layout_marginTop="@dimen/product_card_text_view_integrity_margin_top"
+            android:gravity="center_vertical"
+            app:typographyType="small"
+            app:typographyWeight="bold"
+            tools:text="Terjual 122" />
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/salesRatingFloat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:typographyType="small"
+            tools:text="(4.8)"/>
+    </LinearLayout>
+
     <androidx.constraintlayout.widget.Barrier
         android:id="@+id/barrierCredibility"
         android:layout_width="wrap_content"
