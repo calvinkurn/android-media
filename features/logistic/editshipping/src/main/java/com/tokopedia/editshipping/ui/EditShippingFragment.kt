@@ -264,8 +264,10 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
     }
 
     override fun showErrorToast(error: String?) {
-        progressDialog?.dismiss()
-        Toast.makeText(activity, error, Toast.LENGTH_SHORT).show()
+        if(activity != null) {
+            progressDialog?.dismiss()
+            Toast.makeText(activity, error, Toast.LENGTH_SHORT).show()
+        }
     }
 
     override fun onFragmentTimeout() {

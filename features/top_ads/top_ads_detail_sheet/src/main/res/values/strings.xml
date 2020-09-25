@@ -11,4 +11,12 @@
     <string name="detail_iklan">Detail Iklan</string>
     <string name="ke_dashboard_topads">Ke Dashboard TopAds</string>
     <string name="rincian_iklan">Rincian Iklan</string>
+    <string name="topads_detail_sheet_single_ad_promotion">Atur iklan produk lebih mudah dengan membuat grup iklan baru</string>
+    <string name="topads_detail_sheet_single_ad_promotion_having_group">Atur iklan produk lebih mudah dengan menambahkan Grup Iklan yang ada</string>
+    <string name="topads_detail_sheet_ticker">Kamu sedang menggunakan Iklan Otomatis. Produk ini tidak diiklankan oleh sistem.</string>
+    <string name="topads_detail_sheet_buat_group_iklan">Buat Grup Iklan</string>
+    <string name="topads_detail_sheet_edit_ad">Atur Iklan</string>
+    <string name="topads_detail_sheet_dashboard">Lihat Dashboard TopAds</string>
+    <string name="topads_detail_sheet_auto">Atur Iklan Otomatis</string>
+    <string name="topads_detail_budget">Rp %d per klik</string>
 </resources>

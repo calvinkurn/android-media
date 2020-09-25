@@ -9,11 +9,8 @@ import com.tokopedia.autocomplete.initialstate.popularsearch.PopularSearchTitleV
 import com.tokopedia.autocomplete.initialstate.popularsearch.PopularSearchViewModel
 import com.tokopedia.autocomplete.initialstate.popularsearch.RefreshInitialStateUseCase
 import com.tokopedia.autocomplete.initialstate.popularsearch.convertPopularSearchToVisitableList
-import com.tokopedia.autocomplete.initialstate.recentsearch.DeleteRecentSearchUseCase
-import com.tokopedia.autocomplete.initialstate.recentsearch.RecentSearchTitleViewModel
-import com.tokopedia.autocomplete.initialstate.recentsearch.RecentSearchViewModel
-import com.tokopedia.autocomplete.initialstate.recentsearch.convertRecentSearchToVisitableList
 import com.tokopedia.autocomplete.initialstate.recentview.RecentViewTitleViewModel
+import com.tokopedia.autocomplete.initialstate.recentsearch.*
 import com.tokopedia.autocomplete.initialstate.recentview.convertRecentViewSearchToVisitableList
 import com.tokopedia.autocomplete.util.getShopIdFromApplink
 import com.tokopedia.discovery.common.constants.SearchApiConst
@@ -37,6 +34,7 @@ class InitialStatePresenter @Inject constructor(
     }
 
     private var listVisitable = mutableListOf<Visitable<*>>()
+    private val recentSearchToImpress = mutableListOf<Any>()
     private var searchParameter = HashMap<String, String>()
 
     override fun getQueryKey(): String {
@@ -82,7 +80,8 @@ class InitialStatePresenter @Inject constructor(
                         RECENT_SEARCH-> {
                             initialStateViewModel.addList(initialStateData)
                             initialStateData.items.withNotEmpty{
-                                onRecentSearchImpressed(this)
+                                recentSearchToImpress.addAll(getDataLayerForPromo(this))
+                                onRecentSearchImpressed(false)
                             }
                         }
                         RECENT_VIEW -> {
@@ -105,7 +104,7 @@ class InitialStatePresenter @Inject constructor(
             }
 
             listVisitable = getInitialStateResult(initialStateViewModel.list)
-            view.showInitialStateResult(listVisitable)
+            view?.showInitialStateResult(listVisitable)
         }
     }
 
@@ -114,7 +113,7 @@ class InitialStatePresenter @Inject constructor(
     }
 
     private fun onRecentViewImpressed(list: List<InitialStateItem>) {
-        view.onRecentViewImpressed(getDataLayerForRecentView(list))
+        view?.onRecentViewImpressed(getDataLayerForRecentView(list))
     }
 
     private fun getDataLayerForRecentView(list: List<InitialStateItem>): MutableList<Any> {
@@ -127,8 +126,14 @@ class InitialStatePresenter @Inject constructor(
         return dataLayerList
     }
 
-    private fun onRecentSearchImpressed(list: List<InitialStateItem>) {
-        view.onRecentSearchImpressed(getDataLayerForPromo(list))
+    private fun onRecentSearchImpressed(seeMore: Boolean) {
+        if (recentSearchToImpress.size >= RECENT_SEARCH_SEE_MORE_LIMIT && !seeMore) {
+            val impressedItem = recentSearchToImpress.take(RECENT_SEARCH_SEE_MORE_LIMIT - 1)
+            recentSearchToImpress.removeAll(impressedItem)
+            view?.onRecentSearchImpressed(impressedItem)
+        } else {
+            view?.onRecentSearchImpressed(recentSearchToImpress)
+        }
     }
 
     private fun getDataLayerForPromo(list: List<InitialStateItem>): MutableList<Any> {
@@ -142,7 +147,7 @@ class InitialStatePresenter @Inject constructor(
     }
 
     private fun onPopularSearchImpressed(list: List<InitialStateItem>) {
-        view.onPopularSearchImpressed(getDataLayerForPromo(list))
+        view?.onPopularSearchImpressed(getDataLayerForPromo(list))
     }
 
     private fun getInitialStateResult(list: MutableList<InitialStateData>): MutableList<Visitable<*>> {
@@ -151,7 +156,9 @@ class InitialStatePresenter @Inject constructor(
             when (initialStateData.id) {
                 InitialStateData.INITIAL_STATE_RECENT_SEARCH -> {
                     data.addAll(
-                            initialStateData.convertRecentSearchToVisitableList().insertTitleWithDeleteAll(initialStateData.header, initialStateData.labelAction)
+                            initialStateData.convertRecentSearchToVisitableList()
+                                .insertRecentSearchSeeMoreButton(initialStateData.items)
+                                .insertTitleWithDeleteAll(initialStateData.header, initialStateData.labelAction)
                     )
                 }
                 InitialStateData.INITIAL_STATE_RECENT_VIEW -> {
@@ -203,6 +210,14 @@ class InitialStatePresenter @Inject constructor(
     private fun MutableList<Visitable<*>>.insertDynamicTitle(featureId: String, title: String, labelAction: String): List<Visitable<*>> {
         val titleSearch = DynamicInitialStateTitleViewModel(featureId, title, labelAction)
         this.add(0, titleSearch)
+        return this
+    }
+
+    private fun MutableList<Visitable<*>>.insertRecentSearchSeeMoreButton(items: List<InitialStateItem>): MutableList<Visitable<*>> {
+        if (items.size < RECENT_SEARCH_SEE_MORE_LIMIT) return this
+
+        val viewModel = RecentSearchSeeMoreViewModel()
+        this.add(viewModel)
         return this
     }
 
@@ -303,6 +318,7 @@ class InitialStatePresenter @Inject constructor(
         override fun onNext(isSuccess: Boolean) {
             if (isSuccess) {
                 var needDelete = false
+                var totalSize = 0
                 listVisitable.forEachIndexed { _, visitable ->
                     if (visitable is RecentSearchViewModel) {
                         if (visitable.list.size == 1) {
@@ -310,14 +326,20 @@ class InitialStatePresenter @Inject constructor(
                         } else {
                             val deleted = visitable.list.find { it.title == keyword }
                             visitable.list.remove(deleted)
+                            totalSize = visitable.list.size
                         }
                     }
                 }
+
                 if (needDelete) {
                     removeRecentSearchTitle()
                     removeRecentSearch()
                 }
-                view.showInitialStateResult(listVisitable)
+
+                val seeMore = totalSize < RECENT_SEARCH_SEE_MORE_LIMIT
+                if (seeMore) removeSeeMoreRecentSearch()
+
+                view?.showInitialStateResult(listVisitable)
             }
         }
     }
@@ -330,6 +352,11 @@ class InitialStatePresenter @Inject constructor(
     private fun removeRecentSearch() {
         val recentSearchViewModel = listVisitable.filterIsInstance<RecentSearchViewModel>()
         listVisitable.removeAll(recentSearchViewModel)
+    }
+
+    private fun removeSeeMoreRecentSearch() {
+        val viewModel = listVisitable.filterIsInstance<RecentSearchSeeMoreViewModel>()
+        listVisitable.removeAll(viewModel)
     }
 
     override fun deleteAllRecentSearch() {
@@ -354,7 +381,8 @@ class InitialStatePresenter @Inject constructor(
             if (isSuccess) {
                 removeRecentSearchTitle()
                 removeRecentSearch()
-                view.showInitialStateResult(listVisitable)
+                removeSeeMoreRecentSearch()
+                view?.showInitialStateResult(listVisitable)
             }
         }
     }
@@ -393,5 +421,12 @@ class InitialStatePresenter @Inject constructor(
 
     override fun attachView(view: InitialStateContract.View) {
         super.attachView(view)
+    }
+
+    override fun recentSearchSeeMoreClicked() {
+        removeSeeMoreRecentSearch()
+        onRecentSearchImpressed(true)
+        view?.dropKeyBoard()
+        view?.renderRecentSearch()
     }
 }

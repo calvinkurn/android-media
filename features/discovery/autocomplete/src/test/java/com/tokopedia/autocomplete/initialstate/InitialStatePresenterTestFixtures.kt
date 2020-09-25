@@ -10,7 +10,6 @@ import org.junit.Before
 import rx.Subscriber
 
 internal open class InitialStatePresenterTestFixtures {
-
     protected val initialStateView = mockk<InitialStateContract.View>(relaxed = true)
 
     protected val getInitialStateUseCase = mockk<UseCase<List<InitialStateData>>>(relaxed = true)

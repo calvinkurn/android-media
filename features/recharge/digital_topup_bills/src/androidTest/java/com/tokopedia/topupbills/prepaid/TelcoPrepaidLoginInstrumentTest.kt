@@ -92,7 +92,7 @@ class TelcoPrepaidLoginInstrumentTest {
     @Test
     fun validate_prepaid_login() {
         stubSearchNumber()
-        InstrumentationAuthHelper.loginInstrumentationTestUser1(mActivityRule.activity.application)
+        InstrumentationAuthHelper.loginInstrumentationTestUser1()
 
         Thread.sleep(3000)
 

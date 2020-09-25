@@ -28,6 +28,7 @@ class VariantChipViewHolder(val view: View,
     }
 
     override fun bind(element: VariantOptionWithAttribute) = with(view) {
+        txtChipVariant.contentDescription = context.getString(R.string.content_desc_txtChipVariant, element.variantName)
         txtChipVariant.text = element.variantName
         setState(element)
     }

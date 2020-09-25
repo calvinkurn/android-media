@@ -9,10 +9,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
-import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.HTTP_PREFIX
 import com.tokopedia.product.addedit.common.util.AddEditProductNotificationManager
-import com.tokopedia.product.addedit.description.presentation.model.DescriptionInputModel
-import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.draft.domain.usecase.DeleteProductDraftUseCase
 import com.tokopedia.product.addedit.draft.domain.usecase.SaveProductDraftUseCase
 import com.tokopedia.product.addedit.draft.mapper.AddEditProductMapper.mapProductInputModelDetailToDraft
@@ -20,8 +17,7 @@ import com.tokopedia.product.addedit.preview.domain.usecase.ProductEditUseCase
 import com.tokopedia.product.addedit.preview.presentation.activity.AddEditProductPreviewActivity
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
-import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
-import com.tokopedia.product.addedit.variant.presentation.model.SelectionInputModel
+import com.tokopedia.product.addedit.tracking.ProductEditShippingTracking
 import com.tokopedia.product.addedit.variant.presentation.model.VariantInputModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -84,6 +80,10 @@ class AddEditProductEditService : AddEditProductBaseService() {
         editProduct(uploadIdList, variantInputModel)
     }
 
+    override fun onUploadProductImagesFailed(errorMessage: String) {
+        ProductEditShippingTracking.uploadImageFailed(userSession.shopId, errorMessage)
+    }
+
     override fun getNotificationManager(urlImageCount: Int): AddEditProductNotificationManager {
         val manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         return object : AddEditProductNotificationManager(urlImageCount, manager,
@@ -124,11 +124,14 @@ class AddEditProductEditService : AddEditProductBaseService() {
             clearProductDraft()
             delay(NOTIFICATION_CHANGE_DELAY)
             setUploadProductDataSuccess()
+            ProductEditShippingTracking.clickFinish(shopId, true)
         }, onError = { throwable ->
             delay(NOTIFICATION_CHANGE_DELAY)
-            setUploadProductDataError(getErrorMessage(throwable))
+            val errorMessage = getErrorMessage(throwable)
+            setUploadProductDataError(errorMessage)
 
             logError(productEditUseCase.params, throwable)
+            ProductEditShippingTracking.clickFinish(shopId, false, throwable.message ?: "", errorMessage)
         })
     }
 

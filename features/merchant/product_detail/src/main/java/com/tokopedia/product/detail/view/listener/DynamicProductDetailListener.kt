@@ -10,6 +10,8 @@ import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.product.detail.common.data.model.product.Video
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductNotifyMeDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
+import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
 import com.tokopedia.product.detail.data.model.datamodel.TopAdsImageDataModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 
@@ -74,6 +76,11 @@ interface DynamicProductDetailListener {
     fun gotoShopDetail(componentTrackDataModel: ComponentTrackDataModel)
 
     /**
+     * ProductRecommendationAnnotationChipViewHolder
+     */
+    fun onChipFilterClicked(recommendationDataModel: ProductRecommendationDataModel, annotationChip: AnnotationChip, position: Int, filterPosition: Int)
+
+    /**
      * ProductRecommendationViewHolder
      */
     fun onSeeAllRecomClicked(pageName: String, applink: String, componentTrackDataModel: ComponentTrackDataModel)
@@ -92,7 +99,7 @@ interface DynamicProductDetailListener {
     /**
      * ProductRecom
      */
-    fun loadTopads()
+    fun loadTopads(pageName: String)
 
     /**
      * ProductDefaultErrorViewHolder
