@@ -160,12 +160,14 @@ data class Reply(
         val source: String = ""
 ) {
 
+    val attachmentType: Int get(): Int = attachment?.type ?: 0
+
     fun isAlsoProductAttachment(nextItem: Reply?): Boolean {
-        return nextItem!= null && isProductAttachment() && nextItem.isProductAttachment()
+        return nextItem != null && isProductAttachment() && nextItem.isProductAttachment()
     }
 
-    fun isAlsoBroadcast(nextItem: Reply?): Boolean {
-        return nextItem!= null && isBroadCast() && nextItem.isBroadCast()
+    fun isAlsoTheSameBroadcast(nextItem: Reply?): Boolean {
+        return nextItem != null && isBroadCast() && nextItem.isBroadCast() && blastId == nextItem.blastId
     }
 
     fun isProductAttachment(): Boolean {

@@ -1,9 +1,28 @@
 package com.tokopedia.topchat.chatroom.view.uimodel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.chat_common.data.BaseChatViewModel
+import com.tokopedia.chat_common.domain.pojo.Reply
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
 
-class BroadCastUiModel : Visitable<TopChatTypeFactory> {
+class BroadCastUiModel : BaseChatViewModel, Visitable<TopChatTypeFactory> {
+
+    val items: Map<String, Visitable<*>>
+
+    constructor(reply: Reply, items: Map<String, Visitable<*>>) : super(
+            messageId = reply.msgId.toString(),
+            fromUid = reply.senderId.toString(),
+            from = reply.senderName,
+            fromRole = reply.role,
+            attachmentId = reply.attachment?.id ?: "",
+            attachmentType = reply.attachment?.type.toString(),
+            replyTime = reply.replyTime,
+            message = reply.msg,
+            source = reply.source
+    ) {
+        this.items = items
+    }
+
     override fun type(typeFactory: TopChatTypeFactory): Int {
         return typeFactory.type(this)
     }

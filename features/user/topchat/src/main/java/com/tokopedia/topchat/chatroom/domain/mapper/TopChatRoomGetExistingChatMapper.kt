@@ -1,8 +1,10 @@
 package com.tokopedia.topchat.chatroom.domain.mapper
 
+import androidx.collection.ArrayMap
 import com.google.gson.GsonBuilder
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_IMAGE_CAROUSEL
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_IMAGE_DUAL_ANNOUNCEMENT
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_QUOTATION
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_STICKER
@@ -47,10 +49,11 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
                     val nextItem = chatItemPojoByDate.replies.getOrNull(replyIndex + 1)
                     when {
                         // Merge broadcast bubble
-                        chatDateTime.isBroadCast() && chatDateTime.isAlsoBroadcast(nextItem) -> {
+                        chatDateTime.isBroadCast() && chatDateTime.isAlsoTheSameBroadcast(nextItem) -> {
                             val broadcast = mergeBroadcast(
                                     replyIndex,
-                                    chatItemPojoByDate.replies
+                                    chatItemPojoByDate.replies,
+                                    chatDateTime.blastId
                             )
                             val broadcastUiModel = createBroadCastUiModel(chatDateTime, broadcast.first)
                             listChat.add(broadcastUiModel)
@@ -85,24 +88,25 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
         return listChat
     }
 
-    private fun createBroadCastUiModel(chatDateTime: Reply, first: List<Visitable<*>>): BroadCastUiModel {
-        return BroadCastUiModel()
+    private fun createBroadCastUiModel(chatDateTime: Reply, model: Map<String, Visitable<*>>): BroadCastUiModel {
+        return BroadCastUiModel(chatDateTime, model)
     }
 
-    private fun mergeBroadcast(index: Int, replies: List<Reply>): Pair<List<Visitable<*>>, Int> {
-        val broadcast = mutableListOf<Visitable<*>>()
+    private fun mergeBroadcast(index: Int, replies: List<Reply>, blastId: Int): Pair<Map<String, Visitable<*>>, Int> {
+        val broadcast = ArrayMap<String, Visitable<*>>()
         var idx = index
         while (idx < replies.size) {
             val reply = replies[idx]
+            val replyType = reply.attachmentType.toString()
             val nextReply = replies.getOrNull(idx + 1)
-            if (reply.isProductAttachment() && reply.isAlsoProductAttachment(nextReply)) {
+            if (reply.isProductAttachment() && reply.isAlsoProductAttachment(nextReply) && reply.blastId == blastId) {
                 val products = mergeProduct(idx, replies, reply.isBroadCast())
                 val carouselProducts = createCarouselProduct(reply, products)
-                broadcast.add(carouselProducts)
+                broadcast[TYPE_IMAGE_CAROUSEL] = carouselProducts
                 idx += products.size
-            } else if (reply.isBroadCast()) {
+            } else if (reply.isBroadCast() && reply.blastId == blastId) {
                 val product = mapAttachment(reply)
-                broadcast.add(product)
+                broadcast[replyType] = product
                 idx++
             } else {
                 break

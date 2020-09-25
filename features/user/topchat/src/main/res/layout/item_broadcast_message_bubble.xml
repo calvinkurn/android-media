@@ -1,13 +1,82 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/spacing_lvl4"
+    android:layout_marginEnd="@dimen/spacing_lvl4">
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:layout_width="match_parent"
+    <com.tokopedia.topchat.chatroom.view.custom.BroadcastBannerImageView
+        android:id="@+id/iv_banner"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Broadcast"
+        android:adjustViewBounds="true"
+        android:scaleType="fitCenter"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="ContentDescription"
+        tools:src="@tools:sample/backgrounds/scenic"
+        tools:visibility="visible" />
+
+    <com.tokopedia.topchat.chatroom.view.customview.TopchatMerchantVoucherView
+        android:id="@+id/broadcast_merchant_voucher"
+        android:layout_width="270dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_topchat_12"
+        android:layout_marginLeft="@dimen/dp_topchat_12"
+        android:layout_marginEnd="@dimen/dp_topchat_12"
+        android:layout_marginRight="@dimen/dp_topchat_12"
+        android:maxWidth="270dp"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/iv_banner"
+        tools:visibility="visible" />
+
+    <com.tokopedia.topchat.chatroom.view.custom.ProductCarouselRecyclerView
+        android:id="@+id/rv_product_carousel"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:clipToPadding="false"
+        android:paddingStart="@dimen/dp_topchat_12"
+        android:paddingEnd="@dimen/spacing_lvl3"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/broadcast_merchant_voucher"
+        tools:listitem="@layout/item_topchat_product_carousel_attachment"
+        tools:visibility="visible" />
+
+    <com.tokopedia.topchat.chatroom.view.custom.SingleProductAttachmentContainer
+        android:id="@+id/broadcast_product"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:orientation="vertical"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rv_product_carousel"
+        tools:layout_gravity="end"
+        tools:visibility="gone">
+
+        <include layout="@layout/item_topchat_product_card" />
+    </com.tokopedia.topchat.chatroom.view.custom.SingleProductAttachmentContainer>
+
+    <com.tokopedia.topchat.chatroom.view.custom.FlexBoxChatLayout
+        android:id="@+id/fxChat"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/spacing_lvl4"
+        android:paddingTop="@dimen/dp_topchat_10"
+        android:paddingRight="@dimen/spacing_lvl4"
+        android:paddingBottom="@dimen/dp_topchat_10"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/broadcast_product" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
