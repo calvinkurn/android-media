@@ -600,7 +600,7 @@ internal class SortFilterBottomSheetViewModel {
         mutableMapParameter.putAll(filterController.getParameter())
 
         dynamicFilterModel?.run {
-            mutableMapParameter[getSortKey()] = defaultSortValue
+            if (hasSort()) mutableMapParameter[getSortKey()] = defaultSortValue
         }
     }
 

@@ -30,5 +30,7 @@ class DynamicFilterModel(@SerializedName("data")
         return data.filter.map { it.options }.flatten().isEmpty()
     }
 
-    fun getSortKey() = if (data.sort.isNotEmpty()) data.sort[0].key else ""
+    fun hasSort() = data.sort.isNotEmpty()
+
+    fun getSortKey() = if (hasSort()) data.sort[0].key else ""
 }
