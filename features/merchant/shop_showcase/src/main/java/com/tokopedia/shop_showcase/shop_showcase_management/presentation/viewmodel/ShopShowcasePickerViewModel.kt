@@ -4,6 +4,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.shop_showcase.common.ShopShowcaseDispatchProvider
+import com.tokopedia.shop_showcase.shop_showcase_add.data.model.AddShopShowcaseParam
+import com.tokopedia.shop_showcase.shop_showcase_add.data.model.AddShopShowcaseResponse
+import com.tokopedia.shop_showcase.shop_showcase_add.domain.usecase.CreateShopShowcaseUseCase
 import com.tokopedia.shop_showcase.shop_showcase_management.data.model.GetShopProductsResponse
 import com.tokopedia.shop_showcase.shop_showcase_management.data.model.ShowcaseList.ShowcaseListBuyer.ShopShowcaseListBuyerResponse
 import com.tokopedia.shop_showcase.shop_showcase_management.domain.GetShopShowcaseListBuyerUseCase
@@ -18,6 +21,7 @@ import javax.inject.Inject
 class ShopShowcasePickerViewModel @Inject constructor(
         private val getShopShowcaseListBuyerUseCase: GetShopShowcaseListBuyerUseCase,
         private val getShopShowcaseTotalProductUseCase: GetShopShowcaseTotalProductUseCase,
+        private val createShopShowcaseUseCase: CreateShopShowcaseUseCase,
         private val dispatchers: ShopShowcaseDispatchProvider
 ): BaseViewModel(dispatchers.ui()) {
 
@@ -28,6 +32,9 @@ class ShopShowcasePickerViewModel @Inject constructor(
     private val _getShopProductResponse = MutableLiveData<Result<GetShopProductsResponse>>()
     val getShopProductResponse: LiveData<Result<GetShopProductsResponse>>
         get() = _getShopProductResponse
+
+    private val _createShopShowcase = MutableLiveData<Result<AddShopShowcaseResponse>>()
+    val createShopShowcase: LiveData<Result<AddShopShowcaseResponse>> get() = _createShopShowcase
 
     fun getShopShowcaseListAsBuyer(shopId: String, isOwner: Boolean) {
         launchCatchError(block = {
@@ -65,6 +72,17 @@ class ShopShowcasePickerViewModel @Inject constructor(
         }) {
             _getShopProductResponse.value = Fail(it)
         }
+    }
+
+    fun addShopShowcase(data: AddShopShowcaseParam) {
+        launchCatchError(block = {
+            withContext(dispatchers.io()) {
+                createShopShowcaseUseCase.params = CreateShopShowcaseUseCase.createRequestParams(data)
+                _createShopShowcase.postValue(Success(createShopShowcaseUseCase.executeOnBackground()))
+            }
+        }, onError = {
+            _createShopShowcase.value = Fail(it)
+        })
     }
 
 }
