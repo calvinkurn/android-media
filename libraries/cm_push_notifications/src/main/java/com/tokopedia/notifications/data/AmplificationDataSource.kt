@@ -7,14 +7,16 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.notifications.PushController
 import com.tokopedia.notifications.R
 import com.tokopedia.notifications.common.IrisAnalyticsEvents.INAPP_DELIVERED
+import com.tokopedia.notifications.common.IrisAnalyticsEvents.sendAmplificationInAppEvent
 import com.tokopedia.notifications.data.model.Amplification
 import com.tokopedia.notifications.data.model.AmplificationNotifier
 import com.tokopedia.notifications.domain.AmplificationUseCase
 import com.tokopedia.notifications.inApp.ruleEngine.repository.RepositoryManager
 import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.CMInApp
+import com.tokopedia.notifications.utils.NextFetchCacheManager
 import com.tokopedia.user.session.UserSession
+import java.util.concurrent.TimeUnit
 import com.tokopedia.abstraction.common.utils.GraphqlHelper.loadRawString as loadRaw
-import com.tokopedia.notifications.common.IrisAnalyticsEvents.sendAmplificationInAppEvent as sendAmplificationInAppEvent
 
 object AmplificationDataSource {
 
@@ -25,8 +27,23 @@ object AmplificationDataSource {
     }
 
     @JvmStatic fun invoke(application: Application) {
+        val cacheManager = NextFetchCacheManager(application)
+        val currentTime = System.currentTimeMillis()
         val userSession = UserSession(application)
+
+        /*
+        * preventing amplification data request
+        * if user haven't login yet
+        * */
         if (!userSession.isLoggedIn) return
+
+        /*
+        * preventing multiple fetching of amplification data
+        * check based-on `next_fetch` from payload
+        * */
+        if (currentTime <= cacheManager.getNextFetch()) {
+            return
+        }
 
         val query = loadRaw(application.resources, R.raw.query_notification_amplification)
         val amplificationUseCase = AmplificationUseCase(useCase, query)
@@ -36,6 +53,10 @@ object AmplificationDataSource {
             val webHook = it.webhookAttributionNotifier
             pushData(application, webHook)
             inAppData(application, webHook)
+
+            // save `next_fetch` time data
+            val nextFetchTime = webHook.nextFetch
+            cacheManager.saveNextFetch(nextFetch(nextFetchTime))
         }
     }
 
@@ -68,6 +89,12 @@ object AmplificationDataSource {
                 } catch (e: Exception) {}
             }
         }
+    }
+
+    private fun nextFetch(time: Long): Long {
+        val currentTime = System.currentTimeMillis()
+        val secondToMilis = TimeUnit.SECONDS.toMillis(time)
+        return currentTime + secondToMilis
     }
 
 }
