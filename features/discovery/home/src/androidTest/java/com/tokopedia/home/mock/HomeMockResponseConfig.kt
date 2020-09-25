@@ -28,7 +28,7 @@ class HomeMockResponseConfig: MockModelConfig() {
         addMockResponse(
                 KEY_QUERY_DYNAMIC_HOME_CHANNEL_ONLY,
                 getRawString(context, R.raw.response_mock_data_dynamic_home_channel_only),
-                FIND_BY_QUERY_NAME)
+                FIND_BY_CONTAINS)
 
         addMockResponse(
                 KEY_QUERY_DYNAMIC_HOME_POPULAR_KEYWORD,
