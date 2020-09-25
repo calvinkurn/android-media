@@ -21,10 +21,10 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Compa
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.CATEGORY_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.COMPONENT_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.EMBED_CATEGORY
-import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.TARGET_COMP_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.PIN_PRODUCT
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.PRODUCT_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.SOURCE
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.TARGET_COMP_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.REACT_NATIVE
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -77,8 +77,9 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
                     pageLoadTimePerformanceInterface?.startRenderPerformanceMonitoring()
                     data.let {
                         withContext(Dispatchers.Default) {
-                            discoveryResponseList.postValue(Success(it.components))
-
+                            if (it.components.isNullOrEmpty())
+                                discoveryPageInfo.postValue(Fail(Throwable()))
+                            else discoveryResponseList.postValue(Success(it.components))
                         }
                         setPageInfo(it)
                     }
