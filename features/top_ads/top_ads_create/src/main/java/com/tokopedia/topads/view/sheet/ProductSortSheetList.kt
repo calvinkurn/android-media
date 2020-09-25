@@ -1,25 +1,18 @@
 package com.tokopedia.topads.view.sheet
 
-import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.google.android.material.bottomsheet.BottomSheetDialog
-import android.widget.FrameLayout
 import android.widget.ListView
-import android.widget.RadioGroup
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.topads.create.R
-import com.tokopedia.topads.data.response.ResponseEtalase
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.list.ListItemUnify
 import com.tokopedia.unifycomponents.list.ListUnify
-import kotlinx.android.synthetic.main.topads_create_fragment_product_list_sheet_sort.*
 import kotlinx.android.synthetic.main.topads_create_fragment_product_list_sheet_sort.view.*
-import java.util.ArrayList
+import java.util.*
 
 /**
  * Author errysuprayogi on 07,May,2019

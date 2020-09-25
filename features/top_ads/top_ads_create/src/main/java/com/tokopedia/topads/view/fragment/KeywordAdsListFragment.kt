@@ -34,13 +34,7 @@ import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.SearchBarUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSession
-import kotlinx.android.synthetic.main.topads_create_fragment_budget_list.*
 import kotlinx.android.synthetic.main.topads_create_layout_keyword_list.*
-import kotlinx.android.synthetic.main.topads_create_layout_keyword_list.btn_next
-import kotlinx.android.synthetic.main.topads_create_layout_keyword_list.headlineList
-import kotlinx.android.synthetic.main.topads_create_layout_keyword_list.loading
-import kotlinx.android.synthetic.main.topads_create_layout_keyword_list.tip_btn
-import kotlinx.android.synthetic.main.topads_create_layout_keyword_list.txtRecommendation
 import javax.inject.Inject
 
 /**

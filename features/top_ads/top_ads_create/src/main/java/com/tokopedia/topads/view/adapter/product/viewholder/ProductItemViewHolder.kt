@@ -6,9 +6,7 @@ import com.tokopedia.design.image.ImageLoader
 import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.topads.create.R
 import com.tokopedia.topads.view.adapter.product.viewmodel.ProductItemViewModel
-import kotlinx.android.synthetic.main.topads_create_layout_keyword_list_item.view.*
 import kotlinx.android.synthetic.main.topads_create_layout_product_list_item_product.view.*
-import kotlinx.android.synthetic.main.topads_create_layout_product_list_item_product.view.checkBox
 import kotlinx.android.synthetic.main.topads_create_layout_rating.view.*
 
 /**

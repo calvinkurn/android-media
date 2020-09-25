@@ -1,17 +1,12 @@
 package com.tokopedia.topads.view.sheet
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
-import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.google.android.material.bottomsheet.BottomSheetDialog
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
 import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.topads.create.R
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import kotlinx.android.synthetic.main.topads_create_fragment_product_sheet_info.*
 import kotlinx.android.synthetic.main.topads_create_fragment_product_sheet_info.view.*
 
 /**

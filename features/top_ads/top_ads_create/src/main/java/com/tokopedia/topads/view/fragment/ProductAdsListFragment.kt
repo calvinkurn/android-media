@@ -33,11 +33,7 @@ import com.tokopedia.topads.view.sheet.ProductSortSheetList
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
-import kotlinx.android.synthetic.main.topads_create_fragment_budget_list.*
 import kotlinx.android.synthetic.main.topads_create_fragment_product_list.*
-import kotlinx.android.synthetic.main.topads_create_fragment_product_list.btn_next
-import kotlinx.android.synthetic.main.topads_create_fragment_product_list.tip_btn
-import kotlinx.android.synthetic.main.topads_create_keyword_search_layout.*
 import javax.inject.Inject
 
 /**

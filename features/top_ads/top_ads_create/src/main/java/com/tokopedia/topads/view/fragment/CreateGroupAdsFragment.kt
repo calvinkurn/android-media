@@ -23,9 +23,7 @@ import com.tokopedia.topads.view.model.CreateGroupAdsViewModel
 import com.tokopedia.topads.view.sheet.InfoSheetGroupList
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
-import kotlinx.android.synthetic.main.topads_create_fragment_budget_list.*
 import kotlinx.android.synthetic.main.topads_create_fragment_group_list.*
-import kotlinx.android.synthetic.main.topads_create_fragment_group_list.tip_btn
 import javax.inject.Inject
 
 /**
