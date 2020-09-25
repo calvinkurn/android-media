@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
@@ -28,6 +29,7 @@ import com.tokopedia.tradein.mapper.TradeInMapper
 import com.tokopedia.tradein.model.MoneyInKeroGetAddressResponse
 import com.tokopedia.tradein.view.viewcontrollers.bottomsheet.TradeInOutsideCoverageBottomSheet
 import com.tokopedia.tradein.viewmodel.TradeInAddressViewModel
+import com.tokopedia.tradein.viewmodel.TradeInHomeViewModel
 import kotlinx.android.synthetic.main.tradein_address_fragment.*
 import javax.inject.Inject
 
@@ -42,6 +44,7 @@ class TradeInAddressFragment : BaseViewModelFragment<TradeInAddressViewModel>() 
     @Inject
     lateinit var tradeInAnalytics: TradeInAnalytics
     private lateinit var tradeInAddressViewModel: TradeInAddressViewModel
+    private lateinit var tradeinHomeViewModel: TradeInHomeViewModel
 
     override fun initInject() {
         getComponent().inject(this)
@@ -54,9 +57,10 @@ class TradeInAddressFragment : BaseViewModelFragment<TradeInAddressViewModel>() 
                     .build()
 
     private fun getAddress() {
-        arguments?.apply {
-            tradeInAddressViewModel.getAddress(getString(EXTRA_ORIGIN, ""), getInt(EXTRA_WEIGHT), getInt(EXTRA_SHOP_ID))
-        }
+        tradeInAddressViewModel.getAddress(
+                origin = tradeinHomeViewModel.tradeInParams.origin ?: "",
+                weight = tradeinHomeViewModel.tradeInParams.weight,
+                shopId = tradeinHomeViewModel.tradeInParams.shopId)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -65,6 +69,10 @@ class TradeInAddressFragment : BaseViewModelFragment<TradeInAddressViewModel>() 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        activity?.let { observer ->
+            val viewModelProvider = ViewModelProviders.of(observer, viewModelProvider)
+            tradeinHomeViewModel = viewModelProvider.get(TradeInHomeViewModel::class.java)
+        }
         iv_back.setOnClickListener {
             activity?.onBackPressed()
         }
@@ -103,7 +111,8 @@ class TradeInAddressFragment : BaseViewModelFragment<TradeInAddressViewModel>() 
                 btn_continue.isEnabled = false
                 arguments?.apply {
                     tradeInAnalytics.viewCoverageAreaBottomSheet()
-                    val bottomSheet = TradeInOutsideCoverageBottomSheet.newInstance(getString(EXTRA_PRODUCT_NAME, "")
+                    val bottomSheet = TradeInOutsideCoverageBottomSheet
+                            .newInstance(tradeinHomeViewModel.tradeInParams.productName
                             ?: "")
                     bottomSheet.tradeInAnalytics = tradeInAnalytics
                     bottomSheet.show(childFragmentManager, "")
@@ -155,9 +164,11 @@ class TradeInAddressFragment : BaseViewModelFragment<TradeInAddressViewModel>() 
         if (data?.hasExtra(EXTRA_ADDRESS_NEW) == true) {
             val address = data.getParcelableExtra<SaveAddressDataModel>(EXTRA_ADDRESS_NEW)
             if (address != null) {
-                arguments?.apply {
-                    tradeInAddressViewModel.setAddress(TradeInMapper.mapSavedAddressToKeroAddress(address), getString(EXTRA_ORIGIN, ""), getInt(EXTRA_WEIGHT), getInt(EXTRA_SHOP_ID))
-                }
+                tradeInAddressViewModel.setAddress(
+                        address = TradeInMapper.mapSavedAddressToKeroAddress(address),
+                        origin = tradeinHomeViewModel.tradeInParams.origin ?: "",
+                        weight = tradeinHomeViewModel.tradeInParams.weight,
+                        shopId = tradeinHomeViewModel.tradeInParams.shopId)
             }
         }
     }
@@ -171,9 +182,11 @@ class TradeInAddressFragment : BaseViewModelFragment<TradeInAddressViewModel>() 
                                 CheckoutConstant.EXTRA_SELECTED_ADDRESS_DATA
                         )
                         if (addressModel != null) {
-                            arguments?.apply {
-                                tradeInAddressViewModel.setAddress(TradeInMapper.mapAddressToKeroAddress(addressModel), getString(EXTRA_ORIGIN, ""), getInt(EXTRA_WEIGHT), getInt(EXTRA_SHOP_ID))
-                            }
+                            tradeInAddressViewModel.setAddress(
+                                    address = TradeInMapper.mapAddressToKeroAddress(addressModel),
+                                    origin = tradeinHomeViewModel.tradeInParams.origin ?: "",
+                                    weight = tradeinHomeViewModel.tradeInParams.weight,
+                                    shopId = tradeinHomeViewModel.tradeInParams.shopId)
                         }
                     }
                 }
@@ -196,21 +209,8 @@ class TradeInAddressFragment : BaseViewModelFragment<TradeInAddressViewModel>() 
     }
 
     companion object {
-
-        private const val EXTRA_ORIGIN = "EXTRA_ORIGIN"
-        private const val EXTRA_WEIGHT = "EXTRA_WEIGHT"
-        private const val EXTRA_PRODUCT_NAME = "EXTRA_PRODUCT_NAME"
-        private const val EXTRA_SHOP_ID = "EXTRA_SHOP_ID"
-
-        fun getFragmentInstance(origin: String?, weight: Int, productName: String?, shopId: Int): Fragment {
-            val fragment = TradeInAddressFragment()
-            val bundle = Bundle()
-            bundle.putString(EXTRA_ORIGIN, origin)
-            bundle.putInt(EXTRA_WEIGHT, weight)
-            bundle.putInt(EXTRA_SHOP_ID, shopId)
-            bundle.putString(EXTRA_PRODUCT_NAME, productName)
-            fragment.arguments = bundle
-            return fragment
+        fun getFragmentInstance(): Fragment {
+            return TradeInAddressFragment()
         }
     }
 }
