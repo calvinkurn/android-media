@@ -1007,7 +1007,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                                 promos = shopPromos
                         )
                 )
-        )), promos = checkoutPromos, mode = if (orderTotal.value.isButtonChoosePayment) 1 else 0))
+        )), promos = checkoutPromos, mode = if (orderTotal.value.isButtonPay) 0 else 1))
         OccIdlingResource.increment()
         checkoutOccUseCase.execute(param, { checkoutOccData: CheckoutOccData ->
             if (checkoutOccData.status.equals(STATUS_OK, true)) {
@@ -1394,6 +1394,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                 orderTotal.value = orderTotal.value.copy(orderCost = orderCost, paymentErrorMessage = payment.errorTickerMessage, buttonType = OccButtonType.CHOOSE_PAYMENT, buttonState = currentState)
             }
         } else if (payment.errorMessage.message.isNotEmpty() && payment.errorMessage.button.text.isNotEmpty()) {
+            // CC expired/deleted
             if (currentState == OccButtonState.NORMAL) {
                 currentState = OccButtonState.DISABLE
             }

@@ -1018,6 +1018,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                 refresh()
             }
             OccPromptButton.ACTION_RETRY -> {
+                dialog.dismiss()
                 viewModel.finalUpdate(onSuccessCheckout(), false)
             }
         }
@@ -1056,6 +1057,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                 refresh()
             }
             OccPromptButton.ACTION_RETRY -> {
+                bottomSheet.dismiss()
                 viewModel.finalUpdate(onSuccessCheckout(), false)
             }
         }

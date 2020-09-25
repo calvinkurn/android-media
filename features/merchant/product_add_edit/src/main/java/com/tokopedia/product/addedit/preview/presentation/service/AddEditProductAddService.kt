@@ -8,7 +8,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant
 import com.tokopedia.product.addedit.common.util.AddEditProductNotificationManager
 import com.tokopedia.product.addedit.draft.domain.usecase.DeleteProductDraftUseCase
@@ -84,6 +83,10 @@ open class AddEditProductAddService : AddEditProductBaseService() {
         addProduct(uploadIdList, variantInputModel)
     }
 
+    override fun onUploadProductImagesFailed(errorMessage: String) {
+        ProductAddShippingTracking.uploadImageFailed(userSession.shopId, errorMessage)
+    }
+
     override fun getNotificationManager(urlImageCount: Int): AddEditProductNotificationManager {
         val manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         return object : AddEditProductNotificationManager(urlImageCount, manager,
@@ -125,9 +128,9 @@ open class AddEditProductAddService : AddEditProductBaseService() {
             delay(NOTIFICATION_CHANGE_DELAY)
             val errorMessage = getErrorMessage(throwable)
             setUploadProductDataError(errorMessage)
-            ProductAddShippingTracking.clickFinish(shopId, false, errorMessage)
 
             logError(productAddUseCase.params, throwable)
+            ProductAddShippingTracking.clickFinish(shopId, false, throwable.message ?: "", errorMessage)
         })
     }
 
