@@ -152,7 +152,7 @@ class TradeInAddressFragment : BaseViewModelFragment<TradeInAddressViewModel>() 
     }
 
     private fun onResultFromRequestCodeNewAddress(data: Intent?) {
-        if (data != null && data.hasExtra(EXTRA_ADDRESS_NEW)) {
+        if (data?.hasExtra(EXTRA_ADDRESS_NEW) == true) {
             val address = data.getParcelableExtra<SaveAddressDataModel>(EXTRA_ADDRESS_NEW)
             if (address != null) {
                 arguments?.apply {

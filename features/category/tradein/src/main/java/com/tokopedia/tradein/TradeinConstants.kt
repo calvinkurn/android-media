@@ -26,6 +26,7 @@ object TradeinConstants {
 
         const val SHIPMENT = "shipment"
         const val SP_ID = "48"
+        const val TRADE_IN = 2
     }
 
     object Deeplink  {
