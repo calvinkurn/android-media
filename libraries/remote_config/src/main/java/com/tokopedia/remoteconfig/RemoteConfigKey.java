@@ -225,10 +225,13 @@ public class RemoteConfigKey {
 
     public static final String FREE_SHIPPING_TRANSITION_PERIOD = "android_free_shipping_transition_period";
     public static final String FREE_SHIPPING_FEATURE_DISABLED = "android_free_shipping_feature_disabled";
-    public static final String NEW_SELLER_HOME_DISABLED = "android_new_seller_home_disabled";
     public static final String ENABLE_GLOBAL_SEARCH_SELLER = "android_sellerapp_global_search_enabled";
     public static final String ENABLE_PUSH_NOTIFICATION_CHAT_SELLER = "android_sellerapp_enable_push_notif_reply_chat";
 
     public static final String NOTIFICATION_TRAY_CLEAR = "app_notif_tray_clear";
 
+    public static final String KYC_USING_SELFIE = "android_main_app_enabled_kyc_selfie";
+
+    public static final String HOME_ENABLE_PAGINATION = "android_customer_home_enable_pagination";
+    public static final String HOME_ENABLE_SHARED_PREF_CACHE = "android_customer_home_enable_shared_pref_cache";
 }
