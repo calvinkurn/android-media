@@ -23,7 +23,7 @@
         android:layout_height="wrap_content"
         app:typographyType="body_3"
         app:typographyWeight="bold"
-        android:drawablePadding="@dimen/dp_4"
+        android:drawablePadding="@dimen/dp_2"
         tools:text="Diskusi" />
 
     <com.tokopedia.unifyprinciples.Typography
