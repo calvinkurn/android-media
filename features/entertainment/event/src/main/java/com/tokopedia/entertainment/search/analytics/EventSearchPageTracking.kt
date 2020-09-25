@@ -178,7 +178,7 @@ class EventSearchPageTracking {
                 )
         )))))
     }
-//4
+
     fun clickSearchBarOnSearchActivity() : Boolean{
         getTracker().sendGeneralEvent(DataLayer.mapOf(
                 Event.KEY,"clickEvent",
@@ -193,7 +193,7 @@ class EventSearchPageTracking {
         return true
     }
 
-    //5
+
     fun clickSearchBarOnKeyWordSearchActivity(keyword: String) : Boolean{
         getTracker().sendGeneralEvent(DataLayer.mapOf(
                 Event.KEY,"clickEvent",

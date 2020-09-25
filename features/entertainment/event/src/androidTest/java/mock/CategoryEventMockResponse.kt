@@ -1,7 +1,7 @@
 package mock
 
 import android.content.Context
-import com.tokopedia.entertainment.R
+import com.tokopedia.entertainment.test.R
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.util.InstrumentationMockHelper
 

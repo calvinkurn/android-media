@@ -41,45 +41,38 @@ class HomeEventActivityTest {
     @Test
     fun validateHomeEvent() {
         Thread.sleep(5000)
-        //banner
+
         impression_banner()
         click_banner()
-        //category
+
         click_category_icon()
-       //carousel
+
         impression_carousel_product_event()
         click_carousel_product_event()
 
-//        //taman bermain lokal
         impression_taman_bermain_lokal()
         click_product_taman_bermain_lokal()
         click_see_all_taman_bermain_lokal()
-//
-//        //location event
+
         impression_location_event()
         click_location_event()
-//
-//        //taman bermain mancanegara
+
         impression_taman_bermain_mancanegara()
         click_product_taman_bermain_mancanegara()
         click_see_all_taman_bermain_mancanegara()
-//
-//        //aktivitas
+
         impression_aktivitas()
         click_product_aktivitas()
         click_see_all_aktivitas()
-//
-//        //festival
+
         impression_festival()
         click_product_festival()
         click_see_all_festival()
-//
-//        //event
+
         impression_event()
         click_product_event()
         click_see_all_event()
-//
-//        //aktivitas anak
+
         impression_aktivitas_anak()
         click_product_aktivitas_anak()
         click_see_all_aktivitas_anak()
@@ -93,7 +86,6 @@ class HomeEventActivityTest {
 
     fun click_banner() {
         val viewInteraction = onView(withId(R.id.banner_recyclerview)).check(matches(isDisplayed()))
-        //Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
         viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<BannerViewPagerAdapter.BannerViewHolder>(0, click()))
     }
 
