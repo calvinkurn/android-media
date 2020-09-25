@@ -58,6 +58,10 @@ class OrderSummaryPageRobot {
         onView(withId(R.id.ticker_action)).perform(click())
     }
 
+    fun clickButtonPromo() {
+        onView(withId(R.id.btn_promo_checkout)).perform(scrollTo()).perform(click())
+    }
+
     fun pay() {
         onView(withId(R.id.btn_pay)).perform(scrollTo()).perform(click())
     }

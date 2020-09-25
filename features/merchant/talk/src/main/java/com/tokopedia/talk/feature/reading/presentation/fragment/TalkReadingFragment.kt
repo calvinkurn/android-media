@@ -333,7 +333,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
     }
 
     private fun observeProductHeader() {
-        viewModel.discussionAggregate.observe(this,  Observer {
+        viewModel.discussionAggregate.observe(viewLifecycleOwner,  Observer {
             when (it) {
                 is Success -> {
                     bindHeader(
@@ -355,7 +355,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
     }
 
     private fun observeDiscussionData() {
-        viewModel.discussionData.observe(this, Observer {
+        viewModel.discussionData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     it.data.discussionData.let { data ->
@@ -372,7 +372,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
     }
 
     private fun observeSortOptions() {
-        viewModel.sortOptions.observe(this, Observer { sortOptions ->
+        viewModel.sortOptions.observe(viewLifecycleOwner, Observer { sortOptions ->
             updateSortHeader(sortOptions.first { it.isSelected })
             if(!isLoadingInitialData) {
                 isLoadingInitialData = true
@@ -383,7 +383,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
     }
 
     private fun observeFilterCategories() {
-        viewModel.filterCategories.observe(this, Observer {
+        viewModel.filterCategories.observe(viewLifecycleOwner, Observer {
             if(!isLoadingInitialData) {
                 isLoadingInitialData = true
                 adapter.clearAllElements()
@@ -393,7 +393,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
     }
 
     private fun observeViewState() {
-        viewModel.viewState.observe(this, Observer {
+        viewModel.viewState.observe(viewLifecycleOwner, Observer {
             when(it) {
                 is ViewState.Loading -> {
                     if(it.isRefreshing) {

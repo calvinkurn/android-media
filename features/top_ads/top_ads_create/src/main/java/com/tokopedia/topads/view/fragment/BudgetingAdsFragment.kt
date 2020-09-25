@@ -93,7 +93,7 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
     private fun onClickItem(pos: Int) {
         TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_SETUP_KEY, shopID, userID)
         val sheet = TopAdsEditKeywordBidSheet.createInstance(prepareBundle(pos))
-        sheet.show(fragmentManager!!, "")
+        sheet.show(childFragmentManager, "")
         sheet.onSaved = { bid, type, position ->
             bidInfoAdapter.typeList[position] = type
             (bidInfoAdapter.items[position] as BidInfoItemViewModel).data.suggestionBid = bid.toInt()
@@ -103,6 +103,7 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
         sheet.onDelete = { position ->
             stepperModel?.selectedKeywords?.removeAt(position)
             stepperModel?.selectedSuggestBid?.removeAt(position)
+            bidInfoAdapter.typeList.removeAt(position)
             bidInfoAdapter.items.removeAt(position)
             bidInfoAdapter.notifyItemRemoved(position)
         }
@@ -113,7 +114,7 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
         val bundle = Bundle()
         bundle.putInt(MAX_BID, (bidInfoAdapter.items[pos] as BidInfoItemViewModel).data.maxBid)
         bundle.putInt(MIN_BID, (bidInfoAdapter.items[pos] as BidInfoItemViewModel).data.minBid)
-        bundle.putInt(SUGGESTION_BID, stepperModel?.selectedSuggestBid?.get(pos)!!)
+        bundle.putInt(SUGGESTION_BID, stepperModel?.selectedSuggestBid?.get(pos) ?: 0)
         bundle.putString(KEYWORD_NAME, stepperModel?.selectedKeywords?.get(pos))
         if ((bidInfoAdapter.items[pos] as BidInfoItemViewModel).data.keywordType == SPECIFIC_TYPE) {
             bundle.putInt(CURRENT_KEY_TYPE, EXACT_POSITIVE)
@@ -172,7 +173,7 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        if (stepperModel?.selectedKeywordType?.isNotEmpty()!!) {
+        if (stepperModel?.selectedKeywordType?.isNotEmpty() != false) {
             setRestoreValue()
         }
         val dummyId: MutableList<Int> = mutableListOf()

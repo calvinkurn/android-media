@@ -30,6 +30,8 @@ abstract class HotelBaseActivity: BaseSimpleActivity(), HotelMenuBottomSheets.Ho
     @Inject
     lateinit var trackingHotelUtil: TrackingHotelUtil
 
+    var optionMenu: MenuItem? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -61,8 +63,15 @@ abstract class HotelBaseActivity: BaseSimpleActivity(), HotelMenuBottomSheets.Ho
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menu?.clear()
         if (shouldShowOptionMenu()) {
-            if (shouldShowMenuWhite()) menuInflater.inflate(R.menu.hotel_base_menu_white, menu)
-            else menuInflater.inflate(R.menu.hotel_base_menu, menu)
+            if (shouldShowMenuWhite()) {
+                menuInflater.inflate(R.menu.hotel_base_menu_white, menu)
+                optionMenu = menu?.findItem(R.id.action_overflow_menu_white)
+            }
+            else {
+                menuInflater.inflate(R.menu.hotel_base_menu, menu)
+                optionMenu = menu?.findItem(R.id.action_overflow_menu)
+            }
+
         }
         return true
     }
