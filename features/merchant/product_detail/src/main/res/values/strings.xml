@@ -98,6 +98,9 @@
     <string name="txt_more_item_plus">%1$d +</string>
     <string name="ongkir_pattern_string_dynamic_pdp"><![CDATA[%1s <br>ke <b>%2s</b>]]></string>
     <string name="review_counter">• %1$d ulasan</string>
+    <string name="review_out_of_total_reviews">dari %d ulasan</string>
+    <string name="review_author">oleh &lt;b>%s&lt;/b></string>
+    <string name="review_expand">&lt;a href="#"&gt;Selengkapnya&lt;/a&gt;</string>
 
     <string name="ft_label_without_credit_card">Tanpa Kartu Kredit</string>
     <string name="ft_label_with_credit_card">Dengan Kartu Kredit</string>

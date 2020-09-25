@@ -69,7 +69,7 @@ class SellerHomeNavigator(
             val fragment = setupPageFromAppLink(page)
 
             fragment?.let { selectedPage ->
-                val tag = page::class.java.simpleName
+                val tag = page::class.java.canonicalName
                 val transaction = fm.beginTransaction()
                 val fragments = fm.fragments
 
@@ -158,7 +158,7 @@ class SellerHomeNavigator(
     private fun addAllPages(selectedPage: Fragment?, transaction: FragmentTransaction) {
         pages.keys.forEach {
             it?.let {
-                val tag = it::class.java.simpleName
+                val tag = it::class.java.canonicalName
                 transaction.add(R.id.sahContainer, it, tag)
 
                 if(it != selectedPage) {
@@ -169,7 +169,7 @@ class SellerHomeNavigator(
     }
 
     private fun showFragment(fragment: Fragment, transaction: FragmentTransaction) {
-        val tag = fragment::class.java.simpleName
+        val tag = fragment::class.java.canonicalName
         val fragmentByTag = fm.findFragmentByTag(tag)
         val selectedFragment = fragmentByTag ?: fragment
         val currentState = selectedFragment.lifecycle.currentState
