@@ -42,11 +42,15 @@ object InstrumentationAuthHelper {
     }
 
     fun clearUserSession() {
-        userSession {
-            userId = ""
-            email = ""
-            accessTokenBearer = ""
-            setIsLogin(false)
+        try {
+            val userSession = UserSession(InstrumentationRegistry.getInstrumentation().targetContext)
+            userSession.userId = ""
+            userSession.email = ""
+            userSession.accessTokenBearer = ""
+            userSession.setIsLogin(false)
+        }
+        catch (throwable: Throwable) {
+            throwable.printStackTrace()
         }
     }
 
@@ -64,6 +68,8 @@ object InstrumentationAuthHelper {
             throwable.printStackTrace()
         }
     }
+
+
 
     private var UserSession.accessTokenBearer: String
         get() = accessToken
