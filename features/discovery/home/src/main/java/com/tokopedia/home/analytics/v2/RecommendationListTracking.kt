@@ -198,7 +198,10 @@ object RecommendationListTracking: BaseTrackerConst(){
                 Category.KEY, Category.HOMEPAGE,
                 Action.KEY, RECOMMENDATION_LIST_SEE_ALL_CARD_EVENT_ACTION,
                 Label.KEY, Label.FORMAT_2_ITEMS.format(channelId, headerName),
-                UserId.KEY, userId
+                Screen.KEY, Screen.DEFAULT,
+                UserId.KEY, userId,
+                CurrentSite.KEY, CurrentSite.DEFAULT,
+                BusinessUnit.KEY, BusinessUnit.DEFAULT
         ) as HashMap<String, Any>
     }
 
@@ -210,16 +213,6 @@ object RecommendationListTracking: BaseTrackerConst(){
         getTracker().sendGeneralEvent(getRecommendationListSeeAllCardClick(channelId, headerName, userId))
     }
 
-    fun getCloseClickOnDynamicListCarousel(channel: DynamicHomeChannel.Channels, userId: String = "") = DataLayer.mapOf(
-            Event.KEY, Event.CLICK_HOMEPAGE,
-            Category.KEY, Category.HOMEPAGE,
-            Action.KEY, RECOMMENDATION_LIST_CLOSE_EVENT_ACTION,
-            Label.KEY, Label.FORMAT_2_ITEMS.format(channel.id, channel.header.name),
-            Screen.KEY, Screen.DEFAULT,
-            UserId.KEY, userId,
-            CurrentSite.KEY, CurrentSite.DEFAULT
-    )
-
     fun getCloseClickOnDynamicListCarouselHomeComponent(channel: ChannelModel, userId: String = "") = DataLayer.mapOf(
             Event.KEY, Event.CLICK_HOMEPAGE,
             Category.KEY, Category.HOMEPAGE,
@@ -228,7 +221,8 @@ object RecommendationListTracking: BaseTrackerConst(){
             Screen.KEY, Screen.DEFAULT,
             UserId.KEY, userId,
             CurrentSite.KEY, CurrentSite.DEFAULT,
-            BusinessUnit.KEY, BusinessUnit.DEFAULT
+            BusinessUnit.KEY, BusinessUnit.DEFAULT,
+            Label.CHANNEL_LABEL, channel.id
     )
 
     fun getAddToCartOnDynamicListCarousel(channel: DynamicHomeChannel.Channels, grid: DynamicHomeChannel.Grid, position: Int, cartId: String, quantity: String = "0", userId: String = "") = DataLayer.mapOf(
