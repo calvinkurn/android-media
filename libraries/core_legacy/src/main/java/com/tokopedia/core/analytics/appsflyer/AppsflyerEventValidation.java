@@ -139,7 +139,7 @@ public class AppsflyerEventValidation {
                     logging("validation;reason=product_array_invalid;eventName='';data='$productList'");
                 }
             } catch (JSONException e) {
-                logging("error;reason=productList_array_exception;eventName='';data='$productList'");
+                //logging("error;reason=productList_array_exception;eventName='';data='$productList'");
             }
 
         }
