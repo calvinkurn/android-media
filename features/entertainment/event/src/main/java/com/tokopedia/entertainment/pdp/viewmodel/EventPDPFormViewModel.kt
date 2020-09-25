@@ -29,7 +29,7 @@ class EventPDPFormViewModel@Inject constructor(private val dispatcher: Coroutine
 
     fun getData(url: String, rawQueryPDP: String,rawQueryContent: String, eventCheckoutAdditionalData: EventCheckoutAdditionalData){
         launch {
-            when(val data = usecase.executeUseCase(rawQueryPDP, rawQueryContent, false, url)){
+            when(val data = usecase.executeUseCase(rawQueryPDP, rawQueryContent, true, url)){
                 is Success -> {
                     mFormDataMutable.value = eventFormMapper(data.data.eventProductDetailEntity.eventProductDetail.productDetailData,
                             eventCheckoutAdditionalData)
