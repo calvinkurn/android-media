@@ -1,0 +1,44 @@
+[
+  {
+    "data": {
+      "flightCheckout": {
+        "id": "1510052718",
+        "redirectURL": "https://pay.tokopedia.com/v2/payment",
+        "callbackURLSuccess": "https://pulsa.tokopedia.com/checkout/back-to-app",
+        "callbackURLFailed": "https://pulsa.tokopedia.com/checkout",
+        "queryString": "SubscriptionToken\u003d\u0026SubscriptionUUID\u003d\u0026ValidationType\u003d\u0026additional_fee\u003d\u0026amount\u003d3887400\u0026back_url\u003dhttps%3A%2F%2Fwww.tokopedia.com%2Fflight\u0026currency\u003dIDR\u0026customer_email\u003dfueerqan%40gmail.com\u0026customer_msisdn\u003d6281375496583\u0026customer_name\u003dMuhammad+Furqan\u0026expired_on\u003d\u0026fee\u003d\u0026items%5Bname%5D\u003dTiket+Pesawat\u0026items%5Bprice%5D\u003d3887400\u0026items%5Bquantity%5D\u003d1\u0026language\u003did-ID\u0026merchant_code\u003dtokopediaflight\u0026nid\u003d\u0026payment_identifier\u003d\u0026payment_metadata\u003d%7B%22user_data%22%3A%7B%22device_id%22%3A%22%22%2C%22device_version%22%3A%22%22%2C%22device_type%22%3A%22%22%7D%2C%22order_data%22%3A%7B%22order_data%22%3A%5B%7B%22order_id%22%3A%22511530555%22%2C%22order_code%22%3A%22IVR%2F20200918%2FXX%2FIX%2F511569855%22%2C%22product_code%22%3A%22tiket_pesawat%22%2C%22invoice_url%22%3A%22https%3A%2F%2Fpulsa.tokopedia.com%2Finvoice%2F%3Fpdf%3DInvoice-Recharge-5987896-1509-20200918143429-PawDPQdk4DC2.pdf%5Cu0026id%3D511530555%22%2C%22product_data%22%3A%5B%7B%22operator_id%22%3A%22310%22%2C%22product_id%22%3A%221509%22%2C%22product_name%22%3A%22Tokopedia+Travel+-+Flight+Flight%22%2C%22product_code%22%3A%22FLIGHT%22%2C%22price%22%3A3887400%2C%22quantity%22%3A1%2C%22campaign_id%22%3A%22%22%2C%22client_number%22%3A%22%22%2C%22identity_number%22%3A%22%22%2C%22is_product_pre_order%22%3Afalse%2C%22product_category%22%3A%7B%22id%22%3A27%2C%22name%22%3A%22Flight%22%2C%22identifier%22%3A%22Beli+Tiket+Pesawat%22%2C%22parent%22%3A0%7D%7D%5D%2C%22expire_time%22%3A%222020-09-18T08%3A14%3A11Z%22%7D%5D%7D%2C%22promo_data%22%3A%7B%22voucher_code%22%3A%22%22%2C%22promo_code_id%22%3A0%2C%22payment_description%22%3A%22%22%2C%22subsidized_amount%22%3A0%2C%22total_discount%22%3A0%2C%22total_cashback%22%3A0%2C%22is_stacking%22%3Afalse%7D%2C%22config_data%22%3A%7B%22hide_header_flag%22%3Afalse%2C%22device%22%3A0%2C%22is_verified_msisdn%22%3Afalse%2C%22va_code%22%3A%22%22%2C%22thanks_data%22%3A%7B%22custom_order_url%22%3A%22https%3A%2F%2Fm.tokopedia.com%2Forder-details%2Fdigital%2F511530555%3FbackBtn%3Dfalse%5Cu0026upstream%3DDIGITAL%22%2C%22custom_order_url_app%22%3A%22tokopedia%3A%2F%2Fdigital%2Forder%2F511530555%22%2C%22custom_home_url%22%3A%22https%3A%2F%2Fpulsa.tokopedia.com%2Ftiket-pesawat%2F%22%2C%22custom_home_url_app%22%3A%22tokopedia%3A%2F%2Frecharge%2Fhome%22%2C%22custom_title%22%3A%22Selamat%2C+pembayaran+Tokopedia+Travel+-+Flight+berhasil%21%22%2C%22custom_subtitle%22%3A%22Kamu+bisa+cek+status+transaksimu+di+Detail+Transaksi%2C+ya.%22%2C%22custom_title_order_button%22%3A%22Lihat+Detail+Transaksi%22%2C%22custom_wtv_text%22%3A%22Transaksimu+baru+dilanjutkan+setelah+pembayaran+terverifikasi.%22%2C%22custom_title_home_button%22%3A%22%22%2C%22tracking_data%22%3A%22%5B%7B%5C%22event%5C%22%3A+%5C%22transaction%5C%22%2C%5C%22eventCategory%5C%22%3A+%5C%22digital+-+thanks%5C%22%2C%5C%22eventAction%5C%22%3A+%5C%22view+purchase+attempt%5C%22%2C%5C%22eventLabel%5C%22%3A+%5C%22Flight+-+Tokopedia+Travel+-+Flight+-+Waiting+Payment%5C%22%2C%5C%22currentSite%5C%22%3A+%5C%22tokopediadigital%5C%22%2C%5C%22environment%5C%22%3A+%5C%22android%5C%22%2C%5C%22loginStatus%5C%22%3A+%5C%221%5C%22%2C%5C%22userId%5C%22%3A+%5C%225987896%5C%22%2C%5C%22siteName%5C%22%3A+%5C%22Recharge+Site%5C%22%2C%5C%22businessUnit%5C%22%3A+%5C%22payment%5C%22%2C%5C%22ecommerce%5C%22%3A+%7B%5C%22currencyCode%5C%22%3A+%5C%22IDR%5C%22%2C%5C%22purchase%5C%22%3A+%7B%5C%22actionField%5C%22%3A+%7B%5C%22id%5C%22%3A+%5C%22511530555%5C%22%2C%5C%22revenue%5C%22%3A+%5C%223887400.00%5C%22%2C%5C%22tax%5C%22%3A+%5C%22%5C%22%2C%5C%22coupon%5C%22%3A+%5C%22%5C%22%7D%2C%5C%22products%5C%22%3A+%5B%7B%5C%22name%5C%22%3A+%5C%22Tokopedia+Travel+-+Flight%5C%22%2C%5C%22id%5C%22%3A+%5C%221509%5C%22%2C%5C%22price%5C%22%3A+%5C%223887400.00%5C%22%2C%5C%22quantity%5C%22%3A+%5C%221%5C%22%7D%5D%7D%7D%2C%5C%22categoryId%5C%22%3A+%5C%2227%5C%22%2C%5C%22categoryName%5C%22%3A+%5C%22Flight%5C%22%2C%5C%22operator%5C%22%3A+%5C%22Tokopedia+Travel+-+Flight%5C%22%7D%5D%22%2C%22thank_you_page_token%22%3A%22bGBPrHwAPhcpWGYVQS3P5tMxhP1Ncbob4GuaqK43XYitsK6WjeZ3wHsvqMAjtVKpOW_Znple4nN7Vu9Ko7nu6A%22%7D%7D%7D\u0026pid\u003d18442240474082181119\u0026profile_code\u003dFLIGHT_DEFAULT\u0026signature\u003d2d9b2f08b69967417d8c508a65b173d322d5619c\u0026state\u003d0\u0026transaction_code\u003d\u0026transaction_date\u003d2020-09-18T07%3A34%3A29Z\u0026transaction_id\u003d1510052718\u0026user_defined_value\u003d%7B%22user_id%22%3A5987896%2C%22voucher_code%22%3A%22%22%2C%22device%22%3A3%2C%22product_id%22%3A1509%2C%22price%22%3A3887400%2C%22client_number%22%3A%22%22%2C%22payment_description%22%3A%22%22%2C%22promo_code_id%22%3A0%2C%22discount_amount%22%3A0%2C%22cashback_amount%22%3A0%2C%22cashback_voucher_amount%22%3A0%2C%22cashback_top_cash_amount%22%3A0%2C%22va_code%22%3A%22081375496583%22%2C%22fingerprint_id%22%3A%22%22%2C%22hide_header_flag%22%3Atrue%2C%22category_code%22%3A%2227%22%2C%22product_code%22%3A%22FLIGHT%22%2C%22is_mitra%22%3Afalse%2C%22order_type%22%3A1%2C%22coda_amount%22%3A0%2C%22xshop_flag%22%3A0%2C%22api_key%22%3A%22%22%7D",
+        "parameter": {
+          "merchantCode": "tokopediaflight",
+          "profileCode": "FLIGHT_DEFAULT",
+          "transactionID": "1510052718",
+          "transactionCode": "",
+          "transactionDate": "2020-09-18T07:34:29Z",
+          "customerName": "Muhammad Furqan",
+          "customerEmail": "emaildummy@gmail.com",
+          "amount": "3887400",
+          "currency": "IDR",
+          "itemsName": [
+            "Tiket Pesawat"
+          ],
+          "itemsQuantity": [
+            1
+          ],
+          "itemsPrice": [
+            3887400
+          ],
+          "signature": "2d9b2f08b69967417d8c508a65b173d322d5619c",
+          "language": "id-ID",
+          "userDefinedValue": "{\"user_id\":1234567,\"voucher_code\":\"\",\"device\":3,\"product_id\":1509,\"price\":3887400,\"client_number\":\"\",\"payment_description\":\"\",\"promo_code_id\":0,\"discount_amount\":0,\"cashback_amount\":0,\"cashback_voucher_amount\":0,\"cashback_top_cash_amount\":0,\"va_code\":\"081375496583\",\"fingerprint_id\":\"\",\"hide_header_flag\":true,\"category_code\":\"27\",\"product_code\":\"FLIGHT\",\"is_mitra\":false,\"order_type\":1,\"coda_amount\":0,\"xshop_flag\":0,\"api_key\":\"\"}",
+          "nid": "",
+          "state": 0,
+          "fee": "",
+          "paymentsAmount": [],
+          "paymentsName": [],
+          "pid": "18442240474082181119",
+          "customerMsisdn": "6281375496583"
+        },
+        "thanksURL": ""
+      }
+    }
+  }
+]
