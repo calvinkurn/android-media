@@ -98,12 +98,6 @@ class PromoCheckoutListDealsFragment() : BasePromoCheckoutListFragment(), PromoC
         activity?.finish()
     }
 
-    override fun changeTitle(title: String) {
-        if (!title.isNullOrBlank()) {
-            promo_checkout_list_last_seen_label.setText(title)
-        }
-    }
-
     override fun initInjector() {
         getComponent(PromoCheckoutListComponent::class.java).inject(this)
     }
