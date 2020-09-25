@@ -14,6 +14,7 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.AdapterList
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.CommonViewHolderListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.DeferredViewHolderAttachment
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.SearchListener
+import com.tokopedia.topchat.chatroom.view.custom.ProductCarouselRecyclerView
 import com.tokopedia.topchat.chatroom.view.uimodel.ProductCarouselUiModel
 import kotlinx.android.synthetic.main.item_topchat_product_list_attachment.view.*
 
@@ -32,6 +33,7 @@ class ProductCarouselListAttachmentViewHolder constructor(
         fun getSavedCarouselState(position: Int): Parcelable?
     }
 
+    private val rv: ProductCarouselRecyclerView? = itemView?.findViewById(R.id.rv_product)
     private val adapter = ProductListAdapter(
             searchListener, productListener, deferredAttachment, commonListener, adapterListener
     )
@@ -41,8 +43,9 @@ class ProductCarouselListAttachmentViewHolder constructor(
     }
 
     private fun initRecyclerView() {
-        itemView.rv_product?.apply {
+        rv?.apply {
             setHasFixedSize(true)
+            setRecycledViewPool(adapterListener.getProductCarouselViewPool())
             adapter = this@ProductCarouselListAttachmentViewHolder.adapter
             addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {

@@ -35,6 +35,7 @@ class TopChatRoomAdapter(
     private var bottomMostHeaderDate: HeaderDateUiModel? = null
     private var topMostHeaderDate: HeaderDateUiModel? = null
     private var topMostHeaderDateIndex: Int? = null
+    private val carouselViewPool = RecyclerView.RecycledViewPool()
 
     override fun enableShowDate(): Boolean = false
     override fun enableShowTime(): Boolean = false
@@ -66,6 +67,10 @@ class TopChatRoomAdapter(
         val nextItem = visitables.getOrNull(adapterPosition - 1) as? SendableViewModel
                 ?: return true
         return isSender == nextItem.isSender
+    }
+
+    override fun getProductCarouselViewPool(): RecyclerView.RecycledViewPool {
+        return carouselViewPool
     }
 
     fun showRetryFor(model: ImageUploadViewModel, b: Boolean) {
