@@ -1,6 +1,5 @@
 package com.tokopedia.logisticcart.shipping.features.shippingcourier.view;
 
-import android.annotation.SuppressLint;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
@@ -46,8 +45,7 @@ public class ShippingCourierViewHolder extends RecyclerView.ViewHolder {
         codLabel = itemView.findViewById(R.id.lbl_cod_available);
         otdLabel = itemView.findViewById(R.id.lbl_otd_available);
     }
-
-    @SuppressLint("StringFormatInvalid")
+    
     public void bindData(ShippingCourierUiModel shippingCourierUiModel,
                          ShippingCourierAdapterListener shippingCourierAdapterListener,
                          boolean isLastItem) {

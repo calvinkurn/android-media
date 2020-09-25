@@ -1,6 +1,5 @@
 package com.tokopedia.logisticcart.shipping.features.shippingduration.view;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.graphics.Typeface;
 import android.text.Spannable;
@@ -65,7 +64,6 @@ public class ShippingDurationViewHolder extends RecyclerView.ViewHolder {
         labelCodAvailable = itemView.findViewById(R.id.lbl_cod_available);
     }
 
-    @SuppressLint("StringFormatInvalid")
     public void bindData(ShippingDurationUiModel shippingDurationUiModel,
                          ShippingDurationAdapterListener shippingDurationAdapterListener,
                          boolean isDisableOrderPrioritas) {
