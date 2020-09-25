@@ -111,14 +111,14 @@ class TradeInAddressFragment : BaseViewModelFragment<TradeInAddressViewModel>() 
             }
         })
 
-        tradeInAddressViewModel.getProgBarVisibility().observe(this, Observer {
+        tradeInAddressViewModel.getProgBarVisibility().observe(viewLifecycleOwner, Observer {
             if (it)
                 progress_bar_layout.show()
             else
                 progress_bar_layout.hide()
         })
 
-        tradeInAddressViewModel.getErrorMessage().observe(this, Observer {
+        tradeInAddressViewModel.getErrorMessage().observe(viewLifecycleOwner, Observer {
             global_error.setType(GlobalError.SERVER_ERROR)
             global_error.errorDescription.text = it
             global_error.setActionClickListener {
@@ -152,7 +152,7 @@ class TradeInAddressFragment : BaseViewModelFragment<TradeInAddressViewModel>() 
     }
 
     private fun onResultFromRequestCodeNewAddress(data: Intent?) {
-        if (data != null && data.hasExtra(EXTRA_ADDRESS_NEW)) {
+        if (data?.hasExtra(EXTRA_ADDRESS_NEW) == true) {
             val address = data.getParcelableExtra<SaveAddressDataModel>(EXTRA_ADDRESS_NEW)
             if (address != null) {
                 arguments?.apply {

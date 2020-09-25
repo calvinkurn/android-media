@@ -32,6 +32,8 @@ class TradeInHomeViewModel @Inject constructor(
     val askUserLogin = MutableLiveData<Int>()
     var tradeInParams = TradeInParams()
     var imeiStateLiveData: MutableLiveData<Boolean> = MutableLiveData()
+    var imeiResponseLiveData: MutableLiveData<String?> = MutableLiveData()
+    var isImei = false
 
     var tradeInType: Int = TRADEIN_OFFLINE
 
@@ -181,16 +183,26 @@ class TradeInHomeViewModel @Inject constructor(
 
     override fun onError(jsonObject: JSONObject) {
         progBarVisibility.value = false
-        val homeResult = HomeResult()
-        try {
-            homeResult.displayMessage = jsonObject.getString("message")
-        } catch (e: JSONException) {
-            homeResult.displayMessage = ""
-            e.printStackTrace()
-        }
+        if(isImei){
+            var errorMessage: String? = null
+            try {
+                errorMessage = jsonObject.getString("message")
+            } catch (e: JSONException) {
+                e.printStackTrace()
+            }
+            imeiResponseLiveData.value = errorMessage
+        } else {
+            val homeResult = HomeResult()
+            try {
+                homeResult.displayMessage = jsonObject.getString("message")
+            } catch (e: JSONException) {
+                homeResult.displayMessage = ""
+                e.printStackTrace()
+            }
 
-        homeResult.isSuccess = false
-        homeResultData.value = homeResult
+            homeResult.isSuccess = false
+            homeResultData.value = homeResult
+        }
     }
 
     fun getMaxPrice(laku6TradeIn: Laku6TradeIn, tradeinType: Int) {
@@ -199,7 +211,8 @@ class TradeInHomeViewModel @Inject constructor(
         laku6TradeIn.getMinMaxPrice(this)
     }
 
-    fun getIMEI(laku6TradeIn: Laku6TradeIn, imei:String?){
+    fun getIMEI(laku6TradeIn: Laku6TradeIn, imei: String?){
+        isImei = true
         laku6TradeIn.checkImeiValidation(this, imei)
     }
 

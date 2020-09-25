@@ -189,8 +189,8 @@ class TradeInAnalytics @Inject constructor(
     fun viewInitialPricePage(phoneType: String, minPrice: String, maxPrice: String, productId: String) {
         val map = createGeneralEvent(eventName = ACTION_VIEW_TRADEIN_IRIS,
                 eventCategory = TRADE_IN_START_PAGE,
-                eventAction = "phone type : $phoneType - min price : $minPrice - max price : $maxPrice",
-                eventLabel = ACTION_POP_UP,
+                eventAction = "view price range page",
+                eventLabel = "phone type : $phoneType - min price : $minPrice - max price : $maxPrice",
                 screenName = TRADE_IN_INITIAL_PRICE_PAGE)
         map[PRODUCT_ID] = productId
         getTracker().sendGeneralEvent(map)
