@@ -81,8 +81,8 @@ class ProductMiniSocialProofViewHolder(private val view: View, private val liste
         val firstSocialProofValue = clickedSocialProof.findViewById<Typography>(R.id.chip_social_proof_value)
         when (value.first) {
             ProductMiniSocialProofDataModel.RATING -> {
-                view.isClickable = true
-                view.setOnClickListener { listener.onReviewClick() }
+                clickedSocialProof.isClickable = true
+                clickedSocialProof.setOnClickListener { listener.onReviewClick() }
                 firstSocialProofTxt?.run {
                     text = rating.toString()
                     setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable(view.context, R.drawable.ic_review_one_small), null, null, null)
@@ -92,8 +92,8 @@ class ProductMiniSocialProofViewHolder(private val view: View, private val liste
                 }
             }
             ProductMiniSocialProofDataModel.TALK -> {
-                view.isClickable = true
-                view.setOnClickListener { listener.onDiscussionClicked(componentTrackDataModel) }
+                clickedSocialProof.isClickable = true
+                clickedSocialProof.setOnClickListener { listener.onDiscussionClicked(componentTrackDataModel) }
                 firstSocialProofTxt?.run {
                     text = view.context.getString(R.string.product_detail_discussion_label)
                 }
