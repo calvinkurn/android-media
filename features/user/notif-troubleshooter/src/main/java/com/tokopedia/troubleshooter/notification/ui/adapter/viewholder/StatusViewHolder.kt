@@ -41,7 +41,7 @@ class StatusViewHolder(
     private fun success() {
         pgLoader?.hide()
         txtStatus?.text = context.getString(R.string.notif_status_checked)
-        imgStatus?.loadImageDrawable(R.drawable.ic_ts_notif_status_passed)
+        imgStatus?.loadImageDrawable(R.drawable.ic_ts_notif_status_sucess)
     }
 
     private fun warning() {
