@@ -98,6 +98,9 @@
     <string name="txt_more_item_plus">%1$d +</string>
     <string name="ongkir_pattern_string_dynamic_pdp"><![CDATA[%1s <br>ke <b>%2s</b>]]></string>
     <string name="review_counter">• %1$d ulasan</string>
+    <string name="review_out_of_total_reviews">dari %d ulasan</string>
+    <string name="review_author">oleh &lt;b>%s&lt;/b></string>
+    <string name="review_expand">&lt;a href="#"&gt;Selengkapnya&lt;/a&gt;</string>
 
     <string name="ft_label_without_credit_card">Tanpa Kartu Kredit</string>
     <string name="ft_label_with_credit_card">Dengan Kartu Kredit</string>
@@ -239,18 +242,17 @@
 
     <string name="recom_filter_chip_click_error_network">Silahkan cek kondisi jaringan</string>
 
-    <string name="content_desc_title_info">text title informasi produk</string>
-    <string name="content_desc_desc_info">text desc informasi produk</string>
+    <string name="content_desc_title_info">text info produk %1s</string>
+    <string name="content_desc_desc_info">text deskripsi info produk %1s</string>
     <string name="content_desc_label_see_detail_product_descr">text lihat deskripsi produk</string>
-    <string name="content_desc_txt_product_descr">text content deskripsi produk</string>
     <string name="content_desc_title_product_desc_label">text header deskripsi produk</string>
     <string name="content_desc_title_product_info_label">text header informasi produk</string>
     <string name="content_desc_btnAddToWishlist">button tambahkan ke wishlist</string>
-    <string name="content_desc_txt_main_price">text original price</string>
+    <string name="content_desc_txt_main_price">text harga %1d</string>
     <string name="content_desc_fab_detail_pdp">button wishlist</string>
-    <string name="content_desc_product_name">text product name</string>
+    <string name="content_desc_product_name">text nama produk %1s</string>
     <string name="content_desc_btn_buy_now">button beli</string>
     <string name="content_desc_btn_add_to_cart">button tambah keranjang</string>
-    <string name="content_desc_img_pdp_video">image product</string>
+    <string name="content_desc_img_pdp_video">image produk</string>
 
 </resources>

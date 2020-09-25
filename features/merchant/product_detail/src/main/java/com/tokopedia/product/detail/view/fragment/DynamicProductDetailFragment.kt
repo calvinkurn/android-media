@@ -482,7 +482,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 if (data != null) {
                     val isFavoriteFromShopPage = data.getBooleanExtra(ProductDetailConstant.SHOP_STATUS_FAVOURITE, false)
                     val isUserLoginFromShopPage = data.getBooleanExtra(ProductDetailConstant.SHOP_STICKY_LOGIN, false)
-                    val wasFavorite = pdpUiUpdater?.getShopInfo?.isFavorite
+                    val wasFavorite = pdpUiUpdater?.shopInfoMap?.isFavorite ?: pdpUiUpdater?.shopCredibility?.isFavorite ?: return
 
                     if (isUserLoginFromShopPage) {
                         updateStickyState()
@@ -601,7 +601,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
      */
     override fun onShopInfoClicked(itemId: Int, componentTrackDataModel: ComponentTrackDataModel) {
         when (itemId) {
-            R.id.btn_favorite -> onShopFavoriteClick()
+            R.id.btn_favorite, R.id.btn_follow -> onShopFavoriteClick()
             R.id.send_msg_shop -> {
                 DynamicProductDetailTracking.Click.eventButtonChatShopClicked(viewModel.getDynamicProductInfoP1, componentTrackDataModel)
                 onShopChatClicked()
@@ -1083,13 +1083,13 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     private fun observeP2Other() {
         viewLifecycleOwner.observe(viewModel.p2Other) {
-            if (it.helpfulReviews.isEmpty() && viewModel.getDynamicProductInfoP1?.basic?.stats?.countReview.orZero() == 0) {
+            if (it.helpfulReviews?.isEmpty() == true && viewModel.getDynamicProductInfoP1?.basic?.stats?.countReview.toIntOrZero() == 0) {
                 dynamicAdapter.removeComponentSection(pdpUiUpdater?.productReviewMap)
+                dynamicAdapter.removeComponentSection(pdpUiUpdater?.productReviewOldMap)
             }
 
             pdpUiUpdater?.updateDataP2General(it)
-            dynamicAdapter.notifyItemComponentSections(pdpUiUpdater?.productDiscussionMostHelpfulMap, pdpUiUpdater?.productReviewMap)
-
+            dynamicAdapter.notifyItemComponentSections(pdpUiUpdater?.productDiscussionMostHelpfulMap, pdpUiUpdater?.productReviewMap, pdpUiUpdater?.productReviewOldMap)
             (activity as? ProductDetailActivity)?.stopMonitoringP2Other()
         }
     }
@@ -2501,7 +2501,9 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             doActionOrLogin({
                 trackToggleFavoriteShop(componentTrackDataModel)
                 pdpUiUpdater?.getShopInfo?.enableButtonFavorite = false
-                dynamicAdapter.notifyShopInfo(pdpUiUpdater?.getShopInfo, ProductDetailConstant.PAYLOAD_TOOGLE_FAVORITE)
+                pdpUiUpdater?.shopCredibility?.enableButtonFavorite = false
+                dynamicAdapter.notifyWithPayload(pdpUiUpdater?.getShopInfo, ProductDetailConstant.PAYLOAD_TOOGLE_FAVORITE)
+                dynamicAdapter.notifyWithPayload(pdpUiUpdater?.shopCredibility, ProductDetailConstant.PAYLOAD_TOOGLE_FAVORITE)
                 viewModel.toggleFavorite(viewModel.getDynamicProductInfoP1?.basic?.shopID ?: "")
             })
         }
@@ -2518,11 +2520,11 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     private fun onSuccessFavoriteShop(isSuccess: Boolean) {
-        val isFavorite = pdpUiUpdater?.getShopInfo?.isFavorite ?: return
+        val isFavorite = pdpUiUpdater?.shopInfoMap?.isFavorite ?: pdpUiUpdater?.shopCredibility?.isFavorite ?: return
         if (isSuccess) {
-            pdpUiUpdater?.getShopInfo?.isFavorite = !isFavorite
-            pdpUiUpdater?.getShopInfo?.enableButtonFavorite = true
-            dynamicAdapter.notifyShopInfo(pdpUiUpdater?.getShopInfo, ProductDetailConstant.PAYLOAD_TOOGLE_AND_FAVORITE_SHOP)
+            pdpUiUpdater?.successUpdateShopFollow(isFavorite)
+            dynamicAdapter.notifyWithPayload(pdpUiUpdater?.shopInfoMap, ProductDetailConstant.PAYLOAD_TOOGLE_AND_FAVORITE_SHOP)
+            dynamicAdapter.notifyWithPayload(pdpUiUpdater?.shopCredibility, ProductDetailConstant.PAYLOAD_TOOGLE_AND_FAVORITE_SHOP)
         }
     }
 
@@ -2532,8 +2534,9 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 onShopFavoriteClick()
             })
         }
-        pdpUiUpdater?.getShopInfo?.enableButtonFavorite = true
-        dynamicAdapter.notifyShopInfo(pdpUiUpdater?.getShopInfo, ProductDetailConstant.PAYLOAD_TOOGLE_AND_FAVORITE_SHOP)
+        pdpUiUpdater?.failUpdateShopFollow()
+        dynamicAdapter.notifyWithPayload(pdpUiUpdater?.shopInfoMap, ProductDetailConstant.PAYLOAD_TOOGLE_AND_FAVORITE_SHOP)
+        dynamicAdapter.notifyWithPayload(pdpUiUpdater?.shopCredibility, ProductDetailConstant.PAYLOAD_TOOGLE_AND_FAVORITE_SHOP)
     }
 
     private fun onShopChatClicked() {

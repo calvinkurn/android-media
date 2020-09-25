@@ -1,0 +1,12 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:versionCode="1"
+    android:versionName="1.0.0"
+    package="com.tokopedia.buyerorder.test">
+    <application
+        android:label="BuyerOrder Component Test"
+        tools:ignore="HardcodedDebugMode"
+        tools:replace="android:debuggable,android:label"
+        android:debuggable="false">
+    </application>
+</manifest>
