@@ -65,7 +65,7 @@
             android:layout_marginEnd="@dimen/dp_10"
             android:layout_above="@+id/icon_pointer"
             android:layout_centerHorizontal="true"
-            android:background="@drawable/cards_ui_2">
+            android:background="@drawable/cards_ui_2_lg">
 
             <TextView
                 android:id="@+id/pointer_text"
@@ -86,7 +86,7 @@
                 android:layout_alignParentEnd="true"
                 android:layout_alignTop="@+id/pointer_text"
                 android:layout_alignBottom="@+id/pointer_text"
-                android:background="@drawable/button_buy_from_cart">
+                android:background="@drawable/button_buy_from_cart_lg">
 
                 <ImageView
                     android:layout_width="wrap_content"

@@ -6,7 +6,6 @@
     <uses-sdk tools:overrideLibrary="com.tokopedia.core"/>
 
     <uses-permission android:name="android.permission.NFC" />
-    <uses-permission android:name="android.permission.CALL_PHONE"/>
     <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
     <uses-permission android:name="android.permission.VIBRATE"/>
     <uses-permission
@@ -40,7 +39,7 @@
 
     <application
         android:name=".ConsumerMainApplication"
-        android:allowBackup="true"
+        android:allowBackup="false"
         android:icon="@mipmap/ic_launcher_customerapp"
         android:roundIcon="@mipmap/ic_launcher_customerapp_round"
         android:label="@string/app_name"
@@ -49,7 +48,7 @@
         android:supportsRtl="true"
         android:fullBackupContent="@xml/backup_descriptor"
         android:theme="@style/Theme.Tokopedia3"
-        tools:replace="name,android:label,android:hasCode,android:fullBackupContent">
+        tools:replace="name,android:label,android:hasCode,android:fullBackupContent,android:allowBackup">
         <meta-data android:name="com.facebook.sdk.AutoLogAppEventsEnabled"
            android:value="false"/>
         <meta-data android:name="com.facebook.sdk.AutoInitEnabled"
@@ -159,6 +158,15 @@
                     android:host="m.tokopedia.com"
                     android:pathPattern=".*"
                     android:scheme="https"/>
+
+                <data
+                    android:host="tokopedia.by"
+                    android:pathPattern="/.*"
+                    android:scheme="https" />
+                <data
+                    android:host="tokopedia.by"
+                    android:pathPattern="/.*"
+                    android:scheme="http" />
 
             </intent-filter>
 

@@ -18,8 +18,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:tickerShapeType="loose"
-        app:tickerType="error"
-        tools:descriptionText="@string/message_payment_success" />
+        app:tickerType="error" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_total_payment_label"
@@ -45,8 +44,7 @@
         app:layout_constraintStart_toStartOf="@+id/tv_total_payment_label"
         app:layout_constraintTop_toBottomOf="@+id/tv_total_payment_label"
         app:typographyType="heading_4"
-        app:typographyWeight="bold"
-        tools:text="Rp600.000.000" />
+        app:typographyWeight="bold" />
 
     <ImageView
         android:id="@+id/btn_order_detail"

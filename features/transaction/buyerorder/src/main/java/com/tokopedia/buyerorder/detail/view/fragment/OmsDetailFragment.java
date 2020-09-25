@@ -61,6 +61,7 @@ import com.tokopedia.buyerorder.detail.data.PayMethod;
 import com.tokopedia.buyerorder.detail.data.Pricing;
 import com.tokopedia.buyerorder.detail.data.ShopInfo;
 import com.tokopedia.buyerorder.detail.data.Status;
+import com.tokopedia.buyerorder.detail.data.TickerInfo;
 import com.tokopedia.buyerorder.detail.data.Title;
 import com.tokopedia.buyerorder.detail.di.OrderDetailsComponent;
 import com.tokopedia.buyerorder.detail.view.activity.OrderListwebViewActivity;
@@ -270,26 +271,37 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
 
     @Override
     public void setOrderToken(OrderToken orderToken) {
-
+        // no-op
     }
 
     @Override
     public void setDetail(Detail detail) {
+        // no-op
+    }
 
+    @Override
+    public void setIsRequestedCancel(Boolean isRequestedCancel) {
+        // no-op
     }
 
     @Override
     public void setAdditionInfoVisibility(int visibility) {
+        // no-op
     }
 
     @Override
     public void setAdditionalInfo(AdditionalInfo additionalInfo) {
-
+        // no-op
     }
 
     @Override
     public void setAdditionalTickerInfo(List<AdditionalTickerInfo> tickerInfos, @Nullable String url) {
+        // no-op
+    }
 
+    @Override
+    public void setTickerInfo(TickerInfo tickerInfo) {
+        // no-op
     }
 
     @Override

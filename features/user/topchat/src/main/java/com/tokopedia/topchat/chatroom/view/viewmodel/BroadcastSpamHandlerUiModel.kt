@@ -3,9 +3,7 @@ package com.tokopedia.topchat.chatroom.view.viewmodel
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
 
-data class BroadcastSpamHandlerUiModel constructor(
-        val asd: String = ""
-) : Visitable<TopChatTypeFactory> {
+class BroadcastSpamHandlerUiModel constructor() : Visitable<TopChatTypeFactory> {
 
     var isLoadingFollowShop = false
     var isLoadingStopBroadCast = false

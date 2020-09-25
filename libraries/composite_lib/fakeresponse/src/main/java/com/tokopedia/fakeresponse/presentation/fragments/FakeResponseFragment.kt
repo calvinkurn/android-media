@@ -10,8 +10,10 @@ import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
+import com.tokopedia.fakeresponse.Preference
 import com.tokopedia.fakeresponse.R
 import com.tokopedia.fakeresponse.Router
+import com.tokopedia.fakeresponse.SortBy
 import com.tokopedia.fakeresponse.data.diProvider.fragments.FakeResponseFragmentProvider
 import com.tokopedia.fakeresponse.presentation.activities.BaseActivity
 import com.tokopedia.fakeresponse.presentation.activities.FakeResponseActivity
@@ -128,6 +130,14 @@ class FakeResponseFragment : BaseFragment() {
             }
             R.id.gql_menu_paste_text -> {
                 Router.routeToPasteTextActivity(activity)
+            }
+            R.id.gql_sort_time_asc -> {
+                Preference.updateSortBy(SortBy.TIME_DESC)
+                pagerAdapter.fragmentList.firstOrNull()?.onResume()
+            }
+            R.id.gql_sort_default -> {
+                Preference.updateSortBy(SortBy.DEFAULT)
+                pagerAdapter.fragmentList.firstOrNull()?.onResume()
             }
         }
         return true

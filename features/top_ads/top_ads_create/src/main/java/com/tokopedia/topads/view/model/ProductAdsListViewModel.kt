@@ -36,7 +36,7 @@ class ProductAdsListViewModel @Inject constructor(
         private val dispatcher: CoroutineDispatcher,
         private val userSession: UserSessionInterface,
         private val gqlRepository: GraphqlRepository) : BaseViewModel(dispatcher) {
-        private var totalCount =0
+    private var totalCount = 0
 
     fun etalaseList(onSuccess: ((List<ResponseEtalase.Data.ShopShowcasesByShopID.Result>) -> Unit), onError: ((Throwable) -> Unit)) {
         launchCatchError(
@@ -58,7 +58,7 @@ class ProductAdsListViewModel @Inject constructor(
         )
     }
 
-    fun productList(keyword: String, etalaseId: String, sortBy: String, isPromoted: String, rows: Int, start: Int, onSuccess: ((List<ResponseProductList.Result.TopadsGetListProduct.Data>) -> Unit),
+    fun productList(keyword: String, etalaseId: String, sortBy: String, isPromoted: String, rows: Int, start: Int, onSuccess: ((List<ResponseProductList.Result.TopadsGetListProduct.Data>, eof: Boolean) -> Unit),
                     onEmpty: (() -> Unit), onError: ((Throwable) -> Unit)) {
         launchCatchError(
                 block = {
@@ -82,10 +82,10 @@ class ProductAdsListViewModel @Inject constructor(
                         if (it.topadsGetListProduct.data.isEmpty()) {
                             onEmpty()
                         } else {
-                            if(etalaseId.isEmpty()){
+                            if (etalaseId.isEmpty()) {
                                 totalCount = it.topadsGetListProduct.data.size
                             }
-                            onSuccess(it.topadsGetListProduct.data)
+                            onSuccess(it.topadsGetListProduct.data, it.topadsGetListProduct.eof)
                         }
                     }
                 },

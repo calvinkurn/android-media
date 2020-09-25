@@ -76,7 +76,7 @@ class DealCategoryViewModel @Inject constructor(
                     }
                     privateObservablDealsCategoryLayout.value = categoryLayout
                 } else {
-                    privateObservableProducts.value = listOf(mapCategoryLayout.mapProducttoLayout(brandProduct, page))
+                    privateObservableProducts.value = mapCategoryLayout.mapProducttoLayout(brandProduct, page)
                 }
             } catch (t: Throwable) {
                 privateErrorMessage.value = t

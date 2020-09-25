@@ -7,6 +7,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.WindowManager
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentFactory
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
@@ -18,7 +19,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.play.*
 import com.tokopedia.play.di.DaggerPlayComponent
 import com.tokopedia.play.di.PlayModule
-import com.tokopedia.play.util.observer.PlayVideoUtilObserver
 import com.tokopedia.play.view.contract.PlayNavigation
 import com.tokopedia.play.view.contract.PlayNewChannelInteractor
 import com.tokopedia.play.view.fragment.PlayFragment
@@ -33,21 +33,11 @@ import javax.inject.Inject
  */
 class PlayActivity : BaseActivity(), PlayNewChannelInteractor, PlayNavigation {
 
-    companion object {
-        private const val PLAY_FRAGMENT_TAG = "FRAGMENT_PLAY"
-
-        @TestOnly
-        fun createIntent(context: Context, channelId: String) =
-                Intent(context, PlayActivity::class.java).apply {
-                    data = Uri.parse("${ApplinkConstInternalContent.INTERNAL_PLAY}/$channelId")
-                }
-    }
-
     @Inject
     lateinit var playLifecycleObserver: PlayVideoPlayerObserver
 
     @Inject
-    lateinit var playVideoUtilObserver: PlayVideoUtilObserver
+    lateinit var fragmentFactory: FragmentFactory
 
     private val orientation: ScreenOrientation
         get() = ScreenOrientation.getByInt(resources.configuration.orientation)
@@ -55,10 +45,13 @@ class PlayActivity : BaseActivity(), PlayNewChannelInteractor, PlayNavigation {
     private lateinit var pageMonitoring: PageLoadTimePerformanceInterface
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        inject()
+        supportFragmentManager.fragmentFactory = fragmentFactory
+
         startPageMonitoring()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_play)
-        inject()
+
         setupPage()
 
         val channelId = intent?.data?.lastPathSegment
@@ -102,17 +95,25 @@ class PlayActivity : BaseActivity(), PlayNewChannelInteractor, PlayNavigation {
     }
 
     private fun getFragment(channelId: String?): Fragment {
-        return PlayFragment.newInstance(channelId)
+        return getPlayFragment(channelId)
     }
 
     private fun setupPage() {
         lifecycle.addObserver(playLifecycleObserver)
-        lifecycle.addObserver(playVideoUtilObserver)
     }
 
     private fun setupView(channelId: String?) {
         if (supportFragmentManager.findFragmentByTag(PLAY_FRAGMENT_TAG) == null) {
             onNewChannel(channelId)
+        }
+    }
+
+    private fun getPlayFragment(channelId: String?): Fragment {
+        val fragmentFactory = supportFragmentManager.fragmentFactory
+        return fragmentFactory.instantiate(classLoader, PlayFragment::class.java.name).apply {
+            arguments = Bundle().apply {
+                putString(PLAY_KEY_CHANNEL_ID, channelId)
+            }
         }
     }
 
@@ -139,6 +140,14 @@ class PlayActivity : BaseActivity(), PlayNewChannelInteractor, PlayNavigation {
         onBackPressed(true)
     }
 
+    fun getPageMonitoring(): PageLoadTimePerformanceInterface {
+        return pageMonitoring
+    }
+
+    fun getPltPerformanceResultData(): PltPerformanceData? {
+        return pageMonitoring.getPltPerformanceData()
+    }
+
     private fun startPageMonitoring() {
         pageMonitoring = PageLoadTimePerformanceCallback(
                 PLAY_TRACE_PREPARE_PAGE,
@@ -153,11 +162,13 @@ class PlayActivity : BaseActivity(), PlayNewChannelInteractor, PlayNavigation {
         pageMonitoring.startPreparePagePerformanceMonitoring()
     }
 
-    fun getPageMonitoring(): PageLoadTimePerformanceInterface {
-        return pageMonitoring
-    }
+    companion object {
+        private const val PLAY_FRAGMENT_TAG = "FRAGMENT_PLAY"
 
-    fun getPltPerformanceResultData(): PltPerformanceData? {
-        return pageMonitoring.getPltPerformanceData()
+        @TestOnly
+        fun createIntent(context: Context, channelId: String) =
+                Intent(context, PlayActivity::class.java).apply {
+                    data = Uri.parse("${ApplinkConstInternalContent.INTERNAL_PLAY}/$channelId")
+                }
     }
 }

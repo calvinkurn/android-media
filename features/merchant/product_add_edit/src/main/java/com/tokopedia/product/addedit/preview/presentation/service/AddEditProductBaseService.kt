@@ -73,6 +73,7 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
 
     abstract fun getNotificationManager(urlImageCount: Int): AddEditProductNotificationManager
     abstract fun onUploadProductImagesSuccess(uploadIdList: ArrayList<String>, variantInputModel: VariantInputModel)
+    abstract fun onUploadProductImagesFailed(errorMessage: String)
 
     override fun onCreate() {
         super.onCreate()
@@ -127,6 +128,7 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
         }
     }
 
+
     protected fun logError(requestParams: RequestParams, throwable: Throwable) {
         val errorMessage = String.format(
                 "\"Error upload product.\",\"userId: %s\",\"userEmail: %s \",\"errorMessage: %s\",params: \"%s\"",
@@ -152,7 +154,12 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
     private suspend fun uploadProductSizechart(
             sizecharts: PictureVariantInputModel
     ): PictureVariantInputModel {
-        sizecharts.uploadId = uploadImageAndGetId(sizecharts.filePath)
+        val uploadId = uploadImageAndGetId(sizecharts.urlOriginal)
+        if (uploadId.isNotEmpty()) {
+            sizecharts.uploadId = uploadId
+            sizecharts.urlOriginal = ""
+        }
+
         return sizecharts
     }
 
@@ -161,7 +168,23 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
     ): List<ProductVariantInputModel> {
         productVariants.forEach {
             it.pictures.firstOrNull()?.let { picture ->
-                picture.uploadId = uploadImageAndGetId(picture.filePath)
+                val uploadId = uploadImageAndGetId(picture.urlOriginal)
+                if (uploadId.isNotEmpty()) {
+                    picture.uploadId = uploadId
+
+                    // clear existing data
+                    picture.picID = ""
+                    picture.description = ""
+                    picture.filePath = ""
+                    picture.fileName = ""
+                    picture.width = 0
+                    picture.height = 0
+                    picture.isFromIG = ""
+                    picture.urlOriginal = ""
+                    picture.urlThumbnail = ""
+                    picture.url300 = ""
+                    picture.status = false
+                }
             }
         }
         return productVariants
@@ -190,8 +213,8 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
                 AddEditProductErrorHandler.logExceptionToCrashlytics(exception)
 
                 Timber.w("P2#PRODUCT_UPLOAD#%s", message)
-
-                notificationManager?.onFailedUpload(result.message)
+                onUploadProductImagesFailed(result.message)
+                setUploadProductDataError(result.message)
                 ""
             }
         }

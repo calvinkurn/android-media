@@ -8,10 +8,10 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.discovery2.Constant.ClaimCouponConstant.CLAIMED
+import com.tokopedia.discovery2.Constant.ClaimCouponConstant.DIKLAIM
+import com.tokopedia.discovery2.Constant.ClaimCouponConstant.HABIS
+import com.tokopedia.discovery2.Constant.ClaimCouponConstant.KLAIM
 import com.tokopedia.discovery2.Constant.ClaimCouponConstant.NOT_LOGGEDIN
-import com.tokopedia.discovery2.Constant.ClaimCouponConstant.OUT_OF_STOCK
-import com.tokopedia.discovery2.Constant.ClaimCouponConstant.UNCLAIMED
 import com.tokopedia.discovery2.GenerateUrl
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.data.DataItem
@@ -64,11 +64,14 @@ class ClaimCouponItemViewHolder(itemView: View, private val fragment: Fragment) 
                         RouteManager.route(itemView.context, ApplinkConst.LOGIN)
                     })
                 } else {
-                    setBtn(UNCLAIMED)
+                    setBtn(DIKLAIM)
                     Toaster.make(itemView.rootView, itemView.context.getString(R.string.claim_coupon_redeem_coupon_msg),
                             Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, itemView.context.getString(R.string.claim_coupon_lihat_text), View.OnClickListener {
-                        val applink = GenerateUrl.getClaimCoupon(item)
-                        claimCouponItemViewModel.navigate(itemView.context, applink)
+
+                        claimCouponItemViewModel.getCouponSlug()?.let { slug ->
+                            val applink = GenerateUrl.getClaimCouponApplink(slug)
+                            claimCouponItemViewModel.navigate(itemView.context, applink)
+                        }
                     })
                 }
             })
@@ -77,11 +80,11 @@ class ClaimCouponItemViewHolder(itemView: View, private val fragment: Fragment) 
     }
 
     private fun setBtn(status: String?) {
-        claimBtn.text = if (status == OUT_OF_STOCK || status == null)
-            OUT_OF_STOCK
+        claimBtn.text = if (status == HABIS || status == null)
+            HABIS
         else
             status
-        claimBtn.isEnabled = status == CLAIMED
+        claimBtn.isEnabled = status == KLAIM
         if (claimBtn.isEnabled)
             claimBtn.setTextColor(MethodChecker.getColor(itemView.context, R.color.white))
         else

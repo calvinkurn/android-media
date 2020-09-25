@@ -15,7 +15,13 @@ import kotlinx.android.synthetic.main.card_address_list.view.*
 
 class AddressListItemAdapter(var listener: onSelectedListener) : RecyclerView.Adapter<AddressListItemAdapter.AddressListViewHolder>() {
 
-    var addressList = mutableListOf<RecipientAddressModel>()
+    private var addressList = mutableListOf<RecipientAddressModel>()
+
+    fun setData(data: List<RecipientAddressModel>) {
+        addressList.clear()
+        addressList.addAll(data)
+        notifyDataSetChanged()
+    }
 
     interface onSelectedListener {
         fun onSelect(addressId: String)
@@ -49,6 +55,7 @@ class AddressListItemAdapter(var listener: onSelectedListener) : RecyclerView.Ad
                 address_detail.text = "${data.street}, ${data.destinationDistrictName}, ${data.cityName} ${data.postalCode}"
 
                 item_address_radio.isChecked = data.isSelected
+                item_address_radio.skipAnimation()
 
                 card_address_list.setOnClickListener {
                     listener.onSelect(data.id)

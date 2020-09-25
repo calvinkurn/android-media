@@ -30,6 +30,7 @@
 
     <TextView
         android:id="@+id/title"
+        android:contentDescription="@string/content_desc_title"
         android:layout_width="@dimen/use_case_and_dynamic_icon_size"
         android:layout_height="wrap_content"
         android:maxLines="2"

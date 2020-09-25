@@ -64,7 +64,7 @@ class DigitalRecommendationWidget @JvmOverloads constructor(context: Context, at
             }
         } else {
             thanks_dg_rec_text_sub.visible()
-            thanks_dg_rec_text_sub.text = element.productName.trim()
+            thanks_dg_rec_text_sub.text = (element.title ?: "").trim()
         }
 
     }

@@ -16,8 +16,11 @@ import com.tokopedia.home.account.presentation.viewmodel.TokopediaPayViewModel
 import com.tokopedia.home.account.presentation.viewmodel.base.BuyerViewModel
 import com.tokopedia.home.account.presentation.viewmodel.base.ParcelableViewModel
 import com.tokopedia.home.account.revamp.domain.data.model.AccountDataModel
+import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.navigation_common.model.VccUserStatus
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.user.session.UserSession
 import rx.functions.Func1
 import javax.inject.Inject
@@ -35,6 +38,8 @@ class BuyerAccountMapper @Inject constructor(
     private val LABEL_BLOCKED = "Layanan Terblokir"
     private val LABEL_DEACTIVATED = "Dinonaktifkan"
     private val LABEL_KYC_PENDING = "Selesaikan Pengajuan Aplikasimu"
+    private val UOH_AB_TEST_KEY = "uoh_android"
+    private val UOH_AB_TEST_VALUE = "uoh_android"
 
     override fun call(t: AccountDataModel): BuyerViewModel {
         return getBuyerModel(t)
@@ -46,7 +51,7 @@ class BuyerAccountMapper @Inject constructor(
         val model = BuyerViewModel()
         items.add(getBuyerProfile(accountDataModel))
         items.add(getTokopediaPayModel(accountDataModel))
-        items.addAll(getModel(context, accountDataModel, remoteConfig))
+        items.addAll(getModel(context, accountDataModel, remoteConfig, useUoh()))
         model.items = items
 
         return model
@@ -57,12 +62,15 @@ class BuyerAccountMapper @Inject constructor(
         val buyerCardViewModel = BuyerCardViewModel()
 
         buyerCardViewModel.apply {
-            userId = accountDataModel.profile.userId
-            name = accountDataModel.profile.fullName
+            userId = accountDataModel.profile.userId.toEmptyStringIfNull()
+            name = accountDataModel.profile.fullName.toEmptyStringIfNull()
+
+            shopName = userSession.shopName.toEmptyStringIfNull()
+            isHasShop = userSession.hasShop()
 
             setShortcutResponse(accountDataModel, this)
 
-            imageUrl = accountDataModel.profile.profilePicture
+            imageUrl = accountDataModel.profile.profilePicture.toEmptyStringIfNull()
             progress = accountDataModel.userProfileCompletion.completionScore
             isAffiliate = accountDataModel.isAffiliate
         }
@@ -106,9 +114,9 @@ class BuyerAccountMapper @Inject constructor(
             }
         }
 
-        buyerCardViewModel.eggImageUrl = accountDataModel.tokopoints.status.tier.imageUrl
-        buyerCardViewModel.memberStatus = accountDataModel.tokopoints.status.tier.nameDesc
-        buyerCardViewModel.imageUrl = accountDataModel.profile.profilePicture
+        buyerCardViewModel.eggImageUrl = accountDataModel.tokopoints.status?.tier?.imageUrl.toEmptyStringIfNull()
+        buyerCardViewModel.memberStatus = accountDataModel.tokopoints.status?.tier?.nameDesc.toEmptyStringIfNull()
+        buyerCardViewModel.imageUrl = accountDataModel.profile.profilePicture.toEmptyStringIfNull()
         buyerCardViewModel.progress = accountDataModel.userProfileCompletion.completionScore
     }
 
@@ -117,11 +125,11 @@ class BuyerAccountMapper @Inject constructor(
         val tokopediaPayViewModel = TokopediaPayViewModel()
 
         tokopediaPayViewModel.isLinked = accountDataModel.wallet.isLinked
-        tokopediaPayViewModel.walletType = accountDataModel.wallet.walletType
+        tokopediaPayViewModel.walletType = accountDataModel.wallet.walletType.toEmptyStringIfNull()
 
         val cdnUrl = remoteConfig.getString(AccountHomeUrl.ImageUrl.KEY_IMAGE_HOST, AccountHomeUrl.CDN_URL)
 
-        if(accountDataModel.wallet.walletType == OVO) {
+        if(accountDataModel.wallet.walletType != null && accountDataModel.wallet.walletType == OVO) {
             setOvoWalletType(tokopediaPayViewModel, accountDataModel, cdnUrl)
         } else {
             setWalletNonOvoType(tokopediaPayViewModel, accountDataModel, cdnUrl)
@@ -131,7 +139,7 @@ class BuyerAccountMapper @Inject constructor(
         tokopediaPayViewModel.labelRight = context.getString(R.string.label_tokopedia_pay_deposit)
         tokopediaPayViewModel.isRightSaldo = true
 
-        tokopediaPayViewModel.amountRight = CurrencyFormatUtil.convertPriceValueToIdrFormat(accountDataModel.saldo.depositLong, true)
+        tokopediaPayViewModel.amountRight = CurrencyFormatUtil.convertPriceValueToIdrFormat(accountDataModel.saldo.deposit, false)
         tokopediaPayViewModel.applinkRight = ApplinkConstInternalGlobal.SALDO_DEPOSIT
 
         setVCCBuyer(tokopediaPayViewModel, accountDataModel)
@@ -146,16 +154,16 @@ class BuyerAccountMapper @Inject constructor(
             if (accountDataModel.wallet.amountPendingCashback > 0) {
                 tokopediaPayViewModel.labelLeft = "(+" + accountDataModel.wallet.pendingCashback + ")"
             } else {
-                tokopediaPayViewModel.labelLeft = accountDataModel.wallet.text
+                tokopediaPayViewModel.labelLeft = accountDataModel.wallet.text.toEmptyStringIfNull()
             }
 
-            tokopediaPayViewModel.amountLeft = accountDataModel.wallet.action.text
-            tokopediaPayViewModel.applinkLeft = accountDataModel.wallet.action.applink
+            tokopediaPayViewModel.amountLeft = accountDataModel.wallet.action?.text.toEmptyStringIfNull()
+            tokopediaPayViewModel.applinkLeft = accountDataModel.wallet.action?.applink.toEmptyStringIfNull()
 
         } else {
-            tokopediaPayViewModel.labelLeft = "Points " + accountDataModel.wallet.pointBalance
-            tokopediaPayViewModel.amountLeft = accountDataModel.wallet.cashBalance
-            tokopediaPayViewModel.applinkLeft = accountDataModel.wallet.applink
+            tokopediaPayViewModel.labelLeft = "Points " + accountDataModel.wallet.pointBalance.toEmptyStringIfNull()
+            tokopediaPayViewModel.amountLeft = accountDataModel.wallet.cashBalance.toEmptyStringIfNull()
+            tokopediaPayViewModel.applinkLeft = accountDataModel.wallet.applink.toEmptyStringIfNull()
         }
     }
 
@@ -163,24 +171,24 @@ class BuyerAccountMapper @Inject constructor(
         tokopediaPayViewModel.iconUrlLeft = cdnUrl + AccountHomeUrl.ImageUrl.TOKOCASH_IMG
 
         if (!accountDataModel.wallet.isLinked) {
-            tokopediaPayViewModel.labelLeft = accountDataModel.wallet.text
-            tokopediaPayViewModel.amountLeft = accountDataModel.wallet.action.text
-            tokopediaPayViewModel.applinkLeft = accountDataModel.wallet.action.applink
+            tokopediaPayViewModel.labelLeft = accountDataModel.wallet.text.toEmptyStringIfNull()
+            tokopediaPayViewModel.amountLeft = accountDataModel.wallet.action?.text.toEmptyStringIfNull()
+            tokopediaPayViewModel.applinkLeft = accountDataModel.wallet.action?.applink.toEmptyStringIfNull()
         } else {
-            tokopediaPayViewModel.labelLeft = accountDataModel.wallet.text
-            tokopediaPayViewModel.amountLeft = accountDataModel.wallet.balance
-            tokopediaPayViewModel.applinkLeft = accountDataModel.wallet.applink
+            tokopediaPayViewModel.labelLeft = accountDataModel.wallet.text.toEmptyStringIfNull()
+            tokopediaPayViewModel.amountLeft = accountDataModel.wallet.balance.toEmptyStringIfNull()
+            tokopediaPayViewModel.applinkLeft = accountDataModel.wallet.applink.toEmptyStringIfNull()
         }
     }
 
     private fun setVCCBuyer(tokopediaPayViewModel: TokopediaPayViewModel, accountDataModel: AccountDataModel) {
-        if (accountDataModel.vccUserStatus.title.equals(OVO_PAY_LATER, ignoreCase = true)) {
+        if (accountDataModel.vccUserStatus.title!= null && accountDataModel.vccUserStatus.title.equals(OVO_PAY_LATER, ignoreCase = true)) {
 
             val vccUserStatus = accountDataModel.vccUserStatus
 
-            tokopediaPayViewModel.iconUrlCentre = vccUserStatus.icon
-            tokopediaPayViewModel.applinkCentre = vccUserStatus.redirectionUrl
-            tokopediaPayViewModel.amountCentre = accountDataModel.vccUserStatus.body
+            tokopediaPayViewModel.iconUrlCentre = vccUserStatus.icon.toEmptyStringIfNull()
+            tokopediaPayViewModel.applinkCentre = vccUserStatus.redirectionUrl.toEmptyStringIfNull()
+            tokopediaPayViewModel.amountCentre = accountDataModel.vccUserStatus.body.toEmptyStringIfNull()
 
             setVCCBasedOnStatus(tokopediaPayViewModel, vccUserStatus)
 
@@ -191,46 +199,53 @@ class BuyerAccountMapper @Inject constructor(
 
     private fun setVCCBasedOnStatus(tokopediaPayViewModel: TokopediaPayViewModel, vccUserStatus: VccUserStatus) {
         val tokopediaPayBSModel = TokopediaPayBSModel()
+        val title = vccUserStatus.title.toEmptyStringIfNull()
         when (vccUserStatus.status) {
             VccStatus.ELIGIBLE -> {
-                tokopediaPayViewModel.amountCentre = vccUserStatus.title
+                tokopediaPayViewModel.amountCentre = title
                 tokopediaPayViewModel.labelCentre = LABEL_ELIGIBLE
                 tokopediaPayViewModel.bsDataCentre = tokopediaPayBSModel
             }
             VccStatus.HOLD -> {
-                tokopediaPayViewModel.amountCentre = vccUserStatus.title
+                tokopediaPayViewModel.amountCentre = title
                 tokopediaPayViewModel.labelCentre = LABEL_HOLD
                 tokopediaPayViewModel.bsDataCentre = tokopediaPayBSModel
             }
             VccStatus.ACTIVE -> {
-                tokopediaPayViewModel.labelCentre = vccUserStatus.title
+                tokopediaPayViewModel.labelCentre = title
                 val oplLimit: String? = try {
-                    CurrencyFormatUtil.convertPriceValueToIdrFormat(vccUserStatus.body.toLong(), true)
+                    CurrencyFormatUtil.convertPriceValueToIdrFormat(vccUserStatus.body.toLongOrZero(), true)
                 } catch (e: Exception) {
-                    vccUserStatus.body
+                    e.printStackTrace()
+                    vccUserStatus.body.toEmptyStringIfNull()
                 }
                 tokopediaPayViewModel.amountCentre = oplLimit
                 tokopediaPayViewModel.bsDataCentre = tokopediaPayBSModel
             }
             VccStatus.REJECTED -> {
-                tokopediaPayViewModel.labelCentre = vccUserStatus.title
+                tokopediaPayViewModel.labelCentre = title
                 tokopediaPayViewModel.bsDataCentre = null
             }
             VccStatus.BLOCKED -> {
-                tokopediaPayViewModel.amountCentre = vccUserStatus.title
+                tokopediaPayViewModel.amountCentre = title
                 tokopediaPayViewModel.labelCentre = LABEL_BLOCKED
                 tokopediaPayViewModel.bsDataCentre = tokopediaPayBSModel
             }
             VccStatus.DEACTIVATED -> {
-                tokopediaPayViewModel.amountCentre = vccUserStatus.title
+                tokopediaPayViewModel.amountCentre = title
                 tokopediaPayViewModel.labelCentre = LABEL_DEACTIVATED
                 tokopediaPayViewModel.bsDataCentre = tokopediaPayBSModel
             }
             VccStatus.KYC_PENDING -> {
-                tokopediaPayViewModel.amountCentre = vccUserStatus.title
+                tokopediaPayViewModel.amountCentre = title
                 tokopediaPayViewModel.labelCentre = LABEL_KYC_PENDING
                 tokopediaPayViewModel.bsDataCentre = tokopediaPayBSModel
             }
         }
+    }
+
+    private fun useUoh(): Boolean {
+        val remoteConfigValue = RemoteConfigInstance.getInstance().abTestPlatform.getString(UOH_AB_TEST_KEY, "")
+        return remoteConfigValue == UOH_AB_TEST_VALUE
     }
 }

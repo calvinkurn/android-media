@@ -26,6 +26,8 @@ import com.tokopedia.discovery2.repository.productcards.ProductCardsRepository
 import com.tokopedia.discovery2.repository.productcards.ProductCardsRestRepository
 import com.tokopedia.discovery2.repository.pushstatus.pushstatus.PushStatusGQLRepository
 import com.tokopedia.discovery2.repository.pushstatus.pushstatus.PushStatusRepository
+import com.tokopedia.discovery2.repository.quickFilter.QuickFilterRepository
+import com.tokopedia.discovery2.repository.quickFilter.QuickFilterRestRepository
 import com.tokopedia.discovery2.repository.quickcoupon.QuickCouponGQLRepository
 import com.tokopedia.discovery2.repository.quickcoupon.QuickCouponRepository
 import com.tokopedia.discovery2.repository.tokopoints.TokopointsRepository
@@ -131,6 +133,11 @@ class DiscoveryModule {
     @Provides
     fun providesDiscoveryTopAdsTrackingUseCase(topAdsUrlHitter: TopAdsUrlHitter): DiscoveryTopAdsTrackingUseCase {
         return DiscoveryTopAdsTrackingUseCase(topAdsUrlHitter)
+    }
+
+    @Provides
+    fun provideQuickFilterRestRepository(): QuickFilterRepository {
+        return QuickFilterRestRepository()
     }
 
     @DiscoveryScope

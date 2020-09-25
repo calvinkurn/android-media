@@ -15,6 +15,7 @@ import com.tokopedia.chat_common.BaseChatToolbarActivity
 import com.tokopedia.chat_common.R
 import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel
 import com.tokopedia.chatbot.view.fragment.ChatbotFragment
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.pushnotif.data.constant.Constant
 import com.tokopedia.pushnotif.PushNotification
 
@@ -81,6 +82,13 @@ class ChatbotActivity : BaseChatToolbarActivity() {
         PushNotification.setIsChatBotWindowOpen(false)
     }
 
+    override fun setupToolbar() {
+        super.setupToolbar()
+        findViewById<ImageView>(R.id.user_avatar).setImageResource(com.tokopedia.chatbot.R.drawable.chatbot_avatar)
+        (findViewById<TextView>(R.id.title)).text = getString(com.tokopedia.chatbot.R.string.cb_bot_toolbar_title)
+        (findViewById<TextView>(R.id.label)).hide()
+        (findViewById<TextView>(R.id.subtitle)).hide()
+    }
 
     fun upadateToolbar(profileName: String?, profileImage: String?) {
         ImageHandler.loadImageCircle2(this, findViewById<ImageView>(R.id.user_avatar), profileImage)

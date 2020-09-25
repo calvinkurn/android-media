@@ -5,7 +5,8 @@
       "event": "clickSearchResult",
       "eventCategory": "search result",
       "eventAction": "click - inspiration carousel search",
-      "eventLabel": "{{.* - .* - .*}}"
+      "eventLabel": "{{.* - .* - .*}}",
+      "sessionIris": "{{.*}}"
     },
     {
       "event": "view_item_list",
@@ -13,6 +14,7 @@
       "eventAction": "impression - inspiration carousel product",
       "eventLabel": "{{.* - .*}}",
       "item_list": "/search - carousel",
+      "sessionIris": "{{.*}}",
       "items": [
         {
           "item_name": "{{.*}}",
@@ -31,6 +33,7 @@
       "eventAction": "click - inspiration carousel product",
       "eventLabel": "{{.* - .*}}",
       "item_list": "/search - carousel",
+      "sessionIris": "{{.*}}",
       "items": [
         {
           "item_name": "{{.*}}",
@@ -49,6 +52,7 @@
       "eventCategory": "search result",
       "eventAction": "impression - carousel banner",
       "eventLabel": "{{.* - .*}}",
+      "sessionIris": "{{.*}}",
       "promotions": [
         {
           "item_id": "{{.*}}",
@@ -64,6 +68,7 @@
       "eventCategory": "search result",
       "eventAction": "click - carousel banner",
       "eventLabel": "{{.* - .*}}",
+      "sessionIris": "{{.*}}",
       "promotions": [
         {
           "item_id": "{{.*}}",

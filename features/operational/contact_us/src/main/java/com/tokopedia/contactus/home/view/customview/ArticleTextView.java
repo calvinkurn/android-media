@@ -29,7 +29,7 @@ public class ArticleTextView extends CustomTextView {
 
     @Override
     public void onViewClick() {
-        ContactUsTracking.eventPopularArticleClick(contactUsArticle.getTitle());
+        ContactUsTracking.eventPopularArticleClick(getContext(), contactUsArticle.getTitle());
         getContext().startActivity(RouteManager.getIntent(getContext(), TokopediaUrl.Companion.getInstance().getMOBILEWEB()
                 + ContactUsURL.CONTENT_BASE_URL
                 + contactUsArticle.getSlug() + "?flag_app=1"));

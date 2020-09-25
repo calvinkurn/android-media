@@ -4,7 +4,6 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Context.CLIPBOARD_SERVICE
-import android.net.Uri
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.interfaces.ShareCallback
 import com.tokopedia.linker.model.LinkerData
@@ -24,7 +23,7 @@ object PlayShareWrapper {
     private val channelListWebUrl= "${TokopediaUrl.getInstance().WEB}play/channel/"
 
     fun copyToClipboard(context: Context, shareContents: String, onUrlCopied: () -> Unit) {
-        var clipboard: ClipboardManager = context.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+        val clipboard: ClipboardManager = context.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
         val clip = ClipData.newPlainText("play-broadcaster", shareContents)
         clipboard.setPrimaryClip(clip)
         onUrlCopied()
@@ -73,7 +72,7 @@ object PlayShareWrapper {
     private fun defaultSharedContent(shareContents: String, shareLink: String): String = String.format("%s\n\n%s", shareContents, shareLink)
 
     private fun generateShareData(shareData: ShareUiModel): LinkerData {
-        val desktopUrl  =  "$channelListWebUrl${shareData.id}"
+        val desktopUrl = "$channelListWebUrl${shareData.id}"
         return LinkerData.Builder.getLinkerBuilder()
                 .setId(shareData.id)
                 .setName(shareData.title)
@@ -82,7 +81,7 @@ object PlayShareWrapper {
                 .setImgUri(shareData.imageUrl)
                 .setOgImageUrl(shareData.imageUrl)
                 .setOgTitle(shareData.title)
-                .setUri(Uri.parse(shareData.redirectUrl).toString())
+                .setUri(shareData.redirectUrl)
                 .setDesktopUrl(desktopUrl)
                 .setShareUrl(shareData.redirectUrl)
                 .setType(LinkerData.PLAY_BROADCASTER)

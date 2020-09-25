@@ -41,7 +41,9 @@ data class ProductCardModel (
         val stockBarLabel: String = "",
         val stockBarPercentage: Int = 0,
         val isOutOfStock: Boolean = false,
-        val addToCardText: String = ""
+        val addToCardText: String = "",
+        val shopRating: String = "",
+        val isShopRatingYellow: Boolean = false
 ) {
     @Deprecated("replace with labelGroupList")
     var isProductSoldOut: Boolean = false
@@ -102,7 +104,11 @@ data class ProductCardModel (
         return (ratingString.isNotEmpty() || ratingCount > 0) && reviewCount > 0
     }
 
+    fun isShowDiscountOrSlashPrice() = discountPercentage.isNotEmpty() || slashedPrice.isNotEmpty()
+
     fun isShowFreeOngkirBadge() = freeOngkir.isActive && freeOngkir.imageUrl.isNotEmpty()
 
     fun isShowShopBadge() = shopBadgeList.find { it.isShown && it.imageUrl.isNotEmpty() } != null && shopLocation.isNotEmpty()
+
+    fun isShowShopRating() = shopRating.isNotEmpty()
 }

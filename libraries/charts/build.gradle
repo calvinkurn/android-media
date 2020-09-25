@@ -1,0 +1,23 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+
+repositories {
+    maven { url 'https://jitpack.io' }
+}
+
+dependencies {
+    implementation rootProject.ext.unifyDependencies.principles
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
+
+    implementation rootProject.ext.libraries.mpAndroidChart
+    implementation project(rootProject.ext.libraries.kotlinExtensions)
+}
+
+project.ext {
+    artifactId = 'charts'
+    groupId = 'com.tokopedia.charts'
+    versionName = "0.0.1"
+    artifactName = "charts-release"
+}
+
+apply from: '../../publish_local.gradle'

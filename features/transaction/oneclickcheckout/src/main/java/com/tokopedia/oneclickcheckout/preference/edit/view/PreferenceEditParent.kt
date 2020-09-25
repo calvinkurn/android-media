@@ -37,7 +37,7 @@ interface PreferenceEditParent {
     fun addFragment(fragment: Fragment)
     fun goBack()
 
-    fun setStepperValue(value: Int, isSmooth: Boolean = true)
+    fun setStepperValue(value: Int)
     fun showStepper()
     fun hideStepper()
 

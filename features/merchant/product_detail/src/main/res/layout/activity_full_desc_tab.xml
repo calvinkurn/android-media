@@ -17,6 +17,7 @@
         style="@style/TabBar.White"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
+        android:visibility="gone"
         app:tabMode="scrollable"/>
     </com.google.android.material.appbar.AppBarLayout>
 

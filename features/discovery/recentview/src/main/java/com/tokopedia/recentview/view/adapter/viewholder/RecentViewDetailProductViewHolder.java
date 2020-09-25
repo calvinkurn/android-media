@@ -74,22 +74,10 @@ public class RecentViewDetailProductViewHolder extends AbstractViewHolder<Recent
     public void bind(final RecentViewDetailProductViewModel element) {
 
         ImageHandler.LoadImage(productImage, element.getImageSource());
-
-//        if (element.isWishlist()) {
-//            ImageHandler.loadImageWithId(wishlist, R.drawable.wishlist_faved);
-//        } else {
-//            ImageHandler.loadImageWithId(wishlist, R.drawable.wishlist);
-//        }
-
         productName.setText(MethodChecker.fromHtml(element.getName()));
         productPrice.setText(element.getPrice());
 
-        if (element.getRating() > 0) {
-            productRating.setRating(element.getRating());
-            productRating.setVisibility(View.VISIBLE);
-        } else {
-            productRating.setVisibility(View.GONE);
-        }
+        productRating.setVisibility(View.GONE);
 
         if (!element.getLabels().isEmpty()) {
             labels.setVisibility(View.VISIBLE);
@@ -102,16 +90,6 @@ public class RecentViewDetailProductViewHolder extends AbstractViewHolder<Recent
             freeReturn.setVisibility(View.VISIBLE);
         else
             freeReturn.setVisibility(View.GONE);
-//
-//        wishlist.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                viewListener.onWishlistClicked(
-//                        getAdapterPosition(),
-//                        element.getContentId(),
-//                        element.isWishlist());
-//            }
-//        });
 
         if (element.isOfficial()) {
             officialStore.setVisibility(View.VISIBLE);

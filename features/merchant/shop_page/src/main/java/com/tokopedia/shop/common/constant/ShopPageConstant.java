@@ -9,6 +9,7 @@ public class ShopPageConstant {
     public static final int MAXIMUM_SELECTED_ETALASE_LIST = 4;
 
     public static final int DEFAULT_PER_PAGE = 10;
+    public static final int SHOP_PRODUCT_EMPTY_STATE_LIMIT = 20;
     public static final int ETALASE_HIGHLIGHT_COUNT = 5;
 
     public static final int DEFAULT_MEMBERSHIP_POSITION = 0;
@@ -43,4 +44,5 @@ public class ShopPageConstant {
     public static final String KEY_SHOP_BUYER_EMPTY_PRODUCT_DATA_MODEL = "KEY_SHOP_BUYER_EMPTY_PRODUCT_DATA_MODEL";
     public static final String URL_IMAGE_SELLER_PRODUCT_ALL_ETALASE_EMPTY_STATE_BACKGROUND= "https://ecs7.tokopedia.net/android/shop_page/seller_shop_product_empty_background.png";
     public static final String URL_IMAGE_BUYER_EMPTY_STATE_TOKOPEDIA_IMAGE = "https://ecs7.tokopedia.net/android/shop_page/image_product_empty_state_buyer.png";
+    public static final String URL_IMAGE_BUYER_SHOP_SEARCH_EMPTY_STATE = "https://ecs7.tokopedia.net/android/empty_state_search_filter.png";
 }

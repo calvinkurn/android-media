@@ -2,6 +2,7 @@ package com.tokopedia.play.broadcaster.view.partial
 
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -18,16 +19,16 @@ import com.tokopedia.unifycomponents.UnifyButton
  */
 class BottomActionPartialView(
         container: ViewGroup,
-        listener: Listener
+        private val listener: Listener
 ) : PartialView(container, R.id.bottom_sheet_action) {
 
     private val clInventory: ConstraintLayout = findViewById(R.id.cl_inventory)
     private val ivInventory: ImageView = findViewById(R.id.iv_inventory)
     private val btnAction: UnifyButton = findViewById(R.id.btn_action)
     private val tvBadgeCount: TextView = findViewById(R.id.tv_badge_count)
+    private val flInventoryClickArea: FrameLayout = findViewById(R.id.fl_inventory_click_area)
 
     init {
-        clInventory.setOnClickListener { listener.onInventoryIconClicked() }
         btnAction.setOnClickListener {
             if (!btnAction.isLoading) listener.onNextButtonClicked()
         }
@@ -40,12 +41,14 @@ class BottomActionPartialView(
             ivInventory.isClickable = false
             btnAction.isEnabled = false
             tvBadgeCount.gone()
+            flInventoryClickArea.setOnClickListener {  }
         } else {
             ivInventory.setImageResource(R.drawable.ic_play_inventory)
             ivInventory.isClickable = true
             btnAction.isEnabled = true
             tvBadgeCount.visible()
             tvBadgeCount.text = productList.size.toString()
+            flInventoryClickArea.setOnClickListener { listener.onInventoryIconClicked() }
         }
     }
 

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.tokopedia.design.countdown.CountDownView
     android:id="@+id/count_down"
+    android:contentDescription="@string/content_desc_count_down"
     android:layout_width="0dp"
     android:layout_height="wrap_content"
     android:layout_centerVertical="true"

@@ -102,7 +102,13 @@ class HomeRecycleAdapter(asyncDifferConfig: AsyncDifferConfig<Visitable<*>>, pri
         return list
     }
 
-    fun onResume() {
+    fun onResumeBanner() {
+        if(itemCount > 0){
+            (getViewHolder(0) as? BannerViewHolder)?.onResume()
+        }
+    }
+
+    fun onResumePlayWidget(){
         val positions = getPositionPlay()
         if(positions.isNotEmpty()){
             currentSelected = positions.first()
@@ -113,26 +119,24 @@ class HomeRecycleAdapter(asyncDifferConfig: AsyncDifferConfig<Visitable<*>>, pri
         if(playCarouselIndex != -1){
             (getViewHolder(playCarouselIndex) as? PlayBannerCardViewHolder)?.onResume()
         }
+    }
 
+    fun onPauseBanner() {
         if(itemCount > 0){
-            (getViewHolder(0) as? BannerViewHolder)?.onResume()
+            (getViewHolder(0) as? BannerViewHolder)?.onPause()
         }
     }
 
-    fun onPause() {
+    fun onPausePlayWidget(shouldPausePlay: Boolean){
         val positions = getPositionPlay()
         if(positions.isNotEmpty()){
             currentSelected = positions.first()
-            (getViewHolder(currentSelected) as? PlayCardViewHolder)?.pause()
+            (getViewHolder(currentSelected) as? PlayCardViewHolder)?.pause(shouldPausePlay)
         }
 
         val playCarouselIndex = getPositionPlayCarousel()
         if(playCarouselIndex != -1){
             (getViewHolder(playCarouselIndex) as? PlayBannerCardViewHolder)?.onPause()
-        }
-
-        if(itemCount > 0){
-            (getViewHolder(0) as? BannerViewHolder)?.onPause()
         }
     }
 

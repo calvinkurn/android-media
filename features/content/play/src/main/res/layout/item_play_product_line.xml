@@ -6,15 +6,26 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/iv_product_image"
-        android:layout_width="@dimen/play_product_line_image_size"
-        android:layout_height="@dimen/play_product_line_image_size"
+    <FrameLayout
+        android:id="@+id/fl_product_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_play_product_line_image"
+        android:padding="@dimen/play_product_line_image_border_padding"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:src="@tools:sample/avatars"
-        />
+        >
+
+        <com.tokopedia.play_common.view.RoundedImageView
+            android:id="@+id/iv_product_image"
+            android:layout_width="@dimen/play_product_line_image_size"
+            android:layout_height="@dimen/play_product_line_image_size"
+            app:cornerRadius="@dimen/play_product_line_image_radius"
+            tools:src="@tools:sample/avatars"
+            />
+
+    </FrameLayout>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_product_title"
@@ -29,8 +40,8 @@
         android:maxLines="1"
         android:textColor="@color/Neutral_N700_96"
         app:layout_constraintVertical_chainStyle="packed"
-        app:layout_constraintStart_toEndOf="@id/iv_product_image"
-        app:layout_constraintTop_toTopOf="@id/iv_product_image"
+        app:layout_constraintStart_toEndOf="@id/fl_product_image"
+        app:layout_constraintTop_toTopOf="@id/fl_product_image"
         app:layout_constraintBottom_toTopOf="@id/ll_product_discount"
         app:layout_constraintEnd_toStartOf="@+id/btn_product_buy"
         app:typographyType="body_2"
@@ -85,7 +96,7 @@
         android:textColor="@color/Neutral_N700_96"
         app:layout_constraintStart_toStartOf="@id/ll_product_discount"
         app:layout_constraintTop_toBottomOf="@id/ll_product_discount"
-        app:layout_constraintBottom_toBottomOf="@id/iv_product_image"
+        app:layout_constraintBottom_toBottomOf="@id/fl_product_image"
         android:layout_marginBottom="@dimen/spacing_lvl1"
         android:layout_marginTop="@dimen/spacing_lvl1"
         app:typographyType="body_2"
@@ -101,7 +112,7 @@
         android:paddingStart="@dimen/play_product_line_buy_padding_start_end"
         android:paddingEnd="@dimen/play_product_line_buy_padding_start_end"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/iv_product_image"
+        app:layout_constraintTop_toTopOf="@id/fl_product_image"
         app:unifyButtonSize="small"
         app:unifyButtonType="transaction"
         />
@@ -115,7 +126,7 @@
         app:layout_constraintStart_toStartOf="@id/btn_product_buy"
         app:layout_constraintEnd_toEndOf="@id/btn_product_buy"
         app:layout_constraintTop_toBottomOf="@id/btn_product_buy"
-        app:layout_constraintBottom_toBottomOf="@id/iv_product_image"
+        app:layout_constraintBottom_toBottomOf="@id/fl_product_image"
         app:srcCompat="@drawable/ic_cart_grayscale_20"
         />
 

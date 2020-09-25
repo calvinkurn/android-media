@@ -23,8 +23,8 @@ import com.tokopedia.home.test.fragment.HomeRecommendationFragmentTest
 import com.tokopedia.home.test.json.HomeRecommendationJson
 import com.tokopedia.home.test.matchers.CustomAssertions.Companion.hasItemCount
 import com.tokopedia.home.test.rules.TestDispatcherProvider
+import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import io.mockk.coEvery
-import io.mockk.every
 import io.mockk.mockk
 import io.mockk.slot
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -45,7 +45,7 @@ class HomeRecommendationUITest{
     val taskExecutorRule = InstantTaskExecutorRule()
 
     private val getHomeRecommendationUseCase = mockk<GetHomeRecommendationUseCase>(relaxed = true)
-
+    private val topAdsImageViewUseCase = mockk<TopAdsImageViewUseCase>()
     private lateinit var viewModel: HomeRecommendationViewModel
 
     @Test
@@ -57,7 +57,7 @@ class HomeRecommendationUITest{
         Log.d("testHomeRecom", mockData.toString())
         coEvery { getHomeRecommendationUseCase.executeOnBackground() } returns mockData
         Log.d("testHomeRecom", "success")
-        viewModel = HomeRecommendationViewModel(getHomeRecommendationUseCase, TestDispatcherProvider())
+        viewModel = HomeRecommendationViewModel(getHomeRecommendationUseCase, topAdsImageViewUseCase, TestDispatcherProvider())
         val homeRecommendationTest = HomeRecommendationFragmentTest(createViewModelFactory(viewModel))
         activityRule.activity.setupFragment(homeRecommendationTest)
         Log.d("testHomeRecom", "Activity set fragment")
@@ -71,7 +71,7 @@ class HomeRecommendationUITest{
         Log.d("testHomeRecom", "start test")
         coEvery { getHomeRecommendationUseCase.executeOnBackground() } throws TimeoutException()
         Log.d("testHomeRecom", "success")
-        viewModel = HomeRecommendationViewModel(getHomeRecommendationUseCase, TestDispatcherProvider())
+        viewModel = HomeRecommendationViewModel(getHomeRecommendationUseCase, topAdsImageViewUseCase, TestDispatcherProvider())
         val homeRecommendationTest = HomeRecommendationFragmentTest(createViewModelFactory(viewModel))
         activityRule.activity.setupFragment(homeRecommendationTest)
         Log.d("testHomeRecom", "Activity set fragment")
@@ -89,7 +89,7 @@ class HomeRecommendationUITest{
             HomeRecommendationDataModel()
         }
         Log.d("testHomeRecom", "success")
-        viewModel = HomeRecommendationViewModel(getHomeRecommendationUseCase, TestDispatcherProvider())
+        viewModel = HomeRecommendationViewModel(getHomeRecommendationUseCase, topAdsImageViewUseCase, TestDispatcherProvider())
         val homeRecommendationTest = HomeRecommendationFragmentTest(createViewModelFactory(viewModel))
         activityRule.activity.setupFragment(homeRecommendationTest)
         Log.d("testHomeRecom", "Activity set fragment")
@@ -112,7 +112,7 @@ class HomeRecommendationUITest{
         Log.d("testHomeRecom", mockData.toString())
         coEvery { getHomeRecommendationUseCase.executeOnBackground() } returns mockData
         Log.d("testHomeRecom", "success")
-        viewModel = HomeRecommendationViewModel(getHomeRecommendationUseCase, TestDispatcherProvider())
+        viewModel = HomeRecommendationViewModel(getHomeRecommendationUseCase, topAdsImageViewUseCase, TestDispatcherProvider())
         val homeRecommendationTest = HomeRecommendationFragmentTest(createViewModelFactory(viewModel))
         activityRule.activity.setupFragment(homeRecommendationTest)
         Log.d("testHomeRecom", "Activity set fragment")
@@ -137,7 +137,7 @@ class HomeRecommendationUITest{
         Log.d("testHomeRecom", mockData.toString())
         coEvery { getHomeRecommendationUseCase.executeOnBackground() } returns mockData
         Log.d("testHomeRecom", "success")
-        viewModel = HomeRecommendationViewModel(getHomeRecommendationUseCase, TestDispatcherProvider())
+        viewModel = HomeRecommendationViewModel(getHomeRecommendationUseCase, topAdsImageViewUseCase, TestDispatcherProvider())
         val homeRecommendationTest = HomeRecommendationFragmentTest(createViewModelFactory(viewModel))
         activityRule.activity.setupFragment(homeRecommendationTest)
         Log.d("testHomeRecom", "Activity set fragment")

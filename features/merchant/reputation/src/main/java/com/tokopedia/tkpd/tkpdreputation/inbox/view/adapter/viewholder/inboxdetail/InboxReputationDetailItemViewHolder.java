@@ -20,8 +20,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.tkpd.tkpdreputation.R;
-import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationActivity;
+import com.tokopedia.tkpd.tkpdreputation.constant.Constant;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.ImageUploadAdapter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.listener.InboxReputationDetail;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ImageAttachmentViewModel;
@@ -262,7 +263,7 @@ public class InboxReputationDetailItemViewHolder extends
                 replyArrow.setVisibility(View.GONE);
                 sellerReplyLayout.setVisibility(View.GONE);
 
-                if (element.getTab() == InboxReputationActivity.TAB_BUYER_REVIEW) {
+                if (element.getTab() == Constant.TAB_BUYER_REVIEW) {
                     sellerAddReplyLayout.setVisibility(View.VISIBLE);
                 } else {
                     sellerAddReplyLayout.setVisibility(View.GONE);
@@ -290,7 +291,7 @@ public class InboxReputationDetailItemViewHolder extends
     }
 
     private void showOrHideGiveReviewLayout(InboxReputationDetailItemViewModel element) {
-        if (element.getTab() == InboxReputationActivity.TAB_BUYER_REVIEW
+        if (element.getTab() == Constant.TAB_BUYER_REVIEW
                 || element.isReviewSkipped()
                 || isOwnProduct(element)
                 || element.isReviewHasReviewed()) {
@@ -333,7 +334,7 @@ public class InboxReputationDetailItemViewHolder extends
         sellerReplyTime.setText(getFormattedTime(reviewResponseViewModel.getResponseCreateTime()));
         sellerReply.setText(MethodChecker.fromHtml(reviewResponseViewModel.getResponseMessage()));
         sellerAddReplyEditText.setText("");
-        if (element.getTab() == InboxReputationActivity.TAB_BUYER_REVIEW) {
+        if (element.getTab() == Constant.TAB_BUYER_REVIEW) {
             seeReplyLayout.setVisibility(View.VISIBLE);
             replyOverflow.setVisibility(View.VISIBLE);
             replyOverflow.setOnClickListener(new View.OnClickListener() {
@@ -412,7 +413,7 @@ public class InboxReputationDetailItemViewHolder extends
 
     private String getReviewerNameText(InboxReputationDetailItemViewModel element) {
         if (element.isReviewIsAnonymous()
-                && element.getTab() != InboxReputationActivity.TAB_BUYER_REVIEW) {
+                && element.getTab() != Constant.TAB_BUYER_REVIEW) {
             return getAnonymousName(element.getReviewerName());
         } else {
             return element.getReviewerName();
@@ -428,7 +429,7 @@ public class InboxReputationDetailItemViewHolder extends
 
     private boolean canShowOverflow(InboxReputationDetailItemViewModel element) {
         return element.isReviewIsEditable()
-                || element.getTab() == InboxReputationActivity.TAB_BUYER_REVIEW
+                || element.getTab() == Constant.TAB_BUYER_REVIEW
                 || !TextUtils.isEmpty(element.getProductName());
     }
 
@@ -450,7 +451,7 @@ public class InboxReputationDetailItemViewHolder extends
                     popup.getMenu().add(1, MENU_EDIT, 1, context
                             .getString(R.string.menu_edit));
 
-                if (element.getTab() == InboxReputationActivity.TAB_BUYER_REVIEW)
+                if (element.getTab() == Constant.TAB_BUYER_REVIEW)
                     popup.getMenu().add(1, MENU_REPORT, 2, context
                             .getString(R.string.menu_report));
 

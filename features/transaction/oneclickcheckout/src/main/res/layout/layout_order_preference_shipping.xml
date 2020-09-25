@@ -46,8 +46,7 @@
                 app:layout_constraintEnd_toStartOf="@+id/ticker_action"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:typographyType="body_3"
-                tools:text="Tersedia Bebas Ongkir (4 - 6 hari)" />
+                app:typographyType="body_3" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/ticker_action"
@@ -82,8 +81,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ticker_shipping_promo"
         app:typographyType="body_3"
-        app:typographyWeight="bold"
-        tools:text="pengiriman instan" />
+        app:typographyWeight="bold" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_shipping_duration"
@@ -97,8 +95,7 @@
         app:layout_constraintStart_toStartOf="@+id/tv_shipping_name"
         app:layout_constraintTop_toBottomOf="@+id/tv_shipping_name"
         app:typographyType="body_3"
-        app:typographyWeight="reguler"
-        tools:text="durasi 3 jam - Gojek" />
+        app:typographyWeight="reguler" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_shipping_courier_lbl"
@@ -109,6 +106,7 @@
         android:lines="1"
         android:text="@string/label_kurir"
         android:textColor="@color/Neutral_N700_96"
+        android:visibility="gone"
         app:layout_constraintStart_toStartOf="@+id/tv_shipping_name"
         app:layout_constraintTop_toBottomOf="@+id/tv_shipping_duration"
         app:typographyType="body_3"
@@ -123,11 +121,11 @@
         android:gravity="center_vertical"
         android:lines="1"
         android:textColor="@color/Neutral_N700_68"
+        android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_shipping_courier_lbl"
         app:typographyType="small"
-        app:typographyWeight="reguler"
-        tools:text="Rp. 25.000" />
+        app:typographyWeight="reguler" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_shipping_courier"
@@ -137,12 +135,12 @@
         android:gravity="center_vertical"
         android:lines="1"
         android:textColor="@color/Neutral_N700_68"
+        android:visibility="gone"
         app:drawableRightCompat="@drawable/ic_keyboard_arrow_down_grey_20dp"
         app:layout_constraintStart_toStartOf="@+id/tv_shipping_name"
         app:layout_constraintTop_toBottomOf="@+id/tv_shipping_slash_price"
         app:typographyType="body_3"
-        app:typographyWeight="reguler"
-        tools:text="Gojek" />
+        app:typographyWeight="reguler" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_shipping_price"
@@ -151,12 +149,12 @@
         android:gravity="center_vertical"
         android:lines="1"
         android:textColor="@color/Neutral_N700_96"
+        android:visibility="gone"
         app:drawableEndCompat="@drawable/ic_keyboard_arrow_down_grey_20dp"
         app:layout_constraintStart_toStartOf="@+id/tv_shipping_name"
         app:layout_constraintTop_toBottomOf="@+id/tv_shipping_courier"
         app:typographyType="body_3"
-        app:typographyWeight="bold"
-        tools:text="Rp. 25.000" />
+        app:typographyWeight="bold" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_shipping_message"
@@ -166,12 +164,12 @@
         android:layout_marginEnd="@dimen/dp_8"
         android:layout_marginRight="@dimen/dp_8"
         android:textColor="@color/Red_R600"
+        android:visibility="gone"
         app:layout_constraintEnd_toStartOf="@+id/tv_shipping_change_duration"
         app:layout_constraintStart_toStartOf="@+id/tv_shipping_name"
         app:layout_constraintTop_toBottomOf="@+id/tv_shipping_price"
         app:typographyType="body_3"
-        app:typographyWeight="reguler"
-        tools:text="durasi tidak tersedia" />
+        app:typographyWeight="reguler" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_shipping_change_duration"
@@ -187,6 +185,7 @@
         android:paddingRight="@dimen/dp_0"
         android:text="@string/lbl_change_template"
         android:textColor="@color/Green_G500"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/tv_shipping_message"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ticker_shipping_promo"

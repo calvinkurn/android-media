@@ -8,6 +8,7 @@
   
   <com.tokopedia.unifycomponents.UnifyButton
     android:id="@+id/btnAddToWishlist"
+    android:contentDescription="@string/content_desc_btnAddToWishlist"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_alignParentBottom="true"

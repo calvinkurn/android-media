@@ -1,0 +1,19 @@
+{
+  "data": {
+    "getProgressBarData": {
+      "data": [
+        {
+          "dataKey": "sellerInfo",
+          "valueTxt": "",
+          "maxValueTxt": "",
+          "value": 0,
+          "maxValue": 0,
+          "state": "",
+          "subtitle": "",
+          "error": true,
+          "errorMsg": ""
+        }
+      ]
+    }
+  }
+}

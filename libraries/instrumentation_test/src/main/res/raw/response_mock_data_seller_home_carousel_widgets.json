@@ -1,0 +1,21 @@
+{
+  "data": {
+    "getCarouselWidgetData": {
+      "data": [
+        {
+          "dataKey": "home",
+          "items": [
+            {
+              "ID": "12624",
+              "URL": "https://m.tokopedia.com/discovery/tokopedia-anniversary-seller-11-tahun",
+              "CreativeName": "Tokped Annic_HPB SA_5 Aug 20",
+              "AppLink": "tokopedia://webview?url=https://m.tokopedia.com/discovery/tokopedia-anniversary-seller-11-tahun",
+              "FeaturedMediaURL": "https://ecs7-p.tokopedia.net/img/cache/800/VxWOnu/2020/8/6/a6dc8b0f-c30c-458e-b5ea-0882d0b19820.jpg"
+            }
+          ],
+          "errorMsg": ""
+        }
+      ]
+    }
+  }
+}

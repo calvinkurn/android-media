@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:paddingStart="@dimen/dp_16"
         android:paddingLeft="@dimen/dp_16"
-        android:paddingTop="@dimen/dp_16"
+        android:paddingTop="@dimen/dp_8"
         android:paddingBottom="@dimen/dp_8"
         app:sort_filter_relationship="AND"
         app:sort_filter_type="advanced"

@@ -79,6 +79,10 @@ object ApplinkConstInternalGlobal {
     // tokopedia-android-internal://global/withdraw
     @JvmField
     val WITHDRAW = "$INTERNAL_GLOBAL/withdraw"
+    // WithdrawActivity
+    // tokopedia-android-internal://global/withdraw
+    @JvmField
+    val AUTO_WITHDRAW_SETTING = "$INTERNAL_GLOBAL/autoWithdrawSettings"
 
     // ChangeInactiveFormRequestActivity
     // tokopedia-android-internal://global/change-inactive-phone-form
@@ -167,6 +171,9 @@ object ApplinkConstInternalGlobal {
     val USER_IDENTIFICATION_FORM = "$USER_IDENTIFICATION_FORM_BASE?projectId={projectId}"
     @JvmField
     val PARAM_PROJECT_ID = "projectId"
+
+    @JvmField
+    val PARAM_CALL_BACK = "callBack"
 
     // InboxTalkActivity
     // tokopedia-android-internal://global/inbox-talk

@@ -31,7 +31,7 @@ import com.tokopedia.search.R
 import com.tokopedia.search.analytics.SearchTracking
 import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener
 import com.tokopedia.search.result.presentation.view.listener.EmptyStateListener
-import com.tokopedia.search.result.presentation.view.listener.SearchNavigationListener
+import com.tokopedia.search.result.presentation.view.listener.QuickFilterElevation
 import com.tokopedia.search.result.presentation.viewmodel.SearchViewModel
 import com.tokopedia.search.result.shop.presentation.adapter.ShopListAdapter
 import com.tokopedia.search.result.shop.presentation.itemdecoration.ShopListItemDecoration
@@ -40,8 +40,9 @@ import com.tokopedia.search.result.shop.presentation.model.ShopViewModel
 import com.tokopedia.search.result.shop.presentation.typefactory.ShopListTypeFactory
 import com.tokopedia.search.result.shop.presentation.typefactory.ShopListTypeFactoryImpl
 import com.tokopedia.search.result.shop.presentation.viewmodel.SearchShopViewModel
-import com.tokopedia.search.utils.HideTabOnScrollListener
+import com.tokopedia.search.utils.applyQuickFilterElevation
 import com.tokopedia.search.utils.convertValuesToString
+import com.tokopedia.search.utils.removeQuickFilterElevation
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker
 import com.tokopedia.topads.sdk.domain.model.CpmData
@@ -52,6 +53,7 @@ internal class ShopListFragment:
         ShopListener,
         EmptyStateListener,
         BannerAdsListener,
+        QuickFilterElevation,
         SortFilterBottomSheet.Callback {
 
     companion object {
@@ -139,7 +141,6 @@ internal class ShopListFragment:
             recyclerViewSearchShop?.adapter = shopListAdapter
             recyclerViewSearchShop?.addItemDecoration(createShopItemDecoration(activity))
             gridLayoutLoadMoreTriggerListener?.let {
-                recyclerViewSearchShop?.addOnScrollListener(HideTabOnScrollListener(context, context as SearchNavigationListener, searchShopQuickSortFilter))
                 recyclerViewSearchShop?.addOnScrollListener(it)
             }
         }
@@ -618,5 +619,10 @@ internal class ShopListFragment:
 
     fun backToTop() {
         recyclerViewSearchShop?.smoothScrollToPosition(0)
+    }
+
+    override fun configure(shouldRemove: Boolean) {
+        if (shouldRemove) removeQuickFilterElevation(searchShopQuickSortFilter)
+        else applyQuickFilterElevation(context, searchShopQuickSortFilter)
     }
 }

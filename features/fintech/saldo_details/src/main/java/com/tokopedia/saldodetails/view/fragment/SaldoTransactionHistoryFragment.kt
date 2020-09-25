@@ -21,6 +21,7 @@ import com.tokopedia.saldodetails.adapter.SaldoDepositAdapter
 import com.tokopedia.saldodetails.adapter.SaldoDetailTransactionFactory
 import com.tokopedia.saldodetails.adapter.SaldoHistoryPagerAdapter
 import com.tokopedia.saldodetails.contract.SaldoHistoryContract
+import com.tokopedia.saldodetails.di.SaldoDetailsComponent
 import com.tokopedia.saldodetails.di.SaldoDetailsComponentInstance
 import com.tokopedia.saldodetails.viewmodels.SaldoHistoryViewModel
 import com.tokopedia.saldodetails.utils.ErrorType
@@ -301,15 +302,7 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), SaldoHistoryContra
     }
 
     override fun initInjector() {
-        try {
-            activity?.let {
-                val saldoDetailsComponent = SaldoDetailsComponentInstance.getComponent(it)
-                saldoDetailsComponent.inject(this)
-            }
-        } catch (e: NullPointerException) {
-
-        }
-
+        getComponent(SaldoDetailsComponent::class.java).inject(this)
     }
 
     fun onRefresh() {

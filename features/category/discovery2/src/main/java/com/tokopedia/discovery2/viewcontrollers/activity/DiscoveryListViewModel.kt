@@ -18,10 +18,7 @@ class DiscoveryListViewModel(private val applicationContext: Application) : Andr
     }
 
     fun getViewModelAtPosition(position: Int): DiscoveryBaseViewModel? {
-        if (position < mapOfViewModels.size ) {
-            return mapOfViewModels[position]!!
-        }
-        return null
+            return mapOfViewModels[position]
     }
 
     fun clearList() {

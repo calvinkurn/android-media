@@ -57,7 +57,7 @@
             app:layout_constraintTop_toBottomOf="@+id/title"/>
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/typography19"
+        android:id="@+id/descTxt"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:textColor="#AD31353B"

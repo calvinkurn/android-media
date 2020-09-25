@@ -16,12 +16,18 @@ class SimilarProductRecommendationItemViewHolder (
         private val view: View
 ) : AbstractViewHolder<SimilarProductRecommendationItemDataModel>(view){
 
-    companion object {
-        private const val className: String = "com.tokopedia.home_recom.view.viewholder.SimilarProductRecommendationItemViewHolder"
-    }
-
     private val productCardView: ProductCardGridView by lazy { view.findViewById<ProductCardGridView>(R.id.product_item) }
     override fun bind(element: SimilarProductRecommendationItemDataModel) {
+        setupCard(element)
+    }
+
+    override fun bind(element: SimilarProductRecommendationItemDataModel, payloads: MutableList<Any>) {
+        if(payloads.isNotEmpty() && payloads.first() is Boolean){
+            setupCard(element.copy(productItem = element.productItem.copy(isWishlist = payloads.first() as Boolean)))
+        }
+    }
+
+    private fun setupCard(element: SimilarProductRecommendationItemDataModel){
         productCardView.run {
             setProductModel(
                     ProductCardModel(
@@ -30,7 +36,10 @@ class SimilarProductRecommendationItemViewHolder (
                             formattedPrice = element.productItem.price,
                             productImageUrl = element.productItem.imageUrl,
                             isTopAds = element.productItem.isTopAds,
-                            discountPercentage = element.productItem.discountPercentage.toString(),
+                            isWishlistVisible = true,
+                            hasThreeDots = true,
+                            isWishlisted = element.productItem.isWishlist,
+                            discountPercentage = element.productItem.discountPercentage,
                             reviewCount = element.productItem.countReview,
                             ratingCount = element.productItem.rating,
                             shopLocation = element.productItem.location,
@@ -71,6 +80,10 @@ class SimilarProductRecommendationItemViewHolder (
                         element.productItem.name,
                         element.productItem.imageUrl
                 )
+            }
+
+            setThreeDotsOnClickListener {
+                element.listener.onThreeDotsClick(element.productItem, adapterPosition)
             }
         }
     }

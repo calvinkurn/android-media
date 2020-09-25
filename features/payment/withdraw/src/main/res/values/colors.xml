@@ -3,4 +3,5 @@
     <color name="grey">#888888</color>
     <color name="swd_hint_red">#d6001c</color>
     <color name="swd_lock_tint">#abadb1</color>
+    <color name="swd_shadow">#EEEEEE</color>
 </resources>

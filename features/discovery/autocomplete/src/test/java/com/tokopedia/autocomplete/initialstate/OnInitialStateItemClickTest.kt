@@ -1,6 +1,5 @@
 package com.tokopedia.autocomplete.initialstate
 
-import com.tokopedia.autocomplete.initialstate.testinstance.initialStateCommonResponse
 import io.mockk.confirmVerified
 import io.mockk.every
 import io.mockk.verifyOrder
@@ -22,15 +21,15 @@ internal class OnInitialStateItemClickTest: InitialStatePresenterTestFixtures(){
                 title = keyword
         )
 
-        `given initial state use case capture request params`()
+        `given initial state use case capture request params`(initialStateCommonData)
         `when recent search item clicked` (item, 0)
         `then verify view interaction is correct`(item)
     }
 
-    private fun `given initial state use case capture request params`() {
+    private fun `given initial state use case capture request params`(list: List<InitialStateData>) {
         every { getInitialStateUseCase.execute(any(), any()) }.answers {
             secondArg<Subscriber<List<InitialStateData>>>().onStart()
-            secondArg<Subscriber<List<InitialStateData>>>().onNext(initialStateCommonResponse)
+            secondArg<Subscriber<List<InitialStateData>>>().onNext(list)
         }
     }
 
@@ -48,7 +47,6 @@ internal class OnInitialStateItemClickTest: InitialStatePresenterTestFixtures(){
 
     private fun InitialStateContract.View.onClickRecentSearch(item: BaseItemInitialStateSearch) {
         trackEventClickRecentSearch(getItemEventLabelForTracking(item, 0), 0)
-        dropKeyBoard()
         route(item.applink, initialStatePresenter.getSearchParameter())
         finish()
     }
@@ -71,7 +69,7 @@ internal class OnInitialStateItemClickTest: InitialStatePresenterTestFixtures(){
                 productId = shopId
         )
 
-        `given initial state use case capture request params`()
+        `given initial state use case capture request params`(initialStateCommonData)
         `when recent search item clicked` (item, 0)
         `then verify view interaction is correct for recent shop`(item)
     }
@@ -86,7 +84,6 @@ internal class OnInitialStateItemClickTest: InitialStatePresenterTestFixtures(){
 
     private fun InitialStateContract.View.onClickRecentShop(item: BaseItemInitialStateSearch) {
         trackEventClickRecentShop(getRecentShopLabelForTracking(item), "0")
-        dropKeyBoard()
         route(item.applink, initialStatePresenter.getSearchParameter())
         finish()
     }

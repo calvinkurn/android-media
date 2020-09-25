@@ -99,11 +99,16 @@ class OfficialHomeAdapterTypeFactory(
         return MixLeftComponentViewHolder.LAYOUT
     }
 
+
     override fun type(mixTopDataModel: MixTopDataModel): Int {
         return MixTopComponentViewHolder.LAYOUT
     }
 
     override fun type(productHighlightDataModel: ProductHighlightDataModel): Int {
         return ProductHighlightComponentViewHolder.LAYOUT
+    }
+
+    override fun type(lego4AutoDataModel: Lego4AutoDataModel): Int {
+        return Lego4AutoBannerViewHolder.LAYOUT
     }
 }

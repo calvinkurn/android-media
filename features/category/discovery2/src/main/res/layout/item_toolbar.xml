@@ -26,6 +26,7 @@
             android:layout_width="@dimen/dp_0"
             android:layout_height="match_parent"
             android:gravity="center_vertical"
+            android:ellipsize="end"
             android:maxLines="1"
             android:paddingStart="@dimen/dp_12"
             android:paddingEnd="@dimen/dp_12"
@@ -35,7 +36,7 @@
             app:layout_constraintRight_toLeftOf="@+id/iv_search"
             app:layout_constraintTop_toTopOf="parent"
             app:typographyType="heading_3"
-            tools:text="Discovery Title"/>
+            tools:text="Discovery"/>
 
         <ImageView
             android:id="@+id/iv_search"

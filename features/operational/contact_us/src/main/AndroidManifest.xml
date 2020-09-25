@@ -74,6 +74,7 @@
         </activity>
         <activity
             android:name="com.tokopedia.contactus.createticket.activity.ContactUsCreateTicketActivity"
+            android:theme="@style/Theme.White"
             android:screenOrientation="portrait" />
         <activity
             android:name=".inboxticket2.view.activity.InboxListActivity"

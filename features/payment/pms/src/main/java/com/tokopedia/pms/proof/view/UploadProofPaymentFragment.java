@@ -4,16 +4,17 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
@@ -30,7 +31,7 @@ import com.tokopedia.pms.common.Constant;
 import com.tokopedia.pms.payment.view.model.PaymentListModel;
 import com.tokopedia.pms.proof.di.DaggerUploadProofPaymentComponent;
 import com.tokopedia.pms.proof.di.UploadProofPaymentModule;
-import com.tokopedia.pms.proof.model.UploadProof;
+import com.tokopedia.pms.proof.model.PaymentProofResponse;
 
 import java.util.ArrayList;
 
@@ -40,7 +41,9 @@ import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder.D
 import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef.TYPE_CAMERA;
 import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef.TYPE_GALLERY;
 import static com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS;
+
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.unifycomponents.Toaster;
 
 /**
  * Created by zulfikarrahman on 7/6/18.
@@ -63,9 +66,6 @@ public class UploadProofPaymentFragment extends BaseDaggerFragment implements Up
     private Button buttonChooseAnotherImage;
     private TextView titleUploadImage;
     private ProgressDialog progressDialog;
-    private View containerMainUpload;
-    private ProgressBar progressBar;
-
     private String imageUrl = "";
     private boolean isUploaded;
 
@@ -109,8 +109,6 @@ public class UploadProofPaymentFragment extends BaseDaggerFragment implements Up
         titleUploadImage = view.findViewById(R.id.text_confirmation);
         imageViewProof = view.findViewById(R.id.image_payment);
         buttonSave = view.findViewById(R.id.button_save);
-        containerMainUpload = view.findViewById(R.id.container_main_upload);
-        progressBar = view.findViewById(R.id.progress_bar);
         buttonSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -120,7 +118,7 @@ public class UploadProofPaymentFragment extends BaseDaggerFragment implements Up
         buttonActionCloseImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(!isUploaded) {
+                if (!isUploaded) {
                     resetImageUrl();
                     invalidateView();
                 }
@@ -138,7 +136,6 @@ public class UploadProofPaymentFragment extends BaseDaggerFragment implements Up
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        uploadProofPaymentPresenter.getProofPayment(paymentListModel.getTransactionId(), paymentListModel.getMerchantCode(), getResources());
     }
 
     public void resetImageUrl() {
@@ -146,22 +143,22 @@ public class UploadProofPaymentFragment extends BaseDaggerFragment implements Up
     }
 
     private void invalidateView() {
-        if(!TextUtils.isEmpty(imageUrl)){
+        if (!TextUtils.isEmpty(imageUrl)) {
             ImageHandler.LoadImage(imageViewProof, imageUrl);
             containerImageUpload.setVisibility(View.VISIBLE);
             containerHelpUploadProof.setVisibility(View.GONE);
-            if(isUploaded) {
-                buttonActionCloseImage.setImageDrawable(MethodChecker.getDrawable(getActivity(),R.drawable.ic_check_green_payment));
+            if (isUploaded) {
+                buttonActionCloseImage.setImageDrawable(MethodChecker.getDrawable(getActivity(), R.drawable.ic_check_green_payment));
                 buttonSave.setText(R.string.payment_label_finish);
                 buttonChooseAnotherImage.setVisibility(View.VISIBLE);
                 titleUploadImage.setText(R.string.payment_label_succes_upload_proof);
-            }else{
-                buttonActionCloseImage.setImageDrawable(MethodChecker.getDrawable(getActivity(),R.drawable.ic_close_default));
+            } else {
+                buttonActionCloseImage.setImageDrawable(MethodChecker.getDrawable(getActivity(), R.drawable.ic_close_default));
                 buttonSave.setText(R.string.payment_label_save_image);
                 buttonChooseAnotherImage.setVisibility(View.GONE);
                 titleUploadImage.setText(R.string.payment_label_confirmation_upload_image);
             }
-        }else{
+        } else {
             buttonSave.setText(R.string.payment_label_choose_image);
             buttonChooseAnotherImage.setVisibility(View.GONE);
             containerHelpUploadProof.setVisibility(View.VISIBLE);
@@ -220,29 +217,6 @@ public class UploadProofPaymentFragment extends BaseDaggerFragment implements Up
         progressDialog.hide();
     }
 
-    @Override
-    public void showLoadingMain() {
-        containerMainUpload.setVisibility(View.GONE);
-        progressBar.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void hideLoadingMain() {
-        containerMainUpload.setVisibility(View.VISIBLE);
-        progressBar.setVisibility(View.GONE);
-    }
-
-    @Override
-    public void onSuccessGetImageProof(String imageUrl) {
-        this.imageUrl = imageUrl;
-        this.isUploaded = true;
-        invalidateView();
-    }
-
-    @Override
-    public void onErrorGetImageProof(Throwable e) {
-        NetworkErrorHelper.showRedCloseSnackbar(getActivity(), ErrorHandler.getErrorMessage(getActivity(), e));
-    }
 
     @Override
     public void onErrorUploadProof(Throwable e) {
@@ -250,14 +224,16 @@ public class UploadProofPaymentFragment extends BaseDaggerFragment implements Up
     }
 
     @Override
-    public void onResultUploadProof(UploadProof uploadProof) {
-        if(uploadProof.isSuccess()){
+    public void onResultUploadProof(PaymentProofResponse paymentProofResponse) {
+        if (paymentProofResponse.getStatus() != null
+                && paymentProofResponse.getStatus().equalsIgnoreCase("OK")) {
             isUploaded = true;
             invalidateView();
             getActivity().setResult(Activity.RESULT_OK);
-            NetworkErrorHelper.showGreenCloseSnackbar(getActivity(), uploadProof.getMessage());
-        }else{
-            NetworkErrorHelper.showRedCloseSnackbar(getActivity(), uploadProof.getMessage());
+        } else {
+            if (getView() != null && paymentProofResponse.getMessageError() != null)
+                Toaster.make(getView(), paymentProofResponse.getMessageError(),
+                        Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR);
         }
     }
 }

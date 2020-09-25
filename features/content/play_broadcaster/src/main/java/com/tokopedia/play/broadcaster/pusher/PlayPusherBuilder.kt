@@ -35,6 +35,8 @@ class PlayPusherBuilder(@ApplicationContext var context: Context) {
     var audioSampleRate = AlivcAudioSampleRateEnum.AUDIO_SAMPLE_RATE_32000
         private set
     var audioBitrate = PlayPusherImpl.AUDIO_BITRATE_128Kbps
+    var pushMirror = true
+        private set
 
     fun cameraType(cameraType: AlivcLivePushCameraTypeEnum) = apply {
         this.cameraType = cameraType
@@ -82,6 +84,10 @@ class PlayPusherBuilder(@ApplicationContext var context: Context) {
 
     fun audioBitrate(bitrate: Int) = apply {
         this.audioBitrate = bitrate
+    }
+
+    fun pushMirror(pushMirror: Boolean) = apply {
+        this.pushMirror = pushMirror
     }
 
     fun build() = if (DeviceInfoUtil.isDeviceSupported()) {

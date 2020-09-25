@@ -66,7 +66,7 @@ class EditProductInputMapper @Inject constructor() {
                 ShopParam(shopId),
                 Catalog(detailInputModel.catalogId),
                 Category(detailInputModel.categoryId),
-                ProductEtalase(),
+                null,
                 mapPictureParam(detailInputModel.imageUrlOrPathList, detailInputModel.pictureList, uploadIdList),
                 mapPreorderParam(detailInputModel.preorder),
                 mapWholesaleParam(detailInputModel.wholesaleList),
@@ -134,8 +134,7 @@ class EditProductInputMapper @Inject constructor() {
             products: List<ProductVariantInputModel>
     ): List<PictureVariantInputModel> {
         val existingPicture = products.find {
-            val urlOriginal = it.pictures.firstOrNull()?.urlOriginal
-            return@find urlOriginal == filePath && picID.isEmpty()
+            it.pictures.firstOrNull()?.filePath == filePath && picID.isNotEmpty()
         }?.pictures
 
         return existingPicture ?: emptyList()
@@ -155,7 +154,7 @@ class EditProductInputMapper @Inject constructor() {
     }
 
     private fun mapSizeChart(sizecharts: PictureVariantInputModel): List<Picture>? {
-        return if (sizecharts.filePath.isEmpty()) {
+        return if (sizecharts.urlOriginal.isEmpty() && sizecharts.uploadId.isEmpty()) {
             emptyList()
         } else {
             val sizechart = Picture(

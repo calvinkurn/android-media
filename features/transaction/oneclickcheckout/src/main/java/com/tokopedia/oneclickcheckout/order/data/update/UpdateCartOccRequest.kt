@@ -35,4 +35,9 @@ data class UpdateCartOccProfileRequest(
         val serviceId: Int = 0,
         @SerializedName("address_id")
         val addressId: String = ""
-)
+) {
+        companion object {
+                const val EXPRESS_CHECKOUT_PARAM = "express_checkout_param"
+                const val INSTALLMENT_TERM = "installment_term"
+        }
+}

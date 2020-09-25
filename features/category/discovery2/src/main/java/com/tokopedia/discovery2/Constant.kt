@@ -1,12 +1,17 @@
 package com.tokopedia.discovery2
 
-interface Constant {
+object Constant {
 
     object ClaimCouponConstant {
-        const val CLAIMED = "Klaim"
-        const val UNCLAIMED = "Diklaim"
-        const val OUT_OF_STOCK = "Habis"
+        const val KLAIM = "Klaim"
+        const val DIKLAIM = "Diklaim"
+        const val HABIS = "Habis"
         const val NOT_LOGGEDIN = "Not Logged In"
         const val DOUBLE_COLUMNS = "double"
+    }
+
+    object BrandRecommendation {
+        const val SQUARE_DESIGN = "v1"
+        const val RECTANGLE_DESIGN = "v2"
     }
 }

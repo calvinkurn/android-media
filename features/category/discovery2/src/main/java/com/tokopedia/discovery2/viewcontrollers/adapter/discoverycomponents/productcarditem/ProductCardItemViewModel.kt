@@ -14,6 +14,7 @@ import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.data.campaignnotifymeresponse.CampaignNotifyMeRequest
 import com.tokopedia.discovery2.di.DaggerDiscoveryComponent
 import com.tokopedia.discovery2.usecase.campaignusecase.CampaignNotifyUserCase
+import com.tokopedia.discovery2.usecase.productCardCarouselUseCase.ProductCardItemUseCase
 import com.tokopedia.discovery2.usecase.topAdsUseCase.DiscoveryTopAdsTrackingUseCase
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -43,9 +44,13 @@ class ProductCardItemViewModel(val application: Application, val components: Com
     private val showLoginLiveData: MutableLiveData<Boolean> = MutableLiveData()
     private val notifyMeCurrentStatus: MutableLiveData<Boolean> = MutableLiveData()
     private val showNotifyToast: MutableLiveData<Triple<Boolean, String?, Int?>> = MutableLiveData()
+    private val componentPosition: MutableLiveData<Int?> = MutableLiveData()
 
     @Inject
     lateinit var campaignNotifyUserCase: CampaignNotifyUserCase
+
+    @Inject
+    lateinit var productCardItemUseCase: ProductCardItemUseCase
 
     @Inject
     lateinit var discoveryTopAdsTrackingUseCase: DiscoveryTopAdsTrackingUseCase
@@ -60,6 +65,7 @@ class ProductCardItemViewModel(val application: Application, val components: Com
 
     override fun onAttachToViewHolder() {
         super.onAttachToViewHolder()
+        componentPosition.value = position
         components.data?.let {
             if (!it.isNullOrEmpty()) {
                 dataItem.value = it[0]
@@ -70,6 +76,7 @@ class ProductCardItemViewModel(val application: Application, val components: Com
     fun getShowLoginData(): LiveData<Boolean> = showLoginLiveData
     fun notifyMeCurrentStatus(): LiveData<Boolean> = notifyMeCurrentStatus
     fun showNotifyToastMessage(): LiveData<Triple<Boolean, String?, Int?>> = showNotifyToast
+    fun getComponentPosition() = componentPosition
 
     fun setContext(context: Context) {
         this.context = context
@@ -206,7 +213,7 @@ class ProductCardItemViewModel(val application: Application, val components: Com
         return components.properties?.buttonNotification
     }
 
-    fun subscribeUser() {
+    fun subscribeUser(syncSelectedTab: Boolean = false) {
         if (isUserLoggedIn()) {
             dataItem.value?.let { productItemData ->
 
@@ -217,7 +224,7 @@ class ProductCardItemViewModel(val application: Application, val components: Com
                             productItemData.notifyMe = !productItemData.notifyMe
                             notifyMeCurrentStatus.value = productItemData.notifyMe
                             showNotifyToast.value = Triple(false, campaignResponse.message, productItemData.campaignId.toIntOrZero())
-
+                            this@ProductCardItemViewModel.syncData.value = productCardItemUseCase.notifyProductComponentUpdate(components.id, components.pageEndPoint, syncSelectedTab)
                         } else {
                             showNotifyToast.value = Triple(true, campaignResponse.errorMessage, 0)
                         }
@@ -230,6 +237,10 @@ class ProductCardItemViewModel(val application: Application, val components: Com
         } else {
             showLoginLiveData.value = true
         }
+    }
+
+    override fun loggedInCallback() {
+        subscribeUser(true)
     }
 
     fun sendTopAdsClick() {

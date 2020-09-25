@@ -50,15 +50,13 @@ class GetNearestLocationUseCase @Inject constructor(
                 ))
 
         fun createParams(locationType: String, coordinates: String, size: String, pageNum: String,
-                         categoryId: String, sortBy: String, fixed: String, distance: String): Map<String, Any> {
+                         categoryId: String, distance: String): Map<String, Any> {
             return mapOf(PARAM_SEARCH_PARAM to arrayListOf(
                     DealsNearestLocationParam(DealsNearestLocationParam.PARAM_LOCATION_TYPE, locationType),
                     DealsNearestLocationParam(DealsNearestLocationParam.PARAM_COORDINATES, coordinates),
                     DealsNearestLocationParam(DealsNearestLocationParam.PARAM_SIZE, size),
                     DealsNearestLocationParam(DealsNearestLocationParam.PARAM_PAGE_NUM, pageNum),
                     DealsNearestLocationParam(DealsNearestLocationParam.PARAM_CATEGORY_ID, categoryId),
-                    DealsNearestLocationParam(DealsNearestLocationParam.PARAM_SORT_BY, sortBy),
-                    DealsNearestLocationParam(DealsNearestLocationParam.PARAM_FIXED, fixed),
                     DealsNearestLocationParam(DealsNearestLocationParam.PARAM_DISTANCE, distance)
             ))
         }

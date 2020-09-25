@@ -11,7 +11,9 @@ object MockChannelConfig {
                 layoutName,
                 true,
                 true,
-                0
+                0,
+                "",
+                false
         )
     }
 }

@@ -90,4 +90,7 @@
     <!-- Shop Page -->
     <string name="title_shop_page">Shop Page</string>
 
+    <!-- Statistic -->
+    <string name="title_statistic">Statistic</string>
+
 </resources>

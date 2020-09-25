@@ -15,14 +15,14 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.sellerhome.R
-import com.tokopedia.sellerhome.common.utils.DateTimeUtil
+import com.tokopedia.seller.menu.common.coroutine.SellerHomeCoroutineDispatcher
+import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
 import javax.inject.Inject
-import javax.inject.Named
 
 class CentralizedPromoViewModel @Inject constructor(
         @ApplicationContext private val context: Context,
@@ -31,8 +31,8 @@ class CentralizedPromoViewModel @Inject constructor(
         private val getPostUseCase: GetPostUseCase,
         private val getChatBlastSellerMetadataUseCase: GetChatBlastSellerMetadataUseCase,
         private val remoteConfig: FirebaseRemoteConfigImpl,
-        @Named("Main") dispatcher: CoroutineDispatcher
-) : BaseViewModel(dispatcher) {
+        private val dispatcher: SellerHomeCoroutineDispatcher
+) : BaseViewModel(dispatcher.main()) {
 
     companion object {
         private const val DATE_FORMAT = "dd-MM-yyyy"
@@ -54,7 +54,7 @@ class CentralizedPromoViewModel @Inject constructor(
 
     fun getLayoutData(vararg layoutTypes: LayoutType) {
         launch(coroutineContext) {
-            withContext(Dispatchers.IO) {
+            withContext(dispatcher.io()) {
                 val results = mutableMapOf<LayoutType, Result<BaseUiModel>>()
                 layoutTypes.map { type ->
                     async { results[type] = getResult(type) }

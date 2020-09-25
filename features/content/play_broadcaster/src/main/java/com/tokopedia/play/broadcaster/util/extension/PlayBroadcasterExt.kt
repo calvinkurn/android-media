@@ -184,8 +184,8 @@ internal fun Dialog.updateNavigationBarColor(@ColorRes colorRes: Int, useDarkIco
     updateNavigationBarColors(intArrayOf(colorRes), useDarkIcon)
 }
 
-internal fun sendCrashlyticsLog(priority: Int, message: String) {
+internal fun sendCrashlyticsLog(throwable: Throwable) {
     try {
-        Crashlytics.log(priority, "tkpd-play-broadcaster", message)
+        Crashlytics.logException(throwable)
     } catch (e: Exception) {}
 }

@@ -17,25 +17,29 @@ import com.tokopedia.home.beranda.helper.benchmark.BenchmarkHelper
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeBannerAdapter
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomepageBannerDataModel
+import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.PageControl
 
 /**
  * @author by errysuprayogi on 11/28/17.
  */
 
-class BannerViewHolder(itemView: View, private val listener: HomeCategoryListener)
+class BannerViewHolder(itemView: View, private val listener: HomeCategoryListener?)
     : AbstractViewHolder<HomepageBannerDataModel>(itemView),
         CircularListener {
     private var slidesList: List<BannerSlidesModel>? = null
     private var isCache = true
     private val circularViewPager: CircularViewPager = itemView.findViewById(R.id.circular_view_pager)
     private val indicatorView: PageControl = itemView.findViewById(R.id.indicator_banner)
-    private val seeAllPromo: TextView = itemView.findViewById(R.id.see_all_promo)
+    private val seeAllPromo: Label = itemView.findViewById(R.id.see_more_label)
     private val adapter = HomeBannerAdapter(listOf(), this)
 
     init {
         indicatorView.activeColor = ContextCompat.getColor(itemView.context, R.color.home_hpb_indicator_active)
         indicatorView.inactiveColor = ContextCompat.getColor(itemView.context, R.color.home_hpb_indicator_inactive)
+        seeAllPromo.unlockFeature = true
+        seeAllPromo.setLabelType("#31353b")
+        seeAllPromo.opacityLevel = 0.9f
     }
 
     override fun bind(element: HomepageBannerDataModel) {
@@ -104,26 +108,26 @@ class BannerViewHolder(itemView: View, private val listener: HomeCategoryListene
     override fun onClick(position: Int) {
         slidesList?.let {
             if(it.size > position) {
-                listener.onPromoClick(position, it[position])
+                listener?.onPromoClick(position, it[position])
             }
         }
     }
 
     private fun onPromoScrolled(position: Int) {
-        if (listener.isMainViewVisible) {
+        if (listener?.isMainViewVisible?:false) {
             slidesList?.let {
-                listener.onPromoScrolled(it[position])
+                listener?.onPromoScrolled(it[position])
                 it[position].invoke()
             }
         }
     }
 
     private fun onPageDragStateChanged(isDrag: Boolean) {
-        listener.onPageDragStateChanged(isDrag)
+        listener?.onPageDragStateChanged(isDrag)
     }
 
     private fun onPromoAllClick() {
-        listener.onPromoAllClick()
+        listener?.onPromoAllClick()
     }
 
     fun onResume(){

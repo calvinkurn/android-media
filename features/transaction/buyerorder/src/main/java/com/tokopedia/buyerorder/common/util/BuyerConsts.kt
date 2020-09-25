@@ -9,6 +9,7 @@ object BuyerConsts {
     const val PARAM_SHOP_NAME = "param_shop_name"
     const val PARAM_LIST_PRODUCT = "param_list_product"
     const val PARAM_INVOICE = "param_invoice"
+    const val PARAM = "param"
     const val PARAM_INPUT = "input"
     const val PARAM_ORDER_ID = "order_id"
     const val PARAM_URI = "uri"
@@ -32,4 +33,18 @@ object BuyerConsts {
     const val KEY_HOUR_DIVIDER = ":"
     const val KEY_MINUTE = "menit"
     const val REASON_CODE_LAINNYA = 599
+    const val TICKER_URL = "#ticker_url"
+    const val TICKER_LABEL = "#ticker_label"
+    const val BUTTON_INSTANT_CANCELATION = "Batalkan Pesanan"
+    const val BUTTON_REGULER_CANCELATION = "Ajukan Pembatalan"
+    const val RESULT_CODE_INSTANT_CANCEL = "result_code_instant"
+    const val RESULT_MSG_INSTANT_CANCEL = "result_msg_instant"
+    const val RESULT_POPUP_TITLE_INSTANT_CANCEL = "result_popup_title_instant_cancel"
+    const val RESULT_POPUP_BODY_INSTANT_CANCEL = "result_popup_body_instant_cancel"
+
+    const val TICKER_TYPE_ERROR = "error"
+    const val TICKER_TYPE_INFORMATION = "info"
+    const val TICKER_TYPE_WARNING = "warning"
+
+    const val BUYER_CANCEL_REASON_SCREEN_NAME = "BuyerCancelReason"
 }

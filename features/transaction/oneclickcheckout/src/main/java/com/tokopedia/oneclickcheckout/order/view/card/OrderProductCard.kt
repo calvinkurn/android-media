@@ -9,7 +9,6 @@ import android.widget.EditText
 import android.widget.ImageView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.design.image.RoundedCornerImageView
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.oneclickcheckout.R
@@ -19,6 +18,7 @@ import com.tokopedia.oneclickcheckout.order.view.model.OrderShop
 import com.tokopedia.oneclickcheckout.order.view.model.QuantityUiModel
 import com.tokopedia.purchase_platform.common.utils.QuantityTextWatcher
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifyprinciples.Typography
@@ -31,7 +31,7 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
 
     private val etQty by lazy { view.findViewById<EditText>(R.id.et_qty) }
     private val tvProductName by lazy { view.findViewById<Typography>(R.id.tv_product_name) }
-    private val ivProductImage by lazy { view.findViewById<RoundedCornerImageView>(R.id.iv_product_image) }
+    private val ivProductImage by lazy { view.findViewById<ImageUnify>(R.id.iv_product_image) }
     private val lblCashback by lazy { view.findViewById<Label>(R.id.lbl_cashback) }
     private val tfNote by lazy { view.findViewById<TextFieldUnify>(R.id.tf_note) }
     private val btnQtyPlus by lazy { view.findViewById<ImageView>(R.id.btn_qty_plus) }
@@ -57,10 +57,8 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
     }
 
     fun initView() {
-        if (::product.isInitialized) {
-            ivProductImage?.let {
-                ImageHandler.loadImageFitCenter(view.context, it, product.productImageUrl)
-            }
+        if (isProductInitialized()) {
+            ivProductImage?.setImageUrl(product.productImageUrl)
             tvProductName?.text = product.productName
             showPrice()
 
@@ -207,15 +205,7 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
     }
 
     private fun showPrice() {
-        var productPrice = product.productPrice
-        if (product.wholesalePrice.isNotEmpty()) {
-            for (wholesalePrice in product.wholesalePrice) {
-                if (product.quantity.orderQuantity >= wholesalePrice.qtyMin) {
-                    productPrice = wholesalePrice.prdPrc.toLong()
-                }
-            }
-        }
-        tvProductPrice?.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(productPrice, false).removeDecimalSuffix()
+        tvProductPrice?.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(product.getPrice(), false).removeDecimalSuffix()
 
         if (product.originalPrice.isNotBlank()) {
             tvProductSlashPrice.text = product.originalPrice

@@ -1,6 +1,5 @@
 package com.tokopedia.oneclickcheckout.preference.edit.view
 
-import android.animation.ObjectAnimator
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
@@ -27,7 +26,7 @@ import com.tokopedia.oneclickcheckout.preference.edit.view.summary.PreferenceSum
 import kotlinx.android.synthetic.main.activity_preference_edit.*
 import javax.inject.Inject
 
-class PreferenceEditActivity : BaseActivity(), HasComponent<PreferenceEditComponent>, PreferenceEditParent {
+open class PreferenceEditActivity : BaseActivity(), HasComponent<PreferenceEditComponent>, PreferenceEditParent {
 
     @Inject
     lateinit var preferenceListAnalytics: PreferenceListAnalytics
@@ -111,9 +110,7 @@ class PreferenceEditActivity : BaseActivity(), HasComponent<PreferenceEditCompon
                 preferenceListAnalytics.eventClickBackArrowInPilihPembayaran()
                 return true
             }
-            else -> {
-                return false
-            }
+            else -> return false
         }
     }
 
@@ -221,15 +218,9 @@ class PreferenceEditActivity : BaseActivity(), HasComponent<PreferenceEditCompon
         }
     }
 
-    override fun setStepperValue(value: Int, isSmooth: Boolean) {
-        if (isSmooth && stepper != null) {
-            try {
-                ObjectAnimator.ofInt(stepper, "progress", value).setDuration(500).start()
-            } catch (e: Exception) {
-                stepper.progress = value
-            }
-        } else {
-            stepper.progress = value
+    override fun setStepperValue(value: Int) {
+        if (stepper != null) {
+            stepper.setValue(value, true)
         }
     }
 

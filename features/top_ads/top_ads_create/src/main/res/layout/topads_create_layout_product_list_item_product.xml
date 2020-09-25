@@ -1,16 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:clickable="true"
-    android:layout_marginLeft="@dimen/dp_14"
-    android:layout_marginRight="@dimen/dp_14"
-    app:cardCornerRadius="@dimen/dp_8"
-    app:cardUseCompatPadding="true"
-    app:contentPadding="@dimen/dp_16">
+    android:layout_marginStart="@dimen/dp_16"
+    android:layout_marginEnd="@dimen/dp_16"
+    android:padding="@dimen/dp_16"
+    app:card_type="shadow">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/linearLayout9"
@@ -18,12 +15,14 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <com.tokopedia.design.image.RoundedCornerImageView
+        <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/product_image"
             android:layout_width="@dimen/dp_48"
             android:layout_height="@dimen/dp_48"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            app:unify_image_corner_radius="6"
+            app:unify_image_type="rect"
             tools:src="@tools:sample/avatars" />
 
 
@@ -32,12 +31,11 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginLeft="8dp"
-            app:layout_constraintWidth_percent=".66"
-            android:textStyle="bold"
             android:textColor="@color/topads_heading_color"
+            android:textStyle="bold"
             app:layout_constraintStart_toEndOf="@+id/product_image"
             app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintWidth_percent=".66"
             app:typographyType="heading_6"
             tools:text="@tools:sample/lorem" />
 
@@ -47,7 +45,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginLeft="8dp"
+            android:visibility="gone"
             app:layout_constraintStart_toEndOf="@+id/product_image"
             app:layout_constraintTop_toBottomOf="@+id/product_name" />
 
@@ -56,11 +54,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginLeft="8dp"
             android:textColor="#FA591D"
-            app:typographyType="heading_6"
             app:layout_constraintStart_toEndOf="@+id/product_image"
             app:layout_constraintTop_toBottomOf="@+id/include"
+            app:typographyType="heading_6"
             tools:text="Rp 100.000" />
 
 
@@ -73,6 +70,5 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-
     </androidx.constraintlayout.widget.ConstraintLayout>
-</androidx.cardview.widget.CardView>
+</com.tokopedia.unifycomponents.CardUnify>

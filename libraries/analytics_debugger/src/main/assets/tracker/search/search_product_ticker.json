@@ -5,13 +5,15 @@
       "event": "viewSearchResultIris",
       "eventCategory": "search result",
       "eventAction": "impression - ticker",
-      "eventLabel": "{{.* - .*}}"
+      "eventLabel": "{{.* - .*}}",
+      "sessionIris": "{{.*}}"
     },
     {
       "event": "clickSearchResult",
       "eventCategory": "search result",
       "eventAction": "click - ticker",
-      "eventLabel": "{{.* - .*}}"
+      "eventLabel": "{{.* - .*}}",
+      "sessionIris": "{{.*}}"
     }
   ]
 }

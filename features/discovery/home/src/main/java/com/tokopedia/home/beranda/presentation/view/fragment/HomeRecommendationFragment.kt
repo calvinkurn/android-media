@@ -44,6 +44,7 @@ import com.tokopedia.home.beranda.listener.HomeTabFeedListener
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecommendationAdapter
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecommendationListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.BannerRecommendationDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationBannerTopAdsDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationItemDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.homeRecommendation.HomeRecommendationTypeFactoryImpl
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.HomeFeedItemDecoration
@@ -158,11 +159,11 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
     }
 
     private fun observeLiveData(){
-        viewModel.homeRecommendationLiveData.observe(this, androidx.lifecycle.Observer { data ->
+        viewModel.homeRecommendationLiveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer { data ->
             adapter.submitList(data.homeRecommendations)
         })
 
-        viewModel.homeRecommendationNetworkLiveData.observe(this, androidx.lifecycle.Observer {result ->
+        viewModel.homeRecommendationNetworkLiveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {result ->
             if(result.isFailure){
                 view?.let {
                     if(adapter.itemCount > 1){
@@ -223,7 +224,8 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
             TopAdsUrlHitter(className).hitImpressionUrl(context, homeRecommendationItemDataModel.product.trackerImageUrl,
                     homeRecommendationItemDataModel.product.id,
                     homeRecommendationItemDataModel.product.name,
-                    homeRecommendationItemDataModel.product.imageUrl)
+                    homeRecommendationItemDataModel.product.imageUrl,
+                    HOME_RECOMMENDATION_FRAGMENT)
             if (userSessionInterface.isLoggedIn) {
                 trackingQueue.putEETracking(getRecommendationProductViewLoginTopAds(
                         tabName.toLowerCase(Locale.ROOT),
@@ -256,7 +258,8 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
                     homeRecommendationItemDataModel.product.clickUrl,
                     homeRecommendationItemDataModel.product.id,
                     homeRecommendationItemDataModel.product.name,
-                    homeRecommendationItemDataModel.product.imageUrl)
+                    homeRecommendationItemDataModel.product.imageUrl,
+                    HOME_RECOMMENDATION_FRAGMENT)
             if (userSessionInterface.isLoggedIn) {
                 TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(getRecommendationProductClickLoginTopAds(
                         tabName.toLowerCase(Locale.ROOT),
@@ -293,6 +296,15 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
 
     override fun onBannerImpression(bannerRecommendationDataModel: BannerRecommendationDataModel) {
         trackingQueue.putEETracking(HomeRecommendationTracking.getBannerRecommendation(bannerRecommendationDataModel) as HashMap<String, Any>)
+    }
+
+    override fun onBannerTopAdsClick(homeTopAdsRecommendationBannerDataModelDataModel: HomeRecommendationBannerTopAdsDataModel, position: Int) {
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(HomeRecommendationTracking.getClickBannerTopAds(homeTopAdsRecommendationBannerDataModelDataModel, tabIndex, position))
+        RouteManager.route(context, homeTopAdsRecommendationBannerDataModelDataModel.topAdsImageViewModel?.applink)
+    }
+
+    override fun onBannerTopAdsImpress(homeTopAdsRecommendationBannerDataModelDataModel: HomeRecommendationBannerTopAdsDataModel, position: Int) {
+        trackingQueue.putEETracking(HomeRecommendationTracking.getImpressionBannerTopAds(homeTopAdsRecommendationBannerDataModelDataModel, tabIndex, position) as HashMap<String, Any>)
     }
 
     override fun onRetryGetProductRecommendationData() {
@@ -409,7 +421,7 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
             Toaster.make(
                     it,
                     message,
-                    Snackbar.LENGTH_LONG,
+                    Toaster.LENGTH_LONG,
                     Toaster.TYPE_NORMAL,
                     getString(R.string.go_to_wishlist),
                     View.OnClickListener { goToWishlist() })
@@ -425,7 +437,7 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
         if (activity == null) return
         val view = activity!!.findViewById<View>(android.R.id.content)
         val message = getString(R.string.msg_success_remove_wishlist)
-        Snackbar.make(view, message, Snackbar.LENGTH_LONG).show()
+        Toaster.make(view, message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL)
     }
 
     private fun showMessageFailedWishlistAction() {
@@ -440,6 +452,7 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
 
     companion object {
         private const val className = "com.tokopedia.home.beranda.presentation.view.fragment.HomeRecommendationFragment"
+        private const val HOME_RECOMMENDATION_FRAGMENT = "home_recommendation_fragment"
         const val ARG_TAB_INDEX = "ARG_TAB_INDEX"
         const val ARG_RECOM_ID = "ARG_RECOM_ID"
         const val ARG_TAB_NAME = "ARG_TAB_NAME"

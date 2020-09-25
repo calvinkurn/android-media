@@ -5,6 +5,6 @@ import com.tokopedia.trackingoptimizer.TrackingQueue
 
 interface IDigitalRecommendationView {
     fun loadRecommendation(paymentId: String,
-                           fragment: BaseDaggerFragment, trackingQueue: TrackingQueue)
+                           fragment: BaseDaggerFragment, trackingQueue: TrackingQueue?)
 
 }

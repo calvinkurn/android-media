@@ -5,6 +5,7 @@ import android.content.Context;
 import com.tokopedia.linker.model.LinkerData;
 import com.tokopedia.linker.model.PaymentData;
 import com.tokopedia.linker.model.UserData;
+import com.tokopedia.linker.validation.BranchHelperValidation;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -49,7 +50,7 @@ public class BranchHelper {
                         .setTitle(product.get(LinkerConstants.NAME))
                         .setContentMetadata(
                                 new ContentMetadata()
-                                        .setPrice(LinkerUtils.convertToDouble(product.get(LinkerConstants.PRICE_IDR_TO_DOUBLE)), CurrencyType.IDR)
+                                        .setPrice(LinkerUtils.convertToDouble(product.get(LinkerConstants.PRICE_IDR_TO_DOUBLE),"Product price"), CurrencyType.IDR)
                                         .setProductName(product.get(LinkerConstants.NAME))
                                         .setQuantity(LinkerUtils.convertStringToDouble(product.get(LinkerConstants.QTY)))
                                         .setSku(product.get(LinkerConstants.ID))
@@ -64,9 +65,9 @@ public class BranchHelper {
                     && LinkerConstants.PRODUCTTYPE_MARKETPLACE.equalsIgnoreCase(branchIOPayment.getProductType())) {
                 revenuePrice = Double.parseDouble(branchIOPayment.getItemPrice());
             } else {
-                revenuePrice = LinkerUtils.convertToDouble(branchIOPayment.getRevenue());
+                revenuePrice = LinkerUtils.convertToDouble(branchIOPayment.getRevenue(), "Revenue");
             }
-            double shippingPrice = LinkerUtils.convertToDouble(branchIOPayment.getShipping());
+            double shippingPrice = LinkerUtils.convertToDouble(branchIOPayment.getShipping(), "Shipping");
 
             new BranchEvent(BRANCH_STANDARD_EVENT.PURCHASE)
                     .setTransactionID(branchIOPayment.getOrderId())
@@ -84,9 +85,10 @@ public class BranchHelper {
             if (branchIOPayment.isNewBuyer()) {
                 sendMarketPlaceFirstTxnEvent(context, branchIOPayment, userData.getUserId(), revenuePrice, shippingPrice);
             }
-
+            new BranchHelperValidation().validatePurchaseEvent(branchIOPayment,revenuePrice,shippingPrice);
         } catch (Exception ex) {
             ex.printStackTrace();
+            new BranchHelperValidation().exceptionToSendEvent("" + ex.getMessage(), BRANCH_STANDARD_EVENT.PURCHASE.getName());
         }
     }
 
@@ -135,6 +137,7 @@ public class BranchHelper {
                 .addCustomDataProperty(LinkerConstants.QTY, linkerData.getQuantity())
                 .addCustomDataProperty(LinkerConstants.CURRENCY, linkerData.getCurrency())
                 .logEvent(context);
+        new BranchHelperValidation().validateCartQuantity( linkerData.getQuantity());
     }
 
     public static void sendAddToWishListEvent(Context context, LinkerData linkerData){

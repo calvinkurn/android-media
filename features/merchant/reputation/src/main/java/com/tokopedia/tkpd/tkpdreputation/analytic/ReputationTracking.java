@@ -522,6 +522,26 @@ public class ReputationTracking {
         ));
     }
 
+    public void onClickRadioButtonReportAbuse(String reasonSelected) {
+        tracker.sendGeneralEvent(DataLayer.mapOf(
+                ReputationTrackingConstant.EVENT, ReputationTrackingConstant.CLICK_REVIEW_OLD,
+                ReputationTrackingConstant.EVENT_CATEGORY, ReputationTrackingConstant.REVIEW_DETAIL_PAGE,
+                ReputationTrackingConstant.EVENT_ACTION, "click - select reason on report abuse",
+                ReputationTrackingConstant.EVENT_LABEL, "reason:"+reasonSelected,
+                ReputationTrackingConstant.SCREEN_NAME, ReputationTrackingConstant.REVIEW_DETAIL_PAGE_SCREEN
+        ));
+    }
+
+    public void onSubmitReportAbuse(String feedbackId) {
+        tracker.sendGeneralEvent(DataLayer.mapOf(
+                ReputationTrackingConstant.EVENT, ReputationTrackingConstant.CLICK_REVIEW_OLD,
+                ReputationTrackingConstant.EVENT_CATEGORY, ReputationTrackingConstant.REVIEW_DETAIL_PAGE,
+                ReputationTrackingConstant.EVENT_ACTION, "click - kirim button reasons",
+                ReputationTrackingConstant.EVENT_LABEL, "feedbackId"+feedbackId,
+                ReputationTrackingConstant.SCREEN_NAME, ReputationTrackingConstant.REVIEW_DETAIL_PAGE_SCREEN
+        ));
+    }
+
     public void onSuccessGetIncentiveOvoTracker(String message, String category) {
         if(category.isEmpty()) {
             tracker.sendGeneralEvent(createEventMap(
@@ -610,26 +630,6 @@ public class ReputationTracking {
                     ""
             ));
         }
-    }
-
-    public void onClickRadioButtonReportAbuse(String reasonSelected) {
-        tracker.sendGeneralEvent(DataLayer.mapOf(
-                ReputationTrackingConstant.EVENT, ReputationTrackingConstant.CLICK_REVIEW_OLD,
-                ReputationTrackingConstant.EVENT_CATEGORY, ReputationTrackingConstant.REVIEW_DETAIL_PAGE,
-                ReputationTrackingConstant.EVENT_ACTION, "click - select reason on report abuse",
-                ReputationTrackingConstant.EVENT_LABEL, "reason:"+reasonSelected,
-                ReputationTrackingConstant.SCREEN_NAME, ReputationTrackingConstant.REVIEW_DETAIL_PAGE_SCREEN
-        ));
-    }
-
-    public void onSubmitReportAbuse(String feedbackId) {
-        tracker.sendGeneralEvent(DataLayer.mapOf(
-                ReputationTrackingConstant.EVENT, ReputationTrackingConstant.CLICK_REVIEW_OLD,
-                ReputationTrackingConstant.EVENT_CATEGORY, ReputationTrackingConstant.REVIEW_DETAIL_PAGE,
-                ReputationTrackingConstant.EVENT_ACTION, "click - kirim button reasons",
-                ReputationTrackingConstant.EVENT_LABEL, "feedbackId"+feedbackId,
-                ReputationTrackingConstant.SCREEN_NAME, ReputationTrackingConstant.REVIEW_DETAIL_PAGE_SCREEN
-        ));
     }
 
     private String getEditMarker(boolean isEditReview) {

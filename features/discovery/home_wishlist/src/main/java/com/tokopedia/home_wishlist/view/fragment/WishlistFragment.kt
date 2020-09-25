@@ -452,7 +452,7 @@ open class WishlistFragment: Fragment(), WishlistListener, TopAdsListener {
     }
 
     override fun onClickCheckboxDeleteWishlist(position: Int, isChecked: Boolean) {
-        viewModel.setWishlistOnMarkDelete(position, isChecked)
+        if(position != -1) viewModel.setWishlistOnMarkDelete(position, isChecked)
     }
 
     override fun onWishlistClick(parentPosition: Int, childPosition: Int, wishlistStatus: Boolean) {

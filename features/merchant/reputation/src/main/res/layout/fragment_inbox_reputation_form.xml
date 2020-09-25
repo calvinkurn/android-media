@@ -256,7 +256,7 @@
         <Button
             android:id="@+id/send_button"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/button_height"
+            android:layout_height="@dimen/inbox_send_button_height"
             android:layout_margin="@dimen/padding_activity"
             style="@style/Button.Submit.Green"
             android:text="@string/submit_review"/>

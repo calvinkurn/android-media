@@ -2,7 +2,6 @@ package com.tokopedia.oneclickcheckout.order.view.bottomsheet
 
 import android.graphics.Rect
 import android.view.View
-import android.widget.ProgressBar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.globalerror.GlobalError
@@ -16,6 +15,7 @@ import com.tokopedia.oneclickcheckout.common.view.model.preference.ProfilesItemM
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageFragment
 import com.tokopedia.oneclickcheckout.preference.list.view.PreferenceListAdapter
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import timber.log.Timber
 import java.net.ConnectException
@@ -30,7 +30,7 @@ class PreferenceListBottomSheet(
 
     private var rvPreferenceList: RecyclerView? = null
     private var btnAddPreference: UnifyButton? = null
-    private var progressBar: ProgressBar? = null
+    private var progressBar: LoaderUnify? = null
     private var globalError: GlobalError? = null
 
     private var adapter: PreferenceListAdapter? = null
@@ -54,13 +54,11 @@ class PreferenceListBottomSheet(
                 showGlobalError(GlobalError.NO_CONNECTION)
             }
             is RuntimeException -> {
-                when (throwable.localizedMessage.toIntOrNull()) {
+                when (throwable.localizedMessage?.toIntOrNull()) {
                     ReponseStatus.GATEWAY_TIMEOUT, ReponseStatus.REQUEST_TIMEOUT -> showGlobalError(GlobalError.NO_CONNECTION)
                     ReponseStatus.NOT_FOUND -> showGlobalError(GlobalError.PAGE_NOT_FOUND)
                     ReponseStatus.INTERNAL_SERVER_ERROR -> showGlobalError(GlobalError.SERVER_ERROR)
-                    else -> {
-                        showGlobalError(GlobalError.SERVER_ERROR)
-                    }
+                    else -> showGlobalError(GlobalError.SERVER_ERROR)
                 }
             }
             else -> {

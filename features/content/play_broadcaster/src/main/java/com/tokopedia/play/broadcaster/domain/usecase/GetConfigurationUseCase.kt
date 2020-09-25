@@ -40,7 +40,7 @@ class GetConfigurationUseCase @Inject constructor(
         return try {
             gson.fromJson(config, Config::class.java)
         } catch (e: Exception) {
-            sendCrashlyticsLog(0, e.localizedMessage)
+            sendCrashlyticsLog(e)
             Config()
         }
     }

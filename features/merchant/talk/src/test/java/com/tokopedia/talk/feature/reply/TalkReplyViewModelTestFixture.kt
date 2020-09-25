@@ -32,6 +32,18 @@ abstract class TalkReplyViewModelTestFixture {
     lateinit var talkCreateNewCommentUseCase: TalkCreateNewCommentUseCase
 
     @RelaxedMockK
+    lateinit var talkMarkNotFraudUseCase: TalkMarkNotFraudUseCase
+
+    @RelaxedMockK
+    lateinit var talkMarkCommentNotFraudUseCase: TalkMarkCommentNotFraudUseCase
+
+    @RelaxedMockK
+    lateinit var talkReportTalkUseCase: TalkReportTalkUseCase
+
+    @RelaxedMockK
+    lateinit var talkReportCommentUseCase: TalkReportCommentUseCase
+
+    @RelaxedMockK
     lateinit var userSession: UserSessionInterface
 
     @get:Rule
@@ -47,26 +59,12 @@ abstract class TalkReplyViewModelTestFixture {
                 talkDeleteTalkUseCase,
                 talkDeleteCommentUseCase,
                 talkCreateNewCommentUseCase,
+                talkMarkNotFraudUseCase,
+                talkMarkCommentNotFraudUseCase,
+                talkReportTalkUseCase,
+                talkReportCommentUseCase,
                 userSession,
                 TestCoroutineDispatchers)
-    }
-
-    protected fun LiveData<*>.verifyValueEquals(expected: Any) {
-        val actual = value
-        assertEquals(expected, actual)
-    }
-
-    protected fun LiveData<*>.verifySuccessEquals(expected: Success<*>) {
-        val expectedResult = expected.data
-        val actualResult = (value as Success<*>).data
-        assertEquals(expectedResult, actualResult)
-    }
-
-    protected fun LiveData<*>.verifyErrorEquals(expected: Fail) {
-        val expectedResult = expected.throwable::class.java
-        val actualResult = (value as Fail).throwable::class.java
-        assertEquals(expectedResult, actualResult)
-
     }
 
 }

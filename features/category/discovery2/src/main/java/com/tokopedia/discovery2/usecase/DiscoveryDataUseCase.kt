@@ -8,13 +8,13 @@ import javax.inject.Inject
 
 class DiscoveryDataUseCase @Inject constructor(private val discoveryPageRepository: DiscoveryPageRepository) {
 
-    suspend fun getDiscoveryPageDataUseCase(pageIdentifier: String): DiscoveryPageData {
+    suspend fun getDiscoveryPageDataUseCase(pageIdentifier: String, queryParameterMap: Map<String, String?>): DiscoveryPageData {
         return mapDiscoveryResponseToPageData(discoveryPageData[pageIdentifier]?.let {
             it
         } ?: discoveryPageRepository.getDiscoveryPageData(pageIdentifier).apply {
             discoveryPageData[pageIdentifier] = this
             componentMap = HashMap()
-        })
+        }, queryParameterMap)
     }
 
     fun clearPage(pageIdentifier: String) {

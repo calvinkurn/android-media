@@ -73,12 +73,13 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) : AbstractV
     }
 
     override fun onTabSelected(tab: TabLayout.Tab) {
-        trackTabsGTMStatus(tab)
+        if (tabsViewModel.setSelectedState(tab.position, true)) {
+            tabsViewModel.onTabClick()
+            trackTabsGTMStatus(tab)
+        }
         if (tab.customView != null && tab.customView is CustomViewCreator) {
             ((tab.customView as CustomViewCreator).viewModel as TabsItemViewModel).setSelectionTabItem(true)
         }
-        tabsViewModel.setSelectedState(tab.position, true)
-        tabsViewModel.onTabClick()
     }
 
     override fun onTabUnselected(tab: TabLayout.Tab) {

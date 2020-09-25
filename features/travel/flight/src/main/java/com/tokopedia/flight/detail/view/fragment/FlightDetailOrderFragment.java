@@ -47,6 +47,7 @@ import com.tokopedia.design.component.Dialog;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.cancellation.view.activity.FlightCancellationActivity;
 import com.tokopedia.flight.cancellation.view.activity.FlightCancellationListActivity;
+import com.tokopedia.flight.cancellationV2.presentation.activity.FlightCancellationPassengerActivity;
 import com.tokopedia.flight.common.di.component.FlightComponent;
 import com.tokopedia.flight.detail.presenter.ExpandableOnClickListener;
 import com.tokopedia.flight.detail.presenter.FlightDetailOrderContract;
@@ -77,6 +78,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import static android.app.Activity.RESULT_OK;
+import static com.tokopedia.flight.detail.view.activity.FlightDetailOrderActivity.EXTRA_INVOICE_ID;
 import static com.tokopedia.flight.orderlist.view.FlightOrderListActivity.EXTRA_IS_AFTER_CANCELLATION;
 import static com.tokopedia.flight.orderlist.view.FlightOrderListActivity.EXTRA_IS_CANCELLATION;
 
@@ -142,12 +144,16 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
     private TravelCrossSellWidget travelCrossSellWidget;
 
     private boolean isCancellation;
+    private boolean isRequestCancellation;
 
-    public static Fragment createInstance(FlightOrderDetailPassData flightOrderDetailPassData, boolean isCancellation) {
+    public static Fragment createInstance(FlightOrderDetailPassData flightOrderDetailPassData,
+                                          boolean isCancellation,
+                                          boolean isRequestCancellation) {
         FlightDetailOrderFragment flightDetailOrderFragment = new FlightDetailOrderFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(EXTRA_ORDER_DETAIL_PASS, flightOrderDetailPassData);
         bundle.putBoolean(EXTRA_IS_CANCELLATION, isCancellation);
+        bundle.putBoolean(EXTRA_INVOICE_ID, isRequestCancellation);
         flightDetailOrderFragment.setArguments(bundle);
         return flightDetailOrderFragment;
     }
@@ -168,6 +174,7 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
         super.onCreate(savedInstanceState);
         flightOrderDetailPassData = getArguments().getParcelable(EXTRA_ORDER_DETAIL_PASS);
         isCancellation = getArguments().getBoolean(EXTRA_IS_CANCELLATION, false);
+        isRequestCancellation = getArguments().getBoolean(EXTRA_INVOICE_ID, false);
         remoteConfig = new FirebaseRemoteConfigImpl(getContext());
     }
 
@@ -393,6 +400,8 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
     public void checkIfShouldGoToCancellation() {
         if (isCancellation) {
             navigateToCancellationListPage();
+        } else if (isRequestCancellation) {
+            flightDetailOrderPresenter.actionCancelOrderWithoutDialog();
         }
     }
 
@@ -511,10 +520,24 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
 
     @Override
     public void navigateToCancellationPage(String invoiceId, List<FlightCancellationJourney> items) {
-        startActivityForResult(
-                FlightCancellationActivity.createIntent(getContext(), invoiceId, items),
-                REQUEST_CODE_CANCELLATION
-        );
+        Boolean newSearchEnabledStatus = remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_FLIGHT_NEW_SEARCH_FLOW, true);
+
+        if (newSearchEnabledStatus) {
+            startActivityForResult(
+                    FlightCancellationPassengerActivity.Companion
+                            .createIntent(getContext(),
+                                    invoiceId,
+                                    items),
+                    REQUEST_CODE_CANCELLATION
+            );
+        } else {
+            startActivityForResult(
+                    FlightCancellationActivity.createIntent(getContext(),
+                            invoiceId,
+                            items),
+                    REQUEST_CODE_CANCELLATION
+            );
+        }
 
     }
 

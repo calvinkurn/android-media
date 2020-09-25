@@ -31,7 +31,7 @@ class DigitalRecommendation : FrameLayout, IDigitalRecommendationView {
 
 
     private lateinit var fragment: BaseDaggerFragment
-    private lateinit var trackingQueue: TrackingQueue
+    private var trackingQueue: TrackingQueue? = null
     private lateinit var paymentId: String
 
     @Inject
@@ -80,7 +80,7 @@ class DigitalRecommendation : FrameLayout, IDigitalRecommendationView {
     }
 
     override fun loadRecommendation(paymentId: String,
-                                    fragment: BaseDaggerFragment, trackingQueue: TrackingQueue) {
+                                    fragment: BaseDaggerFragment, trackingQueue: TrackingQueue?) {
         this.paymentId = paymentId
         this.fragment = fragment
         this.trackingQueue = trackingQueue

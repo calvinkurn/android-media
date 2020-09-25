@@ -39,7 +39,7 @@ const val KEY_CONTAINER = "gtm"
 const val KEY_EVENT = "default_app"
 const val KEY_EVENT_SELLERAPP = "default_sellerapp"
 
-const val DEFAULT_CONFIG = "{\"row_limit\":25,\"interval\":2}"
+const val DEFAULT_CONFIG = "{\"row_limit\":50,\"interval\":1}"
 const val JOB_IRIS_ID = 1500
-const val DEFAULT_SERVICE_TIME: Long = 2
-const val DEFAULT_MAX_ROW = 25
+const val DEFAULT_SERVICE_TIME: Long = 1
+const val DEFAULT_MAX_ROW = 50

@@ -6,12 +6,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.applink.RouteManager
@@ -25,8 +30,11 @@ import com.tokopedia.recentview.view.adapter.typefactory.RecentViewTypeFactory
 import com.tokopedia.recentview.view.adapter.typefactory.RecentViewTypeFactoryImpl
 import com.tokopedia.recentview.view.listener.RecentView
 import com.tokopedia.recentview.view.presenter.RecentViewPresenter
+import com.tokopedia.recentview.view.presenter.RecentViewViewModel
 import com.tokopedia.recentview.view.viewmodel.RecentViewDetailProductViewModel
 import com.tokopedia.recentview.view.viewmodel.RecentViewProductViewModel
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import java.util.*
 import javax.inject.Inject
@@ -43,6 +51,10 @@ class RecentViewFragment : BaseDaggerFragment(), RecentView.View, WishListAction
     @Inject
     lateinit var presenter: RecentViewPresenter
 
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+    private lateinit var viewModel: RecentViewViewModel
+
     override fun getScreenName(): String {
         return ""
     }
@@ -58,7 +70,35 @@ class RecentViewFragment : BaseDaggerFragment(), RecentView.View, WishListAction
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        activity?.let {
+            val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
+            viewModel = viewModelProvider.get(RecentViewViewModel::class.java)
+        }
         initVar()
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+
+        val lifecycleOwner: LifecycleOwner = viewLifecycleOwner
+        viewModel.run {
+            recentViewResp.observe(lifecycleOwner, Observer {
+                when (it) {
+                    is Success ->  {
+                        if(it.data.isNotEmpty()) {
+                            val visitableList: ArrayList<Visitable<*>> = ArrayList(it.data)
+                            onSuccessGetRecentView(visitableList)
+                            sendRecentViewImpressionTracking(it.data)
+                        } else {
+                            onEmptyGetRecentView()
+                        }
+                    }
+                    is Fail -> {
+                        onErrorGetRecentView(ErrorHandler.getErrorMessage(context, it.throwable))
+                    }
+                }
+            })
+        }
     }
 
     private fun initVar() {
@@ -92,7 +132,8 @@ class RecentViewFragment : BaseDaggerFragment(), RecentView.View, WishListAction
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        presenter?.getRecentViewProduct()
+        showLoading()
+        viewModel?.getRecentView()
     }
 
     override fun onWishlistClicked(adapterPosition: Int, productId: Int, isWishlist: Boolean) {
@@ -125,11 +166,14 @@ class RecentViewFragment : BaseDaggerFragment(), RecentView.View, WishListAction
     override fun showLoadingProgress() {}
     override fun onErrorGetRecentView(errorMessage: String) {
         adapter.dismissLoading()
-        if (activity != null && view != null && presenter != null) NetworkErrorHelper.showEmptyState(activity, view,
-                errorMessage) { presenter?.getRecentViewProduct() }
+        if (activity != null && view != null) NetworkErrorHelper.showEmptyState(activity, view,
+                errorMessage) {
+            showLoading()
+            viewModel?.getRecentView()
+        }
     }
 
-    override fun onSuccessGetRecentView(recentViewProductViewModels: ArrayList<Visitable<*>?>?) {
+    override fun onSuccessGetRecentView(recentViewProductViewModels: ArrayList<Visitable<*>>) {
         adapter.dismissLoading()
         adapter.addList(recentViewProductViewModels)
         adapter.notifyDataSetChanged()

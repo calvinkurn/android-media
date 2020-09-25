@@ -14,6 +14,9 @@ import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.pushnotif.ApplinkNotificationHelper;
 import com.tokopedia.pushnotif.data.constant.Constant;
 import com.tokopedia.pushnotif.data.model.ApplinkNotificationModel;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.user.session.UserSession;
 
 /**
@@ -31,8 +34,11 @@ public class ChatNotificationFactory extends BaseNotificationFactory {
     private static String USER_ID = "user_id";
     private static int REQUEST_CODE_REPLY = 527;
 
+    private RemoteConfig remoteConfig;
+
     public ChatNotificationFactory(Context context) {
         super(context);
+        remoteConfig = new FirebaseRemoteConfigImpl(context);
     }
 
     @Override
@@ -57,12 +63,14 @@ public class ChatNotificationFactory extends BaseNotificationFactory {
             if (isAllowVibrate()) builder.setVibrate(getVibratePattern());
         }
 
-        if(GlobalConfig.isSellerApp()) {
-            builder.setShowWhen(true);
-            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                builder.setRemoteInputHistory(new String[]{""});
+        if(isEnableReplyChatNotification()) {
+            if (GlobalConfig.isSellerApp()) {
+                builder.setShowWhen(true);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                    builder.setRemoteInputHistory(new String[]{""});
+                }
+                builder.addAction(replyAction(applinkNotificationModel.getApplinks(), notificationId));
             }
-            builder.addAction(replyAction(applinkNotificationModel.getApplinks(), notificationId));
         }
 
         return builder.build();
@@ -103,5 +111,9 @@ public class ChatNotificationFactory extends BaseNotificationFactory {
             e.printStackTrace();
             return "0";
         }
+    }
+
+    private Boolean isEnableReplyChatNotification() {
+        return remoteConfig.getBoolean(RemoteConfigKey.ENABLE_PUSH_NOTIFICATION_CHAT_SELLER, false);
     }
 }

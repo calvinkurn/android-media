@@ -45,15 +45,14 @@
             app:layout_scrollFlags="scroll|snap"
             android:layout_height="@dimen/dp_25"/>
 
-        <com.tokopedia.searchbar.FeedMainToolbar
+        <com.tokopedia.feedplus.view.customview.FeedMainToolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="-20dp"
             app:contentInsetLeft="0dp"
             app:contentInsetStart="0dp"
-            app:layout_scrollFlags="scroll|snap"
-            app:screenName="/feed"/>
+            app:layout_scrollFlags="scroll|snap" />
 
         <View
             android:visibility="invisible"

@@ -3,13 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:paddingBottom="@dimen/dp_16">
+    android:layout_height="wrap_content">
 
     <com.tokopedia.banner.dynamic.BannerViewDynamicBackground
         android:id="@+id/banner"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/spacing_lvl4" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/banner_shimmering"
@@ -77,7 +77,7 @@
             android:layout_marginTop="@dimen/dp_32"
             android:layout_marginEnd="@dimen/dp_16"
             android:layout_marginRight="@dimen/dp_16"
-            app:corners="@integer/travel_subhomepage_shimmering_corner"
+            app:corners="@integer/section_shimmering_corner"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/guideline" />
 

@@ -46,7 +46,7 @@ class TravellerInfoWidget @JvmOverloads constructor(context: Context, attrs: Att
         this.phoneCountry = phoneCountry
     }
 
-    fun getContactPhoneCountry(): String = phoneCountry
+    fun getContactPhoneCountry(): String = if (phoneCountry.isNotEmpty()) phoneCountry else "ID"
 
     fun getContactName(): String = tv_travel_contact_name.text.toString().trim()
 

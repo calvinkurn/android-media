@@ -92,8 +92,11 @@ class InstrumentationShopPageTestActivity : AppCompatActivity(),
         return shopPageProductTabLoadTimePerformanceCallback
     }
 
-    override fun startMonitoringPltNetworkRequest(pageLoadTimePerformanceInterface: PageLoadTimePerformanceInterface) {
+    override fun stopMonitoringPltPreparePage(pageLoadTimePerformanceInterface: PageLoadTimePerformanceInterface) {
         pageLoadTimePerformanceInterface.stopPreparePagePerformanceMonitoring()
+    }
+
+    override fun startMonitoringPltNetworkRequest(pageLoadTimePerformanceInterface: PageLoadTimePerformanceInterface) {
         pageLoadTimePerformanceInterface.startNetworkRequestPerformanceMonitoring()
     }
 

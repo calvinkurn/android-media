@@ -30,4 +30,10 @@ public interface CmInAppConstant {
     String BUTTON_SMALL_SIZE = "small";
     String BUTTON_MICRO_SIZE = "micro";
 
+    interface ScreenListConstants {
+        String SPLASH = "com.tokopedia.tkpd.ConsumerSplashScreen";
+        String DEEPLINK_ACTIVITY = "com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity";
+        String DEEPLINK_HANDLER_ACTIVITY = "com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity";
+    }
+
 }

@@ -91,6 +91,7 @@ object PlayBroadcastUiMapper {
     fun mapToLiveTrafficUiMetrics(metrics: LiveStats): List<TrafficMetricUiModel> = mutableListOf(
                 TrafficMetricUiModel(TrafficMetricsEnum.TotalViews, metrics.visitChannel),
                 TrafficMetricUiModel(TrafficMetricsEnum.VideoLikes, metrics.likeChannel),
+                TrafficMetricUiModel(TrafficMetricsEnum.NewFollowers, metrics.followShop),
                 TrafficMetricUiModel(TrafficMetricsEnum.ShopVisit, metrics.visitShop),
                 TrafficMetricUiModel(TrafficMetricsEnum.ProductVisit, metrics.visitPdp),
                 TrafficMetricUiModel(TrafficMetricsEnum.NumberOfAtc, metrics.addToCart),
@@ -178,8 +179,7 @@ object PlayBroadcastUiMapper {
             channelId = channel.basic.channelId,
             title = channel.basic.title,
             description = channel.basic.description,
-            ingestUrl = channel.medias.firstOrNull()?.ingestUrl.orEmpty(),
-//            ingestUrl = LOCAL_RTMP_URL, // TODO remove mock
+            ingestUrl = channel.medias.firstOrNull { it.id == channel.basic.activeMediaID }?.ingestUrl.orEmpty(),
             coverUrl = channel.basic.coverUrl,
             status = PlayChannelStatus.getByValue(channel.basic.status.id)
     )

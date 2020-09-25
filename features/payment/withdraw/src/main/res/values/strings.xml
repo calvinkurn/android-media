@@ -1,6 +1,7 @@
 <resources>
 
     <string name="swd_activity_withdraw">Penarikan Saldo</string>
+    <string name="swd_activity_auto_withdraw_settings">Pengaturan Saldo</string>
 
     <string name="swd_title_action_withdraw">Tarik Saldo</string>
     <string name="swd_rp">Rp%s</string>
@@ -24,7 +25,7 @@
     <string name="swd_saldo_seller">Saldo Penghasilan</string>
     <string name="swd_tab_buyer_income">Penghasilan</string>
 
-    <string name="swd_tnc_full_text">Dengan klik tombol di bawah, kamu telah setuju dengan</string>\
+    <string name="swd_tnc_full_text">Dengan klik tombol di bawah, kamu telah setuju dengan</string>
 
     <string name="swd_tnc_clickable_text">ketentuan penarikan saldo.</string>
     <string name="swd_tnc_title">Ketentuan penarikan saldo</string>
@@ -89,5 +90,27 @@
     <string name="swd_label_no_ticker">%s -  ticker : tidak ada ticker rekening premium</string>
 
 
+    <string name="swd_automatic_withdrawal">Penarikan otomatis</string>
+    <string name="swd_with_all_balance_according_schedule">Cairkan seluruh saldo sesuai jadwal</string>
+    <string name="swd_withdrawal_schedule">Jadwal Penarikan</string>
+    <string name="swd_awd_terms_and_condition">Dengan klik \"Simpan\", kamu menyetujui Syarat dan Ketentuan tarik saldo otomatis.</string>
+    <string name="swd_awd_terms_and_condition_clickable">Syarat dan Ketentuan</string>
+    <string name="swd_withdrawal_your_balance_according_schedule">Cairkan Saldo Penghasilan ke rekeningmu sesuai jadwal</string>
+    <string name="swd_exclusive_for_premium_acc">Eksklusif khusus Rekening Premium</string>
+    <string name="swd_change">Ubah</string>
+    <string name="swd_info">Info</string>
+    <string name="swd_save">Simpan</string>
+    <string name="swd_auto_wd_user_not_owner">Pengaturan tarik saldo otomatis hanya dapat dilakukan oleh pemilik toko (bukan admin).</string>
+    <string name="swd_auto_wd_select">Pilih</string>
+    <string name="swd_auto_wd_info_title">Info tarik saldo otomatis</string>
 
+    <string name="swd_awd_join_rp_for_autoWD"> &lt;a href="#"&gt;Gabung Rekening Premium&lt;/a&gt; secara gratis untuk menikmati fitur tarik saldo otomatis.</string>
+    <string name="swd_awd_can_withdraw_auto_if_join_rp">Kamu hanya bisa tarik saldo otomatis dengan gabung Rekening Premium.</string>
+    <string name="swd_join_premium_account_free">Gabung Rekening Premium, Gratis</string>
+    <string name="swd_add_bank_account">Tambah Rekening</string>
+    <string name="swd_awd_disable_autowd">Nonaktifkan tarik saldo otomatis?</string>
+    <string name="swd_awd_auto_withdrawal_will_not_work">Saldo Penghasilan tidak akan lagi dicairkan secara otomatis ke rekeningmu.</string>
+    <string name="swd_deactivate">Nonaktifkan</string>
+    <string name="swd_awd_no_saved_account">Belum ada rekening tersimpan.</string>
+    <string name="swd_awd_pilih">Pilih</string>
 </resources>

@@ -16,6 +16,9 @@ import com.tokopedia.shop.analytic.ShopPageHomeTracking
 import com.tokopedia.shop.common.constant.GQLQueryNamedConstant.GQL_CHECK_WISHLIST
 import com.tokopedia.shop.common.di.ShopPageContext
 import com.tokopedia.shop.home.GqlQueryConstant.GQL_ATC_MUTATION
+import com.tokopedia.shop.home.GqlQueryConstant.GQL_CHECK_CAMPAIGN_NOTIFY_ME
+import com.tokopedia.shop.home.GqlQueryConstant.GQL_GET_CAMPAIGN_NOTIFY_ME
+import com.tokopedia.shop.home.GqlQueryConstant.GQL_GET_SHOP_NPL_CAMPAIGN_TNC
 import com.tokopedia.shop.home.GqlQueryConstant.GQL_GET_SHOP_PAGE_HOME_LAYOUT
 import com.tokopedia.shop.home.di.scope.ShopPageHomeScope
 import com.tokopedia.shop.home.util.CoroutineDispatcherProvider
@@ -41,7 +44,7 @@ class ShopPageHomeModule {
     @ShopPageHomeScope
     @Provides
     @Named(GQL_GET_SHOP_PAGE_HOME_LAYOUT)
-    fun getShopFeaturedProductQuery(@ShopPageContext context: Context): String {
+    fun getShopPageHomeLayoutQuery(@ShopPageContext context: Context): String {
         return """
             query get_shop_page_home_layout(${'$'}shopId: String!,${'$'}status:String,${'$'}layoutId:String){
               shopPageGetLayout (shopID:${'$'}shopId,status:${'$'}status,layoutID:${'$'}layoutId){
@@ -115,8 +118,101 @@ class ShopPageHomeModule {
                         identifier
                       }
                     }
+                    ... on CampaignWidget {
+                      campaignID
+                      name
+                      description
+                      startDate
+                      endDate
+                      statusCampaign
+                      timeDescription
+                      timeCounter
+                      totalNotify
+                      totalNotifyWording
+                      banners {
+                        imageID
+                        imageURL
+                        bannerType
+                      }
+                      products {
+                        id
+                        name
+                        url
+                        urlApps
+                        urlMobile
+                        imageURL
+                        price
+                        countSold
+                        stock
+                        status
+                        discountedPrice
+                        discountPercentage
+                        position
+                        stockWording {
+                          title
+                        }
+                        hideGimmick
+                        stockSoldPercentage
+                        labelGroups {
+                          position
+                          type
+                          title
+                        }
+                      }
+                    }
                   }
                 }
+              }
+            }
+        """.trimIndent()
+    }
+
+    @ShopPageHomeScope
+    @Provides
+    @Named(GQL_CHECK_CAMPAIGN_NOTIFY_ME)
+    fun getCheckCampaignNotifyMeQuery(@ShopPageContext context: Context): String {
+        return """
+            mutation check_campaign_notify_me(${'$'}params : CheckCampaignNotifyMeRequest!){
+              checkCampaignNotifyMe(params:${'$'}params ) {
+                campaign_id
+                success
+                message
+                error_message
+              }
+            }
+        """.trimIndent()
+    }
+
+    @ShopPageHomeScope
+    @Provides
+    @Named(GQL_GET_SHOP_NPL_CAMPAIGN_TNC)
+    fun getShopNplCampaignTncQuery(@ShopPageContext context: Context): String {
+        return """
+            query get_merchant_campaign_tnc(${'$'}param: GetMerchantCampaignTNCRequest!){
+              getMerchantCampaignTNC (params:${'$'}param){
+                title,
+    			messages,
+    			error {
+    			  error_code
+    			  error_message
+    			}
+              }
+            }
+        """.trimIndent()
+    }
+
+    @ShopPageHomeScope
+    @Provides
+    @Named(GQL_GET_CAMPAIGN_NOTIFY_ME)
+    fun getCampaignNotifyMeQuery(@ShopPageContext context: Context): String {
+        return """
+            query get_campaign_notify_me(${'$'}params:GetCampaignNotifyMeRequest!){
+              getCampaignNotifyMe (params: ${'$'}params ){
+                campaign_id
+                success
+                message
+                error_message
+                is_available
               }
             }
         """.trimIndent()

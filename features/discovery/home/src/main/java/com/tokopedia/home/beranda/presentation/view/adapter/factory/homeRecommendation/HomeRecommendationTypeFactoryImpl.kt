@@ -31,6 +31,10 @@ class HomeRecommendationTypeFactoryImpl : HomeRecommendationTypeFactory {
         return HomeRecommendationLoadingMoreViewHolder.LAYOUT
     }
 
+    override fun type(dataModel: HomeRecommendationBannerTopAdsDataModel): Int {
+        return HomeRecommendationBannerTopAdsViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(parent: View, viewType: Int): SmartAbstractViewHolder<*> {
         return when (viewType) {
             HomeRecommendationItemViewHolder.LAYOUT -> HomeRecommendationItemViewHolder(parent)
@@ -39,6 +43,7 @@ class HomeRecommendationTypeFactoryImpl : HomeRecommendationTypeFactory {
             HomeRecommendationErrorViewHolder.LAYOUT -> HomeRecommendationErrorViewHolder(parent)
             EmptyViewHolder.LAYOUT -> HomeRecommendationEmptyViewHolder(parent)
             HomeRecommendationLoadingMoreViewHolder.LAYOUT -> HomeRecommendationLoadingMoreViewHolder(parent)
+            HomeRecommendationBannerTopAdsViewHolder.LAYOUT -> HomeRecommendationBannerTopAdsViewHolder(parent)
             else -> throw RuntimeException("Home recommendation Layout not supported")
         }
     }

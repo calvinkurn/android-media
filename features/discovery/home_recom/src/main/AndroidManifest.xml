@@ -17,5 +17,9 @@
                         android:pathPrefix="/rekomendasi"/>
             </intent-filter>
         </activity>
+        <activity android:name=".SimilarProductRecommendationActivity"
+            android:label="@string/recom_home_recommendation"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"/>
     </application>
 </manifest>

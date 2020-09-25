@@ -12,6 +12,7 @@
     app:eo_use_rotate_animation="true">
 
     <androidx.recyclerview.widget.RecyclerView
+        android:nestedScrollingEnabled="false"
         android:id="@+id/rv_event_parent_ticket"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>

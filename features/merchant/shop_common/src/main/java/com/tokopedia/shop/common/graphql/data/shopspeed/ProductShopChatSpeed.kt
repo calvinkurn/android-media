@@ -11,5 +11,5 @@ data class ProductShopChatSpeed(
 data class ProductShopChatSpeedQuery(
         //In minute, for "Chat dibalas +- 5 menit"
         @SerializedName("messageResponseTime")
-        val messageResponseTime: Int = 0
+        val messageResponseTime: String = ""
 )

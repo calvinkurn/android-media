@@ -3,6 +3,9 @@
     <color name="flight_chips_danger_text">#ea212d</color>
     <color name="flight_chips_info_text">#009bff</color>
 
+    <color name="flight_subtitle_text_color">#9E9E9E</color>
+    <color name="flight_green_text_color">#259B24</color>
+
     <color name="flightPriceColor">#ff5722</color>
 
     <color name="flight_booking_route_gradiend_end">#e5f5ff</color>

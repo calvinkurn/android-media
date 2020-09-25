@@ -1,0 +1,67 @@
+[
+  {
+    "data": {
+      "getLineGraphData": {
+        "data": [
+          {
+            "dataKey": "grossIncome",
+            "header": "Rp0",
+            "description": "\u003cspan style\u003dcolor:#31353B;\u003e\u003cb\u003e0%\u003c/b\u003e\u003c/span\u003e dengan 7 hari sebelumnya",
+            "yLabels": [
+              {
+                "yVal": 0,
+                "yLabel": "0"
+              },
+              {
+                "yVal": 0,
+                "yLabel": "0"
+              },
+              {
+                "yVal": 0,
+                "yLabel": "0"
+              }
+            ],
+            "list": [
+              {
+                "yVal": 0,
+                "yLabel": "Rp0",
+                "xLabel": "5"
+              },
+              {
+                "yVal": 0,
+                "yLabel": "Rp0",
+                "xLabel": "6"
+              },
+              {
+                "yVal": 0,
+                "yLabel": "Rp0",
+                "xLabel": "7"
+              },
+              {
+                "yVal": 0,
+                "yLabel": "Rp0",
+                "xLabel": "8"
+              },
+              {
+                "yVal": 0,
+                "yLabel": "Rp0",
+                "xLabel": "9"
+              },
+              {
+                "yVal": 0,
+                "yLabel": "Rp0",
+                "xLabel": "10"
+              },
+              {
+                "yVal": 0,
+                "yLabel": "Rp0",
+                "xLabel": "11"
+              }
+            ],
+            "error": ""
+          }
+        ]
+      }
+    }
+  }
+]

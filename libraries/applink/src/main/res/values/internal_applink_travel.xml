@@ -30,6 +30,6 @@
     <string name="path_flight_search" translatable="false">/search</string>
     <string name="path_flight_order_list" translatable="false">/order</string>
     <string name="path_flight_order_detail" translatable="false">/order/.*\</string>
-    <string name="path_flight_cancel" translatable="false">/cancel</string>
+    <string name="path_flight_cancel" translatable="false">/cancellation</string>
 
 </resources>

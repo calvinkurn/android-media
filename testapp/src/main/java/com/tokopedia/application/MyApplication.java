@@ -7,10 +7,12 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.widget.Toast;
-
+import com.tokopedia.url.TokopediaUrl;
+import com.tokopedia.url.Env;
 import androidx.appcompat.app.AppCompatDelegate;
 
 import com.google.android.gms.security.ProviderInstaller;
+import com.tkpd.remoteresourcerequest.task.ResourceDownloadManager;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
@@ -27,7 +29,6 @@ import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.TkpdCoreRouter;
 import com.tokopedia.core.analytics.container.GTMAnalytics;
 import com.tokopedia.core.analytics.container.MoengageAnalytics;
-import com.tokopedia.core.deprecated.SessionHandler;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
 import com.tokopedia.core.gcm.model.NotificationPass;
@@ -38,6 +39,7 @@ import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.tkpd.ActivityFrameMetrics;
 import com.tokopedia.tkpd.BuildConfig;
+import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.network.DataSource;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.interfaces.ContextAnalytics;
@@ -67,7 +69,6 @@ public class MyApplication extends BaseMainApplication
     }
 
     GCMHandler gcmHandler;
-    SessionHandler sessionHandler;
 
     @Override
     public void onCreate() {
@@ -83,7 +84,7 @@ public class MyApplication extends BaseMainApplication
         com.tokopedia.config.GlobalConfig.DEBUG = BuildConfig.DEBUG;
         com.tokopedia.config.GlobalConfig.ENABLE_DISTRIBUTION = BuildConfig.ENABLE_DISTRIBUTION;
 
-        // for staging-only
+//         for staging-only
 //        TokopediaUrl.Companion.setEnvironment(this, Env.STAGING);
 //        TokopediaUrl.Companion.deleteInstance();
 //        TokopediaUrl.Companion.init(this);
@@ -107,6 +108,11 @@ public class MyApplication extends BaseMainApplication
 
         super.onCreate();
         initCacheApi();
+
+        ResourceDownloadManager
+                .Companion.getManager()
+                .setBaseAndRelativeUrl("http://dummy.dummy", "dummy")
+                .initialize(this, R.raw.dummy_description);
 
         if (BuildConfig.DEBUG) {
             Timber.plant(new Timber.DebugTree());
@@ -264,28 +270,6 @@ public class MyApplication extends BaseMainApplication
     }
 
     @Override
-    public SessionHandler legacySessionHandler() {
-        if(sessionHandler == null) {
-            com.tokopedia.user.session.UserSession userSession =
-                    new com.tokopedia.user.session.UserSession(this);
-            return sessionHandler = new SessionHandler(this) {
-                @Override
-                public String getLoginID() {
-                    return userSession.getUserId();
-                }
-
-                @Override
-                public String getRefreshToken() {
-                    return userSession.getRefreshTokenIV();
-                }
-
-            };
-        }else{
-            return sessionHandler;
-        }
-    }
-
-    @Override
     public GCMHandler legacyGCMHandler() {
         if(gcmHandler == null){
             return gcmHandler = new GCMHandler(this);
@@ -320,13 +304,13 @@ public class MyApplication extends BaseMainApplication
     }
 
     @Override
-    public void sendForceLogoutAnalytics(Response response, boolean isInvalidToken, boolean isRequestDenied) {
+    public void sendForceLogoutAnalytics(String url, boolean isInvalidToken, boolean isRequestDenied) {
 
     }
 
 
     @Override
-    public void showForceLogoutTokenDialog(String response) {
+    public void showForceLogoutTokenDialog(String path) {
 
     }
 

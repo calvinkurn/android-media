@@ -6,6 +6,7 @@ import android.view.View
 import android.widget.FrameLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
 import com.tokopedia.discovery2.viewcontrollers.decorator.HeaderItemDecoration
@@ -30,7 +31,7 @@ class StickyHeadRecyclerView : ConstraintLayout {
         }
     }
 
-    fun addHeaderRecycelerView(view: View) {
+    fun addHeaderRecyclerView(view: View) {
         headerRecyclerView.getChildAt(0)?.let {
             if (it !== view) {
                 headerRecyclerView.removeAllViews()
@@ -68,7 +69,12 @@ class StickyHeadRecyclerView : ConstraintLayout {
         }
     }
 
-    fun smoothScrollToTop() {
-        recyclerView.smoothScrollToPosition(0)
+    fun smoothScrollToPosition(position: Int = 0) {
+        if (position == 0) {
+            recyclerView.smoothScrollToPosition(position)
+        } else {
+            (recyclerView.layoutManager as? StaggeredGridLayoutManager)?.scrollToPositionWithOffset(position, 0)
+
+        }
     }
 }

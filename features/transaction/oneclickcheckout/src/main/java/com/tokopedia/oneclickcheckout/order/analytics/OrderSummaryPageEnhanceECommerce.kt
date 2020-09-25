@@ -104,6 +104,14 @@ class OrderSummaryPageEnhanceECommerce {
         data[KEY_PRODUCT_TYPE] = productType
     }
 
+    fun setShippingPrice(shippingPrice: String) {
+        data[KEY_SHIPPING_PRICE] = shippingPrice
+    }
+
+    fun setShippingDuration(shippingDuration: String?) {
+        data[KEY_SHIPPING_DURATION] = setDefaultIfEmpty(shippingDuration)
+    }
+
     fun build(step: Int, option: String): Map<String, Any> {
         return mapOf(
                 KEY_CHECKOUT to mapOf(
@@ -157,6 +165,8 @@ class OrderSummaryPageEnhanceECommerce {
         private const val KEY_SHOP_TYPE = "dimension81" //marketplace or official_store or gold_merchant
         private const val KEY_CATEGORY_ID = "dimension82"
         private const val KEY_PRODUCT_TYPE = "dimension83"
+        private const val KEY_SHIPPING_PRICE = "dimension12"
+        private const val KEY_SHIPPING_DURATION = "dimension16"
 
         const val STEP_1 = 1
         const val STEP_1_OPTION = "order summary page loaded"
@@ -164,6 +174,6 @@ class OrderSummaryPageEnhanceECommerce {
         const val STEP_2 = 2
         const val STEP_2_OPTION = "click bayar success"
 
-        private const val DEFAULT_EMPTY_VALUE = "none / other"
+        const val DEFAULT_EMPTY_VALUE = "none / other"
     }
 }

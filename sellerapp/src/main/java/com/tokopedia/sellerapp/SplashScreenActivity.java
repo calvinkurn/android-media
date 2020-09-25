@@ -64,7 +64,12 @@ public class SplashScreenActivity extends SplashScreen {
             boolean isAutoLogin = uri.getBooleanQueryParameter(KEY_AUTO_LOGIN, false);
             if (isFromMainApp) {
                 String redirectApplink = uri.getQueryParameter(ApplinkConstInternalGlobal.KEY_REDIRECT_SEAMLESS_APPLINK);
-                Intent intent = RouteManager.getIntent(this, uri.toString());
+                Intent intent;
+                if (redirectApplink != null && !redirectApplink.isEmpty()) {
+                    intent = RouteManager.getIntent(this, redirectApplink);
+                } else {
+                    intent = RouteManager.getIntent(this, uri.toString());
+                }
                 if (isAutoLogin && userSession.getUserId().isEmpty()) {
                     ArrayList<String> remainingAppLinks = getIntent().getStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA);
                     seamlessLogin(true, remainingAppLinks, redirectApplink);
@@ -72,8 +77,12 @@ public class SplashScreenActivity extends SplashScreen {
                 }
                 if (intent != null) {
                     ArrayList<String> remainingAppLinks = getIntent().getStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA);
+                    String featureName = getIntent().getStringExtra(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME);
                     if (remainingAppLinks != null && !remainingAppLinks.isEmpty()) {
                         intent.putStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA, remainingAppLinks);
+                    }
+                    if (featureName != null && !featureName.isEmpty()) {
+                        intent.putExtra(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME, featureName);
                     }
                     startActivity(intent);
                     return true;
@@ -137,11 +146,15 @@ public class SplashScreenActivity extends SplashScreen {
             intent = RouteManager.getIntent(this, ApplinkConstInternalGlobal.SEAMLESS_LOGIN);
             Bundle b = new Bundle();
             b.putBoolean(KEY_AUTO_LOGIN, true);
-            if(!redirectApplink.isEmpty())
+            if(redirectApplink != null && redirectApplink.length() > 0)
                 b.putString(ApplinkConstInternalGlobal.KEY_REDIRECT_SEAMLESS_APPLINK, redirectApplink);
 
             if (remainingApplinks != null && !remainingApplinks.isEmpty()) {
                 intent.putStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA, remainingApplinks);
+            }
+            String featureName = getIntent().getStringExtra(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME);
+            if (featureName != null && !featureName.isEmpty()) {
+                intent.putExtra(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME, featureName);
             }
             intent.putExtras(b);
         } else if (hasOnboarding) {

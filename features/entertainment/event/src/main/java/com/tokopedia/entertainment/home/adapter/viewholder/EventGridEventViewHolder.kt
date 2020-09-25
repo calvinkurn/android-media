@@ -39,6 +39,7 @@ class EventGridEventViewHolder(itemView: View, action: ((data: EventItemModel,
 
     override fun bind(element: EventGridModel) {
         itemView.ent_title_card.text = element.title
+        itemAdapter.titleGrid = element.title
         itemAdapter.setList(element.items)
         itemView.btn_see_all.setOnClickListener {
             RouteManager.route(itemView.context, ApplinkConstInternalEntertainment.EVENT_CATEGORY
@@ -61,6 +62,7 @@ class EventGridEventViewHolder(itemView: View, action: ((data: EventItemModel,
         : RecyclerView.Adapter<InnerViewHolder>() {
 
         lateinit var items: List<EventItemModel>
+        var titleGrid = ""
         var pos: Int = 0
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): InnerViewHolder {
@@ -84,11 +86,11 @@ class EventGridEventViewHolder(itemView: View, action: ((data: EventItemModel,
             }
             holder.view.setOnClickListener {
                 RouteManager.route(holder.view.context, item.appUrl)
-                EventHomePageTracking.getInstance().clickSectionEventProduct(item, items,
+                EventHomePageTracking.getInstance().clickSectionEventProduct(item, items, titleGrid,
                         position + 1)
             }
             holder.view.addOnImpressionListener(item, {
-                EventHomePageTracking.getInstance().impressionSectionEventProduct(item, items,
+                EventHomePageTracking.getInstance().impressionSectionEventProduct(item, items, titleGrid,
                         position + 1)
             })
             holder.view.iv_favorite.setOnClickListener {

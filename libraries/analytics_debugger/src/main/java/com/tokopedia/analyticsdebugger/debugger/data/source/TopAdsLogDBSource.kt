@@ -39,6 +39,7 @@ constructor(context: Context) {
             topAdsLogDB.productId = data.productId
             topAdsLogDB.productName = data.productName
             topAdsLogDB.imageUrl = data.imageUrl
+            topAdsLogDB.componentName = data.componentName
             topAdsLogDB.timestamp = Date().time
             if (data.url.isNotBlank()) {
                 topAdsLogDB.eventStatus = STATUS_PENDING

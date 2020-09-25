@@ -59,15 +59,17 @@ class AnalyticsDebuggerModule {
     @Provides
     @Named(NAMED_IRIS_SAVE)
     fun provideIrisSavePresenter(getIrisSaveLogUseCase: GetIrisSaveLogUseCase,
+                                 getIrisSaveCountLogUseCase: GetIrisSaveCountLogUseCase,
                                  deleteIrisSaveLogUseCase: DeleteIrisSaveLogUseCase): AnalyticsDebugger.Presenter {
-        return AnalyticsIrisSaveDebuggerPresenter(getIrisSaveLogUseCase, deleteIrisSaveLogUseCase)
+        return AnalyticsIrisSaveDebuggerPresenter(getIrisSaveLogUseCase, getIrisSaveCountLogUseCase, deleteIrisSaveLogUseCase)
     }
 
     @Provides
     @Named(NAMED_IRIS_SEND)
     fun provideIrisSendPresenter(getIrisSendLogUseCase: GetIrisSendLogUseCase,
+                                 getIrisSendCountLogUseCase: GetIrisSendCountLogUseCase,
                                  deleteIrisSendLogUseCase: DeleteIrisSendLogUseCase): AnalyticsDebugger.Presenter {
-        return AnalyticsIrisSendDebuggerPresenter(getIrisSendLogUseCase, deleteIrisSendLogUseCase)
+        return AnalyticsIrisSendDebuggerPresenter(getIrisSendLogUseCase, getIrisSendCountLogUseCase, deleteIrisSendLogUseCase)
     }
 
 

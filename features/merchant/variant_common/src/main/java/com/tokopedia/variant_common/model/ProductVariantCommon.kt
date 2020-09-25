@@ -16,6 +16,10 @@ data class ProductDetailVariantCommonResponse(
 
 data class ProductVariantCommon(
 
+        @SerializedName("errorCode")
+        @Expose
+        var errorCode: Int = 0,
+
         @SerializedName("parentID")
         @Expose
         var parentId: Int = 0,
@@ -44,6 +48,9 @@ data class ProductVariantCommon(
         @Expose
         var children: List<VariantChildCommon> = listOf()
 ) {
+    fun getVariantsIdentifier(): String {
+        return if (variant.any { it.name == null }) "" else variant.joinToString(" & ") { it.name.toString() }
+    }
 
     fun isSelectedChildHasFlashSale(optionId: Int): Boolean {
         var isFlashSale = false
@@ -56,6 +63,10 @@ data class ProductVariantCommon(
             }
         }
         return isFlashSale
+    }
+
+    fun getBuyableVariantCount(): Int {
+        return children.filter{ it.isBuyable }.count()
     }
 
     val hasChildren: Boolean

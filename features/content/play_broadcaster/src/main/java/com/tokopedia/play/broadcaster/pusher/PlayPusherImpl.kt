@@ -14,6 +14,7 @@ import com.tokopedia.play.broadcaster.pusher.state.PlayPusherStatus
 import com.tokopedia.play.broadcaster.pusher.timer.PlayPusherTimer
 import com.tokopedia.play.broadcaster.pusher.timer.PlayPusherTimerListener
 import com.tokopedia.play.broadcaster.pusher.type.PlayPusherQualityMode
+import com.tokopedia.play.broadcaster.util.error.DefaultErrorThrowable
 import com.tokopedia.play.broadcaster.util.extension.sendCrashlyticsLog
 
 
@@ -31,13 +32,14 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
     private var  mPusherListener: PlayPusherInfoListener? = null
     private val _observableNetworkState = MutableLiveData<PlayPusherNetworkState>()
     
-    private val mAliVcLivePushConfig: AlivcLivePushConfig = AlivcLivePushConfig().apply {
+    private val mAliVcLivePushConfig: PlayPusherConfig = PlayPusherConfig().apply {
         setCameraType(builder.cameraType)
         setPreviewOrientation(builder.orientation)
         previewDisplayMode = builder.previewDisplayMode
         setResolution(builder.resolution)
         isEnableAutoResolution = builder.isEnableAutoResolution
         setFps(builder.fps)
+        setPushMirror(builder.pushMirror)
 //        setAudioChannels(builder.audioChannel)
 //        audioProfile = builder.audioProfile
 //        setAudioEncodeMode(builder.audioEncode)
@@ -58,7 +60,7 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
             mAliVcLivePusher?.setLivePushNetworkListener(mAliVcLivePushNetworkListener)
             mAliVcLivePusher?.setAudioDenoise(true)
         } catch (e: Exception) {
-            sendCrashlyticsLog(0, e.localizedMessage)
+            sendCrashlyticsLog(e)
             if (GlobalConfig.DEBUG) {
                 e.printStackTrace()
             }
@@ -75,7 +77,7 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
         try {
             mAliVcLivePusher?.startPreview(surfaceView)
         } catch (e: Exception) {
-            sendCrashlyticsLog(0, e.localizedMessage)
+            sendCrashlyticsLog(e)
         }
     }
 
@@ -83,7 +85,7 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
         try {
             mAliVcLivePusher?.stopPreview()
         } catch (e: Exception) {
-            sendCrashlyticsLog(0, e.localizedMessage)
+            sendCrashlyticsLog(e)
             if (GlobalConfig.DEBUG) {
                 e.printStackTrace()
             }
@@ -114,7 +116,7 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
         try {
             mAliVcLivePusher?.stopPush()
         } catch (e: Exception) {
-            sendCrashlyticsLog(0, e.localizedMessage)
+            sendCrashlyticsLog(e)
             if (GlobalConfig.DEBUG) {
                 e.printStackTrace()
             }
@@ -125,14 +127,18 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
     }
 
     override suspend fun switchCamera() {
-        mAliVcLivePusher?.switchCamera()
+        try {
+            mAliVcLivePusher?.switchCamera()
+            mAliVcLivePusher?.setPushMirror(mAliVcLivePushConfig.getCameraTypeEnum()
+                    == AlivcLivePushCameraTypeEnum.CAMERA_TYPE_FRONT)
+        } catch (e: Exception) {}
     }
 
     override suspend fun resume() {
         try {
             mAliVcLivePusher?.resumeAsync()
         } catch (e: Exception) {
-            sendCrashlyticsLog(0, e.localizedMessage)
+            sendCrashlyticsLog(e)
             if (GlobalConfig.DEBUG) {
                 e.printStackTrace()
             }
@@ -150,7 +156,7 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
         try {
             mAliVcLivePusher?.pause()
         } catch (e: Exception) {
-            sendCrashlyticsLog(0, e.localizedMessage)
+            sendCrashlyticsLog(e)
             if (GlobalConfig.DEBUG) {
                 e.printStackTrace()
             }
@@ -169,7 +175,7 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
             mAliVcLivePusher?.destroy()
             mTimerDuration?.destroy()
         } catch (e: Exception) {
-            sendCrashlyticsLog(0, e.localizedMessage)
+            sendCrashlyticsLog(e)
             if (GlobalConfig.DEBUG) {
                 e.printStackTrace()
             }
@@ -226,11 +232,11 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
 
     private val mAliVcLivePushErrorListener = object : AlivcLivePushErrorListener {
         override fun onSystemError(pusher: AlivcLivePusher?, pusherError: AlivcLivePushError?) {
-            sendCrashlyticsLog(0, "onSystemError ${pusherError?.msg}, lastError:${pusher?.lastError}")
+            sendCrashlyticsLog(DefaultErrorThrowable("onSystemError ${pusherError?.msg}, lastError:${pusher?.lastError}"))
         }
 
         override fun onSDKError(pusher: AlivcLivePusher?, pusherError: AlivcLivePushError?) {
-            sendCrashlyticsLog(0, "onSDKError ${pusherError?.msg}, lastError:${pusher?.lastError}")
+            sendCrashlyticsLog(DefaultErrorThrowable("onSystemError ${pusherError?.msg}, lastError:${pusher?.lastError}"))
         }
     }
 
