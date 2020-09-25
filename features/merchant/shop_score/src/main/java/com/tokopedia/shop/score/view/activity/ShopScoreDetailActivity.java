@@ -5,7 +5,11 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.View;
+import android.view.WindowManager;
 
+import androidx.annotation.IdRes;
+import androidx.annotation.LayoutRes;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
@@ -25,16 +29,6 @@ import com.tokopedia.shop.score.view.fragment.ShopScoreDetailFragmentCallback;
 public class ShopScoreDetailActivity extends BaseSimpleActivity implements ShopScoreDetailFragmentCallback {
     private static final String SELLER_CENTER_LINK = "https://seller.tokopedia.com/edu/skor-toko";
     private static final String SHOP_SCORE_INFORMATION = "https://help.tokopedia.com/hc/en-us/articles/115000854466-Performa-Toko";
-
-    @Override
-    protected int getLayoutRes() {
-        return R.layout.activity_shop_score_detail;
-    }
-
-    @Override
-    protected int getToolbarResourceID() {
-        return R.id.toolbar;
-    }
 
     @Override
     public String getScreenName() {
@@ -64,9 +58,10 @@ public class ShopScoreDetailActivity extends BaseSimpleActivity implements ShopS
     @Override
     protected void setupStatusBar() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            getWindow().setStatusBarColor(ContextCompat.getColor(this, com.tokopedia.abstraction.R.color.tkpdabstraction_green_600));
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+            getWindow().setStatusBarColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Neutral_N0));
         }
-        getWindow().getDecorView().setSystemUiVisibility(0);
     }
 
     @Override
@@ -77,7 +72,7 @@ public class ShopScoreDetailActivity extends BaseSimpleActivity implements ShopS
 
     private void inflateFragment(Fragment fragment, boolean isAddToBackStack, String tag) {
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.main_container, fragment, tag);
+        ft.replace(getParentViewResourceID(), fragment, tag);
         if (isAddToBackStack) {
             ft.addToBackStack(null);
         }
