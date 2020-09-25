@@ -87,6 +87,5 @@ enum class ImageSizeAndTimeout(val width: Int, val height: Int, val seconds: Lon
     VISUAL_COLLAPSED(360, 64, 5L),
     VISUAL_EXPANDED(720, 360, 10L),
     BANNER_COLLAPSED(180, 64, 5L),
-    FREE_ONGKIR(290, 60, 5L),
-    ATC(100, 100, 3L)
+    FREE_ONGKIR(290, 60, 5L)
 }
