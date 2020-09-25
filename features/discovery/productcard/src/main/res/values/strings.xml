@@ -13,7 +13,7 @@
     <string name="home_flashsale_card_ad">Ad</string>
 
     <string name="content_desc_textViewProductName">text nama produk %1s</string>
-    <string name="content_desc_textViewSlashedPrice">text harga tercoret %1s</string>
+    <string name="content_desc_textViewSlashedPrice">text harga diskon %1s</string>
     <string name="content_desc_textViewPrice">text harga %1s</string>
     <string name="content_desc_textViewShopLocation">text lokasi toko %1s</string>
     <string name="content_desc_imageProduct">image produk</string>
