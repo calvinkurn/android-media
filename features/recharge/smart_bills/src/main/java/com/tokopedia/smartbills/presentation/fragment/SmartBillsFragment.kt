@@ -172,6 +172,8 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
                 is Success -> {
                     // Check if all items' transaction succeeds; if they do, navigate to payment
                     if (it.data.attributes.allSuccess) {
+                        smartBillsAnalytics.clickPay(adapter.checkedDataList, adapter.dataSize)
+
                         val paymentPassData = PaymentPassData()
                         paymentPassData.convertToPaymenPassData(it.data)
 
@@ -435,8 +437,6 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
                     adapter.notifyItemChanged(index)
                 }
             }
-
-            smartBillsAnalytics.clickPay(adapter.checkedDataList, adapter.dataSize)
 
             viewModel.runMultiCheckout(
                     viewModel.createMultiCheckoutParams(adapter.checkedDataList, userSession)
