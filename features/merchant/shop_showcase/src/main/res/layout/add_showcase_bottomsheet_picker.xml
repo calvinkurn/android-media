@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/dp_16"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.tokopedia.unifycomponents.TextFieldUnify
+        android:id="@+id/textfield_add_showcase_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:text_field_label_static="false"
+        app:text_field_label="@string/bottomsheet_showcase_name_text"
+        app:text_field_message="@string/bottomsheet_add_showcase_textfield_hint_text"
+        app:text_field_counter="128"
+        app:text_field_input_type="text"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btn_add_showcase_save"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/save_product_action_text"
+        android:layout_marginTop="@dimen/dp_28"
+        android:enabled="false"
+        app:unifyButtonVariant="filled"
+        app:unifyButtonSize="large"
+        app:unifyButtonType="main"
+        app:layout_constraintTop_toBottomOf="@id/textfield_add_showcase_name"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
