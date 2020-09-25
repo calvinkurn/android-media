@@ -9,7 +9,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat.startActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
@@ -51,8 +50,8 @@ import javax.inject.Inject
 class WaitingPaymentOrderFragment : BaseListFragment<Visitable<WaitingPaymentOrderAdapterTypeFactory>, WaitingPaymentOrderAdapterTypeFactory>(), WaitingPaymentOrdersViewHolder.LoadUnloadMoreProductClickListener {
 
     companion object {
-        const val TAG_BOTTOM_SHEET = "bottom_sheet"
-        const val BUTTON_ENTER_LEAVE_ANIMATION_DURATION = 300L
+        private const val TAG_BOTTOM_SHEET = "bottom_sheet"
+        private const val BUTTON_ENTER_LEAVE_ANIMATION_DURATION = 300L
     }
 
     @Inject
