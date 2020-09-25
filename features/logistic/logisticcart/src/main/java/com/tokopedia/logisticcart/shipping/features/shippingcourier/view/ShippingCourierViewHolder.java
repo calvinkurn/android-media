@@ -1,5 +1,6 @@
 package com.tokopedia.logisticcart.shipping.features.shippingcourier.view;
 
+import android.annotation.SuppressLint;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
@@ -46,6 +47,7 @@ public class ShippingCourierViewHolder extends RecyclerView.ViewHolder {
         otdLabel = itemView.findViewById(R.id.lbl_otd_available);
     }
 
+    @SuppressLint("StringFormatInvalid")
     public void bindData(ShippingCourierUiModel shippingCourierUiModel,
                          ShippingCourierAdapterListener shippingCourierAdapterListener,
                          boolean isLastItem) {
@@ -76,7 +78,7 @@ public class ShippingCourierViewHolder extends RecyclerView.ViewHolder {
                     .getProductData().getFeatures().getOntimeDeliveryGuarantee();
             otdLabel.setVisibility(otd.getAvailable()? View.VISIBLE : View.GONE);
         }
-
+        tvCourier.setContentDescription(tvCourier.getContext().getString(R.string.content_desc_tv_courier, shippingCourierUiModel.getProductData().getShipperName()));
         tvCourier.setText(shippingCourierUiModel.getProductData().getShipperName());
         if (shippingCourierUiModel.getProductData().getError() != null &&
                 shippingCourierUiModel.getProductData().getError().getErrorMessage().length() > 0) {

@@ -1,5 +1,6 @@
 package com.tokopedia.logisticcart.shipping.features.shippingduration.view;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.graphics.Typeface;
 import android.text.Spannable;
@@ -64,6 +65,7 @@ public class ShippingDurationViewHolder extends RecyclerView.ViewHolder {
         labelCodAvailable = itemView.findViewById(R.id.lbl_cod_available);
     }
 
+    @SuppressLint("StringFormatInvalid")
     public void bindData(ShippingDurationUiModel shippingDurationUiModel,
                          ShippingDurationAdapterListener shippingDurationAdapterListener,
                          boolean isDisableOrderPrioritas) {
@@ -111,6 +113,7 @@ public class ShippingDurationViewHolder extends RecyclerView.ViewHolder {
 
         }
 
+        tvDuration.setContentDescription(tvDuration.getContext().getString(R.string.content_desc_tv_duration, shippingDurationUiModel.getServiceData().getServiceName()));
         tvDuration.setText(shippingDurationUiModel.getServiceData().getServiceName());
         imgCheck.setVisibility(shippingDurationUiModel.isSelected() ? View.VISIBLE : View.GONE);
         labelCodAvailable.setText(shippingDurationUiModel.getCodText());
