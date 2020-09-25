@@ -141,8 +141,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         hideTooltipIfExist()
         setupView()
 
-        loadAllData()
-
         observeWidgetLayoutLiveData()
         observeShopLocationLiveData()
         observeWidgetData(sellerHomeViewModel.cardWidgetData, WidgetType.CARD)
@@ -252,14 +250,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         }
 
         setViewBackground()
-    }
-
-    private fun loadAllData() {
-        setProgressBarVisibility(true)
-        startHomeLayoutNetworkMonitoring()
-        sellerHomeViewModel.getWidgetLayout()
-        sellerHomeViewModel.getShopLocation()
-        sellerHomeViewModel.getTicker()
     }
 
     /**
@@ -489,6 +479,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         })
 
         setProgressBarVisibility(true)
+        sellerHomeViewModel.getShopLocation()
     }
 
     private fun setOnSuccessGetShopLocation(data: ShippingLoc) {
@@ -507,6 +498,10 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 is Fail -> setOnErrorGetLayout(result.throwable)
             }
         })
+
+        setProgressBarVisibility(true)
+        startHomeLayoutNetworkMonitoring()
+        sellerHomeViewModel.getWidgetLayout()
     }
 
     private fun startHomeLayoutNetworkMonitoring() {
@@ -646,6 +641,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 }
             }
         })
+        sellerHomeViewModel.getTicker()
     }
 
     private fun setViewBackground() = view?.run {
