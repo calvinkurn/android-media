@@ -7,10 +7,10 @@ import kotlinx.android.synthetic.main.item_promo_last_seen.view.*
 
 class PromoLastSeenViewHolder(val view: View, private val listenerLastSeen: ListenerLastSeen) : RecyclerView.ViewHolder(view) {
 
-    fun bind(data: PromoCheckoutLastSeenModel, isDeals: Boolean) {
+    fun bind(data: PromoCheckoutLastSeenModel, isDeals: Boolean = false) {
         view.setOnClickListener { listenerLastSeen.onClickItemLastSeen(data) }
         view.voucherCode.text = data.promoCode
-        if (isDeals) {
+        if (isDeals == true) {
             view.descPromoDeals.visibility = View.VISIBLE
             view.descPromoDeals.text = data.title
             view.descPromo.visibility = View.GONE
