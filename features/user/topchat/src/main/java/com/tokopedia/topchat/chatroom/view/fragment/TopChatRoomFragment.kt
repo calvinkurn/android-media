@@ -705,8 +705,9 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
         }
     }
 
-    override fun removeBroadcastHandler() {
+    override fun onSendAndReceiveMessage() {
         adapter.removeBroadcastHandler()
+        getViewState().updateTemplateState()
     }
 
     override fun renderBackground(url: String) {
@@ -777,7 +778,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
             )
         } else {
             sendMessage()
-            removeBroadcastHandler()
+            onSendAndReceiveMessage()
         }
     }
 
@@ -854,7 +855,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
 
     private fun sendSticker(sticker: Sticker?) {
         if (sticker == null) return
-        removeBroadcastHandler()
+        onSendAndReceiveMessage()
         val startTime = SendableViewModel.generateStartTime()
         presenter.sendAttachmentsAndSticker(
                 messageId,
@@ -908,7 +909,9 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
     }
 
     override fun onSuccessGetTemplate(list: List<Visitable<Any>>) {
-        getViewState().setTemplate(list)
+        val isLastMessageBroadcast = adapter.isLastMessageBroadcast()
+        val amIBuyer = !isSeller()
+        getViewState().setTemplate(list, isLastMessageBroadcast, amIBuyer)
     }
 
     override fun onErrorGetTemplate() {
@@ -954,6 +957,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
         processImagePathToUpload(data)?.let { model ->
             remoteConfig?.getBoolean(RemoteConfigKey.TOPCHAT_COMPRESS).let {
                 if (it == null || it == false) {
+                    onSendAndReceiveMessage()
                     presenter.startUploadImages(model)
                 } else {
                     presenter.startCompressImages(model)
