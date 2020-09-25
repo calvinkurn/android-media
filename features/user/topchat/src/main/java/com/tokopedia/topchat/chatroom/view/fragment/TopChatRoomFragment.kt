@@ -185,13 +185,13 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
             bindView(it)
             initStickerView()
             initFbNewUnreadMessage()
-            initTextComposeBackground(it)
+            initTextComposeBackground()
         }
     }
 
-    private fun initTextComposeBackground(view: View) {
+    private fun initTextComposeBackground() {
         val bgComposeArea = ViewUtil.generateBackgroundWithShadow(
-                view,
+                composeArea,
                 com.tokopedia.unifyprinciples.R.color.Neutral_N0,
                 R.dimen.dp_topchat_20,
                 R.dimen.dp_topchat_20,
