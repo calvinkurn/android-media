@@ -4,13 +4,14 @@ import android.Manifest
 import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
-import androidx.annotation.NonNull
-import androidx.core.app.ActivityCompat
-import androidx.fragment.app.Fragment
-import androidx.core.content.ContextCompat
-import androidx.appcompat.app.AppCompatActivity
+import android.view.View
 import android.widget.Toast
-import com.tokopedia.design.component.Dialog
+import androidx.annotation.NonNull
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
+import com.tokopedia.utils.R
 import com.tokopedia.utils.permission.PermissionCheckerHelper.Companion
 import com.tokopedia.utils.permission.PermissionCheckerHelper.Companion.PERMISSION_ACCESS_COARSE_LOCATION
 import com.tokopedia.utils.permission.PermissionCheckerHelper.Companion.PERMISSION_ACCESS_FINE_LOCATION
@@ -20,7 +21,6 @@ import com.tokopedia.utils.permission.PermissionCheckerHelper.Companion.PERMISSI
 import com.tokopedia.utils.permission.PermissionCheckerHelper.Companion.PERMISSION_RECORD_AUDIO
 import com.tokopedia.utils.permission.PermissionCheckerHelper.Companion.PERMISSION_WRITE_EXTERNAL_STORAGE
 import org.jetbrains.annotations.NotNull
-import com.tokopedia.utils.R
 
 /**
  * @author by nisie on 28/11/18.
@@ -63,8 +63,8 @@ class PermissionCheckerHelper {
         const val PERMISSION_NFC = Manifest.permission.NFC
         const val PERMISSION_READ_CONTACTS = Manifest.permission.READ_CONTACTS
         const val PERMISSION_CALL_PHONE = Manifest.permission.CALL_PHONE
-        const val PERMISSION_READ_PHONE_STATE =  Manifest.permission.READ_PHONE_STATE
-        const val PERMISSION_READ_CALL_LOG =  Manifest.permission.READ_CALL_LOG
+        const val PERMISSION_READ_PHONE_STATE = Manifest.permission.READ_PHONE_STATE
+        const val PERMISSION_READ_CALL_LOG = Manifest.permission.READ_CALL_LOG
     }
 
     interface PermissionCheckListener {
@@ -85,14 +85,14 @@ class PermissionCheckerHelper {
     fun checkPermission(@NotNull activity: Activity,
                         @NotNull permission: String,
                         @NotNull listener: PermissionCheckListener,
-                        @NotNull rationaleText : String = "") {
+                        @NotNull rationaleText: String = "") {
         checkPermissions(activity, arrayOf(permission), listener, rationaleText)
     }
 
     fun checkPermission(@NotNull fragment: Fragment,
                         @NotNull permission: String,
                         @NotNull listener: PermissionCheckListener,
-                        @NotNull rationaleText : String = "") {
+                        @NotNull rationaleText: String = "") {
         checkPermissions(fragment, arrayOf(permission), listener, rationaleText)
     }
 
@@ -110,7 +110,7 @@ class PermissionCheckerHelper {
     fun checkPermissions(@NotNull activity: Activity,
                          @NotNull permissions: Array<String>,
                          @NotNull listener: PermissionCheckListener,
-                         @NotNull rationaleText : String = "") {
+                         @NotNull rationaleText: String = "") {
         this.listener = listener
 
         try {
@@ -127,7 +127,7 @@ class PermissionCheckerHelper {
     fun checkPermissions(@NotNull fragment: Fragment,
                          @NotNull permissions: Array<String>,
                          @NotNull listener: PermissionCheckListener,
-                         @NotNull rationaleText : String = "") {
+                         @NotNull rationaleText: String = "") {
         this.listener = listener
 
         try {
@@ -176,7 +176,7 @@ class PermissionCheckerHelper {
             }
 
             when {
-                permissionCount > 1 -> onShowRationale(activity, permissions, listPermissionText ,
+                permissionCount > 1 -> onShowRationale(activity, permissions, listPermissionText,
                         listener, rationaleText)
                 permissionCount == 1 -> onShowRationale(activity, permissions,
                         listPermissionText.replace(",", "").trim()
@@ -214,7 +214,7 @@ class PermissionCheckerHelper {
             }
 
             when {
-                permissionCount > 1 -> onShowRationale(fragment, permissions, listPermissionText ,
+                permissionCount > 1 -> onShowRationale(fragment, permissions, listPermissionText,
                         listener, rationaleText)
                 permissionCount == 1 -> onShowRationale(fragment, permissions,
                         listPermissionText.replace(",", "").trim()
@@ -272,48 +272,48 @@ class PermissionCheckerHelper {
 
     private fun onShowRationale(activity: Activity, permissions: Array<String>,
                                 permissionText: String, listener: PermissionCheckListener,
-                                rationaleText : String) {
+                                rationaleText: String) {
 
         // todo: change to dialog unify and remove tkpddesign dependency
-        val dialog = Dialog(activity, Dialog.Type.PROMINANCE)
+        val dialog = PermissionDialog(activity)
         dialog.setTitle(activity.getString(TEXT_TITLE))
         dialog.setDesc(getNeedPermissionMessage(activity, permissionText, rationaleText))
         dialog.setBtnOk(activity.getString(TEXT_OK))
         dialog.setBtnCancel(activity.getString(TEXT_CANCEL))
         dialog.alertDialog.setCancelable(true)
         dialog.alertDialog.setCanceledOnTouchOutside(true)
-        dialog.setOnOkClickListener {
+        dialog.setOnOkClickListener(View.OnClickListener {
             requestPermissions(activity, permissions, REQUEST_PERMISSION_CODE)
             dialog.dismiss()
-        }
-        dialog.setOnCancelClickListener {
+        })
+        dialog.setOnCancelClickListener(View.OnClickListener {
             listener.onPermissionDenied(permissionText)
             dialog.dismiss()
-        }
+        })
         dialog.show()
     }
 
     private fun onShowRationale(fragment: Fragment, permissions: Array<String>,
                                 permissionText: String, listener: PermissionCheckListener,
-                                rationaleText : String) {
+                                rationaleText: String) {
 
         val activity: Activity = fragment.activity as Activity
 
-        val dialog = Dialog(activity, Dialog.Type.PROMINANCE)
+        val dialog = PermissionDialog(activity)
         dialog.setTitle(fragment.getString(TEXT_TITLE))
         dialog.setDesc(getNeedPermissionMessage(fragment.requireContext(), permissionText, rationaleText))
         dialog.setBtnOk(fragment.getString(TEXT_OK))
         dialog.setBtnCancel(fragment.getString(TEXT_CANCEL))
         dialog.alertDialog.setCancelable(true)
         dialog.alertDialog.setCanceledOnTouchOutside(true)
-        dialog.setOnOkClickListener {
-            requestPermissions(fragment, permissions, REQUEST_PERMISSION_CODE)
+        dialog.setOnOkClickListener(View.OnClickListener {
+            requestPermissions(activity, permissions, REQUEST_PERMISSION_CODE)
             dialog.dismiss()
-        }
-        dialog.setOnCancelClickListener {
+        })
+        dialog.setOnCancelClickListener(View.OnClickListener {
             listener.onPermissionDenied(permissionText)
             dialog.dismiss()
-        }
+        })
         dialog.show()
     }
 
