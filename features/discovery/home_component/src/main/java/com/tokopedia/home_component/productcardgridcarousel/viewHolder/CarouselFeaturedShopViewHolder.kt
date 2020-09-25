@@ -40,7 +40,7 @@ class CarouselFeaturedShopViewHolder (
 
     private fun setListener(element: CarouselFeaturedShopCardDataModel){
         itemView.addOnImpressionListener(element.impressHolder) {
-            if(element.grid.isTopads){
+            if(element.grid.impression.isNotBlank()){
                 TopAdsUrlHitter(itemView.context).hitImpressionUrl(this::class.java.simpleName, element.grid.impression,
                         element.grid.id,
                         element.grid.name,
@@ -50,7 +50,7 @@ class CarouselFeaturedShopViewHolder (
             element.listener.onProductCardImpressed(position = adapterPosition, channel = channels, channelGrid = element.grid)
         }
         itemView.setOnClickListener {
-            if(element.grid.isTopads){
+            if(element.grid.productClickUrl.isNotBlank()){
                 TopAdsUrlHitter(itemView.context).hitImpressionUrl(this::class.java.simpleName, element.grid.productClickUrl,
                         element.grid.id,
                         element.grid.name,
