@@ -6,20 +6,18 @@ import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.view.model.section.SectionContent
 import com.tokopedia.tokopoints.view.tokopointhome.SectionItemViewBinder
 
-class SectionVerticalColumn311ViewBinder()
-    : SectionItemViewBinder<SectionContent, SectionVerticalColumn31VH>(
+class SectionVerticalColumnViewBinder()
+    : SectionItemViewBinder<SectionContent, SectionVerticalColumnVH>(
         SectionContent::class.java) {
-    override fun createViewHolder(parent: ViewGroup): SectionVerticalColumn31VH {
-        return SectionVerticalColumn31VH(
+    override fun createViewHolder(parent: ViewGroup): SectionVerticalColumnVH {
+        return SectionVerticalColumnVH(
                 LayoutInflater.from(parent.context).inflate(getSectionItemType(), parent, false))
     }
 
-    override fun bindViewHolder(model: SectionContent, viewHolder: SectionVerticalColumn31VH) {
+    override fun bindViewHolder(model: SectionContent, viewHolder: SectionVerticalColumnVH) {
         viewHolder.bind(model)
     }
 
-    override fun getSectionItemType() = R.layout.tp_column_container
-
-
+    override fun getSectionItemType() = R.layout.tp_column_container234
 
 }

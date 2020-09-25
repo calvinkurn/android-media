@@ -43,4 +43,8 @@ class SectionAdapter(private val viewBinders: Map<String, SectionItemBinder>) : 
         sectionList.addAll(data)
         notifyDataSetChanged()
     }
+
+    override fun getItemId(position: Int): Long {
+        return position.toLong()
+    }
 }

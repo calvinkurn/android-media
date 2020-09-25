@@ -6,7 +6,10 @@ import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.view.*
-import android.widget.*
+import android.widget.FrameLayout
+import android.widget.ImageView
+import android.widget.RelativeLayout
+import android.widget.ViewFlipper
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.ViewCompat
@@ -26,7 +29,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.di.TokopointBundleComponent
-import com.tokopedia.tokopoints.view.customview.DynamicItemActionView
 import com.tokopedia.tokopoints.view.customview.ServerErrorView
 import com.tokopedia.tokopoints.view.customview.TokoPointToolbar
 import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceConstant.TokopointhomePlt.Companion.HOME_TOKOPOINT_PLT
@@ -44,21 +46,16 @@ import com.tokopedia.tokopoints.view.model.section.SectionContent
 import com.tokopedia.tokopoints.view.tokopointhome.banner.SectionVerticalBanner11ViewBinder
 import com.tokopedia.tokopoints.view.tokopointhome.banner.SectionVerticalBanner21ViewBinder
 import com.tokopedia.tokopoints.view.tokopointhome.banner.SectionVerticalBanner31ViewBinder
-import com.tokopedia.tokopoints.view.tokopointhome.carousel.SectionHorizontalCarousel21ViewBinder
-import com.tokopedia.tokopoints.view.tokopointhome.carousel.SectionVerticalCarousel31ViewBinder
+import com.tokopedia.tokopoints.view.tokopointhome.carousel.SectionHorizontalCarouselViewBinder
 import com.tokopedia.tokopoints.view.tokopointhome.catalog.SectionHoriZontalCatalogViewBinder
 import com.tokopedia.tokopoints.view.tokopointhome.category.SectionVerticalCategoryViewBinder
-import com.tokopedia.tokopoints.view.tokopointhome.column.SectionVerticalColumn211ViewBinder
-import com.tokopedia.tokopoints.view.tokopointhome.column.SectionVerticalColumn234ViewBinder
-import com.tokopedia.tokopoints.view.tokopointhome.column.SectionVerticalColumn311ViewBinder
-import com.tokopedia.tokopoints.view.tokopointhome.carousel.SectionHorizontalCarousel11ViewBinder
+import com.tokopedia.tokopoints.view.tokopointhome.column.SectionVerticalColumnViewBinder
 import com.tokopedia.tokopoints.view.tokopointhome.coupon.SectionHorizontalViewBinder
 import com.tokopedia.tokopoints.view.tokopointhome.header.TopSectionVH
 import com.tokopedia.tokopoints.view.tokopointhome.header.TopSectionViewBinder
 import com.tokopedia.tokopoints.view.tokopointhome.ticker.SectionTickerViewBinder
 import com.tokopedia.tokopoints.view.tokopointhome.topads.SectionTopadsViewBinder
 import com.tokopedia.tokopoints.view.util.*
-import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.NotificationUnify
 import kotlinx.android.synthetic.main.tp_item_dynamic_action.view.*
 import javax.inject.Inject
@@ -394,27 +391,27 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
                                 verticalBanner11ViewBinder as SectionItemBinder)
                         sectionList.add(sectionContent)
                     }
-
-                    CommonConstant.BannerType.COLUMN_2_1_BY_1 -> {
+                 /*   CommonConstant.BannerType.COLUMN_2_1_BY_1 -> {
                         val verticalColumn21ViewBinder = SectionVerticalColumn211ViewBinder()
                         @Suppress("UNCHECKED_CAST")
                         viewBinders.put(
                                 sectionContent.layoutBannerAttr.bannerType,
                                 verticalColumn21ViewBinder as SectionItemBinder)
                         sectionList.add(sectionContent)
-                    }
+                    }*/
 
+                    /*  CommonConstant.BannerType.COLUMN_3_1_BY_1 -> {
+                          val verticalColumn31ViewBinder = SectionVerticalColumn311ViewBinder()
+                          @Suppress("UNCHECKED_CAST")
+                          viewBinders.put(
+                                  sectionContent.layoutBannerAttr.bannerType,
+                                  verticalColumn31ViewBinder as SectionItemBinder)
+                          sectionList.add(sectionContent)
+                      }*/
+                    CommonConstant.BannerType.COLUMN_2_1_BY_1,
+                            CommonConstant.BannerType.COLUMN_2_3_BY_4,
                     CommonConstant.BannerType.COLUMN_3_1_BY_1 -> {
-                        val verticalColumn31ViewBinder = SectionVerticalColumn311ViewBinder()
-                        @Suppress("UNCHECKED_CAST")
-                        viewBinders.put(
-                                sectionContent.layoutBannerAttr.bannerType,
-                                verticalColumn31ViewBinder as SectionItemBinder)
-                        sectionList.add(sectionContent)
-                    }
-
-                    CommonConstant.BannerType.COLUMN_2_3_BY_4 -> {
-                        val verticalColumn234ViewBinder = SectionVerticalColumn234ViewBinder()
+                        val verticalColumn234ViewBinder = SectionVerticalColumnViewBinder()
                         @Suppress("UNCHECKED_CAST")
                         viewBinders.put(
                                 sectionContent.layoutBannerAttr.bannerType,
@@ -422,25 +419,10 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
                         sectionList.add(sectionContent)
                     }
 
-                    CommonConstant.BannerType.CAROUSEL_1_1 -> {
-                        val verticalCarousel11ViewBinder = SectionHorizontalCarousel11ViewBinder()
-                        @Suppress("UNCHECKED_CAST")
-                        viewBinders.put(
-                                sectionContent.layoutBannerAttr.bannerType,
-                                verticalCarousel11ViewBinder as SectionItemBinder)
-                        sectionList.add(sectionContent)
-                    }
-                    CommonConstant.BannerType.CAROUSEL_2_1 -> {
-                        val verticalCarousel21ViewBinder = SectionHorizontalCarousel21ViewBinder()
-                        @Suppress("UNCHECKED_CAST")
-                        viewBinders.put(
-                                sectionContent.layoutBannerAttr.bannerType,
-                                verticalCarousel21ViewBinder as SectionItemBinder)
-                        sectionList.add(sectionContent)
-                    }
+                    CommonConstant.BannerType.CAROUSEL_1_1,
+                    CommonConstant.BannerType.CAROUSEL_2_1,
                     CommonConstant.BannerType.CAROUSEL_3_1 -> {
-
-                        val verticalCarousel31ViewBinder = SectionVerticalCarousel31ViewBinder()
+                        val verticalCarousel31ViewBinder = SectionHorizontalCarouselViewBinder()
                         @Suppress("UNCHECKED_CAST")
                         viewBinders.put(
                                 sectionContent.layoutBannerAttr.bannerType,
@@ -459,9 +441,11 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
             mPagerPromos?.apply {
                 layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.VERTICAL, false)
             }
-            mPagerPromos?.setItemViewCacheSize(20)
+            //   mPagerPromos?.setItemViewCacheSize(20)
             mPagerPromos?.isDrawingCacheEnabled = true
-            mPagerPromos?.drawingCacheQuality = View.DRAWING_CACHE_QUALITY_HIGH;
+            mPagerPromos?.drawingCacheQuality = View.DRAWING_CACHE_QUALITY_HIGH
+            mPagerPromos?.itemAnimator = null
+            mPagerPromos?.setHasFixedSize(true)
             if (mPagerPromos?.adapter == null) {
                 mPagerPromos?.adapter = adapter
             }

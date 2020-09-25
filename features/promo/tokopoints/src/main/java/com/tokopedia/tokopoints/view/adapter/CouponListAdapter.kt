@@ -86,15 +86,6 @@ class CouponListAdapter(private val mItems: MutableList<CouponValueEntity>) : Re
 
     override fun onBindViewHolder(pHolder: RecyclerView.ViewHolder, position: Int) {
 
-        /*    val params = pHolder.itemView.getLayoutParams() as ViewGroup.MarginLayoutParams
-            if (position == 0) {
-                params.setMargins(pHolder.itemView.context.resources.getDimensionPixelSize(R.dimen.tp_margin_normal), 0, 0, 0)
-            } else if (position == mItems.size + 1) {
-                params.setMargins(0, 0, pHolder.itemView.context.resources.getDimensionPixelSize(R.dimen.tp_margin_normal), 0)
-            } else {
-                params.setMargins(pHolder.itemView.context.resources.getDimensionPixelSize(R.dimen.tp_margin_normal), 0, 0, 0)
-            }*/
-
         if (position > 0) {
             val item = mItems!![position - 1]
             if (pHolder is ViewHolder) {
@@ -236,6 +227,9 @@ class CouponListAdapter(private val mItems: MutableList<CouponValueEntity>) : Re
         }
     }
 
+    override fun getItemId(position: Int): Long {
+        return position.toLong()
+    }
     companion object {
         private const val VIEW_HEADER = 0
         private const val VIEW_DATA = 1

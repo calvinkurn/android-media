@@ -82,12 +82,6 @@ public class CatalogListCarouselAdapter extends RecyclerView.Adapter<CatalogList
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-    /*    MarginLayoutParams params =(MarginLayoutParams) holder.itemView.getLayoutParams();
-        if (position == 0) {
-            params.setMargins(convertDpToPixel(10, holder.itemView.getContext()), 0, 0, 0);
-        } else {
-            params.setMargins(0, 0, 0, 0);
-        }*/
         CatalogsValueEntity item = mItems.get(position);
         holder.btnContinue.setEnabled(!item.isDisabledButton());
         holder.description.setText(item.getTitle());
@@ -264,7 +258,7 @@ public class CatalogListCarouselAdapter extends RecyclerView.Adapter<CatalogList
 
         AnalyticsTrackerUtil.sendECommerceEvent(AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_PROMO,
                 AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
-                AnalyticsTrackerUtil.ActionKeys.CLICK_COUPON_ON_CATALOG,
+                AnalyticsTrackerUtil.ActionKeys.CLICK_CATALOG_HOME,
                 data.getTitle() + " - " + data.getBaseCode(), promotions);
     }
 

@@ -54,13 +54,10 @@ class SectionHorizontalCatalogVH(val view: View, val mPresenter: TokoPointsHomeV
             (view.findViewById<View>(R.id.text_sub_title_column) as TextView).text = content.sectionSubTitle
         }
 
-        val viewPool = RecyclerView.RecycledViewPool()
-
         val rvCarousel: RecyclerView = view.findViewById(R.id.rv_column)
         rvCarousel?.isDrawingCacheEnabled = true
         rvCarousel?.drawingCacheQuality = View.DRAWING_CACHE_QUALITY_HIGH
-        rvCarousel.setItemViewCacheSize(20)
-        rvCarousel?.setRecycledViewPool(viewPool)
+        rvCarousel.setHasFixedSize(true)
         rvCarousel.layoutManager = LinearLayoutManager(view.context, LinearLayoutManager.HORIZONTAL, false)
         if (rvCarousel.itemDecorationCount == 0) {
             rvCarousel.addItemDecoration(NonCarouselItemDecoration(convertDpToPixel(16, rvCarousel.context)))

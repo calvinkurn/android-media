@@ -168,7 +168,7 @@ class CouponListStackedBaseAdapter(private val mPresenter: CouponLisitingStacked
 
         data.title?.let {
             AnalyticsTrackerUtil.sendECommerceEvent(context,
-                    AnalyticsTrackerUtil.EventKeys.EVENT_VIEW_PROMO,
+                    AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_PROMO,
                     AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS_KUPON_SAYA,
                     AnalyticsTrackerUtil.ActionKeys.CLICK_COUPON,
                     data.title, promoClick)

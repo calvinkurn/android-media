@@ -103,7 +103,7 @@ class SectionVerticalBanner31VH(val view: View) : RecyclerView.ViewHolder(view) 
         promotionItem[AnalyticsTrackerUtil.EcommerceKeys.CREATIVE] = bannerName
         val promotionMap = HashMap<String, Any>()
         promotionMap[AnalyticsTrackerUtil.EcommerceKeys.PROMOTIONS] = listOf(promotionItem)
-        AnalyticsTrackerUtil.sendECommerceEvent(AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_PROMO,
+        AnalyticsTrackerUtil.sendECommerceEventBanner(AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_PROMO,
                 AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
                 AnalyticsTrackerUtil.ActionKeys.CLICK_BANNERS_ON_HOME_TOKOPOINTS,
                 bannerName, promotionMap)

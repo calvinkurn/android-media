@@ -53,12 +53,10 @@ class SectionHorizontalViewHolder(val view: View)
             (view.findViewById<View>(R.id.text_sub_title) as TextView).text = content.sectionSubTitle
         }
 
-        val viewPool = RecyclerView.RecycledViewPool()
         val rvCarousel: RecyclerView = view.findViewById(R.id.rv_carousel)
         rvCarousel?.isDrawingCacheEnabled = true
+        rvCarousel.setHasFixedSize(true)
         rvCarousel?.drawingCacheQuality = View.DRAWING_CACHE_QUALITY_HIGH
-        rvCarousel.setItemViewCacheSize(20)
-        rvCarousel?.setRecycledViewPool(viewPool)
         rvCarousel.apply {
             layoutManager = LinearLayoutManager(rvCarousel.context, LinearLayoutManager.HORIZONTAL, false)
         }

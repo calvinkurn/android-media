@@ -48,6 +48,20 @@ object AnalyticsTrackerUtil {
         getTracker().sendEnhanceEcommerceEvent(map)
     }
 
+
+    @JvmStatic
+    fun sendECommerceEventBanner(event: String, category: String,
+                                 action: String, label: String, ecommerce: HashMap<String, Any>) {
+        val map = HashMap<String, Any>()
+        map[EventKeys.EVENT] = event
+        map[EventKeys.EVENT_CATEGORY] = category
+        map[EventKeys.EVENT_ACTION] = action
+        map[EventKeys.EVENT_LABEL] = label
+        map[EventKeys.ECOMMERCE] = DataLayer.mapOf("promoClick", ecommerce)
+
+        getTracker().sendEnhanceEcommerceEvent(map)
+    }
+
     interface EventKeys {
         companion object {
             const val EVENT = "event"
@@ -153,8 +167,9 @@ object AnalyticsTrackerUtil {
             const val CLICK_TICKER = "click ticker"
             const val CLICK_SEE_ALL_EXPLORE_CATALOG = "click lihat semua coupon catalog"
             const val CLICK_SEE_ALL_EXPLORE_BANNER = "click lihat semua on banner"
-            const val CLICK_SEE_ALL_COUPON="click lihat semua kupon saya"
-            const val CLICK_CTA_COUPON="click cta on coupon section"
+            const val CLICK_SEE_ALL_COUPON = "click lihat semua kupon saya"
+            const val CLICK_CTA_COUPON = "click cta on coupon section"
+            const val CLICK_CATALOG_HOME = "click coupon on catalog"
             const val VIEW_BANNERS_ON_HOME_TOKOPOINTS = "view banner on home tokopoints"
             const val CLICK_BANNERS_ON_HOME_TOKOPOINTS = "click banner on home tokopoints"
             const val CLICK_COUPON_ON_CATALOG = "view coupon on catalog"
