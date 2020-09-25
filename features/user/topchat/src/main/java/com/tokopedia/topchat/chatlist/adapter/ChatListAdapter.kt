@@ -219,6 +219,7 @@ class ChatListAdapter constructor(
                 attributes?.readStatus = readStatus
                 attributes?.lastReplyTimeStr = newChat.time
                 attributes?.isReplyByTopbot = newChat.contact?.isAutoReply ?: false
+                attributes?.label = ""
             }
         }
     }
