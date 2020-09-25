@@ -1,6 +1,7 @@
 package com.tokopedia.play.broadcaster.model
 
 import com.google.gson.Gson
+import com.tokopedia.play.broadcaster.domain.model.GetProductsByEtalaseResponse
 import com.tokopedia.play.broadcaster.domain.model.LiveStats
 import java.io.File
 
@@ -13,6 +14,10 @@ class ModelBuilder {
 
     fun buildLiveStats(): LiveStats {
         return gson.fromJson(loadJsonToString("mock_live_stats.json"), LiveStats::class.java)
+    }
+
+    fun buildProductsInEtalase(): GetProductsByEtalaseResponse.GetProductListData {
+        return gson.fromJson(loadJsonToString("mock_products_in_etalase.json"), GetProductsByEtalaseResponse::class.java).productList
     }
 
     private fun loadJsonToString(path: String): String {

@@ -11,7 +11,6 @@ import com.tokopedia.play.broadcaster.util.TestCoroutineDispatcherProvider
 import com.tokopedia.play.broadcaster.util.getOrAwaitValue
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastSummaryViewModel
 import io.mockk.coEvery
-import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.assertj.core.api.Assertions
@@ -22,7 +21,7 @@ import org.junit.Test
 /**
  * Created by jegul on 25/09/20
  */
-class PlayBroadcastViewModelTest {
+class PlayBroadcastSummaryViewModelTest {
 
     @get:Rule
     val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
