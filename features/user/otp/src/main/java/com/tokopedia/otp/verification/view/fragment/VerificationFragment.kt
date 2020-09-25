@@ -277,6 +277,7 @@ class VerificationFragment : BaseVerificationFragment(), IOnBackPressed {
                     activity?.let { activity ->
                         val bundle = Bundle().apply {
                             putString(ApplinkConstInternalGlobal.PARAM_UUID, otpValidateData.validateToken)
+                            putString(ApplinkConstInternalGlobal.PARAM_TOKEN, otpValidateData.validateToken)
                             putString(ApplinkConstInternalGlobal.PARAM_MSISDN, otpData.msisdn)
                             putString(ApplinkConstInternalGlobal.PARAM_EMAIL, otpData.email)
                             putString(ApplinkConstInternalGlobal.PARAM_SOURCE, otpData.source)
@@ -285,7 +286,6 @@ class VerificationFragment : BaseVerificationFragment(), IOnBackPressed {
                         if ((activity as VerificationActivity).isResetPin2FA) {
                             val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.CHANGE_PIN).apply {
                                 bundle.putBoolean(ApplinkConstInternalGlobal.PARAM_IS_FROM_2FA, true)
-                                bundle.putString(ApplinkConstInternalGlobal.PARAM_TOKEN, otpValidateData.validateToken)
                                 bundle.putString(ApplinkConstInternalGlobal.PARAM_USER_ID, otpData.userId)
                                 putExtras(bundle)
                             }
