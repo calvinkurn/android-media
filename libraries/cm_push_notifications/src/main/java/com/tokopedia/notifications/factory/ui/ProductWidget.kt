@@ -5,7 +5,6 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.view.View
 import android.widget.RemoteViews
-import androidx.core.content.ContextCompat
 import com.tokopedia.notifications.R
 import com.tokopedia.notifications.analytics.ProductAnalytics
 import com.tokopedia.notifications.common.CMConstant
@@ -140,9 +139,6 @@ internal open class ProductWidget(
         when (actionButton.type) {
             TYPE_ATC -> {
                 view.setOnClickPendingIntent(R.id.btn_atc, pendingIntent)
-                base.loadResourceAsBitmap(R.drawable.cm_ic_cart) {
-                    view.setImageViewBitmap(R.id.btn_atc, it)
-                }
             }
             TYPE_OCC -> {
                 view.setTextViewText(R.id.btn_occ, actionButton.text)
