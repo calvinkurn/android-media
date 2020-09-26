@@ -1,16 +1,28 @@
 package com.tokopedia.product.addedit.tracking
 
-object ProductEditUploadTracking {
+import com.tokopedia.product.addedit.tracking.ProductAddEditTracking.sendEditProductClick
+import com.tokopedia.product.addedit.tracking.ProductAddEditTracking.sendEditProductUpload
 
-    fun uploadProductFinish(category: String, shopId: String, isSuccess: Boolean, errorName: String = "", errorMessage: String = "") {
+object ProductEditUploadTracking {
+    private const val TYPE_SERVER_TOME = "tome server error"
+    private const val TYPE_SERVER_VALIDATION_TOME = "validation server error"
+    private const val TYPE_SERVER_UPLOADPEDIA = "uploadpedia server error"
+
+    fun uploadProductFinish(category: String, shopId: String, isSuccess: Boolean, isValidationError: Boolean, errorName: String = "") {
         if (isSuccess) {
-            ProductAddEditTracking.sendEditProductClick(shopId, "click finish success", "")
+            sendEditProductClick(shopId, "click finish success", "")
         } else {
-            ProductAddEditTracking.sendEditProductUpload(category, shopId, "$errorMessage - $errorName")
+            val label = if (isValidationError) {
+                "$TYPE_SERVER_VALIDATION_TOME - $errorName"
+            } else {
+                "$TYPE_SERVER_TOME - $errorName"
+            }
+
+            sendEditProductUpload(category, shopId, label)
         }
     }
 
     fun uploadImageFailed(category: String, userId: String, errorName: String) {
-        ProductAddEditTracking.sendEditProductUpload(category, userId, "validation error - (Upload Image) $errorName")
+        sendEditProductUpload(category, userId, "$TYPE_SERVER_UPLOADPEDIA - $errorName")
     }
 }

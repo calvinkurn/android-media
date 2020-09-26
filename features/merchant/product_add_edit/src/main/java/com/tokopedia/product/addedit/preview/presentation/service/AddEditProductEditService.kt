@@ -10,6 +10,7 @@ import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
 import com.tokopedia.product.addedit.common.util.AddEditProductNotificationManager
+import com.tokopedia.product.addedit.common.util.AddEditProductUploadErrorHandler
 import com.tokopedia.product.addedit.draft.domain.usecase.DeleteProductDraftUseCase
 import com.tokopedia.product.addedit.draft.domain.usecase.SaveProductDraftUseCase
 import com.tokopedia.product.addedit.draft.mapper.AddEditProductMapper.mapProductInputModelDetailToDraft
@@ -18,6 +19,7 @@ import com.tokopedia.product.addedit.preview.presentation.activity.AddEditProduc
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.tracking.ProductEditShippingTracking
+import com.tokopedia.product.addedit.tracking.ProductEditUploadTracking
 import com.tokopedia.product.addedit.variant.presentation.model.VariantInputModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -81,7 +83,10 @@ class AddEditProductEditService : AddEditProductBaseService() {
     }
 
     override fun onUploadProductImagesFailed(errorMessage: String) {
-        ProductEditShippingTracking.uploadImageFailed(userSession.shopId, errorMessage)
+        ProductEditUploadTracking.uploadImageFailed(
+                ProductEditUseCase.QUERY_NAME,
+                userSession.shopId,
+                AddEditProductUploadErrorHandler.getUploadImageErrorName(errorMessage))
     }
 
     override fun getNotificationManager(urlImageCount: Int): AddEditProductNotificationManager {
