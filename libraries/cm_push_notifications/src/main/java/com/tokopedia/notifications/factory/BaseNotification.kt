@@ -21,6 +21,7 @@ import android.text.TextUtils
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.config.GlobalConfig
@@ -292,6 +293,7 @@ abstract class BaseNotification internal constructor(
         Glide.with(context)
                 .asBitmap()
                 .load(resId)
+                .diskCacheStrategy(DiskCacheStrategy.DATA)
                 .into(object : CustomTarget<Bitmap>() {
                     override fun onLoadCleared(placeholder: Drawable?) {}
                     override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
