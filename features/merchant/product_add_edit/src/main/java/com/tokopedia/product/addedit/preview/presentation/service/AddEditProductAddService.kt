@@ -7,8 +7,8 @@ import android.content.Intent
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant
 import com.tokopedia.product.addedit.common.util.AddEditProductNotificationManager
 import com.tokopedia.product.addedit.draft.domain.usecase.DeleteProductDraftUseCase
@@ -17,12 +17,11 @@ import com.tokopedia.product.addedit.draft.mapper.AddEditProductMapper.mapProduc
 import com.tokopedia.product.addedit.preview.domain.usecase.ProductAddUseCase
 import com.tokopedia.product.addedit.preview.presentation.activity.AddEditProductPreviewActivity
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.TITLE_ERROR_SAVING_DRAFT
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.tracking.ProductAddShippingTracking
 import com.tokopedia.product.addedit.variant.presentation.model.VariantInputModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 /**
@@ -55,25 +54,35 @@ open class AddEditProductAddService : AddEditProductBaseService() {
 
         val saveInstanceCacheManager = SaveInstanceCacheManager(this, cacheId)
         productInputModel = saveInstanceCacheManager.get(AddEditProductPreviewConstants.EXTRA_PRODUCT_INPUT_MODEL, ProductInputModel::class.java) ?: ProductInputModel()
+
         // (1)
-        saveProductToDraft()
+        saveProductToDraftAsync()
     }
 
-    private fun saveProductToDraft() {
-        launch {
-            saveProductDraftUseCase.params = SaveProductDraftUseCase.createRequestParams(
-                    mapProductInputModelDetailToDraft(productInputModel),
-                    productInputModel.draftId, false)
+    private fun saveProductToDraftAsync() {
+        launchCatchError(block = {
+            asyncCatchError( coroutineContext,
+                    block = {
+                        saveProductDraftUseCase.params = SaveProductDraftUseCase.createRequestParams(
+                                mapProductInputModelDetailToDraft(productInputModel),
+                                productInputModel.draftId, false)
+                        saveProductDraftUseCase.executeOnBackground()
+                    },
+                    onError = { throwable ->
+                        logError(TITLE_ERROR_SAVING_DRAFT, throwable)
+                        0L
+                    }
+            ).await().let {
+                productDraftId = it ?: 0L
 
-            productDraftId = withContext(Dispatchers.IO){
-                saveProductDraftUseCase.executeOnBackground()
+                // (2)
+                val detailInputModel = productInputModel.detailInputModel
+                val variantInputModel = productInputModel.variantInputModel
+                uploadProductImages(detailInputModel.imageUrlOrPathList, variantInputModel)
             }
-
-            val detailInputModel = productInputModel.detailInputModel
-            val variantInputModel = productInputModel.variantInputModel
-            // (2)
-            uploadProductImages(detailInputModel.imageUrlOrPathList, variantInputModel)
-        }
+        }, onError = { throwable ->
+            logError(TITLE_ERROR_SAVING_DRAFT, throwable)
+        })
     }
 
     override fun onUploadProductImagesSuccess(
@@ -118,11 +127,9 @@ open class AddEditProductAddService : AddEditProductBaseService() {
             }
             // (4)
             clearProductDraft()
-            delay(NOTIFICATION_CHANGE_DELAY)
             setUploadProductDataSuccess()
             ProductAddShippingTracking.clickFinish(shopId, true)
         }, onError = { throwable ->
-            delay(NOTIFICATION_CHANGE_DELAY)
             val errorMessage = getErrorMessage(throwable)
             setUploadProductDataError(errorMessage)
             ProductAddShippingTracking.clickFinish(shopId, false, errorMessage)

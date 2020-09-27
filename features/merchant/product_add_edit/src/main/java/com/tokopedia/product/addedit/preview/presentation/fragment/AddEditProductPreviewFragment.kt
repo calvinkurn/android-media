@@ -6,6 +6,7 @@ import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,6 +22,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
@@ -38,6 +41,11 @@ import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.addedit.R
+import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringConstants.ADD_EDIT_PRODUCT_PREVIEW_PLT_NETWORK_METRICS
+import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringConstants.ADD_EDIT_PRODUCT_PREVIEW_PLT_PREPARE_METRICS
+import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringConstants.ADD_EDIT_PRODUCT_PREVIEW_PLT_RENDER_METRICS
+import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringConstants.ADD_EDIT_PRODUCT_PREVIEW_TRACE
+import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringListener
 import com.tokopedia.product.addedit.common.AddEditProductComponentBuilder
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.EXTRA_CACHE_MANAGER_ID
@@ -72,6 +80,7 @@ import com.tokopedia.product.addedit.preview.data.source.api.response.Product
 import com.tokopedia.product.addedit.preview.di.AddEditProductPreviewModule
 import com.tokopedia.product.addedit.preview.di.DaggerAddEditProductPreviewComponent
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.BUNDLE_BACK_PRESSED
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.DELAY_CLOSE_ACTIVITY
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.DESCRIPTION_DATA
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.DETAIL_DATA
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_IS_ADDING_PRODUCT
@@ -110,7 +119,10 @@ import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
-class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHolder.OnPhotoChangeListener {
+class AddEditProductPreviewFragment:
+        BaseDaggerFragment(),
+        ProductPhotoViewHolder.OnPhotoChangeListener,
+        AddEditProductPerformanceMonitoringListener {
 
     private var countTouchPhoto = 0
     private var dataBackPressed: Int? = null
@@ -168,11 +180,17 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
     lateinit var viewModel: AddEditProductPreviewViewModel
 
     private var shouldGoToSetCashback: Boolean = false
+    private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        // start PLT monitoring
+        startPerformanceMonitoring()
+
         userSession = UserSession(requireContext())
         shopId = userSession.shopId
+
         super.onCreate(savedInstanceState)
+
         shouldGoToSetCashback = activity?.intent?.getStringExtra(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME).orEmpty() == SellerMigrationFeatureName.FEATURE_EDIT_PRODUCT_CASHBACK
         arguments?.let {
             val previewFragmentArgs = AddEditProductPreviewFragmentArgs.fromBundle(it)
@@ -339,14 +357,10 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                 if (viewModel.productInputModel.value?.productId.orZero() != 0L) {
                     viewModel.productInputModel.value?.apply {
                         startProductEditService(this)
-                        activity?.finish()
+                        showLoading()
+                        Handler().postDelayed( { activity?.finish() }, DELAY_CLOSE_ACTIVITY)
                     }
                 } else {
-                    if (isDrafting()) {
-                        productStatusSwitch?.isChecked?.let {
-                            viewModel.updateProductStatus(it)
-                        }
-                    }
                     viewModel.productInputModel.value?.let { productInputModel ->
                         startProductAddService(productInputModel)
                         activity?.setResult(RESULT_OK)
@@ -451,6 +465,9 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
         observeImageUrlOrPathList()
         observeIsLoading()
         observeSaveProductDraft()
+
+        // stop prepare page PLT monitoring
+        stopPreparePagePerformanceMonitoring()
     }
 
     override fun onDestroyView() {
@@ -542,6 +559,47 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
         } else {
             ProductEditStepperTracking.trackRemoveProductImage(shopId)
         }
+    }
+
+    override fun startPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring = PageLoadTimePerformanceCallback(
+                ADD_EDIT_PRODUCT_PREVIEW_PLT_PREPARE_METRICS,
+                ADD_EDIT_PRODUCT_PREVIEW_PLT_NETWORK_METRICS,
+                ADD_EDIT_PRODUCT_PREVIEW_PLT_RENDER_METRICS,
+                0,
+                0,
+                0,
+                0,
+                null
+        )
+
+        pageLoadTimePerformanceMonitoring?.startMonitoring(ADD_EDIT_PRODUCT_PREVIEW_TRACE)
+        pageLoadTimePerformanceMonitoring?.startPreparePagePerformanceMonitoring()
+    }
+
+    override fun stopPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.stopMonitoring()
+        pageLoadTimePerformanceMonitoring = null
+    }
+
+    override fun stopPreparePagePerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.stopPreparePagePerformanceMonitoring()
+    }
+
+    override fun startNetworkRequestPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.startNetworkRequestPerformanceMonitoring()
+    }
+
+    override fun stopNetworkRequestPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.stopNetworkRequestPerformanceMonitoring()
+    }
+
+    override fun startRenderPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.startRenderPerformanceMonitoring()
+    }
+
+    override fun stopRenderPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.stopRenderPerformanceMonitoring()
     }
 
     private fun onSuccessSetCashback() {
@@ -787,11 +845,17 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
 
     private fun observeIsEditingStatus() {
         viewModel.isEditing.observe(viewLifecycleOwner, Observer {
-            if (it) displayEditMode()
+            if (it) {
+                displayEditMode()
+            } else {
+                stopPerformanceMonitoring()
+            }
         })
     }
 
     private fun observeProductData() {
+        // start PLT monitoring network
+        startNetworkRequestPerformanceMonitoring()
         viewModel.getProductResult.observe(viewLifecycleOwner, Observer { result ->
             when (result) {
                 is Success -> {
@@ -811,8 +875,13 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                             }
                         }
                     }
+                    // continue to PLT monitoring render
+                    stopNetworkRequestPerformanceMonitoring()
+                    startRenderPerformanceMonitoring()
                 }
                 is Fail -> {
+                    // stop PLT if failed getting result
+                    stopPerformanceMonitoring()
                     context?.let {
                         showGetProductErrorToast(ErrorHandler.getErrorMessage(it, result.throwable))
                         AddEditProductErrorHandler.logExceptionToCrashlytics(result.throwable)
@@ -826,10 +895,13 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
         viewModel.productInputModel.observe(viewLifecycleOwner, Observer {
             showProductPhotoPreview(it)
             showProductDetailPreview(it)
+            updateProductStatusSwitch(it)
             showEmptyVariantState(viewModel.productInputModel.value?.variantInputModel?.products?.size == 0)
             if (viewModel.getDraftId() != 0L || it.productId != 0L || viewModel.getProductId().isNotBlank()) {
                 displayEditMode()
             }
+            stopRenderPerformanceMonitoring()
+            stopPerformanceMonitoring()
         })
     }
 
@@ -991,7 +1063,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
     }
 
     @SuppressLint("WrongConstant")
-    private fun createImagePickerBuilder(selectedImagePathList: ArrayList<String>?): ImagePickerBuilder {
+    private fun createImagePickerBuilder(selectedImagePathList: ArrayList<String>): ImagePickerBuilder {
 
         val title = getString(R.string.action_pick_photo)
 

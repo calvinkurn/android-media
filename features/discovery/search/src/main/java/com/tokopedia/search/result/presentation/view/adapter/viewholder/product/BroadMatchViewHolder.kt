@@ -5,6 +5,7 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.carouselproductcard.CarouselProductCardListener
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.search.R
 import com.tokopedia.search.result.presentation.model.BadgeItemViewModel
@@ -55,6 +56,7 @@ class BroadMatchViewHolder(
                             shopLocation = it.shopLocation,
                             shopBadgeList = it.badgeItemViewModelList.toProductCardModelShopBadges(),
                             freeOngkir = it.freeOngkirViewModel.toProductCardModelFreeOngkir(),
+                            isTopAds = it.isOrganicAds,
                             hasThreeDots = true
                     )
                 },
@@ -68,6 +70,16 @@ class BroadMatchViewHolder(
                     override fun onItemThreeDotsClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
                         val product = products.getOrNull(carouselProductCardPosition) ?: return
                         broadMatchListener.onBroadMatchThreeDotsClicked(product)
+                    }
+                },
+                carouselProductCardOnItemImpressedListener = object: CarouselProductCardListener.OnItemImpressedListener {
+                    override fun onItemImpressed(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
+                        val product = products.getOrNull(carouselProductCardPosition) ?: return
+                        broadMatchListener.onBroadMatchItemImpressed(product)
+                    }
+
+                    override fun getImpressHolder(carouselProductCardPosition: Int): ImpressHolder? {
+                        return products.getOrNull(carouselProductCardPosition)
                     }
                 }
         )

@@ -11,9 +11,16 @@ import androidx.navigation.fragment.findNavController
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.kotlin.extensions.view.afterTextChanged
 import com.tokopedia.product.addedit.R
+import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringConstants.ADD_EDIT_PRODUCT_SHIPMENT_PLT_NETWORK_METRICS
+import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringConstants.ADD_EDIT_PRODUCT_SHIPMENT_PLT_PREPARE_METRICS
+import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringConstants.ADD_EDIT_PRODUCT_SHIPMENT_PLT_RENDER_METRICS
+import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringConstants.ADD_EDIT_PRODUCT_SHIPMENT_TRACE
+import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringListener
 import com.tokopedia.product.addedit.common.util.*
 import com.tokopedia.product.addedit.common.util.InputPriceUtil.formatProductPriceInput
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.BUNDLE_CACHE_MANAGER_ID
@@ -50,16 +57,9 @@ import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
-class AddEditProductShipmentFragment : BaseDaggerFragment() {
-  
-    companion object {
-        fun getWeightTypeTitle(type: Int) =
-                when (type) {
-                    UNIT_GRAM -> com.tokopedia.product.addedit.R.string.label_weight_gram
-                    UNIT_KILOGRAM -> com.tokopedia.product.addedit.R.string.label_weight_kilogram
-                    else -> com.tokopedia.product.addedit.R.string.label_weight_gram
-                }
-    }
+class AddEditProductShipmentFragment:
+        BaseDaggerFragment(),
+        AddEditProductPerformanceMonitoringListener {
 
     private var mainLayout: ConstraintLayout? = null
     private var tfWeightAmount: TextFieldUnify? = null
@@ -69,16 +69,14 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
     private var productInputModel: ProductInputModel? = null
     private var btnSave: UnifyButton? = null
     private var selectedWeightPosition: Int = 0
-
+    private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
     private lateinit var userSession: UserSessionInterface
     private lateinit var shopId: String
 
     @Inject
     lateinit var shipmentViewModel: AddEditProductShipmentViewModel
 
-    override fun getScreenName(): String {
-        return ""
-    }
+    override fun getScreenName(): String = ""
 
     override fun initInjector() {
         DaggerAddEditProductShipmentComponent
@@ -89,6 +87,8 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        startPerformanceMonitoring()
+
         userSession = UserSession(requireContext())
         shopId = userSession.shopId
         super.onCreate(savedInstanceState)
@@ -118,6 +118,7 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         tfWeightUnit = view.findViewById(R.id.tf_weight_unit)
         tfWeightAmount = view.findViewById(R.id.tf_weight_amount)
         switchInsurance = view.findViewById(R.id.switch_insurance)
@@ -161,12 +162,57 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
             }
         }
         setupOnBackPressed()
+
+        // PLT monitoring
+        stopNetworkRequestPerformanceMonitoring()
+        stopPerformanceMonitoring()
     }
 
     override fun onResume() {
         super.onResume()
         btnEnd?.isLoading = false
         btnSave?.isLoading = false
+    }
+
+    override fun startPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring = PageLoadTimePerformanceCallback(
+                ADD_EDIT_PRODUCT_SHIPMENT_PLT_PREPARE_METRICS,
+                ADD_EDIT_PRODUCT_SHIPMENT_PLT_NETWORK_METRICS,
+                ADD_EDIT_PRODUCT_SHIPMENT_PLT_RENDER_METRICS,
+                0,
+                0,
+                0,
+                0,
+                null
+        )
+
+        pageLoadTimePerformanceMonitoring?.startMonitoring(ADD_EDIT_PRODUCT_SHIPMENT_TRACE)
+        pageLoadTimePerformanceMonitoring?.startPreparePagePerformanceMonitoring()
+    }
+
+    override fun stopPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.stopMonitoring()
+        pageLoadTimePerformanceMonitoring = null
+    }
+
+    override fun stopPreparePagePerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.stopPreparePagePerformanceMonitoring()
+    }
+
+    override fun startNetworkRequestPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.startNetworkRequestPerformanceMonitoring()
+    }
+
+    override fun stopNetworkRequestPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.stopNetworkRequestPerformanceMonitoring()
+    }
+
+    override fun startRenderPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.startRenderPerformanceMonitoring()
+    }
+
+    override fun stopRenderPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.stopRenderPerformanceMonitoring()
     }
 
     fun sendDataBack() {
@@ -259,6 +305,12 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
                 resetTfWeightAmount()
             }
         }
+    }
+
+    private fun getWeightTypeTitle(type: Int) = when (type) {
+        UNIT_GRAM -> com.tokopedia.product.addedit.R.string.label_weight_gram
+        UNIT_KILOGRAM -> com.tokopedia.product.addedit.R.string.label_weight_kilogram
+        else -> com.tokopedia.product.addedit.R.string.label_weight_gram
     }
 
     private fun validateInputWeight(inputText: String): Boolean {

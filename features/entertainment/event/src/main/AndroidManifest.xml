@@ -132,7 +132,6 @@
             android:name=".pdp.activity.EventPDPFormActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
-            android:label="@string/ent_pdp_title_form"
             >
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />

@@ -46,7 +46,7 @@ class GetShopShowcaseListBuyerUseCase @Inject constructor(private val graphqlUse
 
         object SellerQueryParam {
             const val HIDE_NO_COUNT_VALUE = false
-            const val HIDE_SHOWCASE_GROUP_VALUE = false
+            const val HIDE_SHOWCASE_GROUP_VALUE = true
             const val IS_OWNER_VALUE = true
         }
 
