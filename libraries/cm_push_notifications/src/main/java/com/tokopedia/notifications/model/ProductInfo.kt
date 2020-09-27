@@ -83,7 +83,7 @@ data class ProductInfo(
         @SerializedName(CMConstant.PayloadKeys.REVIEW_SCORE)
         @ColumnInfo(name = CMConstant.PayloadKeys.REVIEW_SCORE)
         @Expose
-        var reviewScore: String? = "",
+        var reviewScore: Long? = 0L,
 
         @SerializedName(CMConstant.PayloadKeys.REVIEW_NUMBER)
         @ColumnInfo(name = CMConstant.PayloadKeys.REVIEW_NUMBER)
