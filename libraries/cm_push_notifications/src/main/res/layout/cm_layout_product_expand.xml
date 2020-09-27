@@ -164,7 +164,7 @@
                     android:orientation="horizontal">
 
                     <Button
-                        android:id="@+id/btn_atc"
+                        android:id="@+id/btn_icon"
                         android:layout_width="0dp"
                         android:layout_weight="1"
                         android:layout_height="wrap_content"
@@ -178,7 +178,7 @@
                         android:textStyle="bold" />
 
                     <TextView
-                        android:id="@+id/btn_occ"
+                        android:id="@+id/btn_text"
                         android:layout_width="0dp"
                         android:layout_weight="4"
                         android:layout_height="match_parent"

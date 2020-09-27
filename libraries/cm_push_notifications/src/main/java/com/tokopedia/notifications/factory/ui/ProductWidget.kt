@@ -17,8 +17,8 @@ import com.tokopedia.user.session.UserSession
 import com.tokopedia.notifications.common.CMConstant.PreDefineActionType.ATC as TYPE_ATC
 import com.tokopedia.notifications.common.CMConstant.PreDefineActionType.OCC as TYPE_OCC
 import com.tokopedia.notifications.common.CMNotificationUtils.getSpannedTextFromStr as spanStr
-import com.tokopedia.notifications.common.CarouselUtilities.loadImageFromStorage as loadImage
 import com.tokopedia.notifications.common.CarouselUtilities.loadImageFromStorage as loadCacheImage
+import com.tokopedia.notifications.common.CarouselUtilities.loadImageFromStorage as loadImage
 
 
 internal open class ProductWidget(
@@ -31,16 +31,11 @@ internal open class ProductWidget(
     private val userSession by lazy { UserSession(context) }
     private val packageName = context.applicationContext.packageName
 
+    val collapsedView by lazy { RemoteViews(packageName, R.layout.cm_layout_collapsed) }
+    val expandedView by lazy { RemoteViews(packageName, R.layout.cm_layout_product_expand) }
+
     val product: ProductInfo = model.productInfoList[model.carouselIndex]
     val productImage: Bitmap? = loadImage(product.productImage)
-
-    val collapsedView by lazy {
-        RemoteViews(packageName, R.layout.cm_layout_collapsed)
-    }
-
-    val expandedView by lazy {
-        RemoteViews(packageName, R.layout.cm_layout_product_expand)
-    }
 
     init {
         if (!model.isUpdateExisting) {
@@ -100,7 +95,7 @@ internal open class ProductWidget(
 
     private fun productV1Card(view: RemoteViews) {
         view.setOnClickPendingIntent(R.id.ll_expandedProductView, contract.productDetailIntent(product))
-        view.setTextViewText(R.id.btn_occ, spanStr(product.productButtonMessage))
+        view.setTextViewText(R.id.btn_text, spanStr(product.productButtonMessage))
     }
 
     private fun productV2Card(view: RemoteViews) {
@@ -111,11 +106,14 @@ internal open class ProductWidget(
         // action button
         if (product.actionButton.size == 1) {
             val actionButton = product.actionButton.first()
-            singleActionButtonVisibility(view, actionButton)
-            actionButtonField(view, actionButton)
+            view.setViewVisibility(R.id.btn_icon, View.GONE)
+            setButtonField(R.id.btn_text, view, actionButton)
         } else if (product.actionButton.size > 1) {
             product.actionButton.forEach {
-                actionButtonField(view, it)
+                when (it.type) {
+                    TYPE_ATC -> setButtonField(R.id.btn_icon, view, it)
+                    TYPE_OCC -> setButtonField(R.id.btn_text, view, it)
+                }
             }
         }
 
@@ -127,23 +125,12 @@ internal open class ProductWidget(
         ProductAnalytics.impressionExpanded(userSession.userId, model, product)
     }
 
-    private fun singleActionButtonVisibility(view: RemoteViews, actionButton: ActionButton) {
-        when (actionButton.type) {
-            TYPE_ATC -> view.setViewVisibility(R.id.btn_occ, View.GONE)
-            TYPE_OCC -> view.setViewVisibility(R.id.btn_atc, View.GONE)
-        }
-    }
-
-    private fun actionButtonField(view: RemoteViews, actionButton: ActionButton) {
+    private fun setButtonField(resId: Int, view: RemoteViews, actionButton: ActionButton) {
         val pendingIntent = contract.actionButtonIntent(actionButton)
-        when (actionButton.type) {
-            TYPE_ATC -> {
-                view.setOnClickPendingIntent(R.id.btn_atc, pendingIntent)
-            }
-            TYPE_OCC -> {
-                view.setTextViewText(R.id.btn_occ, actionButton.text)
-                view.setOnClickPendingIntent(R.id.btn_occ, pendingIntent)
-            }
+        view.setOnClickPendingIntent(resId, pendingIntent)
+
+        if (actionButton.actionButtonIcon.isNullOrEmpty()) {
+            view.setTextViewText(resId, actionButton.text)
         }
     }
 
@@ -218,10 +205,6 @@ internal open class ProductWidget(
         fun productDetailIntent(product: ProductInfo): PendingIntent
         fun rightCarouselButton(remoteView: RemoteViews)
         fun leftCarouselButton(remoteView: RemoteViews)
-    }
-
-    companion object {
-        private const val SET_BACKGROUND_RESOURCE = "setBackgroundResource"
     }
 
 }
