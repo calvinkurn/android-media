@@ -12,8 +12,8 @@ import com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint.Pinpoint
 import com.tokopedia.logisticaddaddress.test.R
 import com.tokopedia.logisticaddaddress.util.getJsonDataFromAsset
 import com.tokopedia.logisticaddaddress.utils.SimpleIdlingResource
-import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig.Companion.FIND_BY_CONTAINS
-import com.tokopedia.test.application.util.InstrumentationMockHelper.getRawString
+import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
+import com.tokopedia.test.application.util.InstrumentationMockHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.junit.After
 import org.junit.Before
@@ -26,7 +26,7 @@ import org.junit.runner.RunWith
  * */
 @LargeTest
 @RunWith(AndroidJUnit4::class)
-class AddNewAddressTest {
+class AddNewAddressNegativeTest {
 
     @get: Rule
     var mActivityTestRule = ActivityTestRule(PinpointMapActivity::class.java, false, false)
@@ -42,9 +42,9 @@ class AddNewAddressTest {
     fun setup() {
         gtmLogDBSource.deleteAll().toBlocking().first()
         setupGraphqlMockResponse {
-            addMockResponse(AUTOCOMPLETE_KEY, getRawString(context, R.raw.autocomplete_jak), FIND_BY_CONTAINS)
-            addMockResponse(GET_DISTRICT_KEY, getRawString(context, R.raw.get_district_jakarta), FIND_BY_CONTAINS)
-            addMockResponse(SAVE_ADDRESS_KEY, getRawString(context, R.raw.save_address_success), FIND_BY_CONTAINS)
+            addMockResponse(AUTOCOMPLETE_KEY, InstrumentationMockHelper.getRawString(context, R.raw.autocomplete_jak_negative), MockModelConfig.FIND_BY_CONTAINS)
+            addMockResponse(GET_DISTRICT_KEY, InstrumentationMockHelper.getRawString(context, R.raw.district_recommendation_jakarta), MockModelConfig.FIND_BY_CONTAINS)
+            addMockResponse(SAVE_ADDRESS_KEY, InstrumentationMockHelper.getRawString(context, R.raw.save_address_success), MockModelConfig.FIND_BY_CONTAINS)
         }
         IdlingRegistry.getInstance().register(SimpleIdlingResource.countingIdlingResource)
     }
@@ -56,14 +56,18 @@ class AddNewAddressTest {
 
     @Test
     fun addAddressUserFunnel_PassedAnalyticsTest() {
-        val query = getJsonDataFromAsset(context, "tracker/logistic/addaddress_user_funnel.json")
+        val query = getJsonDataFromAsset(context, "tracker/logistic/addaddress_user_funnel_negative.json")
                 ?: throw AssertionError("Validator Query not found")
         val screenName = "/user/address/create"
         addAddress {
             launchFrom(mActivityTestRule, screenName)
             searchWithKeyword(JAK_KEYWORD)
-            selectFirstItem()
-            addressDetail(TEST_DETAILS)
+            clickCity()
+            searchCityWithKeyword(JAK_KEYWORD)
+            selectFirstCityItem()
+            zipCode()
+            selectFirstZipCode()
+            address(TEST_DETAILS)
             receiver(TEST_RECEIVER)
             phoneNumber(TEST_PHONE)
         } submit {
@@ -73,14 +77,18 @@ class AddNewAddressTest {
 
     @Test
     fun addAddressCartFunnel_PassedAnalyticsTest() {
-        val query = getJsonDataFromAsset(context, "tracker/logistic/addaddress_cart_funnel.json")
+        val query = getJsonDataFromAsset(context, "tracker/logistic/addaddress_cart_funnel_negative.json")
                 ?: throw AssertionError("Validator Query not found")
         val screenName = "/cart/address/create"
         addAddress {
             launchFrom(mActivityTestRule, screenName)
             searchWithKeyword(JAK_KEYWORD)
-            selectFirstItem()
-            addressDetail(TEST_DETAILS)
+            clickCity()
+            searchCityWithKeyword(JAK_KEYWORD)
+            selectFirstCityItem()
+            zipCode()
+            selectFirstZipCode()
+            address(TEST_DETAILS)
             receiver(TEST_RECEIVER)
             phoneNumber(TEST_PHONE)
         } submit {
@@ -90,14 +98,18 @@ class AddNewAddressTest {
 
     @Test
     fun addAddressNewUserFunnel_PassedAnalyticsTest() {
-        val query = getJsonDataFromAsset(context, "tracker/logistic/addaddress_new_user_funnel.json")
+        val query = getJsonDataFromAsset(context, "tracker/logistic/addaddress_new_user_funnel_negative.json")
                 ?: throw AssertionError("Validator Query not found")
         val screenName = "/user/address/create/cart"
         addAddress {
             launchFrom(mActivityTestRule, screenName)
             searchWithKeyword(JAK_KEYWORD)
-            selectFirstItem()
-            addressDetail(TEST_DETAILS)
+            clickCity()
+            searchCityWithKeyword(JAK_KEYWORD)
+            selectFirstCityItem()
+            zipCode()
+            selectFirstZipCode()
+            address(TEST_DETAILS)
             receiver(TEST_RECEIVER)
             phoneNumber(TEST_PHONE)
         } submit {
@@ -111,7 +123,7 @@ class AddNewAddressTest {
         const val TEST_PHONE = "087255991177"
         const val TEST_DETAILS = "no 27 RT 1/ RW X"
         const val AUTOCOMPLETE_KEY = "KeroMapsAutoComplete"
-        const val GET_DISTRICT_KEY = "KeroPlacesGetDistrict"
+        const val GET_DISTRICT_KEY = "KeroDistrictRecommendation"
         const val SAVE_ADDRESS_KEY = "kero_add_address"
     }
 
