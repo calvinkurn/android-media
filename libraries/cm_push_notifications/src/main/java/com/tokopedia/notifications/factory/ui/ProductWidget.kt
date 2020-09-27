@@ -132,6 +132,11 @@ internal open class ProductWidget(
         if (actionButton.actionButtonIcon.isNullOrEmpty()) {
             view.setTextViewText(resId, actionButton.text)
         }
+
+        // force to remove the title of button icon
+        if (resId == R.id.btn_icon) {
+            view.setTextViewText(resId, "")
+        }
     }
 
     private fun starReview(view: RemoteViews) {
