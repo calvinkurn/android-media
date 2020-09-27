@@ -2,13 +2,12 @@ package com.tokopedia.developer_options.presentation.feedbackpage.ui
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.developer_options.api.ApiClient
-import com.tokopedia.developer_options.api.FeedbackApi
+import com.tokopedia.developer_options.api.FeedbackApiInterface
 import com.tokopedia.developer_options.api.request.FeedbackFormRequest
-import com.tokopedia.developer_options.api.response.CategoriesResponse
 import com.tokopedia.developer_options.api.response.FeedbackFormResponse
-import okhttp3.MediaType
+import com.tokopedia.developer_options.api.response.ImageResponse
 import okhttp3.MultipartBody
-import okhttp3.RequestBody
+import okhttp3.ResponseBody
 import rx.Subscriber
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
@@ -16,29 +15,7 @@ import rx.subscriptions.CompositeSubscription
 
 class FeedbackPagePresenter(private val compositeSubscription: CompositeSubscription) : BaseDaggerPresenter<FeedbackPageContract.View>(), FeedbackPageContract.Presenter {
 
-    private val feedbackApi: FeedbackApi = ApiClient.getAPIService()
-
-    override fun getCategories() {
-        feedbackApi.getCategories()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(object: Subscriber<CategoriesResponse>() {
-                    override fun onNext(t: CategoriesResponse?) {
-                        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-                    }
-
-                    override fun onCompleted() {
-                        //no-op
-                    }
-
-                    override fun onError(e: Throwable?) {
-                        if (e != null) {
-                            view.showError(e)
-                        }
-                    }
-
-                })
-    }
+    private val feedbackApi: FeedbackApiInterface = ApiClient.getAPIService()
 
     override fun sendFeedbackForm(feedbackFormRequest: FeedbackFormRequest) {
         view.showLoadingDialog()
@@ -68,12 +45,11 @@ class FeedbackPagePresenter(private val compositeSubscription: CompositeSubscrip
     }
 
     override fun sendAttachment(feedbackId: Int?, filedata: MultipartBody.Part) {
-        val requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), "file")
-        feedbackApi.uploadAttachment("/api/v1/feedback/$feedbackId/upload-attachment", requestFile, filedata)
+        feedbackApi.uploadAttachment("/api/v1/feedback/$feedbackId/upload-attachment", filedata)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(object : Subscriber<String>() {
-                    override fun onNext(t: String?) {
+                .subscribe(object : Subscriber<ImageResponse>() {
+                    override fun onNext(t: ImageResponse?) {
                         view.hideLoadingDialog()
                         commitData(feedbackId)
                     }
@@ -97,8 +73,9 @@ class FeedbackPagePresenter(private val compositeSubscription: CompositeSubscrip
         feedbackApi.commitData("api/v1/feedback/$feedbackId/commit")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(object : Subscriber<String>() {
-                    override fun onNext(t: String?) {
+                .subscribe(object : Subscriber<ResponseBody>() {
+                    override fun onNext(t: ResponseBody?) {
+                        view.hideLoadingDialog()
                         view.goToTicketCreatedActivity()
                     }
 

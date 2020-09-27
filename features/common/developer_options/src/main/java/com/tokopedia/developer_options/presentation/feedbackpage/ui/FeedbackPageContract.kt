@@ -16,7 +16,6 @@ interface FeedbackPageContract {
     }
 
     interface Presenter{
-        fun getCategories()
         fun sendFeedbackForm(feedbackFormRequest: FeedbackFormRequest)
         fun sendAttachment(feedbackId: Int?, fileData: MultipartBody.Part)
         fun commitData(feedbackId: Int?)

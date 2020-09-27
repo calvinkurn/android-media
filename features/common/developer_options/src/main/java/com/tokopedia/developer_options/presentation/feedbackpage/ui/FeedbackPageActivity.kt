@@ -7,19 +7,13 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.developer_options.presentation.feedbackpage.di.DaggerFeedbackPageComponent
 import com.tokopedia.developer_options.presentation.feedbackpage.di.FeedbackPageComponent
-import com.tokopedia.developer_options.presentation.feedbackpage.utils.EXTRA_URI_IMAGE
 
 class FeedbackPageActivity : BaseSimpleActivity(), HasComponent<FeedbackPageComponent> {
 
     override fun getNewFragment(): Fragment? {
         var uriData: Uri?
-        val uri = intent.data
-        uriData = if (uri != null) {
-            intent.getParcelableExtra(EXTRA_URI_IMAGE)
-        } else {
-            null
-        }
-        return FeedbackPageFragment.newInstance(uriData)
+        val uri = intent.getParcelableExtra<Uri>("EXTRA_URI_IMAGE")?: null
+        return FeedbackPageFragment.newInstance(uri)
     }
 
     override fun getComponent(): FeedbackPageComponent {

@@ -27,7 +27,7 @@ public class ApiClient {
         return retrofit;
     }
 
-    public static FeedbackApi getAPIService(){
-        return getClient(BASE_URL_JIRA).create(FeedbackApi.class);
+    public static FeedbackApiInterface getAPIService(){
+        return getClient(BASE_URL_JIRA).create(FeedbackApiInterface.class);
     }
 }
