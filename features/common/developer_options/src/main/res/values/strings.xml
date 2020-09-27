@@ -38,10 +38,10 @@
     <string name="copy_success">Text telah tersalin</string>
 
     <string-array name="bug_type_array">
+        <item>Others</item>
         <item>Crash</item>
         <item>Design</item>
         <item>Functionality</item>
-        <item>Tracking</item>
-        <item>Other</item>
+        <item>Tracker</item>
     </string-array>
 </resources>

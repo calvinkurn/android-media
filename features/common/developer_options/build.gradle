@@ -30,6 +30,9 @@ dependencies {
     implementation project(rootProject.ext.libraries.screenRecorder)
     implementation project(rootProject.ext.libraries.screenshot_observer)
     implementation project(rootProject.ext.libraries.remoteResourceRequest)
+    implementation project(rootProject.ext.libraries.imagePicker)
+    implementation project(rootProject.ext.libraries.imagePreview)
+
     if (rootProject.ext.debugToolsEnabled) {
         implementation project(rootProject.ext.libraries.analyticsDebugger)
     } else {

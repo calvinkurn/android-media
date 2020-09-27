@@ -2,6 +2,7 @@
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
@@ -15,21 +16,34 @@
             android:id="@+id/image_feedback_tv"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_8"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             android:text="Attachment"
             app:typographyType="body_3"
+            app:typographyWeight="bold"
             android:visibility="gone"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_img_feedback"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="@dimen/dp_8"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/image_feedback_tv"
+            android:visibility="gone"
+            tools:listitem="@layout/item_image_chooser_feedback" />
 
         <ImageView
             android:id="@+id/image_feedback"
-            android:layout_width="@dimen/dp_180"
-            android:layout_height="@dimen/dp_240"
-            android:layout_marginTop="@dimen/dp_16"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintLeft_toRightOf="parent"
-            app:layout_constraintRight_toLeftOf="parent"
+            android:layout_width="@dimen/dp_90"
+            android:layout_height="@dimen/dp_120"
+            android:layout_marginTop="@dimen/dp_8"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/image_feedback_tv"
             android:background="@color/white"
             android:visibility="gone"/>
 
@@ -42,8 +56,9 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/et_email_wrapper"
                 style="@style/HintTextInputLayout"
-                android:layout_width="@dimen/dp_290"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_toLeftOf="@id/tokopedia_separator"
                 android:layout_marginTop="@dimen/dp_8"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -51,7 +66,7 @@
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/email"
-                    android:layout_width="@dimen/dp_290"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:imeOptions="actionDone"
                     android:inputType="text"
@@ -67,7 +82,7 @@
                 android:id="@+id/tokopedia_separator"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_toEndOf="@id/et_email_wrapper"
+                android:layout_alignParentEnd="true"
                 android:layout_alignBottom="@id/et_email_wrapper"
                 android:layout_alignTop="@id/et_email_wrapper"
                 android:layout_marginTop="@dimen/dp_20"

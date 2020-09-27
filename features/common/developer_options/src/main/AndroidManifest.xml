@@ -22,7 +22,7 @@
         </activity>
 
         <activity
-            android:name=".presentation.feedbackpage.FeedbackPageActivity"
+            android:name=".presentation.feedbackpage.ui.FeedbackPageActivity"
             android:label="@string/feedback_page_title"
             android:theme="@style/Theme.White"
             android:screenOrientation="portrait" >
@@ -51,7 +51,7 @@
         <receiver android:name=".notification.ReviewNotificationUpdateExample" />
 
         <activity
-            android:name=".presentation.feedbackpage.TicketCreatedActivity"
+            android:name=".presentation.feedbackpage.ui.TicketCreatedActivity"
             android:exported="true"
             android:hardwareAccelerated="true"
             android:screenOrientation="portrait"
