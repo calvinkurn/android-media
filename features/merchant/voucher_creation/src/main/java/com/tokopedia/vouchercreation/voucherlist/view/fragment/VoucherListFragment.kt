@@ -49,10 +49,7 @@ import com.tokopedia.vouchercreation.common.errorhandler.MvcError
 import com.tokopedia.vouchercreation.common.errorhandler.MvcErrorHandler
 import com.tokopedia.vouchercreation.common.exception.VoucherCancellationException
 import com.tokopedia.vouchercreation.common.plt.MvcPerformanceMonitoringListener
-import com.tokopedia.vouchercreation.common.utils.SharingUtil
-import com.tokopedia.vouchercreation.common.utils.Socmed
-import com.tokopedia.vouchercreation.common.utils.showDownloadActionTicker
-import com.tokopedia.vouchercreation.common.utils.showErrorToaster
+import com.tokopedia.vouchercreation.common.utils.*
 import com.tokopedia.vouchercreation.create.domain.model.validation.VoucherTargetType
 import com.tokopedia.vouchercreation.create.view.activity.CreateMerchantVoucherStepsActivity
 import com.tokopedia.vouchercreation.create.view.enums.VoucherCreationStep
@@ -539,6 +536,20 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
             }
             else -> {}
         }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        childFragmentManager.dismissBottomSheetWithTags(
+                DownloadVoucherBottomSheet.TAG,
+                VoucherPeriodBottomSheet.TAG,
+                EditQuotaBottomSheet.TAG,
+                MoreMenuBottomSheet.TAG,
+                SuccessCreateBottomSheet.TAG,
+                FilterBottomSheet.TAG,
+                ShareVoucherBottomSheet.TAG,
+                SortBottomSheet.TAG
+        )
     }
 
     private fun duplicateVoucher(voucher: VoucherUiModel) {

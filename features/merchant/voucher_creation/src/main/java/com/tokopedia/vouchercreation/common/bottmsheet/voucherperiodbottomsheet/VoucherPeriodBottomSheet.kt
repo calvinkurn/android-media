@@ -63,6 +63,8 @@ class VoucherPeriodBottomSheet : BottomSheetUnify() {
         private const val VOUCHER = "voucher"
 
         private const val ERROR_MESSAGE = "Error change voucher period"
+
+        const val TAG = "VoucherPeriodBottomSheet"
     }
 
     @Inject
@@ -336,6 +338,6 @@ class VoucherPeriodBottomSheet : BottomSheetUnify() {
     }
 
     fun show(fm: FragmentManager) {
-        showNow(fm, this::class.java.simpleName)
+        showNow(fm, TAG)
     }
 }

@@ -34,7 +34,7 @@ class VoucherDisplayBottomSheetFragment : BottomSheetUnify(), VoucherBottomView 
             }
         }
 
-        val TAG = VoucherDisplayBottomSheetFragment::javaClass.name
+        const val TAG = "VoucherDisplayBottomSheetFragment"
     }
 
     private val pagerSnapHelper by lazy {

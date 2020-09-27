@@ -25,6 +25,8 @@ class ShareVoucherBottomSheet : BottomSheetUnify() {
         fun createInstance(): ShareVoucherBottomSheet = ShareVoucherBottomSheet().apply {
             setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
         }
+
+        const val TAG = "ShareVoucherBottomSheet"
     }
 
     private var onItemClickListener: (Int) -> Unit = {}
@@ -69,7 +71,7 @@ class ShareVoucherBottomSheet : BottomSheetUnify() {
     }
 
     fun show(fm: FragmentManager) {
-        showNow(fm, ShareVoucherBottomSheet::class.java.simpleName)
+        showNow(fm, TAG)
     }
 
     private fun getSocmedList(): List<ShareVoucherUiModel> {

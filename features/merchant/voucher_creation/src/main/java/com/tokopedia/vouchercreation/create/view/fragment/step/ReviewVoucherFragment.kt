@@ -35,6 +35,7 @@ import com.tokopedia.vouchercreation.common.analytics.VoucherCreationTracking
 import com.tokopedia.vouchercreation.common.consts.VoucherUrl
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
 import com.tokopedia.vouchercreation.common.errorhandler.MvcErrorHandler
+import com.tokopedia.vouchercreation.common.utils.dismissBottomSheetWithTags
 import com.tokopedia.vouchercreation.create.domain.model.CreateVoucherParam
 import com.tokopedia.vouchercreation.create.domain.model.validation.VoucherTargetType
 import com.tokopedia.vouchercreation.create.view.activity.CreateMerchantVoucherStepsActivity
@@ -380,6 +381,15 @@ class ReviewVoucherFragment : BaseDetailFragment() {
             }
             else -> return
         }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        childFragmentManager.dismissBottomSheetWithTags(
+                GeneralExpensesInfoBottomSheetFragment.TAG,
+                TermsAndConditionBottomSheetFragment.TAG,
+                VoucherDisplayBottomSheetFragment.TAG
+        )
     }
 
     private fun observeLiveData() {

@@ -42,6 +42,8 @@ class CreatePromoCodeBottomSheetFragment : BottomSheetUnify(), VoucherBottomView
 
         private const val ERROR_MESSAGE = "Error validate voucher promo code"
 
+        const val TAG = "CreatePromoCodeBottomSheet"
+
         fun createInstance(context: Context?,
                            onNextClick: (String) -> Unit,
                            getPromoCode: () -> String = {""},

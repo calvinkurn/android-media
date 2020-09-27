@@ -39,6 +39,7 @@ import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.getMinEndDate
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.getMinStartDate
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.getToday
 import com.tokopedia.vouchercreation.common.utils.convertUnsafeDateTime
+import com.tokopedia.vouchercreation.common.utils.dismissBottomSheetWithTags
 import com.tokopedia.vouchercreation.common.utils.showErrorToaster
 import com.tokopedia.vouchercreation.create.view.activity.CreateMerchantVoucherStepsActivity
 import com.tokopedia.vouchercreation.create.view.enums.VoucherCreationStep
@@ -171,6 +172,14 @@ class SetVoucherPeriodFragment : Fragment() {
                     userSession.isLoggedIn,
                     userSession.userId)
         }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        childFragmentManager.dismissBottomSheetWithTags(
+                START_DATE_TIME_PICKER_TAG,
+                END_DATE_TIME_PICKER_TAG
+        )
     }
 
     private fun initInjector() {

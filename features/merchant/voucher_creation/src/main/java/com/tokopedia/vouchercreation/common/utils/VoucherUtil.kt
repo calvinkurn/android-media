@@ -1,8 +1,10 @@
 package com.tokopedia.vouchercreation.common.utils
 
 import android.view.View
+import androidx.fragment.app.FragmentManager
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
+import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.vouchercreation.R
 
@@ -36,4 +38,10 @@ fun View.showDownloadActionTicker(isSuccess: Boolean,
             Toaster.LENGTH_LONG,
             toasterType,
             context?.getString(R.string.mvc_oke).toBlankOrString())
+}
+
+fun FragmentManager.dismissBottomSheetWithTags(vararg tags: String) {
+    tags.forEach {
+        (findFragmentByTag(it) as? BottomSheetUnify)?.dismiss()
+    }
 }

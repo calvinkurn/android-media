@@ -13,6 +13,7 @@ import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.bottmsheet.description.DescriptionBottomSheet
+import com.tokopedia.vouchercreation.common.utils.dismissBottomSheetWithTags
 import com.tokopedia.vouchercreation.create.domain.model.validation.VoucherTargetType
 import com.tokopedia.vouchercreation.create.view.enums.VoucherImageType
 import com.tokopedia.vouchercreation.detail.model.*
@@ -48,6 +49,13 @@ abstract class BaseDetailFragment : BaseListFragment<VoucherDetailUiModel, Vouch
         super.onViewCreated(view, savedInstanceState)
 
         setupActionBar()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        childFragmentManager.dismissBottomSheetWithTags(
+                DescriptionBottomSheet.TAG
+        )
     }
 
     override fun getRecyclerViewResourceId(): Int = R.id.rvMvcVoucherDetail

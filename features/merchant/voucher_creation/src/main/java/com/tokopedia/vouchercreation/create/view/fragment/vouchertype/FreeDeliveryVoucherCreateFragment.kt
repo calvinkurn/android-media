@@ -18,6 +18,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
 import com.tokopedia.vouchercreation.common.errorhandler.MvcErrorHandler
+import com.tokopedia.vouchercreation.common.utils.dismissBottomSheetWithTags
 import com.tokopedia.vouchercreation.common.utils.showErrorToaster
 import com.tokopedia.vouchercreation.common.view.promotionexpense.PromotionExpenseEstimationUiModel
 import com.tokopedia.vouchercreation.common.view.textfield.vouchertype.VoucherTextFieldUiModel
@@ -186,6 +187,11 @@ class FreeDeliveryVoucherCreateFragment: BaseListFragment<Visitable<*>, Promotio
         }
     }
 
+    override fun onPause() {
+        super.onPause()
+        childFragmentManager.dismissBottomSheetWithTags(GeneralExpensesInfoBottomSheetFragment.TAG)
+    }
+
     private fun setupView() {
         renderList(freeDeliveryTypeUiList)
     }
@@ -271,7 +277,7 @@ class FreeDeliveryVoucherCreateFragment: BaseListFragment<Visitable<*>, Promotio
     }
 
     private fun onTooltipClicked() {
-        freeDeliveryExpenseInfoBottomSheetField.show(childFragmentManager, GeneralExpensesInfoBottomSheetFragment::class.java.name)
+        freeDeliveryExpenseInfoBottomSheetField.show(childFragmentManager, GeneralExpensesInfoBottomSheetFragment.TAG)
     }
 
     private fun validateValues() {

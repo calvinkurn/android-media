@@ -22,6 +22,7 @@ import com.tokopedia.vouchercreation.common.analytics.VoucherCreationAnalyticCon
 import com.tokopedia.vouchercreation.common.analytics.VoucherCreationTracking
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
 import com.tokopedia.vouchercreation.common.errorhandler.MvcErrorHandler
+import com.tokopedia.vouchercreation.common.utils.dismissBottomSheetWithTags
 import com.tokopedia.vouchercreation.common.utils.showErrorToaster
 import com.tokopedia.vouchercreation.common.view.promotionexpense.PromotionExpenseEstimationUiModel
 import com.tokopedia.vouchercreation.common.view.textfield.vouchertype.VoucherTextFieldUiModel
@@ -313,6 +314,14 @@ class CashbackVoucherCreateFragment : BaseListFragment<Visitable<*>, PromotionTy
         return inflater.inflate(R.layout.fragment_voucher_promotion_type, container, false)
     }
 
+    override fun onPause() {
+        super.onPause()
+        childFragmentManager.dismissBottomSheetWithTags(
+                CashbackExpenseInfoBottomSheetFragment.TAG,
+                GeneralExpensesInfoBottomSheetFragment.TAG
+        )
+    }
+
     override fun getRecyclerViewResourceId(): Int = R.id.rvMvcVoucherType
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -484,7 +493,7 @@ class CashbackVoucherCreateFragment : BaseListFragment<Visitable<*>, PromotionTy
                 activity?.run {
                     KeyboardHandler.hideSoftKeyboard(this)
                 }
-                percentageExpenseBottomSheet?.show(childFragmentManager, CashbackExpenseInfoBottomSheetFragment::class.java.name)
+                percentageExpenseBottomSheet?.show(childFragmentManager, CashbackExpenseInfoBottomSheetFragment.TAG)
             }
         } else {
             validateRupiahValues()
@@ -542,7 +551,7 @@ class CashbackVoucherCreateFragment : BaseListFragment<Visitable<*>, PromotionTy
         activity?.run {
             KeyboardHandler.hideSoftKeyboard(this)
         }
-        expensesInfoBottomSheetFragment.show(childFragmentManager, GeneralExpensesInfoBottomSheetFragment::class.java.name)
+        expensesInfoBottomSheetFragment.show(childFragmentManager, GeneralExpensesInfoBottomSheetFragment.TAG)
     }
 
     private fun onCloseTicker() {

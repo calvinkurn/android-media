@@ -3,7 +3,6 @@ package com.tokopedia.vouchercreation.create.view.fragment.step
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.SparseArray
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -27,6 +26,7 @@ import com.tokopedia.vouchercreation.common.analytics.VoucherCreationAnalyticCon
 import com.tokopedia.vouchercreation.common.analytics.VoucherCreationTracking
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
 import com.tokopedia.vouchercreation.common.errorhandler.MvcErrorHandler
+import com.tokopedia.vouchercreation.common.utils.dismissBottomSheetWithTags
 import com.tokopedia.vouchercreation.common.utils.showErrorToaster
 import com.tokopedia.vouchercreation.create.domain.model.validation.VoucherTargetType
 import com.tokopedia.vouchercreation.create.view.enums.CreateVoucherBottomSheetType
@@ -71,8 +71,6 @@ class MerchantVoucherTargetFragment : BaseListFragment<Visitable<VoucherTargetTy
     private var isCreateNew = true
     private var isEdit = false
 
-    private var bottomSheetViewArray: SparseArray<BottomSheetUnify> = SparseArray()
-
     @Inject
     lateinit var userSession: UserSessionInterface
 
@@ -85,22 +83,6 @@ class MerchantVoucherTargetFragment : BaseListFragment<Visitable<VoucherTargetTy
 
     private val viewModel by lazy {
         viewModelProvider.get(MerchantVoucherTargetViewModel::class.java)
-    }
-
-    private val createPromoCodeBottomSheetFragment by lazy {
-        CreatePromoCodeBottomSheetFragment.createInstance(context, ::onNextCreatePromoCode, ::getPromoCodeString, getPromoCodePrefix).apply {
-            setCloseClickListener {
-                VoucherCreationTracking.sendCreateVoucherClickTracking(
-                        step = VoucherCreationStep.TARGET,
-                        action = VoucherCreationAnalyticConstant.EventAction.Click.CLOSE_PRIVATE,
-                        userId = userSession.userId
-                )
-                dismiss()
-            }
-            setOnDismissListener {
-                onDismissBottomSheet(CreateVoucherBottomSheetType.CREATE_PROMO_CODE)
-            }
-        }
     }
 
     private val voucherDisplayBottomSheetFragment by lazy {
@@ -127,6 +109,10 @@ class MerchantVoucherTargetFragment : BaseListFragment<Visitable<VoucherTargetTy
     private var lastClickedVoucherDisplayType = VoucherTargetCardType.PUBLIC
     private var currentTargetType = VoucherTargetType.PUBLIC
 
+    private val extraWidget: List<Visitable<VoucherTargetTypeFactory>> by lazy {
+        listOf(voucherTargetWidget)
+    }
+
     override fun getScreenName(): String = ""
 
     override fun initInjector() {
@@ -144,10 +130,6 @@ class MerchantVoucherTargetFragment : BaseListFragment<Visitable<VoucherTargetTy
 
     override fun getRecyclerViewResourceId(): Int = R.id.recycler_view
 
-    private val extraWidget: List<Visitable<VoucherTargetTypeFactory>> by lazy {
-        listOf(voucherTargetWidget)
-    }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_merchant_voucher_target, container, false)
     }
@@ -161,6 +143,14 @@ class MerchantVoucherTargetFragment : BaseListFragment<Visitable<VoucherTargetTy
                     userSession.isLoggedIn,
                     userSession.userId)
         }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        childFragmentManager.dismissBottomSheetWithTags(
+                CreatePromoCodeBottomSheetFragment.TAG,
+                VoucherDisplayBottomSheetFragment.TAG
+        )
     }
 
     private fun BottomSheetUnify.onDismissBottomSheet(bottomSheetType: CreateVoucherBottomSheetType) {
@@ -201,14 +191,9 @@ class MerchantVoucherTargetFragment : BaseListFragment<Visitable<VoucherTargetTy
             }
             CreateVoucherBottomSheetType.VOUCHER_DISPLAY -> {
                 onBeforeShowBottomSheet(bottomSheetType)
-                bottomSheetViewArray.get(bottomSheetType.key)?.show(childFragmentManager, bottomSheetType.tag)
+                voucherDisplayBottomSheetFragment.show(childFragmentManager, bottomSheetType.tag)
             }
         }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        viewModel.flush()
     }
 
     private fun setupView() {
@@ -217,7 +202,6 @@ class MerchantVoucherTargetFragment : BaseListFragment<Visitable<VoucherTargetTy
             observeLiveData()
             setupTextFieldWidget()
             setupNextButton()
-            setupBottomSheet()
             if (!isCreateNew) {
                 setupReloadData()
             }
@@ -361,17 +345,6 @@ class MerchantVoucherTargetFragment : BaseListFragment<Visitable<VoucherTargetTy
                 }
             }
         }
-    }
-
-    private fun setupBottomSheet() {
-        context?.run {
-            addBottomSheetView(CreateVoucherBottomSheetType.CREATE_PROMO_CODE, createPromoCodeBottomSheetFragment)
-            addBottomSheetView(CreateVoucherBottomSheetType.VOUCHER_DISPLAY, voucherDisplayBottomSheetFragment)
-        }
-    }
-
-    private fun addBottomSheetView (bottomSheetType: CreateVoucherBottomSheetType, bottomSheetFragment: BottomSheetUnify) {
-        bottomSheetViewArray.put(bottomSheetType.key, bottomSheetFragment)
     }
 
     private fun setupReloadData() {

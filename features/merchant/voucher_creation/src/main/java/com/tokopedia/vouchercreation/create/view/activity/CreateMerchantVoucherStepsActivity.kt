@@ -35,6 +35,7 @@ import com.tokopedia.vouchercreation.common.plt.MvcPerformanceMonitoring
 import com.tokopedia.vouchercreation.common.plt.MvcPerformanceMonitoringInterface
 import com.tokopedia.vouchercreation.common.plt.MvcPerformanceMonitoringType
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils
+import com.tokopedia.vouchercreation.common.utils.dismissBottomSheetWithTags
 import com.tokopedia.vouchercreation.create.domain.model.validation.VoucherTargetType
 import com.tokopedia.vouchercreation.create.view.adapter.CreateMerchantVoucherStepsAdapter
 import com.tokopedia.vouchercreation.create.view.dialog.CreateVoucherCancelDialog
@@ -293,7 +294,10 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        viewModel.flush()
+        supportFragmentManager.dismissBottomSheetWithTags(
+                TipsAndTrickBottomSheetFragment.TAG,
+                ChangeDetailPromptBottomSheetFragment.TAG
+        )
     }
 
     private fun initInjector() {
@@ -326,7 +330,7 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
             try {
                 addRightIcon(R.drawable.ic_tips).setOnClickListener {
                     KeyboardHandler.hideSoftKeyboard(this@CreateMerchantVoucherStepsActivity)
-                    bottomSheet.show(supportFragmentManager, TipsAndTrickBottomSheetFragment::javaClass.name)
+                    bottomSheet.show(supportFragmentManager, TipsAndTrickBottomSheetFragment.TAG)
                     VoucherCreationTracking.sendCreateVoucherClickTracking(
                             step = currentStepPosition,
                             action = VoucherCreationAnalyticConstant.EventAction.Click.LAMP_ICON,

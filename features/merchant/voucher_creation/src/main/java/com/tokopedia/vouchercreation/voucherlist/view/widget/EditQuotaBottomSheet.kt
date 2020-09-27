@@ -56,6 +56,8 @@ class EditQuotaBottomSheet : BottomSheetUnify() {
         private const val VOUCHER = "voucher"
 
         private const val ERROR_MESSAGE = "Error edit voucher quota"
+
+        const val TAG = "EditQuotaBottomSheet"
     }
 
     private val voucher by lazy {
@@ -254,7 +256,7 @@ class EditQuotaBottomSheet : BottomSheetUnify() {
     }
 
     fun show(fm: FragmentManager) {
-        show(fm, EditQuotaBottomSheet::class.java.simpleName)
+        show(fm, TAG)
     }
 
     fun setOnSuccessUpdateVoucher(action: () -> Unit): EditQuotaBottomSheet {

@@ -29,7 +29,7 @@ class SortBottomSheet : BottomSheetUnify() {
             setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
         }
 
-        val TAG: String = SortBottomSheet::class.java.simpleName
+        const val TAG: String = "SortBottomSheet"
 
         fun getMvcSortItems(context: Context): MutableList<SortUiModel> {
             return mutableListOf(
