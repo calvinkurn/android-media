@@ -3,6 +3,7 @@ package com.tokopedia.product.addedit.common.util
 import com.tokopedia.mediauploader.domain.UploaderUseCase
 import com.tokopedia.network.constant.ResponseStatus
 import com.tokopedia.network.data.model.response.ResponseV4ErrorException
+import com.tokopedia.network.exception.MessageErrorException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 
@@ -19,11 +20,10 @@ object AddEditProductUploadErrorHandler {
     private const val ERROR_UPLOADER_NETWORK_ERROR = "networkError"
 
     fun getErrorName(e: Throwable?): String {
-        if (e == null) {
-            ERROR_UNKNOWN
-        }
         return if (e is ResponseV4ErrorException) {
             e.errorList.firstOrNull() ?: ERROR_UNKNOWN
+        } else if (e is MessageErrorException) {
+            e.localizedMessage
         } else if (e is UnknownHostException) {
             ERROR_NO_INTERNET
         } else if (e is SocketTimeoutException) {
@@ -50,6 +50,10 @@ object AddEditProductUploadErrorHandler {
         } else {
             ERROR_UNKNOWN
         }
+    }
+
+    fun isValidationError(e: Throwable?): Boolean {
+        return e is MessageErrorException
     }
 
     fun getUploadImageErrorName(messageFromUploader: String): String {

@@ -14,10 +14,12 @@ import com.tokopedia.product.addedit.common.util.AddEditProductUploadErrorHandle
 import com.tokopedia.product.addedit.draft.domain.usecase.DeleteProductDraftUseCase
 import com.tokopedia.product.addedit.draft.domain.usecase.SaveProductDraftUseCase
 import com.tokopedia.product.addedit.draft.mapper.AddEditProductMapper.mapProductInputModelDetailToDraft
+import com.tokopedia.product.addedit.preview.domain.usecase.ProductAddUseCase
 import com.tokopedia.product.addedit.preview.domain.usecase.ProductEditUseCase
 import com.tokopedia.product.addedit.preview.presentation.activity.AddEditProductPreviewActivity
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
+import com.tokopedia.product.addedit.tracking.ProductAddUploadTracking
 import com.tokopedia.product.addedit.tracking.ProductEditShippingTracking
 import com.tokopedia.product.addedit.tracking.ProductEditUploadTracking
 import com.tokopedia.product.addedit.variant.presentation.model.VariantInputModel
@@ -129,14 +131,19 @@ class AddEditProductEditService : AddEditProductBaseService() {
             clearProductDraft()
             delay(NOTIFICATION_CHANGE_DELAY)
             setUploadProductDataSuccess()
-            ProductEditShippingTracking.clickFinish(shopId, true)
+            ProductEditUploadTracking.uploadProductFinish(ProductEditUseCase.QUERY_NAME, shopId, true)
         }, onError = { throwable ->
             delay(NOTIFICATION_CHANGE_DELAY)
             val errorMessage = getErrorMessage(throwable)
             setUploadProductDataError(errorMessage)
 
             logError(productEditUseCase.params, throwable)
-            ProductEditShippingTracking.clickFinish(shopId, false, throwable.message ?: "", errorMessage)
+            ProductEditUploadTracking.uploadProductFinish(
+                    ProductEditUseCase.QUERY_NAME,
+                    shopId,
+                    false,
+                    AddEditProductUploadErrorHandler.isValidationError(throwable),
+                    AddEditProductUploadErrorHandler.getErrorName(throwable))
         })
     }
 

@@ -6,10 +6,10 @@ import com.tokopedia.product.addedit.tracking.ProductAddEditTracking.sendAddProd
 object ProductAddUploadTracking {
     private const val SCREEN = "/addproductpage - shipping"
     private const val TYPE_SERVER_TOME = "tome server error"
-    private const val TYPE_SERVER_VALIDATION_TOME = "validation server error"
+    private const val TYPE_SERVER_VALIDATION_TOME = "tome validation error"
     private const val TYPE_SERVER_UPLOADPEDIA = "uploadpedia server error"
 
-    fun uploadProductFinish(category: String, shopId: String, isSuccess: Boolean, isValidationError: Boolean, errorName: String = "") {
+    fun uploadProductFinish(category: String, shopId: String, isSuccess: Boolean, isValidationError: Boolean = false, errorName: String = "") {
         if (isSuccess) {
             sendAddProductClick(SCREEN, shopId, "click finish success", "")
         } else {

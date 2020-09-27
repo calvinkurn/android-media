@@ -18,7 +18,6 @@ import com.tokopedia.product.addedit.preview.domain.usecase.ProductAddUseCase
 import com.tokopedia.product.addedit.preview.presentation.activity.AddEditProductPreviewActivity
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
-import com.tokopedia.product.addedit.tracking.ProductAddShippingTracking
 import com.tokopedia.product.addedit.tracking.ProductAddUploadTracking
 import com.tokopedia.product.addedit.variant.presentation.model.VariantInputModel
 import kotlinx.coroutines.Dispatchers
@@ -128,14 +127,19 @@ open class AddEditProductAddService : AddEditProductBaseService() {
             clearProductDraft()
             delay(NOTIFICATION_CHANGE_DELAY)
             setUploadProductDataSuccess()
-            ProductAddShippingTracking.clickFinish(shopId, true)
+            ProductAddUploadTracking.uploadProductFinish(ProductAddUseCase.QUERY_NAME, shopId, true)
         }, onError = { throwable ->
             delay(NOTIFICATION_CHANGE_DELAY)
             val errorMessage = getErrorMessage(throwable)
             setUploadProductDataError(errorMessage)
 
             logError(productAddUseCase.params, throwable)
-            ProductAddShippingTracking.clickFinish(shopId, false, throwable.message ?: "", errorMessage)
+            ProductAddUploadTracking.uploadProductFinish(
+                    ProductAddUseCase.QUERY_NAME,
+                    shopId,
+                    false,
+                    AddEditProductUploadErrorHandler.isValidationError(throwable),
+                    AddEditProductUploadErrorHandler.getErrorName(throwable))
         })
     }
 
