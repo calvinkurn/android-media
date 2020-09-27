@@ -90,7 +90,7 @@ class AddNewAddressTest {
 
     @Test
     fun addAddressNewUserFunnel_PassedAnalyticsTest() {
-        val query = getJsonDataFromAsset(context, "tracker/logistic/addadress_new_user_funnel.json")
+        val query = getJsonDataFromAsset(context, "tracker/logistic/addaddress_new_user_funnel.json")
                 ?: throw AssertionError("Validator Query not found")
         val screenName = "/user/address/create/cart"
         addAddress {
