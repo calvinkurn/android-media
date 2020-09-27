@@ -141,10 +141,9 @@ internal open class ProductWidget(
 
     private fun starReview(view: RemoteViews) {
         if (product.reviewScore == null) return
-        if (product.reviewScore?.isEmpty() == true) return
 
         view.setViewVisibility(R.id.widget_review, View.VISIBLE)
-        view.setTextViewText(R.id.txt_review, product.reviewScore)
+        view.setTextViewText(R.id.txt_review, product.reviewScore.toString())
         view.setTextViewText(R.id.txt_count_review, "(${product.reviewNumber?: "0"})")
 
         base.loadResourceAsBitmap(R.drawable.cm_ic_star_review) {
