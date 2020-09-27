@@ -20,7 +20,7 @@ import java.io.IOException
 
 @MustBeDocumented
 @Retention(AnnotationRetention.SOURCE)
-@StringDef(SocmedPackage.INSTAGRAM, SocmedPackage.WHATSAPP, SocmedPackage.LINE, SocmedPackage.TWITTER, SocmedPackage.MESSENGER, SocmedPackage.FACEBOOK)
+@StringDef(SocmedPackage.INSTAGRAM, SocmedPackage.WHATSAPP, SocmedPackage.LINE, SocmedPackage.TWITTER, SocmedPackage.FACEBOOK)
 annotation class SocmedPackage {
     companion object {
         const val INSTAGRAM = "com.instagram.android"
@@ -28,7 +28,6 @@ annotation class SocmedPackage {
         const val LINE = "jp.naver.line.android"
         const val TWITTER = "com.twitter.android"
         const val FACEBOOK = "com.facebook.katana"
-        const val MESSENGER = "com.facebook.orca"
     }
 }
 
@@ -97,7 +96,7 @@ object SharingUtil {
                         val contentUri = FileProvider.getUriForFile(context, AUTHORITY, internalFile)
                         when(socmed) {
                             Socmed.INSTAGRAM -> {
-                                shareInstagramFeed(context, contentUri, messageString)
+                                shareInstagramFeed(context, contentUri)
                             }
                             Socmed.TWITTER -> {
                                 goToSocialMedia(socmed.packageString, context, contentUri, messageString)
@@ -206,8 +205,7 @@ object SharingUtil {
     }
 
     private fun shareInstagramFeed(context: Context,
-                                   fileUri: Uri,
-                                   messageString: String? = null) {
+                                   fileUri: Uri) {
 
         val intent = context.packageManager.getLaunchIntentForPackage(SocmedPackage.INSTAGRAM)
         if (intent != null) {
@@ -217,7 +215,6 @@ object SharingUtil {
                 flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
                 setPackage(SocmedPackage.INSTAGRAM)
                 try {
-//                    val fileUri = FileProvider.getUriForFile(context, context.applicationContext.packageName+".provider", mediaFile)
                     putExtra(Intent.EXTRA_STREAM, fileUri)
                 } catch (ex: Exception) {
                     ex.printStackTrace()

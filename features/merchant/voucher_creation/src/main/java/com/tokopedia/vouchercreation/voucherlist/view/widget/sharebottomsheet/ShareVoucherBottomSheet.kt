@@ -78,6 +78,7 @@ class ShareVoucherBottomSheet : BottomSheetUnify() {
         return listOf(
                 ShareVoucherUiModel(R.drawable.ic_mvc_link, context?.getString(R.string.mvc_copy_link).toBlankOrString(), SocmedType.COPY_LINK),
                 ShareVoucherUiModel(R.drawable.ic_mvc_instagram, context?.getString(R.string.mvc_instagram).toBlankOrString(), SocmedType.INSTAGRAM),
+                ShareVoucherUiModel(R.drawable.ic_mvc_facebook, context?.getString(R.string.mvc_facebook).toBlankOrString(), SocmedType.FACEBOOK),
                 ShareVoucherUiModel(R.drawable.ic_mvc_whatsapp, context?.getString(R.string.mvc_whatsapp).toBlankOrString(), SocmedType.WHATSAPP),
                 ShareVoucherUiModel(R.drawable.ic_mvc_line, context?.getString(R.string.mvc_line).toBlankOrString(), SocmedType.LINE),
                 ShareVoucherUiModel(R.drawable.ic_mvc_twitter, context?.getString(R.string.mvc_twitter).toBlankOrString(), SocmedType.TWITTER),

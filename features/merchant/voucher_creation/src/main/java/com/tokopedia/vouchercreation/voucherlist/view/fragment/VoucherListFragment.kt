@@ -29,7 +29,6 @@ import com.tokopedia.kotlin.util.DownloadHelper
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -49,7 +48,10 @@ import com.tokopedia.vouchercreation.common.errorhandler.MvcError
 import com.tokopedia.vouchercreation.common.errorhandler.MvcErrorHandler
 import com.tokopedia.vouchercreation.common.exception.VoucherCancellationException
 import com.tokopedia.vouchercreation.common.plt.MvcPerformanceMonitoringListener
-import com.tokopedia.vouchercreation.common.utils.*
+import com.tokopedia.vouchercreation.common.utils.dismissBottomSheetWithTags
+import com.tokopedia.vouchercreation.common.utils.shareVoucher
+import com.tokopedia.vouchercreation.common.utils.showDownloadActionTicker
+import com.tokopedia.vouchercreation.common.utils.showErrorToaster
 import com.tokopedia.vouchercreation.create.domain.model.validation.VoucherTargetType
 import com.tokopedia.vouchercreation.create.view.activity.CreateMerchantVoucherStepsActivity
 import com.tokopedia.vouchercreation.create.view.enums.VoucherCreationStep
@@ -72,7 +74,6 @@ import com.tokopedia.vouchercreation.voucherlist.view.widget.filterbottomsheet.F
 import com.tokopedia.vouchercreation.voucherlist.view.widget.filterbottomsheet.FilterBy
 import com.tokopedia.vouchercreation.voucherlist.view.widget.headerchips.ChipType
 import com.tokopedia.vouchercreation.voucherlist.view.widget.sharebottomsheet.ShareVoucherBottomSheet
-import com.tokopedia.vouchercreation.voucherlist.view.widget.sharebottomsheet.SocmedType
 import com.tokopedia.vouchercreation.voucherlist.view.widget.sortbottomsheet.SortBottomSheet
 import com.tokopedia.vouchercreation.voucherlist.view.widget.sortbottomsheet.SortBy
 import kotlinx.android.synthetic.main.fragment_mvc_voucher_list.*
@@ -597,65 +598,10 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
         ShareVoucherBottomSheet.createInstance()
                 .setOnItemClickListener { socmedType ->
                     context?.run {
-                        shareVoucher(socmedType, voucher)
+                        shopBasicData?.shareVoucher(this, socmedType, voucher, userSession.userId)
                     }
                 }
                 .show(childFragmentManager)
-    }
-
-    private fun shareVoucher(@SocmedType socmedType: Int,
-                             voucher: VoucherUiModel) {
-        context?.run {
-            shopBasicData?.let { shopData ->
-                val shareUrl = "${TokopediaUrl.getInstance().WEB}${shopData.shopDomain}"
-                val shareMessage =
-                        if (voucher.isPublic) {
-                            StringBuilder().apply {
-                                append(String.format(
-                                        getString(R.string.mvc_share_message_public).toBlankOrString(),
-                                        voucher.typeFormatted,
-                                        shopData.shopName))
-                                append("\n")
-                                append(shareUrl)
-                            }.toString()
-                        } else {
-                            StringBuilder().apply {
-                                append(String.format(
-                                        getString(R.string.mvc_share_message_private).toBlankOrString(),
-                                        voucher.typeFormatted,
-                                        voucher.code,
-                                        shopData.shopName))
-                                append("\n")
-                                append(shareUrl)
-                            }.toString()
-                        }
-                when(socmedType) {
-                    SocmedType.COPY_LINK -> {
-                        SharingUtil.copyTextToClipboard(this, COPY_PROMO_CODE_LABEL, shareMessage)
-                    }
-                    SocmedType.INSTAGRAM -> {
-                        SharingUtil.shareToSocialMedia(Socmed.INSTAGRAM, this, voucher.imageSquare)
-                    }
-                    SocmedType.WHATSAPP -> {
-                        SharingUtil.shareToSocialMedia(Socmed.WHATSAPP, this, voucher.imageSquare, shareMessage)
-                    }
-                    SocmedType.LINE -> {
-                        SharingUtil.shareToSocialMedia(Socmed.LINE, this, voucher.imageSquare, shareMessage)
-                    }
-                    SocmedType.TWITTER -> {
-                        SharingUtil.shareToSocialMedia(Socmed.TWITTER, this, voucher.imageSquare, shareMessage)
-                    }
-                    SocmedType.LAINNYA -> {
-                        SharingUtil.otherShare(this, shareMessage)
-                    }
-                }
-            }
-            VoucherCreationTracking.sendShareClickTracking(
-                    socmedType = socmedType,
-                    userId = userSession.userId,
-                    isDetail = false
-            )
-        }
     }
 
     private fun showDownloadBottomSheet(voucher: VoucherUiModel) {
