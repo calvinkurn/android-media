@@ -3,7 +3,9 @@ package com.tokopedia.developer_options.presentation.feedbackpage.ui
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.developer_options.api.ApiClient
 import com.tokopedia.developer_options.api.FeedbackApiInterface
+import com.tokopedia.developer_options.api.model.CategoriesMapper
 import com.tokopedia.developer_options.api.request.FeedbackFormRequest
+import com.tokopedia.developer_options.api.response.CategoriesResponse
 import com.tokopedia.developer_options.api.response.FeedbackFormResponse
 import com.tokopedia.developer_options.api.response.ImageResponse
 import okhttp3.MultipartBody
@@ -13,9 +15,33 @@ import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import rx.subscriptions.CompositeSubscription
 
-class FeedbackPagePresenter(private val compositeSubscription: CompositeSubscription) : BaseDaggerPresenter<FeedbackPageContract.View>(), FeedbackPageContract.Presenter {
+class FeedbackPagePresenter(private val compositeSubscription: CompositeSubscription, val mapper: CategoriesMapper) : BaseDaggerPresenter<FeedbackPageContract.View>(), FeedbackPageContract.Presenter {
 
     private val feedbackApi: FeedbackApiInterface = ApiClient.getAPIService()
+
+    override fun getCategories() {
+        feedbackApi.getCategories()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(object: Subscriber<CategoriesResponse>() {
+                    override fun onNext(t: CategoriesResponse?) {
+                        if (t != null) {
+                            view.categoriesMapper(mapper.mapData(t))
+                        }
+                    }
+
+                    override fun onCompleted() {
+                        //no-op
+                    }
+
+                    override fun onError(e: Throwable?) {
+                        if (e != null) {
+                            view.showError(e)
+                        }
+                    }
+
+                })
+    }
 
     override fun sendFeedbackForm(feedbackFormRequest: FeedbackFormRequest) {
         view.showLoadingDialog()

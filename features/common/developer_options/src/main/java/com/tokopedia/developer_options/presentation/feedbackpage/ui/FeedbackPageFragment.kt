@@ -22,9 +22,12 @@ import com.google.android.material.textfield.TextInputLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.developer_options.R
+import com.tokopedia.developer_options.api.model.CategoriesModel
 import com.tokopedia.developer_options.api.request.FeedbackFormRequest
+import com.tokopedia.developer_options.presentation.feedbackpage.adapter.ImageFeedbackAdapter
 import com.tokopedia.developer_options.presentation.feedbackpage.di.FeedbackPageComponent
 import com.tokopedia.developer_options.presentation.feedbackpage.dialog.LoadingDialog
+import com.tokopedia.developer_options.presentation.feedbackpage.listener.ImageClickListener
 import com.tokopedia.developer_options.presentation.feedbackpage.utils.EXTRA_URI_IMAGE
 import com.tokopedia.developer_options.presentation.preference.Preferences
 import com.tokopedia.screenshot_observer.ScreenshotData
@@ -40,7 +43,7 @@ import java.io.File
 import javax.inject.Inject
 
 
-class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View {
+class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, ImageClickListener {
 
     @Inject
     lateinit var feedbackPagePresenter: FeedbackPagePresenter
@@ -56,6 +59,10 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View {
     private lateinit var compositeSubscription: CompositeSubscription
     private lateinit var myPreferences: Preferences
     private lateinit var tvImage: Typography
+    private val imageAdapter: ImageFeedbackAdapter by lazy {
+        ImageFeedbackAdapter(this)
+    }
+//    private lateinit var spinnerAdapter: CategoriesSpinAdapter
 
     private var deviceInfo: String = ""
     private var androidVersion: String = ""
@@ -126,6 +133,11 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View {
         loadingDialog = context?.let { LoadingDialog(it) }
 
         uriImage = arguments?.getParcelable(EXTRA_URI_IMAGE)
+        feedbackPagePresenter.getCategories()
+
+/*
+        spinnerAdapter =  CategoriesSpinAdapter(context, android.R.layout.simple_spinner_item)
+        bugType.adapter = spinnerAdapter*/
 
         context?.let { ArrayAdapter.createFromResource(it,
                 R.array.bug_type_array,
@@ -164,6 +176,8 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View {
             codeName.startsWith("P") -> { codeName = getString(R.string.pie) }
             codeName.startsWith("Q") -> { codeName = getString(R.string.android10) }
         }
+
+        feedbackPagePresenter.getCategories()
 
         deviceInfo = (StringBuilder().append(Build.MANUFACTURER).append(" ").append(Build.MODEL).toString())
         androidVersion = codeName
@@ -243,7 +257,8 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View {
             if(validate) {
                 val issueType = bugType.selectedItem.toString()
                 emailTokopedia = "$emailText@tokopedia.com"
-                feedbackPagePresenter.sendFeedbackForm(requestMapper(emailTokopedia, affectedPageText, journeyText, issueType, actualResultText, expectedResultText))
+                feedbackPagePresenter.sendAttachment( 61, checkUriImage())
+//                feedbackPagePresenter.sendFeedbackForm(requestMapper(emailTokopedia, affectedPageText, journeyText, issueType, actualResultText, expectedResultText))
             }
         }
 
@@ -373,6 +388,9 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View {
         Toast.makeText(activity, throwable.toString(), Toast.LENGTH_SHORT).show()
     }
 
+    override fun categoriesMapper(data: CategoriesModel) {
+    }
+
     private fun checkUriImage(): MultipartBody.Part {
         val screenshotData = uriImage?.let { handleItem(it) }
         val file = File(screenshotData?.path)
@@ -400,5 +418,9 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View {
                 MediaStore.Images.Media.DISPLAY_NAME,
                 MediaStore.Images.Media.DATA
         )
+    }
+
+    override fun addImageClick() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 }
