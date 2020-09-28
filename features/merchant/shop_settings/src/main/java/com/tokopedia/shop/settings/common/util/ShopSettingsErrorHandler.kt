@@ -26,4 +26,12 @@ object ShopSettingsErrorHandler {
         }
     }
 
+    fun logExceptionToCrashlytics(m: String) {
+        try {
+            Crashlytics.log(m)
+        } catch (e: IllegalStateException) {
+            e.printStackTrace()
+        }
+    }
+
 }

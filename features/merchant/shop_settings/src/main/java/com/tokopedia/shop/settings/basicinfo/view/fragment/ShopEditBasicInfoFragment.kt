@@ -382,8 +382,14 @@ class ShopEditBasicInfoFragment: Fragment() {
         observe(viewModel.updateShopBasicData) {
             when(it) {
                 is Success -> {
-                    it.data.graphQLSuccessMessage?.message?.let {
-                        onSuccessUpdateShopBasicData(it)
+                    it.data.graphQLSuccessMessage?.let { graphQlSuccesMessage ->
+                        graphQlSuccesMessage.message?.let { message ->
+                            if (graphQlSuccesMessage.isSuccess) {
+                                onSuccessUpdateShopBasicData(message)
+                            } else {
+                                onErrorUpdateShopBasicData(message)
+                            }
+                        }
                     }
                 }
                 is Fail -> onErrorUpdateShopBasicData(it.throwable)
@@ -582,6 +588,14 @@ class ShopEditBasicInfoFragment: Fragment() {
         ShopSettingsErrorHandler.logExceptionToCrashlytics(throwable)
     }
 
+    private fun onErrorUpdateShopBasicData(message: String) {
+        hideSubmitLoading()
+        showSnackBarErrorSubmitEdit(message)
+        tvSave.isEnabled = true
+        ShopSettingsErrorHandler.logMessage(message)
+        ShopSettingsErrorHandler.logExceptionToCrashlytics(message)
+    }
+
     private fun showShopInformation(shopBasicDataModel: ShopBasicDataModel?) {
         shopBasicDataModel?.let {
             this.shopBasicDataModel = it.apply {
@@ -660,6 +674,13 @@ class ShopEditBasicInfoFragment: Fragment() {
         val message = ErrorHandler.getErrorMessage(context, throwable)
         Toaster.make(container, message, Snackbar.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
             getString(com.tokopedia.abstraction.R.string.title_try_again), View.OnClickListener {
+            onSaveButtonClicked()
+        })
+    }
+
+    private fun showSnackBarErrorSubmitEdit(message: String) {
+        Toaster.make(container, message, Snackbar.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
+                getString(com.tokopedia.abstraction.R.string.title_try_again), View.OnClickListener {
             onSaveButtonClicked()
         })
     }
