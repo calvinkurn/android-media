@@ -43,29 +43,31 @@ class ImpresionTask {
         taskAlert = getInstance(className!!)
     }
 
-    fun execute(url: String) {
-        GlobalScope.launch(Dispatchers.IO){
-            try {
-                if (taskAlert != null) {
-                    taskAlert!!.track(url, fileName, methodName, lineNumber)
-                }
-                val request = HttpRequestBuilder()
-                        .setBaseUrl(url)
-                        .addHeader(KEY_SESSION_ID, if (userSession != null) userSession!!.deviceId else "")
-                        .setMethod(HttpMethod.GET)
-                        .build()
-                var result = RawHttpRequestExecutor.newInstance(request).executeAsGetRequest()
-                if (impressionListener != null) {
-                    if (result != null) {
-                        impressionListener!!.onSuccess()
-                    } else {
-                        impressionListener!!.onFailed()
+    fun execute(url: String?) {
+        url?.let {
+            GlobalScope.launch(Dispatchers.IO){
+                try {
+                    if (taskAlert != null) {
+                        taskAlert!!.track(url, fileName, methodName, lineNumber)
                     }
+                    val request = HttpRequestBuilder()
+                            .setBaseUrl(url)
+                            .addHeader(KEY_SESSION_ID, if (userSession != null) userSession!!.deviceId else "")
+                            .setMethod(HttpMethod.GET)
+                            .build()
+                    var result = RawHttpRequestExecutor.newInstance(request).executeAsGetRequest()
+                    if (impressionListener != null) {
+                        if (result != null) {
+                            impressionListener!!.onSuccess()
+                        } else {
+                            impressionListener!!.onFailed()
+                        }
+                    }
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                } catch (e: RuntimeException) {
+                    e.printStackTrace()
                 }
-            } catch (e: IOException) {
-                e.printStackTrace()
-            } catch (e: RuntimeException) {
-                e.printStackTrace()
             }
         }
     }
