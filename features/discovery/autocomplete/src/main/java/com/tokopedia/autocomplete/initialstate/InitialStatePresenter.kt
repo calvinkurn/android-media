@@ -108,7 +108,7 @@ class InitialStatePresenter @Inject constructor(
         }
     }
 
-    private fun getDataLayerForRecentView(list: List<InitialStateItem>): MutableList<Any> {
+    private fun getDataLayerForRecentView(list: List<InitialStateItem>): List<Any> {
         val dataLayerList: MutableList<Any> = mutableListOf()
 
         list.forEachIndexed { index, item ->
@@ -118,19 +118,17 @@ class InitialStatePresenter @Inject constructor(
         return dataLayerList
     }
 
-    private fun checkToImpressSeeMoreRecentSearch() {
-        recentSearchList?.let{
-            if (it.size >= RECENT_SEARCH_SEE_MORE_LIMIT) view?.onSeeMoreRecentSearchImpressed(getUserId())
-        }
+    private fun onImpressSeeMoreRecentSearch() {
+        view?.onSeeMoreRecentSearchImpressed(getUserId())
     }
 
-    private fun onRecentSearchImpressed(list: List<InitialStateItem>) {
+    private fun onRecentSearchImpressed(list: List<Any>) {
         list.withNotEmpty{
-            view?.onRecentSearchImpressed(getDataLayerForPromo(this))
+            view?.onRecentSearchImpressed(this)
         }
     }
 
-    private fun getDataLayerForPromo(list: List<InitialStateItem>): MutableList<Any> {
+    private fun getDataLayerForPromo(list: List<InitialStateItem>): List<Any> {
         val dataLayerList: MutableList<Any> = mutableListOf()
 
         list.forEachIndexed { index, item ->
@@ -194,7 +192,7 @@ class InitialStatePresenter @Inject constructor(
     }
 
     private fun addRecentSearchDataWithoutSeeMoreButton(listVisitable: MutableList<Visitable<*>>, listInitialStateItem: List<InitialStateItem>) {
-        onRecentSearchImpressed(listInitialStateItem)
+        onRecentSearchImpressed(getDataLayerForPromo(listInitialStateItem))
         listVisitable.add(listInitialStateItem.convertToRecentSearchViewModel())
     }
 
@@ -202,10 +200,11 @@ class InitialStatePresenter @Inject constructor(
         recentSearchList = listInitialStateItem as MutableList<InitialStateItem>
 
         val recentSearchToBeShown = listInitialStateItem.take(RECENT_SEARCH_SEE_MORE_LIMIT)
-        onRecentSearchImpressed(recentSearchToBeShown)
+        onRecentSearchImpressed(getDataLayerForPromo(recentSearchToBeShown))
 
         listVisitable.add(recentSearchToBeShown.convertToRecentSearchViewModel())
         listVisitable.add(createRecentSearchSeeMoreButton())
+        onImpressSeeMoreRecentSearch()
     }
 
     private fun MutableList<Visitable<*>>.insertTitle(title: String): List<Visitable<*>> {
@@ -451,7 +450,8 @@ class InitialStatePresenter @Inject constructor(
         removeSeeMoreRecentSearch()
 
         recentSearchList?.let { recentSearchList ->
-            onRecentSearchImpressed(recentSearchList.takeLast(recentSearchList.size - RECENT_SEARCH_SEE_MORE_LIMIT))
+            val recentSearchToImpress = getDataLayerForPromo(recentSearchList)
+            onRecentSearchImpressed(recentSearchToImpress.takeLast(recentSearchList.size - RECENT_SEARCH_SEE_MORE_LIMIT))
 
             val recentSearchViewModel = recentSearchList.convertToRecentSearchViewModel()
 
