@@ -1,4 +1,4 @@
-package com.tokopedia.developer_options.api.response
+package com.tokopedia.developer_options.presentation.feedbackpage.domain.response
 
 import com.google.gson.annotations.SerializedName
 

@@ -1,4 +1,4 @@
-package com.tokopedia.developer_options.api.request
+package com.tokopedia.developer_options.presentation.feedbackpage.domain.request
 
 data class FeedbackFormRequest(
         var platformID: Int,
