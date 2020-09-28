@@ -1,9 +1,9 @@
 package com.tokopedia.developer_options.api
 
-import com.tokopedia.developer_options.api.request.FeedbackFormRequest
-import com.tokopedia.developer_options.api.response.CategoriesResponse
-import com.tokopedia.developer_options.api.response.FeedbackFormResponse
-import com.tokopedia.developer_options.api.response.ImageResponse
+import com.tokopedia.developer_options.presentation.feedbackpage.domain.request.FeedbackFormRequest
+import com.tokopedia.developer_options.presentation.feedbackpage.domain.response.CategoriesResponse
+import com.tokopedia.developer_options.presentation.feedbackpage.domain.response.FeedbackFormResponse
+import com.tokopedia.developer_options.presentation.feedbackpage.domain.response.ImageResponse
 import okhttp3.MultipartBody
 import okhttp3.ResponseBody
 import retrofit2.http.*
