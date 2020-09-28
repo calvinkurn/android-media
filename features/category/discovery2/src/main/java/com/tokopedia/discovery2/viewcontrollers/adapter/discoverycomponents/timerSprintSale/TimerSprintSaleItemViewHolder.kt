@@ -93,6 +93,7 @@ class TimerSprintSaleItemViewHolder(itemView: View, private val fragment: Fragme
     override fun removeObservers(lifecycleOwner: LifecycleOwner?) {
         super.removeObservers(lifecycleOwner)
         lifecycleOwner?.let { it ->
+            timerSprintSaleItemViewModel.stopTimer()
             timerSprintSaleItemViewModel.getComponentLiveData().removeObservers(it)
             timerSprintSaleItemViewModel.getTimerData().removeObservers(it)
             timerSprintSaleItemViewModel.refreshPage().removeObservers(it)
