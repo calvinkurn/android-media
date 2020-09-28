@@ -46,8 +46,11 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
     val productDiscussionMostHelpfulMap: ProductDiscussionMostHelpfulDataModel?
         get() = mapOfData[ProductDetailConstant.DISCUSSION_FAQ] as? ProductDiscussionMostHelpfulDataModel
 
-    val productReviewMap: ProductMostHelpfulReviewDataModel?
+    val productReviewOldMap: ProductMostHelpfulReviewDataModel?
         get() = mapOfData[ProductDetailConstant.MOST_HELPFUL_REVIEW] as? ProductMostHelpfulReviewDataModel
+
+    val productReviewMap: ProductMostHelpfulReviewDataModel?
+        get() = mapOfData[ProductDetailConstant.REVIEW] as? ProductMostHelpfulReviewDataModel
 
     val productTradeinMap: ProductGeneralInfoDataModel?
         get() = mapOfData[ProductDetailConstant.TRADE_IN] as? ProductGeneralInfoDataModel
@@ -144,9 +147,9 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
 
             miniSocialProofMap?.run {
                 rating = it.basic.stats.rating
-                ratingCount = it.basic.stats.countReview
-                talkCount = it.basic.stats.countTalk
-                paymentVerifiedCount = it.basic.txStats.itemSoldPaymentVerified.toInt()
+                ratingCount = it.basic.stats.countReview.toIntOrZero()
+                talkCount = it.basic.stats.countTalk.toIntOrZero()
+                paymentVerifiedCount = it.basic.txStats.itemSoldPaymentVerified.toIntOrZero()
             }
 
             productInfoMap?.run {
@@ -160,7 +163,12 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
             }
 
             productReviewMap?.run {
-                totalRating = it.basic.stats.countReview
+                totalRating = it.basic.stats.countReview.toIntOrZero()
+                ratingScore = it.basic.stats.rating
+            }
+
+            productReviewOldMap?.run {
+                totalRating = it.basic.stats.countReview.toIntOrZero()
                 ratingScore = it.basic.stats.rating
             }
 
@@ -248,11 +256,17 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
             }
 
             shopCredibility?.run {
-                shopInfo = it.shopInfo
+                shopLastActive = it.shopInfo.shopLastActive
+                shopName = it.shopInfo.shopCore.name
+                shopAva = it.shopInfo.shopAssets.avatar
+                shopLocation = it.shopInfo.location
+                shopActiveProduct = it.shopInfo.activeProduct.toIntOrZero()
+                shopCreated = it.shopInfo.createdInfo.shopCreated
                 isGoApotik = it.isGoApotik
                 shopSpeed = it.shopSpeed
                 shopChatSpeed = it.shopChatSpeed.toIntOrZero()
                 shopRating = it.shopRating
+                isFavorite = it.shopInfo.favoriteData.alreadyFavorited == ProductDetailConstant.ALREADY_FAVORITE_SHOP
             }
 
             orderPriorityMap?.run {
@@ -311,8 +325,13 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
                 imageReviews = it.imageReviews
             }
 
+            productReviewOldMap?.run {
+                listOfReviews = it.helpfulReviews
+                imageReviews = it.imageReviews
+            }
+
             mediaMap?.run {
-                shouldShowImageReview = it.imageReviews.isNotEmpty()
+                shouldShowImageReview = it.imageReviews?.isNotEmpty() ?: false
             }
 
             productDiscussionMostHelpfulMap?.run {
@@ -373,8 +392,21 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
         }
     }
 
+    fun successUpdateShopFollow(isFavorite: Boolean) {
+        shopInfoMap?.isFavorite = !isFavorite
+        shopInfoMap?.enableButtonFavorite = true
+
+        shopCredibility?.isFavorite = !isFavorite
+        shopCredibility?.enableButtonFavorite = true
+    }
+
+    fun failUpdateShopFollow() {
+        shopInfoMap?.enableButtonFavorite = true
+        shopCredibility?.enableButtonFavorite = true
+    }
+
     private fun mapToCardModel(data: RecommendationWidget?): List<ProductCardModel> {
-        if(data == null) return listOf()
+        if (data == null) return listOf()
         return data.recommendationItemList.map {
             ProductCardModel(
                     slashedPrice = it.slashedPrice,
@@ -407,7 +439,7 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
         }
     }
 
-    private fun mapToAnnotateChip(data: RecommendationWidget): List<AnnotationChip>{
+    private fun mapToAnnotateChip(data: RecommendationWidget): List<AnnotationChip> {
         return data.recommendationFilterChips.map {
             AnnotationChip(it)
         }
