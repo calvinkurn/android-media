@@ -208,7 +208,7 @@ class TopChatRoomPresenter @Inject constructor(
             }
             EVENT_TOPCHAT_REPLY_MESSAGE -> {
                 if (!isInTheMiddleOfThePage()) {
-                    view?.removeBroadcastHandler()
+                    view?.onSendAndReceiveMessage()
                     onReplyMessage(pojo)
                     newUnreadMessage = 0
                     view?.hideUnreadMessage()
