@@ -125,7 +125,6 @@ class ShopEditBasicInfoFragment: Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-        removeObservers()
         viewModel.detachView()
     }
 
@@ -152,16 +151,6 @@ class ShopEditBasicInfoFragment: Fragment() {
             supportActionBar?.setDisplayShowTitleEnabled(true)
             supportActionBar?.setTitle(getString(R.string.shop_settings_basic_info_title))
         }
-    }
-
-    private fun removeObservers() {
-        viewModel.shopBasicData.removeObservers(viewLifecycleOwner)
-        viewModel.uploadShopImage.removeObservers(viewLifecycleOwner)
-        viewModel.updateShopBasicData.removeObservers(viewLifecycleOwner)
-        viewModel.allowShopNameDomainChanges.removeObservers(viewLifecycleOwner)
-        viewModel.validateShopName.removeObservers(viewLifecycleOwner)
-        viewModel.validateShopDomain.removeObservers(viewLifecycleOwner)
-        viewModel.shopDomainSuggestion.removeObservers(viewLifecycleOwner)
     }
 
     private fun setupTextField() {
