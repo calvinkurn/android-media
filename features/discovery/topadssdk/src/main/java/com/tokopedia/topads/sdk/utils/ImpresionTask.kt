@@ -23,10 +23,15 @@ class ImpresionTask {
     private var lineNumber: Int = 0
 
     init {
-        var element = Thread.currentThread().stackTrace[4]
-        fileName = element.fileName
-        methodName = element.methodName
-        lineNumber = element.lineNumber
+        try {
+            Thread.currentThread().stackTrace[4].let {
+                fileName = it.fileName
+                methodName = it.methodName
+                lineNumber = it.lineNumber
+            }
+        }catch (e: Exception){
+            e.printStackTrace()
+        }
     }
 
     constructor(className: String?) {
