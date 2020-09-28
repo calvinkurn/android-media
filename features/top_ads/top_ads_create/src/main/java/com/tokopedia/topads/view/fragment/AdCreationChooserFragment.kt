@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
+import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.topads.auto.view.activity.EditBudgetAutoAdsActivity
 import com.tokopedia.topads.create.R
 import com.tokopedia.topads.data.response.AdCreationOption
@@ -101,6 +102,8 @@ class AdCreationChooserFragment : BaseDaggerFragment() {
             viewModel.getAutoAdsStatus(this::onSuccessAutoAds)
 
         })
+        icon1.setImageDrawable(view.context.getResDrawable(R.drawable.topads_create_ic_thumb_up))
+        icon2.setImageDrawable(view.context.getResDrawable(R.drawable.topads_create_ic_gear))
         auto_ads.setOnClickListener {
             if (adStatus == AUTO) {
                 val intent = Intent(context, EditBudgetAutoAdsActivity::class.java)
@@ -115,7 +118,11 @@ class AdCreationChooserFragment : BaseDaggerFragment() {
                 startActivity(Intent(activity, StepperActivity::class.java))
             }
             if (adStatus == AUTO) {
-                ManualAdsConfirmationSheet.newInstance(activity!!, this::manualAdsClick).show()
+                val sheet = ManualAdsConfirmationSheet.newInstance()
+                sheet.show(fragmentManager!!, "")
+                sheet.manualClick = {
+                    viewModel.postAutoAds(TOGGLE_OFF, dailyBudget)
+                }
             }
         }
     }
@@ -142,10 +149,6 @@ class AdCreationChooserFragment : BaseDaggerFragment() {
 
     override fun initInjector() {
         getComponent(CreateAdsComponent::class.java).inject(this)
-    }
-
-    fun manualAdsClick() {
-        viewModel.postAutoAds(TOGGLE_OFF, dailyBudget)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

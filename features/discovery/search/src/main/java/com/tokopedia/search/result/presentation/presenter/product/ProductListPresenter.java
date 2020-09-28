@@ -45,6 +45,7 @@ import com.tokopedia.search.result.presentation.model.ProductViewModel;
 import com.tokopedia.search.result.presentation.model.RecommendationItemViewModel;
 import com.tokopedia.search.result.presentation.model.RecommendationTitleViewModel;
 import com.tokopedia.search.result.presentation.model.RelatedViewModel;
+import com.tokopedia.search.result.presentation.model.SeparatorViewModel;
 import com.tokopedia.search.result.presentation.model.SearchProductTitleViewModel;
 import com.tokopedia.search.result.presentation.model.SuggestionViewModel;
 import com.tokopedia.search.utils.SearchFilterUtilsKt;
@@ -1116,7 +1117,10 @@ final class ProductListPresenter
     }
 
     private void processBroadMatchAtBottom(@NotNull SearchProductModel.SearchProduct searchProduct, List<Visitable> list) {
-        if (isLastPage(searchProduct)) addBroadMatchToVisitableList(list);
+        if (isLastPage(searchProduct)) {
+            list.add(new SeparatorViewModel());
+            addBroadMatchToVisitableList(list);
+        }
     }
 
     private boolean isLastPage(@NotNull SearchProductModel.SearchProduct searchProduct) {
@@ -1127,7 +1131,9 @@ final class ProductListPresenter
 
     private void processBroadMatchAtTop(List<Visitable> list) {
         List<Visitable> broadMatchVisitableList = new ArrayList<>();
+
         addBroadMatchToVisitableList(broadMatchVisitableList);
+        broadMatchVisitableList.add(new SeparatorViewModel());
 
         list.addAll(list.indexOf(productList.get(0)), broadMatchVisitableList);
     }
@@ -1136,7 +1142,10 @@ final class ProductListPresenter
         if (productList.size() < broadMatchPosition) return;
 
         List<Visitable> broadMatchVisitableList = new ArrayList<>();
+
+        broadMatchVisitableList.add(new SeparatorViewModel());
         addBroadMatchToVisitableList(broadMatchVisitableList);
+        broadMatchVisitableList.add(new SeparatorViewModel());
 
         Visitable productItemAtBroadMatchPosition = productList.get(broadMatchPosition - 1);
         int broadMatchIndex = list.indexOf(productItemAtBroadMatchPosition) + 1;
@@ -1186,7 +1195,7 @@ final class ProductListPresenter
         for (Filter filter : quickFilterData.getFilter()) {
             List<Option> options = filter.getOptions();
             quickFilterOptionList.addAll(options);
-            sortFilterItems.addAll(convertToSortFilterItem(options));
+            sortFilterItems.addAll(convertToSortFilterItem(filter.getTitle(), options));
         }
 
         if (sortFilterItems.size() > 0) {
@@ -1195,16 +1204,16 @@ final class ProductListPresenter
         }
     }
 
-    private List<SortFilterItem> convertToSortFilterItem(List<Option> options) {
+    private List<SortFilterItem> convertToSortFilterItem(String title, List<Option> options) {
         List<SortFilterItem> list = new ArrayList<>();
         for (Option option : options) {
-            list.add(createSortFilterItem(option));
+            list.add(createSortFilterItem(title, option));
         }
         return list;
     }
 
-    private SortFilterItem createSortFilterItem(Option option) {
-        SortFilterItem item = new SortFilterItem(option.getName(), () -> Unit.INSTANCE);
+    private SortFilterItem createSortFilterItem(String title, Option option) {
+        SortFilterItem item = new SortFilterItem(title, () -> Unit.INSTANCE);
 
         setSortFilterItemListener(item, option);
         setSortFilterItemState(item, option);

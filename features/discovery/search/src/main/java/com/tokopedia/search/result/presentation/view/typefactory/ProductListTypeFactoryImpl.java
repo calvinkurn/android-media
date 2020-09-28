@@ -18,6 +18,7 @@ import com.tokopedia.search.result.presentation.model.InspirationCarouselViewMod
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
 import com.tokopedia.search.result.presentation.model.RecommendationItemViewModel;
 import com.tokopedia.search.result.presentation.model.RecommendationTitleViewModel;
+import com.tokopedia.search.result.presentation.model.SeparatorViewModel;
 import com.tokopedia.search.result.presentation.model.SearchProductTitleViewModel;
 import com.tokopedia.search.result.presentation.model.SuggestionViewModel;
 import com.tokopedia.search.result.presentation.model.TickerViewModel;
@@ -34,6 +35,7 @@ import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.ProductEmptySearchViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.RecommendationItemViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.RecommendationTitleViewHolder;
+import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.SeparatorViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.SearchProductTitleViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.SmallGridInspirationCardViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.SmallGridProductItemViewHolder;
@@ -190,6 +192,11 @@ public class ProductListTypeFactoryImpl extends BaseAdapterTypeFactory implement
     }
 
     @Override
+    public int type(SeparatorViewModel separatorViewModel) {
+        return SeparatorViewHolder.LAYOUT;
+    }
+
+    @Override
     public int type(SearchProductTitleViewModel searchProductTitleViewModel) {
         return SearchProductTitleViewHolder.LAYOUT;
     }
@@ -232,6 +239,8 @@ public class ProductListTypeFactoryImpl extends BaseAdapterTypeFactory implement
             viewHolder = new SmallGridInspirationCardViewHolder(view, inspirationCardListener);
         } else if (type == BigGridInspirationCardViewHolder.LAYOUT) {
             viewHolder = new BigGridInspirationCardViewHolder(view, inspirationCardListener);
+        } else if (type == SeparatorViewHolder.LAYOUT) {
+            viewHolder = new SeparatorViewHolder(view);
         } else if (type == SearchProductTitleViewHolder.LAYOUT) {
             viewHolder = new SearchProductTitleViewHolder(view);
         } else {
