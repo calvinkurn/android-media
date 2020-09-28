@@ -11,11 +11,13 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelFragment
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
+import com.tokopedia.common_tradein.utils.TradeInUtils
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tradein.R
@@ -23,7 +25,9 @@ import com.tokopedia.tradein.TradeInAnalytics
 import com.tokopedia.tradein.di.DaggerTradeInComponent
 import com.tokopedia.tradein.di.TradeInComponent
 import com.tokopedia.tradein.view.viewcontrollers.bottomsheet.TradeInImeiHelpBottomSheet.Companion.newInstance
+import com.tokopedia.tradein.viewmodel.TradeInHomeViewModel
 import com.tokopedia.tradein.viewmodel.TradeInInitialPriceViewModel
+import com.tokopedia.utils.currency.CurrencyFormatUtil
 import kotlinx.android.synthetic.main.tradein_initial_price_fragment.*
 import java.util.*
 import javax.inject.Inject
@@ -35,7 +39,7 @@ class TradeInInitialPriceFragment : BaseViewModelFragment<TradeInInitialPriceVie
     @Inject
     lateinit var tradeInAnalytics: TradeInAnalytics
     private lateinit var tradeInInitialPriceViewModel: TradeInInitialPriceViewModel
-    private var tradeInInitialPriceClick: TradeInInitialPriceClick? = null
+    private lateinit var tradeinHomeViewModel: TradeInHomeViewModel
 
     override fun initInject() {
         getComponent().inject(this)
@@ -49,21 +53,16 @@ class TradeInInitialPriceFragment : BaseViewModelFragment<TradeInInitialPriceVie
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        activity?.let { observer ->
+            val viewModelProvider = ViewModelProviders.of(observer, viewModelProvider)
+            tradeinHomeViewModel = viewModelProvider.get(TradeInHomeViewModel::class.java)
+        }
         setUpObservers()
         init()
     }
 
-    fun setListener(tradeInInitialPriceClick: TradeInInitialPriceClick) {
-        this.tradeInInitialPriceClick = tradeInInitialPriceClick
-    }
-
     private fun init() {
         arguments?.apply {
-            product_name.text = getString(EXTRA_PRODUCT_NAME)
-            product_price.text = getString(EXTRA_PRODUCT_PRICE)
-            ImageHandler.loadImageWithoutPlaceholder(product_image, getString(EXTRA_PRODUCT_IMAGE))
-            tradeInInitialPriceViewModel.checkAndroid10(getString(EXTRA_DEVICE_ID))
-            no_imei_value.text = getString(EXTRA_DEVICE_ID)
             setMaxPrice(getString(EXTRA_MAX_PRICE, "-"))
             if (getBoolean(EXTRA_IS_ELIGIBLE, false)) {
                 isElligible()
@@ -71,6 +70,13 @@ class TradeInInitialPriceFragment : BaseViewModelFragment<TradeInInitialPriceVie
                 notElligible(getString(EXTRA_NOT_ELIGIBLE_MESSAGE, ""))
             }
         }
+        tradeInInitialPriceViewModel.checkAndroid10(getTradeInDeviceId())
+        tradeinHomeViewModel.tradeInParams.apply {
+            product_name.text = productName
+            product_price.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(newPrice, true)
+            ImageHandler.loadImageWithoutPlaceholder(product_image, productImage)
+        }
+        no_imei_value.text = getTradeInDeviceId()
         model_value.text = StringBuilder().append(Build.MANUFACTURER).append(" ").append(Build.MODEL).toString()
         typography_imei_help.setOnClickListener {
             val tradeInImeiHelpBottomSheet = newInstance()
@@ -89,10 +95,14 @@ class TradeInInitialPriceFragment : BaseViewModelFragment<TradeInInitialPriceVie
             } else {
                 imei_view.hide()
                 btn_continue.setOnClickListener {
-                    tradeInInitialPriceClick?.onInitialPriceClick(null)
+                    tradeinHomeViewModel.onInitialPriceClick(null)
                 }
             }
         })
+    }
+
+    private fun getTradeInDeviceId(): String? {
+        return TradeInUtils.getDeviceId(context)
     }
 
     private fun handleImei() {
@@ -106,7 +116,7 @@ class TradeInInitialPriceFragment : BaseViewModelFragment<TradeInInitialPriceVie
         btn_continue.setOnClickListener {
             when {
                 edit_text_imei.text.length == 15 -> {
-                    tradeInInitialPriceClick?.onInitialPriceClick(edit_text_imei.text.toString())
+                    tradeinHomeViewModel.onInitialPriceClick(edit_text_imei.text.toString())
                 }
                 edit_text_imei.text.isEmpty() -> {
                     tradeInAnalytics.clickInitialPriceImeiNoInput()
@@ -154,7 +164,7 @@ class TradeInInitialPriceFragment : BaseViewModelFragment<TradeInInitialPriceVie
         save_upto.text = spannableString
     }
 
-    fun isElligible() {
+    private fun isElligible() {
         progress_bar_layout.hide()
         btn_continue.isEnabled = true
     }
@@ -164,31 +174,19 @@ class TradeInInitialPriceFragment : BaseViewModelFragment<TradeInInitialPriceVie
         typography_imei_description.setTextColor(MethodChecker.getColor(context, R.color.tradein_hint_red))
     }
 
-    interface TradeInInitialPriceClick {
-        fun onInitialPriceClick(imei: String?)
-    }
-
     companion object {
-        private const val EXTRA_PRODUCT_NAME = "EXTRA_PRODUCT_NAME"
-        private const val EXTRA_PRODUCT_IMAGE = "EXTRA_PRODUCT_IMAGE"
-        private const val EXTRA_PRODUCT_PRICE = "EXTRA_PRODUCT_PRICE"
-        private const val EXTRA_DEVICE_ID = "EXTRA_DEVICE_ID"
         private const val EXTRA_MAX_PRICE = "EXTRA_MAX_PRICE"
         private const val EXTRA_IS_ELIGIBLE = "EXTRA_IS_ELIGIBLE"
         private const val EXTRA_NOT_ELIGIBLE_MESSAGE = "EXTRA_NOT_ELIGIBLE_MESSAGE"
 
-        fun getFragmentInstance(productName: String?, productImage: String?, productPrice: String, deviceId: String?, maxPrice: String, isEligible: Boolean, notEligibleMessage: String): Fragment {
-            val fragment = TradeInInitialPriceFragment()
-            val bundle = Bundle()
-            bundle.putString(EXTRA_PRODUCT_NAME, productName)
-            bundle.putString(EXTRA_PRODUCT_IMAGE, productImage)
-            bundle.putString(EXTRA_PRODUCT_PRICE, productPrice)
-            bundle.putString(EXTRA_DEVICE_ID, deviceId)
-            bundle.putString(EXTRA_MAX_PRICE, maxPrice)
-            bundle.putString(EXTRA_NOT_ELIGIBLE_MESSAGE, notEligibleMessage)
-            bundle.putBoolean(EXTRA_IS_ELIGIBLE, isEligible)
-            fragment.arguments = bundle
-            return fragment
+        fun getFragmentInstance(maxPrice: String, isEligible: Boolean, notEligibleMessage: String): Fragment {
+            return TradeInInitialPriceFragment().also {
+                it.arguments = Bundle().apply {
+                    putString(EXTRA_MAX_PRICE, maxPrice)
+                    putString(EXTRA_NOT_ELIGIBLE_MESSAGE, notEligibleMessage)
+                    putBoolean(EXTRA_IS_ELIGIBLE, isEligible)
+                }
+            }
         }
     }
 }

@@ -24,7 +24,7 @@ class TradeInImeiHelpBottomSheet : BottomSheetDialogFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.tradein_imei_input_help_bottom_sheet, container, false)
         view.findViewById<ImageView>(R.id.close_button).setOnClickListener {
-            dialog?.hide()
+            dialog?.dismiss()
         }
         view.findViewById<Typography>(R.id.point_1_txt).text = MethodChecker.fromHtml(getString(R.string.tradein_imei_txt_1))
         view.findViewById<Typography>(R.id.point_2_txt).text = MethodChecker.fromHtml(getString(R.string.tradein_imei_txt_2))

@@ -2,6 +2,7 @@ package com.tokopedia.tradein.view.viewcontrollers.activity
 
 import android.os.Bundle
 import android.util.DisplayMetrics
+import android.view.WindowManager
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -65,9 +66,12 @@ class TradeInInfoActivity : BaseViewModelActivity<TradeInInfoViewModel>() {
     }
 
     private fun init() {
+        window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN)
         val dm = DisplayMetrics()
         windowManager.defaultDisplay.getMetrics(dm)
         root_view.minimumHeight = dm.heightPixels.minus(50)
+        root_view.minimumWidth = dm.widthPixels
         close_button.setOnClickListener {
             this.finish()
         }

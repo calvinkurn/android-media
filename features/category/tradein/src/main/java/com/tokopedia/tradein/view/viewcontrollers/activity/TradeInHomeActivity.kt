@@ -25,13 +25,12 @@ import com.tokopedia.authentication.AuthKey
 import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelActivity
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.common_tradein.model.TradeInParams
-import com.tokopedia.common_tradein.utils.TradeInUtils
 import com.tokopedia.iris.IrisAnalytics.Companion.getInstance
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.tradein.TradeinConstants
 import com.tokopedia.tradein.R
 import com.tokopedia.tradein.TradeInAnalytics
 import com.tokopedia.tradein.TradeInGTMConstants
+import com.tokopedia.tradein.TradeinConstants
 import com.tokopedia.tradein.TradeinConstants.Deeplink.TRADEIN_DISCOVERY_INFO_URL
 import com.tokopedia.tradein.di.DaggerTradeInComponent
 import com.tokopedia.tradein.view.viewcontrollers.activity.BaseTradeInActivity.TRADEIN_OFFLINE
@@ -41,16 +40,15 @@ import com.tokopedia.tradein.view.viewcontrollers.fragment.TradeInInitialPriceFr
 import com.tokopedia.tradein.viewmodel.HomeResult
 import com.tokopedia.tradein.viewmodel.HomeResult.PriceState
 import com.tokopedia.tradein.viewmodel.TradeInHomeViewModel
+import com.tokopedia.tradein.viewmodel.liveState.GoToCheckout
+import com.tokopedia.tradein.viewmodel.liveState.GoToHargaFinal
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.utils.currency.CurrencyFormatUtil
 import kotlinx.android.synthetic.main.tradein_home_activity.*
 import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
-class TradeInHomeActivity : BaseViewModelActivity<TradeInHomeViewModel>(),
-        TradeInInitialPriceFragment.TradeInInitialPriceClick,
-        TradeInFinalPriceFragment.TradeInHargaFinalClick {
+class TradeInHomeActivity : BaseViewModelActivity<TradeInHomeViewModel>(){
 
     @Inject
     lateinit var viewModelProvider: ViewModelProvider.Factory
@@ -141,28 +139,10 @@ class TradeInHomeActivity : BaseViewModelActivity<TradeInHomeViewModel>(),
                         notEligibleMessage = getString(R.string.tradein_not_elligible_price_high)
                     }
                     PriceState.DIAGNOSED_VALID -> {
-                        isEligibleForTradein = true
-                        maxPrice = homeResult.displayMessage
-                        minPrice = homeResult.minPrice?.toString() ?: "-"
-                        sendIrisEvent(if (homeResult.maxPrice != null) homeResult.maxPrice else 0, if (homeResult.minPrice != null) homeResult.minPrice else 0)
-                        intent?.data?.lastPathSegment?.let { last ->
-                            if (last == TRADEIN_INITIAL_PRICE) {
-                                deviceDisplayName = homeResult.deviceDisplayName
-                                addFinalPriceFragment()
-                                return@Observer
-                            }
-                        }
-                        replaceFinalPriceFragment()
-                        return@Observer
+                        setDiagnosedValid(homeResult)
                     }
                     PriceState.NOT_DIAGNOSED -> {
-                        isEligibleForTradein = true
-                        maxPrice = homeResult.displayMessage
-                        minPrice = homeResult.minPrice?.toString() ?: "-"
-                        sendIrisEvent(if (homeResult.maxPrice != null) homeResult.maxPrice else 0, if (homeResult.minPrice != null) homeResult.minPrice else 0)
-                        if (inputImei) {
-                            laku6TradeIn.startGUITest()
-                        }
+                        setNotDiagnosed(homeResult)
                     }
                     else -> {
                     }
@@ -174,8 +154,44 @@ class TradeInHomeActivity : BaseViewModelActivity<TradeInHomeViewModel>(),
         })
         viewModel.imeiResponseLiveData.observe(this, Observer {
             (currentFragment as TradeInInitialPriceFragment).setWrongImei(it ?: getString(R.string.wrong_imei_string))
-
         })
+
+        viewModel.tradeInHomeStateLiveData.observe(this, Observer {
+            when(it) {
+                is GoToCheckout -> {
+                    goToCheckout(it.deviceId, it.price)
+                }
+                is GoToHargaFinal -> {
+                    onInitialPriceClick(it.imei)
+                }
+            }
+        })
+    }
+
+    private fun setDiagnosedValid(homeResult: HomeResult) {
+        isEligibleForTradein = true
+        maxPrice = homeResult.displayMessage
+        minPrice = homeResult.minPrice?.toString() ?: "-"
+        sendIrisEvent(if (homeResult.maxPrice != null) homeResult.maxPrice else 0, if (homeResult.minPrice != null) homeResult.minPrice else 0)
+        intent?.data?.lastPathSegment?.let { last ->
+            if (last == TRADEIN_INITIAL_PRICE) {
+                deviceDisplayName = homeResult.deviceDisplayName
+                addFinalPriceFragment()
+                return
+            }
+        }
+        replaceFinalPriceFragment()
+        return
+    }
+
+    private fun setNotDiagnosed(homeResult: HomeResult) {
+        isEligibleForTradein = true
+        maxPrice = homeResult.displayMessage
+        minPrice = homeResult.minPrice?.toString() ?: "-"
+        sendIrisEvent(if (homeResult.maxPrice != null) homeResult.maxPrice else 0, if (homeResult.minPrice != null) homeResult.minPrice else 0)
+        if (inputImei) {
+            laku6TradeIn.startGUITest()
+        }
     }
 
     private fun askPermissions() {
@@ -197,22 +213,19 @@ class TradeInHomeActivity : BaseViewModelActivity<TradeInHomeViewModel>(),
             intent.data?.lastPathSegment?.let {
                 when (it) {
                     TRADEIN_SELLER_CHECK -> {
-                        currentFragment = TradeInAddressFragment.getFragmentInstance(origin, weight, productName, shopId)
+                        currentFragment = TradeInAddressFragment.getFragmentInstance()
                         supportFragmentManager.beginTransaction()
                                 .replace(R.id.tradein_parent_view, currentFragment, "")
                                 .commit()
                     }
                     else -> {
                         currentFragment = TradeInInitialPriceFragment
-                                .getFragmentInstance(productName, productImage,
-                                        CurrencyFormatUtil.convertPriceValueToIdrFormat(newPrice, true),
-                                        getTradeInDeviceId(), maxPrice, isEligibleForTradein, notEligibleMessage)
+                                .getFragmentInstance(maxPrice, isEligibleForTradein, notEligibleMessage)
                         supportFragmentManager.beginTransaction()
                                 .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out, android.R.animator.fade_in, android.R.animator.fade_out)
                                 .add(R.id.tradein_parent_view, currentFragment, TRADEIN_INITIAL_FRAGMENT)
                                 .addToBackStack("")
                                 .commit()
-                        (currentFragment as TradeInInitialPriceFragment).setListener(this@TradeInHomeActivity)
                         tradeInAnalytics.viewInitialPricePage(
                                 deviceDisplayName ?: "none/other"
                                 , minPrice
@@ -227,24 +240,22 @@ class TradeInHomeActivity : BaseViewModelActivity<TradeInHomeViewModel>(),
     private fun replaceFinalPriceFragment() {
         progress_bar_layout.hide()
         deviceDisplayName = StringBuilder().append(Build.MANUFACTURER).append(" ").append(Build.MODEL).toString()
-        currentFragment = TradeInFinalPriceFragment.getFragmentInstance(deviceDisplayName, viewModel.tradeInParams)
+        currentFragment = TradeInFinalPriceFragment.getFragmentInstance(deviceDisplayName)
         supportFragmentManager.beginTransaction()
                 .replace(R.id.tradein_parent_view, currentFragment, TRADEIN_FINAL_PRICE_FRAGMENT)
                 .commit()
-        (currentFragment as TradeInFinalPriceFragment).setListener(this@TradeInHomeActivity)
     }
 
     private fun addFinalPriceFragment() {
         progress_bar_layout.hide()
         if (currentFragment is TradeInFinalPriceFragment)
             return
-        currentFragment = TradeInFinalPriceFragment.getFragmentInstance(deviceDisplayName, viewModel.tradeInParams)
+        currentFragment = TradeInFinalPriceFragment.getFragmentInstance(deviceDisplayName)
         supportFragmentManager.beginTransaction()
                 .add(R.id.tradein_parent_view, currentFragment, TRADEIN_FINAL_PRICE_FRAGMENT)
                 .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out, android.R.animator.fade_in, android.R.animator.fade_out)
                 .addToBackStack("")
                 .commit()
-        (currentFragment as TradeInFinalPriceFragment).setListener(this@TradeInHomeActivity)
     }
 
     override fun getLayoutRes(): Int = R.layout.tradein_home_activity
@@ -289,10 +300,6 @@ class TradeInHomeActivity : BaseViewModelActivity<TradeInHomeViewModel>(),
                     ?: TradeInParams()
     }
 
-    private fun getTradeInDeviceId(): String? {
-        return TradeInUtils.getDeviceId(this)
-    }
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == BaseTradeInActivity.APP_SETTINGS) {
@@ -335,7 +342,7 @@ class TradeInHomeActivity : BaseViewModelActivity<TradeInHomeViewModel>(),
         }
     }
 
-    override fun onInitialPriceClick(imei: String?) {
+    private fun onInitialPriceClick(imei: String?) {
         tradeInAnalytics.clickInitialPriceContinueButton()
         if (imei != null) {
             inputImei = true
@@ -346,7 +353,7 @@ class TradeInHomeActivity : BaseViewModelActivity<TradeInHomeViewModel>(),
         }
     }
 
-    override fun onHargaFinalClick(deviceId: String?, price: String) {
+    private fun goToCheckout(deviceId: String?, price: String) {
         val intent = Intent(TradeinConstants.ACTION_GO_TO_SHIPMENT)
         intent.putExtra(TradeInParams.PARAM_DEVICE_ID, deviceId)
         intent.putExtra(TradeInParams.PARAM_PHONE_TYPE, deviceDisplayName?.toLowerCase(Locale.getDefault()))

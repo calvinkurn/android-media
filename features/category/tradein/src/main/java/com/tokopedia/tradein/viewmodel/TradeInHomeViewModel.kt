@@ -16,6 +16,7 @@ import com.tokopedia.tradein.usecase.CheckMoneyInUseCase
 import com.tokopedia.tradein.usecase.ProcessMessageUseCase
 import com.tokopedia.tradein.view.viewcontrollers.activity.BaseTradeInActivity.TRADEIN_MONEYIN
 import com.tokopedia.tradein.view.viewcontrollers.activity.BaseTradeInActivity.TRADEIN_OFFLINE
+import com.tokopedia.tradein.viewmodel.liveState.*
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import org.json.JSONException
@@ -33,7 +34,8 @@ class TradeInHomeViewModel @Inject constructor(
     var tradeInParams = TradeInParams()
     var imeiStateLiveData: MutableLiveData<Boolean> = MutableLiveData()
     var imeiResponseLiveData: MutableLiveData<String?> = MutableLiveData()
-    var isImei = false
+    var tradeInHomeStateLiveData: MutableLiveData<TradeInHomeState> = MutableLiveData()
+    var imei: String? = null
 
     var tradeInType: Int = TRADEIN_OFFLINE
 
@@ -52,6 +54,9 @@ class TradeInHomeViewModel @Inject constructor(
 
     fun processMessage(intent: Intent) {
         val diagnostics = getDiagnosticData(intent)
+        if (diagnostics.imei.isEmpty()) {
+            diagnostics.imei = imei
+        }
         tradeInParams.deviceId = diagnostics.imei
         launchCatchError(block = {
             setDiagnoseResult(processMessageUseCase.processMessage(tradeInParams, diagnostics), diagnostics)
@@ -183,7 +188,7 @@ class TradeInHomeViewModel @Inject constructor(
 
     override fun onError(jsonObject: JSONObject) {
         progBarVisibility.value = false
-        if(isImei){
+        if (imei != null) {
             var errorMessage: String? = null
             try {
                 errorMessage = jsonObject.getString("message")
@@ -211,13 +216,21 @@ class TradeInHomeViewModel @Inject constructor(
         laku6TradeIn.getMinMaxPrice(this)
     }
 
-    fun getIMEI(laku6TradeIn: Laku6TradeIn, imei: String?){
-        isImei = true
+    fun getIMEI(laku6TradeIn: Laku6TradeIn, imei: String?) {
+        this.imei = imei
         laku6TradeIn.checkImeiValidation(this, imei)
     }
 
     fun setDeviceId(deviceId: String?) {
         tradeInParams.deviceId = deviceId
+    }
+
+    fun onHargaFinalClick(deviceId: String?, price: String) {
+        tradeInHomeStateLiveData.value = GoToCheckout(deviceId, price)
+    }
+
+    fun onInitialPriceClick(imei: String?) {
+        tradeInHomeStateLiveData.value = GoToHargaFinal(imei)
     }
 
 }

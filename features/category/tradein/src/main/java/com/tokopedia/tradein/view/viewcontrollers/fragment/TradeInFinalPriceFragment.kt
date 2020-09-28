@@ -7,10 +7,10 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelFragment
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
-import com.tokopedia.common_tradein.model.TradeInParams
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -18,10 +18,10 @@ import com.tokopedia.tradein.R
 import com.tokopedia.tradein.TradeInAnalytics
 import com.tokopedia.tradein.di.DaggerTradeInComponent
 import com.tokopedia.tradein.di.TradeInComponent
-import com.tokopedia.tradein.model.DeviceAttr
 import com.tokopedia.tradein.model.DeviceDataResponse
 import com.tokopedia.tradein.view.viewcontrollers.bottomsheet.TradeInFinalPriceDetailsBottomSheet
 import com.tokopedia.tradein.viewmodel.FinalPriceViewModel
+import com.tokopedia.tradein.viewmodel.TradeInHomeViewModel
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import kotlinx.android.synthetic.main.tradein_address_fragment.global_error
 import kotlinx.android.synthetic.main.tradein_address_fragment.iv_back
@@ -33,7 +33,7 @@ class TradeInFinalPriceFragment : BaseViewModelFragment<FinalPriceViewModel>() {
     @Inject
     lateinit var viewModelProvider: ViewModelProvider.Factory
     private lateinit var viewModel: FinalPriceViewModel
-    private var tradeInHargaFinalClick: TradeInHargaFinalClick? = null
+    private lateinit var tradeinHomeViewModel: TradeInHomeViewModel
     @Inject
     lateinit var tradeInAnalytics: TradeInAnalytics
 
@@ -49,6 +49,10 @@ class TradeInFinalPriceFragment : BaseViewModelFragment<FinalPriceViewModel>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        activity?.let { observer ->
+            val viewModelProvider = ViewModelProviders.of(observer, viewModelProvider)
+            tradeinHomeViewModel = viewModelProvider.get(TradeInHomeViewModel::class.java)
+        }
         init()
     }
 
@@ -100,7 +104,7 @@ class TradeInFinalPriceFragment : BaseViewModelFragment<FinalPriceViewModel>() {
             bottomSheet.show(childFragmentManager, "")
         }
         btn_continue.setOnClickListener {
-            tradeInHargaFinalClick?.onHargaFinalClick(dataResponse.deviceAttr?.imei?.get(0), dataResponse.oldPrice.toString())
+            tradeinHomeViewModel.onHargaFinalClick(dataResponse.deviceAttr?.imei?.get(0), dataResponse.oldPrice.toString())
         }
     }
 
@@ -108,8 +112,8 @@ class TradeInFinalPriceFragment : BaseViewModelFragment<FinalPriceViewModel>() {
         iv_back.setOnClickListener {
             activity?.onBackPressed()
         }
+        viewModel.tradeInParams = tradeinHomeViewModel.tradeInParams
         arguments?.apply {
-            viewModel.tradeInParams = getParcelable(EXTRA_TRADE_IN_PARAMS)
             product_name.text = viewModel.tradeInParams?.productName
             product_price.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(viewModel.tradeInParams?.newPrice
                     ?: 0, true)
@@ -135,26 +139,16 @@ class TradeInFinalPriceFragment : BaseViewModelFragment<FinalPriceViewModel>() {
         this.viewModel = viewModel as FinalPriceViewModel
     }
 
-    fun setListener(tradeInHargaFinalClick: TradeInHargaFinalClick) {
-        this.tradeInHargaFinalClick = tradeInHargaFinalClick
-    }
-
-    interface TradeInHargaFinalClick {
-        fun onHargaFinalClick(deviceId: String?, price: String)
-    }
-
     companion object {
 
         private const val EXTRA_DEVICE_DISPLAY_NAME = "EXTRA_DEVICE_DISPLAY_NAME"
-        private const val EXTRA_TRADE_IN_PARAMS = "EXTRA_TRADE_IN_PARAMS"
 
-        fun getFragmentInstance(deviceDisplayName: String?, tradeInParams: TradeInParams): Fragment {
-            val fragment = TradeInFinalPriceFragment()
-            val bundle = Bundle()
-            bundle.putString(EXTRA_DEVICE_DISPLAY_NAME, deviceDisplayName)
-            bundle.putParcelable(EXTRA_TRADE_IN_PARAMS, tradeInParams)
-            fragment.arguments = bundle
-            return fragment
+        fun getFragmentInstance(deviceDisplayName: String?): Fragment {
+            return TradeInFinalPriceFragment().also {
+                it.arguments = Bundle().apply {
+                    putString(EXTRA_DEVICE_DISPLAY_NAME, deviceDisplayName)
+                }
+            }
         }
     }
 }
