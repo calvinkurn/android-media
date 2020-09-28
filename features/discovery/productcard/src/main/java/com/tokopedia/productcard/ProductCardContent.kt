@@ -44,8 +44,9 @@ private fun View.renderPdpCountView(productCardModel: ProductCardModel) {
 
 private fun View.renderTextProductName(productCardModel: ProductCardModel) {
     textViewProductName?.shouldShowWithAction(productCardModel.productName.isNotEmpty()) {
-        it.contentDescription = context.getString(R.string.content_desc_textViewProductName, MethodChecker.fromHtml(productCardModel.productName))
-        it.text = MethodChecker.fromHtml(productCardModel.productName)
+        val productNameFromHtml = MethodChecker.fromHtml(productCardModel.productName)
+        it.contentDescription = context.getString(R.string.content_desc_textViewProductName, productNameFromHtml)
+        it.text = productNameFromHtml
     }
 }
 
