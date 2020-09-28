@@ -62,12 +62,6 @@ public class ShopScoreDetailActivity extends BaseSimpleActivity implements ShopS
         }
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        updateTitle(getString(R.string.shop_score_title));
-    }
-
     private void inflateFragment(Fragment fragment, boolean isAddToBackStack, String tag) {
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(getParentViewResourceID(), fragment, tag);
