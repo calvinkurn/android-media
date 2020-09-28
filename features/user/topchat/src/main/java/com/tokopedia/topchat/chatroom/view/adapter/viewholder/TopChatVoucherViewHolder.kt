@@ -5,9 +5,9 @@ import android.view.View
 import android.widget.LinearLayout
 import androidx.annotation.LayoutRes
 import com.tokopedia.chat_common.view.adapter.viewholder.BaseChatViewHolder
-import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.merchantvoucher.common.widget.MerchantVoucherView
 import com.tokopedia.topchat.R
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.binder.TopChatVoucherViewHolderBinder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.getStrokeWidthSenderDimenRes
 import com.tokopedia.topchat.chatroom.view.listener.TopChatVoucherListener
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatVoucherUiModel
@@ -16,7 +16,7 @@ import com.tokopedia.topchat.common.util.ViewUtil
 /**
  * Created by Steven on 18/03/19.
  */
-class TopChatVoucherViewHolder(
+class TopChatVoucherViewHolder constructor(
         itemView: View,
         private var voucherListener: TopChatVoucherListener
 ) : BaseChatViewHolder<TopChatVoucherUiModel>(itemView) {
@@ -55,7 +55,7 @@ class TopChatVoucherViewHolder(
 
     override fun bind(element: TopChatVoucherUiModel) {
         super.bind(element)
-        bindVoucherView(element)
+        TopChatVoucherViewHolderBinder.bindVoucherView(element, merchantVoucherView, voucherListener)
         bindChatBubbleAlignment(element)
         bindClick(element)
         bindBackground(element)
@@ -74,22 +74,6 @@ class TopChatVoucherViewHolder(
         } else {
             merchantVoucherView?.background = bgOpposite
         }
-    }
-
-    private fun bindVoucherView(element: TopChatVoucherUiModel) {
-        merchantVoucherView?.onMerchantVoucherViewListener = object : MerchantVoucherView.OnMerchantVoucherViewListener {
-            override fun onMerchantUseVoucherClicked(merchantVoucherViewModel: MerchantVoucherViewModel) {
-                voucherListener.onVoucherCopyClicked(
-                        merchantVoucherViewModel.voucherCode, element.messageId, element.replyId,
-                        element.blastId, element.attachmentId, element.replyTime, element.fromUid
-                )
-            }
-
-            override fun isOwner(): Boolean {
-                return element.isSender
-            }
-        }
-        merchantVoucherView?.setData(element.voucher, false)
     }
 
     private fun bindChatBubbleAlignment(element: TopChatVoucherUiModel) {
