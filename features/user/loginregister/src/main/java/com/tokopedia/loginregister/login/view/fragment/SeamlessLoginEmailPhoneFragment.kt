@@ -119,9 +119,6 @@ class SeamlessLoginEmailPhoneFragment: LoginEmailPhoneFragment() {
                             presenter.getUserInfo()
                         }
                     }
-                    if(data.hasExtra(ApplinkConstInternalGlobal.KEY_REDIRECT_SEAMLESS_APPLINK)){
-                        redirectApplink = data.getStringExtra(ApplinkConstInternalGlobal.KEY_REDIRECT_SEAMLESS_APPLINK)
-                    }
                 } else {
                     presenter.getUserInfo()
                 }

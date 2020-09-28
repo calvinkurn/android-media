@@ -397,10 +397,6 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     }
 
     private fun goToSellerAppProductManageThenSetCashback(product: ProductViewModel) {
-        val firstAppLink = Uri.parse(ApplinkConst.PRODUCT_MANAGE)
-                .buildUpon()
-                .build()
-                .toString()
         val secondAppLink = Uri.parse(UriUtil.buildUri(ApplinkConstInternalMarketplace.SET_CASHBACK, product.id))
                 .buildUpon()
                 .appendQueryParameter(SET_CASHBACK_PRODUCT_NAME, product.title)
@@ -409,7 +405,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
                 .appendQueryParameter(EXTRA_CASHBACK_SHOP_ID, userSession.shopId)
                 .build()
                 .toString()
-        goToSellerMigrationPage(SellerMigrationFeatureName.FEATURE_SET_CASHBACK, arrayListOf(firstAppLink, secondAppLink))
+        goToSellerMigrationPage(SellerMigrationFeatureName.FEATURE_SET_CASHBACK, arrayListOf(ApplinkConst.PRODUCT_MANAGE, secondAppLink))
     }
 
     private fun goToSellerAppProductManageThenAddAsFeatured(product: ProductViewModel) {

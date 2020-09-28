@@ -68,7 +68,6 @@ class SellerMigrationActivity : BaseSimpleActivity() {
                     }
                     val sellerHomeAppLink = Uri.parse(ApplinkConstInternalSellerapp.SELLER_HOME).buildUpon()
                             .appendQueryParameter(RouteManager.KEY_REDIRECT_TO_SELLER_APP, "true")
-                            .appendQueryParameter(ApplinkConstInternalGlobal.KEY_REDIRECT_SEAMLESS_APPLINK, ApplinkConstInternalSellerapp.SELLER_HOME)
                             .appendQueryParameter(SellerMigrationApplinkConst.QUERY_PARAM_IS_AUTO_LOGIN, "true")
                             .toString()
                     val sellerHomeIntent = RouteManager.getIntent(this, sellerHomeAppLink).apply {

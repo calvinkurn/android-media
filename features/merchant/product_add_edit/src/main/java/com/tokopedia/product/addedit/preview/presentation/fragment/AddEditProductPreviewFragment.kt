@@ -1213,10 +1213,6 @@ class AddEditProductPreviewFragment:
 
     private fun goToSellerAppProductManageThenSetCashback() {
         viewModel.productInputModel.value?.let { productInputModel ->
-            val firstAppLink = Uri.parse(ApplinkConst.PRODUCT_MANAGE)
-                    .buildUpon()
-                    .build()
-                    .toString()
             val secondApplink = Uri.parse(ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW)
                     .buildUpon()
                     .appendQueryParameter(ApplinkConstInternalMechant.QUERY_PARAM_ID, viewModel.getProductId())
@@ -1231,7 +1227,7 @@ class AddEditProductPreviewFragment:
                     .appendQueryParameter(EXTRA_CASHBACK_SHOP_ID, userSession.shopId)
                     .build()
                     .toString()
-            goToSellerMigrationPage(SellerMigrationFeatureName.FEATURE_EDIT_PRODUCT_CASHBACK, arrayListOf(firstAppLink, secondApplink, thirdAppLink))
+            goToSellerMigrationPage(SellerMigrationFeatureName.FEATURE_EDIT_PRODUCT_CASHBACK, arrayListOf(ApplinkConst.PRODUCT_MANAGE, secondApplink, thirdAppLink))
         }
     }
 
