@@ -23,7 +23,14 @@ class TimerSprintSaleItemViewHolder(itemView: View, private val fragment: Fragme
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         timerSprintSaleItemViewModel = discoveryBaseViewModel as TimerSprintSaleItemViewModel
+//        setTimerType()
+    }
+
+
+    override fun onViewAttachedToWindow() {
+        super.onViewAttachedToWindow()
         setTimerType()
+        timerSprintSaleItemViewModel.startTimer()
     }
 
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
@@ -31,7 +38,7 @@ class TimerSprintSaleItemViewHolder(itemView: View, private val fragment: Fragme
         lifecycleOwner?.let {
             timerSprintSaleItemViewModel.getComponentLiveData().observe(it, Observer { componentItem ->
                 if (!componentItem.data.isNullOrEmpty()) {
-                    timerSprintSaleItemViewModel.startTimer()
+//                    timerSprintSaleItemViewModel.startTimer()
                     sendSprintSaleTimerTrack()
                 }
             })
@@ -44,14 +51,10 @@ class TimerSprintSaleItemViewHolder(itemView: View, private val fragment: Fragme
                 setTimerTime(timerData)
             })
             timerSprintSaleItemViewModel.refreshPage().observe(it, Observer { refreshPage ->
-                if (refreshPage) {
-                    (fragment as DiscoveryFragment).onRefresh()
-                }
+                if (refreshPage) (fragment as DiscoveryFragment).onRefresh()
             })
             timerSprintSaleItemViewModel.getSyncPageLiveData().observe(it, Observer { needResync ->
-                if (needResync) {
-                    (fragment as DiscoveryFragment).reSync()
-                }
+                if (needResync) (fragment as DiscoveryFragment).reSync()
             })
         }
     }
@@ -92,6 +95,8 @@ class TimerSprintSaleItemViewHolder(itemView: View, private val fragment: Fragme
         lifecycleOwner?.let { it ->
             timerSprintSaleItemViewModel.getComponentLiveData().removeObservers(it)
             timerSprintSaleItemViewModel.getTimerData().removeObservers(it)
+            timerSprintSaleItemViewModel.refreshPage().removeObservers(it)
+            timerSprintSaleItemViewModel.getSyncPageLiveData().removeObservers(it)
         }
     }
 

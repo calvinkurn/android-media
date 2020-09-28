@@ -65,8 +65,8 @@ class TimerSprintSaleItemViewModel(val application: Application, val components:
     }
 
     private fun checkForTimerComponent(componentItem: ComponentsItem) {
-        if (componentItem.name == ComponentNames.TimerSprintSale.componentName) {
-            if (!componentItem.data.isNullOrEmpty() && Utils.isFutureSale(componentItem.data!![0].startDate
+        if (componentItem.name == ComponentNames.TimerSprintSale.componentName && !componentItem.data.isNullOrEmpty()) {
+            if (Utils.isFutureSale(componentItem.data!![0].startDate
                             ?: "")) {
                 val currentSystemTime = Calendar.getInstance().time
                 val parsedEndDate = Utils.parseData(componentItem.data!![0].startDate)
@@ -82,6 +82,9 @@ class TimerSprintSaleItemViewModel(val application: Application, val components:
                         timerWithBannerCounter?.start()
                     }
                 }
+            } else if (Utils.isFutureSaleOngoing(componentItem.data!![0].startDate
+                            ?: "", componentItem.data!![0].endDate ?: "")) {
+                needPageRefresh.value = true
             }
         }
     }
@@ -94,7 +97,6 @@ class TimerSprintSaleItemViewModel(val application: Application, val components:
         }
         if (!timerData.isNullOrEmpty()) {
             val currentSystemTime = Calendar.getInstance().time
-
             val parsedEndDate = Utils.parseData(timerData)
             if (parsedEndDate != null) {
                 val saleTimeMillis = parsedEndDate.time - currentSystemTime.time
@@ -111,6 +113,7 @@ class TimerSprintSaleItemViewModel(val application: Application, val components:
 
     fun stopTimer() {
         timerWithBannerCounter?.cancel()
+        timerWithBannerCounter = null
     }
 
     fun getStartDate(): String {

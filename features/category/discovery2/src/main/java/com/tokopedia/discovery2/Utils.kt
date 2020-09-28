@@ -25,7 +25,6 @@ const val LABEL_PRICE = "price"
 const val LABEL_GIMMICK = "gimmick"
 const val LABEL_INTEGRITY = "integrity"
 const val LABEL_SHIPPING = "shipping"
-const val TIMER_DIFFERENCE: Int = 3000
 
 class Utils {
 
@@ -87,7 +86,20 @@ class Utils {
             val currentSystemTime = Calendar.getInstance().time
             val parsedDate = parseData(saleStartDate)
             return if (parsedDate != null) {
-                (currentSystemTime.time - TIMER_DIFFERENCE) <= parsedDate.time
+                currentSystemTime.time < parsedDate.time
+            } else {
+                false
+            }
+        }
+
+
+        fun isFutureSaleOngoing(saleStartDate: String, saleEndDate: String): Boolean {
+            if (saleStartDate.isEmpty() || saleEndDate.isEmpty()) return false
+            val currentSystemTime = Calendar.getInstance().time
+            val saleStartDate = parseData(saleStartDate)
+            val saleEndDate = parseData(saleEndDate)
+            return if (saleStartDate != null && saleEndDate != null) {
+                (saleStartDate.time <= currentSystemTime.time) && (currentSystemTime.time < saleEndDate.time)
             } else {
                 false
             }
