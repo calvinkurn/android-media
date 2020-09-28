@@ -4,7 +4,7 @@ import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.product.Video
 import com.tokopedia.product.detail.data.util.thumbnailUrl
@@ -28,7 +28,7 @@ class YoutubeThumbnailAdapter(private val videos: MutableList<Video>,
             if (videos.isEmpty()) {
                 recyclerView.visibility = View.GONE
             } else {
-                ImageHandler.LoadImage(video_thumbnail, videos[position].thumbnailUrl)
+                video_thumbnail.loadImage(videos[position].thumbnailUrl)
                 recyclerView.visibility = View.VISIBLE
             }
         }

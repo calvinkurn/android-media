@@ -3,12 +3,12 @@ package com.tokopedia.product.detail.view.viewholder
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductGeneralInfoDataModel
@@ -58,7 +58,7 @@ class ProductGeneralInfoViewHolder(val view: View, private val listener: Dynamic
 
         if (element.parentIcon.isNotEmpty()) {
             view.pdp_icon.show()
-            ImageHandler.LoadImage(view.pdp_icon, element.parentIcon)
+            view.pdp_icon.loadImage(element.parentIcon)
         } else {
             view.pdp_icon.hide()
         }

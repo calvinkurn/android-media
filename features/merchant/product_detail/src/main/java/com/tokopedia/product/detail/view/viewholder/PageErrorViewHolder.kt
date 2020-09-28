@@ -2,10 +2,10 @@ package com.tokopedia.product.detail.view.viewholder
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.PageErrorDataModel
 import com.tokopedia.product.detail.data.model.datamodel.TobacoErrorData
@@ -61,7 +61,7 @@ class PageErrorViewHolder(val view: View,
             errorDescription.text = getString(R.string.banned_product_description)
             errorDescription.show()
 
-            ImageHandler.LoadImage(errorIllustration, IMG_URL_ERROR_TOBACCO)
+            errorIllustration.loadImage(IMG_URL_ERROR_TOBACCO)
             errorIllustration.adjustViewBounds = true
             errorIllustration.show()
 
@@ -79,7 +79,7 @@ class PageErrorViewHolder(val view: View,
             errorDescription.text = tobacoErrorData.messages
             errorDescription.show()
 
-            ImageHandler.LoadImage(errorIllustration, IMG_URL_ERROR_TOBACCO)
+            errorIllustration.loadImage(IMG_URL_ERROR_TOBACCO)
             errorIllustration.adjustViewBounds = true
             errorIllustration.show()
 

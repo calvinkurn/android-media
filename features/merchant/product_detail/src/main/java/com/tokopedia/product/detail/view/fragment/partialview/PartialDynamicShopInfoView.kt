@@ -1,12 +1,12 @@
 package com.tokopedia.product.detail.view.fragment.partialview
 
 import android.view.View
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.relativeWeekDay
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
@@ -23,7 +23,7 @@ class PartialDynamicShopInfoView(val view: View, private val listener: DynamicPr
                    componentTrackDataModel: ComponentTrackDataModel) {
         with(view) {
             shop_name.text = MethodChecker.fromHtml(shopName)
-            ImageHandler.LoadImage(shop_ava, shopAvatar)
+            shop_ava.loadImage(shopAvatar)
 
             var templateLocOnline = "${shopLocation} "
             if (shopLastActive.isNotBlank()) {
@@ -96,7 +96,7 @@ class PartialDynamicShopInfoView(val view: View, private val listener: DynamicPr
     }
 
     fun renderShopBadge(shopBadge: String) {
-        ImageHandler.LoadImage(view.l_medal, shopBadge)
+        view.l_medal.loadImage(shopBadge)
     }
 
     fun renderShopFeature(isGoApotik: Boolean) {
