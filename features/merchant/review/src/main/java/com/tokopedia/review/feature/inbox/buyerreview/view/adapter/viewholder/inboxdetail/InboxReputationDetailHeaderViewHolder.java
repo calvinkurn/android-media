@@ -185,21 +185,6 @@ public class InboxReputationDetailHeaderViewHolder extends
         } else
             changeButton.setVisibility(View.GONE);
 
-        if (element.getRevieweeBadgeSellerViewModel().getIsFavorited() != -1
-                && element.getRole() ==
-                InboxReputationItemViewModel.ROLE_SELLER) {
-            favoriteButton.setVisibility(View.VISIBLE);
-            setFavorite(element.getRevieweeBadgeSellerViewModel());
-            favoriteButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    reputationListener.onFavoriteShopClicked(element.getShopId());
-                }
-            });
-        } else {
-            favoriteButton.setVisibility(View.GONE);
-        }
-
         setSmileyOpponent(element);
 
     }

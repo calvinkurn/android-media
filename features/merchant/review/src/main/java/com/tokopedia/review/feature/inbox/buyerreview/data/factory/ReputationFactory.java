@@ -2,7 +2,6 @@ package com.tokopedia.review.feature.inbox.buyerreview.data.factory;
 
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.review.feature.inbox.buyerreview.data.mapper.DeleteReviewResponseMapper;
-import com.tokopedia.review.feature.inbox.buyerreview.data.mapper.FaveShopMapper;
 import com.tokopedia.review.feature.inbox.buyerreview.data.mapper.InboxReputationDetailMapper;
 import com.tokopedia.review.feature.inbox.buyerreview.data.mapper.InboxReputationMapper;
 import com.tokopedia.review.feature.inbox.buyerreview.data.mapper.ReplyReviewMapper;
@@ -18,7 +17,6 @@ import com.tokopedia.review.feature.inbox.buyerreview.data.source.CloudReportRev
 import com.tokopedia.review.feature.inbox.buyerreview.data.source.CloudSendSmileyReputationDataSource;
 import com.tokopedia.review.feature.inbox.buyerreview.data.source.LocalInboxReputationDataSource;
 import com.tokopedia.review.feature.inbox.buyerreview.network.ReputationService;
-import com.tokopedia.review.feature.inbox.buyerreview.network.shop.FaveShopActService;
 import com.tokopedia.review.feature.inbox.buyerreview.network.tome.TomeService;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -30,19 +28,14 @@ public class ReputationFactory {
 
     private final ReputationService reputationService;
     private final TomeService tomeService;
-    private final FaveShopActService faveShopActService;
     private final InboxReputationMapper inboxReputationMapper;
     private final PersistentCacheManager persistentCacheManager;
     private final InboxReputationDetailMapper inboxReputationDetailMapper;
     private final SendSmileyReputationMapper sendSmileyReputationMapper;
     private final ReportReviewMapper reportReviewMapper;
     private final ShopFavoritedMapper shopFavoritedMapper;
-    private final FaveShopMapper faveShopMapper;
     private final ReplyReviewMapper replyReviewMapper;
-    private final GetLikeDislikeMapper getLikeDislikeMapper;
-    private final LikeDislikeMapper likeDislikeMapper;
     private final DeleteReviewResponseMapper deleteReviewResponseMapper;
-    private final ReviewProductService reputationReviewApi;
     private final UserSessionInterface userSession;
 
     public ReputationFactory(TomeService tomeService,
@@ -53,12 +46,7 @@ public class ReputationFactory {
                              ReportReviewMapper reportReviewMapper,
                              ShopFavoritedMapper shopFavoritedMapper,
                              PersistentCacheManager persistentCacheManager,
-                             FaveShopActService faveShopActService,
-                             FaveShopMapper faveShopMapper,
                              ReplyReviewMapper replyReviewMapper,
-                             GetLikeDislikeMapper getLikeDislikeMapper,
-                             LikeDislikeMapper likeDislikeMapper,
-                             ReviewProductService reputationReviewApi,
                              DeleteReviewResponseMapper deleteReviewResponseMapper,
                              UserSessionInterface userSession) {
         this.reputationService = reputationService;
@@ -70,12 +58,7 @@ public class ReputationFactory {
         this.shopFavoritedMapper = shopFavoritedMapper;
         this.deleteReviewResponseMapper = deleteReviewResponseMapper;
         this.tomeService = tomeService;
-        this.faveShopActService = faveShopActService;
-        this.faveShopMapper = faveShopMapper;
         this.replyReviewMapper = replyReviewMapper;
-        this.getLikeDislikeMapper = getLikeDislikeMapper;
-        this.likeDislikeMapper = likeDislikeMapper;
-        this.reputationReviewApi = reputationReviewApi;
         this.userSession = userSession;
     }
 
@@ -117,20 +100,5 @@ public class ReputationFactory {
     public CloudReplyReviewDataSource createCloudReplyReviewDataSource() {
         return new CloudReplyReviewDataSource(reputationService,
                 replyReviewMapper, userSession);
-    }
-
-    public CloudGetLikeDislikeDataSource createCloudGetLikeDislikeDataSource() {
-        return new CloudGetLikeDislikeDataSource(
-                reputationService,
-                getLikeDislikeMapper
-        );
-    }
-
-    public CloudLikeDislikeDataSource createCloudLikeDislikeDataSource() {
-        return new CloudLikeDislikeDataSource(
-                reputationService,
-                likeDislikeMapper,
-                userSession
-        );
     }
 }

@@ -272,12 +272,6 @@ public class InboxReputationDetailItemViewHolder extends
 
         }
         showOrHideGiveReviewLayout(element);
-        giveReview.setOnClickListener( view -> viewListener.onGoToGiveReview(
-                element.getProductId(),
-                element.getShopId(),
-                element.getOrderId(),
-                getAdapterPosition()
-        ));
 
         adapter.addList(convertToAdapterViewModel(element.getReviewAttachment()));
         adapter.notifyDataSetChanged();
@@ -446,9 +440,6 @@ public class InboxReputationDetailItemViewHolder extends
                 viewListener.onClickReviewOverflowMenu(element, getAdapterPosition());
 
                 PopupMenu popup = new PopupMenu(context, v);
-                if (element.isReviewIsEditable())
-                    popup.getMenu().add(1, MENU_EDIT, 1, context
-                            .getString(R.string.menu_edit));
 
                 if (element.getTab() == ReviewInboxConstants.TAB_BUYER_REVIEW)
                     popup.getMenu().add(1, MENU_REPORT, 2, context
@@ -462,10 +453,7 @@ public class InboxReputationDetailItemViewHolder extends
 
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
-                        if (item.getItemId() == MENU_EDIT) {
-                            viewListener.onEditReview(element, getAdapterPosition());
-                            return true;
-                        } else if (item.getItemId() == MENU_REPORT) {
+                        if (item.getItemId() == MENU_REPORT) {
                             viewListener.onGoToReportReview(
                                     element.getShopId(),
                                     element.getReviewId()

@@ -1,10 +1,5 @@
 package com.tokopedia.tkpd.tkpdreputation.review.product.view.adapter;
 
-import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.appcompat.widget.PopupMenu;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.Context;
 import android.text.Spanned;
 import android.view.MenuItem;
@@ -13,12 +8,16 @@ import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import androidx.appcompat.widget.PopupMenu;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.tkpd.tkpdreputation.R;
+import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.ImageAttachmentViewModel;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.ImageUploadAdapter;
-import com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel.inboxdetail.ImageAttachmentViewModel;
-import com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel.inboxdetail.ImageUpload;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ImageUpload;
 import com.tokopedia.tkpd.tkpdreputation.review.product.view.util.TimeUtil;
 
 import java.util.ArrayList;

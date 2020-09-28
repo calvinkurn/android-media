@@ -1,7 +1,8 @@
 package com.tokopedia.review.feature.inbox.buyerreview.domain.interactor.inboxdetail;
 
-import com.tokopedia.tkpd.tkpdreputation.inbox.data.repository.ReputationRepository;
-import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.CheckShopFavoriteDomain;
+
+import com.tokopedia.review.feature.inbox.buyerreview.data.repository.ReputationRepository;
+import com.tokopedia.review.feature.inbox.buyerreview.domain.model.inboxdetail.CheckShopFavoriteDomain;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 

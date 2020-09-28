@@ -29,8 +29,8 @@ import com.tokopedia.tkpd.tkpdreputation.analytic.ReputationTrackingConstant;
 import com.tokopedia.tkpd.tkpdreputation.di.DaggerReputationComponent;
 import com.tokopedia.tkpd.tkpdreputation.di.ReputationModule;
 import com.tokopedia.tkpd.tkpdreputation.domain.model.LikeDislikeDomain;
-import com.tokopedia.review.feature.inbox.buyerreview.domain.model.inboxdetail.DeleteReviewResponseDomain;
-import com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel.inboxdetail.ImageUpload;
+import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.DeleteReviewResponseDomain;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ImageUpload;
 import com.tokopedia.tkpd.tkpdreputation.review.product.view.adapter.ReviewProductAdapter;
 import com.tokopedia.tkpd.tkpdreputation.review.product.view.adapter.ReviewProductContentViewHolder;
 import com.tokopedia.tkpd.tkpdreputation.review.product.view.adapter.ReviewProductModelContent;
@@ -193,10 +193,10 @@ public class ReviewShopFragment extends BaseListFragment<ReviewShopModelContent,
     @Override
     public void onGoToReportReview(String shopId, String reviewId, int adapterPosition) {
         onGoToReportReviewTracking(shopId, adapterPosition);
-        startActivity(InboxReputationReportActivity.getCallingIntent(
-                getActivity(),
-                Integer.valueOf(shopId),
-                reviewId));
+//        startActivity(InboxReputationReportActivity.getCallingIntent(
+//                getActivity(),
+//                Integer.valueOf(shopId),
+//                reviewId));
     }
 
     protected void onGoToReportReviewTracking(String shopId, int adapterPosition) {

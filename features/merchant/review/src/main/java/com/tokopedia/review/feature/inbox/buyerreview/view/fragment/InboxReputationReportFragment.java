@@ -25,10 +25,10 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.review.R;
 import com.tokopedia.review.feature.inbox.buyerreview.analytics.AppScreen;
 import com.tokopedia.review.feature.inbox.buyerreview.analytics.ReputationTracking;
+import com.tokopedia.review.feature.inbox.buyerreview.di.DaggerReputationComponent;
 import com.tokopedia.review.feature.inbox.buyerreview.view.activity.InboxReputationReportActivity;
 import com.tokopedia.review.feature.inbox.buyerreview.view.listener.InboxReputationReport;
 import com.tokopedia.review.feature.inbox.buyerreview.view.presenter.InboxReputationReportPresenter;
-import com.tokopedia.tkpd.tkpdreputation.di.DaggerReputationComponent;
 
 import javax.inject.Inject;
 

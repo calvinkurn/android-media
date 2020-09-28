@@ -5,10 +5,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Build;
-import com.google.android.material.bottomsheet.BottomSheetBehavior;
-import com.google.android.material.bottomsheet.BottomSheetDialog;
-import com.google.android.material.snackbar.Snackbar;
-import androidx.fragment.app.Fragment;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -16,18 +12,22 @@ import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.Toast;
 
+import androidx.fragment.app.Fragment;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.share.Sharer;
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareDialog;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.snackbar.Snackbar;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
-import com.tokopedia.tkpd.tkpdreputation.R;
-import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.ShareAdapter;
+import com.tokopedia.review.R;
+import com.tokopedia.review.common.util.ClipboardHandler;
+import com.tokopedia.review.feature.inbox.buyerreview.view.adapter.ShareAdapter;
 import com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel.inboxdetail.ShareModel;
-import com.tokopedia.tkpd.tkpdreputation.utils.ClipboardHandler;
-import com.tokopedia.tkpd.tkpdreputation.widgets.ShareItem;
+import com.tokopedia.review.feature.inbox.buyerreview.view.widgets.ShareItem;
 
 /**
  * Created by stevenfredian on 2/20/17.

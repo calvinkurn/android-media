@@ -3,16 +3,16 @@ package com.tokopedia.review.feature.inbox.buyerreview.view.fragment;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
@@ -20,13 +20,13 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.review.R;
 import com.tokopedia.review.feature.inbox.buyerreview.analytics.AppScreen;
 import com.tokopedia.review.feature.inbox.buyerreview.analytics.ReputationTracking;
+import com.tokopedia.review.feature.inbox.buyerreview.di.DaggerReputationComponent;
+import com.tokopedia.review.feature.inbox.buyerreview.domain.interactor.inbox.GetFirstTimeInboxReputationUseCase;
 import com.tokopedia.review.feature.inbox.buyerreview.view.activity.InboxReputationFilterActivity;
 import com.tokopedia.review.feature.inbox.buyerreview.view.adapter.InboxReputationFilterAdapter;
-import com.tokopedia.review.feature.inbox.common.ReviewInboxConstants;
-import com.tokopedia.tkpd.tkpdreputation.di.DaggerReputationComponent;
-import com.tokopedia.review.feature.inbox.buyerreview.domain.interactor.inbox.GetFirstTimeInboxReputationUseCase;
 import com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel.filter.HeaderOptionViewModel;
 import com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel.filter.OptionViewModel;
+import com.tokopedia.review.feature.inbox.common.ReviewInboxConstants;
 
 import java.util.ArrayList;
 

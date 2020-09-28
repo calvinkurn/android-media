@@ -17,7 +17,6 @@ import android.view.Window;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
-import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -39,6 +38,7 @@ import com.tokopedia.network.utils.ErrorHandler;
 import com.tokopedia.review.R;
 import com.tokopedia.review.feature.inbox.buyerreview.analytics.AppScreen;
 import com.tokopedia.review.feature.inbox.buyerreview.analytics.ReputationTracking;
+import com.tokopedia.review.feature.inbox.buyerreview.di.DaggerReputationComponent;
 import com.tokopedia.review.feature.inbox.buyerreview.domain.model.ProductRevIncentiveOvoDomain;
 import com.tokopedia.review.feature.inbox.buyerreview.view.activity.InboxReputationDetailActivity;
 import com.tokopedia.review.feature.inbox.buyerreview.view.activity.InboxReputationReportActivity;
@@ -338,10 +338,10 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
             listDesc.add(image.getDescription());
         }
 
-        startActivity(ImagePreviewActivity.getCallingIntent(getContext(),
-                listLocation,
-                listDesc,
-                position));
+//        startActivity(ImagePreviewActivity.getCallingIntent(getContext(),
+//                listLocation,
+//                listDesc,
+//                position));
     }
 
     @Override
@@ -492,12 +492,6 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
             dialog.show();
             reputationTracking.onClickSmileyShopReviewTracker(name, orderId);
         }
-    }
-
-    @Override
-    public void onFavoriteShopClicked(int shopId) {
-        presenter.onFavoriteShopClicked(shopId);
-        reputationTracking.onClickFollowShopButton(shopId, orderId);
     }
 
     @Override

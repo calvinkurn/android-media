@@ -2,7 +2,7 @@ package com.tokopedia.tkpd.tkpdreputation.review.product.view;
 
 import android.text.TextUtils;
 
-import com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel.inboxdetail.ImageAttachmentViewModel;
+import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.ImageAttachmentViewModel;
 import com.tokopedia.tkpd.tkpdreputation.review.product.data.model.reviewlist.DataResponseReviewHelpful;
 import com.tokopedia.tkpd.tkpdreputation.review.product.data.model.reviewlist.DataResponseReviewProduct;
 import com.tokopedia.tkpd.tkpdreputation.review.product.data.model.reviewlist.DataResponseReviewShop;

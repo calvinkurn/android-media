@@ -1,13 +1,13 @@
 package com.tokopedia.review.feature.inbox.buyerreview.view.adapter;
 
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.review.R;
@@ -37,8 +37,6 @@ public class ReputationAdapter extends RecyclerView.Adapter<ReputationAdapter.Vi
 
     public interface ReputationListener {
         void onReputationSmileyClicked(String name, String value);
-
-        void onFavoriteShopClicked(int shopId);
 
         void onGoToShopDetail(int shopId);
 

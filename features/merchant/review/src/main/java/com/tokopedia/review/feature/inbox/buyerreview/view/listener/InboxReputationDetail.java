@@ -101,8 +101,6 @@ public interface InboxReputationDetail {
 
         void sendSmiley(String reputationId, String score, int role);
 
-        void onFavoriteShopClicked(int shopId);
-
         void deleteReviewResponse(String reviewId, String productId, String shopId, String
                 reputationId);
 

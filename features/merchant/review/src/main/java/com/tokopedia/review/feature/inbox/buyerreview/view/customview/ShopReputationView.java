@@ -18,7 +18,7 @@ import androidx.appcompat.content.res.AppCompatResources;
 
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.tokopedia.design.base.BaseCustomView;
-import com.tokopedia.tkpd.tkpdreputation.R;
+import com.tokopedia.review.R;
 
 /**
  * @author by stevenfredian on 8/16/17.
@@ -66,7 +66,7 @@ public class ShopReputationView extends BaseCustomView {
         try {
             showTooltip = styledAttributes.getBoolean(R.styleable.ShopReputationView_srv_show_tooltip, false);
             medalWidth = (int) styledAttributes.getDimension(R.styleable.ShopReputationView_srv_medal_width,
-                    getContext().getResources().getDimensionPixelSize(R.dimen.dp_15));
+                    getContext().getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_15));
         } finally {
             styledAttributes.recycle();
         }

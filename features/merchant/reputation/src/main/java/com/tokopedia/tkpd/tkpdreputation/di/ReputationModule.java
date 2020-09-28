@@ -175,6 +175,18 @@ public class ReputationModule {
 
     @ReputationScope
     @Provides
+    DeleteReviewResponseUseCase provideDeleteReviewResponseUseCase(ReputationRepository reputationRepository) {
+        return new DeleteReviewResponseUseCase(reputationRepository);
+    }
+
+    @ReputationScope
+    @Provides
+    DeleteReviewResponseMapper provideDeleteReviewResponseMapper() {
+        return new DeleteReviewResponseMapper();
+    }
+
+    @ReputationScope
+    @Provides
     public UserSession provideUserSession(@ApplicationContext Context context) {
         return new UserSession(context);
     }

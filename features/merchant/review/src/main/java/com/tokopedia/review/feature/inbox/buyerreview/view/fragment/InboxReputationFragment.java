@@ -34,6 +34,7 @@ import com.tokopedia.review.R;
 import com.tokopedia.review.feature.inbox.buyerreview.analytics.AppScreen;
 import com.tokopedia.review.feature.inbox.buyerreview.analytics.ReputationTracking;
 import com.tokopedia.review.feature.inbox.buyerreview.analytics.ReputationTrackingConstant;
+import com.tokopedia.review.feature.inbox.buyerreview.di.DaggerReputationComponent;
 import com.tokopedia.review.feature.inbox.buyerreview.domain.model.ProductRevIncentiveOvoDomain;
 import com.tokopedia.review.feature.inbox.buyerreview.domain.model.ProductRevIncentiveOvoResponse;
 import com.tokopedia.review.feature.inbox.buyerreview.view.activity.InboxReputationDetailActivity;
