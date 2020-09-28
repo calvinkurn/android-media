@@ -10,13 +10,15 @@ private const val FILE_DIR = "voucher_images"
 private const val MAXIMUM_FILES_IN_FOLDER = 3
 
 fun Bitmap.getSavedImageDirPath(context: Context, filename: String): String {
-    val file = getSavedImageDirFile(context, filename)
+    val file = getSavedImageDirFile(context, filename, false)
     return file.toString()
 }
 
-fun Bitmap.getSavedImageDirFile(context: Context, filename: String): File {
+fun Bitmap.getSavedImageDirFile(context: Context, filename: String, isSharing: Boolean = true): File {
     val basePath = File(context.filesDir, FILE_DIR).also {
-        it.checkVoucherDirectory()
+        if (isSharing) {
+            it.checkVoucherDirectory()
+        }
     }
     val filePath = File(basePath, "${filename}.jpg")
     val fos = FileOutputStream(filePath)
