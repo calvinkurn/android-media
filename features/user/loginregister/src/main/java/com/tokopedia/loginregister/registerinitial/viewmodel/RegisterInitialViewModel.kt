@@ -110,6 +110,10 @@ class RegisterInitialViewModel @Inject constructor(
     val getUserInfoResponse: LiveData<Result<ProfileInfoData>>
         get() = mutableGetUserInfoResponse
 
+    private val mutableGetUserInfoAfterAddPinResponse = MutableLiveData<Result<ProfileInfoData>>()
+    val getUserInfoAfterAddPinResponse: LiveData<Result<ProfileInfoData>>
+        get() = mutableGetUserInfoAfterAddPinResponse
+
     private val mutableGetTickerInfoResponse = MutableLiveData<Result<List<TickerInfoPojo>>>()
     val getTickerInfoResponse: LiveData<Result<List<TickerInfoPojo>>>
         get() = mutableGetTickerInfoResponse
@@ -203,10 +207,16 @@ class RegisterInitialViewModel @Inject constructor(
 
     }
 
-    fun getUserInfo(isCreatePin: Boolean = false) {
+    fun getUserInfo() {
         getProfileUseCase.execute(GetProfileSubscriber(userSession,
-                onSuccessGetUserInfo(isCreatePin),
+                onSuccessGetUserInfo(),
                 onFailedGetUserInfo()))
+    }
+
+    fun getUserInfoAfterAddPin() {
+        getProfileUseCase.execute(GetProfileSubscriber(userSession,
+                onSuccessGetUserInfoAfterAddPin(),
+                onFailedGetUserInfoAfterAddPin()))
     }
 
     fun getTickerInfo() {
@@ -384,15 +394,27 @@ class RegisterInitialViewModel @Inject constructor(
         }
     }
 
-    private fun onSuccessGetUserInfo(isCreatePin: Boolean): (ProfilePojo) -> Unit {
+    private fun onSuccessGetUserInfo(): (ProfilePojo) -> Unit {
         return {
-            mutableGetUserInfoResponse.value = Success(ProfileInfoData(isCreatePin, it.profileInfo))
+            mutableGetUserInfoResponse.value = Success(ProfileInfoData(it.profileInfo))
         }
     }
 
     private fun onFailedGetUserInfo(): (Throwable) -> Unit {
         return {
             mutableGetUserInfoResponse.value = Fail(it)
+        }
+    }
+
+    private fun onSuccessGetUserInfoAfterAddPin(): (ProfilePojo) -> Unit {
+        return {
+            mutableGetUserInfoAfterAddPinResponse.value = Success(ProfileInfoData(it.profileInfo))
+        }
+    }
+
+    private fun onFailedGetUserInfoAfterAddPin(): (Throwable) -> Unit {
+        return {
+            mutableGetUserInfoAfterAddPinResponse.value = Fail(it)
         }
     }
 

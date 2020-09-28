@@ -115,6 +115,7 @@ open class HomeViewModel @Inject constructor(
         private val REQUEST_DELAY_SEND_GEOLOCATION = TimeUnit.HOURS.toMillis(1) // 1 hour
     }
 
+    var currentTopAdsBannerToken: String = ""
     private val homeFlowData: Flow<HomeDataModel?> = homeUseCase.get().getHomeData().flowOn(homeDispatcher.get().io())
 
 // ============================================================================================
@@ -1181,6 +1182,7 @@ open class HomeViewModel @Inject constructor(
                                 val newTopAdsModel = it.value.copy(topAdsImageViewModel = topAdsImageViewModel)
                                 homeProcessor.get().sendWithQueueMethod(AddWidgetCommand(newTopAdsModel, it.key, this@HomeViewModel))
                             }
+                            currentTopAdsBannerToken = topAdsImageViewModel.nextPageToken?:""
                         }
                     }
                 }

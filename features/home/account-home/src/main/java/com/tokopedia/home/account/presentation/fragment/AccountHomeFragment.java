@@ -14,10 +14,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
-import androidx.viewpager.widget.ViewPager;
 
-import com.google.android.material.appbar.AppBarLayout;
-import com.google.android.material.tabs.TabLayout;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils;
@@ -30,8 +27,6 @@ import com.tokopedia.home.account.di.component.AccountHomeComponent;
 import com.tokopedia.home.account.di.component.DaggerAccountHomeComponent;
 import com.tokopedia.home.account.presentation.AccountHome;
 import com.tokopedia.home.account.presentation.activity.GeneralSettingActivity;
-import com.tokopedia.home.account.presentation.adapter.AccountHomePagerAdapter;
-import com.tokopedia.home.account.presentation.listener.BaseAccountView;
 import com.tokopedia.navigation_common.listener.AllNotificationListener;
 import com.tokopedia.navigation_common.listener.FragmentListener;
 
@@ -45,10 +40,6 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
 
     @Inject
     AccountHome.Presenter presenter;
-    private TabLayout tabLayout;
-    private ViewPager viewPager;
-    private AppBarLayout appBarLayout;
-    private AccountHomePagerAdapter adapter;
     private BadgeView badgeViewInbox;
     private BadgeView badgeViewNotification;
     private ImageButton menuNotification;
@@ -104,12 +95,9 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
     }
 
     private void initView(View view) {
-        accountAnalytics = new AccountAnalytics(getActivity());
         setToolbar(view);
-        appBarLayout = view.findViewById(R.id.app_bar_layout);
-        tabLayout = view.findViewById(R.id.tab_home_account);
-        viewPager = view.findViewById(R.id.pager_home_account);
-        setAdapter();
+        accountAnalytics = new AccountAnalytics(getActivity());
+        onNotificationChanged(counterNumber, 0);
         showBuyerPage();
     }
 
@@ -165,64 +153,8 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
         setHasOptionsMenu(true);
     }
 
-    private void setAdapter() {
-        adapter = new AccountHomePagerAdapter(getChildFragmentManager());
-        viewPager.setAdapter(adapter);
-        tabLayout.setupWithViewPager(viewPager);
-        tabLayout.addTab(tabLayout.newTab().setText(R.string.label_account_buyer));
-        tabLayout.addTab(tabLayout.newTab().setText(R.string.label_account_seller));
-
-        onNotificationChanged(counterNumber, 0);
-    }
-
     @Override
-    public void showLoading() {
-        Fragment currentFragment = adapter.getItem(viewPager.getCurrentItem());
-        if (currentFragment != null && currentFragment instanceof BaseAccountView) {
-            ((BaseAccountView) currentFragment).showLoading();
-        }
-    }
-
-    @Override
-    public void hideLoading() {
-        Fragment currentFragment = adapter.getItem(viewPager.getCurrentItem());
-        if (currentFragment != null && currentFragment instanceof BaseAccountView) {
-            ((BaseAccountView) currentFragment).hideLoading();
-        }
-    }
-
-    @Override
-    public void showError(String message) {
-        Fragment currentFragment = adapter.getItem(viewPager.getCurrentItem());
-        if (currentFragment != null && currentFragment instanceof BaseAccountView) {
-            ((BaseAccountView) currentFragment).showError(message);
-        }
-    }
-
-    @Override
-    public void showError(Throwable e, String errorCode) {
-        Fragment currentFragment = adapter.getItem(viewPager.getCurrentItem());
-        if (currentFragment != null && currentFragment instanceof BaseAccountView) {
-            ((BaseAccountView) currentFragment).showError(e, errorCode);
-        }
-    }
-
-    @Override
-    public void showErrorNoConnection() {
-        showError(getString(R.string.error_no_internet_connection));
-    }
-
-    @Override
-    public void onScrollToTop() {
-        if (viewPager != null && adapter != null) {
-            Fragment currentFragment = adapter.getItem(viewPager.getCurrentItem());
-            if (currentFragment != null && currentFragment instanceof FragmentListener) {
-                ((FragmentListener) currentFragment).onScrollToTop();
-            }
-            if (appBarLayout != null)
-                appBarLayout.setExpanded(true);
-        }
-    }
+    public void onScrollToTop() {}
 
     @Override
     public boolean isLightThemeStatusBar() {

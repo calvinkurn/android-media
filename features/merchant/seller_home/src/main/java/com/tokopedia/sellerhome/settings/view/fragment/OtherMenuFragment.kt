@@ -68,8 +68,6 @@ import javax.inject.Inject
 class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFactory>(), OtherMenuViewHolder.Listener, StatusBarCallback, SettingTrackingListener {
 
     companion object {
-        const val URL_KEY = "url"
-
         private const val APPLINK_FORMAT = "%s?url=%s%s"
 
         private const val START_OFFSET = 56 // Pixels when scrolled past toolbar height
@@ -141,11 +139,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if(sellerHomeConfig.isNewSellerHomeDisabled()) {
-            (activity as? com.tokopedia.sellerhome.view.oldactivity.SellerHomeActivity)?.attachCallback(this)
-        } else {
-            (activity as? SellerHomeActivity)?.attachCallback(this)
-        }
+        (activity as? SellerHomeActivity)?.attachCallback(this)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
