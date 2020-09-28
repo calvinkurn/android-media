@@ -294,7 +294,10 @@ public class ReviewProductFragment extends BaseListFragment<ReviewProductModel, 
 
     @Override
     public void onGoToReportReview(String shopId, String reviewId, int adapterPosition) {
-        //TODO Redirect to InboxReputationReportActivity using internal applink
+        Intent intent = RouteManager.getIntent(getContext(), ApplinkConstInternalMarketplace.REVIEW_SELLER_REPORT);
+        intent.putExtra(ApplinkConstInternalMarketplace.ARGS_SHOP_ID, toInt(shopId));
+        intent.putExtra(ApplinkConstInternalMarketplace.ARGS_REVIEW_ID, reviewId);
+        startActivity(intent);
     }
 
     @Override
@@ -328,6 +331,14 @@ public class ReviewProductFragment extends BaseListFragment<ReviewProductModel, 
             getAdapter().addElement(i, map.get(i));
         }
         listReviewHelpful = map;
+    }
+
+    private int toInt(String string) {
+        try {
+            return Integer.parseInt(string);
+        } catch (NumberFormatException nfe) {
+            return -1;
+        }
     }
 
     @Override

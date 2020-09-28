@@ -159,7 +159,7 @@
                 android:layout_alignParentRight="true"
                 android:layout_alignParentTop="true"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                app:srcCompat="@drawable/ic_more_vert_grey" />
+                app:srcCompat="@drawable/reputation_ic_more_vert_grey" />
         </RelativeLayout>
     </LinearLayout>
 </merge>
