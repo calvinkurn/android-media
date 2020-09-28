@@ -1,28 +1,29 @@
 package com.tokopedia.otp.notif.view.fragment
 
-import android.app.Activity
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import androidx.core.content.ContextCompat
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.otp.R
 import com.tokopedia.otp.common.IOnBackPressed
-import com.tokopedia.otp.common.abstraction.BaseOtpFragment
 import com.tokopedia.otp.common.di.OtpComponent
 import com.tokopedia.otp.notif.view.viewbinding.ResultNotifViewBinding
-import com.tokopedia.unifycomponents.setImage
+import javax.inject.Inject
 
 /**
  * Created by Ade Fulki on 14/09/20.
  */
 
-class ResultNotifFragment : BaseOtpFragment(), IOnBackPressed {
+class ResultNotifFragment : BaseDaggerFragment(), IOnBackPressed {
 
-    private var resultStatus: String? = ""
+    @Inject
+    lateinit var viewBound: ResultNotifViewBinding
 
-    override var viewBound = ResultNotifViewBinding()
+    private var imglink: String = ""
+    private var messageTitle: String = ""
+    private var messageBody: String = ""
+    private var ctaType: String = ""
 
     override fun getScreenName(): String = ""
 
@@ -42,38 +43,62 @@ class ResultNotifFragment : BaseOtpFragment(), IOnBackPressed {
 
     private fun initVar() {
         arguments?.run {
-            resultStatus = getString(ApplinkConstInternalGlobal.PARAM_RESULT_STATUS, "")
+            imglink = getString(ApplinkConstInternalGlobal.PARAM_IMG_LINK, "")
+            messageTitle = getString(ApplinkConstInternalGlobal.PARAM_MESSAGE_TITLE, "")
+            messageBody = getString(ApplinkConstInternalGlobal.PARAM_MESSAGE_BODY, "")
+            ctaType = getString(ApplinkConstInternalGlobal.PARAM_CTA_TYPE, "")
         }
     }
 
     private fun initView() {
-        context?.let { context ->
-            when (resultStatus) {
-                RESULT_STATUS_APPROVED -> {
-                    viewBound.mainImage?.setImageUrl(URL_IMG_SUCCESS_RESULT)
+        viewBound.mainImage?.setImageUrl(imglink)
+        viewBound.title?.text = messageTitle
+        viewBound.subtitle?.text = messageBody
+        when (ctaType) {
+            CTA_TYPE_CLOSE -> {
+                viewBound.btnMain?.text = getText(R.string.close_result_push_notif)
+                viewBound.btnMain?.setOnClickListener {
+                    closeResult()
                 }
-                RESULT_STATUS_EXPIRED -> {
-                    viewBound.mainImage?.setImageUrl(URL_IMG_FAILED_EXPIRED_RESULT)
+            }
+            CTA_TYPE_CHANGE_PIN -> {
+                viewBound.btnMain?.text = getText(R.string.change_pin_result_push_notif)
+                viewBound.btnMain?.setOnClickListener {
+                    goToChangePin()
                 }
-                RESULT_STATUS_REJECTED -> {
-                    viewBound.mainImage?.setImageUrl(URL_IMG_FAILED_RESULT)
-                }
-                else -> {
-                    activity?.setResult(Activity.RESULT_CANCELED)
-                    activity?.finish()
+            }
+            CTA_TYPE_CHANGE_PASSWORD -> {
+                viewBound.btnMain?.text = getText(R.string.change_password_result_push_notif)
+                viewBound.btnMain?.setOnClickListener {
+                    goToChangePassword()
                 }
             }
         }
     }
 
+    private fun closeResult() {
+        activity?.finish()
+    }
+
+    private fun goToChangePin() {
+        context?.let {
+            RouteManager.route(it, ApplinkConstInternalGlobal.CHANGE_PIN)
+            closeResult()
+        }
+    }
+
+    private fun goToChangePassword() {
+        context?.let {
+            RouteManager.route(it, ApplinkConstInternalGlobal.CHANGE_PASSWORD)
+            closeResult()
+        }
+    }
+
     companion object {
 
-        const val RESULT_STATUS_APPROVED = "result-status-approved"
-        const val RESULT_STATUS_REJECTED = "result-status-rejected"
-        const val RESULT_STATUS_EXPIRED = "result-status-expired"
-        const val URL_IMG_SUCCESS_RESULT = "https://ecs7.tokopedia.net/android/user/success_result_push_notif.png"
-        const val URL_IMG_FAILED_RESULT = "https://ecs7.tokopedia.net/android/user/failed_result_push_notif.png"
-        const val URL_IMG_FAILED_EXPIRED_RESULT = "https://ecs7.tokopedia.net/android/user/failed_expired_result_push_notif.png"
+        private const val CTA_TYPE_CLOSE = "Close"
+        private const val CTA_TYPE_CHANGE_PIN = "ChangePin"
+        private const val CTA_TYPE_CHANGE_PASSWORD = "ChangePassword"
 
         fun createInstance(bundle: Bundle): ResultNotifFragment {
             val fragment = ResultNotifFragment()

@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.otp.common.DispatcherProvider
+import com.tokopedia.otp.notif.view.viewbinding.RecieverNotifViewBinding
 import com.tokopedia.otp.verification.view.viewbinding.OnboardingMisscallViewBinding
 import com.tokopedia.otp.verification.view.viewbinding.VerificationMethodViewBinding
 import com.tokopedia.otp.verification.view.viewbinding.VerificationViewBinding
@@ -36,18 +37,6 @@ class OtpModule {
     @OtpScope
     @Provides
     fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface = UserSession(context)
-
-    @OtpScope
-    @Provides
-    fun provideOnboardingMisscallViewBinding() = OnboardingMisscallViewBinding()
-
-    @OtpScope
-    @Provides
-    fun provideVerificationViewBinding() = VerificationViewBinding()
-
-    @OtpScope
-    @Provides
-    fun provideVerificationMethodViewBinding() = VerificationMethodViewBinding()
 
     @OtpScope
     @Provides

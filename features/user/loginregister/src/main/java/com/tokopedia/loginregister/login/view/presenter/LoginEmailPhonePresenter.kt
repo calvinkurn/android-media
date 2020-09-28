@@ -9,6 +9,7 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.loginfingerprint.data.preference.FingerprintSetting
 import com.tokopedia.loginfingerprint.utils.crypto.Cryptography
 import com.tokopedia.loginregister.R
+import com.tokopedia.loginregister.common.SignaturePref
 import com.tokopedia.loginregister.common.domain.usecase.DynamicBannerUseCase
 import com.tokopedia.loginregister.discover.usecase.DiscoverUseCase
 import com.tokopedia.loginregister.login.domain.*
@@ -52,6 +53,7 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
                                                    private val registerPushNotifUseCase: RegisterPushNotifUseCase,
                                                    private val fingerprintPreferenceHelper: FingerprintSetting,
                                                    private var cryptographyUtils: Cryptography?,
+                                                   private val signaturePref: SignaturePref,
                                                    @Named(SESSION_MODULE)
                                                    private val userSession: UserSessionInterface)
     : BaseDaggerPresenter<LoginEmailPhoneContract.View>(),
@@ -327,6 +329,7 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
     override fun registerPushNotif() {
         val signature = cryptographyUtils?.generateFingerprintSignature(userSession.userId, userSession.deviceId)
         signature?.let {
+            signaturePref.signature = it.signature
             registerPushNotifUseCase.executeCoroutines(
                     cryptographyUtils?.getPublicKey() ?: "",
                     it.signature,

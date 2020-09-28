@@ -198,27 +198,31 @@ class VerificationFragment : BaseOtpFragment(), IOnBackPressed {
 
     private fun onSuccessSendOtp(): (OtpRequestData) -> Unit {
         return { otpRequestData ->
-            if (otpRequestData.success) {
-                if (!isFirstSendOtp) {
-                    when (otpData.otpType) {
-                        OtpConstant.OtpType.REGISTER_PHONE_NUMBER -> {
-                            analytics.trackSuccessClickResendRegisterPhoneOtpButton()
-                        }
-                        OtpConstant.OtpType.REGISTER_EMAIL -> {
-                            analytics.trackSuccessClickResendRegisterEmailOtpButton()
+            when {
+                otpRequestData.success -> {
+                    if (!isFirstSendOtp) {
+                        when (otpData.otpType) {
+                            OtpConstant.OtpType.REGISTER_PHONE_NUMBER -> {
+                                analytics.trackSuccessClickResendRegisterPhoneOtpButton()
+                            }
+                            OtpConstant.OtpType.REGISTER_EMAIL -> {
+                                analytics.trackSuccessClickResendRegisterEmailOtpButton()
+                            }
                         }
                     }
+                    hideLoading()
+                    setPrefixMiscall(otpRequestData.prefixMisscall)
+                    startCountDown()
+                    viewBound.containerView?.let {
+                        Toaster.make(it, otpRequestData.message, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL)
+                    }
                 }
-                hideLoading()
-                setPrefixMiscall(otpRequestData.prefixMisscall)
-                startCountDown()
-                viewBound.containerView?.let {
-                    Toaster.make(it, otpRequestData.message, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL)
+                otpRequestData.errorMessage.isNotEmpty() -> {
+                    onFailedSendOtp().invoke(MessageErrorException(otpRequestData.errorMessage))
                 }
-            } else if (otpRequestData.errorMessage.isNotEmpty()) {
-                onFailedSendOtp().invoke(MessageErrorException(otpRequestData.errorMessage))
-            } else {
-                onFailedSendOtp().invoke(Throwable())
+                else -> {
+                    onFailedSendOtp().invoke(Throwable())
+                }
             }
 
             isFirstSendOtp = false

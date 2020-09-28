@@ -21,12 +21,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/spacing_lvl4"
-        android:text="Kamu bisa masuk ke akunmu dengan melakukan verifikasi lewat notifikasi yang dikirim ke perangkat terdaftar"
+        android:text="@string/subtitle_push_notif_setting"
         android:textAlignment="center"
         app:layout_constraintTop_toBottomOf="@+id/main_image"
         app:typographyType="body_3"
-        app:typographyWeight="reguler"
-        tools:layout_editor_absoluteX="16dp" />
+        app:typographyWeight="reguler" />
 
     <View
         android:id="@+id/view"
@@ -36,33 +35,22 @@
         android:background="@color/Neutral_N50"
         app:layout_constraintTop_toBottomOf="@+id/text_subtitle_desc" />
 
-    <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
+    <com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
         android:id="@+id/switch_button"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/spacing_lvl4"
-        app:layout_constraintBottom_toBottomOf="@+id/switch_layout"
+        android:layout_margin="@dimen/spacing_lvl4"
+        android:text="@string/text_switch_push_notif_setting"
+        app:bold="true"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/view" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/text_switch_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_lvl4"
-        android:layout_marginTop="@dimen/spacing_lvl4"
-        android:layout_marginBottom="@dimen/spacing_lvl4"
-        android:text="Aktifkan Masuk Lewat Notifikasi"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/view"
-        app:typographyType="body_2"
-        app:typographyWeight="bold" />
+        app:layout_constraintTop_toBottomOf="@+id/view" />
 
     <FrameLayout
         android:id="@+id/switch_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl4"
-        app:layout_constraintTop_toBottomOf="@id/text_switch_title" />
+        app:layout_constraintTop_toBottomOf="@id/switch_button" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

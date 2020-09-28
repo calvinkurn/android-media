@@ -62,6 +62,7 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
     private View addressMenu;
     private View passwordMenu;
     private View pinMenu;
+    private View pushNotifMenu;
     private View kycSeparator;
     private View kycMenu;
     private View sampaiMenu;
@@ -93,6 +94,7 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
         addressMenu = view.findViewById(R.id.label_view_address);
         passwordMenu = view.findViewById(R.id.label_view_password);
         pinMenu = view.findViewById(R.id.label_view_pin);
+        pushNotifMenu = view.findViewById(R.id.label_view_push_notif);
         kycMenu = view.findViewById(R.id.label_view_kyc);
         sampaiMenu = view.findViewById(R.id.label_view_sampai);
         bankAccount = view.findViewById(R.id.label_view_account_bank);
@@ -176,6 +178,8 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
                 onItemClicked(SettingConstant.SETTING_ACCOUNT_PASS_ID));
         pinMenu.setOnClickListener(view1 ->
                 onItemClicked(SettingConstant.SETTING_PIN));
+        pushNotifMenu.setOnClickListener(view1 ->
+                onItemClicked(SettingConstant.SETTING_PUSH_NOTIF));
         kycMenu.setOnClickListener(view1 ->
                 onItemClicked(SettingConstant.SETTING_ACCOUNT_KYC_ID));
         bankAccount.setOnClickListener(view1 ->
@@ -207,6 +211,9 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
             case SettingConstant.SETTING_PIN:
                 accountAnalytics.eventClickPinSetting();
                 onPinMenuClicked();
+                break;
+            case SettingConstant.SETTING_PUSH_NOTIF:
+                onPushNotifClicked();
                 break;
             case SettingConstant.SETTING_ACCOUNT_ADDRESS_ID:
                 accountAnalytics.eventClickAccountSetting(ADDRESS_LIST);
@@ -335,6 +342,10 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
 
             dialog.show();
         }
+    }
+
+    private void onPushNotifClicked() {
+        RouteManager.route(getContext(), ApplinkConstInternalGlobal.OTP_PUSH_NOTIF_SETTING);
     }
 
     private void showNoPasswordDialog() {

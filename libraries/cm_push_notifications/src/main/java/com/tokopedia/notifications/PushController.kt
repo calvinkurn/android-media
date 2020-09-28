@@ -5,8 +5,6 @@ import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import com.google.gson.Gson
-import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.notifications.common.CMConstant
 import com.tokopedia.notifications.common.IrisAnalyticsEvents
 import com.tokopedia.notifications.common.PayloadConverter
@@ -138,14 +136,9 @@ class PushController(val context: Context) : CoroutineScope {
             val baseNotification = CMNotificationFactory
                     .getNotification(context.applicationContext, baseNotificationModel)
             if (null != baseNotification) {
-                val applink = baseNotification.baseNotificationModel.appLink ?: ""
-                if(applink.contains(ApplinkConst.OTP_PUSH_NOTIF_RECIEVER)) {
-                    RouteManager.route(context, baseNotification.baseNotificationModel.appLink)
-                } else {
-                    val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-                    val notification = baseNotification.createNotification()
-                    notificationManager.notify(baseNotification.baseNotificationModel.notificationId, notification)
-                }
+                val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+                val notification = baseNotification.createNotification()
+                notificationManager.notify(baseNotification.baseNotificationModel.notificationId, notification)
             }
         } catch (e: Exception) {
             Log.d(

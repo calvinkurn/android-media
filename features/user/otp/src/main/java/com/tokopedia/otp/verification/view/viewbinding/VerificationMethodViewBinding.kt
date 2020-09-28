@@ -8,13 +8,14 @@ import com.tokopedia.otp.R
 import com.tokopedia.otp.common.abstraction.BaseOtpViewBinding
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifyprinciples.Typography
+import javax.inject.Inject
 
 /**
  * Created by Ade Fulki on 22/04/20.
  * ade.hadian@tokopedia.com
  */
 
-class VerificationMethodViewBinding : BaseOtpViewBinding() {
+class VerificationMethodViewBinding @Inject constructor() : BaseOtpViewBinding() {
 
     override val layoutResId: Int = R.layout.fragment_verification_method
 

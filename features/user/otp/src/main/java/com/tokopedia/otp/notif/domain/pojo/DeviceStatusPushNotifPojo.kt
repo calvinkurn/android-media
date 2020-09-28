@@ -20,6 +20,9 @@ data class DeviceStatusPushNotifData(
         @SerializedName("errorMessage")
         @Expose
         var errorMessage: String = "",
+        @SerializedName("isTrusted")
+        @Expose
+        var isTrusted: Boolean = false,
         @SerializedName("listDevices")
         @Expose
         var listDevices: ArrayList<ListDeviceData> = arrayListOf()
@@ -28,11 +31,5 @@ data class DeviceStatusPushNotifData(
 data class ListDeviceData(
         @SerializedName("deviceName")
         @Expose
-        var deviceName: String = "",
-        @SerializedName("isActive")
-        @Expose
-        var isActive: Boolean = false,
-        @SerializedName("isTrusted")
-        @Expose
-        var isTrusted: Boolean = false
+        var deviceName: String = ""
 )

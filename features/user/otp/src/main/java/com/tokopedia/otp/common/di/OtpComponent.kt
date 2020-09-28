@@ -1,9 +1,7 @@
 package com.tokopedia.otp.common.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
-import com.tokopedia.otp.notif.view.fragment.RecieverNotifFragment
-import com.tokopedia.otp.notif.view.fragment.ResultNotifFragment
-import com.tokopedia.otp.notif.view.fragment.SettingNotifFragment
+import com.tokopedia.otp.notif.view.fragment.*
 import com.tokopedia.otp.verification.view.activity.VerificationActivity
 import com.tokopedia.otp.verification.view.fragment.OnboardingMiscallFragment
 import com.tokopedia.otp.verification.view.fragment.VerificationFragment
@@ -27,4 +25,6 @@ interface OtpComponent {
     fun inject(fragment: RecieverNotifFragment)
     fun inject(fragment: SettingNotifFragment)
     fun inject(fragment: ResultNotifFragment)
+    fun inject(fragment: ActivePushNotifFragment)
+    fun inject(fragment: InactivePushNotifFragment)
 }

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -10,7 +9,7 @@
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/main_image"
         android:layout_width="wrap_content"
-        android:layout_height="210dp"
+        android:layout_height="@dimen/otp_dp_210"
         android:layout_marginTop="@dimen/spacing_lvl6"
         android:layout_marginBottom="@dimen/spacing_lvl3"
         android:adjustViewBounds="true"
@@ -22,8 +21,7 @@
         android:id="@+id/text_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:text="Akses masuk diterima"
+        android:layout_marginTop="@dimen/otp_dp_12"
         android:textColor="@color/Neutral_N700_96"
         android:textSize="@dimen/fontSize_lvl6"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -34,12 +32,11 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/text_subtitle"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl4"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="@dimen/otp_dp_12"
         android:layout_marginEnd="@dimen/spacing_lvl4"
-        android:text="Kamu berhasil masuk ke Tokopedia lewat perangkat lain. Selamat berbelanja, ya!"
         android:textAlignment="center"
         android:textColor="@color/otp_black_secondary"
         app:layout_constraintEnd_toEndOf="parent"
@@ -56,7 +53,6 @@
         android:layout_marginTop="@dimen/spacing_lvl5"
         android:layout_marginRight="@dimen/spacing_lvl5"
         android:gravity="center"
-        android:text="Tutup"
         app:layout_constraintTop_toBottomOf="@id/text_subtitle" />
 
 

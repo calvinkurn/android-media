@@ -51,7 +51,13 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val PARAM_FACE_PATH = "facePath"
     @JvmField
-    val PARAM_RESULT_STATUS = "resultStatus"
+    val PARAM_CTA_TYPE = "ctaType"
+    @JvmField
+    val PARAM_IMG_LINK = "imglink"
+    @JvmField
+    val PARAM_MESSAGE_TITLE = "messageTitle"
+    @JvmField
+    val PARAM_MESSAGE_BODY = "messageBody"
 
     @JvmField
     val PARAM_IS_FROM_2FA = "isFromTwoFactor"
@@ -280,6 +286,11 @@ object ApplinkConstInternalGlobal {
     // tokopedia-android-internal://global/otp-push-notif-reciever
     @JvmField
     val OTP_PUSH_NOTIF_RECIEVER = "$INTERNAL_GLOBAL/otp-push-notif-reciever"
+
+    // SettingNotifActivity
+    // tokopedia-android-internal://global/otp-push-notif-setting
+    @JvmField
+    val OTP_PUSH_NOTIF_SETTING = "$INTERNAL_GLOBAL/otp-push-notif-setting"
 
     // ChangePhoneNumberWarningActivity
     // tokopedia-android-internal://global/change-phone-number

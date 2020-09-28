@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
+import com.tokopedia.otp.notif.viewmodel.NotifViewModel
 import com.tokopedia.otp.verification.viewmodel.VerificationViewModel
 import dagger.Binds
 import dagger.Module
@@ -25,5 +26,10 @@ abstract class OtpViewModelModule{
     @Binds
     @IntoMap
     @ViewModelKey(VerificationViewModel::class)
-    internal abstract fun validatorViewModel(viewModel: VerificationViewModel): ViewModel
+    internal abstract fun bindValidatorViewModel(viewModel: VerificationViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(NotifViewModel::class)
+    internal abstract fun bindNotifViewModel(viewModel: NotifViewModel): ViewModel
 }

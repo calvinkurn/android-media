@@ -30,4 +30,15 @@
     <string name="verification_coundown_text"><![CDATA[Mohon tunggu dalam %d detik untuk kirim ulang.]]></string>
     
     <string name="title_push_notif_reciever">Apakah kamu ingin masuk ke Tokopedia dari perangkat ini?</string>
+    <string name="subtitle_push_notif_reciever">Jika ini bukan perangkatmu, segera tingkatkan keamanan akun dengan tolak akses.</string>
+    <string name="subtitle_push_notif_setting">Kamu bisa masuk ke akunmu dengan melakukan verifikasi lewat notifikasi yang dikirim ke perangkat terdaftar</string>
+    <string name="title_device_push_notif_reciever">Perangkat</string>
+    <string name="title_time_push_notif_reciever">Waktu</string>
+    <string name="title_location_push_notif_reciever">Lokasi</string>
+    <string name="accept_push_notif_reciever">Terima Akses</string>
+    <string name="reject_push_notif_reciever">Tolak Akses</string>
+    <string name="text_switch_push_notif_setting">Aktifkan Masuk Lewat Notifikasi</string>
+    <string name="close_result_push_notif">Tutup</string>
+    <string name="change_pin_result_push_notif">Ubah PIN Tokopedia</string>
+    <string name="change_password_result_push_notif">Ubah Kata Sandi</string>
 </resources>

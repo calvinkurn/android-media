@@ -7,12 +7,13 @@ import com.tokopedia.otp.R
 import com.tokopedia.otp.common.abstraction.BaseOtpViewBinding
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
+import javax.inject.Inject
 
 /**
  * Created by Ade Fulki on 14/09/20.
  */
 
-class RecieverNotifViewBinding : BaseOtpViewBinding() {
+class RecieverNotifViewBinding @Inject constructor() : BaseOtpViewBinding() {
 
     override val layoutResId: Int = R.layout.fragment_notif_reciever
 
