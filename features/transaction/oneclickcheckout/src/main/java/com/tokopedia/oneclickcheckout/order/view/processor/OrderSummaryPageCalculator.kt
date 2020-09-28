@@ -4,6 +4,9 @@ import com.tokopedia.oneclickcheckout.common.dispatchers.ExecutorDispatchers
 import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageViewModel
+import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageViewModel.Companion.CHOOSE_OTHER_PAYMENT_METHOD_MESSAGE
+import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageViewModel.Companion.MAXIMUM_AMOUNT_ERROR_MESSAGE
+import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageViewModel.Companion.MINIMUM_AMOUNT_ERROR_MESSAGE
 import com.tokopedia.oneclickcheckout.order.view.model.*
 import com.tokopedia.promocheckout.common.view.uimodel.SummariesUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
@@ -18,6 +21,22 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
 
     private fun shouldButtonStateEnable(orderShipment: OrderShipment, orderCart: OrderCart): Boolean {
         return (orderShipment.isValid() && orderShipment.serviceErrorMessage.isNullOrEmpty() && orderCart.shop.errors.isEmpty() && !orderCart.product.quantity.isStateError)
+    }
+
+    private fun generateMinimumAmountPaymentErrorMessage(gatewayName: String, minimumAmount: Long, isEnableChooseOtherPaymentMethod: Boolean): String {
+        var message = "$MINIMUM_AMOUNT_ERROR_MESSAGE $gatewayName (${CurrencyFormatUtil.convertPriceValueToIdrFormat(minimumAmount, false).removeDecimalSuffix()})."
+        if (isEnableChooseOtherPaymentMethod) {
+            message += CHOOSE_OTHER_PAYMENT_METHOD_MESSAGE
+        }
+        return message
+    }
+
+    private fun generateMaximumAmountPaymentErrorMessage(gatewayName: String, maximumAmount: Long, isEnableChooseOtherPaymentMethod: Boolean): String {
+        var message = "$MAXIMUM_AMOUNT_ERROR_MESSAGE $gatewayName (${CurrencyFormatUtil.convertPriceValueToIdrFormat(maximumAmount, false).removeDecimalSuffix()})."
+        if (isEnableChooseOtherPaymentMethod) {
+            message += CHOOSE_OTHER_PAYMENT_METHOD_MESSAGE
+        }
+        return message
     }
 
     suspend fun calculateTotal(orderCart: OrderCart, _orderPreference: OrderPreference, shipping: OrderShipment, validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel?, _orderPayment: OrderPayment, orderTotal: OrderTotal): Pair<OrderPayment, OrderTotal> {
@@ -64,11 +83,11 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
                         currentState = OccButtonState.DISABLE
                     }
                     return@withContext payment.copy(isCalculationError = true) to orderTotal.copy(orderCost = orderCost,
-                            paymentErrorMessage = "Belanjaanmu kurang dari min. transaksi ${payment.gatewayName} (${CurrencyFormatUtil.convertPriceValueToIdrFormat(payment.minimumAmount, false).removeDecimalSuffix()}).",
+                            paymentErrorMessage = generateMinimumAmountPaymentErrorMessage(payment.gatewayName, payment.minimumAmount, false),
                             buttonType = OccButtonType.PAY, buttonState = currentState)
                 }
                 return@withContext payment.copy(isCalculationError = true) to orderTotal.copy(orderCost = orderCost,
-                        paymentErrorMessage = "Belanjaanmu kurang dari min. transaksi ${payment.gatewayName} (${CurrencyFormatUtil.convertPriceValueToIdrFormat(payment.minimumAmount, false).removeDecimalSuffix()}). Silahkan pilih pembayaran lain.",
+                        paymentErrorMessage = generateMinimumAmountPaymentErrorMessage(payment.gatewayName, payment.minimumAmount, true),
                         buttonType = OccButtonType.CHOOSE_PAYMENT, buttonState = currentState)
             }
             if (payment.maximumAmount > 0 && payment.maximumAmount < subtotal) {
@@ -77,11 +96,11 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
                         currentState = OccButtonState.DISABLE
                     }
                     return@withContext payment.copy(isCalculationError = true) to orderTotal.copy(orderCost = orderCost,
-                            paymentErrorMessage = "Belanjaanmu melebihi limit transaksi ${payment.gatewayName} (${CurrencyFormatUtil.convertPriceValueToIdrFormat(payment.maximumAmount, false).removeDecimalSuffix()}).",
+                            paymentErrorMessage = generateMaximumAmountPaymentErrorMessage(payment.gatewayName, payment.maximumAmount, false),
                             buttonType = OccButtonType.PAY, buttonState = currentState)
                 }
                 return@withContext payment.copy(isCalculationError = true) to orderTotal.copy(orderCost = orderCost,
-                        paymentErrorMessage = "Belanjaanmu melebihi limit transaksi ${payment.gatewayName} (${CurrencyFormatUtil.convertPriceValueToIdrFormat(payment.maximumAmount, false).removeDecimalSuffix()}). Silahkan pilih pembayaran lain.",
+                        paymentErrorMessage = generateMaximumAmountPaymentErrorMessage(payment.gatewayName, payment.maximumAmount, true),
                         buttonType = OccButtonType.CHOOSE_PAYMENT, buttonState = currentState)
             }
             if (payment.errorTickerMessage.isNotEmpty() && payment.isEnableNextButton) {
