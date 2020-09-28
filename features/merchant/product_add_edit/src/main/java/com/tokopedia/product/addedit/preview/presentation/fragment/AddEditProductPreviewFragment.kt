@@ -890,12 +890,12 @@ class AddEditProductPreviewFragment:
                     context?.let {
                         val isEditing = viewModel.isEditing.value ?: false
                         val errorMessage = ErrorHandler.getErrorMessage(context, result.throwable)
-                        val errorThrowable = result.throwable.message ?: ""
+                        val errorName = AddEditProductUploadErrorHandler.getErrorName(result.throwable)
                         if (isEditing) {
                             ProductEditStepperTracking.oopsConnectionPageScreen(
                                     userSession.userId,
                                     errorMessage,
-                                    errorThrowable)
+                                    errorName)
                         }
                         showGetProductErrorToast(ErrorHandler.getErrorMessage(it, result.throwable))
                         AddEditProductErrorHandler.logExceptionToCrashlytics(result.throwable)

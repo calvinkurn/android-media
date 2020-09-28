@@ -34,6 +34,7 @@ import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitori
 import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringConstants.ADD_EDIT_PRODUCT_VARIANT_TRACE
 import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringListener
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.EXTRA_CACHE_MANAGER_ID
+import com.tokopedia.product.addedit.common.util.AddEditProductUploadErrorHandler
 import com.tokopedia.product.addedit.common.util.HorizontalItemDecoration
 import com.tokopedia.product.addedit.common.util.RecyclerViewItemDecoration
 import com.tokopedia.product.addedit.imagepicker.view.activity.SizechartPickerAddProductActivity
@@ -1188,17 +1189,17 @@ class AddEditProductVariantFragment :
 
     private fun trackOopsConnectionPageScreen(isEditMode: Boolean, throwable: Throwable, context: Context) {
         val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
-        val errorThrowable = throwable.message ?: ""
+        val errorName = AddEditProductUploadErrorHandler.getErrorName(throwable)
         if (isEditMode) {
             ProductEditStepperTracking.oopsConnectionPageScreen(
                     userId,
                     errorMessage,
-                    errorThrowable)
+                    errorName)
         } else {
             ProductAddStepperTracking.oopsConnectionPageScreen(
                     userId,
                     errorMessage,
-                    errorThrowable)
+                    errorName)
         }
     }
 
