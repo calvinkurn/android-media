@@ -35,10 +35,6 @@ internal class PrepareSearchRobot {
         }
     }
 
-    fun recordResponseSize() {
-        setupTotalSizeInterceptor(listOf("SearchProduct"))
-    }
-
     fun deleteAllTrackingRecord() {
         GtmLogDBSource(InstrumentationRegistry.getInstrumentation().targetContext).deleteAll().subscribe()
     }
