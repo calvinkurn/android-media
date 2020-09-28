@@ -19,10 +19,8 @@ import com.tokopedia.topchat.common.util.ViewUtil
 class TopChatVoucherViewHolder(
         itemView: View,
         private var voucherListener: TopChatVoucherListener
-) : BaseChatViewHolder<TopChatVoucherUiModel>(itemView), MerchantVoucherView.OnMerchantVoucherViewListener {
+) : BaseChatViewHolder<TopChatVoucherUiModel>(itemView) {
 
-    private var isOwner: Boolean = false
-    private lateinit var model: TopChatVoucherUiModel
     private var merchantVoucherView: MerchantVoucherView? = itemView.findViewById(R.id.merchantVoucherView)
     private var voucherContainer: LinearLayout? = itemView.findViewById(R.id.topchat_voucher_container)
 
@@ -55,39 +53,47 @@ class TopChatVoucherViewHolder(
             getStrokeWidthSenderDimenRes()
     )
 
-    override fun bind(viewModel: TopChatVoucherUiModel) {
-        super.bind(viewModel)
-        model = viewModel
-        val element = viewModel.voucherModel
-        val data = MerchantVoucherViewModel(element)
-        isOwner = viewModel.isSender
-
-        bindVoucherView(viewModel, data)
-        setupChatBubbleAlignment(isOwner, viewModel)
-
-        itemView.setOnClickListener {
-            data.isPublic = !viewModel.hasCtaCopy()
-            voucherListener.onVoucherClicked(data)
-        }
-
-        bindBackground(viewModel)
+    override fun bind(element: TopChatVoucherUiModel) {
+        super.bind(element)
+        bindVoucherView(element)
+        bindChatBubbleAlignment(element)
+        bindClick(element)
+        bindBackground(element)
     }
 
-    private fun bindBackground(viewModel: TopChatVoucherUiModel) {
-        if (viewModel.isSender) {
+    private fun bindClick(element: TopChatVoucherUiModel) {
+        itemView.setOnClickListener {
+            element.voucher.isPublic = !element.hasCtaCopy()
+            voucherListener.onVoucherClicked(element.voucher)
+        }
+    }
+
+    private fun bindBackground(element: TopChatVoucherUiModel) {
+        if (element.isSender) {
             merchantVoucherView?.background = bgSender
         } else {
             merchantVoucherView?.background = bgOpposite
         }
     }
 
-    private fun bindVoucherView(viewModel: TopChatVoucherUiModel, data: MerchantVoucherViewModel) {
-        merchantVoucherView?.onMerchantVoucherViewListener = this
-        merchantVoucherView?.setData(data, false)
+    private fun bindVoucherView(element: TopChatVoucherUiModel) {
+        merchantVoucherView?.onMerchantVoucherViewListener = object : MerchantVoucherView.OnMerchantVoucherViewListener {
+            override fun onMerchantUseVoucherClicked(merchantVoucherViewModel: MerchantVoucherViewModel) {
+                voucherListener.onVoucherCopyClicked(
+                        merchantVoucherViewModel.voucherCode, element.messageId, element.replyId,
+                        element.blastId, element.attachmentId, element.replyTime, element.fromUid
+                )
+            }
+
+            override fun isOwner(): Boolean {
+                return element.isSender
+            }
+        }
+        merchantVoucherView?.setData(element.voucher, false)
     }
 
-    private fun setupChatBubbleAlignment(isSender: Boolean, element: TopChatVoucherUiModel) {
-        if (isSender) {
+    private fun bindChatBubbleAlignment(element: TopChatVoucherUiModel) {
+        if (element.isSender) {
             setChatRight(element)
         } else {
             setChatLeft()
@@ -100,16 +106,6 @@ class TopChatVoucherViewHolder(
 
     private fun setChatRight(element: TopChatVoucherUiModel) {
         voucherContainer?.gravity = Gravity.END
-    }
-
-    override fun isOwner(): Boolean {
-        return isOwner
-    }
-
-    override fun onMerchantUseVoucherClicked(merchantVoucherViewModel: MerchantVoucherViewModel) {
-        voucherListener.onVoucherCopyClicked(merchantVoucherViewModel.voucherCode
-                , model.messageId, model.replyId
-                , model.blastId, model.attachmentId, model.replyTime, model.fromUid)
     }
 
     companion object {
