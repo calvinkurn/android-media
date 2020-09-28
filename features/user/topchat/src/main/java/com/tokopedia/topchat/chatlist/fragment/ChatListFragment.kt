@@ -114,6 +114,7 @@ open class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseA
     private var filterMenu = FilterMenu()
     private var chatBannedSellerTicker: Ticker? = null
     private var rv: RecyclerView? = null
+    private var emptyUiModel: Visitable<*>? = null
     private lateinit var broadCastButton: FloatingActionButton
 
     private val sellerMigrationStaticCommunicationBottomSheet by lazy {
@@ -140,7 +141,8 @@ open class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseA
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        shouldMoveToChatSettings = activity?.intent?.getStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA)?.firstOrNull()?.startsWith(ApplinkConstInternalMarketplace.CHAT_SETTING) ?: false
+        shouldMoveToChatSettings = activity?.intent?.getStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA)?.firstOrNull()?.startsWith(ApplinkConstInternalMarketplace.CHAT_SETTING)
+                ?: false
         performanceMonitoring = PerformanceMonitoring.start(getFpmKey())
         sightTag = getParamString(CHAT_TAB_TITLE, arguments, null, "")
         setHasOptionsMenu(true)
@@ -207,6 +209,7 @@ open class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseA
         setObserver()
         setupSellerBroadcast()
         setupChatSellerBannedStatus()
+        setupEmptyModel()
     }
 
     private fun setupChatSellerBannedStatus() {
@@ -216,6 +219,10 @@ open class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseA
                 is Success -> updateChatBannedSellerStatus(it.data)
             }
         })
+    }
+
+    private fun setupEmptyModel() {
+        emptyUiModel = emptyDataViewModel
     }
 
     private fun updateChatBannedSellerStatus(isBanned: Boolean) {
@@ -318,7 +325,7 @@ open class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseA
         chatItemListViewModel.deleteChat.observe(viewLifecycleOwner, Observer { result ->
             when (result) {
                 is Success -> {
-                    adapter?.deleteItem(itemPositionLongClicked)
+                    adapter?.deleteItem(itemPositionLongClicked, emptyUiModel)
                     decreaseNotificationCounter()
                 }
                 is Fail -> view?.let {
@@ -556,7 +563,7 @@ open class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseA
                         }
                     }
                     TopChatInternalRouter.Companion.CHAT_DELETED_RESULT_CODE -> {
-                        adapter?.deleteItem(itemPositionLongClicked)
+                        adapter?.deleteItem(itemPositionLongClicked, emptyUiModel)
                         showToaster(R.string.title_success_delete_chat)
                     }
                 }
