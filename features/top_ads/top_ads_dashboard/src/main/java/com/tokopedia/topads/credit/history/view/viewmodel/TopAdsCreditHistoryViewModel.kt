@@ -9,6 +9,8 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant
 import com.tokopedia.topads.common.data.exception.ResponseErrorException
+import com.tokopedia.topads.common.data.model.DataDeposit
+import com.tokopedia.topads.common.domain.interactor.TopAdsGetShopDepositUseCase
 import com.tokopedia.topads.credit.history.data.model.TopAdsCreditHistory
 import com.tokopedia.topads.debit.autotopup.data.model.AutoTopUpData
 import com.tokopedia.topads.debit.autotopup.data.model.AutoTopUpStatus
@@ -19,6 +21,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import rx.Subscriber
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
@@ -26,12 +29,14 @@ import javax.inject.Named
 
 class TopAdsCreditHistoryViewModel @Inject constructor(private val graphqlRepository: GraphqlRepository,
                                                        private val userSessionInterface: UserSessionInterface,
+                                                       private val topAdsGetShopDepositUseCase: TopAdsGetShopDepositUseCase,
                                                        @Named("Main")
                                                        val dispatcher: CoroutineDispatcher)
     : BaseViewModel(dispatcher) {
 
     val creditsHistory = MutableLiveData<Result<TopAdsCreditHistory>>()
     val getAutoTopUpStatus = MutableLiveData<Result<AutoTopUpStatus>>()
+    val creditAmount = MutableLiveData<String>()
 
 
     fun getCreditHistory(rawQuery: String, startDate: Date? = null, endDate: Date? = null) {
@@ -42,7 +47,7 @@ class TopAdsCreditHistoryViewModel @Inject constructor(private val graphqlReposi
                 PARAM_END_DATE to endDate?.let { SimpleDateFormat(TopAdsCommonConstant.REQUEST_DATE_FORMAT, Locale.ENGLISH).format(it) }
         )
         launchCatchError(block = {
-            val data = withContext(Dispatchers.Default){
+            val data = withContext(Dispatchers.Default) {
                 val graphqlRequest = GraphqlRequest(rawQuery, TYPE_CREDIT_RESPONSE, params, false)
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
             }.getSuccessData<TopAdsCreditHistory.CreditsResponse>()
@@ -51,29 +56,45 @@ class TopAdsCreditHistoryViewModel @Inject constructor(private val graphqlReposi
                 creditsHistory.value = Success(data.response.dataHistory)
             else
                 creditsHistory.value = Fail(ResponseErrorException(data.response.errors))
-        }){
+        }) {
             creditsHistory.value = Fail(it)
         }
     }
 
-    fun getAutoTopUpStatus(rawQuery: String){
+    fun getAutoTopUpStatus(rawQuery: String) {
         val params = mapOf(PARAM_SHOP_ID to userSessionInterface.shopId)
         launchCatchError(block = {
-            val data = withContext(Dispatchers.Default){
+            val data = withContext(Dispatchers.Default) {
                 val graphqlRequest = GraphqlRequest(rawQuery, AutoTopUpData.Response::class.java, params)
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
             }.getSuccessData<AutoTopUpData.Response>()
 
             if (data.response == null)
                 getAutoTopUpStatus.value = Fail(Exception("Gagal mengambil status"))
-             else if (data.response.errors.isEmpty())
+            else if (data.response.errors.isEmpty())
                 getAutoTopUpStatus.value = Success(data.response.data)
             else
                 getAutoTopUpStatus.value = Fail(ResponseErrorException(data.response.errors))
-        }){
+        }) {
             getAutoTopUpStatus.value = Fail(it)
         }
     }
+
+    fun getShopDeposit() {
+        topAdsGetShopDepositUseCase.execute(TopAdsGetShopDepositUseCase.createParams(userSessionInterface.shopId),
+                object : Subscriber<DataDeposit>() {
+                    override fun onCompleted() {}
+
+                    override fun onError(e: Throwable) {
+                        e.printStackTrace()
+                    }
+
+                    override fun onNext(dataDeposit: DataDeposit) {
+                        creditAmount.value = dataDeposit.amountFmt
+                    }
+                })
+    }
+
 
     companion object {
         private const val PARAM_SHOP_ID = "shopId"

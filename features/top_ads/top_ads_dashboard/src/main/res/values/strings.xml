@@ -1,7 +1,29 @@
 <resources>
-    <string name="app_name">top_ads_dashboard</string>
+
+    <!-- TOP ADS TOPUP - CREDIT -->
+    <string name="topads_dash_total_credit">Total Kredit</string>
+    <string name="topads_dash_total_used">Total Terpakai</string>
+    <string name="topads_adash_auto_topup_off_title">Keuntungan tambah kredit otomatis</string>
+    <string name="topads_adash_auto_topup_off_desc1">Isi kredit mu otomatis, agar iklan mu terus tampil.</string>
+    <string name="topads_adash_auto_topup_off_desc2">Atur sendiri batas minimum kredit dan nominal top-up mu.</string>
+    <string name="topads_adash_auto_topup_off_desc3">Dapatkan bonus 10% kredit tiap kali kredit mu ditambah otomatis.</string>
+    <string name="topads_dash_auto_topup_off_dialog_title">Yakin mau nonaktifkan tambah kredit otomatis?</string>
+    <string name="topads_dash_auto_topup_off_dialog_desc">Kamu akan kehilangan bonus %s kredit tiap kali top-up kredit</string>
+    <string name="topads_dash_auto_topup_off_dialog_ok_btn">Ya, Nonaktifkan</string>
+    <string name="topads_dash_auto_topup_off_dialog_cancel_btn">Tetap gunakan</string>
+    <string name="topads_dash_auto_topup_ticker_desc">Biaya diambil dari saldo penghasilan toko anda, setiap kali kredit di bawah batas Anda ditentukan</string>
+    <string name="topads_dash_select_topup_amount">Top-up kredit sebesar</string>
+    <string name="topads_dash_when_credit_is_down">Saat kredit saya di bawah</string>
+    <string name="topads_dash_credit_is_down_desc">Diambil dari 20% nominal top-up mu,untuk menjaga iklanmu terus tampil</string>
+    <string name="topads_dash_auto_topup_setting_is_saved_toast">Pengaturan berhasil diperbarui</string>
+    <string name="topads_dash_auto_topup_activated_toast">Tambah kredit otomatis berhasil diaktifkan</string>
+    <string name="topads_dash_auto_topup_title">Pengaturan Kredit Otomatis</string>
+    <string name="topads_dash_pengaturan">Pengaturan</string>
+    <string name="topads_dash_auto_topup_bonus_amount">Bonus Rp <![CDATA["<font color='#42b549'><b> %s </b></font> ]]> kredit setiap tambah kredit.</string>
+    <string name="topads_dash_topads_auto_topup_bottomsheet_title">Aktifkan Tambah Kredit Otomatis</string>
     <string name="top_ads_title_dashboard">TopAds</string>
     <string name="title_top_ads_add_credit">Tambah Kredit TopAds</string>
+    <string name="topads_dash_auto_topup_on">Diatur Otomatis</string>
 
     <string name="top_ads_title_product">Produk</string>
     <string name="title_date_picker">Atur Tanggal</string>
@@ -282,6 +304,6 @@
     <string name="topads_insight_add_bid">Biaya untuk [%d] kata kunci rekomendasi berhasil diterapkan ke grup iklanmu.</string>
     <string name="topads_insight_invalid_key_tag_pos">1 atau lebih kata kunci yang kamu pilih sedang aktif di kata kunci negatif di grup kamu, silahkan hapus terlebih dahulu bila ingin menggunakan kata kunci</string>
     <string name="topads_insight_invalid_key_tag_neg">1 atau lebih kata kunci yang kamu pilih sedang aktif di kata kunci di grup kamu, silahkan hapus terlebih dahulu bila ingin menggunakan kata kunci</string>
-
+    <string name="topads_auto_topup_widget">Dapatkan bonus kredit 10% dengan Tambah Kredit Otomatis</string>
 </resources>
 

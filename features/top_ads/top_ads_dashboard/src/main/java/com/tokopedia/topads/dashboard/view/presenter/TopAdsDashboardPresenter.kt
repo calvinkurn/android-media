@@ -15,16 +15,16 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
 import com.tokopedia.topads.common.data.exception.ResponseErrorException
 import com.tokopedia.topads.common.data.model.DataDeposit
+import com.tokopedia.topads.common.data.response.groupitem.GetTopadsDashboardGroupStatistics
+import com.tokopedia.topads.common.data.response.groupitem.GroupItemResponse
+import com.tokopedia.topads.common.data.response.nongroupItem.GetDashboardProductStatistics
+import com.tokopedia.topads.common.data.response.nongroupItem.NonGroupResponse
+import com.tokopedia.topads.common.domain.interactor.*
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.constant.TopAdsStatisticsType
 import com.tokopedia.topads.dashboard.data.model.*
-import com.tokopedia.topads.common.data.response.groupitem.GetTopadsDashboardGroupStatistics
-import com.tokopedia.topads.common.data.response.groupitem.GroupItemResponse
 import com.tokopedia.topads.dashboard.data.model.insightkey.InsightKeyData
-import com.tokopedia.topads.common.data.response.nongroupItem.GetDashboardProductStatistics
-import com.tokopedia.topads.common.data.response.nongroupItem.NonGroupResponse
-import com.tokopedia.topads.common.domain.interactor.*
 import com.tokopedia.topads.dashboard.domain.interactor.*
 import com.tokopedia.topads.dashboard.view.listener.TopAdsDashboardView
 import com.tokopedia.topads.debit.autotopup.data.model.AutoTopUpData
@@ -215,17 +215,17 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetShopDepositUseCase
                 })
     }
 
-    fun getInsight(resources: Resources,onSuccess:((InsightKeyData)->Unit)){
+    fun getInsight(resources: Resources, onSuccess: ((InsightKeyData) -> Unit)) {
         topAdsInsightUseCase.run {
-            setGraphqlQuery(GraphqlHelper.loadRawString(resources,R.raw.gql_query_insights_keyword))
+            setGraphqlQuery(GraphqlHelper.loadRawString(resources, R.raw.gql_query_insights_keyword))
             setParams()
             executeQuerySafeMode(
-                {
+                    {
                         onSuccess(it)
 
-                },{
+                    }, {
 
-                })
+            })
         }
     }
 

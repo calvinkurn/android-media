@@ -1,4 +1,4 @@
-package com.tokopedia.topads.dashboard.view.fragment
+package com.tokopedia.topads.debit.autotopup.view.fragment
 
 import android.app.Activity
 import android.content.Intent
@@ -8,10 +8,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.network.URLGenerator
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.topads.dashboard.R
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
+import com.tokopedia.topads.dashboard.data.model.CreditResponse
 import com.tokopedia.topads.dashboard.data.model.DataCredit
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.view.activity.TopAdsPaymentCreditActivity
@@ -19,6 +24,7 @@ import com.tokopedia.topads.dashboard.view.adapter.TopAdsCreditTypeFactory
 import com.tokopedia.topads.dashboard.view.adapter.viewholder.DataCreditViewHolder
 import com.tokopedia.topads.dashboard.view.listener.TopAdsAddCreditView
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsAddCreditPresenter
+import com.tokopedia.topads.debit.autotopup.view.activity.TopAdsEditAutoTopUpActivity
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.webview.KEY_TITLE
@@ -50,6 +56,9 @@ class TopAdsAddCreditFragment : BaseListFragment<DataCredit, TopAdsCreditTypeFac
         super.onViewCreated(view, savedInstanceState)
         button_submit.setOnClickListener { chooseCredit() }
         initErrorNetworkViewModel()
+        onBoarding?.setOnClickListener {
+            startActivity(Intent(context, TopAdsEditAutoTopUpActivity::class.java))
+        }
     }
 
     private fun initErrorNetworkViewModel() {
@@ -64,19 +73,32 @@ class TopAdsAddCreditFragment : BaseListFragment<DataCredit, TopAdsCreditTypeFac
         return TopAdsCreditTypeFactory(this)
     }
 
-
-    private fun populateData() {
-        button_submit.visibility = View.GONE
-        presenter.populateCreditList()
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        presenter.autoTopUpStatus.observe(viewLifecycleOwner, Observer {
+            val isAutoTopUpActive = (it.toIntOrZero()) != TopAdsDashboardConstant.AUTO_TOPUP_INACTIVE
+            if (isAutoTopUpActive) {
+                suggestAutoTopUp.visibility = View.GONE
+            } else
+                suggestAutoTopUp.visibility = View.VISIBLE
+        })
     }
 
-    override fun onCreditListLoaded(creditList: List<DataCredit>) {
-        super.renderList(creditList)
-        if (!creditList.isEmpty() && selectedCreditPos < 0) {
-            select(getDefaultSelection(creditList))
-        }
+    private fun populateData() {
+        userSession = UserSession(activity)
+        button_submit.visibility = View.GONE
+        presenter.getAutoTopUpStatus(userSession?.shopId ?: "", GraphqlHelper
+                .loadRawString(resources, R.raw.gql_query_get_status_auto_topup))
 
-        if (creditList.isEmpty()) {
+        presenter.populateCreditList(userSession?.shopId.toString())
+    }
+
+    override fun onCreditListLoaded(creditList: CreditResponse) {
+        super.renderList(creditList.credit)
+        if (creditList.credit.isNotEmpty() && selectedCreditPos < 0) {
+            select(getDefaultSelection(creditList.credit))
+        }
+        if (creditList.credit.isEmpty()) {
             button_submit.visibility = View.GONE
             button_submit.isEnabled = false
         } else {
@@ -90,7 +112,8 @@ class TopAdsAddCreditFragment : BaseListFragment<DataCredit, TopAdsCreditTypeFac
     }
 
     private fun getDefaultSelection(creditList: List<DataCredit>): Int {
-        return creditList.withIndex().filter { it.value.selected > 0 }.map { it.index }.firstOrNull() ?: 0
+        return creditList.withIndex().filter { it.value.selected > 0 }.map { it.index }.firstOrNull()
+                ?: 0
     }
 
     private fun chooseCredit() {
@@ -106,7 +129,6 @@ class TopAdsAddCreditFragment : BaseListFragment<DataCredit, TopAdsCreditTypeFac
                 it.finish()
             }
         }
-
     }
 
     private fun getUrl(selected: DataCredit): String {

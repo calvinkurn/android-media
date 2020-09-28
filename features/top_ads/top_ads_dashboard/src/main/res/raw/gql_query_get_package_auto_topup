@@ -4,6 +4,7 @@ query topAdsAutoTopup($shopId: String!) {
             status
             status_desc
             tkpd_product_id
+            extra_credit_percent
             available_nominal {
                 min_credit_fmt
                 price_fmt

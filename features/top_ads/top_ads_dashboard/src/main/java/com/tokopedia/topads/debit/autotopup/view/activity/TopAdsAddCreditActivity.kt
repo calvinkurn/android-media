@@ -1,4 +1,4 @@
-package com.tokopedia.topads.dashboard.view.activity
+package com.tokopedia.topads.debit.autotopup.view.activity
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
@@ -8,7 +8,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.di.DaggerTopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
-import com.tokopedia.topads.dashboard.view.fragment.TopAdsAddCreditFragment
+import com.tokopedia.topads.debit.autotopup.view.fragment.TopAdsAddCreditFragment
 
 /**
  * Created by Nathaniel on 11/22/2016.

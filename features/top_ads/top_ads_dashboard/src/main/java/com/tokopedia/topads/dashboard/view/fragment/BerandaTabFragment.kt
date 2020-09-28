@@ -26,6 +26,7 @@ import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CUST
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.DATA_INSIGHT
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.DATE_RANGE_BERANDA
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.END_DATE_BERANDA
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.REQUEST_CODE_ADD_CREDIT
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.START_DATE_BERANDA
 import com.tokopedia.topads.dashboard.data.constant.TopAdsStatisticsType
 import com.tokopedia.topads.dashboard.data.model.DataStatistic
@@ -34,24 +35,18 @@ import com.tokopedia.topads.dashboard.data.model.insightkey.KeywordInsightDataMa
 import com.tokopedia.topads.dashboard.data.utils.Utils
 import com.tokopedia.topads.dashboard.data.utils.Utils.format
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
-import com.tokopedia.topads.dashboard.view.activity.TopAdsAddCreditActivity
 import com.tokopedia.topads.dashboard.view.adapter.TopAdsDashInsightPagerAdapter
 import com.tokopedia.topads.dashboard.view.adapter.TopAdsStatisticPagerAdapter
 import com.tokopedia.topads.dashboard.view.adapter.TopAdsTabAdapter
 import com.tokopedia.topads.dashboard.view.adapter.insight.TopAdsInsightTabAdapter
-import com.tokopedia.topads.dashboard.view.fragment.insight.TopAdsInsightMiniBidFragment
 import com.tokopedia.topads.dashboard.view.fragment.insight.TopAdsInsightMiniKeyFragment
-import com.tokopedia.topads.dashboard.view.fragment.insight.TopAdsInsightMiniProductFragment
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDashboardPresenter
 import com.tokopedia.topads.dashboard.view.sheet.CustomDatePicker
 import com.tokopedia.topads.dashboard.view.sheet.DatePickerSheet
 import com.tokopedia.topads.debit.autotopup.data.model.AutoTopUpStatus
-import com.tokopedia.unifycomponents.setImage
+import com.tokopedia.topads.debit.autotopup.view.activity.TopAdsAddCreditActivity
 import kotlinx.android.synthetic.main.partial_top_ads_dashboard_statistics.*
 import kotlinx.android.synthetic.main.topads_dash_fragment_beranda_base.*
-import kotlinx.android.synthetic.main.topads_dash_fragment_beranda_base.hari_ini
-import kotlinx.android.synthetic.main.topads_dash_fragment_beranda_base.swipe_refresh_layout
-import kotlinx.android.synthetic.main.topads_dash_fragment_group_detail_view_layout.*
 import kotlinx.android.synthetic.main.topads_dash_layout_hari_ini.*
 import kotlinx.android.synthetic.main.topads_dash_layout_hari_ini.view.*
 import java.util.*
@@ -73,7 +68,6 @@ open class BerandaTabFragment : BaseDaggerFragment(), CustomDatePicker.ActionLis
 
     companion object {
 
-        private const val REQUEST_CODE_ADD_CREDIT = 1
         private const val REQUEST_CODE_SET_AUTO_TOPUP = 6
         private const val SEVEN_DAYS_RANGE_INDEX = 2
 
@@ -279,8 +273,14 @@ open class BerandaTabFragment : BaseDaggerFragment(), CustomDatePicker.ActionLis
     private fun onSuccessGetAutoTopUpStatus(data: AutoTopUpStatus) {
         val isAutoTopUpActive = (data.status.toIntOrZero()) != TopAdsDashboardConstant.AUTO_TOPUP_INACTIVE
         if (isAutoTopUpActive) {
+            autoTopUp?.visibility = View.VISIBLE
+            addCredit?.visibility = View.GONE
             img_auto_debit.setImageDrawable(context?.getResDrawable(R.drawable.topads_dash_auto_debit))
             img_auto_debit.visibility = View.VISIBLE
+        }else{
+            autoTopUp?.visibility = View.GONE
+            addCredit?.visibility = View.VISIBLE
+            img_auto_debit.visibility = View.GONE
         }
     }
 
@@ -290,17 +290,16 @@ open class BerandaTabFragment : BaseDaggerFragment(), CustomDatePicker.ActionLis
         topAdsInsightTabAdapter?.setListener(object : TopAdsInsightTabAdapter.OnRecyclerTabItemClick {
             override fun onTabItemClick(position: Int) {
                 viewPagerInsight.currentItem = position
-                if(position==1||position==2){
+                if (position == 1 || position == 2) {
                     goToInsights.visibility = View.GONE
                     arrow.visibility = View.GONE
-                }
-                else{
+                } else {
                     goToInsights.visibility = View.VISIBLE
                     arrow.visibility = View.VISIBLE
                 }
             }
         })
-        topAdsInsightTabAdapter?.setTabTitles(resources,  response.data.size, 0, 0)
+        topAdsInsightTabAdapter?.setTabTitles(resources, response.data.size, 0, 0)
         rvTabInsight.adapter = topAdsInsightTabAdapter
     }
 
