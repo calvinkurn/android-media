@@ -68,6 +68,7 @@ class LihatFlashSaleTimerViewHolder(itemView: View, private val fragment: Fragme
     override fun removeObservers(lifecycleOwner: LifecycleOwner?) {
         super.removeObservers(lifecycleOwner)
         lifecycleOwner?.let { it ->
+            lihatFlashSaleTimerViewModel.stopTimer()
             lihatFlashSaleTimerViewModel.getComponentData().removeObservers(it)
             lihatFlashSaleTimerViewModel.getTimerData().removeObservers(it)
         }

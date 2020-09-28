@@ -55,6 +55,7 @@ class LihatFlashSaleTimerViewModel(val application: Application, componentData: 
 
     fun stopTimer() {
         timeCounter?.cancel()
+        timeCounter = null
     }
 
     fun getTimerData() = mutableTimeDiffModel

@@ -43,9 +43,8 @@ class BannerTimerViewModel(val application: Application, components: ComponentsI
     }
 
     fun stopTimer() {
-        if (timerWithBannerCounter != null) {
-            timerWithBannerCounter!!.cancel()
-        }
+        timerWithBannerCounter?.cancel()
+        timerWithBannerCounter = null
     }
 
     fun getTimerData() = mutableTimeDiffModel

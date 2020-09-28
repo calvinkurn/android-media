@@ -82,6 +82,7 @@ class BannerTimerViewHolder(private val customItemView: View, val fragment: Frag
     override fun removeObservers(lifecycleOwner: LifecycleOwner?) {
         super.removeObservers(lifecycleOwner)
         lifecycleOwner?.let { it ->
+            bannerTimerViewModel.stopTimer()
             bannerTimerViewModel.getComponentData().removeObservers(it)
             bannerTimerViewModel.getTimerData().removeObservers(it)
         }
