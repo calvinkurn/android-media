@@ -1,10 +1,15 @@
 package com.tokopedia.media.loader
 
+import android.graphics.drawable.Drawable
 import android.widget.ImageView
 import com.bumptech.glide.load.model.GlideUrl
 import com.tokopedia.media.loader.common.Properties
 import com.tokopedia.media.loader.common.UrlBuilder
 import com.tokopedia.media.loader.utils.DEFAULT_ROUNDED
+
+fun ImageView.loadImage(drawable: Drawable) = this.setImageDrawable(drawable)
+
+fun ImageView.loadImage(resource: Int) = this.setImageResource(resource)
 
 fun ImageView.loadImage(url: String) = call(url, Properties())
 

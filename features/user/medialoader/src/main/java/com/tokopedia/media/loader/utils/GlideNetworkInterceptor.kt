@@ -13,7 +13,7 @@ object GlideNetworkInterceptor {
             val response = chain?.proceed(chain.request())
             val header = response?.header(HEADER_ECT)
 
-            // send to scalyr
+            // send to analytics
             Timber.d("Connection-Type (ECT): $header")
 
             // showing into logcat tool

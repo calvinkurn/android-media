@@ -1,6 +1,5 @@
 package com.tokopedia.media.loader
 
-import android.graphics.drawable.Drawable
 import android.widget.ImageView
 import androidx.annotation.DrawableRes
 import androidx.appcompat.content.res.AppCompatResources.getDrawable
@@ -8,7 +7,6 @@ import com.bumptech.glide.load.Key
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.model.GlideUrl
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.tokopedia.kotlin.extensions.R
 import com.tokopedia.media.loader.module.GlideApp
 
 object GlideBuilder {
@@ -19,15 +17,16 @@ object GlideBuilder {
             url: GlideUrl?,
             radius: Float = 0f,
             signatureKey: Key?,
-            cacheStrategy: DiskCacheStrategy? = DiskCacheStrategy.DATA,
+            cacheStrategy: DiskCacheStrategy?,
             @DrawableRes placeHolder: Int = 0,
-            @DrawableRes resOnError: Int = 0,
+            @DrawableRes resOnError: Int,
             isAnimate: Boolean = false
     ) {
-        val drawableError: Drawable? = if (resOnError == 0) {
-            getDrawable(imageView.context, R.drawable.ic_loading_error)
-        } else {
+
+        val drawableError = if (resOnError != 0) {
             getDrawable(imageView.context, resOnError)
+        } else {
+            getDrawable(imageView.context, R.drawable.ic_media_default_error)
         }
 
         if (url == null) {
