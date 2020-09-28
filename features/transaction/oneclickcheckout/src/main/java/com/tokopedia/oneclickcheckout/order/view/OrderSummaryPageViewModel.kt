@@ -246,7 +246,6 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             clearBboIfExist()
             _orderShipment = it
             orderShipment.value = _orderShipment
-//            calculateTotal()
             validateUsePromo()
         }
     }
