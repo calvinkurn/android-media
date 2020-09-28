@@ -105,7 +105,8 @@ class ThankYouPageAnalytics @Inject constructor(
                 ParentTrackingKey.KEY_PAYMENT_STATUS to thanksPageData.paymentStatus,
                 ParentTrackingKey.KEY_PAYMENT_TYPE to thanksPageData.paymentType,
                 ParentTrackingKey.KEY_CURRENT_SITE to thanksPageData.currentSite,
-                ParentTrackingKey.KEY_BUSINESS_UNIT to thanksPageData.businessUnit
+                ParentTrackingKey.KEY_BUSINESS_UNIT to thanksPageData.businessUnit,
+                ParentTrackingKey.KEY_PROFILE_ID to thanksPageData.profileCode
         )
     }
 
