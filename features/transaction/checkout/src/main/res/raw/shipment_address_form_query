@@ -272,6 +272,7 @@ query shipment_address_form($params: ShipmentAddressFormParams) {
       }
       addresses {
         active
+        disable_tabs
         data {
           key
           value {
