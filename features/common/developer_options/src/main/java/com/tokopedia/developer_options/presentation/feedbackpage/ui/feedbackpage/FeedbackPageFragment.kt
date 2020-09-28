@@ -18,16 +18,17 @@ import android.view.ViewGroup
 import android.widget.*
 import android.widget.AdapterView.OnItemSelectedListener
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.textfield.TextInputLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.developer_options.R
-import com.tokopedia.developer_options.presentation.feedbackpage.domain.request.FeedbackFormRequest
-import com.tokopedia.developer_options.presentation.feedbackpage.domain.model.CategoriesModel
 import com.tokopedia.developer_options.presentation.feedbackpage.adapter.ImageFeedbackAdapter
 import com.tokopedia.developer_options.presentation.feedbackpage.di.FeedbackPageComponent
-import com.tokopedia.developer_options.presentation.feedbackpage.ui.dialog.LoadingDialog
+import com.tokopedia.developer_options.presentation.feedbackpage.domain.model.CategoriesModel
+import com.tokopedia.developer_options.presentation.feedbackpage.domain.request.FeedbackFormRequest
 import com.tokopedia.developer_options.presentation.feedbackpage.listener.ImageClickListener
+import com.tokopedia.developer_options.presentation.feedbackpage.ui.dialog.LoadingDialog
 import com.tokopedia.developer_options.presentation.feedbackpage.ui.tickercreated.TicketCreatedActivity
 import com.tokopedia.developer_options.presentation.feedbackpage.utils.EXTRA_URI_IMAGE
 import com.tokopedia.developer_options.presentation.preference.Preferences
@@ -60,6 +61,7 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
     private lateinit var compositeSubscription: CompositeSubscription
     private lateinit var myPreferences: Preferences
     private lateinit var tvImage: Typography
+    private lateinit var rvImageFeedback: RecyclerView
     private val imageAdapter: ImageFeedbackAdapter by lazy {
         ImageFeedbackAdapter(this)
     }
@@ -127,6 +129,7 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
         imageView = mainView.findViewById(R.id.image_feedback)
         submitButton = mainView.findViewById(R.id.submit_button)
         tvImage = mainView.findViewById(R.id.image_feedback_tv)
+        rvImageFeedback = mainView.findViewById(R.id.rv_img_feedback)
         feedbackPagePresenter.attachView(this)
 
         compositeSubscription = CompositeSubscription()
@@ -134,7 +137,7 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
         loadingDialog = context?.let { LoadingDialog(it) }
 
         uriImage = arguments?.getParcelable(EXTRA_URI_IMAGE)
-        feedbackPagePresenter.getCategories()
+//        feedbackPagePresenter.getCategories()
 
 /*
         spinnerAdapter =  CategoriesSpinAdapter(context, android.R.layout.simple_spinner_item)
@@ -164,6 +167,7 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
     }
 
     private fun initData() {
+        rvImageFeedback.adapter = imageAdapter
         val fields = VERSION_CODES::class.java.fields
 
         var codeName = "UNKNOWN"
@@ -178,7 +182,7 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
             codeName.startsWith("Q") -> { codeName = getString(R.string.android10) }
         }
 
-        feedbackPagePresenter.getCategories()
+//        feedbackPagePresenter.getCategories()
 
         deviceInfo = (StringBuilder().append(Build.MANUFACTURER).append(" ").append(Build.MODEL).toString())
         androidVersion = codeName
