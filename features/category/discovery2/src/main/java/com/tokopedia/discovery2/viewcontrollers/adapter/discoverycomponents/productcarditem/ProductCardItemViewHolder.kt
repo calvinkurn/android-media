@@ -35,6 +35,7 @@ private const val SOLD_PERCENTAGE_UPPER_LIMIT = 100
 private const val SOLD_PERCENTAGE_LOWER_LIMIT = 0
 private const val SALE_PRODUCT_STOCK = 100
 private const val PRODUCT_STOCK = 0
+private const val PRODUCT_CAROUSEL_WIDTH = 2.3
 
 class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
 
@@ -129,10 +130,7 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
             setSlashedPrice(dataItem.discountedPrice)
             textViewPrice.setTextAndCheckShow(dataItem.price)
             showOutOfStockLabel(dataItem.stock, PRODUCT_STOCK)
-            if(productCardName == ComponentNames.ProductCardCarouselItem.componentName){
-                val displayMetrics = getDisplayMetric(context)
-                productCardView.layoutParams.width = (displayMetrics.widthPixels/2.3).toInt()
-            }
+            carouselProductWidth()
         } else {
             productName.setTextAndCheckShow(dataItem.title)
             setSlashedPrice(dataItem.price)
@@ -151,6 +149,14 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
         showNotifyMe(dataItem)
         priceLabel.initLabelGroup(dataItem.getLabelPrice())
         showStatusLabel(dataItem)
+    }
+
+
+    private fun carouselProductWidth() {
+        if(productCardName == ComponentNames.ProductCardCarouselItem.componentName || productCardName == ComponentNames.ProductCardSprintSaleCarousel.componentName){
+            val displayMetrics = getDisplayMetric(context)
+            productCardView.layoutParams.width = (displayMetrics.widthPixels/PRODUCT_CAROUSEL_WIDTH).toInt()
+        }
     }
 
     private fun showStatusLabel(dataItem: DataItem) {
