@@ -24,12 +24,18 @@ class ImpresionTask {
 
     init {
         try {
-            Thread.currentThread().stackTrace[4].let {
-                fileName = it.fileName
-                methodName = it.methodName
-                lineNumber = it.lineNumber
+            var startTraceIndex = 4
+            var traceElement: StackTraceElement
+            var stackTraceElements = Thread.currentThread().stackTrace
+            if (stackTraceElements[startTraceIndex].className.equals(TopAdsUrlHitter::class.qualifiedName)) {
+                traceElement = stackTraceElements[startTraceIndex++]
+            } else {
+                traceElement = stackTraceElements[startTraceIndex]
             }
-        }catch (e: Exception){
+            fileName = traceElement.fileName
+            methodName = traceElement.methodName
+            lineNumber = traceElement.lineNumber
+        } catch (e: Exception) {
             e.printStackTrace()
         }
     }
@@ -50,7 +56,7 @@ class ImpresionTask {
 
     fun execute(url: String?) {
         url?.let {
-            GlobalScope.launch(Dispatchers.IO){
+            GlobalScope.launch(Dispatchers.IO) {
                 try {
                     if (taskAlert != null) {
                         taskAlert!!.track(url, fileName, methodName, lineNumber)
