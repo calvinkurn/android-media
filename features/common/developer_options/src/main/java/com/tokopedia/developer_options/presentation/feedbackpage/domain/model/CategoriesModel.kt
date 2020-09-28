@@ -1,4 +1,4 @@
-package com.tokopedia.developer_options.api.model
+package com.tokopedia.developer_options.presentation.feedbackpage.domain.model
 
 data class CategoriesModel(
         var categories: List<CategoriesItem> = emptyList()

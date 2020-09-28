@@ -1,7 +1,7 @@
-package com.tokopedia.developer_options.api.model
+package com.tokopedia.developer_options.presentation.feedbackpage.domain.model
 
-import com.tokopedia.developer_options.api.response.CategoriesResponse
-import com.tokopedia.developer_options.api.response.Category
+import com.tokopedia.developer_options.presentation.feedbackpage.domain.response.CategoriesResponse
+import com.tokopedia.developer_options.presentation.feedbackpage.domain.response.Category
 import javax.inject.Inject
 
 class CategoriesMapper @Inject constructor() {

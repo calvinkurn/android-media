@@ -1,7 +1,7 @@
 package com.tokopedia.developer_options.presentation.feedbackpage.ui.feedbackpage
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView
-import com.tokopedia.developer_options.api.model.CategoriesModel
+import com.tokopedia.developer_options.presentation.feedbackpage.domain.model.CategoriesModel
 import com.tokopedia.developer_options.presentation.feedbackpage.domain.request.FeedbackFormRequest
 import okhttp3.MultipartBody
 

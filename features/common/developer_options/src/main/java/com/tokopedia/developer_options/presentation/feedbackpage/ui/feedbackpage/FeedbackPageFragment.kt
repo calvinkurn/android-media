@@ -23,7 +23,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.developer_options.R
 import com.tokopedia.developer_options.presentation.feedbackpage.domain.request.FeedbackFormRequest
-import com.tokopedia.developer_options.api.model.CategoriesModel
+import com.tokopedia.developer_options.presentation.feedbackpage.domain.model.CategoriesModel
 import com.tokopedia.developer_options.presentation.feedbackpage.adapter.ImageFeedbackAdapter
 import com.tokopedia.developer_options.presentation.feedbackpage.di.FeedbackPageComponent
 import com.tokopedia.developer_options.presentation.feedbackpage.ui.dialog.LoadingDialog
