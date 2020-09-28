@@ -95,18 +95,18 @@ ext {
     ]
 
     unifyIconVersion = '0.0.4'
-    unifyPrinciplesVersion = '1.2.0'
-    unifyComponentsVersion = '1.1.45'
+    unifyPrinciplesVersion = '1.3.0'
+    unifyComponentsVersion = '1.1.48'
     unifyCoachMarkVersion = '1.2.6'
     unifyCalendarVersion = '1.0.2'
     unifyBannerVersion = '1.0.4'
-    unifyDialogVersion = '1.0.3'
+    unifyDialogVersion = '1.0.5'
     unifyDatePickerVersion = '1.0.6'
     unifyPinVersion = '1.0.3'
     unifyEmptyStateVersion = '1.0.6-beta-1'
     unifyGlobalErrorVersion = '1.0.9'
     unifyHeaderVersion = '1.1.4'
-    unifySortFilterVersion = '1.0.3'
+    unifySortFilterVersion = '1.0.4'
     unifyIconNotificationVersion = '1.0.0'
     unifyCarouselVersion = '1.0.4'
     unifyListVersion = '1.0.5'
@@ -114,10 +114,6 @@ ext {
     gradlePlugin = [
             crashlytics   : "io.fabric.tools:gradle:${crashlyticsGradleVersion}",
             googleServices: "com.google.gms:google-services:${googleServiceGradleVersion}"
-    ]
-
-    monitoringDependencies = [
-            bugSnag       : "com.bugsnag:bugsnag-android:4.22.3"
     ]
 
     networkDependencies = [
@@ -179,7 +175,7 @@ ext {
             messaging  : "com.google.firebase:firebase-messaging:${playServiceFirebaseMessaging}",
             config     : "com.google.firebase:firebase-config:${playServiceFirebaseRemoteConfig}",
             performance: "com.google.firebase:firebase-perf:${playServiceFirebasePerfMon}",
-            fireStore  : "com.google.firebase:firebase-firestore:21.4.3"
+            fireStore  : "com.google.firebase:firebase-firestore:17.1.2"
     ]
 
     viewDependencies = [

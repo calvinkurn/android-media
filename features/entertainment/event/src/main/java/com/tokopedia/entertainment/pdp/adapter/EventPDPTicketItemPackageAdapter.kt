@@ -88,7 +88,7 @@ class EventPDPTicketItemPackageAdapter(
                 quantityEditor.maxValue = items.maxQty.toInt()
 
                 quantityEditor.setValueChangedListener { newValue, _, _ ->
-                    isError = !(quantityEditor.getValue() >= items.minQty.toInt() && quantityEditor.getValue() <= items.maxQty.toInt())
+                    isError = !((quantityEditor.getValue() >= items.minQty.toInt() || quantityEditor.getValue() >= EMPTY_QTY) && quantityEditor.getValue() <= items.maxQty.toInt())
                     onBindItemTicketListener.quantityEditorValueButtonClicked(idPackage,items.id, items,
                             items.salesPrice.toInt()*newValue, newValue.toString(),
                             isError, items.name, items.productId,items.salesPrice,

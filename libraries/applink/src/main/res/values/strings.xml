@@ -102,4 +102,6 @@
     <string name="payment_title_upload_proof">Unggah Bukti Pembayaran</string>
 
 
+    <!-- Seller Menu -->
+    <string name="title_seller_menu">Toko Saya</string>
 </resources>

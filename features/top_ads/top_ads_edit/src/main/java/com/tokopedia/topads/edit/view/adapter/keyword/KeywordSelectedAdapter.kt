@@ -35,7 +35,11 @@ class KeywordSelectedAdapter(private val onChecked: ((position: Int) -> Unit)) :
 
         holder.view.keyword_name.text = items[holder.adapterPosition].keyword
         try {
-            holder.view.keyword_count.text = Utils.convertToCurrencyString(items[position].totalSearch.toLong())
+            if (items[holder.adapterPosition].totalSearch == "-1") {
+                holder.view.keyword_count.text = "  -  "
+
+            } else
+                holder.view.keyword_count.text = Utils.convertToCurrencyString(items[position].totalSearch.toLong())
         } catch (e: Exception) {
             holder.view.keyword_count.text = items[holder.adapterPosition].totalSearch.toString()
         }
@@ -51,22 +55,29 @@ class KeywordSelectedAdapter(private val onChecked: ((position: Int) -> Unit)) :
             }
 
         }
-        when (items[holder.adapterPosition].competition) {
-            KeywordItemViewHolder.LOW -> {
-                holder.view.keywordCompetition.setLabelType(Label.GENERAL_DARK_GREEN)
-                holder.view.keywordCompetition.setLabel(holder.view.resources.getString(R.string.topads_common_keyword_competition_low))
-            }
+        if (items[holder.adapterPosition].competition.isEmpty()) {
+            holder.view.keywordCompetition.setLabel(holder.view.resources.getString(R.string.topads_common_keyword_competition_low))
+            holder.view.keywordCompetition.visibility = View.INVISIBLE
 
-            KeywordItemViewHolder.MEDIUM -> {
-                holder.view.keywordCompetition.setLabelType(Label.GENERAL_DARK_ORANGE)
-                holder.view.keywordCompetition.setLabel(holder.view.resources.getString(R.string.topads_common_keyword_competition_moderation))
-            }
 
-            KeywordItemViewHolder.HIGH -> {
-                holder.view.keywordCompetition.setLabelType(Label.GENERAL_DARK_RED)
-                holder.view.keywordCompetition.setLabel(holder.view.resources.getString(R.string.topads_common_keyword_competition_high))
-            }
+        } else {
+            when (items[holder.adapterPosition].competition) {
+                KeywordItemViewHolder.LOW -> {
+                    holder.view.keywordCompetition.setLabelType(Label.GENERAL_DARK_GREEN)
+                    holder.view.keywordCompetition.setLabel(holder.view.resources.getString(R.string.topads_common_keyword_competition_low))
+                }
 
+                KeywordItemViewHolder.MEDIUM -> {
+                    holder.view.keywordCompetition.setLabelType(Label.GENERAL_DARK_ORANGE)
+                    holder.view.keywordCompetition.setLabel(holder.view.resources.getString(R.string.topads_common_keyword_competition_moderation))
+                }
+
+                KeywordItemViewHolder.HIGH -> {
+                    holder.view.keywordCompetition.setLabelType(Label.GENERAL_DARK_RED)
+                    holder.view.keywordCompetition.setLabel(holder.view.resources.getString(R.string.topads_common_keyword_competition_high))
+                }
+
+            }
         }
     }
 

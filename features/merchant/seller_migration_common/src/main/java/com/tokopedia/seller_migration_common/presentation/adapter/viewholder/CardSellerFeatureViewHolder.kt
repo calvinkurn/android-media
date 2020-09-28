@@ -21,7 +21,7 @@ class CardSellerFeatureViewHolder(
 
     override fun bind(element: SellerFeatureUiModel) {
         with(itemView) {
-            ivSellerFeature.setImage(element.imageId, 0f)
+            ivSellerFeature.setImage(element.imageUrl, 0f)
             tvSellerFeatureTitle.text = getString(element.titleId)
             tvSellerFeatureDescription.text = getString(element.descriptionId)
             setOnClickListener { listener?.onSellerFeatureClicked(element) }

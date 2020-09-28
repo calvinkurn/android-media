@@ -62,7 +62,6 @@ dependencies {
     //implementation project(rootProject.ext.features.agerestriction) //Need to fix the structure
 
     //Content
-    implementation project(rootProject.ext.features.affiliate)
     implementation project(rootProject.ext.features.createpost)
     implementation project(rootProject.ext.features.profile)
     implementation project(rootProject.ext.features.play)
@@ -137,7 +136,6 @@ dependencies {
     implementation project(rootProject.ext.features.notifTroubleshooter)
     implementation project(rootProject.ext.features.topchat)
     implementation project(rootProject.ext.features.otp)
-    implementation project(rootProject.ext.features.userIdentification)
 
     //Entertainment
     implementation project(rootProject.ext.features.orderhistory)

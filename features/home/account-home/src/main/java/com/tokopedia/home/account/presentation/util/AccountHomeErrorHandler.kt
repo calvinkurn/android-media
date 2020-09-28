@@ -31,8 +31,7 @@ object AccountHomeErrorHandler {
                 getExceptionMessage(t),
                 errorCode)
         val exception = AccountHomeException(errorMessage, t)
-
-        Timber.w("P2#ACCOUNT_HOME_ERROR#'Failed render';$errorMessage;'$exception'")
+        Timber.w("P2#ACCOUNT_HOME_ERROR#'Failed render';'${getExceptionMessage(t)}';'${errorCode}'")
         try {
             Crashlytics.logException(exception)
         } catch (exception: Exception) {

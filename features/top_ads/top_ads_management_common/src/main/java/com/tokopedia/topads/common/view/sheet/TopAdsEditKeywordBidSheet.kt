@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import com.tokopedia.design.text.watcher.NumberTextWatcher
 import com.tokopedia.topads.common.R
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
+import com.tokopedia.topads.common.data.util.Utils.removeCommaRawString
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.topads_common_edit_key_bid_sheet.*
@@ -162,7 +163,7 @@ class TopAdsEditKeywordBidSheet : BottomSheetUnify() {
                 val eventLabel = "$groupId - $name - ${budget.textFieldInput.text} - ${getSelectedSortId()}"
                 TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEventEdit(CLICK_SUBMIT_BUTTON, eventLabel, userID)
             }
-            onSaved?.invoke(budget.textFieldInput.text.toString(), getSelectedSortId(), position)
+            onSaved?.invoke(budget.textFieldInput.text.toString().removeCommaRawString(), getSelectedSortId(), position)
             dismiss()
         }
 

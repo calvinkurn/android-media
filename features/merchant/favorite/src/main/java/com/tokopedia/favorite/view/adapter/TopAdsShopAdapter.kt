@@ -25,6 +25,7 @@ import com.tokopedia.favorite.utils.TrackingConst
 import com.tokopedia.favorite.view.viewlistener.FavoriteClickListener
 import com.tokopedia.favorite.view.viewmodel.TopAdsShopItem
 import com.tokopedia.topads.sdk.utils.ImageLoader
+import com.tokopedia.topads.sdk.utils.ImpresionTask
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.track.TrackApp
 import java.util.*
@@ -92,13 +93,17 @@ class TopAdsShopAdapter(
                             return false
                         }
 
-                        override fun onResourceReady(resource: Drawable?, model: Any, target: Target<Drawable?>, dataSource: DataSource, isFirstResource: Boolean): Boolean {
-                            TopAdsUrlHitter(holder.getContext()).hitImpressionUrl(
-                                    className,
-                                    shopItem.shopImageUrl,
-                                    shopItem.shopId,
-                                    shopItem.shopName,
-                                    shopItem.shopImageUrl)
+                        override fun onResourceReady(resource: Drawable?,
+                                                     model: Any,
+                                                     target: Target<Drawable?>,
+                                                     dataSource: DataSource,
+                                                     isFirstResource: Boolean): Boolean {
+                            val coverUrl = shopItem.shopCoverUrl
+                            if (coverUrl != null
+                                    && coverUrl.contains(PATH_VIEW)
+                                    && !isFirstResource) {
+                                ImpresionTask(className).execute(coverUrl)
+                            }
                             return false
                         }
                     })

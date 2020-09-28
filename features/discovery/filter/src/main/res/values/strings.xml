@@ -33,4 +33,7 @@
     <string name="price_filter_min_value">1.000</string>
     <string name="price_filter_max_value">100.000.000</string>
     <string name="price_filter_chips_item">Rp350 rb - Rp750 rb</string>
+
+    <string name="content_desc_filterTitleTextView">text title filter</string>
+    <string name="content_desc_filterSeeAll">button lihat semua filter</string>
 </resources>

@@ -105,4 +105,5 @@ object Utils {
         return (NumberFormat.getNumberInstance(locale).format(value) + KALI)
     }
 
+    fun String.removeCommaRawString() = toString().replace(",", "").replace(".", "").trim()
 }

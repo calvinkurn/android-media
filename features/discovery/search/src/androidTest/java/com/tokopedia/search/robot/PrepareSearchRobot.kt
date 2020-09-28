@@ -8,6 +8,7 @@ import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.search.result.presentation.view.activity.SearchActivity
 import com.tokopedia.search.test.R
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig.Companion.FIND_BY_CONTAINS
+import com.tokopedia.test.application.util.InstrumentationAuthHelper.loginInstrumentationTestTopAdsUser
 import com.tokopedia.test.application.util.InstrumentationMockHelper.getRawString
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import com.tokopedia.test.application.util.setupGraphqlMockResponseWithCheck
@@ -47,6 +48,10 @@ internal class PrepareSearchRobot {
             it.putBoolean(SearchConstant.OnBoarding.FILTER_ONBOARDING_SHOWN, true)
             it.applyEditor()
         }
+    }
+
+    fun loginAsTopAdsUser() {
+        loginInstrumentationTestTopAdsUser()
     }
 
     infix fun search(action: SearchRobot.() -> Unit) = SearchRobot(activityRule).apply { action() }

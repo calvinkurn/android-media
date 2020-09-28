@@ -29,6 +29,7 @@ data class ChannelGrid(
         val countReview: Int = 0,
         val backColor: String = "",
         val benefit: ChannelBenefit = ChannelBenefit(),
-        val textColor: String = ""
+        val textColor: String = "",
+        val recommendationType: String = ""
 
 )

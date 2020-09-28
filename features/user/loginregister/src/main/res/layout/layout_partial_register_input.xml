@@ -31,6 +31,7 @@
 
                 <AutoCompleteTextView
                     android:id="@+id/input_email_phone"
+                    android:contentDescription="@string/content_desc_input_email_phone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingLeft="@dimen/dp_5"
@@ -101,6 +102,7 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/password"
+                android:contentDescription="@string/content_desc_password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:imeActionLabel="Lanjut"
@@ -115,6 +117,7 @@
 
         <TextView
             android:id="@+id/forgot_pass"
+            android:contentDescription="@string/content_desc_forgot_pass"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
@@ -136,6 +139,7 @@
 
         <com.tokopedia.design.component.ButtonCompat
             android:id="@+id/register_btn"
+            android:contentDescription="@string/content_desc_register_btn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/forgot_pass"

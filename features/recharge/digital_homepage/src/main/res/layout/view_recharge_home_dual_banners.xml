@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingLeft="@dimen/spacing_lvl4"
+    android:paddingRight="@dimen/spacing_lvl4">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/view_recharge_home_dual_banners_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/view_recharge_home_dual_banners_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="heading_3" />
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/view_recharge_home_dual_banners_image_1"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="@dimen/layout_lvl0"
+            android:layout_marginTop="@dimen/section_header_margin"
+            android:layout_marginRight="@dimen/spacing_lvl2"
+            app:layout_constraintDimensionRatio="1:2"
+            app:layout_constraintHorizontal_chainStyle="spread_inside"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/view_recharge_home_dual_banners_image_2"
+            app:layout_constraintTop_toBottomOf="@id/view_recharge_home_dual_banners_title"
+            app:unify_image_corner_radius="@integer/banner_image_corner" />
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/view_recharge_home_dual_banners_image_2"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="@dimen/layout_lvl0"
+            android:layout_marginLeft="@dimen/spacing_lvl2"
+            android:layout_marginTop="@dimen/section_header_margin"
+            app:layout_constraintDimensionRatio="1:2"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintLeft_toRightOf="@id/view_recharge_home_dual_banners_image_1"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/view_recharge_home_dual_banners_title"
+            app:unify_image_corner_radius="@integer/banner_image_corner" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <include
+        android:id="@+id/view_recharge_home_dual_banners_shimmering"
+        layout="@layout/view_recharge_home_dual_banners_shimmering"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone" />
+
+</LinearLayout>

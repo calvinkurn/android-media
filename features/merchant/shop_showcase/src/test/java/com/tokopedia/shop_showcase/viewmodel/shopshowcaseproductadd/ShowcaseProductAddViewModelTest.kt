@@ -27,7 +27,6 @@ class ShowcaseProductAddViewModelTest : ShowcaseProductAddViewModelTestFixture()
             getProductListFilter.fkeyword = "baju"
             showcaseProductAddViewModel.getProductList(filter = getProductListFilter)
 
-            assertTrue(showcaseProductAddViewModel.fetchingState.value == true)
             showcaseProductAddViewModel.coroutineContext[Job]?.children?.forEach { it.join() }
 
             verifySuccessGetSelectedProductListUseCaseCalled(getProductListFilter)
@@ -46,7 +45,6 @@ class ShowcaseProductAddViewModelTest : ShowcaseProductAddViewModelTestFixture()
             val getProductListFilter = GetProductListFilter()
             getProductListFilter.fkeyword = "baju"
             showcaseProductAddViewModel.getProductList(filter = getProductListFilter, isLoadMore = true)
-            assertTrue(showcaseProductAddViewModel.loadingState.value == true)
 
             showcaseProductAddViewModel.coroutineContext[Job]?.children?.forEach { it.join() }
 
