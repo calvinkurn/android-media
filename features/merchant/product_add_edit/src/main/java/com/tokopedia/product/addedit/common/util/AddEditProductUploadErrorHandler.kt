@@ -56,6 +56,25 @@ object AddEditProductUploadErrorHandler {
         return e is MessageErrorException
     }
 
+    fun isServerTimeout(e: Throwable?): Boolean {
+        return if (e is RuntimeException && e.getLocalizedMessage() != null &&
+                e.getLocalizedMessage() != "" && e.getLocalizedMessage().length <= 3) {
+            try {
+                val code = e.getLocalizedMessage() ?: "0"
+                when (code.toInt()) {
+                    ResponseStatus.SC_REQUEST_TIMEOUT ->{
+                        true
+                    }
+                    else -> false
+                }
+            } catch (e1: NumberFormatException) {
+                false
+            }
+        } else {
+            false
+        }
+    }
+
     fun getUploadImageErrorName(messageFromUploader: String): String {
         return when (messageFromUploader) {
             UploaderUseCase.FILE_NOT_FOUND -> ERROR_UPLOADER_SOURCE_UNAVAILABLE

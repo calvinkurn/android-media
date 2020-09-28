@@ -86,7 +86,6 @@ open class AddEditProductAddService : AddEditProductBaseService() {
 
     override fun onUploadProductImagesFailed(errorMessage: String) {
         ProductAddUploadTracking.uploadImageFailed(
-                ProductAddUseCase.QUERY_NAME,
                 userSession.shopId,
                 AddEditProductUploadErrorHandler.getUploadImageErrorName(errorMessage))
     }
@@ -127,19 +126,25 @@ open class AddEditProductAddService : AddEditProductBaseService() {
             clearProductDraft()
             delay(NOTIFICATION_CHANGE_DELAY)
             setUploadProductDataSuccess()
-            ProductAddUploadTracking.uploadProductFinish(ProductAddUseCase.QUERY_NAME, shopId, true)
+            ProductAddUploadTracking.uploadProductFinish(shopId, true)
         }, onError = { throwable ->
             delay(NOTIFICATION_CHANGE_DELAY)
             val errorMessage = getErrorMessage(throwable)
             setUploadProductDataError(errorMessage)
 
             logError(productAddUseCase.params, throwable)
-            ProductAddUploadTracking.uploadProductFinish(
-                    ProductAddUseCase.QUERY_NAME,
-                    shopId,
-                    false,
-                    AddEditProductUploadErrorHandler.isValidationError(throwable),
-                    AddEditProductUploadErrorHandler.getErrorName(throwable))
+            if (AddEditProductUploadErrorHandler.isServerTimeout(throwable)) {
+                ProductAddUploadTracking.uploadGqlTimeout(
+                        ProductAddUseCase.QUERY_NAME,
+                        shopId,
+                        AddEditProductUploadErrorHandler.getErrorName(throwable))
+            } else {
+                ProductAddUploadTracking.uploadProductFinish(
+                        shopId,
+                        false,
+                        AddEditProductUploadErrorHandler.isValidationError(throwable),
+                        AddEditProductUploadErrorHandler.getErrorName(throwable))
+            }
         })
     }
 
