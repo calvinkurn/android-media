@@ -36,12 +36,4 @@ public interface ReputationApi {
     @FormUrlEncoded
     Observable<Response<TokopediaWsV4Response>> deleteReviewResponse(@FieldMap Map<String, String> params);
 
-    @GET(ReputationBaseURL.PATH_GET_LIKE_DISLIKE_REVIEW)
-    Observable<Response<TokopediaWsV4Response>> getLikeDislikeReview(@QueryMap Map<String, Object>
-                                                                    parameters);
-
-    @POST(ReputationBaseURL.PATH_LIKE_DISLIKE_REVIEW)
-    @FormUrlEncoded
-    Observable<Response<TokopediaWsV4Response>> likeDislikeReview(@FieldMap Map<String, String> params);
-
 }
