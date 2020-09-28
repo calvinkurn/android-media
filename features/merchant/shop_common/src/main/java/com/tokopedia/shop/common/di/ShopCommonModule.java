@@ -7,9 +7,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
-import com.tokopedia.graphql.coroutines.data.GraphqlInteractor;
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase;
-import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.shop.common.constant.GQLQueryNamedConstant;
@@ -235,8 +233,4 @@ public class ShopCommonModule {
         return new GQLGetShopInfoUseCase(gqlQuery, graphqlUseCase);
     }
 
-    @Provides
-    public GraphqlRepository provideGraphqlRepository() {
-        return GraphqlInteractor.getInstance().getGraphqlRepository();
-    }
 }
