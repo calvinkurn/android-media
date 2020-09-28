@@ -648,13 +648,11 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
     }
 
     private fun setupButtonPromo(orderPromo: OrderPromo) {
-        //loading
         when (orderPromo.state) {
             OccButtonState.LOADING -> {
                 btnPromoCheckout?.state = ButtonPromoCheckoutView.State.LOADING
             }
             OccButtonState.DISABLE -> {
-                //failed
                 btnPromoCheckout?.state = ButtonPromoCheckoutView.State.INACTIVE
                 btnPromoCheckout?.title = getString(com.tokopedia.purchase_platform.common.R.string.promo_checkout_inactive_label)
                 btnPromoCheckout?.desc = getString(com.tokopedia.purchase_platform.common.R.string.promo_checkout_inactive_desc)
