@@ -5,10 +5,12 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.shop.common.graphql.data.shopbasicdata.ShopBasicDataModel
+import com.tokopedia.shop.common.graphql.data.shopbasicdata.gql.ShopBasicDataMutation
 import com.tokopedia.shop.common.graphql.data.shopopen.ShopDomainSuggestionData
 import com.tokopedia.shop.common.graphql.data.shopopen.ValidateShopDomainNameResult
 import com.tokopedia.shop.settings.common.coroutine.CoroutineDispatchers
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetShopBasicDataUseCase
+import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.OldUpdateShopBasicDataUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.UpdateShopBasicDataUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.shopopen.GetShopDomainNameSuggestionUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.shopopen.ValidateDomainShopNameUseCase
@@ -26,13 +28,14 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class ShopEditBasicInfoViewModel @Inject constructor(
-    private val getShopBasicDataUseCase: GetShopBasicDataUseCase,
-    private val updateShopBasicDataUseCase: UpdateShopBasicDataUseCase,
-    private val uploadShopImageUseCase: UploadShopImageUseCase,
-    private val getAllowShopNameDomainChangesUseCase: GetAllowShopNameDomainChanges,
-    private val getShopDomainNameSuggestionUseCase: GetShopDomainNameSuggestionUseCase,
-    private val validateDomainShopNameUseCase: ValidateDomainShopNameUseCase,
-    private val dispatchers: CoroutineDispatchers
+        private val getShopBasicDataUseCase: GetShopBasicDataUseCase,
+        private val oldUpdateShopBasicDataUseCase: OldUpdateShopBasicDataUseCase,
+        private val updateShopBasicDataUseCase: UpdateShopBasicDataUseCase,
+        private val uploadShopImageUseCase: UploadShopImageUseCase,
+        private val getAllowShopNameDomainChangesUseCase: GetAllowShopNameDomainChanges,
+        private val getShopDomainNameSuggestionUseCase: GetShopDomainNameSuggestionUseCase,
+        private val validateDomainShopNameUseCase: ValidateDomainShopNameUseCase,
+        private val dispatchers: CoroutineDispatchers
 ): BaseViewModel(dispatchers.main) {
 
     companion object {
@@ -43,7 +46,7 @@ class ShopEditBasicInfoViewModel @Inject constructor(
         get() = _shopBasicData
     val uploadShopImage: LiveData<Result<UploadShopEditImageModel>>
         get() = _uploadShopImage
-    val updateShopBasicData: LiveData<Result<String>>
+    val updateShopBasicData: LiveData<Result<ShopBasicDataMutation>>
         get() = _updateShopBasicData
     val allowShopNameDomainChanges: LiveData<Result<AllowShopNameDomainChangesData>>
         get() = _allowShopNameDomainChanges
@@ -56,7 +59,7 @@ class ShopEditBasicInfoViewModel @Inject constructor(
 
     private val _shopBasicData = MutableLiveData<Result<ShopBasicDataModel>>()
     private val _uploadShopImage = MutableLiveData<Result<UploadShopEditImageModel>>()
-    private val _updateShopBasicData = MutableLiveData<Result<String>>()
+    private val _updateShopBasicData = MutableLiveData<Result<ShopBasicDataMutation>>()
     private val _allowShopNameDomainChanges = MutableLiveData<Result<AllowShopNameDomainChangesData>>()
     private val _validateShopName = MutableLiveData<Result<ValidateShopDomainNameResult>>()
     private val _validateShopDomain = MutableLiveData<Result<ValidateShopDomainNameResult>>()
@@ -173,7 +176,7 @@ class ShopEditBasicInfoViewModel @Inject constructor(
         description: String,
         logoCode: String? = null
     ) {
-        updateShopBasicDataUseCase.unsubscribe()
+        oldUpdateShopBasicDataUseCase.unsubscribe()
 
         val shopName = name.nullIfNotChanged(currentShop?.name)
         val shopDomain = domain.nullIfNotChanged(currentShop?.domain)
@@ -186,7 +189,7 @@ class ShopEditBasicInfoViewModel @Inject constructor(
 
     fun detachView() {
         getShopBasicDataUseCase.unsubscribe()
-        updateShopBasicDataUseCase.unsubscribe()
+        oldUpdateShopBasicDataUseCase.unsubscribe()
         uploadShopImageUseCase.unsubscribe()
     }
 
@@ -224,9 +227,8 @@ class ShopEditBasicInfoViewModel @Inject constructor(
 
     private fun updateShopBasicData(requestParams: RequestParams) {
         launchCatchError(block = {
-            val updateShopBasicData = withContext(dispatchers.io) {
-                updateShopBasicDataUseCase.getData(requestParams)
-            }
+            updateShopBasicDataUseCase.setParams(requestParams)
+            val updateShopBasicData = updateShopBasicDataUseCase.executeOnBackground()
             _updateShopBasicData.value = Success(updateShopBasicData)
         }) {
             _updateShopBasicData.value = Fail(it)

@@ -381,7 +381,11 @@ class ShopEditBasicInfoFragment: Fragment() {
     private fun observeUpdateShopData() {
         observe(viewModel.updateShopBasicData) {
             when(it) {
-                is Success -> onSuccessUpdateShopBasicData(it.data)
+                is Success -> {
+                    it.data.graphQLSuccessMessage?.message?.let {
+                        onSuccessUpdateShopBasicData(it)
+                    }
+                }
                 is Fail -> onErrorUpdateShopBasicData(it.throwable)
             }
         }
