@@ -608,8 +608,8 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
         if (!isAdded) return
         DownloadVoucherBottomSheet.createInstance(voucher.image, voucher.imageSquare, userSession.userId)
                 .setOnDownloadClickListener { voucherList ->
-                    activity?.run {
-                        permissionCheckerHelper.checkPermission(this,
+                    context?.run {
+                        permissionCheckerHelper.checkPermission(this@VoucherListFragment,
                                 PermissionCheckerHelper.Companion.PERMISSION_WRITE_EXTERNAL_STORAGE,
                                 object : PermissionCheckerHelper.PermissionCheckListener {
                                     override fun onPermissionDenied(permissionText: String) {

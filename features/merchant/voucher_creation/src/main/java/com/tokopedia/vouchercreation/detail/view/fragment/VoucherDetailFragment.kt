@@ -2,6 +2,7 @@ package com.tokopedia.vouchercreation.detail.view.fragment
 
 import android.Manifest
 import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.view.*
 import androidx.annotation.RequiresPermission
@@ -296,8 +297,8 @@ class VoucherDetailFragment : BaseDetailFragment(), DownloadHelper.DownloadHelpe
                 voucherUiModel?.imageSquare.toBlankOrString(),
                 userSession.userId)
                 .setOnDownloadClickListener { voucherList ->
-                    activity?.run {
-                        permissionCheckerHelper.checkPermission(this,
+                    context?.run {
+                        permissionCheckerHelper.checkPermission(this@VoucherDetailFragment,
                                 PermissionCheckerHelper.Companion.PERMISSION_WRITE_EXTERNAL_STORAGE,
                                 object : PermissionCheckerHelper.PermissionCheckListener {
                                     override fun onPermissionDenied(permissionText: String) {
@@ -340,6 +341,13 @@ class VoucherDetailFragment : BaseDetailFragment(), DownloadHelper.DownloadHelpe
 
     override fun onDownloadComplete() {
         view?.showDownloadActionTicker(true)
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            permissionCheckerHelper.onRequestPermissionsResult(context, requestCode, permissions, grantResults)
+        }
     }
 
     private fun observeLiveData() {
