@@ -69,7 +69,7 @@ open class TopchatProductAttachmentViewHolder constructor(
     private val labelEmptyStockColor = "#AD31353B"
     private val bottomMarginOpposite: Float = getOppositeMargin(itemView?.context)
     private val bgOpposite = ViewUtil.generateBackgroundWithShadow(
-            itemView,
+            cardContainer,
             com.tokopedia.unifyprinciples.R.color.Neutral_N0,
             com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
             com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
@@ -81,7 +81,7 @@ open class TopchatProductAttachmentViewHolder constructor(
             Gravity.CENTER
     )
     private val bgSender = ViewUtil.generateBackgroundWithShadow(
-            itemView,
+            cardContainer,
             com.tokopedia.unifyprinciples.R.color.Neutral_N0,
             com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
             com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
