@@ -3,9 +3,8 @@ package com.tokopedia.notifcenter.presentation.adapter.viewholder.notification
 import android.view.View
 import android.widget.ImageView
 import androidx.annotation.LayoutRes
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
-import com.tokopedia.media.loader.loadImage
-import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.listener.NotificationItemListener
 import com.tokopedia.notifcenter.data.viewbean.NotificationItemViewBean
@@ -17,19 +16,12 @@ class BigBannerNotificationViewHolder(
 ) : BaseNotificationItemViewHolder(itemView, listener) {
 
     private val contentImageBanner: ImageView = itemView.findViewById(R.id.image_banner)
-    private val contentImageBanner2: ImageView = itemView.findViewById(R.id.image_banner_2)
 
     override fun bindNotificationPayload(element: NotificationItemViewBean) {
         val imageUrl = element.contentUrl
 
         contentImageBanner.shouldShowWithAction(imageUrl.isNotEmpty()) {
-            contentImageBanner.loadImage(imageUrl) {
-                placeHolder = R.drawable.ic_notifcenter_loading_toped
-            }
-        }
-
-        contentImageBanner2.shouldShowWithAction(imageUrl.isNotEmpty()) {
-            contentImageBanner2.loadImageRounded(imageUrl, 10f)
+            ImageHandler.loadImage2(contentImageBanner, imageUrl, R.drawable.ic_notifcenter_loading_toped)
         }
     }
 
