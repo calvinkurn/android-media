@@ -89,7 +89,7 @@ class TelcoPostpaidLoginInstrumentTest {
     @Test
     fun validate_postpaid_login() {
         stubSearchNumber()
-        InstrumentationAuthHelper.loginInstrumentationTestUser1(mActivityRule.activity.application)
+        InstrumentationAuthHelper.loginInstrumentationTestUser1()
 
         Thread.sleep(3000)
 

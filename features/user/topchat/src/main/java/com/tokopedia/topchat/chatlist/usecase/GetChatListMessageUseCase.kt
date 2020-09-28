@@ -93,6 +93,7 @@ open class GetChatListMessageUseCase @Inject constructor(
                     fraudStatus
                     pinStatus
                     isReplyByTopbot
+                    label
                   }
                 }
             hasNext

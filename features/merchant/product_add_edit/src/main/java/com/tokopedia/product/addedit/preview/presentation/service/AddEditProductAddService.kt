@@ -93,6 +93,10 @@ open class AddEditProductAddService : AddEditProductBaseService() {
         addProduct(uploadIdList, variantInputModel)
     }
 
+    override fun onUploadProductImagesFailed(errorMessage: String) {
+        ProductAddShippingTracking.uploadImageFailed(userSession.shopId, errorMessage)
+    }
+
     override fun getNotificationManager(urlImageCount: Int): AddEditProductNotificationManager {
         val manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         return object : AddEditProductNotificationManager(urlImageCount, manager,
@@ -132,9 +136,9 @@ open class AddEditProductAddService : AddEditProductBaseService() {
         }, onError = { throwable ->
             val errorMessage = getErrorMessage(throwable)
             setUploadProductDataError(errorMessage)
-            ProductAddShippingTracking.clickFinish(shopId, false, errorMessage)
 
             logError(productAddUseCase.params, throwable)
+            ProductAddShippingTracking.clickFinish(shopId, false, throwable.message ?: "", errorMessage)
         })
     }
 

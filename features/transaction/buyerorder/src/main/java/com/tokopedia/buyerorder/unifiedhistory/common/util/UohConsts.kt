@@ -119,6 +119,9 @@ object UohConsts {
     const val VERTICAL_CATEGORY_MODALTOKO = "modal_toko"
     const val VERTICAL_CATEGORY_HOTEL = "hotel"
 
+    const val QUERY_PARAM_INVOICE = "invoice"
+    const val QUERY_PARAM_INVOICE_URL = "invoice_url"
+
     const val PRODUCT_ID = "product_id"
     const val QUANTITY = "quantity"
     const val NOTES = "notes"

@@ -268,90 +268,14 @@
                     android:background="@color/divider_color"
                     app:layout_constraintTop_toBottomOf="@+id/cl_contact_info" />
 
-
-                <TextView
-                    android:id="@+id/tv_promocode"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dp_16"
-                    android:layout_marginTop="@dimen/dp_16"
-                    android:drawablePadding="@dimen/dp_8"
-                    android:gravity="center_vertical"
-                    android:text="@string/redeem_coupon_promo"
-                    style="@style/TextView.Small.Green"
+                <com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView
+                    android:id="@+id/ticker_promocode"
                     app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/divider6" />
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/cl_promo_applied"
+                    app:layout_constraintTop_toBottomOf="@+id/divider6"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/dp_16"
-                    android:background="@drawable/background_lightgreen_voucher"
-                    android:visibility="gone"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tv_promocode">
-
-                    <View
-                        android:layout_width="2dp"
-                        android:layout_height="0dp"
-                        android:layout_marginBottom="1.5dp"
-                        android:layout_marginLeft="1dp"
-                        android:layout_marginTop="1.5dp"
-                        android:background="@drawable/deals_line_green"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintLeft_toLeftOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <TextView
-                        android:id="@+id/tv_voucher_code_text"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="sans-serif-medium"
-                        android:paddingLeft="@dimen/dp_8"
-                        android:paddingTop="@dimen/dp_8"
-                        style="@style/TextView.Micro11.FontMedium"
-                        android:text="@string/text_voucher_code"
-                        android:textColor="@color/black_40" />
-
-                    <TextView
-                        android:id="@+id/tv_voucher_code"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:paddingTop="@dimen/dp_8"
-                        android:textColor="@color/red_800"
-                        style="@style/TextView.Micro11.FontMedium"
-                        app:layout_constraintBottom_toBottomOf="@+id/tv_voucher_code_text"
-                        app:layout_constraintLeft_toRightOf="@+id/tv_voucher_code_text"
-                        app:layout_constraintTop_toTopOf="@+id/tv_voucher_code_text"
-                        tools:text="GAJIAN" />
-
-                    <ImageView
-                        android:id="@+id/iv_remove_promo"
-                        android:layout_width="@dimen/dp_18"
-                        android:layout_height="@dimen/dp_18"
-                        android:layout_marginRight="@dimen/dp_4"
-                        android:layout_marginTop="@dimen/dp_4"
-                        android:padding="@dimen/dp_3"
-                        app:layout_constraintRight_toRightOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/ic_close_deals" />
-
-                    <TextView
-                        android:id="@+id/amount_of_cashback"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:lineSpacingExtra="4sp"
-                        android:paddingBottom="@dimen/dp_8"
-                        android:paddingLeft="@dimen/dp_8"
-                        android:paddingRight="@dimen/dp_24"
-                        style="@style/TextView.Micro11.Black40"
-                        app:layout_constraintTop_toBottomOf="@+id/tv_voucher_code_text"
-                        tools:text="@string/cashback_amount" />
-
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
+                    />
 
                 <View
                     android:id="@+id/divider5"
@@ -359,7 +283,7 @@
                     android:layout_height="@dimen/dp_1"
                     android:layout_marginTop="@dimen/dp_16"
                     android:background="@color/divider_color"
-                    app:layout_constraintTop_toBottomOf="@+id/cl_promo_applied" />
+                    app:layout_constraintTop_toBottomOf="@+id/ticker_promocode" />
 
                 <TextView
                     android:id="@+id/tv_price_details"
