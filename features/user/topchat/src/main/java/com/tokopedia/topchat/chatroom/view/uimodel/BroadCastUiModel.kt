@@ -13,6 +13,7 @@ class BroadCastUiModel : BaseChatViewModel, Visitable<TopChatTypeFactory> {
     val items: Map<String, Visitable<*>>
     val banner: ImageAnnouncementViewModel? get() = items[AttachmentType.Companion.TYPE_IMAGE_ANNOUNCEMENT] as? ImageAnnouncementViewModel
     val voucherUiModel: TopChatVoucherUiModel? get() = items[AttachmentType.Companion.TYPE_VOUCHER] as? TopChatVoucherUiModel
+    val productCarousel: ProductCarouselUiModel? get() = items[AttachmentType.Companion.TYPE_IMAGE_CAROUSEL] as? ProductCarouselUiModel
 
     constructor(reply: Reply, items: Map<String, Visitable<*>>) : super(
             messageId = reply.msgId.toString(),
