@@ -81,6 +81,7 @@ class InitialStatePresenter @Inject constructor(
                             initialStateViewModel.addList(initialStateData)
                             initialStateData.items.withNotEmpty{
                                 recentSearchToImpress.addAll(getDataLayerForPromo(this))
+                                checkToImpressSeeMoreRecentSearch()
                                 onRecentSearchImpressed(false)
                             }
                         }
@@ -124,6 +125,10 @@ class InitialStatePresenter @Inject constructor(
             dataLayerList.add(item.getObjectDataLayerForRecentView(position))
         }
         return dataLayerList
+    }
+
+    private fun checkToImpressSeeMoreRecentSearch() {
+        if (recentSearchToImpress.size >= RECENT_SEARCH_SEE_MORE_LIMIT) view?.onSeeMoreRecentSearchImpressed(getUserId())
     }
 
     private fun onRecentSearchImpressed(seeMore: Boolean) {
@@ -426,6 +431,8 @@ class InitialStatePresenter @Inject constructor(
     override fun recentSearchSeeMoreClicked() {
         removeSeeMoreRecentSearch()
         onRecentSearchImpressed(true)
+
+        view?.trackEventClickSeeMoreRecentSearch(getUserId())
         view?.dropKeyBoard()
         view?.renderRecentSearch()
     }

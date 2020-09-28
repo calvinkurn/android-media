@@ -29,19 +29,18 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
+import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
 import com.tokopedia.chat_common.util.EndlessRecyclerViewScrollUpListener
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.component.Menus
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.util.getParamString
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
-import com.tokopedia.seller_migration_common.presentation.fragment.bottomsheet.SellerMigrationCommunicationBottomSheet
-import com.tokopedia.seller_migration_common.presentation.model.CommunicationInfo
-import com.tokopedia.seller_migration_common.presentation.util.initializeSellerMigrationCommunicationTicker
+import com.tokopedia.seller_migration_common.isSellerMigrationEnabled
+import com.tokopedia.seller_migration_common.presentation.activity.SellerMigrationActivity
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.activity.ChatListActivity
 import com.tokopedia.topchat.chatlist.adapter.ChatListAdapter
@@ -78,7 +77,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.fragment_chat_list.*
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -115,12 +113,6 @@ open class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseA
     private var chatBannedSellerTicker: Ticker? = null
     private var rv: RecyclerView? = null
     private lateinit var broadCastButton: FloatingActionButton
-
-    private val sellerMigrationStaticCommunicationBottomSheet by lazy {
-        context?.let {
-            SellerMigrationCommunicationBottomSheet.createInstance(it, CommunicationInfo.BroadcastChat, screenName, userSession.userId)
-        }
-    }
 
     override fun getRecyclerViewResourceId() = R.id.recycler_view
     override fun getSwipeRefreshLayoutResourceId() = R.id.swipe_refresh_layout
@@ -169,6 +161,7 @@ open class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseA
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        menu.clear()
         inflater.inflate(R.menu.chat_options_menu, menu)
     }
 
@@ -221,7 +214,6 @@ open class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseA
     private fun updateChatBannedSellerStatus(isBanned: Boolean) {
         if (isBanned) {
             showBannedTicker()
-            ticker_seller_migration_topchat?.hide()
         } else {
             chatBannedSellerTicker?.hide()
         }
@@ -254,14 +246,6 @@ open class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseA
         chatItemListViewModel.loadChatBlastSellerMetaData()
     }
 
-    private fun setupTicker() {
-        initializeSellerMigrationCommunicationTicker(sellerMigrationStaticCommunicationBottomSheet, ticker_seller_migration_topchat, CommunicationInfo.BroadcastChat) {
-            if (chatBannedSellerTicker?.isVisible == false) {
-                ticker_seller_migration_topchat?.show()
-            }
-        }
-    }
-
     private fun isSellerBroadcastRemoteConfigOn(): Boolean {
         return remoteConfig.getBoolean(RemoteConfigKey.TOPCHAT_SELLER_BROADCAST)
     }
@@ -271,7 +255,6 @@ open class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseA
             when (visibility) {
                 true -> {
                     broadCastButton.show()
-                    setupTicker()
                 }
                 false -> broadCastButton.hide()
             }
@@ -279,8 +262,23 @@ open class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseA
         chatItemListViewModel.broadCastButtonUrl.observe(viewLifecycleOwner, Observer { url ->
             if (url.isNullOrEmpty()) return@Observer
             broadCastButton.setOnClickListener {
-                chatListAnalytics.eventClickBroadcastButton()
-                RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, url)
+                if(isSellerMigrationEnabled(context)) {
+                    val screenName = SellerMigrationFeatureName.FEATURE_BROADCAST_CHAT
+                    val webViewUrl = String.format("%s?url=%s", ApplinkConst.WEBVIEW, url)
+                    val intent = context?.let { context ->
+                        SellerMigrationActivity.createIntent(
+                                context = context,
+                                featureName = SellerMigrationFeatureName.FEATURE_BROADCAST_CHAT,
+                                screenName = screenName,
+                                appLinks = arrayListOf(ApplinkConstInternalSellerapp.SELLER_HOME_CHAT, webViewUrl),
+                                isStackBuilder = true
+                        )
+                    }
+                    startActivity(intent)
+                } else {
+                    chatListAnalytics.eventClickBroadcastButton()
+                    RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, url)
+                }
             }
         })
     }

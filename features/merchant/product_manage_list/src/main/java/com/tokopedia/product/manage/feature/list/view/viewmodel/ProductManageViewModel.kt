@@ -12,7 +12,7 @@ import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.common.coroutine.CoroutineDispatchers
 import com.tokopedia.product.manage.feature.filter.data.mapper.ProductManageFilterMapper.Companion.countSelectedFilter
 import com.tokopedia.product.manage.feature.filter.data.model.FilterOptionWrapper
-import com.tokopedia.product.manage.feature.filter.domain.GetProductListMetaUseCase
+import com.tokopedia.product.manage.common.list.domain.usecase.GetProductListMetaUseCase
 import com.tokopedia.product.manage.feature.list.domain.PopupManagerAddProductUseCase
 import com.tokopedia.product.manage.feature.list.view.mapper.ProductMapper.mapToFilterTabResult
 import com.tokopedia.product.manage.feature.list.domain.SetFeaturedProductUseCase

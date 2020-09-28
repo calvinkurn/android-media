@@ -1,10 +1,15 @@
 package com.tokopedia.autocomplete.initialstate
 
+import com.tokopedia.autocomplete.initialstate.data.InitialStateUniverse
+import com.tokopedia.autocomplete.jsonToObject
 import io.mockk.confirmVerified
 import io.mockk.every
+import io.mockk.verify
 import io.mockk.verifyOrder
 import org.junit.Test
 import rx.Subscriber
+
+private const val initialStateWithSeeMoreRecentSearch = "autocomplete/initialstate/with-show-more-recent-search.json"
 
 internal class OnInitialStateItemClickTest: InitialStatePresenterTestFixtures(){
 
@@ -90,5 +95,25 @@ internal class OnInitialStateItemClickTest: InitialStatePresenterTestFixtures(){
 
     private fun getRecentShopLabelForTracking(item: BaseItemInitialStateSearch): String {
         return item.productId + " - keyword: " + item.title
+    }
+
+    @Test
+    fun `Test click Show More Recent Search`() {
+        val initialStateData = initialStateWithSeeMoreRecentSearch.jsonToObject<InitialStateUniverse>().data
+        `Given view already get initial state`(initialStateData)
+        `When recent search see more clicked`()
+        `Then verify renderRecentSearch is called`()
+    }
+
+    private fun `When recent search see more clicked`() {
+        initialStatePresenter.recentSearchSeeMoreClicked()
+    }
+
+    private fun `Then verify renderRecentSearch is called`() {
+        verify {
+            initialStateView.trackEventClickSeeMoreRecentSearch("0")
+            initialStateView.dropKeyBoard()
+            initialStateView.renderRecentSearch()
+        }
     }
 }

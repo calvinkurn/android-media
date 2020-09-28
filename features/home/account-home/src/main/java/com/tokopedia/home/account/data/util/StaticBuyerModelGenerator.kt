@@ -53,18 +53,6 @@ class StaticBuyerModelGenerator private constructor() {
                     sectionTrack = context.getString(R.string.title_menu_transaction)
                 })
 
-                MenuGridViewModel().apply {
-                    title = context.getString(R.string.title_menu_shopping_transaction)
-                    linkText = context.getString(R.string.label_menu_show_history)
-                    titleTrack = AccountConstants.Analytics.PEMBELI
-                    sectionTrack = context.getString(R.string.title_menu_transaction)
-                    applinkUrl = ApplinkConst.BELANJA_ORDER
-                    items = when (remoteConfig.getBoolean(RemoteConfigKey.APP_GLOBAL_NAV_NEW_DESIGN, true)) {
-                        true -> getMarketPlaceOrderMenu(context, accountDataModel)
-                        else -> getPurchaseOrderMenu(context, accountDataModel)
-                    }
-                }
-
                 viewItems.add(MenuGridViewModel().apply {
                     title = context.getString(R.string.title_menu_other_transaction)
                     items = getDigitalOrderMenu(context, remoteConfig)
@@ -165,96 +153,6 @@ class StaticBuyerModelGenerator private constructor() {
             })
 
             return viewItems
-        }
-
-        private fun getPurchaseOrderMenu(
-                context: Context,
-                accountDataModel: AccountDataModel?
-        ): List<MenuGridItemViewModel> {
-            val gridItems = arrayListOf<MenuGridItemViewModel>()
-
-            gridItems.add(MenuGridItemViewModel(
-                    R.drawable.ic_waiting_for_confirmation,
-                    context.getString(R.string.label_menu_waiting_confirmation),
-                    ApplinkConst.PURCHASE_CONFIRMED,
-                    accountDataModel?.notifications?.buyerOrder?.confirmed ?: 0,
-                    AccountConstants.Analytics.PEMBELI,
-                    context.getString(R.string.title_menu_transaction)
-            ))
-
-            gridItems.add(MenuGridItemViewModel(
-                    R.drawable.ic_order_processed,
-                    context.getString(R.string.label_menu_order_processed),
-                    ApplinkConst.PURCHASE_PROCESSED,
-                    accountDataModel?.notifications?.buyerOrder?.processed ?: 0,
-                    AccountConstants.Analytics.PEMBELI,
-                    context.getString(R.string.title_menu_transaction)
-            ))
-
-            gridItems.add(MenuGridItemViewModel(
-                    R.drawable.ic_shipped,
-                    context.getString(R.string.label_menu_shipping),
-                    ApplinkConst.PURCHASE_SHIPPED,
-                    accountDataModel?.notifications?.buyerOrder?.shipped ?: 0,
-                    AccountConstants.Analytics.PEMBELI,
-                    context.getString(R.string.title_menu_transaction)
-            ))
-
-            gridItems.add(MenuGridItemViewModel(
-                    R.drawable.ic_delivered,
-                    context.getString(R.string.label_menu_delivered),
-                    ApplinkConst.PURCHASE_DELIVERED,
-                    accountDataModel?.notifications?.buyerOrder?.arriveAtDestination ?: 0,
-                    AccountConstants.Analytics.PEMBELI,
-                    context.getString(R.string.title_menu_transaction)
-            ))
-
-            return gridItems
-        }
-
-        private fun getMarketPlaceOrderMenu(
-                context: Context,
-                accountDataModel: AccountDataModel?
-        ): List<MenuGridItemViewModel> {
-            val gridItems = arrayListOf<MenuGridItemViewModel>()
-
-            gridItems.add(MenuGridItemViewModel(
-                    R.drawable.ic_waiting_for_confirmation,
-                    context.getString(R.string.label_menu_waiting_confirmation),
-                    ApplinkConst.MARKETPLACE_WAITING_CONFIRMATION,
-                    accountDataModel?.notifications?.buyerOrder?.confirmed ?: 0,
-                    AccountConstants.Analytics.PEMBELI,
-                    context.getString(R.string.title_menu_transaction)
-            ))
-
-            gridItems.add(MenuGridItemViewModel(
-                    R.drawable.ic_order_processed,
-                    context.getString(R.string.label_menu_order_processed),
-                    ApplinkConst.MARKETPLACE_ORDER_PROCESSED,
-                    accountDataModel?.notifications?.buyerOrder?.processed ?: 0,
-                    AccountConstants.Analytics.PEMBELI,
-                    context.getString(R.string.title_menu_transaction)
-            ))
-
-            gridItems.add(MenuGridItemViewModel(
-                    R.drawable.ic_shipped,
-                    context.getString(R.string.label_menu_shipping),
-                    ApplinkConst.MARKETPLACE_SENT,
-                    accountDataModel?.notifications?.buyerOrder?.shipped ?: 0,
-                    AccountConstants.Analytics.PEMBELI,
-                    context.getString(R.string.title_menu_transaction)
-            ))
-
-            gridItems.add(MenuGridItemViewModel(
-                    R.drawable.ic_delivered,
-                    context.getString(R.string.label_menu_delivered),
-                    ApplinkConst.MARKETPLACE_DELIVERED,
-                    accountDataModel?.notifications?.buyerOrder?.arriveAtDestination ?: 0,
-                    AccountConstants.Analytics.PEMBELI,
-                    context.getString(R.string.title_menu_transaction)
-            ))
-
-            return gridItems
         }
 
         private fun getDigitalOrderMenu(

@@ -15,7 +15,6 @@ import android.webkit.SslErrorHandler
 import android.webkit.WebResourceResponse
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import android.widget.ProgressBar
 import com.google.gson.Gson
 import com.google.gson.JsonParser
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -24,12 +23,13 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentCreditCardAdditionalData
+import com.tokopedia.unifycomponents.LoaderUnify
 import java.net.URLEncoder
 
 class CreditCardPickerFragment : BaseDaggerFragment() {
 
     private var webView: WebView? = null
-    private var progressBar: ProgressBar? = null
+    private var progressBar: LoaderUnify? = null
 
     override fun getScreenName(): String {
         return this::class.java.simpleName

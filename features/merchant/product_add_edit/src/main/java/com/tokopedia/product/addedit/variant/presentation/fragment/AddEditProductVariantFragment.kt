@@ -1,6 +1,7 @@
 package com.tokopedia.product.addedit.variant.presentation.fragment
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.*
@@ -40,7 +41,9 @@ import com.tokopedia.product.addedit.imagepicker.view.activity.SizechartPickerEd
 import com.tokopedia.product.addedit.imagepicker.view.activity.VariantPhotoPickerActivity
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_PRODUCT_INPUT_MODEL
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
+import com.tokopedia.product.addedit.tracking.ProductAddStepperTracking
 import com.tokopedia.product.addedit.tracking.ProductAddVariantTracking
+import com.tokopedia.product.addedit.tracking.ProductEditStepperTracking
 import com.tokopedia.product.addedit.tracking.ProductEditVariantTracking
 import com.tokopedia.product.addedit.variant.data.model.Unit
 import com.tokopedia.product.addedit.variant.data.model.UnitValue
@@ -703,13 +706,6 @@ class AddEditProductVariantFragment :
         variantDataValuePicker?.setShowListener {
             // set the bottom sheet to full screen
             variantDataValuePicker?.bottomSheet?.state = BottomSheetBehavior.STATE_EXPANDED
-            // enable the back button despite of overlayClickDismiss = false
-            variantDataValuePicker?.dialog?.setOnKeyListener { dialog, keyCode, event ->
-                if (keyCode == KeyEvent.KEYCODE_BACK) {
-                    variantDataValuePicker?.dismiss()
-                }
-                true
-            }
         }
         val variantDataValuePickerLayout = VariantDataValuePicker(requireContext(), layoutPosition, variantData, this, this, this, this)
         variantDataValuePickerLayout.setupVariantDataValuePicker(selectedVariantUnit, selectedVariantUnitValues, addedCustomVariantUnitValue, unConfirmedSelection)
@@ -736,16 +732,6 @@ class AddEditProductVariantFragment :
             variantUnitPicker?.dismiss()
             variantDataValuePicker?.dialog?.show()
         }
-        // enable the back button despite of overlayClickDismiss = false
-        variantUnitPicker?.setShowListener {
-            variantUnitPicker?.dialog?.setOnKeyListener { dialog, keyCode, event ->
-                if(keyCode == KeyEvent.KEYCODE_BACK){
-                    variantUnitPicker?.dismiss()
-                    variantDataValuePicker?.dialog?.show()
-                }
-                true
-            }
-        }
         variantUnitPicker?.setChild(variantUnitPickerLayout)
         variantUnitPicker?.show(this@AddEditProductVariantFragment.childFragmentManager, TAG_VARIANT_UNIT_PICKER)
     }
@@ -759,15 +745,6 @@ class AddEditProductVariantFragment :
         customVariantValueInputForm?.setTitle(getString(R.string.action_variant_add) + " " + variantData.name)
         customVariantValueInputForm?.overlayClickDismiss = false
         customVariantValueInputForm?.isKeyboardOverlap = false
-        // enable the back button despite of overlayClickDismiss = false
-        customVariantValueInputForm?.setShowListener {
-            customVariantValueInputForm?.dialog?.setOnKeyListener { dialog, keyCode, event ->
-                if(keyCode == KeyEvent.KEYCODE_BACK){
-                    customVariantValueInputForm?.dismiss()
-                }
-                true
-            }
-        }
         val customVariantValueInputLayout = CustomVariantUnitValueForm(requireContext(), layoutPosition, variantUnitValues, this)
         customVariantValueInputLayout.setupVariantCustomInputLayout(selectedVariantUnit, selectedVariantUnitValues)
         customVariantValueInputForm?.setChild(customVariantValueInputLayout)
@@ -831,6 +808,9 @@ class AddEditProductVariantFragment :
                     context?.let {
                         showGetVariantCategoryCombinationErrorToast(
                                 ErrorHandler.getErrorMessage(it, result.throwable))
+                        viewModel.isEditMode.value?.let { isEditMode ->
+                            trackOopsConnectionPageScreen(isEditMode, result.throwable, it)
+                        }
                     }
                 }
             }
@@ -903,7 +883,7 @@ class AddEditProductVariantFragment :
 
     private fun observeisRemovingVariant() {
         viewModel.isRemovingVariant.observe(viewLifecycleOwner, Observer {
-            buttonSave.text =  if (it) {
+            buttonSave.text = if (it) {
                 getString(com.tokopedia.product.addedit.R.string.action_variant_save)
             } else {
                 getString(com.tokopedia.product.addedit.R.string.action_variant_next)
@@ -1178,6 +1158,22 @@ class AddEditProductVariantFragment :
     private fun trackRemoveVariantUnitValueEvent(isEditMode: Boolean, eventLabel: String, shopId: String) {
         if (isEditMode) ProductEditVariantTracking.removeVariantUnitValue(eventLabel, shopId)
         else ProductAddVariantTracking.removeVariantUnitValue(eventLabel, shopId)
+    }
+
+    private fun trackOopsConnectionPageScreen(isEditMode: Boolean, throwable: Throwable, context: Context) {
+        val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
+        val errorThrowable = throwable.message ?: ""
+        if (isEditMode) {
+            ProductEditStepperTracking.oopsConnectionPageScreen(
+                    userId,
+                    errorMessage,
+                    errorThrowable)
+        } else {
+            ProductAddStepperTracking.oopsConnectionPageScreen(
+                    userId,
+                    errorMessage,
+                    errorThrowable)
+        }
     }
 
     private fun setupToolbarActions() {
