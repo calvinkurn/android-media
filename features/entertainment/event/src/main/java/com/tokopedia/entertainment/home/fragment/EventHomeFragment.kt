@@ -19,8 +19,12 @@ import com.tokopedia.entertainment.common.util.EventQuery
 import com.tokopedia.entertainment.home.adapter.HomeEventAdapter
 import com.tokopedia.entertainment.home.adapter.HomeEventItem
 import com.tokopedia.entertainment.home.adapter.factory.HomeTypeFactoryImpl
+import com.tokopedia.entertainment.home.adapter.listener.TrackingListener
+import com.tokopedia.entertainment.home.adapter.viewholder.CategoryEventViewHolder
+import com.tokopedia.entertainment.home.adapter.viewmodel.EventItemLocationModel
 import com.tokopedia.entertainment.home.adapter.viewmodel.EventItemModel
 import com.tokopedia.entertainment.home.analytics.EventHomePageTracking
+import com.tokopedia.entertainment.home.data.EventHomeDataResponse
 import com.tokopedia.entertainment.home.di.EventHomeComponent
 import com.tokopedia.entertainment.home.viewmodel.FragmentView
 import com.tokopedia.entertainment.home.viewmodel.HomeEventViewModel
@@ -36,7 +40,8 @@ import javax.inject.Inject
  * Author errysuprayogi on 27,January,2020
  */
 
-class EventHomeFragment : BaseDaggerFragment(), FragmentView, MenuSheet.ItemClickListener {
+class EventHomeFragment : BaseDaggerFragment(), FragmentView, MenuSheet.ItemClickListener,
+        TrackingListener {
 
     companion object {
         fun getInstance(): EventHomeFragment = EventHomeFragment()
@@ -59,11 +64,11 @@ class EventHomeFragment : BaseDaggerFragment(), FragmentView, MenuSheet.ItemClic
     lateinit var performanceMonitoring: PerformanceMonitoring
 
     @Inject
-    lateinit var analytics:EventHomePageTracking
+    lateinit var analytics: EventHomePageTracking
 
-    var favMenuItem : View? = null
+    var favMenuItem: View? = null
 
-    private fun initializePerformance(){
+    private fun initializePerformance() {
         performanceMonitoring = PerformanceMonitoring.start(ENT_HOME_PAGE_PERFORMANCE)
     }
 
@@ -95,7 +100,7 @@ class EventHomeFragment : BaseDaggerFragment(), FragmentView, MenuSheet.ItemClic
         recycler_view.apply {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
-            homeAdapter = HomeEventAdapter(HomeTypeFactoryImpl(::actionItemAdapter, analytics))
+            homeAdapter = HomeEventAdapter(HomeTypeFactoryImpl(::actionItemAdapter, this@EventHomeFragment))
             adapter = homeAdapter
         }
 
@@ -192,4 +197,48 @@ class EventHomeFragment : BaseDaggerFragment(), FragmentView, MenuSheet.ItemClic
     }
 
     override fun getRes(): Resources = resources
+
+    override fun clickBanner(item: EventHomeDataResponse.Data.EventHome.Layout.Item, position: Int) {
+        analytics.clickBanner(item, position)
+    }
+
+    override fun impressionBanner(item: EventHomeDataResponse.Data.EventHome.Layout.Item, position: Int) {
+        analytics.impressionBanner(item, position)
+    }
+
+    override fun clickCategoryIcon(item: CategoryEventViewHolder.CategoryItemModel, position: Int) {
+        analytics.clickCategoryIcon(item, position)
+    }
+
+    override fun clickLocationEvent(item: EventItemLocationModel, listItems: List<EventItemLocationModel>, position: Int) {
+        analytics.clickLocationEvent(item, listItems, position)
+    }
+
+    override fun clickSectionEventProduct(item: EventItemModel, listItems: List<EventItemModel>, title: String, position: Int) {
+        analytics.clickSectionEventProduct(item, listItems, title, position)
+    }
+
+    override fun clickSeeAllCuratedEventProduct(title: String, position: Int) {
+        analytics.clickSeeAllCuratedEventProduct(title, position)
+    }
+
+    override fun clickSeeAllTopEventProduct() {
+        analytics.clickSeeAllTopEventProduct()
+    }
+
+    override fun clickTopEventProduct(item: EventItemModel, listItems: List<String>, position: Int) {
+        analytics.clickTopEventProduct(item, listItems, position)
+    }
+
+    override fun impressionLocationEvent(item: EventItemLocationModel, listItems: List<EventItemLocationModel>, position: Int) {
+        analytics.impressionLocationEvent(item, listItems, position)
+    }
+
+    override fun impressionSectionEventProduct(item: EventItemModel, listItems: List<EventItemModel>, title: String, position: Int) {
+        analytics.impressionSectionEventProduct(item, listItems, title, position)
+    }
+
+    override fun impressionTopEventProduct(item: EventItemModel, listItems: List<String>, position: Int) {
+        analytics.impressionTopEventProduct(item, listItems, position)
+    }
 }
