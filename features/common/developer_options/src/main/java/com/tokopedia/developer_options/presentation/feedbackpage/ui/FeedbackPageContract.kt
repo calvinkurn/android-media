@@ -10,14 +10,14 @@ interface FeedbackPageContract {
         fun showLoadingDialog()
         fun hideLoadingDialog()
         fun setSubmitFlag()
-        fun checkUriImage(feedbackId: Int?)
+        fun checkUriImage(feedbackId: Int)
         fun goToTicketCreatedActivity()
         fun showError(throwable: Throwable)
     }
 
     interface Presenter{
         fun sendFeedbackForm(feedbackFormRequest: FeedbackFormRequest)
-        fun sendAttachment(feedbackId: Int?, fileData: MultipartBody.Part)
-        fun commitData(feedbackId: Int?)
+        fun sendAttachment(feedbackId: Int, fileData: MultipartBody.Part)
+        fun commitData(feedbackId: Int)
     }
 }

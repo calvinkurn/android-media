@@ -2,16 +2,17 @@ package com.tokopedia.developer_options.presentation.feedbackpage.ui
 
 import android.Manifest
 import android.content.ContentResolver
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.database.Cursor
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Build
 import android.os.Build.VERSION_CODES
 import android.os.Bundle
 import android.provider.MediaStore
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,9 +23,9 @@ import com.google.android.material.textfield.TextInputLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.developer_options.R
-import com.tokopedia.developer_options.presentation.feedbackpage.domain.request.FeedbackFormRequest
 import com.tokopedia.developer_options.presentation.feedbackpage.di.FeedbackPageComponent
 import com.tokopedia.developer_options.presentation.feedbackpage.dialog.LoadingDialog
+import com.tokopedia.developer_options.presentation.feedbackpage.domain.request.FeedbackFormRequest
 import com.tokopedia.developer_options.presentation.feedbackpage.utils.EXTRA_URI_IMAGE
 import com.tokopedia.developer_options.presentation.preference.Preferences
 import com.tokopedia.screenshot_observer.ScreenshotData
@@ -36,10 +37,12 @@ import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import rx.subscriptions.CompositeSubscription
+import java.io.ByteArrayOutputStream
 import java.io.File
 import javax.inject.Inject
 
 
+@Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View {
 
     @Inject
@@ -67,6 +70,7 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View {
     private var loginState: String = ""
     private var emailTokopedia: String = ""
     private var uriImage: Uri? = null
+    private var resizedUriImage: Uri? = null
     private var categoryItem: Int = -1
 
     private var userSession: UserSessionInterface? = null
@@ -200,12 +204,6 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View {
                 //no-op
             }
         }
-/*
-        email.addTextChangedListener(setWrapperWatcher(et_email_wrapper))
-        page.addTextChangedListener(setWrapperWatcher(et_affected_page_wrapper))
-        journey.addTextChangedListener(setWrapperWatcher(et_str_wrapper))
-        actualResult.addTextChangedListener(setWrapperWatcher(et_actual_result_wrapper))
-        expectedResult.addTextChangedListener(setWrapperWatcher(et_expected_result_wrapper))*/
 
         submitButton.setOnClickListener {
             val emailText= email.text.toString()
@@ -260,26 +258,6 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View {
         }
     }
 
-    private fun setWrapperWatcher(wrapper: TextInputLayout): TextWatcher {
-        return object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
-                //no-op
-            }
-
-            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                if (s.isNotEmpty()) {
-                    setWrapperError(wrapper, null)
-                }
-            }
-
-            override fun afterTextChanged(text: Editable) {
-                if (text.isNotEmpty()) {
-                    setWrapperError(wrapper, null)
-                }
-            }
-        }
-    }
-
     private fun handleItem(uri: Uri): ScreenshotData? {
         val contentResolver: ContentResolver = requireContext().contentResolver
         var result: ScreenshotData? = null
@@ -303,11 +281,7 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View {
         val id = cursor.getLong(cursor.getColumnIndex(MediaStore.Images.Media._ID))
         val fileName = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DISPLAY_NAME))
         val path = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA))
-        return if (isPathScreenshot(path) && isFileScreenshot(fileName)) {
-            ScreenshotData(id, fileName, path)
-        } else {
-            null
-        }
+        return ScreenshotData(id, fileName, path)
     }
 
     private fun isFileScreenshot(fileName: String): Boolean {
@@ -357,9 +331,45 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View {
         myPreferences.setSubmitFlag(emailTokopedia, userSession?.userId.toString())
     }
 
-    override fun checkUriImage(feedbackId: Int?) {
-        if (uriImage != null) feedbackPagePresenter.sendAttachment(feedbackId, checkUriImage())
-        else feedbackPagePresenter.commitData(feedbackId)
+    override fun checkUriImage(feedbackId: Int) {
+        val screenshotData = uriImage?.let { handleItem(it) }
+        val originalFile = File(screenshotData?.path)
+        val imageSize = originalFile.length()/1000
+
+        if (uriImage != null && imageSize > 250) {
+            screenshotData?.let { resizeImage(it) }
+            val resizedData = resizedUriImage?.let { handleItem(it) }
+            val resizedFile = File(resizedData?.path)
+            sendAttachment(feedbackId, resizedFile)
+        } else if (imageSize < 250) {
+            sendAttachment(feedbackId, originalFile)
+        }
+        else {
+            feedbackPagePresenter.commitData(feedbackId)
+        }
+    }
+
+    private fun sendAttachment(feedbackId: Int, file: File) {
+        val requestFile: RequestBody = RequestBody.create(MediaType.parse("image/*"), file)
+        val fileData = MultipartBody.Part.createFormData("file", file.name, requestFile)
+        feedbackPagePresenter.sendAttachment(feedbackId, fileData)
+    }
+
+    private fun resizeImage(data: ScreenshotData) {
+        val b = BitmapFactory.decodeFile(data.path)
+        val origWidth = b.width
+        val origHeight = b.height
+        val destHeight = 2480
+        val destWidth = origWidth / (origHeight.toDouble() / destHeight)
+        val b2 = Bitmap.createScaledBitmap(b, destWidth.toInt(), destHeight, false)
+        resizedUriImage = context?.let { getImageUri(it, b2) }
+    }
+
+    private fun getImageUri(inContext: Context, inImage: Bitmap): Uri? {
+        val bytes = ByteArrayOutputStream()
+        inImage.compress(Bitmap.CompressFormat.PNG, 100, bytes)
+        val path = MediaStore.Images.Media.insertImage(inContext.contentResolver, inImage, "Title", null)
+        return Uri.parse(path)
     }
 
     override fun goToTicketCreatedActivity() {
@@ -371,16 +381,6 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View {
 
     override fun showError(throwable: Throwable) {
         Toast.makeText(activity, throwable.toString(), Toast.LENGTH_SHORT).show()
-    }
-
-    private fun checkUriImage(): MultipartBody.Part {
-        val screenshotData = uriImage?.let { handleItem(it) }
-        val file = File(screenshotData?.path)
-
-        val requestFile: RequestBody = RequestBody.create(MediaType.parse("image/*"), file)
-        val fileData = MultipartBody.Part.createFormData("file", file.name, requestFile)
-
-        return fileData
     }
 
     companion object {
