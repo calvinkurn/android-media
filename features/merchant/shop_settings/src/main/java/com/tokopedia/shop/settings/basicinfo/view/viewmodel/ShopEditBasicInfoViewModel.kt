@@ -10,7 +10,6 @@ import com.tokopedia.shop.common.graphql.data.shopopen.ShopDomainSuggestionData
 import com.tokopedia.shop.common.graphql.data.shopopen.ValidateShopDomainNameResult
 import com.tokopedia.shop.settings.common.coroutine.CoroutineDispatchers
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetShopBasicDataUseCase
-import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.OldUpdateShopBasicDataUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.UpdateShopBasicDataUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.shopopen.GetShopDomainNameSuggestionUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.shopopen.ValidateDomainShopNameUseCase
@@ -29,7 +28,6 @@ import javax.inject.Inject
 
 class ShopEditBasicInfoViewModel @Inject constructor(
         private val getShopBasicDataUseCase: GetShopBasicDataUseCase,
-        private val oldUpdateShopBasicDataUseCase: OldUpdateShopBasicDataUseCase,
         private val updateShopBasicDataUseCase: UpdateShopBasicDataUseCase,
         private val uploadShopImageUseCase: UploadShopImageUseCase,
         private val getAllowShopNameDomainChangesUseCase: GetAllowShopNameDomainChanges,
@@ -176,8 +174,6 @@ class ShopEditBasicInfoViewModel @Inject constructor(
         description: String,
         logoCode: String? = null
     ) {
-        oldUpdateShopBasicDataUseCase.unsubscribe()
-
         val shopName = name.nullIfNotChanged(currentShop?.name)
         val shopDomain = domain.nullIfNotChanged(currentShop?.domain)
 
@@ -189,7 +185,6 @@ class ShopEditBasicInfoViewModel @Inject constructor(
 
     fun detachView() {
         getShopBasicDataUseCase.unsubscribe()
-        oldUpdateShopBasicDataUseCase.unsubscribe()
         uploadShopImageUseCase.unsubscribe()
     }
 

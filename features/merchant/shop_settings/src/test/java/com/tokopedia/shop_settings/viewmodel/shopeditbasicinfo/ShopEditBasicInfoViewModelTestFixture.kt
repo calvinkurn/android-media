@@ -3,9 +3,10 @@ package com.tokopedia.shop_settings.viewmodel.shopeditbasicinfo
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.LiveData
 import com.tokopedia.shop.common.graphql.data.shopbasicdata.ShopBasicDataModel
+import com.tokopedia.shop.common.graphql.data.shopbasicdata.gql.ShopBasicDataMutation
 import com.tokopedia.shop.common.graphql.data.shopopen.ValidateShopDomainNameResult
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetShopBasicDataUseCase
-import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.OldUpdateShopBasicDataUseCase
+import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.UpdateShopBasicDataUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.shopopen.GetShopDomainNameSuggestionUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.shopopen.ValidateDomainShopNameUseCase
 import com.tokopedia.shop.settings.basicinfo.data.AllowShopNameDomainChanges
@@ -34,7 +35,7 @@ abstract class ShopEditBasicInfoViewModelTestFixture {
     lateinit var getShopBasicDataUseCase: GetShopBasicDataUseCase
 
     @RelaxedMockK
-    lateinit var oldUpdateShopBasicDataUseCase: OldUpdateShopBasicDataUseCase
+    lateinit var updateShopBasicDataUseCase: UpdateShopBasicDataUseCase
 
     @RelaxedMockK
     lateinit var uploadShopImageUseCase: UploadShopImageUseCase
@@ -55,7 +56,7 @@ abstract class ShopEditBasicInfoViewModelTestFixture {
         MockKAnnotations.init(this)
         shopEditBasicInfoViewModel = ShopEditBasicInfoViewModel(
                 getShopBasicDataUseCase,
-                oldUpdateShopBasicDataUseCase,
+                updateShopBasicDataUseCase,
                 uploadShopImageUseCase,
                 getAllowShopNameDomainChangesUseCase,
                 getShopDomainNameSuggestionUseCase,
@@ -71,7 +72,6 @@ abstract class ShopEditBasicInfoViewModelTestFixture {
 
     protected fun verifyUnsubscribeUseCase() {
         coVerify { getShopBasicDataUseCase.unsubscribe() }
-        coVerify { oldUpdateShopBasicDataUseCase.unsubscribe() }
         coVerify { uploadShopImageUseCase.unsubscribe() }
     }
 
@@ -98,9 +98,10 @@ abstract class ShopEditBasicInfoViewModelTestFixture {
     }
 
     protected fun _onUpdateShopBasicData_thenReturn() {
-        every {
-            oldUpdateShopBasicDataUseCase.getData(any())
-        } returns "test string response"
+        coEvery {
+            updateShopBasicDataUseCase.setParams(any())
+            updateShopBasicDataUseCase.executeOnBackground()
+        } returns ShopBasicDataMutation()
     }
 
     protected fun _onGetShopBasicData_thenReturn() {
