@@ -23,7 +23,7 @@ class ImpresionTask {
     private var lineNumber: Int = 0
 
     init {
-        var element = Thread.currentThread().stackTrace[3]
+        var element = Thread.currentThread().stackTrace[4]
         fileName = element.fileName
         methodName = element.methodName
         lineNumber = element.lineNumber
