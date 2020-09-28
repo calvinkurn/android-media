@@ -48,7 +48,7 @@ class PlaySearchSuggestionsViewModelTest {
     }
 
     @Test
-    fun `test success load suggestion`() = runBlockingTest(testDispatcher) {
+    fun `when load suggestion is success, then it should return success`() = runBlockingTest(testDispatcher) {
         coEvery { getProductInEtalaseUseCase.executeOnBackground() } returns mockProductsInEtalase
 
         val keyword = "123"
@@ -75,7 +75,7 @@ class PlaySearchSuggestionsViewModelTest {
     }
 
     @Test
-    fun `test failed load suggestion`() = runBlockingTest(testDispatcher) {
+    fun `when load suggestion is failed, then it should return failed`() = runBlockingTest(testDispatcher) {
         val error = IllegalStateException()
 
         coEvery { getProductInEtalaseUseCase.executeOnBackground() } throws error

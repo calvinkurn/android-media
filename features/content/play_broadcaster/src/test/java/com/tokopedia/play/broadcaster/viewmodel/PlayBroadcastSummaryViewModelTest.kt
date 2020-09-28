@@ -51,7 +51,7 @@ class PlayBroadcastSummaryViewModelTest {
     }
 
     @Test
-    fun `test success get traffic summary`() {
+    fun `when get traffic summary is success, then it should return success`() {
         coEvery { liveStatisticsUseCase.executeOnBackground() } returns mockLiveStats
 
         viewModel.fetchLiveTraffic()
@@ -71,7 +71,7 @@ class PlayBroadcastSummaryViewModelTest {
     }
 
     @Test
-    fun `test failed get traffic summary`() {
+    fun `when get traffic summary failed, then it should return failed`() {
         coEvery { liveStatisticsUseCase.executeOnBackground() } throws Throwable()
 
         viewModel.fetchLiveTraffic()

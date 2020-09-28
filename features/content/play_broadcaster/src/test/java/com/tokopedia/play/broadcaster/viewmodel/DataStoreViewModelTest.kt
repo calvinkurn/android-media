@@ -38,14 +38,14 @@ class DataStoreViewModelTest {
     }
 
     @Test
-    fun `test get data store`() {
+    fun `when get setup data store, then it should return the set setup data store`() {
         Assertions
                 .assertThat(viewModel.getDataStore())
                 .isEqualTo(mockSetupDataStore)
     }
 
     @Test
-    fun `test overwrite data store`() {
+    fun `when overwrite setup data store, then the set setup data store should be overwritten`() {
         Assertions
                 .assertThat(mockSetupDataStore.isOverwritten)
                 .isEqualTo(false)
