@@ -54,6 +54,8 @@ class TopAdsDetectorInterceptor(private val adder: (Int) -> Unit) : Interceptor 
         var i = 0
         val p: Pattern = Pattern.compile("\"isTopads\":true")
         val p2: Pattern = Pattern.compile("\"is_topads\":true")
+        val p3: Pattern = Pattern.compile("\"activity\":\"topads")
+        val p4: Pattern = Pattern.compile("\"activity\":\"topads_banner")
 
         val m: Matcher = p.matcher(`in`)
         while (m.find()) {
@@ -62,6 +64,14 @@ class TopAdsDetectorInterceptor(private val adder: (Int) -> Unit) : Interceptor 
 
         val m2: Matcher = p2.matcher(`in`)
         while (m2.find()) {
+            i++
+        }
+        val m3: Matcher = p3.matcher(`in`)
+        while (m3.find()) {
+            i++
+        }
+        val m4: Matcher = p4.matcher(`in`)
+        while (m4.find()) {
             i++
         }
         if (i > 0 && !topAdsInEachRequest.containsKey(key)) {

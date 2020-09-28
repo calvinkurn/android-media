@@ -149,15 +149,25 @@ open class PageLoadTimePerformanceCallback(
 
     private fun startMethodTracing(traceName: String){
         if(GlobalConfig.ENABLE_DEBUG_TRACE && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
-            Log.i("PageLoadTimePerformanceCallback" , "startMethodTracing ==> "+traceName)
-            Debug.startMethodTracingSampling(traceName , 50 * 1024 * 1024 , 500);
+            for(item in GlobalConfig.DEBUG_TRACE_NAME){
+                if(item.equals(traceName)){
+                    Log.i("PageLoadTimePerformanceCallback" , "startMethodTracing ==> "+traceName)
+                    Debug.startMethodTracingSampling(traceName , 50 * 1024 * 1024 , 500);
+                    break
+                }
+            }
         }
     }
 
     private fun stopMethodTracing(traceName: String){
         if(GlobalConfig.ENABLE_DEBUG_TRACE && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
-            Log.i("PageLoadTimePerformanceCallback" , "stopMethodTracing ==> "+traceName)
-            Debug.stopMethodTracing();
+            for(item in GlobalConfig.DEBUG_TRACE_NAME){
+                if(item.equals(traceName)){
+                    Log.i("PageLoadTimePerformanceCallback" , "stopMethodTracing ==> "+traceName)
+                    Debug.stopMethodTracing();
+                    break
+                }
+            }
         }
     }
 }

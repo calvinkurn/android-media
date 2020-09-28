@@ -6,20 +6,16 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.design.touchhelper.OnStartDragListener
 import com.tokopedia.design.touchhelper.SimpleItemTouchHelperCallback
 import com.tokopedia.header.HeaderUnify
@@ -168,7 +164,7 @@ class ShopShowcaseListReorderFragment : BaseDaggerFragment(),
         val shopShowcaseList = ArrayList<String>()
         shopShowcaseListReorderAdapter?._showcaseList?.let {
             for (shopShowcaseModel in it) {
-                if (shopShowcaseModel.type != ShowcaseType.GENERATED) {
+                if (shopShowcaseModel.type == ShowcaseType.CUSTOM) {
                     shopShowcaseList.add(shopShowcaseModel.id)
                 }
             }
@@ -184,10 +180,10 @@ class ShopShowcaseListReorderFragment : BaseDaggerFragment(),
                     val isSuccess = it.data.reorderShopShowcase.success
                     if (isSuccess) {
                         showSuccessMessage(message)
-                        fragmentManager?.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+                        shopShowcaseFragmentNavigation.navigateToPage(PageNameConstant.SHOWCASE_LIST_PAGE, null, null)
                     } else {
                         showErrorResponse(message)
-                        fragmentManager?.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+                        shopShowcaseFragmentNavigation.navigateToPage(PageNameConstant.SHOWCASE_LIST_PAGE, null, null)
                     }
                 }
                 is Fail -> {
