@@ -293,6 +293,7 @@ abstract class BaseNotification internal constructor(
         Glide.with(context)
                 .asBitmap()
                 .load(resId)
+                .placeholder(resId)
                 .diskCacheStrategy(DiskCacheStrategy.DATA)
                 .into(object : CustomTarget<Bitmap>() {
                     override fun onLoadCleared(placeholder: Drawable?) {}
