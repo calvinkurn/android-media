@@ -3,7 +3,7 @@ package com.tokopedia.product.manage.feature.list.view.mapper
 import androidx.lifecycle.LiveData
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.product.manage.feature.filter.data.model.Tab
+import com.tokopedia.product.manage.common.list.data.model.filter.Tab
 import com.tokopedia.product.manage.feature.list.view.model.FilterTabViewModel
 import com.tokopedia.product.manage.feature.list.view.model.FilterTabViewModel.*
 import com.tokopedia.product.manage.feature.list.view.model.GetFilterTabResult

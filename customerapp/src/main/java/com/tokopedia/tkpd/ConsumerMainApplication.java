@@ -252,6 +252,9 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         if (com.tokopedia.config.GlobalConfig.DEBUG) {
             com.tokopedia.config.GlobalConfig.DEVICE_ID = DeviceInfo.getAndroidId(this);
         }
+        if(BuildConfig.DEBUG_TRACE_NAME != null) {
+            com.tokopedia.config.GlobalConfig.DEBUG_TRACE_NAME = BuildConfig.DEBUG_TRACE_NAME.split(",");
+        }
         generateConsumerAppNetworkKeys();
     }
 

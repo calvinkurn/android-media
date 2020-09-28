@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.gson.Gson
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
+import com.google.gson.JsonParser
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
@@ -66,6 +67,8 @@ import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.GQL_RECHARG
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.GQL_TRACK
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.GQL_TRAIN_EMAIL
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.LS_LACAK_MWEB
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.QUERY_PARAM_INVOICE
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.QUERY_PARAM_INVOICE_URL
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.REPLACE_ORDER_ID
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.SEMUA_TRANSAKSI
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.START_DATE
@@ -122,6 +125,7 @@ import kotlinx.android.synthetic.main.bottomsheet_send_email.*
 import kotlinx.android.synthetic.main.bottomsheet_send_email.view.*
 import kotlinx.android.synthetic.main.fragment_uoh_list.*
 import kotlinx.coroutines.*
+import java.lang.Exception
 import java.net.URLDecoder
 import java.text.SimpleDateFormat
 import java.util.*
@@ -335,7 +339,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
 
         uohBottomSheetKebabMenuAdapter = UohBottomSheetKebabMenuAdapter(this)
 
-        search_bar?.searchBarTextField?.addTextChangedListener(object: TextWatcher{
+        search_bar?.searchBarTextField?.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
                 textChangedJob?.cancel()
                 textChangedJob = GlobalScope.launch(Dispatchers.Main) {
@@ -1078,7 +1082,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
 
     private fun showBottomSheetSendEmail(gqlGroup: String, orderData: UohListOrder.Data.UohOrders.Order) {
         val viewBottomSheet = View.inflate(context, R.layout.bottomsheet_send_email, null)
-        viewBottomSheet.tf_email?.textFieldInput?.addTextChangedListener(object: TextWatcher{
+        viewBottomSheet.tf_email?.textFieldInput?.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
             }
 
@@ -1158,7 +1162,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                                 cl_choose_date?.gone()
                             }
                             val startDate = getCalculatedFormattedDate("yyyy-MM-dd", -30)
-                            val endDate= Date().toFormattedString("yyyy-MM-dd")
+                            val endDate = Date().toFormattedString("yyyy-MM-dd")
                             paramUohOrder.createTimeStart = startDate
                             paramUohOrder.createTimeEnd = endDate
 
@@ -1168,7 +1172,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                                 cl_choose_date?.gone()
                             }
                             val startDate = getCalculatedFormattedDate("yyyy-MM-dd", -90)
-                            val endDate= Date().toFormattedString("yyyy-MM-dd")
+                            val endDate = Date().toFormattedString("yyyy-MM-dd")
                             paramUohOrder.createTimeStart = startDate
                             paramUohOrder.createTimeEnd = endDate
 
@@ -1223,7 +1227,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
 
     @SuppressLint("SetTextI18n")
     private fun showDatePicker(flag: String) {
-        context?.let {  context ->
+        context?.let { context ->
             val minDate = Calendar.getInstance()
 
             val resultMinDate = orderList.dateLimit.split('-')
@@ -1268,7 +1272,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
 
             if (splitDate.isNotEmpty()) {
                 splitDate.let {
-                    currentDate.set(it[0].toInt(), it[1].toInt()-1, it[2].toInt())
+                    currentDate.set(it[0].toInt(), it[1].toInt() - 1, it[2].toInt())
                     val datePicker = DatePickerUnify(context, minDate, currentDate, maxDate)
                     fragmentManager?.let { it1 -> datePicker.show(it1, "") }
                     datePicker.datePickerButton.setOnClickListener {
@@ -1347,7 +1351,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                     showBottomSheetSendEmail(GQL_TRAIN_EMAIL, orderData)
                 }
                 dotMenu.actionType.equals(GQL_MP_CHAT, true) -> {
-                    RouteManager.route(context, URLDecoder.decode(dotMenu.appURL, UohConsts.UTF_8))
+                    doChatSeller(dotMenu.appURL, orderData)
                 }
                 dotMenu.actionType.equals(GQL_ATC, true) -> {
                     bottomSheetKebabMenu?.dismiss()
@@ -1606,5 +1610,33 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
 
         UohAnalytics.productAtcRecommendation(listProduct = arrayListProduct, isTopads = isTopAds)
         if (isTopAds) activity?.let { TopAdsUrlHitter(it).hitClickUrl(UohListFragment::class.qualifiedName, url, productId, productName, imageUrl) }
+    }
+
+    private fun doChatSeller(appUrl: String, order: UohListOrder.Data.UohOrders.Order) {
+        var invoiceCode = ""
+        var invoiceUrl = ""
+
+        try {
+            val parser = JsonParser()
+            val queryParams: JsonObject = parser.parse(order.metadata.queryParams).asJsonObject
+            invoiceCode = queryParams.get(QUERY_PARAM_INVOICE).asString
+            invoiceUrl = queryParams.get(QUERY_PARAM_INVOICE_URL).asString
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+
+        val intent = RouteManager.getIntent(context, URLDecoder.decode(appUrl, UohConsts.UTF_8))
+        intent.putExtra(ApplinkConst.Chat.INVOICE_ID, order.verticalID)
+        intent.putExtra(ApplinkConst.Chat.INVOICE_CODE, invoiceCode)
+        if (order.metadata.products.isNotEmpty()) {
+            intent.putExtra(ApplinkConst.Chat.INVOICE_TITLE, order.metadata.products.first().title)
+            intent.putExtra(ApplinkConst.Chat.INVOICE_IMAGE_URL, order.metadata.products.first().imageURL)
+        }
+        intent.putExtra(ApplinkConst.Chat.INVOICE_DATE, order.metadata.paymentDateStr)
+        intent.putExtra(ApplinkConst.Chat.INVOICE_URL, invoiceUrl)
+        intent.putExtra(ApplinkConst.Chat.INVOICE_STATUS_ID, order.verticalStatus)
+        intent.putExtra(ApplinkConst.Chat.INVOICE_STATUS, order.metadata.status.label)
+        intent.putExtra(ApplinkConst.Chat.INVOICE_TOTAL_AMOUNT, order.metadata.totalPrice.value)
+        startActivity(intent)
     }
 }
