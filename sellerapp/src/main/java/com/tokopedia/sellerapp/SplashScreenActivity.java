@@ -12,7 +12,7 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp;
 import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst;
-import com.tokopedia.applink.sellermigration.SellerMigrationUtil;
+import com.tokopedia.applink.sellermigration.SellerMigrationRedirectionUtil;
 import com.tokopedia.core.SplashScreen;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.fcmcommon.service.SyncFcmTokenService;
@@ -81,7 +81,7 @@ public class SplashScreenActivity extends SplashScreen {
                     if (remainingAppLinks == null || remainingAppLinks.size() == 0) {
                         return false;
                     }
-                    new SellerMigrationUtil().startRedirectionActivities(this, remainingAppLinks);
+                    new SellerMigrationRedirectionUtil().startRedirectionActivities(this, remainingAppLinks);
                     return true;
                 }
                 return false;

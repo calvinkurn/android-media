@@ -4,7 +4,7 @@ import android.app.TaskStackBuilder
 import android.content.Context
 import com.tokopedia.applink.RouteManager
 
-class SellerMigrationUtil {
+class SellerMigrationRedirectionUtil {
     fun startRedirectionActivities(context: Context, appLinks: List<String>) {
         val taskStackBuilder = TaskStackBuilder.create(context)
         appLinks.forEach {

@@ -10,7 +10,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
-import com.tokopedia.applink.sellermigration.SellerMigrationUtil
+import com.tokopedia.applink.sellermigration.SellerMigrationRedirectionUtil
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -77,7 +77,7 @@ class SeamlessLoginEmailPhoneFragment: LoginEmailPhoneFragment() {
                 if (context.applicationContext is LoginRouter) {
                     (context.applicationContext as LoginRouter).setOnboardingStatus(true)
                 }
-                SellerMigrationUtil().startRedirectionActivities(context, redirectAppLinks.orEmpty())
+                SellerMigrationRedirectionUtil().startRedirectionActivities(context, redirectAppLinks.orEmpty())
                 activity?.finish()
             }
         } else super.setLoginSuccessSellerApp()
