@@ -5,5 +5,6 @@ data class ProfilesItemModel(
         var shipmentModel: ShipmentModel = ShipmentModel(),
         var profileId: Int = 0,
         var paymentModel: PaymentModel = PaymentModel(),
-        var status: Int = 0
+        var status: Int = 0,
+        var enable: Boolean = false
 )

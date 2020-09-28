@@ -162,7 +162,7 @@ public class InboxReputationDetailHeaderViewHolder extends
         } else {
             smiley.setLayoutManager(gridLayout);
             adapter.showAllSmiley();
-            promptMessage.setText(getPromptText(element));
+            promptMessage.setText(MethodChecker.fromHtml(getPromptText(element)));
         }
 
         if (element.getReputationDataViewModel().isEditable()) {
