@@ -33,13 +33,13 @@ public class ImagePickerViewPageAddProductAdapter extends ImagePickerViewPagerAd
             case 0:
                 return context.getString(R.string.product_label_catalog);
             case 1:
-                return context.getString(R.string.gallery);
+                return context.getString(com.tokopedia.imagepicker.R.string.gallery);
             case 2:
-                return context.getString(R.string.camera);
+                return context.getString(com.tokopedia.imagepicker.R.string.camera);
             case 3:
-                return context.getString(R.string.instagram);
+                return context.getString(com.tokopedia.imagepicker.R.string.instagram);
             default:
-                return context.getString(R.string.gallery);
+                return context.getString(com.tokopedia.imagepicker.R.string.gallery);
         }
     }
 

@@ -43,7 +43,7 @@ class VoteAnnouncementViewModel : BaseChatViewModel, Visitable<GroupChatTypeFact
     }
 
     protected constructor(`in`: Parcel) : super(`in`) {
-        this.voteType = `in`.readString()
+        this.voteType = `in`.readString() ?: ""
         this.voteInfoViewModel = `in`.readParcelable(VoteInfoViewModel::class.java.classLoader)
     }
 

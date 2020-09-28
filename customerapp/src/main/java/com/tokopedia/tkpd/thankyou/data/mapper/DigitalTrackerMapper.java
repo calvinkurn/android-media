@@ -5,7 +5,6 @@ import android.text.TextUtils;
 import com.tokopedia.core.analytics.PurchaseTracking;
 import com.tokopedia.core.analytics.nishikino.model.Purchase;
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.design.utils.CurrencyFormatHelper;
 import com.tokopedia.linker.LinkerConstants;
 import com.tokopedia.linker.LinkerManager;
@@ -16,6 +15,7 @@ import com.tokopedia.tkpd.thankyou.data.pojo.digital.DigitalDataWrapper;
 import com.tokopedia.tkpd.thankyou.data.pojo.digital.response.Product;
 import com.tokopedia.tkpd.thankyou.data.pojo.digital.response.PurchaseData;
 import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.HashMap;
 
@@ -31,10 +31,10 @@ public class DigitalTrackerMapper implements Func1<Response<DigitalDataWrapper<P
     private static final String DEFAULT_DIGITAL_SHIPPING = "0";
     private static final String TOKOPEDIA_DIGITAL = "tokopediadigital";
 
-    private SessionHandler sessionHandler;
+    private UserSessionInterface userSessionInterface;
 
-    public DigitalTrackerMapper(SessionHandler sessionHandler) {
-        this.sessionHandler = sessionHandler;
+    public DigitalTrackerMapper(UserSessionInterface userSessionInterface) {
+        this.userSessionInterface = userSessionInterface;
     }
 
     @Override
@@ -56,7 +56,7 @@ public class DigitalTrackerMapper implements Func1<Response<DigitalDataWrapper<P
         purchase.setPaymentId(data.getPaymentId());
         purchase.setPaymentType(data.getPaymentType());
         purchase.setPaymentStatus(data.getPaymentStatus());
-        purchase.setUserId(sessionHandler.getLoginID());
+        purchase.setUserId(userSessionInterface.getUserId());
         purchase.setCurrentSite(TOKOPEDIA_DIGITAL);
         purchase.setItemPrice(String.valueOf(parseStringToInt(data.getEcommerce().getPurchase().getActionField().getRevenue())));
         if (isActionFieldValid(data)) {

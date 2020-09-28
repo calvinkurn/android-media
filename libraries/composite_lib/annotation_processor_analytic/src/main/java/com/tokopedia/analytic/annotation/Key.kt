@@ -1,4 +1,4 @@
-package com.tokopedia.annotation
+package com.tokopedia.analytic.annotation
 
 @Target(AnnotationTarget.FIELD)
 @Retention(AnnotationRetention.SOURCE)

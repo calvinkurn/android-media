@@ -10,5 +10,5 @@ import rx.Observable;
  * Created by Hendry on 2/20/17.
  */
 public interface TopAdsEtalaseListRepository {
-    Observable<List<Etalase>> getEtalaseList(String shopId);
+    Observable<List<Etalase>> getEtalaseList(String shopId, String userId, String deviceId);
 }

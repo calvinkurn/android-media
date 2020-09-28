@@ -28,7 +28,7 @@ object RouteManagerKt{
         if (!url.contains(DeepLinkChecker.WEB_HOST) && !url.contains(DeepLinkChecker.MOBILE_HOST)) {
             return false
         }
-        val registeredNavigation = DeeplinkMapper.getRegisteredNavigationFromHttp(activity, url)
+        val registeredNavigation = DeeplinkMapper.getRegisteredNavigationFromHttp(activity, Uri.parse(url), url)
         if (!TextUtils.isEmpty(registeredNavigation)) {
             val intent = RouteManager.getIntentNoFallback(activity, registeredNavigation)
             if (intent != null) {

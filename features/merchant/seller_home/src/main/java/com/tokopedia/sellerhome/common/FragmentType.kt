@@ -10,10 +10,12 @@ import androidx.annotation.IntDef
 @Target(AnnotationTarget.PROPERTY, AnnotationTarget.FIELD, AnnotationTarget.VALUE_PARAMETER)
 @IntDef(value = [
     FragmentType.HOME, FragmentType.PRODUCT,
-    FragmentType.CHAT, FragmentType.ORDER
+    FragmentType.CHAT, FragmentType.ORDER,
+    FragmentType.OTHER
 ])
 annotation class FragmentType {
     companion object {
+        const val NONE: Int = -1 //means no page selected
         const val HOME: Int = 0
         const val PRODUCT: Int = 1
         const val CHAT: Int = 2

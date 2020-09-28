@@ -1,0 +1,10 @@
+{
+  "validate_use_promo_revamp": {
+    "status": "ERROR",
+    "message": [
+      "Error message"
+    ],
+    "error_code": "500",
+    "code": "500000"
+  }
+}

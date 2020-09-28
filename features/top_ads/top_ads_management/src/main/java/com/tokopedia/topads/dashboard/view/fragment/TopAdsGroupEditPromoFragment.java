@@ -1,16 +1,20 @@
 package com.tokopedia.topads.dashboard.view.fragment;
 
 import android.os.Bundle;
+import android.text.TextUtils;
 
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.topads.R;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 /**
  * Created by zulfikarrahman on 2/27/17.
  */
 
 public class TopAdsGroupEditPromoFragment extends TopAdsBaseGroupEditPromoFragment{
+
+    public String shopId = "";
 
     public static TopAdsGroupEditPromoFragment createInstance(String adId, int choosenOption,
                                                               String groupId, String groupName) {
@@ -26,17 +30,17 @@ public class TopAdsGroupEditPromoFragment extends TopAdsBaseGroupEditPromoFragme
 
     @Override
     protected void onSubmitFormNewGroup(String groupName) {
-        presenter.moveToNewProductGroup(adId, groupName, SessionHandler.getShopID(getActivity()));
+        presenter.moveToNewProductGroup(adId, groupName, getShopId());
     }
 
     @Override
     protected void onSubmitFormNotInGroup() {
-        presenter.moveOutProductGroup(SessionHandler.getShopID(getActivity()),adId);
+        presenter.moveOutProductGroup(getShopId(),adId);
     }
 
     @Override
     protected void onSubmitFormChooseGroup(String choosenId) {
-        presenter.moveToExistProductGroup(adId, choosenId , SessionHandler.getShopID(getActivity()));
+        presenter.moveToExistProductGroup(adId, choosenId ,getShopId());
     }
 
     @Override
@@ -44,4 +48,13 @@ public class TopAdsGroupEditPromoFragment extends TopAdsBaseGroupEditPromoFragme
         return getString(R.string.title_save);
     }
 
+    private String getShopId() {
+        if(!TextUtils.isEmpty(shopId)) {
+            return shopId;
+        } else {
+            UserSessionInterface userSession = new UserSession(getActivity());
+            shopId = userSession.getShopId();
+            return shopId;
+        }
+    }
 }

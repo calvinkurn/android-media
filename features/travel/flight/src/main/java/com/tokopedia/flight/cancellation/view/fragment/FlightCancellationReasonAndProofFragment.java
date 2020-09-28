@@ -5,17 +5,18 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
-import androidx.annotation.Nullable;
-import androidx.appcompat.widget.AppCompatButton;
-import androidx.appcompat.widget.AppCompatTextView;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatButton;
+import androidx.appcompat.widget.AppCompatTextView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
@@ -63,6 +64,7 @@ public class FlightCancellationReasonAndProofFragment extends BaseDaggerFragment
     private AppCompatButton btnNext;
 
     private List<FlightCancellationAttachmentModel> attachments;
+    private List<FlightCancellationAttachmentModel> viewAttachments;
     private FlightCancellationAttachmentAdapter adapter;
     private FlightCancellationWrapperModel flightCancellationViewModel;
     private OnFragmentInteractionListener interactionListener;
@@ -118,8 +120,11 @@ public class FlightCancellationReasonAndProofFragment extends BaseDaggerFragment
         presenter.attachView(this);
         if (attachments == null) {
             attachments = presenter.buildAttachmentList();
+            viewAttachments = presenter.buildViewAttachmentList(0);
+        } else {
+            viewAttachments = presenter.buildViewAttachmentList(0);
         }
-        presenter.initialize(attachments);
+        presenter.initialize(viewAttachments);
         presenter.setNextButton();
 
         buildAttachmentReasonView();
@@ -229,8 +234,13 @@ public class FlightCancellationReasonAndProofFragment extends BaseDaggerFragment
     }
 
     @Override
+    public List<FlightCancellationAttachmentModel> getViewAttachments() {
+        return viewAttachments;
+    }
+
+    @Override
     public void setAttachment(FlightCancellationAttachmentModel attachment, int position) {
-        attachments.set(position, attachment);
+        viewAttachments.set(position, attachment);
         adapter.setElement(position, attachment);
     }
 
@@ -368,14 +378,19 @@ public class FlightCancellationReasonAndProofFragment extends BaseDaggerFragment
         buildAttachmentReasonView();
 
         deleteAllAttachments();
-        addAttachments(attachments);
+        if (selectedReason.getRequiredDocs() != null && selectedReason.getRequiredDocs().size() > 0) {
+            viewAttachments = presenter.buildViewAttachmentList(selectedReason.getRequiredDocs().get(0).getDocId());
+        } else {
+            viewAttachments = presenter.buildViewAttachmentList(0);
+        }
+        addAttachments(viewAttachments);
         renderAttachment();
     }
 
     private void buildAttachmentReasonView() {
         if (selectedReason != null && selectedReason.getRequiredDocs() != null &&
                 selectedReason.getRequiredDocs().size() > 0 && attachments != null &&
-                attachments.size() > 0) {
+                attachments.size() > 0 && viewAttachments != null && viewAttachments.size() > 0) {
             showAttachmentContainer();
         } else {
             hideAttachmentContainer();

@@ -2,12 +2,20 @@ package com.tokopedia.sellerhome.settings.view.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.network.exception.ResponseErrorException
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.seller.menu.common.coroutine.SellerHomeCoroutineDispatcher
 import com.tokopedia.sellerhome.common.viewmodel.NonNullLiveData
-import com.tokopedia.sellerhome.settings.domain.usecase.GetAllShopInfoUseCase
-import com.tokopedia.sellerhome.settings.view.uimodel.shopinfo.SettingShopInfoUiModel
+import com.tokopedia.seller.menu.common.domain.usecase.GetAllShopInfoUseCase
+import com.tokopedia.seller.menu.common.domain.entity.OthersBalance
+import com.tokopedia.seller.menu.common.view.uimodel.base.ShopType
+import com.tokopedia.seller.menu.common.view.uimodel.base.partialresponse.PartialSettingSuccessInfoType
+import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.ShopBadgeUiModel
+import com.tokopedia.sellerhome.utils.SellerHomeCoroutineTestDispatcher
 import com.tokopedia.sellerhome.utils.observeOnce
+import com.tokopedia.shop.common.domain.interactor.GetShopFreeShippingInfoUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -15,11 +23,13 @@ import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.spyk
 import junit.framework.Assert.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestCoroutineDispatcher
-import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.mockito.ArgumentMatchers.*
 import org.mockito.internal.util.reflection.Whitebox
 
 @ExperimentalCoroutinesApi
@@ -28,39 +38,68 @@ class OtherMenuViewModelTest {
     @RelaxedMockK
     lateinit var getAllShopInfoUseCase: GetAllShopInfoUseCase
 
+    @RelaxedMockK
+    lateinit var getShopFreeShippingInfoUseCase: GetShopFreeShippingInfoUseCase
+
+    @RelaxedMockK
+    lateinit var userSession: UserSessionInterface
+
+    @RelaxedMockK
+    lateinit var remoteConfig: FirebaseRemoteConfigImpl
+
     @get:Rule
     val rule = InstantTaskExecutorRule()
+
+    private lateinit var mViewModel: OtherMenuViewModel
+    private lateinit var testCoroutineDispatcher: SellerHomeCoroutineDispatcher
 
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-    }
+        testCoroutineDispatcher = SellerHomeCoroutineTestDispatcher
 
-    private val testDispatcher = TestCoroutineDispatcher()
-
-    private val mViewModel: OtherMenuViewModel by lazy {
-        OtherMenuViewModel(testDispatcher, getAllShopInfoUseCase)
+        mViewModel =
+                OtherMenuViewModel(
+                        testCoroutineDispatcher,
+                        getAllShopInfoUseCase,
+                        getShopFreeShippingInfoUseCase,
+                        userSession,
+                        remoteConfig
+                )
     }
 
     @Test
-    fun `success get all setting shop info data`() {
-        val settingShopInfoSuccess = SettingShopInfoUiModel()
+    fun `success get all setting shop info data`() = runBlocking {
+        val partialShopInfoSuccess = PartialSettingSuccessInfoType.PartialShopSettingSuccessInfo(
+                ShopType.OfficialStore,
+                anyInt(),
+                anyString()
+        )
+        val partialTopAdsSuccess = PartialSettingSuccessInfoType.PartialTopAdsSettingSuccessInfo(
+                OthersBalance(),
+                anyFloat(),
+                anyBoolean()
+        )
+        val successPair = Pair(partialShopInfoSuccess, partialTopAdsSuccess)
 
         coEvery {
             getAllShopInfoUseCase.executeOnBackground()
-        } returns settingShopInfoSuccess
+        } returns successPair
 
         mViewModel.getAllSettingShopInfo()
+
+        coroutineContext[Job]?.children?.forEach { it.join() }
 
         coVerify {
             getAllShopInfoUseCase.executeOnBackground()
         }
 
-        assert(mViewModel.settingShopInfoLiveData.value == Success(settingShopInfoSuccess))
+        assertEquals((mViewModel.settingShopInfoLiveData.value as? Success)?.data?.shopBadgeUiModel, ShopBadgeUiModel(partialShopInfoSuccess.shopBadgeUrl))
+        assertEquals((mViewModel.settingShopInfoLiveData.value as? Success)?.data?.topadsBalanceUiModel?.isTopAdsUser, partialTopAdsSuccess.isTopAdsAutoTopup)
     }
 
     @Test
-    fun `error get setting shop info data`() {
+    fun `error get setting shop info data`() = runBlocking {
         val throwable = ResponseErrorException()
 
         coEvery {
@@ -68,6 +107,8 @@ class OtherMenuViewModelTest {
         } throws throwable
 
         mViewModel.getAllSettingShopInfo()
+
+        coroutineContext[Job]?.children?.forEach { it.join() }
 
         coVerify {
             getAllShopInfoUseCase.executeOnBackground()
@@ -78,7 +119,7 @@ class OtherMenuViewModelTest {
     }
 
     @Test
-    fun `Check delay will alter isToasterAlreadyShown between true and false`() = testDispatcher.runBlockingTest {
+    fun `Check delay will alter isToasterAlreadyShown between true and false`() = runBlocking {
 
         val mockViewModel = spyk(mViewModel, recordPrivateCalls = true)
 
@@ -88,13 +129,11 @@ class OtherMenuViewModelTest {
             mockViewModel["checkDelayErrorResponseTrigger"]()
         }
 
-        testDispatcher.pauseDispatcher()
-
         mockViewModel.isToasterAlreadyShown.observeOnce {
             assertTrue(it)
         }
 
-        testDispatcher.resumeDispatcher()
+        (testCoroutineDispatcher.io() as? TestCoroutineDispatcher)?.advanceTimeBy(5000L)
 
         mockViewModel.isToasterAlreadyShown.observeOnce {
             assertFalse(it)
@@ -130,4 +169,5 @@ class OtherMenuViewModelTest {
         }
 
     }
+
 }

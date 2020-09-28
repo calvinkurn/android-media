@@ -9,30 +9,33 @@ import com.google.gson.annotations.SerializedName;
  * @author lalit.singh
  */
 public class CMBackground {
+
+    @Expose
     @ColumnInfo(name = "img")
     @SerializedName("img")
+    public String img = "";
+
     @Expose
-    public String img;
     @ColumnInfo(name = "clr")
     @SerializedName("clr")
+    public String color = "";
+
     @Expose
-    public String color;
     @ColumnInfo(name = "sc")
     @SerializedName("sc")
+    public String strokeColor = "";
+
     @Expose
-    public String strokeColor;
     @ColumnInfo(name = "sw")
     @SerializedName("sw")
+    public int strokeWidth = 0;
+
     @Expose
-    public int strokeWidth;
     @ColumnInfo(name = "rd")
     @SerializedName("rd")
-    @Expose
-    public float cornerRadius;
+    public float cornerRadius = 0;
 
-    public CMBackground(){
-
-    }
+    public CMBackground(){}
 
     public String getImg() {
         return img;

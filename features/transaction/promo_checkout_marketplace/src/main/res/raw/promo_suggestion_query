@@ -1,0 +1,18 @@
+{
+  GetPromoSuggestion(serviceID: "marketplace") {
+    PromoHistory {
+      PromoCode
+      PromoContent {
+        ID
+        Name
+        Public
+        Status
+        BaseCode
+        IsBackdoor
+        PromoType
+        PromoTitle
+        Description
+      }
+    }
+  }
+}

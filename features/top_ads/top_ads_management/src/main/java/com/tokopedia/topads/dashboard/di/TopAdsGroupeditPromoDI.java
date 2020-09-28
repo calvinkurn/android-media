@@ -2,7 +2,6 @@ package com.tokopedia.topads.dashboard.di;
 
 import android.content.Context;
 
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.topads.common.util.TopAdsSourceTaggingUseCaseUtil;
 import com.tokopedia.topads.dashboard.data.factory.TopAdsGroupAdFactory;
@@ -40,7 +39,7 @@ public class TopAdsGroupeditPromoDI {
 
     public static TopAdsGroupEditPromoPresenter createPresenter(Context context) {
 
-        TopAdsManagementService topAdsManagementService = new TopAdsManagementService(new SessionHandler(context));
+        TopAdsManagementService topAdsManagementService = new TopAdsManagementService(new UserSession(context));
         TopAdsOldManagementApi topAdsManagementApi = topAdsManagementService.getApi();
 
         TopAdsSearchGroupMapper topAdsSearchGroupMapper = new TopAdsSearchGroupMapper();

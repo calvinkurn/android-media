@@ -10,6 +10,9 @@ public class MetaDataInfo {
     @SerializedName("end_date")
     @Expose
     private String endDate;
+    @SerializedName("end_time")
+    @Expose
+    private String endTime;
     @SerializedName("entity_address")
     @Expose
     private EntityAddress entityAddress;
@@ -22,35 +25,70 @@ public class MetaDataInfo {
     @SerializedName("entity_category_id")
     @Expose
     private int entityCategoryId;
+    @SerializedName("email")
+    @Expose
+    private String email;
     @SerializedName("entity_image")
     @Expose
     private String entityImage;
+    @SerializedName("product_image")
+    @Expose
+    private String productImage;
     @SerializedName("entity_product_id")
     @Expose
     private int entityProductId;
     @SerializedName("entity_product_name")
     @Expose
     private String entityProductName;
+    @SerializedName("product_name")
+    @Expose
+    private String productName;
     @SerializedName("entity_provider_id")
     @Expose
     private int entityProviderId;
     @SerializedName("start_date")
     @Expose
     private String startDate;
+    @SerializedName("start_time")
+    @Expose
+    private String startTime;
     @SerializedName("total_ticket_count")
     @Expose
     private int totalTicketCount;
+    @SerializedName("quantity")
+    @Expose
+    private int quantity;
     @SerializedName("total_ticket_price")
     @Expose
     private int totalTicketPrice;
+
+    @SerializedName("total_price")
+    @Expose
+    private int totalPrice;
 
     @SerializedName("entity_passengers")
     @Expose
     private List<EntityPessenger> entityPessengers;
 
+    @SerializedName("passenger_forms")
+    @Expose
+    private List<PassengerForm> passengerForms;
+
     @SerializedName("is_hiburan")
     @Expose
     private int isHiburan;
+
+    @SerializedName("name")
+    @Expose
+    private String name;
+
+    @SerializedName("location_name")
+    @Expose
+    private String locationName;
+
+    @SerializedName("location_desc")
+    @Expose
+    private String locationDesc;
 
     @SerializedName("seo_url")
     @Expose
@@ -76,16 +114,21 @@ public class MetaDataInfo {
     @Expose
     private String prouductImage;
 
-    @SerializedName("product_name")
-    @Expose
-    private String productName;
     @SerializedName("product_price_fmt")
     @Expose
     private String productPrice;
 
+    @SerializedName("product_app_url")
+    @Expose
+    private String productAppUrl;
+
 
     public String getEndDate() {
         return endDate;
+    }
+
+    public String getEndTime(){
+        return endTime;
     }
 
     public String getProductQuantity() {
@@ -104,6 +147,17 @@ public class MetaDataInfo {
         return premiumPrice;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public String getLocationName() {
+        return locationName;
+    }
+
+    public String getLocationDesc() {
+        return locationDesc;
+    }
 
     public String getProuductImage() {
         return prouductImage;
@@ -157,6 +211,10 @@ public class MetaDataInfo {
         return entityImage;
     }
 
+    public String getProductImage() {
+        return productImage;
+    }
+
     public void setEntityImage(String entityImage) {
         this.entityImage = entityImage;
     }
@@ -189,6 +247,10 @@ public class MetaDataInfo {
         return startDate;
     }
 
+    public String getStartTime() {
+        return startTime;
+    }
+
     public void setStartDate(String startDate) {
         this.startDate = startDate;
     }
@@ -197,12 +259,18 @@ public class MetaDataInfo {
         return totalTicketCount;
     }
 
+    public int getQuantity(){return quantity;}
+
     public void setTotalTicketCount(int totalTicketCount) {
         this.totalTicketCount = totalTicketCount;
     }
 
     public int getTotalTicketPrice() {
         return totalTicketPrice;
+    }
+
+    public int getTotalPrice() {
+        return totalPrice;
     }
 
     public void setTotalTicketPrice(int totalTicketPrice) {
@@ -221,6 +289,10 @@ public class MetaDataInfo {
         return entityPessengers;
     }
 
+    public List<PassengerForm> getPassengerForms() {
+        return passengerForms;
+    }
+
     public void setEntityPessengers(List<EntityPessenger> entityPessengers) {
         this.entityPessengers = entityPessengers;
     }
@@ -236,4 +308,8 @@ public class MetaDataInfo {
     public String getSeoUrl() {
         return seoUrl;
     }
+
+    public String getEmail(){return email;}
+
+    public String getProductAppUrl(){return productAppUrl;}
 }

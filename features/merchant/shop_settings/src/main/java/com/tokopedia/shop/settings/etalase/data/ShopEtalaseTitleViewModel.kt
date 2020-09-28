@@ -2,8 +2,6 @@ package com.tokopedia.shop.settings.etalase.data
 
 import android.os.Parcel
 import android.os.Parcelable
-
-import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 import com.tokopedia.shop.settings.etalase.view.adapter.factory.BaseShopEtalaseFactory
 
 /**

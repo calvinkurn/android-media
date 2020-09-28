@@ -6,6 +6,7 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.slot
 import io.mockk.spyk
+import org.junit.Assert
 import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
@@ -17,7 +18,10 @@ class HotlistNavViewModelTest {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
-    private var trackUrl: String = "test"
+    private var trackUrl: String = "testUrl"
+    private var trackId: String = "testId"
+    private var trackName: String = "testName"
+    private var trackImage: String = "testImage"
     private var sendTopAdsUseCase: SendTopAdsUseCase = mockk(relaxed = true)
     private var hotlistNavViewModel: HotlistNavViewModel = spyk(HotlistNavViewModel(
             mockk(),
@@ -32,13 +36,25 @@ class HotlistNavViewModelTest {
     @Test
     fun testSendTopAds() {
         var url = ""
+        var id = ""
+        var name = ""
+        var image = ""
         val slotUrl = slot<String>()
-        every { sendTopAdsUseCase.executeOnBackground(capture(slotUrl)) } answers {
+        val slotId = slot<String>()
+        val slotName = slot<String>()
+        val slotImage = slot<String>()
+        every { sendTopAdsUseCase.hitImpressions(capture(slotUrl), capture(slotId), capture(slotName), capture(slotImage)) } answers {
             url = slotUrl.captured
+            id = slotId.captured
+            name = slotName.captured
+            image = slotImage.captured
         }
 
-        hotlistNavViewModel.sendTopAds(trackUrl)
+        hotlistNavViewModel.sendTopAdsImpressions(trackUrl, trackId,trackName,trackImage)
 
         assertEquals(trackUrl, url)
+        assertEquals(trackId, id)
+        assertEquals(trackName, name)
+        assertEquals(trackImage, image)
     }
 }

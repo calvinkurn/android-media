@@ -1,13 +1,19 @@
 package com.tokopedia.notifications.model
 
-import androidx.room.ColumnInfo
-import android.os.Parcel
 import android.os.Parcelable
+import androidx.room.ColumnInfo
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.notifications.common.CMConstant
+import kotlinx.android.parcel.Parcelize
 
+@Parcelize
 data class ProductInfo(
+
+        @SerializedName("productId")
+        @ColumnInfo(name = "productId")
+        @Expose
+        var productId: Int?,
 
         @SerializedName("productTitle")
         @ColumnInfo(name = "productTitle")
@@ -44,6 +50,11 @@ data class ProductInfo(
         @Expose
         var productButtonMessage: String,
 
+        @SerializedName("shopId")
+        @ColumnInfo(name = "shopId")
+        @Expose
+        var shopId: Int?,
+
         @SerializedName("appLink")
         @ColumnInfo(name = "appLink")
         @Expose
@@ -52,43 +63,35 @@ data class ProductInfo(
         @SerializedName(CMConstant.PayloadKeys.ELEMENT_ID)
         @ColumnInfo(name = CMConstant.PayloadKeys.ELEMENT_ID)
         @Expose
-        var element_id: String? = ""
+        var element_id: String? = "",
+
+        @SerializedName(CMConstant.PayloadKeys.FREE_DELIVERY)
+        @ColumnInfo(name = CMConstant.PayloadKeys.FREE_DELIVERY)
+        @Expose
+        var freeOngkirIcon: String? = "",
+
+        @SerializedName(CMConstant.PayloadKeys.STOCK_AVAILABLE)
+        @ColumnInfo(name = CMConstant.PayloadKeys.STOCK_AVAILABLE)
+        @Expose
+        var stockAvailable: String? = "",
+
+        @SerializedName(CMConstant.PayloadKeys.REVIEW_SCORE)
+        @ColumnInfo(name = CMConstant.PayloadKeys.REVIEW_SCORE)
+        @Expose
+        var reviewScore: String? = "",
+
+        @SerializedName(CMConstant.PayloadKeys.ACTION_BUTTON)
+        @ColumnInfo(name = CMConstant.PayloadKeys.ACTION_BUTTON)
+        var actionButton: ArrayList<ActionButton> = ArrayList()
+
 ) : Parcelable {
-    constructor(parcel: Parcel) : this(
-            parcel.readString()?.let { it } ?: "",
-            parcel.readString()?.let { it } ?: "",
-            parcel.readString()?.let { it } ?: "",
-            parcel.readString()?.let { it } ?: "",
-            parcel.readString()?.let { it } ?: "",
-            parcel.readString()?.let { it } ?: "",
-            parcel.readString()?.let { it } ?: "",
-            parcel.readString()?.let { it } ?: "",
-            parcel.readString()?.let { it } ?: "")
 
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeString(productTitle)
-        parcel.writeString(productImage)
-        parcel.writeString(productActualPrice)
-        parcel.writeString(productCurrentPrice)
-        parcel.writeString(productPriceDroppedPercentage)
-        parcel.writeString(productMessage)
-        parcel.writeString(productButtonMessage)
-        parcel.writeString(appLink)
-        parcel.writeString(element_id)
-    }
-
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    companion object CREATOR : Parcelable.Creator<ProductInfo> {
-        override fun createFromParcel(parcel: Parcel): ProductInfo {
-            return ProductInfo(parcel)
-        }
-
-        override fun newArray(size: Int): Array<ProductInfo?> {
-            return arrayOfNulls(size)
-        }
+    fun getNumberPrice(): String {
+        val startIndex = productCurrentPrice.indexOfFirst { it.isDigit() }
+        val endIndex = productCurrentPrice.indexOfLast { it.isDigit() } + 1
+        return productCurrentPrice
+                .substring(startIndex, endIndex)
+                .filter { it.isDigit() || it == '.' }
     }
 
 }

@@ -1,23 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.recyclerview.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/recycler_view"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:background="@color/white"
-    android:fillViewport="true">
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/dp_10"
-        android:background="@color/white"
-        android:orientation="vertical"
-        android:paddingBottom="@dimen/dp_20">
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingLeft="@dimen/spacing_lvl4"
-            android:paddingRight="@dimen/spacing_lvl4" />
-    </RelativeLayout>
-</androidx.core.widget.NestedScrollView>
+    android:clipToPadding="false"
+    android:paddingLeft="@dimen/spacing_lvl4"
+    android:paddingRight="@dimen/spacing_lvl4"
+    android:paddingBottom="@dimen/spacing_lvl6" />

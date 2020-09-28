@@ -10,14 +10,14 @@ import javax.inject.Inject
 /**
  * Created by fwidjaja on 09/05/20.
  */
-class SomGetConfirmShippingResultUseCase @Inject constructor(private val useCase: GraphqlUseCase<SomConfirmShipping.Data.MpLogisticConfirmShipping>) {
+class SomGetConfirmShippingResultUseCase @Inject constructor(private val useCase: GraphqlUseCase<SomConfirmShipping.Data>) {
 
     suspend fun execute(query: String): Result<SomConfirmShipping.Data.MpLogisticConfirmShipping> {
         useCase.setGraphqlQuery(query)
-        useCase.setTypeClass(SomConfirmShipping.Data.MpLogisticConfirmShipping::class.java)
+        useCase.setTypeClass(SomConfirmShipping.Data::class.java)
 
         return try {
-            val resultConfirmShipping = useCase.executeOnBackground()
+            val resultConfirmShipping = useCase.executeOnBackground().mpLogisticConfirmShipping
             Success(resultConfirmShipping)
         } catch (throwable: Throwable) {
             Fail(throwable)

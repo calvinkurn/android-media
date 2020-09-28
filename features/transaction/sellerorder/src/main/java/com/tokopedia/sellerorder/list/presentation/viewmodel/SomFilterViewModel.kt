@@ -3,9 +3,6 @@ package com.tokopedia.sellerorder.list.presentation.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
-import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.sellerorder.common.SomDispatcherProvider
 import com.tokopedia.sellerorder.list.data.model.SomListAllFilter
@@ -13,7 +10,6 @@ import com.tokopedia.sellerorder.list.domain.filter.SomGetAllFilterUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.*
 import javax.inject.Inject
 
 /**
@@ -34,13 +30,31 @@ class SomFilterViewModel @Inject constructor(dispatcher: SomDispatcherProvider,
     val orderTypeListResult: LiveData<Result<MutableList<SomListAllFilter.Data.OrderType>>>
         get() = _orderTypeListResult
 
+    private val _filterListResult = MutableLiveData<Result<Boolean>>()
+    val filterListResult: LiveData<Result<Boolean>>
+        get() = _filterListResult
+
+    @Suppress("UNCHECKED_CAST")
     fun loadSomFilterData(filterQuery: String) {
-        launch {
+        launchCatchError(block = {
             somGetAllFilterUseCase.execute(filterQuery)
-            _shippingListResult.postValue(somGetAllFilterUseCase.getShippingListResult())
-            _statusOrderListResult.postValue(somGetAllFilterUseCase.getStatusOrderListResult())
-            _orderTypeListResult.postValue(somGetAllFilterUseCase.getOrderTypeListResult())
-        }
+            val results = mutableListOf<Result<Any>>(
+                    somGetAllFilterUseCase.getShippingListResult(),
+                    somGetAllFilterUseCase.getStatusOrderListResult(),
+                    somGetAllFilterUseCase.getOrderTypeListResult()
+            )
+            _shippingListResult.postValue(results[0] as Result<MutableList<SomListAllFilter.Data.ShippingList>>?)
+            _statusOrderListResult.postValue(results[1] as Result<MutableList<SomListAllFilter.Data.OrderFilterSomSingle.StatusList>>?)
+            _orderTypeListResult.postValue(results[2] as Result<MutableList<SomListAllFilter.Data.OrderType>>?)
+            val failingResult = results.filterIsInstance<Fail>()
+            if (failingResult.isEmpty()) {
+                _filterListResult.postValue(Success(true))
+            } else {
+                _filterListResult.postValue(Fail(failingResult.first().throwable))
+            }
+        }, onError = {
+            _filterListResult.postValue(Fail(it))
+        })
     }
 
     fun loadSomFilterDataOld(filterQuery: String) {

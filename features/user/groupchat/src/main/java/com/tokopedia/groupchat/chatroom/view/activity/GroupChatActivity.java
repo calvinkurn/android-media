@@ -53,7 +53,7 @@ import com.tokopedia.abstraction.constant.TkpdState;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.design.card.ToolTipUtils;
+import com.tokopedia.groupchat.chatroom.utils.ToolTipUtils;
 import com.tokopedia.design.component.ButtonCompat;
 import com.tokopedia.globalerror.GlobalError;
 import com.tokopedia.groupchat.R;

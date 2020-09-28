@@ -1,9 +1,9 @@
 package com.tokopedia.createpost.view.adapter
 
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.createpost.TYPE_AFFILIATE
 import com.tokopedia.createpost.createpost.R
@@ -48,7 +48,7 @@ class RelatedProductAdapter(val listener: RelatedProductListener? = null, val ty
         val element = list[position]
 
         if (element.id == EMPTY_ITEM_ID) {
-            holder.itemView.thumbnail.loadImageDrawable(R.drawable.ic_system_action_addimage_grayscale_62)
+            holder.itemView.thumbnail.loadImageDrawable(com.tokopedia.resources.common.R.drawable.ic_system_action_addimage_grayscale_62)
             holder.itemView.delete.hide()
             holder.itemView.separatorBottom.hide()
             holder.itemView.separatorBottomEmpty.show()
@@ -66,8 +66,8 @@ class RelatedProductAdapter(val listener: RelatedProductListener? = null, val ty
         holder.itemView.price.text = element.price
         holder.itemView.price.setTextColor(MethodChecker.getColor(
                 holder.itemView.context,
-                if (element.type == TYPE_AFFILIATE) R.color.af_commission_blue
-                else R.color.orange_red)
+                if (element.type == TYPE_AFFILIATE) com.tokopedia.affiliatecommon.R.color.af_commission_blue
+                else com.tokopedia.design.R.color.orange_red)
         )
         holder.itemView.delete.setOnClickListener {
             listener?.onItemDeleted(holder.adapterPosition)

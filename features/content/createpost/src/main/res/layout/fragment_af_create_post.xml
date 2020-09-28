@@ -29,7 +29,7 @@
                 android:background="@android:color/transparent"
                 android:fontFamily="sans-serif"
                 android:gravity="top"
-                android:hint="@string/af_caption_hint"
+                android:hint="@string/cp_caption_hint"
                 android:singleLine="false"
                 android:maxLength="2000"
                 android:scrollbars="vertical"
@@ -75,7 +75,7 @@
                 android:id="@+id/label_title_product_attachment"
                 android:layout_width="@dimen/dp_0"
                 android:layout_height="wrap_content"
-                android:text="@string/af_title_header_product_attachment"
+                android:text="@string/cp_title_header_product_attachment"
                 android:layout_marginTop="@dimen/dp_12"
                 android:visibility="gone"
                 tools:visibility="visible"
@@ -144,7 +144,7 @@
             android:layout_marginBottom="@dimen/dp_10"
             android:ellipsize="end"
             android:lines="1"
-            android:text="@string/af_product_suggestion_title"
+            android:text="@string/cp_product_suggestion_title"
             android:textColor="@color/clr_f531353b"
             app:typographyType="body_2"
             app:typographyWeight="bold" />
@@ -198,7 +198,7 @@
             android:textColor="@color/ae000000"
             app:typographyType="heading_5"
             app:typographyWeight="bold"
-            android:text="@string/label_add_product"/>
+            android:text="@string/cp_label_add_product"/>
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/video_picker"
@@ -223,7 +223,7 @@
             android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginStart="@dimen/dp_16"
             app:typographyType="heading_4"
-            android:text="@string/label_add_sticker"
+            android:text="@string/cp_label_add_sticker"
             android:textColor="@color/c45000000"
             android:visibility="gone"
             tools:visibility="visible"/>

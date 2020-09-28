@@ -25,5 +25,8 @@
     <string name="cb_bot_string_hint_invoice_search">Cari invoice atau nama produk</string>
     <string name="cb_bot_title_no_result">Transaksi tidak ditemukan  Periksa kembali kata kunci Anda</string>
     <string name="title_chat_bot">Chat Sekarang</string>
+    <string name="cb_bot_reply_text">Ketik pesan singkat dan jelas</string>
+    <string name="cb_bot_three_dots">\u2026</string>
+    <string name="cb_bot_toolbar_title">Tanya</string>
 
 </resources>

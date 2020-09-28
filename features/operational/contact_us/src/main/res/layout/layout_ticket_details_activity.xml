@@ -14,9 +14,9 @@
         android:elevation="@dimen/dp_4"
         android:gravity="center_vertical"
         android:theme="?toolbarTheme"
-        app:contentInsetLeft="0dp"
-        app:contentInsetStart="0dp"
-        app:contentInsetStartWithNavigation="0dp"
+        app:contentInsetLeft="@dimen/dp_0"
+        app:contentInsetStart="@dimen/dp_0"
+        app:contentInsetStartWithNavigation="@dimen/dp_0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:subtitleTextAppearance="?subtitleTextAppearance"
@@ -35,7 +35,7 @@
 
             <com.tokopedia.contactus.inboxticket2.view.customview.CustomEditText
                 android:id="@+id/custom_search"
-                android:layout_width="0dp"
+                android:layout_width="@dimen/dp_0"
                 android:layout_height="@dimen/dp_40"
                 android:layout_marginEnd="@dimen/dp_16"
                 android:layout_marginRight="@dimen/dp_16"
@@ -102,100 +102,20 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.appcompat.widget.Toolbar>
 
-    <TextView
-        android:id="@+id/tv_priority_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="19dp"
-        android:drawableLeft="@drawable/resized_priority_label_image"
-        android:drawablePadding="@dimen/dp_minus2"
-        android:gravity="center"
-        android:fontFamily="sans-serif-medium"
-        android:text="Layanan Prioritas"
-        android:textColor="@color/purple"
-        android:textSize="@dimen/sp_10"
-        android:lineSpacingExtra="@dimen/sp_2"
-        android:textStyle="normal"
-        android:visibility="gone"
-        tools:visibility="visible"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar" />
-
-    <TextView
-        android:id="@+id/tv_ticket_title"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_7"
-        android:layout_marginEnd="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
-        android:fontFamily="sans-serif"
-        android:lineSpacingExtra="5sp"
-        android:paddingBottom="@dimen/dp_4"
-        android:textColor="@color/black_70"
-        android:textSize="@dimen/sp_17"
-        android:textStyle="normal"
-        app:layout_goneMarginTop="@dimen/dp_16"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_priority_label"
-        tools:text="Prifikasi dan
-dinilaiwbckwbvkbwvwkwbkjewvrrevervrevrvvvrvrrevrvrvevebvwv" />
-
-
-    <TextView
-        android:id="@+id/tv_id_num"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_12"
-        android:lineSpacingExtra="6sp"
-        android:textColor="@color/black_38"
-        android:textSize="@dimen/sp_12"
-        app:layout_constraintStart_toStartOf="@+id/tv_ticket_title"
-        app:layout_constraintTop_toBottomOf="@+id/tv_ticket_title"
-        tools:text="ID: #00079468" />
-
-    <TextView
-        android:id="@+id/tv_view_transaction"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginRight="@dimen/dp_16"
-        android:fontFamily="sans-serif"
-        android:lineSpacingExtra="6sp"
-        android:text="Detail Transaksi"
-        android:textColor="@color/green_nob"
-        android:textSize="@dimen/sp_12"
-        android:textStyle="normal"
-        android:visibility="visible"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/tv_id_num"
-        app:layout_goneMarginTop="@dimen/dp_12" />
-
-    <View
-        android:id="@+id/top_divider"
-        android:layout_width="wrap_content"
-        android:layout_height="@dimen/dp_1"
-        android:layout_marginTop="@dimen/dp_16"
-        android:background="@color/grey_300"
-        app:layout_constraintTop_toBottomOf="@+id/tv_id_num"
-        app:layout_goneMarginTop="@dimen/dp_16" />
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_message_list"
         android:layout_width="wrap_content"
-        android:layout_height="0dp"
+        android:layout_height="@dimen/dp_0"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHeight_default="spread"
-        app:layout_constraintTop_toBottomOf="@+id/top_divider"
-        tools:listitem="@layout/layout_item_ticket" />
+        app:layout_constraintTop_toBottomOf="@+id/toolbar"
+        app:layout_constraintLeft_toLeftOf="parent"
+        tools:listitem="@layout/layout_item_message" />
 
     <include
         android:id="@+id/text_toolbar"
         layout="@layout/layout_bottom_text_toolbar"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/dp_0"
         android:layout_height="wrap_content"
         android:elevation="@dimen/dp_8"
         android:visibility="gone"
@@ -206,7 +126,7 @@ dinilaiwbckwbvkbwvwkwbkjewvrrevervrevrvvvrvrrevrvrvevebvwv" />
     <include
         android:id="@+id/view_help_rate"
         layout="@layout/layout_rating"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/dp_0"
         android:layout_height="wrap_content"
         android:elevation="@dimen/dp_8"
         android:visibility="gone"
@@ -217,7 +137,7 @@ dinilaiwbckwbvkbwvwkwbkjewvrrevervrevrvvvrvrrevrvrvevebvwv" />
     <include
         android:id="@+id/view_link_bottom"
         layout="@layout/layout_link_bottom"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/dp_0"
         android:layout_height="wrap_content"
         android:elevation="@dimen/dp_8"
         android:visibility="gone"

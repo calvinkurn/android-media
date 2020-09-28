@@ -6,9 +6,10 @@ import java.io.File
 
 object PerformanceDataFileUtils {
     fun writePLTPerformanceFile(activity: Activity,
-                                        testCaseName: String,
-                                        pltPerformanceData: PltPerformanceData,
-                                        dataSourceType: String = "") {
+                                testCaseName: String,
+                                pltPerformanceData: PltPerformanceData,
+                                dataSourceType: String = "",
+                                networkData: NetworkData? = null) {
         val path = activity.getExternalFilesDir(null)
         val perfDataDir = File(path, "perf_data")
         if (!perfDataDir.exists()) {
@@ -21,7 +22,12 @@ object PerformanceDataFileUtils {
                         "${pltPerformanceData.networkRequestDuration}," +
                         "${pltPerformanceData.renderPageDuration}," +
                         "${pltPerformanceData.overallDuration}," +
-                        "$dataSourceType\n")
+                        "$dataSourceType," +
+                        "${networkData?.totalResponseSize ?: ""}," +
+                        "${networkData?.totalResponseTime ?: ""}," +
+                        "${networkData?.totalUserNetworkDuration ?: ""}," +
+                        "${networkData?.responseSizeDetailMapString ?: ""}," +
+                        "${networkData?.responseTimeDetailMapString ?: ""}\n")
 
         val perfReport = File(perfDataDir, "report.csv")
         perfReport.appendText(
@@ -62,6 +68,11 @@ object PerformanceDataFileUtils {
         val renderPagePlt = "Render Page Duration (ms)"
         val overallPlt = "Page Load Time (FPI) (ms)"
         val datasource = "Data source"
+        val totalResponseSize = "Total Response Size (bytes)"
+        val totalResponseTime = "Total Response Time (ms)"
+        val totalUserNetworkDuration = "Total User Network Duration (ms)"
+        val responseSizeDetail = "ResponseSizeDetail"
+        val responseTimeDetail = "ResponseTimeDetail"
 
         val allframes = "All Frames"
         val jankyframes = "Janky Frames"
@@ -76,7 +87,12 @@ object PerformanceDataFileUtils {
                 "$networkRequestPlt," +
                 "$renderPagePlt," +
                 "$overallPlt," +
-                "$datasource\n")
+                "$datasource," +
+                "$totalResponseSize," +
+                "$totalResponseTime," +
+                "$totalUserNetworkDuration," +
+                "$responseSizeDetail," +
+                "$responseTimeDetail\n")
 
         val perfReportFpi = File(perfDataDir, "report-fpi.csv")
         perfReportFpi.appendText("" +

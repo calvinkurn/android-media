@@ -11,14 +11,13 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/setting_shop_info_height"
         android:layout_marginTop="@dimen/setting_header_height"
-        app:layout_constraintTop_toTopOf="parent"
-        android:background="@color/white"/>
+        app:layout_constraintTop_toTopOf="parent"/>
 
     <View
         android:id="@+id/bottomRefer"
         android:layout_width="match_parent"
         android:layout_height="@dimen/setting_bottom_refer"
-        android:background="@color/transparent"
+        android:background="@android:color/transparent"
         app:layout_constraintBottom_toBottomOf="@id/shopInfoView"/>
 
     <View
@@ -48,14 +47,15 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_margin="@dimen/setting_shop_avatar_border"
-            app:unify_image_type="circle"/>
+            app:unify_image_type="circle"
+            tools:src="@tools:sample/avatars"/>
     </RelativeLayout>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/shopName"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:textColor="@color/setting_black_text"
+        android:textColor="@color/default_black_text"
         android:ellipsize="end"
         android:maxLines="1"
         app:layout_constraintTop_toTopOf="@id/shopInfoView"
@@ -63,7 +63,8 @@
         app:layout_constraintEnd_toEndOf="@id/settingShopGuidelineRight"
         app:layout_constraintBottom_toBottomOf="@id/settingMiddleGuideline"
         app:typographyType="heading_3"
-        app:typographyWeight="bold"/>
+        app:typographyWeight="bold"
+        tools:text="Adeedust Naiki"/>
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/shopBadges"
@@ -71,7 +72,9 @@
         android:layout_height="@dimen/setting_shop_badge_height"
         app:layout_constraintTop_toBottomOf="@id/settingMiddleGuideline"
         app:layout_constraintBottom_toTopOf="@id/bottomRefer"
-        app:layout_constraintStart_toStartOf="@id/settingShopGuidelineInfo"/>
+        app:layout_constraintStart_toStartOf="@id/settingShopGuidelineInfo"
+        tools:src="@tools:sample/avatars"
+        tools:layout_width="@dimen/layout_lvl3"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/dot"
@@ -96,7 +99,8 @@
         app:typographyWeight="reguler"
         app:layout_constraintTop_toBottomOf="@id/settingMiddleGuideline"
         app:layout_constraintBottom_toTopOf="@id/bottomRefer"
-        app:layout_constraintStart_toEndOf="@id/dot" />
+        app:layout_constraintStart_toEndOf="@id/dot"
+        tools:text="99 Followers"/>
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/settingShopNext"

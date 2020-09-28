@@ -1,102 +1,102 @@
 {
-  "getPublicMerchantVoucherList": {
-    "vouchers": [
-      {
-        "merchant_voucher_id": 375595,
-        "voucher_id": 525041,
-        "voucher_name": "haaaai",
-        "voucher_code": "VELOMONDAYHAY",
-        "minimum_spend": 100000,
-        "minimum_spend_formatted": "100rb",
-        "in_use_expiry": "0",
-        "valid_thru": "1580405400",
-        "tnc": "<ol>\n    <li>Cashback sebesar  Rp 20.000</li>\n    <li>Berlaku minimal transaksi  Rp 100.000 (total harga produk, belum termasuk ongkos kirim dan biaya tambahan lainnya)</li>\n    <li>Voucher hanya berlaku untuk satu kali untuk pembelanjaan di Velovelo Shop.</li>\n    <li>Cashback akan dikirimkan pada user yang memiliki nomor ponsel yang aktif</li>\n    <li>Tidak bisa digabung dengan promo lain.</li>\n    <li>Satu pengguna Tokopedia hanya boleh menggunakan 1 (satu) akun Tokopedia untuk menggunakan Voucher ini.</li>\n    <li>Tokopedia berhak melakukan tindakan yang diperlukan apabila diduga terjadi tindakan kecurangan dari pengguna yang merugikan pihak Tokopedia.</li>\n    <li>Dengan menggunakan Voucher ini, pengguna dianggap mengerti dan menyetujui semua syarat & ketentuan yang berlaku.</li>\n</ol>",
-        "restricted_for_liquid_product": false,
-        "owner": {
-          "owner_id": 1,
-          "identifier": "merchant-voucher"
+  "MerchantPromotionGetMVList": {
+    "header": {
+      "process_time": 0,
+      "message": [],
+      "reason": "",
+      "error_code": ""
+    },
+    "data": {
+      "paging": {
+        "per_page": 15,
+        "page": 1,
+        "has_prev": false,
+        "has_next": false
+      },
+      "vouchers": [
+        {
+          "voucher_id": 786590,
+          "shop_id": 2155436,
+          "voucher_name": "testing private",
+          "voucher_type": 1,
+          "voucher_type_formatted": "Gratis Ongkir",
+          "voucher_image": "https://ecs7.tokopedia.net/img/BTJGre/2020/7/7/f36f5c6a-8dc9-426f-9c00-3221629c1f8d.jpg",
+          "voucher_image_square": "https://ecs7.tokopedia.net/img/nNLhqY/2020/7/7/b29fd984-413f-4ee8-a975-69398f88bad9.jpg",
+          "voucher_status": 2,
+          "voucher_status_formatted": "on_going",
+          "voucher_discount_type": 1,
+          "voucher_discount_type_formatted": "idr",
+          "voucher_discount_amt": 20000,
+          "voucher_discount_amt_formatted": "20rb",
+          "voucher_discount_amt_max": 20000,
+          "voucher_discount_amt_max_formatted": "20rb",
+          "voucher_minimum_amt": 100000,
+          "voucher_minimum_amt_formatted": "100rb",
+          "voucher_quota": 100,
+          "remaining_quota": 100,
+          "booked_global_quota": 0,
+          "voucher_start_time": "2020-07-07T15:00:00Z",
+          "voucher_finish_time": "2020-07-14T00:30:00Z",
+          "voucher_code": "CANCABCDEFGHI",
+          "galadriel_voucher_id": 948977,
+          "galadriel_catalog_id": 327971,
+          "create_time": "2020-07-07T11:47:44Z",
+          "create_by": 19016250,
+          "update_time": "2020-07-07T14:58:01.016812Z",
+          "update_by": -1,
+          "is_public": 0,
+          "is_quota_avaiable": 1,
+          "tnc": "\u003col\u003e\u003cli\u003eVoucher Gratis Ongkir dapat digunakan dengan membuka halaman promo di Keranjang.\u003c/li\u003e\u003cli\u003eVoucher Gratis Ongkir hanya berlaku apabila pembelian Pengguna sudah memenuhi syarat dan ketentuan yang tertera pada voucher.\u003c/li\u003e\u003cli\u003eNominal Gratis Ongkir yang bisa didapatkan sebesar Rp 20.000.\u003c/li\u003e\u003cli\u003eVoucher Gratis Ongkir berlaku untuk transaksi minimal Rp 100.000 (tidak termasuk ongkos kirim dan biaya tambahan lainnya).\u003c/li\u003e\u003cli\u003eVoucher Gratis Ongkir hanya berlaku untuk pembelanjaan di cancanshop.\u003c/li\u003e\u003cli\u003e1 (satu) Pengguna Tokopedia hanya boleh menggunakan 1 (satu) akun Tokopedia untuk menggunakan Voucher Gratis Ongkir ini.\u003c/li\u003e\u003cli\u003eTokopedia berhak melakukan tindakan yang diperlukan apabila diduga terjadi tindakan kecurangan yang dilakukan oleh  Pengguna dan/atau melanggar Syarat dan Ketentuan Situs dan/atau merugikan pihak Tokopedia.\u003c/li\u003e\u003cli\u003eDengan menggunakan Voucher Gratis Ongkir, Pengguna dianggap telah memahami dan menyetujui semua Syarat dan Ketentuan yang berlaku.\u003c/li\u003e\u003c/ol\u003e",
+          "hyperlink": {
+            "edit": "https://www.tokopedia.com/v2/vouchertoko/edit/786590",
+            "edit_quota_ajax": "https://www.tokopedia.com/v2/vouchertoko/edit_quota_ajax/786590",
+            "delete": "https://www.tokopedia.com/v2/vouchertoko/delete/786590",
+            "stop": "https://www.tokopedia.com/v2/vouchertoko/stop/786590",
+            "share": "https://www.tokopedia.com/cancanshop"
+          }
         },
-        "voucher_type": {
+        {
+          "voucher_id": 784427,
+          "shop_id": 2155436,
+          "voucher_name": "test voucher",
           "voucher_type": 3,
-          "identifier": "cashback"
-        },
-        "amount": {
-          "amount_type": 1,
-          "amount": 20000
-        },
-        "banner": {
-          "desktop_url": "https://ecs7.tokopedia.net/img/attachment/2020/1/6/47676617/47676617_2a8eba2e-4214-49ec-ae64-62363c008612",
-          "mobile_url": "https://ecs7.tokopedia.net/img/attachment/2020/1/6/47676617/47676617_2a8eba2e-4214-49ec-ae64-62363c008612"
-        },
-        "status": {
-          "status": 2,
-          "identifier": "available"
+          "voucher_type_formatted": "Cashback",
+          "voucher_image": "https://ecs7.tokopedia.net/img/BTJGre/2020/7/6/7862962e-38b8-44b0-ad8f-10ff687b421f.jpg",
+          "voucher_image_square": "https://ecs7.tokopedia.net/img/nNLhqY/2020/7/6/d3a2f566-1b49-4507-812c-b6224e2a9e7a.jpg",
+          "voucher_status": 2,
+          "voucher_status_formatted": "on_going",
+          "voucher_discount_type": 1,
+          "voucher_discount_type_formatted": "idr",
+          "voucher_discount_amt": 20000,
+          "voucher_discount_amt_formatted": "20rb",
+          "voucher_discount_amt_max": 20000,
+          "voucher_discount_amt_max_formatted": "20rb",
+          "voucher_minimum_amt": 100000,
+          "voucher_minimum_amt_formatted": "100rb",
+          "voucher_quota": 100,
+          "remaining_quota": 100,
+          "booked_global_quota": 0,
+          "voucher_start_time": "2020-07-06T15:30:00Z",
+          "voucher_finish_time": "2020-07-31T00:30:00Z",
+          "voucher_code": "CANC29JA0Y",
+          "galadriel_voucher_id": 946757,
+          "galadriel_catalog_id": 325788,
+          "create_time": "2020-07-06T12:23:32Z",
+          "create_by": 19016250,
+          "update_time": "2020-07-06T15:28:02.001996Z",
+          "update_by": -1,
+          "is_public": 1,
+          "is_quota_avaiable": 1,
+          "tnc": "\u003col\u003e\u003cli\u003eVoucher Cashback dapat digunakan dengan membuka halaman promo di Keranjang.\u003c/li\u003e\u003cli\u003eVoucher Cashback hanya berlaku apabila pembelian Pengguna sudah memenuhi syarat dan ketentuan yang tertera pada voucher.\u003c/li\u003e\u003cli\u003eNominal Cashback yang bisa didapatkan sebesar 20000% hingga Rp 20.000.\u003c/li\u003e\u003cli\u003eVoucher Cashback ini berlaku untuk transaksi minimal Rp 100.000 (tidak termasuk ongkos kirim dan biaya tambahan lainnya).\u003c/li\u003e\u003cli\u003eVoucher Cashback ini hanya berlaku untuk pembelanjaan di cancanshop.\u003c/li\u003e\u003cli\u003e1 (satu) Pengguna Tokopedia hanya boleh menggunakan 1 (satu) akun Tokopedia untuk menggunakan Voucher Cashback ini.\u003c/li\u003e\u003cli\u003eCashback akan diberikan dalam bentuk OVO Points pada saat transaksi selesai. Pengguna diharapkan untuk memastikan bahwa pengguna sudah mengaktifkan OVO. Jika tidak mengaktifkan dalam 7 hari setelah mengikuti promo, Cashback akan hangus.\u003c/li\u003e\u003cli\u003eJika transaksi gagal atau masuk ke Pusat Resolusi, dana yang kembali ke Pembeli akan sesuai dengan nominal pembayaran yang dilakukan oleh Pembeli.\u003c/li\u003e\u003cli\u003eTokopedia berhak melakukan tindakan yang diperlukan apabila diduga terjadi tindakan kecurangan yang dilakukan oleh Pengguna dan/atau yang melanggar Syarat dan Ketentuan Situs dan/atau merugikan pihak Tokopedia.\u003c/li\u003e\u003cli\u003eDengan menggunakan Voucher Cashback ini, Pengguna dianggap telah memahami dan menyetujui semua Syarat \u0026 Ketentuan yang berlaku.\u003c/li\u003e\u003c/ol\u003e",
+          "hyperlink": {
+            "edit": "https://www.tokopedia.com/v2/vouchertoko/edit/784427",
+            "edit_quota_ajax": "https://www.tokopedia.com/v2/vouchertoko/edit_quota_ajax/784427",
+            "delete": "https://www.tokopedia.com/v2/vouchertoko/delete/784427",
+            "stop": "https://www.tokopedia.com/v2/vouchertoko/stop/784427",
+            "share": "https://www.tokopedia.com/cancanshop"
+          }
         }
-      },
-      {
-        "merchant_voucher_id": 365707,
-        "voucher_id": 513937,
-        "voucher_name": "cacikuku",
-        "voucher_code": "VELOLIBURAN",
-        "minimum_spend": 100000,
-        "minimum_spend_formatted": "100rb",
-        "in_use_expiry": "0",
-        "valid_thru": "1579282200",
-        "tnc": "<ol>\n\t<li>Gratis ongkir hingga Rp 20.000</li>\n\t<li>Minimum transaksi Rp 100.000 (total harga produk, belum termasuk ongkos kirim dan biaya tambahan lainnya).</li>\n\t<li>Voucher hanya berlaku untuk pembelanjaan di Velovelo Shop.</li>\n\t<li>Tidak bisa digabung dengan Voucher lain.</li>\n\t<li>Tidak berlaku untuk pembelian Dropshipper.</li>\n\t<li>Satu pengguna Tokopedia hanya boleh menggunakan 1 (satu) akun Tokopedia untuk menggunakan Voucher ini.</li>\n\t<li>Tokopedia berhak melakukan tindakan yang diperlukan apabila diduga terjadi tindakan kecurangan dari pengguna yang melanggar Syarat dan Ketentuan atau merugikan pihak Tokopedia.</li>\n\t<li>Dengan menggunakan Voucher ini, pengguna dianggap mengerti dan menyetujui semua Syarat dan Ketentuan yang berlaku.</li>\n</ol>",
-        "restricted_for_liquid_product": false,
-        "owner": {
-          "owner_id": 1,
-          "identifier": "merchant-voucher"
-        },
-        "voucher_type": {
-          "voucher_type": 1,
-          "identifier": "free-ongkir"
-        },
-        "amount": {
-          "amount_type": 1,
-          "amount": 20000
-        },
-        "banner": {
-          "desktop_url": "https://ecs7.tokopedia.net/img/attachment/2019/12/23/47676617/47676617_5a5f6fa8-0bd0-408f-9fee-c9189ecfac2a",
-          "mobile_url": "https://ecs7.tokopedia.net/img/attachment/2019/12/23/47676617/47676617_5a5f6fa8-0bd0-408f-9fee-c9189ecfac2a"
-        },
-        "status": {
-          "status": 2,
-          "identifier": "available"
-        }
-      },
-      {
-        "merchant_voucher_id": 375597,
-        "voucher_id": 525043,
-        "voucher_name": "gratisongkirmonday",
-        "voucher_code": "VELOGRATISONGK",
-        "minimum_spend": 100000,
-        "minimum_spend_formatted": "100rb",
-        "in_use_expiry": "0",
-        "valid_thru": "1580405400",
-        "tnc": "<ol>\n\t<li>Gratis ongkir hingga Rp 20.000</li>\n\t<li>Minimum transaksi Rp 100.000 (total harga produk, belum termasuk ongkos kirim dan biaya tambahan lainnya).</li>\n\t<li>Voucher hanya berlaku untuk pembelanjaan di Velovelo Shop.</li>\n\t<li>Tidak bisa digabung dengan Voucher lain.</li>\n\t<li>Tidak berlaku untuk pembelian Dropshipper.</li>\n\t<li>Satu pengguna Tokopedia hanya boleh menggunakan 1 (satu) akun Tokopedia untuk menggunakan Voucher ini.</li>\n\t<li>Tokopedia berhak melakukan tindakan yang diperlukan apabila diduga terjadi tindakan kecurangan dari pengguna yang melanggar Syarat dan Ketentuan atau merugikan pihak Tokopedia.</li>\n\t<li>Dengan menggunakan Voucher ini, pengguna dianggap mengerti dan menyetujui semua Syarat dan Ketentuan yang berlaku.</li>\n</ol>",
-        "restricted_for_liquid_product": false,
-        "owner": {
-          "owner_id": 1,
-          "identifier": "merchant-voucher"
-        },
-        "voucher_type": {
-          "voucher_type": 1,
-          "identifier": "free-ongkir"
-        },
-        "amount": {
-          "amount_type": 1,
-          "amount": 20000
-        },
-        "banner": {
-          "desktop_url": "https://ecs7.tokopedia.net/img/attachment/2020/1/6/47676617/47676617_86b78344-f2da-42e6-a080-d14763d758ec",
-          "mobile_url": "https://ecs7.tokopedia.net/img/attachment/2020/1/6/47676617/47676617_86b78344-f2da-42e6-a080-d14763d758ec"
-        },
-        "status": {
-          "status": 2,
-          "identifier": "available"
-        }
-      }
-    ]
+      ]
+    }
   }
 }

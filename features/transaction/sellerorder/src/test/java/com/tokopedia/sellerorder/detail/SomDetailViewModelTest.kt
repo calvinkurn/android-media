@@ -2,12 +2,15 @@ package com.tokopedia.sellerorder.detail
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.sellerorder.SomTestDispatcherProvider
+import com.tokopedia.sellerorder.common.domain.usecase.SomGetUserRoleUseCase
+import com.tokopedia.sellerorder.common.presenter.model.SomGetUserRoleUiModel
 import com.tokopedia.sellerorder.detail.data.model.*
 import com.tokopedia.sellerorder.detail.domain.*
 import com.tokopedia.sellerorder.detail.presentation.viewmodel.SomDetailViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import io.mockk.*
+import io.mockk.MockKAnnotations
+import io.mockk.coEvery
 import io.mockk.impl.annotations.RelaxedMockK
 import org.junit.Before
 import org.junit.Rule
@@ -49,12 +52,19 @@ class SomDetailViewModelTest {
     @RelaxedMockK
     lateinit var somSetDeliveredUseCase: SomSetDeliveredUseCase
 
+    @RelaxedMockK
+    lateinit var somGetUserRoleUseCase: SomGetUserRoleUseCase
+
+    @RelaxedMockK
+    lateinit var somRejectCancelOrderUseCase: SomRejectCancelOrderUseCase
+
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
         somDetailViewModel = SomDetailViewModel(dispatcher, somGetOrderDetailUseCase,
                 somAcceptOrderUseCase, somReasonRejectUseCase, somRejectOrderUseCase,
-                somEditRefNumUseCase, somSetDeliveredUseCase)
+                somEditRefNumUseCase, somSetDeliveredUseCase, somGetUserRoleUseCase,
+                somRejectCancelOrderUseCase)
 
         val product1 = SomDetailOrder.Data.GetSomDetail.Products(123)
         listProducts = arrayListOf(product1).toMutableList()
@@ -70,11 +80,11 @@ class SomDetailViewModelTest {
     fun getOrderDetail_shouldReturnSuccess() {
         //given
         coEvery {
-            somGetOrderDetailUseCase.execute(any(), any())
+            somGetOrderDetailUseCase.execute(any())
         } returns Success(SomDetailOrder.Data.GetSomDetail(123))
 
         //when
-        somDetailViewModel.loadDetailOrder("", "")
+        somDetailViewModel.loadDetailOrder("")
 
         //then
         assert(somDetailViewModel.orderDetailResult.value is Success)
@@ -85,11 +95,11 @@ class SomDetailViewModelTest {
     fun getOrderDetail_shouldReturnFail() {
         //given
         coEvery {
-            somGetOrderDetailUseCase.execute(any(), any())
+            somGetOrderDetailUseCase.execute(any())
         } returns Fail(Throwable())
 
         //when
-        somDetailViewModel.loadDetailOrder("", "")
+        somDetailViewModel.loadDetailOrder("")
 
         //then
         assert(somDetailViewModel.orderDetailResult.value is Fail)
@@ -99,11 +109,11 @@ class SomDetailViewModelTest {
     fun getOrderDetail_shouldNotReturnEmpty() {
         //given
         coEvery {
-            somGetOrderDetailUseCase.execute(any(), any())
+            somGetOrderDetailUseCase.execute(any())
         } returns Success(SomDetailOrder.Data.GetSomDetail(listProduct = listProducts))
 
         //when
-        somDetailViewModel.loadDetailOrder("", "")
+        somDetailViewModel.loadDetailOrder("")
 
         //then
         assert(somDetailViewModel.orderDetailResult.value is Success)
@@ -334,4 +344,55 @@ class SomDetailViewModelTest {
         assert(somDetailViewModel.setDelivered.value is Success)
         assert((somDetailViewModel.setDelivered.value as Success<SetDeliveredResponse>).data.setDelivered.message.first() == "msg1")
     }
+
+    @Test
+    fun loadUserRoles_shouldReturnSuccess() {
+        //given
+        coEvery {
+            somGetUserRoleUseCase.execute()
+        } returns Success(SomGetUserRoleUiModel())
+
+        //when
+        somDetailViewModel.loadUserRoles(123456)
+
+        //then
+        assert(somDetailViewModel.userRoleResult.value is Success)
+    }
+
+    @Test
+    fun loadUserRoles_shouldReturnFail() {
+        //given
+        coEvery {
+            somGetUserRoleUseCase.execute()
+        } returns Fail(Throwable())
+
+        //when
+        somDetailViewModel.loadUserRoles(123456)
+
+        //then
+        assert(somDetailViewModel.userRoleResult.value is Fail)
+    }
+
+    @Test
+    fun rejectCancelOrder_shouldReturnSuccess() {
+        coEvery {
+            somRejectCancelOrderUseCase.execute(any())
+        } returns Success(SomRejectCancelOrderResponse.Data())
+
+        somDetailViewModel.rejectCancelOrder("123456")
+
+        assert(somDetailViewModel.rejectCancelOrderResult.value is Success)
+    }
+
+    @Test
+    fun rejectCancelOrder_shouldReturnFail() {
+        coEvery {
+            somRejectCancelOrderUseCase.execute(any())
+        } returns Fail(Throwable())
+
+        somDetailViewModel.rejectCancelOrder("123456")
+
+        assert(somDetailViewModel.rejectCancelOrderResult.value is Fail)
+    }
 }
+

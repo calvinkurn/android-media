@@ -1,20 +1,20 @@
 package com.tokopedia.autocomplete.initialstate
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.autocomplete.initialstate.popularsearch.RefreshPopularSearchUseCase
-import com.tokopedia.autocomplete.initialstate.recentsearch.DeleteRecentSearchUseCase
+import com.tokopedia.autocomplete.initialstate.data.InitialStateUniverse
+import com.tokopedia.autocomplete.jsonToObject
 import com.tokopedia.usecase.UseCase
 import com.tokopedia.user.session.UserSessionInterface
-import io.mockk.mockk
-import io.mockk.slot
+import io.mockk.*
 import org.junit.Before
+import rx.Subscriber
 
 internal open class InitialStatePresenterTestFixtures {
     protected val initialStateView = mockk<InitialStateContract.View>(relaxed = true)
 
     protected val getInitialStateUseCase = mockk<UseCase<List<InitialStateData>>>(relaxed = true)
-    protected val deleteRecentSearchUseCase = mockk<DeleteRecentSearchUseCase>(relaxed = true)
-    protected val popularSearchUseCase = mockk<RefreshPopularSearchUseCase>(relaxed = true)
+    protected val deleteRecentSearchUseCase = mockk<UseCase<Boolean>>(relaxed = true)
+    protected val refreshInitialStateUseCase = mockk<UseCase<List<InitialStateData>>>(relaxed = true)
 
     protected val userSession = mockk<UserSessionInterface>(relaxed = true)
 
@@ -30,13 +30,81 @@ internal open class InitialStatePresenterTestFixtures {
 
     protected val testException = TestException("Error")
 
+    private val initialStateCommonResponse = "autocomplete/initialstate/common-response.json"
+    protected val initialStateCommonData = initialStateCommonResponse.jsonToObject<InitialStateUniverse>().data
+
+    protected val ID_POPULAR_SEARCH = "popular_search"
+    protected val ID_NEW_SECTION = "new_section"
+
     @Before
     fun setUp() {
         initialStatePresenter = InitialStatePresenter(
                 getInitialStateUseCase,
                 deleteRecentSearchUseCase,
-                popularSearchUseCase,
+                refreshInitialStateUseCase,
                 userSession)
         initialStatePresenter.attachView(initialStateView)
+    }
+
+    protected fun `Given view already get initial state`(list: List<InitialStateData>) {
+        `Given initial state use case capture request params`(list)
+        `Given presenter get initial state data`()
+    }
+
+    private fun `Given presenter get initial state data`() {
+        initialStatePresenter.getInitialStateData()
+    }
+
+    protected fun `Given initial state use case capture request params`(list: List<InitialStateData>) {
+        every { getInitialStateUseCase.execute(any(), any()) }.answers {
+            secondArg<Subscriber<List<InitialStateData>>>().onStart()
+            secondArg<Subscriber<List<InitialStateData>>>().onNext(list)
+        }
+    }
+
+    protected fun `Then verify initial state view behavior is correct`() {
+        verifyOrder {
+            initialStateView.onRecentViewImpressed(capture(slotRecentViewItemList))
+            initialStateView.onRecentSearchImpressed(capture(slotRecentSearchItemList))
+            initialStateView.onPopularSearchImpressed(capture(slotPopularSearchItemList))
+            initialStateView.showInitialStateResult(capture(slotVisitableList))
+        }
+        confirmVerified(initialStateView)
+    }
+
+    protected fun `Then verify initial state view do nothing behavior`() {
+        confirmVerified(initialStateView)
+    }
+
+    protected fun `Given refresh popular search API will return data`(list: List<InitialStateData>) {
+        every { refreshInitialStateUseCase.execute(any(), any()) }.answers {
+            secondArg<Subscriber<List<InitialStateData>>>().onStart()
+            secondArg<Subscriber<List<InitialStateData>>>().onNext(list)
+        }
+    }
+
+    protected fun `Then verify popularSearch API is called`() {
+        verify { refreshInitialStateUseCase.execute(any(), any()) }
+    }
+
+    protected fun `Then verify refreshPopularSearch view behavior`() {
+        verifyOrder {
+            initialStateView.onRecentViewImpressed(capture(slotRecentViewItemList))
+            initialStateView.onRecentSearchImpressed(capture(slotRecentSearchItemList))
+            initialStateView.onPopularSearchImpressed(capture(slotPopularSearchItemList))
+
+            //This showInitialStateResult is called the first time it loads initial state data
+            initialStateView.showInitialStateResult(capture(slotVisitableList))
+
+            //This showInitialStateResult is called when refresh popular search is clicked
+            initialStateView.showInitialStateResult(capture(slotRefreshVisitableList))
+        }
+    }
+
+    protected fun `Then verify refreshPopularSearch view behavior with no new refreshed data`() {
+        verify(exactly = 1) {
+            //This showInitialStateResult is only called once when it loads initial state data
+            initialStateView.showInitialStateResult(capture(slotVisitableList))
+        }
     }
 }

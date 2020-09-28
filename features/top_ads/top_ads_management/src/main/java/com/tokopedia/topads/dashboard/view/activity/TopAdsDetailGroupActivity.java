@@ -8,11 +8,15 @@ import androidx.fragment.app.Fragment;
 import androidx.appcompat.widget.Toolbar;
 import android.view.View;
 
-import com.tokopedia.core.base.di.component.HasComponent;
-import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
+import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.topads.R;
 import com.tokopedia.topads.TopAdsComponentInstance;
+import com.tokopedia.topads.TopAdsModuleRouter;
 import com.tokopedia.topads.common.util.TopAdsComponentUtils;
+import com.tokopedia.topads.common.view.activity.TopAdsBaseActivity;
 import com.tokopedia.topads.common.view.listener.OneUseGlobalLayoutListener;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
@@ -27,8 +31,8 @@ import com.tokopedia.showcase.ShowCasePreference;
 
 import java.util.ArrayList;
 
-public class TopAdsDetailGroupActivity extends BaseSimpleActivity
-        implements TopAdsDetailGroupFragment.OnTopAdsDetailGroupListener, HasComponent<TopAdsComponent> {
+public class TopAdsDetailGroupActivity extends TopAdsBaseActivity
+        implements TopAdsDetailGroupFragment.OnTopAdsDetailGroupListener, HasComponent<BaseAppComponent> {
 
     private ShowCaseDialog showCaseDialog;
 
@@ -151,12 +155,7 @@ public class TopAdsDetailGroupActivity extends BaseSimpleActivity
     }
 
     @Override
-    protected boolean isToolbarWhite() {
-        return true;
-    }
-
-    @Override
-    public TopAdsComponent getComponent() {
-        return TopAdsComponentInstance.getComponent(getApplication());
+    public BaseAppComponent getComponent() {
+        return ((BaseMainApplication)getApplication()).getBaseAppComponent();
     }
 }

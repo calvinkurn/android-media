@@ -142,7 +142,7 @@ public class OrderListActivity extends BaseSimpleActivity
                 .putExtras(bundle);
     }
 
-    @DeepLink({ApplinkConst.MARKETPLACE_ORDER, ApplinkConst.MARKETPLACE_ORDER_FILTER})
+    @DeepLink({ApplinkConst.BELANJA_ORDER, ApplinkConst.MARKETPLACE_ORDER_FILTER})
     public static Intent getMarketPlaceOrderListIntent(Context context, Bundle bundle) {
         Uri.Builder uri = Uri.parse(bundle.getString(DeepLink.URI)).buildUpon();
         bundle.putString(ORDER_CATEGORY, OrderCategory.MARKETPLACE);
@@ -196,7 +196,7 @@ public class OrderListActivity extends BaseSimpleActivity
         if (!userSession.isLoggedIn()) {
             startActivityForResult(RouteManager.getIntent(this, ApplinkConst.LOGIN), REQUEST_CODE);
         } else {
-            getInitialData();
+            getInitialData(orderCategory);
             presenter.getTickerInfo();
         }
 
@@ -226,7 +226,8 @@ public class OrderListActivity extends BaseSimpleActivity
     }
 
     @Override
-    public void renderTabs(List<OrderLabelList> orderLabelList) {
+    public void renderTabs(List<OrderLabelList> orderLabelList, String orderCategory) {
+        tabLayout.removeAllTabs();
         int position = 0;
         for (int i = 0; i < orderLabelList.size(); i++) {
             if (orderCategory.equals(orderLabelList.get(i).getOrderCategory())) {
@@ -321,7 +322,7 @@ public class OrderListActivity extends BaseSimpleActivity
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
-                getInitialData();
+                getInitialData(orderCategory);
             } else {
                 finish();
             }
@@ -335,7 +336,7 @@ public class OrderListActivity extends BaseSimpleActivity
         super.onDestroy();
     }
 
-    public void getInitialData() {
-        presenter.getInitData();
+    public void getInitialData(String orderCategory) {
+        presenter.getInitData(orderCategory);
     }
 }

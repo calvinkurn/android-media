@@ -2,26 +2,58 @@ package com.tokopedia.topchat.chatroom.view.adapter.viewholder
 
 import android.view.Gravity
 import android.view.View
-import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.annotation.LayoutRes
 import com.tokopedia.chat_common.view.adapter.viewholder.BaseChatViewHolder
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.merchantvoucher.common.widget.MerchantVoucherView
 import com.tokopedia.topchat.R
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.getStrokeWidthSenderDimenRes
 import com.tokopedia.topchat.chatroom.view.listener.TopChatVoucherListener
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatVoucherUiModel
+import com.tokopedia.topchat.common.util.ViewUtil
 
 /**
  * Created by Steven on 18/03/19.
  */
-class TopChatVoucherViewHolder(itemView: View, private var voucherListener: TopChatVoucherListener)
-    : BaseChatViewHolder<TopChatVoucherUiModel>(itemView), MerchantVoucherView.OnMerchantVoucherViewListener {
+class TopChatVoucherViewHolder(
+        itemView: View,
+        private var voucherListener: TopChatVoucherListener
+) : BaseChatViewHolder<TopChatVoucherUiModel>(itemView), MerchantVoucherView.OnMerchantVoucherViewListener {
 
-    private var chatStatus: ImageView = itemView.findViewById(com.tokopedia.chat_common.R.id.chat_status)
     private var isOwner: Boolean = false
     private lateinit var model: TopChatVoucherUiModel
     private var merchantVoucherView: MerchantVoucherView? = itemView.findViewById(R.id.merchantVoucherView)
+    private var voucherContainer: LinearLayout? = itemView.findViewById(R.id.topchat_voucher_container)
+
+    private val bgOpposite = ViewUtil.generateBackgroundWithShadow(
+            merchantVoucherView,
+            com.tokopedia.unifyprinciples.R.color.Neutral_N0,
+            R.dimen.dp_topchat_0,
+            R.dimen.dp_topchat_0,
+            R.dimen.dp_topchat_0,
+            R.dimen.dp_topchat_0,
+            R.color.topchat_message_shadow,
+            R.dimen.dp_topchat_2,
+            R.dimen.dp_topchat_1,
+            Gravity.CENTER,
+            com.tokopedia.unifyprinciples.R.color.Neutral_N0,
+            getStrokeWidthSenderDimenRes()
+    )
+    private val bgSender = ViewUtil.generateBackgroundWithShadow(
+            merchantVoucherView,
+            R.color.bg_topchat_right_message,
+            R.dimen.dp_topchat_0,
+            R.dimen.dp_topchat_0,
+            R.dimen.dp_topchat_0,
+            R.dimen.dp_topchat_0,
+            R.color.topchat_message_shadow,
+            R.dimen.dp_topchat_2,
+            R.dimen.dp_topchat_1,
+            Gravity.CENTER,
+            R.color.bg_topchat_right_message,
+            getStrokeWidthSenderDimenRes()
+    )
 
     override fun bind(viewModel: TopChatVoucherUiModel) {
         super.bind(viewModel)
@@ -34,7 +66,18 @@ class TopChatVoucherViewHolder(itemView: View, private var voucherListener: TopC
         setupChatBubbleAlignment(isOwner, viewModel)
 
         itemView.setOnClickListener {
+            data.isPublic = !viewModel.hasCtaCopy()
             voucherListener.onVoucherClicked(data)
+        }
+
+        bindBackground(viewModel)
+    }
+
+    private fun bindBackground(viewModel: TopChatVoucherUiModel) {
+        if (viewModel.isSender) {
+            merchantVoucherView?.background = bgSender
+        } else {
+            merchantVoucherView?.background = bgOpposite
         }
     }
 
@@ -43,32 +86,20 @@ class TopChatVoucherViewHolder(itemView: View, private var voucherListener: TopC
         merchantVoucherView?.setData(data, false)
     }
 
-    override fun alwaysShowTime(): Boolean {
-        return true
-    }
-
-    override fun getDateId(): Int {
-        return R.id.tvDate
-    }
-
     private fun setupChatBubbleAlignment(isSender: Boolean, element: TopChatVoucherUiModel) {
         if (isSender) {
             setChatRight(element)
-            bindChatReadStatus(element)
         } else {
             setChatLeft()
         }
     }
 
     private fun setChatLeft() {
-        itemView.findViewById<LinearLayout>(R.id.topchat_voucher_container).gravity = Gravity.START
-        chatStatus.visibility = View.GONE
+        voucherContainer?.gravity = Gravity.START
     }
 
     private fun setChatRight(element: TopChatVoucherUiModel) {
-        itemView.findViewById<LinearLayout>(R.id.topchat_voucher_container).gravity = Gravity.END
-        chatStatus.visibility = View.VISIBLE
-        bindChatReadStatus(element)
+        voucherContainer?.gravity = Gravity.END
     }
 
     override fun isOwner(): Boolean {

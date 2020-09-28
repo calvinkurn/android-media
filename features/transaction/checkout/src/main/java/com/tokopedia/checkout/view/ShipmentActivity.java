@@ -17,8 +17,6 @@ import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.E
 
 public class ShipmentActivity extends BaseCheckoutActivity {
 
-    public static final String EXTRA_PROMO_CODE_COUPON_DEFAULT_SELECTED_TAB = "EXTRA_PROMO_CODE_COUPON_DEFAULT_SELECTED_TAB";
-
     private CheckoutAnalyticsCourierSelection checkoutAnalyticsCourierSelection;
     private ShipmentFragment shipmentFragment;
 

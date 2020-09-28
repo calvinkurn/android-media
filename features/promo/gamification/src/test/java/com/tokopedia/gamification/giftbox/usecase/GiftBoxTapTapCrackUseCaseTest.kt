@@ -43,11 +43,10 @@ class GiftBoxTapTapCrackUseCaseTest {
     @Test
     fun `check query params`() {
         val param1 = "124"
-        val param2 = "234"
+        val param2 = 234L
         val map = giftBoxTapTapCrackUseCase.getQueryParams(param1, param2)
         Assert.assertEquals(map[GamificationConstants.GraphQlVariableKeys.TOKEN_ID], param1)
         Assert.assertEquals(map[GamificationConstants.GraphQlVariableKeys.CAMPAIGN_ID], param2)
 
     }
-
 }

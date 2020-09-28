@@ -14,31 +14,31 @@ class BrandlistSearchAdapterTypeFactory(
         private val searchListener: BrandlistSearchRecommendationNotFoundViewHolder.Listener
 ) : BaseAdapterTypeFactory(), BrandlistSearchTypeFactory {
 
-    override fun type(brandlistSearchResultViewModel: BrandlistSearchResultViewModel): Int {
+    override fun type(brandlistSearchResultUiModel: BrandlistSearchResultUiModel): Int {
         return BrandlistSearchResultViewHolder.LAYOUT
     }
 
-    override fun type(brandlistSearchRecommendationViewModel: BrandlistSearchRecommendationViewModel): Int {
+    override fun type(brandlistSearchRecommendationUiModel: BrandlistSearchRecommendationUiModel): Int {
         return BrandlistSearchRecommendationViewHolder.LAYOUT
     }
 
-    override fun type(brandlistSearchNotFoundViewModel: BrandlistSearchNotFoundViewModel): Int {
+    override fun type(brandlistSearchNotFoundUiModel: BrandlistSearchNotFoundUiModel): Int {
         return BrandlistSearchNotFoundViewHolder.LAYOUT
     }
 
-    override fun type(brandlistSearchHeaderViewModel: BrandlistSearchHeaderViewModel): Int {
+    override fun type(brandlistSearchHeaderUiModel: BrandlistSearchHeaderUiModel): Int {
         return BrandlistSearchHeaderViewHolder.LAYOUT
     }
 
-    override fun type(brandlistSearchShimmeringViewModel: BrandlistSearchShimmeringViewModel): Int {
+    override fun type(brandlistSearchShimmeringUiModel: BrandlistSearchShimmeringUiModel): Int {
         return BrandlistSearchShimmeringViewHolder.LAYOUT
     }
 
-    override fun type(brandlistSearchAllBrandGroupHeaderViewModel: BrandlistSearchAllBrandGroupHeaderViewModel): Int {
+    override fun type(brandlistSearchAllBrandGroupHeaderUiModel: BrandlistSearchAllBrandGroupHeaderUiModel): Int {
         return BrandlistSearchGroupHeaderViewHolder.LAYOUT
     }
 
-    override fun type(brandlistSearchRecommendationNotFoundViewModel: BrandlistSearchRecommendationNotFoundViewModel): Int {
+    override fun type(brandlistSearchRecommendationNotFoundUiModel: BrandlistSearchRecommendationNotFoundUiModel): Int {
         return BrandlistSearchRecommendationNotFoundViewHolder.LAYOUT
     }
 

@@ -3,6 +3,7 @@ package com.tokopedia.product.addedit.tracking
 import com.tokopedia.product.addedit.tracking.ProductAddEditTracking.CAT_EDIT_PRODUCT_PAGE
 import com.tokopedia.product.addedit.tracking.ProductAddEditTracking.EVENT_CLICK_EDIT_PRODUCT
 import com.tokopedia.product.addedit.tracking.ProductAddEditTracking.KEY_SHOP_ID
+import com.tokopedia.product.addedit.tracking.ProductAddEditTracking.sendEditProductImpression
 
 
 object ProductEditStepperTracking {
@@ -62,6 +63,14 @@ object ProductEditStepperTracking {
 
     fun trackFinishButton(shopId: String) {
         sendEditProductClick(shopId, "click finish on stepper page")
+    }
+
+    fun trackDragPhoto(shopId: String) {
+        sendEditProductClick(shopId, "click drag product image")
+    }
+
+    fun oopsConnectionPageScreen(userId: String, serverStatus: String, errorName: String) {
+        sendEditProductImpression(userId, "impression add product error", "server error - $serverStatus - $errorName")
     }
 
     fun trackFinishService(shopId: String, isSuccess: Boolean) {

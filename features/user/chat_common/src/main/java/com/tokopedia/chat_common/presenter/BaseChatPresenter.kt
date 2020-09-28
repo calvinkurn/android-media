@@ -32,9 +32,15 @@ abstract class BaseChatPresenter<T : BaseChatContract.View> constructor(
         if (pojo.msgId.toString() != messageId) return
 
         when (webSocketResponse.code) {
-            EVENT_TOPCHAT_TYPING -> view.onReceiveStartTypingEvent()
-            EVENT_TOPCHAT_END_TYPING -> view.onReceiveStopTypingEvent()
-            EVENT_TOPCHAT_READ_MESSAGE -> view.onReceiveReadEvent()
+            EVENT_TOPCHAT_TYPING -> {
+                view.onReceiveStartTypingEvent()
+            }
+            EVENT_TOPCHAT_END_TYPING -> {
+                view.onReceiveStopTypingEvent()
+            }
+            EVENT_TOPCHAT_READ_MESSAGE -> {
+                view.onReceiveReadEvent()
+            }
             EVENT_TOPCHAT_REPLY_MESSAGE -> {
                 view.onReceiveMessageEvent(mapToVisitable(pojo))
             }
@@ -66,7 +72,7 @@ abstract class BaseChatPresenter<T : BaseChatContract.View> constructor(
         }
     }
 
-    protected fun isValidReply(message: String) = message.isNotBlank()
+    fun isValidReply(message: String) = message.isNotBlank()
 
     abstract fun sendMessageWithWebsocket(messageId: String, sendMessage: String, startTime: String, opponentId: String)
 

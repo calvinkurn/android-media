@@ -92,23 +92,6 @@ public class FileUtils {
     }
 
     /**
-     * compress the bitmap, then write to Tkpd Cache Directory
-     * The file represents the copy of the original bitmap and can be deleted/modified
-     * without changing the original image
-     */
-    public static File writeImageToTkpdPath(Bitmap bitmap) {
-        if (bitmap != null) {
-            ByteArrayOutputStream bao = new ByteArrayOutputStream();
-            byte[] bytes;
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, bao);
-            bytes = bao.toByteArray();
-            return writeImageToTkpdPath(bytes);
-        } else {
-            return null;
-        }
-    }
-
-    /**
      * copy the bitmap (might from gallery or camera path) to Tkpd Cache Directory
      * The file represents the copy of the original bitmap and can be deleted/modified
      * without changing the original image
@@ -117,28 +100,6 @@ public class FileUtils {
         return writeImageToTkpdPath(convertLocalImagePathToBytes(galleryOrCameraPath, DEF_WIDTH_CMPR,
                 DEF_WIDTH_CMPR, DEF_QLTY_COMPRESS));
     }
-    public static File writeImageToTkpdPath(String galleryOrCameraPath,  int compressionQuality) {
-        return writeImageToTkpdPath(convertLocalImagePathToBytes(galleryOrCameraPath, DEF_WIDTH_CMPR,
-                DEF_WIDTH_CMPR, compressionQuality));
-    }
-
-    /**
-     * copy the inputstream to Tkpd Cache Directory
-     * The file represents the copy of the original bitmap and can be deleted/modified
-     * without changing the original image
-     */
-    public static File writeImageToTkpdPath(InputStream source) {
-        String fileName = generateUniqueFileName();
-        File photo = getTkpdImageCacheFile(fileName);
-
-        if (photo.exists()) {
-            photo.delete();
-        }
-        if (writeStreamToFile(source, photo)) {
-            return photo;
-        }
-        return null;
-    }
 
     private static boolean writeBufferToFile(byte[] buffer, String path) {
         try {
@@ -146,27 +107,6 @@ public class FileUtils {
 
             fos.write(buffer);
             fos.close();
-            return true;
-        } catch (java.io.IOException e) {
-            return false;
-        }
-
-    }
-
-    private static boolean writeStreamToFile(InputStream source, File file) {
-        OutputStream outStream;
-        try {
-            outStream = new FileOutputStream(file);
-
-            byte[] buffer = new byte[1024];
-
-            int length;
-            //copy the file content in bytes
-            while ((length = source.read(buffer)) > 0) {
-                outStream.write(buffer, 0, length);
-            }
-            source.close();
-            outStream.close();
             return true;
         } catch (java.io.IOException e) {
             return false;

@@ -35,11 +35,13 @@ class TravelContactArrayAdapter(@get:JvmName("getContext_") val context: Context
         notifyDataSetChanged()
     }
 
-    override fun getView(position: Int, convertView: View?, parent: ViewGroup): View? {
-        var view = convertView
-        if (view == null) {
+    override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+        val view: View
+        if (convertView == null) {
             val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
             view = inflater.inflate(textViewResourceId, null)
+        } else {
+            view = convertView
         }
         val contact = getItem(position)
         if (contact != null) {

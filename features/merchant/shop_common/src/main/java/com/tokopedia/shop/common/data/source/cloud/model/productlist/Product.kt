@@ -11,6 +11,8 @@ data class Product(
     val price: Price?,
     @SerializedName("stock")
     val stock: Int?,
+    @SerializedName("hasStockReserved")
+    val hasStockReserved: Boolean = false,
     @SerializedName("status")
     val status: ProductStatus?,
     @SerializedName("cashback")
@@ -24,5 +26,16 @@ data class Product(
     @SerializedName("sku")
     val sku: String?,
     @SerializedName("pictures")
-    val pictures: List<Picture>?
-)
+    val pictures: List<Picture>?,
+    @SerializedName("topads")
+    val topAds: ProductTopAds?
+) {
+
+    fun isTopAds(): Boolean {
+        return topAds != null && topAds.isApplied()
+    }
+
+    fun isAutoAds(): Boolean {
+        return topAds != null && topAds.isAutoAds()
+    }
+}

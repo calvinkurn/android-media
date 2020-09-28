@@ -15,6 +15,7 @@ import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.iris.util.IrisSession;
 import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics;
 import com.tokopedia.loginregister.common.analytics.RegisterAnalytics;
+import com.tokopedia.loginregister.common.analytics.SeamlessLoginAnalytics;
 import com.tokopedia.loginregister.common.data.LoginRegisterApi;
 import com.tokopedia.loginregister.common.data.LoginRegisterUrl;
 import com.tokopedia.network.interceptor.DebugInterceptor;
@@ -54,6 +55,12 @@ public class LoginRegisterModule {
     @Provides
     RegisterAnalytics provideRegisterAnalytics() {
         return new RegisterAnalytics();
+    }
+
+    @LoginRegisterScope
+    @Provides
+    SeamlessLoginAnalytics provideSeamlessAnalytics() {
+        return new SeamlessLoginAnalytics();
     }
 
     @LoginRegisterScope

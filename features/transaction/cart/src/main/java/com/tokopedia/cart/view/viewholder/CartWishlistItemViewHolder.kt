@@ -7,7 +7,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.cart.R
 import com.tokopedia.cart.view.ActionListener
 import com.tokopedia.cart.view.uimodel.CartWishlistItemHolderData
-import kotlinx.android.synthetic.main.item_cart_recent_view_item.view.*
+import kotlinx.android.synthetic.main.item_product_cart_additional.view.*
 
 /**
  * Created by Irfan Khoirul on 2019-06-15.
@@ -16,7 +16,7 @@ import kotlinx.android.synthetic.main.item_cart_recent_view_item.view.*
 class CartWishlistItemViewHolder(val view: View, val actionListener: ActionListener?, val itemWidth: Int) : RecyclerView.ViewHolder(view) {
 
     companion object {
-        val LAYOUT = R.layout.item_cart_wishlist_item
+        val LAYOUT = R.layout.item_product_cart_additional
     }
 
     fun bind(element: CartWishlistItemHolderData) {

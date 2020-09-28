@@ -9,7 +9,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.search.R
 import com.tokopedia.search.result.presentation.model.InspirationCarouselViewModel
-import com.tokopedia.search.result.presentation.view.adapter.InspirationCarouselProductAdapter
+import com.tokopedia.search.result.presentation.view.adapter.InspirationCarouselOptionAdapter
+import com.tokopedia.search.result.presentation.view.adapter.InspirationCarouselOptionAdapterTypeFactory
 import com.tokopedia.search.result.presentation.view.listener.InspirationCarouselListener
 import com.tokopedia.search.utils.getHorizontalShadowOffset
 import com.tokopedia.search.utils.getVerticalShadowOffset
@@ -27,15 +28,8 @@ class InspirationCarouselViewHolder(
     }
 
     override fun bind(element: InspirationCarouselViewModel) {
-        setBackgroundRandom()
-
         bindTitle(element)
         bindContent(element)
-    }
-
-    private fun setBackgroundRandom() {
-        val backgroundIndex = intArrayOf(0, 1, 2, 3).indices.shuffled().first()
-        itemView.inspirationCarousel?.setContainerColor(backgroundIndex)
     }
 
     private fun bindTitle(element: InspirationCarouselViewModel) {
@@ -58,20 +52,30 @@ class InspirationCarouselViewHolder(
     }
 
     private fun createAdapter(
-            inspirationCarouselProductList: List<InspirationCarouselViewModel.Option>
-    ): RecyclerView.Adapter<InspirationCarouselProductViewHolder> {
-        val inspirationCarouselProductAdapter = InspirationCarouselProductAdapter(inspirationCarouselListener)
-        inspirationCarouselProductAdapter.setItemList(inspirationCarouselProductList)
+            inspirationCarouselOptionList: List<InspirationCarouselViewModel.Option>
+    ): RecyclerView.Adapter<AbstractViewHolder<*>> {
+        val typeFactory = InspirationCarouselOptionAdapterTypeFactory(inspirationCarouselListener)
+        val inspirationCarouselProductAdapter = InspirationCarouselOptionAdapter(typeFactory)
+        inspirationCarouselProductAdapter.clearData()
+        inspirationCarouselProductAdapter.addAll(inspirationCarouselOptionList)
 
         return inspirationCarouselProductAdapter
     }
 
     private fun createItemDecoration(): RecyclerView.ItemDecoration {
-        return InspirationCarouselItemDecoration(itemView.context?.resources?.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16) ?: 0)
+        return InspirationCarouselItemDecoration(
+                itemView.context?.resources?.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16) ?: 0,
+                itemView.context?.resources?.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_12) ?: 0,
+                itemView.context?.resources?.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16) ?: 0,
+                itemView.context?.resources?.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16) ?: 0
+        )
     }
 
     private class InspirationCarouselItemDecoration(
-            private val margin: Int
+            private val left: Int,
+            private val top: Int,
+            private val right: Int,
+            private val bottom: Int
     ): RecyclerView.ItemDecoration() {
 
         private var cardViewHorizontalOffset = 0
@@ -98,26 +102,26 @@ class InspirationCarouselViewHolder(
 
         private fun getLeftOffset(cardView: CardView, parent: RecyclerView): Int {
             return if (parent.getChildAdapterPosition(cardView) == 0) {
-                margin - (cardViewHorizontalOffset / 2)
+                left - (cardViewHorizontalOffset / 2)
             } else {
-                (margin / 4) - (cardViewHorizontalOffset / 2)
+                (left / 4) - (cardViewHorizontalOffset / 2)
             }
         }
 
         private fun getTopOffset(): Int {
-            return margin - cardViewVerticalOffset
+            return top - cardViewVerticalOffset
         }
 
         private fun getRightOffset(cardView: CardView, parent: RecyclerView): Int {
             return if (parent.getChildAdapterPosition(cardView) == (parent.adapter?.itemCount ?: 0) - 1) {
-                margin - (cardViewHorizontalOffset / 2)
+                right - (cardViewHorizontalOffset / 2)
             } else {
-                (margin / 4) - (cardViewHorizontalOffset / 2)
+                (right / 4) - (cardViewHorizontalOffset / 2)
             }
         }
 
         private fun getBottomOffset(): Int {
-            return margin - (cardViewVerticalOffset / 2)
+            return bottom - (cardViewVerticalOffset / 2)
         }
     }
 }

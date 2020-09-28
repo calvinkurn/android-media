@@ -20,7 +20,7 @@ import rx.Observable;
 public class FlightCancellationReasonDataCacheSource {
 
     private static long FLIGHT_CANCELLATION_REASON_CACHE_TIMEOUT = TimeUnit.DAYS.toSeconds(10);
-    private static String FLIGHT_CANCELLATION_REASON_CACHE_KEY = "FLIGHT_CANCELLATION_REASON_CACHE";
+    private static String FLIGHT_CANCELLATION_REASON_CACHE_KEY = "FLIGHT_CANCELLATION_REASON_CACHE_KEY";
 
     @Inject
     public FlightCancellationReasonDataCacheSource() {

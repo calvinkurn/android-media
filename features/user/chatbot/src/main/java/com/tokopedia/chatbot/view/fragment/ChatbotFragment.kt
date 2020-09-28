@@ -90,6 +90,7 @@ private const val ACTION_THUMBS_DOWN_REASON_BUTTON_CLICKED = "click thumbs down 
 private const val ACTION_IMPRESSION_CSAT_SMILEY_VIEW = "impression csat smiley form"
 private const val ACTION_IMPRESSION_WELCOME_MESSAGE = "impression welcome message"
 private const val WELCOME_MESSAGE_VALIDATION = "dengan Toped di sini"
+private const val FIRST_PAGE = 1
 class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         AttachedInvoiceSelectionListener, QuickReplyListener,
         ChatActionListBubbleListener, ChatRatingListener, TypingListener, View.OnClickListener {
@@ -563,6 +564,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     }
 
     override fun onChatActionBalloonSelected(selected: ChatActionBubbleViewModel, model: ChatActionSelectionBubbleViewModel) {
+        getViewState().hideActionBubble(model)
         chatbotAnalytics.eventClick(ACTION_ACTION_BUBBLE_CLICKED)
         presenter.sendActionBubble(messageId, selected, SendableViewModel.generateStartTime(), opponentId)
     }
@@ -614,7 +616,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
             val uri = Uri.parse(url)
             if (uri?.scheme != null) {
                 val isTargetDomainTokopedia = uri.host != null
-                        && uri.host.endsWith("tokopedia.com")
+                        && uri.host!!.endsWith("tokopedia.com")
                 val isTargetTkpMeAndNotRedirect = TextUtils.equals(uri.host, BASE_DOMAIN_SHORTENED)
                         && !TextUtils.equals(uri.encodedPath, "/r")
                 val isNeedAuthToken = isTargetDomainTokopedia || isTargetTkpMeAndNotRedirect
@@ -670,7 +672,9 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         return object : EndlessRecyclerViewScrollUpListener(getRecyclerView(view).layoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
                 showLoading()
-                loadData(page)
+                if (page != FIRST_PAGE) {
+                    loadData(page)
+                }
             }
         }
     }

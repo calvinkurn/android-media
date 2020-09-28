@@ -18,7 +18,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseActivity;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.applink.ApplinkConst;
-import com.tokopedia.design.component.ticker.TouchViewPager2;
+import com.tokopedia.loyalty.view.widget.TouchViewPager2;
 import com.tokopedia.device.info.DeviceConnectionInfo;
 import com.tokopedia.globalerror.GlobalError;
 import com.tokopedia.loyalty.R;

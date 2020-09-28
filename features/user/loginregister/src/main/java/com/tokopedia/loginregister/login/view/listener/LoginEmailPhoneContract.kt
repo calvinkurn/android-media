@@ -54,6 +54,8 @@ interface LoginEmailPhoneContract {
 
         fun stopTrace()
 
+        fun setLoginSuccessSellerApp()
+
         fun onErrorLoginEmail(email: String): Function1<Throwable, Unit>
 
         fun onErrorReloginAfterSQ(validateToken: String): Function1<Throwable, Unit>
@@ -69,10 +71,6 @@ interface LoginEmailPhoneContract {
         fun onSuccessGetUserInfo(): Function1<ProfilePojo, Unit>
 
         fun onErrorGetUserInfo(): Function1<Throwable, Unit>
-
-        fun onSuccessGetUserInfoAddPin(): Function1<ProfilePojo, Unit>
-
-        fun onGoToCreatePassword(): Function2<String, String, Unit>
 
         fun onGoToActivationPage(email: String): Function1<MessageErrorException, Unit>
 
@@ -125,8 +123,6 @@ interface LoginEmailPhoneContract {
         fun getFacebookCredential(fragment: Fragment, callbackManager: CallbackManager)
 
         fun getUserInfo()
-
-        fun getUserInfoAddPin()
 
         fun getUserInfoFingerprint()
 

@@ -16,10 +16,13 @@ class GetDetailCouponMarketplaceUseCase(val resources: Resources)
 
     val ONE_CLICK_SHIPMENT = "oneClickShipment"
     val INPUT_CODE = "code"
+    val API_VERSION= "apiVersion"
 
     override fun execute(requestParams: RequestParams?, subscriber: Subscriber<GraphqlResponse>?) {
         val variables = HashMap<String, Any>()
         variables[INPUT_CODE] = requestParams?.getString(INPUT_CODE, "") ?: ""
+        variables[API_VERSION] = "2.0.0"
+
         val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(resources,
                 R.raw.promo_checkout_detail_marketplace), DataPromoCheckoutDetail::class.java, variables)
         clearRequest()

@@ -1,12 +1,12 @@
 package com.tokopedia.createpost.domain.usecase
 
 import android.content.Context
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.affiliatecommon.analytics.CheckQuotaQuery
 import com.tokopedia.createpost.TYPE_AFFILIATE
-import com.tokopedia.createpost.createpost.R
 import com.tokopedia.createpost.data.pojo.getcontentform.FeedContentResponse
+import com.tokopedia.createpost.data.raw.GQL_QUERY_CONTENT_FORM
+import com.tokopedia.createpost.di.ActivityContext
 import com.tokopedia.createpost.domain.entity.GetContentFormDomain
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
@@ -19,23 +19,20 @@ import javax.inject.Inject
  * @author by milhamj on 9/26/18.
  */
 class GetContentFormUseCase @Inject internal constructor(
-        @ApplicationContext private val context: Context,
-        private val graphqlUseCase: GraphqlUseCase): UseCase<GetContentFormDomain>() {
+        @ActivityContext private val context: Context,
+        private val graphqlUseCase: GraphqlUseCase) : UseCase<GetContentFormDomain>() {
 
     override fun createObservable(requestParams: RequestParams): Observable<GetContentFormDomain> {
         graphqlUseCase.clearRequest()
 
-        val query = GraphqlHelper.loadRawString(
-                context.resources,
-                R.raw.query_af_content_form
-        )
+        val query = GQL_QUERY_CONTENT_FORM
         val request = GraphqlRequest(query, FeedContentResponse::class.java, requestParams.parameters)
         graphqlUseCase.addRequest(request)
 
         if (requestParams.getString(PARAM_TYPE, "") == TYPE_AFFILIATE) {
             val queryQouta = GraphqlHelper.loadRawString(
                     context.resources,
-                    R.raw.query_af_quota
+                    com.tokopedia.affiliatecommon.R.raw.query_af_quota
             )
             val requestQouta = GraphqlRequest(queryQouta, CheckQuotaQuery::class.java, false)
             graphqlUseCase.addRequest(requestQouta)

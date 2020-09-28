@@ -21,7 +21,10 @@ data class TelcoCatalogProductInput(
         val enquiryFields: List<TelcoCatalogEnquiryFields> = listOf(),
         @SerializedName("product")
         @Expose
-        val product: TelcoCatalogProduct = TelcoCatalogProduct())
+        val product: TelcoCatalogProduct = TelcoCatalogProduct(),
+        @SerializedName("filterTagComponents")
+        @Expose
+        val filterTagComponents: List<TelcoFilterTagComponent> = mutableListOf())
 
 data class TelcoCatalogEnquiryFields(
         @SerializedName("id")

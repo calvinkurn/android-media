@@ -1,0 +1,238 @@
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/card_dynamic_action"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toBottomOf="parent">
+
+    <LinearLayout
+        android:id="@+id/holder_tokopoint"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@color/transparent"
+        android:clickable="true"
+        android:focusable="true"
+        android:orientation="vertical"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/card_dynamic_action"
+        app:layout_constraintEnd_toStartOf="@+id/holder_coupon"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintStart_toStartOf="@id/card_dynamic_action"
+        app:layout_constraintTop_toTopOf="@+id/card_dynamic_action"
+        tools:visibility="visible">
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center">
+
+            <ImageView
+                android:id="@+id/image_tokopoint"
+                android:layout_width="@dimen/dp_32"
+                android:layout_height="@dimen/dp_32"
+                android:layout_gravity="center"
+                android:clickable="false"
+                android:focusable="false"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:layout_editor_absoluteX="45dp" />
+
+            <com.tokopedia.unifycomponents.NotificationUnify
+                android:id="@+id/notif_tokopoint"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@id/image_tokopoint"
+                android:layout_alignEnd="@id/image_tokopoint"
+                android:layout_alignRight="@id/image_tokopoint"
+                android:gravity="center"
+                android:textSize="@dimen/tp_text_size_xxsmall"
+                android:visibility="gone"
+                app:notificationColor="color_primary"
+                app:notificationTitle="3"
+                app:notificationType="text_type" />
+        </RelativeLayout>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/label_tokopoint1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:clickable="false"
+            android:focusable="false"
+            android:lineSpacingExtra="2sp"
+            android:lines="1"
+            android:textColor="@color/tp_textcolor_dynamic_action"
+            android:translationY="-1.03sp"
+            app:layout_constraintEnd_toEndOf="@+id/image_tokopoint"
+            app:layout_constraintStart_toStartOf="@+id/image_tokopoint"
+            app:layout_constraintTop_toBottomOf="@+id/image_tokopoint"
+            app:typographyType="body_3"
+            tools:text="Tokopoint" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/holder_coupon"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@color/transparent"
+        android:clickable="true"
+        android:focusable="true"
+        android:orientation="vertical"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/card_dynamic_action"
+        app:layout_constraintEnd_toStartOf="@+id/holder_tokomember"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintStart_toEndOf="@+id/holder_tokopoint"
+        app:layout_constraintTop_toTopOf="@+id/card_dynamic_action"
+        tools:visibility="visible">
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center">
+
+            <ImageView
+                android:id="@+id/image_voucher"
+                android:layout_width="@dimen/dp_32"
+                android:layout_height="@dimen/dp_32"
+                android:layout_gravity="center"
+                android:clickable="false"
+                android:focusable="false"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:layout_editor_absoluteX="45dp" />
+
+            <com.tokopedia.unifycomponents.NotificationUnify
+                android:id="@+id/notif_voucher"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@id/image_voucher"
+                android:layout_alignEnd="@id/image_voucher"
+                android:layout_alignRight="@id/image_voucher"
+                android:gravity="center"
+                android:textSize="@dimen/tp_text_size_xxsmall"
+                android:visibility="gone"
+                app:notificationColor="color_primary"
+                app:notificationTitle="3"
+                app:notificationType="text_type" />
+        </RelativeLayout>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/label_voucher"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:clickable="false"
+            android:focusable="false"
+            android:lineSpacingExtra="2sp"
+            android:lines="1"
+            android:textColor="@color/tp_textcolor_dynamic_action"
+            android:translationY="-1.03sp"
+            app:layout_constraintEnd_toEndOf="@+id/image_tokopoint"
+            app:layout_constraintStart_toStartOf="@+id/image_tokopoint"
+            app:layout_constraintTop_toBottomOf="@+id/image_tokopoint"
+            app:typographyType="body_3"
+            tools:text="Voucher" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/holder_tokomember"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@color/transparent"
+        android:clickable="true"
+        android:focusable="true"
+        android:orientation="vertical"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/card_dynamic_action"
+        app:layout_constraintEnd_toEndOf="@+id/card_dynamic_action"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintStart_toEndOf="@+id/holder_coupon"
+        app:layout_constraintTop_toTopOf="@+id/card_dynamic_action"
+        tools:visibility="visible">
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center">
+
+            <ImageView
+                android:id="@+id/image_tokomember"
+                android:layout_width="@dimen/dp_32"
+                android:layout_height="@dimen/dp_32"
+                android:layout_gravity="center"
+                android:clickable="false"
+                android:focusable="false"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:layout_editor_absoluteX="45dp" />
+
+            <com.tokopedia.unifycomponents.NotificationUnify
+                android:id="@+id/notif_tokomember"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@id/image_tokomember"
+                android:layout_alignEnd="@id/image_tokomember"
+                android:layout_alignRight="@id/image_tokomember"
+                android:gravity="center"
+                android:textSize="@dimen/tp_text_size_xxsmall"
+                android:visibility="gone"
+                app:notificationColor="color_primary"
+                app:notificationTitle="3"
+                app:notificationType="text_type" />
+        </RelativeLayout>
+
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/label_tokomember"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:clickable="false"
+            android:focusable="false"
+            android:lineSpacingExtra="2sp"
+            android:lines="1"
+            android:textColor="@color/tp_textcolor_dynamic_action"
+            android:translationY="-1.03sp"
+            app:layout_constraintEnd_toEndOf="@+id/image_tokopoint"
+            app:layout_constraintStart_toStartOf="@+id/image_tokopoint"
+            app:layout_constraintTop_toBottomOf="@+id/image_tokopoint"
+            app:typographyType="body_3"
+            tools:text="Tokomember" />
+    </LinearLayout>
+
+    <View
+        android:id="@+id/divider1"
+        android:layout_width="1dp"
+        android:layout_height="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/dp_16"
+        android:background="@color/grey_300"
+        app:layout_constraintBottom_toBottomOf="@+id/card_dynamic_action"
+        app:layout_constraintEnd_toStartOf="@+id/holder_coupon"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintStart_toEndOf="@+id/holder_tokopoint"
+        app:layout_constraintTop_toTopOf="@+id/card_dynamic_action"
+        tools:layout_editor_absoluteY="0dp" />
+
+    <View
+        android:id="@+id/divider2"
+        android:layout_width="1dp"
+        android:layout_height="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/dp_16"
+        android:background="@color/grey_300"
+        app:layout_constraintBottom_toBottomOf="@+id/card_dynamic_action"
+        app:layout_constraintEnd_toStartOf="@+id/holder_tokomember"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintStart_toEndOf="@+id/holder_coupon"
+        app:layout_constraintTop_toTopOf="@+id/card_dynamic_action"
+        tools:layout_editor_absoluteY="0dp" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -73,7 +73,7 @@ public class OrderListContract {
 
         void setFilterRange(DefaultDate defaultDate, CustomDate customDate);
 
-        void sendATCTrackingUrl(String clickUrl);
+        void sendATCTrackingUrl(String clickUrl, String productId, String productName, String imageUrl);
     }
 
     public interface Presenter extends CustomerPresenter<View> {

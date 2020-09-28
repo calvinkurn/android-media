@@ -8,7 +8,6 @@ import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.domain.model.district_boundary.DistrictBoundaryResponse
-import com.tokopedia.logisticaddaddress.domain.model.district_recommendation.DistrictRecommendationResponse
 import com.tokopedia.usecase.RequestParams
 import rx.Observable
 import javax.inject.Inject
@@ -25,10 +24,10 @@ class DistrictBoundaryUseCase @Inject constructor(@ApplicationContext val contex
         val PARAM_KERO_UT = "#keroUt"
     }
 
-    fun setParams(districtId: Int, keroToken: String, keroUt: Int) {
+    fun setParams(districtId: Int, keroToken: String?, keroUt: Int) {
         queryString = GraphqlHelper.loadRawString(context.resources, R.raw.district_boundary)
         queryString = queryString.replace(PARAM_DISTRICT_ID, districtId.toString(), false)
-        queryString = queryString.replace(PARAM_KERO_TOKEN, keroToken, false)
+        queryString = queryString.replace(PARAM_KERO_TOKEN, keroToken.toString(), false)
         queryString = queryString.replace(PARAM_KERO_UT, keroUt.toString(), false)
     }
 

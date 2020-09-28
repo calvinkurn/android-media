@@ -14,14 +14,15 @@ import com.tokopedia.checkout.view.uimodel.EgoldAttributeModel;
 import com.tokopedia.design.component.Tooltip;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.purchase_platform.common.utils.Utils;
+import com.tokopedia.unifyprinciples.Typography;
 
 public class ShipmentEmasViewHolder extends RecyclerView.ViewHolder {
 
     public static final int ITEM_VIEW_EMAS = R.layout.checkout_holder_item_emas;
 
     private CheckBox buyEmas;
-    private TextView tvEmasTitle;
-    private TextView tvEmasDesc;
+    private Typography tvEmasTitle;
+    private Typography tvEmasDesc;
     private ImageView imgEmasInfo;
     private LinearLayout llContainer;
 

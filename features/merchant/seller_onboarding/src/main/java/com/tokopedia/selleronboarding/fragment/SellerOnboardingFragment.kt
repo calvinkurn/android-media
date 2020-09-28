@@ -20,6 +20,7 @@ import com.tokopedia.selleronboarding.model.SlideUiModel
 import com.tokopedia.selleronboarding.utils.OnboardingLayoutManager
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.fragment_sob_onboarding.view.*
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 
 /**
  * Created By @ilhamsuaib on 13/04/20
@@ -88,7 +89,7 @@ class SellerOnboardingFragment : Fragment() {
 
     private fun openApp() = view?.run {
         sendEventOpenApp()
-        RouteManager.route(context, ApplinkConst.LOGIN)
+        RouteManager.route(context, ApplinkConstInternalGlobal.SEAMLESS_LOGIN)
         activity?.finish()
     }
 

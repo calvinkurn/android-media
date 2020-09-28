@@ -13,7 +13,6 @@ import com.tokopedia.contactus.createticket.listener.CreateTicketFormFragmentVie
 import com.tokopedia.contactus.createticket.model.ContactUsPass;
 import com.tokopedia.contactus.createticket.model.solution.SolutionResult;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -85,7 +84,7 @@ public class CreateTicketFormFragmentPresenterImpl implements CreateTicketFormFr
         pass.setMessageBody(viewListener.getMessage().getText().toString());
         if (!viewListener.getAttachment().isEmpty())
             pass.setAttachment(viewListener.getAttachment());
-        pass.setName(SessionHandler.getLoginName(viewListener.getActivity()));
+        pass.setName(userSession.getName());
         pass.setTag(String.valueOf(viewListener.getArguments().getString(
                 ContactUsActivity.PARAM_TAG)));
         if (viewListener.getPhoneNumber().trim().length() > 0)

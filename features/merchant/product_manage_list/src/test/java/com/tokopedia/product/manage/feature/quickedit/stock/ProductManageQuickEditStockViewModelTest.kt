@@ -1,6 +1,7 @@
 package com.tokopedia.product.manage.feature.quickedit.stock
 
-import com.tokopedia.product.manage.feature.quickedit.stock.presentation.fragment.ProductManageQuickEditStockFragment
+import com.tokopedia.product.manage.feature.quickedit.common.constant.EditProductConstant.MAXIMUM_STOCK
+import com.tokopedia.product.manage.feature.quickedit.common.constant.EditProductConstant.MINIMUM_STOCK
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import junit.framework.TestCase.assertEquals
 import org.junit.Test
@@ -13,7 +14,7 @@ class ProductManageQuickEditStockViewModelTest: ProductManageQuickEditStockViewM
 
         viewModel.updateStock(veryLowStock)
 
-        val expectedStock = ProductManageQuickEditStockFragment.MINIMUM_STOCK
+        val expectedStock = MINIMUM_STOCK
 
         verifyStockEquals(expectedStock)
     }
@@ -24,7 +25,7 @@ class ProductManageQuickEditStockViewModelTest: ProductManageQuickEditStockViewM
 
         viewModel.updateStock(veryHighStock)
 
-        val expectedStock = ProductManageQuickEditStockFragment.MAXIMUM_STOCK
+        val expectedStock = MAXIMUM_STOCK
 
         verifyStockEquals(expectedStock)
     }

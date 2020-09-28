@@ -1,0 +1,16 @@
+<resources>
+    <string name="two_factor_title">Verifikasi 2 Langkah</string>
+  
+    <string name="add_phone_heading">Tambah nomor HP untuk\nkeamanan akunmu</string>
+    <string name="add_phone_body">Demi keamanan akun, tambah nomor HP di akunmu untuk mengaktifkan Verifikasi 2 langkah.</string>
+    <string name="add_phone_button_title">Tambah nomor HP</string>
+
+    <string name="add_pin_heading">Tambah keamanan ekstra\ndengan PIN Tokopedia</string>
+    <string name="add_pin_body">PIN Tokopedia adalah verifikasi 2 langkah untuk meningkatkan keamanan akun.</string>
+    <string name="add_pin_button_title">Buat PIN Tokopedia</string>
+
+    <string name="add_pin_success_heading">PIN Tokopedia kamu berhasil disimpan</string>
+    <string name="add_pin_success_body">Jangan bagikan PIN Tokopedia kamu kepada pihak mana pun.</string>
+    <string name="add_pin_success_button_title">Selesai</string>
+
+</resources>

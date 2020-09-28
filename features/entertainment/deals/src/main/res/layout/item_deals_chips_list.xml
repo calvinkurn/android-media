@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.sortfilter.SortFilter
+        android:id="@+id/sort_filter_deals_category"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginLeft="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:clipToPadding="true"
+        android:visibility="gone"
+        app:sort_filter_relationship="AND"
+        app:sort_filter_type="advanced"
+        tools:visibility="visible" />
+
+    <include
+        android:id="@+id/filter_shimmering"
+        layout="@layout/item_deals_chips_shimmering"
+        tools:visibility="gone" />
+
+</FrameLayout>

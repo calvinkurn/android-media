@@ -12,6 +12,7 @@ import android.widget.TextView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.chat_common.data.*
 import com.tokopedia.chat_common.domain.pojo.attachmentmenu.AttachmentMenu
 import com.tokopedia.chat_common.view.BaseChatViewStateImpl
@@ -92,6 +93,12 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
         updateHeader(chatroomViewModel) {}
         showReplyBox(chatroomViewModel.replyable)
         checkShowQuickReply(chatroomViewModel)
+    }
+
+    override fun loadAvatar(avatarUrl: String) {
+        val avatar = toolbar.findViewById<ImageView>(com.tokopedia.chat_common.R.id.user_avatar)
+        ImageHandler.loadImageCircle2(avatar.context, avatar, avatarUrl,
+                R.drawable.chatbot_avatar)
     }
 
     private fun checkShowQuickReply(chatroomViewModel: ChatroomViewModel) {
@@ -223,6 +230,13 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
 
     override fun showLiveChatQuickReply(quickReplyList: List<QuickReplyViewModel>) {
         showQuickReply(quickReplyList)
+    }
+
+    override fun hideActionBubble(model: ChatActionSelectionBubbleViewModel) {
+        val adapter = getAdapter()
+        if (adapter.list.isNotEmpty() && adapter.list[0] is ChatActionSelectionBubbleViewModel ){
+            adapter.removeElement(model)
+        }
     }
 
     override fun getInterlocutorName(headerName: String): String  = headerName

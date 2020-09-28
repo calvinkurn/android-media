@@ -97,7 +97,7 @@ internal class SearchShopRemoveSelectedFilterOnEmptySearchTest: SearchShopViewMo
     private fun `Given search shop view model with search parameter contains several location filter`() {
         val searchShopParameterWithLocationFilter = mapOf<String, Any>(
                 SearchApiConst.Q to "samsung",
-                SearchApiConst.FCITY to "1,2,3"
+                SearchApiConst.FCITY to "1#2#3"
         )
 
         searchShopViewModel = createSearchShopViewModel(searchShopParameterWithLocationFilter)
@@ -106,7 +106,7 @@ internal class SearchShopRemoveSelectedFilterOnEmptySearchTest: SearchShopViewMo
     private fun `Then Search Parameter should only contain the remaining location filter`() {
         val searchParameter = searchShopViewModel.getSearchParameter()
 
-        val remainingLocationFilter = searchParameter[SearchApiConst.FCITY].toString().split(OptionHelper.VALUE_SEPARATOR)
+        val remainingLocationFilter = searchParameter[SearchApiConst.FCITY].toString().split(OptionHelper.OPTION_SEPARATOR)
 
         remainingLocationFilter shouldNotContain "1"
         remainingLocationFilter shouldContain "2"

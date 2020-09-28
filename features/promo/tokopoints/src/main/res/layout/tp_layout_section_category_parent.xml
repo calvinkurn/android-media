@@ -1,24 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container_dynamic_links"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:visibility="gone"
-    app:layout_constraintTop_toBottomOf="@+id/card_point"
+    android:animateLayoutChanges="true"
+    android:visibility="visible"
     app:layout_scrollFlags="scroll">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_sectionTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:textColor="@color/tp_loyalty_color"
+        android:textStyle="bold"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="heading_4"
+        tools:text="Browse coupon" />
+
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_ovopointValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_4"
+        android:textColor="@color/tp_section_category_sub_color"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_sectionTitle"
+        app:typographyType="body_3"
+        tools:text="Rp12.560" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_seeall_category"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:text="@string/tp_see_all"
+        android:visibility="gone"
+        android:textColor="@color/tp_tab_indicator_text_color_"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tv_sectionTitle"
+        app:typographyType="heading_5"
+        app:typographyWeight="bold" />
+
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_dynamic_link"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/tp_margin_regular"
         android:layout_marginTop="@dimen/dp_12"
-        android:layout_marginRight="@dimen/tp_margin_regular"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_ovopointValue"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

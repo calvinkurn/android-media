@@ -13,13 +13,18 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.prod
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcarditem.ProductCardItemViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardrevamp.ProductCardRevampViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardsprintsalecarousel.ProductCardSprintSaleCarouselViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.quickcoupon.QuickCouponViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.quickfilter.QuickFilterViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tokopoints.TokopointsViewModel
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
+import com.tokopedia.topads.sdk.di.TopAdsUrlHitterModule
 import dagger.Component
 
 
 @DiscoveryScope
-@Component(modules = [DiscoveryModule::class, DiscoveryViewModelModule::class], dependencies = [BaseAppComponent::class])
+@Component(modules = [DiscoveryModule::class,
+    DiscoveryViewModelModule::class,
+    TopAdsUrlHitterModule::class], dependencies = [BaseAppComponent::class])
 interface DiscoveryComponent {
     fun inject(discoveryActivity: DiscoveryActivity)
     fun inject(discoveryFragment: DiscoveryFragment)
@@ -35,4 +40,6 @@ interface DiscoveryComponent {
     fun inject(productCardItemViewModel: ProductCardItemViewModel)
     fun inject(chipsFilterViewModel: ChipsFilterViewModel)
     fun inject(loadMoreViewModel: LoadMoreViewModel)
+    fun inject(quickCouponViewModel: QuickCouponViewModel)
+    fun inject(quickFilterViewModel: QuickFilterViewModel)
 }

@@ -24,12 +24,12 @@ class ProductEditNameFragment : Fragment(), ProductEditNameViewHolder.Listener {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
         activity?.let {
-            productName = it.intent.getParcelableExtra(EXTRA_NAME)?: ProductName()
+            productName = it.intent.getParcelableExtra(EXTRA_NAME) ?: ProductName()
             isEditable = it.intent.getBooleanExtra(EXTRA_IS_EDITABLE_NAME, true)
         }
         if (savedInstanceState != null) {
             if (savedInstanceState.containsKey(SAVED_PRODUCT_NAME)) {
-                productName = savedInstanceState.getParcelable(SAVED_PRODUCT_NAME)
+                productName = savedInstanceState.getParcelable(SAVED_PRODUCT_NAME) ?: ProductName()
             }
         }
     }
@@ -43,10 +43,12 @@ class ProductEditNameFragment : Fragment(), ProductEditNameViewHolder.Listener {
         val productEditNameViewHolder = ProductEditNameViewHolder(view, this)
         productEditNameViewHolder.setName(productName.name)
         productEditNameViewHolder.setEditableName(isEditable)
-        texViewMenu?.run{text = getString(R.string.label_save)
+        texViewMenu?.run {
+            text = getString(R.string.label_save)
             setOnClickListener {
                 setResult()
-            }}
+            }
+        }
     }
 
     override fun onNameChanged(productName: ProductName) {
@@ -57,14 +59,14 @@ class ProductEditNameFragment : Fragment(), ProductEditNameViewHolder.Listener {
         this.productName = productName
     }
 
-    private fun isDataValid(): Boolean{
+    private fun isDataValid(): Boolean {
         return productName.name.isNotEmpty()
     }
 
-    private fun setResult(){
-        if(isDataValid()) {
+    private fun setResult() {
+        if (isDataValid()) {
             activity?.run {
-                setResult(Activity.RESULT_OK, Intent().apply {putExtra(EXTRA_NAME, productName) })
+                setResult(Activity.RESULT_OK, Intent().apply { putExtra(EXTRA_NAME, productName) })
                 finish()
             }
         }

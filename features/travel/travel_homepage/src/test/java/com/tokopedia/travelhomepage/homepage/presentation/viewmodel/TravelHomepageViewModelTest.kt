@@ -7,6 +7,7 @@ import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.travelhomepage.homepage.data.*
 import com.tokopedia.travelhomepage.homepage.usecase.GetEmptyModelsUseCase
+import com.tokopedia.travelhomepage.homepage.usecase.GetSubhomepageUnifiedDataUseCase
 import com.tokopedia.travelhomepage.shouldBe
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -14,6 +15,7 @@ import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.mockk
+import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -29,8 +31,6 @@ class TravelHomepageViewModelTest {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
-    private val graphqlRepository = mockk<GraphqlRepository>()
-
     private val travelDispatcherProvider = TravelTestDispatcherProvider()
 
     private lateinit var viewModel: TravelHomepageViewModel
@@ -38,10 +38,13 @@ class TravelHomepageViewModelTest {
     @RelaxedMockK
     lateinit var emptyUseCase: GetEmptyModelsUseCase
 
+    @RelaxedMockK
+    lateinit var getSubhomepageUnifiedDataUseCase: GetSubhomepageUnifiedDataUseCase
+
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        viewModel = TravelHomepageViewModel(graphqlRepository, emptyUseCase, travelDispatcherProvider)
+        viewModel = TravelHomepageViewModel(emptyUseCase, travelDispatcherProvider, getSubhomepageUnifiedDataUseCase)
     }
 
     @Test
@@ -58,12 +61,12 @@ class TravelHomepageViewModelTest {
         viewModel.getListFromCloud("", true)
 
         // then
-        viewModel.travelItemList.value!!.size shouldBe 2
-        viewModel.travelItemList.value!!.forEach {
+        viewModel.travelItemList.size shouldBe 2
+        viewModel.travelItemList.forEach {
             it.isLoaded shouldBe false
             it.isLoadFromCloud shouldBe true
         }
-        viewModel.isAllError.value shouldBe false
+        viewModel.isAllError.value shouldBe null
     }
 
     @Test
@@ -77,8 +80,8 @@ class TravelHomepageViewModelTest {
         viewModel.getListFromCloud("", true)
 
         // then
-        viewModel.travelItemList.value shouldBe null
-        viewModel.isAllError.value shouldBe null
+        viewModel.travelItemList.size shouldBe 0
+        viewModel.isAllError.value shouldBe true
     }
 
     @Test
@@ -91,23 +94,27 @@ class TravelHomepageViewModelTest {
             emptyUseCase.getTravelLayoutSubhomepage(any(), any())
         } returns Success(list)
 
-        val result = HashMap<Type, Any>()
-        result[TravelUnifiedSubhomepageData.Response::class.java] = TravelUnifiedSubhomepageData.Response()
-        val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
-
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery {
+            getSubhomepageUnifiedDataUseCase.execute(any(), any(), any(), any())
+        } returns listOf()
 
         // when
-        viewModel.getListFromCloud("", true)
-        viewModel.getTravelUnifiedData("", TravelLayoutSubhomepage.Data(), 0, true)
-        viewModel.getTravelUnifiedData("", TravelLayoutSubhomepage.Data(), 1, true)
+        runBlocking {
+            viewModel.getListFromCloud("", true)
+            viewModel.getTravelUnifiedData("", TravelLayoutSubhomepage.Data(position = 0),true, TypeUnifiedSubhomepageResponse.ProductCardResponse::class.java)
+            viewModel.getTravelUnifiedData("", TravelLayoutSubhomepage.Data(position = 1), true, TypeUnifiedSubhomepageResponse.LegoBannerResponse::class.java)
+        }
 
         // then
-//        viewModel.travelItemList.value!!.forEach {
-//            it.isLoaded shouldBe true
-//            it.isSuccess shouldBe true
-//        }
-        viewModel.isAllError.value shouldBe false
+        Thread.sleep(1000)
+        viewModel.isAllError.value shouldBe null
+        viewModel.travelItemList.let {
+            it[0].isLoaded shouldBe true
+            it[1].isLoaded shouldBe true
+
+            it[0].isSuccess shouldBe true
+            it[1].isSuccess shouldBe true
+        }
     }
 
     @Test
@@ -120,23 +127,25 @@ class TravelHomepageViewModelTest {
             emptyUseCase.getTravelLayoutSubhomepage(any(), any())
         } returns Success(list)
 
-        val errors = HashMap<Type, List<GraphqlError>>()
-        errors[GraphqlError::class.java] = listOf(GraphqlError())
-        val gqlResponse = GraphqlResponse(HashMap<Type, Any?>(), errors, false)
-
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery {
+            getSubhomepageUnifiedDataUseCase.execute(any(), any(), any(), any())
+        } throws Throwable()
 
         // when
         viewModel.getListFromCloud("", true)
-        viewModel.getTravelUnifiedData("", TravelLayoutSubhomepage.Data(), 0, true)
-        viewModel.getTravelUnifiedData("", TravelLayoutSubhomepage.Data(), 1, true)
+        viewModel.getTravelUnifiedData("", TravelLayoutSubhomepage.Data(position = 0), true, TypeUnifiedSubhomepageResponse.ProductCardResponse::class.java)
+        viewModel.getTravelUnifiedData("", TravelLayoutSubhomepage.Data(position = 1), true, TypeUnifiedSubhomepageResponse.LegoBannerResponse::class.java)
 
         // then
-//        viewModel.travelItemList.value!!.forEach {
-//            it.isLoaded shouldBe false
-//            it.isSuccess shouldBe false
-//        }
-//        viewModel.isAllError.value shouldBe true
+        Thread.sleep(1000)
+        viewModel.isAllError.value shouldBe true
+        viewModel.travelItemList.let {
+            it[0].isLoaded shouldBe true
+            it[1].isLoaded shouldBe true
+
+            it[0].isSuccess shouldBe false
+            it[1].isSuccess shouldBe false
+        }
     }
 
     @Test
@@ -149,55 +158,65 @@ class TravelHomepageViewModelTest {
             emptyUseCase.getTravelLayoutSubhomepage(any(), any())
         } returns Success(list)
 
+        coEvery {
+            getSubhomepageUnifiedDataUseCase.execute(any(), any(), any(), TypeUnifiedSubhomepageResponse.ProductCardResponse::class.java)
+        } returns listOf()
+
+        coEvery {
+            getSubhomepageUnifiedDataUseCase.execute(any(), any(), any(), TypeUnifiedSubhomepageResponse.LegoBannerResponse::class.java)
+        } throws Exception()
+
         // when
         viewModel.getListFromCloud("", true)
-
-        val result = HashMap<Type, Any>()
-        result[TravelUnifiedSubhomepageData.Response::class.java] = TravelUnifiedSubhomepageData.Response()
-        val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
-
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
-        viewModel.getTravelUnifiedData("", TravelLayoutSubhomepage.Data(), 0, true)
-
-        val errors = HashMap<Type, List<GraphqlError>>()
-        errors[GraphqlError::class.java] = listOf(GraphqlError())
-        val gqlResponseError = GraphqlResponse(HashMap<Type, Any?>(), errors, false)
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseError
-        viewModel.getTravelUnifiedData("", TravelLayoutSubhomepage.Data(), 1, true)
+        viewModel.getTravelUnifiedData("", TravelLayoutSubhomepage.Data(position = 0), true, TypeUnifiedSubhomepageResponse.ProductCardResponse::class.java)
+        viewModel.getTravelUnifiedData("", TravelLayoutSubhomepage.Data(position = 1), true, TypeUnifiedSubhomepageResponse.LegoBannerResponse::class.java)
 
         // then
-        viewModel.travelItemList.value!!.let {
+        Thread.sleep(1000)
+        viewModel.isAllError.value shouldBe null
+        viewModel.travelItemList.let {
             it[0].isLoaded shouldBe true
-            it[1].isLoaded shouldBe false
+            it[1].isLoaded shouldBe true
 
-            it[0].isSuccess shouldBe false
+            it[0].isSuccess shouldBe true
             it[1].isSuccess shouldBe false
         }
-        viewModel.isAllError.value shouldBe false
     }
 
     @Test
-    fun checkIfAllError_ifAllLoadedAndSuccess_ValueShouldReturnFalse() {
+    fun checkIfAllError_ifAllLoadedAndSuccess_ValueShouldReturnNull() {
         // given
         val list = mutableListOf<TravelHomepageItemModel>()
         list.add(TravelHomepageProductCardModel())
         list.add(TravelHomepageLegoBannerModel())
-        viewModel.travelItemList.value = list
 
-        val result = HashMap<Type, Any>()
-        result[TravelUnifiedSubhomepageData.Response::class.java] = TravelUnifiedSubhomepageData.Response()
-        val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
+        coEvery {
+            emptyUseCase.getTravelLayoutSubhomepage(any(), any())
+        } returns Success(list)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
-        viewModel.getTravelUnifiedData("", TravelLayoutSubhomepage.Data(), 0, true)
+        coEvery {
+            getSubhomepageUnifiedDataUseCase.execute(any(), any(), any(), TypeUnifiedSubhomepageResponse.ProductCardResponse::class.java)
+        } returns listOf()
 
-        val errors = HashMap<Type, List<GraphqlError>>()
-        errors[GraphqlError::class.java] = listOf(GraphqlError())
-        val gqlResponseError = GraphqlResponse(HashMap<Type, Any?>(), errors, false)
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseError
-        viewModel.getTravelUnifiedData("", TravelLayoutSubhomepage.Data(), 1, true)
+        coEvery {
+            getSubhomepageUnifiedDataUseCase.execute(any(), any(), any(), TypeUnifiedSubhomepageResponse.LegoBannerResponse::class.java)
+        } returns listOf()
+
+        //when
+        viewModel.getListFromCloud("", true)
+        viewModel.getTravelUnifiedData("", TravelLayoutSubhomepage.Data(position = 0), true, TypeUnifiedSubhomepageResponse.ProductCardResponse::class.java)
+        viewModel.getTravelUnifiedData("", TravelLayoutSubhomepage.Data(position = 1), true, TypeUnifiedSubhomepageResponse.LegoBannerResponse::class.java)
 
         // then
-        viewModel.isAllError.value shouldBe false
+        // then
+        Thread.sleep(1000)
+        viewModel.isAllError.value shouldBe null
+        viewModel.travelItemList.let {
+            it[0].isLoaded shouldBe true
+            it[1].isLoaded shouldBe true
+
+            it[0].isSuccess shouldBe true
+            it[1].isSuccess shouldBe true
+        }
     }
 }

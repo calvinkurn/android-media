@@ -18,13 +18,16 @@ import com.tokopedia.autocomplete.analytics.AutocompleteTracking
 import com.tokopedia.autocomplete.suggestion.di.DaggerSuggestionComponent
 import com.tokopedia.autocomplete.suggestion.di.SuggestionComponent
 import com.tokopedia.autocomplete.suggestion.di.SuggestionContextModule
+import com.tokopedia.autocomplete.suggestion.topshop.SuggestionTopShopCardViewModel
+import com.tokopedia.autocomplete.suggestion.topshop.SuggestionTopShopListener
 import com.tokopedia.autocomplete.util.getModifiedApplink
 import com.tokopedia.discovery.common.model.SearchParameter
 import kotlinx.android.synthetic.main.fragment_suggestion.*
 import javax.inject.Inject
 
-class SuggestionFragment : BaseDaggerFragment(), SuggestionContract.View, SuggestionClickListener {
-
+class SuggestionFragment :
+        BaseDaggerFragment(), SuggestionContract.View,
+        SuggestionClickListener, SuggestionTopShopListener {
     private val SEARCH_PARAMETER = "SEARCH_PARAMETER"
     private val MP_SEARCH_AUTOCOMPLETE = "mp_search_autocomplete"
 
@@ -34,8 +37,6 @@ class SuggestionFragment : BaseDaggerFragment(), SuggestionContract.View, Sugges
     private lateinit var networkErrorMessage: String
 
     private var performanceMonitoring: PerformanceMonitoring? = null
-
-    private var searchParameter: SearchParameter? = null
 
     private lateinit var adapter: SuggestionAdapter
 
@@ -76,7 +77,7 @@ class SuggestionFragment : BaseDaggerFragment(), SuggestionContract.View, Sugges
     }
 
     private fun prepareView(view: View) {
-        val typeFactory = SuggestionAdapterTypeFactory(this)
+        val typeFactory = SuggestionAdapterTypeFactory(this, this)
         val layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         adapter = SuggestionAdapter(typeFactory)
         recyclerViewSuggestion?.adapter = adapter
@@ -95,7 +96,7 @@ class SuggestionFragment : BaseDaggerFragment(), SuggestionContract.View, Sugges
         return AppScreen.SCREEN_UNIVERSEARCH
     }
 
-    override fun showSuggestionResult(list: MutableList<Visitable<*>>) {
+    override fun showSuggestionResult(list: List<Visitable<*>>) {
         stopTracePerformanceMonitoring()
         adapter.clearData()
         adapter.addAll(list)
@@ -111,19 +112,21 @@ class SuggestionFragment : BaseDaggerFragment(), SuggestionContract.View, Sugges
         super.onViewStateRestored(savedInstanceState)
 
         if (savedInstanceState != null) {
-            searchParameter = savedInstanceState.getParcelable(SEARCH_PARAMETER)
-            searchParameter?.let { presenter.search(it) }
+            val searchParameter = savedInstanceState.getSerializable(SEARCH_PARAMETER) as HashMap<String, String>
+            setSearchParameter(searchParameter)
+            presenter.search()
         }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putParcelable(SEARCH_PARAMETER, searchParameter)
+        outState.putSerializable(SEARCH_PARAMETER, HashMap<String, Any>(presenter.getSearchParameter()))
     }
 
     fun search(searchParameter: SearchParameter) {
         performanceMonitoring = PerformanceMonitoring.start(MP_SEARCH_AUTOCOMPLETE)
-        presenter.search(searchParameter)
+        setSearchParameter(searchParameter.getSearchParameterHashMap())
+        presenter.search()
     }
 
     fun setIsTyping(isTyping: Boolean) {
@@ -138,7 +141,7 @@ class SuggestionFragment : BaseDaggerFragment(), SuggestionContract.View, Sugges
         suggestionViewUpdateListener?.dropKeyboard()
     }
 
-    override fun route(applink: String) {
+    override fun route(applink: String, searchParameter: Map<String, String>) {
         activity?.let {
             val modifiedApplink = getModifiedApplink(applink, searchParameter)
             RouteManager.route(it, modifiedApplink)
@@ -153,8 +156,8 @@ class SuggestionFragment : BaseDaggerFragment(), SuggestionContract.View, Sugges
         suggestionViewUpdateListener?.setSearchQuery("$text ")
     }
 
-    fun setSearchParameter(searchParameter: SearchParameter) {
-        this.searchParameter = searchParameter
+    fun setSearchParameter(searchParameter: HashMap<String, String> ) {
+        presenter.setSearchParameter(searchParameter)
     }
 
     fun setSuggestionViewUpdateListener(suggestionViewUpdateListener: SuggestionViewUpdateListener) {
@@ -179,5 +182,21 @@ class SuggestionFragment : BaseDaggerFragment(), SuggestionContract.View, Sugges
 
     override fun trackEventClickRecentKeyword(eventLabel: String) {
         AutocompleteTracking.eventClickRecentKeyword(eventLabel)
+    }
+
+    override fun onTopShopCardClicked(topShop: SuggestionTopShopCardViewModel) {
+        presenter.onTopShopCardClicked(topShop)
+    }
+
+    override fun onTopShopSeeMoreClicked(topShop: SuggestionTopShopCardViewModel) {
+        presenter.onTopShopCardClicked(topShop)
+    }
+
+    override fun trackEventClickTopShopCard(eventLabel: String) {
+        AutocompleteTracking.eventClickTopShop(eventLabel)
+    }
+
+    override fun trackEventClickTopShopSeeMore(eventLabel: String) {
+        AutocompleteTracking.eventClickTopShopSeeMore(eventLabel)
     }
 }

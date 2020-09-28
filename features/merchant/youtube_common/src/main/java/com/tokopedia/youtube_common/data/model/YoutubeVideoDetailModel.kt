@@ -2,8 +2,6 @@ package com.tokopedia.youtube_common.data.model
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.product.addedit.description.presentation.model.youtube.Item
-import com.tokopedia.product.addedit.description.presentation.model.youtube.PageInfo
 
 data class YoutubeVideoDetailModel(
         @SerializedName("kind")

@@ -3,7 +3,6 @@ package com.tokopedia.topads.dashboard.view.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.tokopedia.seller.base.view.model.StepperModel;
 
 import java.util.List;
 

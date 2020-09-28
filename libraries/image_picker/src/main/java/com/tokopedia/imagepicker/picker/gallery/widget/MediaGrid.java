@@ -13,8 +13,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.tokopedia.imagepicker.R;
 import com.tokopedia.imagepicker.picker.gallery.model.MediaItem;
+import com.tokopedia.utils.image.ImageUtil;
 
+import java.io.File;
 import java.util.ArrayList;
+
+import kotlin.Pair;
 
 /**
  * Created by hangnadi on 5/29/17.
@@ -69,13 +73,25 @@ public class MediaGrid extends SquareFrameLayout implements View.OnClickListener
     }
 
     private void setImage() {
-        Glide.with(getContext())
-                .load(mMedia.getContentUri())
-                .placeholder(mPreBindInfo.mPlaceholder)
-                .error(mPreBindInfo.error)
-                .override(mPreBindInfo.mResize, mPreBindInfo.mResize)
-                .centerCrop()
-                .into(mThumbnail);
+        File file = new File(mMedia.getRealPath());
+        boolean loadFitCenter = ImageUtil.shouldLoadFitCenter(file);
+        if (loadFitCenter) {
+            Glide.with(getContext())
+                    .load(file)
+                    .placeholder(mPreBindInfo.mPlaceholder)
+                    .error(mPreBindInfo.error)
+                    .override(mPreBindInfo.mResize, mPreBindInfo.mResize)
+                    .fitCenter()
+                    .into(mThumbnail);
+        } else {
+            Glide.with(getContext())
+                    .load(file)
+                    .placeholder(mPreBindInfo.mPlaceholder)
+                    .error(mPreBindInfo.error)
+                    .override(mPreBindInfo.mResize, mPreBindInfo.mResize)
+                    .centerCrop()
+                    .into(mThumbnail);
+        }
     }
 
     private void setVideoDuration() {

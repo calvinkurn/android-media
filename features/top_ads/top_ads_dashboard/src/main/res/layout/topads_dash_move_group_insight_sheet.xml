@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/topads_bg_top_round"
+    android:orientation="vertical">
+
+    <com.tokopedia.unifycomponents.SearchBarUnify
+        android:id="@+id/searchBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:search_bar_show_icon="false"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifycomponents.list.ListUnify
+        android:id="@+id/listGroup"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:choiceMode="singleChoice"
+        app:layout_constraintTop_toBottomOf="@id/searchBar" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txtSearch"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_200"
+        android:gravity="center"
+        android:textColor="@color/topads_light_shadow"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Grup iklan “hgvjj” tidak ditemukan" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

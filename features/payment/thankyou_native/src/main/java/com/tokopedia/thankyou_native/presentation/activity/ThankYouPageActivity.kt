@@ -28,6 +28,8 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
 
     private lateinit var thankYouPageComponent: ThankYouPageComponent
 
+    lateinit var thanksPageData: ThanksPageData
+
     fun getHeader(): HeaderUnify = thank_header
 
     override fun getScreenName(): String {
@@ -38,11 +40,6 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
         super.onCreate(savedInstanceState)
         updateTitle("")
         component.inject(this)
-        addThankPageAnalyticFragment()
-    }
-
-    private fun addThankPageAnalyticFragment() {
-        ThanksPageAnalyticsFragment.addFragmentToActivity(supportFragmentManager)
     }
 
     override fun getLayoutRes() = R.layout.thank_activity_thank_you
@@ -65,18 +62,26 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
     }
 
     override fun onThankYouPageDataLoaded(thanksPageData: ThanksPageData) {
-        postEventOnThankPageDataLoaded(thanksPageData)
+        this.thanksPageData = thanksPageData
         val fragment = getGetFragmentByPaymentMode(thanksPageData)
         fragment?.let {
             supportFragmentManager.beginTransaction()
                     .replace(parentViewResourceID, fragment, tagFragment)
                     .commit()
         } ?: run { gotoHomePage() }
+        showAppFeedbackBottomSheet(thanksPageData)
+        postEventOnThankPageDataLoaded(thanksPageData)
+    }
+
+    private fun showAppFeedbackBottomSheet(thanksPageData: ThanksPageData){
+        val paymentStatus = PaymentStatusMapper.getPaymentStatusByInt(thanksPageData.paymentStatus)
+        if(paymentStatus == PaymentVerified || paymentStatus == PaymentPreAuth) {
+            InAppReviewHelper.launchInAppReview(this, null)
+        }
     }
 
     private fun postEventOnThankPageDataLoaded(thanksPageData: ThanksPageData) {
-        ThanksPageAnalyticsFragment.postThanksPageLoadEvent(supportFragmentManager,
-                thanksPageData)
+        thankYouPageAnalytics.get().postThankYouPageLoadedEvent(thanksPageData)
     }
 
     override fun onInvalidThankYouPage() {
@@ -134,7 +139,8 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
      * status if payment type is deferred/Processing
      * */
     override fun onBackPressed() {
-        thankYouPageAnalytics.get().sendBackPressedEvent()
+        if(::thanksPageData.isInitialized)
+            thankYouPageAnalytics.get().sendBackPressedEvent(thanksPageData.paymentID.toString())
         if (!isOnBackPressOverride()) {
             gotoHomePage()
             finish()
@@ -146,19 +152,7 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
         fragment?.let {
             return when (it) {
                 is LoaderFragment -> true
-                is DeferredPaymentFragment -> {
-                    it.onBackPressed()
-                }
-                is ProcessingPaymentFragment -> {
-                    it.onBackPressed()
-                }
-                else -> {
-                    InAppReviewHelper.launchInAppReview(this, object: InAppReviewHelper.Callback {
-                        override fun onCompleted() {
-                            gotoHomePage()
-                        }
-                    })
-                }
+                else -> false
             }
 
         }

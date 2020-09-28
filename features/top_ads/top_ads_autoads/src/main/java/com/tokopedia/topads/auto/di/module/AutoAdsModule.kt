@@ -5,6 +5,8 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.topads.auto.di.AutoAdsDispatcherProvider
+import com.tokopedia.topads.auto.di.AutoAdsDispatcherProviderImpl
 import com.tokopedia.topads.auto.di.AutoAdsScope
 import com.tokopedia.topads.auto.view.factory.AutoAdsWidgetViewModelFactory
 import com.tokopedia.topads.auto.view.factory.DailyBudgetViewModelFactory
@@ -25,7 +27,7 @@ class AutoAdsModule {
 
     @AutoAdsScope
     @Provides
-    fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
+    fun provideAutoAdsDispatcher(): AutoAdsDispatcherProvider = AutoAdsDispatcherProviderImpl()
 
     @AutoAdsScope
     @Provides
@@ -46,21 +48,21 @@ class AutoAdsModule {
     @AutoAdsScope
     @Provides
     fun provideDailyBudgetViewModelFactory(@ApplicationContext context: Context,
-                                           dispatcher: CoroutineDispatcher,
+                                           dispatcher: AutoAdsDispatcherProvider,
                                            repository: GraphqlRepository,
                                            query: Map<String, String>):
             DailyBudgetViewModelFactory = DailyBudgetViewModelFactory(context, dispatcher, repository, query)
 
     @AutoAdsScope
     @Provides
-    fun provideTopAdsInfoViewModelFactory(dispatcher: CoroutineDispatcher,
+    fun provideTopAdsInfoViewModelFactory(dispatcher: AutoAdsDispatcherProvider,
                                           repository: GraphqlRepository,
                                           query: Map<String, String>):
             TopAdsInfoViewModelFactory = TopAdsInfoViewModelFactory(dispatcher, repository, query)
 
     @AutoAdsScope
     @Provides
-    fun provideAutoAdsWidgetViewModelFactory(dispatcher: CoroutineDispatcher,
+    fun provideAutoAdsWidgetViewModelFactory(dispatcher: AutoAdsDispatcherProvider,
                                              repository: GraphqlRepository,
                                              query: Map<String, String>):
             AutoAdsWidgetViewModelFactory = AutoAdsWidgetViewModelFactory(dispatcher, repository, query)

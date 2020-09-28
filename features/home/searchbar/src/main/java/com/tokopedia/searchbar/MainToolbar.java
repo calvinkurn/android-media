@@ -8,7 +8,6 @@ import androidx.appcompat.widget.Toolbar;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.View;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -152,7 +151,7 @@ public class MainToolbar extends Toolbar {
         });
 
         editTextSearch.setOnClickListener(v -> {
-            searchBarAnalytics.eventTrackingSearchBar(screenName);
+            searchBarAnalytics.eventTrackingSearchBar(screenName, "");
             RouteManager.route(context, searchApplink);
         });
 

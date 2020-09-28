@@ -5,9 +5,10 @@ import android.content.Context;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.product.manage.item.main.base.data.source.cloud.api.EditProductFormApi;
 import com.tokopedia.product.manage.item.main.base.data.source.cloud.model.editproductform.EditProductFormServiceModel;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import javax.inject.Inject;
 
@@ -33,7 +34,8 @@ public class EditProductFormCloud {
 
     public Observable<EditProductFormServiceModel> fetchEditProductForm(String productId) {
         TKPDMapParam<String, String> params = new TKPDMapParam<>();
-        String shopId = SessionHandler.getShopID(context);
+        UserSessionInterface userSession = new UserSession(context);
+        String shopId = userSession.getShopId();
         params.put(SHOP_ID, shopId);
         params.put(PRODUCT_ID, productId);
         return api.fetchEditProductForm(AuthUtil.generateParamsNetwork(context, params)).map(new Func1<Response<EditProductFormServiceModel>, EditProductFormServiceModel>() {

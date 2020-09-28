@@ -5,14 +5,11 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CompoundButton
 import android.widget.TextView
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.tokopedia.core.analytics.AppEventTracking
 import com.tokopedia.core.analytics.UnifyTracking
@@ -22,8 +19,6 @@ import com.tokopedia.product.manage.item.main.base.view.activity.BaseProductAddE
 import com.tokopedia.product.manage.item.main.base.view.activity.BaseProductAddEditFragment.Companion.EXTRA_STOCK
 import com.tokopedia.product.manage.item.stock.view.model.ProductStock
 import kotlinx.android.synthetic.main.fragment_product_edit_stock.*
-import kotlinx.android.synthetic.main.widget_label_switch_product.view.*
-import timber.log.Timber
 
 class ProductEditStockFragment : Fragment() {
 
@@ -40,10 +35,11 @@ class ProductEditStockFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
-        activity?.let { productStock = it.intent.getParcelableExtra(EXTRA_STOCK) }
+        activity?.let { productStock = it.intent.getParcelableExtra(EXTRA_STOCK) ?: ProductStock() }
         if (savedInstanceState != null) {
             if (savedInstanceState.containsKey(SAVED_PRODUCT_STOCK)) {
                 productStock = savedInstanceState.getParcelable(SAVED_PRODUCT_STOCK)
+                        ?: ProductStock()
             }
         }
     }

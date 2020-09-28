@@ -8,7 +8,7 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.topads.R;
 import com.tokopedia.topads.common.util.TopAdsComponentUtils;
-import com.tokopedia.topads.dashboard.data.model.response.GetSuggestionResponse;
+import com.tokopedia.topads.dashboard.data.model.response.TopAdsDepositResponse;
 import com.tokopedia.topads.dashboard.di.component.DaggerTopAdsCreatePromoComponent;
 import com.tokopedia.topads.dashboard.di.module.TopAdsCreatePromoModule;
 import com.tokopedia.topads.dashboard.domain.model.MinimumBidDomain;
@@ -17,6 +17,7 @@ import com.tokopedia.topads.dashboard.view.model.TopAdsDetailAdViewModel;
 import com.tokopedia.topads.dashboard.view.model.TopAdsDetailGroupViewModel;
 import com.tokopedia.topads.dashboard.view.model.TopAdsCreatePromoNewGroupModel;
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDetailNewGroupPresenter;
+import com.tokopedia.user.session.UserSession;
 
 /**
  * Created by zulfikarrahman on 8/8/17.
@@ -27,6 +28,8 @@ public class TopAdsNewScheduleNewGroupFragment extends TopAdsNewScheduleFragment
 
     public static final String EXTRA_NEW_GROUP_ID = "EXTRA_NEW_GROUP_ID";
     public static final String EXTRA_IS_ENOUGH_DEPOSIT = "EXTRA_IS_ENOUGH_DEPOSIT";
+
+    private String shopId;
 
     @Override
     protected void initView(View view) {
@@ -40,6 +43,8 @@ public class TopAdsNewScheduleNewGroupFragment extends TopAdsNewScheduleFragment
         if(stepperModel != null){
             loadAd(stepperModel.getDetailAd());
         }
+        UserSession userSession = new UserSession(getActivity());
+        shopId = userSession.getShopId();
     }
 
     @Override
@@ -65,8 +70,8 @@ public class TopAdsNewScheduleNewGroupFragment extends TopAdsNewScheduleFragment
             stepperModel = new TopAdsCreatePromoNewGroupModel();
         }
         trackingNewScheduleTopads();
+        daggerPresenter.getBalance(getResources());
         stepperModel.setDetailGroupScheduleViewModel(detailAd);
-        daggerPresenter.saveAdNew(stepperModel.getGroupName(), stepperModel.getDetailAd(), stepperModel.getTopAdsProductViewModels(), stepperModel.getSource());
     }
 
     @Override
@@ -75,6 +80,11 @@ public class TopAdsNewScheduleNewGroupFragment extends TopAdsNewScheduleFragment
         if(stepperListener != null) {
             stepperListener.finishPage();
         }
+    }
+
+    @Override
+    public void onBalanceCheck(TopAdsDepositResponse.Data topAdsDepositResponse) {
+        daggerPresenter.saveAdNew(stepperModel.getGroupName(), stepperModel.getDetailAd(), stepperModel.getTopAdsProductViewModels(), stepperModel.getSource(), shopId,topAdsDepositResponse);
     }
 
     @Override

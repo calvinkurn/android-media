@@ -26,7 +26,8 @@ class CpmItemMapper {
                         applink,
                         adClickUrl,
                         headline.image?.fullUrl,
-                        badge))
+                        badge,
+                        id = headline.shop?.id))
 
                 headline.shop?.product?.let {
 
@@ -40,7 +41,8 @@ class CpmItemMapper {
                                     element.applinks,
                                     element.imageProduct?.imageClickUrl,
                                     "",
-                                    ""))
+                                    "",
+                                    id = element.id))
                         }
                     }
                 }

@@ -48,7 +48,6 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
     private Typography tvRecipientAddress;
     private Typography tvRecipientPhone;
     private TextView tvRecipientChangeAddress;
-    private TextView tvSendToMultipleAddress;
     private LinearLayout llTradeInInfo;
     private TextView tvTradeInInfo;
     private TabsUnify tabUnifyTradeInAddress;
@@ -74,13 +73,12 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
         this.shipmentAdapterActionListener = shipmentAdapterActionListener;
 
         rlRecipientAddressLayout = itemView.findViewById(R.id.rl_shipment_recipient_address_layout);
-        tvAddressStatus = itemView.findViewById(R.id.tv_address_status);
-        tvAddressName = itemView.findViewById(R.id.tv_address_name);
-        tvRecipientName = itemView.findViewById(R.id.tv_recipient_name);
-        tvRecipientAddress = itemView.findViewById(R.id.tv_recipient_address);
-        tvRecipientPhone = itemView.findViewById(R.id.tv_recipient_phone);
+        tvAddressStatus = itemView.findViewById(com.tokopedia.logisticdata.R.id.tv_address_status);
+        tvAddressName = itemView.findViewById(com.tokopedia.logisticdata.R.id.tv_address_name);
+        tvRecipientName = itemView.findViewById(com.tokopedia.logisticdata.R.id.tv_recipient_name);
+        tvRecipientAddress = itemView.findViewById(com.tokopedia.logisticdata.R.id.tv_recipient_address);
+        tvRecipientPhone = itemView.findViewById(com.tokopedia.logisticdata.R.id.tv_recipient_phone);
         tvRecipientChangeAddress = itemView.findViewById(R.id.tv_change_recipient_address);
-        tvSendToMultipleAddress = itemView.findViewById(R.id.tv_send_to_multiple_address);
         llTradeInInfo = itemView.findViewById(R.id.ll_trade_in_info);
         tvTradeInInfo = itemView.findViewById(R.id.tv_trade_in_info);
         tabUnifyTradeInAddress = itemView.findViewById(R.id.tab_unify_trade_in_address);
@@ -116,13 +114,7 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
     }
 
     private void renderBaseAddress(RecipientAddressModel recipientAddress, String cartIds) {
-        if (recipientAddress.isDisableMultipleAddress()) {
-            tvSendToMultipleAddress.setVisibility(View.GONE);
-        } else {
-            tvSendToMultipleAddress.setVisibility(View.VISIBLE);
-        }
         tvRecipientChangeAddress.setOnClickListener(v -> shipmentAdapterActionListener.onChangeAddress());
-        tvSendToMultipleAddress.setOnClickListener(v -> shipmentAdapterActionListener.onSendToMultipleAddress(recipientAddress, cartIds));
         tvChangeAddressTop.setOnClickListener(v -> shipmentAdapterActionListener.onChangeAddress());
     }
 

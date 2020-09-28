@@ -39,11 +39,11 @@ class ChatAttachmentMapper @Inject constructor() {
     }
 
     private fun convertToInvoiceAttachment(attachment: Attachment): InvoiceSentPojo {
-        return CommonUtil.fromJson<InvoiceSentPojo>(attachment.attributes, InvoiceSentPojo::class.java)
+        return CommonUtil.fromJson(attachment.attributes, InvoiceSentPojo::class.java)
     }
 
     private fun convertToProductAttachment(attachment: Attachment): ProductAttachmentAttributes {
-        return CommonUtil.fromJson<ProductAttachmentAttributes>(attachment.attributes, ProductAttachmentAttributes::class.java)
+        return CommonUtil.fromJson(attachment.attributes, ProductAttachmentAttributes::class.java)
     }
 
 }

@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.oneclickcheckout.R
-import com.tokopedia.oneclickcheckout.order.data.OnboardingComponentResponse
+import com.tokopedia.oneclickcheckout.order.data.get.OnboardingComponentResponse
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageFragment
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.main.bottom_sheet_occ_info.view.*

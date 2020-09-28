@@ -62,7 +62,7 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <com.tokopedia.design.component.ticker.TouchViewPager2
+    <com.tokopedia.loyalty.view.widget.TouchViewPager2
         android:id="@+id/view_pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

@@ -2,6 +2,7 @@ package com.tokopedia.sellerorder.list.presentation.fragment
 
 import android.animation.Animator
 import android.animation.ObjectAnimator
+import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
@@ -21,30 +22,38 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
+import com.tokopedia.applink.sellerhome.AppLinkMapperSellerHome
 import com.tokopedia.coachmark.CoachMark
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
+import com.tokopedia.coachmark.CoachMarkPreference
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.quickfilter.QuickFilterItem
 import com.tokopedia.design.quickfilter.custom.CustomViewQuickFilterItem
 import com.tokopedia.design.text.SearchInputView
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.getCalculatedFormattedDate
 import com.tokopedia.kotlin.extensions.toFormattedString
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.loadImageDrawable
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.seller.active.common.service.UpdateShopActiveService
 import com.tokopedia.seller_migration_common.isSellerMigrationEnabled
 import com.tokopedia.seller_migration_common.presentation.widget.SellerMigrationGenericBottomSheet.Companion.createNewInstance
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.SomComponentInstance
 import com.tokopedia.sellerorder.analytics.SomAnalytics
 import com.tokopedia.sellerorder.analytics.SomAnalytics.eventClickOrder
+import com.tokopedia.sellerorder.analytics.SomAnalytics.eventClickWaitingPaymentOrderCard
 import com.tokopedia.sellerorder.analytics.SomAnalytics.eventSubmitSearch
+import com.tokopedia.sellerorder.common.errorhandler.SomErrorHandler
+import com.tokopedia.sellerorder.common.presenter.model.Roles
 import com.tokopedia.sellerorder.common.util.SomConsts
+import com.tokopedia.sellerorder.common.util.SomConsts.ERROR_GET_USER_ROLES
 import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_STATUS_ID
 import com.tokopedia.sellerorder.common.util.SomConsts.FROM_WIDGET_TAG
 import com.tokopedia.sellerorder.common.util.SomConsts.LIST_ORDER_SCREEN_NAME
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_ORDER_ID
+import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_USER_ROLES
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_ACCEPT_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_CONFIRM_SHIPPING
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_PROCESS_REQ_PICKUP
@@ -53,13 +62,15 @@ import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_SET_DELIVERED
 import com.tokopedia.sellerorder.common.util.SomConsts.SORT_ASCENDING
 import com.tokopedia.sellerorder.common.util.SomConsts.SORT_DESCENDING
 import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_ALL_ORDER
+import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_CODE_ORDER_DELIVERED
+import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_CODE_ORDER_DELIVERED_DUE_LIMIT
 import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_DELIVERED
 import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_DONE
+import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_NEW_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_ORDER_CANCELLED
-import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_ORDER_DELIVERED
-import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_ORDER_DELIVERED_DUE_LIMIT
 import com.tokopedia.sellerorder.common.util.SomConsts.TAB_ACTIVE
 import com.tokopedia.sellerorder.common.util.SomConsts.TAB_STATUS
+import com.tokopedia.sellerorder.common.util.Utils
 import com.tokopedia.sellerorder.detail.data.model.SomAcceptOrder
 import com.tokopedia.sellerorder.detail.data.model.SomRejectOrder
 import com.tokopedia.sellerorder.detail.presentation.activity.SomDetailActivity
@@ -72,17 +83,21 @@ import com.tokopedia.sellerorder.list.presentation.activity.SomFilterActivity
 import com.tokopedia.sellerorder.list.presentation.adapter.SomListItemAdapter
 import com.tokopedia.sellerorder.list.presentation.viewmodel.SomListViewModel
 import com.tokopedia.sellerorder.requestpickup.data.model.SomProcessReqPickup
+import com.tokopedia.sellerorder.waitingpaymentorder.presentation.activity.WaitingPaymentOrderActivity
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.empty_list.*
 import kotlinx.android.synthetic.main.fragment_som_list.*
+import kotlinx.android.synthetic.main.partial_som_list_waiting_payment.*
 import kotlinx.coroutines.*
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
 /**
@@ -90,6 +105,9 @@ import kotlin.collections.HashMap
  */
 class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerListener,
         SearchInputView.Listener, SearchInputView.ResetListener, SomListItemAdapter.ActionListener {
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -110,11 +128,31 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         CoachMarkItem(filter_action_button, getString(R.string.coachmark_filter), getString(R.string.coachmark_filter_info))
     }
 
+
+    private val coachMarkWaitingPaymentButton: List<CoachMarkItem> by lazy {
+        arrayListOf(
+                CoachMarkItem(
+                        somWaitingPaymentButton,
+                        getString(R.string.som_list_coachmark_waiting_payment_order_title),
+                        getString(R.string.som_list_coachmark_waiting_payment_order_description)
+                ),
+                CoachMarkItem(
+                        somWaitingPaymentButton,
+                        getString(R.string.som_list_coachmark_check_and_mange_product_stock_title),
+                        getString(R.string.som_list_coachmark_check_and_mange_product_stock_description)
+                )
+        )
+    }
+
+    private val coachMarkToShow: MutableSet<CoachMarkItem> = mutableSetOf()
+
     private val FLAG_DETAIL = 3333
     private val FLAG_CONFIRM_REQ_PICKUP = 3553
     private val ANIMATION_DURATION_IN_MILIS = 250L
     private val ANIMATION_TYPE = "translationY"
     private val TRANSLATION_LENGTH = 500f
+
+    private var searchKeyword = ""
 
     private lateinit var somListItemAdapter: SomListItemAdapter
     private lateinit var scrollListener: EndlessRecyclerViewScrollListener
@@ -136,14 +174,31 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     private var _animator: Animator? = null
     private var isFromWidget: Boolean? = false
     private var textChangedJob: Job? = null
+    private var waitingPaymentCounterAnimator: ValueAnimator? = null
+
 
     private val somListViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory)[SomListViewModel::class.java]
     }
 
+    private var userNotAllowedDialog: DialogUnify? = null
+
     companion object {
-        private val TAG_COACHMARK = "coachMark"
+        private const val TAG_COACHMARK_FILTER = "coachMarksFilter"
+        private const val TAG_COACHMARK_SEARCH = "coachMarksSearch"
+        private const val TAG_COACHMARK_PRODUCTS = "coachMarksProducts"
+        private const val TAG_COACHMARK_WAITING_PAYMENT = "coachMarksWaitingPayment"
         private const val REQUEST_FILTER = 2888
+        private const val ERROR_GET_TICKERS = "Error when get tickers in seller order list page."
+        private const val ERROR_GET_FILTER = "Error when get filters in seller order list page."
+        private const val ERROR_GET_STATUS_LIST = "Error when get order status list in seller order list page."
+        private const val ERROR_GET_ORDER_LIST = "Error when get list of order in seller order list page."
+        private const val PAGE_NAME = "seller order list page."
+
+        private const val MAX_WAITING_PAYMENT_ORDER_COUNTER = 99
+        private const val WAITING_PAYMENT_ORDER_COUNTER_ANIMATION_DURATION = 1000L
+
+        private val allowedRoles = listOf(Roles.MANAGE_SHOPSTATS, Roles.MANAGE_INBOX, Roles.MANAGE_TA, Roles.MANAGE_TX)
 
         @JvmStatic
         fun newInstance(bundle: Bundle): SomListFragment {
@@ -178,12 +233,8 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
             filterStatusId = filterStatusIdStr.toIntOrNull() ?: 0
             isFromWidget = arguments?.getBoolean(FROM_WIDGET_TAG)
         }
-        loadTicker()
-        loadFilterList()
-        activity?.let { SomAnalytics.sendScreenName(it, LIST_ORDER_SCREEN_NAME) }
-        isFromWidget?.let {
-            if (it) SomAnalytics.eventClickWidgetNewOrder()
-        }
+        checkUserRole()
+        getDefaultKeywordOptionFromApplink()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -195,14 +246,39 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         prepareLayout()
         setListeners()
         setInitialValue()
+        observingUserRoles()
         observingTicker()
         observingFilter()
         observingStatusList()
         observingOrders()
+        context?.let { UpdateShopActiveService.startService(it) }
+    }
+
+    override fun onHiddenChanged(hidden: Boolean) {
+        super.onHiddenChanged(hidden)
+        if (!hidden && !isUserRoleFetched()) checkUserRole()
+        else if (hidden && isUserRoleFetched()) somListViewModel.clearUserRoles()
+    }
+
+    private fun isUserRoleFetched(): Boolean = somListViewModel.userRoleResult.value is Success
+
+    private fun checkUserRole() {
+        toggleSomLayout(true)
+        somListViewModel.loadUserRoles(userSession.userId.toIntOrZero())
+    }
+
+    private fun getDefaultKeywordOptionFromApplink() {
+        if (GlobalConfig.isSellerApp()) {
+            context?.let {
+                activity?.intent?.data?.apply {
+                    searchKeyword = getQueryParameter(AppLinkMapperSellerHome.QUERY_PARAM_SEARCH).orEmpty()
+                }
+            }
+        }
     }
 
     private fun showSellerMigrationTicker() {
-        if(isSellerMigrationEnabled(context)) {
+        if (isSellerMigrationEnabled(context)) {
             somListSellerMigrationTicker.apply {
                 tickerTitle = getString(com.tokopedia.seller_migration_common.R.string.seller_migration_generic_ticker_title)
                 setHtmlDescription(getString(com.tokopedia.seller_migration_common.R.string.seller_migration_generic_ticker_content))
@@ -210,6 +286,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                     override fun onDescriptionViewClick(charSequence: CharSequence) {
                         openSellerMigrationBottomSheet()
                     }
+
                     override fun onDismiss() {
                         // No Op
                     }
@@ -221,7 +298,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
 
     private fun openSellerMigrationBottomSheet() {
         context?.let {
-            val sellerMigrationBottomSheet: BottomSheetUnify = createNewInstance(it)
+            val sellerMigrationBottomSheet: BottomSheetUnify = createNewInstance()
             sellerMigrationBottomSheet.show(childFragmentManager, "")
         }
     }
@@ -242,7 +319,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                 override fun onLoadMore(page: Int, totalItemsCount: Int) {
                     onLoadMore = true
                     if (nextOrderId != 0) {
-                        loadOrderList(nextOrderId)
+                        loadOrderList(nextOrderId, false)
                     }
                 }
             }
@@ -334,6 +411,13 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     }
 
     private fun setListeners() {
+        if (GlobalConfig.isSellerApp()) {
+            if (searchKeyword.isNotBlank()) {
+                paramOrder.search = searchKeyword
+                search_input_view.searchTextView.setText(searchKeyword)
+                search_input_view.searchTextView.text?.length?.let { search_input_view.searchTextView.setSelection(it) }
+            }
+        }
         search_input_view?.setListener(this)
         search_input_view?.setResetListener(this)
         search_input_view?.searchTextView?.setOnClickListener {
@@ -356,41 +440,45 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     }
 
     private fun loadTicker() {
-        somListViewModel.loadTickerList(GraphqlHelper.loadRawString(resources, R.raw.gql_som_ticker))
+        activity?.resources?.let {
+            somListViewModel.loadTickerList(userSession.userId.toString())
+        }
     }
 
-    private fun observingTicker() = somListViewModel.tickerListResult.observe(this, Observer {
+    private fun observingTicker() = somListViewModel.tickerListResult.observe(viewLifecycleOwner, Observer {
         when (it) {
             is Success -> {
                 renderInfoTicker(it.data)
             }
             is Fail -> {
+                SomErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_GET_TICKERS)
                 ticker_info?.visibility = View.GONE
             }
         }
     })
 
     private fun observingFilter() {
-        somListViewModel.filterListResult.observe(this, Observer {
+        somListViewModel.filterResult.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
-                    filterList = it.data
+                    filterList = it.data.statusList
                     renderFilter()
                     if (filterStatusId != 0) {
                         loadStatusOrderList()
                     } else {
                         nextOrderId = 0
-                        loadOrderList(nextOrderId)
+                        loadOrderList(nextOrderId, GlobalConfig.isSellerApp())
                     }
                 }
                 is Fail -> {
+                    SomErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_GET_FILTER)
                     quick_filter?.visibility = View.GONE
                 }
             }
         })
     }
 
-    private fun observingStatusList() = somListViewModel.statusOrderListResult.observe(this, Observer {
+    private fun observingStatusList() = somListViewModel.statusOrderListResult.observe(viewLifecycleOwner, Observer {
         when (it) {
             is Success -> {
                 it.data.forEach { statusList ->
@@ -399,25 +487,83 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                         return@forEach
                     }
                 }
-                loadOrderList(nextOrderId)
+                loadOrderList(nextOrderId, GlobalConfig.isSellerApp())
             }
             is Fail -> {
-                loadOrderList(nextOrderId)
+                SomErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_GET_STATUS_LIST)
+                loadOrderList(nextOrderId, GlobalConfig.isSellerApp())
             }
         }
     })
 
-    private fun loadStatusOrderList() {
-        somListViewModel.loadStatusOrderList(GraphqlHelper.loadRawString(resources, R.raw.gql_som_status_list))
+    private fun observingUserRoles() {
+        somListViewModel.userRoleResult.observe(viewLifecycleOwner, Observer { result ->
+            result?.run {
+                when (result) {
+                    is Success -> {
+                        if (result.data.roles.any { allowedRoles.contains(it) }) {
+                            onUserAllowedToViewSOM()
+                        } else {
+                            onUserNotAllowedToViewSOM()
+                        }
+                    }
+                    is Fail -> {
+                        SomErrorHandler.logExceptionToCrashlytics(result.throwable, String.format(ERROR_GET_USER_ROLES, PAGE_NAME))
+                        toggleSomLayout(false)
+                        renderErrorOrderList(getString(R.string.error_list_title), getString(R.string.error_list_desc))
+                    }
+                }
+            }
+        })
     }
 
-    private fun loadOrderList(nextOrderId: Int) {
+    private fun onUserNotAllowedToViewSOM() {
+        context?.run {
+            if (userNotAllowedDialog == null) {
+                userNotAllowedDialog = Utils.createUserNotAllowedDialog(this)
+            }
+            userNotAllowedDialog?.show()
+        }
+    }
+
+    private fun onUserAllowedToViewSOM() {
+        toggleSomLayout(false)
+        if (GlobalConfig.isSellerApp() && isNewOrderChipSelected()) {
+            somListViewModel.loadTopAdsShopInfo(userSession.shopId.toIntOrZero())
+        }
+        loadTicker()
+        loadFilterList()
+        rl_search_filter.show()
+        filterButton.show()
+        activity?.let { SomAnalytics.sendScreenName(it, LIST_ORDER_SCREEN_NAME) }
+        isFromWidget?.let {
+            if (it) SomAnalytics.eventClickWidgetNewOrder()
+        }
+    }
+
+    private fun toggleSomLayout(isLoading: Boolean) {
+        progressBarSom?.showWithCondition(isLoading)
+        layoutSom?.showWithCondition(!isLoading)
+    }
+
+    private fun loadStatusOrderList() {
+        activity?.resources?.let {
+            somListViewModel.loadStatusOrderList(GraphqlHelper.loadRawString(it, R.raw.gql_som_status_list))
+        }
+    }
+
+    private fun loadOrderList(nextOrderId: Int, shouldWaitForTopAdsGetInfo: Boolean) {
         paramOrder.nextOrderId = nextOrderId
-        somListViewModel.loadOrderList(GraphqlHelper.loadRawString(resources, R.raw.gql_som_order), paramOrder)
+        activity?.resources?.let {
+            somListViewModel.loadOrderList(paramOrder, shouldWaitForTopAdsGetInfo)
+        }
     }
 
     private fun loadFilterList() {
-        somListViewModel.loadFilterList(GraphqlHelper.loadRawString(resources, R.raw.gql_som_filter))
+        activity?.resources?.let {
+            waitingPaymentCounterAnimator?.end()
+            somListViewModel.loadFilter()
+        }
     }
 
     private fun renderInfoTicker(tickerList: List<SomListTicker.Data.OrderTickers.Tickers>) {
@@ -443,7 +589,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                             SomAnalytics.eventClickSeeMoreOnTicker(itemData.toString())
                         }
                     })
-                    ticker_info?.setDescriptionClickEvent(object: TickerCallback {
+                    ticker_info?.setDescriptionClickEvent(object : TickerCallback {
                         override fun onDescriptionViewClick(linkUrl: CharSequence) {}
 
                         override fun onDismiss() {
@@ -503,8 +649,8 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                 if (paramOrder.statusList.isEmpty()) {
                     if (tabStatus.equals(STATUS_DELIVERED, true)) {
                         val listPesananTiba = ArrayList<Int>()
-                        if (it.orderStatusIdList.contains(STATUS_ORDER_DELIVERED)) listPesananTiba.add(STATUS_ORDER_DELIVERED)
-                        if (it.orderStatusIdList.contains(STATUS_ORDER_DELIVERED_DUE_LIMIT)) listPesananTiba.add(STATUS_ORDER_DELIVERED_DUE_LIMIT)
+                        if (it.orderStatusIdList.contains(STATUS_CODE_ORDER_DELIVERED)) listPesananTiba.add(STATUS_CODE_ORDER_DELIVERED)
+                        if (it.orderStatusIdList.contains(STATUS_CODE_ORDER_DELIVERED_DUE_LIMIT)) listPesananTiba.add(STATUS_CODE_ORDER_DELIVERED_DUE_LIMIT)
                         paramOrder.statusList = listPesananTiba
                     } else {
                         paramOrder.statusList = it.orderStatusIdList
@@ -541,17 +687,20 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
 
     @SuppressLint("SimpleDateFormat")
     private fun observingOrders() {
-        somListViewModel.orderListResult.observe(this, androidx.lifecycle.Observer {
+        somListViewModel.orderListResult.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             when (it) {
                 is Success -> {
+                    if (!onLoadMore) {
+                        renderWaitingForPaymentCard()
+                        showCoachMarkSearch()
+                        showCoachMarkWaitingPayment()
+                    }
                     orderList = it.data
                     nextOrderId = orderList.cursorOrderId
                     if (orderList.orders.isNotEmpty()) {
                         renderOrderList()
                         showCoachMarkProducts()
-                    }
-
-                    else {
+                    } else {
                         if (isFilterApplied) {
                             if (!paramOrder.startDate.equals(defaultStartDate, true) || !paramOrder.endDate.equals(defaultEndDate, true)) {
                                 val inputFormat = SimpleDateFormat("dd/MM/yyyy")
@@ -566,15 +715,24 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                             }
                         } else {
                             renderEmptyOrderList()
-                            showCoachMarkProductsEmpty()
                         }
                     }
+                    showCoachMarkFilter()
+                    renderCoachMark()
                 }
                 is Fail -> {
+                    SomErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_GET_ORDER_LIST)
                     renderErrorOrderList(getString(R.string.error_list_title), getString(R.string.error_list_desc))
                 }
             }
         })
+    }
+
+    private fun renderCoachMark() {
+        coachMark.show(activity, "", ArrayList(coachMarkToShow))
+        coachMark.onFinishListener = {
+            coachMarkToShow.clear()
+        }
     }
 
     private fun renderOrderList() {
@@ -591,15 +749,87 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         }
     }
 
-    private fun showCoachMarkProducts() {
-        if (!coachMark.hasShown(activity, TAG_COACHMARK) && !GlobalConfig.isSellerApp()) {
-            coachMark.show(activity, TAG_COACHMARK, arrayListOf(coachMarkSearch, coachMarkProduct, coachMarkFilter))
+    private fun renderWaitingForPaymentCard() {
+        if (shouldShowWaitingPaymentButton()) {
+            val filterResult = somListViewModel.filterResult.value
+            if (filterResult is Success) {
+                somWaitingPaymentButton.visible()
+                animateWaitingPaymentButtonCounter(filterResult)
+                somWaitingPaymentButton.setOnClickListener {
+                    context?.run {
+                        Intent(this, WaitingPaymentOrderActivity::class.java).apply {
+                            startActivity(this)
+                        }
+                        eventClickWaitingPaymentOrderCard(
+                                tabActive,
+                                filterResult.data.waitingPaymentCounter.amount,
+                                userSession.userId,
+                                userSession.shopId)
+                    }
+                }
+            }
+        } else {
+            somWaitingPaymentButton.gone()
         }
     }
 
-    private fun showCoachMarkProductsEmpty() {
-        if (!coachMark.hasShown(activity, TAG_COACHMARK) && !GlobalConfig.isSellerApp()) {
-            coachMark.show(activity, TAG_COACHMARK, arrayListOf(coachMarkSearch, coachMarkFilter))
+    private fun animateWaitingPaymentButtonCounter(filterResult: Success<SomListFilter.Data.OrderFilterSom>) {
+        val regex = Regex("\\d+")
+        val start = regex.find(tvTitle.text)?.value.toIntOrZero()
+        val end = filterResult.data.waitingPaymentCounter.amount
+        val maxValue = MAX_WAITING_PAYMENT_ORDER_COUNTER
+        val checkedStart = if (start > maxValue) maxValue + 1 else start
+        val checkedEnd = if (end > maxValue) maxValue + 1 else end
+        if (checkedStart == checkedEnd || (checkedStart > maxValue && checkedEnd > maxValue)) return
+        waitingPaymentCounterAnimator = ValueAnimator().apply {
+            setObjectValues(checkedStart, checkedEnd)
+            addUpdateListener { animation ->
+                val newValue = animation.animatedValue as Int
+                val newValueString = if (newValue > maxValue) getString(R.string.som_list_waiting_payment_order_max_counter) else newValue.toString()
+                tvTitle.text = getString(
+                        R.string.som_list_order_waiting_payment_button_text,
+                        filterResult.data.waitingPaymentCounter.text,
+                        newValueString)
+            }
+            duration = WAITING_PAYMENT_ORDER_COUNTER_ANIMATION_DURATION
+            start()
+        }
+    }
+
+    private fun showCoachMarkSearch() {
+        context?.let { context ->
+            if (!coachMark.hasShown(activity, TAG_COACHMARK_SEARCH) && !GlobalConfig.isSellerApp()) {
+                CoachMarkPreference.setShown(context, TAG_COACHMARK_SEARCH, true)
+                coachMarkToShow.add(coachMarkSearch)
+            }
+        }
+    }
+
+    private fun showCoachMarkProducts() {
+        context?.let { context ->
+            if (!coachMark.hasShown(activity, TAG_COACHMARK_PRODUCTS) && !GlobalConfig.isSellerApp()) {
+                CoachMarkPreference.setShown(context, TAG_COACHMARK_PRODUCTS, true)
+                coachMarkToShow.add(coachMarkProduct)
+            }
+        }
+    }
+
+    private fun showCoachMarkFilter() {
+        context?.let { context ->
+            if (!coachMark.hasShown(activity, TAG_COACHMARK_FILTER) && !GlobalConfig.isSellerApp()) {
+                CoachMarkPreference.setShown(context, TAG_COACHMARK_FILTER, true)
+                coachMarkToShow.add(coachMarkFilter)
+            }
+        }
+    }
+
+    private fun showCoachMarkWaitingPayment() {
+        context?.let { context ->
+            if (!coachMark.hasShown(activity, TAG_COACHMARK_WAITING_PAYMENT) &&
+                    somWaitingPaymentButton.visibility == View.VISIBLE) {
+                CoachMarkPreference.setShown(context, TAG_COACHMARK_WAITING_PAYMENT, true)
+                coachMarkToShow.addAll(coachMarkWaitingPaymentButton)
+            }
         }
     }
 
@@ -615,6 +845,9 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     }
 
     private fun renderErrorOrderList(title: String, desc: String) {
+        val isUserRoleFetched = isUserRoleFetched()
+        filterButton.showWithCondition(isUserRoleFetched)
+        rl_search_filter.showWithCondition(isUserRoleFetched)
         refreshHandler?.finishRefresh()
         order_list_rv?.visibility = View.GONE
         quick_filter?.visibility = View.GONE
@@ -626,7 +859,11 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
             visibility = View.VISIBLE
             text = getString(R.string.retry_load_list)
             setOnClickListener {
-                refreshHandler?.startRefresh()
+                if (isUserRoleFetched()) {
+                    refreshHandler?.startRefresh()
+                } else {
+                    checkUserRole()
+                }
             }
         }
     }
@@ -636,12 +873,25 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         order_list_rv?.visibility = View.GONE
         quick_filter?.visibility = View.VISIBLE
         empty_state_order_list?.visibility = View.VISIBLE
-        title_empty?.text = getString(R.string.empty_peluang_title)
 
-        // Peluang Feature has been removed, thus we set text to empty and button is gone
-        desc_empty?.text = ""
-        btn_cek_peluang?.visibility = View.GONE
-        SomAnalytics.eventViewEmptyState(tabActive)
+        title_empty?.text = getString(R.string.empty_peluang_title)
+        if (somListViewModel.isTopAdsActive()) {
+            desc_empty?.text = getString(R.string.empty_peluang_desc_non_topads_with_filter)
+            btn_cek_peluang?.gone()
+            SomAnalytics.eventViewEmptyState(tabActive)
+        } else if (GlobalConfig.isSellerApp() && !isFilterApplied && isNewOrderChipSelected()) {
+            desc_empty?.text = getString(R.string.empty_peluang_desc_non_topads_no_filter)
+            btn_cek_peluang?.apply {
+                text = getString(R.string.btn_cek_peluang_non_topads)
+                setOnClickListener {
+                    goToTopAds()
+                }
+                visible()
+            }
+        } else {
+            desc_empty?.text = getString(R.string.empty_peluang_desc_non_topads_with_filter)
+            btn_cek_peluang?.gone()
+        }
     }
 
     override fun onSearchReset() {}
@@ -667,9 +917,13 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
 
     override fun onRefresh(view: View?) {
         addEndlessScrollListener()
+        val shouldWaitForTopAdsGetInfo = GlobalConfig.isSellerApp() && isNewOrderChipSelected()
+        if (shouldWaitForTopAdsGetInfo) {
+            somListViewModel.loadTopAdsShopInfo(userSession.shopId.toIntOrZero())
+        }
         onLoadMore = false
         nextOrderId = 0
-        loadOrderList(nextOrderId)
+        loadOrderList(nextOrderId, shouldWaitForTopAdsGetInfo)
         loadFilterList()
         if (isFilterApplied) {
             if (paramOrder.startDate.equals(defaultStartDate, true) && paramOrder.endDate.equals(defaultEndDate, true)) {
@@ -699,7 +953,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                     filterStatusId = 0
                     paramOrder = data.getParcelableExtra(SomConsts.PARAM_LIST_ORDER)
                     isFilterApplied = checkFilterApplied(paramOrder)
-                    tabActive = ""
+                    tabActive = data.getStringExtra(SomConsts.PARAM_TAB_ACTIVE).orEmpty()
                     renderFilter()
                     refreshHandler?.startRefresh()
                 }
@@ -729,7 +983,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                         val msg = data.getStringExtra(RESULT_SET_DELIVERED)
                         refreshThenShowToasterOk(msg)
                     }
-                    data.hasExtra(RESULT_PROCESS_REQ_PICKUP)  ->  {
+                    data.hasExtra(RESULT_PROCESS_REQ_PICKUP) -> {
                         val resultProcessReqPickup = data.getParcelableExtra<SomProcessReqPickup.Data.MpLogisticRequestPickup>(RESULT_PROCESS_REQ_PICKUP)
                         refreshThenShowToasterOk(resultProcessReqPickup.listMessage.first())
                     }
@@ -740,16 +994,21 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
 
     private fun refreshThenShowToasterOk(message: String) {
         refreshHandler?.startRefresh()
-        val toasterSuccess = Toaster
         view?.let { v ->
-            toasterSuccess.make(v, message, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL, SomConsts.ACTION_OK)
+            val toasterSuccess = Toaster.build(v, message, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL, SomConsts.ACTION_OK)
+            toasterSuccess.show()
         }
     }
 
     override fun onListItemClicked(orderId: String) {
         eventClickOrder(tabActive)
+        val userRolesResult = somListViewModel.userRoleResult.value
+        val userRoles = if (userRolesResult != null && userRolesResult is Success) userRolesResult.data else null
         Intent(activity, SomDetailActivity::class.java).apply {
             putExtra(PARAM_ORDER_ID, orderId)
+            userRoles?.let {
+                putExtra(PARAM_USER_ROLES, it)
+            }
             startActivityForResult(this, FLAG_DETAIL)
         }
     }
@@ -758,5 +1017,21 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         var orderStatusName = tabActive
         if (orderStatusName.isEmpty()) orderStatusName = STATUS_ALL_ORDER
         SomAnalytics.eventClickChatIconOnOrderList(orderStatusName)
+    }
+
+    private fun goToTopAds() {
+        if (RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_CREATE_ADS)) {
+            SomAnalytics.eventClickStartAds(tabActive)
+        }
+    }
+
+    private fun isNewOrderChipSelected(): Boolean {
+        return tabActive == STATUS_NEW_ORDER
+    }
+
+    private fun shouldShowWaitingPaymentButton(): Boolean {
+        val filterResult = somListViewModel.filterResult.value
+        return filterResult is Success && filterResult.data.waitingPaymentCounter.amount > 0 &&
+                (tabActive == STATUS_ALL_ORDER || tabActive == STATUS_NEW_ORDER)
     }
 }

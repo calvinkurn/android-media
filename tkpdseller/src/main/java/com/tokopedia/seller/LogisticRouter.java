@@ -14,4 +14,5 @@ import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationP
 public interface LogisticRouter {
     Intent getDistrictRecommendationIntent(Activity activity, Token token);
     Intent getGeoLocationActivityIntent(Context context, LocationPass locationPass);
+    boolean getBooleanRemoteConfig(String key, boolean value);
 }

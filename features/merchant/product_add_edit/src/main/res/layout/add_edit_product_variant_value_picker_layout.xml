@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/variantUnitLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0"
+        android:orientation="vertical">
+
+        <com.tokopedia.unifycomponents.TextFieldUnify
+            android:id="@+id/textFieldUnifyVariantUnit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/spacing_lvl4"
+            android:layout_marginTop="@dimen/spacing_lvl4"
+            android:layout_marginRight="@dimen/spacing_lvl4"
+            android:layout_marginBottom="@dimen/spacing_lvl3"
+            app:text_field_append_drawable_icon_2="@drawable/unify_chips_ic_chevron_normal"
+            app:text_field_label_static="true" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/spacing_lvl3"
+            android:background="@color/Neutral_N50" />
+    </LinearLayout>
+
+    <ScrollView
+        android:id="@+id/scrollViewVariantUnitValues"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <com.tokopedia.unifycomponents.list.ListUnify
+            android:id="@+id/listUnifyVariantUnitValues"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:choiceMode="singleChoice" />
+
+    </ScrollView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardSaveBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardElevation="@dimen/layout_lvl2">
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/buttonSave"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/spacing_lvl4"
+            android:layout_marginTop="@dimen/spacing_lvl3"
+            android:layout_marginRight="@dimen/spacing_lvl4"
+            android:layout_marginBottom="@dimen/spacing_lvl3"
+            android:layout_weight="0"
+            android:gravity="center|bottom"
+            android:text="@string/action_variant_save" />
+
+    </androidx.cardview.widget.CardView>
+
+</LinearLayout>

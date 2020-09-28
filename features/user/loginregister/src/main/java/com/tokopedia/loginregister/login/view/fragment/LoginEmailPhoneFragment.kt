@@ -48,6 +48,7 @@ import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.text.TextDrawable
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.util.getParamBoolean
 import com.tokopedia.kotlin.util.getParamString
 import com.tokopedia.linker.LinkerConstants
@@ -61,6 +62,7 @@ import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.activation.view.activity.ActivationActivity
 import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics
 import com.tokopedia.loginregister.common.analytics.RegisterAnalytics
+import com.tokopedia.loginregister.common.analytics.SeamlessLoginAnalytics
 import com.tokopedia.loginregister.common.data.DynamicBannerConstant
 import com.tokopedia.loginregister.common.data.model.DynamicBannerDataModel
 import com.tokopedia.loginregister.common.di.LoginRegisterComponent
@@ -69,7 +71,6 @@ import com.tokopedia.loginregister.discover.data.DiscoverItemViewModel
 import com.tokopedia.loginregister.login.di.DaggerLoginComponent
 import com.tokopedia.loginregister.login.domain.StatusFingerprint
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckData
-import com.tokopedia.loginregister.login.domain.pojo.StatusPinData
 import com.tokopedia.loginregister.login.router.LoginRouter
 import com.tokopedia.loginregister.login.view.activity.LoginActivity
 import com.tokopedia.loginregister.login.view.listener.LoginEmailPhoneContract
@@ -81,8 +82,6 @@ import com.tokopedia.loginregister.ticker.domain.pojo.TickerInfoPojo
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.notifications.CMPushNotificationManager
-import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase
-import com.tokopedia.otp.cotp.view.activity.VerificationActivity
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.sessioncommon.ErrorHandlerSession
@@ -111,7 +110,7 @@ import javax.inject.Named
 /**
  * @author by nisie on 18/01/19.
  */
-class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterface, LoginEmailPhoneContract.View {
+open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterface, LoginEmailPhoneContract.View {
 
     private var isTraceStopped: Boolean = false
     private lateinit var performanceMonitoring: PerformanceMonitoring
@@ -126,6 +125,9 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterface, 
     lateinit var registerAnalytics: RegisterAnalytics
 
     @Inject
+    lateinit var seamlessAnalytics: SeamlessLoginAnalytics
+
+    @Inject
     lateinit var presenter: LoginEmailPhonePresenter
 
     @Inject
@@ -136,11 +138,13 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterface, 
     lateinit var userSession: UserSessionInterface
 
     private var source: String = ""
-    private var isAutoLogin: Boolean = false
+    protected var isAutoLogin: Boolean = false
+    protected var isEnableSmartLock = true
     private var isShowTicker: Boolean = false
     private var isShowBanner: Boolean = false
     private var isEnableFingerprint = true
     private var activityShouldEnd = true
+    private var isFromRegister = false
 
     private lateinit var partialRegisterInputView: PartialRegisterInputView
     private lateinit var socmedButtonsContainer: LinearLayout
@@ -324,11 +328,13 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterface, 
     }
 
     private fun showSmartLock() {
-        val intent = Intent(activity, SmartLockActivity::class.java)
-        val bundle = Bundle()
-        bundle.putInt(SmartLockActivity.STATE, SmartLockActivity.RC_READ)
-        intent.putExtras(bundle)
-        startActivityForResult(intent, REQUEST_SMART_LOCK)
+        if(isEnableSmartLock) {
+            val intent = Intent(activity, SmartLockActivity::class.java)
+            val bundle = Bundle()
+            bundle.putInt(SmartLockActivity.STATE, SmartLockActivity.RC_READ)
+            intent.putExtras(bundle)
+            startActivityForResult(intent, REQUEST_SMART_LOCK)
+        }
     }
 
 
@@ -700,7 +706,10 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterface, 
                 finish()
             }
 
-            analytics.eventSuccessLogin(context, userSession.loginMethod, registerAnalytics)
+            if(userSession.loginMethod == SeamlessLoginAnalytics.LOGIN_METHOD_SEAMLESS){
+                seamlessAnalytics.eventClickLoginSeamless(SeamlessLoginAnalytics.LABEL_SUCCESS)
+            }else analytics.eventSuccessLogin(context, userSession.loginMethod, registerAnalytics)
+
             setTrackingUserId(userSession.userId)
             setFCM()
         }
@@ -710,18 +719,20 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterface, 
         saveFirstInstallTime()
     }
 
-    private fun setLoginSuccessSellerApp() = view?.run {
-        if (context.applicationContext is LoginRouter) {
-            (context.applicationContext as LoginRouter).setOnboardingStatus(true)
+    override fun setLoginSuccessSellerApp() {
+        view?.run {
+            if (context.applicationContext is LoginRouter) {
+                (context.applicationContext as LoginRouter).setOnboardingStatus(true)
+            }
+            val intent = if (userSession.hasShop()) {
+                RouteManager.getIntent(context, ApplinkConstInternalSellerapp.SELLER_HOME)
+            } else {
+                RouteManager.getIntent(context, ApplinkConstInternalMarketplace.OPEN_SHOP)
+            }
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+            startActivity(intent)
+            activity?.finish()
         }
-        val intent = if (userSession.hasShop()) {
-            RouteManager.getIntent(context, ApplinkConstInternalSellerapp.SELLER_HOME)
-        } else {
-            RouteManager.getIntent(context, ApplinkConstInternalMarketplace.OPEN_SHOP)
-        }
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
-        startActivity(intent)
-        activity?.finish()
     }
 
     private fun setFCM() {
@@ -752,17 +763,30 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterface, 
                 loginEventAppsFlyer(userSession.userId, userSession.email)
             }
 
-            TrackApp.getInstance().moEngage.setMoEUserAttributesLogin(
-                    userSession.userId,
-                    userSession.name,
-                    userSession.email,
-                    userSession.phoneNumber,
-                    userSession.isGoldMerchant,
-                    userSession.shopName,
-                    userSession.shopId,
-                    userSession.hasShop(),
-                    analytics.getLoginMethodMoengage(userSession.loginMethod)
-            )
+            if(isFromRegister) {
+                TrackApp.getInstance().moEngage.sendMoengageRegisterEvent(
+                        userSession.name,
+                        userSession.userId.toIntOrZero().toString(),
+                        userSession.email,
+                        analytics.getLoginMethodMoengage(userSession.loginMethod),
+                        userSession.phoneNumber,
+                        userSession.isGoldMerchant,
+                        userSession.shopId,
+                        userSession.shopName
+                )
+            } else {
+                TrackApp.getInstance().moEngage.setMoEUserAttributesLogin(
+                        userSession.userId,
+                        userSession.name,
+                        userSession.email,
+                        userSession.phoneNumber,
+                        userSession.isGoldMerchant,
+                        userSession.shopName,
+                        userSession.shopId,
+                        userSession.hasShop(),
+                        analytics.getLoginMethodMoengage(userSession.loginMethod)
+                )
+            }
 
         } catch (e: Exception) {
             e.printStackTrace()
@@ -813,8 +837,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterface, 
 
         analytics.trackLoginPhoneNumber()
         activity?.let {
-            val intent = VerificationActivity.getShowChooseVerificationMethodIntent(it,
-                    RequestOtpUseCase.OTP_TYPE_LOGIN_PHONE_NUMBER, phoneNumber, "")
+            val intent =  goToVerification(phone = phoneNumber, otpType = OTP_LOGIN_PHONE_NUMBER)
             startActivityForResult(intent, REQUEST_LOGIN_PHONE)
         }
 
@@ -824,16 +847,10 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterface, 
         userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_PHONE
 
         activity?.let {
-            val intent = VerificationActivity.getShowChooseVerificationMethodIntent(
-                    it,
-                    RequestOtpUseCase.OTP_TYPE_REGISTER_PHONE_NUMBER,
-                    phoneNumber,
-                    ""
-            )
+            val intent =  goToVerification(phone = phoneNumber, otpType = OTP_REGISTER_PHONE_NUMBER)
             startActivityForResult(intent, REQUEST_REGISTER_PHONE)
         }
     }
-
 
     override fun onEmailExist(email: String) {
         dismissLoadingLogin()
@@ -860,11 +877,12 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterface, 
             dialog.setOnOkClickListener { v ->
                 analytics.eventClickYesSmartLoginDialogButton()
                 dialog.dismiss()
-                val intent = RouteManager.getIntent(context, ApplinkConst.REGISTER)
+                val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.INIT_REGISTER)
                 intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, email)
                 intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, source)
                 intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_SMART_LOGIN, true)
                 intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_PENDING, isPending)
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                 it.startActivity(intent)
                 it.finish()
             }
@@ -957,30 +975,12 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterface, 
         }
     }
 
-    override fun onSuccessGetUserInfoAddPin(): (ProfilePojo) -> Unit {
-        return {
-            if (it.profileInfo.fullName.contains(CHARACTER_NOT_ALLOWED)) {
-                onGoToChangeName()
-            } else {
-                checkAdditionalLoginOptionsAfterSQ()
-            }
-        }
-    }
 
     override fun onErrorGetUserInfo(): (Throwable) -> Unit {
         return {
             dismissLoadingLogin()
             onErrorLogin(ErrorHandler.getErrorMessage(context, it))
 
-        }
-    }
-
-    override fun onGoToCreatePassword(): (String, String) -> Unit {
-        return { fullName: String, userId: String ->
-            val intent = RouteManager.getIntent(context, ApplinkConst.CREATE_PASSWORD)
-            intent.putExtra("name", fullName)
-            intent.putExtra("user_id", userId)
-            startActivityForResult(intent, REQUESTS_CREATE_PASSWORD)
         }
     }
 
@@ -994,8 +994,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterface, 
 
     override fun onGoToSecurityQuestion(email: String): () -> Unit {
         return {
-            val intent = VerificationActivity.getShowChooseVerificationMethodIntent(
-                    activity, RequestOtpUseCase.OTP_TYPE_SECURITY_QUESTION, "", email)
+            val intent =  goToVerification(email = email, otpType = OTP_SECURITY_QUESTION)
             startActivityForResult(intent, REQUEST_SECURITY_QUESTION)
         }
     }
@@ -1089,6 +1088,16 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterface, 
         }
     }
 
+    private fun goToVerification(phone: String = "", email: String = "", otpType: Int): Intent {
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.COTP)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_MSISDN, phone)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, email)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, otpType)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, true)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD, true)
+        return intent
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (activity != null) {
             callbackManager.onActivityResult(requestCode, resultCode, data)
@@ -1145,12 +1154,13 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterface, 
                 val msisdn = data.extras!!.getString(ApplinkConstInternalGlobal.PARAM_MSISDN, "")
                 goToAddNameFromRegisterPhone(uuid, msisdn)
             } else if (requestCode == REQUEST_ADD_NAME) {
-                checkAdditionalLoginOptionsAfterSQ()
+                onSuccessLogin()
             } else if (requestCode == REQUEST_ADD_NAME_REGISTER_PHONE && resultCode == Activity.RESULT_OK) {
                 isAutoLogin = true
+                isFromRegister = true
                 showLoading(true)
-                presenter.getUserInfo()
-                onGoToWelcomeNewUserPage()
+                activityShouldEnd = false
+                processAfterAddNameRegisterPhone(data?.extras)
             } else if (requestCode == REQUEST_LOGIN_PHONE
                     && resultCode == Activity.RESULT_OK
                     && data != null
@@ -1168,12 +1178,11 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterface, 
                         if (it.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_SQ_CHECK, false)) {
                             onGoToSecurityQuestion("")
                         } else {
-                            checkAdditionalLoginOptions()
-                            checkAdditionalLoginOptions()
+                            onSuccessLogin()
                         }
                     }
                 } else {
-                    checkAdditionalLoginOptions()
+                    onSuccessLogin()
                 }
 
             } else if (requestCode == REQUEST_LOGIN_PHONE
@@ -1186,6 +1195,8 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterface, 
                 onSuccessLogin()
             } else if (requestCode == REQUEST_COTP_PHONE_VERIFICATION && resultCode == Activity.RESULT_OK) {
                 onSuccessLogin()
+            } else if (requestCode == REQUEST_ADD_PIN_AFTER_REGISTER_PHONE && resultCode == Activity.RESULT_OK) {
+                presenter.getUserInfo()
             } else {
                 dismissLoadingLogin()
                 super.onActivityResult(requestCode, resultCode, data)
@@ -1198,6 +1209,26 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterface, 
             val intent = RouteManager.getIntent(context, ApplinkConst.DISCOVERY_NEW_USER)
             startActivity(intent)
         }
+    }
+
+    private fun processAfterAddNameRegisterPhone(data: Bundle?){
+        val enable2FA = data?.getBoolean(ApplinkConstInternalGlobal.PARAM_ENABLE_2FA) ?: false
+        val enableSkip2FA = data?.getBoolean(ApplinkConstInternalGlobal.PARAM_ENABLE_SKIP_2FA) ?: false
+        if(enable2FA){
+            goToAddPin2FA(enableSkip2FA)
+        } else {
+            presenter.getUserInfo()
+        }
+    }
+
+    private fun goToAddPin2FA(enableSkip2FA: Boolean){
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PIN)
+        intent.putExtras(Bundle().apply {
+            putBoolean(ApplinkConstInternalGlobal.PARAM_ENABLE_SKIP_2FA, enableSkip2FA)
+            putBoolean(ApplinkConstInternalGlobal.PARAM_IS_FROM_2FA, true)
+            putBoolean(ApplinkConstInternalGlobal.PARAM_IS_SKIP_OTP, true)
+        })
+        startActivityForResult(intent, REQUEST_ADD_PIN_AFTER_REGISTER_PHONE)
     }
 
     private fun isFromAccountPage(): Boolean = source == SOURCE_ACCOUNT
@@ -1327,20 +1358,6 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterface, 
         }
     }
 
-    private fun checkAdditionalLoginOptions() {
-        if (isEnableFingerprint && ScanFingerprintDialog.isFingerprintAvailable(activity))
-                presenter.checkStatusFingerprint()
-        else
-            presenter.checkStatusPin(onSuccessCheckStatusPin(), onErrorCheckStatusPin())
-    }
-
-    private fun checkAdditionalLoginOptionsAfterSQ() {
-        if (isEnableFingerprint && ScanFingerprintDialog.isFingerprintAvailable(activity))
-            presenter.checkStatusFingerprint()
-        else
-            presenter.checkStatusPin(onSuccessCheckStatusPinAfterSQ(), onErrorCheckStatusPin())
-    }
-
     override fun onErrorCheckStatusFingerprint(e: Throwable) {
         dismissLoadingLogin()
         e.printStackTrace()
@@ -1348,63 +1365,19 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterface, 
 
     override fun onSuccessCheckStatusFingerprint(data: StatusFingerprint) {
         dismissLoadingLogin()
+        onSuccessLogin()
         if (!data.isValid && isFromAccountPage()) {
             goToFingerprintRegisterPage()
-        } else {
-            onSuccessLogin()
         }
     }
 
     override fun goToFingerprintRegisterPage() {
-        RemoteConfigInstance.getInstance().abTestPlatform.fetchByType(null)
-        RouteManager.route(context, ApplinkConstInternalGlobal.ADD_FINGERPRINT_ONBOARDING)
-        activity?.finish()
-    }
-
-    private fun onErrorCheckStatusPin(): (Throwable) -> Unit {
-        return {
-            it.printStackTrace()
-            dismissLoadingLogin()
-            view?.run {
-                val errorMessage = ErrorHandler.getErrorMessage(context, it)
-                Toaster.showError(this, errorMessage, Snackbar.LENGTH_LONG)
-            }
+        context?.run {
+            val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_FINGERPRINT_ONBOARDING)
+            startActivity(intent)
         }
     }
 
-    private fun onSuccessCheckStatusPin(): (StatusPinData) -> Unit {
-        return {
-            dismissLoadingLogin()
-            if (!it.isRegistered &&
-                    isFromAccountPage() &&
-                    userSession.phoneNumber.isNotEmpty() &&
-                    userSession.isMsisdnVerified) {
-                val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PIN_ONBOARDING)
-                intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_SKIP_OTP, true)
-                startActivityForResult(intent, REQUEST_ADD_PIN)
-            } else {
-                onSuccessLogin()
-            }
-        }
-    }
-
-    private fun onSuccessCheckStatusPinAfterSQ(): (StatusPinData) -> Unit {
-        return {
-            dismissLoadingLogin()
-            if (!it.isRegistered &&
-                    isFromAccountPage() &&
-                    userSession.phoneNumber.isNotEmpty() &&
-                    userSession.isMsisdnVerified) {
-                activity?.run {
-                    val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PIN_ONBOARDING)
-                    intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_SKIP_OTP, true)
-                    startActivityForResult(intent, REQUEST_ADD_PIN_AFTER_SQ)
-                }
-            } else {
-                onSuccessLogin()
-            }
-        }
-    }
 
     private fun registerCheck(id: String) {
         if (id.isEmpty()) onErrorEmptyEmailPhone()
@@ -1550,9 +1523,14 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterface, 
         const val REQUEST_ADD_PIN_AFTER_SQ = 119
         private val REQUEST_OTP_VALIDATE = 120
         private val REQUEST_PENDING_OTP_VALIDATE = 121
+        const val REQUEST_ADD_PIN_AFTER_REGISTER_PHONE = 122
 
         private const val PHONE_TYPE = "phone"
         private const val EMAIL_TYPE = "email"
+
+        private const val OTP_SECURITY_QUESTION = 134
+        private const val OTP_LOGIN_PHONE_NUMBER = 112
+        private const val OTP_REGISTER_PHONE_NUMBER = 116
 
         private const val LOGIN_LOAD_TRACE = "gb_login_trace"
         private const val LOGIN_SUBMIT_TRACE = "gb_submit_login_trace"

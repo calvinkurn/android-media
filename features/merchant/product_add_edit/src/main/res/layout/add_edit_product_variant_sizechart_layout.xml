@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/layoutSizechart"
+    android:orientation="vertical"
+    android:padding="@dimen/spacing_lvl4"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/typographySizechartTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/label_variant_sizechart"
+        android:textColor="@color/Neutral_N700_96"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="heading_4" />
+
+    <com.tokopedia.unifycomponents.CardUnify
+        android:id="@+id/cardSizechart"
+        android:layout_width="@dimen/layout_lvl7"
+        android:layout_height="@dimen/layout_lvl7"
+        app:card_type="border"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/typographySizechartTitle">
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_margin="@dimen/spacing_lvl2"
+            app:cardBackgroundColor="@color/Neutral_N50"
+            app:cardCornerRadius="@dimen/spacing_lvl2"
+            app:cardElevation="@dimen/layout_lvl0">
+
+            <ImageView
+                android:id="@+id/ivSizechart"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <ImageView
+                android:id="@+id/ivSizechartAddSign"
+                android:layout_gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/ic_plus_gray" />
+
+            <ImageView
+                android:id="@+id/ivSizechartEditSign"
+                android:layout_gravity="bottom"
+                android:layout_width="@dimen/layout_lvl2"
+                android:layout_height="@dimen/layout_lvl2"
+                android:padding="@dimen/spacing_lvl1"
+                android:background="@drawable/oval_transparent_grey"
+                android:tint="@color/white_95"
+                android:visibility="gone"
+                app:srcCompat="@drawable/ic_edit_price" />
+
+        </androidx.cardview.widget.CardView>
+
+    </com.tokopedia.unifycomponents.CardUnify>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/typographySizechartDescription"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:text="@string/label_variant_sizechart_description"
+        android:textColor="@color/Neutral_N700_68"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_marginLeft="@dimen/spacing_lvl3"
+        android:layout_marginStart="@dimen/spacing_lvl3"
+        app:layout_constraintBottom_toBottomOf="@+id/cardSizechart"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/cardSizechart"
+        app:layout_constraintTop_toBottomOf="@+id/typographySizechartTitle"
+        app:typographyType="body_3" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

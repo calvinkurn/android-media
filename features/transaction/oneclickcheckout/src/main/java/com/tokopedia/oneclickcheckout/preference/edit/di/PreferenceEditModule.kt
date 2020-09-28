@@ -1,5 +1,6 @@
 package com.tokopedia.oneclickcheckout.preference.edit.di
 
+import android.app.Activity
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.data.Interactor
@@ -7,15 +8,29 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.logisticcart.domain.executor.MainScheduler
 import com.tokopedia.logisticcart.domain.executor.SchedulerProvider
-import com.tokopedia.oneclickcheckout.common.domain.GetShippingDurationUseCase
+import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationConverter
+import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
+import com.tokopedia.logisticdata.domain.mapper.AddressCornerMapper
+import com.tokopedia.logisticdata.domain.usecase.GetAddressCornerUseCase
+import com.tokopedia.oneclickcheckout.common.dispatchers.DefaultDispatchers
+import com.tokopedia.oneclickcheckout.common.dispatchers.ExecutorDispatchers
+import com.tokopedia.oneclickcheckout.common.domain.mapper.PreferenceModelMapper
 import com.tokopedia.oneclickcheckout.preference.analytics.PreferenceListAnalytics
+import com.tokopedia.oneclickcheckout.preference.edit.data.payment.PaymentListingParamGqlResponse
 import com.tokopedia.oneclickcheckout.preference.edit.domain.create.CreatePreferenceUseCase
+import com.tokopedia.oneclickcheckout.preference.edit.domain.create.CreatePreferenceUseCaseImpl
 import com.tokopedia.oneclickcheckout.preference.edit.domain.create.model.CreatePreferenceGqlResponse
 import com.tokopedia.oneclickcheckout.preference.edit.domain.delete.DeletePreferenceUseCase
+import com.tokopedia.oneclickcheckout.preference.edit.domain.delete.DeletePreferenceUseCaseImpl
 import com.tokopedia.oneclickcheckout.preference.edit.domain.delete.model.DeletePreferenceGqlResponse
 import com.tokopedia.oneclickcheckout.preference.edit.domain.get.model.GetPreferenceByIdGqlResponse
+import com.tokopedia.oneclickcheckout.preference.edit.domain.payment.GetPaymentListingParamUseCase
+import com.tokopedia.oneclickcheckout.preference.edit.domain.payment.GetPaymentListingParamUseCaseImpl
+import com.tokopedia.oneclickcheckout.preference.edit.domain.shipping.GetShippingDurationUseCase
+import com.tokopedia.oneclickcheckout.preference.edit.domain.shipping.mapper.ShippingDurationModelMapper
 import com.tokopedia.oneclickcheckout.preference.edit.domain.update.UpdatePreferenceUseCase
 import com.tokopedia.oneclickcheckout.preference.edit.domain.update.model.UpdatePreferenceGqlResponse
+import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -23,13 +38,20 @@ import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 
-@PreferenceEditScope
 @Module
-class PreferenceEditModule {
+open class PreferenceEditModule(private val activity: Activity) {
+
+    @PreferenceEditScope
+    @Provides
+    fun provideContext(): Context = activity
 
     @PreferenceEditScope
     @Provides
     fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
+
+    @PreferenceEditScope
+    @Provides
+    fun provideExecutorDispatchers(): ExecutorDispatchers = DefaultDispatchers
 
     @PreferenceEditScope
     @Provides
@@ -45,8 +67,8 @@ class PreferenceEditModule {
 
     @PreferenceEditScope
     @Provides
-    fun provideGetShippingDurationUseCase(graphqlRepository: GraphqlRepository): GetShippingDurationUseCase {
-        return GetShippingDurationUseCase(GraphqlUseCase(graphqlRepository))
+    fun provideGetShippingDurationUseCase(graphqlRepository: GraphqlRepository, mapper: ShippingDurationModelMapper): GetShippingDurationUseCase {
+        return GetShippingDurationUseCase(GraphqlUseCase(graphqlRepository), mapper)
     }
 
     @PreferenceEditScope
@@ -57,6 +79,10 @@ class PreferenceEditModule {
 
     @PreferenceEditScope
     @Provides
+    fun providesPreferenceModelMapper(): PreferenceModelMapper = PreferenceModelMapper
+
+    @PreferenceEditScope
+    @Provides
     fun providesCreatePreferenceGraphqlUseCase(graphqlRepository: GraphqlRepository): GraphqlUseCase<CreatePreferenceGqlResponse> {
         return GraphqlUseCase(graphqlRepository)
     }
@@ -64,7 +90,7 @@ class PreferenceEditModule {
     @PreferenceEditScope
     @Provides
     fun providesCreatePreferenceUseCase(graphqlUseCase: GraphqlUseCase<CreatePreferenceGqlResponse>): CreatePreferenceUseCase {
-        return CreatePreferenceUseCase(graphqlUseCase)
+        return CreatePreferenceUseCaseImpl(graphqlUseCase)
     }
 
     @PreferenceEditScope
@@ -76,7 +102,7 @@ class PreferenceEditModule {
     @PreferenceEditScope
     @Provides
     fun providesDeletePreferenceUseCase(graphqlUseCase: GraphqlUseCase<DeletePreferenceGqlResponse>): DeletePreferenceUseCase {
-        return DeletePreferenceUseCase(graphqlUseCase)
+        return DeletePreferenceUseCaseImpl(graphqlUseCase)
     }
 
     @PreferenceEditScope
@@ -107,5 +133,36 @@ class PreferenceEditModule {
     @Provides
     fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface {
         return UserSession(context)
+    }
+
+    @PreferenceEditScope
+    @Provides
+    fun provideGetRatesUseCase(context: Context, converter: ShippingDurationConverter,
+                               graphqlUseCase: com.tokopedia.graphql.domain.GraphqlUseCase, schedulerProvider: SchedulerProvider): GetRatesUseCase {
+        return GetRatesUseCase(context, converter, graphqlUseCase, schedulerProvider)
+    }
+
+    @PreferenceEditScope
+    @Provides
+    fun provideGetAddressCornerUseCase(context: Context, graphqlUseCase: com.tokopedia.graphql.domain.GraphqlUseCase, mapper: AddressCornerMapper): GetAddressCornerUseCase {
+        return GetAddressCornerUseCase(context, graphqlUseCase, mapper)
+    }
+
+    @PreferenceEditScope
+    @Provides
+    fun provideGetPaymentListingGraphqlUseCase(graphqlRepository: GraphqlRepository): GraphqlUseCase<PaymentListingParamGqlResponse> {
+        return GraphqlUseCase(graphqlRepository)
+    }
+
+    @PreferenceEditScope
+    @Provides
+    fun provideGetPaymentListingParamUseCase(graphqlUseCase: GraphqlUseCase<PaymentListingParamGqlResponse>): GetPaymentListingParamUseCase {
+        return GetPaymentListingParamUseCaseImpl(graphqlUseCase)
+    }
+
+    @PreferenceEditScope
+    @Provides
+    open fun providePaymentListingUrl(): String {
+        return "${TokopediaUrl.getInstance().PAY}/v2/payment/register/listing"
     }
 }

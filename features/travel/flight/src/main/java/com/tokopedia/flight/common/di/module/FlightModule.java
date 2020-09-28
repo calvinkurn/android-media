@@ -28,15 +28,14 @@ import com.tokopedia.flight.common.di.scope.FlightScope;
 import com.tokopedia.flight.common.domain.FlightRepository;
 import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.country.database.FlightAirportCountryDao;
-import com.tokopedia.flight.dashboard.data.cloud.FlightClassesDataSource;
 import com.tokopedia.flight.orderlist.data.FlightOrderApi;
 import com.tokopedia.flight.orderlist.data.cloud.FlightOrderDataSource;
 import com.tokopedia.flight.orderlist.domain.FlightGetOrderUseCase;
 import com.tokopedia.flight.orderlist.domain.model.mapper.FlightOrderMapper;
-import com.tokopedia.flight.search.data.db.FlightComboDao;
-import com.tokopedia.flight.search.data.db.FlightJourneyDao;
-import com.tokopedia.flight.search.data.db.FlightRouteDao;
-import com.tokopedia.flight.search.data.db.FlightSearchRoomDb;
+import com.tokopedia.flight.searchV4.data.FlightRouteDao;
+import com.tokopedia.flight.searchV4.data.cache.db.FlightSearchRoomDb;
+import com.tokopedia.flight.searchV4.data.cache.db.dao.FlightComboDao;
+import com.tokopedia.flight.searchV4.data.cache.db.dao.FlightJourneyDao;
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor;
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase;
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository;
@@ -63,9 +62,9 @@ import retrofit2.converter.gson.GsonConverterFactory;
 @FlightScope
 @Module
 public class FlightModule {
-    private static final int NET_READ_TIMEOUT = 30;
-    private static final int NET_WRITE_TIMEOUT = 30;
-    private static final int NET_CONNECT_TIMEOUT = 30;
+    private static final int NET_READ_TIMEOUT = 60;
+    private static final int NET_WRITE_TIMEOUT = 60;
+    private static final int NET_CONNECT_TIMEOUT = 60;
     private static final int NET_RETRY = 1;
     private static final String GSON_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ssZ";
 
@@ -111,11 +110,10 @@ public class FlightModule {
 
     @FlightScope
     @Provides
-    public FlightRepository provideFlightRepository(FlightClassesDataSource getFlightClassesUseCase,
-                                                    FlightOrderDataSource flightOrderDataSource,
+    public FlightRepository provideFlightRepository(FlightOrderDataSource flightOrderDataSource,
                                                     FlightOrderMapper flightOrderMapper,
                                                     FlightCancellationCloudDataSource flightCancellationCloudDataSource) {
-        return new FlightRepositoryImpl(getFlightClassesUseCase, flightOrderDataSource,
+        return new FlightRepositoryImpl(flightOrderDataSource,
                 flightOrderMapper, flightCancellationCloudDataSource);
     }
 
@@ -173,38 +171,20 @@ public class FlightModule {
 
     @Provides
     @FlightScope
-    FlightComboDao provideComboDao(FlightSearchRoomDb flightSearchRoomDb) {
-        return flightSearchRoomDb.flightComboDao();
-    }
-
-    @Provides
-    @FlightScope
-    FlightJourneyDao provideFlightJourneyDao(FlightSearchRoomDb flightSearchRoomDb) {
+    FlightJourneyDao provideFlightJourneyNewDao(FlightSearchRoomDb flightSearchRoomDb) {
         return flightSearchRoomDb.flightJourneyDao();
     }
 
     @Provides
     @FlightScope
-    FlightRouteDao provideRouteDao(FlightSearchRoomDb flightSearchRoomDb) {
+    FlightRouteDao provideRouteNewDao(FlightSearchRoomDb flightSearchRoomDb) {
         return flightSearchRoomDb.flightRouteDao();
     }
 
     @Provides
     @FlightScope
-    com.tokopedia.flight.searchV4.data.cache.dao.FlightJourneyDao provideFlightJourneyNewDao(FlightSearchRoomDb flightSearchRoomDb) {
-        return flightSearchRoomDb.flightJourneyCoroutineDao();
-    }
-
-    @Provides
-    @FlightScope
-    com.tokopedia.flight.searchV4.data.FlightRouteDao provideRouteNewDao(FlightSearchRoomDb flightSearchRoomDb) {
-        return flightSearchRoomDb.flightRouteCoroutineDao();
-    }
-
-    @Provides
-    @FlightScope
-    com.tokopedia.flight.searchV4.data.cache.dao.FlightComboDao provideComboNewDao(FlightSearchRoomDb flightSearchRoomDb) {
-        return flightSearchRoomDb.flightComboCoroutineDao();
+    FlightComboDao provideComboNewDao(FlightSearchRoomDb flightSearchRoomDb) {
+        return flightSearchRoomDb.flightComboDao();
     }
 
     @Provides

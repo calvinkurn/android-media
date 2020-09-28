@@ -1,17 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/telco_layout_content_product"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:layout_marginBottom="@dimen/layout_lvl2"
+    android:focusableInTouchMode="true"
+    android:descendantFocusability="blocksDescendants">
 
-    <com.tokopedia.topupbills.telco.view.widget.DigitalTelcoProductWidget
+    <com.tokopedia.sortfilter.SortFilter
+        android:id="@+id/telco_sort_filter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/layout_lvl2"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/telco_title_filter_result"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/telco_sort_filter"
+        android:layout_marginTop="@dimen/layout_lvl2"
+        android:layout_marginBottom="@dimen/layout_lvl1"
+        android:layout_marginLeft="@dimen/layout_lvl2"
+        android:layout_marginRight="@dimen/layout_lvl2"
+        android:lines="1"
+        android:textColor="@color/light_N700_96"
+        app:typographyType="heading_4"
+        android:visibility="gone"
+        android:text="@string/telco_title_filter_result" />
+
+    <com.tokopedia.topupbills.telco.prepaid.widget.DigitalTelcoProductWidget
         android:id="@+id/telco_product_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/telco_title_filter_result"/>
 
-    <include layout="@layout/view_telco_digital_empty_product_list" />
+    <include
+        layout="@layout/view_telco_digital_empty_product_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/telco_title_filter_result" />
 
-    <include layout="@layout/layout_shimmering_product_grid" />
+    <include
+        layout="@layout/layout_telco_shimmering_product_grid"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/telco_sort_filter" />
 
-    <include layout="@layout/layout_shimmering_product_list" />
+    <include
+        layout="@layout/layout_telco_shimmering_product_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/telco_sort_filter" />
 
 </RelativeLayout>

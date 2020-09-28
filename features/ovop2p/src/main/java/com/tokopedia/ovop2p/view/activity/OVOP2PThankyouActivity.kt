@@ -77,9 +77,9 @@ class OVOP2PThankyouActivity : BaseSimpleActivity(), LoaderUiListener, ActivityL
             transferId = listStr?.get(0) ?: ""
         }
         if(intent != null && intent.extras != null) {
-            nonOvoUser = intent.extras.getBoolean(Constants.Keys.NON_OVO_SUCS)
-            if(TextUtils.isEmpty(transferId) && intent.extras.containsKey(Constants.Keys.TRANSFER_ID)) {
-                transferId = intent.extras.getString(Constants.Keys.TRANSFER_ID)
+            nonOvoUser = intent.extras!!.getBoolean(Constants.Keys.NON_OVO_SUCS)
+            if(TextUtils.isEmpty(transferId) && intent.extras!!.containsKey(Constants.Keys.TRANSFER_ID)) {
+                transferId = intent.extras!!.getString(Constants.Keys.TRANSFER_ID, "")
             }
         }
     }

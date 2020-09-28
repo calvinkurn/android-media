@@ -197,7 +197,9 @@ class DynamicChannelSprintViewHolder(sprintView: View,
                             element.freeOngkir.isActive,
                             element.freeOngkir.imageUrl
                     ),
-                    isOutOfStock = element.isOutOfStock
+                    isOutOfStock = element.isOutOfStock,
+                    ratingCount = element.rating,
+                    reviewCount = element.countReview
             )
         }
     }

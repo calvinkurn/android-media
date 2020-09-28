@@ -5,7 +5,7 @@ import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.oneclickcheckout.R
-import com.tokopedia.oneclickcheckout.common.domain.model.shipping.LogisticPromoInfo
+import com.tokopedia.oneclickcheckout.preference.edit.view.shipping.model.LogisticPromoInfo
 
 class LogisticPromoInfoViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
 

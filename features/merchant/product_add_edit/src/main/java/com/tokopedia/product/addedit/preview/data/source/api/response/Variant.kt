@@ -1,6 +1,7 @@
 package com.tokopedia.product.addedit.preview.data.source.api.response
 
 import com.google.gson.annotations.SerializedName
+import java.math.BigInteger
 
 data class Variant(
         @SerializedName("products")
@@ -21,7 +22,7 @@ data class ProductVariant(
         @SerializedName("isPrimary")
         val isPrimary: Boolean,
         @SerializedName("price")
-        val price: Long,
+        val price: BigInteger,
         @SerializedName("sku")
         val sku: String,
         @SerializedName("stock")

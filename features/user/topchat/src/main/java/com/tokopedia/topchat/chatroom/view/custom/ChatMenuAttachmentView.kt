@@ -7,10 +7,17 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.chat_common.domain.pojo.attachmentmenu.AttachmentMenu
 import com.tokopedia.chat_common.view.adapter.AttachmentMenuAdapter
 import com.tokopedia.chat_common.view.adapter.viewholder.chatmenu.AttachmentItemViewHolder
+import com.tokopedia.config.GlobalConfig
 
 class ChatMenuAttachmentView : RecyclerView {
 
-    private val manager = GridLayoutManager(context, 4)
+    companion object {
+        const val SPAN_COUNT_MAIN_APP = 3
+        const val SPAN_COUNT_SELLER_APP = 4
+    }
+
+    private val manager = GridLayoutManager(context, getTabCount())
+
     private val adapter = AttachmentMenuAdapter()
 
     constructor(context: Context) : super(context)
@@ -29,6 +36,8 @@ class ChatMenuAttachmentView : RecyclerView {
         setAdapter(adapter)
     }
 
+    private fun getTabCount(): Int = if (GlobalConfig.isSellerApp()) SPAN_COUNT_SELLER_APP else SPAN_COUNT_MAIN_APP
+
     fun setAttachmentMenuListener(listener: AttachmentMenu.AttachmentMenuListener) {
         adapter.attachmentMenuListener = listener
     }
@@ -38,7 +47,7 @@ class ChatMenuAttachmentView : RecyclerView {
     }
 
     fun addVoucherAttachmentMenu() {
-        if (!adapter.alreadyHasAttachVoucherMenu()) {
+        if (!adapter.alreadyHasAttachVoucherMenu() && GlobalConfig.isSellerApp()) {
             adapter.addVoucherAttachmentMenu()
         }
     }

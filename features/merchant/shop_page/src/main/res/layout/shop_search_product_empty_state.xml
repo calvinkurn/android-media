@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    
+    <com.tokopedia.unifycomponents.EmptyState
+        android:id="@+id/shopSearchEmptyState"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:unifyEmptyStateTitle="@string/shop_product_search_empty_state_title"
+        app:unifyEmptyStateDescription="@string/shop_product_search_empty_state_desc"
+        app:unifyEmptyStatePrimaryCTAText="@string/shop_product_search_empty_state_btn_primary"
+        app:unifyEmptyStateSecondaryCTAText="@string/shop_product_search_empty_state_btn_secondary"
+        app:unifyEmptyStateOrientation="horizontal"
+        app:unifyEmptyStateType="section"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -14,10 +14,6 @@ public interface AdsView {
 
     void initInjector();
 
-    void initPresenter();
-
-    void setDisplayMode(DisplayMode displayMode);
-
     void displayAds(List<Item> list, int position);
 
     void notifyAdsErrorLoaded(int errorCode, String message);

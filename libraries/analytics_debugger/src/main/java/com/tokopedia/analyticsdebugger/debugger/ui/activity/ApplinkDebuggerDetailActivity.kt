@@ -27,7 +27,7 @@ class ApplinkDebuggerDetailActivity : BaseSimpleActivity() {
     }
 
     override fun getNewFragment(): Fragment? {
-        return ApplinkDebuggerDetailFragment.newInstance(intent.extras)
+        return ApplinkDebuggerDetailFragment.newInstance(intent.extras ?: Bundle())
     }
 
     companion object {

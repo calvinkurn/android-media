@@ -19,6 +19,6 @@ class PlayProcessLifecycleObserver(private val context: Context) : LifecycleObse
      */
     @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
     fun onPause() {
-        playVideoManager.stop(false)
+        playVideoManager.stop(resetState = playVideoManager.isVideoLive())
     }
 }

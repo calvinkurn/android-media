@@ -1,5 +1,6 @@
 package com.tokopedia.iris
 
+import android.os.Bundle
 import com.tokopedia.iris.model.Configuration
 
 /**
@@ -18,7 +19,7 @@ interface Iris {
      * config, ex: {"row_limit":25,"interval":1}
      * isEnabled, ex: true
      */
-    fun setService(config: String, isEnabled: Boolean)
+    fun setService(config: String, isEnabled: Boolean, isWorkManagerEnabled: Boolean)
 
     fun setService(config: Configuration)
 
@@ -28,6 +29,8 @@ interface Iris {
      *
      */
     fun saveEvent(map: Map<String, Any>)
+
+    fun saveEvent(bundle: Bundle)
 
     /**
      * direct send event to server

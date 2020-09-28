@@ -11,7 +11,10 @@ import com.tokopedia.centralizedpromo.view.viewholder.OnGoingPromoViewHolder
 import com.tokopedia.centralizedpromo.view.viewholder.PostViewHolder
 import com.tokopedia.centralizedpromo.view.viewholder.PromoCreationViewHolder
 
-class CentralizedPromoAdapterTypeFactory : BaseAdapterTypeFactory() {
+class CentralizedPromoAdapterTypeFactory(
+    private val onFreeShippingImpression: () -> Unit,
+    private val onFreeShippingClicked: () -> Unit
+) : BaseAdapterTypeFactory() {
     fun type(onGoingPromoUiModel: OnGoingPromoUiModel): Int {
         return OnGoingPromoViewHolder.RES_LAYOUT
     }
@@ -26,7 +29,10 @@ class CentralizedPromoAdapterTypeFactory : BaseAdapterTypeFactory() {
 
     override fun createViewHolder(parent: View?, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
-            PromoCreationViewHolder.RES_LAYOUT -> PromoCreationViewHolder(parent)
+            PromoCreationViewHolder.RES_LAYOUT -> PromoCreationViewHolder(parent).apply {
+                onFreeShippingImpression = this@CentralizedPromoAdapterTypeFactory.onFreeShippingImpression
+                onFreeShippingClicked = this@CentralizedPromoAdapterTypeFactory.onFreeShippingClicked
+            }
             PostViewHolder.RES_LAYOUT -> PostViewHolder(parent)
             OnGoingPromoViewHolder.RES_LAYOUT -> OnGoingPromoViewHolder(parent)
             else -> super.createViewHolder(parent, type)

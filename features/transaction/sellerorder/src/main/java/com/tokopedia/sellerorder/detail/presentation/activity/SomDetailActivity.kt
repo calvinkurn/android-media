@@ -1,5 +1,6 @@
 package com.tokopedia.sellerorder.detail.presentation.activity
 
+import android.annotation.SuppressLint
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
@@ -33,7 +34,7 @@ class SomDetailActivity: BaseSimpleActivity(), HasComponent<SomDetailComponent> 
     override fun getNewFragment(): Fragment? {
         var bundle = Bundle()
         if (intent.extras != null) {
-            bundle = intent.extras
+            bundle = intent.extras ?: Bundle()
         } else {
             bundle.putString(PARAM_ORDER_ID, "")
         }
@@ -57,7 +58,7 @@ class SomDetailActivity: BaseSimpleActivity(), HasComponent<SomDetailComponent> 
     }
 
     private fun onChatClicked() {
-        (fragment as SomDetailFragment).doClickChat()
+        (fragment as? SomDetailFragment)?.doClickChat()
     }
 
     override fun getComponent(): SomDetailComponent =
@@ -69,5 +70,10 @@ class SomDetailActivity: BaseSimpleActivity(), HasComponent<SomDetailComponent> 
         if (GlobalConfig.isSellerApp() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             setStatusBarColor(Color.WHITE)
         }
+    }
+
+    @SuppressLint("MissingSuperCall")
+    override fun onSaveInstanceState(outState: Bundle) {
+        // Do not put super, avoid crash "Can not perform this action after onSaveInstanceState"
     }
 }

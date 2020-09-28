@@ -28,9 +28,9 @@ import java.util.concurrent.TimeUnit
 class LivenessDetectionUploadImagesModule {
 
     private val GSON_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ssZ"
-    private val NET_READ_TIMEOUT = 100
-    private val NET_WRITE_TIMEOUT = 100
-    private val NET_CONNECT_TIMEOUT = 100
+    private val NET_READ_TIMEOUT = 300
+    private val NET_WRITE_TIMEOUT = 300
+    private val NET_CONNECT_TIMEOUT = 300
     private val NET_RETRY = 3
 
     @LivenessDetectionScope

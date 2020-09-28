@@ -12,17 +12,9 @@ import rx.Observable;
  */
 
 public interface CategoryRepository {
-    Observable<Boolean> checkVersion();
-
     Observable<Boolean> checkCategoryAvailable();
 
-    Observable<List<CategoryDomainModel>> fetchCategoryWithParent(long categoryId);
-
-    Observable<List<CategoryLevelDomainModel>> fetchCategoryFromSelected(long categoryId);
-
     Observable<List<String>> fetchCategoryDisplay(long categoryId);
-
-    Observable<Boolean> clearCache();
 
     Observable<String> getCategoryName(long categoryId);
 }

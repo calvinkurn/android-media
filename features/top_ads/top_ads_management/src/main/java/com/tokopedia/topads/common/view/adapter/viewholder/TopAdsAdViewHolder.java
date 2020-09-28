@@ -34,6 +34,7 @@ public class TopAdsAdViewHolder<T extends Ad & Visitable> extends BaseMultipleCh
     private TextView statusActive;
     private TextView promoPriceUsed;
     private TextView dailySpentTextView;
+    private View separator;
     private TextView dailyTotalTextView;
     private TextView pricePromoPerClick;
     private View progressBarLayout;
@@ -45,6 +46,7 @@ public class TopAdsAdViewHolder<T extends Ad & Visitable> extends BaseMultipleCh
     private View promoPerClickContainer;
     private View promoPriceUsedContainer;
     private View statusActiveContainer;
+    public static final String TIDAK_DIBATASI = "Tidak Dibatasi";
 
     public TopAdsAdViewHolder(View view) {
         super(view);
@@ -55,6 +57,7 @@ public class TopAdsAdViewHolder<T extends Ad & Visitable> extends BaseMultipleCh
         statusActive = (TextView) view.findViewById(R.id.status_active);
         promoPriceUsed = (TextView) view.findViewById(R.id.promo_price_used);
         dailySpentTextView = (TextView) view.findViewById(R.id.text_view_daily_spent);
+        separator = view.findViewById(R.id.separator);
         dailyTotalTextView = (TextView) view.findViewById(R.id.text_view_daily_total);
         pricePromoPerClick = (TextView) view.findViewById(R.id.price_promo_per_click);
         progressBarLayout = view.findViewById(R.id.progress_bar_layout);
@@ -96,6 +99,10 @@ public class TopAdsAdViewHolder<T extends Ad & Visitable> extends BaseMultipleCh
             groupName = ((ProductAd) ad).getGroupName();
         }
         if (TextUtils.isEmpty(ad.getPriceDailyBar()) || groupId > 0) {
+            separator.setVisibility(View.GONE);
+            dailyTotalTextView.setVisibility(View.GONE);
+            dailySpentTextView.setText(TIDAK_DIBATASI);
+
             progressBarLayout.setVisibility(View.GONE);
             if (groupId > 0) {
                 groupNameView.setVisibility(View.VISIBLE);
@@ -105,6 +112,8 @@ public class TopAdsAdViewHolder<T extends Ad & Visitable> extends BaseMultipleCh
                 groupNameView.setVisibility(View.GONE);
             }
         } else {
+            separator.setVisibility(View.VISIBLE);
+            dailyTotalTextView.setVisibility(View.VISIBLE);
             groupNameView.setVisibility(View.GONE);
             progressBarLayout.setVisibility(View.VISIBLE);
             progressBarPromo.setProgress((int) Double.parseDouble(ad.getPriceDailyBar()));

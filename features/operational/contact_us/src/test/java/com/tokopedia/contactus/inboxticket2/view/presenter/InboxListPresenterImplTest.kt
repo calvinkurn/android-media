@@ -1,7 +1,7 @@
 package com.tokopedia.contactus.inboxticket2.view.presenter
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tkpd.library.ui.view.LinearLayoutManager
+import com.tokopedia.contactus.createticket.widget.LinearLayoutManager
 import com.tokopedia.contactus.common.analytics.ContactUsTracking
 import com.tokopedia.contactus.inboxticket2.domain.TicketListResponse
 import com.tokopedia.contactus.inboxticket2.domain.TicketsItem

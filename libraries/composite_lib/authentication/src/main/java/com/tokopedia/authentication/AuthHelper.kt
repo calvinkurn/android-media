@@ -1,22 +1,38 @@
 package com.tokopedia.authentication
 
 import android.os.Build
-import androidx.collection.ArrayMap
 import android.util.Base64
+import androidx.collection.ArrayMap
 import com.google.gson.Gson
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.user.session.UserSessionInterface
 import java.security.InvalidKeyException
 import java.security.NoSuchAlgorithmException
 import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.HashMap
-import java.util.Locale
+import java.util.*
+import java.util.regex.Pattern
 import javax.crypto.Mac
 import javax.crypto.spec.SecretKeySpec
 
+
 class AuthHelper {
     companion object {
+
+        val p = Pattern.compile("([\\d]*[^-\\w][\\d]*)-([\\D]*)")
+
+        const val ERROR = "error read version name"
+
+        @JvmStatic
+        fun getVersionName(versionName: String): Pair<String, String> {
+            val m = p.matcher(versionName)
+            if(m.groupCount()==2){
+                while(m.find()){
+                    return Pair(m.group(1), m.group(2))
+                }
+            }
+            return Pair(ERROR, ERROR)
+        }
+
         @JvmStatic
         fun getDefaultHeaderMap(
                 path: String,
@@ -41,7 +57,9 @@ class AuthHelper {
             headerMap[HEADER_AUTHORIZATION] = "${HEADER_HMAC_SIGNATURE_KEY}${signature.trim()}"
 
             headerMap.remove(HEADER_ACCOUNT_AUTHORIZATION)
+            headerMap.remove(HEADER_RELEASE_TRACK)
 
+            headerMap[HEADER_RELEASE_TRACK] = GlobalConfig.VERSION_NAME_SUFFIX
             headerMap[HEADER_ACCOUNT_AUTHORIZATION] = "$HEADER_PARAM_BEARER ${userSession.accessToken}"
             headerMap[HEADER_X_APP_VERSION] = GlobalConfig.VERSION_CODE.toString(10)
             headerMap[HEADER_X_TKPD_APP_NAME] = GlobalConfig.getPackageApplicationName()
@@ -79,7 +97,9 @@ class AuthHelper {
             headerMap[HEADER_AUTHORIZATION] = "TKPD Tokopedia:${signature.trim()}"
 
             headerMap.remove(HEADER_ACCOUNT_AUTHORIZATION)
+            headerMap.remove(HEADER_RELEASE_TRACK)
 
+            headerMap[HEADER_RELEASE_TRACK] = GlobalConfig.VERSION_NAME_SUFFIX
             headerMap[HEADER_ACCOUNT_AUTHORIZATION] = "$HEADER_PARAM_BEARER ${session.accessToken}"
             headerMap[HEADER_X_APP_VERSION] = GlobalConfig.VERSION_CODE.toString(10)
             headerMap[HEADER_X_TKPD_APP_NAME] = GlobalConfig.getPackageApplicationName()
@@ -134,6 +154,8 @@ class AuthHelper {
                 finalHeader[HEADER_AUTHORIZATION] = authKey
             }
 
+            finalHeader.remove(HEADER_RELEASE_TRACK)
+            finalHeader[HEADER_RELEASE_TRACK] = GlobalConfig.VERSION_NAME_SUFFIX
             finalHeader[HEADER_DEVICE] = "android-${GlobalConfig.VERSION_NAME}"
             finalHeader[HEADER_X_APP_VERSION] = GlobalConfig.VERSION_CODE.toString(10)
             finalHeader[HEADER_X_TKPD_APP_NAME] = GlobalConfig.getPackageApplicationName()
@@ -177,6 +199,7 @@ class AuthHelper {
         ): MutableMap<String, String> {
             val hash = getMD5Hash("${userId}~${deviceId}")
 
+
             params[PARAM_USER_ID] = userId
             params[PARAM_DEVICE_ID] = deviceId
             params[PARAM_HASH] = hash
@@ -194,7 +217,9 @@ class AuthHelper {
             header[HEADER_AUTHORIZATION] = "Bearer ${userSession.accessToken}"
 
             header.remove(HEADER_ACCOUNT_AUTHORIZATION)
+            header.remove(HEADER_RELEASE_TRACK)
 
+            header[HEADER_RELEASE_TRACK] = GlobalConfig.VERSION_NAME_SUFFIX
             header[HEADER_ACCOUNT_AUTHORIZATION] = "$HEADER_PARAM_BEARER ${userSession.accessToken}"
             header[PARAM_OS_TYPE] = "1"
             header[HEADER_DEVICE] = "android-${GlobalConfig.VERSION_NAME}"
@@ -231,6 +256,8 @@ class AuthHelper {
 
             headers.remove(HEADER_ACCOUNT_AUTHORIZATION)
 
+            headers.remove(HEADER_RELEASE_TRACK)
+            headers[HEADER_RELEASE_TRACK] = GlobalConfig.VERSION_NAME_SUFFIX
             headers[HEADER_ACCOUNT_AUTHORIZATION] = "$HEADER_PARAM_BEARER ${userSession.accessToken}"
             headers[PARAM_OS_TYPE] = "1"
             headers[HEADER_DEVICE] = "android-${GlobalConfig.VERSION_NAME}"

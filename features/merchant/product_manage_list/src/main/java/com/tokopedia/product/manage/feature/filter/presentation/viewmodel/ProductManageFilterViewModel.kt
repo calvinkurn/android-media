@@ -197,4 +197,12 @@ class ProductManageFilterViewModel @Inject constructor(
             }
         }
     }
+
+    fun getSelectedFilters(): List<FilterDataUiModel> {
+        return _filterData.value?.flatMap { filterDataUiModels ->
+            filterDataUiModels.data.filter { filterDataUiModel ->
+                filterDataUiModel.select
+            }
+        }.orEmpty()
+    }
 }

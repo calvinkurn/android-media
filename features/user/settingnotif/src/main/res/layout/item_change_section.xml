@@ -5,21 +5,21 @@
     android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/bg_big_divider"
-    android:paddingTop="@dimen/dp_16"
-    android:paddingStart="@dimen/dp_16"
-    android:paddingEnd="@dimen/dp_16"
-    android:paddingBottom="@dimen/dp_16">
+    android:paddingTop="@dimen/spacing_lvl4"
+    android:paddingStart="@dimen/spacing_lvl4"
+    android:paddingEnd="@dimen/spacing_lvl4"
+    android:paddingBottom="@dimen/spacing_lvl4">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/container_seller"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_60"
+        android:layout_height="@dimen/setting_notif_dp_60"
         android:orientation="horizontal"
         android:background="@drawable/bg_notifsetting_seller_card">
 
         <ImageView
             android:id="@+id/imgIcon"
-            android:layout_width="@dimen/dp_40"
+            android:layout_width="@dimen/setting_notif_dp_40"
             android:layout_height="match_parent"
             android:layout_gravity="center_vertical"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -29,11 +29,11 @@
             app:srcCompat="@drawable/ic_notifsetting_change_email" />
 
         <LinearLayout
-            android:layout_width="0dp"
+            android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_marginStart="@dimen/dp_8"
-            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginStart="@dimen/spacing_lvl3"
+            android:layout_marginLeft="@dimen/spacing_lvl3"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/imgIcon"
             app:layout_constraintTop_toTopOf="parent">
@@ -62,10 +62,10 @@
             android:id="@+id/btnChange"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/green_600"
-            android:layout_marginEnd="@dimen/dp_12"
-            android:layout_marginRight="@dimen/dp_12"
-            android:layout_marginBottom="@dimen/dp_14"
+            android:textColor="@color/settingnotif_green_600"
+            android:layout_marginEnd="@dimen/setting_notif_dp_12"
+            android:layout_marginRight="@dimen/setting_notif_dp_12"
+            android:layout_marginBottom="@dimen/setting_notif_dp_14"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:typographyType="body_2"

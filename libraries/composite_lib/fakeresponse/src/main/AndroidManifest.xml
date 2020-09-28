@@ -6,42 +6,30 @@
     <application>
         <activity
             android:name="com.tokopedia.fakeresponse.presentation.activities.BaseActivity"
-            android:splitName="com.tokopedia.tkpd"
             android:theme="@style/FakeNoActionBar"
-            tools:replace="android:splitName"
-            tools:targetApi="o" />
+             />
         <activity
             android:name="com.tokopedia.fakeresponse.presentation.activities.AddGqlActivity"
-            android:splitName="com.tokopedia.tkpd"
             android:theme="@style/FakeNoActionBar"
-            tools:replace="android:splitName"
-            tools:targetApi="o" />
+             />
         <activity
             android:name="com.tokopedia.fakeresponse.presentation.activities.AddRestResponseActivity"
-            android:splitName="com.tokopedia.tkpd"
             android:theme="@style/FakeNoActionBar"
-            tools:replace="android:splitName"
-            tools:targetApi="o" />
+             />
         <activity
             android:name="com.tokopedia.fakeresponse.chuck.presentation.activities.SearchActivity"
-            android:splitName="com.tokopedia.tkpd"
             android:theme="@style/FakeNoActionBar"
-            tools:replace="android:splitName"
-            tools:targetApi="o" />
+             />
         <activity
             android:name="com.tokopedia.fakeresponse.presentation.activities.PasteTextActivity"
-            android:splitName="com.tokopedia.tkpd"
             android:theme="@style/FakeNoActionBar"
-            tools:replace="android:splitName"
-            tools:targetApi="o" />
+             />
         <activity
             android:name="com.tokopedia.fakeresponse.presentation.activities.FakeResponseActivity"
             android:launchMode="singleTask"
-            android:splitName="com.tokopedia.tkpd"
             android:taskAffinity="fakeresponse.gqlTesting"
             android:theme="@style/FakeNoActionBar"
-            tools:replace="android:splitName"
-            tools:targetApi="o">
+            >
             <intent-filter>
                 <action android:name="com.tokopedia.tkpd.fakeresponse.gqlTesting" />
                 <category android:name="android.intent.category.DEFAULT" />

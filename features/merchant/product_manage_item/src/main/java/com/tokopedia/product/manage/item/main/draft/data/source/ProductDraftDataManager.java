@@ -30,7 +30,7 @@ public class ProductDraftDataManager {
             productDraft.setData(json);
             productDraft.setUploading(isUploading);
             productDraft.setShopId(shopId);
-            productDraft.setVersion(DBMetaData.DB_VERSION);
+            productDraft.setVersion(DBMetaData.DB_VERSION_EIGHT);
             return productDraftDao.insertSingle(productDraft);
         });
     }
@@ -73,7 +73,7 @@ public class ProductDraftDataManager {
     public Observable<Long> updateDraft(long productId, String draftData) {
         return getDraft(productId).map(productDraft -> {
             productDraft.setData(draftData);
-            productDraft.setVersion(DBMetaData.DB_VERSION);
+            productDraft.setVersion(DBMetaData.DB_VERSION_EIGHT);
             return productDraft;
         }).map(productDraft -> {
             productDraftDao.updateSingle(productDraft);
@@ -87,7 +87,7 @@ public class ProductDraftDataManager {
         return getDraft(draftProductId).map(productDraft -> {
             productDraft.setData(draftData);
             productDraft.setUploading(isUploading);
-            productDraft.setVersion(DBMetaData.DB_VERSION);
+            productDraft.setVersion(DBMetaData.DB_VERSION_EIGHT);
             return productDraft;
         }).map(productDraft -> {
             productDraftDao.updateSingle(productDraft);

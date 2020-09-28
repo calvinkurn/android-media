@@ -3,7 +3,6 @@ package com.tokopedia.hotlist.fragment
 
 import android.content.Intent
 import android.os.Bundle
-
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
@@ -15,8 +14,10 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -33,20 +34,20 @@ import com.tokopedia.common_category.interfaces.QuickFilterListener
 import com.tokopedia.common_category.model.productModel.ProductsItem
 import com.tokopedia.core.gcm.GCMHandler
 import com.tokopedia.discovery.common.constants.SearchConstant
+import com.tokopedia.filter.common.data.Filter
+import com.tokopedia.filter.common.data.Option
+import com.tokopedia.hotlist.R
+import com.tokopedia.hotlist.adapters.CpmAdsAdapter
 import com.tokopedia.hotlist.analytics.HotlistNavAnalytics.Companion.hotlistNavAnalytics
 import com.tokopedia.hotlist.data.cpmAds.CpmItem
 import com.tokopedia.hotlist.data.hotListDetail.HotListDetailResponse
 import com.tokopedia.hotlist.data.hotListDetail.HotlistDetail
 import com.tokopedia.hotlist.di.DaggerHotlistNavComponent
 import com.tokopedia.hotlist.di.HotlistNavComponent
+import com.tokopedia.hotlist.interfaces.CpmTopAdsListener
 import com.tokopedia.hotlist.util.HotlistParamBuilder
 import com.tokopedia.hotlist.util.HotlistParamBuilder.Companion.hotlistParamBuilder
-import com.tokopedia.hotlist.adapters.CpmAdsAdapter
-import com.tokopedia.hotlist.interfaces.CpmTopAdsListener
 import com.tokopedia.hotlist.viewmodel.HotlistNavViewModel
-import com.tokopedia.filter.common.data.Filter
-import com.tokopedia.filter.common.data.Option
-import com.tokopedia.hotlist.R
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
@@ -491,7 +492,7 @@ class HotlistNavFragment : BaseCategorySectionFragment(),
             startActivityForResult(intent, REQUEST_PRODUCT_ITEM_CLICK)
         }
         if (item.isTopAds) {
-            hotlistnavViewModel.sendTopAds(item.productClickTrackingUrl)
+            hotlistnavViewModel.sendTopAdsClick(item.productClickTrackingUrl, item.id.toString(), item.name, item.imageURL)
         }
     }
 
@@ -623,7 +624,7 @@ class HotlistNavFragment : BaseCategorySectionFragment(),
     override fun onSuccessAddWishlist(productId: String) {
         productNavListAdapter?.updateWishlistStatus(parseStringToInt(productId), true)
         enableWishlistButton(productId)
-        NetworkErrorHelper.showSnackbar(activity, getString(R.string.msg_success_add_wishlist))
+        NetworkErrorHelper.showSnackbar(activity, getString(com.tokopedia.wishlist.common.R.string.msg_success_add_wishlist))
     }
 
     override fun onErrorRemoveWishlist(errorMessage: String?, productId: String) {
@@ -634,7 +635,7 @@ class HotlistNavFragment : BaseCategorySectionFragment(),
     override fun onSuccessRemoveWishlist(productId: String) {
         productNavListAdapter?.updateWishlistStatus(parseStringToInt(productId), false)
         enableWishlistButton(productId)
-        NetworkErrorHelper.showSnackbar(activity, getString(R.string.msg_success_remove_wishlist))
+        NetworkErrorHelper.showSnackbar(activity, getString(com.tokopedia.wishlist.common.R.string.msg_success_remove_wishlist))
     }
 
 
@@ -663,7 +664,7 @@ class HotlistNavFragment : BaseCategorySectionFragment(),
 
     // CPM click listner
 
-    override fun onCpmClicked(applink: String, clickTrackerUrl: String, item: CpmItem) {
+    override fun onCpmClicked(applink: String, clickTrackerUrl: String, item: CpmItem, id: String, name: String, image: String) {
         if (item.is_product) {
             hotlistNavAnalytics.eventCpmTopAdsProductClick(isUserLoggedIn(),
                     hotlistDetail?.shareFilePath ?: "")
@@ -671,12 +672,12 @@ class HotlistNavFragment : BaseCategorySectionFragment(),
             hotlistNavAnalytics.eventCpmTopAdsShopClick(isUserLoggedIn(),
                     hotlistDetail?.shareFilePath ?: "")
         }
-        hotlistnavViewModel.sendTopAds(clickTrackerUrl)
+        hotlistnavViewModel.sendTopAdsClick(clickTrackerUrl, id, name, image)
         RouteManager.route(activity, applink)
     }
 
-    override fun onCpmImpression(impressionTrackUrl: String) {
-        hotlistnavViewModel.sendTopAds(impressionTrackUrl)
+    override fun onCpmImpression(impressionTrackUrl: String, id: String, name: String, image: String) {
+        hotlistnavViewModel.sendTopAdsImpressions(impressionTrackUrl, id, name, image)
     }
 
     // share button clicked
@@ -701,8 +702,8 @@ class HotlistNavFragment : BaseCategorySectionFragment(),
         DefaultShareData(activity, shareData).show()
     }
 
-    override fun topAdsTrackerUrlTrigger(url: String) {
-        hotlistnavViewModel.sendTopAds(url)
+    override fun topAdsTrackerUrlTrigger(url: String, id: String, name: String, imageURL: String) {
+        hotlistnavViewModel.sendTopAdsImpressions(url, id, name, imageURL)
     }
 
     override fun onDestroyView() {
@@ -729,5 +730,9 @@ class HotlistNavFragment : BaseCategorySectionFragment(),
         } catch (e: NumberFormatException) {
             0
         }
+    }
+
+    override fun getSwipeRefreshLayout(): SwipeRefreshLayout? {
+        return view?.findViewById<SwipeToRefresh>(R.id.swipe_refresh_layout)
     }
 }

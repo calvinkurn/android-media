@@ -2,10 +2,7 @@ package com.tokopedia.shop.home.domain
 
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
-import com.tokopedia.graphql.data.model.CacheType
-import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import com.tokopedia.graphql.data.model.GraphqlError
-import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.graphql.data.model.*
 import com.tokopedia.shop.home.GqlQueryConstant.GQL_GET_SHOP_PAGE_HOME_LAYOUT
 import com.tokopedia.shop.home.data.model.ShopLayoutWidget
 import com.tokopedia.usecase.coroutines.UseCase

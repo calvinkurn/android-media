@@ -24,12 +24,20 @@ class TopAdsLogger private constructor(private val context: Context) : TopAdsLog
 
     override fun save(url: String,
                       eventType: String,
-                      sourceName: String) {
+                      sourceName: String,
+                      productId: String,
+                      productName: String,
+                      imageUrl: String,
+                      componentName: String) {
         try {
             val topAdsLogModel = TopAdsLogModel()
             topAdsLogModel.url = url
             topAdsLogModel.eventType = eventType
             topAdsLogModel.sourceName = sourceName
+            topAdsLogModel.productId = productId
+            topAdsLogModel.productName = productName
+            topAdsLogModel.imageUrl = imageUrl
+            topAdsLogModel.componentName = componentName
 
             dbSource.insertAll(topAdsLogModel).subscribeOn(Schedulers.io()).unsubscribeOn(Schedulers.io()).subscribe(defaultSubscriber())
 
@@ -92,7 +100,11 @@ class TopAdsLogger private constructor(private val context: Context) : TopAdsLog
 
                 override fun save(url: String,
                                   eventType: String,
-                                  sourceName: String) {
+                                  sourceName: String,
+                                  productId: String,
+                                  productName: String,
+                                  imageUrl: String,
+                                  componentName: String) {
 
                 }
 

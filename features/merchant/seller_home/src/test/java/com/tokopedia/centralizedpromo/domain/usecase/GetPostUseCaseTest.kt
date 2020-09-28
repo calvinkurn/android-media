@@ -1,11 +1,11 @@
 package com.tokopedia.centralizedpromo.domain.usecase
 
-import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.centralizedpromo.domain.mapper.PostMapper
 import com.tokopedia.centralizedpromo.view.model.PostListUiModel
 import com.tokopedia.centralizedpromo.view.model.PostUiModel
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.sellerhome.domain.model.GetPostDataResponse
+import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.centralizedpromo.domain.model.GetPostDataResponse
 import com.tokopedia.sellerhome.utils.TestHelper
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery

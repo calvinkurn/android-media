@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:visibility="gone"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/container_global_error"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingTop="@dimen/spacing_lvl4"
     android:background="@color/play_error_background"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:visibility="gone"
+    >
 
     <com.tokopedia.globalerror.GlobalError
         android:id="@+id/global_error"
@@ -15,7 +16,8 @@
         android:layout_height="match_parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintBottom_toBottomOf="parent"
+        />
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/img_back"
@@ -24,7 +26,8 @@
         android:layout_height="@dimen/layout_lvl3"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_play_back_white" />
+        app:srcCompat="@drawable/ic_play_back_white"
+        />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/text_play_title"
@@ -41,6 +44,7 @@
         app:layout_constraintStart_toEndOf="@id/img_back"
         app:layout_constraintTop_toTopOf="@id/img_back"
         app:typographyType="heading_4"
-        app:typographyWeight="bold" />
+        app:typographyWeight="bold"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

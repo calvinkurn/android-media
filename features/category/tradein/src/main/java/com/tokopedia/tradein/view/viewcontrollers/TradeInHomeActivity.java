@@ -31,6 +31,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory;
+import com.tokopedia.authentication.AuthKey;
 import com.tokopedia.common_tradein.utils.TradeInUtils;
 import com.tokopedia.design.dialog.AccessRequestDialogFragment;
 import com.tokopedia.iris.IrisAnalytics;
@@ -337,7 +338,7 @@ public class TradeInHomeActivity extends BaseTradeInActivity<TradeInHomeViewMode
         if (Constants.LAKU6_BASEURL.equals(Constants.LAKU6_BASEURL_STAGING))
             campaignId = Constants.CAMPAIGN_ID_STAGING;
         laku6TradeIn = Laku6TradeIn.getInstance(context, campaignId,
-                Constants.APPID, Constants.APIKEY, Constants.LAKU6_BASEURL, TRADEIN_TEST_TYPE);
+                Constants.APPID, Constants.APIKEY, Constants.LAKU6_BASEURL, TRADEIN_TEST_TYPE, AuthKey.SAFETYNET_KEY_TRADE_IN);
         requestPermission();
     }
 
@@ -446,8 +447,13 @@ public class TradeInHomeActivity extends BaseTradeInActivity<TradeInHomeViewMode
             }
         };
         SpannableString spannableString = new SpannableString(getString(messageStringId));
-        spannableString.setSpan(foregroundColorSpan, 67, 84, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
-        spannableString.setSpan(clickableSpan, 67, 84, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+        if(messageStringId == R.string.money_in_need_permission) {
+            spannableString.setSpan(foregroundColorSpan, 62, 83, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+            spannableString.setSpan(clickableSpan, 62, 83, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+        } else {
+            spannableString.setSpan(foregroundColorSpan, 67, 84, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+            spannableString.setSpan(clickableSpan, 67, 84, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+        }
         mTvPriceElligible.setText(spannableString);
         mTvPriceElligible.setVisibility(View.VISIBLE);
         mButtonRemove.setVisibility(View.VISIBLE);

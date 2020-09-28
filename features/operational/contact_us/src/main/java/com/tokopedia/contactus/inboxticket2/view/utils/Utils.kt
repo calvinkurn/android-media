@@ -7,9 +7,10 @@ import android.text.SpannableString
 import android.text.Spanned
 import android.text.format.DateUtils
 import android.text.format.Time
+import android.text.style.AbsoluteSizeSpan
 import android.text.style.BackgroundColorSpan
 import android.util.TypedValue
-import com.tokopedia.contactus.orderquery.data.ImageUpload
+import com.tokopedia.contactus.inboxticket2.data.ImageUpload
 import org.json.JSONException
 import org.json.JSONObject
 import java.io.File
@@ -61,25 +62,27 @@ class Utils {
         return spannableString
     }
 
-    fun getStatusTitle(src: String, background: Int, textColor: Int, textSizeSp: Int, mContext: Context): SpannableString {
+    fun getStatusTitle(src: String, background: Int, textColor: Int, textSize: Int, mContext: Context): SpannableString {
         val spannableString = SpannableString(src)
         val start = src.lastIndexOf(".") + 4
-        val roundedBackgroundSpan = RoundedBackgroundSpan(background, textColor, convertSpToPx(textSizeSp, mContext),
+        val roundedBackgroundSpan = RoundedBackgroundSpan(background, textColor, textSize.toFloat(),
                 convertDpToPx(8, mContext), convertDpToPx(4, mContext), convertDpToPx(2, mContext), convertDpToPx(2, mContext))
         spannableString.setSpan(roundedBackgroundSpan, start, src.length, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
+        spannableString.setSpan(AbsoluteSizeSpan(textSize), start,
+                src.length, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
         return spannableString
     }
 
-    fun getDateTime(isoTime: String?): String {
+    fun getDateTime(isoTime: String): String {
         val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ", locale)
         val dateFormat = SimpleDateFormat("d MMM 'pukul' HH:mm", locale)
         dateFormat.timeZone = TimeZone.getDefault()
         return try {
             val date = inputFormat.parse(isoTime)
-            dateFormat.format(date)
+            date.let { dateFormat.format(date) }
         } catch (e: ParseException) {
             e.printStackTrace()
-            e.localizedMessage
+            e.localizedMessage ?: ""
         }
     }
 

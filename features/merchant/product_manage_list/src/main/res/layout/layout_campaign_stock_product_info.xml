@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/transparent"
+    android:paddingLeft="@dimen/product_manage_campaign_stock_horizontal_margin"
+    android:paddingStart="@dimen/product_manage_campaign_stock_horizontal_margin"
+    android:paddingRight="@dimen/product_manage_campaign_stock_horizontal_margin"
+    android:paddingEnd="@dimen/product_manage_campaign_stock_horizontal_margin"
+    android:paddingTop="@dimen/layout_lvl2"
+    android:paddingBottom="@dimen/layout_lvl2">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/img_campaign_stock_product"
+        android:layout_width="@dimen/layout_lvl6"
+        android:layout_height="@dimen/layout_lvl6"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:unify_image_corner_radius="6"
+        app:unify_image_type="rect"
+        tools:src="@tools:sample/avatars"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_campaign_stock_product_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/layout_lvl2"
+        android:layout_marginStart="@dimen/layout_lvl2"
+        android:maxLines="2"
+        android:ellipsize="end"
+        android:textColor="@color/Neutral_N700_96"
+        app:typographyType="body_3"
+        app:typographyWeight="bold"
+        app:layout_constraintStart_toEndOf="@id/img_campaign_stock_product"
+        app:layout_constraintTop_toTopOf="@id/img_campaign_stock_product"
+        app:layout_constraintBottom_toTopOf="@id/tv_campaign_stock_product_total_stock"
+        tools:text="New Balance 1500 Genel (Limited Edition) Japan Version Nike/Adidas Crossover"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_campaign_stock_product_total_stock"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/layout_lvl2"
+        android:layout_marginStart="@dimen/layout_lvl2"
+        android:layout_marginTop="@dimen/product_manage_campaign_stock_total_margin"
+        android:textColor="@color/Neutral_N700_68"
+        android:text="@string/product_manage_campaign_stock_total_stock"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler"
+        app:layout_constraintStart_toEndOf="@id/img_campaign_stock_product"
+        app:layout_constraintTop_toBottomOf="@id/tv_campaign_stock_product_name"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_campaign_stock_product_total_stock_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Neutral_N700_96"
+        app:typographyType="body_3"
+        app:layout_constraintStart_toEndOf="@id/tv_campaign_stock_product_total_stock"
+        app:layout_constraintTop_toTopOf="@id/tv_campaign_stock_product_total_stock"
+        app:layout_constraintBottom_toBottomOf="@id/tv_campaign_stock_product_total_stock"
+        tools:text="90"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

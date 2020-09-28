@@ -1,12 +1,13 @@
 package com.tokopedia.common_category.model.productModel
 
-import android.os.Parcel
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.common_category.factory.ProductTypeFactory
 import com.tokopedia.topads.sdk.domain.model.ImpressHolder
+import kotlinx.android.parcel.Parcelize
 
+@Parcelize
 data class ProductsItem(
 
         @field:SerializedName("imageURL500")
@@ -125,127 +126,12 @@ data class ProductsItem(
     override fun type(typeFactory: ProductTypeFactory?): Int {
         return typeFactory!!.type(this)
     }
-
-    constructor(parcel: Parcel) : this(
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readParcelable(Shop::class.java.classLoader),
-            parcel.readString(),
-            parcel.readValue(Boolean::class.java.classLoader) as Boolean,
-            parcel.readValue(Boolean::class.java.classLoader) as Boolean,
-            parcel.readInt(),
-            parcel.readString(),
-            parcel.readValue(Int::class.java.classLoader) as Int,
-            parcel.readValue(Int::class.java.classLoader) as Int,
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readValue(Int::class.java.classLoader) as? Int,
-            parcel.readString(),
-            parcel.readValue(Int::class.java.classLoader) as? Int,
-            parcel.readValue(Int::class.java.classLoader) as? Int,
-            parcel.readValue(Int::class.java.classLoader) as? Int,
-            parcel.readString(),
-            parcel.readValue(Int::class.java.classLoader) as? Int,
-            parcel.readString(),
-            parcel.createTypedArrayList(LabelsItem.CREATOR) ?: arrayListOf(),
-            parcel.createTypedArrayList(BadgesItem.CREATOR) ?: arrayListOf(),
-            parcel.readValue(Int::class.java.classLoader) as? Int,
-            parcel.createTypedArrayList(LabelGroupsItem.CREATOR) ?: arrayListOf(),
-            parcel.readString(),
-            parcel.readValue(Int::class.java.classLoader) as? Int,
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readValue(Boolean::class.java.classLoader) as? Boolean,
-            parcel.readValue(Boolean::class.java.classLoader) as Boolean,
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readInt(),
-            parcel.readParcelable(FreeOngkir::class.java.classLoader),
-            parcel.readString())
-
-    override fun writeToParcel(dest: Parcel?, flags: Int) {
-        dest?.writeString(this.imageURL500)
-        dest?.writeString(this.imageURL700)
-        dest?.writeParcelable(this.shop, flags)
-        dest?.writeString(this.imageURL500)
-        dest?.writeString(this.originalPrice)
-        dest?.writeValue(this.wishlist)
-        dest?.writeValue(this.isWishListEnabled)
-        dest?.writeInt(this.rating ?: 0)
-        dest?.writeString(this.categoryName)
-        dest?.writeInt(this.discountPercentage)
-        dest?.writeInt(this.countReview ?: 0)
-        dest?.writeString(this.price)
-        dest?.writeString(this.imageURL)
-        dest?.writeInt(this.id ?: 0)
-        dest?.writeString(this.categoryBreadcrumb)
-        dest?.writeInt(this.isFeatured ?: 0)
-        dest?.writeInt(this.stock ?: 0)
-        dest?.writeInt(this.categoryID ?: 0)
-        dest?.writeString(this.gAKey)
-        dest?.writeInt(this.courierCount ?: 0)
-        dest?.writeString(this.url)
-        dest?.writeTypedList(this.labels)
-        dest?.writeTypedList(this.badges)
-        dest?.writeInt(this.condition ?: 0)
-        dest?.writeTypedList(this.labelGroups)
-        dest?.writeString(this.name)
-        dest?.writeInt(this.category ?: 0)
-        dest?.writeString(this.priceRange)
-        dest?.writeString(this.imageURL300)
-        dest?.writeValue(this.preorder)
-        dest?.writeValue(this.isTopAds)
-        dest?.writeValue(this.productImpTrackingUrl)
-        dest?.writeValue(this.productClickTrackingUrl)
-        dest?.writeValue(this.productWishlistTrackingUrl)
-        dest?.writeInt(this.adapter_position)
-        dest?.writeValue(this.freeOngkir)
-        dest?.writeString(this.dimension)
-    }
-
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    companion object CREATOR : Parcelable.Creator<ProductsItem> {
-        override fun createFromParcel(parcel: Parcel): ProductsItem {
-            return ProductsItem(parcel)
-        }
-
-        override fun newArray(size: Int): Array<ProductsItem?> {
-            return arrayOfNulls(size)
-        }
-    }
 }
 
+@Parcelize
 data class FreeOngkir(
         @SerializedName("is_active")
         val isActive: Boolean,
         @SerializedName("img_url")
         val imageUrl: String
-) : Parcelable {
-    constructor(parcel: Parcel) : this(
-            parcel.readByte() != 0.toByte(),
-            parcel.readString()) {
-    }
-
-    override fun writeToParcel(dest: Parcel?, flags: Int) {
-        dest?.writeValue(isActive)
-        dest?.writeString(imageUrl)
-    }
-
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    companion object CREATOR : Parcelable.Creator<FreeOngkir> {
-        override fun createFromParcel(parcel: Parcel): FreeOngkir {
-            return FreeOngkir(parcel)
-        }
-
-        override fun newArray(size: Int): Array<FreeOngkir?> {
-            return arrayOfNulls(size)
-        }
-    }
-}
+) : Parcelable

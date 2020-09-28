@@ -6,7 +6,7 @@ import com.tokopedia.purchase_platform.common.feature.insurance.response.Insuran
 import com.tokopedia.purchase_platform.common.feature.insurance.response.InsuranceCartShops
 import com.tokopedia.cart.domain.model.cartlist.CartItemData
 import com.tokopedia.cart.domain.model.cartlist.CartListData
-import com.tokopedia.cart.domain.model.cartlist.UpdateAndValidateUseData
+import com.tokopedia.cart.domain.model.updatecart.UpdateAndValidateUseData
 import com.tokopedia.cart.view.uimodel.CartRecentViewItemHolderData
 import com.tokopedia.cart.view.uimodel.CartRecommendationItemHolderData
 import com.tokopedia.cart.view.uimodel.CartShopHolderData
@@ -33,7 +33,9 @@ interface ICartListPresenter {
 
     fun processInitialGetCartData(cartId: String, initialLoad: Boolean, isLoadingTypeRefresh: Boolean)
 
-    fun processDeleteCartItem(allCartItemData: List<CartItemData>, removedCartItems: List<CartItemData>, addWishList: Boolean, removeInsurance: Boolean)
+    fun processDeleteCartItem(allCartItemData: List<CartItemData>, removedCartItems: List<CartItemData>, addWishList: Boolean, removeInsurance: Boolean, forceExpandCollapsedUnavailableItems: Boolean = false)
+
+    fun processUndoDeleteCartItem(cartIds: List<String>);
 
     fun processUpdateCartData(fireAndForget: Boolean)
 
@@ -45,7 +47,7 @@ interface ICartListPresenter {
 
     fun generateDeleteCartDataAnalytics(cartItemDataList: List<CartItemData>): Map<String, Any>
 
-    fun generateRecommendationImpressionDataAnalytics(cartRecommendationItemHolderDataList: List<CartRecommendationItemHolderData>, isEmptyCart: Boolean): Map<String, Any>
+    fun generateRecommendationImpressionDataAnalytics(position: Int, cartRecommendationItemHolderDataList: List<CartRecommendationItemHolderData>, isEmptyCart: Boolean): Map<String, Any>
 
     fun generateRecommendationDataOnClickAnalytics(recommendationItem: RecommendationItem, isEmptyCart: Boolean, position: Int): Map<String, Any>
 
@@ -65,6 +67,8 @@ interface ICartListPresenter {
 
     fun processRemoveFromWishlist(productId: String, userId: String, wishListActionListener: WishListActionListener)
 
+    fun processAddCartToWishlist(productId: String, cartId: String, isLastItem: Boolean, source: String, forceExpandCollapsedUnavailableItems: Boolean = false)
+
     fun setHasPerformChecklistChange(hasChangeState: Boolean)
 
     fun getHasPerformChecklistChange(): Boolean
@@ -78,6 +82,8 @@ interface ICartListPresenter {
     fun processGetRecommendationData(page: Int, allProductIds: List<String>)
 
     fun processAddToCart(productModel: Any)
+
+    fun processAddToCartExternal(productId: Long)
 
     fun generateAddToCartEnhanceEcommerceDataLayer(cartWishlistItemHolderData: CartWishlistItemHolderData, addToCartDataResponseModel: AddToCartDataModel, isCartEmpty: Boolean): Map<String, Any>
 

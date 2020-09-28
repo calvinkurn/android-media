@@ -35,8 +35,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/Neutral_N700_96"
-                    app:typographyType="heading_4"
                     app:layout_constraintTop_toBottomOf="@+id/transaction_status_hint"
+                    app:typographyType="heading_4"
                     tools:text="Transaksi Berhasil"
                     tools:textSize="@dimen/sp_17"
                     tools:textStyle="bold" />
@@ -62,12 +62,12 @@
                     android:paddingEnd="@dimen/layout_lvl3"
                     android:paddingRight="@dimen/layout_lvl3"
                     android:paddingBottom="@dimen/hotel_10dp"
-                    android:visibility="gone"
                     android:textColor="@color/Neutral_N700_68"
-                    app:typographyType="body_3"
+                    android:visibility="gone"
                     app:layout_constraintTop_toBottomOf="@+id/transaction_seperator"
+                    app:typographyType="body_3"
                     tools:text="Dana Pembayaran akan dikembalikan ke Saldo Tokopedia/OVO/Limit Kartu Kredit"
-                    tools:visibility="visible"/>
+                    tools:visibility="visible" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/transaction_detail_title_recycler_view"
@@ -94,11 +94,12 @@
                     android:id="@+id/invoice_number"
                     android:layout_width="@dimen/layout_lvl0"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/layout_lvl2"
-                    app:typographyType="body_3"
                     android:textColor="@color/Neutral_N700_96"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/invoice_see_button"
                     app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:typographyType="body_3"
                     tools:text="IVR/20170713/XVII/VII/16205811"
                     tools:textColor="@color/Neutral_N700_96"
                     tools:textSize="@dimen/sp_12" />
@@ -110,11 +111,11 @@
                     android:padding="@dimen/hotel_6dp"
                     android:text="@string/hotel_order_detail_see_invoice_text"
                     android:textColor="@color/Green_G500"
-                    app:typographyType="body_3"
-                    app:typographyWeight="bold"
                     app:layout_constraintBottom_toBottomOf="@+id/invoice_number"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="@+id/invoice_number"
+                    app:typographyType="body_3"
+                    app:typographyWeight="bold"
                     tools:textSize="@dimen/sp_12"
                     tools:textStyle="bold" />
 
@@ -142,10 +143,10 @@
                 android:layout_height="25dp"
                 android:text="@string/hotel_order_detail_see_evoucher_text"
                 android:textColor="@color/Green_G500"
-                app:typographyType="body_2"
-                app:typographyWeight="bold"
                 app:layout_constraintEnd_toStartOf="@+id/see_evoucher_next_icon"
                 app:layout_constraintStart_toStartOf="parent"
+                app:typographyType="body_2"
+                app:typographyWeight="bold"
                 tools:layout_editor_absoluteY="16dp"
                 tools:textSize="@dimen/sp_14"
                 tools:textStyle="bold" />

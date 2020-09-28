@@ -1,0 +1,17 @@
+query topAdsGetShopWhitelistedFeature($shopID:String!){
+      topAdsGetShopWhitelistedFeature(shopID:$shopID){
+      data{
+          featureID
+          featureName
+      }
+      errors{
+          code
+          detail
+          object{
+              type
+              text
+           }
+      title
+      }
+     }
+}

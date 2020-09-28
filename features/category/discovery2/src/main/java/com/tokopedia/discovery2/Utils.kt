@@ -2,11 +2,26 @@ package com.tokopedia.discovery2
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
 import android.net.Uri
-import android.provider.MediaStore
 import kotlin.math.floor
 
+
+const val LIGHT_GREY = "lightGrey"
+const val LIGHT_BLUE = "lightBlue"
+const val LIGHT_GREEN = "lightGreen"
+const val LIGHT_RED = "lightRed"
+const val LIGHT_ORANGE = "lightOrange"
+const val DARK_GREY = "darkGrey"
+const val DARK_BLUE = "darkBlue"
+const val DARK_GREEN = "darkGreen"
+const val DARK_RED = "darkRed"
+const val DARK_ORANGE = "darkOrange"
+const val TRANSPARENT_BLACK = "transparentBlack"
+const val LABEL_PRODUCT_STATUS = "status"
+const val LABEL_PRICE = "price"
+const val LABEL_GIMMICK = "gimmick"
+const val LABEL_INTEGRITY = "integrity"
+const val LABEL_SHIPPING = "shipping"
 
 class Utils {
 
@@ -25,6 +40,7 @@ class Utils {
         private const val SERIBU_TEXT = "rb orang"
         private const val SEJUTA_TEXT = "jt orang"
         private const val SEMILIAR_TEXT = "M orang"
+        var preSelectedTab = -1
 
 
         fun extractDimension(url: String?, dimension: String = "height"): Int? {
@@ -32,15 +48,9 @@ class Utils {
             return uri?.getQueryParameter(dimension)?.toInt()
         }
 
-        fun shareData(context: Context?, shareTxt: String?, productUri: String?, image: Bitmap?) {
+        fun shareData(context: Context?, shareTxt: String?, productUri: String?) {
             val share = Intent(Intent.ACTION_SEND)
-            share.type = "image/*"
-            if (image != null) {
-                share.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                val path: String = MediaStore.Images.Media.insertImage(context?.contentResolver, image, "Image Description", null)
-                val uri = Uri.parse(path)
-                share.putExtra(Intent.EXTRA_STREAM, uri)
-            }
+            share.type = "text/plain"
             share.putExtra(Intent.EXTRA_TEXT, shareTxt + "\n" + productUri)
             context?.startActivity(Intent.createChooser(share, shareTxt))
         }

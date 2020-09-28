@@ -18,21 +18,21 @@ class GqlRawQueryModule {
     @IntoMap
     @StringKey(RawQueryKeyConstant.QUERY_PRODUCT_INFO)
     fun provideRawProductInfo(@ApplicationContext context: Context): String =
-            GraphqlHelper.loadRawString(context.resources, R.raw.gql_get_product_info)
+            GraphqlHelper.loadRawString(context.resources, com.tokopedia.product.detail.common.R.raw.gql_get_product_info)
 
     @NormalCheckoutScope
     @Provides
     @IntoMap
     @StringKey(RawQueryKeyConstant.QUERY_VARIANT)
     fun provideRawVariant(@ApplicationContext context: Context): String =
-            GraphqlHelper.loadRawString(context.resources, R.raw.gql_get_product_variant)
+            GraphqlHelper.loadRawString(context.resources, com.tokopedia.product.detail.common.R.raw.gql_get_product_variant)
 
     @NormalCheckoutScope
     @Provides
     @IntoMap
     @StringKey(RawQueryKeyConstant.QUERY_MULTI_ORIGIN)
     fun provideRawMultiOrigin(@ApplicationContext context: Context): String =
-            GraphqlHelper.loadRawString(context.resources, R.raw.gql_get_nearest_warehouse)
+            GraphqlHelper.loadRawString(context.resources, com.tokopedia.product.detail.common.R.raw.gql_get_nearest_warehouse)
 
     @NormalCheckoutScope
     @Provides

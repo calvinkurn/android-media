@@ -16,6 +16,6 @@ object ThanksPageHelper {
                 as ClipboardManager
         val clip = ClipData.newPlainText(COPY_BOARD_LABEL,
                 dataStr.replace(extraSpaceRegexStr, ""))
-        clipboard.primaryClip = clip
+        clipboard.setPrimaryClip(clip)
     }
 }

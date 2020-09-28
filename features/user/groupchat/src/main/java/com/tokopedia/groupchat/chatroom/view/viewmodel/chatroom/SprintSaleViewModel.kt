@@ -40,15 +40,15 @@ class SprintSaleViewModel() : Parcelable {
 
 
     protected constructor(`in`: Parcel): this() {
-        listProduct = `in`.createTypedArrayList(SprintSaleProductViewModel.CREATOR)
-        campaignName = `in`.readString()
+        listProduct = `in`.createTypedArrayList(SprintSaleProductViewModel.CREATOR) ?: arrayListOf()
+        campaignName = `in`.readString() ?: ""
         startDate = `in`.readLong()
         endDate = `in`.readLong()
-        redirectUrl = `in`.readString()
-        formattedStartDate = `in`.readString()
-        formattedEndDate = `in`.readString()
-        sprintSaleType = `in`.readString()
-        campaignId = `in`.readString()
+        redirectUrl = `in`.readString() ?: ""
+        formattedStartDate = `in`.readString() ?: ""
+        formattedEndDate = `in`.readString() ?: ""
+        sprintSaleType = `in`.readString() ?: ""
+        campaignId = `in`.readString() ?: ""
     }
 
     fun getStartDate(): Long {

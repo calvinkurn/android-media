@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/transparent"
+        android:paddingTop="@dimen/layout_lvl1">
+
+        <ImageView
+            android:id="@+id/icMvcCarouselInfo"
+            android:layout_width="@dimen/layout_lvl4"
+            android:layout_height="@dimen/layout_lvl4"
+            android:layout_marginStart="@dimen/layout_lvl2"
+            android:layout_marginLeft="@dimen/layout_lvl2"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@tools:sample/avatars" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvMvcCarouselInfo"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/layout_lvl2"
+            android:layout_marginLeft="@dimen/layout_lvl2"
+            android:layout_marginEnd="@dimen/layout_lvl2"
+            android:layout_marginRight="@dimen/layout_lvl2"
+            android:textColor="@color/Neutral_N700_96"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/icMvcCarouselInfo"
+            app:layout_constraintTop_toTopOf="@+id/icMvcCarouselInfo"
+            app:typographyType="body_3"
+            tools:text="Kode promo hanya dapat digunakan oleh pembeli yang menerima kode khusus dari tokomu." />
+
+        <View
+            android:id="@+id/vMvcHorLine0"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="@dimen/mvc_dimen_1dp"
+            android:layout_marginTop="@dimen/layout_lvl2"
+            android:background="@color/dark_N600"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvMvcCarouselInfo" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvMvcVoucherDesign"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/layout_lvl2"
+            android:layout_marginStart="@dimen/layout_lvl2"
+            android:layout_marginLeft="@dimen/layout_lvl2"
+            android:layout_marginEnd="@dimen/layout_lvl2"
+            android:layout_marginRight="@dimen/layout_lvl2"
+            android:text="@string/mvc_voucher_view"
+            android:textAllCaps="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/vMvcHorLine0"
+            app:typographyType="body_3"
+            app:typographyWeight="bold" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvMvcImageCarousel"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/layout_lvl1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvMvcVoucherDesign" />
+
+        <com.tokopedia.unifycomponents.PageControl
+            android:id="@+id/pageControlMvcCarousel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/layout_lvl2"
+            app:indicator_color="DEFAULT"
+            app:indicator_type="CIRCLE"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/rvMvcImageCarousel" />
+
+        <View
+            android:id="@+id/vMvcHorLine1"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="@dimen/mvc_dimen_1dp"
+            android:layout_marginTop="@dimen/layout_lvl2"
+            android:background="@color/dark_N600"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/pageControlMvcCarousel" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvMvcTipsTrick"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/layout_lvl2"
+            android:layout_marginStart="@dimen/layout_lvl2"
+            android:layout_marginLeft="@dimen/layout_lvl2"
+            android:layout_marginEnd="@dimen/layout_lvl2"
+            android:layout_marginRight="@dimen/layout_lvl2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/vMvcHorLine1"
+            tools:itemCount="3"
+            tools:listitem="@layout/item_mvc_tips_trick" />
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btnMvcTipsTrickDownload"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/layout_lvl3"
+            android:gravity="center"
+            android:text="@string/mvc_download_voucher"
+            android:textStyle="bold"
+            android:layout_marginStart="@dimen/layout_lvl2"
+            android:layout_marginLeft="@dimen/layout_lvl2"
+            android:layout_marginEnd="@dimen/layout_lvl2"
+            android:layout_marginRight="@dimen/layout_lvl2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/rvMvcTipsTrick"
+            app:unifyButtonVariant="ghost" />
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btnMvcTipsTrickShare"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/layout_lvl2"
+            android:layout_marginBottom="@dimen/layout_lvl3"
+            android:layout_marginStart="@dimen/layout_lvl2"
+            android:layout_marginLeft="@dimen/layout_lvl2"
+            android:layout_marginEnd="@dimen/layout_lvl2"
+            android:layout_marginRight="@dimen/layout_lvl2"
+            android:gravity="center"
+            android:text="@string/mvc_share_voucher"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btnMvcTipsTrickDownload"
+            app:layout_goneMarginTop="@dimen/layout_lvl2" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.core.widget.NestedScrollView>

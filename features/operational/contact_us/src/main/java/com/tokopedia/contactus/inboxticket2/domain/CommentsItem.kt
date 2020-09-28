@@ -20,5 +20,9 @@ data class CommentsItem(
         @SerializedName("created_by")
         var createdBy: CreatedBy? = null,
         var shortTime: String? = null,
-        var isCollapsed: Boolean = true
+        var isCollapsed: Boolean = true,
+        var priorityLabel: Boolean = false,
+        var ticketTitle: String? = null,
+        var ticketId: String? = null,
+        var ticketStatus: String? = null
 )

@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/inspirationCard"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -26,8 +27,10 @@
             android:id="@+id/recyclerViewInspirationCardOptionList"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_4"
+            android:layout_marginTop="@dimen/dp_12"
             android:layout_marginBottom="@dimen/dp_12"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginStart="@dimen/dp_8"
             android:layout_marginRight="@dimen/dp_8"
             android:layout_marginEnd="@dimen/dp_8"
             app:layout_constraintTop_toBottomOf="@id/inspirationCardTitle"

@@ -2,9 +2,9 @@ package com.tokopedia.seller.product.draft.view.presenter;
 
 import android.content.Context;
 import android.graphics.BitmapFactory;
+
 import androidx.annotation.NonNull;
 
-import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.seller.product.draft.domain.interactor.SaveBulkDraftProductUseCase;
 import com.tokopedia.seller.product.draft.domain.interactor.SaveInstagramToProductDraftUseCase;
 
@@ -58,18 +58,18 @@ public class ProductDraftSaveBulkPresenterImpl extends ProductDraftSaveBulkPrese
             return;
         }
 
-        // this is for seller app
-        if(GlobalConfig.isSellerApp()) {
-            saveInstagramToProductDraftUseCase.execute(
-                    SaveInstagramToProductDraftUseCase.Companion.generateUploadProductParam(
-                    correctResolutionLocalPathList, correctResolutionInstagramDescList),
-                    getSaveInstagramToProductDraftSubscriber());
-        } else {
-            saveBulkDraftProductUseCase.execute(
-                    SaveBulkDraftProductUseCase.generateUploadProductParam(
-                    correctResolutionLocalPathList, correctResolutionInstagramDescList),
-                    getSaveInstagramToDraftSubscriber());
-        }
+        //TODO milhamj remove comment
+//        if(GlobalConfig.isSellerApp()) {
+        saveInstagramToProductDraftUseCase.execute(
+                SaveInstagramToProductDraftUseCase.Companion.generateUploadProductParam(
+                        correctResolutionLocalPathList, correctResolutionInstagramDescList),
+                getSaveInstagramToProductDraftSubscriber());
+//        } else {
+//            saveBulkDraftProductUseCase.execute(
+//                    SaveBulkDraftProductUseCase.generateUploadProductParam(
+//                    correctResolutionLocalPathList, correctResolutionInstagramDescList),
+//                    getSaveInstagramToDraftSubscriber());
+//        }
     }
 
     private boolean isResolutionCorrect(String localPath){

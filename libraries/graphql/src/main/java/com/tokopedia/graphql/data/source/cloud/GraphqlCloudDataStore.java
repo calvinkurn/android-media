@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import com.akamai.botman.CYFMonitor;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import com.tokopedia.graphql.CommonUtils;
 import com.tokopedia.graphql.FingerprintManager;
 import com.tokopedia.graphql.GraphqlCacheManager;
 import com.tokopedia.graphql.GraphqlConstant;
@@ -31,6 +32,7 @@ import javax.inject.Inject;
 import okhttp3.internal.http2.ConnectionShutdownException;
 import retrofit2.Response;
 import rx.Observable;
+import timber.log.Timber;
 
 import static com.tokopedia.akamai_bot_lib.UtilsKt.isAkamai;
 import static com.tokopedia.graphql.util.Const.AKAMAI_SENSOR_DATA_HEADER;
@@ -94,7 +96,10 @@ public class GraphqlCloudDataStore implements GraphqlDataStore {
                     if (httpResponse.body() != null) {
                         LoggingUtils.logGqlSize("java", requests.toString(), httpResponse.body().toString());
                     }
-                    return new GraphqlResponseInternal(httpResponse.body(), false, httpResponse.headers().get(GraphqlConstant.GqlApiKeys.CACHE));
+
+                    JsonArray gJsonArray = CommonUtils.getOriginalResponse(httpResponse);
+
+                    return new GraphqlResponseInternal(gJsonArray, false, httpResponse.headers().get(GraphqlConstant.GqlApiKeys.CACHE));
                 }).doOnNext(graphqlResponseInternal -> {
                     //Handling backend cache
                     Map<String, BackendCache> caches = CacheHelper.parseCacheHeaders(graphqlResponseInternal.getBeCache());
@@ -118,6 +123,7 @@ public class GraphqlCloudDataStore implements GraphqlDataStore {
                             JsonElement childResp = rawResp.getAsJsonObject().get(GraphqlConstant.GqlApiKeys.DATA);
                             if (childResp != null) {
                                 mCacheManager.save(request.cacheKey(), childResp.toString(), cache.getMaxAge() * 1000);
+                                Timber.d("Android CLC - Request saved to cache " + CacheHelper.getQueryName(request.getQuery()) + " KEY: " + request.cacheKey());
                             }
                         }
                     }

@@ -12,7 +12,9 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.home.R
+import com.tokopedia.home.analytics.v2.PopularKeywordTracking
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PopularKeywordListDataModel
@@ -34,6 +36,9 @@ class PopularKeywordViewHolder (val view: View,
         val LAYOUT = R.layout.home_popular_keyword
     }
 
+    private var performanceMonitoring: PerformanceMonitoring? = null
+    private val performanceTraceName = "mp_home_popular_keyword_widget_load_time"
+
     private var adapter: PopularKeywordAdapter? = null
     var channelTitle: Typography? = null
     var tvReload: Typography? = null
@@ -45,9 +50,13 @@ class PopularKeywordViewHolder (val view: View,
     init{
         rotateAnimation.duration = 500
         rotateAnimation.interpolator = LinearInterpolator()
+        performanceMonitoring = PerformanceMonitoring()
     }
 
     override fun bind(element: PopularKeywordListDataModel) {
+        performanceMonitoring?.startTrace(performanceTraceName)
+        homeCategoryListener.sendIrisTrackerHashMap(PopularKeywordTracking.getPopularKeywordImpressionIris(element.channel, element.popularKeywordList, adapterPosition) as HashMap<String, Any>)
+
         initStub(element)
         initAdapter(element)
     }
@@ -58,11 +67,13 @@ class PopularKeywordViewHolder (val view: View,
 
     private fun initAdapter(element: PopularKeywordListDataModel) {
         if(adapter == null) {
-            adapter = PopularKeywordAdapter(popularKeywordListener, homeCategoryListener, element.channel)
+            adapter = PopularKeywordAdapter(popularKeywordListener, homeCategoryListener, element.channel, adapterPosition)
             recyclerView.layoutManager = GridLayoutManager(view.context, 2)
             recyclerView.adapter = adapter
         }
         adapter?.submitList(element.popularKeywordList)
+        performanceMonitoring?.stopTrace()
+        performanceMonitoring = null
     }
 
     private fun initStub(element: PopularKeywordListDataModel) {
@@ -154,7 +165,7 @@ class PopularKeywordViewHolder (val view: View,
 
     interface PopularKeywordListener {
         fun onPopularKeywordSectionReloadClicked(position: Int, channel: DynamicHomeChannel.Channels)
-        fun onPopularKeywordItemClicked(applink: String, channel: DynamicHomeChannel.Channels, position: Int, keyword: String)
-        fun onPopularKeywordItemImpressed(channel: DynamicHomeChannel.Channels, position: Int, keyword: String)
+        fun onPopularKeywordItemClicked(applink: String, channel: DynamicHomeChannel.Channels, position: Int, keyword: String,  positionInWidget: Int)
+        fun onPopularKeywordItemImpressed(channel: DynamicHomeChannel.Channels, position: Int, keyword: String,  positionInWidget: Int)
     }
 }

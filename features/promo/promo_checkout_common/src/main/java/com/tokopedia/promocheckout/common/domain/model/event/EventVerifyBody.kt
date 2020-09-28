@@ -1,10 +1,11 @@
 package com.tokopedia.promocheckout.common.domain.model.event
 
-import android.os.Parcel
 import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.Parcelize
 
+@Parcelize
 data class EventVerifyBody(
         @SerializedName("cart_items")
         @Expose
@@ -15,34 +16,9 @@ data class EventVerifyBody(
         @SerializedName("promocode")
         @Expose
         var promocode: String = ""
-) : Parcelable {
-        constructor(parcel: Parcel) : this(
-                parcel.createTypedArrayList(CartItemVerify),
-                parcel.readString(),
-                parcel.readString()) {
-        }
+) : Parcelable
 
-        override fun writeToParcel(parcel: Parcel, flags: Int) {
-                parcel.writeTypedList(cartItems)
-                parcel.writeString(deviceId)
-                parcel.writeString(promocode)
-        }
-
-        override fun describeContents(): Int {
-                return 0
-        }
-
-        companion object CREATOR : Parcelable.Creator<EventVerifyBody> {
-                override fun createFromParcel(parcel: Parcel): EventVerifyBody {
-                        return EventVerifyBody(parcel)
-                }
-
-                override fun newArray(size: Int): Array<EventVerifyBody?> {
-                        return arrayOfNulls(size)
-                }
-        }
-}
-
+@Parcelize
 data class CartItemVerify(
         @SerializedName("configuration")
         @Expose
@@ -59,38 +35,9 @@ data class CartItemVerify(
         @SerializedName("quantity")
         @Expose
         val quantity: Int = 0
-) : Parcelable {
-        constructor(parcel: Parcel) : this(
-                parcel.readParcelable(ConfigurationVerify::class.java.classLoader),
-                parcel.readParcelable(MetaDataVerify::class.java.classLoader),
-                parcel.readInt(),
-                parcel.readString(),
-                parcel.readInt()) {
-        }
+) : Parcelable
 
-        override fun writeToParcel(parcel: Parcel, flags: Int) {
-                parcel.writeParcelable(configuration, flags)
-                parcel.writeParcelable(metaData, flags)
-                parcel.writeInt(productId)
-                parcel.writeString(productName)
-                parcel.writeInt(quantity)
-        }
-
-        override fun describeContents(): Int {
-                return 0
-        }
-
-        companion object CREATOR : Parcelable.Creator<CartItemVerify> {
-                override fun createFromParcel(parcel: Parcel): CartItemVerify {
-                        return CartItemVerify(parcel)
-                }
-
-                override fun newArray(size: Int): Array<CartItemVerify?> {
-                        return arrayOfNulls(size)
-                }
-        }
-}
-
+@Parcelize
 data class MetaDataVerify(
         @SerializedName("entity_category_id")
         @Expose
@@ -155,70 +102,9 @@ data class MetaDataVerify(
         @SerializedName("entity_image")
         @Expose
         val entityImage: String = ""
-) : Parcelable {
-        constructor(parcel: Parcel) : this(
-                parcel.readInt(),
-                parcel.readString(),
-                parcel.readInt(),
-                parcel.createTypedArrayList(EntityPackageVerify),
-                parcel.readInt(),
-                parcel.readInt(),
-                parcel.readString(),
-                parcel.readInt(),
-                parcel.readInt(),
-                parcel.createTypedArrayList(EntityPassengerVerify),
-                parcel.readParcelable(EntityAddressVerify::class.java.classLoader),
-                parcel.readString(),
-                parcel.readString(),
-                parcel.readString(),
-                parcel.createTypedArrayList(TaxPerQuantity),
-                parcel.createTypedArrayList(OtherCharge),
-                parcel.readByte() != 0.toByte(),
-                parcel.readInt(),
-                parcel.readInt(),
-                parcel.readInt(),
-                parcel.readString()) {
-        }
+) : Parcelable
 
-        override fun writeToParcel(parcel: Parcel, flags: Int) {
-                parcel.writeInt(entityCategoryId)
-                parcel.writeString(entityCategoryName)
-                parcel.writeInt(entityGroupId)
-                parcel.writeTypedList(entityPackages)
-                parcel.writeInt(totalTicketCount)
-                parcel.writeInt(entityProductId)
-                parcel.writeString(entityProductName)
-                parcel.writeInt(entityProviderId)
-                parcel.writeInt(entityScheduleId)
-                parcel.writeTypedList(entityPassengers)
-                parcel.writeParcelable(entityAddress, flags)
-                parcel.writeString(citySearched)
-                parcel.writeString(entityEndTime)
-                parcel.writeString(entityStartTime)
-                parcel.writeTypedList(taxPerQuantity)
-                parcel.writeTypedList(otherCharges)
-                parcel.writeByte(if (tncApproved) 1 else 0)
-                parcel.writeInt(totalOtherCharges)
-                parcel.writeInt(totalTaxAmount)
-                parcel.writeInt(totalTicketPrice)
-                parcel.writeString(entityImage)
-        }
-
-        override fun describeContents(): Int {
-                return 0
-        }
-
-        companion object CREATOR : Parcelable.Creator<MetaDataVerify> {
-                override fun createFromParcel(parcel: Parcel): MetaDataVerify {
-                        return MetaDataVerify(parcel)
-                }
-
-                override fun newArray(size: Int): Array<MetaDataVerify?> {
-                        return arrayOfNulls(size)
-                }
-        }
-}
-
+@Parcelize
 data class EntityPackageVerify(
         @SerializedName("package_id")
         @Expose
@@ -247,46 +133,9 @@ data class EntityPackageVerify(
         @SerializedName("area_id")
         @Expose
         val areaID: String = ""
-) : Parcelable {
-        constructor(parcel: Parcel) : this(
-                parcel.readInt(),
-                parcel.readInt(),
-                parcel.readString(),
-                parcel.readInt(),
-                parcel.readString(),
-                parcel.readInt(),
-                parcel.readInt(),
-                parcel.readInt(),
-                parcel.readString()) {
-        }
+) : Parcelable
 
-        override fun writeToParcel(parcel: Parcel, flags: Int) {
-                parcel.writeInt(packageId)
-                parcel.writeInt(quantity)
-                parcel.writeString(description)
-                parcel.writeInt(pricePerSeat)
-                parcel.writeString(sessionID)
-                parcel.writeInt(productId)
-                parcel.writeInt(groupId)
-                parcel.writeInt(scheduleId)
-                parcel.writeString(areaID)
-        }
-
-        override fun describeContents(): Int {
-                return 0
-        }
-
-        companion object CREATOR : Parcelable.Creator<EntityPackageVerify> {
-                override fun createFromParcel(parcel: Parcel): EntityPackageVerify {
-                        return EntityPackageVerify(parcel)
-                }
-
-                override fun newArray(size: Int): Array<EntityPackageVerify?> {
-                        return arrayOfNulls(size)
-                }
-        }
-}
-
+@Parcelize
 data class EntityPassengerVerify(
         @SerializedName("element_type")
         @Expose
@@ -318,48 +167,9 @@ data class EntityPassengerVerify(
         @SerializedName("value")
         @Expose
         val value: String = ""
-) : Parcelable {
-        constructor(parcel: Parcel) : this(
-                parcel.readString(),
-                parcel.readString(),
-                parcel.readString(),
-                parcel.readInt(),
-                parcel.readString(),
-                parcel.readInt(),
-                parcel.readString(),
-                parcel.readString(),
-                parcel.readString(),
-                parcel.readString()) {
-        }
+) : Parcelable
 
-        override fun writeToParcel(parcel: Parcel, flags: Int) {
-                parcel.writeString(elementType)
-                parcel.writeString(errorMessage)
-                parcel.writeString(helpText)
-                parcel.writeInt(id)
-                parcel.writeString(name)
-                parcel.writeInt(productId)
-                parcel.writeString(required)
-                parcel.writeString(title)
-                parcel.writeString(validatorRegex)
-                parcel.writeString(value)
-        }
-
-        override fun describeContents(): Int {
-                return 0
-        }
-
-        companion object CREATOR : Parcelable.Creator<EntityPassengerVerify> {
-                override fun createFromParcel(parcel: Parcel): EntityPassengerVerify {
-                        return EntityPassengerVerify(parcel)
-                }
-
-                override fun newArray(size: Int): Array<EntityPassengerVerify?> {
-                        return arrayOfNulls(size)
-                }
-        }
-}
-
+@Parcelize
 data class EntityAddressVerify(
         @SerializedName("address")
         @Expose
@@ -382,42 +192,9 @@ data class EntityAddressVerify(
         @SerializedName("Name")
         @Expose
         val name: String = ""
-) : Parcelable {
-        constructor(parcel: Parcel) : this(
-                parcel.readString(),
-                parcel.readString(),
-                parcel.readString(),
-                parcel.readString(),
-                parcel.readString(),
-                parcel.readString(),
-                parcel.readString()) {
-        }
+) : Parcelable
 
-        override fun writeToParcel(parcel: Parcel, flags: Int) {
-                parcel.writeString(address)
-                parcel.writeString(city)
-                parcel.writeString(email)
-                parcel.writeString(latitude)
-                parcel.writeString(longitude)
-                parcel.writeString(mobile)
-                parcel.writeString(name)
-        }
-
-        override fun describeContents(): Int {
-                return 0
-        }
-
-        companion object CREATOR : Parcelable.Creator<EntityAddressVerify> {
-                override fun createFromParcel(parcel: Parcel): EntityAddressVerify {
-                        return EntityAddressVerify(parcel)
-                }
-
-                override fun newArray(size: Int): Array<EntityAddressVerify?> {
-                        return arrayOfNulls(size)
-                }
-        }
-}
-
+@Parcelize
 data class ConfigurationVerify(
         @SerializedName("price")
         @Expose
@@ -425,55 +202,11 @@ data class ConfigurationVerify(
         @SerializedName("sub_config")
         @Expose
         val subConfig: SubConfigVerify = SubConfigVerify()
-) : Parcelable {
-        constructor(parcel: Parcel) : this(
-                parcel.readInt(),
-                parcel.readParcelable(SubConfigVerify::class.java.classLoader)) {
-        }
+) : Parcelable
 
-        override fun writeToParcel(parcel: Parcel, flags: Int) {
-                parcel.writeInt(price)
-                parcel.writeParcelable(subConfig, flags)
-        }
-
-        override fun describeContents(): Int {
-                return 0
-        }
-
-        companion object CREATOR : Parcelable.Creator<ConfigurationVerify> {
-                override fun createFromParcel(parcel: Parcel): ConfigurationVerify {
-                        return ConfigurationVerify(parcel)
-                }
-
-                override fun newArray(size: Int): Array<ConfigurationVerify?> {
-                        return arrayOfNulls(size)
-                }
-        }
-}
-
+@Parcelize
 data class SubConfigVerify(
         @SerializedName("name")
         @Expose
         val name: String = ""
-) : Parcelable {
-        constructor(parcel: Parcel) : this(parcel.readString()) {
-        }
-
-        override fun writeToParcel(parcel: Parcel, flags: Int) {
-                parcel.writeString(name)
-        }
-
-        override fun describeContents(): Int {
-                return 0
-        }
-
-        companion object CREATOR : Parcelable.Creator<SubConfigVerify> {
-                override fun createFromParcel(parcel: Parcel): SubConfigVerify {
-                        return SubConfigVerify(parcel)
-                }
-
-                override fun newArray(size: Int): Array<SubConfigVerify?> {
-                        return arrayOfNulls(size)
-                }
-        }
-}
+) : Parcelable

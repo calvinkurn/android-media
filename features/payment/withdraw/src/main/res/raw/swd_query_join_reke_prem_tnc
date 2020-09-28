@@ -1,0 +1,9 @@
+query GetTNC($programID:Int!, $isQuit:Boolean!){
+    GetTNC(programID: $programID, isQuit:$isQuit){
+        status
+        message
+        data{
+            template
+        }
+    }
+}

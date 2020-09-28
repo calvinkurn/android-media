@@ -110,7 +110,7 @@ class TopAdsKeywordNewChooseGroupFragment : TopAdsNewBaseStepperFragment<TopAdsK
 
         var groupName: String? = null
         savedInstanceState?.run {
-            chosenId = getString(SAVED_GROUP_ID)
+            chosenId = getString(SAVED_GROUP_ID, "")
             groupName = getString(SAVED_GROUP_NAME)
             keywordCount = getInt(SAVED_KEYWORD_COUNT)
         }

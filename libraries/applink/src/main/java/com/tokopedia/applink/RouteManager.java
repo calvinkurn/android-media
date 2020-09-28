@@ -17,6 +17,7 @@ import androidx.annotation.Nullable;
 
 import com.tokopedia.analyticsdebugger.debugger.ApplinkLogger;
 import com.tokopedia.config.GlobalConfig;
+import com.tokopedia.dev_monitoring_tools.userjourney.UserJourney;
 import com.tokopedia.utils.uri.DeeplinkUtils;
 
 import java.util.List;
@@ -92,7 +93,7 @@ public class RouteManager {
 
         if (shouldRedirectToSellerApp && !GlobalConfig.isSellerApp()) {
             return getIntentRedirectSellerApp(context, uri);
-        } else if (resolveInfos == null || resolveInfos.size() == 0) {
+        } else if (resolveInfos.size() == 0) {
             // intent cannot be viewed in app
             ApplinkLogger.getInstance(context).appendTrace("Intent cannot be viewed in app");
             ApplinkLogger.getInstance(context).appendTrace("Explicit intent result:\nnull");
@@ -208,7 +209,7 @@ public class RouteManager {
         } else if (URLUtil.isNetworkUrl(mappedDeeplink)) {
             ApplinkLogger.getInstance(context).appendTrace("Network url detected");
             intent = buildInternalImplicitIntent(context, mappedDeeplink);
-            if (intent == null || intent.resolveActivity(context.getPackageManager()) == null) {
+            if (intent.resolveActivity(context.getPackageManager()) == null) {
                 intent = new Intent();
                 intent.setClassName(context.getPackageName(), GlobalConfig.DEEPLINK_ACTIVITY_CLASS_NAME);
                 intent.setData(Uri.parse(uriString));
@@ -259,8 +260,8 @@ public class RouteManager {
             } else if (context instanceof Service) {
                 sourceClass = ((Service) context).getClass().getCanonicalName();
             }
-            Timber.w("P1#APPLINK_OPEN_ERROR#Router;source='%s';referrer='%s';uri='%s'",
-                    sourceClass, referrer, uriString);
+            Timber.w("P1#APPLINK_OPEN_ERROR#Router;source='%s';referrer='%s';uri='%s';journey='%s'",
+                    sourceClass, referrer, uriString, UserJourney.INSTANCE.getReadableJourneyActivity(5));
         } catch (Exception e) {
             Timber.e(e);
         }
@@ -375,9 +376,15 @@ public class RouteManager {
         if (URLUtil.isNetworkUrl(mappedDeeplink)) {
             ApplinkLogger.getInstance(context).appendTrace("Network url detected");
             Intent intent = buildInternalImplicitIntent(context, mappedDeeplink);
-            ApplinkLogger.getInstance(context).appendTrace("Returning network intent:\n" + (intent != null ? intent.toString() : ""));
+            Intent webIntent;
+            if (intent.resolveActivity(context.getPackageManager()) == null) {
+                webIntent = null;
+            } else {
+                webIntent = intent;
+            }
+            ApplinkLogger.getInstance(context).appendTrace("Returning network intent:\n" + (webIntent != null ? webIntent.toString() : ""));
             ApplinkLogger.getInstance(context).save();
-            return intent;
+            return webIntent;
         }
         Intent intent = buildInternalExplicitIntent(context, mappedDeeplink);
         ApplinkLogger.getInstance(context).appendTrace("Returning intent:\n" + (intent != null ? intent.toString() : ""));

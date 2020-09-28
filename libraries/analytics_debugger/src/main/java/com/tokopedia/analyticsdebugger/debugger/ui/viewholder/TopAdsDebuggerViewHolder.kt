@@ -14,6 +14,7 @@ class TopAdsDebuggerViewHolder(itemView: View) : AbstractViewHolder<TopAdsDebugg
         itemView.viewHolderUrlText.text = element.previewUrl
         itemView.viewHolderEventTypeText.text = element.eventType
         itemView.viewHolderSourceNameText.text = element.sourceName
+        itemView.viewHolderProductIdText.text = element.productId + " - " + element.productName
         itemView.viewHolderTimestampText.text = element.timestamp
         itemView.viewHolderStatusText.text = element.eventStatus
         itemView.viewHolderStatusText.setTextColor(getTopAdsStatusColor(itemView.context, element.eventStatus))

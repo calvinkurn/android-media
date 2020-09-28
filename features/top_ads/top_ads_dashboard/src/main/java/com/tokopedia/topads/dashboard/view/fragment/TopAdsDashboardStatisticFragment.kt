@@ -2,11 +2,10 @@ package com.tokopedia.topads.dashboard.view.fragment
 
 
 import android.os.Bundle
-import androidx.core.content.ContextCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-
+import androidx.core.content.ContextCompat
 import com.db.williamchart.base.BaseWilliamChartConfig
 import com.db.williamchart.base.BaseWilliamChartModel
 import com.db.williamchart.config.GrossGraphDataSetConfig
@@ -21,7 +20,6 @@ import com.tokopedia.topads.dashboard.data.model.Cell
 import com.tokopedia.topads.dashboard.data.model.DataStatistic
 import com.tokopedia.topads.dashboard.data.model.Summary
 import kotlinx.android.synthetic.main.partial_statistics_graph_fragment.*
-
 import java.text.SimpleDateFormat
 
 /**
@@ -41,16 +39,10 @@ abstract class TopAdsDashboardStatisticFragment : TkpdBaseV4Fragment() {
     private var mLabelDisplay: ArrayList<TooltipModel> = ArrayList()
     private var mValues: FloatArray = floatArrayOf()
 
-    protected abstract val titleGraph: String
-
     override fun getScreenName(): String = javaClass.simpleName
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.partial_statistics_graph_fragment, container, false)
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        content_title_graph.text = titleGraph
     }
 
     private fun generateLineChart() {
@@ -79,11 +71,10 @@ abstract class TopAdsDashboardStatisticFragment : TkpdBaseV4Fragment() {
                         } else indexToDisplay.contains(i)
 
                     })
-                    .setDotDrawable(ContextCompat.getDrawable(activity!!, com.db.williamchart.R.drawable.oval_2_copy_6))
+                    .setDotDrawable(ContextCompat.getDrawable(activity!!,R.drawable.topads_dash_graph_dot_drawable))
                     .buildChart(content_graph)
         } catch (e: Exception) {
         }
-
     }
 
     private fun calculateIndexToDisplay(): List<Int> {

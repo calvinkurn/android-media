@@ -1,9 +1,6 @@
 package com.tokopedia.common.travel.ticker.domain
 
-import android.content.Context
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.common.travel.R
+import com.tokopedia.common.travel.data.TravelTickerGQLQuery
 import com.tokopedia.common.travel.ticker.data.response.TravelTickerAttribute
 import com.tokopedia.common.travel.ticker.data.response.TravelTickerEntity
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
@@ -19,8 +16,8 @@ import javax.inject.Inject
 /**
  * @author by furqan on 19/02/19
  */
-class TravelTickerUseCase @Inject
-constructor(@param:ApplicationContext private val context: Context, private val graphqlUseCase: GraphqlUseCase) : UseCase<TravelTickerModel>() {
+class TravelTickerUseCase @Inject constructor(private val graphqlUseCase: GraphqlUseCase)
+    : UseCase<TravelTickerModel>() {
 
     override fun createObservable(requestParams: RequestParams): Observable<TravelTickerModel> {
         return Observable.just(requestParams)
@@ -33,7 +30,7 @@ constructor(@param:ApplicationContext private val context: Context, private val 
                             params[PARAM_PAGE] = reqParams.getString(PARAM_PAGE, "")
                         }
 
-                        val query = GraphqlHelper.loadRawString(context.resources, R.raw.query_travel_ticker)
+                        val query = TravelTickerGQLQuery.TRAVEL_TICKER
 
                         if (query.isNotEmpty()) {
                             val request = GraphqlRequest(query, TravelTickerEntity::class.java, params, TRAVEL_TICKER_OPERATION_NAME, false)

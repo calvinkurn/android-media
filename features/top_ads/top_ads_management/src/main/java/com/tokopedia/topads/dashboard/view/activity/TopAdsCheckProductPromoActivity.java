@@ -4,27 +4,28 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import androidx.fragment.app.Fragment;
 import android.text.TextUtils;
 
+import androidx.fragment.app.Fragment;
+
 import com.airbnb.deeplinkdispatch.DeepLink;
-import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.applink.ApplinkConst;
-import com.tokopedia.core.gcm.utils.ApplinkUtils;
 import com.tokopedia.config.GlobalConfig;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.topads.TopAdsComponentInstance;
 import com.tokopedia.topads.TopAdsManagementRouter;
-import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceTaggingConstant;
+import com.tokopedia.topads.common.view.activity.TopAdsBaseActivity;
 import com.tokopedia.topads.dashboard.di.component.TopAdsComponent;
+import com.tokopedia.topads.dashboard.utils.ApplinkUtils;
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsCheckProductPromoFragment;
+import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceTaggingConstant;
+import com.tokopedia.user.session.UserSession;
 
 /**
  * Created by hadi.putra on 17/04/18.
  */
 
-public class TopAdsCheckProductPromoActivity extends BaseSimpleActivity implements HasComponent<TopAdsComponent>{
+public class TopAdsCheckProductPromoActivity extends TopAdsBaseActivity implements HasComponent<TopAdsComponent>{
     public static final String PARAM_USER_ID = "user_id";
     public static final String PARAM_SOURCE = "source";
 
@@ -37,7 +38,7 @@ public class TopAdsCheckProductPromoActivity extends BaseSimpleActivity implemen
         if (GlobalConfig.isSellerApp()) {
             String userId = extras.getString(PARAM_USER_ID, "");
             if (!TextUtils.isEmpty(userId)) {
-                if (SessionHandler.getLoginID(context).equalsIgnoreCase(userId)) {
+                if (new UserSession(context).getUserId().equalsIgnoreCase(userId)) {
                     Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
                     return getCallingIntent(context)
                             .setData(uri.build())

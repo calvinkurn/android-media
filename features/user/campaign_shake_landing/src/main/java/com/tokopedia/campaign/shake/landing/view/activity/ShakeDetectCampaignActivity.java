@@ -108,7 +108,7 @@ public class ShakeDetectCampaignActivity extends BaseSimpleActivity implements S
 
     @Override
     protected int getLayoutRes() {
-        return R.layout.activity_shake;
+        return R.layout.shake_landing_activity_shake;
     }
 
     void attachToPresenter() {
@@ -148,7 +148,7 @@ public class ShakeDetectCampaignActivity extends BaseSimpleActivity implements S
 
     @Override
     public void showErrorGetInfo() {
-        shakeShakeErrorMsg.setText(getString(R.string.shake_default_error));
+        shakeShakeErrorMsg.setText(getString(R.string.shake_landing_shake_default_error));
         layoutshakeShakeErrorMsg.setVisibility(View.VISIBLE);
         cancelButton.setVisibility(View.GONE);
     }
@@ -188,8 +188,8 @@ public class ShakeDetectCampaignActivity extends BaseSimpleActivity implements S
 
     @Override
     public void setSnackBarErrorMessage() {
-        Toaster.INSTANCE.make(parent, getResources().getString(R.string.shake_login_error), TOAST_LENGTH, Toaster.TYPE_ERROR,
-                getResources().getString(R.string.masuk_sekarang), v->{
+        Toaster.INSTANCE.make(parent, getResources().getString(R.string.shake_landing_shake_login_error), TOAST_LENGTH, Toaster.TYPE_ERROR,
+                getResources().getString(R.string.shake_landing_masuk_sekarang), v->{
                     RouteManager.route(ShakeDetectCampaignActivity.this, ApplinkConst.LOGIN);
                     finish();
                 });

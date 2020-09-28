@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/white"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tg_event_checkout_summary_title"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_marginLeft="@dimen/spacing_lvl4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/ent_event_checkout_summary_title"
+        app:typographyType="body_1"
+        app:typographyWeight="bold"
+        android:textColor="@color/Neutral_N700"
+        />
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_event_checkout_price"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tg_event_checkout_summary_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        />
+
+    <View
+        android:id="@+id/view_event_checkout_summary"
+        app:layout_constraintTop_toBottomOf="@+id/rv_event_checkout_price"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginRight="@dimen/spacing_lvl4"
+        android:layout_marginLeft="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/Neutral_N100"
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/tg_event_checkout_summary_price_title"
+        android:text="@string/ent_event_checkout_summary_total"
+        android:textColor="@color/Neutral_N700"
+        app:typographyWeight="bold"
+        app:typographyType="body_2"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        app:layout_constraintTop_toBottomOf="@+id/view_event_checkout_summary"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginLeft="@dimen/spacing_lvl4"
+        android:layout_marginBottom="@dimen/spacing_lvl6"
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/tg_event_checkout_summary_price_price"
+        tools:text="Rp 12,698,400"
+        android:textColor="@color/orange_500"
+        app:typographyWeight="bold"
+        app:typographyType="body_2"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        app:layout_constraintTop_toBottomOf="@+id/view_event_checkout_summary"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginRight="@dimen/spacing_lvl4"
+        android:layout_marginBottom="@dimen/spacing_lvl6"
+        />
+
+    <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
+        android:id="@+id/cb_event_checkout"
+        android:checked="false"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_marginLeft="@dimen/spacing_lvl4"
+        android:layout_marginBottom="@dimen/spacing_lvl4"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tg_event_checkout_summary_price_title" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tg_event_checkout_tnc"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/tg_event_checkout_summary_price_title"
+        app:layout_constraintLeft_toRightOf="@+id/cb_event_checkout"
+        android:text="@string/ent_event_checkout_summary_tnc"
+        app:typographyWeight="reguler"
+        app:typographyType="body_3"
+        android:layout_marginTop="@dimen/dimen_dp_20"
+        android:textColorLink="@color/green_500"
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

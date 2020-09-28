@@ -17,7 +17,7 @@ internal class SearchShopOpenFilterPageTest: SearchShopViewModelTestFixtures() {
 
         `When handle view open filter page`()
 
-        `Then should post event success open filter page`()
+        `Then assert success open filter page`()
     }
 
     private fun `Given view get dynamic filter successfully`() {
@@ -31,7 +31,18 @@ internal class SearchShopOpenFilterPageTest: SearchShopViewModelTestFixtures() {
         searchShopViewModel.onViewOpenFilterPage()
     }
 
-    private fun `Then should post event success open filter page`() {
+    private fun `Then assert success open filter page`() {
+        `Then should post open filter page tracking event`()
+        `Then should post event open filter page`()
+    }
+
+    private fun `Then should post open filter page tracking event`() {
+        val trackingOpenFilterPageEvent = searchShopViewModel.getOpenFilterPageTrackingEventLiveData().value
+
+        trackingOpenFilterPageEvent?.getContentIfNotHandled() shouldBe true
+    }
+
+    private fun `Then should post event open filter page`() {
         val openFilterPageEvent = searchShopViewModel.getOpenFilterPageEventLiveData().value
 
         openFilterPageEvent?.getContentIfNotHandled() shouldBe true
@@ -43,7 +54,7 @@ internal class SearchShopOpenFilterPageTest: SearchShopViewModelTestFixtures() {
 
         `When handle view open filter page`()
 
-        `Then should show error message indicating no filter data exists`()
+        `Then assert cannot open filter page`()
     }
 
     private fun `Given view get dynamic filter successfully without filter data`() {
@@ -54,6 +65,17 @@ internal class SearchShopOpenFilterPageTest: SearchShopViewModelTestFixtures() {
         getDynamicFilterUseCase.stubExecute().returns(dynamicFilterModelWithoutFilterData)
 
         searchShopViewModel.onViewVisibilityChanged(isViewVisible = true, isViewAdded = true)
+    }
+
+    private fun `Then assert cannot open filter page`() {
+        `Then should NOT post open filter page tracking event`()
+        `Then should show error message indicating no filter data exists`()
+    }
+
+    private fun `Then should NOT post open filter page tracking event`() {
+        val trackingOpenFilterPageEvent = searchShopViewModel.getOpenFilterPageTrackingEventLiveData().value
+
+        trackingOpenFilterPageEvent?.getContentIfNotHandled() shouldBe null
     }
 
     private fun `Then should show error message indicating no filter data exists`() {
@@ -71,7 +93,7 @@ internal class SearchShopOpenFilterPageTest: SearchShopViewModelTestFixtures() {
 
         `When handle view open filter page`()
 
-        `Then should show error message indicating no filter data exists`()
+        `Then assert cannot open filter page`()
     }
 
     private fun `Given view get dynamic filter failed on second try`(exception: Exception) {

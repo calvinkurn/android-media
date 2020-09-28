@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <dimen name="dimen_first_last_category">18dp</dimen>
-    <dimen name="dimen_recycler_view_category">16dp</dimen>
-    <dimen name="dimen_category_item">8dp</dimen>
-    <dimen name="dimen_0dp">0dp</dimen>
-</resources>

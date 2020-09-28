@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:padding="16dp">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txtLokasiKamuCari"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/ent_search_search_find_loc"
+        app:typographyType="small"
+        app:typographyWeight="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/lihatSemua"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/ent_search_lihat_semua"
+        android:textColor="#03ac04"
+        android:visibility="gone"
+        android:clickable="false"
+        app:typographyType="small"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+     <com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
+         android:id="@+id/recycler_view_location"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+         tools:listitem="@layout/ent_search_city_adapter_item"
+         tools:itemCount="5"
+         app:layout_constraintTop_toBottomOf="@+id/txtLokasiKamuCari"
+         app:layout_constraintStart_toStartOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,10 +1,10 @@
 package com.tokopedia.oneclickcheckout.order.view.card
 
-import android.annotation.SuppressLint
 import android.graphics.Paint
 import android.view.View
 import android.widget.ImageView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticcart.shipping.features.shippingcourierocc.ShippingCourierOccBottomSheet
@@ -20,8 +20,9 @@ import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.Service
 import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageFragment
-import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageViewModel
-import com.tokopedia.oneclickcheckout.order.view.model.OrderPreference
+import com.tokopedia.oneclickcheckout.order.view.bottomsheet.InstallmentDetailBottomSheet
+import com.tokopedia.oneclickcheckout.order.view.model.*
+import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifyprinciples.Typography
@@ -30,6 +31,8 @@ import com.tokopedia.utils.currency.CurrencyFormatUtil
 class OrderPreferenceCard(private val view: View, private val listener: OrderPreferenceCardListener, private val orderSummaryAnalytics: OrderSummaryAnalytics) {
 
     private lateinit var preference: OrderPreference
+    private var shipment: OrderShipment? = null
+    private var payment: OrderPayment? = null
 
     private val tvCardHeader by lazy { view.findViewById<Typography>(R.id.tv_card_header) }
     private val lblMainPreference by lazy { view.findViewById<Label>(R.id.lbl_main_preference) }
@@ -49,6 +52,13 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
     private val ivPayment by lazy { view.findViewById<ImageView>(R.id.iv_payment) }
     private val tvPaymentName by lazy { view.findViewById<Typography>(R.id.tv_payment_name) }
     private val tvPaymentDetail by lazy { view.findViewById<Typography>(R.id.tv_payment_detail) }
+    private val tvPaymentInfo by lazy { view.findViewById<Typography>(R.id.tv_payment_info) }
+    private val tvPaymentErrorMessage by lazy { view.findViewById<Typography>(R.id.tv_payment_error_message) }
+    private val tvPaymentErrorAction by lazy { view.findViewById<Typography>(R.id.tv_payment_error_action) }
+    private val tvInstallmentType by lazy { view.findViewById<Typography>(R.id.tv_installment_type) }
+    private val tvInstallmentDetail by lazy { view.findViewById<Typography>(R.id.tv_installment_detail) }
+    private val tvInstallmentErrorMessage by lazy { view.findViewById<Typography>(R.id.tv_installment_error_message) }
+    private val tvInstallmentErrorAction by lazy { view.findViewById<Typography>(R.id.tv_installment_error_action) }
     private val tvAddressName by lazy { view.findViewById<Typography>(R.id.tv_address_name) }
     private val tvAddressReceiver by lazy { view.findViewById<Typography>(R.id.tv_address_receiver) }
     private val tvAddressDetail by lazy { view.findViewById<Typography>(R.id.tv_address_detail) }
@@ -56,6 +66,20 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
     fun setPreference(preference: OrderPreference) {
         this.preference = preference
         showPreference()
+    }
+
+    fun setShipment(shipment: OrderShipment?) {
+        if (::preference.isInitialized) {
+            this.shipment = shipment
+            showShipping()
+        }
+    }
+
+    fun setPayment(payment: OrderPayment) {
+        if (::preference.isInitialized) {
+            this.payment = payment
+            showPayment()
+        }
     }
 
     private fun showPreference() {
@@ -93,32 +117,32 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
         }
     }
 
-    @SuppressLint("SetTextI18n")
     private fun showShipping() {
         val shipmentModel = preference.preference.shipment
 
-        val shipping = preference.shipping
-        tvShippingName?.text = "Pengiriman ${shipmentModel.serviceName.capitalize()}"
-        val tempServiceDuration = shipping?.serviceDuration ?: shipmentModel.serviceDuration
-        val serviceDur = if (tempServiceDuration.contains("(") && tempServiceDuration.contains(")")) {
-            "Durasi " + tempServiceDuration.substring(tempServiceDuration.indexOf("(") + 1, tempServiceDuration.indexOf(")"))
-        } else {
-            OrderSummaryPageViewModel.NO_EXACT_DURATION_MESSAGE
-        }
-        tvShippingDuration?.text = serviceDur
+        val shipping = shipment
+        tvShippingName?.text = view.context.getString(R.string.lbl_shipping_with_name, shipmentModel.serviceName.capitalize())
 
-        if (shipping == null) {
+        if (shipping == null || shipping.serviceName.isNullOrEmpty()) {
+            tvShippingDuration?.text = generateServiceDuration(shipmentModel.serviceDuration)
             tvShippingDuration?.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
             tickerShippingPromo?.gone()
             tvShippingPrice?.gone()
+            tvShippingSlashPrice?.gone()
+            tvShippingCourier?.gone()
+            tvShippingCourierLbl?.gone()
+            tvShippingMessage?.gone()
+            tvShippingChangeDuration?.gone()
         } else {
             if (shipping.serviceErrorMessage == null || shipping.serviceErrorMessage.isBlank()) {
                 if (!shipping.isServicePickerEnable) {
-                    tvShippingDuration?.text = "Durasi ${shipping.serviceDuration} - ${shipping.shipperName}"
+                    tvShippingDuration?.text = "${generateServiceDuration(shipping.serviceDuration)} - ${shipping.shipperName}"
                     tvShippingDuration?.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
-                    tvShippingDuration?.setOnClickListener { }
+                    tvShippingDuration?.setOnClickListener {
+                        // no op
+                    }
                     tvShippingPrice?.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(shipping.shippingPrice
-                            ?: 0, false)
+                            ?: 0, false).removeDecimalSuffix()
                     tvShippingPrice?.setOnClickListener {
                         listener.chooseCourier()
                     }
@@ -130,45 +154,17 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
                     tvShippingChangeDuration?.gone()
 
                     //BBO
-                    if (shipping.logisticPromoTickerMessage?.isNotEmpty() == true && shipping.shippingRecommendationData?.logisticPromo != null) {
-                        tickerShippingPromoDescription?.text = "${shipping.logisticPromoTickerMessage}"
-                        tickerShippingPromo?.visible()
-                        tickerAction?.setOnClickListener {
-                            listener.onLogisticPromoClick(shipping.shippingRecommendationData.logisticPromo)
-                        }
-                    } else {
-                        tickerShippingPromo?.gone()
-                    }
+                    renderBboTicker(shipping)
 
                     //BBO APPLY
-                    if (shipping.isApplyLogisticPromo && shipping.logisticPromoViewModel != null && shipping.logisticPromoShipping != null) {
-                        tvShippingName?.text = view.context.getString(R.string.lbl_osp_free_shipping)
-                        val tempServiceDuration = shipping.logisticPromoViewModel.title
-                        val serviceDur = if (tempServiceDuration.contains("(") && tempServiceDuration.contains(")")) {
-                            tempServiceDuration.substring(tempServiceDuration.indexOf("(") + 1, tempServiceDuration.indexOf(")"))
-                        } else {
-                            OrderSummaryPageViewModel.NO_EXACT_DURATION_MESSAGE
-                        }
-                        tvShippingDuration?.text = serviceDur
-                        if (shipping.logisticPromoViewModel.benefitAmount >= shipping.logisticPromoShipping.productData.price.price.toDouble()) {
-                            tvShippingPrice?.text = view.context.getString(R.string.lbl_osp_free_shipping_only_price)
-                            tvShippingSlashPrice?.gone()
-                        } else {
-                            tvShippingPrice?.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(shipping.logisticPromoShipping.productData.price.price - shipping.logisticPromoViewModel.benefitAmount, false)
-                            tvShippingSlashPrice?.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(shipping.logisticPromoShipping.productData.price.price, false)
-                            tvShippingSlashPrice?.paintFlags?.let {
-                                tvShippingSlashPrice?.paintFlags = it or Paint.STRIKE_THRU_TEXT_FLAG
-                            }
-                            tvShippingSlashPrice?.visible()
-                        }
-                    }
+                    renderBbo(shipping, tvShippingPrice)
 
                 } else {
-                    tvShippingName?.text = "Pengiriman"
+                    tvShippingName?.text = view.context.getString(R.string.lbl_shipping)
                     tvShippingDuration?.text = shipping.serviceName
                     tvShippingDuration?.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_keyboard_arrow_down_grey_20dp, 0)
                     tvShippingDuration?.setOnClickListener {
-                        listener.chooseDuration()
+                        listener.chooseDuration(false)
                     }
                     tvShippingPrice?.gone()
                     tvShippingSlashPrice?.gone()
@@ -176,104 +172,208 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
                     tvShippingChangeDuration?.gone()
                     tvShippingCourierLbl?.visible()
                     tvShippingCourier?.text = "${shipping.shipperName} - ${CurrencyFormatUtil.convertPriceValueToIdrFormat(shipping.shippingPrice
-                            ?: 0, false)}"
+                            ?: 0, false).removeDecimalSuffix()}"
                     tvShippingCourier?.setOnClickListener {
                         listener.chooseCourier()
                     }
                     tvShippingCourier?.visible()
 
                     //BBO
-                    if (shipping.logisticPromoTickerMessage?.isNotEmpty() == true && shipping.shippingRecommendationData?.logisticPromo != null) {
-                        tickerShippingPromoDescription?.text = "${shipping.logisticPromoTickerMessage}"
-                        tickerShippingPromo?.visible()
-                        tickerAction?.setOnClickListener {
-                            listener.onLogisticPromoClick(shipping.shippingRecommendationData.logisticPromo)
-                        }
-                    } else {
-                        tickerShippingPromo?.gone()
-                    }
+                    renderBboTicker(shipping)
 
                     //BBO APPLY
-                    if (shipping.isApplyLogisticPromo && shipping.logisticPromoViewModel != null) {
-                        tvShippingName?.text = view.context.getString(R.string.lbl_osp_free_shipping)
-                        val tempServiceDuration = shipping.logisticPromoViewModel.title
-                        val serviceDur = if (tempServiceDuration.contains("(") && tempServiceDuration.contains(")")) {
-                            tempServiceDuration.substring(tempServiceDuration.indexOf("(") + 1, tempServiceDuration.indexOf(")"))
-                        } else {
-                            OrderSummaryPageViewModel.NO_EXACT_DURATION_MESSAGE
-                        }
-                        tvShippingDuration?.text = serviceDur
-                        if (shipping.logisticPromoViewModel.benefitAmount >= shipping.logisticPromoViewModel.shippingRate) {
-                            tvShippingCourier?.text = view.context.getString(R.string.lbl_osp_free_shipping_with_price)
-                            tvShippingSlashPrice?.gone()
-                        } else {
-                            tvShippingCourier?.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(shipping.logisticPromoViewModel.discountedRate, false)
-                            tvShippingSlashPrice?.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(shipping.logisticPromoViewModel.shippingRate, false)
-                            tvShippingSlashPrice?.paintFlags?.let {
-                                tvShippingSlashPrice?.paintFlags = it or Paint.STRIKE_THRU_TEXT_FLAG
-                            }
-                            tvShippingSlashPrice?.visible()
-                        }
-                    }
+                    renderBbo(shipping, tvShippingCourier)
                 }
             } else {
-                if (!shipping.isServicePickerEnable) {
-                    tvShippingCourierLbl?.gone()
-                    tvShippingCourier?.gone()
-                    tvShippingDuration?.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
-                    tvShippingPrice?.gone()
-                    tvShippingSlashPrice?.gone()
-                    tvShippingMessage?.text = shipping.serviceErrorMessage
-                    if (shipping.shippingRecommendationData != null) {
-                        tvShippingChangeDuration?.setOnClickListener {
-                            listener.chooseDuration()
-                        }
-                        tvShippingChangeDuration?.visible()
-                    } else {
-                        tvShippingChangeDuration?.gone()
+                tvShippingDuration?.text = generateServiceDuration(shipping.serviceDuration)
+                tvShippingCourierLbl?.gone()
+                tvShippingCourier?.gone()
+                tvShippingDuration?.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
+                tvShippingPrice?.gone()
+                tvShippingSlashPrice?.gone()
+                tvShippingMessage?.text = shipping.serviceErrorMessage
+                if (shipping.shippingRecommendationData != null) {
+                    tvShippingChangeDuration?.setOnClickListener {
+                        listener.chooseDuration(true)
                     }
-                    tvShippingMessage?.visible()
+                    tvShippingChangeDuration?.visible()
+                } else {
+                    tvShippingChangeDuration?.gone()
                 }
+                tvShippingMessage?.visible()
             }
+        }
+    }
+
+    private fun renderBbo(shipping: OrderShipment, tvBboPrice: Typography?) {
+        if (shipping.isApplyLogisticPromo && shipping.logisticPromoViewModel != null && shipping.logisticPromoShipping != null) {
+            tvShippingName?.text = view.context.getString(R.string.lbl_osp_free_shipping)
+            tvShippingDuration?.text = generateServiceDuration(shipping.logisticPromoViewModel.title)
+            if (shipping.logisticPromoViewModel.benefitAmount >= shipping.logisticPromoViewModel.shippingRate) {
+                tvBboPrice?.text = view.context.getString(R.string.lbl_osp_free_shipping_only_price)
+                tvShippingSlashPrice?.gone()
+            } else {
+                tvBboPrice?.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(shipping.logisticPromoViewModel.discountedRate, false).removeDecimalSuffix()
+                tvShippingSlashPrice?.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(shipping.logisticPromoViewModel.shippingRate, false).removeDecimalSuffix()
+                tvShippingSlashPrice?.paintFlags?.let {
+                    tvShippingSlashPrice?.paintFlags = it or Paint.STRIKE_THRU_TEXT_FLAG
+                }
+                tvShippingSlashPrice?.visible()
+            }
+        }
+    }
+
+    private fun renderBboTicker(shipping: OrderShipment) {
+        if (shipping.logisticPromoTickerMessage?.isNotEmpty() == true && shipping.shippingRecommendationData?.logisticPromo != null) {
+            tickerShippingPromoDescription?.text = "${shipping.logisticPromoTickerMessage}"
+            tickerShippingPromo?.visible()
+            tickerAction?.setOnClickListener {
+                listener.onLogisticPromoClick(shipping.shippingRecommendationData.logisticPromo)
+            }
+        } else {
+            tickerShippingPromo?.gone()
+        }
+    }
+
+    private fun generateServiceDuration(tempServiceDuration: String?): String {
+        return if (tempServiceDuration == null || !tempServiceDuration.contains("(") || !tempServiceDuration.contains(")")) {
+            view.context.getString(R.string.lbl_no_exact_shipping_duration)
+        } else {
+            view.context.getString(R.string.lbl_shipping_duration_prefix, tempServiceDuration.substring(tempServiceDuration.indexOf("(") + 1, tempServiceDuration.indexOf(")")))
         }
     }
 
     private fun showPayment() {
         val paymentModel = preference.preference.payment
+
         ivPayment?.let {
             ImageHandler.loadImageFitCenter(view.context, it, paymentModel.image)
         }
         tvPaymentName?.text = paymentModel.gatewayName
         val description = paymentModel.description
         if (description.isNotBlank()) {
-            tvPaymentDetail?.text = description
+            tvPaymentDetail?.text = description.replace('*', '\u2022')
             tvPaymentDetail?.visible()
         } else {
             tvPaymentDetail?.gone()
         }
-    }
-
-    fun setPaymentError(isError: Boolean) {
-        if (isError) {
-            ivPayment?.alpha = 0.5f
-            tvPaymentName?.alpha = 0.5f
-            tvPaymentDetail?.alpha = 0.5f
-            val color = tvPaymentDetail?.context?.resources?.getColor(com.tokopedia.unifyprinciples.R.color.Red_R600)
-            if (color != null) {
-                tvPaymentDetail?.setTextColor(color)
-            }
+        if (paymentModel.tickerMessage.isNotBlank()) {
+            tvPaymentInfo?.text = MethodChecker.fromHtml(paymentModel.tickerMessage)
+            tvPaymentInfo?.visible()
         } else {
-            ivPayment?.alpha = 1f
-            tvPaymentName?.alpha = 1f
-            tvPaymentDetail?.alpha = 1f
-            val color = tvPaymentDetail?.context?.resources?.getColor(com.tokopedia.unifyprinciples.R.color.Neutral_N700_68)
-            if (color != null) {
-                tvPaymentDetail?.setTextColor(color)
+            tvPaymentInfo?.gone()
+        }
+
+        val payment = payment
+        if (payment != null) {
+            if (!payment.isError()) {
+                tvPaymentErrorMessage?.gone()
+                tvPaymentErrorAction?.gone()
+                setPaymentActiveAlpha()
+
+                setupPaymentSelector(payment)
+
+                setupPaymentInstallment(payment.creditCard.selectedTerm)
+            } else {
+                if (payment.errorMessage.message.isNotEmpty()) {
+                    tvPaymentErrorMessage?.text = payment.errorMessage.message
+                    tvPaymentErrorAction?.text = payment.errorMessage.button.text
+                    tvPaymentErrorMessage?.visible()
+                    tvPaymentErrorAction?.visible()
+                    tvPaymentDetail?.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
+                    tvPaymentDetail?.setOnClickListener {
+                        //do nothing
+                    }
+                    tvPaymentErrorAction?.setOnClickListener {
+                        if (payment.hasCreditCardOption()) {
+                            listener.onChangeCreditCardClicked(payment.creditCard.additionalData)
+                        } else {
+                            listener.onPreferenceEditClicked(preference)
+                        }
+                    }
+                } else {
+                    tvPaymentErrorMessage?.gone()
+                    tvPaymentErrorAction?.gone()
+                }
+                setPaymentErrorAlpha(payment.isCalculationError)
+                tvInstallmentType?.gone()
+                tvInstallmentDetail?.gone()
+                tvInstallmentErrorMessage?.gone()
+                tvInstallmentErrorAction?.gone()
             }
         }
     }
 
-    @SuppressLint("SetTextI18n")
+    private fun setupPaymentInstallment(selectedTerm: OrderPaymentInstallmentTerm?) {
+        if (selectedTerm != null) {
+            tvInstallmentType?.visible()
+            tvInstallmentDetail?.visible()
+            if (selectedTerm.term > 0) {
+                tvInstallmentDetail?.text = "${selectedTerm.term} Bulan x ${CurrencyFormatUtil.convertPriceValueToIdrFormat(selectedTerm.monthlyAmount, false).removeDecimalSuffix()}"
+            } else {
+                tvInstallmentDetail?.text = view.context.getString(R.string.lbl_installment_full_payment)
+            }
+            setupPaymentInstallmentError(selectedTerm)
+            tvInstallmentDetail?.setOnClickListener {
+                listener.onInstallmentDetailClicked()
+            }
+        } else {
+            tvInstallmentType?.gone()
+            tvInstallmentDetail?.gone()
+            tvInstallmentErrorMessage?.gone()
+            tvInstallmentErrorAction?.gone()
+        }
+    }
+
+    private fun setupPaymentInstallmentError(selectedTerm: OrderPaymentInstallmentTerm) {
+        if (selectedTerm.isError) {
+            tvInstallmentDetail?.alpha = 0.5f
+            tvInstallmentErrorMessage?.text = view.context.getString(R.string.lbl_installment_error)
+            tvInstallmentErrorAction?.text = view.context.getString(R.string.lbl_change_template)
+            tvInstallmentErrorAction?.setOnClickListener {
+                listener.onInstallmentDetailClicked()
+            }
+            tvInstallmentErrorMessage?.visible()
+            tvInstallmentErrorAction?.visible()
+        } else {
+            tvInstallmentDetail?.alpha = 1.0f
+            tvInstallmentErrorMessage?.gone()
+            tvInstallmentErrorAction?.gone()
+        }
+    }
+
+    private fun setupPaymentSelector(payment: OrderPayment) {
+        if (payment.creditCard.numberOfCards.availableCards > 1) {
+            tvPaymentDetail?.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_keyboard_arrow_down_grey_20dp, 0)
+            tvPaymentDetail?.setOnClickListener {
+                listener.onChangeCreditCardClicked(payment.creditCard.additionalData)
+            }
+        } else {
+            tvPaymentDetail?.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
+            tvPaymentDetail?.setOnClickListener {
+                //do nothing
+            }
+        }
+    }
+
+    private fun setPaymentErrorAlpha(isDetailRed: Boolean) {
+        ivPayment?.alpha = 0.5f
+        tvPaymentName?.alpha = 0.5f
+        tvPaymentDetail?.alpha = 0.5f
+        if (isDetailRed) {
+            tvPaymentDetail?.setTextColor(MethodChecker.getColor(view.context, com.tokopedia.unifyprinciples.R.color.Red_R600))
+        } else {
+            tvPaymentDetail?.setTextColor(MethodChecker.getColor(view.context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_68))
+        }
+    }
+
+    private fun setPaymentActiveAlpha() {
+        ivPayment?.alpha = 1f
+        tvPaymentName?.alpha = 1f
+        tvPaymentDetail?.alpha = 1f
+        tvPaymentDetail?.setTextColor(MethodChecker.getColor(view.context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_68))
+    }
+
     private fun showAddress() {
         val addressModel = preference.preference.address
         tvAddressName?.text = addressModel.addressName
@@ -296,7 +396,7 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
     }
 
     fun showCourierBottomSheet(fragment: OrderSummaryPageFragment) {
-        val shippingRecommendationData = preference.shipping?.shippingRecommendationData
+        val shippingRecommendationData = shipment?.shippingRecommendationData
         if (shippingRecommendationData != null) {
             val list: ArrayList<RatesViewModelType> = ArrayList()
             for (shippingDurationViewModel in shippingRecommendationData.shippingDurationViewModels) {
@@ -335,11 +435,33 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
     }
 
     fun showDurationBottomSheet(fragment: OrderSummaryPageFragment) {
-        val shippingRecommendationData = preference.shipping?.shippingRecommendationData
+        val shippingRecommendationData = shipment?.shippingRecommendationData
         if (shippingRecommendationData != null) {
-            ShippingDurationOccBottomSheet().showBottomSheet(fragment, shippingRecommendationData.shippingDurationViewModels, object : ShippingDurationOccBottomSheetListener {
+            val list: ArrayList<RatesViewModelType> = ArrayList(shippingRecommendationData.shippingDurationViewModels)
+            if (shippingRecommendationData.logisticPromo != null) {
+                list.add(shippingRecommendationData.logisticPromo)
+                if (shippingRecommendationData.logisticPromo.disabled && shippingRecommendationData.logisticPromo.description.contains(BBO_DESCRIPTION_MINIMUM_LIMIT[0]) && shippingRecommendationData.logisticPromo.description.contains(BBO_DESCRIPTION_MINIMUM_LIMIT[1])) {
+                    orderSummaryAnalytics.eventViewErrorMessage(OrderSummaryAnalytics.ERROR_ID_LOGISTIC_BBO_MINIMUM)
+                }
+            }
+            ShippingDurationOccBottomSheet().showBottomSheet(fragment, list, object : ShippingDurationOccBottomSheetListener {
                 override fun onDurationChosen(serviceData: ServiceData, selectedServiceId: Int, selectedShippingCourierUiModel: ShippingCourierUiModel, flagNeedToSetPinpoint: Boolean) {
                     listener.onDurationChange(selectedServiceId, selectedShippingCourierUiModel, flagNeedToSetPinpoint)
+                }
+
+                override fun onLogisticPromoClicked(data: LogisticPromoUiModel) {
+                    listener.onLogisticPromoClick(data)
+                }
+            })
+        }
+    }
+
+    fun showInstallmentDetailBottomSheet(fragment: OrderSummaryPageFragment) {
+        val creditCard = payment?.creditCard
+        if (creditCard != null && creditCard.availableTerms.isNotEmpty()) {
+            InstallmentDetailBottomSheet().show(fragment, creditCard, object : InstallmentDetailBottomSheet.InstallmentDetailBottomSheetListener {
+                override fun onSelectInstallment(installment: OrderPaymentInstallmentTerm) {
+                    listener.onInstallmentDetailChange(installment)
                 }
             })
         }
@@ -361,8 +483,14 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
 
         fun chooseCourier()
 
-        fun chooseDuration()
+        fun chooseDuration(isDurationError: Boolean)
 
         fun onPreferenceEditClicked(preference: OrderPreference)
+
+        fun onInstallmentDetailClicked()
+
+        fun onInstallmentDetailChange(selectedInstallmentTerm: OrderPaymentInstallmentTerm)
+
+        fun onChangeCreditCardClicked(additionalData: OrderPaymentCreditCardAdditionalData)
     }
 }

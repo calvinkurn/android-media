@@ -6,6 +6,8 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import android.os.Handler
+import android.os.IBinder
 import android.os.PersistableBundle
 import androidx.annotation.RequiresApi
 import androidx.core.app.JobIntentService
@@ -13,11 +15,16 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.RemoteInput
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.chat_common.data.ReplyChatViewModel
+import com.tokopedia.device.info.DeviceConnectionInfo
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.topchat.chatroom.di.ChatRoomContextModule
 import com.tokopedia.topchat.chatroom.di.DaggerChatComponent
 import com.tokopedia.topchat.chatroom.domain.usecase.ReplyChatUseCase
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
 import rx.Subscriber
+import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -35,13 +42,23 @@ class NotificationChatService : JobIntentService() {
     lateinit var analytics: TopChatAnalytics
 
     private var jobScheduler: JobScheduler? = null
+    private var remoteConfig: RemoteConfig? = null
 
     companion object {
         private const val JOB_ID_RETRY = 712
         private const val JOB_ID_NOTIFICATION = 812
+        private const val DELAY_THREAD_BINDER = 1000L
 
         fun enqueueWork(context: Context, intent: Intent) {
             enqueueWork(context, NotificationChatService::class.java, JOB_ID_NOTIFICATION, intent)
+        }
+    }
+
+    override fun onBind(intent: Intent): IBinder? {
+        return super.onBind(intent)?.also {
+            Handler().post {
+                Thread.sleep(DELAY_THREAD_BINDER)
+            }
         }
     }
 
@@ -57,6 +74,8 @@ class NotificationChatService : JobIntentService() {
             jobScheduler = applicationContext.getSystemService(Context.JOB_SCHEDULER_SERVICE) as? JobScheduler
                     ?: return
         }
+
+        remoteConfig = FirebaseRemoteConfigImpl(this)
     }
 
     override fun onHandleWork(intent: Intent) {
@@ -73,7 +92,7 @@ class NotificationChatService : JobIntentService() {
             intent.getStringExtra(REPLY_KEY)
         }
 
-        val messageId = intent.getStringExtra(MESSAGE_ID)
+        val messageId = intent.getStringExtra(MESSAGE_ID).orEmpty()
         val notificationId = intent.getIntExtra(NOTIFICATION_ID, 0)
         val userId = intent.getStringExtra(USER_ID)
 
@@ -87,6 +106,7 @@ class NotificationChatService : JobIntentService() {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                         if (isJobIdRunning(JOB_ID_RETRY)) {
                             jobScheduler?.cancel(JOB_ID_RETRY)
+                            applicationContext.stopService(Intent(applicationContext, NotificationChatJobService::class.java))
                         }
                     }
                 } else {
@@ -97,8 +117,21 @@ class NotificationChatService : JobIntentService() {
             override fun onCompleted() {}
 
             override fun onError(e: Throwable?) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    setRetryJob(messageId, message, notificationId, userId)
+                if (!DeviceConnectionInfo.isInternetAvailable(applicationContext,
+                                checkWifi = true,
+                                checkCellular = true,
+                                checkEthernet = true)) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        jobScheduler?.cancelAll()
+                        if (isEnableReplyChatNotification()) {
+                            setRetryJob(messageId, message, notificationId, if (userId.isNullOrBlank()) "0" else userId)
+                        }
+                    }
+                } else {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        jobScheduler?.cancelAll()
+                    }
+                    Timber.w("P2#PUSH_NOTIF_REPLY_CHAT#'ErrorReplyChat';error='%s';", e?.message)
                 }
             }
         })
@@ -138,9 +171,20 @@ class NotificationChatService : JobIntentService() {
         return false
     }
 
+    override fun onDestroy() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            jobScheduler?.cancelAll()
+            applicationContext.stopService(Intent(applicationContext, NotificationChatJobService::class.java))
+        }
+        super.onDestroy()
+    }
+
     private fun clearNotification(notificationId: Int) {
         val notificationManager = NotificationManagerCompat.from(applicationContext)
         notificationManager.cancel(notificationId)
     }
 
+    private fun isEnableReplyChatNotification(): Boolean {
+        return remoteConfig?.getBoolean(RemoteConfigKey.ENABLE_PUSH_NOTIFICATION_CHAT_SELLER, false) == true
+    }
 }

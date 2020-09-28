@@ -101,6 +101,7 @@ public class InboxReputationPresenter
                         scoreFilter, tab),
                 new RefreshInboxReputationSubscriber(viewListener, isUsingFilter(query,
                         timeFilter,scoreFilter)));
+        getProductIncentiveOvo();
     }
 
     public void getProductIncentiveOvo() {

@@ -6,6 +6,7 @@ import com.tokopedia.notifications.image.downloaderFactory.ImageSizeAndTimeout
 import com.tokopedia.notifications.image.downloaderFactory.NotificationImageDownloader
 import com.tokopedia.notifications.model.BaseNotificationModel
 import com.tokopedia.notifications.model.NotificationStatus
+import timber.log.Timber
 
 class ProductImageDownloader(baseNotificationModel: BaseNotificationModel)
     : NotificationImageDownloader(baseNotificationModel) {
@@ -16,6 +17,8 @@ class ProductImageDownloader(baseNotificationModel: BaseNotificationModel)
                     baseNotificationModel.status = NotificationStatus.COMPLETED
                     baseNotificationModel.type = CMConstant.NotificationType.DROP_NOTIFICATION
                     baseNotificationModel.productInfoList.clear()
+                    Timber.w("${CMConstant.TimberTags.TAG}validation;reason='image_download';data='${
+                    baseNotificationModel.toString().take(CMConstant.TimberTags.MAX_LIMIT)}'")
                     return
                 }
             }
@@ -24,10 +27,19 @@ class ProductImageDownloader(baseNotificationModel: BaseNotificationModel)
 
     override suspend fun downloadAndVerify(context: Context): BaseNotificationModel? {
         baseNotificationModel.productInfoList.forEach { productInfo ->
-            val filePath = downloadAndStore(context, productInfo.productImage, ImageSizeAndTimeout.PRODUCT_IMAGE)
-            filePath?.let {
-                productInfo.productImage = it
-            }
+            val productImage = downloadAndStore(
+                    context,
+                    productInfo.productImage,
+                    ImageSizeAndTimeout.PRODUCT_IMAGE
+            )
+            val freeOngkirIcon = downloadAndStore(
+                    context,
+                    productInfo.freeOngkirIcon,
+                    ImageSizeAndTimeout.FREE_ONGKIR
+            )
+
+            productImage?.let { productInfo.productImage = it }
+            freeOngkirIcon?.let { productInfo.freeOngkirIcon = it }
         }
         verifyAndUpdate()
         return baseNotificationModel

@@ -2,8 +2,8 @@ package com.tokopedia.shop.favourite.di.module;
 
 import android.content.Context;
 
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.feedcomponent.di.CoroutineDispatcherModule;
+import com.tokopedia.shop.common.di.ShopPageContext;
 import com.tokopedia.shop.common.domain.interactor.DeleteShopInfoCacheUseCase;
 import com.tokopedia.shop.favourite.data.query.GetShopFollowerListQueryProvider;
 import com.tokopedia.shop.favourite.di.scope.ShopFavouriteScope;
@@ -23,13 +23,13 @@ public class ShopFavouriteModule {
 
     @ShopFavouriteScope
     @Provides
-    public DeleteShopInfoCacheUseCase provideDeleteShopInfoUseCase(@ApplicationContext Context context) {
+    public DeleteShopInfoCacheUseCase provideDeleteShopInfoUseCase(@ShopPageContext Context context) {
         return new DeleteShopInfoCacheUseCase(context);
     }
 
     @ShopFavouriteScope
     @Provides
-    public UserSessionInterface provideUserSessionInterface(@ApplicationContext Context context) {
+    public UserSessionInterface provideUserSessionInterface(@ShopPageContext Context context) {
         return new UserSession(context);
     }
 

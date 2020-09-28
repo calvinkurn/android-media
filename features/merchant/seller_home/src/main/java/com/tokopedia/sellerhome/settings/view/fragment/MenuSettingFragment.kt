@@ -20,15 +20,16 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
-import com.tokopedia.sellerhome.settings.analytics.*
-import com.tokopedia.sellerhome.settings.view.typefactory.OtherMenuAdapterTypeFactory
-import com.tokopedia.sellerhome.settings.view.uimodel.DividerUiModel
-import com.tokopedia.sellerhome.settings.view.uimodel.IndentedSettingTitleUiModel
-import com.tokopedia.sellerhome.settings.view.uimodel.MenuItemUiModel
-import com.tokopedia.sellerhome.settings.view.uimodel.SettingTitleMenuUiModel
-import com.tokopedia.sellerhome.settings.view.uimodel.base.DividerType
-import com.tokopedia.sellerhome.settings.view.uimodel.base.SettingShopInfoImpressionTrackable
-import com.tokopedia.sellerhome.settings.view.uimodel.base.SettingUiModel
+import com.tokopedia.seller.menu.common.analytics.*
+import com.tokopedia.seller.menu.common.view.typefactory.OtherMenuAdapterTypeFactory
+import com.tokopedia.seller.menu.common.view.uimodel.DividerUiModel
+import com.tokopedia.seller.menu.common.view.uimodel.IndentedSettingTitleUiModel
+import com.tokopedia.seller.menu.common.view.uimodel.MenuItemUiModel
+import com.tokopedia.seller.menu.common.view.uimodel.SettingTitleMenuUiModel
+import com.tokopedia.seller.menu.common.view.uimodel.base.DividerType
+import com.tokopedia.seller.menu.common.view.uimodel.base.SettingShopInfoImpressionTrackable
+import com.tokopedia.seller.menu.common.view.uimodel.base.SettingUiModel
+import com.tokopedia.seller.menu.common.analytics.SettingTrackingListener
 import com.tokopedia.sellerhome.settings.view.uimodel.menusetting.OtherSettingsUiModel
 import com.tokopedia.url.TokopediaUrl.Companion.getInstance
 import com.tokopedia.user.session.UserSessionInterface
@@ -149,6 +150,11 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
                         clickApplink = ApplinkConst.SELLER_SHIPPING_EDITOR,
                         settingTypeInfix = SettingTrackingConstant.SHOP_SETTING,
                         trackingAlias = trackingAliasHashMap[resources.getString(R.string.setting_menu_set_shipment_method)]),
+                DividerUiModel(DividerType.THIN_INDENTED),
+                MenuItemUiModel(
+                        resources.getString(R.string.setting_menu_set_activation_page_cod),
+                        clickApplink = ApplinkConst.SELLER_COD_ACTIVATION,
+                        settingTypeInfix = SettingTrackingConstant.COD_ACTIVATION_SETTING),
                 DividerUiModel(DividerType.THICK),
                 SettingTitleMenuUiModel(resources.getString(R.string.setting_menu_account_setting), R.drawable.ic_account),
                 MenuItemUiModel(
@@ -167,7 +173,11 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
                 SettingTitleMenuUiModel(resources.getString(R.string.setting_menu_app_setting), R.drawable.ic_app_setting),
                 MenuItemUiModel(
                         resources.getString(R.string.setting_menu_chat_and_notification),
-                        clickApplink = ApplinkConstInternalGlobal.MANAGE_NOTIFICATION,
+                        clickApplink = ApplinkConstInternalMarketplace.USER_NOTIFICATION_SETTING,
+                        settingTypeInfix = SettingTrackingConstant.APP_SETTING),
+                MenuItemUiModel(
+                        resources.getString(R.string.setting_notification_troubleshooter),
+                        clickApplink = ApplinkConstInternalGlobal.PUSH_NOTIFICATION_TROUBLESHOOTER,
                         settingTypeInfix = SettingTrackingConstant.APP_SETTING),
                 MenuItemUiModel(
                         resources.getString(R.string.setting_menu_share_app),
@@ -259,9 +269,10 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
             setTitle(context.getString(R.string.seller_home_logout_title))
             setMessage(context.getString(R.string.seller_home_logout_confirm))
             setPositiveButton(context.getString(R.string.seller_home_logout_button)) { dialogInterface, _ ->
-                showProgressDialog()
+                val progressDialog = showProgressDialog()
                 dialogInterface.dismiss()
                 RouteManager.route(context, ApplinkConstInternalGlobal.LOGOUT)
+                progressDialog.dismiss()
                 activity?.finish()
             }
             setNegativeButton(context.getString(R.string.seller_home_cancel)) {
@@ -271,9 +282,9 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
         }
     }
 
-    private fun showProgressDialog() {
+    private fun showProgressDialog(): ProgressDialog {
         val progressDialog = ProgressDialog(context)
-        progressDialog.apply {
+        return progressDialog.apply {
             setMessage(resources.getString(R.string.seller_home_loading))
             setTitle("")
             setCancelable(false)

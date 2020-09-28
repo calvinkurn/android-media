@@ -4,6 +4,7 @@
     <application>
         <activity
             android:name=".activity.SellerOnboardingActivity"
+            android:label="@string/title_seller_onboarding"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White">
             <intent-filter>
@@ -14,7 +15,7 @@
 
                 <data
                     android:host="@string/host_sellerapp"
-                    android:path="@string/path_sellerapp_onboarding"
+                    android:path="@string/path_welcome"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>

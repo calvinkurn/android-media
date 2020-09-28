@@ -10,6 +10,7 @@
 
     <dimen name="hotel_room_list_image_height">136dp</dimen>
 
+    <dimen name="hotel_minus2dp">-2dp</dimen>
     <dimen name="hotel_1dp">1dp</dimen>
     <dimen name="hotel_3dp">3dp</dimen>
     <dimen name="hotel_5dp">5dp</dimen>

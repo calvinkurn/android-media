@@ -17,7 +17,7 @@ import android.widget.TextView;
 import androidx.cardview.widget.CardView;
 import androidx.viewpager.widget.ViewPager;
 
-import com.tkpd.library.viewpagerindicator.CirclePageIndicator;
+
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
@@ -37,6 +37,7 @@ import com.tokopedia.contactus.home.view.customview.ArticleTextView;
 import com.tokopedia.contactus.home.view.presenter.ContactUsHomeContract;
 import com.tokopedia.contactus.home.view.presenter.ContactUsHomePresenter;
 import com.tokopedia.contactus.inboxticket2.view.activity.InboxListActivity;
+import com.tokopedia.design.viewpagerindicator.CirclePageIndicator;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -127,7 +128,7 @@ public class ContactUsHomeFragment extends BaseDaggerFragment
     public boolean onOptionsItemSelected(MenuItem item) {
         int i = item.getItemId();
         if (i == R.id.action_inbox) {
-            ContactUsTracking.eventInboxClick();
+            ContactUsTracking.eventInboxClick(getContext());
             startActivity(new Intent(getContext(), InboxListActivity.class));
             return true;
         }
@@ -212,17 +213,17 @@ public class ContactUsHomeFragment extends BaseDaggerFragment
     }
 
     public void onViewClicked() {
-        ContactUsTracking.eventLihatBantuanClick();
+        ContactUsTracking.eventLihatBantuanClick(getContext());
         RouteManager.route(getContext(), ContactUsURL.ARTICLE_POPULAR_URL);
     }
 
     public void onViewFullClicked() {
-        ContactUsTracking.eventLihatTransaksiClick();
+        ContactUsTracking.eventLihatTransaksiClick(getContext());
         startActivity(BuyerPurchaseListActivity.getInstance(getContext()));
     }
 
     public void onBtnContactUsClicked() {
-        ContactUsTracking.eventHomeHubungiKamiClick();
+        ContactUsTracking.eventHomeHubungiKamiClick(getContext());
         String encodedUrl;
         try {
             encodedUrl = URLEncoder.encode(ContactUsURL.NAVIGATE_NEXT_URL, "UTF-8");
@@ -234,7 +235,7 @@ public class ContactUsHomeFragment extends BaseDaggerFragment
     }
 
     public void onBtnChatClicked() {
-        ContactUsTracking.eventChatBotOkClick();
+        ContactUsTracking.eventChatBotOkClick(getContext());
         startActivity(RouteManager.getIntent(getContext(), ApplinkConst.CHATBOT
                 .replace(String.format("{%s}", ApplinkConst.Chat.MESSAGE_ID), msgId)));
     }

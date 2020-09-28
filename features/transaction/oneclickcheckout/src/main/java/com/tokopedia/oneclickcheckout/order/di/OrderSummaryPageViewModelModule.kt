@@ -9,7 +9,6 @@ import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
 
-@OrderSummaryPageScope
 @Module
 abstract class OrderSummaryPageViewModelModule {
 
@@ -17,6 +16,7 @@ abstract class OrderSummaryPageViewModelModule {
     @Binds
     internal abstract fun bindViewModelFactory(viewModelFactor: ViewModelFactory): ViewModelProvider.Factory
 
+    @OrderSummaryPageScope
     @Binds
     @IntoMap
     @ViewModelKey(OrderSummaryPageViewModel::class)

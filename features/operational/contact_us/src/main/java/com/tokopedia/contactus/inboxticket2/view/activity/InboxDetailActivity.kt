@@ -21,8 +21,10 @@ import com.tokopedia.applink.UriUtil
 import com.tokopedia.contactus.R
 import com.tokopedia.contactus.common.analytics.ContactUsTracking
 import com.tokopedia.contactus.common.analytics.InboxTicketTracking
+import com.tokopedia.contactus.inboxticket2.data.ImageUpload
 import com.tokopedia.contactus.inboxticket2.data.model.Tickets
 import com.tokopedia.contactus.inboxticket2.domain.CommentsItem
+import com.tokopedia.contactus.inboxticket2.view.adapter.ImageUploadAdapter
 import com.tokopedia.contactus.inboxticket2.view.adapter.InboxDetailAdapter
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxBaseContract.InboxBasePresenter
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxBaseContract.InboxBaseView
@@ -37,13 +39,7 @@ import com.tokopedia.contactus.inboxticket2.view.fragment.ImageViewerFragment
 import com.tokopedia.contactus.inboxticket2.view.fragment.ImageViewerFragment.Companion.newInstance
 import com.tokopedia.contactus.inboxticket2.view.fragment.ServicePrioritiesBottomSheet
 import com.tokopedia.contactus.inboxticket2.view.fragment.ServicePrioritiesBottomSheet.CloseServicePrioritiesBottomSheet
-import com.tokopedia.contactus.inboxticket2.view.utils.CLOSED
-import com.tokopedia.contactus.inboxticket2.view.utils.NEW
-import com.tokopedia.contactus.inboxticket2.view.utils.OPEN
-import com.tokopedia.contactus.inboxticket2.view.utils.SOLVED
-import com.tokopedia.contactus.orderquery.data.ImageUpload
-import com.tokopedia.contactus.orderquery.view.adapter.ImageUploadAdapter
-import com.tokopedia.contactus.orderquery.view.adapter.ImageUploadAdapter.OnSelectImageClick
+import com.tokopedia.contactus.inboxticket2.view.listeners.InboxDetailListener
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder
@@ -60,15 +56,16 @@ import rx.schedulers.Schedulers
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, OnSelectImageClick, View.OnClickListener, CloseServicePrioritiesBottomSheet, CloseSHelpFullBottomSheet, CloseComplainBottomSheetListner {
+const val TICKET_STATUS_IN_PROCESS = "in_process"
+const val TICKET_STATUS_NEED_RATING = "need_rating"
+const val TICKET_STATUS_CLOSED = "closed"
 
-    private lateinit var tvTicketTitle: TextView
-    private lateinit var tvIdNum: TextView
+class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, ImageUploadAdapter.OnSelectImageClick, View.OnClickListener, CloseServicePrioritiesBottomSheet, CloseSHelpFullBottomSheet, CloseComplainBottomSheetListner, InboxDetailListener {
+
     private lateinit var rvMessageList: RecyclerView
     private lateinit var rvSelectedImages: RecyclerView
     private lateinit var ivUploadImg: ImageView
     private lateinit var ivSendButton: ImageView
-    private lateinit var viewTransaction: TextView
     private lateinit var edMessage: EditText
     private lateinit var sendProgress: View
     private lateinit var viewHelpRate: View
@@ -80,7 +77,6 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, OnSelectImageC
     private lateinit var ivNext: View
     private lateinit var totalRes: TextView
     private lateinit var currentRes: TextView
-    private lateinit var tvPriorityLabel: TextView
     private lateinit var btnInactive1: ImageView
     private lateinit var btnInactive2: ImageView
     private lateinit var btnInactive3: ImageView
@@ -101,7 +97,7 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, OnSelectImageC
     private var helpFullBottomSheet: CloseableBottomSheetDialog? = null
     private var closeComplainBottomSheet: CloseableBottomSheetDialog? = null
     private var servicePrioritiesBottomSheet: CloseableBottomSheetDialog? = null
-    private lateinit var commentsItems: List<CommentsItem>
+    private val commentsItems: MutableList<CommentsItem> by lazy { mutableListOf<CommentsItem>() }
     private var iscloseAllow = false
     private var isSendButtonEnabled = false
 
@@ -112,77 +108,68 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, OnSelectImageC
     }
 
     override fun renderMessageList(ticketDetail: Tickets) {
-        commentsItems = ticketDetail.comments ?: listOf()
+        commentsItems.clear()
+        commentsItems.addAll(ticketDetail.comments?: mutableListOf())
 
         iscloseAllow = ticketDetail.isAllowClose
-        val utils = (mPresenter as InboxDetailPresenter).getUtils()
         edMessage.text.clear()
         setSubmitButtonEnabled(false)
         viewHelpRate.hide()
         textToolbar.show()
-        val textSizeLabel = 11
-        tvTicketTitle.text = ticketDetail.subject
-        if (ticketDetail.status.equals(SOLVED, ignoreCase = true)
-                || ticketDetail.status.equals(OPEN, ignoreCase = true) || ticketDetail.status.equals(NEW, ignoreCase = true)) {
-            tvTicketTitle.text = utils.getStatusTitle(ticketDetail.subject + ".   " + getString(R.string.on_going),
-                    ContextCompat.getColor(this, com.tokopedia.design.R.color.y_200),
-                    ContextCompat.getColor(this, com.tokopedia.design.R.color.orange_500), textSizeLabel, this)
-            rvMessageList.setPadding(0, 0, 0,
-                    resources.getDimensionPixelSize(R.dimen.text_toolbar_height_collapsed))
-            if (commentsItems[commentsItems.size - 1].createdBy?.role.equals(ROLE_TYPE_AGENT, ignoreCase = true) && commentsItems[commentsItems.size - 1].rating.equals("", ignoreCase = true)) {
-                viewReplyButton.show()
-                mCommentID = commentsItems[commentsItems.size - 1].id
-            }
-            if (ticketDetail.isShowRating) {
-                toggleTextToolbar(View.GONE)
-                mCommentID = commentsItems[commentsItems.size - 1].id
-            }
-        } else if (ticketDetail.status.equals(CLOSED, ignoreCase = true)
-                && !ticketDetail.isShowRating) {
-            tvTicketTitle.text = utils.getStatusTitle(ticketDetail.subject + ".   " + getString(R.string.closed),
-                    ContextCompat.getColor(this, com.tokopedia.design.R.color.grey_200),
-                    ContextCompat.getColor(this, com.tokopedia.design.R.color.black_38), textSizeLabel, this)
-            showIssueClosed()
-        } else if (ticketDetail.isShowRating) {
-            tvTicketTitle.text = utils.getStatusTitle(ticketDetail.subject + ".   " + getString(R.string.need_rating),
-                    ContextCompat.getColor(this, com.tokopedia.design.R.color.r_100),
-                    ContextCompat.getColor(this, com.tokopedia.design.R.color.r_400), textSizeLabel, this)
-            toggleTextToolbar(View.GONE)
-            mCommentID = commentsItems[commentsItems.size - 1].id
-        }
-        if (!TextUtils.isEmpty(ticketDetail.number)) {
-            tvIdNum.text = String.format(getString(R.string.invoice_id), ticketDetail.number)
-            tvIdNum.show()
-        } else tvIdNum.hide()
-        if (ticketDetail.comments?.size ?: 0 > 0) {
-            detailAdapter = InboxDetailAdapter(this, commentsItems, ticketDetail.isNeedAttachment,
-                    (mPresenter as InboxDetailPresenter))
+        if (!commentsItems.isNullOrEmpty()){
+            updateUiBasedOnStatus(ticketDetail)
+            setHeaderPriorityLabel()
+            detailAdapter = InboxDetailAdapter(this,
+                    commentsItems,
+                    ticketDetail.isNeedAttachment,
+                    (mPresenter as InboxDetailPresenter),
+                    this)
             rvMessageList.adapter = detailAdapter
             rvMessageList.show()
-        } else {
+            scrollTo(detailAdapter.itemCount - 1)
+        }else{
             rvMessageList.hide()
         }
-        scrollTo(detailAdapter.itemCount - 1)
-        if (intent != null && intent.getBooleanExtra(IS_OFFICIAL_STORE, false)) {
-            tvPriorityLabel.show()
-            tvPriorityLabel.setOnClickListener {
-                servicePrioritiesBottomSheet = CloseableBottomSheetDialog.createInstanceRounded(getActivity())
-                servicePrioritiesBottomSheet?.setCustomContentView(ServicePrioritiesBottomSheet(this@InboxDetailActivity, this@InboxDetailActivity), "", false)
-                servicePrioritiesBottomSheet?.show()
+    }
+
+    private fun setHeaderPriorityLabel() {
+        commentsItems[0].priorityLabel = intent.getBooleanExtra(IS_OFFICIAL_STORE, false)
+    }
+
+    private fun updateUiBasedOnStatus(ticketDetail: Tickets) {
+        when (commentsItems[0].ticketStatus) {
+            TICKET_STATUS_IN_PROCESS -> {
+                rvMessageList.setPadding(0, 0, 0,
+                        resources.getDimensionPixelSize(R.dimen.contact_us_text_toolbar_height_collapsed))
+                if (ROLE_TYPE_AGENT.equals(commentsItems[commentsItems.size - 1].createdBy?.role, ignoreCase = true) && "".equals(commentsItems[commentsItems.size - 1].rating, ignoreCase = true)) {
+                    viewReplyButton.show()
+                    mCommentID = commentsItems[commentsItems.size - 1].id
+                }
+                if (ticketDetail.isShowRating) {
+                    toggleTextToolbar(View.GONE)
+                    mCommentID = commentsItems[commentsItems.size - 1].id
+                }
+            }
+            TICKET_STATUS_CLOSED -> {
+                showIssueClosed()
+            }
+            TICKET_STATUS_NEED_RATING -> {
+                toggleTextToolbar(View.GONE)
+                mCommentID = commentsItems[commentsItems.size - 1].id
             }
         }
     }
 
-    override fun updateAddComment() {
+    override fun updateAddComment(newItem: CommentsItem) {
         edMessage.text.clear()
         setSubmitButtonEnabled(false)
         imageUploadAdapter.clearAll()
         imageUploadAdapter.notifyDataSetChanged()
         rvSelectedImages.hide()
         rvMessageList.setPadding(0, 0, 0,
-                resources.getDimensionPixelSize(R.dimen.text_toolbar_height_collapsed))
+                resources.getDimensionPixelSize(R.dimen.contact_us_text_toolbar_height_collapsed))
         detailAdapter.setNeedAttachment(false)
-        detailAdapter.notifyItemRangeChanged(detailAdapter.itemCount - 2, 2)
+        detailAdapter.addComment(newItem)
     }
 
     override fun toggleSearch(visibility: Int) {
@@ -214,13 +201,10 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, OnSelectImageC
 
     private fun findingViewsId() {
         rootView = findViewById(R.id.root_view)
-        tvTicketTitle = findViewById(R.id.tv_ticket_title)
-        tvIdNum = findViewById(R.id.tv_id_num)
         rvMessageList = findViewById(R.id.rv_message_list)
         rvSelectedImages = findViewById(R.id.rv_selected_images)
         ivUploadImg = findViewById(R.id.iv_upload_img)
         ivSendButton = findViewById(R.id.iv_send_button)
-        viewTransaction = findViewById(R.id.tv_view_transaction)
         edMessage = findViewById(R.id.ed_message)
         sendProgress = findViewById(R.id.send_progress)
         viewHelpRate = findViewById(R.id.view_help_rate)
@@ -232,7 +216,6 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, OnSelectImageC
         ivNext = findViewById(R.id.iv_next_down)
         totalRes = findViewById(R.id.tv_count_total)
         currentRes = findViewById(R.id.tv_count_current)
-        tvPriorityLabel = findViewById(R.id.tv_priority_label)
         btnInactive1 = findViewById(R.id.btn_inactive_1)
         btnInactive2 = findViewById(R.id.btn_inactive_2)
         btnInactive3 = findViewById(R.id.btn_inactive_3)
@@ -254,7 +237,6 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, OnSelectImageC
         btnInactive5.setOnClickListener(this)
         ivUploadImg.setOnClickListener(this)
         ivSendButton.setOnClickListener(this)
-        viewTransaction.setOnClickListener(this)
         ivNext.setOnClickListener(this)
         ivPrevious.setOnClickListener(this)
         txtHyper.setOnClickListener(this)
@@ -283,10 +265,15 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, OnSelectImageC
             }
         }
         super.onCreate(savedInstanceState)
-        imageUploadAdapter = ImageUploadAdapter(this, this)
+        imageUploadAdapter = ImageUploadAdapter(this, this, onClickCross)
         rvSelectedImages.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         rvSelectedImages.adapter = imageUploadAdapter
         edMessage.addTextChangedListener((mPresenter as InboxDetailPresenter).watcher())
+    }
+
+    private val onClickCross = {
+        rvSelectedImages.hide()
+        rvMessageList.setPadding(0, 0, 0, resources.getDimensionPixelSize(R.dimen.contact_us_text_toolbar_height_collapsed))
     }
 
     private fun showImagePickerDialog() {
@@ -320,12 +307,8 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, OnSelectImageC
     }
 
     private fun onClickUpload() {
-        if (rvSelectedImages.visibility != View.VISIBLE) showImagePickerDialog() else {
-            rvSelectedImages.hide()
-            rvMessageList.setPadding(0, 0, 0,
-                    resources.getDimensionPixelSize(R.dimen.text_toolbar_height_collapsed))
-        }
-        ContactUsTracking.sendGTMInboxTicket("",
+        showImagePickerDialog()
+        ContactUsTracking.sendGTMInboxTicket(this,"",
                 InboxTicketTracking.Category.EventInboxTicket,
                 InboxTicketTracking.Action.EventClickAttachImage,
                 "")
@@ -357,7 +340,7 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, OnSelectImageC
     private fun sendMessage() {
         (mPresenter as InboxDetailPresenter).sendMessage()
         edMessage.setHint(R.string.contact_us_type_here)
-        ContactUsTracking.sendGTMInboxTicket("",
+        ContactUsTracking.sendGTMInboxTicket(this, "",
                 InboxTicketTracking.Category.EventInboxTicket,
                 InboxTicketTracking.Action.EventClickSubmitReply,
                 "")
@@ -367,16 +350,11 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, OnSelectImageC
         val id = v.id
         if (id == R.id.txt_hyper) {
             setResult(InboxBaseView.RESULT_FINISH)
-            ContactUsTracking.sendGTMInboxTicket("",
+            ContactUsTracking.sendGTMInboxTicket(this, "",
                     InboxTicketTracking.Category.EventInboxTicket,
                     InboxTicketTracking.Action.EventClickHubungi,
                     InboxTicketTracking.Label.TicketClosed)
             finish()
-        } else if (id == R.id.tv_view_transaction) {
-            ContactUsTracking.sendGTMInboxTicket("",
-                    InboxTicketTracking.Category.EventInboxTicket,
-                    InboxTicketTracking.Action.EventClickDetailTrasanksi,
-                    "")
         }
     }
 
@@ -401,7 +379,7 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, OnSelectImageC
         if (rvSelectedImages.visibility != View.VISIBLE) {
             rvSelectedImages.show()
             rvMessageList.setPadding(0, 0, 0,
-                    resources.getDimensionPixelSize(R.dimen.text_toolbar_height_expanded))
+                    resources.getDimensionPixelSize(R.dimen.contact_us_text_toolbar_height_expanded))
         }
         imageUploadAdapter.addImage(image)
     }
@@ -420,7 +398,7 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, OnSelectImageC
         if (visibility == View.VISIBLE) {
             viewHelpRate.hide()
             rvMessageList.setPadding(0, 0, 0,
-                    resources.getDimensionPixelSize(R.dimen.text_toolbar_height_collapsed))
+                    resources.getDimensionPixelSize(R.dimen.contact_us_text_toolbar_height_collapsed))
         } else {
             viewHelpRate.show()
             rvMessageList.setPadding(0, 0, 0,
@@ -438,7 +416,7 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, OnSelectImageC
         viewHelpRate.hide()
         textToolbar.show()
         rvMessageList.setPadding(0, 0, 0,
-                resources.getDimensionPixelSize(R.dimen.text_toolbar_height_collapsed))
+                resources.getDimensionPixelSize(R.dimen.contact_us_text_toolbar_height_collapsed))
         isCustomReason = true
     }
 
@@ -447,7 +425,7 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, OnSelectImageC
         textToolbar.hide()
         viewLinkBottom.show()
         rvMessageList.setPadding(0, 0, 0,
-                resources.getDimensionPixelSize(R.dimen.text_toolbar_height_collapsed))
+                resources.getDimensionPixelSize(R.dimen.contact_us_text_toolbar_height_collapsed))
     }
 
     override fun enterSearchMode(search: String, total: Int) {
@@ -496,12 +474,11 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, OnSelectImageC
         this.currentRes.text = currentRes.toString()
     }
 
-    override fun updateClosedStatus(subject: String?) {
-        val textSizeLabel = 11
-        val utils = (mPresenter as InboxDetailPresenter).getUtils()
-        tvTicketTitle.text = utils.getStatusTitle(subject + ".   " + getString(R.string.closed),
-                ContextCompat.getColor(this, com.tokopedia.design.R.color.grey_200),
-                ContextCompat.getColor(this, com.tokopedia.design.R.color.black_38), textSizeLabel, this)
+    override fun updateClosedStatus() {
+        if (!commentsItems.isNullOrEmpty()){
+            commentsItems[0].ticketStatus = TICKET_STATUS_CLOSED
+            detailAdapter.notifyItemChanged(0)
+        }
     }
 
     override fun isSearchMode(): Boolean {
@@ -513,12 +490,12 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, OnSelectImageC
         if (enabled) {
             ivSendButton.setColorFilter(ContextCompat.getColor(this, com.tokopedia.design.R.color.green_nob))
         } else {
-            ivSendButton.setColorFilter(ContextCompat.getColor(this, com.tokopedia.design.R.color.grey_300))
+            ivSendButton.clearColorFilter()
         }
     }
 
     override val imageList: List<ImageUpload>
-        get() = imageUploadAdapter.imageUpload
+        get() = imageUploadAdapter.getUploadedImageList()
 
     override val userMessage: String
         get() = edMessage.text.toString()
@@ -553,7 +530,7 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, OnSelectImageC
             ) { dialog: DialogInterface, i: Int -> dialog.dismiss() }
             builder.setPositiveButton(getString(R.string.inbox_exit)
             ) { _, _ ->
-                ContactUsTracking.sendGTMInboxTicket("",
+                ContactUsTracking.sendGTMInboxTicket(this, "",
                         InboxTicketTracking.Category.EventInboxTicket,
                         InboxTicketTracking.Action.EventAbandonReplySubmission,
                         getString(R.string.inbox_cancel))
@@ -572,7 +549,7 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, OnSelectImageC
             onEmojiClick(view)
         } else if (id == R.id.iv_send_button) {
             sendMessage(isSendButtonEnabled)
-        } else if (id == R.id.txt_hyper || id == R.id.tv_view_transaction) {
+        } else if (id == R.id.txt_hyper) {
             onClickListener(view)
         } else if (id == R.id.iv_next_down || id == R.id.iv_previous_up) {
             onClickNextPrev(view)
@@ -613,7 +590,7 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, OnSelectImageC
                 sendGTmEvent(InboxTicketTracking.Label.EventHelpful,
                         InboxTicketTracking.Action.EventRatingCsatOnSlider)
                 closeComplainBottomSheet = CloseableBottomSheetDialog.createInstanceRounded(getActivity())
-                closeComplainBottomSheet?.setCustomContentView(CloseComplainBottomSheet(this@InboxDetailActivity, this), "", true)
+                closeComplainBottomSheet?.setCustomContentView(CloseComplainBottomSheet(this@InboxDetailActivity, this), "", false)
                 closeComplainBottomSheet?.show()
             } else {
                 textToolbar.show()
@@ -682,10 +659,23 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, OnSelectImageC
     }
 
     private fun sendGTmEvent(eventLabel: String, action: String) {
-        ContactUsTracking.sendGTMInboxTicket(InboxTicketTracking.Event.EventName,
+        ContactUsTracking.sendGTMInboxTicket(this, InboxTicketTracking.Event.EventName,
                 InboxTicketTracking.Category.EventHelpMessageInbox,
                 action,
                 eventLabel)
+    }
+
+    override fun onPriorityLabelClick() {
+        servicePrioritiesBottomSheet = CloseableBottomSheetDialog.createInstanceRounded(getActivity())
+        servicePrioritiesBottomSheet?.setCustomContentView(ServicePrioritiesBottomSheet(this@InboxDetailActivity, this@InboxDetailActivity), "", false)
+        servicePrioritiesBottomSheet?.show()
+    }
+
+    override fun onTransactionDetailsClick() {
+        ContactUsTracking.sendGTMInboxTicket(this, "",
+                InboxTicketTracking.Category.EventInboxTicket,
+                InboxTicketTracking.Action.EventClickDetailTrasanksi,
+                "")
     }
 
     companion object {

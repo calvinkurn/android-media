@@ -19,7 +19,7 @@ class GetProductIncentiveOvoUseCase @Inject constructor(
 
     override fun createObservable(requestParams: RequestParams?): Observable<ProductRevIncentiveOvoDomain> {
         val query = GraphqlHelper.loadRawString(context.resources, R.raw.gql_product_rev_incentive_ovo)
-        val request = GraphqlRequest(query, ProductRevIncentiveOvoDomain::class.java)
+        val request = GraphqlRequest(query, ProductRevIncentiveOvoDomain::class.java, false)
 
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(request)

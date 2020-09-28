@@ -8,17 +8,28 @@ import kotlin.collections.ArrayList
 /**
  * @author by nisie on 14/12/18.
  */
-class ChatroomViewModel(
+class ChatroomViewModel constructor(
         val listChat: ArrayList<Visitable<*>> = ArrayList(),
         val headerModel: ChatRoomHeaderViewModel = ChatRoomHeaderViewModel(),
         val canLoadMore: Boolean = false,
         val replyable: Boolean = false,
         var blockedStatus: BlockedStatus = BlockedStatus(),
-        val minReplyTime: String = "0",
         val latestHeaderDate: String = "",
         val attachmentIds: String = ""
 ) {
 
+    val shopName: String get() {
+        return headerModel.name
+    }
+    val shopType: String get() {
+        var shopType = "reguler"
+        if (headerModel.isGold) {
+            shopType = "gold_merchant"
+        } else if (headerModel.isOfficial) {
+            shopType = "official_Store"
+        }
+        return shopType
+    }
     val badgeUrl get() = headerModel.badge
 
     val role get() = headerModel.role.toLowerCase(Locale.getDefault())

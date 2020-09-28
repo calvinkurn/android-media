@@ -46,7 +46,7 @@ import com.tokopedia.recommendation_widget_common.listener.RecommendationListene
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.topads.sdk.utils.ImpresionTask
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.Toaster
@@ -56,7 +56,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
-class AddToCartDoneBottomSheet :
+open class AddToCartDoneBottomSheet :
         BottomSheetDialogFragment(),
         AddToCartDoneAddedProductViewHolder.AddToCartDoneAddedProductListener,
         HasComponent<ProductDetailComponent>,
@@ -97,6 +97,13 @@ class AddToCartDoneBottomSheet :
 
     fun setDismissListener(dismissListener: BottomSheetDismissListener) {
         this.dismissListener = dismissListener
+    }
+
+    fun getRecyclerView(): RecyclerView? {
+        if(::recyclerView.isInitialized) {
+            return recyclerView
+        }
+        return null
     }
 
     private fun configView(parentView: View) {
@@ -242,7 +249,8 @@ class AddToCartDoneBottomSheet :
                 is Success -> {
                     viewShimmeringLoading.hide()
                     atcDoneAdapter.clearAllElements()
-                    if(RemoteConfigInstance.getInstance().abTestPlatform.getString(abNewPdpAfterAtcKey) != oldVariantPDP){
+                    val abValue = RemoteConfigInstance.getInstance().abTestPlatform.getString(abNewPdpAfterAtcKey)
+                    if(abValue.isNotEmpty() && abValue != oldVariantPDP){
                         atcDoneAdapter.addElement(AddToCartDoneRecommendationCarouselDataModel(mapRecommendationWidgetToAddToCartRecommendationDataModel(it.data.first()), addedProductDataModel?.shopId ?: -1))
                     } else {
                         for (res in it.data) {
@@ -345,7 +353,17 @@ class AddToCartDoneBottomSheet :
     }
 
     override fun onProductClick(item: RecommendationItem, layoutType: String?, vararg position: Int) {
-        if (item.isTopAds) ImpresionTask(className).execute(item.clickUrl)
+        if (item.isTopAds) {
+            context?.run {
+                TopAdsUrlHitter(className).hitClickUrl(
+                        this,
+                        item.clickUrl,
+                        item.productId.toString(),
+                        item.name,
+                        item.imageUrl
+                )
+            }
+        }
         DynamicProductDetailTracking.Click.eventAddToCartRecommendationClick(
                 item,
                 item.position,
@@ -362,7 +380,17 @@ class AddToCartDoneBottomSheet :
     }
 
     override fun onProductImpression(item: RecommendationItem) {
-        if (item.isTopAds) ImpresionTask(className).execute(item.trackerImageUrl)
+        if (item.isTopAds) {
+            context?.run {
+                TopAdsUrlHitter(className).hitImpressionUrl(
+                        this,
+                        item.trackerImageUrl,
+                        item.productId.toString(),
+                        item.name,
+                        item.imageUrl
+                )
+            }
+        }
         productDetailTracking.eventAddToCartRecommendationImpression(
                 item.position,
                 item,

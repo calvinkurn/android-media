@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <FrameLayout
+        android:id="@+id/fl_product_camera_cover"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:paddingStart="@dimen/spacing_lvl4"
+        android:paddingLeft="@dimen/spacing_lvl4"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="RtlSymmetry"
+        >
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_product_cover"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="center"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintWidth_max="@dimen/layout_lvl0"
+            />
+
+    </FrameLayout>
+
+    <View
+        android:id="@+id/v_separator"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="@dimen/layout_lvl3"
+        android:background="@color/Neutral_N75"
+        app:layout_constraintTop_toBottomOf="@+id/fl_product_camera_cover" />
+
+    <LinearLayout
+        android:id="@+id/ll_open_gallery"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:paddingLeft="@dimen/spacing_lvl4"
+        android:paddingTop="@dimen/spacing_lvl4"
+        android:paddingRight="@dimen/spacing_lvl4"
+        android:paddingBottom="@dimen/spacing_lvl4"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/v_separator">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:layout_width="@dimen/layout_lvl3"
+            android:layout_height="@dimen/layout_lvl3"
+            app:srcCompat="@drawable/ic_play_action_add" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/play_prepare_cover_choose_from_gallery"
+            android:textColor="@color/Neutral_N700_96"
+            app:typographyType="body_3"
+            app:typographyWeight="bold" />
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

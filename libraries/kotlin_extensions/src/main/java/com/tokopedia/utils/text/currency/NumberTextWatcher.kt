@@ -37,11 +37,11 @@ open class NumberTextWatcher : AfterTextWatcher {
             editText.setSelection(editText.text.length)
             return
         }
-        val value = java.lang.Double.parseDouble(valueString)
+        val value = valueString?.toDouble() ?: 0.0
         onNumberChanged(value)
     }
 
-    fun onNumberChanged(number: Double) {
+    open fun onNumberChanged(number: Double) {
 
     }
 

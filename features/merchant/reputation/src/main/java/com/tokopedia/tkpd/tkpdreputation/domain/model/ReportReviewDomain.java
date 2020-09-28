@@ -5,7 +5,12 @@ package com.tokopedia.tkpd.tkpdreputation.domain.model;
  */
 
 public class ReportReviewDomain {
-    private final boolean isSuccess;
+    private boolean isSuccess;
+    private String errorMessage;
+
+    public ReportReviewDomain(String errorMessage) {
+        this.errorMessage = errorMessage;
+    }
 
     public ReportReviewDomain(int isSuccess) {
         this.isSuccess = isSuccess == 1;
@@ -13,5 +18,9 @@ public class ReportReviewDomain {
 
     public boolean isSuccess() {
         return isSuccess;
+    }
+
+    public String getErrorMessage() {
+        return errorMessage;
     }
 }

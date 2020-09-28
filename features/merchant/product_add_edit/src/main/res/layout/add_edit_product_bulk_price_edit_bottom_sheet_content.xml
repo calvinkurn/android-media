@@ -14,6 +14,7 @@
 
     <com.tokopedia.unifycomponents.TextFieldUnify
         android:id="@+id/tfu_product_price"
+        android:contentDescription="@string/content_desc_tfu_product_price"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/layout_lvl3"
@@ -29,7 +30,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_40"
         android:layout_marginBottom="@dimen/spacing_lvl3"
-        android:background="@drawable/rect_green_solid"
+        android:background="@drawable/product_add_edit_rect_green_solid"
         android:text="@string/action_bulk_edit_price"
         android:textAllCaps="false"
         android:textColor="@android:color/white" />

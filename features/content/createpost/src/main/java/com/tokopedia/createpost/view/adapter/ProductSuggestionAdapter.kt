@@ -1,9 +1,8 @@
 package com.tokopedia.createpost.view.adapter
 
-import androidx.cardview.widget.CardView
-import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.createpost.SuggestionItemHandler
 import com.tokopedia.createpost.createpost.R
@@ -76,10 +75,10 @@ class ProductSuggestionAdapter(
         private fun setAffiliateStyle(itemView: View) {
             with(itemView) {
                 bymeLogo.visible()
-                title.text = context.getString(R.string.af_get_commission)
+                title.text = context.getString(R.string.cp_get_commission)
                 title.setWeight(Typography.REGULAR)
-                title.setTextColor(MethodChecker.getColor(context, R.color.clr_ae31353b))
-                price.setTextColor(MethodChecker.getColor(context, R.color.af_commission_blue))
+                title.setTextColor(MethodChecker.getColor(context, com.tokopedia.design.R.color.clr_ae31353b))
+                price.setTextColor(MethodChecker.getColor(context, com.tokopedia.affiliatecommon.R.color.af_commission_blue))
             }
         }
 
@@ -87,8 +86,8 @@ class ProductSuggestionAdapter(
             with(itemView) {
                 bymeLogo.gone()
                 title.setWeight(Typography.BOLD)
-                title.setTextColor(MethodChecker.getColor(context, R.color.clr_f531353b))
-                price.setTextColor(MethodChecker.getColor(context, R.color.Yellow_Y500))
+                title.setTextColor(MethodChecker.getColor(context, com.tokopedia.design.R.color.clr_f531353b))
+                price.setTextColor(MethodChecker.getColor(context, R.color.cp_Yellow_Y500))
             }
 
         }

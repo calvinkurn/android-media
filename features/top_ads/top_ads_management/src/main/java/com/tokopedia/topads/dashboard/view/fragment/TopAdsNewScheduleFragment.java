@@ -13,13 +13,13 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import com.tokopedia.abstraction.base.view.model.StepperModel;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.base.list.seller.view.fragment.BasePresenterFragment;
-import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.datepicker.range.view.widget.DatePickerLabelView;
-import com.tokopedia.seller.base.view.activity.BaseStepperActivity;
-import com.tokopedia.seller.base.view.listener.StepperListener;
-import com.tokopedia.seller.base.view.model.StepperModel;
 import com.tokopedia.topads.R;
+import com.tokopedia.topads.common.view.activity.BaseStepperActivity;
+import com.tokopedia.topads.common.view.listener.StepperListener;
 import com.tokopedia.topads.dashboard.constant.TopAdsConstant;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.view.dialog.DatePickerDialog;
@@ -179,6 +179,10 @@ public abstract class TopAdsNewScheduleFragment<T extends StepperModel, V extend
         });
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage(getString(R.string.title_loading));
+
+        if(getContext() instanceof StepperListener){
+            this.stepperListener = (StepperListener) getContext();
+        }
     }
 
     private void showTimeConfigurationTime(boolean show) {
@@ -199,6 +203,13 @@ public abstract class TopAdsNewScheduleFragment<T extends StepperModel, V extend
         progressDialog.dismiss();
     }
 
+    @Override
+    protected void onAttachListener(Context context) {
+        super.onAttachListener(context);
+        if(context instanceof StepperListener){
+            this.stepperListener = (StepperListener)context;
+        }
+    }
 
     @Override
     protected void initialVar() {
@@ -279,14 +290,6 @@ public abstract class TopAdsNewScheduleFragment<T extends StepperModel, V extend
         super.setupArguments(arguments);
         stepperModel = arguments.getParcelable(BaseStepperActivity.STEPPER_MODEL_EXTRA);
         adId = arguments.getString(TopAdsExtraConstant.EXTRA_AD_ID);
-    }
-
-    @Override
-    protected void onAttachListener(Context context) {
-        super.onAttachListener(context);
-        if(context instanceof StepperListener){
-            this.stepperListener = (StepperListener)context;
-        }
     }
 
 

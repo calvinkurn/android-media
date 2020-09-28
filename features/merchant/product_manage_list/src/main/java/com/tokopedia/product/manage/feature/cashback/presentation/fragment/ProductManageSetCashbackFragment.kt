@@ -16,6 +16,7 @@ import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.manage.ProductManageInstance
 import com.tokopedia.product.manage.R
+import com.tokopedia.product.manage.common.util.ProductManageListErrorHandler
 import com.tokopedia.product.manage.feature.cashback.data.SetCashbackResult
 import com.tokopedia.product.manage.feature.cashback.di.DaggerProductManageSetCashbackComponent
 import com.tokopedia.product.manage.feature.cashback.di.ProductManageSetCashbackComponent
@@ -25,7 +26,7 @@ import com.tokopedia.product.manage.feature.cashback.presentation.adapter.viewmo
 import com.tokopedia.product.manage.feature.cashback.presentation.viewmodel.ProductManageSetCashbackViewModel
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.SelectUiModel
 import com.tokopedia.product.manage.feature.filter.presentation.widget.SelectClickListener
-import com.tokopedia.product.manage.feature.list.utils.ProductManageTracking
+import com.tokopedia.product.manage.feature.list.analytics.ProductManageTracking
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -48,7 +49,9 @@ class ProductManageSetCashbackFragment : Fragment(), SelectClickListener,
         const val SET_CASHBACK_PRODUCT_NAME = "product_name"
         const val PARAM_SET_CASHBACK_PRODUCT_PRICE = "price"
         const val PARAM_SET_CASHBACK_SHOP_ID = "shop_id"
+        const val PARAM_SET_CASHBACK_IS_DRAFTING = "is_drafting"
         const val EXTRA_CASHBACK_SHOP_ID = "extra_shop_id"
+        const val EXTRA_CASHBACK_IS_DRAFTING = "extra_is_drafting"
 
         fun createInstance(productId: String, cashback: Int, productName: String, price: String): ProductManageSetCashbackFragment{
             return ProductManageSetCashbackFragment().apply {
@@ -61,7 +64,7 @@ class ProductManageSetCashbackFragment : Fragment(), SelectClickListener,
             }
         }
 
-        fun createInstance(productId: String, cashback: Int, productName: String, price: String, shopId: String): ProductManageSetCashbackFragment{
+        fun createInstance(productId: String, cashback: Int, productName: String, price: String, shopId: String, isDrafting: Boolean): ProductManageSetCashbackFragment{
             return ProductManageSetCashbackFragment().apply {
                 arguments = Bundle().apply {
                     putString(SET_CASHBACK_PRODUCT_ID, productId)
@@ -69,6 +72,7 @@ class ProductManageSetCashbackFragment : Fragment(), SelectClickListener,
                     putString(SET_CASHBACK_PRODUCT_NAME, productName)
                     putString(PARAM_SET_CASHBACK_PRODUCT_PRICE, price)
                     putString(PARAM_SET_CASHBACK_SHOP_ID, shopId)
+                    putBoolean(PARAM_SET_CASHBACK_IS_DRAFTING, isDrafting)
                 }
             }
         }
@@ -83,6 +87,7 @@ class ProductManageSetCashbackFragment : Fragment(), SelectClickListener,
     private var productName = ""
     private var price = ""
     private var shopId = ""
+    private var isDrafting = false
 
     override fun getComponent(): ProductManageSetCashbackComponent? {
         return activity?.run {
@@ -102,6 +107,7 @@ class ProductManageSetCashbackFragment : Fragment(), SelectClickListener,
             productName = it.getString(SET_CASHBACK_PRODUCT_NAME, "")
             price = it.getString(PARAM_SET_CASHBACK_PRODUCT_PRICE, "")
             shopId = it.getString(PARAM_SET_CASHBACK_SHOP_ID, "")
+            isDrafting = it.getBoolean(PARAM_SET_CASHBACK_IS_DRAFTING, false)
         }
     }
 
@@ -123,7 +129,7 @@ class ProductManageSetCashbackFragment : Fragment(), SelectClickListener,
     override fun onSelectClick(element: SelectUiModel) {
         cashback = element.value.toIntOrZero()
         setCashbackList()
-        if(shopId != "") {
+        if(shopId.isNotBlank() && !isDrafting) {
             if(cashback != 0) {
                 ProductManageTracking.eventClickCashbackValue(cashback, shopId)
             } else {
@@ -133,7 +139,7 @@ class ProductManageSetCashbackFragment : Fragment(), SelectClickListener,
     }
 
     fun setTrackerOnBackPressed() {
-        if(shopId != "") {
+        if(shopId.isNotBlank() && !isDrafting) {
             ProductManageTracking.eventClickBackOnPromotionPage(shopId)
         }
     }
@@ -163,10 +169,12 @@ class ProductManageSetCashbackFragment : Fragment(), SelectClickListener,
     private fun initButton() {
         submitCashbackButton.setOnClickListener {
             viewModel.setCashback(productId, productName, cashback)
-            if(shopId != "") {
-                ProductManageTracking.eventClickSavePromotion(shopId)
-            } else {
-                ProductManageTracking.eventCashbackSettingsSave(productId)
+            if (!isDrafting) {
+                if(shopId.isNotBlank()) {
+                    ProductManageTracking.eventClickSavePromotion(shopId)
+                } else {
+                    ProductManageTracking.eventCashbackSettingsSave(productId)
+                }
             }
         }
     }
@@ -219,6 +227,7 @@ class ProductManageSetCashbackFragment : Fragment(), SelectClickListener,
                 }
                 is Fail -> {
                     onErrorSetCashback(it.throwable as SetCashbackResult)
+                    ProductManageListErrorHandler.logExceptionToCrashlytics(it.throwable)
                 }
             }
         }

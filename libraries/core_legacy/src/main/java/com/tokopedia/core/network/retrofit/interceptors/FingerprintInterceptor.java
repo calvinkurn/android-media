@@ -14,9 +14,7 @@ import com.tokopedia.core.analytics.fingerprint.data.FingerprintDataRepository;
 import com.tokopedia.core.analytics.fingerprint.domain.FingerprintRepository;
 import com.tokopedia.core.analytics.fingerprint.domain.usecase.CacheGetFingerprintUseCase;
 import com.tokopedia.core.analytics.fingerprint.domain.usecase.GetFingerprintUseCase;
-import com.tokopedia.core.deprecated.SessionHandler;
 import com.tokopedia.core.gcm.FCMCacheManager;
-import com.tokopedia.core.gcm.utils.RouterUtils;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -41,6 +39,8 @@ import timber.log.Timber;
 
 public class FingerprintInterceptor implements Interceptor {
 
+    public static final String ADVERTISINGID = "ADVERTISINGID";
+    public static final String KEY_ADVERTISINGID = "KEY_ADVERTISINGID";
     private static final String KEY_SESSION_ID = "Tkpd-SessionId";
     private static final String KEY_USER_ID = "Tkpd-UserId";
     private static final String KEY_ACC_AUTH = "Accounts-Authorization";
@@ -49,10 +49,30 @@ public class FingerprintInterceptor implements Interceptor {
     private static final String BEARER = "Bearer ";
     private static final String KEY_ADSID = "X-GA-ID";
     private Context context;
+    private UserSessionInterface userSession;
 
     @Inject
     public FingerprintInterceptor(Context context) {
         this.context = context;
+        userSession = new UserSession(context);
+    }
+
+    static String trimGoogleAdId(String googleAdsId) {
+        StringBuilder sb = new StringBuilder(googleAdsId.length());//we know this is the capacity so we initialise with it:
+        for (int i = 0; i < googleAdsId.length(); i++) {
+            char c = googleAdsId.charAt(i);
+            switch (c) {
+                case '\u2013':
+                case '\u2014':
+                case '\u2015':
+                    sb.append('-');
+                    break;
+                default:
+                    sb.append(c);
+                    break;
+            }
+        }
+        return sb.toString();
     }
 
     @Override
@@ -64,21 +84,25 @@ public class FingerprintInterceptor implements Interceptor {
     }
 
     private Request.Builder addFingerPrint(final Request.Builder newRequest) {
-        UserSessionInterface userSession = new UserSession(context);
         String json = getFingerPrintJson();
 
-        SessionHandler session = RouterUtils.getRouterFromContext(context).legacySessionHandler();
         newRequest.addHeader(KEY_SESSION_ID, FCMCacheManager.getRegistrationIdWithTemp(context));
         if (userSession.isLoggedIn()) {
-            newRequest.addHeader(KEY_USER_ID, session.getLoginID());
-            newRequest.addHeader(KEY_FINGERPRINT_HASH, AuthUtil.md5(json + "+" + session.getLoginID()));
+            newRequest.addHeader(KEY_USER_ID, userSession.getUserId());
+            newRequest.addHeader(KEY_FINGERPRINT_HASH, AuthUtil.md5(json + "+" + userSession.getUserId()));
         } else {
             newRequest.addHeader(KEY_USER_ID, "0");
             newRequest.addHeader(KEY_FINGERPRINT_HASH, AuthUtil.md5(json + "+" + "0"));
         }
         newRequest.addHeader(KEY_ACC_AUTH, BEARER + userSession.getAccessToken());
         newRequest.addHeader(KEY_FINGERPRINT_DATA, json);
-        newRequest.addHeader(KEY_ADSID, getGoogleAdId(context));
+        String adsId = getGoogleAdId(context);
+        if (!TextUtils.isEmpty(adsId)) {
+            adsId = trimGoogleAdId(getGoogleAdId(context));
+        } else {
+            adsId = "";
+        }
+        newRequest.addHeader(KEY_ADSID, adsId);
 
         return newRequest;
     }
@@ -119,9 +143,6 @@ public class FingerprintInterceptor implements Interceptor {
 
         return json;
     }
-
-    public static final String ADVERTISINGID = "ADVERTISINGID";
-    public static final String KEY_ADVERTISINGID = "KEY_ADVERTISINGID";
 
     /**
      * This function first try to fetch the Google Ad ID from cache and if not found in cache, it fetches from system and save into the cache

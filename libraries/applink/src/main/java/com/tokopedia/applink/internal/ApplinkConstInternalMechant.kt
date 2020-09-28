@@ -48,4 +48,11 @@ object ApplinkConstInternalMechant {
 
     @JvmField
     val MERCHANT_SHOP_SHOWCASE_EDIT = "${INTERNAL_MERCHANT}/shop-showcase-edit"
+
+    @JvmField
+    val MERCHANT_SHOP_SCORE = "${INTERNAL_MERCHANT}/shop-score-detail"
+
+    //com.tokopedia.statistic.presentation.view.activity.StatisticActivity
+    @JvmField
+    val MERCHANT_STATISTIC_DASHBOARD = "$INTERNAL_MERCHANT/statistic_dashboard"
 }

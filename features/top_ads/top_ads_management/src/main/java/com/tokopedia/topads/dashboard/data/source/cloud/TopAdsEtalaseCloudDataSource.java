@@ -1,6 +1,5 @@
 package com.tokopedia.topads.dashboard.data.source.cloud;
 
-import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.topads.dashboard.constant.TopAdsNetworkConstant;
 import com.tokopedia.topads.dashboard.data.mapper.TopAdsEtalaseListMapper;
@@ -30,11 +29,11 @@ public class TopAdsEtalaseCloudDataSource implements TopAdsEtalaseDataSource {
         this.topAdsEtalaseListMapper = topAdsEtalaseListMapper;
     }
 
-    public Observable<List<Etalase>> getEtalaseList(String shopId) {
+    public Observable<List<Etalase>> getEtalaseList(String shopId, String userId, String deviceId) {
         Map<String, String> map = new HashMap<>();
         map.put(TopAdsNetworkConstant.PARAM_SHOP_ID, shopId);
 
-        Map <String, String> param = AuthUtil.generateParams(MainApplication.getAppContext(), map);
+        Map <String, String> param = AuthUtil.generateParams(userId, deviceId, map);
         return topAdsShopApi.getShopEtalase(param)
                 .map(topAdsEtalaseListMapper)
                 .doOnNext(new Action1<List<Etalase>>() {

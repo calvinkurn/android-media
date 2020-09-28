@@ -8,7 +8,7 @@ import android.os.Build
 import android.os.Bundle
 import android.webkit.URLUtil
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.pushnotif.Constant
+import com.tokopedia.pushnotif.data.constant.Constant
 
 /**
  * @author by milhamj on 2019-12-06.

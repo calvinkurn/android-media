@@ -1,6 +1,5 @@
 package com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewholder
 
-import android.content.Context
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.AppCompatTextView
@@ -10,18 +9,18 @@ import androidx.recyclerview.widget.SimpleItemAnimator
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.brandlist.R
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewholder.adapter.BrandlistAlphabetHeaderAdapter
-import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewmodel.AllBrandGroupHeaderViewModel
+import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewmodel.AllBrandGroupHeaderUiModel
 import java.text.NumberFormat
 import java.util.*
 
 
-class AllBrandGroupHeaderViewHolder(itemView: View) : AbstractViewHolder<AllBrandGroupHeaderViewModel>(itemView) {
+class AllBrandGroupHeaderViewHolder(itemView: View) : AbstractViewHolder<AllBrandGroupHeaderUiModel>(itemView) {
 
     private lateinit var recyclerViewBrandHeader: RecyclerView
     private var tvTotalBrand: AppCompatTextView? = null
     private var layoutManager: LinearLayoutManager? = null
     private var adapter: BrandlistAlphabetHeaderAdapter? = null
-    private lateinit var allBrandGroupHeaderViewModel: AllBrandGroupHeaderViewModel
+    private lateinit var allBrandGroupHeaderUiModel: AllBrandGroupHeaderUiModel
 
     init {
         initLayout(itemView)
@@ -41,17 +40,17 @@ class AllBrandGroupHeaderViewHolder(itemView: View) : AbstractViewHolder<AllBran
         recyclerViewBrandHeader.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-                allBrandGroupHeaderViewModel.recyclerViewState = recyclerView.layoutManager?.onSaveInstanceState()
-                adapter?.recyclerViewState = allBrandGroupHeaderViewModel.recyclerViewState
+                allBrandGroupHeaderUiModel.recyclerViewState = recyclerView.layoutManager?.onSaveInstanceState()
+                adapter?.recyclerViewState = allBrandGroupHeaderUiModel.recyclerViewState
             }
         })
     }
 
-    override fun bind(element: AllBrandGroupHeaderViewModel) {
+    override fun bind(element: AllBrandGroupHeaderUiModel) {
         val totalBrand: Int = element.totalBrands
         val headerList: MutableList<String> = getAlphabeticalShopFilter(totalBrand)
 
-        this.allBrandGroupHeaderViewModel = element
+        this.allBrandGroupHeaderUiModel = element
         element.recyclerViewLastState?.let {
             recyclerViewBrandHeader.layoutManager?.onRestoreInstanceState(it)
         }
@@ -60,6 +59,7 @@ class AllBrandGroupHeaderViewHolder(itemView: View) : AbstractViewHolder<AllBran
         adapter?.let {
             it.headerList = headerList
             it.selectedPosition = element.selectedChip
+            it.lastTimeChipsClicked = element.lastTimeChipsClicked
             it.notifyDataSetChanged()
         }
         recyclerViewBrandHeader.adapter = adapter

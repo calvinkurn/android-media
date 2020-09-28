@@ -18,7 +18,6 @@ import com.tokopedia.core.base.di.component.DaggerAppComponent;
 import com.tokopedia.core.base.di.module.AppModule;
 import com.tokopedia.core.gcm.utils.NotificationUtils;
 import com.tokopedia.core.router.InboxRouter;
-import com.tokopedia.core.util.toolargetool.TooLargeTool;
 import com.tokopedia.core2.BuildConfig;
 import com.tokopedia.linker.LinkerConstants;
 import com.tokopedia.linker.LinkerManager;
@@ -30,7 +29,6 @@ import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.weaver.WeaveInterface;
 import com.tokopedia.weaver.Weaver;
-import com.tokopedia.weaver.WeaverFirebaseConditionCheck;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -47,6 +45,9 @@ public abstract class MainApplication extends MainRouterApplication{
     private UserSession userSession;
     protected RemoteConfig remoteConfig;
     private String MAINAPP_ADDGAIDTO_BRANCH = "android_addgaid_to_branch";
+    private static final String ENABLE_ASYNC_REMOTECONFIG_MAINAPP_INIT = "android_async_remoteconfig_mainapp_init";
+    private final String ENABLE_ASYNC_CRASHLYTICS_USER_INFO = "android_async_crashlytics_user_info";
+    private final String ENABLE_ASYNC_BRANCH_USER_INFO = "android_async_branch_user_info";
 
 
     public static MainApplication getInstance() {
@@ -61,7 +62,7 @@ public abstract class MainApplication extends MainRouterApplication{
                 return remoteConfig = new FirebaseRemoteConfigImpl(MainApplication.this);
             }
         };
-        Weaver.Companion.executeWeaveCoRoutineNow(remoteConfigWeave);
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(remoteConfigWeave, ENABLE_ASYNC_REMOTECONFIG_MAINAPP_INIT, MainApplication.this);
     }
 
     @Override
@@ -113,19 +114,17 @@ public abstract class MainApplication extends MainRouterApplication{
                 return executeInBackground();
             }
         };
-        Weaver.Companion.executeWeaveCoRoutine(executeBgWorkWeave,
-                new WeaverFirebaseConditionCheck(RemoteConfigKey.ENABLE_SEQ3_ASYNC, remoteConfig));
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(executeBgWorkWeave,
+                RemoteConfigKey.ENABLE_SEQ3_ASYNC, context);
     }
 
     @NotNull
     private Boolean executeInBackground(){
         locationUtils = new LocationUtils(MainApplication.this);
         locationUtils.initLocationBackground();
-        TooLargeTool.startLogging(MainApplication.this);
         if(Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
             upgradeSecurityProvider();
         }
-        init();
         return true;
     }
 
@@ -149,18 +148,20 @@ public abstract class MainApplication extends MainRouterApplication{
         }
     }
 
-    private void init() {
-        if (BuildConfig.DEBUG && Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            registerActivityLifecycleCallbacks(new ActivityFrameMetrics.Builder().build());
-        }
-    }
-
     public void initCrashlytics() {
         if (!BuildConfig.DEBUG) {
             Fabric.with(this, new Crashlytics());
-            Crashlytics.setUserIdentifier(userSession.getUserId());
-            Crashlytics.setUserEmail(userSession.getEmail());
-            Crashlytics.setUserName(userSession.getName());
+            WeaveInterface crashlyticsUserInfoWeave = new WeaveInterface() {
+                @NotNull
+                @Override
+                public Object execute() {
+                    Crashlytics.setUserIdentifier(userSession.getUserId());
+                    Crashlytics.setUserEmail(userSession.getEmail());
+                    Crashlytics.setUserName(userSession.getName());
+                    return true;
+                }
+            };
+            Weaver.Companion.executeWeaveCoRoutineWithFirebase(crashlyticsUserInfoWeave, ENABLE_ASYNC_CRASHLYTICS_USER_INFO, getApplicationContext());
         }
     }
 
@@ -186,13 +187,20 @@ public abstract class MainApplication extends MainRouterApplication{
         if(remoteConfig.getBoolean(MAINAPP_ADDGAIDTO_BRANCH, false)){
             LinkerManager.getInstance().setGAClientId(TrackingUtils.getClientID(getApplicationContext()));
         }
-        if(userSession.isLoggedIn()) {
-            UserData userData = new UserData();
-            userData.setUserId(userSession.getUserId());
-
-            LinkerManager.getInstance().sendEvent(LinkerUtils.createGenericRequest(LinkerConstants.EVENT_USER_IDENTITY,
-                    userData));
-        }
+        WeaveInterface branchUserIdentityWeave = new WeaveInterface() {
+            @NotNull
+            @Override
+            public Object execute() {
+                if(userSession.isLoggedIn()) {
+                    UserData userData = new UserData();
+                    userData.setUserId(userSession.getUserId());
+                    LinkerManager.getInstance().sendEvent(LinkerUtils.createGenericRequest(LinkerConstants.EVENT_USER_IDENTITY,
+                            userData));
+                }
+                return true;
+            }
+        };
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(branchUserIdentityWeave, ENABLE_ASYNC_BRANCH_USER_INFO, getApplicationContext());
         return true;
     }
 

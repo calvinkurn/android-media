@@ -18,8 +18,10 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.post.video.VideoViewH
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.recommendation.FeedRecommendationViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.recommendation.RecommendationCardAdapter
+import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopAdsBannerViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopadsShopViewHolder
 import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.banner.TopAdsBannerViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.recommendation.FeedRecommendationViewModel
@@ -51,6 +53,7 @@ class ProfileTypeFactoryImpl(private val viewListener : ProfileEmptyContract.Vie
                              private val onEmptyItemClickedListener: EmptyAffiliateViewHolder.OnEmptyItemClickedListener,
                              private val onOtherProfilePostItemClick: ((applink: String, position: Int, datum: FeedPostRelated.Datum) -> Unit),
                              private val highlightListener: HighlightAdapter.HighlightListener,
+                             private val topAdsBannerListener: TopAdsBannerViewHolder.TopAdsBannerListener,
                              private val userSession : UserSessionInterface)
 
     : BaseAdapterTypeFactory(), ProfileTypeFactory, DynamicFeedTypeFactory {
@@ -99,6 +102,10 @@ class ProfileTypeFactoryImpl(private val viewListener : ProfileEmptyContract.Vie
         return HighlightViewHolder.LAYOUT
     }
 
+    override fun type(topAdsBannerViewmodel: TopAdsBannerViewModel): Int {
+        return TopAdsBannerViewHolder.LAYOUT
+    }
+
     @Suppress("UNCHECKED_CAST")
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<Visitable<*>> {
         return when(type) {
@@ -133,6 +140,8 @@ class ProfileTypeFactoryImpl(private val viewListener : ProfileEmptyContract.Vie
                 OtherPostTitleViewHolder(parent) as AbstractViewHolder<Visitable<*>>
             HighlightViewHolder.LAYOUT ->
                 HighlightViewHolder(parent, highlightListener, cardTitleListener) as AbstractViewHolder<Visitable<*>>
+            TopAdsBannerViewHolder.LAYOUT ->
+                TopAdsBannerViewHolder(parent, topAdsBannerListener, cardTitleListener) as AbstractViewHolder<Visitable<*>>
             else -> super.createViewHolder(parent, type)
         }
     }

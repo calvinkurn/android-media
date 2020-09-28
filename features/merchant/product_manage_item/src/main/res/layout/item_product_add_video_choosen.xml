@@ -109,7 +109,7 @@
                             android:id="@+id/imageDelete"
                             android:layout_width="@dimen/dp_16"
                             android:layout_height="@dimen/dp_16"
-                            app:srcCompat="@drawable/ic_delete" />
+                            app:srcCompat="@drawable/product_manage_item_ic_delete" />
 
                 </LinearLayout>
         </LinearLayout>

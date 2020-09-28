@@ -4,17 +4,17 @@ import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewmodel.*
 
 interface BrandlistPageTypeFactory {
 
-    fun type(featuredBrandViewModel: FeaturedBrandViewModel): Int
+    fun type(featuredBrandUiModel: FeaturedBrandUiModel): Int
 
-    fun type(popularBrandViewModel: PopularBrandViewModel): Int
+    fun type(popularBrandUiModel: PopularBrandUiModel): Int
 
-    fun type(newBrandViewModel: NewBrandViewModel): Int
+    fun type(newBrandUiModel: NewBrandUiModel): Int
 
-    fun type(allBrandHeaderViewModel: AllBrandHeaderViewModel): Int
+    fun type(allBrandHeaderUiModel: AllBrandHeaderUiModel): Int
 
-    fun type(allBrandGroupHeaderViewModel: AllBrandGroupHeaderViewModel): Int
+    fun type(allBrandGroupHeaderUiModel: AllBrandGroupHeaderUiModel): Int
 
-    fun type(allBrandViewModel: AllBrandViewModel): Int
+    fun type(allBrandUiModel: AllBrandUiModel): Int
 
-    fun type(allbrandNotFoundViewModel: AllbrandNotFoundViewModel): Int
+    fun type(allbrandNotFoundUiModel: AllbrandNotFoundUiModel): Int
 }

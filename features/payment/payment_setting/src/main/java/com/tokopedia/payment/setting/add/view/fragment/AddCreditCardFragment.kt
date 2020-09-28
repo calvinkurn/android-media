@@ -29,7 +29,7 @@ class AddCreditCardFragment : BaseWebViewFragment() {
         super.onCreate(savedInstanceState)
         arguments?.let {
             if (it.containsKey(AddCreditCardActivity.ARG_PAYMENT_SIGNATURE)) {
-                paymentSignature = it.getParcelable(AddCreditCardActivity.ARG_PAYMENT_SIGNATURE)
+                paymentSignature = it.getParcelable(AddCreditCardActivity.ARG_PAYMENT_SIGNATURE)!!
             }
         }
         activity?.run { NetworkClient.init(this) }

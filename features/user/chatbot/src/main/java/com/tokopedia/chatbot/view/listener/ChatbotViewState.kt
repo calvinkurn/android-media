@@ -46,4 +46,6 @@ interface ChatbotViewState : BaseChatViewState {
 
     fun showLiveChatQuickReply(quickReplyList: List<QuickReplyViewModel>)
 
+    fun hideActionBubble(model: ChatActionSelectionBubbleViewModel)
+
 }

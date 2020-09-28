@@ -4,8 +4,6 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.topads.di.CreateAdsComponent
 import com.tokopedia.topads.di.DaggerCreateAdsComponent
 import com.tokopedia.topads.view.fragment.AdCreationChooserFragment
@@ -20,11 +18,4 @@ class AdCreationChooserActivity : BaseSimpleActivity(), HasComponent<CreateAdsCo
         return DaggerCreateAdsComponent.builder().baseAppComponent(
                 (application as BaseMainApplication).baseAppComponent).build()
     }
-    override fun onBackPressed() {
-        super.onBackPressed()
-        val intent = RouteManager.getIntent(this, ApplinkConstInternalTopAds.TOPADS_DASHBOARD_INTERNAL)
-        startActivity(intent)
-        finish()
-    }
-
 }

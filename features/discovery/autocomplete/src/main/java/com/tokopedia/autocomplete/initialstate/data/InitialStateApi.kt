@@ -15,9 +15,4 @@ interface InitialStateApi {
     fun getInitialState(
             @QueryMap param: HashMap<String, Any>
     ): Observable<Response<InitialStateResponse>>
-
-    @DELETE(AutocompleteBaseURL.Ace.PATH_DELETE_SEARCH)
-    fun deleteRecentSearch(
-            @QueryMap parameters: HashMap<String, Any>
-    ): Observable<Response<Void>>
 }

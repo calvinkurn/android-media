@@ -61,6 +61,7 @@ class NotificationUpdatePresenter @Inject constructor(
     }
 
     override fun clearNotifCounter() {
+        clearCounterNotificationUpdateUseCase.params = ClearCounterNotificationUpdateUseCase.getRequestParams()
         clearCounterNotificationUpdateUseCase.execute(NotificationUpdateActionSubscriber())
     }
 

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <com.tokopedia.reputation.common.view.AnimatedStarsReviewPendingView
+            android:id="@+id/anim_1_review_pending"
+            android:layout_width="@dimen/dp_32"
+            android:layout_height="@dimen/dp_32"
+            android:layout_gravity="center"
+            android:layout_marginEnd="@dimen/layout_lvl1"
+            android:layout_marginRight="@dimen/layout_lvl1" />
+
+        <com.tokopedia.reputation.common.view.AnimatedStarsReviewPendingView
+            android:id="@+id/anim_2_review_pending"
+            android:layout_width="@dimen/dp_32"
+            android:layout_height="@dimen/dp_32"
+            android:layout_gravity="center"
+            android:layout_marginEnd="@dimen/layout_lvl1"
+            android:layout_marginRight="@dimen/layout_lvl1" />
+
+        <com.tokopedia.reputation.common.view.AnimatedStarsReviewPendingView
+            android:id="@+id/anim_3_review_pending"
+            android:layout_width="@dimen/dp_32"
+            android:layout_height="@dimen/dp_32"
+            android:layout_gravity="center"
+            android:layout_marginEnd="@dimen/layout_lvl1"
+            android:layout_marginRight="@dimen/layout_lvl1" />
+
+        <com.tokopedia.reputation.common.view.AnimatedStarsReviewPendingView
+            android:id="@+id/anim_4_review_pending"
+            android:layout_width="@dimen/dp_32"
+            android:layout_height="@dimen/dp_32"
+            android:layout_gravity="center"
+            android:layout_marginEnd="@dimen/layout_lvl1"
+            android:layout_marginRight="@dimen/layout_lvl1" />
+
+        <com.tokopedia.reputation.common.view.AnimatedStarsReviewPendingView
+            android:id="@+id/anim_5_review_pending"
+            android:layout_width="@dimen/dp_32"
+            android:layout_height="@dimen/dp_32"
+            android:layout_gravity="center" />
+
+    </LinearLayout>
+
+</LinearLayout>

@@ -22,8 +22,6 @@ import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.di.DaggerProductDetailComponent
 import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.product.detail.view.fragment.DynamicProductDetailFragment
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 
@@ -44,6 +42,7 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
         private const val PARAM_TRACKER_ATTRIBUTION = "tracker_attribution"
         private const val PARAM_TRACKER_LIST_NAME = "tracker_list_name"
         private const val PARAM_AFFILIATE_STRING = "aff"
+        private const val PARAM_LAYOUT_ID = "layoutID"
 
         private const val AFFILIATE_HOST = "affiliate"
 
@@ -75,17 +74,15 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
     private var trackerListName: String? = null
     private var affiliateString: String? = null
     private var deeplinkUrl: String? = null
+    private var layoutId: String? = null
     private var userSessionInterface: UserSessionInterface? = null
-    private val remoteConfig: RemoteConfig by lazy {
-        FirebaseRemoteConfigImpl(this)
-    }
 
     //Performance Monitoring
     private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
-
     private var performanceMonitoringP1: PerformanceMonitoring? = null
-    private var performanceMonitoringP2: PerformanceMonitoring? = null
-    private var performanceMonitoringP2General: PerformanceMonitoring? = null
+    private var performanceMonitoringP2Data: PerformanceMonitoring? = null
+    //Temporary (disscussion/talk, review/ulasan)
+    private var performanceMonitoringP2Other: PerformanceMonitoring? = null
     private var performanceMonitoringP2Login: PerformanceMonitoring? = null
     private var performanceMonitoringFull: PerformanceMonitoring? = null
 
@@ -94,9 +91,15 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
         @JvmStatic
         fun getCallingIntent(context: Context, extras: Bundle): Intent {
             val uri = Uri.parse(extras.getString(DeepLink.URI)) ?: return Intent()
-            return RouteManager.getIntent(context,
+            val intent = RouteManager.getIntent(context,
                     ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
-                    uri.lastPathSegment) ?: Intent()
+                    uri.lastPathSegment)
+
+            if (!uri.getQueryParameter(PARAM_LAYOUT_ID).isNullOrBlank()) {
+                intent.putExtra(PARAM_LAYOUT_ID, uri.getQueryParameter(PARAM_LAYOUT_ID))
+            }
+
+            return intent ?: Intent()
         }
 
         @DeepLink(ApplinkConst.AFFILIATE_PRODUCT)
@@ -115,12 +118,12 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
         performanceMonitoringP1?.stopTrace()
     }
 
-    fun stopMonitoringP2() {
-        performanceMonitoringP2?.stopTrace()
+    fun stopMonitoringP2Data() {
+        performanceMonitoringP2Data?.stopTrace()
     }
 
-    fun stopMonitoringP2General() {
-        performanceMonitoringP2General?.stopTrace()
+    fun stopMonitoringP2Other() {
+        performanceMonitoringP2Other?.stopTrace()
     }
 
     fun stopMonitoringP2Login() {
@@ -164,8 +167,7 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
     override fun getNewFragment(): Fragment = DynamicProductDetailFragment.newInstance(productId, warehouseId, shopDomain,
             productKey, isFromDeeplink,
             isFromAffiliate, trackerAttribution,
-            trackerListName, affiliateString, deeplinkUrl)
-
+            trackerListName, affiliateString, deeplinkUrl, layoutId)
 
     override fun getComponent(): ProductDetailComponent = DaggerProductDetailComponent.builder()
             .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent).build()
@@ -177,9 +179,6 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
         isFromDeeplink = intent.getBooleanExtra(PARAM_IS_FROM_DEEPLINK, false)
         val uri = intent.data
         val bundle = intent.extras
-        bundle?.let {
-            warehouseId = it.getString("warehouse_id")
-        }
         if (uri != null) {
             deeplinkUrl = generateApplink(uri.toString())
             if (uri.scheme == DeeplinkConstant.SCHEME_INTERNAL) {
@@ -205,6 +204,9 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
             affiliateString = uri.getQueryParameter(PARAM_AFFILIATE_STRING)
         }
         bundle?.let {
+            warehouseId = it.getString("warehouse_id")
+            layoutId = it.getString(PARAM_LAYOUT_ID)
+
             if (productId.isNullOrBlank()) {
                 productId = it.getString(PARAM_PRODUCT_ID)
             }
@@ -250,8 +252,8 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
 
     private fun initPerformanceMonitoring() {
         performanceMonitoringP1 = PerformanceMonitoring.start(ProductDetailConstant.PDP_P1_TRACE)
-        performanceMonitoringP2 = PerformanceMonitoring.start(ProductDetailConstant.PDP_P2_TRACE)
-        performanceMonitoringP2General = PerformanceMonitoring.start(ProductDetailConstant.PDP_P2_GENERAL_TRACE)
+        performanceMonitoringP2Data = PerformanceMonitoring.start(ProductDetailConstant.PDP_P2_DATA_TRACE)
+        performanceMonitoringP2Other = PerformanceMonitoring.start(ProductDetailConstant.PDP_P2_OTHER_TRACE)
 
         if (userSessionInterface?.isLoggedIn == true) {
             performanceMonitoringP2Login = PerformanceMonitoring.start(ProductDetailConstant.PDP_P2_LOGIN_TRACE)

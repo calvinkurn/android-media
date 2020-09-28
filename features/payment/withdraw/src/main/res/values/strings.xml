@@ -1,115 +1,51 @@
 <resources>
-    <string name="app_name">withdraw</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="swd_activity_withdraw">Penarikan Saldo</string>
+    <string name="swd_activity_auto_withdraw_settings">Pengaturan Saldo</string>
 
-    <string name="activity_withdraw">Penarikan Saldo</string>
+    <string name="swd_title_action_withdraw">Tarik Saldo</string>
+    <string name="swd_rp">Rp%s</string>
+    <string name="swd_choose_bank_account">Rekening Tujuan</string>
+    <string name="swd_has_no_bank">Anda belum memiliki rekening bank yang terdaftar di Tokopedia</string>
+    <string name="swd_title_add_account_bank">Tambah Rekening</string>
+    <string name="swd_title_set_account_bank">Atur Rekening</string>
+    <string name="swd_title_set_rekening_utama">Rekening Utama</string>
 
-    <string name="title_confirm_account">Pastikan Nomor Rekening &amp; Nama Pemilik Rekening sesuai buku tabungan</string>
-    <string name="title_action_withdraw">Tarik Saldo</string>
-    <string name="title_withdrawal_saldo">Saldo yang Dapat Ditarik</string>
-    <string name="title_withdrawal_nominal">Masukkan Nominal Penarikan Saldo</string>
-    <string name="choose_bank_account">Pilih Rekening Tujuan</string>
-    <string name="withdrawal_info">Informasi Penarikan Saldo</string>
-    <string name="has_no_bank">Anda belum memiliki rekening bank yang terdaftar di Tokopedia</string>
-    <string name="success_add_bank">Rekening baru berhasil ditambahkan</string>
-    <string name="dot">•</string>
-    <string name="title_account_name">Nama Akun</string>
-    <string name="title_account_number_saldo">Nomor Rekening</string>
-    <string name="title_bank_name">Nama Bank</string>
-    <string name="title_choose_bank">Pilih Nama Bank</string>
-    <string name="title_branch">Cabang</string>
-    <string name="title_otp">Masukkan Kode Verifikasi :</string>
-    <string name="title_password">Kata Sandi</string>
-    <string name="title_forgot_password">Lupa kata sandi?</string>
-    <string name="title_close">Tutup</string>
-    <string name="title_add_account_bank">Tambah Rekening</string>
-    <string name="title_set_account_bank">Atur Rekening</string>
-    <string name="title_set_rekening_utama">Rekening Utama</string>
+    <string name="swd_alert_not_verified_yet_title">Akun Anda Belum Terverifikasi</string>
+    <string name="swd_alert_not_verified_yet_body">Untuk melakukan penarikan saldo Anda harus mengverifikasi akun Anda.</string>
+    <string name="swd_alert_not_verified_yet_positive">Verifikasi</string>
+    <string name="swd_alert_not_verified_yet_negative">Tidak</string>
+    <string name="swd_label_analytics_success_withdraw">success withdrawal</string>
+    <string name="swd_saldo_refund">Saldo Refund</string>
+    <string name="swd_tab_saldo_refund">Refund</string>
+    <string name="swd_seller">Saldo Penghasilan</string>
+    <string name="swd_nominal_withdrawal">Nominal Penarikan</string>
+    <string name="swd_withdrawal_all">Tarik Semua</string>
 
+    <string name="swd_saldo_seller">Saldo Penghasilan</string>
+    <string name="swd_tab_buyer_income">Penghasilan</string>
 
-    <string name="title_info_withdrawal_1">Minimum Penarikan</string>
-    <string name="body_1">BCA, BNI, BRI, Mandiri- Rp 10.000\nBank lain - Rp 50.000</string>
-    <string name="title_info_withdrawal_2">Biaya Admin</string>
-    <string name="body_info_withdrawal_2">BRI - Rp 1.000\nBiaya transfer antar bank ditanggung pengguna</string>
-    <string name="title_info_withdrawal_3">Waktu Proses Penarikan</string>
-    <string name="body_info_withdrawal_3">BCA, BRI, BNI, CIMB, Mandiri - paling lama 24 jam\nBank
-        lain - paling lama 2 hari kerja (tidak termasuk Sabtu/Minggu/libur) </string>
-    <string name="title_info_withdrawal_4">Biaya Tambahan Ditanggung Pengguna</string>
-    <string name="exceed_limit_withdraw">Anda telah melewati batas maksimal penarikan dana per hari</string>
+    <string name="swd_tnc_full_text">Dengan klik tombol di bawah, kamu telah setuju dengan</string>
 
-    <string name="error_withdraw_exceed_balance">Saldo Tokopedia Anda tidak mencukupi</string>
-    <string name="withdrawal">Tarik Saldo</string>
-    <string name="confirm_password">Konfirmasi dengan kata sandi akun Tokopedia Anda</string>
-    <string name="tokopedia_password">Kata Sandi Tokopedia</string>
-    <string name="error_field_required">Harus diisi</string>
-    <string name="indicator_password_error">kata sandi</string>
-    <string name="alert_success_withdraw_title">Penarikan Saldo Sedang Diproses</string>
-    <string name="alert_success_withdraw_positive">Ok</string>
-    <string name="alert_success_withdraw_body">Anda telah melakukan penarikan saldo. Waktu proses penarikan paling lama 2x24 jam (tidak termasuk Sabtu/Minggu/Libur)</string>
-    <string name="minimal_withdrawal">Jumlah minimum penarikan dana sebesar Rp %1$s</string>
-
-    <string name="alert_not_verified_yet_title">Akun Anda Belum Terverifikasi</string>
-    <string name="alert_not_verified_yet_body">Untuk melakukan penarikan saldo Anda harus mengverifikasi akun Anda.</string>
-    <string name="alert_not_verified_yet_positive">Verifikasi</string>
-    <string name="alert_not_verified_yet_negative">Tidak</string>
-    <string name="label_analytics_success_withdraw">success withdrawal</string>
-    <string name="saldo_refund">Saldo Refund</string>
-    <string name="tab_saldo_refund">Refund</string>
-    <string name="saldo_seller">Saldo Penghasilan</string>
-    <string name="nominal_withdrawal">Nominal Penarikan</string>
-    <string name="saldo_withdrawal_all">Tarik Semua</string>
-    <string name="saldo_withdraw_hint">Minimum penarikan %s</string>
-    <string name="saldo_retrieve_balance">Tarik Saldo dari:</string>
-    <string name="refund">Refund</string>
-    <string name="saldo_return">Penghasilan</string>
-    <string name="saldo_exceeding_total_value_seller">Nilai melebihi total Saldo Penghasilan</string>
-    <string name="saldo_exceeding_total_value_buyer">Nilai melebihi total Saldo Refund</string>
-    <string name="saldo_withdraw_show_case_title">Penarikan Saldo</string>
-    <string name="saldo_withdraw_show_case_desc">Pilih sumber dana yang ingin ditarik. Kamu dapat menarik dana dari refund atau dari penghasilan.</string>
-    <string name="refund_saldo_inactive">Saat ini kamu tidak memiliki Saldo Refund</string>
-    <string name="refund_saldo_less_min">Saldo Refund kurang dari minimum penarikan, Rp10.000</string>
-    <string name="seller_saldo_inactive">Saat ini kamu tidak memiliki Saldo Penghasilan</string>
-    <string name="seller_saldo_less_min">Saldo Penghasilan kurang dari minimum penarikan, Rp10.000</string>
-    <string name="withdraw_help">Info</string>
-    <string name="string_min_withdraw">Minimum Penarikan</string>
-    <string name="min_withdraw_body_one">BCA, BRI, BNI, Mandiri = Rp10.000</string>
-    <string name="min_withdraw_body_two">Bank Lain = Rp50.000</string>
-    <string name="admin_withdraw_title">Biaya Admin</string>
-    <string name="admin_withdraw_body_one">BRI = Rp1.000</string>
-    <string name="admin_withdraw_body_two">Biaya transfer antar bank ditanggung pengguna</string>
-    <string name="process_time_withdraw_title">Waktu Proses Penarikan</string>
-    <string name="process_time_withdraw_body_one">BCA, BRI, BNI, CIMB, Mandiri paling lama 24 jam</string>
-    <string name="process_time_withdraw_body_two">Bank lain - paling lama 2 hari kerja (tidak termasuk Sabtu/Minggu/Libur)</string>
-    <string name="saldolock_info_text">Tidak bisa tarik Saldo Penghasilan karena belum lunasi tagihan Modal Toko. Bantuan? Klik di sini</string>
-    <string name="saldo_withdraw_tnc_original">Dengan klik tombol di bawah, kamu telah setuju dengan</string>
-    <string name="saldo_withdraw_tnc_clickable">ketentuan penarikan saldo.</string>
-    <string name="saldo_withdraw_tnc_title">Ketentuan penarikan saldo</string>
-    <string name="saldo_exceeding_withdraw_balance">Nominal melebihi saldo milikmu</string>
+    <string name="swd_tnc_clickable_text">ketentuan penarikan saldo.</string>
+    <string name="swd_tnc_title">Ketentuan penarikan saldo</string>
+    <string name="swd_saldo_exceeding_withdraw_balance">Nominal melebihi saldo milikmu</string>
     <string name="swd_continue_pull">Lanjut Tarik</string>
     <string name="swd_back">Kembali</string>
-    <string name="max_saldo_withdraw_hint">Maks. penarikan saldo %s</string>
-    <string name="min_saldo_withdraw_hint">Min. penarikan %s</string>
+    <string name="swd_max_saldo_withdraw_hint">Maks. penarikan saldo %s</string>
+    <string name="swd_min_saldo_withdraw_hint">Min. penarikan %s</string>
 
-    <string name="withdraw_with_more">Tarik saldo makin untung</string>
-    <string name="account_in_progress">%s (Dalam Proses)</string>
-    <string name="active_bri_Account">%s (<b>Aktif</b>)</string>
-    <string name="active_bri_Account_point">Bank %1$s (Points: <b>%2$d</b>)</string>
-    <string name="bri_cek">cek</string>
     <string name="swd_label_new">BARU</string>
     <string name="swd_bank_added_success">Rekening tujuan berhasil ditambahkan</string>
 
-    <string name="backto_saldo_dtl">Kembali Ke Detail Saldo</string>
-    <string name="backto_shop">Belanja di Tokopedia</string>
-    <string name="ttl_total">Total Penarikan</string>
-    <string name="dstn_actn">Rekening Tujuan</string>
-    <string name="ttl_withdraw_dtl">Detail penarikan saldo</string>
-    <string name="withdrawal_being_processed">Penarikanmu sedang diproses, harap tunggu maks. 1x24 jam di hari kerja</string>
-    <string name="noincome_to_withdraw">Kamu tidak punya Saldo Penghasilan untuk ditarik</string>
-    <string name="sucs_pg_ttl">Penarikan Diproses</string>
+    <string name="swd_back_to_saldo_detail">Kembali Ke Detail Saldo</string>
+    <string name="swd_backto_shop">Belanja di Tokopedia</string>
+    <string name="swd_ttl_total">Total Penarikan</string>
+    <string name="swd_destination_account">Rekening Tujuan</string>
+    <string name="swd_ttl_withdraw_dtl">Detail penarikan saldo</string>
+    <string name="swd_withdrawal_being_processed">Penarikanmu sedang diproses</string>
 
-
+    <string name="swd_success_page_title">Penarikan Diproses</string>
     <string name="swd_admin_fee">Dikenai biaya admin %s</string>
 
     <string name="swd_program_tarik_saldo">Program Tarik Saldo</string>
@@ -121,8 +57,60 @@
     <string name="swd_rekening_premium_description">Saldo hanya bisa ditarik ke bank tertentu, sesuai Rekening Premium yang kamu ikuti.</string>
 
     <string name="swd_refund_empty_msg">Kamu tidak punya Saldo Refund untuk ditarik</string>
-    <string name="admin_fee_msg">Dikenai biaya admin %s</string>
+    <string name="swd_admin_fee_msg">Dikenai biaya admin %s</string>
     <string name="swd_penghasilan_empty_msg">Kamu tidak punya Saldo Penghasilan untuk ditarik</string>
-    <string name="swd_earn_point_on_withdraw">Dapatkan poin setiap penarikan</string>
+    <string name="swd_account_number_name">"%1$s • %2$s"</string>
+    <string name="swd_special_offer">Penawaran Khusus</string>
+    <string name="swd_join_premium_account_icon_title">Gabung ke rekening premium</string>
+    <string name="swd_join_premium_account_icon_description">Temukan akun bank bertanda ini untuk tarik saldo sekaligus gabung ke rekening premium. Eksklusif untuk Power Merchant.</string>
+    <string name="swd_premium_account_info_title">Tarik saldo lebih untung dengan Rekening Premium</string>
+    <string name="swd_premium_account_info_line_one">Khusus Power Merchant</string>
+    <string name="swd_premium_account_info_line_Two">Kumpulkan poin tiap tarik saldo di Tokopedia dan dapatkan hadiahnya.</string>
+    <string name="swd_premium_account_info_line_Three">Gabung program Rekening Premium GRATIS dan tanpa syarat apa pun.</string>
+    <string name="swd_more_info">Info Selengkapnya</string>
+    <string name="swd_join_premium_account">Gabung Rekening Premium</string>
+    <string name="swd_can_withdraw_to_premium_account">Kamu hanya bisa tarik saldo ke Rekening Premium</string>
+    <string name="swd_deactivated_account_description">Jika ingin tarik saldo ke bank lain, kamu harus keluar dari program Rekening Premium dulu.</string>
+    <string name="swd_check_premium_account">Cek Rekening Premium</string>
+    <string name="swd_come_on_join_rp">Gabung Rekening Premium Yuk</string>
+    <string name="swd_come_on_join_rp_description">Upgrade ke Rekening Premium untuk dapat keuntungan tiap tarik saldo.</string>
+    <string name="swd_try_now">Coba Sekarang</string>
+    <string name="swd_withdrawal_process_time">Harap tunggu maks. 1x24 jam di hari kerja</string>
 
+    <string name="swd_lock_tickerTitle">Saldo Penghasilan tidak bisa ditarik</string>
+    <string name="swd_lock_tickerDescription">Karena belum membayar tagihan pinjaman Modal Toko selama %d hari.</string>
+    <string name="swd_lock_pay_now">Bayar Sekarang</string>
+    <string name="swd_withdrawand_join">Tarik Saldo &amp; Bergabung</string>
+    <string name="swd_withdrawal_only">Tarik Saldo Saja</string>
+    <string name="swd_tnc_rekening_account">Dengan klik \"Gabung\", kamu menyetujui syarat dan ketentuan Rekening Premium %s.</string>
+    <string name="swd_tnc">syarat dan ketentuan</string>
+
+    <string name="swd_ticker_description_html">%1$s &lt;a href="#"&gt;%2$s&lt;/a&gt;</string>
+    <string name="swd_label_cek_rp_from_disable_bank_sheet">%s - ticker : hanya bisa tarik saldo ke rekprem</string>
+    <string name="swd_label_no_ticker">%s -  ticker : tidak ada ticker rekening premium</string>
+
+
+    <string name="swd_automatic_withdrawal">Penarikan otomatis</string>
+    <string name="swd_with_all_balance_according_schedule">Cairkan seluruh saldo sesuai jadwal</string>
+    <string name="swd_withdrawal_schedule">Jadwal Penarikan</string>
+    <string name="swd_awd_terms_and_condition">Dengan klik \"Simpan\", kamu menyetujui Syarat dan Ketentuan tarik saldo otomatis.</string>
+    <string name="swd_awd_terms_and_condition_clickable">Syarat dan Ketentuan</string>
+    <string name="swd_withdrawal_your_balance_according_schedule">Cairkan Saldo Penghasilan ke rekeningmu sesuai jadwal</string>
+    <string name="swd_exclusive_for_premium_acc">Eksklusif khusus Rekening Premium</string>
+    <string name="swd_change">Ubah</string>
+    <string name="swd_info">Info</string>
+    <string name="swd_save">Simpan</string>
+    <string name="swd_auto_wd_user_not_owner">Pengaturan tarik saldo otomatis hanya dapat dilakukan oleh pemilik toko (bukan admin).</string>
+    <string name="swd_auto_wd_select">Pilih</string>
+    <string name="swd_auto_wd_info_title">Info tarik saldo otomatis</string>
+
+    <string name="swd_awd_join_rp_for_autoWD"> &lt;a href="#"&gt;Gabung Rekening Premium&lt;/a&gt; secara gratis untuk menikmati fitur tarik saldo otomatis.</string>
+    <string name="swd_awd_can_withdraw_auto_if_join_rp">Kamu hanya bisa tarik saldo otomatis dengan gabung Rekening Premium.</string>
+    <string name="swd_join_premium_account_free">Gabung Rekening Premium, Gratis</string>
+    <string name="swd_add_bank_account">Tambah Rekening</string>
+    <string name="swd_awd_disable_autowd">Nonaktifkan tarik saldo otomatis?</string>
+    <string name="swd_awd_auto_withdrawal_will_not_work">Saldo Penghasilan tidak akan lagi dicairkan secara otomatis ke rekeningmu.</string>
+    <string name="swd_deactivate">Nonaktifkan</string>
+    <string name="swd_awd_no_saved_account">Belum ada rekening tersimpan.</string>
+    <string name="swd_awd_pilih">Pilih</string>
 </resources>

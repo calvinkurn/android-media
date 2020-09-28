@@ -3,25 +3,16 @@ package com.tokopedia.sellerorder.requestpickup.presentation.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
-import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.sellerorder.common.SomDispatcherProvider
-import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.requestpickup.data.model.SomConfirmReqPickup
 import com.tokopedia.sellerorder.requestpickup.data.model.SomConfirmReqPickupParam
 import com.tokopedia.sellerorder.requestpickup.data.model.SomProcessReqPickup
 import com.tokopedia.sellerorder.requestpickup.data.model.SomProcessReqPickupParam
 import com.tokopedia.sellerorder.requestpickup.domain.SomConfirmReqPickupUseCase
 import com.tokopedia.sellerorder.requestpickup.domain.SomProcessReqPickupUseCase
-import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import com.tokopedia.usecase.coroutines.Result
 import javax.inject.Inject
 
 /**
@@ -39,14 +30,18 @@ class SomConfirmReqPickupViewModel @Inject constructor(dispatcher: SomDispatcher
         get() = _processReqPickupResult
 
     fun loadConfirmRequestPickup(query: String, reqPickupParam: SomConfirmReqPickupParam) {
-        launch {
+        launchCatchError(block = {
             _confirmReqPickupResult.postValue(somConfirmReqPickupUseCase.execute(query, reqPickupParam))
-        }
+        }, onError = {
+            _confirmReqPickupResult.postValue(Fail(it))
+        })
     }
 
     fun processRequestPickup(reqPickupQuery: String, processReqPickupParam: SomProcessReqPickupParam) {
-        launch {
+        launchCatchError(block = {
             _processReqPickupResult.postValue(somProcessReqPickupUseCase.execute(reqPickupQuery, processReqPickupParam))
-        }
+        }, onError = {
+            _processReqPickupResult.postValue(Fail(it))
+        })
     }
 }

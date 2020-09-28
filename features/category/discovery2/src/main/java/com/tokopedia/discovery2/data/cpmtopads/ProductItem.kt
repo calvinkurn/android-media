@@ -20,6 +20,11 @@ data class ProductItem(
         val id: String? = null,
 
         @SerializedName("button_text")
-        var buttonText: String? = ""
+        var buttonText: String? = "",
+
+        // Specifically for Shop TopAds Click URL
+        var shopAdsClickUrl: String? = "",
+
+        var shopAdsViewUrl: String? = ""
 
 )

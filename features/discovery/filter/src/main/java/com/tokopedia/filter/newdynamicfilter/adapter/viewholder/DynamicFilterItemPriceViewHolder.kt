@@ -8,7 +8,7 @@ import android.view.View
 import android.widget.CompoundButton
 import android.widget.TextView
 
-import com.tokopedia.design.text.DecimalRangeInputView
+import com.tokopedia.filter.newdynamicfilter.adapter.viewholder.widget.DecimalRangeInputView
 import com.tokopedia.design.text.RangeInputView
 import com.tokopedia.filter.R
 import com.tokopedia.filter.common.data.Filter

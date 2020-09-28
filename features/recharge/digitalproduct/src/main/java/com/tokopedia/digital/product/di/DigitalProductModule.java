@@ -2,6 +2,7 @@ package com.tokopedia.digital.product.di;
 
 import android.content.Context;
 
+import com.chuckerteam.chucker.api.ChuckerInterceptor;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
@@ -9,6 +10,7 @@ import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.common_digital.common.data.api.DigitalResponseConverter;
 import com.tokopedia.common_digital.common.data.api.DigitalRestApi;
 import com.tokopedia.common_digital.common.di.DigitalRestApiRetrofit;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.digital.common.data.apiservice.DigitalGqlApi;
 import com.tokopedia.digital.common.data.apiservice.DigitalHmacAuthInterceptor;
 import com.tokopedia.digital.common.data.mapper.ProductDigitalMapper;
@@ -65,6 +67,12 @@ public class DigitalProductModule {
     IUssdCheckBalanceRepository provideUssdCheckBalanceRepository(DigitalRestApi digitalRestApi,
                                                                   USSDMapper ussdMapper) {
         return new UssdCheckBalanceRepository(digitalRestApi, ussdMapper);
+    }
+
+    @Provides
+    @DigitalProductScope
+    ChuckerInterceptor provideChuckInterceptor(@ApplicationContext Context context) {
+        return new ChuckerInterceptor(context);
     }
 
     @Provides
@@ -130,15 +138,19 @@ public class DigitalProductModule {
                                      FingerprintInterceptor fingerprintInterceptor,
                                      HttpLoggingInterceptor httpLoggingInterceptor,
                                      OkHttpRetryPolicy okHttpRetryPolicy,
-                                     Gson gson) {
+                                     ChuckerInterceptor chuckInterceptor) {
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
-        return builder.addInterceptor(fingerprintInterceptor)
+        builder.addInterceptor(fingerprintInterceptor)
                 .addInterceptor(digitalHmacAuthInterceptor)
-                .addInterceptor(httpLoggingInterceptor)
                 .readTimeout(okHttpRetryPolicy.readTimeout, TimeUnit.SECONDS)
                 .writeTimeout(okHttpRetryPolicy.writeTimeout, TimeUnit.SECONDS)
-                .connectTimeout(okHttpRetryPolicy.connectTimeout, TimeUnit.SECONDS)
-                .build();
+                .connectTimeout(okHttpRetryPolicy.connectTimeout, TimeUnit.SECONDS);
+
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            builder.addInterceptor(httpLoggingInterceptor)
+                    .addInterceptor(chuckInterceptor);
+        }
+        return builder.build();
 
     }
 

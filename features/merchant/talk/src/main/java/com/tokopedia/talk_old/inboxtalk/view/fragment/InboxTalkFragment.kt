@@ -22,7 +22,8 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.Menus
-import com.tokopedia.talk.common.constants.TalkConstants.PARAM_PRODUCT_ID
+import com.tokopedia.seller.active.common.service.UpdateShopActiveService
+import com.tokopedia.talk.common.constants.TalkConstants
 import com.tokopedia.talk.common.constants.TalkConstants.PARAM_SHOP_ID
 import com.tokopedia.talk_old.R
 import com.tokopedia.talk_old.common.adapter.TalkProductAttachmentAdapter
@@ -47,10 +48,9 @@ import com.tokopedia.talk_old.inboxtalk.view.viewmodel.InboxTalkViewModel
 import com.tokopedia.talk_old.producttalk.view.viewmodel.TalkState
 import com.tokopedia.talk_old.reporttalk.view.activity.ReportTalkActivity
 import com.tokopedia.talk_old.talkdetails.view.activity.TalkDetailsActivity
-import com.tokopedia.talk_old.talkdetails.view.activity.TalkDetailsActivity.Companion.SOURCE
 import com.tokopedia.talk_old.talkdetails.view.activity.TalkDetailsActivity.Companion.SOURCE_INBOX
 import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonItem
-import kotlinx.android.synthetic.main.fragment_talk_inbox.*
+import kotlinx.android.synthetic.main.fragment_talk_inbox_old.*
 import java.util.*
 import javax.inject.Inject
 
@@ -112,7 +112,7 @@ open class InboxTalkFragment : BaseDaggerFragment(),
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_talk_inbox, container, false)
+        return inflater.inflate(R.layout.fragment_talk_inbox_old, container, false)
     }
 
     override fun onStart() {
@@ -138,6 +138,7 @@ open class InboxTalkFragment : BaseDaggerFragment(),
 
         setupView()
         initData()
+        context?.let { UpdateShopActiveService.startService(it) }
     }
 
     private fun setupView() {
@@ -670,9 +671,8 @@ open class InboxTalkFragment : BaseDaggerFragment(),
                         context,
                         Uri.parse(UriUtil.buildUri(ApplinkConstInternalGlobal.TALK_REPLY, talkId))
                                 .buildUpon()
-                                .appendQueryParameter(PARAM_PRODUCT_ID, productId)
                                 .appendQueryParameter(PARAM_SHOP_ID, shopId)
-                                .appendQueryParameter(SOURCE, SOURCE_INBOX)
+                                .appendQueryParameter(TalkConstants.PARAM_SOURCE, SOURCE_INBOX)
                                 .build().toString()
                 )
                 this@InboxTalkFragment.startActivityForResult(

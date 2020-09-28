@@ -40,17 +40,16 @@ class BrandRecommendationViewHolder(itemView: View, private val fragment: Fragme
         })
 
         brandRecommendationViewModel.getListDataLiveData().observe(fragment.viewLifecycleOwner, Observer { item ->
-            val itemList: ArrayList<ComponentsItem>? = item.filter { !it.data?.get(0)?.imageUrlMobile.isNullOrEmpty() } as ArrayList<ComponentsItem>
-            itemList?.let {
-                discoveryRecycleAdapter.setDataList(it)
-                sendBrandRecommendationImpressionGtm(it[0].data ?: ArrayList())
+            val itemList: List<ComponentsItem> = item.filter { !it.data?.get(0)?.imageUrlMobile.isNullOrEmpty() }
+            if (itemList.isNotEmpty()) {
+                discoveryRecycleAdapter.setDataList(itemList as? ArrayList<ComponentsItem>)
+                sendBrandRecommendationImpressionGtm(itemList[0].data ?: ArrayList())
             }
         })
     }
 
     private fun sendBrandRecommendationImpressionGtm(item: List<DataItem>) {
-        (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackBannerImpression(
-                item)
+        (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackBannerImpression(item, brandRecommendationViewModel.getComponentPosition())
     }
 
     private fun setTitle(title: String) {
