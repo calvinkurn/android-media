@@ -12,8 +12,6 @@ class FeaturedShopAdapter(items: List<Visitable<*>>,
                           typeFactory: CommonCarouselProductCardTypeFactory)
     : BaseAdapter<CommonCarouselProductCardTypeFactory>(typeFactory, items){
 
-    val data: List<Visitable<*>>
-        get() = visitables
 
     override fun onViewRecycled(holder: AbstractViewHolder<out Visitable<*>>) {
         super.onViewRecycled(holder)

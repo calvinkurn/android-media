@@ -41,7 +41,7 @@ class FeaturedShopViewHolder(
     private lateinit var adapter: FeaturedShopAdapter
 
     override fun bind(element: FeaturedShopDataModel) {
-        if(element.channelModel.channelGrids.isEmpty()){
+        if(element.channelModel.channelGrids.size < 2){
             itemView.content_container?.hide()
         } else {
             itemView.content_container?.show()
@@ -58,16 +58,21 @@ class FeaturedShopViewHolder(
         initItems(element)
     }
 
-    private fun initItems(element: FeaturedShopDataModel) {
+    private fun initItems(element: FeaturedShopDataModel)
+    {
+        val listData = mutableListOf<Visitable<*>>()
+        val productDataList = convertDataToProductData(element.channelModel)
+        listData.addAll(productDataList)
+        if (element.channelModel.channelGrids.size > 1 && element.channelModel.channelHeader.applink.isNotEmpty())
+            listData.add(CarouselSeeMorePdpDataModel(element.channelModel.channelHeader.applink, element.channelModel.channelHeader.backImage, this))
+
         if(!this::adapter.isInitialized) {
             val typeFactoryImpl = CommonCarouselProductCardTypeFactoryImpl(element.channelModel)
-            val listData = mutableListOf<Visitable<*>>()
-            val productDataList = convertDataToProductData(element.channelModel)
-            listData.addAll(productDataList)
-            if (element.channelModel.channelGrids.size > 1 && element.channelModel.channelHeader.applink.isNotEmpty())
-                listData.add(CarouselSeeMorePdpDataModel(element.channelModel.channelHeader.applink, element.channelModel.channelHeader.backImage, this))
             adapter = FeaturedShopAdapter(listData, typeFactoryImpl)
             itemView.dc_banner_rv?.adapter = adapter
+        } else {
+            adapter.clearAllElements()
+            adapter.setElement(listData)
         }
     }
 
