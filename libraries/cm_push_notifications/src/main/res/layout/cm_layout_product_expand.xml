@@ -158,9 +158,9 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp_32"
+                    android:layout_height="@dimen/dp_40"
                     android:layout_marginTop="@dimen/dp_8"
-                    android:layout_marginBottom="@dimen/dp_2"
+                    android:paddingBottom="@dimen/dp_4"
                     android:layout_alignParentBottom="true"
                     android:orientation="horizontal">
 
@@ -171,12 +171,8 @@
                         android:layout_height="wrap_content"
                         android:background="@drawable/cm_btn_atc"
                         android:gravity="center"
-                        android:paddingTop="@dimen/dp_8"
                         android:layout_marginEnd="@dimen/dp_8"
-                        android:paddingBottom="@dimen/dp_8"
-                        android:textColor="@color/deep_orange_500"
-                        android:textSize="@dimen/sp_14"
-                        android:textStyle="bold" />
+                        android:textColor="@color/deep_orange_500" />
 
                     <TextView
                         android:id="@+id/btn_text"
@@ -185,8 +181,6 @@
                         android:layout_height="match_parent"
                         android:background="@drawable/cm_background_buy"
                         android:gravity="center"
-                        android:paddingTop="@dimen/dp_8"
-                        android:paddingBottom="@dimen/dp_8"
                         android:textColor="@color/white"
                         android:textSize="@dimen/sp_14"
                         android:textStyle="bold"
