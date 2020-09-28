@@ -7,7 +7,7 @@ package com.tokopedia.media.loader.utils
 * But for the first phase, ECT is giving us enough information regarding the client’s
 * network capabilities. See this article to read the details.
 * */
-const val HEADERS_ECT = "ECT"
+const val HEADER_ECT = "ECT"
 
 /*
 * determine object classification in every network capability segmentation

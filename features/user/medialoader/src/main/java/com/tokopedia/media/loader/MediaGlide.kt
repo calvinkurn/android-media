@@ -1,19 +1,23 @@
 package com.tokopedia.media.loader
 
+import android.content.Context
+import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.widget.ImageView
+import com.bumptech.glide.load.Key
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.tokopedia.media.loader.common.Properties
 import com.tokopedia.media.loader.module.GlideApp
-import com.tokopedia.media.loader.viewtarget.RoundedViewTarget
+import com.tokopedia.media.loader.module.GlideRequest
 
-internal data class MediaGlide(val imageView: ImageView?, val url: Any?) {
+internal class MediaGlide(
+        private val imageView: ImageView?,
+        val url: Any?,
+        private val glide: GlideRequest<Bitmap>? = null
+): Properties() {
 
-    private var isRounded: Boolean = false
     private var radius: Float = 0f
-
-    private val glide = imageView?.context?.let {
-        GlideApp.with(it).asBitmap().load(url)
-    }
 
     fun isAnimate(isAnimate: Boolean) = apply {
         if (!isAnimate) glide?.dontAnimate()
@@ -22,6 +26,10 @@ internal data class MediaGlide(val imageView: ImageView?, val url: Any?) {
     fun isRounded(isRounded: Boolean, radius: Float) = apply {
         this.isRounded = isRounded
         this.radius = radius
+    }
+
+    fun isCircular(isCircular: Boolean) = apply {
+        this.isCircular = isCircular
     }
 
     fun <T> showError(errorRes: T) = apply {
@@ -44,11 +52,30 @@ internal data class MediaGlide(val imageView: ImageView?, val url: Any?) {
         cacheStrategy?.let { glide?.diskCacheStrategy(it) }
     }
 
-    fun build(): MediaGlide {
-        return MediaGlide(imageView, url).apply {
+    fun signature(key: Key?) = apply {
+        key?.let { glide?.signature(it) }
+    }
+
+    private fun scaleType() = apply {
+        when (imageView?.scaleType) {
+            ImageView.ScaleType.FIT_CENTER -> glide?.fitCenter()
+            ImageView.ScaleType.CENTER_CROP -> glide?.centerCrop()
+            ImageView.ScaleType.CENTER_INSIDE -> glide?.centerInside()
+            else -> {}
+        }
+    }
+
+    fun build(context: Context): MediaGlide {
+        val glide = GlideApp.with(context).asBitmap().load(url)
+        return MediaGlide(imageView, url, glide).apply {
+            scaleType()
+
             imageView?.let {
-                if (!isRounded) glide?.into(it)
-                else glide?.into(RoundedViewTarget(imageView, radius))
+                when {
+                    isRounded -> glide.transform(RoundedCorners(roundedRadius.toInt()))
+                    //isCircular -> glide.into(CircularViewTarget(imageView))
+                }
+                glide.into(it)
             }
         }
     }

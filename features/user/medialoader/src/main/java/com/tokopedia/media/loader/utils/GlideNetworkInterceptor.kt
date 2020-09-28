@@ -10,9 +10,9 @@ object GlideNetworkInterceptor {
         val httpClient = OkHttpClient.Builder()
         httpClient.addInterceptor { chain: Interceptor.Chain? ->
             val response = chain?.proceed(chain.request())
-            val header = response?.header(HEADERS_ECT)
+            val header = response?.header(HEADER_ECT)
 
-            Timber.d("Connection-Type (ECT):$header")
+            Timber.d("Connection-Type (ECT): $header")
 
             response
         }

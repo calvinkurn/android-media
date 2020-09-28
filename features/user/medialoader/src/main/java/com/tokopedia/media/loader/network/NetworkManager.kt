@@ -69,9 +69,9 @@ object NetworkManager {
                     TelephonyManager.NETWORK_TYPE_HSPA -> false // ~ 700-1700 kbps
                     TelephonyManager.NETWORK_TYPE_HSUPA -> true // ~ 1-23 Mbps
                     TelephonyManager.NETWORK_TYPE_UMTS -> false // ~ 400-7000 kbps
-                    TelephonyManager.NETWORK_TYPE_EHRPD -> false // ~ 1-2 Mbps
-                    TelephonyManager.NETWORK_TYPE_EVDO_B -> false // ~ 5 Mbps
-                    TelephonyManager.NETWORK_TYPE_HSPAP -> false // ~ 10-20 Mbps
+                    TelephonyManager.NETWORK_TYPE_EHRPD -> true // ~ 1-2 Mbps
+                    TelephonyManager.NETWORK_TYPE_EVDO_B -> true // ~ 5 Mbps
+                    TelephonyManager.NETWORK_TYPE_HSPAP -> true // ~ 10-20 Mbps
                     TelephonyManager.NETWORK_TYPE_IDEN -> false // ~25 kbps
                     TelephonyManager.NETWORK_TYPE_LTE -> true // ~ 10+ Mbps
                     TelephonyManager.NETWORK_TYPE_UNKNOWN -> false
