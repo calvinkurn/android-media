@@ -330,11 +330,10 @@ open class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseA
 
     fun processIncomingMessage(newChat: IncomingChatWebSocketModel) {
         adapter?.let { adapter ->
-            if (adapter.list.size <= 1 && adapter.list[0] is LoadingModel) {
-                return
-            } else if (adapter.list.size == 0) {
-                return
-            } else if (filterChecked == arrayFilterParam.indexOf(PARAM_FILTER_READ)) {
+            if (
+                    (adapter.list.isNotEmpty() && adapter.list[0] is LoadingModel) ||
+                    filterChecked == arrayFilterParam.indexOf(PARAM_FILTER_READ)
+            ) {
                 return
             }
 
@@ -371,11 +370,11 @@ open class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseA
 
     fun processIncomingMessage(newItem: IncomingTypingWebSocketModel) {
         adapter?.let { adapter ->
-            if (adapter.list.size < 1 && adapter.list[0] is LoadingModel) {
-                return
-            } else if (adapter.list.size == 0) {
-                return
-            } else if (filterChecked == arrayFilterParam.indexOf(PARAM_FILTER_READ)) {
+            if (
+                    (adapter.list.isNotEmpty() && adapter.list[0] is LoadingModel) ||
+                    adapter.list.isEmpty() ||
+                    filterChecked == arrayFilterParam.indexOf(PARAM_FILTER_READ)
+            ) {
                 return
             }
 
