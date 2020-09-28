@@ -19,6 +19,7 @@ import com.tokopedia.product.addedit.preview.presentation.activity.AddEditProduc
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.TITLE_ERROR_SAVING_DRAFT
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
+import com.tokopedia.product.addedit.tracking.ProductEditShippingTracking
 import com.tokopedia.product.addedit.variant.presentation.model.VariantInputModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -89,6 +90,10 @@ class AddEditProductEditService : AddEditProductBaseService() {
         editProduct(uploadIdList, variantInputModel)
     }
 
+    override fun onUploadProductImagesFailed(errorMessage: String) {
+        ProductEditShippingTracking.uploadImageFailed(userSession.shopId, errorMessage)
+    }
+
     override fun getNotificationManager(urlImageCount: Int): AddEditProductNotificationManager {
         val manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         return object : AddEditProductNotificationManager(urlImageCount, manager,
@@ -128,10 +133,12 @@ class AddEditProductEditService : AddEditProductBaseService() {
             // (4)
             clearProductDraft()
             setUploadProductDataSuccess()
+            ProductEditShippingTracking.clickFinish(shopId, true)
         }, onError = { throwable ->
             setUploadProductDataError(getErrorMessage(throwable))
 
             logError(productEditUseCase.params, throwable)
+            ProductEditShippingTracking.clickFinish(shopId, false, throwable.message ?: "")
         })
     }
 

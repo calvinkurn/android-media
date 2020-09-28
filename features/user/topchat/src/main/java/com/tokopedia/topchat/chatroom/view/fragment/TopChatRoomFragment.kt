@@ -7,10 +7,12 @@ import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
+import android.widget.ImageView
 import androidx.annotation.StringRes
 import androidx.collection.ArrayMap
 import androidx.fragment.app.FragmentActivity
@@ -18,6 +20,8 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.github.rubensousa.bottomsheetbuilder.BottomSheetBuilder
 import com.github.rubensousa.bottomsheetbuilder.custom.CheckedBottomSheetBuilder
 import com.google.android.material.snackbar.Snackbar
@@ -96,6 +100,7 @@ import com.tokopedia.topchat.common.analytics.ChatSettingsAnalytics
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
 import com.tokopedia.topchat.common.custom.ToolTipStickerPopupWindow
 import com.tokopedia.topchat.common.util.Utils
+import com.tokopedia.topchat.common.util.ViewUtil
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
 import com.tokopedia.unifyprinciples.Typography
@@ -163,6 +168,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
     private var fbNewUnreadMessage: FloatingButtonUnify? = null
     private var tvTotalUnreadMessage: Typography? = null
     private var rv: RecyclerView? = null
+    private var chatBackground: ImageView? = null
 
     override fun getRecyclerViewResourceId() = R.id.recycler_view
     override fun getAnalytic(): TopChatAnalytics = analytics
@@ -179,7 +185,29 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
             bindView(it)
             initStickerView()
             initFbNewUnreadMessage()
+            initTextComposeBackground()
         }
+    }
+
+    private fun initTextComposeBackground() {
+        val bgComposeArea = ViewUtil.generateBackgroundWithShadow(
+                composeArea,
+                com.tokopedia.unifyprinciples.R.color.Neutral_N0,
+                R.dimen.dp_topchat_20,
+                R.dimen.dp_topchat_20,
+                R.dimen.dp_topchat_20,
+                R.dimen.dp_topchat_20,
+                R.color.topchat_message_shadow,
+                R.dimen.dp_topchat_2,
+                R.dimen.dp_topchat_1,
+                Gravity.CENTER
+        )
+        val paddingStart = resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl7).toInt()
+        val paddingEnd = resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl8).toInt()
+        val paddingTop = resources.getDimension(R.dimen.dp_topchat_11).toInt()
+        val paddingBottom = resources.getDimension(R.dimen.dp_topchat_10).toInt()
+        composeArea?.background = bgComposeArea
+        composeArea?.setPadding(paddingStart, paddingTop, paddingEnd, paddingBottom)
     }
 
     private fun initFbNewUnreadMessage() {
@@ -196,6 +224,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
         chatMenu = view?.findViewById(R.id.fl_chat_menu)
         rv = view?.findViewById(recyclerViewResourceId)
         fbNewUnreadMessage = view?.findViewById(R.id.fb_new_unread_message)
+        chatBackground = view?.findViewById(R.id.iv_bg_chat)
     }
 
     private fun initStickerView() {
@@ -204,6 +233,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupBackground()
         setupPresenter(savedInstanceState)
         setupArguments(savedInstanceState)
         setupAttachmentsPreview(savedInstanceState)
@@ -212,6 +242,10 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
         setupBeforeReplyTime()
         loadInitialData()
         initLoadMoreListener()
+    }
+
+    private fun setupBackground() {
+        presenter.getBackground()
     }
 
     override fun onClickOccFromProductAttachment(product: ProductAttachmentViewModel, position: Int) {
@@ -671,8 +705,20 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
         }
     }
 
-    override fun removeBroadcastHandler() {
+    override fun onSendAndReceiveMessage() {
         adapter.removeBroadcastHandler()
+        getViewState().updateTemplateState()
+    }
+
+    override fun renderBackground(url: String) {
+        chatBackground?.let {
+            Glide.with(it.context)
+                    .load(url)
+                    .centerInside()
+                    .dontAnimate()
+                    .diskCacheStrategy(DiskCacheStrategy.DATA)
+                    .into(it)
+        }
     }
 
     private fun getFirstVisibleItemPosition(): Int? {
@@ -732,7 +778,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
             )
         } else {
             sendMessage()
-            removeBroadcastHandler()
+            onSendAndReceiveMessage()
         }
     }
 
@@ -809,7 +855,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
 
     private fun sendSticker(sticker: Sticker?) {
         if (sticker == null) return
-        removeBroadcastHandler()
+        onSendAndReceiveMessage()
         val startTime = SendableViewModel.generateStartTime()
         presenter.sendAttachmentsAndSticker(
                 messageId,
@@ -863,7 +909,9 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
     }
 
     override fun onSuccessGetTemplate(list: List<Visitable<Any>>) {
-        getViewState().setTemplate(list)
+        val isLastMessageBroadcast = adapter.isLastMessageBroadcast()
+        val amIBuyer = !isSeller()
+        getViewState().setTemplate(list, isLastMessageBroadcast, amIBuyer)
     }
 
     override fun onErrorGetTemplate() {
@@ -909,6 +957,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
         processImagePathToUpload(data)?.let { model ->
             remoteConfig?.getBoolean(RemoteConfigKey.TOPCHAT_COMPRESS).let {
                 if (it == null || it == false) {
+                    onSendAndReceiveMessage()
                     presenter.startUploadImages(model)
                 } else {
                     presenter.startCompressImages(model)
