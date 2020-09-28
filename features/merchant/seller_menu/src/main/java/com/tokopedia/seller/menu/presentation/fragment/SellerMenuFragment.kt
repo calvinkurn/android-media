@@ -198,7 +198,7 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
             }
             is SettingError -> {
                 if (canShowErrorToaster) {
-                    view?.showToasterError(resources.getString(R.string.setting_toaster_error_message))
+                    view?.showToasterError(resources.getString(com.tokopedia.seller.menu.common.R.string.setting_toaster_error_message))
                 }
                 adapter.showShopInfoError()
             }
@@ -230,7 +230,7 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
             errorMessage,
             Snackbar.LENGTH_LONG,
             Toaster.TYPE_ERROR,
-            resources.getString(R.string.setting_toaster_error_retry),
+            resources.getString(com.tokopedia.seller.menu.common.R.string.setting_toaster_error_retry),
             View.OnClickListener {
                 retryFetchAfterError()
             })

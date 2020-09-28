@@ -10,7 +10,7 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.AdapterList
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.CommonViewHolderListener
 import com.tokopedia.topchat.common.util.ViewUtil
 
-open class LeftChatMessageViewHolder(
+class LeftChatMessageViewHolder(
         itemView: View?,
         listener: ChatLinkHandlerListener,
         private val commonListener: CommonViewHolderListener,
@@ -18,7 +18,7 @@ open class LeftChatMessageViewHolder(
 ) : ChatMessageViewHolder(itemView, listener, adapterListener) {
 
     private val bg = ViewUtil.generateBackgroundWithShadow(
-            itemView,
+            fxChat,
             com.tokopedia.unifyprinciples.R.color.Neutral_N0,
             R.dimen.dp_topchat_0,
             R.dimen.dp_topchat_20,
