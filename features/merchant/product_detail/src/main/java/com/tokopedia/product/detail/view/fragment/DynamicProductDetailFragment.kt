@@ -103,6 +103,7 @@ import com.tokopedia.product.detail.view.bottomsheet.OvoFlashDealsBottomSheet
 import com.tokopedia.product.detail.view.bottomsheet.ShopStatusInfoBottomSheet
 import com.tokopedia.product.detail.view.fragment.partialview.PartialButtonActionView
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
+import com.tokopedia.product.detail.view.listener.PartialButtonActionListener
 import com.tokopedia.product.detail.view.util.*
 import com.tokopedia.product.detail.view.viewmodel.DynamicProductDetailViewModel
 import com.tokopedia.product.detail.view.widget.*
@@ -149,7 +150,7 @@ import javax.inject.Inject
  * Top separator : All of the view holder except above
  */
 
-class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, DynamicProductDetailAdapterFactoryImpl>(), DynamicProductDetailListener, ProductVariantListener, ProductAccessRequestDialogFragment.Listener {
+class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, DynamicProductDetailAdapterFactoryImpl>(), DynamicProductDetailListener, ProductVariantListener, ProductAccessRequestDialogFragment.Listener, PartialButtonActionListener {
 
     companion object {
         fun newInstance(productId: String? = null,
@@ -526,35 +527,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     override fun getLifecycleFragment(): Lifecycle {
         return lifecycle
-    }
-
-    private val onViewClickListener = View.OnClickListener {
-        when (it.id) {
-            R.id.btn_topchat -> {
-                DynamicProductDetailTracking.Click.eventButtonChatClicked(viewModel.getDynamicProductInfoP1)
-                onShopChatClicked()
-            }
-            R.id.btn_apply_leasing -> doAtc(ProductDetailConstant.LEASING_BUTTON)
-            R.id.btn_edit_product -> {
-                val shopInfo = viewModel.getShopInfo()
-                val productInfo = viewModel.getDynamicProductInfoP1
-                if (shopInfo.isShopInfoNotEmpty() && shopInfo.isAllowManage == 1) {
-                    if (productInfo?.basic?.status != ProductStatusTypeDef.PENDING) {
-                        DynamicProductDetailTracking.Click.eventEditProductClick(viewModel.isUserSessionActive, viewModel.getDynamicProductInfoP1, ComponentTrackDataModel())
-                        gotoEditProduct()
-                    } else {
-                        activity?.run {
-                            val statusMessage = productInfo.basic.statusMessage(this)
-                            if (statusMessage.isNotEmpty()) {
-                                showToasterWithAction(getString(R.string.product_is_at_status_x, statusMessage), getString(R.string.close), {})
-                            }
-                        }
-                    }
-                }
-            }
-            else -> {
-            }
-        }
     }
 
     override fun gotoDescriptionTab(textDescription: String, componentTrackDataModel: ComponentTrackDataModel) {
@@ -1263,7 +1235,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         if (GlobalConfig.isSellerApp() && !activity?.intent?.data?.getQueryParameter(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME).isNullOrBlank() &&
                 !alreadyPerformSellerMigrationAction && viewModel.isShopOwner()) {
             alreadyPerformSellerMigrationAction = true
-            actionButtonView.rincianTopAdsClick?.invoke()
+            rincianTopAdsClicked()
         }
     }
 
@@ -2212,72 +2184,99 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         ))
     }
 
-    private fun initBtnAction() {
-        if (!::actionButtonView.isInitialized) {
-            actionButtonView = PartialButtonActionView.build(base_btn_action, onViewClickListener)
+    override fun advertiseProductClicked() {
+        val firstAppLink = UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId)
+        val secondAppLink = when (viewModel.p2Login.value?.topAdsGetShopInfo?.category) {
+            TopAdsShopCategoryTypeDef.MANUAL_USER -> {
+                ApplinkConst.SellerApp.TOPADS_CREATE_ADS
+            }
+            TopAdsShopCategoryTypeDef.NO_ADS, TopAdsShopCategoryTypeDef.NO_PRODUCT -> {
+                ApplinkConst.SellerApp.TOPADS_CREATE_ONBOARDING
+            }
+            else -> {
+                ""
+            }
         }
 
-        actionButtonView.rincianTopAdsClick = {
-            if (GlobalConfig.isSellerApp()) {
+        if (GlobalConfig.isSellerApp()) {
+            if (secondAppLink.isEmpty()) {
                 showTopAdsBottomSheet()
             } else {
+                RouteManager.route(context, secondAppLink)
+            }
+        } else {
+            if (secondAppLink.isEmpty()) {
                 goToPdpSellerApp()
-            }
-        }
-
-        actionButtonView.advertiseProductClick = {
-            val firstAppLink = UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId)
-            val secondAppLink = when (viewModel.p2Login.value?.topAdsGetShopInfo?.category) {
-                TopAdsShopCategoryTypeDef.MANUAL_USER -> {
-                    ApplinkConst.SellerApp.TOPADS_CREATE_ADS
-                }
-                TopAdsShopCategoryTypeDef.NO_ADS, TopAdsShopCategoryTypeDef.NO_PRODUCT -> {
-                    ApplinkConst.SellerApp.TOPADS_CREATE_ONBOARDING
-                }
-                else -> {
-                    ""
-                }
-            }
-
-            if (GlobalConfig.isSellerApp()) {
-                if (secondAppLink.isEmpty()) {
-                    showTopAdsBottomSheet()
-                } else {
-                    RouteManager.route(context, secondAppLink)
-                }
             } else {
-                if (secondAppLink.isEmpty()) {
-                    goToPdpSellerApp()
-                } else {
-                    goToSellerMigrationPage(SellerMigrationFeatureName.FEATURE_ADS, arrayListOf(
-                            ApplinkConst.PRODUCT_MANAGE,
-                            firstAppLink,
-                            secondAppLink
-                    ))
+                goToSellerMigrationPage(SellerMigrationFeatureName.FEATURE_ADS, arrayListOf(
+                        ApplinkConst.PRODUCT_MANAGE,
+                        firstAppLink,
+                        secondAppLink
+                ))
+            }
+        }
+    }
+
+    override fun rincianTopAdsClicked() {
+        if (GlobalConfig.isSellerApp()) {
+            showTopAdsBottomSheet()
+        } else {
+            goToPdpSellerApp()
+        }
+    }
+
+    override fun addToCartClick(buttonText: String) {
+        viewModel.buttonActionText = buttonText
+        viewModel.getDynamicProductInfoP1?.let {
+            doAtc(ProductDetailConstant.ATC_BUTTON)
+        }
+    }
+
+    override fun buyNowClick(buttonText: String) {
+        viewModel.buttonActionText = buttonText
+        // buy now / buy / preorder
+        viewModel.getDynamicProductInfoP1?.let {
+            doAtc(ProductDetailConstant.BUY_BUTTON)
+        }
+    }
+
+    override fun buttonCartTypeClick(cartType: String, buttonText: String, isAtcButton: Boolean) {
+        viewModel.buttonActionText = buttonText
+        val isLeasing = viewModel.getDynamicProductInfoP1?.basic?.isLeasing ?: false
+        val atcKey = DynamicProductDetailMapper.generateButtonAction(cartType, isAtcButton, isLeasing)
+        doAtc(atcKey)
+    }
+
+    override fun topChatButtonClicked() {
+        DynamicProductDetailTracking.Click.eventButtonChatClicked(viewModel.getDynamicProductInfoP1)
+        onShopChatClicked()
+    }
+
+    override fun leasingButtonClicked() {
+        doAtc(ProductDetailConstant.LEASING_BUTTON)
+    }
+
+    override fun editProductButtonClicked() {
+        val shopInfo = viewModel.getShopInfo()
+        val productInfo = viewModel.getDynamicProductInfoP1
+        if (shopInfo.isShopInfoNotEmpty() && shopInfo.isAllowManage == 1) {
+            if (productInfo?.basic?.status != ProductStatusTypeDef.PENDING) {
+                DynamicProductDetailTracking.Click.eventEditProductClick(viewModel.isUserSessionActive, viewModel.getDynamicProductInfoP1, ComponentTrackDataModel())
+                gotoEditProduct()
+            } else {
+                activity?.run {
+                    val statusMessage = productInfo.basic.statusMessage(this)
+                    if (statusMessage.isNotEmpty()) {
+                        showToasterWithAction(getString(R.string.product_is_at_status_x, statusMessage), getString(R.string.close), {})
+                    }
                 }
             }
         }
+    }
 
-        actionButtonView.addToCartClick = {
-            viewModel.buttonActionText = it
-            viewModel.getDynamicProductInfoP1?.let {
-                doAtc(ProductDetailConstant.ATC_BUTTON)
-            }
-        }
-
-        actionButtonView.buyNowClick = {
-            viewModel.buttonActionText = it
-            // buy now / buy / preorder
-            viewModel.getDynamicProductInfoP1?.let {
-                doAtc(ProductDetailConstant.BUY_BUTTON)
-            }
-        }
-
-        actionButtonView.buttonCartTypeClick = { cartType, buttonText, isAtcButton ->
-            viewModel.buttonActionText = buttonText
-            val isLeasing = viewModel.getDynamicProductInfoP1?.basic?.isLeasing ?: false
-            val atcKey = DynamicProductDetailMapper.generateButtonAction(cartType, isAtcButton, isLeasing)
-            doAtc(atcKey)
+    private fun initBtnAction() {
+        if (!::actionButtonView.isInitialized) {
+            actionButtonView = PartialButtonActionView.build(base_btn_action, this)
         }
     }
 
