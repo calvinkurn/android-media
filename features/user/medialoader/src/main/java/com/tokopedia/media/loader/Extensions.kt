@@ -20,7 +20,7 @@ fun ImageView.loadImageCircle(url: String) = call(url, Properties())
 inline fun ImageView.loadImage(url: String, properties: Properties.() -> Unit) = call(url, Properties().apply(properties))
 
 inline fun ImageView.loadImageRounded(
-        url: String,
+        url: String?,
         rounded: Float = DEFAULT_ROUNDED,
         configuration: Properties.() -> Unit = {
             Properties().apply {
@@ -31,7 +31,7 @@ inline fun ImageView.loadImageRounded(
 }
 
 @PublishedApi
-internal fun ImageView.call(url: String, properties: Properties) {
+internal fun ImageView.call(url: String?, properties: Properties) {
     builder(UrlBuilder.urlBuilder(context, url), properties)
 }
 
