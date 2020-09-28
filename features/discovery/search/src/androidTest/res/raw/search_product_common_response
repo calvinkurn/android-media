@@ -467,6 +467,7 @@
       "quick_filter": {
         "filter": [
           {
+            "title": "COD",
             "options": [
               {
                 "name": "COD",
@@ -484,6 +485,7 @@
             ]
           },
           {
+            "title": "Gratis Ongkir",
             "options": [
               {
                 "name": "Gratis Ongkir",
@@ -501,6 +503,7 @@
             ]
           },
           {
+            "title": "Official Store",
             "options": [
               {
                 "name": "Official Store",
@@ -518,6 +521,7 @@
             ]
           },
           {
+            "title": "Tukar Tambah",
             "options": [
               {
                 "name": "Tukar Tambah",
@@ -535,6 +539,7 @@
             ]
           },
           {
+            "title": "Kurir Instan",
             "options": [
               {
                 "name": "Kurir Instan",
@@ -552,6 +557,7 @@
             ]
           },
           {
+            "title": "Dilayani Tokopedia",
             "options": [
               {
                 "name": "Dilayani Tokopedia",
@@ -569,6 +575,7 @@
             ]
           },
           {
+            "title": "Power Merchant",
             "options": [
               {
                 "name": "Power Merchant",
