@@ -170,6 +170,8 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
 
     private var shouldEnableMultiEdit: Boolean = false
     private var shouldAddAsFeatured: Boolean = false
+    private var extraCacheManagerId: String = ""
+    private var sellerMigrationFeatureName: String = ""
     private var sellerFeatureCarouselClickListener: SellerFeatureCarousel.SellerFeatureClickListener = object: SellerFeatureCarousel.SellerFeatureClickListener {
         override fun onSellerFeatureClicked(item: SellerFeatureUiModel) {
             when (item) {
@@ -193,6 +195,8 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         activity?.intent?.data?.run {
             shouldEnableMultiEdit = this.getBooleanQueryParameter(DeepLinkMapperProductManage.QUERY_PARAM_ENABLE_MULTI_EDIT, false)
             shouldAddAsFeatured = this.getBooleanQueryParameter(DeepLinkMapperProductManage.QUERY_PARAM_ADD_AS_FEATURED, false)
+            extraCacheManagerId = this.getQueryParameter(ApplinkConstInternalMarketplace.ARGS_CACHE_MANAGER_ID).orEmpty()
+            sellerMigrationFeatureName = this.getQueryParameter(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME).orEmpty()
         }
         setHasOptionsMenu(true)
     }
@@ -397,15 +401,22 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     }
 
     private fun goToSellerAppProductManageThenSetCashback(product: ProductViewModel) {
+        val cacheManagerId = UUID.randomUUID().toString()
+        val firstAppLink = Uri.parse(ApplinkConst.PRODUCT_MANAGE)
+                .buildUpon()
+                .appendQueryParameter(ApplinkConstInternalMarketplace.ARGS_CACHE_MANAGER_ID, cacheManagerId)
+                .build()
+                .toString()
         val secondAppLink = Uri.parse(UriUtil.buildUri(ApplinkConstInternalMarketplace.SET_CASHBACK, product.id))
                 .buildUpon()
                 .appendQueryParameter(SET_CASHBACK_PRODUCT_NAME, product.title)
                 .appendQueryParameter(PARAM_SET_CASHBACK_VALUE, product.cashBack.toString())
                 .appendQueryParameter(PARAM_SET_CASHBACK_PRODUCT_PRICE, product.minPrice?.price.toIntOrZero().toString())
                 .appendQueryParameter(EXTRA_CASHBACK_SHOP_ID, userSession.shopId)
+                .appendQueryParameter(ApplinkConstInternalMarketplace.ARGS_CACHE_MANAGER_ID, cacheManagerId)
                 .build()
                 .toString()
-        goToSellerMigrationPage(SellerMigrationFeatureName.FEATURE_SET_CASHBACK, arrayListOf(ApplinkConst.PRODUCT_MANAGE, secondAppLink))
+        goToSellerMigrationPage(SellerMigrationFeatureName.FEATURE_SET_CASHBACK, arrayListOf(firstAppLink, secondAppLink))
     }
 
     private fun goToSellerAppProductManageThenAddAsFeatured(product: ProductViewModel) {
@@ -421,8 +432,15 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     }
 
     private fun goToSellerAppSetStockReminder(product: ProductViewModel) {
+        val cacheManagerId = UUID.randomUUID().toString()
+        val firstAppLink = Uri.parse(ApplinkConst.PRODUCT_MANAGE)
+                .buildUpon()
+                .appendQueryParameter(ApplinkConstInternalMarketplace.ARGS_CACHE_MANAGER_ID, cacheManagerId)
+                .build()
+                .toString()
         val secondAppLink = UriUtil.buildUri(ApplinkConstInternalMarketplace.STOCK_REMINDER, product.id, product.title, product.stock.toString())
-        goToSellerMigrationPage(SellerMigrationFeatureName.FEATURE_STOCK_REMINDER, arrayListOf(ApplinkConst.PRODUCT_MANAGE, secondAppLink))
+                .plus("?${ApplinkConstInternalMarketplace.ARGS_CACHE_MANAGER_ID}=$cacheManagerId")
+        goToSellerMigrationPage(SellerMigrationFeatureName.FEATURE_STOCK_REMINDER, arrayListOf(firstAppLink, secondAppLink))
     }
 
     private fun goToSellerAppAddProduct() {
@@ -653,6 +671,16 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         renderList(list, hasNextPage)
         renderCheckedView()
         showAddAsFeaturedProduct()
+        if (!extraCacheManagerId.isBlank()) {
+            if (sellerMigrationFeatureName == SellerMigrationFeatureName.FEATURE_SET_CASHBACK) {
+                onSetCashbackResult(extraCacheManagerId)
+            } else if (sellerMigrationFeatureName == SellerMigrationFeatureName.FEATURE_STOCK_REMINDER) {
+                val cacheManager = context?.let { context -> SaveInstanceCacheManager(context, extraCacheManagerId) }
+                val productName: String = cacheManager?.getString(EXTRA_PRODUCT_NAME).orEmpty()
+                val threshold = cacheManager?.get(EXTRA_THRESHOLD, Int::class.java) ?: 0
+                onSetStockReminderResult(threshold, productName)
+            }
+        }
     }
 
     private fun showAddAsFeaturedProduct() {
@@ -1474,26 +1502,13 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
                     viewModel.editProductsEtalase(productIds, etalaseId, etalaseName)
                 }
                 REQUEST_CODE_STOCK_REMINDER -> if(resultCode == Activity.RESULT_OK) {
-                    val productName = it.getStringExtra(EXTRA_PRODUCT_NAME)
+                    val productName = it.getStringExtra(EXTRA_PRODUCT_NAME).orEmpty()
                     val threshold = it.getIntExtra(EXTRA_THRESHOLD, 0)
-                    if(threshold > 0) {
-                        Toaster.make(coordinatorLayout, getString(R.string.product_stock_reminder_toaster_success_desc, productName), Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL)
-                    }
-                    else {
-                        Toaster.make(coordinatorLayout, getString(R.string.product_stock_reminder_toaster_success_remove_desc, productName), Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL)
-                    }
+                    onSetStockReminderResult(threshold, productName)
                 }
                 SET_CASHBACK_REQUEST_CODE -> if(resultCode == Activity.RESULT_OK) {
                     val cacheManagerId = it.getStringExtra(SET_CASHBACK_CACHE_MANAGER_KEY)
-                    val cacheManager = context?.let { context -> SaveInstanceCacheManager(context, cacheManagerId) }
-                    val setCashbackResult: SetCashbackResult? = cacheManager?.get(SET_CASHBACK_RESULT, SetCashbackResult::class.java)
-                    setCashbackResult?.let { cashbackResult ->
-                        if(cashbackResult.limitExceeded) {
-                            onSetCashbackLimitExceeded()
-                        } else {
-                            onSuccessSetCashback(cashbackResult)
-                        }
-                    }
+                    onSetCashbackResult(cacheManagerId)
                 }
                 REQUEST_CODE_CAMPAIGN_STOCK ->
                     when(resultCode) {
@@ -1533,6 +1548,29 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
                     }
                 else -> super.onActivityResult(requestCode, resultCode, it)
             }
+        }
+    }
+
+    @Suppress("NAME_SHADOWING")
+    private fun onSetCashbackResult(cacheManagerId: String?) {
+        cacheManagerId?.let { cacheManagerId ->
+            val cacheManager = context?.let { context -> SaveInstanceCacheManager(context, cacheManagerId) }
+            val setCashbackResult: SetCashbackResult? = cacheManager?.get(SET_CASHBACK_RESULT, SetCashbackResult::class.java)
+            setCashbackResult?.let { cashbackResult ->
+                if(cashbackResult.limitExceeded) {
+                    onSetCashbackLimitExceeded()
+                } else {
+                    onSuccessSetCashback(cashbackResult)
+                }
+            }
+        }
+    }
+
+    private fun onSetStockReminderResult(threshold: Int, productName: String) {
+        if(threshold > 0) {
+            Toaster.make(coordinatorLayout, getString(R.string.product_stock_reminder_toaster_success_desc, productName), Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL)
+        } else {
+            Toaster.make(coordinatorLayout, getString(R.string.product_stock_reminder_toaster_success_remove_desc, productName), Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL)
         }
     }
 

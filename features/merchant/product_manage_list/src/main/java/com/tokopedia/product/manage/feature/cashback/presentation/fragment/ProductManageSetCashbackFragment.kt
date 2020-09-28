@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.kotlin.extensions.view.observe
@@ -217,7 +218,12 @@ class ProductManageSetCashbackFragment : Fragment(), SelectClickListener,
         observe(viewModel.setCashbackResult) {
             when (it) {
                 is Success -> {
-                    val cacheManager = context?.let { context -> SaveInstanceCacheManager(context, true) }
+                    val extraCacheManagerId = activity?.intent?.data?.getQueryParameter(ApplinkConstInternalMarketplace.ARGS_CACHE_MANAGER_ID).orEmpty()
+                    val cacheManager = if (extraCacheManagerId.isNotBlank()) {
+                        context?.let { context -> SaveInstanceCacheManager(context, extraCacheManagerId) }
+                    } else {
+                        context?.let { context -> SaveInstanceCacheManager(context, true) }
+                    }
                     cacheManager?.let { manager ->
                         val cacheManagerId = manager.id
                         manager.put(SET_CASHBACK_RESULT, it.data)

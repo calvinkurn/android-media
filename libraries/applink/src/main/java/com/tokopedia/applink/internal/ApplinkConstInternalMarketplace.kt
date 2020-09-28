@@ -329,4 +329,7 @@ object ApplinkConstInternalMarketplace {
 
     @JvmField
     val ARGS_LAYOUT_ID = "layoutID"
+
+    @JvmField
+    val ARGS_CACHE_MANAGER_ID = "cache_manager_id"
 }
