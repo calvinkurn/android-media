@@ -2,6 +2,7 @@ package com.tokopedia.media.loader
 
 import android.graphics.drawable.Drawable
 import android.widget.ImageView
+import com.bumptech.glide.Glide
 import com.bumptech.glide.load.model.GlideUrl
 import com.tokopedia.media.loader.common.Properties
 import com.tokopedia.media.loader.common.UrlBuilder
@@ -28,6 +29,12 @@ inline fun ImageView.loadImageRounded(
             }
         }) {
     call(url, Properties().apply(configuration))
+}
+
+fun ImageView?.clearImage() {
+    if (this != null) {
+        Glide.with(this.context).clear(this)
+    }
 }
 
 @PublishedApi
