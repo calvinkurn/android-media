@@ -24,13 +24,12 @@ class ImpresionTask {
 
     init {
         try {
-            var startTraceIndex = 4
             var traceElement: StackTraceElement
             var stackTraceElements = Thread.currentThread().stackTrace
-            if (stackTraceElements[startTraceIndex].className.equals(TopAdsUrlHitter::class.qualifiedName)) {
-                traceElement = stackTraceElements[startTraceIndex++]
+            if (stackTraceElements[4].className.equals(TopAdsUrlHitter::class.qualifiedName)) {
+                traceElement = stackTraceElements[5]
             } else {
-                traceElement = stackTraceElements[startTraceIndex]
+                traceElement = stackTraceElements[4]
             }
             fileName = traceElement.fileName
             methodName = traceElement.methodName
