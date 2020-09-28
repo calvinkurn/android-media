@@ -28,7 +28,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
-import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
 import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
 import com.tokopedia.chat_common.util.EndlessRecyclerViewScrollUpListener
 import com.tokopedia.config.GlobalConfig
@@ -104,7 +103,6 @@ open class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseA
     private var chatTabListContract: ChatListContract.TabFragment? = null
     private var mUserSeen = false
     private var mViewCreated = false
-    private var shouldMoveToChatSettings: Boolean = false
 
     private var sightTag = ""
     private var itemPositionLongClicked: Int = -1
@@ -132,26 +130,9 @@ open class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseA
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        shouldMoveToChatSettings = activity?.intent?.getStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA)?.firstOrNull()?.startsWith(ApplinkConstInternalMarketplace.CHAT_SETTING) ?: false
         performanceMonitoring = PerformanceMonitoring.start(getFpmKey())
         sightTag = getParamString(CHAT_TAB_TITLE, arguments, null, "")
         setHasOptionsMenu(true)
-    }
-
-    override fun onStart() {
-        super.onStart()
-        if (shouldMoveToChatSettings) {
-            val appLinks = ArrayList(activity?.intent?.extras?.getStringArrayList(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA).orEmpty())
-            if (appLinks.isNotEmpty()) {
-                shouldMoveToChatSettings = false
-                activity?.intent?.extras?.clear()
-                ChatSettingActivity.getIntent(context, true).apply {
-                    putStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA, appLinks)
-                    addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
-                    startActivity(this)
-                }
-            }
-        }
     }
 
     private fun getFpmKey() = if (GlobalConfig.isSellerApp()) {
