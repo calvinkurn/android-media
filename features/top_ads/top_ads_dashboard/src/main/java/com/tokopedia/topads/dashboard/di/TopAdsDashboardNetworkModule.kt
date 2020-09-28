@@ -5,10 +5,12 @@ import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor
+import com.tokopedia.network.NetworkRouter
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant
 import com.tokopedia.topads.common.data.interceptor.TopAdsAuthInterceptor
 import com.tokopedia.topads.common.data.interceptor.TopAdsResponseError
 import com.tokopedia.topads.common.data.util.CacheApiTKPDResponseValidator
+import com.tokopedia.user.session.UserSession
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
@@ -21,8 +23,9 @@ class TopAdsDashboardNetworkModule {
     @TopAdsDashboardScope
     @Provides
     fun provideTopAdsAuthTempInterceptor(@ApplicationContext context: Context,
-                                         abstractionRouter: AbstractionRouter): TopAdsAuthInterceptor {
-        return TopAdsAuthInterceptor(context, abstractionRouter)
+                                         userSession : UserSession ,
+                                         abstractionRouter : NetworkRouter ): TopAdsAuthInterceptor {
+        return TopAdsAuthInterceptor(context, userSession, abstractionRouter)
     }
 
     @TopAdsDashboardScope
@@ -57,4 +60,11 @@ class TopAdsDashboardNetworkModule {
                         retrofitBuilder: Retrofit.Builder): Retrofit {
         return retrofitBuilder.baseUrl(TopAdsCommonConstant.BASE_DOMAIN_URL).client(okHttpClient).build()
     }
+
+    @TopAdsDashboardQualifier
+    @TopAdsDashboardScope
+    @Provides
+    fun provideUserSession(@ApplicationContext context: Context) = UserSession(context)
+
+
 }
