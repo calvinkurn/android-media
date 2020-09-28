@@ -65,17 +65,9 @@ import com.tokopedia.home.analytics.v2.CategoryWidgetTracking
 import com.tokopedia.home.analytics.v2.LegoBannerTracking
 import com.tokopedia.home.analytics.v2.PopularKeywordTracking
 import com.tokopedia.home.analytics.v2.RecommendationListTracking
-import com.tokopedia.home.beranda.data.datasource.default_data_source.HomeDefaultDataSource
-import com.tokopedia.home.beranda.data.datasource.local.HomeCacheDataConst.HOME_CACHE_DATA_VALUE_KEY
-import com.tokopedia.home.beranda.data.datasource.local.HomeCacheDataConst.SHARED_PREF_HOME_DATA_CACHE_KEY
-import com.tokopedia.home.beranda.data.mapper.HomeDataMapper
-import com.tokopedia.home.beranda.data.mapper.HomeDynamicChannelDataMapper
-import com.tokopedia.home.beranda.data.mapper.factory.HomeDynamicChannelVisitableFactoryImpl
-import com.tokopedia.home.beranda.data.mapper.factory.HomeVisitableFactoryImpl
 import com.tokopedia.home.beranda.di.BerandaComponent
 import com.tokopedia.home.beranda.di.DaggerBerandaComponent
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
-import com.tokopedia.home.beranda.domain.model.HomeData
 import com.tokopedia.home.beranda.domain.model.HomeFlag
 import com.tokopedia.home.beranda.domain.model.SearchPlaceholder
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel
@@ -207,6 +199,7 @@ open class HomeFragment : BaseDaggerFragment(),
         private var HIDE_GEO = false
         private const val SOURCE_ACCOUNT = "account"
         private const val SCROLL_RECOMMEND_LIST = "recommend_list"
+        private const val TRACK_IMPRESSION_ON_LAUNCH = "track_impression_on_launch"
         private const val KEY_IS_LIGHT_THEME_STATUS_BAR = "is_light_theme_status_bar"
         private const val CLICK_TIME_INTERVAL: Long = 500
         private const val DEFAULT_INTERVAL_HINT: Long = 1000 * 10
@@ -221,6 +214,7 @@ open class HomeFragment : BaseDaggerFragment(),
         }
     }
 
+    private var trackImpression: Boolean = true
     override val eggListener: HomeEggListener
         get() = this
     override val childsFragmentManager: FragmentManager
@@ -459,6 +453,7 @@ open class HomeFragment : BaseDaggerFragment(),
         root = view.findViewById(R.id.root)
         if (arguments != null) {
             scrollToRecommendList = arguments!!.getBoolean(SCROLL_RECOMMEND_LIST)
+            trackImpression = arguments!!.getBoolean(TRACK_IMPRESSION_ON_LAUNCH)
         }
         homeSnackbar = Snackbar.make(root, "", Snackbar.LENGTH_SHORT)
         fetchRemoteConfig()
@@ -1500,7 +1495,7 @@ open class HomeFragment : BaseDaggerFragment(),
     }
 
     private fun addImpressionToTrackingQueue(visitables: List<Visitable<*>>) {
-        if (visitables != null) {
+        if (visitables != null && trackImpression) {
             val combinedTracking: MutableList<Any> = ArrayList()
             for (visitable in visitables) {
                 if (visitable is HomeVisitable) {
