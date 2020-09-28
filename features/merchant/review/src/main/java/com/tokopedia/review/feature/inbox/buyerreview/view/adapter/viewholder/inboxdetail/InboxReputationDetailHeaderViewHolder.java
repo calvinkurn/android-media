@@ -224,16 +224,16 @@ public class InboxReputationDetailHeaderViewHolder extends
         } else {
             switch (element.getReputationDataViewModel().getRevieweeScore()) {
                 case NO_REPUTATION:
-                    ImageHandler.loadImageWithIdWithoutPlaceholder(opponentSmiley, R.drawable.ic_smiley_empty);
+                    ImageHandler.loadImageWithIdWithoutPlaceholder(opponentSmiley, R.drawable.review_ic_smiley_empty);
                     break;
                 case SMILEY_BAD:
-                    ImageHandler.loadImageWithIdWithoutPlaceholder(opponentSmiley, R.drawable.ic_smiley_bad);
+                    ImageHandler.loadImageWithIdWithoutPlaceholder(opponentSmiley, R.drawable.review_ic_smiley_bad);
                     break;
                 case SMILEY_NEUTRAL:
                     ImageHandler.loadImageWithIdWithoutPlaceholder(opponentSmiley, R.drawable.ic_smiley_neutral);
                     break;
                 case SMILEY_GOOD:
-                    ImageHandler.loadImageWithIdWithoutPlaceholder(opponentSmiley, R.drawable.ic_smiley_good);
+                    ImageHandler.loadImageWithIdWithoutPlaceholder(opponentSmiley, R.drawable.review_ic_smiley_good);
                     break;
             }
 

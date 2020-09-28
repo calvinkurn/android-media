@@ -118,7 +118,7 @@ public class ReputationAdapter extends RecyclerView.Adapter<ReputationAdapter.Vi
 
     public void showSmileyBad() {
         this.list.clear();
-        this.list.add(new SmileyModel(R.drawable.ic_smiley_bad,
+        this.list.add(new SmileyModel(R.drawable.review_ic_smiley_bad,
                 context.getString(R.string.smiley_bad),
                 SMILEY_BAD));
         this.canGiveReputation = false;
@@ -136,7 +136,7 @@ public class ReputationAdapter extends RecyclerView.Adapter<ReputationAdapter.Vi
 
     public void showSmileyGood() {
         this.list.clear();
-        this.list.add(new SmileyModel(R.drawable.ic_smiley_good,
+        this.list.add(new SmileyModel(R.drawable.review_ic_smiley_good,
                 context.getString(R.string.smiley_good),
                 SMILEY_GOOD));
         this.canGiveReputation = false;
@@ -156,7 +156,7 @@ public class ReputationAdapter extends RecyclerView.Adapter<ReputationAdapter.Vi
 
         if (reviewerScore == InboxReputationDetailHeaderViewHolder.SMILEY_BAD) {
             this.list.clear();
-            this.list.add(new SmileyModel(R.drawable.ic_smiley_bad,
+            this.list.add(new SmileyModel(R.drawable.review_ic_smiley_bad,
                     context.getString(R.string.smiley_bad),
                     SMILEY_BAD,
                     true));

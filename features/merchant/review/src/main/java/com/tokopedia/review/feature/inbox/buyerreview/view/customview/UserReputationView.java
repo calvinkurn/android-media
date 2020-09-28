@@ -88,9 +88,9 @@ public class UserReputationView extends BaseCustomView {
         }
 
         if (noReputation) {
-            imageViewIcon.setImageDrawable(getDrawable(imageViewIcon.getContext(), R.drawable.ic_smiley_empty));
+            imageViewIcon.setImageDrawable(getDrawable(imageViewIcon.getContext(), R.drawable.review_ic_smiley_empty));
         } else {
-            imageViewIcon.setImageDrawable(getDrawable(imageViewIcon.getContext(), R.drawable.ic_smiley_good));
+            imageViewIcon.setImageDrawable(getDrawable(imageViewIcon.getContext(), R.drawable.review_ic_smiley_good));
             if (showTooltip) {
                 setBottomDialog(positiveValue, neutralValue, negativeValue);
             }

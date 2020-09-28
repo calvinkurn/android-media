@@ -46,7 +46,7 @@
             android:maxHeight="@dimen/dp_24"
             android:maxWidth="@dimen/dp_24"
             android:scaleType="fitXY"
-            app:srcCompat="@drawable/ic_smiley_good"/>
+            app:srcCompat="@drawable/review_ic_smiley_good"/>
 
         <TextView
             android:id="@+id/score_good"
@@ -90,7 +90,7 @@
             android:maxHeight="@dimen/dp_24"
             android:maxWidth="@dimen/dp_24"
             android:scaleType="fitXY"
-            app:srcCompat="@drawable/ic_smiley_bad"/>
+            app:srcCompat="@drawable/review_ic_smiley_bad"/>
 
         <TextView
             android:id="@+id/score_bad"

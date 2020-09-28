@@ -20,7 +20,7 @@
         android:layout_width="@dimen/dp_10"
         android:layout_height="@dimen/dp_10"
         android:gravity="center_vertical"
-        app:srcCompat="@drawable/ic_smiley_empty"
+        app:srcCompat="@drawable/review_ic_smiley_empty"
         />
 
     <TextView

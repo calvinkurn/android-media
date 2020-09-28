@@ -273,6 +273,6 @@
             android:layout_toEndOf="@id/opponent_smiley_text"
             android:layout_toRightOf="@id/opponent_smiley_text"
             android:gravity="center_vertical"
-            tools:src="@drawable/ic_smiley_empty"/>
+            tools:src="@drawable/review_ic_smiley_empty"/>
     </RelativeLayout>
 </LinearLayout>
