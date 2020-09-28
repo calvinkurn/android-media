@@ -32,7 +32,8 @@ class TwoFactorCheckerSubscriber: Application.ActivityLifecycleCallbacks {
     private val exceptionPage = listOf(
             "ConsumerSplashScreen", "AddPinActivity", "AddPhoneActivity", "TwoFactorActivity",
             "RegisterFingerprintOnboardingActivity", "VerificationActivity", "PinOnboardingActivity",
-            "LogoutActivity", "LoginActivity","GiftBoxTapTapActivity", "GiftBoxDailyActivity"
+            "LogoutActivity", "LoginActivity","GiftBoxTapTapActivity", "GiftBoxDailyActivity", "RegisterInitialActivity",
+            "RegisterEmailActivity"
     )
 
     override fun onActivityCreated(activity: Activity?, savedInstanceState: Bundle?) {

@@ -1573,6 +1573,10 @@ open class HomeFragment : BaseDaggerFragment(),
         }
     }
 
+    override fun getTopAdsBannerNextPageToken(): String {
+        return getHomeViewModel().currentTopAdsBannerToken
+    }
+
     override fun onDynamicChannelRetryClicked() {
         getHomeViewModel().onDynamicChannelRetryClicked()
     }
