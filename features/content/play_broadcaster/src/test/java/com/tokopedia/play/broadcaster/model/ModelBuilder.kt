@@ -2,10 +2,15 @@ package com.tokopedia.play.broadcaster.model
 
 import com.google.gson.Gson
 import com.tokopedia.play.broadcaster.data.model.ProductData
+import com.tokopedia.play.broadcaster.domain.model.CreateLiveStreamChannelResponse
+import com.tokopedia.play.broadcaster.domain.model.GetLiveFollowersResponse
 import com.tokopedia.play.broadcaster.domain.model.GetProductsByEtalaseResponse
 import com.tokopedia.play.broadcaster.domain.model.LiveStats
 import com.tokopedia.play.broadcaster.type.ProductStock
 import com.tokopedia.play.broadcaster.type.StockAvailable
+import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
+import com.tokopedia.play.broadcaster.view.state.CoverSetupState
+import com.tokopedia.play.broadcaster.view.state.SetupDataState
 import java.io.File
 
 /**
@@ -24,6 +29,14 @@ class ModelBuilder {
 
     fun buildProductsInEtalase(): GetProductsByEtalaseResponse.GetProductListData {
         return gson.fromJson(loadJsonToString("mock_products_in_etalase.json"), GetProductsByEtalaseResponse::class.java).productList
+    }
+
+    fun buildCreateLiveStreamGetMedia(): CreateLiveStreamChannelResponse.GetMedia {
+        return gson.fromJson(loadJsonToString("mock_create_live_stream.json"), CreateLiveStreamChannelResponse::class.java).media
+    }
+
+    fun buildGetLiveFollowers(): GetLiveFollowersResponse {
+        return gson.fromJson(loadJsonToString("mock_get_live_followers.json"), GetLiveFollowersResponse::class.java)
     }
 
     /**
@@ -47,4 +60,14 @@ class ModelBuilder {
         }
         return stringBuilder.toString()
     }
+
+    fun buildPlayCoverUiModel(
+            croppedCover: CoverSetupState = CoverSetupState.Blank,
+            title: String = "",
+            state: SetupDataState = SetupDataState.Draft
+    ) = PlayCoverUiModel(
+            croppedCover = croppedCover,
+            title = title,
+            state = state
+    )
 }

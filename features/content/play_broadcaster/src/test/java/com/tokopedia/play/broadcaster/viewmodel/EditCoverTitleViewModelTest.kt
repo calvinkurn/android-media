@@ -67,9 +67,6 @@ class EditCoverTitleViewModelTest {
         coverDataStore.setIsSuccess(true)
         viewModel.editTitle("abc")
 
-        //Consume loading
-        viewModel.observableUpdateTitle.getOrAwaitValue()
-
         val result = viewModel.observableUpdateTitle.getOrAwaitValue()
 
         Assertions
@@ -81,9 +78,6 @@ class EditCoverTitleViewModelTest {
     fun `when edit title is failed, then it should return failed`() {
         coverDataStore.setIsSuccess(false)
         viewModel.editTitle("abc")
-
-        //Consume loading
-        viewModel.observableUpdateTitle.getOrAwaitValue()
 
         val result = viewModel.observableUpdateTitle.getOrAwaitValue()
 

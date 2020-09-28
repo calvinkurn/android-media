@@ -56,9 +56,6 @@ class PlayBroadcastSummaryViewModelTest {
 
         viewModel.fetchLiveTraffic()
 
-        //Consume loading
-        viewModel.observableTrafficMetrics.getOrAwaitValue()
-
         val result = viewModel.observableTrafficMetrics.getOrAwaitValue()
 
         Assertions
@@ -75,9 +72,6 @@ class PlayBroadcastSummaryViewModelTest {
         coEvery { liveStatisticsUseCase.executeOnBackground() } throws Throwable()
 
         viewModel.fetchLiveTraffic()
-
-        //Consume loading
-        viewModel.observableTrafficMetrics.getOrAwaitValue()
 
         val result = viewModel.observableTrafficMetrics.getOrAwaitValue()
 

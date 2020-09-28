@@ -122,9 +122,6 @@ class PlayEditProductViewModelTest {
         productDataStore.setUploadSuccess(true)
         viewModel.uploadProduct()
 
-        //consume loading
-        viewModel.observableUploadProductEvent.getOrAwaitValue()
-
         val result = viewModel.observableUploadProductEvent.getOrAwaitValue()
 
         Assertions
@@ -136,9 +133,6 @@ class PlayEditProductViewModelTest {
     fun `when upload product failed, then it should return failed`() {
         productDataStore.setUploadSuccess(false)
         viewModel.uploadProduct()
-
-        //consume loading
-        viewModel.observableUploadProductEvent.getOrAwaitValue()
 
         val result = viewModel.observableUploadProductEvent.getOrAwaitValue()
 
