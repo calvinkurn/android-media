@@ -153,7 +153,7 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
 
 
     private fun carouselProductWidth() {
-        if(productCardName == ComponentNames.ProductCardCarouselItem.componentName || productCardName == ComponentNames.ProductCardSprintSaleCarousel.componentName){
+        if(productCardName == ComponentNames.ProductCardCarouselItem.componentName || productCardName == ComponentNames.ProductCardSprintSaleCarouselItem.componentName){
             val displayMetrics = getDisplayMetric(context)
             productCardView.layoutParams.width = (displayMetrics.widthPixels/PRODUCT_CAROUSEL_WIDTH).toInt()
         }
