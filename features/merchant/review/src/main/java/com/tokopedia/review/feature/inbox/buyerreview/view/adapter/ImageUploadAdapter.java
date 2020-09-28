@@ -75,11 +75,11 @@ public class ImageUploadAdapter extends RecyclerView.Adapter<ImageUploadAdapter.
         switch (viewType) {
             case VIEW_REVIEW_IMAGE :
                 viewHolder = new ViewHolder(LayoutInflater.from(viewGroup.getContext())
-                        .inflate(R.layout.listview_image_review_item, viewGroup, false));
+                        .inflate(R.layout.review_listview_image_review_item, viewGroup, false));
                 break;
             default:
                 viewHolder = new ViewHolder(LayoutInflater.from(viewGroup.getContext())
-                        .inflate(R.layout.listview_image_upload_review, viewGroup, false));
+                        .inflate(R.layout.review_listview_image_upload_review, viewGroup, false));
         }
         return viewHolder;
     }
