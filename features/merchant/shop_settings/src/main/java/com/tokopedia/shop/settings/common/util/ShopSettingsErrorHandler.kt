@@ -43,39 +43,38 @@ object ShopSettingsErrorHandler {
     }
 
     fun getErrorMessage(context: Context?, e: Throwable?): String? {
-        return if (context != null && e != null) {
+        return if (e != null) {
             if (e is ResponseV4ErrorException) {
                 e.errorList[0] as String
             } else if (e is UnknownHostException) {
-                context.getString(R.string.error_no_internet_message)
+                context?.getString(R.string.error_no_internet_message)
             } else if (e is SocketTimeoutException) {
-                context.getString(com.tokopedia.network.R.string.default_request_error_timeout)
+                context?.getString(com.tokopedia.network.R.string.default_request_error_timeout)
             } else if (e is RuntimeException && e.getLocalizedMessage() != null && e.getLocalizedMessage() != "" && e.localizedMessage?.length ?: 0 <= 3) {
                 try {
                     e.localizedMessage?.let {
                         when (it.toInt()) {
-                            400 -> context.getString(com.tokopedia.network.R.string.default_request_error_bad_request)
-                            401 -> context.getString(com.tokopedia.network.R.string.msg_expired_session_or_unauthorized)
-                            403 -> context.getString(com.tokopedia.network.R.string.default_request_error_forbidden_auth)
-                            404 -> context.getString(R.string.error_not_found_message)
-                            408, 504 -> context.getString(com.tokopedia.network.R.string.default_request_error_timeout)
-                            429 -> context.getString(R.string.error_full_visitor_message)
-                            500 -> context.getString(R.string.error_internal_server_error_message)
-                            502 -> context.getString(com.tokopedia.network.R.string.default_request_error_bad_request)
-                            503 -> context.getString(R.string.error_under_maintenance_message)
-                            else -> context.getString(com.tokopedia.network.R.string.default_request_error_unknown)
+                            400, 502 -> context?.getString(com.tokopedia.network.R.string.default_request_error_bad_request)
+                            401 -> context?.getString(com.tokopedia.network.R.string.msg_expired_session_or_unauthorized)
+                            403 -> context?.getString(com.tokopedia.network.R.string.default_request_error_forbidden_auth)
+                            404 -> context?.getString(R.string.error_not_found_message)
+                            408, 504 -> context?.getString(com.tokopedia.network.R.string.default_request_error_timeout)
+                            429 -> context?.getString(R.string.error_full_visitor_message)
+                            500 -> context?.getString(R.string.error_internal_server_error_message)
+                            503 -> context?.getString(R.string.error_under_maintenance_message)
+                            else -> context?.getString(com.tokopedia.network.R.string.default_request_error_unknown)
                         }
                     }
                 } catch (var3: NumberFormatException) {
-                    context.getString(com.tokopedia.network.R.string.default_request_error_unknown)
+                    context?.getString(com.tokopedia.network.R.string.default_request_error_unknown)
                 }
             } else if (e is MessageErrorException && !TextUtils.isEmpty(e.message)) {
                 e.message
             } else {
-                if (e is IOException) context.getString(R.string.error_internal_server_error_message) else context.getString(com.tokopedia.network.R.string.default_request_error_unknown)
+                if (e is IOException) context?.getString(R.string.error_internal_server_error_message) else context?.getString(com.tokopedia.network.R.string.default_request_error_unknown)
             }
         } else {
-            "Terjadi kesalahan. Ulangi beberapa saat lagi"
+            context?.getString(R.string.error_unknown_issue)
         }
     }
 }
