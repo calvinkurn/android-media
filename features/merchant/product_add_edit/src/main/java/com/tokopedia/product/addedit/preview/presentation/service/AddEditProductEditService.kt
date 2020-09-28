@@ -138,7 +138,7 @@ class AddEditProductEditService : AddEditProductBaseService() {
             setUploadProductDataError(getErrorMessage(throwable))
 
             logError(productEditUseCase.params, throwable)
-            ProductEditShippingTracking.clickFinish(shopId, false, throwable.message ?: "", errorMessage)
+            ProductEditShippingTracking.clickFinish(shopId, false, throwable.message ?: "")
         })
     }
 
