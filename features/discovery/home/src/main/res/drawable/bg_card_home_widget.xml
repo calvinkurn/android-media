@@ -64,7 +64,7 @@
     </item>
     <item>
         <shape>
-            <solid android:color="@android:color/white" />
+            <solid android:color="@color/Unify_N0" />
             <corners android:radius="8dp" />
         </shape>
     </item>

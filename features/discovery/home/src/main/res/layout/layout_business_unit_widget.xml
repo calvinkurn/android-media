@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget"
-        app:tabBackground="@color/white"
+        app:tabBackground="@color/Unify_N0"
         app:tabIndicatorColor="@color/tkpd_main_green"
         app:tabSelectedTextColor="@color/tkpd_main_green"
         app:tabTextColor="@color/tkpd_dark_gray"/>
