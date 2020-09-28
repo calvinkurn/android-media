@@ -53,6 +53,8 @@ dependencies {
         transitive = true
     }
     implementation project(rootProject.ext.features.resourcesCommon)
+    implementation project(rootProject.ext.features.productCard)
+
 
 }
 
