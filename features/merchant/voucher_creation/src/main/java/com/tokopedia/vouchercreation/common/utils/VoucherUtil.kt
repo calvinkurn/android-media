@@ -4,7 +4,16 @@ import android.content.Context
 import android.view.View
 import androidx.fragment.app.FragmentManager
 import com.google.android.material.snackbar.Snackbar
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
+import com.tokopedia.linker.LinkerManager
+import com.tokopedia.linker.LinkerUtils
+import com.tokopedia.linker.interfaces.ShareCallback
+import com.tokopedia.linker.model.LinkerData
+import com.tokopedia.linker.model.LinkerError
+import com.tokopedia.linker.model.LinkerShareResult
+import com.tokopedia.linker.share.DataMapper
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.url.TokopediaUrl
@@ -58,6 +67,36 @@ fun ShopBasicDataResult.shareVoucher(context: Context,
                                      voucher: VoucherUiModel,
                                      userId: String) {
     val shareUrl = "${TokopediaUrl.getInstance().WEB}${shopDomain}"
+    val linkerShareData = DataMapper.getLinkerShareData(LinkerData().apply {
+        type = LinkerData.MERCHANT_VOUCHER
+        uri = shareUrl
+        id = voucher.id.toString()
+        deepLink = UriUtil.buildUri(ApplinkConst.SHOP, voucher.shopId.toString()).orEmpty()
+    })
+    LinkerManager.getInstance().executeShareRequest(
+            LinkerUtils.createShareRequest(0, linkerShareData, object : ShareCallback {
+                override fun urlCreated(linkerShareData: LinkerShareResult?) {
+                    linkerShareData?.url?.let {
+                        shareVoucher(context, socmedType, voucher, shopName, it)
+                    }
+                }
+
+                override fun onError(linkerError: LinkerError?) {}
+            })
+    )
+
+    VoucherCreationTracking.sendShareClickTracking(
+            socmedType = socmedType,
+            userId = userId,
+            isDetail = true
+    )
+}
+
+private fun shareVoucher(context: Context,
+                         @SocmedType socmedType: Int,
+                         voucher: VoucherUiModel,
+                         shopName: String,
+                         shareUrl: String) {
     val shareMessage =
             if (voucher.isPublic) {
                 StringBuilder().apply {
@@ -102,9 +141,4 @@ fun ShopBasicDataResult.shareVoucher(context: Context,
             SharingUtil.otherShare(context, shareMessage)
         }
     }
-    VoucherCreationTracking.sendShareClickTracking(
-            socmedType = socmedType,
-            userId = userId,
-            isDetail = true
-    )
 }
