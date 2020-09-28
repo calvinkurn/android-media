@@ -96,7 +96,6 @@ class PopularSearchViewHolder(
             private fun bindListener(item: BaseItemInitialStateSearch) {
                 itemView.initialStateDynamicItem?.setOnClickListener {
                     AutocompleteTracking.eventClickPopularSearch(
-                            itemView.context,
                             String.format(
                                     "value: %s - po: %s - applink: %s",
                                     item.title,
