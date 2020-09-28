@@ -12,7 +12,6 @@ import com.tokopedia.test.application.util.InstrumentationAuthHelper.loginInstru
 import com.tokopedia.test.application.util.InstrumentationMockHelper.getRawString
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import com.tokopedia.test.application.util.setupGraphqlMockResponseWithCheck
-import com.tokopedia.test.application.util.setupTotalSizeInterceptor
 
 internal class PrepareSearchRobot {
 
