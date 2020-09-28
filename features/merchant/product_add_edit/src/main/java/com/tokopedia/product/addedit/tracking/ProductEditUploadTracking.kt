@@ -1,7 +1,7 @@
 package com.tokopedia.product.addedit.tracking
 
-import com.tokopedia.product.addedit.tracking.ProductAddEditTracking.sendEditProductClick
-import com.tokopedia.product.addedit.tracking.ProductAddEditTracking.sendEditProductUpload
+import com.tokopedia.product.addedit.tracking.ProductAddEditTracking.sendEditProductClickWithoutScreen
+import com.tokopedia.product.addedit.tracking.ProductAddEditTracking.sendEditProductImpression
 
 object ProductEditUploadTracking {
     private const val TYPE_SERVER_TOME = "tome server error"
@@ -10,7 +10,7 @@ object ProductEditUploadTracking {
 
     fun uploadProductFinish(category: String, shopId: String, isSuccess: Boolean, isValidationError: Boolean = false, errorName: String = "") {
         if (isSuccess) {
-            sendEditProductClick(shopId, "click finish success", "")
+            sendEditProductClickWithoutScreen(shopId, "click finish success", "")
         } else {
             val label = if (isValidationError) {
                 "$TYPE_SERVER_VALIDATION_TOME - $errorName"
@@ -18,11 +18,11 @@ object ProductEditUploadTracking {
                 "$TYPE_SERVER_TOME - $errorName"
             }
 
-            sendEditProductUpload(category, shopId, label)
+            sendEditProductClickWithoutScreen(shopId, "click finish error", label)
         }
     }
 
     fun uploadImageFailed(category: String, userId: String, errorName: String) {
-        sendEditProductUpload(category, userId, "$TYPE_SERVER_UPLOADPEDIA - $errorName")
+        sendEditProductImpression(userId, "impression edit product error", "$TYPE_SERVER_UPLOADPEDIA - $errorName")
     }
 }

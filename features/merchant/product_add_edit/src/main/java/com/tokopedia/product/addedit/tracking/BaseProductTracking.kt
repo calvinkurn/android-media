@@ -42,13 +42,14 @@ object ProductAddEditTracking {
                 mapOf(KEY_SHOP_ID to shopId, KEY_SCREEN_NAME to screen))
     }
 
-    fun sendAddProductClickWithoutScreen(shopId: String, action: String, label: String = "") {
+    fun sendAddProductClickWithoutScreen(userId: String, action: String, label: String = "") {
         getTracker().sendGeneralEventCustom(
                 EVENT_CLICK_ADD_PRODUCT,
                 CAT_ADD_PRODUCT_PAGE,
                 action,
                 label,
-                mapOf(KEY_SHOP_ID to shopId))
+                mapOf(KEY_USER_ID to userId, KEY_BUSINESS_UNIT to BUSINESS_UNIT,
+                        KEY_CURRENT_SITE to CURRENT_SITE))
     }
 
     fun sendAddProductImpression(userId: String, action: String, label: String = "") {
@@ -84,6 +85,16 @@ object ProductAddEditTracking {
                 action,
                 label,
                 mapOf(KEY_SHOP_ID to shopId))
+    }
+
+    fun sendEditProductClickWithoutScreen(userId: String, action: String, label: String = "") {
+        getTracker().sendGeneralEventCustom(
+                EVENT_CLICK_EDIT_PRODUCT,
+                CAT_EDIT_PRODUCT_PAGE,
+                action,
+                label,
+                mapOf(KEY_USER_ID to userId, KEY_BUSINESS_UNIT to BUSINESS_UNIT,
+                        KEY_CURRENT_SITE to CURRENT_SITE))
     }
 
     fun sendEditProductImpression(userId: String, action: String, label: String = "") {
