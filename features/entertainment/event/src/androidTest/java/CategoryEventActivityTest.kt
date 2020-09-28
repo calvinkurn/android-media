@@ -69,6 +69,6 @@ class CategoryEventActivityTest {
     }
 
     companion object {
-        private const val ENTERTAINMENT_EVENT_CATEGORY_VALIDATOR_QUERY = "tracker/event/categorypageevent.json"
+        private const val ENTERTAINMENT_EVENT_CATEGORY_VALIDATOR_QUERY = "tracker/event/categorypageeventcheck.json"
     }
 }

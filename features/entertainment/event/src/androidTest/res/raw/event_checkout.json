@@ -292,7 +292,7 @@
               "id": "10296",
               "product_id": "23233",
               "name": "first_name",
-              "title": "Nama Depan",
+              "title": "Nama First",
               "value": "",
               "element_type": "text",
               "help_text": "Nama Depan Anda (cth: John)",
