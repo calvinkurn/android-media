@@ -8,7 +8,7 @@ import timber.log.Timber
  */
 class ImpressionTaskAlert {
     private var lastImpression = 0L
-    private val impressionTreshold = 100L
+    private val impressionTreshold = 250L
     private val VIEWS = "views"
     private val CLICKS = "clicks"
     private val TOPADS_TRACKING = "TOPADS_TRACKING"
