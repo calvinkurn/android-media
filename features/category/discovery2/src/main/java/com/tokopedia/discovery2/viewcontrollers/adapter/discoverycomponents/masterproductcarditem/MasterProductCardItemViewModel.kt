@@ -7,9 +7,10 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.di.DaggerDiscoveryComponent
-import com.tokopedia.discovery2.usecase.productCardCarouselUseCase.ProductCardItemUseCase
 import com.tokopedia.discovery2.usecase.topAdsUseCase.DiscoveryTopAdsTrackingUseCase
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.user.session.UserSession
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -17,22 +18,15 @@ import kotlinx.coroutines.SupervisorJob
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
-private const val OFFICIAL_STORE = 1
-private const val GOLD_MERCHANT = 2
-private const val EMPTY = 0
-
 class MasterProductCardItemViewModel(val application: Application, val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
 
     private val dataItem: MutableLiveData<DataItem> = MutableLiveData()
+    private val productCardModelLiveData: MutableLiveData<ProductCardModel> = MutableLiveData()
     private lateinit var context: Context
     private val componentPosition: MutableLiveData<Int?> = MutableLiveData()
 
     @Inject
-    lateinit var productCardItemUseCase: ProductCardItemUseCase
-
-    @Inject
     lateinit var discoveryTopAdsTrackingUseCase: DiscoveryTopAdsTrackingUseCase
-
 
     init {
         initDaggerInject()
@@ -47,8 +41,33 @@ class MasterProductCardItemViewModel(val application: Application, val component
         components.data?.let {
             if (!it.isNullOrEmpty()) {
                 dataItem.value = it[0]
+                mapDataItemToProductCardModel(it[0])
             }
         }
+    }
+
+    private fun mapDataItemToProductCardModel(dataItem: DataItem) {
+        val productCardModel = ProductCardModel(
+                productName = dataItem.name ?: "",
+                slashedPrice = dataItem.discountedPrice ?: "",
+                formattedPrice = dataItem.price ?: "",
+                discountPercentage = if (dataItem.discountPercentage?.toIntOrZero() != 0) {
+                    "${dataItem.discountPercentage}%"
+                } else {
+                    ""
+                },
+                ratingCount = dataItem.rating?.toIntOrZero() ?: 0,
+                reviewCount = dataItem.countReview?.toIntOrZero() ?: 0,
+                productImageUrl = dataItem.imageUrlMobile ?: "",
+                isTopAds = dataItem.isTopads ?: false,
+                freeOngkir = ProductCardModel.FreeOngkir(imageUrl = dataItem.freeOngkir?.freeOngkirImageUrl
+                        ?: "", isActive = dataItem.freeOngkir?.isActive ?: false),
+                pdpViewCount = dataItem.pdpView.takeIf { it.toIntOrZero() != 0 } ?: "",
+                labelGroupList = ArrayList<ProductCardModel.LabelGroup>().apply {
+                    dataItem.labelsGroupList?.forEach { add(ProductCardModel.LabelGroup(it.position, it.title, it.type)) }
+                }
+        )
+        productCardModelLiveData.value = productCardModel
     }
 
     fun getComponentPosition() = componentPosition
@@ -70,19 +89,7 @@ class MasterProductCardItemViewModel(val application: Application, val component
     }
 
     fun getDataItemValue() = dataItem
-
-    fun chooseShopBadge(): Int {
-        val productData = dataItem.value
-        return if (productData?.goldMerchant == true && productData.officialStore == true) {
-            OFFICIAL_STORE
-        } else if (productData?.goldMerchant == true) {
-            GOLD_MERCHANT
-        } else if (productData?.officialStore == true) {
-            OFFICIAL_STORE
-        } else {
-            EMPTY
-        }
-    }
+    fun getProductModelValue() = productCardModelLiveData
 
     fun handleNavigation() {
         dataItem.value?.applinks?.let { applink ->
