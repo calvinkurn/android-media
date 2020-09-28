@@ -14,7 +14,6 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
-import com.tokopedia.play.broadcaster.pusher.apsara.ApsaraLivePusherErrorStatus
 import com.tokopedia.play.broadcaster.ui.model.PlayMetricUiModel
 import com.tokopedia.play.broadcaster.ui.model.TotalLikeUiModel
 import com.tokopedia.play.broadcaster.ui.model.TotalViewUiModel
@@ -29,6 +28,7 @@ import com.tokopedia.play.broadcaster.view.custom.PlayTimerView
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.fragment.loading.LoadingDialogFragment
 import com.tokopedia.play.broadcaster.view.partial.ChatListPartialView
+import com.tokopedia.play.broadcaster.view.state.LivePusherErrorStatus
 import com.tokopedia.play.broadcaster.view.state.LivePusherState
 import com.tokopedia.play.broadcaster.view.state.LivePusherTimerState
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
@@ -166,6 +166,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
             override fun onFinish() {
                 countdownTimer.gone()
+                parentViewModel.startTimer()
             }
         })
     }
@@ -332,37 +333,42 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         }
     }
 
-    private fun handleLivePushError(errorStatus: ApsaraLivePusherErrorStatus) {
+    private fun handleLivePushError(errorStatus: LivePusherErrorStatus) {
+        var errorMessage = getString(R.string.play_live_broadcast_network_poor)
         when(errorStatus) {
-            ApsaraLivePusherErrorStatus.NetworkPoor -> {
-                val errorMessage = getString(R.string.play_live_broadcast_network_poor)
+            LivePusherErrorStatus.NetworkPoor -> {
+                errorMessage = getString(R.string.play_live_broadcast_network_poor)
                 showToaster(message = errorMessage,
                         type = Toaster.TYPE_ERROR)
-                analytic.viewErrorOnLivePage(parentViewModel.channelId, parentViewModel.title, errorMessage)
             }
-            ApsaraLivePusherErrorStatus.NetworkLoss -> {
-                val errorMessage = getString(R.string.play_live_broadcast_network_loss)
+            LivePusherErrorStatus.NetworkLoss -> {
+                errorMessage = getString(R.string.play_live_broadcast_network_loss)
                 showToaster(message = getString(R.string.play_live_broadcast_network_loss),
                         type = Toaster.TYPE_ERROR,
                         duration = Toaster.LENGTH_INDEFINITE)
-                analytic.viewErrorOnLivePage(parentViewModel.channelId, parentViewModel.title, errorMessage)
             }
-            ApsaraLivePusherErrorStatus.ConnectFailed, ApsaraLivePusherErrorStatus.ReconnectFailed -> {
-                val errorMessage = getString(R.string.play_live_broadcast_connect_fail)
+            is LivePusherErrorStatus.ConnectFailed -> {
+                errorMessage = getString(R.string.play_live_broadcast_connect_fail)
                 showToaster(message = getString(R.string.play_live_broadcast_connect_fail),
                         type = Toaster.TYPE_ERROR,
-                        duration = Toaster.LENGTH_INDEFINITE)
-                analytic.viewErrorOnLivePage(parentViewModel.channelId, parentViewModel.title, errorMessage)
-            }
-            ApsaraLivePusherErrorStatus.SystemError -> {
-                showToaster(message = getString(R.string.play_live_broadcast_connect_fail),
-                        type = Toaster.TYPE_ERROR,duration = Toaster.LENGTH_INDEFINITE,
+                        duration = Toaster.LENGTH_INDEFINITE,
                         actionLabel = getString(R.string.play_broadcast_try_again),
                         actionListener = View.OnClickListener {
-                            parentViewModel.restartPushStream()
+                            errorStatus.onRetry()
+                        })
+            }
+            is LivePusherErrorStatus.UnRecoverable -> {
+                errorMessage = getString(R.string.play_live_broadcast_system_error)
+                showToaster(message = getString(R.string.play_live_broadcast_system_error),
+                        type = Toaster.TYPE_ERROR,
+                        duration = Toaster.LENGTH_INDEFINITE,
+                        actionLabel = getString(R.string.play_broadcast_try_again),
+                        actionListener = View.OnClickListener {
+                            errorStatus.onRetry()
                         })
             }
         }
+        analytic.viewErrorOnLivePage(parentViewModel.channelId, parentViewModel.title, errorMessage)
     }
 
     private fun getLoadingFragment(): LoadingDialogFragment {

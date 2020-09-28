@@ -8,6 +8,7 @@ import androidx.core.app.ActivityCompat
 import com.alivc.live.pusher.*
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.play.broadcaster.util.extension.sendCrashlyticsLog
+import java.util.regex.Pattern
 
 
 /**
@@ -17,6 +18,10 @@ import com.tokopedia.play.broadcaster.util.extension.sendCrashlyticsLog
  * https://github.com/mzennis/live/blob/master/intl.en-US/Stream%20ingest%20SDK/Android%20stream%20ingest%20SDK/SDK%20usage.md
  */
 class ApsaraLivePusher(@ApplicationContext private val mContext: Context) {
+
+    companion object {
+        private const val PATTERN_URL = "((rtmp|rtsp)?://[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\\.[^\\s]{2,})"
+    }
 
     private val mApsaraLivePusherConfig = ApsaraLivePusherConfig().apply {
         setCameraType(AlivcLivePushCameraTypeEnum.CAMERA_TYPE_FRONT)
@@ -101,15 +106,23 @@ class ApsaraLivePusher(@ApplicationContext private val mContext: Context) {
         }
     }
 
-    fun startPush(ingestUrl: String) {
+    @Throws(IllegalArgumentException::class)
+    fun startPush(ingestUrl: String)  {
         if (ingestUrl.isNotEmpty()) {
             this.mIngestUrl = ingestUrl
         }
         if (this.mIngestUrl.isEmpty()) {
             throw IllegalArgumentException("ingestUrl must not be empty")
         }
+        if (!validUrl(ingestUrl)) {
+            throw IllegalArgumentException("ingestUrl must valid url")
+        }
         mAliVcLivePusher?.startPushAysnc(this.mIngestUrl)
     }
+
+    private fun validUrl(ingestUrl: String) : Boolean = Pattern.compile(PATTERN_URL)
+            .matcher(ingestUrl)
+            .matches()
 
     fun restartPush() {
         mAliVcLivePusher?.restartPushAync()
@@ -185,7 +198,6 @@ class ApsaraLivePusher(@ApplicationContext private val mContext: Context) {
         override fun onConnectFail(pusher: AlivcLivePusher?) {
             mApsaraLivePusherStatus = ApsaraLivePusherStatus.Error(ApsaraLivePusherErrorStatus.ConnectFailed)
             mApsaraLivePusherInfoListener?.onError(ApsaraLivePusherErrorStatus.ConnectFailed)
-            mAliVcLivePusher?.reconnectPushAsync(mIngestUrl)
         }
 
         override fun onReconnectStart(pusher: AlivcLivePusher?) {
@@ -220,7 +232,6 @@ class ApsaraLivePusher(@ApplicationContext private val mContext: Context) {
 
         override fun onPushStarted(pusher: AlivcLivePusher?) {
             mApsaraLivePusherStatus = ApsaraLivePusherStatus.Live
-            mApsaraLivePusherInfoListener?.onPushed()
             mApsaraLivePusherInfoListener?.onStarted()
         }
 
@@ -235,7 +246,6 @@ class ApsaraLivePusher(@ApplicationContext private val mContext: Context) {
             if (mApsaraLivePusherStatus !is ApsaraLivePusherStatus.Pause) return
 
             mApsaraLivePusherStatus = ApsaraLivePusherStatus.Live
-            mApsaraLivePusherInfoListener?.onPushed()
             mApsaraLivePusherInfoListener?.onResumed()
         }
 

@@ -3,9 +3,15 @@ package com.tokopedia.play.broadcaster.pusher
 import android.content.Context
 import android.view.SurfaceView
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.play.broadcaster.pusher.apsara.*
+import com.tokopedia.play.broadcaster.pusher.apsara.ApsaraLivePusher
+import com.tokopedia.play.broadcaster.pusher.apsara.ApsaraLivePusherErrorStatus
+import com.tokopedia.play.broadcaster.pusher.apsara.ApsaraLivePusherInfoListener
 import com.tokopedia.play.broadcaster.pusher.timer.PlayPusherTimer
-import kotlinx.coroutines.*
+import com.tokopedia.usecase.launch_cache_error.launchCatchError
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 
 
 /**
@@ -42,8 +48,10 @@ class PlayPusherImpl(@ApplicationContext private val mContext: Context) : PlayPu
     }
 
     override fun startPush(ingestUrl: String) {
-        scope.launch {
+        scope.launchCatchError(block = {
             mApsaraLivePusher.startPush(ingestUrl)
+        }) {
+            mPlayPusherInfoListener?.onError(ApsaraLivePusherErrorStatus.ConnectFailed)
         }
     }
 
@@ -70,13 +78,13 @@ class PlayPusherImpl(@ApplicationContext private val mContext: Context) : PlayPu
         }
     }
 
-    override fun resume() {
+    override fun resumePush() {
         scope.launch(Dispatchers.IO) {
             mApsaraLivePusher.resume()
         }
     }
 
-    override fun pause() {
+    override fun pausePush() {
         scope.launch(Dispatchers.IO) {
             mApsaraLivePusher.pause()
         }
@@ -84,6 +92,7 @@ class PlayPusherImpl(@ApplicationContext private val mContext: Context) : PlayPu
 
     override fun destroy() {
         mApsaraLivePusher.destroy()
+        mTimerDuration?.destroy()
     }
 
     override fun addStreamDuration(durationInMillis: Long) {
@@ -95,6 +104,22 @@ class PlayPusherImpl(@ApplicationContext private val mContext: Context) : PlayPu
 
     override fun addMaxStreamDuration(durationInMillis: Long) {
         this.mTimerDuration?.mMaxDuration = durationInMillis
+    }
+
+    override fun startTimer() {
+        this.mTimerDuration?.start()
+    }
+
+    override fun resumeTimer() {
+        this.mTimerDuration?.resume()
+    }
+
+    override fun pauseTimer() {
+        this.mTimerDuration?.pause()
+    }
+
+    override fun stopTimer() {
+        this.mTimerDuration?.stop()
     }
 
     override fun restartStreamDuration(durationInMillis: Long) {
@@ -118,20 +143,13 @@ class PlayPusherImpl(@ApplicationContext private val mContext: Context) : PlayPu
     private val mApsaraLivePusherInfoListener = object : ApsaraLivePusherInfoListener {
         override fun onStarted() {
             scope.launch {
-                mTimerDuration?.start()
                 mPlayPusherInfoListener?.onStarted()
-            }
-        }
-
-        override fun onPushed() {
-            scope.launch {
-                mPlayPusherInfoListener?.onPushed()
             }
         }
 
         override fun onResumed() {
             scope.launch {
-                mTimerDuration?.resume()
+                mPlayPusherInfoListener?.onResumed()
             }
         }
 
@@ -149,9 +167,6 @@ class PlayPusherImpl(@ApplicationContext private val mContext: Context) : PlayPu
         }
 
         override fun onRestarted() {
-            scope.launch {
-                mPlayPusherInfoListener?.onRestarted()
-            }
         }
 
         override fun onRecovered() {

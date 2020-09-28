@@ -83,7 +83,6 @@ class PlayPusherTimer(val context: Context,
 
     private fun setupDuration(duration: Long) {
         this.mDuration = duration
-        this.mDuration += 1000
         this.mRemainingMillis = mDuration
     }
 

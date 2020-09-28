@@ -210,7 +210,7 @@ class PlayBeforeLiveFragment @Inject constructor(
             when (it) {
                 NetworkResult.Loading -> btnStartLive.setLoading(true)
                 is NetworkResult.Success -> {
-                    parentViewModel.startPushStream()
+                    parentViewModel.startPushStream(manualStartTimer = true)
                 }
                 is NetworkResult.Fail -> {
                     showToaster(
@@ -246,6 +246,8 @@ class PlayBeforeLiveFragment @Inject constructor(
             is LivePusherState.Error -> {
                 showToaster(message = getString(R.string.play_live_broadcast_connect_fail),
                         type = Toaster.TYPE_ERROR)
+                btnStartLive.setLoading(false)
+                analytic.viewErrorOnFinalSetupPage(getString(R.string.play_live_broadcast_connect_fail))
             }
         }
     }

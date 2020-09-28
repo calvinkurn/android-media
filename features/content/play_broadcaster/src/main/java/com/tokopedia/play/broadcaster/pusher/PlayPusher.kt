@@ -22,9 +22,9 @@ interface PlayPusher {
 
     fun switchCamera()
 
-    fun resume()
+    fun resumePush()
 
-    fun pause()
+    fun pausePush()
 
     fun destroy()
 
@@ -37,6 +37,26 @@ interface PlayPusher {
      * add maximum live streaming duration
      */
     fun addMaxStreamDuration(durationInMillis: Long)
+
+    /**
+     * start live streaming timer
+     */
+    fun startTimer()
+
+    /**
+     * resume live streaming timer
+     */
+    fun resumeTimer()
+
+    /**
+     * pause live streaming timer
+     */
+    fun pauseTimer()
+
+    /**
+     * stop live streaming timer
+     */
+    fun stopTimer()
 
     /**
      * restart live streaming duration
