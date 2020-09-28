@@ -118,6 +118,12 @@ class InitialStatePresenter @Inject constructor(
         return dataLayerList
     }
 
+    private fun checkToImpressSeeMoreRecentSearch() {
+        recentSearchList?.let{
+            if (it.size >= RECENT_SEARCH_SEE_MORE_LIMIT) view?.onSeeMoreRecentSearchImpressed(getUserId())
+        }
+    }
+
     private fun onRecentSearchImpressed(list: List<InitialStateItem>) {
         list.withNotEmpty{
             view?.onRecentSearchImpressed(getDataLayerForPromo(this))
@@ -453,6 +459,8 @@ class InitialStatePresenter @Inject constructor(
             recentSearchVisitable.list = recentSearchViewModel.list
 
             this.recentSearchList = null
+
+            view?.trackEventClickSeeMoreRecentSearch(getUserId())
             view?.dropKeyBoard()
             view?.renderRecentSearch(recentSearchVisitable)
         }

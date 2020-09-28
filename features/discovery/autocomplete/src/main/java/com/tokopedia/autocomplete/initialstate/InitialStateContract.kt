@@ -15,6 +15,8 @@ interface InitialStateContract {
 
         fun onPopularSearchImpressed(list: List<Any>)
 
+        fun onSeeMoreRecentSearchImpressed(userId: String)
+
         fun route(applink: String, searchParameter: Map<String, String>)
 
         fun finish()
@@ -22,6 +24,8 @@ interface InitialStateContract {
         fun trackEventClickRecentSearch(label: String, adapterPosition: Int)
 
         fun trackEventClickRecentShop(label: String, userId: String)
+
+        fun trackEventClickSeeMoreRecentSearch(userId: String)
 
         fun renderRecentSearch(recentSearchViewModel: RecentSearchViewModel)
 

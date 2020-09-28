@@ -214,12 +214,20 @@ class InitialStateFragment : BaseDaggerFragment(), InitialStateContract.View, In
         AutocompleteTracking.impressedPopularSearch(iris, list)
     }
 
+    override fun onSeeMoreRecentSearchImpressed(userId: String) {
+        AutocompleteTracking.impressedSeeMoreRecentSearch(iris, userId)
+    }
+
     override fun trackEventClickRecentSearch(label: String, adapterPosition: Int) {
         AutocompleteTracking.eventClickRecentSearch(label)
     }
 
     override fun trackEventClickRecentShop(label: String, userId: String) {
         AutocompleteTracking.eventClickRecentShop(label, userId)
+    }
+
+    override fun trackEventClickSeeMoreRecentSearch(userId: String) {
+        AutocompleteTracking.eventClickSeeMoreRecentSearch(userId)
     }
 
     override fun dropKeyBoard() {
