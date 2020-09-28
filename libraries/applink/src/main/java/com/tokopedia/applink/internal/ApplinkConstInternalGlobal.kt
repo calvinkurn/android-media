@@ -54,6 +54,13 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val PARAM_IS_FROM_2FA = "isFromTwoFactor"
 
+    @JvmField
+    val PARAM_USER_ID_ENC = "userIdEncrypted"
+    @JvmField
+    val PARAM_USER_ACCESS_TOKEN = "accessToken"
+    @JvmField
+    val PARAM_USER_ID = "userId"
+
     //VerificationActivity Param
     @JvmField
     val PARAM_CAN_USE_OTHER_METHOD = "can_use_other_method"
