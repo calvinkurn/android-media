@@ -671,11 +671,13 @@ class ShopEditBasicInfoFragment: Fragment() {
     }
 
     private fun showSnackBarErrorSubmitEdit(throwable: Throwable) {
-        val message = ErrorHandler.getErrorMessage(context, throwable)
-        Toaster.make(container, message, Snackbar.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
-            getString(com.tokopedia.abstraction.R.string.title_try_again), View.OnClickListener {
-            onSaveButtonClicked()
-        })
+        val message = ShopSettingsErrorHandler.getErrorMessage(context, throwable)
+        message?.apply {
+            Toaster.make(container, this, Snackbar.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
+                    getString(com.tokopedia.abstraction.R.string.title_try_again), View.OnClickListener {
+                onSaveButtonClicked()
+            })
+        }
     }
 
     private fun showSnackBarErrorSubmitEdit(message: String) {
