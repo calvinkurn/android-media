@@ -316,11 +316,10 @@ class ShopPageFragment :
                 val shopAppLink = UriUtil.buildUri(ApplinkConst.SHOP, shopId).orEmpty()
                 val appLinkShopPageFeed = UriUtil.buildUri(ApplinkConstInternalMarketplace.SHOP_PAGE_FEED, shopId).orEmpty()
                 val intent = SellerMigrationActivity.createIntent(
-                                context = requireContext(),
-                                featureName = SellerMigrationFeatureName.FEATURE_POST_FEED,
-                                screenName = FeedShopFragment::class.simpleName.orEmpty(),
-                                appLinks = arrayListOf(ApplinkConstInternalSellerapp.SELLER_HOME, shopAppLink, appLinkShopPageFeed),
-                                isStackBuilder = false)
+                        context = requireContext(),
+                        featureName = SellerMigrationFeatureName.FEATURE_POST_FEED,
+                        screenName = FeedShopFragment::class.simpleName.orEmpty(),
+                        appLinks = arrayListOf(ApplinkConstInternalSellerapp.SELLER_HOME, shopAppLink, appLinkShopPageFeed))
                 startActivity(intent)
             }
         }

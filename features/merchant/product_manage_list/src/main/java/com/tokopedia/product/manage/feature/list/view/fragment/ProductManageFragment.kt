@@ -35,10 +35,10 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
+import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.applink.productmanage.DeepLinkMapperProductManage
 import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
 import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
-import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.text.SearchInputView
@@ -170,8 +170,6 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
 
     private var shouldEnableMultiEdit: Boolean = false
     private var shouldAddAsFeatured: Boolean = false
-    private var shouldOpenAppLink: Boolean = false
-    private var shouldOpenTopAdsFromPdp: Boolean = false
     private var sellerFeatureCarouselClickListener: SellerFeatureCarousel.SellerFeatureClickListener = object: SellerFeatureCarousel.SellerFeatureClickListener {
         override fun onSellerFeatureClicked(item: SellerFeatureUiModel) {
             when (item) {
@@ -182,8 +180,6 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
                 is SellerFeatureUiModel.StockReminderFeatureWithDataUiModel -> goToSellerAppSetStockReminder(item.data as ProductViewModel)
                 is SellerFeatureUiModel.ProductManageSetVariantFeatureWithDataUiModel -> goToSellerAppAddProduct()
             }
-            productManageAddEditMenuBottomSheet.dismiss()
-            productManageBottomSheet?.dismiss()
         }
     }
 
@@ -197,8 +193,6 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         activity?.intent?.data?.run {
             shouldEnableMultiEdit = this.getBooleanQueryParameter(DeepLinkMapperProductManage.QUERY_PARAM_ENABLE_MULTI_EDIT, false)
             shouldAddAsFeatured = this.getBooleanQueryParameter(DeepLinkMapperProductManage.QUERY_PARAM_ADD_AS_FEATURED, false)
-            shouldOpenAppLink = activity?.intent?.getStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA).orEmpty().isNotEmpty()
-            shouldOpenTopAdsFromPdp = activity?.intent?.getStringExtra(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME).orEmpty() == SellerMigrationFeatureName.FEATURE_ADS
         }
         setHasOptionsMenu(true)
     }
@@ -662,6 +656,16 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     private fun renderProductList(list: List<ProductViewModel>, hasNextPage: Boolean) {
         renderList(list, hasNextPage)
         renderCheckedView()
+        showAddAsFeaturedProduct()
+    }
+
+    private fun showAddAsFeaturedProduct() {
+        if (shouldAddAsFeatured) {
+            shouldAddAsFeatured = false
+            val isFeatured = activity?.intent?.data?.getBooleanQueryParameter(DeepLinkMapperProductManage.QUERY_PARAM_IS_PRODUCT_FEATURED, false) ?: false
+            val productId = activity?.intent?.data?.getQueryParameter(DeepLinkMapperProductManage.QUERY_PARAM_SELECTED_PRODUCT_ID).orEmpty()
+            onSetFeaturedProductClicked(isFeatured, productId)
+        }
     }
 
     private fun getProductList(page: Int = 1, isRefresh: Boolean = false, withDelay: Boolean = false) {
@@ -1419,42 +1423,6 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         super.onPause()
         context?.let {
             LocalBroadcastManager.getInstance(it).unregisterReceiver(addProductReceiver)
-        }
-    }
-
-    override fun onStart() {
-        super.onStart()
-        if (shouldAddAsFeatured) {
-            shouldAddAsFeatured = false
-            val isFeatured = activity?.intent?.data?.getBooleanQueryParameter(DeepLinkMapperProductManage.QUERY_PARAM_IS_PRODUCT_FEATURED, false) ?: false
-            val productId = activity?.intent?.data?.getQueryParameter(DeepLinkMapperProductManage.QUERY_PARAM_SELECTED_PRODUCT_ID).orEmpty()
-            onSetFeaturedProductClicked(isFeatured, productId)
-        }
-        if (shouldOpenAppLink) {
-            shouldOpenAppLink = false
-            val appLinks = ArrayList(activity?.intent?.getStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA).orEmpty())
-            if (appLinks.isNotEmpty()) {
-                val appLinkToOpen = if (!shouldOpenTopAdsFromPdp) {
-                    appLinks.firstOrNull().orEmpty()
-                    appLinks.removeAt(0)
-                } else {
-                    appLinks.lastOrNull().orEmpty()
-                }
-                if (appLinkToOpen.isNotBlank()) {
-                    val intent = RouteManager.getIntent(context, appLinkToOpen).apply {
-                        putStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA, appLinks)
-                        putExtra(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME, activity?.intent?.getStringExtra(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME).orEmpty())
-                        addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
-                    }
-                    when (activity?.intent?.getStringExtra(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME)) {
-                        SellerMigrationFeatureName.FEATURE_SET_CASHBACK -> startActivityForResult(intent, SET_CASHBACK_REQUEST_CODE)
-                        SellerMigrationFeatureName.FEATURE_STOCK_REMINDER -> startActivityForResult(intent, REQUEST_CODE_STOCK_REMINDER)
-                        SellerMigrationFeatureName.FEATURE_SET_VARIANT, SellerMigrationFeatureName.FEATURE_EDIT_PRODUCT_CASHBACK -> startActivityForResult(intent, REQUEST_CODE_ADD_PRODUCT)
-                        SellerMigrationFeatureName.FEATURE_ADS, SellerMigrationFeatureName.FEATURE_ADS_DETAIL -> startActivity(intent)
-                        SellerMigrationFeatureName.FEATURE_TOPADS -> startActivity(intent)
-                    }
-                }
-            }
         }
     }
 

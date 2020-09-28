@@ -12,14 +12,15 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp;
 import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst;
+import com.tokopedia.applink.sellermigration.SellerMigrationUtil;
 import com.tokopedia.core.SplashScreen;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.fcmcommon.service.SyncFcmTokenService;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.sellerapp.deeplink.DeepLinkDelegate;
 import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
-import com.tokopedia.sellerapp.utils.timber.TimberWrapper;
 import com.tokopedia.sellerapp.utils.SellerOnboardingPreference;
+import com.tokopedia.sellerapp.utils.timber.TimberWrapper;
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -56,7 +57,7 @@ public class SplashScreenActivity extends SplashScreen {
 
     /**
      * handle/forward app link redirection from customer app to seller app
-     * */
+     */
     private boolean handleAppLink(UserSessionInterface userSession) {
         Uri uri = getIntent().getData();
         if (null != uri) {
@@ -77,14 +78,10 @@ public class SplashScreenActivity extends SplashScreen {
                 }
                 if (intent != null) {
                     ArrayList<String> remainingAppLinks = getIntent().getStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA);
-                    String featureName = getIntent().getStringExtra(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME);
-                    if (remainingAppLinks != null && !remainingAppLinks.isEmpty()) {
-                        intent.putStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA, remainingAppLinks);
+                    if (remainingAppLinks == null || remainingAppLinks.size() == 0) {
+                        return false;
                     }
-                    if (featureName != null && !featureName.isEmpty()) {
-                        intent.putExtra(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME, featureName);
-                    }
-                    startActivity(intent);
+                    new SellerMigrationUtil().startRedirectionActivities(this, remainingAppLinks);
                     return true;
                 }
                 return false;

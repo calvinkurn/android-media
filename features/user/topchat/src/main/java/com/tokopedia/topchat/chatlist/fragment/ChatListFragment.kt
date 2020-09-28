@@ -270,8 +270,7 @@ open class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseA
                                 context = context,
                                 featureName = SellerMigrationFeatureName.FEATURE_BROADCAST_CHAT,
                                 screenName = screenName,
-                                appLinks = arrayListOf(ApplinkConstInternalSellerapp.SELLER_HOME_CHAT, webViewUrl),
-                                isStackBuilder = true
+                                appLinks = arrayListOf(ApplinkConstInternalSellerapp.SELLER_HOME_CHAT, webViewUrl)
                         )
                     }
                     startActivity(intent)

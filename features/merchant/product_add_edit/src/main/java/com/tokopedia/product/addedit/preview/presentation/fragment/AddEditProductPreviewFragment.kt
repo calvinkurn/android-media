@@ -28,7 +28,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
-import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
 import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.config.GlobalConfig
@@ -177,7 +176,6 @@ class AddEditProductPreviewFragment:
     @Inject
     lateinit var viewModel: AddEditProductPreviewViewModel
 
-    private var shouldGoToSetCashback: Boolean = false
     private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -189,7 +187,6 @@ class AddEditProductPreviewFragment:
 
         super.onCreate(savedInstanceState)
 
-        shouldGoToSetCashback = activity?.intent?.getStringExtra(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME).orEmpty() == SellerMigrationFeatureName.FEATURE_EDIT_PRODUCT_CASHBACK
         arguments?.let {
             val previewFragmentArgs = AddEditProductPreviewFragmentArgs.fromBundle(it)
             val draftId = previewFragmentArgs.draftId
@@ -864,19 +861,6 @@ class AddEditProductPreviewFragment:
                     val isVariantEmpty = result.data.variant.products.isEmpty()
                     showEmptyVariantState(isVariantEmpty)
                     showProductStatus(result.data)
-                    if (shouldGoToSetCashback) {
-                        val appLinkToOpen = activity?.intent?.getStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA)?.firstOrNull().orEmpty()
-                        if (appLinkToOpen.isNotBlank()) {
-                            shouldGoToSetCashback = false
-                            context?.run {
-                                activity?.intent?.extras?.clear()
-                                RouteManager.getIntent(this, appLinkToOpen).apply {
-                                    addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
-                                    startActivityForResult(this, SET_CASHBACK_REQUEST_CODE)
-                                }
-                            }
-                        }
-                    }
                     // continue to PLT monitoring render
                     stopNetworkRequestPerformanceMonitoring()
                     startRenderPerformanceMonitoring()

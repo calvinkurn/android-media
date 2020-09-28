@@ -58,7 +58,7 @@ class SellerFeatureViewHolder(
         itemView.cardFintech.setOnClickListener {
             val appLinks = ArrayList<String>().apply {
                 add(ApplinkConstInternalSellerapp.SELLER_HOME)
-                add(ApplinkConst.LAYANAN_FINANSIAL)
+                add("${ApplinkConst.LAYANAN_FINANSIAL}/")
             }
             goToSellerMigrationPage(SellerMigrationFeatureName.FEATURE_FINANCIAL_SERVICES, appLinks)
             sellerMenuTracker?.sendEventClickFintech()
