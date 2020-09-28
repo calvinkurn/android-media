@@ -13,7 +13,6 @@ import com.crashlytics.android.Crashlytics
 import com.google.android.youtube.player.YouTubeApiServiceUtil
 import com.google.android.youtube.player.YouTubeInitializationResult
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -22,6 +21,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.product.Video
 import com.tokopedia.product.detail.data.model.description.DescriptionData
@@ -65,7 +65,7 @@ class ProductFullDescriptionFragment : BaseDaggerFragment(), ProductFullDescript
         arguments?.let {
             val descriptionData: DescriptionData = it.getParcelable(PARAM_DESCRIPTION_DATA)
                     ?: DescriptionData()
-            ImageHandler.loadImageAndCache(product_image, descriptionData.thumbnailPicture)
+            product_image.loadImage(descriptionData.thumbnailPicture)
             product_name.text = MethodChecker.fromHtml(descriptionData.basicName)
             product_price.text = descriptionData.basicPrice.getCurrencyFormatted()
             product_shop.text = descriptionData.shopName

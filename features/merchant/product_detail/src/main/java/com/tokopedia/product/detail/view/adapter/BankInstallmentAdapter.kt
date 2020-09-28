@@ -1,10 +1,10 @@
 package com.tokopedia.product.detail.view.adapter
 
-import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import android.view.ViewGroup
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.inflateLayout
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.installment.InstallmentBank
 import com.tokopedia.product.detail.data.util.getCurrencyFormatted
@@ -34,7 +34,7 @@ class BankInstallmentAdapter(private val isOs: Boolean,
 
         fun bind(installment: InstallmentBank){
             with(itemView){
-                ImageHandler.loadImage(context, courier_item_image, installment.icon, null)
+                courier_item_image.loadImage(installment.icon)
                 val item = installment.installmentList.first()
                 courier_item_name.text = (if (isOs) item.osMonthlyPrice else item.monthlyPrice).getCurrencyFormatted()
                 courier_item_info.text = context.getString(R.string.template_installment,

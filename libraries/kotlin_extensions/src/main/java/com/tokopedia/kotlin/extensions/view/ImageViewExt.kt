@@ -10,30 +10,37 @@ import com.tokopedia.utils.resources.DrawableUtils
  * @author by milhamj on 30/11/18.
  */
 
+@Deprecated("Please use medialoader module instead")
 fun ImageView.loadImage(url: String, resId: Int = R.drawable.ic_loading_placeholder) {
     ImageUtils.loadImage2(this, url, resId)
 }
 
+@Deprecated("Please use medialoader module instead")
 fun ImageView.loadImageCircle(url: String) {
     ImageUtils.loadImageCircle2(context, this, url)
 }
 
+@Deprecated("Please use medialoader module instead")
 fun ImageView.loadImageRounded(url: String, radius: Float = 5.0f) {
     ImageUtils.loadImageRounded2(context, this, url, radius)
 }
 
+@Deprecated("Please use medialoader module instead")
 fun ImageView.loadImageWithoutPlaceholder(@DrawableRes drawableId: Int) {
     ImageUtils.loadImageWithIdWithoutPlaceholder(this, drawableId)
 }
 
+@Deprecated("Please use medialoader module instead")
 fun ImageView.loadImageWithoutPlaceholder(url: String) {
     ImageUtils.loadImageWithoutPlaceholderAndError( this, url)
 }
 
+@Deprecated("Please use medialoader module instead")
 fun ImageView.loadImageDrawable(@DrawableRes drawableId: Int) {
     this.setImageDrawable(DrawableUtils.getDrawable(context, drawableId))
 }
 
+@Deprecated("Please use medialoader module instead")
 fun ImageView.clearImage() {
     ImageUtils.clearImage(this)
 }

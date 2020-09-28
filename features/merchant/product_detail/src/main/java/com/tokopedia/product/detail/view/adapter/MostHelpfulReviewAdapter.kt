@@ -4,9 +4,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.inflateLayout
+import com.tokopedia.kotlin.extensions.view.loadImageRounded
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
@@ -68,7 +68,7 @@ class MostHelpfulReviewAdapter(private val imageList: List<ImageAttachment>,
 
     inner class MostHelpfulReviewViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bind(image: ImageAttachment, type: Int, moreItemCount: Int) {
-            ImageHandler.loadImageRounded(itemView.context, itemView.img_attachment_review, image.imageUrl, 16F)
+            itemView.img_attachment_review.loadImageRounded(image.imageUrl, 16f)
             if (type == VIEW_TYPE_IMAGE_WITH_SEE_ALL_LAYER) {
                 itemView.overlay_see_more.show()
                 itemView.txt_see_more.text = itemView.context.getString(R.string.txt_more_item_plus, moreItemCount)

@@ -7,9 +7,9 @@ import android.text.style.ImageSpan
 import android.text.style.StyleSpan
 import android.view.View
 import androidx.core.content.ContextCompat
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.pdplayout.CampaignModular
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
@@ -39,7 +39,7 @@ class PartialSnapshotView(private val view: View,
         product_name.text = MethodChecker.fromHtml(data.name)
 
         img_free_ongkir.shouldShowWithAction(data.isFreeOngkir.isActive) {
-            ImageHandler.loadImageRounded2(context, img_free_ongkir, data.isFreeOngkir.imageURL)
+            img_free_ongkir.loadImageRounded(data.isFreeOngkir.imageURL)
         }
 
         text_cashback.shouldShowWithAction(data.isCashback.percentage > 0) {

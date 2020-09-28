@@ -15,7 +15,12 @@ import androidx.interpolator.view.animation.FastOutLinearInInterpolator
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.ViewHintListener
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneRecommendationCarouselDataModel
 import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneRecommendationItemDataModel
@@ -23,7 +28,6 @@ import com.tokopedia.recommendation_widget_common.listener.RecommendationListene
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifyprinciples.Typography
 import kotlin.math.abs
-
 
 class AddToCartDoneRecommendationCarouselViewHolder(
         itemView: View,
@@ -212,10 +216,7 @@ class AddToCartDoneRecommendationCarouselViewHolder(
         constructor(parent: ViewGroup) : this(LayoutInflater.from(parent.context).inflate(R.layout.add_to_cart_done_recommendation_carousel_image_item, parent, false))
         fun bind(dataModel: AddToCartDoneRecommendationItemDataModel){
             val recommendation = dataModel.recommendationItem
-            itemView.findViewById<ImageView>(R.id.carousel_image)?.loadImageRounded(
-                    recommendation.imageUrl,
-                    16f
-            )
+            itemView.findViewById<ImageView>(R.id.carousel_image)?.loadImageRounded(recommendation.imageUrl)
             if(!itemView.hasOnClickListeners()){
                 itemView.setOnClickListener {
                     recommendationListener.onProductClick(

@@ -11,7 +11,11 @@ fun ImageView.loadImage(drawable: Drawable) = this.setImageDrawable(drawable)
 
 fun ImageView.loadImage(resource: Int) = this.setImageResource(resource)
 
+fun ImageView.loadImageRounded(resource: Int, rounded: Float) = this.setImageResource(resource)
+
 fun ImageView.loadImage(url: String) = call(url, Properties())
+
+fun ImageView.loadImageCircle(url: String) = call(url, Properties())
 
 inline fun ImageView.loadImage(url: String, properties: Properties.() -> Unit) = call(url, Properties().apply(properties))
 
