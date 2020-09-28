@@ -1,4 +1,4 @@
-package com.tokopedia.developer_options.presentation.feedbackpage.ui
+package com.tokopedia.developer_options.presentation.feedbackpage.ui.tickercreated
 
 import android.content.ClipData
 import android.content.ClipboardManager

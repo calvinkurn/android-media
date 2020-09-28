@@ -1,4 +1,4 @@
-package com.tokopedia.developer_options.presentation.feedbackpage.model
+package com.tokopedia.developer_options.presentation.feedbackpage.domain.model
 
 import androidx.annotation.StringRes
 

@@ -1,4 +1,4 @@
-package com.tokopedia.developer_options.presentation.feedbackpage.ui
+package com.tokopedia.developer_options.presentation.feedbackpage.ui.feedbackpage
 
 import android.Manifest
 import android.content.ContentResolver
@@ -26,8 +26,9 @@ import com.tokopedia.developer_options.presentation.feedbackpage.domain.request.
 import com.tokopedia.developer_options.api.model.CategoriesModel
 import com.tokopedia.developer_options.presentation.feedbackpage.adapter.ImageFeedbackAdapter
 import com.tokopedia.developer_options.presentation.feedbackpage.di.FeedbackPageComponent
-import com.tokopedia.developer_options.presentation.feedbackpage.dialog.LoadingDialog
+import com.tokopedia.developer_options.presentation.feedbackpage.ui.dialog.LoadingDialog
 import com.tokopedia.developer_options.presentation.feedbackpage.listener.ImageClickListener
+import com.tokopedia.developer_options.presentation.feedbackpage.ui.tickercreated.TicketCreatedActivity
 import com.tokopedia.developer_options.presentation.feedbackpage.utils.EXTRA_URI_IMAGE
 import com.tokopedia.developer_options.presentation.preference.Preferences
 import com.tokopedia.screenshot_observer.ScreenshotData

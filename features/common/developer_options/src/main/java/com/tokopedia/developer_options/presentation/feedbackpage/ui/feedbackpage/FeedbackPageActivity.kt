@@ -1,4 +1,4 @@
-package com.tokopedia.developer_options.presentation.feedbackpage.ui
+package com.tokopedia.developer_options.presentation.feedbackpage.ui.feedbackpage
 
 import android.net.Uri
 import androidx.fragment.app.Fragment

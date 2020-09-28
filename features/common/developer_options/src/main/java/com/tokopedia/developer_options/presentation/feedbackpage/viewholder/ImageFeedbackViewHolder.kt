@@ -3,7 +3,7 @@ package com.tokopedia.developer_options.presentation.feedbackpage.viewholder
 import android.view.View
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.developer_options.presentation.feedbackpage.listener.ImageClickListener
-import com.tokopedia.developer_options.presentation.feedbackpage.model.ImageFeedbackUiModel
+import com.tokopedia.developer_options.presentation.feedbackpage.domain.model.ImageFeedbackUiModel
 import kotlinx.android.synthetic.main.item_image_chooser_feedback.view.*
 
 abstract class ImageFeedbackViewHolder (val view: View, private val addImageClickListener: ImageClickListener): BaseImageFeedbackViewHolder<ImageFeedbackUiModel>(view) {

@@ -1,4 +1,4 @@
-package com.tokopedia.developer_options.presentation.feedbackpage.ui
+package com.tokopedia.developer_options.presentation.feedbackpage.ui.feedbackpage
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.developer_options.api.ApiClient
@@ -6,6 +6,7 @@ import com.tokopedia.developer_options.api.FeedbackApiInterface
 import com.tokopedia.developer_options.presentation.feedbackpage.domain.request.FeedbackFormRequest
 import com.tokopedia.developer_options.presentation.feedbackpage.domain.response.FeedbackFormResponse
 import com.tokopedia.developer_options.presentation.feedbackpage.domain.response.ImageResponse
+import com.tokopedia.developer_options.presentation.feedbackpage.ui.feedbackpage.FeedbackPageContract
 import okhttp3.MultipartBody
 import okhttp3.ResponseBody
 import rx.Subscriber

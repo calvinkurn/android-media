@@ -1,7 +1,7 @@
 package com.tokopedia.developer_options.presentation.feedbackpage.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
-import com.tokopedia.developer_options.presentation.feedbackpage.ui.FeedbackPageFragment
+import com.tokopedia.developer_options.presentation.feedbackpage.ui.feedbackpage.FeedbackPageFragment
 import dagger.Component
 
 @FeedbackPageScope

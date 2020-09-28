@@ -1,4 +1,4 @@
-package com.tokopedia.developer_options.presentation.feedbackpage.dialog
+package com.tokopedia.developer_options.presentation.feedbackpage.ui.dialog
 
 import android.app.Dialog
 import android.content.Context

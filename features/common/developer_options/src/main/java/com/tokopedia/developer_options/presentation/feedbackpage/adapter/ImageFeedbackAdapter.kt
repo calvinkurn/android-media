@@ -5,9 +5,9 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.developer_options.R
 import com.tokopedia.developer_options.presentation.feedbackpage.listener.ImageClickListener
-import com.tokopedia.developer_options.presentation.feedbackpage.model.BaseImageFeedbackUiModel
-import com.tokopedia.developer_options.presentation.feedbackpage.model.DefaultFeedbackUiModel
-import com.tokopedia.developer_options.presentation.feedbackpage.model.ImageFeedbackUiModel
+import com.tokopedia.developer_options.presentation.feedbackpage.domain.model.BaseImageFeedbackUiModel
+import com.tokopedia.developer_options.presentation.feedbackpage.domain.model.DefaultFeedbackUiModel
+import com.tokopedia.developer_options.presentation.feedbackpage.domain.model.ImageFeedbackUiModel
 import com.tokopedia.developer_options.presentation.feedbackpage.viewholder.BaseImageFeedbackViewHolder
 import com.tokopedia.developer_options.presentation.feedbackpage.viewholder.DefaultImafeFeedbackViewHolder
 import com.tokopedia.developer_options.presentation.feedbackpage.viewholder.ImageFeedbackViewHolder

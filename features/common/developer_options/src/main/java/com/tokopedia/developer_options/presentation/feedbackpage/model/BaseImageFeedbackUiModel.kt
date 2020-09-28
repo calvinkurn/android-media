@@ -1,3 +1,0 @@
-package com.tokopedia.developer_options.presentation.feedbackpage.model
-
-interface BaseImageFeedbackUiModel
