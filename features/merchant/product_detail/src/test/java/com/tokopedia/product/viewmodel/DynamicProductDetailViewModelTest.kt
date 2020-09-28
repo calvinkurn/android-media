@@ -35,6 +35,7 @@ import com.tokopedia.purchase_platform.common.feature.helpticket.domain.usecase.
 import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationFilterChips
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
@@ -428,7 +429,7 @@ class DynamicProductDetailViewModelTest {
      */
     @Test
     fun onSuccessLoadRecommendationWithEmptyFilter() {
-        val recomWidget = RecommendationWidget(tid = "1")
+        val recomWidget = RecommendationWidget(tid = "1", recommendationItemList = listOf(RecommendationItem()))
         val listOfRecom = arrayListOf(recomWidget)
         val listOfFilter = listOf<RecommendationFilterChipsEntity.RecommendationFilterChip>()
         val pageName = "pdp3"
@@ -451,7 +452,7 @@ class DynamicProductDetailViewModelTest {
 
     @Test
     fun onSuccessLoadRecommendationWithNonEmptyFilter() {
-        val recomWidget = RecommendationWidget(tid="1")
+        val recomWidget = RecommendationWidget(tid = "1", recommendationItemList = listOf(RecommendationItem()))
         val listOfRecom = arrayListOf(recomWidget)
         val listOfFilter = listOf(RecommendationFilterChipsEntity.RecommendationFilterChip())
         val pageName = "pdp3"

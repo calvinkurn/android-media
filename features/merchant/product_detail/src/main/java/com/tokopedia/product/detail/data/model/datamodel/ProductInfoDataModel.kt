@@ -1,10 +1,8 @@
 package com.tokopedia.product.detail.data.model.datamodel
 
 import com.tokopedia.kotlin.model.ImpressHolder
-import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.pdplayout.ProductInfoContent
 import com.tokopedia.product.detail.common.data.model.product.Video
-import com.tokopedia.product.detail.data.model.spesification.ProductSpecificationResponse
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
 
 /**

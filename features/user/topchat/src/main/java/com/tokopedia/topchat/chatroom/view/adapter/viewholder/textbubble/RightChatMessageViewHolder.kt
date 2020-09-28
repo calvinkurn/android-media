@@ -25,7 +25,7 @@ open class RightChatMessageViewHolder constructor(
     var headerRole: Typography? = itemView?.findViewById(R.id.tvRole)
     var smartReplyBlueDot: ImageView? = itemView?.findViewById(R.id.img_sr_blue_dot)
     private val bg = ViewUtil.generateBackgroundWithShadow(
-            itemView,
+            fxChat,
             R.color.bg_topchat_right_message,
             R.dimen.dp_topchat_20,
             R.dimen.dp_topchat_0,
