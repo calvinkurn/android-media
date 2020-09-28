@@ -1,12 +1,12 @@
-package com.tokopedia.product.detail.view.adapter
+package com.tokopedia.product.info.view.adapter
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
-import com.tokopedia.product.detail.data.model.description.DescriptionData
-import com.tokopedia.product.detail.data.model.spesification.Specification
-import com.tokopedia.product.detail.view.fragment.ProductFullDescriptionFragment
-import com.tokopedia.product.detail.view.fragment.ProductSpecificationFragment
+import com.tokopedia.product.info.model.description.DescriptionData
+import com.tokopedia.product.info.view.fragment.ProductFullDescriptionFragment
+import com.tokopedia.product.info.view.fragment.ProductSpecificationFragment
+import com.tokopedia.product.info.model.specification.Specification
 
 class ProductViewPagerAdapter(fragmentManager: FragmentManager,
                               private val titleList: List<String>,

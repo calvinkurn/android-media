@@ -2,9 +2,9 @@ package com.tokopedia.product.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
-import com.tokopedia.product.detail.data.model.spesification.ProductSpecificationResponse
-import com.tokopedia.product.detail.usecase.GetProductSpecificationUseCase
-import com.tokopedia.product.detail.view.viewmodel.ProductFullDescriptionViewModel
+import com.tokopedia.product.info.model.specification.ProductSpecificationResponse
+import com.tokopedia.product.info.usecase.GetProductSpecificationUseCase
+import com.tokopedia.product.info.view.ProductFullDescriptionViewModel
 import com.tokopedia.product.util.TestDispatcherProvider
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail

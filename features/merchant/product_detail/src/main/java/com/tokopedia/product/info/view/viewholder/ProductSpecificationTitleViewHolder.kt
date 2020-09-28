@@ -1,10 +1,10 @@
-package com.tokopedia.product.detail.view.viewholder
+package com.tokopedia.product.info.view.viewholder
 
 import android.view.View
 import android.widget.TextView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.data.model.spesification.SpecificationTitleDataModel
+import com.tokopedia.product.info.model.specification.SpecificationTitleDataModel
 
 class ProductSpecificationTitleViewHolder(view: View) : AbstractViewHolder<SpecificationTitleDataModel>(view) {
 

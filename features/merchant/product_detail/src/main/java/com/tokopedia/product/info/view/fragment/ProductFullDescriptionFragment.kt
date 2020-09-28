@@ -1,4 +1,4 @@
-package com.tokopedia.product.detail.view.fragment
+package com.tokopedia.product.info.view.fragment
 
 import android.content.Intent
 import android.net.Uri
@@ -24,13 +24,13 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.product.Video
-import com.tokopedia.product.detail.data.model.description.DescriptionData
 import com.tokopedia.product.detail.data.util.ProductCustomMovementMethod
 import com.tokopedia.product.detail.data.util.getCurrencyFormatted
 import com.tokopedia.product.detail.view.activity.ProductYoutubePlayerActivity
 import com.tokopedia.product.detail.view.adapter.YoutubeThumbnailAdapter
-import com.tokopedia.product.detail.view.listener.ProductFullDescriptionListener
 import com.tokopedia.product.detail.view.util.SpaceItemDecoration
+import com.tokopedia.product.info.model.description.DescriptionData
+import com.tokopedia.product.info.view.ProductFullDescriptionListener
 import kotlinx.android.synthetic.main.fragment_product_full_description.*
 
 class ProductFullDescriptionFragment : BaseDaggerFragment(), ProductFullDescriptionListener {

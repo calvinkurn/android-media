@@ -1,4 +1,4 @@
-package com.tokopedia.product.detail.view.listener
+package com.tokopedia.product.info.view
 
 /**
  * Created by Yehezkiel on 05/05/20

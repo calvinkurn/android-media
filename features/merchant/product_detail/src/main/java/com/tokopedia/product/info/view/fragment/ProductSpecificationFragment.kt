@@ -1,4 +1,4 @@
-package com.tokopedia.product.detail.view.fragment
+package com.tokopedia.product.info.view.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,11 +7,11 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.kotlin.extensions.view.joinToStringWithLast
 import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.data.model.spesification.ProductSpecificationDataModel
-import com.tokopedia.product.detail.data.model.spesification.Specification
-import com.tokopedia.product.detail.data.model.spesification.SpecificationBodyDataModel
-import com.tokopedia.product.detail.data.model.spesification.SpecificationTitleDataModel
-import com.tokopedia.product.detail.view.adapter.factory.ProductSpecificationFactoryImpl
+import com.tokopedia.product.info.model.specification.ProductSpecificationDataModel
+import com.tokopedia.product.info.model.specification.Specification
+import com.tokopedia.product.info.model.specification.SpecificationBodyDataModel
+import com.tokopedia.product.info.model.specification.SpecificationTitleDataModel
+import com.tokopedia.product.info.view.adapter.ProductSpecificationFactoryImpl
 
 class ProductSpecificationFragment : BaseListFragment<ProductSpecificationDataModel, ProductSpecificationFactoryImpl>() {
 

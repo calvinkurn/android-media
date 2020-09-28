@@ -1,4 +1,4 @@
-package com.tokopedia.product.detail.view.activity
+package com.tokopedia.product.info.view
 
 import android.content.Context
 import android.content.Intent
@@ -6,21 +6,19 @@ import android.os.Bundle
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.data.model.description.DescriptionData
 import com.tokopedia.product.detail.data.util.ProductDetailTracking
 import com.tokopedia.product.detail.di.DaggerProductDetailComponent
 import com.tokopedia.product.detail.di.ProductDetailComponent
-import com.tokopedia.product.detail.view.adapter.ProductViewPagerAdapter
-import com.tokopedia.product.detail.view.fragment.ProductFullDescriptionFragment
-import com.tokopedia.product.detail.view.fragment.ProductSpecificationFragment
 import com.tokopedia.product.detail.view.util.doSuccessOrFail
-import com.tokopedia.product.detail.view.viewmodel.ProductFullDescriptionViewModel
+import com.tokopedia.product.info.model.description.DescriptionData
+import com.tokopedia.product.info.view.adapter.ProductViewPagerAdapter
+import com.tokopedia.product.info.view.fragment.ProductFullDescriptionFragment
+import com.tokopedia.product.info.view.fragment.ProductSpecificationFragment
 import kotlinx.android.synthetic.main.activity_full_desc_tab.*
 import javax.inject.Inject
 
@@ -40,7 +38,7 @@ class ProductFullDescriptionTabActivity : BaseSimpleActivity(), HasComponent<Pro
                 ?: DescriptionData())
     }
     private val viewModel by lazy {
-        ViewModelProviders.of(this, viewModelFactory).get(ProductFullDescriptionViewModel::class.java)
+        ViewModelProvider(this, viewModelFactory).get(ProductFullDescriptionViewModel::class.java)
     }
 
     companion object {

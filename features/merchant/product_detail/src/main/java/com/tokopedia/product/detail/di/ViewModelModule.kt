@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.product.detail.view.viewmodel.AddToCartDoneViewModel
 import com.tokopedia.product.detail.view.viewmodel.DynamicProductDetailViewModel
-import com.tokopedia.product.detail.view.viewmodel.ProductFullDescriptionViewModel
+import com.tokopedia.product.info.view.ProductFullDescriptionViewModel
 import com.tokopedia.product.detail.view.viewmodel.ProductInstallmentViewModel
 import dagger.Binds
 import dagger.Module

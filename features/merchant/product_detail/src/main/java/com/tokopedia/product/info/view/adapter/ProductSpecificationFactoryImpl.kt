@@ -1,13 +1,13 @@
-package com.tokopedia.product.detail.view.adapter.factory
+package com.tokopedia.product.info.view.adapter
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingShimmeringGridViewHolder
-import com.tokopedia.product.detail.data.model.spesification.SpecificationBodyDataModel
-import com.tokopedia.product.detail.data.model.spesification.SpecificationTitleDataModel
-import com.tokopedia.product.detail.view.viewholder.ProductSpecificationBodyViewHolder
-import com.tokopedia.product.detail.view.viewholder.ProductSpecificationTitleViewHolder
+import com.tokopedia.product.info.view.viewholder.ProductSpecificationBodyViewHolder
+import com.tokopedia.product.info.view.viewholder.ProductSpecificationTitleViewHolder
+import com.tokopedia.product.info.model.specification.SpecificationBodyDataModel
+import com.tokopedia.product.info.model.specification.SpecificationTitleDataModel
 
 class ProductSpecificationFactoryImpl : BaseAdapterTypeFactory(), ProductSpecificationFactory {
 

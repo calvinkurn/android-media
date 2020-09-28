@@ -1,15 +1,15 @@
-package com.tokopedia.product.detail.view.viewmodel
+package com.tokopedia.product.info.view
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.product.detail.data.model.spesification.ProductSpecificationResponse
-import com.tokopedia.product.detail.usecase.GetProductSpecificationUseCase
 import com.tokopedia.product.detail.view.util.DynamicProductDetailDispatcherProvider
 import com.tokopedia.product.detail.view.util.asFail
 import com.tokopedia.product.detail.view.util.asSuccess
+import com.tokopedia.product.info.model.specification.ProductSpecificationResponse
+import com.tokopedia.product.info.usecase.GetProductSpecificationUseCase
 import com.tokopedia.usecase.coroutines.Result
 import kotlinx.coroutines.withContext
 import javax.inject.Inject

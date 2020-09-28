@@ -1,7 +1,7 @@
-package com.tokopedia.product.detail.data.model.spesification
+package com.tokopedia.product.info.model.specification
 
 import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.view.adapter.factory.ProductSpecificationFactory
+import com.tokopedia.product.info.view.adapter.ProductSpecificationFactory
 
 data class SpecificationTitleDataModel(
         var title: String = "") : ProductSpecificationDataModel {
