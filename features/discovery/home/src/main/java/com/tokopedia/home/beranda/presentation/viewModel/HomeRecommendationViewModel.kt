@@ -7,8 +7,8 @@ import com.tokopedia.home.beranda.domain.interactor.GetHomeRecommendationUseCase
 import com.tokopedia.home.beranda.helper.copy
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.*
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import javax.inject.Inject
 
 class HomeRecommendationViewModel @Inject constructor(
@@ -32,51 +32,45 @@ class HomeRecommendationViewModel @Inject constructor(
             val data = getHomeRecommendationUseCase.executeOnBackground()
             if(data.homeRecommendations.isEmpty()){
                 _homeRecommendationLiveData.postValue(data.copy(homeRecommendations = listOf(HomeRecommendationEmpty())))
-            } else if (shouldFetchTopAds(data)) {
-                fetchTopAds(data)
+            } else {
+                try{
+                    val homeBannerTopAds = data.homeRecommendations.filterIsInstance<HomeRecommendationBannerTopAdsDataModel>()
+                    var topAdsBanner = arrayListOf<TopAdsImageViewModel>()
+                    if (homeBannerTopAds.isNotEmpty()) {
+                        topAdsBanner = topAdsImageViewUseCase.getImageData(
+                                topAdsImageViewUseCase.getQueryMap(
+                                        "",
+                                        "1",
+                                        topAdsBannerNextPageToken,
+                                        homeBannerTopAds.size,
+                                        3,
+                                        ""
+                                )
+                        )
+                    }
+                    if(topAdsBanner.isEmpty()){
+                        _homeRecommendationLiveData.postValue(data.copy(
+                                homeRecommendations = data.homeRecommendations.filter { it !is HomeRecommendationBannerTopAdsDataModel}
+                        ))
+                    } else {
+                        val newList = data.homeRecommendations.toMutableList()
+                        topAdsBanner.forEachIndexed { index, topAdsImageViewModel ->
+                            val visitableBanner = homeBannerTopAds[index]
+                            newList[visitableBanner.position] = HomeRecommendationBannerTopAdsDataModel(topAdsImageViewModel)
+                            topAdsBannerNextPageToken = topAdsImageViewModel.nextPageToken ?: ""
+                        }
+                        _homeRecommendationLiveData.postValue(data.copy(homeRecommendations = newList))
+                    }
+                } catch (e: Exception){
+                    _homeRecommendationLiveData.postValue(data.copy(
+                            homeRecommendations = data.homeRecommendations.filter { it !is HomeRecommendationBannerTopAdsDataModel}
+                    ))
+                }
             }
             _homeRecommendationNetworkLiveData.postValue(Result.success(data))
         }){
             _homeRecommendationLiveData.postValue(HomeRecommendationDataModel(homeRecommendations = listOf(HomeRecommendationError())))
             _homeRecommendationNetworkLiveData.postValue(Result.failure(it))
-        }
-    }
-
-    private fun shouldFetchTopAds(data: HomeRecommendationDataModel): Boolean {
-        val homeBannerTopAds = data.homeRecommendations.filterIsInstance<HomeRecommendationBannerTopAdsDataModel>()
-        return homeBannerTopAds.size.isMoreThanZero()
-    }
-
-    private suspend fun fetchTopAds(data: HomeRecommendationDataModel) {
-        try {
-            val homeBannerTopAds = data.homeRecommendations.filterIsInstance<HomeRecommendationBannerTopAdsDataModel>()
-            val topAdsBanner = topAdsImageViewUseCase.getImageData(
-                    topAdsImageViewUseCase.getQueryMap(
-                            "",
-                            "1",
-                            topAdsBannerNextPageToken,
-                            homeBannerTopAds.size,
-                            3,
-                            ""
-                    )
-            )
-            if (topAdsBanner.isEmpty()) {
-                _homeRecommendationLiveData.postValue(data.copy(
-                        homeRecommendations = data.homeRecommendations.filter { it !is HomeRecommendationBannerTopAdsDataModel }
-                ))
-            } else {
-                val newList = data.homeRecommendations.toMutableList()
-                topAdsBanner.forEachIndexed { index, topAdsImageViewModel ->
-                    val visitableBanner = homeBannerTopAds[index]
-                    newList[visitableBanner.position] = HomeRecommendationBannerTopAdsDataModel(topAdsImageViewModel)
-                    topAdsBannerNextPageToken = topAdsImageViewModel.nextPageToken ?: ""
-                }
-                _homeRecommendationLiveData.postValue(data.copy(homeRecommendations = newList))
-            }
-        } catch (e: Exception) {
-            _homeRecommendationLiveData.postValue(data.copy(
-                    homeRecommendations = data.homeRecommendations.filter { it !is HomeRecommendationBannerTopAdsDataModel }
-            ))
         }
     }
 
