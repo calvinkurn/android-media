@@ -3,14 +3,13 @@ package com.tokopedia.media.loader.data
 import android.content.Context
 import android.content.SharedPreferences
 
-class QualitySettingsManager constructor(val context: Context) {
+class MediaSettingPreferences constructor(val context: Context) {
 
     private fun pref(): SharedPreferences {
         return context.getSharedPreferences(MEDIA_QUALITY_PREF, Context.MODE_PRIVATE)
     }
 
     fun qualitySettings(): Int {
-        // default: adaptive image.
         return if (isExist()) pref().getInt(KEY_QUALITY_SETTING, 0) else 0
     }
 

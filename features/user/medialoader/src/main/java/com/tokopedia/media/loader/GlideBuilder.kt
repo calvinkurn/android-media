@@ -3,19 +3,13 @@ package com.tokopedia.media.loader
 import android.graphics.drawable.Drawable
 import android.widget.ImageView
 import androidx.annotation.DrawableRes
-import androidx.appcompat.content.res.AppCompatResources
-import com.bumptech.glide.Glide
+import androidx.appcompat.content.res.AppCompatResources.getDrawable
 import com.bumptech.glide.load.Key
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.model.GlideUrl
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.bumptech.glide.request.target.CustomTarget
-import com.bumptech.glide.request.transition.Transition
-import com.bumptech.glide.signature.ObjectKey
 import com.tokopedia.kotlin.extensions.R
 import com.tokopedia.media.loader.module.GlideApp
-import com.tokopedia.media.loader.viewtarget.RoundedViewTarget
-import androidx.appcompat.content.res.AppCompatResources.getDrawable as getDrawable
 
 object GlideBuilder {
 
@@ -30,7 +24,6 @@ object GlideBuilder {
             @DrawableRes resOnError: Int = 0,
             isAnimate: Boolean = false
     ) {
-
         val drawableError: Drawable? = if (resOnError == 0) {
             getDrawable(imageView.context, R.drawable.ic_loading_error)
         } else {
