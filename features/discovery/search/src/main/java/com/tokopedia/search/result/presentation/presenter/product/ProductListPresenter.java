@@ -1272,7 +1272,10 @@ final class ProductListPresenter
 
     private GeneralSearchTrackingModel createGeneralSearchTrackingModel(ProductViewModel productViewModel, String query, Set<String> categoryIdMapping, Set<String> categoryNameMapping) {
         return new GeneralSearchTrackingModel(
+                createGeneralSearchTrackingEventCategory(),
                 createGeneralSearchTrackingEventLabel(productViewModel, query),
+                getUserId(),
+                "",
                 Boolean.toString(!productViewModel.getProductList().isEmpty()),
                 StringUtils.join(categoryIdMapping, ","),
                 StringUtils.join(categoryNameMapping, ","),
@@ -1280,10 +1283,14 @@ final class ProductListPresenter
         );
     }
 
+    private String createGeneralSearchTrackingEventCategory() {
+        return SearchEventTracking.Category.EVENT_TOP_NAV + (textIsEmpty(pageTitle) ? "" : " - " + pageTitle);
+    }
+
     private String createGeneralSearchTrackingEventLabel(ProductViewModel productViewModel, String query) {
         String source = getTopNavSource(productViewModel.getGlobalNavViewModel());
         return String.format(
-                SearchEventTracking.Label.KEYWORD_TREATMENT_RESPONSE,
+                SearchEventTracking.Label.GENERAL_SEARCH_EVENT_LABEL,
                 query,
                 productViewModel.getKeywordProcess(),
                 productViewModel.getResponseCode(),

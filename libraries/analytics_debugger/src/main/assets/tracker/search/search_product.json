@@ -4,9 +4,12 @@
   "query" : [
     {
       "event": "clickSearch",
-      "eventCategory": "top nav",
+      "eventCategory": "{{top nav|top nav - .+}}",
       "eventAction": "general search",
-      "eventLabel": "{{keyword: .* - treatment: .* - response: \\d* - .* - .* - .*}}",
+      "eventLabel": "{{.+_.+_\\d_.+_.+_.+}}",
+      "currentSite": "tokopediamarketplace",
+      "userId": "{{.+}}",
+      "businessUnit": "",
       "isResultFound": "{{.*}}",
       "categoryIdMapping": "{{.*}}",
       "categoryNameMapping": "{{.*}}",

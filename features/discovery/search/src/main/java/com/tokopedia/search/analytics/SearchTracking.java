@@ -546,9 +546,12 @@ public class SearchTracking {
     public static void trackGTMEventSearchAttempt(GeneralSearchTrackingModel generalSearchTrackingModel) {
         Map<String, Object> value = DataLayer.mapOf(
                 EVENT, SearchEventTracking.Event.CLICK_SEARCH,
-                EVENT_CATEGORY, SearchEventTracking.Category.EVENT_TOP_NAV,
+                EVENT_CATEGORY, generalSearchTrackingModel.getEventCategory(),
                 EVENT_ACTION, SearchEventTracking.Action.GENERAL_SEARCH,
                 EVENT_LABEL, generalSearchTrackingModel.getEventLabel(),
+                CURRENT_SITE, TOKOPEDIA_MARKETPLACE,
+                USER_ID, generalSearchTrackingModel.getUserId(),
+                BUSINESS_UNIT, generalSearchTrackingModel.getBusinessUnit(),
                 IS_RESULT_FOUND, generalSearchTrackingModel.isResultFound(),
                 CATEGORY_ID_MAPPING, generalSearchTrackingModel.getCategoryIdMapping(),
                 CATEGORY_NAME_MAPPING, generalSearchTrackingModel.getCategoryNameMapping(),
