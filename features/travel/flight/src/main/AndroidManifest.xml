@@ -73,9 +73,26 @@
                     android:pathPattern="@string/path_flight_order_detail"
                     android:scheme="@string/tokopedia_scheme" />
             </intent-filter>
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_flight"
+                    android:path="@string/path_flight_cancel"
+                    android:scheme="@string/tokopedia_scheme" />
+            </intent-filter>
         </activity>
         <activity
             android:name=".cancellation.view.activity.FlightCancellationActivity"
+            android:label="@string/activity_label_flight_cancellation"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White.Flight">
+        </activity>
+        <activity
+            android:name=".cancellationV2.presentation.activity.FlightCancellationPassengerActivity"
             android:label="@string/activity_label_flight_cancellation"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White.Flight">
@@ -87,15 +104,10 @@
 
                 <data
                     android:host="@string/host_flight"
-                    android:path="@string/path_flight_cancel"
+                    android:pathPattern="@string/path_flight_cancel"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".cancellationV2.presentation.activity.FlightCancellationPassengerActivity"
-            android:label="@string/activity_label_flight_cancellation"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White.Flight" />
         <activity
             android:name=".cancellation.view.activity.FlightCancellationReasonAndProofActivity"
             android:label="@string/activity_label_flight_cancellation"

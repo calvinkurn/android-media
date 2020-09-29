@@ -36,11 +36,9 @@ import com.tokopedia.sellerhome.common.SellerHomePerformanceMonitoringConstant.S
 import com.tokopedia.sellerhome.common.SellerHomePerformanceMonitoringConstant.SELLER_HOME_POST_LIST_TRACE
 import com.tokopedia.sellerhome.common.SellerHomePerformanceMonitoringConstant.SELLER_HOME_PROGRESS_TRACE
 import com.tokopedia.sellerhome.common.SellerHomePerformanceMonitoringConstant.SELLER_HOME_TABLE_TRACE
-import com.tokopedia.sellerhome.common.ShopStatus
 import com.tokopedia.sellerhome.common.exception.SellerHomeException
 import com.tokopedia.sellerhome.config.SellerHomeRemoteConfig
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
-import com.tokopedia.sellerhome.domain.model.GetShopStatusResponse
 import com.tokopedia.sellerhome.domain.model.PROVINCE_ID_EMPTY
 import com.tokopedia.sellerhome.domain.model.ShippingLoc
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity
@@ -96,7 +94,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     @Inject
     lateinit var remoteConfig: SellerHomeRemoteConfig
 
-    private var widgetHasMap = hashMapOf<String, MutableList<BaseWidgetUiModel<*>>>()
     private val sellerHomeViewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(SellerHomeViewModel::class.java)
     }
@@ -154,7 +151,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         observeWidgetData(sellerHomeViewModel.pieChartWidgetData, WidgetType.PIE_CHART)
         observeWidgetData(sellerHomeViewModel.barChartWidgetData, WidgetType.BAR_CHART)
         observeTickerLiveData()
-        observeShopStatusLiveData()
         context?.let { UpdateShopActiveService.startService(it) }
     }
 
@@ -162,6 +158,11 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         super.onResume()
         if (!isFirstLoad)
             reloadPage()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        hideTooltipIfExist()
     }
 
     override fun onHiddenChanged(hidden: Boolean) {
@@ -196,11 +197,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     }
 
     private fun initPltPerformanceMonitoring() {
-        performanceMonitoringSellerHomePlt = if(remoteConfig.isNewSellerHomeDisabled()) {
-            (activity as? com.tokopedia.sellerhome.view.oldactivity.SellerHomeActivity)?.performanceMonitoringSellerHomeLayoutPlt
-        } else {
-            (activity as? SellerHomeActivity)?.performanceMonitoringSellerHomeLayoutPlt
-        }
+        performanceMonitoringSellerHomePlt = (activity as? SellerHomeActivity)?.performanceMonitoringSellerHomeLayoutPlt
     }
 
     private fun hideTooltipIfExist() {
@@ -240,13 +237,14 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         swipeRefreshLayout.setOnRefreshListener {
             reloadPage()
             showNotificationBadge()
-            sellerHomeViewModel.getShopStatus()
             sellerHomeListener?.getShopInfo()
         }
 
         sahGlobalError.setActionClickListener {
             reloadPage()
         }
+
+        setViewBackground()
     }
 
     /**
@@ -353,8 +351,9 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     override fun onTooltipClicked(tooltip: TooltipUiModel) {
         if (!isAdded || context == null) return
-        TooltipBottomSheet(requireContext(), tooltip)
-                .show(childFragmentManager, TAG_TOOLTIP)
+        val tooltipBottomSheet = (childFragmentManager.findFragmentByTag(TAG_TOOLTIP) as? TooltipBottomSheet) ?: TooltipBottomSheet.createInstance()
+        tooltipBottomSheet.init(requireContext(), tooltip)
+        tooltipBottomSheet.show(childFragmentManager, TAG_TOOLTIP)
     }
 
     override fun removeWidget(position: Int, widget: BaseWidgetUiModel<*>) {
@@ -511,19 +510,11 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     private fun stopHomeLayoutRenderMonitoring() {
         performanceMonitoringSellerHomePlt?.stopRenderPerformanceMonitoring()
-        if(remoteConfig.isNewSellerHomeDisabled()) {
-            (activity as? com.tokopedia.sellerhome.view.oldactivity.SellerHomeActivity)?.sellerHomeLoadTimeMonitoringListener?.onStopPltMonitoring()
-        } else {
-            (activity as? SellerHomeActivity)?.sellerHomeLoadTimeMonitoringListener?.onStopPltMonitoring()
-        }
+        (activity as? SellerHomeActivity)?.sellerHomeLoadTimeMonitoringListener?.onStopPltMonitoring()
     }
 
     private fun stopPerformanceMonitoringSellerHomeLayout() {
-        if(remoteConfig.isNewSellerHomeDisabled()) {
-            (activity as? com.tokopedia.sellerhome.view.oldactivity.SellerHomeActivity)?.stopPerformanceMonitoringSellerHomeLayout()
-        } else {
-            (activity as? SellerHomeActivity)?.stopPerformanceMonitoringSellerHomeLayout()
-        }
+        (activity as? SellerHomeActivity)?.stopPerformanceMonitoringSellerHomeLayout()
     }
 
     private fun setOnSuccessGetLayout(widgets: List<BaseWidgetUiModel<*>>) {
@@ -635,32 +626,13 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         sellerHomeViewModel.getTicker()
     }
 
-    private fun observeShopStatusLiveData() {
-        sellerHomeViewModel.shopStatus.observe(viewLifecycleOwner, Observer {
-            if (it is Success)
-                setOnSuccessGetShopStatus(it.data)
-        })
-        sellerHomeViewModel.getShopStatus()
-    }
-
-    private fun setOnSuccessGetShopStatus(goldPmOsStatus: GetShopStatusResponse) = view?.run {
-        val mShopStatus = goldPmOsStatus.result.data
-        val shopStatus: ShopStatus = when {
-            mShopStatus.isOfficialStore() -> ShopStatus.OFFICIAL_STORE
-            mShopStatus.isPowerMerchantActive() || mShopStatus.isPowerMerchantIdle() -> ShopStatus.POWER_MERCHANT
-            else -> ShopStatus.REGULAR_MERCHANT
-        }
-
-        when (shopStatus) {
-            ShopStatus.OFFICIAL_STORE -> {
-                viewBgShopStatus.setBackgroundResource(R.drawable.sah_shop_state_bg_official_store)
-            }
-            ShopStatus.POWER_MERCHANT -> {
-                viewBgShopStatus.setBackgroundResource(R.drawable.sah_shop_state_bg_power_merchant)
-            }
-            else -> {
-                viewBgShopStatus.setBackgroundColor(context.getResColor(android.R.color.transparent))
-            }
+    private fun setViewBackground() = view?.run {
+        val isOfficialStore = userSession.isShopOfficialStore
+        val isPowerMerchant = userSession.isPowerMerchantIdle || userSession.isGoldMerchant
+        when {
+            isOfficialStore -> viewBgShopStatus.setBackgroundResource(R.drawable.sah_shop_state_bg_official_store)
+            isPowerMerchant -> viewBgShopStatus.setBackgroundResource(R.drawable.sah_shop_state_bg_power_merchant)
+            else -> viewBgShopStatus.setBackgroundColor(context.getResColor(android.R.color.transparent))
         }
     }
 
@@ -741,7 +713,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         }
     }
 
-    private fun onSuccessGetTickers(tickers: List<TickerUiModel>) {
+    private fun onSuccessGetTickers(tickers: List<TickerItemUiModel>) {
 
         fun getTickerType(hexColor: String): Int = when (hexColor) {
             context?.getString(R.string.sah_ticker_warning) -> Ticker.TYPE_WARNING
@@ -783,10 +755,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     fun setNotifCenterCounter(count: Int) {
         this.notifCenterCount = count
         showNotificationBadge()
-    }
-
-    fun bindListener(listener: Listener?) {
-        this.sellerHomeListener = listener
     }
 
     interface Listener {

@@ -8,6 +8,7 @@
 
     <ImageView
         android:id="@+id/banner_image_view"
+        android:contentDescription="@string/content_desc_banner_image_view"
         style="@style/MatchConstrain"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

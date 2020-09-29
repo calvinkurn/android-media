@@ -108,6 +108,7 @@ class TopChatRoomPresenter @Inject constructor(
         private val chatAttachmentUseCase: ChatAttachmentUseCase,
         private val chatToggleBlockChat: ChatToggleBlockChatUseCase,
         private val addToCartOccUseCase: AddToCartOccUseCase,
+        private val chatBackgroundUseCase: ChatBackgroundUseCase,
         private val sharedPref: SharedPreferences,
         private val dispatchers: TopchatCoroutineContextProvider
 ) : BaseChatPresenter<TopChatContract.View>(userSession, topChatRoomWebSocketMessageMapper),
@@ -207,7 +208,7 @@ class TopChatRoomPresenter @Inject constructor(
             }
             EVENT_TOPCHAT_REPLY_MESSAGE -> {
                 if (!isInTheMiddleOfThePage()) {
-                    view?.removeBroadcastHandler()
+                    view?.onSendAndReceiveMessage()
                     onReplyMessage(pojo)
                     newUnreadMessage = 0
                     view?.hideUnreadMessage()
@@ -885,6 +886,24 @@ class TopChatRoomPresenter @Inject constructor(
                     onError(it)
                 }
         )
+    }
+
+    override fun getBackground() {
+        chatBackgroundUseCase.getBackground(::onLoadBackgroundFromCache, ::onSuccessLoadBackground, ::onErrorLoadBackground)
+    }
+
+    private fun onLoadBackgroundFromCache(url: String) {
+        view?.renderBackground(url)
+    }
+
+    private fun onSuccessLoadBackground(url: String, needToUpdate: Boolean) {
+        if (needToUpdate) {
+            view?.renderBackground(url)
+        }
+    }
+
+    private fun onErrorLoadBackground(throwable: Throwable) {
+        throwable.printStackTrace()
     }
 
     private fun onSuccessGetAttachments(attachments: ArrayMap<String, Attachment>) {

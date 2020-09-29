@@ -192,4 +192,9 @@ public interface CMConstant {
         String COUPON_CODE = "coupon_code";
     }
 
+    interface TimberTags {
+        String TAG = "P2#CM_VALIDATION#";
+        int MAX_LIMIT = 1000;
+    }
+
 }
