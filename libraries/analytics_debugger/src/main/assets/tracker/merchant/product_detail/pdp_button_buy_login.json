@@ -1,0 +1,82 @@
+{
+  "readme": "Product Detail - click button buy login",
+  "mode": "exact",
+  "query": [
+    {
+      "eventCategory": "product page",
+      "productDeeplinkUrl": "{{.*}}",
+      "shopName": "{{.*}}",
+      "eventAction": "view product page",
+      "pageType": "/productpage",
+      "subcategoryId": "{{.*}}",
+      "shopDomain": "{{.*}}",
+      "shopId": "{{.*}}",
+      "isOfficialStore": "{{.*}}",
+      "event": "view_item",
+      "key": "{{.*}}",
+      "productImageUrl": "{{.*}}",
+      "shopLocation": "{{.*}}",
+      "productId": "{{.*}}",
+      "sessionIris": "{{.*}}",
+      "eventLabel": "{{.*}}",
+      "shopIsGold": "{{.*}}",
+      "productPriceFormatted": "{{.*}}",
+      "layout": "layout:{{.*}};catName:{{.*}};catId:{{.*}}",
+      "component": "",
+      "shopType": "{{.*}}",
+      "subcategory": "{{.*}}",
+      "productUrl": "{{.*}}",
+      "items": [
+        {
+          "item_id": "{{.*}}",
+          "index": "{{\\d*.}}",
+          "item_name": "{{.*}}",
+          "dimension81": "{{.*}}",
+          "item_brand": "{{.*}}",
+          "item_category": "{{.*}}",
+          "dimension54": "{{.*}}",
+          "dimension98": "{{.*}}",
+          "dimension55": "{{.*}}",
+          "dimension83": "{{none / other}}",
+          "price": "{{\\d*.}}",
+          "dimension40": "{{.*}}",
+          "item_variant": "{{none / other}}",
+          "dimension38": "{{none / other}}"
+        }
+      ],
+      "categoryId": "{{.*}}"
+    },
+    {
+      "layout": "layout:{{.*}};catName:{{.*}};catId:{{.*}};",
+      "eventCategory": "product detail page",
+      "productId": "{{.*}}",
+      "user_id": "{{.*}}",
+      "isLoggedInStatus": "{{.*}}",
+      "shopId": "{{.*}}",
+      "shopType": "{{.*}}",
+      "event": "add_to_cart",
+      "eventAction": "click - Beli on pdp",
+      "items": [
+        {
+          "quantity": "{{\\d*.}}",
+          "item_id": "{{.*}}",
+          "item_name": "{{.*}}",
+          "dimension81": "{{.*}}",
+          "dimension80": "{{.*}}",
+          "item_brand": "{{none / other}}",
+          "item_category": "{{.*}}",
+          "dimension54": "{{.*}}",
+          "dimension45": "{{.*}}",
+          "dimension83": "{{none / other}}",
+          "dimension82": "{{.*}}",
+          "price": "{{\\d*.}}",
+          "dimension40": "{{.*}}",
+          "dimension79": "{{.*}}",
+          "item_variant": "{{.*}}",
+          "dimension38": "{{.*}}"
+        }
+      ],
+      "eventLabel": "fitur : Beli normal"
+    }
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "readme": "Product Detail - click guide on the size chart",
+  "mode": "exact",
+  "query": [
+    {
+      "eventCategory": "product page",
+      "productDeeplinkUrl": "{{.*}}",
+      "shopName": "{{.*}}",
+      "eventAction": "view product page",
+      "pageType": "/productpage",
+      "subcategoryId": "{{.*}}",
+      "shopDomain": "{{.*}}",
+      "shopId": "{{.*}}",
+      "isOfficialStore": "{{.*}}",
+      "event": "view_item",
+      "key": "{{.*}}",
+      "productImageUrl": "{{.*}}",
+      "shopLocation": "{{.*}}",
+      "productId": "{{.*}}",
+      "sessionIris": "{{.*}}",
+      "eventLabel": "{{.*}}",
+      "shopIsGold": "{{.*}}",
+      "productPriceFormatted": "{{.*}}",
+      "layout": "layout:{{.*}};catName:{{.*}};catId:{{.*}}",
+      "component": "",
+      "shopType": "{{.*}}",
+      "subcategory": "{{.*}}",
+      "productUrl": "{{.*}}",
+      "items": [
+        {
+          "item_id": "{{.*}}",
+          "index": "{{\\d*.}}",
+          "item_name": "{{.*}}",
+          "dimension81": "{{.*}}",
+          "item_brand": "{{.*}}",
+          "item_category": "{{.*}}",
+          "dimension54": "{{.*}}",
+          "dimension98": "{{.*}}",
+          "dimension55": "{{.*}}",
+          "dimension83": "{{none / other}}",
+          "price": "{{\\d*.}}",
+          "dimension40": "{{.*}}",
+          "item_variant": "{{none / other}}",
+          "dimension38": "{{none / other}}"
+        }
+      ],
+      "categoryId": "{{.*}}"
+    },
+    {
+      "event": "clickPDP",
+      "eventCategory": "product detail page",
+      "eventAction": "click - lihat panduan on size chart",
+      "eventLabel": "{{.*}}",
+      "productId": "{{.*}}",
+      "layout": "layout:{{.*}};catName:{{.*}};catId:{{.*}};",
+      "component": "comp:{{.*}};temp:{{.*}};elem:{{.*}};cpos:{{.*}};"
+    }
+  ]
+}
