@@ -114,7 +114,7 @@ class BannerViewHolder(itemView: View, private val listener: HomeCategoryListene
     }
 
     private fun onPromoScrolled(position: Int) {
-        if (listener?.isMainViewVisible?:false) {
+        if (listener?.isMainViewVisible?:false && !isCache) {
             slidesList?.let {
                 listener?.onPromoScrolled(it[position])
                 it[position].invoke()
