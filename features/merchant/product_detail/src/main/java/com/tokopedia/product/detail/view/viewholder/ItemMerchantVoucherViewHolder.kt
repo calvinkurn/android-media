@@ -2,7 +2,6 @@ package com.tokopedia.product.detail.view.viewholder
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherTypeDef
@@ -50,11 +49,11 @@ class ItemMerchantVoucherViewHolder(view: View, val listener: ProductMerchantVou
         ic_merchant_voucher?.run {
             when (merchantVoucherType) {
                 MerchantVoucherTypeDef.TYPE_DISCOUNT, MerchantVoucherTypeDef.TYPE_CASHBACK -> {
-                    setImageDrawable(MethodChecker.getDrawable(context, R.drawable.ic_voucher_discount))
+                    setImageResource(R.drawable.ic_voucher_discount)
                     show()
                 }
                 MerchantVoucherTypeDef.TYPE_FREE_ONGKIR -> {
-                    setImageDrawable(MethodChecker.getDrawable(context, R.drawable.ic_voucher_shipping))
+                    setImageResource(R.drawable.ic_voucher_shipping)
                     show()
                 }
                 else -> hide()
