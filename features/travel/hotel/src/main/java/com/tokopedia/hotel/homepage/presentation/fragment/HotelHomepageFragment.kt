@@ -159,7 +159,6 @@ class HotelHomepageFragment : HotelBaseFragment(),
         homepageViewModel.promoData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
-//                    if (remoteConfig.getBoolean(RemoteConfigKey.CUSTOMER_HOTEL_SHOW_PROMO) && it.data.banners.isNotEmpty()) {
                     if (it.data.banners.isNotEmpty()) {
                         renderHotelPromo(it.data.banners)
                     } else {
