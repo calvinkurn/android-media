@@ -32,7 +32,7 @@
     <color name="font_title_bu_widget">@color/Unify_N700_96</color>
     <color name="font_subtitle_bu_widget">@color/Unify_N700_68</color>
     <color name="shadow_6">@color/Unify_N400_32</color>
-    <color name="sticky_bg_color">@color/Unify_G100</color>
+    <color name="sticky_bg_color">@color/Unify_G100_96</color>
     <color name="grey_hint_full">@color/Unify_N100</color>
 
     <color name="home_hpb_indicator_active">@color/Unify_N0</color>
