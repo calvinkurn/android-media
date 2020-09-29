@@ -9,7 +9,6 @@ import android.util.DisplayMetrics
 import android.view.View
 import android.widget.FrameLayout
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -18,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCallback
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.di.component.HasComponent
@@ -46,7 +46,6 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.trackingoptimizer.TrackingQueue
-import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
@@ -56,7 +55,7 @@ import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
 open class AddToCartDoneBottomSheet :
-        BottomSheetUnify(),
+        BottomSheetDialogFragment(),
         AddToCartDoneAddedProductViewHolder.AddToCartDoneAddedProductListener,
         HasComponent<ProductDetailComponent>,
         RecommendationListener {
@@ -146,22 +145,17 @@ open class AddToCartDoneBottomSheet :
                         override fun onSlide(bottomSheet: View, slideOffset: Float) {}
                     })
                 }
+
+                initInjector()
+                initViewModel()
+                getArgumentsData()
+                trackingQueue = TrackingQueue(context)
+                initAdapter()
+                observeRecommendationProduct()
+                observeAtcStatus()
+                getRecommendationProduct()
             }
         }
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        initInjector()
-        initViewModel()
-        getArgumentsData()
-        context?.let {
-            trackingQueue = TrackingQueue(it)
-        }
-        initAdapter()
-        observeRecommendationProduct()
-        observeAtcStatus()
-        getRecommendationProduct()
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -222,7 +216,7 @@ open class AddToCartDoneBottomSheet :
     }
 
     private fun observeAtcStatus(){
-        addToCartDoneViewModel.addToCartLiveData.observe(viewLifecycleOwner, Observer { result ->
+        addToCartDoneViewModel.addToCartLiveData.observe(this, Observer { result ->
             addToCartButton.isLoading = false
             if(result is Success){
                 stateAtcView.visible()
@@ -242,7 +236,7 @@ open class AddToCartDoneBottomSheet :
     }
 
     private fun observeRecommendationProduct() {
-        addToCartDoneViewModel.recommendationProduct.observe(viewLifecycleOwner, Observer {
+        addToCartDoneViewModel.recommendationProduct.observe(this, Observer {
             when (it) {
                 is Success -> {
                     viewShimmeringLoading.hide()
