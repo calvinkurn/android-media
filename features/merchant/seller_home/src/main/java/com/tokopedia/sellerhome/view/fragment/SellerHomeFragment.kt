@@ -1,5 +1,6 @@
 package com.tokopedia.sellerhome.view.fragment
 
+import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import android.view.*
@@ -129,6 +130,13 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 .inject(this)
     }
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        isManuallyInitInjector = true
+        initInjector()
+        loadAllData()
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         setHasOptionsMenu(true)
         return inflater.inflate(R.layout.fragment_sah, container, false)
@@ -152,6 +160,12 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         observeWidgetData(sellerHomeViewModel.barChartWidgetData, WidgetType.BAR_CHART)
         observeTickerLiveData()
         context?.let { UpdateShopActiveService.startService(it) }
+    }
+
+    private fun loadAllData() {
+        sellerHomeViewModel.getWidgetLayout()
+        sellerHomeViewModel.getShopLocation()
+        sellerHomeViewModel.getTicker()
     }
 
     override fun onResume() {
@@ -474,7 +488,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         })
 
         setProgressBarVisibility(true)
-        sellerHomeViewModel.getShopLocation()
     }
 
     private fun setOnSuccessGetShopLocation(data: ShippingLoc) {
@@ -496,7 +509,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
         setProgressBarVisibility(true)
         startHomeLayoutNetworkMonitoring()
-        sellerHomeViewModel.getWidgetLayout()
     }
 
     private fun startHomeLayoutNetworkMonitoring() {
@@ -628,7 +640,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 }
             }
         })
-        sellerHomeViewModel.getTicker()
     }
 
     private fun setViewBackground() = view?.run {

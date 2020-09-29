@@ -8,7 +8,12 @@ import androidx.test.espresso.IdlingRegistry
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.analytics.performance.util.PerformanceDataFileUtils
+import com.tokopedia.graphql.FingerprintManager
+import com.tokopedia.graphql.data.GraphqlClient
+import com.tokopedia.graphql.data.GraphqlClient.getApi
+import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.instrumentation.test.R
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.sellerhome.SellerHomeIdlingResource
 import com.tokopedia.sellerhome.analytic.performance.SellerHomeLoadTimeMonitoringListener
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity
@@ -20,10 +25,19 @@ import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.InstrumentationMockHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponseWithCheck
 import com.tokopedia.test.application.util.setupTotalSizeInterceptor
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.http.GET
+import timber.log.Timber
+import java.util.ArrayList
+import java.util.HashMap
 import java.util.concurrent.TimeUnit
 
 
@@ -82,6 +96,8 @@ class PltSellerHomePerformanceTest {
 
     @Test
     fun testPageLoadTimePerformance() {
+        warmUpGQLClient()
+        Espresso.onIdle()
         login()
         Espresso.onIdle() // wait for login to complete
         activityRule.launchActivity(createIntent(InstrumentationRegistry.getInstrumentation().targetContext))
@@ -146,6 +162,16 @@ class PltSellerHomePerformanceTest {
         val performanceData = activityRule.activity.performanceMonitoringSellerHomeLayoutPlt?.getPltPerformanceMonitoring()
         if (performanceData?.isSuccess == true) {
             sellerHomeLoadTimeMonitoringListener.onStopPltMonitoring()
+        }
+    }
+
+    private fun warmUpGQLClient() {
+        SellerHomeIdlingResource.idlingResource.increment()
+        GlobalScope.launch {
+            val requests = ArrayList<GraphqlRequest>()
+            requests.add(GraphqlRequest("{status}", String::class.java))
+            getApi().getResponseSuspend(requests, HashMap(), FingerprintManager.getQueryDigest(requests))
+            SellerHomeIdlingResource.idlingResource.decrement()
         }
     }
 }
