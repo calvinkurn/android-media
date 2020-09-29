@@ -2,22 +2,31 @@ package com.tokopedia.shop.product.view.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.filter.common.data.DynamicFilterModel
+import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.merchantvoucher.common.gql.domain.usecase.GetMerchantVoucherListUseCase
 import com.tokopedia.shop.common.constant.ShopPageConstant
+import com.tokopedia.shop.common.data.response.ShopFilterProductCountResponse
+import com.tokopedia.shop.common.domain.GetShopFilterBottomSheetDataUseCase
+import com.tokopedia.shop.common.domain.GetShopFilterProductCountUseCase
+import com.tokopedia.shop.common.domain.GqlGetShopSortUseCase
 import com.tokopedia.shop.common.domain.interactor.DeleteShopInfoCacheUseCase
 import com.tokopedia.shop.common.graphql.data.membershipclaimbenefit.MembershipClaimBenefitResponse
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.ClaimBenefitMembershipUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetMembershipUseCaseNew
 import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtalaseByShopUseCase
 import com.tokopedia.shop.home.util.CoroutineDispatcherProvider
+import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.view.datamodel.*
 import com.tokopedia.shop.product.utils.mapper.ShopPageProductListMapper
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProductFilterInput
 import com.tokopedia.shop.product.di.ShopProductGetHighlightProductQualifier
 import com.tokopedia.shop.product.domain.interactor.GetShopFeaturedProductUseCase
 import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
+import com.tokopedia.shop.sort.view.mapper.ShopProductSortMapper
+import com.tokopedia.shop.sort.view.model.ShopProductSortModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -43,7 +52,11 @@ class ShopPageProductListViewModel @Inject constructor(
         private val getShopHighlightProductUseCase: Provider<GqlGetShopProductUseCase>,
         private val removeWishlistUseCase: RemoveWishListUseCase,
         private val deleteShopInfoUseCase: DeleteShopInfoCacheUseCase,
-        private val dispatcherProvider: CoroutineDispatcherProvider
+        private val dispatcherProvider: CoroutineDispatcherProvider,
+        private val getShopFilterBottomSheetDataUseCase: GetShopFilterBottomSheetDataUseCase,
+        private val getShopFilterProductCountUseCase: GetShopFilterProductCountUseCase,
+        private val gqlGetShopSortUseCase: GqlGetShopSortUseCase,
+        private val shopProductSortMapper: ShopProductSortMapper
 ) : BaseViewModel(dispatcherProvider.main()) {
 
     companion object {
@@ -58,7 +71,7 @@ class ShopPageProductListViewModel @Inject constructor(
 
     val userId: String
         get() = userSession.userId
-    val etalaseListData = MutableLiveData<Result<List<ShopEtalaseItemDataModel>>>()
+    val shopSortFilterData = MutableLiveData<Result<ShopStickySortFilter>>()
     val membershipData = MutableLiveData<Result<MembershipStampProgressViewModel>>()
     val newMembershipData = MutableLiveData<Result<MembershipStampProgressViewModel>>()
     val merchantVoucherData = MutableLiveData<Result<ShopMerchantVoucherViewModel>>()
@@ -69,6 +82,8 @@ class ShopPageProductListViewModel @Inject constructor(
     val shopProductChangeProductGridSectionData = MutableLiveData<Result<Int>>()
     val productListData = MutableLiveData<Result<GetShopProductUiModel>>()
     val claimMembershipResp = MutableLiveData<Result<MembershipClaimBenefitResponse>>()
+    val bottomSheetFilterLiveData = MutableLiveData<Result<DynamicFilterModel>>()
+    val shopProductFilterCountLiveData = MutableLiveData<Result<Int>>()
     val isLogin: Boolean
         get() = userSession.isLoggedIn
     val userDeviceId: String
@@ -105,7 +120,7 @@ class ShopPageProductListViewModel @Inject constructor(
                     else getShopProductEtalaseHighlightData(shopId, etalaseList)
                 }
                 val productListDataAsync = async(Dispatchers.IO) {
-                    if (initialProductListData  == null) {
+                    if (initialProductListData == null) {
                         getProductList(
                                 getShopProductUseCase,
                                 shopId,
@@ -115,7 +130,7 @@ class ShopPageProductListViewModel @Inject constructor(
                                 "",
                                 sortId.toIntOrZero()
                         )
-                    }else{
+                    } else {
                         null
                     }
                 }
@@ -209,7 +224,7 @@ class ShopPageProductListViewModel @Inject constructor(
     private suspend fun getMembershipData(shopId: String): MembershipStampProgressViewModel {
         getMembershipUseCase.params = GetMembershipUseCaseNew.createRequestParams(shopId.toIntOrZero())
         val memberShipResponse = getMembershipUseCase.executeOnBackground()
-         return MembershipStampProgressViewModel(ShopPageProductListMapper.mapTopMembershipViewModel(memberShipResponse))
+        return MembershipStampProgressViewModel(ShopPageProductListMapper.mapTopMembershipViewModel(memberShipResponse))
     }
 
     private fun getMerchantVoucherListData(shopId: String, numVoucher: Int = 0): ShopMerchantVoucherViewModel? {
@@ -249,17 +264,22 @@ class ShopPageProductListViewModel @Inject constructor(
         return ShopPageProductListMapper.mapToShopProductEtalaseListDataModel(listShopEtalaseResponse)
     }
 
+    private suspend fun getSortListData(): MutableList<ShopProductSortModel> {
+        val listSort = gqlGetShopSortUseCase.executeOnBackground()
+        return shopProductSortMapper.convertSort(listSort)
+    }
+
     private suspend fun getProductList(
             useCase: GqlGetShopProductUseCase,
             shopId: String,
-            page : Int,
+            page: Int,
             perPage: Int,
             etalaseId: String,
             keyword: String,
             sortId: Int
     ): GetShopProductUiModel {
         useCase.params = GqlGetShopProductUseCase.createParams(shopId, ShopProductFilterInput(
-                page,perPage,keyword,etalaseId,sortId
+                page, perPage, keyword, etalaseId, sortId
         ))
         val productListResponse = useCase.executeOnBackground()
         val isHasNextPage = isHasNextPage(page, ShopPageConstant.DEFAULT_PER_PAGE, productListResponse.totalData)
@@ -375,12 +395,35 @@ class ShopPageProductListViewModel @Inject constructor(
         getMerchantVoucherListUseCase.clearCache()
     }
 
-    fun getEtalaseData(shopId: String) {
-        launchCatchError(coroutineContext, block = {
-            val etalaseListDataResult = withContext(dispatcherProvider.io()) { getShopEtalaseData(shopId) }
-            etalaseListData.postValue(Success(etalaseListDataResult))
+    fun getShopFilterData(shopId: String) {
+        launchCatchError(block = {
+            val etalaseResponse = asyncCatchError(
+                    dispatcherProvider.io(),
+                    block = {
+                        getShopEtalaseData(shopId)
+                    },
+                    onError = {
+                        shopSortFilterData.postValue(Fail(it))
+                        null
+                    }
+            )
+            val sortResponse  = asyncCatchError(
+                    dispatcherProvider.io(),
+                    block = {
+                        getSortListData()
+                    },
+                    onError = {
+                        shopSortFilterData.postValue(Fail(it))
+                        null
+                    }
+            )
+            etalaseResponse.await()?.let { etalase ->
+                sortResponse.await()?.let{sort ->
+                    shopSortFilterData.postValue(Success(ShopStickySortFilter(etalase, sort)))
+                }
+            }
         }) {
-            etalaseListData.postValue(Fail(it))
+            shopSortFilterData.postValue(Fail(it))
         }
     }
 
@@ -390,5 +433,47 @@ class ShopPageProductListViewModel @Inject constructor(
 
     fun setInitialProductList(initialProductListData: GetShopProductUiModel) {
         productListData.postValue(Success(initialProductListData))
+    }
+
+    fun getBottomSheetFilterData() {
+        launchCatchError(coroutineContext, block = {
+            val filterBottomSheetData = withContext(dispatcherProvider.io()) {
+                getShopFilterBottomSheetDataUseCase.params = GetShopFilterBottomSheetDataUseCase.createParams(mapOf(
+                        "source" to "shop_product",
+                        "device" to "android"
+                ))
+                getShopFilterBottomSheetDataUseCase.executeOnBackground()
+            }
+            bottomSheetFilterLiveData.postValue(Success(filterBottomSheetData))
+        }) {
+
+        }
+    }
+
+    fun getFilterResultCount(shopId: String, mapParameter: Map<String, String>) {
+        launchCatchError(block = {
+            val filterResultProductCount = withContext(dispatcherProvider.io()) {
+                getFilterResultCountData(shopId, mapParameter)
+            }
+            shopProductFilterCountLiveData.postValue(Success(filterResultProductCount))
+        }) {}
+    }
+
+    private suspend fun getFilterResultCountData(
+            shopId: String,
+            mapParameter: Map<String, String>
+    ): Int {
+        val filter = ShopProductFilterInput(0, 0, "", "", 0)
+        getShopFilterProductCountUseCase.params = GetShopFilterProductCountUseCase.createParams(
+                shopId,
+                filter
+        )
+        return getShopFilterProductCountUseCase.executeOnBackground()
+    }
+
+    fun getSortNameById(sortId: String): String {
+        return (shopSortFilterData.value as? Success)?.data?.sortList?.firstOrNull {
+            it.value == sortId
+        }?.name.orEmpty()
     }
 }

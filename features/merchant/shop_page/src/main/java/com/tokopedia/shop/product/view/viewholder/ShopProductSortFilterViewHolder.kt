@@ -1,5 +1,6 @@
 package com.tokopedia.shop.product.view.viewholder
 
+import android.os.Handler
 import android.view.View
 import android.view.View.MeasureSpec
 import android.view.ViewTreeObserver
@@ -11,6 +12,12 @@ import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
 import kotlinx.android.synthetic.main.item_shop_product_sort_filter.view.*
+import android.R.attr.duration
+
+import android.animation.ObjectAnimator
+import android.os.SystemClock
+import android.view.MotionEvent
+import com.tokopedia.kotlin.extensions.view.orZero
 
 /**
  * @author by alvarisi on 12/12/17.
@@ -32,6 +39,7 @@ class ShopProductSortFilterViewHolder(
         fun onSortFilterClicked()
         fun onClearFilterClicked()
         fun setSortFilterMeasureHeight(measureHeight: Int)
+        fun onFilterClicked()
     }
 
     private var shopProductSortFilterUiModel: ShopProductSortFilterUiModel? = null
@@ -46,22 +54,31 @@ class ShopProductSortFilterViewHolder(
         this.shopProductSortFilterUiModel = data
         itemView.sort_filter?.sortFilterItems?.removeAllViews()
         val scrollX = shopProductSortFilterUiModel?.scrollX ?: 0
-        itemView.viewTreeObserver.addOnPreDrawListener(object : ViewTreeObserver.OnPreDrawListener {
-            override fun onPreDraw(): Boolean {
-                itemView.sort_filter?.sortFilterHorizontalScrollView?.scrollX = scrollX
-                itemView.viewTreeObserver.removeOnPreDrawListener(this)
-                return true
-            }
-        })
+//        itemView.viewTreeObserver.addOnPreDrawListener(object : ViewTreeObserver.OnPreDrawListener {
+//            override fun onPreDraw(): Boolean {
+//                itemView.sort_filter?.sortFilterHorizontalScrollView?.scrollX = scrollX
+//                itemView.viewTreeObserver.removeOnPreDrawListener(this)
+//                return true
+//            }
+//        })
         itemView.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
+//                Handler().postDelayed({
+//                    itemView.sort_filter?.sortFilterHorizontalScrollView?.scrollTo(scrollX, 0)
+//                    Handler().postDelayed({
+//                        itemView.sort_filter?.sortFilterHorizontalScrollView?.scrollTo(scrollX, 0)
+//                    }, 1)
+//                },1)
+//                itemView.sort_filter?.sortFilterHorizontalScrollView?.post {
+//                    ObjectAnimator.ofInt(itemView.sort_filter?.sortFilterHorizontalScrollView, "scrollX", scrollX).setDuration(50L).start();
+//                }
                 addScrollListener()
                 itemView.viewTreeObserver.removeOnGlobalLayoutListener(this)
             }
         })
         val filterData = ArrayList<SortFilterItem>()
         var sortFilter: SortFilterItem? = null
-        if(data.isShowSortFilter) {
+        if (data.isShowSortFilter) {
             sortFilter = if (data.selectedSortName.isNotEmpty()) {
                 SortFilterItem(data.selectedSortName).apply {
                     type = ChipsUnify.TYPE_SELECTED
@@ -73,6 +90,7 @@ class ShopProductSortFilterViewHolder(
                     type = ChipsUnify.TYPE_NORMAL
                 }
             }
+            sortFilter.typeUpdated = false
             sortFilter.listener = {
                 shopProductSortFilterViewHolderListener?.onSortFilterClicked()
             }
@@ -90,12 +108,13 @@ class ShopProductSortFilterViewHolder(
                 type = ChipsUnify.TYPE_NORMAL
             }
         }
+        etalaseFilter.typeUpdated = false
         etalaseFilter.listener = {
             shopProductSortFilterViewHolderListener?.onEtalaseFilterClicked()
         }
         filterData.add(etalaseFilter)
         itemView.sort_filter?.addItem(filterData)
-        if(data.isShowSortFilter) {
+        if (data.isShowSortFilter) {
             sortFilter?.refChipUnify?.setChevronClickListener {
                 shopProductSortFilterViewHolderListener?.onSortFilterClicked()
             }
@@ -103,12 +122,18 @@ class ShopProductSortFilterViewHolder(
         etalaseFilter.refChipUnify.setChevronClickListener {
             shopProductSortFilterViewHolderListener?.onEtalaseFilterClicked()
         }
-        itemView.sort_filter?.filterType = SortFilter.TYPE_QUICK
+        itemView.sort_filter?.filterType = SortFilter.TYPE_ADVANCED
         itemView.sort_filter?.filterRelationship = SortFilter.RELATIONSHIP_AND
-        itemView.sort_filter?.dismissListener = {
-            shopProductSortFilterViewHolderListener?.onClearFilterClicked()
+//        itemView.sort_filter?.dismissListener = {
+//            shopProductSortFilterViewHolderListener?.onClearFilterClicked()
+//        }
+        itemView.sort_filter?.parentListener = {
+            shopProductSortFilterViewHolderListener?.onFilterClicked()
         }
         itemView.measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED)
+        itemView.sort_filter?.textView?.text = "Filter"
+
+        itemView.sort_filter?.indicatorCounter = shopProductSortFilterUiModel?.filterIndicatorCounter.orZero()
         shopProductSortFilterViewHolderListener?.setSortFilterMeasureHeight(itemView.measuredHeight)
     }
 

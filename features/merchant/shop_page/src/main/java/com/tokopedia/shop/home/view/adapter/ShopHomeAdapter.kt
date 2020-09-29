@@ -242,6 +242,16 @@ class ShopHomeAdapter(
         notifyChangedItem(visitables.indexOf(shopProductSortFilterUiViewModel))
     }
 
+
+    fun changeSortFilterIndicatorCounter(filterIndicatorCounter: Int) {
+        val shopProductSortFilterUiViewModel = visitables
+                .filterIsInstance<ShopProductSortFilterUiModel>().firstOrNull()
+        shopProductSortFilterUiViewModel?.apply {
+            this.filterIndicatorCounter = filterIndicatorCounter
+        }
+        notifyChangedItem(visitables.indexOf(shopProductSortFilterUiViewModel))
+    }
+
     fun removeProductList() {
         val firstProductViewModelIndex = visitables.indexOfFirst {
             it::class.java == ShopHomeProductViewModel::class.java

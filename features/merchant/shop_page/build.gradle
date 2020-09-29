@@ -111,6 +111,7 @@ dependencies {
     implementation project(rootProject.ext.features.productCard)
     implementation project(rootProject.ext.libraries.imagePreview)
     implementation rootProject.ext.networkDependencies.glide
+    implementation project(rootProject.ext.features.filter)
 
     // UI Test
     androidTestImplementation rootProject.ext.testDependencies.androidTestRunner
