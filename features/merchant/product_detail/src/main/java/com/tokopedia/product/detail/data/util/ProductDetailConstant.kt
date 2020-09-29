@@ -93,6 +93,7 @@ object ProductDetailConstant {
     const val DISCUSSION = "discussion"
     const val DISCUSSION_FAQ = "discussion_faq"
     const val MOST_HELPFUL_REVIEW = "most_helpful_review"
+    const val REVIEW = "review"
     const val TRADE_IN = "tradein"
     const val INFO = "info"
     const val SHOP_VOUCHER = "shop_voucher"

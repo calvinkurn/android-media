@@ -2,18 +2,21 @@ package com.tokopedia.shop_showcase.viewmodel.shopshowcasemanagement
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.shop_showcase.coroutines.TestCoroutineDispatchers
+import com.tokopedia.shop_showcase.shop_showcase_add.data.model.AddShopShowcaseParam
+import com.tokopedia.shop_showcase.shop_showcase_add.data.model.AddShopShowcaseResponse
+import com.tokopedia.shop_showcase.shop_showcase_add.domain.usecase.CreateShopShowcaseUseCase
 import com.tokopedia.shop_showcase.shop_showcase_management.data.model.GetShopProductsResponse
 import com.tokopedia.shop_showcase.shop_showcase_management.data.model.ShowcaseList.ShowcaseListBuyer.ShopShowcaseListBuyerResponse
 import com.tokopedia.shop_showcase.shop_showcase_management.domain.GetShopShowcaseListBuyerUseCase
 import com.tokopedia.shop_showcase.shop_showcase_management.domain.GetShopShowcaseTotalProductUseCase
 import com.tokopedia.shop_showcase.shop_showcase_management.presentation.viewmodel.ShopShowcasePickerViewModel
 import com.tokopedia.usecase.coroutines.Success
-import io.mockk.MockKAnnotations
-import io.mockk.coEvery
-import io.mockk.coVerify
+import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
 import junit.framework.Assert.assertEquals
+import junit.framework.TestCase
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Rule
@@ -28,6 +31,9 @@ class ShopShowcasePickerViewModelTest {
     @RelaxedMockK
     lateinit var getShopShowcaseTotalProductUseCase: GetShopShowcaseTotalProductUseCase
 
+    @RelaxedMockK
+    lateinit var createShopShowcaseUseCase: CreateShopShowcaseUseCase
+
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
@@ -39,6 +45,7 @@ class ShopShowcasePickerViewModelTest {
         viewModel = ShopShowcasePickerViewModel(
                 getBuyerShowcaseList,
                 getShopShowcaseTotalProductUseCase,
+                createShopShowcaseUseCase,
                 TestCoroutineDispatchers()
         )
     }
@@ -94,6 +101,26 @@ class ShopShowcasePickerViewModelTest {
 
             val expectedResponse = Success(GetShopProductsResponse())
             val actualResponse = viewModel.getShopProductResponse.value as Success<GetShopProductsResponse>
+            assertEquals(expectedResponse, actualResponse)
+        }
+    }
+
+    @Test
+    fun `when create shop showcase should return success`() {
+        runBlocking {
+            mockkObject(CreateShopShowcaseUseCase)
+            coEvery { createShopShowcaseUseCase.executeOnBackground() } returns AddShopShowcaseResponse()
+
+            viewModel.addShopShowcase(AddShopShowcaseParam())
+            viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
+            verify { CreateShopShowcaseUseCase.createRequestParams(AddShopShowcaseParam()) }
+            coVerify { createShopShowcaseUseCase.executeOnBackground() }
+
+
+            val expectedResponse = Success(AddShopShowcaseResponse())
+            val actualResponse = viewModel.createShopShowcase.value as Success<AddShopShowcaseResponse>
+            TestCase.assertTrue(viewModel.createShopShowcase.value is Success)
             assertEquals(expectedResponse, actualResponse)
         }
     }

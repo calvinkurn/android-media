@@ -25,7 +25,7 @@ class TopChatVoucherViewHolder constructor(
     private var voucherContainer: LinearLayout? = itemView.findViewById(R.id.topchat_voucher_container)
 
     private val bgOpposite = ViewUtil.generateBackgroundWithShadow(
-            itemView,
+            merchantVoucherView,
             com.tokopedia.unifyprinciples.R.color.Neutral_N0,
             R.dimen.dp_topchat_0,
             R.dimen.dp_topchat_0,
@@ -39,7 +39,7 @@ class TopChatVoucherViewHolder constructor(
             getStrokeWidthSenderDimenRes()
     )
     private val bgSender = ViewUtil.generateBackgroundWithShadow(
-            itemView,
+            merchantVoucherView,
             R.color.bg_topchat_right_message,
             R.dimen.dp_topchat_0,
             R.dimen.dp_topchat_0,
