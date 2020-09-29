@@ -84,7 +84,6 @@ internal open class ProductWidget(
         // carousel button
         contract.rightCarouselButton(view)
         contract.leftCarouselButton(view)
-        carouselButtonVisibility(view)
 
         // handling legacy of product card
         when (model.notificationProductType) {
@@ -96,6 +95,8 @@ internal open class ProductWidget(
     private fun productV1Card(view: RemoteViews) {
         view.setOnClickPendingIntent(R.id.ll_expandedProductView, contract.productDetailIntent(product))
         view.setTextViewText(R.id.btn_text, spanStr(product.productButtonMessage))
+        view.setViewVisibility(R.id.btn_icon, View.GONE)
+        carouselButtonVisibility(view)
     }
 
     private fun productV2Card(view: RemoteViews) {
@@ -123,6 +124,8 @@ internal open class ProductWidget(
         // tracker
         ProductAnalytics.impression(userSession.userId, model, product)
         ProductAnalytics.impressionExpanded(userSession.userId, model, product)
+
+        carouselButtonVisibility(view)
     }
 
     private fun setButtonField(resId: Int, view: RemoteViews, actionButton: ActionButton) {
@@ -163,7 +166,7 @@ internal open class ProductWidget(
     }
 
     private fun productStock(view: RemoteViews) {
-        if (product.stockMessage.isNullOrEmpty()) {
+        if (product.stockAvailable?.toInt() == 0) {
             view.setViewVisibility(R.id.tv_stock, View.GONE)
         } else {
             view.setTextViewText(R.id.tv_stock, spanStr(product.stockMessage))
