@@ -378,7 +378,11 @@ class ShopEditBasicInfoFragment: Fragment() {
     private fun observeUploadShopImage() {
         observe(viewModel.uploadShopImage) {
             when(it) {
-                is Fail -> onErrorUploadShopImage(it.throwable)
+                is Fail -> {
+                    it.throwable.cause?.apply {
+                        onErrorUploadShopImage(this)
+                    }
+                }
             }
         }
     }
@@ -386,7 +390,17 @@ class ShopEditBasicInfoFragment: Fragment() {
     private fun observeUpdateShopData() {
         observe(viewModel.updateShopBasicData) {
             when(it) {
-                is Success -> onSuccessUpdateShopBasicData(it.data)
+                is Success -> {
+                    it.data.graphQLSuccessMessage?.let { graphQlSuccesMessage ->
+                        graphQlSuccesMessage.message?.let { message ->
+                            if (graphQlSuccesMessage.isSuccess) {
+                                onSuccessUpdateShopBasicData(message)
+                            } else {
+                                onErrorUpdateShopBasicData(message)
+                            }
+                        }
+                    }
+                }
                 is Fail -> onErrorUpdateShopBasicData(it.throwable)
             }
         }
@@ -585,6 +599,14 @@ class ShopEditBasicInfoFragment: Fragment() {
         ShopSettingsErrorHandler.logExceptionToCrashlytics(throwable)
     }
 
+    private fun onErrorUpdateShopBasicData(message: String) {
+        hideSubmitLoading()
+        showSnackBarErrorSubmitEdit(message)
+        tvSave.isEnabled = true
+        ShopSettingsErrorHandler.logMessage(message)
+        ShopSettingsErrorHandler.logExceptionToCrashlytics(message)
+    }
+
     private fun showShopInformation(shopBasicDataModel: ShopBasicDataModel?) {
         shopBasicDataModel?.let {
             this.shopBasicDataModel = it.apply {
@@ -660,9 +682,18 @@ class ShopEditBasicInfoFragment: Fragment() {
     }
 
     private fun showSnackBarErrorSubmitEdit(throwable: Throwable) {
-        val message = ErrorHandler.getErrorMessage(context, throwable)
+        val message = ShopSettingsErrorHandler.getErrorMessage(context, throwable)
+        message?.apply {
+            Toaster.make(container, this, Snackbar.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
+                    getString(com.tokopedia.abstraction.R.string.title_try_again), View.OnClickListener {
+                onSaveButtonClicked()
+            })
+        }
+    }
+
+    private fun showSnackBarErrorSubmitEdit(message: String) {
         Toaster.make(container, message, Snackbar.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
-            getString(com.tokopedia.abstraction.R.string.title_try_again), View.OnClickListener {
+                getString(com.tokopedia.abstraction.R.string.title_try_again), View.OnClickListener {
             onSaveButtonClicked()
         })
     }

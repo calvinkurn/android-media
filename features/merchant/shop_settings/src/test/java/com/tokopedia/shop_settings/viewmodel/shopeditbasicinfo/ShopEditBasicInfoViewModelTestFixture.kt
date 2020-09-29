@@ -3,6 +3,7 @@ package com.tokopedia.shop_settings.viewmodel.shopeditbasicinfo
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.LiveData
 import com.tokopedia.shop.common.graphql.data.shopbasicdata.ShopBasicDataModel
+import com.tokopedia.shop.common.graphql.data.shopbasicdata.gql.ShopBasicDataMutation
 import com.tokopedia.shop.common.graphql.data.shopopen.ValidateShopDomainNameResult
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetShopBasicDataUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.UpdateShopBasicDataUseCase
@@ -22,7 +23,6 @@ import junit.framework.TestCase
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Before
 import org.junit.Rule
-import rx.Observable
 
 
 @ExperimentalCoroutinesApi
@@ -72,7 +72,6 @@ abstract class ShopEditBasicInfoViewModelTestFixture {
 
     protected fun verifyUnsubscribeUseCase() {
         coVerify { getShopBasicDataUseCase.unsubscribe() }
-        coVerify { updateShopBasicDataUseCase.unsubscribe() }
         coVerify { uploadShopImageUseCase.unsubscribe() }
     }
 
@@ -99,9 +98,10 @@ abstract class ShopEditBasicInfoViewModelTestFixture {
     }
 
     protected fun _onUpdateShopBasicData_thenReturn() {
-        every {
-            updateShopBasicDataUseCase.getData(any())
-        } returns "test string response"
+        coEvery {
+            updateShopBasicDataUseCase.setParams(any())
+            updateShopBasicDataUseCase.executeOnBackground()
+        } returns ShopBasicDataMutation()
     }
 
     protected fun _onGetShopBasicData_thenReturn() {
