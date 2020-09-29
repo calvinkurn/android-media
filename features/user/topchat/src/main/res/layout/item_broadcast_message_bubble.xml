@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -15,9 +14,6 @@
         android:adjustViewBounds="true"
         android:scaleType="fitCenter"
         android:visibility="visible"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         tools:ignore="ContentDescription"
         tools:src="@tools:sample/backgrounds/scenic"
         tools:visibility="visible" />
@@ -32,8 +28,6 @@
         android:layout_marginRight="@dimen/dp_topchat_12"
         android:maxWidth="270dp"
         android:visibility="gone"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/iv_banner"
         tools:visibility="visible" />
 
     <com.tokopedia.topchat.chatroom.view.custom.ProductCarouselRecyclerView
@@ -45,9 +39,6 @@
         android:paddingStart="@dimen/dp_topchat_12"
         android:paddingEnd="@dimen/spacing_lvl3"
         android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/broadcast_merchant_voucher"
         tools:listitem="@layout/item_topchat_product_carousel_attachment"
         tools:visibility="gone" />
 
@@ -59,10 +50,6 @@
         android:layout_marginEnd="@dimen/spacing_lvl4"
         android:orientation="vertical"
         android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/rv_product_carousel"
-        app:widthMultiplier="1"
         tools:layout_gravity="end"
         tools:layout_height="50dp"
         tools:visibility="gone" />
@@ -74,9 +61,6 @@
         android:paddingLeft="@dimen/spacing_lvl4"
         android:paddingTop="@dimen/dp_topchat_10"
         android:paddingRight="@dimen/spacing_lvl4"
-        android:paddingBottom="@dimen/dp_topchat_10"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/broadcast_product" />
+        android:paddingBottom="@dimen/dp_topchat_10" />
 
 </LinearLayout>
