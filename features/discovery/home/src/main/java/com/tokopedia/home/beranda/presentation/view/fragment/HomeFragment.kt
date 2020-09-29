@@ -291,7 +291,6 @@ open class HomeFragment : BaseDaggerFragment(),
     private var autoRefreshHandler = Handler()
     private var autoRefreshRunnable: TimerRunnable = TimerRunnable(listener = this)
     private var serverOffsetTime: Long = 0L
-    private var sharedPrefCache : SharedPreferences? = null
     private val gson = Gson()
 
     override fun onAttach(context: Context) {
@@ -332,10 +331,6 @@ open class HomeFragment : BaseDaggerFragment(),
         fragmentCreatedForFirstTime = true
         searchBarTransitionRange = resources.getDimensionPixelSize(R.dimen.home_searchbar_transition_range)
         startToTransitionOffset = resources.getDimensionPixelSize(R.dimen.banner_background_height) / 2
-        sharedPrefCache = context?.getSharedPreferences(
-                SHARED_PREF_HOME_DATA_CACHE_KEY,
-                Context.MODE_PRIVATE
-        )
     }
 
     fun callSubordinateTasks() {
@@ -469,43 +464,8 @@ open class HomeFragment : BaseDaggerFragment(),
         fetchRemoteConfig()
         setupStatusBar()
         setupHomeRecyclerView()
-        if (getRemoteConfig().getBoolean(RemoteConfigKey.HOME_ENABLE_SHARED_PREF_CACHE)) {
-            consumeSharedPreferenceCache()
-        }
         initEggDragListener()
         return view
-    }
-
-    private fun consumeSharedPreferenceCache() {
-        sharedPrefCache?.let {
-            val cacheJson = it.getString(HOME_CACHE_DATA_VALUE_KEY, null)
-            cacheJson?.let {
-                context?.let { context->
-                    getTrackingQueueObj()?.let { trackingQueueObj->
-                        val cacheData = gson.fromJson(cacheJson, HomeData::class.java)
-                        val mapper = HomeDataMapper(
-                                context,
-                                HomeVisitableFactoryImpl(getUserSession(), remoteConfig, HomeDefaultDataSource()), trackingQueueObj,
-                                HomeDynamicChannelDataMapper(context, HomeDynamicChannelVisitableFactoryImpl(getUserSession(), remoteConfig, HomeDefaultDataSource()), trackingQueueObj))
-                        val dataVisitable = mapper.mapToHomeViewModel(cacheData, true, false)
-                        if (needToPerformanceMonitoring(dataVisitable.list) && getPageLoadTimeCallback() != null) {
-                            /**
-                             * Add one time global layout listener for first time lay-out which will trigger
-                             * onGlobalLayout
-                             */
-                            homeRecyclerView?.addOneTimeGlobalLayoutListener {
-                                /**
-                                 * Call start render, since we have cache then we start to render something
-                                 */
-                                pageLoadTimeCallback?.startRenderPerformanceMonitoring()
-                                setOnRecyclerViewLayoutReady(true)
-                                adapter?.submitList(dataVisitable.list)
-                            }
-                        }
-                    }
-                }
-            }
-        }
     }
 
     private val afterInflationCallable: Callable<Any?>
@@ -1069,7 +1029,9 @@ open class HomeFragment : BaseDaggerFragment(),
                 HomeReminderWidgetCallback(RechargeRecommendationCallback(context,getHomeViewModel(),this),
                         SalamWidgetCallback(context,getHomeViewModel(),this, getUserSession())),
                 ProductHighlightComponentCallback(this),
-                Lego4AutoBannerComponentCallback(context, this)
+                Lego4AutoBannerComponentCallback(context, this),
+                FeaturedShopComponentCallback(context, this)
+
         )
         val asyncDifferConfig = AsyncDifferConfig.Builder(HomeVisitableDiffUtil())
                 .setBackgroundThreadExecutor(Executors.newSingleThreadExecutor())
@@ -1611,6 +1573,10 @@ open class HomeFragment : BaseDaggerFragment(),
         } else {
             RouteManager.route(context, playBannerCarouselItemDataModel.applink)
         }
+    }
+
+    override fun getTopAdsBannerNextPageToken(): String {
+        return getHomeViewModel().currentTopAdsBannerToken
     }
 
     override fun onDynamicChannelRetryClicked() {

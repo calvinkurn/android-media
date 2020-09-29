@@ -82,7 +82,7 @@ class VoucherGameListFragment : BaseSearchListFragment<Visitable<*>,
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        voucherGameViewModel.voucherGameList.observe(this, Observer {
+        voucherGameViewModel.voucherGameList.observe(viewLifecycleOwner, Observer {
             it.run {
                 when (it) {
                     is Success -> {
@@ -94,7 +94,7 @@ class VoucherGameListFragment : BaseSearchListFragment<Visitable<*>,
                 }
             }
         })
-        voucherGameViewModel.voucherGameMenuDetail.observe(this, Observer {
+        voucherGameViewModel.voucherGameMenuDetail.observe(viewLifecycleOwner, Observer {
             it.run {
                 togglePromoBanner(true)
                 when (it) {
@@ -301,11 +301,12 @@ class VoucherGameListFragment : BaseSearchListFragment<Visitable<*>,
         getComponent(VoucherGameListComponent::class.java).inject(this)
     }
 
+    override fun loadInitialData() {
+        searchVoucherGame("", true)
+    }
+
     override fun loadData(page: Int) {
-        voucherGameExtraParam.menuId.toIntOrNull()?.let {
-            voucherGameViewModel.getVoucherGameOperators(GraphqlHelper.loadRawString(resources, R.raw.query_voucher_game_product_list),
-                    voucherGameViewModel.createParams(it), "", true)
-        }
+
     }
 
     override fun onItemClicked(item: Visitable<*>) {
@@ -344,12 +345,6 @@ class VoucherGameListFragment : BaseSearchListFragment<Visitable<*>,
         return true
     }
 
-    override fun onSwipeRefresh() {
-        hideSnackBarRetry()
-        swipeToRefresh.isRefreshing = true
-        searchInputView.searchText = ""
-    }
-
     override fun getRecyclerViewLayoutManager(): RecyclerView.LayoutManager {
         val layoutManager = GridLayoutManager(context, 3, GridLayoutManager.VERTICAL, false)
         layoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
@@ -375,17 +370,18 @@ class VoucherGameListFragment : BaseSearchListFragment<Visitable<*>,
     }
 
     override fun onSearchTextChanged(text: String?) {
-        text?.let { searchVoucherGame(it) }
+        text?.let { searchVoucherGame(it, swipe_refresh_layout.isRefreshing) }
     }
 
     override fun onSearchReset() {
         voucherGameAnalytics.eventClearSearchBox()
-        searchVoucherGame("")
     }
 
-    private fun searchVoucherGame(query: String) {
-        voucherGameViewModel.getVoucherGameOperators(GraphqlHelper.loadRawString(resources, R.raw.query_voucher_game_product_list),
-                voucherGameViewModel.createParams(voucherGameExtraParam.menuId.toInt()), query)
+    private fun searchVoucherGame(query: String, loadFromCloud: Boolean = false) {
+        voucherGameExtraParam.menuId.toIntOrNull()?.let {
+            voucherGameViewModel.getVoucherGameOperators(GraphqlHelper.loadRawString(resources, R.raw.query_voucher_game_product_list),
+                    voucherGameViewModel.createParams(it), query, loadFromCloud)
+        }
     }
 
     fun onBackPressed() {

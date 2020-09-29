@@ -907,7 +907,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             imageUrlOrPathList = viewModel.productPhotoPaths
             if (!productPictureList.isNullOrEmpty()) pictureList = productPictureList ?: listOf()
             if (productCategoryId.isNotBlank()) categoryId = productCategoryId
-            if (categoryName.isNotBlank()) categoryName = productCategoryName
+            if (productCategoryName.isNotBlank()) categoryName = productCategoryName
             preorder.apply {
                 duration = preOrderDurationField.getTextIntOrZero()
                 timeUnit = selectedDurationPosition

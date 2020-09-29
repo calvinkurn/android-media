@@ -59,8 +59,8 @@ class ProductManageBottomSheet : BottomSheetUnify() {
     }
 
     private fun setupView() = view?.run {
-        setupMenuAdapter()
         setupSellerCarousel()
+        setupMenuAdapter()
     }
 
     private fun setupMenuAdapter() = view?.run {

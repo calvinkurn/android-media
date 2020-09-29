@@ -24,6 +24,8 @@ interface SmartBillsAnalyticConstants {
             const val CLICK_UNTICK_BILL = "click untick bill"
             const val IMPRESSION_ALL_PRODUCT = "impression all product"
             const val CLICK_BAYAR = "click bayar"
+            const val CLICK_BAYAR_FULL = "click bayar full"
+            const val CLICK_BAYAR_PARTIAL = "click bayar partial"
             const val CLICK_DETAIL = "click detail"
         }
     }
