@@ -148,10 +148,6 @@ object ApplinkConstInternalMarketplace {
     @JvmField
     val SHOP_PAGE_PRODUCT_LIST = "$SHOP_PAGE_BASE-product-list/{shop_id}/etalase/{etalase_id}/"
 
-    //ReviewShopInfoActiviy
-    @JvmField
-    val SHOP_REVIEW_APPLINK = "$INTERNAL_MARKETPLACE/shop/{shop_id}/review"
-
     // GmSubscribeHomeActivity
     @JvmField
     val GOLD_MERCHANT_SUBSCRIBE_DASHBOARD = "$INTERNAL_MARKETPLACE/gold-merchant-subscribe-dashboard"

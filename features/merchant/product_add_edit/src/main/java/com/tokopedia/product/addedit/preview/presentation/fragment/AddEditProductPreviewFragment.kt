@@ -6,6 +6,7 @@ import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -79,6 +80,7 @@ import com.tokopedia.product.addedit.preview.data.source.api.response.Product
 import com.tokopedia.product.addedit.preview.di.AddEditProductPreviewModule
 import com.tokopedia.product.addedit.preview.di.DaggerAddEditProductPreviewComponent
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.BUNDLE_BACK_PRESSED
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.DELAY_CLOSE_ACTIVITY
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.DESCRIPTION_DATA
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.DETAIL_DATA
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_IS_ADDING_PRODUCT
@@ -355,14 +357,10 @@ class AddEditProductPreviewFragment:
                 if (viewModel.productInputModel.value?.productId.orZero() != 0L) {
                     viewModel.productInputModel.value?.apply {
                         startProductEditService(this)
-                        activity?.finish()
+                        showLoading()
+                        Handler().postDelayed( { activity?.finish() }, DELAY_CLOSE_ACTIVITY)
                     }
                 } else {
-                    if (isDrafting()) {
-                        productStatusSwitch?.isChecked?.let {
-                            viewModel.updateProductStatus(it)
-                        }
-                    }
                     viewModel.productInputModel.value?.let { productInputModel ->
                         startProductAddService(productInputModel)
                         activity?.setResult(RESULT_OK)
@@ -906,6 +904,7 @@ class AddEditProductPreviewFragment:
         viewModel.productInputModel.observe(viewLifecycleOwner, Observer {
             showProductPhotoPreview(it)
             showProductDetailPreview(it)
+            updateProductStatusSwitch(it)
             showEmptyVariantState(viewModel.productInputModel.value?.variantInputModel?.products?.size == 0)
             if (viewModel.getDraftId() != 0L || it.productId != 0L || viewModel.getProductId().isNotBlank()) {
                 displayEditMode()
@@ -1073,7 +1072,7 @@ class AddEditProductPreviewFragment:
     }
 
     @SuppressLint("WrongConstant")
-    private fun createImagePickerBuilder(selectedImagePathList: ArrayList<String>?): ImagePickerBuilder {
+    private fun createImagePickerBuilder(selectedImagePathList: ArrayList<String>): ImagePickerBuilder {
 
         val title = getString(R.string.action_pick_photo)
 

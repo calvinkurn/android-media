@@ -293,6 +293,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
 
     override fun onRefresh(view: View?) {
         onLoadMore = false
+        isFetchRecommendation = false
         onLoadMoreRecommendation = false
         currPage = 1
         currRecommendationListPage = 1
@@ -1043,6 +1044,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
 
             btn_ajukan_komplain?.setOnClickListener {
                 RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, URL_RESO.replace(REPLACE_ORDER_ID, orderId)))
+                userSession?.userId?.let { it1 -> UohAnalytics.clickAjukanKomplainOnBottomSheetFinishTransaction(it1) }
             }
         }
 
@@ -1119,6 +1121,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                 val param = TrainResendEmailParam(bookCode = invoiceId, email = email)
                 uohListViewModel.doTrainResendEmail(GraphqlHelper.loadRawString(resources, R.raw.uoh_send_eticket_train), param)
             }
+            userSession?.userId?.let { it1 -> UohAnalytics.clickKirimOnBottomSheetSendEmail(it1, orderData.verticalCategory) }
         }
 
         viewBottomSheet.btn_ls_kembali?.setOnClickListener {
@@ -1570,20 +1573,43 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         }
     }
 
-    override fun trackAddToCartRecommendation(recommendationItem: RecommendationItem) {
-        val product = ECommerceAddRecommendation.Add.ActionField.Product(
-                name = recommendationItem.name,
-                id = recommendationItem.productId.toString(),
-                price = recommendationItem.price,
-                category = recommendationItem.categoryBreadcrumbs,
-                quantity = recommendationItem.quantity.toString(),
-                dimension45 = recommendationItem.cartId
+    override fun atcRecommendationItem(recommendationItem: RecommendationItem) {
+        val jsonArrayAtc = JsonArray()
+        val atcJsonObject = JsonObject()
+        atcJsonObject.addProperty(UohConsts.PRODUCT_ID, recommendationItem.productId)
+        atcJsonObject.addProperty(UohConsts.SHOP_ID, recommendationItem.shopId)
+        atcJsonObject.addProperty(UohConsts.QUANTITY, recommendationItem.quantity)
+        atcJsonObject.addProperty(UohConsts.NOTES, "")
+        jsonArrayAtc.add(atcJsonObject)
+        uohListViewModel.doAtc(GraphqlHelper.loadRawString(resources, R.raw.buy_again), jsonArrayAtc)
 
-        )
+        // analytics
+        trackAtcRecommendationItem(recommendationItem)
+    }
+
+    private fun trackAtcRecommendationItem(recommendationItem: RecommendationItem) {
+        val productId = recommendationItem.productId.toString()
+        val productName = recommendationItem.name
+        val productPrice = recommendationItem.price
+        val productCategory = recommendationItem.categoryBreadcrumbs
+        val qty = recommendationItem.quantity.toString()
+        val imageUrl = recommendationItem.imageUrl
+        val cartId = recommendationItem.cartId
+        val isTopAds = recommendationItem.isTopAds
+        val url = "${recommendationItem.clickUrl}&click_source=ATC_direct_click";
+
+        val product = ECommerceAddRecommendation.Add.ActionField.Product(
+                name = productName,
+                id = productId,
+                price = productPrice,
+                category = productCategory,
+                quantity = qty,
+                dimension45 = cartId)
         val arrayListProduct = arrayListOf<ECommerceAddRecommendation.Add.ActionField.Product>()
         arrayListProduct.add(product)
 
-        UohAnalytics.productAtcRecommendation(listProduct = arrayListProduct, isTopads = recommendationItem.isTopAds)
+        UohAnalytics.productAtcRecommendation(listProduct = arrayListProduct, isTopads = isTopAds)
+        if (isTopAds) activity?.let { TopAdsUrlHitter(it).hitClickUrl(UohListFragment::class.qualifiedName, url, productId, productName, imageUrl) }
     }
 
     private fun doChatSeller(appUrl: String, order: UohListOrder.Data.UohOrders.Order) {
