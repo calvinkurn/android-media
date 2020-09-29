@@ -86,7 +86,8 @@
 
         <activity
             android:name=".chatroom.view.activity.TopchatReportWebViewActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White" />
 
         <service
             android:name=".chatroom.service.NotificationChatService"
