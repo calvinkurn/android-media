@@ -290,6 +290,8 @@ dependencies {
 
     implementation project(rootProject.ext.features.playCommon)
 
+    implementation project(rootProject.ext.features.additional_check)
+
     implementation rootProject.ext.unifyDependencies.icon
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.principles

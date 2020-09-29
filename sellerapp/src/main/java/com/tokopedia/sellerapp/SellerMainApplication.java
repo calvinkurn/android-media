@@ -51,6 +51,7 @@ import com.tokopedia.track.TrackApp;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.weaver.WeaveInterface;
 import com.tokopedia.weaver.Weaver;
+import com.tokopedia.additional_check.subscriber.TwoFactorCheckerSubscriber;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -216,6 +217,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         registerActivityLifecycleCallbacks(new LoggerActivityLifecycleCallbacks());
         registerActivityLifecycleCallbacks(new SessionActivityLifecycleCallbacks());
         registerActivityLifecycleCallbacks(new ViewInspectorSubscriber());
+        registerActivityLifecycleCallbacks(new TwoFactorCheckerSubscriber());
     }
 
     @Override
