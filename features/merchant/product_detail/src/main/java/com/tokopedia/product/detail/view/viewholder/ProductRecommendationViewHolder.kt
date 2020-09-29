@@ -38,53 +38,57 @@ class ProductRecommendationViewHolder(
     private var annotationChipAdapter: AnnotationChipFilterAdapter? = null
 
     override fun bind(element: ProductRecommendationDataModel) {
-        view.rvProductRecom.gone()
-        view.visible()
-        view.loadingRecom.visible()
-        element.recomWidgetData?.run {
-            view.addOnImpressionListener(element.impressHolder) {
-                listener.onImpressComponent(getComponentTrackData(element))
-            }
-            if(annotationChipAdapter == null){
-                annotationChipAdapter = AnnotationChipFilterAdapter(object : AnnotationChipListener{
-                    override fun onFilterAnnotationClicked(annotationChip: AnnotationChip, position: Int) {
-                        annotationChipAdapter?.submitList(
-                            element.filterData?.map {
-                                it.copy(
-                                    recommendationFilterChip = it.recommendationFilterChip.copy(
-                                            isActivated =
-                                            annotationChip.recommendationFilterChip.name == it.recommendationFilterChip.name
-                                                    && !annotationChip.recommendationFilterChip.isActivated
-                                    )
-                                )
-                            } ?: listOf()
-                        )
-                        listener.onChipFilterClicked(element, annotationChip.copy(
-                                recommendationFilterChip = annotationChip.recommendationFilterChip.copy(
-                                        isActivated = !annotationChip.recommendationFilterChip.isActivated
-                                )), adapterPosition, position
-                        )
-                        view.loadingRecom.show()
-                        view.rvProductRecom.hide()
-                        view.rvProductRecom.recycle()
-                    }
-                })
-            }
+        if(element.recomWidgetData == null || element.recomWidgetData?.recommendationItemList?.isEmpty() == true) {
+            view.rvProductRecom.gone()
+            view.visible()
+            view.loadingRecom.visible()
+        } else {
+            element.recomWidgetData?.run {
+                view.addOnImpressionListener(element.impressHolder) {
+                    listener.onImpressComponent(getComponentTrackData(element))
+                }
+                if (annotationChipAdapter == null && element.filterData?.isNotEmpty() == true) {
+                    annotationChipAdapter = AnnotationChipFilterAdapter(object : AnnotationChipListener {
+                        override fun onFilterAnnotationClicked(annotationChip: AnnotationChip, position: Int) {
+                            annotationChipAdapter?.submitList(
+                                    element.filterData?.map {
+                                        it.copy(
+                                                recommendationFilterChip = it.recommendationFilterChip.copy(
+                                                        isActivated =
+                                                        annotationChip.recommendationFilterChip.name == it.recommendationFilterChip.name
+                                                                && !annotationChip.recommendationFilterChip.isActivated
+                                                )
+                                        )
+                                    } ?: listOf()
+                            )
+                            listener.onChipFilterClicked(element, annotationChip.copy(
+                                    recommendationFilterChip = annotationChip.recommendationFilterChip.copy(
+                                            isActivated = !annotationChip.recommendationFilterChip.isActivated
+                                    )), adapterPosition, position
+                            )
+                            view.loadingRecom.show()
+                            view.rvProductRecom.hide()
+                            view.rvProductRecom.recycle()
+                        }
+                    })
+                    view.chip_filter_recyclerview?.adapter = annotationChipAdapter
+                }
+                annotationChipAdapter?.submitList(element.filterData ?: listOf())
+                initAdapter(element, this, element.cardModel, getComponentTrackData(element))
+                view.rvProductRecom.show()
+                view.loadingRecom.gone()
+                view.titleRecom.text = title
+                if (seeMoreAppLink.isNotEmpty()) {
+                    view.seeMoreRecom.show()
+                } else {
+                    view.seeMoreRecom.hide()
+                }
 
-            view.chip_filter_recyclerview?.adapter = annotationChipAdapter
-            annotationChipAdapter?.submitList(element.filterData ?: listOf())
-            view.loadingRecom.gone()
-            view.titleRecom.text = title
-            view.rvProductRecom.show()
-            if (seeMoreAppLink.isNotEmpty()) {
-                view.seeMoreRecom.show()
-            } else {
-                view.seeMoreRecom.hide()
+                view.seeMoreRecom.setOnClickListener {
+                    listener.onSeeAllRecomClicked(pageName, seeMoreAppLink + (element.filterData?.find { it.recommendationFilterChip.isActivated }?.recommendationFilterChip?.value
+                            ?: ""), getComponentTrackData(element))
+                }
             }
-            view.seeMoreRecom.setOnClickListener {
-                listener.onSeeAllRecomClicked(pageName, seeMoreAppLink + (element.filterData?.find { it.recommendationFilterChip.isActivated }?.recommendationFilterChip?.value ?: ""), getComponentTrackData(element))
-            }
-            initAdapter(element, this, element.cardModel, getComponentTrackData(element))
         }
     }
 

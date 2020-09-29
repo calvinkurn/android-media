@@ -107,6 +107,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         private const val EXTRA_CHANNEL_ID = "EXTRA_CHANNEL_ID"
         const val SPAN_COUNT = 2
         const val UPDATE_REMIND_ME_PLAY = "update_remind_me"
+        const val UPDATE_REMIND_ME_PLAY_ID = "update_remind_me_id"
         const val SAVED_SHOP_SORT_ID = "saved_shop_sort_id"
         const val SAVED_SHOP_SORT_NAME = "saved_shop_sort_name"
         private const val REQUEST_CODE_ETALASE = 206
@@ -1012,10 +1013,12 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     override fun onReminderClick(playBannerCarouselItemDataModel: PlayBannerCarouselItemDataModel, position: Int) {
         if(isLogin) {
             viewModel?.setToggleReminderPlayBanner(playBannerCarouselItemDataModel.channelId, playBannerCarouselItemDataModel.remindMe, position)
-        }
-        else {
+        } else {
             // reset remind icon
-            adapter.notifyItemChanged(position, Bundle().apply { putBoolean(UPDATE_REMIND_ME_PLAY, true) })
+            adapter.notifyItemChanged(position, Bundle().apply {
+                putBoolean(UPDATE_REMIND_ME_PLAY, true)
+                putString(UPDATE_REMIND_ME_PLAY_ID, playBannerCarouselItemDataModel.channelId)
+            })
             redirectToLoginPage()
         }
     }

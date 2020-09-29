@@ -50,7 +50,6 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/textViewProductName"
-        android:contentDescription="@string/content_desc_textViewProductName"
         android:layout_width="@dimen/dp_0"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/product_card_text_view_product_name_margin_top"
@@ -81,7 +80,6 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/textViewSlashedPrice"
-        android:contentDescription="@string/content_desc_textViewSlashedPrice"
         android:layout_width="0dp"
         android:layout_height="@dimen/dp_14"
         android:layout_marginTop="@dimen/product_card_label_discount_margin_top"
@@ -122,7 +120,6 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/textViewPrice"
-        android:contentDescription="@string/content_desc_textViewPrice"
         android:layout_width="0dp"
         android:layout_height="@dimen/product_card_text_view_price_height"
         android:layout_marginTop="@dimen/product_card_text_view_price_margin_top"
@@ -152,7 +149,6 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/textViewShopLocation"
-        android:contentDescription="@string/content_desc_textViewShopLocation" 
         android:layout_width="@dimen/dp_0"
         android:layout_height="@dimen/product_card_text_shop_location_height"
         android:layout_marginStart="@dimen/dp_4"
