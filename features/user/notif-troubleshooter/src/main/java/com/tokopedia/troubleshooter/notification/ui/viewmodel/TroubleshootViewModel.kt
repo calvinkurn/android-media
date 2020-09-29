@@ -4,27 +4,35 @@ import android.media.RingtoneManager.TYPE_NOTIFICATION
 import android.net.Uri
 import androidx.lifecycle.*
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.fcmcommon.FirebaseMessagingManager
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.settingnotif.usersetting.data.pojo.UserNotificationResponse
 import com.tokopedia.settingnotif.usersetting.domain.GetUserSettingUseCase
 import com.tokopedia.troubleshooter.notification.data.domain.TroubleshootStatusUseCase
 import com.tokopedia.troubleshooter.notification.data.entity.NotificationSendTroubleshoot
-import com.tokopedia.troubleshooter.notification.data.service.notification.NotificationChannelManager
 import com.tokopedia.troubleshooter.notification.data.service.fcm.FirebaseInstanceManager
+import com.tokopedia.troubleshooter.notification.data.service.notification.NotificationChannelManager
 import com.tokopedia.troubleshooter.notification.data.service.notification.NotificationCompatManager
 import com.tokopedia.troubleshooter.notification.data.service.ringtone.RingtoneModeService
+import com.tokopedia.troubleshooter.notification.di.module.TroubleshootModule.Companion.KEY_SELLER_SETTING
+import com.tokopedia.troubleshooter.notification.di.module.TroubleshootModule.Companion.KEY_USER_SETTING
+import com.tokopedia.troubleshooter.notification.ui.state.DeviceSettingState
 import com.tokopedia.troubleshooter.notification.ui.state.RingtoneState
 import com.tokopedia.troubleshooter.notification.ui.state.StatusState
-import com.tokopedia.troubleshooter.notification.ui.uiview.*
-import com.tokopedia.troubleshooter.notification.ui.state.DeviceSettingState
+import com.tokopedia.troubleshooter.notification.ui.uiview.TickerItemUIView
+import com.tokopedia.troubleshooter.notification.ui.uiview.UserSettingUIView
 import com.tokopedia.troubleshooter.notification.util.dispatchers.DispatcherProvider
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
+import javax.inject.Named
 import android.media.RingtoneManager.getDefaultUri as getRingtoneUri
+import com.tokopedia.troubleshooter.notification.ui.uiview.UserSettingUIView.Companion.merge as mergeSetting
 
 interface TroubleshootContract {
     fun removeTickers()
@@ -40,13 +48,15 @@ interface TroubleshootContract {
 }
 
 class TroubleshootViewModel @Inject constructor(
+        @Named(KEY_SELLER_SETTING) private val sellerSettingUseCase: GetUserSettingUseCase,
+        @Named(KEY_USER_SETTING) private val userSettingUseCase: GetUserSettingUseCase,
         private val troubleshootUseCase: TroubleshootStatusUseCase,
         private val notificationChannel: NotificationChannelManager,
         private val notificationCompat: NotificationCompatManager,
         private val messagingManager: FirebaseMessagingManager,
-        private val userSettingUseCase: GetUserSettingUseCase,
         private val instanceManager: FirebaseInstanceManager,
         private val ringtoneMode: RingtoneModeService,
+        private val userSession: UserSessionInterface,
         private val dispatcher: DispatcherProvider
 ) : BaseViewModel(dispatcher.io()), TroubleshootContract, LifecycleObserver {
 
@@ -119,19 +129,21 @@ class TroubleshootViewModel @Inject constructor(
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     override fun userSetting() {
         launchCatchError(block = {
-            val result = userSettingUseCase.executeOnBackground()
+            val notification = userSettingUseCase.executeOnBackground()
+            val seller = sellerSettingUseCase.executeOnBackground()
             withContext(dispatcher.main()) {
-                val userNotification = UserSettingUIView()
-                result.userSetting.settingSections.forEach { section ->
-                    section?.listSettings?.forEach {
-                        userNotification.notifications++
-                        if (it?.status == true) {
-                            userNotification.totalOn++
-                        }
+                val userNotification = notificationSetting(notification)
+                val sellerNotification = notificationSetting(seller)
+
+                _notificationSetting.value = if (GlobalConfig.isSellerApp()) {
+                    Success(sellerNotification)
+                } else {
+                    if (userSession.hasShop()) {
+                        Success(mergeSetting(userNotification, sellerNotification))
+                    } else {
+                        Success(userNotification)
                     }
                 }
-
-                _notificationSetting.value =  Success(userNotification)
             }
         }, onError = {
             _notificationSetting.postValue(Fail(it))
@@ -140,8 +152,13 @@ class TroubleshootViewModel @Inject constructor(
 
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     override fun deviceSetting() {
+        if (!notificationCompat.isNotificationEnabled()) {
+            _deviceSetting.value = Fail(Throwable(""))
+            return
+        }
+
         if (notificationChannel.hasNotificationChannel()) {
-            // check status
+            // check status channel
             if (notificationChannel.isNotificationChannelEnabled()) {
                 _deviceSetting.value = Fail(Throwable(""))
                 return
@@ -173,6 +190,19 @@ class TroubleshootViewModel @Inject constructor(
         instanceManager.getNewToken { token ->
             _token.value = token
         }
+    }
+
+    private fun notificationSetting(result: UserNotificationResponse): UserSettingUIView {
+        val userNotification = UserSettingUIView()
+        result.userSetting.settingSections.forEach { section ->
+            section?.listSettings?.forEach {
+                userNotification.notifications++
+                if (it?.status == true) {
+                    userNotification.totalOn++
+                }
+            }
+        }
+        return userNotification
     }
 
 }
