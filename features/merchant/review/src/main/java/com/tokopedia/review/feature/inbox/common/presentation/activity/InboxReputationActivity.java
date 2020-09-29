@@ -10,7 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -27,10 +26,7 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst;
 import com.tokopedia.config.GlobalConfig;
-import com.tokopedia.remoteconfig.RemoteConfig;
-import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.review.R;
-import com.tokopedia.review.common.util.ReviewConstants;
 import com.tokopedia.review.common.util.ReviewUtil;
 import com.tokopedia.review.feature.inbox.buyerreview.analytics.ReputationTracking;
 import com.tokopedia.review.feature.inbox.buyerreview.analytics.ReputationTrackingConstant;
@@ -65,7 +61,6 @@ public class InboxReputationActivity extends BaseActivity implements HasComponen
     public static final int TAB_MY_REVIEW = 2;
     public static final int TAB_BUYER_REVIEW = 3;
     public static final int TAB_SELLER_REPUTATION_HISTORY = 2;
-    private static final int OFFSCREEN_PAGE_LIMIT = 3;
     private Fragment sellerReputationFragment;
     private Fragment reviewSellerFragment;
     private Fragment inboxReviewFragment;
@@ -99,7 +94,7 @@ public class InboxReputationActivity extends BaseActivity implements HasComponen
         userSession = new UserSession(this);
         reputationTracking = new ReputationTracking();
         super.onCreate(savedInstanceState);
-        if (useNewPage() && !GlobalConfig.isSellerApp()) {
+        if (!GlobalConfig.isSellerApp()) {
             startActivity(ReviewInboxActivity.Companion.createNewInstance(this));
             finish();
         }
@@ -133,9 +128,6 @@ public class InboxReputationActivity extends BaseActivity implements HasComponen
                 if (!canFireTracking) {
                     canFireTracking = true;
                     return;
-                }
-                if (!GlobalConfig.isSellerApp()) {
-                    reputationTracking.onTabReviewSelectedTracker(tab.getPosition());
                 }
                 if (tickerTitle != null) {
                     reputationTracking.onSuccessGetIncentiveOvoTracker(tickerTitle, ReputationTrackingConstant.WAITING_REVIEWED);
@@ -319,23 +311,5 @@ public class InboxReputationActivity extends BaseActivity implements HasComponen
     @Override
     public void updateTickerTitle(@NotNull String title) {
         tickerTitle = title;
-    }
-
-    @Nullable
-    private RemoteConfig getABTestRemoteConfig() {
-        try {
-            return RemoteConfigInstance.getInstance().getABTestPlatform();
-        } catch (IllegalStateException exception) {
-            return null;
-        }
-    }
-
-    private Boolean useNewPage() {
-        RemoteConfig remoteConfig = getABTestRemoteConfig();
-        if (remoteConfig != null) {
-            String remoteConfigValue = remoteConfig.getString(ReviewConstants.AB_TEST_KEY);
-            return remoteConfigValue.equals(ReviewConstants.NEW_REVIEW_FLOW);
-        }
-        return false;
     }
 }
