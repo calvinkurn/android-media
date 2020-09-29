@@ -43,6 +43,7 @@ import com.tokopedia.sellerhome.domain.model.PROVINCE_ID_EMPTY
 import com.tokopedia.sellerhome.domain.model.ShippingLoc
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity
 import com.tokopedia.sellerhome.view.model.TickerUiModel
+import com.tokopedia.sellerhome.view.viewhelper.SellerHomeLayoutManager
 import com.tokopedia.sellerhome.view.viewmodel.SellerHomeViewModel
 import com.tokopedia.sellerhome.view.widget.toolbar.NotificationDotBadge
 import com.tokopedia.sellerhomecommon.common.WidgetListener
@@ -207,7 +208,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     }
 
     private fun setupView() = view?.run {
-        val gridLayoutManager = GridLayoutManager(context, 2).apply {
+        val gridLayoutManager = SellerHomeLayoutManager(context, 2).apply {
             spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
                 override fun getSpanSize(position: Int): Int {
                     return try {
@@ -218,19 +219,13 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                     }
                 }
             }
+
+            setOnVerticalScrollListener {
+                requestVisibleWidgetsData()
+            }
         }
         with(recyclerView) {
             layoutManager = gridLayoutManager
-
-            addOnScrollListener(object : RecyclerView.OnScrollListener() {
-                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                    if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                        requestVisibleWidgetsData()
-                    }
-                    super.onScrollStateChanged(recyclerView, newState)
-                }
-            })
-
             (itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
         }
 
