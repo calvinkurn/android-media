@@ -51,6 +51,7 @@ import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.android.synthetic.main.fragment_choose_login_phone_account.*
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Named
@@ -76,8 +77,6 @@ class ChooseAccountFragment : BaseDaggerFragment(),
     private val REQUEST_SECURITY_QUESTION = 101
 
     private lateinit var listAccount: RecyclerView
-    private lateinit var mainView: View
-    private lateinit var progressBar: LoaderUnify
     private lateinit var adapter: AccountAdapter
     private lateinit var toolbarShopCreation: Toolbar
 
@@ -141,9 +140,7 @@ class ChooseAccountFragment : BaseDaggerFragment(),
         val view = inflater.inflate(R.layout.fragment_choose_login_phone_account, parent, false)
         setHasOptionsMenu(true)
         toolbarShopCreation = view.findViewById(R.id.toolbar_shop_creation)
-        listAccount = view.findViewById(R.id.list_account)
-        mainView = view.findViewById(R.id.main_view)
-        progressBar = view.findViewById(R.id.progress_bar)
+        listAccount = view.findViewById(R.id.chooseAccountList)
         prepareView()
         return view
     }
@@ -197,7 +194,10 @@ class ChooseAccountFragment : BaseDaggerFragment(),
         chooseAccountViewModel.getUserInfoResponse.observe(this, androidx.lifecycle.Observer {
             when (it) {
                 is Success -> onSuccessGetUserInfo(it.data)
-                is Fail -> onErrorGetUserInfo(it.throwable)
+                is Fail -> {
+                    dismissLoadingProgress()
+                    onErrorGetUserInfo(it.throwable)
+                }
             }
         })
         chooseAccountViewModel.goToActivationPage.observe(this, androidx.lifecycle.Observer {
@@ -271,7 +271,6 @@ class ChooseAccountFragment : BaseDaggerFragment(),
 
     private fun onSuccessLogin(userId: String) {
         activity?.let {
-            dismissLoadingProgress()
             analytics.eventSuccessLoginPhoneNumber()
             setTrackingUserId(userId)
             setFCM()
@@ -326,6 +325,7 @@ class ChooseAccountFragment : BaseDaggerFragment(),
     }
 
     private fun onSuccessLoginToken() {
+        showLoadingProgress()
         chooseAccountViewModel.getUserInfo()
     }
 
@@ -374,13 +374,15 @@ class ChooseAccountFragment : BaseDaggerFragment(),
     }
 
     private fun showLoadingProgress() {
-        mainView.visibility = View.GONE
-        progressBar.visibility = View.VISIBLE
+        chooseAccountTitle?.visibility = View.GONE
+        chooseAccountList?.visibility = View.GONE
+        chooseAccountLoader?.visibility = View.VISIBLE
     }
 
     private fun dismissLoadingProgress() {
-        mainView.visibility = View.VISIBLE
-        progressBar.visibility = View.GONE
+        chooseAccountTitle?.visibility = View.VISIBLE
+        chooseAccountList?.visibility = View.VISIBLE
+        chooseAccountLoader?.visibility = View.GONE
     }
 
     private fun onSuccessGetAccountList(accountList: AccountList) {
