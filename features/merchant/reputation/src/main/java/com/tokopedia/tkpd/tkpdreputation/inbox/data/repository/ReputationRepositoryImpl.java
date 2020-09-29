@@ -59,13 +59,6 @@ public class ReputationRepositoryImpl implements ReputationRepository {
     }
 
     @Override
-    public Observable<DataResponseReviewShop> getReviewShopList(HashMap<String, String> params) {
-        return reputationFactory
-                .createCloudGetReviewShopList()
-                .getReviewShopList(params);
-    }
-
-    @Override
     public Observable<DataResponseReviewHelpful> getReviewHelpful(String shopId, String productId) {
         return reputationFactory
                 .createCloudGetReviewHelpful()

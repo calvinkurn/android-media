@@ -25,8 +25,6 @@ public interface ReputationRepository {
 
     Observable<LikeDislikeDomain> likeDislikeReview(RequestParams requestParams);
 
-    Observable<DataResponseReviewShop> getReviewShopList(HashMap<String, String> params);
-
     Observable<DataResponseReviewHelpful> getReviewHelpful(String shopId, String productId);
 
     Observable<DataResponseReviewStarCount> getReviewStarCount(String productId);
