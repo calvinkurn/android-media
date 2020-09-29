@@ -133,7 +133,7 @@ ext {
             referral                        : ":features:im:referral",
             install_referral                : ":features:im:install_referral",
 
-            reputation                      : ":features:merchant:reputation",
+            reviewProduct                   : ":features:merchant:review_product",
             reputationCommon                : ":features:merchant:reputation_common",
             review                          : ":features:merchant:review",
             sellerActiveCommon              : ":features:merchant:seller_active_common",

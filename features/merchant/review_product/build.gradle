@@ -74,10 +74,10 @@ dependencies {
 }
 
 project.ext {
-    artifactId = 'reputation'
+    artifactId = 'review_product'
     groupId = 'com.tokopedia.merchant'
     versionName = "0.0.2"
-    artifactName ="reputation-release"
+    artifactName ="review_product-release"
 }
 
 apply from: '../../../publish_local.gradle'
