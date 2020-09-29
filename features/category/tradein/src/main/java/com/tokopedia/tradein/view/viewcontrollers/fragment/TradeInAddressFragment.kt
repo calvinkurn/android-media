@@ -109,14 +109,12 @@ class TradeInAddressFragment : BaseViewModelFragment<TradeInAddressViewModel>() 
             } else if (it == false) {
                 address_valid_ticker.hide()
                 btn_continue.isEnabled = false
-                arguments?.apply {
-                    tradeInAnalytics.viewCoverageAreaBottomSheet()
-                    val bottomSheet = TradeInOutsideCoverageBottomSheet
-                            .newInstance(tradeinHomeViewModel.tradeInParams.productName
-                            ?: "")
-                    bottomSheet.tradeInAnalytics = tradeInAnalytics
-                    bottomSheet.show(childFragmentManager, "")
-                }
+                tradeInAnalytics.viewCoverageAreaBottomSheet()
+                val bottomSheet = TradeInOutsideCoverageBottomSheet
+                        .newInstance(tradeinHomeViewModel.tradeInParams.productName
+                                ?: "")
+                bottomSheet.tradeInAnalytics = tradeInAnalytics
+                bottomSheet.show(childFragmentManager, "")
             }
         })
 
