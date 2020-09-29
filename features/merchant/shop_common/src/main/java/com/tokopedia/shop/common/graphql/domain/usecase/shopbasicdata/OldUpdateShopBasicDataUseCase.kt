@@ -1,7 +1,6 @@
 package com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata
 
 import android.content.Context
-import android.text.TextUtils
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
@@ -18,6 +17,7 @@ import javax.inject.Inject
 
 import rx.Observable
 
+@Deprecated("Use UpdateShopBasicDataUseCase")
 class OldUpdateShopBasicDataUseCase @Inject
 constructor(@ApplicationContext context: Context) : UseCase<String>() {
 
