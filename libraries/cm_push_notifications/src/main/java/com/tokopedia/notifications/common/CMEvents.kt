@@ -60,10 +60,16 @@ object IrisAnalyticsEvents {
     fun sendPushEvent(context: Context, eventName: String, baseNotificationModel: BaseNotificationModel) {
         if (baseNotificationModel.isTest) return
         val irisAnalytics = IrisAnalytics(context)
+        trackEvent(context, irisAnalytics, addBaseValues(context, eventName, baseNotificationModel))
+    }
+
+    @JvmStatic
+    fun sendAmplificationPushEvent(context: Context, eventName: String, baseNotificationModel: BaseNotificationModel) {
+        if (baseNotificationModel.isTest) return
+        if (!baseNotificationModel.isAmplification) return
+        val irisAnalytics = IrisAnalytics(context)
         trackEvent(context, irisAnalytics, addBaseValues(context, eventName, baseNotificationModel).apply {
-            if (baseNotificationModel.isAmplification) {
-                put(LABEL, AMPLIFICATION)
-            }
+            put(LABEL, AMPLIFICATION)
         })
     }
 
