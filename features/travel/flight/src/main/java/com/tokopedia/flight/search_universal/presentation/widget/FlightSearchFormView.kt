@@ -159,6 +159,13 @@ class FlightSearchFormView @JvmOverloads constructor(context: Context, attrs: At
     }
 
     private fun setViewClickListener() {
+        val departureAirport = if (flightSearchData.departureAirport.cityAirports != null &&
+                flightSearchData.departureAirport.cityAirports.size > 0)
+            flightSearchData.departureAirport.cityCode else flightSearchData.departureAirport.airportCode
+        val arrivalAirport = if (flightSearchData.arrivalAirport.cityAirports != null &&
+                flightSearchData.arrivalAirport.cityAirports.size > 0)
+            flightSearchData.arrivalAirport.cityCode else flightSearchData.arrivalAirport.airportCode
+
         switchFlightRoundTrip.setOnCheckedChangeListener { compoundButton, isChecked ->
             listener?.onRoundTripSwitchChanged(isChecked)
             toggleOneWay(isChecked)
@@ -180,21 +187,14 @@ class FlightSearchFormView @JvmOverloads constructor(context: Context, attrs: At
                     flightSearchData.flightClass.id, departureDate, returnDate, isRoundTrip())
         }
         tvFlightDepartureDate.setOnClickListener {
-            val departureAirport = if (flightSearchData.departureAirport.cityAirports != null &&
-                    flightSearchData.departureAirport.cityAirports.size > 0)
-                flightSearchData.departureAirport.cityCode else flightSearchData.departureAirport.airportCode
-            val arrivalAirport = if (flightSearchData.arrivalAirport.cityAirports != null &&
-                    flightSearchData.arrivalAirport.cityAirports.size > 0)
-                flightSearchData.arrivalAirport.cityCode else flightSearchData.arrivalAirport.airportCode
-
             listener?.onDepartureDateClicked(departureAirport, arrivalAirport,
                     flightSearchData.flightClass.id, departureDate, returnDate, isRoundTrip())
         }
         tvFlightReturnDateLabel.setOnClickListener {
-            listener?.onReturnDateClicked(departureDate, returnDate)
+            listener?.onReturnDateClicked(departureDate, returnDate, departureAirport, arrivalAirport, flightSearchData.flightClass.id)
         }
         tvFlightReturnDate.setOnClickListener {
-            listener?.onReturnDateClicked(departureDate, returnDate)
+            listener?.onReturnDateClicked(departureDate, returnDate, departureAirport, arrivalAirport, flightSearchData.flightClass.id)
         }
         tvFlightPassengerLabel.setOnClickListener { listener?.onPassengerClicked(flightSearchData.flightPassengerModel) }
         tvFlightPassenger.setOnClickListener { listener?.onPassengerClicked(flightSearchData.flightPassengerModel) }
@@ -428,7 +428,8 @@ class FlightSearchFormView @JvmOverloads constructor(context: Context, attrs: At
         fun onDepartureDateClicked(departureAirport: String, arrivalAirport: String, flightClassId: Int,
                                    departureDate: Date, returnDate: Date, isRoundTrip: Boolean)
 
-        fun onReturnDateClicked(departureDate: Date, returnDate: Date)
+        fun onReturnDateClicked(departureDate: Date, returnDate: Date, departureAirport: String,
+                                arrivalAirport: String, flightClassId: Int)
         fun onPassengerClicked(passengerModel: FlightPassengerModel?)
         fun onClassClicked(flightClassId: Int = -1)
         fun onSaveSearch(flightSearchData: FlightSearchPassDataModel)

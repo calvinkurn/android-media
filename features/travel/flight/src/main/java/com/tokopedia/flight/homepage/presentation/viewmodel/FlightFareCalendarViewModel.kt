@@ -25,10 +25,12 @@ class FlightFareCalendarViewModel @Inject constructor(private val dispatcherProv
     : BaseViewModel(dispatcherProvider.io()) {
 
     val fareFlightCalendarData = MutableLiveData<List<FlightFareAttributes>>()
+    val fareFlightReturnCalendarData = MutableLiveData<List<FlightFareAttributes>>()
 
     fun getFareFlightCalendar(rawQuery: String,
                               mapParam: HashMap<String, Any>,
-                              minDate: Date, maxDate: Date) {
+                              minDate: Date, maxDate: Date,
+                              isReturn: Boolean = false) {
         launchCatchError(block = {
             val attributes = ArrayList<FlightFareAttributes>()
             val minCalendar = Calendar.getInstance()
