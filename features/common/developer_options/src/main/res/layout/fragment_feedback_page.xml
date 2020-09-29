@@ -22,7 +22,7 @@
             android:text="Attachment"
             app:typographyType="body_3"
             app:typographyWeight="bold"
-            android:visibility="gone"/>
+            android:visibility="visible"/>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_img_feedback"
@@ -34,7 +34,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/image_feedback_tv"
-            android:visibility="gone"
+            android:visibility="visible"
             tools:listitem="@layout/item_image_chooser_feedback" />
 
         <ImageView
@@ -51,7 +51,7 @@
             android:id="@+id/email_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layout_constraintTop_toBottomOf="@id/image_feedback">
+            app:layout_constraintTop_toBottomOf="@id/rv_img_feedback">
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/et_email_wrapper"

@@ -3,10 +3,14 @@ package com.tokopedia.developer_options.presentation.feedbackpage.ui.feedbackpag
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.developer_options.api.ApiClient
 import com.tokopedia.developer_options.api.FeedbackApiInterface
+import com.tokopedia.developer_options.presentation.feedbackpage.domain.model.BaseImageFeedbackUiModel
+import com.tokopedia.developer_options.presentation.feedbackpage.domain.model.CategoriesMapper
+import com.tokopedia.developer_options.presentation.feedbackpage.domain.model.DefaultFeedbackUiModel
+import com.tokopedia.developer_options.presentation.feedbackpage.domain.model.ImageFeedbackUiModel
 import com.tokopedia.developer_options.presentation.feedbackpage.domain.request.FeedbackFormRequest
+import com.tokopedia.developer_options.presentation.feedbackpage.domain.response.CategoriesResponse
 import com.tokopedia.developer_options.presentation.feedbackpage.domain.response.FeedbackFormResponse
 import com.tokopedia.developer_options.presentation.feedbackpage.domain.response.ImageResponse
-import com.tokopedia.developer_options.presentation.feedbackpage.ui.feedbackpage.FeedbackPageContract
 import okhttp3.MultipartBody
 import okhttp3.ResponseBody
 import rx.Subscriber
@@ -17,6 +21,8 @@ import rx.subscriptions.CompositeSubscription
 class FeedbackPagePresenter(private val compositeSubscription: CompositeSubscription, val mapper: CategoriesMapper) : BaseDaggerPresenter<FeedbackPageContract.View>(), FeedbackPageContract.Presenter {
 
     private val feedbackApi: FeedbackApiInterface = ApiClient.getAPIService()
+    private var imageData: MutableList<BaseImageFeedbackUiModel> = mutableListOf()
+    private var originalImage: MutableList<String> = mutableListOf()
 
     override fun getCategories() {
         feedbackApi.getCategories()
@@ -117,6 +123,29 @@ class FeedbackPagePresenter(private val compositeSubscription: CompositeSubscrip
                     }
 
                 })
+    }
+
+    override fun getImageList(selectedImage: ArrayList<String>): MutableList<BaseImageFeedbackUiModel> {
+        when (selectedImage.size) {
+            5 -> {
+                imageData = (selectedImage.take(4).map {
+                    ImageFeedbackUiModel(it, shouldDisplayOverlay = true)
+                }).asReversed().toMutableList()
+            }
+            else -> {
+                imageData.addAll(selectedImage.map {
+                    ImageFeedbackUiModel(it, shouldDisplayOverlay = false)
+                }.asReversed())
+            }
+        }
+
+        return imageData
+    }
+
+    override fun initImageData(): MutableList<BaseImageFeedbackUiModel> {
+        imageData.clear()
+        imageData.add(DefaultFeedbackUiModel())
+        return imageData
     }
 
 }

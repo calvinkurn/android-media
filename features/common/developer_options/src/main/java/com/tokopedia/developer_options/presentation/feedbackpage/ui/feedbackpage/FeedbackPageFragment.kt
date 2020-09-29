@@ -1,6 +1,7 @@
 package com.tokopedia.developer_options.presentation.feedbackpage.ui.feedbackpage
 
 import android.Manifest
+import android.app.Activity
 import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
@@ -13,8 +14,6 @@ import android.os.Build
 import android.os.Build.VERSION_CODES
 import android.os.Bundle
 import android.provider.MediaStore
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -35,6 +34,12 @@ import com.tokopedia.developer_options.presentation.feedbackpage.ui.dialog.Loadi
 import com.tokopedia.developer_options.presentation.feedbackpage.ui.tickercreated.TicketCreatedActivity
 import com.tokopedia.developer_options.presentation.feedbackpage.utils.EXTRA_URI_IMAGE
 import com.tokopedia.developer_options.presentation.preference.Preferences
+import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
+import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder
+import com.tokopedia.imagepicker.picker.main.builder.ImagePickerMultipleSelectionBuilder
+import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef
+import com.tokopedia.imagepicker.picker.main.builder.ImageRatioTypeDef
+import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
 import com.tokopedia.screenshot_observer.ScreenshotData
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSession
@@ -86,6 +91,7 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
 
     private var userSession: UserSessionInterface? = null
     private var loadingDialog: LoadingDialog? = null
+    private var selectedImage: ArrayList<String> = arrayListOf()
 
     private val requiredPermissions: Array<String>
         get() = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE,
@@ -122,6 +128,21 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
             }
         }
         return true
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        when (requestCode) {
+            REQUEST_CODE_IMAGE -> {
+                if (resultCode == Activity.RESULT_OK && data != null) {
+                    selectedImage = data.getStringArrayListExtra(ImagePickerActivity.PICKER_RESULT_PATHS)
+                    feedbackPagePresenter.initImageData()
+
+                    val imageListData = feedbackPagePresenter.getImageList(selectedImage)
+                    imageAdapter.setImageFeedbackData(imageListData)
+                }
+            }
+           else -> super.onActivityResult(requestCode, resultCode, data)
+        }
     }
 
     private fun initView(mainView: View){
@@ -173,6 +194,7 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
 
     private fun initData() {
         rvImageFeedback.adapter = imageAdapter
+        imageAdapter.setImageFeedbackData(feedbackPagePresenter.initImageData())
         val fields = VERSION_CODES::class.java.fields
 
         var codeName = "UNKNOWN"
@@ -267,8 +289,7 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
             if(validate) {
                 val issueType = bugType.selectedItem.toString()
                 emailTokopedia = "$emailText@tokopedia.com"
-                feedbackPagePresenter.sendAttachment( 61, checkUriImage())
-//                feedbackPagePresenter.sendFeedbackForm(requestMapper(emailTokopedia, affectedPageText, journeyText, issueType, actualResultText, expectedResultText))
+                feedbackPagePresenter.sendFeedbackForm(requestMapper(emailTokopedia, affectedPageText, journeyText, issueType, actualResultText, expectedResultText))
             }
         }
 
@@ -410,6 +431,10 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
         Toast.makeText(activity, throwable.toString(), Toast.LENGTH_SHORT).show()
     }
 
+    override fun categoriesMapper(data: CategoriesModel) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
     companion object {
         @JvmStatic
         fun newInstance(uri: Uri?) : FeedbackPageFragment {
@@ -420,6 +445,7 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
             }
         }
 
+        private const val REQUEST_CODE_IMAGE = 111
         private val FILE_NAME_PREFIX = "screenshot"
         private val PATH_SCREENSHOT = "screenshots/"
         private val PROJECTION = arrayOf(
@@ -430,6 +456,17 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
     }
 
     override fun addImageClick() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        context?.let {
+            val builder = ImagePickerBuilder(getString(R.string.image_picker_title),
+                    intArrayOf(ImagePickerTabTypeDef.TYPE_GALLERY),
+                    GalleryType.ALL, ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB,
+                    ImagePickerBuilder.DEFAULT_MIN_RESOLUTION, ImageRatioTypeDef.RATIO_16_9, true,
+                    null,
+                    ImagePickerMultipleSelectionBuilder(
+                    selectedImage, null, -1, 5
+            ))
+            val intent = ImagePickerActivity.getIntent(it, builder)
+            startActivityForResult(intent, REQUEST_CODE_IMAGE)
+        }
     }
 }

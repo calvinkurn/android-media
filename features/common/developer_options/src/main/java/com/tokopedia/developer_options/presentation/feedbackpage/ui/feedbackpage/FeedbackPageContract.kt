@@ -1,6 +1,7 @@
 package com.tokopedia.developer_options.presentation.feedbackpage.ui.feedbackpage
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView
+import com.tokopedia.developer_options.presentation.feedbackpage.domain.model.BaseImageFeedbackUiModel
 import com.tokopedia.developer_options.presentation.feedbackpage.domain.model.CategoriesModel
 import com.tokopedia.developer_options.presentation.feedbackpage.domain.request.FeedbackFormRequest
 import okhttp3.MultipartBody
@@ -22,5 +23,7 @@ interface FeedbackPageContract {
         fun sendFeedbackForm(feedbackFormRequest: FeedbackFormRequest)
         fun sendAttachment(feedbackId: Int, fileData: MultipartBody.Part)
         fun commitData(feedbackId: Int)
+        fun getImageList(selectedImage: ArrayList<String>): MutableList<BaseImageFeedbackUiModel>
+        fun initImageData(): MutableList<BaseImageFeedbackUiModel>
     }
 }

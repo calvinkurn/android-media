@@ -4,10 +4,10 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.developer_options.R
-import com.tokopedia.developer_options.presentation.feedbackpage.listener.ImageClickListener
 import com.tokopedia.developer_options.presentation.feedbackpage.domain.model.BaseImageFeedbackUiModel
 import com.tokopedia.developer_options.presentation.feedbackpage.domain.model.DefaultFeedbackUiModel
 import com.tokopedia.developer_options.presentation.feedbackpage.domain.model.ImageFeedbackUiModel
+import com.tokopedia.developer_options.presentation.feedbackpage.listener.ImageClickListener
 import com.tokopedia.developer_options.presentation.feedbackpage.viewholder.BaseImageFeedbackViewHolder
 import com.tokopedia.developer_options.presentation.feedbackpage.viewholder.DefaultImafeFeedbackViewHolder
 import com.tokopedia.developer_options.presentation.feedbackpage.viewholder.ImageFeedbackViewHolder
@@ -21,10 +21,15 @@ class ImageFeedbackAdapter(private val imageClickListener: ImageClickListener): 
 
     private var imageFeedbackData: MutableList<BaseImageFeedbackUiModel> = mutableListOf()
 
+    fun setImageFeedbackData(data: List<BaseImageFeedbackUiModel>) {
+        imageFeedbackData = data.toMutableList()
+        notifyDataSetChanged()
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseImageFeedbackViewHolder<*> {
         return when (viewType) {
             TYPE_DEFAULT -> {
-                DefaultImafeFeedbackViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_image_chooser_feedback, parent, false), imageClickListener)
+                DefaultImafeFeedbackViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_add_image_feedback, parent, false), imageClickListener)
             }
             TYPE_IMAGE -> {
                 DefaultImafeFeedbackViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_image_chooser_feedback, parent, false), imageClickListener)

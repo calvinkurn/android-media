@@ -59,6 +59,9 @@ dependencies {
     implementation rootProject.ext.debugToolsDependencies.chuck
     implementation rootProject.ext.playServicesDependencies.maps
 
+    implementation rootProject.ext.miscDependencies.dagger
+    kapt rootProject.ext.miscDependencies.daggerCompiler
+
     implementation rootProject.ext.firebase.messaging
     
     implementation project(rootProject.ext.libraries.translator)
