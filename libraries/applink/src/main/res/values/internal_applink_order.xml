@@ -5,14 +5,10 @@
     <string name="host_order" translatable="false">order</string>
     <string name="host_transaction_buyer" translatable="false">transaction</string>
     <string name="host_order_list" translatable="false">order_list</string>
-    <string name="host_deals" translatable="false">deals</string>
-    <string name="host_digital" translatable="false">digital</string>
     <string name="host_events" translatable="false">events</string>
     <string name="host_giftcards" translatable="false">giftcards</string>
     <string name="host_insurance" translatable="false">insurance</string>
     <string name="host_modaltoko" translatable="false">modaltoko</string>
-    <string name="host_hotel" translatable="false">hotel</string>
-    <string name="host_pesawat" translatable="false">pesawat</string>
     <string name="host_belanja" translatable="false">belanja</string>
     <!--
         If the link is Ended with {id}, must end with "/"

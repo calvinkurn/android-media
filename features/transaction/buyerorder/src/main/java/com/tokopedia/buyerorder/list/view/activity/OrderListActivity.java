@@ -10,7 +10,6 @@ import org.jetbrains.annotations.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
-import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
@@ -61,97 +60,97 @@ public class OrderListActivity extends BaseSimpleActivity
     public static final String KEY_TITLE = "title";
     OrderListAnalytics orderListAnalytics;
 
-    @DeepLink({ApplinkConst.PURCHASE_CONFIRMED, ApplinkConst.PURCHASE_ORDER})
-    public static Intent getConfirmedIntent(Context context, Bundle extras) {
+    // @DeepLink({ApplinkConst.PURCHASE_CONFIRMED, ApplinkConst.PURCHASE_ORDER})
+    /*public static Intent getConfirmedIntent(Context context, Bundle extras) {
         return getMarketPlaceIntent(context, extras);
 
-    }
+    }*/
 
-    @DeepLink(ApplinkConst.ORDER_LIST_WEBVIEW)
+    // @DeepLink(ApplinkConst.ORDER_LIST_WEBVIEW)
     public static Intent getOrderList(Context context, Bundle extras) {
         Intent intent = new Intent(context, OrderListActivity.class);
         return intent.putExtras(extras);
     }
 
-    @DeepLink(ApplinkConst.PURCHASE_PROCESSED)
-    public static Intent getProcessedIntent(Context context, Bundle extras) {
+    // @DeepLink(ApplinkConst.PURCHASE_PROCESSED)
+    /*public static Intent getProcessedIntent(Context context, Bundle extras) {
         return getMarketPlaceIntent(context, extras);
-    }
+    }*/
 
-    @DeepLink({ApplinkConst.PURCHASE_SHIPPED})
-    public static Intent getShippedIntent(Context context, Bundle extras) {
+    // @DeepLink({ApplinkConst.PURCHASE_SHIPPED})
+    /*public static Intent getShippedIntent(Context context, Bundle extras) {
         return getMarketPlaceIntent(context, extras);
-    }
+    }*/
 
-    @DeepLink({ApplinkConst.PURCHASE_DELIVERED, ApplinkConst.PURCHASE_SHIPPING_CONFIRM})
-    public static Intent getDeliveredIntent(Context context, Bundle extras) {
+    // @DeepLink({ApplinkConst.PURCHASE_DELIVERED, ApplinkConst.PURCHASE_SHIPPING_CONFIRM})
+    /*public static Intent getDeliveredIntent(Context context, Bundle extras) {
         return getMarketPlaceIntent(context, extras);
-    }
+    }*/
 
-    @DeepLink(ApplinkConst.PURCHASE_HISTORY)
-    public static Intent getHistoryIntent(Context context, Bundle extras) {
+    // @DeepLink(ApplinkConst.PURCHASE_HISTORY)
+    /*public static Intent getHistoryIntent(Context context, Bundle extras) {
         return getMarketPlaceIntent(context, extras);
-    }
+    }*/
 
 
-    private static Intent getMarketPlaceIntent(Context context, Bundle extras) {
+    /*private static Intent getMarketPlaceIntent(Context context, Bundle extras) {
         Uri uri = Uri.parse(extras.getString(DeepLink.URI));
         extras.putString(OrderCategory.KEY_LABEL, OrderCategory.MARKETPLACE);
         extras.putString(OrderListContants.ORDER_FILTER_ID, uri.getQueryParameter(OrderListContants.ORDER_FILTER_ID));
         Intent intent = new Intent(context, OrderListActivity.class);
         return intent.putExtras(extras);
-    }
+    }*/
 
-    @DeepLink({ApplinkConst.DEALS_ORDER,
-            ApplinkConst.DIGITAL_ORDER,
-            ApplinkConst.EVENTS_ORDER,
-            ApplinkConst.GIFT_CARDS_ORDER,
-            ApplinkConst.INSURANCE_ORDER,
-            ApplinkConst.MODAL_TOKO_ORDER})
-    public static Intent getOrderListIntent(Context context, Bundle bundle) {
-
-        Uri.Builder uri = Uri.parse(bundle.getString(DeepLink.URI)).buildUpon();
-        String link = bundle.getString(DeepLink.URI);
-        String category = link.substring(link.indexOf("//") + 2, link.lastIndexOf("/")).toUpperCase();
-        bundle.putString(ORDER_CATEGORY, category);
-        return new Intent(context, OrderListActivity.class)
-                .setData(uri.build())
-                .putExtras(bundle);
-    }
+//    @DeepLink({ApplinkConst.DEALS_ORDER,
+//            ApplinkConst.DIGITAL_ORDER,
+//            ApplinkConst.EVENTS_ORDER,
+//            ApplinkConst.GIFT_CARDS_ORDER,
+//            ApplinkConst.INSURANCE_ORDER,
+//            ApplinkConst.MODAL_TOKO_ORDER})
+//    public static Intent getOrderListIntent(Context context, Bundle bundle) {
+//
+//        Uri.Builder uri = Uri.parse(bundle.getString(DeepLink.URI)).buildUpon();
+//        String link = bundle.getString(DeepLink.URI);
+//        String category = link.substring(link.indexOf("//") + 2, link.lastIndexOf("/")).toUpperCase();
+//        bundle.putString(ORDER_CATEGORY, category);
+//        return new Intent(context, OrderListActivity.class)
+//                .setData(uri.build())
+//                .putExtras(bundle);
+//    }
 
     @Override
     protected int getLayoutRes() {
         return R.layout.activity_order_list_module;
     }
 
-    @DeepLink(ApplinkConst.HOTEL_ORDER)
-    public static Intent getHotelOrderListIntent(Context context, Bundle bundle) {
-        Uri.Builder uri = Uri.parse(bundle.getString(DeepLink.URI)).buildUpon();
-        bundle.putString(ORDER_CATEGORY, OrderCategory.HOTELS);
-        return new Intent(context, OrderListActivity.class)
-                .setData(uri.build())
-                .putExtras(bundle);
-    }
+//    @DeepLink(ApplinkConst.HOTEL_ORDER)
+//    public static Intent getHotelOrderListIntent(Context context, Bundle bundle) {
+//        Uri.Builder uri = Uri.parse(bundle.getString(DeepLink.URI)).buildUpon();
+//        bundle.putString(ORDER_CATEGORY, OrderCategory.HOTELS);
+//        return new Intent(context, OrderListActivity.class)
+//                .setData(uri.build())
+//                .putExtras(bundle);
+//    }
 
-    @DeepLink(ApplinkConst.FLIGHT_ORDER)
-    public static Intent getFlightOrderListIntent(Context context, Bundle bundle) {
-        Uri.Builder uri = Uri.parse(bundle.getString(DeepLink.URI)).buildUpon();
-        bundle.putString(ORDER_CATEGORY, OrderCategory.FLIGHTS);
-        return new Intent(context, OrderListActivity.class)
-                .setData(uri.build())
-                .putExtras(bundle);
-    }
+//    @DeepLink(ApplinkConst.FLIGHT_ORDER)
+//    public static Intent getFlightOrderListIntent(Context context, Bundle bundle) {
+//        Uri.Builder uri = Uri.parse(bundle.getString(DeepLink.URI)).buildUpon();
+//        bundle.putString(ORDER_CATEGORY, OrderCategory.FLIGHTS);
+//        return new Intent(context, OrderListActivity.class)
+//                .setData(uri.build())
+//                .putExtras(bundle);
+//    }
 
-    @DeepLink({ApplinkConst.BELANJA_ORDER, ApplinkConst.MARKETPLACE_ORDER_FILTER})
-    public static Intent getMarketPlaceOrderListIntent(Context context, Bundle bundle) {
-        Uri.Builder uri = Uri.parse(bundle.getString(DeepLink.URI)).buildUpon();
-        bundle.putString(ORDER_CATEGORY, OrderCategory.MARKETPLACE);
-        Intent intent = new Intent(context, OrderListActivity.class);
-        if (uri != null) {
-            intent.setData(uri.build());
-        }
-        return intent.putExtras(bundle);
-    }
+//    @DeepLink({ApplinkConst.BELANJA_ORDER, ApplinkConst.MARKETPLACE_ORDER_FILTER})
+//    public static Intent getMarketPlaceOrderListIntent(Context context, Bundle bundle) {
+//        Uri.Builder uri = Uri.parse(bundle.getString(DeepLink.URI)).buildUpon();
+//        bundle.putString(ORDER_CATEGORY, OrderCategory.MARKETPLACE);
+//        Intent intent = new Intent(context, OrderListActivity.class);
+//        if (uri != null) {
+//            intent.setData(uri.build());
+//        }
+//        return intent.putExtras(bundle);
+//    }
 
     public static Intent getInstance(Context context) {
         return new Intent(context, OrderListActivity.class);
