@@ -303,7 +303,6 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
         sahBottomNav.setOnNavigationItemSelectedListener { menu ->
             when (menu.itemId) {
                 R.id.menu_sah_home -> {
-                    initPerformanceMonitoringSellerHome()
                     UpdateShopActiveService.startService(this)
                     onBottomNavSelected(PageFragment(FragmentType.HOME), TrackingConstant.CLICK_HOME)
                     showToolbarNotificationBadge()
@@ -463,10 +462,8 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
     }
 
     private fun initPerformanceMonitoringSellerHome() {
-        if (performanceMonitoringSellerHomeLayoutPlt == null) {
-            performanceMonitoringSellerHomelayout = PerformanceMonitoring.start(SELLER_HOME_LAYOUT_TRACE)
-            performanceMonitoringSellerHomeLayoutPlt = HomeLayoutLoadTimeMonitoring()
-            performanceMonitoringSellerHomeLayoutPlt?.initPerformanceMonitoring()
-        }
+        performanceMonitoringSellerHomelayout = PerformanceMonitoring.start(SELLER_HOME_LAYOUT_TRACE)
+        performanceMonitoringSellerHomeLayoutPlt = HomeLayoutLoadTimeMonitoring()
+        performanceMonitoringSellerHomeLayoutPlt?.initPerformanceMonitoring()
     }
 }
