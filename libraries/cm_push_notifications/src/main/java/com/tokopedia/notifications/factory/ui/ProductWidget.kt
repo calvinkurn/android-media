@@ -131,10 +131,7 @@ internal open class ProductWidget(
     private fun setButtonField(resId: Int, view: RemoteViews, actionButton: ActionButton) {
         val pendingIntent = contract.actionButtonIntent(actionButton)
         view.setOnClickPendingIntent(resId, pendingIntent)
-
-        if (actionButton.actionButtonIcon.isNullOrEmpty()) {
-            view.setTextViewText(resId, actionButton.text)
-        }
+        view.setTextViewText(resId, actionButton.text)
 
         // force to remove the title of button icon
         if (resId == R.id.btn_icon) {
