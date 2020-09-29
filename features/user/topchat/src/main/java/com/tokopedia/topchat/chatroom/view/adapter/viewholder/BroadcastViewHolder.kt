@@ -4,6 +4,9 @@ import android.view.View
 import android.widget.ImageView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.chat_common.data.DeferredAttachment
+import com.tokopedia.chat_common.data.MessageViewModel
+import com.tokopedia.chat_common.util.ChatLinkHandlerMovementMethod
+import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandlerListener
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ProductAttachmentListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
@@ -13,10 +16,8 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.AdapterList
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.CommonViewHolderListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.DeferredViewHolderAttachment
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.SearchListener
-import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.binder.ImageAnnouncementViewHolderBinder
-import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.binder.ProductCarouselListAttachmentViewHolderBinder
-import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.binder.TopChatVoucherViewHolderBinder
-import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.binder.TopchatProductAttachmentViewHolderBinder
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.binder.*
+import com.tokopedia.topchat.chatroom.view.custom.FlexBoxChatLayout
 import com.tokopedia.topchat.chatroom.view.custom.ProductCarouselRecyclerView
 import com.tokopedia.topchat.chatroom.view.custom.SingleProductAttachmentContainer
 import com.tokopedia.topchat.chatroom.view.customview.TopchatMerchantVoucherView
@@ -31,16 +32,19 @@ class BroadcastViewHolder constructor(
         private val deferredAttachment: DeferredViewHolderAttachment,
         private val searchListener: SearchListener,
         private val commonListener: CommonViewHolderListener,
-        private val adapterListener: AdapterListener
+        private val adapterListener: AdapterListener,
+        private val chatMessageListener: ChatLinkHandlerListener
 ) : AbstractViewHolder<BroadCastUiModel>(itemView) {
 
     private val bannerView: ImageView? = itemView?.findViewById(R.id.iv_banner)
     private val voucherView: TopchatMerchantVoucherView? = itemView?.findViewById(R.id.broadcast_merchant_voucher)
     private val singleProduct: SingleProductAttachmentContainer? = itemView?.findViewById(R.id.broadcast_product)
+    private val broadcastText: FlexBoxChatLayout? = itemView?.findViewById(R.id.broadcast_fx_chat)
     private val rvProductCarousel: ProductCarouselRecyclerView? = itemView?.findViewById(R.id.rv_product_carousel)
     private val adapterProductCarousel = ProductListAdapter(
             searchListener, productListener, deferredAttachment, commonListener, adapterListener
     )
+    private val movementMethod = ChatLinkHandlerMovementMethod(chatMessageListener)
 
     init {
         ProductCarouselListAttachmentViewHolderBinder.initRecyclerView(
@@ -69,6 +73,7 @@ class BroadcastViewHolder constructor(
         bindVoucher(element)
         bindProductCarousel(element)
         bindSingleProduct(element)
+        bindMessage(element)
     }
 
     private fun bindBanner(element: BroadCastUiModel) {
@@ -100,15 +105,27 @@ class BroadcastViewHolder constructor(
     }
 
     private fun bindSingleProduct(element: BroadCastUiModel) {
-        val productCarousel = element.singleProduct
-        if (productCarousel != null) {
+        val product = element.singleProduct
+        if (product != null) {
             singleProduct?.show()
             singleProduct?.bindData(
-                    productCarousel, adapterPosition, productListener, deferredAttachment,
+                    product, adapterPosition, productListener, deferredAttachment,
                     searchListener, commonListener, adapterListener
             )
         } else {
             singleProduct?.gone()
+        }
+    }
+
+    private fun bindMessage(element: BroadCastUiModel) {
+        val message: MessageViewModel? = element.messageUiModel
+        if (message != null) {
+            broadcastText?.show()
+            ChatMessageViewHolderBinder.bindChatMessage(message, broadcastText, movementMethod)
+            ChatMessageViewHolderBinder.bindHour(message, broadcastText)
+            ChatMessageViewHolderBinder.bindChatReadStatus(message, broadcastText)
+        } else {
+            broadcastText?.gone()
         }
     }
 

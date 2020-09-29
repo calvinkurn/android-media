@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -55,12 +56,13 @@
         tools:visibility="gone" />
 
     <com.tokopedia.topchat.chatroom.view.custom.FlexBoxChatLayout
-        android:id="@+id/fxChat"
+        android:id="@+id/broadcast_fx_chat"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingLeft="@dimen/spacing_lvl4"
         android:paddingTop="@dimen/dp_topchat_10"
         android:paddingRight="@dimen/spacing_lvl4"
-        android:paddingBottom="@dimen/dp_topchat_10" />
+        android:paddingBottom="@dimen/dp_topchat_10"
+        app:useMaxWidth="true" />
 
 </LinearLayout>

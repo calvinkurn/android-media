@@ -105,8 +105,12 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
                 broadcast[TYPE_IMAGE_CAROUSEL] = carouselProducts
                 idx += products.size
             } else if (reply.isBroadCast() && reply.blastId == blastId) {
-                val product = mapAttachment(reply)
-                broadcast[replyType] = product
+                val messageItem = if (hasAttachment(reply)) {
+                    mapAttachment(reply)
+                } else {
+                    convertToMessageViewModel(reply)
+                }
+                broadcast[replyType] = messageItem
                 idx++
             } else {
                 break

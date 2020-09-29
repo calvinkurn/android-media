@@ -1,10 +1,7 @@
 package com.tokopedia.topchat.chatroom.view.uimodel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.chat_common.data.AttachmentType
-import com.tokopedia.chat_common.data.BaseChatViewModel
-import com.tokopedia.chat_common.data.ImageAnnouncementViewModel
-import com.tokopedia.chat_common.data.ProductAttachmentViewModel
+import com.tokopedia.chat_common.data.*
 import com.tokopedia.chat_common.domain.pojo.Reply
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatVoucherUiModel
@@ -16,6 +13,7 @@ class BroadCastUiModel : BaseChatViewModel, Visitable<TopChatTypeFactory> {
     val voucherUiModel: TopChatVoucherUiModel? get() = items[AttachmentType.Companion.TYPE_VOUCHER] as? TopChatVoucherUiModel
     val productCarousel: ProductCarouselUiModel? get() = items[AttachmentType.Companion.TYPE_IMAGE_CAROUSEL] as? ProductCarouselUiModel
     val singleProduct: ProductAttachmentViewModel? get() = items[AttachmentType.Companion.TYPE_PRODUCT_ATTACHMENT] as? ProductAttachmentViewModel
+    val messageUiModel: MessageViewModel? get() = items[AttachmentType.Companion.TYPE_MESSAGE] as? MessageViewModel
 
     constructor(reply: Reply, items: Map<String, Visitable<*>>) : super(
             messageId = reply.msgId.toString(),
