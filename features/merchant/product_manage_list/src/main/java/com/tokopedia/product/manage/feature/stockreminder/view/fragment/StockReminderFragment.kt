@@ -29,6 +29,7 @@ import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.common.util.ProductManageListErrorHandler
 import com.tokopedia.product.manage.feature.list.analytics.ProductManageTracking
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.EXTRA_PRODUCT_NAME
+import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.EXTRA_RESULT_STATUS
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.EXTRA_THRESHOLD
 import com.tokopedia.product.manage.feature.stockreminder.data.source.cloud.response.createupdateresponse.CreateStockReminderResponse
 import com.tokopedia.product.manage.feature.stockreminder.data.source.cloud.response.createupdateresponse.UpdateStockReminderResponse
@@ -215,6 +216,7 @@ class StockReminderFragment: BaseDaggerFragment() {
             cacheManager?.let {
                 it.put(EXTRA_PRODUCT_NAME, productName)
                 it.put(EXTRA_THRESHOLD, threshold)
+                it.put(EXTRA_RESULT_STATUS, Activity.RESULT_OK)
             }
         } else {
             val resultIntent = Intent()

@@ -672,13 +672,16 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         renderCheckedView()
         showAddAsFeaturedProduct()
         if (!extraCacheManagerId.isBlank()) {
-            if (sellerMigrationFeatureName == SellerMigrationFeatureName.FEATURE_SET_CASHBACK) {
-                onSetCashbackResult(extraCacheManagerId)
-            } else if (sellerMigrationFeatureName == SellerMigrationFeatureName.FEATURE_STOCK_REMINDER) {
-                val cacheManager = context?.let { context -> SaveInstanceCacheManager(context, extraCacheManagerId) }
-                val productName: String = cacheManager?.getString(EXTRA_PRODUCT_NAME).orEmpty()
-                val threshold = cacheManager?.get(EXTRA_THRESHOLD, Int::class.java) ?: 0
-                onSetStockReminderResult(threshold, productName)
+            val cacheManager = context?.let { context -> SaveInstanceCacheManager(context, extraCacheManagerId) }
+            val resultStatus = cacheManager?.get(ProductManageListConstant.EXTRA_RESULT_STATUS, Int::class.java) ?: 0
+            if (resultStatus == Activity.RESULT_OK) {
+                if (sellerMigrationFeatureName == SellerMigrationFeatureName.FEATURE_SET_CASHBACK) {
+                    onSetCashbackResult(cacheManager)
+                } else if (sellerMigrationFeatureName == SellerMigrationFeatureName.FEATURE_STOCK_REMINDER) {
+                    val productName: String = cacheManager?.getString(EXTRA_PRODUCT_NAME).orEmpty()
+                    val threshold = cacheManager?.get(EXTRA_THRESHOLD, Int::class.java) ?: 0
+                    onSetStockReminderResult(threshold, productName)
+                }
             }
         }
     }
@@ -1508,7 +1511,8 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
                 }
                 SET_CASHBACK_REQUEST_CODE -> if(resultCode == Activity.RESULT_OK) {
                     val cacheManagerId = it.getStringExtra(SET_CASHBACK_CACHE_MANAGER_KEY)
-                    onSetCashbackResult(cacheManagerId)
+                    val cacheManager = context?.let { context -> SaveInstanceCacheManager(context, cacheManagerId) }
+                    onSetCashbackResult(cacheManager)
                 }
                 REQUEST_CODE_CAMPAIGN_STOCK ->
                     when(resultCode) {
@@ -1552,16 +1556,13 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     }
 
     @Suppress("NAME_SHADOWING")
-    private fun onSetCashbackResult(cacheManagerId: String?) {
-        cacheManagerId?.let { cacheManagerId ->
-            val cacheManager = context?.let { context -> SaveInstanceCacheManager(context, cacheManagerId) }
-            val setCashbackResult: SetCashbackResult? = cacheManager?.get(SET_CASHBACK_RESULT, SetCashbackResult::class.java)
-            setCashbackResult?.let { cashbackResult ->
-                if(cashbackResult.limitExceeded) {
-                    onSetCashbackLimitExceeded()
-                } else {
-                    onSuccessSetCashback(cashbackResult)
-                }
+    private fun onSetCashbackResult(cacheManager: SaveInstanceCacheManager?) {
+        val setCashbackResult: SetCashbackResult? = cacheManager?.get(SET_CASHBACK_RESULT, SetCashbackResult::class.java)
+        setCashbackResult?.let { cashbackResult ->
+            if (cashbackResult.limitExceeded) {
+                onSetCashbackLimitExceeded()
+            } else {
+                onSuccessSetCashback(cashbackResult)
             }
         }
     }

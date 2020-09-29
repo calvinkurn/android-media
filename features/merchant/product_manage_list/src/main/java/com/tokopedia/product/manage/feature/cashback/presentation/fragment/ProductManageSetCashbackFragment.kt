@@ -28,6 +28,7 @@ import com.tokopedia.product.manage.feature.cashback.presentation.viewmodel.Prod
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.SelectUiModel
 import com.tokopedia.product.manage.feature.filter.presentation.widget.SelectClickListener
 import com.tokopedia.product.manage.feature.list.analytics.ProductManageTracking
+import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.EXTRA_RESULT_STATUS
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -40,6 +41,7 @@ class ProductManageSetCashbackFragment : Fragment(), SelectClickListener,
     companion object {
         const val SET_CASHBACK_CACHE_MANAGER_KEY = "set_cashback_cache_id"
         const val SET_CASHBACK_RESULT = "set_cashback_result"
+        const val SET_CASHBACK_RESULT_STATUS = "set_cashback_result_status"
         const val ZERO_CASHBACK = 0
         const val THREE_PERCENT_CASHBACK = 3
         const val FOUR_PERCENT_CASHBACK = 4
@@ -227,6 +229,7 @@ class ProductManageSetCashbackFragment : Fragment(), SelectClickListener,
                     cacheManager?.let { manager ->
                         val cacheManagerId = manager.id
                         manager.put(SET_CASHBACK_RESULT, it.data)
+                        manager.put(EXTRA_RESULT_STATUS, Activity.RESULT_OK)
                         this.activity?.setResult(Activity.RESULT_OK, Intent().putExtra(SET_CASHBACK_CACHE_MANAGER_KEY, cacheManagerId))
                         this.activity?.finish()
                     }

@@ -56,6 +56,7 @@ import com.tokopedia.product.addedit.common.util.*
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.BUNDLE_CACHE_MANAGER_ID
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.EXTRA_CASHBACK_IS_DRAFTING
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.EXTRA_CASHBACK_SHOP_ID
+import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.EXTRA_RESULT_STATUS
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PRODUCT_PHOTOS
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.PARAM_SET_CASHBACK_PRODUCT_NAME
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.PARAM_SET_CASHBACK_PRODUCT_PRICE
@@ -478,7 +479,7 @@ class AddEditProductPreviewFragment:
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == Activity.RESULT_OK && data != null) {
+        if (resultCode == RESULT_OK && data != null) {
             when (requestCode) {
                 REQUEST_CODE_IMAGE -> {
                     val imagePickerResult = data.getStringArrayListExtra(ImagePickerActivity.PICKER_RESULT_PATHS)
@@ -510,7 +511,8 @@ class AddEditProductPreviewFragment:
                 }
                 SET_CASHBACK_REQUEST_CODE -> {
                     val cacheManagerId = data.getStringExtra(SET_CASHBACK_CACHE_MANAGER_KEY) ?: ""
-                    onSetCashbackResult(cacheManagerId)
+                    val cacheManager = context?.let { context -> SaveInstanceCacheManager(context, cacheManagerId) }
+                    onSetCashbackResult(cacheManager)
                 }
             }
         }
@@ -878,7 +880,11 @@ class AddEditProductPreviewFragment:
     private fun handleSetCashBackResult() {
         activity?.intent?.data?.getQueryParameter(ApplinkConstInternalMarketplace.ARGS_CACHE_MANAGER_ID)?.let {
             if (it.isNotBlank()) {
-                onSetCashbackResult(it)
+                val cacheManager = context?.let { context -> SaveInstanceCacheManager(context, it) }
+                val resultStatus = cacheManager?.get(EXTRA_RESULT_STATUS, Int::class.java) ?: 0
+                if (resultStatus == RESULT_OK) {
+                    onSetCashbackResult(cacheManager)
+                }
             }
         }
     }
@@ -1249,8 +1255,7 @@ class AddEditProductPreviewFragment:
         }
     }
 
-    private fun onSetCashbackResult(cacheManagerId: String) {
-        val cacheManager = context?.let { context -> SaveInstanceCacheManager(context, cacheManagerId) }
+    private fun onSetCashbackResult(cacheManager: SaveInstanceCacheManager?) {
         val setCashbackResult: SetCashbackResult? = cacheManager?.get(SET_CASHBACK_RESULT, SetCashbackResult::class.java)
         if(setCashbackResult == null) {
             onFailedSetCashback()
