@@ -123,7 +123,8 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
         recyclerViewVariantDetailFields.adapter = variantDetailFieldsAdapter
         recyclerViewVariantDetailFields.layoutManager = LinearLayoutManager(context)
 
-        switchUnifySku.setOnCheckedChangeListener { _, isChecked ->
+        switchUnifySku.setOnClickListener {
+            val isChecked = switchUnifySku.isChecked
             viewModel.updateSkuVisibilityStatus(isVisible = isChecked)
             sendTrackerClickSKUToggleData(isChecked)
         }
