@@ -16,8 +16,11 @@ import com.tokopedia.play.data.websocket.PlaySocketInfo
 import com.tokopedia.play.domain.*
 import com.tokopedia.play.ui.chatlist.model.PlayChat
 import com.tokopedia.play.ui.toolbar.model.PartnerType
+import com.tokopedia.play.util.channel.state.PlayViewerChannelStateListener
+import com.tokopedia.play.util.channel.state.PlayViewerChannelStateProcessor
 import com.tokopedia.play.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.util.event.Event
+import com.tokopedia.play.util.video.buffer.PlayViewerVideoBufferGovernor
 import com.tokopedia.play.util.video.state.PlayViewerVideoState
 import com.tokopedia.play.util.video.state.PlayViewerVideoStateListener
 import com.tokopedia.play.util.video.state.PlayViewerVideoStateProcessor
@@ -39,6 +42,8 @@ import javax.inject.Inject
 class PlayViewModel @Inject constructor(
         private val playVideoManager: PlayVideoManager,
         private val videoStateProcessorFactory: PlayViewerVideoStateProcessor.Factory,
+        private val channelStateProcessorFactory: PlayViewerChannelStateProcessor.Factory,
+        private val videoBufferGovernorFactory: PlayViewerVideoBufferGovernor.Factory,
         private val getChannelInfoUseCase: GetChannelDetailUseCase,
         private val getSocketCredentialUseCase: GetSocketCredentialUseCase,
         private val getPartnerInfoUseCase: GetPartnerInfoUseCase,
@@ -206,6 +211,15 @@ class PlayViewModel @Inject constructor(
         }
     }
 
+    private val channelStateListener = object : PlayViewerChannelStateListener {
+        override fun onChannelFreezeStateChanged(shouldFreeze: Boolean) {
+            scope.launch(dispatchers.immediate) {
+                val value = _observableEvent.value
+                value?.let { _observableEvent.value = it.copy(isFreeze = shouldFreeze) }
+            }
+        }
+    }
+
     private val videoManagerListener = object : PlayVideoManager.Listener {
         override fun onVideoPlayerChanged(player: ExoPlayer) {
             scope.launch(dispatchers.immediate) {
@@ -226,10 +240,14 @@ class PlayViewModel @Inject constructor(
     }
 
     private val videoStateProcessor = videoStateProcessorFactory.create(scope) { channelType }
+    private val channelStateProcessor = channelStateProcessorFactory.create(scope) { channelType }
+    private val videoBufferGovernor = videoBufferGovernorFactory.create(scope)
 
     init {
         playVideoManager.addListener(videoManagerListener)
         videoStateProcessor.addStateListener(videoStateListener)
+        channelStateProcessor.addStateListener(channelStateListener)
+        videoBufferGovernor.startBufferGovernance()
 
         stateHandler.observeForever(stateHandlerObserver)
 
@@ -259,6 +277,7 @@ class PlayViewModel @Inject constructor(
         stopPlayer()
         playVideoManager.removeListener(videoManagerListener)
         videoStateProcessor.removeStateListener(videoStateListener)
+        channelStateProcessor.removeStateListener(channelStateListener)
     }
     //endregion
 
@@ -557,9 +576,10 @@ class PlayViewModel @Inject constructor(
                     is BannedFreeze -> {
                         if (result.channelId.isNotEmpty() && result.channelId.equals(channelId, true)) {
                             _observableEvent.value = _observableEvent.value?.copy(
-                                    isFreeze = result.isFreeze,
                                     isBanned = result.isBanned && result.userId.isNotEmpty()
                                             && result.userId.equals(userSession.userId, true))
+
+                            channelStateProcessor.setIsFreeze(result.isFreeze)
                         }
                     }
                     is ProductTag -> {
