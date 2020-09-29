@@ -3,7 +3,6 @@ package com.tokopedia.tokopoints.view.couponlisting
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
@@ -73,8 +72,7 @@ class CouponListingStackedActivity : BaseSimpleActivity(), StackedCouponActivity
     private fun forDeeplink() {
         bundle = intent.extras
         if (intent.data != null) {
-            val intentData = intent.data as Uri
-            bundle = UriUtil.destructiveUriBundle(ApplinkConstInternalPromo.TOKOPOINTS_COUPON_LISTING, intentData, bundle)
+            bundle = UriUtil.destructiveUriBundle(ApplinkConstInternalPromo.TOKOPOINTS_COUPON_LISTING, intent.data, bundle)
         }
     }
 
