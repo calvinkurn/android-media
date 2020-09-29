@@ -48,7 +48,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/broadcast_merchant_voucher"
         tools:listitem="@layout/item_topchat_product_carousel_attachment"
-        tools:visibility="visible" />
+        tools:visibility="gone" />
 
     <com.tokopedia.topchat.chatroom.view.custom.SingleProductAttachmentContainer
         android:id="@+id/broadcast_product"
@@ -61,11 +61,9 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/rv_product_carousel"
+        app:widthMultiplier="1"
         tools:layout_gravity="end"
-        tools:visibility="gone">
-
-        <include layout="@layout/item_topchat_product_card" />
-    </com.tokopedia.topchat.chatroom.view.custom.SingleProductAttachmentContainer>
+        tools:visibility="visible"/>
 
     <com.tokopedia.topchat.chatroom.view.custom.FlexBoxChatLayout
         android:id="@+id/fxChat"
