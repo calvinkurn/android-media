@@ -565,7 +565,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                             recomFilterList.addAll(getRecommendationFilterChips.get().executeOnBackground())
                         }
 
-                        val recomData = getRecommendationUseCase.get().createObservable(getRecommendationUseCase.getRecomParams(
+                        val recomData = getRecommendationUseCase.get().createObservable(getRecommendationUseCase.get().getRecomParams(
                                 pageNumber = ProductDetailConstant.DEFAULT_PAGE_NUMBER,
                                 pageName = pageName,
                                 productIds = productIds
