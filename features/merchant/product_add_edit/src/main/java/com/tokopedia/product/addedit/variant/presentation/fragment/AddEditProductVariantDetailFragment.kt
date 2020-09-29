@@ -267,6 +267,8 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
         viewModel.selectedVariantSize.observe(viewLifecycleOwner, Observer { size ->
             // clear old elements before rendering new elements
             variantDetailFieldsAdapter?.clearAllElements()
+            // reset the collapsed fields counter
+            viewModel.resetCollapsedFields()
             // have 2 selected variant detail
             val hasVariantCombination = viewModel.hasVariantCombination(size)
             // with collapsible header
