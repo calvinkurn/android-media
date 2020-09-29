@@ -16,7 +16,7 @@ const val HEADER_USER_ID = "Tkpd-UserId"
 const val HEADER_DEVICE = "X-Device"
 const val HEADER_JSON = "application/json"
 const val HEADER_ANDROID = "android-"
-
+const val USER_AGENT = "User-Agent"
 const val DATABASE_NAME = "iris-db"
 const val TABLE_TRACKING = "tracking"
 

@@ -1,6 +1,7 @@
 package com.tokopedia.iris.data.network
 
 import android.content.Context
+import android.os.Build
 import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.iris.util.*
@@ -44,6 +45,7 @@ class ApiService(private val context: Context) {
                         request.header(HEADER_USER_ID, userId)
                     }
                     request.header(HEADER_DEVICE, HEADER_ANDROID + GlobalConfig.VERSION_NAME)
+                    request.header(USER_AGENT, getUserAgent())
                     request.method(original.method(), original.body())
                     val requestBuilder = request.build()
 
@@ -64,11 +66,14 @@ class ApiService(private val context: Context) {
     }
 
     companion object {
-
+        private const val userAgentFormat = "TkpdConsumer/%s (%s;)"
         fun parse(data: String) : RequestBody {
             val jsonObject = JSONObject(data).toString()
             return RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"),
                     jsonObject)
+        }
+        fun getUserAgent():String {
+            return String.format(userAgentFormat, GlobalConfig.VERSION_NAME, "Android "+ Build.VERSION.RELEASE);
         }
     }
 }
