@@ -34,6 +34,8 @@ import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
 import com.tokopedia.shop_showcase.R
 import com.tokopedia.shop_showcase.ShopShowcaseInstance
 import com.tokopedia.shop_showcase.common.*
+import com.tokopedia.shop_showcase.common.util.ShowcaseErrorHandler
+import com.tokopedia.shop_showcase.common.util.ShowcaseListException
 import com.tokopedia.shop_showcase.shop_showcase_add.presentation.activity.ShopShowcaseAddActivity
 import com.tokopedia.shop_showcase.shop_showcase_add.presentation.fragment.ShopShowcaseAddFragment
 import com.tokopedia.shop_showcase.shop_showcase_management.data.model.ShowcaseList.ShowcaseItem
@@ -46,6 +48,9 @@ import com.tokopedia.shop_showcase.shop_showcase_management.presentation.viewmod
 import com.tokopedia.unifycomponents.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
+import timber.log.Timber
 import javax.inject.Inject
 
 
@@ -79,6 +84,10 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
         }
 
         const val REQUEST_EDIT_SHOWCASE_CODE = 1
+    }
+
+    private val userSession: UserSessionInterface by lazy {
+        UserSession(activity)
     }
 
     @Inject
@@ -333,32 +342,35 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
     }
 
     private fun observeShopShowcaseBuyerData() {
-        viewModel.getListBuyerShopShowcaseResponse.observe(this, Observer {
+        viewModel.getListBuyerShopShowcaseResponse.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     stopPerformanceMonitoring()
                     showLoading(false)
                     showLoadingSwipeToRefresh(false)
-                    val errorMessage = it.data.shopShowcasesByShopID.error.message
-                    if (errorMessage.isNotEmpty()) {
-                        showErrorResponse(errorMessage)
-                    } else {
-                        hideGlobalError()
-                        showcaseList = it.data.shopShowcasesByShopID.result
-                        shopShowcaseListAdapter?.updateDataShowcaseList(showcaseList)
-                    }
+                    hideGlobalError()
+                    shopShowcaseListAdapter?.updateDataShowcaseList(showcaseList)
+//                    val errorMessage = it.data.shopShowcasesByShopID.error.message
+//                    if (errorMessage.isNotEmpty()) {
+//                        showErrorResponse(errorMessage)
+//                    } else {
+//                        hideGlobalError()
+//                        showcaseList = it.data.shopShowcasesByShopID.result
+//                        shopShowcaseListAdapter?.updateDataShowcaseList(showcaseList)
+//                    }
                 }
                 is Fail -> {
                     showLoading(false)
                     showErrorMessage(it.throwable)
                     showGlobalError(GlobalError.SERVER_ERROR)
+                    logError("SHOWCASE_LIST", throwable = it.throwable)
                 }
             }
         })
     }
 
     private fun observeShopShowcaseSellerData() {
-        viewModel.getListSellerShopShowcaseResponse.observe(this, Observer {
+        viewModel.getListSellerShopShowcaseResponse.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     stopPerformanceMonitoring()
@@ -377,13 +389,14 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
                     showLoading(false)
                     showErrorMessage(it.throwable)
                     showGlobalError(GlobalError.SERVER_ERROR)
+                    logError("SHOWCASE_LIST", throwable = it.throwable)
                 }
             }
         })
     }
 
     private fun observeTotalProduct() {
-        viewModel.getShopProductResponse.observe(this, Observer {
+        viewModel.getShopProductResponse.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     val error = it.data.getShopProduct.errors
@@ -401,13 +414,14 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
                 }
                 is Fail -> {
                     showErrorMessage(it.throwable)
+                    logError("SHOWCASE_LIST", throwable = it.throwable)
                 }
             }
         })
     }
 
     private fun observeDeleteShopShowcase() {
-        viewModel.deleteShopShowcaseResponse.observe(this, Observer {
+        viewModel.deleteShopShowcaseResponse.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     val isSuccess = it.data.deleteShopShowcase.success
@@ -422,6 +436,7 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
                 }
                 is Fail -> {
                     showErrorMessage(it.throwable)
+                    logError("SHOWCASE_LIST", throwable = it.throwable)
                 }
             }
         })
@@ -440,10 +455,18 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
             }, 500)
         } else {
             if (!isMyShop) {
-                viewModel.getShopShowcaseListAsBuyer(shopId, isOwner = false)
+                viewModel.getShopShowcaseListAsBuyer(
+                        shopId = shopId,
+                        isOwner = false,
+                        hideShowCaseGroup = isSellerNeedToHideShowcaseGroupValue
+                )
             } else {
                 if (isSellerNeedToHideShowcaseGroupValue) {
-                    viewModel.getShopShowcaseListAsBuyer(shopId, isOwner = true) // Treat as a seller
+                    viewModel.getShopShowcaseListAsBuyer(
+                            shopId = shopId,
+                            isOwner = true,
+                            hideShowCaseGroup = isSellerNeedToHideShowcaseGroupValue
+                    ) // Treat as a seller
                 } else {
                     viewModel.getShopShowcaseListAsSeller()
                 }
@@ -646,6 +669,19 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
                 show()
             }
         }
+    }
+
+    private fun logError(title: String, throwable: Throwable) {
+        val message = throwable.message ?: ""
+        val errorMessage = String.format(
+                "\"%s.\",\"userId: %s\",\"errorMessage: %s\"",
+                title,
+                userSession.userId,
+                message)
+
+        val exception = ShowcaseListException(errorMessage, throwable)
+        ShowcaseErrorHandler.logExceptionToCrashlytics(exception)
+        Timber.w("SHOWCASE_LIST#%s", message)
     }
 
 }

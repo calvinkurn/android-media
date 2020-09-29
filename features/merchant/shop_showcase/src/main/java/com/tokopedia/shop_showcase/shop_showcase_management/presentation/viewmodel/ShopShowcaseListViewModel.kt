@@ -3,6 +3,8 @@ package com.tokopedia.shop_showcase.shop_showcase_management.presentation.viewmo
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
+import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtalaseByShopUseCase
 import com.tokopedia.shop_showcase.common.ShopShowcaseDispatchProvider
 import com.tokopedia.shop_showcase.shop_showcase_management.data.model.*
 import com.tokopedia.usecase.coroutines.Fail
@@ -18,7 +20,8 @@ import com.tokopedia.shop_showcase.shop_showcase_management.data.model.ShowcaseL
 import com.tokopedia.shop_showcase.shop_showcase_management.domain.*
 
 class ShopShowcaseListViewModel @Inject constructor(
-        private val getShopShowcaseListBuyerUseCase: GetShopShowcaseListBuyerUseCase,
+//        private val getShopShowcaseListBuyerUseCase: GetShopShowcaseListBuyerUseCase,
+        private val getShopShowcaseListBuyerUseCase: GetShopEtalaseByShopUseCase,
         private val getShopShowcaseListSellerUseCase: GetShopShowcaseListSellerUseCase,
         private val deleteShopShowcaseUseCase: DeleteShopShowcaseUseCase,
         private val reorderShopShowcaseUseCase: ReorderShopShowcaseListUseCase,
@@ -26,8 +29,12 @@ class ShopShowcaseListViewModel @Inject constructor(
         private val dispatchers: ShopShowcaseDispatchProvider
 ): BaseViewModel(dispatchers.ui()) {
 
-    private val _getListBuyerShopShowcaseResponse = MutableLiveData<Result<ShopShowcaseListBuyerResponse>>()
-    val getListBuyerShopShowcaseResponse: LiveData<Result<ShopShowcaseListBuyerResponse>>
+//    private val _getListBuyerShopShowcaseResponse = MutableLiveData<Result<ShopShowcaseListBuyerResponse>>()
+//    val getListBuyerShopShowcaseResponse: LiveData<Result<ShopShowcaseListBuyerResponse>>
+//        get() = _getListBuyerShopShowcaseResponse
+
+    private val _getListBuyerShopShowcaseResponse = MutableLiveData<Result<List<ShopEtalaseModel>>>()
+    val getListBuyerShopShowcaseResponse: LiveData<Result<List<ShopEtalaseModel>>>
         get() = _getListBuyerShopShowcaseResponse
 
     private val _getListSellerShopShowcaseResponse = MutableLiveData<Result<ShopShowcaseListSellerResponse>>()
@@ -47,16 +54,40 @@ class ShopShowcaseListViewModel @Inject constructor(
         get() = _getShopProductResponse
 
 
-    fun getShopShowcaseListAsBuyer(shopId: String, isOwner: Boolean) {
+    fun getShopShowcaseListAsBuyer(shopId: String, isOwner: Boolean, hideShowCaseGroup: Boolean) {
         launchCatchError(block = {
-            withContext(dispatchers.io()) {
-                getShopShowcaseListBuyerUseCase.params = GetShopShowcaseListBuyerUseCase
-                        .createRequestParam(shopId, isOwner)
-                val shopShowcaseData = getShopShowcaseListBuyerUseCase.executeOnBackground()
-                shopShowcaseData.let {
-                    _getListBuyerShopShowcaseResponse.postValue(Success(it))
+            val showcaseList = withContext(dispatchers.io()) {
+                clearGetShowcaseCache()
+                val requestParam = if (isOwner) {
+                    GetShopEtalaseByShopUseCase.createRequestParams(
+                            shopId = shopId,
+                            hideNoCount = GetShopEtalaseByShopUseCase.Companion.SellerQueryParam.HIDE_NO_COUNT_VALUE,
+                            hideShowCaseGroup = hideShowCaseGroup,
+                            isOwner = GetShopEtalaseByShopUseCase.Companion.SellerQueryParam.IS_OWNER_VALUE
+                    )
+                } else {
+                    GetShopEtalaseByShopUseCase.createRequestParams(
+                            shopId = shopId,
+                            hideNoCount = GetShopEtalaseByShopUseCase.Companion.BuyerQueryParam.HIDE_NO_COUNT_VALUE,
+                            hideShowCaseGroup = hideShowCaseGroup,
+                            isOwner = GetShopEtalaseByShopUseCase.Companion.BuyerQueryParam.IS_OWNER_VALUE
+                    )
                 }
+
+                getShopShowcaseListBuyerUseCase.createObservable(requestParam)
+                        .toBlocking().first()
             }
+
+            _getListBuyerShopShowcaseResponse.postValue(Success(showcaseList))
+
+
+//            withContext(dispatchers.io()) {
+//                getShopShowcaseListBuyerUseCase.params = GetShopShowcaseListBuyerUseCase
+//                        .createRequestParam(shopId, isOwner)
+//                val shopShowcaseData = getShopShowcaseListBuyerUseCase.executeOnBackground()
+//                shopShowcaseData.let {
+//                    _getListBuyerShopShowcaseResponse.postValue(Success(it))
+//                }
         }) {
             _getListBuyerShopShowcaseResponse.value = Fail(it)
         }
@@ -124,6 +155,10 @@ class ShopShowcaseListViewModel @Inject constructor(
         }) {
             _getShopProductResponse.value = Fail(it)
         }
+    }
+
+    fun clearGetShowcaseCache() {
+        getShopShowcaseListBuyerUseCase.clearCache()
     }
 
 }
