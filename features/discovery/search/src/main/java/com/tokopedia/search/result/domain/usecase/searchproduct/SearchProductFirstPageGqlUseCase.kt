@@ -244,7 +244,7 @@ class SearchProductFirstPageGqlUseCase(
         """
 
         private const val SEARCH_INSPIRATION_CAROUSEL_QUERY = """
-            query SearchInspirationCarouselV2(${'$'}params: String!) {
+            query SearchInspirationCarousel(${'$'}params: String!) {
                 searchInspirationCarouselV2(params: ${'$'}params) {
                     data {
                         title
