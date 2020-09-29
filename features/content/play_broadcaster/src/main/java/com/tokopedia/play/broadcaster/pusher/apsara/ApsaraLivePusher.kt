@@ -40,9 +40,6 @@ class ApsaraLivePusher(@ApplicationContext private val mContext: Context) {
         // max fps
         setFps(AlivcFpsEnum.FPS_30)
 
-        // configure auto focus
-        setAutoFocus(true)
-
         // configure mirroring
         setPushMirror(true)
 
