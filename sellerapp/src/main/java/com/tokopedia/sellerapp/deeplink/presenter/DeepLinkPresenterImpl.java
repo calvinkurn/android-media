@@ -171,10 +171,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         if (!userSession.hasShop()) {
             intentToLaunch = new Intent(context, SplashScreenActivity.class);
             intentToLaunch.setData(uriData);
-        } else if (TextUtils.isEmpty(type)) {
-            intentToLaunch = new Intent(context, TopAdsDashboardActivity.class);
-            intentToLaunch.setData(uriData);
-        } else if (TOPADS_VIEW_TYPE.equals(type)) {
+        } else if (TextUtils.isEmpty(type) || TOPADS_VIEW_TYPE.equals(type)) {
             intentToLaunch = new Intent(context, TopAdsDashboardActivity.class);
             intentToLaunch.setData(uriData);
         } else if (TOPADS_CREATE_TYPE.equals(type)) {
