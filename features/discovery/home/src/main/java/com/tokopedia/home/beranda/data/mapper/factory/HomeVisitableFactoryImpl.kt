@@ -70,6 +70,7 @@ class HomeVisitableFactoryImpl(
             bannerViewModel.slides = bannerDataModel.slides
         }
         bannerViewModel.isCache = isCache
+        bannerViewModel.createdTimeMillis = bannerDataModel.timestamp
 
         visitableList.add(bannerViewModel)
         return this
