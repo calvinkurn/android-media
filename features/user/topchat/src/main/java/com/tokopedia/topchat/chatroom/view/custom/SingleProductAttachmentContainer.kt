@@ -67,8 +67,36 @@ class SingleProductAttachmentContainer : ConstraintLayout {
     private var searchListener: SearchListener? = null
     private var commonListener: CommonViewHolderListener? = null
     private var adapterListener: AdapterListener? = null
-    private var bgOpposite: Drawable? = null
-    private var bgSender: Drawable? = null
+    private val bgOpposite: Drawable? by lazy(LazyThreadSafetyMode.NONE) {
+        ViewUtil.generateBackgroundWithShadow(
+                this,
+                com.tokopedia.unifyprinciples.R.color.Neutral_N0,
+                com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
+                com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
+                com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
+                com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
+                R.color.topchat_message_shadow,
+                R.dimen.dp_topchat_2,
+                R.dimen.dp_topchat_1,
+                Gravity.CENTER
+        )
+    }
+    private val bgSender: Drawable? by lazy(LazyThreadSafetyMode.NONE) {
+        ViewUtil.generateBackgroundWithShadow(
+                this,
+                com.tokopedia.unifyprinciples.R.color.Neutral_N0,
+                com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
+                com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
+                com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
+                com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
+                R.color.topchat_message_shadow,
+                R.dimen.dp_topchat_2,
+                R.dimen.dp_topchat_1,
+                Gravity.CENTER,
+                R.color.bg_topchat_right_message,
+                getStrokeWidthSenderDimenRes()
+        )
+    }
 
     private var widthMultiplier = DEFAULT_WIDTH_MULTIPLIER
     private val white = "#ffffff"
@@ -96,40 +124,6 @@ class SingleProductAttachmentContainer : ConstraintLayout {
     init {
         initLayoutView()
         initBindView()
-        initBackgroundDrawable()
-    }
-
-    private fun initBackgroundDrawable() {
-        if (bgOpposite == null) {
-            bgOpposite = ViewUtil.generateBackgroundWithShadow(
-                    this,
-                    com.tokopedia.unifyprinciples.R.color.Neutral_N0,
-                    com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-                    com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-                    com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-                    com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-                    R.color.topchat_message_shadow,
-                    R.dimen.dp_topchat_2,
-                    R.dimen.dp_topchat_1,
-                    Gravity.CENTER
-            )
-        }
-        if (bgSender == null) {
-            bgSender = ViewUtil.generateBackgroundWithShadow(
-                    this,
-                    com.tokopedia.unifyprinciples.R.color.Neutral_N0,
-                    com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-                    com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-                    com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-                    com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-                    R.color.topchat_message_shadow,
-                    R.dimen.dp_topchat_2,
-                    R.dimen.dp_topchat_1,
-                    Gravity.CENTER,
-                    R.color.bg_topchat_right_message,
-                    getStrokeWidthSenderDimenRes()
-            )
-        }
     }
 
     private fun initBindView() {

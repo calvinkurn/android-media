@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginStart="@dimen/spacing_lvl4"
-    android:layout_marginEnd="@dimen/spacing_lvl4">
+    android:layout_marginEnd="@dimen/spacing_lvl4"
+    android:orientation="vertical">
 
     <com.tokopedia.topchat.chatroom.view.custom.BroadcastBannerImageView
         android:id="@+id/iv_banner"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:adjustViewBounds="true"
         android:scaleType="fitCenter"
@@ -37,7 +38,7 @@
 
     <com.tokopedia.topchat.chatroom.view.custom.ProductCarouselRecyclerView
         android:id="@+id/rv_product_carousel"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:clipToPadding="false"
@@ -52,7 +53,7 @@
 
     <com.tokopedia.topchat.chatroom.view.custom.SingleProductAttachmentContainer
         android:id="@+id/broadcast_product"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginEnd="@dimen/spacing_lvl4"
@@ -63,11 +64,12 @@
         app:layout_constraintTop_toBottomOf="@+id/rv_product_carousel"
         app:widthMultiplier="1"
         tools:layout_gravity="end"
-        tools:visibility="visible"/>
+        tools:layout_height="50dp"
+        tools:visibility="gone" />
 
     <com.tokopedia.topchat.chatroom.view.custom.FlexBoxChatLayout
         android:id="@+id/fxChat"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingLeft="@dimen/spacing_lvl4"
         android:paddingTop="@dimen/dp_topchat_10"
@@ -77,4 +79,4 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/broadcast_product" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>
