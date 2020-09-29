@@ -20,7 +20,6 @@
 
     <TextView
         android:id="@+id/product_name"
-        android:contentDescription="@string/content_desc_product_name_shop_review"
         style="@style/TextView.Small.Bold"
         android:layout_marginLeft="@dimen/dp_10"
         android:layout_marginStart="@dimen/dp_10"

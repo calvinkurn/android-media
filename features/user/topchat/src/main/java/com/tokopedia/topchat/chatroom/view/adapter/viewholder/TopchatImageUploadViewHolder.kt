@@ -23,7 +23,7 @@ class TopchatImageUploadViewHolder(itemView: View?, listener: ImageUploadListene
     override fun getChatBalloonId() = R.id.fl_image_container
 
     private val bgOpposite = ViewUtil.generateBackgroundWithShadow(
-            itemView,
+            chatBalloon,
             com.tokopedia.unifyprinciples.R.color.Neutral_N0,
             com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
             com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
@@ -37,7 +37,7 @@ class TopchatImageUploadViewHolder(itemView: View?, listener: ImageUploadListene
             getStrokeWidthSenderDimenRes()
     )
     private val bgSender = ViewUtil.generateBackgroundWithShadow(
-            itemView,
+            chatBalloon,
             R.color.bg_topchat_right_message,
             com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
             com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
