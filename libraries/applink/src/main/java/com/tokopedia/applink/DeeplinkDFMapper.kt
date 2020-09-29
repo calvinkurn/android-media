@@ -173,6 +173,7 @@ object DeeplinkDFMapper : CoroutineScope {
     const val DF_PROMO_TOKOPOINTS = "df_promo_tokopoints"
     const val DF_GAMIFICATION = "df_gamification"
     const val DF_SHOP_SCORE = "shop_score_sellerapp"
+    const val DF_VOUCHER_CREATION = "voucher_creation_sellerapp"
     const val DF_ENTERTAINMENT = "df_entertainment"
     const val DF_MERCHANT_LOGIN = "df_merchant_login"
 
@@ -419,7 +420,7 @@ object DeeplinkDFMapper : CoroutineScope {
             }, DF_SHOP_SCORE, R.string.title_shop_score_sellerapp))
             add(DFP({ it.startsWith(CREATE_VOUCHER) ||
                     it.startsWith(VOUCHER_LIST) ||
-                    it.startsWith(VOUCHER_DETAIL)}, DF_BASE_SELLER_APP, R.string.title_voucher_creation))
+                    it.startsWith(VOUCHER_DETAIL)}, DF_VOUCHER_CREATION, R.string.title_voucher_creation))
             add(DFP({ it.startsWith(MERCHANT_OPEN_PRODUCT_PREVIEW) || it.startsWith(PRODUCT_ADD) }, DF_BASE_SELLER_APP, R.string.title_product_add_edit))
             add(DFP({ it.startsWith(WELCOME)}, DF_BASE_SELLER_APP, R.string.title_seller_onboarding))
             add(DFP({ it.startsWith(SELLER_SEARCH)}, DF_BASE_SELLER_APP, R.string.title_global_search_seller))
