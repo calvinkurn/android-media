@@ -103,7 +103,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
                 var shipping = orderShipment
                 val currPromo = if (shipping.isApplyLogisticPromo) shipping.logisticPromoViewModel?.promoCode
                         ?: "" else ""
-                var shippingErrorId: String? = null
+                val shippingErrorId: String?
                 var preselectedSpId: String? = null
 
                 if (!shippingRecommendationData.errorId.isNullOrEmpty() && !shippingRecommendationData.errorMessage.isNullOrEmpty()) {

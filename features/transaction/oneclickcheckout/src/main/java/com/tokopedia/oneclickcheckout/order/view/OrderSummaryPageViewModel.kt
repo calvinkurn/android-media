@@ -70,6 +70,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     val globalEvent: OccMutableLiveData<OccGlobalEvent> = OccMutableLiveData(OccGlobalEvent.Normal)
 
     private var debounceJob: Job? = null
+    private var finalUpdateJob: Job? = null
 
     private var hasSentViewOspEe = false
 
@@ -360,7 +361,8 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                 val param = generateUpdateCartParam()
                 if (param != null) {
                     if (validateSelectedTerm()) {
-                        launch(executorDispatchers.main) {
+                        finalUpdateJob?.cancel()
+                        finalUpdateJob = launch(executorDispatchers.main) {
                             val (isSuccess, errorGlobalEvent) = cartProcessor.finalUpdateCart(param)
                             if (isSuccess) {
                                 finalValidateUse(product, shop, pref, onSuccessCheckout, skipCheckIneligiblePromo)
@@ -566,8 +568,9 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     }
 
     override fun onCleared() {
-        super.onCleared()
         debounceJob?.cancel()
+        finalUpdateJob?.cancel()
+        super.onCleared()
     }
 
     private fun sendViewOspEe() {
