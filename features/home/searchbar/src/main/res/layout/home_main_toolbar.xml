@@ -22,7 +22,7 @@
             android:layout_toStartOf="@+id/btn_wishlist"
             android:layout_marginStart="@dimen/dp_8"
             android:layout_width="match_parent"
-            android:background="@drawable/bg_corner"
+            android:background="@drawable/toolbar_bg_corner"
             android:layout_height="match_parent"
             android:orientation="horizontal"
             android:paddingLeft="@dimen/spacing_lvl2"
