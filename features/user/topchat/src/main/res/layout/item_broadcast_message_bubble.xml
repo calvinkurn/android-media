@@ -65,4 +65,33 @@
         android:paddingBottom="@dimen/dp_topchat_10"
         app:useMaxWidth="true" />
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_topchat_1"
+        android:background="@color/Neutral_N75" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_broadcast_see_detail"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingHorizontal="@dimen/spacing_lvl4"
+        android:paddingVertical="@dimen/dp_topchat_11">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/title_topchat_see_detail"
+            android:textColor="@color/Unify_G500"
+            app:typographyType="heading_5"
+            app:typographyWeight="bold" />
+
+        <ImageView
+            android:layout_width="@dimen/layout_lvl3"
+            android:layout_height="@dimen/layout_lvl3"
+            app:srcCompat="@drawable/ic_green_chevron_right_16dp" />
+    </LinearLayout>
+
 </LinearLayout>
