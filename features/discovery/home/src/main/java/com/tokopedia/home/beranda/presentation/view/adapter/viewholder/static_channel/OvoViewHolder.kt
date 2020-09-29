@@ -35,7 +35,7 @@ import com.tokopedia.home.beranda.helper.benchmark.BenchmarkHelper
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderDataModel
 import com.tokopedia.home.util.ViewUtils
-import com.tokopedia.home_component.util.invertColorWhenNeeded
+import com.tokopedia.home_component.util.invertIfDarkMode
 import com.tokopedia.kotlin.extensions.view.getResColor
 import kotlin.math.roundToInt
 
@@ -326,7 +326,7 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener?) : Abstr
                 }
             } else if (sectionContentItem.textAttributes != null && !TextUtils.isEmpty(sectionContentItem.textAttributes.text)) {
                 if (!TextUtils.isEmpty(sectionContentItem.textAttributes.colour) && HexValidator.validate(sectionContentItem.textAttributes.colour)) {
-                    tokopointsTextView.setTextColor(Color.parseColor(sectionContentItem.textAttributes.colour).invertColorWhenNeeded(itemView.context))
+                    tokopointsTextView.setTextColor(Color.parseColor(sectionContentItem.textAttributes.colour).invertIfDarkMode(itemView.context))
                 } else {
                     tokopointsTextView.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
                 }

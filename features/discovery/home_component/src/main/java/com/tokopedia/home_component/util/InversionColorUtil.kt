@@ -9,7 +9,7 @@ import androidx.annotation.ColorInt
  * Created by Lukas on 28/09/20.
  */
 @ColorInt
-fun Int.invertColorWhenNeeded(context: Context?): Int{
+fun Int.invertIfDarkMode(context: Context?): Int{
     return if (context != null && context.resources.configuration.uiMode.and(Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES) getContrastColor(this) else this
 }
 
