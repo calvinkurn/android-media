@@ -119,6 +119,15 @@
             android:text="Device ID: 1213124" />
 
         <CheckBox
+            android:id="@+id/toggle_dark_mode"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/margin_small"
+            android:padding="@dimen/margin_small"
+            android:text="Force Dark Mode" />
+
+        <CheckBox
             android:id="@+id/toggle_topads_debugger_notif"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
