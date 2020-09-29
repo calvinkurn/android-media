@@ -396,11 +396,7 @@ class ShopEditBasicInfoFragment: Fragment() {
                         }
                     }
                 }
-                is Fail -> {
-                    it.throwable.cause?.apply {
-                        onErrorUpdateShopBasicData(this)
-                    }
-                }
+                is Fail -> onErrorUpdateShopBasicData(it.throwable)
             }
         }
     }
