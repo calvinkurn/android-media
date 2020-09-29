@@ -227,7 +227,7 @@ object PlayBroadcastUiMapper {
             maxDuration = duration.maxDuration
     )
 
-    fun mapIncomingChat(chat: Chat): PlayChatUiModel =  PlayChatUiModel(
+    fun mapIncomingChat(chat: Chat): PlayChatUiModel = PlayChatUiModel(
             messageId = chat.messageId,
             message = chat.message,
             userId = chat.user.id,

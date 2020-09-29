@@ -54,33 +54,14 @@
 
     </LinearLayout>
 
-    <com.tokopedia.product.detail.view.widget.SliderCounterView
-        android:id="@+id/imageSliderCounter"
+    <com.tokopedia.unifycomponents.PageControl
+        android:id="@+id/imageSliderPageControl"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_margin="@dimen/dp_16"/>
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/imageFromUser"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
-        android:layout_marginBottom="@dimen/dp_16"
-        android:background="@drawable/bg_rounded_grey_pdp"
-        android:paddingLeft="@dimen/dp_8"
-        android:paddingTop="@dimen/dp_5"
-        android:paddingRight="@dimen/dp_8"
-        android:paddingBottom="@dimen/dp_5"
-        android:gravity="center"
-        android:visibility="gone"
-        tools:visibility="visible"
-        android:alpha="0.9"
-        android:text="@string/title_image_review"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:typographyType="small" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="@dimen/spacing_lvl4"
+        app:indicator_type="CIRCLE" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

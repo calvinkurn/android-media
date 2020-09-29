@@ -205,6 +205,12 @@ class TopChatRoomAdapter(
         notifyDataSetChanged()
     }
 
+    fun isLastMessageBroadcast(): Boolean {
+        if (visitables.isEmpty()) return false
+        val latestMessage = visitables.first()
+        return (latestMessage is MessageViewModel && latestMessage.isFromBroadCast()) || latestMessage is BroadcastSpamHandlerUiModel
+    }
+
     fun addBroadcastSpamHandler(): Int {
         var insertedPosition = RecyclerView.NO_POSITION
         if (visitables.isEmpty()) return insertedPosition
