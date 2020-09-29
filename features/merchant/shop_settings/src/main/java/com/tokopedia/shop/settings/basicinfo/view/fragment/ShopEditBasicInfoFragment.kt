@@ -373,7 +373,11 @@ class ShopEditBasicInfoFragment: Fragment() {
     private fun observeUploadShopImage() {
         observe(viewModel.uploadShopImage) {
             when(it) {
-                is Fail -> onErrorUploadShopImage(it.throwable)
+                is Fail -> {
+                    it.throwable.cause?.apply {
+                        onErrorUploadShopImage(this)
+                    }
+                }
             }
         }
     }
@@ -392,7 +396,11 @@ class ShopEditBasicInfoFragment: Fragment() {
                         }
                     }
                 }
-                is Fail -> onErrorUpdateShopBasicData(it.throwable)
+                is Fail -> {
+                    it.throwable.cause?.apply {
+                        onErrorUpdateShopBasicData(this)
+                    }
+                }
             }
         }
     }
