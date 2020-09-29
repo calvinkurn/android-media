@@ -301,6 +301,11 @@ public class ReviewProductFragment extends BaseListFragment<ReviewProductModel, 
     }
 
     @Override
+    public int getRecyclerViewResourceId() {
+        return R.id.review_product_recycler_view;
+    }
+
+    @Override
     public void onGetListReviewProduct(List<ReviewProductModel> map, boolean isHasNextPage) {
         if (isLoadingInitialData && customViewQuickFilterView.getSelectedFilter().equals(getString(R.string.review_label_all))) {
             map.add(0, new ReviewProductModelTitleHeader(getString(R.string.product_review_label_all_review)));
