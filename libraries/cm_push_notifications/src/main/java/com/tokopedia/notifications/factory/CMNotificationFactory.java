@@ -26,7 +26,6 @@ public class CMNotificationFactory {
             return null;
         }
         IrisAnalyticsEvents.INSTANCE.sendPushEvent(context, IrisAnalyticsEvents.PUSH_RECEIVED, baseNotificationModel);
-        IrisAnalyticsEvents.sendAmplificationPushEvent(context, IrisAnalyticsEvents.PUSH_RECEIVED, baseNotificationModel);
 
         if (CMConstant.NotificationType.SILENT_PUSH.equals(baseNotificationModel.getType())) {
             handleSilentPush(context, baseNotificationModel);
