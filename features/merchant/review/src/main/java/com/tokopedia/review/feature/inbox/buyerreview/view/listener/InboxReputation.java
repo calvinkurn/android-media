@@ -53,8 +53,6 @@ public interface InboxReputation {
 
         void onShowEmptyFilteredInboxReputation();
 
-        void clickFromWhitespace(boolean source);
-
         void onClickOvoIncentiveTickerDescription(ProductRevIncentiveOvoDomain productRevIncentiveOvoDomain);
 
         void onDismissOvoIncentiveTicker(String title);

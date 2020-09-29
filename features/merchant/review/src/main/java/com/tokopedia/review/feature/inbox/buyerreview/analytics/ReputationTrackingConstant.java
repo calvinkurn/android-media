@@ -25,16 +25,8 @@ public class ReputationTrackingConstant {
     public static final String VIEW_MY_REVIEW_TAB = "view - ulasan saya tab";
     public static final String CLICK_WAITING_REVIEW_TAB = "click - menunggu diulas tab";
     public static final String VIEW_WAITING_REVIEW_TAB = "view - menunggu diulas tab";
-    public static final String CLICK_REVIEW_SEARCH = "click - search bar on ";
-    public static final String CLICK_FILTER_REVIEW = "click - filter on ";
-    public static final String CLICK_SELECT_FILTER_REVIEW = "click - select filter from ";
-    public static final String VIEW_FILTER_PAGE = "view - filter invoice review on ";
-    public static final String CLICK_APPLY_FILTER_REVIEW = "click - apply filter from ";
-    public static final String CLICK_BACK_BUTTON_FILTER_REVIEW = "click - back button on filter from ";
     public static final String CLICK_BACK_BUTTON_SELLER_FEEDBACK = "click - back button on seller feedback page";
-    public static final String CLICK_RESET_BUTTON_FILTER_REVIEW = "click - reset button on filter from ";
     public static final String VIEW_SELLER_FEEDBACK = "view - seller feedback page";
-    public static final String SCROLL_REVIEW = "scroll - ulasan page on ";
     public static final String CLICK_SMILEY = "click - smiley ";
     public static final String CLICK_OVERFLOW_MENU = "click - three dots menu on product review";
     public static final String CLICK_OVERFLOW_MENU_SHARE = "click - bagikan on three dots menu";

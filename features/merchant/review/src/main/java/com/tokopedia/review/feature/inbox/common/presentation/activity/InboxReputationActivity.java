@@ -280,7 +280,6 @@ public class InboxReputationActivity extends BaseActivity implements HasComponen
             onBackPressed();
             return true;
         }
-        reputationTracking.onBackPressedInboxReviewClickTracker(indicator.getUnifyTabLayout().getSelectedTabPosition());
         return super.onOptionsItemSelected(item);
     }
 

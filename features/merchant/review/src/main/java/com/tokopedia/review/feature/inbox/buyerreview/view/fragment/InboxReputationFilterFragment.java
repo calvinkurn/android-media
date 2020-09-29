@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -113,14 +112,6 @@ public class InboxReputationFilterFragment extends BaseDaggerFragment
 
     }
 
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        if(getArguments() != null) {
-            reputationTracking.onSeeFilterPageTracker(getArguments().getInt(InboxReputationFragment.PARAM_TAB));
-        }
-    }
-
     private void prepareView() {
         list.setLayoutManager(new LinearLayoutManager(getActivity(),
                 LinearLayoutManager.VERTICAL, false));
@@ -128,9 +119,6 @@ public class InboxReputationFilterFragment extends BaseDaggerFragment
         list.setAdapter(adapter);
 
         saveButton.setOnClickListener(view -> {
-            if(getArguments() != null) {
-                reputationTracking.onSaveFilterReviewTracker(timeFilterName, getArguments().getInt(InboxReputationFragment.PARAM_TAB));
-            }
             Intent data = new Intent();
             data.putExtra(SELECTED_TIME_FILTER, timeFilter);
             data.putExtra(SELECTED_SCORE_FILTER, scoreFilter);
@@ -217,9 +205,6 @@ public class InboxReputationFilterFragment extends BaseDaggerFragment
         if (optionViewModel.getKey().equals(GetFirstTimeInboxReputationUseCase.PARAM_TIME_FILTER)) {
             timeFilter = optionViewModel.getValue();
             timeFilterName = optionViewModel.getName();
-            if(getArguments() != null) {
-                reputationTracking.onClickFilterItemTracker(timeFilterName, getArguments().getInt(InboxReputationFragment.PARAM_TAB));
-            }
         } else if (optionViewModel.getKey().equals(GetFirstTimeInboxReputationUseCase
                 .PARAM_SCORE_FILTER)) {
             scoreFilter = optionViewModel.getValue();

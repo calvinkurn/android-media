@@ -107,6 +107,7 @@ dependencies {
     implementation(rootProject.ext.tkpdLibDependencies.showcase) {
         exclude group: "com.android.support"
     }
+    implementation project(path: ':libraries:image_preview')
 
     kapt rootProject.ext.miscDependencies.daggerCompiler
 

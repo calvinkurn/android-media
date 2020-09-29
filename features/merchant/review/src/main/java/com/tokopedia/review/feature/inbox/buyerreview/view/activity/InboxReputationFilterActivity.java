@@ -4,12 +4,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-
-import android.view.Menu;
-import android.view.MenuItem;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.design.text.TextDrawable;
@@ -85,13 +84,9 @@ public class InboxReputationFilterActivity extends BaseSimpleActivity {
         if (item.getItemId() == R.id.action_reset
                 && listener != null) {
             listener.resetFilter();
-            reputationTracking.onClickResetButtonFilterTracker(getIntent().getIntExtra(InboxReputationFragment
-                    .PARAM_TAB, 1));
             return true;
         }
         else {
-            reputationTracking.onClickBackButtonFromFilterTracker(getIntent().getIntExtra(InboxReputationFragment
-                    .PARAM_TAB, 1));
             return super.onOptionsItemSelected(item);
         }
     }

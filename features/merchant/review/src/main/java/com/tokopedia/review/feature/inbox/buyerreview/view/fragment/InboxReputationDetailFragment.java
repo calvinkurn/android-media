@@ -33,7 +33,7 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.cachemanager.PersistentCacheManager;
-import com.tokopedia.config.GlobalConfig;
+import com.tokopedia.imagepreview.ImagePreviewActivity;
 import com.tokopedia.network.utils.ErrorHandler;
 import com.tokopedia.review.R;
 import com.tokopedia.review.feature.inbox.buyerreview.analytics.AppScreen;
@@ -338,10 +338,10 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
             listDesc.add(image.getDescription());
         }
 
-//        startActivity(ImagePreviewActivity.getCallingIntent(getContext(),
-//                listLocation,
-//                listDesc,
-//                position));
+        startActivity(ImagePreviewActivity.getCallingIntent(getContext(),
+                listLocation,
+                listDesc,
+                position));
     }
 
     @Override
@@ -361,9 +361,6 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
 
     @Override
     public void onSuccessSendSmiley(int score) {
-        if (GlobalConfig.isSellerApp() && score == PUAS_SCORE) {
-            // No More Router
-        }
         refreshPage();
     }
 

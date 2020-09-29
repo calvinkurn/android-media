@@ -68,7 +68,7 @@ import javax.inject.Inject;
  */
 
 public class InboxReputationFragment extends BaseDaggerFragment
-        implements InboxReputation.View, SearchInputView.Listener, SearchInputView.FocusChangeListener, SellerMigrationReviewViewHolder.SellerMigrationReviewClickListener {
+        implements InboxReputation.View, SearchInputView.Listener, SellerMigrationReviewViewHolder.SellerMigrationReviewClickListener {
 
     protected static final long DEFAULT_DELAY_TEXT_CHANGED = TimeUnit.MILLISECONDS.toMillis(300);
     public final static String PARAM_TAB = "tab";
@@ -78,7 +78,6 @@ public class InboxReputationFragment extends BaseDaggerFragment
     private static final String ARGS_TIME_FILTER = "ARGS_TIME_FILTER";
     private static final String ARGS_SCORE_FILTER = "ARGS_SCORE_FILTER";
     private static final String ARGS_QUERY = "ARGS_QUERY";
-    private static final String SEE_ALL_REVIEW = "Lihat Semua";
 
     private SearchInputView searchView;
     private RecyclerView mainList;
@@ -88,7 +87,6 @@ public class InboxReputationFragment extends BaseDaggerFragment
     private String timeFilter;
     private String scoreFilter;
     private View filterButton;
-    private boolean isFromWhitespace;
     private InboxReputationOvoIncentiveViewModel ovoDataModel;
     private SellerMigrationReviewModel sellerMigrationReviewModel = new SellerMigrationReviewModel();
 
@@ -165,7 +163,6 @@ public class InboxReputationFragment extends BaseDaggerFragment
         searchView = (SearchInputView) parentView.findViewById(R.id.search);
         searchView.setDelayTextChanged(DEFAULT_DELAY_TEXT_CHANGED);
         searchView.setListener(this);
-        searchView.setFocusChangeListener(this);
         filterButton = parentView.findViewById(R.id.filter_button);
         prepareView();
         presenter.attachView(this);
@@ -191,7 +188,6 @@ public class InboxReputationFragment extends BaseDaggerFragment
             @Override
             public void onClick(View v) {
                 openFilter();
-                reputationTracking.onClickButtonFilterReputationTracker(getTab());
             }
         });
     }
@@ -216,7 +212,6 @@ public class InboxReputationFragment extends BaseDaggerFragment
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
-                reputationTracking.onScrollReviewTracker(getTab());
                 int lastItemPosition = layoutManager.findLastVisibleItemPosition();
                 int visibleItem = layoutManager.getItemCount() - 1;
                 if (!adapter.isLoading() && !adapter.isEmpty())
@@ -359,22 +354,6 @@ public class InboxReputationFragment extends BaseDaggerFragment
                              ReputationDataViewModel reputationDataViewModel, String textDeadline,
                              int adapterPosition, int role) {
 
-        if (reputationDataViewModel.getActionMessage().equals(SEE_ALL_REVIEW)) {
-            reputationTracking.seeAllReviewItemOnClickTracker(
-                    invoice,
-                    (adapterPosition + 1),
-                    isFromWhitespace,
-                    getTab()
-            );
-        } else {
-            reputationTracking.reviewItemOnClickTracker(
-                    invoice,
-                    (adapterPosition + 1),
-                    isFromWhitespace,
-                    getTab()
-            );
-        }
-
         savePassModelToDB(getInboxReputationDetailPassModel(reputationId, invoice, createTime,
                 revieweeImage, revieweeName, textDeadline,
                 reputationDataViewModel, role));
@@ -385,11 +364,6 @@ public class InboxReputationFragment extends BaseDaggerFragment
                         adapterPosition,
                         getTab()),
                 REQUEST_OPEN_DETAIL);
-    }
-
-    @Override
-    public void clickFromWhitespace(boolean source) {
-        isFromWhitespace = source;
     }
 
     @Override
@@ -453,15 +427,12 @@ public class InboxReputationFragment extends BaseDaggerFragment
         adapter.removeEmpty();
         adapter.setList(inboxReputationViewModel.getList(), ovoDataModel);
         presenter.setHasNextPage(inboxReputationViewModel.isHasNextPage());
-        if (!getQuery().isEmpty())
-            reputationTracking.onSuccessFilteredReputationTracker(getQuery(), getTab());
     }
 
     @Override
     public void onErrorGetFilteredInboxReputation(Throwable throwable) {
         NetworkErrorHelper.createSnackbarWithAction(getActivity(), ErrorHandler.getErrorMessage(getContext(), throwable),
                 () -> presenter.getFilteredInboxReputation(getQuery(), timeFilter, scoreFilter, getTab())).showRetrySnackbar();
-        reputationTracking.onErrorFilteredReputationTracker(getQuery(), getTab());
     }
 
     @Override
@@ -510,8 +481,6 @@ public class InboxReputationFragment extends BaseDaggerFragment
                     }
                 });
         adapter.notifyDataSetChanged();
-        if (!getQuery().isEmpty())
-            reputationTracking.onEmptyFilteredReputationTracker(getQuery(), getTab());
     }
 
     @Override
@@ -580,13 +549,6 @@ public class InboxReputationFragment extends BaseDaggerFragment
                     timeFilter,
                     scoreFilter,
                     getTab());
-        }
-    }
-
-    @Override
-    public void onFocusChanged(boolean hasFocus) {
-        if (hasFocus) {
-            reputationTracking.onClickSearchViewTracker(getTab());
         }
     }
 

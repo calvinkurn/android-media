@@ -182,6 +182,7 @@
     <string name="favorite_button">Follow</string>
     <string name="already_favorite">\u2713</string>
     <string name="seller">Penjual</string>
+    <string name="filter_time">Waktu</string>
     <string name="filter_all_time">Semua Waktu</string>
     <string name="filter_last_7_days">7 Hari Terakhir</string>
     <string name="filter_this_month">Bulan Ini</string>
