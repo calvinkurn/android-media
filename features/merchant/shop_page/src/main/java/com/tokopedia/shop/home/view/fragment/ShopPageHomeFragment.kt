@@ -479,6 +479,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     }
 
     private fun onSuccessGetBottomSheetFilterData(model: DynamicFilterModel) {
+        model.defaultSortValue = DEFAULT_SORT_ID
         sortFilterBottomSheet?.setDynamicFilterModel(model)
     }
 
@@ -1363,8 +1364,6 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 null,
                 this
         )
-        sortFilterBottomSheet?.setCustomOBKey(SORT_PARAM_KEY)
-        sortFilterBottomSheet?.setCustomDefaultSortIdParameter(DEFAULT_SORT_ID)
         sortFilterBottomSheet?.setOnDismissListener {
             sortFilterBottomSheet = null
         }
