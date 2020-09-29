@@ -123,11 +123,11 @@ class CatalogListItemFragment : BaseDaggerFragment(), CatalogListItemContract.Vi
         }
     })
 
-    private fun addRedeemCouponObserver() = viewModel.onRedeemCouponLiveData.observe(this, androidx.lifecycle.Observer {
+    private fun addRedeemCouponObserver() = viewModel.onRedeemCouponLiveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
         it?.let { RouteManager.route(context, it) }
     })
 
-    private fun addStartSaveCouponObserver() = viewModel.startSaveCouponLiveData.observe(this, androidx.lifecycle.Observer {
+    private fun addStartSaveCouponObserver() = viewModel.startSaveCouponLiveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
         it?.let {
             when (it) {
                 is Success -> showConfirmRedeemDialog(it.data.cta, it.data.code, it.data.title)
@@ -140,7 +140,7 @@ class CatalogListItemFragment : BaseDaggerFragment(), CatalogListItemContract.Vi
         }
     })
 
-    private fun addStartValidateObserver() = viewModel.startValidateCouponLiveData.observe(this, androidx.lifecycle.Observer {
+    private fun addStartValidateObserver() = viewModel.startValidateCouponLiveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
         it?.let {
             showValidationMessageDialog(it.item, it.title, it.desc, it.messageCode)
         }

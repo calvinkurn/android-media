@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.os.Handler
 
 import com.google.android.material.snackbar.Snackbar
 
@@ -18,10 +19,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.WebView
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.ProgressBar
-import android.widget.TextView
+import android.widget.*
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -59,10 +57,16 @@ import com.tokopedia.tokopoints.view.util.CommonConstant.COUPON_MIME_TYPE
 import com.tokopedia.tokopoints.view.util.CommonConstant.UTF_ENCODING
 import com.tokopedia.tokopoints.view.validatePin.ValidateMerchantPinFragment
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
+import kotlinx.android.synthetic.main.tp_content_coupon_catalog.*
 import kotlinx.android.synthetic.main.tp_content_coupon_detail.*
+import kotlinx.android.synthetic.main.tp_content_coupon_detail.how_to_use_content
+import kotlinx.android.synthetic.main.tp_content_coupon_detail.how_to_use_see_more
+import kotlinx.android.synthetic.main.tp_content_coupon_detail.tnc_content
+import kotlinx.android.synthetic.main.tp_content_coupon_detail.tnc_see_more
 import kotlinx.android.synthetic.main.tp_coupon_notfound_error.*
 import kotlinx.android.synthetic.main.tp_fragment_coupon_detail.*
 import kotlinx.android.synthetic.main.tp_layout_coupon_detail_button.*
@@ -127,29 +131,34 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
         observeUserInfo()
     }
 
-    private fun observeUserInfo() = mPresenter.userInfo.observe(this, Observer {
+    private fun observeUserInfo() = mPresenter.userInfo.observe(viewLifecycleOwner, Observer {
         it.let {
             phoneVerificationState = it.verifiedMsisdn
         }
     })
 
-    private fun obserserFinish() = mPresenter.finish.observe(this, Observer {
+    private fun obserserFinish() = mPresenter.finish.observe(viewLifecycleOwner, Observer {
         it?.let {
             activity?.finish()
         }
     })
 
-    private fun onbserveOnRedeemCoupon() = mPresenter.onRedeemCoupon.observe(this, Observer {
+    private fun onbserveOnRedeemCoupon() = mPresenter.onRedeemCoupon.observe(viewLifecycleOwner, Observer {
         it?.let {
             when (it) {
                 is ErrorMessage -> RouteManager.route(context, it.data)
-                is Success -> RouteManager.route(context, it.data)
+                is Success -> {
+                    RouteManager.route(context, it.data)
+                    Handler().postDelayed({
+                        appContext?.let { it1 -> CustomToast.show(it1,"Test",2000) }
+                    }, 2000)
+                }
             }
             return@let
         }
     })
 
-    private fun observeRefetchCoupon() = mPresenter.onReFetch.observe(this, Observer {
+    private fun observeRefetchCoupon() = mPresenter.onReFetch.observe(viewLifecycleOwner, Observer {
         it?.let {
             when (it) {
                 is ErrorMessage -> onRealCodeReFreshError()
@@ -158,11 +167,11 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
         }
     })
 
-    private fun observePinPage() = mPresenter.pinPageData.observe(this, Observer {
+    private fun observePinPage() = mPresenter.pinPageData.observe(viewLifecycleOwner, Observer {
         it?.let { showPinPage(it.code, it.pinText) }
     })
 
-    private fun observeOnSwipeCoupon() = mPresenter.onCouponSwipe.observe(this, Observer {
+    private fun observeOnSwipeCoupon() = mPresenter.onCouponSwipe.observe(viewLifecycleOwner, Observer {
         it.let {
             when (it) {
                 is ErrorMessage -> onSwipeError(it.data)
@@ -171,11 +180,11 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
         }
     })
 
-    private fun observeSwipeDetail() = mPresenter.swipeDetail.observe(this, Observer {
+    private fun observeSwipeDetail() = mPresenter.swipeDetail.observe(viewLifecycleOwner, Observer {
         it?.let { setSwipeUi(it) }
     })
 
-    private fun observeCouponDetail() = mPresenter.detailLiveData.observe(this, Observer {
+    private fun observeCouponDetail() = mPresenter.detailLiveData.observe(viewLifecycleOwner, Observer {
         it?.let {
             when (it) {
                 is Loading -> showLoader()
