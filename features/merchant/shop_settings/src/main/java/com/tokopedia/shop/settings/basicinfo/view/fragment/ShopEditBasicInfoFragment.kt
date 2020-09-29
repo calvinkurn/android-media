@@ -48,9 +48,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_shop_edit_basic_info.*
-import kotlinx.android.synthetic.main.partial_toolbar_save_button.*
-import java.net.UnknownHostException
-import java.net.UnknownServiceException
 import javax.inject.Inject
 
 class ShopEditBasicInfoFragment: Fragment() {
@@ -162,6 +159,7 @@ class ShopEditBasicInfoFragment: Fragment() {
     }
 
     private fun setupShopTagLineTextField() {
+        shopTagLineTextField.textFieldInput.isSingleLine = false
         shopTagLineTextField.textFieldInput.addTextChangedListener(object : AfterTextWatcher() {
             override fun afterTextChanged(s: Editable) {
                 shopTagLineTextField.setMessage("")
@@ -172,6 +170,7 @@ class ShopEditBasicInfoFragment: Fragment() {
     }
 
     private fun setupShopDescriptionTextField() {
+        shopDescriptionTextField.textFieldInput.isSingleLine = false
         shopDescriptionTextField.textFieldInput.addTextChangedListener(object : AfterTextWatcher() {
             override fun afterTextChanged(s: Editable) {
                 shopDescriptionTextField.setMessage("")
@@ -219,6 +218,7 @@ class ShopEditBasicInfoFragment: Fragment() {
             setText(shopBasicDataModel?.name)
             addTextChangedListener(textWatcher)
             isEnabled = false
+            isSingleLine = false
         }
     }
 
@@ -227,6 +227,7 @@ class ShopEditBasicInfoFragment: Fragment() {
             setText(shopBasicDataModel?.domain)
             addTextChangedListener(shopDomainTextWatcher)
             isEnabled = false
+            isSingleLine = false
         }
     }
 
@@ -237,14 +238,16 @@ class ShopEditBasicInfoFragment: Fragment() {
             }
 
             override fun afterTextChanged(s: Editable) {
-                val input = s.toString()
-                if (input.length < MIN_INPUT_LENGTH) {
-                    val message = context?.getString(R.string.shop_edit_name_too_short).orEmpty()
-                    showShopNameInputError(message)
-                    viewModel.cancelValidateShopName()
-                } else {
-                    resetShopNameInput()
-                    viewModel.validateShopName(input)
+                if (!isNameStillSame()) {
+                    val input = s.toString()
+                    if (input.length < MIN_INPUT_LENGTH) {
+                        val message = context?.getString(R.string.shop_edit_name_too_short).orEmpty()
+                        showShopNameInputError(message)
+                        viewModel.cancelValidateShopName()
+                    } else {
+                        resetShopNameInput()
+                        viewModel.validateShopName(input)
+                    }
                 }
             }
 
@@ -259,14 +262,16 @@ class ShopEditBasicInfoFragment: Fragment() {
             }
 
             override fun afterTextChanged(s: Editable) {
-                val input = s.toString()
-                if (input.length < MIN_INPUT_LENGTH) {
-                    val message = context?.getString(R.string.shop_edit_domain_too_short).orEmpty()
-                    showShopDomainInputError(message)
-                    viewModel.cancelValidateShopDomain()
-                } else {
-                    resetShopDomainInput()
-                    viewModel.validateShopDomain(input)
+                if (!isDomainStillSame()) {
+                    val input = s.toString()
+                    if (input.length < MIN_INPUT_LENGTH) {
+                        val message = context?.getString(R.string.shop_edit_domain_too_short).orEmpty()
+                        showShopDomainInputError(message)
+                        viewModel.cancelValidateShopDomain()
+                    } else {
+                        resetShopDomainInput()
+                        viewModel.validateShopDomain(input)
+                    }
                 }
             }
 
@@ -400,6 +405,8 @@ class ShopEditBasicInfoFragment: Fragment() {
                     showAllowShopNameDomainChangesError(throwable)
                 }
             }
+            progressBar.hide()
+            container.show()
         }
     }
 
@@ -538,12 +545,12 @@ class ShopEditBasicInfoFragment: Fragment() {
 
     private fun showSubmitLoading() {
         progressBar.show()
-        scrollViewContent.hide()
+        container.hide()
     }
 
     private fun hideSubmitLoading() {
         progressBar.hide()
-        scrollViewContent.show()
+        container.show()
     }
 
     private fun loadShopBasicData() {

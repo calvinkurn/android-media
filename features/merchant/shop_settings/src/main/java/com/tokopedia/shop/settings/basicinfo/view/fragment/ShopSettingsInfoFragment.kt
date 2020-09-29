@@ -46,7 +46,6 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_shop_settings_info.*
 import kotlinx.android.synthetic.main.partial_shop_settings_info_basic.*
-import kotlinx.android.synthetic.main.partial_shop_settings_info_status.*
 import java.util.*
 import javax.inject.Inject
 
