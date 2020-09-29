@@ -678,9 +678,9 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 }
             }
         }
-        view?.postDelayed({
+        view?.addOneTimeGlobalLayoutListener {
             requestVisibleWidgetsData()
-        }, DELAY_FETCH_VISIBLE_WIDGET_DATA)
+        }
     }
 
     private inline fun <reified D : BaseDataUiModel, reified W : BaseWidgetUiModel<D>> Throwable.setOnErrorWidgetState(widgetType: String) {
@@ -695,16 +695,18 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             }
         }
         showErrorToaster()
-        view?.postDelayed({
+        view?.addOneTimeGlobalLayoutListener {
             requestVisibleWidgetsData()
-        }, DELAY_FETCH_VISIBLE_WIDGET_DATA)
+        }
     }
 
     private fun notifyWidgetChanged(widget: BaseWidgetUiModel<*>) {
-        val widgetPosition = adapter.data.indexOf(widget)
-        if (widgetPosition > -1) {
-            adapter.notifyItemChanged(widgetPosition)
-            view?.swipeRefreshLayout?.isRefreshing = false
+        recyclerView.post {
+            val widgetPosition = adapter.data.indexOf(widget)
+            if (widgetPosition != RecyclerView.NO_POSITION) {
+                adapter.notifyItemChanged(widgetPosition)
+                view?.swipeRefreshLayout?.isRefreshing = false
+            }
         }
     }
 
