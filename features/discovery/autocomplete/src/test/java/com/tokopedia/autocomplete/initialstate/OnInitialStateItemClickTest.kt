@@ -1,8 +1,10 @@
 package com.tokopedia.autocomplete.initialstate
 
 import com.tokopedia.autocomplete.initialstate.data.InitialStateUniverse
+import com.tokopedia.autocomplete.initialstate.recentsearch.RecentSearchSeeMoreViewModel
 import com.tokopedia.autocomplete.initialstate.recentsearch.RecentSearchViewModel
 import com.tokopedia.autocomplete.jsonToObject
+import com.tokopedia.autocomplete.shouldBe
 import io.mockk.*
 import org.junit.Test
 import rx.Subscriber
@@ -101,11 +103,11 @@ internal class OnInitialStateItemClickTest: InitialStatePresenterTestFixtures(){
         val initialStateData = initialStateWithSeeMoreRecentSearch.jsonToObject<InitialStateUniverse>().data
         `Given view already get initial state`(initialStateData)
         `Then verify initial state view will call showInitialStateResult behavior`()
-        `Then verify RecentSearchViewModel size is 3 and has RecentSearchSeeMoreViewModel`()
 
         `When recent search see more button is clicked`()
+        `Then verify RecentSearchSeeMoreViewModel has been removed`()
         `Then verify renderRecentSearch is called`()
-        `Then verify recent search data shown increased from 3 to 5`()
+        `Then verify initial state show all recent search`(initialStateData)
     }
 
     private fun `Then verify initial state view will call showInitialStateResult behavior`() {
@@ -114,15 +116,15 @@ internal class OnInitialStateItemClickTest: InitialStatePresenterTestFixtures(){
         }
     }
 
-    private fun `Then verify RecentSearchViewModel size is 3 and has RecentSearchSeeMoreViewModel`() {
-        val recentSearchVisitable = slotVisitableList.captured.find { it is RecentSearchViewModel } as RecentSearchViewModel
-        assert(recentSearchVisitable.list.size == 3) {
-            "Actual size is ${recentSearchVisitable.list.size}, Expected size is 3"
-        }
-    }
-
     private fun `When recent search see more button is clicked`() {
         initialStatePresenter.recentSearchSeeMoreClicked()
+    }
+
+    private fun `Then verify RecentSearchSeeMoreViewModel has been removed`() {
+        val recentSearchSeeMoreViewModel = slotVisitableList.captured.find { it is RecentSearchSeeMoreViewModel }
+        assert(recentSearchSeeMoreViewModel == null) {
+            "There should be no RecentSearchSeeMoreViewModel in visitable list"
+        }
     }
 
     private fun `Then verify renderRecentSearch is called`() {
@@ -133,10 +135,10 @@ internal class OnInitialStateItemClickTest: InitialStatePresenterTestFixtures(){
         }
     }
 
-    private fun `Then verify recent search data shown increased from 3 to 5`() {
+    private fun `Then verify initial state show all recent search`(initialStateData: List<InitialStateData>) {
         val recentSearchViewModel = slotRecentSearchViewModel.captured
-        assert(recentSearchViewModel.list.size == 5) {
-            "Actual size is ${recentSearchViewModel.list.size}, Expected size is 5"
-        }
+        val recentSearchResponse = initialStateData.find { it.featureId == "recent_search" }
+
+        recentSearchViewModel.list.size shouldBe recentSearchResponse?.items?.size
     }
 }
