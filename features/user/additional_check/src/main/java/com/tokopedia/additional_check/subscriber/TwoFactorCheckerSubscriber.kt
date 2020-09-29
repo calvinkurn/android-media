@@ -10,10 +10,12 @@ import com.tokopedia.additional_check.di.AdditionalCheckUseCaseModules
 import com.tokopedia.additional_check.di.DaggerAdditionalCheckComponents
 import com.tokopedia.additional_check.internal.AdditionalCheckConstants
 import com.tokopedia.additional_check.internal.AdditionalCheckConstants.REMOTE_CONFIG_2FA
+import com.tokopedia.additional_check.internal.AdditionalCheckConstants.REMOTE_CONFIG_2FA_SELLER_APP
 import com.tokopedia.additional_check.view.TwoFactorViewModel
 import com.tokopedia.additional_check.view.TwoFactorFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import javax.inject.Inject
 
@@ -36,6 +38,12 @@ class TwoFactorCheckerSubscriber: Application.ActivityLifecycleCallbacks {
             "RegisterEmailActivity"
     )
 
+    private val exceptionPageSeller = listOf(
+            "ConsumerSplashScreen", "AddPinActivity", "AddPhoneActivity", "TwoFactorActivity",
+            "RegisterFingerprintOnboardingActivity", "VerificationActivity", "PinOnboardingActivity",
+            "LogoutActivity", "LoginActivity","GiftBoxTapTapActivity", "GiftBoxDailyActivity"
+    )
+
     override fun onActivityCreated(activity: Activity?, savedInstanceState: Bundle?) {
         DaggerAdditionalCheckComponents
                 .builder()
@@ -52,8 +60,30 @@ class TwoFactorCheckerSubscriber: Application.ActivityLifecycleCallbacks {
         return remoteConfig?.getBoolean(REMOTE_CONFIG_2FA, false)
     }
 
+    private fun getTwoFactorRemoteConfigSellerApp(): Boolean? {
+        return remoteConfig?.getBoolean(REMOTE_CONFIG_2FA_SELLER_APP, false)
+    }
+
     private fun doChecking(activity: Activity){
+        if (GlobalConfig.isSellerApp()) {
+            checkSellerApp(activity)
+        } else {
+            checkMainApp(activity)
+        }
+    }
+
+    private fun checkMainApp(activity: Activity) {
         if(!exceptionPage.contains(activity.javaClass.simpleName.toString()) && getTwoFactorRemoteConfig() == true) {
+            viewModel.check(onSuccess = {
+                handleResponse(activity, twoFactorResult = it)
+            }, onError = {
+                it.printStackTrace()
+            })
+        }
+    }
+
+    private fun checkSellerApp(activity: Activity) {
+        if(!exceptionPageSeller.contains(activity.javaClass.simpleName.toString()) && getTwoFactorRemoteConfigSellerApp() == true) {
             viewModel.check(onSuccess = {
                 handleResponse(activity, twoFactorResult = it)
             }, onError = {
