@@ -180,35 +180,74 @@ public class OrderListActivity extends BaseSimpleActivity
                 .build();
     }
 
+    private static Intent getMarketPlaceIntent(Context context, Uri uri) {
+        Bundle bundle = new Bundle();
+        bundle.putString(OrderCategory.KEY_LABEL, OrderCategory.MARKETPLACE);
+        bundle.putString(OrderListContants.ORDER_FILTER_ID, uri.getQueryParameter(OrderListContants.ORDER_FILTER_ID));
+        Intent intent = new Intent(context, OrderListActivity.class);
+        return intent.putExtras(bundle);
+    }
+
+    public static Intent getOrderListIntent(Context context, String uriStr, Uri uri) {
+        Bundle bundle = new Bundle();
+        String category = uriStr.substring(uriStr.indexOf("//") + 2, uriStr.lastIndexOf("/")).toUpperCase();
+        bundle.putString(ORDER_CATEGORY, category);
+        return new Intent(context, OrderListActivity.class)
+                .setData(uri)
+                .putExtras(bundle);
+    }
+
+    public static Intent getHotelOrderListIntent(Context context, Uri uri) {
+        Bundle bundle = new Bundle();
+        bundle.putString(ORDER_CATEGORY, OrderCategory.HOTELS);
+        return new Intent(context, OrderListActivity.class)
+                .setData(uri)
+                .putExtras(bundle);
+    }
+
+    public static Intent getFlightOrderListIntent(Context context, Uri uri) {
+        Bundle bundle = new Bundle();
+        bundle.putString(ORDER_CATEGORY, OrderCategory.FLIGHTS);
+        return new Intent(context, OrderListActivity.class)
+                .setData(uri)
+                .putExtras(bundle);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initVar();
         if (getIntent() != null && getIntent().getData() != null) {
             String uriStr = String.valueOf(getIntent().getData());
+            Intent newIntent = new Intent();
 
             if (uriStr.contains(HOST_BUYER)) {
-                orderCategory = OrderCategory.MARKETPLACE;
+                /*orderCategory = OrderCategory.MARKETPLACE;
                 if (getIntent().getExtras() != null) {
                     getIntent().getExtras().putString(OrderListContants.ORDER_FILTER_ID, getIntent().getData().getQueryParameter(OrderListContants.ORDER_FILTER_ID));
                     getIntent().getExtras().putString(OrderCategory.KEY_LABEL, OrderCategory.MARKETPLACE);
-                }
+                }*/
+                newIntent = getMarketPlaceIntent(this, getIntent().getData());
             } else {
                 if (uriStr.contains(BuyerConsts.HOST_DEALS) || uriStr.contains(BuyerConsts.HOST_DIGITAL)
                         || uriStr.contains(BuyerConsts.HOST_EVENTS) || uriStr.contains(BuyerConsts.HOST_GIFTCARDS)
                         || uriStr.contains(BuyerConsts.HOST_INSURANCE) || uriStr.contains(BuyerConsts.HOST_MODALTOKO)) {
-                    orderCategory = uriStr.substring(uriStr.indexOf("//") + 2, uriStr.lastIndexOf("/")).toUpperCase();
+                    // orderCategory = uriStr.substring(uriStr.indexOf("//") + 2, uriStr.lastIndexOf("/")).toUpperCase();
+                    newIntent = getOrderListIntent(this, uriStr, getIntent().getData());
 
                 }  else if (uriStr.contains(HOST_HOTEL)) {
-                    orderCategory = OrderCategory.HOTELS;
+                    // orderCategory = OrderCategory.HOTELS;
+                    newIntent = getHotelOrderListIntent(this, getIntent().getData());
 
                 } else if (uriStr.contains(HOST_FLIGHT)) {
-                    orderCategory = OrderCategory.FLIGHTS;
+                    // orderCategory = OrderCategory.FLIGHTS;
+                    newIntent = getFlightOrderListIntent(this, getIntent().getData());
                 }
-                if (getIntent().getExtras() != null) {
+                /*if (getIntent().getExtras() != null) {
                     getIntent().getExtras().putString(ORDER_CATEGORY, orderCategory);
-                }
+                }*/
             }
+            startActivity(newIntent);
         }
         Bundle bundle = getIntent().getExtras();
         context = this;
