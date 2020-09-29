@@ -189,4 +189,6 @@ yang ditemukan</string>
     <string name="title_buy_occ">Beli Langsung</string>
     <string name="title_success_pin_chat">Chat telah ditempel ke atas.</string>
     <string name="title_success_unpin_chat">Chat telah dilepas.</string>
+    <string name="title_topchat_as_buyer">Sebagai Pembeli</string>
+    <string name="title_topchat_as_seller">Sebagai Penjual</string>
 </resources>

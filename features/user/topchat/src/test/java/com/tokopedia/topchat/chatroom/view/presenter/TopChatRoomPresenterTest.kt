@@ -113,6 +113,9 @@ class TopChatRoomPresenterTest {
     private lateinit var addToCartOccUseCase: AddToCartOccUseCase
 
     @RelaxedMockK
+    private lateinit var chatBackgroundUseCase: ChatBackgroundUseCase
+
+    @RelaxedMockK
     private lateinit var sharedPref: SharedPreferences
 
     private val dispatchers: TopchatCoroutineContextProvider = TopchatTestCoroutineContextDispatcher()
@@ -170,6 +173,7 @@ class TopChatRoomPresenterTest {
                         chatAttachmentUseCase,
                         chatToggleBlockChat,
                         addToCartOccUseCase,
+                        chatBackgroundUseCase,
                         sharedPref,
                         dispatchers
                 )
