@@ -128,7 +128,7 @@ public class ReviewProductFragment extends BaseListFragment<ReviewProductModel, 
         oneStarReview = view.findViewById(R.id.one_star);
         customViewQuickFilterView = view.findViewById(R.id.filter_review);
         progressDialog = new ProgressDialog(getActivity());
-        progressDialog.setMessage(getString(R.string.title_loading));
+        progressDialog.setMessage(getString(com.tokopedia.abstraction.R.string.title_loading));
         setupFilterView();
         return view;
     }

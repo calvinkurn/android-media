@@ -2,13 +2,14 @@ package com.tokopedia.tkpd.tkpdreputation.review.product.view.widget;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import androidx.annotation.AttrRes;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.annotation.AttrRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.tokopedia.design.base.BaseCustomView;
 import com.tokopedia.tkpd.tkpdreputation.R;
@@ -87,9 +88,9 @@ public class ReviewProductItemFilterView extends BaseCustomView {
         }else{
             ratingBar.setVisibility(VISIBLE);
             if (active) {
-                ratingBar.setImageResource(R.drawable.ic_rating_gold_micro);
+                ratingBar.setImageResource(com.tokopedia.design.R.drawable.ic_rating_gold_micro);
             } else {
-                ratingBar.setImageResource(R.drawable.ic_rating_grey_micro);
+                ratingBar.setImageResource(com.tokopedia.design.R.drawable.ic_rating_grey_micro);
             }
         }
     }
