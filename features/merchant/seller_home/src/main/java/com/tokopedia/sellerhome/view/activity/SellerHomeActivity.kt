@@ -104,7 +104,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         initInjector()
-        initPerformanceMonitoring()
+        initSellerHomePlt()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sah_seller_home)
 
@@ -303,6 +303,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
         sahBottomNav.setOnNavigationItemSelectedListener { menu ->
             when (menu.itemId) {
                 R.id.menu_sah_home -> {
+                    initPerformanceMonitoringSellerHome()
                     UpdateShopActiveService.startService(this)
                     onBottomNavSelected(PageFragment(FragmentType.HOME), TrackingConstant.CLICK_HOME)
                     showToolbarNotificationBadge()
@@ -449,9 +450,23 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
         sahToolbar?.hide()
     }
 
-    private fun initPerformanceMonitoring(){
-        performanceMonitoringSellerHomelayout = PerformanceMonitoring.start(SELLER_HOME_LAYOUT_TRACE)
-        performanceMonitoringSellerHomeLayoutPlt = HomeLayoutLoadTimeMonitoring()
-        performanceMonitoringSellerHomeLayoutPlt?.initPerformanceMonitoring()
+    private fun initSellerHomePlt() {
+        if (intent.data == null) {
+            initPerformanceMonitoringSellerHome()
+        } else {
+            DeepLinkHandler.handleAppLink(intent) {
+                if (it.type == FragmentType.HOME) {
+                    initPerformanceMonitoringSellerHome()
+                }
+            }
+        }
+    }
+
+    private fun initPerformanceMonitoringSellerHome() {
+        if (performanceMonitoringSellerHomeLayoutPlt == null) {
+            performanceMonitoringSellerHomelayout = PerformanceMonitoring.start(SELLER_HOME_LAYOUT_TRACE)
+            performanceMonitoringSellerHomeLayoutPlt = HomeLayoutLoadTimeMonitoring()
+            performanceMonitoringSellerHomeLayoutPlt?.initPerformanceMonitoring()
+        }
     }
 }
