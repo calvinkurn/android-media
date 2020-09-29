@@ -99,6 +99,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         observeTotalLikes()
         observeChatList()
         observeMetrics()
+        observeEvent()
     }
 
     override fun onStart() {
@@ -403,7 +404,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     }
 
     private fun observeLiveDuration() {
-        parentViewModel.observableLiveDuration.observe(viewLifecycleOwner, EventObserver {
+        parentViewModel.observableLiveDuration.observe(viewLifecycleOwner, Observer {
             when(it)  {
                 is LivePusherTimerState.Active -> showCounterDuration(it.remainingTime)
                 is LivePusherTimerState.AlmostFinish -> showTimeRemaining(it.minutesLeft)
@@ -428,6 +429,12 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
     private fun observeMetrics() {
         parentViewModel.observableNewMetrics.observe(viewLifecycleOwner, EventObserver(::setNewMetrics))
+    }
+
+    private fun observeEvent() {
+        parentViewModel.observableEvent.observe(viewLifecycleOwner, Observer {
+            if (it.freeze) showDialogWhenTimeout()
+        })
     }
     //endregion
 
