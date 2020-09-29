@@ -99,4 +99,13 @@ public interface LinkerConstants {
     String UTM_CAMPAIGN = "utm_campaign";
     String UTM_TERM = "utm_term";
     String SCREEN_NAME = "screenName";
+
+    String CONTENT = "content";
+    String CONTENT_TYPE = "content_type";
+    String LEVEL1_NAME = "level1_name";
+    String LEVEL1_ID = "level1_id";
+    String LEVEL2_NAME = "level2_name";
+    String LEVEL2_ID = "level2_id";
+    String LEVEL3_NAME = "level3_name";
+    String LEVEL3_ID = "level3_id";
 }

@@ -125,17 +125,37 @@ public class BranchHelper {
                 .addCustomDataProperty(LinkerConstants.DESCRIPTION, linkerData.getDescription())
                 .addCustomDataProperty(LinkerConstants.SHOP_ID, linkerData.getShopId())
                 .addCustomDataProperty(LinkerConstants.CURRENCY, linkerData.getCurrency())
+                .addCustomDataProperty(LinkerConstants.CONTENT, linkerData.getContent())
+                .addCustomDataProperty(LinkerConstants.CONTENT_TYPE, linkerData.getContentType())
+                .addCustomDataProperty(LinkerConstants.LEVEL1_ID, linkerData.getLevel1Id())
+                .addCustomDataProperty(LinkerConstants.LEVEL2_NAME, linkerData.getLevel2Name())
+                .addCustomDataProperty(LinkerConstants.LEVEL2_ID, linkerData.getLevel2Id())
+                .addCustomDataProperty(LinkerConstants.LEVEL3_NAME, linkerData.getLevel3Name())
+                .addCustomDataProperty(LinkerConstants.LEVEL3_ID, linkerData.getLevel3Id())
                 .logEvent(context);
     }
 
     public static void sendAddToCartEvent(Context context, LinkerData linkerData){
+        BranchUniversalObject buo = new BranchUniversalObject()
+                .setTitle(linkerData.getProductName())
+                .setContentMetadata(
+                        new ContentMetadata()
+                                .setPrice(LinkerUtils.convertToDouble(linkerData.getPrice(),"Product price"), CurrencyType.IDR)
+                                .setProductName(linkerData.getProductName())
+                                .setQuantity(LinkerUtils.convertToDouble(linkerData.getQuantity(),"Product quantity"))
+                                .setSku(linkerData.getId())
+                                .setContentSchema(BranchContentSchema.COMMERCE_PRODUCT)
+                                .addCustomMetadata(LinkerConstants.ProductCategory, String.valueOf(linkerData.getCatLvl1())));
         new BranchEvent(BRANCH_STANDARD_EVENT.ADD_TO_CART)
-                .addCustomDataProperty(LinkerConstants.PRODUCT_ID, linkerData.getId())
-                .addCustomDataProperty(LinkerConstants.PRICE, linkerData.getPrice())
-                .addCustomDataProperty(LinkerConstants.CATEGORY_LEVEL_1, linkerData.getCatLvl1())
                 .addCustomDataProperty(LinkerConstants.USER_ID, linkerData.getUserId())
-                .addCustomDataProperty(LinkerConstants.QTY, linkerData.getQuantity())
-                .addCustomDataProperty(LinkerConstants.CURRENCY, linkerData.getCurrency())
+                .addCustomDataProperty(LinkerConstants.CONTENT_TYPE, linkerData.getContentType())
+                .addCustomDataProperty(LinkerConstants.LEVEL1_NAME, linkerData.getLevel1Name())
+                .addCustomDataProperty(LinkerConstants.LEVEL1_ID, linkerData.getLevel1Id())
+                .addCustomDataProperty(LinkerConstants.LEVEL2_NAME, linkerData.getLevel2Name())
+                .addCustomDataProperty(LinkerConstants.LEVEL2_ID, linkerData.getLevel2Id())
+                .addCustomDataProperty(LinkerConstants.LEVEL3_NAME, linkerData.getLevel3Name())
+                .addCustomDataProperty(LinkerConstants.LEVEL3_ID, linkerData.getLevel3Name())
+                .addContentItems(buo)
                 .logEvent(context);
         new BranchHelperValidation().validateCartQuantity( linkerData.getQuantity());
     }
