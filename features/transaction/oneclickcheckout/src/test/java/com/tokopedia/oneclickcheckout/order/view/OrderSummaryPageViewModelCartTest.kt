@@ -612,7 +612,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel.updateCreditCard("")
 
         // Then
-        verify(inverse = true) { updateCartOccUseCase.execute(any(), any(), any(), any()) }
+        coVerify(inverse = true) { updateCartOccUseCase.executeSuspend(any()) }
     }
 
     @Test
