@@ -60,9 +60,9 @@ data class Product(
         @SerializedName("count_review")
         @Expose
         val countReview: Int = 0,
-        @SerializedName("rating_float")
+        @SerializedName("ratingAverage")
         @Expose
-        val ratingFloat: Float = 0f,
+        val ratingFloat: String = "",
         @SerializedName("recommendation_type")
         @Expose
         val recommendationType: String = "",

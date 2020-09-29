@@ -266,7 +266,7 @@ class MixTopComponentViewHolder(
                             isOutOfStock = element.isOutOfStock,
                             ratingCount = if(RemoteConfigInstance.getInstance().abTestPlatform.getString(ConstantABTesting.EXPERIMENT_NAME) == ConstantABTesting.EXPERIMENT_RATING_ONLY) element.rating else 0,
                             reviewCount = if(RemoteConfigInstance.getInstance().abTestPlatform.getString(ConstantABTesting.EXPERIMENT_NAME) == ConstantABTesting.EXPERIMENT_RATING_ONLY) element.countReview else 0,
-                            countSoldRating = if(RemoteConfigInstance.getInstance().abTestPlatform.getString(ConstantABTesting.EXPERIMENT_NAME) == ConstantABTesting.EXPERIMENT_SALES_RATING) element.ratingFloat.toString() else ""
+                            countSoldRating = if(RemoteConfigInstance.getInstance().abTestPlatform.getString(ConstantABTesting.EXPERIMENT_NAME) == ConstantABTesting.EXPERIMENT_SALES_RATING) element.ratingFloat else ""
                     ),
                     blankSpaceConfig = BlankSpaceConfig(),
                     grid = element,

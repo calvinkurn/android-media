@@ -42,7 +42,7 @@ class HomeRecommendationItemViewHolder(itemView: View) : SmartAbstractViewHolder
                             discountPercentage = if (element.product.discountPercentage > 0) "${element.product.discountPercentage}%" else "",
                             ratingCount = if(RemoteConfigInstance.getInstance().abTestPlatform.getString(ConstantABTesting.EXPERIMENT_NAME) == ConstantABTesting.EXPERIMENT_RATING_ONLY) element.product.rating else 0,
                             reviewCount = if(RemoteConfigInstance.getInstance().abTestPlatform.getString(ConstantABTesting.EXPERIMENT_NAME) == ConstantABTesting.EXPERIMENT_RATING_ONLY) element.product.countReview else 0,
-                            countSoldRating = if(RemoteConfigInstance.getInstance().abTestPlatform.getString(ConstantABTesting.EXPERIMENT_NAME) == ConstantABTesting.EXPERIMENT_SALES_RATING) element.product.ratingFloat.toString() else "",
+                            countSoldRating = if(RemoteConfigInstance.getInstance().abTestPlatform.getString(ConstantABTesting.EXPERIMENT_NAME) == ConstantABTesting.EXPERIMENT_SALES_RATING) element.product.ratingFloat else "",
                             shopLocation = element.product.shop.city,
                             isWishlistVisible = true,
                             isWishlisted = element.product.isWishlist,
