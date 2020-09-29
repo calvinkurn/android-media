@@ -10,14 +10,10 @@ import com.tokopedia.abstraction.common.di.component.HasComponent;
  */
 public abstract class BaseDaggerFragment extends TkpdBaseV4Fragment {
 
-    protected boolean isManuallyInitInjector = false;
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (!isManuallyInitInjector) {
-            initInjector();
-        }
+        initInjector();
     }
 
     @SuppressWarnings("unchecked")
