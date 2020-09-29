@@ -17,6 +17,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.buyerorder.R;
+import com.tokopedia.buyerorder.common.util.BuyerConsts;
 import com.tokopedia.buyerorder.detail.view.OrderListAnalytics;
 import com.tokopedia.buyerorder.list.common.OrderListContants;
 import com.tokopedia.buyerorder.list.data.OrderCategory;
@@ -41,6 +42,10 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.tokopedia.buyerorder.common.util.BuyerConsts.HOST_BUYER;
+import static com.tokopedia.buyerorder.common.util.BuyerConsts.HOST_FLIGHT;
+import static com.tokopedia.buyerorder.common.util.BuyerConsts.HOST_HOTEL;
 
 public class OrderListActivity extends BaseSimpleActivity
         implements HasComponent<OrderListComponent>, OrderListInitContract.View, OrderTabAdapter.Listener {
@@ -67,10 +72,10 @@ public class OrderListActivity extends BaseSimpleActivity
     }*/
 
     // @DeepLink(ApplinkConst.ORDER_LIST_WEBVIEW)
-    public static Intent getOrderList(Context context, Bundle extras) {
+    /*public static Intent getOrderList(Context context, Bundle extras) {
         Intent intent = new Intent(context, OrderListActivity.class);
         return intent.putExtras(extras);
-    }
+    }*/
 
     // @DeepLink(ApplinkConst.PURCHASE_PROCESSED)
     /*public static Intent getProcessedIntent(Context context, Bundle extras) {
@@ -179,6 +184,32 @@ public class OrderListActivity extends BaseSimpleActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initVar();
+        if (getIntent() != null && getIntent().getData() != null) {
+            String uriStr = String.valueOf(getIntent().getData());
+
+            if (uriStr.contains(HOST_BUYER)) {
+                orderCategory = OrderCategory.MARKETPLACE;
+                if (getIntent().getExtras() != null) {
+                    getIntent().getExtras().putString(OrderListContants.ORDER_FILTER_ID, getIntent().getData().getQueryParameter(OrderListContants.ORDER_FILTER_ID));
+                    getIntent().getExtras().putString(OrderCategory.KEY_LABEL, OrderCategory.MARKETPLACE);
+                }
+            } else {
+                if (uriStr.contains(BuyerConsts.HOST_DEALS) || uriStr.contains(BuyerConsts.HOST_DIGITAL)
+                        || uriStr.contains(BuyerConsts.HOST_EVENTS) || uriStr.contains(BuyerConsts.HOST_GIFTCARDS)
+                        || uriStr.contains(BuyerConsts.HOST_INSURANCE) || uriStr.contains(BuyerConsts.HOST_MODALTOKO)) {
+                    orderCategory = uriStr.substring(uriStr.indexOf("//") + 2, uriStr.lastIndexOf("/")).toUpperCase();
+
+                }  else if (uriStr.contains(HOST_HOTEL)) {
+                    orderCategory = OrderCategory.HOTELS;
+
+                } else if (uriStr.contains(HOST_FLIGHT)) {
+                    orderCategory = OrderCategory.FLIGHTS;
+                }
+                if (getIntent().getExtras() != null) {
+                    getIntent().getExtras().putString(ORDER_CATEGORY, orderCategory);
+                }
+            }
+        }
         Bundle bundle = getIntent().getExtras();
         context = this;
         if (bundle != null) {
