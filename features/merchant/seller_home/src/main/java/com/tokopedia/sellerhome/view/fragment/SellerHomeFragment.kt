@@ -207,7 +207,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     }
 
     private fun setupView() = view?.run {
-        val gridLayoutManager = SellerHomeLayoutManager(context, 2).apply {
+        val sellerHomeLayoutManager = SellerHomeLayoutManager(context, 2).apply {
             spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
                 override fun getSpanSize(position: Int): Int {
                     return try {
@@ -224,7 +224,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             }
         }
         with(recyclerView) {
-            layoutManager = gridLayoutManager
+            layoutManager = sellerHomeLayoutManager
             (itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
         }
 
