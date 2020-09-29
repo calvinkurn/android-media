@@ -61,7 +61,9 @@ class TwoFactorCheckerSubscriber: Application.ActivityLifecycleCallbacks {
     }
 
     private fun getTwoFactorRemoteConfigSellerApp(): Boolean? {
-        return remoteConfig?.getBoolean(REMOTE_CONFIG_2FA_SELLER_APP, false)
+//        return remoteConfig?.getBoolean(REMOTE_CONFIG_2FA_SELLER_APP, false)
+        // harcoded : test
+        return true
     }
 
     private fun doChecking(activity: Activity){
