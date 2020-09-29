@@ -2,28 +2,16 @@ package com.tokopedia.shop_settings.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
-import com.tokopedia.shop.common.graphql.data.shopbasicdata.ShopBasicDataModel
-import com.tokopedia.shop.common.graphql.data.shopopen.ShopDomainSuggestionData
-import com.tokopedia.shop.common.graphql.data.shopopen.ValidateShopDomainNameResult
-import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.UpdateShopBasicDataUseCase
-import com.tokopedia.shop.common.graphql.domain.usecase.shopopen.GetShopDomainNameSuggestionUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.shopopen.ValidateDomainShopNameUseCase
 import com.tokopedia.shop.settings.basicinfo.data.AllowShopNameDomainChanges
-import com.tokopedia.shop.settings.basicinfo.data.UploadShopEditImageModel
 import com.tokopedia.shop.settings.basicinfo.domain.GetAllowShopNameDomainChanges
 import com.tokopedia.shop_settings.viewmodel.shopeditbasicinfo.ShopEditBasicInfoViewModelTestFixture
-import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.*
-import junit.framework.TestCase.assertNotNull
 import junit.framework.TestCase.assertTrue
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
-import org.mockito.ArgumentMatchers
-import org.mockito.ArgumentMatchers.anyString
-import org.mockito.Matchers
-import rx.Observable
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 

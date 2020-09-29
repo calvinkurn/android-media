@@ -4,7 +4,7 @@ import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.shop.common.graphql.data.shopbasicdata.ShopBasicDataModel
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetShopBasicDataUseCase
-import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.UpdateShopBasicDataUseCase
+import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.OldUpdateShopBasicDataUseCase
 import com.tokopedia.shop.settings.basicinfo.data.UploadShopEditImageModel
 import com.tokopedia.shop.settings.basicinfo.domain.UploadShopImageUseCase
 import com.tokopedia.usecase.RequestParams
@@ -16,7 +16,7 @@ import rx.Subscriber
 
 class UpdateShopSettingsInfoPresenter @Inject
 constructor(private val getShopBasicDataUseCase: GetShopBasicDataUseCase,
-            private val updateShopBasicDataUseCase: UpdateShopBasicDataUseCase,
+            private val oldUpdateShopBasicDataUseCase: OldUpdateShopBasicDataUseCase,
             private val uploadShopImageUseCase: UploadShopImageUseCase) : BaseDaggerPresenter<UpdateShopSettingsInfoPresenter.View>() {
 
     interface View : CustomerView {
@@ -67,14 +67,14 @@ constructor(private val getShopBasicDataUseCase: GetShopBasicDataUseCase,
     }
 
     fun updateShopBasicData(tagline: String, description: String) {
-        updateShopBasicDataUseCase.unsubscribe()
-        updateShopBasicDataUseCase.execute(UpdateShopBasicDataUseCase.createRequestParams(tagline,
+        oldUpdateShopBasicDataUseCase.unsubscribe()
+        oldUpdateShopBasicDataUseCase.execute(OldUpdateShopBasicDataUseCase.createRequestParams(tagline,
                 description, null, null, null), createUpdateBasicInfoSubscriber())
     }
 
     private fun updateShopBasicData(tagline: String, description: String, logoCode: String?) {
-        updateShopBasicDataUseCase.unsubscribe()
-        updateShopBasicDataUseCase.execute(UpdateShopBasicDataUseCase.createRequestParams(tagline,
+        oldUpdateShopBasicDataUseCase.unsubscribe()
+        oldUpdateShopBasicDataUseCase.execute(OldUpdateShopBasicDataUseCase.createRequestParams(tagline,
                 description, logoCode, null, null), createUpdateBasicInfoSubscriber())
     }
 
@@ -97,7 +97,7 @@ constructor(private val getShopBasicDataUseCase: GetShopBasicDataUseCase,
     override fun detachView() {
         super.detachView()
         getShopBasicDataUseCase.unsubscribe()
-        updateShopBasicDataUseCase.unsubscribe()
+        oldUpdateShopBasicDataUseCase.unsubscribe()
         uploadShopImageUseCase.unsubscribe()
     }
 
