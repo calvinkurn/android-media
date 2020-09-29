@@ -123,7 +123,6 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
         }
     }
 
-
     private fun populateData(dataItem: DataItem) {
         if (productCardName == ComponentNames.ProductCardRevampItem.componentName || productCardName == ComponentNames.ProductCardCarouselItem.componentName) {
             productName.setTextAndCheckShow(dataItem.name)
@@ -137,6 +136,7 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
             textViewPrice.setTextAndCheckShow(dataItem.discountedPrice)
             setStockProgress(dataItem.stockSoldPercentage)
             showOutOfStockLabel(dataItem.stockSoldPercentage, SALE_PRODUCT_STOCK)
+            carouselProductWidth()
         }
         setLabelDiscount(dataItem.discountPercentage.toString())
         dataItem.rating?.let { setRating(it, dataItem.countReview) }
