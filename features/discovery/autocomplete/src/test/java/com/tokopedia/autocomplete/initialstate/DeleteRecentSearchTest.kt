@@ -16,13 +16,14 @@ import org.junit.Assert
 import org.junit.Test
 import rx.Subscriber
 
-private const val initialStateWithSeeMoreRecentSearch = "autocomplete/initialstate/with-show-more-recent-search.json"
+private const val initialStateWith4DataSeeMoreRecentSearch = "autocomplete/initialstate/with-4-data-show-more-recent-search.json"
+private const val initialStateWith5DataSeeMoreRecentSearch = "autocomplete/initialstate/with-5-data-show-more-recent-search.json"
 
 internal class DeleteRecentSearchTest: InitialStatePresenterTestFixtures() {
 
     private val isSuccessful = true
 
-    private fun `Test Delete Recant Search Data`(initialStateData: List<InitialStateData>, item: BaseItemInitialStateSearch) {
+    private fun `Test Delete Recent Search Data`(initialStateData: List<InitialStateData>, item: BaseItemInitialStateSearch) {
         `Given view already get initial state`(initialStateData)
 
         `Given delete recent search API will return data`()
@@ -65,7 +66,7 @@ internal class DeleteRecentSearchTest: InitialStatePresenterTestFixtures() {
                 shortcutImage = "https://shortcut"
         )
 
-        `Test Delete Recant Search Data`(initialStateCommonData, item)
+        `Test Delete Recent Search Data`(initialStateCommonData, item)
         `Then verify visitable list doesnt have the deleted keyword in recent search`(item)
     }
 
@@ -88,7 +89,7 @@ internal class DeleteRecentSearchTest: InitialStatePresenterTestFixtures() {
                 type = "shop"
         )
 
-        `Test Delete Recant Search Data`(initialStateCommonData, item)
+        `Test Delete Recent Search Data`(initialStateCommonData, item)
         `Then verify visitable list doesnt have shop in recent search`(item)
     }
 
@@ -103,8 +104,8 @@ internal class DeleteRecentSearchTest: InitialStatePresenterTestFixtures() {
     }
 
     @Test
-    fun `Test delete 2 recent search data with see more button`() {
-        val initialStateData = initialStateWithSeeMoreRecentSearch.jsonToObject<InitialStateUniverse>().data
+    fun `Test delete recent search data without removing see more button`() {
+        val initialStateData = initialStateWith5DataSeeMoreRecentSearch.jsonToObject<InitialStateUniverse>().data
         val item = BaseItemInitialStateSearch(
                 template = "list_single_line",
                 applink = "tokopedia://search?q=samsung&source=universe&st=product",
@@ -115,25 +116,10 @@ internal class DeleteRecentSearchTest: InitialStatePresenterTestFixtures() {
                 productId = "0",
                 shortcutImage = "https://shortcut"
         )
-        val item2 = BaseItemInitialStateSearch(
-                productId = "0",
-                template = "list_single_line",
-                imageUrl = "https://ecs7.tokopedia.net/img/autocomplete/icTime-3x.png",
-                applink = "tokopedia://search?q=momo&source=universe&st=product",
-                url = "/search?q=momo&source=universe&st=product",
-                title = "momo",
-                shortcutImage = "https://ecs7.tokopedia.net/img/autocomplete/ic-close-3x.png",
-                type = "keyword"
-        )
 
-        `Test Delete Recant Search Data`(initialStateData, item)
+        `Test Delete Recent Search Data`(initialStateData, item)
         `Then verify visitable list doesnt have the deleted keyword in recent search`(item)
         `Then verify visitable list still have RecentSearchSeeMoreViewModel`()
-
-        `When presenter delete recent search`(item2)
-        `Then verify initial state view called deleteRecentSearch`()
-        `Then verify visitable list doesnt have the deleted keyword in recent search`(item)
-        `Then verify visitable list doesnt have RecentSearchSeeMoreViewModel`()
     }
 
     private fun `Then verify visitable list still have RecentSearchSeeMoreViewModel`() {
@@ -141,6 +127,25 @@ internal class DeleteRecentSearchTest: InitialStatePresenterTestFixtures() {
         assert(seeMoreRecentSearchViewModel != null) {
             "Visitable list should have SeeMoreRecentSearchViewModel"
         }
+    }
+
+    @Test
+    fun `Test delete recent search data and remove see more button`() {
+        val initialStateData = initialStateWith4DataSeeMoreRecentSearch.jsonToObject<InitialStateUniverse>().data
+        val item = BaseItemInitialStateSearch(
+                template = "list_single_line",
+                applink = "tokopedia://search?q=samsung&source=universe&st=product",
+                url = "/search?q=samsung&source=universe&st=product",
+                title = "samsung",
+                label = "keyword",
+                type = "keyword",
+                productId = "0",
+                shortcutImage = "https://shortcut"
+        )
+
+        `Test Delete Recent Search Data`(initialStateData, item)
+        `Then verify visitable list doesnt have the deleted keyword in recent search`(item)
+        `Then verify visitable list doesnt have RecentSearchSeeMoreViewModel`()
     }
 
     private fun `Then verify visitable list doesnt have RecentSearchSeeMoreViewModel`() {

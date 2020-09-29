@@ -9,7 +9,7 @@ import io.mockk.*
 import org.junit.Test
 import rx.Subscriber
 
-private const val initialStateWithSeeMoreRecentSearch = "autocomplete/initialstate/with-show-more-recent-search.json"
+private const val initialStateWithSeeMoreRecentSearch = "autocomplete/initialstate/with-5-data-show-more-recent-search.json"
 
 internal class OnInitialStateItemClickTest: InitialStatePresenterTestFixtures(){
 
@@ -102,18 +102,17 @@ internal class OnInitialStateItemClickTest: InitialStatePresenterTestFixtures(){
     fun `Test click Show More Recent Search`() {
         val initialStateData = initialStateWithSeeMoreRecentSearch.jsonToObject<InitialStateUniverse>().data
         `Given view already get initial state`(initialStateData)
-        `Then verify initial state view will call showInitialStateResult behavior`()
+        `Given initial state view already call showInitialStateResult`()
 
         `When recent search see more button is clicked`()
+
         `Then verify RecentSearchSeeMoreViewModel has been removed`()
         `Then verify renderRecentSearch is called`()
         `Then verify initial state show all recent search`(initialStateData)
     }
 
-    private fun `Then verify initial state view will call showInitialStateResult behavior`() {
-        verify {
-            initialStateView.showInitialStateResult(capture(slotVisitableList))
-        }
+    private fun `Given initial state view already call showInitialStateResult`() {
+        every { initialStateView.showInitialStateResult(capture(slotVisitableList)) } just runs
     }
 
     private fun `When recent search see more button is clicked`() {

@@ -17,7 +17,7 @@ import org.junit.Assert
 import org.junit.Test
 import rx.Subscriber
 
-private const val initialStateWithSeeMoreRecentSearch = "autocomplete/initialstate/with-show-more-recent-search.json"
+private const val initialStateWithSeeMoreRecentSearch = "autocomplete/initialstate/with-5-data-show-more-recent-search.json"
 
 internal class InitialStatePresenterTest: InitialStatePresenterTestFixtures() {
 
