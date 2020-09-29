@@ -35,8 +35,8 @@ class BannerViewHolder(itemView: View, private val listener: HomeCategoryListene
     private val adapter = HomeBannerAdapter(listOf(), this)
 
     init {
-        indicatorView.activeColor = ContextCompat.getColor(itemView.context, R.color.home_hpb_indicator_active)
-        indicatorView.inactiveColor = ContextCompat.getColor(itemView.context, R.color.home_hpb_indicator_inactive)
+        indicatorView.activeColor = ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+        indicatorView.inactiveColor = ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N0_32)
         seeAllPromo.unlockFeature = true
         seeAllPromo.setLabelType("#31353b")
         seeAllPromo.opacityLevel = 0.9f

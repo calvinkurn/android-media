@@ -48,7 +48,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        app:sticky_highlight_color="@color/g_500"
+        app:sticky_highlight_color="@color/Unify_G500"
         app:sticky_left_icon="@drawable/ic_toped_widget_login"/>
     
     </LinearLayout>
@@ -68,7 +68,7 @@
       android:layout_width="match_parent"
       android:layout_height="@dimen/dp_25"
       android:layout_gravity="top"
-      android:background="@color/green_600"
+      android:background="@color/Unify_G500"
       android:visibility="invisible" />
     
     <fragment
