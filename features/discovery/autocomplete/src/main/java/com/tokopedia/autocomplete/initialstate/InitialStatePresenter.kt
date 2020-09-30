@@ -37,6 +37,12 @@ class InitialStatePresenter @Inject constructor(
     private var recentSearchList: MutableList<InitialStateItem>? = null
     private var searchParameter = HashMap<String, String>()
 
+    var recentSearchPosition = -1
+        private set
+
+    var seeMoreButtonPosition = -1
+        private set
+
     override fun getQueryKey(): String {
         return searchParameter[SearchApiConst.Q] ?: ""
     }
@@ -193,7 +199,9 @@ class InitialStatePresenter @Inject constructor(
 
     private fun addRecentSearchDataWithoutSeeMoreButton(listVisitable: MutableList<Visitable<*>>, listInitialStateItem: List<InitialStateItem>) {
         onRecentSearchImpressed(getDataLayerForPromo(listInitialStateItem))
-        listVisitable.add(listInitialStateItem.convertToRecentSearchViewModel(listVisitable.lastIndex + 1))
+
+        listVisitable.add(listInitialStateItem.convertToRecentSearchViewModel())
+        recentSearchPosition = listVisitable.lastIndex
     }
 
     private fun addRecentSearchDataWithSeeMoreButton(listVisitable: MutableList<Visitable<*>>, listInitialStateItem: List<InitialStateItem>) {
@@ -202,8 +210,11 @@ class InitialStatePresenter @Inject constructor(
         val recentSearchToBeShown = listInitialStateItem.take(RECENT_SEARCH_SEE_MORE_LIMIT)
         onRecentSearchImpressed(getDataLayerForPromo(recentSearchToBeShown))
 
-        listVisitable.add(recentSearchToBeShown.convertToRecentSearchViewModel(listVisitable.lastIndex + 1))
-        listVisitable.add(createRecentSearchSeeMoreButton(listVisitable.lastIndex + 1))
+        listVisitable.add(recentSearchToBeShown.convertToRecentSearchViewModel())
+        recentSearchPosition = listVisitable.lastIndex
+
+        listVisitable.add(createRecentSearchSeeMoreButton())
+        seeMoreButtonPosition = listVisitable.lastIndex
         onImpressSeeMoreRecentSearch()
     }
 
@@ -229,8 +240,8 @@ class InitialStatePresenter @Inject constructor(
         return this
     }
 
-    private fun createRecentSearchSeeMoreButton(position: Int): RecentSearchSeeMoreViewModel {
-        return RecentSearchSeeMoreViewModel(position)
+    private fun createRecentSearchSeeMoreButton(): RecentSearchSeeMoreViewModel {
+        return RecentSearchSeeMoreViewModel()
     }
 
     override fun refreshPopularSearch(featureId: String) {
@@ -462,7 +473,7 @@ class InitialStatePresenter @Inject constructor(
 
             view?.trackEventClickSeeMoreRecentSearch(getUserId())
             view?.dropKeyBoard()
-            view?.renderRecentSearch(recentSearchVisitable)
+            view?.removeSeeMoreButtonAndRenderRecentSearch(recentSearchVisitable)
         }
     }
 }

@@ -4,7 +4,7 @@ import com.tokopedia.autocomplete.initialstate.BaseItemInitialStateSearch
 import com.tokopedia.autocomplete.initialstate.InitialStateItem
 import java.util.*
 
-fun List<InitialStateItem>.convertToRecentSearchViewModel(position: Int = -1): RecentSearchViewModel {
+fun List<InitialStateItem>.convertToRecentSearchViewModel(): RecentSearchViewModel {
     val childList = ArrayList<BaseItemInitialStateSearch>()
     for (item in this) {
         val model = BaseItemInitialStateSearch(
@@ -24,5 +24,5 @@ fun List<InitialStateItem>.convertToRecentSearchViewModel(position: Int = -1): R
         )
         childList.add(model)
     }
-    return RecentSearchViewModel(childList, position)
+    return RecentSearchViewModel(childList)
 }

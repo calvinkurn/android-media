@@ -78,8 +78,7 @@ public class InitialStateAdapter extends RecyclerView.Adapter<AbstractViewHolder
         }
     }
 
-    public void renderRecentSearch(RecentSearchViewModel recentSearchViewModel) {
-        int index = recentSearchViewModel.getPosition();
+    public void renderRecentSearch(RecentSearchViewModel recentSearchViewModel, int index) {
         if (index != -1 && list.get(index) instanceof RecentSearchViewModel) {
             list.set(index, recentSearchViewModel);
             notifyItemChanged(index);

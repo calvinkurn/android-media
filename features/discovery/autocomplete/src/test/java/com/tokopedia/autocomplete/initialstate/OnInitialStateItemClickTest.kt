@@ -130,7 +130,7 @@ internal class OnInitialStateItemClickTest: InitialStatePresenterTestFixtures(){
         verifyOrder {
             initialStateView.trackEventClickSeeMoreRecentSearch("0")
             initialStateView.dropKeyBoard()
-            initialStateView.renderRecentSearch(capture(slotRecentSearchViewModel))
+            initialStateView.removeSeeMoreButtonAndRenderRecentSearch(capture(slotRecentSearchViewModel))
         }
     }
 
