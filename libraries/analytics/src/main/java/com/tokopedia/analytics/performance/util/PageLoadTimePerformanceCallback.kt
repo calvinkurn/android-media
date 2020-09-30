@@ -49,9 +49,12 @@ open class PageLoadTimePerformanceCallback(
         if (!isRenderDone) renderDuration = 0
         if (!isNetworkDone) requestNetworkDuration = 0
 
-        performanceMonitoring?.stopTrace()
-        overallDuration = System.currentTimeMillis() - overallDuration
-        stopMethodTracing(traceName);
+        performanceMonitoring?.let {
+            performanceMonitoring?.stopTrace()
+            overallDuration = System.currentTimeMillis() - overallDuration
+            stopMethodTracing(traceName)
+        }
+        invalidate()
     }
 
     override fun startPreparePagePerformanceMonitoring() {
