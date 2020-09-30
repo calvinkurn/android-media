@@ -28,7 +28,16 @@ public class GlobalConfig {
     public static String PREINSTALL_SITE = "";
     public static String APPLICATION_ID = "";
     public static String DEVICE_ID = "";
+
+    /**
+     * This field is used to enable the debug trace to find the performance insights. Used by automation test for perforamnce
+     */
     public static Boolean ENABLE_DEBUG_TRACE = false;
+
+    /**
+     * This field is used to pass the list of  trace names for which tracing need to be recorded if debug trace is enabled
+     */
+    public static String[] DEBUG_TRACE_NAME = {};
 
     // use to set default root Activity for incoming deeplink
     public static String HOME_ACTIVITY_CLASS_NAME = "";

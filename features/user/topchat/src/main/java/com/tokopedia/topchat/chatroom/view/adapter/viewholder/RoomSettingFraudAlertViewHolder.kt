@@ -45,6 +45,6 @@ class RoomSettingFraudAlertViewHolder constructor(
     companion object {
         val LAYOUT = R.layout.item_topchat_room_setting_fraud_alert
 
-        const val ACTION_BLOCK_USER = "tokopedia://topchat_block_personal"
+        const val ACTION_BLOCK_USER = "tkpd-internal://topchat_block_personal"
     }
 }

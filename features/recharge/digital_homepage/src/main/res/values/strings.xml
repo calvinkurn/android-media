@@ -5,6 +5,12 @@
     <string name="digital_home_label_order_list">Daftar Transaksi</string>
     <string name="digital_home_label_help">Bantuan</string>
     <string name="digital_home_label_mybills">Langganan</string>
+    <string name="digital_home_empty_list_label">Sedang ada kendala, mohon coba kembali sesaat lagi</string>
 
     <string name="digital_home_search_view_hint"><![CDATA[Cari di Topup & Tagihan]]></string>
+
+    <string name="recharge_home_banner_see_all_label">Lihat Semua</string>
+    <string name="recharge_home_empty_banner_title">Beli produk digital di Tokopedia</string>
+    <string name="recharge_home_empty_banner_desc">Mulai dari Pulsa, Paket Data, Listrik PLN, semua bisa kamu beli di Tokopedia.</string>
+    <string name="recharge_home_product_banner_buy_button_label">Beli Sekarang</string>
 </resources>

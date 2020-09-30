@@ -327,6 +327,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
         setCheckoutPassData(enquiryData)
         postpaidClientNumberWidget.showEnquiryResultPostpaid(enquiryData)
 
+        price = enquiryData.enquiry.attributes.pricePlain
         buyWidget.setTotalPrice(enquiryData.enquiry.attributes.price)
         buyWidget.setVisibilityLayout(true)
     }
@@ -344,20 +345,13 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
     private fun setCheckoutPassData(telcoEnquiryData: TelcoEnquiryData) {
         telcoEnquiryData?.run {
             operatorSelected?.run {
-                checkoutPassData = DigitalCheckoutPassData.Builder()
-                        .action(DigitalCheckoutPassData.DEFAULT_ACTION)
+                checkoutPassData = getDefaultCheckoutPassDataBuilder()
                         .categoryId(categoryId.toString())
                         .clientNumber(postpaidClientNumberWidget.getInputNumber())
-                        .instantCheckout("0")
                         .isPromo("0")
                         .operatorId(operator.id)
                         .productId(operator.attributes.defaultProductId.toString())
                         .utmCampaign(categoryId.toString())
-                        .utmContent(GlobalConfig.VERSION_NAME)
-                        .idemPotencyKey(userSession.userId.generateRechargeCheckoutToken())
-                        .utmSource(DigitalCheckoutPassData.UTM_SOURCE_ANDROID)
-                        .utmMedium(DigitalCheckoutPassData.UTM_MEDIUM_WIDGET)
-                        .voucherCodeCopied("")
                         .build()
             }
         }
@@ -371,6 +365,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
                 }
                 operatorSelected?.run {
                     operatorName = operator.attributes.name
+                    productName = operatorName
                     when (inputNumberActionType) {
                         InputNumberActionType.MANUAL -> {
                             topupAnalytics.eventInputNumberManual(categoryId, operatorName)

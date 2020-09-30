@@ -26,6 +26,11 @@ object ProductEditVariantTracking {
         sendEditProductVariantClick("click unselect variant type", label, shopId, SCREEN_NAME)
     }
 
+    // 2.13
+    fun continueToVariantDetailPage(shopId: String) {
+        sendEditProductVariantClick("click lanjut", "", shopId, SCREEN_NAME)
+    }
+
     // 2.2 label = variant type
     fun addingVariantDetailValue(label: String, shopId: String) {
         sendEditProductVariantClick("click tambah variant", label, shopId, SCREEN_NAME)

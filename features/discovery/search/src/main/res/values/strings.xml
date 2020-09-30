@@ -83,6 +83,8 @@
 
     <string name="search_inspiration_card_title">Mungkin maksud kamu ini?</string>
     <string name="search_inspiration_card_option">putih</string>
+    <string name="search_inspiration_card_curated_title">Fashion Pria</string>
+    <string name="search_inspiration_card_curated_button">Lihat Sekarang</string>
 
     <string name="content_desc_searchTextView">edit text search</string>
     <string name="content_desc_search_home_button">button home</string>

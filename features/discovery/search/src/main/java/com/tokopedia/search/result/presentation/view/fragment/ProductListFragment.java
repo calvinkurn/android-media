@@ -741,7 +741,8 @@ public class ProductListFragment
                 model.getTitle(), model.getSeeAllApplink());
     }
 
-    private void redirectionStartActivity(String applink, String url) {
+    @Override
+    public void redirectionStartActivity(String applink, String url) {
         if (redirectionListener == null) return;
 
         if (!TextUtils.isEmpty(applink)) {
@@ -1531,17 +1532,27 @@ public class ProductListFragment
     }
 
     @Override
-    public void onBroadMatchItemClicked(@NotNull BroadMatchItemViewModel broadMatchItemViewModel) {
-        trackEventClickBroadMatchItem(broadMatchItemViewModel);
+    public void onBroadMatchItemImpressed(@NotNull BroadMatchItemViewModel broadMatchItemViewModel) {
+        if (presenter == null) return;
 
-        redirectionStartActivity(broadMatchItemViewModel.getApplink(), broadMatchItemViewModel.getUrl());
+        presenter.onBroadMatchItemImpressed(broadMatchItemViewModel);
     }
 
-    private void trackEventClickBroadMatchItem(@NotNull BroadMatchItemViewModel broadMatchItemViewModel) {
+    @Override
+    public void onBroadMatchItemClicked(@NotNull BroadMatchItemViewModel broadMatchItemViewModel) {
+        if (presenter == null) return;
+
+        presenter.onBroadMatchItemClick(broadMatchItemViewModel);
+    }
+
+    @Override
+    public void trackEventClickBroadMatchItem(@NotNull BroadMatchItemViewModel broadMatchItemViewModel) {
         List<Object> broadMatchItem = new ArrayList<>();
         broadMatchItem.add(broadMatchItemViewModel.asClickObjectDataLayer());
 
-        SearchTracking.trackEventClickBroadMatchItem(getQueryKey(), broadMatchItemViewModel.getAlternativeKeyword(), broadMatchItem);
+        SearchTracking.trackEventClickBroadMatchItem(
+                getQueryKey(), broadMatchItemViewModel.getAlternativeKeyword(), getUserId(), broadMatchItem
+        );
     }
 
     @Override
@@ -1569,13 +1580,15 @@ public class ProductListFragment
         productCardOptionsModel.setProductId(item.getId());
         productCardOptionsModel.setScreenName(SearchEventTracking.Category.SEARCH_RESULT);
         productCardOptionsModel.setSeeSimilarProductEvent(SearchTracking.EVENT_CLICK_SEARCH_RESULT);
+        productCardOptionsModel.setTopAds(item.isOrganicAds());
+        productCardOptionsModel.setTopAdsWishlistUrl(item.getTopAdsWishlistUrl());
 
         return productCardOptionsModel;
     }
 
     @Override
     public void trackBroadMatchImpression(String alternativeKeyword, List<Object> impressionObjectDataLayer) {
-        SearchTracking.trackEventImpressionBroadMatch(getQueryKey(), alternativeKeyword, impressionObjectDataLayer);
+        SearchTracking.trackEventImpressionBroadMatch(getQueryKey(), alternativeKeyword, getUserId(), impressionObjectDataLayer);
     }
 
     @Override

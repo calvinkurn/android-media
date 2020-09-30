@@ -27,6 +27,7 @@ import com.tokopedia.search.analytics.SearchEventTracking;
 import com.tokopedia.search.result.domain.model.SearchProductModel;
 import com.tokopedia.search.result.presentation.ProductListSectionContract;
 import com.tokopedia.search.result.presentation.mapper.ProductViewModelMapper;
+import com.tokopedia.search.result.presentation.ShopRatingABTestStrategy;
 import com.tokopedia.search.result.presentation.mapper.RecommendationViewModelMapper;
 import com.tokopedia.search.result.presentation.model.BadgeItemViewModel;
 import com.tokopedia.search.result.presentation.model.BannedProductsEmptySearchViewModel;
@@ -35,6 +36,7 @@ import com.tokopedia.search.result.presentation.model.BroadMatchItemViewModel;
 import com.tokopedia.search.result.presentation.model.BroadMatchViewModel;
 import com.tokopedia.search.result.presentation.model.CpmViewModel;
 import com.tokopedia.search.result.presentation.model.FreeOngkirViewModel;
+import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
 import com.tokopedia.search.result.presentation.model.InspirationCardViewModel;
 import com.tokopedia.search.result.presentation.model.InspirationCarouselViewModel;
 import com.tokopedia.search.result.presentation.model.LabelGroupViewModel;
@@ -43,6 +45,7 @@ import com.tokopedia.search.result.presentation.model.ProductViewModel;
 import com.tokopedia.search.result.presentation.model.RecommendationItemViewModel;
 import com.tokopedia.search.result.presentation.model.RecommendationTitleViewModel;
 import com.tokopedia.search.result.presentation.model.RelatedViewModel;
+import com.tokopedia.search.result.presentation.model.SeparatorViewModel;
 import com.tokopedia.search.result.presentation.model.SuggestionViewModel;
 import com.tokopedia.search.utils.SearchFilterUtilsKt;
 import com.tokopedia.search.utils.UrlParamUtils;
@@ -82,6 +85,10 @@ import kotlin.collections.CollectionsKt;
 import kotlin.jvm.functions.Function1;
 import rx.Subscriber;
 
+import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_SHOP_RATING;
+import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_SHOP_RATING_VARIANT_A;
+import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_SHOP_RATING_VARIANT_B;
+import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_SHOP_RATING_VARIANT_C;
 import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_KEY_COMMA_VS_FULL_STAR;
 import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_VARIANT_COMMA_STAR;
 import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_VARIANT_FULL_STAR;
@@ -126,6 +133,7 @@ final class ProductListPresenter
     private boolean useRatingString = false;
     private String responseCode = "";
     private int topAdsCount = 1;
+    private ShopRatingABTestStrategy shopRatingABTestStrategy = null;
 
     private List<Visitable> productList;
     private List<InspirationCarouselViewModel> inspirationCarouselViewModel;
@@ -173,6 +181,7 @@ final class ProductListPresenter
         super.attachView(view);
 
         useRatingString = getIsUseRatingString();
+        shopRatingABTestStrategy = getShopRatingABTestStrategy();
     }
 
     private boolean getIsUseRatingString() {
@@ -184,6 +193,27 @@ final class ProductListPresenter
         catch (Exception e) {
             e.printStackTrace();
             return false;
+        }
+    }
+
+    private ShopRatingABTestStrategy getShopRatingABTestStrategy() {
+        String shopRatingABVariant = getShopRatingABVariant();
+
+        switch(shopRatingABVariant) {
+            case AB_TEST_SHOP_RATING_VARIANT_A: return new ShopRatingABTestVariantA();
+            case AB_TEST_SHOP_RATING_VARIANT_B: return new ShopRatingABTestVariantB();
+            case AB_TEST_SHOP_RATING_VARIANT_C: return new ShopRatingABTestVariantC();
+            default: return null;
+        }
+    }
+
+    private String getShopRatingABVariant() {
+        try {
+            return getView().getABTestRemoteConfig().getString(AB_TEST_SHOP_RATING);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return "";
         }
     }
 
@@ -414,7 +444,9 @@ final class ProductListPresenter
         if (isViewAttached()) {
             int lastProductItemPositionFromCache = getView().getLastProductItemPositionFromCache();
 
-            ProductViewModel productViewModel = new ProductViewModelMapper().convertToProductViewModel(lastProductItemPositionFromCache, searchProductModel, useRatingString);
+            ProductViewModelMapper mapper = new ProductViewModelMapper(shopRatingABTestStrategy);
+            ProductViewModel productViewModel = mapper
+                    .convertToProductViewModel(lastProductItemPositionFromCache, searchProductModel, useRatingString);
 
             saveLastProductItemPositionToCache(lastProductItemPositionFromCache, productViewModel.getProductList());
 
@@ -448,7 +480,7 @@ final class ProductListPresenter
     }
 
     private void getViewToShowMoreData(Map<String, Object> searchParameter, SearchProductModel searchProductModel, ProductViewModel productViewModel) {
-        List<Visitable> list = new ArrayList<>(convertToListOfVisitable(productViewModel));
+        List<Visitable> list = new ArrayList<>(createProductItemVisitableList(productViewModel));
         productList.addAll(list);
 
         processInspirationCardPosition(searchParameter, list);
@@ -461,7 +493,7 @@ final class ProductListPresenter
         getView().updateScrollListener();
     }
 
-    private List<Visitable> convertToListOfVisitable(ProductViewModel productViewModel) {
+    private List<Visitable> createProductItemVisitableList(ProductViewModel productViewModel) {
         List<Visitable> list = new ArrayList<>(productViewModel.getProductList());
         int j = 0;
         for (int i = 0; i < productViewModel.getTotalItem(); i++) {
@@ -501,6 +533,11 @@ final class ProductListPresenter
                     item.setCategoryID(topAds.getProduct().getCategory().getId());
                     item.setCategoryBreadcrumb(topAds.getProduct().getCategoryBreadcrumb());
                     item.setProductUrl(topAds.getProduct().getUri());
+
+                    if (shopRatingABTestStrategy != null) {
+                        shopRatingABTestStrategy.processShopRatingVariant(topAds, item);
+                    }
+
                     list.add(i, item);
                     j++;
                     topAdsCount++;
@@ -729,7 +766,9 @@ final class ProductListPresenter
 
         int lastProductItemPositionFromCache = getView().getLastProductItemPositionFromCache();
 
-        ProductViewModel productViewModel = new ProductViewModelMapper().convertToProductViewModel(lastProductItemPositionFromCache, searchProductModel, useRatingString);
+        ProductViewModelMapper mapper = new ProductViewModelMapper(shopRatingABTestStrategy);
+        ProductViewModel productViewModel = mapper
+                .convertToProductViewModel(lastProductItemPositionFromCache, searchProductModel, useRatingString);
 
         saveLastProductItemPositionToCache(lastProductItemPositionFromCache, productViewModel.getProductList());
 
@@ -900,7 +939,7 @@ final class ProductListPresenter
         }
 
         topAdsCount = 1;
-        productList = convertToListOfVisitable(productViewModel);
+        productList = createProductItemVisitableList(productViewModel);
         list.addAll(productList);
 
         if (!textIsEmpty(productViewModel.getAdditionalParams())) {
@@ -1045,7 +1084,10 @@ final class ProductListPresenter
     }
 
     private void processBroadMatchAtBottom(@NotNull SearchProductModel.SearchProduct searchProduct, List<Visitable> list) {
-        if (isLastPage(searchProduct)) addBroadMatchToVisitableList(list);
+        if (isLastPage(searchProduct)) {
+            list.add(new SeparatorViewModel());
+            addBroadMatchToVisitableList(list);
+        }
     }
 
     private boolean isLastPage(@NotNull SearchProductModel.SearchProduct searchProduct) {
@@ -1056,7 +1098,9 @@ final class ProductListPresenter
 
     private void processBroadMatchAtTop(List<Visitable> list) {
         List<Visitable> broadMatchVisitableList = new ArrayList<>();
+
         addBroadMatchToVisitableList(broadMatchVisitableList);
+        broadMatchVisitableList.add(new SeparatorViewModel());
 
         list.addAll(list.indexOf(productList.get(0)), broadMatchVisitableList);
     }
@@ -1065,7 +1109,10 @@ final class ProductListPresenter
         if (productList.size() < broadMatchPosition) return;
 
         List<Visitable> broadMatchVisitableList = new ArrayList<>();
+
+        broadMatchVisitableList.add(new SeparatorViewModel());
         addBroadMatchToVisitableList(broadMatchVisitableList);
+        broadMatchVisitableList.add(new SeparatorViewModel());
 
         Visitable productItemAtBroadMatchPosition = productList.get(broadMatchPosition - 1);
         int broadMatchIndex = list.indexOf(productItemAtBroadMatchPosition) + 1;
@@ -1115,7 +1162,7 @@ final class ProductListPresenter
         for (Filter filter : quickFilterData.getFilter()) {
             List<Option> options = filter.getOptions();
             quickFilterOptionList.addAll(options);
-            sortFilterItems.addAll(convertToSortFilterItem(options));
+            sortFilterItems.addAll(convertToSortFilterItem(filter.getTitle(), options));
         }
 
         if (sortFilterItems.size() > 0) {
@@ -1124,16 +1171,16 @@ final class ProductListPresenter
         }
     }
 
-    private List<SortFilterItem> convertToSortFilterItem(List<Option> options) {
+    private List<SortFilterItem> convertToSortFilterItem(String title, List<Option> options) {
         List<SortFilterItem> list = new ArrayList<>();
         for (Option option : options) {
-            list.add(createSortFilterItem(option));
+            list.add(createSortFilterItem(title, option));
         }
         return list;
     }
 
-    private SortFilterItem createSortFilterItem(Option option) {
-        SortFilterItem item = new SortFilterItem(option.getName(), () -> Unit.INSTANCE);
+    private SortFilterItem createSortFilterItem(String title, Option option) {
+        SortFilterItem item = new SortFilterItem(title, () -> Unit.INSTANCE);
 
         setSortFilterItemListener(item, option);
         setSortFilterItemState(item, option);
@@ -1201,12 +1248,20 @@ final class ProductListPresenter
     }
 
     private String createGeneralSearchTrackingEventLabel(ProductViewModel productViewModel, String query) {
+        String source = getTopNavSource(productViewModel.getGlobalNavViewModel());
         return String.format(
                 SearchEventTracking.Label.KEYWORD_TREATMENT_RESPONSE,
                 query,
                 productViewModel.getKeywordProcess(),
-                productViewModel.getResponseCode()
+                productViewModel.getResponseCode(),
+                source
         );
+    }
+
+    private String getTopNavSource(GlobalNavViewModel globalNavViewModel) {
+        if (globalNavViewModel == null) return "none";
+        if (globalNavViewModel.getSource().isEmpty()) return "other";
+        return globalNavViewModel.getSource();
     }
 
     private String createGeneralSearchTrackingRelatedKeyword(ProductViewModel productViewModel) {
@@ -1630,6 +1685,38 @@ final class ProductListPresenter
 
     private void handleGetDynamicFilterFailed() {
         getViewToSetDynamicFilterModel(SearchFilterUtilsKt.createSearchProductDefaultFilter());
+    }
+
+    @Override
+    public void onBroadMatchItemImpressed(@NotNull BroadMatchItemViewModel broadMatchItemViewModel) {
+        if (getView() == null || !broadMatchItemViewModel.isOrganicAds()) return;
+
+        topAdsUrlHitter.hitImpressionUrl(
+                getView().getClassName(),
+                broadMatchItemViewModel.getTopAdsViewUrl(),
+                broadMatchItemViewModel.getId(),
+                broadMatchItemViewModel.getName(),
+                broadMatchItemViewModel.getImageUrl(),
+                SearchConstant.TopAdsComponent.BROAD_MATCH_ADS
+        );
+    }
+
+    @Override
+    public void onBroadMatchItemClick(@NotNull BroadMatchItemViewModel broadMatchItemViewModel) {
+        if (getView() == null) return;
+
+        getView().trackEventClickBroadMatchItem(broadMatchItemViewModel);
+        getView().redirectionStartActivity(broadMatchItemViewModel.getApplink(), broadMatchItemViewModel.getUrl());
+
+        if (broadMatchItemViewModel.isOrganicAds())
+            topAdsUrlHitter.hitClickUrl(
+                    getView().getClassName(),
+                    broadMatchItemViewModel.getTopAdsClickUrl(),
+                    broadMatchItemViewModel.getId(),
+                    broadMatchItemViewModel.getName(),
+                    broadMatchItemViewModel.getImageUrl(),
+                    SearchConstant.TopAdsComponent.BROAD_MATCH_ADS
+            );
     }
 
     @Override

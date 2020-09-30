@@ -6,7 +6,8 @@ object SellerFeatureAdsPromoStaticDataProvider : StaticDataProvider {
     override fun getData(): List<SellerFeatureUiModel> {
         return listOf(
                 SellerFeatureUiModel.VoucherCashbackFeatureUiModel(),
-                SellerFeatureUiModel.TopAdsFeatureUiModel()
+                SellerFeatureUiModel.TopAdsFeatureUiModel(),
+                SellerFeatureUiModel.BroadcastChatUiModel()
         )
     }
 }

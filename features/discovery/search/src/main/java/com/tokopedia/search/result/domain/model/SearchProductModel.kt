@@ -210,8 +210,14 @@ data class SearchProductModel(
 
             @SerializedName("freeOngkir")
             @Expose
-            val freeOngkir: OtherRelatedProductFreeOngkir = OtherRelatedProductFreeOngkir()
-    )
+            val freeOngkir: OtherRelatedProductFreeOngkir = OtherRelatedProductFreeOngkir(),
+
+            @SerializedName("ads")
+            @Expose
+            val ads: ProductAds = ProductAds()
+    ) {
+            fun isOrganicAds(): Boolean = ads.id.isNotEmpty()
+    }
 
     data class OtherRelatedProductShop(
             @SerializedName("city")
@@ -354,6 +360,10 @@ data class SearchProductModel(
             @Expose
             val isWishlist: Boolean = false,
 
+            @SerializedName("count_sold")
+            @Expose
+            val countSold: String = "",
+
             @SerializedName("minOrder")
             @Expose
             val minOrder: Int = 1,
@@ -396,6 +406,10 @@ data class SearchProductModel(
             @SerializedName("city")
             @Expose
             val city: String = "",
+
+            @SerializedName("rating_average")
+            @Expose
+            val ratingAverage: String = "",
 
             @SerializedName("isOfficial")
             @Expose

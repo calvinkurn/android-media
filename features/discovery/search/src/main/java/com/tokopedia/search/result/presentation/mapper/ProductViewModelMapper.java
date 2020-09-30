@@ -1,5 +1,7 @@
 package com.tokopedia.search.result.presentation.mapper;
 
+import androidx.annotation.Nullable;
+
 import com.tokopedia.search.result.domain.model.SearchProductModel;
 import com.tokopedia.search.result.presentation.model.BadgeItemViewModel;
 import com.tokopedia.search.result.presentation.model.BroadMatchItemViewModel;
@@ -15,11 +17,18 @@ import com.tokopedia.search.result.presentation.model.ProductViewModel;
 import com.tokopedia.search.result.presentation.model.RelatedViewModel;
 import com.tokopedia.search.result.presentation.model.SuggestionViewModel;
 import com.tokopedia.search.result.presentation.model.TickerViewModel;
+import com.tokopedia.search.result.presentation.ShopRatingABTestStrategy;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ProductViewModelMapper {
+
+    @Nullable private final ShopRatingABTestStrategy shopRatingABTestStrategy;
+
+    public ProductViewModelMapper(@Nullable ShopRatingABTestStrategy shopRatingABTestStrategy) {
+        this.shopRatingABTestStrategy = shopRatingABTestStrategy;
+    }
 
     public ProductViewModel convertToProductViewModel(int lastProductItemPositionFromCache, SearchProductModel searchProductModel, boolean useRatingString) {
         SearchProductModel.SearchProduct aceSearchProduct = searchProductModel.getSearchProduct();
@@ -147,7 +156,11 @@ public class ProductViewModelMapper {
                 convertOtherRelatedProductFreeOngkirToFreeOngkirViewModel(otherRelatedProduct.getFreeOngkir()),
                 otherRelatedProduct.isWishlisted(),
                 position,
-                alternativeKeyword
+                alternativeKeyword,
+                otherRelatedProduct.isOrganicAds(),
+                otherRelatedProduct.getAds().getProductViewUrl(),
+                otherRelatedProduct.getAds().getProductClickUrl(),
+                otherRelatedProduct.getAds().getProductWishlistUrl()
         );
     }
 
@@ -228,6 +241,11 @@ public class ProductViewModelMapper {
         productItem.setTopadsWishlistUrl(productModel.getAds().getProductWishlistUrl());
         productItem.setMinOrder(productModel.getMinOrder());
         productItem.setProductUrl(productModel.getUrl());
+
+        if (shopRatingABTestStrategy != null) {
+            shopRatingABTestStrategy.processShopRatingVariant(productModel, productItem);
+        }
+
         return productItem;
     }
 

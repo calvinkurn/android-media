@@ -420,9 +420,9 @@ class PlayBroadcastAnalytic(private val userSession: UserSessionInterface) {
      * View Error Message (:Param) on Preparation Page
      */
     fun viewErrorOnFinalSetupPage(errorMessage: String) {
-        viewGeneralEvent(
+        viewCustomGeneralEvent(
                 action = "error state on preparation page",
-                label = " - $errorMessage"
+                label = "- $errorMessage"
         )
     }
 

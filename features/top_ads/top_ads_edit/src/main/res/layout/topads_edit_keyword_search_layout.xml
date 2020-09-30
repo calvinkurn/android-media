@@ -19,18 +19,42 @@
         android:id="@+id/txtError"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginStart="@dimen/dp_12"
         android:textColor="@color/topads_common_red"
         app:layout_constraintTop_toBottomOf="@id/header_toolbar"
         app:typographyType="body_3"
         tools:text="lalala" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/manualAd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_12"
+        android:layout_marginTop="@dimen/dp_8"
+        android:text="@string/topads_common_new_manual_key"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/txtError"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/dividerManual"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_2"
+        android:layout_marginTop="@dimen/dp_12"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/manualAd"
+        tools:visibility="visible" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/headlineList"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_16"
-        app:layout_constraintTop_toBottomOf="@id/txtError">
+        android:layout_marginEnd="@dimen/dp_16"
+        app:layout_constraintTop_toBottomOf="@id/dividerManual">
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/txtRecommendation"

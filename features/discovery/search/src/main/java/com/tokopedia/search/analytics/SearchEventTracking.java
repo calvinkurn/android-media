@@ -66,7 +66,6 @@ public interface SearchEventTracking {
         String IMPRESSION_INSPIRATION_CAROUSEL_INFO_PRODUCT = "impression - carousel banner";
         String CLICK_INSPIRATION_CAROUSEL_SEARCH = "click - inspiration carousel search";
         String CLICK_INSPIRATION_CAROUSEL_PRODUCT = "click - inspiration carousel product";
-        String CLICK_INSPIRATION_CAROUSEL_INFO_PRODUCT = "click - carousel banner";
         String CLICK = "click";
         String CLICK_FUZZY_KEYWORDS_SUGGESTION = "click - fuzzy keywords - suggestion";
         String IMPRESSION_BROAD_MATCH = "impression - broad match";
@@ -80,7 +79,7 @@ public interface SearchEventTracking {
         String KEYWORD_PRODUCT_ID = "Keyword: %s - product id: %s";
         String TOPADS = "topads";
         String GENERAL = "general";
-        String KEYWORD_TREATMENT_RESPONSE = "keyword: %s - treatment: %s - response: %s";
+        String KEYWORD_TREATMENT_RESPONSE = "keyword: %s - treatment: %s - response: %s - %s";
     }
 
     interface MOENGAGE {
@@ -101,6 +100,11 @@ public interface SearchEventTracking {
         String ACTION_FIELD = "actionField";
         String PRODUCTS = "products";
     }
+
+    String CURRENT_SITE = "currentSite";
+    String TOKOPEDIA_MARKETPLACE = "tokopediamarketplace";
+    String BUSINESS_UNIT = "businessUnit";
+    String SEARCH = "search";
 
     String NONE = "none";
 }

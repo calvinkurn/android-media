@@ -1,6 +1,7 @@
 package com.tokopedia.product.addedit.tracking
 
 import com.tokopedia.product.addedit.tracking.ProductAddEditTracking.sendEditProductClick
+import com.tokopedia.product.addedit.tracking.ProductAddEditTracking.sendEditProductImpression
 
 object ProductEditShippingTracking {
 
@@ -28,12 +29,16 @@ object ProductEditShippingTracking {
         })
     }
 
-    fun clickFinish(shopId: String, isSuccess: Boolean) {
-        sendEditProductClick(shopId, "click finish", if (isSuccess) {
-            "success"
+    fun uploadImageFailed(userId: String, errorName: String) {
+        sendEditProductImpression(userId, "impression add product error", "validation error - (Upload Image) $errorName")
+    }
+
+    fun clickFinish(shopId: String, isSuccess: Boolean, errorName: String = "", errorMessage: String = "") {
+        if (isSuccess) {
+            sendEditProductClick(shopId, "click finish success", "")
         } else {
-            "error"
-        })
+            sendEditProductClick(shopId, "click finish error", "$errorMessage - $errorName")
+        }
     }
 
 }
