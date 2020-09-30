@@ -7,10 +7,13 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.iris.util.*
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.FingerprintInterceptor
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigKey.IRIS_CUSTOM_USER_AGENT_ENABLE
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import okhttp3.OkHttpClient
+import okhttp3.Request
 import okhttp3.RequestBody
 import org.json.JSONObject
 import retrofit2.Retrofit
@@ -23,14 +26,19 @@ class ApiService(private val context: Context) {
 
     private val userSession: UserSessionInterface = UserSession(context)
     private var apiInterface: ApiInterface? = null
+    lateinit var firebaseRemoteConfigImpl: FirebaseRemoteConfigImpl
+
+    init {
+        firebaseRemoteConfigImpl = FirebaseRemoteConfigImpl(context)
+    }
 
     fun makeRetrofitService(): ApiInterface {
         if (apiInterface == null)
             apiInterface = Retrofit.Builder()
-                .baseUrl(TokopediaUrl.getInstance().HUB + VERSION)
-                .addConverterFactory(StringResponseConverter())
-                .client(createClient())
-                .build().create(ApiInterface::class.java)
+                    .baseUrl(TokopediaUrl.getInstance().HUB + VERSION)
+                    .addConverterFactory(StringResponseConverter())
+                    .client(createClient())
+                    .build().create(ApiInterface::class.java)
         return apiInterface!!
     }
 
@@ -45,7 +53,7 @@ class ApiService(private val context: Context) {
                         request.header(HEADER_USER_ID, userId)
                     }
                     request.header(HEADER_DEVICE, HEADER_ANDROID + GlobalConfig.VERSION_NAME)
-                    request.header(USER_AGENT, getUserAgent())
+                    addUserAgent(request)
                     request.method(original.method(), original.body())
                     val requestBuilder = request.build()
 
@@ -61,19 +69,26 @@ class ApiService(private val context: Context) {
         return builder.build()
     }
 
-    private fun addFringerInterceptor(builder:OkHttpClient.Builder){
+    private fun addUserAgent(request: Request.Builder) {
+        if (firebaseRemoteConfigImpl.getBoolean(IRIS_CUSTOM_USER_AGENT_ENABLE)) {
+            request.header(USER_AGENT, getUserAgent())
+        }
+    }
+
+    private fun addFringerInterceptor(builder: OkHttpClient.Builder) {
         builder.addInterceptor(FingerprintInterceptor(context.applicationContext as NetworkRouter, userSession))
     }
 
     companion object {
         private const val userAgentFormat = "TkpdConsumer/%s (%s;)"
-        fun parse(data: String) : RequestBody {
+        fun parse(data: String): RequestBody {
             val jsonObject = JSONObject(data).toString()
             return RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"),
                     jsonObject)
         }
-        fun getUserAgent():String {
-            return String.format(userAgentFormat, GlobalConfig.VERSION_NAME, "Android "+ Build.VERSION.RELEASE);
+
+        fun getUserAgent(): String {
+            return String.format(userAgentFormat, GlobalConfig.VERSION_NAME, "Android " + Build.VERSION.RELEASE);
         }
     }
 }
