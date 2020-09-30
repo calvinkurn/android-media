@@ -4,9 +4,6 @@ import android.app.Activity
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
-import android.graphics.BlendMode
-import android.graphics.BlendModeColorFilter
-import android.graphics.Color
 import android.graphics.Paint
 import android.os.Bundle
 import android.os.CountDownTimer
@@ -22,10 +19,6 @@ import androidx.core.app.ActivityCompat.invalidateOptionsMenu
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
-import androidx.transition.AutoTransition
-import androidx.transition.Transition
-import androidx.transition.TransitionManager
-import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
@@ -35,9 +28,6 @@ import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.setMargin
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.di.TokopointBundleComponent
 import com.tokopedia.tokopoints.view.cataloglisting.ValidateMessageDialog
@@ -53,15 +43,13 @@ import com.tokopedia.tokopoints.view.model.CatalogsValueEntity
 import com.tokopedia.tokopoints.view.sendgift.SendGiftFragment
 import com.tokopedia.tokopoints.view.util.*
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.webview.TkpdWebView
-import kotlinx.android.synthetic.main.tp_content_coupon_catalog.*
 import kotlinx.android.synthetic.main.tp_coupon_notfound_error.*
 import kotlinx.android.synthetic.main.tp_fragment_coupon_detail.*
-import kotlinx.android.synthetic.main.tp_toolbar.*
 import rx.Observable
 import rx.Subscriber
 import rx.Subscription
@@ -86,9 +74,6 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
     var textUserPoint: Typography? = null
     var code: String? = null
     var userPoints: String? = null
-    var mCouponCode: String? = null
-    var mCouponCta: String? = null
-    var mIsCouponSaved = false
 
     @Inject
     lateinit var factory: ViewModelFactory
@@ -153,20 +138,13 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
         addRedeemCouponObserver()
     }
 
-    private fun addRedeemCouponObserver() = mViewModel.onRedeemCouponLiveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+    private fun addRedeemCouponObserver() = mViewModel.onRedeemCouponLiveData.observe(this, androidx.lifecycle.Observer {
         it?.let { RouteManager.route(context, it) }
     })
 
-    private fun addStartSaveCouponObserver() = mViewModel.startSaveCouponLiveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+    private fun addStartSaveCouponObserver() = mViewModel.startSaveCouponLiveData.observe(this, androidx.lifecycle.Observer {
         when (it) {
-            is Success -> {
-                mCouponCode = it.data.code
-                mCouponCta = it.data.cta
-                mIsCouponSaved = true
-                // redeemCoupon(it.data.cta, it.data.code, it.data.title, it.data.description)
-                animateButton(mCouponCta, mCouponCode, mIsCouponSaved)
-
-            }
+            is Success -> redeemCoupon(it.data.cta, it.data.code, it.data.title, it.data.description)
             is ValidationError<*, *> -> {
                 if (it.data is ValidateMessageDialog) {
                     checkValidation(it.data.item, it.data.title, it.data.desc, it.data.messageCode)
@@ -175,54 +153,17 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
         }
     })
 
-    private fun animateButton(mCouponCta: String?, mCouponCode: String?, mIsCouponSaved: Boolean) {
-
-        if (mIsCouponSaved) {
-            progressbar_coupon.hide()
-            val autoTransition: Transition = AutoTransition()
-            autoTransition.duration = 1500
-            autoTransition.addListener(object : Transition.TransitionListener {
-                override fun onTransitionEnd(transition: Transition) {
-                    Toaster.toasterCustomBottomHeight = 150
-                    Toaster.make(catalog_bottom_section, "Kupon Berhasil Diklain", Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL)
-                }
-
-                override fun onTransitionResume(transition: Transition) {
-                }
-
-                override fun onTransitionPause(transition: Transition) {
-                }
-
-                override fun onTransitionCancel(transition: Transition) {
-                }
-
-                override fun onTransitionStart(transition: Transition) {
-                }
-            })
-
-            val lp = btnContainer?.layoutParams as ViewGroup.MarginLayoutParams
-            lp.width = ViewGroup.LayoutParams.MATCH_PARENT
-            btnContainer?.setMargin(convertDpToPixel(16, context!!), lp.topMargin, convertDpToPixel(16, context!!), lp.bottomMargin)
-            btnContainer.layoutParams = lp
-            button_action_2.text = "Pakai Coupon"
-            button_action_2?.background?.colorFilter = BlendModeColorFilter(Color.parseColor("#239229"), BlendMode.SRC_ATOP)
-            TransitionManager.beginDelayedTransition(catalog_bottom_section, autoTransition)
-            btnContainer?.requestLayout()
-            btnContainer?.invalidate()
-        }
-    }
-
-    private fun addLatestStatusObserver() = mViewModel.latestStatusLiveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+    private fun addLatestStatusObserver() = mViewModel.latestStatusLiveData.observe(this, androidx.lifecycle.Observer {
         it?.let { refreshCatalog(it) }
     })
 
-    private fun addValidationDialogObserver() = mViewModel.startValidateCouponLiveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+    private fun addValidationDialogObserver() = mViewModel.startValidateCouponLiveData.observe(this, androidx.lifecycle.Observer {
         it?.let {
             checkValidation(it.item, it.title, it.desc, it.messageCode)
         }
     })
 
-    private fun addSendGiftDialogObserver() = mViewModel.sendGiftPageLiveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+    private fun addSendGiftDialogObserver() = mViewModel.sendGiftPageLiveData.observe(this, androidx.lifecycle.Observer {
         when (it) {
             is Success -> gotoSendGiftPage(it.data.id, it.data.title, it.data.pointStr, it.data.banner)
             is ValidationError<*, *> -> {
@@ -232,7 +173,7 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
         }
     })
 
-    private fun addCatalogDetailObserver() = mViewModel.catalogDetailLiveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+    private fun addCatalogDetailObserver() = mViewModel.catalogDetailLiveData.observe(this, androidx.lifecycle.Observer {
         when (it) {
             is Loading -> showLoader()
             is ErrorMessage -> {
@@ -350,37 +291,37 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
     override fun redeemCoupon(cta: String, code: String, title: String, description: String) {
         //Call api to validate the coupon
 
-        /*      val btn1: UnifyButton
-              val btn2: UnifyButton
-              val titleDialog: TextView
-              val descDialog: Typography
-              val adb = AlertDialog.Builder(context!!)
-              val altTitle = "Kupon berhasil diklaim"
-              val altDescription = "Selamat! Kamu berhasil klaim kupon ini. Yuk pakai kuponnya supaya belanjamu lebih hemat."
-              val view = LayoutInflater.from(context).inflate(R.layout.tp_upcoming_feature_dialog, null)
-              adb.setView(view)
-              btn1 = view.findViewById(R.id.btn_route)
-              btn2 = view.findViewById(R.id.btn_route_kupon)
-              titleDialog = view.findViewById(R.id.tv_dialogTitle)
-              descDialog = view.findViewById(R.id.tv_dialogDesc)
-              titleDialog.text = altTitle
-              descDialog.text = altDescription
-              val alertDialog = adb.create()
-              alertDialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
-              alertDialog.setCancelable(true)
-              alertDialog.setCanceledOnTouchOutside(true)
-              btn1.setOnClickListener { v: View? ->*/
-        mViewModel.redeemCoupon(code, cta)
-        /*      alertDialog.dismiss()
-          }
-          btn2.setOnClickListener {
-              startActivity(getCallingIntent(activityContext))
-              alertDialog.dismiss()
-          }
-          alertDialog.show()*/
+        val btn1: UnifyButton
+        val btn2: UnifyButton
+        val titleDialog: TextView
+        val descDialog: Typography
+        val adb = AlertDialog.Builder(context!!)
+        val altTitle = "Kupon berhasil diklaim"
+        val altDescription = "Selamat! Kamu berhasil klaim kupon ini. Yuk pakai kuponnya supaya belanjamu lebih hemat."
+        val view = LayoutInflater.from(context).inflate(R.layout.tp_upcoming_feature_dialog, null)
+        adb.setView(view)
+        btn1 = view.findViewById(R.id.btn_route)
+        btn2 = view.findViewById(R.id.btn_route_kupon)
+        titleDialog = view.findViewById(R.id.tv_dialogTitle)
+        descDialog = view.findViewById(R.id.tv_dialogDesc)
+        titleDialog.text = altTitle
+        descDialog.text = altDescription
+        val alertDialog = adb.create()
+        alertDialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+        alertDialog.setCancelable(true)
+        alertDialog.setCanceledOnTouchOutside(true)
+        btn1.setOnClickListener { v: View? ->
+            mViewModel.redeemCoupon(code, cta)
+            alertDialog.dismiss()
+        }
+        btn2.setOnClickListener {
+            startActivity(getCallingIntent(activityContext))
+            alertDialog.dismiss()
+        }
+        alertDialog.show()
     }
 
-    private fun showErrorDialog(item: CatalogsValueEntity, title: String, message: String, resCode: Int) {
+    private fun showErrorDialog(item: CatalogsValueEntity, title: String, message: String, resCode: Int){
         val adb = AlertDialog.Builder(activityContext)
         val labelPositive: String
         var labelNegative: String? = null
@@ -453,24 +394,16 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
     }
 
     override fun checkValidation(item: CatalogsValueEntity, title: String, message: String, resCode: Int) {
-        if (resCode == CommonConstant.CouponRedemptionCode.SUCCESS) {
-            mViewModel.startSaveCoupon(item)
-            AnalyticsTrackerUtil.sendEvent(context,
-                    AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
-                    AnalyticsTrackerUtil.CategoryKeys.POPUP_KONFIRMASI,
-                    AnalyticsTrackerUtil.ActionKeys.CLICK_TUKAR,
-                    title)
-        } else {
-            progressbar_coupon.hide()
-            button_action_2.text="Quota Over"
-            button_action_2.setTextColor(ContextCompat.getColor(button_action_2.context, com.tokopedia.abstraction.R.color.black_12))
-            if (resCode == 42020) {
-                showErrorDialog(item, title, message, resCode)
-            } else {
-                Toaster.toasterCustomBottomHeight = 150
-                Toaster.make(catalog_bottom_section, message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
-            }
-        }
+       if (resCode == CommonConstant.CouponRedemptionCode.SUCCESS){
+           mViewModel.startSaveCoupon(item)
+           AnalyticsTrackerUtil.sendEvent(context,
+                   AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
+                   AnalyticsTrackerUtil.CategoryKeys.POPUP_KONFIRMASI,
+                   AnalyticsTrackerUtil.ActionKeys.CLICK_TUKAR,
+                   title)
+       } else {
+           showErrorDialog(item,title,message,resCode)
+       }
     }
 
     override fun onRealCodeReFresh(realCode: String) {
@@ -670,24 +603,19 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
             giftSectionMainLayout.visibility = View.GONE
             bottomSeparator.visibility = View.GONE
         }
-        var state = 0
         btnAction2.setOnClickListener { v: View? ->
-            if (state == 0) {
-                pointValue.hide()
+            //call validate api the show dialog
+            if (mUserSession!!.isLoggedIn) {
                 mViewModel.startValidateCoupon(data)
-                progressbar_coupon.show()
-                AnalyticsTrackerUtil.sendEvent(context,
-                        AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
-                        AnalyticsTrackerUtil.CategoryKeys.PENUKARAN_POINT_DETAIL,
-                        AnalyticsTrackerUtil.ActionKeys.CLICK_TUKAR,
-                        mCouponName)
-                state = 1
             } else {
-                val applinkCoupon = "tokopedia://rewards/kupon-saya/detail/"
-                RouteManager.route(this.context, applinkCoupon + mCouponCode)
+                startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN), REQUEST_CODE_LOGIN)
             }
+            AnalyticsTrackerUtil.sendEvent(context,
+                    AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
+                    AnalyticsTrackerUtil.CategoryKeys.PENUKARAN_POINT_DETAIL,
+                    AnalyticsTrackerUtil.ActionKeys.CLICK_TUKAR,
+                    mCouponName)
         }
-
         pointValueText = view!!.findViewById(R.id.text_point_value_label)
         if (!mUserSession!!.isLoggedIn) {
             pointValueText!!.setText("Masuk untuk tukar Points")

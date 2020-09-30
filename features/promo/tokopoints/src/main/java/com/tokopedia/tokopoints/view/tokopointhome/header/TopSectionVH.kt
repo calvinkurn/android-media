@@ -80,57 +80,45 @@ class TopSectionVH(itemView: View, val cardRuntimeHeightListener: CardRuntimeHei
     fun renderDynamicActionList(dataList: List<DynamicActionListItem?>?) {
 
         if (dataList != null && dataList.isNotEmpty()) {
-            dynamicAction?.setFirstLayoutVisibility(View.VISIBLE)
-            dataList[0]?.cta?.text?.let { dynamicAction?.setFirstLayoutText(it) }
-            dataList[0]?.iconImageURL?.let { dynamicAction?.setFirstLayoutIcon(it) }
-            if (dataList[0]?.counter?.isShowCounter!! && dataList[0]?.counter?.counterStr != "0") {
-                dataList[0]?.counter?.counterStr?.let { dynamicAction?.setFirstLayoutNotification(it) }
-            } else {
-                dynamicAction?.notifFirstLayout?.hide()
-                dataList[0]?.counter?.isShowCounter = false
-            }
-            dynamicAction?.findViewById<LinearLayout>(R.id.holder_tokopoint)?.setOnClickListener {
-                dataList[0]?.cta?.let {
-                    hideNotification(0, dataList[0])
-                    dynamicAction?.setLayoutClickListener(it.appLink, it.text)
-                }
-            }
-
-            if (dataList.size > 1) {
-                dynamicAction?.setCenterLayoutVisibility(View.VISIBLE)
-                dataList[1]?.cta?.text?.let { dynamicAction?.setCenterLayoutText(it) }
-                dataList[1]?.iconImageURL?.let { dynamicAction?.setCenterLayoutIcon(it) }
-                if (dataList[1]?.counter?.isShowCounter!! && dataList[1]?.counter?.counterStr != "0") {
-                    dataList[1]?.counter?.counterStr?.let { dynamicAction?.setCenterLayoutNotification(it) }
+            for (i in dataList.indices) {
+                dynamicAction?.setLayoutVisibility(View.VISIBLE, i)
+                dataList[i]?.cta?.text?.let { dynamicAction?.setLayoutText(it, i) }
+                dataList[i]?.cta?.text?.let { dynamicAction?.setLayoutText(it, i) }
+                dataList[i]?.iconImageURL?.let { dynamicAction?.setLayoutIcon(it, i) }
+                if (dataList[i]?.counter?.isShowCounter!! && dataList[i]?.counter?.counterStr != "0") {
+                    dataList[i]?.counter?.counterStr?.let { dynamicAction?.setLayoutNotification(it, i) }
                 } else {
-                    dynamicAction?.notifCenterLayout?.hide()
-                    dataList[1]?.counter?.isShowCounter = false
+                    dynamicAction?.hideNotification(i)
+                    dataList[i]?.counter?.isShowCounter = false
+                }
+
+                if (dataList[i]?.counter?.isShowCounter!! && dataList[i]?.counter?.counterStr != "0") {
+                    dataList[i]?.counter?.counterStr?.let { dynamicAction?.setLayoutNotification(it, i) }
+                } else {
+                    dynamicAction?.hideNotification(i)
+                    dataList[i]?.counter?.isShowCounter = false
+                }
+
+                dynamicAction?.findViewById<LinearLayout>(R.id.holder_tokopoint)?.setOnClickListener {
+                    dataList[0]?.cta?.let {
+                        hideNotification(0, dataList[0])
+                        dynamicAction?.setLayoutClicklistener(it.appLink, it.text, 0)
+                    }
                 }
                 dynamicAction?.findViewById<LinearLayout>(R.id.holder_coupon)?.setOnClickListener {
                     dataList[1]?.cta?.let {
-                        hideNotification(1,dataList[1])
-                        dynamicAction?.setCenterLayoutClickListener(it.appLink, it.text)
+                        hideNotification(1, dataList[1])
+                        dynamicAction?.setLayoutClicklistener(it.appLink, it.text, 1)
                     }
-                }
-                dynamicAction?.setVisibilityDividerOne(View.VISIBLE)
-            }
-            if (dataList.size > 2) {
-                dynamicAction?.setRightLayoutVisibility(View.VISIBLE)
-                dataList[2]?.cta?.text?.let { dynamicAction?.setRightLayoutText(it) }
-                dataList[2]?.iconImageURL?.let { dynamicAction?.setRightLayoutIcon(it) }
-                if (dataList[2]?.counter?.isShowCounter!! && dataList[2]?.counter?.counterStr != "0") {
-                    dataList[2]?.counter?.counterStr?.let { dynamicAction?.setRightLayoutNotification(it) }
-                } else {
-                    dynamicAction?.notifRightLayout?.hide()
-                    dataList[2]?.counter?.isShowCounter = false
                 }
                 dynamicAction?.findViewById<LinearLayout>(R.id.holder_tokomember)?.setOnClickListener {
                     dataList[2]?.cta?.let {
-                        hideNotification(2,dataList[2])
-                        dynamicAction?.setRightLayoutClickListener(it.appLink, it.text)
+                        hideNotification(2, dataList[2])
+                        dynamicAction?.setLayoutClicklistener(it.appLink, it.text, 2)
                     }
                 }
-                dynamicAction?.setVisibilityDividerTwo(View.VISIBLE)
+
+                dynamicAction?.setVisibilityDivider(View.VISIBLE, i)
             }
         }
     }

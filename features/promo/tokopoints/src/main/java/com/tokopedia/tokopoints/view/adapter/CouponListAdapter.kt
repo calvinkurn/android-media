@@ -87,7 +87,7 @@ class CouponListAdapter(private val mItems: MutableList<CouponValueEntity>) : Re
     override fun onBindViewHolder(pHolder: RecyclerView.ViewHolder, position: Int) {
 
         if (position > 0) {
-            val item = mItems!![position - 1]
+            val item = mItems[position - 1]
             if (pHolder is ViewHolder) {
                 val holder = pHolder
                 ImageHandler.loadImageFitCenter(holder.imgBanner.context, holder.imgBanner,
@@ -230,6 +230,7 @@ class CouponListAdapter(private val mItems: MutableList<CouponValueEntity>) : Re
     override fun getItemId(position: Int): Long {
         return position.toLong()
     }
+
     companion object {
         private const val VIEW_HEADER = 0
         private const val VIEW_DATA = 1

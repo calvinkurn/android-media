@@ -57,27 +57,63 @@ class DynamicItemActionView @JvmOverloads constructor(
         addView(view)
     }
 
-    fun setFirstLayoutText(title: String) {
-        tvFirstLayout.text = title
+    fun setLayoutText(title: String, position: Int) {
+        when (position) {
+            0 -> tvFirstLayout.text = title
+            1 -> tvCenterLayout.text = title
+            else -> tvRightLayout.text = title
+        }
     }
 
-    fun setFirstLayoutIcon(imgUrl: String) {
-        ivFirstLayout.loadImage(imgUrl)
+    fun setLayoutIcon(imgUrl: String, position: Int) {
+        when (position) {
+            0 -> ivFirstLayout.loadImage(imgUrl)
+            1 -> ivCenterLayout.loadImage(imgUrl)
+            else -> ivRightLayout.loadImage(imgUrl)
+        }
     }
 
-    fun setFirstLayoutNotification(notif: String) {
-        notifFirstLayout.show()
-        notifFirstLayout.setNotification(notif, NotificationUnify.TEXT_TYPE, NotificationUnify.COLOR_PRIMARY)
+    fun setLayoutVisibility(visibility: Int, position: Int) {
+        when (position) {
+            0 -> holderFirstLayout.visibility = visibility
+            1 -> holderCenterLayout.visibility = visibility
+            else -> holderRightLayout.visibility = visibility
+        }
     }
 
-    fun setFirstLayoutVisibility(visibility: Int) {
-        holderFirstLayout.visibility = visibility
+    fun setLayoutNotification(notif: String, position: Int) {
+        when (position) {
+            0 -> {
+                notifFirstLayout.show()
+                notifFirstLayout.setNotification(notif, NotificationUnify.NONE_TYPE, NotificationUnify.COLOR_PRIMARY)
+            }
+            1 -> {
+                notifCenterLayout.show()
+                notifCenterLayout.setNotification(notif, NotificationUnify.NONE_TYPE, NotificationUnify.COLOR_PRIMARY)
+            }
+            else -> {
+                notifRightLayout.show()
+                notifRightLayout.setNotification(notif, NotificationUnify.NONE_TYPE, NotificationUnify.COLOR_PRIMARY)
+            }
+        }
     }
 
-    fun setLayoutClickListener(applink: String?, text: String?) {
+    fun hideNotification(position: Int) {
+        when (position) {
+            0 -> notifFirstLayout.hide()
+            1 -> notifCenterLayout.hide()
+            else -> notifRightLayout.hide()
+        }
+    }
+
+    fun setLayoutClicklistener(applink: String?, text: String?, position: Int) {
+        when (position) {
+            0 -> notifFirstLayout.hide()
+            1 -> notifCenterLayout.hide()
+            else ->
+                notifRightLayout.hide()
+        }
         RouteManager.route(context, applink)
-        notifFirstLayout.hide()
-
         text?.let {
             AnalyticsTrackerUtil.sendEvent(context,
                     AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
@@ -87,72 +123,11 @@ class DynamicItemActionView @JvmOverloads constructor(
         }
     }
 
-    fun setCenterLayoutText(title: String) {
-        tvCenterLayout.text = title
-    }
-
-    fun setCenterLayoutIcon(imgUrl: String) {
-        ivCenterLayout.loadImage(imgUrl)
-    }
-
-    fun setCenterLayoutNotification(notif: String) {
-        notifCenterLayout.show()
-        notifCenterLayout.setNotification(notif, NotificationUnify.TEXT_TYPE, NotificationUnify.COLOR_PRIMARY)
-
-    }
-
-    fun setCenterLayoutVisibility(visibility: Int) {
-        holderCenterLayout.visibility = visibility
-    }
-
-    fun setCenterLayoutClickListener(applink: String?, text: String?) {
-        RouteManager.route(context, applink)
-        notifCenterLayout.hide()
-        text?.let {
-            AnalyticsTrackerUtil.sendEvent(context,
-                    AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
-                    AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
-                    AnalyticsTrackerUtil.ActionKeys.KEY_EVENT_CLICK_DYNAMICITEM,
-                    text)
+    fun setVisibilityDivider(visibility: Int, position: Int) {
+        when (position) {
+            1 -> dividerOne.visibility = visibility
+            else -> dividerTwo.visibility = visibility
         }
-    }
-
-    fun setRightLayoutText(title: String) {
-        tvRightLayout.text = title
-    }
-
-    fun setRightLayoutIcon(imgUrl: String) {
-        ivRightLayout.loadImage(imgUrl)
-    }
-
-    fun setRightLayoutNotification(notif: String) {
-        notifRightLayout.show()
-        notifRightLayout.setNotification(notif, NotificationUnify.TEXT_TYPE, NotificationUnify.COLOR_PRIMARY)
-
-    }
-
-    fun setRightLayoutVisibility(visibility: Int) {
-        holderRightLayout.visibility = visibility
-    }
-
-    fun setRightLayoutClickListener(applink: String?, text: String?) {
-        RouteManager.route(context, applink)
-        notifRightLayout.hide()
-        text?.let {
-            AnalyticsTrackerUtil.sendEvent(context,
-                    AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
-                    AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
-                    AnalyticsTrackerUtil.ActionKeys.KEY_EVENT_CLICK_DYNAMICITEM,
-                    text)
-        }
-    }
-
-    fun setVisibilityDividerOne(visibility: Int) {
-        dividerOne.visibility = visibility
-    }
-
-    fun setVisibilityDividerTwo(visibility: Int) {
-        dividerTwo.visibility = visibility
     }
 
 }

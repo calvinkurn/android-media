@@ -200,7 +200,6 @@ public class CatalogListCarouselAdapter extends RecyclerView.Adapter<CatalogList
         });
 
         holder.btnContinue.setVisibility(item.isShowTukarButton() ? View.VISIBLE : View.GONE);
-        //  setUpHeig{"status":{"error_code":0,"message":"OK"},"header":{"total_data":0,"process_time":0.002513375,"meta":{"ab_test":"N","display":"banner"},"pagination":{"kind":"scroll","next_page_token":"8a-pyR-5QchwPsJi6SDiQcVpPVYaQRri6sCYwe"}},"data":[]}ht(item);
     }
 
     @Override

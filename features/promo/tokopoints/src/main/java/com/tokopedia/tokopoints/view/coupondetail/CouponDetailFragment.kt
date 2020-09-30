@@ -57,16 +57,10 @@ import com.tokopedia.tokopoints.view.util.CommonConstant.COUPON_MIME_TYPE
 import com.tokopedia.tokopoints.view.util.CommonConstant.UTF_ENCODING
 import com.tokopedia.tokopoints.view.validatePin.ValidateMerchantPinFragment
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
-import kotlinx.android.synthetic.main.tp_content_coupon_catalog.*
 import kotlinx.android.synthetic.main.tp_content_coupon_detail.*
-import kotlinx.android.synthetic.main.tp_content_coupon_detail.how_to_use_content
-import kotlinx.android.synthetic.main.tp_content_coupon_detail.how_to_use_see_more
-import kotlinx.android.synthetic.main.tp_content_coupon_detail.tnc_content
-import kotlinx.android.synthetic.main.tp_content_coupon_detail.tnc_see_more
 import kotlinx.android.synthetic.main.tp_coupon_notfound_error.*
 import kotlinx.android.synthetic.main.tp_fragment_coupon_detail.*
 import kotlinx.android.synthetic.main.tp_layout_coupon_detail_button.*
@@ -147,12 +141,7 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
         it?.let {
             when (it) {
                 is ErrorMessage -> RouteManager.route(context, it.data)
-                is Success -> {
-                    RouteManager.route(context, it.data)
-                    Handler().postDelayed({
-                        appContext?.let { it1 -> CustomToast.show(it1,"Test",2000) }
-                    }, 2000)
-                }
+                is Success -> RouteManager.route(context, it.data)
             }
             return@let
         }
