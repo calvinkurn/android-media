@@ -34,10 +34,10 @@ class ApiService(private val context: Context) {
     fun makeRetrofitService(): ApiInterface {
         if (apiInterface == null)
             apiInterface = Retrofit.Builder()
-                    .baseUrl(TokopediaUrl.getInstance().HUB + VERSION)
-                    .addConverterFactory(StringResponseConverter())
-                    .client(createClient())
-                    .build().create(ApiInterface::class.java)
+                .baseUrl(TokopediaUrl.getInstance().HUB + VERSION)
+                .addConverterFactory(StringResponseConverter())
+                .client(createClient())
+                .build().create(ApiInterface::class.java)
         return apiInterface!!
     }
 
@@ -88,7 +88,7 @@ class ApiService(private val context: Context) {
         }
 
         fun getUserAgent(): String {
-            return String.format(userAgentFormat, GlobalConfig.VERSION_NAME, "Android " + Build.VERSION.RELEASE);
+            return String.format(USER_AGENT_FORMAT, GlobalConfig.VERSION_NAME, "Android " + Build.VERSION.RELEASE);
         }
     }
 }
