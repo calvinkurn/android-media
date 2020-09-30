@@ -118,6 +118,7 @@ class BroadcastViewHolder constructor(
         if (voucher != null) {
             voucherView?.show()
             TopChatVoucherViewHolderBinder.bindVoucherView(voucher, voucherView, voucherListener)
+            TopChatVoucherViewHolderBinder.bindClick(voucher, voucherView, voucherListener)
         } else {
             voucherView?.gone()
         }

@@ -56,16 +56,9 @@ class TopChatVoucherViewHolder constructor(
     override fun bind(element: TopChatVoucherUiModel) {
         super.bind(element)
         TopChatVoucherViewHolderBinder.bindVoucherView(element, merchantVoucherView, voucherListener)
+        TopChatVoucherViewHolderBinder.bindClick(element, merchantVoucherView, voucherListener)
         bindChatBubbleAlignment(element)
-        bindClick(element)
         bindBackground(element)
-    }
-
-    private fun bindClick(element: TopChatVoucherUiModel) {
-        itemView.setOnClickListener {
-            element.voucher.isPublic = !element.hasCtaCopy()
-            voucherListener.onVoucherClicked(element.voucher)
-        }
     }
 
     private fun bindBackground(element: TopChatVoucherUiModel) {

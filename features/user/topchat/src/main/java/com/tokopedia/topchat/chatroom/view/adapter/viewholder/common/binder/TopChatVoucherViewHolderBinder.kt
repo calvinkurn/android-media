@@ -27,4 +27,15 @@ object TopChatVoucherViewHolderBinder {
         merchantVoucherView?.setData(element.voucher, false)
     }
 
+    fun bindClick(
+            element: TopChatVoucherUiModel,
+            merchantVoucherView: MerchantVoucherView?,
+            voucherListener: TopChatVoucherListener
+    ) {
+        merchantVoucherView?.setOnClickListener {
+            element.voucher.isPublic = !element.hasCtaCopy()
+            voucherListener.onVoucherClicked(element.voucher)
+        }
+    }
+
 }
