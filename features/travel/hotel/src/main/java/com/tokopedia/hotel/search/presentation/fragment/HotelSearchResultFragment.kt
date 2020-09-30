@@ -238,7 +238,7 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
         for ((index, item) in quick_filter_sort_filter.chipItems.withIndex()) {
             item.refChipUnify.setOnClickListener {
                 item.toggleSelected()
-                trackingHotelUtil.clickOnQuickFilter(context, SEARCH_SCREEN_NAME, item.title.toString(), index)
+                trackingHotelUtil.clickOnQuickFilter(context, SEARCH_SCREEN_NAME, item.title.toString(), index, isShowAdvancedFilter())
                 bottom_action_view.visibility = View.GONE
                 searchResultviewModel.addFilter(quickFilters, quick_filter_sort_filter.chipItems)
             }
@@ -250,7 +250,9 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
             bottom_action_view.hide()
 
             quick_filter_sort_filter.filterType = SortFilter.TYPE_ADVANCED
-            quick_filter_sort_filter.parentListener = { initiateAdvancedFilter(filters.toMutableList(), sort) }
+            quick_filter_sort_filter.parentListener = {
+                trackingHotelUtil.clickOnAdvancedFilter(context, SEARCH_SCREEN_NAME)
+                initiateAdvancedFilter(filters.toMutableList(), sort) }
         } else quick_filter_sort_filter.parentListener = { }
 
         quick_filter_sort_filter.show()
