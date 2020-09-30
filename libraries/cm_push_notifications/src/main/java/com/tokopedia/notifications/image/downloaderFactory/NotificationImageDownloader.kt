@@ -8,10 +8,7 @@ import com.tokopedia.notifications.model.BaseNotificationModel
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
-import java.util.concurrent.CancellationException
-import java.util.concurrent.ExecutionException
 import java.util.concurrent.TimeUnit
-import java.util.concurrent.TimeoutException
 
 const val PARENT_DIR = "CM_RESOURCE"
 const val PNG_QUALITY = 95
