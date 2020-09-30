@@ -1,5 +1,5 @@
 {
-  "readme": "Product Detail - click guide on the size chart",
+  "readme": "Product Detail - click button buy non login",
   "mode": "exact",
   "query": [
     {
@@ -26,13 +26,28 @@
       ]
     },
     {
-      "event": "clickPDP",
       "eventCategory": "product detail page",
-      "eventAction": "click - lihat panduan on size chart",
-      "eventLabel": "{{layout:.*;catName:.*;catId:\\d{1,}}};",
+      "eventAction": "click - choose product variant",
+      "event": "clickPDP",
       "productId": "{{\\d{1,}}}",
-      "layout": "{{layout:.*;catName:.*;catId:.*}};",
+      "sessionIris": "{{.*}}",
+      "eventLabel": "{{level : \\d{1,};variant_title : .*;variant_value: .*;variant : \\d{1,}}};",
+      "layout": "{{layout:.*;catName:.*;catId:\\d{1,}}};",
       "component": "{{comp:.*;temp:.*;elem:.*;cpos:\\d{1,}}};"
+    },
+    {
+      "eventAction": "click Beli on pdp - non login",
+      "eventCategory": "product detail page",
+      "event": "clickPDP",
+      "shopType": "{{.*}}",
+      "productId": "{{\\d{1,}}}",
+      "isLoggedInStatus": "{{true|false}}",
+      "sessionIris": "{{.*}}",
+      "shopId": "{{\\d{1,}}}",
+      "eventLabel": "{{.*}}",
+      "user_id": "{{.*}}",
+      "layout": "{{layout:.*;catName:.*;catId:\\d{1,}}};",
+      "component": "{{.*}}"
     }
   ]
 }
