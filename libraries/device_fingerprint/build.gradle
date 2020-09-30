@@ -29,6 +29,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.deviceInfo)
     implementation project(rootProject.ext.libraries.encryption)
     implementation project(rootProject.ext.libraries.graphql)
+    implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation (rootProject.ext.serviceDependencies.crashlytics) {
         transitive = true
     }
