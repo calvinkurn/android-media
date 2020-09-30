@@ -2,7 +2,6 @@
 <resources>
     <string name="host_seller" translatable="false">seller</string>
     <string name="host_buyer" translatable="false">buyer</string>
-    <string name="host_marketplace" translatable="false">marketplace</string>
     <string name="host_order" translatable="false">order</string>
     <string name="host_orderlist" translatable="false">orderlist</string>
     <string name="host_transaction_buyer" translatable="false">transaction</string>
