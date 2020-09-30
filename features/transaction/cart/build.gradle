@@ -85,13 +85,15 @@ dependencies {
     implementation project(rootProject.ext.features.seamlesslogin)
     implementation project(rootProject.ext.features.productCard)
 
+    implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk8
     testImplementation rootProject.ext.testDependencies.junitJupiterApi
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.spek2Api
     testImplementation rootProject.ext.testDependencies.spek2Dsl
     testImplementation rootProject.ext.supportLibDependencies.kotlinReflection
-    implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk8
 
+    implementation rootProject.ext.testDependencies.espressoIdlingResource
+    androidTestImplementation rootProject.ext.testDependencies.espressoIntents
     androidTestImplementation rootProject.ext.testDependencies.espressoCore
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib
     androidTestImplementation project(rootProject.ext.libraries.instrumentation_test)
