@@ -18,7 +18,6 @@ class TopchatImageAnnouncementViewHolder(
 
     private val attachment: ImageView? = itemView?.findViewById(R.id.image)
     private val container: LinearLayout? = itemView?.findViewById(R.id.ll_banner_container)
-    private val btnCheckNow: Button? = itemView?.findViewById(R.id.btn_check)
 
     override fun bind(viewModel: ImageAnnouncementViewModel) {
         super.bind(viewModel)
