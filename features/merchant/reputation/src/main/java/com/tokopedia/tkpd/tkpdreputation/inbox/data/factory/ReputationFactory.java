@@ -36,7 +36,6 @@ import com.tokopedia.tkpd.tkpdreputation.review.product.data.source.ReviewProduc
 import com.tokopedia.tkpd.tkpdreputation.review.product.data.source.ReviewProductGetHelpfulReviewCloud;
 import com.tokopedia.tkpd.tkpdreputation.review.product.data.source.ReviewProductGetListProductCloud;
 import com.tokopedia.tkpd.tkpdreputation.review.product.data.source.ReviewProductGetStarCountCloud;
-import com.tokopedia.tkpd.tkpdreputation.review.shop.data.source.ReviewShopGetListReviewCloud;
 import com.tokopedia.user.session.UserSessionInterface;
 
 /**
@@ -181,12 +180,6 @@ public class ReputationFactory {
 
     public ReviewProductGetListProductCloud createCloudGetReviewProductList() {
         return new ReviewProductGetListProductCloud(
-                reputationReviewApi
-        );
-    }
-
-    public ReviewShopGetListReviewCloud createCloudGetReviewShopList() {
-        return new ReviewShopGetListReviewCloud(
                 reputationReviewApi
         );
     }

@@ -21,6 +21,7 @@ import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
 
 /**
@@ -185,6 +186,9 @@ internal fun Dialog.updateNavigationBarColor(@ColorRes colorRes: Int, useDarkIco
 }
 
 internal fun sendCrashlyticsLog(throwable: Throwable) {
+    if (GlobalConfig.DEBUG) {
+        throwable.printStackTrace()
+    }
     try {
         FirebaseCrashlytics.getInstance().recordException(throwable)
     } catch (e: Exception) {

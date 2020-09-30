@@ -3,6 +3,7 @@ package com.tokopedia.play.broadcaster.pusher.timer
 import android.content.Context
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
+import com.tokopedia.play.broadcaster.pusher.PlayPusherTimerListener
 import com.tokopedia.play.broadcaster.util.extension.convertMillisToMinuteSecond
 import kotlin.math.max
 
@@ -10,18 +11,19 @@ import kotlin.math.max
 /**
  * Created by mzennis on 25/05/20.
  */
-class PlayPusherTimer(val context: Context) {
+class PlayPusherTimer(val context: Context,
+                      duration: Long) {
 
-    constructor(context: Context,
-                duration: Long) : this(context) {
-        setupDuration(duration)
-        this.mMaxDuration = mDuration
-    }
 
     var callback: PlayPusherTimerListener? = null
     var timeoutList: List<Timeout> = Timeout.Default()
     var pauseDuration: Long? = null
     var mMaxDuration: Long = 0L
+
+    init {
+        setupDuration(duration)
+        this.mMaxDuration = duration
+    }
 
     private var mDuration: Long = 0L
     private var mRemainingMillis: Long = 0L
@@ -81,7 +83,6 @@ class PlayPusherTimer(val context: Context) {
 
     private fun setupDuration(duration: Long) {
         this.mDuration = duration
-        this.mDuration += 1000
         this.mRemainingMillis = mDuration
     }
 

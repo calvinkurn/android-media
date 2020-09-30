@@ -101,7 +101,6 @@ import com.tokopedia.tkpd.fcm.appupdate.FirebaseRemoteAppUpdate;
 import com.tokopedia.tkpd.nfc.NFCSubscriber;
 import com.tokopedia.tkpd.react.DaggerReactNativeComponent;
 import com.tokopedia.tkpd.react.ReactNativeComponent;
-import com.tokopedia.tkpd.tkpdreputation.review.shop.view.ReviewShopFragment;
 import com.tokopedia.tkpd.utils.DeferredResourceInitializer;
 import com.tokopedia.tkpd.utils.FingerprintModelGenerator;
 import com.tokopedia.tkpd.utils.GQLPing;
