@@ -90,7 +90,8 @@ class TimerSprintSaleItemViewModel(val application: Application, val components:
     }
 
     fun startTimer() {
-        val timerData: String? = if (Utils.isFutureSale(getStartDate())) {
+        val futureSaleTab = Utils.isFutureSale(getStartDate())
+        val timerData: String? = if (futureSaleTab) {
             getStartDate()
         } else {
             getEndDate()
@@ -102,7 +103,10 @@ class TimerSprintSaleItemViewModel(val application: Application, val components:
                 val saleTimeMillis = parsedEndDate.time - currentSystemTime.time
                 if (saleTimeMillis > 0) {
                     timerWithBannerCounter = SaleCountDownTimer(saleTimeMillis, elapsedTime) { timerModel ->
-                        if (timerModel.timeFinish) stopTimer()
+                        if (timerModel.timeFinish) {
+                            stopTimer()
+                            if(futureSaleTab) needPageRefresh.value = true
+                        }
                         mutableTimeDiffModel.value = timerModel
                     }
                     timerWithBannerCounter?.start()
