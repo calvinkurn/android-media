@@ -5,6 +5,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.view.View
 import android.widget.RemoteViews
+import com.bumptech.glide.Glide
 import com.tokopedia.notifications.R
 import com.tokopedia.notifications.analytics.ProductAnalytics
 import com.tokopedia.notifications.common.CMConstant
@@ -64,6 +65,9 @@ internal open class ProductWidget(
 
     override fun setExpandedViewData(view: RemoteViews) {
         setCollapseViewData(view)
+
+        // hide collapsed icon
+        view.setViewVisibility(R.id.iv_icon_collapsed, View.GONE)
 
         // set notification icon
         productImage?.let {

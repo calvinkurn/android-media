@@ -12,7 +12,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/dp_50">
+        android:layout_marginTop="@dimen/dp_60">
 
         <LinearLayout
             android:id="@+id/ll_expandedProductView"
@@ -40,7 +40,7 @@
                 android:id="@+id/ll_content"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_marginStart="@dimen/dp_16"
+                android:layout_marginStart="@dimen/dp_8"
                 android:layout_weight="5">
 
                 <TextView
@@ -103,7 +103,7 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/ll_oldPriceAndDiscount"
                     android:layout_marginTop="@dimen/dp_5"
-                    android:textColor="@color/deep_orange_500"
+                    android:textColor="@color/black_39"
                     android:textSize="15sp"
                     android:textStyle="bold"
                     tools:text="Rp1500000" />
@@ -167,7 +167,7 @@
                     <Button
                         android:id="@+id/btn_icon"
                         android:layout_width="0dp"
-                        android:layout_weight="1.1"
+                        android:layout_weight="1.2"
                         android:layout_height="wrap_content"
                         android:background="@drawable/cm_btn_atc"
                         android:gravity="center"
