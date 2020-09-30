@@ -11,21 +11,20 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import com.tokopedia.discovery2.R
+import com.tokopedia.discovery2.TIME_DISPLAY_FORMAT
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 
-class LihatFlashSaleTimerViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView), View.OnClickListener {
+class LihatFlashSaleTimerViewHolder(itemView: View, fragment: Fragment) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner), View.OnClickListener {
 
-    private lateinit var lihatFlashSaleTimerViewModel: LihatFlashSaleTimerViewModel
-    private var constraintLayout: ConstraintLayout
+    private var lihatFlashSaleTimerViewModel: LihatFlashSaleTimerViewModel? = null
+    private var constraintLayout: ConstraintLayout = itemView.findViewById(R.id.parent_layout)
+    private var lihatSemuaTextView: TextView = itemView.findViewById(R.id.lihat_semua_tv)
     private var context: Context
     private lateinit var hoursTextView: TextView
     private lateinit var minutesTextView: TextView
     private lateinit var secondsTextView: TextView
-
-    private var lihatSemuaTextView: TextView
-    private val TIME_DISPLAY_FORMAT = "%1$02d"
 
     companion object {
         const val HOURS = 1
@@ -34,43 +33,43 @@ class LihatFlashSaleTimerViewHolder(itemView: View, private val fragment: Fragme
     }
 
     init {
-        constraintLayout = itemView.findViewById(R.id.parent_layout)
-        lihatSemuaTextView = itemView.findViewById(R.id.lihat_semua_tv)
         context = constraintLayout.context
     }
-
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         lihatFlashSaleTimerViewModel = discoveryBaseViewModel as LihatFlashSaleTimerViewModel
         lihatSemuaTextView.setOnClickListener(this)
     }
 
+    override fun onViewAttachedToWindow() {
+        super.onViewAttachedToWindow()
+        lihatFlashSaleTimerViewModel?.startTimer()
+    }
 
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
         super.setUpObservers(lifecycleOwner)
-        lihatFlashSaleTimerViewModel.getComponentData().observe(fragment.viewLifecycleOwner, Observer { componentItem ->
-            if (!componentItem.data.isNullOrEmpty()) {
-                setTimerUI(componentItem, HOURS)
-                setTimerUI(componentItem, MINUTES)
-                setTimerUI(componentItem, SECONDS)
-
-                lihatFlashSaleTimerViewModel.startTimer()
-            }
-        })
-
-        lihatFlashSaleTimerViewModel.getTimerData().observe(fragment.viewLifecycleOwner, Observer {
-            hoursTextView.text = String.format(TIME_DISPLAY_FORMAT, it.hours)
-            minutesTextView.text = String.format(TIME_DISPLAY_FORMAT, it.minutes)
-            secondsTextView.text = String.format(TIME_DISPLAY_FORMAT, it.seconds)
-        })
+        lifecycleOwner?.let {
+            lihatFlashSaleTimerViewModel?.getComponentData()?.observe(it, Observer { componentItem ->
+                if (!componentItem.data.isNullOrEmpty()) {
+                    setTimerUI(componentItem, HOURS)
+                    setTimerUI(componentItem, MINUTES)
+                    setTimerUI(componentItem, SECONDS)
+                }
+            })
+            lihatFlashSaleTimerViewModel?.getTimerData()?.observe(it, Observer { timerMode ->
+                hoursTextView.text = String.format(TIME_DISPLAY_FORMAT, timerMode.hours)
+                minutesTextView.text = String.format(TIME_DISPLAY_FORMAT, timerMode.minutes)
+                secondsTextView.text = String.format(TIME_DISPLAY_FORMAT, timerMode.seconds)
+            })
+        }
     }
 
     override fun removeObservers(lifecycleOwner: LifecycleOwner?) {
         super.removeObservers(lifecycleOwner)
         lifecycleOwner?.let { it ->
-            lihatFlashSaleTimerViewModel.stopTimer()
-            lihatFlashSaleTimerViewModel.getComponentData().removeObservers(it)
-            lihatFlashSaleTimerViewModel.getTimerData().removeObservers(it)
+            lihatFlashSaleTimerViewModel?.stopTimer()
+            lihatFlashSaleTimerViewModel?.getComponentData()?.removeObservers(it)
+            lihatFlashSaleTimerViewModel?.getTimerData()?.removeObservers(it)
         }
     }
 
@@ -105,24 +104,21 @@ class LihatFlashSaleTimerViewHolder(itemView: View, private val fragment: Fragme
 
 
     override fun onViewDetachedToWindow() {
-        lihatFlashSaleTimerViewModel.stopTimer()
-    }
-
-    override fun onViewAttachedToWindow() {
-        super.onViewAttachedToWindow()
-        lihatFlashSaleTimerViewModel.startTimer()
+        lihatFlashSaleTimerViewModel?.stopTimer()
     }
 
     override fun onClick(v: View?) {
-        v?.context?.let { lihatFlashSaleTimerViewModel.onLihatSemuaClicked(it) }
+        v?.context?.let { lihatFlashSaleTimerViewModel?.onLihatSemuaClicked(it) }
     }
 
     @SuppressLint("ResourceType")
     private fun getTimerFontColour(componentItem: ComponentsItem?): String? {
         return if (componentItem?.data?.get(0)?.timerFontColor?.isEmpty() == true) {
-            componentItem.data?.get(0)?.timerFontColor
+//            componentItem.data?.get(0)?.timerFontColor
+            context.resources.getString(R.color.white)
         } else {
-            context.resources.getString(R.color.clr_fd412b)
+//            context.resources.getString(R.color.clr_fd412b)
+            context.resources.getString(R.color.white)
         }
     }
 
