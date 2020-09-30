@@ -93,4 +93,6 @@
     <!-- Statistic -->
     <string name="title_statistic">Statistic</string>
 
+    <!-- Seller Menu -->
+    <string name="title_seller_menu">Toko Saya</string>
 </resources>

@@ -29,7 +29,7 @@ public class SellerReputationInfoActivity extends BaseSimpleActivity {
 
         setWhiteStatusBar();
 
-        webviewReputationInfo = (WebView) findViewById(R.id.webview_reputation_info);
+        webviewReputationInfo = (WebView) findViewById(R.id.webview_reputation_review_info);
 
         webviewReputationInfo.getSettings().setJavaScriptEnabled(true);
         webviewReputationInfo.loadUrl("file:///android_asset/poin-reputasi.html");
@@ -42,7 +42,7 @@ public class SellerReputationInfoActivity extends BaseSimpleActivity {
 
     @Override
     protected int getLayoutRes() {
-        return R.layout.activity_reputation_info;
+        return R.layout.activity_reputation_review_info;
     }
 
     @Nullable
