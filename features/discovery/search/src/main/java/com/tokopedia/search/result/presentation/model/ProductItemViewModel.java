@@ -12,8 +12,6 @@ import com.tokopedia.kotlin.model.ImpressHolder;
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory;
 import com.tokopedia.search.utils.SearchKotlinExtKt;
 
-import org.apache.commons.lang3.StringUtils;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -370,7 +368,7 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
     }
 
     public String getCategoryString() {
-        return StringUtils.isEmpty(categoryName) ? categoryBreadcrumb : categoryName;
+        return StringUtils.isBlank(categoryName) ? categoryBreadcrumb : categoryName;
     }
 
     public void setMinOrder(int minOrder) {

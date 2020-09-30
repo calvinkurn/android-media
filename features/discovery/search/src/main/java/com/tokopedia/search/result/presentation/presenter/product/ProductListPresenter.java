@@ -1731,6 +1731,14 @@ final class ProductListPresenter
     }
 
     @Override
+    public void onThreeDotsClick(ProductItemViewModel item, int adapterPosition) {
+        if (getView() == null) return;
+
+        getView().trackEventLongPress(item.getProductID());
+        getView().showProductCardOptions(null);
+    }
+
+    @Override
     public void detachView() {
         super.detachView();
         if (getDynamicFilterUseCase != null) getDynamicFilterUseCase.get().unsubscribe();

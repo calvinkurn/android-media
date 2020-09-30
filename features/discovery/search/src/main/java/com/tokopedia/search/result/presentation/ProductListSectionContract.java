@@ -174,6 +174,10 @@ public interface ProductListSectionContract {
         void trackEventClickBroadMatchItem(BroadMatchItemViewModel broadMatchItemViewModel);
 
         void redirectionStartActivity(String applink, String url);
+
+        void trackEventLongPress(String productID);
+
+        void showProductCardOptions(ProductCardOptionsModel productCardOptionsModel);
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -225,9 +229,13 @@ public interface ProductListSectionContract {
 
         void onBroadMatchItemClick(@NotNull BroadMatchItemViewModel broadMatchItemViewModel);
 
+        @Deprecated
         void setThreeDotsProduct(ProductItemViewModel item);
 
         @Nullable
+        @Deprecated
         ProductItemViewModel getThreeDotsProduct();
+
+        void onThreeDotsClick(ProductItemViewModel item, int adapterPosition);
     }
 }

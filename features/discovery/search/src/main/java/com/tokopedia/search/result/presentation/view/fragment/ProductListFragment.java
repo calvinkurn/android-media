@@ -858,6 +858,18 @@ public class ProductListFragment
         presenter.setThreeDotsProduct(item);
         SearchTracking.trackEventProductLongPress(getSearchParameter().getSearchQuery(), item.getProductID());
         ProductCardOptionsManager.showProductCardOptions(this, createProductCardOptionsModel(item));
+
+//        presenter.onThreeDotsClick(item, adapterPosition);
+    }
+
+    @Override
+    public void trackEventLongPress(String productID) {
+        SearchTracking.trackEventProductLongPress(getSearchParameter().getSearchQuery(), productID);
+    }
+
+    @Override
+    public void showProductCardOptions(ProductCardOptionsModel productCardOptionsModel) {
+        ProductCardOptionsManager.showProductCardOptions(this, productCardOptionsModel);
     }
 
     private ProductCardOptionsModel createProductCardOptionsModel(ProductItemViewModel item) {
