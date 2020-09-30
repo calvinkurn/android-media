@@ -41,9 +41,9 @@ import javax.inject.Inject
  */
 class PlayViewModel @Inject constructor(
         private val playVideoManager: PlayVideoManager,
-        private val videoStateProcessorFactory: PlayViewerVideoStateProcessor.Factory,
-        private val channelStateProcessorFactory: PlayViewerChannelStateProcessor.Factory,
-        private val videoBufferGovernorFactory: PlayViewerVideoBufferGovernor.Factory,
+        videoStateProcessorFactory: PlayViewerVideoStateProcessor.Factory,
+        channelStateProcessorFactory: PlayViewerChannelStateProcessor.Factory,
+        videoBufferGovernorFactory: PlayViewerVideoBufferGovernor.Factory,
         private val getChannelInfoUseCase: GetChannelDetailUseCase,
         private val getSocketCredentialUseCase: GetSocketCredentialUseCase,
         private val getPartnerInfoUseCase: GetPartnerInfoUseCase,
