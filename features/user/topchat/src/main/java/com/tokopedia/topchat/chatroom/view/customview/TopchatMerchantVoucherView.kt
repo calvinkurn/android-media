@@ -12,9 +12,33 @@ class TopchatMerchantVoucherView : MerchantVoucherView {
 
     private var voucherContainer: LinearLayout? = null
 
-    constructor(context: Context) : super(context)
-    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
+    private var useShadow = DEFAULT_USE_SHADOW
+
+    constructor(context: Context) : super(context) {
+        initAttr(context, null)
+    }
+
+    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
+        initAttr(context, attrs)
+    }
+
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
+        initAttr(context, attrs)
+    }
+
+    private fun initAttr(context: Context, attrs: AttributeSet?) {
+        if (context == null || attrs == null) return
+        context.theme.obtainStyledAttributes(
+                attrs,
+                R.styleable.TopchatMerchantVoucherView,
+                0, 0).apply {
+            try {
+                useShadow = getBoolean(R.styleable.TopchatMerchantVoucherView_useShadow, DEFAULT_USE_SHADOW)
+            } finally {
+                recycle()
+            }
+        }
+    }
 
     override fun getVoucherCodeId() = R.id.tvCode
     override fun getVoucherDescId() = R.id.tvVoucherDesc
@@ -32,6 +56,15 @@ class TopchatMerchantVoucherView : MerchantVoucherView {
     }
 
     override fun getShadowColor(): Int {
-        return ContextCompat.getColor(context, android.R.color.transparent)
+        val color: Int = if (useShadow) {
+            R.color.shadow_topchat_voucher_attachment
+        } else {
+            android.R.color.transparent
+        }
+        return ContextCompat.getColor(context, color)
+    }
+
+    companion object {
+        private const val DEFAULT_USE_SHADOW = false
     }
 }
