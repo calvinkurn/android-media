@@ -169,7 +169,7 @@ class CouponListingStackedActivity : BaseSimpleActivity(), StackedCouponActivity
             postDelayed({
                 val ids = getSelectedCategoryId(data)
                 currentItem = ids[1]
-                if (ids[0] == initialTabNum) {
+                if (ids[0] == FIRST_TAB_NUM) {
                     loadFirstTab(ids[0])
                 }
             }, TAB_SETUP_DELAY_MS.toLong())
@@ -226,7 +226,7 @@ class CouponListingStackedActivity : BaseSimpleActivity(), StackedCouponActivity
 
     companion object {
         private val REQUEST_CODE_LOGIN = 1
-        private const val initialTabNum = -1
+        private const val FIRST_TAB_NUM = -1
 
         fun getCallingIntent(context: Context, extras: Bundle): Intent {
             val intent = Intent(context, CouponListingStackedActivity::class.java)
