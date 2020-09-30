@@ -188,7 +188,10 @@ class ChooseAccountFragment : BaseDaggerFragment(),
         chooseAccountViewModel.loginPhoneNumberResponse.observe(this, androidx.lifecycle.Observer {
             when (it) {
                 is Success -> onSuccessLoginToken()
-                is Fail -> onErrorLoginToken(it.throwable)
+                is Fail -> {
+                    dismissLoadingProgress()
+                    onErrorLoginToken(it.throwable)
+                }
             }
         })
         chooseAccountViewModel.getUserInfoResponse.observe(this, androidx.lifecycle.Observer {
@@ -209,6 +212,7 @@ class ChooseAccountFragment : BaseDaggerFragment(),
     }
 
     override fun onSelectedAccount(account: UserDetail, phone: String) {
+        showLoadingProgress()
         if (account.challenge2Fa) {
             open2FA(account, phone)
         } else {
@@ -325,7 +329,6 @@ class ChooseAccountFragment : BaseDaggerFragment(),
     }
 
     private fun onSuccessLoginToken() {
-        showLoadingProgress()
         chooseAccountViewModel.getUserInfo()
     }
 
