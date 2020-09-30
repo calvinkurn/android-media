@@ -193,7 +193,7 @@ class InitialStatePresenter @Inject constructor(
 
     private fun addRecentSearchDataWithoutSeeMoreButton(listVisitable: MutableList<Visitable<*>>, listInitialStateItem: List<InitialStateItem>) {
         onRecentSearchImpressed(getDataLayerForPromo(listInitialStateItem))
-        listVisitable.add(listInitialStateItem.convertToRecentSearchViewModel())
+        listVisitable.add(listInitialStateItem.convertToRecentSearchViewModel(listVisitable.lastIndex + 1))
     }
 
     private fun addRecentSearchDataWithSeeMoreButton(listVisitable: MutableList<Visitable<*>>, listInitialStateItem: List<InitialStateItem>) {
@@ -202,8 +202,8 @@ class InitialStatePresenter @Inject constructor(
         val recentSearchToBeShown = listInitialStateItem.take(RECENT_SEARCH_SEE_MORE_LIMIT)
         onRecentSearchImpressed(getDataLayerForPromo(recentSearchToBeShown))
 
-        listVisitable.add(recentSearchToBeShown.convertToRecentSearchViewModel())
-        listVisitable.add(createRecentSearchSeeMoreButton())
+        listVisitable.add(recentSearchToBeShown.convertToRecentSearchViewModel(listVisitable.lastIndex + 1))
+        listVisitable.add(createRecentSearchSeeMoreButton(listVisitable.lastIndex + 1))
         onImpressSeeMoreRecentSearch()
     }
 
@@ -229,8 +229,8 @@ class InitialStatePresenter @Inject constructor(
         return this
     }
 
-    private fun createRecentSearchSeeMoreButton(): RecentSearchSeeMoreViewModel {
-        return RecentSearchSeeMoreViewModel()
+    private fun createRecentSearchSeeMoreButton(position: Int): RecentSearchSeeMoreViewModel {
+        return RecentSearchSeeMoreViewModel(position)
     }
 
     override fun refreshPopularSearch(featureId: String) {

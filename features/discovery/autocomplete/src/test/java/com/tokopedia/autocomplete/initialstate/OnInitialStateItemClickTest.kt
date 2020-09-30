@@ -101,8 +101,8 @@ internal class OnInitialStateItemClickTest: InitialStatePresenterTestFixtures(){
     @Test
     fun `Test click Show More Recent Search`() {
         val initialStateData = initialStateWithSeeMoreRecentSearch.jsonToObject<InitialStateUniverse>().data
+        `Given initial state view will call showInitialStateResult`()
         `Given view already get initial state`(initialStateData)
-        `Given initial state view already call showInitialStateResult`()
 
         `When recent search see more button is clicked`()
 
@@ -111,7 +111,7 @@ internal class OnInitialStateItemClickTest: InitialStatePresenterTestFixtures(){
         `Then verify initial state show all recent search`(initialStateData)
     }
 
-    private fun `Given initial state view already call showInitialStateResult`() {
+    private fun `Given initial state view will call showInitialStateResult`() {
         every { initialStateView.showInitialStateResult(capture(slotVisitableList)) } just runs
     }
 

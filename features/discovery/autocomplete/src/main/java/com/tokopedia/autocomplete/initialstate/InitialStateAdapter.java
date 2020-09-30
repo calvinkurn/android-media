@@ -71,26 +71,18 @@ public class InitialStateAdapter extends RecyclerView.Adapter<AbstractViewHolder
         }
     }
 
-    public void removeSeeMoreButton(RecentSearchSeeMoreViewModel recentSearchSeeMoreViewModel) {
-        int index = list.indexOf(recentSearchSeeMoreViewModel);
-        if (index != -1) {
+    public void removeSeeMoreButton(int index) {
+        if (index != -1 && list.get(index) instanceof RecentSearchSeeMoreViewModel) {
             list.remove(index);
             notifyItemRemoved(index);
         }
     }
 
     public void renderRecentSearch(RecentSearchViewModel recentSearchViewModel) {
-        int index = getRecentSearchViewModelIndex();
-        if (index != -1) {
+        int index = recentSearchViewModel.getPosition();
+        if (index != -1 && list.get(index) instanceof RecentSearchViewModel) {
             list.set(index, recentSearchViewModel);
             notifyItemChanged(index);
         }
-    }
-
-    private int getRecentSearchViewModelIndex() {
-        for (Visitable item: list) {
-            if (item instanceof RecentSearchViewModel) return list.indexOf(item);
-        }
-        return -1;
     }
 }

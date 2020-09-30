@@ -13,7 +13,7 @@ interface InitialStateItemClickListener {
 
     fun onRecentSearchItemClicked(item: BaseItemInitialStateSearch, adapterPosition: Int)
 
-    fun onRecentSearchSeeMoreClicked(recentSearchSeeMoreViewModel: RecentSearchSeeMoreViewModel)
+    fun onRecentSearchSeeMoreClicked(position: Int)
 
     fun onRefreshDynamicSection(featureId: String)
 }
