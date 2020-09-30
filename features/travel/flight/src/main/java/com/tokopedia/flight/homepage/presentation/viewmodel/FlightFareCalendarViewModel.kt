@@ -17,6 +17,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.travelcalendar.TRAVEL_CAL_YYYY
 import com.tokopedia.travelcalendar.dateToString
 import kotlinx.coroutines.withContext
+import java.text.NumberFormat
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
@@ -28,8 +29,8 @@ class FlightFareCalendarViewModel @Inject constructor(private val dispatcherProv
 
     val fareFlightCalendarData = MutableLiveData<List<FlightFareAttributes>>()
 
-    val departureFares = HashMap<String, Long>()
-    val returnFares = HashMap<String, Long>()
+    private val departureFares = HashMap<String, Long>()
+    private val returnFares = HashMap<String, Long>()
 
     fun getFareFlightCalendar(rawQuery: String,
                               mapParam: HashMap<String, Any>,
@@ -99,13 +100,15 @@ class FlightFareCalendarViewModel @Inject constructor(private val dispatcherProv
     private fun storeRoundTripCalendarFare(departureFareAttributes: ArrayList<FlightFareAttributes>,
                                            returnFareAttributes: ArrayList<FlightFareAttributes>,
                                            departureDate: String) {
-        if (departureFareAttributes.isNotEmpty() && departureFares.isEmpty()) {
+        if (departureFareAttributes.isNotEmpty()) {
+            departureFares.clear()
             departureFareAttributes.forEach {
                 departureFares[it.dateFare] = it.cheapestPriceNumeric
             }
         }
 
-        if (returnFareAttributes.isNotEmpty() && returnFares.isEmpty()) {
+        if (returnFareAttributes.isNotEmpty()) {
+            returnFares.clear()
             returnFareAttributes.forEach {
                 returnFares[it.dateFare] = it.cheapestPriceNumeric
             }
@@ -117,19 +120,21 @@ class FlightFareCalendarViewModel @Inject constructor(private val dispatcherProv
     }
 
     fun calculateRoundTripFareCalendar(departureDate: String) {
+        val dotFormat: NumberFormat = NumberFormat.getNumberInstance(Locale("in", "id"))
         val attributes = arrayListOf<FlightFareAttributes>()
 
         val departureFareNumeric = departureFares[departureDate]
         departureFareNumeric?.let {
             returnFares.forEach { (date, price) ->
+                val priceNumberic = ((price + departureFareNumeric) / 1000)
+
                 attributes.add(FlightFareAttributes(dateFare = date,
-                        cheapestPriceNumeric = price,
-                        displayedFare = ((price + departureFareNumeric) / 1000).toString()
+                        cheapestPriceNumeric = priceNumberic,
+                        displayedFare = dotFormat.format(priceNumberic)
                 ))
             }
         }
 
         fareFlightCalendarData.value = attributes
     }
-
 }
