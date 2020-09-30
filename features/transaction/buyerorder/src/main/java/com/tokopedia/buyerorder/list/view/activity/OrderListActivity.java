@@ -241,9 +241,9 @@ public class OrderListActivity extends BaseSimpleActivity
                     orderCategory = OrderCategory.FLIGHTS;
                     // newIntent = getFlightOrderListIntent(this, getIntent().getData());
                 }
-                if (getIntent().getExtras() != null) {
-                    getIntent().getExtras().putString(ORDER_CATEGORY, orderCategory);
-                }
+            }
+            if (getIntent().getExtras() != null) {
+                getIntent().getExtras().putString(ORDER_CATEGORY, orderCategory);
             }
             // startActivity(newIntent);
         }

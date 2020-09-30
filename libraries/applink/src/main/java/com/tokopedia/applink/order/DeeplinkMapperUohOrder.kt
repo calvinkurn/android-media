@@ -71,6 +71,30 @@ object DeeplinkMapperUohOrder {
     }
 
     private fun getInternalDeeplink(deeplink: String): String {
-        return deeplink.replace(DeeplinkConstant.SCHEME_TOKOPEDIA, DeeplinkConstant.SCHEME_INTERNAL)
+        when {
+            deeplink.equals(PURCHASE_CONFIRMED, true) -> {
+                return deeplink.replace(PURCHASE_CONFIRMED, MP_INTERNAL_CONFIRMED)
+
+            }
+            deeplink.equals(PURCHASE_PROCESSED, true) -> {
+                return deeplink.replace(PURCHASE_PROCESSED, MP_INTERNAL_PROCESSED)
+
+            }
+            deeplink.equals(PURCHASE_SHIPPED, true) -> {
+                return deeplink.replace(PURCHASE_SHIPPED, MP_INTERNAL_SHIPPED)
+
+            }
+            deeplink.equals(PURCHASE_DELIVERED, true) -> {
+                return deeplink.replace(PURCHASE_DELIVERED, MP_INTERNAL_DELIVERED)
+
+            }
+            deeplink.equals(PURCHASE_SHIPPING_CONFIRM, true) -> {
+                return deeplink.replace(PURCHASE_SHIPPING_CONFIRM, MP_INTERNAL_SHIPPED)
+
+            }
+            else -> {
+                return deeplink.replace(DeeplinkConstant.SCHEME_TOKOPEDIA, DeeplinkConstant.SCHEME_INTERNAL)
+            }
+        }
     }
 }

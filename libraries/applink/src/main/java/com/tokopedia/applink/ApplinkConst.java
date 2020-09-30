@@ -164,6 +164,11 @@ public interface ApplinkConst {
     String MARKETPLACE_ORDER_PROCESSED = "tokopedia://order/marketplace/filter/12";
     String MARKETPLACE_DELIVERED = "tokopedia://order/marketplace/filter/14";
 
+    String MP_INTERNAL_CONFIRMED = "tokopedia-android-internal://buyer/history?filter_id=5";
+    String MP_INTERNAL_PROCESSED = "tokopedia-android-internal://buyer/history?filter_id=12";
+    String MP_INTERNAL_SHIPPED = "tokopedia-android-internal://buyer/history?filter_id=13";
+    String MP_INTERNAL_DELIVERED = "tokopedia-android-internal://buyer/history?filter_id=14";
+
     String BUYER_INFO = "tokopedia://notif-center";
     String BUYER_INFO_WITH_ID = "tokopedia://notif-center/{notif_id}";
     String SELLER_INFO = "tokopedia://sellerinfo";
