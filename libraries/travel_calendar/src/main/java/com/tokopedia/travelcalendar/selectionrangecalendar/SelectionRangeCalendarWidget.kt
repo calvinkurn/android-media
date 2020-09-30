@@ -23,7 +23,6 @@ import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
-import javax.inject.Named
 
 /**
  * @author by jessica on 03/07/19
