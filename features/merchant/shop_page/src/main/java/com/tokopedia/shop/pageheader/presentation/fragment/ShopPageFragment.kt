@@ -7,6 +7,7 @@ import android.graphics.Color
 import android.graphics.drawable.LayerDrawable
 import android.os.Bundle
 import android.text.method.LinkMovementMethod
+import android.util.Log
 import android.view.*
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -65,6 +66,7 @@ import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.analytic.model.TrackShopTypeDef
 import com.tokopedia.shop.common.constant.ShopHomeType
 import com.tokopedia.shop.common.constant.ShopPageConstant
+import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.view.bottomsheet.ShopShareBottomSheet
 import com.tokopedia.shop.common.view.bottomsheet.listener.ShopShareBottomsheetListener
 import com.tokopedia.shop.common.view.model.ShopShareModel
@@ -86,12 +88,12 @@ import com.tokopedia.shop.pageheader.presentation.listener.ShopPagePerformanceMo
 import com.tokopedia.shop.pageheader.presentation.uimodel.ShopPageP1HeaderData
 import com.tokopedia.shop.product.view.fragment.HomeProductFragment
 import com.tokopedia.shop.product.view.fragment.ShopPageProductListFragment
+import com.tokopedia.shop.review.shop.view.ReviewShopFragment
 import com.tokopedia.shop.search.view.activity.ShopSearchProductActivity
 import com.tokopedia.shop.setting.view.activity.ShopPageSettingActivity
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
 import com.tokopedia.stickylogin.internal.StickyLoginConstant
 import com.tokopedia.stickylogin.view.StickyLoginView
-import com.tokopedia.tkpd.tkpdreputation.review.shop.view.ReviewShopFragment
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ImageUnify
@@ -343,6 +345,13 @@ class ShopPageFragment :
                 }
                 is Fail -> {
                     onErrorGetShopPageTabData(result.throwable)
+                    val throwable = result.throwable
+                    ShopUtil.logTimberWarning(
+                            "SHOP_PAGE_P1_ERROR",
+                            "shop_id='${shopId}';" +
+                                    "error_message='${ErrorHandler.getErrorMessage(context, throwable)}';" +
+                                    "error_trace='${Log.getStackTraceString(throwable)}'"
+                    )
                 }
             }
             stopPerformanceMonitoring()

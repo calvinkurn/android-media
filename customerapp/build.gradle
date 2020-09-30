@@ -168,6 +168,7 @@ android {
             buildConfigField "String", "PREINSTALL_DESC", "\"\""
             buildConfigField "String", "PREINSTALL_SITE", "\"\""
             buildConfigField "boolean", "ENABLE_DEBUG_TRACE", isDebugTraceEnabled()
+            buildConfigField "String", "DEBUG_TRACE_NAME", "\"${getDynamicProperty("debugTraceName")}\""
             ext.enableHansel = project.hasProperty('hanselEnableDebug')
             ext.enableCrashlytics = false
             FirebasePerformance {
@@ -200,6 +201,7 @@ android {
             buildConfigField "String", "PREINSTALL_DESC", "\"${getDynamicProperty("preInstallDesc")}\""
             buildConfigField "String", "PREINSTALL_SITE", "\"${getDynamicProperty("preInstallSite")}\""
             buildConfigField "boolean", "ENABLE_DEBUG_TRACE", isDebugTraceEnabled()
+            buildConfigField "String", "DEBUG_TRACE_NAME", "\"${getDynamicProperty("debugTraceName")}\""
             multiDexKeepFile file('multidex-config.txt')
             multiDexKeepProguard file('multidex-config.pro')
             if (allowProguard()) {
@@ -292,7 +294,6 @@ dependencies {
     implementation project(rootProject.ext.features.reputation)
     implementation project(rootProject.ext.features.inboxReputation)
     implementation project(rootProject.ext.features.review)
-    implementation project(rootProject.ext.features.sellerMenu)
     implementation project(rootProject.ext.features.sellerActiveCommon)
     implementation project(rootProject.ext.features.buyerorder)
     implementation project(rootProject.ext.features.tkpdseller)
