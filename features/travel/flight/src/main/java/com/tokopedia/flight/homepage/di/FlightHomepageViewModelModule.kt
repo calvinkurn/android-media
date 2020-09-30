@@ -10,7 +10,6 @@ import com.tokopedia.flight.homepage.presentation.viewmodel.FlightHomepageViewMo
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
-import javax.inject.Named
 
 /**
  * @author by furqan on 27/03/2020

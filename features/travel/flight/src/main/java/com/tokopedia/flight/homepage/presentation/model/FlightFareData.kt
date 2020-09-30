@@ -3,7 +3,7 @@ package com.tokopedia.flight.homepage.presentation.model
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-open class FlightFareData(
+class FlightFareData(
         @SerializedName("flightFare")
         @Expose
         val flightFare: FlightFare = FlightFare())
