@@ -44,7 +44,7 @@ class ProductImageDownloader(
     }
 
     companion object {
-        private const val PRODUCT_RADIUS = 6
+        private const val PRODUCT_RADIUS = 16
     }
 
 }
