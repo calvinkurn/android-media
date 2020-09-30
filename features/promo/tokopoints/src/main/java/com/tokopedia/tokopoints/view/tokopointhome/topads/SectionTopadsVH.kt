@@ -13,6 +13,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.view.model.section.SectionContent
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil
+import com.tokopedia.tokopoints.view.util.CommonConstant
 import com.tokopedia.tokopoints.view.util.convertDpToPixel
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.topads.sdk.listener.TopAdsImageVieWApiResponseListener
@@ -86,6 +87,7 @@ class SectionTopadsVH(val view: View) : RecyclerView.ViewHolder(view) {
                     view.topads_reward.setTopAdsImageViewClick(object : TopAdsImageViewClickListener {
                         override fun onTopAdsImageViewClicked(applink: String?) {
                             RouteManager.route(view.context, applink)
+                            sendBannerClick(content.sectionTitle)
                         }
                     })
                 } else {
@@ -139,6 +141,19 @@ class SectionTopadsVH(val view: View) : RecyclerView.ViewHolder(view) {
         } catch (e: Exception) {
             e.printStackTrace()
         }
+    }
+
+    private fun sendBannerClick(bannerName: String) {
+        val promotionItem = HashMap<String, Any>()
+        promotionItem[AnalyticsTrackerUtil.EcommerceKeys.NAME] = CommonConstant.IMPRESSION_LIST
+        promotionItem[AnalyticsTrackerUtil.EcommerceKeys.POSITION] = -1
+        promotionItem[AnalyticsTrackerUtil.EcommerceKeys.CREATIVE] = bannerName
+        val promotionMap = HashMap<String, Any>()
+        promotionMap[AnalyticsTrackerUtil.EcommerceKeys.PROMOTIONS] = listOf(promotionItem)
+        AnalyticsTrackerUtil.sendECommerceEventBanner(AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_PROMO,
+                AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
+                AnalyticsTrackerUtil.ActionKeys.CLICK_BANNERS_ON_HOME_TOKOPOINTS,
+                bannerName, promotionMap)
     }
 
     companion object {
