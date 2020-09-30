@@ -88,8 +88,11 @@ class FlightCalendarRoundTripWidget : SelectionRangeCalendarWidget() {
     private fun mapFareFlightToSubtitleCalendar(listFareAttribute: List<FlightFareAttributes>): ArrayList<SubTitle> {
         val subTitleList = arrayListOf<SubTitle>()
         listFareAttribute.map {
-            subTitleList.add(SubTitle(TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, it.dateFare),
-                    it.displayedFare, if (it.isLowestFare) getString(R.string.flight_calendar_lowest_fare_price_color) else ""))
+            val dateFare = TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, it.dateFare)
+            minDate?.let { date ->
+                subTitleList.add(SubTitle(dateFare,
+                        if (!dateFare.before(date)) it.displayedFare else " ", if (it.isLowestFare) getString(R.string.flight_calendar_lowest_fare_price_color) else ""))
+            }
         }
         return subTitleList
     }
