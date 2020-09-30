@@ -163,7 +163,7 @@ internal open class ProductWidget(
     }
 
     private fun productStock(view: RemoteViews) {
-        if (product.stockAvailable?.toInt() == 0) {
+        if (product.stockAvailable?.toInt() == 0 || product.stockMessage?.isEmpty() == true) {
             view.setViewVisibility(R.id.tv_stock, View.GONE)
         } else {
             view.setTextViewText(R.id.tv_stock, spanStr(product.stockMessage))
