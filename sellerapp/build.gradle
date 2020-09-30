@@ -264,7 +264,6 @@ dependencies {
     implementation project(rootProject.ext.features.notifCenter)
     implementation project(rootProject.ext.features.settingbank)
     implementation project(rootProject.ext.features.managepassword)
-    implementation project(rootProject.ext.features.voucherCreation)
 
     implementation project(rootProject.ext.features.shopCommon)
     implementation project(rootProject.ext.features.commonDigital)
