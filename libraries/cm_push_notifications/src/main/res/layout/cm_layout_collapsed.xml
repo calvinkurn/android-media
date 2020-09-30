@@ -23,7 +23,7 @@
             android:ellipsize="marquee"
             android:fadingEdge="horizontal"
             android:singleLine="true"
-            android:textColor="@color/black_39"
+            android:textColor="@color/black"
             tools:text="Title"
             android:textSize="@dimen/sp_14" />
 

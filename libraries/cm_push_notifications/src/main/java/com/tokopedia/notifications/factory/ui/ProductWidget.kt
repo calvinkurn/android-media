@@ -150,7 +150,9 @@ internal open class ProductWidget(
         view.setTextViewText(R.id.txt_review, product.reviewScore.toString())
         view.setTextViewText(R.id.txt_count_review, "(${product.reviewNumber?: "0"})")
 
-        base.loadResourceAsBitmap(R.drawable.cm_ic_star_review) {
+        loadCacheImage(product.reviewIcon)?.let {
+            view.setImageViewBitmap(R.id.img_star, it)
+        }?: base.loadResourceAsBitmap(R.drawable.cm_ic_star_review) {
             view.setImageViewBitmap(R.id.img_star, it)
         }
     }

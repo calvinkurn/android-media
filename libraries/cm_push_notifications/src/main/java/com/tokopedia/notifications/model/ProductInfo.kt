@@ -75,6 +75,11 @@ data class ProductInfo(
         @Expose
         var freeOngkirIcon: String? = "",
 
+        @SerializedName(CMConstant.PayloadKeys.REVIEW_ICON)
+        @ColumnInfo(name = CMConstant.PayloadKeys.REVIEW_ICON)
+        @Expose
+        var reviewIcon: String? = "",
+
         @SerializedName(CMConstant.PayloadKeys.STOCK_AVAILABLE)
         @ColumnInfo(name = CMConstant.PayloadKeys.STOCK_AVAILABLE)
         @Expose

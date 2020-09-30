@@ -1,13 +1,13 @@
 package com.tokopedia.notifications.image.downloaderFactory.factoryIml
 
 import android.content.Context
+import com.tokopedia.notifications.R
 import com.tokopedia.notifications.common.CMConstant
+import com.tokopedia.notifications.image.downloaderFactory.ImageSizeAndTimeout.*
 import com.tokopedia.notifications.image.downloaderFactory.NotificationImageDownloader
 import com.tokopedia.notifications.model.BaseNotificationModel
 import com.tokopedia.notifications.model.NotificationStatus
 import timber.log.Timber
-import com.tokopedia.notifications.image.downloaderFactory.ImageSizeAndTimeout.FREE_ONGKIR
-import com.tokopedia.notifications.image.downloaderFactory.ImageSizeAndTimeout.PRODUCT_IMAGE
 
 class ProductImageDownloader(baseNotificationModel: BaseNotificationModel)
     : NotificationImageDownloader(baseNotificationModel) {
@@ -30,11 +30,15 @@ class ProductImageDownloader(baseNotificationModel: BaseNotificationModel)
         baseNotificationModel.productInfoList.forEach { product ->
             val productImage = downloadAndStore(context, product.productImage, PRODUCT_IMAGE)
             val freeOngkirIcon = downloadAndStore(context, product.freeOngkirIcon, FREE_ONGKIR)
+            val starReviewIcon = downloadAndStore(context, R.drawable.cm_ic_star_review, STAR_REVIEW)
 
             productImage?.let { product.productImage = it }
             freeOngkirIcon?.let { product.freeOngkirIcon = it }
+            starReviewIcon?.let { product.reviewIcon = it }
         }
+
         verifyAndUpdate()
         return baseNotificationModel
     }
+
 }

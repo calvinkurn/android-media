@@ -22,14 +22,14 @@ abstract class NotificationImageDownloader(val baseNotificationModel: BaseNotifi
 
     protected abstract suspend fun verifyAndUpdate()
 
-    protected fun downloadAndStore(context: Context, url: String?, imageSizeAndTimeout: ImageSizeAndTimeout): String? {
+    protected fun downloadAndStore(context: Context, url: Any?, imageSizeAndTimeout: ImageSizeAndTimeout): String? {
         val bitmap = url?.let { downloadImage(context, url, imageSizeAndTimeout) }
         return bitmap?.let {
             storeBitmapToFile(context, bitmap)
         }
     }
 
-    private fun downloadImage(context: Context, url: String, imageSizeAndTimeout: ImageSizeAndTimeout): Bitmap? {
+    private fun downloadImage(context: Context, url: Any, imageSizeAndTimeout: ImageSizeAndTimeout): Bitmap? {
         try {
             return Glide.with(context)
                     .asBitmap()
@@ -87,5 +87,6 @@ enum class ImageSizeAndTimeout(val width: Int, val height: Int, val seconds: Lon
     VISUAL_COLLAPSED(360, 64, 5L),
     VISUAL_EXPANDED(720, 360, 10L),
     BANNER_COLLAPSED(180, 64, 5L),
-    FREE_ONGKIR(290, 60, 5L)
+    FREE_ONGKIR(290, 60, 5L),
+    STAR_REVIEW(60, 60, 5L)
 }
