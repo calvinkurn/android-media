@@ -98,4 +98,12 @@
 
     <string name="vidpick_app_name">Video Recorder</string>
 
+    <!-- Review   -->
+    <string name="review_text">Ulasan</string>
+    <string name="title_review_reply">Balas Ulasan</string>
+    <string name="title_activity_reputation_review">Ulasan</string>
+    <string name="reputation_point_calculation">Perhitungan Poin Reputasi</string>
+    <string name="title_filter">Filter</string>
+    <string name="title_report">Laporkan</string>
+
 </resources>
