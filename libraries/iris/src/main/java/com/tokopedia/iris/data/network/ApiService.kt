@@ -8,7 +8,6 @@ import com.tokopedia.iris.util.*
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.remoteconfig.RemoteConfigKey.IRIS_CUSTOM_USER_AGENT_ENABLE
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -80,6 +79,8 @@ class ApiService(private val context: Context) {
     }
 
     companion object {
+
+        private const val IRIS_CUSTOM_USER_AGENT_ENABLE = "android_iris_custom_user_agent_enable"
         private const val userAgentFormat = "TkpdConsumer/%s (%s;)"
         fun parse(data: String): RequestBody {
             val jsonObject = JSONObject(data).toString()
