@@ -47,7 +47,9 @@ public class TkpdOkHttpBuilder {
     }
 
     public TkpdOkHttpBuilder addAuthenticator(Authenticator authenticator){
-        builder.authenticator(authenticator);
+        if(authenticator != null) {
+            builder.authenticator(authenticator);
+        }
         return this;
     }
 
