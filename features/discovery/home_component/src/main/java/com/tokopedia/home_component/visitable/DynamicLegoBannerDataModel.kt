@@ -6,7 +6,8 @@ import com.tokopedia.home_component.HomeComponentTypeFactory
 import com.tokopedia.home_component.model.ChannelModel
 
 data class DynamicLegoBannerDataModel(
-        val channelModel: ChannelModel
+        val channelModel: ChannelModel,
+        val isCache: Boolean = false
 ): HomeComponentVisitable {
     override fun visitableId(): String? {
         return channelModel.id

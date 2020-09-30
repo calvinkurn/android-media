@@ -95,7 +95,6 @@
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/label_selected_shipping_duration"
-                    android:contentDescription="@string/content_desc_label_selected_shipping_duration"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     app:layout_constraintBottom_toBottomOf="@+id/icon_chevron_choose_duration"
@@ -128,7 +127,6 @@
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/label_selected_shipping_courier"
-                    android:contentDescription="@string/content_desc_label_selected_shipping_courier"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_13"

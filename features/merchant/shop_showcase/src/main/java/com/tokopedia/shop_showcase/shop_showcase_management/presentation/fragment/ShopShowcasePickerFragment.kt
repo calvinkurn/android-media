@@ -1,6 +1,7 @@
 package com.tokopedia.shop_showcase.shop_showcase_management.presentation.fragment
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
@@ -10,25 +11,31 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.cardview.widget.CardView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.design.text.watcher.AfterTextWatcher
+import com.tokopedia.empty_state.EmptyStateUnify
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
 import com.tokopedia.shop.common.constant.ShowcasePickerType
 import com.tokopedia.shop.common.data.model.ShowcaseItemPicker
+import com.tokopedia.shop.common.data.model.ShowcaseItemPickerProduct
 import com.tokopedia.shop_showcase.R
 import com.tokopedia.shop_showcase.ShopShowcaseInstance
-import com.tokopedia.shop_showcase.common.AppScreen
-import com.tokopedia.shop_showcase.common.ImageAssets
+import com.tokopedia.shop_showcase.common.*
+import com.tokopedia.shop_showcase.shop_showcase_add.data.model.AddShopShowcaseParam
 import com.tokopedia.shop_showcase.shop_showcase_management.data.model.ShowcaseList.ShowcaseItem
 import com.tokopedia.shop_showcase.shop_showcase_management.di.DaggerShopShowcaseManagementComponent
 import com.tokopedia.shop_showcase.shop_showcase_management.di.ShopShowcaseManagementComponent
@@ -36,12 +43,10 @@ import com.tokopedia.shop_showcase.shop_showcase_management.di.ShopShowcaseManag
 import com.tokopedia.shop_showcase.shop_showcase_management.presentation.activity.ShopShowcaseListActivity
 import com.tokopedia.shop_showcase.shop_showcase_management.presentation.adapter.ShopShowcasePickerAdapter
 import com.tokopedia.shop_showcase.shop_showcase_management.presentation.viewmodel.ShopShowcasePickerViewModel
-import com.tokopedia.unifycomponents.LoaderUnify
-import com.tokopedia.unifycomponents.SearchBarUnify
-import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifycomponents.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import kotlinx.android.synthetic.main.add_showcase_bottomsheet_picker.view.*
 import kotlinx.android.synthetic.main.fragment_shop_showcase_picker.*
 import java.util.*
 import javax.inject.Inject
@@ -57,12 +62,24 @@ class ShopShowcasePickerFragment: BaseDaggerFragment(),
     companion object {
 
         @JvmStatic
-        fun createInstance(shopId: String?, isMyShop: Boolean, pickerType: String): ShopShowcasePickerFragment {
+        fun createInstance(
+                shopId: String?,
+                isMyShop: Boolean,
+                shopType: String,
+                pickerType: String,
+                preSelectionShowcaseList: ArrayList<ShowcaseItemPicker>?,
+                productId: String,
+                productName: String
+        ): ShopShowcasePickerFragment {
             val fragment = ShopShowcasePickerFragment()
             val extraData = Bundle()
             extraData.putString(ShopShowcaseParamConstant.EXTRA_SHOP_ID, shopId)
             extraData.putBoolean(ShopShowcaseParamConstant.EXTRA_IS_MY_SHOP, isMyShop)
+            extraData.putString(ShopShowcaseParamConstant.EXTRA_SHOP_TYPE, shopType)
             extraData.putString(ShopShowcaseParamConstant.EXTRA_PICKER_TYPE, pickerType)
+            extraData.putParcelableArrayList(ShopShowcaseParamConstant.EXTRA_PRE_SELECTED_SHOWCASE_PICKER, preSelectionShowcaseList)
+            extraData.putString(ShopShowcaseParamConstant.EXTRA_PICKER_PRODUCT_ID, productId)
+            extraData.putString(ShopShowcaseParamConstant.EXTRA_PICKER_PRODUCT_NAME, productName)
             fragment.arguments = extraData
             return fragment
         }
@@ -100,6 +117,14 @@ class ShopShowcasePickerFragment: BaseDaggerFragment(),
         view?.findViewById<CardView>(R.id.header_layout)
     }
 
+    private val headerUnify by lazy {
+        view?.findViewById<HeaderUnify>(R.id.showcase_picker_toolbar)?.apply {
+            setNavigationOnClickListener {
+                activity?.onBackPressed()
+            }
+        }
+    }
+
     private val searchBar by lazy {
         view?.findViewById<SearchBarUnify>(R.id.searchbar)
     }
@@ -108,8 +133,20 @@ class ShopShowcasePickerFragment: BaseDaggerFragment(),
         view?.findViewById<LinearLayout>(R.id.empty_state)
     }
 
+    private val emptyStatePicker by lazy {
+        view?.findViewById<EmptyStateUnify>(R.id.picker_checkbox_empty_state)
+    }
+
+    private val emptyStateHint by lazy {
+        view?.findViewById<ConstraintLayout>(R.id.empty_state_picker_checkbox_hint)
+    }
+
     private val emptyStateImage by lazy {
         view?.findViewById<ImageView>(R.id.img_empty_state)
+    }
+
+    private val tvEmptyStateHint by lazy {
+        view?.findViewById<TextView>(R.id.tv_empty_state_hint)
     }
 
     private val savePickerButton by lazy {
@@ -138,15 +175,42 @@ class ShopShowcasePickerFragment: BaseDaggerFragment(),
     private var showcaseList: List<ShowcaseItem> = listOf()
     private var isMyShop = false
     private var shopId: String = ""
+    private var shopType: String = ""
     private var pickerType: String = ""
+    private var newCreatedShowcaseId: String = ""
     private var selectedShowcase: ShowcaseItemPicker? = null
+    private var selectedProduct: ShowcaseItemPickerProduct? = null
+    private var _productId: String = ""
+    private var _productName: String = ""
+    private var selectedShowcaseList: ArrayList<ShowcaseItemPicker>? = null
+    private var preSelectedShowcaseList: ArrayList<ShowcaseItemPicker>? = null
+    private var addShowcaseBottomSheet: BottomSheetUnify? = null
+    private var textFieldAddShowcaseBottomSheet: TextFieldUnify? = null
+    private var buttonAddShowcaseBottomSheet: UnifyButton? = null
+    private var showcaseNameHint: String = ""
+    private var totalCheckedShowcase: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
             shopId = it.getString(ShopShowcaseParamConstant.EXTRA_SHOP_ID, "")
             isMyShop = it.getBoolean(ShopShowcaseParamConstant.EXTRA_IS_MY_SHOP)
+            shopType = it.getString(ShopShowcaseParamConstant.EXTRA_SHOP_TYPE, "")
+            _productId = it.getString(ShopShowcaseParamConstant.EXTRA_PICKER_PRODUCT_ID, "")
+            _productName = it.getString(ShopShowcaseParamConstant.EXTRA_PICKER_PRODUCT_NAME, "")
             pickerType = it.getString(ShopShowcaseParamConstant.EXTRA_PICKER_TYPE, ShowcasePickerType.RADIO)
+            if(pickerType == ShowcasePickerType.CHECKBOX) {
+                selectedShowcaseList = arrayListOf()
+                preSelectedShowcaseList = it.getParcelableArrayList(ShopShowcaseParamConstant.EXTRA_PRE_SELECTED_SHOWCASE_PICKER)
+                if(preSelectedShowcaseList == null)
+                    preSelectedShowcaseList = arrayListOf()
+            }
+        }
+
+        ShowcaseItemPickerProduct().apply {
+            productId = _productId
+            productName = _productName
+            selectedProduct = this
         }
     }
 
@@ -168,6 +232,8 @@ class ShopShowcasePickerFragment: BaseDaggerFragment(),
     override fun onDestroy() {
         super.onDestroy()
         removeObservers(shopShowcasePickerViewModel.getListBuyerShopShowcaseResponse)
+        removeObservers(shopShowcasePickerViewModel.getShopProductResponse)
+        removeObservers(shopShowcasePickerViewModel.createShopShowcase)
     }
 
     override fun getComponent(): ShopShowcaseManagementComponent? {
@@ -188,12 +254,26 @@ class ShopShowcasePickerFragment: BaseDaggerFragment(),
         component?.inject(this)
     }
 
-    override fun onPickerItemClicked(item: ShowcaseItem) {
-        ShowcaseItemPicker().apply {
+    override fun onPickerItemClicked(item: ShowcaseItem, totalCheckedItem: Int) {
+        val itemPicker = ShowcaseItemPicker().apply {
             showcaseId = item.id
             showcaseName = item.name
-            selectedShowcase = this
         }
+        if(pickerType == ShowcasePickerType.RADIO) {
+            selectedShowcase = itemPicker
+        } else {
+            if(item.isChecked) {
+                selectedShowcaseList?.add(itemPicker)
+            } else {
+                selectedShowcaseList?.remove(itemPicker)
+            }
+            totalCheckedShowcase = totalCheckedItem
+            renderButtonCounter(selectedShowcaseList?.size)
+        }
+    }
+
+    override fun onPickerMaxSelectedShowcase() {
+        showToaster(getString(R.string.max_selected_showcase_text), Toaster.TYPE_NORMAL)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -206,9 +286,11 @@ class ShopShowcasePickerFragment: BaseDaggerFragment(),
     private fun initView() {
         setBackgroundColor()
         initRecyclerView()
+        setupPickerLayout()
         loadShowcaseList()
         observeGetShowcaseList()
         observeGetTotalProduct()
+        observeCreateShowcase()
     }
 
     private fun initListener() {
@@ -220,10 +302,16 @@ class ShopShowcasePickerFragment: BaseDaggerFragment(),
                         it.name.toLowerCase(Locale.ROOT).contains(keyword.toString().toLowerCase(Locale.ROOT))
                     }
                     if(filteredList.size.isMoreThanZero()) {
-                        showShowcasePickerEmptyState(false)
-                        showcasePickerAdapter?.updateDataSet(ArrayList(filteredList))
+                        showSearchEmptyStateRadioPicker(false)
+                        showSearchEmptyStateHint(false)
+                        showcasePickerAdapter?.updateDataSet(ArrayList(filteredList), totalChecked = totalCheckedShowcase)
                     } else {
-                        showShowcasePickerEmptyState(true)
+                        if(pickerType == ShowcasePickerType.RADIO)
+                            showSearchEmptyStateRadioPicker(true)
+                        else {
+                            showcaseNameHint = keyword.toString()
+                            showSearchEmptyStateHint(true, showcaseNameHint)
+                        }
                     }
                 }
             }
@@ -231,7 +319,14 @@ class ShopShowcasePickerFragment: BaseDaggerFragment(),
 
         // set listener for save picker button
         savePickerButton?.setOnClickListener {
-            activity?.setResult(Activity.RESULT_OK, Intent().putExtra(ShopShowcaseParamConstant.EXTRA_PICKER_SELECTED_SHOWCASE, selectedShowcase))
+            val intent = Intent()
+            if(pickerType == ShowcasePickerType.RADIO) {
+                intent.putExtra(ShopShowcaseParamConstant.EXTRA_PICKER_SELECTED_SHOWCASE, selectedShowcase)
+                intent.putExtra(ShopShowcaseParamConstant.EXTRA_PICKER_PRODUCT, selectedProduct)
+            } else {
+                intent.putExtra(ShopShowcaseParamConstant.EXTRA_PICKER_SELECTED_SHOWCASE, selectedShowcaseList)
+            }
+            activity?.setResult(Activity.RESULT_OK, intent)
             activity?.finish()
         }
 
@@ -239,10 +334,86 @@ class ShopShowcasePickerFragment: BaseDaggerFragment(),
         addShowcaseButton?.setOnClickListener {
             checkTotalProduct()
         }
+
+        // set listener for add showcase (for checkbox version)
+        headerUnify?.actionTextView?.setOnClickListener {
+            showAddShowcaseBottomSheet()
+        }
+
+        // set listener for empty state picker
+        emptyStatePicker?.setPrimaryCTAClickListener {
+            if(pickerType == ShowcasePickerType.RADIO) {
+                checkTotalProduct()
+            } else {
+                showAddShowcaseBottomSheet()
+            }
+        }
+
+        // set listener for hint
+        emptyStateHint?.setOnClickListener {
+            if(pickerType == ShowcasePickerType.CHECKBOX) {
+                showAddShowcaseBottomSheet(showcaseNameHint)
+            }
+        }
+    }
+
+
+    private fun setupAddShowcaseBottomSheet(ctx: Context) {
+        addShowcaseBottomSheet = BottomSheetUnify().apply {
+            setTitle(ctx.getString(R.string.button_tambah_etalase))
+            setChild(View.inflate(ctx, R.layout.add_showcase_bottomsheet_picker, null).apply {
+                textFieldAddShowcaseBottomSheet = textfield_add_showcase_name
+                buttonAddShowcaseBottomSheet = btn_add_showcase_save
+
+                // set text change listener for add showcase name textfield
+                textFieldAddShowcaseBottomSheet?.textFieldInput?.addTextChangedListener(object : AfterTextWatcher() {
+                    override fun afterTextChanged(name: Editable?) {
+                        textFieldAddShowcaseBottomSheet?.setError(false)
+                        textFieldAddShowcaseBottomSheet?.setMessage(ctx.getString(R.string.bottomsheet_add_showcase_textfield_hint_text))
+                        buttonAddShowcaseBottomSheet?.isEnabled = !name?.length.isZero()
+                    }
+                })
+
+                // set listener for add showcase button on bottomsheet
+                buttonAddShowcaseBottomSheet?.setOnClickListener {
+                    buttonAddShowcaseBottomSheet?.isLoading = true
+                    createShowcase(textFieldAddShowcaseBottomSheet?.textFieldInput?.text.toString())
+                }
+            })
+            isKeyboardOverlap = false
+        }
+    }
+
+    private fun showAddShowcaseBottomSheet(showcaseNameHint: String = "") {
+        if(shopType == ShopType.REGULAR && showcaseList.size >= MAX_TOTAL_SHOWCASE_REGULAR_MERCHANT) {
+            showToaster(getString(R.string.max_total_showcase_error_text), Toaster.TYPE_NORMAL)
+        }
+        else if((shopType == ShopType.GOLD_MERCHANT || shopType == ShopType.OFFICIAL_STORE)
+                && (showcaseList.size >= MAX_TOTAL_SHOWCASE_PM_AND_OS)) {
+            showToaster(getString(R.string.max_total_showcase_error_text), Toaster.TYPE_NORMAL)
+        }
+        else {
+            context?.let {
+                setupAddShowcaseBottomSheet(it)
+            }
+            if(showcaseNameHint.isNotEmpty()) {
+                // set hint to bottomsheet textfield
+                textFieldAddShowcaseBottomSheet?.textFieldInput?.text = Editable.Factory.getInstance().newEditable(showcaseNameHint)
+            }
+            fragmentManager?.let {
+                addShowcaseBottomSheet?.show(it, "")
+            }
+        }
     }
 
     private fun initRecyclerView() {
         showcasePickerAdapter = ShopShowcasePickerAdapter(this, pickerType)
+        if(preSelectedShowcaseList?.size.isMoreThanZero()) {
+            preSelectedShowcaseList?.size?.let { totalCheckedShowcase += it }
+            showcasePickerAdapter?.updateDataSet(preSelectedShowcase = preSelectedShowcaseList?.toList(), totalChecked = totalCheckedShowcase)
+            preSelectedShowcaseList?.let { selectedShowcaseList?.addAll(it) }
+            renderButtonCounter(selectedShowcaseList?.size)
+        }
         rv_list_etalase_picker?.apply {
             setHasFixedSize(true)
             layoutManager = linearLayoutManager
@@ -270,6 +441,34 @@ class ShopShowcasePickerFragment: BaseDaggerFragment(),
         )
     }
 
+    private fun createShowcase(showcaseName: String) {
+        shopShowcasePickerViewModel.addShopShowcase(AddShopShowcaseParam(name = showcaseName))
+    }
+
+    private fun observeCreateShowcase() {
+        observe(shopShowcasePickerViewModel.createShopShowcase) {
+            when(it) {
+                is Success -> {
+                    if(it.data.success) {
+                        addShowcaseBottomSheet?.dismiss()
+                        searchBar?.searchBarTextField?.text?.clear()
+                        newCreatedShowcaseId = it.data.createdId
+                        loadShowcaseList()
+                    } else {
+                        buttonAddShowcaseBottomSheet?.isLoading = false
+                        textFieldAddShowcaseBottomSheet?.setError(true)
+                        textFieldAddShowcaseBottomSheet?.setMessage(it.data.message)
+                    }
+                }
+                is Fail -> {
+                    addShowcaseBottomSheet?.dismiss()
+                    showGlobalError(true)
+                    showToaster(it.throwable.message, Toaster.TYPE_ERROR)
+                }
+            }
+        }
+    }
+
     private fun observeGetShowcaseList() {
         observe(shopShowcasePickerViewModel.getListBuyerShopShowcaseResponse) {
             when(it) {
@@ -278,16 +477,42 @@ class ShopShowcasePickerFragment: BaseDaggerFragment(),
                    val errorMessage = it.data.shopShowcasesByShopID.error.message
                    showcaseList = it.data.shopShowcasesByShopID.result
                    if(errorMessage.isNotEmpty()) {
-                       showErrorToaster(errorMessage)
+                       showToaster(errorMessage, Toaster.TYPE_ERROR)
                    } else {
                        showGlobalError(false)
-                       showcasePickerAdapter?.updateDataSet(showcaseList)
+                       if(showcaseList.size.isMoreThanZero()) {
+                           showEmptyStatePickerList(false)
+                           // checked new created showcase, if showcaseId is not equal to zero
+                           if(totalCheckedShowcase < ShopShowcasePickerAdapter.MAX_SELECTED_SHOWCASE && newCreatedShowcaseId.isNotEmpty()) {
+                               showcaseList.map { showcaseItem ->
+                                   if(showcaseItem.id == newCreatedShowcaseId) {
+                                       showcaseItem.isChecked = true
+                                       selectedShowcaseList?.add(ShowcaseItemPicker(showcaseItem.id, showcaseItem.name))
+                                       renderButtonCounter(selectedShowcaseList?.size)
+                                       totalCheckedShowcase += 1
+                                   }
+                               }
+                           }
+                           // check previous selected showcase
+                           if(selectedShowcaseList?.size.isMoreThanZero()) {
+                               showcaseList.forEach { item ->
+                                   selectedShowcaseList?.forEach { selectedItem ->
+                                       if(item.id == selectedItem.showcaseId)
+                                           item.isChecked = true
+                                   }
+                               }
+                           }
+                           showcasePickerAdapter?.updateDataSet(newList = showcaseList, totalChecked = totalCheckedShowcase)
+                       } else {
+                           showEmptyStatePickerList(true)
+                       }
                    }
                }
                 is Fail -> {
                     showLoading(false)
+                    showEmptyStatePickerList(false)
                     showGlobalError(true)
-                    showErrorToaster(it.throwable.message)
+                    showToaster(it.throwable.message, Toaster.TYPE_ERROR)
                 }
             }
         }
@@ -302,33 +527,86 @@ class ShopShowcasePickerFragment: BaseDaggerFragment(),
 
                     if (error.isNotEmpty()) {
                         showLoading(false)
-                        showErrorToaster(error)
+                        showToaster(error, Toaster.TYPE_ERROR)
                     } else {
                         if (totalProduct.isMoreThanZero()) {
                             goToAddShowcase()
                         } else {
                             showLoading(false)
-                            showErrorToaster(getString(R.string.error_product_less_than_one))
+                            showToaster(getString(R.string.error_product_less_than_one), Toaster.TYPE_ERROR)
                         }
                     }
                 }
                 is Fail -> {
                     showLoading(false)
                     showGlobalError(true)
-                    showErrorToaster(it.throwable.message)
+                    showToaster(it.throwable.message, Toaster.TYPE_ERROR)
                 }
             }
         }
     }
 
-    private fun showShowcasePickerEmptyState(state: Boolean) {
+    private fun setupPickerLayout() {
+        if(pickerType == ShowcasePickerType.CHECKBOX) {
+            addShowcaseButton?.gone()
+            headerUnify?.actionTextView?.visible()
+            renderButtonCounter(selectedShowcaseList?.size)
+        } else {
+            addShowcaseButton?.visible()
+            headerUnify?.actionTextView?.gone()
+        }
+    }
+
+    private fun renderButtonCounter(total: Int?) {
+        if(total.isMoreThanZero()) {
+            savePickerButton?.text = getString(R.string.picker_apply_showcase_counter_text, total.toString())
+            savePickerButton?.isEnabled = true
+        } else {
+            savePickerButton?.text = getString(R.string.picker_apply_showcase_text)
+            savePickerButton?.isEnabled = false
+        }
+    }
+
+    private fun showSearchEmptyStateHint(state: Boolean, hint: String = "") {
+        if(state) {
+            tvEmptyStateHint?.text = MethodChecker.fromHtml(String.format(getString(R.string.empty_state_hint_text), hint))
+            emptyStateHint?.visible()
+            rvPicker?.gone()
+        } else {
+            emptyStateHint?.gone()
+            rvPicker?.visible()
+        }
+    }
+
+    private fun showSearchEmptyStateRadioPicker(state: Boolean) {
         if(state) {
             ImageHandler.loadImage(context, emptyStateImage, ImageAssets.SEARCH_SHOWCASE_NOT_FOUND, null)
             emptyState?.visible()
-            rv_list_etalase_picker?.gone()
+            rvPicker?.gone()
         } else {
             emptyState?.gone()
-            rv_list_etalase_picker?.visible()
+            rvPicker?.visible()
+        }
+    }
+
+    private fun showEmptyStatePickerList(state: Boolean) {
+        if(state) {
+            rvPicker?.gone()
+            searchBar?.gone()
+            headerUnify?.actionTextView?.gone()
+            footer?.gone()
+            emptyStatePicker?.setImageUrl(ImageAssets.PICKER_LIST_EMPTY)
+            emptyStatePicker?.visible()
+        } else {
+            emptyStatePicker?.gone()
+            rvPicker?.visible()
+            searchBar?.visible()
+            footer?.visible()
+            if(pickerType == ShowcasePickerType.CHECKBOX) {
+                headerUnify?.actionTextView?.visible()
+            } else {
+                addShowcaseButton?.visible()
+            }
         }
     }
 
@@ -337,16 +615,28 @@ class ShopShowcasePickerFragment: BaseDaggerFragment(),
             loaderUnify?.visible()
             rvPicker?.gone()
             footer?.gone()
+            headerUnify?.actionTextView?.gone()
+            searchBar?.gone()
+            emptyState?.gone()
+            emptyStatePicker?.gone()
+            emptyStateHint?.gone()
+            addShowcaseButton?.gone()
         } else {
             loaderUnify?.gone()
             rvPicker?.visible()
             footer?.visible()
+            searchBar?.visible()
+            if(pickerType == ShowcasePickerType.CHECKBOX) {
+                headerUnify?.actionTextView?.visible()
+            } else {
+                addShowcaseButton?.visible()
+            }
         }
     }
 
-    private fun showErrorToaster(msg: String?) {
+    private fun showToaster(msg: String?, type: Int) {
         view?.let { view ->
-            Toaster.make(view, msg ?: "", Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
+            Toaster.make(view, msg ?: "", Snackbar.LENGTH_LONG, type)
         }
     }
 

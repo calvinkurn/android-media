@@ -34,7 +34,8 @@ class UserIdentificationStepperModel : StepperModel {
     }
 
     companion object {
-        val CREATOR: Parcelable.Creator<UserIdentificationStepperModel?> = object : Parcelable.Creator<UserIdentificationStepperModel?> {
+        @JvmField
+        val CREATOR: Parcelable.Creator<UserIdentificationStepperModel> = object : Parcelable.Creator<UserIdentificationStepperModel> {
             override fun createFromParcel(source: Parcel): UserIdentificationStepperModel? {
                 return UserIdentificationStepperModel(source)
             }
