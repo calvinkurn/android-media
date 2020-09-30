@@ -17,7 +17,6 @@ class MerchantVoucherViewHolder(
         private val onMerchantVoucherListWidgetListener: MerchantVoucherListWidget.OnMerchantVoucherListWidgetListener?
 ) : AbstractViewHolder<MerchantVoucherViewModel>(itemView) {
 
-    private var merchantVoucherView: MerchantVoucherView? = itemView.findViewById(R.id.merchantVoucherView)
 
     companion object {
         val LAYOUT = R.layout.item_merchant_voucher
@@ -25,7 +24,7 @@ class MerchantVoucherViewHolder(
     }
 
     override fun bind(element: MerchantVoucherViewModel?) {
-        merchantVoucherView?.run {
+        itemView.findViewById<MerchantVoucherView?>(R.id.merchantVoucherView)?.run {
             setData(element)
             onMerchantVoucherViewListener = merchantVoucherViewListener
         }
