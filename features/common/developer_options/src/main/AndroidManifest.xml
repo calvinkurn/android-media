@@ -3,7 +3,6 @@
     package="com.tokopedia.developer_options">
 
     <application>
-        <activity android:name=".presentation.feedbackpage.ui.activity.DrawOnPictureActivity"></activity>
         <activity
             android:name=".presentation.activity.DeveloperOptionActivity"
             android:label="@string/app_name"
@@ -56,6 +55,13 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="adjustResize" />
+
+        <activity
+            android:name=".presentation.feedbackpage.ui.activity.DrawOnPictureActivity"
+            android:hardwareAccelerated="true"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
     </application>
 
 </manifest>
