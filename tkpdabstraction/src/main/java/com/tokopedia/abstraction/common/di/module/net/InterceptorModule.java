@@ -7,8 +7,11 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.abstraction.common.network.exception.HeaderErrorResponse;
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor;
-import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.config.GlobalConfig;
+import com.tokopedia.network.NetworkRouter;
+import com.tokopedia.network.interceptor.TkpdAuthInterceptor;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import dagger.Module;
 import dagger.Provides;
@@ -35,14 +38,7 @@ public class InterceptorModule {
 
     @ApplicationScope
     @Provides
-    TkpdAuthInterceptor provideTkpdAuthInterceptor(@ApplicationContext Context context,
-                                                   AbstractionRouter abstractionRouter){
-        return new TkpdAuthInterceptor(context, abstractionRouter);
-    }
-
-    @ApplicationScope
-    @Provides
-    HeaderErrorResponseInterceptor provideHeaderErrorResponseInterceptor(){
+    HeaderErrorResponseInterceptor provideHeaderErrorResponseInterceptor() {
         return new HeaderErrorResponseInterceptor(HeaderErrorResponse.class);
     }
 

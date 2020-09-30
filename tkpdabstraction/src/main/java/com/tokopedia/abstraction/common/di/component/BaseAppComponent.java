@@ -33,8 +33,6 @@ public interface BaseAppComponent {
 
     AbstractionRouter provideAbstractionRouter();
 
-    TkpdAuthInterceptor tkpdAuthInterceptor();
-
     HeaderErrorResponseInterceptor headerErrorResponseInterceptor();
 
     HttpLoggingInterceptor httpLoggingInterceptor();
