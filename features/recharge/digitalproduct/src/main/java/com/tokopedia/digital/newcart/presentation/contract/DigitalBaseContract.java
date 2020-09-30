@@ -81,6 +81,8 @@ public interface DigitalBaseContract {
 
         String getClientNumber();
 
+        int getOrderId();
+
         String getZoneId();
 
         HashMap<String, String> getFields();

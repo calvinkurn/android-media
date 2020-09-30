@@ -1,8 +1,8 @@
 package com.tokopedia.topads.dashboard.data.mapper;
 
+import com.tokopedia.topads.dashboard.data.source.cloud.response.DataResponse;
 import com.tokopedia.topads.dashboard.domain.model.ProductDomain;
 import com.tokopedia.topads.dashboard.data.model.data.Product;
-import com.tokopedia.product.manage.item.common.data.source.cloud.DataResponse;
 
 import java.util.ArrayList;
 import java.util.List;
