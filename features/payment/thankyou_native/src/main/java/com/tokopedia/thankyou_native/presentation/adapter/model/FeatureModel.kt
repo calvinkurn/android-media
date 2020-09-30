@@ -8,7 +8,7 @@ data class FeatureListItem(
         var id : Int,
         @SerializedName("url")
         val url : String?,
-        @SerializedName("url_app")
+        @SerializedName("url_android")
         val urlApp : String?,
         @SerializedName("image")
         val image : String,

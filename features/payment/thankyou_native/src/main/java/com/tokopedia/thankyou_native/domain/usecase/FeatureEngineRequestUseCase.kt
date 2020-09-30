@@ -4,6 +4,7 @@ import com.google.gson.Gson
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.thankyou_native.GQL_FEATURE_ENGINE_REQUEST
+import com.tokopedia.thankyou_native.data.mapper.PaymentItemKey
 import com.tokopedia.thankyou_native.domain.model.*
 import javax.inject.Inject
 import javax.inject.Named
@@ -13,12 +14,12 @@ class FeatureEngineRequestUseCase @Inject constructor(
         graphqlRepository: GraphqlRepository)
     : GraphqlUseCase<FeatureEngineResponse>(graphqlRepository) {
 
-    fun getFeatureEngineData(merchantCode: String, profileCode: String, amount: Long,
+    fun getFeatureEngineData(thanksPageData: ThanksPageData,
                              onSuccess: (ValidateEngineResponse) -> Unit,
                              onError: (Throwable) -> Unit) {
         try {
             this.setTypeClass(FeatureEngineResponse::class.java)
-            this.setRequestParams(getRequestParams(merchantCode, profileCode, amount))
+            this.setRequestParams(getRequestParams(thanksPageData))
             this.setGraphqlQuery(query)
             this.execute(
                     { result ->
@@ -33,12 +34,32 @@ class FeatureEngineRequestUseCase @Inject constructor(
         }
     }
 
-    private fun getRequestParams(merchantCode: String, profileCode: String, amount: Long): Map<String, Any> {
+    private fun getRequestParams(thanksPageData: ThanksPageData): Map<String, Any> {
         return mapOf(PARAM_REQUEST to Gson().toJson(FeatureEngineRequest(
-                merchantCode, "TEST_DEFAULT", 1, 2,
-                FeatureEngineRequestParameters("300000"),
+                thanksPageData.merchantCode, thanksPageData.profileCode, 1, 2,
+                FeatureEngineRequestParameters(true.toString(), thanksPageData.amount.toString(),
+                        thanksPageData.gatewayName, isEGoldPurchased(thanksPageData).toString(),
+                        isDonation(thanksPageData).toString()),
                 FeatureEngineRequestOperators(),
                 FeatureEngineRequestThresholds())))
+    }
+
+    private fun isEGoldPurchased(thanksPageData: ThanksPageData): Boolean {
+        thanksPageData.paymentItems?.forEach {
+            when (it.itemName) {
+                PaymentItemKey.E_GOLD -> return true
+            }
+        }
+        return false
+    }
+
+    private fun isDonation(thanksPageData: ThanksPageData): Boolean {
+        thanksPageData.paymentItems?.forEach {
+            when (it.itemName) {
+                PaymentItemKey.DONATION -> return true
+            }
+        }
+        return false
     }
 
     companion object {

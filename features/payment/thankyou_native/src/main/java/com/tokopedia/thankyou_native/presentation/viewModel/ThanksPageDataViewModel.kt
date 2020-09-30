@@ -34,9 +34,7 @@ class ThanksPageDataViewModel @Inject constructor(
     fun getFeatureEngine(thanksPageData: ThanksPageData) {
         featureEngineRequestUseCase.cancelJobs()
         featureEngineRequestUseCase.getFeatureEngineData(
-                thanksPageData.merchantCode,
-                thanksPageData.profileCode,
-                thanksPageData.amount,
+                thanksPageData,
                 {
                     if (it.success) {
                         featureEngineDataLiveData.postValue(Success(it))

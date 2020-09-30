@@ -20,8 +20,16 @@ data class FeatureEngineRequest (
 )
 
 data class FeatureEngineRequestParameters(
+        @SerializedName("static")
+        val static : String,
         @SerializedName("amount")
-        val amount : String
+        val amount : String,
+        @SerializedName("gateway_code")
+        val gatewayCode : String,
+        @SerializedName("egold")
+        val eGold : String,
+        @SerializedName("donation")
+        val donation : String
 )
 
 class FeatureEngineRequestOperators
