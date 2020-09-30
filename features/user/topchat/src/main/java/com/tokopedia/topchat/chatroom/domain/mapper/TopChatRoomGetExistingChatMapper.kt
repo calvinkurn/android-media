@@ -89,7 +89,7 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
     }
 
     private fun createBroadCastUiModel(chatDateTime: Reply, model: Map<String, Visitable<*>>): BroadCastUiModel {
-        return BroadCastUiModel(chatDateTime, model)
+        return BroadCastUiModel(chatDateTime, model, chatDateTime.isOpposite)
     }
 
     private fun mergeBroadcast(index: Int, replies: List<Reply>, blastId: Int): Pair<Map<String, Visitable<*>>, Int> {

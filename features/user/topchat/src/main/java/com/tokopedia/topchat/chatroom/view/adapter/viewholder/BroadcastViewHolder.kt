@@ -2,6 +2,7 @@ package com.tokopedia.topchat.chatroom.view.adapter.viewholder
 
 import android.view.View
 import android.widget.ImageView
+import android.widget.LinearLayout
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.chat_common.data.DeferredAttachment
 import com.tokopedia.chat_common.data.MessageViewModel
@@ -36,6 +37,7 @@ class BroadcastViewHolder constructor(
         private val chatMessageListener: ChatLinkHandlerListener
 ) : AbstractViewHolder<BroadCastUiModel>(itemView) {
 
+    private val broadcastContainer: LinearLayout? = itemView?.findViewById(R.id.bubble_broadcast_container)
     private val bannerView: ImageView? = itemView?.findViewById(R.id.iv_banner)
     private val voucherView: TopchatMerchantVoucherView? = itemView?.findViewById(R.id.broadcast_merchant_voucher)
     private val singleProduct: SingleProductAttachmentContainer? = itemView?.findViewById(R.id.broadcast_product)
@@ -44,6 +46,12 @@ class BroadcastViewHolder constructor(
     private val adapterProductCarousel = ProductListAdapter(
             searchListener, productListener, deferredAttachment, commonListener, adapterListener
     )
+    private val paddingOpposite: Int by lazy(LazyThreadSafetyMode.NONE) {
+        itemView?.context?.resources?.getDimension(R.dimen.dp_topchat_1)?.toInt() ?: 0
+    }
+    private val paddingSender: Int by lazy(LazyThreadSafetyMode.NONE) {
+        itemView?.context?.resources?.getDimension(R.dimen.dp_topchat_3)?.toInt() ?: 0
+    }
     private val movementMethod = ChatLinkHandlerMovementMethod(chatMessageListener)
 
     init {
@@ -74,6 +82,17 @@ class BroadcastViewHolder constructor(
         bindProductCarousel(element)
         bindSingleProduct(element)
         bindMessage(element)
+        bindBackground(element)
+    }
+
+    private fun bindBackground(element: BroadCastUiModel) {
+        if (element.isOpposite) {
+            broadcastContainer?.setPadding(paddingOpposite, paddingOpposite, paddingOpposite, paddingOpposite)
+            broadcastContainer?.setBackgroundResource(R.drawable.bg_broadcast_bubble_receiver)
+        } else {
+            broadcastContainer?.setPadding(paddingSender, paddingSender, paddingSender, paddingSender)
+            broadcastContainer?.setBackgroundResource(R.drawable.bg_broadcast_bubble_sender)
+        }
     }
 
     private fun bindBanner(element: BroadCastUiModel) {

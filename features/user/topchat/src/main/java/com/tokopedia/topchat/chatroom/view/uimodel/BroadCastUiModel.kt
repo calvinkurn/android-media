@@ -14,8 +14,9 @@ class BroadCastUiModel : BaseChatViewModel, Visitable<TopChatTypeFactory> {
     val productCarousel: ProductCarouselUiModel? get() = items[AttachmentType.Companion.TYPE_IMAGE_CAROUSEL] as? ProductCarouselUiModel
     val singleProduct: ProductAttachmentViewModel? get() = items[AttachmentType.Companion.TYPE_PRODUCT_ATTACHMENT] as? ProductAttachmentViewModel
     val messageUiModel: MessageViewModel? get() = items[AttachmentType.Companion.TYPE_MESSAGE] as? MessageViewModel
+    val isOpposite: Boolean
 
-    constructor(reply: Reply, items: Map<String, Visitable<*>>) : super(
+    constructor(reply: Reply, items: Map<String, Visitable<*>>, isOpposite: Boolean) : super(
             messageId = reply.msgId.toString(),
             fromUid = reply.senderId.toString(),
             from = reply.senderName,
@@ -27,6 +28,7 @@ class BroadCastUiModel : BaseChatViewModel, Visitable<TopChatTypeFactory> {
             source = reply.source
     ) {
         this.items = items
+        this.isOpposite = isOpposite
     }
 
     override fun type(typeFactory: TopChatTypeFactory): Int {
