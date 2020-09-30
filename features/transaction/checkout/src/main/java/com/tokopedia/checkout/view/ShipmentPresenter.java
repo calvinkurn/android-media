@@ -180,6 +180,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private boolean isPurchaseProtectionPage = false;
     private boolean isShowOnboarding;
     private boolean isIneligiblePromoDialogEnabled;
+    private boolean lockCheckout;
     private ABTestButton abTestButton = new ABTestButton();
 
     private ShipmentContract.AnalyticsActionListener analyticsActionListener;
@@ -673,12 +674,17 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                 String deviceId,
                                 String cornerId,
                                 String leasingId) {
+        if (lockCheckout) {
+            return;
+        }
+
         removeErrorShopProduct();
         CheckoutRequest checkoutRequest = generateCheckoutRequest(null, hasInsurance,
                 shipmentDonationModel != null && shipmentDonationModel.isChecked() ? 1 : 0, leasingId
         );
 
         if (checkoutRequest != null && checkoutRequest.data != null && checkoutRequest.data.size() > 0) {
+            lockCheckout = true;
             Map<String, Object> params = generateCheckoutParams(isOneClickShipment, isTradeIn, isTradeInDropOff, deviceId, checkoutRequest);
             RequestParams requestParams = RequestParams.create();
             requestParams.putAll(params);
@@ -687,6 +693,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                             .subscribe(getSubscriberCheckoutCart(checkoutRequest, isOneClickShipment, isTradeIn, deviceId, cornerId, leasingId))
             );
         } else {
+            lockCheckout = false;
             getView().hideLoading();
             getView().setHasRunningApiCall(false);
             getView().showToastError(getView().getActivityContext().getString(R.string.message_error_checkout_empty));
@@ -896,6 +903,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
             @Override
             public void onError(Throwable e) {
+                lockCheckout = false;
                 getView().hideLoading();
                 Timber.d(e);
                 String errorMessage = e.getMessage();
@@ -910,6 +918,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
             @Override
             public void onNext(CheckoutData checkoutData) {
+                lockCheckout = false;
                 getView().setHasRunningApiCall(false);
                 ShipmentPresenter.this.checkoutData = checkoutData;
                 if (!checkoutData.isError()) {
@@ -1858,6 +1867,11 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     public void proceedCodCheckout(boolean hasInsurance,
                                    boolean isOneClickShipment, boolean isTradeIn,
                                    String deviceId, String leasingId) {
+        if (lockCheckout) {
+            return;
+        }
+
+        lockCheckout = true;
         CheckoutRequest checkoutRequest = generateCheckoutRequest(null, hasInsurance,
                 shipmentDonationModel != null && shipmentDonationModel.isChecked() ? 1 : 0, leasingId
         );
@@ -1871,6 +1885,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
             @Override
             public void onError(Throwable e) {
+                lockCheckout = false;
                 getView().setHasRunningApiCall(false);
                 Timber.d(e);
                 mTrackerCod.eventClickBayarDiTempatShipmentNotSuccessIncomplete();
@@ -1879,6 +1894,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
             @Override
             public void onNext(GraphqlResponse graphqlResponse) {
+                lockCheckout = false;
                 if (getView() == null) return;
 
                 getView().setHasRunningApiCall(false);
@@ -1980,6 +1996,11 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     @Override
     public ValidateUsePromoRequest getLastValidateUseRequest() {
         return lastValidateUsePromoRequest;
+    }
+
+    @Override
+    public boolean isLockCheckout() {
+        return lockCheckout;
     }
 
     @Override

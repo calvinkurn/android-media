@@ -2198,14 +2198,18 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void onProcessToPayment() {
-        showLoading();
-        shipmentAdapter.checkDropshipperValidation(REQUEST_CODE_NORMAL_CHECKOUT);
+        if (shipmentPresenter.isLockCheckout()) {
+            showLoading();
+            shipmentAdapter.checkDropshipperValidation(REQUEST_CODE_NORMAL_CHECKOUT);
+        }
     }
 
     @Override
     public void onProcessToPaymentCod() {
-        showLoading();
-        shipmentAdapter.checkDropshipperValidation(REQUEST_CODE_COD);
+        if (shipmentPresenter.isLockCheckout()) {
+            showLoading();
+            shipmentAdapter.checkDropshipperValidation(REQUEST_CODE_COD);
+        }
     }
 
     public int getResultCode() {

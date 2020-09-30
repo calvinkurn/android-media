@@ -45,22 +45,11 @@ class ShipmentButtonPaymentViewHolder(val view: View, val actionListener: Shipme
         }
         itemView.tv_total_payment.text = model.totalPrice
         itemView.btn_select_payment_method.buttonType = model.abTestButton.getUnifyButtonType()
-        if (model.isClickable) {
-            itemView.btn_select_payment_method.setOnClickListener {
-                model.isClickable = false
-                actionListener.onProcessToPayment()
-            }
-            itemView.btn_select_cod.setOnClickListener {
-                model.isClickable = false
-                actionListener.onProcessToPaymentCod()
-            }
-        } else {
-            itemView.btn_select_payment_method.setOnClickListener {
-                // No-op
-            }
-            itemView.btn_select_cod.setOnClickListener {
-                // No-op
-            }
+        itemView.btn_select_payment_method.setOnClickListener {
+            actionListener.onProcessToPayment()
+        }
+        itemView.btn_select_cod.setOnClickListener {
+            actionListener.onProcessToPaymentCod()
         }
     }
 }
