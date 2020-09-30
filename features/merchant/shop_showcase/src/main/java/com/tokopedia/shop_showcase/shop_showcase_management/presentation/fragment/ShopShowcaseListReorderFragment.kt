@@ -19,6 +19,7 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.design.touchhelper.OnStartDragListener
 import com.tokopedia.design.touchhelper.SimpleItemTouchHelperCallback
 import com.tokopedia.header.HeaderUnify
+import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 import com.tokopedia.shop_showcase.R
 import com.tokopedia.shop_showcase.ShopShowcaseInstance
 import com.tokopedia.shop_showcase.common.*
@@ -43,7 +44,8 @@ class ShopShowcaseListReorderFragment : BaseDaggerFragment(),
         const val SHOWCASE_LIST = "SHOWCASE_LIST"
 
         @JvmStatic
-        fun createInstance(shopType: String, showcaseList: ArrayList<ShowcaseItem>?, isMyShop: Boolean? = false): ShopShowcaseListReorderFragment {
+//        fun createInstance(shopType: String, showcaseList: ArrayList<ShowcaseItem>?, isMyShop: Boolean? = false): ShopShowcaseListReorderFragment {
+        fun createInstance(shopType: String, showcaseList: ArrayList<ShopEtalaseModel>?, isMyShop: Boolean? = false): ShopShowcaseListReorderFragment {
             val fragment = ShopShowcaseListReorderFragment()
             if (showcaseList != null) {
                 val bundle = Bundle()
@@ -173,7 +175,7 @@ class ShopShowcaseListReorderFragment : BaseDaggerFragment(),
     }
 
     private fun observeReorderShopShowcase() {
-        viewModel.reoderShopShowcaseResponse.observe(this, Observer {
+        viewModel.reoderShopShowcaseResponse.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     val message = it.data.reorderShopShowcase.message

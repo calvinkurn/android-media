@@ -31,6 +31,7 @@ import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
+import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 import com.tokopedia.shop_showcase.R
 import com.tokopedia.shop_showcase.ShopShowcaseInstance
 import com.tokopedia.shop_showcase.common.*
@@ -106,7 +107,7 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
     private lateinit var globalError: GlobalError
     private var layoutManager: LinearLayoutManager? = null
     private var shopShowcaseListAdapter: ShopShowcaseListAdapter? = null
-    private var showcaseList: List<ShowcaseItem> = listOf()
+    private var showcaseList: List<ShopEtalaseModel> = listOf()
     private var tracking: ShopShowcaseTracking? = null
     private var performanceMonitoring: PerformanceMonitoring? = null
 
@@ -259,7 +260,7 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
             override fun afterTextChanged(s: Editable) {
                 showLoading(true)
 
-                val shopShowcaseViewModelList = ArrayList<ShowcaseItem>()
+                val shopShowcaseViewModelList = ArrayList<ShopEtalaseModel>()
                 if (showcaseList != null && showcaseList.size > 0) {
                     val lowercaseKeyword = s.toString().toLowerCase()
                     for (showcase in showcaseList) {
@@ -316,12 +317,12 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
         super.onDestroy()
     }
 
-    override fun sendClickShowcaseMenuMore(dataShowcase: ShowcaseItem, position: Int) {
+    override fun sendClickShowcaseMenuMore(dataShowcase: ShopEtalaseModel, position: Int) {
         tracking?.clickDots(shopId, shopType, dataShowcase.name)
         handleEditShowcase(dataShowcase, position)
     }
 
-    override fun sendClickShowcase(dataShowcase: ShowcaseItem, position: Int) {
+    override fun sendClickShowcase(dataShowcase: ShopEtalaseModel, position: Int) {
         tracking?.clickEtalase(shopId, shopType, dataShowcase.name)
         val showcaseId = if (dataShowcase.type == ShowcaseType.GENERATED) dataShowcase.alias else dataShowcase.id
         activity?.run{
@@ -349,7 +350,10 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
                     showLoading(false)
                     showLoadingSwipeToRefresh(false)
                     hideGlobalError()
+
+                    showcaseList = it.data
                     shopShowcaseListAdapter?.updateDataShowcaseList(showcaseList)
+
 //                    val errorMessage = it.data.shopShowcasesByShopID.error.message
 //                    if (errorMessage.isNotEmpty()) {
 //                        showErrorResponse(errorMessage)
@@ -381,8 +385,28 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
                         showErrorResponse(errorMessage)
                     } else {
                         hideGlobalError()
-                        showcaseList = it.data.shopShowcases.result
-                        shopShowcaseListAdapter?.updateDataShowcaseList(showcaseList)
+
+                        val showcaseResult = it.data.shopShowcases.result
+                        if (showcaseResult.size > 0) {
+                            var _showcaseList: MutableList<ShopEtalaseModel> = mutableListOf()
+                            showcaseResult.mapIndexed { index, showcaseItem ->
+                                _showcaseList.add(index, ShopEtalaseModel(
+                                        id = showcaseItem.id,
+                                        name = showcaseItem.name,
+                                        count = showcaseItem.count,
+                                        type = showcaseItem.type,
+                                        highlighted = showcaseItem.highlighted,
+                                        alias = showcaseItem.alias,
+                                        useAce = showcaseItem.useAce,
+                                        aceDefaultSort = showcaseItem.aceDefaultSort,
+                                        uri = showcaseItem.uri,
+                                        badge = showcaseItem.badge
+                                ))
+                            }
+
+                            showcaseList = _showcaseList
+                            shopShowcaseListAdapter?.updateDataShowcaseList(showcaseList)
+                        }
                     }
                 }
                 is Fail -> {
@@ -483,7 +507,8 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
         viewModel.getTotalProduct(shopId, page, perPage, sort, fmenu, fkeyword)
     }
 
-    private fun handleEditShowcase(dataShowcase: ShowcaseItem, position: Int) {
+//    private fun handleEditShowcase(dataShowcase: ShowcaseItem, position: Int) {
+    private fun handleEditShowcase(dataShowcase: ShopEtalaseModel, position: Int) {
         bottomSheet = BottomSheetUnify()
         bottomSheet.setTitle(getString(R.string.setting_showcase))
         bottomSheet.setCloseClickListener {
@@ -637,7 +662,8 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
             }
         }
         headerUnify.actionTextView?.setOnClickListener {
-            val shopShowcaseViewModelList = ArrayList<ShowcaseItem>()
+//            val shopShowcaseViewModelList = ArrayList<ShowcaseItem>()
+            val shopShowcaseViewModelList = ArrayList<ShopEtalaseModel>()
             for (shopShowcaseViewModel in showcaseList) {
                 shopShowcaseViewModelList.add(shopShowcaseViewModel)
             }
