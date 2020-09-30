@@ -24,6 +24,8 @@ android {
 
 dependencies {
     implementation project(rootProject.ext.features.resourcesCommon)
+
+    implementation project(rootProject.ext.libraries.akamaiBotLib)
     implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
 
