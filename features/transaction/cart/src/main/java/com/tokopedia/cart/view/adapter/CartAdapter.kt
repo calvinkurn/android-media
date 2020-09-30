@@ -1208,30 +1208,43 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
                     if (normalItemCount == 0) {
                         // If normal / non error item empty, remove unavailable item error ticker
                         cartItemTickerErrorHolderData?.let {
+                            toBeRemovedIndex.add(cartDataList.indexOf(it))
                             cartDataList.remove(it)
                         }
                     } else {
                         // If normal / non error item not empty, adjust error ticker item wording count
                         cartItemTickerErrorHolderData?.let {
                             it.cartTickerErrorData?.errorInfo = String.format(context.getString(R.string.cart_error_message), errorItemCount)
+                            toBeUpdatedIndex.add(cartDataList.indexOf(it))
                         }
                     }
                     // Adjust unavailable item header wording
                     disabledItemHeaderHolderData?.let {
                         it.disabledItemCount = errorItemCount
+                        toBeUpdatedIndex.add(cartDataList.indexOf(it))
                     }
                 }
             } else {
                 // Goes here if unavailable item is not exist
                 // Remove unavailable item error ticker
                 cartItemTickerErrorHolderData?.let {
+                    toBeRemovedIndex.add(cartDataList.indexOf(it))
                     cartDataList.remove(it)
                 }
                 // Remove unavailable item header
                 disabledItemHeaderHolderData?.let {
+                    toBeRemovedIndex.add(cartDataList.indexOf(it))
                     cartDataList.remove(it)
                 }
             }
+        }
+
+        cartItemTickerErrorHolderData?.let {
+            toBeUpdatedIndex.add(cartDataList.indexOf(it))
+        }
+
+        disabledItemHeaderHolderData?.let {
+            toBeUpdatedIndex.add(cartDataList.indexOf(it))
         }
 
         return Pair(toBeRemovedIndex, toBeUpdatedIndex)

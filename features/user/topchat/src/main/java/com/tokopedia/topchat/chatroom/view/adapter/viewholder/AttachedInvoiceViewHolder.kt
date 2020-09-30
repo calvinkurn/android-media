@@ -38,7 +38,7 @@ class AttachedInvoiceViewHolder(
     private val radiusInvoice: Float = itemView.context.resources.getDimension(R.dimen.dp_topchat_6)
 
     private val bgOpposite = ViewUtil.generateBackgroundWithShadow(
-            itemView,
+            clContainer,
             com.tokopedia.unifyprinciples.R.color.Neutral_N0,
             com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
             com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
@@ -50,7 +50,7 @@ class AttachedInvoiceViewHolder(
             Gravity.CENTER
     )
     private val bgSender = ViewUtil.generateBackgroundWithShadow(
-            itemView,
+            clContainer,
             com.tokopedia.unifyprinciples.R.color.Neutral_N0,
             com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
             com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,

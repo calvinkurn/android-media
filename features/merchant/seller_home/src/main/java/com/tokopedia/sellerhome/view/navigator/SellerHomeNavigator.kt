@@ -38,7 +38,9 @@ class SellerHomeNavigator(
     fun start(@FragmentType page: Int) {
         val transaction = fm.beginTransaction()
         val fragment = getPageFragment(page)
-        addAllPages(fragment, transaction)
+        if (fm.fragments.isEmpty()) {
+            addAllPages(fragment, transaction)
+        }
 
         fragment?.let {
             showFragment(it, transaction)
@@ -103,6 +105,16 @@ class SellerHomeNavigator(
             FragmentType.ORDER -> pages[somListFragment]
             else -> pages[otherSettingsFragment]
         }
+    }
+
+    fun cleanupNavigator() {
+        val transaction = fm.beginTransaction()
+        fm.fragments.forEach {
+            if (it.isAdded) {
+                transaction.remove(it)
+            }
+        }
+        transaction.commitAllowingStateLoss()
     }
 
     private fun setupPageFromAppLink(selectedPage: PageFragment?): Fragment? {

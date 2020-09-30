@@ -1,9 +1,7 @@
 package com.tokopedia.play.view.activity
 
-import android.content.Context
 import android.content.Intent
 import android.media.AudioManager
-import android.net.Uri
 import android.os.Bundle
 import android.view.WindowManager
 import androidx.fragment.app.Fragment
@@ -15,7 +13,6 @@ import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.analytics.performance.util.PltPerformanceData
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.play.*
 import com.tokopedia.play.di.DaggerPlayComponent
 import com.tokopedia.play.di.PlayModule
@@ -24,7 +21,6 @@ import com.tokopedia.play.view.contract.PlayNewChannelInteractor
 import com.tokopedia.play.view.fragment.PlayFragment
 import com.tokopedia.play.view.type.ScreenOrientation
 import com.tokopedia.play_common.util.PlayVideoPlayerObserver
-import org.jetbrains.annotations.TestOnly
 import javax.inject.Inject
 
 /**
@@ -164,11 +160,5 @@ class PlayActivity : BaseActivity(), PlayNewChannelInteractor, PlayNavigation {
 
     companion object {
         private const val PLAY_FRAGMENT_TAG = "FRAGMENT_PLAY"
-
-        @TestOnly
-        fun createIntent(context: Context, channelId: String) =
-                Intent(context, PlayActivity::class.java).apply {
-                    data = Uri.parse("${ApplinkConstInternalContent.INTERNAL_PLAY}/$channelId")
-                }
     }
 }

@@ -121,4 +121,9 @@ object UohConsts {
 
     const val QUERY_PARAM_INVOICE = "invoice"
     const val QUERY_PARAM_INVOICE_URL = "invoice_url"
+
+    const val PRODUCT_ID = "product_id"
+    const val QUANTITY = "quantity"
+    const val NOTES = "notes"
+    const val SHOP_ID = "shop_id"
 }
