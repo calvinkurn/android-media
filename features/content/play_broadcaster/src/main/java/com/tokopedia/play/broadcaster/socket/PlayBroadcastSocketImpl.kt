@@ -36,7 +36,7 @@ class PlayBroadcastSocketImpl constructor(
             pingInterval = DEFAULT_PING
     )
 
-    private val newMetricListType: Type = object: TypeToken<List<Metric>>(){}.type
+    private val newMetricListType: Type = object: TypeToken<List<NewMetricList.NewMetric>>(){}.type
 
     override fun config(minReconnectDelay: Int, maxRetries: Int, pingInterval: Long) {
         this.config = SocketConfiguration(minReconnectDelay, maxRetries, pingInterval)
