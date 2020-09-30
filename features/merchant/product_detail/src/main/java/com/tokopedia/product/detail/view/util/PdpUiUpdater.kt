@@ -149,7 +149,7 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
                 rating = it.basic.stats.rating
                 ratingCount = it.basic.stats.countReview.toIntOrZero()
                 talkCount = it.basic.stats.countTalk.toIntOrZero()
-                paymentVerifiedCount = it.basic.txStats.itemSoldPaymentVerified.toInt()
+                paymentVerifiedCount = it.basic.txStats.itemSoldPaymentVerified.toIntOrZero()
             }
 
             productInfoMap?.run {
@@ -360,11 +360,15 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
     }
 
     fun updateRecommendationData(data: RecommendationWidget): ProductRecommendationDataModel?{
-        return listProductRecomMap?.find { it.name == data.pageName }?.apply {
+        return listProductRecomMap?.find { data.pageName.contains(it.name) }?.apply {
             recomWidgetData = data
             cardModel = mapToCardModel(data)
             filterData = mapToAnnotateChip(data)
         }
+    }
+
+    fun getRecommendationData(pageName: String): List<ProductRecommendationDataModel>?{
+        return listProductRecomMap?.filter { pageName.contains(it.name) }
     }
 
     fun updateFilterRecommendationData(data: ProductRecommendationDataModel): ProductRecommendationDataModel?{
@@ -406,7 +410,7 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
     }
 
     private fun mapToCardModel(data: RecommendationWidget?): List<ProductCardModel> {
-        if(data == null) return listOf()
+        if (data == null) return listOf()
         return data.recommendationItemList.map {
             ProductCardModel(
                     slashedPrice = it.slashedPrice,
@@ -439,7 +443,7 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
         }
     }
 
-    private fun mapToAnnotateChip(data: RecommendationWidget): List<AnnotationChip>{
+    private fun mapToAnnotateChip(data: RecommendationWidget): List<AnnotationChip> {
         return data.recommendationFilterChips.map {
             AnnotationChip(it)
         }

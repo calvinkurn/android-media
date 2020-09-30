@@ -498,4 +498,8 @@
         <key>android_async_branch_user_info</key>
         <value>false</value>
     </entry>
+    <entry>
+        <key>android_post_seq_async_sellerapp</key>
+        <value>true</value>
+    </entry>
 </defaultsMap>

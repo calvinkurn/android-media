@@ -91,6 +91,7 @@ class TopAdsDetailSheet : BottomSheetUnify() {
             categoryType: Int
     ) {
 
+        if(adId.isNotEmpty())
         this.adId = adId
         this.adType = adTye
         this.category = categoryType

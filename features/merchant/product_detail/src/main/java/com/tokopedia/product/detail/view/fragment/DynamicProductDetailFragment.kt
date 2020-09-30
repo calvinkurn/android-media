@@ -65,7 +65,6 @@ import com.tokopedia.discovery.common.manager.AdultManager
 import com.tokopedia.gallery.ImageReviewGalleryActivity
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
 import com.tokopedia.imagepreview.ImagePreviewActivity
-import com.tokopedia.iris.IrisAnalytics.Companion.getInstance
 import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
@@ -89,11 +88,7 @@ import com.tokopedia.product.detail.common.data.model.product.Video
 import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
 import com.tokopedia.product.detail.data.model.ProductInfoP3
 import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneAddedProductDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
-import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductNotifyMeDataModel
-import com.tokopedia.product.detail.data.model.datamodel.TopAdsImageDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
+import com.tokopedia.product.detail.data.model.datamodel.*
 import com.tokopedia.product.detail.data.model.financing.FtInstallmentCalculationDataResponse
 import com.tokopedia.product.detail.data.util.*
 import com.tokopedia.product.detail.data.util.VariantMapper.generateVariantString
@@ -826,14 +821,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     /**
-     * ProductMediaViewHolder
-     */
-    override fun onImageReviewMediaClicked(componentTrackDataModel: ComponentTrackDataModel) {
-        DynamicProductDetailTracking.Click.eventClickReviewImageMedia(viewModel.getDynamicProductInfoP1, componentTrackDataModel, viewModel.userId)
-        goToReviewImagePreview()
-    }
-
-    /**
      * ProductTickerViewHolder
      */
     override fun onTickerGeneralClicked(tickerTitle: String, tickerType: Int, url: String, componentTrackDataModel: ComponentTrackDataModel?) {
@@ -1102,8 +1089,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
             pdpUiUpdater?.updateDataP2General(it)
             dynamicAdapter.notifyItemComponentSections(pdpUiUpdater?.productDiscussionMostHelpfulMap, pdpUiUpdater?.productReviewMap, pdpUiUpdater?.productReviewOldMap)
-            dynamicAdapter.notifyMediaWithPayload(pdpUiUpdater?.mediaMap, ProductDetailConstant.PAYLOAD_MEDIA_UPDATE_IMAGE_REVIEW)
-
             (activity as? ProductDetailActivity)?.stopMonitoringP2Other()
         }
     }
@@ -1329,7 +1314,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             data.doSuccessOrFail({
                 dynamicAdapter.notifyRecomAdapter(pdpUiUpdater?.updateRecommendationData(it.data))
             }, {
-                dynamicAdapter.removeRecommendation(pdpUiUpdater?.listProductRecomMap)
+                dynamicAdapter.removeRecommendation(pdpUiUpdater?.getRecommendationData(it.message ?: ""))
             })
         }
 
@@ -2061,9 +2046,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                         deeplinkUrl,
                         viewModel.getDynamicProductInfoP1?.getFinalStock() ?: "0"
                 )
-                context?.let {
-                    getInstance(it).saveEvent(sentBundle)
-                }
                 return
             }
         }
