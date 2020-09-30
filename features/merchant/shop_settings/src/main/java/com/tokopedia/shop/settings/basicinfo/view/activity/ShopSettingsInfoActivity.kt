@@ -41,7 +41,7 @@ class ShopSettingsInfoActivity : BaseSimpleActivity() {
         }
     }
 
-    fun setup() {
+    private fun setup() {
         window.decorView.setBackgroundColor(Color.WHITE)
         toolbar.background = ContextCompat.getDrawable(this, android.R.color.transparent)
     }

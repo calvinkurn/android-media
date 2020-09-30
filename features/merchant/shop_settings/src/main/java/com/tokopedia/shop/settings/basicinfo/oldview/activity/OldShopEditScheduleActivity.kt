@@ -24,7 +24,7 @@ import com.tokopedia.shop.settings.basicinfo.oldview.presenter.UpdateShopSchedul
 import com.tokopedia.shop.settings.common.olddi.DaggerOldShopSettingsComponent
 import com.tokopedia.shop.settings.common.util.*
 import com.tokopedia.unifycomponents.Toaster
-import kotlinx.android.synthetic.main.activity_shop_edit_schedule.*
+import kotlinx.android.synthetic.main.old_activity_shop_edit_schedule.*
 import kotlinx.android.synthetic.main.partial_toolbar_save_button.*
 import java.util.*
 import javax.inject.Inject
@@ -279,7 +279,7 @@ class OldShopEditScheduleActivity : BaseSimpleActivity(), UpdateShopSchedulePres
     }
 
     override fun getLayoutRes(): Int {
-        return R.layout.activity_shop_edit_schedule
+        return R.layout.old_activity_shop_edit_schedule
     }
 
     companion object {
