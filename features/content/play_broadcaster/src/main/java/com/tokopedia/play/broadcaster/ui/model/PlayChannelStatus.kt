@@ -5,9 +5,7 @@ package com.tokopedia.play.broadcaster.ui.model
  * Created by mzennis on 24/05/20.
  */
 enum class PlayChannelStatus(val value: String) {
-    Deleted("-1"),
     Draft("0"),
-    Active("1"),
     Live("2"),
     Pause("3"),
     Stop("4"),

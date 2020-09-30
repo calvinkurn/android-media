@@ -2,6 +2,7 @@ package com.tokopedia.play.broadcaster.util.extension
 
 import android.content.Context
 import com.crashlytics.android.Crashlytics
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
 
 /**
@@ -30,6 +31,9 @@ internal fun Context.getDialog(
 }
 
 internal fun sendCrashlyticsLog(throwable: Throwable) {
+    if (GlobalConfig.DEBUG) {
+        throwable.printStackTrace()
+    }
     try {
         Crashlytics.logException(throwable)
     } catch (e: Exception) {}

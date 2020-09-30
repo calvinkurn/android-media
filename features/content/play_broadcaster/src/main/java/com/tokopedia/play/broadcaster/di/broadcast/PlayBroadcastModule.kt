@@ -7,7 +7,7 @@ import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.pusher.PlayPusher
-import com.tokopedia.play.broadcaster.pusher.PlayPusherBuilder
+import com.tokopedia.play.broadcaster.pusher.PlayPusherImpl
 import com.tokopedia.play.broadcaster.socket.PlayBroadcastSocket
 import com.tokopedia.play.broadcaster.socket.PlayBroadcastSocket.Companion.KEY_GROUP_CHAT_PREFERENCES
 import com.tokopedia.play.broadcaster.socket.PlayBroadcastSocketImpl
@@ -40,7 +40,7 @@ class PlayBroadcastModule(val mContext: Context) {
 
     @Provides
     fun providePlayPusher(@ApplicationContext context: Context): PlayPusher {
-        return PlayPusherBuilder(context).build()
+        return PlayPusherImpl(context)
     }
 
     @Provides
