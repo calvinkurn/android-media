@@ -23,7 +23,7 @@ class TopchatImageAnnouncementViewHolder(
     override fun bind(viewModel: ImageAnnouncementViewModel) {
         super.bind(viewModel)
         ImageAnnouncementViewHolderBinder.bindBannerImage(viewModel, attachment)
-        bindClick(viewModel)
+        ImageAnnouncementViewHolderBinder.bindBannerClick(viewModel, container, listener)
     }
 
     override fun onViewRecycled() {
@@ -31,12 +31,6 @@ class TopchatImageAnnouncementViewHolder(
         attachment?.let {
             ImageHandler.clearImage(it)
         }
-    }
-
-    private fun bindClick(viewModel: ImageAnnouncementViewModel) {
-        val onClick = View.OnClickListener { listener.onImageAnnouncementClicked(viewModel) }
-        container?.setOnClickListener(onClick)
-        btnCheckNow?.setOnClickListener(onClick)
     }
 
     companion object {

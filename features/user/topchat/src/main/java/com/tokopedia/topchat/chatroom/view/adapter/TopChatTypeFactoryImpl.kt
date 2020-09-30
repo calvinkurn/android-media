@@ -168,7 +168,7 @@ open class TopChatTypeFactoryImpl constructor(
     ): AbstractViewHolder<*> {
         return when (type) {
             ProductCarouselListAttachmentViewHolder.LAYOUT -> ProductCarouselListAttachmentViewHolder(parent, productAttachmentListener, productCarouselListListener, deferredAttachment, searchListener, commonListener, adapterListener)
-            BroadcastViewHolder.LAYOUT -> BroadcastViewHolder(parent, voucherListener, productAttachmentListener, productCarouselListListener, deferredAttachment, searchListener, commonListener, adapterListener, chatLinkHandlerListener)
+            BroadcastViewHolder.LAYOUT -> BroadcastViewHolder(parent, imageAnnouncementListener, voucherListener, productAttachmentListener, productCarouselListListener, deferredAttachment, searchListener, commonListener, adapterListener, chatLinkHandlerListener)
             LeftChatMessageViewHolder.LAYOUT -> LeftChatMessageViewHolder(parent, chatLinkHandlerListener, commonListener, adapterListener)
             RightChatMessageViewHolder.LAYOUT -> RightChatMessageViewHolder(parent, chatLinkHandlerListener, commonListener, adapterListener)
             TopchatProductAttachmentViewHolder.LAYOUT -> TopchatProductAttachmentViewHolder(parent, productAttachmentListener, deferredAttachment, searchListener, commonListener, adapterListener)

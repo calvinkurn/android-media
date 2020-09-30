@@ -8,6 +8,7 @@ import com.tokopedia.chat_common.data.DeferredAttachment
 import com.tokopedia.chat_common.data.MessageViewModel
 import com.tokopedia.chat_common.util.ChatLinkHandlerMovementMethod
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandlerListener
+import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageAnnouncementListener
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ProductAttachmentListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
@@ -27,6 +28,7 @@ import com.tokopedia.topchat.chatroom.view.uimodel.BroadCastUiModel
 
 class BroadcastViewHolder constructor(
         itemView: View?,
+        private val imageAnnouncementListener: ImageAnnouncementListener,
         private val voucherListener: TopChatVoucherListener,
         private val productListener: ProductAttachmentListener,
         private val productCarouselListener: ProductCarouselListAttachmentViewHolder.Listener,
@@ -98,6 +100,7 @@ class BroadcastViewHolder constructor(
     private fun bindBanner(element: BroadCastUiModel) {
         val banner = element.banner ?: return
         ImageAnnouncementViewHolderBinder.bindBannerImage(banner, bannerView)
+        ImageAnnouncementViewHolderBinder.bindBannerClick(banner, bannerView, imageAnnouncementListener)
         bindBannerMargin(element)
     }
 
