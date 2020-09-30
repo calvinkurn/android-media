@@ -167,12 +167,12 @@ internal open class ProductWidget(
     }
 
     private fun productStock(view: RemoteViews) {
-        if (product.stockAvailable?.isEmpty() == true || product.stockMessage?.isEmpty() == true) {
-            return
+        product.stockAvailable?.let {
+            if (it.isNotEmpty() && it != "0") {
+                view.setViewVisibility(R.id.tv_stock, View.VISIBLE)
+                view.setTextViewText(R.id.tv_stock, spanStr(product.stockMessage))
+            }
         }
-
-        view.setViewVisibility(R.id.tv_stock, View.VISIBLE)
-        view.setTextViewText(R.id.tv_stock, spanStr(product.stockMessage))
     }
 
     private fun discountPriceTag(view: RemoteViews) {
