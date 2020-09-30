@@ -173,11 +173,8 @@ class RestCloudDataStore(
     }
 
     private suspend fun postMultipart(request: RestRequest): Response<String> {
-        val file = File(request.body.toString())
-        val reqFile = RequestBody.create(MediaType.parse("image/*"), file)
-        val multipartBody = MultipartBody.Part.createFormData("upload", file.name, reqFile)
 
-        return mApi.postMultipartDeferred(request.url, multipartBody,
+        return mApi.postMultipartDeferred(request.url, request.body as MultipartBody.Part,
                 request.queryParams,
                 request.headers)
     }
