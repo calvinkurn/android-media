@@ -17,7 +17,6 @@ import com.tokopedia.common_digital.cart.data.mapper.CartMapperData
 import com.tokopedia.common_digital.cart.data.mapper.ICartMapperData
 import com.tokopedia.common_digital.cart.data.repository.DigitalCartRepository
 import com.tokopedia.common_digital.cart.domain.IDigitalCartRepository
-import com.tokopedia.common_digital.cart.domain.usecase.DigitalAddToCartUseCase
 import com.tokopedia.common_digital.cart.domain.usecase.DigitalGetCartUseCase
 import com.tokopedia.common_digital.cart.domain.usecase.DigitalInstantCheckoutUseCase
 import com.tokopedia.common_digital.common.DigitalRouter
@@ -185,12 +184,6 @@ class DigitalCommonModule {
                                      digitalGetCartDataSource: DigitalGetCartDataSource,
                                      digitalInstantCheckoutDataSource: DigitalInstantCheckoutDataSource): IDigitalCartRepository {
         return DigitalCartRepository(digitalAddToCartDataSource, digitalGetCartDataSource, digitalInstantCheckoutDataSource)
-    }
-
-    @Provides
-    @DigitalCommonScope
-    fun provideDigitalAddToCartUseCase(digitalCartRepository: IDigitalCartRepository): DigitalAddToCartUseCase {
-        return DigitalAddToCartUseCase(digitalCartRepository)
     }
 
     @Provides

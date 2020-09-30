@@ -2,9 +2,11 @@ package com.tokopedia.digital.newcart.presentation.presenter;
 
 import androidx.annotation.NonNull;
 
+import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.network.exception.HttpErrorException;
 import com.tokopedia.cachemanager.PersistentCacheManager;
+import com.tokopedia.common.network.data.model.RestResponse;
 import com.tokopedia.common_digital.cart.data.entity.requestbody.atc.Attributes;
 import com.tokopedia.common_digital.cart.data.entity.requestbody.atc.Field;
 import com.tokopedia.common_digital.cart.data.entity.requestbody.atc.RequestBodyAtcDigital;
@@ -12,7 +14,10 @@ import com.tokopedia.common_digital.cart.data.entity.requestbody.checkout.Cart;
 import com.tokopedia.common_digital.cart.data.entity.requestbody.checkout.Data;
 import com.tokopedia.common_digital.cart.data.entity.requestbody.checkout.Relationships;
 import com.tokopedia.common_digital.cart.data.entity.requestbody.checkout.RequestBodyCheckout;
-import com.tokopedia.common_digital.cart.domain.usecase.DigitalAddToCartUseCase;
+import com.tokopedia.common_digital.cart.data.entity.response.ResponseCartData;
+import com.tokopedia.common_digital.cart.data.mapper.CartMapperData;
+import com.tokopedia.common_digital.cart.data.mapper.ICartMapperData;
+import com.tokopedia.common_digital.cart.domain.usecase.DigitalAddToCartUseCase2;
 import com.tokopedia.common_digital.cart.domain.usecase.DigitalGetCartUseCase;
 import com.tokopedia.common_digital.cart.domain.usecase.DigitalInstantCheckoutUseCase;
 import com.tokopedia.common_digital.cart.view.model.cart.CartAdditionalInfo;
@@ -39,6 +44,7 @@ import com.tokopedia.digital.newcart.presentation.contract.DigitalBaseContract;
 import com.tokopedia.digital.newcart.presentation.model.DigitalSubscriptionParams;
 import com.tokopedia.digital.utils.DeviceUtil;
 import com.tokopedia.network.constant.ErrorNetMessage;
+import com.tokopedia.network.data.model.response.DataResponse;
 import com.tokopedia.network.exception.ResponseDataNullException;
 import com.tokopedia.network.exception.ResponseErrorException;
 import com.tokopedia.promocheckout.common.view.model.PromoData;
@@ -46,6 +52,7 @@ import com.tokopedia.track.TrackApp;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSession;
 
+import java.lang.reflect.Type;
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
@@ -66,14 +73,14 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
     private ICartDigitalInteractor cartDigitalInteractor;
     private UserSession userSession;
     private DigitalCheckoutUseCase digitalCheckoutUseCase;
-    private DigitalAddToCartUseCase digitalAddToCartUseCase;
+    private DigitalAddToCartUseCase2 digitalAddToCartUseCase;
     private DigitalGetCartUseCase digitalGetCartUseCase;
     private DigitalInstantCheckoutUseCase digitalInstantCheckoutUseCase;
     private String PROMO_CODE = "promoCode";
     public static final String KEY_CACHE_PROMO_CODE = "KEY_CACHE_PROMO_CODE";
 
 
-    public DigitalBaseCartPresenter(DigitalAddToCartUseCase digitalAddToCartUseCase,
+    public DigitalBaseCartPresenter(DigitalAddToCartUseCase2 digitalAddToCartUseCase,
                                     DigitalGetCartUseCase digitalGetCartUseCase,
                                     DigitalAnalytics digitalAnalytics,
                                     RechargeAnalytics rechargeAnalytics,
@@ -112,7 +119,7 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
                         getView().getCartPassData().getCategoryId(),
                         userSession.getUserId(),
                         userSession.getDeviceId());
-                digitalGetCartUseCase.execute(requestParams, getSubscriberCart());
+                digitalGetCartUseCase.execute(requestParams, getSubscriberGetCart());
             } else {
                 RequestParams requestParams = digitalAddToCartUseCase.createRequestParams(
                         getRequestBodyAtcDigital(), getView().getIdemPotencyKey());
@@ -179,7 +186,7 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
         return requestBodyAtcDigital;
     }
 
-    private Subscriber<CartDigitalInfoData> getSubscriberCart() {
+    private Subscriber<CartDigitalInfoData> getSubscriberGetCart() {
         return new Subscriber<CartDigitalInfoData>() {
             @Override
             public void onCompleted() {
@@ -214,6 +221,67 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
 
             @Override
             public void onNext(CartDigitalInfoData cartDigitalInfoData) {
+                getView().setCartDigitalInfo(cartDigitalInfoData);
+                getView().setCheckoutParameter(buildCheckoutData(cartDigitalInfoData, userSession.getAccessToken()));
+
+                digitalAnalytics.eventAddToCart(cartDigitalInfoData, getView().getCartPassData().getSource());
+                digitalAnalytics.eventCheckout(cartDigitalInfoData);
+
+                if (cartDigitalInfoData.getAttributes().isNeedOtp()) {
+                    getView().showCartView();
+                    getView().hideFullPageLoading();
+                    getView().interruptRequestTokenVerification(userSession.getPhoneNumber());
+                } else {
+                    rechargeAnalytics.trackAddToCartRechargePushEventRecommendation(Integer.parseInt(getView().getCartPassData().getCategoryId()));
+                    renderCart(cartDigitalInfoData);
+                }
+            }
+        };
+    }
+
+    private Subscriber<Map<Type, RestResponse>> getSubscriberCart() {
+        return new Subscriber<Map<Type, RestResponse>>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                e.printStackTrace();
+                if (isViewAttached()) {
+                    if (e instanceof UnknownHostException) {
+                        getView().closeViewWithMessageAlert(
+                                ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
+                        );
+                    } else if (e instanceof SocketTimeoutException || e instanceof ConnectException) {
+                        getView().closeViewWithMessageAlert(
+                                ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
+                        );
+                    } else if (e instanceof ResponseErrorException) {
+                        getView().closeViewWithMessageAlert(e.getMessage());
+                    } else if (e instanceof ResponseDataNullException) {
+                        getView().closeViewWithMessageAlert(e.getMessage());
+                    } else if (e instanceof HttpErrorException) {
+                        getView().closeViewWithMessageAlert(e.getMessage());
+                    } else {
+                        getView().closeViewWithMessageAlert(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                    }
+
+                    getView().stopPerfomanceMonitoringTrace();
+                }
+            }
+
+            @Override
+            public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
+                Type token = new TypeToken<DataResponse<ResponseCartData>>() {
+                }.getType();
+                RestResponse restResponse = typeRestResponseMap.get(token);
+                DataResponse data = restResponse.getData();
+                ResponseCartData responseCartData = (ResponseCartData) data.getData();
+                CartMapperData cartMapperData = new CartMapperData();
+                CartDigitalInfoData cartDigitalInfoData = cartMapperData.transformCartInfoData(responseCartData);
+
                 getView().setCartDigitalInfo(cartDigitalInfoData);
                 getView().setCheckoutParameter(buildCheckoutData(cartDigitalInfoData, userSession.getAccessToken()));
 

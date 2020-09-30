@@ -3,7 +3,7 @@ package com.tokopedia.digital.newcart.presentation.presenter
 import com.tokopedia.common_digital.cart.constant.DigitalCartCrossSellingType
 import com.tokopedia.common_digital.cart.data.entity.requestbody.checkout.FintechProductCheckout
 import com.tokopedia.common_digital.cart.data.entity.requestbody.checkout.RequestBodyCheckout
-import com.tokopedia.common_digital.cart.domain.usecase.DigitalAddToCartUseCase
+import com.tokopedia.common_digital.cart.domain.usecase.DigitalAddToCartUseCase2
 import com.tokopedia.common_digital.cart.domain.usecase.DigitalGetCartUseCase
 import com.tokopedia.common_digital.cart.domain.usecase.DigitalInstantCheckoutUseCase
 import com.tokopedia.common_digital.cart.view.model.cart.CartDigitalInfoData
@@ -16,7 +16,7 @@ import com.tokopedia.digital.newcart.presentation.contract.DigitalCartMyBillsCon
 import com.tokopedia.user.session.UserSession
 import javax.inject.Inject
 
-class DigitalCartMyBillsPresenter @Inject constructor(digitalAddToCartUseCase: DigitalAddToCartUseCase?,
+class DigitalCartMyBillsPresenter @Inject constructor(digitalAddToCartUseCase: DigitalAddToCartUseCase2?,
                                                       digitalGetCartUseCase: DigitalGetCartUseCase?,
                                                       digitalAnalytics: DigitalAnalytics?,
                                                       rechargeAnalytics: RechargeAnalytics?,

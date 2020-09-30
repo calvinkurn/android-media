@@ -1,7 +1,7 @@
 package com.tokopedia.digital.newcart.presentation.presenter;
 
 import com.tokopedia.common_digital.cart.constant.DigitalCartCrossSellingType;
-import com.tokopedia.common_digital.cart.domain.usecase.DigitalAddToCartUseCase;
+import com.tokopedia.common_digital.cart.domain.usecase.DigitalAddToCartUseCase2;
 import com.tokopedia.common_digital.cart.domain.usecase.DigitalGetCartUseCase;
 import com.tokopedia.common_digital.cart.domain.usecase.DigitalInstantCheckoutUseCase;
 import com.tokopedia.common_digital.cart.view.model.cart.CartDigitalInfoData;
@@ -18,7 +18,7 @@ import javax.inject.Inject;
 public class DigitalCartDefaultPresenter extends DigitalBaseCartPresenter<DigitalCartDefaultContract.View> implements DigitalCartDefaultContract.Presenter {
 
     @Inject
-    public DigitalCartDefaultPresenter(DigitalAddToCartUseCase digitalAddToCartUseCase,
+    public DigitalCartDefaultPresenter(DigitalAddToCartUseCase2 digitalAddToCartUseCase,
                                        DigitalGetCartUseCase digitalGetCartUseCase,
                                        DigitalAnalytics digitalAnalytics,
                                        RechargeAnalytics rechargeAnalytics,
