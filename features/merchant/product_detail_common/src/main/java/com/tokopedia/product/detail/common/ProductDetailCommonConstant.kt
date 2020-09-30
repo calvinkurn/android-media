@@ -8,6 +8,7 @@ object ProductDetailCommonConstant{
     const val PARAM_SHOP_ID = "shopID"
     const val PARAM_SHOP_DOMAIN = "shopDomain"
     const val PARAM_PRODUCT_KEY = "productKey"
+    const val PARAM_DEVICE_ID = "deviceID"
     const val PARAM_WAREHOUSE_ID = "whID"
     const val PARAM_LAYOUT_ID = "layoutID"
     const val PARAM_INPUT = "input"
@@ -25,7 +26,7 @@ object ProductDetailCommonConstant{
     const val PARAM_PRODUCT_ORIGIN = "origin"
     const val PARAM_IS_PDP = "isPDP"
 
-    const val DEFAULT_NUM_IMAGE_REVIEW = 4
+    const val DEFAULT_NUM_IMAGE_REVIEW = 5
 
     const val SHOP_ID_PARAM = "shopId"
     const val PRODUCT_ID_PARAM = "productId"

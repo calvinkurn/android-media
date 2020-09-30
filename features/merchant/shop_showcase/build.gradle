@@ -40,6 +40,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.libraries.trackingOptimizer)
     implementation project(rootProject.ext.features.productCard)
+    implementation project(rootProject.ext.features.shopCommon)
     implementation project(rootProject.ext.libraries.graphql)
 
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession

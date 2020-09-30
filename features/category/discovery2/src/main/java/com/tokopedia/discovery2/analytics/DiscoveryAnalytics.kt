@@ -242,7 +242,8 @@ class DiscoveryAnalytics(val pageType: String = EMPTY_STRING,
     }
 
     fun trackClickDetailedFilter(componentName: String?) {
-        val map = createGeneralEvent(eventAction = DETAILED_FILTER_CLICK, eventLabel = componentName ?: "")
+        val map = createGeneralEvent(eventAction = DETAILED_FILTER_CLICK, eventLabel = componentName
+                ?: "")
         getTracker().sendGeneralEvent(map)
     }
 
@@ -738,5 +739,16 @@ class DiscoveryAnalytics(val pageType: String = EMPTY_STRING,
         map[KEY_E_COMMERCE] = eCommerce
         getTracker().sendEnhanceEcommerceEvent(map)
         productCardItemList = EMPTY_STRING
+    }
+
+    fun trackHeaderSeeAllClick(isLogin: Boolean, componentsItems: ComponentsItem) {
+        val loginValue = if (isLogin) LOGIN else NON_LOGIN
+        val unifyTabValue = getTabValue(componentsItems)
+        val creativeName = componentsItems.creativeName
+        val headerValue = componentsItems.data?.firstOrNull()?.title ?: ""
+        val map = createGeneralEvent(eventName = EVENT_CLICK_DISCOVERY,
+                eventAction = CLICK_VIEW_ALL_HEADER,
+                eventLabel = "$loginValue - ${componentsItems.name} - $headerValue - $creativeName - $unifyTabValue")
+        getTracker().sendGeneralEvent(map)
     }
 }

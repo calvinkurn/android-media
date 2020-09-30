@@ -6,6 +6,7 @@
         "status": "OK",
         "data": {
           "messages": [],
+          "tickers": [],
           "success": 1,
           "max_profile": 5,
           "profiles": [

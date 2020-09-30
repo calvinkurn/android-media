@@ -36,7 +36,6 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     implementation project(rootProject.ext.features.resourcesCommon)
-    implementation project(rootProject.ext.features.productManageItem)
     implementation project(rootProject.ext.features.reputation)
     implementation project(rootProject.ext.features.reputationCommon)
     implementation project(rootProject.ext.features.shopCommon)
@@ -75,6 +74,10 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.supportLibDependencies.design
     implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk8
+
+    implementation (rootProject.ext.serviceDependencies.crashlytics) {
+        transitive = true
+    }
 
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
