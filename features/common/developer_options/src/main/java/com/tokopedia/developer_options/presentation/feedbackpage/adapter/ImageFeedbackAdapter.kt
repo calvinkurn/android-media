@@ -9,7 +9,7 @@ import com.tokopedia.developer_options.presentation.feedbackpage.domain.model.De
 import com.tokopedia.developer_options.presentation.feedbackpage.domain.model.ImageFeedbackUiModel
 import com.tokopedia.developer_options.presentation.feedbackpage.listener.ImageClickListener
 import com.tokopedia.developer_options.presentation.feedbackpage.viewholder.BaseImageFeedbackViewHolder
-import com.tokopedia.developer_options.presentation.feedbackpage.viewholder.DefaultImafeFeedbackViewHolder
+import com.tokopedia.developer_options.presentation.feedbackpage.viewholder.DefaultImageFeedbackViewHolder
 import com.tokopedia.developer_options.presentation.feedbackpage.viewholder.ImageFeedbackViewHolder
 
 class ImageFeedbackAdapter(private val imageClickListener: ImageClickListener): RecyclerView.Adapter<BaseImageFeedbackViewHolder<*>>() {
@@ -29,12 +29,12 @@ class ImageFeedbackAdapter(private val imageClickListener: ImageClickListener): 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseImageFeedbackViewHolder<*> {
         return when (viewType) {
             TYPE_DEFAULT -> {
-                DefaultImafeFeedbackViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_add_image_feedback, parent, false), imageClickListener)
+                DefaultImageFeedbackViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_add_image_feedback, parent, false), imageClickListener)
             }
             TYPE_IMAGE -> {
-                DefaultImafeFeedbackViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_image_chooser_feedback, parent, false), imageClickListener)
+                ImageFeedbackViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_image_chooser_feedback, parent, false), imageClickListener)
             }
-            else -> throw IllegalArgumentException("Invalied")
+            else -> throw IllegalArgumentException("Invalid")
         }
     }
 
@@ -42,7 +42,7 @@ class ImageFeedbackAdapter(private val imageClickListener: ImageClickListener): 
 
     override fun onBindViewHolder(holder: BaseImageFeedbackViewHolder<*>, position: Int) {
         when (holder) {
-            is DefaultImafeFeedbackViewHolder -> holder.bind((imageFeedbackData[position] as DefaultFeedbackUiModel))
+            is DefaultImageFeedbackViewHolder -> holder.bind((imageFeedbackData[position] as DefaultFeedbackUiModel))
             is ImageFeedbackViewHolder -> holder.bind((imageFeedbackData[position] as ImageFeedbackUiModel))
         }
     }

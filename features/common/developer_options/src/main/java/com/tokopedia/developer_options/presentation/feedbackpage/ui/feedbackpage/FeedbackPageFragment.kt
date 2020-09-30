@@ -107,6 +107,11 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
         return mainView
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+    }
+
     override fun getScreenName(): String = ""
 
     override fun initInjector() {
@@ -138,7 +143,9 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
                     feedbackPagePresenter.initImageData()
 
                     val imageListData = feedbackPagePresenter.getImageList(selectedImage)
-                    imageAdapter.setImageFeedbackData(imageListData)
+                    if (selectedImage.isNotEmpty()) {
+                        imageAdapter.setImageFeedbackData(imageListData)
+                    }
                 }
             }
            else -> super.onActivityResult(requestCode, resultCode, data)
@@ -460,7 +467,7 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
             val builder = ImagePickerBuilder(getString(R.string.image_picker_title),
                     intArrayOf(ImagePickerTabTypeDef.TYPE_GALLERY),
                     GalleryType.ALL, ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB,
-                    ImagePickerBuilder.DEFAULT_MIN_RESOLUTION, ImageRatioTypeDef.RATIO_16_9, true,
+                    ImagePickerBuilder.DEFAULT_MIN_RESOLUTION, ImageRatioTypeDef.RATIO_9_16, true,
                     null,
                     ImagePickerMultipleSelectionBuilder(
                     selectedImage, null, -1, 5

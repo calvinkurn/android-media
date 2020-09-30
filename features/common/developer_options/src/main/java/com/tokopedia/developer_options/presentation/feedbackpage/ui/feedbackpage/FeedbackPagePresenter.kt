@@ -132,6 +132,11 @@ class FeedbackPagePresenter(private val compositeSubscription: CompositeSubscrip
                     ImageFeedbackUiModel(it, shouldDisplayOverlay = true)
                 }).asReversed().toMutableList()
             }
+            4 -> {
+                imageData.addAll(selectedImage.take(3).map {
+                    ImageFeedbackUiModel(it, shouldDisplayOverlay = true)
+                }.asReversed())
+            }
             else -> {
                 imageData.addAll(selectedImage.map {
                     ImageFeedbackUiModel(it, shouldDisplayOverlay = false)

@@ -37,6 +37,7 @@
     <string name="android10">ANDROID 10</string>
     <string name="copy_success">Text telah tersalin</string>
     <string name="image_picker_title">Pilih foto</string>
+    <string name="review_add_photo_txt">Tambah \nfoto</string>
 
     <string-array name="bug_type_array">
         <item>Others</item>

@@ -32,6 +32,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.remoteResourceRequest)
     implementation project(rootProject.ext.libraries.imagePicker)
     implementation project(rootProject.ext.libraries.imagePreview)
+    implementation project(rootProject.ext.libraries.baseList)
 
     if (rootProject.ext.debugToolsEnabled) {
         implementation project(rootProject.ext.libraries.analyticsDebugger)
