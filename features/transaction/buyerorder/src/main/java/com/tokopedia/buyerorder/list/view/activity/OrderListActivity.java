@@ -249,17 +249,18 @@ public class OrderListActivity extends BaseSimpleActivity
             }
             startActivity(newIntent);
         }
-        Bundle bundle = getIntent().getExtras();
+//        Bundle bundle = getIntent().getExtras();
+//        if (bundle != null) {
+//            String url = bundle.getString("url");
+//            if (url != null && (Uri.parse(url).getQueryParameter("tab") != null))
+//                orderCategory = Uri.parse(url).getQueryParameter("tab");
+//            else if (bundle.getString(ORDER_CATEGORY) != null)
+//                orderCategory = bundle.getString(ORDER_CATEGORY);
+//            else
+//                orderCategory = OrderCategory.MARKETPLACE;
+//        }
+
         context = this;
-        if (bundle != null) {
-            String url = bundle.getString("url");
-            if (url != null && (Uri.parse(url).getQueryParameter("tab") != null))
-                orderCategory = Uri.parse(url).getQueryParameter("tab");
-            else if (bundle.getString(ORDER_CATEGORY) != null)
-                orderCategory = bundle.getString(ORDER_CATEGORY);
-            else
-                orderCategory = OrderCategory.MARKETPLACE;
-        }
         orderListAnalytics = new OrderListAnalytics();
         UserSession userSession = new UserSession(this);
         if (!userSession.isLoggedIn()) {
