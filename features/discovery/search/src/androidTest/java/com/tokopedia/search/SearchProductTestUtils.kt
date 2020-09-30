@@ -75,6 +75,7 @@ internal fun createBroadMatchListener(): BroadMatchListener {
         override fun onBroadMatchItemClicked(broadMatchItemViewModel: BroadMatchItemViewModel) {}
         override fun onBroadMatchSeeMoreClicked(broadMatchViewModel: BroadMatchViewModel) {}
         override fun onBroadMatchThreeDotsClicked(broadMatchItemViewModel: BroadMatchItemViewModel) {}
+        override fun onBroadMatchItemImpressed(broadMatchItemViewModel: BroadMatchItemViewModel) {}
     }
 }
 

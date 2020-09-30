@@ -8,7 +8,6 @@ import com.tokopedia.home.account.presentation.AccountHome
 import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
-import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Before
@@ -63,21 +62,6 @@ class AccountHomePresenterTest {
             getUserAttributesUseCase.execute(any())
 
             accountAnalytics.setUserAttributes(any())
-        }
-    }
-
-    @Test
-    fun `open tab by param`() {
-        val param = "ACCOUNT_TAB_SELLER"
-
-        every {
-            view.openSellerTab()
-        } returns mockk()
-
-        presenter.openTabByParam(param)
-
-        verify {
-            view.openSellerTab()
         }
     }
 

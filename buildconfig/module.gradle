@@ -1,5 +1,9 @@
-apply from: "$rootProject.projectDir/buildconfig/jacoco.gradle"
-apply from: "$rootProject.projectDir/tools/set_debug_tools.gradle"
+def isDebuggable() {
+    if (project.hasProperty('enableDebug') && enableDebug == "true") {
+        return "true";
+    }
+    return "false";
+}
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -28,7 +32,7 @@ android {
         release {
             ext.enableHansel = !project.hasProperty('hanselDisableRelease')
             minifyEnabled false
-            debuggable = isDebugable(project).toBoolean()
+            debuggable = isDebuggable().toBoolean()
             //proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             proguardFiles 'proguard-rules.pro'
         }

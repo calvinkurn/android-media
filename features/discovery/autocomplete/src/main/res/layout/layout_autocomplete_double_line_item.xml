@@ -45,7 +45,6 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/doubleLineTitle"
-        android:contentDescription="@string/content_desc_doubleLineTitle"
         android:layout_width="@dimen/dp_0"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_4"
@@ -71,7 +70,6 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/doubleLineSubtitle"
-        android:contentDescription="@string/content_desc_doubleLineSubtitle"
         android:layout_width="@dimen/dp_0"
         android:layout_height="@dimen/dp_18"
         android:layout_marginStart="@dimen/dp_4"

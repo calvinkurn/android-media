@@ -4,6 +4,13 @@
     {
       "eventCategory": "purchase setting",
       "event": "clickCheckoutExpress",
+      "eventAction": "click pilih durasi pengiriman in add new address step",
+      "sessionIris": "{{.*}}",
+      "eventLabel": ""
+    },
+    {
+      "eventCategory": "purchase setting",
+      "event": "clickCheckoutExpress",
       "eventAction": "click available address option",
       "sessionIris": "{{.*}}",
       "eventLabel": ""

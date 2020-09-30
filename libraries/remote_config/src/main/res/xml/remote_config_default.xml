@@ -490,4 +490,20 @@
         <key>android_add_brotli_interceptor</key>
         <value>false</value>
     </entry>
+    <entry>
+        <key>android_async_user_based_timber_session</key>
+        <value>false</value>
+    </entry>
+    <entry>
+        <key>android_async_crashlytics_user_info</key>
+        <value>false</value>
+    </entry>
+    <entry>
+        <key>android_async_branch_user_info</key>
+        <value>false</value>
+    </entry>
+    <entry>
+        <key>android_post_seq_async_sellerapp</key>
+        <value>true</value>
+    </entry>
 </defaultsMap>
