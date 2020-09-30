@@ -9,7 +9,6 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
 import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
@@ -40,15 +39,12 @@ class SellerMigrationActivity : BaseSimpleActivity() {
     }
 
     private var featureName: String = ""
-    private var isStackBuilder: Boolean = false
 
     override fun getScreenName(): String = "/migration-page"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         featureName = intent.extras?.getString(SellerMigrationFragment.KEY_PARAM_FEATURE_NAME)
                 ?: intent.data?.getQueryParameter(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME).orEmpty()
-        isStackBuilder = intent.extras?.getBoolean(SellerMigrationApplinkConst.EXTRA_IS_STACK_BUILDER, false)
-                ?: false
         super.onCreate(savedInstanceState)
         processAppLink()
     }
