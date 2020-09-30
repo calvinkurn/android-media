@@ -11,6 +11,7 @@ import com.tokopedia.topads.common.data.interceptor.TopAdsAuthInterceptor
 import com.tokopedia.topads.common.data.interceptor.TopAdsResponseError
 import com.tokopedia.topads.common.data.util.CacheApiTKPDResponseValidator
 import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
@@ -23,9 +24,9 @@ class TopAdsDashboardNetworkModule {
     @TopAdsDashboardScope
     @Provides
     fun provideTopAdsAuthTempInterceptor(@ApplicationContext context: Context,
-                                         userSession : UserSession ,
+                                         userSession : UserSessionInterface ,
                                          abstractionRouter : NetworkRouter ): TopAdsAuthInterceptor {
-        return TopAdsAuthInterceptor(context, userSession, abstractionRouter)
+        return TopAdsAuthInterceptor(context, userSession as UserSession?, abstractionRouter)
     }
 
     @TopAdsDashboardScope
