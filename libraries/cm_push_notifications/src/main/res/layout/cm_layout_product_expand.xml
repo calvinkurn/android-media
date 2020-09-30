@@ -49,6 +49,8 @@
                     android:layout_height="wrap_content"
                     android:textColor="@color/cm_sisa_ongkir"
                     android:layout_alignParentTop="true"
+                    android:visibility="gone"
+                    tools:visibility="visible"
                     android:textSize="12sp"
                     android:textStyle="bold"
                     tools:text="Sisa 2" />
