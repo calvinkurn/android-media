@@ -14,6 +14,19 @@
       "eventAction": "click lanjutkan",
       "sessionIris": "{{.*}}",
       "eventLabel": "{{.*}}"
+    },
+    {
+      "businessUnit": "travel & entertainment",
+      "clientId": "{{.*}}",
+      "eventCategory": "digital - event",
+      "currentSite": "tokopediadigitalevents",
+      "screenName": "{{.*}}",
+      "category": "events",
+      "event": "clickEvent",
+      "userId": "{{.*}}",
+      "eventAction": "pick date",
+      "sessionIris": "{{.*}}",
+      "eventLabel": "{{.*}}"
     }
   ]
 }
