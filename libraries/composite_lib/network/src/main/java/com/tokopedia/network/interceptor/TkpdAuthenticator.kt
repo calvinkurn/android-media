@@ -8,6 +8,7 @@ import okhttp3.Authenticator
 import okhttp3.Request
 import okhttp3.Response
 import okhttp3.Route
+import timber.log.Timber
 
 /**
  * Created by Yoris Prayogo on 23/06/20.
@@ -23,18 +24,33 @@ class TkpdAuthenticator(
 
     override fun authenticate(route: Route?, response: Response): Request? {
         if(isNeedRefresh()) {
-            return try {
-                val originalRequest = response.request()
-                val accessTokenRefresh = AccessTokenRefresh()
-                val newAccessToken = accessTokenRefresh.refreshToken(context, userSession, networkRouter)
-                networkRouter.doRelogin(newAccessToken)
-                updateRequestWithNewToken(originalRequest)
-            } catch (ex: Exception) {
-                response.request()
+            if(responseCount(response) == 0) {
+                return try {
+                    val originalRequest = response.request()
+                    val accessTokenRefresh = AccessTokenRefresh()
+                    val newAccessToken = accessTokenRefresh.refreshToken(context, userSession, networkRouter)
+                    networkRouter.doRelogin(newAccessToken)
+                    updateRequestWithNewToken(originalRequest)
+                } catch (ex: Exception) {
+                    response.request()
+                }
+            } else {
+                val bodyResponse = response.peekBody(TkpdAuthInterceptor.BYTE_COUNT.toLong()).string()
+                networkRouter.showForceLogoutTokenDialog(bodyResponse)
             }
         }
         return response.request()
     }
+
+    private fun responseCount(response: Response): Int {
+        var response = response
+        var result = 1
+        while (response.priorResponse().also { response = it!! } != null) {
+            result++
+        }
+        return result
+    }
+
 
     private fun updateRequestWithNewToken(request: Request): Request{
         val newRequest = request.newBuilder()
@@ -48,6 +64,10 @@ class TkpdAuthenticator(
         return newRequest.build()
     }
 
+    private fun logToScalyr(message: String, isLoggedIn: Boolean){
+        Timber.w(message)
+    }
+
     companion object {
         private const val HEADER_ACCOUNTS_AUTHORIZATION = "accounts-authorization"
         private const val HEADER_PARAM_BEARER = "Bearer"
@@ -55,5 +75,11 @@ class TkpdAuthenticator(
         private const val BEARER = "Bearer"
         private const val HEADER_PARAM_AUTHORIZATION = "authorization"
         const val BYTE_COUNT = 512L
+
+        const val AUTHENTICATOR_REMOTE_CONFIG_KEY: String = "android_enable_authenticator"
+
+        fun createAuthenticator(context: Context, networkRouter: NetworkRouter, userSession: UserSession): TkpdAuthenticator? {
+                return TkpdAuthenticator(context, networkRouter, userSession)
+        }
     }
 }
