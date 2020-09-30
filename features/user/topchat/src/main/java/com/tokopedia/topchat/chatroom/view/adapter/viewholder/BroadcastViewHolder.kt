@@ -98,6 +98,19 @@ class BroadcastViewHolder constructor(
     private fun bindBanner(element: BroadCastUiModel) {
         val banner = element.banner ?: return
         ImageAnnouncementViewHolderBinder.bindBannerImage(banner, bannerView)
+        bindBannerMargin(element)
+    }
+
+    private fun bindBannerMargin(element: BroadCastUiModel) {
+        (bannerView?.layoutParams as? LinearLayout.LayoutParams)?.apply {
+            val productMarginBottom = if (element.hasVoucher()) {
+                itemView.context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2)
+            } else {
+                itemView.context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
+            }
+            bottomMargin = productMarginBottom.toInt()
+        }
+
     }
 
     private fun bindVoucher(element: BroadCastUiModel) {

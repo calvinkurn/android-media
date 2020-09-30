@@ -34,4 +34,8 @@ class BroadCastUiModel : BaseChatViewModel, Visitable<TopChatTypeFactory> {
     override fun type(typeFactory: TopChatTypeFactory): Int {
         return typeFactory.type(this)
     }
+
+    fun hasVoucher(): Boolean {
+        return voucherUiModel != null
+    }
 }
