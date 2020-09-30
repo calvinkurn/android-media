@@ -98,11 +98,24 @@ class SingleProductAttachmentContainer : ConstraintLayout {
         )
     }
 
+    private val defaultMarginLeft: Int by lazy(LazyThreadSafetyMode.NONE) {
+        (layoutParams as? LinearLayout.LayoutParams)?.leftMargin ?: 0
+    }
+    private val defaultMarginTop: Int by lazy(LazyThreadSafetyMode.NONE) {
+        (layoutParams as? LinearLayout.LayoutParams)?.topMargin ?: 0
+    }
+    private val defaultMarginRight: Int by lazy(LazyThreadSafetyMode.NONE) {
+        (layoutParams as? LinearLayout.LayoutParams)?.rightMargin ?: 0
+    }
+    private val defaultMarginBottom: Int by lazy(LazyThreadSafetyMode.NONE) {
+        (layoutParams as? LinearLayout.LayoutParams)?.bottomMargin ?: 0
+    }
+
     private var widthMultiplier = DEFAULT_WIDTH_MULTIPLIER
     private val white = "#ffffff"
     private val white2 = "#fff"
     private val labelEmptyStockColor = "#AD31353B"
-    private val bottomMarginOpposite: Float = getOppositeMargin(context)
+    private val bottomMarginOpposite = getOppositeMargin(context).toInt()
 
     constructor(context: Context?) : super(context) {
         initAttr(context, null)
@@ -149,9 +162,8 @@ class SingleProductAttachmentContainer : ConstraintLayout {
     private fun initAttr(context: Context?, attrs: AttributeSet?) {
         if (context == null || attrs == null) return
         context.theme.obtainStyledAttributes(
-                attrs,
-                R.styleable.SingleProductAttachmentContainer,
-                0, 0).apply {
+                attrs, R.styleable.SingleProductAttachmentContainer, 0, 0
+        ).apply {
             try {
                 widthMultiplier = getFloat(R.styleable.SingleProductAttachmentContainer_widthMultiplier, DEFAULT_WIDTH_MULTIPLIER)
             } finally {
@@ -310,12 +322,16 @@ class SingleProductAttachmentContainer : ConstraintLayout {
     private fun bindMargin(product: ProductAttachmentViewModel) {
         val lp = layoutParams
         if (lp is LinearLayout.LayoutParams) {
-            if (adapterListener?.isNextItemSender(adapterPosition, product.isSender) == false) {
-                setMargin(0, 0, 0, bottomMarginOpposite.toInt())
+            if (isNextItemSender(product) && bottomMarginOpposite > defaultMarginBottom) {
+                setMargin(defaultMarginLeft, defaultMarginTop, defaultMarginRight, bottomMarginOpposite)
             } else {
-                setMargin(0, 0, 0, 0)
+                setMargin(defaultMarginLeft, defaultMarginTop, defaultMarginRight, defaultMarginBottom)
             }
         }
+    }
+
+    private fun isNextItemSender(product: ProductAttachmentViewModel): Boolean {
+        return adapterListener?.isNextItemSender(adapterPosition, product.isSender) == false
     }
 
     private fun bindBackground(product: ProductAttachmentViewModel) {
