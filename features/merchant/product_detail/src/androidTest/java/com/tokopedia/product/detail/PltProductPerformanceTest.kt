@@ -55,7 +55,7 @@ class PltProductPerformanceTest {
     }
 
     private fun waitForData() {
-        Thread.sleep(10000)
+        Thread.sleep(35000)
     }
 
     private fun savePLTPerformanceResultData(tag: String) {

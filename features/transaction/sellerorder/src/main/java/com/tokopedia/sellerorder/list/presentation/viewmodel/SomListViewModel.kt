@@ -34,9 +34,9 @@ class SomListViewModel @Inject constructor(dispatcher: SomDispatcherProvider,
     val tickerListResult: LiveData<Result<MutableList<SomListTicker.Data.OrderTickers.Tickers>>>
         get() = _tickerListResult
 
-    private val _filterListResult = MutableLiveData<Result<MutableList<SomListFilter.Data.OrderFilterSom.StatusList>>>()
-    val filterListResult: LiveData<Result<MutableList<SomListFilter.Data.OrderFilterSom.StatusList>>>
-        get() = _filterListResult
+    private val _filterResult = MutableLiveData<Result<SomListFilter.Data.OrderFilterSom>>()
+    val filterResult: LiveData<Result<SomListFilter.Data.OrderFilterSom>>
+        get() = _filterResult
 
     private val _statusOrderListResult = MutableLiveData<Result<MutableList<SomListAllFilter.Data.OrderFilterSomSingle.StatusList>>>()
     val statusOrderListResult: LiveData<Result<MutableList<SomListAllFilter.Data.OrderFilterSomSingle.StatusList>>>
@@ -55,10 +55,10 @@ class SomListViewModel @Inject constructor(dispatcher: SomDispatcherProvider,
     private var getUserRolesJob: Job? = null
     private var getTopAdsGetShopInfoJob: Job? = null
 
-    fun loadTickerList(tickerQuery: String) {
+    fun loadTickerList(userId: String) {
         launchCatchError(block = {
-            val requestTickerParams = SomListTickerParam(requestBy = PARAM_SELLER, client = PARAM_CLIENT)
-            _tickerListResult.postValue(getTickerListUseCase.execute(requestTickerParams, tickerQuery))
+            val requestTickerParams = SomListTickerParam(requestBy = PARAM_SELLER, client = PARAM_CLIENT, userId = userId)
+            _tickerListResult.postValue(getTickerListUseCase.execute(requestTickerParams))
         }, onError = {
             _tickerListResult.postValue(Fail(it))
         })
@@ -72,11 +72,11 @@ class SomListViewModel @Inject constructor(dispatcher: SomDispatcherProvider,
         })
     }
 
-    fun loadFilterList(filterQuery: String) {
-        launchCatchError(block = {
-            _filterListResult.postValue(getFilterListUseCase.execute(filterQuery))
+    fun loadFilter() {
+        launchCatchError(block =  {
+            _filterResult.postValue(getFilterListUseCase.execute())
         }, onError = {
-            _filterListResult.postValue(Fail(it))
+            _filterResult.postValue(Fail(it))
         })
     }
 

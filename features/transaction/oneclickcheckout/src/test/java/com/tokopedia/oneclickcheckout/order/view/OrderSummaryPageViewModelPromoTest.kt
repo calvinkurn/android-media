@@ -116,7 +116,7 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
         orderSummaryPageViewModel._orderShipment = helper.orderShipment
-        every { updateCartOccUseCase.execute(any(), any(), any()) } answers {
+        every { updateCartOccUseCase.execute(any(), any(), any(), any()) } answers {
             (secondArg() as ((UpdateCartOccGqlResponse) -> Unit)).invoke(UpdateCartOccGqlResponse(UpdateCartOccResponse(data = UpdateCartDataOcc())))
         }
 
@@ -143,7 +143,7 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
                 PromoCheckoutVoucherOrdersItemUiModel(code = "bbo", messageUiModel = MessageUiModel(state = "green"))
         )), status = "OK"))
         orderSummaryPageViewModel.chooseLogisticPromo(helper.logisticPromo)
-        every { updateCartOccUseCase.execute(any(), any(), any()) } answers {
+        every { updateCartOccUseCase.execute(any(), any(), any(), any()) } answers {
             (secondArg() as ((UpdateCartOccGqlResponse) -> Unit)).invoke(UpdateCartOccGqlResponse(UpdateCartOccResponse(data = UpdateCartDataOcc())))
         }
 
@@ -163,14 +163,32 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
     }
 
     @Test
+    fun `Update Cart Promo Got Prompt`() {
+        // Given
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
+        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
+        orderSummaryPageViewModel._orderShipment = helper.orderShipment
+        val occPrompt = OccPrompt()
+        every { updateCartOccUseCase.execute(any(), any(), any(), any()) } answers {
+            (thirdArg() as ((OccPrompt) -> Unit)).invoke(occPrompt)
+        }
+
+        // When
+        orderSummaryPageViewModel.updateCartPromo { _, _, _ -> }
+
+        // Then
+        assertEquals(OccGlobalEvent.Prompt(occPrompt), orderSummaryPageViewModel.globalEvent.value)
+    }
+
+    @Test
     fun `Update Cart Promo Error`() {
         // Given
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
         orderSummaryPageViewModel._orderShipment = helper.orderShipment
         val response = Throwable()
-        every { updateCartOccUseCase.execute(any(), any(), any()) } answers {
-            (thirdArg() as ((Throwable) -> Unit)).invoke(response)
+        every { updateCartOccUseCase.execute(any(), any(), any(), any()) } answers {
+            (arg(3) as ((Throwable) -> Unit)).invoke(response)
         }
 
         // When
@@ -213,7 +231,7 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
             orderSummaryAnalytics.eventViewPromoDecreasedOrReleased(true)
         }
         assertEquals(response, orderSummaryPageViewModel.validateUsePromoRevampUiModel)
-        assertEquals(ButtonBayarState.NORMAL, orderSummaryPageViewModel.orderTotal.value.buttonState)
+        assertEquals(OccButtonState.NORMAL, orderSummaryPageViewModel.orderTotal.value.buttonState)
     }
 
     @Test
@@ -230,8 +248,8 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel.validateUsePromo()
 
         // Then
-        assertEquals(ButtonBayarState.DISABLE, orderSummaryPageViewModel.orderPromo.value.state)
-        assertEquals(ButtonBayarState.DISABLE, orderSummaryPageViewModel.orderTotal.value.buttonState)
+        assertEquals(OccButtonState.DISABLE, orderSummaryPageViewModel.orderPromo.value.state)
+        assertEquals(OccButtonState.DISABLE, orderSummaryPageViewModel.orderTotal.value.buttonState)
     }
 
     @Test
@@ -254,7 +272,7 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
             orderSummaryAnalytics.eventViewPromoDecreasedOrReleased(true)
         }
         assertEquals(response, orderSummaryPageViewModel.validateUsePromoRevampUiModel)
-        assertEquals(ButtonBayarState.NORMAL, orderSummaryPageViewModel.orderTotal.value.buttonState)
+        assertEquals(OccButtonState.NORMAL, orderSummaryPageViewModel.orderTotal.value.buttonState)
     }
 
     @Test
@@ -279,7 +297,7 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
             orderSummaryAnalytics.eventViewPromoDecreasedOrReleased(false)
         }
         assertEquals(response, orderSummaryPageViewModel.validateUsePromoRevampUiModel)
-        assertEquals(ButtonBayarState.NORMAL, orderSummaryPageViewModel.orderTotal.value.buttonState)
+        assertEquals(OccButtonState.NORMAL, orderSummaryPageViewModel.orderTotal.value.buttonState)
     }
 
     @Test
@@ -288,13 +306,13 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
         orderSummaryPageViewModel._orderShipment = helper.orderShipment
-        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = ButtonBayarState.NORMAL)
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
         val promoCode = "abc"
         val response = ValidateUsePromoRevampUiModel(promoUiModel = PromoUiModel(codes = listOf(promoCode), messageUiModel = MessageUiModel(state = "green")))
         every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(response)
         orderSummaryPageViewModel.lastValidateUsePromoRequest = ValidateUsePromoRequest(codes = mutableListOf(promoCode))
         orderSummaryPageViewModel.validateUsePromoRevampUiModel = response.copy(promoUiModel = response.promoUiModel.copy(messageUiModel = MessageUiModel(state = "green")))
-        every { updateCartOccUseCase.execute(any(), any(), any()) } answers {
+        every { updateCartOccUseCase.execute(any(), any(), any(), any()) } answers {
             (secondArg() as ((UpdateCartOccGqlResponse) -> Unit)).invoke(UpdateCartOccGqlResponse(UpdateCartOccResponse(data = UpdateCartDataOcc())))
         }
 
@@ -316,14 +334,14 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
         orderSummaryPageViewModel._orderShipment = helper.orderShipment
-        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = ButtonBayarState.NORMAL)
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
         val promoCode = "abc"
         val promoType = "type"
         val response = ValidateUsePromoRevampUiModel(promoUiModel = PromoUiModel(voucherOrderUiModels = listOf(PromoCheckoutVoucherOrdersItemUiModel(code = promoCode, type = promoType, messageUiModel = MessageUiModel(state = "green")))))
         every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(response)
         orderSummaryPageViewModel.lastValidateUsePromoRequest = ValidateUsePromoRequest(codes = mutableListOf(promoCode))
         orderSummaryPageViewModel.validateUsePromoRevampUiModel = response.copy(promoUiModel = response.promoUiModel.copy(messageUiModel = MessageUiModel(state = "green")))
-        every { updateCartOccUseCase.execute(any(), any(), any()) } answers {
+        every { updateCartOccUseCase.execute(any(), any(), any(), any()) } answers {
             (secondArg() as ((UpdateCartOccGqlResponse) -> Unit)).invoke(UpdateCartOccGqlResponse(UpdateCartOccResponse(data = UpdateCartDataOcc())))
         }
 
@@ -345,13 +363,13 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
         orderSummaryPageViewModel._orderShipment = helper.orderShipment
-        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = ButtonBayarState.NORMAL)
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
         val promoCode = "abc"
         val response = ValidateUsePromoRevampUiModel(promoUiModel = PromoUiModel(codes = listOf(promoCode), messageUiModel = MessageUiModel(state = "red")))
         every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(response)
         orderSummaryPageViewModel.lastValidateUsePromoRequest = ValidateUsePromoRequest(codes = mutableListOf(promoCode))
         orderSummaryPageViewModel.validateUsePromoRevampUiModel = response.copy(promoUiModel = response.promoUiModel.copy(messageUiModel = MessageUiModel(state = "green")))
-        every { updateCartOccUseCase.execute(any(), any(), any()) } answers {
+        every { updateCartOccUseCase.execute(any(), any(), any(), any()) } answers {
             (secondArg() as ((UpdateCartOccGqlResponse) -> Unit)).invoke(UpdateCartOccGqlResponse(UpdateCartOccResponse(data = UpdateCartDataOcc())))
         }
 
@@ -370,7 +388,7 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
         orderSummaryPageViewModel._orderShipment = helper.orderShipment
-        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = ButtonBayarState.NORMAL)
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
         val promoCode = "abc"
         val response = ValidateUsePromoRevampUiModel(promoUiModel = PromoUiModel(codes = listOf(promoCode),
                 voucherOrderUiModels = listOf(PromoCheckoutVoucherOrdersItemUiModel(
@@ -379,7 +397,7 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
         every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(response)
         orderSummaryPageViewModel.lastValidateUsePromoRequest = ValidateUsePromoRequest(codes = mutableListOf(promoCode))
         orderSummaryPageViewModel.validateUsePromoRevampUiModel = response.copy(promoUiModel = response.promoUiModel.copy(messageUiModel = MessageUiModel(state = "green")))
-        every { updateCartOccUseCase.execute(any(), any(), any()) } answers {
+        every { updateCartOccUseCase.execute(any(), any(), any(), any()) } answers {
             (secondArg() as ((UpdateCartOccGqlResponse) -> Unit)).invoke(UpdateCartOccGqlResponse(UpdateCartOccResponse(data = UpdateCartDataOcc())))
         }
 
@@ -398,7 +416,7 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
         orderSummaryPageViewModel._orderShipment = helper.orderShipment
-        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = ButtonBayarState.NORMAL)
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
         val response = ValidateUsePromoRevampUiModel(promoUiModel = PromoUiModel(
                 voucherOrderUiModels = listOf(PromoCheckoutVoucherOrdersItemUiModel(
                         messageUiModel = MessageUiModel(state = "red")
@@ -408,7 +426,7 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
         every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(response)
         orderSummaryPageViewModel.lastValidateUsePromoRequest = ValidateUsePromoRequest()
         orderSummaryPageViewModel.validateUsePromoRevampUiModel = response.copy(promoUiModel = response.promoUiModel.copy(messageUiModel = MessageUiModel(state = "green")))
-        every { updateCartOccUseCase.execute(any(), any(), any()) } answers {
+        every { updateCartOccUseCase.execute(any(), any(), any(), any()) } answers {
             (secondArg() as ((UpdateCartOccGqlResponse) -> Unit)).invoke(UpdateCartOccGqlResponse(UpdateCartOccResponse(data = UpdateCartDataOcc())))
         }
 
@@ -427,7 +445,7 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel.orderCart = helper.orderData.cart.copy(shop = OrderShop(isOfficial = 1))
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
         orderSummaryPageViewModel._orderShipment = helper.orderShipment
-        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = ButtonBayarState.NORMAL)
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
         val response = ValidateUsePromoRevampUiModel(promoUiModel = PromoUiModel(
                 voucherOrderUiModels = listOf(PromoCheckoutVoucherOrdersItemUiModel(
                         messageUiModel = MessageUiModel(state = "red")
@@ -435,7 +453,7 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
         every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(response)
         orderSummaryPageViewModel.lastValidateUsePromoRequest = ValidateUsePromoRequest()
         orderSummaryPageViewModel.validateUsePromoRevampUiModel = response.copy(promoUiModel = response.promoUiModel.copy(messageUiModel = MessageUiModel(state = "green")))
-        every { updateCartOccUseCase.execute(any(), any(), any()) } answers {
+        every { updateCartOccUseCase.execute(any(), any(), any(), any()) } answers {
             (secondArg() as ((UpdateCartOccGqlResponse) -> Unit)).invoke(UpdateCartOccGqlResponse(UpdateCartOccResponse(data = UpdateCartDataOcc())))
         }
 
@@ -454,7 +472,7 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel.orderCart = helper.orderData.cart.copy(shop = OrderShop(isGold = 1))
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
         orderSummaryPageViewModel._orderShipment = helper.orderShipment
-        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = ButtonBayarState.NORMAL)
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
         val response = ValidateUsePromoRevampUiModel(promoUiModel = PromoUiModel(
                 voucherOrderUiModels = listOf(PromoCheckoutVoucherOrdersItemUiModel(
                         messageUiModel = MessageUiModel(state = "red")
@@ -462,7 +480,7 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
         every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(response)
         orderSummaryPageViewModel.lastValidateUsePromoRequest = ValidateUsePromoRequest()
         orderSummaryPageViewModel.validateUsePromoRevampUiModel = response.copy(promoUiModel = response.promoUiModel.copy(messageUiModel = MessageUiModel(state = "green")))
-        every { updateCartOccUseCase.execute(any(), any(), any()) } answers {
+        every { updateCartOccUseCase.execute(any(), any(), any(), any()) } answers {
             (secondArg() as ((UpdateCartOccGqlResponse) -> Unit)).invoke(UpdateCartOccGqlResponse(UpdateCartOccResponse(data = UpdateCartDataOcc())))
         }
 
@@ -481,14 +499,14 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
         orderSummaryPageViewModel._orderShipment = helper.orderShipment
-        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = ButtonBayarState.NORMAL)
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
         every { clearCacheAutoApplyStackUseCase.setParams(any(), any(), any()) } just Runs
         every { clearCacheAutoApplyStackUseCase.createObservable(any()) } returns Observable.just(ClearPromoUiModel())
-        every { updateCartOccUseCase.execute(any(), any(), any()) } answers {
+        every { updateCartOccUseCase.execute(any(), any(), any(), any()) } answers {
             (secondArg() as ((UpdateCartOccGqlResponse) -> Unit)).invoke(UpdateCartOccGqlResponse(UpdateCartOccResponse(data = UpdateCartDataOcc())))
         }
         every { checkoutOccUseCase.execute(any(), any(), any()) } answers {
-            (secondArg() as ((CheckoutOccGqlResponse) -> Unit)).invoke(CheckoutOccGqlResponse(CheckoutOccResponse(status = STATUS_OK, data = Data(success = 1, paymentParameter = PaymentParameter(redirectParam = RedirectParam(url = "testurl"))))))
+            (secondArg() as ((CheckoutOccData) -> Unit)).invoke(CheckoutOccData(status = STATUS_OK, result = CheckoutOccResult(success = 1, paymentParameter = CheckoutOccPaymentParameter(redirectParam = CheckoutOccRedirectParam(url = "testurl")))))
         }
 
         // When
@@ -510,7 +528,7 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
         every { clearCacheAutoApplyStackUseCase.setParams(any(), any(), any()) } just Runs
         val response = Throwable()
         every { clearCacheAutoApplyStackUseCase.createObservable(any()) } returns Observable.error(response)
-        every { updateCartOccUseCase.execute(any(), any(), any()) } answers {
+        every { updateCartOccUseCase.execute(any(), any(), any(), any()) } answers {
             (secondArg() as ((UpdateCartOccGqlResponse) -> Unit)).invoke(UpdateCartOccGqlResponse(UpdateCartOccResponse(data = UpdateCartDataOcc())))
         }
         every { checkoutOccUseCase.execute(any(), any(), any()) } answers {

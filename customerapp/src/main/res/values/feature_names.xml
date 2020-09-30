@@ -232,6 +232,7 @@
     <string name="title_som_change_courier">Ganti Kurir</string>
     <string name="title_som_scan_barcode">Scan Resi</string>
     <string name="title_som_booking_code">Detail Kode Booking</string>
+    <string name="title_som_waiting_payment">Menunggu Pembayaran</string>
 
 
     <!-- Dynamic feature for Umrah-->
@@ -319,4 +320,7 @@
     <string name="shop_search_product">Search Shop Product</string>
     <string name="shop_page_setting_title">Toko Kamu</string>
 
+    <!-- Seller Menu -->
+    <string name="title_seller_menu">Toko Saya</string>
+    <string name="title_seller_settings">Pengaturan Toko</string>
 </resources>

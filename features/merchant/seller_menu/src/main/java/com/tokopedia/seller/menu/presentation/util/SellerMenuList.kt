@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.Intent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.seller.menu.R
+import com.tokopedia.seller.menu.common.R
 import com.tokopedia.seller.menu.common.analytics.SettingTrackingConstant
 import com.tokopedia.seller.menu.common.constant.MenuItemType
 import com.tokopedia.seller.menu.common.constant.SellerBaseUrl

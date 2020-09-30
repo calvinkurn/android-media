@@ -7,7 +7,6 @@ import com.tokopedia.topads.create.R
 import com.tokopedia.topads.view.adapter.keyword.viewmodel.KeywordItemViewModel
 import com.tokopedia.unifycomponents.Label
 import kotlinx.android.synthetic.main.topads_create_layout_keyword_list_item.view.*
-import java.lang.Exception
 
 /**
  * Author errysuprayogi on 11,November,2019
