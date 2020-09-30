@@ -83,6 +83,7 @@
         android:background="@color/Neutral_N75" />
 
     <LinearLayout
+        android:id="@+id/ll_cta_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/bg_broadcast_see_detail"

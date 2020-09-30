@@ -23,8 +23,9 @@ object ImageAnnouncementViewHolderBinder {
             view: View?,
             listener: ImageAnnouncementListener
     ) {
-        val onClick = View.OnClickListener { listener.onImageAnnouncementClicked(viewModel) }
-        view?.setOnClickListener(onClick)
+        view?.setOnClickListener {
+            listener.onImageAnnouncementClicked(viewModel)
+        }
     }
 
 }

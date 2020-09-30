@@ -44,6 +44,7 @@ class BroadcastViewHolder constructor(
     private val voucherView: TopchatMerchantVoucherView? = itemView?.findViewById(R.id.broadcast_merchant_voucher)
     private val singleProduct: SingleProductAttachmentContainer? = itemView?.findViewById(R.id.broadcast_product)
     private val broadcastText: FlexBoxChatLayout? = itemView?.findViewById(R.id.broadcast_fx_chat)
+    private val cta: LinearLayout? = itemView?.findViewById(R.id.ll_cta_container)
     private val rvProductCarousel: ProductCarouselRecyclerView? = itemView?.findViewById(R.id.rv_product_carousel)
     private val adapterProductCarousel = ProductListAdapter(
             searchListener, productListener, deferredAttachment, commonListener, adapterListener
@@ -85,16 +86,7 @@ class BroadcastViewHolder constructor(
         bindSingleProduct(element)
         bindMessage(element)
         bindBackground(element)
-    }
-
-    private fun bindBackground(element: BroadCastUiModel) {
-        if (element.isOpposite) {
-            broadcastContainer?.setPadding(paddingOpposite, paddingOpposite, paddingOpposite, paddingOpposite)
-            broadcastContainer?.setBackgroundResource(R.drawable.bg_broadcast_bubble_receiver)
-        } else {
-            broadcastContainer?.setPadding(paddingSender, paddingSender, paddingSender, paddingSender)
-            broadcastContainer?.setBackgroundResource(R.drawable.bg_broadcast_bubble_sender)
-        }
+        bindCta(element)
     }
 
     private fun bindBanner(element: BroadCastUiModel) {
@@ -163,6 +155,21 @@ class BroadcastViewHolder constructor(
         } else {
             broadcastText?.gone()
         }
+    }
+
+    private fun bindBackground(element: BroadCastUiModel) {
+        if (element.isOpposite) {
+            broadcastContainer?.setPadding(paddingOpposite, paddingOpposite, paddingOpposite, paddingOpposite)
+            broadcastContainer?.setBackgroundResource(R.drawable.bg_broadcast_bubble_receiver)
+        } else {
+            broadcastContainer?.setPadding(paddingSender, paddingSender, paddingSender, paddingSender)
+            broadcastContainer?.setBackgroundResource(R.drawable.bg_broadcast_bubble_sender)
+        }
+    }
+
+    private fun bindCta(element: BroadCastUiModel) {
+        val banner = element.banner ?: return
+        ImageAnnouncementViewHolderBinder.bindBannerClick(banner, cta, imageAnnouncementListener)
     }
 
     companion object {
