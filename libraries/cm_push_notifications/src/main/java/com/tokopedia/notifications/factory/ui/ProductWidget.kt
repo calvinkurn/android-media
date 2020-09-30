@@ -5,7 +5,6 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.view.View
 import android.widget.RemoteViews
-import com.bumptech.glide.Glide
 import com.tokopedia.notifications.R
 import com.tokopedia.notifications.analytics.ProductAnalytics
 import com.tokopedia.notifications.common.CMConstant
@@ -14,6 +13,7 @@ import com.tokopedia.notifications.factory.BaseNotificationContract
 import com.tokopedia.notifications.model.ActionButton
 import com.tokopedia.notifications.model.BaseNotificationModel
 import com.tokopedia.notifications.model.ProductInfo
+import com.tokopedia.notifications.util.onlyOne
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.notifications.common.CMConstant.PreDefineActionType.ATC as TYPE_ATC
 import com.tokopedia.notifications.common.CMConstant.PreDefineActionType.OCC as TYPE_OCC
@@ -109,7 +109,7 @@ internal open class ProductWidget(
         view.setOnClickPendingIntent(R.id.ll_content, contract.productDetailIntent(product))
 
         // action button
-        if (product.actionButton.size == 1) {
+        if (product.actionButton.onlyOne()) {
             val actionButton = product.actionButton.first()
             view.setViewVisibility(R.id.btn_icon, View.GONE)
             setButtonField(R.id.btn_text, view, actionButton)
