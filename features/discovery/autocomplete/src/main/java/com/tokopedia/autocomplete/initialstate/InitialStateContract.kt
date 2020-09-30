@@ -27,7 +27,7 @@ interface InitialStateContract {
 
         fun trackEventClickSeeMoreRecentSearch(userId: String)
 
-        fun removeSeeMoreButtonAndRenderRecentSearch(recentSearchViewModel: RecentSearchViewModel)
+        fun renderCompleteRecentSearch(recentSearchViewModel: RecentSearchViewModel)
 
         fun dropKeyBoard()
     }

@@ -148,7 +148,7 @@ class InitialStateFragment : BaseDaggerFragment(), InitialStateContract.View, In
         presenter.recentSearchSeeMoreClicked()
     }
 
-    override fun removeSeeMoreButtonAndRenderRecentSearch(recentSearchViewModel: RecentSearchViewModel) {
+    override fun renderCompleteRecentSearch(recentSearchViewModel: RecentSearchViewModel) {
         adapter.removeSeeMoreButton(presenter.seeMoreButtonPosition)
         adapter.renderRecentSearch(recentSearchViewModel, presenter.recentSearchPosition)
     }

@@ -473,7 +473,7 @@ class InitialStatePresenter @Inject constructor(
 
             view?.trackEventClickSeeMoreRecentSearch(getUserId())
             view?.dropKeyBoard()
-            view?.removeSeeMoreButtonAndRenderRecentSearch(recentSearchVisitable)
+            view?.renderCompleteRecentSearch(recentSearchVisitable)
         }
     }
 }

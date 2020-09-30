@@ -72,14 +72,14 @@ public class InitialStateAdapter extends RecyclerView.Adapter<AbstractViewHolder
     }
 
     public void removeSeeMoreButton(int index) {
-        if (index != -1 && list.get(index) instanceof RecentSearchSeeMoreViewModel) {
+        if (index >= 0 && index < list.size()) {
             list.remove(index);
             notifyItemRemoved(index);
         }
     }
 
     public void renderRecentSearch(RecentSearchViewModel recentSearchViewModel, int index) {
-        if (index != -1 && list.get(index) instanceof RecentSearchViewModel) {
+        if (index >= 0 && index < list.size()) {
             list.set(index, recentSearchViewModel);
             notifyItemChanged(index);
         }
