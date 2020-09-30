@@ -225,17 +225,14 @@ public class OrderListActivity extends BaseSimpleActivity
                     getIntent().getExtras().putString(OrderListContants.ORDER_FILTER_ID, getIntent().getData().getQueryParameter(OrderListContants.ORDER_FILTER_ID));
                     getIntent().getExtras().putString(OrderCategory.KEY_LABEL, OrderCategory.MARKETPLACE);
                 }
-                // newIntent = getMarketPlaceIntent(this, getIntent().getData());
             } else {
                 if (uriStr.contains(BuyerConsts.HOST_DEALS) || uriStr.contains(BuyerConsts.HOST_DIGITAL)
                         || uriStr.contains(BuyerConsts.HOST_EVENTS) || uriStr.contains(BuyerConsts.HOST_GIFTCARDS)
                         || uriStr.contains(BuyerConsts.HOST_INSURANCE) || uriStr.contains(BuyerConsts.HOST_MODALTOKO)) {
                     orderCategory = uriStr.substring(uriStr.indexOf("//") + 2, uriStr.lastIndexOf("/")).toUpperCase();
-                    //  = getOrderListIntent(this, uriStr, getIntent().getData());
 
                 }  else if (uriStr.contains(HOST_HOTEL)) {
                     orderCategory = OrderCategory.HOTELS;
-                    // newIntent = getHotelOrderListIntent(this, getIntent().getData());
 
                 } else if (uriStr.contains(HOST_FLIGHT)) {
                     orderCategory = OrderCategory.FLIGHTS;

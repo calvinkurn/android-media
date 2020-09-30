@@ -77,15 +77,22 @@ public class OrderListDetailActivity extends BaseSimpleActivity implements HasCo
 
     @Override
     protected void onCreate(Bundle arg) {
-        if (getIntent().getExtras() != null) {
-            orderId = getIntent().getStringExtra(ORDER_ID);
-            paymentId = getIntent().getStringExtra(PAYMENT_ID);
-            cartString = getIntent().getStringExtra(CART_STRING);
+
+        if (getIntent() != null && getIntent().getData() != null) {
+            category = String.valueOf(getIntent().getData());
+
+            if (getIntent().getExtras() != null) {
+                orderId = getIntent().getStringExtra(ORDER_ID);
+                paymentId = getIntent().getStringExtra(PAYMENT_ID);
+                cartString = getIntent().getStringExtra(CART_STRING);
+            }
+
             Uri uri = getIntent().getData();
             if (uri != null) {
                 fromPayment = uri.getQueryParameter(FROM_PAYMENT);
             }
         }
+
         UserSession userSession = new UserSession(this);
         if (!userSession.isLoggedIn()) {
             startActivityForResult(RouteManager.getIntent(this, ApplinkConst.LOGIN), REQUEST_CODE);
@@ -121,6 +128,7 @@ public class OrderListDetailActivity extends BaseSimpleActivity implements HasCo
         if (requestCode == REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
                 // category = getIntent().getStringExtra((DeepLink.URI));
+                category = String.valueOf(getIntent().getData());
                 if (getIntent().getData() != null)
                     upstream = getIntent().getData().getQueryParameter(UPSTREAM);
 
