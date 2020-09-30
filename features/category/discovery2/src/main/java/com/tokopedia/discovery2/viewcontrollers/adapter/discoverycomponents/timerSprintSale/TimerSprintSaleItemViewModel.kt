@@ -91,16 +91,12 @@ class TimerSprintSaleItemViewModel(val application: Application, val components:
 
     fun startTimer() {
         val futureSaleTab = Utils.isFutureSale(getStartDate())
-        val timerData: String? = if (futureSaleTab) {
-            getStartDate()
-        } else {
-            getEndDate()
-        }
+        val timerData: String? = if (futureSaleTab) getStartDate() else getEndDate()
         if (!timerData.isNullOrEmpty()) {
             val currentSystemTime = Calendar.getInstance().time
             val parsedEndDate = Utils.parseData(timerData)
-            if (parsedEndDate != null) {
-                val saleTimeMillis = parsedEndDate.time - currentSystemTime.time
+            parsedEndDate?.let { parsedDate ->
+                val saleTimeMillis = parsedDate.time - currentSystemTime.time
                 if (saleTimeMillis > 0) {
                     timerWithBannerCounter = SaleCountDownTimer(saleTimeMillis, elapsedTime) { timerModel ->
                         if (timerModel.timeFinish) {
