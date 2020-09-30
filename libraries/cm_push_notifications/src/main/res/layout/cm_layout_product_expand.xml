@@ -41,7 +41,7 @@
                 android:id="@+id/ll_content"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_marginStart="@dimen/dp_8"
+                android:layout_marginStart="@dimen/dp_12"
                 android:layout_weight="5">
 
                 <TextView
@@ -157,9 +157,9 @@
                     tools:src="@tools:sample/avatars"
                     tools:visibility="visible" />
 
-                <LinearLayout
+                <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/cm_dp_38"
+                    android:layout_height="@dimen/dp_32"
                     android:layout_marginTop="@dimen/dp_8"
                     android:paddingBottom="@dimen/dp_2"
                     android:layout_alignParentBottom="true"
@@ -167,26 +167,25 @@
 
                     <Button
                         android:id="@+id/btn_icon"
-                        android:layout_width="0dp"
-                        android:layout_weight="1.2"
+                        android:layout_width="@dimen/dp_32"
                         android:layout_height="wrap_content"
                         android:background="@drawable/cm_btn_atc"
                         android:gravity="center"
-                        android:layout_marginEnd="@dimen/dp_8" />
+                        android:layout_marginEnd="@dimen/dp_12" />
 
                     <TextView
                         android:id="@+id/btn_text"
-                        android:layout_width="0dp"
-                        android:layout_weight="4"
+                        android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:background="@drawable/cm_background_buy"
                         android:gravity="center"
+                        android:layout_toEndOf="@+id/btn_icon"
                         android:textColor="@color/white"
                         android:textSize="@dimen/sp_14"
                         android:textStyle="bold"
                         tools:text="Beli Sekarang" />
 
-                </LinearLayout>
+                </RelativeLayout>
 
             </RelativeLayout>
 
