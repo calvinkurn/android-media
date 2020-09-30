@@ -321,6 +321,12 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
+    public void onDestroy() {
+        shipmentAdapter.clearCompositeSubscription();
+        super.onDestroy();
+    }
+
+    @Override
     protected boolean getOptionsMenuEnable() {
         return false;
     }
@@ -2198,18 +2204,18 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void onProcessToPayment() {
-        if (!shipmentPresenter.isLockCheckout()) {
+//        if (!shipmentPresenter.isLockCheckout()) {
             showLoading();
             shipmentAdapter.checkDropshipperValidation(REQUEST_CODE_NORMAL_CHECKOUT);
-        }
+//        }
     }
 
     @Override
     public void onProcessToPaymentCod() {
-        if (shipmentPresenter.isLockCheckout()) {
+//        if (!shipmentPresenter.isLockCheckout()) {
             showLoading();
             shipmentAdapter.checkDropshipperValidation(REQUEST_CODE_COD);
-        }
+//        }
     }
 
     public int getResultCode() {

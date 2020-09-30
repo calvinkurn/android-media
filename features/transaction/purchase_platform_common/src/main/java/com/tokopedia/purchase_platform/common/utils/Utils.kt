@@ -7,7 +7,12 @@ import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.TextUtils
 import android.util.DisplayMetrics
+import android.view.View
 import com.tokopedia.design.utils.CurrencyFormatUtil
+import rx.Emitter
+import rx.Observable
+import rx.android.schedulers.AndroidSchedulers
+import java.util.concurrent.TimeUnit
 import kotlin.math.roundToInt
 
 /**
@@ -68,3 +73,13 @@ fun <T : Any> List<T>.each(action: T.() -> Unit) {
 }
 
 fun String.removeDecimalSuffix(): String = this.removeSuffix(".00")
+
+fun rxViewClickDebounce(view: View): Observable<Boolean> =
+        Observable.create({ emitter: Emitter<Boolean> ->
+            view.setOnClickListener {
+                emitter.onNext(true)
+            }
+        }, Emitter.BackpressureMode.LATEST)
+                .debounce(500, TimeUnit.MILLISECONDS)
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .observeOn(AndroidSchedulers.mainThread())
