@@ -18,7 +18,6 @@ import com.tokopedia.user.session.UserSession
 import com.tokopedia.notifications.common.CMConstant.PreDefineActionType.ATC as TYPE_ATC
 import com.tokopedia.notifications.common.CMConstant.PreDefineActionType.OCC as TYPE_OCC
 import com.tokopedia.notifications.common.CMNotificationUtils.getSpannedTextFromStr as spanStr
-import com.tokopedia.notifications.common.CarouselUtilities.loadImageFromStorage as loadCacheImage
 import com.tokopedia.notifications.common.CarouselUtilities.loadImageFromStorage as loadImage
 
 
@@ -150,7 +149,7 @@ internal open class ProductWidget(
         view.setTextViewText(R.id.txt_review, product.reviewScore.toString())
         view.setTextViewText(R.id.txt_count_review, "(${product.reviewNumber?: "0"})")
 
-        loadCacheImage(product.reviewIcon)?.let {
+        loadImage(product.reviewIcon)?.let {
             view.setImageViewBitmap(R.id.img_star, it)
         }?: base.loadResourceAsBitmap(R.drawable.cm_ic_star_review) {
             view.setImageViewBitmap(R.id.img_star, it)
@@ -162,7 +161,7 @@ internal open class ProductWidget(
             view.setViewVisibility(R.id.img_campaign, View.GONE)
         } else {
             view.setViewVisibility(R.id.img_campaign, View.VISIBLE)
-            loadCacheImage(product.freeOngkirIcon)?.let {
+            loadImage(product.freeOngkirIcon)?.let {
                 view.setImageViewBitmap(R.id.img_campaign, it)
             }
         }

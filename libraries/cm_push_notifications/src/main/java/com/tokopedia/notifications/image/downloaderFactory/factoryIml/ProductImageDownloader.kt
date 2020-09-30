@@ -9,8 +9,10 @@ import com.tokopedia.notifications.model.BaseNotificationModel
 import com.tokopedia.notifications.model.NotificationStatus
 import timber.log.Timber
 
-class ProductImageDownloader(baseNotificationModel: BaseNotificationModel)
-    : NotificationImageDownloader(baseNotificationModel) {
+class ProductImageDownloader(
+        baseNotificationModel: BaseNotificationModel
+) : NotificationImageDownloader(baseNotificationModel) {
+
     override suspend fun verifyAndUpdate() {
         baseNotificationModel.productInfoList.forEach { productInfo ->
             productInfo.productImage.run {
@@ -28,7 +30,7 @@ class ProductImageDownloader(baseNotificationModel: BaseNotificationModel)
 
     override suspend fun downloadAndVerify(context: Context): BaseNotificationModel? {
         baseNotificationModel.productInfoList.forEach { product ->
-            val productImage = downloadAndStore(context, product.productImage, PRODUCT_IMAGE)
+            val productImage = downloadAndStore(context, product.productImage, PRODUCT_IMAGE, PRODUCT_RADIUS)
             val freeOngkirIcon = downloadAndStore(context, product.freeOngkirIcon, FREE_ONGKIR)
             val starReviewIcon = downloadAndStore(context, R.drawable.cm_ic_star_review, STAR_REVIEW)
 
@@ -39,6 +41,10 @@ class ProductImageDownloader(baseNotificationModel: BaseNotificationModel)
 
         verifyAndUpdate()
         return baseNotificationModel
+    }
+
+    companion object {
+        private const val PRODUCT_RADIUS = 6
     }
 
 }
