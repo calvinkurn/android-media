@@ -1002,10 +1002,9 @@ public class GTMAnalytics extends ContextAnalytics {
 
     public void pushGeneralGtmV5Internal(Map<String, Object> params) {
         if (remoteConfig.getBoolean(REMOTE_CONFIG_SEND_TRACK_BG, true)) {
-            Observable.just(params)
+            Observable.fromCallable(() -> pushGeneralGtmV5InternalOrigin(params))
                     .subscribeOn(Schedulers.io())
                     .unsubscribeOn(Schedulers.io())
-                    .map(this::pushGeneralGtmV5InternalOrigin)
                     .subscribe(getDefaultSubscriber());
         } else {
             pushGeneralGtmV5InternalOrigin(params);

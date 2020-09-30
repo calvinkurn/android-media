@@ -28,6 +28,7 @@ public class GlobalConfig {
     public static String PREINSTALL_SITE = "";
     public static String APPLICATION_ID = "";
     public static String DEVICE_ID = "";
+    public static Boolean ENABLE_DEBUG_TRACE = false;
 
     // use to set default root Activity for incoming deeplink
     public static String HOME_ACTIVITY_CLASS_NAME = "";

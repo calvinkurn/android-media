@@ -30,7 +30,6 @@ class DigitalTelcoProductWidget @JvmOverloads constructor(context: Context, attr
 
     private lateinit var adapter: TelcoProductAdapter
     private lateinit var listener: ActionListener
-    private val digitalTrackTelcoPrev = mutableListOf<DigitalTrackProductTelco>()
 
     init {
         val view = View.inflate(context, R.layout.view_telco_product_list, this)
@@ -78,7 +77,6 @@ class DigitalTelcoProductWidget @JvmOverloads constructor(context: Context, attr
         }
         adapter.renderList(dataCollection)
 
-        getVisibleProductItemsToUsersTracking(dataTracking)
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
@@ -100,20 +98,14 @@ class DigitalTelcoProductWidget @JvmOverloads constructor(context: Context, attr
             lastPos = (recyclerView.layoutManager as GridLayoutManager).findLastCompletelyVisibleItemPosition()
         }
 
-
         val digitalTrackProductTelcoList = mutableListOf<DigitalTrackProductTelco>()
         for (i in firstPos..lastPos) {
             if (firstPos >= 0 && lastPos <= productList.size - 1) {
                 digitalTrackProductTelcoList.add(DigitalTrackProductTelco(productList[i], i))
             }
         }
-        if (digitalTrackProductTelcoList.size > 0 &&
-                digitalTrackProductTelcoList.size != digitalTrackTelcoPrev.size &&
-                digitalTrackProductTelcoList != digitalTrackTelcoPrev) {
+        if (digitalTrackProductTelcoList.size > 0) {
             listener.onTrackImpressionProductsList(digitalTrackProductTelcoList)
-
-            digitalTrackTelcoPrev.clear()
-            digitalTrackTelcoPrev.addAll(digitalTrackProductTelcoList)
         }
     }
 

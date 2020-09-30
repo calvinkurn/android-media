@@ -16,4 +16,5 @@ object TalkConstants {
     const val AB_TEST_WRITE_KEY = "Talk Writing Revamp"
     const val WRITE_OLD_FLOW = "Old Talk Form"
     const val PARAM_APPLINK_IS_VARIANT_SELECTED = "is_variant_selected"
+    const val PARAM_APPLINK_AVAILABLE_VARIANT = "available variants"
 }

@@ -21,7 +21,7 @@ import javax.inject.Inject
  * ade.hadian@tokopedia.com
  */
 
-class PinCompleteFragment: BaseDaggerFragment() {
+class PinCompleteFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var trackingPinUtil: TrackingPinUtil
@@ -46,11 +46,8 @@ class PinCompleteFragment: BaseDaggerFragment() {
         initViews()
     }
 
-    private fun initViews(){
-        activity?.run {
-            tickerCompletePin?.setTextDescription(this.getString(R.string.ticker_complete_add_pin))
-        }
-        when(arguments?.getInt(ApplinkConstInternalGlobal.PARAM_SOURCE)){
+    private fun initViews() {
+        when (arguments?.getInt(ApplinkConstInternalGlobal.PARAM_SOURCE)) {
             SOURCE_CHANGE_PIN -> {
                 titleComplete.text = getString(R.string.change_pin_success)
                 setToolbarTitle(resources.getString(R.string.title_change_pin))
@@ -62,8 +59,8 @@ class PinCompleteFragment: BaseDaggerFragment() {
         }
     }
 
-    private fun setToolbarTitle(title: String){
-        if(activity is PinCompleteActivity){
+    private fun setToolbarTitle(title: String) {
+        if (activity is PinCompleteActivity) {
             (activity as PinCompleteActivity).supportActionBar?.title = title
         }
     }
@@ -79,12 +76,12 @@ class PinCompleteFragment: BaseDaggerFragment() {
         getComponent(ProfileCompletionSettingComponent::class.java).inject(this)
     }
 
-    fun onBackPressed(){
+    fun onBackPressed() {
         trackingPinUtil.trackClickBackButtonSuccess()
     }
 
     companion object {
-        const val COMPLETE_PICT_URL = "https://ecs7.tokopedia.net/android/others/complete_add_pin.png"
+        const val COMPLETE_PICT_URL = "https://ecs7.tokopedia.net/android/user/success_update_pin.png"
 
         const val SOURCE_ADD_PIN = 1
         const val SOURCE_CHANGE_PIN = 2

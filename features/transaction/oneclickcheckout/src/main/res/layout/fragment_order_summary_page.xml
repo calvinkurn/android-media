@@ -24,6 +24,18 @@
                 android:visibility="gone"
                 tools:visibility="visible">
 
+                <com.tokopedia.unifycomponents.ticker.Ticker
+                    android:id="@+id/ticker_osp"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    app:closeButtonVisibility="visible"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:tickerShapeType="full"
+                    app:tickerType="announcement" />
+
                 <include
                     android:id="@+id/layout_occ_onboarding"
                     layout="@layout/layout_occ_onboarding"

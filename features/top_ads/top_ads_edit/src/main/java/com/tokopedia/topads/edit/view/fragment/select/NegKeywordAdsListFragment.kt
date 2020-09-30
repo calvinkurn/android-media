@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager
+import com.tokopedia.topads.common.data.util.Utils
 import com.tokopedia.topads.edit.R
 import com.tokopedia.topads.edit.data.response.GetKeywordResponse
 import com.tokopedia.topads.edit.di.TopAdsEditComponent
@@ -77,6 +78,8 @@ class NegKeywordAdsListFragment : BaseDaggerFragment() {
                 adapter.addKeyword(editText.text.toString().trim())
                 onCheckedItem()
             }
+            add_btn?.isEnabled = false
+            editText.text.clear()
         }
 
         btn_next.setOnClickListener {
@@ -114,7 +117,7 @@ class NegKeywordAdsListFragment : BaseDaggerFragment() {
                     adapter.addKeyword(editText.text.toString().trim())
                     onCheckedItem()
                 }
-                Constants.dismissKeyboard(context, v)
+                Utils.dismissKeyboard(context, v)
 
             }
             true

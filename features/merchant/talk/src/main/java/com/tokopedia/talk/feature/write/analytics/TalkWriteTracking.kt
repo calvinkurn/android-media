@@ -23,20 +23,20 @@ object TalkWriteTracking {
         )
     }
 
-    fun eventClickSendButton(userId: String, productId: String, category: String, isSuccess: Boolean, errorMessage: String? = null, isVariantSelected: Boolean) {
+    fun eventClickSendButton(userId: String, productId: String, category: String, isSuccess: Boolean, errorMessage: String? = null, isVariantSelected: Boolean, availableVariants: String) {
         with(TalkWriteTrackingConstants) {
             val successOrFailTag = if(isSuccess) {SEND_SUCCESS} else {SEND_FAIL}
-            val eventLabel = String.format(EVENT_LABEL_CLICK_SEND, category, successOrFailTag, errorMessage.toString(), isVariantSelected.toString())
+            val eventLabel = String.format(EVENT_LABEL_CLICK_SEND, category, successOrFailTag, errorMessage.toString(), isVariantSelected.toString(), availableVariants)
             eventTalkWriting(userId, productId, EVENT_ACTION_SEND, eventLabel)
         }
 
     }
 
-    fun eventClickChips(userId: String, productId: String, category: String, message: String, isVariantSelected: Boolean) {
+    fun eventClickChips(userId: String, productId: String, category: String, message: String, isVariantSelected: Boolean, availableVariants: String) {
         with(TalkWriteTrackingConstants) {
             eventTalkWriting(userId, productId,
                     EVENT_ACTION_CLICK_CATEGORY,
-                    String.format(EVENT_LABEL_CLICK_CATEGORY, category, message, isVariantSelected.toString()))
+                    String.format(EVENT_LABEL_CLICK_CATEGORY, category, message, isVariantSelected.toString(), availableVariants))
         }
     }
 

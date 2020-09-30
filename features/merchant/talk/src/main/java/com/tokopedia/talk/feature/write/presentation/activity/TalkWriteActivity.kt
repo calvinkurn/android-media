@@ -26,21 +26,24 @@ class TalkWriteActivity : BaseSimpleActivity(), HasComponent<TalkComponent>, Tal
 
     companion object {
         const val PARAM_PRODUCT_ID = "product_id"
-        fun createIntent(context: Context, productId: Int, isVariantSelected: Boolean): Intent {
+        fun createIntent(context: Context, productId: Int, isVariantSelected: Boolean, availableVariants: String): Intent {
             val intent = Intent(context, TalkWriteActivity::class.java)
             intent.putExtra(TalkConstants.PARAM_PRODUCT_ID, productId)
             intent.putExtra(TalkConstants.PARAM_APPLINK_IS_VARIANT_SELECTED, isVariantSelected)
+            intent.putExtra(TalkConstants.PARAM_APPLINK_AVAILABLE_VARIANT, availableVariants)
             return intent
         }
     }
 
     private var productId: Int = 0
     private var isVariantSelected: Boolean = false
+    private var availableVariants: String = ""
     private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         productId = intent.getIntExtra(TalkConstants.PARAM_PRODUCT_ID, productId)
         isVariantSelected = intent.getBooleanExtra(TalkConstants.PARAM_APPLINK_IS_VARIANT_SELECTED, isVariantSelected)
+        availableVariants = intent.getStringExtra(TalkConstants.PARAM_APPLINK_AVAILABLE_VARIANT) ?: ""
         if(productId == 0) {
             getDataFromApplink()
         }
@@ -50,7 +53,7 @@ class TalkWriteActivity : BaseSimpleActivity(), HasComponent<TalkComponent>, Tal
     }
 
     override fun getNewFragment(): Fragment? {
-        return TalkWriteFragment.createNewInstance(productId, isVariantSelected)
+        return TalkWriteFragment.createNewInstance(productId, isVariantSelected, availableVariants)
     }
 
     override fun getComponent(): TalkComponent {
@@ -147,6 +150,10 @@ class TalkWriteActivity : BaseSimpleActivity(), HasComponent<TalkComponent>, Tal
         val isVariantSelectedString = uri.getQueryParameter(TalkConstants.PARAM_APPLINK_IS_VARIANT_SELECTED) ?: ""
         if (isVariantSelectedString.isNotEmpty()) {
             this.isVariantSelected = isVariantSelectedString.toBoolean()
+        }
+        val availableVariantFromApplink = uri.getQueryParameter(TalkConstants.PARAM_APPLINK_AVAILABLE_VARIANT) ?: ""
+        if (availableVariantFromApplink.isNotEmpty()) {
+            this.availableVariants = availableVariantFromApplink
         }
     }
 }

@@ -36,7 +36,6 @@ import kotlin.Unit;
 import kotlin.jvm.functions.Function0;
 import kotlin.jvm.functions.Function1;
 import okhttp3.Interceptor;
-import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 
@@ -70,6 +69,15 @@ public class GraphqlClient {
             //This interceptor should always be added in the end
             if(addBrotliInterceptor){
                 tkpdOkHttpBuilder.addInterceptor(BrotliKotlinCustomObject.INSTANCE);
+            }
+            if (GlobalConfig.isAllowDebuggingTools()) {
+                tkpdOkHttpBuilder.addInterceptor(new DeprecatedApiInterceptor(context.getApplicationContext()));
+
+                FakeResponseInterceptorProvider provider = new FakeResponseInterceptorProvider();
+                Interceptor interceptor = provider.getGqlInterceptor(context.getApplicationContext());
+                if (interceptor != null) {
+                    tkpdOkHttpBuilder.addInterceptor(interceptor);
+                }
             }
             initializeRetrofit(tkpdOkHttpBuilder, context, userSession);
         }
@@ -129,11 +137,11 @@ public class GraphqlClient {
 
         if (GlobalConfig.isAllowDebuggingTools()) {
             tkpdOkHttpBuilder.addInterceptor(new DeprecatedApiInterceptor(context.getApplicationContext()));
-            FakeResponseInterceptorProvider provider = new FakeResponseInterceptorProvider();
-            Interceptor interceptor = provider.getInterceptor(context.getApplicationContext());
-            if (interceptor != null) {
-                tkpdOkHttpBuilder.addInterceptor(interceptor);
-            }
+//            FakeResponseInterceptorProvider provider = new FakeResponseInterceptorProvider();
+//            Interceptor interceptor = provider.getInterceptor(context.getApplicationContext());
+//            if (interceptor != null) {
+//                tkpdOkHttpBuilder.addInterceptor(interceptor);
+//            }
         }
         return tkpdOkHttpBuilder;
     }

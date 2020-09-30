@@ -1,18 +1,8 @@
 package com.tokopedia.topads.edit.utils
 
-import android.content.Context
-import android.view.View
-import android.view.inputmethod.InputMethodManager
-import java.text.NumberFormat
-import java.util.*
-
 object Constants {
 
-    const val FAVOURED_DATA = "favouredData"
     const val SELECTED_DATA = "selectedData"
-    const val MANUAL_DATA = "manualData"
-    const val ORIGINAL_LIST = "originalList"
-    const val NOT_KNOWN = "Tidak diketahui"
     const val PRODUCT_ID = "product"
     const val MIN_SUGGESTION = "minSuggestedBid"
     const val GROUP_ID = "groupId"
@@ -26,7 +16,6 @@ object Constants {
     const val RESULT_IMAGE = "resultImage"
     const val ALL = "all"
     const val ROW = 50
-    const val START = 0
     const val EXISTING_IDS = "ExistingIds"
     const val POSITION0 = 0
     const val POSITION1 = 1
@@ -51,12 +40,9 @@ object Constants {
     const val REQUEST_OK = 1
     const val ADDED_PRODUCTS = "addedProducts"
     const val DELETED_PRODUCTS = "deletedProducts"
-    const val KALI = " kali"
     const val PRODUK_NAME = " Produk"
     const val KATA_KUNCI = " Kata Kunci"
     const val ATUR_NAME = " Atur"
-    const val MIN = "min"
-    const val MAX = "max"
     const val TITLE_1 = "Pencarian luas"
     const val TITLE_2 = "Pencarian Spesifik"
     const val REGEX = "^[A-Za-z0-9 ]*\$"
@@ -81,19 +67,13 @@ object Constants {
     const val priceDaily = "price_daily"
     const val groupName = "groupName"
     const val TAB_POSITION = "tab_position"
+    const val MAX_BID = "max"
+    const val MIN_BID = "min"
+    const val SUGGESTION_BID = "suggest"
+    const val KEYWORD_NAME = "keywordName"
+    const val FROM_EDIT = "fromEdit"
+    const val CURRENT_KEY_TYPE = "currentKeyType"
+    const val ITEM_POSITION = "pos"
+    const val GROUPID = "group_id"
 
-
-    var locale = Locale("in", "ID")
-
-
-    fun convertToCurrencyString(value: Long): String {
-        return (NumberFormat.getNumberInstance(locale).format(value) + KALI)
-    }
-
-
-    fun dismissKeyboard(context: Context?, view: View?) {
-        val inputMethodManager = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
-        if (inputMethodManager?.isAcceptingText == true)
-            inputMethodManager.hideSoftInputFromWindow(view?.windowToken, 0)
-    }
 }

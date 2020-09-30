@@ -52,6 +52,8 @@ dependencies {
     implementation project(rootProject.ext.features.discoveryCommon)
     implementation project(rootProject.ext.libraries.weaver)
     implementation project(rootProject.ext.libraries.core_legacy)
+    implementation project(rootProject.ext.features.cart)
+    implementation project(rootProject.ext.features.purchase_platform_common)
 
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components

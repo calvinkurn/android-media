@@ -19,6 +19,6 @@ public interface ICartDigitalRepository {
     Observable<CartDigitalInfoData> patchOtpCart(RequestBodyOtpSuccess requestBodyOtpSuccess,
                                                  Map<String, String> paramGetCart);
 
-    Observable<String> cancelVoucher(RequestBodyCancelVoucher requestBodyCancelVoucher);
+    Observable<Boolean> cancelVoucher(RequestBodyCancelVoucher requestBodyCancelVoucher);
 
 }

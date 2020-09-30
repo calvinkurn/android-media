@@ -43,13 +43,14 @@ class AddTalkActivity : BaseSimpleActivity(), HasComponent<TalkComponent> {
     private var productId = ""
     private var source = ""
     private var isVariantSelected = false
+    private var availableVariants = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         getDataFromAppLink()
         getAbTestPlatform()?.fetch(null)
         super.onCreate(savedInstanceState)
         if (!useOldPage()) {
-            startActivity(TalkWriteActivity.createIntent(this, productId.toIntOrZero(), isVariantSelected))
+            startActivity(TalkWriteActivity.createIntent(this, productId.toIntOrZero(), isVariantSelected, availableVariants))
             finish()
             return
         }
@@ -83,6 +84,10 @@ class AddTalkActivity : BaseSimpleActivity(), HasComponent<TalkComponent> {
         val isVariantSelectedString = uri.getQueryParameter(TalkConstants.PARAM_APPLINK_IS_VARIANT_SELECTED) ?: ""
         if (isVariantSelectedString.isNotEmpty()) {
             this.isVariantSelected = isVariantSelectedString.toBoolean()
+        }
+        val availableVariantsFromApplink = uri.getQueryParameter(TalkConstants.PARAM_APPLINK_AVAILABLE_VARIANT) ?: ""
+        if (availableVariantsFromApplink.isNotEmpty()) {
+            this.availableVariants = availableVariantsFromApplink
         }
     }
 

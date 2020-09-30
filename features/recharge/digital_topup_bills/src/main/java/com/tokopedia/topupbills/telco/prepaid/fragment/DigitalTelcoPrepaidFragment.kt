@@ -34,6 +34,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.topupbills.R
+import com.tokopedia.topupbills.common.analytics.DigitalTopupAnalytics
 import com.tokopedia.topupbills.searchnumber.view.DigitalSearchNumberActivity
 import com.tokopedia.topupbills.telco.common.adapter.TelcoTabAdapter
 import com.tokopedia.topupbills.telco.common.fragment.DigitalBaseTelcoFragment
@@ -218,8 +219,11 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
                 topupAnalytics.eventClickTelcoPrepaidCategory(tabs[position].title)
                 sharedModelPrepaid.setVisibilityTotalPrice(false)
                 sharedModelPrepaid.setProductCatalogSelected(getEmptyProduct())
+                sharedModelPrepaid.setSelectedCategoryViewPager(getLabelActiveCategory())
             } else {
                 setTrackingOnTabMenu(tabs[position].title)
+                if (tabs[position].title == TelcoComponentName.PROMO) sendImpressionPromo()
+                else sendImpressionRecents()
             }
         }
     }
@@ -268,6 +272,8 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
                 separator.hide()
                 tabLayout.hide()
             }
+            //initiate impression promo
+            sendImpressionPromo()
         }
     }
     // endregion Promo and Recommendation

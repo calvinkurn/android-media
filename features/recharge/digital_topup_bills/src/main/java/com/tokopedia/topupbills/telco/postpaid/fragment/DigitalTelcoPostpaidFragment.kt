@@ -36,6 +36,7 @@ import com.tokopedia.topupbills.telco.common.model.TelcoTabItem
 import com.tokopedia.topupbills.telco.common.viewmodel.TelcoTabViewModel
 import com.tokopedia.topupbills.telco.data.RechargePrefix
 import com.tokopedia.topupbills.telco.data.constant.TelcoCategoryType
+import com.tokopedia.topupbills.telco.data.constant.TelcoComponentName
 import com.tokopedia.topupbills.telco.data.constant.TelcoComponentType
 import com.tokopedia.topupbills.telco.postpaid.listener.ClientNumberPostpaidListener
 import com.tokopedia.topupbills.telco.postpaid.viewmodel.DigitalTelcoEnquiryViewModel
@@ -149,6 +150,10 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
                 it.select()
             }
             setTrackingOnTabMenu(listMenu[position].title)
+
+            val tabs = telcoTabViewModel.getAll()
+            if (tabs[position].title == TelcoComponentName.PROMO) sendImpressionPromo()
+            else sendImpressionRecents()
         }
     }
 
@@ -176,6 +181,8 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
                 separator.hide()
                 tabLayout.hide()
             }
+            //initiate impression promo
+            sendImpressionPromo()
         }
     }
 
@@ -320,6 +327,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
         setCheckoutPassData(enquiryData)
         postpaidClientNumberWidget.showEnquiryResultPostpaid(enquiryData)
 
+        price = enquiryData.enquiry.attributes.pricePlain
         buyWidget.setTotalPrice(enquiryData.enquiry.attributes.price)
         buyWidget.setVisibilityLayout(true)
     }
@@ -364,6 +372,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
                 }
                 operatorSelected?.run {
                     operatorName = operator.attributes.name
+                    productName = operatorName
                     when (inputNumberActionType) {
                         InputNumberActionType.MANUAL -> {
                             topupAnalytics.eventInputNumberManual(categoryId, operatorName)

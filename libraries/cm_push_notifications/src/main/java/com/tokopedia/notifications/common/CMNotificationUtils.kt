@@ -43,8 +43,7 @@ object CMNotificationUtils {
         get() = Build.VERSION.SDK_INT
 
 
-    fun tokenUpdateRequired(context: Context, newToken: String): Boolean {
-        val cacheHandler = CMNotificationCacheHandler(context)
+    private fun tokenUpdateRequired(newToken: String, cacheHandler: CMNotificationCacheHandler): Boolean {
         val oldToken = cacheHandler.getStringValue(CMConstant.FCM_TOKEN_CACHE_KEY)
         if (TextUtils.isEmpty(oldToken)) {
             return true
@@ -53,6 +52,13 @@ object CMNotificationUtils {
             return false
         }
         return true
+    }
+
+    fun isTokenExpired(cacheHandler: CMNotificationCacheHandler, newToken: String, userId: String, gAdId: String, appVersionName: String): Boolean {
+        return tokenUpdateRequired(newToken, cacheHandler) ||
+                mapTokenWithUserRequired(userId, cacheHandler) ||
+                mapTokenWithGAdsIdRequired(gAdId, cacheHandler) ||
+                mapTokenWithAppVersionRequired(appVersionName, cacheHandler)
     }
 
     fun getUserIdAndStatus(context: Context, userId: String): Pair<String, Int> {
@@ -82,21 +88,19 @@ object CMNotificationUtils {
     }
 
 
-    fun mapTokenWithUserRequired(context: Context, newUserId: String): Boolean {
-        val cacheHandler = CMNotificationCacheHandler(context)
+    private fun mapTokenWithUserRequired(newUserId: String, cacheHandler: CMNotificationCacheHandler): Boolean {
         val oldUserID = cacheHandler.getStringValue(CMConstant.USERID_CACHE_KEY)
         if (TextUtils.isEmpty(oldUserID)) {
             return !TextUtils.isEmpty(newUserId)
-        } else if (!TextUtils.isEmpty(oldUserID)) {
-            return TextUtils.isEmpty(newUserId)
         } else if (!TextUtils.isEmpty(newUserId)) {
             return newUserId != oldUserID
+        } else if (!TextUtils.isEmpty(oldUserID)) {
+            return TextUtils.isEmpty(newUserId)
         }
         return false
     }
 
-    fun mapTokenWithGAdsIdRequired(context: Context, gAdsId: String): Boolean {
-        val cacheHandler = CMNotificationCacheHandler(context)
+    private fun mapTokenWithGAdsIdRequired(gAdsId: String, cacheHandler: CMNotificationCacheHandler): Boolean {
         val oldGAdsId = cacheHandler.getStringValue(CMConstant.GADSID_CACHE_KEY)
         if (TextUtils.isEmpty(gAdsId)) {
             return false
@@ -107,16 +111,10 @@ object CMNotificationUtils {
         return true
     }
 
-    fun mapTokenWithAppVersionRequired(context: Context, appVersionName: String): Boolean {
-        val cacheHandler = CMNotificationCacheHandler(context)
+    private fun mapTokenWithAppVersionRequired(appVersionName: String, cacheHandler: CMNotificationCacheHandler): Boolean {
         val oldAppVersionName = cacheHandler.getStringValue(CMConstant.APP_VERSION_CACHE_KEY)
         Timber.d("CMUser-APP_VERSION$oldAppVersionName#new-$appVersionName")
-        return if (TextUtils.isEmpty(oldAppVersionName))
-            true
-        else if (oldAppVersionName.equals(appVersionName, ignoreCase = true)) {
-            false
-        } else
-            false
+        return TextUtils.isEmpty(oldAppVersionName) || !oldAppVersionName.equals(appVersionName, ignoreCase = true)
     }
 
     fun getUniqueAppId(context: Context): String {

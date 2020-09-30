@@ -248,11 +248,6 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
         snapShotMap?.isWishlisted = isWishlisted
     }
 
-    fun updateBasicContentCodData(isCod: Boolean) {
-        snapShotMap?.shouldShowCod = isCod
-        basicContentMap?.shouldShowCod = isCod
-    }
-
     fun updateFulfillmentData(context: Context?, isFullfillment: Boolean) {
         val fullFillmentText = if (!isFullfillment) {
             ""

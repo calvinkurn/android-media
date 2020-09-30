@@ -38,6 +38,7 @@ import com.tokopedia.affiliate.common.viewmodel.ExploreCardViewModel;
 import com.tokopedia.affiliate.common.viewmodel.ExploreTitleViewModel;
 import com.tokopedia.affiliate.common.widget.ExploreSearchView;
 import com.tokopedia.affiliate.feature.explore.di.DaggerExploreComponent;
+import com.tokopedia.affiliate.feature.explore.di.ExploreModule;
 import com.tokopedia.affiliate.feature.explore.view.activity.ExploreActivity;
 import com.tokopedia.affiliate.feature.explore.view.activity.FilterActivity;
 import com.tokopedia.affiliate.feature.explore.view.activity.SortActivity;
@@ -303,6 +304,7 @@ public class ExploreFragment
 
         DaggerExploreComponent.builder()
                 .affiliateComponent(affiliateComponent)
+                .exploreModule(new ExploreModule(getContext()))
                 .build().inject(this);
     }
 

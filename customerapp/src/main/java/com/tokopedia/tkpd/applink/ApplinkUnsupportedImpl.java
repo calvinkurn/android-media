@@ -4,19 +4,20 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
-import androidx.appcompat.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 
+import androidx.appcompat.app.AlertDialog;
+
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.base.view.appupdate.model.DataUpdateApp;
-import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.abstraction.base.view.appupdate.model.DetailUpdate;
 import com.tokopedia.applink.ApplinkUnsupported;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
-import com.tokopedia.intl.R;
+import com.tokopedia.tkpd.R;
 
 /**
  * @author  by alvarisi on 11/13/17.

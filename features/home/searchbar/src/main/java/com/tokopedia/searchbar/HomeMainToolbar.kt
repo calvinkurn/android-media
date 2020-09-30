@@ -11,14 +11,18 @@ import android.os.Build
 import android.text.TextUtils
 import android.util.AttributeSet
 import android.view.View
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.widget.ImageView
-import android.widget.TextView
 import androidx.asynclayoutinflater.view.AsyncLayoutInflater
 import androidx.asynclayoutinflater.view.AsyncLayoutInflater.OnInflateFinishedListener
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
+import com.tokopedia.searchbar.data.HintData
+import com.tokopedia.searchbar.helper.Ease
+import com.tokopedia.searchbar.helper.EasingInterpolator
 import com.tokopedia.searchbar.helper.ViewHelper
 import kotlinx.android.synthetic.main.home_main_toolbar.view.*
 import kotlinx.coroutines.*
@@ -29,8 +33,10 @@ import kotlin.text.Charsets.UTF_8
 
 
 class HomeMainToolbar : MainToolbar, CoroutineScope {
+
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main
+
     private var toolbarType: Int = 0
 
     private var shadowApplied: Boolean = false
@@ -56,6 +62,8 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
     private lateinit var searchMagnifierIcon: Drawable
 
     private lateinit var afterInflationCallable: Callable<Any?>
+
+    private lateinit var animationJob: Job
 
     private var viewHomeMainToolBar: View? = null
 
@@ -146,6 +154,7 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
     }
 
     override fun inflateResource(context: Context) {
+
         val asyncLayoutInflater = AsyncLayoutInflater(context)
         val inflateFinishCallBack: OnInflateFinishedListener? = OnInflateFinishedListener { view, resid, parent ->
             viewHomeMainToolBar = view
@@ -224,24 +233,99 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
         return shadowApplied
     }
 
-    fun setHint(placeholder: String, keyword: String, isFirstInstall: Boolean){
-        if(viewHomeMainToolBar != null) {
-            val editTextSearch = viewHomeMainToolBar!!.findViewById<TextView>(R.id.et_search)
-            editTextSearch.hint = if (placeholder.isEmpty()) context.getString(R.string.search_tokopedia) else placeholder
+    fun setHint(
+            hint: HintData,
+            hints: ArrayList<HintData>,
+            isFirstInstall: Boolean,
+            isShowTransition: Boolean,
+            durationAutoTransition: Long
+    ) {
+        if (viewHomeMainToolBar != null) {
+            if (::animationJob.isInitialized) {
+                animationJob.cancel()
+            }
+            if (hints.size > 1 && isShowTransition) {
+                setHintAnimation(hints, isFirstInstall, durationAutoTransition)
+            } else {
+                setHintSingle(hint, isFirstInstall)
+            }
             editTextSearch.setSingleLine()
             editTextSearch.ellipsize = TextUtils.TruncateAt.END
-            editTextSearch.setOnClickListener {
-                searchBarAnalytics.eventTrackingSearchBar(screenName, keyword)
-                if (placeholder.isEmpty()) {
-                    RouteManager.route(context, ApplinkConstInternalDiscovery.AUTOCOMPLETE)
-                } else {
-                    RouteManager.route(context,
-                            ApplinkConstInternalDiscovery.AUTOCOMPLETE + PARAM_APPLINK_AUTOCOMPLETE,
-                            HOME_SOURCE,
-                            safeEncodeUTF8(keyword),
-                            isFirstInstall.toString())
+        }
+    }
+
+    private fun setHintAnimation(
+            hints: ArrayList<HintData>,
+            isFirstInstall: Boolean,
+            durationAutoTransition: Long
+    ) {
+        var iterator = hints.iterator()
+
+        animationJob = launch {
+            while (true) {
+                var hint = context.getString(R.string.search_tokopedia)
+                var keyword = ""
+                val slideUpIn = AnimationUtils.loadAnimation(context, R.anim.slide_up_in)
+                slideUpIn.interpolator = EasingInterpolator(Ease.QUART_OUT)
+                val slideOutUp = AnimationUtils.loadAnimation(context, R.anim.slide_out_up)
+                slideOutUp.interpolator = EasingInterpolator(Ease.QUART_IN)
+                slideOutUp.setAnimationListener(object : Animation.AnimationListener {
+                    override fun onAnimationRepeat(animation: Animation?) {}
+                    override fun onAnimationEnd(animation: Animation?) {
+                        if (iterator.hasNext()) {
+                            val placeholder = iterator.next()
+                            hint = placeholder.placeholder
+                            keyword = placeholder.keyword
+                        } else {
+                            iterator = hints.iterator()
+                            val placeholder = iterator.next()
+                            hint = placeholder.placeholder
+                            keyword = placeholder.keyword
+                        }
+                        editTextSearch.hint = hint
+                        editTextSearch.startAnimation(slideUpIn)
+                    }
+
+                    override fun onAnimationStart(animation: Animation?) {}
+                })
+                editTextSearch.startAnimation(slideOutUp)
+                editTextSearch.setOnClickListener {
+                    onClickHint(keyword, isFirstInstall)
                 }
+                delay(durationAutoTransition)
             }
+        }
+    }
+
+    fun startHintAnimation() {
+        if (::animationJob.isInitialized) {
+            animationJob.start()
+        }
+    }
+
+    fun stopHintAnimation() {
+        if (::animationJob.isInitialized) {
+            animationJob.cancel()
+        }
+    }
+
+    private fun setHintSingle(hint: HintData, isFirstInstall: Boolean) {
+        editTextSearch.hint = if (hint.placeholder.isEmpty()) context.getString(R.string.search_tokopedia) else hint.placeholder
+        editTextSearch.setOnClickListener {
+            onClickHint(hint.keyword, isFirstInstall)
+        }
+    }
+
+    private fun onClickHint(keyword: String, isFirstInstall: Boolean) {
+        searchBarAnalytics.eventTrackingSearchBar(screenName, keyword)
+        if (keyword.isEmpty()) {
+            RouteManager.route(context, ApplinkConstInternalDiscovery.AUTOCOMPLETE)
+        } else {
+            RouteManager.route(context,
+                    ApplinkConstInternalDiscovery.AUTOCOMPLETE + PARAM_APPLINK_AUTOCOMPLETE,
+                    HOME_SOURCE,
+                    safeEncodeUTF8(keyword),
+                    isFirstInstall.toString())
         }
     }
 

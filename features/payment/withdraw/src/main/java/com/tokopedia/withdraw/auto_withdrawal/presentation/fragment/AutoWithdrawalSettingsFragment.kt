@@ -271,7 +271,7 @@ class AutoWithdrawalSettingsFragment : BaseDaggerFragment(), ScheduleChangeListe
         }
     }
 
-    private fun setScheduleData() {
+    private fun setScheduleData(isFromSelectSchedule: Boolean) {
         requestedSchedule?.apply {
             tvAutoWDScheduleType.text = title
             tvScheduleTiming.text = desc
@@ -279,7 +279,8 @@ class AutoWithdrawalSettingsFragment : BaseDaggerFragment(), ScheduleChangeListe
             currentSchedule?.apply {
                 tvAutoWDScheduleType.text = title
                 tvScheduleTiming.text = desc
-                checkboxAutoWD.isChecked = autoWDStatusData?.status == AUTO_WITHDRAWAL_STATUS_ENABLE
+                if(!isFromSelectSchedule)
+                    checkboxAutoWD.isChecked = autoWDStatusData?.status == AUTO_WITHDRAWAL_STATUS_ENABLE
             }
         }
     }
@@ -291,7 +292,7 @@ class AutoWithdrawalSettingsFragment : BaseDaggerFragment(), ScheduleChangeListe
                 currentSchedule = it
             }
         }
-        setScheduleData()
+        setScheduleData(false)
     }
 
     private fun setAutoWdCheckBoxListener(autoWDStatusData: AutoWDStatusData) {
@@ -520,10 +521,9 @@ class AutoWithdrawalSettingsFragment : BaseDaggerFragment(), ScheduleChangeListe
                 val view = layoutInflater.inflate(R.layout.swd_layout_withdraw_tnc, null,
                         true)
                 val webView: TkpdWebView = view.findViewById(R.id.swd_tnc_webview)
-                webView.loadData(tncTemplateStr, MIME_TYPE_TEXT_HTML, ENCODING_UTF_8)
                 bottomSheetUnify.setChild(view)
                 bottomSheetUnify.setShowListener {
-                    view.requestFocus()
+                    webView.loadData(tncTemplateStr, MIME_TYPE_TEXT_HTML, ENCODING_UTF_8)
                 }
                 bottomSheetUnify.show(activity.supportFragmentManager, TAG_AUTO_WITHDRAWAL_TNC_BOTTOM_SHEET)
                 analytics.onClickViewTermsCondition()
@@ -545,7 +545,7 @@ class AutoWithdrawalSettingsFragment : BaseDaggerFragment(), ScheduleChangeListe
         else {
             requestedSchedule = null
         }
-        setScheduleData()
+        setScheduleData(true)
         showSaveButton()
     }
 
@@ -686,8 +686,6 @@ class AutoWithdrawalSettingsFragment : BaseDaggerFragment(), ScheduleChangeListe
         private const val AUTO_WITHDRAWAL_STATUS_NEW = 0
         private const val AUTO_WITHDRAWAL_STATUS_ENABLE = 1
         private const val AUTO_WITHDRAWAL_STATUS_DISABLE = 2
-
-        private const val DEFAULT_BANK_ACCOUNT_VALUE = 1
 
         private const val BANK_STATUS_REJECTED_PENDING = 2
         private const val BANK_STATUS_REJECTED_FRAUD = 3

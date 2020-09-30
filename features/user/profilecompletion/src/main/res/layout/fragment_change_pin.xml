@@ -1,87 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="@dimen/spacing_lvl4"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:background="@color/Neutral_N0">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/mainView"
+        android:id="@+id/container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:background="@color/Neutral_N0">
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/changePinTitle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/spacing_lvl4"
-            android:layout_marginLeft="@dimen/spacing_lvl4"
-            android:layout_marginTop="@dimen/spacing_lvl7"
-            android:layout_marginEnd="@dimen/spacing_lvl4"
-            android:layout_marginRight="@dimen/spacing_lvl4"
-            android:text="@string/change_pin_title_old_pin"
-            android:textAlignment="center"
-            android:textSize="@dimen/fontSize_lvl4"
-            app:typographyWeight="bold"
-            app:typographyType="heading_2"
-            android:textColor="@color/Neutral_N700_96"
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/method_icon"
+            android:layout_width="@dimen/layout_lvl5"
+            android:layout_height="@dimen/layout_lvl5"
+            android:layout_marginTop="@dimen/spacing_lvl4"
+            android:padding="@dimen/spacing_lvl2"
+            android:scaleType="fitCenter"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/changePinSubtitle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/change_pin_input_old_pin"
-            android:textSize="@dimen/fontSize_lvl3"
-            android:textAlignment="center"
-            app:typographyType="body_1"
-            android:layout_marginTop="@dimen/spacing_lvl3"
-            android:layout_marginRight="@dimen/spacing_lvl4"
-            android:layout_marginEnd="@dimen/spacing_lvl4"
-            android:layout_marginLeft="@dimen/spacing_lvl4"
-            android:layout_marginStart="@dimen/spacing_lvl4"
-            app:layout_constraintTop_toBottomOf="@+id/changePinTitle" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_lock_green"
+            app:unify_image_corner_radius="0"
+            app:unify_image_type="rect" />
 
         <com.tokopedia.pin.PinUnify
-            android:id="@+id/changePinInput"
+            android:id="@+id/pin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/spacing_lvl3"
-            android:layout_marginStart="@dimen/spacing_lvl3"
-            android:layout_marginRight="@dimen/spacing_lvl3"
-            android:layout_marginEnd="@dimen/spacing_lvl3"
-            android:layout_marginTop="@dimen/spacing_lvl5"
-            android:orientation="horizontal"
+            android:layout_marginStart="@dimen/spacing_lvl6"
+            android:layout_marginTop="@dimen/spacing_lvl4"
+            android:layout_marginEnd="@dimen/spacing_lvl6"
+            app:has_clear_button="false"
+            app:is_disabled="false"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/method_icon"
             app:pin_count="6"
-            app:pin_type="hidden"
-            app:has_clear_button="true"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/changePinSubtitle"/>
-
-        <TextView
-            android:id="@+id/changePinForgotBtn"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            android:text="@string/change_pin_forgot_btn"
-            android:gravity="center_horizontal"
-            android:textSize="@dimen/fontSize_lvl3"
-            android:textColor="@color/Green_G500"
-            android:layout_marginTop="@dimen/spacing_lvl7"
-            app:layout_constraintTop_toBottomOf="@+id/changePinInput"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            app:pin_description="@string/change_pin_desc_old_pin"
+            app:pin_secondary_action_text="@string/change_pin_forgot_btn"
+            app:pin_title="@string/change_pin_title_old_pin"
+            app:pin_type="hidden" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <ProgressBar
-        android:id="@+id/changePinProgressBar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:visibility="gone"/>
-</RelativeLayout>
+</ScrollView>

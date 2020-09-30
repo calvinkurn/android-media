@@ -50,10 +50,12 @@ class OtherMenuViewModelTest {
     val rule = InstantTaskExecutorRule()
 
     private lateinit var mViewModel: OtherMenuViewModel
+    private lateinit var testCoroutineDispatcher: TestCoroutineDispatcher
 
     @Before
     fun setup() {
         MockKAnnotations.init(this)
+        testCoroutineDispatcher = TestCoroutineDispatcher()
         mViewModel =
                 OtherMenuViewModel(
                         testCoroutineDispatcher,
@@ -67,10 +69,6 @@ class OtherMenuViewModelTest {
     @After
     fun cleanup() {
         testCoroutineDispatcher.cleanupTestCoroutines()
-    }
-
-    private val testCoroutineDispatcher by lazy {
-        TestCoroutineDispatcher()
     }
 
     @Test
@@ -104,7 +102,7 @@ class OtherMenuViewModelTest {
     }
 
     @Test
-    fun `error get setting shop info data`() {
+    fun `error get setting shop info data`() = runBlocking {
         val throwable = ResponseErrorException()
 
         coEvery {
@@ -112,6 +110,8 @@ class OtherMenuViewModelTest {
         } throws throwable
 
         mViewModel.getAllSettingShopInfo()
+
+        coroutineContext[Job]?.children?.forEach { it.join() }
 
         coVerify {
             getAllShopInfoUseCase.executeOnBackground()

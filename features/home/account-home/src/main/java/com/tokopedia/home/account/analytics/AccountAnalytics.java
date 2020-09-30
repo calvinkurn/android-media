@@ -518,7 +518,7 @@ public class AccountAnalytics {
     public void eventAccountPromoClick(String label) {
         final Analytics analytics = TrackApp.getInstance().getGTM();
         analytics.sendGeneralEvent(TrackAppUtils.gtmData(
-                EVENT,
+                EVENT_CLICK_ACCOUNT,
                 EVENT_CATEGORY_AKUN_PEMBELI,
                 AccountConstants.Analytics.EVENT_ACTION_ACCOUNT_PROMOTION_CLICK, label
         ));
@@ -527,7 +527,7 @@ public class AccountAnalytics {
     public void eventAccountPromoRewardClick() {
         final Analytics analytics = TrackApp.getInstance().getGTM();
         analytics.sendGeneralEvent(TrackAppUtils.gtmData(
-                EVENT,
+                EVENT_CLICK_ACCOUNT,
                 EVENT_CATEGORY_AKUN_PEMBELI,
                 AccountConstants.Analytics.EVENT_ACTION_ACCOUNT_PROMOTION_REWARD_CLICK, ""
         ));

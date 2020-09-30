@@ -6,7 +6,9 @@ public class ConstantKey {
         public static final String APP_SHOW_TOKOPOINT_NATIVE = "app_enable_tokopoint_native";
         public static final String MAINAPP_NATIVE_PROMO_LIST = "mainapp_native_promo_list";
         public static final String REMOTE_CONFIG_KEY_FIRST_INSTALL_SEARCH = "android_user_first_install_search";
+        public static final String REMOTE_CONFIG_KEY_FIRST_DURATION_TRANSITION_SEARCH = "android_user_duration_auto_transition_search";
         public static final String AB_TEST_REVIEW_KEY = "InboxUlasanRevamp2";
+        public static final String AB_TEST_AUTO_TRANSITION_KEY = "auto_transition";
     }
 
     public class TkpdCache {
@@ -42,5 +44,6 @@ public class ConstantKey {
 
     public class ABtestValue {
         public static final String VALUE_NEW_REVIEW_FLOW = "New Review Flow";
+        public static final String AUTO_TRANSITION_VARIANT = "auto_transition";
     }
 }

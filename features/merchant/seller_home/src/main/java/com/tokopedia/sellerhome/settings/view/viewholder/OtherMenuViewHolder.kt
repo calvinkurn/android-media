@@ -11,6 +11,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.kotlin.extensions.view.gone
@@ -50,7 +51,6 @@ class OtherMenuViewHolder(private val itemView: View,
         private val RED_TEXT_COLOR = R.color.setting_red_text
         private val GREY_POWER_MERCHANT_ICON = R.drawable.ic_power_merchant_inactive
         private val GREEN_POWER_MERCHANT_ICON = R.drawable.ic_power_merchant
-
     }
 
     fun onSuccessGetSettingShopInfoData(uiModel: SettingShopInfoUiModel) {
@@ -184,7 +184,7 @@ class OtherMenuViewHolder(private val itemView: View,
     private fun setShopName(shopName: String) {
         itemView.run {
             shopInfoLayout.shopName?.run {
-                text = shopName
+                text = MethodChecker.fromHtml(shopName)
                 setOnClickListener {
                     listener.onShopInfoClicked()
                     sendClickShopNameTracking()
@@ -286,7 +286,9 @@ class OtherMenuViewHolder(private val itemView: View,
         itemView.shopStatusHeaderIcon?.run {
             if (shopType !is RegularMerchant) {
                 visibility = View.VISIBLE
-                setImageDrawable(ContextCompat.getDrawable(context, shopType.shopTypeHeaderIconRes))
+                shopType.shopTypeHeaderIconRes?.let { iconRes ->
+                    setImageDrawable(ContextCompat.getDrawable(context, iconRes))
+                }
             } else {
                 visibility = View.GONE
             }

@@ -3,8 +3,8 @@ package com.tokopedia.review.feature.reviewdetail.view.adapter.viewholder
 import android.os.Build
 import android.view.View
 import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.review.R
 import com.tokopedia.review.feature.reviewdetail.view.adapter.SellerRatingAndTopicListener
@@ -12,7 +12,6 @@ import com.tokopedia.review.feature.reviewdetail.view.model.RatingBarUiModel
 import kotlinx.android.synthetic.main.item_rating_bar_review_detail.view.*
 
 class RatingAndTopicDetailViewHolder(val view: View, val listener: SellerRatingAndTopicListener) : RecyclerView.ViewHolder(view) {
-
 
     companion object {
         @JvmStatic
@@ -46,11 +45,11 @@ class RatingAndTopicDetailViewHolder(val view: View, val listener: SellerRatingA
     private fun setupRatingCheckbox(element: RatingBarUiModel) = with(view) {
         if (element.ratingCount == 0) {
             rating_star_icon.setImageResource(R.drawable.ic_rating_star_inactive)
-            rating_star_label.setTextColor(MethodChecker.getColor(view.context, R.color.clr_review_not_found))
+            rating_star_label.setTextColor(ContextCompat.getColor(view.context, R.color.light_N700_44))
             rating_checkbox.isEnabled = false
         } else {
             rating_star_icon.setImageResource(R.drawable.ic_rating_star_item)
-            rating_star_label.setTextColor(MethodChecker.getColor(view.context, R.color.typography_black))
+            rating_star_label.setTextColor(ContextCompat.getColor(view.context, R.color.light_N700_96))
             rating_checkbox.isEnabled = true
             rating_checkbox.isChecked = element.ratingIsChecked
         }

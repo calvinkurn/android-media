@@ -15,6 +15,8 @@ import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.mockito.ArgumentMatchers
+import org.mockito.Matchers.any
 
 
 @ExperimentalCoroutinesApi
@@ -141,7 +143,8 @@ class EditFormDefaultViewModelTest {
             onSuccess.invoke(data)
         }
 
-        viewModel.getAdKeyword(groupId) {}
+        viewModel.getAdKeyword(groupId,""){ list: List<GetKeywordResponse.KeywordsItem>, s: String -> }
+
 
         verify {
             getAdKeywordUseCase.executeQuerySafeMode(any(), any())
