@@ -75,7 +75,7 @@ public class GraphqlClient {
                     tkpdOkHttpBuilder,
                     new TkpdAuthInterceptor(context, (NetworkRouter) context.getApplicationContext(), userSession),
                     new FingerprintInterceptor((NetworkRouter) context.getApplicationContext(), userSession),
-                    new TkpdAuthenticator(context, (NetworkRouter) context.getApplicationContext(), userSession),
+                    TkpdAuthenticator.Companion.createAuthenticator(context, (NetworkRouter) context.getApplicationContext(), userSession),
                     new StringResponseConverter(),
                     new GsonBuilder());
             sFingerprintManager = new FingerprintManager(userSession);
