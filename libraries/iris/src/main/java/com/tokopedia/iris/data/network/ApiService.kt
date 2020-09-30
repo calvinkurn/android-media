@@ -80,8 +80,7 @@ class ApiService(private val context: Context) {
 
     companion object {
 
-        private const val IRIS_CUSTOM_USER_AGENT_ENABLE = "android_iris_custom_user_agent_enable"
-        private const val userAgentFormat = "TkpdConsumer/%s (%s;)"
+
         fun parse(data: String): RequestBody {
             val jsonObject = JSONObject(data).toString()
             return RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"),

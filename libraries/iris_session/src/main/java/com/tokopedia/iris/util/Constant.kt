@@ -34,6 +34,8 @@ const val IRIS_ENABLED = "iris_enabled"
 const val REMOTE_CONFIG_IRIS_DB_FLUSH = "android_main_app_line_iris_db_flush"
 const val REMOTE_CONFIG_IRIS_DB_SEND = "android_main_app_line_iris_db_send"
 const val REMOTE_CONFIG_IRIS_BATCH_SEND = "android_main_app_line_iris_batch_send"
+const val IRIS_CUSTOM_USER_AGENT_ENABLE = "android_iris_custom_user_agent_enable"
+const val userAgentFormat = "TkpdConsumer/%s (%s;)"
 
 const val KEY_CONTAINER = "gtm"
 const val KEY_EVENT = "default_app"
