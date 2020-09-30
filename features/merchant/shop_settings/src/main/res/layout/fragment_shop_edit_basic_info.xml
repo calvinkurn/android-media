@@ -13,7 +13,7 @@
         app:contentInsetLeft="0dp"
         app:contentInsetStart="0dp"
         android:layout_alignParentTop="true"
-        android:elevation="@dimen/dp_4"
+        android:background="@android:color/transparent"
         app:contentInsetStartWithNavigation="0dp"
         app:subtitleTextAppearance="?subtitleTextAppearance"
         app:titleTextAppearance="?titleTextAppearance"
@@ -48,6 +48,15 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+
+            <View
+                android:id="@+id/shadow"
+                android:layout_width="match_parent"
+                android:layout_height="5dp"
+                android:background="@drawable/bg_shadow"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <RelativeLayout
                 android:id="@+id/containerProfilePicture"

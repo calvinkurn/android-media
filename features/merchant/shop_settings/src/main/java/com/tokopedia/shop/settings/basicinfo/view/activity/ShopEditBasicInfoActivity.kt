@@ -2,6 +2,7 @@ package com.tokopedia.shop.settings.basicinfo.view.activity
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
@@ -37,6 +38,6 @@ class ShopEditBasicInfoActivity : BaseSimpleActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        window.setBackgroundDrawable(null)
+        window.decorView.setBackgroundColor(Color.WHITE)
     }
 }
