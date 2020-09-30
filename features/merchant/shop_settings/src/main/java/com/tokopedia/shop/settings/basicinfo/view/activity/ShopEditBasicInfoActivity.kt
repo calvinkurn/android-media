@@ -2,6 +2,8 @@ package com.tokopedia.shop.settings.basicinfo.view.activity
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
+import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.shop.common.graphql.data.shopbasicdata.ShopBasicDataModel
@@ -32,5 +34,10 @@ class ShopEditBasicInfoActivity : BaseSimpleActivity() {
                 putExtra(EXTRA_SHOP_MODEL, shopBasicDataModel)
             }
         }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        window.decorView.setBackgroundColor(Color.WHITE)
     }
 }
