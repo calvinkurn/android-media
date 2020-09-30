@@ -275,6 +275,7 @@ class ChooseAccountFragment : BaseDaggerFragment(),
 
     private fun onSuccessLogin(userId: String) {
         activity?.let {
+            dismissLoadingProgress()
             analytics.eventSuccessLoginPhoneNumber()
             setTrackingUserId(userId)
             setFCM()
