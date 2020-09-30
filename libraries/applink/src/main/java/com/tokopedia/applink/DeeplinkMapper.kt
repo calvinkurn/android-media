@@ -226,7 +226,7 @@ object DeeplinkMapper {
                     targetDeeplink = { _, _, deeplink -> AppLinkMapperSellerHome.getTopChatAppLink(deeplink) }),
             DLP(logic = {_, uri, _ -> (uri.host == ReviewApplinkConst.AUTHORITY_PRODUCT && uri.pathSegments.last() == ReviewApplinkConst.PATH_REVIEW) }, targetDeeplink = { _, uri, _ -> getRegisteredNavigationProductDetailReview(uri) }),
             DLP.exact(ApplinkConst.BELANJA_ORDER) { _, _, deeplink-> DeeplinkMapperUohOrder.getRegisteredNavigationUohOrder(deeplink) },
-            DLP.exact(ApplinkConst.MARKETPLACE_ORDER) { _, _, deeplink-> DeeplinkMapperUohOrder.getRegisteredNavigationUohOrder(deeplink) },
+            DLP.startWith(ApplinkConst.MARKETPLACE_ORDER) { _, _, deeplink-> DeeplinkMapperUohOrder.getRegisteredNavigationUohOrder(deeplink) },
             DLP.startWith(ApplinkConst.MARKETPLACE_ORDER_SUB) { _, _, deeplink -> DeeplinkMapperUohOrder.getRegisteredNavigationUohOrder(deeplink) },
             DLP.exact(ApplinkConst.ORDER_LIST) { _, _, deeplink -> DeeplinkMapperUohOrder.getRegisteredNavigationUohOrder(deeplink) },
             DLP.exact(ApplinkConst.ORDER_LIST_WEBVIEW) { _, _, deeplink -> DeeplinkMapperUohOrder.getRegisteredNavigationUohOrder(deeplink) },

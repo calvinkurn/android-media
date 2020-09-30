@@ -36,6 +36,19 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
 
+        <intent-filter android:autoVerify="true">
+            <action android:name="android.intent.action.VIEW" />
+
+            <category android:name="android.intent.category.DEFAULT" />
+            <category android:name="android.intent.category.BROWSABLE" />
+
+            <data
+                android:host="@string/host_marketplace"
+                android:path="@string/path_order_single"
+                android:scheme="@string/internal_scheme" />
+
+        </intent-filter>
+
         <activity
             android:name=".list.view.activity.OrderListActivity"
             android:label="@string/title_order_list"
@@ -62,6 +75,10 @@
                 <data
                     android:host="@string/host_buyer"
                     android:path="@string/path_order_single"
+                    android:scheme="@string/internal_scheme" />
+
+                <data
+                    android:host="@string/host_order"
                     android:scheme="@string/internal_scheme" />
 
                 <data
@@ -101,6 +118,11 @@
                 <data
                     android:host="@string/host_digital"
                     android:path="@string/path_order_single"
+                    android:scheme="@string/internal_scheme" />
+
+                <data
+                    android:host="@string/host_orderlist"
+                    android:path="@string/path_orderlist_digital"
                     android:scheme="@string/internal_scheme" />
 
                 <data

@@ -43,9 +43,13 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.tokopedia.buyerorder.common.util.BuyerConsts.HOST_BELANJA;
 import static com.tokopedia.buyerorder.common.util.BuyerConsts.HOST_BUYER;
 import static com.tokopedia.buyerorder.common.util.BuyerConsts.HOST_FLIGHT;
 import static com.tokopedia.buyerorder.common.util.BuyerConsts.HOST_HOTEL;
+import static com.tokopedia.buyerorder.common.util.BuyerConsts.HOST_ORDER;
+import static com.tokopedia.buyerorder.common.util.BuyerConsts.HOST_ORDERLIST_DIGITAL;
+import static com.tokopedia.buyerorder.common.util.BuyerConsts.HOST_ORDER_LIST;
 
 public class OrderListActivity extends BaseSimpleActivity
         implements HasComponent<OrderListComponent>, OrderListInitContract.View, OrderTabAdapter.Listener {
@@ -219,7 +223,8 @@ public class OrderListActivity extends BaseSimpleActivity
             String uriStr = String.valueOf(getIntent().getData());
             // Intent newIntent = new Intent();
 
-            if (uriStr.contains(HOST_BUYER)) {
+            if (uriStr.contains(HOST_BUYER) || uriStr.contains(HOST_BELANJA)
+                    || uriStr.contains(HOST_ORDER) || uriStr.contains(HOST_ORDER_LIST)) {
                 orderCategory = OrderCategory.MARKETPLACE;
                 if (getIntent().getExtras() != null) {
                     getIntent().getExtras().putString(OrderListContants.ORDER_FILTER_ID, getIntent().getData().getQueryParameter(OrderListContants.ORDER_FILTER_ID));
@@ -229,6 +234,9 @@ public class OrderListActivity extends BaseSimpleActivity
                 if (uriStr.contains(BuyerConsts.HOST_DEALS) || uriStr.contains(BuyerConsts.HOST_DIGITAL)
                         || uriStr.contains(BuyerConsts.HOST_EVENTS) || uriStr.contains(BuyerConsts.HOST_GIFTCARDS)
                         || uriStr.contains(BuyerConsts.HOST_INSURANCE) || uriStr.contains(BuyerConsts.HOST_MODALTOKO)) {
+                    if (uriStr.contains(HOST_ORDERLIST_DIGITAL)) {
+                        uriStr = BuyerConsts.HOST_DIGITAL;
+                    }
                     orderCategory = uriStr.substring(uriStr.indexOf("//") + 2, uriStr.lastIndexOf("/")).toUpperCase();
 
                 }  else if (uriStr.contains(HOST_HOTEL)) {
