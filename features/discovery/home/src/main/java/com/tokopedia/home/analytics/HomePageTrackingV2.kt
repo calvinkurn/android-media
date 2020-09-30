@@ -139,7 +139,8 @@ object HomePageTrackingV2 : BaseTracking() {
                 list = String.format(
                         Value.LIST_WITH_HEADER, "1", LIST_VALUE_SPRINT_SALE, channel.header.name
                 )
-        )
+        ).build()
+
         private fun getSprintSaleClick(channel: DynamicHomeChannel.Channels, currentCountDown: String, grid: DynamicHomeChannel.Grid, position: Int) = BaseTrackerBuilder().constructBasicProductClick(
                 event = Event.PRODUCT_CLICK,
                 eventCategory = Category.HOMEPAGE,

@@ -279,6 +279,35 @@ public class HomePageTracking {
     }
 
 
+    public static Map<String, Object> getEventEnhancedClickSpotlightHomePage(int position,
+                                                                             SpotlightItemDataModel spotlightItemDataModel) {
+        return DataLayer.mapOf(
+                EVENT, PROMO_CLICK,
+                EVENT_CATEGORY, CATEGORY_HOME_PAGE,
+                EVENT_ACTION, EVENT_ACTION_CLICK_ON_BANNER_SPOTLIGHT,
+                EVENT_LABEL, spotlightItemDataModel.getTitle(),
+                CHANNEL_ID, spotlightItemDataModel.getChanneldId(),
+                ATTRIBUTION, spotlightItemDataModel.getGalaxyAttribution(),
+                AFFINITY_LABEL, spotlightItemDataModel.getAffinityLabel(),
+                GALAXY_CATEGORY_ID, spotlightItemDataModel.getCategoryPersona(),
+                SHOP_ID, spotlightItemDataModel.getShopId(),
+                CAMPAIGN_CODE,
+                ECOMMERCE, DataLayer.mapOf(
+                        PROMO_CLICK, DataLayer.mapOf(
+                                PROMOTIONS, DataLayer.listOf(
+                                        DataLayer.mapOf(
+                                                FIELD_ID, spotlightItemDataModel.getChanneldId()+"_"+ spotlightItemDataModel.getId(),
+                                                FIELD_NAME, spotlightItemDataModel.getPromoName(),
+                                                FIELD_POSITION, String.valueOf((position + 1)),
+                                                FIELD_CREATIVE, spotlightItemDataModel.getTitle(),
+                                                FIELD_CREATIVE_URL, spotlightItemDataModel.getBackgroundImageUrl()
+                                        )
+                                )
+                        )
+                )
+        );
+    }
+
     public static void eventClickSeeAllDynamicChannel(Context context, String applink, String channelId) {
         Map<String, Object> map = new HashMap<>();
         map.put(EVENT, EVENT_CLICK_HOME_PAGE);
@@ -860,6 +889,23 @@ public class HomePageTracking {
                                                 FIELD_CREATIVE_URL, homeIconItem.getImageUrl(),
                                                 FIELD_POSITION, String.valueOf(position+1)
                                         )
+                                )
+                        )
+                )
+        );
+    }
+
+    public static Map<String, Object> getEnhanceImpressionDynamicIconHomePage(List<DynamicHomeIcon.DynamicIcon> homeIconItem) {
+        List<Object> list = convertEnhanceDynamicIcon(homeIconItem);
+        return DataLayer.mapOf(
+                EVENT, PROMO_VIEW,
+                EVENT_CATEGORY, CATEGORY_HOME_PAGE,
+                EVENT_ACTION, EVENT_ACTION_IMPRESSION_ON_DYNAMIC_ICON,
+                EVENT_LABEL, LABEL_EMPTY,
+                ECOMMERCE, DataLayer.mapOf(
+                        PROMO_VIEW, DataLayer.mapOf(
+                                PROMOTIONS, DataLayer.listOf(
+                                        list.toArray(new Object[list.size()])
                                 )
                         )
                 )
