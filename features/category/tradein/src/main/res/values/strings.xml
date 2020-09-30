@@ -103,4 +103,5 @@
     <string name="tradein_detail_pengecekan">Detail Pengecekan</string>
     <string name="tradein_model_with_name">Model HP : %1$s</string>
     <string name="tradein_search_deeplink"><![CDATA[tokopedia://search?q=%1$s&trade_id=true&shipping=25]]></string>
+    <string name="tradein_laku6_imei_error">TAC missmatch</string>
 </resources>
