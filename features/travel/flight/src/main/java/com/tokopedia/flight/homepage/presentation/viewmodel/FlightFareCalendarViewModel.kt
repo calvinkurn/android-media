@@ -6,6 +6,7 @@ import com.tokopedia.common.travel.utils.TravelDispatcherProvider
 import com.tokopedia.flight.homepage.presentation.model.FlightFareAttributes
 import com.tokopedia.flight.homepage.presentation.model.FlightFareData
 import com.tokopedia.flight.homepage.presentation.widget.FlightCalendarOneWayWidget
+import com.tokopedia.flight.homepage.presentation.widget.FlightCalendarRoundTripWidget
 import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -19,18 +20,23 @@ import kotlinx.coroutines.withContext
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 class FlightFareCalendarViewModel @Inject constructor(private val dispatcherProvider: TravelDispatcherProvider,
                                                       private val gqlRepository: GraphqlRepository)
     : BaseViewModel(dispatcherProvider.io()) {
 
     val fareFlightCalendarData = MutableLiveData<List<FlightFareAttributes>>()
-    val fareFlightReturnCalendarData = MutableLiveData<List<FlightFareAttributes>>()
+
+    val departureFares = HashMap<String, Long>()
+    val returnFares = HashMap<String, Long>()
 
     fun getFareFlightCalendar(rawQuery: String,
                               mapParam: HashMap<String, Any>,
                               minDate: Date, maxDate: Date,
-                              isReturn: Boolean = false) {
+                              isReturn: Boolean = false,
+                              departureDate: String = ""
+    ) {
         launchCatchError(block = {
             val attributes = ArrayList<FlightFareAttributes>()
             val minCalendar = Calendar.getInstance()
@@ -57,12 +63,73 @@ class FlightFareCalendarViewModel @Inject constructor(private val dispatcherProv
                 mapParam[FlightCalendarOneWayWidget.PARAM_YEAR] = minDateUpdate.dateToString(TRAVEL_CAL_YYYY)
             }
 
-            fareFlightCalendarData.value = attributes
+            minCalendar.time = minDate
+
+            if (isReturn) {
+                val returnAttributes = ArrayList<FlightFareAttributes>()
+                val mapReturnFareParam = mapParam.clone() as HashMap<String, Any>
+                mapReturnFareParam[FlightCalendarRoundTripWidget.PARAM_DEPARTURE_CODE] = mapParam[FlightCalendarRoundTripWidget.PARAM_ARRIVAL_CODE].toString()
+                mapReturnFareParam[FlightCalendarRoundTripWidget.PARAM_ARRIVAL_CODE] = mapParam[FlightCalendarRoundTripWidget.PARAM_DEPARTURE_CODE].toString()
+                mapReturnFareParam[FlightCalendarRoundTripWidget.PARAM_YEAR] = minCalendar.time.dateToString(TRAVEL_CAL_YYYY)
+                for (i in 0..diffYear) {
+                    val data = withContext(dispatcherProvider.ui()) {
+                        val graphqlRequest = GraphqlRequest(rawQuery, FlightFareData::class.java, mapReturnFareParam)
+                        gqlRepository.getReseponse(listOf(graphqlRequest),
+                                GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
+                                        .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * 10).build())
+                    }.getSuccessData<FlightFareData>()
+                    returnAttributes.addAll(data.flightFare.attributesList)
+
+                    minCalendar.add(Calendar.YEAR, 1)
+                    val minDateUpdate = minCalendar.time
+                    mapReturnFareParam[FlightCalendarOneWayWidget.PARAM_YEAR] = minDateUpdate.dateToString(TRAVEL_CAL_YYYY)
+                }
+
+                storeRoundTripCalendarFare(attributes, returnAttributes, departureDate)
+            } else {
+                fareFlightCalendarData.value = attributes
+            }
 
         }) {
             fareFlightCalendarData.value = arrayListOf()
         }
 
+    }
+
+    private fun storeRoundTripCalendarFare(departureFareAttributes: ArrayList<FlightFareAttributes>,
+                                           returnFareAttributes: ArrayList<FlightFareAttributes>,
+                                           departureDate: String) {
+        if (departureFareAttributes.isNotEmpty() && departureFares.isEmpty()) {
+            departureFareAttributes.forEach {
+                departureFares[it.dateFare] = it.cheapestPriceNumeric
+            }
+        }
+
+        if (returnFareAttributes.isNotEmpty() && returnFares.isEmpty()) {
+            returnFareAttributes.forEach {
+                returnFares[it.dateFare] = it.cheapestPriceNumeric
+            }
+        }
+
+        if (departureDate.isNotEmpty()) {
+            calculateRoundTripFareCalendar(departureDate)
+        }
+    }
+
+    fun calculateRoundTripFareCalendar(departureDate: String) {
+        val attributes = arrayListOf<FlightFareAttributes>()
+
+        val departureFareNumeric = departureFares[departureDate]
+        departureFareNumeric?.let {
+            returnFares.forEach { (date, price) ->
+                attributes.add(FlightFareAttributes(dateFare = date,
+                        cheapestPriceNumeric = price,
+                        displayedFare = ((price + departureFareNumeric) / 1000).toString()
+                ))
+            }
+        }
+
+        fareFlightCalendarData.value = attributes
     }
 
 }

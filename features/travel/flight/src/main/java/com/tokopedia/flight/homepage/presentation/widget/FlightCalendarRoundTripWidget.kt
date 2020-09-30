@@ -3,7 +3,6 @@ package com.tokopedia.flight.homepage.presentation.widget
 import android.app.Application
 import android.os.Bundle
 import android.view.View
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.calendar.SubTitle
@@ -19,14 +18,12 @@ import com.tokopedia.travelcalendar.dateToString
 import com.tokopedia.travelcalendar.selectionrangecalendar.SelectionRangeCalendarWidget
 import com.tokopedia.travelcalendar.stringToDate
 import java.util.*
-import javax.inject.Inject
-import javax.inject.Named
 
 /**
  * @author by jessica on 29/09/20
  */
 
-class FlightCalendarRoundTripWidget: SelectionRangeCalendarWidget() {
+class FlightCalendarRoundTripWidget : SelectionRangeCalendarWidget() {
 
     private lateinit var fareCalendarViewModel: FlightFareCalendarViewModel
 
@@ -49,10 +46,8 @@ class FlightCalendarRoundTripWidget: SelectionRangeCalendarWidget() {
             this.getString(ARG_MIN_DATE)?.let { minCalendarDate = it.stringToDate(TRAVEL_CAL_YYYY_MM_DD) }
         }
 
-        activity?.run {
-            val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
-            fareCalendarViewModel = viewModelProvider.get(FlightFareCalendarViewModel::class.java)
-        }
+        val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
+        fareCalendarViewModel = viewModelProvider.get(FlightFareCalendarViewModel::class.java)
     }
 
     fun initInjector() {
@@ -78,7 +73,7 @@ class FlightCalendarRoundTripWidget: SelectionRangeCalendarWidget() {
                 fareCalendarViewModel.getFareFlightCalendar(
                         GraphqlHelper.loadRawString(this.resources, R.raw.flight_fare_calendar_query),
                         mapFareParam, minCalendarDate, maxCalendarDate,
-                        true)
+                        true, TravelDateUtil.dateToString(TRAVEL_CAL_YYYY_MM_DD, minDate))
             }
 
             fareCalendarViewModel.fareFlightCalendarData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
@@ -100,7 +95,8 @@ class FlightCalendarRoundTripWidget: SelectionRangeCalendarWidget() {
     }
 
     override fun onDateInClicked(dateIn: Date) {
-
+        calendar.showSubTitle(false)
+        fareCalendarViewModel.calculateRoundTripFareCalendar(TravelDateUtil.dateToString(TRAVEL_CAL_YYYY_MM_DD, dateIn))
     }
 
     companion object {
@@ -109,8 +105,8 @@ class FlightCalendarRoundTripWidget: SelectionRangeCalendarWidget() {
         private const val ARG_CLASS = "arg_class"
         private const val ARG_MAX_SELECTABLE_DATE = "arg_max_selectable_date"
 
-        private const val PARAM_DEPARTURE_CODE = "departCode"
-        private const val PARAM_ARRIVAL_CODE = "arrivalCode"
+        const val PARAM_DEPARTURE_CODE = "departCode"
+        const val PARAM_ARRIVAL_CODE = "arrivalCode"
         const val PARAM_YEAR = "year"
         private const val PARAM_MONTH = "month"
         private const val PARAM_CLASS = "class"
