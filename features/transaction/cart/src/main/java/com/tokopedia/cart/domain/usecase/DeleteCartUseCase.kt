@@ -27,19 +27,6 @@ class DeleteCartUseCase @Inject constructor(private val updaterCartCounterUseCas
         private const val PARAM_VALUE_ID = "id"
         private const val PARAM_KEY_ADD_TO_WISHLIST = "addWishlist"
         private const val PARAM_KEY_CART_IDS = "cartIds"
-
-        private val QUERY = """
-        mutation remove_from_cart(${'$'}addWishlist: Int, ${'$'}cartIds: [String], ${'$'}lang: String){
-            remove_from_cart(addWishlist: ${'$'}addWishlist, cartIds:${'$'}cartIds, lang: ${'$'}lang){
-            error_message
-            status
-            data {
-                message
-                success
-            }
-          }
-        }
-        """.trimIndent()
     }
 
     override fun createObservable(requestParams: RequestParams?): Observable<DeleteCartData> {
@@ -51,7 +38,8 @@ class DeleteCartUseCase @Inject constructor(private val updaterCartCounterUseCas
                 PARAM_KEY_CART_IDS to paramDelete.cartIds
         )
 
-        val graphqlRequest = GraphqlRequest(QUERY, DeleteCartGqlResponse::class.java, variables)
+        val mutation = getDeleteCartMutation()
+        val graphqlRequest = GraphqlRequest(mutation, DeleteCartGqlResponse::class.java, variables)
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
 

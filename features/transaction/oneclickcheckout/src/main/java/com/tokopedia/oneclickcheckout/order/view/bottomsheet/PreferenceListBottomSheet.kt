@@ -10,6 +10,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.common.domain.GetPreferenceListUseCase
+import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
 import com.tokopedia.oneclickcheckout.common.view.model.preference.PreferenceListResponseModel
 import com.tokopedia.oneclickcheckout.common.view.model.preference.ProfilesItemModel
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageFragment
@@ -17,6 +18,7 @@ import com.tokopedia.oneclickcheckout.preference.list.view.PreferenceListAdapter
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifycomponents.ticker.Ticker
 import timber.log.Timber
 import java.net.ConnectException
 import java.net.SocketTimeoutException
@@ -24,10 +26,12 @@ import java.net.UnknownHostException
 
 class PreferenceListBottomSheet(
         private val getPreferenceListUseCase: GetPreferenceListUseCase,
+        private val paymentProfile: String,
         private val listener: PreferenceListBottomSheetListener) {
 
     private var bottomSheet: BottomSheetUnify? = null
 
+    private var ticker: Ticker? = null
     private var rvPreferenceList: RecyclerView? = null
     private var btnAddPreference: UnifyButton? = null
     private var progressBar: LoaderUnify? = null
@@ -37,15 +41,19 @@ class PreferenceListBottomSheet(
 
     private fun getPreferenceList() {
         globalError?.gone()
+        ticker?.gone()
         rvPreferenceList?.gone()
         btnAddPreference?.gone()
         progressBar?.visible()
+        OccIdlingResource.increment()
         getPreferenceListUseCase.execute({ preferenceListResponseModel: PreferenceListResponseModel ->
             updateList(preferenceListResponseModel)
+            OccIdlingResource.decrement()
         }, { throwable: Throwable ->
             Timber.d(throwable)
             handleError(throwable)
-        })
+            OccIdlingResource.decrement()
+        }, getPreferenceListUseCase.generateRequestParams(paymentProfile))
     }
 
     private fun handleError(throwable: Throwable) {
@@ -72,6 +80,7 @@ class PreferenceListBottomSheet(
         globalError?.setActionClickListener {
             getPreferenceList()
         }
+        ticker?.gone()
         rvPreferenceList?.gone()
         btnAddPreference?.gone()
         progressBar?.gone()
@@ -100,6 +109,7 @@ class PreferenceListBottomSheet(
     }
 
     private fun setupChild(child: View, profileId: Int) {
+        ticker = child.findViewById(R.id.ticker_preference_list)
         rvPreferenceList = child.findViewById(R.id.rv_preference_list)
         btnAddPreference = child.findViewById(R.id.btn_add_preference)
         progressBar = child.findViewById(R.id.progress_bar)
@@ -133,13 +143,16 @@ class PreferenceListBottomSheet(
         }
     }
 
-    fun dismiss() {
-        bottomSheet?.dismiss()
-    }
-
     private fun updateList(preferences: PreferenceListResponseModel) {
         adapter?.submitList(preferences.profiles)
         progressBar?.gone()
+        val tickerMessage = preferences.ticker
+        if (tickerMessage != null) {
+            ticker?.setHtmlDescription(tickerMessage)
+            ticker?.visible()
+        } else {
+            ticker?.gone()
+        }
         rvPreferenceList?.visible()
         if (preferences.profiles.size >= preferences.maxProfile) {
             btnAddPreference?.visible()

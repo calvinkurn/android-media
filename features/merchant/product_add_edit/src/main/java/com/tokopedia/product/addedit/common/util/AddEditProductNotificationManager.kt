@@ -1,5 +1,6 @@
 package com.tokopedia.product.addedit.common.util
 
+import android.app.Notification
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
@@ -12,6 +13,7 @@ import androidx.core.app.NotificationCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.HTTP_PREFIX
 import java.io.File
@@ -32,6 +34,7 @@ abstract class AddEditProductNotificationManager(
     }
 
     private val id: Int = Random().nextInt()
+    private var currentProgress = 0
 
     private val notificationBuilder = NotificationCompat.Builder(context, CHANNEL_GENERAL).apply {
         setContentTitle(context.getString(com.tokopedia.product.addedit.R.string.title_notif_product_upload))
@@ -39,24 +42,17 @@ abstract class AddEditProductNotificationManager(
         setLargeIcon(BitmapFactory.decodeResource(context.resources, com.tokopedia.design.R.drawable.ic_big_notif_customerapp))
         setGroup(NOTIFICATION_GROUP)
         setOnlyAlertOnce(true)
-
-        setProgress(maxCount, currentProgress, false)
-        setOngoing(true)
-        setAutoCancel(false)
-
-        notificationManager.notify(TAG, id, this.build())
+        priority = NotificationCompat.PRIORITY_MAX
     }
-
-    private var currentProgress = 0
     
     fun onSuccessUpload() {
         val text = context.getString(R.string.message_notif_product_upload_success)
         val notification = notificationBuilder.setContentText(text)
                 .setStyle(NotificationCompat.BigTextStyle().bigText(text))
                 .setProgress(0, 0, false)
-                .setOngoing(false)
-                .setAutoCancel(true)
                 .setContentIntent(getSuccessIntent())
+                .setOngoing(false)
+                .setShowWhen(true)
                 .build()
         notificationManager.notify(TAG, id, notification)
     }
@@ -65,11 +61,13 @@ abstract class AddEditProductNotificationManager(
         val text = context.getString(R.string.message_notif_product_upload)
         val notification = notificationBuilder.setContentText(text)
                 .setStyle(NotificationCompat.BigTextStyle().bigText(text))
-                .setProgress(0, 0, false)
-                .setOngoing(true)
-                .setAutoCancel(false)
+                .setProgress(0, 0, true)
+                .setOngoing(false)
+                .setShowWhen(true)
+                .build()
 
-        updateLargeIcon(primaryImagePathOrUrl, notification)
+        notificationManager.notify(TAG, id, notification)
+        updateLargeIcon(primaryImagePathOrUrl)
     }
 
     fun onAddProgress() {
@@ -79,7 +77,7 @@ abstract class AddEditProductNotificationManager(
                 .setStyle(NotificationCompat.BigTextStyle().bigText(text))
                 .setProgress(maxCount, currentProgress, false)
                 .setOngoing(true)
-                .setAutoCancel(false)
+                .setShowWhen(true)
                 .build()
 
         notificationManager.notify(TAG, id, notification)
@@ -94,8 +92,8 @@ abstract class AddEditProductNotificationManager(
                         .setBigContentTitle(text))
                 .setProgress(0, 0, false)
                 .setOngoing(false)
-                .setAutoCancel(true)
                 .setContentIntent(getFailedIntent(errorMessage))
+                .setShowWhen(true)
                 .build()
         notificationManager.notify(TAG, id, notification)
     }
@@ -104,26 +102,21 @@ abstract class AddEditProductNotificationManager(
 
     protected abstract fun getFailedIntent(errorMessage: String): PendingIntent
 
-    private fun updateLargeIcon(primaryImagePathOrUrl: String, builder: NotificationCompat.Builder) {
-        val fileImage = if (primaryImagePathOrUrl.startsWith(HTTP_PREFIX)) {
-            primaryImagePathOrUrl
-        } else {
-            File(primaryImagePathOrUrl)
+    private fun updateLargeIcon(primaryImagePathOrUrl: String) {
+        val target = object : CustomTarget<Bitmap>() {
+            override fun onLoadCleared(placeholder: Drawable?) {
+                //no-op
+            }
+
+            override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                val notification = notificationBuilder.setLargeIcon(resource).build()
+                notificationManager.notify(TAG, id, notification)
+            }
         }
-        Handler(Looper.getMainLooper()).post {
-            Glide.with(context.applicationContext)
-                    .asBitmap()
-                    .load(fileImage)
-                    .error(com.tokopedia.design.R.drawable.ic_big_notif_customerapp)
-                    .into(object: CustomTarget<Bitmap>(100, 100) {
-                        override fun onLoadCleared(placeholder: Drawable?) {
-                            // no-op
-                        }
-                        override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                            builder.setLargeIcon(resource)
-                            notificationManager.notify(TAG, id, builder.build())
-                        }
-                    })
-        }
+        ImageHandler.loadImageWithTarget(
+                context,
+                primaryImagePathOrUrl,
+                target
+        )
     }
 }

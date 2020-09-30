@@ -1,20 +1,16 @@
 package com.tokopedia.digital.home.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.lifecycle.Observer
-import com.tokopedia.digital.home.DigitalHomePageTestDispatchersProvider
+import com.tokopedia.digital.home.RechargeHomepageTestDispatchersProvider
 import com.tokopedia.digital.home.domain.SearchCategoryHomePageUseCase
 import com.tokopedia.digital.home.model.DigitalHomePageSearchCategoryModel
-import com.tokopedia.digital.home.presentation.Util.DigitalHomePageDispatchersProvider
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.RelaxedMockK
 import junit.framework.Assert.assertEquals
-import kotlinx.coroutines.Dispatchers
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -34,7 +30,7 @@ class DigitalHomePageSearchViewModelTest {
         MockKAnnotations.init(this)
 
         digitalHomePageSearchViewModel =
-                DigitalHomePageSearchViewModel(searchCategoryHomePageUseCase, DigitalHomePageTestDispatchersProvider())
+                DigitalHomePageSearchViewModel(searchCategoryHomePageUseCase, RechargeHomepageTestDispatchersProvider())
     }
 
     @Test

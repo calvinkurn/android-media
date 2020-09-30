@@ -1,0 +1,29 @@
+{
+  "readme": "#EE2 - View on product thumbnail from broadcast products",
+  "mode": "subset",
+  "query": [
+    {
+      "event": "view_item_list",
+      "eventCategory": "chat detail",
+      "item_list": "/broadcast",
+      "eventAction": "view on product thumbnail",
+      "items": [
+        {
+          "dimension40": "/broadcast",
+          "list": "/broadcast"
+        }
+      ]
+    },
+    {
+      "event": "select_content",
+      "eventCategory": "chat detail",
+      "item_list": "/broadcast",
+      "eventAction": "click on product thumbnail",
+      "items": [
+        {
+          "dimension40": "/broadcast"
+        }
+      ]
+    }
+  ]
+}

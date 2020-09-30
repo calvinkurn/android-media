@@ -12,6 +12,7 @@ object MockChannelConfig {
                 true,
                 true,
                 0,
+                "",
                 false
         )
     }

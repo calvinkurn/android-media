@@ -18,5 +18,6 @@ query Autofill($latlng: String!, $err: Boolean) {
     }
     status
     message_error
+    error_code
   }
 }

@@ -13,21 +13,22 @@ class RechargeAnalytics(private val rechargePushEventRecommendationUseCase: Rech
         val stringScreenName = StringBuilder(RECHARGE_SCREEN_NAME)
         stringScreenName.append(categoryName.toLowerCase())
 
-        val categoryMap: Map<String, String> = mapOf(
-                CATEGORY to categoryName,
-                CATEGORY_ID to categoryId
-        )
-
         val mapOpenScreen = HashMap<String, String>()
         mapOpenScreen[EVENT_NAME] = OPEN_SCREEN_EVENT
+        mapOpenScreen[CATEGORY] = categoryName
+        mapOpenScreen[CATEGORY_ID] = categoryId
         mapOpenScreen[USER_ID] = userId
         mapOpenScreen[IS_LOGIN_STATUS] = if (userId.isNotEmpty()) "true" else "false"
         mapOpenScreen[BUSINESS_UNIT] = BUSINESS_UNIT_RECHARGE
         mapOpenScreen[CURRENT_SITE] = CURRENT_SITE_RECHARGE
-        mapOpenScreen.putAll(categoryMap)
+
+        val mapScreenLaunchData = mapOf(
+                CATEGORY to categoryName,
+                CATEGORY_ID_SCREEN_LAUNCH to categoryId
+        )
 
         TrackApp.getInstance().gtm.sendScreenAuthenticated(stringScreenName.toString(), mapOpenScreen)
-        TrackApp.getInstance().gtm.pushEvent(EVENT_DIGITAL_CATEGORY_SCREEN_LAUNCH, categoryMap)
+        TrackApp.getInstance().gtm.pushEvent(EVENT_DIGITAL_CATEGORY_SCREEN_LAUNCH, mapScreenLaunchData)
     }
 
     fun trackVisitRechargePushEventRecommendation(categoryId: Int) {
@@ -78,6 +79,7 @@ class RechargeAnalytics(private val rechargePushEventRecommendationUseCase: Rech
         const val IS_LOGIN_STATUS = "isLoggedInStatus"
         const val CATEGORY = "category"
         const val CATEGORY_ID = "digitalCategoryId"
+        const val CATEGORY_ID_SCREEN_LAUNCH = "digital_category_id"
         const val BUSINESS_UNIT = "businessUnit"
         const val CURRENT_SITE = "currentSite"
 

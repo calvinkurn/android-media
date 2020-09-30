@@ -34,7 +34,9 @@ abstract class ProductItemViewHolder(
                 isTopAds = isTopAds || isOrganicAds,
                 ratingString = ratingString,
                 hasThreeDots = true,
-                labelGroupList = labelGroupList.toProductCardModelLabelGroup()
+                labelGroupList = labelGroupList.toProductCardModelLabelGroup(),
+                shopRating = shopRating,
+                isShopRatingYellow = isShopRatingYellow
         )
     }
 
