@@ -128,6 +128,7 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
         with(chatDateTime) {
             return ProductCarouselUiModel(
                     products = products,
+                    isSender = !chatDateTime.isOpposite,
                     messageId = msgId.toString(),
                     fromUid = senderId.toString(),
                     from = senderName,

@@ -8,6 +8,7 @@
     android:layout_marginStart="@dimen/spacing_lvl4"
     android:layout_marginTop="@dimen/spacing_lvl1"
     android:layout_marginEnd="@dimen/spacing_lvl4"
+    android:layout_marginBottom="@dimen/spacing_lvl1"
     android:background="@drawable/bg_broadcast_bubble_receiver"
     android:orientation="vertical"
     android:padding="@dimen/dp_topchat_1">

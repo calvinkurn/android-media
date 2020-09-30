@@ -65,9 +65,13 @@ class TopChatRoomAdapter(
     }
 
     override fun isNextItemSender(adapterPosition: Int, isSender: Boolean): Boolean {
-        val nextItem = visitables.getOrNull(adapterPosition - 1) as? SendableViewModel
-                ?: return true
-        return isSender == nextItem.isSender
+        val nextItem = visitables.getOrNull(adapterPosition - 1)
+        val nextItemIsSender: Boolean = when (nextItem) {
+            is SendableViewModel -> nextItem.isSender
+            is ProductCarouselUiModel -> nextItem.isSender
+            else -> true
+        }
+        return isSender == nextItemIsSender
     }
 
     override fun getProductCarouselViewPool(): RecyclerView.RecycledViewPool {
