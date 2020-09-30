@@ -32,7 +32,6 @@ class DrawOnPictureFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         if (::imageUri.isInitialized) {
-//            dopFeedbackForm.setImageUri(imageUri)
             dopFeedbackForm.setImageURI(imageUri)
         }
     }
