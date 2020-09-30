@@ -115,7 +115,8 @@ abstract class BaseTrackerConst {
             val quantity: String = "",
             val headerName: String = "",
             val isCarousel: Boolean? = null,
-            val recommendationType: String = "")
+            val recommendationType: String = "",
+            val pageName: String = "")
 
     object Ecommerce {
         const val KEY = "ecommerce"

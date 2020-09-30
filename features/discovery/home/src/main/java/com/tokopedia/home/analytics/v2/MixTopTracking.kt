@@ -131,7 +131,7 @@ object MixTopTracking : BaseTrackerConst() {
         mapGridToProductTrackerComponent(it.value, channels.id, it.index, channels.trackingAttributionModel.persoType, channels.trackingAttributionModel.categoryId, channels.channelHeader.name)
     }
 
-    fun mapGridToProductTrackerComponent(grid: ChannelGrid, channelId: String, position: Int, persoType: String, categoryId: String, headerName: String = "") = Product(
+    fun mapGridToProductTrackerComponent(grid: ChannelGrid, channelId: String, position: Int, persoType: String, categoryId: String, headerName: String = "", pageName: String = "") = Product(
             id = grid.id,
             name = grid.name,
             brand = "",
@@ -145,6 +145,7 @@ object MixTopTracking : BaseTrackerConst() {
             categoryId = categoryId,
             isTopAds = grid.isTopads,
             recommendationType = grid.recommendationType,
+            pageName = pageName,
             isCarousel = true,
             headerName = headerName
     )

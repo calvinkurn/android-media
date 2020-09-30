@@ -6,6 +6,8 @@ import com.tokopedia.home.analytics.v2.HomeRecommendationTracking.CustomAction.B
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.BannerRecommendationDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationBannerTopAdsDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationItemDataModel
+import com.tokopedia.track.builder.BaseTrackerBuilder
+import com.tokopedia.track.builder.util.BaseTrackerConst
 
 object HomeRecommendationTracking : BaseTracking(){
 
@@ -41,7 +43,7 @@ object HomeRecommendationTracking : BaseTracking(){
         val RECOMMENDATION_ACTION_FIELD_LOGIN_TOP_ADS = BASE.format("", "%s", "%s - product topads")
     }
 
-    fun getRecommendationProductClickNonLogin(tabName: String, homeRecommendationItemDataModel: HomeRecommendationItemDataModel) = getBasicProductClick(
+    fun getRecommendationProductClickNonLogin(tabName: String, homeRecommendationItemDataModel: HomeRecommendationItemDataModel) = BaseTrackerBuilder().constructBasicProductClick(
             event = Event.PRODUCT_CLICK,
             eventCategory = Category.HOMEPAGE,
             eventAction = CustomAction.RECOMMENDATION_CLICK_NON_LOGIN_NON_TOPADS,
@@ -50,7 +52,7 @@ object HomeRecommendationTracking : BaseTracking(){
             products = listOf(mapToProductTracking(homeRecommendationItemDataModel))
     )
 
-    fun getRecommendationProductClickLogin(tabName: String, homeRecommendationItemDataModel: HomeRecommendationItemDataModel) = getBasicProductClick(
+    fun getRecommendationProductClickLogin(tabName: String, homeRecommendationItemDataModel: HomeRecommendationItemDataModel) = BaseTrackerBuilder().constructBasicProductClick(
             event = Event.PRODUCT_CLICK,
             eventCategory = Category.HOMEPAGE,
             eventAction = CustomAction.RECOMMENDATION_CLICK_LOGIN_NON_TOPADS,
@@ -59,7 +61,7 @@ object HomeRecommendationTracking : BaseTracking(){
             products = listOf(mapToProductTracking(homeRecommendationItemDataModel))
     )
 
-    fun getRecommendationProductClickLoginTopAds(tabName: String, homeRecommendationItemDataModel: HomeRecommendationItemDataModel) = getBasicProductClick(
+    fun getRecommendationProductClickLoginTopAds(tabName: String, homeRecommendationItemDataModel: HomeRecommendationItemDataModel) = BaseTrackerBuilder().constructBasicProductClick(
             event = Event.PRODUCT_CLICK,
             eventCategory = Category.HOMEPAGE,
             eventAction = CustomAction.RECOMMENDATION_CLICK_LOGIN_TOPADS,
@@ -68,7 +70,7 @@ object HomeRecommendationTracking : BaseTracking(){
             products = listOf(mapToProductTracking(homeRecommendationItemDataModel))
     )
 
-    fun getRecommendationProductClickNonLoginTopAds(tabName: String, homeRecommendationItemDataModel: HomeRecommendationItemDataModel) = getBasicProductClick(
+    fun getRecommendationProductClickNonLoginTopAds(tabName: String, homeRecommendationItemDataModel: HomeRecommendationItemDataModel) = BaseTrackerBuilder().constructBasicProductClick(
             event = Event.PRODUCT_CLICK,
             eventCategory = Category.HOMEPAGE,
             eventAction = CustomAction.RECOMMENDATION_CLICK_NON_LOGIN_TOPADS,
@@ -77,7 +79,7 @@ object HomeRecommendationTracking : BaseTracking(){
             products = listOf(mapToProductTracking(homeRecommendationItemDataModel))
     )
 
-    fun getRecommendationProductViewLogin(tabName: String, homeRecommendationItemDataModel: HomeRecommendationItemDataModel) = getBasicProductView(
+    fun getRecommendationProductViewLogin(tabName: String, homeRecommendationItemDataModel: HomeRecommendationItemDataModel) = BaseTrackerBuilder().constructBasicProductView(
             event = Event.PRODUCT_VIEW,
             eventCategory = Category.HOMEPAGE,
             eventAction = CustomAction.RECOMMENDATION_VIEW_LOGIN_NON_TOPADS,
@@ -86,7 +88,7 @@ object HomeRecommendationTracking : BaseTracking(){
             products = listOf(mapToProductTracking(homeRecommendationItemDataModel))
     )
 
-    fun getRecommendationProductViewLoginTopAds(tabName: String, homeRecommendationItemDataModel: HomeRecommendationItemDataModel) = getBasicProductView(
+    fun getRecommendationProductViewLoginTopAds(tabName: String, homeRecommendationItemDataModel: HomeRecommendationItemDataModel) = BaseTrackerBuilder().constructBasicProductView(
             event = Event.PRODUCT_VIEW,
             eventCategory = Category.HOMEPAGE,
             eventAction = CustomAction.RECOMMENDATION_VIEW_LOGIN_TOPADS,
@@ -95,7 +97,7 @@ object HomeRecommendationTracking : BaseTracking(){
             products = listOf(mapToProductTracking(homeRecommendationItemDataModel))
     )
 
-    fun getRecommendationProductViewNonLogin(tabName: String, homeRecommendationItemDataModel: HomeRecommendationItemDataModel) = getBasicProductView(
+    fun getRecommendationProductViewNonLogin(tabName: String, homeRecommendationItemDataModel: HomeRecommendationItemDataModel) = BaseTrackerBuilder().constructBasicProductView(
             event = Event.PRODUCT_VIEW,
             eventCategory = Category.HOMEPAGE,
             eventAction = CustomAction.RECOMMENDATION_VIEW_NON_LOGIN_NON_TOPADS,
@@ -104,7 +106,7 @@ object HomeRecommendationTracking : BaseTracking(){
             products = listOf(mapToProductTracking(homeRecommendationItemDataModel))
     )
 
-    fun getRecommendationProductViewNonLoginTopAds(tabName: String, homeRecommendationItemDataModel: HomeRecommendationItemDataModel) = getBasicProductView(
+    fun getRecommendationProductViewNonLoginTopAds(tabName: String, homeRecommendationItemDataModel: HomeRecommendationItemDataModel) = BaseTrackerBuilder().constructBasicProductView(
             event = Event.PRODUCT_VIEW,
             eventCategory = Category.HOMEPAGE,
             eventAction = CustomAction.RECOMMENDATION_VIEW_NON_LOGIN_TOPADS,
@@ -142,13 +144,13 @@ object HomeRecommendationTracking : BaseTracking(){
             listOf(mapToPromoTracking(bannerRecommendationDataModel))
     )
 
-    fun getImpressionBannerTopAds(homeRecommendationBannerTopAdsDataModel: HomeRecommendationBannerTopAdsDataModel, tabPosition: Int, position: Int) = getBasicPromotionView(
+    fun getImpressionBannerTopAds(homeRecommendationBannerTopAdsDataModel: HomeRecommendationBannerTopAdsDataModel, tabPosition: Int, position: Int) = BaseTrackerBuilder().constructBasicPromotionView(
             Event.PROMO_VIEW,
             Category.HOMEPAGE_TOPADS,
             Action.IMPRESSION_ON.format(BANNER_ADS_INSIDE_RECOMMENDATION),
             Label.NONE,
             listOf(
-                    Promotion(
+                    BaseTrackerConst.Promotion(
                             id = homeRecommendationBannerTopAdsDataModel.topAdsImageViewModel?.bannerId.toString(),
                             name = CustomAction.BANNER_ADS_FIELD.format(tabPosition.toString()),
                             position = position.toString(),
@@ -158,13 +160,13 @@ object HomeRecommendationTracking : BaseTracking(){
             )
     )
 
-    fun getClickBannerTopAds(homeRecommendationBannerTopAdsDataModel: HomeRecommendationBannerTopAdsDataModel, tabPosition: Int, position: Int) = getBasicPromotionClick(
+    fun getClickBannerTopAds(homeRecommendationBannerTopAdsDataModel: HomeRecommendationBannerTopAdsDataModel, tabPosition: Int, position: Int) = BaseTrackerBuilder().constructBasicPromotionClick(
             event = Event.PROMO_CLICK,
             eventCategory = Category.HOMEPAGE_TOPADS,
             eventAction = Action.CLICK_ON.format(BANNER_ADS_INSIDE_RECOMMENDATION),
             eventLabel = Label.NONE,
             promotions = listOf(
-                    Promotion(
+                    BaseTrackerConst.Promotion(
                             id = homeRecommendationBannerTopAdsDataModel.topAdsImageViewModel?.bannerId.toString(),
                             name = CustomAction.BANNER_ADS_FIELD.format(tabPosition.toString()),
                             position = position.toString(),
@@ -174,7 +176,7 @@ object HomeRecommendationTracking : BaseTracking(){
             )
     )
 
-    private fun mapToProductTracking(homeRecommendationItemDataModel: HomeRecommendationItemDataModel) = Product(
+    private fun mapToProductTracking(homeRecommendationItemDataModel: HomeRecommendationItemDataModel) = BaseTrackerConst.Product(
             id = homeRecommendationItemDataModel.product.id,
             name = homeRecommendationItemDataModel.product.name,
             variant = "",
@@ -183,7 +185,9 @@ object HomeRecommendationTracking : BaseTracking(){
             isFreeOngkir = homeRecommendationItemDataModel.product.freeOngkirInformation.isActive,
             category = homeRecommendationItemDataModel.product.categoryBreadcrumbs,
             brand = "",
-            clusterId = homeRecommendationItemDataModel.product.clusterId
+            clusterId = homeRecommendationItemDataModel.product.clusterId,
+            recommendationType = homeRecommendationItemDataModel.product.recommendationType,
+            pageName = homeRecommendationItemDataModel.pageName
     )
 
     private fun mapToPromoTracking(bannerRecommendationDataModel: BannerRecommendationDataModel) = Promotion(

@@ -80,6 +80,7 @@ object MixLeftComponentTracking: BaseTrackerConst()  {
                         isTopAds = grid.isTopads,
                         recommendationType = grid.recommendationType,
                         headerName = channel.channelHeader.name,
+                        pageName = channel.pageName,
                         isCarousel = true
                 )),
                 list = String.format(
@@ -113,6 +114,7 @@ object MixLeftComponentTracking: BaseTrackerConst()  {
                         isTopAds = grid.isTopads,
                         recommendationType = grid.recommendationType,
                         headerName = channel.channelHeader.name,
+                        pageName = channel.pageName,
                         isCarousel = true
                 )),
                 list = String.format(
@@ -147,6 +149,7 @@ object MixLeftComponentTracking: BaseTrackerConst()  {
                                 isTopAds = grid.isTopads,
                                 recommendationType = grid.recommendationType,
                                 headerName = channel.channelHeader.name,
+                                pageName = channel.pageName,
                                 isCarousel = true
                         )
                 ),

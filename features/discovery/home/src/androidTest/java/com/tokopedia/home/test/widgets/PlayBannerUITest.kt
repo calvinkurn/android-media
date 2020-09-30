@@ -55,34 +55,6 @@ class PlayBannerUITest : BaseWidgetUiTest(){
     @JvmField
     val taskExecutorRule = InstantTaskExecutorRule()
 
-    override val userSessionInterface = mockk<dagger.Lazy<UserSessionInterface>>(relaxed = true)
-    override val dismissHomeReviewUseCase = mockk<dagger.Lazy<DismissHomeReviewUseCase>>(relaxed = true)
-    override val getHomeReviewSuggestedUseCase = mockk<dagger.Lazy<GetHomeReviewSuggestedUseCase>>(relaxed = true)
-    override val getKeywordSearchUseCase = mockk<dagger.Lazy<GetKeywordSearchUseCase>>(relaxed = true)
-    override val getRecommendationTabUseCase = mockk<dagger.Lazy<GetRecommendationTabUseCase>>(relaxed = true)
-    override val getHomeTokopointsDataUseCase = mockk<dagger.Lazy<GetHomeTokopointsDataUseCase>>(relaxed = true)
-    override val getCoroutinePendingCashbackUseCase = mockk<dagger.Lazy<GetCoroutinePendingCashbackUseCase>> (relaxed = true)
-    override val getPlayLiveDynamicUseCase = mockk<dagger.Lazy<GetPlayLiveDynamicUseCase>> (relaxed = true)
-    override val getCoroutineWalletBalanceUseCase = mockk<dagger.Lazy<GetCoroutineWalletBalanceUseCase>> (relaxed = true)
-    override val getHomeUseCase = mockk<dagger.Lazy<HomeUseCase>> (relaxed = true)
-    override val getSendGeolocationInfoUseCase = mockk<dagger.Lazy<SendGeolocationInfoUseCase>> (relaxed = true)
-    override val getStickyLoginUseCase = mockk<dagger.Lazy<StickyLoginUseCase>> (relaxed = true)
-    override val getBusinessWidgetTab = mockk<dagger.Lazy<GetBusinessWidgetTab>> (relaxed = true)
-    override val getBusinessUnitDataUseCase = mockk<dagger.Lazy<GetBusinessUnitDataUseCase>> (relaxed = true)
-    override val getPopularKeywordUseCase = mockk<dagger.Lazy<GetPopularKeywordUseCase>> (relaxed = true)
-    override val getDynamicChannelsUseCase = mockk<dagger.Lazy<GetDynamicChannelsUseCase>> (relaxed = true)
-    override val getAtcUseCase = mockk<dagger.Lazy<AddToCartOccUseCase>>(relaxed = true)
-    override val getRechargeRecommendationUseCase = mockk<dagger.Lazy<GetRechargeRecommendationUseCase>>(relaxed = true)
-    override val declineRechargeRecommendationUseCase = mockk<dagger.Lazy<DeclineRechargeRecommendationUseCase>>(relaxed = true)
-    override val declineSalamWIdgetUseCase = mockk<dagger.Lazy<DeclineSalamWIdgetUseCase>>(relaxed = true)
-    override val getSalamWIdgetUseCase = mockk<dagger.Lazy<GetSalamWidgetUseCase>>(relaxed = true)
-    override val closeChannelUseCase = mockk<dagger.Lazy<CloseChannelUseCase>>(relaxed = true)
-    override val topAdsImageViewUseCase = mockk<Lazy<TopAdsImageViewUseCase>>(relaxed = true)
-    override val injectCouponTimeBasedUseCase = mockk<dagger.Lazy<InjectCouponTimeBasedUseCase>>(relaxed = true)
-    override val playToggleChannelReminderUseCase = mockk<Lazy<PlayToggleChannelReminderUseCase>> (relaxed = true)
-    override val getPlayBannerUseCase = mockk<Lazy<GetPlayWidgetUseCase>> (relaxed = true)
-    override val remoteConfig = mockk<RemoteConfig>(relaxed = true)
-    override val homeVisitableFactory = HomeVisitableFactoryImpl(userSessionInterface.get(), remoteConfig, HomeDefaultDataSource())
     override val homeDynamicChannelVisitableFactory = HomeDynamicChannelVisitableFactoryImpl(userSessionInterface.get(), remoteConfig, HomeDefaultDataSource())
     override val instrumentationContext = InstrumentationRegistry.getInstrumentation().context
     override val homeDataMapper = HomeDataMapper(instrumentationContext, homeVisitableFactory, mockk(relaxed = true),
@@ -337,35 +309,4 @@ class PlayBannerUITest : BaseWidgetUiTest(){
         onView(withId(TITLE)).check(matches(withText("Play Widget")))
         onView(withId(TITLE_CONTENT)).check(matches(withText("Channel 2")))
     }
-
-    override fun reInitViewModel() = HomeViewModel(
-            dismissHomeReviewUseCase = dismissHomeReviewUseCase,
-            getBusinessUnitDataUseCase = getBusinessUnitDataUseCase,
-            getBusinessWidgetTab = getBusinessWidgetTab,
-            getDynamicChannelsUseCase = getDynamicChannelsUseCase,
-            getHomeReviewSuggestedUseCase = getHomeReviewSuggestedUseCase,
-            getHomeTokopointsDataUseCase = getHomeTokopointsDataUseCase,
-            getKeywordSearchUseCase = getKeywordSearchUseCase,
-            getPendingCashbackUseCase = getCoroutinePendingCashbackUseCase,
-            getPlayCardHomeUseCase = getPlayLiveDynamicUseCase,
-            getRecommendationTabUseCase = getRecommendationTabUseCase,
-            getWalletBalanceUseCase = getCoroutineWalletBalanceUseCase,
-            homeDispatcher = TestDispatcherProvider(),
-            homeUseCase = getHomeUseCase,
-            popularKeywordUseCase = getPopularKeywordUseCase,
-            sendGeolocationInfoUseCase = getSendGeolocationInfoUseCase,
-            stickyLoginUseCase = getStickyLoginUseCase,
-            userSession = userSessionInterface,
-            getAtcUseCase = getAtcUseCase,
-            closeChannelUseCase = closeChannelUseCase,
-            getRechargeRecommendationUseCase = getRechargeRecommendationUseCase,
-            declineRechargeRecommendationUseCase = declineRechargeRecommendationUseCase,
-            getSalamWidgetUseCase = getSalamWIdgetUseCase,
-            declineSalamWidgetUseCase = declineSalamWIdgetUseCase,
-            injectCouponTimeBasedUseCase = injectCouponTimeBasedUseCase,
-            topAdsImageViewUseCase = topAdsImageViewUseCase,
-            playToggleChannelReminderUseCase = playToggleChannelReminderUseCase,
-            getPlayBannerUseCase = getPlayBannerUseCase,
-            homeProcessor = mockk()
-    )
 }
