@@ -12,8 +12,10 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.otp.common.IOnBackPressed
+import com.tokopedia.otp.common.abstraction.BaseOtpFragment
 import com.tokopedia.otp.common.di.OtpComponent
 import com.tokopedia.otp.notif.domain.pojo.DeviceStatusPushNotifData
+import com.tokopedia.otp.notif.view.viewbinding.ActivePushNotifViewBinding
 import com.tokopedia.otp.notif.view.viewbinding.SettingNotifViewBinding
 import com.tokopedia.otp.notif.viewmodel.NotifViewModel
 import com.tokopedia.usecase.coroutines.Fail
@@ -25,10 +27,7 @@ import javax.inject.Inject
  * Created by Ade Fulki on 14/09/20.
  */
 
-class SettingNotifFragment : BaseDaggerFragment(), IOnBackPressed {
-
-    @Inject
-    lateinit var viewBound: SettingNotifViewBinding
+class SettingNotifFragment : BaseOtpFragment(), IOnBackPressed {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -36,6 +35,8 @@ class SettingNotifFragment : BaseDaggerFragment(), IOnBackPressed {
     private val viewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory).get(NotifViewModel::class.java)
     }
+
+    override val viewBound = SettingNotifViewBinding()
 
     override fun getScreenName(): String = ""
 
@@ -72,6 +73,7 @@ class SettingNotifFragment : BaseDaggerFragment(), IOnBackPressed {
 
     private fun initView() {
         viewBound.mainImage?.setImageUrl(LINK_IMG_PHONE_OTP_PUSH_NOTIF)
+        viewModel.deviceStatusPushNotif()
     }
 
     private fun initStatusView(deviceStatusPushNotifData: DeviceStatusPushNotifData) {
@@ -87,17 +89,18 @@ class SettingNotifFragment : BaseDaggerFragment(), IOnBackPressed {
 
     private fun showActivePushNotif() {
         val activePushNotifFragment = ActivePushNotifFragment.createInstance(Bundle())
-        val fragmentTransaction = childFragmentManager.beginTransaction()
-        viewBound.switchLayout?.let { switchLayout ->
-            fragmentTransaction.replace(switchLayout.id, activePushNotifFragment).commit()
-        }
+        replaceFragment(activePushNotifFragment)
     }
 
     private fun showInactivePushNotif() {
         val inactivePushNotifFragment = InactivePushNotifFragment.createInstance(Bundle())
+        replaceFragment(inactivePushNotifFragment)
+    }
+
+    private fun replaceFragment(fragment: BaseDaggerFragment) {
         val fragmentTransaction = childFragmentManager.beginTransaction()
         viewBound.switchLayout?.let { switchLayout ->
-            fragmentTransaction.replace(switchLayout.id, inactivePushNotifFragment).commit()
+            fragmentTransaction.replace(switchLayout.id, fragment).commit()
         }
     }
 

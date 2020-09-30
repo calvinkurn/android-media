@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/spacing_lvl4"
         app:closeButtonVisibility="gone"
-        app:descriptionText="Fitur ini akan tersedia jika perangkatmu telah memenuhi standar keamanan Tokopedia & sudah mengaktifkan Push Notification Tokopedia."
+        app:descriptionText="Fitur ini akan tersedia jika perangkatmu telah memenuhi standar keamanan Tokopedia &amp; sudah mengaktifkan Push Notification Tokopedia."
         app:tickerShapeType="loose"
         app:tickerType="announcement" />
 

@@ -9,17 +9,18 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.loginfingerprint.data.preference.FingerprintSetting
 import com.tokopedia.loginfingerprint.utils.crypto.Cryptography
 import com.tokopedia.loginregister.R
-import com.tokopedia.loginregister.common.SignaturePref
 import com.tokopedia.loginregister.common.domain.usecase.DynamicBannerUseCase
 import com.tokopedia.loginregister.discover.usecase.DiscoverUseCase
-import com.tokopedia.loginregister.login.domain.*
+import com.tokopedia.loginregister.login.domain.RegisterCheckUseCase
+import com.tokopedia.loginregister.login.domain.StatusFingerprint
+import com.tokopedia.loginregister.login.domain.StatusFingerprintUseCase
+import com.tokopedia.loginregister.login.domain.StatusPinUseCase
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.login.domain.pojo.StatusPinData
 import com.tokopedia.loginregister.login.view.listener.LoginEmailPhoneContract
 import com.tokopedia.loginregister.login.view.model.DiscoverViewModel
 import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialSubscriber
 import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialUseCase
-import com.tokopedia.loginregister.registerinitial.domain.usecase.RegisterValidationUseCase
 import com.tokopedia.loginregister.ticker.domain.usecase.TickerInfoUseCase
 import com.tokopedia.loginregister.ticker.subscriber.TickerInfoLoginSubscriber
 import com.tokopedia.sessioncommon.di.SessionModule.SESSION_MODULE
@@ -41,8 +42,6 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
                                                    private val discoverUseCase: DiscoverUseCase,
                                                    private val getFacebookCredentialUseCase:
                                                    GetFacebookCredentialUseCase,
-                                                   private val registerValidationUseCase:
-                                                   RegisterValidationUseCase,
                                                    private val loginTokenUseCase:
                                                    LoginTokenUseCase,
                                                    private val getProfileUseCase: GetProfileUseCase,
@@ -50,10 +49,8 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
                                                    private val statusPinUseCase: StatusPinUseCase,
                                                    private val dynamicBannerUseCase: DynamicBannerUseCase,
                                                    private val statusFingerprintUseCase: StatusFingerprintUseCase,
-                                                   private val registerPushNotifUseCase: RegisterPushNotifUseCase,
                                                    private val fingerprintPreferenceHelper: FingerprintSetting,
                                                    private var cryptographyUtils: Cryptography?,
-                                                   private val signaturePref: SignaturePref,
                                                    @Named(SESSION_MODULE)
                                                    private val userSession: UserSessionInterface)
     : BaseDaggerPresenter<LoginEmailPhoneContract.View>(),
@@ -324,18 +321,5 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
         }, onError = {
             view.onGetDynamicBannerError(it)
         })
-    }
-
-    override fun registerPushNotif() {
-        val signature = cryptographyUtils?.generateFingerprintSignature(userSession.userId, userSession.deviceId)
-        signature?.let {
-            signaturePref.signature = it.signature
-            registerPushNotifUseCase.executeCoroutines(
-                    cryptographyUtils?.getPublicKey() ?: "",
-                    it.signature,
-                    it.datetime
-            )
-        }
-
     }
 }

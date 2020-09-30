@@ -2,28 +2,26 @@ package com.tokopedia.otp.notif.view.fragment
 
 import android.os.Bundle
 import android.view.View
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.otp.R
 import com.tokopedia.otp.common.IOnBackPressed
+import com.tokopedia.otp.common.abstraction.BaseOtpFragment
 import com.tokopedia.otp.common.di.OtpComponent
 import com.tokopedia.otp.notif.view.viewbinding.ResultNotifViewBinding
-import javax.inject.Inject
 
 /**
  * Created by Ade Fulki on 14/09/20.
  */
 
-class ResultNotifFragment : BaseDaggerFragment(), IOnBackPressed {
-
-    @Inject
-    lateinit var viewBound: ResultNotifViewBinding
+class ResultNotifFragment : BaseOtpFragment(), IOnBackPressed {
 
     private var imglink: String = ""
     private var messageTitle: String = ""
     private var messageBody: String = ""
     private var ctaType: String = ""
+
+    override val viewBound = ResultNotifViewBinding()
 
     override fun getScreenName(): String = ""
 

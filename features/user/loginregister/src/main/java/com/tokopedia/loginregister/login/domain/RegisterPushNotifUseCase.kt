@@ -19,7 +19,9 @@ class RegisterPushNotifUseCase @Inject constructor(
     fun executeCoroutines(
             publicKey: String,
             signature: String,
-            datetime: String
+            datetime: String,
+            onSuccess: (RegisterPushNotifData) -> Unit,
+            onError: (Throwable) -> Unit
     ) {
         rawQueries[LoginQueryConstant.QUERY_REGISTER_PUSH_NOTIF]?.let { query ->
             setRequestParams(mapOf(
@@ -29,7 +31,11 @@ class RegisterPushNotifUseCase @Inject constructor(
             ))
             setTypeClass(RegisterPushNotifPojo::class.java)
             setGraphqlQuery(query)
-            execute({}, {})
+            execute({
+                onSuccess.invoke(it.data)
+            }, {
+                onError.invoke(it)
+            })
         }
     }
 

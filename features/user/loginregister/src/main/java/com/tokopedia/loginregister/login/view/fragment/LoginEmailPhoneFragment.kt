@@ -9,6 +9,7 @@ import android.content.SharedPreferences
 import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import android.hardware.fingerprint.FingerprintManager
+import android.os.Build
 import android.os.Bundle
 import android.text.SpannableString
 import android.text.TextPaint
@@ -19,6 +20,8 @@ import android.text.style.ClickableSpan
 import android.view.*
 import android.view.inputmethod.EditorInfo
 import android.widget.*
+import androidx.annotation.Nullable
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
 import com.crashlytics.android.Crashlytics
@@ -57,6 +60,7 @@ import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.linker.model.UserData
 import com.tokopedia.loginfingerprint.data.preference.FingerprintSetting
 import com.tokopedia.loginfingerprint.listener.ScanFingerprintInterface
+import com.tokopedia.loginfingerprint.utils.crypto.Cryptography
 import com.tokopedia.loginfingerprint.view.ScanFingerprintDialog
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.activation.view.activity.ActivationActivity
@@ -69,11 +73,13 @@ import com.tokopedia.loginregister.common.di.LoginRegisterComponent
 import com.tokopedia.loginregister.common.view.LoginTextView
 import com.tokopedia.loginregister.discover.data.DiscoverItemViewModel
 import com.tokopedia.loginregister.login.di.DaggerLoginComponent
+import com.tokopedia.loginregister.login.di.LoginComponentBuilder
 import com.tokopedia.loginregister.login.domain.StatusFingerprint
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.login.domain.pojo.RegisterPushNotifData
 import com.tokopedia.loginregister.login.domain.pojo.StatusPinData
 import com.tokopedia.loginregister.login.router.LoginRouter
+import com.tokopedia.loginregister.login.service.RegisterPushNotifService
 import com.tokopedia.loginregister.login.view.activity.LoginActivity
 import com.tokopedia.loginregister.login.view.listener.LoginEmailPhoneContract
 import com.tokopedia.loginregister.login.view.presenter.LoginEmailPhonePresenter
@@ -164,11 +170,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
     }
 
     override fun initInjector() {
-        val daggerLoginComponent = DaggerLoginComponent
-                .builder().loginRegisterComponent(getComponent(LoginRegisterComponent::class.java))
-                .build() as DaggerLoginComponent
-
-        daggerLoginComponent.inject(this)
+        activity?.application?.let { LoginComponentBuilder.getComponent(it).inject(this) }
         presenter.attachView(this, this)
     }
 
@@ -300,7 +302,6 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
         emailExtensionList.addAll(resources.getStringArray(R.array.email_extension))
         partialRegisterInputView.setEmailExtension(emailExtension, emailExtensionList)
         partialRegisterInputView.initKeyboardListener(view)
-
     }
 
     private fun fetchRemoteConfig() {
@@ -700,7 +701,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
         if (emailPhoneEditText.text.isNotBlank())
             userSession.autofillUserData = emailPhoneEditText.text.toString()
 
-        presenter.registerPushNotif()
+        registerPushNotif()
 
         activity?.run {
             if (GlobalConfig.isSellerApp()) {
@@ -1533,6 +1534,12 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
             } else {
                 presenter.getTickerInfo()
             }
+        }
+    }
+
+    private fun registerPushNotif() {
+        activity?.let {
+            RegisterPushNotifService.startService(it.applicationContext)
         }
     }
 

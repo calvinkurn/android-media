@@ -1,19 +1,17 @@
 package com.tokopedia.otp.notif.view.fragment
 
 import android.os.Bundle
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.otp.common.abstraction.BaseOtpFragment
 import com.tokopedia.otp.common.di.OtpComponent
 import com.tokopedia.otp.notif.view.viewbinding.ActivePushNotifViewBinding
-import javax.inject.Inject
 
 /**
  * Created by Ade Fulki on 25/09/20.
  */
 
-class ActivePushNotifFragment : BaseDaggerFragment() {
+class ActivePushNotifFragment : BaseOtpFragment() {
 
-    @Inject
-    lateinit var viewBound: ActivePushNotifViewBinding
+    override val viewBound = ActivePushNotifViewBinding()
 
     override fun getScreenName(): String = ""
 

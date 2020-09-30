@@ -4,11 +4,14 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.annotation.Nullable
+import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
@@ -23,6 +26,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.loginfingerprint.utils.crypto.Cryptography
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.analytics.ShopCreationAnalytics
 import com.tokopedia.loginregister.common.analytics.ShopCreationAnalytics.Companion.SCREEN_LANDING_SHOP_CREATION
@@ -63,6 +67,11 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
+    @RequiresApi(Build.VERSION_CODES.M)
+    @Nullable
+    @Inject
+    lateinit var cryptography: Cryptography
+
     private val viewModelProvider by lazy {
         ViewModelProviders.of(this, viewModelFactory)
     }
@@ -93,6 +102,13 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
         super.onViewCreated(view, savedInstanceState)
         initObserver()
         initView()
+
+        if(cryptography.isInitialized()) {
+            val signature = cryptography.generateRegisterPushNotifSignature(userId = userSession.userId, deviceId = userSession.deviceId)
+            signature.let { it ->
+                it.signature
+            }
+        }
     }
 
     override fun onStart() {

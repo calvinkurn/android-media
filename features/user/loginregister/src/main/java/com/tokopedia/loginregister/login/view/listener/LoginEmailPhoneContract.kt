@@ -150,7 +150,5 @@ interface LoginEmailPhoneContract {
         fun removeFingerprintData()
 
         fun getDynamicBanner(page: String)
-
-        fun registerPushNotif()
     }
 }

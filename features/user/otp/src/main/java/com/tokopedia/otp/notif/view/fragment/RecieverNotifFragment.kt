@@ -6,9 +6,9 @@ import android.view.View
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.otp.common.IOnBackPressed
+import com.tokopedia.otp.common.abstraction.BaseOtpFragment
 import com.tokopedia.otp.common.di.OtpComponent
 import com.tokopedia.otp.notif.common.SignaturePref
 import com.tokopedia.otp.notif.domain.pojo.VerifyPushNotifData
@@ -23,10 +23,7 @@ import javax.inject.Inject
  * Created by Ade Fulki on 14/09/20.
  */
 
-class RecieverNotifFragment : BaseDaggerFragment(), IOnBackPressed {
-
-    @Inject
-    lateinit var viewBound: RecieverNotifViewBinding
+class RecieverNotifFragment : BaseOtpFragment(), IOnBackPressed {
 
     @Inject
     lateinit var signaturePref: SignaturePref
@@ -43,6 +40,8 @@ class RecieverNotifFragment : BaseDaggerFragment(), IOnBackPressed {
     private val viewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory).get(NotifViewModel::class.java)
     }
+
+    override val viewBound = RecieverNotifViewBinding()
 
     override fun getScreenName(): String = ""
 

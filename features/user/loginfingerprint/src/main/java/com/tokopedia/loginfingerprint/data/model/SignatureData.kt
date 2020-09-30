@@ -5,7 +5,7 @@ package com.tokopedia.loginfingerprint.data.model
  * Copyright (c) 2020 PT. Tokopedia All rights reserved.
  */
 
-data class FingerprintSignature (
+data class SignatureData (
         val signature: String = "",
         val datetime: String = ""
 )
