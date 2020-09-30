@@ -223,6 +223,7 @@ class ChooseAccountFragment : BaseDaggerFragment(),
     private fun open2FA(account: UserDetail, phone: String) {
         selectedAccount = account
         selectedPhoneNo = phone
+        showLoadingProgress()
         val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.COTP)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, OtpConstant.OtpType.AFTER_LOGIN_PHONE)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_MSISDN, phone)
