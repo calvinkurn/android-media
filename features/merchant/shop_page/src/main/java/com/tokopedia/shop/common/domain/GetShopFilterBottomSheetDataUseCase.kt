@@ -18,10 +18,16 @@ class GetShopFilterBottomSheetDataUseCase @Inject constructor(
 
     companion object {
         private const val KEY_PARAMS = "params"
+        private const val KEY_SOURCE = "source"
+        private const val KEY_DEVICE = "device"
+        private const val VALUE_SOURCE = "shop_product"
+        private const val DEVICE_VALUE = "android"
 
-        fun createParams(params: Map<String, String>) = mapOf(
-                KEY_PARAMS to UrlParamUtil.convertMapToStringParam(params)
-//                KEY_PARAMS to "source=search_product&device=android"
+        fun createParams() = mapOf(
+                KEY_PARAMS to UrlParamUtil.convertMapToStringParam(mapOf(
+                        KEY_SOURCE to VALUE_SOURCE,
+                        KEY_DEVICE to DEVICE_VALUE
+                ))
         )
     }
 

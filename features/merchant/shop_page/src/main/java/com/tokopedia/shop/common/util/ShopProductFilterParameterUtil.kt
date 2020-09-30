@@ -3,11 +3,8 @@ package com.tokopedia.shop.common.util
 import com.tokopedia.shop.common.constant.*
 
 private val LIST_FILTER_PARAMETER_KEY = setOf(
-        SHIPPING_PARAM_KEY,
         PMIN_PARAM_KEY,
         PMAX_PARAM_KEY,
-        COD_PARAM_KEY,
-        CONDITION_PARAM_KEY,
         RATING_PARAM_KEY,
         SORT_PARAM_KEY
 )

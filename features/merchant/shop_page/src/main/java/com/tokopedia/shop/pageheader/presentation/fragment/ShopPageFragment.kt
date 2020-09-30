@@ -408,7 +408,7 @@ class ShopPageFragment :
                 shopDomain.orEmpty(),
                 START_PAGE,
                 ShopPageConstant.DEFAULT_PER_PAGE,
-                initialProductFilterParameter?.getSortId().toIntOrZero(),
+                initialProductFilterParameter ?: ShopProductFilterParameter(),
                 "",
                 "",
                 isRefresh
@@ -563,7 +563,7 @@ class ShopPageFragment :
                     shopDomain.orEmpty(),
                     START_PAGE,
                     ShopPageConstant.DEFAULT_PER_PAGE,
-                    initialProductFilterParameter?.getSortId().toIntOrZero(),
+                    initialProductFilterParameter ?: ShopProductFilterParameter(),
                     "",
                     "",
                     isRefresh

@@ -10,6 +10,7 @@ import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play_common.domain.model.PlayToggleChannelReminder
 import com.tokopedia.play_common.domain.usecases.GetPlayWidgetUseCase
@@ -24,6 +25,7 @@ import com.tokopedia.shop.common.domain.GqlGetShopSortUseCase
 import com.tokopedia.shop.common.domain.interactor.GQLCheckWishlistUseCase
 import com.tokopedia.shop.common.graphql.data.checkwishlist.CheckWishlistResult
 import com.tokopedia.shop.common.util.ShopUtil
+import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
 import com.tokopedia.shop.home.data.model.CheckCampaignNotifyMeModel
 import com.tokopedia.shop.home.data.model.GetCampaignNotifyMeModel
 import com.tokopedia.shop.home.domain.CheckCampaignNotifyMeUseCase
@@ -131,7 +133,7 @@ class ShopHomeViewModel @Inject constructor(
 
     fun getShopPageHomeData(
             shopId: String,
-            sortId: Int,
+            shopProductFilterParameter: ShopProductFilterParameter,
             isRefreshShopLayout: Boolean = false
     ) {
         launchCatchError(block = {
@@ -149,7 +151,7 @@ class ShopHomeViewModel @Inject constructor(
                     dispatcherProvider.io(),
                     block = {
                         if (!isRefreshShopLayout)
-                            getProductListData(shopId, sortId, 1)
+                            getProductListData(shopId, 1, shopProductFilterParameter)
                         else null
                     },
                     onError = { null }
@@ -190,12 +192,12 @@ class ShopHomeViewModel @Inject constructor(
 
     fun getNewProductList(
             shopId: String,
-            sortId: Int,
-            page: Int
+            page: Int,
+            shopProductFilterParameter: ShopProductFilterParameter
     ) {
         launchCatchError(block = {
             val listProductData = withContext(dispatcherProvider.io()) {
-                getProductListData(shopId, sortId, page)
+                getProductListData(shopId, page, shopProductFilterParameter)
             }
             _newProductListData.postValue(Success(listProductData))
         }) {
@@ -318,15 +320,18 @@ class ShopHomeViewModel @Inject constructor(
 
     private suspend fun getProductListData(
             shopId: String,
-            sortId: Int,
-            page: Int
+            page: Int,
+            shopProductFilterParameter: ShopProductFilterParameter
     ): GetShopHomeProductUiModel {
         getShopProductUseCase.params = GqlGetShopProductUseCase.createParams(
                 shopId,
                 ShopProductFilterInput().apply {
                     etalaseMenu = ALL_SHOWCASE_ID
                     this.page = page
-                    sort = sortId
+                    sort = shopProductFilterParameter.getSortId().toIntOrZero()
+                    rating = shopProductFilterParameter.getRating()
+                    pmax = shopProductFilterParameter.getPmax()
+                    pmin = shopProductFilterParameter.getPmin()
                 }
         )
         val productListResponse = getShopProductUseCase.executeOnBackground()
@@ -446,11 +451,13 @@ class ShopHomeViewModel @Inject constructor(
     fun getBottomSheetFilterData() {
         launchCatchError(coroutineContext, block = {
             val filterBottomSheetData = withContext(dispatcherProvider.io()) {
-                getShopFilterBottomSheetDataUseCase.params = GetShopFilterBottomSheetDataUseCase.createParams(mapOf(
-                        "source" to "shop_product",
-                        "device" to "android"
-                ))
+                getShopFilterBottomSheetDataUseCase.params = GetShopFilterBottomSheetDataUseCase.createParams()
                 getShopFilterBottomSheetDataUseCase.executeOnBackground()
+            }
+            filterBottomSheetData.data.let {
+                it.filter = it.filter.filter { filterItem ->
+                    ShopUtil.isFilterNotIgnored(filterItem.title)
+                }
             }
             _bottomSheetFilterLiveData.postValue(Success(filterBottomSheetData))
         }) {
@@ -458,10 +465,10 @@ class ShopHomeViewModel @Inject constructor(
         }
     }
 
-    fun getFilterResultCount(shopId: String, mapParameter: Map<String, String>) {
+    fun getFilterResultCount(shopId: String, tempShopProductFilterParameter: ShopProductFilterParameter) {
         launchCatchError(block = {
             val filterResultProductCount = withContext(dispatcherProvider.io()) {
-                getFilterResultCountData(shopId, mapParameter)
+                getFilterResultCountData(shopId, tempShopProductFilterParameter)
             }
             _shopProductFilterCountLiveData.postValue(Success(filterResultProductCount))
         }) {}
@@ -469,9 +476,18 @@ class ShopHomeViewModel @Inject constructor(
 
     private suspend fun getFilterResultCountData(
             shopId: String,
-            mapParameter: Map<String, String>
+            tempShopProductFilterParameter: ShopProductFilterParameter
     ): Int {
-        val filter = ShopProductFilterInput(0, 0, "", "", 0)
+        val filter = ShopProductFilterInput(
+                ShopPageConstant.START_PAGE,
+                ShopPageConstant.DEFAULT_PER_PAGE,
+                "",
+                ALL_SHOWCASE_ID,
+                tempShopProductFilterParameter.getSortId().toIntOrZero(),
+                tempShopProductFilterParameter.getRating(),
+                tempShopProductFilterParameter.getPmax(),
+                tempShopProductFilterParameter.getPmin()
+        )
         getShopFilterProductCountUseCase.params = GetShopFilterProductCountUseCase.createParams(
                 shopId,
                 filter

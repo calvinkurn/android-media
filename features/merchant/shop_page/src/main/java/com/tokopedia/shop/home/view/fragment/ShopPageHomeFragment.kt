@@ -325,7 +325,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         showLoading()
         shopHomeAdapter.isOwner = isOwner
         startMonitoringPltNetworkRequest()
-        viewModel?.getShopPageHomeData(shopId, sortId.toIntOrZero())
+        viewModel?.getShopPageHomeData(shopId, shopProductFilterParameter ?: ShopProductFilterParameter())
     }
 
     private fun getIntentData() {
@@ -367,10 +367,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             when (it) {
                 is Success -> {
                     addProductListHeader()
-                    if(ShopPageProductChangeGridRemoteConfig.isFeatureEnabled(remoteConfig)) {
-                        addChangeProductGridSection(it.data.totalProductData)
-                    }
-                    updateProductListData(it.data.hasNextPage, it.data.listShopProductUiModel, true)
+                    updateProductListData(it.data.hasNextPage, it.data.listShopProductUiModel, it.data.totalProductData, true)
                 }
             }
             stopPerformanceMonitor()
@@ -380,7 +377,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             hideLoading()
             when (it) {
                 is Success -> {
-                    updateProductListData(it.data.hasNextPage, it.data.listShopProductUiModel, false)
+                    updateProductListData(it.data.hasNextPage, it.data.listShopProductUiModel, it.data.totalProductData, false)
                 }
             }
         })
@@ -484,8 +481,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     }
 
     private fun addChangeProductGridSection(totalProductData: Int) {
-        val changeProductGridUiModel = ShopHomeProductChangeGridSectionUiModel(totalProductData)
-        shopHomeAdapter.addShopPageProductChangeGridSection(changeProductGridUiModel)
+        shopHomeAdapter.updateShopPageProductChangeGridSection(totalProductData)
     }
 
     private fun onFailCheckCampaignNplNotifyMe(campaignId: String, errorMessage: String) {
@@ -644,8 +640,12 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     private fun updateProductListData(
             hasNextPage: Boolean,
             productList: List<ShopHomeProductViewModel>,
+            totalProductData: Int,
             isInitialData: Boolean
     ) {
+        if(ShopPageProductChangeGridRemoteConfig.isFeatureEnabled(remoteConfig)) {
+            addChangeProductGridSection(totalProductData)
+        }
         shopHomeAdapter.setProductListData(productList, isInitialData)
         updateScrollListenerState(hasNextPage)
     }
@@ -717,7 +717,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
 
     fun getProductList(page: Int) {
         if (shopId.isNotEmpty()) {
-            viewModel?.getNewProductList(shopId, sortId.toIntOrZero(), page)
+            viewModel?.getNewProductList(shopId, page, shopProductFilterParameter ?: ShopProductFilterParameter())
         }
     }
 
@@ -1514,7 +1514,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
 
     override fun onTimerFinished(model: ShopHomeNewProductLaunchCampaignUiModel) {
         shopHomeAdapter.removeShopHomeCampaignNplWidget(model)
-        viewModel?.getShopPageHomeData(shopId, sortId.toIntOrZero(), true)
+        viewModel?.getShopPageHomeData(shopId, shopProductFilterParameter ?: ShopProductFilterParameter(),true)
     }
 
     private fun setNplRemindMeClickedCampaignId(campaignId: String) {
@@ -1563,9 +1563,11 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     }
 
     override fun getResultCount(mapParameter: Map<String, String>) {
+        val tempShopProductFilterParameter = ShopProductFilterParameter()
+        tempShopProductFilterParameter.setMapData(mapParameter)
         viewModel?.getFilterResultCount(
                 shopId,
-                mapParameter
+                tempShopProductFilterParameter
         )
     }
 

@@ -249,7 +249,11 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         shopProductAdapter.clearAllNonDataElement()
         shopProductAdapter.clearProductList()
         showLoading()
-        viewModel.getNewProductListData(shopId, selectedEtalaseId, sortId)
+        viewModel.getNewProductListData(
+                shopId,
+                selectedEtalaseId,
+                shopProductFilterParameter ?: ShopProductFilterParameter()
+        )
     }
 
     private fun initRecyclerView(view: View) {
@@ -819,7 +823,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                 shopId,
                 selectedEtalaseId,
                 page,
-                sortId
+                shopProductFilterParameter?: ShopProductFilterParameter()
         )
     }
 
@@ -1177,8 +1181,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
 
     private fun addShopPageProductChangeGridSection(totalProductData: Int) {
         if(ShopPageProductChangeGridRemoteConfig.isFeatureEnabled(remoteConfig)) {
-            val data = ShopProductChangeGridSectionUiModel(totalProductData)
-            shopProductAdapter.addShopPageProductChangeGridSection(data)
+            shopProductAdapter.updateShopPageProductChangeGridSection(totalProductData)
         }
     }
 
@@ -1237,9 +1240,9 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                     shopId,
                     data,
                     etalaseItemDataModel,
-                    sortId,
                     isShowNewShopHomeTab(),
-                    initialProductListData
+                    initialProductListData,
+                    shopProductFilterParameter ?: ShopProductFilterParameter()
             )
         }
     }
@@ -1399,16 +1402,13 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         shopProductAdapter.refreshSticky()
         loadNewProductData()
     }
-//    private fun updateInitialProductListFilterParameter(shopProductFilterParameter: ShopProductFilterParameter?) {
-//        shopProductFilterParameter?.let{
-//            (parentFragment as? ShopPageFragment)?.updateFilterParameter(it)
-//        }
-//    }
 
     override fun getResultCount(mapParameter: Map<String, String>) {
+        val tempShopProductFilterParameter = ShopProductFilterParameter()
+        tempShopProductFilterParameter.setMapData(mapParameter)
         viewModel.getFilterResultCount(
                 shopId,
-                mapParameter
+                tempShopProductFilterParameter
         )
     }
 

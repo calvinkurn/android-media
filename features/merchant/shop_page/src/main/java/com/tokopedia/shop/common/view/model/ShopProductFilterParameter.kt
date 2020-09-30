@@ -2,8 +2,8 @@ package com.tokopedia.shop.common.view.model
 
 import android.os.Parcel
 import android.os.Parcelable
-import com.tokopedia.shop.common.constant.DEFAULT_SORT_ID
-import com.tokopedia.shop.common.constant.SORT_PARAM_KEY
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.shop.common.constant.*
 
 class ShopProductFilterParameter() : Parcelable {
 
@@ -40,6 +40,18 @@ class ShopProductFilterParameter() : Parcelable {
 
     fun setSortId(sortId: String) {
         mapParameter[SORT_PARAM_KEY] = sortId
+    }
+
+    fun getRating(): String {
+        return mapParameter[RATING_PARAM_KEY].orEmpty()
+    }
+
+    fun getPmin(): Int {
+        return mapParameter[PMIN_PARAM_KEY].toIntOrZero()
+    }
+
+    fun getPmax(): Int {
+        return mapParameter[PMAX_PARAM_KEY].toIntOrZero()
     }
 
     fun getMapDataWithDefaultSortId(): Map<String, String> {

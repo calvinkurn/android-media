@@ -286,11 +286,11 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                 shopInfo.shopCore.shopID,
                 page,
                 ShopPageConstant.DEFAULT_PER_PAGE,
-                sortId.toIntOrZero(),
                 selectedEtalaseId,
                 keyword,
                 isNeedToReloadData,
-                selectedEtalaseType
+                selectedEtalaseType,
+                shopProductFilterParameter ?: ShopProductFilterParameter()
         )
     }
 
@@ -414,9 +414,6 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
             if (productList.isNotEmpty()) {
                 shopProductSortFilterUiModel?.let { shopProductAdapter.setSortFilterData(it) }
                 if(ShopPageProductChangeGridRemoteConfig.isFeatureEnabled(remoteConfig)) {
-                    shopProductAdapter.addShopPageProductChangeGridSection(ShopProductChangeGridSectionUiModel(
-                            totalProductData
-                    ))
                     changeProductListGridView(ShopProductViewGridType.SMALL_GRID)
                 }
             }
@@ -427,6 +424,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
             shopInfo?.let { loadProductDataEmptyState(it, defaultInitialPage) }
             isEmptyState = true
         } else {
+            shopProductAdapter.updateShopPageProductChangeGridSection(totalProductData)
             shopProductAdapter.setProductListDataModel(productList)
             updateScrollListenerState(hasNextPage)
             isLoadingInitialData = false
@@ -654,11 +652,11 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                     shopId ?: "",
                     defaultInitialPage,
                     ShopPageConstant.DEFAULT_PER_PAGE,
-                    sortId.toIntOrZero(),
                     selectedEtalaseId,
                     keyword,
                     isNeedToReloadData,
-                    selectedEtalaseType
+                    selectedEtalaseType,
+                    shopProductFilterParameter ?: ShopProductFilterParameter()
             )
         } else {
             hideLoading()
@@ -988,9 +986,13 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     }
 
     override fun getResultCount(mapParameter: Map<String, String>) {
+        val tempShopProductFilterParameter = ShopProductFilterParameter()
+        tempShopProductFilterParameter.setMapData(mapParameter)
         viewModel.getFilterResultCount(
                 shopId.orEmpty(),
-                mapParameter
+                keyword,
+                selectedEtalaseId,
+                tempShopProductFilterParameter
         )
     }
 

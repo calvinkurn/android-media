@@ -10,14 +10,7 @@ import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.shop.common.data.response.GqlShopSortProductResponse
-import com.tokopedia.shop.common.data.response.ShopFilterProductCountResponse
-import com.tokopedia.shop.common.util.UrlParamUtil
-import com.tokopedia.shop.product.data.model.ShopProduct
-import com.tokopedia.shop.product.data.source.cloud.model.ShopProductFilterInput
 import com.tokopedia.shop.sort.data.source.cloud.model.ShopProductSort
-import com.tokopedia.usecase.RequestParams
-import com.tokopedia.usecase.UseCase
-import rx.Observable
 import javax.inject.Inject
 
 class GqlGetShopSortUseCase @Inject constructor(

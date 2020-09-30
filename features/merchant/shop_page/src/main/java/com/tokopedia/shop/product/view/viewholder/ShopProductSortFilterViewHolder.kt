@@ -1,6 +1,5 @@
 package com.tokopedia.shop.product.view.viewholder
 
-import android.os.Handler
 import android.view.View
 import android.view.View.MeasureSpec
 import android.view.ViewTreeObserver
@@ -12,11 +11,6 @@ import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
 import kotlinx.android.synthetic.main.item_shop_product_sort_filter.view.*
-import android.R.attr.duration
-
-import android.animation.ObjectAnimator
-import android.os.SystemClock
-import android.view.MotionEvent
 import com.tokopedia.kotlin.extensions.view.orZero
 
 /**
@@ -53,25 +47,8 @@ class ShopProductSortFilterViewHolder(
         removeOnScrollChangedListener()
         this.shopProductSortFilterUiModel = data
         itemView.sort_filter?.sortFilterItems?.removeAllViews()
-        val scrollX = shopProductSortFilterUiModel?.scrollX ?: 0
-//        itemView.viewTreeObserver.addOnPreDrawListener(object : ViewTreeObserver.OnPreDrawListener {
-//            override fun onPreDraw(): Boolean {
-//                itemView.sort_filter?.sortFilterHorizontalScrollView?.scrollX = scrollX
-//                itemView.viewTreeObserver.removeOnPreDrawListener(this)
-//                return true
-//            }
-//        })
         itemView.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
-//                Handler().postDelayed({
-//                    itemView.sort_filter?.sortFilterHorizontalScrollView?.scrollTo(scrollX, 0)
-//                    Handler().postDelayed({
-//                        itemView.sort_filter?.sortFilterHorizontalScrollView?.scrollTo(scrollX, 0)
-//                    }, 1)
-//                },1)
-//                itemView.sort_filter?.sortFilterHorizontalScrollView?.post {
-//                    ObjectAnimator.ofInt(itemView.sort_filter?.sortFilterHorizontalScrollView, "scrollX", scrollX).setDuration(50L).start();
-//                }
                 addScrollListener()
                 itemView.viewTreeObserver.removeOnGlobalLayoutListener(this)
             }
@@ -124,14 +101,11 @@ class ShopProductSortFilterViewHolder(
         }
         itemView.sort_filter?.filterType = SortFilter.TYPE_ADVANCED
         itemView.sort_filter?.filterRelationship = SortFilter.RELATIONSHIP_AND
-//        itemView.sort_filter?.dismissListener = {
-//            shopProductSortFilterViewHolderListener?.onClearFilterClicked()
-//        }
         itemView.sort_filter?.parentListener = {
             shopProductSortFilterViewHolderListener?.onFilterClicked()
         }
         itemView.measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED)
-        itemView.sort_filter?.textView?.text = "Filter"
+        itemView.sort_filter?.textView?.text = itemView.context.getString(R.string.shop_sort_filter_chips_name)
 
         itemView.sort_filter?.indicatorCounter = shopProductSortFilterUiModel?.filterIndicatorCounter.orZero()
         shopProductSortFilterViewHolderListener?.setSortFilterMeasureHeight(itemView.measuredHeight)
