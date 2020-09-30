@@ -1341,7 +1341,4 @@ class ShopPageFragment :
         }
     }
 
-//    fun updateFilterParameter(shopProductFilterParameter: ShopProductFilterParameter) {
-//        this.initialProductFilterParameter = shopProductFilterParameter
-//    }
 }
