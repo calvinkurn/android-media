@@ -3,6 +3,7 @@ package com.tokopedia.shop.score.view.recyclerview;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import androidx.recyclerview.widget.RecyclerView;
 import android.text.SpannableStringBuilder;
@@ -23,6 +24,7 @@ public class ShopScoreDetailViewHolder extends RecyclerView.ViewHolder {
 
     private final TextView shopScoreTitle;
     private final TextView shopScoreValue;
+    private final TextView shopScoreMaxValue;
     private final SquareProgressBar shopScoreProgressBar;
     private final TextView shopScoreDescription;
     private final Context context;
@@ -32,6 +34,7 @@ public class ShopScoreDetailViewHolder extends RecyclerView.ViewHolder {
         context = itemView.getContext();
         shopScoreTitle = (TextView) itemView.findViewById(R.id.title_shop_score_detail);
         shopScoreValue = (TextView) itemView.findViewById(R.id.description_shop_score_value);
+        shopScoreMaxValue = (TextView) itemView.findViewById(R.id.description_shop_score_percent);
         shopScoreProgressBar = (SquareProgressBar) itemView.findViewById(R.id.progress_bar_shop_score_detail);
         shopScoreDescription = (TextView) itemView.findViewById(R.id.description_shop_score_detail);
     }
@@ -43,6 +46,12 @@ public class ShopScoreDetailViewHolder extends RecyclerView.ViewHolder {
     public void setShopScoreValue(int value) {
         shopScoreValue.setText(String.valueOf(value));
         shopScoreProgressBar.setProgress(value);
+    }
+
+    public void setShopScoreMaxValue(int maxValue) {
+        final String maxScore = context.getString(R.string.description_shop_score_percent, maxValue);
+        shopScoreMaxValue.setText(maxScore);
+        shopScoreProgressBar.setMax(maxValue);
     }
 
     public void setShopScoreDescription(String description) {
@@ -102,7 +111,12 @@ public class ShopScoreDetailViewHolder extends RecyclerView.ViewHolder {
         }
     }
 
-    public void setProgressBarColor(Integer progressBarColor) {
-        shopScoreProgressBar.setProgressColor(progressBarColor);
+    public void setProgressBarColor(String progressBarColor) {
+        try {
+            int color = Color.parseColor(progressBarColor);
+            shopScoreProgressBar.setProgressColor(color);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
