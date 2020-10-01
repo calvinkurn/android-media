@@ -58,67 +58,67 @@ class ProductDetailActivityTest {
         setupGraphqlMockResponse(ProductDetailMockResponse())
     }
 
-//    // click button buy when user is login
-//    @Test
-//    fun validateClickBuyIsLogin() {
-//        actionTest {
-//            fakeLogin()
-//            waitForData()
-//            intendingIntent()
-//            clickVariantTest()
-//            clickButtonBuy()
-//            stubAtcIntent()
-//        } assertTest {
-//            performClose(activityRule)
-//            waitForTrackerSent()
-//            validate(gtmLogDBSource, targetContext, BUTTON_BUY_LOGIN_PATH)
-//        }
-//    }
-//
-//    //click  button buy when user is non login
-//    @Test
-//    fun validateClickBuyIsNonLogin() {
-//        actionTest {
-//            intendingIntent()
-//            waitForData()
-//            clickVariantTest()
-//            clickButtonBuy()
-//            stubAtcIntent()
-//        } assertTest {
-//            performClose(activityRule)
-//            waitForTrackerSent()
-//            validate(gtmLogDBSource, targetContext, BUTTON_BUY_NON_LOGIN_PATH)
-//        }
-//    }
-//
-//    @Test
-//    fun validateClickAddToCartIsLogin() {
-//        actionTest {
-//            fakeLogin()
-//            intendingIntent()
-//            waitForData()
-//            clickVariantTest()
-//            clickAddToCart()
-//        } assertTest {
-//            performClose(activityRule)
-//            waitForTrackerSent()
-//            validate(gtmLogDBSource, targetContext, ADD_TO_CART_LOGIN_PATH)
-//        }
-//    }
-//
-//    @Test
-//    fun validateClickAddToCartIsNonLogin() {
-//        actionTest {
-//            intendingIntent()
-//            waitForData()
-//            clickVariantTest()
-//            clickAddToCart()
-//        } assertTest {
-//            performClose(activityRule)
-//            waitForTrackerSent()
-//            validate(gtmLogDBSource, targetContext, ADD_TO_CART_NON_LOGIN_PATH)
-//        }
-//    }
+    // click button buy when user is login
+    @Test
+    fun validateClickBuyIsLogin() {
+        actionTest {
+            fakeLogin()
+            waitForData()
+            intendingIntent()
+            clickVariantTest()
+            clickButtonBuy()
+            stubAtcIntent()
+        } assertTest {
+            performClose(activityRule)
+            waitForTrackerSent()
+            validate(gtmLogDBSource, targetContext, BUTTON_BUY_LOGIN_PATH)
+        }
+    }
+
+    //click  button buy when user is non login
+    @Test
+    fun validateClickBuyIsNonLogin() {
+        actionTest {
+            intendingIntent()
+            waitForData()
+            clickVariantTest()
+            clickButtonBuy()
+            stubAtcIntent()
+        } assertTest {
+            performClose(activityRule)
+            waitForTrackerSent()
+            validate(gtmLogDBSource, targetContext, BUTTON_BUY_NON_LOGIN_PATH)
+        }
+    }
+
+    @Test
+    fun validateClickAddToCartIsLogin() {
+        actionTest {
+            fakeLogin()
+            intendingIntent()
+            waitForData()
+            clickVariantTest()
+            clickAddToCart()
+        } assertTest {
+            performClose(activityRule)
+            waitForTrackerSent()
+            validate(gtmLogDBSource, targetContext, ADD_TO_CART_LOGIN_PATH)
+        }
+    }
+
+    @Test
+    fun validateClickAddToCartIsNonLogin() {
+        actionTest {
+            intendingIntent()
+            waitForData()
+            clickVariantTest()
+            clickAddToCart()
+        } assertTest {
+            performClose(activityRule)
+            waitForTrackerSent()
+            validate(gtmLogDBSource, targetContext, ADD_TO_CART_NON_LOGIN_PATH)
+        }
+    }
 
     //click see guide on size chart
     @Test
@@ -185,8 +185,8 @@ class ProductDetailActivityTest {
         const val PRODUCT_ID = "890495024"
         const val ADD_TO_CART_LOGIN_PATH = "tracker/merchant/product_detail/pdp_add_to_cart_choose_variant_login.json"
         const val ADD_TO_CART_NON_LOGIN_PATH = "tracker/merchant/product_detail/pdp_add_to_cart_choose_variant_non_login.json"
-        const val BUTTON_BUY_LOGIN_PATH = "tracker/merchant/product_detail/pdp_button_buy_choose_variant_login.json"
-        const val BUTTON_BUY_NON_LOGIN_PATH = "tracker/merchant/product_detail/pdp_button_buy_choose_variant_non_login.json"
+        const val BUTTON_BUY_LOGIN_PATH = "tracker/merchant/product_detail/pdp_button_buy_now_choose_variant_login.json"
+        const val BUTTON_BUY_NON_LOGIN_PATH = "tracker/merchant/product_detail/pdp_button_buy_now_choose_variant_non_login.json"
         const val GUIDE_ON_SIZE_CHART_PATH = "tracker/merchant/product_detail/pdp_guide_on_size_chart.json"
     }
 }

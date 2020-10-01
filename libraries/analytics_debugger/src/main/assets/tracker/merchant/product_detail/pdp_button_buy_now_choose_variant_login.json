@@ -1,5 +1,5 @@
 {
-  "readme": "Product Detail - click cart buy login",
+  "readme": "Product Detail - click cart buy now login",
   "mode": "exact",
   "query": [
     {
@@ -37,7 +37,7 @@
     },
     {
       "eventCategory": "product detail page",
-      "eventAction": "click - Beli on pdp",
+      "eventAction": "click - Beli Langsung on pdp",
       "event": "add_to_cart",
       "shopType": "{{.*}}",
       "productId": "{{\\d{1,}}}",

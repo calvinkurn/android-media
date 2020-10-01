@@ -1,5 +1,5 @@
 {
-  "readme": "Product Detail - click button buy non login",
+  "readme": "Product Detail - click button buy now non login",
   "mode": "exact",
   "query": [
     {
@@ -36,7 +36,7 @@
       "component": "{{comp:.*;temp:.*;elem:.*;cpos:\\d{1,};}}"
     },
     {
-      "eventAction": "click Beli on pdp - non login",
+      "eventAction": "click Beli Langsung on pdp - non login",
       "eventCategory": "product detail page",
       "event": "clickPDP",
       "shopType": "{{.*}}",
