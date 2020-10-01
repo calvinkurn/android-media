@@ -331,8 +331,6 @@ public interface ShipmentContract {
         void setLatValidateUseRequest(ValidateUsePromoRequest latValidateUseRequest);
 
         ValidateUsePromoRequest getLastValidateUseRequest();
-
-        boolean isLockCheckout();
     }
 
 }

@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.checkout.R
 import com.tokopedia.checkout.view.ShipmentAdapterActionListener
 import com.tokopedia.checkout.view.uimodel.ShipmentButtonPaymentModel
-import com.tokopedia.logisticdata.util.toCompositeSubs
 import com.tokopedia.purchase_platform.common.utils.rxViewClickDebounce
 import kotlinx.android.synthetic.main.item_shipment_button_payment.view.*
 import rx.Subscriber
@@ -51,31 +50,35 @@ class ShipmentButtonPaymentViewHolder(val view: View, val actionListener: Shipme
         itemView.btn_select_payment_method.buttonType = model.abTestButton.getUnifyButtonType()
 
         itemView.btn_select_payment_method?.let {
-            rxViewClickDebounce(it).subscribe(object : Subscriber<Boolean>() {
-                override fun onNext(t: Boolean?) {
-                    actionListener.onProcessToPayment()
-                }
+            compositeSubscription.add(
+                    rxViewClickDebounce(it).subscribe(object : Subscriber<Boolean>() {
+                        override fun onNext(t: Boolean?) {
+                            actionListener.onProcessToPayment()
+                        }
 
-                override fun onCompleted() {
-                }
+                        override fun onCompleted() {
+                        }
 
-                override fun onError(e: Throwable?) {
-                }
-            }).toCompositeSubs(compositeSubscription)
+                        override fun onError(e: Throwable?) {
+                        }
+                    })
+            )
         }
 
         itemView.btn_select_cod?.let {
-            rxViewClickDebounce(it).subscribe(object : Subscriber<Boolean>() {
-                override fun onNext(t: Boolean?) {
-                    actionListener.onProcessToPaymentCod()
-                }
+            compositeSubscription.add(
+                    rxViewClickDebounce(it).subscribe(object : Subscriber<Boolean>() {
+                        override fun onNext(t: Boolean?) {
+                            actionListener.onProcessToPaymentCod()
+                        }
 
-                override fun onCompleted() {
-                }
+                        override fun onCompleted() {
+                        }
 
-                override fun onError(e: Throwable?) {
-                }
-            }).toCompositeSubs(compositeSubscription)
+                        override fun onError(e: Throwable?) {
+                        }
+                    })
+            )
         }
     }
 }

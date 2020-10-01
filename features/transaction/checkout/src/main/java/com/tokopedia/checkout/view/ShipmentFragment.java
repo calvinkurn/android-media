@@ -1103,6 +1103,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        hideLoading();
         if (requestCode == PaymentConstant.REQUEST_CODE) {
             onResultFromPayment(resultCode);
         } else if (requestCode == CheckoutConstant.REQUEST_CODE_CHECKOUT_ADDRESS) {
@@ -2204,18 +2205,14 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void onProcessToPayment() {
-//        if (!shipmentPresenter.isLockCheckout()) {
-            showLoading();
-            shipmentAdapter.checkDropshipperValidation(REQUEST_CODE_NORMAL_CHECKOUT);
-//        }
+        showLoading();
+        shipmentAdapter.checkDropshipperValidation(REQUEST_CODE_NORMAL_CHECKOUT);
     }
 
     @Override
     public void onProcessToPaymentCod() {
-//        if (!shipmentPresenter.isLockCheckout()) {
-            showLoading();
-            shipmentAdapter.checkDropshipperValidation(REQUEST_CODE_COD);
-//        }
+        showLoading();
+        shipmentAdapter.checkDropshipperValidation(REQUEST_CODE_COD);
     }
 
     public int getResultCode() {

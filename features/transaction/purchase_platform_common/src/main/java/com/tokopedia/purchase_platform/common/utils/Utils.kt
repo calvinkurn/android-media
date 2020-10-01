@@ -74,12 +74,13 @@ fun <T : Any> List<T>.each(action: T.() -> Unit) {
 
 fun String.removeDecimalSuffix(): String = this.removeSuffix(".00")
 
-fun rxViewClickDebounce(view: View): Observable<Boolean> =
+const val DEFAULT_BUTTON_DEBOUNCE = 250L
+fun rxViewClickDebounce(view: View, timeout: Long = DEFAULT_BUTTON_DEBOUNCE): Observable<Boolean> =
         Observable.create({ emitter: Emitter<Boolean> ->
             view.setOnClickListener {
                 emitter.onNext(true)
             }
         }, Emitter.BackpressureMode.LATEST)
-                .debounce(500, TimeUnit.MILLISECONDS)
+                .debounce(timeout, TimeUnit.MILLISECONDS)
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(AndroidSchedulers.mainThread())
