@@ -63,7 +63,7 @@ object DeeplinkMapperUohOrder {
             else getInternalDeeplink(deeplink)
 
         } else if (deeplink.startsWith(MARKETPLACE_ORDER)) {
-            getInternalDeeplink(deeplink)
+            returnedDeeplink = getInternalDeeplink(deeplink)
         }
         return returnedDeeplink
     }

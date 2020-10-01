@@ -44,12 +44,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.tokopedia.buyerorder.common.util.BuyerConsts.APPLINK_INTERNAL_ORDER;
-import static com.tokopedia.buyerorder.common.util.BuyerConsts.APPLINK_ORDER;
 import static com.tokopedia.buyerorder.common.util.BuyerConsts.HOST_BELANJA;
 import static com.tokopedia.buyerorder.common.util.BuyerConsts.HOST_BUYER;
 import static com.tokopedia.buyerorder.common.util.BuyerConsts.HOST_FLIGHT;
 import static com.tokopedia.buyerorder.common.util.BuyerConsts.HOST_HOTEL;
-import static com.tokopedia.buyerorder.common.util.BuyerConsts.HOST_ORDER;
 import static com.tokopedia.buyerorder.common.util.BuyerConsts.HOST_ORDERLIST_DIGITAL;
 import static com.tokopedia.buyerorder.common.util.BuyerConsts.HOST_ORDER_LIST;
 
