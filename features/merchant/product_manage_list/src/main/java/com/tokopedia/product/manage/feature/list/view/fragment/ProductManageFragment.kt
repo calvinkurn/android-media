@@ -188,6 +188,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        setHasOptionsMenu(true)
         return inflater.inflate(getLayoutRes(), container, false)
     }
 
@@ -200,7 +201,6 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
             shouldOpenAppLink = activity?.intent?.getStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA).orEmpty().isNotEmpty()
             shouldOpenTopAdsFromPdp = activity?.intent?.getStringExtra(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME).orEmpty() == SellerMigrationFeatureName.FEATURE_ADS
         }
-        setHasOptionsMenu(true)
     }
 
     override fun onViewStateRestored(savedInstanceState: Bundle?) {
