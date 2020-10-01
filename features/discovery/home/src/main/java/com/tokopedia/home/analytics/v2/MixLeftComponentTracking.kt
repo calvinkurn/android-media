@@ -83,7 +83,7 @@ object MixLeftComponentTracking: BaseTrackerConst()  {
                         isCarousel = true
                 )),
                 list = String.format(
-                        Value.LIST_WITH_HEADER, "1", LIST_MIX_LEFT, channel.channelHeader.name
+                        Value.LIST, "1", LIST_MIX_LEFT
                 ))
                 .appendChannelId(channel.id)
                 .build()
@@ -116,7 +116,7 @@ object MixLeftComponentTracking: BaseTrackerConst()  {
                         isCarousel = true
                 )),
                 list = String.format(
-                        Value.LIST_WITH_HEADER, "1", LIST_MIX_LEFT, channel.channelHeader.name
+                        Value.LIST, "1", LIST_MIX_LEFT
                 ))
                 .appendChannelId(channel.id)
                 .build()

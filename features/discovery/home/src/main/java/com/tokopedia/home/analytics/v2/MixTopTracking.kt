@@ -24,7 +24,7 @@ object MixTopTracking : BaseTrackerConst() {
 
     private class CustomActionField{
         companion object {
-            val LIST_CAROUSEL_PRODUCT = LIST.format("%s", "dynamic channel top carousel - product - %s")
+            val LIST_CAROUSEL_PRODUCT = LIST.format("%s", "dynamic channel top carousel - product")
         }
     }
 
