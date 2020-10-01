@@ -410,7 +410,7 @@ class PlayBroadcastViewModel @Inject constructor(
                         is Freeze -> {
                             if (_observableLiveDurationState.value !is LivePusherTimerState.Finish) {
                                 val eventUiModel = PlayBroadcastUiMapper.mapFreezeEvent(data, _observableEvent.value)
-                                if (eventUiModel.freeze) {
+                                if (eventUiModel.freeze && !eventUiModel.banned) {
                                     stopPushStream()
                                     _observableEvent.value = eventUiModel
                                 }
@@ -419,7 +419,7 @@ class PlayBroadcastViewModel @Inject constructor(
                         is Banned -> {
                             if (_observableLiveDurationState.value !is LivePusherTimerState.Finish) {
                                 val eventUiModel = PlayBroadcastUiMapper.mapBannedEvent(data, _observableEvent.value)
-                                if (eventUiModel.banned) {
+                                if (eventUiModel.banned && !eventUiModel.freeze) {
                                     stopPushStream()
                                     _observableEvent.value = eventUiModel
                                 }
