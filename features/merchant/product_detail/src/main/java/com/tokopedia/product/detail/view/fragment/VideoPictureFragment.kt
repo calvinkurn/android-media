@@ -11,7 +11,6 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.ProgressBar
 import androidx.core.content.ContextCompat
-import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.ExoPlayerFactory
@@ -32,6 +31,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.videoplayer.state.RepeatMode
@@ -123,11 +123,9 @@ class VideoPictureFragment : BaseDaggerFragment() {
             loadingVideoPdp.hide()
             imgPdp.scaleType = ImageView.ScaleType.CENTER_CROP
             if (mediaSource.isNotEmpty()) {
-                Glide.with(view.context)
-                        .load(mediaSource)
-                        .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                        .centerCrop()
-                        .into(imgPdp)
+                imgPdp.loadImage(mediaSource) {
+                    cacheStrategy = DiskCacheStrategy.RESOURCE
+                }
             }
         } else {
             volumePdp.show()

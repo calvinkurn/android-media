@@ -3,7 +3,7 @@ package com.tokopedia.media.loader.common
 import android.content.Context
 import com.bumptech.glide.load.model.GlideUrl
 import com.bumptech.glide.load.model.LazyHeaders
-import com.tokopedia.media.loader.data.MediaSettingPreferences
+import com.tokopedia.media.loader.utils.MediaSettingPreferences
 import com.tokopedia.media.loader.network.NetworkManager
 import com.tokopedia.media.loader.utils.HEADER_ECT
 import com.tokopedia.media.loader.utils.HIGH_QUALITY

@@ -2,6 +2,7 @@ package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_
 
 import android.content.Context
 import android.graphics.Point
+import android.graphics.drawable.Drawable
 import android.view.*
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -9,8 +10,8 @@ import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.load.DataSource
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.beranda.domain.model.DynamicHomeIcon
@@ -28,6 +29,7 @@ import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.common.LoaderStateListener
 
 /**
  * @author by errysuprayogi on 11/28/17.
@@ -102,8 +104,8 @@ class DynamicIconSectionViewHolder(val view: View,
         override fun onBindViewHolder(holder: DynamicIconViewHolder, position: Int) {
             holder.title.text = sectionViewModel.itemList[position].name
             holder.shimmeringIcon.show()
-            holder.icon.loadMiniImage(sectionViewModel.itemList[position].imageUrl, 150, 150, FPM_USE_CASE_ICON, object : ImageHandler.ImageLoaderStateListener{
-                override fun successLoad() {
+            holder.icon.loadMiniImage(sectionViewModel.itemList[position].imageUrl, 150, 150, FPM_USE_CASE_ICON, object : LoaderStateListener {
+                override fun successLoad(resource: Drawable?, dataSource: DataSource?) {
                     holder.shimmeringIcon.hide()
                 }
 

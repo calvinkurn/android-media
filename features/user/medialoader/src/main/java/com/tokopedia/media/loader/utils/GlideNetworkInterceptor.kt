@@ -14,7 +14,7 @@ object GlideNetworkInterceptor {
             val header = response?.header(HEADER_ECT)
 
             // send to analytics
-            Timber.d("Connection-Type (ECT): $header")
+            Timber.d("ECT#$header")
 
             // showing into logcat tool
             if (BuildConfig.DEBUG) {

@@ -12,13 +12,13 @@ fun ImageView.loadImage(drawable: Drawable) = this.setImageDrawable(drawable)
 
 fun ImageView.loadImage(resource: Int) = this.setImageResource(resource)
 
-fun ImageView.loadImageRounded(resource: Int, rounded: Float) = this.setImageResource(resource)
-
 fun ImageView.loadImage(url: String) = call(url, Properties())
+
+inline fun ImageView.loadImage(url: String, properties: Properties.() -> Unit) = call(url, Properties().apply(properties))
 
 fun ImageView.loadImageCircle(url: String) = call(url, Properties())
 
-inline fun ImageView.loadImage(url: String, properties: Properties.() -> Unit) = call(url, Properties().apply(properties))
+fun ImageView.loadImageRounded(resource: Int, rounded: Float) = this.setImageResource(resource)
 
 inline fun ImageView.loadImageRounded(
         url: String?,
@@ -47,14 +47,20 @@ internal fun ImageView.builder(url: GlideUrl, properties: Properties) {
     val imageView = this
     with(properties) {
         GlideBuilder.loadImage(
-                imageView,
-                url,
-                roundedRadius,
-                signature,
-                cacheStrategy,
-                placeHolder,
-                error,
-                isAnimate
+                imageView = imageView,
+                url = url,
+                thumbnailUrl = thumbnailUrl,
+                radius = roundedRadius,
+                signatureKey = signature,
+                cacheStrategy = cacheStrategy,
+                placeHolder = placeHolder,
+                resOnError = error,
+                isAnimate = isAnimate,
+                isCircular = isCircular,
+                overrideSize = overrideSize,
+                decodeFormat = decodeFormat,
+                transform = transform,
+                listener = loaderListener
         )
     }
 }

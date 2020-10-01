@@ -15,6 +15,9 @@ import com.bumptech.glide.request.target.Target
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.home.R
+import com.tokopedia.media.loader.common.LoaderStateListener
+import com.tokopedia.media.loader.data.Resize
+import com.tokopedia.media.loader.loadImage
 
 const val FPM_ATTRIBUTE_IMAGE_URL = "image_url"
 const val FPM_PRODUCT_ORGANIC_CHANNEL = "home_product_organic"
@@ -28,25 +31,23 @@ const val FPM_RECOMMENDATION_LIST_CAROUSEL = "home_recommendation_list_carousel"
 const val TRUNCATED_URL_PREFIX = "https://ecs7.tokopedia.net/img/cache/"
 
 
-fun ImageView.loadImage(url: String, fpmItemLabel: String = "", listener: ImageHandler.ImageLoaderStateListener? = null){
+fun ImageView.loadImage(url: String, fpmItemLabel: String = "", listener: LoaderStateListener? = null){
     val performanceMonitoring = getPerformanceMonitoring(url, fpmItemLabel)
-    Glide.with(context)
-            .load(url)
-            .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-            .listener(object : RequestListener<Drawable> {
-                override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
-                    GlideErrorLogHelper().logError(context, e, url)
-                    listener?.failedLoad()
-                    return false
-                }
+    this.loadImage(url) {
+        cacheStrategy = DiskCacheStrategy.RESOURCE
+        loaderListener = object : LoaderStateListener {
+            override fun successLoad(resource: Drawable?, dataSource: DataSource?) {
+                handleOnResourceReady(dataSource, resource, performanceMonitoring)
+                listener?.successLoad(resource, dataSource)
+            }
 
-                override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
-                    handleOnResourceReady(dataSource, resource, performanceMonitoring)
-                    listener?.successLoad()
-                    return false
-                }
-            })
-            .into(this)
+            override fun failedLoad(error: GlideException?) {
+                GlideErrorLogHelper().logError(context, error, url)
+                listener?.failedLoad(error)
+            }
+
+        }
+    }
 }
 
 fun ImageView.loadImageFitCenter(url: String, fpmItemLabel: String = ""){
@@ -92,27 +93,23 @@ fun ImageView.loadImageRounded(url: String, roundedRadius: Int, fpmItemLabel: St
             .into(this)
 }
 
-fun ImageView.loadMiniImage(url: String, width: Int, height: Int, fpmItemLabel: String = "", listener: ImageHandler.ImageLoaderStateListener? = null){
+fun ImageView.loadMiniImage(url: String, width: Int, height: Int, fpmItemLabel: String = "", listener: LoaderStateListener? = null){
     val performanceMonitoring = getPerformanceMonitoring(url, fpmItemLabel)
-    Glide.with(context)
-            .load(url)
-            .fitCenter()
-            .placeholder(R.drawable.placeholder_grey)
-            .format(DecodeFormat.PREFER_ARGB_8888)
-            .override(width, height)
-            .listener(object : RequestListener<Drawable> {
-                override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
-                    listener?.failedLoad()
-                    return false
-                }
+    this.loadImage(url) {
+        placeHolder = R.drawable.placeholder_grey
+        decodeFormat = DecodeFormat.PREFER_ARGB_8888
+        overrideSize = Resize(width, height)
+        loaderListener = object : LoaderStateListener {
+            override fun failedLoad(error: GlideException?) {
+                listener?.failedLoad(error)
+            }
 
-                override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
-                    listener?.successLoad()
-                    handleOnResourceReady(dataSource, resource, performanceMonitoring)
-                    return false
-                }
-            })
-            .into(this)
+            override fun successLoad(resource: Drawable?, dataSource: DataSource?) {
+                listener?.successLoad(resource, dataSource)
+                handleOnResourceReady(dataSource, resource, performanceMonitoring)
+            }
+        }
+    }
 }
 
 fun ImageView.loadImageCenterCrop(url: String){

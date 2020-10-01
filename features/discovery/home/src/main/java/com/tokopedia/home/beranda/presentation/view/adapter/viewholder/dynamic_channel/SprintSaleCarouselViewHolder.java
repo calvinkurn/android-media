@@ -6,13 +6,6 @@ import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Build;
-import androidx.annotation.LayoutRes;
-import androidx.core.content.ContextCompat;
-import androidx.core.view.ViewCompat;
-import androidx.cardview.widget.CardView;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.text.TextUtils;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -25,10 +18,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.crashlytics.android.Crashlytics;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.config.GlobalConfig;
-import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.design.component.TextViewCompat;
 import com.tokopedia.design.countdown.CountDownView;
 import com.tokopedia.home.R;
@@ -39,13 +32,21 @@ import com.tokopedia.home.beranda.helper.DynamicLinkHelper;
 import com.tokopedia.home.beranda.helper.GravitySnapHelper;
 import com.tokopedia.home.beranda.listener.GridItemClickListener;
 import com.tokopedia.home.beranda.listener.HomeCategoryListener;
-import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.SpacingItemDecoration;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelDataModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.SpacingItemDecoration;
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils;
+import com.tokopedia.media.loader.Loader;
 import com.tokopedia.unifyprinciples.Typography;
 
 import java.util.Date;
 import java.util.Map;
+
+import androidx.annotation.LayoutRes;
+import androidx.cardview.widget.CardView;
+import androidx.core.content.ContextCompat;
+import androidx.core.view.ViewCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * Created by errysuprayogi on 3/22/18.
@@ -190,7 +191,10 @@ public class SprintSaleCarouselViewHolder extends AbstractViewHolder<DynamicChan
         public void onBindViewHolder(ItemViewHolder holder, final int position) {
             try {
                 final DynamicHomeChannel.Grid grid = list[position];
-                ImageHandler.loadImageThumbs(holder.getContext(), holder.imageView, grid.getImageUrl());
+                Loader.loadImage(holder.imageView, grid.getImageUrl(), properties -> {
+                    properties.setCacheStrategy(DiskCacheStrategy.RESOURCE);
+                    return null;
+                });
                 holder.price1.setText(grid.getSlashedPrice());
                 holder.price1.setPaintFlags(holder.price1.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
                 holder.price2.setText(grid.getPrice());

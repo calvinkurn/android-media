@@ -1,4 +1,4 @@
-package com.tokopedia.media.loader.data
+package com.tokopedia.media.loader.utils
 
 import android.content.Context
 import android.content.SharedPreferences
