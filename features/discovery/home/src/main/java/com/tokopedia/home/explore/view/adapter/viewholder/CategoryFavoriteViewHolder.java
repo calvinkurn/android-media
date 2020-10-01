@@ -12,13 +12,14 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.home.analytics.HomePageTracking;
 import com.tokopedia.home.R;
 import com.tokopedia.home.explore.domain.model.LayoutRows;
 import com.tokopedia.home.explore.listener.CategoryAdapterListener;
 import com.tokopedia.home.explore.view.adapter.viewmodel.CategoryFavoriteViewModel;
+import com.tokopedia.media.loader.Loader;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -104,7 +105,10 @@ public class CategoryFavoriteViewHolder extends AbstractViewHolder<CategoryFavor
         public void onBindViewHolder(ItemAdapter.ItemViewHolder holder, final int position) {
             final LayoutRows rowModel = data.get(position);
             holder.title.setText(rowModel.getName());
-            ImageHandler.loadImageThumbs(context, holder.icon, rowModel.getImageUrl());
+            Loader.loadImage(holder.icon, rowModel.getImageUrl(), properties -> {
+                properties.setCacheStrategy(DiskCacheStrategy.RESOURCE);
+                return null;
+            });
             holder.container.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

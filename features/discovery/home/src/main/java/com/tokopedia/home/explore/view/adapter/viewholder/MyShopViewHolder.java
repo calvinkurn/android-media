@@ -10,12 +10,12 @@ import androidx.annotation.LayoutRes;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.home.R;
 import com.tokopedia.home.explore.domain.model.ShopData;
 import com.tokopedia.home.explore.listener.CategoryAdapterListener;
 import com.tokopedia.home.explore.view.adapter.viewmodel.MyShopViewModel;
+import com.tokopedia.media.loader.Loader;
 
 import static com.tokopedia.gm.common.constant.GMCommonConstantKt.GM_TITLE;
 
@@ -80,7 +80,7 @@ public class MyShopViewHolder extends AbstractViewHolder<MyShopViewModel> {
     public void bind(MyShopViewModel element) {
         ShopData data = element.getShopData();
         titleTxt.setText(MethodChecker.fromHtml(data.getShopName()));
-        ImageHandler.LoadImage(imageView, data.getLogo());
+        Loader.loadImage(imageView, data.getLogo());
         if (data.getIsOfficial() == 1) {
             badgeTxt.setText(getString(R.string.official_store));
             badgeImage.setImageResource(R.drawable.ic_official);
