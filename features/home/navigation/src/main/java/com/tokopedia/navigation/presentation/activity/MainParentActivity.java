@@ -260,7 +260,7 @@ public class MainParentActivity extends BaseActivity implements
     @Override
     protected void onStart() {
         super.onStart();
-        if (presenter.get().isFirstTimeUser()) {
+        if (isFirstTimeUser()) {
             setDefaultShakeEnable();
             routeOnboarding();
         }
@@ -502,6 +502,7 @@ public class MainParentActivity extends BaseActivity implements
     }
 
     private void selectFragment(Fragment fragment) {
+        if (isFirstTimeUser()) return;
         configureStatusBarBasedOnFragment(fragment);
         openFragment(fragment);
         setBadgeNotifCounter(fragment);

@@ -59,6 +59,7 @@ fun createHomeViewModel(
         declineSalamWidgetUseCase: DeclineSalamWIdgetUseCase = mockk{ mockk(relaxed = true)},
         declineRechargeRecommendationUseCase: DeclineRechargeRecommendationUseCase = mockk(relaxed = true),
         topadsImageViewUseCase: TopAdsImageViewUseCase = mockk(relaxed = true),
+        getDisplayHeadlineAds: GetDisplayHeadlineAds = mockk(relaxed = true),
         dispatchers: TestDispatcherProvider = TestDispatcherProvider()
 ): HomeViewModel{
 
@@ -89,6 +90,7 @@ fun createHomeViewModel(
             getSalamWidgetUseCase = Lazy{getSalamWidgetUseCase},
             topAdsImageViewUseCase = Lazy{topadsImageViewUseCase},
             getPlayBannerUseCase = Lazy{getPlayBannerUseCase},
+            getDisplayHeadlineAds = Lazy{ getDisplayHeadlineAds },
             playToggleChannelReminderUseCase = Lazy{playToggleChannelReminderUseCase},
             getRechargeRecommendationUseCase = Lazy{getRechargeRecommendationUseCase},
             homeProcessor = Lazy{ HomeCommandProcessor(dispatchers.ui()) }
