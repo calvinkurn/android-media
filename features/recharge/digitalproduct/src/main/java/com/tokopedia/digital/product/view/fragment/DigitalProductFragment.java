@@ -81,7 +81,7 @@ import com.tokopedia.digital.product.view.model.ProductDigitalData;
 import com.tokopedia.digital.product.view.model.PulsaBalance;
 import com.tokopedia.digital.product.view.presenter.ProductDigitalPresenter;
 import com.tokopedia.digital.utils.DeviceUtil;
-import com.tokopedia.permissionchecker.PermissionCheckerHelper;
+import com.tokopedia.utils.permission.PermissionCheckerHelper;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.showcase.ShowCaseBuilder;
@@ -740,28 +740,28 @@ public class DigitalProductFragment extends BaseDaggerFragment
                     operator, phoneNumber)) {
                 presenter.storeUssdPhoneNumber(simPosition, "");
             }
-            String[] listOfPermission = {PermissionCheckerHelper.Companion.PERMISSION_CALL_PHONE,
-                    PermissionCheckerHelper.Companion.PERMISSION_READ_PHONE_STATE};
-            permissionCheckerHelper.checkPermissions(getActivity(), listOfPermission, new PermissionCheckerHelper.PermissionCheckListener() {
-                @Override
-                public void onPermissionDenied(@NotNull String permissionText) {
-                    permissionCheckerHelper.onPermissionDenied(getActivity(), permissionText);
-                    digitalAnalytics.eventUssdAttempt(categoryDataState.name,
-                            getString(R.string.ussd_permission_denied_label));
-                }
-
-                @Override
-                public void onNeverAskAgain(@NotNull String permissionText) {
-                    permissionCheckerHelper.onNeverAskAgain(getActivity(), permissionText);
-                    digitalAnalytics.eventUssdAttempt(categoryDataState.name,
-                            getString(R.string.ussd_permission_denied_label));
-                }
-
-                @Override
-                public void onPermissionGranted() {
-                    checkBalanceByUSSD(simPosition, ussdCode);
-                }
-            }, "");
+//            String[] listOfPermission = {PermissionCheckerHelper.Companion.PERMISSION_CALL_PHONE,
+//                    PermissionCheckerHelper.Companion.PERMISSION_READ_PHONE_STATE};
+//            permissionCheckerHelper.checkPermissions(getActivity(), listOfPermission, new PermissionCheckerHelper.PermissionCheckListener() {
+//                @Override
+//                public void onPermissionDenied(@NotNull String permissionText) {
+//                    permissionCheckerHelper.onPermissionDenied(getActivity(), permissionText);
+//                    digitalAnalytics.eventUssdAttempt(categoryDataState.name,
+//                            getString(R.string.ussd_permission_denied_label));
+//                }
+//
+//                @Override
+//                public void onNeverAskAgain(@NotNull String permissionText) {
+//                    permissionCheckerHelper.onNeverAskAgain(getActivity(), permissionText);
+//                    digitalAnalytics.eventUssdAttempt(categoryDataState.name,
+//                            getString(R.string.ussd_permission_denied_label));
+//                }
+//
+//                @Override
+//                public void onPermissionGranted() {
+//                    checkBalanceByUSSD(simPosition, ussdCode);
+//                }
+//            }, "");
         }
     }
 

@@ -1,6 +1,5 @@
 package com.tokopedia.cart.view.subscriber
 
-import com.tokopedia.cart.view.ICartListPresenter
 import com.tokopedia.cart.view.ICartListView
 import com.tokopedia.wishlist.common.response.GetWishlistResponse
 import rx.Subscriber
@@ -9,7 +8,7 @@ import rx.Subscriber
  * Created by Irfan Khoirul on 20/09/18.
  */
 
-class GetWishlistSubscriber(private val view: ICartListView?, private val presenter: ICartListPresenter) : Subscriber<GetWishlistResponse>() {
+class GetWishlistSubscriber(private val view: ICartListView?) : Subscriber<GetWishlistResponse>() {
 
     override fun onCompleted() {
 
@@ -24,7 +23,7 @@ class GetWishlistSubscriber(private val view: ICartListView?, private val presen
     override fun onNext(getWishlistResponse: GetWishlistResponse) {
         view?.let {
             if (getWishlistResponse.gqlWishList?.wishlistDataList?.isNotEmpty() == true) {
-                it.renderWishlist(getWishlistResponse.gqlWishList?.wishlistDataList)
+                it.renderWishlist(getWishlistResponse.gqlWishList?.wishlistDataList, true)
             }
             it.setHasTriedToLoadWishList()
             it.stopAllCartPerformanceTrace()

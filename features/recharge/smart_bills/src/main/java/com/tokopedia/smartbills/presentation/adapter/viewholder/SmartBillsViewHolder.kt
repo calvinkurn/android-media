@@ -30,7 +30,7 @@ class SmartBillsViewHolder(val view: View,
     override fun bind(element: RechargeBills) {
         super.bind(element)
         with(view) {
-            tv_smart_bills_item_title.text = element.productName
+            tv_smart_bills_item_title.text = String.format("%s - %s", element.categoryName, element.productName)
             val description = if (element.operatorName.isNotEmpty()) {
                 String.format(getString(R.string.smart_bills_item_description),
                         element.clientNumber, element.operatorName)

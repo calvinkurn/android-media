@@ -38,6 +38,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.applink.productmanage.DeepLinkMapperProductManage
 import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
 import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
+import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.text.SearchInputView
@@ -94,6 +95,7 @@ import com.tokopedia.product.manage.feature.list.view.model.GetFilterTabResult.S
 import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult.EditByMenu
 import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult.EditByStatus
 import com.tokopedia.product.manage.feature.list.view.model.ProductMenuViewModel.*
+import com.tokopedia.product.manage.feature.list.view.model.TopAdsPage.*
 import com.tokopedia.product.manage.feature.list.view.model.ViewState.*
 import com.tokopedia.product.manage.feature.list.view.ui.bottomsheet.ProductManageAddEditMenuBottomSheet
 import com.tokopedia.product.manage.feature.list.view.ui.bottomsheet.ProductManageBottomSheet
@@ -123,8 +125,6 @@ import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOpti
 import com.tokopedia.topads.common.data.model.DataDeposit
 import com.tokopedia.topads.common.data.model.FreeDeposit.Companion.DEPOSIT_ACTIVE
 import com.tokopedia.topads.freeclaim.data.constant.TOPADS_FREE_CLAIM_URL
-import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption
-import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceTaggingConstant
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -176,7 +176,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         override fun onSellerFeatureClicked(item: SellerFeatureUiModel) {
             when (item) {
                 is SellerFeatureUiModel.MultiEditFeatureWithDataUiModel -> goToSellerAppProductManageMultiEdit()
-                is SellerFeatureUiModel.TopAdsFeatureWithDataUiModel -> goToSellerAppTopAds(item.data as ProductViewModel)
+                is SellerFeatureUiModel.TopAdsFeatureWithDataUiModel -> goToSellerAppTopAds()
                 is SellerFeatureUiModel.SetCashbackFeatureWithDataUiModel -> goToSellerAppProductManageThenSetCashback(item.data as ProductViewModel)
                 is SellerFeatureUiModel.FeaturedProductFeatureWithDataUiModel -> goToSellerAppProductManageThenAddAsFeatured(item.data as ProductViewModel)
                 is SellerFeatureUiModel.StockReminderFeatureWithDataUiModel -> goToSellerAppSetStockReminder(item.data as ProductViewModel)
@@ -258,11 +258,13 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
 
         observeEditVariantPrice()
         observeEditVariantStock()
+        observeClickTopAdsMenu()
 
         getFiltersTab()
         getProductListFeaturedOnlySize()
         getTopAdsFreeClaim()
         getGoldMerchantStatus()
+        getTopAdsInfo()
 
         setupDialogFeaturedProduct()
 
@@ -393,18 +395,9 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         goToSellerMigrationPage(SellerMigrationFeatureName.FEATURE_MULTI_EDIT, arrayListOf(appLink))
     }
 
-    private fun goToSellerAppTopAds(product: ProductViewModel) {
+    private fun goToSellerAppTopAds() {
         val firstAppLink = ApplinkConst.PRODUCT_MANAGE
-        val secondAppLink = Uri.parse(ApplinkConst.SellerApp.TOPADS_PRODUCT_CREATE).buildUpon()
-                .appendQueryParameter(TopAdsSourceTaggingConstant.PARAM_EXTRA_SHOP_ID, userSession.shopId)
-                .appendQueryParameter(TopAdsSourceTaggingConstant.PARAM_EXTRA_ITEM_ID, product.id)
-                .appendQueryParameter(TopAdsSourceTaggingConstant.PARAM_KEY_SOURCE,
-                        if (GlobalConfig.isSellerApp())
-                            TopAdsSourceOption.SA_MANAGE_LIST_PRODUCT
-                        else
-                            TopAdsSourceOption.MA_MANAGE_LIST_PRODUCT)
-                .build()
-                .toString()
+        val secondAppLink = ApplinkConst.SellerApp.TOPADS_DASHBOARD
 
         goToSellerMigrationPage(SellerMigrationFeatureName.FEATURE_TOPADS, arrayListOf(firstAppLink, secondAppLink))
     }
@@ -528,7 +521,9 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     }
 
     private fun setupBottomSheet() {
-        productManageBottomSheet = ProductManageBottomSheet(view, this, sellerFeatureCarouselClickListener, fragmentManager)
+        productManageBottomSheet = ProductManageBottomSheet.createInstance().apply {
+            init(this@ProductManageFragment, sellerFeatureCarouselClickListener)
+        }
         multiEditBottomSheet = ProductMultiEditBottomSheet(view, this, fragmentManager)
         productManageMoreMenuBottomSheet = ProductManageMoreMenuBottomSheet(context, this, fragmentManager)
     }
@@ -1170,7 +1165,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
             NetworkErrorHelper.showSnackbar(activity, errorMessage)
         } else {
             val isPowerMerchantOrOfficialStore = viewModel.isPowerMerchant() || isOfficialStore
-            productManageBottomSheet?.show(product, isPowerMerchantOrOfficialStore)
+            productManageBottomSheet?.show(childFragmentManager, product, isPowerMerchantOrOfficialStore)
         }
     }
 
@@ -1203,8 +1198,12 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
                 ProductManageTracking.eventSettingsDelete(productId)
             }
             is SetTopAds -> {
-                onPromoTopAdsClicked(product)
+                onPromoTopAdsClicked(product.id)
                 ProductManageTracking.eventSettingsTopads(productId)
+            }
+            is SeeTopAds -> {
+                onSeeTopAdsClicked(product.id)
+                ProductManageTracking.eventSettingsTopadsDetail(productId)
             }
             is SetCashBack -> {
                 onSetCashbackClicked(product)
@@ -1310,19 +1309,12 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         startActivityForResult(intent, REQUEST_CODE_STOCK_REMINDER)
     }
 
-    private fun onPromoTopAdsClicked(productManageViewModel: ProductViewModel) {
-        context?.let {
-            val uri = Uri.parse(ApplinkConst.SellerApp.TOPADS_PRODUCT_CREATE).buildUpon()
-                .appendQueryParameter(TopAdsSourceTaggingConstant.PARAM_EXTRA_SHOP_ID, userSession.shopId)
-                .appendQueryParameter(TopAdsSourceTaggingConstant.PARAM_EXTRA_ITEM_ID, productManageViewModel.id)
-                .appendQueryParameter(TopAdsSourceTaggingConstant.PARAM_KEY_SOURCE,
-                    if (GlobalConfig.isSellerApp())
-                        TopAdsSourceOption.SA_MANAGE_LIST_PRODUCT
-                    else
-                        TopAdsSourceOption.MA_MANAGE_LIST_PRODUCT).build().toString()
+    private fun onPromoTopAdsClicked(productId: String) {
+        viewModel.onPromoTopAdsClicked(productId)
+    }
 
-            RouteManager.route(it, uri)
-        }
+    private fun onSeeTopAdsClicked(productId: String) {
+        goToPDP(productId = productId, showTopAdsSheet = true)
     }
 
     private fun onSetCashbackClicked(productManageViewModel: ProductViewModel) {
@@ -1398,9 +1390,19 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
      * This function is temporary for testing to avoid router and applink
      * For Dynamic Feature Support
      */
-    private fun goToPDP(productId: String?) {
+    private fun goToPDP(productId: String?, showTopAdsSheet: Boolean = false) {
         if (productId != null) {
-            RouteManager.route(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId)
+            val uri = Uri.parse(ApplinkConstInternalMarketplace.PRODUCT_DETAIL).buildUpon()
+
+            if(showTopAdsSheet) {
+                uri.appendQueryParameter(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME,
+                    SellerMigrationFeatureName.FEATURE_ADS)
+            }
+
+            val uriString = uri.build().toString()
+            val intent = RouteManager.getIntent(context, uriString, productId)
+
+            startActivity(intent)
         }
     }
 
@@ -1502,8 +1504,8 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
                 }
                 REQUEST_CODE_PICK_ETALASE -> if (resultCode == Activity.RESULT_OK) {
                     val productIds = itemsChecked.map{ product -> product.id }
-                    val etalaseId = it.getStringExtra(EXTRA_ETALASE_ID)
-                    val etalaseName = it.getStringExtra(EXTRA_ETALASE_NAME)
+                    val etalaseId = it.getStringExtra(EXTRA_ETALASE_ID).orEmpty()
+                    val etalaseName = it.getStringExtra(EXTRA_ETALASE_NAME).orEmpty()
 
                     viewModel.editProductsEtalase(productIds, etalaseId, etalaseName)
                 }
@@ -1532,10 +1534,10 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
                 REQUEST_CODE_CAMPAIGN_STOCK ->
                     when(resultCode) {
                         Activity.RESULT_OK -> {
-                            val productId = it.getStringExtra(EXTRA_PRODUCT_ID)
+                            val productId = it.getStringExtra(EXTRA_PRODUCT_ID).orEmpty()
                             val productName = it.getStringExtra(EXTRA_PRODUCT_NAME)
                             val stock = it.getIntExtra(EXTRA_UPDATED_STOCK, 0)
-                            val status = valueOf(it.getStringExtra(EXTRA_UPDATED_STATUS))
+                            val status = valueOf(it.getStringExtra(EXTRA_UPDATED_STATUS).orEmpty())
 
                             productManageListAdapter.updateStock(productId, stock, status)
 
@@ -1583,6 +1585,10 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
 
     private fun getGoldMerchantStatus() {
         viewModel.getGoldMerchantStatus()
+    }
+
+    private fun getTopAdsInfo() {
+        viewModel.getTopAdsInfo()
     }
 
     private fun getFiltersTab(withDelay: Boolean = false) {
@@ -1884,7 +1890,24 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         }
     }
 
+    private fun observeClickTopAdsMenu() {
+        observe(viewModel.onClickPromoTopAds) {
+            when(it) {
+                is OnBoarding -> goToTopAdsOnBoarding()
+                is ManualAds -> goToCreateTopAds()
+                is AutoAds -> goToPDP(it.productId, showTopAdsSheet = true)
+            }
+        }
+    }
     // endregion
+
+    private fun goToTopAdsOnBoarding() {
+        RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_CREATION_ONBOARD)
+    }
+
+    private fun goToCreateTopAds() {
+        RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_CREATE_ADS)
+    }
 
     private fun updateVariantStock(data: EditVariantResult) {
         val stock = data.countVariantStock()

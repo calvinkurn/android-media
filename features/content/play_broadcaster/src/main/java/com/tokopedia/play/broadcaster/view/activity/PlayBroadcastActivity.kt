@@ -16,12 +16,15 @@ import com.alivc.live.pusher.SurfaceStatus
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
+import com.tokopedia.analytics.performance.util.PltPerformanceData
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.broadcaster.R
-import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
+import com.tokopedia.play.broadcaster.analytic.*
 import com.tokopedia.play.broadcaster.di.broadcast.DaggerPlayBroadcastComponent
 import com.tokopedia.play.broadcaster.di.broadcast.PlayBroadcastComponent
 import com.tokopedia.play.broadcaster.di.broadcast.PlayBroadcastModule
@@ -29,6 +32,7 @@ import com.tokopedia.play.broadcaster.di.provider.PlayBroadcastComponentProvider
 import com.tokopedia.play.broadcaster.ui.model.ChannelType
 import com.tokopedia.play.broadcaster.ui.model.ConfigurationUiModel
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
+import com.tokopedia.play.broadcaster.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.broadcaster.util.deviceinfo.DeviceInfoUtil
 import com.tokopedia.play.broadcaster.util.extension.channelNotFound
 import com.tokopedia.play.broadcaster.util.extension.getDialog
@@ -44,12 +48,19 @@ import com.tokopedia.play.broadcaster.view.fragment.PlayPermissionFragment
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.partial.ActionBarPartialView
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
+import com.tokopedia.play_common.util.extension.awaitResume
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.play_common.view.updatePadding
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.Toaster
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancelChildren
+import kotlinx.coroutines.launch
+import org.jetbrains.annotations.TestOnly
 import javax.inject.Inject
+import kotlin.coroutines.CoroutineContext
 
 /**
  * Created by mzennis on 19/05/20.
@@ -64,6 +75,15 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
 
     @Inject
     lateinit var analytic: PlayBroadcastAnalytic
+
+    @Inject
+    lateinit var dispatcher: CoroutineDispatcherProvider
+
+    private val job = SupervisorJob()
+    private val scope = object: CoroutineScope {
+        override val coroutineContext: CoroutineContext
+            get() = job + dispatcher.mainImmediate
+    }
 
     private lateinit var viewModel: PlayBroadcastViewModel
 
@@ -93,11 +113,13 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
             Manifest.permission.RECORD_AUDIO)
     private val permissionHelper by lazy { PermissionHelperImpl(this) }
 
+    private lateinit var pageMonitoring: PageLoadTimePerformanceInterface
+
     override fun onCreate(savedInstanceState: Bundle?) {
         inject()
         initViewModel()
         setFragmentFactory()
-
+        startPageMonitoring()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_play_broadcast)
         isRecreated = (savedInstanceState != null)
@@ -148,12 +170,15 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
     override fun onDestroy() {
         viewModel.destroyPushStream()
         super.onDestroy()
+        job.cancelChildren()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putString(CHANNEL_ID, viewModel.channelId)
-        outState.putString(CHANNEL_TYPE, channelType.value)
+        try {
+            outState.putString(CHANNEL_ID, viewModel.channelId)
+            outState.putString(CHANNEL_TYPE, channelType.value)
+        } catch (e: Throwable) {}
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
@@ -279,13 +304,14 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
     }
 
     private fun getConfiguration() {
+        startNetworkMonitoring()
         viewModel.getConfiguration()
     }
 
     private fun populateSavedState(savedInstanceState: Bundle) {
         val channelId = savedInstanceState.getString(CHANNEL_ID)
         val channelType = savedInstanceState.getString(CHANNEL_TYPE)
-        channelId?.let {viewModel.setChannelId(it)}
+        channelId?.let { viewModel.setChannelId(it) }
         channelType?.let {
             this.channelType = ChannelType.getByValue(it)
         }
@@ -317,13 +343,16 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
      */
     private fun observeConfiguration() {
         viewModel.observableConfigInfo.observe(this, Observer { result ->
+            startRenderMonitoring()
             when(result) {
                 is NetworkResult.Loading -> loaderView.show()
                 is NetworkResult.Success -> {
                     loaderView.hide()
                     if (!isRecreated) handleChannelConfiguration(result.data)
+                    stopPageMonitoring()
                 }
                 is NetworkResult.Fail -> {
+                    invalidatePerformanceData()
                     loaderView.hide()
                     showToaster(
                             message = result.error.localizedMessage,
@@ -353,6 +382,7 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
     }
 
     private fun configureChannelType(channelType: ChannelType) {
+        if (isRecreated) return
         showActionBar(true)
         if (channelType == ChannelType.Pause) {
             showDialogContinueLiveStreaming()
@@ -371,8 +401,8 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
                     override fun onRequestPermissionResult(): PermissionStatusHandler {
                         return {
                             if (isGranted(Manifest.permission.CAMERA)) startPreview()
-                            if (isAllGranted()) configureChannelType(channelType)
-                            else showPermissionPage()
+                            if (isAllGranted()) doWhenResume { configureChannelType(channelType) }
+                            else doWhenResume { showPermissionPage() }
                         }
                     }
 
@@ -488,6 +518,63 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
                 is PlayBroadcastUserInteractionFragment -> analytic.clickSwitchCameraOnLivePage(viewModel.channelId, viewModel.title)
             }
         }
+    }
+
+    private fun doWhenResume(block: () -> Unit) {
+        scope.launch {
+            awaitResume()
+            block()
+        }
+    }
+
+    private fun startPageMonitoring() {
+        pageMonitoring = PageLoadTimePerformanceCallback(
+                PLAY_BROADCASTER_TRACE_PREPARE_PAGE,
+                PLAY_BROADCASTER_TRACE_REQUEST_NETWORK,
+                PLAY_BROADCASTER_TRACE_RENDER_PAGE
+        )
+        pageMonitoring.startMonitoring(PLAY_BROADCASTER_TRACE_PAGE)
+        starPrepareMonitoring()
+    }
+
+    private fun starPrepareMonitoring() {
+        pageMonitoring.startPreparePagePerformanceMonitoring()
+    }
+
+    private fun stopPrepareMonitoring() {
+        pageMonitoring.stopPreparePagePerformanceMonitoring()
+    }
+
+    private fun startNetworkMonitoring() {
+        stopPrepareMonitoring()
+        pageMonitoring.startNetworkRequestPerformanceMonitoring()
+    }
+
+    private fun stopNetworkMonitoring() {
+        pageMonitoring.stopNetworkRequestPerformanceMonitoring()
+    }
+
+    private fun startRenderMonitoring() {
+        stopNetworkMonitoring()
+        pageMonitoring.startRenderPerformanceMonitoring()
+    }
+
+    private fun stopRenderMonitoring() {
+        pageMonitoring.stopRenderPerformanceMonitoring()
+    }
+
+    private fun stopPageMonitoring() {
+        stopRenderMonitoring()
+        pageMonitoring.stopMonitoring()
+    }
+
+    private fun invalidatePerformanceData() {
+        pageMonitoring.invalidate()
+    }
+
+    @TestOnly
+    fun getPltPerformanceResultData(): PltPerformanceData? {
+        return pageMonitoring.getPltPerformanceData()
     }
 
     companion object {

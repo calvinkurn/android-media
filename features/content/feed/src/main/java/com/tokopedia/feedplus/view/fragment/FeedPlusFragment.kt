@@ -2013,5 +2013,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 listOf(TrackingRecommendationModel(authorId = bannerId.toIntOrZero() )),
                 userIdInt
         )
+        feedViewModel.doTopAdsTracker(imageUrl, "", "", "", false)
     }
 }

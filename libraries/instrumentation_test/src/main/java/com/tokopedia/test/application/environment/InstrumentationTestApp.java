@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Base64;
-
 import com.google.android.gms.ads.identifier.AdvertisingIdClient;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
@@ -51,7 +50,6 @@ import com.tokopedia.test.application.util.DeviceInfo;
 import com.tokopedia.test.application.util.DeviceScreenInfo;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.interfaces.ContextAnalytics;
-
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -83,6 +81,8 @@ public class InstrumentationTestApp extends BaseMainApplication
 
     @Override
     public void onCreate() {
+        GlobalConfig.DEBUG = true;
+        GlobalConfig.VERSION_NAME = "3.66";
         SplitCompat.install(this);
         FirebaseApp.initializeApp(this);
         FpmLogger.init(this);
@@ -278,23 +278,6 @@ public class InstrumentationTestApp extends BaseMainApplication
     }
 
     @Override
-    public SessionHandler legacySessionHandler() {
-        return new SessionHandler(this) {
-
-            @Override
-            public String getLoginID() {
-                return "null";
-            }
-
-            @Override
-            public String getRefreshToken() {
-                return "null";
-            }
-
-        };
-    }
-
-    @Override
     public GCMHandler legacyGCMHandler() {
         return new GCMHandler(this);
     }
@@ -325,7 +308,7 @@ public class InstrumentationTestApp extends BaseMainApplication
     }
 
     @Override
-    public void sendForceLogoutAnalytics(Response response, boolean isInvalidToken, boolean isRequestDenied) {
+    public void sendForceLogoutAnalytics(String url, boolean isInvalidToken, boolean isRequestDenied) {
 
     }
 

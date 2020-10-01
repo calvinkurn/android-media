@@ -2,17 +2,20 @@ package com.tokopedia.notifications.inApp;
 
 import android.app.Activity;
 import android.app.Application;
+import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
+
+import androidx.annotation.NonNull;
 
 import com.google.firebase.messaging.RemoteMessage;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.notifications.CMRouter;
 import com.tokopedia.notifications.R;
+import com.tokopedia.notifications.common.CMConstant;
 import com.tokopedia.notifications.common.IrisAnalyticsEvents;
 import com.tokopedia.notifications.inApp.ruleEngine.RulesManager;
 import com.tokopedia.notifications.inApp.ruleEngine.interfaces.DataProvider;
-import com.tokopedia.notifications.inApp.ruleEngine.repository.RepositoryManager;
 import com.tokopedia.notifications.inApp.ruleEngine.rulesinterpreter.RuleInterpreterImpl;
 import com.tokopedia.notifications.inApp.ruleEngine.storage.DataConsumerImpl;
 import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.CMInApp;
@@ -26,8 +29,9 @@ import com.tokopedia.notifications.inApp.viewEngine.ViewEngine;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
+import java.util.Map;
 
-import androidx.annotation.NonNull;
+import timber.log.Timber;
 
 import static com.tokopedia.notifications.inApp.ruleEngine.RulesUtil.Constants.RemoteConfig.KEY_CM_INAPP_END_TIME_INTERVAL;
 import static com.tokopedia.notifications.inApp.viewEngine.CmInAppBundleConvertor.HOURS_24_IN_MILLIS;
@@ -47,9 +51,9 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
     private List<String> excludeScreenList;
 
     /*
-    * This flag is used for validation of the dialog to be displayed.
-    * This is useful for avoiding InApp dialog appearing more than once.
-    * */
+     * This flag is used for validation of the dialog to be displayed.
+     * This is useful for avoiding InApp dialog appearing more than once.
+     * */
     private Boolean isDialogShowing = false;
 
     static {
@@ -104,12 +108,23 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
                 sendEventInAppPrepared(cmInApp);
                 showDialog(cmInApp);
                 dataConsumed(cmInApp);
+                sendAmplificationEventInAppRead(cmInApp);
             }
         }
     }
 
     private void sendEventInAppPrepared(CMInApp cmInApp) {
         sendPushEvent(cmInApp, IrisAnalyticsEvents.INAPP_PREREAD, null);
+    }
+
+    private void sendAmplificationEventInAppRead(CMInApp cmInApp) {
+        if (cmInApp.isAmplification()) {
+            IrisAnalyticsEvents.INSTANCE.sendAmplificationInAppEvent(
+                    application.getApplicationContext(),
+                    IrisAnalyticsEvents.INAPP_READ,
+                    cmInApp
+            );
+        }
     }
 
     @Override
@@ -119,6 +134,7 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
 
     /**
      * legacy dialog
+     *
      * @param cmInApp
      */
     private void showLegacyDialog(CMInApp cmInApp) {
@@ -144,6 +160,7 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
 
     /**
      * dialog for interstitial and interstitialImg
+     *
      * @param data
      */
     private void interstitialDialog(CMInApp data) {
@@ -156,6 +173,9 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
             // set flag if has dialog showing
             isDialogShowing = true;
         } catch (Exception e) {
+            Timber.w(CMConstant.TimberTags.TAG + "exception;err='" + Log.getStackTraceString
+                    (e).substring(0, (Math.min(Log.getStackTraceString(e).length(), CMConstant.TimberTags.MAX_LIMIT)))
+                    + "';data='" + data.toString().substring(0, (Math.min(data.toString().length(), CMConstant.TimberTags.MAX_LIMIT))) + "'");
             onCMInAppInflateException(data);
         }
     }
@@ -224,9 +244,19 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
                 if (application != null) {
                     sendEventInAppDelivered(cmInApp);
                     new CMInAppController().downloadImagesAndUpdateDB(application, cmInApp);
+                } else {
+                    Timber.w("%svalidation;reason='application_null';data=''", CMConstant.TimberTags.TAG);
                 }
             }
         } catch (Exception e) {
+            Map<String, String> data = remoteMessage.getData();
+            if (data != null)
+                Timber.w(CMConstant.TimberTags.TAG + "exception;err='" + Log.getStackTraceString
+                        (e).substring(0, (Math.min(Log.getStackTraceString(e).length(), CMConstant.TimberTags.MAX_LIMIT))) + "';data='" + data.toString()
+                        .substring(0, (Math.min(data.toString().length(), CMConstant.TimberTags.MAX_LIMIT))) + "'");
+            else
+                Timber.w(CMConstant.TimberTags.TAG + "exception;err='" + Log.getStackTraceString
+                        (e).substring(0, (Math.min(Log.getStackTraceString(e).length(), CMConstant.TimberTags.MAX_LIMIT))) + "';data=''");
         }
     }
 
@@ -246,6 +276,8 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
         if (getCurrentActivity() != null) {
             Activity activity = currentActivity.get();
             activity.startActivity(RouteManager.getIntent(activity, appLink));
+        } else {
+            Timber.w("%svalidation;reason='application_null_no_activity';data=''", CMConstant.TimberTags.TAG);
         }
 
         switch (elementType.getViewType()) {
@@ -262,9 +294,9 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
         if (cmInApp == null) return;
 
         if (elementId != null) {
-            IrisAnalyticsEvents.INSTANCE.sendPushEvent(application.getApplicationContext(), eventName, cmInApp, elementId);
+            IrisAnalyticsEvents.INSTANCE.sendInAppEvent(application.getApplicationContext(), eventName, cmInApp, elementId);
         } else {
-            IrisAnalyticsEvents.INSTANCE.sendPushEvent(application.getApplicationContext(), eventName, cmInApp);
+            IrisAnalyticsEvents.INSTANCE.sendInAppEvent(application.getApplicationContext(), eventName, cmInApp);
         }
     }
 

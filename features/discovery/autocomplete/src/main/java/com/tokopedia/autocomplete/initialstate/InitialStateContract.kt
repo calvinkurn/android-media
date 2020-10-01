@@ -3,20 +3,19 @@ package com.tokopedia.autocomplete.initialstate
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
+import com.tokopedia.autocomplete.initialstate.recentsearch.RecentSearchViewModel
 
 interface InitialStateContract {
     interface View : CustomerView {
         fun showInitialStateResult(initialStateVisitableList: List<Visitable<*>>)
-
-        fun refreshPopularSearch(list: List<Visitable<*>>)
-
-        fun deleteRecentSearch(list: List<Visitable<*>>)
 
         fun onRecentViewImpressed(list: List<Any>)
 
         fun onRecentSearchImpressed(list: List<Any>)
 
         fun onPopularSearchImpressed(list: List<Any>)
+
+        fun onSeeMoreRecentSearchImpressed(userId: String)
 
         fun route(applink: String, searchParameter: Map<String, String>)
 
@@ -25,6 +24,12 @@ interface InitialStateContract {
         fun trackEventClickRecentSearch(label: String, adapterPosition: Int)
 
         fun trackEventClickRecentShop(label: String, userId: String)
+
+        fun trackEventClickSeeMoreRecentSearch(userId: String)
+
+        fun renderCompleteRecentSearch(recentSearchViewModel: RecentSearchViewModel)
+
+        fun dropKeyBoard()
     }
 
     interface Presenter : CustomerPresenter<View> {
@@ -34,10 +39,14 @@ interface InitialStateContract {
 
         fun deleteAllRecentSearch()
 
-        fun refreshPopularSearch()
+        fun refreshPopularSearch(featureId: String)
+
+        fun refreshDynamicSection(featureId: String)
 
         fun getQueryKey(): String
 
         fun onRecentSearchItemClicked(item: BaseItemInitialStateSearch, adapterPosition: Int)
+
+        fun recentSearchSeeMoreClicked()
     }
 }

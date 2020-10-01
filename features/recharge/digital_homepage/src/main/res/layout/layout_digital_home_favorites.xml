@@ -6,18 +6,19 @@
     android:orientation="vertical">
 
     <LinearLayout
-        android:id="@+id/digital_homepage_favorites_container"
+        android:id="@+id/view_digital_homepage_favorites_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/spacing_lvl4"
         android:orientation="vertical"
         android:paddingLeft="@dimen/dp_16"
         android:paddingRight="@dimen/dp_16">
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/digital_homepage_favorites_title"
+            android:id="@+id/tv_digital_homepage_favorites_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/spacing_lvl4"
             app:typographyType="heading_5" />
 
         <androidx.recyclerview.widget.RecyclerView
@@ -29,11 +30,10 @@
     </LinearLayout>
 
     <include
-        android:id="@+id/digital_homepage_favorites_shimmering"
+        android:id="@+id/view_digital_homepage_favorites_shimmering"
         layout="@layout/content_digital_hone_shimmering_favorites"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/dp_16"
         android:visibility="gone" />
 
 </LinearLayout>
