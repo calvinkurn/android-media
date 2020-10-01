@@ -104,11 +104,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         initInjector()
-        if(startOldSellerHomeIfEnabled()) {
-            super.onCreate(savedInstanceState)
-            return
-        }
-        initPerformanceMonitoring()
+        initSellerHomePlt()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sah_seller_home)
 
@@ -209,24 +205,17 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
         super.onSaveInstanceState(outState)
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        navigator?.cleanupNavigator()
+    }
+
     fun attachCallback(callback: StatusBarCallback) {
         statusBarCallback = callback
     }
 
     fun stopPerformanceMonitoringSellerHomeLayout() {
         performanceMonitoringSellerHomelayout?.stopTrace()
-    }
-
-    private fun startOldSellerHomeIfEnabled(): Boolean {
-        if(remoteConfig.isNewSellerHomeDisabled()) {
-            val oldSellerHome = com.tokopedia.sellerhome.view.oldactivity.SellerHomeActivity.createIntent(this)
-            oldSellerHome.data = intent.data
-            startActivity(oldSellerHome)
-            finish()
-
-            return true
-        }
-        return false
     }
 
     private fun setupBackground() {
@@ -460,7 +449,19 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
         sahToolbar?.hide()
     }
 
-    private fun initPerformanceMonitoring(){
+    private fun initSellerHomePlt() {
+        if (intent.data == null) {
+            initPerformanceMonitoringSellerHome()
+        } else {
+            DeepLinkHandler.handleAppLink(intent) {
+                if (it.type == FragmentType.HOME) {
+                    initPerformanceMonitoringSellerHome()
+                }
+            }
+        }
+    }
+
+    private fun initPerformanceMonitoringSellerHome() {
         performanceMonitoringSellerHomelayout = PerformanceMonitoring.start(SELLER_HOME_LAYOUT_TRACE)
         performanceMonitoringSellerHomeLayoutPlt = HomeLayoutLoadTimeMonitoring()
         performanceMonitoringSellerHomeLayoutPlt?.initPerformanceMonitoring()

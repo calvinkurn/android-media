@@ -16,5 +16,6 @@ enum class PlaySocketEnum(var value: String) {
     LiveDuration("LIVE_DURATION"),
     ProductTag("PRODUCT_TAG"),
     Banned("MODERATE"),
-    Chat("MESG")
+    Chat("MESG"),
+    Freeze("FREEZE")
 }

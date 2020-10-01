@@ -1,8 +1,11 @@
 package com.tokopedia.play.analytic.robot
 
+import android.content.Intent
+import android.net.Uri
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
+import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.play.view.activity.PlayActivity
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
@@ -39,7 +42,9 @@ internal class PlayPrepareTrackingTest {
     }
 
     fun launch(channelId: String) {
-        intentsTestRule.launchActivity(PlayActivity.createIntent(targetContext, channelId))
+        intentsTestRule.launchActivity(Intent(targetContext, PlayActivity::class.java).apply {
+            data = Uri.parse("${ApplinkConstInternalContent.INTERNAL_PLAY}/$channelId")
+        })
     }
 
     /**

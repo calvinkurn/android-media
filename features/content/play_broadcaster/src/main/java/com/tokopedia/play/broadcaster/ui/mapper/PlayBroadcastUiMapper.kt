@@ -235,6 +235,10 @@ object PlayBroadcastUiMapper {
             isSelfMessage = false
     )
 
+    fun mapFreezeEvent(event: Freeze): EventUiModel =  EventUiModel(
+            freeze = event.isFreeze
+    )
+
     fun mapBannedEvent(banned: Banned): BannedUiModel = BannedUiModel(
             title = banned.title,
             message = banned.reason,

@@ -63,13 +63,11 @@ import com.tokopedia.loginregister.registerinitial.viewmodel.RegisterInitialView
 import com.tokopedia.loginregister.ticker.domain.pojo.TickerInfoPojo
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.otp.verification.domain.data.OtpConstant
-import com.tokopedia.permissionchecker.PermissionCheckerHelper
+import com.tokopedia.utils.permission.PermissionCheckerHelper
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.sessioncommon.data.LoginTokenPojo
 import com.tokopedia.sessioncommon.data.Token.Companion.GOOGLE_API_KEY
 import com.tokopedia.sessioncommon.data.loginphone.ChooseTokoCashAccountViewModel
-import com.tokopedia.sessioncommon.data.profile.ProfileInfo
 import com.tokopedia.sessioncommon.di.SessionModule.SESSION_MODULE
 import com.tokopedia.sessioncommon.view.forbidden.activity.ForbiddenActivity
 import com.tokopedia.track.TrackApp
@@ -371,37 +369,37 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
     }
 
     private fun initObserver() {
-        registerInitialViewModel.getProviderResponse.observe(this, Observer {
+        registerInitialViewModel.getProviderResponse.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> onSuccessGetProvider(it.data)
                 is Fail -> onFailedGetProvider(it.throwable)
             }
         })
-        registerInitialViewModel.getFacebookCredentialResponse.observe(this, Observer {
+        registerInitialViewModel.getFacebookCredentialResponse.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> onSuccessGetFacebookCredential(it.data)
                 is Fail -> onFailedGetFacebookCredential(it.throwable)
             }
         })
-        registerInitialViewModel.loginTokenFacebookResponse.observe(this, Observer {
+        registerInitialViewModel.loginTokenFacebookResponse.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> onSuccessRegisterFacebook(it.data)
                 is Fail -> onFailedRegisterFacebook(it.throwable)
             }
         })
-        registerInitialViewModel.loginTokenFacebookPhoneResponse.observe(this, Observer {
+        registerInitialViewModel.loginTokenFacebookPhoneResponse.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> onSuccessRegisterFacebookPhone(it.data)
                 is Fail -> onFailedRegisterFacebookPhone(it.throwable)
             }
         })
-        registerInitialViewModel.loginTokenGoogleResponse.observe(this, Observer {
+        registerInitialViewModel.loginTokenGoogleResponse.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> onSuccessRegisterGoogle()
                 is Fail -> onFailedRegisterGoogle(it.throwable)
             }
         })
-        registerInitialViewModel.loginTokenAfterSQResponse.observe(this, Observer {
+        registerInitialViewModel.loginTokenAfterSQResponse.observe(viewLifecycleOwner, Observer {
             if (it is Success) {
                 onSuccessReloginAfterSQ()
             }
@@ -412,47 +410,53 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
                         validateToken?.let { onFailedReloginAfterSQ(it, loginToken.throwable) }
                     }
                 }
-        registerInitialViewModel.getUserInfoResponse.observe(this, Observer {
+        registerInitialViewModel.getUserInfoResponse.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> onSuccessGetUserInfo(it.data)
                 is Fail -> onFailedGetUserInfo(it.throwable)
             }
         })
-        registerInitialViewModel.getTickerInfoResponse.observe(this, Observer {
+        registerInitialViewModel.getUserInfoAfterAddPinResponse.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> onSuccessGetUserInfoAfterAddPin()
+                is Fail -> onFailedGetUserInfoAfterAddPin(it.throwable)
+            }
+        })
+        registerInitialViewModel.getTickerInfoResponse.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> onSuccessGetTickerInfo(it.data)
                 is Fail -> onErrorGetTickerInfo(it.throwable)
             }
         })
-        registerInitialViewModel.registerCheckResponse.observe(this, Observer {
+        registerInitialViewModel.registerCheckResponse.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> onSuccessRegisterCheck(it.data)
                 is Fail -> onFailedRegisterCheck(it.throwable)
             }
         })
-        registerInitialViewModel.activateUserResponse.observe(this, Observer {
+        registerInitialViewModel.activateUserResponse.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> onSuccessActivateUser(it.data)
                 is Fail -> onFailedActivateUser(it.throwable)
             }
         })
-        registerInitialViewModel.goToActivationPage.observe(this, Observer {
+        registerInitialViewModel.goToActivationPage.observe(viewLifecycleOwner, Observer {
             if (it != null) onGoToActivationPage(it)
         })
-        registerInitialViewModel.goToSecurityQuestion.observe(this, Observer {
+        registerInitialViewModel.goToSecurityQuestion.observe(viewLifecycleOwner, Observer {
             if (it != null) {
                 val intent =  goToVerification(email = it, otpType = OTP_SECURITY_QUESTION)
                 startActivityForResult(intent, REQUEST_SECURITY_QUESTION)
             }
         })
-        registerInitialViewModel.goToActivationPageAfterRelogin.observe(this, Observer {
+        registerInitialViewModel.goToActivationPageAfterRelogin.observe(viewLifecycleOwner, Observer {
             if (it != null) onGoToActivationPageAfterRelogin()
         })
-        registerInitialViewModel.goToSecurityQuestionAfterRelogin.observe(this, Observer {
+        registerInitialViewModel.goToSecurityQuestionAfterRelogin.observe(viewLifecycleOwner, Observer {
             if (it != null) onGoToSecurityQuestionAfterRelogin()
         })
 
-        registerInitialViewModel.dynamicBannerResponse.observe(this, Observer {
+        registerInitialViewModel.dynamicBannerResponse.observe(viewLifecycleOwner, Observer {
             when(it) {
                 is Success -> setDynamicBannerView(it.data)
                 is Fail -> {
@@ -562,22 +566,25 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
     }
 
     private fun onSuccessGetUserInfo(profileInfoData: ProfileInfoData) {
-        if(profileInfoData.isCreatePin) {
-            activityShouldEnd = false
-            val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PIN)
-            intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_SKIP_OTP, true)
-            startActivityForResult(intent, REQUEST_ADD_PIN)
+        val CHARACTER_NOT_ALLOWED = "CHARACTER_NOT_ALLOWED"
+        if (profileInfoData.profileInfo.fullName.contains(CHARACTER_NOT_ALLOWED)) {
+            onGoToChangeName()
         } else {
-            val CHARACTER_NOT_ALLOWED = "CHARACTER_NOT_ALLOWED"
-            if (profileInfoData.profileInfo.fullName.contains(CHARACTER_NOT_ALLOWED)) {
-                onGoToChangeName()
-            } else {
-                onSuccessRegister()
-            }
+            sendTrackingSuccessRegister()
+            onSuccessRegister()
         }
     }
 
     private fun onFailedGetUserInfo(throwable: Throwable) {
+        val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
+        onErrorRegister(errorMessage)
+    }
+
+    private fun onSuccessGetUserInfoAfterAddPin() {
+        onSuccessRegister()
+    }
+
+    private fun onFailedGetUserInfoAfterAddPin(throwable: Throwable) {
         val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
         onErrorRegister(errorMessage)
     }
@@ -778,9 +785,9 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
                 dismissProgressBar()
                 it.setResult(Activity.RESULT_CANCELED)
             } else if (requestCode == REQUEST_ADD_NAME_REGISTER_PHONE && resultCode == Activity.RESULT_OK) {
-                registerInitialViewModel.getUserInfo(isCreatePin = true)
+                processAfterAddNameRegisterPhone(data?.extras)
             } else if (requestCode == REQUEST_ADD_PIN) {
-                registerInitialViewModel.getUserInfo()
+                registerInitialViewModel.getUserInfoAfterAddPin()
             }
             else if (requestCode == REQUEST_VERIFY_PHONE_TOKOCASH
                     && resultCode == Activity.RESULT_OK
@@ -863,6 +870,27 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         }
     }
 
+    private fun processAfterAddNameRegisterPhone(data: Bundle?){
+        val enable2FA = data?.getBoolean(ApplinkConstInternalGlobal.PARAM_ENABLE_2FA) ?: false
+        val enableSkip2FA = data?.getBoolean(ApplinkConstInternalGlobal.PARAM_ENABLE_SKIP_2FA) ?: false
+        if(enable2FA){
+            activityShouldEnd = false
+            sendTrackingSuccessRegister()
+            goToAddPin2FA(enableSkip2FA)
+        } else {
+            registerInitialViewModel.getUserInfo()
+        }
+    }
+
+    private fun goToAddPin2FA(enableSkip2FA: Boolean){
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PIN)
+        intent.putExtras(Bundle().apply {
+            putBoolean(ApplinkConstInternalGlobal.PARAM_ENABLE_SKIP_2FA, enableSkip2FA)
+            putBoolean(ApplinkConstInternalGlobal.PARAM_IS_FROM_2FA, true)
+            putBoolean(ApplinkConstInternalGlobal.PARAM_IS_SKIP_OTP, true)
+        })
+        startActivityForResult(intent, REQUEST_ADD_PIN)
+    }
 
     private fun goToAddName(uuid: String) {
         if (activity != null) {
@@ -1062,20 +1090,22 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         this.phoneNumber = partialRegisterInputView.textValue
     }
 
+    private fun sendTrackingSuccessRegister() {
+        registerAnalytics.trackSuccessRegister(
+                userSession.loginMethod,
+                userSession.userId.toIntOrZero(),
+                userSession.name,
+                userSession.email,
+                userSession.phoneNumber,
+                userSession.isGoldMerchant,
+                userSession.shopId,
+                userSession.shopName
+        )
+    }
+
     private fun onSuccessRegister() {
         activityShouldEnd = true
         activity?.let {
-            registerAnalytics.trackSuccessRegister(
-                    userSession.loginMethod,
-                    userSession.userId.toIntOrZero(),
-                    userSession.name,
-                    userSession.email,
-                    userSession.phoneNumber,
-                    userSession.isGoldMerchant,
-                    userSession.shopId,
-                    userSession.shopName
-            )
-
             if (isFromAccount()) {
                 val intent = RouteManager.getIntent(context, ApplinkConst.DISCOVERY_NEW_USER)
                 startActivity(intent)

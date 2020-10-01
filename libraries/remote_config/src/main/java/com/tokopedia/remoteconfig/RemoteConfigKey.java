@@ -201,6 +201,8 @@ public class RemoteConfigKey {
     public static final String ENABLE_ASYNC_CHECKAPPSIGNATURE = "android_async_checkappsignature";
     public static final String ENABLE_ASYNC_HANSEL_INIT = "android_async_hansel_init";
 
+    public static final String ENABLE_POST_SEQ_ASYNC_SELLERAPP = "android_post_seq_async_sellerapp";
+
     public static final String EXECUTE_GQL_CONNECTION_WARM_UP = "android_gql_connection_warm_up";
 
     public static final String WHITELIST_USER_LOG_NOTIFICATION = "key_whitelist_user_log_notification";
@@ -225,7 +227,6 @@ public class RemoteConfigKey {
 
     public static final String FREE_SHIPPING_TRANSITION_PERIOD = "android_free_shipping_transition_period";
     public static final String FREE_SHIPPING_FEATURE_DISABLED = "android_free_shipping_feature_disabled";
-    public static final String NEW_SELLER_HOME_DISABLED = "android_new_seller_home_disabled";
     public static final String ENABLE_GLOBAL_SEARCH_SELLER = "android_sellerapp_global_search_enabled";
     public static final String ENABLE_PUSH_NOTIFICATION_CHAT_SELLER = "android_sellerapp_enable_push_notif_reply_chat";
 

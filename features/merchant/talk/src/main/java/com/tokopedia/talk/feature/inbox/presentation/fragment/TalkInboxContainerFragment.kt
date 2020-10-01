@@ -31,6 +31,7 @@ class TalkInboxContainerFragment : BaseDaggerFragment(), HasComponent<TalkInboxC
     companion object {
         const val SELLER_TAB_INDEX = 0
         const val BUYER_TAB_INDEX = 1
+        const val HIDE_TAB_COUNTER = -1
         fun createNewInstance(): TalkInboxContainerFragment {
             return TalkInboxContainerFragment()
         }
@@ -44,6 +45,7 @@ class TalkInboxContainerFragment : BaseDaggerFragment(), HasComponent<TalkInboxC
 
     private var sellerUnreadCount = 0
     private var buyerUnreadCount = 0
+    private var isFirstTimeEnterPage = true
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
@@ -76,9 +78,28 @@ class TalkInboxContainerFragment : BaseDaggerFragment(), HasComponent<TalkInboxC
 
     override fun updateUnreadCounter(sellerUnread: Int, buyerUnread: Int) {
         sellerUnreadCount = sellerUnread
-        talkInboxTabs.tabLayout.getTabAt(SELLER_TAB_INDEX)?.setNotification(sellerUnread > 0)
+        talkInboxTabs.tabLayout.getTabAt(SELLER_TAB_INDEX)?.setCounter(if(sellerUnread > 0) sellerUnread else HIDE_TAB_COUNTER)
         buyerUnreadCount = buyerUnread
-        talkInboxTabs.tabLayout.getTabAt(BUYER_TAB_INDEX)?.setNotification(buyerUnread > 0)
+        talkInboxTabs.tabLayout.getTabAt(BUYER_TAB_INDEX)?.setCounter(if(buyerUnread > 0) buyerUnread else HIDE_TAB_COUNTER)
+        if(isFirstTimeEnterPage) {
+            isFirstTimeEnterPage = false
+            when {
+                buyerUnreadCount > 0 && sellerUnreadCount == 0 -> {
+                    selectBuyerTab()
+                }
+                else -> {
+                    selectSellerTab()
+                }
+            }
+        }
+    }
+
+    private fun selectSellerTab() {
+        talkInboxViewPager.currentItem = SELLER_TAB_INDEX
+    }
+
+    private fun selectBuyerTab() {
+        talkInboxViewPager.currentItem = BUYER_TAB_INDEX
     }
 
     private fun setupViewPager() {
