@@ -87,6 +87,7 @@ public class SearchActivity extends BaseActivity
     private TabLayout tabLayout;
     private ViewPager viewPager;
     private View tabShadow;
+    private View quickFilterTopPadding;
     private SearchSectionPagerAdapter searchSectionPagerAdapter;
     private View backButton;
     private TextView searchTextView;
@@ -193,6 +194,7 @@ public class SearchActivity extends BaseActivity
         buttonCart = findViewById(R.id.search_cart_button);
         buttonHome = findViewById(R.id.search_home_button);
         tabShadow = findViewById(R.id.search_top_bar_shadow);
+        quickFilterTopPadding = findViewById(R.id.search_quick_filter_top_padding);
     }
 
     protected void prepareView() {
@@ -306,6 +308,7 @@ public class SearchActivity extends BaseActivity
         if (isLandingPage()) {
             tabLayout.setVisibility(View.GONE);
             tabShadow.setVisibility(View.GONE);
+            quickFilterTopPadding.setVisibility(View.GONE);
         }
     }
 
