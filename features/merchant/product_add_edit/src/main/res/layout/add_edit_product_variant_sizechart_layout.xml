@@ -23,7 +23,6 @@
         android:layout_width="@dimen/layout_lvl7"
         android:layout_height="@dimen/layout_lvl7"
         android:layout_marginTop="@dimen/spacing_lvl4"
-        android:padding="@dimen/spacing_lvl1"
         android:background="@drawable/rect_grey_border"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/typographySizechartTitle">
@@ -32,7 +31,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center"
-            android:layout_margin="@dimen/spacing_lvl2"
+            android:layout_margin="@dimen/dp_6"
             app:cardBackgroundColor="@color/Neutral_N50"
             app:cardCornerRadius="@dimen/spacing_lvl2"
             app:cardElevation="@dimen/layout_lvl0">
@@ -54,7 +53,7 @@
                 android:layout_gravity="bottom"
                 android:layout_width="@dimen/layout_lvl2"
                 android:layout_height="@dimen/layout_lvl2"
-                android:padding="@dimen/spacing_lvl1"
+                android:padding="@dimen/spacing_lvl2"
                 android:background="@drawable/oval_transparent_grey"
                 android:tint="@color/white_95"
                 android:visibility="gone"
