@@ -141,7 +141,7 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
 
     protected fun logError(requestParams: RequestParams, throwable: Throwable) {
         val errorMessage = String.format(
-                "\"Error upload product.\",\"userId: %s\",\"userEmail: %s \",\"errorMessage: %s\",params: \"%s\"",
+                "\"Error upload product.\",\"userId: %s\",\"errorMessage: %s\",params: \"%s\"",
                 userSession.userId,
                 userSession.email,
                 getErrorMessage(throwable),
@@ -155,7 +155,7 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
     protected fun logError(title: String, throwable: Throwable) {
         val message = throwable.message ?: ""
         val errorMessage = String.format(
-                "\"%s.\",\"userId: %s\",\"userEmail: %s \",\"errorMessage: %s\"",
+                "\"%s.\",\"userId: %s\",\"errorMessage: %s\"",
                 title,
                 userSession.userId,
                 userSession.email,

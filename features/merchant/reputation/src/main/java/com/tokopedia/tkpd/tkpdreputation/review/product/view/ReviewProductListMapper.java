@@ -12,7 +12,6 @@ import com.tokopedia.tkpd.tkpdreputation.review.product.data.model.reviewlist.Re
 import com.tokopedia.tkpd.tkpdreputation.review.product.data.model.reviewlist.ReviewShop;
 import com.tokopedia.tkpd.tkpdreputation.review.product.view.adapter.ReviewProductModel;
 import com.tokopedia.tkpd.tkpdreputation.review.product.view.adapter.ReviewProductModelContent;
-import com.tokopedia.tkpd.tkpdreputation.review.shop.view.adapter.ReviewShopModelContent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -116,35 +115,4 @@ public class ReviewProductListMapper {
         }
     }
 
-    public List<ReviewShopModelContent> map(DataResponseReviewShop dataResponseReviewShop, String userId) {
-        List<ReviewShopModelContent> shopReviewModelContents = new ArrayList<>();
-        for(ReviewShop review : dataResponseReviewShop.getList()){
-            ReviewShopModelContent shopReviewModelContent = new ReviewShopModelContent();
-            shopReviewModelContent.setResponseCreateTime(review.getReviewResponse().getResponseTime().getDateTimeFmt1());
-            shopReviewModelContent.setResponseMessage(review.getReviewResponse().getResponseMessage());
-            shopReviewModelContent.setReviewCanReported(isReviewCanReported(userId, review));
-            shopReviewModelContent.setReputationId(String.valueOf(review.getReputationId()));
-            shopReviewModelContent.setProductId(String.valueOf(review.getProduct().getProductId()));
-            shopReviewModelContent.setReviewerId(String.valueOf(review.getUser().getUserId()));
-            shopReviewModelContent.setReviewAttachment(generateImageAttachmentModel(review));
-            shopReviewModelContent.setReviewIsAnonymous(review.getReviewAnonymous() == 1);
-            shopReviewModelContent.setReviewStar(review.getProductRating());
-            shopReviewModelContent.setSellerName(dataResponseReviewShop.getOwner().getShop().getShopName());
-            shopReviewModelContent.setReviewTime(getReviewCreateTime(review));
-            shopReviewModelContent.setReviewMessage(review.getReviewMessage());
-            shopReviewModelContent.setReviewerName(review.getUser().getFullName());
-            shopReviewModelContent.setReviewHasReplied(!TextUtils.isEmpty(review.getReviewResponse().getResponseMessage()));
-            shopReviewModelContent.setSellerRepliedOwner(isUserOwnedReplied(userId, dataResponseReviewShop.getOwner()));
-            shopReviewModelContent.setShopId(String.valueOf(dataResponseReviewShop.getOwner().getShop().getShopId()));
-            shopReviewModelContent.setLikeStatus(review.getLikeStatus() == LIKE_STATUS_ACTIVE);
-            shopReviewModelContent.setTotalLike(review.getTotalLike());
-            shopReviewModelContent.setLogin(!TextUtils.isEmpty(userId));
-            shopReviewModelContent.setReviewId(String.valueOf(review.getReviewId()));
-            shopReviewModelContent.setProductName(review.getProduct().getProductName());
-            shopReviewModelContent.setProductImageUrl(review.getProduct().getProductImageUrl());
-            shopReviewModelContent.setProductPageUrl(review.getProduct().getProductPageUrl());
-            shopReviewModelContents.add(shopReviewModelContent);
-        }
-        return shopReviewModelContents;
-    }
 }
