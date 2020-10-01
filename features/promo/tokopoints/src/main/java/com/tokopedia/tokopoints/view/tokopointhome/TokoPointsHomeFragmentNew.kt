@@ -135,11 +135,11 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         val layoutParams = tokoPointToolbar!!.layoutParams as FrameLayout.LayoutParams
         layoutParams.topMargin = statusBarHeight
         tokoPointToolbar!!.layoutParams = layoutParams
-        val imageEggLp = view?.findViewById<AppCompatImageView>(R.id.img_egg)?.layoutParams as RelativeLayout.LayoutParams
-        imageEggLp.topMargin = (statusBarHeight + activity!!.resources.getDimension(R.dimen.tp_top_margin_big_image)).toInt()
+        val imageEggLp = view?.findViewById<AppCompatImageView>(R.id.img_egg)?.layoutParams as? RelativeLayout.LayoutParams
+        imageEggLp?.topMargin = (statusBarHeight + activity!!.resources.getDimension(R.dimen.tp_top_margin_big_image)).toInt()
         view?.findViewById<AppCompatImageView>(R.id.img_egg)?.layoutParams = imageEggLp
-        val imageBigLp = view?.findViewById<ImageView>(R.id.img_bg_header)?.layoutParams as RelativeLayout.LayoutParams
-        imageBigLp.height = (statusBarHeight + activity!!.resources.getDimension(R.dimen.tp_home_top_bg_height) + cardheight).toInt()
+        val imageBigLp = view?.findViewById<ImageView>(R.id.img_bg_header)?.layoutParams as? RelativeLayout.LayoutParams
+        imageBigLp?.height = (statusBarHeight + activity!!.resources.getDimension(R.dimen.tp_home_top_bg_height) + cardheight).toInt()
         view?.findViewById<ImageView>(R.id.img_bg_header)?.layoutParams = imageBigLp
     }
 

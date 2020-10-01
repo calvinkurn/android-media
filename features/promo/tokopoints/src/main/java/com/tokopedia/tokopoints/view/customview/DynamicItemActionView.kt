@@ -85,15 +85,15 @@ class DynamicItemActionView @JvmOverloads constructor(
         when (position) {
             0 -> {
                 notifFirstLayout.show()
-                notifFirstLayout.setNotification(notif, NotificationUnify.NONE_TYPE, NotificationUnify.COLOR_PRIMARY)
+                notifFirstLayout.setNotification(notif, NotificationUnify.TEXT_TYPE, NotificationUnify.COLOR_PRIMARY)
             }
             1 -> {
                 notifCenterLayout.show()
-                notifCenterLayout.setNotification(notif, NotificationUnify.NONE_TYPE, NotificationUnify.COLOR_PRIMARY)
+                notifCenterLayout.setNotification(notif, NotificationUnify.TEXT_TYPE, NotificationUnify.COLOR_PRIMARY)
             }
             else -> {
                 notifRightLayout.show()
-                notifRightLayout.setNotification(notif, NotificationUnify.NONE_TYPE, NotificationUnify.COLOR_PRIMARY)
+                notifRightLayout.setNotification(notif, NotificationUnify.TEXT_TYPE, NotificationUnify.COLOR_PRIMARY)
             }
         }
     }
