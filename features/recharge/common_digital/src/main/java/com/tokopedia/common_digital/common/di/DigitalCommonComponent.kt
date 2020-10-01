@@ -4,7 +4,7 @@ import android.content.Context
 import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.common_digital.cart.domain.usecase.DigitalAddToCartUseCase2
+import com.tokopedia.common_digital.cart.domain.usecase.DigitalAddToCartUseCase
 import com.tokopedia.common_digital.cart.domain.usecase.DigitalGetCartUseCase
 import com.tokopedia.common_digital.cart.domain.usecase.DigitalInstantCheckoutUseCase
 import com.tokopedia.common_digital.cart.view.activity.InstantCheckoutActivity
@@ -33,7 +33,7 @@ interface DigitalCommonComponent {
 
     fun abstractionRouter(): AbstractionRouter
 
-    fun digitalAddToCartUseCase(): DigitalAddToCartUseCase2
+    fun digitalAddToCartUseCase(): DigitalAddToCartUseCase
 
     fun digitalGetCartUseCase(): DigitalGetCartUseCase
 

@@ -3,7 +3,7 @@ package com.tokopedia.digital.newcart.presentation.presenter;
 import androidx.annotation.NonNull;
 
 import com.tokopedia.common_digital.cart.data.entity.requestbody.checkout.RequestBodyCheckout;
-import com.tokopedia.common_digital.cart.domain.usecase.DigitalAddToCartUseCase2;
+import com.tokopedia.common_digital.cart.domain.usecase.DigitalAddToCartUseCase;
 import com.tokopedia.common_digital.cart.domain.usecase.DigitalGetCartUseCase;
 import com.tokopedia.common_digital.cart.domain.usecase.DigitalInstantCheckoutUseCase;
 import com.tokopedia.common_digital.cart.view.model.cart.CartAdditionalInfo;
@@ -37,7 +37,7 @@ public class DigitalDealCheckoutPresenter extends DigitalBaseCartPresenter<Digit
     private UserSession userSession;
 
     @Inject
-    public DigitalDealCheckoutPresenter(DigitalAddToCartUseCase2 digitalAddToCartUseCase,
+    public DigitalDealCheckoutPresenter(DigitalAddToCartUseCase digitalAddToCartUseCase,
                                         DigitalGetCartUseCase digitalGetCartUseCase,
                                         DigitalAnalytics digitalAnalytics,
                                         RechargeAnalytics rechargeAnalytics,

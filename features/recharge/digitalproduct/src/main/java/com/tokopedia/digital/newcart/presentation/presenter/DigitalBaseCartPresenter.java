@@ -16,8 +16,7 @@ import com.tokopedia.common_digital.cart.data.entity.requestbody.checkout.Relati
 import com.tokopedia.common_digital.cart.data.entity.requestbody.checkout.RequestBodyCheckout;
 import com.tokopedia.common_digital.cart.data.entity.response.ResponseCartData;
 import com.tokopedia.common_digital.cart.data.mapper.CartMapperData;
-import com.tokopedia.common_digital.cart.data.mapper.ICartMapperData;
-import com.tokopedia.common_digital.cart.domain.usecase.DigitalAddToCartUseCase2;
+import com.tokopedia.common_digital.cart.domain.usecase.DigitalAddToCartUseCase;
 import com.tokopedia.common_digital.cart.domain.usecase.DigitalGetCartUseCase;
 import com.tokopedia.common_digital.cart.domain.usecase.DigitalInstantCheckoutUseCase;
 import com.tokopedia.common_digital.cart.view.model.cart.CartAdditionalInfo;
@@ -73,14 +72,14 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
     private ICartDigitalInteractor cartDigitalInteractor;
     private UserSession userSession;
     private DigitalCheckoutUseCase digitalCheckoutUseCase;
-    private DigitalAddToCartUseCase2 digitalAddToCartUseCase;
+    private DigitalAddToCartUseCase digitalAddToCartUseCase;
     private DigitalGetCartUseCase digitalGetCartUseCase;
     private DigitalInstantCheckoutUseCase digitalInstantCheckoutUseCase;
     private String PROMO_CODE = "promoCode";
     public static final String KEY_CACHE_PROMO_CODE = "KEY_CACHE_PROMO_CODE";
 
 
-    public DigitalBaseCartPresenter(DigitalAddToCartUseCase2 digitalAddToCartUseCase,
+    public DigitalBaseCartPresenter(DigitalAddToCartUseCase digitalAddToCartUseCase,
                                     DigitalGetCartUseCase digitalGetCartUseCase,
                                     DigitalAnalytics digitalAnalytics,
                                     RechargeAnalytics rechargeAnalytics,

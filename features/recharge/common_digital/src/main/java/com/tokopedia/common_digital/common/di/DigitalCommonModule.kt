@@ -1,22 +1,21 @@
 package com.tokopedia.common_digital.common.di
 
 import android.content.Context
+import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor
 import com.tokopedia.akamai_bot_lib.interceptor.AkamaiBotInterceptor
-import com.tokopedia.config.GlobalConfig
-import com.tokopedia.common_digital.cart.data.datasource.DigitalAddToCartDataSource
 import com.tokopedia.common_digital.cart.data.datasource.DigitalGetCartDataSource
 import com.tokopedia.common_digital.cart.data.datasource.DigitalInstantCheckoutDataSource
 import com.tokopedia.common_digital.cart.data.mapper.CartMapperData
 import com.tokopedia.common_digital.cart.data.mapper.ICartMapperData
 import com.tokopedia.common_digital.cart.data.repository.DigitalCartRepository
 import com.tokopedia.common_digital.cart.domain.IDigitalCartRepository
+import com.tokopedia.common_digital.cart.domain.usecase.DigitalAddToCartUseCase
 import com.tokopedia.common_digital.cart.domain.usecase.DigitalGetCartUseCase
 import com.tokopedia.common_digital.cart.domain.usecase.DigitalInstantCheckoutUseCase
 import com.tokopedia.common_digital.common.DigitalRouter
@@ -27,6 +26,7 @@ import com.tokopedia.common_digital.common.data.api.DigitalResponseConverter
 import com.tokopedia.common_digital.common.data.api.DigitalRestApi
 import com.tokopedia.common_digital.common.usecase.RechargePushEventRecommendationUseCase
 import com.tokopedia.common_digital.product.data.response.TkpdDigitalResponse
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.converter.StringResponseConverter
@@ -115,6 +115,21 @@ class DigitalCommonModule {
         return builder.build()
     }
 
+    @Provides
+    @DigitalCommonScope
+    fun provideDigitalAddToCartUseCase2(listInterceptor: ArrayList<Interceptor>, @ApplicationContext context: Context): DigitalAddToCartUseCase {
+        return DigitalAddToCartUseCase(listInterceptor, context)
+    }
+
+    @Provides
+    @DigitalCommonScope
+    fun provideDigitalInterceptorNew(digitalInterceptor: DigitalInterceptor): ArrayList<Interceptor> {
+        val listInterceptor = ArrayList<Interceptor>()
+        listInterceptor.add(digitalInterceptor)
+        listInterceptor.add(ErrorResponseInterceptor(TkpdDigitalResponse.DigitalErrorResponse::class.java))
+        return listInterceptor
+    }
+
     @DigitalCommonScope
     @DigitalRestApiRetrofit
     @Provides
@@ -159,15 +174,8 @@ class DigitalCommonModule {
 
     @Provides
     @DigitalCommonScope
-    fun provideDigitalAddToCartDataSource(digitalRestApi: DigitalRestApi,
-                                          cartMapperData: ICartMapperData): DigitalAddToCartDataSource {
-        return DigitalAddToCartDataSource(digitalRestApi, cartMapperData)
-    }
-
-    @Provides
-    @DigitalCommonScope
     fun provideDigitalGetCartDataSource(digitalRestApi: DigitalRestApi,
-                                          cartMapperData: ICartMapperData): DigitalGetCartDataSource {
+                                        cartMapperData: ICartMapperData): DigitalGetCartDataSource {
         return DigitalGetCartDataSource(digitalRestApi, cartMapperData)
     }
 
@@ -180,10 +188,9 @@ class DigitalCommonModule {
 
     @Provides
     @DigitalCommonScope
-    fun provideDigitalCartRepository(digitalAddToCartDataSource: DigitalAddToCartDataSource,
-                                     digitalGetCartDataSource: DigitalGetCartDataSource,
+    fun provideDigitalCartRepository(digitalGetCartDataSource: DigitalGetCartDataSource,
                                      digitalInstantCheckoutDataSource: DigitalInstantCheckoutDataSource): IDigitalCartRepository {
-        return DigitalCartRepository(digitalAddToCartDataSource, digitalGetCartDataSource, digitalInstantCheckoutDataSource)
+        return DigitalCartRepository(digitalGetCartDataSource, digitalInstantCheckoutDataSource)
     }
 
     @Provides
