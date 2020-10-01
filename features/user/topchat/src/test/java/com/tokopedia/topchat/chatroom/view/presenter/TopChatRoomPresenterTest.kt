@@ -18,7 +18,8 @@ import com.tokopedia.topchat.chatroom.domain.usecase.*
 import com.tokopedia.topchat.chatroom.view.listener.TopChatContract
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.exMessageId
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.readParam
-import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.wsResponseReply
+import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.wsResponseReplyString
+import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.wsResponseTypingString
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopchatCoroutineContextProvider
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.websocket.RxWebSocket
@@ -136,11 +137,13 @@ class TopChatRoomPresenterTest {
     private lateinit var wsOpen: WebSocketInfo
     private lateinit var wsReconnect: WebSocketInfo
     private lateinit var wsResponseReplyText: WebSocketInfo
+    private lateinit var wsResponseTyping: WebSocketInfo
 
     object Dummy {
         const val exMessageId = "190378584"
         val readParam = TopChatWebSocketParam.generateParamRead(exMessageId)
-        val wsResponseReply = FileUtil.readFileContent("/ws_response_reply_text_is_opposite.json")
+        val wsResponseReplyString = FileUtil.readFileContent("/ws_response_reply_text_is_opposite.json")
+        val wsResponseTypingString = FileUtil.readFileContent("/ws_response_typing.json")
     }
 
     @Before
@@ -183,7 +186,8 @@ class TopChatRoomPresenterTest {
         listInterceptor = arrayListOf(tkpdAuthInterceptor, fingerprintInterceptor)
         wsReconnect = WebSocketInfo.createReconnect("Some Error Comes Up")
         wsOpen = WebSocketInfo(webSocket, true)
-        wsResponseReplyText = WebSocketInfo(webSocket, wsResponseReply)
+        wsResponseReplyText = WebSocketInfo(webSocket, wsResponseReplyString)
+        wsResponseTyping = WebSocketInfo(webSocket, wsResponseTypingString)
     }
 
     private fun mockSingletonObject() {
@@ -266,7 +270,6 @@ class TopChatRoomPresenterTest {
         every { webSocketUtil.getWebSocketInfo(any(), any()) } returns Observable.just(wsResponseReplyText)
         every { getChatUseCase.isInTheMiddleOfThePage() } returns true
         val wsChatPojo = mockkParseResponse(wsResponseReplyText)
-        val wsChatVisitable = mockkWsMapper(wsChatPojo)
 
         // When
         presenter.connectWebSocket(exMessageId)
@@ -274,6 +277,20 @@ class TopChatRoomPresenterTest {
         // Then
         assertThat(presenter.newUnreadMessage, equalTo(1))
         verify(exactly = 1) { view.showUnreadMessage(1) }
+    }
+
+    @Test
+    fun `onMessage ws event typing when not the middle of the page`() {
+        // Given
+        every { webSocketUtil.getWebSocketInfo(any(), any()) } returns Observable.just(wsResponseTyping)
+        every { getChatUseCase.isInTheMiddleOfThePage() } returns false
+        val wsChatPojo = mockkParseResponse(wsResponseReplyText)
+
+        // When
+        presenter.connectWebSocket(exMessageId)
+
+        // Then
+        verify(exactly = 1) { view.onReceiveStartTypingEvent() }
     }
 
     private fun mockkParseResponse(wsInfo: WebSocketInfo, isOpposite: Boolean = true): ChatSocketPojo {
