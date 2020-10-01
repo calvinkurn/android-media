@@ -27,7 +27,7 @@
 
     <com.tokopedia.topchat.chatroom.view.customview.TopchatMerchantVoucherView
         android:id="@+id/broadcast_merchant_voucher"
-        android:layout_width="270dp"
+        android:layout_width="@dimen/dp_topchat_270"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_topchat_12"
         android:layout_marginLeft="@dimen/dp_topchat_12"
