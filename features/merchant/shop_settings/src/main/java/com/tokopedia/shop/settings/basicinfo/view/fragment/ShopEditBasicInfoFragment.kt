@@ -53,7 +53,6 @@ import javax.inject.Inject
 class ShopEditBasicInfoFragment: Fragment() {
 
     companion object {
-        private const val URL_PUSAT_SELLER = "https://seller.tokopedia.com/edu/cara-memilih-nama-toko-online/"
         private const val SAVED_IMAGE_PATH = "saved_img_path"
         private const val MAX_FILE_SIZE_IN_KB = 10240
         private const val REQUEST_CODE_IMAGE = 846
@@ -523,7 +522,7 @@ class ShopEditBasicInfoFragment: Fragment() {
         shopEditTicker.setDescriptionClickEvent(object : TickerCallback{
             override fun onDescriptionViewClick(linkUrl: CharSequence) {
                 if (type == Ticker.TYPE_WARNING) {
-                    clickReadMore()
+                    clickReadMore(linkUrl)
                 }
             }
             override fun onDismiss() {}
@@ -708,8 +707,8 @@ class ShopEditBasicInfoFragment: Fragment() {
         ShopSettingsErrorHandler.logExceptionToCrashlytics(throwable)
     }
 
-    private fun clickReadMore() {
-        RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, URL_PUSAT_SELLER)
+    private fun clickReadMore(linkUrl: CharSequence) {
+        RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, linkUrl.toString())
         ShopSettingsTracking.clickRedirectToPusatSeller(userSession.shopId, getShopType())
     }
 
