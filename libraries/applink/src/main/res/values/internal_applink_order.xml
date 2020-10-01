@@ -37,7 +37,6 @@
     <string name="path_order_unified" translatable="false">/unified</string>
 
     <string name="path_order_confirmed" translatable="false">/confirmed</string>
-    <string name="path_order_single" translatable="false">/order</string>
     <string name="path_order_list_buyer" translatable="false">/order_list</string>
     <string name="path_order_processed" translatable="false">/processed</string>
     <string name="path_order_shipped" translatable="false">/shipped</string>
@@ -45,7 +44,6 @@
     <string name="path_shipping_confirm" translatable="false">/shipping-confirm</string>
     <string name="path_marketplace" translatable="false">/marketplace/filter/.*\\/</string>
     <string name="path_orderlist_digital" translatable="false">/digital</string>
-    <string name="path_order_detail" translatable="false">/order/.*\\/</string>
     <string name="path_any" translatable="false">/.*\\/</string>
 
 </resources>
