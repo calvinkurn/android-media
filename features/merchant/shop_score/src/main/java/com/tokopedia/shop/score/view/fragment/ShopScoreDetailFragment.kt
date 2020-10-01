@@ -26,6 +26,7 @@ import com.tokopedia.shop.score.view.model.ShopScoreDetailItem
 import com.tokopedia.shop.score.view.model.ShopScoreDetailSummary
 import com.tokopedia.shop.score.view.model.ShopType
 import com.tokopedia.shop.score.view.recyclerview.ShopScoreDetailAdapter
+import com.tokopedia.shop.score.view.util.formatShopScore
 import com.tokopedia.shop.score.view.viewmodel.ShopScoreDetailViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -175,7 +176,7 @@ class ShopScoreDetailFragment : Fragment() {
             + getString(R.string.subtitle_second_shop_score_detail_summary)
             + " "
             + "<strong>"
-            + summary?.value
+            + summary?.value?.formatShopScore()
             + "</strong>"
             + ".")
     }

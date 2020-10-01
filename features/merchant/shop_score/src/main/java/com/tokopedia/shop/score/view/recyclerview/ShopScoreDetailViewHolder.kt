@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.view.model.ShopScoreDetailItem
+import com.tokopedia.shop.score.view.util.formatShopScore
 import kotlinx.android.synthetic.main.item_shop_score_detail.view.*
 
 class ShopScoreDetailViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -40,14 +41,15 @@ class ShopScoreDetailViewHolder(itemView: View) : RecyclerView.ViewHolder(itemVi
 
     private fun setShopScoreValue(value: Float) {
         itemView.apply {
-            description_shop_score_value.text = value.toString()
+            description_shop_score_value.text = value.formatShopScore()
             progress_bar_shop_score_detail.progress = value
         }
     }
 
     private fun setShopScoreMaxValue(maxValue: Float) {
         itemView.apply {
-            val maxScore = context.getString(R.string.description_shop_score_percent, maxValue)
+            val maxScore = context.getString(R.string.description_shop_score_percent,
+                maxValue.formatShopScore())
             description_shop_score_percent.text = maxScore
             progress_bar_shop_score_detail.max = maxValue
         }
