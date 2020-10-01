@@ -22,4 +22,5 @@
     <string name="shop_score_min_value">0</string>
     <string name="shop_score_max_value">100</string>
 
+    <string name="title_shopscore">Skor Performa Toko</string>
 </resources>
