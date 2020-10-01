@@ -6,12 +6,15 @@ import android.view.WindowManager
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
-import com.tokopedia.core.analytics.AppScreen
 import com.tokopedia.shop.score.view.fragment.ShopScoreDetailFragment
 
 class ShopScoreDetailActivity : BaseSimpleActivity() {
 
-    override fun getScreenName() = AppScreen.SCREEN_SELLER_SHOP_SCORE
+    companion object {
+        private const val SCREEN_SELLER_SHOP_SCORE = "Shop Score"
+    }
+
+    override fun getScreenName() = SCREEN_SELLER_SHOP_SCORE
 
     override fun getNewFragment(): Fragment = ShopScoreDetailFragment.createFragment()
 
