@@ -1,5 +1,7 @@
 package com.tokopedia.developer_options.drawonpicture.presentation.fragment
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -19,7 +21,9 @@ import com.tokopedia.developer_options.drawonpicture.presentation.adapter.BrushC
 import com.tokopedia.developer_options.drawonpicture.presentation.adapter.viewholder.BrushColorViewHolder
 import com.tokopedia.developer_options.drawonpicture.presentation.viewmodel.DrawOnPictureViewModel
 import com.tokopedia.developer_options.drawonpicture.widgets.DrawOnPictureView
+import com.tokopedia.imagepreview.ImagePreviewUtils
 import kotlinx.android.synthetic.main.fragment_draw_on_picture.*
+import java.io.File
 import javax.inject.Inject
 
 /**
@@ -111,6 +115,9 @@ class DrawOnPictureFragment : BaseDaggerFragment(),
             dopFeedbackForm.setImageURI(imageUri)
         }
 
+        btnSaveImage.setOnClickListener {
+            saveNewImage()
+        }
         btnDoPBack.setOnClickListener {
             activity?.finish()
         }
@@ -148,6 +155,18 @@ class DrawOnPictureFragment : BaseDaggerFragment(),
     private fun hidePencilOptions() {
         seekbarDopBrushSize.visibility = View.GONE
         rvBrushColors.visibility = View.GONE
+    }
+
+    private fun saveNewImage() {
+        val options = BitmapFactory.Options()
+        options.inJustDecodeBounds = true
+        BitmapFactory.decodeFile(File(imageUri.path).absolutePath, options)
+
+        val editedBitmap = dopFeedbackForm.getBitmap()
+        val saveBitmap = Bitmap.createScaledBitmap(editedBitmap, options.outWidth, options.outHeight, false)
+
+        ImagePreviewUtils.saveImageFromBitmap(requireActivity(), saveBitmap, ImagePreviewUtils.processPictureName(Math.random().toInt()))
+
     }
 
     companion object {

@@ -1,10 +1,7 @@
 package com.tokopedia.developer_options.drawonpicture.widgets
 
 import android.content.Context
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.Paint
-import android.graphics.Path
+import android.graphics.*
 import android.util.AttributeSet
 import android.view.MotionEvent
 import androidx.appcompat.widget.AppCompatImageView
@@ -20,7 +17,7 @@ class DrawOnPictureView @JvmOverloads constructor(context: Context,
     lateinit var listener: Listener
 
     private lateinit var currentPath: Path
-    private var currentColor: String = "#00FF00"
+    private var currentColor: String = "#FF0000"
     private var currentStrokeWidth = 5F
 
     private var strokePaint: Paint = Paint().apply {
@@ -97,6 +94,13 @@ class DrawOnPictureView @JvmOverloads constructor(context: Context,
             paths.removeAt(paths.size - 1)
             invalidate()
         }
+    }
+
+    fun getBitmap(): Bitmap {
+        val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(bitmap)
+        draw(canvas)
+        return bitmap
     }
 
     interface Listener {
