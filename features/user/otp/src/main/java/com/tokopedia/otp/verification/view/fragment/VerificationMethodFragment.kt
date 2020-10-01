@@ -50,8 +50,10 @@ class VerificationMethodFragment : BaseVerificationFragment(), IOnBackPressed {
 
     @Inject
     lateinit var analytics: TrackingValidatorUtil
+
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
     @Inject
     lateinit var userSession: UserSessionInterface
 
@@ -115,16 +117,22 @@ class VerificationMethodFragment : BaseVerificationFragment(), IOnBackPressed {
 
     private fun getVerificationMethod() {
         showLoading()
-        viewmodel.getVerificationMethod(
-                otpType = otpData.otpType.toString(),
-                userId = otpData.userId,
-                msisdn = otpData.msisdn,
-                email = otpData.email
-        )
+        val otpType = otpData.otpType.toString()
+        if ((otpType == OtpConstant.OtpType.AFTER_LOGIN_PHONE.toString() || otpType == OtpConstant.OtpType.RESET_PIN.toString())
+                && otpData.userIdEnc.isNotEmpty()) {
+            viewmodel.getVerificationMethod2FA(otpType, otpData.accessToken, otpData.userIdEnc)
+        } else {
+            viewmodel.getVerificationMethod(
+                    otpType = otpType,
+                    userId = otpData.userId,
+                    msisdn = otpData.msisdn,
+                    email = otpData.email
+            )
+        }
     }
 
     private fun initObserver() {
-        viewmodel.getVerificationMethodResult.observe(this, Observer {
+        viewmodel.getVerificationMethodResult.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> onSuccessGetVerificationMethod().invoke(it.data)
                 is Fail -> onFailedGetVerificationMethod().invoke(it.throwable)
@@ -136,12 +144,13 @@ class VerificationMethodFragment : BaseVerificationFragment(), IOnBackPressed {
         return { otpModeListData ->
             if (otpModeListData.success && otpModeListData.modeList.isNotEmpty()) {
                 hideLoading()
-                if(!otpData.isShowChooseMethod) {
+
+                if (!otpData.isShowChooseMethod) {
                     val modeList = otpModeListData.modeList.singleOrNull {
                         it.modeText == otpData.otpMode
                     }
 
-                    if(modeList != null) {
+                    if (modeList != null) {
                         skipView(modeList)
                     } else {
                         showListView(otpModeListData)

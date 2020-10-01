@@ -52,9 +52,6 @@ import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.seller_migration_common.presentation.fragment.bottomsheet.SellerMigrationCommunicationBottomSheet
-import com.tokopedia.seller_migration_common.presentation.model.CommunicationInfo
-import com.tokopedia.seller_migration_common.presentation.util.initializeSellerMigrationCommunicationTicker
 import com.tokopedia.twitter_share.TwitterAuthenticator
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
@@ -101,10 +98,6 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
 
     private val productSuggestionAdapter: ProductSuggestionAdapter by lazy {
         ProductSuggestionAdapter(::onSuggestionItemClicked, ::onSuggestionItemFirstView)
-    }
-
-    private val sellerMigrationCommunicationBottomSheet by lazy {
-        context?.let { SellerMigrationCommunicationBottomSheet.createInstance(it, CommunicationInfo.PostFeed, screenName, userSession.userId, userSession.shopId) }
     }
 
     private lateinit var shareDialogView: View
@@ -575,8 +568,6 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         if (viewModel.isEditState) {
             media_attachment.gone()
         }
-
-        showMigrationTicker()
     }
 
     private fun updateMediaPreview() {
@@ -925,7 +916,4 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun showMigrationTicker() {
-        initializeSellerMigrationCommunicationTicker(sellerMigrationCommunicationBottomSheet, ticker_seller_migration_create_post, CommunicationInfo.PostFeed)
-    }
 }

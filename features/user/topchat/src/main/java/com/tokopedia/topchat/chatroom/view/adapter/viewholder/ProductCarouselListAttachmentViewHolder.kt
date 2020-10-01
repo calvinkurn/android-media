@@ -10,6 +10,7 @@ import com.tokopedia.chat_common.view.adapter.viewholder.listener.ProductAttachm
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ErrorAttachment
 import com.tokopedia.topchat.chatroom.view.adapter.ProductListAdapter
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.AdapterListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.CommonViewHolderListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.DeferredViewHolderAttachment
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.SearchListener
@@ -22,7 +23,8 @@ class ProductCarouselListAttachmentViewHolder constructor(
         private val listener: Listener,
         private val deferredAttachment: DeferredViewHolderAttachment,
         private val searchListener: SearchListener,
-        private val commonListener: CommonViewHolderListener
+        private val commonListener: CommonViewHolderListener,
+        private val adapterListener: AdapterListener
 ) : BaseChatViewHolder<ProductCarouselUiModel>(itemView) {
 
     interface Listener {
@@ -30,7 +32,9 @@ class ProductCarouselListAttachmentViewHolder constructor(
         fun getSavedCarouselState(position: Int): Parcelable?
     }
 
-    private val adapter = ProductListAdapter(searchListener, productListener, deferredAttachment, commonListener)
+    private val adapter = ProductListAdapter(
+            searchListener, productListener, deferredAttachment, commonListener, adapterListener
+    )
 
     init {
         initRecyclerView()
@@ -52,8 +56,9 @@ class ProductCarouselListAttachmentViewHolder constructor(
 
     override fun bind(carousel: ProductCarouselUiModel, payloads: MutableList<Any>) {
         if (payloads.isEmpty()) return
-        when (payloads[0]) {
+        when (val payload = payloads[0]) {
             DeferredAttachment.PAYLOAD_DEFERRED -> bind(carousel)
+            is TopchatProductAttachmentViewHolder.OccState -> bindNewOccState(payload)
         }
     }
 
@@ -62,6 +67,10 @@ class ProductCarouselListAttachmentViewHolder constructor(
         bindDeferredAttachment(carousel)
         bindProductCarousel(carousel)
         bindScrollState()
+    }
+
+    private fun bindNewOccState(payload: TopchatProductAttachmentViewHolder.OccState) {
+        adapter.notifyItemChanged(payload.childPosition, payload)
     }
 
     private fun bindDeferredAttachment(carousel: ProductCarouselUiModel) {

@@ -15,4 +15,7 @@
         android:id="@+id/gql_menu_export"
         android:title="@string/gql_export" />
 
+    <item
+        android:id="@+id/gql_menu_delete"
+        android:title="@string/gql_delete" />
 </menu>

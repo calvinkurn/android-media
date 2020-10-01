@@ -355,10 +355,6 @@
         <value>true</value>
     </entry>
     <entry>
-        <key>android_main_app_enabled_cache_p2_pdp</key>
-        <value>false</value>
-    </entry>
-    <entry>
         <key>app_semua_category_enable</key>
         <value>true</value>
     </entry>
@@ -489,5 +485,21 @@
     <entry>
         <key>android_gql_connection_warm_up</key>
         <value>false</value>
+    </entry>
+    <entry>
+        <key>android_async_user_based_timber_session</key>
+        <value>false</value>
+    </entry>
+    <entry>
+        <key>android_async_crashlytics_user_info</key>
+        <value>false</value>
+    </entry>
+    <entry>
+        <key>android_async_branch_user_info</key>
+        <value>false</value>
+    </entry>
+    <entry>
+        <key>android_post_seq_async_sellerapp</key>
+        <value>true</value>
     </entry>
 </defaultsMap>

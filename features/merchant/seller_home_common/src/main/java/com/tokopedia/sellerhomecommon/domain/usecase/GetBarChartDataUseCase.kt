@@ -67,6 +67,7 @@ class GetBarChartDataUseCase(
                       value {
                         value
                         valueFmt
+                        color
                       }
                     }
                     axes {

@@ -65,6 +65,8 @@ class MixLeftComponentViewHolder (itemView: View,
 
     private lateinit var layoutManager: LinearLayoutManager
 
+    private var isCacheData = false
+
 
     companion object {
         @LayoutRes
@@ -73,6 +75,7 @@ class MixLeftComponentViewHolder (itemView: View,
     }
 
     override fun bind(element: MixLeftDataModel) {
+        isCacheData = element.isCache
         initVar()
         setupBackground(element.channelModel)
         setupList(element.channelModel)
@@ -80,7 +83,8 @@ class MixLeftComponentViewHolder (itemView: View,
         setHeaderComponent(element)
 
         itemView.addOnImpressionListener(element.channelModel)  {
-            mixLeftComponentListener?.onMixLeftImpressed(element.channelModel, adapterPosition)
+            if (!isCacheData)
+                mixLeftComponentListener?.onMixLeftImpressed(element.channelModel, adapterPosition)
         }
     }
 
@@ -89,12 +93,11 @@ class MixLeftComponentViewHolder (itemView: View,
     }
 
     override fun onProductCardImpressed(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int) {
-        //because we have empty value at beginning of list, we need to reduce pos by 1
-        mixLeftComponentListener?.onProductCardImpressed(channelModel, channelGrid, position - 1)
+        if (!isCacheData)
+            mixLeftComponentListener?.onProductCardImpressed(channelModel, channelGrid, position)
     }
 
     override fun onProductCardClicked(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, applink: String) {
-        //because we have empty value at beginning of list, we need to reduce pos by 1
         mixLeftComponentListener?.onProductCardClicked(channelModel, channelGrid, position, applink)
     }
 
@@ -118,7 +121,8 @@ class MixLeftComponentViewHolder (itemView: View,
         if (channel.channelBanner.imageUrl.isNotEmpty()) {
             loadingBackground.show()
             image.addOnImpressionListener(channel){
-                mixLeftComponentListener?.onImageBannerImpressed(channel, adapterPosition)
+                if (!isCacheData)
+                    mixLeftComponentListener?.onImageBannerImpressed(channel, adapterPosition)
             }
             image.loadImage(channel.channelBanner.imageUrl, FPM_MIX_LEFT, object : ImageHandler.ImageLoaderStateListener{
                 override fun successLoad() {
@@ -143,7 +147,7 @@ class MixLeftComponentViewHolder (itemView: View,
         recyclerView.layoutManager = layoutManager
         val typeFactoryImpl = CommonCarouselProductCardTypeFactoryImpl(channel)
         val listData = mutableListOf<Visitable<*>>()
-        listData.add(CarouselEmptyCardDataModel(channel, adapterPosition, this))
+        listData.add(CarouselEmptyCardDataModel(channel, adapterPosition, this, channel.channelBanner.applink))
         val productDataList = convertDataToProductData(channel)
         listData.addAll(productDataList)
 
@@ -223,7 +227,8 @@ class MixLeftComponentViewHolder (itemView: View,
                     blankSpaceConfig = BlankSpaceConfig(),
                     grid = element,
                     applink = element.applink,
-                    listener = this
+                    listener = this,
+                    componentName = FPM_MIX_LEFT
             ))
         }
         return list

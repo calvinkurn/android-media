@@ -55,6 +55,7 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory;
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
+import com.tokopedia.cart.view.CartFragment;
 import com.tokopedia.dynamicfeatures.DFInstaller;
 import com.tokopedia.home.account.presentation.fragment.AccountHomeFragment;
 import com.tokopedia.inappupdate.AppUpdateManagerWrapper;
@@ -259,7 +260,7 @@ public class MainParentActivity extends BaseActivity implements
     @Override
     protected void onStart() {
         super.onStart();
-        if (presenter.get().isFirstTimeUser()) {
+        if (isFirstTimeUser()) {
             setDefaultShakeEnable();
             routeOnboarding();
         }
@@ -501,6 +502,7 @@ public class MainParentActivity extends BaseActivity implements
     }
 
     private void selectFragment(Fragment fragment) {
+        if (isFirstTimeUser()) return;
         configureStatusBarBasedOnFragment(fragment);
         openFragment(fragment);
         setBadgeNotifCounter(fragment);
@@ -662,8 +664,7 @@ public class MainParentActivity extends BaseActivity implements
             fragmentList.add(((GlobalNavRouter) MainParentActivity.this.getApplication()).getHomeFragment(getIntent().getBooleanExtra(SCROLL_RECOMMEND_LIST, false)));
             fragmentList.add(((GlobalNavRouter) MainParentActivity.this.getApplication()).getFeedPlusFragment(getIntent().getExtras()));
             fragmentList.add(((GlobalNavRouter) MainParentActivity.this.getApplication()).getOfficialStoreFragment(getIntent().getExtras()));
-            Fragment cartFragment = ((GlobalNavRouter) MainParentActivity.this.getApplication()).getCartFragment(null);
-            fragmentList.add(cartFragment);
+            fragmentList.add(CartFragment.newInstance(getIntent().getExtras(), MainParentActivity.class.getSimpleName()));
             fragmentList.add(AccountHomeFragment.newInstance(getIntent().getExtras()));
         }
         return fragmentList;

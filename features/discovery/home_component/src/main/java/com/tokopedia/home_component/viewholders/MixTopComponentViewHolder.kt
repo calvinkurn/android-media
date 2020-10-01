@@ -55,6 +55,7 @@ class MixTopComponentViewHolder(
     private val startSnapHelper: GravitySnapHelper by lazy { GravitySnapHelper(Gravity.START) }
     private val background = itemView.findViewById<View>(R.id.background)
     private var adapter: MixTopComponentAdapter? = null
+    private var isCacheData = false
     companion object{
         @LayoutRes
         val LAYOUT = R.layout.global_dc_mix_top
@@ -67,6 +68,7 @@ class MixTopComponentViewHolder(
         private const val CTA_TYPE_FILLED = "filled"
         private const val CTA_TYPE_GHOST = "ghost"
         private const val CTA_TYPE_TEXT = "text_only"
+        private const val HOME_MIX_TOP = "home_mix_top"
     }
 
 
@@ -75,10 +77,13 @@ class MixTopComponentViewHolder(
     override val coroutineContext = masterJob + Dispatchers.Main
 
     override fun bind(element: MixTopDataModel) {
+        isCacheData = element.isCache
         mappingView(element.channelModel)
         setHeaderComponent(element = element)
-        itemView.addOnImpressionListener(element.channelModel) {
-            mixTopComponentListener?.onMixTopImpressed(element.channelModel, adapterPosition)
+        if (!isCacheData) {
+            itemView.addOnImpressionListener(element.channelModel) {
+                mixTopComponentListener?.onMixTopImpressed(element.channelModel, adapterPosition)
+            }
         }
     }
 
@@ -87,7 +92,8 @@ class MixTopComponentViewHolder(
     }
 
     override fun onProductCardImpressed(channel: ChannelModel, channelGrid: ChannelGrid, position: Int) {
-        mixTopComponentListener?.onProductCardImpressed(channel, channelGrid, adapterPosition, position)
+        if (!isCacheData)
+            mixTopComponentListener?.onProductCardImpressed(channel, channelGrid, adapterPosition, position)
     }
 
     override fun onProductCardClicked(channel: ChannelModel, channelGrid: ChannelGrid, position: Int, applink: String) {
@@ -267,7 +273,8 @@ class MixTopComponentViewHolder(
                     blankSpaceConfig = BlankSpaceConfig(),
                     grid = element,
                     applink = element.applink,
-                    listener = this
+                    listener = this,
+                    componentName = HOME_MIX_TOP
             ))
         }
         return list

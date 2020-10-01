@@ -13,9 +13,6 @@ import android.webkit.URLUtil;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDelegate;
 
-import com.bugsnag.android.BeforeNotify;
-import com.bugsnag.android.Bugsnag;
-import com.bugsnag.android.Error;
 import com.github.moduth.blockcanary.BlockCanary;
 import com.github.moduth.blockcanary.BlockCanaryContext;
 import com.google.android.play.core.splitcompat.SplitCompat;
@@ -24,6 +21,7 @@ import com.moengage.inapp.InAppMessage;
 import com.moengage.inapp.InAppTracker;
 import com.moengage.pushbase.push.MoEPushCallBacks;
 import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
+import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiWhiteListUseCase;
 import com.tokopedia.cacheapi.util.CacheApiLoggingUtils;
 import com.tokopedia.cachemanager.PersistentCacheManager;
@@ -36,7 +34,9 @@ import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.device.info.DeviceInfo;
 import com.tokopedia.graphql.data.GraphqlClient;
+import com.tokopedia.prereleaseinspector.ViewInspectorSubscriber;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform;
 import com.tokopedia.sellerapp.deeplink.DeepLinkActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
@@ -46,17 +46,19 @@ import com.tokopedia.sellerapp.utils.SessionActivityLifecycleCallbacks;
 import com.tokopedia.sellerapp.utils.timber.LoggerActivityLifecycleCallbacks;
 import com.tokopedia.sellerapp.utils.timber.TimberWrapper;
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity;
-import com.tokopedia.prereleaseinspector.ViewInspectorSubscriber;
+import com.tokopedia.tokopatch.TokoPatch;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.url.TokopediaUrl;
-import com.tokopedia.user.session.UserSession;
-import com.tokopedia.user.session.UserSessionInterface;
+import com.tokopedia.weaver.WeaveInterface;
+import com.tokopedia.weaver.Weaver;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
+import kotlin.Pair;
 import timber.log.Timber;
-import com.tokopedia.tokopatch.TokoPatch;
 
 /**
  * Created by ricoharisin on 11/11/16.
@@ -69,6 +71,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
 
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
     }
 
     @Override
@@ -124,7 +127,6 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
 
     @Override
     public void onCreate() {
-        initBugsnag();
         GlobalConfig.APPLICATION_TYPE = GlobalConfig.SELLER_APPLICATION;
         GlobalConfig.PACKAGE_APPLICATION = GlobalConfig.PACKAGE_SELLER_APP;
         setVersionCode();
@@ -139,13 +141,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         com.tokopedia.config.GlobalConfig.DEEPLINK_HANDLER_ACTIVITY_CLASS_NAME = DeepLinkHandlerActivity.class.getName();
         com.tokopedia.config.GlobalConfig.DEEPLINK_ACTIVITY_CLASS_NAME = DeepLinkActivity.class.getName();
         com.tokopedia.config.GlobalConfig.DEVICE_ID = DeviceInfo.getAndroidId(this);
-        try {
-            PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
-            com.tokopedia.config.GlobalConfig.VERSION_NAME = pInfo.versionName;
-            com.tokopedia.config.GlobalConfig.VERSION_NAME = pInfo.versionName;
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
+        setVersionName();
         FpmLogger.init(this);
         TokopediaUrl.Companion.init(this);
         generateSellerAppNetworkKeys();
@@ -161,42 +157,55 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
 
         TimberWrapper.init(this);
         super.onCreate();
+        createAndCallPostSeq();
+        initAppNotificationReceiver();
+        registerActivityLifecycleCallbacks();
+        TokoPatch.init(this);
+    }
+
+    private void createAndCallPostSeq() {
+        //don't convert to lambda does not work in kit kat
+        WeaveInterface postWeave = new WeaveInterface() {
+            @NotNull
+            @Override
+            public Boolean execute() {
+                return executePostCreateSequence();
+            }
+        };
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(postWeave, RemoteConfigKey.ENABLE_POST_SEQ_ASYNC_SELLERAPP, context);
+    }
+
+    @NotNull
+    private Boolean executePostCreateSequence() {
         MoEPushCallBacks.getInstance().setOnMoEPushNavigationAction(this);
         InAppManager.getInstance().setInAppListener(this);
         initCacheApi();
         GraphqlClient.init(this);
         NetworkClient.init(this);
         initializeAbTestVariant();
-
-        initAppNotificationReceiver();
-        registerActivityLifecycleCallbacks();
         initBlockCanary();
-        TokoPatch.init(this);
+        return true;
     }
 
-    private void initBugsnag() {
-        Bugsnag.init(this);
-        Bugsnag.beforeNotify(new BeforeNotify() {
-            @Override
-            public boolean run(Error error) {
-                UserSessionInterface userSession = new UserSession(SellerMainApplication.this);
-                error.setUser(userSession.getUserId(), userSession.getEmail(), userSession.getName());
-                error.addToTab("squad", "package", getPackageName(error));
-                return true;
-            }
+    private void setVersionName(){
+        try {
+            PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+            Pair<String, String> versions = AuthHelper.getVersionName(pInfo.versionName);
+            String version = versions.getFirst();
+            String suffixVersion = versions.getSecond();
 
-            private String getPackageName(Error error) {
-                String packageName = "";
-                String errorText = error.getException().getMessage();
-                String startText = "/com.tokopedia.";
-                int startIndex = errorText.indexOf(startText);
-                if (startIndex > 0) {
-                    int endIndex = errorText.indexOf(".", startIndex + startText.length());
-                    packageName = errorText.substring(startIndex + 1, endIndex);
-                }
-                return packageName;
+            if (!version.equalsIgnoreCase(AuthHelper.ERROR)) {
+                GlobalConfig.VERSION_NAME = version;
+                com.tokopedia.config.GlobalConfig.VERSION_NAME = version;
+                com.tokopedia.config.GlobalConfig.VERSION_NAME_SUFFIX = suffixVersion;
+            } else {
+                GlobalConfig.VERSION_NAME = pInfo.versionName;
+                com.tokopedia.config.GlobalConfig.VERSION_NAME = pInfo.versionName;
             }
-        });
+            com.tokopedia.config.GlobalConfig.RAW_VERSION_NAME = pInfo.versionName;// save raw version name
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     public void initBlockCanary(){

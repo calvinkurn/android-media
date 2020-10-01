@@ -7,6 +7,13 @@
     android:orientation="vertical"
     tools:context=".newcart.presentation.fragment.DigitalCartDefaultFragment">
 
+    <com.tokopedia.globalerror.GlobalError
+        android:id="@+id/view_error"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:visibility="gone" />
+
     <ProgressBar
         android:id="@+id/progress_bar"
         android:layout_width="wrap_content"

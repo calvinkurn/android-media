@@ -3,7 +3,7 @@ package com.tokopedia.topads.dashboard.view.adapter.product
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.topads.dashboard.data.model.nongroupItem.WithoutGroupDataItem
+import com.tokopedia.topads.common.data.response.nongroupItem.WithoutGroupDataItem
 import com.tokopedia.topads.dashboard.view.adapter.product.viewholder.ProductViewHolder
 import com.tokopedia.topads.dashboard.view.adapter.product.viewmodel.ProductItemViewModel
 import com.tokopedia.topads.dashboard.view.adapter.product.viewmodel.ProductViewModel

@@ -1,6 +1,7 @@
 package com.tokopedia.profilecompletion.addpin.view.fragment
 
 import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -21,7 +22,7 @@ import javax.inject.Inject
  * ade.hadian@tokopedia.com
  */
 
-class PinCompleteFragment: BaseDaggerFragment() {
+class PinCompleteFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var trackingPinUtil: TrackingPinUtil
@@ -39,31 +40,34 @@ class PinCompleteFragment: BaseDaggerFragment() {
         btnComplete.setOnClickListener {
             trackingPinUtil.trackClickFinishButton()
             activity?.let {
-                it.setResult(Activity.RESULT_OK)
+                if (arguments?.getInt(ApplinkConstInternalGlobal.PARAM_SOURCE) == SOURCE_FORGOT_PIN_2FA) {
+                    val intent = Intent().putExtras(arguments!!)
+                    intent.flags = Intent.FLAG_ACTIVITY_FORWARD_RESULT
+                    it.setResult(Activity.RESULT_OK, intent)
+                } else {
+                    it.setResult(Activity.RESULT_OK)
+                }
                 it.finish()
             }
         }
         initViews()
     }
 
-    private fun initViews(){
-        activity?.run {
-            tickerCompletePin?.setTextDescription(this.getString(R.string.ticker_complete_add_pin))
-        }
-        when(arguments?.getInt(ApplinkConstInternalGlobal.PARAM_SOURCE)){
+    private fun initViews() {
+        when (arguments?.getInt(ApplinkConstInternalGlobal.PARAM_SOURCE)) {
             SOURCE_CHANGE_PIN -> {
                 titleComplete.text = getString(R.string.change_pin_success)
                 setToolbarTitle(resources.getString(R.string.title_change_pin))
             }
-            SOURCE_FORGOT_PIN -> {
+            SOURCE_FORGOT_PIN or SOURCE_FORGOT_PIN_2FA -> {
                 titleComplete.text = getString(R.string.change_pin_success)
                 setToolbarTitle(resources.getString(R.string.change_pin_title_setting))
             }
         }
     }
 
-    private fun setToolbarTitle(title: String){
-        if(activity is PinCompleteActivity){
+    private fun setToolbarTitle(title: String) {
+        if (activity is PinCompleteActivity) {
             (activity as PinCompleteActivity).supportActionBar?.title = title
         }
     }
@@ -79,16 +83,17 @@ class PinCompleteFragment: BaseDaggerFragment() {
         getComponent(ProfileCompletionSettingComponent::class.java).inject(this)
     }
 
-    fun onBackPressed(){
+    fun onBackPressed() {
         trackingPinUtil.trackClickBackButtonSuccess()
     }
 
     companion object {
-        const val COMPLETE_PICT_URL = "https://ecs7.tokopedia.net/android/others/complete_add_pin.png"
+        const val COMPLETE_PICT_URL = "https://ecs7.tokopedia.net/android/user/success_update_pin.png"
 
         const val SOURCE_ADD_PIN = 1
         const val SOURCE_CHANGE_PIN = 2
         const val SOURCE_FORGOT_PIN = 3
+        const val SOURCE_FORGOT_PIN_2FA = 4
 
         fun createInstance(bundle: Bundle): PinCompleteFragment {
             val fragment = PinCompleteFragment()

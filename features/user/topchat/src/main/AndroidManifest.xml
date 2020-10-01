@@ -84,6 +84,9 @@
             android:name=".attachproduct.view.activity.BroadcastMessageAttachProductActivity"
             android:screenOrientation="portrait" />
 
+        <activity
+            android:name=".chatroom.view.activity.TopchatReportWebViewActivity"
+            android:screenOrientation="portrait" />
 
         <service
             android:name=".chatroom.service.NotificationChatService"

@@ -11,6 +11,8 @@ object DynamicChannelComponentMapper {
                 groupId = channel.groupId,
                 type = channel.type,
                 verticalPosition = verticalPosition,
+                contextualInfo = channel.contextualInfo,
+                widgetParam = channel.widgetParam,
                 channelHeader = ChannelHeader(
                         channel.header.id,
                         channel.header.name,
@@ -45,7 +47,9 @@ object DynamicChannelComponentMapper {
                         channel.layout,
                         channel.showPromoBadge,
                         channel.hasCloseButton,
-                        ServerTimeOffsetUtil.getServerTimeOffsetFromUnix(channel.header.serverTimeUnix)
+                        ServerTimeOffsetUtil.getServerTimeOffsetFromUnix(channel.header.serverTimeUnix),
+                        channel.timestamp,
+                        channel.isAutoRefreshAfterExpired
                 ),
                 trackingAttributionModel = TrackingAttributionModel(
                         galaxyAttribution = channel.galaxyAttribution,
@@ -81,7 +85,9 @@ object DynamicChannelComponentMapper {
                             isOutOfStock = it.isOutOfStock,
                             isFreeOngkirActive = it.freeOngkir.isActive,
                             freeOngkirImageUrl = it.freeOngkir.imageUrl,
-                            shopId = it.shop.shopId,
+                            shop = ChannelShop(
+                                    id = it.shop.shopId
+                            ),
                             labelGroup = it.labelGroup.map { label ->
                                 LabelGroup(
                                         title = label.title,

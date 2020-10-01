@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.crashlytics.android.Crashlytics
 import com.google.android.youtube.player.YouTubeApiServiceUtil
 import com.google.android.youtube.player.YouTubeInitializationResult
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -121,8 +122,12 @@ class ProductFullDescriptionFragment : BaseDaggerFragment(), ProductFullDescript
                     == YouTubeInitializationResult.SUCCESS) {
                 startActivity(ProductYoutubePlayerActivity.createIntent(it, vids.map { it.url }, index))
             } else {
-                startActivity(Intent(Intent.ACTION_VIEW,
-                        Uri.parse("https://www.youtube.com/watch?v=" + vids[index].url)));
+                try {
+                    startActivity(Intent(Intent.ACTION_VIEW,
+                            Uri.parse("https://www.youtube.com/watch?v=" + vids[index].url)));
+                } catch (e: Throwable) {
+                    Crashlytics.logException(e)
+                }
             }
         }
     }

@@ -1,7 +1,5 @@
 package com.tokopedia.hotel.search.presentation.fragment
 
-import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -17,19 +15,14 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHold
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.analytics.performance.PerformanceMonitoring
-import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
 import com.tokopedia.hotel.common.util.ErrorHandlerHotel
 import com.tokopedia.hotel.common.util.TRACKING_HOTEL_SEARCH
-import com.tokopedia.hotel.globalsearch.presentation.activity.HotelChangeSearchActivity
 import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelDetailActivity
 import com.tokopedia.hotel.search.data.model.*
-import com.tokopedia.hotel.search.data.model.params.ParamFilter
-import com.tokopedia.hotel.search.data.util.CommonParam
+import com.tokopedia.hotel.search.data.model.params.ParamFilterV2
 import com.tokopedia.hotel.search.di.HotelSearchPropertyComponent
-import com.tokopedia.hotel.search.presentation.activity.HotelSearchFilterActivity
-import com.tokopedia.hotel.search.presentation.activity.HotelSearchResultActivity.Companion.CHANGE_SEARCH_REQ_CODE
 import com.tokopedia.hotel.search.presentation.activity.HotelSearchResultActivity.Companion.SEARCH_SCREEN_NAME
 import com.tokopedia.hotel.search.presentation.adapter.HotelOptionMenuAdapter
 import com.tokopedia.hotel.search.presentation.adapter.HotelOptionMenuAdapter.Companion.MODE_CHECKED
@@ -38,20 +31,25 @@ import com.tokopedia.hotel.search.presentation.adapter.PropertyAdapterTypeFactor
 import com.tokopedia.hotel.search.presentation.adapter.viewholder.SpaceItemDecoration
 import com.tokopedia.hotel.search.presentation.viewmodel.HotelSearchResultViewModel
 import com.tokopedia.hotel.search.presentation.widget.HotelClosedSortBottomSheets
-import com.tokopedia.iris.util.IrisSession
+import com.tokopedia.hotel.search.presentation.widget.HotelFilterBottomSheets
+import com.tokopedia.hotel.search.presentation.widget.SubmitFilterListener
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.sortfilter.SortFilterItem
+import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.fragment_hotel_search_result.*
 import javax.inject.Inject
 
 class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterTypeFactory>(),
-        BaseEmptyViewHolder.Callback, HotelSearchResultAdapter.OnClickListener {
+        BaseEmptyViewHolder.Callback, HotelSearchResultAdapter.OnClickListener, SubmitFilterListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var searchResultviewModel: HotelSearchResultViewModel
     lateinit var sortMenu: HotelClosedSortBottomSheets
+    lateinit var filterBottomSheet: HotelFilterBottomSheets
 
     @Inject
     lateinit var trackingHotelUtil: TrackingHotelUtil
@@ -69,6 +67,12 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
         searchResultviewModel = viewModelProvider.get(HotelSearchResultViewModel::class.java)
         arguments?.let {
             val hotelSearchModel = it.getParcelable(ARG_HOTEL_SEARCH_MODEL) ?: HotelSearchModel()
+
+            val selectedParam = it.getParcelable(ARG_FILTER_PARAM) ?: ParamFilterV2()
+            if (selectedParam.name.isNotEmpty()) {
+                searchResultviewModel.addFilter(listOf(selectedParam), false)
+            }
+
             searchResultviewModel.initSearchParam(hotelSearchModel)
             searchDestinationName = hotelSearchModel.name
             searchDestinationType = if (hotelSearchModel.searchType.isNotEmpty()) hotelSearchModel.searchType else hotelSearchModel.type
@@ -77,12 +81,21 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        searchResultviewModel.liveSearchResult.observe(this, Observer {
+
+        searchResultviewModel.liveSearchResult.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> onSuccessGetResult(it.data)
                 is Fail -> showGetListError(it.throwable)
             }
             stopTrace()
+        })
+
+        searchResultviewModel.liveSelectedFilter.observe(viewLifecycleOwner, Observer { (data, notifyUi) ->
+            if (notifyUi) {
+                showQuickFilterShimmering(true)
+                setUpQuickFilterBaseOnSelectedFilter(data)
+                loadInitialData()
+            }
         })
     }
 
@@ -104,6 +117,7 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
             recyclerView.addItemDecoration(SpaceItemDecoration(it.resources.getDimensionPixelSize(R.dimen.hotel_12dp),
                     LinearLayoutManager.VERTICAL))
         }
+
         bottom_action_view.sortItem.title = getString(R.string.hotel_search_sort_label)
         bottom_action_view.sortItem.listener = {
             if (::sortMenu.isInitialized) {
@@ -120,25 +134,9 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-
-        if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == REQUEST_FILTER && data != null && data.hasExtra(CommonParam.ARG_CACHE_FILTER_ID)) {
-                val cacheId = data.getStringExtra(CommonParam.ARG_CACHE_FILTER_ID)
-                val cacheManager = context?.let { SaveInstanceCacheManager(it, cacheId) } ?: return
-                val paramFilter = cacheManager.get(CommonParam.ARG_SELECTED_FILTER, ParamFilter::class.java)
-                        ?: ParamFilter()
-
-                trackingHotelUtil.hotelUserClickFilter(context, SEARCH_SCREEN_NAME)
-                searchResultviewModel.addFilter(paramFilter)
-                loadInitialData()
-            }
-        }
-    }
-
     fun changeSearchParam() {
-        loadInitialData()
+        bottom_action_view.visibility = View.GONE
+        searchResultviewModel.addFilter(listOf())
     }
 
     override fun createAdapterInstance(): BaseListAdapter<Property, PropertyAdapterTypeFactory> {
@@ -157,23 +155,69 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
         val searchProperties = data.properties
 
         bottom_action_view.visibility = View.VISIBLE
+        bottom_action_view.filterItem.active = searchResultviewModel.isFilter
+        showQuickFilterShimmering(false)
 
         super.renderList(searchProperties, searchProperties.isNotEmpty())
+
         generateSortMenu(data.displayInfo.sort)
-        initializeFilterClick(data.displayInfo.filter)
+
+        if (isFirstInitializeFilter) {
+            initializeFilterV2BottomSheet(data.filters)
+            initializeQuickFilter(data.quickFilter, data.filters)
+            isFirstInitializeFilter = false
+        }
     }
 
-    private fun initializeFilterClick(filter: Filter) {
+    private var isFirstInitializeFilter = true
+
+    private fun initializeFilterV2BottomSheet(filterV2s: List<FilterV2>) {
         bottom_action_view.filterItem.listener = {
-            searchResultviewModel.filter = filter
-            context?.let {
-                val cacheManager = SaveInstanceCacheManager(it, true).apply {
-                    put(CommonParam.ARG_FILTER, filter)
-                    put(CommonParam.ARG_SELECTED_FILTER, searchResultviewModel.selectedFilter)
-                }
-                startActivityForResult(HotelSearchFilterActivity.createIntent(it, cacheManager.id), REQUEST_FILTER)
+            filterBottomSheet = HotelFilterBottomSheets()
+                    .setSubmitFilterListener(this)
+                    .setSelected(searchResultviewModel.getSelectedFilter())
+                    .setFilter(filterV2s)
+            filterBottomSheet.show(childFragmentManager, javaClass.simpleName)
+        }
+    }
+
+    private var quickFilters: List<QuickFilter> = listOf()
+
+    private fun initializeQuickFilter(quickFilters: List<QuickFilter>, filters: List<FilterV2>) {
+        this.quickFilters = quickFilters.map { quickFilter ->
+            val item = filters.filter { it.name.equals(quickFilter.name, true) }
+            if (item.isNotEmpty()) {
+                quickFilter.type = (item.firstOrNull() ?: FilterV2()).type
+            }
+            quickFilter
+        }
+
+        quick_filter_sort_filter.dismissListener = {
+            bottom_action_view.visibility = View.GONE
+            searchResultviewModel.addFilter(quickFilters, quick_filter_sort_filter.chipItems)
+        }
+
+        val sortFilterItem = quickFilters.map {
+            val item = SortFilterItem(title = it.displayName,
+                    type = if (it.selected) ChipsUnify.TYPE_SELECTED else ChipsUnify.TYPE_NORMAL)
+            item.listener = {
+                item.toggleSelected()
+            }
+            return@map item
+        }
+        quick_filter_sort_filter.addItem(ArrayList(sortFilterItem))
+
+        for ((index, item) in quick_filter_sort_filter.chipItems.withIndex()) {
+            item.refChipUnify.setOnClickListener {
+                item.toggleSelected()
+                trackingHotelUtil.clickOnQuickFilter(context, SEARCH_SCREEN_NAME, item.title.toString(), index)
+                bottom_action_view.visibility = View.GONE
+                searchResultviewModel.addFilter(quickFilters, quick_filter_sort_filter.chipItems)
             }
         }
+
+        quick_filter_sort_filter.parentListener = { }
+        quick_filter_sort_filter.show()
     }
 
     private fun generateSortMenu(sort: List<Sort>) {
@@ -211,7 +255,7 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
                     this,
                     property,
                     position,
-            SEARCH_SCREEN_NAME)
+                    SEARCH_SCREEN_NAME)
 
             context?.run {
                 startActivityForResult(HotelDetailActivity.getCallingIntent(this,
@@ -255,12 +299,38 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
     override fun onEmptyButtonClicked() {
         if (!searchResultviewModel.isFilter) activity?.onBackPressed()
         else {
-            context?.let {
-                val cacheManager = SaveInstanceCacheManager(it, true).apply {
-                    put(CommonParam.ARG_FILTER, searchResultviewModel.filter)
-                    put(CommonParam.ARG_SELECTED_FILTER, searchResultviewModel.selectedFilter)
+            filterBottomSheet = HotelFilterBottomSheets()
+                    .setSubmitFilterListener(this)
+                    .setSelected(searchResultviewModel.getSelectedFilter())
+                    .setFilter((searchResultviewModel.liveSearchResult.value as Success<PropertySearch>).data.filters)
+            filterBottomSheet.show(childFragmentManager, javaClass.simpleName)
+        }
+    }
+
+    override fun onSubmitFilter(selectedFilter: List<ParamFilterV2>) {
+        bottom_action_view.visibility = View.GONE
+        trackingHotelUtil.clickSubmitFilterOnBottomSheet(context, SEARCH_SCREEN_NAME, selectedFilter)
+        searchResultviewModel.addFilter(selectedFilter)
+    }
+
+    //for setup quick filter after click submit in bottom sheet
+    private fun setUpQuickFilterBaseOnSelectedFilter(selectedFilters: List<ParamFilterV2>) {
+        quick_filter_sort_filter.chipItems.forEach { it.type = ChipsUnify.TYPE_NORMAL }
+        val selectedFiltersMap = selectedFilters.associateBy({ it.name }, { it })
+        quickFilters.forEachIndexed { index, quickFilter ->
+            if (selectedFiltersMap.containsKey(quickFilter.name)) {
+                val selectedFilter = selectedFiltersMap[quickFilter.name]
+                selectedFilter?.let { selectedFilterMap ->
+                    var contains = true
+                    for (quickFilterValue in quickFilter.values) {
+                        for ((i, selectedFilterValue) in selectedFilterMap.values.withIndex()) {
+                            if (quickFilterValue == selectedFilterValue) break
+                            else if (i == selectedFilterMap.values.lastIndex) contains = false
+                        }
+                        if (!contains) break
+                    }
+                    if (contains) quick_filter_sort_filter.chipItems[index].type = ChipsUnify.TYPE_SELECTED
                 }
-                startActivityForResult(HotelSearchFilterActivity.createIntent(it, cacheManager.id), REQUEST_FILTER)
             }
         }
     }
@@ -279,24 +349,36 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
         getComponent(HotelSearchPropertyComponent::class.java).inject(this)
     }
 
+    private fun showQuickFilterShimmering(isShimmering: Boolean) {
+        if (isShimmering) {
+            shimmer_quick_filter_sort_filter.show()
+            quick_filter_sort_filter.hide()
+        } else {
+            shimmer_quick_filter_sort_filter.hide()
+            quick_filter_sort_filter.show()
+        }
+    }
+
     override fun loadData(page: Int) {
         val searchQuery = GraphqlHelper.loadRawString(resources, R.raw.gql_get_property_search)
         searchResultviewModel.searchProperty(page, searchQuery)
     }
 
     override fun isAutoLoadEnabled(): Boolean = true
+    override fun getMinimumScrollableNumOfItems(): Int = 5
 
     companion object {
-        private const val REQUEST_FILTER = 0x10
         private const val REQUEST_CODE_DETAIL_HOTEL = 101
 
         const val ARG_HOTEL_SEARCH_MODEL = "arg_hotel_search_model"
+        const val ARG_FILTER_PARAM = "arg_hotel_filter_param"
 
-        fun createInstance(hotelSearchModel: HotelSearchModel): HotelSearchResultFragment {
+        fun createInstance(hotelSearchModel: HotelSearchModel, selectedParam: ParamFilterV2): HotelSearchResultFragment {
 
             return HotelSearchResultFragment().also {
                 it.arguments = Bundle().apply {
                     putParcelable(ARG_HOTEL_SEARCH_MODEL, hotelSearchModel)
+                    putParcelable(ARG_FILTER_PARAM, selectedParam)
                 }
             }
         }

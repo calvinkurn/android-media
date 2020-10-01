@@ -1,5 +1,6 @@
 package com.tokopedia.search.result.presentation.presenter.product
 
+import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel
 import io.mockk.confirmVerified
 import io.mockk.every
@@ -61,7 +62,8 @@ internal class SearchProductHandleProductImpressionTest: ProductListPresenterTes
                     productItemViewModel.topadsImpressionUrl,
                     productItemViewModel.productID,
                     productItemViewModel.productName,
-                    productItemViewModel.imageUrl
+                    productItemViewModel.imageUrl,
+                    SearchConstant.TopAdsComponent.TOP_ADS
             )
 
             productListView.sendTopAdsGTMTrackingProductImpression(capture(capturedProductItemViewModel))
@@ -125,7 +127,8 @@ internal class SearchProductHandleProductImpressionTest: ProductListPresenterTes
                     productItemViewModel.topadsImpressionUrl,
                     productItemViewModel.productID,
                     productItemViewModel.productName,
-                    productItemViewModel.imageUrl
+                    productItemViewModel.imageUrl,
+                    SearchConstant.TopAdsComponent.ORGANIC_ADS
             )
 
             productListView.sendProductImpressionTrackingEvent(capture(capturedProductItemViewModel))

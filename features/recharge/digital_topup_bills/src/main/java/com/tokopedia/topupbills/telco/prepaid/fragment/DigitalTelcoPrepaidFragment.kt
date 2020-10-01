@@ -34,6 +34,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.topupbills.R
+import com.tokopedia.topupbills.common.analytics.DigitalTopupAnalytics
 import com.tokopedia.topupbills.searchnumber.view.DigitalSearchNumberActivity
 import com.tokopedia.topupbills.telco.common.adapter.TelcoTabAdapter
 import com.tokopedia.topupbills.telco.common.fragment.DigitalBaseTelcoFragment
@@ -102,7 +103,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
     }
 
     private fun subscribeUi() {
-        sharedModelPrepaid.productCatalogItem.observe(this, Observer {
+        sharedModelPrepaid.productCatalogItem.observe(viewLifecycleOwner, Observer {
             if (isProductExist(it)) {
                 sharedModelPrepaid.setVisibilityTotalPrice(true)
                 telco_buy_widget.setTotalPrice(it.attributes.price)
@@ -115,27 +116,27 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
             }
         })
 
-        sharedModelPrepaid.productAutoCheckout.observe(this, Observer {
+        sharedModelPrepaid.productAutoCheckout.observe(viewLifecycleOwner, Observer {
             if (!isExpressCheckout) {
                 setupCheckoutData()
                 processTransaction()
             }
         })
 
-        sharedModelPrepaid.showTotalPrice.observe(this, Observer {
+        sharedModelPrepaid.showTotalPrice.observe(viewLifecycleOwner, Observer {
             it?.run {
                 buyWidget.setVisibilityLayout(it)
             }
         })
 
-        sharedModelPrepaid.selectedFilter.observe(this, Observer {
+        sharedModelPrepaid.selectedFilter.observe(viewLifecycleOwner, Observer {
             if (operatorId.isNotEmpty()) {
                 sharedModelPrepaid.getCatalogProductList(GraphqlHelper.loadRawString(activity?.resources,
                         R.raw.query_catalog_product_telco), menuId, operatorId, it)
             }
         })
 
-        sharedModelPrepaid.expandView.observe(this, Observer {
+        sharedModelPrepaid.expandView.observe(viewLifecycleOwner, Observer {
             if (it) telcoClientNumberWidget.setVisibleResultNumber(false)
             else telcoClientNumberWidget.setVisibleResultNumber(true)
         })
@@ -218,8 +219,11 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
                 topupAnalytics.eventClickTelcoPrepaidCategory(tabs[position].title)
                 sharedModelPrepaid.setVisibilityTotalPrice(false)
                 sharedModelPrepaid.setProductCatalogSelected(getEmptyProduct())
+                sharedModelPrepaid.setSelectedCategoryViewPager(getLabelActiveCategory())
             } else {
                 setTrackingOnTabMenu(tabs[position].title)
+                if (tabs[position].title == TelcoComponentName.PROMO) sendImpressionPromo()
+                else sendImpressionRecents()
             }
         }
     }
@@ -268,6 +272,8 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
                 separator.hide()
                 tabLayout.hide()
             }
+            //initiate impression promo
+            sendImpressionPromo()
         }
     }
     // endregion Promo and Recommendation
@@ -612,20 +618,13 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
 
     private fun generateCheckoutPassData(inputNumber: String, promoStatus: String,
                                          categoryId: String, operatorId: String, productId: String) {
-        checkoutPassData = DigitalCheckoutPassData.Builder()
-                .action(DigitalCheckoutPassData.DEFAULT_ACTION)
+        checkoutPassData = getDefaultCheckoutPassDataBuilder()
                 .categoryId(categoryId)
                 .clientNumber(inputNumber)
-                .instantCheckout("0")
                 .isPromo(promoStatus)
                 .operatorId(operatorId)
                 .productId(productId)
                 .utmCampaign(categoryId)
-                .utmContent(GlobalConfig.VERSION_NAME)
-                .idemPotencyKey(userSession.userId.generateRechargeCheckoutToken())
-                .utmSource(DigitalCheckoutPassData.UTM_SOURCE_ANDROID)
-                .utmMedium(DigitalCheckoutPassData.UTM_MEDIUM_WIDGET)
-                .voucherCodeCopied("")
                 .build()
     }
 

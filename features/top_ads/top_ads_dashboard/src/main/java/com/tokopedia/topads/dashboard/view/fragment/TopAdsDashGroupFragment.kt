@@ -29,8 +29,8 @@ import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.SELL
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.SELLER_PACKAGENAME
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TOASTER_DURATION
 import com.tokopedia.topads.dashboard.data.model.CountDataItem
-import com.tokopedia.topads.dashboard.data.model.groupitem.GetTopadsDashboardGroupStatistics
-import com.tokopedia.topads.dashboard.data.model.groupitem.GroupItemResponse
+import com.tokopedia.topads.common.data.response.groupitem.GetTopadsDashboardGroupStatistics
+import com.tokopedia.topads.common.data.response.groupitem.GroupItemResponse
 import com.tokopedia.topads.dashboard.data.utils.Utils
 import com.tokopedia.topads.dashboard.data.utils.Utils.format
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
@@ -268,6 +268,7 @@ class TopAdsDashGroupFragment : BaseDaggerFragment() {
     private fun onSuccessGroupResult(response: GroupItemResponse.GetTopadsDashboardGroups) {
         totalCount = response.meta.page.total
         totalPage = (totalCount / response.meta.page.perPage) + 1
+        recyclerviewScrollListener.updateStateAfterGetData()
         loader.visibility = View.GONE
         response.data.forEach {
             groupIds.add(it.groupId.toString())

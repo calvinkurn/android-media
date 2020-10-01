@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.reputation.common.R
 
 class AnimatedStarsReviewPendingView @JvmOverloads constructor(
@@ -27,7 +28,7 @@ class AnimatedStarsReviewPendingView @JvmOverloads constructor(
 
     fun resetStars() {
         showingNormalAnim = true
-        setImageDrawable(AnimatedVectorDrawableCompat.create(context, R.drawable.empty_star_review_pending))
+        setImageDrawable(MethodChecker.getDrawable(context, R.drawable.empty_star_create_review))
     }
 
     fun morph() {

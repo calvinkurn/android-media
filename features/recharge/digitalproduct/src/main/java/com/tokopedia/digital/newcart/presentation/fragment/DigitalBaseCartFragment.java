@@ -45,6 +45,9 @@ import com.tokopedia.digital.newcart.presentation.compoundview.InputPriceHolderV
 import com.tokopedia.digital.newcart.presentation.contract.DigitalBaseContract;
 import com.tokopedia.digital.newcart.presentation.model.DigitalSubscriptionParams;
 import com.tokopedia.digital.utils.DeviceUtil;
+import com.tokopedia.globalerror.GlobalError;
+import com.tokopedia.network.constant.ErrorNetMessage;
+import com.tokopedia.network.utils.ErrorHandler;
 import com.tokopedia.nps.presentation.view.dialog.AppFeedbackRatingBottomSheet;
 import com.tokopedia.promocheckout.common.data.ConstantKt;
 import com.tokopedia.promocheckout.common.util.TickerCheckoutUtilKt;
@@ -60,6 +63,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import kotlin.Unit;
+
 public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Presenter> extends BaseDaggerFragment
         implements DigitalBaseContract.View,
         InputPriceHolderView.ActionListener,
@@ -71,6 +76,8 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
     private static final int REQUEST_CODE_OTP = 1001;
 
     public static final int OTP_TYPE_CHECKOUT_DIGITAL = 16;
+
+    private static final int DELAY_ERROR_SHOWING = 3000;
 
     protected CartDigitalInfoData cartDigitalInfoData;
     protected CheckoutDataParameter.Builder checkoutDataParameterBuilder;
@@ -93,6 +100,8 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
     private static final String EXTRA_STATE_PROMO_DATA = "EXTRA_STATE_PROMO_DATA";
 
     protected P presenter;
+
+    protected GlobalError errorView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -269,8 +278,23 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
     @Override
     public void onDisablePromoDiscount() {
         digitalAnalytics.eventclickCancelApplyCoupon(getCategoryName(), promoData.getPromoCode());
+        presenter.cancelVoucherCart();
+    }
+
+    @Override
+    public void successCancelVoucherCart() {
+        checkoutHolderView.resetPromoTicker();
         promoData.setPromoCode("");
         disableVoucherCheckoutDiscount();
+    }
+
+    @Override
+    public void failedCancelVoucherCart(Throwable throwable) {
+        String message = ErrorNetMessage.MESSAGE_ERROR_DEFAULT;
+        if (throwable != null && !throwable.getMessage().equals("")) {
+            message = ErrorHandler.getErrorMessage(getActivity(), throwable);
+        }
+        showToastMessage(message);
     }
 
     private String getCategoryName() {
@@ -430,6 +454,16 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
     }
 
     @Override
+    public int getOrderId() {
+        String orderIdString = cartPassData.getOrderId();
+        try {
+            return TextUtils.isEmpty(orderIdString) ? 0 : Integer.parseInt(orderIdString);
+        } catch (Exception e) {
+            return 0;
+        }
+    }
+
+    @Override
     public String getZoneId() {
         return cartPassData.getZoneId();
     }
@@ -456,10 +490,33 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
 
     @Override
     public void closeViewWithMessageAlert(String message) {
-        Intent intent = new Intent();
-        intent.putExtra(DigitalExtraParam.EXTRA_MESSAGE, message);
-        getActivity().setResult(Activity.RESULT_OK, intent);
-        getActivity().finish();
+        if (cartPassData.isFromPDP()) {
+            Intent intent = new Intent();
+            intent.putExtra(DigitalExtraParam.EXTRA_MESSAGE, message);
+            getActivity().setResult(Activity.RESULT_OK, intent);
+            getActivity().finish();
+        } else {
+            showError(message);
+        }
+    }
+
+    @Override
+    public void showError(String message) {
+        if (errorView != null) {
+            errorView.setActionClickListener(view -> {
+                errorView.setVisibility(View.GONE);
+                presenter.onViewCreated();
+                return Unit.INSTANCE;
+            });
+
+            int errorType = GlobalError.Companion.getSERVER_ERROR();
+            if (message.equals(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL)) {
+                errorType = GlobalError.Companion.getNO_CONNECTION();
+            }
+            errorView.setType(errorType);
+
+            errorView.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override

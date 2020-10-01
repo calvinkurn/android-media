@@ -60,6 +60,7 @@
 
     <com.tokopedia.unifycomponents.TextFieldUnify
         android:id="@+id/tf_weight_amount"
+        android:contentDescription="@string/content_desc_tf_weight_amount"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl5"

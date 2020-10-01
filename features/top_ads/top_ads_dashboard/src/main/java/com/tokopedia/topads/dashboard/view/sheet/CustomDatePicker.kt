@@ -63,7 +63,7 @@ class CustomDatePicker : BottomSheetUnify() {
         super.onViewCreated(view, savedInstanceState)
         renderSinglePickCalendar(arrayListOf())
         setFieldEnable(false)
-        dateStart?.setOnFocusChangeListener { v, hasFocus ->
+        dateStart?.textFieldInput?.setOnFocusChangeListener { v, hasFocus ->
             if (hasFocus) {
                 dateFlag = 0
                 selectedDate = selectedStartDate
@@ -71,9 +71,9 @@ class CustomDatePicker : BottomSheetUnify() {
                 renderSinglePickCalendar(arrayListOf())
             }
         }
-        dateEnd?.setOnFocusChangeListener { v, hasFocus ->
+        dateEnd?.textFieldInput?.setOnFocusChangeListener { v, hasFocus ->
             if (hasFocus) {
-                if(dateStart.text.isNullOrEmpty()){
+                if(dateStart.textFieldInput.text.isNullOrEmpty()){
                     return@setOnFocusChangeListener
                 }
                 selectedDate = selectedDateOriginal
@@ -81,8 +81,8 @@ class CustomDatePicker : BottomSheetUnify() {
                 renderSinglePickCalendar(arrayListOf())
             }
         }
-        dateStart?.keyListener = null
-        dateEnd?.keyListener = null
+        dateStart?.textFieldInput?.keyListener = null
+        dateEnd?.textFieldInput?.keyListener = null
     }
 
     private fun setFieldEnable(enable: Boolean) {
@@ -99,13 +99,13 @@ class CustomDatePicker : BottomSheetUnify() {
         calendar?.setOnDateSelectedListener(object : CalendarPickerView.OnDateSelectedListener {
             override fun onDateSelected(date: Date) {
                 if (dateFlag == 0) {
-                    dateStart?.setText(outputFormat.format(date))
+                    dateStart?.textFieldInput?.setText(outputFormat.format(date))
                     selectedStartDate = date
                     minDate = date
                     setFieldEnable(true)
                     dateEnd?.requestFocus()
                 } else if (dateFlag == 1) {
-                    dateEnd?.setText(outputFormat.format(date))
+                    dateEnd?.textFieldInput?.setText(outputFormat.format(date))
                     listenerCalendar.onCustomDateSelected(minDate,date)
                     GlobalScope.launch {
                         delay(300)
