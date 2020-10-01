@@ -4,9 +4,9 @@ import android.content.Context;
 import android.content.Intent;
 import androidx.fragment.app.Fragment;
 
+import com.tokopedia.seller.manageitem.data.cloud.model.category.ProductManageCategoryViewModel;
 import com.tokopedia.seller.product.category.view.fragment.CategoryPickerDynamicFragment;
 import com.tokopedia.seller.product.category.view.fragment.CategoryPickerFragment;
-import com.tokopedia.product.manage.item.category.view.model.ProductManageCategoryViewModel;
 
 import java.util.ArrayList;
 

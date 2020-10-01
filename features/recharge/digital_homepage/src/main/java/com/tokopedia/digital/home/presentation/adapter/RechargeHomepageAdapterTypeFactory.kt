@@ -76,6 +76,10 @@ class RechargeHomepageAdapterTypeFactory(
         return ReminderWidgetViewHolder.LAYOUT
     }
 
+    override fun type(featuredShopDataModel: FeaturedShopDataModel): Int{
+        return 0
+    }
+
     override fun type(mixLeftDataModel: MixLeftDataModel): Int {
         return 0
     }

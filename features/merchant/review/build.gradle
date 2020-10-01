@@ -36,7 +36,6 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     implementation project(rootProject.ext.features.resourcesCommon)
-    implementation project(rootProject.ext.features.productManageItem)
     implementation project(rootProject.ext.features.reputationCommon)
     implementation project(rootProject.ext.features.shopCommon)
 
