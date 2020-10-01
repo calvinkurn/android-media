@@ -120,8 +120,8 @@ import com.tokopedia.locationmanager.DeviceLocation
 import com.tokopedia.locationmanager.LocationDetectorHelper
 import com.tokopedia.loyalty.view.activity.PromoListActivity
 import com.tokopedia.navigation_common.listener.*
-import com.tokopedia.permissionchecker.PermissionCheckerHelper
-import com.tokopedia.permissionchecker.PermissionCheckerHelper.PermissionCheckListener
+import com.tokopedia.utils.permission.PermissionCheckerHelper
+import com.tokopedia.utils.permission.PermissionCheckerHelper.PermissionCheckListener
 import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarouselItemDataModel
 import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerWidgetType
 import com.tokopedia.promogamification.common.floating.view.fragment.FloatingEggButtonFragment
