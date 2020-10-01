@@ -31,6 +31,7 @@ import com.tokopedia.tokopoints.view.util.CommonConstant
 import com.tokopedia.tokopoints.view.util.DEFAULT_TIME_STRING
 import com.tokopedia.tokopoints.view.util.convertLongToHourMinuteSec
 import java.util.*
+import kotlin.collections.HashMap
 
 class CouponInStackBaseAdapter(callback: AdapterCallback, val data: TokoPointPromosEntity) : BaseAdapter<CouponValueEntity>(callback) {
 
@@ -103,13 +104,13 @@ class CouponInStackBaseAdapter(callback: AdapterCallback, val data: TokoPointPro
                 if (data.title != null && data.title.isNotEmpty()) {
                     eventLabel = data.title
                 }
-                AnalyticsTrackerUtil.sendECommerceEvent(holder.value.context,
+                AnalyticsTrackerUtil.sendECommerceEvent(holder.itemView.context,
                         AnalyticsTrackerUtil.EventKeys.EVENT_VIEW_PROMO,
                         AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS_KUPON_SAYA,
                         AnalyticsTrackerUtil.ActionKeys.VIEW_MY_COUPON,
                         eventLabel, promoView)
+                holder.isVisited = true
             }
-            holder.isVisited = true
         }
     }
 
@@ -125,8 +126,8 @@ class CouponInStackBaseAdapter(callback: AdapterCallback, val data: TokoPointPro
         val promotions = HashMap<String, List<Map<String, String?>>>()
         promotions["promotions"] = Arrays.asList<Map<String, String?>>(item)
 
-        val promoClick = HashMap<String, Map<String, List<Map<String, String?>>>>()
-        promoClick["promoView"] = promotions
+        val promoClick: HashMap<String, Map<String, List<Map<String, String?>>>> = HashMap()
+        promoClick["promoClick"] = promotions
 
         var eventLabel = ""
         if (data.title != null && data.title.isNotEmpty()) {

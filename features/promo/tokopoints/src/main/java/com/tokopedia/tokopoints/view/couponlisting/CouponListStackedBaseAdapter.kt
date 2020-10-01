@@ -34,6 +34,7 @@ import com.tokopedia.tokopoints.view.util.CommonConstant
 import com.tokopedia.tokopoints.view.util.DEFAULT_TIME_STRING
 import com.tokopedia.tokopoints.view.util.convertLongToHourMinuteSec
 import java.util.*
+import kotlin.collections.HashMap
 
 class CouponListStackedBaseAdapter(private val mPresenter: CouponLisitingStackedViewModel, callback: AdapterCallback) : BaseAdapter<CouponValueEntity>(callback) {
     private var mRecyclerView: RecyclerView? = null
@@ -166,8 +167,8 @@ class CouponListStackedBaseAdapter(private val mPresenter: CouponLisitingStacked
         val promotions = HashMap<String, List<Map<String, String?>>>()
         promotions["promotions"] = Arrays.asList<Map<String, String?>>(item)
 
-        val promoClick = HashMap<String, Map<String, List<Map<String, String?>>>>()
-        promoClick["promoView"] = promotions
+        val promoClick: HashMap<String, Map<String, List<Map<String, String?>>>> = HashMap()
+        promoClick["promoClick"] = promotions
 
         var eventLabel = ""
         if (data.title != null && data.title.isNotEmpty()) {

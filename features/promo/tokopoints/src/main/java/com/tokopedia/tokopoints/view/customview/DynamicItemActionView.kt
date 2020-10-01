@@ -65,19 +65,19 @@ class DynamicItemActionView @JvmOverloads constructor(
 
     fun setLayoutText(title: String, position: Int) {
         when (position) {
-            0 -> tvFirstLayout.text = title
-            1 -> tvCenterLayout.text = title
+            FIRST_TAB -> tvFirstLayout.text = title
+            SECOND_TAB -> tvCenterLayout.text = title
             else -> tvRightLayout.text = title
         }
     }
 
     fun setLayoutLabel(label: String, position: Int) {
         when (position) {
-            0 -> {
+            FIRST_TAB -> {
                 tvFirstLabel.show()
                 tvFirstLabel.text = label
             }
-            1 -> {
+            SECOND_TAB -> {
                 tvCenterLabel.show()
                 tvCenterLabel.text = label
             }
@@ -90,27 +90,27 @@ class DynamicItemActionView @JvmOverloads constructor(
 
     fun setLayoutIcon(imgUrl: String, position: Int) {
         when (position) {
-            0 -> ivFirstLayout.loadImage(imgUrl)
-            1 -> ivCenterLayout.loadImage(imgUrl)
+            FIRST_TAB -> ivFirstLayout.loadImage(imgUrl)
+            SECOND_TAB -> ivCenterLayout.loadImage(imgUrl)
             else -> ivRightLayout.loadImage(imgUrl)
         }
     }
 
     fun setLayoutVisibility(visibility: Int, position: Int) {
         when (position) {
-            0 -> holderFirstLayout.visibility = visibility
-            1 -> holderCenterLayout.visibility = visibility
+            FIRST_TAB -> holderFirstLayout.visibility = visibility
+            SECOND_TAB -> holderCenterLayout.visibility = visibility
             else -> holderRightLayout.visibility = visibility
         }
     }
 
     fun setLayoutNotification(notif: String, position: Int) {
         when (position) {
-            0 -> {
+            FIRST_TAB -> {
                 notifFirstLayout.show()
                 notifFirstLayout.setNotification(notif, NotificationUnify.NONE_TYPE, NotificationUnify.COLOR_PRIMARY)
             }
-            1 -> {
+            SECOND_TAB -> {
                 notifCenterLayout.show()
                 notifCenterLayout.setNotification(notif, NotificationUnify.NONE_TYPE, NotificationUnify.COLOR_PRIMARY)
             }
@@ -123,16 +123,16 @@ class DynamicItemActionView @JvmOverloads constructor(
 
     fun hideNotification(position: Int) {
         when (position) {
-            0 -> notifFirstLayout.hide()
-            1 -> notifCenterLayout.hide()
+            FIRST_TAB -> notifFirstLayout.hide()
+            SECOND_TAB -> notifCenterLayout.hide()
             else -> notifRightLayout.hide()
         }
     }
 
     fun setLayoutClicklistener(applink: String?, text: String?, position: Int) {
         when (position) {
-            0 -> notifFirstLayout.hide()
-            1 -> notifCenterLayout.hide()
+            FIRST_TAB -> notifFirstLayout.hide()
+            SECOND_TAB -> notifCenterLayout.hide()
             else ->
                 notifRightLayout.hide()
         }
@@ -151,6 +151,11 @@ class DynamicItemActionView @JvmOverloads constructor(
             1 -> dividerOne.visibility = visibility
             else -> dividerTwo.visibility = visibility
         }
+    }
+
+    companion object {
+        const val FIRST_TAB = 0
+        const val SECOND_TAB = 1
     }
 
 }

@@ -66,10 +66,7 @@ class SectionTopadsVH(val view: View) : RecyclerView.ViewHolder(view) {
         view.topads_reward.setApiResponseListener(object : TopAdsImageVieWApiResponseListener {
             override fun onImageViewResponse(imageDataList: ArrayList<TopAdsImageViewModel>) {
                 if (imageDataList.isNotEmpty()) {
-                    val stack: Stack<TopAdsImageViewModel> = Stack()
-                    stack.addAll(imageDataList.toMutableList())
-                    stack.reverse()
-                    view.topads_reward.loadImage(stack.pop(), convertDpToPixel(10, view.context))
+                    view.topads_reward.loadImage(imageDataList.last(), convertDpToPixel(10, view.context))
                     containerTopads.displayedChild = 1
                     view.topads_reward.setTopAdsImageViewImpression(object : TopAdsImageViewImpressionListener {
                         override fun onTopAdsImageViewImpression(viewUrl: String) {
@@ -111,7 +108,7 @@ class SectionTopadsVH(val view: View) : RecyclerView.ViewHolder(view) {
 
     private fun sendBannerImpression(bannerName: String) {
         val promotionItem = HashMap<String, Any>()
-        promotionItem[AnalyticsTrackerUtil.EcommerceKeys.NAME] = "/tokopoints - p{x} - promo lis"
+        promotionItem[AnalyticsTrackerUtil.EcommerceKeys.NAME] = CommonConstant.IMPRESSION_LIST
         promotionItem[AnalyticsTrackerUtil.EcommerceKeys.POSITION] = -1
         promotionItem[AnalyticsTrackerUtil.EcommerceKeys.CREATIVE] = bannerName
         val promotionMap = HashMap<String, Any>()

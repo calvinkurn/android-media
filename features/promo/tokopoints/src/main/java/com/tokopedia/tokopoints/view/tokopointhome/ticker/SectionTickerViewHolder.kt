@@ -27,7 +27,7 @@ class SectionTickerViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
         var link = ""
         var desc = ""
         var linkDesc = ""
-        if (content.layoutTickerAttr.tickerList.isNotEmpty()) {
+        if (!content.layoutTickerAttr.tickerList.isNullOrEmpty()) {
             for (tickerItem in content.layoutTickerAttr.tickerList[0].metadata) {
                 link = if (tickerItem.link[CommonConstant.TickerMapKeys.APP_LINK]?.length != 0) {
                     tickerItem.link[CommonConstant.TickerMapKeys.APP_LINK].toString()
