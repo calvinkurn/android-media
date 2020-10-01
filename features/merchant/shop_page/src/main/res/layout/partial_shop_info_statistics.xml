@@ -205,7 +205,7 @@
                     android:id="@+id/image_view_smiley_neutral"
                     android:layout_width="@dimen/dp_16"
                     android:layout_height="@dimen/dp_16"
-                    app:srcCompat="@drawable/ic_smiley_neutral" />
+                    app:srcCompat="@drawable/review_ic_smiley_neutral" />
 
                 <TextView
                     android:id="@+id/textViewScoreNeutral"

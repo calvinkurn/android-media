@@ -127,7 +127,7 @@ public class ReputationAdapter extends RecyclerView.Adapter<ReputationAdapter.Vi
 
     public void showSmileyNeutral() {
         this.list.clear();
-        this.list.add(new SmileyModel(R.drawable.ic_smiley_neutral,
+        this.list.add(new SmileyModel(R.drawable.review_ic_smiley_neutral,
                 context.getString(R.string.smiley_netral),
                 SMILEY_NEUTRAL));
         this.canGiveReputation = false;
@@ -174,7 +174,7 @@ public class ReputationAdapter extends RecyclerView.Adapter<ReputationAdapter.Vi
                     context.getString(R.string.smiley_bad),
                     SMILEY_BAD,
                     true));
-            this.list.add(new SmileyModel(R.drawable.ic_smiley_netral,
+            this.list.add(new SmileyModel(R.drawable.review_ic_smiley_neutral,
                     context.getString(R.string.smiley_netral),
                     SMILEY_NEUTRAL,
                     true));

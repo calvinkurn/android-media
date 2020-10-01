@@ -68,7 +68,7 @@
             android:maxHeight="@dimen/dp_24"
             android:maxWidth="@dimen/dp_24"
             android:scaleType="fitXY"
-            app:srcCompat="@drawable/ic_smiley_neutral"/>
+            app:srcCompat="@drawable/review_ic_smiley_neutral"/>
 
         <TextView
             android:id="@+id/score_netral"
