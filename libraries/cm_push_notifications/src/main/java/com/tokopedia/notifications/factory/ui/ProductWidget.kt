@@ -88,6 +88,9 @@ internal open class ProductWidget(
         contract.rightCarouselButton(view)
         contract.leftCarouselButton(view)
 
+        // carousel visibility of arrow button
+        carouselButtonVisibility(view)
+
         // handling legacy of product card
         when (model.notificationProductType) {
             CMConstant.NotificationProductType.V2 -> productV2Card(view)
@@ -99,7 +102,6 @@ internal open class ProductWidget(
         view.setOnClickPendingIntent(R.id.ll_expandedProductView, contract.productDetailIntent(product))
         view.setTextViewText(R.id.btn_text, spanStr(product.productButtonMessage))
         view.setViewVisibility(R.id.btn_icon, View.GONE)
-        carouselButtonVisibility(view)
     }
 
     private fun productV2Card(view: RemoteViews) {
@@ -128,7 +130,11 @@ internal open class ProductWidget(
         ProductAnalytics.impression(userSession.userId, model, product)
         ProductAnalytics.impressionExpanded(userSession.userId, model, product)
 
-        carouselButtonVisibility(view)
+        // override carousel visibility button
+        if (model.productInfoList.onlyOne()) {
+            view.setViewVisibility(R.id.ivArrowLeft, View.GONE)
+            view.setViewVisibility(R.id.ivArrowRight, View.GONE)
+        }
     }
 
     private fun setButtonField(resId: Int, view: RemoteViews, actionButton: ActionButton) {
