@@ -49,12 +49,12 @@
       "items": [
         {
           "item_category": "{{.*}}",
-          "item_brand": "none / other",
+          "item_brand": "{{.*}}",
           "dimension54": "{{.*}}",
           "dimension80": "{{.*}}",
           "dimension81": "{{.*}}",
           "dimension45": "{{\\d{1,}}}",
-          "dimension83": "none / other",
+          "dimension83": "{{.*}}",
           "dimension40": "{{.*}}",
           "dimension79": "{{\\d{1,}}}",
           "item_id": "{{\\d{1,}}}",
