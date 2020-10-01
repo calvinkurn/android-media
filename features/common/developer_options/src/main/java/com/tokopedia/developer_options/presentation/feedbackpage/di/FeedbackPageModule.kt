@@ -1,6 +1,7 @@
 package com.tokopedia.developer_options.presentation.feedbackpage.di
 
 import com.tokopedia.developer_options.presentation.feedbackpage.domain.model.CategoriesMapper
+import com.tokopedia.developer_options.presentation.feedbackpage.domain.model.ScreenshotResultMapper
 import com.tokopedia.developer_options.presentation.feedbackpage.ui.feedbackpage.FeedbackPagePresenter
 import dagger.Module
 import dagger.Provides
@@ -18,7 +19,7 @@ class FeedbackPageModule {
 
     @Provides
     @FeedbackPageScope
-    fun provideFeedbackPagePresenter(compositeSubscription: CompositeSubscription, mapper: CategoriesMapper): FeedbackPagePresenter {
-        return FeedbackPagePresenter(compositeSubscription, mapper)
+    fun provideFeedbackPagePresenter(compositeSubscription: CompositeSubscription, mapper: CategoriesMapper, imageMapper: ScreenshotResultMapper): FeedbackPagePresenter {
+        return FeedbackPagePresenter(compositeSubscription, mapper, imageMapper)
     }
 }

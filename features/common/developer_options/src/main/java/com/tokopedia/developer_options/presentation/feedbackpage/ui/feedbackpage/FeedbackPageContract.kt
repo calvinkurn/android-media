@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.developer_options.presentation.feedbackpage.domain.model.BaseImageFeedbackUiModel
 import com.tokopedia.developer_options.presentation.feedbackpage.domain.model.CategoriesModel
 import com.tokopedia.developer_options.presentation.feedbackpage.domain.request.FeedbackFormRequest
+import com.tokopedia.screenshot_observer.ScreenshotData
 import okhttp3.MultipartBody
 
 interface FeedbackPageContract {
@@ -25,5 +26,6 @@ interface FeedbackPageContract {
         fun commitData(feedbackId: Int)
         fun getImageList(selectedImage: ArrayList<String>): MutableList<BaseImageFeedbackUiModel>
         fun initImageData(): MutableList<BaseImageFeedbackUiModel>
+        fun screenshotImageResult(data: ScreenshotData) : MutableList<BaseImageFeedbackUiModel>
     }
 }

@@ -107,11 +107,6 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
         return mainView
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-    }
-
     override fun getScreenName(): String = ""
 
     override fun initInjector() {
@@ -192,6 +187,9 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
             val screenshotData = uriImage?.let { handleItem(it) }
             imageView.visibility = View.VISIBLE
             tvImage.visibility = View.VISIBLE
+            if (screenshotData != null) {
+                imageAdapter.setImageFeedbackData(feedbackPagePresenter.screenshotImageResult(screenshotData))
+            }
             imageView.setImageURI(Uri.parse(screenshotData?.path))
         } else {
             imageView.visibility = View.GONE
@@ -461,7 +459,7 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
             val builder = ImagePickerBuilder(getString(R.string.image_picker_title),
                     intArrayOf(ImagePickerTabTypeDef.TYPE_GALLERY),
                     GalleryType.ALL, ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB,
-                    ImagePickerBuilder.DEFAULT_MIN_RESOLUTION, ImageRatioTypeDef.RATIO_9_16, true,
+                    ImagePickerBuilder.DEFAULT_MIN_RESOLUTION, ImageRatioTypeDef.ORIGINAL, true,
                     null,
                     ImagePickerMultipleSelectionBuilder(
                     selectedImage, null, -1, 5

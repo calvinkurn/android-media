@@ -3,14 +3,12 @@ package com.tokopedia.developer_options.presentation.feedbackpage.ui.feedbackpag
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.developer_options.api.ApiClient
 import com.tokopedia.developer_options.api.FeedbackApiInterface
-import com.tokopedia.developer_options.presentation.feedbackpage.domain.model.BaseImageFeedbackUiModel
-import com.tokopedia.developer_options.presentation.feedbackpage.domain.model.CategoriesMapper
-import com.tokopedia.developer_options.presentation.feedbackpage.domain.model.DefaultFeedbackUiModel
-import com.tokopedia.developer_options.presentation.feedbackpage.domain.model.ImageFeedbackUiModel
+import com.tokopedia.developer_options.presentation.feedbackpage.domain.model.*
 import com.tokopedia.developer_options.presentation.feedbackpage.domain.request.FeedbackFormRequest
 import com.tokopedia.developer_options.presentation.feedbackpage.domain.response.CategoriesResponse
 import com.tokopedia.developer_options.presentation.feedbackpage.domain.response.FeedbackFormResponse
 import com.tokopedia.developer_options.presentation.feedbackpage.domain.response.ImageResponse
+import com.tokopedia.screenshot_observer.ScreenshotData
 import okhttp3.MultipartBody
 import okhttp3.ResponseBody
 import rx.Subscriber
@@ -18,7 +16,7 @@ import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import rx.subscriptions.CompositeSubscription
 
-class FeedbackPagePresenter(private val compositeSubscription: CompositeSubscription, val mapper: CategoriesMapper) : BaseDaggerPresenter<FeedbackPageContract.View>(), FeedbackPageContract.Presenter {
+class FeedbackPagePresenter(private val compositeSubscription: CompositeSubscription, val mapper: CategoriesMapper, val imageMapper: ScreenshotResultMapper) : BaseDaggerPresenter<FeedbackPageContract.View>(), FeedbackPageContract.Presenter {
 
     private val feedbackApi: FeedbackApiInterface = ApiClient.getAPIService()
     private var imageData: MutableList<BaseImageFeedbackUiModel> = mutableListOf()
@@ -150,6 +148,11 @@ class FeedbackPagePresenter(private val compositeSubscription: CompositeSubscrip
     override fun initImageData(): MutableList<BaseImageFeedbackUiModel> {
         imageData.clear()
         imageData.add(DefaultFeedbackUiModel())
+        return imageData
+    }
+
+    override fun screenshotImageResult(data: ScreenshotData): MutableList<BaseImageFeedbackUiModel> {
+        imageData.add(imageMapper.mapData(data))
         return imageData
     }
 
