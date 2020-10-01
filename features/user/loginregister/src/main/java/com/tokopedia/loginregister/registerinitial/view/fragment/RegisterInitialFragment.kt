@@ -1106,7 +1106,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
     private fun onSuccessRegister() {
         activityShouldEnd = true
         activity?.let {
-            if (isFromAccount()) {
+            if (isFromAccount() || isFromOnboarding()) {
                 val intent = RouteManager.getIntent(context, ApplinkConst.DISCOVERY_NEW_USER)
                 startActivity(intent)
             }
@@ -1121,6 +1121,8 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
     private fun isFromAccount(): Boolean = source == SOURCE_ACCOUNT
 
     private fun isFromAtc(): Boolean = source == SOURCE_ATC
+
+    private fun isFromOnboarding(): Boolean = source == SOURCE_ONBOARDING
 
     private fun onGoToChangeName() {
         activity?.let {
@@ -1354,6 +1356,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
 
         private const val SOURCE_ACCOUNT = "account"
         private const val SOURCE_ATC = "atc"
+        private const val SOURCE_ONBOARDING = "onboarding"
 
         private const val FACEBOOK_LOGIN_TYPE = "fb"
 
