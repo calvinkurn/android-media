@@ -19,20 +19,20 @@ class DrawOnPictureView @JvmOverloads constructor(context: Context,
 
     lateinit var listener: Listener
 
+    private lateinit var currentPath: Path
+    private var currentColor: String = "#00FF00"
+    private var currentStrokeWidth = 5F
+
     private var strokePaint: Paint = Paint().apply {
         isAntiAlias = true
         style = Paint.Style.STROKE
-        color = currentColor
+        color = Color.parseColor(currentColor)
         strokeJoin = Paint.Join.ROUND
         strokeCap = Paint.Cap.ROUND
         strokeWidth = currentStrokeWidth
     }
 
     private val paths: ArrayList<DrawOnPictureModel> = arrayListOf()
-
-    private lateinit var currentPath: Path
-    private var currentColor: Int = Color.RED
-    private var currentStrokeWidth = 15f
 
     init {
         setOnTouchListener { view, motionEvent ->
@@ -43,7 +43,7 @@ class DrawOnPictureView @JvmOverloads constructor(context: Context,
                 MotionEvent.ACTION_DOWN -> {
                     currentPath = Path()
                     currentPath.moveTo(xPosition, yPosition)
-                    paths.add(DrawOnPictureModel(currentColor, currentPath))
+                    paths.add(DrawOnPictureModel(currentColor, currentStrokeWidth, currentPath))
                     listener.onActionDraw()
                 }
                 MotionEvent.ACTION_MOVE -> {
@@ -68,17 +68,27 @@ class DrawOnPictureView @JvmOverloads constructor(context: Context,
         canvas?.save()
 
         paths.forEach {
-            strokePaint.color = it.color
+            strokePaint.strokeWidth = it.width
+            strokePaint.color = Color.parseColor(it.color)
             canvas?.drawPath(it.path, strokePaint)
         }
 
         canvas?.restore()
     }
 
-    fun changePaintColor(color: Int) {
-        currentColor = color
-        strokePaint.color = color
+    fun changeStrokeWidth(width: Float) {
+        currentStrokeWidth = width
+        strokePaint.strokeWidth = width
     }
+
+    fun getStrokeWidth(): Float = currentStrokeWidth
+
+    fun changeBrushColor(color: String) {
+        currentColor = color
+        strokePaint.color = Color.parseColor(color)
+    }
+
+    fun getCurrentBrushColor(): String = currentColor
 
     fun canUndo(): Boolean = paths.size > 0
 

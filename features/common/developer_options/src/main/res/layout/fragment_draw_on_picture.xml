@@ -1,74 +1,103 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/black">
+    android:background="@color/black"
+    android:paddingTop="@dimen/spacing_lvl4">
 
-    <LinearLayout
-        android:id="@+id/containerHeaderDoP"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/black"
-        android:orientation="horizontal"
-        android:paddingLeft="@dimen/spacing_lvl4"
-        android:paddingTop="@dimen/spacing_lvl4"
-        android:paddingRight="@dimen/spacing_lvl4"
-        android:paddingBottom="@dimen/spacing_lvl4"
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/btnDoPBack"
+        android:layout_width="@dimen/layout_lvl3"
+        android:layout_height="@dimen/layout_lvl3"
+        android:layout_marginLeft="@dimen/spacing_lvl4"
         app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_devops_back_white" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/btnDoPUndo"
+        android:layout_width="@dimen/layout_lvl3"
+        android:layout_height="@dimen/layout_lvl3"
+        android:layout_marginEnd="@dimen/spacing_lvl3"
+        app:layout_constraintRight_toLeftOf="@id/btnDoPencil"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_undo_active" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/btnDoPencil"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/layout_lvl3"
+        android:layout_marginEnd="@dimen/spacing_lvl3"
+        android:gravity="center_vertical"
+        android:text="Pencil Icon"
+        android:textColor="@color/white"
+        app:layout_constraintRight_toLeftOf="@id/btnSaveImage"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!--        <androidx.appcompat.widget.AppCompatImageView-->
+    <!--    android:id="@+id/btnDoPencil"-->
+    <!--            android:layout_width="@dimen/layout_lvl3"-->
+    <!--        android:layout_marginEnd="@dimen/spacing_lvl3"-->
+    <!--            android:layout_height="@dimen/layout_lvl3"-->
+    <!--            app:srcCompat="@drawable/ic_edit" />-->
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/btnSaveImage"
+        android:layout_width="@dimen/layout_lvl3"
+        android:layout_height="@dimen/layout_lvl3"
+        android:layout_marginRight="@dimen/spacing_lvl4"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/btnDoPBack"
-            android:layout_width="@dimen/layout_lvl3"
-            android:layout_height="@dimen/layout_lvl3"
-            app:srcCompat="@drawable/ic_devops_back_white" />
-
-        <View
-            android:layout_width="0dp"
-            android:layout_height="@dimen/layout_lvl3"
-            android:layout_weight="1" />
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/btnDoPUndo"
-            android:layout_width="@dimen/layout_lvl3"
-            android:layout_height="@dimen/layout_lvl3"
-            android:layout_marginEnd="@dimen/spacing_lvl3"
-            app:srcCompat="@drawable/ic_undo_active" />
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/layout_lvl3"
-            android:layout_marginEnd="@dimen/spacing_lvl3"
-            android:gravity="center_vertical"
-            android:text="Pencil Icon"
-            android:textColor="@color/white" />
-
-        <!--        <androidx.appcompat.widget.AppCompatImageView-->
-        <!--            android:layout_width="@dimen/layout_lvl3"-->
-        <!--        android:layout_marginEnd="@dimen/spacing_lvl3"-->
-        <!--            android:layout_height="@dimen/layout_lvl3"-->
-        <!--            app:srcCompat="@drawable/ic_edit" />-->
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/btnSaveImage"
-            android:layout_width="@dimen/layout_lvl3"
-            android:layout_height="@dimen/layout_lvl3"
-            android:layout_marginEnd="@dimen/spacing_lvl3"
-            app:srcCompat="@drawable/ic_devops_check_white" />
-
-    </LinearLayout>
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_devops_check_white" />
 
     <com.tokopedia.developer_options.drawonpicture.widgets.DrawOnPictureView
         android:id="@+id/dopFeedbackForm"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl4"
         android:adjustViewBounds="true"
         android:scaleType="fitCenter"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/containerHeaderDoP" />
+        app:layout_constraintTop_toBottomOf="@id/btnDoPBack" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvBrushSize"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:background="@color/grey_400"
+        android:gravity="center_vertical"
+        android:paddingStart="@dimen/spacing_lvl2"
+        android:paddingEnd="@dimen/spacing_lvl1"
+        app:layout_constraintBottom_toBottomOf="@id/seekbarDopBrushSize"
+        app:layout_constraintRight_toLeftOf="@id/seekbarDopBrushSize"
+        app:layout_constraintTop_toTopOf="@id/seekbarDopBrushSize"
+        app:typographyType="small"
+        tools:text="5" />
+
+    <androidx.appcompat.widget.AppCompatSeekBar
+        android:id="@+id/seekbarDopBrushSize"
+        android:layout_width="@dimen/layout_lvl8"
+        android:layout_height="@dimen/layout_lvl2"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:background="@color/grey_400"
+        android:max="45"
+        app:layout_constraintRight_toRightOf="@id/btnDoPencil"
+        app:layout_constraintTop_toBottomOf="@id/btnDoPencil" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvBrushColors"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/layout_lvl3"
+        android:layout_marginBottom="@dimen/spacing_lvl4"
+        android:clipToPadding="false"
+        android:paddingLeft="@dimen/spacing_lvl4"
+        android:paddingRight="@dimen/spacing_lvl4"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

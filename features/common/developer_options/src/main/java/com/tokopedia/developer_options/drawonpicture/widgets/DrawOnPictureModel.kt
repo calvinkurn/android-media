@@ -6,6 +6,7 @@ import android.graphics.Path
  * @author by furqan on 29/09/2020
  */
 data class DrawOnPictureModel(
-        var color: Int,
+        var color: String,
+        var width: Float,
         var path: Path
 )
