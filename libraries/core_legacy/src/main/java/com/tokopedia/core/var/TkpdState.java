@@ -342,6 +342,8 @@ public class TkpdState extends com.tokopedia.abstraction.constant.TkpdState  {
         public static final int GCM_RES_CENTER = 105;
         public static final int GCM_REVIEW_EDIT = 113;
         public static final int GCM_REVIEW_REPLY = 123;
+        public static final int GCM_REPUTATION_SMILEY = 202;
+        public static final int GCM_REPUTATION_EDIT_SMILEY = 212;
         public static final int GCM_REPUTATION_SMILEY_TO_SELLER = 222;
         public static final int GCM_REPUTATION_EDIT_SMILEY_TO_SELLER = 232;
         public static final int GCM_REPUTATION_SMILEY_TO_BUYER = 242;

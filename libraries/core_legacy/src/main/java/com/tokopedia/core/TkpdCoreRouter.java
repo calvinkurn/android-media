@@ -2,9 +2,11 @@ package com.tokopedia.core;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
+import com.tokopedia.core.gcm.model.NotificationPass;
 import com.tokopedia.core.gcm.utils.RouterUtils;
 
 public interface TkpdCoreRouter {
@@ -68,6 +70,8 @@ public interface TkpdCoreRouter {
     Intent getHomeIntent(Context context);
 
     Class<?> getHomeClass();
+
+    NotificationPass setNotificationPass(Context mContext, NotificationPass mNotificationPass, Bundle data, String notifTitle);
 
     void onAppsFlyerInit();
 
