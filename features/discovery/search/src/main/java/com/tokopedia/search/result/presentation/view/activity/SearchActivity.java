@@ -87,6 +87,7 @@ public class SearchActivity extends BaseActivity
     private LoaderUnify loadingView;
     private TabLayout tabLayout;
     private ViewPager viewPager;
+    private View tabShadow;
     private SearchSectionPagerAdapter searchSectionPagerAdapter;
     private View backButton;
     private TextView searchTextView;
@@ -192,6 +193,7 @@ public class SearchActivity extends BaseActivity
         buttonChangeGrid = findViewById(R.id.search_change_grid_button);
         buttonCart = findViewById(R.id.search_cart_button);
         buttonHome = findViewById(R.id.search_home_button);
+        tabShadow = findViewById(R.id.search_top_bar_shadow);
     }
 
     protected void prepareView() {
@@ -201,7 +203,7 @@ public class SearchActivity extends BaseActivity
     }
 
     private void configureTabLayout() {
-        if (container == null) return;
+        if (container == null || isLandingPage()) return;
 
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP) return;
 
@@ -304,6 +306,7 @@ public class SearchActivity extends BaseActivity
     private void configureToolbarVisibility() {
         if (isLandingPage()) {
             tabLayout.setVisibility(View.GONE);
+            tabShadow.setVisibility(View.GONE);
         }
     }
 
