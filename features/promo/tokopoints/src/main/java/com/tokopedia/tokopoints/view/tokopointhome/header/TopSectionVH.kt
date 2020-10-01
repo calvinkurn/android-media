@@ -99,6 +99,9 @@ class TopSectionVH(itemView: View, val cardRuntimeHeightListener: CardRuntimeHei
                     dataList[i]?.counter?.isShowCounter = false
                 }
 
+                if (dataList[i]?.counterTotal?.isShowCounter!!) {
+                    dataList[i]?.counterTotal?.counterStr?.let { dynamicAction?.setLayoutLabel(it, i) }
+                }
                 dynamicAction?.findViewById<LinearLayout>(R.id.holder_tokopoint)?.setOnClickListener {
                     dataList[0]?.cta?.let {
                         hideNotification(0, dataList[0])
@@ -155,7 +158,6 @@ class TopSectionVH(itemView: View, val cardRuntimeHeightListener: CardRuntimeHei
     fun hideNotification(index: Int, dynamicActionListItem: DynamicActionListItem?) {
         toolbarItemList as ArrayList<NotificationUnify>
         toolbarItemList[index].hide()
-        dynamicAction?.notifCenterLayout?.hide()
         dynamicActionListItem?.counter?.isShowCounter = false
     }
 

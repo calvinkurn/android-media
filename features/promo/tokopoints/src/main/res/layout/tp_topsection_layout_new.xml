@@ -80,12 +80,12 @@
             android:layout_marginBottom="@dimen/dp_12"
             android:lineSpacingExtra="4sp"
             android:textColor="@color/red_30"
-            app:typographyType="body_2"
             android:translationY="-1.84sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/ic_arrow_icon"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="body_2"
             tools:text="Transact 6x more or as much as Rp1.754.000 to become Platinum Member by 31 Des e or as much as Rp1.754.000 to become Platinum Member by 31 Des " />
 
         <androidx.appcompat.widget.AppCompatImageView
@@ -101,7 +101,6 @@
             app:layout_constraintStart_toEndOf="@id/tv_targetText"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_right_arrow_white" />
-
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -121,7 +120,7 @@
         <com.tokopedia.tokopoints.view.customview.DynamicItemActionView
             android:id="@+id/dynamic_widget"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_80" />
+            android:layout_height="@dimen/dp_100" />
 
     </com.tokopedia.unifycomponents.CardUnify>
 

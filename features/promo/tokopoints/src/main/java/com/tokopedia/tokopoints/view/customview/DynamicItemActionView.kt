@@ -28,6 +28,9 @@ class DynamicItemActionView @JvmOverloads constructor(
     lateinit var tvFirstLayout: TextView
     lateinit var tvCenterLayout: TextView
     lateinit var tvRightLayout: TextView
+    lateinit var tvFirstLabel: TextView
+    lateinit var tvCenterLabel: TextView
+    lateinit var tvRightLabel: TextView
     lateinit var notifFirstLayout: NotificationUnify
     lateinit var notifCenterLayout: NotificationUnify
     lateinit var notifRightLayout: NotificationUnify
@@ -49,6 +52,9 @@ class DynamicItemActionView @JvmOverloads constructor(
         tvFirstLayout = view.findViewById(R.id.label_tokopoint1)
         tvCenterLayout = view.findViewById(R.id.label_voucher)
         tvRightLayout = view.findViewById(R.id.label_tokomember)
+        tvFirstLabel = view.findViewById(R.id.label_tokopoint2)
+        tvCenterLabel = view.findViewById(R.id.label_voucher2)
+        tvRightLabel = view.findViewById(R.id.label_tokomember2)
         notifFirstLayout = view.findViewById(R.id.notif_tokopoint)
         notifCenterLayout = view.findViewById(R.id.notif_voucher)
         notifRightLayout = view.findViewById(R.id.notif_tokomember)
@@ -62,6 +68,23 @@ class DynamicItemActionView @JvmOverloads constructor(
             0 -> tvFirstLayout.text = title
             1 -> tvCenterLayout.text = title
             else -> tvRightLayout.text = title
+        }
+    }
+
+    fun setLayoutLabel(label: String, position: Int) {
+        when (position) {
+            0 -> {
+                tvFirstLabel.show()
+                tvFirstLabel.text = label
+            }
+            1 -> {
+                tvCenterLabel.show()
+                tvCenterLabel.text = label
+            }
+            else -> {
+                tvRightLabel.show()
+                tvRightLabel.text = label
+            }
         }
     }
 
@@ -85,15 +108,15 @@ class DynamicItemActionView @JvmOverloads constructor(
         when (position) {
             0 -> {
                 notifFirstLayout.show()
-                notifFirstLayout.setNotification(notif, NotificationUnify.TEXT_TYPE, NotificationUnify.COLOR_PRIMARY)
+                notifFirstLayout.setNotification(notif, NotificationUnify.NONE_TYPE, NotificationUnify.COLOR_PRIMARY)
             }
             1 -> {
                 notifCenterLayout.show()
-                notifCenterLayout.setNotification(notif, NotificationUnify.TEXT_TYPE, NotificationUnify.COLOR_PRIMARY)
+                notifCenterLayout.setNotification(notif, NotificationUnify.NONE_TYPE, NotificationUnify.COLOR_PRIMARY)
             }
             else -> {
                 notifRightLayout.show()
-                notifRightLayout.setNotification(notif, NotificationUnify.TEXT_TYPE, NotificationUnify.COLOR_PRIMARY)
+                notifRightLayout.setNotification(notif, NotificationUnify.NONE_TYPE, NotificationUnify.COLOR_PRIMARY)
             }
         }
     }
