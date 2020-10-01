@@ -14,6 +14,7 @@ import com.tokopedia.cart.domain.model.cartlist.CartItemData
 import com.tokopedia.cart.domain.model.cartlist.CartListData
 import com.tokopedia.cart.domain.model.updatecart.UpdateAndValidateUseData
 import com.tokopedia.cart.domain.usecase.*
+import com.tokopedia.cart.utils.SimpleIdlingResource
 import com.tokopedia.cart.view.analytics.EnhancedECommerceActionFieldData
 import com.tokopedia.cart.view.analytics.EnhancedECommerceClickData
 import com.tokopedia.cart.view.analytics.EnhancedECommerceData
@@ -139,6 +140,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
             val requestParams = RequestParams.create()
             requestParams.putString(GetCartListSimplifiedUseCase.PARAM_SELECTED_CART_ID, cartId)
 
+            SimpleIdlingResource.increment()
             compositeSubscription.add(getCartListSimplifiedUseCase?.createObservable(requestParams)
                     ?.subscribe(GetCartListDataSubscriber(view, this, initialLoad))
             )

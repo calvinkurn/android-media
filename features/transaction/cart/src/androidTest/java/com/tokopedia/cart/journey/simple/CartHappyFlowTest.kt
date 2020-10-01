@@ -3,8 +3,11 @@ package com.tokopedia.cart.journey.simple
 import android.content.Intent
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.test.espresso.Espresso
 import androidx.test.espresso.IdlingRegistry
+import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.intent.rule.IntentsTestRule
+import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.cart.InstrumentTestCartActivity
 import com.tokopedia.cart.robot.CartPageRobot
@@ -48,9 +51,10 @@ class CartHappyFlowTest {
         val itemCount = cartRecyclerView.adapter?.itemCount ?: 0
 
         cartPage {
+            assertMainContent()
             for (i in 0 until itemCount) {
                 scrollCartRecyclerViewToPosition(cartRecyclerView, i)
-                checkItemType(cartRecyclerView, i)
+                checkItemType(cartRecyclerView, i, this)
             }
         } buy {
 
@@ -61,10 +65,10 @@ class CartHappyFlowTest {
     private fun checkItemType(cartRecyclerView: RecyclerView, position: Int, cartPageRobot: CartPageRobot) {
         when (cartRecyclerView.findViewHolderForAdapterPosition(position)) {
             is TickerAnnouncementViewHolder -> {
-                cartPageRobot.assertTickerAnnouncement()
+                cartPageRobot.assertTickerAnnouncement(position)
             }
             is CartTickerErrorViewHolder -> {
-                cartPageRobot.assertTickerError()
+//                cartPageRobot.assertTickerError()
             }
             is CartShopViewHolder -> {
 
