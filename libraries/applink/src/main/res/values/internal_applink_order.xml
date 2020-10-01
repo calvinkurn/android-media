@@ -5,6 +5,7 @@
     <string name="host_order" translatable="false">order</string>
     <string name="host_orderlist" translatable="false">orderlist</string>
     <string name="host_transaction_buyer" translatable="false">transaction</string>
+    <string name="host_order_marketplace" translatable="false">marketplace</string>
     <string name="host_order_list" translatable="false">order_list</string>
     <string name="host_events" translatable="false">events</string>
     <string name="host_giftcards" translatable="false">giftcards</string>
@@ -45,5 +46,7 @@
     <string name="path_shipping_confirm" translatable="false">/shipping-confirm</string>
     <string name="path_marketplace" translatable="false">/marketplace/filter/.*\\/</string>
     <string name="path_orderlist_digital" translatable="false">/digital</string>
+    <string name="path_order_detail" translatable="false">/order/.*\\/</string>
+    <string name="path_any" translatable="false">/.*\\/</string>
 
 </resources>

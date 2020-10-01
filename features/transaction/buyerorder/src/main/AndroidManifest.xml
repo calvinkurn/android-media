@@ -1,4 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.tokopedia.buyerorder">
 
     <application>
@@ -43,8 +44,28 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="@string/host_marketplace"
-                    android:path="@string/path_order_single"
+                    android:host="@string/host_order_marketplace"
+                    android:path="@string/path_order_detail"
+                    android:scheme="@string/internal_scheme" />
+
+                <data
+                    android:host="@string/host_digital"
+                    android:path="@string/path_order_detail"
+                    android:scheme="@string/internal_scheme" />
+
+                <data
+                    android:host="@string/host_flight"
+                    android:path="@string/path_order_detail"
+                    android:scheme="@string/internal_scheme" />
+
+                <data
+                    android:host="@string/host_hotel"
+                    android:path="@string/path_order_detail"
+                    android:scheme="@string/internal_scheme" />
+
+                <data
+                    android:host="@string/host_order"
+                    android:path="@string/path_any"
                     android:scheme="@string/internal_scheme" />
 
             </intent-filter>
@@ -80,11 +101,15 @@
 
                 <data
                     android:host="@string/host_order"
-                    android:scheme="@string/internal_scheme" />
+                    android:path=""
+                    android:scheme="@string/internal_scheme"
+                    tools:ignore="AppLinkUrlError"/>
 
                 <data
                     android:host="@string/host_order_list"
-                    android:scheme="@string/internal_scheme" />
+                    android:path=""
+                    android:scheme="@string/internal_scheme"
+                    tools:ignore="AppLinkUrlError"/>
 
                 <data
                     android:host="@string/host_buyer"

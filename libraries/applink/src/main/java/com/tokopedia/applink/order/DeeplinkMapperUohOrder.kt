@@ -62,7 +62,9 @@ object DeeplinkMapperUohOrder {
             returnedDeeplink = if (useUoh()) ApplinkConstInternalOrder.UNIFY_ORDER_HOTEL
             else getInternalDeeplink(deeplink)
 
-        } else if (deeplink.startsWith(MARKETPLACE_ORDER)) {
+        } else if (deeplink.startsWith(MARKETPLACE_ORDER) || deeplink.startsWith(DIGITAL_ORDER)
+                || deeplink.startsWith(FLIGHT_ORDER) || deeplink.startsWith(HOTEL_ORDER)
+                || deeplink.startsWith(OMS_DETAIL)) {
             returnedDeeplink = getInternalDeeplink(deeplink)
         }
         return returnedDeeplink
