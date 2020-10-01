@@ -1,8 +1,8 @@
 package com.tokopedia.topads.dashboard.data.source.cloud.apiservice.api;
 
 import com.tokopedia.product.manage.item.common.data.source.cloud.DataResponse;
-import com.tokopedia.seller.common.topads.deposit.data.model.DataDeposit;
 import com.tokopedia.topads.dashboard.constant.TopAdsNetworkConstant;
+import com.tokopedia.topads.dashboard.data.model.DataDeposit;
 
 import java.util.Map;
 
