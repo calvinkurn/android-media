@@ -148,7 +148,7 @@ class TradeInHomeActivity : BaseViewModelActivity<TradeInHomeViewModel>(){
                     }
                 }
             }
-            if (!inputImei) {
+            if (!inputImei && currentFragment !is TradeInFinalPriceFragment) {
                 setFragment()
             }
         })

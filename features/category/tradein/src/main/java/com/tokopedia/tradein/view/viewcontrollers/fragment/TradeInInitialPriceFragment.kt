@@ -36,6 +36,7 @@ class TradeInInitialPriceFragment : BaseViewModelFragment<TradeInInitialPriceVie
 
     @Inject
     lateinit var viewModelProvider: ViewModelProvider.Factory
+
     @Inject
     lateinit var tradeInAnalytics: TradeInAnalytics
     private lateinit var tradeInInitialPriceViewModel: TradeInInitialPriceViewModel
@@ -110,7 +111,7 @@ class TradeInInitialPriceFragment : BaseViewModelFragment<TradeInInitialPriceVie
         no_imei.hide()
         no_imei_value.hide()
         edit_text_imei.setOnFocusChangeListener { _, hasFocus ->
-            if(hasFocus)
+            if (hasFocus)
                 tradeInAnalytics.clickInitialPriceInputImei()
         }
         btn_continue.setOnClickListener {
@@ -170,7 +171,10 @@ class TradeInInitialPriceFragment : BaseViewModelFragment<TradeInInitialPriceVie
     }
 
     fun setWrongImei(error: String) {
-        typography_imei_description.text = error
+        if (error == getString(R.string.tradein_laku6_imei_error))
+            typography_imei_description.text = getString(R.string.wrong_imei_string)
+        else
+            typography_imei_description.text = error
         typography_imei_description.setTextColor(MethodChecker.getColor(context, R.color.tradein_hint_red))
     }
 
