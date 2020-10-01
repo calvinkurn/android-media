@@ -52,7 +52,6 @@ import com.tokopedia.topchat.chatroom.domain.pojo.sticker.Sticker
 import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.ChatListGroupStickerResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.StickerGroup
 import com.tokopedia.topchat.chatroom.domain.subscriber.DeleteMessageAllSubscriber
-import com.tokopedia.topchat.chatroom.domain.subscriber.GetExistingMessageIdSubscriber
 import com.tokopedia.topchat.chatroom.domain.usecase.*
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
 import com.tokopedia.topchat.chatroom.view.listener.TopChatContract
@@ -250,10 +249,9 @@ class TopChatRoomPresenter @Inject constructor(
                               source: String,
                               onError: (Throwable) -> Unit,
                               onSuccessGetMessageId: (String) -> Unit) {
-        getExistingMessageIdUseCase.execute(GetExistingMessageIdUseCase.generateParam(
-                toShopId, toUserId, source), GetExistingMessageIdSubscriber(
-                onError, onSuccessGetMessageId
-        ))
+        getExistingMessageIdUseCase.getMessageId(
+                toShopId, toUserId, source, onSuccessGetMessageId, onError
+        )
     }
 
     override fun loadTopChat(
@@ -547,7 +545,6 @@ class TopChatRoomPresenter @Inject constructor(
         getChatUseCase.unsubscribe()
         getTemplateChatRoomUseCase.unsubscribe()
         replyChatUseCase.unsubscribe()
-        getExistingMessageIdUseCase.unsubscribe()
         deleteMessageListUseCase.unsubscribe()
         getShopFollowingUseCase.safeCancel()
         addToCartUseCase.unsubscribe()
