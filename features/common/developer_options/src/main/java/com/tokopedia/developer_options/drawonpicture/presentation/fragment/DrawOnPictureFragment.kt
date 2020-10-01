@@ -182,14 +182,14 @@ class DrawOnPictureFragment : BaseDaggerFragment(),
 
     private fun sendNewPathResult(path: String) {
         val intent = Intent()
-        intent.putExtra(EXTRA_DRAW_IMAGE_PATH, path)
+        intent.putExtra(EXTRA_DRAW_IMAGE_URI, Uri.parse(path))
         activity?.setResult(Activity.RESULT_OK, intent)
         activity?.finish()
     }
 
     companion object {
 
-        const val EXTRA_DRAW_IMAGE_PATH = "EXTRA_DRAW_IMAGE_PATH"
+        const val EXTRA_DRAW_IMAGE_URI = "EXTRA_DRAW_IMAGE_URI"
 
         fun getInstance(imageUri: Uri?): DrawOnPictureFragment =
                 DrawOnPictureFragment().also {
