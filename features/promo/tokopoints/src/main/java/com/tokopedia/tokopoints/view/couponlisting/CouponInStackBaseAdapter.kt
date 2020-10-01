@@ -98,15 +98,18 @@ class CouponInStackBaseAdapter(callback: AdapterCallback, val data: TokoPointPro
 
                 val promoView = HashMap<String, Map<String, List<Map<String, String?>>>>()
                 promoView["promoView"] = promotions
-                data.title?.let {
-                    AnalyticsTrackerUtil.sendECommerceEvent(holder.value.context,
-                            AnalyticsTrackerUtil.EventKeys.EVENT_VIEW_PROMO,
-                            AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS_KUPON_SAYA,
-                            AnalyticsTrackerUtil.ActionKeys.VIEW_MY_COUPON,
-                            it, promoView)
+
+                var eventLabel = ""
+                if (data.title != null && data.title.isNotEmpty()) {
+                    eventLabel = data.title
                 }
-                holder.isVisited = true
+                AnalyticsTrackerUtil.sendECommerceEvent(holder.value.context,
+                        AnalyticsTrackerUtil.EventKeys.EVENT_VIEW_PROMO,
+                        AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS_KUPON_SAYA,
+                        AnalyticsTrackerUtil.ActionKeys.VIEW_MY_COUPON,
+                        eventLabel, promoView)
             }
+            holder.isVisited = true
         }
     }
 
@@ -125,13 +128,15 @@ class CouponInStackBaseAdapter(callback: AdapterCallback, val data: TokoPointPro
         val promoClick = HashMap<String, Map<String, List<Map<String, String?>>>>()
         promoClick["promoView"] = promotions
 
-        data.title?.let {
-            AnalyticsTrackerUtil.sendECommerceEvent(context,
-                    AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_PROMO,
-                    AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS_KUPON_SAYA,
-                    AnalyticsTrackerUtil.ActionKeys.CLICK_COUPON,
-                    it, promoClick)
+        var eventLabel = ""
+        if (data.title != null && data.title.isNotEmpty()) {
+            eventLabel = data.title
         }
+        AnalyticsTrackerUtil.sendECommerceEvent(context,
+                AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_PROMO,
+                AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS_KUPON_SAYA,
+                AnalyticsTrackerUtil.ActionKeys.CLICK_COUPON,
+                eventLabel, promoClick)
     }
 
     override fun getItemViewHolder(parent: ViewGroup, inflater: LayoutInflater, viewType: Int): BaseVH {

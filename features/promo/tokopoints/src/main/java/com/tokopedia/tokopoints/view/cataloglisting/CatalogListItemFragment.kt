@@ -113,7 +113,7 @@ class CatalogListItemFragment : BaseDaggerFragment(), CatalogListItemContract.Vi
         addLatestStatusObserver()
     }
 
-    private fun addLatestStatusObserver() = viewModel.latestStatusLiveData.observe(this, androidx.lifecycle.Observer {
+    private fun addLatestStatusObserver() = viewModel.latestStatusLiveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
         it?.let {
             stopNetworkRequestPerformanceMonitoring()
             startRenderPerformanceMonitoring()
@@ -285,7 +285,7 @@ class CatalogListItemFragment : BaseDaggerFragment(), CatalogListItemContract.Vi
                 title)
     }
 
-    override fun showValidationMessageDialog(item: CatalogsValueEntity, title: String, message: String, resCode: Int) {
+    override fun showValidationMessageDialog(item: CatalogsValueEntity, title: String?, message: String, resCode: Int) {
         val adb = AlertDialog.Builder(activityContext)
         val labelPositive: String
         var labelNegative: String? = null
