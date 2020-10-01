@@ -56,7 +56,7 @@
             app:layout_constraintTop_toTopOf="@id/reviewHistoryDate"
             app:layout_constraintBottom_toBottomOf="@id/reviewHistoryDate"
             tools:visibility="visible"
-            tools:src="@drawable/ic_rating_star_five"/>
+            tools:src="@drawable/review_ic_rating_star_five"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/reviewHistoryDate"

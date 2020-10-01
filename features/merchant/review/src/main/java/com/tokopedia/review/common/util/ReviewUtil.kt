@@ -57,13 +57,13 @@ fun getReviewStar(ratingCount: Int): Int {
             R.drawable.ic_rating_star_three
         }
         4 -> {
-            R.drawable.ic_rating_star_four
+            R.drawable.review_ic_rating_star_four
         }
         5 -> {
-            R.drawable.ic_rating_star_five
+            R.drawable.review_ic_rating_star_five
         }
         else -> {
-            R.drawable.ic_rating_star_zero
+            R.drawable.review_ic_rating_star_zero
         }
     }
 }
