@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Activity.RESULT_OK
 import android.content.Intent
+import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
@@ -253,6 +254,9 @@ class AddEditProductPreviewFragment:
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        // set bg color programatically, to reduce overdraw
+        activity?.window?.decorView?.setBackgroundColor(Color.WHITE)
 
         // activity toolbar
         toolbar = activity?.findViewById(R.id.toolbar)
@@ -885,12 +889,12 @@ class AddEditProductPreviewFragment:
                     context?.let {
                         val isEditing = viewModel.isEditing.value ?: false
                         val errorMessage = ErrorHandler.getErrorMessage(context, result.throwable)
-                        val errorThrowable = result.throwable.message ?: ""
+                        val errorName = AddEditProductUploadErrorHandler.getErrorName(result.throwable)
                         if (isEditing) {
                             ProductEditStepperTracking.oopsConnectionPageScreen(
                                     userSession.userId,
                                     errorMessage,
-                                    errorThrowable)
+                                    errorName)
                         }
                         showGetProductErrorToast(ErrorHandler.getErrorMessage(it, result.throwable))
                         AddEditProductErrorHandler.logExceptionToCrashlytics(result.throwable)

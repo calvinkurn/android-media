@@ -1,6 +1,29 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply from: "../../../compile-instrument-test.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
+
+android {
+
+    sourceSets.each {
+        it.java.srcDirs += "src/$it.name/kotlin"
+    }
+
+    packagingOptions {
+        exclude 'META-INF/**'
+    }
+
+    testOptions {
+        unitTests.all {
+            testLogging.events = ["passed", "skipped", "failed"]
+        }
+    }
+
+    defaultConfig {
+        multiDexEnabled true
+    }
+
+}
 
 buildscript {
     repositories {
@@ -48,6 +71,11 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.assertJ
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.archCoreTesting
+
+    androidTestImplementation rootProject.ext.testDependencies.espressoCore
+    androidTestImplementation rootProject.ext.testDependencies.espressoContrib
+    androidTestImplementation project(rootProject.ext.libraries.instrumentation_test)
+    androidTestImplementation rootProject.ext.testDependencies.espressoIntents
 
 }
 
