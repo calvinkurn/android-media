@@ -35,8 +35,8 @@ class HotelDetailActivityTest {
 
         override fun getActivityIntent(): Intent {
             return HotelDetailActivity.getCallingIntent(context, "2023-10-10",
-                    "2023-10-11", 11, 1, 1, "",
-                    "", true, "")
+                    "2023-10-11", 11, 1, 1, "region",
+                    "Jakarta", true, "HOMEPAGE")
         }
     }
 

@@ -38,7 +38,7 @@ class HotelBookingActivityTest {
         }
 
         override fun getActivityIntent(): Intent {
-            return HotelBookingActivity.getCallingIntent(context, "", "", "Hotel A", 1, 2)
+            return HotelBookingActivity.getCallingIntent(context, "", "region", "Hotel A", 1, 2)
         }
     }
 

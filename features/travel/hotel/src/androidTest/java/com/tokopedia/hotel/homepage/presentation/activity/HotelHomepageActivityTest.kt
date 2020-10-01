@@ -24,6 +24,7 @@ import com.tokopedia.banner.BannerViewPagerAdapter
 import com.tokopedia.carousel.CarouselUnify
 import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.hotel.R
+import com.tokopedia.hotel.cancellation.presentation.activity.mock.HotelCancellationMockResponseConfig
 import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity
 import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity.Companion.HOTEL_DESTINATION_NAME
 import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity.Companion.HOTEL_DESTINATION_SEARCH_ID
@@ -54,17 +55,17 @@ class HotelHomepageActivityTest {
 
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
+            gtmLogDBSource.deleteAll().subscribe()
             setupGraphqlMockResponse(HotelHomepageMockResponseConfig())
         }
 
         override fun getActivityIntent(): Intent {
-            return Intent(context, HotelHomepageActivity::class.java)
+            return HotelHomepageActivity.getCallingIntent(context)
         }
     }
 
     @Before
     fun setUp() {
-        gtmLogDBSource.deleteAll().subscribe()
         intending(anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
     }
 
@@ -132,7 +133,9 @@ class HotelHomepageActivityTest {
     }
 
     private fun slidePromoBanner() {
-        Thread.sleep(4000)
+        Thread.sleep(2000)
+        onView(withId(R.id.hotelHomepageScrollView)).perform(swipeUp())
+        Thread.sleep(2000)
         if (getBannerItemCount() > 0) {
             onView(withId(R.id.banner_hotel_homepage_promo)).check(matches(isDisplayed()))
             Thread.sleep(1000)
@@ -156,7 +159,6 @@ class HotelHomepageActivityTest {
         Thread.sleep(2000)
 
         if (getBannerItemCount() > 0) {
-            onView(withId(R.id.hotelHomepageScrollView)).perform(swipeUp())
             onView(withId(R.id.banner_hotel_homepage_promo)).perform(click())
         }
     }
@@ -181,7 +183,11 @@ class HotelHomepageActivityTest {
         var tomorrowDate = cal[Calendar.DATE]
 
         if (tomorrowDate > 1) {
-            onView(getElementFromMatchAtPosition(withText(tomorrowDate.toString()), 0)).perform(click())
+            try {
+                onView(getElementFromMatchAtPosition(withText(tomorrowDate.toString()), 0)).perform(click())
+            } catch (e: Exception) {
+                onView(getElementFromMatchAtPosition(withText(tomorrowDate.toString()), 2)).perform(click())
+            }
         } else {
             onView(getElementFromMatchAtPosition(withText(tomorrowDate.toString()), 2)).perform(click())
         }
