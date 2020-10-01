@@ -38,18 +38,18 @@ class ShopScoreDetailViewHolder(itemView: View) : RecyclerView.ViewHolder(itemVi
         itemView.title_shop_score_detail.text = title
     }
 
-    private fun setShopScoreValue(value: Int) {
+    private fun setShopScoreValue(value: Float) {
         itemView.apply {
             description_shop_score_value.text = value.toString()
-            progress_bar_shop_score_detail.progress = value.toFloat()
+            progress_bar_shop_score_detail.progress = value
         }
     }
 
-    private fun setShopScoreMaxValue(maxValue: Int) {
+    private fun setShopScoreMaxValue(maxValue: Float) {
         itemView.apply {
             val maxScore = context.getString(R.string.description_shop_score_percent, maxValue)
             description_shop_score_percent.text = maxScore
-            progress_bar_shop_score_detail.max = maxValue.toFloat()
+            progress_bar_shop_score_detail.max = maxValue
         }
     }
 

@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 data class ShopScoreData(
     @SerializedName("result")
-    val result: ShopScoreResult,
+    val result: ShopScoreResult = ShopScoreResult(),
     @SerializedName("error")
-    val error: ShopScoreError?
+    val error: ShopScoreError? = null
 )

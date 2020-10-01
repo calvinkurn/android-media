@@ -6,9 +6,9 @@ data class ShopScoreDetail(
     @SerializedName("title")
     val title: String? = null,
     @SerializedName("value")
-    val value: Int = 0,
+    val value: Float = 0f,
     @SerializedName("maxValue")
-    val maxValue: Int = 0,
+    val maxValue: Float = 0f,
     @SerializedName("color")
     val color: String? = null,
     @SerializedName("description")

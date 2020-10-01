@@ -6,11 +6,7 @@ data class ShopScoreSummary(
     @SerializedName("title")
     val title: String? = null,
     @SerializedName("value")
-    val value: Int = 0,
-    @SerializedName("maxValue")
-    val maxValue: Int = 0,
+    val value: Float = 0f,
     @SerializedName("color")
-    val color: String? = null,
-    @SerializedName("description")
-    val description: String? = null
+    val color: String? = null
 )

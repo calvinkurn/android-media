@@ -32,11 +32,11 @@ class GetShopScoreUseCase @Inject constructor(
         setRequestParams(requestParams)
 
         val getShopScore = executeOnBackground()
-        val response = getShopScore.response
-        val errorMessage = response.error?.message
+        val data = getShopScore.data
+        val errorMessage = data.error?.message
 
         if(errorMessage.isNullOrEmpty()) {
-            return response
+            return data
         } else {
             throw MessageErrorException(errorMessage)
         }

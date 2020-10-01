@@ -4,5 +4,5 @@ import com.google.gson.annotations.SerializedName
 
 data class ShopScoreResponse(
     @SerializedName("shopScore")
-    val response: ShopScoreData
+    val data: ShopScoreData = ShopScoreData()
 )

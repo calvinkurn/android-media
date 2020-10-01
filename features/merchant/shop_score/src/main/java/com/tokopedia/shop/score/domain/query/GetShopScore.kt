@@ -5,14 +5,10 @@ internal object GetShopScore {
         query shopScore(${'$'}input:ShopScoreParam!) {
           shopScore(input:${'$'}input) {
             result {
-              shopID
-              shopScore
               shopScoreSummary {
                 title
                 value
-                maxValue
                 color
-                description
               }
               shopScoreDetail {
                 title
@@ -21,7 +17,6 @@ internal object GetShopScore {
                 color
                 description
               }
-              badgeScore
             }
             error {
                 message
