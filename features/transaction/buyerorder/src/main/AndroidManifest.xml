@@ -45,11 +45,6 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="@string/host_marketplace"
-                    android:path="@string/path_order_detail"
-                    android:scheme="@string/internal_scheme" />
-
-                <data
                     android:host="@string/host_digital"
                     android:path="@string/path_order_detail"
                     android:scheme="@string/internal_scheme" />
@@ -84,6 +79,11 @@
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_marketplace"
+                    android:path="@string/path_order_detail"
+                    android:scheme="@string/internal_scheme" />
 
                 <data
                     android:host="@string/host_transaction_buyer"
