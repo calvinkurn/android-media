@@ -37,16 +37,6 @@
             android:visibility="visible"
             tools:listitem="@layout/item_image_chooser_feedback" />
 
-        <ImageView
-            android:id="@+id/image_feedback"
-            android:layout_width="@dimen/dp_90"
-            android:layout_height="@dimen/dp_120"
-            android:layout_marginTop="@dimen/dp_8"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/image_feedback_tv"
-            android:background="@color/white"
-            android:visibility="gone"/>
-
         <RelativeLayout
             android:id="@+id/email_layout"
             android:layout_width="match_parent"

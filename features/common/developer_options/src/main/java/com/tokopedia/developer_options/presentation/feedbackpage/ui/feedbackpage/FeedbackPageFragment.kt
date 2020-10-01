@@ -185,15 +185,10 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
     private fun initImageUri() {
         if (allPermissionsGranted() && uriImage != null) {
             val screenshotData = uriImage?.let { handleItem(it) }
-            imageView.visibility = View.VISIBLE
-            tvImage.visibility = View.VISIBLE
             if (screenshotData != null) {
                 imageAdapter.setImageFeedbackData(feedbackPagePresenter.screenshotImageResult(screenshotData))
             }
             imageView.setImageURI(Uri.parse(screenshotData?.path))
-        } else {
-            imageView.visibility = View.GONE
-            tvImage.visibility = View.GONE
         }
     }
 
