@@ -34,6 +34,7 @@
         <activity
             android:name=".detail.view.activity.OrderListDetailActivity"
             android:label="@string/title_order_detail"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" >
 
