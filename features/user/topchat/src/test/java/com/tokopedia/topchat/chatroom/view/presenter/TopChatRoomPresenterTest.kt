@@ -5,6 +5,8 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.atc_common.domain.usecase.AddToCartOccUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
+import com.tokopedia.chat_common.data.ChatroomViewModel
+import com.tokopedia.chat_common.domain.pojo.ChatReplies
 import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
 import com.tokopedia.chatbot.domain.mapper.TopChatRoomWebSocketMessageMapper
 import com.tokopedia.network.interceptor.FingerprintInterceptor
@@ -324,6 +326,19 @@ class TopChatRoomPresenterTest {
 
         // Then
         verify(exactly = 1) { view.onReceiveReadEvent() }
+    }
+
+    @Test
+    fun `Get chat usecase called when load page`() {
+        // Given
+        val mockOnSuccess: (ChatroomViewModel, ChatReplies) -> Unit = mockk()
+        val mockOnError: (Throwable) -> Unit = mockk()
+
+        // When
+        presenter.getExistingChat(exMessageId, mockOnError, mockOnSuccess)
+
+        // Then
+        verify(exactly = 1) { getChatUseCase.getFirstPageChat(exMessageId, mockOnSuccess, mockOnError) }
     }
 
     private fun mockkParseResponse(wsInfo: WebSocketInfo, isOpposite: Boolean = true): ChatSocketPojo {
