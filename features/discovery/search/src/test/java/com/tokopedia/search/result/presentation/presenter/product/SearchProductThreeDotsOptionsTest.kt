@@ -2,41 +2,118 @@ package com.tokopedia.search.result.presentation.presenter.product
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
+import com.tokopedia.discovery.common.model.ProductCardOptionsModel.AddToCartParams
+import com.tokopedia.search.analytics.SearchEventTracking
+import com.tokopedia.search.analytics.SearchTracking
 import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel
+import com.tokopedia.search.shouldBe
 import io.mockk.*
 import org.junit.Test
 import rx.Subscriber
 
 internal class SearchProductThreeDotsOptionsTest : ProductListPresenterTestFixtures() {
 
+    private val query = "samsung"
+    private val productCardOptionsModelSlot = slot<ProductCardOptionsModel>()
+    private val visitableListSlot = slot<List<Visitable<*>>>()
+    private val visitableList by lazy { visitableListSlot.captured }
+
     @Test
     fun `Click three dots option for organic product`() {
-        every { searchProductFirstPageUseCase.execute(any(), any()) } answers {
-            secondArg<Subscriber<SearchProductModel>>().complete("searchproduct/with-topads.json".jsonToObject<SearchProductModel>())
-        }
+        `Given view getQueryKey will return keyword`()
+        `Given search product API will success`()
+        `Given view already load data`()
 
-        val visitableListSlot = slot<List<Visitable<*>>>()
-        every { productListView.setProductList(capture(visitableListSlot)) } just runs
-
-        productListPresenter.loadData(mapOf())
-
-        val visitableList = visitableListSlot.captured
-        val indexedProductItem = visitableList.withIndex().find { it.value is ProductItemViewModel && !(it.value as ProductItemViewModel).isAds }!!
+        val indexedProductItem = visitableList.getProductItemWithIndex(false)
         val productItemViewModel = indexedProductItem.value as ProductItemViewModel
         val position = indexedProductItem.index
 
+        `When click three dots`(productItemViewModel, position)
+
+        `Then verify click three dots option`(productItemViewModel)
+        `Then verify product card options model`(productItemViewModel)
+    }
+
+    private fun `Given view getQueryKey will return keyword`() {
+        every { productListView.queryKey } returns query
+    }
+
+    private fun `Given search product API will success`() {
+        every { searchProductFirstPageUseCase.execute(any(), any()) } answers {
+            secondArg<Subscriber<SearchProductModel>>().complete("searchproduct/with-topads.json".jsonToObject<SearchProductModel>())
+        }
+    }
+
+    private fun `Given view already load data`() {
+        every { productListView.setProductList(capture(visitableListSlot)) } just runs
+
+        productListPresenter.loadData(mapOf())
+    }
+
+    private fun `When click three dots`(productItemViewModel: ProductItemViewModel, position: Int) {
         productListPresenter.onThreeDotsClick(productItemViewModel, position)
+    }
 
-        val productCardOptionsModelSlot = slot<ProductCardOptionsModel>()
+    private fun <T> List<T>.getProductItemWithIndex(isAds: Boolean): IndexedValue<T> {
+        return withIndex().find {
+            it.value is ProductItemViewModel && ((it.value as ProductItemViewModel).isAds == isAds)
+        }!!
+    }
 
+    private fun `Then verify click three dots option`(productItemViewModel: ProductItemViewModel) {
         verify {
             productListView.trackEventLongPress(productItemViewModel.productID)
             productListView.showProductCardOptions(capture(productCardOptionsModelSlot))
         }
+    }
 
+    private fun `Then verify product card options model`(
+            productItemViewModel: ProductItemViewModel
+    ) {
         val productCardOptionsModel = productCardOptionsModelSlot.captured
+
+        productCardOptionsModel.hasWishlist shouldBe true
+        productCardOptionsModel.hasSimilarSearch shouldBe true
+        productCardOptionsModel.isWishlisted shouldBe productItemViewModel.isWishlisted
+        productCardOptionsModel.keyword shouldBe query
+        productCardOptionsModel.productId shouldBe productItemViewModel.productID
+        productCardOptionsModel.isTopAds shouldBe productItemViewModel.isAds
+        productCardOptionsModel.topAdsWishlistUrl shouldBe productItemViewModel.topadsWishlistUrl
+        productCardOptionsModel.isRecommendation shouldBe false
+        productCardOptionsModel.screenName shouldBe SearchEventTracking.Category.SEARCH_RESULT
+        productCardOptionsModel.seeSimilarProductEvent shouldBe SearchTracking.EVENT_CLICK_SEARCH_RESULT
+        productCardOptionsModel.hasAddToCart shouldBe true
+        productCardOptionsModel.addToCartParams shouldBe AddToCartParams(productItemViewModel.minOrder)
+        productCardOptionsModel.categoryName shouldBe productItemViewModel.categoryString
+        productCardOptionsModel.productName shouldBe productItemViewModel.productName
+        productCardOptionsModel.formattedPrice shouldBe productItemViewModel.price
+        productCardOptionsModel.shop shouldBe ProductCardOptionsModel.Shop(
+                productItemViewModel.shopID,
+                productItemViewModel.shopName,
+                productItemViewModel.shopUrl
+        )
+        productCardOptionsModel.hasVisitShop shouldBe true
+        productCardOptionsModel.hasShareProduct shouldBe true
+        productCardOptionsModel.productImageUrl shouldBe productItemViewModel.imageUrl
+        productCardOptionsModel.productUrl shouldBe productItemViewModel.productUrl
+    }
+
+    @Test
+    fun `Click three dots option for ads product`() {
+        `Given view getQueryKey will return keyword`()
+        `Given search product API will success`()
+        `Given view already load data`()
+
+        val indexedProductItem = visitableList.getProductItemWithIndex(true)
+        val productItemViewModel = indexedProductItem.value as ProductItemViewModel
+        val position = indexedProductItem.index
+
+        `When click three dots`(productItemViewModel, position)
+
+        `Then verify click three dots option`(productItemViewModel)
+        `Then verify product card options model`(productItemViewModel)
     }
 }

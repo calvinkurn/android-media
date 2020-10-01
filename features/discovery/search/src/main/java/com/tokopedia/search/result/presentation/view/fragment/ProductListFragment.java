@@ -628,45 +628,24 @@ public class ProductListFragment
     }
 
     private void handleAddToCartAction(ProductCardOptionsModel productCardOptionsModel) {
-        ProductCardOptionsModel.AddToCartResult addToCartResult = productCardOptionsModel.getAddToCartResult();
-
-        if (addToCartResult.isUserLoggedIn()) {
-            trackAddToCartSuccess(addToCartResult);
-            showAddToCartMessage(addToCartResult);
-        }
-        else {
-            Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.LOGIN);
-            startActivityForResult(intent, REQUEST_CODE_LOGIN);
-        }
+        presenter.handleAddToCartAction(productCardOptionsModel);
     }
 
-    private void trackAddToCartSuccess(ProductCardOptionsModel.AddToCartResult addToCartResult) {
-        if (presenter == null || !addToCartResult.isSuccess()) return;
-
-        ProductItemViewModel productItemViewModel = presenter.getThreeDotsProduct();
-
-        if (productItemViewModel == null) return;
-
-        Object productItemViewModelAsATCDataLayer = productItemViewModel.getProductAsATCObjectDataLayer(addToCartResult.getCartId());
-
-        SearchTracking.trackEventAddToCart(getQueryKey(), productItemViewModel.isAds(), productItemViewModelAsATCDataLayer);
+    @Override
+    public void trackSuccessAddToCartEvent(boolean isAds, Object addToCartDataLayer) {
+        SearchTracking.trackEventAddToCart(getQueryKey(), isAds, addToCartDataLayer);
     }
 
-    private void showAddToCartMessage(ProductCardOptionsModel.AddToCartResult addToCartResult) {
+    @Override
+    public void showAddToCartSuccessMessage() {
         if (getView() == null) return;
+        Toaster.make(getView(), getString(R.string.search_add_to_cart_success), Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL);
+    }
 
-        String message;
-        int toasterType;
-
-        if (addToCartResult.isSuccess()) {
-            message = getString(R.string.search_add_to_cart_success);
-            toasterType = Toaster.TYPE_NORMAL;
-        } else {
-            message = addToCartResult.getErrorMessage();
-            toasterType = Toaster.TYPE_ERROR;
-        }
-
-        Toaster.make(getView(), message, Toaster.LENGTH_SHORT, toasterType);
+    @Override
+    public void showAddToCartFailedMessage(String errorMessage) {
+        if (getView() == null) return;
+        Toaster.make(getView(), errorMessage, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR);
     }
 
     private void handleVisitShopAction(ProductCardOptionsModel productCardOptionsModel) {
@@ -855,11 +834,7 @@ public class ProductListFragment
     public void onThreeDotsClick(ProductItemViewModel item, int adapterPosition) {
         if (getSearchParameter() == null || getActivity() == null || presenter == null) return;
 
-        presenter.setThreeDotsProduct(item);
-        SearchTracking.trackEventProductLongPress(getSearchParameter().getSearchQuery(), item.getProductID());
-        ProductCardOptionsManager.showProductCardOptions(this, createProductCardOptionsModel(item));
-
-//        presenter.onThreeDotsClick(item, adapterPosition);
+        presenter.onThreeDotsClick(item, adapterPosition);
     }
 
     @Override
@@ -870,41 +845,6 @@ public class ProductListFragment
     @Override
     public void showProductCardOptions(ProductCardOptionsModel productCardOptionsModel) {
         ProductCardOptionsManager.showProductCardOptions(this, productCardOptionsModel);
-    }
-
-    private ProductCardOptionsModel createProductCardOptionsModel(ProductItemViewModel item) {
-        ProductCardOptionsModel productCardOptionsModel = new ProductCardOptionsModel();
-
-        productCardOptionsModel.setHasWishlist(item.isWishlistButtonEnabled());
-        productCardOptionsModel.setHasSimilarSearch(true);
-        productCardOptionsModel.setWishlisted(item.isWishlisted());
-        productCardOptionsModel.setKeyword(getSearchParameter().getSearchQuery());
-        productCardOptionsModel.setProductId(item.getProductID() == null ? "" : item.getProductID());
-        productCardOptionsModel.setTopAds(item.isTopAds() || item.isOrganicAds());
-        productCardOptionsModel.setTopAdsWishlistUrl(item.getTopadsWishlistUrl() == null ? "" : item.getTopadsWishlistUrl());
-        productCardOptionsModel.setRecommendation(false);
-        productCardOptionsModel.setScreenName(SearchEventTracking.Category.SEARCH_RESULT);
-        productCardOptionsModel.setSeeSimilarProductEvent(SearchTracking.EVENT_CLICK_SEARCH_RESULT);
-
-        productCardOptionsModel.setHasAddToCart(true);
-        productCardOptionsModel.setAddToCartParams(new ProductCardOptionsModel.AddToCartParams(item.getMinOrder()));
-        productCardOptionsModel.setCategoryName(item.getCategoryString());
-        productCardOptionsModel.setProductName(item.getProductName());
-        productCardOptionsModel.setFormattedPrice(item.getPrice());
-
-        ProductCardOptionsModel.Shop shop = new ProductCardOptionsModel.Shop();
-        shop.setShopId(item.getShopID());
-        shop.setShopName(item.getShopName());
-        shop.setShopUrl(item.getShopUrl());
-        productCardOptionsModel.setShop(shop);
-
-        productCardOptionsModel.setHasVisitShop(true);
-
-        productCardOptionsModel.setHasShareProduct(true);
-        productCardOptionsModel.setProductImageUrl(item.getImageUrl());
-        productCardOptionsModel.setProductUrl(item.getProductUrl());
-
-        return productCardOptionsModel;
     }
 
     @Override

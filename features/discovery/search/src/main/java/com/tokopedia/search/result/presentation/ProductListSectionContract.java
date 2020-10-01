@@ -178,6 +178,12 @@ public interface ProductListSectionContract {
         void trackEventLongPress(String productID);
 
         void showProductCardOptions(ProductCardOptionsModel productCardOptionsModel);
+
+        void trackSuccessAddToCartEvent(boolean isAds, Object addToCartDataLayer);
+
+        void showAddToCartSuccessMessage();
+
+        void showAddToCartFailedMessage(String errorMessage);
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -237,5 +243,7 @@ public interface ProductListSectionContract {
         ProductItemViewModel getThreeDotsProduct();
 
         void onThreeDotsClick(ProductItemViewModel item, int adapterPosition);
+
+        void handleAddToCartAction(@NotNull ProductCardOptionsModel productCardOptionModel);
     }
 }

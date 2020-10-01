@@ -451,7 +451,7 @@
             "rating_average": "<b>4.8</b> Rating Toko",
             "url": "https://www.tokopedia.com/azkasahira",
             "isOfficial": false,
-            "isPowerBadge": true
+            "isPowerBadge": false
           },
           "freeOngkir": {
             "isActive": false,
