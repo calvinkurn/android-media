@@ -2,7 +2,6 @@ package com.tokopedia.notifications.receiver
 
 import android.app.Activity
 import android.content.*
-import android.text.TextUtils
 import android.widget.Toast
 import androidx.core.app.NotificationManagerCompat
 import com.tokopedia.applink.ApplinkConst
@@ -10,12 +9,14 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.commonpromo.PromoCodeAutoApplyUseCase
 import com.tokopedia.notifications.R
 import com.tokopedia.notifications.analytics.ProductAnalytics
+import com.tokopedia.notifications.analytics.ProductAnalytics.clickCollapsedBody
 import com.tokopedia.notifications.common.*
 import com.tokopedia.notifications.common.CMConstant.NotificationType.PRODUCT_NOTIIFICATION
 import com.tokopedia.notifications.common.CMConstant.PayloadKeys.ADD_TO_CART
 import com.tokopedia.notifications.common.CMConstant.PreDefineActionType.ATC
 import com.tokopedia.notifications.common.CMConstant.PreDefineActionType.OCC
 import com.tokopedia.notifications.common.CMConstant.ReceiverExtraData.ACTION_BUTTON_EXTRA
+import com.tokopedia.notifications.common.IrisAnalyticsEvents.sendPushEvent
 import com.tokopedia.notifications.data.DataManager
 import com.tokopedia.notifications.di.DaggerCMNotificationComponent
 import com.tokopedia.notifications.di.module.NotificationModule
@@ -134,7 +135,7 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
                         sendClickPushEvent(context, IrisAnalyticsEvents.PUSH_CLICKED, baseNotificationModel, CMConstant.NotificationType.GENERAL)
                     }
                     CMConstant.ReceiverAction.ACTION_PRODUCT_COLLAPSED_CLICK -> {
-                        handleCollapsedViewClick(context, intent, notificationId)
+                        handleCollapsedViewClick(context, intent, notificationId, baseNotificationModel)
                     }
                     CMConstant.ReceiverAction.ACTION_PRODUCT_CAROUSEL_LEFT_CLICK -> {
                         ProductNotification.onLeftIconClick(context.applicationContext,baseNotificationModel!!)
@@ -203,8 +204,15 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
         clearProductImages(context.applicationContext)
     }
 
-    private fun handleCollapsedViewClick(context: Context, intent: Intent, notificationId: Int) {
+    private fun handleCollapsedViewClick(
+            context: Context,
+            intent: Intent,
+            notificationId: Int,
+            baseNotificationModel: BaseNotificationModel?
+    ) {
+        val productInfo = baseNotificationModel?.productInfoList?.first()
         handleMainClick(context, intent, notificationId)
+        clickCollapsedBody(userSession.userId, baseNotificationModel, productInfo)
         clearProductImages(context.applicationContext)
     }
 
@@ -418,13 +426,13 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
 
     private fun sendClickPushEvent(context: Context, eventName: String, baseNotificationModel: BaseNotificationModel?, pushType: String) {
         baseNotificationModel?.let {
-            IrisAnalyticsEvents.sendPushEvent(context, eventName, baseNotificationModel)
+            sendPushEvent(context, eventName, baseNotificationModel)
         }
     }
 
     private fun sendElementClickPushEvent(context: Context, eventName: String, baseNotificationModel: BaseNotificationModel, pushType: String, elementId: String?) {
         baseNotificationModel?.let {
-            IrisAnalyticsEvents.sendPushEvent(context, eventName, baseNotificationModel,elementId)
+            sendPushEvent(context, eventName, baseNotificationModel,elementId)
         }
     }
 

@@ -1,9 +1,9 @@
 package com.tokopedia.topads.view.adapter.etalase
 
 import android.view.View
-import com.tokopedia.topads.view.adapter.etalase.viewholder.EtalaseViewHolder
 import com.tokopedia.topads.view.adapter.etalase.viewholder.EtalaseItemViewHolder
 import com.tokopedia.topads.view.adapter.etalase.viewholder.EtalaseShimerViewHolder
+import com.tokopedia.topads.view.adapter.etalase.viewholder.EtalaseViewHolder
 import com.tokopedia.topads.view.adapter.etalase.viewmodel.EtalaseItemViewModel
 import com.tokopedia.topads.view.adapter.etalase.viewmodel.EtalaseShimerViewModel
 

@@ -9,10 +9,11 @@ object MockChannelConfig {
     fun get(layoutName: String): ChannelConfig {
         return ChannelConfig(
                 layoutName,
-                true,
-                true,
-                0,
-                false
+                showPromoBadge = true,
+                hasCloseButton = true,
+                serverTimeOffset = 0,
+                createdTimeMillis = "",
+                isAutoRefreshAfterExpired = false
         )
     }
 }

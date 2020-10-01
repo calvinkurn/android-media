@@ -129,7 +129,6 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         addRewardIntroObserver()
     }
 
-
     private fun setLayoutParams(cardheight: Int) {
         val statusBarHeight = getStatusBarHeight(activity)
         val layoutParams = tokoPointToolbar!!.layoutParams as FrameLayout.LayoutParams
@@ -276,7 +275,6 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
             return
     }
 
-
     private fun addDynamicToolbar(dynamicActionList: List<DynamicActionListItem?>?) {
         dynamicActionList?.forEachIndexed { index, it ->
             it?.let { item ->
@@ -391,25 +389,8 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
                                 verticalBanner11ViewBinder as SectionItemBinder)
                         sectionList.add(sectionContent)
                     }
-                 /*   CommonConstant.BannerType.COLUMN_2_1_BY_1 -> {
-                        val verticalColumn21ViewBinder = SectionVerticalColumn211ViewBinder()
-                        @Suppress("UNCHECKED_CAST")
-                        viewBinders.put(
-                                sectionContent.layoutBannerAttr.bannerType,
-                                verticalColumn21ViewBinder as SectionItemBinder)
-                        sectionList.add(sectionContent)
-                    }*/
-
-                    /*  CommonConstant.BannerType.COLUMN_3_1_BY_1 -> {
-                          val verticalColumn31ViewBinder = SectionVerticalColumn311ViewBinder()
-                          @Suppress("UNCHECKED_CAST")
-                          viewBinders.put(
-                                  sectionContent.layoutBannerAttr.bannerType,
-                                  verticalColumn31ViewBinder as SectionItemBinder)
-                          sectionList.add(sectionContent)
-                      }*/
                     CommonConstant.BannerType.COLUMN_2_1_BY_1,
-                            CommonConstant.BannerType.COLUMN_2_3_BY_4,
+                    CommonConstant.BannerType.COLUMN_2_3_BY_4,
                     CommonConstant.BannerType.COLUMN_3_1_BY_1 -> {
                         val verticalColumn234ViewBinder = SectionVerticalColumnViewBinder()
                         @Suppress("UNCHECKED_CAST")

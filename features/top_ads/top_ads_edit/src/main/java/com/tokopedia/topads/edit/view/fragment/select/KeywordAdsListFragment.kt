@@ -113,7 +113,9 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
     }
 
     private fun sortListSelected() {
-        keywordSelectedAdapter.items.sortWith(Comparator { lhs, rhs -> lhs?.totalSearch?.toInt()!!.compareTo(rhs?.totalSearch?.toInt()!!) })
+        keywordSelectedAdapter.items.sortWith(Comparator { lhs, rhs ->
+            lhs?.totalSearch?.toInt() ?: 0.compareTo(rhs?.totalSearch?.toInt() ?: 0)
+        })
         keywordSelectedAdapter.items.reverse()
         keywordSelectedAdapter.notifyDataSetChanged()
     }
@@ -128,7 +130,10 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
 
     private fun onItemUnchecked(pos: Int) {
         if (!keywordSelectedAdapter.items[pos].fromSearch) {
-            keywordListAdapter.items.add(KeywordItemViewModel(KeywordDataItem(keywordSelectedAdapter.items[pos].bidSuggest, keywordSelectedAdapter.items[pos].totalSearch, keywordSelectedAdapter.items[pos].keyword, keywordSelectedAdapter.items[pos].competition, keywordSelectedAdapter.items[pos].source)))
+            keywordListAdapter.items.add(KeywordItemViewModel(
+                    KeywordDataItem(keywordSelectedAdapter.items[pos].bidSuggest, keywordSelectedAdapter.items[pos].totalSearch,
+                            keywordSelectedAdapter.items[pos].keyword,
+                            keywordSelectedAdapter.items[pos].source, keywordSelectedAdapter.items[pos].competition)))
 
         } else {
             removeSearchedItem(pos)
@@ -166,15 +171,31 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
         }
     }
 
+    private fun setEmptyLayout(empty: Boolean) {
+        if (empty) {
+            tip_btn.visibility = View.GONE
+            headlineList.visibility = View.GONE
+            emptyLayout.visibility = View.VISIBLE
+
+        } else {
+            tip_btn.visibility = View.VISIBLE
+            headlineList.visibility = View.VISIBLE
+            emptyLayout.visibility = View.GONE
+        }
+
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_CODE_SEARCH) {
             selectedKeyFromSearch?.clear()
             if (resultCode == Activity.RESULT_OK) {
                 val dataFromSearch: ArrayList<SearchData>? = data?.getParcelableArrayListExtra(SELECTED_KEYWORDS)
-                for (item in dataFromSearch!!) {
+                dataFromSearch?.forEach { item ->
                     selectedKeyFromSearch?.add(item)
                 }
+                if (selectedKeyFromSearch?.isNotEmpty() != false)
+                    setEmptyLayout(false)
                 checkifExist()
                 if (STAGE == 0)
                     gotoNextStage()
@@ -204,6 +225,8 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
             keywordSelectedAdapter.items.addAll(list)
             sortListSelected()
         }
+        emptyLayout?.visibility = View.GONE
+        showSelectMessage()
     }
 
     private fun showSelectMessage() {
@@ -228,7 +251,7 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
         if (keywords.isEmpty()) {
             setEmptyView()
         }
-        if (selected?.isNotEmpty()!!) {
+        if (selected?.isNotEmpty() != false) {
             restoreStage()
         } else {
             setStepLayout(View.GONE)
@@ -237,11 +260,11 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
     }
 
     private fun setEmptyView() {
+        startLoading(false)
         STAGE = 1
-        setStepLayout(View.GONE)
-        tip_btn.visibility = View.GONE
-        headlineList.visibility = View.GONE
-        emptyLayout.visibility = View.VISIBLE
+        if (selected?.isEmpty() != false && selectedKeyFromSearch?.isEmpty() != false) {
+            setEmptyLayout(true)
+        }
         setBtnText()
     }
 
@@ -261,6 +284,7 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         userID = UserSession(view.context).userId
         startLoading(true)
+        setStepLayout(View.GONE)
         selected = arguments?.getParcelableArrayList(SELECTED_DATA)
         btn_next.setOnClickListener {
             if (btn_next.text == resources.getString(R.string.topads_common_keyword_list_step)) {
@@ -277,7 +301,7 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
             }
         }
         tip_btn.setOnClickListener {
-            TipSheetKeywordList().show(fragmentManager!!, KeywordAdsListFragment::class.java.name)
+            TipSheetKeywordList().show(childFragmentManager, KeywordAdsListFragment::class.java.name)
             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEventEdit(CLICK_TIPS_KEYWORD, groupId.toString(), userID)
 
         }
@@ -360,7 +384,7 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
 
     private fun mapSearchDataToModel(): MutableList<KeywordDataItem> {
         val list: MutableList<KeywordDataItem> = mutableListOf()
-        for (item in selectedKeyFromSearch!!) {
+        selectedKeyFromSearch?.forEach { item ->
             if (keywordSelectedAdapter.items.find { selected -> selected.keyword == item.keyword } == null) {
                 list.add(KeywordDataItem(item.bidSuggest, item.totalSearch.toString(), item.keyword
                         ?: "", item.source ?: "", item.competition ?: ""))
@@ -380,7 +404,7 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
             val intent = Intent(context, KeywordSearchActivity::class.java).apply {
                 putExtra(PRODUCT_IDS_SELECTED, arguments?.getString(PRODUCT_ID) ?: "")
                 putExtra(SEARCH_QUERY, searchBar.searchBarTextField.text.toString())
-                putExtra(GROUP_ID,groupId.toString())
+                putExtra(GROUP_ID, groupId.toString())
             }
             startActivityForResult(intent, REQUEST_CODE_SEARCH)
         }

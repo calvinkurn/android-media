@@ -11,10 +11,10 @@ import androidx.fragment.app.Fragment;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.core.base.di.component.HasComponent;
-import com.tokopedia.product.manage.item.utils.constant.ProductExtraConstant;
 import com.tokopedia.seller.ProductEditItemComponentInstance;
 import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
-import com.tokopedia.product.manage.item.common.di.component.ProductComponent;
+import com.tokopedia.seller.manageitem.common.constant.ProductExtraConstant;
+import com.tokopedia.seller.manageitem.di.component.ProductComponent;
 import com.tokopedia.seller.product.etalase.view.fragment.EtalasePickerFragment;
 import com.tokopedia.seller.product.etalase.view.listener.EtalasePickerFragmentListener;
 
@@ -83,6 +83,7 @@ public class EtalasePickerActivity extends BaseSimpleActivity implements HasComp
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_ADD_ETALASE && resultCode == Activity.RESULT_OK) {
             if (data != null && data.getBooleanExtra(PARAM_ADD_ETALASE_SUCCESS, false)) {
                 reloadEtalaseData();

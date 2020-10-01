@@ -176,7 +176,6 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                       isOS
                       isPowerMerchant
                       isWishlist
-                      isCOD
             		}
                     ... on pdpDataProductInfo {
                       row
@@ -255,7 +254,6 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                           stockWordingHTML
                           minimumOrder
                         }
-                        isCOD
                         isWishlist
                         campaignInfo {
                           campaignID

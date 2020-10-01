@@ -177,6 +177,8 @@ class EditKeywordsFragment : BaseDaggerFragment() {
 
     private fun prepareBundle(pos: Int): Bundle {
         val bundle = Bundle()
+        if ((adapter.items[pos] as EditKeywordItemViewModel).data.priceBid == 0)
+            (adapter.items[pos] as EditKeywordItemViewModel).data.priceBid = minSuggestKeyword
         bundle.putInt(MAX_BID, maxSuggestKeyword)
         bundle.putInt(MIN_BID, minSuggestKeyword)
         bundle.putInt(SUGGESTION_BID, (adapter.items[pos] as EditKeywordItemViewModel).data.priceBid)
@@ -186,7 +188,6 @@ class EditKeywordsFragment : BaseDaggerFragment() {
         bundle.putInt(FROM_EDIT, 1)
         bundle.putString(GROUPID, groupId.toString())
         return bundle
-
     }
 
     private fun ifNewKeyword(tag: String): Boolean {
@@ -221,6 +222,7 @@ class EditKeywordsFragment : BaseDaggerFragment() {
     private fun onSuccessSuggestion(data: List<ResponseBidInfo.Result.TopadsBidInfo.DataItem>) {
         minSuggestKeyword = data[0].minBid
         maxSuggestKeyword = data[0].maxBid
+        adapter.setBid(minSuggestKeyword)
     }
 
     private fun onAddKeyword() {

@@ -17,8 +17,8 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.GrantPermissionRule
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
-import com.tokopedia.analyticsdebugger.validator.core.getAnalyticsWithQuery
-import com.tokopedia.analyticsdebugger.validator.core.hasAllSuccess
+import com.tokopedia.cassavatest.getAnalyticsWithQuery
+import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.common.topupbills.data.TopupBillsFavNumberItem
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity
 import com.tokopedia.common.topupbills.view.adapter.TopupBillsRecentNumbersAdapter
@@ -89,7 +89,7 @@ class TelcoPostpaidLoginInstrumentTest {
     @Test
     fun validate_postpaid_login() {
         stubSearchNumber()
-        InstrumentationAuthHelper.loginInstrumentationTestUser1(mActivityRule.activity.application)
+        InstrumentationAuthHelper.loginInstrumentationTestUser1()
 
         Thread.sleep(3000)
 

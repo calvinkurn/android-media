@@ -29,10 +29,6 @@ object ProductDetailConstant {
 
     const val PARAM_PRICE = "price"
 
-    const val URL_VALUE_PROPOSITION_READY = "https://www.tokopedia.com/help/article/a-1937"
-    const val URL_VALUE_PROPOSITION_ORI = "https://www.tokopedia.com/help/article/a-1938"
-    const val URL_VALUE_PROPOSITION_GUARANTEE_7_DAYS = "https://www.tokopedia.com/help/article/a-1939"
-    const val URL_VALUE_PROPOSITION_GUARANTEE = "https://www.tokopedia.com/help/article/a-1940"
     const val URL_YOUTUBE = "https://www.youtube.com/watch?v="
 
 
@@ -44,12 +40,13 @@ object ProductDetailConstant {
     const val KEY_OCC_BUTTON = "occ"
     const val KEY_CHAT = "chat"
     const val KEY_BYME = "byme"
-    const val DELIMITER_DEVICE_ID = "|>deviceID:"
     const val KEY_BUTTON_PRIMARY = "primary"
+    const val KEY_BUTTON_PRIMARY_GREEN = "primary_green"
+    const val KEY_BUTTON_SECONDARY_GREEN = "secondary_green"
     const val KEY_BUTTON_DISABLE = "disabled"
     const val KEY_BUTTON_SECONDARY = "secondary"
     const val DEFAULT_PAGE_NUMBER = 1
-    const val DEFAULT_PAGE_NAME = "pdp_1,pdp_2,pdp_3,pdp_4"
+    const val DEFAULT_X_SOURCE = "pdp"
     const val KEY_TOP_ADS = "tdn_topads"
 
     const val PDP_P1_TRACE = "mp_pdp_p1"
@@ -96,6 +93,7 @@ object ProductDetailConstant {
     const val DISCUSSION = "discussion"
     const val DISCUSSION_FAQ = "discussion_faq"
     const val MOST_HELPFUL_REVIEW = "most_helpful_review"
+    const val REVIEW = "review"
     const val TRADE_IN = "tradein"
     const val INFO = "info"
     const val SHOP_VOUCHER = "shop_voucher"
@@ -123,7 +121,6 @@ object ProductDetailConstant {
     const val PRODUCT_PROTECTION = "protection"
     const val VALUE_PROP = "value_prop"
     const val PRODUCT_CONTENT = "product_content"
-    const val PRODUCT_CONTENT_TITLE_TOP = "product_content_title_top"
     const val MEDIA = "product_media"
     const val BY_ME = "byme"
     const val TOP_ADS = "banner_ads"
@@ -170,8 +167,6 @@ object ProductDetailConstant {
     //OVO
     const val OVO_INACTIVE_STATUS = 1;
     const val OVO_INSUFFICIENT_BALANCE_STATUS = 2;
-
-    const val ENABLE_NEW_DISCUSSION_REMOTE_CONFIG = "android_enable_new_discussion"
 
     //SHOP
     const val ALREADY_FAVORITE_SHOP = 1

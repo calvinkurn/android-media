@@ -13,7 +13,7 @@
         android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/dp_16"
-        app:corners="@integer/travel_subhomepage_shimmering_corner" />
+        app:corners="@integer/section_shimmering_corner" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -29,13 +29,13 @@
                 android:layout_width="@dimen/dp_40"
                 android:layout_height="@dimen/dp_40"
                 android:layout_marginLeft="@dimen/dp_8"
-                app:corners="@integer/travel_subhomepage_shimmering_corner" />
+                app:corners="@integer/section_shimmering_corner" />
 
             <com.elyeproj.loaderviewlibrary.LoaderImageView
                 android:layout_width="@dimen/dp_120"
                 android:layout_height="@dimen/dp_100"
                 android:layout_marginTop="@dimen/dp_16"
-                app:corners="@integer/travel_subhomepage_shimmering_corner" />
+                app:corners="@integer/section_shimmering_corner" />
 
         </RelativeLayout>
 
@@ -48,13 +48,13 @@
                 android:layout_width="@dimen/dp_40"
                 android:layout_height="@dimen/dp_40"
                 android:layout_marginLeft="@dimen/dp_8"
-                app:corners="@integer/travel_subhomepage_shimmering_corner" />
+                app:corners="@integer/section_shimmering_corner" />
 
             <com.elyeproj.loaderviewlibrary.LoaderImageView
                 android:layout_width="@dimen/dp_120"
                 android:layout_height="@dimen/dp_100"
                 android:layout_marginTop="@dimen/dp_16"
-                app:corners="@integer/travel_subhomepage_shimmering_corner" />
+                app:corners="@integer/section_shimmering_corner" />
 
         </RelativeLayout>
 
@@ -67,13 +67,13 @@
                 android:layout_width="@dimen/dp_40"
                 android:layout_height="@dimen/dp_40"
                 android:layout_marginLeft="@dimen/dp_8"
-                app:corners="@integer/travel_subhomepage_shimmering_corner" />
+                app:corners="@integer/section_shimmering_corner" />
 
             <com.elyeproj.loaderviewlibrary.LoaderImageView
                 android:layout_width="@dimen/dp_120"
                 android:layout_height="@dimen/dp_100"
                 android:layout_marginTop="@dimen/dp_16"
-                app:corners="@integer/travel_subhomepage_shimmering_corner" />
+                app:corners="@integer/section_shimmering_corner" />
 
         </RelativeLayout>
 
@@ -86,13 +86,13 @@
                 android:layout_width="@dimen/dp_40"
                 android:layout_height="@dimen/dp_40"
                 android:layout_marginLeft="@dimen/dp_8"
-                app:corners="@integer/travel_subhomepage_shimmering_corner" />
+                app:corners="@integer/section_shimmering_corner" />
 
             <com.elyeproj.loaderviewlibrary.LoaderImageView
                 android:layout_width="@dimen/dp_120"
                 android:layout_height="@dimen/dp_100"
                 android:layout_marginTop="@dimen/dp_16"
-                app:corners="@integer/travel_subhomepage_shimmering_corner" />
+                app:corners="@integer/section_shimmering_corner" />
 
         </RelativeLayout>
 

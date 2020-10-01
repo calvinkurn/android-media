@@ -20,6 +20,7 @@ import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.view.customview.DynamicItemActionView
 import com.tokopedia.tokopoints.view.model.rewardtopsection.DynamicActionListItem
 import com.tokopedia.tokopoints.view.model.rewardtopsection.TokopediaRewardTopSection
+import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil
 import com.tokopedia.tokopoints.view.util.CommonConstant
 import com.tokopedia.unifycomponents.NotificationUnify
 
@@ -64,6 +65,10 @@ class TopSectionVH(itemView: View, val cardRuntimeHeightListener: CardRuntimeHei
             cardTierInfo.background.setColorFilter(Color.parseColor("#" + it.backgroundColor), PorterDuff.Mode.SRC_OVER)
             cardTierInfo.setOnClickListener {
                 RouteManager.route(itemView.context, ApplinkConstInternalGlobal.WEBVIEW_TITLE, itemView.context.resources.getString(R.string.tp_label_membership), CommonConstant.WebLink.MEMBERSHIP)
+                AnalyticsTrackerUtil.sendEvent(itemView.context,
+                        AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
+                        AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
+                        AnalyticsTrackerUtil.ActionKeys.CLICK_MEMBERSHIP, mValueMembershipDescription)
             }
         }
 
@@ -85,13 +90,6 @@ class TopSectionVH(itemView: View, val cardRuntimeHeightListener: CardRuntimeHei
                 dataList[i]?.cta?.text?.let { dynamicAction?.setLayoutText(it, i) }
                 dataList[i]?.cta?.text?.let { dynamicAction?.setLayoutText(it, i) }
                 dataList[i]?.iconImageURL?.let { dynamicAction?.setLayoutIcon(it, i) }
-                if (dataList[i]?.counter?.isShowCounter!! && dataList[i]?.counter?.counterStr != "0") {
-                    dataList[i]?.counter?.counterStr?.let { dynamicAction?.setLayoutNotification(it, i) }
-                } else {
-                    dynamicAction?.hideNotification(i)
-                    dataList[i]?.counter?.isShowCounter = false
-                }
-
                 if (dataList[i]?.counter?.isShowCounter!! && dataList[i]?.counter?.counterStr != "0") {
                     dataList[i]?.counter?.counterStr?.let { dynamicAction?.setLayoutNotification(it, i) }
                 } else {

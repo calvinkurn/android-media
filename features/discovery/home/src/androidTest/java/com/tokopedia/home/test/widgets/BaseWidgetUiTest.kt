@@ -6,6 +6,8 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.atc_common.domain.usecase.AddToCartOccUseCase
 import com.tokopedia.home.beranda.data.datasource.default_data_source.HomeDefaultDataSource
 import com.tokopedia.home.beranda.data.mapper.HomeDataMapper
+import com.tokopedia.home.beranda.data.mapper.HomeDynamicChannelDataMapper
+import com.tokopedia.home.beranda.data.mapper.factory.HomeDynamicChannelVisitableFactoryImpl
 import com.tokopedia.home.beranda.data.mapper.factory.HomeVisitableFactoryImpl
 import com.tokopedia.home.beranda.data.usecase.HomeUseCase
 import com.tokopedia.home.beranda.domain.interactor.*
@@ -16,6 +18,7 @@ import com.tokopedia.play_common.domain.usecases.PlayToggleChannelReminderUseCas
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.stickylogin.domain.usecase.coroutine.StickyLoginUseCase
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
+import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
 import io.mockk.mockk
@@ -48,7 +51,13 @@ abstract class BaseWidgetUiTest{
     open val remoteConfig = mockk<RemoteConfig>(relaxed = true)
     open val playToggleChannelReminderUseCase = mockk<Lazy<PlayToggleChannelReminderUseCase>> (relaxed = true)
     open val getPlayBannerUseCase = mockk<Lazy<GetPlayWidgetUseCase>> (relaxed = true)
-    open val homeDataMapper = HomeDataMapper(InstrumentationRegistry.getInstrumentation().context, HomeVisitableFactoryImpl(userSessionInterface.get(), remoteConfig, HomeDefaultDataSource()), mockk(relaxed = true))
+    open val getDisplayHeadlineAds = mockk<Lazy<GetDisplayHeadlineAds>> (relaxed = true)
+
+    open val homeVisitableFactory = HomeVisitableFactoryImpl(userSessionInterface.get(), remoteConfig, HomeDefaultDataSource())
+    open val homeDynamicChannelVisitableFactory = HomeDynamicChannelVisitableFactoryImpl(userSessionInterface.get(), remoteConfig, HomeDefaultDataSource())
+    open val instrumentationContext = InstrumentationRegistry.getInstrumentation().context
+    open val homeDataMapper = HomeDataMapper(instrumentationContext, homeVisitableFactory, mockk(relaxed = true),
+            HomeDynamicChannelDataMapper(instrumentationContext, homeDynamicChannelVisitableFactory, TrackingQueue(instrumentationContext)))
 
     open fun reInitViewModel() = HomeViewModel(
             dismissHomeReviewUseCase = dismissHomeReviewUseCase,
@@ -77,7 +86,9 @@ abstract class BaseWidgetUiTest{
             injectCouponTimeBasedUseCase = injectCouponTimeBasedUseCase,
             topAdsImageViewUseCase = topAdsImageViewUseCase,
             playToggleChannelReminderUseCase = playToggleChannelReminderUseCase,
-            getPlayBannerUseCase = getPlayBannerUseCase
+            getPlayBannerUseCase = getPlayBannerUseCase,
+            getDisplayHeadlineAds = getDisplayHeadlineAds,
+            homeProcessor = mockk(relaxed = true)
     )
 
     fun <T : ViewModel> createViewModelFactory(viewModel: T): ViewModelProvider.Factory {

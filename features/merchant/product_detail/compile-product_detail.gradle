@@ -62,6 +62,5 @@ include "features:logistic:logisticdata"
 include "libraries:push_notification"
 include "libraries:websocket"
 include "features:top_ads:top_ads_management_sourcetagging"
-include "features:merchant:shop_etalase_picker"
 include "features:user:user_identification_common"
 include 'libraries:imageuploader'
