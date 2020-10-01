@@ -570,7 +570,7 @@ public class SellerReputationFragment extends BaseDaggerFragment
                         hideAppBarLayout();
                     } else {
                         snackbarRetry = NetworkErrorHelper.createSnackbarWithAction(getActivity(), errorMessage, getListenerOnRetryErrorSnackbar());
-                        snackbarRetry.setColorActionRetry(ContextCompat.getColor(getActivity(), R.color.tkpd_main_green));
+                        snackbarRetry.setColorActionRetry(ContextCompat.getColor(getActivity(), com.tokopedia.abstraction.R.color.tkpd_main_green));
                         snackbarRetry.showRetrySnackbar();
                     }
 
