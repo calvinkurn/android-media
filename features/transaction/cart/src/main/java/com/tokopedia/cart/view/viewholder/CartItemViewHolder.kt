@@ -561,7 +561,7 @@ class CartItemViewHolder constructor(itemView: View,
     private fun setNotesWidth() {
         val padding = itemView.resources.getDimensionPixelOffset(R.dimen.dp_16)
         val paddingLeftRight = padding * 2
-        val remarkOptionWidth = itemView.resources.getDimensionPixelOffset(R.dimen.dp_35)
+        val remarkOptionWidth = itemView.resources.getDimensionPixelOffset(R.dimen.dp_40)
         val screenWidth = getScreenWidth()
         val maxNotesWidth = screenWidth - paddingLeftRight
         val noteWidth = maxNotesWidth - remarkOptionWidth

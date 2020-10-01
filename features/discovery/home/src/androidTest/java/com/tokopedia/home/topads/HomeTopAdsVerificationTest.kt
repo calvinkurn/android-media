@@ -9,6 +9,7 @@ import com.tokopedia.home.R
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelSprintViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationFeedViewHolder
 import com.tokopedia.home.environment.InstrumentationHomeTestActivity
+import com.tokopedia.home_component.viewholders.FeaturedShopViewHolder
 import com.tokopedia.home_component.viewholders.MixLeftComponentViewHolder
 import com.tokopedia.home_component.viewholders.MixTopComponentViewHolder
 import com.tokopedia.test.application.environment.callback.TopAdsVerificatorInterface
@@ -17,6 +18,7 @@ import com.tokopedia.test.application.assertion.topads.TopAdsAssertion
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.InstrumentationAuthHelper.loginInstrumentationTestTopAdsUser
 import com.tokopedia.test.application.util.setupTopAdsDetector
+import kotlinx.android.synthetic.main.home_featured_shop.view.*
 import org.junit.*
 
 /**
@@ -78,6 +80,9 @@ class HomeTopAdsVerificationTest {
             }
             is DynamicChannelSprintViewHolder -> {
                 clickOnEachItemRecyclerView(viewHolder.itemView, R.id.recycleList, 0)
+            }
+            is FeaturedShopViewHolder -> {
+                clickOnEachItemRecyclerView(viewHolder.itemView, R.id.dc_banner_rv, 0)
             }
             is HomeRecommendationFeedViewHolder -> {
                 waitForData()

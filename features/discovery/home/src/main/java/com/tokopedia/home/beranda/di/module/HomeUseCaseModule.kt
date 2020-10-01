@@ -24,6 +24,7 @@ import com.tokopedia.home.beranda.domain.gql.ProductrevDismissSuggestion
 import com.tokopedia.home.beranda.domain.gql.feed.HomeFeedContentGqlResponse
 import com.tokopedia.home.beranda.domain.gql.feed.HomeFeedTabGqlResponse
 import com.tokopedia.home.beranda.domain.interactor.*
+import com.tokopedia.home.beranda.domain.model.DisplayHeadlineAdsEntity
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.domain.model.HomeChannelData
 import com.tokopedia.home.beranda.domain.model.HomeData
@@ -196,6 +197,8 @@ class HomeUseCaseModule {
             "          has_close_button\n" +
             "          isAutoRefreshAfterExpired\n" +
             "          token\n" +
+            "          widgetParam\n" +
+            "          contextualInfo\n" +
             "          header {\n" +
             "            id\n" +
             "            name\n" +
@@ -244,7 +247,7 @@ class HomeUseCaseModule {
             "              }\n" +
             "              has_buy_button\n" +
             "              rating\n" +
-            "              rating_float\n" +
+            "              ratingAverage\n" +
             "              count_review\n" +
             "              benefit {\n" +
             "                 type\n" +
@@ -545,6 +548,12 @@ class HomeUseCaseModule {
     @HomeScope
     fun provideInjectCouponTimeBasedUseCase(graphqlUseCase: com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<SetInjectCouponTimeBased>): InjectCouponTimeBasedUseCase {
         return InjectCouponTimeBasedUseCase(graphqlUseCase)
+    }
+
+    @Provides
+    @HomeScope
+    fun provideGetDisplayHeadlineAds(graphqlUseCase: com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<DisplayHeadlineAdsEntity>): GetDisplayHeadlineAds {
+        return GetDisplayHeadlineAds(graphqlUseCase)
     }
 
     @HomeScope

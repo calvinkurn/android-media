@@ -19,6 +19,7 @@ import com.tokopedia.home.beranda.data.model.HomeWidget
 import com.tokopedia.home.beranda.data.model.TokopointsDrawer
 import com.tokopedia.home.beranda.data.usecase.HomeUseCase
 import com.tokopedia.home.beranda.domain.interactor.*
+import com.tokopedia.home.beranda.domain.model.DisplayHeadlineAdsEntity
 import com.tokopedia.home.beranda.domain.model.InjectCouponTimeBased
 import com.tokopedia.home.beranda.domain.model.SearchPlaceholder
 import com.tokopedia.home.beranda.domain.model.recharge_recommendation.RechargeRecommendation
@@ -39,7 +40,9 @@ import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendation
 import com.tokopedia.home.util.*
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.home_component.model.ChannelShop
 import com.tokopedia.home_component.model.ReminderEnum
+import com.tokopedia.home_component.visitable.FeaturedShopDataModel
 import com.tokopedia.home_component.visitable.HomeComponentVisitable
 import com.tokopedia.home_component.visitable.RecommendationListCarouselDataModel
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
@@ -81,6 +84,7 @@ open class HomeViewModel @Inject constructor(
         private val getBusinessUnitDataUseCase: Lazy<GetBusinessUnitDataUseCase>,
         private val getBusinessWidgetTab: Lazy<GetBusinessWidgetTab>,
         private val getDynamicChannelsUseCase: Lazy<GetDynamicChannelsUseCase>,
+        private val getDisplayHeadlineAds: Lazy<GetDisplayHeadlineAds>,
         private val getHomeReviewSuggestedUseCase: Lazy<GetHomeReviewSuggestedUseCase>,
         private val getHomeTokopointsDataUseCase: Lazy<GetHomeTokopointsDataUseCase>,
         private val getKeywordSearchUseCase: Lazy<GetKeywordSearchUseCase>,
@@ -115,6 +119,7 @@ open class HomeViewModel @Inject constructor(
         private val REQUEST_DELAY_SEND_GEOLOCATION = TimeUnit.HOURS.toMillis(1) // 1 hour
     }
 
+    var currentTopAdsBannerToken: String = ""
     private val homeFlowData: Flow<HomeDataModel?> = homeUseCase.get().getHomeData().flowOn(homeDispatcher.get().io())
 
 // ============================================================================================
@@ -895,17 +900,16 @@ open class HomeViewModel @Inject constructor(
                     val homeDataWithoutExternalComponentPair = evaluateInitialTopAdsBannerComponent(homeDataModel)
                     var homeData: HomeDataModel? = homeDataWithoutExternalComponentPair.first
                     homeData = evaluateGeolocationComponent(homeData)
-                    homeData = evaluateAvailableComponent(homeData, !(homeData?.isFirstPage?:false))
-                    homeData?.let {
-                        _homeLiveData.postValue(homeData)
-                        getPlayBannerCarousel()
-                        getHeaderData()
-                        getReviewData()
-                        getPlayBanner()
-                        getPopularKeyword()
-                        getTopAdsBannerData(homeDataWithoutExternalComponentPair.second)
-                        _trackingLiveData.postValue(Event(_homeLiveData.value?.list?.filterIsInstance<HomeVisitable>() ?: listOf()))
-                    }
+                    homeData = evaluateAvailableComponent(homeData)
+                    _homeLiveData.postValue(homeData)
+                    getPlayBannerCarousel()
+                    getHeaderData()
+                    getReviewData()
+                    getPlayBanner()
+                    getPopularKeyword()
+                    getDisplayTopAdsHeader()
+                    getTopAdsBannerData(homeDataWithoutExternalComponentPair.second)
+                    _trackingLiveData.postValue(Event(_homeLiveData.value?.list?.filterIsInstance<HomeVisitable>() ?: listOf()))
                 } else {
                     if (homeDataModel?.list?.size?:0 > 1) {
                         _isRequestNetworkLiveData.postValue(Event(false))
@@ -1181,6 +1185,7 @@ open class HomeViewModel @Inject constructor(
                                 val newTopAdsModel = it.value.copy(topAdsImageViewModel = topAdsImageViewModel)
                                 homeProcessor.get().sendWithQueueMethod(AddWidgetCommand(newTopAdsModel, it.key, this@HomeViewModel))
                             }
+                            currentTopAdsBannerToken = topAdsImageViewModel.nextPageToken?:""
                         }
                     }
                 }
@@ -1223,6 +1228,49 @@ open class HomeViewModel @Inject constructor(
             val data = getKeywordSearchUseCase.get().executeOnBackground()
             _searchHint.postValue(data.searchData)
         }){}
+    }
+
+    private fun getDisplayTopAdsHeader(){
+        _homeLiveData.value?.list?.withIndex()?.filter { it.value is FeaturedShopDataModel }?.forEach { indexed ->
+            val featuredShopDataModel = indexed.value as FeaturedShopDataModel
+            launchCatchError(coroutineContext, block={
+                getDisplayHeadlineAds.get().createParams(featuredShopDataModel.channelModel.widgetParam)
+                val data = getDisplayHeadlineAds.get().executeOnBackground()
+                if(data.isEmpty()){
+                    homeProcessor.get().sendWithQueueMethod(DeleteWidgetCommand(featuredShopDataModel, indexed.index, this@HomeViewModel))
+                } else {
+                    homeProcessor.get().sendWithQueueMethod(UpdateWidgetCommand(featuredShopDataModel.copy(
+                            channelModel = featuredShopDataModel.channelModel.copy(
+                                    channelGrids = mappingTopAdsHeaderToChannelGrid(data)
+                            )), indexed.index, this@HomeViewModel))
+                }
+            }){
+                homeProcessor.get().sendWithQueueMethod(DeleteWidgetCommand(featuredShopDataModel, indexed.index, this))
+            }
+        }
+    }
+
+    private fun mappingTopAdsHeaderToChannelGrid(data: List<DisplayHeadlineAdsEntity.DisplayHeadlineAds>): List<ChannelGrid>{
+        return data.map {
+            ChannelGrid(
+                    id = it.id,
+                    applink = it.applink,
+                    shop = ChannelShop(
+                            id = it.headline.shop.id,
+                            shopName = it.headline.shop.name,
+                            shopProfileUrl = it.headline.shop.imageShop.cover,
+                            shopLocation = it.headline.shop.location,
+                            shopBadgeUrl = it.headline.badges.firstOrNull()?.imageUrl ?: "",
+                            isGoldMerchant = it.headline.shop.goldShop,
+                            isOfficialStore = it.headline.shop.shopIsOfficialStore
+                    ),
+                    countReviewFormat = it.headline.shop.products.firstOrNull()?.review ?: "",
+                    rating = it.headline.shop.products.firstOrNull()?.rating ?: 0,
+                    impression = it.headline.image.url,
+                    productClickUrl = it.adClickUrl,
+                    imageUrl = it.headline.shop.products.firstOrNull()?.imageProduct?.imageUrl ?: ""
+            )
+        }
     }
 
     fun getStickyContent() {

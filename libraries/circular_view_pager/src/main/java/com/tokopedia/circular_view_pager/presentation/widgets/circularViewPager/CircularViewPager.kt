@@ -277,6 +277,17 @@ open class CircularViewPager : FrameLayout, CoroutineScope{
         resetAutoScroll()
     }
 
+    fun resetScrollToStart() {
+        currentPagePosition = if (isInfinite) {
+            viewPager.setCurrentItem(1, false)
+            1
+        } else {
+            viewPager.setCurrentItem(0, false)
+            0
+        }
+        resetAutoScroll()
+    }
+
     fun resetImpressions(){
         impressionStatusList.clear()
         for (i in 0..(adapter?.listCount ?: 0)) {

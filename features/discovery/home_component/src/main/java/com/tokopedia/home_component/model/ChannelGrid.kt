@@ -28,8 +28,10 @@ data class ChannelGrid(
         val rating: Int = 0,
         val ratingFloat: String = "",
         val countReview: Int = 0,
+        val countReviewFormat: String = "",
         val backColor: String = "",
-        val benefit: ChannelBenefit = ChannelBenefit(),
         val textColor: String = "",
-        val recommendationType: String = ""
+        val benefit: ChannelBenefit = ChannelBenefit(),
+        val recommendationType: String = "",
+        val shop: ChannelShop = ChannelShop()
 )
