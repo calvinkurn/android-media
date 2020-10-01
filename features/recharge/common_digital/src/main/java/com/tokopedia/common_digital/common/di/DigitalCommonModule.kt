@@ -9,7 +9,6 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor
 import com.tokopedia.akamai_bot_lib.interceptor.AkamaiBotInterceptor
-import com.tokopedia.common_digital.cart.data.datasource.DigitalGetCartDataSource
 import com.tokopedia.common_digital.cart.data.datasource.DigitalInstantCheckoutDataSource
 import com.tokopedia.common_digital.cart.data.mapper.CartMapperData
 import com.tokopedia.common_digital.cart.data.mapper.ICartMapperData
@@ -117,9 +116,16 @@ class DigitalCommonModule {
 
     @Provides
     @DigitalCommonScope
-    fun provideDigitalAddToCartUseCase2(listInterceptor: ArrayList<Interceptor>, @ApplicationContext context: Context): DigitalAddToCartUseCase {
+    fun provideDigitalAddToCartUseCase(listInterceptor: ArrayList<Interceptor>, @ApplicationContext context: Context): DigitalAddToCartUseCase {
         return DigitalAddToCartUseCase(listInterceptor, context)
     }
+
+    @Provides
+    @DigitalCommonScope
+    fun provideDigitalGetCartUseCase(listInterceptor: ArrayList<Interceptor>, @ApplicationContext context: Context): DigitalGetCartUseCase {
+        return DigitalGetCartUseCase(listInterceptor, context)
+    }
+
 
     @Provides
     @DigitalCommonScope
@@ -174,13 +180,6 @@ class DigitalCommonModule {
 
     @Provides
     @DigitalCommonScope
-    fun provideDigitalGetCartDataSource(digitalRestApi: DigitalRestApi,
-                                        cartMapperData: ICartMapperData): DigitalGetCartDataSource {
-        return DigitalGetCartDataSource(digitalRestApi, cartMapperData)
-    }
-
-    @Provides
-    @DigitalCommonScope
     fun provideDigitalInstantCheckoutDataSource(digitalRestApi: DigitalRestApi,
                                                 cartMapperData: ICartMapperData): DigitalInstantCheckoutDataSource {
         return DigitalInstantCheckoutDataSource(digitalRestApi, cartMapperData)
@@ -188,15 +187,8 @@ class DigitalCommonModule {
 
     @Provides
     @DigitalCommonScope
-    fun provideDigitalCartRepository(digitalGetCartDataSource: DigitalGetCartDataSource,
-                                     digitalInstantCheckoutDataSource: DigitalInstantCheckoutDataSource): IDigitalCartRepository {
-        return DigitalCartRepository(digitalGetCartDataSource, digitalInstantCheckoutDataSource)
-    }
-
-    @Provides
-    @DigitalCommonScope
-    fun provideDigitalGetCartUseCase(digitalCartRepository: IDigitalCartRepository): DigitalGetCartUseCase {
-        return DigitalGetCartUseCase(digitalCartRepository)
+    fun provideDigitalCartRepository(digitalInstantCheckoutDataSource: DigitalInstantCheckoutDataSource): IDigitalCartRepository {
+        return DigitalCartRepository(digitalInstantCheckoutDataSource)
     }
 
     @Provides

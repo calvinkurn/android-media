@@ -118,7 +118,7 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
                         getView().getCartPassData().getCategoryId(),
                         userSession.getUserId(),
                         userSession.getDeviceId());
-                digitalGetCartUseCase.execute(requestParams, getSubscriberGetCart());
+                digitalGetCartUseCase.execute(requestParams, getSubscriberCart());
             } else {
                 RequestParams requestParams = digitalAddToCartUseCase.createRequestParams(
                         getRequestBodyAtcDigital(), getView().getIdemPotencyKey());
@@ -183,59 +183,6 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
         requestBodyAtcDigital.setType("add_cart");
         requestBodyAtcDigital.setAttributes(attributes);
         return requestBodyAtcDigital;
-    }
-
-    private Subscriber<CartDigitalInfoData> getSubscriberGetCart() {
-        return new Subscriber<CartDigitalInfoData>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                e.printStackTrace();
-                if (isViewAttached()) {
-                    if (e instanceof UnknownHostException) {
-                        getView().closeViewWithMessageAlert(
-                                ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
-                        );
-                    } else if (e instanceof SocketTimeoutException || e instanceof ConnectException) {
-                        getView().closeViewWithMessageAlert(
-                                ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
-                        );
-                    } else if (e instanceof ResponseErrorException) {
-                        getView().closeViewWithMessageAlert(e.getMessage());
-                    } else if (e instanceof ResponseDataNullException) {
-                        getView().closeViewWithMessageAlert(e.getMessage());
-                    } else if (e instanceof HttpErrorException) {
-                        getView().closeViewWithMessageAlert(e.getMessage());
-                    } else {
-                        getView().closeViewWithMessageAlert(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
-                    }
-
-                    getView().stopPerfomanceMonitoringTrace();
-                }
-            }
-
-            @Override
-            public void onNext(CartDigitalInfoData cartDigitalInfoData) {
-                getView().setCartDigitalInfo(cartDigitalInfoData);
-                getView().setCheckoutParameter(buildCheckoutData(cartDigitalInfoData, userSession.getAccessToken()));
-
-                digitalAnalytics.eventAddToCart(cartDigitalInfoData, getView().getCartPassData().getSource());
-                digitalAnalytics.eventCheckout(cartDigitalInfoData);
-
-                if (cartDigitalInfoData.getAttributes().isNeedOtp()) {
-                    getView().showCartView();
-                    getView().hideFullPageLoading();
-                    getView().interruptRequestTokenVerification(userSession.getPhoneNumber());
-                } else {
-                    rechargeAnalytics.trackAddToCartRechargePushEventRecommendation(Integer.parseInt(getView().getCartPassData().getCategoryId()));
-                    renderCart(cartDigitalInfoData);
-                }
-            }
-        };
     }
 
     private Subscriber<Map<Type, RestResponse>> getSubscriberCart() {

@@ -22,7 +22,7 @@ class DigitalAddToCartUseCase(authInterceptor: List<Interceptor>, context: Conte
         val networkRequest = mutableListOf<RestRequest>()
         val token = object : TypeToken<DataResponse<ResponseCartData>>() {}.type
 
-        val url = DigitalUrl.BASE_URL + "cart"
+        val url = DigitalUrl.CART
 
         val requestBodyAtcDigital = requestParams.getObject(PARAM_REQUEST_BODY_ATC_DIGITAL) as RequestBodyAtcDigital
         val jsonElement = JsonParser().parse(Gson().toJson(requestBodyAtcDigital))
