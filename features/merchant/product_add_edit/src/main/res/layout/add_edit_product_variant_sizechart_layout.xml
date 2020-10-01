@@ -18,12 +18,13 @@
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="heading_4" />
 
-    <com.tokopedia.unifycomponents.CardUnify
+    <LinearLayout
         android:id="@+id/cardSizechart"
         android:layout_width="@dimen/layout_lvl7"
         android:layout_height="@dimen/layout_lvl7"
-        app:card_type="border"
-        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:padding="@dimen/spacing_lvl1"
+        android:background="@drawable/rect_grey_border"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/typographySizechartTitle">
 
@@ -61,7 +62,7 @@
 
         </androidx.cardview.widget.CardView>
 
-    </com.tokopedia.unifycomponents.CardUnify>
+    </LinearLayout>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/typographySizechartDescription"
