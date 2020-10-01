@@ -18,6 +18,7 @@ import com.tokopedia.topchat.chatroom.domain.usecase.*
 import com.tokopedia.topchat.chatroom.view.listener.TopChatContract
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.exMessageId
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.readParam
+import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.wsResponseEndTypingString
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.wsResponseReplyString
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.wsResponseTypingString
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopchatCoroutineContextProvider
@@ -138,12 +139,14 @@ class TopChatRoomPresenterTest {
     private lateinit var wsReconnect: WebSocketInfo
     private lateinit var wsResponseReplyText: WebSocketInfo
     private lateinit var wsResponseTyping: WebSocketInfo
+    private lateinit var wsResponseEndTyping: WebSocketInfo
 
     object Dummy {
         const val exMessageId = "190378584"
         val readParam = TopChatWebSocketParam.generateParamRead(exMessageId)
         val wsResponseReplyString = FileUtil.readFileContent("/ws_response_reply_text_is_opposite.json")
         val wsResponseTypingString = FileUtil.readFileContent("/ws_response_typing.json")
+        val wsResponseEndTypingString = FileUtil.readFileContent("/ws_response_end_typing.json")
     }
 
     @Before
@@ -188,6 +191,7 @@ class TopChatRoomPresenterTest {
         wsOpen = WebSocketInfo(webSocket, true)
         wsResponseReplyText = WebSocketInfo(webSocket, wsResponseReplyString)
         wsResponseTyping = WebSocketInfo(webSocket, wsResponseTypingString)
+        wsResponseEndTyping = WebSocketInfo(webSocket, wsResponseEndTypingString)
     }
 
     private fun mockSingletonObject() {
@@ -269,7 +273,7 @@ class TopChatRoomPresenterTest {
         // Given
         every { webSocketUtil.getWebSocketInfo(any(), any()) } returns Observable.just(wsResponseReplyText)
         every { getChatUseCase.isInTheMiddleOfThePage() } returns true
-        val wsChatPojo = mockkParseResponse(wsResponseReplyText)
+        mockkParseResponse(wsResponseReplyText)
 
         // When
         presenter.connectWebSocket(exMessageId)
@@ -284,13 +288,25 @@ class TopChatRoomPresenterTest {
         // Given
         every { webSocketUtil.getWebSocketInfo(any(), any()) } returns Observable.just(wsResponseTyping)
         every { getChatUseCase.isInTheMiddleOfThePage() } returns false
-        val wsChatPojo = mockkParseResponse(wsResponseReplyText)
 
         // When
         presenter.connectWebSocket(exMessageId)
 
         // Then
         verify(exactly = 1) { view.onReceiveStartTypingEvent() }
+    }
+
+    @Test
+    fun `onMessage ws event end typing when not the middle of the page`() {
+        // Given
+        every { webSocketUtil.getWebSocketInfo(any(), any()) } returns Observable.just(wsResponseEndTyping)
+        every { getChatUseCase.isInTheMiddleOfThePage() } returns false
+
+        // When
+        presenter.connectWebSocket(exMessageId)
+
+        // Then
+        verify(exactly = 1) { view.onReceiveStopTypingEvent() }
     }
 
     private fun mockkParseResponse(wsInfo: WebSocketInfo, isOpposite: Boolean = true): ChatSocketPojo {
