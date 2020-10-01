@@ -89,8 +89,6 @@ class PlayBroadcastViewModel @Inject constructor(
         get() = _observableReportDuration
     val observableEvent: LiveData<EventUiModel>
         get() = _observableEvent
-    val observableBannedEvent: LiveData<Event<BannedUiModel>>
-        get() = _observableBannedEvent
 
     val shareContents: String
         get() = _observableShareInfo.value.orEmpty()
@@ -114,7 +112,6 @@ class PlayBroadcastViewModel @Inject constructor(
     private val _observableEvent = MutableLiveData<EventUiModel>()
 
     private var isManualStartTimer = false
-    private val _observableBannedEvent = MutableLiveData<Event<BannedUiModel>>()
 
     init {
         _observableChatList.value = mutableListOf()
@@ -302,7 +299,8 @@ class PlayBroadcastViewModel @Inject constructor(
             }
 
             override fun onCountDownFinish() {
-                if (_observableEvent.value?.freeze == false) {
+                val event = _observableEvent.value
+                if (event?.freeze == false && !event.banned) {
                     _observableLiveDurationState.value = LivePusherTimerState.Finish
                     stopPushStream()
                 }
@@ -411,11 +409,22 @@ class PlayBroadcastViewModel @Inject constructor(
                         is Chat -> retrieveNewChat(PlayBroadcastUiMapper.mapIncomingChat(data))
                         is Freeze -> {
                             if (_observableLiveDurationState.value !is LivePusherTimerState.Finish) {
-                                stopPushStream()
-                                _observableEvent.value = PlayBroadcastUiMapper.mapFreezeEvent(data)
+                                val eventUiModel = PlayBroadcastUiMapper.mapFreezeEvent(data, _observableEvent.value)
+                                if (eventUiModel.freeze) {
+                                    stopPushStream()
+                                    _observableEvent.value = eventUiModel
+                                }
                             }
                         }
-                        is Banned -> retrieveBannedEvent(PlayBroadcastUiMapper.mapBannedEvent(data))
+                        is Banned -> {
+                            if (_observableLiveDurationState.value !is LivePusherTimerState.Finish) {
+                                val eventUiModel = PlayBroadcastUiMapper.mapBannedEvent(data, _observableEvent.value)
+                                if (eventUiModel.banned) {
+                                    stopPushStream()
+                                    _observableEvent.value = eventUiModel
+                                }
+                            }
+                        }
                     }
                 }
 
@@ -494,12 +503,6 @@ class PlayBroadcastViewModel @Inject constructor(
             PlayShareWrapper.generateShareLink(shareUiModel) {
                 _observableShareInfo.value = it
             }
-        }
-    }
-
-    private fun retrieveBannedEvent(data: BannedUiModel) {
-        scope.launch(dispatcher.main) {
-            _observableBannedEvent.value = Event(data)
         }
     }
 }

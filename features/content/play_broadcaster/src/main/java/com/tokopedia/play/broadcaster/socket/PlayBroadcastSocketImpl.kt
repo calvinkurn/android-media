@@ -95,7 +95,7 @@ class PlayBroadcastSocketImpl constructor(
                         data = convertToModel(webSocketResponse.jsonObject, Freeze::class.java)
                     }
                     PlaySocketEnum.Banned.value -> {
-                        data = convertToModel(response.jsonObject, Banned::class.java)
+                        data = convertToModel(webSocketResponse.jsonObject, Banned::class.java)
                     }
                 }
 

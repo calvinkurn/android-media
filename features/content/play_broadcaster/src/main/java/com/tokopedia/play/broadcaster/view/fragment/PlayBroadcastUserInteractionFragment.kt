@@ -100,7 +100,6 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         observeChatList()
         observeMetrics()
         observeEvent()
-        observeBannedEvent()
     }
 
     override fun onStart() {
@@ -434,18 +433,16 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
     private fun observeEvent() {
         parentViewModel.observableEvent.observe(viewLifecycleOwner, Observer {
-            if (it.freeze) showDialogWhenTimeout()
-        })
-    }
-
-    private fun observeBannedEvent() {
-        parentViewModel.observableBannedEvent.observe(viewLifecycleOwner,  EventObserver{ event ->
-            parentViewModel.stopPushStream(shouldNavigate = false, reason = PlayChannelStatus.Moderated)
-            showForceStopDialog(
-                    title = event.title,
-                    message = event.message,
-                    buttonTitle = event.buttonTitle
-            )
+            when {
+                it.freeze -> showDialogWhenTimeout()
+                it.banned -> {
+                    showForceStopDialog(
+                            title = it.title,
+                            message = it.message,
+                            buttonTitle = it.buttonTitle
+                    )
+                }
+            }
         })
     }
     //endregion
