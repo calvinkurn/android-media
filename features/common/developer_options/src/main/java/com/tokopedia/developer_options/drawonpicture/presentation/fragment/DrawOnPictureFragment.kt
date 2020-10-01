@@ -1,5 +1,8 @@
 package com.tokopedia.developer_options.drawonpicture.presentation.fragment
 
+import android.app.Activity
+import android.app.ProgressDialog
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
@@ -158,6 +161,8 @@ class DrawOnPictureFragment : BaseDaggerFragment(),
     }
 
     private fun saveNewImage() {
+        showLoadingDialog()
+
         val options = BitmapFactory.Options()
         options.inJustDecodeBounds = true
         BitmapFactory.decodeFile(File(imageUri.path).absolutePath, options)
@@ -165,11 +170,27 @@ class DrawOnPictureFragment : BaseDaggerFragment(),
         val editedBitmap = dopFeedbackForm.getBitmap()
         val saveBitmap = Bitmap.createScaledBitmap(editedBitmap, options.outWidth, options.outHeight, false)
 
-        ImagePreviewUtils.saveImageFromBitmap(requireActivity(), saveBitmap, ImagePreviewUtils.processPictureName(Math.random().toInt()))
+        val newPath = ImagePreviewUtils.saveImageFromBitmap(requireActivity(), saveBitmap, ImagePreviewUtils.processPictureName(Math.random().toInt()))
+        newPath?.let {
+            sendNewPathResult(newPath)
+        }
+    }
 
+    private fun showLoadingDialog() {
+        ProgressDialog.show(requireContext(), "", "Menyimpan gambar ...", true, true)
+    }
+
+    private fun sendNewPathResult(path: String) {
+        val intent = Intent()
+        intent.putExtra(EXTRA_DRAW_IMAGE_PATH, path)
+        activity?.setResult(Activity.RESULT_OK, intent)
+        activity?.finish()
     }
 
     companion object {
+
+        const val EXTRA_DRAW_IMAGE_PATH = "EXTRA_DRAW_IMAGE_PATH"
+
         fun getInstance(imageUri: Uri?): DrawOnPictureFragment =
                 DrawOnPictureFragment().also {
                     it.arguments = Bundle().apply {
