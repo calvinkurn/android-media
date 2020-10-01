@@ -12,4 +12,5 @@ object TestCoroutineDispatchersProvider : CoroutineDispatcherProvider {
     override val main: CoroutineDispatcher = TestCoroutineDispatcher()
     override val immediate: CoroutineDispatcher = TestCoroutineDispatcher()
     override val io: CoroutineDispatcher = TestCoroutineDispatcher()
+    override val computation: CoroutineDispatcher = TestCoroutineDispatcher()
 }
