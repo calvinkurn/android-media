@@ -10,13 +10,13 @@
       "productId": "{{\\d{1,}}}",
       "sessionIris": "{{.{1,}}}",
       "eventLabel": "{{.*}}",
-      "layout": "{{layout:.*;catName:.*;catId:\\d{1,}}}",
-      "component": "{{comp:.*;temp:.*;elem:.*;cpos:\\d{1,}}};",
+      "layout": "{{layout:.*;catName:.*;catId:\\d{1,};}}",
+      "component": "{{comp:.*;temp:.*;elem:.*;cpos:\\d{1,};}}",
       "promotions": [
         {
           "item_id": "{{.*}}",
           "creative_url": "{{.*}}",
-          "creative_name": "{{layout:.*;comp:.*;temp:.*}};",
+          "creative_name": "{{layout:.*;comp:.*;temp:.*;}}",
           "category": "{{.*}}",
           "item_name": "{{.*}}",
           "promo_code": "{{.*}}",
@@ -31,9 +31,9 @@
       "event": "clickPDP",
       "productId": "{{\\d{1,}}}",
       "sessionIris": "{{.{1,}}}",
-      "eventLabel": "{{level : \\d{1,};variant_title : .*;variant_value: .*;variant : \\d{1,}}};",
-      "layout": "{{layout:.*;catName:.*;catId:\\d{1,}}};",
-      "component": "{{comp:.*;temp:.*;elem:.*;cpos:\\d{1,}}};"
+      "eventLabel": "{{level : \\d{1,};variant_title : .*;variant_value: .*;variant : \\d{1,};}}",
+      "layout": "{{layout:.*;catName:.*;catId:\\d{1,};}}",
+      "component": "{{comp:.*;temp:.*;elem:.*;cpos:\\d{1,};}}"
     },
     {
       "eventAction": "click Beli on pdp - non login",
@@ -46,7 +46,7 @@
       "shopId": "{{\\d{1,}}}",
       "eventLabel": "{{.*}}",
       "user_id": "{{.*}}",
-      "layout": "{{layout:.*;catName:.*;catId:\\d{1,}}};",
+      "layout": "{{layout:.*;catName:.*;catId:\\d{1,};}}",
       "component": "{{.*}}"
     }
   ]
