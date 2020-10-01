@@ -151,7 +151,7 @@ class ProductDetailActivityTest {
         )
         Thread.sleep(1000)
         val viewInteraction = onView(allOf(withId(R.id.rvContainerVariant))).check(matches(isDisplayed()))
-        viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<VariantContainerViewHolder>(0, clickChildViewWithId(R.id.txtVariantGuideline)))
+        viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<VariantContainerViewHolder>(1, clickChildViewWithId(R.id.txtVariantGuideline)))
     }
 
     private fun waitForData() {
@@ -168,6 +168,10 @@ class ProductDetailActivityTest {
 
     private fun intendingIntent() {
         Intents.intending(IntentMatchers.isInternal()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
+    }
+
+    private fun onFinishTest() {
+        gtmLogDBSource.deleteAll().subscribe()
     }
 
     private fun stubAtcIntent() {
