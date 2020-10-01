@@ -52,10 +52,9 @@ class QuickReplyViewHolder(itemView: View,
                 if (message.lineCount >= MESSAGE_LINE_COUNT) {
                     message.maxLines = MESSAGE_LINE_COUNT
                     message.text = EllipsizeMaker.getTruncatedMsg(message)
-                    MethodChecker.setBackground(mesageLayout, ContextCompat.getDrawable(itemView.context,R.drawable.left_bubble_with_stroke))
                     mesageBottom.visibility = View.VISIBLE
                     mesageBottom.setOnClickListener {
-                        ReadMoreBottomSheet.createInstance(element.message).show((itemView.context as FragmentActivity).supportFragmentManager,"read_more_bottom_sheet")
+                        showFullMessage(element.message)
                     }
 
                 } else {
@@ -65,6 +64,12 @@ class QuickReplyViewHolder(itemView: View,
             }
 
         }
+    }
+
+    private fun showFullMessage(message: String) {
+        this.message.maxLines = Int.MAX_VALUE
+        this.message.text = MethodChecker.fromHtml(message)
+        mesageBottom.visibility = View.GONE
     }
 
     private fun setClickableUrl() {
