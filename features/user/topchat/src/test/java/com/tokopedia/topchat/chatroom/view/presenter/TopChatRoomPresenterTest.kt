@@ -20,6 +20,9 @@ import com.tokopedia.topchat.chatroom.domain.usecase.*
 import com.tokopedia.topchat.chatroom.view.listener.TopChatContract
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.exMessageId
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.readParam
+import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.source
+import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.toShopId
+import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.toUserId
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.wsResponseEndTypingString
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.wsResponseReadMessageString
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.wsResponseReplyString
@@ -147,6 +150,9 @@ class TopChatRoomPresenterTest {
 
     object Dummy {
         const val exMessageId = "190378584"
+        const val toUserId = "12345"
+        const val toShopId = "54321"
+        const val source = "askseller"
         val readParam = TopChatWebSocketParam.generateParamRead(exMessageId)
         val wsResponseReplyString = FileUtil.readFileContent("/ws_response_reply_text_is_opposite.json")
         val wsResponseTypingString = FileUtil.readFileContent("/ws_response_typing.json")
@@ -339,6 +345,19 @@ class TopChatRoomPresenterTest {
 
         // Then
         verify(exactly = 1) { getChatUseCase.getFirstPageChat(exMessageId, mockOnSuccess, mockOnError) }
+    }
+
+    @Test
+    fun `Get message usecase called when no message id provided`() {
+        // Given
+        val mockOnSuccess: (String) -> Unit = mockk()
+        val mockOnError: (Throwable) -> Unit = mockk()
+
+        // When
+        presenter.getMessageId(toUserId, toShopId, source, mockOnError, mockOnSuccess)
+
+        // Then
+        verify(exactly = 1) { getExistingMessageIdUseCase.getMessageId(toShopId, toUserId, source, mockOnSuccess, mockOnError) }
     }
 
     private fun mockkParseResponse(wsInfo: WebSocketInfo, isOpposite: Boolean = true): ChatSocketPojo {
