@@ -9,7 +9,6 @@ import android.graphics.Typeface
 import android.location.Location
 import android.net.wifi.WifiManager
 import android.os.Build
-import android.os.Process
 import android.os.SystemClock
 import android.provider.Settings
 import android.telephony.TelephonyManager
@@ -18,13 +17,11 @@ import android.view.WindowManager
 import androidx.core.content.ContextCompat
 import com.google.android.gms.ads.identifier.AdvertisingIdClient
 import com.google.android.gms.location.FusedLocationProviderClient
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.device.info.DeviceConnectionInfo
 import com.tokopedia.device.info.DeviceInfo
 import com.tokopedia.device.info.DeviceScreenInfo
-import com.tokopedia.devicefingerprint.payload.DeviceInfoPayload
 import com.tokopedia.devicefingerprint.model.Screen
-import com.tokopedia.user.session.UserSession
+import com.tokopedia.devicefingerprint.payload.DeviceInfoPayload
 import com.tokopedia.user.session.UserSessionInterface
 import timber.log.Timber
 import java.io.File
@@ -62,7 +59,6 @@ class DeviceInfoPayloadCreator @Inject constructor(
                 userAgent = getUserAgent(),
                 isTablet = isTablet(),
                 adsId = getAdsId(),
-                pid = getPid(),
                 androidId = getAndroidId(),
                 serialNumber = getSerialNumber(),
                 buildFingerprint = Build.FINGERPRINT,
@@ -234,10 +230,6 @@ class DeviceInfoPayloadCreator @Inject constructor(
 
     private fun getAndroidId(): String {
         return DeviceInfo.getAndroidId(context)
-    }
-
-    private fun getPid(): String {
-        return Process.myPid().toString()
     }
 
     private fun getAdsId(): String {

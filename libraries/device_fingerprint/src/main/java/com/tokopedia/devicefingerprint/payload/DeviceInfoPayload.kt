@@ -8,7 +8,6 @@ data class DeviceInfoPayload(
         @SerializedName("user_agent") val userAgent: String,
         @SerializedName("is_tablet") val isTablet: Boolean = false,
         @SerializedName("ads_id") val adsId: String,
-        @SerializedName("pid") val pid: String,
         @SerializedName("android_id") val androidId: String,
         @SerializedName("sys_serial_number") val serialNumber: String,
         @SerializedName("build_fingerprint") val buildFingerprint: String,
