@@ -21,9 +21,10 @@ import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.analytics.ProductDetailActivityTestUtil.performClose
 import com.tokopedia.product.detail.view.activity.ProductDetailActivity
+import com.tokopedia.test.application.TestRepeatRule
 import com.tokopedia.test.application.espresso_component.CommonActions.clickChildViewWithId
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
-import com.tokopedia.test.application.util.setupGraphqlMockResponseWithCheck
+import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import com.tokopedia.variant_common.view.holder.VariantChipViewHolder
 import com.tokopedia.variant_common.view.holder.VariantContainerViewHolder
 import com.tokopedia.variant_common.view.holder.VariantImageViewHolder
@@ -37,21 +38,24 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class ProductDetailActivityTest {
 
-    private val context = InstrumentationRegistry.getInstrumentation().context
+    private val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
 
     @get:Rule
-    var activityRule: IntentsTestRule<ProductDetailActivity> = object : IntentsTestRule<ProductDetailActivity>(ProductDetailActivity::class.java) {
+    var testRepeatRule: TestRepeatRule = TestRepeatRule()
+
+    private val gtmLogDBSource = GtmLogDBSource(targetContext)
+
+    @get:Rule
+    var activityRule: IntentsTestRule<ProductDetailActivity> = object: IntentsTestRule<ProductDetailActivity>(ProductDetailActivity::class.java) {
         override fun getActivityIntent(): Intent {
-            return Intent(ProductDetailActivity.createIntent(context, PRODUCT_ID))
+            return ProductDetailActivity.createIntent(targetContext, PRODUCT_ID)
         }
     }
-
-    private val gtmLogDBSource = GtmLogDBSource(context)
 
     @Before
     fun setup() {
         gtmLogDBSource.deleteAll().toBlocking().first()
-        setupGraphqlMockResponseWithCheck(ProductDetailMockResponse())
+        setupGraphqlMockResponse(ProductDetailMockResponse())
     }
 
     // click button buy when user is login
@@ -67,7 +71,7 @@ class ProductDetailActivityTest {
         } assertTest {
             performClose(activityRule)
             waitForTrackerSent()
-            validate(gtmLogDBSource, context, BUTTON_BUY_LOGIN_PATH)
+            validate(gtmLogDBSource, targetContext, BUTTON_BUY_LOGIN_PATH)
         }
     }
 
@@ -83,7 +87,7 @@ class ProductDetailActivityTest {
         } assertTest {
             performClose(activityRule)
             waitForTrackerSent()
-            validate(gtmLogDBSource, context, BUTTON_BUY_NON_LOGIN_PATH)
+            validate(gtmLogDBSource, targetContext, BUTTON_BUY_NON_LOGIN_PATH)
         }
     }
 
@@ -98,7 +102,7 @@ class ProductDetailActivityTest {
         } assertTest {
             performClose(activityRule)
             waitForTrackerSent()
-            validate(gtmLogDBSource, context, ADD_TO_CART_LOGIN_PATH)
+            validate(gtmLogDBSource, targetContext, ADD_TO_CART_LOGIN_PATH)
         }
     }
 
@@ -112,7 +116,7 @@ class ProductDetailActivityTest {
         } assertTest {
             performClose(activityRule)
             waitForTrackerSent()
-            validate(gtmLogDBSource, context, ADD_TO_CART_NON_LOGIN_PATH)
+            validate(gtmLogDBSource, targetContext, ADD_TO_CART_NON_LOGIN_PATH)
         }
     }
 
@@ -126,7 +130,7 @@ class ProductDetailActivityTest {
         } assertTest {
             performClose(activityRule)
             waitForTrackerSent()
-            validate(gtmLogDBSource, context, GUIDE_ON_SIZE_CHART_PATH)
+            validate(gtmLogDBSource, targetContext, GUIDE_ON_SIZE_CHART_PATH)
         }
     }
 
