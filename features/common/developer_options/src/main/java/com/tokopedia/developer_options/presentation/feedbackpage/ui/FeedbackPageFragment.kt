@@ -148,6 +148,11 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View {
 
         uriImage = arguments?.getParcelable(EXTRA_URI_IMAGE)
 
+        imageView.setOnClickListener {
+            startActivityForResult(DrawOnPictureActivity.getIntent(requireContext(), uriImage),
+                    REQUEST_CODE_EDIT_IMAGE)
+        }
+
         context?.let { ArrayAdapter.createFromResource(it,
                 R.array.bug_type_array,
                 android.R.layout.simple_spinner_item
