@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="SingleProductAttachmentContainer">
-        <attr name="widthMultiplier" format="float"/>
+        <attr name="widthMultiplier" format="float" />
     </declare-styleable>
     <declare-styleable name="FlexBoxChatLayout">
         <attr name="showCheckMark" format="boolean" />
@@ -9,5 +9,6 @@
     </declare-styleable>
     <declare-styleable name="TopchatMerchantVoucherView">
         <attr name="useShadow" format="boolean" />
+        <attr name="voucherShadowColor" format="color" />
     </declare-styleable>
 </resources>

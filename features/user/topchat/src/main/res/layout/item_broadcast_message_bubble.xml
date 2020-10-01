@@ -41,6 +41,7 @@
         android:paddingBottom="@dimen/spacing_lvl3"
         android:visibility="gone"
         app:useShadow="true"
+        app:voucherShadowColor="@color/topchat_message_broadcast_item_shadow"
         tools:visibility="visible" />
 
     <com.tokopedia.topchat.chatroom.view.custom.ProductCarouselRecyclerView

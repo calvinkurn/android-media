@@ -4,7 +4,9 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.widget.LinearLayout
+import androidx.annotation.ColorInt
 import androidx.core.content.ContextCompat
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.merchantvoucher.common.widget.MerchantVoucherView
 import com.tokopedia.topchat.R
 
@@ -13,6 +15,12 @@ class TopchatMerchantVoucherView : MerchantVoucherView {
     private var voucherContainer: LinearLayout? = null
 
     private var useShadow = DEFAULT_USE_SHADOW
+
+    @ColorInt
+    private val defaultVoucherShadowColorInt = MethodChecker.getColor(context, DEFAULT_VOUCHER_SHADOW_COLOR)
+
+    @ColorInt
+    private var voucherShadowColor: Int = defaultVoucherShadowColorInt
 
     constructor(context: Context) : super(context) {
         initAttr(context, null)
@@ -27,13 +35,13 @@ class TopchatMerchantVoucherView : MerchantVoucherView {
     }
 
     private fun initAttr(context: Context, attrs: AttributeSet?) {
-        if (context == null || attrs == null) return
         context.theme.obtainStyledAttributes(
                 attrs,
                 R.styleable.TopchatMerchantVoucherView,
                 0, 0).apply {
             try {
                 useShadow = getBoolean(R.styleable.TopchatMerchantVoucherView_useShadow, DEFAULT_USE_SHADOW)
+                voucherShadowColor = getColor(R.styleable.TopchatMerchantVoucherView_voucherShadowColor, defaultVoucherShadowColorInt)
             } finally {
                 recycle()
             }
@@ -55,9 +63,10 @@ class TopchatMerchantVoucherView : MerchantVoucherView {
         voucherContainer = view.findViewById(R.id.vgVoucherView)
     }
 
+    @ColorInt
     override fun getShadowColor(): Int {
         val color: Int = if (useShadow) {
-            R.color.shadow_topchat_voucher_attachment
+            return voucherShadowColor
         } else {
             android.R.color.transparent
         }
@@ -66,5 +75,6 @@ class TopchatMerchantVoucherView : MerchantVoucherView {
 
     companion object {
         private const val DEFAULT_USE_SHADOW = false
+        private val DEFAULT_VOUCHER_SHADOW_COLOR = R.color.shadow_topchat_voucher_attachment
     }
 }
