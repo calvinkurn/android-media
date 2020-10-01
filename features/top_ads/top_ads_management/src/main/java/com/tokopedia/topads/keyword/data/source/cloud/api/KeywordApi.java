@@ -2,8 +2,8 @@ package com.tokopedia.topads.keyword.data.source.cloud.api;
 
 import com.tokopedia.topads.common.model.request.DataRequest;
 import com.tokopedia.topads.dashboard.constant.TopAdsNetworkConstant;
-import com.tokopedia.product.manage.item.common.data.source.cloud.DataResponse;
 import com.tokopedia.topads.dashboard.data.model.response.PageDataResponse;
+import com.tokopedia.topads.dashboard.data.source.cloud.response.DataResponse;
 import com.tokopedia.topads.keyword.data.model.EditTopAdsKeywordDetailDataModel;
 import com.tokopedia.topads.keyword.data.model.TopAdsKeywordEditDetailInputDataModel;
 import com.tokopedia.topads.keyword.data.model.cloud.KeywordAddResponseDatum;
