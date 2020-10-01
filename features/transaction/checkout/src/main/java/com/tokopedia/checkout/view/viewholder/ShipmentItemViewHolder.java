@@ -636,131 +636,147 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
 
         if (selectedCourierItemData != null) {
             // Has select shipping
-            llShippingOptionsContainer.setVisibility(View.VISIBLE);
-            layoutStateNoSelectedShipping.setVisibility(View.GONE);
-
-            llShippingExperienceStateLoading.setVisibility(View.GONE);
-            containerShippingExperience.setVisibility(View.VISIBLE);
-            containerShippingExperience.setBackgroundResource(R.drawable.checkout_module_bg_rounded_grey);
-            if (shipmentCartItemModel.getVoucherLogisticItemUiModel() != null) {
-                // Is free ongkir shipping
-                layoutStateHasSelectedNormalShipping.setVisibility(View.GONE);
-                layoutStateHasSelectedFreeShipping.setVisibility(View.VISIBLE);
-                layoutStateHasSelectedFreeShipping.setOnClickListener(
-                        getOnChangeDurationClickListener(shipmentCartItemModel, currentAddress)
-                );
-
-                if (shipmentCartItemModel.isError()) {
-                    mActionListener.onCancelVoucherLogisticClicked(
-                            shipmentCartItemModel.getVoucherLogisticItemUiModel().getCode(),
-                            getAdapterPosition());
-                }
-
-                if (selectedCourierItemData.isHideShipperName()) {
-                    // Hide shipper name
-                    labelFreeShippingCourierName.setVisibility(View.GONE);
-                } else {
-                    // Show shipper name
-                    labelFreeShippingCourierName.setVisibility(View.VISIBLE);
-                }
-
-                // Change duration to promo title after promo is applied
-                labelSelectedFreeShipping.setText(selectedCourierItemData.getPromoTitle());
-                if (selectedCourierItemData.getDiscountedRate() == 0) {
-                    // Free Shipping Price
-                    labelFreeShippingOriginalPrice.setVisibility(View.GONE);
-                    labelFreeShippingDiscountedPrice.setVisibility(View.GONE);
-                } else if (selectedCourierItemData.getDiscountedRate() > 0) {
-                    // Discounted Shipping Price
-                    labelFreeShippingOriginalPrice.setText(Utils.removeDecimalSuffix(CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                            selectedCourierItemData.getShippingRate(), false
-                    )));
-                    labelFreeShippingOriginalPrice.setPaintFlags(labelFreeShippingOriginalPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-                    labelFreeShippingDiscountedPrice.setText(Utils.removeDecimalSuffix(CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                            selectedCourierItemData.getDiscountedRate(), false
-                    )));
-                    labelFreeShippingOriginalPrice.setVisibility(View.VISIBLE);
-                    labelFreeShippingDiscountedPrice.setVisibility(View.VISIBLE);
-                }
-            } else {
-                // Is normal shipping
-                layoutStateHasSelectedFreeShipping.setVisibility(View.GONE);
-                layoutStateHasSelectedNormalShipping.setVisibility(View.VISIBLE);
-
-                labelSelectedShippingDuration.setText(selectedCourierItemData.getEstimatedTimeDelivery());
-                labelSelectedShippingDuration.setOnClickListener(
-                        getOnChangeDurationClickListener(shipmentCartItemModel, currentAddress)
-                );
-                iconChevronChooseDuration.setOnClickListener(
-                        getOnChangeDurationClickListener(shipmentCartItemModel, currentAddress)
-                );
-
-                labelSelectedShippingCourier.setText(selectedCourierItemData.getName());
-                labelSelectedShippingPrice.setText(Utils.removeDecimalSuffix(CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                        selectedCourierItemData.getShipperPrice(), false
-                )));
-                labelSelectedShippingPrice.setOnClickListener(
-                        getOnChangeCourierClickListener(shipmentCartItemModel, currentAddress)
-                );
-                labelSelectedShippingCourier.setOnClickListener(
-                        getOnChangeCourierClickListener(shipmentCartItemModel, currentAddress)
-                );
-                iconChevronChooseCourier.setOnClickListener(
-                        getOnChangeCourierClickListener(shipmentCartItemModel, currentAddress)
-                );
-
-                OntimeDelivery ontimeDelivery = selectedCourierItemData.getOntimeDelivery();
-                CashOnDeliveryProduct codProductData = selectedCourierItemData.getCodProductData();
-
-                if (ontimeDelivery != null && ontimeDelivery.getAvailable()) {
-                    // On time delivery guarantee
-                    labelDescCourier.setText(ontimeDelivery.getTextLabel());
-                    labelDescCourierTnc.setOnClickListener(view -> {
-                        mActionListener.onOntimeDeliveryClicked(ontimeDelivery.getUrlDetail());
-                    });
-                    labelDescCourier.setVisibility(View.VISIBLE);
-                    labelDescCourierTnc.setVisibility(View.VISIBLE);
-                } else if (codProductData != null && codProductData.isCodAvailable() == 1) {
-                    /*Cash on delivery*/
-                    labelDescCourier.setText(codProductData.getCodText());
-                    labelDescCourierTnc.setOnClickListener(view -> {
-                        mActionListener.onOntimeDeliveryClicked(codProductData.getTncLink());
-                    });
-                    labelDescCourier.setVisibility(View.VISIBLE);
-                    labelDescCourierTnc.setVisibility(View.VISIBLE);
-                } else {
-                    labelDescCourier.setVisibility(View.GONE);
-                    labelDescCourierTnc.setVisibility(View.GONE);
-                }
-            }
+            renderSelectedCourier(shipmentCartItemModel, currentAddress, selectedCourierItemData);
         } else {
             // Has not select shipping
-            layoutStateHasSelectedFreeShipping.setVisibility(View.GONE);
-            layoutStateHasSelectedNormalShipping.setVisibility(View.GONE);
-            llShippingOptionsContainer.setVisibility(View.GONE);
+            renderNoSelectedCourier(shipmentCartItemModel, currentAddress, ratesDataConverter, isTradeInDropOff);
+        }
+    }
 
-            if (isTradeInDropOff) {
-                boolean hasSelectTradeInLocation = mActionListener.hasSelectTradeInLocation();
-                if (hasSelectTradeInLocation) {
-                    layoutTradeInShippingInfo.setVisibility(View.GONE);
-                    layoutStateNoSelectedShipping.setVisibility(View.VISIBLE);
-                    layoutStateNoSelectedShipping.setOnClickListener(
-                            getOnChangeDurationClickListener(shipmentCartItemModel, currentAddress)
-                    );
-                } else {
-                    layoutTradeInShippingInfo.setVisibility(View.VISIBLE);
-                    layoutStateNoSelectedShipping.setVisibility(View.GONE);
-                }
-            } else {
+    private void renderSelectedCourier(ShipmentCartItemModel shipmentCartItemModel, RecipientAddressModel currentAddress, CourierItemData selectedCourierItemData) {
+        llShippingOptionsContainer.setVisibility(View.VISIBLE);
+        layoutStateNoSelectedShipping.setVisibility(View.GONE);
+
+        llShippingExperienceStateLoading.setVisibility(View.GONE);
+        containerShippingExperience.setVisibility(View.VISIBLE);
+        containerShippingExperience.setBackgroundResource(R.drawable.checkout_module_bg_rounded_grey);
+        if (shipmentCartItemModel.getVoucherLogisticItemUiModel() != null) {
+            // Is free ongkir shipping
+            renderFreeShippingCourier(shipmentCartItemModel, currentAddress, selectedCourierItemData);
+        } else {
+            // Is normal shipping
+            renderNormalShippingCourier(shipmentCartItemModel, currentAddress, selectedCourierItemData);
+        }
+    }
+
+    private void renderNormalShippingCourier(ShipmentCartItemModel shipmentCartItemModel, RecipientAddressModel currentAddress, CourierItemData selectedCourierItemData) {
+        layoutStateHasSelectedFreeShipping.setVisibility(View.GONE);
+        layoutStateHasSelectedNormalShipping.setVisibility(View.VISIBLE);
+
+        labelSelectedShippingDuration.setText(selectedCourierItemData.getEstimatedTimeDelivery());
+        labelSelectedShippingDuration.setOnClickListener(
+                getOnChangeDurationClickListener(shipmentCartItemModel, currentAddress)
+        );
+        iconChevronChooseDuration.setOnClickListener(
+                getOnChangeDurationClickListener(shipmentCartItemModel, currentAddress)
+        );
+
+        labelSelectedShippingCourier.setText(selectedCourierItemData.getName());
+        labelSelectedShippingPrice.setText(Utils.removeDecimalSuffix(CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                selectedCourierItemData.getShipperPrice(), false
+        )));
+        labelSelectedShippingPrice.setOnClickListener(
+                getOnChangeCourierClickListener(shipmentCartItemModel, currentAddress)
+        );
+        labelSelectedShippingCourier.setOnClickListener(
+                getOnChangeCourierClickListener(shipmentCartItemModel, currentAddress)
+        );
+        iconChevronChooseCourier.setOnClickListener(
+                getOnChangeCourierClickListener(shipmentCartItemModel, currentAddress)
+        );
+
+        OntimeDelivery ontimeDelivery = selectedCourierItemData.getOntimeDelivery();
+        CashOnDeliveryProduct codProductData = selectedCourierItemData.getCodProductData();
+
+        if (ontimeDelivery != null && ontimeDelivery.getAvailable()) {
+            // On time delivery guarantee
+            labelDescCourier.setText(ontimeDelivery.getTextLabel());
+            labelDescCourierTnc.setOnClickListener(view -> {
+                mActionListener.onOntimeDeliveryClicked(ontimeDelivery.getUrlDetail());
+            });
+            labelDescCourier.setVisibility(View.VISIBLE);
+            labelDescCourierTnc.setVisibility(View.VISIBLE);
+        } else if (codProductData != null && codProductData.isCodAvailable() == 1) {
+            // Cash on delivery
+            labelDescCourier.setText(codProductData.getCodText());
+            labelDescCourierTnc.setOnClickListener(view -> {
+                mActionListener.onOntimeDeliveryClicked(codProductData.getTncLink());
+            });
+            labelDescCourier.setVisibility(View.VISIBLE);
+            labelDescCourierTnc.setVisibility(View.VISIBLE);
+        } else {
+            labelDescCourier.setVisibility(View.GONE);
+            labelDescCourierTnc.setVisibility(View.GONE);
+        }
+    }
+
+    private void renderFreeShippingCourier(ShipmentCartItemModel shipmentCartItemModel, RecipientAddressModel currentAddress, CourierItemData selectedCourierItemData) {
+        layoutStateHasSelectedNormalShipping.setVisibility(View.GONE);
+        layoutStateHasSelectedFreeShipping.setVisibility(View.VISIBLE);
+        layoutStateHasSelectedFreeShipping.setOnClickListener(
+                getOnChangeDurationClickListener(shipmentCartItemModel, currentAddress)
+        );
+
+        if (shipmentCartItemModel.isError()) {
+            mActionListener.onCancelVoucherLogisticClicked(
+                    shipmentCartItemModel.getVoucherLogisticItemUiModel().getCode(),
+                    getAdapterPosition());
+        }
+
+        if (selectedCourierItemData.isHideShipperName()) {
+            // Hide shipper name
+            labelFreeShippingCourierName.setVisibility(View.GONE);
+        } else {
+            // Show shipper name
+            labelFreeShippingCourierName.setVisibility(View.VISIBLE);
+        }
+
+        // Change duration to promo title after promo is applied
+        labelSelectedFreeShipping.setText(selectedCourierItemData.getPromoTitle());
+        if (selectedCourierItemData.getDiscountedRate() == 0) {
+            // Free Shipping Price
+            labelFreeShippingOriginalPrice.setVisibility(View.GONE);
+            labelFreeShippingDiscountedPrice.setVisibility(View.GONE);
+        } else if (selectedCourierItemData.getDiscountedRate() > 0) {
+            // Discounted Shipping Price
+            labelFreeShippingOriginalPrice.setText(Utils.removeDecimalSuffix(CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                    selectedCourierItemData.getShippingRate(), false
+            )));
+            labelFreeShippingOriginalPrice.setPaintFlags(labelFreeShippingOriginalPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+            labelFreeShippingDiscountedPrice.setText(Utils.removeDecimalSuffix(CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                    selectedCourierItemData.getDiscountedRate(), false
+            )));
+            labelFreeShippingOriginalPrice.setVisibility(View.VISIBLE);
+            labelFreeShippingDiscountedPrice.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void renderNoSelectedCourier(ShipmentCartItemModel shipmentCartItemModel, RecipientAddressModel currentAddress, RatesDataConverter ratesDataConverter, boolean isTradeInDropOff) {
+        layoutStateHasSelectedFreeShipping.setVisibility(View.GONE);
+        layoutStateHasSelectedNormalShipping.setVisibility(View.GONE);
+        llShippingOptionsContainer.setVisibility(View.GONE);
+
+        if (isTradeInDropOff) {
+            boolean hasSelectTradeInLocation = mActionListener.hasSelectTradeInLocation();
+            if (hasSelectTradeInLocation) {
                 layoutTradeInShippingInfo.setVisibility(View.GONE);
                 layoutStateNoSelectedShipping.setVisibility(View.VISIBLE);
                 layoutStateNoSelectedShipping.setOnClickListener(
                         getOnChangeDurationClickListener(shipmentCartItemModel, currentAddress)
                 );
+            } else {
+                layoutTradeInShippingInfo.setVisibility(View.VISIBLE);
+                layoutStateNoSelectedShipping.setVisibility(View.GONE);
             }
-
-            loadCourierState(shipmentCartItemModel, currentAddress, ratesDataConverter, SHIPPING_SAVE_STATE_TYPE_SHIPPING_EXPERIENCE);
+        } else {
+            layoutTradeInShippingInfo.setVisibility(View.GONE);
+            layoutStateNoSelectedShipping.setVisibility(View.VISIBLE);
+            layoutStateNoSelectedShipping.setOnClickListener(
+                    getOnChangeDurationClickListener(shipmentCartItemModel, currentAddress)
+            );
         }
+
+        loadCourierState(shipmentCartItemModel, currentAddress, ratesDataConverter, SHIPPING_SAVE_STATE_TYPE_SHIPPING_EXPERIENCE);
     }
 
     private View.OnClickListener getOnChangeCourierClickListener(ShipmentCartItemModel shipmentCartItemModel, RecipientAddressModel currentAddress) {

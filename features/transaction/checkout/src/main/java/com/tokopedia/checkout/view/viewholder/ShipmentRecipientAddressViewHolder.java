@@ -135,54 +135,11 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
             tabUnifyTradeInAddress.addNewTab(tabUnifyTradeInAddress.getContext().getString(R.string.label_tab_trade_in_address_pickup));
         }
 
-        if (recipientAddress.getSelectedTabIndex() == 0) {
-            if (tabUnifyTradeInAddress.getUnifyTabLayout().getTabCount() > 0) {
-                recipientAddress.setIgnoreSelectionAction(true);
-                tabUnifyTradeInAddress.getUnifyTabLayout().getTabAt(0).select();
-                renderTradeInDeliveryTab(recipientAddress);
-                setTradeInDefaultAddress();
-            }
-        } else {
-            if (tabUnifyTradeInAddress.getUnifyTabLayout().getTabCount() > 1) {
-                recipientAddress.setIgnoreSelectionAction(true);
-                tabUnifyTradeInAddress.getUnifyTabLayout().getTabAt(1).select();
-                renderTradeInPickUpTab(recipientAddress);
-                setTradeInDropOffAddress();
-            }
-        }
+        renderSelectedTab(recipientAddress);
 
-        chipsTradeInNormal.setOnClickListener(v -> {
-            shipmentAdapterActionListener.onSwapInUserAddress();
-            TabLayout.Tab tab = tabUnifyTradeInAddress.getTabLayout().getTabAt(0);
-            if (tab != null) {
-                recipientAddress.setIgnoreSelectionAction(false);
-                setTradeInDefaultAddress();
-                tab.select();
-            }
-        });
+        setChipTabsClickListener(recipientAddress);
 
-        chipsTradeInDropOff.setOnClickListener(v -> {
-            shipmentAdapterActionListener.onClickSwapInIndomaret();
-            TabLayout.Tab tab = tabUnifyTradeInAddress.getTabLayout().getTabAt(1);
-            if (tab != null) {
-                recipientAddress.setIgnoreSelectionAction(false);
-                setTradeInDropOffAddress();
-                tab.select();
-            }
-        });
-
-        if (recipientAddress.getDisabledAddress() != null && !recipientAddress.getDisabledAddress().isEmpty()) {
-            if (recipientAddress.getDisabledAddress().contains(DEFAULT_ADDRESS)) {
-                chipsTradeInNormal.setChipType(ChipsUnify.TYPE_DISABLE);
-                chipsTradeInNormal.setClickable(false);
-                chipsTradeInNormal.setOnClickListener(null);
-            }
-            if (recipientAddress.getDisabledAddress().contains(TRADE_IN_ADDRESS)) {
-                chipsTradeInDropOff.setChipType(ChipsUnify.TYPE_DISABLE);
-                chipsTradeInDropOff.setClickable(false);
-                chipsTradeInNormal.setOnClickListener(null);
-            }
-        }
+        renderDisabledTab(recipientAddress);
 
         tabUnifyTradeInAddress.getUnifyTabLayout().addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -209,6 +166,61 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
         });
 
         tvChangeDropOff.setOnClickListener(view -> shipmentAdapterActionListener.onChangeTradeInDropOffClicked());
+    }
+
+    private void renderDisabledTab(RecipientAddressModel recipientAddress) {
+        if (recipientAddress.getDisabledAddress() != null && !recipientAddress.getDisabledAddress().isEmpty()) {
+            if (recipientAddress.getDisabledAddress().contains(DEFAULT_ADDRESS)) {
+                chipsTradeInNormal.setChipType(ChipsUnify.TYPE_DISABLE);
+                chipsTradeInNormal.setClickable(false);
+                chipsTradeInNormal.setOnClickListener(null);
+            }
+            if (recipientAddress.getDisabledAddress().contains(TRADE_IN_ADDRESS)) {
+                chipsTradeInDropOff.setChipType(ChipsUnify.TYPE_DISABLE);
+                chipsTradeInDropOff.setClickable(false);
+                chipsTradeInNormal.setOnClickListener(null);
+            }
+        }
+    }
+
+    private void renderSelectedTab(RecipientAddressModel recipientAddress) {
+        if (recipientAddress.getSelectedTabIndex() == 0) {
+            if (tabUnifyTradeInAddress.getUnifyTabLayout().getTabCount() > 0) {
+                recipientAddress.setIgnoreSelectionAction(true);
+                tabUnifyTradeInAddress.getUnifyTabLayout().getTabAt(0).select();
+                renderTradeInDeliveryTab(recipientAddress);
+                setTradeInDefaultAddress();
+            }
+        } else {
+            if (tabUnifyTradeInAddress.getUnifyTabLayout().getTabCount() > 1) {
+                recipientAddress.setIgnoreSelectionAction(true);
+                tabUnifyTradeInAddress.getUnifyTabLayout().getTabAt(1).select();
+                renderTradeInPickUpTab(recipientAddress);
+                setTradeInDropOffAddress();
+            }
+        }
+    }
+
+    private void setChipTabsClickListener(RecipientAddressModel recipientAddress) {
+        chipsTradeInNormal.setOnClickListener(v -> {
+            shipmentAdapterActionListener.onSwapInUserAddress();
+            TabLayout.Tab tab = tabUnifyTradeInAddress.getTabLayout().getTabAt(0);
+            if (tab != null) {
+                recipientAddress.setIgnoreSelectionAction(false);
+                setTradeInDefaultAddress();
+                tab.select();
+            }
+        });
+
+        chipsTradeInDropOff.setOnClickListener(v -> {
+            shipmentAdapterActionListener.onClickSwapInIndomaret();
+            TabLayout.Tab tab = tabUnifyTradeInAddress.getTabLayout().getTabAt(1);
+            if (tab != null) {
+                recipientAddress.setIgnoreSelectionAction(false);
+                setTradeInDropOffAddress();
+                tab.select();
+            }
+        });
     }
 
     private void setTradeInDefaultAddress() {

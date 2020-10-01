@@ -374,8 +374,7 @@ public class ShipmentMapper implements IShipmentMapper {
                     groupAddressResult.setErrorMessage(UtilsKt.convertToString(groupAddress.getErrors()));
 
                     if (groupAddress.getUserAddress() != null) {
-                        UserAddress userAddressResult =
-                                new UserAddress();
+                        UserAddress userAddressResult = new UserAddress();
                         userAddressResult.setStatus(groupAddress.getUserAddress().getStatus());
                         userAddressResult.setAddress(groupAddress.getUserAddress().getAddress());
                         userAddressResult.setAddress2(groupAddress.getUserAddress().getAddress2());

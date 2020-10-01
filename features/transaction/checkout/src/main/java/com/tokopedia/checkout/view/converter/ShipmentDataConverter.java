@@ -52,7 +52,6 @@ public class ShipmentDataConverter {
                 }
             }
             boolean isTradeIn = false;
-//            boolean isTradeInDropOffEnable = false;
             if (cartShipmentAddressFormData.getGroupAddress().get(0).getGroupShop() != null &&
                     cartShipmentAddressFormData.getGroupAddress().get(0).getGroupShop().size() > 0) {
                 for (GroupShop groupShop : cartShipmentAddressFormData.getGroupAddress().get(0).getGroupShop()) {
@@ -61,7 +60,6 @@ public class ShipmentDataConverter {
                         for (Product product : groupShop.getProducts()) {
                             if (product.getTradeInInfoData() != null && product.getTradeInInfoData().isValidTradeIn()) {
                                 isTradeIn = true;
-//                                isTradeInDropOffEnable = product.getTradeInInfoData().isDropOffEnable();
                                 foundData = true;
                                 break;
                             }
@@ -124,7 +122,6 @@ public class ShipmentDataConverter {
             recipientAddress.setSelected(defaultAddress.getStatus() == PRIME_ADDRESS);
             recipientAddress.setCornerId(String.valueOf(defaultAddress.getCornerId()));
             recipientAddress.setTradeIn(isTradeIn);
-//            recipientAddress.setTradeInDropOffEnable(isTradeInDropOffEnable);
             recipientAddress.setCornerAddress(defaultAddress.isCorner());
         }
 
