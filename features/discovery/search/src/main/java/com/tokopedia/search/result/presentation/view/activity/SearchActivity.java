@@ -12,7 +12,6 @@ import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.appcompat.widget.Toolbar;
@@ -207,7 +206,7 @@ public class SearchActivity extends BaseActivity
 
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP) return;
 
-        container.loadLayoutDescription(R.xml.tab_layout_scene);
+        container.loadLayoutDescription(R.xml.search_tab_layout_scene);
         container.setTransition(R.id.searchMotionTabStart, R.id.searchMotionTabEnd);
         container.setTransitionListener(getContainerTransitionListener());
     }
