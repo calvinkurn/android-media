@@ -509,6 +509,7 @@ final class ProductListPresenter
                     item.setTopadsImpressionUrl(topAds.getProduct().getImage().getS_url());
                     item.setTopadsClickUrl(topAds.getProductClickUrl());
                     item.setTopadsWishlistUrl(topAds.getProductWishlistUrl());
+                    item.setTopadsClickShopUrl(topAds.getShopClickUrl());
                     item.setProductName(topAds.getProduct().getName());
                     item.setPrice(topAds.getProduct().getPriceFormat());
                     item.setShopCity(topAds.getShop().getLocation());
@@ -1721,17 +1722,6 @@ final class ProductListPresenter
     }
 
     @Override
-    public void setThreeDotsProduct(ProductItemViewModel item) {
-        this.threeDotsProductItem = item;
-    }
-
-    @Nullable
-    @Override
-    public ProductItemViewModel getThreeDotsProduct() {
-        return this.threeDotsProductItem;
-    }
-
-    @Override
     public void onThreeDotsClick(ProductItemViewModel item, int adapterPosition) {
         if (getView() == null) return;
 
@@ -1823,6 +1813,20 @@ final class ProductListPresenter
         if (getView() == null) return;
 
         getView().showAddToCartFailedMessage(addToCartResult.getErrorMessage());
+    }
+
+    @Override
+    public void handleVisitShopAction() {
+        if (getView() == null || threeDotsProductItem == null || !threeDotsProductItem.isTopAds()) return;
+
+        topAdsUrlHitter.hitClickUrl(
+                getView().getClassName(),
+                threeDotsProductItem.getTopadsClickShopUrl(),
+                threeDotsProductItem.getProductID(),
+                threeDotsProductItem.getProductName(),
+                threeDotsProductItem.getImageUrl(),
+                SearchConstant.TopAdsComponent.TOP_ADS
+        );
     }
 
     @Override

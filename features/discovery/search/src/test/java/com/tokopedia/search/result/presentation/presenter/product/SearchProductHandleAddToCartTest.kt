@@ -240,7 +240,7 @@ internal class SearchProductHandleAddToCartTest : ProductListPresenterTestFixtur
     }
 
     @Test
-    fun `Handle add to cart failed for top ads product`() {
+    fun `Handle add to cart failed`() {
         val indexedProductItem = visitableList.getIndexedProductItem(true)
         val productItemViewModel = indexedProductItem.value as ProductItemViewModel
         val position = indexedProductItem.index

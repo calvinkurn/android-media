@@ -235,15 +235,10 @@ public interface ProductListSectionContract {
 
         void onBroadMatchItemClick(@NotNull BroadMatchItemViewModel broadMatchItemViewModel);
 
-        @Deprecated
-        void setThreeDotsProduct(ProductItemViewModel item);
-
-        @Nullable
-        @Deprecated
-        ProductItemViewModel getThreeDotsProduct();
-
         void onThreeDotsClick(ProductItemViewModel item, int adapterPosition);
 
         void handleAddToCartAction(@NotNull ProductCardOptionsModel productCardOptionModel);
+
+        void handleVisitShopAction();
     }
 }

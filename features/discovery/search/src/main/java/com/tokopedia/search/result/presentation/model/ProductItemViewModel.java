@@ -52,6 +52,7 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
     private String topadsImpressionUrl;
     private String topadsClickUrl;
     private String topadsWishlistUrl;
+    private String topadsClickShopUrl;
     private boolean isNew;
     private List<LabelGroupViewModel> labelGroupList = new ArrayList<>();
     private FreeOngkirViewModel freeOngkirViewModel = new FreeOngkirViewModel();
@@ -105,6 +106,14 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
 
     public void setTopadsWishlistUrl(String topadsWishlistUrl) {
         this.topadsWishlistUrl = topadsWishlistUrl;
+    }
+
+    public String getTopadsClickShopUrl() {
+        return topadsClickShopUrl;
+    }
+
+    public void setTopadsClickShopUrl(String topadsClickShopUrl) {
+        this.topadsClickShopUrl = topadsClickShopUrl;
     }
 
     public boolean isNew() {
