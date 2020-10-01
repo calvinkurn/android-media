@@ -57,7 +57,7 @@ object BuyerConsts {
     const val HOST_BELANJA = "belanja"
     const val HOST_ORDER_LIST = "order_list"
     const val HOST_ORDERLIST_DIGITAL = "orderlist"
-    const val APPLINK_ORDER = "tokopedia://order"
+    const val APPLINK_INTERNAL_ORDER = "tokopedia-android-internal://order"
     const val HOST_HOTEL = "hotel"
     const val HOST_FLIGHT = "pesawat"
 }

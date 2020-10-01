@@ -43,6 +43,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.tokopedia.buyerorder.common.util.BuyerConsts.APPLINK_INTERNAL_ORDER;
 import static com.tokopedia.buyerorder.common.util.BuyerConsts.APPLINK_ORDER;
 import static com.tokopedia.buyerorder.common.util.BuyerConsts.HOST_BELANJA;
 import static com.tokopedia.buyerorder.common.util.BuyerConsts.HOST_BUYER;
@@ -225,7 +226,7 @@ public class OrderListActivity extends BaseSimpleActivity
             // Intent newIntent = new Intent();
 
             if (uriStr.contains(HOST_BUYER) || uriStr.contains(HOST_BELANJA)
-                    || uriStr.equalsIgnoreCase(APPLINK_ORDER) || uriStr.contains(HOST_ORDER_LIST)) {
+                    || uriStr.equalsIgnoreCase(APPLINK_INTERNAL_ORDER) || uriStr.contains(HOST_ORDER_LIST)) {
                 orderCategory = OrderCategory.MARKETPLACE;
                 if (getIntent().getExtras() != null) {
                     getIntent().getExtras().putString(OrderListContants.ORDER_FILTER_ID, getIntent().getData().getQueryParameter(OrderListContants.ORDER_FILTER_ID));
