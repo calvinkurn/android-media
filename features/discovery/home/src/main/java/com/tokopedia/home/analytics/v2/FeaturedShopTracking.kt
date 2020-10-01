@@ -62,7 +62,7 @@ object FeaturedShopTracking : BaseTracking() {
             .appendCurrentSite(CurrentSite.DEFAULT)
             .appendBusinessUnit(BusinessUnit.DEFAULT)
             .appendChannelId(channelModel.id)
-            .appendScreen("/")
+            .appendScreen(Screen.DEFAULT)
             .appendUserId(userId)
             .appendAttribution(channelModel.trackingAttributionModel.galaxyAttribution)
             .build()

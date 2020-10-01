@@ -55,6 +55,7 @@ class PlayBannerUITest : BaseWidgetUiTest(){
     @JvmField
     val taskExecutorRule = InstantTaskExecutorRule()
 
+    override val homeVisitableFactory = HomeVisitableFactoryImpl(userSessionInterface.get(), remoteConfig, HomeDefaultDataSource())
     override val homeDynamicChannelVisitableFactory = HomeDynamicChannelVisitableFactoryImpl(userSessionInterface.get(), remoteConfig, HomeDefaultDataSource())
     override val instrumentationContext = InstrumentationRegistry.getInstrumentation().context
     override val homeDataMapper = HomeDataMapper(instrumentationContext, homeVisitableFactory, mockk(relaxed = true),
