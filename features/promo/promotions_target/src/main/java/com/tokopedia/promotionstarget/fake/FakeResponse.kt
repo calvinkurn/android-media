@@ -40,7 +40,7 @@ object FakeResponse {
             "      },\n" +
             "      \"resultStatus\": {\n" +
             "        \"code\": \"200000\",\n" +
-            "        \"reason\": \"\",\n" +
+            "        \"reason\": \"success\",\n" +
             "        \"message\": []\n" +
             "      }\n" +
             "    }\n" +
@@ -53,8 +53,8 @@ object FakeResponse {
             "            \"id\": 2,\n" +
             "            \"expired\": \"Hari ini\",\n" +
             "            \"real_code\": \"FREE50NE113C\",\n" +
-            "            \"minimum_usage\": \"\",\n" +
-            "            \"minimum_usage_label\": \"\",\n" +
+            "            \"minimum_usage\": \"Rp 500.00\",\n" +
+            "            \"minimum_usage_label\": \"Min. transkiki\",\n" +
             "            \"points\": 10000,\n" +
             "            \"title\": \"Coupon Title 4\",\n" +
             "            \"catalog_title\": \"Coupon Diskon 100%\",\n" +
@@ -81,8 +81,8 @@ object FakeResponse {
             "            \"usage\": {\n" +
             "                \"active_count_down\": 0,\n" +
             "                \"expired_count_down\": 0,\n" +
-            "                \"text\": \"\",\n" +
-            "                \"usage_str\": \"\",\n" +
+            "                \"text\": \"Berlaku Hingaa\",\n" +
+            "                \"usage_str\": \"30 Sep 2020\",\n" +
             "                \"btn_usage\": {\n" +
             "                    \"text\": \"Expired\",\n" +
             "                    \"url\": \"https://staging.tokopedia.com/tx.pl\",\n" +
@@ -108,7 +108,7 @@ object FakeResponse {
             "            },\n" +
             "            \"is_applicable\": false,\n" +
             "            \"status\": 8,\n" +
-            "            \"statusStr\": \"\"\n" +
+            "            \"statusStr\": \"Sudah Dipakai\"\n" +
             "        }\n" +
             "    }\n" +
             "}"

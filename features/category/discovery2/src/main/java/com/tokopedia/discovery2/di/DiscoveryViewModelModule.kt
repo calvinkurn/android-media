@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
+import com.tokopedia.discovery2.viewmodel.DiscoveryConfigViewModel
 import com.tokopedia.discovery2.viewmodel.DiscoveryViewModel
 import dagger.Binds
 import dagger.Module
@@ -23,5 +24,12 @@ abstract class DiscoveryViewModelModule {
     @DiscoveryScope
     @ViewModelKey(DiscoveryViewModel::class)
     internal abstract fun discoveryViewModel(viewModel: DiscoveryViewModel): ViewModel
+
+
+    @Binds
+    @IntoMap
+    @DiscoveryScope
+    @ViewModelKey(DiscoveryConfigViewModel::class)
+    internal abstract fun discoveryConfigViewModel(viewModel: DiscoveryConfigViewModel): ViewModel
 
 }

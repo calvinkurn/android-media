@@ -4,31 +4,39 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.ImageView
-import android.widget.ProgressBar
-import android.widget.Space
-import android.widget.TextView
+import android.view.ViewGroup
+import android.view.ViewParent
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.widget.NestedScrollView
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.promotionstarget.R
+import com.tokopedia.promotionstarget.data.LiveDataResult
+import com.tokopedia.promotionstarget.data.autoApply.AutoApplyResponse
 import com.tokopedia.promotionstarget.data.coupon.CouponStatusType
 import com.tokopedia.promotionstarget.data.coupon.CouponUiData
 import com.tokopedia.promotionstarget.data.coupon.TokopointsCouponDetailResponse
-import com.tokopedia.promotionstarget.data.di.modules.AppModule
 import com.tokopedia.promotionstarget.data.di.components.DaggerCmGratificationComponent
+import com.tokopedia.promotionstarget.data.di.modules.AppModule
 import com.tokopedia.promotionstarget.data.notification.GratifNotification
+import com.tokopedia.promotionstarget.data.notification.HachikoButtonType
+import com.tokopedia.promotionstarget.data.notification.NotificationEntryType
+import com.tokopedia.promotionstarget.presentation.ui.CustomToast
 import com.tokopedia.promotionstarget.presentation.ui.adapter.CouponListAdapter
 import com.tokopedia.promotionstarget.presentation.ui.recycleViewHelper.CouponItemDecoration
 import com.tokopedia.promotionstarget.presentation.ui.viewmodel.CmGratificationViewModel
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import timber.log.Timber
 import javax.inject.Inject
@@ -37,29 +45,35 @@ class CmGratificationDialog {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-    lateinit var viewModel: CmGratificationViewModel
+    private lateinit var viewModel: CmGratificationViewModel
 
     private lateinit var tvTitle: Typography
     private lateinit var tvSubTitle: Typography
     private lateinit var btnAction: Typography
-    private lateinit var btnAction2: Typography
+    private lateinit var btnAction2: UnifyButton
     private lateinit var recyclerView: RecyclerView
     private lateinit var couponListAdapter: CouponListAdapter
     private lateinit var bottomSheetDialog: BottomSheetDialog
     private lateinit var nestedScrollView: NestedScrollView
     private lateinit var progressBar: ProgressBar
     private lateinit var space: Space
+    private var bottomSheetFmContainer: ViewGroup? = null
+    private var bottomSheetCoordinatorLayout: ViewGroup? = null
 
-    val couponUiDataList = arrayListOf<CouponUiData>()
+    private val couponUiDataList = arrayListOf<CouponUiData>()
+    private var gratifNotification: GratifNotification? = null
+    private var couponDetailResponse: TokopointsCouponDetailResponse? = null
 
-    fun getLayout(): Int {
+    protected fun getLayout(): Int {
         return R.layout.dialog_gratification
     }
 
-    fun show(activityContext: Context, gratifNotification: GratifNotification, couponDetailResponse: TokopointsCouponDetailResponse) {
+    fun show(activityContext: Context, gratifNotification: GratifNotification, couponDetailResponse: TokopointsCouponDetailResponse, @NotificationEntryType notificationEntryType: Int):BottomSheetDialog? {
         val pair = prepareBottomSheet(activityContext)
         initViews(pair.first, activityContext, gratifNotification, couponDetailResponse)
         setUiData(gratifNotification, couponDetailResponse)
+        updateGratifNotification(gratifNotification, pair.first, notificationEntryType)
+        return pair.second
     }
 
     private fun prepareBottomSheet(activityContext: Context): Pair<View, BottomSheetDialog> {
@@ -109,6 +123,7 @@ class CmGratificationDialog {
         recyclerView.isNestedScrollingEnabled = false
         recyclerView.addItemDecoration(CouponItemDecoration())
         couponListAdapter = CouponListAdapter(couponUiDataList)
+        recyclerView.adapter = couponListAdapter
 
         initInjections(activityContext)
     }
@@ -128,7 +143,8 @@ class CmGratificationDialog {
 
 
     private fun setUiData(gratifNotification: GratifNotification, couponDetailResponse: TokopointsCouponDetailResponse) {
-        val pair = couponDetailResponse.coupon?.couponStatus?.let {
+        val couponStatus = couponDetailResponse.coupon?.couponStatus
+        val pair = couponStatus?.let {
             when (it) {
                 CouponStatusType.USED -> gratifNotification.wordingUsed?.let { word -> Pair(word.subtitle1, word.subtitle2) }
                 CouponStatusType.EXPIRED -> gratifNotification.wordingExpired?.let { word -> Pair(word.subtitle1, word.subtitle2) }
@@ -137,7 +153,7 @@ class CmGratificationDialog {
             }
         }
         tvTitle.text = pair?.first
-        tvSubTitle.text = pair?.first
+        tvSubTitle.text = pair?.second
 
         //set coupon data
 //        if (couponDetailResponse.couponList != null && couponDetailResponse.couponList.isNotEmpty()) {
@@ -145,6 +161,9 @@ class CmGratificationDialog {
             couponUiDataList.add(couponDetailResponse.coupon)
             couponListAdapter.notifyDataSetChanged()
         }
+
+        handleAutoApply(couponStatus)
+
 
         //second button
         val showSecondButton = gratifNotification.secondButton?.isShown != null && gratifNotification.secondButton.isShown
@@ -159,13 +178,108 @@ class CmGratificationDialog {
         }
     }
 
-    fun toggleSecondButton(toggle: Boolean) {
+    private fun handleAutoApply(couponStatus: Int?) {
+        if (couponStatus == CouponStatusType.ACTIVE) {
+            val activity = btnAction.context
+            if (activity is AppCompatActivity) {
+                viewModel.autoApplyLiveData.observe(activity, Observer {
+                    when (it.status) {
+                        LiveDataResult.STATUS.SUCCESS -> {
+                            performShowToast(it.data)
+                            handleRedirection()
+                            toggleProgressBar(false)
+                            btnAction.text = btnAction.context.getString(R.string.t_promo_lanjut_berbelanja)
+                        }
+                        LiveDataResult.STATUS.ERROR -> {
+                            btnAction.text = btnAction.context.getString(R.string.t_promo_lanjut_berbelanja)
+                            toggleProgressBar(false)
+                        }
+                        LiveDataResult.STATUS.LOADING -> {
+                            btnAction.text = ""
+                            toggleProgressBar(true)
+                        }
+                    }
+                })
+            }
+        }
+        btnAction.setOnClickListener {
+            couponStatus?.let { status ->
+                when (status) {
+                    CouponStatusType.ACTIVE -> viewModel.autoApply("")
+                }
+            }
+        }
+    }
+
+    private fun toggleSecondButton(toggle: Boolean) {
         if (toggle) {
             btnAction2.visibility = View.VISIBLE
             space.visibility = View.VISIBLE
         } else {
             btnAction2.visibility = View.GONE
             space.visibility = View.GONE
+        }
+    }
+
+    private fun updateGratifNotification(gratifNotification: GratifNotification, view: View, @NotificationEntryType notificationEntryType: Int) {
+        view.post {
+            if (view.context is AppCompatActivity && !(view.context as AppCompatActivity).isFinishing) {
+                viewModel.updateGratification(gratifNotification.notificationID ?: "", notificationEntryType)
+            }
+        }
+    }
+
+    private fun expandBottomSheet() {
+        if (bottomSheetFmContainer == null) {
+            var child: ViewGroup = nestedScrollView
+            var parent: ViewParent = nestedScrollView.parent
+
+            while (!(parent is CoordinatorLayout)) {
+                if (parent is ViewGroup) {
+                    child = parent
+                }
+                parent = parent.parent
+            }
+            bottomSheetFmContainer = child
+            bottomSheetCoordinatorLayout = parent
+        }
+        if (bottomSheetCoordinatorLayout != null && bottomSheetFmContainer is FrameLayout) {
+            BottomSheetBehavior.from(bottomSheetFmContainer).state = BottomSheetBehavior.STATE_EXPANDED
+        }
+    }
+
+    private fun performShowToast(data: AutoApplyResponse?) {
+        val messageList = data?.tokopointsSetAutoApply?.resultStatus?.message
+        val code = data?.tokopointsSetAutoApply?.resultStatus?.code
+        if (messageList != null && messageList.isNotEmpty()) {
+            if (code == "200") {
+                CustomToast.show(btnAction.context, messageList[0].toString())
+            } else {
+                CustomToast.show(btnAction.context, messageList[0].toString(), R.drawable.t_promo_custom_toast_bg_red)
+            }
+        }
+    }
+
+    private fun handleRedirection() {
+        when (gratifNotification?.hachikoButton?.type) {
+            HachikoButtonType.REDIRECT -> {
+                val applink = couponDetailResponse?.coupon?.usage?.btnUsage?.applink
+                if (!applink.isNullOrEmpty()) {
+                    RouteManager.route(btnAction.context, applink)
+                }
+                bottomSheetDialog.dismiss()
+            }
+            HachikoButtonType.DISMISS -> {
+                bottomSheetDialog.dismiss()
+            }
+        }
+    }
+
+    private fun toggleProgressBar(show: Boolean) {
+        if (show) {
+            progressBar.visibility = View.VISIBLE
+        } else {
+            progressBar.visibility = View.GONE
         }
     }
 }

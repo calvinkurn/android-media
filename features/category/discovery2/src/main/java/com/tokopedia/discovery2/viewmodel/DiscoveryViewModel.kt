@@ -40,7 +40,6 @@ import kotlin.coroutines.CoroutineContext
 private const val PINNED_COMPONENT_FAIL_STATUS = -1
 
 class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: DiscoveryDataUseCase,
-                                             private val discoveryUIConfigRepo: DiscoveryUIConfigGQLRepository,
                                              private val userSession: UserSessionInterface,
                                              private val trackingQueue: TrackingQueue,
                                              private val pageLoadTimePerformanceInterface: PageLoadTimePerformanceInterface?) : BaseViewModel(), CoroutineScope {
@@ -48,7 +47,6 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
     private val discoveryPageInfo = MutableLiveData<Result<PageInfo>>()
     private val discoveryFabLiveData = MutableLiveData<Result<ComponentsItem>>()
     private val discoveryResponseList = MutableLiveData<Result<List<ComponentsItem>>>()
-    private val discoveryUIConfig = MutableLiveData<Result<String>>()
     var pageIdentifier: String = ""
     var pageType: String = ""
     var pagePath: String = ""
@@ -87,21 +85,9 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
 
     }
 
-    fun getDiscoveryUIConfig() {
-        launchCatchError(
-                block = {
-                    val data = discoveryUIConfigRepo.getDiscoveryUIConfigData()
-                    setUIConfig(data.discoveryPageUIConfig?.data?.config)
-                },
-                onError = {
-                    discoveryUIConfig.postValue(Success(REACT_NATIVE))
-                }
-        )
-    }
 
-    private fun setUIConfig(config: String?) {
-        discoveryUIConfig.postValue(Success(config ?: REACT_NATIVE))
-    }
+
+
 
     private fun setPageInfo(discoPageData: DiscoveryPageData?) {
         discoPageData?.pageInfo?.let { pageInfoData ->
@@ -128,7 +114,6 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
     fun getDiscoveryPageInfo(): LiveData<Result<PageInfo>> = discoveryPageInfo
     fun getDiscoveryResponseList(): LiveData<Result<List<ComponentsItem>>> = discoveryResponseList
     fun getDiscoveryFabLiveData(): LiveData<Result<ComponentsItem>> = discoveryFabLiveData
-    fun getDiscoveryUIConfigLiveData(): LiveData<Result<String>> = discoveryUIConfig
 
     private fun fetchTopChatMessageId(context: Context, appLinks: String, shopId: Int) {
         val queryMap: MutableMap<String, Any> = mutableMapOf("fabShopId" to shopId, "source" to "discovery")

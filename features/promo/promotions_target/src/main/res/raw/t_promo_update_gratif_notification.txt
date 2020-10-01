@@ -1,0 +1,9 @@
+mutation UpdateNotification($notificationID: Int,$notificationEntryType: Int) {
+  updateNotification(notificationID:$notificationID,notificationEntryType:$notificationEntryType) {
+    resultStatus {
+      code
+      message
+      reason
+    }
+  }
+}

@@ -2,6 +2,10 @@ package com.tokopedia.notifications.inApp;
 
 import android.app.Activity;
 import android.app.Application;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -9,6 +13,7 @@ import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.google.firebase.messaging.RemoteMessage;
 import com.tokopedia.abstraction.base.view.listener.FragmentLifecycleObserver;
@@ -32,10 +37,16 @@ import com.tokopedia.notifications.inApp.viewEngine.ViewEngine;
 import com.tokopedia.promotionstarget.data.notification.NotificationEntryType;
 import com.tokopedia.promotionstarget.domain.presenter.GratificationPresenter;
 
+import org.jetbrains.annotations.Nullable;
 import org.json.JSONObject;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import static com.tokopedia.notifications.common.CMConstant.EXTRA_BASE_MODEL;
 import static com.tokopedia.notifications.inApp.ruleEngine.RulesUtil.Constants.RemoteConfig.KEY_CM_INAPP_END_TIME_INTERVAL;
@@ -57,6 +68,9 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
     private List<String> excludeScreenList;
     private FragmentObserver fragmentObserver;
     private GratificationPresenter gratificationPresenter;
+    private static final String DISCO_PAGE_ACTIVITY_NAME = "com.tokopedia.discovery2.viewcontrollers.activity";
+    private Map<WeakReference<Activity>, WeakReference<BroadcastReceiver>> broadcastReceiverMap = new HashMap<>();
+    private final Set<String> processedNotificationIds = new HashSet<>();
 
     /*
      * This flag is used for validation of the dialog to be displayed.
@@ -81,6 +95,7 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
         this.application = application;
         this.cmInAppListener = this;
         gratificationPresenter = new GratificationPresenter(application);
+        gratificationPresenter.setExceptionCallback(th -> isDialogShowing = false);
         RulesManager.initRuleEngine(application, new RuleInterpreterImpl(), new DataConsumerImpl());
         initInAppManager();
     }
@@ -113,7 +128,18 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
 
     private void showPopupFromPush(Bundle bundle, String name) {
         String gratificationId = bundle.getString("gratificationId");
-        gratificationPresenter.showGratificationInApp(currentActivity, gratificationId, NotificationEntryType.PUSH);
+        gratificationPresenter.showGratificationInApp(currentActivity, gratificationId, NotificationEntryType.PUSH, new GratificationPresenter.GratifPopupCallback() {
+            @Override
+            public void onShow() {
+
+            }
+
+            @Override
+            public void onDismiss() {
+                isDialogShowing = false;
+            }
+        });
+        isDialogShowing = true;
     }
 
     @Override
@@ -189,7 +215,17 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
             String customValues = data.getCustomValues();
             JSONObject json = new JSONObject(customValues);
             String gratificationId = json.getString("gratificationId");
-            gratificationPresenter.showGratificationInApp(currentActivity, gratificationId,NotificationEntryType.ORGANIC);
+            gratificationPresenter.showGratificationInApp(currentActivity, gratificationId, NotificationEntryType.ORGANIC, new GratificationPresenter.GratifPopupCallback() {
+                @Override
+                public void onShow() {
+
+                }
+
+                @Override
+                public void onDismiss() {
+                    isDialogShowing = false;
+                }
+            });
 
             // set flag if has dialog showing
             isDialogShowing = true;
@@ -231,16 +267,20 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
     public void onActivityStartedInternal(Activity activity) {
         if (application == null) application = activity.getApplication();
         updateCurrentActivity(activity);
-
         //todo Rahul - add logic to parse and show push - popup
+        handleOpenedActivity(activity);
+    }
 
+    private void decideDialog(Activity activity) {
         boolean canShowPopupFromPush = false;
         Bundle bundle = activity.getIntent().getExtras();
         if (bundle != null) {
             boolean isComingFromPush = bundle.keySet().contains(EXTRA_BASE_MODEL);
             if (isComingFromPush) {
                 String gratificationId = bundle.getString("gratificationId"); //todo Remove hardcoding
-                canShowPopupFromPush = !(TextUtils.isEmpty(gratificationId));
+                canShowPopupFromPush = (!(TextUtils.isEmpty(gratificationId)) && !processedNotificationIds.contains(gratificationId));
+                processedNotificationIds.add(gratificationId);
+
             }
         }
 
@@ -249,6 +289,51 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
                 showPopupFromPush(bundle, currentActivity.get().getClass().getName());
             } else {
                 showInAppNotification(currentActivity.get().getClass().getName());
+            }
+        }
+    }
+
+    private void handleOpenedActivity(Activity activity) {
+        String className = activity.getClass().getName();
+        if (className.equals(DISCO_PAGE_ACTIVITY_NAME)) {
+            registerBroadcastReceiver(activity);
+        } else {
+            decideDialog(activity);
+        }
+    }
+
+    private void registerBroadcastReceiver(Activity activity) {
+        BroadcastReceiver receiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                Bundle bundle = intent.getExtras();
+                if (bundle != null) {
+                    final String DISCO_IS_NATIVE = "DISCO_IS_NATIVE";
+                    boolean isNative = bundle.getBoolean(DISCO_IS_NATIVE);
+                    if (isNative && context instanceof Activity)
+                        decideDialog((Activity) context);
+                }
+            }
+        };
+        final String DISCO_INTENT_FILTER = "DISCO_ACTIVITY_SELECTION";
+        LocalBroadcastManager.getInstance(activity).registerReceiver(receiver, new IntentFilter(DISCO_INTENT_FILTER));
+        broadcastReceiverMap.put(new WeakReference<>(activity), new WeakReference<>(receiver));
+    }
+
+    private void unRegisterBroadcastReceiver(Activity activity) {
+        Set<WeakReference<Activity>> set = broadcastReceiverMap.keySet();
+        WeakReference<Activity> finalWeakActivity = null;
+        for (WeakReference<Activity> weakReference : set) {
+            if (weakReference.get() == activity) {
+                finalWeakActivity = weakReference;
+                break;
+            }
+        }
+        WeakReference<BroadcastReceiver> weakReceiver = broadcastReceiverMap.get(finalWeakActivity);
+        if (weakReceiver != null) {
+            BroadcastReceiver receiver = weakReceiver.get();
+            if (receiver != null) {
+                LocalBroadcastManager.getInstance(activity).unregisterReceiver(receiver);
             }
         }
     }
@@ -284,6 +369,7 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
                 getSimpleName().equalsIgnoreCase(activity.getClass().getSimpleName())) {
             currentActivity.clear();
         }
+        unRegisterBroadcastReceiver(activity);
     }
 
     private void dataConsumed(CMInApp inAppData) {

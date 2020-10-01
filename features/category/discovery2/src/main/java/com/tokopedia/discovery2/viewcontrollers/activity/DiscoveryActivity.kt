@@ -6,6 +6,7 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.crashlytics.android.Crashlytics
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
@@ -17,9 +18,9 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.discovery2.Utils.Companion.preSelectedTab
 import com.tokopedia.discovery2.di.DaggerDiscoveryComponent
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
+import com.tokopedia.discovery2.viewmodel.DiscoveryConfigViewModel
 import com.tokopedia.discovery2.viewmodel.DiscoveryViewModel
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
 
@@ -33,6 +34,9 @@ const val DISCOVERY_PLT_RENDER_METRICS = "discovery_plt_render_metrics"
 class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
 
     private lateinit var discoveryViewModel: DiscoveryViewModel
+
+    @Inject
+    lateinit var discoveryConfigViewModel: DiscoveryConfigViewModel
 
     @JvmField
     @Inject
@@ -64,42 +68,26 @@ class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
         initDaggerInject()
         startPerformanceMonitoring()
         super.onCreate(savedInstanceState)
-    }
-
-    override fun sendScreenAnalytics() {
-        //Empty to remove double open screen events
+        discoveryConfigViewModel.doOnCreate()
     }
 
     override fun initView() {
-        moveToRnIfRequired()
         toolbar?.hide()
         setObserver()
     }
 
-    private fun moveToRnIfRequired() {
-        if (config.isNotEmpty()) {
-            if (config == NATIVE) {
-                inflateFragment()
-            } else {
-                routeToReactNativeDiscovery()
-            }
-        } else {
-            discoveryViewModel.getDiscoveryUIConfig()
-        }
-    }
-
     private fun setObserver() {
-        discoveryViewModel.getDiscoveryUIConfigLiveData().observe(this, Observer {
-            when (it) {
-                is Success -> {
-                    config = it.data
-                    moveToRnIfRequired()
-                }
-            }
+        discoveryConfigViewModel.getDiscoveryNativeConfigLiveData().observe(this, Observer{
+            routeToNative()
+        })
+        discoveryConfigViewModel.getDiscoveryRNConfigLiveData().observe(this, Observer {
+            routeToReactNativeDiscovery()
         })
     }
 
-    override fun setupFragment(savedInstance: Bundle?) {
+    private fun routeToNative() {
+        inflateFragment()
+        sendDiscoveryLaunchBradcast(true)
     }
 
     private fun routeToReactNativeDiscovery() {
@@ -108,8 +96,27 @@ class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
                 ApplinkConst.REACT_DISCOVERY_PAGE.replace("{page_id}", intent?.data?.lastPathSegment
                         ?: intent?.getStringExtra(END_POINT) ?: "")
         )
+        sendDiscoveryLaunchBradcast(false)
         finish()
     }
+
+    private fun sendDiscoveryLaunchBradcast(isNative:Boolean) {
+        LocalBroadcastManager.getInstance(this).apply {
+            val DISCO_INTENT_FILTER = "DISCO_IS_NATIVE"
+            sendBroadcast(Intent(DISCO_INTENT_FILTER).apply {
+                val DISCO_IS_NATIVE = "DISCO_IS_NATIVE"
+                putExtra(DISCO_IS_NATIVE,isNative)
+            })
+        }
+    }
+    override fun sendScreenAnalytics() {
+        //Empty to remove double open screen events
+    }
+
+    override fun setupFragment(savedInstance: Bundle?) {
+    }
+
+
 
     private fun startPerformanceMonitoring() {
         pageLoadTimePerformanceInterface?.startMonitoring(DISCOVERY_RESULT_TRACE)

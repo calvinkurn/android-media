@@ -1,1 +1,54 @@
-//todo Rahul
+query GetNotification($notificationID: Int!, $notificationEntryType: Int!, $paymentID: Int!) {
+  getNotification(notificationID: $notificationID, notificationEntryType: $notificationEntryType, paymentID: $paymentID) {
+     notificationID
+    promoCode
+    notificationStatus
+    wordingActive {
+      titleId
+      titleEn
+      subtitle1Id
+      subtitle1En
+      subtitle2Id
+      subtitle2En
+    }
+    wordingSeen {
+      titleId
+      titleEn
+      subtitle1Id
+      subtitle1En
+      subtitle2Id
+      subtitle2En
+    }
+    wordingExpired {
+      titleId
+      titleEn
+      subtitle1Id
+      subtitle1En
+      subtitle2Id
+      subtitle2En
+    }
+    wordingUsed {
+      titleId
+      titleEn
+      subtitle1Id
+      subtitle1En
+      subtitle2Id
+      subtitle2En
+    }
+    button {
+      text
+      url
+      appLink
+      isShown
+      type
+    }
+    hachikoButton {
+      type
+    }
+    resultStatus {
+      code
+      message
+      reason
+    }   
+  }
+}

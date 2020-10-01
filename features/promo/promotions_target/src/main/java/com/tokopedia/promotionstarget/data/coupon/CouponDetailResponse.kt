@@ -8,15 +8,24 @@ data class GetCouponDetail(
         @SerializedName("minimumUsageLabel") val minimumUsageLabel: String?,
         @SerializedName("minimumUsage") val minimumUsage: String?,
         @SerializedName("icon") val icon: String?,
-        @SerializedName("image_url_mobile") val imageUrl: String?):CouponUiData()
+        @SerializedName("image_url_mobile") val imageUrl: String?) : CouponUiData()
 
 data class TokopointsCouponDetail(
         @SerializedName("id") val id: Int,
-        @SerializedName("minimumUsageLabel") val minimumUsageLabel: String?,
-        @SerializedName("minimumUsage") val minimumUsage: String?,
-        @SerializedName("icon") val icon: String?,
+        @SerializedName("minimum_usage_label") val minimumUsageLabel: String?,
+        @SerializedName("minimum_usage") val minimumUsage: String?,
         @SerializedName("statusStr") val statusStr: String?,
+        @SerializedName("usage") val usage: Usage?,
         @CouponStatusType @SerializedName("status") val couponStatus: Int?,
-        @SerializedName("image_url_mobile") val imageUrl: String?):CouponUiData()
+        @SerializedName("thumbnail_url_mobile") val imageUrl: String?) : CouponUiData()
+
+data class Usage(
+        @SerializedName("text") val dateKey: String?,
+        @SerializedName("usage_str") val dateValue: String?,
+        @SerializedName("btn_usage") val btnUsage: ButtonUsage?
+)
+data class ButtonUsage(
+        @SerializedName("applink") val applink: String?
+)
 
 sealed class CouponUiData

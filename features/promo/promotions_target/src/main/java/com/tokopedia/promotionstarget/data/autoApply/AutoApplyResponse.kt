@@ -5,12 +5,17 @@ import com.tokopedia.promotionstarget.data.claim.ResultStatus
 
 data class AutoApplyResponse(
         @SerializedName("tokopointsSetAutoApply")
-        val tokopointsSetAutoApply: TokopointsSetAutoApply? = null
+        val tokopointsSetAutoApply: ResultContainer? = null
 )
 
-data class TokopointsSetAutoApply(
+data class ResultContainer(
 
         @SerializedName("resultStatus")
         val resultStatus: ResultStatus? = null
+)
+
+data class UpdateGratificationNotificationResponse(
+        @SerializedName("updateNotification")
+        val result: ResultContainer? = null
 )
 
