@@ -9,7 +9,7 @@
       "eventLabel": "{{.+_.+_\\d_.+_.+_.+}}",
       "currentSite": "tokopediamarketplace",
       "userId": "{{.+}}",
-      "businessUnit": "",
+      "businessUnit": "search",
       "isResultFound": "{{true|false}}",
       "categoryIdMapping": "{{.+}}",
       "categoryNameMapping": "{{.+}}",

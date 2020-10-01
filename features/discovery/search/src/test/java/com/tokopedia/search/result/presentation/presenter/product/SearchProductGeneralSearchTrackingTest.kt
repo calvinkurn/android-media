@@ -118,7 +118,6 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
                         NONE
                 ),
                 userId = userId,
-                businessUnit = "",
                 isResultFound = true.toString(),
                 categoryIdMapping = "65",
                 categoryNameMapping = "Handphone & Tablet",
@@ -144,7 +143,6 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
                         NONE
                 ),
                 userId = userId,
-                businessUnit = "",
                 isResultFound = true.toString(),
                 categoryIdMapping = "1759,1758,65",
                 categoryNameMapping = "Fashion Pria,Handphone & Tablet,Fashion Wanita",
@@ -170,7 +168,6 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
                         NONE
                 ),
                 userId = userId,
-                businessUnit = "",
                 isResultFound = false.toString(),
                 categoryIdMapping = "",
                 categoryNameMapping = "",
@@ -196,7 +193,6 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
                         NONE
                 ),
                 userId = userId,
-                businessUnit = "",
                 isResultFound = true.toString(),
                 categoryIdMapping = "65",
                 categoryNameMapping = "Handphone & Tablet",
@@ -222,7 +218,6 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
                         NONE
                 ),
                 userId = userId,
-                businessUnit = "",
                 isResultFound = true.toString(),
                 categoryIdMapping = "1759,1758",
                 categoryNameMapping = "Fashion Pria,Fashion Wanita",
@@ -248,7 +243,6 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
                         NONE
                 ),
                 userId = userId,
-                businessUnit = "",
                 isResultFound = true.toString(),
                 categoryIdMapping = "1759,1758",
                 categoryNameMapping = "Fashion Pria,Fashion Wanita",
@@ -276,7 +270,6 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
                         NONE
                 ),
                 userId = userId,
-                businessUnit = "",
                 isResultFound = true.toString(),
                 categoryIdMapping = "1759,1758",
                 categoryNameMapping = "Fashion Pria,Fashion Wanita",
@@ -303,7 +296,6 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
                         NONE
                 ),
                 userId = userId,
-                businessUnit = "",
                 isResultFound = true.toString(),
                 categoryIdMapping = "1759,1758",
                 categoryNameMapping = "Fashion Pria,Fashion Wanita",
@@ -331,7 +323,6 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
                         NONE
                 ),
                 userId = userId,
-                businessUnit = "",
                 isResultFound = true.toString(),
                 categoryIdMapping = "1759,1758",
                 categoryNameMapping = "Fashion Pria,Fashion Wanita",
@@ -357,7 +348,6 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
                         NONE
                 ),
                 userId = userId,
-                businessUnit = "",
                 isResultFound = true.toString(),
                 categoryIdMapping = "1759,1758",
                 categoryNameMapping = "Fashion Pria,Fashion Wanita",
@@ -383,7 +373,6 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
                         NONE
                 ),
                 userId = userId,
-                businessUnit = "",
                 isResultFound = true.toString(),
                 categoryIdMapping = "65",
                 categoryNameMapping = "Handphone & Tablet",
@@ -409,7 +398,6 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
                         NONE
                 ),
                 userId = userId,
-                businessUnit = "",
                 isResultFound = true.toString(),
                 categoryIdMapping = "65",
                 categoryNameMapping = "Handphone & Tablet",
@@ -435,7 +423,6 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
                         NONE
                 ),
                 userId = userId,
-                businessUnit = "",
                 isResultFound = true.toString(),
                 categoryIdMapping = "65",
                 categoryNameMapping = "Handphone & Tablet",
@@ -471,7 +458,6 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
                         NONE
                 ),
                 userId = userId,
-                businessUnit = "",
                 isResultFound = true.toString(),
                 categoryIdMapping = "65",
                 categoryNameMapping = "Handphone & Tablet",
@@ -507,7 +493,6 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
                         pageTitle
                 ),
                 userId = userId,
-                businessUnit = "",
                 isResultFound = true.toString(),
                 categoryIdMapping = "65",
                 categoryNameMapping = "Handphone & Tablet",

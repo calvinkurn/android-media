@@ -551,7 +551,7 @@ public class SearchTracking {
                 EVENT_LABEL, generalSearchTrackingModel.getEventLabel(),
                 CURRENT_SITE, TOKOPEDIA_MARKETPLACE,
                 USER_ID, generalSearchTrackingModel.getUserId(),
-                BUSINESS_UNIT, generalSearchTrackingModel.getBusinessUnit(),
+                BUSINESS_UNIT, SEARCH,
                 IS_RESULT_FOUND, generalSearchTrackingModel.isResultFound(),
                 CATEGORY_ID_MAPPING, generalSearchTrackingModel.getCategoryIdMapping(),
                 CATEGORY_NAME_MAPPING, generalSearchTrackingModel.getCategoryNameMapping(),

@@ -1275,7 +1275,6 @@ final class ProductListPresenter
                 createGeneralSearchTrackingEventCategory(),
                 createGeneralSearchTrackingEventLabel(productViewModel, query),
                 getUserId(),
-                "",
                 Boolean.toString(!productViewModel.getProductList().isEmpty()),
                 StringUtils.join(categoryIdMapping, ","),
                 StringUtils.join(categoryNameMapping, ","),
