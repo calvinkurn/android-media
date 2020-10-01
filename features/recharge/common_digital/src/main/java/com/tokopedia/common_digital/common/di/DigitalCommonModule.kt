@@ -9,11 +9,8 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor
 import com.tokopedia.akamai_bot_lib.interceptor.AkamaiBotInterceptor
-import com.tokopedia.common_digital.cart.data.datasource.DigitalInstantCheckoutDataSource
 import com.tokopedia.common_digital.cart.data.mapper.CartMapperData
 import com.tokopedia.common_digital.cart.data.mapper.ICartMapperData
-import com.tokopedia.common_digital.cart.data.repository.DigitalCartRepository
-import com.tokopedia.common_digital.cart.domain.IDigitalCartRepository
 import com.tokopedia.common_digital.cart.domain.usecase.DigitalAddToCartUseCase
 import com.tokopedia.common_digital.cart.domain.usecase.DigitalGetCartUseCase
 import com.tokopedia.common_digital.cart.domain.usecase.DigitalInstantCheckoutUseCase
@@ -126,6 +123,12 @@ class DigitalCommonModule {
         return DigitalGetCartUseCase(listInterceptor, context)
     }
 
+    @Provides
+    @DigitalCommonScope
+    fun provideDigitalInstantCheckoutUseCase(listInterceptor: ArrayList<Interceptor>, @ApplicationContext context: Context): DigitalInstantCheckoutUseCase {
+        return DigitalInstantCheckoutUseCase(listInterceptor, context)
+    }
+
 
     @Provides
     @DigitalCommonScope
@@ -180,25 +183,6 @@ class DigitalCommonModule {
 
     @Provides
     @DigitalCommonScope
-    fun provideDigitalInstantCheckoutDataSource(digitalRestApi: DigitalRestApi,
-                                                cartMapperData: ICartMapperData): DigitalInstantCheckoutDataSource {
-        return DigitalInstantCheckoutDataSource(digitalRestApi, cartMapperData)
-    }
-
-    @Provides
-    @DigitalCommonScope
-    fun provideDigitalCartRepository(digitalInstantCheckoutDataSource: DigitalInstantCheckoutDataSource): IDigitalCartRepository {
-        return DigitalCartRepository(digitalInstantCheckoutDataSource)
-    }
-
-    @Provides
-    @DigitalCommonScope
-    fun provideDigitalInstantCheckoutUseCase(digitalCartRepository: IDigitalCartRepository): DigitalInstantCheckoutUseCase {
-        return DigitalInstantCheckoutUseCase(digitalCartRepository)
-    }
-
-    @Provides
-    @DigitalCommonScope
     fun provideRechargePushEventRecommendationUseCase(@ApplicationContext context: Context): RechargePushEventRecommendationUseCase {
         return RechargePushEventRecommendationUseCase(GraphqlUseCase(), context)
     }
@@ -212,6 +196,4 @@ class DigitalCommonModule {
     companion object {
         private val GSON_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ssZ"
     }
-
-
 }

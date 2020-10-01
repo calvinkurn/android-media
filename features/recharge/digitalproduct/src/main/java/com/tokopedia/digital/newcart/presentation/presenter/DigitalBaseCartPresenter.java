@@ -15,6 +15,7 @@ import com.tokopedia.common_digital.cart.data.entity.requestbody.checkout.Data;
 import com.tokopedia.common_digital.cart.data.entity.requestbody.checkout.Relationships;
 import com.tokopedia.common_digital.cart.data.entity.requestbody.checkout.RequestBodyCheckout;
 import com.tokopedia.common_digital.cart.data.entity.response.ResponseCartData;
+import com.tokopedia.common_digital.cart.data.entity.response.ResponseCheckoutData;
 import com.tokopedia.common_digital.cart.data.mapper.CartMapperData;
 import com.tokopedia.common_digital.cart.domain.usecase.DigitalAddToCartUseCase;
 import com.tokopedia.common_digital.cart.domain.usecase.DigitalGetCartUseCase;
@@ -246,6 +247,61 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
         };
     }
 
+    private Subscriber<Map<Type, RestResponse>> getSubscriberInstantCheckout2() {
+        return new Subscriber<Map<Type, RestResponse>>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                e.printStackTrace();
+                if (isViewAttached()) {
+                    if (e instanceof UnknownHostException || e instanceof ConnectException) {
+                        /* Ini kalau ga ada internet */
+                        getView().closeViewWithMessageAlert(
+                                ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
+                        );
+                    } else if (e instanceof SocketTimeoutException) {
+                        /* Ini kalau timeout */
+                        getView().closeViewWithMessageAlert(
+                                ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
+                        );
+                    } else if (e instanceof ResponseErrorException) {
+                        /* Ini kalau error dari API kasih message error */
+                        getView().renderErrorInstantCheckout(e.getMessage());
+                    } else if (e instanceof ResponseDataNullException) {
+                        /* Dari Api data null => "data":{}, tapi ga ada message error apa apa */
+                        getView().renderErrorInstantCheckout(e.getMessage());
+                    } else if (e instanceof HttpErrorException) {
+                    /* Ini Http error, misal 403, 500, 404,
+                     code http errornya bisa diambil
+                     e.getErrorCode */
+                        getView().closeViewWithMessageAlert(e.getMessage());
+                    } else {
+                        /* Ini diluar dari segalanya hahahaha */
+                        getView().closeViewWithMessageAlert(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                    }
+                }
+            }
+
+            @Override
+            public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
+                Type token = new TypeToken<DataResponse<ResponseCheckoutData>>() {
+                }.getType();
+                RestResponse restResponse = typeRestResponseMap.get(token);
+                DataResponse data = restResponse.getData();
+                ResponseCheckoutData responseCartData = (ResponseCheckoutData) data.getData();
+                CartMapperData cartMapperData = new CartMapperData();
+                InstantCheckoutData instantCheckoutData = cartMapperData.transformInstantCheckoutData(responseCartData);
+
+                getView().hideCartView();
+                getView().renderToInstantCheckoutPage(instantCheckoutData);
+            }
+        };
+    }
+
 
     private void renderCart(CartDigitalInfoData cartDigitalInfoData) {
         if (getView().getCartPassData().getInstantCheckout().equals("1") && !cartDigitalInfoData.isForceRenderCart()) {
@@ -272,7 +328,7 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
             return;
         }
         RequestParams requestParams = digitalInstantCheckoutUseCase.createRequestParams(getRequestBodyCheckout(checkoutData));
-        digitalInstantCheckoutUseCase.execute(requestParams, getSubscriberInstantCheckout());
+        digitalInstantCheckoutUseCase.execute(requestParams, getSubscriberInstantCheckout2());
     }
 
     protected void renderBaseCart(CartDigitalInfoData cartDigitalInfoData) {
@@ -700,54 +756,6 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
             }
         };
     }
-
-    private Subscriber<InstantCheckoutData> getSubscriberInstantCheckout() {
-        return new Subscriber<InstantCheckoutData>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                e.printStackTrace();
-                if (isViewAttached()) {
-                    if (e instanceof UnknownHostException || e instanceof ConnectException) {
-                        /* Ini kalau ga ada internet */
-                        getView().closeViewWithMessageAlert(
-                                ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
-                        );
-                    } else if (e instanceof SocketTimeoutException) {
-                        /* Ini kalau timeout */
-                        getView().closeViewWithMessageAlert(
-                                ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
-                        );
-                    } else if (e instanceof ResponseErrorException) {
-                        /* Ini kalau error dari API kasih message error */
-                        getView().renderErrorInstantCheckout(e.getMessage());
-                    } else if (e instanceof ResponseDataNullException) {
-                        /* Dari Api data null => "data":{}, tapi ga ada message error apa apa */
-                        getView().renderErrorInstantCheckout(e.getMessage());
-                    } else if (e instanceof HttpErrorException) {
-                    /* Ini Http error, misal 403, 500, 404,
-                     code http errornya bisa diambil
-                     e.getErrorCode */
-                        getView().closeViewWithMessageAlert(e.getMessage());
-                    } else {
-                        /* Ini diluar dari segalanya hahahaha */
-                        getView().closeViewWithMessageAlert(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
-                    }
-                }
-            }
-
-            @Override
-            public void onNext(InstantCheckoutData instantCheckoutData) {
-                getView().hideCartView();
-                getView().renderToInstantCheckoutPage(instantCheckoutData);
-            }
-        };
-    }
-
 
     CheckoutDataParameter.Builder buildCheckoutData(CartDigitalInfoData cartDigitalInfoData, String accessToken) {
         CheckoutDataParameter.Builder builder = new CheckoutDataParameter.Builder();
