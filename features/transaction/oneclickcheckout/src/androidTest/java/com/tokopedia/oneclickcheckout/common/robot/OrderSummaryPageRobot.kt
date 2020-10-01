@@ -169,6 +169,38 @@ class OrderSummaryPageRobot {
             assertEquals(View.VISIBLE, view.visibility)
         }
     }
+
+    fun assertPromptBottomSheetVisible(title: String = "", description: String = "", primaryButton: String = "", secondaryButton: String? = null) {
+        onView(withId(R.id.es_checkout)).check(matches(isDisplayed()))
+        if (title.isNotEmpty()) {
+            onView(withId(com.tokopedia.unifycomponents.R.id.empty_state_title_id)).check(matches(withText(title)))
+        }
+        if (description.isNotEmpty()) {
+            onView(withId(com.tokopedia.unifycomponents.R.id.empty_state_description_id)).check(matches(withText(description)))
+        }
+        if (primaryButton.isNotEmpty()) {
+            onView(withId(com.tokopedia.unifycomponents.R.id.empty_state_cta_id)).check(matches(isDisplayed())).check(matches(withText(primaryButton)))
+        }
+        if (!secondaryButton.isNullOrEmpty()) {
+            onView(withId(com.tokopedia.unifycomponents.R.id.empty_state_secondary_cta_id)).check(matches(isDisplayed())).check(matches(withText(secondaryButton)))
+        }
+    }
+
+    fun assertPromptDialogVisible(title: String = "", description: String = "", primaryButton: String = "", secondaryButton: String? = null) {
+        onView(withId(com.tokopedia.dialog.R.id.dialog_container)).check(matches(isDisplayed()))
+        if (title.isNotEmpty()) {
+            onView(withId(com.tokopedia.dialog.R.id.dialog_title)).check(matches(withText(title)))
+        }
+        if (description.isNotEmpty()) {
+            onView(withId(com.tokopedia.dialog.R.id.dialog_description)).check(matches(withText(description)))
+        }
+        if (primaryButton.isNotEmpty()) {
+            onView(withId(com.tokopedia.dialog.R.id.dialog_btn_primary)).check(matches(isDisplayed())).check(matches(withText(primaryButton)))
+        }
+        if (!secondaryButton.isNullOrEmpty()) {
+            onView(withId(com.tokopedia.dialog.R.id.dialog_btn_secondary)).check(matches(isDisplayed())).check(matches(withText(secondaryButton)))
+        }
+    }
 }
 
 class OrderSummaryPageResultRobot {

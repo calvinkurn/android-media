@@ -10,9 +10,7 @@ import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
-import com.tokopedia.oneclickcheckout.common.interceptor.OneClickCheckoutInterceptor
-import com.tokopedia.oneclickcheckout.common.interceptor.RATES_WITH_INSURANCE_RESPONSE_PATH
-import com.tokopedia.oneclickcheckout.common.interceptor.VALIDATE_USE_PROMO_REVAMP_BBO_APPLIED_RESPONSE
+import com.tokopedia.oneclickcheckout.common.interceptor.*
 import com.tokopedia.oneclickcheckout.common.robot.orderSummaryPage
 import com.tokopedia.oneclickcheckout.common.rule.FreshIdlingResourceTestRule
 import org.junit.After
@@ -210,6 +208,32 @@ class OrderSummaryPageActivityTest {
             clickEditPreference()
 
             assertGlobalErrorVisible()
+        }
+    }
+
+    @Test
+    fun errorFlow_CheckoutGotBottomSheetPrompt() {
+        activityRule.launchActivity(null)
+        intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
+
+        orderSummaryPage {
+            checkoutInterceptor.customCheckoutResponsePath = CHECKOUT_BOTTOM_SHEET_PROMPT_RESPONSE_PATH
+
+            pay()
+            assertPromptBottomSheetVisible("title prompt","description prompt", "button", "second button")
+        }
+    }
+
+    @Test
+    fun errorFlow_CheckoutGotDialogPrompt() {
+        activityRule.launchActivity(null)
+        intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
+
+        orderSummaryPage {
+            checkoutInterceptor.customCheckoutResponsePath = CHECKOUT_DIALOG_PROMPT_RESPONSE_PATH
+
+            pay()
+            assertPromptDialogVisible("title prompt","description prompt", "button", "second button")
         }
     }
 }
