@@ -20,7 +20,7 @@ import java.lang.reflect.Type
 
 
 open class BaseRepository {
-    private val restRepository: RestRepository by lazy { RestRequestInteractor.getInstance().restRepository }
+    protected val restRepository: RestRepository by lazy { RestRequestInteractor.getInstance().restRepository }
     private val graphqlRepository: GraphqlRepository by lazy { GraphqlInteractor.getInstance().graphqlRepository }
 
     suspend fun <T : Any> getRestData(url: String,

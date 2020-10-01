@@ -63,9 +63,11 @@ class InboxModule(private val context: Context) {
                                   submitRatingUseCase: SubmitRatingUseCase,
                                   closeTicketByUserUseCase: CloseTicketByUserUseCase,
                                   contactUsUploadImageUseCase: ContactUsUploadImageUseCase,
+                                  chipUploadHostConfigUseCase: ChipUploadHostConfigUseCase,
+                                  secureUploadUseCase: SecureUploadUseCase,
                                   userSession: UserSessionInterface,
                                   dispatcher: CoroutineDispatcher): InboxDetailPresenter {
-        return InboxDetailPresenterImpl(messageUseCase, messageUseCase2, ratingUseCase, inboxOptionUseCase, submitRatingUseCase, closeTicketByUserUseCase, contactUsUploadImageUseCase, userSession, dispatcher)
+        return InboxDetailPresenterImpl(messageUseCase, messageUseCase2, ratingUseCase, inboxOptionUseCase, submitRatingUseCase, closeTicketByUserUseCase, contactUsUploadImageUseCase, chipUploadHostConfigUseCase, secureUploadUseCase, userSession, dispatcher)
     }
 
 

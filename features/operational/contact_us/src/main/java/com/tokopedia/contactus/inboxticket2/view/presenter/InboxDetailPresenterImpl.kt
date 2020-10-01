@@ -13,6 +13,8 @@ import com.tokopedia.contactus.R
 import com.tokopedia.contactus.common.analytics.ContactUsTracking
 import com.tokopedia.contactus.common.analytics.InboxTicketTracking
 import com.tokopedia.contactus.inboxticket2.data.ImageUpload
+import com.tokopedia.contactus.inboxticket2.data.model.ChipUploadHostConfig
+import com.tokopedia.contactus.inboxticket2.data.model.SecureImageParameter
 import com.tokopedia.contactus.inboxticket2.data.model.Tickets
 import com.tokopedia.contactus.inboxticket2.domain.*
 import com.tokopedia.contactus.inboxticket2.domain.usecase.*
@@ -32,7 +34,11 @@ import com.tokopedia.csat_rating.presenter.BaseProvideRatingFragmentPresenter.Co
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
+import okhttp3.MediaType
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import rx.Subscriber
+import java.io.File
 import java.lang.reflect.Type
 import java.util.*
 import kotlin.collections.ArrayList
@@ -41,6 +47,10 @@ import kotlin.coroutines.CoroutineContext
 private const val AGENT = "agent"
 private const val REPLY_TICKET_RESPONSE_STATUS = "OK"
 private const val ROLE_TYPE_CUSTOMER = "customer"
+private const val MEDIA_TYPE = "image/*"
+private const val FORM_DATA_KEY = "file_upload"
+private const val SUCCESS_KEY_SECURE_IMAGE_PARAMETER = 1
+private const val FAILURE_KEY_UPLOAD_HOST_CONFIG = "0"
 
 class InboxDetailPresenterImpl(private val postMessageUseCase: PostMessageUseCase,
                                private val postMessageUseCase2: PostMessageUseCase2,
@@ -49,6 +59,8 @@ class InboxDetailPresenterImpl(private val postMessageUseCase: PostMessageUseCas
                                private val submitRatingUseCase: SubmitRatingUseCase,
                                private val closeTicketByUserUseCase: CloseTicketByUserUseCase,
                                private val contactUsUploadImageUseCase: ContactUsUploadImageUseCase,
+                               private val chipUploadHostConfigUseCase: ChipUploadHostConfigUseCase,
+                               private val secureUploadUseCase: SecureUploadUseCase,
                                private val userSession: UserSessionInterface,
                                private val defaultDispatcher: CoroutineDispatcher) : InboxDetailPresenter, CustomEditText.Listener, CoroutineScope {
     private var mView: InboxDetailView? = null
@@ -373,46 +385,103 @@ class InboxDetailPresenterImpl(private val postMessageUseCase: PostMessageUseCas
                     val files = contactUsUploadImageUseCase.getFile(mView?.imageList)
                     val list = arrayListOf<ImageUpload>()
 
-                    withContext(Dispatchers.IO) {
-                        list.addAll(contactUsUploadImageUseCase.uploadFile(
-                                userSession.userId,
-                                mView?.imageList,
-                                files))
-                    }
-                    val requestParam = postMessageUseCase.createRequestParams(
-                            mTicketDetail?.id ?: "",
-                            mView?.userMessage ?: "",
-                            1,
-                            getUtils().getAttachmentAsString(mView?.imageList?: listOf()),
-                            getLastReplyFromAgent(),
-                            userSession.userId)
+                    val chipUploadHostConfig = chipUploadHostConfigUseCase.getChipUploadHostConfig()
 
-                    val createTicketResponse = postMessageUseCase.getCreateTicketResult(requestParam)
-                    val ticketReplyData = createTicketResponse.ticketReply?.ticketReplyData
-                    if (ticketReplyData?.status.equals(REPLY_TICKET_RESPONSE_STATUS)) {
-                        if (ticketReplyData?.postKey?.isNotEmpty() == true) {
-                            val queryMap2 = postMessageUseCase2.setQueryMap(
-                                    getUtils().getFileUploaded(list),
-                                    ticketReplyData.postKey)
-                            sendImages(queryMap2)
+                    if (chipUploadHostConfig.chipUploadHostConfig?.chipUploadHostConfigData?.generatedHost?.serverId != FAILURE_KEY_UPLOAD_HOST_CONFIG) {
+
+                        val securelyUploadedImages = getSecurelyUploadedImages(files, chipUploadHostConfig)
+                        if (securelyUploadedImages.isNullOrEmpty()) return@launchCatchError
+                        else list.addAll(securelyUploadedImages)
+
+                    } else{
+                        handleErrorState(chipUploadHostConfig.chipUploadHostConfig.messageError?.getOrNull(0) ?: "")
+                        return@launchCatchError
+                    }
+
+                    if (list.isNotEmpty()){
+                        val requestParam = postMessageUseCase.createRequestParams(
+                                mTicketDetail?.id ?: "",
+                                mView?.userMessage ?: "",
+                                1,
+                                getUtils().getAttachmentAsString(mView?.imageList?: listOf()),
+                                getLastReplyFromAgent(),
+                                userSession.userId)
+
+                        val createTicketResponse = postMessageUseCase.getCreateTicketResult(requestParam)
+                        val ticketReplyData = createTicketResponse.ticketReply?.ticketReplyData
+                        if (ticketReplyData?.status.equals(REPLY_TICKET_RESPONSE_STATUS)) {
+                            if (ticketReplyData?.postKey?.isNotEmpty() == true) {
+                                val queryMap2 = postMessageUseCase2.setQueryMap(
+                                        getUtils().getFileUploaded(list),
+                                        ticketReplyData.postKey)
+                                sendImages(queryMap2)
+                            } else {
+                                handleErrorState(mView?.getActivity()?.getString(R.string.contact_us_something_went_wrong) ?: "")
+                            }
                         } else {
-                            mView?.hideSendProgress()
-                            mView?.setSnackBarErrorMessage(mView?.getActivity()?.getString(R.string.contact_us_something_went_wrong)
-                                    ?: "", true)
+                            handleErrorState(mView?.getActivity()?.getString(R.string.contact_us_something_went_wrong) ?: "")
                         }
-                    } else {
-                        mView?.hideSendProgress()
-                        mView?.setSnackBarErrorMessage(mView?.getActivity()?.getString(R.string.contact_us_something_went_wrong)
-                                ?: "", true)
+                    }else{
+                        handleErrorState(mView?.getActivity()?.getString(R.string.contact_us_something_went_wrong) ?: "")
                     }
-
                 },
                 onError = {
-                    mView?.hideSendProgress()
-                    mView?.setSnackBarErrorMessage(it.message.toString(), true)
+                    handleErrorState(it.message.toString())
                     it.printStackTrace()
                 }
         )
+    }
+
+    private fun handleErrorState(message: String) {
+        mView?.hideSendProgress()
+        mView?.setSnackBarErrorMessage(message, true)
+    }
+
+    private suspend fun getSecurelyUploadedImages(files: List<String>, chipUploadHostConfig: ChipUploadHostConfig): ArrayList<ImageUpload>? {
+        val listOfSecureImageParmeter = getListOfSecureImageParameter(files, chipUploadHostConfig)
+        if (listOfSecureImageParmeter.isEmpty() || files.size != listOfSecureImageParmeter.size) return null
+
+        val uploadedImageList = getUploadedImageList(files,listOfSecureImageParmeter)
+        if (uploadedImageList.isEmpty()) {
+            handleErrorState(mView?.getActivity()?.getString(R.string.contact_us_something_went_wrong) ?: "")
+            return null
+        }
+        else return uploadedImageList
+
+    }
+
+    private suspend fun getUploadedImageList(files: List<String>, listOfSecureImageParmeter: ArrayList<SecureImageParameter>): ArrayList<ImageUpload> {
+        val list = arrayListOf<ImageUpload>()
+        withContext(Dispatchers.IO) {
+            list.addAll(contactUsUploadImageUseCase.uploadFile(
+                    userSession.userId,
+                    mView?.imageList,
+                    files,
+                    listOfSecureImageParmeter))
+        }
+        return list
+    }
+
+    private suspend fun getListOfSecureImageParameter(files: List<String>, chipUploadHostConfig: ChipUploadHostConfig): ArrayList<SecureImageParameter> {
+        val list = arrayListOf<SecureImageParameter>()
+        for (file in files) {
+            val secureImageParmeter = secureUploadUseCase
+                    .getSecureImageParameter(getMultiPartObject(file),
+                            chipUploadHostConfig)
+            if (secureImageParmeter.imageData?.isSuccess == SUCCESS_KEY_SECURE_IMAGE_PARAMETER) {
+                list.add(secureImageParmeter)
+            } else {
+                handleErrorState(secureImageParmeter.messageError?.getOrNull(0) ?: "")
+                return list
+            }
+        }
+        return list
+    }
+
+    private fun getMultiPartObject(pathFile: String): MultipartBody.Part {
+        val file = File(pathFile)
+        val reqFile = RequestBody.create(MediaType.parse(MEDIA_TYPE), file)
+        return MultipartBody.Part.createFormData(FORM_DATA_KEY, file.name, reqFile)
     }
 
     private fun sendImages(queryMap: MutableMap<String, Any>) {
@@ -424,13 +493,11 @@ class InboxDetailPresenterImpl(private val postMessageUseCase: PostMessageUseCas
                         mView?.hideSendProgress()
                         addNewLocalComment()
                     } else {
-                        mView?.hideSendProgress()
-                        mView?.setSnackBarErrorMessage(response.errorMessage?.get(0) ?: "", true)
+                        handleErrorState(response.errorMessage?.getOrNull(0) ?: "")
                     }
                 },
                 onError = {
-                    mView?.hideSendProgress()
-                    mView?.setSnackBarErrorMessage(it.message.toString(), true)
+                    handleErrorState(it.message.toString())
                     it.printStackTrace()
                 })
 
@@ -717,6 +784,8 @@ class InboxDetailPresenterImpl(private val postMessageUseCase: PostMessageUseCas
                 InboxTicketTracking.Action.EventImpressionOnCsatRating,
                 mView?.ticketID)
     }
+
+    override fun getUserId(): String = userSession.userId
 
     companion object {
         const val KEY_LIKED = 101
