@@ -1,4 +1,4 @@
-package com.tokopedia.topads.view.sheet
+package com.tokopedia.topads.common.view.sheet
 
 import android.os.Build
 import android.os.Bundle
@@ -7,26 +7,23 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ListView
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.topads.create.R
+import com.tokopedia.topads.common.R
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.list.ListItemUnify
 import com.tokopedia.unifycomponents.list.ListUnify
-import kotlinx.android.synthetic.main.topads_create_fragment_product_list_sheet_sort.view.*
+import kotlinx.android.synthetic.main.topads_edit_select_fragment_product_list_sheet_sort.view.*
 import java.util.*
 
-/**
- * Author errysuprayogi on 07,May,2019
- */
-class ProductSortSheetList : BottomSheetUnify() {
+class ProductSortSheetList: BottomSheetUnify() {
 
     var onItemClick: ((sortId: String) -> Unit)? = null
     var selectedSortText = 0
     var positionSort = 0
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        var contentView = View.inflate(context, R.layout.topads_create_fragment_product_list_sheet_sort, null)
+        var contentView = View.inflate(context, R.layout.topads_edit_select_fragment_product_list_sheet_sort, null)
         setChild(contentView)
-        setTitle(getString(R.string.urutkan))
+        setTitle(getString(R.string.topads_edit_urutkan))
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 

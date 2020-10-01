@@ -3,6 +3,7 @@ package com.tokopedia.topads.edit.view.activity
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.fragment.app.Fragment
 import com.google.android.material.tabs.TabLayout.TabLayoutOnPageChangeListener
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -13,6 +14,9 @@ import com.tokopedia.topads.edit.R
 import com.tokopedia.topads.edit.di.DaggerTopAdsEditComponent
 import com.tokopedia.topads.edit.di.TopAdsEditComponent
 import com.tokopedia.topads.edit.di.module.TopAdEditModule
+import com.tokopedia.topads.edit.utils.Constants.ATUR_NAME
+import com.tokopedia.topads.edit.utils.Constants.KATA_KUNCI
+import com.tokopedia.topads.edit.utils.Constants.PRODUK_NAME
 import com.tokopedia.topads.edit.utils.Constants.TAB_POSITION
 import com.tokopedia.topads.edit.view.adapter.TopAdsEditPagerAdapter
 import com.tokopedia.topads.edit.view.fragment.edit.BaseEditKeywordFragment
@@ -36,6 +40,7 @@ class EditFormAdActivity : BaseActivity(), HasComponent<TopAdsEditComponent>, Sa
         setContentView(R.layout.topads_base_edit_activity_layout)
         renderTabAndViewPager()
         setupToolBar()
+        backArrow.setImageDrawable(AppCompatResources.getDrawable(this, R.drawable.toolbar_back_black))
         backArrow.setOnClickListener {
             onBackPressed()
         }
@@ -82,7 +87,10 @@ class EditFormAdActivity : BaseActivity(), HasComponent<TopAdsEditComponent>, Sa
         view_pager.adapter = getViewPagerAdapter()
         view_pager.offscreenPageLimit = 3
         view_pager.currentItem = bundle?.getInt(TAB_POSITION, 2) ?: 2
-        view_pager.addOnPageChangeListener(TabLayoutOnPageChangeListener(tab_layout))
+        tab_layout.addNewTab(PRODUK_NAME)
+        tab_layout.addNewTab(KATA_KUNCI)
+        tab_layout.addNewTab(ATUR_NAME)
+        view_pager.addOnPageChangeListener(TabLayoutOnPageChangeListener(tab_layout.tabLayout))
         tab_layout.setupWithViewPager(view_pager)
     }
 
