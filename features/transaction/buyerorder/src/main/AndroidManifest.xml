@@ -55,19 +55,10 @@
                     android:scheme="@string/internal_scheme" />
 
                 <data
-                    android:host="@string/host_flight"
-                    android:path="@string/path_order"
-                    android:scheme="@string/internal_scheme" />
-
-                <data
-                    android:host="@string/host_hotel"
-                    android:path="@string/path_order"
-                    android:scheme="@string/internal_scheme" />
-
-                <data
                     android:host="@string/host_order"
-                    android:path="@string/path_any"
-                    android:scheme="@string/internal_scheme" />
+                    android:path=""
+                    android:scheme="@string/internal_scheme"
+                    tools:ignore="AppLinkUrlError"/>
 
             </intent-filter>
         </activity>

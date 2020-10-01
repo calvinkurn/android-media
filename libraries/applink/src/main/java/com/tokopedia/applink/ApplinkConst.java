@@ -154,6 +154,7 @@ public interface ApplinkConst {
     String HOTEL = "tokopedia://hotel";
     String TRAVEL_SUBHOMEPAGE = "tokopedia://travelentertainment";
 
+    String OMS_ORDER = "tokopedia://order/";
     String MARKETPLACE_ORDER = "tokopedia://marketplace/order";
     String BELANJA_ORDER = "tokopedia://belanja/order";
     String MARKETPLACE_ORDER_SUB = "tokopedia://order/marketplace/filter";
@@ -168,7 +169,6 @@ public interface ApplinkConst {
     String MP_INTERNAL_PROCESSED = "tokopedia-android-internal://buyer/history?filter_id=12";
     String MP_INTERNAL_SHIPPED = "tokopedia-android-internal://buyer/history?filter_id=13";
     String MP_INTERNAL_DELIVERED = "tokopedia-android-internal://buyer/history?filter_id=14";
-    String OMS_DETAIL = "tokopedia://order/";
 
     String BUYER_INFO = "tokopedia://notif-center";
     String BUYER_INFO_WITH_ID = "tokopedia://notif-center/{notif_id}";

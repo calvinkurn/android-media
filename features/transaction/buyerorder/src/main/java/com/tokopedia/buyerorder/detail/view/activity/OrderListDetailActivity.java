@@ -66,7 +66,7 @@ public class OrderListDetailActivity extends BaseSimpleActivity implements HasCo
                 return OrderListDetailFragment.getInstance(orderId, OrderCategory.DIGITAL);
             } else if (category.contains(OrderCategory.MARKETPLACE)) {
                 return MarketPlaceDetailFragment.getInstance(orderId, OrderCategory.MARKETPLACE, paymentId, cartString);
-            } else if(category.contains("")) {
+            } else {
                 return OmsDetailFragment.getInstance(orderId, "", fromPayment, upstream);
             }
         }

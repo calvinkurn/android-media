@@ -68,7 +68,7 @@ object DeeplinkMapperUohOrder {
 
         } else if (deeplink.startsWith(MARKETPLACE_ORDER) || deeplink.startsWith(DIGITAL_ORDER)
                 || deeplink.startsWith(FLIGHT_ORDER) || deeplink.startsWith(HOTEL_ORDER)
-                || deeplink.startsWith(OMS_DETAIL)) {
+                || deeplink.startsWith(OMS_ORDER)) {
             returnedDeeplink = getInternalDeeplink(deeplink)
         }
         return returnedDeeplink
@@ -101,8 +101,11 @@ object DeeplinkMapperUohOrder {
                 return deeplink.replace(PURCHASE_SHIPPING_CONFIRM, MP_INTERNAL_SHIPPED)
 
             }
-            deeplink.startsWith(MARKETPLACE_ORDER) -> {
-                return getMarketplaceOrderDetailInternalAppLink(deeplink)
+            deeplink.startsWith(MARKETPLACE_ORDER) || deeplink.startsWith(DIGITAL_ORDER) -> {
+                return getMarketplaceDigitalOrderDetailInternalAppLink(deeplink)
+            }
+            deeplink.startsWith(OMS_ORDER) -> {
+                return getOmsOrderDetailInternalAppLink(deeplink)
             }
             else -> {
                 return deeplink.replace(DeeplinkConstant.SCHEME_TOKOPEDIA, DeeplinkConstant.SCHEME_INTERNAL)
@@ -115,7 +118,7 @@ object DeeplinkMapperUohOrder {
      * @return tokopedia-android-internal://marketplace/order?order_id=12345
      * or will return empty string if given invalid deep link
      * */
-    private fun getMarketplaceOrderDetailInternalAppLink(deepLink: String): String {
+    private fun getMarketplaceDigitalOrderDetailInternalAppLink(deepLink: String): String {
         val uri = Uri.parse(deepLink)
         return when {
             uri.pathSegments.size == 2 && uri.pathSegments[0] == PATH_ORDER -> {
@@ -124,7 +127,35 @@ object DeeplinkMapperUohOrder {
                 } else {
                     "0"
                 }
-                Uri.parse(ApplinkConstInternalOrder.MARKETPLACE_ORDER)
+
+                var category = ""
+                if (deepLink.startsWith(MARKETPLACE_ORDER)) {
+                    category = ApplinkConstInternalOrder.MARKETPLACE_ORDER
+                } else if (deepLink.startsWith(DIGITAL_ORDER)) {
+                    category = ApplinkConstInternalOrder.DIGITAL_ORDER
+                }
+
+                Uri.parse(category)
+                        .buildUpon()
+                        .appendQueryParameter(PATH_ORDER_ID, orderId)
+                        .build()
+                        .toString()
+            }
+            else -> ""
+        }
+    }
+
+    private fun getOmsOrderDetailInternalAppLink(deepLink: String): String {
+        val uri = Uri.parse(deepLink)
+        return when {
+            uri.pathSegments.size == 1 -> {
+                val orderId: String = if (!uri.pathSegments[0].isNullOrBlank()) {
+                    uri.pathSegments[0]
+                } else {
+                    "0"
+                }
+
+                Uri.parse(ApplinkConstInternalOrder.OMS_ORDER)
                         .buildUpon()
                         .appendQueryParameter(PATH_ORDER_ID, orderId)
                         .build()
