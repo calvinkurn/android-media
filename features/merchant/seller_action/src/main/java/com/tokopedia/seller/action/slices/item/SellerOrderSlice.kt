@@ -10,15 +10,16 @@ import androidx.core.graphics.drawable.IconCompat
 import androidx.slice.Slice
 import androidx.slice.builders.*
 import androidx.slice.builders.ListBuilder.ICON_IMAGE
+import androidx.slice.builders.ListBuilder.SMALL_IMAGE
 import com.bumptech.glide.Glide
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder
 import com.tokopedia.seller.action.R
-import com.tokopedia.seller.action.data.model.SellerActionOrderList
+import com.tokopedia.seller.action.data.model.Order
 
 class SellerOrderSlice(context: Context,
                        sliceUri: Uri,
-                       private val orderList: List<SellerActionOrderList.Data.OrderList.Order>): SellerSlice(context, sliceUri) {
+                       private val orderList: List<Order>): SellerSlice(context, sliceUri) {
 
     @RequiresApi(Build.VERSION_CODES.KITKAT)
     override fun getSlice(): Slice =
@@ -30,7 +31,7 @@ class SellerOrderSlice(context: Context,
                     row {
                         // Todo: Create applink for som detail
                         val pendingIntent =
-                                RouteManager.getIntent(context, ApplinkConstInternalSellerapp.SELLER_HOME_SOM_ALL).apply {
+                                RouteManager.getIntent(context, ApplinkConstInternalOrder.ORDER_DETAIL).apply {
                                     putExtra("order_id", it.orderId)
                                 }.let { intent ->
                                     PendingIntent.getActivity(
@@ -40,6 +41,7 @@ class SellerOrderSlice(context: Context,
                                             0
                                     )
                                 }
+                        setTitleItem(IconCompat.createWithBitmap(it.listOrderProduct.firstOrNull()?.pictureUrl.orEmpty().getBitmap()), SMALL_IMAGE)
                         primaryAction = createPrimaryAction(
                                 pendingIntent,
                                 it.listOrderProduct.firstOrNull()?.pictureUrl.orEmpty(),

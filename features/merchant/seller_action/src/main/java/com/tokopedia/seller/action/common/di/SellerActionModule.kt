@@ -9,7 +9,7 @@ import dagger.Module
 import dagger.Provides
 
 @SellerActionScope
-@Module
+@Module(includes = [SellerActionRepositoryModule::class])
 class SellerActionModule {
 
     @SellerActionScope
