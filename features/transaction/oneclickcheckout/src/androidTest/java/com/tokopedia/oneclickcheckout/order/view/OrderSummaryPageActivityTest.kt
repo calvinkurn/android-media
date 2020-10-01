@@ -198,6 +198,44 @@ class OrderSummaryPageActivityTest {
     }
 
     @Test
+    fun happyFlow_ChangeDurationAndCourier() {
+        logisticInterceptor.customRatesResponsePath = RATES_WITH_NO_PROFILE_DURATION_RESPONSE_PATH
+
+        activityRule.launchActivity(null)
+        intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
+
+        orderSummaryPage {
+            assertShipment(
+                    shippingName = "Pengiriman Reguler",
+                    shippingDuration = "Durasi 2-4 hari",
+                    shippingPrice = null,
+                    hasPromo = false
+            )
+
+            assertShipmentError(OrderSummaryPageViewModel.NO_DURATION_AVAILABLE)
+
+            clickUbahDuration {
+                chooseDurationWithText("Ekonomi (3-4 hari)")
+            }
+
+            assertShipmentWithCustomDuration(
+                    shippingNameAndDuration = "Ekonomi (3-4 hari)",
+                    shippingCourierAndPrice = "JNE OKE - Rp13.000",
+                    hasPromo = false
+            )
+
+            assertPayment("Rp114.000", "Bayar")
+            Thread.sleep(3000)
+        } pay {
+            assertGoToPayment(
+                    redirectUrl = "https://www.tokopedia.com/payment",
+                    queryString = "transaction_id=123",
+                    method = "POST"
+            )
+        }
+    }
+
+    @Test
     fun reloadPage_ErrorGetOccCartPage() {
         activityRule.launchActivity(null)
         intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))

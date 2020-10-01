@@ -49,6 +49,11 @@ class OrderSummaryPageRobot {
         CourierBottomSheetRobot().apply(func)
     }
 
+    fun clickUbahDuration(func: DurationBottomSheetRobot.() -> Unit) {
+        onView(withId(R.id.tv_shipping_change_duration)).perform(scrollTo()).perform(click())
+        DurationBottomSheetRobot().apply(func)
+    }
+
     fun clickInsurance() {
         onView(withId(R.id.cb_insurance)).perform(scrollTo()).perform(click())
     }
@@ -131,6 +136,23 @@ class OrderSummaryPageRobot {
         if (shippingPrice != null) {
             onView(withId(R.id.tv_shipping_price)).perform(scrollTo()).check(matches(withText(shippingPrice)))
         }
+        onView(withId(R.id.ticker_shipping_promo)).check { view, noViewFoundException ->
+            noViewFoundException?.printStackTrace()
+            if (hasPromo) {
+                assertEquals(View.VISIBLE, view.visibility)
+            } else {
+                assertEquals(View.GONE, view.visibility)
+            }
+        }
+    }
+
+    fun assertShipmentError(errorMessage: String) {
+        onView(withId(R.id.tv_shipping_message)).perform(scrollTo()).check(matches(isDisplayed())).check(matches(withText(errorMessage)))
+    }
+
+    fun assertShipmentWithCustomDuration(shippingNameAndDuration: String, shippingCourierAndPrice: String, hasPromo: Boolean) {
+        onView(withId(R.id.tv_shipping_duration)).perform(scrollTo()).check(matches(withText(shippingNameAndDuration)))
+        onView(withId(R.id.tv_shipping_courier)).perform(scrollTo()).check(matches(withText(shippingCourierAndPrice)))
         onView(withId(R.id.ticker_shipping_promo)).check { view, noViewFoundException ->
             noViewFoundException?.printStackTrace()
             if (hasPromo) {
