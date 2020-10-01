@@ -1,7 +1,6 @@
 package com.tokopedia.kyc_centralized.view.fragment
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Build
@@ -22,15 +21,13 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.imagepicker.common.util.FileUtils
 import com.tokopedia.imagepicker.common.util.ImageUtils
 import com.tokopedia.kyc_centralized.R
-import com.tokopedia.kyc_centralized.view.fragment.UserIdentificationCameraFragment
-import com.tokopedia.permissionchecker.PermissionCheckerHelper
-import com.tokopedia.permissionchecker.PermissionCheckerHelper.PermissionCheckListener
+import com.tokopedia.utils.permission.PermissionCheckerHelper
+import com.tokopedia.utils.permission.PermissionCheckerHelper.PermissionCheckListener
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.user_identification_common.KYCConstant
 import com.tokopedia.user_identification_common.analytics.UserIdentificationCommonAnalytics
 import java.io.File
 import java.io.FileOutputStream
-import java.util.*
 
 /**
  * @author by alvinatin on 12/11/18.

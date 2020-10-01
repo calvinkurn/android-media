@@ -71,7 +71,7 @@ class PlayBroadcastViewModel @Inject constructor(
         get() = _observableTotalView
     val observableTotalLike: LiveData<TotalLikeUiModel>
         get() = _observableTotalLike
-    val observableLiveDuration: LiveData<Event<LivePusherTimerState>>
+    val observableLiveDuration: LiveData<LivePusherTimerState>
         get() = _observableLiveDurationState
     val observableLiveInfoState: LiveData<LivePusherState>
         get() = _observableLivePusherState
@@ -87,6 +87,8 @@ class PlayBroadcastViewModel @Inject constructor(
     val observableCover = getCurrentSetupDataStore().getObservableSelectedCover()
     val observableReportDuration: LiveData<String>
         get() = _observableReportDuration
+    val observableEvent: LiveData<EventUiModel>
+        get() = _observableEvent
 
     val shareContents: String
         get() = _observableShareInfo.value.orEmpty()
@@ -105,8 +107,9 @@ class PlayBroadcastViewModel @Inject constructor(
     }
 
     private val _observableLivePusherState = MutableLiveData<LivePusherState>()
-    private val _observableLiveDurationState = MutableLiveData<Event<LivePusherTimerState>>()
+    private val _observableLiveDurationState = MutableLiveData<LivePusherTimerState>()
     private val _observableReportDuration = MutableLiveData<String>()
+    private val _observableEvent = MutableLiveData<EventUiModel>()
 
     private var isManualStartTimer = false
 
@@ -288,16 +291,18 @@ class PlayBroadcastViewModel @Inject constructor(
         })
         playPusher.addPlayPusherTimerListener(object : PlayPusherTimerListener {
             override fun onCountDownActive(timeLeft: String) {
-                _observableLiveDurationState.value = Event(LivePusherTimerState.Active(timeLeft))
+                _observableLiveDurationState.value = LivePusherTimerState.Active(timeLeft)
             }
 
             override fun onCountDownAlmostFinish(minutesUntilFinished: Long) {
-                _observableLiveDurationState.value = Event(LivePusherTimerState.AlmostFinish(minutesUntilFinished))
+                _observableLiveDurationState.value = LivePusherTimerState.AlmostFinish(minutesUntilFinished)
             }
 
             override fun onCountDownFinish() {
-                _observableLiveDurationState.value = Event(LivePusherTimerState.Finish)
-                stopPushStream()
+                if (_observableEvent.value?.freeze == false) {
+                    _observableLiveDurationState.value = LivePusherTimerState.Finish
+                    stopPushStream()
+                }
             }
 
             override fun onReachMaximumPauseDuration() {
@@ -390,19 +395,25 @@ class PlayBroadcastViewModel @Inject constructor(
 
             playSocket.config(socketCredential.setting.minReconnectDelay, socketCredential.setting.maxRetries, socketCredential.setting.pingInterval)
 
-            fun connectWebSocket(): Job = scope.launch(dispatcher.io) {
-                playSocket.connect(channelId = channelId, groupChatToken = socketCredential.gcToken)
-                playSocket.socketInfoListener(object : PlaySocketInfoListener{
-                    override fun onReceive(data: PlaySocketType) {
-                        when(data) {
-                            is Metric -> queueNewMetrics(PlayBroadcastUiMapper.mapMetricList(data))
-                            is TotalView -> _observableTotalView.value = PlayBroadcastUiMapper.mapTotalView(data)
-                            is TotalLike -> _observableTotalLike.value = PlayBroadcastUiMapper.mapTotalLike(data)
-                            is LiveDuration -> restartLiveDuration(data)
-                            is ProductTagging -> setSelectedProduct(PlayBroadcastUiMapper.mapProductTag(data))
-                            is Chat -> retrieveNewChat(PlayBroadcastUiMapper.mapIncomingChat(data))
+        fun connectWebSocket(): Job = scope.launch(dispatcher.io) {
+            playSocket.connect(channelId = channelId, groupChatToken = socketCredential.gcToken)
+            playSocket.socketInfoListener(object : PlaySocketInfoListener{
+                override fun onReceive(data: PlaySocketType) {
+                    when(data) {
+                        is Metric -> queueNewMetrics(PlayBroadcastUiMapper.mapMetricList(data))
+                        is TotalView -> _observableTotalView.value = PlayBroadcastUiMapper.mapTotalView(data)
+                        is TotalLike -> _observableTotalLike.value = PlayBroadcastUiMapper.mapTotalLike(data)
+                        is LiveDuration -> restartLiveDuration(data)
+                        is ProductTagging -> setSelectedProduct(PlayBroadcastUiMapper.mapProductTag(data))
+                        is Chat -> retrieveNewChat(PlayBroadcastUiMapper.mapIncomingChat(data))
+                        is Freeze -> {
+                            if (_observableLiveDurationState.value !is LivePusherTimerState.Finish) {
+                                stopPushStream()
+                                _observableEvent.value = PlayBroadcastUiMapper.mapFreezeEvent(data)
+                            }
                         }
                     }
+                }
 
                     override fun onError(throwable: Throwable) {
                         connectWebSocket()

@@ -2,7 +2,7 @@ package com.tokopedia.topads.dashboard.data.source.cloud.service;
 
 
 import com.tokopedia.topads.dashboard.data.model.data.Product;
-import com.tokopedia.product.manage.item.common.data.source.cloud.DataResponse;
+import com.tokopedia.topads.dashboard.data.source.cloud.response.DataResponse;
 
 import java.util.List;
 import java.util.Map;
