@@ -1,5 +1,6 @@
 package com.tokopedia.applink.order
 
+import android.net.Uri
 import com.tokopedia.applink.ApplinkConst.*
 import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder
@@ -9,8 +10,11 @@ import com.tokopedia.remoteconfig.RemoteConfigInstance
  * Created by fwidjaja on 27/08/20.
  */
 object DeeplinkMapperUohOrder {
-    private var UOH_AB_TEST_KEY = "uoh_android"
-    private var UOH_AB_TEST_VALUE = "uoh_android"
+    const val UOH_AB_TEST_KEY = "uoh_android"
+    const val UOH_AB_TEST_VALUE = "uoh_android"
+
+    private const val PATH_ORDER = "order"
+    const val PATH_ORDER_ID = "order_id"
 
     fun getRegisteredNavigationUohOrder(deeplink: String): String {
         var returnedDeeplink = ""
@@ -97,9 +101,36 @@ object DeeplinkMapperUohOrder {
                 return deeplink.replace(PURCHASE_SHIPPING_CONFIRM, MP_INTERNAL_SHIPPED)
 
             }
+            deeplink.startsWith(MARKETPLACE_ORDER) -> {
+                return getMarketplaceOrderDetailInternalAppLink(deeplink)
+            }
             else -> {
                 return deeplink.replace(DeeplinkConstant.SCHEME_TOKOPEDIA, DeeplinkConstant.SCHEME_INTERNAL)
             }
+        }
+    }
+
+    /**
+     * @param deepLink tokopedia://marketplace/order/599769548
+     * @return tokopedia-android-internal://marketplace/order?order_id=12345
+     * or will return empty string if given invalid deep link
+     * */
+    private fun getMarketplaceOrderDetailInternalAppLink(deepLink: String): String {
+        val uri = Uri.parse(deepLink)
+        return when {
+            uri.pathSegments.size == 2 && uri.pathSegments[0] == PATH_ORDER -> {
+                val orderId: String = if (!uri.pathSegments[1].isNullOrBlank()) {
+                    uri.pathSegments[1]
+                } else {
+                    "0"
+                }
+                Uri.parse(ApplinkConstInternalOrder.MARKETPLACE_ORDER)
+                        .buildUpon()
+                        .appendQueryParameter(PATH_ORDER_ID, orderId)
+                        .build()
+                        .toString()
+            }
+            else -> ""
         }
     }
 }

@@ -119,4 +119,7 @@ object ApplinkConstInternalOrder {
 
     @JvmField
     val UNIFY_ORDER_HOTEL = "$INTERNAL_ORDER/$UNIFIED?$FILTER=$PARAM_HOTEL"
+
+    @JvmField
+    val MARKETPLACE_ORDER = "${DeeplinkConstant.SCHEME_INTERNAL}://$PARAM_MARKETPLACE/order"
 }
