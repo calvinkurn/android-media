@@ -260,8 +260,26 @@ class TopChatRoomPresenterTest {
         verifyReadMessageSentToWs()
     }
 
-    private fun mockkParseResponse(wsInfo: WebSocketInfo): ChatSocketPojo {
-        val wsChatPojo = topChatRoomWebSocketMessageMapper.parseResponse(wsInfo.response)
+    @Test
+    fun `onMessage ws event reply when in the middle of the page`() {
+        // Given
+        every { webSocketUtil.getWebSocketInfo(any(), any()) } returns Observable.just(wsResponseReplyText)
+        every { getChatUseCase.isInTheMiddleOfThePage() } returns true
+        val wsChatPojo = mockkParseResponse(wsResponseReplyText)
+        val wsChatVisitable = mockkWsMapper(wsChatPojo)
+
+        // When
+        presenter.connectWebSocket(exMessageId)
+
+        // Then
+        assertThat(presenter.newUnreadMessage, equalTo(1))
+        verify(exactly = 1) { view.showUnreadMessage(1) }
+    }
+
+    private fun mockkParseResponse(wsInfo: WebSocketInfo, isOpposite: Boolean = true): ChatSocketPojo {
+        val wsChatPojo = topChatRoomWebSocketMessageMapper.parseResponse(wsInfo.response).apply {
+            this.isOpposite = isOpposite
+        }
         every { topChatRoomWebSocketMessageMapper.parseResponse(wsInfo.response) } returns wsChatPojo
         return wsChatPojo
     }
