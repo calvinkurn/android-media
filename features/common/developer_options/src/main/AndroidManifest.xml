@@ -57,7 +57,7 @@
             android:windowSoftInputMode="adjustResize" />
 
         <activity
-            android:name=".presentation.feedbackpage.ui.activity.DrawOnPictureActivity"
+            android:name=".drawonpicture.presentation.activity.DrawOnPictureActivity"
             android:hardwareAccelerated="true"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />

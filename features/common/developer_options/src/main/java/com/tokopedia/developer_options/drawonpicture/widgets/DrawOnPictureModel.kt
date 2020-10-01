@@ -1,4 +1,4 @@
-package com.tokopedia.developer_options.presentation.feedbackpage.widgets
+package com.tokopedia.developer_options.drawonpicture.widgets
 
 import android.graphics.Path
 

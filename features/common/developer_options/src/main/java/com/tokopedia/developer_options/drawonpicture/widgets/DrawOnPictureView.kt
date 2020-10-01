@@ -1,4 +1,4 @@
-package com.tokopedia.developer_options.presentation.feedbackpage.widgets
+package com.tokopedia.developer_options.drawonpicture.widgets
 
 import android.content.Context
 import android.graphics.Canvas
@@ -17,19 +17,22 @@ class DrawOnPictureView @JvmOverloads constructor(context: Context,
                                                   defStyleAttr: Int = 0)
     : AppCompatImageView(context, attrs, defStyleAttr) {
 
+    lateinit var listener: Listener
+
     private var strokePaint: Paint = Paint().apply {
         isAntiAlias = true
         style = Paint.Style.STROKE
         color = currentColor
         strokeJoin = Paint.Join.ROUND
         strokeCap = Paint.Cap.ROUND
+        strokeWidth = currentStrokeWidth
     }
 
-    private val strokeWidth = 15f
     private val paths: ArrayList<DrawOnPictureModel> = arrayListOf()
 
     private lateinit var currentPath: Path
     private var currentColor: Int = Color.RED
+    private var currentStrokeWidth = 15f
 
     init {
         setOnTouchListener { view, motionEvent ->
@@ -41,6 +44,7 @@ class DrawOnPictureView @JvmOverloads constructor(context: Context,
                     currentPath = Path()
                     currentPath.moveTo(xPosition, yPosition)
                     paths.add(DrawOnPictureModel(currentColor, currentPath))
+                    listener.onActionDraw()
                 }
                 MotionEvent.ACTION_MOVE -> {
                     currentPath.lineTo(xPosition, yPosition)
@@ -48,6 +52,7 @@ class DrawOnPictureView @JvmOverloads constructor(context: Context,
                 }
                 MotionEvent.ACTION_UP -> {
                     currentPath.lineTo(xPosition, yPosition)
+                    listener.onActionUp()
                     invalidate()
                 }
                 else -> {
@@ -73,6 +78,20 @@ class DrawOnPictureView @JvmOverloads constructor(context: Context,
     fun changePaintColor(color: Int) {
         currentColor = color
         strokePaint.color = color
+    }
+
+    fun canUndo(): Boolean = paths.size > 0
+
+    fun undoChange() {
+        if (paths.size > 0) {
+            paths.removeAt(paths.size - 1)
+            invalidate()
+        }
+    }
+
+    interface Listener {
+        fun onActionDraw()
+        fun onActionUp()
     }
 
 }

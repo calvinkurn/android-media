@@ -60,7 +60,7 @@
 
     </LinearLayout>
 
-    <com.tokopedia.developer_options.presentation.feedbackpage.widgets.DrawOnPictureView
+    <com.tokopedia.developer_options.drawonpicture.widgets.DrawOnPictureView
         android:id="@+id/dopFeedbackForm"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
