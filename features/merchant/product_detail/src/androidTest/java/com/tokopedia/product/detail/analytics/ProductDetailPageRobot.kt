@@ -1,17 +1,31 @@
 package com.tokopedia.product.detail.analytics
 
+import android.app.Activity
 import android.content.Context
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions
+import androidx.test.espresso.assertion.ViewAssertions
+import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.assertThat
+import androidx.test.rule.ActivityTestRule
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.cassavatest.getAnalyticsWithQuery
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.analytics.ProductDetailActivityTestUtil.performClickMatches
 
 class ProductDetailPageRobot {
-    fun clickButtonBuy() = performClickMatches(R.id.btn_buy_now)
-    fun clickAddToCart() = performClickMatches(R.id.btn_add_to_cart)
-    fun clickGuideSizeChart() = performClickMatches(R.id.txtVariantGuideline)
+
+    fun clickBuyNow() {
+        onView(ViewMatchers.withId(R.id.btn_buy_now)).check(ViewAssertions.matches(ViewMatchers.isDisplayed())).perform(ViewActions.click())
+    }
+
+    fun clickAddToCart() {
+        onView(ViewMatchers.withId(R.id.btn_add_to_cart)).check(ViewAssertions.matches(ViewMatchers.isDisplayed())).perform(ViewActions.click())
+    }
+
+    fun <T : Activity> performClose(activityTestRule: ActivityTestRule<T>) {
+        activityTestRule.finishActivity()
+    }
 
     infix fun assertTest(action: ProductDetailPageRobot.() -> Unit) = ProductDetailPageRobot().apply(action)
 

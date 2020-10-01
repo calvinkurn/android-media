@@ -60,8 +60,8 @@
           "dimension40": "{{.*}}",
           "dimension79": "{{\\d{1,}}}",
           "item_id": "{{\\d{1,}}}",
-          "quantity": "{{\\d{1,}(\\.\\d*){0,1}}}",
-          "price": "{{\\d{1,}\\.\\d{1,}}}",
+          "quantity": "{{\\d*.\\d*|\\d.\\d+E\\d}}",
+          "price": "{{\\d*.\\d*|\\d.\\d+E\\d}}",
           "item_name": "{{.*}}",
           "dimension82": "{{.*}}",
           "dimension38": "{{.*}}"

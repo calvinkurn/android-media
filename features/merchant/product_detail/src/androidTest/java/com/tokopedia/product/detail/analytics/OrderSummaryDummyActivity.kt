@@ -7,11 +7,11 @@ import androidx.appcompat.app.AppCompatActivity
 class OrderSummaryDummyActivity: AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
         if(intent.data.toString() == APP_LINK_ORDER_SUMMARY) {
             setResult(Activity.RESULT_OK)
         }
         finish()
-        super.onCreate(savedInstanceState)
     }
 
     companion object {

@@ -9,7 +9,6 @@ import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.intent.matcher.ComponentNameMatchers
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
@@ -19,9 +18,8 @@ import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.runner.AndroidJUnit4
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.analytics.ProductDetailActivityTestUtil.performClose
+import com.tokopedia.product.detail.presentation.InstrumentTestAddToCartBottomSheet
 import com.tokopedia.product.detail.view.activity.ProductDetailActivity
-import com.tokopedia.test.application.TestRepeatRule
 import com.tokopedia.test.application.espresso_component.CommonActions.clickChildViewWithId
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
@@ -40,9 +38,6 @@ class ProductDetailActivityTest {
 
     private val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
 
-    @get:Rule
-    var testRepeatRule: TestRepeatRule = TestRepeatRule()
-
     private val gtmLogDBSource = GtmLogDBSource(targetContext)
 
     @get:Rule
@@ -58,36 +53,18 @@ class ProductDetailActivityTest {
         setupGraphqlMockResponse(ProductDetailMockResponse())
     }
 
-    // click button buy when user is login
     @Test
     fun validateClickBuyIsLogin() {
         actionTest {
             fakeLogin()
-            waitForData()
             intendingIntent()
+            waitForData()
             clickVariantTest()
-            clickButtonBuy()
-            stubAtcIntent()
+            clickBuyNow()
         } assertTest {
-            performClose(activityRule)
             waitForTrackerSent()
+            performClose(activityRule)
             validate(gtmLogDBSource, targetContext, BUTTON_BUY_LOGIN_PATH)
-        }
-    }
-
-    //click  button buy when user is non login
-    @Test
-    fun validateClickBuyIsNonLogin() {
-        actionTest {
-            intendingIntent()
-            waitForData()
-            clickVariantTest()
-            clickButtonBuy()
-            stubAtcIntent()
-        } assertTest {
-            performClose(activityRule)
-            waitForTrackerSent()
-            validate(gtmLogDBSource, targetContext, BUTTON_BUY_NON_LOGIN_PATH)
         }
     }
 
@@ -100,15 +77,33 @@ class ProductDetailActivityTest {
             clickVariantTest()
             clickAddToCart()
         } assertTest {
+            if(addToCartBottomSheetIsVisible() == true) {
+                waitForTrackerSent()
+                performClose(activityRule)
+                validate(gtmLogDBSource, targetContext, ADD_TO_CART_LOGIN_PATH)
+            }
+        }
+    }
+
+    @Test
+    fun validateClickBuyIsNonLogin() {
+        actionTest {
+            clearLogin()
+            intendingIntent()
+            waitForData()
+            clickVariantTest()
+            clickBuyNow()
+        } assertTest {
             performClose(activityRule)
             waitForTrackerSent()
-            validate(gtmLogDBSource, targetContext, ADD_TO_CART_LOGIN_PATH)
+            validate(gtmLogDBSource, targetContext, BUTTON_BUY_NON_LOGIN_PATH)
         }
     }
 
     @Test
     fun validateClickAddToCartIsNonLogin() {
         actionTest {
+            clearLogin()
             intendingIntent()
             waitForData()
             clickVariantTest()
@@ -120,7 +115,6 @@ class ProductDetailActivityTest {
         }
     }
 
-    //click see guide on size chart
     @Test
     fun validateClickGuideOnSizeChart() {
         actionTest {
@@ -129,10 +123,14 @@ class ProductDetailActivityTest {
             clickSeeGuideSizeChart()
         } assertTest {
             performClose(activityRule)
-            onFinishTest()
             waitForTrackerSent()
             validate(gtmLogDBSource, targetContext, GUIDE_ON_SIZE_CHART_PATH)
         }
+    }
+
+    private fun addToCartBottomSheetIsVisible(): Boolean? {
+        val addToCartBottomSheet = activityRule.activity.supportFragmentManager.findFragmentByTag("ADD_TO_CART") as? InstrumentTestAddToCartBottomSheet
+        return addToCartBottomSheet?.isVisible
     }
 
     private fun clickVariantTest() {
@@ -144,6 +142,8 @@ class ProductDetailActivityTest {
         val viewInteraction = onView(allOf(withId(R.id.rvContainerVariant))).check(matches(isDisplayed()))
         viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<VariantImageViewHolder>(0, clickChildViewWithId(R.id.variantImgContainer)))
         viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<VariantChipViewHolder>(1, clickChildViewWithId(R.id.containerChipVariant)))
+
+        Thread.sleep(1000)
     }
 
     private fun clickSeeGuideSizeChart() {
@@ -167,18 +167,12 @@ class ProductDetailActivityTest {
         InstrumentationAuthHelper.loginInstrumentationTestUser1()
     }
 
+    private fun clearLogin() {
+        InstrumentationAuthHelper.clearUserSession()
+    }
+
     private fun intendingIntent() {
         Intents.intending(IntentMatchers.isInternal()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
-    }
-
-    private fun onFinishTest() {
-        gtmLogDBSource.deleteAll().subscribe()
-    }
-
-    private fun stubAtcIntent() {
-        Intents.intending(IntentMatchers.hasComponent(
-                ComponentNameMatchers.hasShortClassName(".OrderSummaryDummyActivity")))
-                .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
     }
 
     companion object {

@@ -8,7 +8,7 @@ import com.tokopedia.test.application.util.InstrumentationMockHelper
 class ProductDetailMockResponse: MockModelConfig() {
 
     override fun createMockModel(context: Context): MockModelConfig {
-        addMockResponse(KEY_CONTAINS_PDP_GET_LAYOUT, InstrumentationMockHelper.getRawString(context, R.raw.response_mock_data_pdp_get_layout), FIND_BY_QUERY_NAME)
+        addMockResponse(KEY_CONTAINS_PDP_GET_LAYOUT, InstrumentationMockHelper.getRawString(context, R.raw.response_mock_data_pdp_get_layout), FIND_BY_CONTAINS)
         return this
     }
 

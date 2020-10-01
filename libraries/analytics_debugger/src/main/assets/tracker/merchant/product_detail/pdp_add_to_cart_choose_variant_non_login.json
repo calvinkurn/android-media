@@ -46,7 +46,8 @@
       "sessionIris": "{{.{1,}}}",
       "user_id": "{{.*}}",
       "shopId": "{{\\d{1,}}}",
-      "isLoggedInStatus": "{{true|false}}"
+      "isLoggedInStatus": "{{true|false}}",
+      "component": "{{.*}}"
     }
   ]
 }
