@@ -19,7 +19,7 @@ class ReviewDetailActivity : BaseSimpleActivity(), ReviewPerformanceMonitoringLi
 
     override fun onCreate(savedInstanceState: Bundle?) {
         getDataFromApplink()
-        reviewDetailFragment = ReviewDetailFragment.createNewInstance(feedbackId)
+        reviewDetailFragment = ReviewDetailFragment.createNewInstance(if(feedbackId != 0) feedbackId else reputationId.toIntOrZero())
         super.onCreate(savedInstanceState)
         startPerformanceMonitoring()
         supportActionBar?.hide()
