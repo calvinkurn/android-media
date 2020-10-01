@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/black"
-    android:orientation="vertical">
+    android:background="@color/black">
 
     <LinearLayout
+        android:id="@+id/containerHeaderDoP"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/black"
@@ -14,13 +14,16 @@
         android:paddingLeft="@dimen/spacing_lvl4"
         android:paddingTop="@dimen/spacing_lvl4"
         android:paddingRight="@dimen/spacing_lvl4"
-        android:paddingBottom="@dimen/spacing_lvl4">
+        android:paddingBottom="@dimen/spacing_lvl4"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/btnDoPBack"
             android:layout_width="@dimen/layout_lvl3"
             android:layout_height="@dimen/layout_lvl3"
-            app:srcCompat="@drawable/ic_back_white" />
+            app:srcCompat="@drawable/ic_devops_back_white" />
 
         <View
             android:layout_width="0dp"
@@ -28,8 +31,8 @@
             android:layout_weight="1" />
 
         <androidx.appcompat.widget.AppCompatImageView
-            android:layout_width="@dimen/layout_lvl3"
             android:id="@+id/btnDoPUndo"
+            android:layout_width="@dimen/layout_lvl3"
             android:layout_height="@dimen/layout_lvl3"
             android:layout_marginEnd="@dimen/spacing_lvl3"
             app:srcCompat="@drawable/ic_undo_active" />
@@ -37,23 +40,35 @@
         <androidx.appcompat.widget.AppCompatTextView
             android:layout_width="wrap_content"
             android:layout_height="@dimen/layout_lvl3"
+            android:layout_marginEnd="@dimen/spacing_lvl3"
             android:gravity="center_vertical"
             android:text="Pencil Icon"
             android:textColor="@color/white" />
 
         <!--        <androidx.appcompat.widget.AppCompatImageView-->
         <!--            android:layout_width="@dimen/layout_lvl3"-->
+        <!--        android:layout_marginEnd="@dimen/spacing_lvl3"-->
         <!--            android:layout_height="@dimen/layout_lvl3"-->
         <!--            app:srcCompat="@drawable/ic_edit" />-->
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/btnSaveImage"
+            android:layout_width="@dimen/layout_lvl3"
+            android:layout_height="@dimen/layout_lvl3"
+            android:layout_marginEnd="@dimen/spacing_lvl3"
+            app:srcCompat="@drawable/ic_devops_check_white" />
 
     </LinearLayout>
 
     <com.tokopedia.developer_options.presentation.feedbackpage.widgets.DrawOnPictureView
         android:id="@+id/dopFeedbackForm"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_height="wrap_content"
         android:adjustViewBounds="true"
-        android:scaleType="fitCenter" />
+        android:scaleType="fitCenter"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/containerHeaderDoP" />
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
