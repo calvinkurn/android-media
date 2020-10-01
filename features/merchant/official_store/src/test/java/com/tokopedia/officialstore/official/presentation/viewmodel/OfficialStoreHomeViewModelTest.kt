@@ -346,7 +346,7 @@ class OfficialStoreHomeViewModelTest {
     }
 
     private fun onGetOfficialStoreBanners_thenReturn(osBanners: OfficialStoreBanners) {
-        coEvery { getOfficialStoreBannersUseCase.executeOnBackground() } returns osBanners
+        coEvery { getOfficialStoreBannersUseCase.executeOnBackground(any()) } returns osBanners
     }
 
     private fun onGetOfficialStoreBenefits_thenReturn(osBenefits: OfficialStoreBenefits) {
@@ -378,7 +378,7 @@ class OfficialStoreHomeViewModelTest {
     }
 
     private fun onGetOfficialStoreBanners_thenReturn(error: Throwable) {
-        coEvery { getOfficialStoreBannersUseCase.executeOnBackground() } throws error
+        coEvery { getOfficialStoreBannersUseCase.executeOnBackground(any()) } throws error
     }
 
     private fun onGetOfficialStoreBenefits_thenReturn(error: Throwable) {
@@ -431,7 +431,7 @@ class OfficialStoreHomeViewModelTest {
     }
 
     private fun verifyGetOfficialStoreBannersUseCaseCalled() {
-        coVerify { getOfficialStoreBannersUseCase.executeOnBackground() }
+        coVerify { getOfficialStoreBannersUseCase.executeOnBackground(any()) }
     }
 
     private fun verifyGetOfficialStoreBenefitsUseCaseCalled() {
@@ -460,14 +460,14 @@ class OfficialStoreHomeViewModelTest {
     }
 
     private fun verifyOfficialStoreBannersError(expectedError: Fail) {
-        coVerify { getOfficialStoreBannersUseCase.executeOnBackground() }
+        coVerify { getOfficialStoreBannersUseCase.executeOnBackground(any()) }
 
         viewModel.officialStoreBannersResult
                 .assertError(expectedError)
     }
 
     private fun verifyOfficialStoreBenefitsError(expectedError: Fail) {
-        coVerify { getOfficialStoreBannersUseCase.executeOnBackground() }
+        coVerify { getOfficialStoreBannersUseCase.executeOnBackground(any()) }
 
         viewModel.officialStoreBenefitsResult
                 .assertError(expectedError)

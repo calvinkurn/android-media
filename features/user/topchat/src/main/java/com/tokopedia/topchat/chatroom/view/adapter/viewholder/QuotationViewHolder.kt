@@ -24,7 +24,7 @@ class QuotationViewHolder(
     private val container: RelativeLayout? = itemView?.findViewById(R.id.quotationAttachmentContainer)
 
     private val bgOpposite = ViewUtil.generateBackgroundWithShadow(
-            itemView,
+            container,
             com.tokopedia.unifyprinciples.R.color.Neutral_N0,
             com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
             com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
@@ -36,7 +36,7 @@ class QuotationViewHolder(
             Gravity.CENTER
     )
     private val bgSender = ViewUtil.generateBackgroundWithShadow(
-            itemView,
+            container,
             com.tokopedia.unifyprinciples.R.color.Neutral_N0,
             com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
             com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,

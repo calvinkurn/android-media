@@ -21,7 +21,7 @@ open class SellerFeatureViewHolder(view: View?) : AbstractViewHolder<SellerFeatu
                     getDimens(com.tokopedia.unifycomponents.R.dimen.layout_lvl2),
                     getDimens(com.tokopedia.unifycomponents.R.dimen.layout_lvl2)
             )
-            ivSellerFeature.setImage(element.imageId, 0f)
+            ivSellerFeature.setImage(element.imageUrl, 0f)
             tvSellerFeatureTitle.text = getString(element.titleId)
             tvSellerFeatureDescription.text = getString(element.descriptionId)
         }

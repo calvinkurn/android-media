@@ -21,6 +21,7 @@ import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProduc
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.MIN_PRODUCT_STOCK_LIMIT
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_CUSTOM_UNIT_VALUE_ID
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_IDENTIFIER_HAS_SIZECHART
+import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_ONE_COUNT
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_ONE_POSITION
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_TWO_POSITION
 import com.tokopedia.product.addedit.variant.presentation.model.*
@@ -249,12 +250,17 @@ class AddEditProductVariantViewModel @Inject constructor(
 
         // if identifier exist, then update sizechart visibility
         if (isSizechartIdentifierExist) {
-            when (index) {
-                VARIANT_VALUE_LEVEL_ONE_POSITION -> {
-                    mIsVariantSizechartVisible.value = unitValuesLevel1.isNotEmpty()
-                }
-                VARIANT_VALUE_LEVEL_TWO_POSITION -> {
-                    mIsVariantSizechartVisible.value = unitValuesLevel2.isNotEmpty()
+            if (selectedVariantDetails.size == VARIANT_VALUE_LEVEL_ONE_COUNT) {
+                // handling for 1 leveled variant detail
+                mIsVariantSizechartVisible.value = unitValuesLevel1.isNotEmpty() || unitValuesLevel2.isNotEmpty()
+            } else {
+                when (index) {
+                    VARIANT_VALUE_LEVEL_ONE_POSITION -> {
+                        mIsVariantSizechartVisible.value = unitValuesLevel1.isNotEmpty()
+                    }
+                    VARIANT_VALUE_LEVEL_TWO_POSITION -> {
+                        mIsVariantSizechartVisible.value = unitValuesLevel2.isNotEmpty()
+                    }
                 }
             }
         }
@@ -321,6 +327,7 @@ class AddEditProductVariantViewModel @Inject constructor(
     }
 
     fun removeVariant() {
+        mIsRemovingVariant.value = true
         val isRemoteDataHasVariant = productInputModel.value?.variantInputModel?.isRemoteDataHasVariant
                 ?: false // keep isRemoteDataHasVariant old data
         // keep the selections before being cleared

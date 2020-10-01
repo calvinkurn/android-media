@@ -688,7 +688,7 @@ public class SearchTracking {
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(EVENT, SearchEventTracking.Event.PROMO_CLICK,
                         EVENT_CATEGORY,  SearchEventTracking.Category.SEARCH_RESULT,
-                        EVENT_ACTION, SearchEventTracking.Action.CLICK_INSPIRATION_CAROUSEL_INFO_PRODUCT,
+                        EVENT_ACTION, SearchEventTracking.Action.CLICK,
                         EVENT_LABEL, type + " - " + keyword,
                         ECOMMERCE, DataLayer.mapOf(
                                 SearchEventTracking.Event.PROMO_CLICK, DataLayer.mapOf(

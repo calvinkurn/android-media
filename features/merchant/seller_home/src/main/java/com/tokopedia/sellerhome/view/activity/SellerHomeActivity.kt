@@ -104,10 +104,6 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         initInjector()
-        if(startOldSellerHomeIfEnabled()) {
-            super.onCreate(savedInstanceState)
-            return
-        }
         initPerformanceMonitoring()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sah_seller_home)
@@ -209,24 +205,17 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
         super.onSaveInstanceState(outState)
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        navigator?.cleanupNavigator()
+    }
+
     fun attachCallback(callback: StatusBarCallback) {
         statusBarCallback = callback
     }
 
     fun stopPerformanceMonitoringSellerHomeLayout() {
         performanceMonitoringSellerHomelayout?.stopTrace()
-    }
-
-    private fun startOldSellerHomeIfEnabled(): Boolean {
-        if(remoteConfig.isNewSellerHomeDisabled()) {
-            val oldSellerHome = com.tokopedia.sellerhome.view.oldactivity.SellerHomeActivity.createIntent(this)
-            oldSellerHome.data = intent.data
-            startActivity(oldSellerHome)
-            finish()
-
-            return true
-        }
-        return false
     }
 
     private fun setupBackground() {
