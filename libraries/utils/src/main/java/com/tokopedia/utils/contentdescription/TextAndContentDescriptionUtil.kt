@@ -7,6 +7,6 @@ object TextAndContentDescriptionUtil {
     @JvmStatic
     fun setTextAndContentDescription(textView :TextView, text :String, contentDescriptionTemplate :String) {
         textView.text = text;
-        textView.contentDescription = text+contentDescriptionTemplate
+        textView.contentDescription = contentDescriptionTemplate + text
     }
 }

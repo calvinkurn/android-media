@@ -78,7 +78,7 @@ public class ShippingCourierViewHolder extends RecyclerView.ViewHolder {
             otdLabel.setVisibility(otd.getAvailable()? View.VISIBLE : View.GONE);
         }
 
-        TextAndContentDescriptionUtil.setTextAndContentDescription(tvCourier, tvCourier.getContext().getString(R.string.content_desc_tv_courier), shippingCourierUiModel.getProductData().getShipperName());
+        TextAndContentDescriptionUtil.setTextAndContentDescription(tvCourier, shippingCourierUiModel.getProductData().getShipperName(), tvCourier.getContext().getString(R.string.content_desc_tv_courier));
      //   tvCourier.setContentDescription(tvCourier.getContext().getString(R.string.content_desc_tv_courier, shippingCourierUiModel.getProductData().getShipperName()));
        // tvCourier.setText(shippingCourierUiModel.getProductData().getShipperName());
         if (shippingCourierUiModel.getProductData().getError() != null &&
