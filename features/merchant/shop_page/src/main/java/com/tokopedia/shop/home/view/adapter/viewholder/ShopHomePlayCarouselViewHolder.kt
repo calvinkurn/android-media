@@ -88,15 +88,15 @@ class ShopHomePlayCarouselViewHolder(
     }
 
     override fun onReminderClick(dataModel: PlayBannerCarouselItemDataModel, position: Int) {
-        listener.onReminderClick(dataModel, adapterPosition)
+        listener.onReminderClick(dataModel, isFoldPosition(adapterPosition), position)
     }
 
     override fun onSeeMoreClick(dataModel: PlayBannerCarouselDataModel) {
-        listener.onPlayBannerSeeMoreClick(dataModel.seeMoreApplink)
+        listener.onPlayBannerSeeMoreClick(dataModel.seeMoreApplink, isFoldPosition(adapterPosition))
     }
 
     override fun onSeeMoreBannerClick(dataModel: PlayBannerCarouselBannerDataModel, position: Int) {
-        listener.onPlayBannerSeeMoreClick(dataModel.applink)
+        listener.onPlayBannerSeeMoreBanner(dataModel.applink, isFoldPosition(adapterPosition))
     }
 
     override fun onOverlayImageBannerClick(dataModel: PlayBannerCarouselOverlayImageDataModel) {
