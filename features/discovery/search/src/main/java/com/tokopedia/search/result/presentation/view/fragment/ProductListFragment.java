@@ -612,7 +612,7 @@ public class ProductListFragment
             AdultManager.handleActivityResult(getActivity(), requestCode, resultCode, data);
             ProductCardOptionsManager.handleProductCardOptionsActivityResult(
                     requestCode, resultCode, data,
-                    this::handleWishlistAction, this::handleAddToCartAction, this::handleVisitShopAction, this::handleShareProductAction
+                    this::handleWishlistAction, this::handleAddToCartAction, this::handleVisitShopAction
             );
         }
     }
@@ -649,11 +649,7 @@ public class ProductListFragment
     }
 
     private void handleVisitShopAction(ProductCardOptionsModel productCardOptionsModel) {
-
-    }
-
-    private void handleShareProductAction(ProductCardOptionsModel productCardOptionsModel) {
-
+        presenter.handleVisitShopAction();
     }
 
     @Override
