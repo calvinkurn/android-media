@@ -108,7 +108,6 @@ class PlayBroadcastPrepareFragment @Inject constructor(
 
     override fun onStart() {
         super.onStart()
-        actionBarView.rootView.requestApplyInsetsWhenAttached()
         requireView().requestApplyInsetsWhenAttached()
     }
 
@@ -144,9 +143,6 @@ class PlayBroadcastPrepareFragment @Inject constructor(
     }
 
     private fun setupInsets(view: View) {
-        actionBarView.rootView.doOnApplyWindowInsets { v, insets, _, _ ->
-            v.updatePadding(top = insets.systemWindowInsetTop)
-        }
         view.doOnApplyWindowInsets { v, insets, padding, _ ->
             v.updatePadding(top = padding.top + insets.systemWindowInsetTop, bottom = padding.bottom + insets.systemWindowInsetBottom)
         }
