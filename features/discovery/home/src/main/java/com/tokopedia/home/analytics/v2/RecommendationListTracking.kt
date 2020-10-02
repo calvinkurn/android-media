@@ -188,7 +188,8 @@ object RecommendationListTracking: BaseTrackerConst(){
                 Screen.KEY, Screen.DEFAULT,
                 UserId.KEY, userId,
                 CurrentSite.KEY, CurrentSite.DEFAULT,
-                BusinessUnit.KEY, BusinessUnit.DEFAULT
+                BusinessUnit.KEY, BusinessUnit.DEFAULT,
+                ChannelId.KEY, channelId
         ) as HashMap<String, Any>
     }
 
@@ -201,7 +202,8 @@ object RecommendationListTracking: BaseTrackerConst(){
                 Screen.KEY, Screen.DEFAULT,
                 UserId.KEY, userId,
                 CurrentSite.KEY, CurrentSite.DEFAULT,
-                BusinessUnit.KEY, BusinessUnit.DEFAULT
+                BusinessUnit.KEY, BusinessUnit.DEFAULT,
+                ChannelId.KEY, channelId
         ) as HashMap<String, Any>
     }
 
@@ -222,7 +224,7 @@ object RecommendationListTracking: BaseTrackerConst(){
             UserId.KEY, userId,
             CurrentSite.KEY, CurrentSite.DEFAULT,
             BusinessUnit.KEY, BusinessUnit.DEFAULT,
-            Label.CHANNEL_LABEL, channel.id
+            ChannelId.KEY,channel.id
     )
 
     fun getAddToCartOnDynamicListCarousel(channel: DynamicHomeChannel.Channels, grid: DynamicHomeChannel.Grid, position: Int, cartId: String, quantity: String = "0", userId: String = "") = DataLayer.mapOf(

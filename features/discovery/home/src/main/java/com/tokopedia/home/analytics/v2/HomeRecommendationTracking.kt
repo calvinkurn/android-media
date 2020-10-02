@@ -16,16 +16,8 @@ object HomeRecommendationTracking : BaseTrackerConst(){
     }
 
     private object CustomAction{
-        val RECOMMENDATION_CLICK_NON_LOGIN_NON_TOPADS = Action.CLICK.format("product recommendation") + " - non login"
-        val RECOMMENDATION_CLICK_LOGIN_NON_TOPADS = Action.CLICK.format("product recommendation")
-        val RECOMMENDATION_CLICK_NON_LOGIN_TOPADS = Action.CLICK.format("product recommendation") + " - non login - topads"
-        val RECOMMENDATION_CLICK_LOGIN_TOPADS = Action.CLICK.format("product recommendation") + " - topads"
-
-        val RECOMMENDATION_VIEW_NON_LOGIN_NON_TOPADS = Action.IMPRESSION.format("product recommendation") + " - non login"
-        val RECOMMENDATION_VIEW_NON_LOGIN_TOPADS = Action.IMPRESSION.format("product recommendation") + " - non login - topads"
-        val RECOMMENDATION_VIEW_LOGIN_NON_TOPADS = Action.IMPRESSION.format("product recommendation")
-        val RECOMMENDATION_VIEW_LOGIN_TOPADS = Action.IMPRESSION.format("product recommendation") + " - topads"
-
+        val RECOMMENDATION_VIEW_BASE = Action.IMPRESSION.format("product recommendation")
+        val RECOMMENDATION_CLICK_BASE = Action.CLICK.format("product recommendation")
         const val RECOMMENDATION_ADD_WISHLIST_LOGIN = "add wishlist - product recommendation - login"
         const val RECOMMENDATION_REMOVE_WISHLIST_LOGIN = "remove wishlist - product recommendation - login"
         const val RECOMMENDATION_ADD_WISHLIST_NON_LOGIN = "add wishlist - product recommendation - non login"
@@ -51,7 +43,7 @@ object HomeRecommendationTracking : BaseTrackerConst(){
         return trackerBuilder.constructBasicProductClick(
                 event = Event.PRODUCT_CLICK,
                 eventCategory = Category.HOMEPAGE,
-                eventAction = CustomAction.RECOMMENDATION_CLICK_NON_LOGIN_NON_TOPADS,
+                eventAction = CustomAction.RECOMMENDATION_CLICK_BASE,
                 eventLabel = tabName,
                 list = ActionField.RECOMMENDATION_ACTION_FIELD_NON_LOGIN.format(tabName, homeRecommendationItemDataModel.product.recommendationType, ""),
                 products = listOf(mapToProductTracking(homeRecommendationItemDataModel))
@@ -63,7 +55,7 @@ object HomeRecommendationTracking : BaseTrackerConst(){
         return trackerBuilder.constructBasicProductClick(
                 event = Event.PRODUCT_CLICK,
                 eventCategory = Category.HOMEPAGE,
-                eventAction = CustomAction.RECOMMENDATION_CLICK_LOGIN_NON_TOPADS,
+                eventAction = CustomAction.RECOMMENDATION_CLICK_BASE,
                 eventLabel = tabName,
                 list = ActionField.RECOMMENDATION_ACTION_FIELD_LOGIN.format(tabName, homeRecommendationItemDataModel.product.recommendationType, ""),
                 products = listOf(mapToProductTracking(homeRecommendationItemDataModel))
@@ -75,7 +67,7 @@ object HomeRecommendationTracking : BaseTrackerConst(){
         return trackerBuilder.constructBasicProductClick(
                 event = Event.PRODUCT_CLICK,
                 eventCategory = Category.HOMEPAGE,
-                eventAction = CustomAction.RECOMMENDATION_CLICK_LOGIN_TOPADS,
+                eventAction = CustomAction.RECOMMENDATION_CLICK_BASE,
                 eventLabel = tabName,
                 list = ActionField.RECOMMENDATION_ACTION_FIELD_LOGIN_TOP_ADS.format(tabName, homeRecommendationItemDataModel.product.recommendationType, ""),
                 products = listOf(mapToProductTracking(homeRecommendationItemDataModel))
@@ -87,7 +79,7 @@ object HomeRecommendationTracking : BaseTrackerConst(){
         return trackerBuilder.constructBasicProductClick(
                 event = Event.PRODUCT_CLICK,
                 eventCategory = Category.HOMEPAGE,
-                eventAction = CustomAction.RECOMMENDATION_CLICK_NON_LOGIN_TOPADS,
+                eventAction = CustomAction.RECOMMENDATION_CLICK_BASE,
                 eventLabel = tabName,
                 list = ActionField.RECOMMENDATION_ACTION_FIELD_NON_LOGIN_TOP_ADS.format(tabName, homeRecommendationItemDataModel.product.recommendationType),
                 products = listOf(mapToProductTracking(homeRecommendationItemDataModel))
@@ -99,7 +91,7 @@ object HomeRecommendationTracking : BaseTrackerConst(){
         return trackerBuilder.constructBasicProductView(
                 event = Event.PRODUCT_VIEW,
                 eventCategory = Category.HOMEPAGE,
-                eventAction = CustomAction.RECOMMENDATION_VIEW_LOGIN_NON_TOPADS,
+                eventAction = CustomAction.RECOMMENDATION_VIEW_BASE,
                 eventLabel = tabName,
                 list = ActionField.RECOMMENDATION_ACTION_FIELD_LOGIN.format(tabName, homeRecommendationItemDataModel.product.recommendationType, ""),
                 products = listOf(mapToProductTracking(homeRecommendationItemDataModel))
@@ -111,7 +103,7 @@ object HomeRecommendationTracking : BaseTrackerConst(){
         return trackerBuilder.constructBasicProductView(
                 event = Event.PRODUCT_VIEW,
                 eventCategory = Category.HOMEPAGE,
-                eventAction = CustomAction.RECOMMENDATION_VIEW_LOGIN_TOPADS,
+                eventAction = CustomAction.RECOMMENDATION_VIEW_BASE,
                 eventLabel = tabName,
                 list = ActionField.RECOMMENDATION_ACTION_FIELD_LOGIN_TOP_ADS.format(tabName, homeRecommendationItemDataModel.product.recommendationType, ""),
                 products = listOf(mapToProductTracking(homeRecommendationItemDataModel))
@@ -123,7 +115,7 @@ object HomeRecommendationTracking : BaseTrackerConst(){
         return trackerBuilder.constructBasicProductView(
                 event = Event.PRODUCT_VIEW,
                 eventCategory = Category.HOMEPAGE,
-                eventAction = CustomAction.RECOMMENDATION_VIEW_NON_LOGIN_NON_TOPADS,
+                eventAction = CustomAction.RECOMMENDATION_VIEW_BASE,
                 eventLabel = tabName,
                 list = ActionField.RECOMMENDATION_ACTION_FIELD_NON_LOGIN.format(tabName, homeRecommendationItemDataModel.product.recommendationType, ""),
                 products = listOf(mapToProductTracking(homeRecommendationItemDataModel))
@@ -135,7 +127,7 @@ object HomeRecommendationTracking : BaseTrackerConst(){
         return trackerBuilder.constructBasicProductView(
                 event = Event.PRODUCT_VIEW,
                 eventCategory = Category.HOMEPAGE,
-                eventAction = CustomAction.RECOMMENDATION_VIEW_NON_LOGIN_TOPADS,
+                eventAction = CustomAction.RECOMMENDATION_VIEW_BASE,
                 eventLabel = tabName,
                 list = ActionField.RECOMMENDATION_ACTION_FIELD_NON_LOGIN_TOP_ADS.format(tabName, homeRecommendationItemDataModel.product.recommendationType, ""),
                 products = listOf(mapToProductTracking(homeRecommendationItemDataModel))
