@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.drawable.RoundedBitmapDrawable;
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 import androidx.recyclerview.widget.RecyclerView;
@@ -136,9 +137,9 @@ public class ImageUploadAdapter extends RecyclerView.Adapter<ImageUploadAdapter.
 
     private void setBorder(ViewHolder holder, int position) {
         if (data.get(position).isSelected()) {
-            holder.image.setBackgroundColor(context.getResources().getColor(com.tokopedia.abstraction.R.color.green_500));
+            holder.image.setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.abstraction.R.color.green_500));
         } else {
-            holder.image.setBackgroundColor(context.getResources().getColor(com.tokopedia.abstraction.R.color.white));
+            holder.image.setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N0));
         }
     }
 

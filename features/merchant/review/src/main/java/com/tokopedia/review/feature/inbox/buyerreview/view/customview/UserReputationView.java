@@ -15,6 +15,7 @@ import android.widget.TextView;
 import androidx.appcompat.content.res.AppCompatResources;
 
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.design.base.BaseCustomView;
 import com.tokopedia.review.R;
 
@@ -88,9 +89,9 @@ public class UserReputationView extends BaseCustomView {
         }
 
         if (noReputation) {
-            imageViewIcon.setImageDrawable(getDrawable(imageViewIcon.getContext(), R.drawable.review_ic_smiley_empty));
+            imageViewIcon.setImageDrawable(MethodChecker.getDrawable(imageViewIcon.getContext(), R.drawable.review_ic_smiley_empty));
         } else {
-            imageViewIcon.setImageDrawable(getDrawable(imageViewIcon.getContext(), R.drawable.review_ic_smiley_good));
+            imageViewIcon.setImageDrawable(MethodChecker.getDrawable(imageViewIcon.getContext(), R.drawable.review_ic_smiley_good));
             if (showTooltip) {
                 setBottomDialog(positiveValue, neutralValue, negativeValue);
             }
