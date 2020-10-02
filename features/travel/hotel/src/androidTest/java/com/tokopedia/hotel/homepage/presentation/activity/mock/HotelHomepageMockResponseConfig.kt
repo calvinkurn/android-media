@@ -1,7 +1,7 @@
 package com.tokopedia.hotel.homepage.presentation.activity.mock
 
 import android.content.Context
-import com.tokopedia.hotel.R
+import com.tokopedia.hotel.test.R
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.util.InstrumentationMockHelper.getRawString
 

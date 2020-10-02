@@ -42,7 +42,6 @@ import java.util.*
 
 /**
  * @author by jessica on 04/08/20
- * Still missing hotel change date tracking validation
  */
 
 class HotelHomepageActivityTest {
