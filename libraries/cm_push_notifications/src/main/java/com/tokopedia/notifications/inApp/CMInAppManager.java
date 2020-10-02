@@ -39,7 +39,6 @@ import com.tokopedia.promotionstarget.data.notification.NotificationEntryType;
 import com.tokopedia.promotionstarget.domain.presenter.GratifCancellationExceptionType;
 import com.tokopedia.promotionstarget.domain.presenter.GratifPopupIngoreType;
 import com.tokopedia.promotionstarget.domain.presenter.GratificationPresenter;
-import com.tokopedia.promotionstarget.presentation.ui.dialog.CmGratificationDialog;
 
 import org.json.JSONObject;
 
@@ -373,18 +372,46 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
     }
 
     public void onFragmentStart(Fragment fragment) {
-        cancelGratifJob(fragment.hashCode(),GratifCancellationExceptionType.FRAGMENT_STARTED);
+        cancelGratifJob(fragment.hashCode(), GratifCancellationExceptionType.FRAGMENT_STARTED);
 
-        if (!isDialogShowing) {
-            showInAppNotification(fragment.getClass().getName(), fragment.hashCode());
-        }
+//        if (!isDialogShowing) {
+//            showInAppNotification(fragment.getClass().getName(), fragment.hashCode());
+//        }
+        checkFragmentOpenedFromPush(fragment);
     }
 
     public void onFragmentResume(Fragment fragment) {
-        cancelGratifJob(fragment.hashCode(),GratifCancellationExceptionType.FRAGMENT_RESUME);
+        cancelGratifJob(fragment.hashCode(), GratifCancellationExceptionType.FRAGMENT_RESUME);
 
-        if (!isDialogShowing) {
-            showInAppNotification(fragment.getClass().getName(), fragment.hashCode());
+        //check if came from push
+        checkFragmentOpenedFromPush(fragment);
+//        if (!isDialogShowing) {
+//            showInAppNotification(fragment.getClass().getName(), fragment.hashCode());
+//        }
+    }
+
+    public void checkFragmentOpenedFromPush(Fragment fragment) {
+        boolean canShowPopupFromPush = false;
+        String entityName = fragment.getClass().getName();
+        Activity fragmentActivity = fragment.getActivity();
+        if (fragmentActivity != null) {
+            Bundle bundle = fragmentActivity.getIntent().getExtras();
+            if (bundle != null) {
+                boolean isComingFromPush = bundle.keySet().contains(EXTRA_BASE_MODEL);
+                if (isComingFromPush) {
+                    String gratificationId = bundle.getString("gratificationId"); //todo Remove hardcoding
+                    canShowPopupFromPush = (!(TextUtils.isEmpty(gratificationId)) && !processedNotificationIds.contains(gratificationId));
+                    processedNotificationIds.add(gratificationId);
+                }
+            }
+
+            if (!isDialogShowing) {
+                if (canShowPopupFromPush) {
+                    showPopupFromPush(bundle, entityName);
+                } else {
+                    showInAppNotification(entityName, fragment.hashCode());
+                }
+            }
         }
     }
 
@@ -404,9 +431,10 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
 //            if(dialog.)
 //        }
 
-        if (!isDialogShowing) {
-            showInAppNotification(fragment.getClass().getName(), fragment.hashCode());
-        }
+//        if (!isDialogShowing) {
+//            showInAppNotification(fragment.getClass().getName(), fragment.hashCode());
+//        }
+        checkFragmentOpenedFromPush(fragment);
     }
 
     public void onFragmentStop(Fragment fragment) {

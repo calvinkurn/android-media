@@ -473,7 +473,7 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
      */
     private fun displayProductInfo(){
         childFragmentManager.beginTransaction()
-                .replace(com.tokopedia.home_recom.R.id.product_info_container, ProductInfoFragment.newInstance(productId, ref, queryParam, internalRef))
+                .replace(com.tokopedia.home_recom.R.id.product_info_container, ProductInfoFragment.newInstance(productId, ref, queryParam, internalRef, FragmentInflater.FRAGMENT))
                 .commit()
     }
 

@@ -14,6 +14,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.base.view.fragment.FragmentInflater
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -94,11 +95,12 @@ class ProductInfoFragment : BaseDaggerFragment() {
 
     companion object{
 
-        fun newInstance(productId: String, ref: String, queryParam: String, internalRef: String) = ProductInfoFragment().apply {
+        fun newInstance(productId: String, ref: String, queryParam: String, internalRef: String, @FragmentInflater fragmentInflater: String = FragmentInflater.DEFAULT) = ProductInfoFragment().apply {
             this.productId = productId
             this.ref = ref
             this.queryParam = queryParam
             this.internalRef = internalRef
+            this.fragmentInflater = fragmentInflater
         }
 
         private const val REQUEST_CODE_LOGIN = 283
