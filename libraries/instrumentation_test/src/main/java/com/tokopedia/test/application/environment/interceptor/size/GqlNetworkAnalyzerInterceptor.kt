@@ -31,6 +31,7 @@ class GqlNetworkAnalyzerInterceptor(private var gqlQueryListToAnalyze: List<Stri
             sizeInEachRequest.clear()
             timeInEachRequest.clear()
             queryCounterMap.clear()
+            interceptedNetworkDataList.clear()
             startRequest = 0L
             endRequest = 0L
         }
@@ -68,8 +69,6 @@ class GqlNetworkAnalyzerInterceptor(private var gqlQueryListToAnalyze: List<Stri
         }
 
         private fun processInterceptedNetworkData(gqlQueryListToAnalyze: List<String>?) {
-            Log.d("NetInterceptor", "Processing: ${interceptedNetworkDataList.size}")
-
             interceptedNetworkDataList.forEach { interceptedNetworkData ->
                 val requestString = interceptedNetworkData.requestString
                 val size = interceptedNetworkData.size
@@ -80,12 +79,10 @@ class GqlNetworkAnalyzerInterceptor(private var gqlQueryListToAnalyze: List<Stri
                 var formattedOperationName = parserRuleProvider.parse(requestString.substringAfter("\"query\": \""))
 
                 var needToAnalyze = true
-                val gqlFilterList = gqlQueryListToAnalyze
+                val gqlFilterList = gqlQueryListToAnalyze?.map { it.toLowerCase(Locale.US) }
                 if (gqlFilterList?.isNotEmpty() == true) {
                     needToAnalyze = gqlFilterList.contains(formattedOperationName.toLowerCase(Locale.US))
                 }
-
-                Log.d("NetInterceptor", "Name: $formattedOperationName, needToAnalyze: $needToAnalyze, gqlFilterList: $gqlFilterList")
 
                 if (needToAnalyze) {
                     if (queryCounterMap.containsKey(formattedOperationName)) {
@@ -143,9 +140,7 @@ class GqlNetworkAnalyzerInterceptor(private var gqlQueryListToAnalyze: List<Stri
                         size = size,
                         requestTimeStamp = response.sentRequestAtMillis(),
                         responseTimeStamp = response.receivedResponseAtMillis()
-                ).apply {
-                    Log.d("NetInterceptor", "Intercepted Network Data: $this")
-                }
+                )
         )
 
         return response
