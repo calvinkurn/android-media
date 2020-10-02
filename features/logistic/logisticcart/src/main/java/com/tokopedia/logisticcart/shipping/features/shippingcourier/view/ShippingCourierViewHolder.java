@@ -46,7 +46,7 @@ public class ShippingCourierViewHolder extends RecyclerView.ViewHolder {
         codLabel = itemView.findViewById(R.id.lbl_cod_available);
         otdLabel = itemView.findViewById(R.id.lbl_otd_available);
     }
-    
+
     public void bindData(ShippingCourierUiModel shippingCourierUiModel,
                          ShippingCourierAdapterListener shippingCourierAdapterListener,
                          boolean isLastItem) {
