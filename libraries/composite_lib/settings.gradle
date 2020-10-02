@@ -16,7 +16,6 @@ buildCache {
     }
 }
 
-include ":lint"
 include ":authentication"
 include ":analytic_constant"
 include ":analytic_testapp"
