@@ -8,4 +8,5 @@
     <color name="cm_star_review">#FDC402</color>
     <color name="cm_review">#73767A</color>
     <color name="cm_count_review">#A5A6A9</color>
+    <color name="cm_outline_btn_atc">#E5E7E9</color>
 </resources>

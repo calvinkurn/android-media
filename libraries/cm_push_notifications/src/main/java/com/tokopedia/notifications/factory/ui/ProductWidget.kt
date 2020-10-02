@@ -31,7 +31,7 @@ internal open class ProductWidget(
     private val userSession by lazy { UserSession(context) }
     private val packageName = context.applicationContext.packageName
 
-    val collapsedView by lazy { RemoteViews(packageName, R.layout.cm_layout_collapsed) }
+    val collapsedView by lazy { RemoteViews(packageName, R.layout.cm_layout_product_collapsed) }
     val expandedView by lazy { RemoteViews(packageName, R.layout.cm_layout_product_expand) }
 
     val product: ProductInfo = model.productInfoList[model.carouselIndex]
