@@ -81,22 +81,7 @@ class SingleProductAttachmentContainer : ConstraintLayout {
                 Gravity.CENTER
         )
     }
-    private val bgSender: Drawable? by lazy(LazyThreadSafetyMode.NONE) {
-        ViewUtil.generateBackgroundWithShadow(
-                this,
-                com.tokopedia.unifyprinciples.R.color.Neutral_N0,
-                com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-                com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-                com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-                com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-                R.color.topchat_message_shadow,
-                R.dimen.dp_topchat_2,
-                R.dimen.dp_topchat_1,
-                Gravity.CENTER,
-                R.color.bg_topchat_right_message,
-                getStrokeWidthSenderDimenRes()
-        )
-    }
+    private var bgSender: Drawable? = null
 
     private val defaultMarginLeft: Int by lazy(LazyThreadSafetyMode.NONE) {
         (layoutParams as? LinearLayout.LayoutParams)?.leftMargin ?: 0
@@ -185,10 +170,12 @@ class SingleProductAttachmentContainer : ConstraintLayout {
             deferredAttachment: DeferredViewHolderAttachment,
             searchListener: SearchListener,
             commonListener: CommonViewHolderListener,
-            adapterListener: AdapterListener
+            adapterListener: AdapterListener,
+            useStrokeSender: Boolean = true
     ) {
         initViewHolderData(adapterPosition)
         initListener(listener, deferredAttachment, searchListener, commonListener, adapterListener)
+        initBackgroundDrawable(useStrokeSender)
         bindSyncProduct(product)
         bindLayoutGravity(product)
         if (product.isLoading && !product.isError) {
@@ -211,6 +198,27 @@ class SingleProductAttachmentContainer : ConstraintLayout {
             bindBackground(product)
             bindMargin(product)
             listener.trackSeenProduct(product)
+        }
+    }
+
+    private fun initBackgroundDrawable(useStrokeSender: Boolean) {
+        if (bgSender == null) {
+            val strokeColor = if (useStrokeSender) R.color.bg_topchat_right_message else null
+            val strokeWidth = if (useStrokeSender) getStrokeWidthSenderDimenRes() else null
+            bgSender = ViewUtil.generateBackgroundWithShadow(
+                    this,
+                    com.tokopedia.unifyprinciples.R.color.Neutral_N0,
+                    com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
+                    com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
+                    com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
+                    com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
+                    R.color.topchat_message_shadow,
+                    R.dimen.dp_topchat_2,
+                    R.dimen.dp_topchat_1,
+                    Gravity.CENTER,
+                    strokeColor,
+                    strokeWidth
+            )
         }
     }
 

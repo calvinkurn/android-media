@@ -22,6 +22,7 @@ open class TopchatProductAttachmentViewHolder constructor(
         private val adapterListener: AdapterListener
 ) : BaseChatViewHolder<ProductAttachmentViewModel>(itemView) {
 
+    private var useStrokeSender = true
     private var productView: SingleProductAttachmentContainer? = itemView?.findViewById(R.id.containerProductAttachment)
 
     override fun bind(element: ProductAttachmentViewModel, payloads: MutableList<Any>) {
@@ -34,7 +35,15 @@ open class TopchatProductAttachmentViewHolder constructor(
 
     override fun bind(product: ProductAttachmentViewModel) {
         super.bind(product)
-        productView?.bindData(product, adapterPosition, listener, deferredAttachment, searchListener, commonListener, adapterListener)
+        productView?.bindData(
+                product, adapterPosition, listener, deferredAttachment,
+                searchListener, commonListener, adapterListener, useStrokeSender
+        )
+    }
+
+    fun bind(element: ProductAttachmentViewModel, isUnifyBroadcast: Boolean) {
+        useStrokeSender = !isUnifyBroadcast
+        bind(element)
     }
 
     companion object {

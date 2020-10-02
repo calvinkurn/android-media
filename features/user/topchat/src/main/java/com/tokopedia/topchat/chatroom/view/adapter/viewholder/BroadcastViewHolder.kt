@@ -47,7 +47,12 @@ class BroadcastViewHolder constructor(
     private val cta: LinearLayout? = itemView?.findViewById(R.id.ll_cta_container)
     private val rvProductCarousel: ProductCarouselRecyclerView? = itemView?.findViewById(R.id.rv_product_carousel)
     private val adapterProductCarousel = ProductListAdapter(
-            searchListener, productListener, deferredAttachment, commonListener, adapterListener
+            searchListener = searchListener,
+            listener = productListener,
+            deferredAttachment = deferredAttachment,
+            commonListener = commonListener,
+            adapterListener = adapterListener,
+            isUnifyBroadcast = true
     )
     private val paddingOpposite: Int by lazy(LazyThreadSafetyMode.NONE) {
         itemView?.context?.resources?.getDimension(R.dimen.dp_topchat_1)?.toInt() ?: 0
@@ -125,7 +130,6 @@ class BroadcastViewHolder constructor(
             rvProductCarousel?.show()
             ProductCarouselListAttachmentViewHolderBinder.bindDeferredAttachment(productCarousel, deferredAttachment)
             ProductCarouselListAttachmentViewHolderBinder.bindProductCarousel(productCarousel, adapterProductCarousel)
-            ProductCarouselListAttachmentViewHolderBinder.bindProductCarousel(productCarousel, adapterProductCarousel)
             ProductCarouselListAttachmentViewHolderBinder.bindScrollState(rvProductCarousel, productCarouselListener, this)
         } else {
             rvProductCarousel?.gone()
@@ -138,7 +142,7 @@ class BroadcastViewHolder constructor(
             singleProduct?.show()
             singleProduct?.bindData(
                     product, adapterPosition, productListener, deferredAttachment,
-                    searchListener, commonListener, adapterListener
+                    searchListener, commonListener, adapterListener, false
             )
         } else {
             singleProduct?.gone()

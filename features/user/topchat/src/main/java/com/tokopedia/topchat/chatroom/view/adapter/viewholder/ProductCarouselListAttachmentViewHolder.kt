@@ -57,7 +57,6 @@ class ProductCarouselListAttachmentViewHolder constructor(
         super.bind(carousel)
         ProductCarouselListAttachmentViewHolderBinder.bindDeferredAttachment(carousel, deferredAttachment)
         ProductCarouselListAttachmentViewHolderBinder.bindProductCarousel(carousel, adapter)
-        ProductCarouselListAttachmentViewHolderBinder.bindProductCarousel(carousel, adapter)
         ProductCarouselListAttachmentViewHolderBinder.bindScrollState(rv, listener, this)
     }
 
