@@ -137,7 +137,7 @@ object HomePageTrackingV2 : BaseTracking() {
                     )
                 },
                 list = String.format(
-                        Value.LIST_WITH_HEADER, "1", LIST_VALUE_SPRINT_SALE, channel.header.name
+                        Value.LIST, "1", LIST_VALUE_SPRINT_SALE
                 )
         ).build()
 
@@ -165,7 +165,7 @@ object HomePageTrackingV2 : BaseTracking() {
                         )
                 ),
                 list = String.format(
-                        Value.LIST_WITH_HEADER, "1", LIST_VALUE_SPRINT_SALE, channel.header.name
+                        Value.LIST, "1", LIST_VALUE_SPRINT_SALE
                 )
         ).appendChannelId(channel.id)
         .appendCampaignCode(channel.campaignCode)
