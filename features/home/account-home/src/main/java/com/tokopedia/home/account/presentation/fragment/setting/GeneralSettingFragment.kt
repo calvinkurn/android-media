@@ -197,12 +197,13 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
                 getString(R.string.title_help_center_setting)))
         settingItems.add(SettingItemViewModel(SettingConstant.SETTING_APP_ADVANCED_SETTING,
                 getString(R.string.title_app_advanced_setting)))
-        settingItems.add(SettingItemViewModel(SettingConstant.SETTING_FEEDBACK_FORM,
-                getString(R.string.feedback_form)))
 
         if (GlobalConfig.isAllowDebuggingTools()) {
             settingItems.add(SettingItemViewModel(SettingConstant.SETTING_DEV_OPTIONS,
                     getString(R.string.title_dev_options)))
+
+            settingItems.add(SettingItemViewModel(SettingConstant.SETTING_FEEDBACK_FORM,
+                    getString(R.string.feedback_form)))
         }
 
         val itemOut = SettingItemViewModel(SettingConstant.SETTING_OUT_ID, getString(R.string.account_home_button_logout))
