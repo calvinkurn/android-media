@@ -51,8 +51,6 @@ import com.tokopedia.phoneverification.PhoneVerificationRouter;
 import com.tokopedia.product.manage.feature.list.view.fragment.ProductManageSellerFragment;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
-import com.tokopedia.review.feature.inbox.common.presentation.activity.InboxReputationActivity;
-import com.tokopedia.review.feature.reviewlist.view.fragment.RatingProductFragment;
 import com.tokopedia.seller.common.topads.deposit.data.model.DataDeposit;
 import com.tokopedia.seller.product.etalase.utils.EtalaseUtils;
 import com.tokopedia.seller.shop.common.di.component.DaggerShopComponent;
