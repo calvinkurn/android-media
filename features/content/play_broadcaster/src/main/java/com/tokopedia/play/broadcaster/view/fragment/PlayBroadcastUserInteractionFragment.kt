@@ -27,7 +27,7 @@ import com.tokopedia.play.broadcaster.view.custom.PlayTimerCountDown
 import com.tokopedia.play.broadcaster.view.custom.PlayTimerView
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.fragment.loading.LoadingDialogFragment
-import com.tokopedia.play.broadcaster.view.partial.ChatListPartialView
+import com.tokopedia.play.broadcaster.view.partial.ChatListViewComponent
 import com.tokopedia.play.broadcaster.view.state.LivePusherErrorStatus
 import com.tokopedia.play.broadcaster.view.state.LivePusherState
 import com.tokopedia.play.broadcaster.view.state.LivePusherTimerState
@@ -37,6 +37,7 @@ import com.tokopedia.play_common.util.event.EventObserver
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.play_common.view.updateMargins
+import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.Toaster
 import javax.inject.Inject
 
@@ -58,7 +59,8 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     private lateinit var countdownTimer: PlayTimerCountDown
     private lateinit var loadingView: FrameLayout
 
-    private lateinit var chatListView: ChatListPartialView
+    private val chatListView by viewComponent { ChatListViewComponent(it) }
+
     private lateinit var productLiveBottomSheet: PlayProductLiveBottomSheet
 
     private lateinit var exitDialog: DialogUnify
@@ -116,8 +118,6 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         pmvMetrics = view.findViewById(R.id.pmv_metrics)
         countdownTimer = view.findViewById(R.id.countdown_timer)
         loadingView = view.findViewById(R.id.loading_view)
-
-        chatListView = ChatListPartialView(view as ViewGroup)
     }
 
     private fun setupView() {

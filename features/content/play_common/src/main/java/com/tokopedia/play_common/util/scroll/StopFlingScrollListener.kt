@@ -1,9 +1,9 @@
-package com.tokopedia.play.broadcaster.util.scroll
+package com.tokopedia.play_common.util.scroll
 
 import androidx.recyclerview.widget.RecyclerView
 
 /**
- * Created by jegul on 05/06/20
+ * Created by jegul on 17/09/20
  */
 class StopFlingScrollListener : RecyclerView.OnScrollListener() {
 

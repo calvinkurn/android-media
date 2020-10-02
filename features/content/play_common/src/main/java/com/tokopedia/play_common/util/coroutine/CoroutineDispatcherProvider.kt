@@ -1,15 +1,14 @@
-package com.tokopedia.play.util.coroutine
+package com.tokopedia.play_common.util.coroutine
 
 import kotlinx.coroutines.CoroutineDispatcher
 
 /**
- * Created by jegul on 16/12/19
+ * Created by jegul on 22/09/20
  */
 interface CoroutineDispatcherProvider {
 
-    val main: CoroutineDispatcher
-
-    val immediate: CoroutineDispatcher
-
     val io: CoroutineDispatcher
+    val main: CoroutineDispatcher
+    val immediate: CoroutineDispatcher
+    val computation: CoroutineDispatcher
 }

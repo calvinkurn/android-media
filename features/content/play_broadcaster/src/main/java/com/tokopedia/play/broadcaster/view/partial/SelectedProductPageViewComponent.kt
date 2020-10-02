@@ -10,19 +10,17 @@ import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.ui.itemdecoration.PlayGridTwoItemDecoration
 import com.tokopedia.play.broadcaster.ui.model.ProductContentUiModel
 import com.tokopedia.play.broadcaster.ui.viewholder.ProductSelectableViewHolder
-import com.tokopedia.play.broadcaster.util.scroll.StopFlingScrollListener
 import com.tokopedia.play.broadcaster.view.adapter.ProductSelectableAdapter
+import com.tokopedia.play_common.util.scroll.StopFlingScrollListener
+import com.tokopedia.play_common.viewcomponent.ViewComponent
 
 /**
  * Created by jegul on 28/05/20
  */
-class SelectedProductPagePartialView(
+class SelectedProductPageViewComponent(
         container: ViewGroup,
         listener: Listener
-) : PartialView(container, R.id.cl_selected_product) {
-
-    val isShown: Boolean
-        get() = bottomSheetBehavior.state == BottomSheetBehavior.STATE_EXPANDED
+) : ViewComponent(container, R.id.cl_selected_product) {
 
     private val clSelectedProduct: ConstraintLayout = rootView as ConstraintLayout
     private val tvSelectedProductTitle: TextView = findViewById(R.id.tv_selected_product_title)
@@ -51,12 +49,16 @@ class SelectedProductPagePartialView(
         hide()
     }
 
-    fun show() {
+    override fun show() {
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
     }
 
-    fun hide() {
+    override fun hide() {
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+    }
+
+    override fun isShown(): Boolean {
+        return bottomSheetBehavior.state == BottomSheetBehavior.STATE_EXPANDED
     }
 
     fun setSelectedProductList(productList: List<ProductContentUiModel>) {
