@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
@@ -35,18 +36,23 @@ import com.tokopedia.notifications.inApp.viewEngine.CmInAppListener;
 import com.tokopedia.notifications.inApp.viewEngine.ElementType;
 import com.tokopedia.notifications.inApp.viewEngine.ViewEngine;
 import com.tokopedia.promotionstarget.data.notification.NotificationEntryType;
+import com.tokopedia.promotionstarget.domain.presenter.GratifCancellationExceptionType;
+import com.tokopedia.promotionstarget.domain.presenter.GratifPopupIngoreType;
 import com.tokopedia.promotionstarget.domain.presenter.GratificationPresenter;
+import com.tokopedia.promotionstarget.presentation.ui.dialog.CmGratificationDialog;
 
-import org.jetbrains.annotations.Nullable;
 import org.json.JSONObject;
 
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.CancellationException;
+import java.util.concurrent.ConcurrentHashMap;
+
+import kotlinx.coroutines.Job;
 
 import static com.tokopedia.notifications.common.CMConstant.EXTRA_BASE_MODEL;
 import static com.tokopedia.notifications.inApp.ruleEngine.RulesUtil.Constants.RemoteConfig.KEY_CM_INAPP_END_TIME_INTERVAL;
@@ -71,6 +77,9 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
     private static final String DISCO_PAGE_ACTIVITY_NAME = "com.tokopedia.discovery2.viewcontrollers.activity";
     private Map<WeakReference<Activity>, WeakReference<BroadcastReceiver>> broadcastReceiverMap = new HashMap<>();
     private final Set<String> processedNotificationIds = new HashSet<>();
+    private Map<Integer, Job> mapOfGratifJobs = new ConcurrentHashMap<Integer, Job>();
+//    private ArrayList<Job> gratifJobs = new ArrayList<>();
+//    private Set<DialogInterface> dialogInterfaceSet = new HashSet<>();
 
     /*
      * This flag is used for validation of the dialog to be displayed.
@@ -95,7 +104,9 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
         this.application = application;
         this.cmInAppListener = this;
         gratificationPresenter = new GratificationPresenter(application);
-        gratificationPresenter.setExceptionCallback(th -> isDialogShowing = false);
+        gratificationPresenter.setExceptionCallback(th -> {
+            isDialogShowing = false;
+        });
         RulesManager.initRuleEngine(application, new RuleInterpreterImpl(), new DataConsumerImpl());
         initInAppManager();
     }
@@ -116,13 +127,14 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
         currentActivity = new WeakReference<>(activity);
     }
 
-    private void showInAppNotification(String name) {
+    private void showInAppNotification(String name, int entityHashCode) {
         if (excludeScreenList != null && excludeScreenList.contains(name))
             return;
         RulesManager.getInstance().checkValidity(
                 name,
                 0L,
-                this
+                this,
+                entityHashCode
         );
     }
 
@@ -130,26 +142,35 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
         String gratificationId = bundle.getString("gratificationId");
         gratificationPresenter.showGratificationInApp(currentActivity, gratificationId, NotificationEntryType.PUSH, new GratificationPresenter.GratifPopupCallback() {
             @Override
-            public void onShow() {
-
+            public void onShow(@NonNull DialogInterface dialogInterface) {
+//                dialogInterfaceSet.add(dialogInterface);
             }
 
             @Override
-            public void onDismiss() {
+            public void onDismiss(@NonNull DialogInterface dialogInterface) {
+//                dialogInterfaceSet.remove(dialogInterface);
+                isDialogShowing = false;
+            }
+
+            @Override
+            public void onIgnored(@GratifPopupIngoreType int reason) {
                 isDialogShowing = false;
             }
         });
+
         isDialogShowing = true;
     }
 
     @Override
-    public void notificationsDataResult(List<CMInApp> inAppDataList) {
+    public void notificationsDataResult(List<CMInApp> inAppDataList, int entityHashCode) {
         synchronized (lock) {
             if (canShowInApp(inAppDataList)) {
                 CMInApp cmInApp = inAppDataList.get(0);
                 sendEventInAppPrepared(cmInApp);
-                showDialog(cmInApp);
-                dataConsumed(cmInApp);
+                showDialog(cmInApp, entityHashCode);
+                if (!cmInApp.getType().equals(TYPE_GRATIF)) {
+                    dataConsumed(cmInApp);
+                }
             }
         }
     }
@@ -208,40 +229,53 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
         }
     }
 
-    private void showGratifDialog(CMInApp data) {
+    private void showGratifDialog(CMInApp data, int entityHashCode) {
         if (getCurrentActivity() == null) return;
 
         try {
             String customValues = data.getCustomValues();
             JSONObject json = new JSONObject(customValues);
             String gratificationId = json.getString("gratificationId");
-            gratificationPresenter.showGratificationInApp(currentActivity, gratificationId, NotificationEntryType.ORGANIC, new GratificationPresenter.GratifPopupCallback() {
+            Job job = gratificationPresenter.showGratificationInApp(currentActivity, gratificationId, NotificationEntryType.ORGANIC, new GratificationPresenter.GratifPopupCallback() {
                 @Override
-                public void onShow() {
-
+                public void onShow(@NonNull DialogInterface dialogInterface) {
+//                    dialogInterfaceSet.add(dialogInterface);
+                    dataConsumed(data);
                 }
 
                 @Override
-                public void onDismiss() {
+                public void onDismiss(@NonNull DialogInterface dialogInterface) {
+//                    dialogInterfaceSet.remove(dialogInterface);
                     isDialogShowing = false;
+                }
+
+                @Override
+                public void onIgnored(@GratifPopupIngoreType int reason) {
+                    isDialogShowing = false;
+                    dataConsumed(data);
                 }
             });
 
             // set flag if has dialog showing
+            mapOfGratifJobs.put(entityHashCode, job);
             isDialogShowing = true;
+//            gratifJobs.add(job);
+
         } catch (Exception e) {
+            dataConsumed(data);
             onCMInAppInflateException(data);
         }
     }
 
-    private void showDialog(CMInApp data) {
+    private void showDialog(CMInApp data, int entityHashCode) {
         switch (data.getType()) {
             case TYPE_INTERSTITIAL_IMAGE_ONLY:
             case TYPE_INTERSTITIAL:
                 interstitialDialog(data);
                 break;
             case TYPE_GRATIF:
-                showGratifDialog(data);
+                showGratifDialog(data, entityHashCode);
+                break;
             default:
                 showLegacyDialog(data);
                 break;
@@ -288,7 +322,7 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
             if (canShowPopupFromPush) {
                 showPopupFromPush(bundle, currentActivity.get().getClass().getName());
             } else {
-                showInAppNotification(currentActivity.get().getClass().getName());
+                showInAppNotification(currentActivity.get().getClass().getName(), activity.hashCode());
             }
         }
     }
@@ -339,21 +373,45 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
     }
 
     public void onFragmentStart(Fragment fragment) {
+        cancelGratifJob(fragment.hashCode(),GratifCancellationExceptionType.FRAGMENT_STARTED);
 
         if (!isDialogShowing) {
-            showInAppNotification(fragment.getClass().getName());
+            showInAppNotification(fragment.getClass().getName(), fragment.hashCode());
+        }
+    }
+
+    public void onFragmentResume(Fragment fragment) {
+        cancelGratifJob(fragment.hashCode(),GratifCancellationExceptionType.FRAGMENT_RESUME);
+
+        if (!isDialogShowing) {
+            showInAppNotification(fragment.getClass().getName(), fragment.hashCode());
         }
     }
 
     public void onFragmentSelected(Fragment fragment) {
 
+        for (Job job : mapOfGratifJobs.values()) {
+            job.cancel(new CancellationException(GratifCancellationExceptionType.FRAGMENT_SELECTED));
+
+            //todo Rahul later - need better logic for this
+            isDialogShowing = false;
+        }
+//        gratifJobs.clear();
+        mapOfGratifJobs.clear();
+
+//        for (DialogInterface dialogInterface:dialogInterfaceSet){
+//            CmGratificationDialog dialog;
+//            if(dialog.)
+//        }
+
         if (!isDialogShowing) {
-            showInAppNotification(fragment.getClass().getName());
+            showInAppNotification(fragment.getClass().getName(), fragment.hashCode());
         }
     }
 
     public void onFragmentStop(Fragment fragment) {
         //todo Rahul - need to stop showning dialog - ask lalit
+        cancelGratifJob(fragment.hashCode(), GratifCancellationExceptionType.FRAGMENT_STOP);
     }
 
     public void onFragmentUnSelected(Fragment fragment) {
@@ -361,7 +419,18 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
     }
 
     public void onFragmentDestroyed(Fragment fragment) {
-        //todo Rahul
+        cancelGratifJob(fragment.hashCode(), GratifCancellationExceptionType.FRAGMENT_DESTROYED);
+    }
+
+    private void cancelGratifJob(int entityHashCode, @GratifCancellationExceptionType String reason) {
+        Job job = mapOfGratifJobs.get(entityHashCode);
+        if (job != null) {
+            job.cancel(new CancellationException(reason));
+            mapOfGratifJobs.remove(entityHashCode);
+
+            //need better logic for this
+            isDialogShowing = false;
+        }
     }
 
     public void onActivityStopInternal(Activity activity) {
@@ -370,6 +439,8 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
             currentActivity.clear();
         }
         unRegisterBroadcastReceiver(activity);
+
+        cancelGratifJob(activity.hashCode(), GratifCancellationExceptionType.ACTIVITY_STOP);
     }
 
     private void dataConsumed(CMInApp inAppData) {

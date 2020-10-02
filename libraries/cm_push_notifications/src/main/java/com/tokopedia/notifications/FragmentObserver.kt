@@ -13,6 +13,13 @@ class FragmentObserver(private val cmInAppManager: CMInAppManager) : FragmentLif
         }
     }
 
+    override fun onFragmentResume(fragment: Fragment) {
+        try {
+            cmInAppManager.onFragmentResume(fragment)
+        } catch (e: Exception) {
+        }
+    }
+
     override fun onFragmentStop(fragment: Fragment) {
         try {
             cmInAppManager.onFragmentStop(fragment)

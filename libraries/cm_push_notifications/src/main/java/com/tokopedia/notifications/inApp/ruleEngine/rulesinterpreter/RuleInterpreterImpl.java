@@ -24,14 +24,15 @@ public class RuleInterpreterImpl implements InterfaceRuleInterpreter {
 
     @Override
     public void checkForValidity(String entity, long currentTime,
-                                 DataProvider dataProvider) {
-        makeRequestForData(entity, currentTime, dataProvider);
+                                 DataProvider dataProvider, int entityHashCode) {
+        makeRequestForData(entity, currentTime, dataProvider, entityHashCode);
     }
 
     private void makeRequestForData(
             final String entity,
             final long currentTime,
-            final DataProvider dataProvider
+            final DataProvider dataProvider,
+            int entityHashCode
     ){
         Observable.fromCallable(new Callable<ElapsedTime>() {
             @Override
@@ -74,11 +75,11 @@ public class RuleInterpreterImpl implements InterfaceRuleInterpreter {
                                 }
                             }
                         }
-                        dataProvider.notificationsDataResult(inAppList);
+                        dataProvider.notificationsDataResult(inAppList, entityHashCode);
                     }
 
                     @Override public void onError(Throwable e) {
-                        dataProvider.notificationsDataResult(null);
+                        dataProvider.notificationsDataResult(null,entityHashCode);
                     }
 
                     @Override public void onCompleted() {}

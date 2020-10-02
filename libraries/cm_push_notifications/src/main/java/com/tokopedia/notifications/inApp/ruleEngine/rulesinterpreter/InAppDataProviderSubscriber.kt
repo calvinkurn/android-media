@@ -6,7 +6,7 @@ import com.tokopedia.notifications.inApp.ruleEngine.repository.RepositoryManager
 import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.ElapsedTime
 import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.CMInApp
 import rx.Subscriber
-
+//todo Rahul - this should be in test class - since it is used only in testing
 class InAppDataProviderSubscriber(
         private val elapsedTimeObj: ElapsedTime?,
         private val dataProvider: DataProvider?) : Subscriber<List<CMInApp>>() {
@@ -35,7 +35,7 @@ class InAppDataProviderSubscriber(
             }
 
         }
-        dataProvider?.notificationsDataResult(inAppList)
+        dataProvider?.notificationsDataResult(inAppList,0)
     }
 
     override fun onCompleted() {
@@ -43,7 +43,7 @@ class InAppDataProviderSubscriber(
     }
 
     override fun onError(e: Throwable?) {
-        dataProvider?.notificationsDataResult(null)
+        dataProvider?.notificationsDataResult(null,0)
     }
 
     private fun checkIfActiveInTimeFrame(inAppData: CMInApp, currentTime: Long): Boolean {

@@ -1,9 +1,6 @@
 package com.tokopedia.abstraction.base.view.listener
 
-import android.content.Context
 import androidx.fragment.app.Fragment
-import com.tokopedia.abstraction.base.view.fragment.CmFragment
-import java.lang.ref.WeakReference
 
 object FragmentLifecycleObserver {
 
@@ -14,6 +11,13 @@ object FragmentLifecycleObserver {
             item.onFragmentStart(fragment)
         }
     }
+
+    fun onFragmentResume(fragment: Fragment){
+        for(item in FragmentLifecycleObserver.callbacks){
+            item.onFragmentResume(fragment)
+        }
+    }
+
     fun onFragmentStop(fragment: Fragment){
         for(item in FragmentLifecycleObserver.callbacks){
             item.onFragmentStop(fragment)
@@ -41,30 +45,30 @@ object FragmentLifecycleObserver {
 
 
     //==============USELESS CODE BELOW NEED TO REMOVE==========
-    var weakFragment: WeakReference<CmFragment>? = null
+//    var weakFragment: WeakReference<CmFragment>? = null
+//
+//    fun onFragmentSelected(fragment: CmFragment) {
+//        checkNotifications(fragment)
+//    }
+//
+//    fun onFragmentResumed(fragment: CmFragment) {
+//        checkNotifications(fragment)
+//    }
+//
+//    fun onFragmentStop(fragment: CmFragment) {
+//
+//    }
+//
+//    fun onFragmentDestroyed(fragment: CmFragment) {
+//
+//    }
+//
+//    private fun checkNotifications(fragment: CmFragment) {
+//
+//
+//    }
 
-    fun onFragmentSelected(fragment: CmFragment) {
-        checkNotifications(fragment)
-    }
-
-    fun onFragmentResumed(fragment: CmFragment) {
-        checkNotifications(fragment)
-    }
-
-    fun onFragmentStop(fragment: CmFragment) {
-
-    }
-
-    fun onFragmentDestroyed(fragment: CmFragment) {
-
-    }
-
-    private fun checkNotifications(fragment: CmFragment) {
-
-
-    }
-
-    fun createAlertDialog(context: Context, title: String) {
-
-    }
+//    fun createAlertDialog(context: Context, title: String) {
+//
+//    }
 }

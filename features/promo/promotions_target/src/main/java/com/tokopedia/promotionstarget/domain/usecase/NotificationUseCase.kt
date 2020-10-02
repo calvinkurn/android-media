@@ -1,20 +1,26 @@
 package com.tokopedia.promotionstarget.domain.usecase
 
+import android.content.SharedPreferences
 import com.google.gson.Gson
-import com.tokopedia.promotionstarget.data.AutoApplyParams
 import com.tokopedia.promotionstarget.data.GratifParams
 import com.tokopedia.promotionstarget.data.di.GRATIFF_NOTIFICATION
 import com.tokopedia.promotionstarget.data.gql.GqlUseCaseWrapper
 import com.tokopedia.promotionstarget.data.notification.GratifNotificationResponse
 import com.tokopedia.promotionstarget.fake.FakeResponse
+import kotlinx.coroutines.delay
 import org.json.JSONObject
 import javax.inject.Inject
 import javax.inject.Named
 
-class NotificationUseCase @Inject constructor(@Named(GRATIFF_NOTIFICATION) val queryString: String, val gqlWrapper: GqlUseCaseWrapper) {
+class NotificationUseCase @Inject constructor(@Named(GRATIFF_NOTIFICATION) val queryString: String,
+                                              val gqlWrapper: GqlUseCaseWrapper,
+                                              val sharedPreferences: SharedPreferences) {
     private val PARAMS = GratifParams
 
     suspend fun getResponse(map: HashMap<String, Any>): GratifNotificationResponse {
+        val delayInSecs = sharedPreferences.getInt("get_notification_delay", 0)
+        if (delayInSecs > 0)
+            delay(delayInSecs * 1000L)
         return gqlWrapper.getResponse(GratifNotificationResponse::class.java, queryString, map)
     }
 

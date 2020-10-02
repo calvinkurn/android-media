@@ -505,5 +505,32 @@
             android:layout_height="wrap_content"
             android:id="@+id/requestFcmToken"
             android:text="Request New FCM Token" />
+
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/et_delay_gratif"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl4"
+            android:textSize="@dimen/fontSize_lvl4"
+            android:lines="1"
+            android:gravity="center_vertical"
+            android:inputType="number"
+            android:text="0"
+            android:hint="Delay in Gratif pop-up"
+            app:backgroundTint="@color/Green_G500" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/btn_delay_gratif_pop_up"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/spacing_lvl2"
+            android:layout_marginBottom="@dimen/spacing_lvl4"
+            android:background="@drawable/btn_share"
+            android:gravity="center"
+            android:padding="@dimen/spacing_lvl3"
+            android:text="Enter seconds to add delay in Gratif pop-up"
+            android:textColor="@color/Neutral_N0" />
     </LinearLayout>
 </ScrollView>

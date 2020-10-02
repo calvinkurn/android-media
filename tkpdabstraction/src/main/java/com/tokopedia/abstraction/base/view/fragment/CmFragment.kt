@@ -29,7 +29,7 @@ abstract class CmFragment: TkpdBaseV4Fragment() {
 
         view?.post {
             if (isVisible && fragmentInflater == ACTIVITY) {
-                FragmentLifecycleObserver.onFragmentResumed(this)
+                FragmentLifecycleObserver.onFragmentResume(this)
             }
             else if (isVisible && fragmentInflater == VIEW_PAGER) {
                 //To handle - when this fragment gets onResume event from backstack (when user comes back to this activity)
@@ -46,11 +46,12 @@ abstract class CmFragment: TkpdBaseV4Fragment() {
     override fun onStop() {
         super.onStop()
         FragmentLifecycleObserver.onFragmentStop(this)
+
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        FragmentLifecycleObserver.onFragmentDestroyed(this)
+        FragmentLifecycleObserver.onFragmentStop(this)
     }
 
     companion object {

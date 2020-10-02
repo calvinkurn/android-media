@@ -131,6 +131,9 @@ public class DeveloperOptionActivity extends BaseActivity {
     private PermissionCheckerHelper permissionCheckerHelper;
     private EditText etUIBlockDelay;
 
+    private EditText etDelayGratif;
+    private AppCompatTextView btnDelayGratif;
+
     @Override
     public String getScreenName() {
         return getString(R.string.screen_name);
@@ -251,6 +254,8 @@ public class DeveloperOptionActivity extends BaseActivity {
         spinnerEnvironmentChooser.setAdapter(envSpinnerAdapter);
 
         tvFakeResponse = findViewById(R.id.tv_fake_response);
+        etDelayGratif = findViewById(R.id.et_delay_gratif);
+        btnDelayGratif = findViewById(R.id.btn_delay_gratif_pop_up);
     }
 
     private void initListener() {
@@ -485,6 +490,21 @@ public class DeveloperOptionActivity extends BaseActivity {
 
         tvFakeResponse.setOnClickListener(v -> {
             new FakeResponseActivityProvider().startActivity(this);
+        });
+
+        SharedPreferences gratifSp = getSharedPreferences("promo_gratif", Context.MODE_PRIVATE);
+        int delayGraif = gratifSp.getInt("get_notification_delay",0);
+        etDelayGratif.setText(String.valueOf(delayGraif));
+
+        btnDelayGratif.setOnClickListener(v->{
+            String delay = etDelayGratif.getText().toString();
+            try {
+                int delayInNum = Integer.parseInt(delay);
+                SharedPreferences sp = getSharedPreferences("promo_gratif", Context.MODE_PRIVATE);
+                sp.edit().putInt("get_notification_delay",delayInNum).apply();
+            }catch (Exception e){
+                Toast.makeText(btnDelayGratif.getContext(),"Unable to save",Toast.LENGTH_SHORT).show();
+            }
         });
     }
 
