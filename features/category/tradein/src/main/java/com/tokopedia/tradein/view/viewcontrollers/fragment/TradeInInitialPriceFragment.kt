@@ -64,12 +64,7 @@ class TradeInInitialPriceFragment : BaseViewModelFragment<TradeInInitialPriceVie
 
     private fun init() {
         arguments?.apply {
-            setMaxPrice(getString(EXTRA_MAX_PRICE, "-"))
-            if (getBoolean(EXTRA_IS_ELIGIBLE, false)) {
-                isElligible()
-            } else {
-                notElligible(getString(EXTRA_NOT_ELIGIBLE_MESSAGE, ""))
-            }
+            handleEligibility(getString(EXTRA_MAX_PRICE, "-"), getBoolean(EXTRA_IS_ELIGIBLE, false), getString(EXTRA_NOT_ELIGIBLE_MESSAGE, ""))
         }
         tradeInInitialPriceViewModel.checkAndroid10(getTradeInDeviceId())
         tradeinHomeViewModel.tradeInParams.apply {
@@ -86,6 +81,15 @@ class TradeInInitialPriceFragment : BaseViewModelFragment<TradeInInitialPriceVie
         }
         iv_back.setOnClickListener {
             activity?.onBackPressed()
+        }
+    }
+
+    fun handleEligibility(maxPrice: String, isElligibleForTradeIn: Boolean, notElligibleMessage: String) {
+        setMaxPrice(maxPrice)
+        if (isElligibleForTradeIn) {
+            isElligible()
+        } else {
+            notElligible(notElligibleMessage)
         }
     }
 

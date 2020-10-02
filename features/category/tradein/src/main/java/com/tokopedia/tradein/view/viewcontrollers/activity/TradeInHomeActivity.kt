@@ -132,11 +132,11 @@ class TradeInHomeActivity : BaseViewModelActivity<TradeInHomeViewModel>(){
         })
         viewModel.homeResultData.observe(this, Observer { homeResult: HomeResult ->
             if (!homeResult.isSuccess) {
-                notEligibleMessage = getString(R.string.not_elligible)
+                setNotElligible(getString(R.string.not_elligible))
             } else {
                 when (homeResult.priceStatus) {
                     PriceState.DIAGNOSED_INVALID -> {
-                        notEligibleMessage = getString(R.string.tradein_not_elligible_price_high)
+                        setNotElligible(getString(R.string.tradein_not_elligible_price_high))
                     }
                     PriceState.DIAGNOSED_VALID -> {
                         setDiagnosedValid(homeResult)
@@ -166,6 +166,12 @@ class TradeInHomeActivity : BaseViewModelActivity<TradeInHomeViewModel>(){
                 }
             }
         })
+    }
+
+    private fun setNotElligible(message: String){
+        isEligibleForTradein = false
+        maxPrice = "-"
+        notEligibleMessage = message
     }
 
     private fun setDiagnosedValid(homeResult: HomeResult) {
@@ -219,18 +225,20 @@ class TradeInHomeActivity : BaseViewModelActivity<TradeInHomeViewModel>(){
                                 .commit()
                     }
                     else -> {
-                        currentFragment = TradeInInitialPriceFragment
-                                .getFragmentInstance(maxPrice, isEligibleForTradein, notEligibleMessage)
-                        supportFragmentManager.beginTransaction()
-                                .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out, android.R.animator.fade_in, android.R.animator.fade_out)
-                                .add(R.id.tradein_parent_view, currentFragment, TRADEIN_INITIAL_FRAGMENT)
-                                .addToBackStack("")
-                                .commit()
-                        tradeInAnalytics.viewInitialPricePage(
-                                deviceDisplayName ?: "none/other"
-                                , minPrice
-                                , maxPrice
-                                , productId.toString())
+                        if(currentFragment is TradeInInitialPriceFragment){
+                            (currentFragment as TradeInInitialPriceFragment).handleEligibility(maxPrice, isEligibleForTradein, notEligibleMessage)
+                        } else {
+                            currentFragment = TradeInInitialPriceFragment
+                                    .getFragmentInstance(maxPrice, isEligibleForTradein, notEligibleMessage)
+                            supportFragmentManager.beginTransaction()
+                                    .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out, android.R.animator.fade_in, android.R.animator.fade_out)
+                                    .add(R.id.tradein_parent_view, currentFragment, TRADEIN_INITIAL_FRAGMENT)
+                                    .addToBackStack("")
+                                    .commit()
+                            tradeInAnalytics.viewInitialPricePage(
+                                    deviceDisplayName
+                                            ?: "none/other", minPrice, maxPrice, productId.toString())
+                        }
                     }
                 }
             }
