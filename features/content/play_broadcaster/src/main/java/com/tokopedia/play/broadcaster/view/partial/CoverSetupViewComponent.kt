@@ -10,7 +10,6 @@ import android.view.inputmethod.EditorInfo
 import android.widget.*
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.GlideException
@@ -19,20 +18,22 @@ import com.bumptech.glide.request.target.Target
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.play.broadcaster.R
-import com.tokopedia.play.broadcaster.util.extension.doOnLayout
-import com.tokopedia.play.broadcaster.util.extension.doOnPreDraw
-import com.tokopedia.play.broadcaster.util.extension.isLocal
-import com.tokopedia.play.broadcaster.util.extension.setTextFieldColor
 import com.tokopedia.play_common.util.KeyboardWatcher
+import com.tokopedia.play_common.util.extension.doOnLayout
+import com.tokopedia.play_common.util.extension.doOnPreDraw
+import com.tokopedia.play_common.util.extension.isLocal
+import com.tokopedia.play_common.util.extension.setTextFieldColor
+import com.tokopedia.play_common.viewcomponent.ViewComponent
+import com.tokopedia.play_common.viewcomponent.ViewComponentListener
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.UnifyButton
 
 
-class CoverSetupPartialView(
+class CoverSetupViewComponent(
         container: ViewGroup,
         private val dataSource: DataSource,
         private val listener: Listener
-) : PartialView(container, R.id.cl_cover_setup), LifecycleObserver {
+) : ViewComponent(container, R.id.cl_cover_setup) {
 
     var coverTitle: String
         get() = etCoverTitle.text?.toString() ?: ""
@@ -106,14 +107,7 @@ class CoverSetupPartialView(
     fun onDestroy() {
         keyboardWatcher.unlisten(rootView)
         etCoverTitle.clearFocus()
-    }
-
-    fun show() {
-        rootView.show()
-    }
-
-    fun hide() {
-        rootView.hide()
+        listener.onViewDestroyed(this)
     }
 
     fun getBottomActionView() = clCropButton
@@ -279,10 +273,10 @@ class CoverSetupPartialView(
         slCropParent.setOnTouchListener { _, _ -> true }
     }
 
-    interface Listener {
+    interface Listener : ViewComponentListener<CoverSetupViewComponent> {
 
-        fun onImageAreaClicked(view: CoverSetupPartialView)
-        fun onNextButtonClicked(view: CoverSetupPartialView, coverTitle: String)
+        fun onImageAreaClicked(view: CoverSetupViewComponent)
+        fun onNextButtonClicked(view: CoverSetupViewComponent, coverTitle: String)
         fun onTitleAreaHasFocus()
     }
 

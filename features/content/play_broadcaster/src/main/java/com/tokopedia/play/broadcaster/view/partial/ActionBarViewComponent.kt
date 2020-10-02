@@ -3,19 +3,18 @@ package com.tokopedia.play.broadcaster.view.partial
 import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.broadcaster.R
+import com.tokopedia.play_common.viewcomponent.ViewComponent
 import com.tokopedia.unifyprinciples.Typography
 
 
 /**
  * Created by mzennis on 12/06/20.
  */
-class ActionBarPartialView(
+class ActionBarViewComponent(
         container: ViewGroup,
         listener: Listener
-) : PartialView(container, R.id.action_bar){
+) : ViewComponent(container, R.id.action_bar){
 
     private var ivSwitchCamera: AppCompatImageView = findViewById(R.id.iv_switch)
     private var tvClose: AppCompatTextView = findViewById(R.id.tv_close)
@@ -33,14 +32,6 @@ class ActionBarPartialView(
     fun setupCloseButton(actionTitle: String) {
         tvClose.text = actionTitle
         tvClose.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
-    }
-
-    fun show() {
-        rootView.visible()
-    }
-
-    fun hide() {
-        rootView.gone()
     }
 
     interface Listener {
