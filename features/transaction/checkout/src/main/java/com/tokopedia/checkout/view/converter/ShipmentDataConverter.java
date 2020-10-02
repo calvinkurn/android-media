@@ -68,7 +68,7 @@ public class ShipmentDataConverter {
                     }
                 }
             }
-            RecipientAddressModel recipientAddressModel = createRecipientAddressModel(defaultAddress, tradeInDropOffAddress, isTradeIn/*, isTradeInDropOffEnable*/);
+            RecipientAddressModel recipientAddressModel = createRecipientAddressModel(defaultAddress, tradeInDropOffAddress, isTradeIn);
             recipientAddressModel.setSelectedTabIndex(RecipientAddressModel.TAB_ACTIVE_ADDRESS_DEFAULT);
             if (cartShipmentAddressFormData.getAddressesData() != null) {
                 recipientAddressModel.setDisabledAddress(cartShipmentAddressFormData.getAddressesData().getDisableTabs());
@@ -94,8 +94,7 @@ public class ShipmentDataConverter {
     @NonNull
     private RecipientAddressModel createRecipientAddressModel(UserAddress defaultAddress,
                                                               UserAddress tradeInAddress,
-                                                              boolean isTradeIn
-                                                              /*boolean isTradeInDropOffEnable*/) {
+                                                              boolean isTradeIn) {
         RecipientAddressModel recipientAddress = new RecipientAddressModel();
 
         if (defaultAddress != null) {
