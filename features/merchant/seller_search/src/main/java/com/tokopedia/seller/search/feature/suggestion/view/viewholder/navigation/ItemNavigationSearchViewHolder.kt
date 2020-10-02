@@ -26,7 +26,9 @@ class ItemNavigationSearchViewHolder(
     override fun bind(element: NavigationSellerSearchUiModel) {
         bindTitleText(element)
         with(itemView){
-            ivHistoryTime.setImage(element.imageUrl.orEmpty(), 0F)
+            if(element.imageUrl?.isNotBlank() == true) {
+                ivHistoryTime.setImage(element.imageUrl.orEmpty(), 0F)
+            }
             tvDescSearchResultNav?.text = element.desc
             setOnClickListener {
                 navigationSearchListener.onNavigationItemClicked(element, adapterPosition)
