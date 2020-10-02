@@ -274,7 +274,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                     }
             )
         }
-        forceStopDialog.show()
+        if (!forceStopDialog.isShowing) forceStopDialog.show()
     }
 
     private fun showToaster(
