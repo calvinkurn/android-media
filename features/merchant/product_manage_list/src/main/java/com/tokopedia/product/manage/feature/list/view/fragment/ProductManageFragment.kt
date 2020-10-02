@@ -1451,6 +1451,12 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         context?.let {
             LocalBroadcastManager.getInstance(it).unregisterReceiver(addProductReceiver)
         }
+        if (productManageAddEditMenuBottomSheet.isVisible) {
+            productManageAddEditMenuBottomSheet.dismiss()
+        }
+        if (productManageBottomSheet?.isVisible == true) {
+            productManageBottomSheet?.dismiss()
+        }
     }
 
     override fun onResume() {
