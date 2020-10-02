@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
+import com.bumptech.glide.Glide
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.utils.*
@@ -32,6 +33,13 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
 
     override fun setProductModel(productCardModel: ProductCardModel) {
         imageProduct?.loadImage(productCardModel.productImageUrl)
+
+        labelCampaignBackground?.let {
+            Glide.with(context)
+                    .load(R.drawable.product_card_label_campaign_background)
+                    .error(R.drawable.placeholder_grey)
+                    .into(it)
+        }
 
         renderOutOfStockView(productCardModel)
 

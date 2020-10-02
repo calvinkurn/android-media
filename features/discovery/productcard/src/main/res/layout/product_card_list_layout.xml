@@ -71,6 +71,34 @@
             app:typographyType="small"
             app:typographyWeight="bold" />
 
+        <ImageView
+            android:id="@+id/labelCampaignBackground"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="@dimen/dp_24"
+            android:layout_marginStart="@dimen/dp_8"
+            android:layout_marginEnd="@dimen/dp_16"
+            android:scaleType="fitXY"
+            app:srcCompat="@drawable/product_card_label_campaign_background"
+            app:layout_constraintStart_toEndOf="@id/imageProduct"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="@dimen/dp_0"
+            android:layout_marginStart="@dimen/dp_8"
+            android:layout_marginEnd="@dimen/dp_16"
+            android:ellipsize="end"
+            android:text="Official Store"
+            android:gravity="center_vertical"
+            android:textColor="@color/Neutral_N0"
+            app:typographyType="small"
+            app:typographyWeight="bold"
+            app:layout_constraintStart_toStartOf="@id/labelCampaignBackground"
+            app:layout_constraintTop_toTopOf="@id/labelCampaignBackground"
+            app:layout_constraintEnd_toEndOf="@id/labelCampaignBackground"
+            app:layout_constraintBottom_toBottomOf="@id/labelCampaignBackground" />
+
         <include
             android:id="@+id/productCardContentLayout"
             android:layout_width="@dimen/dp_0"
@@ -79,8 +107,10 @@
             android:layout_marginStart="@dimen/dp_8"
             android:layout_marginRight="@dimen/dp_8"
             android:layout_marginEnd="@dimen/dp_8"
+            android:layout_marginTop="@dimen/dp_4"
+            app:layout_goneMarginTop="@dimen/dp_0"
             app:layout_constraintStart_toEndOf="@id/imageProduct"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/labelCampaignBackground"
             app:layout_constraintEnd_toEndOf="parent"
             layout="@layout/product_card_content_layout" />
 
