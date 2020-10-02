@@ -140,8 +140,8 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         hideTooltipIfExist()
         setupView()
 
-        observeShopLocationLiveData()
         observeWidgetLayoutLiveData()
+        observeShopLocationLiveData()
         observeWidgetData(sellerHomeViewModel.cardWidgetData, WidgetType.CARD)
         observeWidgetData(sellerHomeViewModel.lineGraphWidgetData, WidgetType.LINE_GRAPH)
         observeWidgetData(sellerHomeViewModel.progressWidgetData, WidgetType.PROGRESS)
@@ -480,7 +480,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         }
     }
 
-
     private fun observeWidgetLayoutLiveData() {
         sellerHomeViewModel.widgetLayout.observe(viewLifecycleOwner, Observer { result ->
             when (result) {
@@ -518,6 +517,8 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         super.clearAllData()
         super.renderList(widgets)
 
+        loadCardWidgetsData(widgets)
+
         if (isFirstLoad) {
             recyclerView.post {
                 requestVisibleWidgetsData()
@@ -528,6 +529,10 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         }
 
         setProgressBarVisibility(false)
+    }
+
+    private fun loadCardWidgetsData(widgets: List<BaseWidgetUiModel<*>>) {
+        getCardData(widgets.filter { !it.isLoaded && it.widgetType == WidgetType.CARD })
     }
 
     private fun getWidgetsData(widgets: List<BaseWidgetUiModel<*>>) {
@@ -640,13 +645,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                     result.throwable.setOnErrorWidgetState<D, BaseWidgetUiModel<D>>(type)
                 }
             }
-            if (!performanceMonitoringSellerHomePltCompleted) {
-                performanceMonitoringSellerHomePltCompleted = true
-                recyclerView.addOneTimeGlobalLayoutListener {
-                    stopPerformanceMonitoringSellerHomeLayout()
-                    stopHomeLayoutRenderMonitoring()
-                }
-            }
             stopSellerHomeFragmentWidgetPerformanceMonitoring(type)
         })
     }
@@ -665,15 +663,15 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     }
 
     private inline fun <D : BaseDataUiModel, reified W : BaseWidgetUiModel<D>> List<D>.setOnSuccessWidgetState(widgetType: String) {
+        stopPltMonitoringIfNotCompleted()
         forEach { widgetData ->
-            adapter.data.find {
-                val isSameDataKey = it.dataKey == widgetData.dataKey
-                val isSameWidgetType = it.widgetType == widgetType
-                return@find isSameDataKey && isSameWidgetType
-            }?.let { widget ->
+            adapter.data.indexOfFirst {
+                it.dataKey == widgetData.dataKey && it.widgetType == widgetType
+            }.takeIf { it > -1 }?.let { index ->
+                val widget = adapter.data.getOrNull(index)
                 if (widget is W) {
                     widget.data = widgetData
-                    notifyWidgetChanged(widget)
+                    notifyWidgetChanged(index)
                 }
             }
         }
@@ -684,13 +682,13 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     private inline fun <reified D : BaseDataUiModel, reified W : BaseWidgetUiModel<D>> Throwable.setOnErrorWidgetState(widgetType: String) {
         val message = this.message.orEmpty()
-        adapter.data.forEach { widget ->
+        adapter.data.forEachIndexed { index, widget ->
             val isSameWidgetType = widget.widgetType == widgetType
             if (widget is W && widget.data == null && widget.isLoaded && isSameWidgetType) {
                 widget.data = D::class.java.newInstance().apply {
                     error = message
                 }
-                notifyWidgetChanged(widget)
+                notifyWidgetChanged(index)
             }
         }
         showErrorToaster()
@@ -703,10 +701,14 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         recyclerView.post {
             val widgetPosition = adapter.data.indexOf(widget)
             if (widgetPosition != RecyclerView.NO_POSITION) {
-                adapter.notifyItemChanged(widgetPosition)
-                view?.swipeRefreshLayout?.isRefreshing = false
+                notifyWidgetChanged(widgetPosition)
             }
         }
+    }
+
+    private fun notifyWidgetChanged(position: Int) {
+        adapter.notifyItemChanged(position)
+        view?.swipeRefreshLayout?.isRefreshing = false
     }
 
     private fun onSuccessGetTickers(tickers: List<TickerItemUiModel>) {
@@ -745,6 +747,16 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             ))
         } else {
             throwable.printStackTrace()
+        }
+    }
+
+    private fun stopPltMonitoringIfNotCompleted() {
+        if (!performanceMonitoringSellerHomePltCompleted) {
+            performanceMonitoringSellerHomePltCompleted = true
+            recyclerView.addOneTimeGlobalLayoutListener {
+                stopPerformanceMonitoringSellerHomeLayout()
+                stopHomeLayoutRenderMonitoring()
+            }
         }
     }
 
