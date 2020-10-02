@@ -97,13 +97,18 @@ class PlayBroadcastConfigurableMapper(
         else mockMapper.mapLiveDuration(duration)
     }
 
+    override fun mapIncomingChat(chat: Chat): PlayChatUiModel {
+        return if (!isMock) uiMapper.mapIncomingChat(chat)
+        else mockMapper.mapIncomingChat(chat)
+    }
+
     override fun mapFreezeEvent(freezeEvent: Freeze, event: EventUiModel?): EventUiModel {
         return if (!isMock) uiMapper.mapFreezeEvent(freezeEvent, event)
         else mockMapper.mapFreezeEvent(freezeEvent, event)
-    )
+    }
 
     override fun mapBannedEvent(bannedEvent: Banned, event: EventUiModel?): EventUiModel {
         return if (!isMock) uiMapper.mapBannedEvent(bannedEvent, event)
         else mockMapper.mapBannedEvent(bannedEvent, event)
-    )
+    }
 }
