@@ -2,6 +2,7 @@ package com.tokopedia.product.addedit.variant.presentation.fragment
 
 import android.app.Activity
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
@@ -109,6 +110,9 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         sendTrackerTrackScreenData()
+
+        // set bg color programatically, to reduce overdraw
+        activity?.window?.decorView?.setBackgroundColor(Color.WHITE)
 
         val multipleVariantEditSelectBottomSheet = MultipleVariantEditSelectBottomSheet(this)
         val variantInputModel = viewModel.productInputModel.value?.variantInputModel

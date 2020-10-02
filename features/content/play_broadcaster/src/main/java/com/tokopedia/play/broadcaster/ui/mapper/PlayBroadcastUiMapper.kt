@@ -234,4 +234,8 @@ object PlayBroadcastUiMapper {
             name = chat.user.name,
             isSelfMessage = false
     )
+
+    fun mapFreezeEvent(event: Freeze): EventUiModel =  EventUiModel(
+            freeze = event.isFreeze
+    )
 }

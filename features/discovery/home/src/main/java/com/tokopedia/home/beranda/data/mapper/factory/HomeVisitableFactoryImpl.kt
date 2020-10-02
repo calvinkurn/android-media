@@ -70,6 +70,7 @@ class HomeVisitableFactoryImpl(
             bannerViewModel.slides = bannerDataModel.slides
         }
         bannerViewModel.isCache = isCache
+        bannerViewModel.createdTimeMillis = bannerDataModel.timestamp
 
         visitableList.add(bannerViewModel)
         return this
@@ -130,7 +131,7 @@ class HomeVisitableFactoryImpl(
     override fun addDynamicChannelVisitable(addLoadingMore: Boolean): HomeVisitableFactory {
         homeData?.let {
             val data = dynamicChannelDataMapper?.mapToDynamicChannelDataModel(
-                    HomeChannelData(it.dynamicHomeChannel), false, addLoadingMore)
+                    HomeChannelData(it.dynamicHomeChannel), isCache, addLoadingMore)
             data?.let { it1 -> visitableList.addAll(it1) }
         }
         return this

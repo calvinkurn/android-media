@@ -170,11 +170,12 @@ class TradeInInitialPriceFragment : BaseViewModelFragment<TradeInInitialPriceVie
         btn_continue.isEnabled = true
     }
 
-    fun setWrongImei(error: String) {
-        if (error == getString(R.string.tradein_laku6_imei_error))
-            typography_imei_description.text = getString(R.string.wrong_imei_string)
-        else
-            typography_imei_description.text = error
+    fun setWrongImei(error: String?) {
+        when (error) {
+            getString(R.string.tradein_laku6_imei_error) -> typography_imei_description.text = getString(R.string.wrong_imei_string)
+            getString(R.string.tradein_laku6_imei_cheat) -> typography_imei_description.text = getString(R.string.tradein_wrong_imei_string)
+            else -> typography_imei_description.text = error ?: getString(R.string.wrong_imei_string)
+        }
         typography_imei_description.setTextColor(MethodChecker.getColor(context, R.color.tradein_hint_red))
     }
 
