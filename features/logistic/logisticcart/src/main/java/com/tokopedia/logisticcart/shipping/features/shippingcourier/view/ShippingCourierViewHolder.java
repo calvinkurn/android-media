@@ -79,8 +79,6 @@ public class ShippingCourierViewHolder extends RecyclerView.ViewHolder {
         }
 
         TextAndContentDescriptionUtil.setTextAndContentDescription(tvCourier, shippingCourierUiModel.getProductData().getShipperName(), tvCourier.getContext().getString(R.string.content_desc_tv_courier));
-     //   tvCourier.setContentDescription(tvCourier.getContext().getString(R.string.content_desc_tv_courier, shippingCourierUiModel.getProductData().getShipperName()));
-       // tvCourier.setText(shippingCourierUiModel.getProductData().getShipperName());
         if (shippingCourierUiModel.getProductData().getError() != null &&
                 shippingCourierUiModel.getProductData().getError().getErrorMessage().length() > 0) {
             if (shippingCourierUiModel.getProductData().getError().getErrorId().equals(ErrorProductData.ERROR_PINPOINT_NEEDED)) {
