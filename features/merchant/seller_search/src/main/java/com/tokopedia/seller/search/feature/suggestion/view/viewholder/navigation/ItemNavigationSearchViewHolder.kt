@@ -11,6 +11,7 @@ import com.tokopedia.seller.search.common.util.indexOfSearchQuery
 import com.tokopedia.seller.search.common.util.safeSetSpan
 import com.tokopedia.seller.search.feature.initialsearch.view.viewholder.NavigationSearchListener
 import com.tokopedia.seller.search.feature.suggestion.view.model.sellersearch.NavigationSellerSearchUiModel
+import com.tokopedia.unifycomponents.setImage
 import kotlinx.android.synthetic.main.item_search_result_navigation.view.*
 
 class ItemNavigationSearchViewHolder(
@@ -25,6 +26,7 @@ class ItemNavigationSearchViewHolder(
     override fun bind(element: NavigationSellerSearchUiModel) {
         bindTitleText(element)
         with(itemView){
+            ivHistoryTime.setImage(element.imageUrl.orEmpty(), 0F)
             tvDescSearchResultNav?.text = element.desc
             setOnClickListener {
                 navigationSearchListener.onNavigationItemClicked(element, adapterPosition)
