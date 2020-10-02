@@ -73,7 +73,7 @@ class PltSearchPerformanceTest {
                     TEST_CASE_PAGE_LOAD_TIME_SEARCH_PERFORMANCE,
                     it,
                     dataSource,
-                    GqlNetworkAnalyzerInterceptor.getNetworkData(listOf("SearchProduct"))
+                    GqlNetworkAnalyzerInterceptor.getNetworkData()
             )
         }
     }

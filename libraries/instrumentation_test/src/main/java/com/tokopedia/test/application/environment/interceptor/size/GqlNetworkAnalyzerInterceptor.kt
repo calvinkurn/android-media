@@ -11,26 +11,30 @@ import okio.Buffer
 import java.io.IOException
 import java.util.*
 
-class GqlNetworkAnalyzerInterceptor(private var gqlQueryListToAnalyze: List<String>?) : Interceptor {
-
-    init {
-        gqlQueryListToAnalyze = gqlQueryListToAnalyze?.map { it.toLowerCase(Locale.US) }
-    }
+class GqlNetworkAnalyzerInterceptor : Interceptor {
 
     companion object {
         val parserRuleProvider = ParserRuleProvider()
         val sizeInEachRequest = hashMapOf<String, Int>()
         val timeInEachRequest = hashMapOf<String, Long>()
         val queryCounterMap = hashMapOf<String, Int>()
+        val gqlQueryListToAnalyze = mutableListOf<String>()
         val interceptedNetworkDataList = mutableListOf<InterceptedNetworkData>()
 
         var startRequest = 0L
         var endRequest = 0L
 
+        fun addGqlQueryListToAnalyze(gqlQueryListToAnalyze: List<String>?) {
+            if (gqlQueryListToAnalyze == null) return
+
+            this.gqlQueryListToAnalyze.addAll(gqlQueryListToAnalyze.map { it.toLowerCase(Locale.US) })
+        }
+
         fun reset() {
             sizeInEachRequest.clear()
             timeInEachRequest.clear()
             queryCounterMap.clear()
+            gqlQueryListToAnalyze.clear()
             interceptedNetworkDataList.clear()
             startRequest = 0L
             endRequest = 0L
@@ -56,8 +60,8 @@ class GqlNetworkAnalyzerInterceptor(private var gqlQueryListToAnalyze: List<Stri
             return endRequest - startRequest
         }
 
-        fun getNetworkData(gqlQueryListToAnalyze: List<String>? = listOf()): NetworkData {
-            processInterceptedNetworkData(gqlQueryListToAnalyze)
+        fun getNetworkData(): NetworkData {
+            processInterceptedNetworkData()
 
             return NetworkData(
                     getTotalSize(),
@@ -68,7 +72,7 @@ class GqlNetworkAnalyzerInterceptor(private var gqlQueryListToAnalyze: List<Stri
             )
         }
 
-        private fun processInterceptedNetworkData(gqlQueryListToAnalyze: List<String>?) {
+        private fun processInterceptedNetworkData() {
             interceptedNetworkDataList.forEach { interceptedNetworkData ->
                 val requestString = interceptedNetworkData.requestString
                 val size = interceptedNetworkData.size
@@ -79,8 +83,8 @@ class GqlNetworkAnalyzerInterceptor(private var gqlQueryListToAnalyze: List<Stri
                 var formattedOperationName = parserRuleProvider.parse(requestString.substringAfter("\"query\": \""))
 
                 var needToAnalyze = true
-                val gqlFilterList = gqlQueryListToAnalyze?.map { it.toLowerCase(Locale.US) }
-                if (gqlFilterList?.isNotEmpty() == true) {
+                val gqlFilterList = gqlQueryListToAnalyze
+                if (gqlFilterList.isNotEmpty()) {
                     needToAnalyze = gqlFilterList.contains(formattedOperationName.toLowerCase(Locale.US))
                 }
 

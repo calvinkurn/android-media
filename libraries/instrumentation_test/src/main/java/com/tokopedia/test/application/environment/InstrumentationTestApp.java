@@ -125,9 +125,9 @@ public class InstrumentationTestApp extends BaseMainApplication
         }
     }
 
-    public void enableSizeDetector(@Nullable List<String> listToAnalyze) {
+    public void enableSizeDetector() {
         if (GlobalConfig.DEBUG) {
-            addInterceptor(new GqlNetworkAnalyzerInterceptor(listToAnalyze));
+            addInterceptor(new GqlNetworkAnalyzerInterceptor());
         }
     }
 
