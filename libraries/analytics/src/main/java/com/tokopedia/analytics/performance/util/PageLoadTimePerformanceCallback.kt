@@ -4,6 +4,7 @@ import android.os.Build
 import android.os.Debug
 import android.os.Trace
 import android.util.Log
+import com.tokopedia.analytics.performance.PerformanceAnalyticsUtil
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.config.GlobalConfig
 
@@ -37,6 +38,7 @@ open class PageLoadTimePerformanceCallback(
     }
 
     override fun startMonitoring(traceName: String) {
+        PerformanceAnalyticsUtil.increment()
         this.traceName = traceName
         performanceMonitoring = PerformanceMonitoring()
         performanceMonitoring?.startTrace(traceName)
@@ -55,6 +57,7 @@ open class PageLoadTimePerformanceCallback(
             stopMethodTracing(traceName)
         }
         invalidate()
+        PerformanceAnalyticsUtil.decrement()
     }
 
     override fun startPreparePagePerformanceMonitoring() {
@@ -117,6 +120,10 @@ open class PageLoadTimePerformanceCallback(
             isRenderDone = true
             endAsyncSystraceSection("PageLoadTime.AsyncRenderPage$traceName",33)
         }
+    }
+
+    override fun getPltPerformanceMonitoring(): PerformanceMonitoring? {
+        return performanceMonitoring
     }
 
     fun beginAsyncSystraceSection(methodName: String, cookie: Int) {
