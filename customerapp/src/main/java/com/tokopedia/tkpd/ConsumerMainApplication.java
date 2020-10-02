@@ -60,7 +60,6 @@ import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform;
 import com.tokopedia.authentication.AuthHelper;
-import com.tokopedia.screenshot_observer.Screenshot;
 import com.tokopedia.shakedetect.ShakeDetectManager;
 import com.tokopedia.shakedetect.ShakeSubscriber;
 import com.tokopedia.tkpd.BuildConfig;
@@ -150,13 +149,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
             @Override
             public void onShakeDetected(boolean isLongShake) {
                 openShakeDetectCampaignPage(isLongShake);
-            }
-        }));
-
-        registerActivityLifecycleCallbacks(new Screenshot(getApplicationContext().getContentResolver(), new Screenshot.Listener() {
-            @Override
-            public void onScreenShotTaken(Uri uri) {
-                openFeedbackForm(uri);
             }
         }));
 
@@ -317,13 +309,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
     private void openShakeDetectCampaignPage(boolean isLongShake) {
         Intent intent = RouteManager.getIntent(getApplicationContext(), ApplinkConstInternalPromo.PROMO_CAMPAIGN_SHAKE_LANDING, Boolean.toString(isLongShake));
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        getApplicationContext().startActivity(intent);
-    }
-
-    private void openFeedbackForm(Uri uri) {
-        Intent intent = RouteManager.getIntent(getApplicationContext(), ApplinkConst.FEEDBACK_FORM);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.putExtra("EXTRA_URI_IMAGE", uri);
         getApplicationContext().startActivity(intent);
     }
 
