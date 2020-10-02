@@ -16,6 +16,7 @@ buildCache {
     }
 }
 
+include ":lint"
 include ":authentication"
 include ":analytic_constant"
 include ":analytic_testapp"
@@ -38,4 +39,3 @@ include ":fakeresponse-no-op"
 include ":analytic_gtmutil"
 include ":gqlquery_annotation_processor"
 include ":gqlquery_annotation"
-include ":lint"
