@@ -31,6 +31,7 @@ import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragme
 import com.tokopedia.play.broadcaster.view.fragment.edit.CoverEditFragment
 import com.tokopedia.play.broadcaster.view.fragment.edit.EditCoverTitleBottomSheet
 import com.tokopedia.play.broadcaster.view.fragment.edit.ProductEditFragment
+import com.tokopedia.play.broadcaster.view.partial.ActionBarViewComponent
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import com.tokopedia.play.broadcaster.view.state.LivePusherState
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastPrepareViewModel
@@ -39,6 +40,7 @@ import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.play_common.view.updatePadding
+import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.Toaster
 import javax.inject.Inject
 
@@ -58,6 +60,19 @@ class PlayBeforeLiveFragment @Inject constructor(
     private lateinit var followerView: PlayShareFollowerView
     private lateinit var ivShareLink: ImageView
     private lateinit var flEdit: FrameLayout
+
+    private val actionBarView by viewComponent {
+        ActionBarViewComponent(it, object : ActionBarViewComponent.Listener {
+            override fun onCameraIconClicked() {
+                parentViewModel.switchCamera()
+                analytic.clickSwitchCameraOnFinalSetupPage()
+            }
+
+            override fun onCloseIconClicked() {
+                onBackPressed()
+            }
+        })
+    }
 
     private lateinit var prepareViewModel: PlayBroadcastPrepareViewModel
     private lateinit var parentViewModel: PlayBroadcastViewModel
@@ -109,6 +124,7 @@ class PlayBeforeLiveFragment @Inject constructor(
 
     override fun onStart() {
         super.onStart()
+        actionBarView.rootView.requestApplyInsetsWhenAttached()
         requireView().requestApplyInsetsWhenAttached()
         analytic.openFinalSetupPage()
     }
@@ -146,7 +162,7 @@ class PlayBeforeLiveFragment @Inject constructor(
     }
 
     private fun setupView(view: View) {
-        broadcastCoordinator.setupTitle(getString(R.string.play_action_bar_prepare_final_title))
+        actionBarView.setTitle(getString(R.string.play_action_bar_prepare_final_title))
         btnStartLive.setOnClickListener {
             startStreaming()
             analytic.clickStartStreamingOnFinalSetupPage()
@@ -172,6 +188,9 @@ class PlayBeforeLiveFragment @Inject constructor(
     }
 
     private fun setupInsets(view: View) {
+        actionBarView.rootView.doOnApplyWindowInsets { v, insets, _, _ ->
+            v.updatePadding(top = insets.systemWindowInsetTop)
+        }
         view.doOnApplyWindowInsets { v, insets, padding, _ ->
             v.updatePadding(top = padding.top + insets.systemWindowInsetTop, bottom = padding.bottom + insets.systemWindowInsetBottom)
         }

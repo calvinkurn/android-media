@@ -40,9 +40,9 @@ class PlayBroadcastSummaryFragment @Inject constructor(
     private lateinit var viewModel: PlayBroadcastSummaryViewModel
     private lateinit var parentViewModel: PlayBroadcastViewModel
 
-    private val summaryInfoView by viewComponent(isEagerInit = true) { SummaryInfoViewComponent(it) }
     private lateinit var btnFinish: UnifyButton
     private lateinit var loaderView: LoaderUnify
+    private val summaryInfoView by viewComponent(isEagerInit = true) { SummaryInfoViewComponent(it) }
 
     private var toasterBottomMargin = 0
 
@@ -86,7 +86,6 @@ class PlayBroadcastSummaryFragment @Inject constructor(
     }
 
     private fun setupView(view: View) {
-        broadcastCoordinator.showActionBar(false)
         btnFinish.setOnClickListener {
             analytic.clickDoneOnReportPage(parentViewModel.channelId, parentViewModel.title)
             activity?.finish()

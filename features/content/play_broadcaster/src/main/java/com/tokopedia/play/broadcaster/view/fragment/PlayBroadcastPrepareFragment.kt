@@ -26,12 +26,14 @@ import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupBottomS
 import com.tokopedia.play.broadcaster.view.contract.SetupResultListener
 import com.tokopedia.play.broadcaster.view.custom.PlayShareFollowerView
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
+import com.tokopedia.play.broadcaster.view.partial.ActionBarViewComponent
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastPrepareViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.play_common.view.updatePadding
+import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.url.TokopediaUrl
 import javax.inject.Inject
@@ -50,6 +52,19 @@ class PlayBroadcastPrepareFragment @Inject constructor(
     private lateinit var btnSetup: UnifyButton
     private lateinit var followerView: PlayShareFollowerView
     private lateinit var tvTermsCondition: TextView
+
+    private val actionBarView by viewComponent {
+        ActionBarViewComponent(it, object : ActionBarViewComponent.Listener {
+            override fun onCameraIconClicked() {
+                parentViewModel.switchCamera()
+                analytic.clickSwitchCameraOnSetupPage()
+            }
+
+            override fun onCloseIconClicked() {
+                onBackPressed()
+            }
+        })
+    }
 
     private val isFirstStreaming: Boolean
         get() = parentViewModel.isFirstStreaming
@@ -93,6 +108,7 @@ class PlayBroadcastPrepareFragment @Inject constructor(
 
     override fun onStart() {
         super.onStart()
+        actionBarView.rootView.requestApplyInsetsWhenAttached()
         requireView().requestApplyInsetsWhenAttached()
     }
 
@@ -118,7 +134,7 @@ class PlayBroadcastPrepareFragment @Inject constructor(
     }
 
     private fun setupView(view: View) {
-        broadcastCoordinator.setupTitle(getString(R.string.play_action_bar_prepare_title))
+        actionBarView.setTitle(getString(R.string.play_action_bar_prepare_title))
         btnSetup.setOnClickListener {
             analytic.clickPrepareBroadcast()
             openBroadcastSetupPage()
@@ -128,6 +144,9 @@ class PlayBroadcastPrepareFragment @Inject constructor(
     }
 
     private fun setupInsets(view: View) {
+        actionBarView.rootView.doOnApplyWindowInsets { v, insets, _, _ ->
+            v.updatePadding(top = insets.systemWindowInsetTop)
+        }
         view.doOnApplyWindowInsets { v, insets, padding, _ ->
             v.updatePadding(top = padding.top + insets.systemWindowInsetTop, bottom = padding.bottom + insets.systemWindowInsetBottom)
         }

@@ -11,6 +11,8 @@ import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
@@ -26,7 +28,7 @@ import com.tokopedia.play.broadcaster.view.custom.PlayStatInfoView
 import com.tokopedia.play.broadcaster.view.custom.PlayTimerCountDown
 import com.tokopedia.play.broadcaster.view.custom.PlayTimerView
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
-import com.tokopedia.play.broadcaster.view.fragment.loading.LoadingDialogFragment
+import com.tokopedia.play.broadcaster.view.partial.ActionBarViewComponent
 import com.tokopedia.play.broadcaster.view.partial.ChatListViewComponent
 import com.tokopedia.play.broadcaster.view.state.LivePusherErrorStatus
 import com.tokopedia.play.broadcaster.view.state.LivePusherState
@@ -37,6 +39,7 @@ import com.tokopedia.play_common.util.event.EventObserver
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.play_common.view.updateMargins
+import com.tokopedia.play_common.view.updatePadding
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.Toaster
 import javax.inject.Inject
@@ -58,6 +61,20 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     private lateinit var pmvMetrics: PlayMetricsView
     private lateinit var countdownTimer: PlayTimerCountDown
     private lateinit var loadingView: FrameLayout
+    private lateinit var errorLiveNetworkLossView: View
+
+    private val actionBarView by viewComponent {
+        ActionBarViewComponent(it, object : ActionBarViewComponent.Listener {
+            override fun onCameraIconClicked() {
+                parentViewModel.switchCamera()
+                analytic.clickSwitchCameraOnLivePage(parentViewModel.channelId, parentViewModel.title)
+            }
+
+            override fun onCloseIconClicked() {
+                onBackPressed()
+            }
+        })
+    }
 
     private val chatListView by viewComponent { ChatListViewComponent(it) }
 
@@ -104,6 +121,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
     override fun onStart() {
         super.onStart()
+        actionBarView.rootView.requestApplyInsetsWhenAttached()
         ivShareLink.requestApplyInsetsWhenAttached()
         viewTimer.requestApplyInsetsWhenAttached()
     }
@@ -116,12 +134,11 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         pmvMetrics = view.findViewById(R.id.pmv_metrics)
         countdownTimer = view.findViewById(R.id.countdown_timer)
         loadingView = view.findViewById(R.id.loading_view)
+        errorLiveNetworkLossView = view.findViewById(R.id.error_live_view)
     }
 
     private fun setupView() {
-        broadcastCoordinator.setupTitle("")
-        broadcastCoordinator.setupCloseButton(getString(R.string.play_action_bar_end))
-
+        actionBarView.setupCloseButton(getString(R.string.play_action_bar_end))
         ivShareLink.setOnClickListener{
             doCopyShareLink()
             analytic.clickShareIconOnLivePage(parentViewModel.channelId, parentViewModel.title)
@@ -133,6 +150,10 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     }
 
     private fun setupInsets(view: View) {
+        actionBarView.rootView.doOnApplyWindowInsets { v, insets, _, _ ->
+            v.updatePadding(top = insets.systemWindowInsetTop)
+        }
+
         viewTimer.doOnApplyWindowInsets { v, insets, _, margin ->
             val marginLayoutParams = v.layoutParams as ViewGroup.MarginLayoutParams
             val newTopMargin = margin.top + insets.systemWindowInsetTop
@@ -315,16 +336,19 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
     private fun handleLivePushInfo(state: LivePusherState) {
         if (!isVisible) return
+        errorLiveNetworkLossView.hide()
         when (state) {
             is LivePusherState.Connecting -> showLoading(true)
             is LivePusherState.Started -> showLoading(false)
+            is LivePusherState.Recovered -> {
+                showToaster(
+                        message = getString(R.string.play_live_broadcast_network_recover),
+                        type = Toaster.TYPE_NORMAL)
+            }
             is LivePusherState.Stopped -> {
                 showLoading(false)
                  if (state.shouldNavigate) navigateToSummary()
             }
-            is LivePusherState.Recovered -> showToaster(
-                    message = getString(R.string.play_live_broadcast_network_recover),
-                    type = Toaster.TYPE_NORMAL)
             is LivePusherState.Error -> {
                 showLoading(false)
                 handleLivePushError(state.errorStatus)
@@ -341,10 +365,8 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                         type = Toaster.TYPE_ERROR)
             }
             LivePusherErrorStatus.NetworkLoss -> {
+                errorLiveNetworkLossView.show()
                 errorMessage = getString(R.string.play_live_broadcast_network_loss)
-                showToaster(message = getString(R.string.play_live_broadcast_network_loss),
-                        type = Toaster.TYPE_ERROR,
-                        duration = Toaster.LENGTH_INDEFINITE)
             }
             is LivePusherErrorStatus.ConnectFailed -> {
                 errorMessage = getString(R.string.play_live_broadcast_connect_fail)

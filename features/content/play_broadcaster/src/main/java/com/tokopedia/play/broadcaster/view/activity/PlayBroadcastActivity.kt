@@ -37,22 +37,16 @@ import com.tokopedia.play.broadcaster.util.extension.showToaster
 import com.tokopedia.play.broadcaster.util.permission.PermissionHelperImpl
 import com.tokopedia.play.broadcaster.util.permission.PermissionResultListener
 import com.tokopedia.play.broadcaster.util.permission.PermissionStatusHandler
-import com.tokopedia.play.broadcaster.view.contract.PlayBroadcastCoordinator
-import com.tokopedia.play.broadcaster.view.fragment.PlayBeforeLiveFragment
+import com.tokopedia.play.broadcaster.view.contract.PlayBaseCoordinator
 import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastPrepareFragment
 import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastUserInteractionFragment
 import com.tokopedia.play.broadcaster.view.fragment.PlayPermissionFragment
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.fragment.loading.LoadingDialogFragment
-import com.tokopedia.play.broadcaster.view.partial.ActionBarViewComponent
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play_common.util.extension.awaitResume
-import com.tokopedia.play_common.view.doOnApplyWindowInsets
-import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
-import com.tokopedia.play_common.view.updatePadding
-import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
@@ -65,7 +59,7 @@ import kotlin.coroutines.CoroutineContext
 /**
  * Created by mzennis on 19/05/20.
  */
-class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroadcastComponentProvider {
+class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, PlayBroadcastComponentProvider {
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -90,20 +84,6 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
     private lateinit var containerSetup: FrameLayout
     private lateinit var globalErrorView: GlobalError
     private lateinit var surfaceView: SurfaceView
-    private lateinit var errorLiveView: View
-
-    private val actionBarView by viewComponent {
-        ActionBarViewComponent(it, object : ActionBarViewComponent.Listener {
-            override fun onCameraIconClicked() {
-                viewModel.switchCamera()
-                sendClickCameraAnalytic()
-            }
-
-            override fun onCloseIconClicked() {
-                onBackPressed()
-            }
-        })
-    }
 
     private var surfaceStatus = SurfaceStatus.UNINITED
 
@@ -147,7 +127,6 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
         setupContent()
         initView()
         setupView()
-        setupInsets()
 
         if (!DeviceInfoUtil.isDeviceSupported()) {
             showDialogWhenUnSupportedDevices()
@@ -156,11 +135,6 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
 
         getConfiguration()
         observeConfiguration()
-    }
-
-    override fun onStart() {
-        super.onStart()
-        actionBarView.rootView.requestApplyInsetsWhenAttached()
     }
 
     override fun onResume() {
@@ -226,18 +200,6 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
         }
     }
 
-    override fun setupTitle(title: String) {
-        actionBarView.setTitle(title)
-    }
-
-    override fun setupCloseButton(actionTitle: String) {
-        actionBarView.setupCloseButton(actionTitle)
-    }
-
-    override fun showActionBar(shouldShow: Boolean) {
-        if (shouldShow) actionBarView.show() else actionBarView.hide()
-    }
-
     override fun getBroadcastComponent(): PlayBroadcastComponent {
         return playBroadcastComponent
     }
@@ -275,7 +237,6 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
         containerSetup = findViewById(R.id.fl_setup)
         globalErrorView = findViewById(R.id.global_error)
         surfaceView = findViewById(R.id.surface_view)
-        errorLiveView = findViewById(R.id.error_live_view)
     }
 
     private fun setupView() {
@@ -297,12 +258,6 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
                 startPreview()
             }
         })
-    }
-
-    private fun setupInsets() {
-        actionBarView.rootView.doOnApplyWindowInsets { v, insets, _, _ ->
-            v.updatePadding(top = insets.systemWindowInsetTop)
-        }
     }
 
     private fun getConfiguration() {
@@ -391,7 +346,6 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
 
     private fun configureChannelType(channelType: ChannelType) {
         if (isRecreated) return
-        showActionBar(true)
         if (channelType == ChannelType.Pause) {
             showDialogContinueLiveStreaming()
             openBroadcastActivePage()
@@ -448,7 +402,6 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
     }
 
     private fun showPermissionPage() {
-        showActionBar(false)
         navigateToFragment(PlayPermissionFragment::class.java)
         analytic.openPermissionScreen()
     }
@@ -530,17 +483,6 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
         if (!getLoadingFragment().isAdded) return
         if (isLoading && !getLoadingFragment().isVisible)  getLoadingFragment().show(supportFragmentManager)
         else getLoadingFragment().dismiss()
-    }
-
-    private fun sendClickCameraAnalytic() {
-        val currentVisibleFragment = getCurrentFragment()
-        if (currentVisibleFragment != null) {
-            when(currentVisibleFragment) {
-                is PlayBroadcastPrepareFragment -> analytic.clickSwitchCameraOnSetupPage()
-                is PlayBeforeLiveFragment -> analytic.clickSwitchCameraOnFinalSetupPage()
-                is PlayBroadcastUserInteractionFragment -> analytic.clickSwitchCameraOnLivePage(viewModel.channelId, viewModel.title)
-            }
-        }
     }
 
     private fun doWhenResume(block: () -> Unit) {
