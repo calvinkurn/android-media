@@ -15,11 +15,11 @@ import com.tokopedia.datepicker.range.domain.interactor.SaveDatePickerUseCase;
 import com.tokopedia.datepicker.range.view.presenter.DatePickerPresenter;
 import com.tokopedia.datepicker.range.view.presenter.DatePickerPresenterImpl;
 import com.tokopedia.gm.common.di.scope.GMScope;
-import com.tokopedia.product.manage.item.common.data.source.ShopInfoDataSource;
-import com.tokopedia.product.manage.item.common.data.source.cloud.ShopApi;
-import com.tokopedia.product.manage.item.common.data.source.cloud.TomeProductApi;
-import com.tokopedia.product.manage.item.common.domain.repository.ShopInfoRepository;
-import com.tokopedia.product.manage.item.common.domain.repository.ShopInfoRepositoryImpl;
+import com.tokopedia.gm.shopinfo.data.cloud.ShopApi;
+import com.tokopedia.gm.shopinfo.data.cloud.TomeProductApi;
+import com.tokopedia.gm.shopinfo.data.cloud.source.ShopInfoDataSource;
+import com.tokopedia.gm.shopinfo.domain.repository.ShopInfoRepository;
+import com.tokopedia.gm.shopinfo.domain.repository.ShopInfoRepositoryImpl;
 
 import dagger.Module;
 import dagger.Provides;

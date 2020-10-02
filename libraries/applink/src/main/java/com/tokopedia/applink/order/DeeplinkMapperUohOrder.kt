@@ -19,8 +19,9 @@ object DeeplinkMapperUohOrder {
             else deeplink
 
         } else if (deeplink.startsWith(MARKETPLACE_ORDER_SUB) || deeplink.equals(PURCHASE_CONFIRMED, true)
-                || deeplink.equals(PURCHASE_PROCESSED, true) || deeplink.equals(PURCHASE_SHIPPING_CONFIRM, true)
-                || deeplink.equals(PURCHASE_SHIPPED, true) || deeplink.equals(PURCHASE_DELIVERED, true)) {
+                || deeplink.startsWith(PURCHASE_HISTORY) || deeplink.equals(PURCHASE_PROCESSED, true)
+                || deeplink.equals(PURCHASE_SHIPPING_CONFIRM, true) || deeplink.equals(PURCHASE_SHIPPED, true)
+                || deeplink.equals(PURCHASE_DELIVERED, true)) {
             returnedDeeplink = if (useUoh()) ApplinkConstInternalOrder.UNIFY_ORDER_MARKETPLACE_IN_PROCESS
             else deeplink
 
