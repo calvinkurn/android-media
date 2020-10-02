@@ -81,7 +81,7 @@ object HomeRecommendationTracking : BaseTrackerConst(){
                 eventCategory = Category.HOMEPAGE,
                 eventAction = CustomAction.RECOMMENDATION_CLICK_BASE,
                 eventLabel = tabName,
-                list = ActionField.RECOMMENDATION_ACTION_FIELD_NON_LOGIN_TOP_ADS.format(tabName, homeRecommendationItemDataModel.product.recommendationType),
+                list = ActionField.RECOMMENDATION_ACTION_FIELD_NON_LOGIN_TOP_ADS.format(tabName, homeRecommendationItemDataModel.product.recommendationType, ""),
                 products = listOf(mapToProductTracking(homeRecommendationItemDataModel))
         ).build()
     }
