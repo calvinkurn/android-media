@@ -331,9 +331,6 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
     override fun onResume() {
         super.onResume()
         map_view?.onResume()
-        if ((currentLat == 0.0 && currentLong == 0.0) || currentLat == DEFAULT_LAT && currentLong == DEFAULT_LONG) {
-            presenter.requestLocation(requireActivity())
-        }
         if (AddNewAddressUtils.isGpsEnabled(context)) {
             ic_current_location.setImageResource(R.drawable.ic_gps_enable)
         } else {
