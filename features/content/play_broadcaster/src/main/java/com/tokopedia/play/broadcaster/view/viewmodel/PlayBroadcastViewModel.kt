@@ -299,7 +299,8 @@ class PlayBroadcastViewModel @Inject constructor(
             }
 
             override fun onCountDownFinish() {
-                if (_observableEvent.value?.freeze == false) {
+                val event = _observableEvent.value
+                if (event?.freeze == false && !event.banned) {
                     _observableLiveDurationState.value = LivePusherTimerState.Finish
                     stopPushStream()
                 }
@@ -408,8 +409,20 @@ class PlayBroadcastViewModel @Inject constructor(
                         is Chat -> retrieveNewChat(PlayBroadcastUiMapper.mapIncomingChat(data))
                         is Freeze -> {
                             if (_observableLiveDurationState.value !is LivePusherTimerState.Finish) {
-                                stopPushStream()
-                                _observableEvent.value = PlayBroadcastUiMapper.mapFreezeEvent(data)
+                                val eventUiModel = PlayBroadcastUiMapper.mapFreezeEvent(data, _observableEvent.value)
+                                if (eventUiModel.freeze) {
+                                    stopPushStream()
+                                    _observableEvent.value = eventUiModel
+                                }
+                            }
+                        }
+                        is Banned -> {
+                            if (_observableLiveDurationState.value !is LivePusherTimerState.Finish) {
+                                val eventUiModel = PlayBroadcastUiMapper.mapBannedEvent(data, _observableEvent.value)
+                                if (eventUiModel.banned) {
+                                    stopPushStream()
+                                    _observableEvent.value = eventUiModel
+                                }
                             }
                         }
                     }

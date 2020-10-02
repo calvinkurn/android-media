@@ -274,7 +274,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                     }
             )
         }
-        forceStopDialog.show()
+        if (!forceStopDialog.isShowing) forceStopDialog.show()
     }
 
     private fun showToaster(
@@ -433,7 +433,16 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
     private fun observeEvent() {
         parentViewModel.observableEvent.observe(viewLifecycleOwner, Observer {
-            if (it.freeze) showDialogWhenTimeout()
+            when {
+                it.freeze -> showDialogWhenTimeout()
+                it.banned -> {
+                    showForceStopDialog(
+                            title = it.title,
+                            message = it.message,
+                            buttonTitle = it.buttonTitle
+                    )
+                }
+            }
         })
     }
     //endregion
