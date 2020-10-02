@@ -374,20 +374,20 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
     public void onFragmentStart(Fragment fragment) {
         cancelGratifJob(fragment.hashCode(), GratifCancellationExceptionType.FRAGMENT_STARTED);
 
-//        if (!isDialogShowing) {
-//            showInAppNotification(fragment.getClass().getName(), fragment.hashCode());
-//        }
-        checkFragmentOpenedFromPush(fragment);
+        if (!isDialogShowing) {
+            showInAppNotification(fragment.getClass().getName(), fragment.hashCode());
+        }
+//        checkFragmentOpenedFromPush(fragment);
     }
 
     public void onFragmentResume(Fragment fragment) {
         cancelGratifJob(fragment.hashCode(), GratifCancellationExceptionType.FRAGMENT_RESUME);
 
         //check if came from push
-        checkFragmentOpenedFromPush(fragment);
-//        if (!isDialogShowing) {
-//            showInAppNotification(fragment.getClass().getName(), fragment.hashCode());
-//        }
+//        checkFragmentOpenedFromPush(fragment);
+        if (!isDialogShowing) {
+            showInAppNotification(fragment.getClass().getName(), fragment.hashCode());
+        }
     }
 
     public void checkFragmentOpenedFromPush(Fragment fragment) {
@@ -431,10 +431,10 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
 //            if(dialog.)
 //        }
 
-//        if (!isDialogShowing) {
-//            showInAppNotification(fragment.getClass().getName(), fragment.hashCode());
-//        }
-        checkFragmentOpenedFromPush(fragment);
+        if (!isDialogShowing) {
+            showInAppNotification(fragment.getClass().getName(), fragment.hashCode());
+        }
+//        checkFragmentOpenedFromPush(fragment);
     }
 
     public void onFragmentStop(Fragment fragment) {
