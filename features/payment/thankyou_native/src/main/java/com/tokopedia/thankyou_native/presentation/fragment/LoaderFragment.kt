@@ -20,6 +20,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.thankyou_native.R
+import com.tokopedia.thankyou_native.TkpdIdlingResourceProvider
 import com.tokopedia.thankyou_native.data.mapper.Invalid
 import com.tokopedia.thankyou_native.data.mapper.PaymentStatusMapper
 import com.tokopedia.thankyou_native.di.component.ThankYouPageComponent
@@ -43,7 +44,7 @@ class LoaderFragment : BaseDaggerFragment() {
         val viewModelProvider = ViewModelProviders.of(this, viewModelFactory.get())
         viewModelProvider.get(ThanksPageDataViewModel::class.java)
     }
-
+    var idlingResourceProvider = TkpdIdlingResourceProvider.provideIdlingResource("Purchase")
     private val handler = Handler()
 
     var callback: ThankYouPageDataLoadCallback? = null
@@ -75,6 +76,7 @@ class LoaderFragment : BaseDaggerFragment() {
     }
 
     private fun loadThankPageData() {
+        idlingResourceProvider?.increment()
         globalError.gone()
         arguments?.let {
             if (it.containsKey(ThankYouPageActivity.ARG_PAYMENT_ID) && it.containsKey(ThankYouPageActivity.ARG_MERCHANT)) {
@@ -90,6 +92,7 @@ class LoaderFragment : BaseDaggerFragment() {
                 is Success -> onThankYouPageDataLoaded(it.data)
                 is Fail -> onThankYouPageDataLoadingFail(it.throwable)
             }
+            idlingResourceProvider?.decrement()
         })
     }
 
