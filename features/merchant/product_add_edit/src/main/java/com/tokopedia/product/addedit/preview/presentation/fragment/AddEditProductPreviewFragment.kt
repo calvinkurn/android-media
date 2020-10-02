@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Activity.RESULT_OK
 import android.content.Intent
+import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
@@ -253,6 +254,9 @@ class AddEditProductPreviewFragment:
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        // set bg color programatically, to reduce overdraw
+        activity?.window?.decorView?.setBackgroundColor(Color.WHITE)
 
         // activity toolbar
         toolbar = activity?.findViewById(R.id.toolbar)

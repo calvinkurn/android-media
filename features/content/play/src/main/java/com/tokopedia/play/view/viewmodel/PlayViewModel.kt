@@ -16,8 +16,6 @@ import com.tokopedia.play.data.websocket.PlaySocketInfo
 import com.tokopedia.play.domain.*
 import com.tokopedia.play.ui.chatlist.model.PlayChat
 import com.tokopedia.play.ui.toolbar.model.PartnerType
-import com.tokopedia.play.util.coroutine.CoroutineDispatcherProvider
-import com.tokopedia.play.util.event.Event
 import com.tokopedia.play.util.video.state.PlayViewerVideoState
 import com.tokopedia.play.util.video.state.PlayViewerVideoStateListener
 import com.tokopedia.play.util.video.state.PlayViewerVideoStateProcessor
@@ -29,6 +27,8 @@ import com.tokopedia.play_common.model.PlayBufferControl
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.player.PlayVideoManager
+import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
+import com.tokopedia.play_common.util.event.Event
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
 import javax.inject.Inject

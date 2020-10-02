@@ -109,7 +109,11 @@ class GetOccCartUseCase @Inject constructor(val context: Context, val graphqlUse
             shopId = shop.shopId
             userId = shop.userId
             shopName = shop.shopName
-            shopImage = shop.shopImage
+            shopBadge = when {
+                shop.isOfficial == 1 -> shop.officialStore.osLogoUrl
+                shop.isGoldBadge -> shop.goldMerchant.goldMerchantLogoUrl
+                else -> ""
+            }
             shopUrl = shop.shopUrl
             isGold = shop.isGold
             isOfficial = shop.isOfficial
