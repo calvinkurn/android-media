@@ -27,9 +27,9 @@ import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelDetailActivity
 import com.tokopedia.hotel.search.data.model.*
 import com.tokopedia.hotel.search.data.model.FilterV2.Companion.FILTER_TYPE_SORT
 import com.tokopedia.hotel.search.data.model.params.ParamFilterV2
-import com.tokopedia.hotel.search.data.util.ADVANCE_FILTER_EXPERIMENT_NAME
-import com.tokopedia.hotel.search.data.util.ADVANCE_FILTER_VARIANT_NEW_FILTER
-import com.tokopedia.hotel.search.data.util.ADVANCE_FILTER_VARIANT_OLD_FILTER
+import com.tokopedia.hotel.search.data.util.AdvanceFilterABRollanceConst.ADVANCE_FILTER_EXPERIMENT_NAME
+import com.tokopedia.hotel.search.data.util.AdvanceFilterABRollanceConst.ADVANCE_FILTER_VARIANT_NEW_FILTER
+import com.tokopedia.hotel.search.data.util.AdvanceFilterABRollanceConst.ADVANCE_FILTER_VARIANT_OLD_FILTER
 import com.tokopedia.hotel.search.di.HotelSearchPropertyComponent
 import com.tokopedia.hotel.search.presentation.activity.HotelSearchResultActivity.Companion.SEARCH_SCREEN_NAME
 import com.tokopedia.hotel.search.presentation.adapter.HotelOptionMenuAdapter
