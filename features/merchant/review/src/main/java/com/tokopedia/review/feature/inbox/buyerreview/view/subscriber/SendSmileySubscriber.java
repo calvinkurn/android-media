@@ -39,7 +39,7 @@ public class SendSmileySubscriber extends Subscriber<SendSmileyReputationDomain>
         if (sendSmileyReputationDomain.isSuccess()) {
             viewListener.onSuccessSendSmiley(Integer.parseInt(score));
         } else {
-            viewListener.onErrorSendSmiley(viewListener.getContext().getApplicationContext().getString(R.string
+            viewListener.onErrorSendSmiley(viewListener.getContext().getApplicationContext().getString(com.tokopedia.abstraction.R.string
                     .default_request_error_unknown));
         }
     }
