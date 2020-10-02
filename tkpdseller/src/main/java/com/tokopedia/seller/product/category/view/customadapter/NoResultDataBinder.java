@@ -1,4 +1,4 @@
-package com.tokopedia.core.customadapter;
+package com.tokopedia.seller.product.category.view.customadapter;
 
 import androidx.annotation.DrawableRes;
 import androidx.recyclerview.widget.RecyclerView;
@@ -9,9 +9,7 @@ import android.widget.AbsListView;
 import android.widget.ImageView;
 
 import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.core2.R;
-import com.tokopedia.core.util.DataBindAdapter;
-import com.tokopedia.core.util.DataBinder;
+import com.tokopedia.seller.R;
 
 /**
  * Created by Nisie on 2/26/16.

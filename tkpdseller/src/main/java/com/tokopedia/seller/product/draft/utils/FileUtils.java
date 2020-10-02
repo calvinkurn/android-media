@@ -1,4 +1,4 @@
-package com.tokopedia.core.myproduct.utils;
+package com.tokopedia.seller.product.draft.utils;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -28,12 +28,6 @@ public class FileUtils {
     public static final int DEF_WIDTH_CMPR = 2048;
     public static final int DEF_QLTY_COMPRESS = 100;
 
-    /**
-     * example of result : /storage/emulated/0/Android/data/com.tokopedia.tkpd/1451274244/
-     */
-    public static String getFolderPathForUploadRandom() {
-        return getFolderPathForUpload() + (System.currentTimeMillis() / 1000L) + new Random().nextInt(1000) + "/";
-    }
 
     public static String getFolderPathForUpload() {
         return Environment.getExternalStorageDirectory().getAbsolutePath() + "/Android/data/" + MainApplication.PACKAGE_NAME + "/";

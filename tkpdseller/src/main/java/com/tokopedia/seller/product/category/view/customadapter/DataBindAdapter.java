@@ -1,4 +1,4 @@
-package com.tokopedia.core.util;
+package com.tokopedia.seller.product.category.view.customadapter;
 
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.ViewGroup;

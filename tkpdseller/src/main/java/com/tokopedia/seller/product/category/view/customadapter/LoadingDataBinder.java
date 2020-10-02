@@ -1,4 +1,4 @@
-package com.tokopedia.core.customadapter;
+package com.tokopedia.seller.product.category.view.customadapter;
 
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -6,9 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 
-import com.tokopedia.core2.R;
-import com.tokopedia.core.util.DataBindAdapter;
-import com.tokopedia.core.util.DataBinder;
+import com.tokopedia.seller.R;
 
 /**
  * Created by Nisie on 2/26/16.

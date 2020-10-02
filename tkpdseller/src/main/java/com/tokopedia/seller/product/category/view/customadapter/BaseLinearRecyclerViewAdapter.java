@@ -1,7 +1,4 @@
-package com.tokopedia.core.customadapter;
-
-import com.tokopedia.core.util.DataBindAdapter;
-import com.tokopedia.core.util.DataBinder;
+package com.tokopedia.seller.product.category.view.customadapter;
 
 /**
  * Created by Nisie on 1/22/16.
@@ -30,18 +27,6 @@ public class BaseLinearRecyclerViewAdapter extends DataBindAdapter{
         emptyView = new NoResultDataBinder(this);
         retryView = new RetryDataBinder(this);
         retryView.setOnRetryListenerRV(onRetryClicked());
-    }
-
-    public void setLoadingView(LoadingDataBinder loadingView) {
-        this.loadingView = loadingView;
-    }
-
-    public void setEmptyView(NoResultDataBinder emptyView) {
-        this.emptyView = emptyView;
-    }
-
-    public void setRetryView(RetryDataBinder retryView) {
-        this.retryView = retryView;
     }
 
     @Override
@@ -89,15 +74,6 @@ public class BaseLinearRecyclerViewAdapter extends DataBindAdapter{
         };
     }
 
-    public void showEmpty(boolean isEmpty) {
-        if (isEmpty) {
-            empty = 1;
-        } else {
-            empty = 0;
-        }
-        notifyDataSetChanged();
-    }
-
     public boolean isEmpty() {
         return empty == 1;
     }
@@ -130,43 +106,4 @@ public class BaseLinearRecyclerViewAdapter extends DataBindAdapter{
         return loading == 1;
     }
 
-    public void setOnRetryListenerRV(RetryDataBinder.OnRetryListener listener) {
-        this.listener = listener;
-    }
-
-    public void showEmptyFull(boolean isEmpty) {
-        if (isEmpty) {
-            retry = 0;
-            loading = 0;
-            empty = 1;
-        } else {
-            empty = 0;
-        }
-        emptyView.setIsFullScreen(isEmpty);
-        notifyDataSetChanged();
-    }
-
-    public void showLoadingFull(boolean isLoading) {
-        if (isLoading) {
-            retry = 0;
-            loading = 1;
-            empty = 0;
-        } else {
-            loading = 0;
-        }
-        loadingView.setIsFullScreen(isLoading);
-        notifyDataSetChanged();
-    }
-
-    public void showRetryFull(boolean isRetry) {
-        if (isRetry) {
-            retry = 1;
-            loading = 0;
-            empty = 0;
-        } else {
-            retry = 0;
-        }
-        retryView.setIsFullScreen(isRetry);
-        notifyDataSetChanged();
-    }
 }

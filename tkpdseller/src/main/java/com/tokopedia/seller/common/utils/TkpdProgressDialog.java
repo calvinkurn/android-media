@@ -1,4 +1,4 @@
-package com.tkpd.library.ui.utilities;
+package com.tokopedia.seller.common.utils;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -9,7 +9,8 @@ import android.graphics.drawable.AnimationDrawable;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.tokopedia.core2.R;
+import com.tokopedia.seller.R;
+
 
 public class TkpdProgressDialog {
 

@@ -262,11 +262,6 @@ public class InstrumentationTestApp extends BaseMainApplication
     }
 
     @Override
-    public GCMHandler legacyGCMHandler() {
-        return new GCMHandler(this);
-    }
-
-    @Override
     public void refreshFCMTokenFromBackgroundToCM(String token, boolean force) {
 
     }
