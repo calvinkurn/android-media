@@ -16,7 +16,7 @@ object MixLeftComponentTracking: BaseTrackerConst()  {
         const val FORMAT_4_VALUE_UNDERSCORE = "%s_%s_%s_%s";
     }
 
-    private const val LIST_MIX_LEFT = "dynamic channel left carousel"
+    private const val LIST_MIX_LEFT = "dynamic channel left carousel - product"
     private const val IMPRESSION_MIX_LEFT = "impression on product dynamic channel left carousel"
     private const val IMPRESSION_MIX_LEFT_BANNER = "impression on banner dynamic channel left carousel"
     private const val CLICK_MIX_LEFT_BANNER = "click on banner dynamic channel left carousel"
