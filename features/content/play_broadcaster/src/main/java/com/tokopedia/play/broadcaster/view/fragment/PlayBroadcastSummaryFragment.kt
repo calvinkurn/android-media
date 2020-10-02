@@ -14,16 +14,17 @@ import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.ui.model.ChannelInfoUiModel
 import com.tokopedia.play.broadcaster.ui.model.TrafficMetricUiModel
-import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
 import com.tokopedia.play.broadcaster.util.extension.showToaster
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
-import com.tokopedia.play.broadcaster.view.partial.SummaryInfoPartialView
+import com.tokopedia.play.broadcaster.view.partial.SummaryInfoViewComponent
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastSummaryViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
+import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.play_common.view.updateMargins
 import com.tokopedia.play_common.view.updatePadding
+import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
@@ -39,7 +40,7 @@ class PlayBroadcastSummaryFragment @Inject constructor(
     private lateinit var viewModel: PlayBroadcastSummaryViewModel
     private lateinit var parentViewModel: PlayBroadcastViewModel
 
-    private lateinit var summaryInfoView: SummaryInfoPartialView
+    private val summaryInfoView by viewComponent(isEagerInit = true) { SummaryInfoViewComponent(it) }
     private lateinit var btnFinish: UnifyButton
     private lateinit var loaderView: LoaderUnify
 
@@ -79,7 +80,6 @@ class PlayBroadcastSummaryFragment @Inject constructor(
 
     private fun initView(view: View) {
         with(view) {
-            summaryInfoView = SummaryInfoPartialView(this as ViewGroup)
             btnFinish = findViewById(R.id.btn_finish)
             loaderView = findViewById(R.id.loader_summary)
         }

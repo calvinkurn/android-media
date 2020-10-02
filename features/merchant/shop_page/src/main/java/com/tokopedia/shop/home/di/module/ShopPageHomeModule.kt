@@ -25,6 +25,7 @@ import com.tokopedia.shop.home.util.CoroutineDispatcherProvider
 import com.tokopedia.shop.home.util.CoroutineDispatcherProviderImpl
 import com.tokopedia.shop.product.data.GQLQueryConstant
 import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
+import com.tokopedia.shop.sort.view.mapper.ShopProductSortMapper
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -385,4 +386,9 @@ class ShopPageHomeModule {
         return ShopPageHomeTracking(TrackingQueue(context))
     }
 
+    @ShopPageHomeScope
+    @Provides
+    fun provideShopProductSortMapper(): ShopProductSortMapper {
+        return ShopProductSortMapper()
+    }
 }

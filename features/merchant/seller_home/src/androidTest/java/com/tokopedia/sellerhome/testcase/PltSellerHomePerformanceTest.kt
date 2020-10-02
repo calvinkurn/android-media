@@ -43,7 +43,8 @@ class PltSellerHomePerformanceTest {
                     listOf("getNotifications", "getShopInfoMoengage", "shopInfoByID",
                             "goldGetPMOSStatus", "GetSellerDashboardLayout", "getCardWidgetData",
                             "getLineGraphData", "getCarouselWidgetData", "getPostWidgetData",
-                            "getProgressData"
+                            "getProgressData", "getBarChartData", "getPieChartData", "getTableData",
+                            "getTicker"
                     ))
         }
 
