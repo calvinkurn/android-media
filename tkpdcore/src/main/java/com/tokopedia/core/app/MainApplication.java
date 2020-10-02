@@ -153,12 +153,13 @@ public abstract class MainApplication extends MainRouterApplication{
                 @NotNull
                 @Override
                 public Object execute() {
-            FirebaseCrashlytics crashlytics = FirebaseCrashlytics.getInstance();
-            crashlytics.setUserId(userSession.getUserId());
+                    FirebaseCrashlytics crashlytics = FirebaseCrashlytics.getInstance();
+                    crashlytics.setUserId(userSession.getUserId());
                     return true;
                 }
             };
             Weaver.Companion.executeWeaveCoRoutineWithFirebase(crashlyticsUserInfoWeave, ENABLE_ASYNC_CRASHLYTICS_USER_INFO, getApplicationContext());
+        }
     }
 
     public AppComponent getApplicationComponent() {
