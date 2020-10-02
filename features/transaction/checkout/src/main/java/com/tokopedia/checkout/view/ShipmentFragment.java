@@ -62,7 +62,6 @@ import com.tokopedia.design.component.Tooltip;
 import com.tokopedia.design.countdown.CountDownView;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.dialog.DialogUnify;
-import com.tokopedia.iris.util.IrisSession;
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierBottomsheet;
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierBottomsheetListener;
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationBottomsheet;
@@ -151,8 +150,8 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.EVENT_ACTION_PILUH_PEMBAYARAN_INDOMARET;
-import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.EVENT_ACTION_PILUH_PEMBAYARAN_NORMAL;
+import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.EVENT_ACTION_PILIH_PEMBAYARAN_INDOMARET;
+import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.EVENT_ACTION_PILIH_PEMBAYARAN_NORMAL;
 import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.EVENT_CATEGORY_SELF_PICKUP_ADDRESS_SELECTION_TRADE_IN;
 import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.KEY_BUSINESS_UNIT;
 import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.KEY_SCREEN_NAME;
@@ -2482,10 +2481,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             tradeInCustomDimension.put(KEY_USER_ID, userSessionInterface.getUserId());
             tradeInCustomDimension.put(KEY_BUSINESS_UNIT, VALUE_TRADE_IN);
             if (isTradeInByDropOff()) {
-                eventAction = EVENT_ACTION_PILUH_PEMBAYARAN_INDOMARET;
+                eventAction = EVENT_ACTION_PILIH_PEMBAYARAN_INDOMARET;
                 tradeInCustomDimension.put(KEY_SCREEN_NAME, SCREEN_NAME_DROP_OFF_ADDRESS);
             } else {
-                eventAction = EVENT_ACTION_PILUH_PEMBAYARAN_NORMAL;
+                eventAction = EVENT_ACTION_PILIH_PEMBAYARAN_NORMAL;
                 tradeInCustomDimension.put(KEY_SCREEN_NAME, SCREEN_NAME_NORMAL_ADDRESS);
             }
         }

@@ -108,9 +108,6 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
         setShowCase(rlRecipientAddressLayout, showCaseObjectList);
     }
 
-    private void renderBaseAddress() {
-    }
-
     private void setShowCase(ViewGroup viewGroup, ArrayList<ShowCaseObject> showCaseObjectList) {
         showCaseObjectList.add(new ShowCaseObject(viewGroup,
                 viewGroup.getContext().getString(R.string.label_showcase_address_title),

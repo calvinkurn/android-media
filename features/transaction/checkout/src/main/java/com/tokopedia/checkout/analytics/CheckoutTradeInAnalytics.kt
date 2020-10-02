@@ -39,8 +39,8 @@ class CheckoutTradeInAnalytics constructor(val userId: String) : TransactionAnal
         const val EVENT_ACTION_UNTICK_GOLD_SAVING = "untick gold saving"
         const val EVENT_ACTION_CLICK_PROMO = "click promo"
         const val EVENT_ACTION_ERROR = "error"
-        const val EVENT_ACTION_PILUH_PEMBAYARAN_INDOMARET = "click pilih pembayaran tukar di indomaret"
-        const val EVENT_ACTION_PILUH_PEMBAYARAN_NORMAL = "click pilih pembayaran tukar di alamatmu"
+        const val EVENT_ACTION_PILIH_PEMBAYARAN_INDOMARET = "click pilih pembayaran tukar di indomaret"
+        const val EVENT_ACTION_PILIH_PEMBAYARAN_NORMAL = "click pilih pembayaran tukar di alamatmu"
 
         // Event Label
         const val EVENT_LABEL_OPSI_PENUKARAN = "opsi penukaran"
