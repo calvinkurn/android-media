@@ -212,7 +212,6 @@ dependencies {
         implementation project(rootProject.ext.features.developerOptionsNoop)
     }
     implementation rootProject.ext.tkpdInternalLibDependencies.authentication
-    implementation project(rootProject.ext.features.commonDigital)
     implementation project(rootProject.ext.features.tkpdcore)
     implementation project(rootProject.ext.features.sellerorder)
     implementation project(rootProject.ext.features.sellerHome)
@@ -267,10 +266,7 @@ dependencies {
     implementation project(rootProject.ext.features.managepassword)
     implementation project(rootProject.ext.features.voucherCreation)
     implementation project(rootProject.ext.features.shopCommon)
-    implementation project(rootProject.ext.features.commonDigital)
-    implementation project(rootProject.ext.features.digitalproduct)
     implementation project(rootProject.ext.features.shopOpen)
-//    implementation project(rootProject.ext.features.shopShowcase)
     implementation project(rootProject.ext.features.withdraw)
 
     implementation project(rootProject.ext.features.changePhoneNumber)
