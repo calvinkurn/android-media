@@ -62,9 +62,11 @@ class ProductDetailActivityTest {
             clickVariantTest()
             clickBuyNow()
         } assertTest {
+            intendingIntent()
             performClose(activityRule)
             waitForTrackerSent()
             validate(gtmLogDBSource, targetContext, BUTTON_BUY_LOGIN_PATH)
+            finishTest()
         }
     }
 
@@ -78,10 +80,10 @@ class ProductDetailActivityTest {
             clickAddToCart()
         } assertTest {
             if(addToCartBottomSheetIsVisible() == true) {
-                intendingIntent()
                 performClose(activityRule)
                 waitForTrackerSent()
                 validate(gtmLogDBSource, targetContext, ADD_TO_CART_LOGIN_PATH)
+                finishTest()
             } else {
                 performClose(activityRule)
             }
@@ -100,6 +102,7 @@ class ProductDetailActivityTest {
             performClose(activityRule)
             waitForTrackerSent()
             validate(gtmLogDBSource, targetContext, BUTTON_BUY_NON_LOGIN_PATH)
+            finishTest()
         }
     }
 
@@ -115,6 +118,7 @@ class ProductDetailActivityTest {
             performClose(activityRule)
             waitForTrackerSent()
             validate(gtmLogDBSource, targetContext, ADD_TO_CART_NON_LOGIN_PATH)
+            finishTest()
         }
     }
 
@@ -128,7 +132,13 @@ class ProductDetailActivityTest {
             performClose(activityRule)
             waitForTrackerSent()
             validate(gtmLogDBSource, targetContext, GUIDE_ON_SIZE_CHART_PATH)
+            finishTest()
         }
+    }
+
+    private fun finishTest() {
+        gtmLogDBSource.deleteAll().subscribe()
+        Thread.sleep(3000)
     }
 
     private fun addToCartBottomSheetIsVisible(): Boolean? {
