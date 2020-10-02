@@ -17,10 +17,11 @@ import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
+import android.widget.ArrayAdapter
+import android.widget.Toast
 import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.textfield.TextInputLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.config.GlobalConfig
@@ -41,7 +42,6 @@ import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef
 import com.tokopedia.imagepicker.picker.main.builder.ImageRatioTypeDef
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
 import com.tokopedia.screenshot_observer.ScreenshotData
-import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_feedback_page.*
@@ -59,18 +59,17 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
     @Inject
     lateinit var feedbackPagePresenter: FeedbackPagePresenter
 
-    private lateinit var bugType : Spinner
-    private lateinit var email: EditText
-    private lateinit var page: EditText
-    private lateinit var journey: EditText
-    private lateinit var actualResult: EditText
-    private lateinit var expectedResult: EditText
-    private lateinit var imageView: ImageView
-    private lateinit var submitButton: View
+//    private lateinit var bugType : Spinner
+//    private lateinit var email: EditText
+//    private lateinit var page: EditText
+//    private lateinit var journey: EditText
+//    private lateinit var actualResult: EditText
+//    private lateinit var expectedResult: EditText
+//    private lateinit var submitButton: View
     private lateinit var compositeSubscription: CompositeSubscription
     private lateinit var myPreferences: Preferences
-    private lateinit var tvImage: Typography
-    private lateinit var rvImageFeedback: RecyclerView
+//    private lateinit var tvImage: Typography
+//    private lateinit var rvImageFeedback: RecyclerView
     private val imageAdapter: ImageFeedbackAdapter by lazy {
         ImageFeedbackAdapter(this)
     }
@@ -98,13 +97,18 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
                 Manifest.permission.READ_EXTERNAL_STORAGE)
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val mainView = inflater.inflate(R.layout.fragment_feedback_page, container, false)
+        return inflater.inflate(R.layout.fragment_feedback_page, container, false)
+
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
         if(!allPermissionsGranted()) {
             requestPermissions(requiredPermissions, 5111)
         }
-        initView(mainView)
+        initViews()
         initListener()
-        return mainView
     }
 
     override fun getScreenName(): String = ""
@@ -134,7 +138,7 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
         when (requestCode) {
             REQUEST_CODE_IMAGE -> {
                 if (resultCode == Activity.RESULT_OK && data != null) {
-                    selectedImage = data.getStringArrayListExtra(ImagePickerActivity.PICKER_RESULT_PATHS)
+                    val selectedImage = data.getStringArrayListExtra(ImagePickerActivity.PICKER_RESULT_PATHS)
                     feedbackPagePresenter.initImageData()
 
                     val imageListData = feedbackPagePresenter.getImageList(selectedImage)
@@ -147,17 +151,7 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
         }
     }
 
-    private fun initView(mainView: View){
-        email =  mainView.findViewById(R.id.email)
-        bugType = mainView.findViewById(R.id.spinner_bug_type)
-        page = mainView.findViewById(R.id.page)
-        journey = mainView.findViewById(R.id.step_to_reproduce)
-        actualResult = mainView.findViewById(R.id.actual_result)
-        expectedResult = mainView.findViewById(R.id.expected_result)
-        imageView = mainView.findViewById(R.id.image_feedback)
-        submitButton = mainView.findViewById(R.id.submit_button)
-        tvImage = mainView.findViewById(R.id.image_feedback_tv)
-        rvImageFeedback = mainView.findViewById(R.id.rv_img_feedback)
+    private fun initViews(){
         feedbackPagePresenter.attachView(this)
 
         compositeSubscription = CompositeSubscription()
@@ -186,9 +180,9 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
         if (allPermissionsGranted() && uriImage != null) {
             val screenshotData = uriImage?.let { handleItem(it) }
             if (screenshotData != null) {
+//                feedbackPagePresenter.getImageList(listOf(screenshotData.path))
                 imageAdapter.setImageFeedbackData(feedbackPagePresenter.screenshotImageResult(screenshotData))
             }
-            imageView.setImageURI(Uri.parse(screenshotData?.path))
         }
     }
 

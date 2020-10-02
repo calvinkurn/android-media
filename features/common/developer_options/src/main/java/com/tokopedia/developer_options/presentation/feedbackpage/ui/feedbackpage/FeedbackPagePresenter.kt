@@ -16,6 +16,7 @@ import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import rx.subscriptions.CompositeSubscription
 
+
 class FeedbackPagePresenter(private val compositeSubscription: CompositeSubscription, val mapper: CategoriesMapper, val imageMapper: ScreenshotResultMapper) : BaseDaggerPresenter<FeedbackPageContract.View>(), FeedbackPageContract.Presenter {
 
     private val feedbackApi: FeedbackApiInterface = ApiClient.getAPIService()
@@ -126,19 +127,15 @@ class FeedbackPagePresenter(private val compositeSubscription: CompositeSubscrip
     override fun getImageList(selectedImage: ArrayList<String>): MutableList<BaseImageFeedbackUiModel> {
         when (selectedImage.size) {
             5 -> {
-                imageData = (selectedImage.take(4).map {
-                    ImageFeedbackUiModel(it, shouldDisplayOverlay = true)
-                }).asReversed().toMutableList()
-            }
-            4 -> {
-                imageData.addAll(selectedImage.take(3).map {
-                    ImageFeedbackUiModel(it, shouldDisplayOverlay = true)
-                }.asReversed())
+                imageData = (selectedImage.map {
+                    ImageFeedbackUiModel(it)
+                }).toMutableList()
             }
             else -> {
                 imageData.addAll(selectedImage.map {
-                    ImageFeedbackUiModel(it, shouldDisplayOverlay = false)
-                }.asReversed())
+                    ImageFeedbackUiModel(it)
+                })
+                imageData.add(DefaultFeedbackUiModel())
             }
         }
 
@@ -154,6 +151,21 @@ class FeedbackPagePresenter(private val compositeSubscription: CompositeSubscrip
     override fun screenshotImageResult(data: ScreenshotData): MutableList<BaseImageFeedbackUiModel> {
         imageData.add(imageMapper.mapData(data))
         return imageData
+    }
+
+    override fun getSelectedImageUrl(): ArrayList<String> {
+        val result = arrayListOf<String>()
+        imageData.forEach {
+            val imageUrl = if((it as? ImageFeedbackUiModel)?.fullImageUrl?.isNotBlank() == true) {
+                (it as? ImageFeedbackUiModel)?.fullImageUrl
+            } else {
+                (it as? ImageFeedbackUiModel)?.imageUrl
+            }
+            if (imageUrl?.isNotEmpty() == true) {
+                result.add(imageUrl)
+            }
+        }
+        return result
     }
 
 }

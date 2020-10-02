@@ -13,7 +13,7 @@
         android:layout_height="match_parent">
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/image_feedback_tv"
+            android:id="@+id/tvImage"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="@dimen/dp_8"
@@ -25,7 +25,7 @@
             android:visibility="visible"/>
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_img_feedback"
+            android:id="@+id/rvImageFeedback"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -33,7 +33,7 @@
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/image_feedback_tv"
+            app:layout_constraintTop_toBottomOf="@id/tvImage"
             android:visibility="visible"
             tools:listitem="@layout/item_image_chooser_feedback" />
 
@@ -41,7 +41,7 @@
             android:id="@+id/email_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layout_constraintTop_toBottomOf="@id/rv_img_feedback">
+            app:layout_constraintTop_toBottomOf="@id/rvImageFeedback">
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/et_email_wrapper"
@@ -104,7 +104,7 @@
             android:hint="@string/category">
 
             <Spinner
-                android:id="@+id/spinner_bug_type"
+                android:id="@+id/bugType"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="2" />
@@ -146,7 +146,7 @@
             android:hint="@string/step_to_reproduce">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/step_to_reproduce"
+                android:id="@+id/journey"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:imeOptions="actionDone"
@@ -170,7 +170,7 @@
             android:hint="@string/actual_result">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/actual_result"
+                android:id="@+id/actualResult"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:imeOptions="actionDone"
@@ -194,7 +194,7 @@
             android:hint="@string/expected_result">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/expected_result"
+                android:id="@+id/expectedResult"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:imeOptions="actionDone"
@@ -208,7 +208,7 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <FrameLayout
-            android:id="@+id/submit_button"
+            android:id="@+id/submitButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:animateLayoutChanges="true"
