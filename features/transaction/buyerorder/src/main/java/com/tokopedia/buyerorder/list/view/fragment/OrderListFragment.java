@@ -164,6 +164,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
     private String datePickerStartDate = "";
     private String datePickerEndDate = "";
     private boolean customFilter = false;
+    private String allCategoryFilter = "18";
 
     private static final String DATE_FORMAT = "dd/MM/yyyy";
     private static final String DATE_FORMAT_1 = "yyyy/MM/dd";
@@ -185,7 +186,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
     @Inject
     UserSessionInterface userSession;
 
-    private String selectedFilter = "0";
+    private String selectedFilter = allCategoryFilter;
 
     private CustomViewRounderCornerFilterView quickSingleFilterView;
 
@@ -466,6 +467,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
 
     private void doRefresh() {
         page_num = 1;
+        selectedFilter = allCategoryFilter;
         isLoading = true;
         presenter.onRefresh();
         if (orderListAdapter != null) {
