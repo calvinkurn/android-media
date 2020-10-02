@@ -275,6 +275,7 @@ object RecommendationListTracking: BaseTrackerConst(){
             CurrentSite.KEY, CurrentSite.DEFAULT,
             UserId.KEY, userId,
             Label.CHANNEL_LABEL, channel.id,
+            BusinessUnit.KEY, BusinessUnit.DEFAULT,
             Ecommerce.KEY, Ecommerce.getEcommerceProductAddToCart(
             products = listOf(
                     Product(
