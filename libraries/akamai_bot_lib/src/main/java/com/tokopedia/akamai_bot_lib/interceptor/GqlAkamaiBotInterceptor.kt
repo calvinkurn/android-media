@@ -53,7 +53,9 @@ class GqlAkamaiBotInterceptor : Interceptor {
                                 if (!xTkpdAkamai.isNullOrEmpty()) {
                                     newRequest.addHeader("X-TKPD-AKAMAI", xTkpdAkamai)
                                 }
-                                        
+
+                                newRequest.addHeader("X-Origin", "beta")
+
                             }
                         } catch (e: JSONException) {
                             e.printStackTrace()
