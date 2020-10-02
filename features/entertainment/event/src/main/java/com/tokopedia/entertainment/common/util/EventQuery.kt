@@ -369,6 +369,21 @@ object EventQuery {
                     sales_price
                     dates
                     end_date
+                    forms_package {
+                        id
+                        product_id
+                        name
+                        title
+                        value
+                        element_type
+                        help_text
+                        required
+                        validator_regex
+                        error_message
+                        status
+                        created_at
+                        updated_at
+                    }
                     package_items{
                         id
                         product_id
@@ -391,6 +406,21 @@ object EventQuery {
                         start_date
                         end_date
                         provider_custom_text
+                        forms_item {
+                           id
+                           product_id
+                            name
+                           title
+                           value
+                           element_type
+                           help_text
+                           required
+                           validator_regex
+                           error_message
+                           status
+                           created_at
+                           updated_at
+                        }
                     }
                 }
                 facilities{

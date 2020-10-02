@@ -3,8 +3,6 @@ package com.tokopedia.topads.keyword.di.module;
 import android.content.Context;
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
-import com.tokopedia.product.manage.item.common.data.mapper.SimpleDataResponseMapper;
-import com.tokopedia.product.manage.item.common.data.source.cloud.TomeProductApi;
 import com.tokopedia.seller.shop.common.di.ShopQualifier;
 import com.tokopedia.topads.common.data.source.local.TopAdsCacheDataSource;
 import com.tokopedia.topads.common.data.source.local.TopAdsCacheDataSourceImpl;
@@ -21,6 +19,7 @@ import com.tokopedia.topads.keyword.data.repository.TopAdsKeywordRepositoryImpl;
 import com.tokopedia.topads.keyword.data.repository.TopAdsOldKeywordRepositoryImpl;
 import com.tokopedia.topads.keyword.data.source.TopAdsKeywordDataSource;
 import com.tokopedia.topads.keyword.data.source.cloud.TopAdsKeywordDataSourceCloud;
+import com.tokopedia.topads.keyword.data.source.cloud.api.TomeProductApi;
 import com.tokopedia.topads.sourcetagging.data.repository.TopAdsSourceTaggingRepositoryImpl;
 import com.tokopedia.topads.sourcetagging.data.source.TopAdsSourceTaggingDataSource;
 import com.tokopedia.topads.sourcetagging.data.source.TopAdsSourceTaggingLocal;

@@ -15,7 +15,7 @@ import com.otaliastudios.cameraview.gesture.Gesture
 import com.otaliastudios.cameraview.gesture.GestureAction
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.permissionchecker.PermissionCheckerHelper
+import com.tokopedia.utils.permission.PermissionCheckerHelper
 import com.tokopedia.videorecorder.R
 import com.tokopedia.videorecorder.main.VideoPickerCallback
 import com.tokopedia.videorecorder.main.state.StateRecorder

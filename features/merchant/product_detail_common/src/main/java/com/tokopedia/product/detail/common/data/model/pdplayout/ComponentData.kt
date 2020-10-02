@@ -27,8 +27,6 @@ data class ComponentData(
         //region Content data
         @SerializedName("campaign")
         val campaign: CampaignModular = CampaignModular(),
-        @SerializedName("isCOD")
-        val isCOD: Boolean = false,
         @SerializedName("isCashback")
         val isCashback: Cashback = Cashback(),
         @SerializedName("isFreeOngkir")

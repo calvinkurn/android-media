@@ -33,6 +33,8 @@ class PartialContentView(private val view: View,
         val basic = product.basic
         val campaign = data.campaign
 
+        txt_main_price.contentDescription = context.getString(R.string.content_desc_txt_main_price, data.price.value)
+        product_name.contentDescription = context.getString(R.string.content_desc_product_name, MethodChecker.fromHtml(data.name))
         product_name.text = MethodChecker.fromHtml(data.name)
 
         img_free_ongkir.shouldShowWithAction(data.isFreeOngkir.isActive) {
@@ -187,11 +189,6 @@ class PartialContentView(private val view: View,
         text_slash_price.gone()
         sale_text_stock_available.gone()
         text_stock_available.show()
-    }
-
-    fun renderCod(showCod: Boolean) = with(view) {
-        cod_header_container.showWithCondition(showCod)
-        cod_header_container.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable(view.context, R.drawable.ic_cod_white), null, null, null)
     }
 
     fun renderTradein(showTradein: Boolean) = with(view) {

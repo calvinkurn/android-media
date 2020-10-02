@@ -10,10 +10,10 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.play.KEY_GROUPCHAT_PREFERENCES
 import com.tokopedia.play.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.util.coroutine.DefaultCoroutineDispatcherProvider
-import com.tokopedia.play.util.observer.PlayVideoUtilObserver
-import com.tokopedia.play.util.video.PlayVideoUtil
-import com.tokopedia.play.util.video.PlayVideoUtilImpl
 import com.tokopedia.play_common.player.PlayVideoManager
+import com.tokopedia.play_common.player.creator.DefaultExoPlayerCreator
+import com.tokopedia.play_common.player.creator.ExoPlayerCreator
+import com.tokopedia.play_common.util.ExoPlaybackExceptionParser
 import com.tokopedia.play_common.util.PlayVideoPlayerObserver
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSession
@@ -31,15 +31,15 @@ class PlayModule(val mContext: Context) {
 
     @PlayScope
     @Provides
-    fun provideTokopediaPlayPlayerInstance(@ApplicationContext ctx: Context): PlayVideoManager = PlayVideoManager.getInstance(ctx)
+    fun providerExoPlayerCreator(@ApplicationContext ctx: Context): ExoPlayerCreator = DefaultExoPlayerCreator(ctx)
+
+    @PlayScope
+    @Provides
+    fun provideTokopediaPlayPlayerInstance(@ApplicationContext ctx: Context, creator: ExoPlayerCreator): PlayVideoManager = PlayVideoManager.getInstance(ctx, creator)
 
     @PlayScope
     @Provides
     fun providePlayVideoPlayerLifecycleObserver(): PlayVideoPlayerObserver = PlayVideoPlayerObserver(mContext)
-
-    @PlayScope
-    @Provides
-    fun providePlayVideoUtilLifecycleObserver(playVideoUtil: PlayVideoUtil): PlayVideoUtilObserver = PlayVideoUtilObserver(mContext, playVideoUtil)
 
     @PlayScope
     @Provides
@@ -92,7 +92,7 @@ class PlayModule(val mContext: Context) {
 
     @Provides
     @PlayScope
-    fun providePlayVideoUtil(): PlayVideoUtil {
-        return PlayVideoUtilImpl(mContext)
+    fun provideExoPlaybackExceptionParser(): ExoPlaybackExceptionParser {
+        return ExoPlaybackExceptionParser()
     }
 }
