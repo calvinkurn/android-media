@@ -17,7 +17,7 @@ buildCache {
 }
 
 include "libraries:lint"
-project("libraries:lint").projectDir = file("../libraries:lint")
+project("libraries:lint").projectDir = file("../lint")
 
 include ":authentication"
 include ":analytic_constant"
