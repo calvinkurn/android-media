@@ -1,6 +1,7 @@
 package com.tokopedia.oneclickcheckout.common.robot
 
 import android.view.View
+import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -65,6 +66,11 @@ class OrderSummaryPageRobot {
 
     fun clickButtonPromo() {
         onView(withId(R.id.btn_promo_checkout)).perform(scrollTo()).perform(click())
+    }
+
+    fun clickButtonOrderDetail(func: OrderPriceSummaryBottomSheetRobot.() -> Unit) {
+        onView(withId(R.id.btn_order_detail)).perform(scrollTo()).perform(click())
+        OrderPriceSummaryBottomSheetRobot().apply(func)
     }
 
     fun pay() {
@@ -232,5 +238,68 @@ class OrderSummaryPageResultRobot {
         assertEquals(redirectUrl, paymentPassData.redirectUrl)
         assertEquals(queryString, paymentPassData.queryString)
         assertEquals(method, paymentPassData.method)
+    }
+}
+
+class OrderPriceSummaryBottomSheetRobot {
+
+    fun assertSummary(productPrice: String = "",
+                      productDiscount: String? = null,
+                      shippingPrice: String = "",
+                      shippingDiscount: String? = null,
+                      isBbo: Boolean = false,
+                      insurancePrice: String? = null,
+                      paymentFee: String? = null,
+                      totalPrice: String = "") {
+        onView(withId(R.id.tv_total_product_price_value)).check(matches(withText(productPrice)))
+        onView(withId(R.id.tv_total_product_discount_value)).check { view, noViewFoundException ->
+            noViewFoundException?.printStackTrace()
+            if (productDiscount == null) {
+                assertEquals(View.GONE, view.visibility)
+            } else {
+                assertEquals(View.VISIBLE, view.visibility)
+                assertEquals(productDiscount, (view as Typography).text)
+            }
+        }
+        onView(withId(R.id.tv_total_shipping_price_value)).check { view, noViewFoundException ->
+            noViewFoundException?.printStackTrace()
+            if (isBbo) {
+                assertEquals("Bebas Ongkir", (view as Typography).text)
+            } else {
+                assertEquals(shippingPrice, (view as Typography).text)
+            }
+        }
+        onView(withId(R.id.tv_total_shipping_discount_value)).check { view, noViewFoundException ->
+            noViewFoundException?.printStackTrace()
+            if (shippingDiscount == null) {
+                assertEquals(View.GONE, view.visibility)
+            } else {
+                assertEquals(View.VISIBLE, view.visibility)
+                assertEquals(shippingDiscount, (view as Typography).text)
+            }
+        }
+        onView(withId(R.id.tv_total_insurance_price_value)).check { view, noViewFoundException ->
+            noViewFoundException?.printStackTrace()
+            if (insurancePrice == null) {
+                assertEquals(View.GONE, view.visibility)
+            } else {
+                assertEquals(View.VISIBLE, view.visibility)
+                assertEquals(insurancePrice, (view as Typography).text)
+            }
+        }
+        onView(withId(R.id.tv_total_payment_fee_price_value)).check { view, noViewFoundException ->
+            noViewFoundException?.printStackTrace()
+            if (paymentFee == null) {
+                assertEquals(View.GONE, view.visibility)
+            } else {
+                assertEquals(View.VISIBLE, view.visibility)
+                assertEquals(paymentFee, (view as Typography).text)
+            }
+        }
+        onView(withId(R.id.tv_total_payment_price_value)).check(matches(withText(totalPrice)))
+    }
+
+    fun closeBottomSheet() {
+        Espresso.pressBack()
     }
 }

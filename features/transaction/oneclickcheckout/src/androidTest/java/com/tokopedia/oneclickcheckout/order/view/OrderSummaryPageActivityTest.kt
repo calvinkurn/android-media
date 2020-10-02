@@ -87,6 +87,16 @@ class OrderSummaryPageActivityTest {
             assertProfilePayment("Payment 1")
 
             assertPayment("Rp116.000", "Bayar")
+
+            clickButtonOrderDetail {
+                assertSummary(
+                        productPrice = "Rp100.000",
+                        shippingPrice = "Rp15.000",
+                        paymentFee = "Rp1.000",
+                        totalPrice = "Rp116.000"
+                )
+                closeBottomSheet()
+            }
         } pay {
             assertGoToPayment(
                     redirectUrl = "https://www.tokopedia.com/payment",
@@ -162,6 +172,17 @@ class OrderSummaryPageActivityTest {
             assertInsurance(true)
 
             assertPayment("Rp117.000", "Bayar")
+
+            clickButtonOrderDetail {
+                assertSummary(
+                        productPrice = "Rp100.000",
+                        shippingPrice = "Rp15.000",
+                        insurancePrice = "Rp1.000",
+                        paymentFee = "Rp1.000",
+                        totalPrice = "Rp117.000"
+                )
+                closeBottomSheet()
+            }
         } pay {
             assertGoToPayment(
                     redirectUrl = "https://www.tokopedia.com/payment",
@@ -191,6 +212,17 @@ class OrderSummaryPageActivityTest {
             )
 
             assertPayment("Rp101.000", "Bayar")
+
+            clickButtonOrderDetail {
+                assertSummary(
+                        productPrice = "Rp100.000",
+                        shippingPrice = "Rp0",
+                        isBbo = true,
+                        paymentFee = "Rp1.000",
+                        totalPrice = "Rp101.000"
+                )
+                closeBottomSheet()
+            }
         } pay {
             assertGoToPayment(
                     redirectUrl = "https://www.tokopedia.com/payment",
@@ -228,7 +260,6 @@ class OrderSummaryPageActivityTest {
             )
 
             assertPayment("Rp114.000", "Bayar")
-            Thread.sleep(3000)
         } pay {
             assertGoToPayment(
                     redirectUrl = "https://www.tokopedia.com/payment",

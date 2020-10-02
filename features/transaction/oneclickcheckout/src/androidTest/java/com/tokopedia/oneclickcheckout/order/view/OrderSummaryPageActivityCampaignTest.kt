@@ -70,6 +70,16 @@ class OrderSummaryPageActivityCampaignTest {
             )
 
             assertPayment("Rp116.000", "Bayar")
+
+            clickButtonOrderDetail {
+                assertSummary(
+                        productPrice = "Rp100.000",
+                        shippingPrice = "Rp15.000",
+                        paymentFee = "Rp1.000",
+                        totalPrice = "Rp116.000"
+                )
+                closeBottomSheet()
+            }
         } pay {
             assertGoToPayment(
                     redirectUrl = "https://www.tokopedia.com/payment",
