@@ -63,6 +63,15 @@ dependencies {
     implementation rootProject.ext.playServicesDependencies.auth
 
     implementation rootProject.ext.debugToolsDependencies.chuck
+
+    // spek
+    testImplementation rootProject.ext.testDependencies.junit
+    implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk8
+    testImplementation rootProject.ext.testDependencies.archCoreTesting
+    testImplementation rootProject.ext.testDependencies.mockk
+    testImplementation rootProject.ext.testDependencies.assertJCore
+    testImplementation rootProject.ext.testDependencies.couroutinesTest
+
 }
 
 project.ext {
@@ -73,3 +82,6 @@ project.ext {
 }
 
 apply from: '../../../publish_local.gradle'
+
+apply from: '../../../jacoco_task.gradle'
+apply from: '../../../sonar_config.gradle'
