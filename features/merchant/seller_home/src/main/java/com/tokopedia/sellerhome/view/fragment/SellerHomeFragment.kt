@@ -43,6 +43,7 @@ import com.tokopedia.sellerhome.domain.model.PROVINCE_ID_EMPTY
 import com.tokopedia.sellerhome.domain.model.ShippingLoc
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity
 import com.tokopedia.sellerhome.view.model.TickerUiModel
+import com.tokopedia.sellerhome.view.viewhelper.SellerHomeLayoutManager
 import com.tokopedia.sellerhome.view.viewmodel.SellerHomeViewModel
 import com.tokopedia.sellerhome.view.widget.toolbar.NotificationDotBadge
 import com.tokopedia.sellerhomecommon.common.WidgetListener
@@ -82,7 +83,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         private const val ERROR_WIDGET = "Error get widget data."
         private const val ERROR_TICKER = "Error get ticker data."
         private const val TOAST_DURATION = 5000L
-        private const val DELAY_FETCH_VISIBLE_WIDGET_DATA = 500L
     }
 
     @Inject
@@ -207,7 +207,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     }
 
     private fun setupView() = view?.run {
-        val gridLayoutManager = GridLayoutManager(context, 2).apply {
+        val sellerHomeLayoutManager = SellerHomeLayoutManager(context, 2).apply {
             spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
                 override fun getSpanSize(position: Int): Int {
                     return try {
@@ -218,19 +218,13 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                     }
                 }
             }
+
+            setOnVerticalScrollListener {
+                requestVisibleWidgetsData()
+            }
         }
         with(recyclerView) {
-            layoutManager = gridLayoutManager
-
-            addOnScrollListener(object : RecyclerView.OnScrollListener() {
-                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                    if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                        requestVisibleWidgetsData()
-                    }
-                    super.onScrollStateChanged(recyclerView, newState)
-                }
-            })
-
+            layoutManager = sellerHomeLayoutManager
             (itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
         }
 
@@ -683,9 +677,9 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 }
             }
         }
-        view?.postDelayed({
+        view?.addOneTimeGlobalLayoutListener {
             requestVisibleWidgetsData()
-        }, DELAY_FETCH_VISIBLE_WIDGET_DATA)
+        }
     }
 
     private inline fun <reified D : BaseDataUiModel, reified W : BaseWidgetUiModel<D>> Throwable.setOnErrorWidgetState(widgetType: String) {
@@ -700,16 +694,18 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             }
         }
         showErrorToaster()
-        view?.postDelayed({
+        view?.addOneTimeGlobalLayoutListener {
             requestVisibleWidgetsData()
-        }, DELAY_FETCH_VISIBLE_WIDGET_DATA)
+        }
     }
 
     private fun notifyWidgetChanged(widget: BaseWidgetUiModel<*>) {
-        val widgetPosition = adapter.data.indexOf(widget)
-        if (widgetPosition > -1) {
-            adapter.notifyItemChanged(widgetPosition)
-            view?.swipeRefreshLayout?.isRefreshing = false
+        recyclerView.post {
+            val widgetPosition = adapter.data.indexOf(widget)
+            if (widgetPosition != RecyclerView.NO_POSITION) {
+                adapter.notifyItemChanged(widgetPosition)
+                view?.swipeRefreshLayout?.isRefreshing = false
+            }
         }
     }
 

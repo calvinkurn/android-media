@@ -198,6 +198,10 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
         )
     }
 
+    override fun mapFreezeEvent(event: Freeze): EventUiModel {
+        return EventUiModel(event.isFreeze)
+    }
+
     companion object {
         const val LOCAL_RTMP_URL: String = "rtmp://192.168.0.110:1935/stream/"
     }

@@ -54,4 +54,6 @@ interface PlayBroadcastMapper {
     fun mapLiveDuration(duration: LiveDuration): DurationUiModel
 
     fun mapIncomingChat(chat: Chat): PlayChatUiModel
+
+    fun mapFreezeEvent(event: Freeze): EventUiModel
 }

@@ -3,6 +3,7 @@ package com.tokopedia.autocomplete.initialstate
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
+import com.tokopedia.autocomplete.initialstate.recentsearch.RecentSearchViewModel
 
 interface InitialStateContract {
     interface View : CustomerView {
@@ -26,7 +27,7 @@ interface InitialStateContract {
 
         fun trackEventClickSeeMoreRecentSearch(userId: String)
 
-        fun renderRecentSearch()
+        fun renderCompleteRecentSearch(recentSearchViewModel: RecentSearchViewModel)
 
         fun dropKeyBoard()
     }

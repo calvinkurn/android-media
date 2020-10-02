@@ -214,11 +214,15 @@ class PlayBroadcastUiMapper : PlayBroadcastMapper {
             maxDuration = duration.maxDuration
     )
 
-    override fun mapIncomingChat(chat: Chat): PlayChatUiModel =  PlayChatUiModel(
+    override fun mapIncomingChat(chat: Chat): PlayChatUiModel = PlayChatUiModel(
             messageId = chat.messageId,
             message = chat.message,
             userId = chat.user.id,
             name = chat.user.name,
             isSelfMessage = false
+    )
+
+    override fun mapFreezeEvent(event: Freeze): EventUiModel = EventUiModel(
+            freeze = event.isFreeze
     )
 }

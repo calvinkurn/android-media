@@ -106,6 +106,7 @@
     <string name="play_live_broadcast_network_loss">Koneksi internetmu terputus, nih.</string>
     <string name="play_live_broadcast_network_poor">Koneksi internetmu melambat, nih.</string>
     <string name="play_live_broadcast_connect_fail">Oops, gagal menyambungkan siaran.</string>
+    <string name="play_live_broadcast_system_error">Tunggu sebentar, biar Toped bereskan. Coba lagi atau kembali nanti.</string>
 
     <string name="play_summary_title">Laporan Live Streaming</string>
     <string name="play_summary_button_finish">Selesai</string>

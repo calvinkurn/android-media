@@ -101,4 +101,9 @@ class PlayBroadcastConfigurableMapper(
         return if (!isMock) uiMapper.mapIncomingChat(chat)
         else mockMapper.mapIncomingChat(chat)
     }
+
+    override fun mapFreezeEvent(event: Freeze): EventUiModel {
+        return if (!isMock) uiMapper.mapFreezeEvent(event)
+        else mockMapper.mapFreezeEvent(event)
+    }
 }
