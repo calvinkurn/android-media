@@ -62,8 +62,8 @@ class ProductDetailActivityTest {
             clickVariantTest()
             clickBuyNow()
         } assertTest {
-            waitForTrackerSent()
             performClose(activityRule)
+            waitForTrackerSent()
             validate(gtmLogDBSource, targetContext, BUTTON_BUY_LOGIN_PATH)
         }
     }
@@ -78,8 +78,9 @@ class ProductDetailActivityTest {
             clickAddToCart()
         } assertTest {
             if(addToCartBottomSheetIsVisible() == true) {
-                waitForTrackerSent()
+                intendingIntent()
                 performClose(activityRule)
+                waitForTrackerSent()
                 validate(gtmLogDBSource, targetContext, ADD_TO_CART_LOGIN_PATH)
             } else {
                 performClose(activityRule)
@@ -174,7 +175,7 @@ class ProductDetailActivityTest {
     }
 
     private fun intendingIntent() {
-        Intents.intending(IntentMatchers.isInternal()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
+        Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
     }
 
     companion object {
