@@ -131,7 +131,10 @@ object HomePageTrackingV2 : BaseTracking() {
                             isFreeOngkir = grid.freeOngkir.isActive,
                             persoType = channel.persoType,
                             categoryId = channel.categoryID,
-                            isTopAds = grid.isTopads
+                            isTopAds = grid.isTopads,
+                            recommendationType = grid.recommendationType,
+                            isCarousel = false,
+                            headerName = channel.header.name
                     )
                 },
                 list = String.format(
