@@ -12,6 +12,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:loader_type="circular_white" />
+        app:loader_type="circular_white"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

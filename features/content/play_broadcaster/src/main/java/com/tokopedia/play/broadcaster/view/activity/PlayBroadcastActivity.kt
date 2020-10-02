@@ -320,12 +320,6 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, PlayBroadcast
             }
         })
     }
-
-    private fun observeLiveInfo() {
-        viewModel.observableLiveInfoState.observe(this, Observer {
-
-        })
-    }
     //endregion
 
     private fun handleChannelConfiguration(config: ConfigurationUiModel) {
