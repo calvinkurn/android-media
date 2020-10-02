@@ -13,7 +13,6 @@ import androidx.fragment.app.Fragment;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.design.text.TextDrawable;
 import com.tokopedia.review.R;
-import com.tokopedia.review.feature.inbox.buyerreview.analytics.ReputationTracking;
 import com.tokopedia.review.feature.inbox.buyerreview.view.fragment.InboxReputationFilterFragment;
 import com.tokopedia.review.feature.inbox.buyerreview.view.fragment.InboxReputationFragment;
 
@@ -22,8 +21,6 @@ import com.tokopedia.review.feature.inbox.buyerreview.view.fragment.InboxReputat
  */
 
 public class InboxReputationFilterActivity extends BaseSimpleActivity {
-
-    private ReputationTracking reputationTracking;
 
     public interface ResetListener {
         void resetFilter();
@@ -39,12 +36,6 @@ public class InboxReputationFilterActivity extends BaseSimpleActivity {
         intent.putExtra(InboxReputationFilterFragment.SELECTED_SCORE_FILTER, scoreFilter);
         intent.putExtra(InboxReputationFragment.PARAM_TAB, tab);
         return intent;
-    }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        reputationTracking = new ReputationTracking();
     }
 
     @Nullable
