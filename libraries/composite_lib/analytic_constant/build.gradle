@@ -3,6 +3,8 @@ apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 
 dependencies {
     implementation rootProject.ext.playServicesDependencies.measurementApi
+
+    lintChecks project(rootProject.ext.libraries.lint)
 }
 
 project.ext {
