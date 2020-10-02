@@ -5,7 +5,6 @@ import com.tokopedia.common_digital.cart.data.entity.requestbody.checkout.Fintec
 import com.tokopedia.common_digital.cart.data.entity.requestbody.checkout.RequestBodyCheckout
 import com.tokopedia.common_digital.cart.domain.usecase.DigitalAddToCartUseCase
 import com.tokopedia.common_digital.cart.domain.usecase.DigitalGetCartUseCase
-import com.tokopedia.common_digital.cart.domain.usecase.DigitalInstantCheckoutUseCase
 import com.tokopedia.common_digital.cart.view.model.cart.CartDigitalInfoData
 import com.tokopedia.common_digital.cart.view.model.checkout.CheckoutDataParameter
 import com.tokopedia.common_digital.common.RechargeAnalytics
@@ -22,16 +21,14 @@ class DigitalCartMyBillsPresenter @Inject constructor(digitalAddToCartUseCase: D
                                                       rechargeAnalytics: RechargeAnalytics?,
                                                       cartDigitalInteractor: ICartDigitalInteractor?,
                                                       val userSession: UserSession?,
-                                                      digitalCheckoutUseCase: DigitalCheckoutUseCase?,
-                                                      digitalInstantCheckoutUseCase: DigitalInstantCheckoutUseCase?) :
+                                                      digitalCheckoutUseCase: DigitalCheckoutUseCase?) :
         DigitalBaseCartPresenter<DigitalCartMyBillsContract.View>(digitalAddToCartUseCase,
                 digitalGetCartUseCase,
                 digitalAnalytics,
                 rechargeAnalytics,
                 cartDigitalInteractor,
                 userSession,
-                digitalCheckoutUseCase,
-                digitalInstantCheckoutUseCase), DigitalCartMyBillsContract.Presenter {
+                digitalCheckoutUseCase), DigitalCartMyBillsContract.Presenter {
 
     override fun onSubcriptionCheckedListener(checked: Boolean) {
         view.cartInfoData.crossSellingConfig?.run {

@@ -6,8 +6,6 @@ import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.common_digital.cart.domain.usecase.DigitalAddToCartUseCase
 import com.tokopedia.common_digital.cart.domain.usecase.DigitalGetCartUseCase
-import com.tokopedia.common_digital.cart.domain.usecase.DigitalInstantCheckoutUseCase
-import com.tokopedia.common_digital.common.DigitalRouter
 import com.tokopedia.common_digital.common.RechargeAnalytics
 import com.tokopedia.common_digital.common.di.DigitalCommonComponent
 import com.tokopedia.common_digital.common.di.DigitalRestApiRetrofit
@@ -24,8 +22,6 @@ interface DigitalComponent {
 
     fun rechargeAnalytics(): RechargeAnalytics
 
-    fun digitalRouter(): DigitalRouter
-
     fun userSession(): UserSession
 
     @ApplicationContext
@@ -36,8 +32,6 @@ interface DigitalComponent {
     fun digitalAddToCartUseCase(): DigitalAddToCartUseCase
 
     fun digitalGetCartUseCase(): DigitalGetCartUseCase
-
-    fun digitalInstantCheckoutUseCase(): DigitalInstantCheckoutUseCase
 
     fun httpLoggingInterceptor(): HttpLoggingInterceptor
 

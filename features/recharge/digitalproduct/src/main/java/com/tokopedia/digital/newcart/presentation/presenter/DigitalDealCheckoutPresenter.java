@@ -5,7 +5,6 @@ import androidx.annotation.NonNull;
 import com.tokopedia.common_digital.cart.data.entity.requestbody.checkout.RequestBodyCheckout;
 import com.tokopedia.common_digital.cart.domain.usecase.DigitalAddToCartUseCase;
 import com.tokopedia.common_digital.cart.domain.usecase.DigitalGetCartUseCase;
-import com.tokopedia.common_digital.cart.domain.usecase.DigitalInstantCheckoutUseCase;
 import com.tokopedia.common_digital.cart.view.model.cart.CartAdditionalInfo;
 import com.tokopedia.common_digital.cart.view.model.cart.CartItemDigital;
 import com.tokopedia.common_digital.cart.view.model.checkout.CheckoutDataParameter;
@@ -43,16 +42,14 @@ public class DigitalDealCheckoutPresenter extends DigitalBaseCartPresenter<Digit
                                         RechargeAnalytics rechargeAnalytics,
                                         ICartDigitalInteractor cartDigitalInteractor,
                                         UserSession userSession,
-                                        DigitalCheckoutUseCase digitalCheckoutUseCase,
-                                        DigitalInstantCheckoutUseCase digitalInstantCheckoutUseCase) {
+                                        DigitalCheckoutUseCase digitalCheckoutUseCase) {
         super(digitalAddToCartUseCase,
                 digitalGetCartUseCase,
                 digitalAnalytics,
                 rechargeAnalytics,
                 cartDigitalInteractor,
                 userSession,
-                digitalCheckoutUseCase,
-                digitalInstantCheckoutUseCase);
+                digitalCheckoutUseCase);
         this.digitalAnalytics = digitalAnalytics;
         this.userSession = userSession;
     }

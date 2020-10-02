@@ -1,6 +1,7 @@
 package com.tokopedia.digital.newcart.presentation.contract;
 
 import android.app.Activity;
+
 import androidx.annotation.StringRes;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
@@ -12,7 +13,6 @@ import com.tokopedia.common_digital.cart.view.model.cart.CartDigitalInfoData;
 import com.tokopedia.common_digital.cart.view.model.cart.CartItemDigital;
 import com.tokopedia.common_digital.cart.view.model.cart.UserInputPriceDigital;
 import com.tokopedia.common_digital.cart.view.model.checkout.CheckoutDataParameter;
-import com.tokopedia.common_digital.cart.view.model.checkout.InstantCheckoutData;
 import com.tokopedia.digital.newcart.domain.model.CheckoutDigitalData;
 import com.tokopedia.digital.newcart.presentation.model.DigitalSubscriptionParams;
 import com.tokopedia.promocheckout.common.view.model.PromoData;
@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface DigitalBaseContract {
-    interface View extends CustomerView{
+    interface View extends CustomerView {
 
         CartDigitalInfoData getCartInfoData();
 
@@ -61,9 +61,9 @@ public interface DigitalBaseContract {
 
         void showFullPageLoading();
 
-        Map<String,String> getGeneratedAuthParamNetwork(String userId,
-                                                        String deviceId,
-                                                        Map<String, String> param);
+        Map<String, String> getGeneratedAuthParamNetwork(String userId,
+                                                         String deviceId,
+                                                         Map<String, String> param);
 
         void showCartView();
 
@@ -101,8 +101,6 @@ public interface DigitalBaseContract {
 
         void renderErrorInstantCheckout(String message);
 
-        void renderToInstantCheckoutPage(InstantCheckoutData instantCheckoutData);
-
         void expandAdditionalInfo();
 
         String getString(@StringRes int resId);
@@ -126,7 +124,7 @@ public interface DigitalBaseContract {
         void showError(String message);
     }
 
-    interface Presenter<T extends View> extends CustomerPresenter<T>{
+    interface Presenter<T extends View> extends CustomerPresenter<T> {
 
         void onViewCreated();
 

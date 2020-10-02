@@ -6,7 +6,6 @@ import android.content.Context;
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
 import com.tokopedia.common_digital.cart.view.model.cart.CartDigitalInfoData;
 import com.tokopedia.common_digital.cart.view.model.checkout.CheckoutDataParameter;
-import com.tokopedia.common_digital.cart.view.model.checkout.InstantCheckoutData;
 import com.tokopedia.digital.newcart.domain.model.CheckoutDigitalData;
 import com.tokopedia.digital.newcart.domain.model.VoucherDigital;
 
@@ -54,8 +53,6 @@ public interface IDigitalCartView extends IBaseView {
 
     void renderErrorTimeoutConnectionCheckout(String message);
 
-    void renderToInstantCheckoutPage(InstantCheckoutData instantCheckoutData);
-
     void renderErrorInstantCheckout(String message);
 
     void renderErrorHttpInstantCheckout(String message);
@@ -94,7 +91,7 @@ public interface IDigitalCartView extends IBaseView {
 
     DigitalCheckoutPassData getPassData();
 
-    void showProgressLoading(String title,String message);
+    void showProgressLoading(String title, String message);
 
     CartDigitalInfoData getCartDataInfo();
 

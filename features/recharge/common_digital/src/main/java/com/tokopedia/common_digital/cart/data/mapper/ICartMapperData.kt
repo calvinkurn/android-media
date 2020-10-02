@@ -2,9 +2,7 @@ package com.tokopedia.common_digital.cart.data.mapper
 
 import com.tokopedia.common_digital.cart.data.entity.response.ResponseCancelVoucherData
 import com.tokopedia.common_digital.cart.data.entity.response.ResponseCartData
-import com.tokopedia.common_digital.cart.data.entity.response.ResponseCheckoutData
 import com.tokopedia.common_digital.cart.view.model.cart.CartDigitalInfoData
-import com.tokopedia.common_digital.cart.view.model.checkout.InstantCheckoutData
 import com.tokopedia.common_digital.common.MapperDataException
 
 /**
@@ -16,11 +14,6 @@ interface ICartMapperData {
     fun transformCartInfoData(
             responseCartData: ResponseCartData
     ): CartDigitalInfoData
-
-    @Throws(MapperDataException::class)
-    fun transformInstantCheckoutData(
-            responseCheckoutData: ResponseCheckoutData
-    ): InstantCheckoutData
 
     @Throws(MapperDataException::class)
     fun transformCancelVoucherData(

@@ -1,4 +1,4 @@
-package com.tokopedia.common_digital.common.data.api.exception
+package com.tokopedia.common_digital.common.data.api
 
 interface DigitalError {
     companion object {

@@ -15,18 +15,15 @@ import com.tokopedia.common_digital.cart.data.entity.requestbody.checkout.Data;
 import com.tokopedia.common_digital.cart.data.entity.requestbody.checkout.Relationships;
 import com.tokopedia.common_digital.cart.data.entity.requestbody.checkout.RequestBodyCheckout;
 import com.tokopedia.common_digital.cart.data.entity.response.ResponseCartData;
-import com.tokopedia.common_digital.cart.data.entity.response.ResponseCheckoutData;
 import com.tokopedia.common_digital.cart.data.mapper.CartMapperData;
 import com.tokopedia.common_digital.cart.domain.usecase.DigitalAddToCartUseCase;
 import com.tokopedia.common_digital.cart.domain.usecase.DigitalGetCartUseCase;
-import com.tokopedia.common_digital.cart.domain.usecase.DigitalInstantCheckoutUseCase;
 import com.tokopedia.common_digital.cart.view.model.cart.CartAdditionalInfo;
 import com.tokopedia.common_digital.cart.view.model.cart.CartAutoApplyVoucher;
 import com.tokopedia.common_digital.cart.view.model.cart.CartDigitalInfoData;
 import com.tokopedia.common_digital.cart.view.model.cart.CartItemDigital;
 import com.tokopedia.common_digital.cart.view.model.cart.UserInputPriceDigital;
 import com.tokopedia.common_digital.cart.view.model.checkout.CheckoutDataParameter;
-import com.tokopedia.common_digital.cart.view.model.checkout.InstantCheckoutData;
 import com.tokopedia.common_digital.common.RechargeAnalytics;
 import com.tokopedia.common_digital.common.constant.DigitalCache;
 import com.tokopedia.commonpromo.PromoCodeAutoApplyUseCase;
@@ -75,7 +72,6 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
     private DigitalCheckoutUseCase digitalCheckoutUseCase;
     private DigitalAddToCartUseCase digitalAddToCartUseCase;
     private DigitalGetCartUseCase digitalGetCartUseCase;
-    private DigitalInstantCheckoutUseCase digitalInstantCheckoutUseCase;
     private String PROMO_CODE = "promoCode";
     public static final String KEY_CACHE_PROMO_CODE = "KEY_CACHE_PROMO_CODE";
 
@@ -86,8 +82,7 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
                                     RechargeAnalytics rechargeAnalytics,
                                     ICartDigitalInteractor cartDigitalInteractor,
                                     UserSession userSession,
-                                    DigitalCheckoutUseCase digitalCheckoutUseCase,
-                                    DigitalInstantCheckoutUseCase digitalInstantCheckoutUseCase) {
+                                    DigitalCheckoutUseCase digitalCheckoutUseCase) {
         this.digitalAddToCartUseCase = digitalAddToCartUseCase;
         this.digitalGetCartUseCase = digitalGetCartUseCase;
         this.digitalAnalytics = digitalAnalytics;
@@ -95,14 +90,12 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
         this.cartDigitalInteractor = cartDigitalInteractor;
         this.userSession = userSession;
         this.digitalCheckoutUseCase = digitalCheckoutUseCase;
-        this.digitalInstantCheckoutUseCase = digitalInstantCheckoutUseCase;
     }
 
     @Override
     public void detachView() {
         digitalAddToCartUseCase.unsubscribe();
         digitalCheckoutUseCase.unsubscribe();
-        digitalInstantCheckoutUseCase.unsubscribe();
         super.detachView();
     }
 
@@ -247,70 +240,9 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
         };
     }
 
-    private Subscriber<Map<Type, RestResponse>> getSubscriberInstantCheckout2() {
-        return new Subscriber<Map<Type, RestResponse>>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                e.printStackTrace();
-                if (isViewAttached()) {
-                    if (e instanceof UnknownHostException || e instanceof ConnectException) {
-                        /* Ini kalau ga ada internet */
-                        getView().closeViewWithMessageAlert(
-                                ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
-                        );
-                    } else if (e instanceof SocketTimeoutException) {
-                        /* Ini kalau timeout */
-                        getView().closeViewWithMessageAlert(
-                                ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
-                        );
-                    } else if (e instanceof ResponseErrorException) {
-                        /* Ini kalau error dari API kasih message error */
-                        getView().renderErrorInstantCheckout(e.getMessage());
-                    } else if (e instanceof ResponseDataNullException) {
-                        /* Dari Api data null => "data":{}, tapi ga ada message error apa apa */
-                        getView().renderErrorInstantCheckout(e.getMessage());
-                    } else if (e instanceof HttpErrorException) {
-                    /* Ini Http error, misal 403, 500, 404,
-                     code http errornya bisa diambil
-                     e.getErrorCode */
-                        getView().closeViewWithMessageAlert(e.getMessage());
-                    } else {
-                        /* Ini diluar dari segalanya hahahaha */
-                        getView().closeViewWithMessageAlert(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
-                    }
-                }
-            }
-
-            @Override
-            public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
-                Type token = new TypeToken<DataResponse<ResponseCheckoutData>>() {
-                }.getType();
-                RestResponse restResponse = typeRestResponseMap.get(token);
-                DataResponse data = restResponse.getData();
-                ResponseCheckoutData responseCartData = (ResponseCheckoutData) data.getData();
-                CartMapperData cartMapperData = new CartMapperData();
-                InstantCheckoutData instantCheckoutData = cartMapperData.transformInstantCheckoutData(responseCartData);
-
-                getView().hideCartView();
-                getView().renderToInstantCheckoutPage(instantCheckoutData);
-            }
-        };
-    }
-
-
     private void renderCart(CartDigitalInfoData cartDigitalInfoData) {
-        if (getView().getCartPassData().getInstantCheckout().equals("1") && !cartDigitalInfoData.isForceRenderCart()) {
-            processToInstantCheckout();
-        } else {
-            digitalAnalytics.sendCartScreen(getView().getActivity());
-
-            renderCrossSellingCart(cartDigitalInfoData);
-        }
+        digitalAnalytics.sendCartScreen(getView().getActivity());
+        renderCrossSellingCart(cartDigitalInfoData);
         getView().stopPerfomanceMonitoringTrace();
     }
 
@@ -318,17 +250,6 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
         getView().showCartView();
         getView().hideFullPageLoading();
         renderBaseCart(cartDigitalInfoData);
-    }
-
-
-    private void processToInstantCheckout() {
-        CheckoutDataParameter checkoutData = getView().getCheckoutData();
-        if (checkoutData.isNeedOtp()) {
-            getView().interruptRequestTokenVerification(userSession.getPhoneNumber());
-            return;
-        }
-        RequestParams requestParams = digitalInstantCheckoutUseCase.createRequestParams(getRequestBodyCheckout(checkoutData));
-        digitalInstantCheckoutUseCase.execute(requestParams, getSubscriberInstantCheckout2());
     }
 
     protected void renderBaseCart(CartDigitalInfoData cartDigitalInfoData) {

@@ -6,9 +6,6 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.common_digital.cart.domain.usecase.DigitalAddToCartUseCase
 import com.tokopedia.common_digital.cart.domain.usecase.DigitalGetCartUseCase
-import com.tokopedia.common_digital.cart.domain.usecase.DigitalInstantCheckoutUseCase
-import com.tokopedia.common_digital.cart.view.activity.InstantCheckoutActivity
-import com.tokopedia.common_digital.common.DigitalRouter
 import com.tokopedia.common_digital.common.RechargeAnalytics
 import com.tokopedia.user.session.UserSession
 import dagger.Component
@@ -33,12 +30,6 @@ interface DigitalCommonComponent {
     fun digitalAddToCartUseCase(): DigitalAddToCartUseCase
 
     fun digitalGetCartUseCase(): DigitalGetCartUseCase
-
-    fun digitalInstantCheckoutUseCase(): DigitalInstantCheckoutUseCase
-
-    fun digitalRouter(): DigitalRouter
-
-    fun inject(instantCheckoutActivity: InstantCheckoutActivity)
 
     fun httpLoggingInterceptor(): HttpLoggingInterceptor
 

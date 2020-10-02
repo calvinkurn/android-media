@@ -13,8 +13,6 @@ import com.tokopedia.common_digital.cart.data.mapper.CartMapperData
 import com.tokopedia.common_digital.cart.data.mapper.ICartMapperData
 import com.tokopedia.common_digital.cart.domain.usecase.DigitalAddToCartUseCase
 import com.tokopedia.common_digital.cart.domain.usecase.DigitalGetCartUseCase
-import com.tokopedia.common_digital.cart.domain.usecase.DigitalInstantCheckoutUseCase
-import com.tokopedia.common_digital.common.DigitalRouter
 import com.tokopedia.common_digital.common.RechargeAnalytics
 import com.tokopedia.common_digital.common.constant.DigitalUrl
 import com.tokopedia.common_digital.common.data.api.DigitalInterceptor
@@ -76,12 +74,6 @@ class DigitalCommonModule {
 
     @Provides
     @DigitalCommonScope
-    fun provideDigitalInstantCheckoutUseCase(listInterceptor: ArrayList<Interceptor>, @ApplicationContext context: Context): DigitalInstantCheckoutUseCase {
-        return DigitalInstantCheckoutUseCase(listInterceptor, context)
-    }
-
-    @Provides
-    @DigitalCommonScope
     fun provideDigitalInterceptorNew(digitalInterceptor: DigitalInterceptor): ArrayList<Interceptor> {
         val listInterceptor = ArrayList<Interceptor>()
         listInterceptor.add(digitalInterceptor)
@@ -119,15 +111,6 @@ class DigitalCommonModule {
     fun provideDigitalInterceptor(@ApplicationContext context: Context,
                                   networkRouter: AbstractionRouter): DigitalInterceptor {
         return DigitalInterceptor(context, networkRouter)
-    }
-
-    @Provides
-    @DigitalCommonScope
-    fun provideDigitalRouter(@ApplicationContext context: Context): DigitalRouter {
-        if (context is DigitalRouter) {
-            return context
-        }
-        throw RuntimeException("Application must implement " + DigitalRouter::class.java.canonicalName)
     }
 
     @Provides

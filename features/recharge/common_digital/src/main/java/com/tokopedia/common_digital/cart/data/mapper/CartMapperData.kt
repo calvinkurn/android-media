@@ -3,10 +3,8 @@ package com.tokopedia.common_digital.cart.data.mapper
 import com.tokopedia.common_digital.cart.constant.DigitalCartCrossSellingType
 import com.tokopedia.common_digital.cart.data.entity.response.ResponseCancelVoucherData
 import com.tokopedia.common_digital.cart.data.entity.response.ResponseCartData
-import com.tokopedia.common_digital.cart.data.entity.response.ResponseCheckoutData
 import com.tokopedia.common_digital.cart.domain.model.PostPaidPopupAttribute
 import com.tokopedia.common_digital.cart.view.model.cart.*
-import com.tokopedia.common_digital.cart.view.model.checkout.InstantCheckoutData
 import com.tokopedia.common_digital.common.MapperDataException
 import java.util.*
 
@@ -144,27 +142,6 @@ class CartMapperData : ICartMapperData {
             cartDigitalInfoData.relationships = relationships
 
             return cartDigitalInfoData
-        } catch (e: Exception) {
-            throw MapperDataException(e.message, e)
-        }
-
-    }
-
-    @Throws(MapperDataException::class)
-    override fun transformInstantCheckoutData(
-            responseCheckoutData: ResponseCheckoutData
-    ): InstantCheckoutData {
-        try {
-            val checkoutDigitalData = InstantCheckoutData()
-            checkoutDigitalData.failedCallbackUrl = responseCheckoutData.attributes!!.callbackUrlFailed
-            checkoutDigitalData.successCallbackUrl = responseCheckoutData.attributes!!.callbackUrlSuccess
-            checkoutDigitalData.redirectUrl = responseCheckoutData.attributes!!.redirectUrl
-            checkoutDigitalData.stringQuery = responseCheckoutData.attributes!!.queryString
-            checkoutDigitalData.thanksUrl = responseCheckoutData.attributes!!.thanksUrl
-            if (responseCheckoutData.attributes!!.parameter != null) {
-                checkoutDigitalData.transactionId = responseCheckoutData.attributes!!.parameter!!.transactionId
-            }
-            return checkoutDigitalData
         } catch (e: Exception) {
             throw MapperDataException(e.message, e)
         }
