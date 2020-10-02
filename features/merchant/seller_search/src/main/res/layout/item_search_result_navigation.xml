@@ -27,7 +27,7 @@
         app:typographyType="body_2"
         android:layout_marginStart="@dimen/spacing_lvl3"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toEndOf="@id/ivHistoryTime"
+        app:layout_constraintStart_toEndOf="@id/ivSearchResultNav"
         tools:text="Sop jamur"/>
 
     <com.tokopedia.unifyprinciples.Typography
@@ -40,7 +40,7 @@
         android:layout_marginStart="@dimen/spacing_lvl3"
         android:layout_marginEnd="@dimen/spacing_lvl4"
         app:layout_constraintTop_toBottomOf="@id/tvTitleSearchResultNav"
-        app:layout_constraintStart_toEndOf="@id/ivHistoryTime"
+        app:layout_constraintStart_toEndOf="@id/ivSearchResultNav"
         app:layout_constraintEnd_toStartOf="@id/ivCloseHistory"
         app:layout_constraintEnd_toEndOf="parent"
         tools:text="Lebih efektif beriklan agar produkmu dicari banyak pembeli dan penjualanmu meningkat"/>
