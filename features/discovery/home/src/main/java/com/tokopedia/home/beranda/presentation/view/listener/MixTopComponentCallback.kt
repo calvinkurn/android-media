@@ -39,7 +39,6 @@ class MixTopComponentCallback(val homeCategoryListener: HomeCategoryListener)
         homeCategoryListener.getTrackingQueueObj()?.putEETracking(
                 MixTopTracking.getMixTopView(
                         listOf(product),
-                        channel.channelHeader.name,
                         adapterPosition.toString()
                 ) as HashMap<String, Any>)
         

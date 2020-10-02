@@ -49,7 +49,7 @@ object ProductHighlightTracking : BaseTrackerConst() {
                 eventAction = EVENT_ACTION_IMPRESSION_PRODUCT_DYNAMIC_CHANNEL_HERO,
                 eventLabel = Label.NONE,
                 list = String.format(
-                        Value.LIST_WITH_HEADER, "1", PRODUCT_DYNAMIC_CHANNEL_HERO, channel.channelHeader.name
+                        Value.LIST, "1", PRODUCT_DYNAMIC_CHANNEL_HERO
                 ),
                 products = channel.channelGrids.mapIndexed { index, grid ->
                     Product(
@@ -117,7 +117,7 @@ object ProductHighlightTracking : BaseTrackerConst() {
                         )
                 ),
                 list = String.format(
-                        Value.LIST_WITH_HEADER, "1", PRODUCT_DYNAMIC_CHANNEL_HERO, headerName
+                        Value.LIST, "1", PRODUCT_DYNAMIC_CHANNEL_HERO
                 ))
                 .appendChannelId(channelId)
                 .appendCampaignCode(campaignCode)
