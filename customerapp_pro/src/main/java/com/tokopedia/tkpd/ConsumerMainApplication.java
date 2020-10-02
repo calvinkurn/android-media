@@ -63,6 +63,7 @@ import com.tokopedia.promotionstarget.presentation.subscriber.GratificationSubsc
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform;
+import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.screenshot_observer.Screenshot;
 import com.tokopedia.shakedetect.ShakeDetectManager;
 import com.tokopedia.shakedetect.ShakeSubscriber;
