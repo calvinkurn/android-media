@@ -103,7 +103,8 @@ object DynamicChannelComponentMapper {
                                     it.benefit.type,
                                     it.benefit.value
                             ),
-                            textColor = it.textColor
+                            textColor = it.textColor,
+                            recommendationType = it.recommendationType
                     )
                 }
         )
