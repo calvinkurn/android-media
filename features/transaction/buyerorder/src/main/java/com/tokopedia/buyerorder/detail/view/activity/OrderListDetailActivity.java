@@ -44,19 +44,6 @@ public class OrderListDetailActivity extends BaseSimpleActivity implements HasCo
     String upstream = null;
 
 
-//    @DeepLink({ApplinkConst.Transaction.ORDER_DETAIL,
-//            ApplinkConst.Transaction.ORDER_OMS_DETAIL,
-//            ApplinkConst.Transaction.ORDER_MARKETPLACE_DETAIL,
-//            ApplinkConst.Transaction.ORDER_MARKETPLACE_DETAIL_WAITING_INVOICE,
-//            ApplinkConst.Transaction.ORDER_OMS_DETAIL_UPSTREAM
-//    })
-//    public static Intent getOrderDetailIntent(Context context, Bundle bundle) {
-//        Uri.Builder uri = Uri.parse(bundle.getString(DeepLink.URI)).buildUpon();
-//        return new Intent(context, OrderListDetailActivity.class)
-//                .setData(uri.build())
-//                .putExtras(bundle);
-//    }
-
     @Override
     protected Fragment getNewFragment() {
         if (category != null) {
@@ -97,7 +84,6 @@ public class OrderListDetailActivity extends BaseSimpleActivity implements HasCo
         if (!userSession.isLoggedIn()) {
             startActivityForResult(RouteManager.getIntent(this, ApplinkConst.LOGIN), REQUEST_CODE);
         } else {
-            // category = getIntent().getStringExtra((DeepLink.URI));
             if (getIntent().getData() != null)
                 upstream = getIntent().getData().getQueryParameter(UPSTREAM);
         }
@@ -127,7 +113,6 @@ public class OrderListDetailActivity extends BaseSimpleActivity implements HasCo
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
-                // category = getIntent().getStringExtra((DeepLink.URI));
                 category = String.valueOf(getIntent().getData());
                 if (getIntent().getData() != null)
                     upstream = getIntent().getData().getQueryParameter(UPSTREAM);
