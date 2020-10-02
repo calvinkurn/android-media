@@ -2,9 +2,8 @@ package com.tokopedia.home.account.presentation;
 
 import android.content.Context;
 
+import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
-
-import com.tokopedia.home.account.presentation.listener.BaseAccountView;
 
 /**
  * @author okasurya on 7/20/18.
@@ -14,7 +13,7 @@ public interface AccountHome {
         void sendUserAttributeTracker();
     }
 
-    interface View extends BaseAccountView {
+    interface View extends CustomerView {
         Context getContext();
     }
 }

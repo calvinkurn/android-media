@@ -44,11 +44,13 @@ import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelDetailActivity
 import com.tokopedia.hotel.search.data.model.HotelSearchModel
 import com.tokopedia.hotel.search.presentation.activity.HotelSearchResultActivity
 import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.travelcalendar.selectionrangecalendar.SelectionRangeCalendarWidget
 import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_hotel_homepage.*
 import java.util.*
@@ -456,11 +458,20 @@ class HotelHomepageFragment : HotelBaseFragment(),
         banner_hotel_homepage_promo.apply {
             freeMode = false
             centerMode = true
-            slideToShow = 1.1f
             slideToScroll = 1
-            autoplay = true
             indicatorPosition = CarouselUnify.INDICATOR_BL
-            infinite = true
+
+            if (promoDataList.size == 1) {
+                autoplay = false
+                infinite = false
+                slideToShow = 1.0f
+                setMargin(left = 12.toPx(), top = 8.toPx(), bottom = 0, right = 12.toPx())
+            } else {
+                slideToShow = 1.1f
+                autoplay = true
+                infinite = true
+            }
+
             onActiveIndexChangedListener = object : CarouselUnify.OnActiveIndexChangedListener {
                 override fun onActiveIndexChanged(prev: Int, current: Int) {
                     if (!bannerImpressionIndex.contains(current)) {

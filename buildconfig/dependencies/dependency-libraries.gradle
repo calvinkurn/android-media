@@ -5,7 +5,7 @@ ext {
             authentication          : "com.tokopedia.authentication:authentication:1.0.19",
             cachemanager            : "com.tokopedia.cachemanager:cachemanager:2.24",
             cacheapi                : "com.tokopedia.cacheapi:cache_api:0.0.3",
-            globalconfig            : "com.tokopedia.config:global_config:1.0.8",
+            globalconfig            : "com.tokopedia.config:global_config:1.0.9",
             url                     : "com.tokopedia.url:url:1.0.7",
             network                 : "com.tokopedia.network:network:1.1.10",
             usecase                 : "com.tokopedia.usecase:usecase:1.0.3",
@@ -22,7 +22,7 @@ ext {
             analyticProcessor       : "com.tokopedia.analytic:processor:0.0.3",
             analyticFirebaseRules   : "com.tokopedia.analytic.rules:firebase:0.0.2",
             analyticGTMUtil         : "com.tokopedia.analytic:gtmutil:0.0.3",
-            gqlquery_annotation     : "com.tokopedia.gql_query_annotation:gqlquery_annotation:0.0.20",
+            gqlquery_annotation     : "com.tokopedia.gql_query_annotation:gqlquery_annotation:0.0.21",
             gqlquery_annotation_processor       : "com.tokopedia.gqlquery_annotation_processor:gqlquery_annotation_processor:0.0.21"
     ]
 
@@ -55,7 +55,6 @@ ext {
             dynamicFeatures         : ":libraries:dynamic_features",
             encryption              : ":libraries:encryption",
             fingerprint             : ":libraries:fingerprint",
-            graphView               : ":libraries:graph_view",
             graphql                 : ":libraries:graphql",
             imagePicker             : ":libraries:image_picker",
             imagePreview            : ":libraries:image_preview",
@@ -72,7 +71,6 @@ ext {
             mediauploader           : ":libraries:mediauploader",
             mpAndroidChart          : "com.github.PhilJay:MPAndroidChart:v3.1.0",
             oms                     : ":libraries:oms",
-            permissionchecker       : ":libraries:permissionchecker",
             productPhotoAdapter     : ":libraries:product_photo_adapter",
             pushNotification        : ":libraries:push_notification",
             reactNative             : ":libraries:react_native",
@@ -81,7 +79,6 @@ ext {
             shakeDetect             : ":libraries:shake_detect",
             preReleaseInspector     : ":libraries:pre_release_inspector",
             preReleaseInspectorNoop : ":libraries:pre_release_inspector_no_op",
-            sharedata               : ":libraries:sharedata",
             diffUtilRecycler        : ":libraries:smart_recycler_diffutil_helper",
             track                   : ":libraries:track",
             trackingOptimizer       : ":libraries:tracking_optimizer",
