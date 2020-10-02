@@ -1,4 +1,4 @@
-package com.tokopedia.core.app;
+package com.tokopedia.seller.base.view.core;
 
 import android.content.Context;
 import android.content.Intent;
@@ -17,7 +17,7 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
 import com.tokopedia.config.GlobalConfig;
-import com.tokopedia.core2.R;
+import com.tokopedia.seller.R;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -129,11 +129,11 @@ public abstract class TActivity extends BaseActivity {
 
         if (getSupportActionBar() != null)
             getSupportActionBar().setHomeAsUpIndicator(
-                    com.tokopedia.core2.R.drawable.ic_webview_back_button
+                    R.drawable.ic_webview_back_button
             );
 
-        toolbar.setTitleTextAppearance(this, com.tokopedia.core2.R.style.WebViewToolbarText);
-        toolbar.setSubtitleTextAppearance(this, com.tokopedia.core2.R.style
+        toolbar.setTitleTextAppearance(this, R.style.WebViewToolbarText);
+        toolbar.setSubtitleTextAppearance(this, R.style
                 .WebViewToolbarSubtitleText);
     }
 

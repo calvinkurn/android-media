@@ -11,13 +11,14 @@ import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.security.ProviderInstaller;
+import com.tokopedia.core.TkpdCoreRouter;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.fingerprint.LocationUtils;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.DaggerAppComponent;
 import com.tokopedia.core.base.di.module.AppModule;
 import com.tokopedia.core.gcm.utils.NotificationUtils;
-import com.tokopedia.core.router.InboxRouter;
+import com.tokopedia.core.network.CoreNetworkApplication;
 import com.tokopedia.core2.BuildConfig;
 import com.tokopedia.linker.LinkerConstants;
 import com.tokopedia.linker.LinkerManager;
@@ -34,7 +35,7 @@ import org.jetbrains.annotations.NotNull;
 
 import io.fabric.sdk.android.Fabric;
 
-public abstract class MainApplication extends MainRouterApplication{
+public abstract class MainApplication extends CoreNetworkApplication implements TkpdCoreRouter {
 
     public static final int DATABASE_VERSION = 7;
     public static String PACKAGE_NAME;
@@ -204,13 +205,32 @@ public abstract class MainApplication extends MainRouterApplication{
         return true;
     }
 
+    private static final String INBOX_RESCENTER_ACTIVITY = "com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity";
+    private static final String INBOX_MESSAGE_ACTIVITY = "com.tokopedia.inbox.inboxmessage.activity.InboxMessageActivity";
+
     @Override
     public Class<?> getInboxMessageActivityClass() {
-        return InboxRouter.getInboxMessageActivityClass();
+        Class<?> parentIndexHomeClass = null;
+        try {
+            parentIndexHomeClass = getActivityClass(INBOX_MESSAGE_ACTIVITY);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return parentIndexHomeClass;
     }
 
     @Override
     public Class<?> getInboxResCenterActivityClassReal() {
-        return InboxRouter.getInboxResCenterActivityClass();
+        Class<?> parentIndexHomeClass = null;
+        try {
+            parentIndexHomeClass = getActivityClass(INBOX_RESCENTER_ACTIVITY);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return parentIndexHomeClass;
+    }
+
+    private static Class<?> getActivityClass(String activityFullPath) throws ClassNotFoundException {
+        return Class.forName(activityFullPath);
     }
 }

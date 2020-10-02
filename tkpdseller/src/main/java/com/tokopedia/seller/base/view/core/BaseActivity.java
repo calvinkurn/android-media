@@ -1,4 +1,4 @@
-package com.tokopedia.core.app;
+package com.tokopedia.seller.base.view.core;
 
 
 import android.content.Intent;
@@ -20,13 +20,12 @@ import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.MaintenancePage;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
+import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.gcm.GCMHandler;
-import com.tokopedia.core.network.retrofit.utils.DialogForceLogout;
-import com.tokopedia.core.service.ErrorNetworkReceiver;
-import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
-import com.tokopedia.core2.R;
+import com.tokopedia.seller.R;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -67,8 +66,6 @@ public class BaseActivity extends AppCompatActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getApplicationComponent().inject(this);
-
 
         if (MaintenancePage.isMaintenance(this)) {
             startActivity(MaintenancePage.createIntent(this));

@@ -19,7 +19,6 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.TkpdCoreRouter;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.TrackingUtils;
-import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.tkpd.R;

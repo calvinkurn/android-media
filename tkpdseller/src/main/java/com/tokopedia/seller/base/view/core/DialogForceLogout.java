@@ -1,4 +1,4 @@
-package com.tokopedia.core.network.retrofit.utils;
+package com.tokopedia.seller.base.view.core;
 
 import android.app.AlertDialog;
 import android.content.Context;

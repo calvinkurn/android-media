@@ -4,9 +4,7 @@ import android.content.Context;
 
 import com.chuckerteam.chucker.api.ChuckerInterceptor;
 import com.google.gson.Gson;
-import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.base.di.module.AppModule;
 import com.tokopedia.core.base.di.module.UtilModule;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
@@ -44,10 +42,6 @@ import retrofit2.Retrofit;
 public interface AppComponent {
 
     void inject(MainApplication mainApplication);
-
-    void inject(BaseActivity baseActivity);
-
-    void inject(TActivity baseActivity);
 
     @ApplicationContext
     Context context();
