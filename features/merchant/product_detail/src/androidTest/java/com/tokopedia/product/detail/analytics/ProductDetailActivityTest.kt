@@ -81,6 +81,8 @@ class ProductDetailActivityTest {
                 waitForTrackerSent()
                 performClose(activityRule)
                 validate(gtmLogDBSource, targetContext, ADD_TO_CART_LOGIN_PATH)
+            } else {
+                performClose(activityRule)
             }
         }
     }
