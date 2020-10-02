@@ -19,7 +19,6 @@ import com.tokopedia.common_digital.common.RechargeAnalytics
 import com.tokopedia.common_digital.common.constant.DigitalUrl
 import com.tokopedia.common_digital.common.data.api.DigitalInterceptor
 import com.tokopedia.common_digital.common.data.api.DigitalResponseConverter
-import com.tokopedia.common_digital.common.data.api.DigitalRestApi
 import com.tokopedia.common_digital.common.usecase.RechargePushEventRecommendationUseCase
 import com.tokopedia.common_digital.product.data.response.TkpdDigitalResponse
 import com.tokopedia.config.GlobalConfig
@@ -44,6 +43,54 @@ import java.util.concurrent.TimeUnit
  */
 @Module
 class DigitalCommonModule {
+
+    @Provides
+    @DigitalCommonScope
+    fun provideCartMapperData(): ICartMapperData {
+        return CartMapperData()
+    }
+
+    @Provides
+    @DigitalCommonScope
+    fun provideRechargePushEventRecommendationUseCase(@ApplicationContext context: Context): RechargePushEventRecommendationUseCase {
+        return RechargePushEventRecommendationUseCase(GraphqlUseCase(), context)
+    }
+
+    @Provides
+    @DigitalCommonScope
+    fun provideRechargeAnalytics(rechargePushEventRecommendationUseCase: RechargePushEventRecommendationUseCase): RechargeAnalytics {
+        return RechargeAnalytics(rechargePushEventRecommendationUseCase)
+    }
+
+    @Provides
+    @DigitalCommonScope
+    fun provideDigitalAddToCartUseCase(listInterceptor: ArrayList<Interceptor>, @ApplicationContext context: Context): DigitalAddToCartUseCase {
+        return DigitalAddToCartUseCase(listInterceptor, context)
+    }
+
+    @Provides
+    @DigitalCommonScope
+    fun provideDigitalGetCartUseCase(listInterceptor: ArrayList<Interceptor>, @ApplicationContext context: Context): DigitalGetCartUseCase {
+        return DigitalGetCartUseCase(listInterceptor, context)
+    }
+
+    @Provides
+    @DigitalCommonScope
+    fun provideDigitalInstantCheckoutUseCase(listInterceptor: ArrayList<Interceptor>, @ApplicationContext context: Context): DigitalInstantCheckoutUseCase {
+        return DigitalInstantCheckoutUseCase(listInterceptor, context)
+    }
+
+    @Provides
+    @DigitalCommonScope
+    fun provideDigitalInterceptorNew(digitalInterceptor: DigitalInterceptor): ArrayList<Interceptor> {
+        val listInterceptor = ArrayList<Interceptor>()
+        listInterceptor.add(digitalInterceptor)
+        listInterceptor.add(ErrorResponseInterceptor(TkpdDigitalResponse.DigitalErrorResponse::class.java))
+        return listInterceptor
+    }
+
+
+    //region REST API FOR DIGITAL PRODUCT MODULE ----------------------------------
 
     @DigitalCommonScope
     @Provides
@@ -111,38 +158,10 @@ class DigitalCommonModule {
         return builder.build()
     }
 
-    @Provides
-    @DigitalCommonScope
-    fun provideDigitalAddToCartUseCase(listInterceptor: ArrayList<Interceptor>, @ApplicationContext context: Context): DigitalAddToCartUseCase {
-        return DigitalAddToCartUseCase(listInterceptor, context)
-    }
-
-    @Provides
-    @DigitalCommonScope
-    fun provideDigitalGetCartUseCase(listInterceptor: ArrayList<Interceptor>, @ApplicationContext context: Context): DigitalGetCartUseCase {
-        return DigitalGetCartUseCase(listInterceptor, context)
-    }
-
-    @Provides
-    @DigitalCommonScope
-    fun provideDigitalInstantCheckoutUseCase(listInterceptor: ArrayList<Interceptor>, @ApplicationContext context: Context): DigitalInstantCheckoutUseCase {
-        return DigitalInstantCheckoutUseCase(listInterceptor, context)
-    }
-
-
-    @Provides
-    @DigitalCommonScope
-    fun provideDigitalInterceptorNew(digitalInterceptor: DigitalInterceptor): ArrayList<Interceptor> {
-        val listInterceptor = ArrayList<Interceptor>()
-        listInterceptor.add(digitalInterceptor)
-        listInterceptor.add(ErrorResponseInterceptor(TkpdDigitalResponse.DigitalErrorResponse::class.java))
-        return listInterceptor
-    }
-
     @DigitalCommonScope
     @DigitalRestApiRetrofit
     @Provides
-    fun provideFlightGson(): Gson {
+    fun provideDigitalGson(): Gson {
         return GsonBuilder()
                 .setDateFormat(GSON_DATE_FORMAT)
                 .setPrettyPrinting()
@@ -169,29 +188,7 @@ class DigitalCommonModule {
         return retrofitBuilder.baseUrl(DigitalUrl.BASE_URL).client(okHttpClient).build()
     }
 
-    @Provides
-    @DigitalCommonScope
-    fun provideDigitalRestApi(@DigitalRestApiRetrofit retrofit: Retrofit): DigitalRestApi {
-        return retrofit.create(DigitalRestApi::class.java)
-    }
-
-    @Provides
-    @DigitalCommonScope
-    fun provideCartMapperData(): ICartMapperData {
-        return CartMapperData()
-    }
-
-    @Provides
-    @DigitalCommonScope
-    fun provideRechargePushEventRecommendationUseCase(@ApplicationContext context: Context): RechargePushEventRecommendationUseCase {
-        return RechargePushEventRecommendationUseCase(GraphqlUseCase(), context)
-    }
-
-    @Provides
-    @DigitalCommonScope
-    fun provideRechargeAnalytics(rechargePushEventRecommendationUseCase: RechargePushEventRecommendationUseCase): RechargeAnalytics {
-        return RechargeAnalytics(rechargePushEventRecommendationUseCase)
-    }
+    //endregion
 
     companion object {
         private val GSON_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ssZ"

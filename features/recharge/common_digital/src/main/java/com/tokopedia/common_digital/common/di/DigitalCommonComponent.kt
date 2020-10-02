@@ -10,7 +10,6 @@ import com.tokopedia.common_digital.cart.domain.usecase.DigitalInstantCheckoutUs
 import com.tokopedia.common_digital.cart.view.activity.InstantCheckoutActivity
 import com.tokopedia.common_digital.common.DigitalRouter
 import com.tokopedia.common_digital.common.RechargeAnalytics
-import com.tokopedia.common_digital.common.data.api.DigitalRestApi
 import com.tokopedia.user.session.UserSession
 import dagger.Component
 import okhttp3.logging.HttpLoggingInterceptor
@@ -28,8 +27,6 @@ interface DigitalCommonComponent {
 
     @DigitalRestApiRetrofit
     fun digitalRestApiRetrofit(): Retrofit
-
-    fun digitalApi(): DigitalRestApi
 
     fun abstractionRouter(): AbstractionRouter
 

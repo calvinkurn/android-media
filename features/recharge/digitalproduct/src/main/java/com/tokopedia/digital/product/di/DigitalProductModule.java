@@ -8,16 +8,17 @@ import com.google.gson.GsonBuilder;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.common_digital.common.data.api.DigitalResponseConverter;
-import com.tokopedia.common_digital.common.data.api.DigitalRestApi;
 import com.tokopedia.common_digital.common.di.DigitalRestApiRetrofit;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.digital.common.data.apiservice.DigitalGqlApi;
 import com.tokopedia.digital.common.data.apiservice.DigitalHmacAuthInterceptor;
+import com.tokopedia.digital.common.data.apiservice.DigitalRestApi;
 import com.tokopedia.digital.common.data.mapper.ProductDigitalMapper;
 import com.tokopedia.digital.common.data.repository.DigitalCategoryRepository;
 import com.tokopedia.digital.common.data.source.CategoryDetailDataSource;
 import com.tokopedia.digital.common.domain.IDigitalCategoryRepository;
 import com.tokopedia.digital.common.domain.interactor.GetDigitalCategoryByIdUseCase;
+import com.tokopedia.digital.newcart.di.DigitalCartScope;
 import com.tokopedia.digital.product.data.mapper.USSDMapper;
 import com.tokopedia.digital.product.data.repository.UssdCheckBalanceRepository;
 import com.tokopedia.digital.product.domain.IUssdCheckBalanceRepository;
@@ -195,7 +196,7 @@ public class DigitalProductModule {
 
     @Provides
     @DigitalProductScope
-    com.tokopedia.digital.common.data.apiservice.DigitalRestApi provideDigitalRestApi(@DigitalRestApiRetrofit Retrofit retrofit) {
-        return retrofit.create(com.tokopedia.digital.common.data.apiservice.DigitalRestApi.class);
+    DigitalRestApi provideDigitalRestApi(@DigitalRestApiRetrofit Retrofit retrofit) {
+        return retrofit.create(DigitalRestApi.class);
     }
 }

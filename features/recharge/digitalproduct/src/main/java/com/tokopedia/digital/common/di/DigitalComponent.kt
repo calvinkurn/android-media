@@ -9,7 +9,6 @@ import com.tokopedia.common_digital.cart.domain.usecase.DigitalGetCartUseCase
 import com.tokopedia.common_digital.cart.domain.usecase.DigitalInstantCheckoutUseCase
 import com.tokopedia.common_digital.common.DigitalRouter
 import com.tokopedia.common_digital.common.RechargeAnalytics
-import com.tokopedia.common_digital.common.data.api.DigitalRestApi
 import com.tokopedia.common_digital.common.di.DigitalCommonComponent
 import com.tokopedia.common_digital.common.di.DigitalRestApiRetrofit
 import com.tokopedia.digital.common.analytic.DigitalAnalytics
@@ -44,7 +43,5 @@ interface DigitalComponent {
 
     @DigitalRestApiRetrofit
     fun digitalRestApiRetrofit(): Retrofit
-
-    fun digitalApi(): DigitalRestApi
 
 }

@@ -56,4 +56,7 @@ public interface DigitalRestApi {
     @Headers({"Content-Type: application/json"})
     Observable<Response<TkpdDigitalResponse>> smartcardCommand(@Body JsonObject requestBody);
 
+    @POST("ussd/balance")
+    @Headers({"Content-Type: application/json"})
+    Observable<Response<TkpdDigitalResponse>> parsePulsaMessage(@Body JsonObject requestBody);
 }
