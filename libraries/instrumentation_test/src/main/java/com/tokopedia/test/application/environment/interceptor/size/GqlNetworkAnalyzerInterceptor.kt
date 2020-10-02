@@ -83,9 +83,8 @@ class GqlNetworkAnalyzerInterceptor : Interceptor {
                 var formattedOperationName = parserRuleProvider.parse(requestString.substringAfter("\"query\": \""))
 
                 var needToAnalyze = true
-                val gqlFilterList = gqlQueryListToAnalyze
-                if (gqlFilterList.isNotEmpty()) {
-                    needToAnalyze = gqlFilterList.contains(formattedOperationName.toLowerCase(Locale.US))
+                if (gqlQueryListToAnalyze.isNotEmpty()) {
+                    needToAnalyze = gqlQueryListToAnalyze.contains(formattedOperationName.toLowerCase(Locale.US))
                 }
 
                 if (needToAnalyze) {
