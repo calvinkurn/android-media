@@ -21,7 +21,6 @@ import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.analytics.performance.util.PltPerformanceData
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.*
@@ -46,13 +45,13 @@ import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastPrepareFragment
 import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastUserInteractionFragment
 import com.tokopedia.play.broadcaster.view.fragment.PlayPermissionFragment
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
+import com.tokopedia.play.broadcaster.view.fragment.loading.LoadingDialogFragment
 import com.tokopedia.play.broadcaster.view.partial.ActionBarPartialView
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play_common.util.extension.awaitResume
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.play_common.view.updatePadding
-import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
@@ -89,9 +88,9 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
 
     private lateinit var containerSetup: FrameLayout
     private lateinit var viewActionBar: ActionBarPartialView
-    private lateinit var loaderView: LoaderUnify
     private lateinit var globalErrorView: GlobalError
     private lateinit var surfaceView: SurfaceView
+    private lateinit var errorLiveView: View
 
     private var surfaceStatus = SurfaceStatus.UNINITED
 
@@ -114,6 +113,8 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
     private val permissionHelper by lazy { PermissionHelperImpl(this) }
 
     private lateinit var pageMonitoring: PageLoadTimePerformanceInterface
+
+    private lateinit var loadingFragment: LoadingDialogFragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         inject()
@@ -260,9 +261,9 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
 
     private fun initView() {
         containerSetup = findViewById(R.id.fl_setup)
-        loaderView = findViewById(R.id.loader_initial)
-        globalErrorView = findViewById(R.id.error_channel)
+        globalErrorView = findViewById(R.id.global_error)
         surfaceView = findViewById(R.id.surface_view)
+        errorLiveView = findViewById(R.id.error_live_view)
     }
 
     private fun setupView() {
@@ -345,15 +346,15 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
         viewModel.observableConfigInfo.observe(this, Observer { result ->
             startRenderMonitoring()
             when(result) {
-                is NetworkResult.Loading -> loaderView.show()
+                is NetworkResult.Loading -> showLoading(true)
                 is NetworkResult.Success -> {
-                    loaderView.hide()
+                    showLoading(false)
                     if (!isRecreated) handleChannelConfiguration(result.data)
                     stopPageMonitoring()
                 }
                 is NetworkResult.Fail -> {
                     invalidatePerformanceData()
-                    loaderView.hide()
+                    showLoading(false)
                     showToaster(
                             message = result.error.localizedMessage,
                             actionLabel = getString(R.string.play_broadcast_try_again),
@@ -361,6 +362,12 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
                     )
                 }
             }
+        })
+    }
+
+    private fun observeLiveInfo() {
+        viewModel.observableLiveInfoState.observe(this, Observer {
+
         })
     }
     //endregion
@@ -507,6 +514,21 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
                 actionListener = actionListener,
                 bottomMargin = toasterBottomMargin
         )
+    }
+
+    private fun getLoadingFragment(): LoadingDialogFragment {
+        if (!::loadingFragment.isInitialized) {
+            val setupClass = LoadingDialogFragment::class.java
+            val fragmentFactory = supportFragmentManager.fragmentFactory
+            loadingFragment = fragmentFactory.instantiate(this.classLoader, setupClass.name) as LoadingDialogFragment
+        }
+        return loadingFragment
+    }
+
+    private fun showLoading(isLoading: Boolean) {
+        if (!getLoadingFragment().isAdded) return
+        if (isLoading && !getLoadingFragment().isVisible)  getLoadingFragment().show(supportFragmentManager)
+        else getLoadingFragment().dismiss()
     }
 
     private fun sendClickCameraAnalytic() {

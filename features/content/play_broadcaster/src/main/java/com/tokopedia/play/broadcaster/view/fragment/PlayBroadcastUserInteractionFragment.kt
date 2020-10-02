@@ -65,8 +65,6 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
     private var toasterBottomMargin = 0
 
-//    private lateinit var loadingFragment: LoadingDialogFragment
-
     override fun getScreenName(): String = "Play Broadcast Interaction"
 
     override fun onCreate(savedInstanceState: Bundle?) {
