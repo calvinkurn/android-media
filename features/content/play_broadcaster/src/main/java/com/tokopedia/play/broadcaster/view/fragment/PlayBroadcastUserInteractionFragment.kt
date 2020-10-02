@@ -26,7 +26,6 @@ import com.tokopedia.play.broadcaster.view.custom.PlayStatInfoView
 import com.tokopedia.play.broadcaster.view.custom.PlayTimerCountDown
 import com.tokopedia.play.broadcaster.view.custom.PlayTimerView
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
-import com.tokopedia.play.broadcaster.view.fragment.loading.LoadingDialogFragment
 import com.tokopedia.play.broadcaster.view.partial.ChatListPartialView
 import com.tokopedia.play.broadcaster.view.state.LivePusherErrorStatus
 import com.tokopedia.play.broadcaster.view.state.LivePusherState
@@ -66,7 +65,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
     private var toasterBottomMargin = 0
 
-    private lateinit var loadingFragment: LoadingDialogFragment
+//    private lateinit var loadingFragment: LoadingDialogFragment
 
     override fun getScreenName(): String = "Play Broadcast Interaction"
 
@@ -372,19 +371,8 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         analytic.viewErrorOnLivePage(parentViewModel.channelId, parentViewModel.title, errorMessage)
     }
 
-    private fun getLoadingFragment(): LoadingDialogFragment {
-        if (!::loadingFragment.isInitialized) {
-            val setupClass = LoadingDialogFragment::class.java
-            val fragmentFactory = childFragmentManager.fragmentFactory
-            loadingFragment = fragmentFactory.instantiate(requireContext().classLoader, setupClass.name) as LoadingDialogFragment
-        }
-        return loadingFragment
-    }
-
     private fun showLoading(isLoading: Boolean) {
-        if (!getLoadingFragment().isAdded) return
-        if (isLoading && !getLoadingFragment().isVisible)  getLoadingFragment().show(childFragmentManager)
-        else getLoadingFragment().dismiss()
+        loadingView.visibility = if (isLoading) View.VISIBLE else View.GONE
     }
 
     //region observe
