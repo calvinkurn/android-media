@@ -112,8 +112,6 @@ public class ShippingDurationViewHolder extends RecyclerView.ViewHolder {
 
         }
         TextAndContentDescriptionUtil.setTextAndContentDescription(tvDuration, shippingDurationUiModel.getServiceData().getServiceName(), tvDuration.getContext().getString(R.string.content_desc_tv_duration));
-        //tvDuration.setContentDescription(tvDuration.getContext().getString(R.string.content_desc_tv_duration, shippingDurationUiModel.getServiceData().getServiceName()));
-        //tvDuration.setText(shippingDurationUiModel.getServiceData().getServiceName());
         imgCheck.setVisibility(shippingDurationUiModel.isSelected() ? View.VISIBLE : View.GONE);
         labelCodAvailable.setText(shippingDurationUiModel.getCodText());
         labelCodAvailable.setVisibility(shippingDurationUiModel.isCodAvailable() ? View.VISIBLE : View.GONE);
