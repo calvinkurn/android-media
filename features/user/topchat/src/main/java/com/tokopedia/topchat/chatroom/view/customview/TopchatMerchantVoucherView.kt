@@ -7,6 +7,7 @@ import android.widget.LinearLayout
 import androidx.annotation.ColorInt
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.merchantvoucher.common.widget.MerchantVoucherView
 import com.tokopedia.topchat.R
 
@@ -56,6 +57,14 @@ class TopchatMerchantVoucherView : MerchantVoucherView {
 
     override fun getVoucherLayout(): Int {
         return R.layout.item_topchat_widget_merchant_voucher_view
+    }
+
+    override fun getShadowRadiusValue(): Float {
+        return 2f.toPx()
+    }
+
+    override fun getShadowOffsetDx(): Float {
+        return 0.5f.toPx()
     }
 
     override fun initView(view: View) {
