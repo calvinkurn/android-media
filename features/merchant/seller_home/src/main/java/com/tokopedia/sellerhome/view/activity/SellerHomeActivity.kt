@@ -93,7 +93,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         initInjector()
-        initPerformanceMonitoring()
+        initSellerHomePlt()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sah_seller_home)
 
@@ -146,6 +146,11 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
             outState.putInt(LAST_FRAGMENT_TYPE_KEY, page)
         }
         super.onSaveInstanceState(outState)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        navigator?.cleanupNavigator()
     }
 
     fun attachCallback(callback: StatusBarCallback) {
@@ -387,7 +392,19 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
         sahToolbar?.hide()
     }
 
-    private fun initPerformanceMonitoring(){
+    private fun initSellerHomePlt() {
+        if (intent.data == null) {
+            initPerformanceMonitoringSellerHome()
+        } else {
+            DeepLinkHandler.handleAppLink(intent) {
+                if (it.type == FragmentType.HOME) {
+                    initPerformanceMonitoringSellerHome()
+                }
+            }
+        }
+    }
+
+    private fun initPerformanceMonitoringSellerHome() {
         performanceMonitoringSellerHomelayout = PerformanceMonitoring.start(SELLER_HOME_LAYOUT_TRACE)
         performanceMonitoringSellerHomeLayoutPlt = HomeLayoutLoadTimeMonitoring()
         performanceMonitoringSellerHomeLayoutPlt?.initPerformanceMonitoring()
