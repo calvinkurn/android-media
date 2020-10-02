@@ -1,7 +1,6 @@
 package com.tokopedia.applink.internal
 
 import com.tokopedia.applink.constant.DeeplinkConstant
-import java.io.FilterReader
 
 /**
  * Created by fwidjaja on 2019-09-05.
@@ -26,6 +25,10 @@ object ApplinkConstInternalOrder {
     const val PARAM_INSURANCE = "insurance"
     const val PARAM_MODALTOKO = "modaltoko"
     const val PARAM_HOTEL = "hotel"
+    const val MP_INTERNAL_CONFIRMED = "tokopedia-android-internal://buyer/history?filter_id=5"
+    const val MP_INTERNAL_PROCESSED = "tokopedia-android-internal://buyer/history?filter_id=12"
+    const val MP_INTERNAL_SHIPPED = "tokopedia-android-internal://buyer/history?filter_id=13"
+    const val MP_INTERNAL_DELIVERED = "tokopedia-android-internal://buyer/history?filter_id=14"
 
     @JvmField
     val HOST_SELLER = "seller"

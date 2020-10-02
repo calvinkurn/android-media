@@ -113,9 +113,10 @@ public class OrderListDetailActivity extends BaseSimpleActivity implements HasCo
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
-                category = String.valueOf(getIntent().getData());
-                if (getIntent().getData() != null)
+                if (getIntent() != null && getIntent().getData() != null) {
+                    category = String.valueOf(getIntent().getData());
                     upstream = getIntent().getData().getQueryParameter(UPSTREAM);
+                }
 
                 if (category != null) {
                     category = category.toUpperCase();
