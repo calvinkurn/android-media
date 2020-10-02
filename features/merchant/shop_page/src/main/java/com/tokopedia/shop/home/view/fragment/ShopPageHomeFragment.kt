@@ -1545,6 +1545,9 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         sortFilterBottomSheet = null
         shopProductFilterParameter?.clearParameter()
         shopProductFilterParameter?.setMapData(applySortFilterModel.mapParameter)
+        if(applySortFilterModel.selectedSortName.isEmpty()){
+            sortId = ""
+        }
         changeSortData(shopProductFilterParameter?.getSortId().orEmpty())
         scrollToEtalaseTitlePosition()
     }

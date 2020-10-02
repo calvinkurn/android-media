@@ -975,7 +975,11 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         sortFilterBottomSheet = null
         shopProductFilterParameter?.clearParameter()
         shopProductFilterParameter?.setMapData(applySortFilterModel.mapParameter)
-        sortId = shopProductFilterParameter?.getSortId().orEmpty()
+        sortId = if (applySortFilterModel.selectedSortName.isEmpty()) {
+            ""
+        } else {
+            shopProductFilterParameter?.getSortId().orEmpty()
+        }
         val sortName = viewModel.getSortNameById(sortId)
         shopProductAdapter.changeSelectedSortFilter(sortId, sortName)
         shopProductAdapter.changeSortFilterIndicatorCounter(getIndicatorCount(
