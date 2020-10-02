@@ -24,12 +24,6 @@ import rx.Observable;
  */
 public interface DigitalRestApi {
 
-    @GET(TkpdBaseURL.DigitalApi.PATH_STATUS)
-    Observable<Response<TkpdDigitalResponse>> getStatus();
-
-    @GET(TkpdBaseURL.DigitalApi.PATH_CATEGORY_LIST)
-    Observable<Response<TkpdDigitalResponse>> getCategoryList(@QueryMap Map<String, Object> params);
-
     @GET(TkpdBaseURL.DigitalApi.PATH_GET_CART)
     Observable<Response<DataResponse<ResponseCartData>>> getCart(@QueryMap Map<String, String> params);
 
@@ -48,15 +42,7 @@ public interface DigitalRestApi {
     @Headers({"Content-Type: application/json"})
     Observable<Response<DataResponse<ResponseCancelVoucherData>>> cancelVoucher(@Body JsonObject requestBody);
 
-    @POST(TkpdBaseURL.DigitalApi.PATH_SMARTCARD_INQUIRY)
-    @Headers({"Content-Type: application/json"})
-    Observable<Response<TkpdDigitalResponse>> smartcardInquiry(@Body JsonObject requestBody);
-
-    @POST(TkpdBaseURL.DigitalApi.PATH_SMARTCARD_COMMAND)
-    @Headers({"Content-Type: application/json"})
-    Observable<Response<TkpdDigitalResponse>> smartcardCommand(@Body JsonObject requestBody);
-
-    @POST("ussd/balance")
+    @POST(TkpdBaseURL.DigitalApi.PATH_USSD)
     @Headers({"Content-Type: application/json"})
     Observable<Response<TkpdDigitalResponse>> parsePulsaMessage(@Body JsonObject requestBody);
 }
