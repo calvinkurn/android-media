@@ -198,9 +198,21 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
         )
     }
 
-    override fun mapFreezeEvent(event: Freeze): EventUiModel {
-        return EventUiModel(event.isFreeze)
-    }
+    override fun mapFreezeEvent(freezeEvent: Freeze, event: EventUiModel?): EventUiModel = EventUiModel(
+            freeze = freezeEvent.isFreeze,
+            banned = event?.banned?:false,
+            title = event?.title.orEmpty(),
+            message = event?.message.orEmpty(),
+            buttonTitle = event?.buttonTitle.orEmpty()
+    )
+
+    override fun mapBannedEvent(bannedEvent: Banned, event: EventUiModel?): EventUiModel = EventUiModel(
+            freeze = event?.freeze?:false,
+            banned = true,
+            title = bannedEvent.title,
+            message = bannedEvent.reason,
+            buttonTitle = bannedEvent.btnText
+    )
 
     companion object {
         const val LOCAL_RTMP_URL: String = "rtmp://192.168.0.110:1935/stream/"

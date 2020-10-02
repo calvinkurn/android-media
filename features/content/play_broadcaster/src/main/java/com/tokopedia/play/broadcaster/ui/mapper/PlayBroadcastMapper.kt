@@ -55,5 +55,7 @@ interface PlayBroadcastMapper {
 
     fun mapIncomingChat(chat: Chat): PlayChatUiModel
 
-    fun mapFreezeEvent(event: Freeze): EventUiModel
+    fun mapFreezeEvent(freezeEvent: Freeze, event: EventUiModel?): EventUiModel
+
+    fun mapBannedEvent(bannedEvent: Banned, event: EventUiModel?): EventUiModel
 }
