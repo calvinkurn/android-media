@@ -129,7 +129,7 @@ object ApplinkConstInternalOrder {
     val MARKETPLACE_ORDER = "${DeeplinkConstant.SCHEME_INTERNAL}://$PARAM_MARKETPLACE/$HOST_ORDER"
 
     @JvmField
-    val DIGITAL_ORDER = "${DeeplinkConstant.SCHEME_INTERNAL}://$PARAM_DIGITAL/$HOST_ORDER"
+    val DIGITAL_ORDER_INTERNAL = "${DeeplinkConstant.SCHEME_INTERNAL}://$PARAM_DIGITAL/$HOST_ORDER"
 
     @JvmField
     val OMS_INTERNAL_ORDER = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_ORDER"

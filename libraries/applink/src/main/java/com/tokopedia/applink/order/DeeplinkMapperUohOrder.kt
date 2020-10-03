@@ -4,6 +4,7 @@ import android.net.Uri
 import com.tokopedia.applink.ApplinkConst.*
 import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder.DIGITAL_ORDER_INTERNAL
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.MP_INTERNAL_CONFIRMED
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.MP_INTERNAL_DELIVERED
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.MP_INTERNAL_PROCESSED
@@ -88,28 +89,31 @@ object DeeplinkMapperUohOrder {
     private fun getInternalDeeplink(deeplink: String): String {
         when {
             deeplink.equals(PURCHASE_CONFIRMED, true) -> {
-                return deeplink.replace(PURCHASE_CONFIRMED, MP_INTERNAL_CONFIRMED)
+                return MP_INTERNAL_CONFIRMED
 
             }
             deeplink.equals(PURCHASE_PROCESSED, true) -> {
-                return deeplink.replace(PURCHASE_PROCESSED, MP_INTERNAL_PROCESSED)
+                return MP_INTERNAL_PROCESSED
 
             }
             deeplink.equals(PURCHASE_SHIPPED, true) -> {
-                return deeplink.replace(PURCHASE_SHIPPED, MP_INTERNAL_SHIPPED)
+                return MP_INTERNAL_SHIPPED
 
             }
             deeplink.equals(PURCHASE_DELIVERED, true) -> {
-                return deeplink.replace(PURCHASE_DELIVERED, MP_INTERNAL_DELIVERED)
-
+                return MP_INTERNAL_DELIVERED
             }
+
             deeplink.equals(PURCHASE_SHIPPING_CONFIRM, true) -> {
-                return deeplink.replace(PURCHASE_SHIPPING_CONFIRM, MP_INTERNAL_SHIPPED)
+                return MP_INTERNAL_SHIPPED
             }
             deeplink.equals(ORDER_LIST, true) -> {
-                return deeplink.replace(ORDER_LIST, ORDER_LIST_INTERNAL)
+                return ORDER_LIST_INTERNAL
             }
-            deeplink.startsWith(MARKETPLACE_ORDER) || deeplink.startsWith(DIGITAL_ORDER) -> {
+            deeplink.equals(DIGITAL_ORDER, true) || deeplink.equals(Transaction.ORDER_HISTORY, true) -> {
+                return DIGITAL_ORDER_INTERNAL
+            }
+            deeplink.startsWith(MARKETPLACE_ORDER) || (deeplink.startsWith(DIGITAL_ORDER) && !deeplink.equals(DIGITAL_ORDER, true)) -> {
                 return getMarketplaceDigitalOrderDetailInternalAppLink(deeplink)
             }
             deeplink.startsWith(OMS_ORDER_DETAIL) -> {
@@ -140,7 +144,7 @@ object DeeplinkMapperUohOrder {
                 if (deepLink.startsWith(MARKETPLACE_ORDER)) {
                     category = ApplinkConstInternalOrder.MARKETPLACE_ORDER
                 } else if (deepLink.startsWith(DIGITAL_ORDER)) {
-                    category = ApplinkConstInternalOrder.DIGITAL_ORDER
+                    category = ApplinkConstInternalOrder.DIGITAL_ORDER_INTERNAL
                 }
 
                 Uri.parse(category)
