@@ -1,4 +1,4 @@
-package com.tokopedia.core.base.domain.executor;
+package com.tokopedia.seller.common.usecase;
 
 import rx.Scheduler;
 

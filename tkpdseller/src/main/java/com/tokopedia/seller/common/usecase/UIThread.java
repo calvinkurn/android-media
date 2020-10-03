@@ -1,6 +1,4 @@
-package com.tokopedia.core.base.presentation;
-
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
+package com.tokopedia.seller.common.usecase;
 
 import javax.inject.Inject;
 

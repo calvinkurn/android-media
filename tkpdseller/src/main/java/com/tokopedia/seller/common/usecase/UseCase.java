@@ -1,7 +1,6 @@
-package com.tokopedia.core.base.domain;
+package com.tokopedia.seller.common.usecase;
 
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
+import com.tokopedia.core.base.domain.RequestParams;
 
 import rx.Observable;
 import rx.Subscriber;

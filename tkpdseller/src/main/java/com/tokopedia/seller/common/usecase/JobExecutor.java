@@ -1,8 +1,6 @@
-package com.tokopedia.core.base.data.executor;
+package com.tokopedia.seller.common.usecase;
 
 import androidx.annotation.NonNull;
-
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadFactory;

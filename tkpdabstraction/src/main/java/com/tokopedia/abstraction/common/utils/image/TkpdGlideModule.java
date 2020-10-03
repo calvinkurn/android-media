@@ -1,4 +1,4 @@
-package com.tkpd.library.utils;
+package com.tokopedia.abstraction.common.utils.image;
 
 import android.content.Context;
 

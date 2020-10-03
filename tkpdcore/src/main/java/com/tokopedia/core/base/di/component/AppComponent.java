@@ -9,8 +9,6 @@ import com.tokopedia.core.base.di.module.AppModule;
 import com.tokopedia.core.base.di.module.UtilModule;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.di.scope.ApplicationScope;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.di.qualifier.AceQualifier;
 import com.tokopedia.core.network.di.qualifier.CartQualifier;
@@ -85,10 +83,6 @@ public interface AppComponent {
 
     @WsV4QualifierWithErrorHander
     Retrofit baseDomainWithErrorHandlerRetrofit();
-
-    ThreadExecutor threadExecutor();
-
-    PostExecutionThread postExecutionThread();
 
     ChuckerInterceptor ChuckerInterceptor();
 
