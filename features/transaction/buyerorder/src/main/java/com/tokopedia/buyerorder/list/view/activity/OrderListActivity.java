@@ -46,9 +46,9 @@ import java.util.List;
 import static com.tokopedia.buyerorder.common.util.BuyerConsts.APPLINK_INTERNAL_ORDER;
 import static com.tokopedia.buyerorder.common.util.BuyerConsts.HOST_BELANJA;
 import static com.tokopedia.buyerorder.common.util.BuyerConsts.HOST_BUYER;
+import static com.tokopedia.buyerorder.common.util.BuyerConsts.HOST_DIGITAL;
 import static com.tokopedia.buyerorder.common.util.BuyerConsts.HOST_FLIGHT;
 import static com.tokopedia.buyerorder.common.util.BuyerConsts.HOST_HOTEL;
-import static com.tokopedia.buyerorder.common.util.BuyerConsts.HOST_ORDERLIST_DIGITAL;
 import static com.tokopedia.buyerorder.common.util.BuyerConsts.HOST_ORDER_LIST;
 
 public class OrderListActivity extends BaseSimpleActivity
@@ -143,15 +143,15 @@ public class OrderListActivity extends BaseSimpleActivity
                     getIntent().getExtras().putString(OrderCategory.KEY_LABEL, OrderCategory.MARKETPLACE);
                 }
             } else {
-                if (uriStr.contains(BuyerConsts.HOST_DEALS) || uriStr.contains(BuyerConsts.HOST_DIGITAL)
-                        || uriStr.contains(BuyerConsts.HOST_EVENTS) || uriStr.contains(BuyerConsts.HOST_GIFTCARDS)
-                        || uriStr.contains(BuyerConsts.HOST_INSURANCE) || uriStr.contains(BuyerConsts.HOST_MODALTOKO)) {
-                    if (uriStr.contains(HOST_ORDERLIST_DIGITAL)) {
-                        uriStr = BuyerConsts.HOST_DIGITAL;
-                    }
+                if (uriStr.contains(BuyerConsts.HOST_DEALS) || uriStr.contains(BuyerConsts.HOST_EVENTS)
+                        || uriStr.contains(BuyerConsts.HOST_GIFTCARDS) || uriStr.contains(BuyerConsts.HOST_INSURANCE)
+                        || uriStr.contains(BuyerConsts.HOST_MODALTOKO)) {
                     orderCategory = uriStr.substring(uriStr.indexOf("//") + 2, uriStr.lastIndexOf("/")).toUpperCase();
 
-                }  else if (uriStr.contains(HOST_HOTEL)) {
+                }  else if (uriStr.contains(HOST_DIGITAL)) {
+                    orderCategory = OrderCategory.DIGITAL;
+
+                } else if (uriStr.contains(HOST_HOTEL)) {
                     orderCategory = OrderCategory.HOTELS;
 
                 } else if (uriStr.contains(HOST_FLIGHT)) {
