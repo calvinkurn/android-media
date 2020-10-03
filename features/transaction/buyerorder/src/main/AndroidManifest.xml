@@ -92,12 +92,6 @@
                     android:scheme="@string/internal_scheme" />
 
                 <data
-                    android:host="@string/host_order"
-                    android:path=""
-                    android:scheme="@string/internal_scheme"
-                    tools:ignore="AppLinkUrlError"/>
-
-                <data
                     android:host="@string/host_order_list"
                     android:path=""
                     android:scheme="@string/internal_scheme"

@@ -8,6 +8,8 @@ import com.tokopedia.applink.internal.ApplinkConstInternalOrder.MP_INTERNAL_CONF
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.MP_INTERNAL_DELIVERED
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.MP_INTERNAL_PROCESSED
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.MP_INTERNAL_SHIPPED
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder.OMS_INTERNAL_ORDER
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder.ORDER_LIST_INTERNAL
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 
 /**
@@ -72,7 +74,7 @@ object DeeplinkMapperUohOrder {
 
         } else if (deeplink.startsWith(MARKETPLACE_ORDER) || deeplink.startsWith(DIGITAL_ORDER)
                 || deeplink.startsWith(FLIGHT_ORDER) || deeplink.startsWith(HOTEL_ORDER)
-                || deeplink.startsWith(OMS_ORDER)) {
+                || deeplink.startsWith(OMS_ORDER_DETAIL)) {
             returnedDeeplink = getInternalDeeplink(deeplink)
         }
         return returnedDeeplink
@@ -103,12 +105,14 @@ object DeeplinkMapperUohOrder {
             }
             deeplink.equals(PURCHASE_SHIPPING_CONFIRM, true) -> {
                 return deeplink.replace(PURCHASE_SHIPPING_CONFIRM, MP_INTERNAL_SHIPPED)
-
+            }
+            deeplink.equals(ORDER_LIST, true) -> {
+                return deeplink.replace(ORDER_LIST, ORDER_LIST_INTERNAL)
             }
             deeplink.startsWith(MARKETPLACE_ORDER) || deeplink.startsWith(DIGITAL_ORDER) -> {
                 return getMarketplaceDigitalOrderDetailInternalAppLink(deeplink)
             }
-            deeplink.startsWith(OMS_ORDER) -> {
+            deeplink.startsWith(OMS_ORDER_DETAIL) -> {
                 return getOmsOrderDetailInternalAppLink(deeplink)
             }
             else -> {
@@ -159,7 +163,7 @@ object DeeplinkMapperUohOrder {
                     "0"
                 }
 
-                Uri.parse(ApplinkConstInternalOrder.OMS_ORDER)
+                Uri.parse(OMS_INTERNAL_ORDER)
                         .buildUpon()
                         .appendQueryParameter(PATH_ORDER_ID, orderId)
                         .build()

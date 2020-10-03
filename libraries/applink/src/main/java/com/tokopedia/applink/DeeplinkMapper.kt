@@ -249,7 +249,7 @@ object DeeplinkMapper {
             DLP.exact(ApplinkConst.PURCHASE_DELIVERED) { _, _, deeplink -> DeeplinkMapperUohOrder.getRegisteredNavigationUohOrder(deeplink) },
             DLP.startWith(ApplinkConst.PURCHASE_HISTORY) { _, _, deeplink -> DeeplinkMapperUohOrder.getRegisteredNavigationUohOrder(deeplink) },
             DLP.exact(ApplinkConst.ORDER_HISTORY) { _, _, deeplink -> DeeplinkMapperUohOrder.getRegisteredNavigationUohOrder(deeplink) },
-            DLP.startWith(ApplinkConst.OMS_ORDER) { _, _, deeplink -> DeeplinkMapperUohOrder.getRegisteredNavigationUohOrder(deeplink) },
+            DLP.startWith(ApplinkConst.OMS_ORDER_DETAIL) { _, _, deeplink -> DeeplinkMapperUohOrder.getRegisteredNavigationUohOrder(deeplink) },
             DLP.startWith(ApplinkConst.HOTEL) { _, _, deeplink -> deeplink },
             DLP.startWith(ApplinkConst.DIGITAL) { ctx, _, deeplink -> getRegisteredNavigationDigital(ctx, deeplink) },
             DLP.startWith(ApplinkConst.RECHARGE) { ctx, _, deeplink -> getRegisteredNavigationDigital(ctx, deeplink) },
