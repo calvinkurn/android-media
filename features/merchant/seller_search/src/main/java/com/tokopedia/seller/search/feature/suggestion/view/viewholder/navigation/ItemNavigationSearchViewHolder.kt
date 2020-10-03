@@ -4,8 +4,8 @@ import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.TextAppearanceSpan
 import android.view.View
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.seller.search.R
 import com.tokopedia.seller.search.common.util.indexOfSearchQuery
@@ -26,7 +26,11 @@ class ItemNavigationSearchViewHolder(
     override fun bind(element: NavigationSellerSearchUiModel) {
         bindTitleText(element)
         with(itemView) {
-            ivSearchResultNav.loadImage(element.imageUrl.orEmpty())
+            try {
+                ivSearchResultNav.setImageUrl(element.imageUrl.orEmpty())
+            } catch (e: Exception) {
+                ivSearchResultNav.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_topads))
+            }
             tvDescSearchResultNav?.text = element.desc
             setOnClickListener {
                 navigationSearchListener.onNavigationItemClicked(element, adapterPosition)
