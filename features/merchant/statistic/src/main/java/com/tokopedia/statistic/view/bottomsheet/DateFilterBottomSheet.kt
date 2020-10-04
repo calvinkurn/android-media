@@ -62,6 +62,7 @@ class DateFilterBottomSheet : BottomSheetUnify(), DateFilterAdapterFactoryImpl.L
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupView()
+        dismissIfNoItems(view)
     }
 
     override fun onItemDateRangeClick(model: DateFilterItem) {
@@ -149,5 +150,13 @@ class DateFilterBottomSheet : BottomSheetUnify(), DateFilterAdapterFactoryImpl.L
         val label = context?.getString(R.string.stc_today_real_time).orEmpty()
         val today = Date()
         return DateFilterItem.Click(label, today, today, false, DateFilterItem.TYPE_TODAY)
+    }
+
+    private fun dismissIfNoItems(view: View) {
+        view.post {
+            if (mAdapter?.elements.isNullOrEmpty() && isVisible) {
+                dismiss()
+            }
+        }
     }
 }
