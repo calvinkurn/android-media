@@ -64,7 +64,7 @@ dependencies {
 
     implementation rootProject.ext.debugToolsDependencies.chuck
 
-    // spek
+    // unit test
     testImplementation rootProject.ext.testDependencies.junit
     implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk8
     testImplementation rootProject.ext.testDependencies.archCoreTesting
