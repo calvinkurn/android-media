@@ -129,21 +129,6 @@ class PinpointMapPresenter @Inject constructor(private val getDistrictUseCase: G
         })
     }
 
-/*    fun requestLocation(activity: Activity) {
-        permissionCheckerHelper?.let { permission ->
-            val locationDetectorHelper = activity.let { act ->
-                LocationDetectorHelper(
-                        permission,
-                        LocationServices.getFusedLocationProviderClient(act),
-                        act)
-            }
-
-            locationDetectorHelper.getLocation(onGetLocation(), activity,
-                    LocationDetectorHelper.TYPE_DEFAULT_FROM_CLOUD,
-                    activity.getString(R.string.rationale_need_location))
-        }
-    }*/
-
     fun requestLocation(activity: Activity) {
         fusedLocationClient = FusedLocationProviderClient(activity)
         permissionCheckerHelper?.checkPermissions(activity, getPermissions(),
