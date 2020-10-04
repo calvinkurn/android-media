@@ -139,8 +139,10 @@ class ShopShowcaseListReorderFragment : BaseDaggerFragment(),
     private fun initHeaderUnify() {
         headerUnify.apply {
             setNavigationOnClickListener {
-                activity?.supportFragmentManager?.popBackStack()
-                // fragmentManager?.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+                shopShowcaseFragmentNavigation.navigateToPage(
+                        page = PageNameConstant.SHOWCASE_LIST_PAGE,
+                        tag = null,
+                        showcaseList = null)
             }
         }
         headerUnify.actionTextView?.setOnClickListener {
