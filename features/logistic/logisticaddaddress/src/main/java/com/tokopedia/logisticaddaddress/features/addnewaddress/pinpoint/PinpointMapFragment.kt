@@ -253,7 +253,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
         }
         activity?.let { MapsInitializer.initialize(activity) }
 
-        moveMap(getLatLng(currentLat, currentLong))
+        moveMap(getLatLng(currentLat, currentLong), 16f)
 
         if (this.isPolygon) {
             districtId?.let { districtId ->
@@ -319,7 +319,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
         moveMap(getLatLng(currentLat, currentLong), zoomLevel)
     }
 
-    private fun moveMap(latLng: LatLng, zoomLevel: Float = 16f) {
+    override fun moveMap(latLng: LatLng, zoomLevel: Float) {
         val cameraPosition = CameraPosition.Builder()
                 .target(latLng)
                 .zoom(zoomLevel)
@@ -388,7 +388,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
                 if (getDistrictDataUiModel.postalCode.isEmpty() || getDistrictDataUiModel.districtId == 0) {
                     currentLat = getDistrictDataUiModel.latitude.toDouble()
                     currentLong = getDistrictDataUiModel.longitude.toDouble()
-                    moveMap(getLatLng(currentLat, currentLong))
+                    moveMap(getLatLng(currentLat, currentLong), 16f)
                     showNotFoundLocation()
                 } else {
                     doAfterSuccessPlaceGetDistrict(getDistrictDataUiModel)
@@ -403,7 +403,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
         currentLat = getDistrictDataUiModel.latitude.toDouble()
         currentLong = getDistrictDataUiModel.longitude.toDouble()
         isGetDistrict = true
-        moveMap(getLatLng(currentLat, currentLong))
+        moveMap(getLatLng(currentLat, currentLong), 16f)
 
         whole_loading_container?.visibility = View.GONE
         getdistrict_container?.visibility = View.VISIBLE

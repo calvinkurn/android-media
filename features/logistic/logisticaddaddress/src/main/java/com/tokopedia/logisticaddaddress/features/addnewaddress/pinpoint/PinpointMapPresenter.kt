@@ -17,6 +17,7 @@ import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.get_distr
 import com.tokopedia.logisticaddaddress.utils.SimpleIdlingResource
 import com.tokopedia.logisticdata.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticdata.domain.usecase.RevGeocodeUseCase
+import com.tokopedia.logisticdata.util.getLatLng
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.usecase.RequestParams
 import rx.Subscriber
@@ -179,6 +180,7 @@ class PinpointMapPresenter @Inject constructor(private val getDistrictUseCase: G
 
     private fun onGetLocation(): (DeviceLocation) -> Unit {
         return {
+            view.moveMap(getLatLng(it.latitude, it.longitude), 16f)
             view.showAutoComplete(it.latitude, it.longitude)
         }
     }
