@@ -5,8 +5,8 @@ import com.tokopedia.home.analytics.v2.BaseTracking
 import com.tokopedia.home.analytics.v2.BaseTrackingBuilder
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel
-import com.tokopedia.home_component.model.ChannelGrid
-import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.track.builder.BaseTrackerBuilder
+import com.tokopedia.track.builder.util.BaseTrackerConst
 
 object HomePageTrackingV2 : BaseTracking() {
     private object CustomEvent{
@@ -107,121 +107,19 @@ object HomePageTrackingV2 : BaseTracking() {
         )
     }
 
-    object LegoBanner{
-        private const val LEGO_BANNER_4_IMAGE_NAME = "lego banner 4 image"
-        private const val LEGO_BANNER_3_IMAGE_NAME = "lego banner 3 image"
-        private const val LEGO_BANNER_6_IMAGE_NAME = "lego banner"
-
-        fun getLegoBannerFourImageImpression(channel: DynamicHomeChannel.Channels, position: Int, isToIris: Boolean = false) = getBasicPromotionChannelView(
-                event = if(isToIris) Event.PROMO_VIEW_IRIS else Event.PROMO_VIEW,
-                eventCategory = Category.HOMEPAGE,
-                eventAction = Action.IMPRESSION.format(LEGO_BANNER_4_IMAGE_NAME),
-                eventLabel = Label.NONE,
-                promotions = channel.grids.mapIndexed { index, grid ->
-                    Promotion(
-                            id = CustomEvent.FORMAT_4_VALUE_UNDERSCORE.format(channel.id, grid.id, channel.persoType, channel.categoryID),
-                            creative = grid.attribution,
-                            name = Ecommerce.PROMOTION_NAME.format(position, LEGO_BANNER_4_IMAGE_NAME, channel.header.name),
-                            position = (index + 1).toString()
-                    )
-                },
-                channelId = channel.id
-        )
-
-        fun getLegoBannerFourImageImpression(channel: ChannelModel, position: Int, isToIris: Boolean = false) = getBasicPromotionChannelView(
-                event = if(isToIris) Event.PROMO_VIEW_IRIS else Event.PROMO_VIEW,
-                eventCategory = Category.HOMEPAGE,
-                eventAction = Action.IMPRESSION.format(LEGO_BANNER_4_IMAGE_NAME),
-                eventLabel = Label.NONE,
-                promotions = channel.channelGrids.mapIndexed { index, grid ->
-                    Promotion(
-                            id = CustomEvent.FORMAT_4_VALUE_UNDERSCORE.format(channel.id, grid.id, channel.trackingAttributionModel.persoType, channel.trackingAttributionModel.categoryId),
-                            creative = grid.attribution,
-                            name = Ecommerce.PROMOTION_NAME.format(position, LEGO_BANNER_4_IMAGE_NAME, channel.channelHeader.name),
-                            position = (index + 1).toString()
-                    )
-                },
-                channelId = channel.id
-        )
-
-        fun getLegoBannerThreeImageImpression(channel: ChannelModel, position: Int, isToIris: Boolean = false) = getBasicPromotionChannelView(
-                event = if(isToIris) Event.PROMO_VIEW_IRIS else Event.PROMO_VIEW,
-                eventCategory = Category.HOMEPAGE,
-                eventAction = Action.IMPRESSION.format(LEGO_BANNER_3_IMAGE_NAME),
-                eventLabel = Label.NONE,
-                promotions = channel.channelGrids.mapIndexed { index, grid ->
-                    Promotion(
-                            id = CustomEvent.FORMAT_4_VALUE_UNDERSCORE.format(channel.id, grid.id, channel.trackingAttributionModel.persoType, channel.trackingAttributionModel.categoryId),
-                            creative = grid.attribution,
-                            name = Ecommerce.PROMOTION_NAME.format(position, LEGO_BANNER_3_IMAGE_NAME, channel.channelHeader.name),
-                            position = (index + 1).toString()
-                    )
-                },
-                channelId = channel.id
-        )
-
-        fun getLegoBannerSixImageImpression(channel: ChannelModel, position: Int, isToIris: Boolean = false) = getBasicPromotionChannelView(
-                event = if(isToIris) Event.PROMO_VIEW_IRIS else Event.PROMO_VIEW,
-                eventCategory = Category.HOMEPAGE,
-                eventAction = Action.IMPRESSION.format(LEGO_BANNER_6_IMAGE_NAME),
-                eventLabel = Label.NONE,
-                promotions = channel.channelGrids.mapIndexed { index, grid ->
-                    Promotion(
-                            id = CustomEvent.FORMAT_4_VALUE_UNDERSCORE.format(channel.id, grid.id, channel.trackingAttributionModel.persoType, channel.trackingAttributionModel.categoryId),
-                            creative = grid.attribution,
-                            name = Ecommerce.PROMOTION_NAME.format(position, LEGO_BANNER_6_IMAGE_NAME, channel.channelHeader.name),
-                            position = (index + 1).toString()
-                    )
-                },
-                channelId = channel.id
-        )
-
-        fun getLegoBannerFourImageClick(channel: ChannelModel, grid: ChannelGrid, position: Int) = getBasicPromotionChannelClick(
-                event = Event.PROMO_CLICK,
-                eventCategory = Category.HOMEPAGE,
-                eventAction = Action.CLICK.format(LEGO_BANNER_4_IMAGE_NAME),
-                eventLabel = grid.attribution,
-                channelId = channel.id,
-                categoryId = channel.trackingAttributionModel.categoryPersona,
-                affinity = channel.trackingAttributionModel.persona,
-                attribution = channel.trackingAttributionModel.galaxyAttribution,
-                shopId = channel.trackingAttributionModel.brandId,
-                campaignCode = channel.trackingAttributionModel.campaignCode,
-                promotions = listOf(
-                        Promotion(
-                                id = CustomEvent.FORMAT_4_VALUE_UNDERSCORE.format(channel.id, grid.id, channel.trackingAttributionModel.persoType, channel.trackingAttributionModel.categoryId),
-                                creative = grid.attribution,
-                                name = channel.trackingAttributionModel.promoName,
-                                position = position.toString()
-                        )
-                )
-        )
-
-        fun getLegoBannerFourImageSeeAllClick(channelHeaderName: String, channelId: String): HashMap<String, Any>{
-            return DataLayer.mapOf(
-                Event.KEY, CustomEvent.CLICK_HOMEPAGE,
-                Category.KEY, Category.HOMEPAGE,
-                Action.KEY, Action.CLICK.format(LEGO_BANNER_4_IMAGE_NAME) + " view all",
-                Label.KEY, "$channelId - $channelHeaderName",
-                Label.CHANNEL_LABEL, channelId
-            ) as HashMap<String, Any>
-        }
-    }
-
-
     object SprintSale{
         private const val EVENT_ACTION_SPRINT_SALE_IMPRESSION = "sprint sale impression"
         private const val EVENT_ACTION_SPRINT_SALE_CLICK = "sprint sale click"
         private const val EVENT_ACTION_SPRINT_SALE_CLICK_VIEW_ALL = "sprint sale click view all"
         private const val LIST_VALUE_SPRINT_SALE = "sprint sale"
 
-        fun getSprintSaleImpression(channel: DynamicHomeChannel.Channels, isToIris: Boolean = false) = getBasicProductView(
+        fun getSprintSaleImpression(channel: DynamicHomeChannel.Channels, isToIris: Boolean = false) = BaseTrackerBuilder().constructBasicProductView(
                 event = if(isToIris) Event.PRODUCT_VIEW_IRIS else Event.PRODUCT_VIEW,
                 eventCategory = Category.HOMEPAGE,
                 eventAction = EVENT_ACTION_SPRINT_SALE_IMPRESSION,
                 eventLabel = Label.NONE,
                 products = channel.grids.mapIndexed { index, grid ->
-                    Product(
+                    BaseTrackerConst.Product(
                             name = grid.name,
                             id =  grid.id,
                             productPrice = convertRupiahToInt(grid.price).toString(),
@@ -233,22 +131,23 @@ object HomePageTrackingV2 : BaseTracking() {
                             isFreeOngkir = grid.freeOngkir.isActive,
                             persoType = channel.persoType,
                             categoryId = channel.categoryID,
+                            recommendationType = grid.recommendationType,
+                            pageName = channel.pageName,
                             isTopAds = grid.isTopads
                     )
                 },
                 list = String.format(
-                        Value.LIST_WITH_HEADER, "1", LIST_VALUE_SPRINT_SALE, channel.header.name
+                        Value.LIST, "1", LIST_VALUE_SPRINT_SALE
                 )
-        )
-        private fun getSprintSaleClick(channel: DynamicHomeChannel.Channels, currentCountDown: String, grid: DynamicHomeChannel.Grid, position: Int) = getBasicProductChannelClick(
+        ).build()
+
+        private fun getSprintSaleClick(channel: DynamicHomeChannel.Channels, currentCountDown: String, grid: DynamicHomeChannel.Grid, position: Int) = BaseTrackerBuilder().constructBasicProductClick(
                 event = Event.PRODUCT_CLICK,
                 eventCategory = Category.HOMEPAGE,
                 eventAction = EVENT_ACTION_SPRINT_SALE_CLICK,
                 eventLabel = currentCountDown,
-                channelId = channel.id,
-                campaignCode = channel.campaignCode,
                 products = listOf(
-                        Product(
+                        BaseTrackerConst.Product(
                                 name = grid.name,
                                 id = grid.id,
                                 productPrice = convertRupiahToInt(grid.price).toString(),
@@ -260,13 +159,17 @@ object HomePageTrackingV2 : BaseTracking() {
                                 isFreeOngkir = grid.freeOngkir.isActive,
                                 persoType = channel.persoType,
                                 categoryId = channel.categoryID,
+                                recommendationType = grid.recommendationType,
+                                pageName = channel.pageName,
                                 isTopAds = grid.isTopads
                         )
                 ),
                 list = String.format(
-                        Value.LIST_WITH_HEADER, "1", LIST_VALUE_SPRINT_SALE, channel.header.name
+                        Value.LIST, "1", LIST_VALUE_SPRINT_SALE
                 )
-        )
+        ).appendChannelId(channel.id)
+        .appendCampaignCode(channel.campaignCode)
+        .build()
 
         fun sendSprintSaleClick(channel: DynamicHomeChannel.Channels, currentCountDown: String, grid: DynamicHomeChannel.Grid, position: Int) {
             getTracker().sendEnhanceEcommerceEvent(getSprintSaleClick(channel, currentCountDown, grid, position))

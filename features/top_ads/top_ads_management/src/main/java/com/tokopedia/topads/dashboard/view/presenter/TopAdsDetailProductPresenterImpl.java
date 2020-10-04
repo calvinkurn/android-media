@@ -4,7 +4,7 @@ import android.content.Context;
 
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.topads.auto.data.AutoAdsUseCase;
-import com.tokopedia.topads.auto.data.entity.TopAdsAutoAdsData;
+import com.tokopedia.topads.common.data.response.TopAdsAutoAdsData;
 import com.tokopedia.topads.common.data.internal.AutoAdsStatus;
 import com.tokopedia.topads.dashboard.data.model.data.ProductAd;
 import com.tokopedia.topads.dashboard.data.model.request.SearchAdRequest;

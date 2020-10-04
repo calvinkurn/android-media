@@ -31,7 +31,7 @@ class OrderSummaryPageRobot {
     }
 
     fun clickAddProductQuantity() {
-        onView(withId(R.id.btn_qty_plus)).perform(scrollTo()).perform(click())
+        onView(withId(com.tokopedia.unifycomponents.R.id.quantity_editor_add)).perform(scrollTo()).perform(click())
     }
 
     fun clickEditPreference() {
@@ -56,6 +56,10 @@ class OrderSummaryPageRobot {
     fun clickBboTicker() {
         onView(withId(R.id.ticker_shipping_promo)).perform(scrollTo())
         onView(withId(R.id.ticker_action)).perform(click())
+    }
+
+    fun clickButtonPromo() {
+        onView(withId(R.id.btn_promo_checkout)).perform(scrollTo()).perform(click())
     }
 
     fun pay() {
@@ -95,11 +99,11 @@ class OrderSummaryPageRobot {
                 assertEquals(View.GONE, view.visibility)
             }
         }
-        onView(withId(R.id.et_qty)).check(matches(withText(productQty.toString())))
+        onView(withId(com.tokopedia.unifycomponents.R.id.quantity_editor_qty)).check(matches(withText(productQty.toString())))
     }
 
     fun assertProductQuantity(qty: Int) {
-        onView(withId(R.id.et_qty)).perform(scrollTo()).check(matches(withText(qty.toString())))
+        onView(withId(com.tokopedia.unifycomponents.R.id.quantity_editor_qty)).perform(scrollTo()).check(matches(withText(qty.toString())))
     }
 
     fun assertProfileAddress(headerMessage: String,

@@ -17,7 +17,7 @@ import com.tokopedia.autocomplete.initialstate.InitialStateItemClickListener
 import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.unifycomponents.toDp
-import kotlinx.android.synthetic.main.layout_popular_item_autocomplete.view.*
+import kotlinx.android.synthetic.main.layout_dynamic_item_initial_state.view.*
 import kotlinx.android.synthetic.main.layout_recyclerview_autocomplete.view.*
 
 class PopularSearchViewHolder(
@@ -54,7 +54,7 @@ class PopularSearchViewHolder(
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
             val itemView = LayoutInflater.from(parent.context)
-                    .inflate(R.layout.layout_popular_item_autocomplete, parent, false)
+                    .inflate(R.layout.layout_dynamic_item_initial_state, parent, false)
             return ItemViewHolder(itemView, clickListener)
         }
 
@@ -76,27 +76,26 @@ class PopularSearchViewHolder(
             }
 
             private fun bindIcon(item: BaseItemInitialStateSearch) {
-                itemView.autocompletePopularSearchIcon?.shouldShowWithAction(item.imageUrl.isNotEmpty()) {
-                    ImageHandler.loadImageRounded(itemView.context, itemView.autocompletePopularSearchIcon, item.imageUrl, 6.toDp().toFloat())
+                itemView.initialStateDynamicIcon?.shouldShowWithAction(item.imageUrl.isNotEmpty()) {
+                    ImageHandler.loadImageRounded(itemView.context, itemView.initialStateDynamicIcon, item.imageUrl, 6.toDp().toFloat())
                 }
             }
 
             private fun bindTitle(item: BaseItemInitialStateSearch) {
-                itemView.autocompletePopularSearchTitle?.shouldShowWithAction(item.title.isNotEmpty()) {
-                    itemView.autocompletePopularSearchTitle?.setTextAndCheckShow(MethodChecker.fromHtml(item.title).toString())
+                itemView.initialStateDynamicItemTitle?.shouldShowWithAction(item.title.isNotEmpty()) {
+                    itemView.initialStateDynamicItemTitle?.setTextAndCheckShow(MethodChecker.fromHtml(item.title).toString())
                 }
             }
 
             private fun bindSubtitle(item: BaseItemInitialStateSearch) {
-                itemView.autocompletePopularSearchSubtitle?.shouldShowWithAction(item.subtitle.isNotEmpty()) {
-                    itemView.autocompletePopularSearchSubtitle?.setTextAndCheckShow(MethodChecker.fromHtml(item.subtitle).toString())
+                itemView.initialStateDynamicItemSubtitle?.shouldShowWithAction(item.subtitle.isNotEmpty()) {
+                    itemView.initialStateDynamicItemSubtitle?.setTextAndCheckShow(MethodChecker.fromHtml(item.subtitle).toString())
                 }
             }
 
             private fun bindListener(item: BaseItemInitialStateSearch) {
-                itemView.autocompletePopularSearchItem?.setOnClickListener {
+                itemView.initialStateDynamicItem?.setOnClickListener {
                     AutocompleteTracking.eventClickPopularSearch(
-                            itemView.context,
                             String.format(
                                     "value: %s - po: %s - applink: %s",
                                     item.title,

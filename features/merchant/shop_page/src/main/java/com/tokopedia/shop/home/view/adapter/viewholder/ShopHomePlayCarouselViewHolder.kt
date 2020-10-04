@@ -1,5 +1,6 @@
 package com.tokopedia.shop.home.view.adapter.viewholder
 
+import android.os.Bundle
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -22,8 +23,6 @@ class ShopHomePlayCarouselViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_shop_home_play_carousel
-        private const val IS_AUTO_PLAY_SUCCESS = "success"
-        private const val IS_AUTO_PLAY_FAILED = "failed"
         const val ON_PAUSE = "on_pause"
         const val ON_RESUME = "on_resume"
         const val ON_DESTROY = "on_resume"
@@ -43,19 +42,30 @@ class ShopHomePlayCarouselViewHolder(
 
     override fun bind(element: ShopHomePlayCarouselUiModel?, payloads: MutableList<Any>) {
         if(payloads.isNotEmpty()){
+            val bundle = payloads.first() as Bundle
             when {
-                payloads.contains(ON_DESTROY) -> {
+                bundle.containsKey(ON_DESTROY) -> {
                     itemView.play_banner_carousel?.onDestroy()
                 }
-                payloads.contains(ON_RESUME) -> {
+                bundle.containsKey(ON_RESUME) -> {
                     itemView.play_banner_carousel?.onResume()
                 }
-                payloads.contains(ON_PAUSE) -> {
+                bundle.containsKey(ON_PAUSE) -> {
                     itemView.play_banner_carousel?.onPause()
                 }
-                payloads.contains(ShopPageHomeFragment.UPDATE_REMIND_ME_PLAY) -> {
-                    element?.playBannerCarouselDataModel?.let{
-                        itemView.play_banner_carousel?.setItem(it)
+                 bundle.containsKey(ShopPageHomeFragment.UPDATE_REMIND_ME_PLAY) -> {
+                    element?.playBannerCarouselDataModel?.let{ playCarouselCardDataModel ->
+                        if(bundle.containsKey(ShopPageHomeFragment.UPDATE_REMIND_ME_PLAY)){
+                            itemView.play_banner_carousel?.setItem(playCarouselCardDataModel.copy(
+                                channelList = playCarouselCardDataModel.channelList.map {
+                                    if(it.getId() == bundle.getString(ShopPageHomeFragment.UPDATE_REMIND_ME_PLAY_ID) && it is PlayBannerCarouselItemDataModel){
+                                        it.copy(remindMe = !it.remindMe)
+                                    } else {
+                                        it
+                                    }
+                                }
+                            ))
+                        }
                     }
                 }
             }
@@ -68,7 +78,7 @@ class ShopHomePlayCarouselViewHolder(
                 playCarouselCardDataModel?.playBannerCarouselDataModel?.isAutoPlay.toString(),
                 playCarouselCardDataModel?.widgetId ?: "",
                 isFoldPosition(adapterPosition),
-                position + 1
+                position
         )
     }
 
@@ -78,12 +88,12 @@ class ShopHomePlayCarouselViewHolder(
                 playCarouselCardDataModel?.playBannerCarouselDataModel?.isAutoPlay.toString(),
                 playCarouselCardDataModel?.widgetId ?: "",
                 isFoldPosition(adapterPosition),
-                position + 1
+                position
         )
     }
 
     override fun onReminderClick(dataModel: PlayBannerCarouselItemDataModel, position: Int) {
-        listener.onReminderClick(dataModel, position)
+        listener.onReminderClick(dataModel, adapterPosition)
     }
 
     override fun onSeeMoreClick(dataModel: PlayBannerCarouselDataModel) {

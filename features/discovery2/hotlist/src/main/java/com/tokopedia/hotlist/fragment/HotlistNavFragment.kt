@@ -52,9 +52,9 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.linker.model.LinkerData
+import com.tokopedia.linker.share.DefaultShare
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey.HOTLIST_SHARE_MSG
-import com.tokopedia.sharedata.DefaultShareData
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -699,7 +699,7 @@ class HotlistNavFragment : BaseCategorySectionFragment(),
                 .build()
 
         shareData.type = LinkerData.HOTLIST_TYPE
-        DefaultShareData(activity, shareData).show()
+        DefaultShare(activity, shareData).show()
     }
 
     override fun topAdsTrackerUrlTrigger(url: String, id: String, name: String, imageURL: String) {

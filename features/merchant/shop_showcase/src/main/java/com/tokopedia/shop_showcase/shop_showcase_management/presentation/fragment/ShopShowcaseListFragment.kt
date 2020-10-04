@@ -22,14 +22,14 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.analytics.performance.PerformanceMonitoring
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.design.text.watcher.AfterTextWatcher
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.header.HeaderUnify
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
 import com.tokopedia.shop_showcase.R
 import com.tokopedia.shop_showcase.ShopShowcaseInstance
@@ -110,7 +110,6 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
     private var isNeedToGoToAddShowcase = false
     private var isReorderList = false
     private var isSellerNeedToHideShowcaseGroupValue = false
-
 
     override fun getScreenName(): String {
         return ""
@@ -262,9 +261,11 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
                 }
 
                 if (shopShowcaseViewModelList.size > 0) {
+                    showLoading(false)
                     isSearchShowcaseFound(true)
                     shopShowcaseListAdapter?.updateDataShowcaseList(shopShowcaseViewModelList)
                 } else {
+                    showLoading(false)
                     isSearchShowcaseFound(false)
                 }
             }
@@ -497,8 +498,10 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
     private fun showLoading(isLoading: Boolean) {
         if (isLoading) {
             loading.visibility = View.VISIBLE
+            swipeRefreshLayout.gone()
         } else {
             loading.visibility = View.GONE
+            swipeRefreshLayout.visible()
         }
     }
 

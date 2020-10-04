@@ -10,20 +10,22 @@ import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
 import androidx.test.espresso.intent.rule.IntentsTestRule
-import androidx.test.espresso.matcher.ViewMatchers.assertThat
-import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.runner.AndroidJUnit4
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
-import com.tokopedia.analyticsdebugger.validator.core.getAnalyticsWithQuery
-import com.tokopedia.analyticsdebugger.validator.core.hasAllSuccess
+import com.tokopedia.cassavatest.getAnalyticsWithQuery
+import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.flight.R
 import com.tokopedia.flight.airport.view.model.FlightAirportModel
 import com.tokopedia.flight.homepage.presentation.model.FlightClassModel
 import com.tokopedia.flight.homepage.presentation.model.FlightPassengerModel
 import com.tokopedia.flight.searchV4.presentation.adapter.viewholder.FlightSearchViewHolder
 import com.tokopedia.flight.searchV4.presentation.model.FlightSearchPassDataModel
+import com.tokopedia.test.application.espresso_component.CommonMatcher
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
+import org.hamcrest.CoreMatchers
+import org.hamcrest.core.AllOf
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -42,7 +44,9 @@ class FlightSearchActivityTest {
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
             setupGraphqlMockResponse(FlightSearchMockResponse())
+            gtmLogDBSource.deleteAll().subscribe()
         }
+
         override fun getActivityIntent(): Intent =
                 FlightSearchActivity.getCallingIntent(
                         context,
@@ -78,16 +82,59 @@ class FlightSearchActivityTest {
 
     @Before
     fun setup() {
-        gtmLogDBSource.deleteAll().subscribe()
         intending(anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
     }
 
     @Test
-    fun validateFlightSearchPageP1Tracking() {
-        Thread.sleep(2000)
-        assert(getJourneyItemCount() > 1)
+    fun validateFlightSearchPageP2AndBelowTracking() {
+        Thread.sleep(3000)
+        quickFilter()
+        changeSearch()
 
         Thread.sleep(3000)
+        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_ALL),
+                hasAllSuccess())
+    }
+
+    private fun quickFilter() {
+        Thread.sleep(2000)
+        onView(AllOf.allOf(withId(R.id.chip_text), withText("Langsung"))).perform(click())
+        Thread.sleep(1000)
+    }
+
+    private fun changeSearch() {
+        onView(withTagValue(CoreMatchers.equalTo("TagChangeSearchButton"))).perform(click())
+        setPassengersCount()
+
+        onView(withId(R.id.btnFlightSearch)).perform(click())
+    }
+
+    private fun setPassengersCount() {
+        Thread.sleep(1000)
+
+        // click on flight passengers to open bottom sheet to set passengers number
+        onView(withId(R.id.tvFlightPassenger)).perform(click())
+
+        // change passengers
+        onView(CommonMatcher.getElementFromMatchAtPosition(withId(R.id.quantity_editor_add), 0)).perform(click())
+        onView(CommonMatcher.getElementFromMatchAtPosition(withId(R.id.quantity_editor_add), 0)).perform(click())
+
+        onView(CommonMatcher.getElementFromMatchAtPosition(withId(R.id.quantity_editor_add), 1)).perform(click())
+        onView(CommonMatcher.getElementFromMatchAtPosition(withId(R.id.quantity_editor_add), 1)).perform(click())
+
+        onView(CommonMatcher.getElementFromMatchAtPosition(withId(R.id.quantity_editor_add), 2)).perform(click())
+        Thread.sleep(1000)
+
+        onView(withId(R.id.btnFlightPassenger)).perform(click())
+        Thread.sleep(1000)
+    }
+
+    @Test
+    fun validateFlightSearchPageP1Tracking() {
+        Thread.sleep(3000)
+        assert(getJourneyItemCount() > 1)
+
+        Thread.sleep(1000)
         if (getJourneyItemCount() > 0) {
             onView(withId(R.id.recycler_view)).perform(RecyclerViewActions
                     .actionOnItemAtPosition<FlightSearchViewHolder>(0, click()))
@@ -105,5 +152,6 @@ class FlightSearchActivityTest {
 
     companion object {
         private const val ANALYTIC_VALIDATOR_QUERY_P1 = "tracker/travel/flight/flight_search_p1.json"
+        private const val ANALYTIC_VALIDATOR_QUERY_ALL = "tracker/travel/flight/flight_search_all.json"
     }
 }

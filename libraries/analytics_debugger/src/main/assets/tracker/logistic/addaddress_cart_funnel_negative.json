@@ -1,0 +1,57 @@
+{
+  "mode": "subset",
+  "query": [
+    {
+      "screenName": "/cart/address/create"
+    },
+    {
+      "eventCategory": "cart change address negative",
+      "event": "clickAddress",
+      "eventAction": "click field kota/kecamatan",
+      "eventLabel": "logistic"
+    },
+    {
+      "eventCategory": "cart change address negative",
+      "event": "clickAddress",
+      "eventAction": "click suggestion kota/kecamatan",
+      "eventLabel": "logistic"
+    },
+    {
+      "eventCategory": "cart change address negative",
+      "event": "clickAddress",
+      "eventAction": "click field kode pos",
+      "eventLabel": "logistic"
+    },
+    {
+      "eventCategory": "cart change address negative",
+      "event": "clickAddress",
+      "eventAction": "click chips kode pos",
+      "eventLabel": "logistic"
+    },
+    {
+      "eventCategory": "cart change address negative",
+      "event": "clickAddress",
+      "eventAction": "click field alamat",
+      "eventLabel": "logistic"
+    },
+    {
+      "eventCategory": "cart change address negative",
+      "event": "clickAddress",
+      "eventAction": "click field nama penerima",
+      "sessionIris": "{{.*}}",
+      "eventLabel": "logistic"
+    },
+    {
+      "eventCategory": "cart change address negative",
+      "event": "clickAddress",
+      "eventAction": "click field no ponsel",
+      "eventLabel": "logistic"
+    },
+    {
+      "eventCategory": "cart change address",
+      "eventAction": "click button simpan",
+      "eventLabel": "negative success - logistic"
+    }
+  ],
+  "readme": "Logistic Add Address cart funnel, also verifies CVR. STR: Create New Address from Cart Address Choice"
+}
