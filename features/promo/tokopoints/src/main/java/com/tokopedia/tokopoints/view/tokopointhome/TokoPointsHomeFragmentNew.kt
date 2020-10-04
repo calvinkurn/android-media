@@ -417,7 +417,6 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
 
             adapter = SectionAdapter(viewBinders)
             adapter?.addItem(sectionList)
-            adapter?.setHasStableIds(true)
             mPagerPromos?.apply {
                 layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.VERTICAL, false)
             }

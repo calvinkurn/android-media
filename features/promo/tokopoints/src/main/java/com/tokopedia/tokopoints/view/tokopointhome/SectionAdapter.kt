@@ -78,10 +78,6 @@ class SectionAdapter(private val viewBinders: Map<String, SectionItemBinder>) : 
         notifyDataSetChanged()
     }
 
-    override fun getItemId(position: Int): Long {
-        return position.toLong()
-    }
-
     override fun onViewRecycled(holder: RecyclerView.ViewHolder) {
         if (holder is SectionHorizontalViewHolder) {
             val key = (sectionList[holder.adapterPosition] as SectionContent).sectionTitle

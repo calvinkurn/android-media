@@ -227,10 +227,6 @@ class CouponListAdapter(private val mItems: MutableList<CouponValueEntity>) : Re
         }
     }
 
-    override fun getItemId(position: Int): Long {
-        return position.toLong()
-    }
-
     companion object {
         private const val VIEW_HEADER = 0
         private const val VIEW_DATA = 1
