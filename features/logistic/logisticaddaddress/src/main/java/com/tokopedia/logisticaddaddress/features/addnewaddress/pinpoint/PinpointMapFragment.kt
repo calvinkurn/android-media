@@ -49,7 +49,7 @@ import com.tokopedia.logisticdata.data.entity.response.Data
 import com.tokopedia.logisticdata.util.getLatLng
 import com.tokopedia.logisticdata.util.rxPinPoint
 import com.tokopedia.logisticdata.util.toCompositeSubs
-import com.tokopedia.permissionchecker.PermissionCheckerHelper
+import com.tokopedia.utils.permission.PermissionCheckerHelper
 import kotlinx.android.synthetic.main.bottomsheet_getdistrict.*
 import kotlinx.android.synthetic.main.fragment_pinpoint_map.*
 import rx.Subscriber

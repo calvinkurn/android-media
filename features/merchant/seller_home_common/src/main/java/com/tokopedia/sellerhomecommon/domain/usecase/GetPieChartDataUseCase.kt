@@ -4,9 +4,9 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.sellerhomecommon.domain.mapper.PieChartMapper
 import com.tokopedia.sellerhomecommon.domain.model.DataKeyModel
+import com.tokopedia.sellerhomecommon.domain.model.DynamicParameterModel
 import com.tokopedia.sellerhomecommon.domain.model.GetPieChartDataResponse
 import com.tokopedia.sellerhomecommon.domain.model.PieChartWidgetDataModel
-import com.tokopedia.sellerhomecommon.domain.model.DynamicParameterModel
 import com.tokopedia.sellerhomecommon.presentation.model.PieChartDataUiModel
 import com.tokopedia.usecase.RequestParams
 
@@ -50,7 +50,7 @@ class GetPieChartDataUseCase(
         }
 
         private val QUERY = """
-            query (${'$'}dataKeys: [dataKey!]!) {
+            query getPieChartData(${'$'}dataKeys: [dataKey!]!) {
               fetchPieChartWidgetData(dataKeys: ${'$'}dataKeys) {
                 data {
                   dataKey
