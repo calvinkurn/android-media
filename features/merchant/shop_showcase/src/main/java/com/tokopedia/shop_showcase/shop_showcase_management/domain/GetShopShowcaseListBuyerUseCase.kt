@@ -9,6 +9,7 @@ import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 import javax.inject.Named
 
+@Deprecated("Use GetShopEtalaseByShopUseCase from shop common")
 class GetShopShowcaseListBuyerUseCase @Inject constructor(private val graphqlUseCase: MultiRequestGraphqlUseCase): UseCase<ShopShowcaseListBuyerResponse>() {
 
     var params: RequestParams = RequestParams.EMPTY
