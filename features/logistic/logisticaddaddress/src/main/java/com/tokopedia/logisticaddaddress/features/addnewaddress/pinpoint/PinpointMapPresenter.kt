@@ -1,12 +1,10 @@
 package com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint
 
 import android.app.Activity
-import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.FusedLocationProviderClient
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.locationmanager.DeviceLocation
-import com.tokopedia.locationmanager.LocationDetectorHelper
-import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.common.AddressConstants.CIRCUIT_BREAKER_ON_CODE
 import com.tokopedia.logisticaddaddress.di.addnewaddress.AddNewAddressScope
 import com.tokopedia.logisticaddaddress.domain.mapper.DistrictBoundaryMapper
@@ -36,6 +34,7 @@ class PinpointMapPresenter @Inject constructor(private val getDistrictUseCase: G
 
     private var saveAddressDataModel = SaveAddressDataModel()
     private var permissionCheckerHelper: PermissionCheckerHelper? = null
+    private var fusedLocationClient: FusedLocationProviderClient? = null
 
     fun getDistrict(placeId: String) {
         SimpleIdlingResource.increment()
@@ -129,7 +128,7 @@ class PinpointMapPresenter @Inject constructor(private val getDistrictUseCase: G
         })
     }
 
-    fun requestLocation(activity: Activity) {
+/*    fun requestLocation(activity: Activity) {
         permissionCheckerHelper?.let { permission ->
             val locationDetectorHelper = activity.let { act ->
                 LocationDetectorHelper(
@@ -142,12 +141,40 @@ class PinpointMapPresenter @Inject constructor(private val getDistrictUseCase: G
                     LocationDetectorHelper.TYPE_DEFAULT_FROM_CLOUD,
                     activity.getString(R.string.rationale_need_location))
         }
+    }*/
+
+    fun requestLocation(activity: Activity) {
+        fusedLocationClient = FusedLocationProviderClient(activity)
+        permissionCheckerHelper?.checkPermissions(activity, getPermissions(),
+                object : PermissionCheckerHelper.PermissionCheckListener {
+                    override fun onPermissionDenied(permissionText: String) {
+                        permissionCheckerHelper?.onPermissionDenied(activity, permissionText)
+                    }
+
+                    override fun onNeverAskAgain(permissionText: String) {
+                        permissionCheckerHelper?.onNeverAskAgain(activity, permissionText)
+                    }
+
+                    override fun onPermissionGranted() {
+                        fusedLocationClient?.lastLocation
+                                ?.addOnSuccessListener {
+                                       onGetLocation()
+                                }
+                    }
+
+                }, "")
     }
 
     fun setPermissionChecker(permissionCheckerHelper: PermissionCheckerHelper?) {
         if (permissionCheckerHelper != null) {
             this.permissionCheckerHelper = permissionCheckerHelper
         }
+    }
+
+    private fun getPermissions(): Array<String> {
+        return arrayOf(
+                PermissionCheckerHelper.Companion.PERMISSION_ACCESS_FINE_LOCATION,
+                PermissionCheckerHelper.Companion.PERMISSION_ACCESS_COARSE_LOCATION)
     }
 
     private fun onGetLocation(): (DeviceLocation) -> Unit {
