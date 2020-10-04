@@ -249,6 +249,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
                                 fusedLocationClient?.lastLocation
                                         ?.addOnSuccessListener { lastLocation ->
                                             moveMap(getLatLng(lastLocation.latitude, lastLocation.longitude), ZOOM_LEVEL)
+                                            showAutoComplete(lastLocation.latitude, lastLocation.longitude)
                                         }
                                 googleMap?.isMyLocationEnabled = true
                             }

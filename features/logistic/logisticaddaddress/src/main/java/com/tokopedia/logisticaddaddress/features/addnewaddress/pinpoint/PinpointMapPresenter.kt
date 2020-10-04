@@ -17,9 +17,8 @@ import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.get_distr
 import com.tokopedia.logisticaddaddress.utils.SimpleIdlingResource
 import com.tokopedia.logisticdata.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticdata.domain.usecase.RevGeocodeUseCase
-import com.tokopedia.logisticdata.util.getLatLng
-import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.usecase.RequestParams
+import com.tokopedia.utils.permission.PermissionCheckerHelper
 import rx.Subscriber
 import timber.log.Timber
 import javax.inject.Inject
@@ -145,10 +144,10 @@ class PinpointMapPresenter @Inject constructor(private val getDistrictUseCase: G
                         fusedLocationClient?.lastLocation
                                 ?.addOnSuccessListener {
                                     if (it != null) {
-                                        view.moveMap(getLatLng(it.latitude, it.longitude), 16f)
-
+                                        onGetLocation()
+//                                        view.moveMap(getLatLng(it.latitude, it.longitude), 16f)
                                     }
-                                    onGetLocation()
+//                                    onGetLocation()
                                 }
                     }
 
