@@ -159,7 +159,11 @@ class PinpointMapPresenter @Inject constructor(private val getDistrictUseCase: G
                     override fun onPermissionGranted() {
                         fusedLocationClient?.lastLocation
                                 ?.addOnSuccessListener {
-                                       onGetLocation()
+                                    if (it != null) {
+                                        view.moveMap(getLatLng(it.latitude, it.longitude), 16f)
+
+                                    }
+                                    onGetLocation()
                                 }
                     }
 
@@ -180,7 +184,6 @@ class PinpointMapPresenter @Inject constructor(private val getDistrictUseCase: G
 
     private fun onGetLocation(): (DeviceLocation) -> Unit {
         return {
-            view.moveMap(getLatLng(it.latitude, it.longitude), 16f)
             view.showAutoComplete(it.latitude, it.longitude)
         }
     }
