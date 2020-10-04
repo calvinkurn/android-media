@@ -50,13 +50,14 @@ open class CatalogPurchaseRedeemptionViewModel(private val repository: CatalogPu
                             }
                         }
                     }
-                    if (errorsMessage.size >= 2) {
+                    if (errorsMessage.size == 2) {
                         title = ""
                         desc = errorsMessage[0]
-                        validateResponseCode = errorsMessage[1].toInt()
+                        validateResponseCode = Integer.parseInt(errorsMessage[1])
                     }
-                    if (errorsMessage.size >= 3) {
-                        validateResponseCode = errorsMessage[2].toInt()
+                    if (errorsMessage.size == 3) {
+                        desc=errorsMessage[1]
+                        validateResponseCode = Integer.parseInt(errorsMessage[2])
                     }
                     startValidateCouponLiveData.value = ValidateMessageDialog(item, title, desc
                             ?: "", validateResponseCode)
