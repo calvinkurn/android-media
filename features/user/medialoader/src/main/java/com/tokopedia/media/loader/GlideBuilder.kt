@@ -25,28 +25,15 @@ import timber.log.Timber
 
 object GlideBuilder {
 
-    private fun glideListener(
-            listener: LoaderStateListener?,
-            onSuccess: () -> Unit
-    ) = object : RequestListener<Drawable> {
-        override fun onLoadFailed(
-                e: GlideException?,
-                model: Any?,
-                target: Target<Drawable>?,
-                isFirstResource: Boolean
-        ): Boolean {
+    private fun glideListener(listener: LoaderStateListener?, onSuccess: () -> Unit) = object : RequestListener<Drawable> {
+        override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
             listener?.failedLoad(e)
             return false
         }
 
-        override fun onResourceReady(
-                resource: Drawable?,
-                model: Any?,
-                target: Target<Drawable>?,
-                dataSource: DataSource?,
-                isFirstResource: Boolean
-        ): Boolean {
+        override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
             listener?.successLoad(resource, dataSource)
+            onSuccess()
             return false
         }
     }
@@ -69,6 +56,7 @@ object GlideBuilder {
             transform: Transformation<Bitmap>? = null
     ) {
         val startTime = System.currentTimeMillis()
+
         val drawableError = if (resOnError != 0) {
             getDrawable(imageView.context, resOnError)
         } else {
@@ -80,26 +68,14 @@ object GlideBuilder {
         } else {
             GlideApp.with(imageView).load(url).apply {
                 if (thumbnailUrl.isNotEmpty()) thumbnail(imageView.thumbnailLoader(thumbnailUrl))
-
                 if (overrideSize != null) override(overrideSize.width, overrideSize.height)
-
                 if (radius != 0f) transform(RoundedCorners(radius.toInt()))
-
                 if (signatureKey != null) signature(signatureKey)
-
                 if (placeHolder != 0) placeholder(placeHolder)
-
                 if (decodeFormat != null) format(decodeFormat)
-
+                if (transform != null) transform(transform)
+                if (isCircular) transform(CircleCrop())
                 if (!isAnimate) dontAnimate()
-
-                if (isCircular) {
-                    transform(CircleCrop())
-                }
-
-                if (transform != null) {
-                    transform(transform)
-                }
 
                 drawableError?.let { drawable -> error(drawable) }
                 cacheStrategy?.let { diskCacheStrategy(it) }

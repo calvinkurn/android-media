@@ -14,7 +14,7 @@ open class Properties(
         var isAnimate: Boolean = false,
         var isCircular: Boolean = false,
         var roundedRadius: Float = 0f,
-        var signature: Key? = ObjectKey(System.currentTimeMillis().toString()),
+        var signature: Key? = null,
         var error: Int = R.drawable.ic_media_default_error,
         var placeHolder: Int = R.drawable.ic_media_default_placeholder,
         var cacheStrategy: DiskCacheStrategy? = DiskCacheStrategy.DATA,

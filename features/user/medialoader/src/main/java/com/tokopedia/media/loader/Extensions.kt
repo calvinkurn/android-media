@@ -6,7 +6,9 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.model.GlideUrl
 import com.tokopedia.media.loader.common.Properties
 import com.tokopedia.media.loader.common.UrlBuilder
+import com.tokopedia.media.loader.data.Signature.adaptiveSignature
 import com.tokopedia.media.loader.utils.DEFAULT_ROUNDED
+import com.tokopedia.media.loader.utils.HEADER_ECT
 
 fun ImageView.loadImage(drawable: Drawable) = this.setImageDrawable(drawable)
 
@@ -46,12 +48,18 @@ internal fun ImageView.call(url: String?, properties: Properties) {
 internal fun ImageView.builder(url: GlideUrl, properties: Properties) {
     val imageView = this
     with(properties) {
+        val adaptiveSignature = if (signature == null) {
+            adaptiveSignature(url.toStringUrl(), url.headers[HEADER_ECT].toString())
+        } else {
+            signature
+        }
+
         GlideBuilder.loadImage(
                 imageView = imageView,
                 url = url,
                 thumbnailUrl = thumbnailUrl,
                 radius = roundedRadius,
-                signatureKey = signature,
+                signatureKey = adaptiveSignature,
                 cacheStrategy = cacheStrategy,
                 placeHolder = placeHolder,
                 resOnError = error,
