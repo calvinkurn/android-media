@@ -12,7 +12,6 @@ import android.widget.RelativeLayout
 import android.widget.ViewFlipper
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.coordinatorlayout.widget.CoordinatorLayout
-import androidx.core.view.ViewCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -422,7 +421,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
             mPagerPromos?.apply {
                 layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.VERTICAL, false)
             }
-            //   mPagerPromos?.setItemViewCacheSize(20)
+            mPagerPromos?.setItemViewCacheSize(20)
             mPagerPromos?.isDrawingCacheEnabled = true
             mPagerPromos?.drawingCacheQuality = View.DRAWING_CACHE_QUALITY_HIGH
             mPagerPromos?.itemAnimator = null
@@ -436,6 +435,14 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
     override fun onResume() {
         super.onResume()
         AnalyticsTrackerUtil.sendScreenEvent(activity, screenName)
+    }
+
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mPagerPromos?.adapter = null
+        mPagerPromos?.layoutManager = null
+        adapter = null
     }
 
     override fun showLoading() {
@@ -482,40 +489,10 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         }
     }
 
-    inline fun View.doOnLayout(crossinline action: (view: View) -> Unit) {
-        if (ViewCompat.isLaidOut(this) && !isLayoutRequested) {
-            action(this)
-        } else {
-            doOnNextLayout {
-                action(it)
-            }
-        }
-    }
-
-    inline fun View.doOnNextLayout(crossinline action: (view: View) -> Unit) {
-        addOnLayoutChangeListener(object : View.OnLayoutChangeListener {
-            override fun onLayoutChange(
-                    view: View,
-                    left: Int,
-                    top: Int,
-                    right: Int,
-                    bottom: Int,
-                    oldLeft: Int,
-                    oldTop: Int,
-                    oldRight: Int,
-                    oldBottom: Int
-            ) {
-                view.removeOnLayoutChangeListener(this)
-                action(view)
-            }
-        })
-    }
-
     companion object {
         private const val CONTAINER_LOADER = 0
         private const val CONTAINER_DATA = 1
         private const val CONTAINER_ERROR = 2
-        private const val BUNDLE_KEY_LAYOUT_HORIZONTAL_LIST_STATE = "horizontal_list_layout_manager"
 
         fun newInstance(): TokoPointsHomeFragmentNew {
             return TokoPointsHomeFragmentNew()

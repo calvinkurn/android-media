@@ -35,6 +35,7 @@ class SectionHorizontalCarouselViewBinder()
 }
 
 class SectionHorizontalCarouselVH(val view: View) : RecyclerView.ViewHolder(view) {
+     val layoutManager: LinearLayoutManager by lazy { LinearLayoutManager(view.context, LinearLayoutManager.HORIZONTAL, false) }
     fun bind(content: SectionContent) {
 
         if (content?.sectionTitle == null || content.layoutBannerAttr == null) {
@@ -61,7 +62,7 @@ class SectionHorizontalCarouselVH(val view: View) : RecyclerView.ViewHolder(view
         }
 
         val rvCarousel: RecyclerView = view.findViewById(R.id.rv_carousel_31)
-        rvCarousel.layoutManager = LinearLayoutManager(view.context, LinearLayoutManager.HORIZONTAL, false)
+        rvCarousel.layoutManager = layoutManager
         if (rvCarousel?.itemDecorationCount == 0) {
             rvCarousel?.addItemDecoration(CarouselItemDecorationNew(convertDpToPixel(10, rvCarousel.context),convertDpToPixel(20, rvCarousel.context)))
         }

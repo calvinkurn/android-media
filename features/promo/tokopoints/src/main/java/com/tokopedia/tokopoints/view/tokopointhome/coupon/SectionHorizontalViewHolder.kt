@@ -19,6 +19,7 @@ import com.tokopedia.unifycomponents.TimerUnify
 class SectionHorizontalViewHolder(val view: View)
     : RecyclerView.ViewHolder(view) {
 
+    val layoutManager: LinearLayoutManager by lazy { LinearLayoutManager(view.context, LinearLayoutManager.HORIZONTAL, false) }
     fun bind(content: SectionContent) {
 
         if (content.sectionTitle == null || content.layoutCatalogAttr == null) {
@@ -57,16 +58,15 @@ class SectionHorizontalViewHolder(val view: View)
         rvCarousel?.isDrawingCacheEnabled = true
         rvCarousel.setHasFixedSize(true)
         rvCarousel?.drawingCacheQuality = View.DRAWING_CACHE_QUALITY_HIGH
-        rvCarousel.apply {
-            layoutManager = LinearLayoutManager(rvCarousel.context, LinearLayoutManager.HORIZONTAL, false)
-        }
+        rvCarousel.layoutManager = layoutManager
         val arrayList = content.layoutCouponAttr.couponList
         if (rvCarousel.itemDecorationCount == 0) {
-            rvCarousel.addItemDecoration(CarouselItemDecoration(convertDpToPixel(10, rvCarousel.context)))
+            rvCarousel.addItemDecoration(CarouselItemDecoration(convertDpToPixel(8, rvCarousel.context)))
         }
         rvCarousel.adapter = CouponListAdapter(arrayList)
 
     }
+
 
     fun handledClick(appLink: String?, webLink: String?, action: String?) {
         try {

@@ -1,15 +1,19 @@
 package com.tokopedia.tokopoints.view.tokopointhome
 
+import android.os.Parcelable
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.tokopoints.view.model.rewardtopsection.TokopediaRewardTopSection
 import com.tokopedia.tokopoints.view.model.section.SectionContent
+import com.tokopedia.tokopoints.view.tokopointhome.carousel.SectionHorizontalCarouselVH
+import com.tokopedia.tokopoints.view.tokopointhome.catalog.SectionHorizontalCatalogVH
+import com.tokopedia.tokopoints.view.tokopointhome.coupon.SectionHorizontalViewHolder
 import com.tokopedia.tokopoints.view.util.CommonConstant
-import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 
 class SectionAdapter(private val viewBinders: Map<String, SectionItemBinder>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val sectionList: ArrayList<Any> = ArrayList()
+    private val scrollStates = hashMapOf<String, Parcelable?>()
+
     private val viewTypeToBinders = viewBinders.mapKeys { it.value.getSectionItemType() }
 
     private fun getViewBinder(viewType: Int): SectionItemBinder = viewTypeToBinders.getValue(viewType)
@@ -32,7 +36,37 @@ class SectionAdapter(private val viewBinders: Map<String, SectionItemBinder>) : 
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        return getViewBinder(getItemViewType(position)).bindViewHolder(sectionList.get(position), holder)
+
+        if (holder is SectionHorizontalViewHolder) {
+            val key = (sectionList[holder.adapterPosition] as SectionContent).sectionTitle
+            val state = scrollStates[key]
+            if (state != null) {
+                holder.layoutManager.onRestoreInstanceState(state)
+            } else {
+                holder.layoutManager.scrollToPosition(0)
+            }
+        }
+
+        if (holder is SectionHorizontalCarouselVH) {
+            val key = (sectionList[holder.adapterPosition] as SectionContent).sectionTitle
+            val state = scrollStates[key]
+            if (state != null) {
+                holder.layoutManager.onRestoreInstanceState(state)
+            } else {
+                holder.layoutManager.scrollToPosition(0)
+            }
+        }
+
+        if (holder is SectionHorizontalCatalogVH) {
+            val key = (sectionList[holder.adapterPosition] as SectionContent).sectionTitle
+            val state = scrollStates[key]
+            if (state != null) {
+                holder.layoutManager.onRestoreInstanceState(state)
+            } else {
+                holder.layoutManager.scrollToPosition(0)
+            }
+        }
+        return getViewBinder(getItemViewType(position)).bindViewHolder(sectionList[position], holder)
     }
 
     override fun getItemCount(): Int {
@@ -47,4 +81,23 @@ class SectionAdapter(private val viewBinders: Map<String, SectionItemBinder>) : 
     override fun getItemId(position: Int): Long {
         return position.toLong()
     }
+
+    override fun onViewRecycled(holder: RecyclerView.ViewHolder) {
+        if (holder is SectionHorizontalViewHolder) {
+            val key = (sectionList[holder.adapterPosition] as SectionContent).sectionTitle
+            scrollStates[key] = holder.layoutManager.onSaveInstanceState()
+        }
+
+        if (holder is SectionHorizontalCatalogVH) {
+            val key = (sectionList[holder.adapterPosition] as SectionContent).sectionTitle
+            scrollStates[key] = holder.layoutManager.onSaveInstanceState()
+        }
+
+        if (holder is SectionHorizontalCarouselVH) {
+            val key = (sectionList[holder.adapterPosition] as SectionContent).sectionTitle
+            scrollStates[key] = holder.layoutManager.onSaveInstanceState()
+        }
+        super.onViewRecycled(holder)
+    }
+
 }

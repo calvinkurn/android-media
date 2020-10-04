@@ -54,15 +54,6 @@ class SectionTopadsVH(val view: View) : RecyclerView.ViewHolder(view) {
         }
         val containerTopads = view.findViewById<ViewFlipper>(R.id.container_topads)
 
-        val jObject = JSONObject(content.layoutTopAdsAttr.jsonTopAdsDisplayParam)
-        view.topads_reward.getImageData(
-                jObject.getString(INVENTORY_ID),
-                jObject.getInt(ITEM),
-                TOPADS_BANNER_DIMENSION,
-                "",
-                ""
-        )
-
         view.topads_reward.setApiResponseListener(object : TopAdsImageVieWApiResponseListener {
             override fun onImageViewResponse(imageDataList: ArrayList<TopAdsImageViewModel>) {
                 if (imageDataList.isNotEmpty()) {
@@ -104,6 +95,15 @@ class SectionTopadsVH(val view: View) : RecyclerView.ViewHolder(view) {
                 containerTopads.hide()
             }
         })
+
+        val jObject = JSONObject(content.layoutTopAdsAttr.jsonTopAdsDisplayParam)
+        view.topads_reward.getImageData(
+                jObject.getString(INVENTORY_ID),
+                jObject.getInt(ITEM),
+                TOPADS_BANNER_DIMENSION,
+                "",
+                ""
+        )
     }
 
     private fun sendBannerImpression(bannerName: String) {
