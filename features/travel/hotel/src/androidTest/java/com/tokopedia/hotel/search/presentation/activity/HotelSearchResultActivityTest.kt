@@ -63,7 +63,17 @@ class HotelSearchResultActivityTest {
         )
     }
 
-    fun validateHotelSearchPageTracking() {
+    @Test
+    fun validateSearchResultPageTracking() {
+        clickQuickFilterChips()
+        clickOnSortAndFilter()
+        clickOnChangeDestination()
+        validateHotelSearchPageTracking()
+
+        assertThat(getAnalyticsWithQuery(gtmLogDBSource, targetContext, ANALYTIC_VALIDATOR_QUERY_HOTEL_DISCO), hasAllSuccess())
+    }
+
+    private fun validateHotelSearchPageTracking() {
         Thread.sleep(2000)
         assert(getHotelResultCount() > 1)
 
@@ -74,16 +84,6 @@ class HotelSearchResultActivityTest {
         }
 
         Thread.sleep(3000)
-    }
-
-    @Test
-    fun validateChangeSearchTracking() {
-        clickQuickFilterChips()
-        clickOnSortAndFilter()
-        clickOnChangeDestination()
-        validateHotelSearchPageTracking()
-
-        assertThat(getAnalyticsWithQuery(gtmLogDBSource, targetContext, ANALYTIC_VALIDATOR_QUERY_HOTEL_DISCO), hasAllSuccess())
     }
 
     private fun clickQuickFilterChips() {
