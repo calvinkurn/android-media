@@ -65,7 +65,7 @@ class ShopShowcaseListReorderFragment : BaseDaggerFragment(),
     private lateinit var recyclerView: RecyclerView
     private var layoutManager: LinearLayoutManager? = null
     private var shopShowcaseListReorderAdapter: ShopShowcaseListReorderAdapter? = null
-    private var shopShowcaseListDefault: ArrayList<ShowcaseItem>? = null
+    private var shopShowcaseListDefault: ArrayList<ShopEtalaseModel>? = null
     private var itemTouchHelper: ItemTouchHelper? = null
     private var isMyShop: Boolean = false
 
