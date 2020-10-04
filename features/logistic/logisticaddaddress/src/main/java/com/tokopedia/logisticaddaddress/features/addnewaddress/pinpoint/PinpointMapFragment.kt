@@ -248,7 +248,6 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
                             override fun onPermissionGranted() {
                                 fusedLocationClient?.lastLocation
                                         ?.addOnSuccessListener { lastLocation ->
-                                            moveMap(getLatLng(lastLocation.latitude, lastLocation.longitude), ZOOM_LEVEL)
                                             showAutoComplete(lastLocation.latitude, lastLocation.longitude)
                                         }
                                 googleMap?.isMyLocationEnabled = true
@@ -759,6 +758,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
                         grantResults)
             }
         }
+        moveMap(getLatLng(currentLat, currentLong), ZOOM_LEVEL)
     }
 
     override fun useCurrentLocation() {
