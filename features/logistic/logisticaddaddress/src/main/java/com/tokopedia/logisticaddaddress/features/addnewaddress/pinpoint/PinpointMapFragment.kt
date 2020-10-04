@@ -175,6 +175,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
 
         val zoom = googleMap?.cameraPosition?.zoom ?: 0f
         presenter.autoFill(currentLat, currentLong, zoom)
+        fusedLocationClient = FusedLocationProviderClient(requireActivity())
     }
 
     private fun prepareMap(savedInstanceState: Bundle?) {
@@ -234,7 +235,6 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
 
         activity?.let {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                fusedLocationClient = FusedLocationProviderClient(requireActivity())
                 permissionCheckerHelper?.checkPermissions(it, getPermissions(),
                         object : PermissionCheckerHelper.PermissionCheckListener {
                             override fun onPermissionDenied(permissionText: String) {
@@ -339,6 +339,11 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
     override fun onResume() {
         super.onResume()
         map_view?.onResume()
+        if ((currentLat == 0.0 && currentLong == 0.0) || currentLat == DEFAULT_LAT && currentLong == DEFAULT_LONG) {
+            fusedLocationClient?.lastLocation?.addOnSuccessListener {
+                moveMap(getLatLng(it.latitude, it.longitude), ZOOM_LEVEL)
+            }
+        }
         if (AddNewAddressUtils.isGpsEnabled(context)) {
             ic_current_location.setImageResource(R.drawable.ic_gps_enable)
         } else {
@@ -758,7 +763,6 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
                         grantResults)
             }
         }
-        moveMap(getLatLng(currentLat, currentLong), ZOOM_LEVEL)
     }
 
     override fun useCurrentLocation() {
