@@ -2,8 +2,8 @@ package com.tokopedia.search.result.presentation.view.adapter.viewholder.product
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.search.R
 import com.tokopedia.search.result.presentation.model.InspirationCarouselViewModel
 import com.tokopedia.search.result.presentation.view.listener.InspirationCarouselListener
@@ -60,7 +60,7 @@ class InspirationCarouselOptionListViewHolder(
 
     private fun bindProductImage(imgUrl: String) {
         itemView.productImage?.shouldShowWithAction(imgUrl.isNotEmpty()) {
-            ImageHandler.loadImageFitCenter(itemView.context, it, imgUrl)
+            it.loadImage(imgUrl)
         }
     }
 

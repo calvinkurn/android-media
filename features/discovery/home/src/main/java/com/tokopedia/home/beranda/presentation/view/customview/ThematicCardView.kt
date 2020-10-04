@@ -17,6 +17,7 @@ import androidx.annotation.IdRes
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
@@ -31,6 +32,7 @@ import com.tokopedia.home.beranda.helper.glide.loadImageFitCenter
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.productcard.v2.BlankSpaceConfig
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.unifycomponents.Label
@@ -316,7 +318,9 @@ class ThematicCardView : BaseCustomView {
 
     fun setImageProductUrl(imageUrl: String) {
         imageProduct?.let {
-            ImageHandler.loadImageThumbs(context, it, imageUrl)
+            it.loadImage(imageUrl) {
+                cacheStrategy = DiskCacheStrategy.RESOURCE
+            }
         }
     }
 

@@ -12,12 +12,13 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.tokopedia.home.R;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.home.explore.domain.model.LayoutRows;
 import com.tokopedia.home.explore.listener.CategoryAdapterListener;
 import com.tokopedia.home.explore.view.adapter.viewmodel.CategoryGridListViewModel;
+import com.tokopedia.media.loader.Loader;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -88,7 +89,10 @@ public class CategoryGridListViewHolder extends AbstractViewHolder<CategoryGridL
                     holder.title.setText(rowModel.getName());
                 }
                 if (rowModel.getImageUrl() != null) {
-                    ImageHandler.loadImageThumbs(context, holder.icon, rowModel.getImageUrl());
+                    Loader.loadImage(holder.icon, rowModel.getImageUrl(), properties -> {
+                        properties.setCacheStrategy(DiskCacheStrategy.RESOURCE);
+                        return null;
+                    });
                 }
                 if (rowModel.getType() != null) {
                     holder.container.setOnClickListener(new View.OnClickListener() {

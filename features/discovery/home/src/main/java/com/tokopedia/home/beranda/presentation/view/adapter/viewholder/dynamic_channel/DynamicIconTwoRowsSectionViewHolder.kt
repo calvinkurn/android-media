@@ -12,6 +12,7 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.home.R
@@ -80,7 +81,7 @@ class DynamicIconTwoRowsSectionViewHolder(val view: View,
                     holder.shimmeringIcon.hide()
                 }
 
-                override fun failedLoad() {
+                override fun failedLoad(error: GlideException?) {
                     holder.shimmeringIcon.show()
                 }
             })

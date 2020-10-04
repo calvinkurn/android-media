@@ -52,24 +52,22 @@ fun ImageView.loadImage(url: String, fpmItemLabel: String = "", listener: Loader
 
 fun ImageView.loadImageFitCenter(url: String, fpmItemLabel: String = ""){
     val performanceMonitoring = getPerformanceMonitoring(url, fpmItemLabel)
-    Glide.with(context)
-            .load(url)
-            .fitCenter()
-            .placeholder(R.drawable.placeholder_grey)
-            .format(DecodeFormat.PREFER_ARGB_8888)
-            .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-            .listener(object : RequestListener<Drawable> {
-                override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
-                    GlideErrorLogHelper().logError(context, e, url)
-                    return false
-                }
+    this.loadImage(url) {
+        //put fitCenter in XML file
+        placeHolder = R.drawable.placeholder_grey
+        decodeFormat = DecodeFormat.PREFER_ARGB_8888
+        cacheStrategy = DiskCacheStrategy.RESOURCE
+        loaderListener = object : LoaderStateListener {
+            override fun successLoad(resource: Drawable?, dataSource: DataSource?) {
+                handleOnResourceReady(dataSource, resource, performanceMonitoring)
+            }
 
-                override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
-                    handleOnResourceReady(dataSource, resource, performanceMonitoring)
-                    return false
-                }
-            })
-            .into(this)
+            override fun failedLoad(error: GlideException?) {
+                GlideErrorLogHelper().logError(context, error, url)
+            }
+
+        }
+    }
 }
 
 fun ImageView.loadImageRounded(url: String, roundedRadius: Int, fpmItemLabel: String = ""){
@@ -91,6 +89,20 @@ fun ImageView.loadImageRounded(url: String, roundedRadius: Int, fpmItemLabel: St
                 }
             })
             .into(this)
+    //put centerCrop in XML file
+    this.loadImage(url) {
+        decodeFormat = DecodeFormat.PREFER_ARGB_8888
+        cacheStrategy = DiskCacheStrategy.RESOURCE
+        transform = RoundedCorners(roundedRadius)
+//        need to add transform = CenterCrop() too
+        loaderListener = object : LoaderStateListener {
+            override fun failedLoad(error: GlideException?) {}
+
+            override fun successLoad(resource: Drawable?, dataSource: DataSource?) {
+                handleOnResourceReady(dataSource, resource, performanceMonitoring)
+            }
+        }
+    }
 }
 
 fun ImageView.loadMiniImage(url: String, width: Int, height: Int, fpmItemLabel: String = "", listener: LoaderStateListener? = null){
@@ -113,31 +125,30 @@ fun ImageView.loadMiniImage(url: String, width: Int, height: Int, fpmItemLabel: 
 }
 
 fun ImageView.loadImageCenterCrop(url: String){
-    Glide.with(context)
-            .load(url)
-            .format(DecodeFormat.PREFER_ARGB_8888)
-            .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-            .transform(CenterCrop(), RoundedCorners(15))
-            .placeholder(R.drawable.placeholder_grey)
-            .into(this)
+    this.loadImage(url) {
+        decodeFormat = DecodeFormat.PREFER_ARGB_8888
+        placeHolder = R.drawable.placeholder_grey
+        transform = RoundedCorners(15)
+//        need to add transform = CenterCrop() too
+        cacheStrategy = DiskCacheStrategy.RESOURCE
+    }
 }
 
 fun ImageView.loadImageWithoutPlaceholder(url: String){
-    Glide.with(context)
-            .load(url)
-            .format(DecodeFormat.PREFER_ARGB_8888)
-            .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-            .into(this)
+    this.loadImage(url) {
+        decodeFormat = DecodeFormat.PREFER_ARGB_8888
+        cacheStrategy = DiskCacheStrategy.RESOURCE
+        placeHolder = -1
+    }
 }
 
 fun ImageView.loadImageNoRounded(url: String, placeholder: Int = -1){
-    Glide.with(context)
-            .load(url)
-            .format(DecodeFormat.PREFER_ARGB_8888)
-            .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-            .transform(CenterCrop())
-            .placeholder(placeholder)
-            .into(this)
+    this.loadImage(url) {
+        decodeFormat = DecodeFormat.PREFER_ARGB_8888
+        cacheStrategy = DiskCacheStrategy.RESOURCE
+        transform = CenterCrop()
+        placeHolder = placeholder
+    }
 }
 
 fun ImageView.loadGif(url: String){

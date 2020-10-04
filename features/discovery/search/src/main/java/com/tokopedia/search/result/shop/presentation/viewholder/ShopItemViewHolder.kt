@@ -6,10 +6,12 @@ import androidx.constraintlayout.widget.ConstraintSet
 import androidx.appcompat.widget.AppCompatImageView
 import android.text.Spanned
 import android.view.View
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.search.R
 import com.tokopedia.search.result.shop.presentation.listener.ShopListener
 import com.tokopedia.search.result.shop.presentation.model.ShopViewModel
@@ -53,7 +55,7 @@ internal class ShopItemViewHolder(
 
     private fun initImageShopAvatar(shopViewItem: ShopViewModel.ShopItem) {
         itemView.imageViewShopAvatar?.let {
-            ImageHandler.loadImageCircle2(context, itemView.imageViewShopAvatar, shopViewItem.image)
+            it.loadImageCircle(shopViewItem.image)
         }
     }
 
@@ -95,7 +97,9 @@ internal class ShopItemViewHolder(
 
     private fun initImageShopReputation(shopViewItem: ShopViewModel.ShopItem) {
         itemView.imageViewShopReputation?.let { imageViewShopReputation ->
-            ImageHandler.loadImageThumbs(context, imageViewShopReputation, shopViewItem.reputationImageUri)
+            imageViewShopReputation.loadImage(shopViewItem.reputationImageUri) {
+                cacheStrategy = DiskCacheStrategy.RESOURCE
+            }
         }
     }
 
@@ -171,7 +175,9 @@ internal class ShopItemViewHolder(
             textViewShopItemProductPrice: Typography?
     ) {
         imageViewShopItemProductImage?.let {
-            ImageHandler.loadImageFitCenter(context, imageViewShopItemProductImage, productPreviewItem.imageUrl)
+            it.loadImage(productPreviewItem.imageUrl) {
+                cacheStrategy = (DiskCacheStrategy.RESOURCE)
+            }
         }
 
         imageViewShopItemProductImage?.setOnClickListener {

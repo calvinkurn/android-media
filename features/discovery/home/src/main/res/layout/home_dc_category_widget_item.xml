@@ -12,7 +12,8 @@
         tools:background="@color/bg_corner_red"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent"
+        android:scaleType="centerCrop"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/category_item_name"
