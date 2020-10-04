@@ -20,7 +20,6 @@ import com.tokopedia.shop_showcase.shop_showcase_management.data.model.ShowcaseL
 import com.tokopedia.shop_showcase.shop_showcase_management.domain.*
 
 class ShopShowcaseListViewModel @Inject constructor(
-//        private val getShopShowcaseListBuyerUseCase: GetShopShowcaseListBuyerUseCase,
         private val getShopShowcaseListBuyerUseCase: GetShopEtalaseByShopUseCase,
         private val getShopShowcaseListSellerUseCase: GetShopShowcaseListSellerUseCase,
         private val deleteShopShowcaseUseCase: DeleteShopShowcaseUseCase,
@@ -28,10 +27,6 @@ class ShopShowcaseListViewModel @Inject constructor(
         private val getShopShowcaseTotalProductUseCase: GetShopShowcaseTotalProductUseCase,
         private val dispatchers: ShopShowcaseDispatchProvider
 ): BaseViewModel(dispatchers.ui()) {
-
-//    private val _getListBuyerShopShowcaseResponse = MutableLiveData<Result<ShopShowcaseListBuyerResponse>>()
-//    val getListBuyerShopShowcaseResponse: LiveData<Result<ShopShowcaseListBuyerResponse>>
-//        get() = _getListBuyerShopShowcaseResponse
 
     private val _getListBuyerShopShowcaseResponse = MutableLiveData<Result<List<ShopEtalaseModel>>>()
     val getListBuyerShopShowcaseResponse: LiveData<Result<List<ShopEtalaseModel>>>
@@ -79,15 +74,6 @@ class ShopShowcaseListViewModel @Inject constructor(
             }
 
             _getListBuyerShopShowcaseResponse.postValue(Success(showcaseList))
-
-
-//            withContext(dispatchers.io()) {
-//                getShopShowcaseListBuyerUseCase.params = GetShopShowcaseListBuyerUseCase
-//                        .createRequestParam(shopId, isOwner)
-//                val shopShowcaseData = getShopShowcaseListBuyerUseCase.executeOnBackground()
-//                shopShowcaseData.let {
-//                    _getListBuyerShopShowcaseResponse.postValue(Success(it))
-//                }
         }) {
             _getListBuyerShopShowcaseResponse.value = Fail(it)
         }

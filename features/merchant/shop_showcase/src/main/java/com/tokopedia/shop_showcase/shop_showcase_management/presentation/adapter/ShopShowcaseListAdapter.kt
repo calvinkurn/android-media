@@ -25,8 +25,6 @@ class ShopShowcaseListAdapter (
 
     private var showcaseList: MutableList<ShopEtalaseModel> = mutableListOf()
 
-    // fun updateDataShowcaseList(showcaseListData: List<ShowcaseItem>) {
-
     fun updateDataShowcaseList(showcaseListData: List<ShopEtalaseModel>) {
         showcaseList = showcaseListData.toMutableList()
         notifyDataSetChanged()
@@ -58,7 +56,6 @@ class ShopShowcaseListAdapter (
             campaignLabel = itemView.findViewById(R.id.tv_campaign_label)
         }
 
-        // fun bindData(dataShowcase: ShowcaseItem, position: Int) {
         fun bindData(dataShowcase: ShopEtalaseModel, position: Int) {
             titleShowcase?.text = dataShowcase.name
 

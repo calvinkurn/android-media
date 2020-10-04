@@ -47,7 +47,6 @@ class ShopShowcaseListActivity : BaseSimpleActivity(), ShopShowcaseFragmentNavig
     private var isSellerNeedToHideShowcaseGroupValue: Boolean = false
     private var productId: String = ""
     private var productName: String = ""
-//    private var listShowcase: ArrayList<ShowcaseItem>? = arrayListOf()
     private var listShowcase: ArrayList<ShopEtalaseModel>? = arrayListOf()
     private var preSelectedShowcaseListPicker: ArrayList<ShowcaseItemPicker>? = arrayListOf()
 
@@ -116,7 +115,6 @@ class ShopShowcaseListActivity : BaseSimpleActivity(), ShopShowcaseFragmentNavig
         }
     }
 
-//    override fun navigateToPage(page: String, tag: String?, showcaseList: ArrayList<ShowcaseItem>?) {
     override fun navigateToPage(page: String, tag: String?, showcaseList: ArrayList<ShopEtalaseModel>?) {
         when (page) {
             PageNameConstant.SHOWCASE_LIST_PAGE -> {

@@ -353,15 +353,6 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
 
                     showcaseList = it.data
                     shopShowcaseListAdapter?.updateDataShowcaseList(showcaseList)
-
-//                    val errorMessage = it.data.shopShowcasesByShopID.error.message
-//                    if (errorMessage.isNotEmpty()) {
-//                        showErrorResponse(errorMessage)
-//                    } else {
-//                        hideGlobalError()
-//                        showcaseList = it.data.shopShowcasesByShopID.result
-//                        shopShowcaseListAdapter?.updateDataShowcaseList(showcaseList)
-//                    }
                 }
                 is Fail -> {
                     showLoading(false)
@@ -507,7 +498,6 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
         viewModel.getTotalProduct(shopId, page, perPage, sort, fmenu, fkeyword)
     }
 
-//    private fun handleEditShowcase(dataShowcase: ShowcaseItem, position: Int) {
     private fun handleEditShowcase(dataShowcase: ShopEtalaseModel, position: Int) {
         bottomSheet = BottomSheetUnify()
         bottomSheet.setTitle(getString(R.string.setting_showcase))
@@ -662,7 +652,6 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
             }
         }
         headerUnify.actionTextView?.setOnClickListener {
-//            val shopShowcaseViewModelList = ArrayList<ShowcaseItem>()
             val shopShowcaseViewModelList = ArrayList<ShopEtalaseModel>()
             for (shopShowcaseViewModel in showcaseList) {
                 shopShowcaseViewModelList.add(shopShowcaseViewModel)

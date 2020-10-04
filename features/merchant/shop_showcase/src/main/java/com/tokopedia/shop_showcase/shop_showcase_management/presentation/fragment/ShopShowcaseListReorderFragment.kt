@@ -44,7 +44,6 @@ class ShopShowcaseListReorderFragment : BaseDaggerFragment(),
         const val SHOWCASE_LIST = "SHOWCASE_LIST"
 
         @JvmStatic
-//        fun createInstance(shopType: String, showcaseList: ArrayList<ShowcaseItem>?, isMyShop: Boolean? = false): ShopShowcaseListReorderFragment {
         fun createInstance(shopType: String, showcaseList: ArrayList<ShopEtalaseModel>?, isMyShop: Boolean? = false): ShopShowcaseListReorderFragment {
             val fragment = ShopShowcaseListReorderFragment()
             if (showcaseList != null) {
