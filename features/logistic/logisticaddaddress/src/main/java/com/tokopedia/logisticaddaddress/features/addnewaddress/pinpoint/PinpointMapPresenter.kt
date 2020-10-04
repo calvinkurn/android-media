@@ -4,7 +4,6 @@ import android.app.Activity
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.locationmanager.DeviceLocation
 import com.tokopedia.logisticaddaddress.common.AddressConstants.CIRCUIT_BREAKER_ON_CODE
 import com.tokopedia.logisticaddaddress.di.addnewaddress.AddNewAddressScope
 import com.tokopedia.logisticaddaddress.domain.mapper.DistrictBoundaryMapper
@@ -17,6 +16,7 @@ import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.get_distr
 import com.tokopedia.logisticaddaddress.utils.SimpleIdlingResource
 import com.tokopedia.logisticdata.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticdata.domain.usecase.RevGeocodeUseCase
+import com.tokopedia.logisticdata.util.getLatLng
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import rx.Subscriber
@@ -144,10 +144,8 @@ class PinpointMapPresenter @Inject constructor(private val getDistrictUseCase: G
                         fusedLocationClient?.lastLocation
                                 ?.addOnSuccessListener {
                                     if (it != null) {
-                                        onGetLocation()
-//                                        view.moveMap(getLatLng(it.latitude, it.longitude), 16f)
+                                        view.moveMap(getLatLng(it.latitude, it.longitude), 16f)
                                     }
-//                                    onGetLocation()
                                 }
                     }
 
@@ -164,11 +162,5 @@ class PinpointMapPresenter @Inject constructor(private val getDistrictUseCase: G
         return arrayOf(
                 PermissionCheckerHelper.Companion.PERMISSION_ACCESS_FINE_LOCATION,
                 PermissionCheckerHelper.Companion.PERMISSION_ACCESS_COARSE_LOCATION)
-    }
-
-    private fun onGetLocation(): (DeviceLocation) -> Unit {
-        return {
-            view.showAutoComplete(it.latitude, it.longitude)
-        }
     }
 }
