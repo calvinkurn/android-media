@@ -79,6 +79,8 @@ dependencies {
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
 
+    implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk7
+
     implementation rootProject.ext.miscDependencies.chips
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.dagger
@@ -98,16 +100,20 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.mockkAndroid
     androidTestImplementation rootProject.ext.testDependencies.espressoCore
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib
-    androidTestImplementation project(rootProject.ext.libraries.instrumentation_test)
-    androidTestAnnotationProcessor rootProject.ext.miscDependencies.daggerCompiler
-    androidTestImplementation rootProject.ext.testDependencies.archCoreTesting
-    androidTestImplementation rootProject.ext.testDependencies.benchmark
-    androidTestImplementation rootProject.ext.testDependencies.testCore
-    androidTestImplementation project(rootProject.ext.libraries.cassavaTest)
-    androidTestImplementation project(rootProject.ext.libraries.analyticsDebugger)
+    androidTestImplementation(rootProject.ext.testDependencies.androidRulesVersion) {
+        exclude module: 'support-annotations'
+    }
     androidTestImplementation(rootProject.ext.testDependencies.espressoIntents) {
         exclude group: 'com.android.support', module: 'support-annotations'
     }
+    androidTestImplementation project(rootProject.ext.libraries.instrumentation_test), {
+        exclude group: 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
+        exclude group: 'org.jetbrains.kotlin:kotlin-reflect'
+        exclude group: 'org.jetbrains.kotlin:kotlin-stdlib-jdk7'
+    }
+    androidTestAnnotationProcessor rootProject.ext.miscDependencies.daggerCompiler
+    androidTestImplementation rootProject.ext.testDependencies.archCoreTesting
+    androidTestImplementation project(rootProject.ext.libraries.cassavaTest)
 
 
     // Unit test

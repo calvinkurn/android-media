@@ -9,6 +9,7 @@ import androidx.test.espresso.action.ViewActions.swipeUp
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.rule.IntentsTestRule
+import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
@@ -18,7 +19,11 @@ import com.tokopedia.hotel.R
 import com.tokopedia.hotel.booking.presentation.activity.mock.HotelBookingMockResponseConfig
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
-import org.junit.*
+import com.tokopedia.user.session.UserSession
+import org.junit.After
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
 
 /**
  * @author by jessica on 22/09/20
@@ -35,10 +40,11 @@ class HotelBookingActivityTest {
             super.beforeActivityLaunched()
             gtmLogDBSource.deleteAll().subscribe()
             setupGraphqlMockResponse(HotelBookingMockResponseConfig())
+            login()
         }
 
         override fun getActivityIntent(): Intent {
-            return HotelBookingActivity.getCallingIntent(context, "", "region", "Hotel A", 1, 2)
+            return HotelBookingActivity.getCallingIntent(context, "123", "region", "Hotel A", 1, 2)
         }
     }
 
@@ -49,8 +55,6 @@ class HotelBookingActivityTest {
 
     @Test
     fun testBookingFlow() {
-        Thread.sleep(2000)
-        login()
 
         Thread.sleep(2000)
         Espresso.onView(withId(R.id.hotel_booking_container)).perform(swipeUp())
@@ -59,13 +63,24 @@ class HotelBookingActivityTest {
         Espresso.onView(withId(R.id.booking_button)).perform(click())
 
         Thread.sleep(2000)
-        Assert.assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_HOTEL_BOOKING_PAGE),
+        ViewMatchers.assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_HOTEL_BOOKING_PAGE),
                 hasAllSuccess())
     }
 
     private fun login() {
-        Thread.sleep(3000)
-        InstrumentationAuthHelper.loginToAnUser(activityRule.activity.application)
+        InstrumentationAuthHelper.loginInstrumentationTestUser1()
+        val userSession = UserSession(context)
+        userSession.setLoginSession(
+                true,
+                userSession.userId,
+                userSession.name,
+                userSession.shopId,
+                true,
+                userSession.shopName,
+                userSession.email,
+                userSession.isGoldMerchant,
+                userSession.phoneNumber
+        )
     }
 
     @After
