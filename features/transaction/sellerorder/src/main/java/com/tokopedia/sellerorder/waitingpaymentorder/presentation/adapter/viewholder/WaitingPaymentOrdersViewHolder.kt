@@ -1,5 +1,7 @@
 package com.tokopedia.sellerorder.waitingpaymentorder.presentation.adapter.viewholder
 
+import android.animation.Animator
+import android.animation.AnimatorSet
 import android.animation.ValueAnimator
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -31,6 +33,29 @@ class WaitingPaymentOrdersViewHolder(
 
     private var iconDropdownAnimator: ValueAnimator? = null
     private var recyclerViewAnimator: ValueAnimator? = null
+    private var animatorSet: AnimatorSet = AnimatorSet()
+
+    private val animationListener = object: Animator.AnimatorListener {
+        override fun onAnimationEnd(animation: Animator?) {
+            itemView?.setHasTransientState(false)
+        }
+
+        override fun onAnimationCancel(animation: Animator?) {
+            itemView?.setHasTransientState(false)
+        }
+
+        override fun onAnimationStart(animation: Animator?) {
+            itemView?.setHasTransientState(true)
+        }
+
+        override fun onAnimationRepeat(animation: Animator?) {
+            itemView?.setHasTransientState(true)
+        }
+    }
+
+    init {
+        animatorSet.addListener(animationListener)
+    }
 
     @Suppress("NAME_SHADOWING")
     override fun bind(element: WaitingPaymentOrderUiModel?) {
@@ -73,19 +98,16 @@ class WaitingPaymentOrdersViewHolder(
 
     private fun setLoadUnloadMoreClickListener(element: WaitingPaymentOrderUiModel) {
         itemView.setOnClickListener {
-            recyclerViewAnimator?.end()
-            iconDropdownAnimator?.end()
+            animatorSet.end()
             element.isExpanded = !element.isExpanded
-            animateRecyclerViewResizing(element.isExpanded, element.productUiModels)
+            setupRecyclerViewSizeAnimator(
+                    itemView.rvWaitingPaymentOrderProducts.height,
+                    getRecyclerViewHeight(element.isExpanded, element.productUiModels.size))
             setupDropdownIconAnimator(element.isExpanded)
             updateToggleCollapseText(element.isExpanded)
-            recyclerViewAnimator?.start()
-            iconDropdownAnimator?.start()
+            animatorSet.playTogether(recyclerViewAnimator, iconDropdownAnimator)
+            animatorSet.start()
         }
-    }
-
-    private fun animateRecyclerViewResizing(isExpanded: Boolean, productUiModels: List<WaitingPaymentOrderUiModel.ProductUiModel>) {
-        setupRecyclerViewSizeAnimator(itemView.rvWaitingPaymentOrderProducts.height, getRecyclerViewHeight(isExpanded, productUiModels.size))
     }
 
     private fun setupRecyclerViewSizeAnimator(from: Int, to: Int) {
