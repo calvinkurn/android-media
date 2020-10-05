@@ -318,6 +318,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public void onNewIntent(Context context, Intent intent) {
         NFCSubscriber.onNewIntent(context, intent);
+        if(context instanceof Activity)
+            CMInAppManager.getInstance().onNewIntent((Activity) context, intent);
     }
 
     /**

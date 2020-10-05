@@ -17,6 +17,7 @@ import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
@@ -83,8 +84,8 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
     private Map<WeakReference<Activity>, WeakReference<BroadcastReceiver>> broadcastReceiverMap = new HashMap<>();
     private final Set<String> processedNotificationIds = new HashSet<>();
     private Map<Integer, Job> mapOfGratifJobs = new ConcurrentHashMap<Integer, Job>();
-//    private ArrayList<Job> gratifJobs = new ArrayList<>();
-    private WeakHashMap<Activity,DialogInterface> weakMap = new WeakHashMap();
+    //    private ArrayList<Job> gratifJobs = new ArrayList<>();
+    private WeakHashMap<Activity, DialogInterface> weakMap = new WeakHashMap();
     private WeakReference<DialogInterface> weakDialog = null;
 
 
@@ -94,6 +95,7 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
      * */
 
     static AtomicBoolean isDialogShowing = new AtomicBoolean(false);
+
     static {
         inAppManager = new CMInAppManager();
     }
@@ -159,7 +161,7 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
             @Override
             public void onDismiss(@NonNull DialogInterface dialogInterface) {
 //                dialogInterfaceSet.remove(dialogInterface);
-                if (weakDialog.get() == dialogInterface){
+                if (weakDialog.get() == dialogInterface) {
                     weakDialog.clear();
                 }
                 isDialogShowing.set(false);
@@ -167,7 +169,7 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
 
             @Override
             public void onIgnored(@GratifPopupIngoreType int reason) {
-                if(reason != GratifPopupIngoreType.DIALOG_ALREADY_ACTIVE){
+                if (reason != GratifPopupIngoreType.DIALOG_ALREADY_ACTIVE) {
                     isDialogShowing.set(false);
                 }
 
@@ -178,16 +180,16 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
 //        isDialogShowing = true;
     }
 
-    private void showIgnoreToast(String type,@GratifPopupIngoreType int reason){
+    private void showIgnoreToast(String type, @GratifPopupIngoreType int reason) {
 
         Handler handler = new Handler(Looper.getMainLooper());
         handler.post(() -> {
             Context context = getCurrentActivity();
 
-            if(context!=null) {
+            if (context != null) {
                 SharedPreferences sp1 = context.getSharedPreferences("promo_gratif", Context.MODE_PRIVATE);
-                boolean isDebugGratifChecked = sp1.getBoolean("gratif_debug_toast",false);
-                if(isDebugGratifChecked) {
+                boolean isDebugGratifChecked = sp1.getBoolean("gratif_debug_toast", false);
+                if (isDebugGratifChecked) {
                     String message = "DEBUG - " + type + " - " + reason;
                     Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
                 }
@@ -284,7 +286,7 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
 
                 @Override
                 public void onDismiss(@NonNull DialogInterface dialogInterface) {
-                    if (weakDialog.get() == dialogInterface){
+                    if (weakDialog.get() == dialogInterface) {
                         weakDialog.clear();
                     }
 //                    dialogInterfaceSet.remove(dialogInterface);
@@ -294,7 +296,7 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
 
                 @Override
                 public void onIgnored(@GratifPopupIngoreType int reason) {
-                    if(reason != GratifPopupIngoreType.DIALOG_ALREADY_ACTIVE){
+                    if (reason != GratifPopupIngoreType.DIALOG_ALREADY_ACTIVE) {
                         isDialogShowing.set(false);
 //                        isDialogShowing = false;
                         dataConsumed(data);
@@ -345,23 +347,36 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
         return null;
     }
 
-    public void onActivityStartedInternal(Activity activity) {
+    //todo Rahul onNewIntent of DISCO activity is pending
+    public void onNewIntent(Activity activity, Intent intent) {
         if (application == null) application = activity.getApplication();
         updateCurrentActivity(activity);
-        //todo Rahul - add logic to parse and show push - popup
-        handleOpenedActivity(activity);
+        if (intent != null && intent.getExtras() != null) {
+            handleOpenedActivity(activity, intent.getExtras());
+        }
     }
 
-    private void decideDialog(Activity activity) {
+    public void onActivityStartedInternal(final Activity activity,@Nullable final Bundle bundle) {
+        if (application == null) application = activity.getApplication();
+        updateCurrentActivity(activity);
+        Bundle finalBundle = bundle;
+        if (finalBundle == null) {
+            Intent intent = activity.getIntent();
+            if (intent != null) {
+                finalBundle = intent.getExtras();
+            }
+        }
+        handleOpenedActivity(activity, finalBundle);
+    }
+
+    private void decideDialog(Activity activity, Bundle bundle) {
         boolean canShowPopupFromPush = false;
-        Bundle bundle = activity.getIntent().getExtras();
         if (bundle != null) {
             boolean isComingFromPush = bundle.keySet().contains(EXTRA_BASE_MODEL);
             if (isComingFromPush) {
                 String gratificationId = bundle.getString("gratificationId"); //todo Remove hardcoding
-                canShowPopupFromPush = (!(TextUtils.isEmpty(gratificationId)) && !processedNotificationIds.contains(gratificationId));
+                canShowPopupFromPush = (!(TextUtils.isEmpty(gratificationId)));
                 processedNotificationIds.add(gratificationId);
-
             }
         }
 
@@ -374,12 +389,12 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
         }
     }
 
-    private void handleOpenedActivity(Activity activity) {
+    private void handleOpenedActivity(Activity activity, Bundle bundle) {
         String className = activity.getClass().getName();
         if (className.equals(DISCO_PAGE_ACTIVITY_NAME)) {
             registerBroadcastReceiver(activity);
         } else {
-            decideDialog(activity);
+            decideDialog(activity, bundle);
         }
     }
 
@@ -392,7 +407,7 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
                     final String DISCO_IS_NATIVE = "DISCO_IS_NATIVE";
                     boolean isNative = bundle.getBoolean(DISCO_IS_NATIVE);
                     if (isNative && context instanceof Activity)
-                        decideDialog((Activity) context);
+                        decideDialog((Activity) context, bundle);
                 }
             }
         };
@@ -435,32 +450,7 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
         }
     }
 
-    public void checkFragmentOpenedFromPush(Fragment fragment) {
-        boolean canShowPopupFromPush = false;
-        String entityName = fragment.getClass().getName();
-        Activity fragmentActivity = fragment.getActivity();
-        if (fragmentActivity != null) {
-            Bundle bundle = fragmentActivity.getIntent().getExtras();
-            if (bundle != null) {
-                boolean isComingFromPush = bundle.keySet().contains(EXTRA_BASE_MODEL);
-                if (isComingFromPush) {
-                    String gratificationId = bundle.getString("gratificationId"); //todo Remove hardcoding
-                    canShowPopupFromPush = (!(TextUtils.isEmpty(gratificationId)) && !processedNotificationIds.contains(gratificationId));
-                    processedNotificationIds.add(gratificationId);
-                }
-            }
-
-            if (canShowDialog()) {
-                if (canShowPopupFromPush) {
-                    showPopupFromPush(bundle, entityName);
-                } else {
-                    showInAppNotification(entityName, fragment.hashCode());
-                }
-            }
-        }
-    }
-
-    public boolean canShowDialog(){
+    public boolean canShowDialog() {
         return !isDialogShowing.get();
 //        if(!isDialogShowing){
 //            return true;
@@ -472,27 +462,18 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
     }
 
     public void onFragmentSelected(Fragment fragment) {
-
-        for (Job job : mapOfGratifJobs.values()) {
-            job.cancel(new CancellationException(GratifCancellationExceptionType.FRAGMENT_SELECTED));
-
-            //todo Rahul later - need better logic for this
-//            isDialogShowing = false;
-        }
-        mapOfGratifJobs.clear();
-
+        cancelGratifJob(fragment.hashCode(), GratifCancellationExceptionType.FRAGMENT_SELECTED);
         if (canShowDialog()) {
             showInAppNotification(fragment.getClass().getName(), fragment.hashCode());
         }
     }
 
     public void onFragmentStop(Fragment fragment) {
-        //todo Rahul - need to stop showning dialog - ask lalit
         cancelGratifJob(fragment.hashCode(), GratifCancellationExceptionType.FRAGMENT_STOP);
     }
 
     public void onFragmentUnSelected(Fragment fragment) {
-        //todo Rahul
+        cancelGratifJob(fragment.hashCode(), GratifCancellationExceptionType.FRAGMENT_UNSELECTED);
     }
 
     public void onFragmentDestroyed(Fragment fragment) {
@@ -504,9 +485,6 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
         if (job != null && !job.isActive()) {
             job.cancel(new CancellationException(reason));
             mapOfGratifJobs.remove(entityHashCode);
-
-            //need better logic for this
-//            isDialogShowing = false;
         }
     }
 

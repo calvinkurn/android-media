@@ -18,6 +18,7 @@ import com.tokopedia.promotionstarget.domain.presenter.GratifCancellationExcepti
 import com.tokopedia.promotionstarget.domain.presenter.GratifCancellationExceptionType.Companion.FRAGMENT_SELECTED
 import com.tokopedia.promotionstarget.domain.presenter.GratifCancellationExceptionType.Companion.FRAGMENT_STARTED
 import com.tokopedia.promotionstarget.domain.presenter.GratifCancellationExceptionType.Companion.FRAGMENT_STOP
+import com.tokopedia.promotionstarget.domain.presenter.GratifCancellationExceptionType.Companion.FRAGMENT_UNSELECTED
 import com.tokopedia.promotionstarget.domain.presenter.GratifPopupIngoreType.Companion.COUPON_CODE_EMPTY
 import com.tokopedia.promotionstarget.domain.presenter.GratifPopupIngoreType.Companion.DIALOG_ALREADY_ACTIVE
 import com.tokopedia.promotionstarget.domain.presenter.GratifPopupIngoreType.Companion.INVALID_COUPON
@@ -28,6 +29,8 @@ import com.tokopedia.promotionstarget.domain.usecase.TokopointsCouponDetailUseCa
 import com.tokopedia.promotionstarget.presentation.ui.dialog.CmGratificationDialog
 import kotlinx.coroutines.*
 import java.lang.ref.WeakReference
+import java.util.concurrent.Executor
+import java.util.concurrent.Executors
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -39,9 +42,9 @@ class GratificationPresenter @Inject constructor(val application: Application) {
     lateinit var tpCouponDetailUseCase: TokopointsCouponDetailUseCase
 
 
-    @Inject
-    @field:Named(IO)
-    lateinit var worker: CoroutineDispatcher
+//    @Inject
+//    @field:Named(IO)
+    var worker: CoroutineDispatcher = Executors.newSingleThreadExecutor().asCoroutineDispatcher()
 
     @Inject
     @field:Named(MAIN)
@@ -73,8 +76,8 @@ class GratificationPresenter @Inject constructor(val application: Application) {
             val reason = notifResponse.response?.resultStatus?.code
             if (reason == GratifResultStatus.SUCCESS) {
                 //todo Rahul refactor later
-                val code = notifResponse.response.promoCode
-//                val code = "NUPLBDAY5D7RUU5M329"
+//                val code = notifResponse.response.promoCode
+                val code = "NUPLBDAY5D7RUU5M329"
                 if (!code.isNullOrEmpty()) {
                     val couponDetail = tpCouponDetailUseCase.getResponse(tpCouponDetailUseCase.getQueryParams(code))
 //                    val couponDetail = tpCouponDetailUseCase.getFakeResponse(tpCouponDetailUseCase.getQueryParams(code))
@@ -196,12 +199,13 @@ annotation class GratifPopupIngoreType {
 }
 
 @Retention(AnnotationRetention.SOURCE)
-@StringDef(FRAGMENT_STARTED, FRAGMENT_SELECTED, FRAGMENT_RESUME, FRAGMENT_STOP, FRAGMENT_DESTROYED, ACTIVITY_STOP)
+@StringDef(FRAGMENT_STARTED, FRAGMENT_SELECTED, FRAGMENT_RESUME, FRAGMENT_STOP, FRAGMENT_DESTROYED, ACTIVITY_STOP, FRAGMENT_UNSELECTED)
 annotation class GratifCancellationExceptionType {
     companion object {
         const val FRAGMENT_STARTED = "fragment started"
         const val FRAGMENT_RESUME = "fragment resume"
         const val FRAGMENT_SELECTED = "fragment selected"
+        const val FRAGMENT_UNSELECTED = "fragment unselected"
         const val FRAGMENT_STOP = "fragment stop"
         const val FRAGMENT_DESTROYED = "fragment destroyed"
         const val ACTIVITY_STOP = "activity stop"
