@@ -11,20 +11,21 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalEntertainment
 import com.tokopedia.entertainment.R
 import com.tokopedia.entertainment.home.adapter.HomeEventViewHolder
+import com.tokopedia.entertainment.home.adapter.listener.TrackingListener
 import com.tokopedia.entertainment.home.adapter.viewmodel.CategoryModel
-import com.tokopedia.entertainment.home.analytics.EventHomePageTracking
 import kotlinx.android.synthetic.main.ent_layout_category_adapter_item.view.*
 import kotlinx.android.synthetic.main.ent_layout_viewholder_category.view.*
 
 /**
  * Author errysuprayogi on 27,January,2020
  */
-class CategoryEventViewHolder(itemView: View) : HomeEventViewHolder<CategoryModel>(itemView) {
+class CategoryEventViewHolder(itemView: View,
+                              val categoryEventListener: TrackingListener) : HomeEventViewHolder<CategoryModel>(itemView) {
 
-    val listAdapter = InnerCategoryItemAdapter()
+    val listAdapter = InnerCategoryItemAdapter(categoryEventListener)
 
     init {
-        itemView.list.apply {
+        itemView.ent_recycle_view_category.apply {
             setHasFixedSize(true)
             layoutManager = GridLayoutManager(itemView.context, 5)
             adapter = listAdapter
@@ -44,7 +45,7 @@ class CategoryEventViewHolder(itemView: View) : HomeEventViewHolder<CategoryMode
 
     data class CategoryItemModel(var id: String, var imageUrl: String, var title: String, var applink: String)
 
-    class InnerCategoryItemAdapter : RecyclerView.Adapter<InnerViewHolder>() {
+    class InnerCategoryItemAdapter(val categoryEventListener: TrackingListener) : RecyclerView.Adapter<InnerViewHolder>() {
 
         lateinit var items: List<CategoryItemModel>
 
@@ -60,7 +61,7 @@ class CategoryEventViewHolder(itemView: View) : HomeEventViewHolder<CategoryMode
             holder.view.setOnClickListener {
                 RouteManager.route(holder.view.context,
                         ApplinkConstInternalEntertainment.EVENT_CATEGORY, items.get(position).id, "", "")
-                EventHomePageTracking.getInstance().clickCategoryIcon(items.get(position), position + 1)
+                categoryEventListener.clickCategoryIcon(items.get(position), position + 1)
             }
         }
 

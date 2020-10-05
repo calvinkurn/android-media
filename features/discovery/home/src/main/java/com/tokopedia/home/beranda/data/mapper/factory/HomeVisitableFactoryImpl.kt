@@ -4,11 +4,12 @@ import android.content.Context
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.beranda.data.datasource.default_data_source.HomeDefaultDataSource
+import com.tokopedia.home.beranda.data.mapper.HomeDynamicChannelDataMapper
+import com.tokopedia.home.beranda.domain.model.HomeChannelData
 import com.tokopedia.home.beranda.domain.model.HomeData
 import com.tokopedia.home.beranda.domain.model.HomeFlag
-import com.tokopedia.home.beranda.data.mapper.HomeDynamicChannelDataMapper
-import com.tokopedia.home.beranda.domain.model.*
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.*
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomepageBannerDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.TickerDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.dynamic_icon.DynamicIconSectionDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.GeoLocationPromptDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderDataModel
@@ -17,7 +18,6 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.stickylogin.internal.StickyLoginConstant
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSessionInterface
-import java.util.*
 
 class HomeVisitableFactoryImpl(
         val userSessionInterface: UserSessionInterface?,
@@ -70,6 +70,7 @@ class HomeVisitableFactoryImpl(
             bannerViewModel.slides = bannerDataModel.slides
         }
         bannerViewModel.isCache = isCache
+        bannerViewModel.createdTimeMillis = bannerDataModel.timestamp
 
         visitableList.add(bannerViewModel)
         return this
@@ -130,7 +131,7 @@ class HomeVisitableFactoryImpl(
     override fun addDynamicChannelVisitable(addLoadingMore: Boolean): HomeVisitableFactory {
         homeData?.let {
             val data = dynamicChannelDataMapper?.mapToDynamicChannelDataModel(
-                    HomeChannelData(it.dynamicHomeChannel), false, addLoadingMore)
+                    HomeChannelData(it.dynamicHomeChannel), isCache, addLoadingMore)
             data?.let { it1 -> visitableList.addAll(it1) }
         }
         return this

@@ -12,6 +12,7 @@ import com.tokopedia.play.broadcaster.util.bottomsheet.PlayBroadcastDialogCustom
 import com.tokopedia.play.broadcaster.util.preference.PermissionSharedPreferences
 import com.tokopedia.play.broadcaster.view.activity.PlayBroadcastActivity
 import com.tokopedia.play.broadcaster.view.activity.PlayCoverCameraActivity
+import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Component
 
@@ -41,6 +42,8 @@ interface PlayBroadcastComponent {
     fun inject(activity: PlayCoverCameraActivity)
 
     fun analytic(): PlayBroadcastAnalytic
+
+    fun coroutineDispatcher(): CoroutineDispatcherProvider
 
     /**
      * Config

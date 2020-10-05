@@ -34,7 +34,7 @@ import com.tokopedia.buyerorder.detail.view.customview.RedeemVoucherView;
 import com.tokopedia.buyerorder.detail.view.presenter.OrderListDetailContract;
 import com.tokopedia.buyerorder.detail.view.presenter.OrderListDetailPresenter;
 import com.tokopedia.buyerorder.list.data.OrderCategory;
-import com.tokopedia.permissionchecker.PermissionCheckerHelper;
+import com.tokopedia.utils.permission.PermissionCheckerHelper;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
