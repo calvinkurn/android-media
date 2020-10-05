@@ -28,6 +28,9 @@ class DynamicItemActionView @JvmOverloads constructor(
     lateinit var tvFirstLayout: TextView
     lateinit var tvCenterLayout: TextView
     lateinit var tvRightLayout: TextView
+    lateinit var tvFirstLabel: TextView
+    lateinit var tvCenterLabel: TextView
+    lateinit var tvRightLabel: TextView
     lateinit var notifFirstLayout: NotificationUnify
     lateinit var notifCenterLayout: NotificationUnify
     lateinit var notifRightLayout: NotificationUnify
@@ -49,6 +52,9 @@ class DynamicItemActionView @JvmOverloads constructor(
         tvFirstLayout = view.findViewById(R.id.label_tokopoint1)
         tvCenterLayout = view.findViewById(R.id.label_voucher)
         tvRightLayout = view.findViewById(R.id.label_tokomember)
+        tvFirstLabel = view.findViewById(R.id.label_tokopoint2)
+        tvCenterLabel = view.findViewById(R.id.label_voucher2)
+        tvRightLabel = view.findViewById(R.id.label_tokomember2)
         notifFirstLayout = view.findViewById(R.id.notif_tokopoint)
         notifCenterLayout = view.findViewById(R.id.notif_voucher)
         notifRightLayout = view.findViewById(R.id.notif_tokomember)
@@ -57,27 +63,80 @@ class DynamicItemActionView @JvmOverloads constructor(
         addView(view)
     }
 
-    fun setFirstLayoutText(title: String) {
-        tvFirstLayout.text = title
+    fun setLayoutText(title: String, position: Int) {
+        when (position) {
+            FIRST_TAB -> tvFirstLayout.text = title
+            SECOND_TAB -> tvCenterLayout.text = title
+            else -> tvRightLayout.text = title
+        }
     }
 
-    fun setFirstLayoutIcon(imgUrl: String) {
-        ivFirstLayout.loadImage(imgUrl)
+    fun setLayoutLabel(label: String, position: Int) {
+        when (position) {
+            FIRST_TAB -> {
+                tvFirstLabel.show()
+                tvFirstLabel.text = label
+            }
+            SECOND_TAB -> {
+                tvCenterLabel.show()
+                tvCenterLabel.text = label
+            }
+            else -> {
+                tvRightLabel.show()
+                tvRightLabel.text = label
+            }
+        }
     }
 
-    fun setFirstLayoutNotification(notif: String) {
-        notifFirstLayout.show()
-        notifFirstLayout.setNotification(notif, NotificationUnify.TEXT_TYPE, NotificationUnify.COLOR_PRIMARY)
+    fun setLayoutIcon(imgUrl: String, position: Int) {
+        when (position) {
+            FIRST_TAB -> ivFirstLayout.loadImage(imgUrl)
+            SECOND_TAB -> ivCenterLayout.loadImage(imgUrl)
+            else -> ivRightLayout.loadImage(imgUrl)
+        }
     }
 
-    fun setFirstLayoutVisibility(visibility: Int) {
-        holderFirstLayout.visibility = visibility
+    fun setLayoutVisibility(visibility: Int, position: Int) {
+        when (position) {
+            FIRST_TAB -> holderFirstLayout.visibility = visibility
+            SECOND_TAB -> holderCenterLayout.visibility = visibility
+            else -> holderRightLayout.visibility = visibility
+        }
     }
 
-    fun setLayoutClickListener(applink: String?, text: String?) {
+    fun setLayoutNotification(notif: String, position: Int) {
+        when (position) {
+            FIRST_TAB -> {
+                notifFirstLayout.show()
+                notifFirstLayout.setNotification(notif, NotificationUnify.NONE_TYPE, NotificationUnify.COLOR_PRIMARY)
+            }
+            SECOND_TAB -> {
+                notifCenterLayout.show()
+                notifCenterLayout.setNotification(notif, NotificationUnify.NONE_TYPE, NotificationUnify.COLOR_PRIMARY)
+            }
+            else -> {
+                notifRightLayout.show()
+                notifRightLayout.setNotification(notif, NotificationUnify.NONE_TYPE, NotificationUnify.COLOR_PRIMARY)
+            }
+        }
+    }
+
+    fun hideNotification(position: Int) {
+        when (position) {
+            FIRST_TAB -> notifFirstLayout.hide()
+            SECOND_TAB -> notifCenterLayout.hide()
+            else -> notifRightLayout.hide()
+        }
+    }
+
+    fun setLayoutClicklistener(applink: String?, text: String?, position: Int) {
+        when (position) {
+            FIRST_TAB -> notifFirstLayout.hide()
+            SECOND_TAB -> notifCenterLayout.hide()
+            else ->
+                notifRightLayout.hide()
+        }
         RouteManager.route(context, applink)
-        notifFirstLayout.hide()
-
         text?.let {
             AnalyticsTrackerUtil.sendEvent(context,
                     AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
@@ -87,72 +146,16 @@ class DynamicItemActionView @JvmOverloads constructor(
         }
     }
 
-    fun setCenterLayoutText(title: String) {
-        tvCenterLayout.text = title
-    }
-
-    fun setCenterLayoutIcon(imgUrl: String) {
-        ivCenterLayout.loadImage(imgUrl)
-    }
-
-    fun setCenterLayoutNotification(notif: String) {
-        notifCenterLayout.show()
-        notifCenterLayout.setNotification(notif, NotificationUnify.TEXT_TYPE, NotificationUnify.COLOR_PRIMARY)
-
-    }
-
-    fun setCenterLayoutVisibility(visibility: Int) {
-        holderCenterLayout.visibility = visibility
-    }
-
-    fun setCenterLayoutClickListener(applink: String?, text: String?) {
-        RouteManager.route(context, applink)
-        notifCenterLayout.hide()
-        text?.let {
-            AnalyticsTrackerUtil.sendEvent(context,
-                    AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
-                    AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
-                    AnalyticsTrackerUtil.ActionKeys.KEY_EVENT_CLICK_DYNAMICITEM,
-                    text)
+    fun setVisibilityDivider(visibility: Int, position: Int) {
+        when (position) {
+            1 -> dividerOne.visibility = visibility
+            else -> dividerTwo.visibility = visibility
         }
     }
 
-    fun setRightLayoutText(title: String) {
-        tvRightLayout.text = title
-    }
-
-    fun setRightLayoutIcon(imgUrl: String) {
-        ivRightLayout.loadImage(imgUrl)
-    }
-
-    fun setRightLayoutNotification(notif: String) {
-        notifRightLayout.show()
-        notifRightLayout.setNotification(notif, NotificationUnify.TEXT_TYPE, NotificationUnify.COLOR_PRIMARY)
-
-    }
-
-    fun setRightLayoutVisibility(visibility: Int) {
-        holderRightLayout.visibility = visibility
-    }
-
-    fun setRightLayoutClickListener(applink: String?, text: String?) {
-        RouteManager.route(context, applink)
-        notifRightLayout.hide()
-        text?.let {
-            AnalyticsTrackerUtil.sendEvent(context,
-                    AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
-                    AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
-                    AnalyticsTrackerUtil.ActionKeys.KEY_EVENT_CLICK_DYNAMICITEM,
-                    text)
-        }
-    }
-
-    fun setVisibilityDividerOne(visibility: Int) {
-        dividerOne.visibility = visibility
-    }
-
-    fun setVisibilityDividerTwo(visibility: Int) {
-        dividerTwo.visibility = visibility
+    companion object {
+        const val FIRST_TAB = 0
+        const val SECOND_TAB = 1
     }
 
 }
