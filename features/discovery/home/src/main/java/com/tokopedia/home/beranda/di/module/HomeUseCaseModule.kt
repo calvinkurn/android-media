@@ -1,3 +1,4 @@
+
 package com.tokopedia.home.beranda.di.module
 
 import android.content.Context
@@ -190,6 +191,7 @@ class HomeUseCaseModule {
             "          name\n" +
             "          layout\n" +
             "          type\n" +
+            "          pageName\n" +
             "          showPromoBadge\n" +
             "          categoryID\n" +
             "          perso_type\n" +

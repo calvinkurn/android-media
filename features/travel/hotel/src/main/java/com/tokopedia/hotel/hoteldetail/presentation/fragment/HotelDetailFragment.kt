@@ -161,7 +161,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        detailViewModel.roomListResult.observe(this, Observer {
+        detailViewModel.roomListResult.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     isRoomListSuccess = true

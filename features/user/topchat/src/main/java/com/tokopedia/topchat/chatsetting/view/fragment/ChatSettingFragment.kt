@@ -1,6 +1,5 @@
 package com.tokopedia.topchat.chatsetting.view.fragment
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.LifecycleOwner
@@ -11,9 +10,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.topchat.chatsetting.analytic.ChatSettingAnalytic
 import com.tokopedia.topchat.chatsetting.data.uimodel.ItemChatSettingUiModel
@@ -24,7 +20,6 @@ import com.tokopedia.topchat.chatsetting.view.adapter.ChatSettingTypeFactoryImpl
 import com.tokopedia.topchat.chatsetting.view.adapter.decoration.ChatSettingDividerItemDecoration
 import com.tokopedia.topchat.chatsetting.view.adapter.viewholder.ChatSettingViewHolder
 import com.tokopedia.topchat.chatsetting.viewmodel.ChatSettingViewModel
-import com.tokopedia.topchat.chattemplate.view.activity.TemplateChatActivity.PARAM_IS_SELLER
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
@@ -39,7 +34,6 @@ class ChatSettingFragment : BaseListFragment<Visitable<*>, ChatSettingTypeFactor
     private var rVadapter: ChatSettingListAdapter? = null
     private val viewModelFragmentProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
     private val viewModel by lazy { viewModelFragmentProvider.get(ChatSettingViewModel::class.java) }
-    private var shouldMoveToChatTemplate: Boolean = false
 
     override fun getScreenName(): String = SCREEN_NAME
 
@@ -47,38 +41,11 @@ class ChatSettingFragment : BaseListFragment<Visitable<*>, ChatSettingTypeFactor
         getComponent(ChatSettingComponent::class.java).inject(this)
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        shouldMoveToChatTemplate = checkForMoveToChatTemplateAppLink()
-    }
-
-    private fun checkForMoveToChatTemplateAppLink(): Boolean {
-        return activity?.intent?.extras?.getStringArrayList(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA)?.firstOrNull() == ApplinkConstInternalMarketplace.CHAT_SETTING_TEMPLATE
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel.initArguments(arguments)
         setupObserver()
         setupRecyclerView(view)
-    }
-
-    override fun onStart() {
-        super.onStart()
-        if (shouldMoveToChatTemplate) {
-            val appLink = activity?.intent?.extras?.getStringArrayList(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA).orEmpty().firstOrNull().orEmpty()
-            if (appLink.isNotBlank()) {
-                shouldMoveToChatTemplate = false
-                activity?.intent?.extras?.clear()
-                context?.run {
-                    RouteManager.getIntent(this, appLink).apply {
-                        addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
-                        putExtra(PARAM_IS_SELLER, true)
-                        startActivity(this)
-                    }
-                }
-            }
-        }
     }
 
     override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, ChatSettingTypeFactory> {
