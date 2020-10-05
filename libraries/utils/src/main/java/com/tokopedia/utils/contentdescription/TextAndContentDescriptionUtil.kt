@@ -8,8 +8,6 @@ object TextAndContentDescriptionUtil {
     fun setTextAndContentDescription(textView :TextView?, text :String, contentDescriptionTemplate :String) {
         if (textView != null) {
             textView.text = text
-        }
-        if (textView != null) {
             textView.contentDescription = "$contentDescriptionTemplate $text"
         }
     }
