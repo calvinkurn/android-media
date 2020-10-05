@@ -14,6 +14,7 @@ import rx.subscriptions.CompositeSubscription
 
 /**
  * Created by mzennis on 24/05/20.
+ * https://tokopedia.atlassian.net/wiki/spaces/CN/pages/601065014/New+Chat+Room+Socket+Contract
  */
 class PlayBroadcastSocketImpl constructor(
         private val userSession: UserSessionInterface,
@@ -70,25 +71,31 @@ class PlayBroadcastSocketImpl constructor(
                 var data: PlaySocketType? = null
                 when(webSocketResponse.type) {
                     PlaySocketEnum.TotalView.value -> {
-                        data = mapTotalView(webSocketResponse)
+                        data = convertToModel(webSocketResponse.jsonObject, TotalView::class.java)
                     }
                     PlaySocketEnum.TotalLike.value -> {
-                        data = mapTotalLike(webSocketResponse)
+                        data = convertToModel(webSocketResponse.jsonObject, TotalLike::class.java)
                     }
                     PlaySocketEnum.LiveDuration.value -> {
-                        data = mapLiveDuration(webSocketResponse)
+                        data = convertToModel(webSocketResponse.jsonObject, LiveDuration::class.java)
                     }
                     PlaySocketEnum.LiveStats.value -> {
-                        data = mapLiveStats(webSocketResponse)
+                        data = convertToModel(webSocketResponse.jsonObject, LiveStats::class.java)
                     }
                     PlaySocketEnum.Metric.value -> {
-                        data = mapMetric(webSocketResponse)
+                        data = convertToModel(webSocketResponse.jsonObject, Metric::class.java)
                     }
                     PlaySocketEnum.ProductTag.value -> {
-                        data = mapProductTag(webSocketResponse)
+                        data = convertToModel(webSocketResponse.jsonObject, ProductTagging::class.java)
                     }
                     PlaySocketEnum.Chat.value -> {
-                        data = mapChat(webSocketResponse)
+                        data = convertToModel(webSocketResponse.jsonObject, Chat::class.java)
+                    }
+                    PlaySocketEnum.Freeze.value -> {
+                        data = convertToModel(webSocketResponse.jsonObject, Freeze::class.java)
+                    }
+                    PlaySocketEnum.Banned.value -> {
+                        data = convertToModel(webSocketResponse.jsonObject, Banned::class.java)
                     }
                 }
 
@@ -133,37 +140,6 @@ class PlayBroadcastSocketImpl constructor(
             val maxRetries: Int,
             val pingInterval: Long
     )
-
-    /**
-     * Mapping
-     */
-    private fun mapLiveDuration(response: WebSocketResponse): LiveDuration? {
-        return convertToModel(response.jsonObject, LiveDuration::class.java)
-    }
-
-    private fun mapLiveStats(response: WebSocketResponse): LiveStats? {
-        return convertToModel(response.jsonObject, LiveStats::class.java)
-    }
-
-    private fun mapMetric(response: WebSocketResponse): Metric? {
-        return convertToModel(response.jsonObject, Metric::class.java)
-    }
-
-    private fun mapTotalView(response: WebSocketResponse): TotalView? {
-        return convertToModel(response.jsonObject, TotalView::class.java)
-    }
-
-    private fun mapTotalLike(response: WebSocketResponse): TotalLike? {
-        return convertToModel(response.jsonObject, TotalLike::class.java)
-    }
-
-    private fun mapProductTag(response: WebSocketResponse): ProductTagging? {
-        return convertToModel(response.jsonObject, ProductTagging::class.java)
-    }
-
-    private fun mapChat(response: WebSocketResponse): Chat? {
-        return convertToModel(response.jsonObject, Chat::class.java)
-    }
 
     private fun <T> convertToModel(jsonElement: JsonElement?, classOfT: Class<T>): T? {
         try {

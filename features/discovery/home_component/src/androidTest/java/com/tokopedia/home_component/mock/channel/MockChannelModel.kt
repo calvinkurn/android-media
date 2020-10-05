@@ -10,6 +10,8 @@ object MockChannelModel {
                 "11",
                 "type",
                 0,
+                0,
+                "",
                 MockChannelHeader.get(),
                 MockChannelBanner.get(),
                 MockChannelConfig.get(layoutName),

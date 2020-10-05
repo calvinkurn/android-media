@@ -56,11 +56,16 @@ class ShopHomePlayCarouselViewHolder(
                  bundle.containsKey(ShopPageHomeFragment.UPDATE_REMIND_ME_PLAY) -> {
                     element?.playBannerCarouselDataModel?.let{ playCarouselCardDataModel ->
                         if(bundle.containsKey(ShopPageHomeFragment.UPDATE_REMIND_ME_PLAY)){
-                            playCarouselCardDataModel.channelList.find { it.getId() == bundle.getString(ShopPageHomeFragment.UPDATE_REMIND_ME_PLAY_ID) && it is PlayBannerCarouselItemDataModel}?.let{
-                                (it as PlayBannerCarouselItemDataModel).remindMe = !it.remindMe
-                            }
+                            itemView.play_banner_carousel?.setItem(playCarouselCardDataModel.copy(
+                                channelList = playCarouselCardDataModel.channelList.map {
+                                    if(it.getId() == bundle.getString(ShopPageHomeFragment.UPDATE_REMIND_ME_PLAY_ID) && it is PlayBannerCarouselItemDataModel){
+                                        it.copy(remindMe = !it.remindMe)
+                                    } else {
+                                        it
+                                    }
+                                }
+                            ))
                         }
-                        itemView.play_banner_carousel?.setItem(playCarouselCardDataModel)
                     }
                 }
             }
