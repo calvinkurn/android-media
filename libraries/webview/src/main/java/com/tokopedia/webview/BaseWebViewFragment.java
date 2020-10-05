@@ -64,6 +64,7 @@ import static com.tokopedia.webview.ConstantKt.DEFAULT_TITLE;
 import static com.tokopedia.webview.ConstantKt.JS_TOKOPEDIA;
 import static com.tokopedia.webview.ConstantKt.KEY_ALLOW_OVERRIDE;
 import static com.tokopedia.webview.ConstantKt.KEY_NEED_LOGIN;
+import static com.tokopedia.webview.ConstantKt.KEY_PULL_TO_REFRESH;
 import static com.tokopedia.webview.ConstantKt.KEY_URL;
 import static com.tokopedia.webview.ConstantKt.SEAMLESS;
 import static com.tokopedia.webview.ext.UrlEncoderExtKt.encodeOnce;
@@ -77,7 +78,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
 
     public TkpdWebView webView;
     ProgressBar progressBar;
-    private SwipeToRefresh swipeToRefresh;
+    private SwipeToRefresh swipeRefreshLayout;
     private ValueCallback<Uri> uploadMessageBeforeLolipop;
     public ValueCallback<Uri[]> uploadMessageAfterLolipop;
     public final static int ATTACH_FILE_REQUEST = 1;
@@ -109,6 +110,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     public static final String TOKOPEDIA_STRING = "tokopedia";
     protected boolean isTokopediaUrl;
     boolean allowOverride = true;
+    boolean pullToRefresh = false;
     private boolean needLogin = false;
 
     // last check overrideUrlLoading
@@ -158,6 +160,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         url = getUrlFromArguments(args);
         needLogin = args.getBoolean(KEY_NEED_LOGIN, false);
         allowOverride = args.getBoolean(KEY_ALLOW_OVERRIDE, true);
+        pullToRefresh = args.getBoolean(KEY_PULL_TO_REFRESH, false);
         String host = Uri.parse(url).getHost();
         isTokopediaUrl = host != null && host.contains(TOKOPEDIA_STRING);
         remoteConfig = new FirebaseRemoteConfigImpl(getActivity());
@@ -191,9 +194,10 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         View view = inflater.inflate(getLayout(), container, false);
         webView = view.findViewById(setWebView());
         progressBar = view.findViewById(setProgressBar());
-        swipeToRefresh = view.findViewById(R.id.general_web_view_lib_swipe_refresh_layout);
+        swipeRefreshLayout = view.findViewById(R.id.general_web_view_lib_swipe_refresh_layout);
 
-        swipeToRefresh.setOnRefreshListener(this::reloadPage);
+        swipeRefreshLayout.setEnabled(pullToRefresh);
+        swipeRefreshLayout.setOnRefreshListener(this::reloadPage);
 
         webView.clearCache(true);
         webView.addJavascriptInterface(new WebToastInterface(getActivity()),"Android");
