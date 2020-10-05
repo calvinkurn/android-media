@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <integer name="product_max_character_name">70</integer>
-    <integer name="product_max_character_description">2000</integer>
-    <integer name="product_max_character_sku">50</integer>
-    <integer name="product_default_counter_minimum_order_text">1</integer>
-    <integer name="product_default_counter_minimum_stock_text">1</integer>
-</resources>
