@@ -5,8 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.search.data.model.FilterV2
@@ -14,13 +12,12 @@ import com.tokopedia.hotel.search.data.model.params.ParamFilterV2
 import com.tokopedia.hotel.search.presentation.adapter.HotelSearchResultFilterV2Adapter
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.UnifyButton
-import kotlinx.android.synthetic.main.bottom_sheets_hotel_filters.*
 
 /**
  * @author by jessica on 12/08/20
  */
 
-class HotelFilterBottomSheets: BottomSheetUnify() {
+class HotelFilterBottomSheets : BottomSheetUnify() {
 
     var filters: List<FilterV2> = listOf()
 
@@ -30,9 +27,12 @@ class HotelFilterBottomSheets: BottomSheetUnify() {
 
     var adapter = HotelSearchResultFilterV2Adapter()
 
+    var isAdvanceFilter = false
+
     fun setFilter(filter: List<FilterV2>): HotelFilterBottomSheets = this.apply { filters = filter }
     fun setSelected(paramFilterV2: List<ParamFilterV2>): HotelFilterBottomSheets = this.apply { selectedFilters = paramFilterV2.toMutableList() }
     fun setSubmitFilterListener(listener: SubmitFilterListener): HotelFilterBottomSheets = this.apply { this.listener = listener }
+    fun setIsAdvanceFilter(isAdvancedFilter: Boolean): HotelFilterBottomSheets = this.apply { this.isAdvanceFilter = isAdvancedFilter }
 
     init {
         setTitle("Filter")
@@ -61,16 +61,18 @@ class HotelFilterBottomSheets: BottomSheetUnify() {
         recyclerView.clearItemDecoration()
 
         adapter.filters = filters
+        filters.forEach {
+            adapter.onSelectedFilterChanged(it.name, it.optionSelected.toMutableList())
+        }
+
+        adapter.isSelectionWithOverflowLayout = isAdvanceFilter
         recyclerView.adapter = adapter
 
         setAction("Reset") {
-            for (i in 0 until recyclerView.childCount) {
-                val viewHolder = recyclerView.findViewHolderForAdapterPosition(i)
-                viewHolder?.let {
-                    it as HotelSearchResultFilterV2Adapter.FilterBaseViewHolder
-                    it.resetSelection()
-                }
-            }
+            filters.forEach { it.optionSelected = listOf() }
+            adapter.filters = filters
+            adapter.selectedFilter = hashMapOf()
+            adapter.notifyDataSetChanged()
         }
 
         val submitButton = view.findViewById<UnifyButton>(R.id.hotel_filter_submit_button)

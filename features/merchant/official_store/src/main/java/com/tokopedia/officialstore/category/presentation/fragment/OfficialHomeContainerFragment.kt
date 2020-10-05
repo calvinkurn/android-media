@@ -161,6 +161,7 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
     }
 
     private fun populateCategoriesData(officialStoreCategories: OfficialStoreCategories) {
+        tabAdapter.categoryList = mutableListOf()
         officialStoreCategories.categories.forEachIndexed { _, category ->
             tabAdapter.categoryList.add(category)
         }
