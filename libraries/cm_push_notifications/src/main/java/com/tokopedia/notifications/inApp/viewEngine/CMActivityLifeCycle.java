@@ -7,6 +7,7 @@ import android.os.Bundle;
 import com.tokopedia.iris.Iris;
 import com.tokopedia.iris.IrisAnalytics;
 import com.tokopedia.notifications.inApp.CMInAppManager;
+import com.tokopedia.promotionstarget.presentation.ui.dialog.CmGratificationDialog;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -77,6 +78,12 @@ public class CMActivityLifeCycle implements Application.ActivityLifecycleCallbac
     @Override
     public void onActivityDestroyed(Activity activity) {
         activityCount--;
+        try {
+            CmGratificationDialog.Companion.getWeakHashMap().remove(activity);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
     }
 
 

@@ -55,6 +55,7 @@ import java.util.Set;
 import java.util.WeakHashMap;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import kotlinx.coroutines.Job;
 
@@ -91,8 +92,8 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
      * This flag is used for validation of the dialog to be displayed.
      * This is useful for avoiding InApp dialog appearing more than once.
      * */
-    private Boolean isDialogShowing = false;
 
+    static AtomicBoolean isDialogShowing = new AtomicBoolean(false);
     static {
         inAppManager = new CMInAppManager();
     }
@@ -111,7 +112,7 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
         this.cmInAppListener = this;
         gratificationPresenter = new GratificationPresenter(application);
         gratificationPresenter.setExceptionCallback(th -> {
-            isDialogShowing = false;
+            CMInAppManager.isDialogShowing.set(false);
         });
         RulesManager.initRuleEngine(application, new RuleInterpreterImpl(), new DataConsumerImpl());
         initInAppManager();
@@ -151,6 +152,7 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
             public void onShow(@NonNull DialogInterface dialogInterface) {
 //                dialogInterfaceSet.add(dialogInterface);
                 weakDialog = new WeakReference<>(dialogInterface);
+                isDialogShowing.set(true);
 
             }
 
@@ -160,17 +162,20 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
                 if (weakDialog.get() == dialogInterface){
                     weakDialog.clear();
                 }
-                isDialogShowing = false;
+                isDialogShowing.set(false);
             }
 
             @Override
             public void onIgnored(@GratifPopupIngoreType int reason) {
-                isDialogShowing = false;
+                if(reason != GratifPopupIngoreType.DIALOG_ALREADY_ACTIVE){
+                    isDialogShowing.set(false);
+                }
+
 //                showIgnoreToast("push", reason);
             }
         });
 
-        isDialogShowing = true;
+//        isDialogShowing = true;
     }
 
     private void showIgnoreToast(String type,@GratifPopupIngoreType int reason){
@@ -236,7 +241,8 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
         root.addView(view);
 
         // set flag if has dialog showing
-        isDialogShowing = true;
+        isDialogShowing.set(true);
+//        isDialogShowing = true;
     }
 
     /**
@@ -252,7 +258,8 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
             BannerView.create(activity, data);
 
             // set flag if has dialog showing
-            isDialogShowing = true;
+            isDialogShowing.set(true);
+//            isDialogShowing = true;
         } catch (Exception e) {
             onCMInAppInflateException(data);
         }
@@ -270,6 +277,8 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
                 public void onShow(@NonNull DialogInterface dialogInterface) {
                     weakDialog = new WeakReference<>(dialogInterface);
 //                    dialogInterfaceSet.add(dialogInterface);
+                    isDialogShowing.set(true);
+//                    isDialogShowing = true;
                     dataConsumed(data);
                 }
 
@@ -279,20 +288,24 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
                         weakDialog.clear();
                     }
 //                    dialogInterfaceSet.remove(dialogInterface);
-                    isDialogShowing = false;
+                    isDialogShowing.set(false);
+//                    isDialogShowing = false;
                 }
 
                 @Override
                 public void onIgnored(@GratifPopupIngoreType int reason) {
-                    isDialogShowing = false;
-                    dataConsumed(data);
+                    if(reason != GratifPopupIngoreType.DIALOG_ALREADY_ACTIVE){
+                        isDialogShowing.set(false);
+//                        isDialogShowing = false;
+                        dataConsumed(data);
+                    }
 //                    showIgnoreToast("organic", reason);
                 }
             });
 
             // set flag if has dialog showing
             mapOfGratifJobs.put(entityHashCode, job);
-            isDialogShowing = true;
+//            isDialogShowing = true;
 //            gratifJobs.add(job);
 
         } catch (Exception e) {
@@ -448,13 +461,14 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
     }
 
     public boolean canShowDialog(){
-        if(!isDialogShowing){
-            return true;
-        }else if(weakDialog== null || weakDialog.get() == null){
-            isDialogShowing = false;
-            return true;
-        }
-        return false;
+        return !isDialogShowing.get();
+//        if(!isDialogShowing){
+//            return true;
+//        }else if(weakDialog== null || weakDialog.get() == null){
+//            isDialogShowing = false;
+//            return true;
+//        }
+//        return false;
     }
 
     public void onFragmentSelected(Fragment fragment) {
@@ -492,7 +506,7 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
             mapOfGratifJobs.remove(entityHashCode);
 
             //need better logic for this
-            isDialogShowing = false;
+//            isDialogShowing = false;
         }
     }
 
@@ -535,7 +549,8 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
     @Override
     public void onCMinAppDismiss(CMInApp inApp) {
         RulesManager.getInstance().viewDismissed(inApp.id);
-        isDialogShowing = false;
+        isDialogShowing.set(false);
+//        isDialogShowing = false;
     }
 
     @Override

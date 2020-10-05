@@ -1,6 +1,7 @@
 package com.tokopedia.promotionstarget.presentation.ui.dialog
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import android.content.DialogInterface
 import android.view.LayoutInflater
@@ -41,6 +42,7 @@ import com.tokopedia.promotionstarget.presentation.ui.viewmodel.CmGratificationV
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import timber.log.Timber
+import java.util.*
 import javax.inject.Inject
 
 class CmGratificationDialog {
@@ -65,6 +67,10 @@ class CmGratificationDialog {
     private val couponUiDataList = arrayListOf<CouponUiData>()
     private var gratifNotification: GratifNotification? = null
     private var couponDetailResponse: TokopointsCouponDetailResponse? = null
+
+    companion object{
+        val weakHashMap = WeakHashMap<Activity,DialogInterface>()
+    }
 
     protected fun getLayout(): Int {
         return R.layout.dialog_gratification

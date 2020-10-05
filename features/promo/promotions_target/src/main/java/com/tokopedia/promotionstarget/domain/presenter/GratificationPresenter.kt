@@ -19,6 +19,8 @@ import com.tokopedia.promotionstarget.domain.presenter.GratifCancellationExcepti
 import com.tokopedia.promotionstarget.domain.presenter.GratifCancellationExceptionType.Companion.FRAGMENT_STARTED
 import com.tokopedia.promotionstarget.domain.presenter.GratifCancellationExceptionType.Companion.FRAGMENT_STOP
 import com.tokopedia.promotionstarget.domain.presenter.GratifPopupIngoreType.Companion.COUPON_CODE_EMPTY
+import com.tokopedia.promotionstarget.domain.presenter.GratifPopupIngoreType.Companion.DIALOG_ALREADY_ACTIVE
+import com.tokopedia.promotionstarget.domain.presenter.GratifPopupIngoreType.Companion.INVALID_COUPON
 import com.tokopedia.promotionstarget.domain.presenter.GratifPopupIngoreType.Companion.NO_SUCCESS
 import com.tokopedia.promotionstarget.domain.presenter.GratifPopupIngoreType.Companion.UNKOWN_ERROR
 import com.tokopedia.promotionstarget.domain.usecase.NotificationUseCase
@@ -71,30 +73,40 @@ class GratificationPresenter @Inject constructor(val application: Application) {
             val reason = notifResponse.response?.resultStatus?.code
             if (reason == GratifResultStatus.SUCCESS) {
                 //todo Rahul refactor later
-                val code = notifResponse.response.promoCode
-//                val code = "NUPLBDAY5D7RUU5M329"
+//                val code = notifResponse.response.promoCode
+                val code = "NUPLBDAY5D7RUU5M329"
                 if (!code.isNullOrEmpty()) {
                     val couponDetail = tpCouponDetailUseCase.getResponse(tpCouponDetailUseCase.getQueryParams(code))
 //                    val couponDetail = tpCouponDetailUseCase.getFakeResponse(tpCouponDetailUseCase.getQueryParams(code))
                     val couponStatus = couponDetail?.coupon?.realCode ?: ""
-                    if (!couponStatus.isEmpty()) {
+                    if (couponStatus.isNotEmpty()) {
                         withContext(uiWorker) {
-                            weakActivity.get()?.let {
-                                val dialog = CmGratificationDialog().show(it,
-                                        notifResponse.response,
-                                        couponDetail,
-                                        notificationEntryType,
-                                        DialogInterface.OnShowListener { dialog ->
-                                            if (dialog != null)
-                                                gratifPopupCallback?.onShow(dialog)
-                                        })
+                            weakActivity.get()?.let {activity->
+                                if(CmGratificationDialog.weakHashMap[activity]!=null){
+                                    gratifPopupCallback?.onIgnored(GratifPopupIngoreType.DIALOG_ALREADY_ACTIVE)
+                                }else{
+                                    val dialog = CmGratificationDialog().show(activity,
+                                            notifResponse.response,
+                                            couponDetail,
+                                            notificationEntryType,
+                                            DialogInterface.OnShowListener { dialog ->
+                                                if (dialog != null) {
+                                                    gratifPopupCallback?.onShow(dialog)
+                                                    CmGratificationDialog.weakHashMap[activity] = dialog
+                                                }
+                                            })
 
-                                dialog?.setOnDismissListener { dialogInterface ->
-                                    gratifPopupCallback?.onDismiss(dialogInterface)
+                                    dialog?.setOnDismissListener { dialogInterface ->
+                                        CmGratificationDialog.weakHashMap.remove(activity)
+                                        gratifPopupCallback?.onDismiss(dialogInterface)
+                                    }
+                                    dialog?.setOnCancelListener {dialogInterface->
+                                        CmGratificationDialog.weakHashMap.remove(activity)
+                                        gratifPopupCallback?.onDismiss(dialogInterface)
+                                    }
                                 }
-                                dialog?.setOnCancelListener {dialogInterface->
-                                    gratifPopupCallback?.onDismiss(dialogInterface)
-                                }
+
+
                             }
                         }
                     } else {
@@ -172,13 +184,14 @@ class GratificationPresenter @Inject constructor(val application: Application) {
 }
 
 @Retention(AnnotationRetention.SOURCE)
-@IntDef(COUPON_CODE_EMPTY, NO_SUCCESS, UNKOWN_ERROR)
+@IntDef(COUPON_CODE_EMPTY, NO_SUCCESS, UNKOWN_ERROR,INVALID_COUPON, DIALOG_ALREADY_ACTIVE)
 annotation class GratifPopupIngoreType {
     companion object {
         const val COUPON_CODE_EMPTY = 0
         const val NO_SUCCESS = 1
         const val UNKOWN_ERROR = 2
         const val INVALID_COUPON = 3
+        const val DIALOG_ALREADY_ACTIVE = 4
     }
 }
 
