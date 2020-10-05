@@ -259,6 +259,10 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         performanceMonitoring.initMvcPerformanceMonitoring()
         super.onCreate(savedInstanceState)
+        // Finish activity when fragments on view pager are being restored because of low memory or don`t keep activity.
+        // When restored, the lambdas that being passed to fragments in view pager are not working as intended (eg. next action is not running).
+        // While you can save lambdas into savedInstanceState, it is not recommended to do that.
+        // So, the best option right now is to finish activity when state is being restored to avoid anomalies in those fragments.
         if (savedInstanceState != null) {
             finish()
         }
