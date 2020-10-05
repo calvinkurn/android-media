@@ -40,6 +40,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.RouteManagerKt;
@@ -76,6 +77,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
 
     public TkpdWebView webView;
     ProgressBar progressBar;
+    private SwipeToRefresh swipeToRefresh;
     private ValueCallback<Uri> uploadMessageBeforeLolipop;
     public ValueCallback<Uri[]> uploadMessageAfterLolipop;
     public final static int ATTACH_FILE_REQUEST = 1;
@@ -189,6 +191,9 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         View view = inflater.inflate(getLayout(), container, false);
         webView = view.findViewById(setWebView());
         progressBar = view.findViewById(setProgressBar());
+        swipeToRefresh = view.findViewById(R.id.general_web_view_lib_swipe_refresh_layout);
+
+        swipeToRefresh.setOnRefreshListener(this::reloadPage);
 
         webView.clearCache(true);
         webView.addJavascriptInterface(new WebToastInterface(getActivity()),"Android");
