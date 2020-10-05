@@ -59,21 +59,11 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
     @Inject
     lateinit var feedbackPagePresenter: FeedbackPagePresenter
 
-//    private lateinit var bugType : Spinner
-//    private lateinit var email: EditText
-//    private lateinit var page: EditText
-//    private lateinit var journey: EditText
-//    private lateinit var actualResult: EditText
-//    private lateinit var expectedResult: EditText
-//    private lateinit var submitButton: View
     private lateinit var compositeSubscription: CompositeSubscription
     private lateinit var myPreferences: Preferences
-//    private lateinit var tvImage: Typography
-//    private lateinit var rvImageFeedback: RecyclerView
     private val imageAdapter: ImageFeedbackAdapter by lazy {
         ImageFeedbackAdapter(this)
     }
-//    private lateinit var spinnerAdapter: CategoriesSpinAdapter
 
     private var deviceInfo: String = ""
     private var androidVersion: String = ""
@@ -138,7 +128,7 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
         when (requestCode) {
             REQUEST_CODE_IMAGE -> {
                 if (resultCode == Activity.RESULT_OK && data != null) {
-                    val selectedImage = data.getStringArrayListExtra(ImagePickerActivity.PICKER_RESULT_PATHS)
+                    selectedImage = data.getStringArrayListExtra(ImagePickerActivity.PICKER_RESULT_PATHS)
                     feedbackPagePresenter.initImageData()
 
                     val imageListData = feedbackPagePresenter.getImageList(selectedImage)
@@ -159,11 +149,6 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
         loadingDialog = context?.let { LoadingDialog(it) }
 
         uriImage = arguments?.getParcelable(EXTRA_URI_IMAGE)
-//        feedbackPagePresenter.getCategories()
-
-/*
-        spinnerAdapter =  CategoriesSpinAdapter(context, android.R.layout.simple_spinner_item)
-        bugType.adapter = spinnerAdapter*/
 
         context?.let { ArrayAdapter.createFromResource(it,
                 R.array.bug_type_array,
@@ -182,6 +167,7 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
             if (screenshotData != null) {
 //                feedbackPagePresenter.getImageList(listOf(screenshotData.path))
                 imageAdapter.setImageFeedbackData(feedbackPagePresenter.screenshotImageResult(screenshotData))
+                selectedImage = arrayListOf(screenshotData.path)
             }
         }
     }

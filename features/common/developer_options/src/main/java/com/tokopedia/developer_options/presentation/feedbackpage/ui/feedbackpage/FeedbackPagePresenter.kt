@@ -125,6 +125,7 @@ class FeedbackPagePresenter(private val compositeSubscription: CompositeSubscrip
     }
 
     override fun getImageList(selectedImage: ArrayList<String>): MutableList<BaseImageFeedbackUiModel> {
+
         when (selectedImage.size) {
             5 -> {
                 imageData = (selectedImage.map {
@@ -153,7 +154,7 @@ class FeedbackPagePresenter(private val compositeSubscription: CompositeSubscrip
         return imageData
     }
 
-    override fun getSelectedImageUrl(): ArrayList<String> {
+/*    override fun getSelectedImageUrl(): ArrayList<String> {
         val result = arrayListOf<String>()
         imageData.forEach {
             val imageUrl = if((it as? ImageFeedbackUiModel)?.fullImageUrl?.isNotBlank() == true) {
@@ -166,6 +167,6 @@ class FeedbackPagePresenter(private val compositeSubscription: CompositeSubscrip
             }
         }
         return result
-    }
+    }*/
 
 }
