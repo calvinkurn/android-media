@@ -168,7 +168,9 @@ class DrawOnPictureFragment : BaseDaggerFragment(),
         BitmapFactory.decodeFile(File(imageUri.path).absolutePath, options)
 
         val editedBitmap = dopFeedbackForm.getBitmap()
-        val saveBitmap = Bitmap.createScaledBitmap(editedBitmap, options.outWidth, options.outHeight, false)
+        val saveBitmap = if (options.outWidth > 0 && options.outHeight > 0)
+            Bitmap.createScaledBitmap(editedBitmap, options.outWidth, options.outHeight, false)
+        else editedBitmap
 
         val newPath = ImagePreviewUtils.saveImageFromBitmap(requireActivity(), saveBitmap, ImagePreviewUtils.processPictureName(Math.random().toInt()))
         newPath?.let {
