@@ -1,7 +1,6 @@
 package com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint
 
 import android.app.Activity
-import com.google.android.gms.location.FusedLocationProviderClient
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.logisticaddaddress.common.AddressConstants.CIRCUIT_BREAKER_ON_CODE
@@ -16,7 +15,6 @@ import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.get_distr
 import com.tokopedia.logisticaddaddress.utils.SimpleIdlingResource
 import com.tokopedia.logisticdata.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticdata.domain.usecase.RevGeocodeUseCase
-import com.tokopedia.logisticdata.util.getLatLng
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import rx.Subscriber
