@@ -31,6 +31,12 @@ class CouponListTokopointsVH(itemView: View) : CouponListVH(itemView) {
         tvTitleRight.text = data.minimumUsageLabel
         tvSubTitleRight.text = data.minimumUsage
 
+        if (tvSubTitleRight.text.isNullOrEmpty()) {
+            tvSubTitleRight.visibility = View.GONE
+        } else {
+            tvSubTitleRight.visibility = View.VISIBLE
+        }
+
         if (tvSubTitle.text.isNullOrEmpty()) {
             tvSubTitle.visibility = View.GONE
         } else {

@@ -92,6 +92,9 @@ class GratificationPresenter @Inject constructor(val application: Application) {
                                 dialog?.setOnDismissListener { dialogInterface ->
                                     gratifPopupCallback?.onDismiss(dialogInterface)
                                 }
+                                dialog?.setOnCancelListener {dialogInterface->
+                                    gratifPopupCallback?.onDismiss(dialogInterface)
+                                }
                             }
                         }
                     } else {

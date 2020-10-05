@@ -52,6 +52,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.WeakHashMap;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -82,7 +83,9 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
     private final Set<String> processedNotificationIds = new HashSet<>();
     private Map<Integer, Job> mapOfGratifJobs = new ConcurrentHashMap<Integer, Job>();
 //    private ArrayList<Job> gratifJobs = new ArrayList<>();
-//    private Set<DialogInterface> dialogInterfaceSet = new HashSet<>();
+    private WeakHashMap<Activity,DialogInterface> weakMap = new WeakHashMap();
+    private WeakReference<DialogInterface> weakDialog = null;
+
 
     /*
      * This flag is used for validation of the dialog to be displayed.
@@ -147,11 +150,16 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
             @Override
             public void onShow(@NonNull DialogInterface dialogInterface) {
 //                dialogInterfaceSet.add(dialogInterface);
+                weakDialog = new WeakReference<>(dialogInterface);
+
             }
 
             @Override
             public void onDismiss(@NonNull DialogInterface dialogInterface) {
 //                dialogInterfaceSet.remove(dialogInterface);
+                if (weakDialog.get() == dialogInterface){
+                    weakDialog.clear();
+                }
                 isDialogShowing = false;
             }
 
@@ -260,12 +268,16 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
             Job job = gratificationPresenter.showGratificationInApp(currentActivity, gratificationId, NotificationEntryType.ORGANIC, new GratificationPresenter.GratifPopupCallback() {
                 @Override
                 public void onShow(@NonNull DialogInterface dialogInterface) {
+                    weakDialog = new WeakReference<>(dialogInterface);
 //                    dialogInterfaceSet.add(dialogInterface);
                     dataConsumed(data);
                 }
 
                 @Override
                 public void onDismiss(@NonNull DialogInterface dialogInterface) {
+                    if (weakDialog.get() == dialogInterface){
+                        weakDialog.clear();
+                    }
 //                    dialogInterfaceSet.remove(dialogInterface);
                     isDialogShowing = false;
                 }
@@ -340,7 +352,7 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
             }
         }
 
-        if (!isDialogShowing) {
+        if (canShowDialog()) {
             if (canShowPopupFromPush) {
                 showPopupFromPush(bundle, currentActivity.get().getClass().getName());
             } else {
@@ -397,18 +409,15 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
     public void onFragmentStart(Fragment fragment) {
         cancelGratifJob(fragment.hashCode(), GratifCancellationExceptionType.FRAGMENT_STARTED);
 
-        if (!isDialogShowing) {
+        if (canShowDialog()) {
             showInAppNotification(fragment.getClass().getName(), fragment.hashCode());
         }
-//        checkFragmentOpenedFromPush(fragment);
     }
 
     public void onFragmentResume(Fragment fragment) {
         cancelGratifJob(fragment.hashCode(), GratifCancellationExceptionType.FRAGMENT_RESUME);
 
-        //check if came from push
-//        checkFragmentOpenedFromPush(fragment);
-        if (!isDialogShowing) {
+        if (canShowDialog()) {
             showInAppNotification(fragment.getClass().getName(), fragment.hashCode());
         }
     }
@@ -428,7 +437,7 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
                 }
             }
 
-            if (!isDialogShowing) {
+            if (canShowDialog()) {
                 if (canShowPopupFromPush) {
                     showPopupFromPush(bundle, entityName);
                 } else {
@@ -436,6 +445,15 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
                 }
             }
         }
+    }
+
+    public boolean canShowDialog(){
+        if(!isDialogShowing){
+            return true;
+        }else if(weakDialog.get() == null){
+            return true;
+        }
+        return false;
     }
 
     public void onFragmentSelected(Fragment fragment) {
@@ -446,18 +464,11 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
             //todo Rahul later - need better logic for this
 //            isDialogShowing = false;
         }
-//        gratifJobs.clear();
         mapOfGratifJobs.clear();
 
-//        for (DialogInterface dialogInterface:dialogInterfaceSet){
-//            CmGratificationDialog dialog;
-//            if(dialog.)
-//        }
-
-        if (!isDialogShowing) {
+        if (canShowDialog()) {
             showInAppNotification(fragment.getClass().getName(), fragment.hashCode());
         }
-//        checkFragmentOpenedFromPush(fragment);
     }
 
     public void onFragmentStop(Fragment fragment) {
@@ -475,12 +486,12 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
 
     private void cancelGratifJob(int entityHashCode, @GratifCancellationExceptionType String reason) {
         Job job = mapOfGratifJobs.get(entityHashCode);
-        if (job != null && !job.isCompleted()) {
+        if (job != null && !job.isActive()) {
             job.cancel(new CancellationException(reason));
             mapOfGratifJobs.remove(entityHashCode);
 
             //need better logic for this
-//            isDialogShowing = false;
+            isDialogShowing = false;
         }
     }
 

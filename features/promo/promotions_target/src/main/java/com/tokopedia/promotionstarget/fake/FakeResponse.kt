@@ -25,8 +25,8 @@ object FakeResponse {
             "          \"subtitle2En\": \"\"\n" +
             "        },\n" +
             "        \"wordingExpired\": {\n" +
-            "          \"titleId\": \"\",\n" +
-            "          \"titleEn\": \"\",\n" +
+            "          \"titleId\": \"Kupon Spesial Buatmu\",\n" +
+            "          \"titleEn\": \"Kupon Spesial Buatmu\",\n" +
             "          \"subtitle1Id\": \"Kupon ini tidak berlaku lagi\",\n" +
             "          \"subtitle1En\": \"Kupon ini tidak berlaku lagi\",\n" +
             "          \"subtitle2Id\": \"Kamu tidak bisa pakai kupon ini. Tenang saja, masih banyak kupon menarik lainnya yang bisa kamu dapatkan!\",\n" +

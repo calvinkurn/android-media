@@ -11,6 +11,7 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.content.ContextCompat
 import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -111,8 +112,22 @@ class CmGratificationDialog {
                 else -> ""
             }
 
+
             val tvDialogTitle = (root.parent.parent as ConstraintLayout).findViewById<TextView>(R.id.title_closeable_rounded)
-            tvDialogTitle.text = dialogTitleText
+            if (tvDialogTitle.parent is RelativeLayout && !dialogTitleText.isNullOrEmpty()) {
+                val rlParent = tvDialogTitle.parent as RelativeLayout
+                val typographyTitle = Typography(tvTitle.context)
+                val lp = RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                lp.addRule(RelativeLayout.RIGHT_OF, tvDialogTitle.id)
+                lp.addRule(RelativeLayout.END_OF, tvDialogTitle.id)
+                lp.addRule(RelativeLayout.CENTER_VERTICAL)
+                typographyTitle.setTextColor(ContextCompat.getColor(tvDialogTitle.context, R.color.t_promo_title_color))
+                typographyTitle.layoutParams = lp
+                typographyTitle.setType(Typography.HEADING_3)
+                rlParent.addView(typographyTitle)
+
+                typographyTitle.text = dialogTitleText
+            }
         } catch (th: Throwable) {
             Timber.d(th)
         }
