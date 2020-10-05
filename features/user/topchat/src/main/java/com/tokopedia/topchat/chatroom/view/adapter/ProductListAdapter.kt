@@ -19,10 +19,10 @@ class ProductListAdapter constructor(
         private val deferredAttachment: DeferredViewHolderAttachment,
         private val commonListener: CommonViewHolderListener,
         private val adapterListener: AdapterListener,
-        carousel: ProductCarouselUiModel? = null
+        private val isUnifyBroadcast: Boolean = false
 ) : RecyclerView.Adapter<TopchatProductAttachmentViewHolder>() {
 
-    var carousel = carousel
+    var carousel: ProductCarouselUiModel? = null
         set(value) {
             field = value
             notifyDataSetChanged()
@@ -40,7 +40,7 @@ class ProductListAdapter constructor(
 
     override fun onBindViewHolder(holder: TopchatProductAttachmentViewHolder, position: Int) {
         carousel?.products?.get(position)?.let {
-            holder.bind(it as ProductAttachmentViewModel)
+            holder.bind(it as ProductAttachmentViewModel, isUnifyBroadcast)
         }
     }
 
