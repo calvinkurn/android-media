@@ -6,7 +6,7 @@
       "event" : "clickDeals", 
       "eventCategory" : "digital - deals",
       "eventAction" : "change location - search page",
-      "eventLabel" : "deals - {{.+}} - {{.+}}",
+      "eventLabel" : "{{deals - .+ - .+}}",
       "screenName" : "/deals/",
       "category" : "deals",
       "currentSite" : "tokopediadigitaldeals",
