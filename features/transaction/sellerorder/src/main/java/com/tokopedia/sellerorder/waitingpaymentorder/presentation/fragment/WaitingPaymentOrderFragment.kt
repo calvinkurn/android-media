@@ -1,7 +1,6 @@
 package com.tokopedia.sellerorder.waitingpaymentorder.presentation.fragment
 
 import android.animation.Animator
-import android.animation.LayoutTransition
 import android.animation.ValueAnimator
 import android.app.ActivityOptions
 import android.os.Build
@@ -28,7 +27,6 @@ import com.tokopedia.sellerorder.waitingpaymentorder.di.DaggerWaitingPaymentOrde
 import com.tokopedia.sellerorder.waitingpaymentorder.domain.model.WaitingPaymentOrderRequestParam
 import com.tokopedia.sellerorder.waitingpaymentorder.presentation.adapter.WaitingPaymentOrderAdapter
 import com.tokopedia.sellerorder.waitingpaymentorder.presentation.adapter.typefactory.WaitingPaymentOrderAdapterTypeFactory
-import com.tokopedia.sellerorder.waitingpaymentorder.presentation.adapter.viewholder.WaitingPaymentOrdersViewHolder
 import com.tokopedia.sellerorder.waitingpaymentorder.presentation.bottomsheet.BottomSheetWaitingPaymentOrderTips
 import com.tokopedia.sellerorder.waitingpaymentorder.presentation.model.WaitingPaymentOrderUiModel
 import com.tokopedia.sellerorder.waitingpaymentorder.presentation.model.WaitingPaymentTickerUiModel
@@ -47,7 +45,7 @@ import javax.inject.Inject
  * Created by yusuf.hendrawan on 2020-09-07.
  */
 
-class WaitingPaymentOrderFragment : BaseListFragment<Visitable<WaitingPaymentOrderAdapterTypeFactory>, WaitingPaymentOrderAdapterTypeFactory>(), WaitingPaymentOrdersViewHolder.LoadUnloadMoreProductClickListener {
+class WaitingPaymentOrderFragment : BaseListFragment<Visitable<WaitingPaymentOrderAdapterTypeFactory>, WaitingPaymentOrderAdapterTypeFactory>() {
 
     companion object {
         private const val TAG_BOTTOM_SHEET = "bottom_sheet"
@@ -89,7 +87,7 @@ class WaitingPaymentOrderFragment : BaseListFragment<Visitable<WaitingPaymentOrd
     }
 
     override fun getAdapterTypeFactory(): WaitingPaymentOrderAdapterTypeFactory {
-        return WaitingPaymentOrderAdapterTypeFactory(this, this)
+        return WaitingPaymentOrderAdapterTypeFactory(this)
     }
 
     override fun onItemClicked(t: Visitable<WaitingPaymentOrderAdapterTypeFactory>?) {
@@ -165,15 +163,10 @@ class WaitingPaymentOrderFragment : BaseListFragment<Visitable<WaitingPaymentOrd
         }
     }
 
-    override fun toggleCollapse(position: Int, isExpanded: Boolean) {
-        (adapter as WaitingPaymentOrderAdapter).toggleCollapse(position, isExpanded)
-    }
-
     private fun setupViews() {
         setupRecyclerView()
         setupSwipeRefreshLayout()
         setupCheckAndSetStockButton()
-        waitingPaymentOrderContainer.layoutTransition.enableTransitionType(LayoutTransition.CHANGING)
     }
 
     private fun setupCheckAndSetStockButton() {
