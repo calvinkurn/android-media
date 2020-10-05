@@ -27,8 +27,8 @@ class ShopShowcaseManageViewModel {
     @RelaxedMockK
     lateinit var getSellerShowcaseList: GetShopShowcaseListSellerUseCase
 
-    @RelaxedMockK
-    lateinit var getBuyerShowcaseList: GetShopShowcaseListBuyerUseCase
+//    @RelaxedMockK
+//    lateinit var getBuyerShowcaseList: GetShopShowcaseListBuyerUseCase
 
     @RelaxedMockK
     lateinit var deleteShowcase: DeleteShopShowcaseUseCase
@@ -49,7 +49,7 @@ class ShopShowcaseManageViewModel {
     fun setup() {
         MockKAnnotations.init(this)
         viewModel = ShopShowcaseListViewModel(
-                getBuyerShowcaseList,
+//                getBuyerShowcaseList,
                 getSellerShowcaseList,
                 deleteShowcase,
                 reorderShowcase,
