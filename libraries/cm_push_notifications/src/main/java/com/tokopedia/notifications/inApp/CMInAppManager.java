@@ -450,7 +450,7 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
     public boolean canShowDialog(){
         if(!isDialogShowing){
             return true;
-        }else if(weakDialog.get() == null){
+        }else if(weakDialog== null || weakDialog.get() == null){
             isDialogShowing = false;
             return true;
         }
