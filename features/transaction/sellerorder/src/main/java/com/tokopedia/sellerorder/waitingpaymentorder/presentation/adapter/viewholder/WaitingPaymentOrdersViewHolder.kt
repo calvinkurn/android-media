@@ -54,9 +54,8 @@ class WaitingPaymentOrdersViewHolder(
                         isNestedScrollingEnabled = false
                         adapter = this@WaitingPaymentOrdersViewHolder.adapter
                     }
-                    val productCount = if (!element.isExpanded) element.productUiModels.size.coerceAtMost(MAX_ORDER_WHEN_COLLAPSED) else element.productUiModels.size
                     val layoutParams = layoutParams
-                    layoutParams.height = getRecyclerViewHeight(productCount)
+                    layoutParams.height = getRecyclerViewHeight(element.isExpanded, element.productUiModels.size)
                     this.layoutParams = layoutParams
                     this@WaitingPaymentOrdersViewHolder.adapter.updateProducts(element.productUiModels)
                     setHasFixedSize(true)
@@ -65,8 +64,9 @@ class WaitingPaymentOrdersViewHolder(
         }
     }
 
-    private fun getRecyclerViewHeight(productCount: Int): Int {
+    private fun getRecyclerViewHeight(isExpanded: Boolean, productUiModelsSize: Int): Int {
         return itemView.run {
+            val productCount = if (!isExpanded) productUiModelsSize.coerceAtMost(MAX_ORDER_WHEN_COLLAPSED) else productUiModelsSize
             productCount * (getDimens(R.dimen.waiting_order_product_height))
         }
     }
@@ -85,8 +85,7 @@ class WaitingPaymentOrdersViewHolder(
     }
 
     private fun animateRecyclerViewResizing(isExpanded: Boolean, productUiModels: List<WaitingPaymentOrderUiModel.ProductUiModel>) {
-        val productCount = if (!isExpanded) productUiModels.size.coerceAtMost(5) else productUiModels.size
-        setupRecyclerViewSizeAnimator(itemView.rvWaitingPaymentOrderProducts.height, getRecyclerViewHeight(productCount))
+        setupRecyclerViewSizeAnimator(itemView.rvWaitingPaymentOrderProducts.height, getRecyclerViewHeight(isExpanded, productUiModels.size))
     }
 
     private fun setupRecyclerViewSizeAnimator(from: Int, to: Int) {
