@@ -896,11 +896,14 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                 metadata = preference.paymentModel.metadata
         ))
         globalEvent.value = OccGlobalEvent.Loading
+        OccIdlingResource.increment()
         updateCartOccUseCase.execute(param, {
             clearBboIfExist()
             globalEvent.value = OccGlobalEvent.TriggerRefresh()
+            OccIdlingResource.decrement()
         }, {
             globalEvent.value = OccGlobalEvent.Prompt(it)
+            OccIdlingResource.decrement()
         }, { throwable: Throwable ->
             if (throwable is MessageErrorException) {
                 globalEvent.value = OccGlobalEvent.Error(errorMessage = throwable.message
@@ -908,6 +911,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             } else {
                 globalEvent.value = OccGlobalEvent.Error(throwable)
             }
+            OccIdlingResource.decrement()
         })
     }
 
@@ -1655,6 +1659,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                 setShippingPrice(_orderShipment.getRealShippingPrice().toString())
             }
             setShippingDuration(_orderShipment.serviceDuration)
+            setCampaignId(orderProduct.campaignId.toString())
         }.build(step, option)
     }
 

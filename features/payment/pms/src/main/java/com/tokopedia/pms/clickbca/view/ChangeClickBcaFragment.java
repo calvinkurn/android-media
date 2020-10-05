@@ -89,7 +89,7 @@ public class ChangeClickBcaFragment extends BaseDaggerFragment implements Change
         inputClickBcaUserId = view.findViewById(R.id.input_click_bca_user_id);
         buttonUse = view.findViewById(R.id.button_use);
         progressDialog = new ProgressDialog(getActivity());
-        progressDialog.setMessage(getString(R.string.title_loading));
+        progressDialog.setMessage(getString(com.tokopedia.abstraction.R.string.title_loading));
 
         inputClickBcaUserId.setText(userIdKlikBca);
         inputLayoutClickBcaUserId.setHelper(getString(R.string.payment_label_helper_change_click_bca, userIdKlikBca));

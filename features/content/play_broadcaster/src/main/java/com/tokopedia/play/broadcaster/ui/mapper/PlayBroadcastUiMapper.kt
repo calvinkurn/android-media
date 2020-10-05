@@ -227,11 +227,27 @@ object PlayBroadcastUiMapper {
             maxDuration = duration.maxDuration
     )
 
-    fun mapIncomingChat(chat: Chat): PlayChatUiModel =  PlayChatUiModel(
+    fun mapIncomingChat(chat: Chat): PlayChatUiModel = PlayChatUiModel(
             messageId = chat.messageId,
             message = chat.message,
             userId = chat.user.id,
             name = chat.user.name,
             isSelfMessage = false
+    )
+
+    fun mapFreezeEvent(freezeEvent: Freeze, event: EventUiModel?): EventUiModel =  EventUiModel(
+            freeze = freezeEvent.isFreeze,
+            banned = event?.banned?:false,
+            title = event?.title.orEmpty(),
+            message = event?.message.orEmpty(),
+            buttonTitle = event?.buttonTitle.orEmpty()
+    )
+
+    fun mapBannedEvent(bannedEvent: Banned, event: EventUiModel?): EventUiModel =  EventUiModel(
+            freeze = event?.freeze?:false,
+            banned = true,
+            title = bannedEvent.title,
+            message = bannedEvent.reason,
+            buttonTitle = bannedEvent.btnText
     )
 }
