@@ -11,7 +11,7 @@ import com.tokopedia.shop_showcase.shop_showcase_add.data.model.AddShopShowcaseR
 import com.tokopedia.shop_showcase.shop_showcase_add.domain.usecase.CreateShopShowcaseUseCase
 import com.tokopedia.shop_showcase.shop_showcase_management.data.model.GetShopProductsResponse
 import com.tokopedia.shop_showcase.shop_showcase_management.data.model.ShowcaseList.ShowcaseListBuyer.ShopShowcaseListBuyerResponse
-import com.tokopedia.shop_showcase.shop_showcase_management.domain.GetShopShowcaseListBuyerUseCase
+//import com.tokopedia.shop_showcase.shop_showcase_management.domain.GetShopShowcaseListBuyerUseCase
 import com.tokopedia.shop_showcase.shop_showcase_management.domain.GetShopShowcaseTotalProductUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
