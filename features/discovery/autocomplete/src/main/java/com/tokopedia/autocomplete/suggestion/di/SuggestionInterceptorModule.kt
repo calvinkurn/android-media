@@ -11,7 +11,7 @@ import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.DebugInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.network.interceptor.TkpdBaseInterceptor
-import com.tokopedia.user.session.UserSession
+
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
@@ -51,12 +51,6 @@ class SuggestionInterceptorModule {
     @Provides
     fun provideNetworkRouter(@ApplicationContext context: Context): NetworkRouter {
         return context as NetworkRouter
-    }
-
-    @SuggestionScope
-    @Provides
-    fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface {
-        return UserSession(context)
     }
 
     @SuggestionScope
