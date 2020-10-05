@@ -269,6 +269,7 @@ abstract class BaseTrackerConst {
         }
 
         private fun setNewList(product: Product?, list: String): String{
+            if(product == null) return list
             var newList = list + if(product.isTopAds) " - topads" else " - nontopads"
             if(product.isCarousel != null) newList += if (product.isCarousel == true) " - carousel" else "- non carousel"
             if(product.recommendationType.isNotEmpty()) newList += " - ${product.recommendationType}"
