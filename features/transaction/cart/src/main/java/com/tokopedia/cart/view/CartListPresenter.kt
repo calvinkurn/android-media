@@ -1250,6 +1250,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
         view?.showProgressLoading()
         val requestParams = RequestParams.create()
         requestParams.putLong(AddToCartExternalUseCase.PARAM_PRODUCT_ID, productId)
+        requestParams.putString(AddToCartExternalUseCase.PARAM_USER_ID, userSessionInterface.userId)
         compositeSubscription.add(
                 addToCartExternalUseCase?.createObservable(requestParams)
                         ?.subscribeOn(schedulers.io)

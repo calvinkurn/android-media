@@ -16,12 +16,13 @@ data class AddToCartDataModel(
 ) : Parcelable {
 
     fun isDataError(): Boolean {
-        return (data.success == 0 || !status.equals("OK", true)) && (data.message.isNotEmpty() || errorMessage.isNotEmpty())
+        return (data.success == 0 || !status.equals("OK", true))
     }
 
     fun getAtcErrorMessage(): String? {
         return errorMessage.firstOrNull() ?: data.message.firstOrNull()
     }
+
     companion object {
         const val STATUS_OK = "OK"
         const val STATUS_ERROR = "ERROR"

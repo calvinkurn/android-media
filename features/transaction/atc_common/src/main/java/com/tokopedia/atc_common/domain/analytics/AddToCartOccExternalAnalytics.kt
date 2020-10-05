@@ -1,24 +1,14 @@
-package com.tokopedia.atc_common.domain.tracking
+package com.tokopedia.atc_common.domain.analytics
 
-import android.content.Context
-import com.appsflyer.AFInAppEventParameterName
 import com.tokopedia.atc_common.data.model.response.DetailOccResponse
-import com.tokopedia.atc_common.domain.tracking.AddToCartBaseTracking.AF_PARAM_CATEGORY
-import com.tokopedia.atc_common.domain.tracking.AddToCartBaseTracking.AF_PARAM_CONTENT_ID
-import com.tokopedia.atc_common.domain.tracking.AddToCartBaseTracking.AF_PARAM_CONTENT_QUANTITY
-import com.tokopedia.atc_common.domain.tracking.AddToCartBaseTracking.AF_VALUE_CONTENT_TYPE
-import com.tokopedia.atc_common.domain.tracking.AddToCartBaseTracking.VALUE_BEBAS_ONGKIR
-import com.tokopedia.atc_common.domain.tracking.AddToCartBaseTracking.VALUE_CURRENCY
-import com.tokopedia.atc_common.domain.tracking.AddToCartBaseTracking.VALUE_NONE_OTHER
-import com.tokopedia.atc_common.domain.tracking.AddToCartBaseTracking.getMultiOriginAttribution
-import com.tokopedia.atc_common.domain.tracking.AddToCartBaseTracking.setDefaultIfEmpty
-import com.tokopedia.linker.model.LinkerData
+import com.tokopedia.atc_common.domain.analytics.AddToCartBaseAnalytics.VALUE_BEBAS_ONGKIR
+import com.tokopedia.atc_common.domain.analytics.AddToCartBaseAnalytics.VALUE_CURRENCY
+import com.tokopedia.atc_common.domain.analytics.AddToCartBaseAnalytics.VALUE_NONE_OTHER
+import com.tokopedia.atc_common.domain.analytics.AddToCartBaseAnalytics.getMultiOriginAttribution
+import com.tokopedia.atc_common.domain.analytics.AddToCartBaseAnalytics.setDefaultIfEmpty
 import com.tokopedia.track.TrackAppUtils
-import com.tokopedia.user.session.UserSession
-import org.json.JSONArray
-import org.json.JSONObject
 
-object AddToCartOccExternalTracking {
+object AddToCartOccExternalAnalytics {
 
     private const val EVENT_NAME_VALUE = "addToCart"
     private const val EVENT_CATEGORY_VALUE = "product detail page"
@@ -61,7 +51,7 @@ object AddToCartOccExternalTracking {
 
     fun sendEETracking(response: DetailOccResponse) {
         //same as atc occ in pdp
-        AddToCartBaseTracking.sendEETracking(
+        AddToCartBaseAnalytics.sendEETracking(
                 mutableMapOf(
                         TrackAppUtils.EVENT to EVENT_NAME_VALUE,
                         TrackAppUtils.EVENT_CATEGORY to EVENT_CATEGORY_VALUE,
@@ -102,38 +92,5 @@ object AddToCartOccExternalTracking {
                                 )
                         )
                 ))
-    }
-
-    fun sendAppsFlyerTracking(response: DetailOccResponse) {
-        val content = JSONArray().put(JSONObject().put(AF_PARAM_CONTENT_ID, response.productId.toString()).put(AF_PARAM_CONTENT_QUANTITY, response.quantity))
-        AddToCartBaseTracking.sendAppsFlyerTracking(
-                mutableMapOf(
-                        AFInAppEventParameterName.CONTENT_ID to response.productId,
-                        AFInAppEventParameterName.CONTENT_TYPE to AF_VALUE_CONTENT_TYPE,
-                        AFInAppEventParameterName.DESCRIPTION to response.productName,
-                        AFInAppEventParameterName.CURRENCY to VALUE_CURRENCY,
-                        AFInAppEventParameterName.QUANTITY to response.quantity,
-                        AFInAppEventParameterName.PRICE to response.price,
-                        AF_PARAM_CATEGORY to response.category,
-                        AFInAppEventParameterName.CONTENT to content.toString()
-                )
-        )
-    }
-
-    fun sendBranchIoTracking(context: Context, response: DetailOccResponse) {
-        AddToCartBaseTracking.sendBranchIoTracking(createLinkerData(context, response))
-    }
-
-    private fun createLinkerData(context: Context, response: DetailOccResponse): LinkerData {
-        return LinkerData().apply {
-            id = response.productId.toString()
-            price = response.price.toInt().toString()
-            description = ""
-            shopId = response.shopId.toString()
-            catLvl1 = response.category
-            userId = UserSession(context).userId
-            currency = VALUE_CURRENCY
-            quantity = response.quantity.toString()
-        }
     }
 }

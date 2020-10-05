@@ -2,7 +2,7 @@ package com.tokopedia.atc_common.domain.usecase
 
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.data.model.response.AddToCartGqlResponse
-import com.tokopedia.atc_common.domain.AddToCartAnalytics
+import com.tokopedia.atc_common.domain.analytics.AddToCartBaseAnalytics
 import com.tokopedia.atc_common.domain.mapper.AddToCartDataMapper
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -19,8 +19,7 @@ import javax.inject.Named
 
 class AddToCartUseCase @Inject constructor(@Named("atcMutation") private val queryString: String,
                                            private val graphqlUseCase: GraphqlUseCase,
-                                           private val addToCartDataMapper: AddToCartDataMapper,
-                                           private val analytics: AddToCartAnalytics) : UseCase<AddToCartDataModel>() {
+                                           private val addToCartDataMapper: AddToCartDataMapper) : UseCase<AddToCartDataModel>() {
 
     companion object {
         const val REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST = "REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST"
@@ -85,10 +84,15 @@ class AddToCartUseCase @Inject constructor(@Named("atcMutation") private val que
         return graphqlUseCase.createObservable(RequestParams.EMPTY).map {
             val addToCartGqlResponse = it.getData<AddToCartGqlResponse>(AddToCartGqlResponse::class.java)
             val result = addToCartDataMapper.mapAddToCartResponse(addToCartGqlResponse)
-            analytics.sendAppsFlyerTracking(result, addToCartRequest)
+            if (!result.isDataError()) {
+                AddToCartBaseAnalytics.sendAppsFlyerTracking(addToCartRequest.productId.toString(), addToCartRequest.productName, addToCartRequest.price,
+                        addToCartRequest.quantity.toString(), addToCartRequest.category)
+                AddToCartBaseAnalytics.sendBranchIoTracking(addToCartRequest.productId.toString(), addToCartRequest.productName, addToCartRequest.price,
+                        addToCartRequest.quantity.toString(), addToCartRequest.category, addToCartRequest.categoryLevel1Id,
+                        addToCartRequest.categoryLevel1Name, addToCartRequest.categoryLevel2Id, addToCartRequest.categoryLevel2Name,
+                        addToCartRequest.categoryLevel3Id, addToCartRequest.categoryLevel3Name, addToCartRequest.contentType, addToCartRequest.userId)
+            }
             result
         }
-
     }
-
 }
