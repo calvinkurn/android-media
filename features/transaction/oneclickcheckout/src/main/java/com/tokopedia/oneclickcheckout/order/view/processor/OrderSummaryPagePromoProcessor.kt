@@ -22,11 +22,12 @@ import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.Valid
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import com.tokopedia.purchase_platform.common.feature.promonoteligible.NotEligiblePromoHolderdata
 import com.tokopedia.usecase.RequestParams
+import dagger.Lazy
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUsePromoRevampUseCase: ValidateUsePromoRevampUseCase,
-                                                         private val clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase,
+class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUsePromoRevampUseCase: Lazy<ValidateUsePromoRevampUseCase>,
+                                                         private val clearCacheAutoApplyStackUseCase: Lazy<ClearCacheAutoApplyStackUseCase>,
                                                          private val orderSummaryAnalytics: OrderSummaryAnalytics,
                                                          private val executorDispatchers: ExecutorDispatchers) {
 
@@ -35,7 +36,7 @@ class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUse
         OccIdlingResource.increment()
         val resultValidateUse = withContext(executorDispatchers.io) {
             try {
-                val result = validateUsePromoRevampUseCase.createObservable(RequestParams.create().apply {
+                val result = validateUsePromoRevampUseCase.get().createObservable(RequestParams.create().apply {
                     putObject(ValidateUsePromoRevampUseCase.PARAM_VALIDATE_USE, validateUsePromoRequest)
                 }).toBlocking().single()
                 var isPromoReleased = false
@@ -63,8 +64,8 @@ class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUse
     suspend fun clearOldLogisticPromo(oldPromoCode: String) {
         withContext(executorDispatchers.io) {
             try {
-                clearCacheAutoApplyStackUseCase.setParams(ClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE, arrayListOf(oldPromoCode), true)
-                clearCacheAutoApplyStackUseCase.createObservable(RequestParams.EMPTY).toBlocking().single()
+                clearCacheAutoApplyStackUseCase.get().setParams(ClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE, arrayListOf(oldPromoCode), true)
+                clearCacheAutoApplyStackUseCase.get().createObservable(RequestParams.EMPTY).toBlocking().single()
             } catch (t: Throwable) {
                 //ignore throwable
             }
@@ -75,7 +76,7 @@ class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUse
         OccIdlingResource.increment()
         val resultValidateUse = withContext(executorDispatchers.io) {
             try {
-                val response = validateUsePromoRevampUseCase.createObservable(RequestParams.create().apply {
+                val response = validateUsePromoRevampUseCase.get().createObservable(RequestParams.create().apply {
                     putObject(ValidateUsePromoRevampUseCase.PARAM_VALIDATE_USE, validateUsePromoRequest)
                 }).toBlocking().single()
                 if (response.status.equals(STATUS_OK, true)) {
@@ -97,7 +98,7 @@ class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUse
         OccIdlingResource.increment()
         val resultValidateUse = withContext(executorDispatchers.io) {
             try {
-                val response = validateUsePromoRevampUseCase.createObservable(RequestParams.create().apply {
+                val response = validateUsePromoRevampUseCase.get().createObservable(RequestParams.create().apply {
                     putObject(ValidateUsePromoRevampUseCase.PARAM_VALIDATE_USE, validateUsePromoRequest)
                 }).toBlocking().single()
                 val (isSuccess, newGlobalEvent) = checkIneligiblePromo(response, orderCart)
@@ -115,8 +116,8 @@ class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUse
         OccIdlingResource.increment()
         val result = withContext(executorDispatchers.io) {
             try {
-                clearCacheAutoApplyStackUseCase.setParams(ClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE, promoCodeList, true)
-                clearCacheAutoApplyStackUseCase.createObservable(RequestParams.EMPTY).toBlocking().single()
+                clearCacheAutoApplyStackUseCase.get().setParams(ClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE, promoCodeList, true)
+                clearCacheAutoApplyStackUseCase.get().createObservable(RequestParams.EMPTY).toBlocking().single()
                 return@withContext true to OccGlobalEvent.Loading
             } catch (t: Throwable) {
                 return@withContext false to OccGlobalEvent.Error(t.cause ?: t)

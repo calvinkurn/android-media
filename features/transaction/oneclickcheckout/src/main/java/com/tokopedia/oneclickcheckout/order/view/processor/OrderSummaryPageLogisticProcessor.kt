@@ -19,15 +19,14 @@ import com.tokopedia.oneclickcheckout.order.view.model.*
 import com.tokopedia.purchase_platform.common.feature.editaddress.domain.param.EditAddressParam
 import com.tokopedia.purchase_platform.common.feature.editaddress.domain.usecase.EditAddressUseCase
 import com.tokopedia.usecase.RequestParams
-import com.tokopedia.user.session.UserSessionInterface
+import dagger.Lazy
 import kotlinx.coroutines.withContext
 import org.json.JSONException
 import javax.inject.Inject
 
 class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUseCase: GetRatesUseCase,
                                                             private val ratesResponseStateConverter: RatesResponseStateConverter,
-                                                            private val editAddressUseCase: EditAddressUseCase,
-                                                            private val userSessionInterface: UserSessionInterface,
+                                                            private val editAddressUseCase: Lazy<EditAddressUseCase>,
                                                             private val orderSummaryAnalytics: OrderSummaryAnalytics,
                                                             private val executorDispatchers: ExecutorDispatchers) {
 
@@ -302,11 +301,11 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
                 preselectedSpId)
     }
 
-    suspend fun savePinpoint(address: OrderProfileAddress, longitude: String, latitude: String): OccGlobalEvent {
+    suspend fun savePinpoint(address: OrderProfileAddress, longitude: String, latitude: String, userId: String, deviceId: String): OccGlobalEvent {
         OccIdlingResource.increment()
         val result = withContext(executorDispatchers.io) {
             try {
-                val params = AuthHelper.generateParamsNetwork(userSessionInterface.userId, userSessionInterface.deviceId, TKPDMapParam())
+                val params = AuthHelper.generateParamsNetwork(userId, deviceId, TKPDMapParam())
                 params[EditAddressParam.ADDRESS_ID] = address.addressId.toString()
                 params[EditAddressParam.ADDRESS_NAME] = address.addressName
                 params[EditAddressParam.ADDRESS_STREET] = address.addressStreet
@@ -319,7 +318,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
                 params[EditAddressParam.RECEIVER_NAME] = address.receiverName
                 params[EditAddressParam.RECEIVER_PHONE] = address.phone
 
-                val stringResponse = editAddressUseCase.createObservable(RequestParams.create().apply {
+                val stringResponse = editAddressUseCase.get().createObservable(RequestParams.create().apply {
                     putAllString(params)
                 }).toBlocking().single()
                 var messageError: String? = null

@@ -12,11 +12,12 @@ import com.tokopedia.promocheckout.common.view.uimodel.SummariesUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.utils.currency.CurrencyFormatUtil
+import dagger.Lazy
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import kotlin.math.ceil
 
-class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAnalytics: OrderSummaryAnalytics,
+class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAnalytics: Lazy<OrderSummaryAnalytics>,
                                                      private val executorDispatchers: ExecutorDispatchers) {
 
     private fun shouldButtonStateEnable(orderShipment: OrderShipment, orderCart: OrderCart): Boolean {
@@ -108,7 +109,7 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
                 return@withContext payment.copy(isCalculationError = false) to orderTotal.copy(orderCost = orderCost, paymentErrorMessage = payment.errorTickerMessage, buttonType = OccButtonType.CONTINUE, buttonState = currentState)
             }
             if (payment.gatewayCode.contains(OrderSummaryPageViewModel.OVO_GATEWAY_CODE) && subtotal > payment.walletAmount) {
-                orderSummaryAnalytics.eventViewErrorMessage(OrderSummaryAnalytics.ERROR_ID_PAYMENT_OVO_BALANCE)
+                orderSummaryAnalytics.get().eventViewErrorMessage(OrderSummaryAnalytics.ERROR_ID_PAYMENT_OVO_BALANCE)
                 if (payment.isOvoOnlyCampaign) {
                     return@withContext payment.copy(isCalculationError = true) to orderTotal.copy(orderCost = orderCost,
                             paymentErrorMessage = OrderSummaryPageViewModel.OVO_INSUFFICIENT_CONTINUE_MESSAGE,

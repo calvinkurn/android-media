@@ -78,6 +78,7 @@ import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
+import dagger.Lazy
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -92,7 +93,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
     lateinit var orderSummaryAnalytics: OrderSummaryAnalytics
 
     @Inject
-    lateinit var userSession: UserSessionInterface
+    lateinit var userSession: Lazy<UserSessionInterface>
 
     private val viewModel: OrderSummaryPageViewModel by lazy {
         ViewModelProvider(this, viewModelFactory)[OrderSummaryPageViewModel::class.java]
@@ -598,7 +599,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         orderInsuranceCard.setGroupInsuranceVisible(false)
 
         buttonAturPilihan?.setOnClickListener {
-            orderSummaryAnalytics.eventUserSetsFirstPreference(userSession.userId)
+            orderSummaryAnalytics.eventUserSetsFirstPreference(userSession.get().userId)
             val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PREFERENCE_EDIT).apply {
                 putExtra(PreferenceEditActivity.EXTRA_FROM_FLOW, PreferenceEditActivity.FROM_FLOW_OSP)
                 putExtra(PreferenceEditActivity.EXTRA_IS_EXTRA_PROFILE, false)
@@ -719,7 +720,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         }
 
         override fun onDurationChange(selectedServiceId: Int, selectedShippingCourierUiModel: ShippingCourierUiModel, flagNeedToSetPinpoint: Boolean) {
-            orderSummaryAnalytics.eventClickSelectedDurationOption(selectedServiceId.toString(), userSession.userId)
+            orderSummaryAnalytics.eventClickSelectedDurationOption(selectedServiceId.toString(), userSession.get().userId)
             viewModel.chooseDuration(selectedServiceId, selectedShippingCourierUiModel, flagNeedToSetPinpoint)
         }
 
@@ -737,7 +738,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
 
         override fun chooseDuration(isDurationError: Boolean) {
             if (isDurationError) {
-                orderSummaryAnalytics.eventClickUbahWhenDurationError(userSession.userId)
+                orderSummaryAnalytics.eventClickUbahWhenDurationError(userSession.get().userId)
             }
             if (viewModel.orderTotal.value.buttonState != OccButtonState.LOADING) {
                 orderPreferenceCard.showDurationBottomSheet(this@OrderSummaryPageFragment)
@@ -784,7 +785,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         if (profileId > 0 && updateCartParam != null) {
             PreferenceListBottomSheet(
                     paymentProfile = viewModel.getPaymentProfile(),
-                    getPreferenceListUseCase = viewModel.getPreferenceListUseCase,
+                    getPreferenceListUseCase = viewModel.getPreferenceListUseCase.get(),
                     listener = object : PreferenceListBottomSheet.PreferenceListBottomSheetListener {
                         override fun onChangePreference(preference: ProfilesItemModel) {
                             viewModel.updatePreference(preference)

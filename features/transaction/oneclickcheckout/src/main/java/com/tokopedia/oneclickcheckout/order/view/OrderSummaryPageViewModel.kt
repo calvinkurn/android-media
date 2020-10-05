@@ -30,6 +30,7 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateu
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import com.tokopedia.purchase_platform.common.feature.promonoteligible.NotEligiblePromoHolderdata
 import com.tokopedia.user.session.UserSessionInterface
+import dagger.Lazy
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
@@ -37,13 +38,13 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class OrderSummaryPageViewModel @Inject constructor(private val executorDispatchers: ExecutorDispatchers,
-                                                    val getPreferenceListUseCase: GetPreferenceListUseCase,
+                                                    val getPreferenceListUseCase: Lazy<GetPreferenceListUseCase>,
                                                     private val cartProcessor: OrderSummaryPageCartProcessor,
                                                     private val logisticProcessor: OrderSummaryPageLogisticProcessor,
                                                     private val checkoutProcessor: OrderSummaryPageCheckoutProcessor,
                                                     private val promoProcessor: OrderSummaryPagePromoProcessor,
                                                     private val calculator: OrderSummaryPageCalculator,
-                                                    private val userSessionInterface: UserSessionInterface,
+                                                    private val userSession: UserSessionInterface,
                                                     private val orderSummaryAnalytics: OrderSummaryAnalytics) : BaseViewModel(executorDispatchers.main) {
 
     var orderCart: OrderCart = OrderCart()
@@ -190,7 +191,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
 
     private fun sendPreselectedCourierOption(preselectedSpId: String?) {
         if (preselectedSpId != null) {
-            orderSummaryAnalytics.eventViewPreselectedCourierOption(preselectedSpId, userSessionInterface.userId)
+            orderSummaryAnalytics.eventViewPreselectedCourierOption(preselectedSpId, userSession.userId)
         }
     }
 
@@ -287,7 +288,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             return
         }
         launch(executorDispatchers.main) {
-            val result = logisticProcessor.savePinpoint(op.preference.address, longitude, latitude)
+            val result = logisticProcessor.savePinpoint(op.preference.address, longitude, latitude, userSession.userId, userSession.deviceId)
             globalEvent.value = result
         }
     }
@@ -400,7 +401,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
 
     private fun doCheckout(product: OrderProduct, shop: OrderShop, pref: OrderPreference, onSuccessCheckout: (CheckoutOccResult) -> Unit) {
         launch(executorDispatchers.main) {
-            val (checkoutOccResult, globalEventResult) = checkoutProcessor.doCheckout(validateUsePromoRevampUiModel, orderCart, product, shop, pref, _orderShipment, orderTotal.value, userSessionInterface.userId, generateOspEeBody(emptyList()))
+            val (checkoutOccResult, globalEventResult) = checkoutProcessor.doCheckout(validateUsePromoRevampUiModel, orderCart, product, shop, pref, _orderShipment, orderTotal.value, userSession.userId, generateOspEeBody(emptyList()))
             if (checkoutOccResult != null) {
                 onSuccessCheckout(checkoutOccResult)
             } else if (globalEventResult != null) {
@@ -575,7 +576,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
 
     private fun sendViewOspEe() {
         if (!hasSentViewOspEe) {
-            orderSummaryAnalytics.eventViewOrderSummaryPage(userSessionInterface.userId, _orderPreference.preference.payment.gatewayName, generateOspEeBody().build(OrderSummaryPageEnhanceECommerce.STEP_1, OrderSummaryPageEnhanceECommerce.STEP_1_OPTION))
+            orderSummaryAnalytics.eventViewOrderSummaryPage(userSession.userId, _orderPreference.preference.payment.gatewayName, generateOspEeBody().build(OrderSummaryPageEnhanceECommerce.STEP_1, OrderSummaryPageEnhanceECommerce.STEP_1_OPTION))
             hasSentViewOspEe = true
         }
     }

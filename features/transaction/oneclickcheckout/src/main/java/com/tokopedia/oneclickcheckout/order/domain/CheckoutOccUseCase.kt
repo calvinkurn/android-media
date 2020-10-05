@@ -9,18 +9,6 @@ import javax.inject.Inject
 
 class CheckoutOccUseCase @Inject constructor(private val graphqlUseCase: GraphqlUseCase<CheckoutOccGqlResponse>) {
 
-    fun execute(param: CheckoutOccRequest, onSuccess: (CheckoutOccData) -> Unit, onError: (Throwable) -> Unit) {
-        graphqlUseCase.setGraphqlQuery(QUERY)
-        graphqlUseCase.setTypeClass(CheckoutOccGqlResponse::class.java)
-        graphqlUseCase.setRequestParams(generateParam(param))
-
-        graphqlUseCase.execute({ checkoutOccGqlResponse: CheckoutOccGqlResponse ->
-            onSuccess(mapCheckoutData(checkoutOccGqlResponse))
-        }, { throwable: Throwable ->
-            onError(throwable)
-        })
-    }
-
     suspend fun executeSuspend(param: CheckoutOccRequest): CheckoutOccData {
         graphqlUseCase.setGraphqlQuery(QUERY)
         graphqlUseCase.setTypeClass(CheckoutOccGqlResponse::class.java)

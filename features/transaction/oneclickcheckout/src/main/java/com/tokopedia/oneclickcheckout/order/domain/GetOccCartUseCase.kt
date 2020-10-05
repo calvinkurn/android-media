@@ -18,13 +18,12 @@ import com.tokopedia.oneclickcheckout.order.view.model.WholesalePrice
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.Ticker
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerData
 import com.tokopedia.usecase.RequestParams
-import com.tokopedia.usecase.coroutines.UseCase
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 import kotlin.math.min
 
-class GetOccCartUseCase @Inject constructor(val context: Context, val graphqlUseCase: GraphqlUseCase<GetOccCartGqlResponse>) : UseCase<OrderData>() {
+class GetOccCartUseCase @Inject constructor(val context: Context, val graphqlUseCase: GraphqlUseCase<GetOccCartGqlResponse>) {
 
     fun createRequestParams(source: String): RequestParams {
         return RequestParams.create().apply {
@@ -277,10 +276,5 @@ class GetOccCartUseCase @Inject constructor(val context: Context, val graphqlUse
 
     companion object {
         private const val PARAM_SOURCE = "source"
-    }
-
-    override suspend fun executeOnBackground(): OrderData {
-        // temporary
-        return OrderData()
     }
 }

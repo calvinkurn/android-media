@@ -1,6 +1,8 @@
 package com.tokopedia.oneclickcheckout.order.domain
 
-import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.oneclickcheckout.common.DEFAULT_ERROR_MESSAGE
 import com.tokopedia.oneclickcheckout.common.STATUS_OK
@@ -12,34 +14,11 @@ import com.tokopedia.oneclickcheckout.order.view.model.OccPromptButton
 import java.util.*
 import javax.inject.Inject
 
-class UpdateCartOccUseCase @Inject constructor(private val graphqlUseCase: GraphqlUseCase<UpdateCartOccGqlResponse>) {
-
-    fun execute(param: UpdateCartOccRequest, onSuccess: (UpdateCartOccGqlResponse) -> Unit, onPrompt: (OccPrompt) -> Unit, onError: (Throwable) -> Unit) {
-        graphqlUseCase.setGraphqlQuery(QUERY)
-        graphqlUseCase.setRequestParams(generateParam(param))
-        graphqlUseCase.setTypeClass(UpdateCartOccGqlResponse::class.java)
-        graphqlUseCase.execute({ response: UpdateCartOccGqlResponse ->
-            if (response.response.status.equals(STATUS_OK, true) && response.response.data.success == 1) {
-                onSuccess(response)
-            } else {
-                val prompt = mapPrompt(response.response.data.prompt)
-                if (prompt.shouldShowPrompt()) {
-                    onPrompt(prompt)
-                } else {
-                    onError(MessageErrorException(response.getErrorMessage()
-                            ?: DEFAULT_ERROR_MESSAGE))
-                }
-            }
-        }, { throwable: Throwable ->
-            onError(throwable)
-        })
-    }
+class UpdateCartOccUseCase @Inject constructor(private val graphqlRepository: GraphqlRepository) {
 
     suspend fun executeSuspend(param: UpdateCartOccRequest): OccPrompt? {
-        graphqlUseCase.setGraphqlQuery(QUERY)
-        graphqlUseCase.setRequestParams(generateParam(param))
-        graphqlUseCase.setTypeClass(UpdateCartOccGqlResponse::class.java)
-        val response = graphqlUseCase.executeOnBackground()
+        val request = GraphqlRequest(QUERY, UpdateCartOccGqlResponse::class.java, generateParam(param))
+        val response = graphqlRepository.getReseponse(listOf(request)).getSuccessData<UpdateCartOccGqlResponse>()
         if (response.response.status.equals(STATUS_OK, true) && response.response.data.success == 1) {
             return null
         }
