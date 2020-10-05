@@ -6,6 +6,9 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.ui.model.PlayMetricUiModel
 import com.tokopedia.play_common.widget.playBannerCarousel.extension.loadImage
@@ -29,8 +32,20 @@ class PlayMetricBubble : ConstraintLayout {
         tvMetricDetail = view.findViewById(R.id.tv_metric_detail)
     }
 
+    private val imageListener = object : ImageHandler.ImageLoaderStateListener {
+        override fun successLoad() {
+            ivIcon.visible()
+        }
+
+        override fun failedLoad() {
+            ivIcon.gone()
+        }
+    }
+
     fun setMetric(metric: PlayMetricUiModel) {
-        ivIcon.loadImage(metric.iconUrl)
+        if (metric.iconUrl.isEmpty()) ivIcon.gone()
+        else ivIcon.loadImage(metric.iconUrl, imageListener)
+
         tvMetricDetail.text = metric.spannedSentence
     }
 }

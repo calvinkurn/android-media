@@ -92,8 +92,6 @@ class PlayMetricsView : LinearLayout {
     }
 
     private fun getMetricBubbleInstance(): PlayMetricBubble {
-//        val view = View.inflate(context, R.layout.item_play_metrics, null) as TextView
-//        view.layoutParams = LayoutParams(LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         return PlayMetricBubble(context)
     }
 
