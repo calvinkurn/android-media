@@ -74,6 +74,9 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
             val isLoginRequire = getQueryParameter(KEY_NEED_LOGIN)
             isLoginRequire?.let { needLogin = it.toBoolean() }
 
+            val isPullToRefreshEnabled = getQueryParameter(KEY_PULL_TO_REFRESH)
+            isPullToRefreshEnabled?.let { pullToRefresh = it.toBoolean() }
+
             val needTitle = getQueryParameter(KEY_TITLE)
             needTitle?.let { webViewTitle = it }
         }

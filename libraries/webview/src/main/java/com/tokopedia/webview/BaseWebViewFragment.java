@@ -751,6 +751,9 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         if (progressBar != null) {
             progressBar.setVisibility(View.GONE);
         }
+        if (swipeRefreshLayout != null) {
+            swipeRefreshLayout.setRefreshing(false);
+        }
     }
 
     private String getPreviousUri() {
