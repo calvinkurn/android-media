@@ -34,7 +34,6 @@ class PinpointMapPresenter @Inject constructor(private val getDistrictUseCase: G
 
     private var saveAddressDataModel = SaveAddressDataModel()
     private var permissionCheckerHelper: PermissionCheckerHelper? = null
-    private var fusedLocationClient: FusedLocationProviderClient? = null
 
     fun getDistrict(placeId: String) {
         SimpleIdlingResource.increment()
@@ -129,7 +128,6 @@ class PinpointMapPresenter @Inject constructor(private val getDistrictUseCase: G
     }
 
     fun requestLocation(activity: Activity) {
-        fusedLocationClient = FusedLocationProviderClient(activity)
         permissionCheckerHelper?.checkPermissions(activity, getPermissions(),
                 object : PermissionCheckerHelper.PermissionCheckListener {
                     override fun onPermissionDenied(permissionText: String) {
@@ -141,12 +139,7 @@ class PinpointMapPresenter @Inject constructor(private val getDistrictUseCase: G
                     }
 
                     override fun onPermissionGranted() {
-                        fusedLocationClient?.lastLocation
-                                ?.addOnSuccessListener {
-                                    if (it != null) {
-                                        view.moveMap(getLatLng(it.latitude, it.longitude), 16f)
-                                    }
-                                }
+                        view.getLastLocationClient()
                     }
 
                 }, "")

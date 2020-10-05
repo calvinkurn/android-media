@@ -327,7 +327,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
         moveMap(getLatLng(currentLat, currentLong), zoomLevel)
     }
 
-    override fun moveMap(latLng: LatLng, zoomLevel: Float) {
+    private fun moveMap(latLng: LatLng, zoomLevel: Float) {
         val cameraPosition = CameraPosition.Builder()
                 .target(latLng)
                 .zoom(zoomLevel)
@@ -340,15 +340,22 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
         super.onResume()
         map_view?.onResume()
         if ((currentLat == 0.0 && currentLong == 0.0) || currentLat == DEFAULT_LAT && currentLong == DEFAULT_LONG) {
-            fusedLocationClient?.lastLocation?.addOnSuccessListener {
-                moveMap(getLatLng(it.latitude, it.longitude), ZOOM_LEVEL)
-            }
+            getLastLocationClient()
         }
         if (AddNewAddressUtils.isGpsEnabled(context)) {
             ic_current_location.setImageResource(R.drawable.ic_gps_enable)
         } else {
             ic_current_location.setImageResource(R.drawable.ic_gps_disable)
         }
+    }
+
+    override fun getLastLocationClient() {
+        fusedLocationClient?.lastLocation
+                ?.addOnSuccessListener {
+                    if (it != null) {
+                        moveMap(getLatLng(it.latitude, it.longitude), ZOOM_LEVEL)
+                    }
+                }
     }
 
     private fun doUseCurrentLocation(isFullFlow: Boolean) {
