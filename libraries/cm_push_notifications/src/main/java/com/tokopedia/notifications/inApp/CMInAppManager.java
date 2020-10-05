@@ -444,7 +444,7 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
             job.cancel(new CancellationException(GratifCancellationExceptionType.FRAGMENT_SELECTED));
 
             //todo Rahul later - need better logic for this
-            isDialogShowing = false;
+//            isDialogShowing = false;
         }
 //        gratifJobs.clear();
         mapOfGratifJobs.clear();
@@ -475,12 +475,12 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
 
     private void cancelGratifJob(int entityHashCode, @GratifCancellationExceptionType String reason) {
         Job job = mapOfGratifJobs.get(entityHashCode);
-        if (job != null) {
+        if (job != null && !job.isCompleted()) {
             job.cancel(new CancellationException(reason));
             mapOfGratifJobs.remove(entityHashCode);
 
             //need better logic for this
-            isDialogShowing = false;
+//            isDialogShowing = false;
         }
     }
 

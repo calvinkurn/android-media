@@ -2,6 +2,7 @@ package com.tokopedia.promotionstarget.presentation.ui.dialog
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.DialogInterface
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -68,18 +69,19 @@ class CmGratificationDialog {
         return R.layout.dialog_gratification
     }
 
-    fun show(activityContext: Context, gratifNotification: GratifNotification, couponDetailResponse: TokopointsCouponDetailResponse, @NotificationEntryType notificationEntryType: Int): BottomSheetDialog? {
-        val pair = prepareBottomSheet(activityContext)
+    fun show(activityContext: Context, gratifNotification: GratifNotification, couponDetailResponse: TokopointsCouponDetailResponse, @NotificationEntryType notificationEntryType: Int, onShowListener: DialogInterface.OnShowListener): BottomSheetDialog? {
+        val pair = prepareBottomSheet(activityContext, onShowListener)
         initViews(pair.first, activityContext, gratifNotification, couponDetailResponse)
         setUiData(gratifNotification, couponDetailResponse)
         updateGratifNotification(gratifNotification, pair.first, notificationEntryType)
         return pair.second
     }
 
-    private fun prepareBottomSheet(activityContext: Context): Pair<View, BottomSheetDialog> {
+    private fun prepareBottomSheet(activityContext: Context, onShowListener: DialogInterface.OnShowListener): Pair<View, BottomSheetDialog> {
         val bottomSheet = CloseableBottomSheetDialog.createInstanceCloseableRounded(activityContext, {})
         val view = LayoutInflater.from(activityContext).inflate(getLayout(), null, false)
         bottomSheet.setCustomContentView(view, "", true)
+        bottomSheet.setOnShowListener(onShowListener)
         bottomSheet.show()
         return Pair(view, bottomSheet)
     }

@@ -2,9 +2,7 @@ package com.tokopedia.promotionstarget.domain.presenter
 
 import android.app.Activity
 import android.app.Application
-import android.content.Context
 import android.content.DialogInterface
-import android.content.SharedPreferences
 import android.util.Log
 import androidx.annotation.IntDef
 import androidx.annotation.StringDef
@@ -78,20 +76,25 @@ class GratificationPresenter @Inject constructor(val application: Application) {
                 if (!code.isNullOrEmpty()) {
                     val couponDetail = tpCouponDetailUseCase.getResponse(tpCouponDetailUseCase.getQueryParams(code))
 //                    val couponDetail = tpCouponDetailUseCase.getFakeResponse(tpCouponDetailUseCase.getQueryParams(code))
-                    val couponStatus = couponDetail?.coupon?.realCode?:""
-                    if(!couponStatus.isEmpty()){
+                    val couponStatus = couponDetail?.coupon?.realCode ?: ""
+                    if (!couponStatus.isEmpty()) {
                         withContext(uiWorker) {
                             weakActivity.get()?.let {
-                                val dialog = CmGratificationDialog().show(it, notifResponse.response, couponDetail, notificationEntryType)
-                                dialog?.setOnShowListener {dialogInterface->
-                                    gratifPopupCallback?.onShow(dialogInterface)
-                                }
-                                dialog?.setOnDismissListener {dialogInterface->
+                                val dialog = CmGratificationDialog().show(it,
+                                        notifResponse.response,
+                                        couponDetail,
+                                        notificationEntryType,
+                                        DialogInterface.OnShowListener { dialog ->
+                                            if (dialog != null)
+                                                gratifPopupCallback?.onShow(dialog)
+                                        })
+
+                                dialog?.setOnDismissListener { dialogInterface ->
                                     gratifPopupCallback?.onDismiss(dialogInterface)
                                 }
                             }
                         }
-                    }else{
+                    } else {
                         gratifPopupCallback?.onIgnored(GratifPopupIngoreType.INVALID_COUPON)
                     }
 
@@ -156,7 +159,7 @@ class GratificationPresenter @Inject constructor(val application: Application) {
     interface GratifPopupCallback {
         fun onShow(dialog: DialogInterface)
         fun onDismiss(dialog: DialogInterface)
-        fun onIgnored(@GratifPopupIngoreType reason:Int)
+        fun onIgnored(@GratifPopupIngoreType reason: Int)
     }
 
     interface ExceptionCallback {
@@ -177,7 +180,7 @@ annotation class GratifPopupIngoreType {
 }
 
 @Retention(AnnotationRetention.SOURCE)
-@StringDef(FRAGMENT_STARTED, FRAGMENT_SELECTED,FRAGMENT_RESUME,FRAGMENT_STOP,FRAGMENT_DESTROYED, ACTIVITY_STOP)
+@StringDef(FRAGMENT_STARTED, FRAGMENT_SELECTED, FRAGMENT_RESUME, FRAGMENT_STOP, FRAGMENT_DESTROYED, ACTIVITY_STOP)
 annotation class GratifCancellationExceptionType {
     companion object {
         const val FRAGMENT_STARTED = "fragment started"

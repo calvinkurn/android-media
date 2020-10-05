@@ -2,50 +2,62 @@ package com.tokopedia.promotionstarget.fake
 
 object FakeResponse {
 
-    val GRATIF_RESPONSE = "{\n" +
-            "  \"data\": {\n" +
-            "    \"getNotification\": {\n" +
-            "      \"notificationID\": 4,\n" +
-            "      \"promoCode\": \"TOPEDTEST\",\n" +
-            "      \"notificationStatus\": 20,\n" +
-            "      \"wordingActive\": {\n" +
-            "        \"titleId\": \"Kupon Special Buatmu\",\n" +
-            "        \"titleEn\": \"Kupon Special Buatmu\",\n" +
-            "        \"subtitle1Id\": \"Hai topers, kamu dapat kupon dari transaksi pertamamu!\",\n" +
-            "        \"subtitle1En\": \"Hai topers, kamu dapat kupon dari transaksi pertamamu!\",\n" +
-            "        \"subtitle2Id\": \"Kamu bisa langsung pakai kuponnya buat belanja, lho.\",\n" +
-            "        \"subtitle2En\": \"Kamu bisa langsung pakai kuponnya buat belanja, lho.\"\n" +
-            "      },\n" +
-            "      \"wordingExpired\": {\n" +
-            "        \"titleId\": \"\",\n" +
-            "        \"titleEn\": \"\",\n" +
-            "        \"subtitle1Id\": \"Kupon ini tidak berlaku lagi\",\n" +
-            "        \"subtitle1En\": \"Kupon ini tidak berlaku lagi\",\n" +
-            "        \"subtitle2Id\": \"Kamu tidak bisa pakai kupon ini. Tenang saja, masih banyak kupon menarik lainnya yang bisa kamu dapatkan!\",\n" +
-            "        \"subtitle2En\": \"Kamu tidak bisa pakai kupon ini. Tenang saja, masih banyak kupon menarik lainnya yang bisa kamu dapatkan!\"\n" +
-            "      },\n" +
-            "      \"wordingUsed\": {\n" +
-            "        \"titleId\": \"\",\n" +
-            "        \"titleEn\": \"\",\n" +
-            "        \"subtitle1Id\": \"Kamu sudah pakai kupon ini\",\n" +
-            "        \"subtitle1En\": \"Kamu sudah pakai kupon ini\",\n" +
-            "        \"subtitle2Id\": \"Tenang saja, masih banyak kupon menarik lainnya yang bisa kamu dapatkan di Tokopedia, lho!\",\n" +
-            "        \"subtitle2En\": \"Tenang saja, masih banyak kupon menarik lainnya yang bisa kamu dapatkan di Tokopedia, lho!\"\n" +
-            "      },\n" +
-            "      \"button\": {\n" +
-            "        \"text\": \"Coupon gratis\",\n" +
-            "        \"url\": \"https://tokopedia.com/coupon\",\n" +
-            "        \"appLink\": \"https://tokopedia.com/coupon\",\n" +
-            "        \"isShown\": true\n" +
-            "      },\n" +
-            "      \"resultStatus\": {\n" +
-            "        \"code\": \"200000\",\n" +
-            "        \"reason\": \"success\",\n" +
-            "        \"message\": []\n" +
+    val GRATIF_RESPONSE ="{\n" +
+            "    \"data\": {\n" +
+            "      \"getNotification\": {\n" +
+            "        \"notificationID\": 64,\n" +
+            "        \"promoCode\": \"MZTEMS5ECJYEJA3NPHM\",\n" +
+            "        \"notificationStatus\": 11,\n" +
+            "        \"wordingActive\": {\n" +
+            "          \"titleId\": \"Kupon Special Buatmu\",\n" +
+            "          \"titleEn\": \"Kupon Special Buatmu\",\n" +
+            "          \"subtitle1Id\": \"Hai Rahul, kamu dapat kupon dari transaksi pertamamu!\",\n" +
+            "          \"subtitle1En\": \"Hai Rahul, kamu dapat kupon dari transaksi pertamamu!\",\n" +
+            "          \"subtitle2Id\": \"Kamu bisa langsung pakai kuponnya buat belanja, lho.\",\n" +
+            "          \"subtitle2En\": \"Kamu bisa langsung pakai kuponnya buat belanja, lho.\"\n" +
+            "        },\n" +
+            "        \"wordingSeen\": {\n" +
+            "          \"titleId\": \"Kupon Spesial Buatmu\",\n" +
+            "          \"titleEn\": \"Kupon Spesial Buatmu\",\n" +
+            "          \"subtitle1Id\": \"Kamu bisa cek kupon ini & lihat detailnya di halaman kupon saya\",\n" +
+            "          \"subtitle1En\": \"Kamu bisa cek kupon ini & lihat detailnya di halaman kupon saya\",\n" +
+            "          \"subtitle2Id\": \"\",\n" +
+            "          \"subtitle2En\": \"\"\n" +
+            "        },\n" +
+            "        \"wordingExpired\": {\n" +
+            "          \"titleId\": \"\",\n" +
+            "          \"titleEn\": \"\",\n" +
+            "          \"subtitle1Id\": \"Kupon ini tidak berlaku lagi\",\n" +
+            "          \"subtitle1En\": \"Kupon ini tidak berlaku lagi\",\n" +
+            "          \"subtitle2Id\": \"Kamu tidak bisa pakai kupon ini. Tenang saja, masih banyak kupon menarik lainnya yang bisa kamu dapatkan!\",\n" +
+            "          \"subtitle2En\": \"Kamu tidak bisa pakai kupon ini. Tenang saja, masih banyak kupon menarik lainnya yang bisa kamu dapatkan!\"\n" +
+            "        },\n" +
+            "        \"wordingUsed\": {\n" +
+            "          \"titleId\": \"\",\n" +
+            "          \"titleEn\": \"\",\n" +
+            "          \"subtitle1Id\": \"Kamu sudah pakai kupon ini\",\n" +
+            "          \"subtitle1En\": \"Kamu sudah pakai kupon ini\",\n" +
+            "          \"subtitle2Id\": \"Tenang saja, masih banyak kupon menarik lainnya yang bisa kamu dapatkan di Tokopedia, lho!\",\n" +
+            "          \"subtitle2En\": \"Tenang saja, masih banyak kupon menarik lainnya yang bisa kamu dapatkan di Tokopedia, lho!\"\n" +
+            "        },\n" +
+            "        \"button\": {\n" +
+            "          \"text\": \"Coupon gratis\",\n" +
+            "          \"url\": \"https:://tokopedia.com\",\n" +
+            "          \"appLink\": \"https:://tokopedia.com\",\n" +
+            "          \"isShown\": false,\n" +
+            "          \"type\": \"redirect\"\n" +
+            "        },\n" +
+            "        \"hachikoButton\": {\n" +
+            "          \"type\": \"redirect\"\n" +
+            "        },\n" +
+            "        \"resultStatus\": {\n" +
+            "          \"code\": \"200000\",\n" +
+            "          \"message\": [],\n" +
+            "          \"reason\": \"\"\n" +
+            "        }\n" +
             "      }\n" +
             "    }\n" +
-            "  }\n" +
-            "}"
+            "  }"
 
     val HACHIKO_COUPON_DETAIL = "{\n" +
             "    \"data\": {\n" +
