@@ -17,7 +17,7 @@ import android.webkit.WebViewClient;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.crashlytics.android.Crashlytics;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.config.GlobalConfig;
@@ -434,7 +434,7 @@ public class SessionHandler {
         editor.apply();
         TrackApp.getInstance().getGTM()
                 .pushUserId(getGTMLoginID(context));
-        if (!GlobalConfig.DEBUG) Crashlytics.setUserIdentifier(u_id);
+        if (!GlobalConfig.DEBUG) FirebaseCrashlytics.getInstance().setUserId(u_id);
 
         UserData userData = new UserData();
         userData.setUserId(u_id);

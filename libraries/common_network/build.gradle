@@ -40,9 +40,8 @@ dependencies {
     implementation rootProject.ext.miscDependencies.gson
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
-    implementation (rootProject.ext.serviceDependencies.crashlytics) {
-        transitive = true
-    }
+    implementation (rootProject.ext.firebase.crashlytics) {
+        transitive = true	        }
 }
 
 project.ext {

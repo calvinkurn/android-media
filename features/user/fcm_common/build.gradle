@@ -21,7 +21,8 @@ buildscript {
 
 dependencies {
     implementation project(rootProject.ext.libraries.tkpdabstraction)
-    implementation (rootProject.ext.serviceDependencies.crashlytics)
+    implementation (rootProject.ext.firebase.crashlytics) {
+        transitive = true	        }
 
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
