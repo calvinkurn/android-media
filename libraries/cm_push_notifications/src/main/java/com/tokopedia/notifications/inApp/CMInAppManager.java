@@ -299,7 +299,7 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
 //                        isDialogShowing = false;
                         dataConsumed(data);
                     }
-//                    showIgnoreToast("organic", reason);
+                    showIgnoreToast("organic", reason);
                 }
             });
 
