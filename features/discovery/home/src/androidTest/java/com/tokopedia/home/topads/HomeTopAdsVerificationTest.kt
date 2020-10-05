@@ -18,7 +18,6 @@ import com.tokopedia.test.application.assertion.topads.TopAdsAssertion
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.InstrumentationAuthHelper.loginInstrumentationTestTopAdsUser
 import com.tokopedia.test.application.util.setupTopAdsDetector
-import kotlinx.android.synthetic.main.home_featured_shop.view.*
 import org.junit.*
 
 /**

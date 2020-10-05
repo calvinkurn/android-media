@@ -1,0 +1,2680 @@
+[
+  {
+    "data": {
+      "propertySearchRoom": {
+        "propertyID": 488573,
+        "rooms": [
+          {
+            "ID": "2687421ef4b9b40c3f07521728563406",
+            "available": true,
+            "roomQtyRequired": 1,
+            "breakfastInfo": {
+              "isBreakFastIncluded": true,
+              "mealPlan": "Sarapan sudah termasuk dalam harga.",
+              "breakFast": "Sarapan Gratis",
+              "icon": "breakfast_included",
+              "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-breakfast_included.png"
+            },
+            "occupancyInfo": {
+              "maxOccupancy": 2,
+              "maxFreeChild": 0,
+              "occupancyText": "2 Dewasa"
+            },
+            "depositInfo": {
+              "isNeedDeposit": false,
+              "depositText": ""
+            },
+            "refundInfo": {
+              "isRefundAble": false,
+              "refundStatus": "Non-refundable",
+              "icon": "non_refundable",
+              "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-non_refundable.png"
+            },
+            "creditcardInfo": {
+              "isCCRequired": true,
+              "isCCDomesticRequired": true,
+              "header": "Perlu jaminan kartu kredit",
+              "info": "Kartu kredit diperlukan untuk verifikasi, biaya pemesanan akan ditagihkan saat tiba di hotel."
+            },
+            "numberRoomLeft": 2,
+            "roomPrice": {
+              "price": "Rp 4.172.597",
+              "priceAmount": 4172597,
+              "totalPrice": "Rp 4.172.597",
+              "totalPriceAmount": 4172597,
+              "extraCharges": {
+                "netPrice": "Rp 3.448.428",
+                "netPriceAmount": 3448427.27,
+                "extraChargeInfo": [
+                  {
+                    "name": "Pajak",
+                    "excluded": false,
+                    "type": "VAT",
+                    "price": "Rp 344.843",
+                    "priceAmount": 344842.73
+                  },
+                  {
+                    "name": "biaya layanan",
+                    "excluded": false,
+                    "type": "SERVICECHARGE",
+                    "price": "Rp 379.327",
+                    "priceAmount": 379327
+                  }
+                ]
+              },
+              "deals": {
+                "tagging": "",
+                "price": "",
+                "priceAmount": 0
+              }
+            },
+            "roomPolicy": [],
+            "cancelPolicy": [
+              {
+                "subHeader": "Non-refundable",
+                "content": "Setelah 16 Sep 2020, 00:00\nJika melakukan pembatalan, limit kartu kredit akan dipotong sebesar total biaya pemesanan"
+              }
+            ],
+            "refundableUntil": "0001-01-01 00:00:00",
+            "roomInfo": {
+              "description": "Suite 1-kamar tidur yang luas ini terletak di lantai atas properti. Unit ini menawarkan AC, ruang tamu, dapur kecil terpisah, dan ruang makan. Kamar mandi pribadinya yang bergaya semi-terbuka menyediakan bathtub dan shower, serta hot tub berpemanas. Anda dapat menikmati sore dengan bermalas-malasan di sofa daybed yang terletak di balkon yang menghadap samudra.",
+              "name": "Suite 1 Kamar Tidur dengan Bathtub Air Panas dan Pemandangan Samudera",
+              "bathRoomCount": 1,
+              "size": 75,
+              "maxGuest": 2,
+              "facility": [
+                {
+                  "name": "AC",
+                  "icon": "ac",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-ac.png"
+                },
+                {
+                  "name": "Kamar mandi pribadi",
+                  "icon": "bathtub",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-bathtub.png"
+                },
+                {
+                  "name": "Peralatan mandi",
+                  "icon": "toiletries",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-toiletries.png"
+                },
+                {
+                  "name": "TV",
+                  "icon": "tv",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-tv.png"
+                },
+                {
+                  "name": "Minibar",
+                  "icon": "bar",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-bar.png"
+                },
+                {
+                  "name": "Handuk",
+                  "icon": "towel",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-towel.png"
+                },
+                {
+                  "name": "Lemari es",
+                  "icon": "refrigerator",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-refrigerator.png"
+                },
+                {
+                  "name": "Brankas",
+                  "icon": "safety_box",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-safety_box.png"
+                },
+                {
+                  "name": "Lemari",
+                  "icon": "wardrobe",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-wardrobe.png"
+                },
+                {
+                  "name": "Pengering rambut",
+                  "icon": "hair_dryer",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-hair_dryer.png"
+                },
+                {
+                  "name": "Kamar rias",
+                  "icon": "dressing_room",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-dressing_room.png"
+                },
+                {
+                  "name": "Sebotol air",
+                  "icon": "mineral_water",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-mineral_water.png"
+                },
+                {
+                  "name": "Pembuat teh/kopi",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Layanan bangun tidur",
+                  "icon": "clock",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-clock.png"
+                },
+                {
+                  "name": "Fasilitas setrika",
+                  "icon": "iron",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-iron.png"
+                },
+                {
+                  "name": "Shower",
+                  "icon": "bathtub",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-bathtub.png"
+                },
+                {
+                  "name": "Bathtub",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Telepon",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Jam alarm/layanan bangun tidur",
+                  "icon": "clock",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-clock.png"
+                },
+                {
+                  "name": "Hot tub",
+                  "icon": "bathtub",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-bathtub.png"
+                },
+                {
+                  "name": "Dapur kecil",
+                  "icon": "kitchen",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-kitchen.png"
+                },
+                {
+                  "name": "Jubah mandi",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Meja kerja",
+                  "icon": "desk",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-desk.png"
+                },
+                {
+                  "name": "Area tempat duduk",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Kipas angin",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Toilet",
+                  "icon": "bathtub",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-bathtub.png"
+                },
+                {
+                  "name": "Sandal",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "TV satelit",
+                  "icon": "cable_tv",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-cable_tv.png"
+                },
+                {
+                  "name": "Bathtub atau shower",
+                  "icon": "shower",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-shower.png"
+                },
+                {
+                  "name": "TV layar datar",
+                  "icon": "tv",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-tv.png"
+                },
+                {
+                  "name": "Sofa",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Lantai keramik/marmer",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Pemandangan",
+                  "icon": "view",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-view.png"
+                },
+                {
+                  "name": "Jam alarm",
+                  "icon": "clock",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-clock.png"
+                },
+                {
+                  "name": "Ruang makan",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Ketel listrik",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Peralatan dapur",
+                  "icon": "kitchen",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-kitchen.png"
+                },
+                {
+                  "name": "Kelambu nyamuk",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Kompor",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Pemandangan laut",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Pemandangan taman",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Alat bersih-bersih",
+                  "icon": "toiletries",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-toiletries.png"
+                },
+                {
+                  "name": "Mesin kopi",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Meja makan",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Furnitur outdoor",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Area makan outdoor",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Lantai atas hanya bisa diakses dengan tangga",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Papan Jemur Baju",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Tisu toilet",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Ranjang sofa",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Kamar mandi luas",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Handuk kolam",
+                  "icon": "towel",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-towel.png"
+                },
+                {
+                  "name": "Anggur atau sampanye",
+                  "icon": "bar",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-bar.png"
+                },
+                {
+                  "name": "Buah-buahan",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Tempat sampah",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Gelas anggur",
+                  "icon": "bar",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-bar.png"
+                },
+                {
+                  "name": "Sikat gigi",
+                  "icon": "toiletries",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-toiletries.png"
+                },
+                {
+                  "name": "Sampo",
+                  "icon": "toiletries",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-toiletries.png"
+                },
+                {
+                  "name": "Kondisioner",
+                  "icon": "toiletries",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-toiletries.png"
+                },
+                {
+                  "name": "Sabun",
+                  "icon": "toiletries",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-toiletries.png"
+                },
+                {
+                  "name": "Shower cap",
+                  "icon": "toiletries",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-toiletries.png"
+                },
+                {
+                  "name": "Stop kontak dekat tempat tidur",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Adaptor",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Bantal non-bulu",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Loker",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Alarm kebakaran",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Pemadam api",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Akses kunci",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Balkon",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Brankas laptop",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Yukata",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                }
+              ],
+              "mainFacility": [
+                {
+                  "name": "AC",
+                  "icon": "ac",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-ac.png"
+                },
+                {
+                  "name": "Kamar mandi pribadi",
+                  "icon": "bathtub",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-bathtub.png"
+                }
+              ],
+              "roomImages": [
+                {
+                  "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/max300/258676849.jpg?k=0db15b5f13a38c41ee574d17faba7502ad0c27472639c99961861baa9b5b12a2&o=",
+                  "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/258676849.jpg?k=0db15b5f13a38c41ee574d17faba7502ad0c27472639c99961861baa9b5b12a2&o=",
+                  "urlSquare": "https://q-xx.bstatic.com/xdata/images/hotel/square60/258676849.jpg?k=0db15b5f13a38c41ee574d17faba7502ad0c27472639c99961861baa9b5b12a2&o="
+                },
+                {
+                  "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/max300/258835750.jpg?k=412d9f852db01191251dbd2a831c9bac8008a77af87668d40a2b0cdec4e5ba69&o=",
+                  "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/258835750.jpg?k=412d9f852db01191251dbd2a831c9bac8008a77af87668d40a2b0cdec4e5ba69&o=",
+                  "urlSquare": "https://q-xx.bstatic.com/xdata/images/hotel/square60/258835750.jpg?k=412d9f852db01191251dbd2a831c9bac8008a77af87668d40a2b0cdec4e5ba69&o="
+                },
+                {
+                  "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/max300/258835745.jpg?k=49f2f98705a79a851dd61922f7174b092c89ac0f8f9ff4a885d1e5bc62a09542&o=",
+                  "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/258835745.jpg?k=49f2f98705a79a851dd61922f7174b092c89ac0f8f9ff4a885d1e5bc62a09542&o=",
+                  "urlSquare": "https://q-xx.bstatic.com/xdata/images/hotel/square60/258835745.jpg?k=49f2f98705a79a851dd61922f7174b092c89ac0f8f9ff4a885d1e5bc62a09542&o="
+                },
+                {
+                  "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/max300/258835733.jpg?k=9d6c25f1eb0ae11ed95696c44bcf8b771fe458d53c22c6ec1ae969ab5cfea63d&o=",
+                  "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/258835733.jpg?k=9d6c25f1eb0ae11ed95696c44bcf8b771fe458d53c22c6ec1ae969ab5cfea63d&o=",
+                  "urlSquare": "https://q-xx.bstatic.com/xdata/images/hotel/square60/258835733.jpg?k=9d6c25f1eb0ae11ed95696c44bcf8b771fe458d53c22c6ec1ae969ab5cfea63d&o="
+                },
+                {
+                  "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/max300/258835755.jpg?k=3769062ce6486ebb2eca4c3f54c852ba4017e76d03f8db8c0868ba05529a9f59&o=",
+                  "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/258835755.jpg?k=3769062ce6486ebb2eca4c3f54c852ba4017e76d03f8db8c0868ba05529a9f59&o=",
+                  "urlSquare": "https://q-xx.bstatic.com/xdata/images/hotel/square60/258835755.jpg?k=3769062ce6486ebb2eca4c3f54c852ba4017e76d03f8db8c0868ba05529a9f59&o="
+                },
+                {
+                  "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/max300/46797818.jpg?k=3226622ce85ffd4c4f595220a2d457f51efb076d02ef8ec8bfe942b711a7f532&o=",
+                  "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/46797818.jpg?k=3226622ce85ffd4c4f595220a2d457f51efb076d02ef8ec8bfe942b711a7f532&o=",
+                  "urlSquare": "https://q-xx.bstatic.com/xdata/images/hotel/square60/46797818.jpg?k=3226622ce85ffd4c4f595220a2d457f51efb076d02ef8ec8bfe942b711a7f532&o="
+                },
+                {
+                  "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/max300/258835747.jpg?k=af3f58064cb2051823b320ca691fb7d3b0c4ff7f78dfbbbf14c219de11e86611&o=",
+                  "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/258835747.jpg?k=af3f58064cb2051823b320ca691fb7d3b0c4ff7f78dfbbbf14c219de11e86611&o=",
+                  "urlSquare": "https://q-xx.bstatic.com/xdata/images/hotel/square60/258835747.jpg?k=af3f58064cb2051823b320ca691fb7d3b0c4ff7f78dfbbbf14c219de11e86611&o="
+                },
+                {
+                  "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/max300/258835748.jpg?k=e2ca67c9cdac14b59b85f4efe694de10135792bbb6897fceaa8ee036a3486a89&o=",
+                  "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/258835748.jpg?k=e2ca67c9cdac14b59b85f4efe694de10135792bbb6897fceaa8ee036a3486a89&o=",
+                  "urlSquare": "https://q-xx.bstatic.com/xdata/images/hotel/square60/258835748.jpg?k=e2ca67c9cdac14b59b85f4efe694de10135792bbb6897fceaa8ee036a3486a89&o="
+                },
+                {
+                  "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/max300/258833691.jpg?k=07b78d65cc0521d1c45227acae040ff0642d5d3c2559ef3eeaadab217ad3e390&o=",
+                  "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/258833691.jpg?k=07b78d65cc0521d1c45227acae040ff0642d5d3c2559ef3eeaadab217ad3e390&o=",
+                  "urlSquare": "https://q-xx.bstatic.com/xdata/images/hotel/square60/258833691.jpg?k=07b78d65cc0521d1c45227acae040ff0642d5d3c2559ef3eeaadab217ad3e390&o="
+                },
+                {
+                  "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/max300/258835757.jpg?k=c9eef69e2fdee11f1bc811550ad05aaf6f6b23fe4167d4905b8495d0b6a81270&o=",
+                  "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/258835757.jpg?k=c9eef69e2fdee11f1bc811550ad05aaf6f6b23fe4167d4905b8495d0b6a81270&o=",
+                  "urlSquare": "https://q-xx.bstatic.com/xdata/images/hotel/square60/258835757.jpg?k=c9eef69e2fdee11f1bc811550ad05aaf6f6b23fe4167d4905b8495d0b6a81270&o="
+                },
+                {
+                  "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/max300/259008394.jpg?k=fb4d0c7026763319d2daf3670268c8573dae6a46d99f59be4b39dc811a8a61e5&o=",
+                  "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/259008394.jpg?k=fb4d0c7026763319d2daf3670268c8573dae6a46d99f59be4b39dc811a8a61e5&o=",
+                  "urlSquare": "https://q-xx.bstatic.com/xdata/images/hotel/square60/259008394.jpg?k=fb4d0c7026763319d2daf3670268c8573dae6a46d99f59be4b39dc811a8a61e5&o="
+                }
+              ],
+              "maxPrice": 22884600,
+              "minPrice": 4172600
+            },
+            "bedInfo": "",
+            "taxes": "Termasuk: Pajak 10 %, biaya layanan 10 %",
+            "extraBedInfo": {
+              "IsFreeExtraBed": false,
+              "Content": "Tidak Menyediakan tempat tidur tambahan"
+            }
+          },
+          {
+            "ID": "5c0aee491e90fee5db5233dcde57a5c9",
+            "available": true,
+            "roomQtyRequired": 1,
+            "breakfastInfo": {
+              "isBreakFastIncluded": true,
+              "mealPlan": "Sarapan sudah termasuk dalam harga.",
+              "breakFast": "Sarapan Gratis",
+              "icon": "breakfast_included",
+              "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-breakfast_included.png"
+            },
+            "occupancyInfo": {
+              "maxOccupancy": 2,
+              "maxFreeChild": 0,
+              "occupancyText": "2 Dewasa"
+            },
+            "depositInfo": {
+              "isNeedDeposit": false,
+              "depositText": ""
+            },
+            "refundInfo": {
+              "isRefundAble": false,
+              "refundStatus": "Non-refundable",
+              "icon": "non_refundable",
+              "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-non_refundable.png"
+            },
+            "creditcardInfo": {
+              "isCCRequired": true,
+              "isCCDomesticRequired": true,
+              "header": "Perlu jaminan kartu kredit",
+              "info": "Kartu kredit diperlukan untuk verifikasi, biaya pemesanan akan ditagihkan saat tiba di hotel."
+            },
+            "numberRoomLeft": 2,
+            "roomPrice": {
+              "price": "Rp 4.812.500",
+              "priceAmount": 4812500,
+              "totalPrice": "Rp 4.812.500",
+              "totalPriceAmount": 4812500,
+              "extraCharges": {
+                "netPrice": "Rp 3.977.273",
+                "netPriceAmount": 3977272.73,
+                "extraChargeInfo": [
+                  {
+                    "name": "biaya layanan",
+                    "excluded": false,
+                    "type": "SERVICECHARGE",
+                    "price": "Rp 437.500",
+                    "priceAmount": 437500
+                  },
+                  {
+                    "name": "Pajak",
+                    "excluded": false,
+                    "type": "VAT",
+                    "price": "Rp 397.728",
+                    "priceAmount": 397727.27
+                  }
+                ]
+              },
+              "deals": {
+                "tagging": "",
+                "price": "",
+                "priceAmount": 0
+              }
+            },
+            "roomPolicy": [],
+            "cancelPolicy": [
+              {
+                "subHeader": "Non-refundable",
+                "content": "Setelah 16 Sep 2020, 00:00\nJika melakukan pembatalan, limit kartu kredit akan dipotong sebesar total biaya pemesanan"
+              }
+            ],
+            "refundableUntil": "0001-01-01 00:00:00",
+            "roomInfo": {
+              "description": "Vila 1-kamar tidur yang luas ini menawarkan ruang tamu, dapur kecil lengkap, dan ruang makan. Kamar mandi dalam semi-terbukanya menyediakan bathtub dan shower. Anda dapat menikmati sore hari di dipan di samping kolam renang outdoor.",
+              "name": "Suite 1-Kamar Tidur dengan Kolam Renang Pribadi ",
+              "bathRoomCount": 0,
+              "size": 220,
+              "maxGuest": 2,
+              "facility": [
+                {
+                  "name": "AC",
+                  "icon": "ac",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-ac.png"
+                },
+                {
+                  "name": "Kamar mandi pribadi",
+                  "icon": "bathtub",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-bathtub.png"
+                },
+                {
+                  "name": "Peralatan mandi",
+                  "icon": "toiletries",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-toiletries.png"
+                },
+                {
+                  "name": "TV",
+                  "icon": "tv",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-tv.png"
+                },
+                {
+                  "name": "Minibar",
+                  "icon": "bar",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-bar.png"
+                },
+                {
+                  "name": "Handuk",
+                  "icon": "towel",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-towel.png"
+                },
+                {
+                  "name": "Lemari es",
+                  "icon": "refrigerator",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-refrigerator.png"
+                },
+                {
+                  "name": "Brankas",
+                  "icon": "safety_box",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-safety_box.png"
+                },
+                {
+                  "name": "Lemari",
+                  "icon": "wardrobe",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-wardrobe.png"
+                },
+                {
+                  "name": "Pengering rambut",
+                  "icon": "hair_dryer",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-hair_dryer.png"
+                },
+                {
+                  "name": "Kamar rias",
+                  "icon": "dressing_room",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-dressing_room.png"
+                },
+                {
+                  "name": "Sebotol air",
+                  "icon": "mineral_water",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-mineral_water.png"
+                },
+                {
+                  "name": "Pembuat teh/kopi",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Layanan bangun tidur",
+                  "icon": "clock",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-clock.png"
+                },
+                {
+                  "name": "Fasilitas setrika",
+                  "icon": "iron",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-iron.png"
+                },
+                {
+                  "name": "Shower",
+                  "icon": "bathtub",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-bathtub.png"
+                },
+                {
+                  "name": "Bathtub",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Telepon",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Jam alarm/layanan bangun tidur",
+                  "icon": "clock",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-clock.png"
+                },
+                {
+                  "name": "Hot tub",
+                  "icon": "bathtub",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-bathtub.png"
+                },
+                {
+                  "name": "Dapur kecil",
+                  "icon": "kitchen",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-kitchen.png"
+                },
+                {
+                  "name": "Jubah mandi",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Meja kerja",
+                  "icon": "desk",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-desk.png"
+                },
+                {
+                  "name": "Area tempat duduk",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Kipas angin",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Toilet",
+                  "icon": "bathtub",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-bathtub.png"
+                },
+                {
+                  "name": "Sandal",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "TV satelit",
+                  "icon": "cable_tv",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-cable_tv.png"
+                },
+                {
+                  "name": "Bathtub atau shower",
+                  "icon": "shower",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-shower.png"
+                },
+                {
+                  "name": "TV layar datar",
+                  "icon": "tv",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-tv.png"
+                },
+                {
+                  "name": "Sofa",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Lantai keramik/marmer",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Pemandangan",
+                  "icon": "view",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-view.png"
+                },
+                {
+                  "name": "Jam alarm",
+                  "icon": "clock",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-clock.png"
+                },
+                {
+                  "name": "Ruang makan",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Ketel listrik",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Peralatan dapur",
+                  "icon": "kitchen",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-kitchen.png"
+                },
+                {
+                  "name": "Kelambu nyamuk",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Kolam renang pribadi",
+                  "icon": "swimming_pool",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-swimming_pool.png"
+                },
+                {
+                  "name": "Kompor",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Pemandangan kolam renang",
+                  "icon": "swimming_pool",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-swimming_pool.png"
+                },
+                {
+                  "name": "Alat bersih-bersih",
+                  "icon": "toiletries",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-toiletries.png"
+                },
+                {
+                  "name": "Mesin kopi",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Teras",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Meja makan",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Furnitur outdoor",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Area makan outdoor",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Papan Jemur Baju",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Tisu toilet",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Ranjang sofa",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Kamar mandi luas",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Kolam dengan pemandangan",
+                  "icon": "swimming_pool",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-swimming_pool.png"
+                },
+                {
+                  "name": "Handuk kolam",
+                  "icon": "towel",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-towel.png"
+                },
+                {
+                  "name": "Anggur atau sampanye",
+                  "icon": "bar",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-bar.png"
+                },
+                {
+                  "name": "Buah-buahan",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Tempat sampah",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Gelas anggur",
+                  "icon": "bar",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-bar.png"
+                },
+                {
+                  "name": "Sikat gigi",
+                  "icon": "toiletries",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-toiletries.png"
+                },
+                {
+                  "name": "Sampo",
+                  "icon": "toiletries",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-toiletries.png"
+                },
+                {
+                  "name": "Kondisioner",
+                  "icon": "toiletries",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-toiletries.png"
+                },
+                {
+                  "name": "Sabun",
+                  "icon": "toiletries",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-toiletries.png"
+                },
+                {
+                  "name": "Shower cap",
+                  "icon": "toiletries",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-toiletries.png"
+                },
+                {
+                  "name": "Stop kontak dekat tempat tidur",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Adaptor",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Bantal non-bulu",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Loker",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Alarm kebakaran",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Pemadam api",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Akses kunci",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Brankas laptop",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Yukata",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                }
+              ],
+              "mainFacility": [
+                {
+                  "name": "AC",
+                  "icon": "ac",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-ac.png"
+                },
+                {
+                  "name": "Kamar mandi pribadi",
+                  "icon": "bathtub",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-bathtub.png"
+                }
+              ],
+              "roomImages": [
+                {
+                  "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/max300/259352674.jpg?k=ba4ab1a416f4eeeab45ae6ae74f0f299b9ccd166bf07ed0fe0b26e6bac921706&o=",
+                  "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/259352674.jpg?k=ba4ab1a416f4eeeab45ae6ae74f0f299b9ccd166bf07ed0fe0b26e6bac921706&o=",
+                  "urlSquare": "https://q-xx.bstatic.com/xdata/images/hotel/square60/259352674.jpg?k=ba4ab1a416f4eeeab45ae6ae74f0f299b9ccd166bf07ed0fe0b26e6bac921706&o="
+                },
+                {
+                  "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/max300/259352516.jpg?k=a0431cc5784c21b5aa3b6028835ec902d0d476a2e02c8ac9909f39ec5686ed45&o=",
+                  "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/259352516.jpg?k=a0431cc5784c21b5aa3b6028835ec902d0d476a2e02c8ac9909f39ec5686ed45&o=",
+                  "urlSquare": "https://q-xx.bstatic.com/xdata/images/hotel/square60/259352516.jpg?k=a0431cc5784c21b5aa3b6028835ec902d0d476a2e02c8ac9909f39ec5686ed45&o="
+                },
+                {
+                  "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/max300/259353096.jpg?k=e4e5f498d07384d78e546f02c98bf82eddc0f6e1a36ac3ed871f0d4fec9d369b&o=",
+                  "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/259353096.jpg?k=e4e5f498d07384d78e546f02c98bf82eddc0f6e1a36ac3ed871f0d4fec9d369b&o=",
+                  "urlSquare": "https://q-xx.bstatic.com/xdata/images/hotel/square60/259353096.jpg?k=e4e5f498d07384d78e546f02c98bf82eddc0f6e1a36ac3ed871f0d4fec9d369b&o="
+                },
+                {
+                  "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/max300/258833680.jpg?k=0dfcb605c2eb46e34035f41bed8b7fbd1bfbfab7c80fa3a664c2a67e24f6e76f&o=",
+                  "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/258833680.jpg?k=0dfcb605c2eb46e34035f41bed8b7fbd1bfbfab7c80fa3a664c2a67e24f6e76f&o=",
+                  "urlSquare": "https://q-xx.bstatic.com/xdata/images/hotel/square60/258833680.jpg?k=0dfcb605c2eb46e34035f41bed8b7fbd1bfbfab7c80fa3a664c2a67e24f6e76f&o="
+                },
+                {
+                  "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/max300/258832977.jpg?k=27b3a8ed80ab08e28599b3fa64f5b39249d19b1d55e2d1f81de07a78f40bbeca&o=",
+                  "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/258832977.jpg?k=27b3a8ed80ab08e28599b3fa64f5b39249d19b1d55e2d1f81de07a78f40bbeca&o=",
+                  "urlSquare": "https://q-xx.bstatic.com/xdata/images/hotel/square60/258832977.jpg?k=27b3a8ed80ab08e28599b3fa64f5b39249d19b1d55e2d1f81de07a78f40bbeca&o="
+                },
+                {
+                  "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/max300/258833681.jpg?k=4ea7f7f5db758c8e1ff438a8cdb49cd3043012abc30d832c724d5b3fe0df37ff&o=",
+                  "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/258833681.jpg?k=4ea7f7f5db758c8e1ff438a8cdb49cd3043012abc30d832c724d5b3fe0df37ff&o=",
+                  "urlSquare": "https://q-xx.bstatic.com/xdata/images/hotel/square60/258833681.jpg?k=4ea7f7f5db758c8e1ff438a8cdb49cd3043012abc30d832c724d5b3fe0df37ff&o="
+                },
+                {
+                  "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/max300/258832986.jpg?k=0f827f8e149f62e52f64ab1852b8ed002ffb333e9312beea5ca46d03208eb1cf&o=",
+                  "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/258832986.jpg?k=0f827f8e149f62e52f64ab1852b8ed002ffb333e9312beea5ca46d03208eb1cf&o=",
+                  "urlSquare": "https://q-xx.bstatic.com/xdata/images/hotel/square60/258832986.jpg?k=0f827f8e149f62e52f64ab1852b8ed002ffb333e9312beea5ca46d03208eb1cf&o="
+                },
+                {
+                  "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/max300/258832410.jpg?k=f11a9ca821b1908fe003c75c219540d301aec9d7d12c961dbfdd598a77ecc4d0&o=",
+                  "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/258832410.jpg?k=f11a9ca821b1908fe003c75c219540d301aec9d7d12c961dbfdd598a77ecc4d0&o=",
+                  "urlSquare": "https://q-xx.bstatic.com/xdata/images/hotel/square60/258832410.jpg?k=f11a9ca821b1908fe003c75c219540d301aec9d7d12c961dbfdd598a77ecc4d0&o="
+                },
+                {
+                  "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/max300/258832404.jpg?k=01cf74a626d7a6d4882354ea6ec8c60e58589368eb83744ced83f2a9510d4b33&o=",
+                  "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/258832404.jpg?k=01cf74a626d7a6d4882354ea6ec8c60e58589368eb83744ced83f2a9510d4b33&o=",
+                  "urlSquare": "https://q-xx.bstatic.com/xdata/images/hotel/square60/258832404.jpg?k=01cf74a626d7a6d4882354ea6ec8c60e58589368eb83744ced83f2a9510d4b33&o="
+                },
+                {
+                  "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/max300/258833886.jpg?k=48364eeb47becd19255c91d17dffddb82377cba9bc7d3ef663db20f2299d87c6&o=",
+                  "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/258833886.jpg?k=48364eeb47becd19255c91d17dffddb82377cba9bc7d3ef663db20f2299d87c6&o=",
+                  "urlSquare": "https://q-xx.bstatic.com/xdata/images/hotel/square60/258833886.jpg?k=48364eeb47becd19255c91d17dffddb82377cba9bc7d3ef663db20f2299d87c6&o="
+                },
+                {
+                  "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/max300/258833888.jpg?k=27ed0dcd3a98b5e8246f8d2aedf62576a0e988724fcaca2b16a15d7b1f53c1c3&o=",
+                  "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/258833888.jpg?k=27ed0dcd3a98b5e8246f8d2aedf62576a0e988724fcaca2b16a15d7b1f53c1c3&o=",
+                  "urlSquare": "https://q-xx.bstatic.com/xdata/images/hotel/square60/258833888.jpg?k=27ed0dcd3a98b5e8246f8d2aedf62576a0e988724fcaca2b16a15d7b1f53c1c3&o="
+                },
+                {
+                  "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/max300/258833676.jpg?k=5ad20b445af6f1b36f27435a1d70f1cbe7e3a14092143913e1ae9e06bc54eb8b&o=",
+                  "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/258833676.jpg?k=5ad20b445af6f1b36f27435a1d70f1cbe7e3a14092143913e1ae9e06bc54eb8b&o=",
+                  "urlSquare": "https://q-xx.bstatic.com/xdata/images/hotel/square60/258833676.jpg?k=5ad20b445af6f1b36f27435a1d70f1cbe7e3a14092143913e1ae9e06bc54eb8b&o="
+                },
+                {
+                  "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/max300/258833691.jpg?k=07b78d65cc0521d1c45227acae040ff0642d5d3c2559ef3eeaadab217ad3e390&o=",
+                  "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/258833691.jpg?k=07b78d65cc0521d1c45227acae040ff0642d5d3c2559ef3eeaadab217ad3e390&o=",
+                  "urlSquare": "https://q-xx.bstatic.com/xdata/images/hotel/square60/258833691.jpg?k=07b78d65cc0521d1c45227acae040ff0642d5d3c2559ef3eeaadab217ad3e390&o="
+                },
+                {
+                  "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/max300/258833883.jpg?k=5b2eb11281f14501e35a8982847479351378298665279b25914c6fc9401c1bf3&o=",
+                  "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/258833883.jpg?k=5b2eb11281f14501e35a8982847479351378298665279b25914c6fc9401c1bf3&o=",
+                  "urlSquare": "https://q-xx.bstatic.com/xdata/images/hotel/square60/258833883.jpg?k=5b2eb11281f14501e35a8982847479351378298665279b25914c6fc9401c1bf3&o="
+                },
+                {
+                  "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/max300/258833885.jpg?k=d6fdad1bda1d4d9d30d01d1003269644171e2b6c7182ec232c5bf667075cf4c9&o=",
+                  "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/258833885.jpg?k=d6fdad1bda1d4d9d30d01d1003269644171e2b6c7182ec232c5bf667075cf4c9&o=",
+                  "urlSquare": "https://q-xx.bstatic.com/xdata/images/hotel/square60/258833885.jpg?k=d6fdad1bda1d4d9d30d01d1003269644171e2b6c7182ec232c5bf667075cf4c9&o="
+                },
+                {
+                  "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/max300/258832415.jpg?k=98b198c843f2c6470729c7e80c58f0a43565c3e426efca68136aa7362edbe4dd&o=",
+                  "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/258832415.jpg?k=98b198c843f2c6470729c7e80c58f0a43565c3e426efca68136aa7362edbe4dd&o=",
+                  "urlSquare": "https://q-xx.bstatic.com/xdata/images/hotel/square60/258832415.jpg?k=98b198c843f2c6470729c7e80c58f0a43565c3e426efca68136aa7362edbe4dd&o="
+                },
+                {
+                  "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/max300/258832421.jpg?k=a2d7cd11b05d2a57da443f4d146010fe4cb094fc17bc13f48964b49630360ef7&o=",
+                  "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/258832421.jpg?k=a2d7cd11b05d2a57da443f4d146010fe4cb094fc17bc13f48964b49630360ef7&o=",
+                  "urlSquare": "https://q-xx.bstatic.com/xdata/images/hotel/square60/258832421.jpg?k=a2d7cd11b05d2a57da443f4d146010fe4cb094fc17bc13f48964b49630360ef7&o="
+                },
+                {
+                  "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/max300/259021708.jpg?k=d7809902f51aae096f3baad55738db008f002847712fad3dceed61589e0aadbe&o=",
+                  "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/259021708.jpg?k=d7809902f51aae096f3baad55738db008f002847712fad3dceed61589e0aadbe&o=",
+                  "urlSquare": "https://q-xx.bstatic.com/xdata/images/hotel/square60/259021708.jpg?k=d7809902f51aae096f3baad55738db008f002847712fad3dceed61589e0aadbe&o="
+                },
+                {
+                  "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/max300/231993393.jpg?k=58414235a9e04882cec67040c29de886f4431a3f769fabdf711491308fd08ee2&o=",
+                  "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/max500/231993393.jpg?k=58414235a9e04882cec67040c29de886f4431a3f769fabdf711491308fd08ee2&o=",
+                  "urlSquare": "https://q-xx.bstatic.com/xdata/images/hotel/square60/231993393.jpg?k=58414235a9e04882cec67040c29de886f4431a3f769fabdf711491308fd08ee2&o="
+                }
+              ],
+              "maxPrice": 0,
+              "minPrice": 0
+            },
+            "bedInfo": "",
+            "taxes": "Termasuk: Pajak 10 %, biaya layanan 10 %",
+            "extraBedInfo": {
+              "IsFreeExtraBed": false,
+              "Content": "Tidak Menyediakan tempat tidur tambahan"
+            }
+          },
+          {
+            "ID": "7078441ebc69f9d6c6056f23b1af6c3a",
+            "available": true,
+            "roomQtyRequired": 1,
+            "breakfastInfo": {
+              "isBreakFastIncluded": true,
+              "mealPlan": "Sarapan sudah termasuk dalam harga.",
+              "breakFast": "Sarapan Gratis",
+              "icon": "breakfast_included",
+              "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-breakfast_included.png"
+            },
+            "occupancyInfo": {
+              "maxOccupancy": 2,
+              "maxFreeChild": 0,
+              "occupancyText": "2 Dewasa"
+            },
+            "depositInfo": {
+              "isNeedDeposit": false,
+              "depositText": ""
+            },
+            "refundInfo": {
+              "isRefundAble": false,
+              "refundStatus": "Non-refundable",
+              "icon": "non_refundable",
+              "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-non_refundable.png"
+            },
+            "creditcardInfo": {
+              "isCCRequired": true,
+              "isCCDomesticRequired": true,
+              "header": "Perlu jaminan kartu kredit",
+              "info": "Kartu kredit diperlukan untuk verifikasi, biaya pemesanan akan ditagihkan saat tiba di hotel."
+            },
+            "numberRoomLeft": 3,
+            "roomPrice": {
+              "price": "Rp 5.870.205",
+              "priceAmount": 5870205,
+              "totalPrice": "Rp 5.870.205",
+              "totalPriceAmount": 5870205,
+              "extraCharges": {
+                "netPrice": "Rp 4.851.410",
+                "netPriceAmount": 4851409.09,
+                "extraChargeInfo": [
+                  {
+                    "name": "Pajak",
+                    "excluded": false,
+                    "type": "VAT",
+                    "price": "Rp 485.141",
+                    "priceAmount": 485140.91
+                  },
+                  {
+                    "name": "biaya layanan",
+                    "excluded": false,
+                    "type": "SERVICECHARGE",
+                    "price": "Rp 533.655",
+                    "priceAmount": 533655
+                  }
+                ]
+              },
+              "deals": {
+                "tagging": "",
+                "price": "",
+                "priceAmount": 0
+              }
+            },
+            "roomPolicy": [],
+            "cancelPolicy": [
+              {
+                "subHeader": "Non-refundable",
+                "content": "Setelah 16 Sep 2020, 00:00\nJika melakukan pembatalan, limit kartu kredit akan dipotong sebesar total biaya pemesanan"
+              }
+            ],
+            "refundableUntil": "0001-01-01 00:00:00",
+            "roomInfo": {
+              "description": "Vila ber-AC ini menawarkan ruang tamu, dapur terpisah, dan ruang makan. Kamar mandi semi-terbukanya menyediakan bathtub dan shower. Tersedia juga kolam renang dan dipan.",
+              "name": "Vila 1 Kamar Tidur dengan Kolam Renang Pribadi",
+              "bathRoomCount": 1,
+              "size": 220,
+              "maxGuest": 2,
+              "facility": [
+                {
+                  "name": "AC",
+                  "icon": "ac",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-ac.png"
+                },
+                {
+                  "name": "Kamar mandi pribadi",
+                  "icon": "bathtub",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-bathtub.png"
+                },
+                {
+                  "name": "Peralatan mandi",
+                  "icon": "toiletries",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-toiletries.png"
+                },
+                {
+                  "name": "TV",
+                  "icon": "tv",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-tv.png"
+                },
+                {
+                  "name": "Minibar",
+                  "icon": "bar",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-bar.png"
+                },
+                {
+                  "name": "Handuk",
+                  "icon": "towel",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-towel.png"
+                },
+                {
+                  "name": "Lemari es",
+                  "icon": "refrigerator",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-refrigerator.png"
+                },
+                {
+                  "name": "Brankas",
+                  "icon": "safety_box",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-safety_box.png"
+                },
+                {
+                  "name": "Lemari",
+                  "icon": "wardrobe",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-wardrobe.png"
+                },
+                {
+                  "name": "Pengering rambut",
+                  "icon": "hair_dryer",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-hair_dryer.png"
+                },
+                {
+                  "name": "Kamar rias",
+                  "icon": "dressing_room",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-dressing_room.png"
+                },
+                {
+                  "name": "Sebotol air",
+                  "icon": "mineral_water",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-mineral_water.png"
+                },
+                {
+                  "name": "Pembuat teh/kopi",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Layanan bangun tidur",
+                  "icon": "clock",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-clock.png"
+                },
+                {
+                  "name": "Fasilitas setrika",
+                  "icon": "iron",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-iron.png"
+                },
+                {
+                  "name": "Shower",
+                  "icon": "bathtub",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-bathtub.png"
+                },
+                {
+                  "name": "Bathtub",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Telepon",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Jam alarm/layanan bangun tidur",
+                  "icon": "clock",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-clock.png"
+                },
+                {
+                  "name": "Dapur kecil",
+                  "icon": "kitchen",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-kitchen.png"
+                },
+                {
+                  "name": "Jubah mandi",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Meja kerja",
+                  "icon": "desk",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-desk.png"
+                },
+                {
+                  "name": "Area tempat duduk",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Kipas angin",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Toilet",
+                  "icon": "bathtub",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-bathtub.png"
+                },
+                {
+                  "name": "Sandal",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "TV satelit",
+                  "icon": "cable_tv",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-cable_tv.png"
+                },
+                {
+                  "name": "Bathtub atau shower",
+                  "icon": "shower",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-shower.png"
+                },
+                {
+                  "name": "TV layar datar",
+                  "icon": "tv",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-tv.png"
+                },
+                {
+                  "name": "Sofa",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Lantai keramik/marmer",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Pemandangan",
+                  "icon": "view",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-view.png"
+                },
+                {
+                  "name": "Jam alarm",
+                  "icon": "clock",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-clock.png"
+                },
+                {
+                  "name": "Ruang makan",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Ketel listrik",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Peralatan dapur",
+                  "icon": "kitchen",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-kitchen.png"
+                },
+                {
+                  "name": "Kelambu nyamuk",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Kolam renang pribadi",
+                  "icon": "swimming_pool",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-swimming_pool.png"
+                },
+                {
+                  "name": "Kompor",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Pemandangan kolam renang",
+                  "icon": "swimming_pool",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-swimming_pool.png"
+                },
+                {
+                  "name": "Alat bersih-bersih",
+                  "icon": "toiletries",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-toiletries.png"
+                },
+                {
+                  "name": "Mesin kopi",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Teras",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Meja makan",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Furnitur outdoor",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Area makan outdoor",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Papan Jemur Baju",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Tisu toilet",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Ranjang sofa",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Kamar mandi luas",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Kolam dengan pemandangan",
+                  "icon": "swimming_pool",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-swimming_pool.png"
+                },
+                {
+                  "name": "Handuk kolam",
+                  "icon": "towel",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-towel.png"
+                },
+                {
+                  "name": "Anggur atau sampanye",
+                  "icon": "bar",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-bar.png"
+                },
+                {
+                  "name": "Buah-buahan",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Tempat sampah",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Gelas anggur",
+                  "icon": "bar",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-bar.png"
+                },
+                {
+                  "name": "Sikat gigi",
+                  "icon": "toiletries",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-toiletries.png"
+                },
+                {
+                  "name": "Sampo",
+                  "icon": "toiletries",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-toiletries.png"
+                },
+                {
+                  "name": "Kondisioner",
+                  "icon": "toiletries",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-toiletries.png"
+                },
+                {
+                  "name": "Sabun",
+                  "icon": "toiletries",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-toiletries.png"
+                },
+                {
+                  "name": "Shower cap",
+                  "icon": "toiletries",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-toiletries.png"
+                },
+                {
+                  "name": "Stop kontak dekat tempat tidur",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Adaptor",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Bantal non-bulu",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Loker",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Alarm kebakaran",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Pemadam api",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Akses kunci",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Brankas laptop",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Yukata",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                }
+              ],
+              "mainFacility": [
+                {
+                  "name": "AC",
+                  "icon": "ac",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-ac.png"
+                },
+                {
+                  "name": "Kamar mandi pribadi",
+                  "icon": "bathtub",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-bathtub.png"
+                }
+              ],
+              "roomImages": [
+                {
+                  "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/max300/259349454.jpg?k=9bbc2cecd04835a4f3c1ee660462f7613abf9a84f67b234edd82adfca126ae84&o=",
+                  "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/259349454.jpg?k=9bbc2cecd04835a4f3c1ee660462f7613abf9a84f67b234edd82adfca126ae84&o=",
+                  "urlSquare": "https://q-xx.bstatic.com/xdata/images/hotel/square60/259349454.jpg?k=9bbc2cecd04835a4f3c1ee660462f7613abf9a84f67b234edd82adfca126ae84&o="
+                },
+                {
+                  "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/max300/259016285.jpg?k=8b2b18e911b1b611aa4549ff618f7557ad3ce8e4f285098bb994899096240952&o=",
+                  "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/259016285.jpg?k=8b2b18e911b1b611aa4549ff618f7557ad3ce8e4f285098bb994899096240952&o=",
+                  "urlSquare": "https://q-xx.bstatic.com/xdata/images/hotel/square60/259016285.jpg?k=8b2b18e911b1b611aa4549ff618f7557ad3ce8e4f285098bb994899096240952&o="
+                },
+                {
+                  "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/max300/259016294.jpg?k=277d3fffec06e2356774739d5a9177cd2d48272506e65c186e7710891caad6e7&o=",
+                  "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/259016294.jpg?k=277d3fffec06e2356774739d5a9177cd2d48272506e65c186e7710891caad6e7&o=",
+                  "urlSquare": "https://q-xx.bstatic.com/xdata/images/hotel/square60/259016294.jpg?k=277d3fffec06e2356774739d5a9177cd2d48272506e65c186e7710891caad6e7&o="
+                },
+                {
+                  "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/max300/46803838.jpg?k=816a4797416c39969d657199f4c4ff7a228d7ead84187a07273e9f2d28592037&o=",
+                  "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/46803838.jpg?k=816a4797416c39969d657199f4c4ff7a228d7ead84187a07273e9f2d28592037&o=",
+                  "urlSquare": "https://q-xx.bstatic.com/xdata/images/hotel/square60/46803838.jpg?k=816a4797416c39969d657199f4c4ff7a228d7ead84187a07273e9f2d28592037&o="
+                },
+                {
+                  "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/max300/258832132.jpg?k=7ba4b28215a912d01dc87164cc34cd3fb45108165fad4db0e3f7316ab5623678&o=",
+                  "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/258832132.jpg?k=7ba4b28215a912d01dc87164cc34cd3fb45108165fad4db0e3f7316ab5623678&o=",
+                  "urlSquare": "https://q-xx.bstatic.com/xdata/images/hotel/square60/258832132.jpg?k=7ba4b28215a912d01dc87164cc34cd3fb45108165fad4db0e3f7316ab5623678&o="
+                },
+                {
+                  "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/max300/258832113.jpg?k=bd3f7959976cadf84e55bafc0c3b722376465e81c91bc266d52fbf0cb7879425&o=",
+                  "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/258832113.jpg?k=bd3f7959976cadf84e55bafc0c3b722376465e81c91bc266d52fbf0cb7879425&o=",
+                  "urlSquare": "https://q-xx.bstatic.com/xdata/images/hotel/square60/258832113.jpg?k=bd3f7959976cadf84e55bafc0c3b722376465e81c91bc266d52fbf0cb7879425&o="
+                },
+                {
+                  "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/max300/259349473.jpg?k=81d5baba1ee2a89f1f5e72ad1b2ad7807fc60f6621e6f82dcb05902100cf98cd&o=",
+                  "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/259349473.jpg?k=81d5baba1ee2a89f1f5e72ad1b2ad7807fc60f6621e6f82dcb05902100cf98cd&o=",
+                  "urlSquare": "https://q-xx.bstatic.com/xdata/images/hotel/square60/259349473.jpg?k=81d5baba1ee2a89f1f5e72ad1b2ad7807fc60f6621e6f82dcb05902100cf98cd&o="
+                },
+                {
+                  "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/max300/258832108.jpg?k=0483b47ebba838c42941792a37df02c79010294468b4ee7692071d464d5a5602&o=",
+                  "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/258832108.jpg?k=0483b47ebba838c42941792a37df02c79010294468b4ee7692071d464d5a5602&o=",
+                  "urlSquare": "https://q-xx.bstatic.com/xdata/images/hotel/square60/258832108.jpg?k=0483b47ebba838c42941792a37df02c79010294468b4ee7692071d464d5a5602&o="
+                },
+                {
+                  "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/max300/259349463.jpg?k=5117a19ada9ea826e52dab644c66c2cb46857feda8cfc092847d8f76e7c00894&o=",
+                  "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/259349463.jpg?k=5117a19ada9ea826e52dab644c66c2cb46857feda8cfc092847d8f76e7c00894&o=",
+                  "urlSquare": "https://q-xx.bstatic.com/xdata/images/hotel/square60/259349463.jpg?k=5117a19ada9ea826e52dab644c66c2cb46857feda8cfc092847d8f76e7c00894&o="
+                },
+                {
+                  "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/max300/258832126.jpg?k=584275554034b6457dfd7cca51ae0f98afd269799a7313222650bfac1fca8041&o=",
+                  "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/258832126.jpg?k=584275554034b6457dfd7cca51ae0f98afd269799a7313222650bfac1fca8041&o=",
+                  "urlSquare": "https://q-xx.bstatic.com/xdata/images/hotel/square60/258832126.jpg?k=584275554034b6457dfd7cca51ae0f98afd269799a7313222650bfac1fca8041&o="
+                },
+                {
+                  "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/max300/258832118.jpg?k=4d4ce0759479f3c5fb6636b7b447cfe4297ff035a6afe9b5e10710d9ec7d411b&o=",
+                  "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/258832118.jpg?k=4d4ce0759479f3c5fb6636b7b447cfe4297ff035a6afe9b5e10710d9ec7d411b&o=",
+                  "urlSquare": "https://q-xx.bstatic.com/xdata/images/hotel/square60/258832118.jpg?k=4d4ce0759479f3c5fb6636b7b447cfe4297ff035a6afe9b5e10710d9ec7d411b&o="
+                },
+                {
+                  "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/max300/258832124.jpg?k=6efff74bda1f91d864f1aceb9c7864896ea3b5e0fa5c44ea1505ae4fc506662d&o=",
+                  "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/258832124.jpg?k=6efff74bda1f91d864f1aceb9c7864896ea3b5e0fa5c44ea1505ae4fc506662d&o=",
+                  "urlSquare": "https://q-xx.bstatic.com/xdata/images/hotel/square60/258832124.jpg?k=6efff74bda1f91d864f1aceb9c7864896ea3b5e0fa5c44ea1505ae4fc506662d&o="
+                },
+                {
+                  "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/max300/258832122.jpg?k=af2699db0fd283fee6c2c1cb62d01344aa3b23a31bdbbbfd0ba7621fb49a8bc3&o=",
+                  "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/258832122.jpg?k=af2699db0fd283fee6c2c1cb62d01344aa3b23a31bdbbbfd0ba7621fb49a8bc3&o=",
+                  "urlSquare": "https://q-xx.bstatic.com/xdata/images/hotel/square60/258832122.jpg?k=af2699db0fd283fee6c2c1cb62d01344aa3b23a31bdbbbfd0ba7621fb49a8bc3&o="
+                },
+                {
+                  "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/max300/258832115.jpg?k=a8e25d0073d92a36d5fb31ac91e8a6ee73b0720c2d6be7e3349eadf0be085cd5&o=",
+                  "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/258832115.jpg?k=a8e25d0073d92a36d5fb31ac91e8a6ee73b0720c2d6be7e3349eadf0be085cd5&o=",
+                  "urlSquare": "https://q-xx.bstatic.com/xdata/images/hotel/square60/258832115.jpg?k=a8e25d0073d92a36d5fb31ac91e8a6ee73b0720c2d6be7e3349eadf0be085cd5&o="
+                },
+                {
+                  "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/max300/231992787.jpg?k=0af54a500ee9c1d72f240234e3eeb31a13c27d05b272e96d4897ad8d8b61f5cb&o=",
+                  "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/max500/231992787.jpg?k=0af54a500ee9c1d72f240234e3eeb31a13c27d05b272e96d4897ad8d8b61f5cb&o=",
+                  "urlSquare": "https://q-xx.bstatic.com/xdata/images/hotel/square60/231992787.jpg?k=0af54a500ee9c1d72f240234e3eeb31a13c27d05b272e96d4897ad8d8b61f5cb&o="
+                }
+              ],
+              "maxPrice": 0,
+              "minPrice": 0
+            },
+            "bedInfo": "",
+            "taxes": "Termasuk: Pajak 10 %, biaya layanan 10 %",
+            "extraBedInfo": {
+              "IsFreeExtraBed": false,
+              "Content": "Tidak Menyediakan tempat tidur tambahan"
+            }
+          },
+          {
+            "ID": "44413e42482d09ec7c2174a0ab27f37b",
+            "available": true,
+            "roomQtyRequired": 1,
+            "breakfastInfo": {
+              "isBreakFastIncluded": true,
+              "mealPlan": "Sarapan sudah termasuk dalam harga.",
+              "breakFast": "Sarapan Gratis",
+              "icon": "breakfast_included",
+              "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-breakfast_included.png"
+            },
+            "occupancyInfo": {
+              "maxOccupancy": 4,
+              "maxFreeChild": 0,
+              "occupancyText": "4 Dewasa"
+            },
+            "depositInfo": {
+              "isNeedDeposit": false,
+              "depositText": ""
+            },
+            "refundInfo": {
+              "isRefundAble": false,
+              "refundStatus": "Non-refundable",
+              "icon": "non_refundable",
+              "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-non_refundable.png"
+            },
+            "creditcardInfo": {
+              "isCCRequired": true,
+              "isCCDomesticRequired": true,
+              "header": "Perlu jaminan kartu kredit",
+              "info": "Kartu kredit diperlukan untuk verifikasi, biaya pemesanan akan ditagihkan saat tiba di hotel."
+            },
+            "numberRoomLeft": 3,
+            "roomPrice": {
+              "price": "Rp 7.298.060",
+              "priceAmount": 7298060,
+              "totalPrice": "Rp 7.298.060",
+              "totalPriceAmount": 7298060,
+              "extraCharges": {
+                "netPrice": "Rp 6.031.455",
+                "netPriceAmount": 6031454.55,
+                "extraChargeInfo": [
+                  {
+                    "name": "biaya layanan",
+                    "excluded": false,
+                    "type": "SERVICECHARGE",
+                    "price": "Rp 663.460",
+                    "priceAmount": 663460
+                  },
+                  {
+                    "name": "Pajak",
+                    "excluded": false,
+                    "type": "VAT",
+                    "price": "Rp 603.146",
+                    "priceAmount": 603145.45
+                  }
+                ]
+              },
+              "deals": {
+                "tagging": "",
+                "price": "",
+                "priceAmount": 0
+              }
+            },
+            "roomPolicy": [],
+            "cancelPolicy": [
+              {
+                "subHeader": "Non-refundable",
+                "content": "Setelah 16 Sep 2020, 00:00\nJika melakukan pembatalan, limit kartu kredit akan dipotong sebesar total biaya pemesanan"
+              }
+            ],
+            "refundableUntil": "0001-01-01 00:00:00",
+            "roomInfo": {
+              "description": "Suite 2-lantai yang luas ini dapat diakses melalui pintu masuk pribadi dan menawarkan kolam renang outdoor pribadi di lantai dasar, serta bathtub spa di lantai atas. Setiap lantai menampilkan desain bergaya studio dengan kamar tidur dan ruang tamu. Terdapat juga dapur kecil yang lengkap, ruang makan, serta kamar mandi dalam semi-terbuka dengan shower dan bathtub.\n\nAnda dapat menikmati pemandangan taman dan laut.",
+              "name": "Suite 2 Kamar Tidur dengan Kolam Renang Pribadi dan Bathtub Air Panas",
+              "bathRoomCount": 2,
+              "size": 220,
+              "maxGuest": 4,
+              "facility": [
+                {
+                  "name": "AC",
+                  "icon": "ac",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-ac.png"
+                },
+                {
+                  "name": "Kamar mandi pribadi",
+                  "icon": "bathtub",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-bathtub.png"
+                },
+                {
+                  "name": "Peralatan mandi",
+                  "icon": "toiletries",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-toiletries.png"
+                },
+                {
+                  "name": "TV",
+                  "icon": "tv",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-tv.png"
+                },
+                {
+                  "name": "Minibar",
+                  "icon": "bar",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-bar.png"
+                },
+                {
+                  "name": "Handuk",
+                  "icon": "towel",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-towel.png"
+                },
+                {
+                  "name": "Lemari es",
+                  "icon": "refrigerator",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-refrigerator.png"
+                },
+                {
+                  "name": "Brankas",
+                  "icon": "safety_box",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-safety_box.png"
+                },
+                {
+                  "name": "Lemari",
+                  "icon": "wardrobe",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-wardrobe.png"
+                },
+                {
+                  "name": "Pengering rambut",
+                  "icon": "hair_dryer",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-hair_dryer.png"
+                },
+                {
+                  "name": "Kamar rias",
+                  "icon": "dressing_room",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-dressing_room.png"
+                },
+                {
+                  "name": "Sebotol air",
+                  "icon": "mineral_water",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-mineral_water.png"
+                },
+                {
+                  "name": "Pembuat teh/kopi",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Layanan bangun tidur",
+                  "icon": "clock",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-clock.png"
+                },
+                {
+                  "name": "Fasilitas setrika",
+                  "icon": "iron",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-iron.png"
+                },
+                {
+                  "name": "Shower",
+                  "icon": "bathtub",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-bathtub.png"
+                },
+                {
+                  "name": "Bathtub",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Telepon",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Jam alarm/layanan bangun tidur",
+                  "icon": "clock",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-clock.png"
+                },
+                {
+                  "name": "Hot tub",
+                  "icon": "bathtub",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-bathtub.png"
+                },
+                {
+                  "name": "Dapur kecil",
+                  "icon": "kitchen",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-kitchen.png"
+                },
+                {
+                  "name": "Jubah mandi",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Meja kerja",
+                  "icon": "desk",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-desk.png"
+                },
+                {
+                  "name": "Area tempat duduk",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Kipas angin",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Toilet",
+                  "icon": "bathtub",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-bathtub.png"
+                },
+                {
+                  "name": "Sandal",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "TV satelit",
+                  "icon": "cable_tv",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-cable_tv.png"
+                },
+                {
+                  "name": "Bathtub atau shower",
+                  "icon": "shower",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-shower.png"
+                },
+                {
+                  "name": "Kamar terhubung",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "TV layar datar",
+                  "icon": "tv",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-tv.png"
+                },
+                {
+                  "name": "Sofa",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Lantai keramik/marmer",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Pemandangan",
+                  "icon": "view",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-view.png"
+                },
+                {
+                  "name": "Jam alarm",
+                  "icon": "clock",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-clock.png"
+                },
+                {
+                  "name": "Ruang makan",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Ketel listrik",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Peralatan dapur",
+                  "icon": "kitchen",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-kitchen.png"
+                },
+                {
+                  "name": "Kelambu nyamuk",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Kolam renang pribadi",
+                  "icon": "swimming_pool",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-swimming_pool.png"
+                },
+                {
+                  "name": "Kompor",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Pemandangan taman",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Pemandangan kolam renang",
+                  "icon": "swimming_pool",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-swimming_pool.png"
+                },
+                {
+                  "name": "Alat bersih-bersih",
+                  "icon": "toiletries",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-toiletries.png"
+                },
+                {
+                  "name": "Mesin kopi",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Meja makan",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Furnitur outdoor",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Area makan outdoor",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Lantai atas hanya bisa diakses dengan tangga",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Papan Jemur Baju",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Tisu toilet",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Ranjang sofa",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Kamar mandi luas",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Kolam dengan pemandangan",
+                  "icon": "swimming_pool",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-swimming_pool.png"
+                },
+                {
+                  "name": "Handuk kolam",
+                  "icon": "towel",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-towel.png"
+                },
+                {
+                  "name": "Anggur atau sampanye",
+                  "icon": "bar",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-bar.png"
+                },
+                {
+                  "name": "Buah-buahan",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Tempat sampah",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Gelas anggur",
+                  "icon": "bar",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-bar.png"
+                },
+                {
+                  "name": "Sikat gigi",
+                  "icon": "toiletries",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-toiletries.png"
+                },
+                {
+                  "name": "Sampo",
+                  "icon": "toiletries",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-toiletries.png"
+                },
+                {
+                  "name": "Kondisioner",
+                  "icon": "toiletries",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-toiletries.png"
+                },
+                {
+                  "name": "Sabun",
+                  "icon": "toiletries",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-toiletries.png"
+                },
+                {
+                  "name": "Shower cap",
+                  "icon": "toiletries",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-toiletries.png"
+                },
+                {
+                  "name": "Stop kontak dekat tempat tidur",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Adaptor",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Bantal non-bulu",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Loker",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Alarm kebakaran",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Pemadam api",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Akses kunci",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Balkon",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Brankas laptop",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Teras",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Yukata",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                }
+              ],
+              "mainFacility": [
+                {
+                  "name": "AC",
+                  "icon": "ac",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-ac.png"
+                },
+                {
+                  "name": "Kamar mandi pribadi",
+                  "icon": "bathtub",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-bathtub.png"
+                }
+              ],
+              "roomImages": [
+                {
+                  "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/max300/263747350.jpg?k=4f1d744f9fe48107ba294b6d30cb3f6745afbe369ef71ee001f5e696e7e831ff&o=",
+                  "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/max500/263747350.jpg?k=4f1d744f9fe48107ba294b6d30cb3f6745afbe369ef71ee001f5e696e7e831ff&o=",
+                  "urlSquare": "https://q-xx.bstatic.com/xdata/images/hotel/square60/263747350.jpg?k=4f1d744f9fe48107ba294b6d30cb3f6745afbe369ef71ee001f5e696e7e831ff&o="
+                },
+                {
+                  "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/max300/258832973.jpg?k=7f2a8c90ab42b577f4dd329b77ee0003898d075091f19f8b2460f42b5b72c467&o=",
+                  "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/258832973.jpg?k=7f2a8c90ab42b577f4dd329b77ee0003898d075091f19f8b2460f42b5b72c467&o=",
+                  "urlSquare": "https://q-xx.bstatic.com/xdata/images/hotel/square60/258832973.jpg?k=7f2a8c90ab42b577f4dd329b77ee0003898d075091f19f8b2460f42b5b72c467&o="
+                },
+                {
+                  "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/max300/46798014.jpg?k=36b3168c3e86d2a094b1612e9019aa52074c8e86c52b90ec26030dc6d1b5751c&o=",
+                  "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/46798014.jpg?k=36b3168c3e86d2a094b1612e9019aa52074c8e86c52b90ec26030dc6d1b5751c&o=",
+                  "urlSquare": "https://q-xx.bstatic.com/xdata/images/hotel/square60/46798014.jpg?k=36b3168c3e86d2a094b1612e9019aa52074c8e86c52b90ec26030dc6d1b5751c&o="
+                },
+                {
+                  "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/max300/46797960.jpg?k=a3d4ea63bd28539ca9a19e31b7ec7266cd89715c43d40cfb07e41b12bacd5976&o=",
+                  "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/46797960.jpg?k=a3d4ea63bd28539ca9a19e31b7ec7266cd89715c43d40cfb07e41b12bacd5976&o=",
+                  "urlSquare": "https://q-xx.bstatic.com/xdata/images/hotel/square60/46797960.jpg?k=a3d4ea63bd28539ca9a19e31b7ec7266cd89715c43d40cfb07e41b12bacd5976&o="
+                },
+                {
+                  "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/max300/258676849.jpg?k=0db15b5f13a38c41ee574d17faba7502ad0c27472639c99961861baa9b5b12a2&o=",
+                  "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/258676849.jpg?k=0db15b5f13a38c41ee574d17faba7502ad0c27472639c99961861baa9b5b12a2&o=",
+                  "urlSquare": "https://q-xx.bstatic.com/xdata/images/hotel/square60/258676849.jpg?k=0db15b5f13a38c41ee574d17faba7502ad0c27472639c99961861baa9b5b12a2&o="
+                },
+                {
+                  "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/max300/46797849.jpg?k=de9fbbf8cd74fe32c61a9ab0cf9c9893cf8ee6b47a6d524b1a5fd308e8cacf6d&o=",
+                  "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/46797849.jpg?k=de9fbbf8cd74fe32c61a9ab0cf9c9893cf8ee6b47a6d524b1a5fd308e8cacf6d&o=",
+                  "urlSquare": "https://q-xx.bstatic.com/xdata/images/hotel/square60/46797849.jpg?k=de9fbbf8cd74fe32c61a9ab0cf9c9893cf8ee6b47a6d524b1a5fd308e8cacf6d&o="
+                },
+                {
+                  "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/max300/46797683.jpg?k=91a0e61045ff4b5b36e73629995fe1a01c76be595d01b9087569c3fea0932339&o=",
+                  "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/46797683.jpg?k=91a0e61045ff4b5b36e73629995fe1a01c76be595d01b9087569c3fea0932339&o=",
+                  "urlSquare": "https://q-xx.bstatic.com/xdata/images/hotel/square60/46797683.jpg?k=91a0e61045ff4b5b36e73629995fe1a01c76be595d01b9087569c3fea0932339&o="
+                },
+                {
+                  "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/max300/258835755.jpg?k=3769062ce6486ebb2eca4c3f54c852ba4017e76d03f8db8c0868ba05529a9f59&o=",
+                  "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/258835755.jpg?k=3769062ce6486ebb2eca4c3f54c852ba4017e76d03f8db8c0868ba05529a9f59&o=",
+                  "urlSquare": "https://q-xx.bstatic.com/xdata/images/hotel/square60/258835755.jpg?k=3769062ce6486ebb2eca4c3f54c852ba4017e76d03f8db8c0868ba05529a9f59&o="
+                },
+                {
+                  "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/max300/46797818.jpg?k=3226622ce85ffd4c4f595220a2d457f51efb076d02ef8ec8bfe942b711a7f532&o=",
+                  "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/46797818.jpg?k=3226622ce85ffd4c4f595220a2d457f51efb076d02ef8ec8bfe942b711a7f532&o=",
+                  "urlSquare": "https://q-xx.bstatic.com/xdata/images/hotel/square60/46797818.jpg?k=3226622ce85ffd4c4f595220a2d457f51efb076d02ef8ec8bfe942b711a7f532&o="
+                },
+                {
+                  "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/max300/258833691.jpg?k=07b78d65cc0521d1c45227acae040ff0642d5d3c2559ef3eeaadab217ad3e390&o=",
+                  "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/258833691.jpg?k=07b78d65cc0521d1c45227acae040ff0642d5d3c2559ef3eeaadab217ad3e390&o=",
+                  "urlSquare": "https://q-xx.bstatic.com/xdata/images/hotel/square60/258833691.jpg?k=07b78d65cc0521d1c45227acae040ff0642d5d3c2559ef3eeaadab217ad3e390&o="
+                },
+                {
+                  "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/max300/46797812.jpg?k=ac533e76d90017e3f195d24d0995ef5ce8141db2e7e74f791f6fc1c9743d50c0&o=",
+                  "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/46797812.jpg?k=ac533e76d90017e3f195d24d0995ef5ce8141db2e7e74f791f6fc1c9743d50c0&o=",
+                  "urlSquare": "https://q-xx.bstatic.com/xdata/images/hotel/square60/46797812.jpg?k=ac533e76d90017e3f195d24d0995ef5ce8141db2e7e74f791f6fc1c9743d50c0&o="
+                },
+                {
+                  "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/max300/46798569.jpg?k=52d797aee6148b9cd2fff3462177e2595809141d5f8214e27291d81fe53569ac&o=",
+                  "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/46798569.jpg?k=52d797aee6148b9cd2fff3462177e2595809141d5f8214e27291d81fe53569ac&o=",
+                  "urlSquare": "https://q-xx.bstatic.com/xdata/images/hotel/square60/46798569.jpg?k=52d797aee6148b9cd2fff3462177e2595809141d5f8214e27291d81fe53569ac&o="
+                },
+                {
+                  "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/max300/258832421.jpg?k=a2d7cd11b05d2a57da443f4d146010fe4cb094fc17bc13f48964b49630360ef7&o=",
+                  "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/258832421.jpg?k=a2d7cd11b05d2a57da443f4d146010fe4cb094fc17bc13f48964b49630360ef7&o=",
+                  "urlSquare": "https://q-xx.bstatic.com/xdata/images/hotel/square60/258832421.jpg?k=a2d7cd11b05d2a57da443f4d146010fe4cb094fc17bc13f48964b49630360ef7&o="
+                },
+                {
+                  "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/max300/259008351.jpg?k=435fe3cec8209d8f2281a98248419a4b493dc1fe8ae74c9c29a15c69d0485caa&o=",
+                  "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/259008351.jpg?k=435fe3cec8209d8f2281a98248419a4b493dc1fe8ae74c9c29a15c69d0485caa&o=",
+                  "urlSquare": "https://q-xx.bstatic.com/xdata/images/hotel/square60/259008351.jpg?k=435fe3cec8209d8f2281a98248419a4b493dc1fe8ae74c9c29a15c69d0485caa&o="
+                }
+              ],
+              "maxPrice": 0,
+              "minPrice": 0
+            },
+            "bedInfo": "",
+            "taxes": "Termasuk: Pajak 10 %, biaya layanan 10 %",
+            "extraBedInfo": {
+              "IsFreeExtraBed": false,
+              "Content": "Tidak Menyediakan tempat tidur tambahan"
+            }
+          },
+          {
+            "ID": "f64214e161e6071f14bb6592600be9e6",
+            "available": true,
+            "roomQtyRequired": 1,
+            "breakfastInfo": {
+              "isBreakFastIncluded": true,
+              "mealPlan": "Sarapan sudah termasuk dalam harga.",
+              "breakFast": "Sarapan Gratis",
+              "icon": "breakfast_included",
+              "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-breakfast_included.png"
+            },
+            "occupancyInfo": {
+              "maxOccupancy": 2,
+              "maxFreeChild": 0,
+              "occupancyText": "2 Dewasa"
+            },
+            "depositInfo": {
+              "isNeedDeposit": true,
+              "depositText": "Kamar ini mungkin menerapkan sistem deposit yang harus dibayar saat check-in."
+            },
+            "refundInfo": {
+              "isRefundAble": false,
+              "refundStatus": "Non-refundable",
+              "icon": "non_refundable",
+              "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-non_refundable.png"
+            },
+            "creditcardInfo": {
+              "isCCRequired": true,
+              "isCCDomesticRequired": true,
+              "header": "Perlu jaminan kartu kredit",
+              "info": "Kartu kredit diperlukan untuk verifikasi, biaya pemesanan akan ditagihkan saat tiba di hotel."
+            },
+            "numberRoomLeft": 2,
+            "roomPrice": {
+              "price": "Rp 7.586.540",
+              "priceAmount": 7586540,
+              "totalPrice": "Rp 7.586.540",
+              "totalPriceAmount": 7586540,
+              "extraCharges": {
+                "netPrice": "Rp 6.269.868",
+                "netPriceAmount": 6269867.77,
+                "extraChargeInfo": [
+                  {
+                    "name": "biaya layanan",
+                    "excluded": false,
+                    "type": "SERVICECHARGE",
+                    "price": "Rp 689.686",
+                    "priceAmount": 689685.45
+                  },
+                  {
+                    "name": "Pajak",
+                    "excluded": false,
+                    "type": "VAT",
+                    "price": "Rp 626.987",
+                    "priceAmount": 626986.78
+                  }
+                ]
+              },
+              "deals": {
+                "tagging": "",
+                "price": "",
+                "priceAmount": 0
+              }
+            },
+            "roomPolicy": [],
+            "cancelPolicy": [
+              {
+                "subHeader": "Non-refundable",
+                "content": "Setelah 16 Sep 2020, 06:00\nJika melakukan pembatalan, limit kartu kredit akan dipotong sebesar total biaya pemesanan"
+              }
+            ],
+            "refundableUntil": "0001-01-01 00:00:00",
+            "roomInfo": {
+              "description": "Suite 1-kamar tidur yang luas ini terletak di lantai atas properti. Unit ini menawarkan AC, ruang tamu, dapur kecil terpisah, dan ruang makan. Kamar mandi pribadinya yang bergaya semi-terbuka menyediakan bathtub dan shower, serta hot tub berpemanas. Anda dapat menikmati sore dengan bermalas-malasan di sofa daybed yang terletak di balkon yang menghadap samudra.",
+              "name": "Suite 1 Kamar Tidur dengan Bathtub Air Panas dan Pemandangan Samudera",
+              "bathRoomCount": 1,
+              "size": 75,
+              "maxGuest": 2,
+              "facility": [
+                {
+                  "name": "AC",
+                  "icon": "ac",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-ac.png"
+                },
+                {
+                  "name": "Kamar mandi pribadi",
+                  "icon": "bathtub",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-bathtub.png"
+                },
+                {
+                  "name": "Peralatan mandi",
+                  "icon": "toiletries",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-toiletries.png"
+                },
+                {
+                  "name": "TV",
+                  "icon": "tv",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-tv.png"
+                },
+                {
+                  "name": "Minibar",
+                  "icon": "bar",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-bar.png"
+                },
+                {
+                  "name": "Handuk",
+                  "icon": "towel",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-towel.png"
+                },
+                {
+                  "name": "Lemari es",
+                  "icon": "refrigerator",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-refrigerator.png"
+                },
+                {
+                  "name": "Brankas",
+                  "icon": "safety_box",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-safety_box.png"
+                },
+                {
+                  "name": "Lemari",
+                  "icon": "wardrobe",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-wardrobe.png"
+                },
+                {
+                  "name": "Pengering rambut",
+                  "icon": "hair_dryer",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-hair_dryer.png"
+                },
+                {
+                  "name": "Kamar rias",
+                  "icon": "dressing_room",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-dressing_room.png"
+                },
+                {
+                  "name": "Sebotol air",
+                  "icon": "mineral_water",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-mineral_water.png"
+                },
+                {
+                  "name": "Pembuat teh/kopi",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Layanan bangun tidur",
+                  "icon": "clock",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-clock.png"
+                },
+                {
+                  "name": "Fasilitas setrika",
+                  "icon": "iron",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-iron.png"
+                },
+                {
+                  "name": "Shower",
+                  "icon": "bathtub",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-bathtub.png"
+                },
+                {
+                  "name": "Bathtub",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Telepon",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Jam alarm/layanan bangun tidur",
+                  "icon": "clock",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-clock.png"
+                },
+                {
+                  "name": "Hot tub",
+                  "icon": "bathtub",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-bathtub.png"
+                },
+                {
+                  "name": "Dapur kecil",
+                  "icon": "kitchen",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-kitchen.png"
+                },
+                {
+                  "name": "Jubah mandi",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Meja kerja",
+                  "icon": "desk",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-desk.png"
+                },
+                {
+                  "name": "Area tempat duduk",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Kipas angin",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Toilet",
+                  "icon": "bathtub",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-bathtub.png"
+                },
+                {
+                  "name": "Sandal",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "TV satelit",
+                  "icon": "cable_tv",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-cable_tv.png"
+                },
+                {
+                  "name": "Bathtub atau shower",
+                  "icon": "shower",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-shower.png"
+                },
+                {
+                  "name": "TV layar datar",
+                  "icon": "tv",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-tv.png"
+                },
+                {
+                  "name": "Sofa",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Lantai keramik/marmer",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Pemandangan",
+                  "icon": "view",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-view.png"
+                },
+                {
+                  "name": "Jam alarm",
+                  "icon": "clock",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-clock.png"
+                },
+                {
+                  "name": "Ruang makan",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Ketel listrik",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Peralatan dapur",
+                  "icon": "kitchen",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-kitchen.png"
+                },
+                {
+                  "name": "Kelambu nyamuk",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Kompor",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Pemandangan laut",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Pemandangan taman",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Alat bersih-bersih",
+                  "icon": "toiletries",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-toiletries.png"
+                },
+                {
+                  "name": "Mesin kopi",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Meja makan",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Furnitur outdoor",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Area makan outdoor",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Lantai atas hanya bisa diakses dengan tangga",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Papan Jemur Baju",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Tisu toilet",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Ranjang sofa",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Kamar mandi luas",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Handuk kolam",
+                  "icon": "towel",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-towel.png"
+                },
+                {
+                  "name": "Anggur atau sampanye",
+                  "icon": "bar",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-bar.png"
+                },
+                {
+                  "name": "Buah-buahan",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Tempat sampah",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Gelas anggur",
+                  "icon": "bar",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-bar.png"
+                },
+                {
+                  "name": "Sikat gigi",
+                  "icon": "toiletries",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-toiletries.png"
+                },
+                {
+                  "name": "Sampo",
+                  "icon": "toiletries",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-toiletries.png"
+                },
+                {
+                  "name": "Kondisioner",
+                  "icon": "toiletries",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-toiletries.png"
+                },
+                {
+                  "name": "Sabun",
+                  "icon": "toiletries",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-toiletries.png"
+                },
+                {
+                  "name": "Shower cap",
+                  "icon": "toiletries",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-toiletries.png"
+                },
+                {
+                  "name": "Stop kontak dekat tempat tidur",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Adaptor",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Bantal non-bulu",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Loker",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Alarm kebakaran",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Pemadam api",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Akses kunci",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Balkon",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Brankas laptop",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                },
+                {
+                  "name": "Yukata",
+                  "icon": "default",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+                }
+              ],
+              "mainFacility": [
+                {
+                  "name": "AC",
+                  "icon": "ac",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-ac.png"
+                },
+                {
+                  "name": "Kamar mandi pribadi",
+                  "icon": "bathtub",
+                  "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-bathtub.png"
+                }
+              ],
+              "roomImages": [
+                {
+                  "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/max300/258676849.jpg?k=0db15b5f13a38c41ee574d17faba7502ad0c27472639c99961861baa9b5b12a2&o=",
+                  "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/258676849.jpg?k=0db15b5f13a38c41ee574d17faba7502ad0c27472639c99961861baa9b5b12a2&o=",
+                  "urlSquare": "https://q-xx.bstatic.com/xdata/images/hotel/square60/258676849.jpg?k=0db15b5f13a38c41ee574d17faba7502ad0c27472639c99961861baa9b5b12a2&o="
+                },
+                {
+                  "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/max300/258835750.jpg?k=412d9f852db01191251dbd2a831c9bac8008a77af87668d40a2b0cdec4e5ba69&o=",
+                  "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/258835750.jpg?k=412d9f852db01191251dbd2a831c9bac8008a77af87668d40a2b0cdec4e5ba69&o=",
+                  "urlSquare": "https://q-xx.bstatic.com/xdata/images/hotel/square60/258835750.jpg?k=412d9f852db01191251dbd2a831c9bac8008a77af87668d40a2b0cdec4e5ba69&o="
+                },
+                {
+                  "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/max300/258835745.jpg?k=49f2f98705a79a851dd61922f7174b092c89ac0f8f9ff4a885d1e5bc62a09542&o=",
+                  "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/258835745.jpg?k=49f2f98705a79a851dd61922f7174b092c89ac0f8f9ff4a885d1e5bc62a09542&o=",
+                  "urlSquare": "https://q-xx.bstatic.com/xdata/images/hotel/square60/258835745.jpg?k=49f2f98705a79a851dd61922f7174b092c89ac0f8f9ff4a885d1e5bc62a09542&o="
+                },
+                {
+                  "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/max300/258835733.jpg?k=9d6c25f1eb0ae11ed95696c44bcf8b771fe458d53c22c6ec1ae969ab5cfea63d&o=",
+                  "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/258835733.jpg?k=9d6c25f1eb0ae11ed95696c44bcf8b771fe458d53c22c6ec1ae969ab5cfea63d&o=",
+                  "urlSquare": "https://q-xx.bstatic.com/xdata/images/hotel/square60/258835733.jpg?k=9d6c25f1eb0ae11ed95696c44bcf8b771fe458d53c22c6ec1ae969ab5cfea63d&o="
+                },
+                {
+                  "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/max300/258835755.jpg?k=3769062ce6486ebb2eca4c3f54c852ba4017e76d03f8db8c0868ba05529a9f59&o=",
+                  "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/258835755.jpg?k=3769062ce6486ebb2eca4c3f54c852ba4017e76d03f8db8c0868ba05529a9f59&o=",
+                  "urlSquare": "https://q-xx.bstatic.com/xdata/images/hotel/square60/258835755.jpg?k=3769062ce6486ebb2eca4c3f54c852ba4017e76d03f8db8c0868ba05529a9f59&o="
+                },
+                {
+                  "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/max300/46797818.jpg?k=3226622ce85ffd4c4f595220a2d457f51efb076d02ef8ec8bfe942b711a7f532&o=",
+                  "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/46797818.jpg?k=3226622ce85ffd4c4f595220a2d457f51efb076d02ef8ec8bfe942b711a7f532&o=",
+                  "urlSquare": "https://q-xx.bstatic.com/xdata/images/hotel/square60/46797818.jpg?k=3226622ce85ffd4c4f595220a2d457f51efb076d02ef8ec8bfe942b711a7f532&o="
+                },
+                {
+                  "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/max300/258835747.jpg?k=af3f58064cb2051823b320ca691fb7d3b0c4ff7f78dfbbbf14c219de11e86611&o=",
+                  "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/258835747.jpg?k=af3f58064cb2051823b320ca691fb7d3b0c4ff7f78dfbbbf14c219de11e86611&o=",
+                  "urlSquare": "https://q-xx.bstatic.com/xdata/images/hotel/square60/258835747.jpg?k=af3f58064cb2051823b320ca691fb7d3b0c4ff7f78dfbbbf14c219de11e86611&o="
+                },
+                {
+                  "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/max300/258835748.jpg?k=e2ca67c9cdac14b59b85f4efe694de10135792bbb6897fceaa8ee036a3486a89&o=",
+                  "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/258835748.jpg?k=e2ca67c9cdac14b59b85f4efe694de10135792bbb6897fceaa8ee036a3486a89&o=",
+                  "urlSquare": "https://q-xx.bstatic.com/xdata/images/hotel/square60/258835748.jpg?k=e2ca67c9cdac14b59b85f4efe694de10135792bbb6897fceaa8ee036a3486a89&o="
+                },
+                {
+                  "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/max300/258833691.jpg?k=07b78d65cc0521d1c45227acae040ff0642d5d3c2559ef3eeaadab217ad3e390&o=",
+                  "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/258833691.jpg?k=07b78d65cc0521d1c45227acae040ff0642d5d3c2559ef3eeaadab217ad3e390&o=",
+                  "urlSquare": "https://q-xx.bstatic.com/xdata/images/hotel/square60/258833691.jpg?k=07b78d65cc0521d1c45227acae040ff0642d5d3c2559ef3eeaadab217ad3e390&o="
+                },
+                {
+                  "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/max300/258835757.jpg?k=c9eef69e2fdee11f1bc811550ad05aaf6f6b23fe4167d4905b8495d0b6a81270&o=",
+                  "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/258835757.jpg?k=c9eef69e2fdee11f1bc811550ad05aaf6f6b23fe4167d4905b8495d0b6a81270&o=",
+                  "urlSquare": "https://q-xx.bstatic.com/xdata/images/hotel/square60/258835757.jpg?k=c9eef69e2fdee11f1bc811550ad05aaf6f6b23fe4167d4905b8495d0b6a81270&o="
+                },
+                {
+                  "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/max300/259008394.jpg?k=fb4d0c7026763319d2daf3670268c8573dae6a46d99f59be4b39dc811a8a61e5&o=",
+                  "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/259008394.jpg?k=fb4d0c7026763319d2daf3670268c8573dae6a46d99f59be4b39dc811a8a61e5&o=",
+                  "urlSquare": "https://q-xx.bstatic.com/xdata/images/hotel/square60/259008394.jpg?k=fb4d0c7026763319d2daf3670268c8573dae6a46d99f59be4b39dc811a8a61e5&o="
+                }
+              ],
+              "maxPrice": 22884600,
+              "minPrice": 4172600
+            },
+            "bedInfo": "",
+            "taxes": "Termasuk: Pajak 10 %, biaya layanan 10 %",
+            "extraBedInfo": {
+              "IsFreeExtraBed": false,
+              "Content": "Tidak Menyediakan tempat tidur tambahan"
+            }
+          }
+        ],
+        "isAddressRequired": false,
+        "isCvCRequired": true,
+        "isDirectPayment": false,
+        "isEnabled": true,
+        "deals": {
+          "tagging": "",
+          "price": "",
+          "priceAmount": 0
+        }
+      }
+    }
+  }
+]

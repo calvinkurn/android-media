@@ -115,7 +115,8 @@ abstract class BaseTrackerConst {
             val quantity: String = "",
             val headerName: String = "",
             val isCarousel: Boolean? = null,
-            val recommendationType: String = "")
+            val recommendationType: String = "",
+            val pageName: String = "")
 
     object Ecommerce {
         const val KEY = "ecommerce"
@@ -261,23 +262,21 @@ abstract class BaseTrackerConst {
             if(product.clusterId != -1) map[KEY_DIMENSION_11] = product.clusterId.toString()
             if (product.channelId.isNotEmpty()) map[KEY_DIMENSION_84] = product.channelId else NONE
             if (product.categoryId.isNotEmpty() || product.persoType.isNotEmpty()) map[KEY_DIMENSION_96] = String.format(FORMAT_2_ITEMS_UNDERSCORE, product.persoType, product.categoryId) else NONE
-            if (list.isNotEmpty()) {
-                map[KEY_LIST] = setNewList(product, list)
-            }
+            if (list.isNotEmpty()) map[KEY_LIST] = setNewList(product, list)
             if(product.cartId.isNotEmpty()) map[KEY_DIMENSION_45] = product.cartId
             if(product.quantity.isNotEmpty()) map[KEY_QUANTITY] = product.quantity
             return map
         }
 
         private fun setNewList(product: Product?, list: String): String{
-            var newList = list + if(product?.isTopAds == true) " - topads" else " - non topads"
-            if(product?.isCarousel != null) newList += if (product.isCarousel == true) " - carousel" else " - non carousel"
-            if(product?.recommendationType?.isNotEmpty() == true) newList += " - ${product.recommendationType}"
-            if(product?.headerName?.isNotEmpty() == true) newList += " - ${product.headerName}"
+            var newList = list + if(product.isTopAds) " - topads" else " - nontopads"
+            if(product.isCarousel != null) newList += if (product.isCarousel == true) " - carousel" else "- non carousel"
+            if(product.recommendationType.isNotEmpty()) newList += " - ${product.recommendationType}"
+            if(product.pageName.isNotEmpty()) newList += " - ${product.pageName}"
+            if(product.headerName.isNotEmpty()) newList += " - ${product.headerName}"
             return newList
         }
     }
-
 
     protected fun convertRupiahToInt(rupiah: String): Int {
         return try {

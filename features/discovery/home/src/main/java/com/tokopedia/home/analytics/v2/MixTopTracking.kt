@@ -2,7 +2,6 @@ package com.tokopedia.home.analytics.v2
 
 
 import com.tokopedia.analyticconstant.DataLayer
-import com.tokopedia.home.analytics.v2.BaseTracking.Value.LIST
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
@@ -28,7 +27,7 @@ object MixTopTracking : BaseTrackerConst() {
         }
     }
 
-    fun getMixTopView(products: List<Product>, headerName: String, positionOnWidgetHome: String): Map<String, Any> {
+    fun getMixTopView(products: List<Product>, positionOnWidgetHome: String): Map<String, Any> {
         val trackingBuilder = BaseTrackerBuilder()
         return trackingBuilder.constructBasicProductView(
                 event = Event.PRODUCT_VIEW,
@@ -67,7 +66,7 @@ object MixTopTracking : BaseTrackerConst() {
                 eventCategory = Category.HOMEPAGE,
                 eventAction = CustomAction.CLICK_ON_CAROUSEL_PRODUCT,
                 eventLabel = "$channelId - $headerName",
-                list = CustomActionField.LIST_CAROUSEL_PRODUCT.format(positionOnWidgetHome, headerName),
+                list = CustomActionField.LIST_CAROUSEL_PRODUCT.format(positionOnWidgetHome),
                 products = products)
                 .appendChannelId(channelId)
                 .appendCampaignCode(campaignCode)
@@ -140,7 +139,7 @@ object MixTopTracking : BaseTrackerConst() {
         mapGridToProductTrackerComponent(it.value, channels.id, it.index, channels.trackingAttributionModel.persoType, channels.trackingAttributionModel.categoryId, channels.channelHeader.name)
     }
 
-    fun mapGridToProductTrackerComponent(grid: ChannelGrid, channelId: String, position: Int, persoType: String, categoryId: String, headerName: String = "") = Product(
+    fun mapGridToProductTrackerComponent(grid: ChannelGrid, channelId: String, position: Int, persoType: String, categoryId: String, headerName: String = "", pageName: String = "") = Product(
             id = grid.id,
             name = grid.name,
             brand = "",
@@ -154,6 +153,7 @@ object MixTopTracking : BaseTrackerConst() {
             categoryId = categoryId,
             isTopAds = grid.isTopads,
             recommendationType = grid.recommendationType,
+            pageName = pageName,
             isCarousel = true,
             headerName = headerName
     )

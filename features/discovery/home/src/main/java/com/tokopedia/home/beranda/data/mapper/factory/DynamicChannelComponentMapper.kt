@@ -13,6 +13,7 @@ object DynamicChannelComponentMapper {
                 verticalPosition = verticalPosition,
                 contextualInfo = channel.contextualInfo,
                 widgetParam = channel.widgetParam,
+                pageName = channel.pageName,
                 channelHeader = ChannelHeader(
                         channel.header.id,
                         channel.header.name,

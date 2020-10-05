@@ -78,6 +78,7 @@ object RecommendationListTracking: BaseTrackerConst(){
                             isTopAds = grid.isTopads,
                             headerName = channel.channelHeader.name,
                             isCarousel = true,
+                            pageName = channel.pageName,
                             recommendationType = grid.recommendationType
                     )
                 },
@@ -111,6 +112,7 @@ object RecommendationListTracking: BaseTrackerConst(){
                                 categoryId = channel.categoryID,
                                 isTopAds = grid.isTopads,
                                 headerName = channel.header.name,
+                                pageName = channel.pageName,
                                 isCarousel = true,
                                 recommendationType = grid.recommendationType
                         )
@@ -145,6 +147,7 @@ object RecommendationListTracking: BaseTrackerConst(){
                                 categoryId = channel.trackingAttributionModel.categoryId,
                                 isTopAds = grid.isTopads,
                                 headerName = channel.channelHeader.name,
+                                pageName = channel.pageName,
                                 isCarousel = true,
                                 recommendationType = grid.recommendationType
                         )
@@ -274,6 +277,8 @@ object RecommendationListTracking: BaseTrackerConst(){
                             isFreeOngkir = grid.isFreeOngkirActive,
                             persoType = channel.trackingAttributionModel.persoType,
                             categoryId = channel.trackingAttributionModel.categoryId,
+                            pageName = channel.pageName,
+                            recommendationType = grid.recommendationType,
                             isTopAds = grid.isTopads,
                             quantity = quantity,
                             cartId = cartId,

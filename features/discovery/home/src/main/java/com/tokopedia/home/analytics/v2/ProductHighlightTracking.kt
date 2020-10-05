@@ -1,6 +1,5 @@
 package com.tokopedia.home.analytics.v2
 
-import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.track.builder.BaseTrackerBuilder
 import com.tokopedia.track.builder.util.BaseTrackerConst
@@ -23,7 +22,8 @@ object ProductHighlightTracking : BaseTrackerConst() {
             gridFreeOngkirIsActive: Boolean,
             position: Int,
             isTopAds: Boolean,
-            recommendationType: String) {
+            recommendationType: String,
+            pageName: String) {
         getTracker().sendEnhanceEcommerceEvent(getProductHighlightClick(
                 channelId,
                 headerName,
@@ -36,6 +36,7 @@ object ProductHighlightTracking : BaseTrackerConst() {
                 gridFreeOngkirIsActive,
                 isTopAds,
                 recommendationType,
+                pageName,
                 position))
     }
 
@@ -66,7 +67,8 @@ object ProductHighlightTracking : BaseTrackerConst() {
                             isTopAds = grid.isTopads,
                             isCarousel = false,
                             headerName = channel.channelHeader.name,
-                            recommendationType = grid.recommendationType
+                            recommendationType = grid.recommendationType,
+                            pageName = channel.pageName
                     )
                 })
                 .appendChannelId(channel.id)
@@ -89,6 +91,7 @@ object ProductHighlightTracking : BaseTrackerConst() {
             gridFreeOngkirIsActive: Boolean,
             isTopAds: Boolean,
             recommendationType: String,
+            pageName: String,
             position: Int) : Map<String, Any> {
         val trackerBuilder = BaseTrackerBuilder()
         return trackerBuilder.constructBasicProductClick(
@@ -112,7 +115,8 @@ object ProductHighlightTracking : BaseTrackerConst() {
                                 isTopAds = isTopAds,
                                 isCarousel = false,
                                 headerName = headerName,
-                                recommendationType = recommendationType
+                                recommendationType = recommendationType,
+                                pageName = pageName
                         )
                 ),
                 list = String.format(
