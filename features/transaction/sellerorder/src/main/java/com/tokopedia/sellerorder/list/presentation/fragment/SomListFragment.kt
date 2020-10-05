@@ -784,12 +784,14 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         waitingPaymentCounterAnimator = ValueAnimator().apply {
             setObjectValues(checkedStart, checkedEnd)
             addUpdateListener { animation ->
-                val newValue = animation.animatedValue as Int
-                val newValueString = if (newValue > maxValue) getString(R.string.som_list_waiting_payment_order_max_counter) else newValue.toString()
-                tvTitle.text = getString(
-                        R.string.som_list_order_waiting_payment_button_text,
-                        filterResult.data.waitingPaymentCounter.text,
-                        newValueString)
+                context?.let {
+                    val newValue = (animation.animatedValue as? Int).orZero()
+                    val newValueString = if (newValue > maxValue) getString(R.string.som_list_waiting_payment_order_max_counter) else newValue.toString()
+                    tvTitle?.text = getString(
+                            R.string.som_list_order_waiting_payment_button_text,
+                            filterResult.data.waitingPaymentCounter.text,
+                            newValueString)
+                }
             }
             duration = WAITING_PAYMENT_ORDER_COUNTER_ANIMATION_DURATION
             start()

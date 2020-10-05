@@ -499,7 +499,7 @@
         <value>false</value>
     </entry>
     <entry>
-        <key>android_post_seq_async_sellerapp</key>
+        <key>android_iris_custom_user_agent_enable</key>
         <value>true</value>
     </entry>
 </defaultsMap>
