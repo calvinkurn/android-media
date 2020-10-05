@@ -360,6 +360,19 @@ class TopChatRoomPresenterTest {
         verify(exactly = 1) { getExistingMessageIdUseCase.getMessageId(toShopId, toUserId, source, mockOnSuccess, mockOnError) }
     }
 
+    @Test
+    fun `Get chat usecase called when load top page chat`() {
+        // Given
+        val mockOnSuccess: (ChatroomViewModel, ChatReplies) -> Unit = mockk()
+        val mockOnError: (Throwable) -> Unit = mockk()
+
+        // When
+        presenter.loadTopChat(exMessageId, mockOnError, mockOnSuccess)
+
+        // Then
+        verify(exactly = 1) { getChatUseCase.getTopChat(exMessageId, mockOnSuccess, mockOnError) }
+    }
+
     private fun mockkParseResponse(wsInfo: WebSocketInfo, isOpposite: Boolean = true): ChatSocketPojo {
         val wsChatPojo = topChatRoomWebSocketMessageMapper.parseResponse(wsInfo.response).apply {
             this.isOpposite = isOpposite
