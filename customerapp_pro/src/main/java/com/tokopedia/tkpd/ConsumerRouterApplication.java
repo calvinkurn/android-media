@@ -101,7 +101,6 @@ import com.tokopedia.tkpd.fcm.appupdate.FirebaseRemoteAppUpdate;
 import com.tokopedia.tkpd.nfc.NFCSubscriber;
 import com.tokopedia.tkpd.react.DaggerReactNativeComponent;
 import com.tokopedia.tkpd.react.ReactNativeComponent;
-import com.tokopedia.tkpd.tkpdreputation.review.shop.view.ReviewShopFragment;
 import com.tokopedia.tkpd.utils.DeferredResourceInitializer;
 import com.tokopedia.tkpd.utils.FingerprintModelGenerator;
 import com.tokopedia.tkpd.utils.GQLPing;
@@ -474,16 +473,16 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void sendForceLogoutAnalytics(Response response, boolean isInvalidToken,
+    public void sendForceLogoutAnalytics(String url, boolean isInvalidToken,
                                          boolean isRequestDenied) {
-        ServerErrorHandler.sendForceLogoutAnalytics(response.request().url().toString(),
+        ServerErrorHandler.sendForceLogoutAnalytics(url,
                 isInvalidToken, isRequestDenied);
     }
 
     @Override
-    public void showForceLogoutTokenDialog(String response) {
-        ServerErrorHandler.showForceLogoutDialog();
-        ServerErrorHandler.sendForceLogoutTokenAnalytics(response);
+    public void showForceLogoutTokenDialog(String path) {
+        ServerErrorHandler.showForceLogoutDialog(path);
+        ServerErrorHandler.sendForceLogoutTokenAnalytics(path);
     }
 
     @Override
@@ -527,7 +526,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void logInvalidGrant(Response response) {
-        AnalyticsLog.logInvalidGrant(this, legacyGCMHandler(), legacySessionHandler(), response.request().url().toString());
+        AnalyticsLog.logInvalidGrant(this, response.request().url().toString());
     }
 
     @Override
