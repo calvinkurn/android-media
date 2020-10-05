@@ -54,7 +54,6 @@ import com.tokopedia.buyerorder.R;
 import com.tokopedia.buyerorder.common.util.BuyerConsts;
 import com.tokopedia.buyerorder.common.util.UnifiedOrderListRouter;
 import com.tokopedia.buyerorder.common.util.Utils;
-import com.tokopedia.buyerorder.common.view.DoubleTextView;
 import com.tokopedia.buyerorder.detail.data.ActionButton;
 import com.tokopedia.buyerorder.detail.data.AdditionalInfo;
 import com.tokopedia.buyerorder.detail.data.AdditionalTickerInfo;
@@ -92,6 +91,7 @@ import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.unifycomponents.ticker.Ticker;
 import com.tokopedia.unifycomponents.ticker.TickerCallback;
 import com.tokopedia.url.TokopediaUrl;
+import com.tokopedia.utils.view.DoubleTextView;
 
 import java.io.Serializable;
 import java.util.List;

@@ -1,19 +1,17 @@
-package com.tokopedia.buyerorder.common.view;
+package com.tokopedia.utils.view;
 
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
-import android.text.SpannableString;
 import android.text.method.LinkMovementMethod;
 import android.util.AttributeSet;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.tokopedia.buyerorder.R;
+import com.tokopedia.utils.R;
 
 public class DoubleTextView extends LinearLayout {
     private LinearLayout layout = null;

@@ -434,9 +434,6 @@ Anda di sini.</string>
     <string name="title_other_reason">Lainnya</string>
     <string name="error_note_empty">Catatan harus diisi</string>
 
-    <string name="msg_add_wishlist">Sukses menambah wishlist</string>
-    <string name="msg_remove_wishlist">Sukses menghapus wishlist</string>
-
     <string name="title_buyer_request_cancel">Ajukan Pembatalan</string>
     <string name="store_name_placeholder">Store Name 24 Character</string>
     <string name="invoice_placeholder">INV/20161025/XVI/X/55069657</string>

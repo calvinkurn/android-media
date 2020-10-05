@@ -21,7 +21,6 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.buyerorder.R;
 import com.tokopedia.buyerorder.common.util.ApplinkOMSConstant;
-import com.tokopedia.buyerorder.common.view.DoubleTextView;
 import com.tokopedia.buyerorder.detail.data.ActionButton;
 import com.tokopedia.buyerorder.detail.data.EntityAddress;
 import com.tokopedia.buyerorder.detail.data.Items;
@@ -35,6 +34,7 @@ import com.tokopedia.buyerorder.detail.view.presenter.OrderListDetailContract;
 import com.tokopedia.buyerorder.detail.view.presenter.OrderListDetailPresenter;
 import com.tokopedia.buyerorder.list.data.OrderCategory;
 import com.tokopedia.utils.permission.PermissionCheckerHelper;
+import com.tokopedia.utils.view.DoubleTextView;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
