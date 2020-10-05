@@ -77,8 +77,6 @@
             android:layout_height="@dimen/dp_24"
             android:layout_marginStart="@dimen/dp_8"
             android:layout_marginEnd="@dimen/dp_16"
-            android:scaleType="fitXY"
-            app:srcCompat="@drawable/product_card_label_campaign_background"
             app:layout_constraintStart_toEndOf="@id/imageProduct"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />

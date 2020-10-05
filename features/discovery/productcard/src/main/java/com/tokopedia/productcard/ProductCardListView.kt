@@ -4,6 +4,8 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
@@ -13,17 +15,7 @@ import com.tokopedia.productcard.utils.*
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.android.synthetic.main.product_card_content_layout.view.*
-import kotlinx.android.synthetic.main.product_card_grid_layout.view.*
 import kotlinx.android.synthetic.main.product_card_list_layout.view.*
-import kotlinx.android.synthetic.main.product_card_list_layout.view.buttonAddToCart
-import kotlinx.android.synthetic.main.product_card_list_layout.view.cardViewProductCard
-import kotlinx.android.synthetic.main.product_card_list_layout.view.constraintLayoutProductCard
-import kotlinx.android.synthetic.main.product_card_list_layout.view.imageProduct
-import kotlinx.android.synthetic.main.product_card_list_layout.view.imageThreeDots
-import kotlinx.android.synthetic.main.product_card_list_layout.view.labelProductStatus
-import kotlinx.android.synthetic.main.product_card_list_layout.view.progressBarStock
-import kotlinx.android.synthetic.main.product_card_list_layout.view.textTopAds
-import kotlinx.android.synthetic.main.product_card_list_layout.view.textViewStockLabel
 
 class ProductCardListView: BaseCustomView, IProductCardView {
 
@@ -45,6 +37,16 @@ class ProductCardListView: BaseCustomView, IProductCardView {
 
     override fun setProductModel(productCardModel: ProductCardModel) {
         imageProduct?.loadImageRounded(productCardModel.productImageUrl)
+
+        labelCampaignBackground?.let {
+            Glide.with(context)
+                    .load(R.drawable.product_card_label_campaign_background)
+                    .transform(TopRightCrop())
+                    .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                    .placeholder(R.drawable.placeholder_grey)
+                    .error(R.drawable.placeholder_grey)
+                    .into(it)
+        }
 
         labelProductStatus?.initLabelGroup(productCardModel.getLabelProductStatus())
 
