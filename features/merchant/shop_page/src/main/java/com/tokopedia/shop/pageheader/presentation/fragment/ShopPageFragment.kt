@@ -1340,7 +1340,4 @@ class ShopPageFragment :
         }
     }
 
-    fun updateSortId(sortId: String) {
-        this.initialProductListSortId = sortId
-    }
 }
