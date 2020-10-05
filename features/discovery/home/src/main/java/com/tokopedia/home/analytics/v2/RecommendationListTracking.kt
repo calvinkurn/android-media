@@ -282,7 +282,6 @@ object RecommendationListTracking: BaseTrackerConst(){
                             isTopAds = grid.isTopads,
                             quantity = quantity,
                             cartId = cartId,
-                            recommendationType = grid.recommendationType,
                             headerName = channel.channelHeader.name
                     )
             ),
