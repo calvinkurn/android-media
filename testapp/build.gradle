@@ -1,16 +1,11 @@
 apply plugin: 'com.android.application'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'com.google.gms.google-services'
-apply plugin: 'io.hansel.preprocessor'
 apply from: '../tools/set_debug_tools.gradle'
 
 kapt {
     correctErrorTypes = true
     generateStubs = false
-}
-def allowSplit() {
-    return gradle.startParameter.taskNames.contains("assembleLiveRelease") &&
-            (project.hasProperty('tkpdBuildType') && tkpdBuildType == "production");
 }
 def allowDistribution() {
     if (project.hasProperty('tkpdBuildType') && tkpdBuildType == "hockeyapp") {
@@ -28,14 +23,12 @@ buildscript {
     repositories {
         maven { url 'https://maven.fabric.io/public' }
         maven { url "https://maven.google.com" }
-        maven { url 'https://hansel.io/maven' }
         mavenCentral()
         jcenter()
     }
     dependencies{
         classpath rootProject.ext.gradlePlugin.crashlytics
         classpath rootProject.ext.gradlePlugin.googleServices
-        classpath rootProject.ext.miscDependencies.hansel
     }
 }
 android {
@@ -91,20 +84,6 @@ android {
         }
         release {
             signingConfig signingConfigs.debug
-        }
-    }
-    splits {
-        density {
-            enable allowSplit()
-            reset()
-            include "mdpi", "hdpi", "xhdpi", "xxhdpi"
-            compatibleScreens 'small', 'normal', 'large', 'xlarge'
-        }
-        abi {
-            enable allowSplit()
-            reset()
-            include "armeabi-v7a", "x86"
-            universalApk false
         }
     }
     defaultConfig {
@@ -187,17 +166,6 @@ dependencies {
     //developer_options should not appear in compile-testapp-plugin.gradle if it is successfully excluded
     implementation project(rootProject.ext.features.developerOptions)
 
-//    implementation project(rootProject.ext.libraries.logger)
-//    implementation (rootProject.ext.debugToolsDependencies.timber){
-//        exclude group: 'org.jetbrains', module: 'annotations'
-//    }
-
     //------- DO NOT DELETE THIS PART -------//
     // TO BE ADDED AS FEATURE REQUIREMENT
 }
-
-repositories {
-    mavenCentral()
-}
-
-//apply plugin: 'com.google.gms.google-services'
