@@ -343,7 +343,6 @@ dependencies {
     implementation project(rootProject.ext.features.loginphone)
     implementation project(rootProject.ext.features.sessioncommon)
     implementation project(rootProject.ext.features.commonDigital)
-    implementation project(rootProject.ext.features.pms)
     implementation project(rootProject.ext.features.promoCheckout)
     implementation project(rootProject.ext.features.loyaltyCommon)
     implementation project(rootProject.ext.features.promoCheckoutCommon)
@@ -377,7 +376,8 @@ dependencies {
     implementation project(rootProject.ext.libraries.coreNetwork)
     implementation project(rootProject.ext.libraries.trackingOptimizer)
     implementation project(rootProject.ext.libraries.locationmanager)
-    implementation project(rootProject.ext.libraries.permissionchecker)
+
+    implementation project(rootProject.ext.libraries.utils)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.libraries.imagePreviewSlider)
     implementation project(rootProject.ext.libraries.devMonitoringTools)

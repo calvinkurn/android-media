@@ -11,8 +11,8 @@ import com.tokopedia.play.broadcaster.pusher.PlayPusherImpl
 import com.tokopedia.play.broadcaster.socket.PlayBroadcastSocket
 import com.tokopedia.play.broadcaster.socket.PlayBroadcastSocket.Companion.KEY_GROUP_CHAT_PREFERENCES
 import com.tokopedia.play.broadcaster.socket.PlayBroadcastSocketImpl
-import com.tokopedia.play.broadcaster.util.coroutine.CommonCoroutineDispatcherProvider
-import com.tokopedia.play.broadcaster.util.coroutine.CoroutineDispatcherProvider
+import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
+import com.tokopedia.play_common.util.coroutine.DefaultCoroutineDispatcherProvider
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -24,8 +24,9 @@ import dagger.Provides
 @Module
 class PlayBroadcastModule(val mContext: Context) {
 
+    @PlayBroadcastScope
     @Provides
-    fun provideCoroutineDispatcherProvider(): CoroutineDispatcherProvider = CommonCoroutineDispatcherProvider()
+    fun provideCoroutineDispatcherProvider(): CoroutineDispatcherProvider = DefaultCoroutineDispatcherProvider()
 
     @Provides
     fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface {

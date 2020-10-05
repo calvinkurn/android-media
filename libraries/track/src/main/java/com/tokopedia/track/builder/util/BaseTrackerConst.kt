@@ -115,7 +115,8 @@ abstract class BaseTrackerConst {
             val quantity: String = "",
             val headerName: String = "",
             val isCarousel: Boolean? = null,
-            val recommendationType: String = "")
+            val recommendationType: String = "",
+            val pageName: String = "")
 
     object Ecommerce {
         const val KEY = "ecommerce"
@@ -262,9 +263,10 @@ abstract class BaseTrackerConst {
             if (product.channelId.isNotEmpty()) map[KEY_DIMENSION_84] = product.channelId else NONE
             if (product.categoryId.isNotEmpty() || product.persoType.isNotEmpty()) map[KEY_DIMENSION_96] = String.format(FORMAT_2_ITEMS_UNDERSCORE, product.persoType, product.categoryId) else NONE
             if (list.isNotEmpty()) {
-                var newList = list + if(product.isTopAds) " - topads" else ""
+                var newList = list + if(product.isTopAds) " - topads" else " - nontopads"
                 if(product.isCarousel != null) newList += if (product.isCarousel == true) " - carousel" else "- non carousel"
                 if(product.recommendationType.isNotEmpty()) newList += " - ${product.recommendationType}"
+                if(product.pageName.isNotEmpty()) newList += " - ${product.pageName}"
                 if(product.headerName.isNotEmpty()) newList += " - ${product.headerName}"
                 map[KEY_LIST] = newList
             }

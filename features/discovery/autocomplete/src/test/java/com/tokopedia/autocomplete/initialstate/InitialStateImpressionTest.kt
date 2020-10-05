@@ -6,7 +6,7 @@ import io.mockk.verify
 import org.junit.Test
 
 private const val initialStateEmptyDataResponse = "autocomplete/initialstate/empty-response.json"
-private const val initialStateWithShowMoreResponse = "autocomplete/initialstate/with-show-more-recent-search.json"
+private const val initialStateWithShowMoreResponse = "autocomplete/initialstate/with-5-data-show-more-recent-search.json"
 
 internal class InitialStateImpressionTest: InitialStatePresenterTestFixtures() {
 

@@ -5,7 +5,7 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.UriUtil
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
 import com.tokopedia.seller.menu.common.R
@@ -30,7 +30,7 @@ class SellerFeatureViewHolder(
         itemView.cardStatistics.setOnClickListener {
             val appLinks = ArrayList<String>().apply {
                 add(ApplinkConstInternalSellerapp.SELLER_HOME)
-                add(ApplinkConstInternalMarketplace.GOLD_MERCHANT_STATISTIC_DASHBOARD)
+                add(ApplinkConstInternalMechant.MERCHANT_STATISTIC_DASHBOARD)
             }
             goToSellerMigrationPage(SellerMigrationFeatureName.FEATURE_SHOP_INSIGHT, appLinks)
             sellerMenuTracker?.sendEventClickShopStatistic()
@@ -58,7 +58,7 @@ class SellerFeatureViewHolder(
         itemView.cardFintech.setOnClickListener {
             val appLinks = ArrayList<String>().apply {
                 add(ApplinkConstInternalSellerapp.SELLER_HOME)
-                add(ApplinkConst.LAYANAN_FINANSIAL)
+                add("${ApplinkConst.LAYANAN_FINANSIAL}/")
             }
             goToSellerMigrationPage(SellerMigrationFeatureName.FEATURE_FINANCIAL_SERVICES, appLinks)
             sellerMenuTracker?.sendEventClickFintech()
