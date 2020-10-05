@@ -58,6 +58,7 @@ import com.tokopedia.topchat.chatroom.view.listener.TopChatContract
 import com.tokopedia.topchat.chatroom.view.uimodel.StickerUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.*
 import com.tokopedia.topchat.chattemplate.view.viewmodel.GetTemplateUiModel
+import com.tokopedia.topchat.common.util.ImageUtil
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.websocket.RxWebSocket
@@ -311,7 +312,8 @@ class TopChatRoomPresenter @Inject constructor(
     }
 
     override fun startCompressImages(it: ImageUploadViewModel) {
-        if (validateImageAttachment(it.imageUrl)) {
+        val isValidImage = ImageUtil.validateImageAttachment(it.imageUrl)
+        if (isValidImage.first) {
             it.imageUrl?.let { it1 ->
                 val subscription = compressImageUseCase.compressImage(it1)
                         .subscribe(object : Subscriber<String>() {
@@ -329,6 +331,11 @@ class TopChatRoomPresenter @Inject constructor(
                         })
                 compressImageSubscription?.clear()
                 compressImageSubscription?.add(subscription)
+            }
+        } else {
+            when (isValidImage.second) {
+                ImageUtil.IMAGE_UNDERSIZE -> showErrorSnackbar(R.string.undersize_image)
+                ImageUtil.IMAGE_EXCEED_SIZE_LIMIT -> showErrorSnackbar(R.string.oversize_image)
             }
         }
     }
@@ -357,32 +364,6 @@ class TopChatRoomPresenter @Inject constructor(
     private fun sendImageByApi(uploadId: String, image: ImageUploadViewModel) {
         val requestParams = ReplyChatUseCase.generateParamAttachImage(thisMessageId, uploadId)
         sendByApi(requestParams, image)
-    }
-
-    private fun validateImageAttachment(uri: String?): Boolean {
-        var MAX_FILE_SIZE = 15360
-        val MINIMUM_HEIGHT = 100
-        val MINIMUM_WIDTH = 300
-        val DEFAULT_ONE_MEGABYTE: Long = 1024
-        if (uri == null) return false
-        val file = File(uri)
-        val options = BitmapFactory.Options()
-        options.inJustDecodeBounds = true
-        BitmapFactory.decodeFile(file.absolutePath, options)
-        val imageHeight = options.outHeight
-        val imageWidth = options.outWidth
-
-        val fileSize = Integer.parseInt((file.length() / DEFAULT_ONE_MEGABYTE).toString())
-
-        return if (imageHeight < MINIMUM_HEIGHT || imageWidth < MINIMUM_WIDTH) {
-            showErrorSnackbar(R.string.undersize_image)
-            false
-        } else if (fileSize >= MAX_FILE_SIZE) {
-            showErrorSnackbar(R.string.oversize_image)
-            false
-        } else {
-            true
-        }
     }
 
     override fun isUploading(): Boolean {

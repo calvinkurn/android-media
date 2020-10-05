@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.atc_common.domain.usecase.AddToCartOccUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.chat_common.data.ChatroomViewModel
+import com.tokopedia.chat_common.data.ImageUploadViewModel
 import com.tokopedia.chat_common.domain.pojo.ChatReplies
 import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
 import com.tokopedia.chatbot.domain.mapper.TopChatRoomWebSocketMessageMapper
@@ -18,7 +19,9 @@ import com.tokopedia.topchat.TopchatTestCoroutineContextDispatcher
 import com.tokopedia.topchat.chatlist.domain.usecase.DeleteMessageListUseCase
 import com.tokopedia.topchat.chatroom.domain.usecase.*
 import com.tokopedia.topchat.chatroom.view.listener.TopChatContract
+import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.exImageUploadId
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.exMessageId
+import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.imageUploadViewModel
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.readParam
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.source
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.toShopId
@@ -29,6 +32,8 @@ import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Du
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.wsResponseTypingString
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopchatCoroutineContextProvider
 import com.tokopedia.topchat.chattemplate.view.viewmodel.GetTemplateUiModel
+import com.tokopedia.topchat.common.util.ImageUtil
+import com.tokopedia.topchat.common.util.ImageUtil.IMAGE_VALID
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.websocket.RxWebSocket
 import com.tokopedia.websocket.RxWebSocketUtil
@@ -152,14 +157,27 @@ class TopChatRoomPresenterTest {
 
     object Dummy {
         const val exMessageId = "190378584"
+        const val exImageUploadId = "667056"
         const val toUserId = "12345"
         const val toShopId = "54321"
         const val source = "askseller"
         val readParam = TopChatWebSocketParam.generateParamRead(exMessageId)
+        val imageUploadViewModel = generateImageUploadViewModel()
         val wsResponseReplyString = FileUtil.readFileContent("/ws_response_reply_text_is_opposite.json")
         val wsResponseTypingString = FileUtil.readFileContent("/ws_response_typing.json")
         val wsResponseEndTypingString = FileUtil.readFileContent("/ws_response_end_typing.json")
         val wsResponseReadMessageString = FileUtil.readFileContent("/ws_response_read_message.json")
+
+
+        private fun generateImageUploadViewModel(): ImageUploadViewModel {
+            return ImageUploadViewModel(
+                    exMessageId,
+                    "123123",
+                    "123987",
+                    "https://ecs.tokopedia.com/image.jpg",
+                    "123"
+            )
+        }
     }
 
     @Before
@@ -211,6 +229,7 @@ class TopChatRoomPresenterTest {
     private fun mockSingletonObject() {
         mockkObject(RxWebSocket)
         mockkObject(RxWebSocketUtil)
+        mockkObject(ImageUtil)
         every { RxWebSocketUtil.getInstance(any()) } returns webSocketUtil
     }
 
@@ -428,6 +447,34 @@ class TopChatRoomPresenterTest {
 
         // Then
         verify(exactly = 1) { view.onErrorGetTemplate() }
+    }
+
+    @Test
+    fun `on success upload image`() {
+        // Given
+        every {
+            ImageUtil.validateImageAttachment(imageUploadViewModel.imageUrl)
+        } returns Pair(true, IMAGE_VALID)
+        every {
+            compressImageUseCase.compressImage(imageUploadViewModel.imageUrl!!)
+        } returns Observable.just(imageUploadViewModel.imageUrl)
+        every {
+            uploadImageUseCase.upload(imageUploadViewModel, captureLambda(), any())
+        } answers {
+            val onSuccess = lambda<(String, ImageUploadViewModel) -> Unit>()
+            onSuccess.invoke(exImageUploadId, imageUploadViewModel)
+        }
+
+        // When
+        presenter.connectWebSocket(exMessageId)
+        presenter.startCompressImages(imageUploadViewModel)
+
+        // Then
+        val websocketParam = TopChatWebSocketParam.generateParamSendImage(
+                exMessageId, exImageUploadId, imageUploadViewModel.startTime
+        )
+        verify(exactly = 1) { view.addDummyMessage(imageUploadViewModel) }
+        verify(exactly = 1) { RxWebSocket.send(websocketParam, listInterceptor) }
     }
 
     private fun mockkParseResponse(wsInfo: WebSocketInfo, isOpposite: Boolean = true): ChatSocketPojo {
