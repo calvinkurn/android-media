@@ -39,6 +39,7 @@ import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.test.application.environment.callback.TopAdsVerificatorInterface;
 import com.tokopedia.test.application.environment.interceptor.TopAdsDetectorInterceptor;
+import com.tokopedia.test.application.environment.interceptor.mock.MockInterceptor;
 import com.tokopedia.test.application.environment.interceptor.size.GqlNetworkAnalyzerInterceptor;
 import com.tokopedia.test.application.util.DeviceConnectionInfo;
 import com.tokopedia.test.application.util.DeviceInfo;
@@ -87,9 +88,9 @@ public class InstrumentationTestApp extends BaseMainApplication
         initAkamaiBotManager();
         LinkerManager.initLinkerManager(getApplicationContext()).setGAClientId(TrackingUtils.getClientID(getApplicationContext()));
         TrackApp.getInstance().initializeAllApis();
-        NetworkClient.init(this);
         GlobalConfig.DEBUG = true;
         GlobalConfig.VERSION_NAME = "3.90";
+        NetworkClient.init(this);
         GraphqlClient.init(this);
         com.tokopedia.config.GlobalConfig.DEBUG = true;
         RemoteConfigInstance.initAbTestPlatform(this);
@@ -136,6 +137,18 @@ public class InstrumentationTestApp extends BaseMainApplication
             testInterceptors.put(interceptor.getClass().getCanonicalName(), interceptor);
             ArrayList<Interceptor> interceptorList = new ArrayList<Interceptor>(testInterceptors.values());
             GraphqlClient.reInitRetrofitWithInterceptors(interceptorList, this);
+        }
+    }
+
+    /**
+     * this method is just for mock response API with custom interceptor
+     * common_network with use case RestRequestSupportInterceptorUseCase
+     */
+    public void addRestSupportInterceptor(Interceptor interceptor) {
+        if (!testInterceptors.containsKey(interceptor.getClass().getCanonicalName())) {
+            testInterceptors.put(interceptor.getClass().getCanonicalName(), interceptor);
+            ArrayList<Interceptor> interceptorList = new ArrayList<Interceptor>(testInterceptors.values());
+            NetworkClient.reInitRetrofitWithInterceptors(interceptorList, this);
         }
     }
 
