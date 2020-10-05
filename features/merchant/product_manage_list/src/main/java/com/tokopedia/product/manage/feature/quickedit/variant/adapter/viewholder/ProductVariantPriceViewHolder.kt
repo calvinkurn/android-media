@@ -25,6 +25,8 @@ class ProductVariantPriceViewHolder(
         val LAYOUT = R.layout.item_product_manage_variant
     }
 
+    private var currentPrice: Int? = null
+
     override fun bind(variant: ProductVariant) {
         itemView.textProductName.text = variant.name
         setupEditTextFieldPrice(variant)
@@ -56,7 +58,7 @@ class ProductVariantPriceViewHolder(
 
     private fun setTextFieldPriceValue(price: Int) {
        itemView.textFieldPrice.apply {
-           val priceRupiah = CurrencyFormatHelper.convertToRupiah(price.toString())
+           val priceRupiah = CurrencyFormatHelper.convertToRupiah(getCurrentPrice(price))
            val priceTxt = CurrencyFormatHelper.removeCurrencyPrefix(priceRupiah)
            val prefixTxt = itemView.context.getString(R.string.product_manage_quick_edit_currency)
 
@@ -91,6 +93,8 @@ class ProductVariantPriceViewHolder(
                     } else {
                         hidePriceError()
                     }
+
+                    currentPrice = price
                 }
             })
             setOnFocusChangeListener { _, hasFocus ->
@@ -121,6 +125,10 @@ class ProductVariantPriceViewHolder(
             setMessage("")
             setError(false)
         }
+    }
+
+    private fun getCurrentPrice(price: Int): String {
+        return (currentPrice ?: price).toString()
     }
 
     interface ProductVariantListener {
