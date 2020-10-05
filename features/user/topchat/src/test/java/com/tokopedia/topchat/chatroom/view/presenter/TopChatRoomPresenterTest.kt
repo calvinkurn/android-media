@@ -28,6 +28,7 @@ import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Du
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.wsResponseReplyString
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.wsResponseTypingString
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopchatCoroutineContextProvider
+import com.tokopedia.topchat.chattemplate.view.viewmodel.GetTemplateUiModel
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.websocket.RxWebSocket
 import com.tokopedia.websocket.RxWebSocketUtil
@@ -45,6 +46,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import rx.Observable
+import rx.Subscriber
 
 class TopChatRoomPresenterTest {
 
@@ -384,6 +386,48 @@ class TopChatRoomPresenterTest {
 
         // Then
         verify(exactly = 1) { getChatUseCase.getBottomChat(exMessageId, mockOnSuccess, mockOnError) }
+    }
+
+    @Test
+    fun `On success get chat template`() {
+        // Given
+        val slot = slot<Subscriber<GetTemplateUiModel>>()
+        every {
+            getTemplateChatRoomUseCase.execute(
+                    any(),
+                    capture(slot)
+            )
+        } answers {
+            val subs = slot.captured
+            subs.onNext(GetTemplateUiModel())
+        }
+
+        // When
+        presenter.getTemplate(true)
+
+        // Then
+        verify(exactly = 1) { view.onSuccessGetTemplate(emptyList()) }
+    }
+
+    @Test
+    fun `On error get chat template`() {
+        // Given
+        val slot = slot<Subscriber<GetTemplateUiModel>>()
+        every {
+            getTemplateChatRoomUseCase.execute(
+                    any(),
+                    capture(slot)
+            )
+        } answers {
+            val subs = slot.captured
+            subs.onError(Throwable())
+        }
+
+        // When
+        presenter.getTemplate(true)
+
+        // Then
+        verify(exactly = 1) { view.onErrorGetTemplate() }
     }
 
     private fun mockkParseResponse(wsInfo: WebSocketInfo, isOpposite: Boolean = true): ChatSocketPojo {
