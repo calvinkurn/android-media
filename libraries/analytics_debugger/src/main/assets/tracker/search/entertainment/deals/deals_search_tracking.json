@@ -1,6 +1,6 @@
 {
   "readme": "this tracker for tracking search page",
-  "mode" : "subset",
+  "mode" : "exact",
   "query": [
     {
       "event" : "clickDeals", 
@@ -8,28 +8,31 @@
       "eventAction" : "change location - search page",
       "eventLabel" : "deals - {{.+}} - {{.+}}",
       "screenName" : "/deals/",
-      "currentSite" : "tokopediadigitaldeals",
-      "clientId" : "{{.+}}",
-      "sessionIris" : "{{iris session}}",
-      "userId" : "{{.+}}",
-      "businessUnit ": "travel & entertainment"
-    }, {
-      "event" : "clickDeals", 
-      "eventCategory" : "digital - deals",
-      "eventAction" : "click search",
-      "eventLabel" : "-",
-      "screenName" : "/deals/search",
+      "category" : "deals",
       "currentSite" : "tokopediadigitaldeals",
       "clientId" : "{{.+}}",
       "sessionIris" : "{{.+}}",
-      "userId" : "{{.+}}",
+      "userId" : "{{.*}}",
       "businessUnit ": "travel & entertainment"
+    }, {
+      "businessUnit ": "travel & entertainment",
+      "clientId" : "{{.+}}",
+      "eventCategory" : "digital - deals",
+      "currentSite" : "tokopediadigitaldeals",
+      "screenName" : "/deals/search",
+      "category" : "deals",
+      "event" : "clickDeals",
+      "userId" : "{{.*}}",
+      "eventAction" : "click search",
+      "sessionIris" : "{{.+}}",
+      "eventLabel" : "-"
     }, {
       "event" : "view_item_list/view_search_results", 
       "eventCategory" : "digital - deals",
       "eventAction" : "impression on search results",
       "eventLabel" : "deals - {{.+}} - {{.+}}",
       "screenName": "/deals/",
+      "category" : "deals",
       "currentSite":"tokopediadigitaldeals",
       "clientId":"{{.+}}",
       "sessionIris":"{{.+}}",
@@ -37,14 +40,14 @@
       "businessUnit":"travel & entertainment",
       "items": [
         {
-          "item_name": "{{.*}}",
           "item_id": "{{.*}}",
           "price": "{{.*}}",
-          "item_brand": "{{.*}}",
-          "item_category": "{{.*}}",
-          "item_variant": "{{.*}}",
+          "dimension40": "{{.*}}",
           "index": "{{.*}}",
-          "dimensionXX": "{{.*}}"
+          "item_name": "{{.*}}",
+          "item_brand": "{{.*}}",
+          "item_variant": "{{.*}}",
+          "item_category": "{{.*}}"
         }
       ],
       "item_list": "{{.*}}",
@@ -55,6 +58,7 @@
       "eventAction" : "impression on search results",
       "eventLabel" : "deals - {{.*}} - {{.*}} - result not found",
       "screenName" : "/deals/",
+      "category" : "deals",
       "currentSite" : "tokopediadigitaldeals",
       "clientId" : "{{.*}}",
       "sessionIris" : "{{.*}}",
@@ -66,6 +70,7 @@
       "eventAction" : "click on search result",
       "eventLabel" : "deals - product - {{.+}} - {{.+}} - {{.+}}",
       "screenName": "/deals/",
+      "category" : "deals",
       "currentSite":"tokopediadigitaldeals",
       "clientId":"{client id}",
       "sessionIris":"{iris session}",
@@ -80,7 +85,7 @@
           "item_category": "{{.*}}",
           "item_variant": "{{.*}}",
           "index": "{{.*}}",
-          "dimensionXX": "{{.*}}"
+          "dimension40": "{{.*}}"
         }
       ],
       "item_list": "{{.*}}",
@@ -91,6 +96,7 @@
       "eventAction" : "click on search result",
       "eventLabel" : "deals - brand - {{.+}} - {{.+}}",
       "screenName": "/deals/",
+      "category" : "deals",
       "currentSite":"tokopediadigitaldeals",
       "clientId":"{client id}",
       "sessionIris":"{iris session}",
@@ -105,7 +111,7 @@
           "item_category": "{{.*}}",
           "item_variant": "{{.*}}",
           "index": "{{.*}}",
-          "dimensionXX": "{{.*}}"
+          "dimension40": "{{.*}}"
         }
       ],
       "item_list": "{{.*}}",
@@ -117,6 +123,7 @@
       "eventAction" : "impression on chips",
       "eventLabel" : "-",
       "screenName" : "/deals/",
+      "category" : "deals",
       "currentSite" : "tokopediadigitaldeals",
       "clientId" : "{{.*}}",
       "sessionIris" : "{{.*}}",
@@ -128,6 +135,7 @@
       "eventAction" : "click on chips",
       "eventLabel" : "deals - {{.*}}",
       "screenName" : "/deals/",
+      "category" : "deals",
       "currentSite" : "tokopediadigitaldeals",
       "clientId" : "{{.*}}",
       "sessionIris" : "{{.*}}",
@@ -139,6 +147,7 @@
       "eventAction" : "impression on last seen",
       "eventLabel" : "-",
       "screenName" : "/deals/",
+      "category" : "deals",
       "currentSite" : "tokopediadigitaldeals",
       "clientId" : "{{.*}}",
       "sessionIris" : "{{.*}}",
@@ -150,6 +159,7 @@
       "eventAction" : "click on last seen",
       "eventLabel" : "deals - {{.*}}",
       "screenName" : "/deals/",
+      "category" : "deals",
       "currentSite" : "tokopediadigitaldeals",
       "clientId" : "{{.*}}",
       "sessionIris" : "{{.*}}",
