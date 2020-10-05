@@ -1,6 +1,4 @@
 // Sort alphabetically by name
-includeDynamicFeatureIfEnabled("customerapp")
-includeDynamicFeatureIfEnabled("customerapp_pro")
 
 include "features:common:developer_options"
 include "features:common:developer_options_noop"
@@ -237,5 +235,3 @@ include "tkpdseller"
 include "tkpdabstraction"
 
 include 'testapp-features:user:logintestapp'
-include "customerapp"
-include "customerapp_pro"
