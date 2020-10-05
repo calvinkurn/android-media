@@ -1,6 +1,6 @@
 package com.tokopedia.seller.product.etalase.data.source;
 
-import com.tokopedia.product.manage.item.main.base.data.source.cloud.model.myetalase.MyEtalaseListServiceModel;
+import com.tokopedia.seller.manageitem.data.cloud.model.etalase.MyEtalaseListServiceModel;
 import com.tokopedia.seller.product.etalase.data.mapper.AddEtalaseServiceToDomainMapper;
 import com.tokopedia.seller.product.etalase.data.source.cloud.MyEtalaseCloud;
 

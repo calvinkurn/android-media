@@ -29,8 +29,11 @@ import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
 import com.tokopedia.discovery.common.manager.handleProductCardOptionsActivityResult
 import com.tokopedia.discovery.common.manager.showProductCardOptions
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
+import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet
+import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.thousandFormatted
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
@@ -42,13 +45,14 @@ import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarou
 import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarouselOverlayImageDataModel
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigKey.ENABLE_SHOP_PAGE_CHANGE_PRODUCT_GRID_LAYOUT_FEATURE
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopComponentHelper
 import com.tokopedia.shop.analytic.ShopPageHomeTracking
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPageAttribution
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPageProduct
+import com.tokopedia.shop.common.constant.DEFAULT_SORT_ID
+import com.tokopedia.shop.common.constant.SORT_PARAM_KEY
 import com.tokopedia.shop.common.constant.ShopParamConstant
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
 import com.tokopedia.shop.common.graphql.data.checkwishlist.CheckWishlistResult
@@ -73,11 +77,13 @@ import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity
 import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageFragment
 import com.tokopedia.shop.pageheader.presentation.listener.ShopPageHomeTabPerformanceMonitoringListener
 import com.tokopedia.shop.common.util.ShopProductViewGridType
+import com.tokopedia.shop.common.util.getIndicatorCount
+import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
 import com.tokopedia.shop.product.view.activity.ShopProductListResultActivity
 import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener
 import com.tokopedia.shop.product.view.datamodel.ShopProductSortFilterUiModel
 import com.tokopedia.shop.product.view.viewholder.ShopProductSortFilterViewHolder
-import com.tokopedia.shop.common.view.viewmodel.ShopSortSharedViewModel
+import com.tokopedia.shop.common.view.viewmodel.ShopProductFilterParameterSharedViewModel
 import com.tokopedia.shop.sort.view.activity.ShopProductSortActivity
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
@@ -94,7 +100,8 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         ShopProductSortFilterViewHolder.ShopProductSortFilterViewHolderListener,
         ShopHomeCarouselProductListener,
         ShopHomeCampaignNplWidgetListener,
-        ShopProductChangeGridSectionListener {
+        ShopProductChangeGridSectionListener,
+        SortFilterBottomSheet.Callback{
 
     companion object {
         const val KEY_SHOP_ID = "SHOP_ID"
@@ -107,8 +114,10 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         private const val EXTRA_CHANNEL_ID = "EXTRA_CHANNEL_ID"
         const val SPAN_COUNT = 2
         const val UPDATE_REMIND_ME_PLAY = "update_remind_me"
+        const val UPDATE_REMIND_ME_PLAY_ID = "update_remind_me_id"
         const val SAVED_SHOP_SORT_ID = "saved_shop_sort_id"
         const val SAVED_SHOP_SORT_NAME = "saved_shop_sort_name"
+        const val SAVED_SHOP_PRODUCT_FILTER_PARAMETER = "SAVED_SHOP_PRODUCT_FILTER_PARAMETER"
         private const val REQUEST_CODE_ETALASE = 206
         private const val REQUEST_CODE_SORT = 301
         private const val REQUEST_CODE_PLAY_ROOM = 256
@@ -153,12 +162,19 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     private var shopName: String = ""
     private var shopAttribution: String = ""
     private var shopRef: String = ""
-    private var sortId = ""
-    private var sortName = ""
+    private var sortId
+        get() = shopProductFilterParameter?.getSortId().orEmpty()
+        set(value) {
+            shopProductFilterParameter?.setSortId(value)
+        }
+    private val sortName
+        get() = viewModel?.getSortNameById(sortId).orEmpty()
     private var recyclerViewTopPadding = 0
-    private var shopSortSharedViewModel: ShopSortSharedViewModel? = null
+    private var shopProductFilterParameterSharedViewModel: ShopProductFilterParameterSharedViewModel? = null
     private var shopChangeProductGridSharedViewModel: ShopChangeProductGridSharedViewModel? = null
     private var remoteConfig: RemoteConfig? = null
+    private var sortFilterBottomSheet: SortFilterBottomSheet? = null
+    private var shopProductFilterParameter: ShopProductFilterParameter? = ShopProductFilterParameter()
 
     val isLogin: Boolean
         get() = viewModel?.isLogin ?: false
@@ -182,12 +198,11 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         getIntentData()
         super.onCreate(savedInstanceState)
         savedInstanceState?.let {
-            sortId = it.getString(SAVED_SHOP_SORT_ID, "")
-            sortName = it.getString(SAVED_SHOP_SORT_NAME, "")
+            shopProductFilterParameter = it.getParcelable(SAVED_SHOP_PRODUCT_FILTER_PARAMETER)
         }
         remoteConfig = FirebaseRemoteConfigImpl(context)
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(ShopHomeViewModel::class.java)
-        shopSortSharedViewModel = ViewModelProviders.of(requireActivity()).get(ShopSortSharedViewModel::class.java)
+        shopProductFilterParameterSharedViewModel = ViewModelProviders.of(requireActivity()).get(ShopProductFilterParameterSharedViewModel::class.java)
         shopChangeProductGridSharedViewModel = ViewModelProvider(requireActivity()).get(ShopChangeProductGridSharedViewModel::class.java)
         customDimensionShopPage.updateCustomDimensionData(shopId, isOfficialStore, isGoldMerchant)
         staggeredGridLayoutManager = StaggeredGridLayoutManager(SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL)
@@ -239,7 +254,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 animator.supportsChangeAnimations = false
             }
         }
-        observeShopSortSharedViewModel()
+        observeShopProductFilterParameterSharedViewModel()
         observeShopChangeProductGridSharedViewModel()
         observeLiveData()
         loadInitialData()
@@ -261,14 +276,11 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         return false
     }
 
-    private fun observeShopSortSharedViewModel() {
-        shopSortSharedViewModel?.sharedSortData?.observe(viewLifecycleOwner, Observer {
+    private fun observeShopProductFilterParameterSharedViewModel() {
+        shopProductFilterParameterSharedViewModel?.sharedShopProductFilterParameter?.observe(viewLifecycleOwner, Observer {
             if (!shopHomeAdapter.isLoading) {
-                sortId = it.first
-                sortName = it.second
-                shopHomeAdapter.changeSelectedSortFilter(sortId, sortName)
-                shopHomeAdapter.refreshSticky()
-                refreshProductList()
+                shopProductFilterParameter = it
+                changeSortData(sortId)
             }
         })
     }
@@ -290,17 +302,18 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         viewModel?.shopHomeLayoutData?.removeObservers(this)
         viewModel?.checkWishlistData?.removeObservers(this)
         viewModel?.reminderPlayLiveData?.removeObservers(this)
+        viewModel?.bottomSheetFilterLiveData?.removeObservers(this)
+        viewModel?.shopProductFilterCountLiveData?.removeObservers(this)
         viewModel?.flush()
         shopHomeAdapter.onDestroy()
-        shopSortSharedViewModel?.sharedSortData?.removeObservers(this)
+        shopProductFilterParameterSharedViewModel?.sharedShopProductFilterParameter?.removeObservers(this)
         shopChangeProductGridSharedViewModel?.sharedProductGridType?.removeObservers(this)
         super.onDestroy()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putString(SAVED_SHOP_SORT_ID, sortId)
-        outState.putString(SAVED_SHOP_SORT_NAME, sortName)
+        outState.putParcelable(SAVED_SHOP_PRODUCT_FILTER_PARAMETER, shopProductFilterParameter)
     }
 
     override fun loadInitialData() {
@@ -312,7 +325,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         showLoading()
         shopHomeAdapter.isOwner = isOwner
         startMonitoringPltNetworkRequest()
-        viewModel?.getShopPageHomeData(shopId, sortId.toIntOrZero())
+        viewModel?.getShopPageHomeData(shopId, shopProductFilterParameter ?: ShopProductFilterParameter())
     }
 
     private fun getIntentData() {
@@ -354,10 +367,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             when (it) {
                 is Success -> {
                     addProductListHeader()
-                    if(ShopPageProductChangeGridRemoteConfig.isFeatureEnabled(remoteConfig)) {
-                        addChangeProductGridSection(it.data.totalProductData)
-                    }
-                    updateProductListData(it.data.hasNextPage, it.data.listShopProductUiModel, true)
+                    updateProductListData(it.data.hasNextPage, it.data.listShopProductUiModel, it.data.totalProductData, true)
                 }
             }
             stopPerformanceMonitor()
@@ -367,7 +377,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             hideLoading()
             when (it) {
                 is Success -> {
-                    updateProductListData(it.data.hasNextPage, it.data.listShopProductUiModel, false)
+                    updateProductListData(it.data.hasNextPage, it.data.listShopProductUiModel, it.data.totalProductData, false)
                 }
             }
         })
@@ -436,11 +446,42 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 }
             }
         })
+
+
+        viewModel?.bottomSheetFilterLiveData?.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> {
+                    onSuccessGetBottomSheetFilterData(it.data)
+                }
+            }
+        })
+
+        viewModel?.shopProductFilterCountLiveData?.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> {
+                    onSuccessGetShopProductFilterCount(it.data)
+                }
+            }
+        })
+
+    }
+
+
+    private fun onSuccessGetShopProductFilterCount(count: Int) {
+        val countText = String.format(
+                getString(com.tokopedia.filter.R.string.bottom_sheet_filter_finish_button_template_text),
+                count.thousandFormatted()
+        )
+        sortFilterBottomSheet?.setResultCountText(countText)
+    }
+
+    private fun onSuccessGetBottomSheetFilterData(model: DynamicFilterModel) {
+        model.defaultSortValue = DEFAULT_SORT_ID
+        sortFilterBottomSheet?.setDynamicFilterModel(model)
     }
 
     private fun addChangeProductGridSection(totalProductData: Int) {
-        val changeProductGridUiModel = ShopHomeProductChangeGridSectionUiModel(totalProductData)
-        shopHomeAdapter.addShopPageProductChangeGridSection(changeProductGridUiModel)
+        shopHomeAdapter.updateShopPageProductChangeGridSection(totalProductData)
     }
 
     private fun onFailCheckCampaignNplNotifyMe(campaignId: String, errorMessage: String) {
@@ -501,7 +542,10 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 selectedEtalaseId = "",
                 selectedEtalaseName = "",
                 selectedSortId = sortId,
-                selectedSortName = sortName
+                selectedSortName = sortName,
+                filterIndicatorCounter = getIndicatorCount(
+                        shopProductFilterParameter?.getMapData()
+                )
         )
         shopHomeAdapter.setSortFilterData(shopProductSortFilterUiModel)
     }
@@ -596,8 +640,12 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     private fun updateProductListData(
             hasNextPage: Boolean,
             productList: List<ShopHomeProductViewModel>,
+            totalProductData: Int,
             isInitialData: Boolean
     ) {
+        if(ShopPageProductChangeGridRemoteConfig.isFeatureEnabled(remoteConfig)) {
+            addChangeProductGridSection(totalProductData)
+        }
         shopHomeAdapter.setProductListData(productList, isInitialData)
         updateScrollListenerState(hasNextPage)
     }
@@ -669,7 +717,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
 
     fun getProductList(page: Int) {
         if (shopId.isNotEmpty()) {
-            viewModel?.getNewProductList(shopId, sortId.toIntOrZero(), page)
+            viewModel?.getNewProductList(shopId, page, shopProductFilterParameter ?: ShopProductFilterParameter())
         }
     }
 
@@ -708,14 +756,10 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                     if (shopHomeAdapter.isLoading) {
                         return
                     }
-                    sortId = data?.getStringExtra(ShopProductSortActivity.SORT_VALUE) ?: ""
-                    sortName = data?.getStringExtra(ShopProductSortActivity.SORT_NAME) ?: ""
                     shopPageHomeTracking.sortProduct(sortName, isOwner, customDimensionShopPage)
-                    shopSortSharedViewModel?.changeSharedSortData(sortId, sortName)
-                    shopHomeAdapter.changeSelectedSortFilter(sortId, sortName)
-                    shopHomeAdapter.refreshSticky()
+                    val sortId = data?.getStringExtra(ShopProductSortActivity.SORT_VALUE) ?: ""
+                    changeSortData(sortId)
                     scrollToEtalaseTitlePosition()
-                    refreshProductList()
                 }
             }
             REQUEST_CODE_USER_LOGIN -> {
@@ -1012,10 +1056,12 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     override fun onReminderClick(playBannerCarouselItemDataModel: PlayBannerCarouselItemDataModel, position: Int) {
         if(isLogin) {
             viewModel?.setToggleReminderPlayBanner(playBannerCarouselItemDataModel.channelId, playBannerCarouselItemDataModel.remindMe, position)
-        }
-        else {
+        } else {
             // reset remind icon
-            adapter.notifyItemChanged(position, Bundle().apply { putBoolean(UPDATE_REMIND_ME_PLAY, true) })
+            adapter.notifyItemChanged(position, Bundle().apply {
+                putBoolean(UPDATE_REMIND_ME_PLAY, true)
+                putString(UPDATE_REMIND_ME_PLAY_ID, playBannerCarouselItemDataModel.channelId)
+            })
             redirectToLoginPage()
         }
     }
@@ -1296,16 +1342,34 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 isOwner,
                 customDimensionShopPage
         )
-        sortId = ""
-        sortName = ""
-        shopSortSharedViewModel?.changeSharedSortData(sortId, sortName)
-        shopHomeAdapter.changeSelectedSortFilter(sortId, sortName)
-        shopHomeAdapter.refreshSticky()
+        changeSortData("")
         scrollToEtalaseTitlePosition()
-        refreshProductList()
     }
 
     override fun setSortFilterMeasureHeight(measureHeight: Int) {}
+
+    override fun onFilterClicked() {
+        showBottomSheetFilter()
+    }
+
+    private fun showBottomSheetFilter() {
+        val mapParameter = if (sortId.isNotEmpty())
+            shopProductFilterParameter?.getMapData()
+        else
+            shopProductFilterParameter?.getMapDataWithDefaultSortId()
+        sortFilterBottomSheet = SortFilterBottomSheet()
+        sortFilterBottomSheet?.show(
+                requireFragmentManager(),
+                mapParameter,
+                null,
+                this
+        )
+        sortFilterBottomSheet?.setOnDismissListener {
+            sortFilterBottomSheet = null
+        }
+        viewModel?.getBottomSheetFilterData()
+    }
+
 
     private fun refreshProductList() {
         shopHomeAdapter.removeProductList()
@@ -1450,7 +1514,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
 
     override fun onTimerFinished(model: ShopHomeNewProductLaunchCampaignUiModel) {
         shopHomeAdapter.removeShopHomeCampaignNplWidget(model)
-        viewModel?.getShopPageHomeData(shopId, sortId.toIntOrZero(), true)
+        viewModel?.getShopPageHomeData(shopId, shopProductFilterParameter ?: ShopProductFilterParameter(),true)
     }
 
     private fun setNplRemindMeClickedCampaignId(campaignId: String) {
@@ -1474,6 +1538,40 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         changeProductListGridView(gridType)
         scrollToEtalaseTitlePosition()
         shopChangeProductGridSharedViewModel?.changeSharedProductGridType(gridType)
+    }
+
+
+    override fun onApplySortFilter(applySortFilterModel: SortFilterBottomSheet.ApplySortFilterModel) {
+        sortFilterBottomSheet = null
+        shopProductFilterParameter?.clearParameter()
+        shopProductFilterParameter?.setMapData(applySortFilterModel.mapParameter)
+        if(applySortFilterModel.selectedSortName.isEmpty()){
+            sortId = ""
+        }
+        changeSortData(shopProductFilterParameter?.getSortId().orEmpty())
+        scrollToEtalaseTitlePosition()
+    }
+
+    private fun changeSortData(sortId: String){
+        this.sortId = sortId
+        shopProductFilterParameterSharedViewModel?.changeSharedSortData(
+                shopProductFilterParameter?:ShopProductFilterParameter()
+        )
+        shopHomeAdapter.changeSelectedSortFilter(this.sortId, sortName)
+        shopHomeAdapter.changeSortFilterIndicatorCounter(getIndicatorCount(
+                shopProductFilterParameter?.getMapData()
+        ))
+        shopHomeAdapter.refreshSticky()
+        refreshProductList()
+    }
+
+    override fun getResultCount(mapParameter: Map<String, String>) {
+        val tempShopProductFilterParameter = ShopProductFilterParameter()
+        tempShopProductFilterParameter.setMapData(mapParameter)
+        viewModel?.getFilterResultCount(
+                shopId,
+                tempShopProductFilterParameter
+        )
     }
 
 }
