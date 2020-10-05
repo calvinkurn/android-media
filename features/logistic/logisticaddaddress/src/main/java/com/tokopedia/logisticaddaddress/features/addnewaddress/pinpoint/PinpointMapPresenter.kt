@@ -1,6 +1,5 @@
 package com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint
 
-import android.app.Activity
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.logisticaddaddress.common.AddressConstants.CIRCUIT_BREAKER_ON_CODE
@@ -123,24 +122,6 @@ class PinpointMapPresenter @Inject constructor(private val getDistrictUseCase: G
                 Timber.d(e)
             }
         })
-    }
-
-    fun requestLocation(activity: Activity) {
-        permissionCheckerHelper?.checkPermissions(activity, getPermissions(),
-                object : PermissionCheckerHelper.PermissionCheckListener {
-                    override fun onPermissionDenied(permissionText: String) {
-                        permissionCheckerHelper?.onPermissionDenied(activity, permissionText)
-                    }
-
-                    override fun onNeverAskAgain(permissionText: String) {
-                        permissionCheckerHelper?.onNeverAskAgain(activity, permissionText)
-                    }
-
-                    override fun onPermissionGranted() {
-                        view.getLastLocationClient()
-                    }
-
-                }, "")
     }
 
     fun setPermissionChecker(permissionCheckerHelper: PermissionCheckerHelper?) {

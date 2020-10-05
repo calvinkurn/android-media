@@ -18,5 +18,4 @@ interface PinpointMapView : CustomerView {
     fun showUndetectedDialog()
     fun showLocationNotFoundCTA()
     fun goToAddNewAddressNegative()
-    fun getLastLocationClient()
 }

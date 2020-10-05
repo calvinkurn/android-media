@@ -235,23 +235,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
 
         activity?.let {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                permissionCheckerHelper?.checkPermissions(it, getPermissions(),
-                        object : PermissionCheckerHelper.PermissionCheckListener {
-                            override fun onPermissionDenied(permissionText: String) {
-                                permissionCheckerHelper?.onPermissionDenied(it, permissionText)
-                            }
-
-                            override fun onNeverAskAgain(permissionText: String) {
-                                permissionCheckerHelper?.onNeverAskAgain(it, permissionText)
-                            }
-
-                            override fun onPermissionGranted() {
-                                getLastLocationClient()
-                                googleMap?.isMyLocationEnabled = true
-                            }
-
-                        },
-                        it.getString(R.string.rationale_need_location))
+                requestLocation()
             } else {
                 googleMap?.isMyLocationEnabled = true
             }
@@ -346,7 +330,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
         }
     }
 
-    override fun getLastLocationClient() {
+    private fun getLastLocationClient() {
         fusedLocationClient?.lastLocation
                 ?.addOnSuccessListener {
                     if (it != null) {
@@ -357,7 +341,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
 
     private fun doUseCurrentLocation(isFullFlow: Boolean) {
         if (AddNewAddressUtils.isGpsEnabled(context)) {
-            activity?.let { presenter.requestLocation(it) }
+            requestLocation()
         } else {
             showLocationInfoBottomSheet(isFullFlow)
         }
@@ -827,6 +811,27 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
 
             override fun afterTextChanged(text: Editable) {
             }
+        }
+    }
+
+    private fun requestLocation() {
+        activity?.let {
+            permissionCheckerHelper?.checkPermissions(it, getPermissions(),
+                object : PermissionCheckerHelper.PermissionCheckListener {
+                    override fun onPermissionDenied(permissionText: String) {
+                        permissionCheckerHelper?.onPermissionDenied(it, permissionText)
+                    }
+
+                    override fun onNeverAskAgain(permissionText: String) {
+                        permissionCheckerHelper?.onNeverAskAgain(it, permissionText)
+                    }
+
+                    override fun onPermissionGranted() {
+                        getLastLocationClient()
+                        googleMap?.isMyLocationEnabled = true
+                    }
+
+                }, it.getString(R.string.rationale_need_location))
         }
     }
 
