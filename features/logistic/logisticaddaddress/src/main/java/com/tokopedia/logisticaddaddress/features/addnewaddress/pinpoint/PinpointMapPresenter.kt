@@ -15,7 +15,6 @@ import com.tokopedia.logisticaddaddress.utils.SimpleIdlingResource
 import com.tokopedia.logisticdata.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticdata.domain.usecase.RevGeocodeUseCase
 import com.tokopedia.usecase.RequestParams
-import com.tokopedia.utils.permission.PermissionCheckerHelper
 import rx.Subscriber
 import timber.log.Timber
 import javax.inject.Inject
@@ -30,7 +29,6 @@ class PinpointMapPresenter @Inject constructor(private val getDistrictUseCase: G
                                                private val districtBoundaryMapper: DistrictBoundaryMapper) : BaseDaggerPresenter<PinpointMapView>() {
 
     private var saveAddressDataModel = SaveAddressDataModel()
-    private var permissionCheckerHelper: PermissionCheckerHelper? = null
 
     fun getDistrict(placeId: String) {
         SimpleIdlingResource.increment()
@@ -122,12 +120,6 @@ class PinpointMapPresenter @Inject constructor(private val getDistrictUseCase: G
                 Timber.d(e)
             }
         })
-    }
-
-    fun setPermissionChecker(permissionCheckerHelper: PermissionCheckerHelper?) {
-        if (permissionCheckerHelper != null) {
-            this.permissionCheckerHelper = permissionCheckerHelper
-        }
     }
 
 }

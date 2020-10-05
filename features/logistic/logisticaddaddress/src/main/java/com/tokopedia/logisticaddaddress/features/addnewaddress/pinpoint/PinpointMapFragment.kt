@@ -110,7 +110,6 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
                     .build()
                     .inject(this@PinpointMapFragment)
             presenter.attachView(this@PinpointMapFragment)
-            presenter.setPermissionChecker(permissionCheckerHelper)
         }
     }
 
