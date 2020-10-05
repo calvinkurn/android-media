@@ -1,20 +1,19 @@
 package com.tokopedia.oneclickcheckout.order.domain
 
-import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.oneclickcheckout.order.data.checkout.CheckoutOccGqlResponse
 import com.tokopedia.oneclickcheckout.order.data.checkout.CheckoutOccRequest
 import com.tokopedia.oneclickcheckout.order.view.model.*
 import java.util.*
 import javax.inject.Inject
 
-class CheckoutOccUseCase @Inject constructor(private val graphqlUseCase: GraphqlUseCase<CheckoutOccGqlResponse>) {
+class CheckoutOccUseCase @Inject constructor(private val graphqlRepository: GraphqlRepository) {
 
     suspend fun executeSuspend(param: CheckoutOccRequest): CheckoutOccData {
-        graphqlUseCase.setGraphqlQuery(QUERY)
-        graphqlUseCase.setTypeClass(CheckoutOccGqlResponse::class.java)
-        graphqlUseCase.setRequestParams(generateParam(param))
-
-        val response = graphqlUseCase.executeOnBackground()
+        val request = GraphqlRequest(QUERY, CheckoutOccGqlResponse::class.java, generateParam(param))
+        val response = graphqlRepository.getReseponse(listOf(request)).getSuccessData<CheckoutOccGqlResponse>()
         return mapCheckoutData(response)
     }
 

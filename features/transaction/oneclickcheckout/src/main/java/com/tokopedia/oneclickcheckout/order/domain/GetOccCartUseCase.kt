@@ -2,7 +2,9 @@ package com.tokopedia.oneclickcheckout.order.domain
 
 import android.content.Context
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.logisticcart.shipping.model.ShopShipment
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.oneclickcheckout.R
@@ -23,7 +25,7 @@ import javax.inject.Inject
 import kotlin.collections.ArrayList
 import kotlin.math.min
 
-class GetOccCartUseCase @Inject constructor(val context: Context, val graphqlUseCase: GraphqlUseCase<GetOccCartGqlResponse>) {
+class GetOccCartUseCase @Inject constructor(val context: Context, private val graphqlRepository: GraphqlRepository) {
 
     fun createRequestParams(source: String): RequestParams {
         return RequestParams.create().apply {
@@ -32,11 +34,9 @@ class GetOccCartUseCase @Inject constructor(val context: Context, val graphqlUse
     }
 
     suspend fun executeSuspend(params: RequestParams): OrderData {
-        graphqlUseCase.setTypeClass(GetOccCartGqlResponse::class.java)
         val graphqlRequest = GraphqlHelper.loadRawString(context.resources, R.raw.mutation_get_occ)
-        graphqlUseCase.setGraphqlQuery(graphqlRequest)
-        graphqlUseCase.setRequestParams(params.parameters)
-        val response = graphqlUseCase.executeOnBackground()
+        val request = GraphqlRequest(graphqlRequest, GetOccCartGqlResponse::class.java, params.parameters)
+        val response = graphqlRepository.getReseponse(listOf(request)).getSuccessData<GetOccCartGqlResponse>()
         if (response.response.status.equals(STATUS_OK, true)) {
             val errorMessage = response.response.data.errors.firstOrNull()
             val cart = response.response.data.cartList.firstOrNull()
