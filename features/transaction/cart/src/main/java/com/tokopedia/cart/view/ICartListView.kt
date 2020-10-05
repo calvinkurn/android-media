@@ -141,4 +141,6 @@ interface ICartListView : CustomerView {
     fun sendATCTrackingURL(recommendationItem: RecommendationItem)
 
     fun reCollapseExpandedDeletedUnavailableItems()
+
+
 }

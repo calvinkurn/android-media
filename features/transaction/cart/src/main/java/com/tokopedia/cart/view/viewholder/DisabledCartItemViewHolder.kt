@@ -8,6 +8,7 @@ import com.tokopedia.cart.R
 import com.tokopedia.cart.domain.model.cartlist.ActionData
 import com.tokopedia.cart.domain.model.cartlist.ActionData.Companion.ACTION_CHECKOUTBROWSER
 import com.tokopedia.cart.domain.model.cartlist.ActionData.Companion.ACTION_DELETE
+import com.tokopedia.cart.domain.model.cartlist.ActionData.Companion.ACTION_FOLLOWSHOP
 import com.tokopedia.cart.domain.model.cartlist.ActionData.Companion.ACTION_SIMILARPRODUCT
 import com.tokopedia.cart.domain.model.cartlist.ActionData.Companion.ACTION_WISHLIST
 import com.tokopedia.cart.domain.model.cartlist.ActionData.Companion.ACTION_WISHLISTED
@@ -94,13 +95,16 @@ class DisabledCartItemViewHolder(itemView: View, val actionListener: ActionListe
                     ACTION_WISHLIST, ACTION_WISHLISTED -> {
                         renderActionWishlist(it, data)
                     }
-                    ACTION_CHECKOUTBROWSER, ACTION_SIMILARPRODUCT -> {
+                    ACTION_CHECKOUTBROWSER, ACTION_SIMILARPRODUCT, ACTION_FOLLOWSHOP -> {
                         when {
                             data.selectedUnavailableActionId == ACTION_CHECKOUTBROWSER && it.id == ACTION_CHECKOUTBROWSER -> {
                                 renderActionCheckoutInBrowser(it, data)
                             }
                             data.selectedUnavailableActionId == ACTION_SIMILARPRODUCT && it.id == ACTION_SIMILARPRODUCT -> {
                                 renderActionSimilarProduct(it, data)
+                            }
+                            data.selectedUnavailableActionId == ACTION_FOLLOWSHOP && it.id == ACTION_FOLLOWSHOP -> {
+                                renderFollowShop(it, data)
                             }
                         }
                     }
@@ -121,8 +125,20 @@ class DisabledCartItemViewHolder(itemView: View, val actionListener: ActionListe
         itemView.btn_delete_cart.show()
     }
 
-    private fun renderActionSimilarProduct(it: ActionData, data: DisabledCartItemHolderData) {
-        itemView.tv_product_unavailable_action.text = it.message
+    private fun renderFollowShop(actionData: ActionData, data: DisabledCartItemHolderData) {
+        itemView.tv_product_unavailable_action.text = actionData.message
+        itemView.tv_product_unavailable_action.setOnClickListener {
+            data.data?.originData?.shopId?.let {
+                if (it.isNotEmpty()) {
+                    actionListener?.onFollowShopClicked(it)
+                }
+            }
+        }
+        itemView.tv_product_unavailable_action.show()
+    }
+
+    private fun renderActionSimilarProduct(actionData: ActionData, data: DisabledCartItemHolderData) {
+        itemView.tv_product_unavailable_action.text = actionData.message
         itemView.tv_product_unavailable_action.setOnClickListener {
             if (data.selectedUnavailableActionLink.isNotBlank()) {
                 actionListener?.onSimilarProductUrlClicked(data.selectedUnavailableActionLink)

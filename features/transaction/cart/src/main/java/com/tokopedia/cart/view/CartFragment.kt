@@ -1362,6 +1362,10 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         cartPageAnalytics.eventClickMoreLikeThis()
     }
 
+    override fun onFollowShopClicked(shopId: String) {
+        dPresenter.followShop(shopId)
+    }
+
     override fun onSelectAllClicked() {
         val checked = dPresenter.getCartListData()?.isAllSelected == false
         if (checked) {

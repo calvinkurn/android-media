@@ -204,4 +204,11 @@ class CartModule {
         return GraphqlHelper.loadRawString(context.resources, R.raw.mutation_add_to_cart_external)
     }
 
+    @Provides
+    @CartScope
+    @Named(FollowShopUseCase.MUTATION_NAME)
+    fun provideFollowShopMutation(@ApplicationContext context: Context): String {
+        return GraphqlHelper.loadRawString(context.resources, R.raw.gql_mutation_favorite_shop)
+    }
+
 }
