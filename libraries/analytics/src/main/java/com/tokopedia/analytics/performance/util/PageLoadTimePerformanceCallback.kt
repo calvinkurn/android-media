@@ -122,10 +122,6 @@ open class PageLoadTimePerformanceCallback(
         }
     }
 
-    override fun getPltPerformanceMonitoring(): PerformanceMonitoring? {
-        return performanceMonitoring
-    }
-
     fun beginAsyncSystraceSection(methodName: String, cookie: Int) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && GlobalConfig.DEBUG) {
             Trace.beginAsyncSection(methodName, cookie)
