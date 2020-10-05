@@ -5,6 +5,7 @@ import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.utils.*
@@ -37,6 +38,9 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
         labelCampaignBackground?.let {
             Glide.with(context)
                     .load(R.drawable.product_card_label_campaign_background)
+                    .transform(TopRightCrop())
+                    .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                    .placeholder(R.drawable.placeholder_grey)
                     .error(R.drawable.placeholder_grey)
                     .into(it)
         }
@@ -95,6 +99,7 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
     override fun recycle() {
         imageProduct?.glideClear(context)
         imageFreeOngkirPromo?.glideClear(context)
+        labelCampaignBackground?.glideClear(context)
     }
 
     private fun View.renderStockPercentage(productCardModel: ProductCardModel) {

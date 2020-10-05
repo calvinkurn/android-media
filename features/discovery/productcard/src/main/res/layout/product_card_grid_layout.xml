@@ -37,7 +37,6 @@
             android:layout_width="@dimen/dp_0"
             android:layout_height="@dimen/dp_24"
             android:layout_marginEnd="@dimen/dp_16"
-            android:scaleType="fitXY"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/imageProduct"
             app:layout_constraintEnd_toEndOf="parent" />
