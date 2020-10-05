@@ -532,5 +532,16 @@
             android:padding="@dimen/spacing_lvl3"
             android:text="Enter seconds to add delay in Gratif pop-up"
             android:textColor="@color/Neutral_N0" />
+
+        <CheckBox
+            android:id="@+id/cb_gratif_debug_toast"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/spacing_lvl2"
+            android:layout_marginBottom="@dimen/spacing_lvl4"
+            android:gravity="center"
+            android:padding="@dimen/spacing_lvl3"
+            android:text="Show debug toast" />
     </LinearLayout>
 </ScrollView>

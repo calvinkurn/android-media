@@ -78,17 +78,23 @@ class GratificationPresenter @Inject constructor(val application: Application) {
                 if (!code.isNullOrEmpty()) {
                     val couponDetail = tpCouponDetailUseCase.getResponse(tpCouponDetailUseCase.getQueryParams(code))
 //                    val couponDetail = tpCouponDetailUseCase.getFakeResponse(tpCouponDetailUseCase.getQueryParams(code))
-                    withContext(uiWorker) {
-                        weakActivity.get()?.let {
-                            val dialog = CmGratificationDialog().show(it, notifResponse.response, couponDetail, notificationEntryType)
-                            dialog?.setOnShowListener {dialogInterface->
-                                gratifPopupCallback?.onShow(dialogInterface)
-                            }
-                            dialog?.setOnDismissListener {dialogInterface->
-                                gratifPopupCallback?.onDismiss(dialogInterface)
+                    val couponStatus = couponDetail?.coupon?.realCode?:""
+                    if(!couponStatus.isEmpty()){
+                        withContext(uiWorker) {
+                            weakActivity.get()?.let {
+                                val dialog = CmGratificationDialog().show(it, notifResponse.response, couponDetail, notificationEntryType)
+                                dialog?.setOnShowListener {dialogInterface->
+                                    gratifPopupCallback?.onShow(dialogInterface)
+                                }
+                                dialog?.setOnDismissListener {dialogInterface->
+                                    gratifPopupCallback?.onDismiss(dialogInterface)
+                                }
                             }
                         }
+                    }else{
+                        gratifPopupCallback?.onIgnored(GratifPopupIngoreType.INVALID_COUPON)
                     }
+
                 } else {
                     gratifPopupCallback?.onIgnored(GratifPopupIngoreType.COUPON_CODE_EMPTY)
                 }
@@ -166,6 +172,7 @@ annotation class GratifPopupIngoreType {
         const val COUPON_CODE_EMPTY = 0
         const val NO_SUCCESS = 1
         const val UNKOWN_ERROR = 2
+        const val INVALID_COUPON = 3
     }
 }
 

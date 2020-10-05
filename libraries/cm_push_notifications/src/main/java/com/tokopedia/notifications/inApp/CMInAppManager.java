@@ -7,10 +7,14 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -154,10 +158,28 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
             @Override
             public void onIgnored(@GratifPopupIngoreType int reason) {
                 isDialogShowing = false;
+//                showIgnoreToast("push", reason);
             }
         });
 
         isDialogShowing = true;
+    }
+
+    private void showIgnoreToast(String type,@GratifPopupIngoreType int reason){
+
+        Handler handler = new Handler(Looper.getMainLooper());
+        handler.post(() -> {
+            Context context = getCurrentActivity();
+
+            if(context!=null) {
+                SharedPreferences sp1 = context.getSharedPreferences("promo_gratif", Context.MODE_PRIVATE);
+                boolean isDebugGratifChecked = sp1.getBoolean("gratif_debug_toast",false);
+                if(isDebugGratifChecked) {
+                    String message = "DEBUG - " + type + " - " + reason;
+                    Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
     @Override
@@ -252,6 +274,7 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
                 public void onIgnored(@GratifPopupIngoreType int reason) {
                     isDialogShowing = false;
                     dataConsumed(data);
+//                    showIgnoreToast("organic", reason);
                 }
             });
 

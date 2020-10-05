@@ -133,6 +133,7 @@ public class DeveloperOptionActivity extends BaseActivity {
 
     private EditText etDelayGratif;
     private AppCompatTextView btnDelayGratif;
+    private CheckBox cbGratifDebugToast;
 
     @Override
     public String getScreenName() {
@@ -256,6 +257,7 @@ public class DeveloperOptionActivity extends BaseActivity {
         tvFakeResponse = findViewById(R.id.tv_fake_response);
         etDelayGratif = findViewById(R.id.et_delay_gratif);
         btnDelayGratif = findViewById(R.id.btn_delay_gratif_pop_up);
+        cbGratifDebugToast = findViewById(R.id.cb_gratif_debug_toast);
     }
 
     private void initListener() {
@@ -500,11 +502,20 @@ public class DeveloperOptionActivity extends BaseActivity {
             String delay = etDelayGratif.getText().toString();
             try {
                 int delayInNum = Integer.parseInt(delay);
-                SharedPreferences sp = getSharedPreferences("promo_gratif", Context.MODE_PRIVATE);
-                sp.edit().putInt("get_notification_delay",delayInNum).apply();
+                SharedPreferences sp1 = getSharedPreferences("promo_gratif", Context.MODE_PRIVATE);
+                sp1.edit().putInt("get_notification_delay",delayInNum).apply();
             }catch (Exception e){
                 Toast.makeText(btnDelayGratif.getContext(),"Unable to save",Toast.LENGTH_SHORT).show();
             }
+        });
+
+        boolean isDebugGratifChecked = gratifSp.getBoolean("gratif_debug_toast",false);
+
+        cbGratifDebugToast.setChecked(isDebugGratifChecked);
+
+        cbGratifDebugToast.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            SharedPreferences sp = getSharedPreferences("promo_gratif", Context.MODE_PRIVATE);
+            sp.edit().putBoolean("gratif_debug_toast",isChecked).apply();
         });
     }
 

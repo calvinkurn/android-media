@@ -68,7 +68,7 @@ class CmGratificationDialog {
         return R.layout.dialog_gratification
     }
 
-    fun show(activityContext: Context, gratifNotification: GratifNotification, couponDetailResponse: TokopointsCouponDetailResponse, @NotificationEntryType notificationEntryType: Int):BottomSheetDialog? {
+    fun show(activityContext: Context, gratifNotification: GratifNotification, couponDetailResponse: TokopointsCouponDetailResponse, @NotificationEntryType notificationEntryType: Int): BottomSheetDialog? {
         val pair = prepareBottomSheet(activityContext)
         initViews(pair.first, activityContext, gratifNotification, couponDetailResponse)
         setUiData(gratifNotification, couponDetailResponse)
@@ -101,14 +101,14 @@ class CmGratificationDialog {
             val imageClose = (root.parent.parent as ConstraintLayout).findViewById<ImageView>(R.id.close_button_rounded)
             imageClose.setImageResource(R.drawable.t_promo_close)
 
-            val dialogTitleText = couponDetailResponse.coupon?.couponStatus?.let {
-                when (it) {
-                    CouponStatusType.USED -> gratifNotification.wordingUsed?.title
-                    CouponStatusType.EXPIRED -> gratifNotification.wordingExpired?.title
-                    CouponStatusType.ACTIVE -> gratifNotification.wordingActive?.title
-                    else -> ""
-                }
+            val couponStatus = couponDetailResponse.coupon?.couponStatus ?: 0
+            val dialogTitleText = when (couponStatus) {
+                CouponStatusType.USED -> gratifNotification.wordingUsed?.title
+                CouponStatusType.EXPIRED -> gratifNotification.wordingExpired?.title
+                CouponStatusType.ACTIVE -> gratifNotification.wordingActive?.title
+                else -> ""
             }
+
             val tvDialogTitle = (root.parent.parent as ConstraintLayout).findViewById<TextView>(R.id.title_closeable_rounded)
             tvDialogTitle.text = dialogTitleText
         } catch (th: Throwable) {

@@ -15,6 +15,7 @@ data class TokopointsCouponDetail(
         @SerializedName("minimum_usage_label") val minimumUsageLabel: String?,
         @SerializedName("minimum_usage") val minimumUsage: String?,
         @SerializedName("statusStr") val statusStr: String?,
+        @SerializedName("real_code") val realCode: String?,
         @SerializedName("usage") val usage: Usage?,
         @CouponStatusType @SerializedName("status") val couponStatus: Int?,
         @SerializedName("thumbnail_url_mobile") val imageUrl: String?) : CouponUiData()
