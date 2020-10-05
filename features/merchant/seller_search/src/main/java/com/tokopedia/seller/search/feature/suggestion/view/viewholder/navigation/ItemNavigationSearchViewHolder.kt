@@ -21,15 +21,16 @@ class ItemNavigationSearchViewHolder(
 
     companion object {
         val LAYOUT = R.layout.item_search_result_navigation
+        const val SVG = ".svg"
     }
 
     override fun bind(element: NavigationSellerSearchUiModel) {
         bindTitleText(element)
         with(itemView) {
-            try {
-                ivSearchResultNav.setImageUrl(element.imageUrl.orEmpty())
-            } catch (e: Exception) {
-                ivSearchResultNav.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_topads))
+            if(element.imageUrl?.contains(SVG) == true) {
+                ivSearchResultNav?.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_topads))
+            } else {
+                ivSearchResultNav?.setImageUrl(element.imageUrl.orEmpty())
             }
             tvDescSearchResultNav?.text = element.desc
             setOnClickListener {
