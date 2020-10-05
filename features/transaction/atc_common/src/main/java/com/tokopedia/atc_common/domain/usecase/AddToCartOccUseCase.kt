@@ -16,7 +16,8 @@ import javax.inject.Named
 
 class AddToCartOccUseCase @Inject constructor(@Named(MUTATION_ATC_OCC) private val queryString: String,
                                               private val graphqlUseCase: GraphqlUseCase,
-                                              private val addToCartDataMapper: AddToCartDataMapper) : UseCase<AddToCartDataModel>() {
+                                              private val addToCartDataMapper: AddToCartDataMapper,
+                                              private val baseAnalytics: AddToCartBaseAnalytics) : UseCase<AddToCartDataModel>() {
 
     companion object {
         const val REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST = "REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST"
@@ -33,9 +34,9 @@ class AddToCartOccUseCase @Inject constructor(@Named(MUTATION_ATC_OCC) private v
             val addToCartOccGqlResponse = it.getData<AddToCartOccGqlResponse>(AddToCartOccGqlResponse::class.java)
             val result = addToCartDataMapper.mapAddToCartOccResponse(addToCartOccGqlResponse)
             if (!result.isDataError()) {
-                AddToCartBaseAnalytics.sendAppsFlyerTracking(addToCartRequest.productId, addToCartRequest.productName, addToCartRequest.price,
+                baseAnalytics.sendAppsFlyerTracking(addToCartRequest.productId, addToCartRequest.productName, addToCartRequest.price,
                         addToCartRequest.quantity, addToCartRequest.category)
-                AddToCartBaseAnalytics.sendBranchIoTracking(addToCartRequest.productId, addToCartRequest.productName, addToCartRequest.price,
+                baseAnalytics.sendBranchIoTracking(addToCartRequest.productId, addToCartRequest.productName, addToCartRequest.price,
                         addToCartRequest.quantity, addToCartRequest.category, addToCartRequest.categoryLevel1Id,
                         addToCartRequest.categoryLevel1Name, addToCartRequest.categoryLevel2Id, addToCartRequest.categoryLevel2Name,
                         addToCartRequest.categoryLevel3Id, addToCartRequest.categoryLevel3Name, addToCartRequest.contentType, addToCartRequest.userId)

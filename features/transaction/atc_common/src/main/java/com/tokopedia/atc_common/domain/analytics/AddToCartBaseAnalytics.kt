@@ -9,18 +9,21 @@ import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.track.TrackApp
 import org.json.JSONArray
 import org.json.JSONObject
+import javax.inject.Inject
 
-object AddToCartBaseAnalytics {
+class AddToCartBaseAnalytics @Inject constructor() {
 
-    private const val AF_PARAM_CATEGORY = "category"
-    private const val AF_PARAM_CONTENT_ID = "id"
-    private const val AF_PARAM_CONTENT_QUANTITY = "quantity"
-    private const val AF_VALUE_CONTENT_TYPE = "product"
+    companion object {
+        private const val AF_PARAM_CATEGORY = "category"
+        private const val AF_PARAM_CONTENT_ID = "id"
+        private const val AF_PARAM_CONTENT_QUANTITY = "quantity"
+        private const val AF_VALUE_CONTENT_TYPE = "product"
 
-    const val VALUE_CURRENCY = "IDR"
+        const val VALUE_CURRENCY = "IDR"
 
-    const val VALUE_BEBAS_ONGKIR = "bebas ongkir"
-    const val VALUE_NONE_OTHER = "none / other"
+        const val VALUE_BEBAS_ONGKIR = "bebas ongkir"
+        const val VALUE_NONE_OTHER = "none / other"
+    }
 
     fun sendEETracking(data: MutableMap<String, Any>) {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(data)

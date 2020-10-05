@@ -21,7 +21,8 @@ import javax.inject.Named
 open class AddToCartOcsUseCase @Inject constructor(@Named("atcOcsMutation") private val queryString: String,
                                                    private val gson: Gson,
                                                    private val graphqlUseCase: GraphqlUseCase,
-                                                   private val addToCartDataMapper: AddToCartDataMapper) : UseCase<AddToCartDataModel>() {
+                                                   private val addToCartDataMapper: AddToCartDataMapper,
+                                                   private val baseAnalytics: AddToCartBaseAnalytics) : UseCase<AddToCartDataModel>() {
 
     companion object {
         const val REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST = "REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST"
@@ -45,9 +46,9 @@ open class AddToCartOcsUseCase @Inject constructor(@Named("atcOcsMutation") priv
             val addToCartOcsGqlResponse = it.getData<AddToCartOcsGqlResponse>(AddToCartOcsGqlResponse::class.java)
             val result = addToCartDataMapper.mapAddToCartOcsResponse(addToCartOcsGqlResponse)
             if (!result.isDataError()) {
-                AddToCartBaseAnalytics.sendAppsFlyerTracking(addToCartRequest.productId.toString(), addToCartRequest.productName, addToCartRequest.price,
+                baseAnalytics.sendAppsFlyerTracking(addToCartRequest.productId.toString(), addToCartRequest.productName, addToCartRequest.price,
                         addToCartRequest.quantity.toString(), addToCartRequest.category)
-                AddToCartBaseAnalytics.sendBranchIoTracking(addToCartRequest.productId.toString(), addToCartRequest.productName, addToCartRequest.price,
+                baseAnalytics.sendBranchIoTracking(addToCartRequest.productId.toString(), addToCartRequest.productName, addToCartRequest.price,
                         addToCartRequest.quantity.toString(), addToCartRequest.category, addToCartRequest.categoryLevel1Id,
                         addToCartRequest.categoryLevel1Name, addToCartRequest.categoryLevel2Id, addToCartRequest.categoryLevel2Name,
                         addToCartRequest.categoryLevel3Id, addToCartRequest.categoryLevel3Name, addToCartRequest.contentType, addToCartRequest.userId)
