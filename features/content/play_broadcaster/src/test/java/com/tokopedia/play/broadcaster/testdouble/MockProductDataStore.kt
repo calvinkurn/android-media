@@ -4,8 +4,8 @@ import androidx.lifecycle.LiveData
 import com.tokopedia.play.broadcaster.data.datastore.ProductDataStore
 import com.tokopedia.play.broadcaster.data.datastore.ProductDataStoreImpl
 import com.tokopedia.play.broadcaster.data.model.ProductData
-import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
-import com.tokopedia.play.broadcaster.util.coroutine.CoroutineDispatcherProvider
+import com.tokopedia.play_common.model.result.NetworkResult
+import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
 import io.mockk.mockk
 
 /**

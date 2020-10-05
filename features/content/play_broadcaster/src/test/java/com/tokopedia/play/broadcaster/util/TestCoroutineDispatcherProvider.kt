@@ -1,6 +1,6 @@
 package com.tokopedia.play.broadcaster.util
 
-import com.tokopedia.play.broadcaster.util.coroutine.CoroutineDispatcherProvider
+import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
 import kotlinx.coroutines.CoroutineDispatcher
 
 /**
@@ -14,7 +14,7 @@ class TestCoroutineDispatcherProvider(
         get() = testDispatcher
     override val main: CoroutineDispatcher
         get() = testDispatcher
-    override val mainImmediate: CoroutineDispatcher
+    override val immediate: CoroutineDispatcher
         get() = testDispatcher
     override val computation: CoroutineDispatcher
         get() = testDispatcher
