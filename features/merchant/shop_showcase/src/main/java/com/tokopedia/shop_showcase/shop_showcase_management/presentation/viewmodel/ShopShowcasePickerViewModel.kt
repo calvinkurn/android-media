@@ -10,8 +10,6 @@ import com.tokopedia.shop_showcase.shop_showcase_add.data.model.AddShopShowcaseP
 import com.tokopedia.shop_showcase.shop_showcase_add.data.model.AddShopShowcaseResponse
 import com.tokopedia.shop_showcase.shop_showcase_add.domain.usecase.CreateShopShowcaseUseCase
 import com.tokopedia.shop_showcase.shop_showcase_management.data.model.GetShopProductsResponse
-import com.tokopedia.shop_showcase.shop_showcase_management.data.model.ShowcaseList.ShowcaseListBuyer.ShopShowcaseListBuyerResponse
-//import com.tokopedia.shop_showcase.shop_showcase_management.domain.GetShopShowcaseListBuyerUseCase
 import com.tokopedia.shop_showcase.shop_showcase_management.domain.GetShopShowcaseTotalProductUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -21,7 +19,6 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class ShopShowcasePickerViewModel @Inject constructor(
-//        private val getShopShowcaseListBuyerUseCase: GetShopShowcaseListBuyerUseCase,
         private val getShopShowcaseListBuyerUseCase: GetShopEtalaseByShopUseCase,
         private val getShopShowcaseTotalProductUseCase: GetShopShowcaseTotalProductUseCase,
         private val createShopShowcaseUseCase: CreateShopShowcaseUseCase,
@@ -32,9 +29,6 @@ class ShopShowcasePickerViewModel @Inject constructor(
     private val _getListBuyerShopShowcaseResponse = MutableLiveData<Result<List<ShopEtalaseModel>>>()
     val getListBuyerShopShowcaseResponse: LiveData<Result<List<ShopEtalaseModel>>>
         get() = _getListBuyerShopShowcaseResponse
-//    private val _getListBuyerShopShowcaseResponse = MutableLiveData<Result<ShopShowcaseListBuyerResponse>>()
-//    val getListBuyerShopShowcaseResponse: LiveData<Result<ShopShowcaseListBuyerResponse>>
-//        get() = _getListBuyerShopShowcaseResponse
 
     private val _getShopProductResponse = MutableLiveData<Result<GetShopProductsResponse>>()
     val getShopProductResponse: LiveData<Result<GetShopProductsResponse>>
@@ -59,15 +53,6 @@ class ShopShowcasePickerViewModel @Inject constructor(
             }
 
             _getListBuyerShopShowcaseResponse.postValue(Success(showcaseList))
-
-//            withContext(dispatchers.io()) {
-//                getShopShowcaseListBuyerUseCase.params = GetShopShowcaseListBuyerUseCase
-//                        .createRequestParam(shopId, isOwner)
-//                val shopShowcaseData = getShopShowcaseListBuyerUseCase.executeOnBackground()
-//                shopShowcaseData.let {
-//                    _getListBuyerShopShowcaseResponse.postValue(Success(it))
-//                }
-//            }
         }) {
             _getListBuyerShopShowcaseResponse.value = Fail(it)
         }

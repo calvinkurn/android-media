@@ -23,7 +23,6 @@ import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 import com.tokopedia.shop_showcase.R
 import com.tokopedia.shop_showcase.ShopShowcaseInstance
 import com.tokopedia.shop_showcase.common.*
-import com.tokopedia.shop_showcase.shop_showcase_management.data.model.ShowcaseList.ShowcaseItem
 import com.tokopedia.shop_showcase.shop_showcase_management.di.DaggerShopShowcaseManagementComponent
 import com.tokopedia.shop_showcase.shop_showcase_management.di.ShopShowcaseManagementComponent
 import com.tokopedia.shop_showcase.shop_showcase_management.di.ShopShowcaseManagementModule

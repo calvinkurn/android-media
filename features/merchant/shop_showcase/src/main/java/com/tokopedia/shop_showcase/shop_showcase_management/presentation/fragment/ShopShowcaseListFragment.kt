@@ -39,7 +39,6 @@ import com.tokopedia.shop_showcase.common.util.ShowcaseErrorHandler
 import com.tokopedia.shop_showcase.common.util.ShowcaseListException
 import com.tokopedia.shop_showcase.shop_showcase_add.presentation.activity.ShopShowcaseAddActivity
 import com.tokopedia.shop_showcase.shop_showcase_add.presentation.fragment.ShopShowcaseAddFragment
-import com.tokopedia.shop_showcase.shop_showcase_management.data.model.ShowcaseList.ShowcaseItem
 import com.tokopedia.shop_showcase.shop_showcase_management.di.DaggerShopShowcaseManagementComponent
 import com.tokopedia.shop_showcase.shop_showcase_management.di.ShopShowcaseManagementComponent
 import com.tokopedia.shop_showcase.shop_showcase_management.di.ShopShowcaseManagementModule
