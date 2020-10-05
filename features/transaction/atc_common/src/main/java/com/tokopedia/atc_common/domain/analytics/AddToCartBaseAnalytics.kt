@@ -44,21 +44,21 @@ object AddToCartBaseAnalytics {
     fun sendBranchIoTracking(productId: String, productName: String, price: String, quantity: String, catLvl1: String,
                              level1Id: String, level1Name: String, level2Id: String, level2Name: String, level3Id: String, level3Name: String,
                              contentType: String, userId: String) {
-        val data = LinkerData.Builder.getLinkerBuilder()
-                .setId(productId)
-                .setProductName(productName)
-                .setPrice(convertPriceToIntString(price))
-                .setQuantity(quantity)
-                .setCatLvl1(catLvl1)
-                .setContentType(contentType)
-                .setLevel1Id(level1Id)
-                .setLevel1Name(level1Name)
-                .setLevel2Id(level2Id)
-                .setLevel2Name(level2Name)
-                .setLevel3Id(level3Id)
-                .setLevel3Name(level3Name)
-                .setUserId(userId)
-                .build()
+        val data = LinkerData().apply {
+            this.id = productId
+            this.productName = productName
+            this.price = convertPriceToIntString(price)
+            this.quantity = quantity
+            this.catLvl1 = catLvl1
+            this.contentType = contentType
+            this.level1Id = level1Id
+            this.level1Name = level1Name
+            this.level2Id = level2Id
+            this.level2Name = level2Name
+            this.level3Id = level3Id
+            this.level3Name = level3Name
+            this.userId = userId
+        }
         LinkerManager.getInstance().sendEvent(LinkerUtils.createGenericRequest(LinkerConstants.EVENT_ADD_TO_CART, data))
     }
 

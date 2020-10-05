@@ -1197,18 +1197,22 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
         var productCategory = ""
         var productPrice = ""
         var externalSource = ""
+        var quantity = 0
+
         if (productModel is CartWishlistItemHolderData) {
             productId = if (productModel.id.isNotBlank()) Integer.parseInt(productModel.id) else 0
             shopId = if (productModel.shopId.isNotBlank()) Integer.parseInt(productModel.shopId) else 0
             productName = productModel.name
             productCategory = productModel.category
             productPrice = productModel.price
+            quantity = productModel.minOrder
             externalSource = AddToCartRequestParams.ATC_FROM_WISHLIST
         } else if (productModel is CartRecentViewItemHolderData) {
             productId = if (productModel.id.isNotBlank()) Integer.parseInt(productModel.id) else 0
             shopId = if (productModel.shopId.isNotBlank()) Integer.parseInt(productModel.shopId) else 0
             productName = productModel.name
             productPrice = productModel.price
+            quantity = productModel.minOrder
             externalSource = AddToCartRequestParams.ATC_FROM_RECENT_VIEW
         } else if (productModel is CartRecommendationItemHolderData) {
             val (_, recommendationItem) = productModel
@@ -1217,6 +1221,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
             productName = recommendationItem.name
             productCategory = recommendationItem.categoryBreadcrumbs
             productPrice = recommendationItem.price
+            quantity = productModel.recommendationItem.minOrder
             externalSource = AddToCartRequestParams.ATC_FROM_RECOMMENDATION
 
             val clickUrl = recommendationItem.clickUrl
@@ -1226,7 +1231,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
         val addToCartRequestParams = AddToCartRequestParams().apply {
             this.productId = productId.toLong()
             this.shopId = shopId
-            this.quantity = 0
+            this.quantity = quantity
             this.notes = ""
             this.warehouseId = 0
             this.atcFromExternalSource = externalSource
