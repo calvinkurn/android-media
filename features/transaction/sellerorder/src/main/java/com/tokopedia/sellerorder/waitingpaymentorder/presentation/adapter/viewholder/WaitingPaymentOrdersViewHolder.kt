@@ -134,7 +134,7 @@ class WaitingPaymentOrdersViewHolder(
         iconDropdownAnimator = ValueAnimator.ofFloat(start, end)
         iconDropdownAnimator?.duration = RECYCLER_VIEW_ANIMATION_DURATION
         iconDropdownAnimator?.addUpdateListener { animation ->
-            itemView.icLoadMoreDropDown.rotation = animation.animatedValue as Float
+            itemView.icLoadMoreDropDown?.rotation = animation.animatedValue as Float
         }
     }
 
