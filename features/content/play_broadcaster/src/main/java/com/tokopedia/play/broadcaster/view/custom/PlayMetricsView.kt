@@ -5,6 +5,7 @@ import android.os.Build
 import android.util.AttributeSet
 import android.view.Gravity
 import android.view.View
+import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.RequiresApi
@@ -92,7 +93,9 @@ class PlayMetricsView : LinearLayout {
     }
 
     private fun getMetricBubbleInstance(): PlayMetricBubble {
-        return PlayMetricBubble(context)
+        return PlayMetricBubble(context).apply {
+            layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        }
     }
 
     private suspend fun initMetricsChannel() = withContext(Dispatchers.Default) {
