@@ -1397,7 +1397,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
         view?.showProgressLoading()
         val requestParams = followShopUseCase.buildRequestParams(shopId)
         compositeSubscription.add(followShopUseCase.createObservable(requestParams)
-                .subscribe(FollowShopSubscriber(view))
+                .subscribe(FollowShopSubscriber(view, this))
         )
     }
 }

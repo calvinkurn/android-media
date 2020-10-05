@@ -7,6 +7,11 @@ import rx.Subscriber
 import timber.log.Timber
 
 class FollowShopSubscriber(private val view: ICartListView?, private val presenter: ICartListPresenter) : Subscriber<DataFollowShop>() {
+
+    companion object {
+        const val CTA_WORDING = "Oke"
+    }
+
     override fun onCompleted() {
 
     }
@@ -15,13 +20,14 @@ class FollowShopSubscriber(private val view: ICartListView?, private val present
         view?.let {
             Timber.e(e)
             it.hideProgressLoading()
-            it.showToastMessageRed(e)
+            it.showToastMessageRed(e, CTA_WORDING)
         }
     }
 
     override fun onNext(data: DataFollowShop) {
-        view?.let { view ->
-            view.hideProgressLoading()
+        view?.let {
+            it.hideProgressLoading()
+            it.showToastMessageGreen(data.followShop.message, CTA_WORDING)
             presenter.processInitialGetCartData("0", false, false)
         }
     }
