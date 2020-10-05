@@ -1,6 +1,6 @@
 package com.tokopedia.seller.base.view.listener;
 
-import com.tokopedia.product.manage.item.common.util.ItemPickerType;
+import com.tokopedia.seller.manageitem.common.util.ItemPickerType;
 
 /**
  * Created by nathan on 8/3/17.

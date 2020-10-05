@@ -2315,16 +2315,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     override fun renderErrorInitialGetCartListData(throwable: Throwable) {
-        var errorMessage = throwable.message ?: ""
-        if (throwable !is CartResponseErrorException) {
-            errorMessage = ErrorHandler.getErrorMessage(activity, throwable)
-        }
-
-        if (cartAdapter.itemCount > 0) {
-            showSnackbarRetry(errorMessage)
-        } else {
-            showErrorLayout(throwable)
-        }
+        showErrorLayout(throwable)
     }
 
     override fun renderToShipmentFormSuccess(eeCheckoutData: Map<String, Any>,
