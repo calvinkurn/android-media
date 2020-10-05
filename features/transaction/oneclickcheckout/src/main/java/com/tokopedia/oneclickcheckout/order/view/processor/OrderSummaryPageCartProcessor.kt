@@ -33,12 +33,13 @@ class OrderSummaryPageCartProcessor @Inject constructor(private val atcOccExtern
                             putString(AddToCartOccExternalUseCase.REQUEST_PARAM_KEY_PRODUCT_ID, productId)
                         }).toBlocking().single()
                 if (response.isDataError()) {
-                    OccGlobalEvent.AtcError(errorMessage = response.getAtcErrorMessage() ?: "")
-                } else {
-                    OccGlobalEvent.AtcSuccess(response.data.message.firstOrNull() ?: "")
+                    return@withContext OccGlobalEvent.AtcError(errorMessage = response.getAtcErrorMessage()
+                            ?: "")
                 }
+                return@withContext OccGlobalEvent.AtcSuccess(response.data.message.firstOrNull()
+                        ?: "")
             } catch (t: Throwable) {
-                OccGlobalEvent.AtcError(t.cause ?: t)
+                return@withContext OccGlobalEvent.AtcError(t.cause ?: t)
             }
         }
         OccIdlingResource.decrement()
@@ -50,7 +51,7 @@ class OrderSummaryPageCartProcessor @Inject constructor(private val atcOccExtern
         val result = withContext(executorDispatchers.io) {
             try {
                 val orderData = getOccCartUseCase.executeSuspend(getOccCartUseCase.createRequestParams(source))
-                ResultGetOccCart(
+                return@withContext ResultGetOccCart(
                         orderCart = orderData.cart,
                         orderPreference = OrderPreference(orderData.ticker, orderData.onboarding, orderData.profileIndex, orderData.profileRecommendation, orderData.preference, true),
                         orderPayment = orderData.payment,
@@ -61,7 +62,7 @@ class OrderSummaryPageCartProcessor @Inject constructor(private val atcOccExtern
             } catch (t: Throwable) {
                 Timber.d(t)
                 t.printStackTrace()
-                ResultGetOccCart(
+                return@withContext ResultGetOccCart(
                         orderCart = OrderCart(),
                         orderPreference = OrderPreference(),
                         orderPayment = OrderPayment(),

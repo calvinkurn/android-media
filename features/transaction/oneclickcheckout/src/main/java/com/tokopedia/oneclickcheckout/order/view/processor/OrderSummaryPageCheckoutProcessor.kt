@@ -102,33 +102,36 @@ class OrderSummaryPageCheckoutProcessor @Inject constructor(private val checkout
                                     setShippingPrice(orderShipment.getRealShippingPrice().toString())
                                 }.build(OrderSummaryPageEnhanceECommerce.STEP_2, OrderSummaryPageEnhanceECommerce.STEP_2_OPTION)
                         )
-                        checkoutOccData.result to null
-                    } else {
-                        val error = checkoutOccData.result.error
-                        val errorCode = error.code
-                        orderSummaryAnalytics.eventClickBayarNotSuccess(orderTotal.isButtonChoosePayment, errorCode)
-                        if (checkoutOccData.result.prompt.shouldShowPrompt()) {
-                            null to OccGlobalEvent.Prompt(checkoutOccData.result.prompt)
-                        } else if (errorCode == ErrorCheckoutBottomSheet.ERROR_CODE_PRODUCT_STOCK_EMPTY || errorCode == ErrorCheckoutBottomSheet.ERROR_CODE_PRODUCT_ERROR || errorCode == ErrorCheckoutBottomSheet.ERROR_CODE_SHOP_CLOSED) {
-                            null to OccGlobalEvent.CheckoutError(error)
-                        } else if (errorCode == OrderSummaryPageViewModel.ERROR_CODE_PRICE_CHANGE) {
-                            null to OccGlobalEvent.PriceChangeError(PriceChangeMessage(OrderSummaryPageViewModel.PRICE_CHANGE_ERROR_MESSAGE, error.message, OrderSummaryPageViewModel.PRICE_CHANGE_ACTION_MESSAGE))
-                        } else if (error.message.isNotBlank()) {
-                            null to OccGlobalEvent.TriggerRefresh(errorMessage = error.message)
-                        } else {
-                            null to OccGlobalEvent.TriggerRefresh(errorMessage = "Terjadi kesalahan dengan kode $errorCode")
-                        }
+                        return@withContext checkoutOccData.result to null
                     }
+                    return@withContext onCheckoutError(checkoutOccData, orderTotal)
                 } else {
-                    null to OccGlobalEvent.TriggerRefresh(errorMessage = checkoutOccData.headerMessage
+                    return@withContext null to OccGlobalEvent.TriggerRefresh(errorMessage = checkoutOccData.headerMessage
                             ?: DEFAULT_ERROR_MESSAGE)
                 }
             } catch (t: Throwable) {
-                null to OccGlobalEvent.Error(t)
+                return@withContext null to OccGlobalEvent.Error(t)
             }
         }
         OccIdlingResource.decrement()
         return result
+    }
+
+    private fun onCheckoutError(checkoutOccData: CheckoutOccData, orderTotal: OrderTotal): Pair<CheckoutOccResult?, OccGlobalEvent> {
+        val error = checkoutOccData.result.error
+        val errorCode = error.code
+        orderSummaryAnalytics.eventClickBayarNotSuccess(orderTotal.isButtonChoosePayment, errorCode)
+        return if (checkoutOccData.result.prompt.shouldShowPrompt()) {
+            null to OccGlobalEvent.Prompt(checkoutOccData.result.prompt)
+        } else if (errorCode == ErrorCheckoutBottomSheet.ERROR_CODE_PRODUCT_STOCK_EMPTY || errorCode == ErrorCheckoutBottomSheet.ERROR_CODE_PRODUCT_ERROR || errorCode == ErrorCheckoutBottomSheet.ERROR_CODE_SHOP_CLOSED) {
+            null to OccGlobalEvent.CheckoutError(error)
+        } else if (errorCode == OrderSummaryPageViewModel.ERROR_CODE_PRICE_CHANGE) {
+            null to OccGlobalEvent.PriceChangeError(PriceChangeMessage(OrderSummaryPageViewModel.PRICE_CHANGE_ERROR_MESSAGE, error.message, OrderSummaryPageViewModel.PRICE_CHANGE_ACTION_MESSAGE))
+        } else if (error.message.isNotBlank()) {
+            null to OccGlobalEvent.TriggerRefresh(errorMessage = error.message)
+        } else {
+            null to OccGlobalEvent.TriggerRefresh(errorMessage = "Terjadi kesalahan dengan kode $errorCode")
+        }
     }
 
     private fun getTransactionId(query: String): String {
