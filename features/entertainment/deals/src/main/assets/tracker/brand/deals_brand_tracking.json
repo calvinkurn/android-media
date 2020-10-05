@@ -1,0 +1,115 @@
+{
+  "readme": "this tracker to track brand page",
+  "mode": "subset",
+  "query": [
+    {
+      "event" : "clickDeals", 
+      "eventCategory" : "digital - deals",
+      "eventAction" : "change location - brand page",
+      "eventLabel" : "deals - {{.*}} - {{.*}}",
+      "screenName" : "/deals/",
+      "currentSite" : "tokopediadigitaldeals",
+      "clientId" : "{{.*}}",
+      "sessionIris" : "{{.*}}",
+      "userId" : "{{.*}}",
+      "businessUnit ": "travel & entertainment"
+    }, {
+      "event" : "clickDeals",
+      "eventCategory" : "digital - deals",
+      "eventAction" : "click search - brand page",
+      "eventLabel" : "-",
+      "screenName" : "/deals/brand/search",
+      "currentSite" : "tokopediadigitaldeals",
+      "clientId" : "{{.*}}",
+      "sessionIris" : "{{.*}}",
+      "userId" : "{{.*}}",
+      "businessUnit ": "travel & entertainment"
+    },{
+      "event" : "view_item_list/view_search_results",
+      "eventCategory" : "digital - deals",
+      "eventAction" : "impression on search results - brand page",
+      "eventLabel" : "deals - {{.*}} - {{.*}}",
+      "screenName": "/deals/",
+      "currentSite":"tokopediadigitaldeals",
+      "clientId":"{{.*}}",
+      "sessionIris":"{{.*}}",
+      "userId":"{{.*}}",
+      "businessUnit":"travel & entertainment",
+      "items": [
+        {
+          "item_name": "{{.*}}",
+          "item_id": "{{.*}}",
+          "price": "{{.*}}",
+          "item_brand": "{{.*}}",
+          "item_category": "{{.*}}",
+          "item_variant": "{{.*}}",
+          "index": "{{.*}}",
+          "dimensionXX": "{{.*}}"
+        }
+      ],
+      "item_list": "{{.*}}",
+      "user id": "{{.*}}"
+    }, {
+      "event" : "select_content",
+      "eventCategory" : "digital - deals",
+      "eventAction" : "click on search result - brand page",
+      "eventLabel" : "deals - brand - {{.*}} - {{.*}}",
+      "screenName": "/deals/",
+      "currentSite":"tokopediadigitaldeals",
+      "clientId":"{{.*}}",
+      "sessionIris":"{{.*}}",
+      "userId":"{{.*}}",
+      "businessUnit":"travel & entertainment",
+      "items": [
+        {
+          "item_name": "{{.*}}",
+          "item_id": "{{.*}}",
+          "price": "{{.*}}",
+          "item_brand": "{{.*}}",
+          "item_category": "{{.*}}",
+          "item_variant": "{{.*}}",
+          "index": "{{.*}}",
+          "dimensionXX": "{{.*}}"
+        }
+      ],
+      "item_list": "{{.*}}",
+      "user id": "{{.*}}"
+    }, {
+      "event" : "clickDeals",
+      "eventCategory" : "digital - deals",
+      "eventAction" : "click category tab - brand page",
+      "eventLabel" : "deals - {{.*}} - {{.*}}",
+      "screenName" : "/deals/",
+      "currentSite" : "tokopediadigitaldeals",
+      "clientId" : "{{.*}}",
+      "sessionIris" : "{{.*}}",
+      "userId" : "{{.*}}",
+      "businessUnit ": "travel & entertainment"
+    }, {
+      "event" : "view_item_list/view_search_results",
+      "eventCategory" : "digital - deals",
+      "eventAction" : "impression on brand populer - brand page",
+      "eventLabel" : "-",
+      "screenName": "/deals/",
+      "currentSite":"tokopediadigitaldeals",
+      "clientId":"{{.*}}",
+      "sessionIris":"{{.*}}",
+      "userId":"{{.*}}",
+      "businessUnit":"travel & entertainment",
+      "items": [
+        {
+          "item_name": "{{.*}}",
+          "item_id": "{{.*}}",
+          "price": "{{.*}}",
+          "item_brand": "{{.*}}",
+          "item_category": "{{.*}}",
+          "item_variant": "{{.*}}",
+          "index": "{{.*}}",
+          "dimensionXX": "{{.*}}"
+        }
+      ],
+      "item_list": "{{.*}}",
+      "user id": "{{.*}}"
+    }
+  ]
+}
