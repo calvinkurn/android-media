@@ -110,18 +110,24 @@ class MultipleVariantEditInputBottomSheet(
     }
 
     private fun sendTrackerTrackManageAllPriceData() {
-        val price = contentView?.tfuPrice.getTextBigIntegerOrZero().toString()
+        val price = contentView?.tfuPrice.getText()
         val stock = contentView?.tfuStock.getText()
         val sku = contentView?.tfuSku.getText()
 
         if (trackerIsEditMode) {
-            ProductEditVariantDetailTracking.trackManageAllPrice(price, trackerShopId)
-            ProductEditVariantDetailTracking.trackManageAllStock(stock, trackerShopId)
-            ProductEditVariantDetailTracking.trackManageAllSku(sku, trackerShopId)
+            if (price.isNotEmpty())
+                ProductEditVariantDetailTracking.trackManageAllPrice(price, trackerShopId)
+            if (stock.isNotEmpty())
+                ProductEditVariantDetailTracking.trackManageAllStock(stock, trackerShopId)
+            if (sku.isNotEmpty())
+                ProductEditVariantDetailTracking.trackManageAllSku(sku, trackerShopId)
         } else {
-            ProductAddVariantDetailTracking.trackManageAllPrice(price, trackerShopId)
-            ProductAddVariantDetailTracking.trackManageAllStock(stock, trackerShopId)
-            ProductAddVariantDetailTracking.trackManageAllSku(sku, trackerShopId)
+            if (price.isNotEmpty())
+                ProductAddVariantDetailTracking.trackManageAllPrice(price, trackerShopId)
+            if (stock.isNotEmpty())
+                ProductAddVariantDetailTracking.trackManageAllStock(stock, trackerShopId)
+            if (sku.isNotEmpty())
+                ProductAddVariantDetailTracking.trackManageAllSku(sku, trackerShopId)
         }
     }
 
