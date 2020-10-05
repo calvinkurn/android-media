@@ -6,5 +6,5 @@ import com.tokopedia.hotel.search.data.model.params.ParamFilterV2
  * @author by jessica on 12/08/20
  */
 interface SubmitFilterListener {
-    fun onSubmitFilter(selectedFilter: List<ParamFilterV2>)
+    fun onSubmitFilter(selectedFilter: MutableList<ParamFilterV2>)
 }

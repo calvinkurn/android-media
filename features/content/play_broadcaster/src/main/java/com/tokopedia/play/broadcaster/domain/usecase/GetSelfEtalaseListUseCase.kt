@@ -1,8 +1,8 @@
 package com.tokopedia.play.broadcaster.domain.usecase
 
 import com.tokopedia.play.broadcaster.type.EtalaseType
-import com.tokopedia.play.broadcaster.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.broadcaster.util.error.DefaultNetworkThrowable
+import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtalaseByShopUseCase
 import com.tokopedia.usecase.RequestParams
