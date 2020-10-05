@@ -45,6 +45,11 @@ data class ProductInfo(
         @Expose
         var productMessage: String,
 
+        @SerializedName("stockMessage")
+        @ColumnInfo(name = "stockMessage")
+        @Expose
+        var stockMessage: String? = "",
+
         @SerializedName("buttonTxt")
         @ColumnInfo(name = "buttonTxt")
         @Expose
@@ -70,6 +75,11 @@ data class ProductInfo(
         @Expose
         var freeOngkirIcon: String? = "",
 
+        @SerializedName(CMConstant.PayloadKeys.REVIEW_ICON)
+        @ColumnInfo(name = CMConstant.PayloadKeys.REVIEW_ICON)
+        @Expose
+        var reviewIcon: String? = "",
+
         @SerializedName(CMConstant.PayloadKeys.STOCK_AVAILABLE)
         @ColumnInfo(name = CMConstant.PayloadKeys.STOCK_AVAILABLE)
         @Expose
@@ -78,7 +88,12 @@ data class ProductInfo(
         @SerializedName(CMConstant.PayloadKeys.REVIEW_SCORE)
         @ColumnInfo(name = CMConstant.PayloadKeys.REVIEW_SCORE)
         @Expose
-        var reviewScore: String? = "",
+        var reviewScore: Double? = 0.0,
+
+        @SerializedName(CMConstant.PayloadKeys.REVIEW_NUMBER)
+        @ColumnInfo(name = CMConstant.PayloadKeys.REVIEW_NUMBER)
+        @Expose
+        var reviewNumber: String? = "",
 
         @SerializedName(CMConstant.PayloadKeys.ACTION_BUTTON)
         @ColumnInfo(name = CMConstant.PayloadKeys.ACTION_BUTTON)

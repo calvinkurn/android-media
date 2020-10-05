@@ -609,6 +609,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             setShopType(orderShop.isOfficial, orderShop.isGold)
             setCategoryId(orderProduct.categoryId.toString())
             setShippingDuration(_orderShipment.serviceDuration)
+            setCampaignId(orderProduct.campaignId.toString())
         }
     }
 
