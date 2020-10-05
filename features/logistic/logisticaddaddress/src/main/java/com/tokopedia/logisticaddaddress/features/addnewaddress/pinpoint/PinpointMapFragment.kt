@@ -246,10 +246,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
                             }
 
                             override fun onPermissionGranted() {
-                                fusedLocationClient?.lastLocation
-                                        ?.addOnSuccessListener { lastLocation ->
-                                            showAutoComplete(lastLocation.latitude, lastLocation.longitude)
-                                        }
+                                getLastLocationClient()
                                 googleMap?.isMyLocationEnabled = true
                             }
 
