@@ -173,5 +173,7 @@
     <string name="error_no_internet_message">Wah, internet putus. Cek paket data atau WiFi-mu, ya.</string>
     <string name="error_unknown_issue">Terjadi kesalahan. Ulangi beberapa saat lagi.</string>
     <string name="error_validation_shop_name_domain">Wah, internet putus. Cek jaringan internetmu, ya.</string>
+    <string name="error_validation_shop_name_empty">Oops, nama toko harus kamu isi.</string>
+    <string name="error_validation_shop_domain_empty">Oops, domain toko harus kamu isi.</string>
     <string name="shop_settings_basic_info_title">Informasi Toko</string>
 </resources>

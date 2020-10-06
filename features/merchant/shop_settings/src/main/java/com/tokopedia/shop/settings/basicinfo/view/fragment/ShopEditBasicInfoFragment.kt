@@ -238,8 +238,14 @@ class ShopEditBasicInfoFragment: Fragment() {
             override fun afterTextChanged(s: Editable) {
                 if (!isNameStillSame()) {
                     val input = s.toString()
-                    resetShopNameInput()
-                    viewModel.validateShopName(input)
+                    if (input.isBlank()) {
+                        val message = context?.getString(R.string.error_validation_shop_name_empty).orEmpty()
+                        showShopNameInputError(message)
+                        viewModel.cancelValidateShopName()
+                    } else {
+                        resetShopNameInput()
+                        viewModel.validateShopName(input)
+                    }
                 }
             }
 
@@ -256,8 +262,14 @@ class ShopEditBasicInfoFragment: Fragment() {
             override fun afterTextChanged(s: Editable) {
                 if (!isDomainStillSame()) {
                     val input = s.toString()
-                    resetShopDomainInput()
-                    viewModel.validateShopDomain(input)
+                    if (input.isBlank()) {
+                        val message = context?.getString(R.string.error_validation_shop_domain_empty).orEmpty()
+                        showShopDomainInputError(message)
+                        viewModel.cancelValidateShopDomain()
+                    } else {
+                        resetShopDomainInput()
+                        viewModel.validateShopDomain(input)
+                    }
                 }
             }
 
@@ -445,7 +457,7 @@ class ShopEditBasicInfoFragment: Fragment() {
                 }
                 is Fail -> {
                     val message = context?.getString(R.string.error_validation_shop_name_domain).orEmpty()
-                    showShopNameInputError(message)
+                    showShopDomainInputError(message)
                     shopDomainSuggestions.hide()
                     ShopSettingsErrorHandler.logMessage(it.throwable.message ?: "")
                     ShopSettingsErrorHandler.logExceptionToCrashlytics(it.throwable)
