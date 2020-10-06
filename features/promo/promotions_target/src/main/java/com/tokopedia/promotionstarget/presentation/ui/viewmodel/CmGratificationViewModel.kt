@@ -26,7 +26,6 @@ class CmGratificationViewModel @Inject constructor(@Named(MAIN)
 ) : BaseAndroidViewModel(uiDispatcher, app) {
 
     val autoApplyLiveData: MutableLiveData<LiveDataResult<AutoApplyResponse>> = MutableLiveData()
-    val updateGratifNotifLiveData: MutableLiveData<LiveDataResult<UpdateGratificationNotificationResponse>> = MutableLiveData()
 
     fun autoApply(code: String) {
         launchCatchError(block = {

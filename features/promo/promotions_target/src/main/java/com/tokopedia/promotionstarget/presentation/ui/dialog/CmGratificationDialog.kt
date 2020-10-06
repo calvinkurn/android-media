@@ -67,9 +67,10 @@ class CmGratificationDialog {
     private val couponUiDataList = arrayListOf<CouponUiData>()
     private var gratifNotification: GratifNotification? = null
     private var couponDetailResponse: TokopointsCouponDetailResponse? = null
+    private var buttonText = ""
 
-    companion object{
-        val weakHashMap = WeakHashMap<Activity,Boolean>()
+    companion object {
+        val weakHashMap = WeakHashMap<Activity, Boolean>()
     }
 
     protected fun getLayout(): Int {
@@ -77,7 +78,11 @@ class CmGratificationDialog {
     }
 
     fun show(activityContext: Context, gratifNotification: GratifNotification, couponDetailResponse: TokopointsCouponDetailResponse, @NotificationEntryType notificationEntryType: Int, onShowListener: DialogInterface.OnShowListener): BottomSheetDialog? {
+        this.gratifNotification = gratifNotification
+        this.couponDetailResponse = couponDetailResponse
+
         val pair = prepareBottomSheet(activityContext, onShowListener)
+        bottomSheetDialog = pair.second
         initViews(pair.first, activityContext, gratifNotification, couponDetailResponse)
         setUiData(gratifNotification, couponDetailResponse)
         updateGratifNotification(gratifNotification, pair.first, notificationEntryType)
@@ -167,6 +172,14 @@ class CmGratificationDialog {
 
     private fun setUiData(gratifNotification: GratifNotification, couponDetailResponse: TokopointsCouponDetailResponse) {
         val couponStatus = couponDetailResponse.coupon?.couponStatus
+
+        setTitles(couponStatus, gratifNotification)
+        setCoupon(couponDetailResponse)
+        handleActionButton(couponStatus)
+        handleWhiteButton(gratifNotification)
+    }
+
+    private fun setTitles(couponStatus: Int?, gratifNotification: GratifNotification) {
         val pair = couponStatus?.let {
             when (it) {
                 CouponStatusType.USED -> gratifNotification.wordingUsed?.let { word -> Pair(word.subtitle1, word.subtitle2) }
@@ -177,60 +190,103 @@ class CmGratificationDialog {
         }
         tvTitle.text = pair?.first
         tvSubTitle.text = pair?.second
+    }
 
-        //set coupon data
-//        if (couponDetailResponse.couponList != null && couponDetailResponse.couponList.isNotEmpty()) {
+    private fun setCoupon(couponDetailResponse: TokopointsCouponDetailResponse) {
         if (couponDetailResponse.coupon != null) {
             couponUiDataList.add(couponDetailResponse.coupon)
             couponListAdapter.notifyDataSetChanged()
         }
+    }
 
-        handleAutoApply(couponStatus)
-
-
-        //second button
+    private fun handleWhiteButton(gratifNotification: GratifNotification) {
         val showSecondButton = gratifNotification.secondButton?.isShown != null && gratifNotification.secondButton.isShown
         toggleSecondButton(showSecondButton)
         if (showSecondButton) {
             btnAction2.text = gratifNotification.secondButton?.text
             btnAction2.setOnClickListener {
-                if (!gratifNotification.secondButton?.applink.isNullOrEmpty()) {
-                    RouteManager.route(it.context, gratifNotification.secondButton?.applink)
+                val type = gratifNotification.secondButton?.type
+                if (type.isNullOrEmpty()) {
+                    when (type) {
+                        HachikoButtonType.REDIRECT -> {
+                            if (!gratifNotification.secondButton?.applink.isNullOrEmpty()) {
+                                RouteManager.route(it.context, gratifNotification.secondButton.applink)
+                            }
+                            bottomSheetDialog.dismiss()
+                        }
+                        HachikoButtonType.DISMISS -> {
+                            bottomSheetDialog.dismiss()
+                        }
+                    }
                 }
             }
         }
     }
 
-    private fun handleAutoApply(couponStatus: Int?) {
+    private fun handleActionButton(couponStatus: Int?) {
+        setActionButtonText(couponStatus)
+        observerViewModel()
+        setClickEvent(couponStatus)
+    }
+
+    private fun setActionButtonText(couponStatus: Int?) {
+        buttonText = btnAction.context.getString(R.string.t_promo_lanjut_berbelanja)
         if (couponStatus == CouponStatusType.ACTIVE) {
-            val activity = btnAction.context
-            if (activity is AppCompatActivity) {
-                viewModel.autoApplyLiveData.observe(activity, Observer {
-                    when (it.status) {
-                        LiveDataResult.STATUS.SUCCESS -> {
-                            performShowToast(it.data)
-                            handleRedirection()
-                            toggleProgressBar(false)
-                            btnAction.text = btnAction.context.getString(R.string.t_promo_lanjut_berbelanja)
-                        }
-                        LiveDataResult.STATUS.ERROR -> {
-                            btnAction.text = btnAction.context.getString(R.string.t_promo_lanjut_berbelanja)
-                            toggleProgressBar(false)
-                        }
-                        LiveDataResult.STATUS.LOADING -> {
-                            btnAction.text = ""
-                            toggleProgressBar(true)
-                        }
-                    }
-                })
+            val btnUsageText = couponDetailResponse?.coupon?.usage?.btnUsage?.text
+            if (!btnUsageText.isNullOrEmpty()) {
+                buttonText = btnUsageText
             }
         }
-        btnAction.setOnClickListener {
-            couponStatus?.let { status ->
-                when (status) {
-                    CouponStatusType.ACTIVE -> viewModel.autoApply("")
+        btnAction.text = buttonText
+    }
+
+    private fun observerViewModel() {
+        val activity = btnAction.context
+        if (activity is AppCompatActivity) {
+            viewModel.autoApplyLiveData.observe(activity, Observer {
+                when (it.status) {
+                    LiveDataResult.STATUS.SUCCESS -> {
+                        handleAutoApplySuccess(it.data)
+                    }
+                    LiveDataResult.STATUS.ERROR -> {
+                        btnAction.text = buttonText
+                        toggleProgressBar(false)
+                    }
+                    LiveDataResult.STATUS.LOADING -> {
+                        btnAction.text = ""
+                        toggleProgressBar(true)
+                    }
                 }
+            })
+        }
+    }
+
+    private fun handleAutoApplySuccess(autoApplyResponse: AutoApplyResponse?){
+        performShowToast(autoApplyResponse)
+        val code = autoApplyResponse?.tokopointsSetAutoApply?.resultStatus?.code
+        if(code == "200") {
+            handleGreenBtnRedirection()
+        }
+        toggleProgressBar(false)
+        btnAction.text = buttonText
+    }
+
+    private fun setClickEvent(couponStatus: Int?) {
+        btnAction.setOnClickListener {
+            handleButtonAction(couponStatus)
+        }
+    }
+
+    private fun handleButtonAction(couponStatus: Int?) {
+        if (couponStatus != null && couponStatus == CouponStatusType.ACTIVE) {
+            val code = gratifNotification?.promoCode
+            if (!code.isNullOrEmpty()) {
+                viewModel.autoApply(code)
+            } else {
+                handleGreenBtnRedirection()
             }
+        } else {
+            handleGreenBtnRedirection()
         }
     }
 
@@ -276,14 +332,16 @@ class CmGratificationDialog {
         val code = data?.tokopointsSetAutoApply?.resultStatus?.code
         if (messageList != null && messageList.isNotEmpty()) {
             if (code == "200") {
-                CustomToast.show(btnAction.context, messageList[0].toString())
+                CustomToast.show(btnAction.context.applicationContext, messageList[0].toString())
             } else {
-                CustomToast.show(btnAction.context, messageList[0].toString(), R.drawable.t_promo_custom_toast_bg_red)
+                CustomToast.show(activityContext = btnAction.context.applicationContext,
+                        text = messageList[0].toString(),
+                        bg = R.drawable.t_promo_custom_toast_bg_red)
             }
         }
     }
 
-    private fun handleRedirection() {
+    private fun handleGreenBtnRedirection() {
         when (gratifNotification?.hachikoButton?.type) {
             HachikoButtonType.REDIRECT -> {
                 val applink = couponDetailResponse?.coupon?.usage?.btnUsage?.applink

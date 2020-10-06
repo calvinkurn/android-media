@@ -26,7 +26,8 @@ data class Usage(
         @SerializedName("btn_usage") val btnUsage: ButtonUsage?
 )
 data class ButtonUsage(
-        @SerializedName("applink") val applink: String?
+        @SerializedName("applink") val applink: String?,
+        @SerializedName("text") val text: String?
 )
 
 sealed class CouponUiData
