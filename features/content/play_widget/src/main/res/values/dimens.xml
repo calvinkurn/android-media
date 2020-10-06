@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="play_widget_dp_6">6dp</dimen>
+
+    <!--Play Widget Small-->
+    <dimen name="play_widget_small_height">144dp</dimen>
+    <dimen name="play_widget_small_width">104dp</dimen>
+    <dimen name="play_widget_small_radius">10dp</dimen>
+    <dimen name="play_widget_small_border_width">2dp</dimen>
+    <dimen name="play_widget_small_total_view_height">20dp</dimen>
+</resources>
