@@ -42,9 +42,9 @@ object FakeResponse {
             "        },\n" +
             "        \"button\": {\n" +
             "          \"text\": \"Coupon gratis\",\n" +
-            "          \"url\": \"https:://tokopedia.com\",\n" +
-            "          \"appLink\": \"https:://tokopedia.com\",\n" +
-            "          \"isShown\": false,\n" +
+            "          \"url\": \"https://tokopedia.com\",\n" +
+            "          \"appLink\": \"https://tokopedia.com\",\n" +
+            "          \"isShown\": true,\n" +
             "          \"type\": \"redirect\"\n" +
             "        },\n" +
             "        \"hachikoButton\": {\n" +
@@ -96,7 +96,7 @@ object FakeResponse {
             "                \"text\": \"Berlaku Hingaa\",\n" +
             "                \"usage_str\": \"30 Sep 2020\",\n" +
             "                \"btn_usage\": {\n" +
-            "                    \"text\": \"Expired\",\n" +
+            "                    \"text\": \"Active\",\n" +
             "                    \"url\": \"https://staging.tokopedia.com/tx.pl\",\n" +
             "                    \"applink\": \"tokopedia://cart\",\n" +
             "                    \"type\": \"disable\"\n" +

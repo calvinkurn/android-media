@@ -206,7 +206,7 @@ class CmGratificationDialog {
             btnAction2.text = gratifNotification.secondButton?.text
             btnAction2.setOnClickListener {
                 val type = gratifNotification.secondButton?.type
-                if (type.isNullOrEmpty()) {
+                if (!type.isNullOrEmpty()) {
                     when (type) {
                         HachikoButtonType.REDIRECT -> {
                             if (!gratifNotification.secondButton?.applink.isNullOrEmpty()) {
@@ -220,6 +220,7 @@ class CmGratificationDialog {
                     }
                 }
             }
+            btnAction2.post { expandBottomSheet() }
         }
     }
 

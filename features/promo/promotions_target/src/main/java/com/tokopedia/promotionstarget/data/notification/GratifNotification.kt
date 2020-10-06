@@ -49,7 +49,7 @@ data class Wording(
 data class SecondButton(
         @SerializedName("text") val text: String?,
         @SerializedName("url") val url: String?,
-        @SerializedName("applink") val applink: String?,
+        @SerializedName("appLink") val applink: String?,
         @SerializedName("isShown") val isShown: Boolean?,
         @SerializedName("type") val type: String?
 )
@@ -59,7 +59,6 @@ data class HachikoButton(
 )
 
 
-//todo Rahul check data type once api is finalized for https://tokopedia.atlassian.net/wiki/spaces/P/pages/930022376/GQL+Get+Notification+Detail
 @Retention(AnnotationRetention.SOURCE)
 @IntDef(ACTIVE_NON_PUSH_NOTIF, ACTIVE_PUSH_NOTIF, SEEN, INACTIVE)
 annotation class NotificationStatusType {
