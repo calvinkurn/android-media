@@ -127,7 +127,6 @@ class CMUserHandler(private val mContext: Context) : CoroutineScope {
 
     private fun sendFcmTokenToServerGQL(token: String?) {
         try {
-            Log.d("CMUserHandler", Thread.currentThread().name)
             if (tempFcmId.equals(token!!, ignoreCase = true)) {
                 //ignore temporary fcm token
                 return
@@ -164,7 +163,6 @@ class CMUserHandler(private val mContext: Context) : CoroutineScope {
                     override fun onError(e: Throwable) {
                         Timber.w( "${CMConstant.TimberTags.TAG}exception;err='${Log.getStackTraceString(e)
                                 .take(CMConstant.TimberTags.MAX_LIMIT)}';data=''")
-                        Log.e(TAG, "CMPushNotificationManager: sendFcmTokenToServer " + e.message)
                     }
 
                     override fun onNext(gqlResponse: GraphqlResponse) {
