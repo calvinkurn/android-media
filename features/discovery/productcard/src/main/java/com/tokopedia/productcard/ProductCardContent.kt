@@ -178,10 +178,14 @@ private fun View.renderShopRating(productCardModel: ProductCardModel) {
 }
 
 private fun View.renderSalesAndRating(productCardModel: ProductCardModel){
-    salesAndRating?.shouldShowWithAction(productCardModel.willShowSalesAndRating()){
+    textViewSales?.shouldShowWithAction(productCardModel.willShowSalesAndRating()){
         textViewSales?.initLabelGroup(productCardModel.getLabelIntegrity())
-        val ssb = SpannableStringBuilder("(${productCardModel.countSoldRating})")
-        ssb.setSpan(ImageSpan(context, R.drawable.ic_rating_apps_active), 1, 2, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
+    }
+    salesRatingFloat.shouldShowWithAction(productCardModel.willShowSalesAndRating()){
+        val ssb = SpannableStringBuilder("( ${productCardModel.countSoldRating})")
+        val drawableStar = ContextCompat.getDrawable(context, R.drawable.ic_rating_apps_active)
+        drawableStar?.setBounds(0, 10, 32, 32)
+        ssb.setSpan(ImageSpan(drawableStar!!, ImageSpan.ALIGN_BASELINE), 1, 2, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
         salesRatingFloat?.setText(ssb, TextView.BufferType.SPANNABLE)
     }
 }
