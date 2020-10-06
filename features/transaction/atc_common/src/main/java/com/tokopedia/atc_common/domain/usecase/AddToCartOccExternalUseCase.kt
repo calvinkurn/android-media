@@ -16,9 +16,7 @@ import javax.inject.Named
 
 class AddToCartOccExternalUseCase @Inject constructor(@Named(MUTATION_ATC_OCC_EXTERNAL) private val query: String,
                                                       private val graphqlUseCase: GraphqlUseCase,
-                                                      private val addToCartDataMapper: AddToCartDataMapper,
-                                                      private val analytics: AddToCartOccExternalAnalytics,
-                                                      private val baseAnalytics: AddToCartBaseAnalytics) : UseCase<AddToCartDataModel>() {
+                                                      private val addToCartDataMapper: AddToCartDataMapper) : UseCase<AddToCartDataModel>() {
 
     companion object {
         const val REQUEST_PARAM_KEY_PRODUCT_ID = "REQUEST_PARAM_KEY_PRODUCT_ID"
@@ -38,10 +36,10 @@ class AddToCartOccExternalUseCase @Inject constructor(@Named(MUTATION_ATC_OCC_EX
             val result = addToCartDataMapper.mapAddToCartOccResponse(addToCartOccGqlResponse)
             if (addToCartOccGqlResponse.addToCartOccResponse.data.success == 1) {
                 val detail = addToCartOccGqlResponse.addToCartOccResponse.data.detail
-                analytics.sendEETracking(detail)
-                baseAnalytics.sendAppsFlyerTracking(detail.productId.toString(), detail.productName, detail.price.toString(),
+                AddToCartOccExternalAnalytics.sendEETracking(detail)
+                AddToCartBaseAnalytics.sendAppsFlyerTracking(detail.productId.toString(), detail.productName, detail.price.toString(),
                         detail.quantity.toString(), detail.category)
-                baseAnalytics.sendBranchIoTracking(detail.productId.toString(), detail.productName, detail.price.toString(),
+                AddToCartBaseAnalytics.sendBranchIoTracking(detail.productId.toString(), detail.productName, detail.price.toString(),
                         detail.quantity.toString(), detail.category, "",
                         "", "", "",
                         "", "", "", requestParams.getString(REQUEST_PARAM_KEY_USER_ID, ""))

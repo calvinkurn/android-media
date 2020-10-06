@@ -19,8 +19,7 @@ import javax.inject.Named
 class AddToCartExternalUseCase @Inject constructor(@Named(MUTATION_ATC_EXTERNAL) private val queryString: String,
                                                    private val graphqlUseCase: GraphqlUseCase,
                                                    private val addToCartDataMapper: AddToCartExternalDataMapper,
-                                                   private val analytics: AddToCartExternalAnalytics,
-                                                   private val baseAnalytics: AddToCartBaseAnalytics) : UseCase<AddToCartExternalModel>() {
+                                                   private val analytics: AddToCartExternalAnalytics) : UseCase<AddToCartExternalModel>() {
 
     companion object {
         const val PARAM_PRODUCT_ID = "productID"
@@ -39,9 +38,9 @@ class AddToCartExternalUseCase @Inject constructor(@Named(MUTATION_ATC_EXTERNAL)
                 if (result.success == 1) {
                     val data = result.data
                     analytics.sendEnhancedEcommerceTracking(data)
-                    baseAnalytics.sendAppsFlyerTracking(data.productId.toString(), data.productName, data.price.toString(),
+                    AddToCartBaseAnalytics.sendAppsFlyerTracking(data.productId.toString(), data.productName, data.price.toString(),
                             data.quantity.toString(), data.category)
-                    baseAnalytics.sendBranchIoTracking(data.productId.toString(), data.productName, data.price.toString(),
+                    AddToCartBaseAnalytics.sendBranchIoTracking(data.productId.toString(), data.productName, data.price.toString(),
                             data.quantity.toString(), data.category, "",
                             "", "", "",
                             "", "", "", requestParams.getString(PARAM_USER_ID, ""))

@@ -1,7 +1,6 @@
 package com.tokopedia.notifications.di.module
 
 import android.content.Context
-import com.tokopedia.atc_common.domain.analytics.AddToCartBaseAnalytics
 import com.tokopedia.atc_common.domain.mapper.AddToCartDataMapper
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
@@ -59,10 +58,9 @@ import com.tokopedia.graphql.domain.GraphqlUseCase as RxUseCase
     fun provideAtcUseCase(
             @Named(ATC_MUTATION_QUERY) query: String,
             useCase: RxUseCase,
-            mapper: AddToCartDataMapper,
-            baseAnalytics: AddToCartBaseAnalytics
+            mapper: AddToCartDataMapper
     ): AddToCartUseCase {
-        return AddToCartUseCase(query, useCase, mapper, baseAnalytics)
+        return AddToCartUseCase(query, useCase, mapper)
     }
 
     @Provides

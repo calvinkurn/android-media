@@ -519,7 +519,7 @@ class HomeUseCaseModule {
     @Provides
     @HomeScope
     fun provideAddToCartOccUseCase(graphqlUseCase: GraphqlUseCase): AddToCartOccUseCase{
-        return AddToCartOccUseCase(addToCartOneClickCheckout, graphqlUseCase, AddToCartDataMapper(), AddToCartBaseAnalytics())
+        return AddToCartOccUseCase(addToCartOneClickCheckout, graphqlUseCase, AddToCartDataMapper())
     }
 
     @Provides

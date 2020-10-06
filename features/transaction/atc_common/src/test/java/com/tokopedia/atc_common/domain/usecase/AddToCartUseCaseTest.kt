@@ -27,12 +27,25 @@ import java.lang.reflect.Type
 class AddToCartUseCaseTest : Spek({
     val graphqlUseCase = mockk<GraphqlUseCase>(relaxed = true)
     val addToCartdataMapper = mockk<AddToCartDataMapper>()
-    val baseAnalytics = mockk<AddToCartBaseAnalytics>()
     val addToCartUseCase by memoized {
-        AddToCartUseCase("mock_query", graphqlUseCase, addToCartdataMapper, baseAnalytics)
+        AddToCartUseCase("mock_query", graphqlUseCase, addToCartdataMapper)
     }
 
     every { addToCartdataMapper.mapAddToCartResponse(any()) } returns AddToCartDataModel(status = "OK", data = DataModel(success = 1))
+
+    beforeEachGroup {
+        mockkObject(AddToCartBaseAnalytics)
+
+        every { AddToCartBaseAnalytics.sendAppsFlyerTracking(any(), any(), any(), any(), any()) } just Runs
+        every {
+            AddToCartBaseAnalytics.sendBranchIoTracking(any(), any(), any(), any(), any(),
+                    any(), any(), any(), any(), any(), any(), any(), any())
+        } just Runs
+    }
+
+    afterEachGroup {
+        unmockkObject(AddToCartBaseAnalytics)
+    }
 
     Feature("AddToCartUseCase") {
         lateinit var subscriber: AssertableSubscriber<AddToCartDataModel>
@@ -48,14 +61,6 @@ class AddToCartUseCaseTest : Spek({
                 result[objectType] = MockResponseProvider.getResponseAtcSuccess()
                 every { graphqlUseCase.createObservable(any()) } returns
                         Observable.just(GraphqlResponse(result, errors, false))
-            }
-
-            Given("given just run analytics") {
-                every { baseAnalytics.sendAppsFlyerTracking(any(), any(), any(), any(), any()) } just Runs
-                every {
-                    baseAnalytics.sendBranchIoTracking(any(), any(), any(), any(), any(),
-                            any(), any(), any(), any(), any(), any(), any(), any())
-                } just Runs
             }
 
             When("create observable") {
@@ -94,8 +99,8 @@ class AddToCartUseCaseTest : Spek({
 
             Then("should run analytics") {
                 verify {
-                    baseAnalytics.sendAppsFlyerTracking(any(), any(), any(), any(), any())
-                    baseAnalytics.sendBranchIoTracking(any(), any(), any(), any(), any(),
+                    AddToCartBaseAnalytics.sendAppsFlyerTracking(any(), any(), any(), any(), any())
+                    AddToCartBaseAnalytics.sendBranchIoTracking(any(), any(), any(), any(), any(),
                             any(), any(), any(), any(), any(), any(), any(), any())
                 }
             }
