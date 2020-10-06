@@ -1,6 +1,8 @@
 package com.tokopedia.shop_showcase.viewmodel.shopshowcasemanagement
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
+import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtalaseByShopUseCase
 import com.tokopedia.shop_showcase.coroutines.TestCoroutineDispatchers
 import com.tokopedia.shop_showcase.shop_showcase_management.data.model.DeleteShopShowcaseResponse
 import com.tokopedia.shop_showcase.shop_showcase_management.data.model.GetShopProductsResponse
@@ -19,6 +21,7 @@ import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import rx.Observable
 
 
 @ExperimentalCoroutinesApi
@@ -27,8 +30,8 @@ class ShopShowcaseManageViewModel {
     @RelaxedMockK
     lateinit var getSellerShowcaseList: GetShopShowcaseListSellerUseCase
 
-//    @RelaxedMockK
-//    lateinit var getBuyerShowcaseList: GetShopShowcaseListBuyerUseCase
+    @RelaxedMockK
+    lateinit var getBuyerShowcaseList: GetShopEtalaseByShopUseCase // GetShopShowcaseListBuyerUseCase
 
     @RelaxedMockK
     lateinit var deleteShowcase: DeleteShopShowcaseUseCase
@@ -49,7 +52,7 @@ class ShopShowcaseManageViewModel {
     fun setup() {
         MockKAnnotations.init(this)
         viewModel = ShopShowcaseListViewModel(
-//                getBuyerShowcaseList,
+                getBuyerShowcaseList,
                 getSellerShowcaseList,
                 deleteShowcase,
                 reorderShowcase,
@@ -77,24 +80,27 @@ class ShopShowcaseManageViewModel {
         }
     }
 
+    // Buyerview
     @Test
     fun `given showcase list as a buyer when shopid and isowner is provided`() {
         runBlocking {
             val shopId = "123456"
             val isOwner = false
+            val index = 0
+            val etalaseId = "2"
+            val etalaseName = "Elektronik"
+            val etalaseList = arrayListOf(ShopEtalaseModel(id = etalaseId, name = etalaseName))
 
-            coEvery {
-                getBuyerShowcaseList.executeOnBackground()
-            } returns ShopShowcaseListBuyerResponse()
+            coEvery { getBuyerShowcaseList.createObservable(any()) } returns Observable.just(etalaseList)
 
-            viewModel.getShopShowcaseListAsBuyer(shopId = shopId, isOwner = isOwner)
+            viewModel.getShopShowcaseListAsBuyer(
+                    shopId = shopId,
+                    isOwner = isOwner,
+                    hideShowCaseGroup = false
+            )
 
-            coVerify {
-                getBuyerShowcaseList.executeOnBackground()
-            }
-
-            val expectedResponse = Success(ShopShowcaseListBuyerResponse())
-            val actualResponse = viewModel.getListBuyerShopShowcaseResponse.value as Success<ShopShowcaseListBuyerResponse>
+            val expectedResponse = Success(etalaseList)
+            val actualResponse = viewModel.getListBuyerShopShowcaseResponse.value as Success<List<ShopEtalaseModel>>
             assertEquals(expectedResponse, actualResponse)
         }
     }
