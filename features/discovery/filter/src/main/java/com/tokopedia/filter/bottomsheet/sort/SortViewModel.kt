@@ -10,8 +10,4 @@ internal class SortViewModel(
     override fun type(typeFactory: SortFilterBottomSheetTypeFactory?): Int {
         return typeFactory?.type(this) ?: 0
     }
-
-    fun getDefaultSortItemViewModel(): SortItemViewModel? {
-        return sortItemViewModelList.find { it.isDefaultSort() }
-    }
 }

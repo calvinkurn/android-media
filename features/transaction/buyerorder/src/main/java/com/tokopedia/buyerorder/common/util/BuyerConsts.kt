@@ -47,4 +47,16 @@ object BuyerConsts {
     const val TICKER_TYPE_WARNING = "warning"
 
     const val BUYER_CANCEL_REASON_SCREEN_NAME = "BuyerCancelReason"
+    const val HOST_DEALS = "deals"
+    const val HOST_DIGITAL = "digital"
+    const val HOST_EVENTS = "events"
+    const val HOST_GIFTCARDS = "giftcards"
+    const val HOST_INSURANCE = "insurance"
+    const val HOST_MODALTOKO = "modaltoko"
+    const val HOST_BUYER = "buyer"
+    const val HOST_BELANJA = "belanja"
+    const val HOST_ORDER_LIST = "order_list"
+    const val APPLINK_INTERNAL_ORDER = "tokopedia-android-internal://order"
+    const val HOST_HOTEL = "hotel"
+    const val HOST_FLIGHT = "pesawat"
 }

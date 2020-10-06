@@ -4,8 +4,10 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Activity.RESULT_OK
 import android.content.Intent
+import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -28,7 +30,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
-import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
 import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.config.GlobalConfig
@@ -57,6 +58,7 @@ import com.tokopedia.product.addedit.common.util.*
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.BUNDLE_CACHE_MANAGER_ID
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.EXTRA_CASHBACK_IS_DRAFTING
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.EXTRA_CASHBACK_SHOP_ID
+import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.EXTRA_RESULT_STATUS
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PRODUCT_PHOTOS
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.PARAM_SET_CASHBACK_PRODUCT_NAME
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.PARAM_SET_CASHBACK_PRODUCT_PRICE
@@ -79,6 +81,7 @@ import com.tokopedia.product.addedit.preview.data.source.api.response.Product
 import com.tokopedia.product.addedit.preview.di.AddEditProductPreviewModule
 import com.tokopedia.product.addedit.preview.di.DaggerAddEditProductPreviewComponent
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.BUNDLE_BACK_PRESSED
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.DELAY_CLOSE_ACTIVITY
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.DESCRIPTION_DATA
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.DETAIL_DATA
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_IS_ADDING_PRODUCT
@@ -115,7 +118,9 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
+import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 class AddEditProductPreviewFragment:
         BaseDaggerFragment(),
@@ -177,7 +182,6 @@ class AddEditProductPreviewFragment:
     @Inject
     lateinit var viewModel: AddEditProductPreviewViewModel
 
-    private var shouldGoToSetCashback: Boolean = false
     private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -189,7 +193,6 @@ class AddEditProductPreviewFragment:
 
         super.onCreate(savedInstanceState)
 
-        shouldGoToSetCashback = activity?.intent?.getStringExtra(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME).orEmpty() == SellerMigrationFeatureName.FEATURE_EDIT_PRODUCT_CASHBACK
         arguments?.let {
             val previewFragmentArgs = AddEditProductPreviewFragmentArgs.fromBundle(it)
             val draftId = previewFragmentArgs.draftId
@@ -251,6 +254,9 @@ class AddEditProductPreviewFragment:
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        // set bg color programatically, to reduce overdraw
+        activity?.window?.decorView?.setBackgroundColor(Color.WHITE)
 
         // activity toolbar
         toolbar = activity?.findViewById(R.id.toolbar)
@@ -355,14 +361,10 @@ class AddEditProductPreviewFragment:
                 if (viewModel.productInputModel.value?.productId.orZero() != 0L) {
                     viewModel.productInputModel.value?.apply {
                         startProductEditService(this)
-                        activity?.finish()
+                        showLoading()
+                        Handler().postDelayed( { activity?.finish() }, DELAY_CLOSE_ACTIVITY)
                     }
                 } else {
-                    if (isDrafting()) {
-                        productStatusSwitch?.isChecked?.let {
-                            viewModel.updateProductStatus(it)
-                        }
-                    }
                     viewModel.productInputModel.value?.let { productInputModel ->
                         startProductAddService(productInputModel)
                         activity?.setResult(RESULT_OK)
@@ -479,7 +481,7 @@ class AddEditProductPreviewFragment:
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == Activity.RESULT_OK && data != null) {
+        if (resultCode == RESULT_OK && data != null) {
             when (requestCode) {
                 REQUEST_CODE_IMAGE -> {
                     val imagePickerResult = data.getStringArrayListExtra(ImagePickerActivity.PICKER_RESULT_PATHS)
@@ -512,20 +514,7 @@ class AddEditProductPreviewFragment:
                 SET_CASHBACK_REQUEST_CODE -> {
                     val cacheManagerId = data.getStringExtra(SET_CASHBACK_CACHE_MANAGER_KEY) ?: ""
                     val cacheManager = context?.let { context -> SaveInstanceCacheManager(context, cacheManagerId) }
-                    val setCashbackResult: SetCashbackResult? = cacheManager?.get(SET_CASHBACK_RESULT, SetCashbackResult::class.java)
-                    if(setCashbackResult == null) {
-                        onFailedSetCashback()
-                        return
-                    }
-                    setCashbackResult.let { cashbackResult ->
-                        if(!cashbackResult.limitExceeded) {
-                            val cashbackProduct = Cashback(cashbackResult.cashback)
-                            viewModel.productDomain = viewModel.productDomain.copy(cashback = cashbackProduct)
-                            onSuccessSetCashback()
-                        } else {
-                            onFailedSetCashback()
-                        }
-                    }
+                    onSetCashbackResult(cacheManager)
                 }
             }
         }
@@ -864,19 +853,7 @@ class AddEditProductPreviewFragment:
                     val isVariantEmpty = result.data.variant.products.isEmpty()
                     showEmptyVariantState(isVariantEmpty)
                     showProductStatus(result.data)
-                    if (shouldGoToSetCashback) {
-                        val appLinkToOpen = activity?.intent?.getStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA)?.firstOrNull().orEmpty()
-                        if (appLinkToOpen.isNotBlank()) {
-                            shouldGoToSetCashback = false
-                            context?.run {
-                                activity?.intent?.extras?.clear()
-                                RouteManager.getIntent(this, appLinkToOpen).apply {
-                                    addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
-                                    startActivityForResult(this, SET_CASHBACK_REQUEST_CODE)
-                                }
-                            }
-                        }
-                    }
+                    handleSetCashBackResult()
                     // continue to PLT monitoring render
                     stopNetworkRequestPerformanceMonitoring()
                     startRenderPerformanceMonitoring()
@@ -887,12 +864,12 @@ class AddEditProductPreviewFragment:
                     context?.let {
                         val isEditing = viewModel.isEditing.value ?: false
                         val errorMessage = ErrorHandler.getErrorMessage(context, result.throwable)
-                        val errorThrowable = result.throwable.message ?: ""
+                        val errorName = AddEditProductUploadErrorHandler.getErrorName(result.throwable)
                         if (isEditing) {
                             ProductEditStepperTracking.oopsConnectionPageScreen(
                                     userSession.userId,
                                     errorMessage,
-                                    errorThrowable)
+                                    errorName)
                         }
                         showGetProductErrorToast(ErrorHandler.getErrorMessage(it, result.throwable))
                         AddEditProductErrorHandler.logExceptionToCrashlytics(result.throwable)
@@ -902,10 +879,23 @@ class AddEditProductPreviewFragment:
         })
     }
 
+    private fun handleSetCashBackResult() {
+        activity?.intent?.data?.getQueryParameter(ApplinkConstInternalMarketplace.ARGS_CACHE_MANAGER_ID)?.let {
+            if (it.isNotBlank()) {
+                val cacheManager = context?.let { context -> SaveInstanceCacheManager(context, it) }
+                val resultStatus = cacheManager?.get(EXTRA_RESULT_STATUS, Int::class.java) ?: 0
+                if (resultStatus == RESULT_OK) {
+                    onSetCashbackResult(cacheManager)
+                }
+            }
+        }
+    }
+
     private fun observeProductInputModel() {
         viewModel.productInputModel.observe(viewLifecycleOwner, Observer {
             showProductPhotoPreview(it)
             showProductDetailPreview(it)
+            updateProductStatusSwitch(it)
             showEmptyVariantState(viewModel.productInputModel.value?.variantInputModel?.products?.size == 0)
             if (viewModel.getDraftId() != 0L || it.productId != 0L || viewModel.getProductId().isNotBlank()) {
                 displayEditMode()
@@ -1073,7 +1063,7 @@ class AddEditProductPreviewFragment:
     }
 
     @SuppressLint("WrongConstant")
-    private fun createImagePickerBuilder(selectedImagePathList: ArrayList<String>?): ImagePickerBuilder {
+    private fun createImagePickerBuilder(selectedImagePathList: ArrayList<String>): ImagePickerBuilder {
 
         val title = getString(R.string.action_pick_photo)
 
@@ -1229,14 +1219,12 @@ class AddEditProductPreviewFragment:
 
     private fun goToSellerAppProductManageThenSetCashback() {
         viewModel.productInputModel.value?.let { productInputModel ->
-            val firstAppLink = Uri.parse(ApplinkConst.PRODUCT_MANAGE)
-                    .buildUpon()
-                    .build()
-                    .toString()
+            val cacheManagerId = UUID.randomUUID().toString()
             val secondApplink = Uri.parse(ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW)
                     .buildUpon()
                     .appendQueryParameter(ApplinkConstInternalMechant.QUERY_PARAM_ID, viewModel.getProductId())
                     .appendQueryParameter(ApplinkConstInternalMechant.QUERY_PARAM_MODE, ApplinkConstInternalMechant.MODE_EDIT_PRODUCT)
+                    .appendQueryParameter(ApplinkConstInternalMarketplace.ARGS_CACHE_MANAGER_ID, cacheManagerId)
                     .build()
                     .toString()
             val thirdAppLink = Uri.parse(UriUtil.buildUri(ApplinkConstInternalMarketplace.SET_CASHBACK, viewModel.getProductId()))
@@ -1245,9 +1233,10 @@ class AddEditProductPreviewFragment:
                     .appendQueryParameter(PARAM_SET_CASHBACK_VALUE, viewModel.productDomain.cashback.percentage.toString())
                     .appendQueryParameter(PARAM_SET_CASHBACK_PRODUCT_PRICE, productInputModel.detailInputModel.price.toString())
                     .appendQueryParameter(EXTRA_CASHBACK_SHOP_ID, userSession.shopId)
+                    .appendQueryParameter(ApplinkConstInternalMarketplace.ARGS_CACHE_MANAGER_ID, cacheManagerId)
                     .build()
                     .toString()
-            goToSellerMigrationPage(SellerMigrationFeatureName.FEATURE_EDIT_PRODUCT_CASHBACK, arrayListOf(firstAppLink, secondApplink, thirdAppLink))
+            goToSellerMigrationPage(SellerMigrationFeatureName.FEATURE_EDIT_PRODUCT_CASHBACK, arrayListOf(ApplinkConst.PRODUCT_MANAGE, secondApplink, thirdAppLink))
         }
     }
 
@@ -1266,6 +1255,23 @@ class AddEditProductPreviewFragment:
             val intent = SellerMigrationActivity.createIntent(this, featureName, screenName, appLinks)
             startActivity(intent)
             activity?.finish()
+        }
+    }
+
+    private fun onSetCashbackResult(cacheManager: SaveInstanceCacheManager?) {
+        val setCashbackResult: SetCashbackResult? = cacheManager?.get(SET_CASHBACK_RESULT, SetCashbackResult::class.java)
+        if(setCashbackResult == null) {
+            onFailedSetCashback()
+            return
+        }
+        setCashbackResult.let { cashbackResult ->
+            if(!cashbackResult.limitExceeded) {
+                val cashbackProduct = Cashback(cashbackResult.cashback)
+                viewModel.productDomain = viewModel.productDomain.copy(cashback = cashbackProduct)
+                onSuccessSetCashback()
+            } else {
+                onFailedSetCashback()
+            }
         }
     }
 }

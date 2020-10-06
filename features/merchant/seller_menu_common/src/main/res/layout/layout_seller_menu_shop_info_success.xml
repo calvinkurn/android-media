@@ -103,7 +103,6 @@
         android:id="@+id/shopScore"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/seller_menu_shop_score_max_label"
         android:textColor="@color/light_G500"
         app:layout_constraintTop_toTopOf="@id/shopScoreLabel"
         app:layout_constraintBottom_toBottomOf="@id/shopScoreLabel"

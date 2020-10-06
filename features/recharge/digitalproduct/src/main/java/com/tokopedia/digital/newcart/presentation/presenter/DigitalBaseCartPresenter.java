@@ -156,6 +156,8 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
         attributes.setUserAgent(DeviceUtil.getUserAgentForApiCall());
         attributes.setUserId(Integer.parseInt(userSession.getUserId()));
         attributes.setProductId(getView().getProductId());
+        int orderId = getView().getOrderId();
+        if (orderId > 0) attributes.setOrderId(orderId);
         attributes.setFields(fieldList);
         if (GlobalConfig.isSellerApp()) {
             attributes.setReseller(true);
@@ -564,8 +566,10 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
 
             @Override
             public void onError(Throwable e) {
-                getView().hideFullPageLoading();
-                getView().failedCancelVoucherCart(e);
+                if (isViewAttached()) {
+                    getView().hideFullPageLoading();
+                    getView().failedCancelVoucherCart(e);
+                }
             }
 
             @Override
