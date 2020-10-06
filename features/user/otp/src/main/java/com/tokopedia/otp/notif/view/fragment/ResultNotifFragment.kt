@@ -87,7 +87,7 @@ class ResultNotifFragment : BaseOtpFragment(), IOnBackPressed {
 
     private fun goToChangePassword() {
         context?.let {
-            RouteManager.route(it, ApplinkConstInternalGlobal.CHANGE_PASSWORD)
+            RouteManager.route(it, ApplinkConstInternalGlobal.HAS_PASSWORD)
             closeResult()
         }
     }
