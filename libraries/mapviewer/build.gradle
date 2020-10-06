@@ -23,6 +23,9 @@ dependencies {
     implementation rootProject.ext.playServicesDependencies.location
     implementation rootProject.ext.playServicesDependencies.maps
 
+    androidTestImplementation project(rootProject.ext.libraries.tkpddesign)
+    testImplementation project(rootProject.ext.libraries.tkpddesign)
+
 }
 
 project.ext {
