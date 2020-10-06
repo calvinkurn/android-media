@@ -1,28 +1,27 @@
 package com.tokopedia.play.widget.ui.adapter.viewholder
 
 import android.view.View
-import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatImageView
-import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.play.widget.R
+import com.tokopedia.play.widget.ui.adapter.PlayWidgetCardMediumAdapter
+import com.tokopedia.play.widget.ui.custom.PlayWidgetVideoView
 import com.tokopedia.play.widget.ui.model.PlayWidgetCardUiModel
 import com.tokopedia.play.widget.ui.type.PlayWidgetCardType
-import com.tokopedia.unifyprinciples.Typography
 
 
 /**
  * Created by mzennis on 05/10/20.
  */
-class PlayWidgetCardMediumViewHolder(itemView: View, val listener: PlayWidgetCardMediumListener) : RecyclerView.ViewHolder(itemView) {
+class PlayWidgetCardMediumViewHolder(itemView: View, private val listener: PlayWidgetCardMediumAdapter.PlayWidgetCardMediumListener?) : RecyclerView.ViewHolder(itemView) {
 
     private val thumbnail: AppCompatImageView = itemView.findViewById(R.id.play_widget_thumbnail)
 
-    private val playerContainer: FrameLayout = itemView.findViewById(R.id.play_widget_player)
+    private val videoView: PlayWidgetVideoView = itemView.findViewById(R.id.play_widget_player)
 
     private val reminderBadge: AppCompatImageView = itemView.findViewById(R.id.play_widget_iv_reminder)
     private val liveBadge: View = itemView.findViewById(R.id.play_widget_badge_live)
@@ -33,6 +32,8 @@ class PlayWidgetCardMediumViewHolder(itemView: View, val listener: PlayWidgetCar
     private val title: TextView = itemView.findViewById(R.id.play_widget_channel_title)
     private val author: TextView = itemView.findViewById(R.id.play_widget_channel_name)
     private val totalView: TextView = itemView.findViewById(R.id.viewer)
+
+    private var widgetType: PlayWidgetCardType = PlayWidgetCardType.Unknown
 
     fun bind(item: PlayWidgetCardUiModel) {
         thumbnail.loadImage(item.video.coverUrl)
@@ -54,7 +55,39 @@ class PlayWidgetCardMediumViewHolder(itemView: View, val listener: PlayWidgetCar
 
         title.visibility = if (item.title.isNotEmpty()) View.VISIBLE else View.GONE
         author.visibility = if (item.partner.name.isNotEmpty()) View.VISIBLE else View.GONE
-        startTime.visibility = if (item.startTime.isNotEmpty()) View.VISIBLE else View.GONE
+        startTime.visibility = if (item.startTime.isNotEmpty() && item.widgetType == PlayWidgetCardType.Upcoming) View.VISIBLE else View.GONE
+
+        setupListener(item)
+
+        videoView.videoUrl = item.video.videoUrl
+        videoView.listener = videoListener
+
+        widgetType = item.widgetType
+    }
+
+    fun playVideo() {
+        videoView.start()
+    }
+
+    fun stopVideo() {
+        videoView.stop()
+    }
+
+    fun release() {
+        videoView.release()
+    }
+
+    fun getWidgetType(): PlayWidgetCardType = widgetType
+
+    private val videoListener = object : PlayWidgetVideoView.PlayWidgetVideoListener {
+        override fun onPlayerStateChanged(state: PlayWidgetVideoView.PlayWidgetVideoState) {
+            videoView.visibility = if (state == PlayWidgetVideoView.PlayWidgetVideoState.Ready) View.VISIBLE else View.INVISIBLE
+        }
+
+    }
+
+    private fun setupListener(item: PlayWidgetCardUiModel) {
+        if (listener == null) return
 
         itemView.setOnClickListener {
             listener.onItemClickListener(item)
@@ -62,10 +95,5 @@ class PlayWidgetCardMediumViewHolder(itemView: View, val listener: PlayWidgetCar
         itemView.addOnImpressionListener(item) {
             listener.onItemImpressListener(item)
         }
-    }
-
-    interface PlayWidgetCardMediumListener {
-        fun onItemClickListener(item: PlayWidgetCardUiModel)
-        fun onItemImpressListener(item: PlayWidgetCardUiModel)
     }
 }
