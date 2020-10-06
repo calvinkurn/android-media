@@ -51,7 +51,7 @@ class CarouselFeaturedShopViewHolder (
         }
         itemView.setOnClickListener {
             if(element.grid.productClickUrl.isNotBlank()){
-                TopAdsUrlHitter(itemView.context).hitImpressionUrl(this::class.java.simpleName, element.grid.productClickUrl,
+                TopAdsUrlHitter(itemView.context).hitClickUrl(this::class.java.simpleName, element.grid.productClickUrl,
                         element.grid.id,
                         element.grid.name,
                         element.grid.imageUrl,
