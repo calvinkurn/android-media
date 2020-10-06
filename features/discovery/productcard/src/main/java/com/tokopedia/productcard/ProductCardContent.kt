@@ -157,7 +157,7 @@ private fun View.renderTextReview(productCardModel: ProductCardModel) {
 }
 
 private fun View.renderTextCredibility(productCardModel: ProductCardModel) {
-    if (productCardModel.willShowRatingAndReviewCount())
+    if (productCardModel.willShowRatingAndReviewCount() || productCardModel.willShowSalesAndRating())
         textViewIntegrity?.initLabelGroup(null)
     else
         textViewIntegrity?.initLabelGroup(productCardModel.getLabelIntegrity())
@@ -178,7 +178,7 @@ private fun View.renderShopRating(productCardModel: ProductCardModel) {
 }
 
 private fun View.renderSalesAndRating(productCardModel: ProductCardModel){
-    salesAndRating?.shouldShowWithAction(productCardModel.countSoldRating.isNotBlank()){
+    salesAndRating?.shouldShowWithAction(productCardModel.willShowSalesAndRating()){
         textViewSales?.initLabelGroup(productCardModel.getLabelIntegrity())
         val ssb = SpannableStringBuilder("(${productCardModel.countSoldRating})")
         ssb.setSpan(ImageSpan(context, R.drawable.ic_rating_apps_active), 1, 2, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
