@@ -13,6 +13,7 @@ import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.AdapterListener
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.binder.ChatMessageViewHolderBinder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.getOppositeMargin
 import com.tokopedia.topchat.chatroom.view.custom.FlexBoxChatLayout
 
@@ -25,11 +26,12 @@ abstract class ChatMessageViewHolder(
     protected open val fxChat: FlexBoxChatLayout? = itemView?.findViewById(R.id.fxChat)
     protected open val msgContainer: ConstraintLayout? = itemView?.findViewById(R.id.cl_msg_container)
     protected val bottomMarginOpposite: Float = getOppositeMargin(itemView?.context)
+    private val movementMethod = ChatLinkHandlerMovementMethod(listener)
 
     override fun bind(message: MessageViewModel) {
         verifyReplyTime(message)
-        bindChatMessage(message)
-        bindHour(message)
+        ChatMessageViewHolderBinder.bindChatMessage(message, fxChat, movementMethod)
+        ChatMessageViewHolderBinder.bindHour(message, fxChat)
         bindMargin(message)
         bindClick()
     }
@@ -47,18 +49,6 @@ abstract class ChatMessageViewHolder(
 
     protected fun bindClick() {
         itemView.setOnClickListener { v -> KeyboardHandler.DropKeyboard(itemView.context, itemView) }
-    }
-
-    protected fun bindChatMessage(chat: MessageViewModel) {
-        val movementMethod = ChatLinkHandlerMovementMethod(listener)
-        val htmlMessage = MethodChecker.fromHtml(chat.message)
-        fxChat?.setMessage(htmlMessage)
-        fxChat?.setMovementMethod(movementMethod)
-    }
-
-    protected fun bindHour(viewModel: MessageViewModel) {
-        val hourTime = getHourTime(viewModel.replyTime)
-        fxChat?.setHourTime(hourTime)
     }
 
     private fun verifyReplyTime(chat: MessageViewModel) {
