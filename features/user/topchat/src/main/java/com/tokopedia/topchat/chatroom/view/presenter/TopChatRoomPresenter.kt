@@ -479,7 +479,9 @@ class TopChatRoomPresenter @Inject constructor(
         sendStickerWithWebSocket(messageId, sticker, opponentId, startTime)
     }
 
-    private fun mapToDummySticker(messageId: String, sticker: Sticker, startTime: String): Visitable<*> {
+    private fun mapToDummySticker(
+            messageId: String, sticker: Sticker, startTime: String
+    ): Visitable<*> {
         return StickerUiModel(
                 messageId, userSession.userId, userSession.name, startTime, sticker.generateStickerProfile()
         )

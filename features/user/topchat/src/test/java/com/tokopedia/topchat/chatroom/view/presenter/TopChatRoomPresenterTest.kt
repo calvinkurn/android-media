@@ -14,6 +14,7 @@ import com.tokopedia.chat_common.data.preview.ProductPreview
 import com.tokopedia.chat_common.domain.pojo.ChatReplies
 import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
 import com.tokopedia.chatbot.domain.mapper.TopChatRoomWebSocketMessageMapper
+import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.seamless_login.domain.usecase.SeamlessLoginUsecase
@@ -22,6 +23,7 @@ import com.tokopedia.topchat.FileUtil
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.TopchatTestCoroutineContextDispatcher
 import com.tokopedia.topchat.chatlist.domain.usecase.DeleteMessageListUseCase
+import com.tokopedia.topchat.chatroom.domain.pojo.sticker.Sticker
 import com.tokopedia.topchat.chatroom.domain.usecase.*
 import com.tokopedia.topchat.chatroom.view.listener.TopChatContract
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.exImageUploadId
@@ -29,6 +31,7 @@ import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Du
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.exOpponentId
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.exSendMessage
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.exStartTime
+import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.exSticker
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.imageUploadViewModel
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.readParam
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.replyChatViewModelApiSuccess
@@ -189,6 +192,7 @@ class TopChatRoomPresenterTest {
         val readParam = TopChatWebSocketParam.generateParamRead(exMessageId)
         val imageUploadViewModel = generateImageUploadViewModel()
         val replyChatViewModelApiSuccess = generateReplyChatViewModelApi()
+        val exSticker = generateSticker()
         val wsResponseReplyString = FileUtil.readFileContent("/ws_response_reply_text_is_opposite.json")
         val wsResponseTypingString = FileUtil.readFileContent("/ws_response_typing.json")
         val wsResponseEndTypingString = FileUtil.readFileContent("/ws_response_end_typing.json")
@@ -217,6 +221,10 @@ class TopChatRoomPresenterTest {
                     id = "12398764"
             )
             return SendableProductPreview(productPreview)
+        }
+
+        private fun generateSticker(): Sticker {
+            return Sticker()
         }
     }
 
@@ -710,6 +718,30 @@ class TopChatRoomPresenterTest {
         verify(exactly = 1) { view.addDummyMessage(dummyMessage) }
         verify(exactly = 1) { view.onReceiveMessageEvent(replyChatViewModelApiSuccess.chat) }
         verify(exactly = 1) { view.removeDummy(dummyMessage) }
+    }
+
+    @Test
+    fun `on success send sticker through websocket`() {
+        // Given
+        val mockOnSendingMessage: () -> Unit = mockk(relaxed = true)
+        val stickerContract = CommonUtil.toJson(
+                exSticker.generateWebSocketPayload(
+                        exMessageId, exOpponentId, exStartTime, emptyList()
+                )
+        )
+        every { webSocketUtil.getWebSocketInfo(any(), any()) } returns websocketServer
+        every { getChatUseCase.isInTheMiddleOfThePage() } returns false
+
+        // When
+        presenter.connectWebSocket(exMessageId)
+        presenter.sendAttachmentsAndSticker(
+                exMessageId, exSticker, exStartTime, exOpponentId, mockOnSendingMessage
+        )
+
+        // Then
+        verify(exactly = 1) { mockOnSendingMessage.invoke() }
+        verify(exactly = 1) { RxWebSocket.send(stickerContract, listInterceptor) }
+        verify(exactly = 1) { view.clearAttachmentPreviews() }
     }
 
     private fun mockkParseResponse(wsInfo: WebSocketInfo, isOpposite: Boolean = true): ChatSocketPojo {
