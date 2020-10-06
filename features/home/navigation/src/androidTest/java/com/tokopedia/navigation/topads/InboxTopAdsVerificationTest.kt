@@ -1,13 +1,14 @@
 package com.tokopedia.navigation.topads
 
 import android.Manifest
+import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.test.rule.ActivityTestRule
 import androidx.test.rule.GrantPermissionRule
-import com.tokopedia.home.account.presentation.viewholder.RecommendationProductViewHolder
 import com.tokopedia.navigation.R
 import com.tokopedia.navigation.environment.InstrumentationInboxTestActivity
+import com.tokopedia.navigation.presentation.adapter.viewholder.RecommendationViewHolder
 import com.tokopedia.test.application.assertion.topads.TopAdsAssertion
 import com.tokopedia.test.application.environment.callback.TopAdsVerificatorInterface
 import com.tokopedia.test.application.espresso_component.CommonActions.clickOnEachItemRecyclerView
@@ -72,14 +73,9 @@ class InboxTopAdsVerificationTest {
     }
 
     private fun checkProductOnDynamicChannel(inboxRecyclerView: RecyclerView, i: Int) {
-        when (inboxRecyclerView.findViewHolderForAdapterPosition(i)) {
-            is RecommendationProductViewHolder -> {
-                waitForData()
-                clickOnEachItemRecyclerView(
-                        activityRule.activity.findViewById(com.tokopedia.navigation.test.R.id.container_inbox),
-                        inboxRecyclerView.id,
-                        0
-                )
+        when (val viewHolder = inboxRecyclerView.findViewHolderForAdapterPosition(i)) {
+            is RecommendationViewHolder -> {
+                viewHolder.itemView.findViewById<View>(R.id.productCardView).performClick()
             }
         }
     }
