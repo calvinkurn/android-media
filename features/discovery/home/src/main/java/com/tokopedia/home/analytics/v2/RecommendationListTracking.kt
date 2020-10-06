@@ -48,7 +48,7 @@ object RecommendationListTracking: BaseTrackerConst(){
                     )
                 },
                 list = String.format(
-                        "/ - p%s", "1", RECOMMENDATION_LIST_CAROUSEL_PRODUCT
+                        "/ - p%s - %s - product", "1", RECOMMENDATION_LIST_CAROUSEL_PRODUCT
                 ))
                 .appendChannelId(channel.id)
                 .appendUserId(userId)
@@ -80,11 +80,10 @@ object RecommendationListTracking: BaseTrackerConst(){
                             isCarousel = true,
                             pageName = channel.pageName,
                             recommendationType = grid.recommendationType
-
                     )
                 },
                 list = String.format(
-                        "/ - p%s", "1", RECOMMENDATION_LIST_CAROUSEL_PRODUCT
+                        "/ - p%s - %s - product", "1", RECOMMENDATION_LIST_CAROUSEL_PRODUCT
                 ))
                 .appendChannelId(channel.id)
                 .appendUserId(userId)
@@ -119,7 +118,7 @@ object RecommendationListTracking: BaseTrackerConst(){
                         )
                 ),
                 list = String.format(
-                        "/ - p%s", "1", RECOMMENDATION_LIST_CAROUSEL_PRODUCT
+                        "/ - p%s - %s - product", "1", RECOMMENDATION_LIST_CAROUSEL_PRODUCT
                 ))
                 .appendChannelId(channel.id)
                 .appendCampaignCode(channel.campaignCode)
@@ -154,7 +153,7 @@ object RecommendationListTracking: BaseTrackerConst(){
                         )
                 ),
                 list = String.format(
-                        "/ - p%s", "1", RECOMMENDATION_LIST_CAROUSEL_PRODUCT
+                        "/ - p%s - %s - product", "1", RECOMMENDATION_LIST_CAROUSEL_PRODUCT
                 ))
                 .appendChannelId(channel.id)
                 .appendCampaignCode(channel.trackingAttributionModel.campaignCode)
@@ -248,7 +247,7 @@ object RecommendationListTracking: BaseTrackerConst(){
                     )
             ),
             list = String.format(
-                    Value.LIST_WITH_HEADER, "1", RECOMMENDATION_LIST_CAROUSEL_PRODUCT, channel.header.name
+                    "/ - p%s - %s - product", "1", RECOMMENDATION_LIST_CAROUSEL_PRODUCT
             )
     )
 
@@ -282,11 +281,12 @@ object RecommendationListTracking: BaseTrackerConst(){
                             recommendationType = grid.recommendationType,
                             isTopAds = grid.isTopads,
                             quantity = quantity,
-                            cartId = cartId
+                            cartId = cartId,
+                            headerName = channel.channelHeader.name
                     )
             ),
             list = String.format(
-                    Value.LIST_WITH_HEADER, "1", RECOMMENDATION_LIST_CAROUSEL_PRODUCT, channel.channelHeader.name
+                    "/ - p%s - %s - product", "1", RECOMMENDATION_LIST_CAROUSEL_PRODUCT
             )
     )
 
