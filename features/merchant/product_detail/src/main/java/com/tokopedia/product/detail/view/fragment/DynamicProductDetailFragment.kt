@@ -89,6 +89,7 @@ import com.tokopedia.product.detail.data.model.ProductInfoP3
 import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneAddedProductDataModel
 import com.tokopedia.product.detail.data.model.datamodel.*
 import com.tokopedia.product.detail.data.model.financing.FtInstallmentCalculationDataResponse
+import com.tokopedia.product.detail.data.model.restrictioninfo.RestrictionInfoResponse
 import com.tokopedia.product.detail.data.util.*
 import com.tokopedia.product.detail.data.util.VariantMapper.generateVariantString
 import com.tokopedia.product.detail.data.util.getCurrencyFormatted
@@ -121,6 +122,8 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
+import com.tokopedia.shop.common.widget.PartialButtonShopFollowersListener
+import com.tokopedia.shop.common.widget.PartialButtonShopFollowersView
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
 import com.tokopedia.stickylogin.internal.StickyLoginConstant
 import com.tokopedia.stickylogin.view.StickyLoginView
@@ -149,7 +152,7 @@ import javax.inject.Inject
  * Top separator : All of the view holder except above
  */
 
-class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, DynamicProductDetailAdapterFactoryImpl>(), DynamicProductDetailListener, ProductVariantListener, ProductAccessRequestDialogFragment.Listener, PartialButtonActionListener {
+class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, DynamicProductDetailAdapterFactoryImpl>(), DynamicProductDetailListener, ProductVariantListener, ProductAccessRequestDialogFragment.Listener, PartialButtonActionListener, PartialButtonShopFollowersListener {
 
     companion object {
         fun newInstance(productId: String? = null,
@@ -189,6 +192,12 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private val viewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(DynamicProductDetailViewModel::class.java)
+    }
+
+    private val nplFollowersButton by lazy{
+        base_btn_follow?.run {
+            PartialButtonShopFollowersView.build(this, this@DynamicProductDetailFragment)
+        }
     }
 
     //Listener function
@@ -1012,6 +1021,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         observeP2Login()
         observeP3()
         observeToggleFavourite()
+        observeToggleNplFavorite()
         observeToggleNotifyMe()
         observeMoveToWarehouse()
         observeMoveToEtalase()
@@ -1249,6 +1259,21 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         }
     }
 
+    private fun observeToggleNplFavorite() {
+        viewLifecycleOwner.observe(viewModel.toggleFavoriteNplResult) {
+            it.doSuccessOrFail({
+                viewModel.clearCacheP2Data()
+                nplFollowersButton?.stopButtonLoading()
+                nplFollowersButton?.setupVisibility = false
+                onSuccessFavoriteShop(it.data)
+                showToastSuccess(context?.getString(R.string.merchant_product_detail_success_follow_shop_npl) ?: "")
+            }) {
+                nplFollowersButton?.stopButtonLoading()
+                showToastError(it)
+            }
+        }
+    }
+
     private fun observeMoveToWarehouse() {
         viewLifecycleOwner.observe(viewModel.moveToWarehouseResult) { data ->
             data.doSuccessOrFail({
@@ -1468,6 +1493,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     private fun onSuccessGetDataP2(it: ProductInfoP2UiData) {
+        updateNplButtonFollowers(it.restrictionInfo)
         updateButtonState()
         setupTickerOcc()
 
@@ -1516,6 +1542,19 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 ?: "")
 
         dynamicAdapter.notifyDataSetChanged()
+    }
+
+    private fun updateNplButtonFollowers(restrictionInfo: RestrictionInfoResponse) {
+        val title = restrictionInfo.restrictionData.firstOrNull()?.action?.firstOrNull()?.title ?: ""
+        val desc = restrictionInfo.restrictionData.firstOrNull()?.action?.firstOrNull()?.description ?: ""
+        val isEligible = restrictionInfo.restrictionData.firstOrNull()?.isEligible ?: false
+        nplFollowersButton?.renderView(title, desc, isEligible)
+    }
+
+    override fun onButtonFollowNplClick() {
+        doActionOrLogin({
+            viewModel.toggleFavoriteShopFollowers()
+        })
     }
 
     private fun onSuccessGetDataP3(it: ProductInfoP3) {
@@ -2697,6 +2736,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     private fun showToastSuccess(message: String) {
         view?.let {
+            val toasterOffset = resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl7)
+            Toaster.toasterCustomBottomHeight = toasterOffset
             Toaster.make(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL)
         }
     }
@@ -2869,7 +2910,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                     pdpUiUpdater?.notifyMeMap?.notifyMe?.let { notifyMe -> trackToggleNotifyMe(componentTrackDataModel, notifyMe) }
                     pdpUiUpdater?.notifyMeMap?.notifyMe = !data.notifyMe
                     dynamicAdapter.notifyNotifyMe(pdpUiUpdater?.notifyMeMap, ProductDetailConstant.PAYLOAD_NOTIFY_ME)
-                    viewModel.toggleTeaserNotifyMe(data.campaignID.toInt(), productId?.toInt()
+                    viewModel.toggleTeaserNotifyMe(data.campaignID.toIntOrZero(), productId?.toIntOrZero()
                             ?: 0, ProductDetailCommonConstant.VALUE_TEASER_SOURCE)
                 } else {
                     goToLogin()

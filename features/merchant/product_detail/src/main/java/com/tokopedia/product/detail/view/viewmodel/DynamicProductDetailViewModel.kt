@@ -146,6 +146,10 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     val toggleFavoriteResult: LiveData<Result<Boolean>>
         get() = _toggleFavoriteResult
 
+    private val _toggleFavoriteNplResult = MutableLiveData<Result<Boolean>>()
+    val toggleFavoriteNplResult: LiveData<Result<Boolean>>
+        get() = _toggleFavoriteNplResult
+
     private val _updatedImageVariant = MutableLiveData<Pair<List<VariantCategory>?, List<Media>>>()
     val updatedImageVariant: LiveData<Pair<List<VariantCategory>?, List<Media>>>
         get() = _updatedImageVariant
@@ -498,6 +502,16 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
             _toggleFavoriteResult.value = toggleFavoriteUseCase.get().executeOnBackground().followShop.isSuccess.asSuccess()
         }) {
             _toggleFavoriteResult.value = it.asFail()
+        }
+    }
+
+    fun toggleFavoriteShopFollowers() {
+        launchCatchError(dispatcher.io(), {
+            val shopId = getDynamicProductInfoP1?.basic?.shopID.toString()
+            toggleFavoriteUseCase.get().createRequestParam(shopId)
+            _toggleFavoriteNplResult.postValue(toggleFavoriteUseCase.get().executeOnBackground().followShop.isSuccess.asSuccess())
+        }) {
+            _toggleFavoriteNplResult.postValue(it.asFail())
         }
     }
 
