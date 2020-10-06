@@ -27,6 +27,7 @@ import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Du
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.toShopId
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.toUserId
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.wsResponseEndTypingString
+import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.wsResponseImageAttachmentString
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.wsResponseReadMessageString
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.wsResponseReplyString
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.wsResponseTypingString
@@ -155,6 +156,7 @@ class TopChatRoomPresenterTest {
     private lateinit var wsResponseTyping: WebSocketInfo
     private lateinit var wsResponseEndTyping: WebSocketInfo
     private lateinit var wsResponseReadMessage: WebSocketInfo
+    private lateinit var wsResponseImageAttachment: WebSocketInfo
     private val websocketServer = PublishSubject.create<WebSocketInfo>()
 
     object Dummy {
@@ -169,6 +171,7 @@ class TopChatRoomPresenterTest {
         val wsResponseTypingString = FileUtil.readFileContent("/ws_response_typing.json")
         val wsResponseEndTypingString = FileUtil.readFileContent("/ws_response_end_typing.json")
         val wsResponseReadMessageString = FileUtil.readFileContent("/ws_response_read_message.json")
+        val wsResponseImageAttachmentString = FileUtil.readFileContent("/ws_response_image_attachment.json")
 
         private fun generateImageUploadViewModel(): ImageUploadViewModel {
             return ImageUploadViewModel(
@@ -225,6 +228,7 @@ class TopChatRoomPresenterTest {
         wsResponseTyping = WebSocketInfo(webSocket, wsResponseTypingString)
         wsResponseEndTyping = WebSocketInfo(webSocket, wsResponseEndTypingString)
         wsResponseReadMessage = WebSocketInfo(webSocket, wsResponseReadMessageString)
+        wsResponseImageAttachment = WebSocketInfo(webSocket, wsResponseImageAttachmentString)
     }
 
     private fun mockSingletonObject() {
@@ -474,10 +478,15 @@ class TopChatRoomPresenterTest {
             val onSuccess = lambda<(String, ImageUploadViewModel) -> Unit>()
             onSuccess.invoke(exImageUploadId, imageUploadViewModel)
         }
+        every { webSocketUtil.getWebSocketInfo(any(), any()) } returns websocketServer
+        every { getChatUseCase.isInTheMiddleOfThePage() } returns false
+        val wsChatPojo = mockkParseResponse(wsResponseImageAttachment, false)
+        val wsChatVisitable = mockkWsMapper(wsChatPojo)
 
         // When
         presenter.connectWebSocket(exMessageId)
         presenter.startCompressImages(imageUploadViewModel)
+        websocketServer.onNext(wsResponseImageAttachment)
 
         // Then
         val websocketParam = TopChatWebSocketParam.generateParamSendImage(
@@ -485,6 +494,8 @@ class TopChatRoomPresenterTest {
         )
         verify(exactly = 1) { view.addDummyMessage(imageUploadViewModel) }
         verify(exactly = 1) { RxWebSocket.send(websocketParam, listInterceptor) }
+        verify(exactly = 1) { view.onReceiveMessageEvent(wsChatVisitable) }
+        verify(exactly = 1) { view.removeDummy(imageUploadViewModel) }
     }
 
     private fun mockkParseResponse(wsInfo: WebSocketInfo, isOpposite: Boolean = true): ChatSocketPojo {
