@@ -7,10 +7,7 @@ import androidx.annotation.DrawableRes
 import androidx.appcompat.content.res.AppCompatResources.getDrawable
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestBuilder
-import com.bumptech.glide.load.DataSource
-import com.bumptech.glide.load.DecodeFormat
-import com.bumptech.glide.load.Key
-import com.bumptech.glide.load.Transformation
+import com.bumptech.glide.load.*
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.load.model.GlideUrl
@@ -53,8 +50,10 @@ object GlideBuilder {
             overrideSize: Resize? = null,
             decodeFormat: DecodeFormat? = null,
             listener: LoaderStateListener? = null,
-            transform: Transformation<Bitmap>? = null
+            transform: Transformation<Bitmap>? = null,
+            transforms: List<Transformation<Bitmap>>? = null
     ) {
+        val localTransform = mutableListOf<Transformation<Bitmap>>()
         val startTime = System.currentTimeMillis()
 
         val drawableError = if (resOnError != 0) {
@@ -70,15 +69,18 @@ object GlideBuilder {
                 if (thumbnailUrl.isNotEmpty()) thumbnail(imageView.thumbnailLoader(thumbnailUrl))
                 if (overrideSize != null) override(overrideSize.width, overrideSize.height)
                 if (radius != 0f) transform(RoundedCorners(radius.toInt()))
+                if (transform != null) localTransform.add(transform)
                 if (signatureKey != null) signature(signatureKey)
                 if (placeHolder != 0) placeholder(placeHolder)
                 if (decodeFormat != null) format(decodeFormat)
-                if (transform != null) transform(transform)
-                if (isCircular) transform(CircleCrop())
+                if (isCircular) localTransform.add(CircleCrop())
                 if (!isAnimate) dontAnimate()
 
                 drawableError?.let { drawable -> error(drawable) }
                 cacheStrategy?.let { diskCacheStrategy(it) }
+                transforms?.let { localTransform.addAll(it) }
+
+                transform(MultiTransformation(localTransform))
 
                 when (imageView.scaleType) {
                     ImageView.ScaleType.FIT_CENTER -> fitCenter()

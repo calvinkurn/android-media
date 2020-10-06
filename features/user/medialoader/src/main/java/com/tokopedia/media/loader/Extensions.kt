@@ -18,7 +18,11 @@ fun ImageView.loadImage(url: String) = call(url, Properties())
 
 inline fun ImageView.loadImage(url: String, properties: Properties.() -> Unit) = call(url, Properties().apply(properties))
 
-fun ImageView.loadImageCircle(url: String) = call(url, Properties())
+fun ImageView.loadImageCircle(url: String) {
+    call(url, Properties().apply {
+        isCircular = true
+    })
+}
 
 fun ImageView.loadImageRounded(resource: Int, rounded: Float) = this.setImageResource(resource)
 
@@ -68,6 +72,7 @@ internal fun ImageView.builder(url: GlideUrl, properties: Properties) {
                 overrideSize = overrideSize,
                 decodeFormat = decodeFormat,
                 transform = transform,
+                transforms = transforms,
                 listener = loaderListener
         )
     }

@@ -12,8 +12,11 @@ import com.tokopedia.media.loader.utils.LOW_QUALITY
 object UrlBuilder {
 
     fun urlBuilder(context: Context, url: String?): GlideUrl {
-        val networkState = NetworkManager.state(context) // adaptive network state
-        val settings = MediaSettingPreferences(context) // get configuration quality setting state
+        // adaptive network state
+        val networkState by lazy { NetworkManager.state(context) }
+
+        // get configuration quality setting state
+        val settings by lazy { MediaSettingPreferences(context) }
 
         val connectionType = when(settings.qualitySettings()) {
             1 -> LOW_QUALITY // (2g / 3g)
