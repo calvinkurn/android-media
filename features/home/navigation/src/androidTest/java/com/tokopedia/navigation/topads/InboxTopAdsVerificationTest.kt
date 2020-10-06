@@ -1,9 +1,13 @@
 package com.tokopedia.navigation.topads
 
 import android.Manifest
+import android.app.Activity
+import android.app.Instrumentation
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.rule.ActivityTestRule
 import androidx.test.rule.GrantPermissionRule
 import com.tokopedia.navigation.R
@@ -11,7 +15,7 @@ import com.tokopedia.navigation.environment.InstrumentationInboxTestActivity
 import com.tokopedia.navigation.presentation.adapter.viewholder.RecommendationViewHolder
 import com.tokopedia.test.application.assertion.topads.TopAdsAssertion
 import com.tokopedia.test.application.environment.callback.TopAdsVerificatorInterface
-import com.tokopedia.test.application.espresso_component.CommonActions.clickOnEachItemRecyclerView
+import androidx.test.espresso.intent.rule.IntentsTestRule
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupTopAdsDetector
 import org.junit.After
@@ -23,7 +27,7 @@ class InboxTopAdsVerificationTest {
     private var topAdsAssertion: TopAdsAssertion? = null
 
     @get:Rule
-    var activityRule = object : ActivityTestRule<InstrumentationInboxTestActivity>(InstrumentationInboxTestActivity::class.java) {
+    var activityRule = object : IntentsTestRule<InstrumentationInboxTestActivity>(InstrumentationInboxTestActivity::class.java) {
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
             setupTopAdsDetector()
@@ -39,6 +43,8 @@ class InboxTopAdsVerificationTest {
 
     @Before
     fun setTopAdsAssertion() {
+        Intents.intending(IntentMatchers.isInternal()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
+
         topAdsAssertion = TopAdsAssertion(
                 activityRule.activity,
                 activityRule.activity.application as TopAdsVerificatorInterface
