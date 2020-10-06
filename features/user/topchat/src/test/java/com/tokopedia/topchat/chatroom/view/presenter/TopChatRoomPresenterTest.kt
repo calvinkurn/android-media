@@ -7,6 +7,7 @@ import com.tokopedia.atc_common.domain.usecase.AddToCartOccUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.ImageUploadViewModel
+import com.tokopedia.chat_common.data.ReplyChatViewModel
 import com.tokopedia.chat_common.domain.pojo.ChatReplies
 import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
 import com.tokopedia.chatbot.domain.mapper.TopChatRoomWebSocketMessageMapper
@@ -23,6 +24,7 @@ import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Du
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.exMessageId
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.imageUploadViewModel
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.readParam
+import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.replyChatViewModelApiSuccess
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.source
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.toShopId
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.toUserId
@@ -167,6 +169,7 @@ class TopChatRoomPresenterTest {
         const val source = "askseller"
         val readParam = TopChatWebSocketParam.generateParamRead(exMessageId)
         val imageUploadViewModel = generateImageUploadViewModel()
+        val replyChatViewModelApiSuccess = generateReplyChatViewModelApi()
         val wsResponseReplyString = FileUtil.readFileContent("/ws_response_reply_text_is_opposite.json")
         val wsResponseTypingString = FileUtil.readFileContent("/ws_response_typing.json")
         val wsResponseEndTypingString = FileUtil.readFileContent("/ws_response_end_typing.json")
@@ -181,6 +184,10 @@ class TopChatRoomPresenterTest {
                     "https://ecs.tokopedia.com/image.jpg",
                     "123"
             )
+        }
+
+        private fun generateReplyChatViewModelApi(): ReplyChatViewModel {
+            return ReplyChatViewModel(imageUploadViewModel, true)
         }
     }
 
@@ -495,6 +502,42 @@ class TopChatRoomPresenterTest {
         verify(exactly = 1) { view.addDummyMessage(imageUploadViewModel) }
         verify(exactly = 1) { RxWebSocket.send(websocketParam, listInterceptor) }
         verify(exactly = 1) { view.onReceiveMessageEvent(wsChatVisitable) }
+        verify(exactly = 1) { view.removeDummy(imageUploadViewModel) }
+    }
+
+    @Test
+    fun `on success upload image and sent through API`() {
+        // Given
+        val slot = slot<Subscriber<ReplyChatViewModel>>()
+        every {
+            ImageUtil.validateImageAttachment(imageUploadViewModel.imageUrl)
+        } returns Pair(true, IMAGE_VALID)
+        every {
+            compressImageUseCase.compressImage(imageUploadViewModel.imageUrl!!)
+        } returns Observable.just(imageUploadViewModel.imageUrl)
+        every {
+            uploadImageUseCase.upload(imageUploadViewModel, captureLambda(), any())
+        } answers {
+            val onSuccess = lambda<(String, ImageUploadViewModel) -> Unit>()
+            onSuccess.invoke(exImageUploadId, imageUploadViewModel)
+        }
+        every {
+            replyChatUseCase.execute(any(), capture(slot))
+        } answers {
+            val subs = slot.captured
+            subs.onNext(replyChatViewModelApiSuccess)
+        }
+        every { webSocketUtil.getWebSocketInfo(any(), any()) } returns websocketServer
+        every { getChatUseCase.isInTheMiddleOfThePage() } returns false
+
+        // When
+        presenter.connectWebSocket(exMessageId)
+        websocketServer.onNext(wsOpen)
+        websocketServer.onCompleted()
+        presenter.startCompressImages(imageUploadViewModel)
+
+        // Then
+        verify(exactly = 1) { view.onReceiveMessageEvent(replyChatViewModelApiSuccess.chat) }
         verify(exactly = 1) { view.removeDummy(imageUploadViewModel) }
     }
 
