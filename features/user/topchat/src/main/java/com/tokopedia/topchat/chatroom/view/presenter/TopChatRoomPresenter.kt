@@ -1,18 +1,14 @@
 package com.tokopedia.topchat.chatroom.view.presenter
 
 import android.content.SharedPreferences
-import android.os.Bundle
 import androidx.annotation.StringRes
 import androidx.collection.ArrayMap
-import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.atc_common.data.model.request.AddToCartOccRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartOccUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
-import com.tokopedia.attachcommon.data.VoucherPreview
 import com.tokopedia.attachproduct.resultmodel.ResultProduct
 import com.tokopedia.chat_common.data.*
 import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_END_TYPING
@@ -48,7 +44,9 @@ import com.tokopedia.topchat.chatroom.domain.usecase.*
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
 import com.tokopedia.topchat.chatroom.view.listener.TopChatContract
 import com.tokopedia.topchat.chatroom.view.uimodel.StickerUiModel
-import com.tokopedia.topchat.chatroom.view.viewmodel.*
+import com.tokopedia.topchat.chatroom.view.viewmodel.SendablePreview
+import com.tokopedia.topchat.chatroom.view.viewmodel.SendableProductPreview
+import com.tokopedia.topchat.chatroom.view.viewmodel.TopchatCoroutineContextProvider
 import com.tokopedia.topchat.chattemplate.view.viewmodel.GetTemplateUiModel
 import com.tokopedia.topchat.common.util.ImageUtil
 import com.tokopedia.usecase.RequestParams
@@ -558,58 +556,12 @@ class TopChatRoomPresenter @Inject constructor(
         })
     }
 
-    override fun initProductPreview(savedInstanceState: Bundle?) {
-        val stringProductPreviews = view?.getStringArgument(ApplinkConst.Chat.PRODUCT_PREVIEWS, savedInstanceState)
-
-        if (stringProductPreviews == null || stringProductPreviews.isEmpty()) return
-
-        val listType = object : TypeToken<List<ProductPreview>>() {}.type
-        val productPreviews = CommonUtil.fromJson<List<ProductPreview>>(
-                stringProductPreviews,
-                listType
-        )
-
-        for (productPreview in productPreviews) {
-            if (productPreview.notEnoughRequiredData()) continue
-            val sendAbleProductPreview = SendableProductPreview(productPreview)
-            attachmentsPreview.add(sendAbleProductPreview)
-        }
+    override fun addAttachmentPreview(sendAbleProductPreview: SendablePreview) {
+        attachmentsPreview.add(sendAbleProductPreview)
     }
 
-    override fun initInvoicePreview(savedInstanceState: Bundle?) {
-        val id = view?.getStringArgument(ApplinkConst.Chat.INVOICE_ID, savedInstanceState) ?: ""
-        val invoiceCode = view?.getStringArgument(ApplinkConst.Chat.INVOICE_CODE, savedInstanceState)
-                ?: ""
-        val productName = view?.getStringArgument(ApplinkConst.Chat.INVOICE_TITLE, savedInstanceState)
-                ?: ""
-        val date = view?.getStringArgument(ApplinkConst.Chat.INVOICE_DATE, savedInstanceState) ?: ""
-        val imageUrl = view?.getStringArgument(ApplinkConst.Chat.INVOICE_IMAGE_URL, savedInstanceState)
-                ?: ""
-        val invoiceUrl = view?.getStringArgument(ApplinkConst.Chat.INVOICE_URL, savedInstanceState)
-                ?: ""
-        val statusId = view?.getStringArgument(ApplinkConst.Chat.INVOICE_STATUS_ID, savedInstanceState)
-                ?: ""
-        val status = view?.getStringArgument(ApplinkConst.Chat.INVOICE_STATUS, savedInstanceState)
-                ?: ""
-        val totalPriceAmount = view?.getStringArgument(ApplinkConst.Chat.INVOICE_TOTAL_AMOUNT, savedInstanceState)
-                ?: ""
-
-        val invoiceViewModel = InvoicePreviewUiModel(
-                id.toIntOrNull() ?: InvoicePreviewUiModel.INVALID_ID,
-                invoiceCode,
-                productName,
-                date,
-                imageUrl,
-                invoiceUrl,
-                statusId.toIntOrNull() ?: InvoicePreviewUiModel.INVALID_ID,
-                status,
-                totalPriceAmount
-        )
-
-        if (invoiceViewModel.enoughRequiredData()) {
-            clearAttachmentPreview()
-            attachmentsPreview.add(invoiceViewModel)
-        }
+    override fun hasEmptyAttachmentPreview(): Boolean {
+        return attachmentsPreview.isEmpty()
     }
 
     override fun initAttachmentPreview() {
@@ -637,17 +589,6 @@ class TopChatRoomPresenter @Inject constructor(
             attachmentsPreview.add(sendAbleProductPreview)
         }
         initAttachmentPreview()
-    }
-
-    override fun initVoucherPreview(extras: Bundle?) {
-        val stringVoucherPreview = view?.getStringArgument(ApplinkConst.AttachVoucher.PARAM_VOUCHER_PREVIEW, extras)
-
-        if (stringVoucherPreview == null || stringVoucherPreview.isEmpty()) return
-
-        val voucherPreview = CommonUtil.fromJson<VoucherPreview>(stringVoucherPreview, VoucherPreview::class.java)
-        val sendableVoucher = SendableVoucherPreview(voucherPreview)
-        if (attachmentsPreview.isNotEmpty()) clearAttachmentPreview()
-        attachmentsPreview.add(sendableVoucher)
     }
 
     override fun onClickBannedProduct(liteUrl: String) {

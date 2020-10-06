@@ -24,6 +24,9 @@ import com.tokopedia.topchat.chatroom.domain.usecase.*
 import com.tokopedia.topchat.chatroom.view.listener.TopChatContract
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.exImageUploadId
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.exMessageId
+import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.exOpponentId
+import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.exSendMessage
+import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.exStartTime
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.imageUploadViewModel
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.readParam
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.replyChatViewModelApiSuccess
@@ -169,6 +172,9 @@ class TopChatRoomPresenterTest {
     object Dummy {
         const val exMessageId = "190378584"
         const val exImageUploadId = "667056"
+        const val exSendMessage = "Hello World"
+        const val exStartTime = "123321"
+        const val exOpponentId = "39467501"
         const val toUserId = "12345"
         const val toShopId = "54321"
         const val source = "askseller"
@@ -617,6 +623,20 @@ class TopChatRoomPresenterTest {
         // Then
         verify(exactly = 1) { uploadImageUseCase.isUploading }
         assertTrue(uploadImageUseCase.isUploading)
+    }
+
+    @Test
+    fun `on success send attachment and message through websocket`() {
+        // Given
+        val mockOnSendingMessage: () -> Unit = mockk(relaxed = true)
+
+        // When
+        presenter.sendAttachmentsAndMessage(
+                exMessageId, exSendMessage, exStartTime, exOpponentId, mockOnSendingMessage
+        )
+
+        // Then
+        verify(exactly = 1) { view.clearAttachmentPreviews() }
     }
 
     private fun mockkParseResponse(wsInfo: WebSocketInfo, isOpposite: Boolean = true): ChatSocketPojo {

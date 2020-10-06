@@ -25,6 +25,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.github.rubensousa.bottomsheetbuilder.BottomSheetBuilder
 import com.github.rubensousa.bottomsheetbuilder.custom.CheckedBottomSheetBuilder
 import com.google.android.material.snackbar.Snackbar
+import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
@@ -35,16 +36,19 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.atc_common.data.model.request.AddToCartOccRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
+import com.tokopedia.attachcommon.data.VoucherPreview
 import com.tokopedia.attachproduct.resultmodel.ResultProduct
 import com.tokopedia.attachproduct.view.activity.AttachProductActivity
 import com.tokopedia.chat_common.BaseChatFragment
 import com.tokopedia.chat_common.BaseChatToolbarActivity
 import com.tokopedia.chat_common.data.*
+import com.tokopedia.chat_common.data.preview.ProductPreview
 import com.tokopedia.chat_common.domain.pojo.ChatReplies
 import com.tokopedia.chat_common.domain.pojo.attachmentmenu.*
 import com.tokopedia.chat_common.view.listener.BaseChatViewState
 import com.tokopedia.chat_common.view.listener.TypingListener
 import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel
+import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
@@ -439,8 +443,8 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
     }
 
     private fun setupAttachmentsPreview(savedInstanceState: Bundle?) {
-        presenter.initProductPreview(savedInstanceState)
-        presenter.initInvoicePreview(savedInstanceState)
+        initProductPreview(savedInstanceState)
+        initInvoicePreview(savedInstanceState)
         presenter.initAttachmentPreview()
     }
 
@@ -988,13 +992,13 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
 
     private fun onAttachInvoiceSelected(data: Intent?, resultCode: Int) {
         if (data == null || resultCode != RESULT_OK) return
-        presenter.initInvoicePreview(data.extras)
+        initInvoicePreview(data.extras)
         presenter.initAttachmentPreview()
     }
 
     private fun onAttachVoucherSelected(data: Intent?, resultCode: Int) {
         if (data == null || resultCode != RESULT_OK) return
-        presenter.initVoucherPreview(data.extras)
+        initVoucherPreview(data.extras)
         presenter.initAttachmentPreview()
     }
 
@@ -1277,11 +1281,11 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
         analytics.trackClickInvoice(viewModel)
     }
 
-    override fun getStringArgument(key: String, savedInstanceState: Bundle?): String {
+    private fun getStringArgument(key: String, savedInstanceState: Bundle?): String {
         return getParamString(key, arguments, savedInstanceState)
     }
 
-    override fun getBooleanArgument(key: String, savedInstanceState: Bundle?): Boolean {
+    private fun getBooleanArgument(key: String, savedInstanceState: Bundle?): Boolean {
         return getParamBoolean(key, arguments, savedInstanceState, false)
     }
 
@@ -1618,6 +1622,59 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
             putExtra(ApplinkConst.Transaction.EXTRA_CUSTOM_DIMENSION40, element.getAtcDimension40(sourcePage))
             putExtra(ApplinkConst.Transaction.EXTRA_ATC_EXTERNAL_SOURCE, AddToCartRequestParams.ATC_FROM_TOPCHAT)
         }
+    }
+
+    private fun initProductPreview(savedInstanceState: Bundle?) {
+        val stringProductPreviews = getStringArgument(ApplinkConst.Chat.PRODUCT_PREVIEWS, savedInstanceState)
+        if (stringProductPreviews.isEmpty()) return
+        val listType = object : TypeToken<List<ProductPreview>>() {}.type
+        val productPreviews = CommonUtil.fromJson<List<ProductPreview>>(
+                stringProductPreviews,
+                listType
+        )
+        for (productPreview in productPreviews) {
+            if (productPreview.notEnoughRequiredData()) continue
+            val sendAbleProductPreview = SendableProductPreview(productPreview)
+            presenter.addAttachmentPreview(sendAbleProductPreview)
+        }
+    }
+
+    private fun initInvoicePreview(savedInstanceState: Bundle?) {
+        val id = getStringArgument(ApplinkConst.Chat.INVOICE_ID, savedInstanceState)
+        val invoiceCode = getStringArgument(ApplinkConst.Chat.INVOICE_CODE, savedInstanceState)
+        val productName = getStringArgument(ApplinkConst.Chat.INVOICE_TITLE, savedInstanceState)
+        val date = getStringArgument(ApplinkConst.Chat.INVOICE_DATE, savedInstanceState)
+        val imageUrl = getStringArgument(ApplinkConst.Chat.INVOICE_IMAGE_URL, savedInstanceState)
+        val invoiceUrl = getStringArgument(ApplinkConst.Chat.INVOICE_URL, savedInstanceState)
+        val statusId = getStringArgument(ApplinkConst.Chat.INVOICE_STATUS_ID, savedInstanceState)
+        val status = getStringArgument(ApplinkConst.Chat.INVOICE_STATUS, savedInstanceState)
+        val totalPriceAmount = getStringArgument(ApplinkConst.Chat.INVOICE_TOTAL_AMOUNT, savedInstanceState)
+        val invoiceViewModel = InvoicePreviewUiModel(
+                id.toIntOrNull() ?: InvoicePreviewUiModel.INVALID_ID,
+                invoiceCode,
+                productName,
+                date,
+                imageUrl,
+                invoiceUrl,
+                statusId.toIntOrNull() ?: InvoicePreviewUiModel.INVALID_ID,
+                status,
+                totalPriceAmount
+        )
+        if (invoiceViewModel.enoughRequiredData()) {
+            presenter.clearAttachmentPreview()
+            presenter.addAttachmentPreview(invoiceViewModel)
+        }
+    }
+
+    private fun initVoucherPreview(extras: Bundle?) {
+        val stringVoucherPreview = getStringArgument(ApplinkConst.AttachVoucher.PARAM_VOUCHER_PREVIEW, extras)
+        if (stringVoucherPreview.isEmpty()) return
+        val voucherPreview = CommonUtil.fromJson<VoucherPreview>(stringVoucherPreview, VoucherPreview::class.java)
+        val sendableVoucher = SendableVoucherPreview(voucherPreview)
+        if (!presenter.hasEmptyAttachmentPreview()) {
+            presenter.clearAttachmentPreview()
+        }
+        presenter.addAttachmentPreview(sendableVoucher)
     }
 
     companion object {
