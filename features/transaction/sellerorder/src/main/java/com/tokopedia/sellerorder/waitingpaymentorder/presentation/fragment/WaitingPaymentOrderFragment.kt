@@ -267,14 +267,14 @@ class WaitingPaymentOrderFragment : BaseListFragment<Visitable<WaitingPaymentOrd
     }
 
     private fun scrollToTopAfterRecyclerViewInflated() {
-        rvWaitingPaymentOrder.addOneTimeGlobalLayoutListener {
-            (rvWaitingPaymentOrder).smoothScrollToPosition(0)
+        rvWaitingPaymentOrder?.addOneTimeGlobalLayoutListener {
+            rvWaitingPaymentOrder?.smoothScrollToPosition(0)
         }
     }
 
     private fun scrollToBottomAfterLoadMoreViewInflated() {
-        rvWaitingPaymentOrder.addOneTimeGlobalLayoutListener {
-            (rvWaitingPaymentOrder).smoothScrollToPosition(adapter.dataSize - 1)
+        rvWaitingPaymentOrder?.addOneTimeGlobalLayoutListener {
+            rvWaitingPaymentOrder?.smoothScrollToPosition(adapter.dataSize - 1)
         }
     }
 
