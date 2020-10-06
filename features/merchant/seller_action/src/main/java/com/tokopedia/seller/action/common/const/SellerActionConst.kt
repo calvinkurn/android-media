@@ -6,4 +6,9 @@ object SellerActionConst {
         internal const val ORDER = "order"
     }
 
+    object Som {
+        internal const val STATUS_CODE_ORDER_CREATED = 220
+        internal const val STATUS_CODE_ORDER_ORDER_CONFIRMED = 400
+    }
+
 }
