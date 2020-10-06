@@ -1,5 +1,6 @@
 package com.tokopedia.play.widget.ui.model
 
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.play.widget.ui.type.PlayWidgetCardType
 
 
@@ -8,6 +9,7 @@ import com.tokopedia.play.widget.ui.type.PlayWidgetCardType
  */
 data class PlayWidgetCardUiModel(
         val channelId: String,
+        val title: String,
         val widgetType: PlayWidgetCardType,
         val appLink: String,
         val webLink: String,
@@ -16,6 +18,7 @@ data class PlayWidgetCardUiModel(
         val totalViewVisible: Boolean,
         val hasPromo: Boolean,
         val activeReminder: Boolean,
+        val isLive: Boolean,
         val partner: PlayWidgetPartnerUiModel,
         val video: PlayWidgetCardVideoUiModel
-)
+): ImpressHolder()
