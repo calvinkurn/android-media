@@ -56,7 +56,6 @@ class ShopEditBasicInfoFragment: Fragment() {
         private const val SAVED_IMAGE_PATH = "saved_img_path"
         private const val MAX_FILE_SIZE_IN_KB = 10240
         private const val REQUEST_CODE_IMAGE = 846
-        private const val MIN_INPUT_LENGTH = 3
 
         @JvmStatic
         fun newInstance(bundle: Bundle?): ShopEditBasicInfoFragment {
@@ -239,14 +238,8 @@ class ShopEditBasicInfoFragment: Fragment() {
             override fun afterTextChanged(s: Editable) {
                 if (!isNameStillSame()) {
                     val input = s.toString()
-                    if (input.length < MIN_INPUT_LENGTH) {
-                        val message = context?.getString(R.string.shop_edit_name_too_short).orEmpty()
-                        showShopNameInputError(message)
-                        viewModel.cancelValidateShopName()
-                    } else {
-                        resetShopNameInput()
-                        viewModel.validateShopName(input)
-                    }
+                    resetShopNameInput()
+                    viewModel.validateShopName(input)
                 }
             }
 
@@ -263,14 +256,8 @@ class ShopEditBasicInfoFragment: Fragment() {
             override fun afterTextChanged(s: Editable) {
                 if (!isDomainStillSame()) {
                     val input = s.toString()
-                    if (input.length < MIN_INPUT_LENGTH) {
-                        val message = context?.getString(R.string.shop_edit_domain_too_short).orEmpty()
-                        showShopDomainInputError(message)
-                        viewModel.cancelValidateShopDomain()
-                    } else {
-                        resetShopDomainInput()
-                        viewModel.validateShopDomain(input)
-                    }
+                    resetShopDomainInput()
+                    viewModel.validateShopDomain(input)
                 }
             }
 
@@ -436,7 +423,7 @@ class ShopEditBasicInfoFragment: Fragment() {
                     }
                 }
                 is Fail -> {
-                    val message = (it as Success).data.validateDomainShopName.error.message
+                    val message = context?.getString(R.string.error_validation_shop_name_domain).orEmpty()
                     showShopNameInputError(message)
                     shopDomainSuggestions.hide()
                     ShopSettingsErrorHandler.logMessage(it.throwable.message ?: "")
@@ -457,7 +444,7 @@ class ShopEditBasicInfoFragment: Fragment() {
                     }
                 }
                 is Fail -> {
-                    val message = (it as Success).data.validateDomainShopName.error.message
+                    val message = context?.getString(R.string.error_validation_shop_name_domain).orEmpty()
                     showShopNameInputError(message)
                     shopDomainSuggestions.hide()
                     ShopSettingsErrorHandler.logMessage(it.throwable.message ?: "")

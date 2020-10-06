@@ -153,8 +153,6 @@
     <string name="ticker_warning_can_only_change_shopname_once">Nama dan domain toko hanya bisa diubah 1 kali.\nPastikan semua sudah benar.</string>
     <string name="ticker_warning_read_more">Selengkapnya</string>
     <string name="text_ubah_button">Ubah</string>
-    <string name="shop_edit_name_too_short">Nama Toko terlalu pendek, minimum 3 karakter</string>
-    <string name="shop_edit_domain_too_short">Domain Toko terlalu pendek, minimum 3 karakter</string>
     <string name="shop_edit_avatar_label">Gambar Profil</string>
     <string name="shop_edit_avatar_description">Besar file maks. 10MB dengan format .JPG, JPEG atau PNG.</string>
     <string name="shop_edit_change_avatar">Ganti Gambar</string>
@@ -174,5 +172,6 @@
     <string name="error_internal_server_error_message">Oops, ada gangguan yang perlu kami bereskan. Refresh atau balik lagi nanti.</string>
     <string name="error_no_internet_message">Wah, internet putus. Cek paket data atau WiFi-mu, ya.</string>
     <string name="error_unknown_issue">Terjadi kesalahan. Ulangi beberapa saat lagi.</string>
+    <string name="error_validation_shop_name_domain">Wah, internet putus. Cek jaringan internetmu, ya.</string>
     <string name="shop_settings_basic_info_title">Informasi Toko</string>
 </resources>
