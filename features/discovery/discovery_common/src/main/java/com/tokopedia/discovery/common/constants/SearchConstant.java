@@ -138,6 +138,15 @@ public interface SearchConstant {
         String AB_TEST_KEY_COMMA_VS_FULL_STAR = "Comma vs Full Star";
         String AB_TEST_VARIANT_FULL_STAR = "Full Star";
         String AB_TEST_VARIANT_COMMA_STAR = "Comma Star";
+        String AB_TEST_SHOP_RATING = "Hierarchical Rating Toko";
+        String AB_TEST_SHOP_RATING_VARIANT_A = "Hierarchical Rating";
+        String AB_TEST_SHOP_RATING_VARIANT_B = "Terjual ft Rating";
+        String AB_TEST_SHOP_RATING_VARIANT_C = "Rating Only";
+    }
+
+    interface ProductCardLabel {
+        String LABEL_INTEGRITY = "integrity";
+        String LABEL_INTEGRITY_TYPE = "textDarkGrey";
     }
 
     interface OnBoarding {
@@ -153,5 +162,13 @@ public interface SearchConstant {
     interface TopAdsComponent {
         String TOP_ADS = "search_product_top_ads";
         String ORGANIC_ADS = "search_product_organic_ads";
+        String BROAD_MATCH_ADS = "search_product_broad_match_ads";
+    }
+
+    interface InspirationCard {
+        String TYPE_ANNOTATION = "annotation";
+        String TYPE_CATEGORY = "category";
+        String TYPE_GUIDED = "guided";
+        String TYPE_CURATED = "curated";
     }
 }

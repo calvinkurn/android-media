@@ -15,6 +15,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.otp.R
 import com.tokopedia.otp.common.IOnBackPressed
 import com.tokopedia.otp.common.abstraction.BaseOtpActivity
@@ -49,6 +50,7 @@ class VerificationActivity : BaseOtpActivity() {
     @Inject
     lateinit var userSession: UserSessionInterface
 
+    var isResetPin2FA = false
     private var otpData = OtpData()
 
     override fun getNewFragment(): Fragment? = null
@@ -68,7 +70,7 @@ class VerificationActivity : BaseOtpActivity() {
         KeyboardHandler.hideSoftKeyboard(this)
         val fragment = this.supportFragmentManager.findFragmentById(R.id.parent_view)
         (fragment as? IOnBackPressed)?.onBackPressed()?.let { isBackPressed ->
-            if(isBackPressed) {
+            if (isBackPressed) {
                 if (supportFragmentManager.backStackEntryCount > 1) {
                     supportFragmentManager.popBackStack()
                 } else {
@@ -79,18 +81,19 @@ class VerificationActivity : BaseOtpActivity() {
     }
 
     private fun setupParams() {
-        otpData.userId = userSession.userId ?: userSession.temporaryUserId
+        if(isResetPin2FA || intent?.extras?.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_FROM_2FA) == true) {
+            otpData.userId = intent?.extras?.getString(ApplinkConstInternalGlobal.PARAM_USER_ID, "").toEmptyStringIfNull()
+        }else {
+            otpData.userId = userSession.userId ?: userSession.temporaryUserId
+        }
         otpData.otpType = intent?.extras?.getInt(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, 0) ?: 0
-        otpData.otpMode = intent?.extras?.getString(ApplinkConstInternalGlobal.PARAM_REQUEST_OTP_MODE, "") ?: ""
-        otpData.email = intent?.extras?.getString(ApplinkConstInternalGlobal.PARAM_EMAIL, "") ?: ""
-        otpData.msisdn = intent?.extras?.getString(ApplinkConstInternalGlobal.PARAM_MSISDN, "")
-                ?: ""
-        otpData.source = intent?.extras?.getString(ApplinkConstInternalGlobal.PARAM_SOURCE, "")
-                ?: ""
-        otpData.canUseOtherMethod = intent?.extras?.getBoolean(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, false)
-                ?: false
-        otpData.isShowChooseMethod = intent?.extras?.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD, true)
-                ?: true
+        otpData.otpMode = intent?.extras?.getString(ApplinkConstInternalGlobal.PARAM_REQUEST_OTP_MODE, "").toEmptyStringIfNull()
+        otpData.email = intent?.extras?.getString(ApplinkConstInternalGlobal.PARAM_EMAIL, "").toEmptyStringIfNull()
+        otpData.msisdn = intent?.extras?.getString(ApplinkConstInternalGlobal.PARAM_MSISDN, "").toEmptyStringIfNull()
+        otpData.source = intent?.extras?.getString(ApplinkConstInternalGlobal.PARAM_SOURCE, "").toEmptyStringIfNull()
+        otpData.userIdEnc = intent?.extras?.getString(ApplinkConstInternalGlobal.PARAM_USER_ID_ENC, "").toEmptyStringIfNull()
+
+        otpData.accessToken = intent?.extras?.getString(ApplinkConstInternalGlobal.PARAM_USER_ACCESS_TOKEN, "").toEmptyStringIfNull()
     }
 
     private fun createBundle(modeListData: ModeListData? = null): Bundle {
@@ -107,7 +110,7 @@ class VerificationActivity : BaseOtpActivity() {
         val fragmentTransactionManager = supportFragmentManager.beginTransaction()
 
         fragmentTransactionManager.add(parentViewResourceID, fragment, tag)
-        if(isBackAnimation)
+        if (isBackAnimation)
             fragmentTransactionManager.setCustomAnimations(R.animator.slide_in_left, 0, 0, R.animator.slide_out_right)
         else fragmentTransactionManager.setCustomAnimations(R.animator.slide_in_left, 0, 0, R.animator.slide_out_left)
         fragmentTransactionManager.addToBackStack(BACK_STACK_ROOT_TAG)
@@ -127,6 +130,15 @@ class VerificationActivity : BaseOtpActivity() {
     fun goToOnboardingMiscallPage(modeListData: ModeListData) {
         val fragment = OnboardingMiscallFragment.createInstance(createBundle(modeListData))
         doFragmentTransaction(fragment, TAG_OTP_MISCALL, false)
+    }
+
+    fun goToMethodPageResetPin(otpData: OtpData) {
+        isResetPin2FA = true
+        val bundle = Bundle().apply {
+            putParcelable(OtpConstant.OTP_DATA_EXTRA, otpData)
+        }
+        val fragment = VerificationMethodFragment.createInstance(bundle)
+        doFragmentTransaction(fragment, TAG_OTP_VALIDATOR, false)
     }
 
     companion object {

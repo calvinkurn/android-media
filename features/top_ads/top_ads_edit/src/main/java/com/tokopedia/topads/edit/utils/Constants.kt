@@ -29,7 +29,6 @@ object Constants {
     const val DAILY_BUDGET = "daily_budget"
     const val NAME_EDIT = "isNameEdit"
     const val MULTIPLIER = 40
-    const val GROUPKEY = "groupName"
     const val PRODUCT = "product"
     const val BUDGET_LIMITED = "isBudgetLimited"
     const val KEYWORD_EXISTS = 1

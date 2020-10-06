@@ -2,6 +2,7 @@
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/hotelHomepageScrollView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/Neutral_N0"
@@ -282,11 +283,11 @@
 
             </LinearLayout>
 
-            <com.tokopedia.banner.Banner
+            <com.tokopedia.carousel.CarouselUnify
                 android:id="@+id/banner_hotel_homepage_promo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:clipToPadding="false" />
+                android:layout_marginTop="@dimen/spacing_lvl3"/>
 
         </LinearLayout>
 

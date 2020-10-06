@@ -13,6 +13,7 @@ import com.tokopedia.play.R
 import com.tokopedia.play.ui.chatlist.adapter.ChatAdapter
 import com.tokopedia.play.ui.chatlist.itemdecoration.ChatListItemDecoration
 import com.tokopedia.play.view.custom.ChatScrollDownView
+import com.tokopedia.play.view.custom.MaximumHeightRecyclerView
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 import timber.log.Timber
@@ -25,7 +26,7 @@ class ChatListViewComponent(
         @IdRes idRes: Int
 ) : ViewComponent(container, idRes) {
 
-    private val rvChatList: RecyclerView = findViewById(R.id.rv_chat_list)
+    private val rvChatList: MaximumHeightRecyclerView = findViewById(R.id.rv_chat_list)
     private val csDownView: ChatScrollDownView = findViewById<ChatScrollDownView>(R.id.csdown_view).apply {
         setOnClickListener {
             if (rvChatList.canScrollDown) rvChatList.smoothScrollToPosition(chatAdapter.lastIndex)

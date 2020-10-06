@@ -28,7 +28,8 @@
     <string name="with_other_method">gunakan metode verifikasi lain.</string>
     <string name="resend_otp">Kirim ulang</string>
     <string name="verification_coundown_text"><![CDATA[Mohon tunggu dalam %d detik untuk kirim ulang.]]></string>
-    
+    <string name="forgot_pin">Lupa PIN Tokopedia</string>
+
     <string name="title_push_notif_reciever">Ada perangkat baru yang ingin mengakses akunmu</string>
     <string name="subtitle_push_notif_reciever">Jangan berikan akses ke perangkat orang lain, agar akun &amp; data pribadimu tetap aman.</string>
     <string name="subtitle_push_notif_setting">Kamu bisa masuk ke akunmu dengan melakukan verifikasi lewat notifikasi yang dikirim ke perangkat terdaftar</string>

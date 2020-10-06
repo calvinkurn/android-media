@@ -62,6 +62,13 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val PARAM_IS_FROM_2FA = "isFromTwoFactor"
 
+    @JvmField
+    val PARAM_USER_ID_ENC = "userIdEncrypted"
+    @JvmField
+    val PARAM_USER_ACCESS_TOKEN = "accessToken"
+    @JvmField
+    val PARAM_USER_ID = "userId"
+
     //VerificationActivity Param
     @JvmField
     val PARAM_CAN_USE_OTHER_METHOD = "can_use_other_method"
@@ -77,8 +84,11 @@ object ApplinkConstInternalGlobal {
     val PARAM_IS_SKIP_OTP = "is_skip_otp"
     @JvmField
     val PARAM_TWO_FACTOR_TYPE = "two_factor_type"
+
     @JvmField
-    val KEY_REDIRECT_SEAMLESS_APPLINK = "redirect_seamless"
+    val PARAM_ENABLE_2FA = "enable_2fa"
+    @JvmField
+    val PARAM_ENABLE_SKIP_2FA = "enable_skip_2fa"
 
     @JvmField
     val INTERNAL_GLOBAL = "${DeeplinkConstant.SCHEME_INTERNAL}://${HOST_GLOBAL}"

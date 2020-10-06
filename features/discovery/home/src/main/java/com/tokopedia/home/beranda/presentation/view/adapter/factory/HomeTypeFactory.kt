@@ -53,4 +53,8 @@ interface HomeTypeFactory {
     fun type(popularKeywordListDataModel: PopularKeywordListDataModel): Int
 
     fun type(homeTopAdsBannerDataModel: HomeTopAdsBannerDataModel): Int
+
+    fun type(dynamicChannelLoadingModel: DynamicChannelLoadingModel): Int
+
+    fun type(dynamicChannelRetryModel: DynamicChannelRetryModel): Int
 }

@@ -32,7 +32,7 @@ class Lego4AutoBannerComponentCallback(val context: Context?, val homeCategoryLi
 
     override fun onChannelLegoImpressed(channelModel: ChannelModel, parentPosition: Int) {
         homeCategoryListener.putEEToIris(
-                HomePageTrackingV2.LegoBanner.getLegoBannerFourImageImpression(
+                LegoBannerTracking.getLegoBannerFourImageImpression(
                         channelModel, parentPosition, true
                 ) as HashMap<String, Any>
         )

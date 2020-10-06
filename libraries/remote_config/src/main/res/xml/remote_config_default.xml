@@ -486,4 +486,20 @@
         <key>android_gql_connection_warm_up</key>
         <value>false</value>
     </entry>
+    <entry>
+        <key>android_async_user_based_timber_session</key>
+        <value>false</value>
+    </entry>
+    <entry>
+        <key>android_async_crashlytics_user_info</key>
+        <value>false</value>
+    </entry>
+    <entry>
+        <key>android_async_branch_user_info</key>
+        <value>false</value>
+    </entry>
+    <entry>
+        <key>android_iris_custom_user_agent_enable</key>
+        <value>true</value>
+    </entry>
 </defaultsMap>

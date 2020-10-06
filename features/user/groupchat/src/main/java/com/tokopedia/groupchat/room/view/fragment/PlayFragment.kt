@@ -50,7 +50,7 @@ import com.tokopedia.kotlin.util.getParamBoolean
 import com.tokopedia.kotlin.util.getParamInt
 import com.tokopedia.kotlin.util.getParamString
 import com.tokopedia.linker.model.LinkerData
-import com.tokopedia.sharedata.DefaultShareData
+import com.tokopedia.linker.share.DefaultShare
 import com.tokopedia.user.session.UserSessionInterface
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -249,7 +249,7 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
                     .setType(LinkerData.GROUPCHAT_TYPE)
                     .build()
 
-            DefaultShareData(activity, shareData).show()
+            DefaultShare(activity, shareData).show()
         }
 
     }
