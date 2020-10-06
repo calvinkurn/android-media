@@ -464,7 +464,7 @@ class TopChatRoomPresenterTest {
     }
 
     @Test
-    fun `on success upload image`() {
+    fun `on success upload image and sent through websocket`() {
         // Given
         every {
             ImageUtil.validateImageAttachment(imageUploadViewModel.imageUrl)
