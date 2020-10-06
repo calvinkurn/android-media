@@ -8,10 +8,6 @@ import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.otp.common.DispatcherProvider
 import com.tokopedia.otp.common.LoadingDialog
-import com.tokopedia.otp.notif.view.viewbinding.*
-import com.tokopedia.otp.verification.view.viewbinding.OnboardingMisscallViewBinding
-import com.tokopedia.otp.verification.view.viewbinding.VerificationMethodViewBinding
-import com.tokopedia.otp.verification.view.viewbinding.VerificationViewBinding
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -42,26 +38,6 @@ class OtpModule (val context: Context) {
     @OtpScope
     @Provides
     fun provideSmsRetriever(@ApplicationContext context: Context): SmsRetrieverClient = SmsRetriever.getClient(context)
-
-    @OtpScope
-    @Provides
-    fun provideActivePushNotifViewBinding(): ActivePushNotifViewBinding = ActivePushNotifViewBinding()
-
-    @OtpScope
-    @Provides
-    fun provideInactivePushNotifViewBinding(): InactivePushNotifViewBinding = InactivePushNotifViewBinding()
-
-    @OtpScope
-    @Provides
-    fun provideRecieverNotifViewBinding(): RecieverNotifViewBinding = RecieverNotifViewBinding()
-
-    @OtpScope
-    @Provides
-    fun provideResultNotifViewBinding(): ResultNotifViewBinding = ResultNotifViewBinding()
-
-    @OtpScope
-    @Provides
-    fun provideSettingNotifViewBinding(): SettingNotifViewBinding = SettingNotifViewBinding()
 
     @OtpScope
     @Provides
