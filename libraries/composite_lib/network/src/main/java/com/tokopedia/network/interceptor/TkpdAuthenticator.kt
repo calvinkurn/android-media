@@ -24,7 +24,6 @@ class TkpdAuthenticator(
 
     override fun authenticate(route: Route?, response: Response): Request? {
         if(isNeedRefresh()) {
-            if(responseCount(response) == 0) {
                 return try {
                     val originalRequest = response.request()
                     val accessTokenRefresh = AccessTokenRefresh()
@@ -34,11 +33,8 @@ class TkpdAuthenticator(
                 } catch (ex: Exception) {
                     response.request()
                 }
-            } else {
-                val bodyResponse = response.peekBody(TkpdAuthInterceptor.BYTE_COUNT.toLong()).string()
-                networkRouter.showForceLogoutTokenDialog(bodyResponse)
-            }
         }
+
         return response.request()
     }
 
