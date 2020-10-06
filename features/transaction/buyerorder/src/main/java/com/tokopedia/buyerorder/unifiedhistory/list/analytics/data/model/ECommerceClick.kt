@@ -10,7 +10,7 @@ import kotlinx.android.parcel.Parcelize
  */
 
 @Parcelize
-data class ECommerceClick (
+class ECommerceClick (
         @SerializedName("actionField")
         var actionField: ActionField = ActionField(),
 
@@ -18,13 +18,13 @@ data class ECommerceClick (
         var products: ArrayList<Products> = arrayListOf()) : Parcelable {
 
         @Parcelize
-        data class ActionField(
+        class ActionField(
                 @SerializedName("list")
                 var list: String = "/order list - ${UohConsts.BUSINESS_UNIT_REPLACEE}"
         ) : Parcelable
 
         @Parcelize
-        data class Products (
+        class Products (
                 @SerializedName("name")
                 var name: String = "",
 
