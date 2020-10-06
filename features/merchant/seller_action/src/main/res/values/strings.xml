@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="seller_action_open_app">Buka App Tokopedia Seller</string>
+    <string name="seller_action_not_found">Data tidak dapat ditampilkan</string>
+    <string name="seller_action_loading">Mohon tunggu</string>
+
+    //Order Slice
+    <string name="seller_action_order_title">Order Anda</string>
+</resources>

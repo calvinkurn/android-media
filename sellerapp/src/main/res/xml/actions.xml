@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<actions>
+    <action intentName="actions.intent.GET_ORDER">
+        <fulfillment
+            fulfillmentMode="actions.fulfillment.SLICE"
+            urlTemplate="content://com.tokopedia.seller.action.slices.provider/order">
+        </fulfillment>
+    </action>
+</actions>
