@@ -680,6 +680,38 @@ class TopChatRoomPresenterTest {
         verify(exactly = 1) { view.clearAttachmentPreviews() }
     }
 
+    @Test
+    fun `on success send message through API`() {
+        // Given
+        val slot = slot<Subscriber<ReplyChatViewModel>>()
+        val mockOnSendingMessage: () -> Unit = mockk(relaxed = true)
+        val dummyMessage = MessageViewModel(
+                exMessageId, userSession.userId, userSession.name, exStartTime, exSendMessage
+        )
+        every { webSocketUtil.getWebSocketInfo(any(), any()) } returns websocketServer
+        every { getChatUseCase.isInTheMiddleOfThePage() } returns false
+        every {
+            topChatRoomWebSocketMessageMapper.mapToDummyMessage(any(), any(), any(), any(), any())
+        } returns dummyMessage
+        every { replyChatUseCase.execute(any(), capture(slot)) } answers {
+            val subs = slot.captured
+            subs.onNext(replyChatViewModelApiSuccess)
+        }
+
+        // When
+        presenter.connectWebSocket(exMessageId)
+        websocketServer.onNext(wsOpen)
+        websocketServer.onCompleted()
+        presenter.sendAttachmentsAndMessage(
+                exMessageId, exSendMessage, exStartTime, exOpponentId, mockOnSendingMessage
+        )
+
+        // Then
+        verify(exactly = 1) { view.addDummyMessage(dummyMessage) }
+        verify(exactly = 1) { view.onReceiveMessageEvent(replyChatViewModelApiSuccess.chat) }
+        verify(exactly = 1) { view.removeDummy(dummyMessage) }
+    }
+
     private fun mockkParseResponse(wsInfo: WebSocketInfo, isOpposite: Boolean = true): ChatSocketPojo {
         val wsChatPojo = topChatRoomWebSocketMessageMapper.parseResponse(wsInfo.response).apply {
             this.isOpposite = isOpposite
