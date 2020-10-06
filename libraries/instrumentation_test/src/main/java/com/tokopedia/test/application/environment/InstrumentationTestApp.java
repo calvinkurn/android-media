@@ -413,7 +413,24 @@ public class InstrumentationTestApp extends BaseMainApplication
 
     @Override
     public CacheManager getGlobalCacheManager() {
-        return null;
+        return new CacheManager(){
+            @Override
+            public void save(String key, String value, long durationInSeconds) {
+                PersistentCacheManager.instance.put(key, value, durationInSeconds * 1000L);
+            }
+            @Override
+            public void delete(String key) {
+                PersistentCacheManager.instance.delete(key);
+            }
+            @Override
+            public String get(String key) {
+                return PersistentCacheManager.instance.getString(key, null);
+            }
+            @Override
+            public boolean isExpired(String key) {
+                return PersistentCacheManager.instance.isExpired(key);
+            }
+        };
     }
 
     @Override

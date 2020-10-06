@@ -90,6 +90,7 @@
 
         <com.tokopedia.design.text.TkpdHintTextInputLayout
             android:id="@+id/wrapper_password"
+            android:contentDescription="@string/content_desc_wrapper_pass_partial"
             style="@style/HintTextInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
