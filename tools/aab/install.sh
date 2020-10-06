@@ -4,7 +4,7 @@
 # ./tools/aab/install.sh :customerapp:bundleLiveDevDebug -install-mode=local-testing-apks -launch=com.tokopedia.tkpd/com.tokopedia.tkpd.ConsumerSplashScreen
 
 # Update the bundletool file version
-BUNDLETOOL=~/Library/Bundletool/bundletool-all-0.14.0.jar
+BUNDLETOOL=./tools/aab/bundletool.jar
 
 # Check bundle tool
 if [ ! -f $BUNDLETOOL ]; then
