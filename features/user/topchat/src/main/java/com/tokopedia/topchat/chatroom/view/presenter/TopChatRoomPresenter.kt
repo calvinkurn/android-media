@@ -10,7 +10,10 @@ import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartOccUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.attachproduct.resultmodel.ResultProduct
-import com.tokopedia.chat_common.data.*
+import com.tokopedia.chat_common.data.ChatroomViewModel
+import com.tokopedia.chat_common.data.ImageUploadViewModel
+import com.tokopedia.chat_common.data.ReplyChatViewModel
+import com.tokopedia.chat_common.data.SendableViewModel
 import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_END_TYPING
 import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_READ_MESSAGE
 import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_REPLY_MESSAGE
@@ -367,7 +370,7 @@ class TopChatRoomPresenter @Inject constructor(
     private fun getDummyOnList(visitable: Visitable<*>): Visitable<*>? {
         dummyList.isNotEmpty().let {
             for (i in 0 until dummyList.size) {
-                var temp = (dummyList[i] as SendableViewModel)
+                val temp = (dummyList[i] as SendableViewModel)
                 if (temp.startTime == (visitable as SendableViewModel).startTime
                         && temp.messageId == (visitable as SendableViewModel).messageId) {
                     return dummyList[i]
@@ -450,12 +453,16 @@ class TopChatRoomPresenter @Inject constructor(
         sendMessageWebSocket(TopChatWebSocketParam.generateParamStopTyping(messageId))
     }
 
-    private fun mapToDummyMessage(messageId: String, messageText: String, startTime: String): Visitable<*> {
-        return MessageViewModel(messageId, userSession.userId, userSession.name, startTime, messageText)
+    private fun mapToDummyMessage(
+            messageId: String, messageText: String, startTime: String
+    ): Visitable<*> {
+        return topChatRoomWebSocketMessageMapper.mapToDummyMessage(
+                messageId, userSession.userId, userSession.name, startTime, messageText
+        )
     }
 
     override fun sendMessageWithApi(messageId: String, sendMessage: String, startTime: String) {
-        var dummyMessage = mapToDummyMessage(thisMessageId, sendMessage, startTime)
+        val dummyMessage = mapToDummyMessage(thisMessageId, sendMessage, startTime)
         processDummyMessage(dummyMessage)
         sendByApi(ReplyChatUseCase.generateParam(messageId, sendMessage), dummyMessage)
     }
@@ -556,8 +563,8 @@ class TopChatRoomPresenter @Inject constructor(
         })
     }
 
-    override fun addAttachmentPreview(sendAbleProductPreview: SendablePreview) {
-        attachmentsPreview.add(sendAbleProductPreview)
+    override fun addAttachmentPreview(sendablePreview: SendablePreview) {
+        attachmentsPreview.add(sendablePreview)
     }
 
     override fun hasEmptyAttachmentPreview(): Boolean {

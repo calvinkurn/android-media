@@ -186,7 +186,7 @@ interface TopChatContract {
 
         fun getBackground()
 
-        fun addAttachmentPreview(sendAbleProductPreview: SendablePreview)
+        fun addAttachmentPreview(sendablePreview: SendablePreview)
 
         fun hasEmptyAttachmentPreview(): Boolean
     }

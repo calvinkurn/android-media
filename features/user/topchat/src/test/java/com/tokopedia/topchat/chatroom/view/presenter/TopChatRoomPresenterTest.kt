@@ -8,7 +8,9 @@ import com.tokopedia.atc_common.domain.usecase.AddToCartOccUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.ImageUploadViewModel
+import com.tokopedia.chat_common.data.MessageViewModel
 import com.tokopedia.chat_common.data.ReplyChatViewModel
+import com.tokopedia.chat_common.data.preview.ProductPreview
 import com.tokopedia.chat_common.domain.pojo.ChatReplies
 import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
 import com.tokopedia.chatbot.domain.mapper.TopChatRoomWebSocketMessageMapper
@@ -38,6 +40,8 @@ import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Du
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.wsResponseReadMessageString
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.wsResponseReplyString
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.wsResponseTypingString
+import com.tokopedia.topchat.chatroom.view.viewmodel.SendablePreview
+import com.tokopedia.topchat.chatroom.view.viewmodel.SendableProductPreview
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopchatCoroutineContextProvider
 import com.tokopedia.topchat.chattemplate.view.viewmodel.GetTemplateUiModel
 import com.tokopedia.topchat.common.util.ImageUtil
@@ -153,6 +157,9 @@ class TopChatRoomPresenterTest {
     @RelaxedMockK
     private lateinit var view: TopChatContract.View
 
+    @RelaxedMockK
+    private lateinit var sendAbleProductPreview: SendablePreview
+
     @SpyK
     private var topChatRoomWebSocketMessageMapper = TopChatRoomWebSocketMessageMapper()
 
@@ -175,6 +182,7 @@ class TopChatRoomPresenterTest {
         const val exSendMessage = "Hello World"
         const val exStartTime = "123321"
         const val exOpponentId = "39467501"
+        const val exImageUrl = "https://ecs.tokopedia.com/image.jpg"
         const val toUserId = "12345"
         const val toShopId = "54321"
         const val source = "askseller"
@@ -192,13 +200,23 @@ class TopChatRoomPresenterTest {
                     exMessageId,
                     "123123",
                     "123987",
-                    "https://ecs.tokopedia.com/image.jpg",
+                    exImageUrl,
                     "123"
             )
         }
 
         private fun generateReplyChatViewModelApi(): ReplyChatViewModel {
             return ReplyChatViewModel(imageUploadViewModel, true)
+        }
+
+        private fun generateSendAbleProductPreview(): SendablePreview {
+            val productPreview = ProductPreview(
+                    name = "hello product",
+                    imageUrl = exImageUrl,
+                    price = "Rp120.000",
+                    id = "12398764"
+            )
+            return SendableProductPreview(productPreview)
         }
     }
 
@@ -253,6 +271,7 @@ class TopChatRoomPresenterTest {
         mockkObject(RxWebSocket)
         mockkObject(RxWebSocketUtil)
         mockkObject(ImageUtil)
+        mockkObject(TopChatWebSocketParam)
         every { RxWebSocketUtil.getInstance(any()) } returns webSocketUtil
     }
 
@@ -626,16 +645,38 @@ class TopChatRoomPresenterTest {
     }
 
     @Test
-    fun `on success send attachment and message through websocket`() {
+    fun `on success send attachment and message through Websocket`() {
         // Given
         val mockOnSendingMessage: () -> Unit = mockk(relaxed = true)
+        val dummyMessage = MessageViewModel(
+                exMessageId, userSession.userId, userSession.name, exStartTime, exSendMessage
+        )
+        val paramSendMessage = "paramSendMessage"
+        val paramStopTyping = TopChatWebSocketParam.generateParamStopTyping(exMessageId)
+        every { webSocketUtil.getWebSocketInfo(any(), any()) } returns websocketServer
+        every { getChatUseCase.isInTheMiddleOfThePage() } returns false
+        every {
+            topChatRoomWebSocketMessageMapper.mapToDummyMessage(any(), any(), any(), any(), any())
+        } returns dummyMessage
+        every {
+            TopChatWebSocketParam.generateParamSendMessage(any(), any(), any(), any())
+        } returns paramSendMessage
 
         // When
+        presenter.connectWebSocket(exMessageId)
+        presenter.addAttachmentPreview(sendAbleProductPreview)
         presenter.sendAttachmentsAndMessage(
                 exMessageId, exSendMessage, exStartTime, exOpponentId, mockOnSendingMessage
         )
 
         // Then
+        verify(exactly = 1) {
+            sendAbleProductPreview.sendTo(exMessageId, exOpponentId, exSendMessage, listInterceptor)
+        }
+        verify(exactly = 1) { view.sendAnalyticAttachmentSent(sendAbleProductPreview) }
+        verify(exactly = 1) { view.addDummyMessage(dummyMessage) }
+        verify(exactly = 1) { RxWebSocket.send(paramSendMessage, listInterceptor) }
+        verify(exactly = 1) { RxWebSocket.send(paramStopTyping, listInterceptor) }
         verify(exactly = 1) { view.clearAttachmentPreviews() }
     }
 
