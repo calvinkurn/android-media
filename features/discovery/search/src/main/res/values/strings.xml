@@ -90,4 +90,7 @@
     <string name="content_desc_search_home_button">button home</string>
     <string name="content_desc_search_cart_button">button keranjang</string>
     <string name="content_desc_search_change_grid_button">button ganti layout</string>
+
+    <string name="search_result_global_search_text">Belum nemu barang sale yang cocok?</string>
+    <string name="search_result_global_search_button_text">Cari di Tokopedia</string>
 </resources>

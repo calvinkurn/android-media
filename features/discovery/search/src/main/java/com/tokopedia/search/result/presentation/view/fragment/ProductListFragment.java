@@ -80,6 +80,7 @@ import com.tokopedia.search.result.presentation.view.listener.InspirationCarouse
 import com.tokopedia.search.result.presentation.view.listener.ProductListener;
 import com.tokopedia.search.result.presentation.view.listener.QuickFilterElevation;
 import com.tokopedia.search.result.presentation.view.listener.RedirectionListener;
+import com.tokopedia.search.result.presentation.view.listener.SearchInTokopediaListener;
 import com.tokopedia.search.result.presentation.view.listener.SearchNavigationListener;
 import com.tokopedia.search.result.presentation.view.listener.SearchPerformanceMonitoringListener;
 import com.tokopedia.search.result.presentation.view.listener.SuggestionListener;
@@ -136,7 +137,8 @@ public class ProductListFragment
         BroadMatchListener,
         InspirationCardListener,
         QuickFilterElevation,
-        SortFilterBottomSheet.Callback {
+        SortFilterBottomSheet.Callback,
+        SearchInTokopediaListener {
 
     private static final String SCREEN_SEARCH_PAGE_PRODUCT_TAB = "Search result - Product tab";
     private static final int REQUEST_CODE_GOTO_PRODUCT_DETAIL = 123;
@@ -310,7 +312,8 @@ public class ProductListFragment
                 this, this,
                 this, this, this,
                 this, this, this,
-                this, this, this, topAdsConfig);
+                this, this, this, this,
+                topAdsConfig);
 
         adapter = new ProductListAdapter(this, productListTypeFactory);
     }
@@ -1695,5 +1698,12 @@ public class ProductListFragment
     public void configure(boolean shouldRemove) {
         if (shouldRemove) SearchFilterUtilsKt.removeQuickFilterElevation(searchSortFilter);
         else SearchFilterUtilsKt.applyQuickFilterElevation(getContext(), searchSortFilter);
+    }
+
+    @Override
+    public void onSearchInTokopediaClick(@NotNull String applink) {
+        if (getActivity() == null) return;
+
+        RouteManager.route(getActivity(), applink);
     }
 }

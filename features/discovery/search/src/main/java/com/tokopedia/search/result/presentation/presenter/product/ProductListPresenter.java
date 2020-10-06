@@ -7,6 +7,7 @@ import androidx.annotation.Nullable;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
+import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
 import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.discovery.common.constants.SearchApiConst;
 import com.tokopedia.discovery.common.constants.SearchConstant;
@@ -142,6 +143,7 @@ final class ProductListPresenter
     private String navSource = "";
     private String pageId = "";
     private String pageTitle = "";
+    private String autoCompleteApplink = "";
 
     private List<Visitable> productList;
     private List<InspirationCarouselViewModel> inspirationCarouselViewModel;
@@ -482,6 +484,8 @@ final class ProductListPresenter
         List<Visitable> list = new ArrayList<>();
         processBroadMatch(searchProduct, list);
 
+        addSearchInTokopedia(searchProduct, list);
+
         getView().removeLoading();
         getView().addProductList(list);
     }
@@ -493,6 +497,8 @@ final class ProductListPresenter
         processInspirationCardPosition(searchParameter, list);
         processInspirationCarouselPosition(searchParameter, list);
         processBroadMatch(searchProductModel.getSearchProduct(), list);
+
+        addSearchInTokopedia(searchProductModel.getSearchProduct(), list);
 
         getView().removeLoading();
         getView().addProductList(list);
@@ -743,6 +749,7 @@ final class ProductListPresenter
         setResponseCode(productViewModel.getResponseCode());
         setSuggestionViewModel(productViewModel.getSuggestionModel());
         setRelatedViewModel(productViewModel.getRelatedViewModel());
+        setAutoCompleteApplink(productViewModel.getAutocompleteApplink());
 
         sendTrackingNoSearchResult(productViewModel);
 
@@ -811,6 +818,10 @@ final class ProductListPresenter
 
     private void setRelatedViewModel(RelatedViewModel relatedViewModel) {
         this.relatedViewModel = relatedViewModel;
+    }
+
+    private void setAutoCompleteApplink(String autoCompleteApplink) {
+        this.autoCompleteApplink = autoCompleteApplink;
     }
 
     private void getViewToHandleEmptyProductList(SearchProductModel.SearchProduct searchProduct, ProductViewModel productViewModel) {
@@ -984,11 +995,7 @@ final class ProductListPresenter
 
         processBroadMatch(searchProduct, list);
 
-        if (isLastPage(searchProduct) && isLocalSearch()) {
-            String globalSearchApplink = UrlParamUtils.removeQueryParams(searchProduct.getData().getAutocompleteApplink(), LOCAL_SEARCH_KEY_PARAMS);
-            SearchInTokopediaViewModel searchInTokopediaViewModel = new SearchInTokopediaViewModel(globalSearchApplink);
-            list.add(searchInTokopediaViewModel);
-        }
+        addSearchInTokopedia(searchProduct, list);
 
         getView().removeLoading();
         getView().setProductList(list);
@@ -1000,6 +1007,27 @@ final class ProductListPresenter
         }
 
         getView().stopTracePerformanceMonitoring();
+    }
+
+    private void addSearchInTokopedia(SearchProductModel.SearchProduct searchProduct, List<Visitable> list) {
+        if (isLastPage(searchProduct) && isLocalSearch()) {
+            String globalSearchApplink = constructGlobalSearchApplink();
+            SearchInTokopediaViewModel searchInTokopediaViewModel = new SearchInTokopediaViewModel(globalSearchApplink);
+
+            list.add(searchInTokopediaViewModel);
+        }
+    }
+
+    private String constructGlobalSearchApplink() {
+        String globalSearchApplink = ApplinkConstInternalDiscovery.SEARCH_RESULT;
+
+        String queryParams = UrlParamUtils.getQueryParams(autoCompleteApplink);
+        String globalSearchQueryParams = UrlParamUtils.removeKeysFromQueryParams(queryParams, LOCAL_SEARCH_KEY_PARAMS);
+
+        if (!textIsEmpty(globalSearchQueryParams))
+            globalSearchApplink += "?" + globalSearchQueryParams;
+
+        return globalSearchApplink;
     }
 
     private void addPageTitle(List<Visitable> list) {

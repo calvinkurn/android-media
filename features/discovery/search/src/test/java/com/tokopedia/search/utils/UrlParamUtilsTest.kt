@@ -72,20 +72,28 @@ internal class UrlParamUtilsTest {
     }
 
     @Test
-    fun `Remove keys from url`() {
-        UrlParamUtils.removeQueryParams(null, null) shouldBe ""
-        UrlParamUtils.removeQueryParams("ssss", null) shouldBe "ssss"
-        UrlParamUtils.removeQueryParams("tokopedia://search-autocomplete?", null) shouldBe "tokopedia://search-autocomplete"
-        UrlParamUtils.removeQueryParams("tokopedia://search-autocomplete?q=sss", listOf("s")) shouldBe "tokopedia://search-autocomplete?q=sss"
-        UrlParamUtils.removeQueryParams("tokopedia://search-autocomplete?q=sss", listOf("q")) shouldBe "tokopedia://search-autocomplete"
-        UrlParamUtils.removeQueryParams("tokopedia://search-autocomplete?navsource=campaign&q=sss", listOf("navsource")) shouldBe "tokopedia://search-autocomplete?q=sss"
-        UrlParamUtils.removeQueryParams(
-                "tokopedia://search-autocomplete?navsource=campaign&q=sss&srp_page_id=160&otherkeys=othervalue",
+    fun `Remove keys from query params`() {
+        UrlParamUtils.removeKeysFromQueryParams(null, null) shouldBe ""
+        UrlParamUtils.removeKeysFromQueryParams("ssss", null) shouldBe "ssss"
+        UrlParamUtils.removeKeysFromQueryParams("", null) shouldBe ""
+        UrlParamUtils.removeKeysFromQueryParams("q=sss", listOf("s")) shouldBe "q=sss"
+        UrlParamUtils.removeKeysFromQueryParams("q=sss", listOf("q")) shouldBe ""
+        UrlParamUtils.removeKeysFromQueryParams("navsource=campaign&q=sss", listOf("navsource")) shouldBe "q=sss"
+        UrlParamUtils.removeKeysFromQueryParams(
+                "navsource=campaign&q=sss&srp_page_id=160&otherkeys=othervalue",
                 listOf("navsource", "srp_page_id")
-        ) shouldBe "tokopedia://search-autocomplete?q=sss&otherkeys=othervalue"
-        UrlParamUtils.removeQueryParams(
-                "tokopedia://search-autocomplete?navsource=campaign&q=asus&navsource=campaign&srp_page_id=160&srp_page_title=Waktu%20Indonesia%20Belanja",
+        ) shouldBe "q=sss&otherkeys=othervalue"
+        UrlParamUtils.removeKeysFromQueryParams(
+                "navsource=campaign&q=asus&navsource=campaign&srp_page_id=160&srp_page_title=Waktu%20Indonesia%20Belanja",
                 listOf(SearchApiConst.NAVSOURCE, SearchApiConst.SRP_PAGE_ID, SearchApiConst.SRP_PAGE_TITLE)
-        ) shouldBe "tokopedia://search-autocomplete?q=asus"
+        ) shouldBe "q=asus"
+    }
+
+    @Test
+    fun `Get query params from url`() {
+        UrlParamUtils.getQueryParams(null) shouldBe ""
+        UrlParamUtils.getQueryParams("") shouldBe ""
+        UrlParamUtils.getQueryParams("xxx") shouldBe ""
+        UrlParamUtils.getQueryParams("?xxx") shouldBe "xxx"
     }
 }

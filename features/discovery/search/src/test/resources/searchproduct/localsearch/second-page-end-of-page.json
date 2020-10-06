@@ -5,7 +5,7 @@
     },
     "data": {
       "isQuerySafe": true,
-      "autocompleteApplink": "tokopedia://search-autocomplete?q=samsung",
+      "autocompleteApplink": "tokopedia://search-autocomplete?navsource=campaign&q=asus&navsource=campaign&srp_page_id=160&srp_page_title=Waktu+Indonesia+Belanja",
       "redirection": {
         "redirectApplink": ""
       },

@@ -1,6 +1,7 @@
 package com.tokopedia.search.result.presentation.presenter.product
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.result.complete
@@ -22,6 +23,7 @@ private const val searchProductLocalSearchEmptyJSON = "searchproduct/localsearch
 private const val searchProductLocalSearchFirstPageEndOfPageJSON = "searchproduct/localsearch/first-page-end-of-page.json"
 private const val searchProductLocalSearchFirstPage12ProductsJSON = "searchproduct/localsearch/first-page-12-products.json"
 private const val searchProductLocalSearchSecondPageEndOfPageJSON = "searchproduct/localsearch/second-page-end-of-page.json"
+private const val searchProductLocalSearchSecondPageEmptyProductJSON = "searchproduct/localsearch/second-page-empty-product.json"
 
 internal class SearchProductLocalSearchTest: ProductListPresenterTestFixtures() {
 
@@ -162,7 +164,7 @@ internal class SearchProductLocalSearchTest: ProductListPresenterTestFixtures() 
 
     private fun `Then verify visitable list have search in tokopedia at bottom`() {
         visitableList.last().shouldBeInstanceOf<SearchInTokopediaViewModel>()
-        (visitableList.last() as SearchInTokopediaViewModel).applink shouldBe "tokopedia://search-autocomplete?q=asus"
+        (visitableList.last() as SearchInTokopediaViewModel).applink shouldBe "${ApplinkConstInternalDiscovery.SEARCH_RESULT}?q=asus"
     }
 
     @Test
@@ -175,7 +177,22 @@ internal class SearchProductLocalSearchTest: ProductListPresenterTestFixtures() 
         `Given view already load data`(searchParameter)
         `Given visitable list page 2 will be captured`()
 
-        `When Load Data`(searchParameter)
+        `When load more data`(searchParameter)
+
+        `Then verify visitable list have search in tokopedia at bottom`()
+    }
+
+    @Test
+    fun `Show search in tokopedia button at bottom of last page - empty page 2`() {
+        val searchProductModel = searchProductLocalSearchFirstPage12ProductsJSON.jsonToObject<SearchProductModel>()
+        val searchProductModelPage2 = searchProductLocalSearchSecondPageEmptyProductJSON.jsonToObject<SearchProductModel>()
+
+        `Given Search Product API will return SearchProductModel`(searchProductModel)
+        `Given Search Product Load More API will return Search Product Model`(searchProductModelPage2)
+        `Given view already load data`(searchParameter)
+        `Given visitable list page 2 will be captured`()
+
+        `When load more data`(searchParameter)
 
         `Then verify visitable list have search in tokopedia at bottom`()
     }
