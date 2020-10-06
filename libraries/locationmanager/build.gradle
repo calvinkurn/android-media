@@ -10,6 +10,8 @@ dependencies {
 
     implementation rootProject.ext.playServicesDependencies.location
 
+    androidTestImplementation rootProject.ext.supportLibDependencies.constraintLayout
+
 }
 
 project.ext {
