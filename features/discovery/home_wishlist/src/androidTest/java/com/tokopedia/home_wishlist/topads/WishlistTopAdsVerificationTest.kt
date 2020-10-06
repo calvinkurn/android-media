@@ -145,8 +145,8 @@ class WishlistTopAdsVerificationTest {
     }
 
     private fun waitForVerificatorReady() {
-        //wait for 5 minutes and 30 seconds
-        Thread.sleep(480000)
+        //wait for 15 seconds
+        Thread.sleep(15000)
     }
 
     private fun waitForData() {
