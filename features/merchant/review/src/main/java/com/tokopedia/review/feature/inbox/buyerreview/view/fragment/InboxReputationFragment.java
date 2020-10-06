@@ -563,8 +563,7 @@ public class InboxReputationFragment extends BaseDaggerFragment
                     context,
                     SellerMigrationFeatureName.FEATURE_REVIEW_TEMPLATE_AND_STATISTICS,
                     getScreenName(),
-                    appLinks,
-                    false);
+                    appLinks);
             startActivity(intent);
         }
     }

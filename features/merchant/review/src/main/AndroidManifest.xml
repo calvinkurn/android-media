@@ -83,11 +83,12 @@
 
         <activity
             android:name=".feature.reputationhistory.view.activity.SellerReputationDatePickerActivity"
-            android:label="@string/set_date" />
+            android:label="@string/set_date"
+            android:theme="@style/Theme.White"/>
         <activity
             android:name=".feature.reputationhistory.view.activity.SellerReputationInfoActivity"
             android:label="@string/reputation_point_calculation"
-            android:theme="@style/AppTheme" />
+            android:theme="@style/Theme.White" />
 
         <activity
             android:name="com.tokopedia.review.feature.inbox.common.presentation.activity.InboxReputationActivity"

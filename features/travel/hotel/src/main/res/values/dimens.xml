@@ -26,4 +26,6 @@
     <dimen name="hotel_80dp">80dp</dimen>
     <dimen name="hotel_100dp">100dp</dimen>
     <dimen name="hotel_160dp">160dp</dimen>
+
+    <dimen name="hotel_sp_6">6sp</dimen>
 </resources>

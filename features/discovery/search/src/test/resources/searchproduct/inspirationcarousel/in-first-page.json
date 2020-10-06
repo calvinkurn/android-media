@@ -957,7 +957,7 @@
       }
     ]
   },
-  "searchInspirationCarousel": {
+  "searchInspirationCarouselV2": {
     "data": [
       {
         "title": "Cek kategori berikut - should not be shown (position error)",
