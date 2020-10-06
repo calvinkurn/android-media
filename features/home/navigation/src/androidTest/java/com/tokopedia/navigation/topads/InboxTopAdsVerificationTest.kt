@@ -2,8 +2,11 @@ package com.tokopedia.navigation.topads
 
 import android.Manifest
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.test.rule.ActivityTestRule
 import androidx.test.rule.GrantPermissionRule
+import com.tokopedia.home.account.presentation.viewholder.RecommendationProductViewHolder
+import com.tokopedia.navigation.R
 import com.tokopedia.navigation.environment.InstrumentationInboxTestActivity
 import com.tokopedia.test.application.assertion.topads.TopAdsAssertion
 import com.tokopedia.test.application.environment.callback.TopAdsVerificatorInterface
@@ -57,16 +60,33 @@ class InboxTopAdsVerificationTest {
     fun testTopAdsInbox() {
         waitForData()
 
-        val inboxRecyclerView = activityRule.activity.findViewById<RecyclerView>(com.tokopedia.navigation.R.id.recyclerview)
+        val inboxRecyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.recyclerview)
         val itemCount = inboxRecyclerView.adapter?.itemCount ?: 0
 
-        clickOnEachItemRecyclerView(
-                activityRule.activity.findViewById(com.tokopedia.navigation.test.R.id.container_inbox),
-                inboxRecyclerView.id,
-                itemCount
-        )
+        for (i in 0 until itemCount) {
+            scrollHomeAccountRecyclerViewToPosition(inboxRecyclerView, i)
+            checkProductOnDynamicChannel(inboxRecyclerView, i)
+        }
 
         topAdsAssertion?.assert()
+    }
+
+    private fun checkProductOnDynamicChannel(inboxRecyclerView: RecyclerView, i: Int) {
+        when (inboxRecyclerView.findViewHolderForAdapterPosition(i)) {
+            is RecommendationProductViewHolder -> {
+                waitForData()
+                clickOnEachItemRecyclerView(
+                        activityRule.activity.findViewById(com.tokopedia.navigation.test.R.id.container_inbox),
+                        inboxRecyclerView.id,
+                        0
+                )
+            }
+        }
+    }
+
+    private fun scrollHomeAccountRecyclerViewToPosition(inboxRecyclerView: RecyclerView, position: Int) {
+        val layoutManager = inboxRecyclerView.layoutManager as StaggeredGridLayoutManager
+        activityRule.runOnUiThread { layoutManager.scrollToPositionWithOffset(position, 0) }
     }
 
     private fun login() {
