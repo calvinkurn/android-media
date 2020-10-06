@@ -75,7 +75,7 @@ class InboxTopAdsVerificationTest {
     private fun checkProductOnDynamicChannel(inboxRecyclerView: RecyclerView, i: Int) {
         when (val viewHolder = inboxRecyclerView.findViewHolderForAdapterPosition(i)) {
             is RecommendationViewHolder -> {
-                viewHolder.itemView.findViewById<View>(R.id.productCardView).performClick()
+                activityRule.runOnUiThread { viewHolder.itemView.findViewById<View>(R.id.productCardView).performClick() }
             }
         }
     }
