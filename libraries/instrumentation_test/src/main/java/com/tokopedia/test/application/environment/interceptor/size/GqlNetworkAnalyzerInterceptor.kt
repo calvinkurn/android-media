@@ -1,6 +1,5 @@
 package com.tokopedia.test.application.environment.interceptor.size
 
-import android.util.Log
 import com.tokopedia.analytics.performance.util.NetworkData
 import com.tokopedia.network.BuildConfig
 import com.tokopedia.test.application.util.parserule.ParserRuleProvider
@@ -8,6 +7,7 @@ import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response
 import okio.Buffer
+import timber.log.Timber
 import java.io.IOException
 import java.util.*
 
@@ -123,7 +123,7 @@ class GqlNetworkAnalyzerInterceptor : Interceptor {
             try {
                 return analyzeNetwork(chain)
             } catch (e: IOException) {
-                Log.i("SizeInterceptorTag", "did not work" + e.stackTrace)
+                Timber.i("SizeInterceptorTag; %s", "did not work ${e.stackTrace}")
             }
         } else {
             //just to be on safe side.
