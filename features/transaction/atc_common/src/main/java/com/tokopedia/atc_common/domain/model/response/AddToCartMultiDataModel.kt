@@ -1,10 +1,7 @@
-package com.tokopedia.buyerorder.unifiedhistory.list.data.model
+package com.tokopedia.atc_common.domain.model.response
 
 import com.google.gson.annotations.SerializedName
 
-/**
- * Created by fwidjaja on 03/08/20.
- */
 data class AtcMultiData (
         @SerializedName("add_to_cart_multi")
         val atcMulti: AtcMulti = AtcMulti()

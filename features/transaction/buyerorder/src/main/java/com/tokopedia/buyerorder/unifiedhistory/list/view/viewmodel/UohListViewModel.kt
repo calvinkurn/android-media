@@ -4,6 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.gson.JsonArray
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.atc_common.domain.model.response.AtcMultiData
+import com.tokopedia.atc_common.domain.usecase.AddToCartMultiUseCase
 import com.tokopedia.buyerorder.common.BuyerDispatcherProvider
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohUtils.asSuccess
@@ -23,7 +25,7 @@ class UohListViewModel @Inject constructor(dispatcher: BuyerDispatcherProvider,
                                            private val uohListUseCase: UohListUseCase,
                                            private val getRecommendationUseCase: GetRecommendationUseCase,
                                            private val uohFinishOrderUseCase: UohFinishOrderUseCase,
-                                           private val atcMultiProductsUseCase: AtcMultiProductsUseCase,
+                                           private val atcMultiProductsUseCase: AddToCartMultiUseCase,
                                            private val lsPrintFinishOrderUseCase: LsPrintFinishOrderUseCase,
                                            private val flightResendEmailUseCase: FlightResendEmailUseCase,
                                            private val trainResendEmailUseCase: TrainResendEmailUseCase,
@@ -83,9 +85,9 @@ class UohListViewModel @Inject constructor(dispatcher: BuyerDispatcherProvider,
         }
     }
 
-    fun doAtc(atcMultiQuery: String, listParam: JsonArray) {
+    fun doAtc(userId: String, atcMultiQuery: String, listParam: JsonArray) {
         launch {
-            _atcResult.postValue(atcMultiProductsUseCase.execute(atcMultiQuery, listParam))
+            _atcResult.postValue(atcMultiProductsUseCase.execute(userId, atcMultiQuery, listParam))
         }
     }
 

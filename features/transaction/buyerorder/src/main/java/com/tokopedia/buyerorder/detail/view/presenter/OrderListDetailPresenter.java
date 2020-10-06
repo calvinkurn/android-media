@@ -384,7 +384,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
 
         GraphqlRequest graphqlRequest = new
                 GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
-                R.raw.buy_again), ResponseBuyAgain.class, variables, false);
+                com.tokopedia.atc_common.R.raw.mutation_add_to_cart_multi), ResponseBuyAgain.class, variables, false);
 
         buyAgainUseCase = new GraphqlUseCase();
         buyAgainUseCase.clearRequest();

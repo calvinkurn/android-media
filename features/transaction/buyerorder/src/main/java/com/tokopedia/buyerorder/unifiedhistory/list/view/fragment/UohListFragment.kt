@@ -1359,7 +1359,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                     if (orderData.metadata.listProducts.isNotEmpty()) {
                         val listOfStrings = Gson().fromJson(orderData.metadata.listProducts, mutableListOf<String>().javaClass)
                         val jsonArray: JsonArray = Gson().toJsonTree(listOfStrings).asJsonArray
-                        uohListViewModel.doAtc(GraphqlHelper.loadRawString(resources, R.raw.buy_again), jsonArray)
+                        uohListViewModel.doAtc(userSession?.userId ?: "", GraphqlHelper.loadRawString(resources, com.tokopedia.atc_common.R.raw.mutation_add_to_cart_multi), jsonArray)
 
                         // analytics
                         val arrayListProducts = arrayListOf<ECommerceAdd.Add.Products>()
@@ -1445,7 +1445,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                     if (order.metadata.listProducts.isNotEmpty()) {
                         val listOfStrings = Gson().fromJson(order.metadata.listProducts, mutableListOf<String>().javaClass)
                         val jsonArray: JsonArray = Gson().toJsonTree(listOfStrings).asJsonArray
-                        uohListViewModel.doAtc(GraphqlHelper.loadRawString(resources, R.raw.buy_again), jsonArray)
+                        uohListViewModel.doAtc(userSession?.userId ?: "", GraphqlHelper.loadRawString(resources, com.tokopedia.atc_common.R.raw.mutation_add_to_cart_multi), jsonArray)
                     }
                 }
                 button.actionType.equals(GQL_TRACK, true) -> {
@@ -1581,7 +1581,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         atcJsonObject.addProperty(UohConsts.QUANTITY, recommendationItem.quantity)
         atcJsonObject.addProperty(UohConsts.NOTES, "")
         jsonArrayAtc.add(atcJsonObject)
-        uohListViewModel.doAtc(GraphqlHelper.loadRawString(resources, R.raw.buy_again), jsonArrayAtc)
+        uohListViewModel.doAtc(userSession?.userId ?: "", GraphqlHelper.loadRawString(resources, com.tokopedia.atc_common.R.raw.mutation_add_to_cart_multi), jsonArrayAtc)
 
         // analytics
         trackAtcRecommendationItem(recommendationItem)

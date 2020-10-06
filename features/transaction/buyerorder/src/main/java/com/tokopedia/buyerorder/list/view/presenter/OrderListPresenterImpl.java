@@ -664,7 +664,7 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
         variables.put(PARAM, generateInputQueryBuyAgain(orderDetails.getItems()));
         GraphqlRequest graphqlRequest = new
                 GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
-                R.raw.buy_again), ResponseBuyAgain.class, variables, false);
+                com.tokopedia.atc_common.R.raw.mutation_add_to_cart_multi), ResponseBuyAgain.class, variables, false);
         getView().displayLoadMore(true);
         GraphqlUseCase buyAgainUseCase = new GraphqlUseCase();
         buyAgainUseCase.clearRequest();
