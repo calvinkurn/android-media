@@ -11,7 +11,6 @@ interface PlaySocketType {
 enum class PlaySocketEnum(var value: String) {
     TotalView("TOTAL_VIEW"),
     TotalLike("TOTAL_LIKE"),
-    Metric("BULK_EVENT_NOTIF"), //Not Used anymore in Broadcaster side
     NewMetric("GENERAL_BULK_EVENT_NOTIF"),
     LiveStats("REPORT_CHANNEL"),
     LiveDuration("LIVE_DURATION"),

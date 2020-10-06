@@ -88,9 +88,6 @@ class PlayBroadcastSocketImpl constructor(
                     PlaySocketEnum.LiveStats.value -> {
                         data = convertToModel(webSocketResponse.jsonObject, LiveStats::class.java)
                     }
-//                    PlaySocketEnum.Metric.value -> {
-//                        data = convertToModel(webSocketResponse.jsonObject, Metric::class.java)
-//                    }
                     PlaySocketEnum.NewMetric.value -> {
                         data = NewMetricList(convertToModel(webSocketResponse.jsonArray, newMetricListType) ?: emptyList())
                     }
