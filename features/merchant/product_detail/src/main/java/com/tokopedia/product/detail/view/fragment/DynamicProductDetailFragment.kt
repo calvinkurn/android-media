@@ -2783,6 +2783,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             tradeinParam.setPrice(it.data.price.value)
             tradeinParam.productId = it.basic.getProductId()
             tradeinParam.productName = it.data.name
+            tradeinParam.origin =  viewModel.getMultiOriginByProductId().getOrigin()
         }
         intent.putExtra(TradeInParams.PARAM_PERMISSION_GIVEN, true)
         intent.putExtra(TradeInParams.TRADE_IN_PARAMS, tradeinParam)

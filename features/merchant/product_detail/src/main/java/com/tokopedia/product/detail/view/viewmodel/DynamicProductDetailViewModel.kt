@@ -760,7 +760,6 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         tradeInParams.remainingPrice = validateTradeIn.remainingPrice.toIntOrZero()
         tradeInParams.isUseKyc = if (validateTradeIn.useKyc) 1 else 0
         tradeInParams.widgetString = validateTradeIn.widgetString
-        tradeInParams.origin = getMultiOriginByProductId().getOrigin()
     }
 
     private fun getProductInfoP2OtherAsync(productId: Int, shopId: Int): Deferred<ProductInfoP2Other> {
