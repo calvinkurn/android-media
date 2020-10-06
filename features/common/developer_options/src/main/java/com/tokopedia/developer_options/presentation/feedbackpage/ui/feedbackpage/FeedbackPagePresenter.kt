@@ -136,7 +136,6 @@ class FeedbackPagePresenter(private val compositeSubscription: CompositeSubscrip
                 imageData.addAll(selectedImage.map {
                     ImageFeedbackUiModel(it)
                 })
-                imageData.add(DefaultFeedbackUiModel())
             }
         }
 

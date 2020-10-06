@@ -59,8 +59,8 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
     @Inject
     lateinit var feedbackPagePresenter: FeedbackPagePresenter
 
-    private lateinit var compositeSubscription: CompositeSubscription
-    private lateinit var myPreferences: Preferences
+    private var compositeSubscription: CompositeSubscription? = null
+    private var myPreferences: Preferences? = null
     private val imageAdapter: ImageFeedbackAdapter by lazy {
         ImageFeedbackAdapter(this)
     }
@@ -205,7 +205,7 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
         val separator = "@"
         val loginEmail = userSession?.email
         val topedEmail = loginEmail?.lastIndexOf(separator)
-        val savedEmail = myPreferences.getSubmitFlag(userSession?.userId.toString())
+        val savedEmail = myPreferences?.getSubmitFlag(userSession?.userId.toString())
         if (loginEmail != null) {
             if (loginEmail.contains("@tokopedia.com") && savedEmail == null) {
                 email.setText(topedEmail?.let { loginEmail.substring(0, it) })
@@ -350,7 +350,7 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
     }
 
     override fun setSubmitFlag() {
-        myPreferences.setSubmitFlag(emailTokopedia, userSession?.userId.toString())
+        myPreferences?.setSubmitFlag(emailTokopedia, userSession?.userId.toString())
     }
 
     override fun checkUriImage(feedbackId: Int) {

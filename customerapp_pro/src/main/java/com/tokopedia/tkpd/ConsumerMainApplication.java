@@ -152,11 +152,12 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
             }
         }));
 
-        registerActivityLifecycleCallbacks(new Screenshot(getApplicationContext().getContentResolver(), new Screenshot.Listener() {
+        registerActivityLifecycleCallbacks(new Screenshot(getApplicationContext().getContentResolver(), new Screenshot.BottomSheetListener() {
             @Override
-            public void onScreenShotTaken(Uri uri) {
+            public void onFeedbackClicked(Uri uri) {
                 openFeedbackForm(uri);
             }
+
         }));
 
         registerActivityLifecycleCallbacks(new BetaSignActivityLifecycleCallbacks());

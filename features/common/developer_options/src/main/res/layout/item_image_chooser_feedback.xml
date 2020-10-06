@@ -27,14 +27,14 @@
                 android:layout_alignParentLeft="true"
                 tools:src="@tools:sample/avatars" />
 
-            <ImageView
+            <!--<ImageView
                 android:id="@+id/createReviewRemoveImage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignTop="@id/image_review"
                 android:layout_alignEnd="@id/image_review"
                 android:layout_alignRight="@id/image_review"
-                app:srcCompat="@drawable/ic_remove_image_feedback" />
+                app:srcCompat="@drawable/ic_remove_image_feedback" />-->
 
         </RelativeLayout>
 
