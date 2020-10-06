@@ -4,8 +4,23 @@ apply plugin: 'io.hansel.preprocessor.module'
 apply plugin: "de.mannodermaus.android-junit5"
 
 android{
+
+
+    defaultConfig {
+        multiDexEnabled true
+        testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
+    }
+
     sourceSets.each {
         it.java.srcDirs += "src/$it.name/kotlin"
+    }
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8
     }
 
     testOptions {
@@ -123,6 +138,13 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.platformEngine
     testImplementation rootProject.ext.testDependencies.junitJupiterApi
     testImplementation rootProject.ext.testDependencies.junitPlatformRunner
+    testImplementation rootProject.ext.testDependencies.espressoIntents
+    implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
+
+//    debugImplementation 'androidx.fragment:fragment-testing:1.2.5'
+//    implementation "androidx.lifecycle:lifecycle-common-java8:2.1.0"
+//    implementation "android.arch.lifecycle:common-java8:1.1.0"
+//    implementation rootProject.ext.miscDependencies.viewModel
 }
 
 project.ext {
