@@ -18,7 +18,6 @@ import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
@@ -317,21 +316,33 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
         if (application == null) application = activity.getApplication();
         updateCurrentActivity(activity);
         if (intent != null && intent.getExtras() != null) {
-            handleOpenedActivity(activity, intent.getExtras());
+            decideDialog(activity, intent.getExtras());
         }
     }
 
-    public void onActivityStartedInternal(final Activity activity, @Nullable final Bundle bundle) {
+    public void onActivityCreatedInternalForPush(final Activity activity) {
         if (application == null) application = activity.getApplication();
         updateCurrentActivity(activity);
-        Bundle finalBundle = bundle;
-        if (finalBundle == null) {
-            Intent intent = activity.getIntent();
-            if (intent != null) {
-                finalBundle = intent.getExtras();
-            }
+        Bundle finalBundle = null;
+        Intent intent = activity.getIntent();
+        if (intent != null) {
+            finalBundle = intent.getExtras();
         }
-        handleOpenedActivity(activity, finalBundle);
+
+        //registerBroadcast
+        String className = activity.getClass().getName();
+        if (className.equals(DISCO_PAGE_ACTIVITY_NAME)) {
+            registerBroadcastReceiver(activity);
+        }
+        decideDialog(activity, finalBundle);
+    }
+
+    public void onActivityStartedInternal(final Activity activity) {
+        if (application == null) application = activity.getApplication();
+        updateCurrentActivity(activity);
+        if (canShowDialog()) {
+            showInAppNotification(currentActivity.get().getClass().getName(), activity.hashCode());
+        }
     }
 
     private void decideDialog(Activity activity, Bundle bundle) {
@@ -342,14 +353,15 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
             if (isComingFromPush) {
                 gratificationId = bundle.getString("gratificationId"); //todo Remove hardcoding
                 canShowPopupFromPush = (!(TextUtils.isEmpty(gratificationId)));
-                bundle.putString("gratificationId_processed", gratificationId);
-                bundle.remove("gratificationId");
                 try {
                     Intent intent = activity.getIntent();
                     Bundle activityBundle = intent.getExtras();
                     if (activityBundle != null) {
-                        activityBundle.remove("gratificationId");
-                        activityBundle.putString("gratificationId_processed", gratificationId);
+
+                        if (activityBundle.keySet().contains(EXTRA_BASE_MODEL)) {
+                            activity.getIntent().removeExtra("gratificationId");
+                            activity.getIntent().putExtra("gratificationId_processed", gratificationId);
+                        }
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -359,17 +371,6 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
 
         if (canShowPopupFromPush && !TextUtils.isEmpty(gratificationId)) {
             showPopupFromPush(activity, currentActivity.get().getClass().getName(), gratificationId);
-        } else if (canShowDialog()) {
-            showInAppNotification(currentActivity.get().getClass().getName(), activity.hashCode());
-        }
-    }
-
-    private void handleOpenedActivity(Activity activity, Bundle bundle) {
-        String className = activity.getClass().getName();
-        if (className.equals(DISCO_PAGE_ACTIVITY_NAME)) {
-            registerBroadcastReceiver(activity);
-        } else {
-            decideDialog(activity, bundle);
         }
     }
 
@@ -459,12 +460,10 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
     }
 
     private void cancelGratifJob(int entityHashCode, @GratifCancellationExceptionType String reason) {
-//        Log.d("NOOB","cancelGratifJob - reason "+reason);
         Job job = mapOfGratifJobs.get(entityHashCode);
         if (job != null && job.isActive()) {
             job.cancel(new CancellationException(reason));
             mapOfGratifJobs.remove(entityHashCode);
-//            Log.d("NOOB","cancelGratifJob -reason "+reason+" - entityHasCode "+ entityHashCode);
         }
     }
 
@@ -510,8 +509,6 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
         Activity activity = getCurrentActivity();
         if (activity != null)
             CmGratificationDialog.Companion.getWeakHashMap().remove(activity);
-//        isDialogShowing.set(false);
-//        isDialogShowing = false;
     }
 
     @Override

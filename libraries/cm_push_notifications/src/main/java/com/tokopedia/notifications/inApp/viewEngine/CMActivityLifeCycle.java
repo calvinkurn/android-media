@@ -37,17 +37,17 @@ public class CMActivityLifeCycle implements Application.ActivityLifecycleCallbac
             trackIrisEventForAppOpen(activity);
         }
         activityCount++;
+        try {
+            cmInAppManager.onActivityCreatedInternalForPush(activity);
+        }catch (Exception e){
+
+        }
     }
 
     @Override
     public void onActivityStarted(Activity activity) {
         try {
-            Bundle bundle = null;
-            Intent intent = activity.getIntent();
-            if (intent != null) {
-                bundle = intent.getExtras();
-            }
-            cmInAppManager.onActivityStartedInternal(activity, bundle);
+            cmInAppManager.onActivityStartedInternal(activity);
         } catch (Exception e) {
         }
     }
