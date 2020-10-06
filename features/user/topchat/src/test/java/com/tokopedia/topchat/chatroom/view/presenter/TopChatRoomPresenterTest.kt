@@ -17,6 +17,7 @@ import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.seamless_login.domain.usecase.SeamlessLoginUsecase
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.topchat.FileUtil
+import com.tokopedia.topchat.R
 import com.tokopedia.topchat.TopchatTestCoroutineContextDispatcher
 import com.tokopedia.topchat.chatlist.domain.usecase.DeleteMessageListUseCase
 import com.tokopedia.topchat.chatroom.domain.usecase.*
@@ -37,6 +38,7 @@ import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Du
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopchatCoroutineContextProvider
 import com.tokopedia.topchat.chattemplate.view.viewmodel.GetTemplateUiModel
 import com.tokopedia.topchat.common.util.ImageUtil
+import com.tokopedia.topchat.common.util.ImageUtil.IMAGE_UNDERSIZE
 import com.tokopedia.topchat.common.util.ImageUtil.IMAGE_VALID
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.websocket.RxWebSocket
@@ -570,6 +572,20 @@ class TopChatRoomPresenterTest {
                     imageUploadViewModel
             )
         }
+    }
+
+    @Test
+    fun `on error image file to upload validation IMAGE_UNDERSIZE`() {
+        // Given
+        every {
+            ImageUtil.validateImageAttachment(imageUploadViewModel.imageUrl)
+        } returns Pair(false, IMAGE_UNDERSIZE)
+
+        // When
+        presenter.startCompressImages(imageUploadViewModel)
+
+        // Then
+        verify(exactly = 1) { view.showSnackbarError(view.getStringResource(R.string.undersize_image)) }
     }
 
     private fun mockkParseResponse(wsInfo: WebSocketInfo, isOpposite: Boolean = true): ChatSocketPojo {
