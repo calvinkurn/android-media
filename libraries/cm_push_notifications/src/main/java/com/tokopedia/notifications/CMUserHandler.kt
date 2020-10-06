@@ -14,6 +14,7 @@ import com.tokopedia.abstraction.constant.TkpdCache
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.notifications.common.CMConstant
 import com.tokopedia.notifications.common.CMNotificationCacheHandler
 import com.tokopedia.notifications.common.CMNotificationUtils
 import com.tokopedia.notifications.common.launchCatchError
@@ -23,6 +24,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import rx.Subscriber
+import timber.log.Timber
 import java.io.IOException
 import java.util.*
 import kotlin.coroutines.CoroutineContext
@@ -42,7 +44,8 @@ class CMUserHandler(private val mContext: Context) : CoroutineScope {
         launchCatchError(block = {
             sendFcmTokenToServerGQL(token)
         }, onError = {
-            Log.e(TAG, "CMUserHandler: sendFcmTokenToServer ", it)
+            Timber.w( "${CMConstant.TimberTags.TAG}exception;err='${Log.getStackTraceString(it)
+                    .take(CMConstant.TimberTags.MAX_LIMIT)}';data=''")
         })
     }
 
@@ -58,12 +61,18 @@ class CMUserHandler(private val mContext: Context) : CoroutineScope {
                 try {
                     adInfo = AdvertisingIdClient.getAdvertisingIdInfo(mContext)
                 } catch (e: IOException) {
+                    Timber.w( "${CMConstant.TimberTags.TAG}exception;err='${Log.getStackTraceString(e)
+                            .take(CMConstant.TimberTags.MAX_LIMIT)}';data=''")
                     e.printStackTrace()
                     return ""
                 } catch (e: GooglePlayServicesNotAvailableException) {
+                    Timber.w( "${CMConstant.TimberTags.TAG}exception;err='${Log.getStackTraceString(e)
+                            .take(CMConstant.TimberTags.MAX_LIMIT)}';data=''")
                     e.printStackTrace()
                     return ""
                 } catch (e: GooglePlayServicesRepairableException) {
+                    Timber.w( "${CMConstant.TimberTags.TAG}exception;err='${Log.getStackTraceString(e)
+                            .take(CMConstant.TimberTags.MAX_LIMIT)}';data=''")
                     e.printStackTrace()
                     return ""
                 }
@@ -98,6 +107,8 @@ class CMUserHandler(private val mContext: Context) : CoroutineScope {
             this.token = token
             handler.postDelayed(runnable, delay)
         } catch (e: Exception) {
+            Timber.w( "${CMConstant.TimberTags.TAG}exception;err='${Log.getStackTraceString(e)
+                    .take(CMConstant.TimberTags.MAX_LIMIT)}';data=''")
         }
 
     }
@@ -109,6 +120,8 @@ class CMUserHandler(private val mContext: Context) : CoroutineScope {
                 it.unsubscribe()
             }
         } catch (e: Exception) {
+            Timber.w( "${CMConstant.TimberTags.TAG}exception;err='${Log.getStackTraceString(e)
+                    .take(CMConstant.TimberTags.MAX_LIMIT)}';data=''")
         }
     }
 
@@ -149,6 +162,8 @@ class CMUserHandler(private val mContext: Context) : CoroutineScope {
                     }
 
                     override fun onError(e: Throwable) {
+                        Timber.w( "${CMConstant.TimberTags.TAG}exception;err='${Log.getStackTraceString(e)
+                                .take(CMConstant.TimberTags.MAX_LIMIT)}';data=''")
                         Log.e(TAG, "CMPushNotificationManager: sendFcmTokenToServer " + e.message)
                     }
 
@@ -165,6 +180,8 @@ class CMUserHandler(private val mContext: Context) : CoroutineScope {
 
             }
         } catch (e: Exception) {
+            Timber.w( "${CMConstant.TimberTags.TAG}exception;err='${Log.getStackTraceString(e)
+                    .take(CMConstant.TimberTags.MAX_LIMIT)}';data=''")
             e.printStackTrace()
         }
 
