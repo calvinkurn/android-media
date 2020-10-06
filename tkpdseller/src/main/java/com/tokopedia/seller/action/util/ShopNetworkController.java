@@ -1,4 +1,4 @@
-package com.tokopedia.seller.util;
+package com.tokopedia.seller.action.util;
 
 import android.content.Context;
 
