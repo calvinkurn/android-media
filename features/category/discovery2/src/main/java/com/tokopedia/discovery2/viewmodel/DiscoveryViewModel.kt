@@ -17,11 +17,14 @@ import com.tokopedia.discovery2.repository.discoveryPage.DiscoveryUIConfigGQLRep
 import com.tokopedia.discovery2.usecase.CustomTopChatUseCase
 import com.tokopedia.discovery2.usecase.DiscoveryDataUseCase
 import com.tokopedia.discovery2.usecase.quickcouponusecase.QuickCouponUseCase
-import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.PINNED_ACTIVE_TAB
-import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.PINNED_COMPONENT_ID
-import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.PINNED_COMP_ID
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.ACTIVE_TAB
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.CATEGORY_ID
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.COMPONENT_ID
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.EMBED_CATEGORY
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.PIN_PRODUCT
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.PRODUCT_ID
-import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.SOURCE_QUERY
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.SOURCE
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.TARGET_COMP_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.REACT_NATIVE
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -74,8 +77,9 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
                     pageLoadTimePerformanceInterface?.startRenderPerformanceMonitoring()
                     data.let {
                         withContext(Dispatchers.Default) {
-                            discoveryResponseList.postValue(Success(it.components))
-
+                            if (it.components.isNullOrEmpty())
+                                discoveryPageInfo.postValue(Fail(Throwable()))
+                            else discoveryResponseList.postValue(Success(it.components))
                         }
                         setPageInfo(it)
                     }
@@ -174,11 +178,14 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
 
     fun getMapOfQueryParameter(intentUri: Uri): Map<String, String?> {
         return mapOf(
-                SOURCE_QUERY to intentUri.getQueryParameter(SOURCE_QUERY),
-                PINNED_COMPONENT_ID to intentUri.getQueryParameter(PINNED_COMPONENT_ID),
-                PINNED_ACTIVE_TAB to intentUri.getQueryParameter(PINNED_ACTIVE_TAB),
-                PINNED_COMP_ID to intentUri.getQueryParameter(PINNED_COMP_ID),
-                PRODUCT_ID to intentUri.getQueryParameter(PRODUCT_ID)
+                SOURCE to intentUri.getQueryParameter(SOURCE),
+                COMPONENT_ID to intentUri.getQueryParameter(COMPONENT_ID),
+                ACTIVE_TAB to intentUri.getQueryParameter(ACTIVE_TAB),
+                TARGET_COMP_ID to intentUri.getQueryParameter(TARGET_COMP_ID),
+                PRODUCT_ID to intentUri.getQueryParameter(PRODUCT_ID),
+                PIN_PRODUCT to intentUri.getQueryParameter(PIN_PRODUCT),
+                CATEGORY_ID to intentUri.getQueryParameter(CATEGORY_ID),
+                EMBED_CATEGORY to intentUri.getQueryParameter(EMBED_CATEGORY)
         )
     }
 
@@ -193,9 +200,12 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
 
     fun getQueryParameterMapFromBundle(bundle: Bundle?): Map<String, String?> {
         return mapOf(
-                PINNED_ACTIVE_TAB to bundle?.getString(PINNED_ACTIVE_TAB, ""),
-                PINNED_COMP_ID to bundle?.getString(PINNED_COMP_ID, ""),
-                PRODUCT_ID to bundle?.getString(PRODUCT_ID, "")
+                ACTIVE_TAB to bundle?.getString(ACTIVE_TAB, ""),
+                TARGET_COMP_ID to bundle?.getString(TARGET_COMP_ID, ""),
+                PRODUCT_ID to bundle?.getString(PRODUCT_ID, ""),
+                PIN_PRODUCT to bundle?.getString(PIN_PRODUCT, ""),
+                CATEGORY_ID to bundle?.getString(CATEGORY_ID, ""),
+                EMBED_CATEGORY to bundle?.getString(EMBED_CATEGORY, "")
         )
     }
 }

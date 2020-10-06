@@ -38,7 +38,7 @@ import com.tokopedia.logisticdata.data.constant.LogisticConstant
 import com.tokopedia.logisticdata.util.bitmapDescriptorFromVector
 import com.tokopedia.logisticdata.util.getLatLng
 import com.tokopedia.logisticdata.util.rxPinPoint
-import com.tokopedia.permissionchecker.PermissionCheckerHelper
+import com.tokopedia.utils.permission.PermissionCheckerHelper
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success

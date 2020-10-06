@@ -12,10 +12,10 @@ import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.ReponseStatus
@@ -53,7 +53,7 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
     lateinit var preferenceListAnalytics: PreferenceListAnalytics
 
     private val viewModel: PreferenceSummaryViewModel by lazy {
-        ViewModelProviders.of(this, viewModelFactory)[PreferenceSummaryViewModel::class.java]
+        ViewModelProvider(this, viewModelFactory)[PreferenceSummaryViewModel::class.java]
     }
 
     private var progressDialog: AlertDialog? = null
@@ -75,6 +75,7 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
     private var ivPayment: ImageView? = null
     private var tvPaymentName: Typography? = null
     private var tvPaymentDetail: Typography? = null
+    private var tvPaymentInfo: Typography? = null
     private var buttonChangePayment: Typography? = null
 
     private var cbMainPreference: CheckboxUnify? = null
@@ -126,6 +127,7 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
         ivPayment = null
         tvPaymentName = null
         tvPaymentDetail = null
+        tvPaymentInfo = null
         buttonChangePayment = null
         cbMainPreference = null
         tvMainPreference = null
@@ -140,7 +142,7 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
     private fun getPreferenceDetail() {
         val parent = activity
         if (parent is PreferenceEditParent) {
-            viewModel.getPreferenceDetail(parent.getProfileId(), parent.getAddressId(), parent.getShippingId(), parent.getGatewayCode(), parent.getPaymentQuery())
+            viewModel.getPreferenceDetail(parent.getProfileId(), parent.getAddressId(), parent.getShippingId(), parent.getGatewayCode(), parent.getPaymentQuery(), parent.getPaymentProfile())
         }
     }
 
@@ -251,6 +253,12 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
         } else {
             tvPaymentDetail?.gone()
         }
+        if (paymentModel.tickerMessage.isNotBlank()) {
+            tvPaymentInfo?.text = MethodChecker.fromHtml(paymentModel.tickerMessage)
+            tvPaymentInfo?.visible()
+        } else {
+            tvPaymentInfo?.gone()
+        }
 
         val parent = activity
         if (parent is PreferenceEditParent) {
@@ -326,6 +334,7 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
         ivPayment = view?.findViewById(R.id.iv_payment)
         tvPaymentName = view?.findViewById(R.id.tv_payment_name)
         tvPaymentDetail = view?.findViewById(R.id.tv_payment_detail)
+        tvPaymentInfo = view?.findViewById(R.id.tv_payment_info)
         buttonChangePayment = view?.findViewById(R.id.btn_change_payment)
 
         cbMainPreference = view?.findViewById(R.id.cb_main_preference)

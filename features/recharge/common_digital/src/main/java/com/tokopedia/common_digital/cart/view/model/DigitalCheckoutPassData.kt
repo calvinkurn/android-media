@@ -13,6 +13,7 @@ class DigitalCheckoutPassData() : Parcelable {
     var action: String? = null
     var categoryId: String? = null
     var clientNumber: String? = null
+    var orderId: String? = null
     var zoneId: String? = null
     var productId: String? = null
     var operatorId: String? = null
@@ -33,6 +34,7 @@ class DigitalCheckoutPassData() : Parcelable {
         action = parcel.readString()
         categoryId = parcel.readString()
         clientNumber = parcel.readString()
+        orderId = parcel.readString()
         zoneId = parcel.readString()
         productId = parcel.readString()
         operatorId = parcel.readString()
@@ -58,6 +60,7 @@ class DigitalCheckoutPassData() : Parcelable {
         action = builder.action
         categoryId = builder.categoryId
         clientNumber = builder.clientNumber
+        orderId = builder.orderId
         zoneId = builder.zoneId
         productId = builder.productId
         operatorId = builder.operatorId
@@ -79,6 +82,7 @@ class DigitalCheckoutPassData() : Parcelable {
         var action: String? = null
         var categoryId: String? = null
         var clientNumber: String? = null
+        var orderId: String? = null
         var zoneId: String? = null
         var productId: String? = null
         var operatorId: String? = null
@@ -107,6 +111,11 @@ class DigitalCheckoutPassData() : Parcelable {
 
         fun clientNumber(`val`: String): Builder {
             clientNumber = `val`
+            return this
+        }
+
+        fun orderId(`val`: String): Builder {
+            orderId = `val`
             return this
         }
 
@@ -196,6 +205,7 @@ class DigitalCheckoutPassData() : Parcelable {
         val PARAM_ACTION = "action"
         val PARAM_CATEGORY_ID = "category_id"
         val PARAM_CLIENT_NUMBER = "client_number"
+        val PARAM_ORDER_ID = "order_id"
         val PARAM_ZONE_ID = "zone_id"
         val PARAM_PRODUCT_ID = "product_id"
         val PARAM_OPERATOR_ID = "operator_id"
@@ -227,6 +237,7 @@ class DigitalCheckoutPassData() : Parcelable {
         parcel.writeString(action)
         parcel.writeString(categoryId)
         parcel.writeString(clientNumber)
+        parcel.writeString(orderId)
         parcel.writeString(zoneId)
         parcel.writeString(productId)
         parcel.writeString(operatorId)

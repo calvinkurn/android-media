@@ -84,6 +84,7 @@ import com.tokopedia.purchase_platform.common.constant.CartConstant.CART_EMPTY_W
 import com.tokopedia.purchase_platform.common.constant.CartConstant.CART_ERROR_GLOBAL
 import com.tokopedia.purchase_platform.common.constant.CartConstant.PARAM_CART
 import com.tokopedia.purchase_platform.common.constant.CartConstant.PARAM_DEFAULT
+import com.tokopedia.purchase_platform.common.constant.CartConstant.REFRESH_CART_AFTER_BACK_FROM_PDP
 import com.tokopedia.purchase_platform.common.constant.CartConstant.STATE_RED
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.Companion.RESULT_CODE_COUPON_STATE_CHANGED
 import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
@@ -216,6 +217,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     private var initialPromoButtonPosition = 0f
     private var recommendationPage = 1
     private var accordionCollapseState = true
+    private var refreshCartAfterBackFromPdp = true
 
     companion object {
 
@@ -837,6 +839,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             setHasOptionsMenu(true)
             it.title = it.getString(R.string.title_activity_cart)
 
+            setPdpRefreshResult()
+
             val productId = getAtcProductId()
             if (isAtcExternalFlow()) {
                 if (productId == INVALID_PRODUCT_ID) {
@@ -848,6 +852,12 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             } else {
                 loadCartData(savedInstanceState)
             }
+        }
+    }
+
+    private fun setPdpRefreshResult() {
+        if (arguments?.getBoolean(REFRESH_CART_AFTER_BACK_FROM_PDP, true) == false) {
+            refreshCartAfterBackFromPdp = false
         }
     }
 
@@ -2305,16 +2315,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     override fun renderErrorInitialGetCartListData(throwable: Throwable) {
-        var errorMessage = throwable.message ?: ""
-        if (throwable !is CartResponseErrorException) {
-            errorMessage = ErrorHandler.getErrorMessage(activity, throwable)
-        }
-
-        if (cartAdapter.itemCount > 0) {
-            showSnackbarRetry(errorMessage)
-        } else {
-            showErrorLayout(throwable)
-        }
+        showErrorLayout(throwable)
     }
 
     override fun renderToShipmentFormSuccess(eeCheckoutData: Map<String, Any>,
@@ -2681,9 +2682,11 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         when (requestCode) {
             NAVIGATION_SHIPMENT -> onResultFromRequestCodeCartShipment(resultCode, data)
             NAVIGATION_PDP -> {
-                refreshHandler?.isRefreshing = true
-                resetRecentViewList()
-                dPresenter.processInitialGetCartData(getCartId(), cartListData == null, true)
+                if (refreshCartAfterBackFromPdp) {
+                    refreshHandler?.isRefreshing = true
+                    resetRecentViewList()
+                    dPresenter.processInitialGetCartData(getCartId(), cartListData == null, true)
+                }
             }
             NAVIGATION_PROMO -> {
                 if (resultCode == Activity.RESULT_OK) {

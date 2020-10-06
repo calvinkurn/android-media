@@ -4,8 +4,9 @@ import android.content.SharedPreferences
 import com.tokopedia.common.network.util.CommonUtil
 import java.lang.reflect.Type
 import javax.inject.Inject
+import javax.inject.Singleton
 
-
+@Singleton
 class TopchatCacheManagerImpl @Inject constructor(
         private val sharedPreferences: SharedPreferences
 ) : TopchatCacheManager {

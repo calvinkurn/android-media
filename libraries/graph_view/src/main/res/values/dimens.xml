@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <dimen name="lcv_bottom_margin">8dp</dimen>
-    <dimen name="lcv_top_margin">4dp</dimen>
-    <dimen name="lcv_left_margin">4dp</dimen>
-    <dimen name="lcv_right_margin">4dp</dimen>
-    <dimen name="lcv_left_margin_from_text">4dp</dimen>
-</resources>

@@ -100,6 +100,7 @@ class SearchProductFirstPageGqlUseCase(
             query QuickFilter(${'$'}query: String!, ${'$'}params: String!) {
                 quick_filter(query: ${'$'}query, extraParams: ${'$'}params) {
                     filter {
+                        title
                         options {
                             name
                             key
@@ -244,7 +245,7 @@ class SearchProductFirstPageGqlUseCase(
 
         private const val SEARCH_INSPIRATION_CAROUSEL_QUERY = """
             query SearchInspirationCarousel(${'$'}params: String!) {
-                searchInspirationCarousel(params: ${'$'}params) {
+                searchInspirationCarouselV2(params: ${'$'}params) {
                     data {
                         title
                         type
