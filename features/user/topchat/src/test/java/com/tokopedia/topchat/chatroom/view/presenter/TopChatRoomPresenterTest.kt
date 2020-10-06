@@ -38,6 +38,7 @@ import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Du
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopchatCoroutineContextProvider
 import com.tokopedia.topchat.chattemplate.view.viewmodel.GetTemplateUiModel
 import com.tokopedia.topchat.common.util.ImageUtil
+import com.tokopedia.topchat.common.util.ImageUtil.IMAGE_EXCEED_SIZE_LIMIT
 import com.tokopedia.topchat.common.util.ImageUtil.IMAGE_UNDERSIZE
 import com.tokopedia.topchat.common.util.ImageUtil.IMAGE_VALID
 import com.tokopedia.user.session.UserSessionInterface
@@ -586,6 +587,21 @@ class TopChatRoomPresenterTest {
 
         // Then
         verify(exactly = 1) { view.showSnackbarError(view.getStringResource(R.string.undersize_image)) }
+    }
+
+
+    @Test
+    fun `on error image file to upload validation IMAGE_EXCEED_SIZE_LIMIT`() {
+        // Given
+        every {
+            ImageUtil.validateImageAttachment(imageUploadViewModel.imageUrl)
+        } returns Pair(false, IMAGE_EXCEED_SIZE_LIMIT)
+
+        // When
+        presenter.startCompressImages(imageUploadViewModel)
+
+        // Then
+        verify(exactly = 1) { view.showSnackbarError(view.getStringResource(R.string.oversize_image)) }
     }
 
     private fun mockkParseResponse(wsInfo: WebSocketInfo, isOpposite: Boolean = true): ChatSocketPojo {
