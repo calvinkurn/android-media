@@ -8,8 +8,6 @@ import com.tokopedia.shop_showcase.shop_showcase_add.data.model.AddShopShowcaseP
 import com.tokopedia.shop_showcase.shop_showcase_add.data.model.AddShopShowcaseResponse
 import com.tokopedia.shop_showcase.shop_showcase_add.domain.usecase.CreateShopShowcaseUseCase
 import com.tokopedia.shop_showcase.shop_showcase_management.data.model.GetShopProductsResponse
-import com.tokopedia.shop_showcase.shop_showcase_management.data.model.ShowcaseList.ShowcaseListBuyer.ShopShowcaseListBuyerResponse
-//import com.tokopedia.shop_showcase.shop_showcase_management.domain.GetShopShowcaseListBuyerUseCase
 import com.tokopedia.shop_showcase.shop_showcase_management.domain.GetShopShowcaseTotalProductUseCase
 import com.tokopedia.shop_showcase.shop_showcase_management.presentation.viewmodel.ShopShowcasePickerViewModel
 import com.tokopedia.usecase.coroutines.Success
@@ -29,7 +27,7 @@ import rx.Observable
 class ShopShowcasePickerViewModelTest {
 
     @RelaxedMockK
-    lateinit var getBuyerShowcaseList: GetShopEtalaseByShopUseCase // GetShopShowcaseListBuyerUseCase
+    lateinit var getBuyerShowcaseList: GetShopEtalaseByShopUseCase
 
     @RelaxedMockK
     lateinit var getShopShowcaseTotalProductUseCase: GetShopShowcaseTotalProductUseCase

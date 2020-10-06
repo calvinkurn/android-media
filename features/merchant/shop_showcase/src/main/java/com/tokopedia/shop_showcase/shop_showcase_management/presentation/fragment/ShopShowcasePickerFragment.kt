@@ -471,14 +471,9 @@ class ShopShowcasePickerFragment : BaseDaggerFragment(),
             when (it) {
                 is Success -> {
                     showLoading(false)
-
-                    // val errorMessage = it.data.shopShowcasesByShopID.error.message
-                    showcaseList = it.data //.shopShowcasesByShopID.result
-
-//                   if(errorMessage.isNotEmpty()) {
-//                       showToaster(errorMessage, Toaster.TYPE_ERROR)
-//                   } else {
+                    showcaseList = it.data
                     showGlobalError(false)
+
                     if (showcaseList.size.isMoreThanZero()) {
                         showEmptyStatePickerList(false)
                         // checked new created showcase, if showcaseId is not equal to zero
@@ -505,7 +500,6 @@ class ShopShowcasePickerFragment : BaseDaggerFragment(),
                     } else {
                         showEmptyStatePickerList(true)
                     }
-//                   }
                 }
                 is Fail -> {
                     showLoading(false)
