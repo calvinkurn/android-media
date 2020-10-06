@@ -1,0 +1,92 @@
+package com.tokopedia.shop.common.widget
+
+import android.view.Gravity
+import android.view.View
+import android.widget.ImageView
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.shop.common.R
+import com.tokopedia.shop.common.util.RoundedShadowUtill
+import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifyprinciples.Typography
+import kotlinx.android.synthetic.main.layout_button_npl_follow.view.*
+
+/**
+ * Created by Yehezkiel on 06/10/20
+ */
+class PartialButtonShopFollowersView private constructor(val view: View, private val listener: PartialButtonShopFollowersListener) {
+
+    companion object {
+        fun build(_view: View, _buttonListener: PartialButtonShopFollowersListener) = PartialButtonShopFollowersView(_view, _buttonListener)
+    }
+
+    var setupVisibility: Boolean = false
+        set(value) {
+            field = value
+            with(view) {
+                if (value) base_btn_follow.visibility = View.VISIBLE else base_btn_follow.visibility = View.GONE
+            }
+        }
+
+    private var followersImageAsset: ImageView? = null
+    private var followersTitle: Typography? = null
+    private var followersDesc: Typography? = null
+    private var followersBtn: UnifyButton? = null
+
+    init {
+        with(view) {
+            followersImageAsset = findViewById(R.id.shop_followers_image)
+            followersTitle = findViewById(R.id.shop_followers_title)
+            followersDesc = findViewById(R.id.shop_followers_desc)
+            followersBtn = findViewById(R.id.shop_followers_btn)
+        }
+    }
+
+    fun renderView(title: String, desc: String, isElligible: Boolean = false) = with(view) {
+        if (!isElligible) {
+            setupVisibility = false
+            return@with
+        }
+
+        setupRoundedTopShadow()
+        setupButtonFollowers()
+
+        followersImageAsset?.run {
+            ImageHandler.loadImageWithoutPlaceholderAndError(this, "https://ecs7.tokopedia.net/android/other/il_pdp%20bts_follower.png")
+        }
+
+        setupVisibility = true
+    }
+
+    fun stopButtonLoading() {
+        followersBtn?.run {
+            if (isLoading) {
+                followersBtn?.isLoading = false
+            }
+        }
+    }
+
+    private fun setupButtonFollowers() {
+        followersBtn?.run {
+            setOnClickListener {
+                if (!isLoading) {
+                    followersBtn?.isLoading = true
+                    listener.onButtonFollowNplClick()
+                }
+            }
+        }
+    }
+
+    private fun setupRoundedTopShadow() = with(view) {
+        background = RoundedShadowUtill.generateBackgroundWithShadow(this,
+                com.tokopedia.unifyprinciples.R.color.Unify_N0,
+                R.dimen.dp_12,
+                com.tokopedia.unifyprinciples.R.color.Neutral_N700_20,
+                R.dimen.dp_2,
+                Gravity.TOP)
+    }
+
+}
+
+interface PartialButtonShopFollowersListener {
+    fun onButtonFollowNplClick()
+}
