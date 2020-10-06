@@ -45,19 +45,17 @@ import com.tokopedia.promotionstarget.data.notification.NotificationEntryType;
 import com.tokopedia.promotionstarget.domain.presenter.GratifCancellationExceptionType;
 import com.tokopedia.promotionstarget.domain.presenter.GratifPopupIngoreType;
 import com.tokopedia.promotionstarget.domain.presenter.GratificationPresenter;
+import com.tokopedia.promotionstarget.presentation.ui.dialog.CmGratificationDialog;
 
 import org.json.JSONObject;
 
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.WeakHashMap;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import kotlinx.coroutines.Job;
 
@@ -84,15 +82,11 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
     private static final String DISCO_PAGE_ACTIVITY_NAME = "com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity";
     private Map<WeakReference<Activity>, WeakReference<BroadcastReceiver>> broadcastReceiverMap = new HashMap<>();
     private Map<Integer, Job> mapOfGratifJobs = new ConcurrentHashMap<Integer, Job>();
-    private WeakReference<DialogInterface> weakDialog = null;
-
 
     /*
      * This flag is used for validation of the dialog to be displayed.
      * This is useful for avoiding InApp dialog appearing more than once.
      * */
-
-    static AtomicBoolean isDialogShowing = new AtomicBoolean(false);
 
     static {
         inAppManager = new CMInAppManager();
@@ -112,7 +106,8 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
         this.cmInAppListener = this;
         gratificationPresenter = new GratificationPresenter(application);
         gratificationPresenter.setExceptionCallback(th -> {
-            CMInAppManager.isDialogShowing.set(false);
+            if (th != null)
+                th.printStackTrace();
         });
         RulesManager.initRuleEngine(application, new RuleInterpreterImpl(), new DataConsumerImpl());
         initInAppManager();
@@ -150,33 +145,19 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
         gratificationPresenter.showGratificationInApp(tempWeakActivity, gratificationId, NotificationEntryType.PUSH, new GratificationPresenter.GratifPopupCallback() {
             @Override
             public void onShow(@NonNull DialogInterface dialogInterface) {
-//                dialogInterfaceSet.add(dialogInterface);
-                weakDialog = new WeakReference<>(dialogInterface);
-                isDialogShowing.set(true);
                 Log.d("NOOB", "Gratif Dialog - push - show");
             }
 
             @Override
             public void onDismiss(@NonNull DialogInterface dialogInterface) {
-//                dialogInterfaceSet.remove(dialogInterface);
-                if (weakDialog.get() == dialogInterface) {
-                    weakDialog.clear();
-                }
-                isDialogShowing.set(false);
                 Log.d("NOOB", "Gratif Dialog - push - dismiss");
             }
 
             @Override
             public void onIgnored(@GratifPopupIngoreType int reason) {
-                if (reason != GratifPopupIngoreType.DIALOG_ALREADY_ACTIVE) {
-                    isDialogShowing.set(false);
-                }
-
                 Log.d("NOOB", "Gratif Dialog - push - ignore - reason" + String.valueOf(reason));
             }
         });
-
-//        isDialogShowing = true;
     }
 
     private void showIgnoreToast(String type, @GratifPopupIngoreType int reason) {
@@ -241,9 +222,7 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
                 .getRootView();
         root.addView(view);
 
-        // set flag if has dialog showing
-        isDialogShowing.set(true);
-//        isDialogShowing = true;
+        CmGratificationDialog.Companion.getWeakHashMap().put(activity, true);
     }
 
     /**
@@ -259,8 +238,7 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
             BannerView.create(activity, data);
 
             // set flag if has dialog showing
-            isDialogShowing.set(true);
-//            isDialogShowing = true;
+            CmGratificationDialog.Companion.getWeakHashMap().put(activity, true);
         } catch (Exception e) {
             onCMInAppInflateException(data);
         }
@@ -276,30 +254,18 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
             Job job = gratificationPresenter.showGratificationInApp(currentActivity, gratificationId, NotificationEntryType.ORGANIC, new GratificationPresenter.GratifPopupCallback() {
                 @Override
                 public void onShow(@NonNull DialogInterface dialogInterface) {
-                    weakDialog = new WeakReference<>(dialogInterface);
-//                    dialogInterfaceSet.add(dialogInterface);
-                    isDialogShowing.set(true);
-//                    isDialogShowing = true;
                     dataConsumed(data);
                     Log.d("NOOB", "Gratif Dialog - organic - show");
                 }
 
                 @Override
                 public void onDismiss(@NonNull DialogInterface dialogInterface) {
-                    if (weakDialog.get() == dialogInterface) {
-                        weakDialog.clear();
-                    }
-//                    dialogInterfaceSet.remove(dialogInterface);
-                    isDialogShowing.set(false);
-//                    isDialogShowing = false;
                     Log.d("NOOB", "Gratif Dialog - organic - dismiss");
                 }
 
                 @Override
                 public void onIgnored(@GratifPopupIngoreType int reason) {
                     if (reason != GratifPopupIngoreType.DIALOG_ALREADY_ACTIVE) {
-                        isDialogShowing.set(false);
-//                        isDialogShowing = false;
                         dataConsumed(data);
                     }
                     showIgnoreToast("organic", reason);
@@ -307,10 +273,7 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
                 }
             });
 
-            // set flag if has dialog showing
             mapOfGratifJobs.put(entityHashCode, job);
-//            isDialogShowing = true;
-//            gratifJobs.add(job);
 
         } catch (Exception e) {
             dataConsumed(data);
@@ -379,8 +342,18 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
             if (isComingFromPush) {
                 gratificationId = bundle.getString("gratificationId"); //todo Remove hardcoding
                 canShowPopupFromPush = (!(TextUtils.isEmpty(gratificationId)));
-                bundle.putString("gratificationId_processed",gratificationId);
+                bundle.putString("gratificationId_processed", gratificationId);
                 bundle.remove("gratificationId");
+                try {
+                    Intent intent = activity.getIntent();
+                    Bundle activityBundle = intent.getExtras();
+                    if (activityBundle != null) {
+                        activityBundle.remove("gratificationId");
+                        activityBundle.putString("gratificationId_processed", gratificationId);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }
 
@@ -459,14 +432,11 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
     }
 
     public boolean canShowDialog() {
-        return !isDialogShowing.get();
-//        if(!isDialogShowing){
-//            return true;
-//        }else if(weakDialog== null || weakDialog.get() == null){
-//            isDialogShowing = false;
-//            return true;
-//        }
-//        return false;
+        Activity activity = getCurrentActivity();
+        if (activity != null) {
+            return !CmGratificationDialog.Companion.getWeakHashMap().containsKey(activity);
+        }
+        return false;
     }
 
     public void onFragmentSelected(Fragment fragment) {
@@ -489,10 +459,12 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
     }
 
     private void cancelGratifJob(int entityHashCode, @GratifCancellationExceptionType String reason) {
+//        Log.d("NOOB","cancelGratifJob - reason "+reason);
         Job job = mapOfGratifJobs.get(entityHashCode);
-        if (job != null && !job.isActive()) {
+        if (job != null && job.isActive()) {
             job.cancel(new CancellationException(reason));
             mapOfGratifJobs.remove(entityHashCode);
+//            Log.d("NOOB","cancelGratifJob -reason "+reason+" - entityHasCode "+ entityHashCode);
         }
     }
 
@@ -535,7 +507,10 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
     @Override
     public void onCMinAppDismiss(CMInApp inApp) {
         RulesManager.getInstance().viewDismissed(inApp.id);
-        isDialogShowing.set(false);
+        Activity activity = getCurrentActivity();
+        if (activity != null)
+            CmGratificationDialog.Companion.getWeakHashMap().remove(activity);
+//        isDialogShowing.set(false);
 //        isDialogShowing = false;
     }
 

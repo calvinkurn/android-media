@@ -124,6 +124,7 @@ class GratificationPresenter @Inject constructor(val application: Application) {
                     }
                 })
         CmGratificationDialog.weakHashMap[activity] = true
+
         dialog?.setOnDismissListener { dialogInterface ->
             CmGratificationDialog.weakHashMap.remove(activity)
             gratifPopupCallback?.onDismiss(dialogInterface)
