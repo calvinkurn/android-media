@@ -195,7 +195,7 @@ class WishlistTopAdsVerificationTest {
     }
 
     private fun login() {
-        InstrumentationAuthHelper.loginToAnUser(activityRule.activity.application)
+        InstrumentationAuthHelper.loginInstrumentationTestTopAdsUser()
     }
 
     private fun setRequestParams(page: Int, keyword: String) {
