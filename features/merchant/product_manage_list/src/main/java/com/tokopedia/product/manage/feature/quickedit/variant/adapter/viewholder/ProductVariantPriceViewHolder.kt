@@ -25,7 +25,7 @@ class ProductVariantPriceViewHolder(
         val LAYOUT = R.layout.item_product_manage_variant
     }
 
-    private var currentPrice: Int? = null
+    private val priceMap: MutableMap<String, Int> = mutableMapOf()
 
     override fun bind(variant: ProductVariant) {
         itemView.textProductName.text = variant.name
@@ -36,7 +36,7 @@ class ProductVariantPriceViewHolder(
         setInputType()
         setupClearIcon()
         setTextFieldPriceMaxLength()
-        setTextFieldPriceValue(variant.price)
+        setTextFieldPriceValue(variant)
         setTextFieldPriceListeners(variant.id)
     }
 
@@ -56,17 +56,19 @@ class ProductVariantPriceViewHolder(
         }
     }
 
-    private fun setTextFieldPriceValue(price: Int) {
+    private fun setTextFieldPriceValue(variant: ProductVariant) {
        itemView.textFieldPrice.apply {
-           val priceRupiah = CurrencyFormatHelper.convertToRupiah(getCurrentPrice(price))
-           val priceTxt = CurrencyFormatHelper.removeCurrencyPrefix(priceRupiah)
-           val prefixTxt = itemView.context.getString(R.string.product_manage_quick_edit_currency)
+           priceMap.getOrElse(variant.id, { variant.price }).toString().let { price ->
+               val priceRupiah = CurrencyFormatHelper.convertToRupiah(price)
+               val priceTxt = CurrencyFormatHelper.removeCurrencyPrefix(priceRupiah)
+               val prefixTxt = itemView.context.getString(R.string.product_manage_quick_edit_currency)
 
-           prependText(prefixTxt)
-           textFieldInput.setText(priceTxt)
+               prependText(prefixTxt)
+               textFieldInput.setText(priceTxt)
 
-           val length = textFieldInput.length()
-           textFieldInput.setSelection(length)
+               val length = textFieldInput.length()
+               textFieldInput.setSelection(length)
+           }
        }
     }
 
@@ -94,7 +96,7 @@ class ProductVariantPriceViewHolder(
                         hidePriceError()
                     }
 
-                    currentPrice = price
+                    priceMap[productId] = price
                 }
             })
             setOnFocusChangeListener { _, hasFocus ->
@@ -125,10 +127,6 @@ class ProductVariantPriceViewHolder(
             setMessage("")
             setError(false)
         }
-    }
-
-    private fun getCurrentPrice(price: Int): String {
-        return (currentPrice ?: price).toString()
     }
 
     interface ProductVariantListener {
