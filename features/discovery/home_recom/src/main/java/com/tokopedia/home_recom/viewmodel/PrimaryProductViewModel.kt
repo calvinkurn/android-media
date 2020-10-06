@@ -19,8 +19,6 @@ import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import rx.Subscriber
-import rx.android.schedulers.AndroidSchedulers
-import rx.schedulers.Schedulers
 import javax.inject.Inject
 
 /**
@@ -113,7 +111,7 @@ class PrimaryProductViewModel @Inject constructor(
      */
     fun addToCart(addToCartRequestParams: AddToCartRequestParams) {
         val requestParams = RequestParams.create()
-        requestParams.putObject(AddToCartUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST, addToCartRequestParams)
+        requestParams.putObject(AddToCartUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST, addToCartRequestParams.apply { userId = userSessionInterface.userId })
         addToCartUseCase.createObservable(requestParams)
                 .subscribeOn(dispatcher.getSchedulerIO())
                 .observeOn(dispatcher.getSchedulerMain())
@@ -143,7 +141,7 @@ class PrimaryProductViewModel @Inject constructor(
      */
     fun buyNow(addToCartRequestParams: AddToCartRequestParams) {
         val requestParams = RequestParams.create()
-        requestParams.putObject(AddToCartUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST, addToCartRequestParams)
+        requestParams.putObject(AddToCartUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST, addToCartRequestParams.apply { userId = userSessionInterface.userId })
         addToCartUseCase.createObservable(requestParams)
                 .subscribeOn(dispatcher.getSchedulerIO())
                 .observeOn(dispatcher.getSchedulerMain())

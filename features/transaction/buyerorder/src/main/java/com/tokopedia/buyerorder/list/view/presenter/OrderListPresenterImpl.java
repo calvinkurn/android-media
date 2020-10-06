@@ -513,6 +513,7 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
         addToCartRequestParams.setProductName(productName);
         addToCartRequestParams.setCategory(productCategory);
         addToCartRequestParams.setPrice(productPrice);
+        addToCartRequestParams.setUserId(userSessionInterface.getUserId());
 
         RequestParams requestParams = RequestParams.create();
         requestParams.putObject(AddToCartUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST, addToCartRequestParams);

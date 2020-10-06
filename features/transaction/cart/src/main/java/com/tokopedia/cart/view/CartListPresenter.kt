@@ -1238,6 +1238,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
             this.productName = productName
             this.category = productCategory
             this.price = productPrice
+            this.userId = userSessionInterface.userId
         }
 
         val requestParams = RequestParams.create()

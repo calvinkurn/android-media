@@ -2395,6 +2395,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                         productName = data.getProductName
                         category = data.basic.category.name
                         price = data.finalPrice.toString()
+                        userId = viewModel.userId
                     }
                     viewModel.addToCart(addToCartOcsRequestParams)
                 }
@@ -2414,6 +2415,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                         productName = data.getProductName
                         category = data.basic.category.name
                         price = data.finalPrice.toString()
+                        userId = viewModel.userId
                     }
                     viewModel.addToCart(addToCartRequestParams)
                 }
@@ -2430,6 +2432,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 productName = data.getProductName
                 category = data.basic.category.name
                 price = data.finalPrice.toString()
+                userId = viewModel.userId
             }
             viewModel.addToCart(addToCartOccRequestParams)
         } else {
@@ -2445,6 +2448,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 productName = data.getProductName
                 category = data.basic.category.name
                 price = data.finalPrice.toString()
+                userId = viewModel.userId
             }
             viewModel.addToCart(addToCartRequestParams)
         }

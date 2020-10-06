@@ -253,6 +253,7 @@ open class WishlistViewModel @Inject constructor(
                 addToCartRequestParams.productName = it.name
                 addToCartRequestParams.category = it.categoryBreadcrumb
                 addToCartRequestParams.price = it.price
+                addToCartRequestParams.userId = userSessionInterface.userId
 
                 val requestParams = RequestParams.create()
                 requestParams.putObject(AddToCartUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST, addToCartRequestParams)
