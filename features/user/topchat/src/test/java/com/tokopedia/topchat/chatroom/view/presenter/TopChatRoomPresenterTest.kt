@@ -50,6 +50,7 @@ import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.impl.annotations.SpyK
+import junit.framework.Assert.assertTrue
 import okhttp3.Interceptor
 import okhttp3.WebSocket
 import org.hamcrest.CoreMatchers.equalTo
@@ -589,7 +590,6 @@ class TopChatRoomPresenterTest {
         verify(exactly = 1) { view.showSnackbarError(view.getStringResource(R.string.undersize_image)) }
     }
 
-
     @Test
     fun `on error image file to upload validation IMAGE_EXCEED_SIZE_LIMIT`() {
         // Given
@@ -602,6 +602,21 @@ class TopChatRoomPresenterTest {
 
         // Then
         verify(exactly = 1) { view.showSnackbarError(view.getStringResource(R.string.oversize_image)) }
+    }
+
+    @Test
+    fun `on uploading image`() {
+        // Given
+        every {
+            uploadImageUseCase.isUploading
+        } returns true
+
+        // When
+        presenter.isUploading()
+
+        // Then
+        verify(exactly = 1) { uploadImageUseCase.isUploading }
+        assertTrue(uploadImageUseCase.isUploading)
     }
 
     private fun mockkParseResponse(wsInfo: WebSocketInfo, isOpposite: Boolean = true): ChatSocketPojo {
