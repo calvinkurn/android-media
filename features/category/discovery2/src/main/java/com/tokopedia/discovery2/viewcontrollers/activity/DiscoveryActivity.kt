@@ -102,7 +102,7 @@ class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
 
     private fun sendDiscoveryLaunchBradcast(isNative:Boolean) {
         LocalBroadcastManager.getInstance(this).apply {
-            val DISCO_INTENT_FILTER = "DISCO_IS_NATIVE"
+            val DISCO_INTENT_FILTER = "DISCO_ACTIVITY_SELECTION"
             sendBroadcast(Intent(DISCO_INTENT_FILTER).apply {
                 val DISCO_IS_NATIVE = "DISCO_IS_NATIVE"
                 putExtra(DISCO_IS_NATIVE,isNative)

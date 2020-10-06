@@ -69,7 +69,7 @@ class CmGratificationDialog {
     private var couponDetailResponse: TokopointsCouponDetailResponse? = null
 
     companion object{
-        val weakHashMap = WeakHashMap<Activity,DialogInterface>()
+        val weakHashMap = WeakHashMap<Activity,Boolean>()
     }
 
     protected fun getLayout(): Int {

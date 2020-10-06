@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.Toast;
@@ -80,12 +81,9 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
     private List<String> excludeScreenList;
     private FragmentObserver fragmentObserver;
     private GratificationPresenter gratificationPresenter;
-    private static final String DISCO_PAGE_ACTIVITY_NAME = "com.tokopedia.discovery2.viewcontrollers.activity";
+    private static final String DISCO_PAGE_ACTIVITY_NAME = "com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity";
     private Map<WeakReference<Activity>, WeakReference<BroadcastReceiver>> broadcastReceiverMap = new HashMap<>();
-    private final Set<String> processedNotificationIds = new HashSet<>();
     private Map<Integer, Job> mapOfGratifJobs = new ConcurrentHashMap<Integer, Job>();
-    //    private ArrayList<Job> gratifJobs = new ArrayList<>();
-    private WeakHashMap<Activity, DialogInterface> weakMap = new WeakHashMap();
     private WeakReference<DialogInterface> weakDialog = null;
 
 
@@ -147,15 +145,15 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
         );
     }
 
-    private void showPopupFromPush(Bundle bundle, String name) {
-        String gratificationId = bundle.getString("gratificationId");
-        gratificationPresenter.showGratificationInApp(currentActivity, gratificationId, NotificationEntryType.PUSH, new GratificationPresenter.GratifPopupCallback() {
+    private void showPopupFromPush(Activity activity, String name, String gratificationId) {
+        WeakReference<Activity> tempWeakActivity = new WeakReference<>(activity);
+        gratificationPresenter.showGratificationInApp(tempWeakActivity, gratificationId, NotificationEntryType.PUSH, new GratificationPresenter.GratifPopupCallback() {
             @Override
             public void onShow(@NonNull DialogInterface dialogInterface) {
 //                dialogInterfaceSet.add(dialogInterface);
                 weakDialog = new WeakReference<>(dialogInterface);
                 isDialogShowing.set(true);
-
+                Log.d("NOOB", "Gratif Dialog - push - show");
             }
 
             @Override
@@ -165,6 +163,7 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
                     weakDialog.clear();
                 }
                 isDialogShowing.set(false);
+                Log.d("NOOB", "Gratif Dialog - push - dismiss");
             }
 
             @Override
@@ -173,7 +172,7 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
                     isDialogShowing.set(false);
                 }
 
-//                showIgnoreToast("push", reason);
+                Log.d("NOOB", "Gratif Dialog - push - ignore - reason" + String.valueOf(reason));
             }
         });
 
@@ -282,6 +281,7 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
                     isDialogShowing.set(true);
 //                    isDialogShowing = true;
                     dataConsumed(data);
+                    Log.d("NOOB", "Gratif Dialog - organic - show");
                 }
 
                 @Override
@@ -292,6 +292,7 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
 //                    dialogInterfaceSet.remove(dialogInterface);
                     isDialogShowing.set(false);
 //                    isDialogShowing = false;
+                    Log.d("NOOB", "Gratif Dialog - organic - dismiss");
                 }
 
                 @Override
@@ -302,6 +303,7 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
                         dataConsumed(data);
                     }
                     showIgnoreToast("organic", reason);
+                    Log.d("NOOB", "Gratif Dialog - organic - ignored- reason - " + String.valueOf(reason));
                 }
             });
 
@@ -356,7 +358,7 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
         }
     }
 
-    public void onActivityStartedInternal(final Activity activity,@Nullable final Bundle bundle) {
+    public void onActivityStartedInternal(final Activity activity, @Nullable final Bundle bundle) {
         if (application == null) application = activity.getApplication();
         updateCurrentActivity(activity);
         Bundle finalBundle = bundle;
@@ -371,21 +373,21 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
 
     private void decideDialog(Activity activity, Bundle bundle) {
         boolean canShowPopupFromPush = false;
+        String gratificationId = null;
         if (bundle != null) {
             boolean isComingFromPush = bundle.keySet().contains(EXTRA_BASE_MODEL);
             if (isComingFromPush) {
-                String gratificationId = bundle.getString("gratificationId"); //todo Remove hardcoding
+                gratificationId = bundle.getString("gratificationId"); //todo Remove hardcoding
                 canShowPopupFromPush = (!(TextUtils.isEmpty(gratificationId)));
-                processedNotificationIds.add(gratificationId);
+                bundle.putString("gratificationId_processed",gratificationId);
+                bundle.remove("gratificationId");
             }
         }
 
-        if (canShowDialog()) {
-            if (canShowPopupFromPush) {
-                showPopupFromPush(bundle, currentActivity.get().getClass().getName());
-            } else {
-                showInAppNotification(currentActivity.get().getClass().getName(), activity.hashCode());
-            }
+        if (canShowPopupFromPush && !TextUtils.isEmpty(gratificationId)) {
+            showPopupFromPush(activity, currentActivity.get().getClass().getName(), gratificationId);
+        } else if (canShowDialog()) {
+            showInAppNotification(currentActivity.get().getClass().getName(), activity.hashCode());
         }
     }
 
@@ -406,8 +408,13 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
                 if (bundle != null) {
                     final String DISCO_IS_NATIVE = "DISCO_IS_NATIVE";
                     boolean isNative = bundle.getBoolean(DISCO_IS_NATIVE);
-                    if (isNative && context instanceof Activity)
-                        decideDialog((Activity) context, bundle);
+                    if (isNative) {
+                        Intent activityIntent = activity.getIntent();
+                        if (activityIntent != null) {
+                            Bundle activityBundle = activityIntent.getExtras();
+                            decideDialog(activity, activityBundle);
+                        }
+                    }
                 }
             }
         };
@@ -431,6 +438,7 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
             if (receiver != null) {
                 LocalBroadcastManager.getInstance(activity).unregisterReceiver(receiver);
             }
+            broadcastReceiverMap.remove(finalWeakActivity);
         }
     }
 
