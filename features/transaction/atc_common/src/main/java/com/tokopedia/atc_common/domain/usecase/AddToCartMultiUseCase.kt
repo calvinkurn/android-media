@@ -9,8 +9,7 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
-class AddToCartMultiUseCase @Inject constructor(private val useCase: GraphqlUseCase<AtcMultiData>,
-                                                private val baseAnalytics: AddToCartBaseAnalytics) {
+class AddToCartMultiUseCase @Inject constructor(private val useCase: GraphqlUseCase<AtcMultiData>) {
 
     companion object {
         private const val PARAM = "param"
@@ -25,9 +24,9 @@ class AddToCartMultiUseCase @Inject constructor(private val useCase: GraphqlUseC
             val atc = useCase.executeOnBackground()
             if (atc.atcMulti.buyAgainData.success == 1) {
                 for (product in atc.atcMulti.buyAgainData.listProducts) {
-                    baseAnalytics.sendAppsFlyerTracking(product.productId.toString(), "", "",
+                    AddToCartBaseAnalytics.sendAppsFlyerTracking(product.productId.toString(), "", "",
                             product.quantity.toString(), "")
-                    baseAnalytics.sendBranchIoTracking(product.productId.toString(), "", "",
+                    AddToCartBaseAnalytics.sendBranchIoTracking(product.productId.toString(), "", "",
                             product.quantity.toString(), "", "",
                             "", "", "",
                             "", "", "", userId)

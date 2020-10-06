@@ -17,6 +17,8 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams;
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel;
+import com.tokopedia.atc_common.domain.model.response.AtcMultiData;
+import com.tokopedia.atc_common.domain.usecase.AddToCartMultiLegacyUseCase;
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase;
 import com.tokopedia.buyerorder.R;
 import com.tokopedia.buyerorder.detail.data.CancelReplacementPojo;
@@ -126,6 +128,7 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
     private RequestCancelInfo requestCancelInfo;
     private PostCancelReasonUseCase postCancelReasonUseCase;
     private FinishOrderUseCase finishOrderUseCase;
+    private AddToCartMultiLegacyUseCase addToCartMultiLegacyUseCase;
 
     @Inject
     public OrderListPresenterImpl(GetRecommendationUseCase getRecommendationUseCase,
@@ -135,7 +138,9 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
                                   TopAdsWishlishedUseCase topAdsWishlishedUseCase,
                                   UserSessionInterface userSessionInterface,
                                   OrderListAnalytics orderListAnalytics,
-                                  PostCancelReasonUseCase postCancelReasonUseCase, FinishOrderUseCase finishOrderUseCase) {
+                                  PostCancelReasonUseCase postCancelReasonUseCase,
+                                  FinishOrderUseCase finishOrderUseCase,
+                                  AddToCartMultiLegacyUseCase addToCartMultiLegacyUseCase) {
         this.getRecommendationUseCase = getRecommendationUseCase;
         this.addToCartUseCase = addToCartUseCase;
         this.addWishListUseCase = addWishListUseCase;
@@ -145,6 +150,7 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
         this.orderListAnalytics = orderListAnalytics;
         this.postCancelReasonUseCase = postCancelReasonUseCase;
         this.finishOrderUseCase = finishOrderUseCase;
+        this.addToCartMultiLegacyUseCase = addToCartMultiLegacyUseCase;
     }
 
     @Override
@@ -660,17 +666,10 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
         if (getView() == null || getView().getAppContext() == null)
             return;
         Map<String, Object> variables = new HashMap<>();
-        JsonObject passenger = new JsonObject();
         variables.put(PARAM, generateInputQueryBuyAgain(orderDetails.getItems()));
-        GraphqlRequest graphqlRequest = new
-                GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
-                com.tokopedia.atc_common.R.raw.mutation_add_to_cart_multi), ResponseBuyAgain.class, variables, false);
         getView().displayLoadMore(true);
-        GraphqlUseCase buyAgainUseCase = new GraphqlUseCase();
-        buyAgainUseCase.clearRequest();
-        buyAgainUseCase.addRequest(graphqlRequest);
-
-        buyAgainUseCase.execute(new Subscriber<GraphqlResponse>() {
+        addToCartMultiLegacyUseCase.setup(GraphqlHelper.loadRawString(getView().getAppContext().getResources(), com.tokopedia.atc_common.R.raw.mutation_add_to_cart_multi), variables, userSessionInterface.getUserId());
+        addToCartMultiLegacyUseCase.execute(new Subscriber<AtcMultiData>() {
             @Override
             public void onCompleted() {
 
@@ -685,18 +684,16 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
             }
 
             @Override
-            public void onNext(GraphqlResponse objects) {
+            public void onNext(AtcMultiData atcMultiData) {
                 if (getView() != null && getView().getAppContext() != null) {
                     getView().displayLoadMore(false);
-                    ResponseBuyAgain responseBuyAgain = objects.getData(ResponseBuyAgain.class);
-                    if (responseBuyAgain.getAddToCartMulti().getData().getSuccess() == 1) {
-                        getView().showSuccessMessageWithAction(StringUtils.convertListToStringDelimiter(responseBuyAgain.getAddToCartMulti().getData().getMessage(), ","));
+                    if (atcMultiData.getAtcMulti().getBuyAgainData().getSuccess() == 1) {
+                        getView().showSuccessMessageWithAction(StringUtils.convertListToStringDelimiter(atcMultiData.getAtcMulti().getBuyAgainData().getMessage(), ","));
                     } else {
-                        getView().showFailureMessage(StringUtils.convertListToStringDelimiter(responseBuyAgain.getAddToCartMulti().getData().getMessage(), ","));
+                        getView().showFailureMessage(StringUtils.convertListToStringDelimiter(atcMultiData.getAtcMulti().getBuyAgainData().getMessage(), ","));
                     }
-                    orderListAnalytics.sendBuyAgainEvent(orderDetails.getItems(), orderDetails.getShopInfo(), responseBuyAgain.getAddToCartMulti().getData().getData(), responseBuyAgain.getAddToCartMulti().getData().getSuccess() == 1, false, "", getStatus().status());
+                    orderListAnalytics.sendBuyAgainEvent(orderDetails.getItems(), orderDetails.getShopInfo(), atcMultiData.getAtcMulti().getBuyAgainData().getListProducts(), atcMultiData.getAtcMulti().getBuyAgainData().getSuccess() == 1, false, "", getStatus().status());
                 }
-
             }
         });
     }

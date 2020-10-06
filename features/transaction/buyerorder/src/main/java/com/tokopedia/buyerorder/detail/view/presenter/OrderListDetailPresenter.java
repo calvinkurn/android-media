@@ -17,6 +17,8 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
+import com.tokopedia.atc_common.domain.model.response.AtcMultiData;
+import com.tokopedia.atc_common.domain.usecase.AddToCartMultiLegacyUseCase;
 import com.tokopedia.buyerorder.R;
 import com.tokopedia.buyerorder.detail.data.ActionButton;
 import com.tokopedia.buyerorder.detail.data.ActionButtonList;
@@ -108,6 +110,8 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     RequestCancelInfo requestCancelInfo;
     @Inject
     SendEventNotificationUseCase sendEventNotificationUseCase;
+    @Inject
+    AddToCartMultiLegacyUseCase addToCartMultiLegacyUseCase;
 
     private String Insurance_File_Name = "Invoice";
     public String pdfUri = " ";
@@ -379,18 +383,10 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     @Override
     public void onBuyAgainItems(List<Items> items, String eventActionLabel, String statusCode) {
         Map<String, Object> variables = new HashMap<>();
-        JsonObject passenger = new JsonObject();
         variables.put(PARAM, generateInputQueryBuyAgain(items));
-
-        GraphqlRequest graphqlRequest = new
-                GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
-                com.tokopedia.atc_common.R.raw.mutation_add_to_cart_multi), ResponseBuyAgain.class, variables, false);
-
-        buyAgainUseCase = new GraphqlUseCase();
-        buyAgainUseCase.clearRequest();
-        buyAgainUseCase.addRequest(graphqlRequest);
-
-        buyAgainUseCase.execute(new Subscriber<GraphqlResponse>() {
+        UserSession userSession = new UserSession(getView().getAppContext());
+        addToCartMultiLegacyUseCase.setup(GraphqlHelper.loadRawString(getView().getAppContext().getResources(), com.tokopedia.atc_common.R.raw.mutation_add_to_cart_multi), variables, userSession.getUserId());
+        addToCartMultiLegacyUseCase.execute(new Subscriber<AtcMultiData>() {
             @Override
             public void onCompleted() {
 
@@ -405,18 +401,16 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
             }
 
             @Override
-            public void onNext(GraphqlResponse objects) {
+            public void onNext(AtcMultiData atcMultiData) {
                 if (getView() != null && getView().getAppContext() != null) {
                     getView().hideProgressBar();
-                    ResponseBuyAgain responseBuyAgain = objects.getData(ResponseBuyAgain.class);
-                    if (responseBuyAgain.getAddToCartMulti().getData().getSuccess() == 1) {
-                        getView().showSuccessMessageWithAction(StringUtils.convertListToStringDelimiter(responseBuyAgain.getAddToCartMulti().getData().getMessage(), ","));
+                    if (atcMultiData.getAtcMulti().getBuyAgainData().getSuccess() == 1) {
+                        getView().showSuccessMessageWithAction(StringUtils.convertListToStringDelimiter(atcMultiData.getAtcMulti().getBuyAgainData().getMessage(), ","));
                     } else {
-                        getView().showErrorMessage(StringUtils.convertListToStringDelimiter(responseBuyAgain.getAddToCartMulti().getData().getMessage(), ","));
+                        getView().showErrorMessage(StringUtils.convertListToStringDelimiter(atcMultiData.getAtcMulti().getBuyAgainData().getMessage(), ","));
                     }
-                    orderListAnalytics.sendBuyAgainEvent(items, orderDetails.getShopInfo(), responseBuyAgain.getAddToCartMulti().getData().getData(), responseBuyAgain.getAddToCartMulti().getData().getSuccess() == 1, true, eventActionLabel, statusCode);
+                    orderListAnalytics.sendBuyAgainEvent(items, orderDetails.getShopInfo(), atcMultiData.getAtcMulti().getBuyAgainData().getListProducts(), atcMultiData.getAtcMulti().getBuyAgainData().getSuccess() == 1, true, eventActionLabel, statusCode);
                 }
-
             }
         });
     }
