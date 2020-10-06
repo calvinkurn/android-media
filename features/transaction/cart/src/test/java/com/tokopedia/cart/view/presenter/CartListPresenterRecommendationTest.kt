@@ -58,6 +58,7 @@ object CartListPresenterRecommendationTest : Spek({
     val updateInsuranceProductDataUsecase: UpdateInsuranceProductDataUsecase = mockk()
     val seamlessLoginUsecase: SeamlessLoginUsecase = mockk()
     val updateCartCounterUseCase: UpdateCartCounterUseCase = mockk()
+    val followShopUseCase: FollowShopUseCase = mockk()
     val view: ICartListView = mockk(relaxed = true)
 
     Feature("get recommendation test") {
@@ -71,7 +72,8 @@ object CartListPresenterRecommendationTest : Spek({
                     getWishlistUseCase, getRecommendationUseCase, addToCartUseCase,
                     addToCartExternalUseCase, getInsuranceCartUseCase, removeInsuranceProductUsecase,
                     updateInsuranceProductDataUsecase, seamlessLoginUsecase, updateCartCounterUseCase,
-                    updateCartAndValidateUseUseCase, validateUsePromoRevampUseCase, TestSchedulers
+                    updateCartAndValidateUseUseCase, validateUsePromoRevampUseCase, followShopUseCase,
+                    TestSchedulers
             )
         }
 

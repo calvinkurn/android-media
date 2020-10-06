@@ -59,6 +59,7 @@ object CartListPresenterAddToCartWishlistAnalyticsTest : Spek({
     val updateInsuranceProductDataUsecase: UpdateInsuranceProductDataUsecase = mockk()
     val seamlessLoginUsecase: SeamlessLoginUsecase = mockk()
     val updateCartCounterUseCase: UpdateCartCounterUseCase = mockk()
+    val followShopUseCase: FollowShopUseCase = mockk()
     val view: ICartListView = mockk(relaxed = true)
 
     Feature("generate add to cart data analytics on wishlist") {
@@ -72,7 +73,8 @@ object CartListPresenterAddToCartWishlistAnalyticsTest : Spek({
                     getWishlistUseCase, getRecommendationUseCase, addToCartUseCase,
                     addToCartExternalUseCase, getInsuranceCartUseCase, removeInsuranceProductUsecase,
                     updateInsuranceProductDataUsecase, seamlessLoginUsecase, updateCartCounterUseCase,
-                    updateCartAndValidateUseUseCase, validateUsePromoRevampUseCase, TestSchedulers
+                    updateCartAndValidateUseUseCase, validateUsePromoRevampUseCase, followShopUseCase,
+                    TestSchedulers
             )
         }
 

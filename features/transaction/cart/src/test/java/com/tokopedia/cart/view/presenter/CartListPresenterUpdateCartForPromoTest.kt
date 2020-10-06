@@ -54,6 +54,7 @@ object CartListPresenterUpdateCartForPromoTest : Spek({
     val updateInsuranceProductDataUsecase: UpdateInsuranceProductDataUsecase = mockk()
     val seamlessLoginUsecase: SeamlessLoginUsecase = mockk()
     val updateCartCounterUseCase: UpdateCartCounterUseCase = mockk()
+    val followShopUseCase: FollowShopUseCase = mockk()
     val view: ICartListView = mockk(relaxed = true)
 
     Feature("update cart list for promo action") {
@@ -67,7 +68,8 @@ object CartListPresenterUpdateCartForPromoTest : Spek({
                     getWishlistUseCase, getRecommendationUseCase, addToCartUseCase,
                     addToCartExternalUseCase, getInsuranceCartUseCase, removeInsuranceProductUsecase,
                     updateInsuranceProductDataUsecase, seamlessLoginUsecase, updateCartCounterUseCase,
-                    updateCartAndValidateUseUseCase, validateUsePromoRevampUseCase, TestSchedulers
+                    updateCartAndValidateUseUseCase, validateUsePromoRevampUseCase, followShopUseCase,
+                    TestSchedulers
             )
         }
 
