@@ -54,6 +54,12 @@ public class TopAdsModule {
 
     @TopAdsScope
     @Provides
+    public UserSession provideUserSession(@ApplicationContext Context context){
+        return new UserSession(context);
+    }
+
+    @TopAdsScope
+    @Provides
     public CacheApiInterceptor provideApiCacheInterceptor(@ApplicationContext Context context) {
         return new CacheApiInterceptor(context, new CacheApiTKPDResponseValidator<TopAdsResponseError>(TopAdsResponseError.class));
     }
