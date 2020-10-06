@@ -1,5 +1,6 @@
 package com.tokopedia.review.feature.reviewreply.domain
 
+import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -17,7 +18,7 @@ class InsertTemplateReviewReplyUseCase @Inject constructor(
         private const val TITLE = "title"
         private const val MESSAGE = "message"
 
-        private val gqlQuery = """
+        const val INSERT_TEMPLATE_REVIEW_MUTATION = """
             mutation insert_template_review(${'$'}shopID: Int!, ${'$'}title: String!, ${'$'}message: String!) {
               insertResponseTemplate(shopID: ${'$'}shopID, title: ${'$'}title, message: ${'$'}message) {
                     success
@@ -31,7 +32,7 @@ class InsertTemplateReviewReplyUseCase @Inject constructor(
                      error
                   }
             }
-        """.trimIndent()
+        """
 
         @JvmStatic
         fun createParams(shopID: Int, title: String, message: String): Map<String, Any> =
@@ -40,8 +41,9 @@ class InsertTemplateReviewReplyUseCase @Inject constructor(
 
     var params = mapOf<String, Any>()
 
+    @GqlQuery("InsertTemplateReview", INSERT_TEMPLATE_REVIEW_MUTATION)
     override suspend fun executeOnBackground(): ReviewReplyInsertTemplateResponse.InsertResponseTemplate {
-        val gqlRequest = GraphqlRequest(gqlQuery, ReviewReplyInsertTemplateResponse::class.java, params)
+        val gqlRequest = GraphqlRequest(InsertTemplateReview.GQL_QUERY, ReviewReplyInsertTemplateResponse::class.java, params)
         val gqlResponse = graphQlRepository.getReseponse(listOf(gqlRequest))
         val error = gqlResponse.getError(GraphqlError::class.java)
         if (error.isNullOrEmpty()) {

@@ -1,5 +1,6 @@
 package com.tokopedia.review.feature.reviewlist.domain
 
+import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -18,7 +19,7 @@ class GetReviewProductListUseCase @Inject constructor(
         private const val LIMIT = "limit"
         private const val PAGE = "page"
 
-        private val gqlQuery = """
+        const val PRODUCT_REVIEW_LIST = """
             query get_product_review_list(${'$'}sortBy: String!, ${'$'}filterBy: String, ${'$'}limit: Int!, ${'$'}page: Int!) {
             	productrevShopRatingAggregate(sortBy: ${'$'}sortBy, filterBy: ${'$'}filterBy, limit: ${'$'}limit, page: ${'$'}page) {
                 data {
@@ -33,7 +34,7 @@ class GetReviewProductListUseCase @Inject constructor(
                 hasNext
             	}
             }
-        """.trimIndent()
+        """
 
         @JvmStatic
         fun createParams(sortBy: String, filterBy: String, limit: Int, page: Int): Map<String, Any> {
@@ -43,8 +44,9 @@ class GetReviewProductListUseCase @Inject constructor(
 
     var params = mapOf<String, Any>()
 
+    @GqlQuery("ProductReviewList", PRODUCT_REVIEW_LIST)
     override suspend fun executeOnBackground(): ProductReviewListResponse.ProductShopRatingAggregate {
-        val gqlRequest = GraphqlRequest(gqlQuery, ProductReviewListResponse::class.java, params)
+        val gqlRequest = GraphqlRequest(ProductReviewList.GQL_QUERY, ProductReviewListResponse::class.java, params)
         val gqlResponse = graphQlRepository.getReseponse(listOf(gqlRequest))
         val error = gqlResponse.getError(GraphqlError::class.java)
         if (error == null || error.isEmpty()) {

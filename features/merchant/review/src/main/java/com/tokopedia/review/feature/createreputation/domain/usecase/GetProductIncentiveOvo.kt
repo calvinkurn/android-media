@@ -1,5 +1,6 @@
 package com.tokopedia.review.feature.createreputation.domain.usecase
 
+import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
@@ -9,27 +10,28 @@ import javax.inject.Inject
 
 class GetProductIncentiveOvo @Inject constructor(private val graphqlRepository: GraphqlRepository) {
 
-    private val query by lazy {
-        """
-            query getProductRevIncentiveOvo{
-            	productrevIncentiveOvo{
-                ticker{
-                  title
-                  subtitle
+    companion object {
+        const val OVO_INCENTIVE_QUERY = """
+                query getProductRevIncentiveOvo{
+                    productrevIncentiveOvo{
+                    ticker{
+                      title
+                      subtitle
+                    }
+                    title
+                    subtitle
+                    description
+                    numbered_list
+                    cta_text
+                  }
                 }
-                title
-                subtitle
-                description
-                numbered_list
-                cta_text
-              }
-            }
-        """.trimIndent()
+            """
     }
 
+    @GqlQuery("OvoIncentive", OVO_INCENTIVE_QUERY)
     suspend fun getIncentiveOvo(): ProductRevIncentiveOvoDomain {
         val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
-        val graphqlRequest = GraphqlRequest(query, ProductRevIncentiveOvoDomain::class.java)
+        val graphqlRequest = GraphqlRequest(OvoIncentive.GQL_QUERY, ProductRevIncentiveOvoDomain::class.java)
 
         val response = graphqlRepository.getReseponse(listOf(graphqlRequest), cacheStrategy)
 
