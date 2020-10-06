@@ -189,6 +189,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        setHasOptionsMenu(true)
         return inflater.inflate(getLayoutRes(), container, false)
     }
 
@@ -201,7 +202,6 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
             extraCacheManagerId = this.getQueryParameter(ApplinkConstInternalMarketplace.ARGS_CACHE_MANAGER_ID).orEmpty()
             sellerMigrationFeatureName = this.getQueryParameter(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME).orEmpty()
         }
-        setHasOptionsMenu(true)
     }
 
     override fun onViewStateRestored(savedInstanceState: Bundle?) {

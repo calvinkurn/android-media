@@ -124,9 +124,9 @@ class HotelBookingFragment : HotelBaseFragment() {
             stopTrace()
         })
 
-        bookingViewModel.tokopointSumCouponResult.observe(this, androidx.lifecycle.Observer { renderSumCoupon(it) })
+        bookingViewModel.tokopointSumCouponResult.observe(viewLifecycleOwner, androidx.lifecycle.Observer { renderSumCoupon(it) })
 
-        bookingViewModel.hotelCheckoutResult.observe(this, androidx.lifecycle.Observer {
+        bookingViewModel.hotelCheckoutResult.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             progressDialog.dismiss()
             when (it) {
                 is Success -> {
