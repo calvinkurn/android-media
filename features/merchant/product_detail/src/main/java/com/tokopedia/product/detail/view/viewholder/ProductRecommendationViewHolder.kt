@@ -30,8 +30,6 @@ class ProductRecommendationViewHolder(
 
     companion object {
         val LAYOUT = R.layout.item_dynamic_recommendation
-        private const val EXPERIMENT_NAME = "See more button card"
-        private const val SEE_MORE_CARD_AB_VALUE = "See more card"
         const val KEY_UPDATE_FILTER_RECOM = "KEY_UPDATE_FILTER_RECOM"
     }
 
@@ -108,7 +106,7 @@ class ProductRecommendationViewHolder(
         view.rvProductRecom.bindCarouselProductCardViewGrid(
                 scrollToPosition = listener.getRecommendationCarouselSavedState().get(adapterPosition),
                 recyclerViewPool = listener.getParentRecyclerViewPool(),
-                showSeeMoreCard = RemoteConfigInstance.getInstance().abTestPlatform.getString(EXPERIMENT_NAME) == SEE_MORE_CARD_AB_VALUE && product.seeMoreAppLink.isNotBlank(),
+                showSeeMoreCard = product.seeMoreAppLink.isNotBlank(),
                 carouselProductCardOnItemClickListener = object : CarouselProductCardListener.OnItemClickListener {
                     override fun onItemClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
                         val productRecommendation = product.recommendationItemList.getOrNull(carouselProductCardPosition) ?: return

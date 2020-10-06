@@ -209,6 +209,7 @@ query shipment_address_form($params: ShipmentAddressFormParams) {
             }
             product_alert_message
             product_information
+            campaign_id
           }
           warehouse {
             warehouse_id

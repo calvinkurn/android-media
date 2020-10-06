@@ -156,8 +156,8 @@ public abstract class MainApplication extends MainRouterApplication{
                 @Override
                 public Object execute() {
                     Crashlytics.setUserIdentifier(userSession.getUserId());
-                    Crashlytics.setUserEmail(userSession.getEmail());
-                    Crashlytics.setUserName(userSession.getName());
+                    Crashlytics.setUserEmail(null);
+                    Crashlytics.setUserName(null);
                     return true;
                 }
             };

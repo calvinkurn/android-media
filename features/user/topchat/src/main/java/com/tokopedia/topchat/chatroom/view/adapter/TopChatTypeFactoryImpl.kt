@@ -29,6 +29,7 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.textbubble.LeftCha
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.textbubble.RightChatMessageViewHolder
 import com.tokopedia.topchat.chatroom.view.listener.DualAnnouncementListener
 import com.tokopedia.topchat.chatroom.view.listener.TopChatVoucherListener
+import com.tokopedia.topchat.chatroom.view.uimodel.BroadCastUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.HeaderDateUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.ProductCarouselUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.StickerUiModel
@@ -119,6 +120,10 @@ open class TopChatTypeFactoryImpl constructor(
         return BroadcastSpamHandlerViewHolder.LAYOUT
     }
 
+    override fun type(broadCastUiModel: BroadCastUiModel): Int {
+        return BroadcastViewHolder.LAYOUT
+    }
+
     override fun type(productAttachmentViewModel: ProductAttachmentViewModel): Int {
         return TopchatProductAttachmentViewHolder.LAYOUT
     }
@@ -163,6 +168,7 @@ open class TopChatTypeFactoryImpl constructor(
     ): AbstractViewHolder<*> {
         return when (type) {
             ProductCarouselListAttachmentViewHolder.LAYOUT -> ProductCarouselListAttachmentViewHolder(parent, productAttachmentListener, productCarouselListListener, deferredAttachment, searchListener, commonListener, adapterListener)
+            BroadcastViewHolder.LAYOUT -> BroadcastViewHolder(parent, imageAnnouncementListener, voucherListener, productAttachmentListener, productCarouselListListener, deferredAttachment, searchListener, commonListener, adapterListener, chatLinkHandlerListener)
             LeftChatMessageViewHolder.LAYOUT -> LeftChatMessageViewHolder(parent, chatLinkHandlerListener, commonListener, adapterListener)
             RightChatMessageViewHolder.LAYOUT -> RightChatMessageViewHolder(parent, chatLinkHandlerListener, commonListener, adapterListener)
             TopchatProductAttachmentViewHolder.LAYOUT -> TopchatProductAttachmentViewHolder(parent, productAttachmentListener, deferredAttachment, searchListener, commonListener, adapterListener)
