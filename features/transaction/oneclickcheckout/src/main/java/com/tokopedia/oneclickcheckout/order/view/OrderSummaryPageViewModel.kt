@@ -471,19 +471,15 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                 updatePromoState(resultValidateUse.promoUiModel)
             } else {
                 orderPromo.value = orderPromo.value.copy(state = OccButtonState.NORMAL)
-                orderTotal.value = orderTotal.value.copy(buttonState = if (shouldButtonStateEnable(_orderShipment)) OccButtonState.NORMAL else OccButtonState.DISABLE)
+                orderTotal.value = orderTotal.value.copy(buttonState = if (calculator.shouldButtonStateEnable(_orderShipment, orderCart)) OccButtonState.NORMAL else OccButtonState.DISABLE)
                 calculateTotal()
             }
         }
     }
 
-    private fun shouldButtonStateEnable(orderShipment: OrderShipment): Boolean {
-        return (orderShipment.isValid() && orderShipment.serviceErrorMessage.isNullOrEmpty() && orderShop.errors.isEmpty() && !orderProduct.quantity.isStateError)
-    }
-
     fun updatePromoState(promoUiModel: PromoUiModel) {
         orderPromo.value = orderPromo.value.copy(lastApply = LastApplyUiMapper.mapValidateUsePromoUiModelToLastApplyUiModel(promoUiModel), state = OccButtonState.NORMAL)
-        orderTotal.value = orderTotal.value.copy(buttonState = if (shouldButtonStateEnable(_orderShipment)) OccButtonState.NORMAL else OccButtonState.DISABLE)
+        orderTotal.value = orderTotal.value.copy(buttonState = if (calculator.shouldButtonStateEnable(_orderShipment, orderCart)) OccButtonState.NORMAL else OccButtonState.DISABLE)
         calculateTotal()
     }
 
@@ -526,7 +522,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                     it.isError = false
                 }
                 _orderPayment = _orderPayment.copy(creditCard = creditCard.copy(selectedTerm = selectedInstallmentTerm, availableTerms = availableTerms))
-                orderTotal.value = orderTotal.value.copy(buttonState = if (shouldButtonStateEnable(_orderShipment)) OccButtonState.NORMAL else OccButtonState.DISABLE)
+                orderTotal.value = orderTotal.value.copy(buttonState = if (calculator.shouldButtonStateEnable(_orderShipment, orderCart)) OccButtonState.NORMAL else OccButtonState.DISABLE)
                 calculateTotal()
                 globalEvent.value = OccGlobalEvent.Normal
                 return@launch
