@@ -52,6 +52,7 @@ import org.junit.Rule
 import org.junit.Test
 import rx.Observable
 import rx.Subscriber
+import rx.subjects.PublishSubject
 
 class TopChatRoomPresenterTest {
 
@@ -154,6 +155,7 @@ class TopChatRoomPresenterTest {
     private lateinit var wsResponseTyping: WebSocketInfo
     private lateinit var wsResponseEndTyping: WebSocketInfo
     private lateinit var wsResponseReadMessage: WebSocketInfo
+    private val websocketServer = PublishSubject.create<WebSocketInfo>()
 
     object Dummy {
         const val exMessageId = "190378584"
@@ -167,7 +169,6 @@ class TopChatRoomPresenterTest {
         val wsResponseTypingString = FileUtil.readFileContent("/ws_response_typing.json")
         val wsResponseEndTypingString = FileUtil.readFileContent("/ws_response_end_typing.json")
         val wsResponseReadMessageString = FileUtil.readFileContent("/ws_response_read_message.json")
-
 
         private fun generateImageUploadViewModel(): ImageUploadViewModel {
             return ImageUploadViewModel(
@@ -246,10 +247,11 @@ class TopChatRoomPresenterTest {
     @Test
     fun `onOpen connect to webscoket`() {
         // Given
-        every { webSocketUtil.getWebSocketInfo(any(), any()) } returns Observable.just(wsOpen)
+        every { webSocketUtil.getWebSocketInfo(any(), any()) } returns websocketServer
 
         // When
         presenter.connectWebSocket(exMessageId)
+        websocketServer.onNext(wsOpen)
 
         // Then
         verify(exactly = 1) { view.showErrorWebSocket(false) }
@@ -260,10 +262,11 @@ class TopChatRoomPresenterTest {
     @Test
     fun `onReconnect webscoket`() {
         // Given
-        every { webSocketUtil.getWebSocketInfo(any(), any()) } returns Observable.just(wsReconnect)
+        every { webSocketUtil.getWebSocketInfo(any(), any()) } returns websocketServer
 
         // When
         presenter.connectWebSocket(exMessageId)
+        websocketServer.onNext(wsReconnect)
 
         // Then
         verify(exactly = 1) { view.showErrorWebSocket(true) }
@@ -273,10 +276,12 @@ class TopChatRoomPresenterTest {
     @Test
     fun `onClose ws`() {
         // Given
-        every { webSocketUtil.getWebSocketInfo(any(), any()) } returns Observable.just(wsOpen)
+        every { webSocketUtil.getWebSocketInfo(any(), any()) } returns websocketServer
 
         // When
         presenter.connectWebSocket(exMessageId)
+        websocketServer.onNext(wsOpen)
+        websocketServer.onCompleted()
 
         // Then
         verify(exactly = 2) { presenter.destroyWebSocket() }
@@ -286,13 +291,14 @@ class TopChatRoomPresenterTest {
     @Test
     fun `onMessage ws event reply when not in the middle of the page`() {
         // Given
-        every { webSocketUtil.getWebSocketInfo(any(), any()) } returns Observable.just(wsResponseReplyText)
+        every { webSocketUtil.getWebSocketInfo(any(), any()) } returns websocketServer
         every { getChatUseCase.isInTheMiddleOfThePage() } returns false
         val wsChatPojo = mockkParseResponse(wsResponseReplyText)
         val wsChatVisitable = mockkWsMapper(wsChatPojo)
 
         // When
         presenter.connectWebSocket(exMessageId)
+        websocketServer.onNext(wsResponseReplyText)
 
         // Then
         assertThat(presenter.newUnreadMessage, equalTo(0))
@@ -304,12 +310,13 @@ class TopChatRoomPresenterTest {
     @Test
     fun `onMessage ws event reply when in the middle of the page`() {
         // Given
-        every { webSocketUtil.getWebSocketInfo(any(), any()) } returns Observable.just(wsResponseReplyText)
+        every { webSocketUtil.getWebSocketInfo(any(), any()) } returns websocketServer
         every { getChatUseCase.isInTheMiddleOfThePage() } returns true
         mockkParseResponse(wsResponseReplyText)
 
         // When
         presenter.connectWebSocket(exMessageId)
+        websocketServer.onNext(wsResponseReplyText)
 
         // Then
         assertThat(presenter.newUnreadMessage, equalTo(1))
@@ -319,11 +326,12 @@ class TopChatRoomPresenterTest {
     @Test
     fun `onMessage ws event typing when not the middle of the page`() {
         // Given
-        every { webSocketUtil.getWebSocketInfo(any(), any()) } returns Observable.just(wsResponseTyping)
+        every { webSocketUtil.getWebSocketInfo(any(), any()) } returns websocketServer
         every { getChatUseCase.isInTheMiddleOfThePage() } returns false
 
         // When
         presenter.connectWebSocket(exMessageId)
+        websocketServer.onNext(wsResponseTyping)
 
         // Then
         verify(exactly = 1) { view.onReceiveStartTypingEvent() }
@@ -332,11 +340,12 @@ class TopChatRoomPresenterTest {
     @Test
     fun `onMessage ws event end typing when not the middle of the page`() {
         // Given
-        every { webSocketUtil.getWebSocketInfo(any(), any()) } returns Observable.just(wsResponseEndTyping)
+        every { webSocketUtil.getWebSocketInfo(any(), any()) } returns websocketServer
         every { getChatUseCase.isInTheMiddleOfThePage() } returns false
 
         // When
         presenter.connectWebSocket(exMessageId)
+        websocketServer.onNext(wsResponseEndTyping)
 
         // Then
         verify(exactly = 1) { view.onReceiveStopTypingEvent() }
@@ -345,11 +354,12 @@ class TopChatRoomPresenterTest {
     @Test
     fun `onMessage ws event read message`() {
         // Given
-        every { webSocketUtil.getWebSocketInfo(any(), any()) } returns Observable.just(wsResponseReadMessage)
+        every { webSocketUtil.getWebSocketInfo(any(), any()) } returns websocketServer
         every { getChatUseCase.isInTheMiddleOfThePage() } returns false
 
         // When
         presenter.connectWebSocket(exMessageId)
+        websocketServer.onNext(wsResponseReadMessage)
 
         // Then
         verify(exactly = 1) { view.onReceiveReadEvent() }
