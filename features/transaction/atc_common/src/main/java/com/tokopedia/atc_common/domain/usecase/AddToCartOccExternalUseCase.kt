@@ -42,9 +42,9 @@ class AddToCartOccExternalUseCase @Inject constructor(@Named(MUTATION_ATC_OCC_EX
                 baseAnalytics.sendAppsFlyerTracking(detail.productId.toString(), detail.productName, detail.price.toString(),
                         detail.quantity.toString(), detail.category)
                 baseAnalytics.sendBranchIoTracking(detail.productId.toString(), detail.productName, detail.price.toString(),
-                        detail.quantity.toString(), detail.category,
-                        "", "", "", "", "", "",
-                        "", requestParams.getString(REQUEST_PARAM_KEY_USER_ID, ""))
+                        detail.quantity.toString(), detail.category, "",
+                        "", "", "",
+                        "", "", "", requestParams.getString(REQUEST_PARAM_KEY_USER_ID, ""))
             }
             result
         }
