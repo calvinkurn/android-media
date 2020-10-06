@@ -9,7 +9,7 @@ import kotlinx.android.parcel.Parcelize
  */
 
 @Parcelize
-class ECommerceImpressions (
+data class ECommerceImpressions (
         @SerializedName("currencyCode")
         var currencyCode: String = "IDR",
 
@@ -17,7 +17,7 @@ class ECommerceImpressions (
         var impressions: ArrayList<Impressions> = arrayListOf()) : Parcelable {
 
         @Parcelize
-        class Impressions (
+        data class Impressions (
                 @SerializedName("name")
                 var name: String = "",
 

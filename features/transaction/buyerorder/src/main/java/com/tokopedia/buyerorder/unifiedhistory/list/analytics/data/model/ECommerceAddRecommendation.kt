@@ -9,7 +9,7 @@ import kotlinx.android.parcel.Parcelize
  */
 
 @Parcelize
-class ECommerceAddRecommendation (
+data class ECommerceAddRecommendation (
         @SerializedName("currencyCode")
         var currencyCode: String = "IDR",
 
@@ -17,7 +17,7 @@ class ECommerceAddRecommendation (
         var add: Add = Add()) : Parcelable {
 
         @Parcelize
-        class Add(
+        data class Add(
                 @SerializedName("actionField")
                 var actionField: ActionField = ActionField()
         ): Parcelable {

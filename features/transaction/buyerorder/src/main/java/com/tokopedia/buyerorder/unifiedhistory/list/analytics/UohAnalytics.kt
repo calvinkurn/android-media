@@ -203,6 +203,7 @@ object UohAnalytics {
             putString(CURRENT_SITE, TOKOPEDIA_MARKETPLACE)
             putString(USER_ID, userId)
             putString(BUSINESS_UNIT, ORDER_MANAGEMENT)
+            classLoader = ECommerceImpressions::class.java.classLoader
             putParcelable(ECOMMERCE, eCommerce)
         }
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(PRODUCT_VIEW, bundle)
@@ -221,6 +222,7 @@ object UohAnalytics {
             putString(CURRENT_SITE, TOKOPEDIA_MARKETPLACE)
             putString(USER_ID, userId)
             putString(BUSINESS_UNIT, ORDER_MANAGEMENT)
+            classLoader = ECommerceClick::class.java.classLoader
             putParcelable(ECOMMERCE, eCommerceClick)
         }
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(PRODUCT_CLICK, bundle)
@@ -299,6 +301,7 @@ object UohAnalytics {
             putString(CURRENT_SITE, TOKOPEDIA_MARKETPLACE)
             putString(USER_ID, userId)
             putString(BUSINESS_UNIT, ORDER_MANAGEMENT)
+            classLoader = ECommerceAdd::class.java.classLoader
             putParcelable(ECOMMERCE, eCommerceAdd)
         }
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(PRODUCT_CLICK, bundle)
@@ -345,6 +348,7 @@ object UohAnalytics {
             putString(EVENT_CATEGORY, PURCHASE_LIST_EVENT_CATEGORY)
             putString(EVENT_ACTION, VIEW_RECOMMENDATION)
             putString(EVENT_LABEL, EVENT_LABEL_RECOMMENDATION)
+            classLoader = ECommerceImpressions::class.java.classLoader
             putParcelable(ECOMMERCE, eCommerce)
         }
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(PRODUCT_VIEW, bundle)
@@ -366,6 +370,7 @@ object UohAnalytics {
             putString(EVENT_CATEGORY, PURCHASE_LIST_EVENT_CATEGORY)
             putString(EVENT_ACTION, CLICK_RECOMMENDATION)
             putString(EVENT_LABEL, EVENT_LABEL_RECOMMENDATION)
+            classLoader = ECommerceClick::class.java.classLoader
             putParcelable(ECOMMERCE, eCommerce)
         }
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(PRODUCT_CLICK, bundle)
@@ -384,6 +389,7 @@ object UohAnalytics {
             putString(EVENT_CATEGORY, PURCHASE_LIST_EVENT_CATEGORY)
             putString(EVENT_ACTION, CLICK_ATC_RECOMMENDATION)
             putString(EVENT_LABEL, EVENT_LABEL_RECOMMENDATION)
+            classLoader = ECommerceAddRecommendation::class.java.classLoader
             putParcelable(ECOMMERCE, eCommerce)
         }
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(ADD_TO_CART, bundle)
