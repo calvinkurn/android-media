@@ -1,9 +1,6 @@
 package com.tokopedia.topchat.chatroom.view.presenter
 
-import android.content.Context
-import android.content.Intent
 import android.content.SharedPreferences
-import android.graphics.BitmapFactory
 import android.os.Bundle
 import androidx.annotation.StringRes
 import androidx.collection.ArrayMap
@@ -11,10 +8,7 @@ import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.atc_common.data.model.request.AddToCartOccRequestParams
-import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartOccUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
@@ -38,8 +32,6 @@ import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
-import com.tokopedia.purchase_platform.common.constant.ATC_AND_BUY
-import com.tokopedia.purchase_platform.common.constant.ATC_ONLY
 import com.tokopedia.seamless_login.domain.usecase.SeamlessLoginUsecase
 import com.tokopedia.seamless_login.subscriber.SeamlessLoginSubscriber
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
@@ -75,7 +67,6 @@ import okhttp3.Interceptor
 import okhttp3.WebSocket
 import rx.Subscriber
 import rx.subscriptions.CompositeSubscription
-import java.io.File
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
@@ -375,10 +366,6 @@ class TopChatRoomPresenter @Inject constructor(
         dummyList.add(it)
     }
 
-    private fun mapToDummyMessage(messageId: String, messageText: String, startTime: String): Visitable<*> {
-        return MessageViewModel(messageId, userSession.userId, userSession.name, startTime, messageText)
-    }
-
     private fun getDummyOnList(visitable: Visitable<*>): Visitable<*>? {
         dummyList.isNotEmpty().let {
             for (i in 0 until dummyList.size) {
@@ -395,18 +382,6 @@ class TopChatRoomPresenter @Inject constructor(
 
     override fun mapToVisitable(pojo: ChatSocketPojo): Visitable<*> {
         return topChatRoomWebSocketMessageMapper.map(pojo)
-    }
-
-    override fun sendMessageWithWebsocket(messageId: String, sendMessage: String, startTime: String, opponentId: String) {
-        processDummyMessage(mapToDummyMessage(thisMessageId, sendMessage, startTime))
-        sendMessageWebSocket(TopChatWebSocketParam.generateParamSendMessage(messageId, sendMessage, startTime, attachmentsPreview))
-        sendMessageWebSocket(TopChatWebSocketParam.generateParamStopTyping(messageId))
-    }
-
-    override fun sendMessageWithApi(messageId: String, sendMessage: String, startTime: String) {
-        var dummyMessage = mapToDummyMessage(thisMessageId, sendMessage, startTime)
-        processDummyMessage(dummyMessage)
-        sendByApi(ReplyChatUseCase.generateParam(messageId, sendMessage), dummyMessage)
     }
 
     private fun sendByApi(requestParams: RequestParams, dummyMessage: Visitable<*>) {
@@ -469,6 +444,22 @@ class TopChatRoomPresenter @Inject constructor(
         sendAttachments(messageId, opponentId, sticker.intention)
         sendSticker(messageId, sticker, startTime, opponentId, onSendingMessage)
         view?.clearAttachmentPreviews()
+    }
+
+    override fun sendMessageWithWebsocket(messageId: String, sendMessage: String, startTime: String, opponentId: String) {
+        processDummyMessage(mapToDummyMessage(thisMessageId, sendMessage, startTime))
+        sendMessageWebSocket(TopChatWebSocketParam.generateParamSendMessage(messageId, sendMessage, startTime, attachmentsPreview))
+        sendMessageWebSocket(TopChatWebSocketParam.generateParamStopTyping(messageId))
+    }
+
+    private fun mapToDummyMessage(messageId: String, messageText: String, startTime: String): Visitable<*> {
+        return MessageViewModel(messageId, userSession.userId, userSession.name, startTime, messageText)
+    }
+
+    override fun sendMessageWithApi(messageId: String, sendMessage: String, startTime: String) {
+        var dummyMessage = mapToDummyMessage(thisMessageId, sendMessage, startTime)
+        processDummyMessage(dummyMessage)
+        sendByApi(ReplyChatUseCase.generateParam(messageId, sendMessage), dummyMessage)
     }
 
     private fun sendSticker(
@@ -629,63 +620,6 @@ class TopChatRoomPresenter @Inject constructor(
 
     override fun clearAttachmentPreview() {
         attachmentsPreview.clear()
-    }
-
-    override fun getAtcPageIntent(
-            context: Context?,
-            element: ProductAttachmentViewModel,
-            sourcePage: String
-    ): Intent {
-        val quantity = element.minOrder
-        val atcOnly = ATC_ONLY
-        val needRefresh = true
-        val shopName = view?.getShopName()
-        return RouteManager.getIntent(context, ApplinkConstInternalMarketplace.NORMAL_CHECKOUT).apply {
-            putExtra(ApplinkConst.Transaction.EXTRA_SHOP_ID, element.shopId.toString())
-            putExtra(ApplinkConst.Transaction.EXTRA_PRODUCT_ID, element.productId.toString())
-            putExtra(ApplinkConst.Transaction.EXTRA_QUANTITY, quantity)
-            putExtra(ApplinkConst.Transaction.EXTRA_SELECTED_VARIANT_ID, element.productId.toString())
-            putExtra(ApplinkConst.Transaction.EXTRA_ACTION, atcOnly)
-            putExtra(ApplinkConst.Transaction.EXTRA_SHOP_NAME, shopName)
-            putExtra(ApplinkConst.Transaction.EXTRA_OCS, false)
-            putExtra(ApplinkConst.Transaction.EXTRA_NEED_REFRESH, needRefresh)
-            putExtra(ApplinkConst.Transaction.EXTRA_REFERENCE, ApplinkConst.TOPCHAT)
-            putExtra(ApplinkConst.Transaction.EXTRA_CATEGORY_ID, element.categoryId.toString())
-            putExtra(ApplinkConst.Transaction.EXTRA_CUSTOM_EVENT_LABEL, element.getAtcEventLabel())
-            putExtra(ApplinkConst.Transaction.EXTRA_CUSTOM_EVENT_ACTION, element.getAtcEventAction())
-            putExtra(ApplinkConst.Transaction.EXTRA_CUSTOM_DIMENSION40, element.getAtcDimension40(sourcePage))
-            putExtra(ApplinkConst.Transaction.EXTRA_ATC_EXTERNAL_SOURCE, AddToCartRequestParams.ATC_FROM_TOPCHAT)
-        }
-    }
-
-    override fun getBuyPageIntent(
-            context: Context?,
-            element: ProductAttachmentViewModel,
-            sourcePage: String
-    ): Intent {
-        val quantity = element.minOrder
-        val atcAndBuyAction = ATC_AND_BUY
-        val needRefresh = true
-        val shopName = view?.getShopName()
-        return RouteManager.getIntent(context, ApplinkConstInternalMarketplace.NORMAL_CHECKOUT).apply {
-            putExtra(ApplinkConst.Transaction.EXTRA_SHOP_ID, element.shopId.toString())
-            putExtra(ApplinkConst.Transaction.EXTRA_PRODUCT_ID, element.productId.toString())
-            putExtra(ApplinkConst.Transaction.EXTRA_QUANTITY, quantity)
-            putExtra(ApplinkConst.Transaction.EXTRA_SELECTED_VARIANT_ID, element.productId.toString())
-            putExtra(ApplinkConst.Transaction.EXTRA_ACTION, atcAndBuyAction)
-            putExtra(ApplinkConst.Transaction.EXTRA_SHOP_NAME, shopName)
-            putExtra(ApplinkConst.Transaction.EXTRA_OCS, false)
-            putExtra(ApplinkConst.Transaction.EXTRA_NEED_REFRESH, needRefresh)
-            putExtra(ApplinkConst.Transaction.EXTRA_REFERENCE, ApplinkConst.TOPCHAT)
-            putExtra(ApplinkConst.Transaction.EXTRA_CATEGORY_ID, element.categoryId)
-            putExtra(ApplinkConst.Transaction.EXTRA_CATEGORY_NAME, element.category)
-            putExtra(ApplinkConst.Transaction.EXTRA_PRODUCT_TITLE, element.productName)
-            putExtra(ApplinkConst.Transaction.EXTRA_PRODUCT_PRICE, element.priceInt.toFloat())
-            putExtra(ApplinkConst.Transaction.EXTRA_CUSTOM_EVENT_LABEL, element.getAtcEventLabel())
-            putExtra(ApplinkConst.Transaction.EXTRA_CUSTOM_EVENT_ACTION, element.getBuyEventAction())
-            putExtra(ApplinkConst.Transaction.EXTRA_CUSTOM_DIMENSION40, element.getAtcDimension40(sourcePage))
-            putExtra(ApplinkConst.Transaction.EXTRA_ATC_EXTERNAL_SOURCE, AddToCartRequestParams.ATC_FROM_TOPCHAT)
-        }
     }
 
     override fun initProductPreviewFromAttachProduct(resultProducts: ArrayList<ResultProduct>) {
@@ -908,15 +842,13 @@ class TopChatRoomPresenter @Inject constructor(
                 ?.updateStickers(response.chatListGroupSticker.list, needToUpdate)
     }
 
-    private fun onErrorGetStickerGroup(throwable: Throwable) {
-
-    }
-
     private fun onSuccessGetOrderProgress(orderProgressResponse: OrderProgressResponse) {
         view?.renderOrderProgress(orderProgressResponse.chatOrderProgress)
     }
 
     private fun onErrorGetOrderProgress(throwable: Throwable) {}
+
+    private fun onErrorGetStickerGroup(throwable: Throwable) {}
 
     companion object {
         const val STICKER_TOOLTIP_ONBOARDING = "sticker_tooltip_onboarding"

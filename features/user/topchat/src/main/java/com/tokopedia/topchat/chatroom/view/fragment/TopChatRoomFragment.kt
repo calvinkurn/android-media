@@ -34,6 +34,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.atc_common.data.model.request.AddToCartOccRequestParams
+import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.attachproduct.resultmodel.ResultProduct
 import com.tokopedia.attachproduct.view.activity.AttachProductActivity
 import com.tokopedia.chat_common.BaseChatFragment
@@ -59,6 +60,8 @@ import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity
 import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListFragment
 import com.tokopedia.network.constant.TkpdBaseURL
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.purchase_platform.common.constant.ATC_AND_BUY
+import com.tokopedia.purchase_platform.common.constant.ATC_ONLY
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
@@ -1072,13 +1075,13 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
 
     override fun onClickBuyFromProductAttachment(element: ProductAttachmentViewModel) {
         analytics.eventClickBuyProductAttachment(element)
-        val buyPageIntent = presenter.getBuyPageIntent(context, element, sourcePage)
+        val buyPageIntent = getBuyPageIntent(element)
         startActivity(buyPageIntent)
     }
 
     override fun onClickATCFromProductAttachment(element: ProductAttachmentViewModel) {
         analytics.eventClickAddToCartProductAttachment(element, session)
-        val atcPageIntent = presenter.getAtcPageIntent(context, element, sourcePage)
+        val atcPageIntent = getAtcPageIntent(element)
         startActivityForResult(atcPageIntent, REQUEST_GO_TO_NORMAL_CHECKOUT)
     }
 
@@ -1296,10 +1299,6 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
 
     override fun clearAttachmentPreviews() {
         getViewState().clearAttachmentPreview()
-    }
-
-    override fun getShopName(): String {
-        return opponentName
     }
 
     override fun sendAnalyticAttachmentSent(attachment: SendablePreview) {
@@ -1571,6 +1570,53 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
     private fun showToasterError(message: String) {
         view?.let {
             Toaster.build(it, message, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
+        }
+    }
+
+    private fun getAtcPageIntent(element: ProductAttachmentViewModel): Intent {
+        val quantity = element.minOrder
+        val atcOnly = ATC_ONLY
+        val needRefresh = true
+        return RouteManager.getIntent(context, ApplinkConstInternalMarketplace.NORMAL_CHECKOUT).apply {
+            putExtra(ApplinkConst.Transaction.EXTRA_SHOP_ID, element.shopId.toString())
+            putExtra(ApplinkConst.Transaction.EXTRA_PRODUCT_ID, element.productId.toString())
+            putExtra(ApplinkConst.Transaction.EXTRA_QUANTITY, quantity)
+            putExtra(ApplinkConst.Transaction.EXTRA_SELECTED_VARIANT_ID, element.productId.toString())
+            putExtra(ApplinkConst.Transaction.EXTRA_ACTION, atcOnly)
+            putExtra(ApplinkConst.Transaction.EXTRA_SHOP_NAME, opponentName)
+            putExtra(ApplinkConst.Transaction.EXTRA_OCS, false)
+            putExtra(ApplinkConst.Transaction.EXTRA_NEED_REFRESH, needRefresh)
+            putExtra(ApplinkConst.Transaction.EXTRA_REFERENCE, ApplinkConst.TOPCHAT)
+            putExtra(ApplinkConst.Transaction.EXTRA_CATEGORY_ID, element.categoryId.toString())
+            putExtra(ApplinkConst.Transaction.EXTRA_CUSTOM_EVENT_LABEL, element.getAtcEventLabel())
+            putExtra(ApplinkConst.Transaction.EXTRA_CUSTOM_EVENT_ACTION, element.getAtcEventAction())
+            putExtra(ApplinkConst.Transaction.EXTRA_CUSTOM_DIMENSION40, element.getAtcDimension40(sourcePage))
+            putExtra(ApplinkConst.Transaction.EXTRA_ATC_EXTERNAL_SOURCE, AddToCartRequestParams.ATC_FROM_TOPCHAT)
+        }
+    }
+
+    private fun getBuyPageIntent(element: ProductAttachmentViewModel): Intent {
+        val quantity = element.minOrder
+        val atcAndBuyAction = ATC_AND_BUY
+        val needRefresh = true
+        return RouteManager.getIntent(context, ApplinkConstInternalMarketplace.NORMAL_CHECKOUT).apply {
+            putExtra(ApplinkConst.Transaction.EXTRA_SHOP_ID, element.shopId.toString())
+            putExtra(ApplinkConst.Transaction.EXTRA_PRODUCT_ID, element.productId.toString())
+            putExtra(ApplinkConst.Transaction.EXTRA_QUANTITY, quantity)
+            putExtra(ApplinkConst.Transaction.EXTRA_SELECTED_VARIANT_ID, element.productId.toString())
+            putExtra(ApplinkConst.Transaction.EXTRA_ACTION, atcAndBuyAction)
+            putExtra(ApplinkConst.Transaction.EXTRA_SHOP_NAME, opponentName)
+            putExtra(ApplinkConst.Transaction.EXTRA_OCS, false)
+            putExtra(ApplinkConst.Transaction.EXTRA_NEED_REFRESH, needRefresh)
+            putExtra(ApplinkConst.Transaction.EXTRA_REFERENCE, ApplinkConst.TOPCHAT)
+            putExtra(ApplinkConst.Transaction.EXTRA_CATEGORY_ID, element.categoryId)
+            putExtra(ApplinkConst.Transaction.EXTRA_CATEGORY_NAME, element.category)
+            putExtra(ApplinkConst.Transaction.EXTRA_PRODUCT_TITLE, element.productName)
+            putExtra(ApplinkConst.Transaction.EXTRA_PRODUCT_PRICE, element.priceInt.toFloat())
+            putExtra(ApplinkConst.Transaction.EXTRA_CUSTOM_EVENT_LABEL, element.getAtcEventLabel())
+            putExtra(ApplinkConst.Transaction.EXTRA_CUSTOM_EVENT_ACTION, element.getBuyEventAction())
+            putExtra(ApplinkConst.Transaction.EXTRA_CUSTOM_DIMENSION40, element.getAtcDimension40(sourcePage))
+            putExtra(ApplinkConst.Transaction.EXTRA_ATC_EXTERNAL_SOURCE, AddToCartRequestParams.ATC_FROM_TOPCHAT)
         }
     }
 
