@@ -1,0 +1,256 @@
+{
+  "readme": "P2#FINGERPRINT - Login page",
+  "mode": "subset",
+  "query": [
+    {
+      "event": "clickLogin",
+      "eventCategory": "login page",
+      "eventAction": "click on button selanjutnya - email",
+      "eventLabel": "click"
+    },
+    {
+      "event": "clickLogin",
+      "eventCategory": "login page",
+      "eventAction": "enter login phone number",
+      "eventLabel": "click"
+    },
+    {
+      "event": "clickLogin",
+      "eventCategory": "login page",
+      "eventAction": "click on button selanjutnya - unknown",
+      "eventLabel": "click"
+    },
+    {
+      "event": "clickLogin",
+      "eventCategory": "login page",
+      "eventAction": "click on button selanjutnya - email",
+      "eventLabel": "{{failed - (?:.*)}}"
+    },
+    {
+      "event": "clickLogin",
+      "eventCategory": "login page",
+      "eventAction": "enter login phone number",
+      "eventLabel": "{{failed - (?:.*)}}"
+    },
+    {
+      "event": "clickLogin",
+      "eventCategory": "login page",
+      "eventAction": "click on button selanjutnya - unknown",
+      "eventLabel": "{{failed - (?:.*)}}"
+    },
+    {
+      "event": "clickLogin",
+      "eventCategory": "login page",
+      "eventAction": "click on button selanjutnya - email",
+      "eventLabel": "success"
+    },
+    {
+      "event": "clickLogin",
+      "eventCategory": "login page",
+      "eventAction": "enter login phone number",
+      "eventLabel": "success"
+    },
+    {
+      "event": "clickLogin",
+      "eventCategory": "login page",
+      "eventAction": "click on button selanjutnya - unknown",
+      "eventLabel": "success"
+    },
+    {
+      "event": "clickLogin",
+      "eventCategory": "login page",
+      "eventAction": "enter login phone number",
+      "eventLabel": "click"
+    },
+    {
+      "event": "clickLogin",
+      "eventCategory": "login page",
+      "eventAction": "enter login phone number",
+      "eventLabel": "success"
+    },
+    {
+      "event": "clickLogin",
+      "eventCategory": "login page",
+      "eventAction": "enter login phone number",
+      "eventLabel": "{{failed - (?:.*)}}"
+    },
+    {
+      "event": "clickLogin",
+      "eventCategory": "login page",
+      "eventAction": "click on button ubah"
+    },
+    {
+      "event": "clickLogin",
+      "eventCategory": "login page",
+      "eventAction": "click on lupa kata sandi"
+    },
+    {
+      "event": "clickLogin",
+      "eventCategory": "login page",
+      "eventAction": "click on button masuk",
+      "eventLabel": "click"
+    },
+    {
+      "event": "clickLogin",
+      "eventCategory": "login page smart lock",
+      "eventAction": "click on email login smart lock",
+      "eventLabel": "click",
+      "user_id": "{{.*}}"
+    },
+    {
+      "event": "clickLogin",
+      "eventCategory": "login page",
+      "eventAction": "click on button masuk",
+      "eventLabel": "success"
+    },
+    {
+      "event": "clickLogin",
+      "eventCategory": "login page",
+      "eventAction": "click on button google",
+      "eventLabel": "click"
+    },
+    {
+      "event": "clickLogin",
+      "eventCategory": "login page",
+      "eventAction": "click on button facebook",
+      "eventLabel": "click"
+    },
+    {
+      "event": "clickLogin",
+      "eventCategory": "login page",
+      "eventAction": "click back"
+    },
+    {
+      "event": "registerLogin",
+      "eventCategory": "Login",
+      "eventAction": "Register",
+      "eventLabel": "Register"
+    },
+    {
+      "event": "eventSuccessSmartLock",
+      "eventCategory": "Smart Lock",
+      "eventAction": "Success",
+      "eventLabel": "Save Password"
+    },
+    {
+      "event": "eventSuccessSmartLock",
+      "eventCategory": "Smart Lock",
+      "eventAction": "Success",
+      "eventLabel": "Never"
+    },
+    {
+      "event": "clickLogin",
+      "eventCategory": "register page",
+      "eventAction": "click on masuk"
+    },
+    {
+      "event": "clickHomePage",
+      "eventCategory": "welcome page",
+      "eventAction": "click on lanjut"
+    },
+    {
+      "event": "clickLogin",
+      "eventCategory": "login page smart lock",
+      "eventAction": "success",
+      "user_id": "{{.*}}"
+    },
+    {
+      "event": "clickLogin",
+      "eventCategory": "login page",
+      "eventAction": "phone",
+      "eventLabel": "success"
+    },
+    {
+      "event": "clickLogin",
+      "eventCategory": "login page",
+      "eventAction": "click on button facebook",
+      "eventLabel": "success"
+    },
+    {
+      "event": "clickLogin",
+      "eventCategory": "login page",
+      "eventAction": "click on button google",
+      "eventLabel": "success"
+    },
+    {
+      "event": "loginSuccess",
+      "eventCategory": "Login",
+      "eventAction": "Login Success",
+      "eventLabel": "Email"
+    },
+    {
+      "event": "clickLogin",
+      "eventCategory": "login page smart lock",
+      "eventAction": "click on email login smart lock",
+      "eventLabel": "{{failed - (?:.*)}}"
+    },
+    {
+      "event": "clickLogin",
+      "eventCategory": "login page",
+      "eventAction": "click on button facebook",
+      "eventLabel": "{{failed - (?:.*)}}"
+    },
+    {
+      "event": "clickLogin",
+      "eventCategory": "login page",
+      "eventAction": "click on button google",
+      "eventLabel": "{{failed - (?:.*)}}"
+    },
+    {
+      "event": "clickLogin",
+      "eventCategory": "login page",
+      "eventAction": "click on button masuk",
+      "eventLabel": "{{failed - (?:.*)}}"
+    },
+    {
+      "event": "clickLogin",
+      "eventCategory": "login page",
+      "eventAction": "click on button masuk",
+      "eventLabel": "{{failed - (?:.*)}}"
+    },
+    {
+      "event": "clickLogin",
+      "eventCategory": "login page",
+      "eventAction": "click on ticker login"
+    },
+    {
+      "event": "clickLogin",
+      "eventCategory": "login page",
+      "eventAction": "click ticker link",
+      "eventLabel": "{{.*}}"
+    },
+    {
+      "event": "clickLogin",
+      "eventCategory": "login page",
+      "eventAction": "click on button close ticker"
+    },
+    {
+      "event": "clickLogin",
+      "eventCategory": "login page",
+      "eventAction": "click on button socmed"
+    },
+    {
+      "event": "clickLogin",
+      "eventCategory": "login page",
+      "eventAction": "click on button close socmed"
+    },
+    {
+      "event": "clickLogin",
+      "eventCategory": "login page",
+      "eventAction": "click on button popup smart login",
+      "eventLabel": "{{yes - (?:.*)}}"
+    },
+    {
+      "event": "clickLogin",
+      "eventCategory": "login page",
+      "eventAction": "click on button popup smart login",
+      "eventLabel": "{{no - (?:.*)}}"
+    },
+    {
+      "event": "viewLoginIris",
+      "eventCategory": "login page",
+      "eventAction": "view banner",
+      "eventLabel": "{{.*}}"
+    }
+  ]
+}
