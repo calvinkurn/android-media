@@ -1,9 +1,11 @@
 package com.tokopedia.topads.sdk.utils
 
+import com.google.gson.reflect.TypeToken
+import com.tokopedia.common.network.coroutines.RestRequestInteractor
+import com.tokopedia.common.network.coroutines.repository.RestRepository
+import com.tokopedia.common.network.data.model.RestRequest
+import com.tokopedia.network.data.model.response.DataResponse
 import com.tokopedia.topads.sdk.listener.ImpressionListener
-import com.tokopedia.topads.sdk.network.HttpMethod
-import com.tokopedia.topads.sdk.network.HttpRequest.HttpRequestBuilder
-import com.tokopedia.topads.sdk.network.RawHttpRequestExecutor
 import com.tokopedia.topads.sdk.utils.ImpressionTaskAlert.Companion.getInstance
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Dispatchers
@@ -21,6 +23,7 @@ class ImpresionTask {
     private var fileName: String = ""
     private var methodName: String = ""
     private var lineNumber: Int = 0
+    private val restRepository: RestRepository by lazy { RestRequestInteractor.getInstance().restRepository }
 
     init {
         try {
@@ -60,12 +63,16 @@ class ImpresionTask {
                     if (taskAlert != null) {
                         taskAlert!!.track(url, fileName, methodName, lineNumber)
                     }
-                    val request = HttpRequestBuilder()
-                            .setBaseUrl(url)
-                            .addHeader(KEY_SESSION_ID, if (userSession != null) userSession!!.deviceId else "")
-                            .setMethod(HttpMethod.GET)
-                            .build()
-                    var result = RawHttpRequestExecutor.newInstance(request).executeAsGetRequest()
+                    //Request 1
+                    val token = object : TypeToken<DataResponse<String>>() {}.type
+                    val restRequest = RestRequest.Builder(url, token).build()
+                    val result = restRepository.getResponse(restRequest).getData<String>()
+//                    val request = HttpRequestBuilder()
+//                            .setBaseUrl(url)
+//                            .addHeader(KEY_SESSION_ID, if (userSession != null) userSession!!.deviceId else "")
+//                            .setMethod(HttpMethod.GET)
+//                            .build()
+//                    var result = RawHttpRequestExecutor.newInstance(request).executeAsGetRequest()
                     if (impressionListener != null) {
                         if (result != null) {
                             impressionListener!!.onSuccess()
