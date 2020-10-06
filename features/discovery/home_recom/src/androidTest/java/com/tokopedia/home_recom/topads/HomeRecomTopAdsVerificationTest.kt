@@ -29,6 +29,9 @@ class HomeRecomTopAdsVerificationTest {
                 activityRule.activity,
                 activityRule.activity.application as TopAdsVerificatorInterface
         )
+
+        login()
+        waitForData()
     }
 
     @After
@@ -51,6 +54,6 @@ class HomeRecomTopAdsVerificationTest {
     }
 
     private fun login() {
-        InstrumentationAuthHelper.loginToAnUser(activityRule.activity.application)
+        InstrumentationAuthHelper.loginInstrumentationTestTopAdsUser()
     }
 }
