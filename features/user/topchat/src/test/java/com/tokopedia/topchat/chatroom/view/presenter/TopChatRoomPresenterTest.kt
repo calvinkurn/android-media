@@ -3,6 +3,7 @@ package com.tokopedia.topchat.chatroom.view.presenter
 import android.content.SharedPreferences
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.atc_common.domain.usecase.AddToCartOccUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.chat_common.data.ChatroomViewModel
@@ -539,6 +540,36 @@ class TopChatRoomPresenterTest {
         // Then
         verify(exactly = 1) { view.onReceiveMessageEvent(replyChatViewModelApiSuccess.chat) }
         verify(exactly = 1) { view.removeDummy(imageUploadViewModel) }
+    }
+
+    @Test
+    fun `on error upload image`() {
+        // Given
+        val errorUploadImage = Throwable()
+        every {
+            ImageUtil.validateImageAttachment(imageUploadViewModel.imageUrl)
+        } returns Pair(true, IMAGE_VALID)
+        every {
+            compressImageUseCase.compressImage(imageUploadViewModel.imageUrl!!)
+        } returns Observable.just(imageUploadViewModel.imageUrl)
+        every {
+            uploadImageUseCase.upload(imageUploadViewModel, any(), captureLambda())
+        } answers {
+            val onError = lambda<(Throwable, ImageUploadViewModel) -> Unit>()
+            onError.invoke(errorUploadImage, imageUploadViewModel)
+        }
+
+        // When
+        presenter.startCompressImages(imageUploadViewModel)
+
+        // Then
+        verify(exactly = 1) { view.addDummyMessage(imageUploadViewModel) }
+        verify(exactly = 1) {
+            view.onErrorUploadImage(
+                    ErrorHandler.getErrorMessage(view.context, errorUploadImage),
+                    imageUploadViewModel
+            )
+        }
     }
 
     private fun mockkParseResponse(wsInfo: WebSocketInfo, isOpposite: Boolean = true): ChatSocketPojo {
