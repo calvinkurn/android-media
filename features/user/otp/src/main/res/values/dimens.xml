@@ -9,5 +9,7 @@
     <dimen name="otp_dp_6">6dp</dimen>
     <dimen name="otp_dp_12">12dp</dimen>
     <dimen name="otp_dp_14">14dp</dimen>
+    <dimen name="otp_dp_17">17dp</dimen>
+    <dimen name="otp_dp_18">18dp</dimen>
     <dimen name="otp_dp_210">210dp</dimen>
 </resources>

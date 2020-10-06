@@ -17,7 +17,7 @@ import com.tokopedia.otp.common.di.OtpComponentBuilder
 
 abstract class BaseOtpActivity : BaseSimpleActivity(), HasComponent<OtpComponent> {
 
-    override fun getComponent(): OtpComponent = OtpComponentBuilder.getComponent(application as BaseMainApplication)
+    override fun getComponent(): OtpComponent = OtpComponentBuilder.getComponent(application as BaseMainApplication, this)
 
     override fun setupLayout(savedInstanceState: Bundle?) {
         setContentView(layoutRes)

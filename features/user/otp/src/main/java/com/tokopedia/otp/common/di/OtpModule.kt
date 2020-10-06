@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.otp.common.DispatcherProvider
+import com.tokopedia.otp.common.LoadingDialog
 import com.tokopedia.otp.notif.view.viewbinding.*
 import com.tokopedia.otp.verification.view.viewbinding.OnboardingMisscallViewBinding
 import com.tokopedia.otp.verification.view.viewbinding.VerificationMethodViewBinding
@@ -20,7 +21,7 @@ import kotlinx.coroutines.Dispatchers
 
 @OtpScope
 @Module
-class OtpModule {
+class OtpModule (val context: Context) {
 
     @OtpScope
     @Provides
@@ -61,4 +62,8 @@ class OtpModule {
     @OtpScope
     @Provides
     fun provideSettingNotifViewBinding(): SettingNotifViewBinding = SettingNotifViewBinding()
+
+    @OtpScope
+    @Provides
+    fun provideLoadingDialog(): LoadingDialog = LoadingDialog(context)
 }

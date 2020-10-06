@@ -11,11 +11,11 @@ object DeviceStatusPushNotifQuery {
             DeviceStatusPushnotif() {
                 success
                 errorMessage
+                isTrusted
                 listDevices{
                     deviceName
-                    isActive
-                    isTrusted
                 }
+                isActive
             }
         }
     """.trimIndent()

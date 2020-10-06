@@ -123,11 +123,6 @@ class CryptographyUtils: Cryptography {
         return SignatureData(signature = getSignature(userId + datetime + deviceId, BiometricConstant.SHA_1_WITH_RSA), datetime = datetime)
     }
 
-    override fun generateRegisterPushNotifSignature(userId: String, deviceId: String): SignatureData {
-        val datetime = (System.currentTimeMillis()/1000).toString()
-        return SignatureData(signature = getSignature(userId + datetime + deviceId, BiometricConstant.SHA_1_WITH_RSA), datetime = datetime)
-    }
-
     override fun getSignature(textToEncrypt: String, algorithm: String): String {
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             var signText = ""

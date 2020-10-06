@@ -3,18 +3,20 @@ package com.tokopedia.loginregister.login.service
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import androidx.annotation.Nullable
+import android.security.keystore.KeyGenParameterSpec
+import android.security.keystore.KeyProperties
+import android.util.Base64
 import androidx.annotation.RequiresApi
 import androidx.core.app.JobIntentService
 import com.crashlytics.android.Crashlytics
-import com.tokopedia.loginfingerprint.utils.crypto.Cryptography
 import com.tokopedia.loginregister.BuildConfig
 import com.tokopedia.loginregister.common.SignaturePref
+import com.tokopedia.loginregister.login.data.SignResult
 import com.tokopedia.loginregister.login.di.LoginComponentBuilder
 import com.tokopedia.loginregister.login.domain.RegisterPushNotifUseCase
-import com.tokopedia.loginregister.login.domain.pojo.RegisterPushNotifData
 import com.tokopedia.sessioncommon.di.SessionModule
 import com.tokopedia.user.session.UserSessionInterface
+import java.security.*
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -31,35 +33,35 @@ class RegisterPushNotifService : JobIntentService() {
     @Inject
     lateinit var registerPushNotifUseCase: RegisterPushNotifUseCase
 
-    @RequiresApi(Build.VERSION_CODES.M)
-    @Nullable
-    @Inject
-    lateinit var cryptography: Cryptography
-
     @Inject
     lateinit var signaturePref: SignaturePref
+
+    private lateinit var keyPair: KeyPair
 
     override fun onCreate() {
         super.onCreate()
         initInjector()
     }
 
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun onHandleWork(intent: Intent) {
         try {
-            if(cryptography.isInitialized()) {
-                val signature = cryptography.generateRegisterPushNotifSignature(userId = userSession.userId, deviceId = userSession.deviceId)
-                signature.let { it ->
-                    signaturePref.signature = it.signature
-                    registerPushNotifUseCase.executeCoroutines(
-                            cryptography.getPublicKey(),
-                            it.signature,
-                            it.datetime,
-                            {
-                                it.success
-                            },
-                            {
-                                it.printStackTrace()
-                            })
+            if (userSession.isLoggedIn) {
+                generateKey()
+                if (::keyPair.isInitialized) {
+                    signData(userSession.userId, userSession.deviceId).let {
+                        signaturePref.signature = it.signature
+                        registerPushNotifUseCase.executeCoroutines(
+                                it.publicKey,
+                                it.signature,
+                                it.datetime,
+                                { registerPushNotifData ->
+                                    registerPushNotifData.success
+                                },
+                                { throwable ->
+                                    throwable.printStackTrace()
+                                })
+                    }
                 }
             }
         } catch (e: Exception) {
@@ -74,9 +76,80 @@ class RegisterPushNotifService : JobIntentService() {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.M)
+    private fun generateKey() {
+        //We are creating a RSA key pair and store it in the Android Keystore
+        val keyPairGenerator: KeyPairGenerator = KeyPairGenerator.getInstance(KeyProperties.KEY_ALGORITHM_RSA, ANDROID_KEY_STORE)
+
+        //We are creating the key pair with sign and verify purposes
+        val parameterSpec: KeyGenParameterSpec = KeyGenParameterSpec.Builder(PUSH_NOTIF_ALIAS,
+                KeyProperties.PURPOSE_SIGN or KeyProperties.PURPOSE_VERIFY).run {
+            setDigests(KeyProperties.DIGEST_SHA256)                         //Set of digests algorithms with which the key can be used
+            setSignaturePaddings(KeyProperties.SIGNATURE_PADDING_RSA_PKCS1) //Set of padding schemes with which the key can be used when signing/verifying
+            build()
+        }
+
+        //Initialization of key generator with the parameters we have specified above
+        keyPairGenerator.initialize(parameterSpec)
+
+        //Generates the key pair
+        keyPair = keyPairGenerator.genKeyPair()
+    }
+
+    @RequiresApi(Build.VERSION_CODES.M)
+    private fun signData(userId: String, deviceId: String): SignResult {
+        val signResult = SignResult()
+        try {
+            val datetime = (System.currentTimeMillis() / 1000).toString()
+            signResult.datetime = datetime
+
+            val data = userId + datetime + deviceId
+
+            //We get the Keystore instance
+            val keyStore: KeyStore = KeyStore.getInstance(ANDROID_KEY_STORE).apply {
+                load(null)
+            }
+
+            //Retrieves the private key from the keystore
+            val privateKey: PrivateKey = keyStore.getKey(PUSH_NOTIF_ALIAS, null) as PrivateKey
+
+            //Retrieves the public key from the keystore
+            val publicKey: PublicKey = keyStore.getCertificate(PUSH_NOTIF_ALIAS).publicKey
+            signResult.publicKey = publicKeyToString(publicKey.encoded)
+
+            //We sign the data with the private key. We use RSA algorithm along SHA-256 digest algorithm
+            val signature: ByteArray? = Signature.getInstance(SHA_256_WITH_RSA).run {
+                initSign(privateKey)
+                update(data.toByteArray())
+                sign()
+            }
+
+            if (signature != null) {
+                //We encode and store in a variable the value of the signature
+                signResult.signature = Base64.encodeToString(signature, Base64.DEFAULT)
+            }
+
+        } catch (e: Exception) {
+            throw RuntimeException(e)
+        }
+
+        return signResult
+    }
+
+    private fun publicKeyToString(input: ByteArray): String {
+        val encoded = Base64.encodeToString(input, Base64.NO_WRAP)
+        return "$PUBLIC_KEY_PREFIX$encoded$PUBLIC_KEY_SUFFIX"
+    }
+
     companion object {
 
-        const val JOB_ID = 34578
+        private const val JOB_ID = 34578
+
+        private const val ANDROID_KEY_STORE = "AndroidKeyStore"
+        private const val PUSH_NOTIF_ALIAS = "PushNotif"
+        private const val SHA_256_WITH_RSA = "SHA256withRSA"
+        private const val PUBLIC_KEY_PREFIX = "-----BEGIN PUBLIC KEY-----\n"
+        private const val PUBLIC_KEY_SUFFIX = "\n-----END PUBLIC KEY-----"
 
         fun startService(context: Context) {
             try {

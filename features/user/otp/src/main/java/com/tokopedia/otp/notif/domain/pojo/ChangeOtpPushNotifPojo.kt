@@ -20,5 +20,6 @@ data class ChangeOtpPushNotifData(
         var success: Boolean = false,
         @SerializedName("errorMessage")
         @Expose
-        var errorMessage: String = ""
+        var errorMessage: String = "",
+        var isChecked: Boolean = false
 )

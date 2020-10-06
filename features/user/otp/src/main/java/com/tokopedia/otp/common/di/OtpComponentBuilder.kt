@@ -1,5 +1,6 @@
 package com.tokopedia.otp.common.di
 
+import android.content.Context
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 
 /**
@@ -8,7 +9,8 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 
 object OtpComponentBuilder {
 
-    fun getComponent(application: BaseMainApplication): OtpComponent =
+    fun getComponent(application: BaseMainApplication, activityContext: Context): OtpComponent =
             DaggerOtpComponent.builder()
+                    .otpModule(OtpModule(activityContext))
                     .baseAppComponent(application.baseAppComponent).build()
 }

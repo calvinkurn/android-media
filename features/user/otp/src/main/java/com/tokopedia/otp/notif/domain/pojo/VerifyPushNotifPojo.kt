@@ -14,10 +14,13 @@ data class VerifyPushNotifPojo(
 )
 
 data class VerifyPushNotifData(
-        @SerializedName("is_success")
+        @SerializedName("success")
         @Expose
         var success: Boolean = false,
-        @SerializedName("error_message")
+        @SerializedName("message")
+        @Expose
+        var message: String = "",
+        @SerializedName("errorMessage")
         @Expose
         var errorMessage: String = "",
         @SerializedName("Imglink")

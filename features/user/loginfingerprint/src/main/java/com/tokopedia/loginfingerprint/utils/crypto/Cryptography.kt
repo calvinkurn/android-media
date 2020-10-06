@@ -24,8 +24,6 @@ interface Cryptography {
 
     fun generateFingerprintSignature(userId: String, deviceId: String): SignatureData
 
-    fun generateRegisterPushNotifSignature(userId: String, deviceId: String): SignatureData
-
     fun getSignature(textToEncrypt: String, algorithm: String): String
 
     fun getCryptoObject(): FingerprintManagerCompat.CryptoObject?

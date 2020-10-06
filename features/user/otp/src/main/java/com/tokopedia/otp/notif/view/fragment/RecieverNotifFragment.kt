@@ -1,5 +1,6 @@
 package com.tokopedia.otp.notif.view.fragment
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -7,7 +8,9 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.kotlin.util.LetUtil
 import com.tokopedia.otp.common.IOnBackPressed
+import com.tokopedia.otp.common.LoadingDialog
 import com.tokopedia.otp.common.abstraction.BaseOtpFragment
 import com.tokopedia.otp.common.di.OtpComponent
 import com.tokopedia.otp.notif.common.SignaturePref
@@ -15,6 +18,7 @@ import com.tokopedia.otp.notif.domain.pojo.VerifyPushNotifData
 import com.tokopedia.otp.notif.view.activity.ResultNotifActivity
 import com.tokopedia.otp.notif.view.viewbinding.RecieverNotifViewBinding
 import com.tokopedia.otp.notif.viewmodel.NotifViewModel
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
@@ -27,9 +31,10 @@ class RecieverNotifFragment : BaseOtpFragment(), IOnBackPressed {
 
     @Inject
     lateinit var signaturePref: SignaturePref
-
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+    @Inject
+    lateinit var loadingDialog: LoadingDialog
 
     private var deviceName: String = ""
     private var location: String = ""
@@ -81,22 +86,23 @@ class RecieverNotifFragment : BaseOtpFragment(), IOnBackPressed {
 
     private fun onSuccessVerifyPushNotif(): (VerifyPushNotifData) -> Unit {
         return { verifyPushNotifData ->
-            if (verifyPushNotifData.ctaType.isNotEmpty()) {
-                goToResultNotif(
-                        verifyPushNotifData.imglink,
-                        verifyPushNotifData.messageTitle,
-                        verifyPushNotifData.messageBody,
-                        verifyPushNotifData.ctaType
-                )
-            } else {
-                onFailedVerifyPushNotif().invoke(Throwable())
-            }
+            dismissLoading()
+            goToResultNotif(
+                    verifyPushNotifData.imglink,
+                    verifyPushNotifData.messageTitle,
+                    verifyPushNotifData.messageBody,
+                    verifyPushNotifData.ctaType
+            )
         }
     }
 
     private fun onFailedVerifyPushNotif(): (Throwable) -> Unit {
         return { throwable ->
+            dismissLoading()
             throwable.printStackTrace()
+            LetUtil.ifLet(throwable.message, viewBound.containerView) { (message, containerView) ->
+                Toaster.make(containerView as View, message as String, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL)
+            }
         }
     }
 
@@ -110,15 +116,30 @@ class RecieverNotifFragment : BaseOtpFragment(), IOnBackPressed {
         activity?.finish()
     }
 
+    @SuppressLint("SetTextI18n")
     private fun initView() {
         viewBound.textDevice?.text = deviceName
         viewBound.textTime?.text = time
-        viewBound.textLocation?.text = location
+        viewBound.textLocation?.text = "$location • $ip"
         viewBound.btnYes?.setOnClickListener {
+            showLoading()
             viewModel.verifyPushNotif(challengeCode, signaturePref.signature ?: "", STATUS_APPROVE)
         }
         viewBound.btnNo?.setOnClickListener {
+            showLoading()
             viewModel.verifyPushNotif(challengeCode, signaturePref.signature ?: "", STATUS_REJECT)
+        }
+    }
+
+    private fun showLoading() {
+        if(activity != null){
+            loadingDialog.show()
+        }
+    }
+
+    private fun dismissLoading() {
+        if(activity != null) {
+            loadingDialog.dismiss()
         }
     }
 

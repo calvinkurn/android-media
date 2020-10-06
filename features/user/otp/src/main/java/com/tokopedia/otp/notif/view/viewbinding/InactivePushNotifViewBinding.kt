@@ -20,6 +20,6 @@ class InactivePushNotifViewBinding @Inject constructor() : BaseOtpViewBinding() 
 
     override fun inflate(layoutInflater: LayoutInflater, container: ViewGroup?): View =
             layoutInflater.inflate(layoutResId, container, false).apply {
-                ticker = findViewById(R.id.ticker_push_notif)
+                ticker = findViewById(R.id.ticker_push_notif_inactive)
             }
 }

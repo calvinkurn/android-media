@@ -9,7 +9,6 @@ object BiometricConstant {
     val FINGERPRINT = "loginfingerprint"
     val ANDROID_KEY_STORE = "AndroidKeyStore"
     val SHA_1_WITH_RSA = "SHA1withRSA"
-    val SHA_256_WITH_RSA = "SHA256withRSA"
     val ENABLE_FINGERPRINT_MAINAPP = "mainapp_enable_fingerprint"
     val ENABLE_FINGERPRINT_SELLERAPP = "sellerapp_enable_fingerprint"
 }

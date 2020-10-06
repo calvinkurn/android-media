@@ -17,6 +17,7 @@ class RecieverNotifViewBinding @Inject constructor() : BaseOtpViewBinding() {
 
     override val layoutResId: Int = R.layout.fragment_notif_reciever
 
+    var containerView: View? = null
     var btnYes: UnifyButton? = null
     var btnNo: UnifyButton? = null
     var textDevice: Typography? = null
@@ -25,6 +26,7 @@ class RecieverNotifViewBinding @Inject constructor() : BaseOtpViewBinding() {
 
     override fun inflate(layoutInflater: LayoutInflater, container: ViewGroup?): View =
             layoutInflater.inflate(layoutResId, container, false).apply {
+                containerView = findViewById(R.id.container)
                 btnYes = findViewById(R.id.btn_yes)
                 btnNo = findViewById(R.id.btn_no)
                 textDevice = findViewById(R.id.text_device)

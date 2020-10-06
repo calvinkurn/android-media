@@ -37,12 +37,13 @@ class NotifViewModel @Inject constructor(
     val verifyPushNotifResult: LiveData<Result<VerifyPushNotifData>>
         get() = _verifyPushNotifResult
 
-    fun changeOtpPushNotif(status: Int) {
+    fun changeOtpPushNotif(status: Boolean) {
         launchCatchError(coroutineContext, {
-            val params = changeOtpPushNotifUseCase.getParams(status)
+            val params = changeOtpPushNotifUseCase.getParams(if (status) 1 else 0)
             val data = changeOtpPushNotifUseCase.getData(params).data
             when {
                 data.success -> {
+                    data.isChecked = status
                     _changeOtpPushNotifResult.value = Success(data)
                 }
                 data.errorMessage.isNotEmpty() -> {
@@ -85,7 +86,10 @@ class NotifViewModel @Inject constructor(
             val params = verifyPushNotifUseCase.getParams(challengeCode, signature, status)
             val data = verifyPushNotifUseCase.getData(params).data
             when {
-                data.success -> {
+                data.imglink.isNotEmpty() &&
+                data.messageTitle.isNotEmpty() &&
+                data.messageBody.isNotEmpty() &&
+                data.ctaType.isNotEmpty() -> {
                     _verifyPushNotifResult.value = Success(data)
                 }
                 data.errorMessage.isNotEmpty() -> {
