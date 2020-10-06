@@ -3,6 +3,7 @@ package com.tokopedia.play.widget.ui.custom
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -10,6 +11,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.widget.R
 import com.tokopedia.play.widget.ui.model.PlayWidgetCardUiModel
+import com.tokopedia.play.widget.ui.type.PlayWidgetCardType
 import com.tokopedia.play_common.widget.playBannerCarousel.extension.loadImage
 
 /**
@@ -22,78 +24,73 @@ class PlayWidgetCardSmallView : ConstraintLayout {
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes)
 
+    private val flBorder: FrameLayout
     private val ivCover: ImageView
     private val ivDiscount: ImageView
-    private val tvTotalViews: TextView
+    private val clTotalView: ConstraintLayout
+    private val tvTotalView: TextView
     private val tvTitle: TextView
     private val tvUpcoming: TextView
-
-//    private val borderPath = Path()
-//    private val borderWidth by lazy { resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl1).toFloat() }
-//    private val borderRadius by lazy { resources.getDimensionPixelSize(R.dimen.play_widget_small_radius).toFloat() }
-//    private val gradientShader by lazy {
-//        LinearGradient(
-//                0f,
-//                0f,
-//                0f,
-//                height.toFloat(),
-//                MethodChecker.getColor(context, R.color.play_widget_small_gradient_top),
-//                MethodChecker.getColor(context, com.tokopedia.unifycomponents.R.color.Red_R400),
-//                Shader.TileMode.CLAMP
-//        )
-//    }
-//    private val paint = Paint().apply {
-//        isAntiAlias = true
-//        isDither = true
-//    }
+    private val ivLiveBadge: ImageView
 
     init {
         val view = View.inflate(context, R.layout.view_play_widget_card_small, this)
+        flBorder = view.findViewById(R.id.fl_border)
         ivCover = view.findViewById(R.id.iv_cover)
         ivDiscount = view.findViewById(R.id.iv_discount)
-        tvTotalViews = view.findViewById(R.id.tv_total_views)
+        clTotalView = view.findViewById(R.id.cl_total_view)
+        tvTotalView = view.findViewById(R.id.tv_total_view)
         tvTitle = view.findViewById(R.id.tv_title)
         tvUpcoming = view.findViewById(R.id.tv_upcoming)
+        ivLiveBadge = view.findViewById(R.id.iv_live_badge)
     }
 
     fun setModel(model: PlayWidgetCardUiModel) {
         ivCover.loadImage(model.video.coverUrl)
-        if (model.hasPromo) ivDiscount.visible() else ivDiscount.gone()
-        if (model.totalViewVisible) {
-            tvTotalViews.visible()
-            tvTotalViews.text = model.totalView
-        } else tvTotalViews.gone()
+
+        handleType(model.widgetType)
+        handlePromo(model.widgetType, model.hasPromo)
+        handleTotalView(model.widgetType, model.totalViewVisible, model.totalView)
+
         tvTitle.text = "Kuliner Lokal Lezatnya Total Lezatnya"
         tvUpcoming.text = "10 Jan - 17.00"
+
+        flBorder.setBackgroundResource(
+                if (model.video.isLive) R.drawable.bg_play_widget_small_live_border
+                else R.drawable.bg_play_widget_small_default_border
+        )
     }
 
-//    override fun dispatchDraw(canvas: Canvas?) {
-//        canvas?.let { drawBorder(it) }
-//        super.dispatchDraw(canvas)
-//    }
+    private fun handleType(type: PlayWidgetCardType) {
+        when (type) {
+            PlayWidgetCardType.Live -> {
+                tvUpcoming.gone()
+                ivLiveBadge.visible()
+            }
+            PlayWidgetCardType.Vod -> {
+                tvUpcoming.gone()
+                ivLiveBadge.gone()
+            }
+            PlayWidgetCardType.Upcoming -> {
+                tvUpcoming.visible()
+                ivLiveBadge.gone()
+                ivDiscount.gone()
+            }
+        }
+    }
 
-//    private fun drawBorder(canvas: Canvas) {
-//        canvas.save()
-//        canvas.clipRoundRect(
-//                RectF(borderWidth, borderWidth, width - borderWidth, height - borderWidth),
-//                borderRadius
-//        )
-//        paint.shader = gradientShader
-//        canvas.drawRoundRect(
-//                RectF(0f, 0f, width.toFloat(), height.toFloat()),
-//                borderRadius,
-//                borderRadius,
-//                paint
-//        )
-//        canvas.restore()
-//    }
-//
-//    private fun Canvas.clipRoundRect(rect: RectF, radius: Float) {
-//        borderPath.reset()
-//        borderPath.addRoundRect(rect, radius, radius, Path.Direction.CW)
-//        borderPath.close()
-//
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) clipOutPath(borderPath)
-//        else clipPath(borderPath, Region.Op.DIFFERENCE)
-//    }
+    private fun handlePromo(type: PlayWidgetCardType, hasPromo: Boolean) {
+        if (type == PlayWidgetCardType.Upcoming || type == PlayWidgetCardType.Unknown) ivDiscount.gone()
+        else if (hasPromo) ivDiscount.visible()
+        else ivDiscount.gone()
+    }
+
+    private fun handleTotalView(type: PlayWidgetCardType, isVisible: Boolean, totalViewString: String) {
+        if (type == PlayWidgetCardType.Upcoming || type == PlayWidgetCardType.Unknown) clTotalView.gone()
+        else if (isVisible) {
+            clTotalView.visible()
+            tvTotalView.text = totalViewString
+        }
+        else clTotalView.gone()
+    }
 }
