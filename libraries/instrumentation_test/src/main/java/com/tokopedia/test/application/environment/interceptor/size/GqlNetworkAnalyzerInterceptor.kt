@@ -24,12 +24,14 @@ class GqlNetworkAnalyzerInterceptor : Interceptor {
         var startRequest = 0L
         var endRequest = 0L
 
+        @JvmStatic
         fun addGqlQueryListToAnalyze(gqlQueryListToAnalyze: List<String>?) {
             if (gqlQueryListToAnalyze == null) return
 
             this.gqlQueryListToAnalyze.addAll(gqlQueryListToAnalyze.map { it.toLowerCase(Locale.US) })
         }
 
+        @JvmStatic
         fun reset() {
             sizeInEachRequest.clear()
             timeInEachRequest.clear()
