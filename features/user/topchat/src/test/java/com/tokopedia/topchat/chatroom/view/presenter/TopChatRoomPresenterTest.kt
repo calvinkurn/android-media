@@ -482,6 +482,9 @@ class TopChatRoomPresenterTest {
         every { getChatUseCase.isInTheMiddleOfThePage() } returns false
         val wsChatPojo = mockkParseResponse(wsResponseImageAttachment, false)
         val wsChatVisitable = mockkWsMapper(wsChatPojo)
+        val websocketParam = TopChatWebSocketParam.generateParamSendImage(
+                exMessageId, exImageUploadId, imageUploadViewModel.startTime
+        )
 
         // When
         presenter.connectWebSocket(exMessageId)
@@ -489,9 +492,6 @@ class TopChatRoomPresenterTest {
         websocketServer.onNext(wsResponseImageAttachment)
 
         // Then
-        val websocketParam = TopChatWebSocketParam.generateParamSendImage(
-                exMessageId, exImageUploadId, imageUploadViewModel.startTime
-        )
         verify(exactly = 1) { view.addDummyMessage(imageUploadViewModel) }
         verify(exactly = 1) { RxWebSocket.send(websocketParam, listInterceptor) }
         verify(exactly = 1) { view.onReceiveMessageEvent(wsChatVisitable) }
