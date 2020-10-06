@@ -50,6 +50,7 @@ import com.tokopedia.abstraction.common.utils.view.RefreshHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder;
 import com.tokopedia.buyerorder.R;
 import com.tokopedia.buyerorder.common.util.BuyerConsts;
 import com.tokopedia.buyerorder.common.util.UnifiedOrderListRouter;
@@ -101,6 +102,8 @@ import javax.inject.Inject;
 
 import kotlin.Unit;
 import static android.content.Context.CLIPBOARD_SERVICE;
+import static com.tokopedia.applink.internal.ApplinkConstInternalOrder.EXTRA_ORDER_ID;
+import static com.tokopedia.applink.internal.ApplinkConstInternalOrder.EXTRA_USER_MODE;
 import static com.tokopedia.buyerorder.common.util.BuyerConsts.CANCEL_BUYER_REQUEST_TWO_LAYER;
 import static com.tokopedia.buyerorder.common.util.BuyerConsts.RESULT_CODE_INSTANT_CANCEL;
 import static com.tokopedia.buyerorder.common.util.BuyerConsts.RESULT_MSG_INSTANT_CANCEL;
@@ -300,10 +303,11 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                 @Override
                 public void onClick(View view) {
                     orderListAnalytics.sendLihatStatusClick(status.status());
-                    // TODO: cek apakah masih butuh UnifiedOrderListRouter
-                    startActivity(((UnifiedOrderListRouter) getActivity().getApplication()).getOrderHistoryIntent(
-                            getActivity(), getArguments().getString(KEY_ORDER_ID)
-                    ));
+
+                    startActivity(RouteManager.getIntent(getActivity(), ApplinkConstInternalOrder.TRACK, "")
+                            .putExtra(EXTRA_ORDER_ID, getArguments().getString(KEY_ORDER_ID))
+                            .putExtra(EXTRA_USER_MODE, 1));
+
                 }
             });
         }
