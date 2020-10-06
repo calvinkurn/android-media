@@ -99,7 +99,7 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
 
     val listProductRecomMap: List<ProductRecommendationDataModel>? = mapOfData.filterKeys {
         it == ProductDetailConstant.PDP_1 || it == ProductDetailConstant.PDP_2
-                || it == ProductDetailConstant.PDP_3 || it == ProductDetailConstant.PDP_4
+                || it == ProductDetailConstant.PDP_3 || it == ProductDetailConstant.PDP_4 || it == ProductDetailConstant.PDP_5
     }.map {
         it.value as ProductRecommendationDataModel
     }
