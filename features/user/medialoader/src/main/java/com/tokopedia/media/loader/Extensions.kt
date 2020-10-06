@@ -72,6 +72,7 @@ internal fun ImageView.builder(url: GlideUrl, properties: Properties) {
                 overrideSize = overrideSize,
                 decodeFormat = decodeFormat,
                 transform = transform,
+                transforms = transforms,
                 listener = loaderListener
         )
     }

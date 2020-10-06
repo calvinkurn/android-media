@@ -21,5 +21,6 @@ open class Properties(
         var overrideSize: Resize? = null,
         var decodeFormat: DecodeFormat? = DecodeFormat.DEFAULT,
         var loaderListener: LoaderStateListener? = null,
-        var transform: Transformation<Bitmap>? = null
+        var transform: Transformation<Bitmap>? = null,
+        var transforms: List<Transformation<Bitmap>>? = null
 )
