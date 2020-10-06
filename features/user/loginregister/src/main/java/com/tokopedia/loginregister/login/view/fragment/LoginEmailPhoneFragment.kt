@@ -142,7 +142,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
     protected var isEnableSmartLock = true
     private var isShowTicker: Boolean = false
     private var isShowBanner: Boolean = false
-    private var isEnableFingerprint = true
+    protected var isEnableFingerprint = true
     private var activityShouldEnd = true
     private var isFromRegister = false
 
@@ -500,7 +500,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
 
     }
 
-    private fun goToTokopediaCareWebview() {
+    fun goToTokopediaCareWebview() {
         RouteManager.route(activity, String.format("%s?url=%s", ApplinkConst.WEBVIEW,
                 getInstance().MOBILEWEB + TOKOPEDIA_CARE_PATH))
     }
