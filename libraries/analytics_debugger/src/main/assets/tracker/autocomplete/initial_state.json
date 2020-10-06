@@ -25,13 +25,6 @@
     },
     {
       "event": "clickSearch",
-      "eventCategory": "top nav - /",
-      "eventAction": "click - popular search",
-      "eventLabel": "{{.* - po: .* - applink: .*}}",
-      "sessionIris": "{{.*}}"
-    },
-    {
-      "event": "clickSearch",
       "eventCategory": "top nav",
       "eventAction": "click - recent search",
       "eventLabel": "{{value: .* - po: .* - applink: .*}}",
@@ -73,6 +66,16 @@
       "currentSite": "tokopediamarketplace",
       "userId": "{{.*}}",
       "businessUnit": "search",
+      "sessionIris": "{{.*}}"
+    },
+    {
+      "event": "clickTopNav",
+      "eventCategory": "top nav - /",
+      "eventAction": "{{click - popular search - .*}}",
+      "eventLabel": "{{value: .* - title: .* - po: .*}}",
+      "businessUnit": "search",
+      "currentSite": "tokopediamarketplace",
+      "userId": "{{.*}}",
       "sessionIris": "{{.*}}"
     }
   ]
