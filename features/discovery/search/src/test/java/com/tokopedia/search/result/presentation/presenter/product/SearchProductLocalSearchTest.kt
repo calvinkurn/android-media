@@ -7,7 +7,9 @@ import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.presentation.model.CpmViewModel
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel
+import com.tokopedia.search.result.presentation.model.SearchInTokopediaViewModel
 import com.tokopedia.search.result.presentation.model.SearchProductTitleViewModel
+import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
 import com.tokopedia.search.shouldBe
 import com.tokopedia.search.shouldBeInstanceOf
 import io.mockk.*
@@ -17,6 +19,9 @@ import rx.Subscriber
 private const val searchProductLocalSearchFirstPageJSON = "searchproduct/localsearch/first-page.json"
 private const val searchProductLocalSearchSecondPageJSON = "searchproduct/localsearch/second-page.json"
 private const val searchProductLocalSearchEmptyJSON = "searchproduct/localsearch/empty-search.json"
+private const val searchProductLocalSearchFirstPageEndOfPageJSON = "searchproduct/localsearch/first-page-end-of-page.json"
+private const val searchProductLocalSearchFirstPage12ProductsJSON = "searchproduct/localsearch/first-page-12-products.json"
+private const val searchProductLocalSearchSecondPageEndOfPageJSON = "searchproduct/localsearch/second-page-end-of-page.json"
 
 internal class SearchProductLocalSearchTest: ProductListPresenterTestFixtures() {
 
@@ -141,5 +146,37 @@ internal class SearchProductLocalSearchTest: ProductListPresenterTestFixtures() 
         verify(exactly = 0) {
             recommendationUseCase.execute(any(), any())
         }
+    }
+
+    @Test
+    fun `Show search in tokopedia button at bottom of last page - page 1`() {
+        val searchProductModel = searchProductLocalSearchFirstPageEndOfPageJSON.jsonToObject<SearchProductModel>()
+
+        `Given Search Product API will return SearchProductModel`(searchProductModel)
+        `Given visitable list will be captured`()
+
+        `When Load Data`(searchParameter)
+
+        `Then verify visitable list have search in tokopedia at bottom`()
+    }
+
+    private fun `Then verify visitable list have search in tokopedia at bottom`() {
+        visitableList.last().shouldBeInstanceOf<SearchInTokopediaViewModel>()
+        (visitableList.last() as SearchInTokopediaViewModel).applink shouldBe "tokopedia://search-autocomplete?q=asus"
+    }
+
+    @Test
+    fun `Show search in tokopedia button at bottom of last page - page 2`() {
+        val searchProductModel = searchProductLocalSearchFirstPage12ProductsJSON.jsonToObject<SearchProductModel>()
+        val searchProductModelPage2 = searchProductLocalSearchSecondPageEndOfPageJSON.jsonToObject<SearchProductModel>()
+
+        `Given Search Product API will return SearchProductModel`(searchProductModel)
+        `Given Search Product Load More API will return Search Product Model`(searchProductModelPage2)
+        `Given view already load data`(searchParameter)
+        `Given visitable list page 2 will be captured`()
+
+        `When Load Data`(searchParameter)
+
+        `Then verify visitable list have search in tokopedia at bottom`()
     }
 }

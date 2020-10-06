@@ -45,6 +45,7 @@ import com.tokopedia.search.result.presentation.model.ProductViewModel;
 import com.tokopedia.search.result.presentation.model.RecommendationItemViewModel;
 import com.tokopedia.search.result.presentation.model.RecommendationTitleViewModel;
 import com.tokopedia.search.result.presentation.model.RelatedViewModel;
+import com.tokopedia.search.result.presentation.model.SearchInTokopediaViewModel;
 import com.tokopedia.search.result.presentation.model.SeparatorViewModel;
 import com.tokopedia.search.result.presentation.model.SearchProductTitleViewModel;
 import com.tokopedia.search.result.presentation.model.SuggestionViewModel;
@@ -113,6 +114,8 @@ final class ProductListPresenter
     private static final String DEFAULT_PAGE_TITLE_RECOMMENDATION = "Rekomendasi untukmu";
     private static final String DEFAULT_USER_ID = "0";
     private static final int QUICK_FILTER_MINIMUM_SIZE = 2;
+    private static final List<String> LOCAL_SEARCH_KEY_PARAMS =
+            Arrays.asList(SearchApiConst.NAVSOURCE, SearchApiConst.SRP_PAGE_ID, SearchApiConst.SRP_PAGE_TITLE);
 
     private UseCase<SearchProductModel> searchProductFirstPageUseCase;
     private UseCase<SearchProductModel> searchProductLoadMoreUseCase;
@@ -980,6 +983,12 @@ final class ProductListPresenter
         processInspirationCardPosition(searchParameter, list);
 
         processBroadMatch(searchProduct, list);
+
+        if (isLastPage(searchProduct) && isLocalSearch()) {
+            String globalSearchApplink = UrlParamUtils.removeQueryParams(searchProduct.getData().getAutocompleteApplink(), LOCAL_SEARCH_KEY_PARAMS);
+            SearchInTokopediaViewModel searchInTokopediaViewModel = new SearchInTokopediaViewModel(globalSearchApplink);
+            list.add(searchInTokopediaViewModel);
+        }
 
         getView().removeLoading();
         getView().setProductList(list);

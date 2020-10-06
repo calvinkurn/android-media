@@ -18,6 +18,7 @@ import com.tokopedia.search.result.presentation.model.InspirationCarouselViewMod
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
 import com.tokopedia.search.result.presentation.model.RecommendationItemViewModel;
 import com.tokopedia.search.result.presentation.model.RecommendationTitleViewModel;
+import com.tokopedia.search.result.presentation.model.SearchInTokopediaViewModel;
 import com.tokopedia.search.result.presentation.model.SeparatorViewModel;
 import com.tokopedia.search.result.presentation.model.SearchProductTitleViewModel;
 import com.tokopedia.search.result.presentation.model.SuggestionViewModel;
@@ -199,6 +200,11 @@ public class ProductListTypeFactoryImpl extends BaseAdapterTypeFactory implement
     @Override
     public int type(SearchProductTitleViewModel searchProductTitleViewModel) {
         return SearchProductTitleViewHolder.LAYOUT;
+    }
+
+    @Override
+    public int type(SearchInTokopediaViewModel searchInTokopediaViewModel) {
+        return 0;
     }
 
     @Override
