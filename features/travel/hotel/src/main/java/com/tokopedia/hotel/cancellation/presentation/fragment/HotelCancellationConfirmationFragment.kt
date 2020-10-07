@@ -146,6 +146,7 @@ class HotelCancellationConfirmationFragment: HotelBaseFragment() {
         button.buttonVariant = HotelCancellationButtonEnum.getEnumFromValue(actionButton.buttonType).buttonVariant
         button.buttonSize = UnifyButton.Size.MEDIUM
         button.text = actionButton.label
+        button.tag = actionButton.label
         button.layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT)
         button.setMargin(0, 0, 0, resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.layout_lvl1))

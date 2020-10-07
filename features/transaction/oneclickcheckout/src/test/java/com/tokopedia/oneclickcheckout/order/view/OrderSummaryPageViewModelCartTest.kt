@@ -83,7 +83,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         assertEquals(OccState.FirstLoad(OrderPreference(profileIndex = "", profileRecommendation = "", isValid = true)), orderSummaryPageViewModel.orderPreference.value)
         assertEquals(OccGlobalEvent.Normal, orderSummaryPageViewModel.globalEvent.value)
         verify(exactly = 1) {
-            orderSummaryAnalytics.eventViewOrderSummaryPage(any())
+            orderSummaryAnalytics.eventViewOrderSummaryPage(any(), any(), any())
         }
         verify(inverse = true) { ratesUseCase.execute(any()) }
     }
@@ -101,7 +101,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
 
         // Then
         verify(exactly = 1) {
-            orderSummaryAnalytics.eventViewOrderSummaryPage(any())
+            orderSummaryAnalytics.eventViewOrderSummaryPage(any(), any(), any())
         }
     }
 
@@ -119,7 +119,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         assertEquals(OccState.Failed(Failure(response)), orderSummaryPageViewModel.orderPreference.value)
         assertEquals(OccGlobalEvent.Normal, orderSummaryPageViewModel.globalEvent.value)
         verify(inverse = true) {
-            orderSummaryAnalytics.eventViewOrderSummaryPage(any())
+            orderSummaryAnalytics.eventViewOrderSummaryPage(any(), any(), any())
         }
         verify(inverse = true) { ratesUseCase.execute(any()) }
     }
@@ -140,6 +140,26 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         assertEquals(OccState.FirstLoad(OrderPreference(profileIndex = "", profileRecommendation = "", preference = profile, isValid = true)),
                 orderSummaryPageViewModel.orderPreference.value)
         assertEquals(OccGlobalEvent.Normal, orderSummaryPageViewModel.globalEvent.value)
+        verify(exactly = 1) { ratesUseCase.execute(any()) }
+    }
+
+    @Test
+    fun `Get Occ Cart Success With Prompt`() {
+        // Given
+        val shipment = OrderProfileShipment(serviceId = 1)
+        val profile = OrderProfile(shipment = shipment)
+        val prompt = OccPrompt(OccPrompt.TYPE_DIALOG)
+        val response = OrderData(cart = OrderCart(product = OrderProduct(productId = 1)), preference = profile, prompt = prompt)
+        every { getOccCartUseCase.createRequestParams(any()) } returns RequestParams.EMPTY
+        every { getOccCartUseCase.execute(any(), any(), any()) } answers { (firstArg() as ((OrderData) -> Unit)).invoke(response) }
+
+        // When
+        orderSummaryPageViewModel.getOccCart(true, "")
+
+        // Then
+        assertEquals(OccState.FirstLoad(OrderPreference(profileIndex = "", profileRecommendation = "", preference = profile, isValid = true)),
+                orderSummaryPageViewModel.orderPreference.value)
+        assertEquals(OccGlobalEvent.Prompt(prompt), orderSummaryPageViewModel.globalEvent.value)
         verify(exactly = 1) { ratesUseCase.execute(any()) }
     }
 
@@ -190,7 +210,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
                 orderSummaryPageViewModel.orderShipment.value)
         assertEquals(OccGlobalEvent.Normal, orderSummaryPageViewModel.globalEvent.value)
         verify(exactly = 1) {
-            orderSummaryAnalytics.eventViewOrderSummaryPage(any())
+            orderSummaryAnalytics.eventViewOrderSummaryPage(any(), any(), any())
         }
         assertEquals(cart, orderSummaryPageViewModel.orderCart)
         assertEquals(1, orderSummaryPageViewModel.getCurrentShipperId())
@@ -204,7 +224,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         // Given
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
         orderSummaryPageViewModel._orderShipment = helper.orderShipment
-        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = ButtonBayarState.NORMAL)
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
 
         // When
         orderSummaryPageViewModel.updateProduct(OrderProduct(quantity = QuantityUiModel(orderQuantity = 10)))
@@ -212,9 +232,9 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
 
         // Then
         assertEquals(10, orderSummaryPageViewModel.orderProduct.quantity.orderQuantity)
-        assertEquals(ButtonBayarState.LOADING, orderSummaryPageViewModel.orderTotal.value.buttonState)
+        assertEquals(OccButtonState.LOADING, orderSummaryPageViewModel.orderTotal.value.buttonState)
         verify { ratesUseCase.execute(any()) }
-        verify { updateCartOccUseCase.execute(any(), any(), any()) }
+        verify { updateCartOccUseCase.execute(any(), any(), any(), any()) }
     }
 
     @Test
@@ -222,7 +242,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         // Given
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
         orderSummaryPageViewModel._orderShipment = helper.orderShipment
-        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = ButtonBayarState.NORMAL)
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
 
         // When
         orderSummaryPageViewModel.updateProduct(OrderProduct(quantity = QuantityUiModel(orderQuantity = 10)), false)
@@ -230,7 +250,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
 
         // Then
         verify(inverse = true) { ratesUseCase.execute(any()) }
-        verify(inverse = true) { updateCartOccUseCase.execute(any(), any(), any()) }
+        verify(inverse = true) { updateCartOccUseCase.execute(any(), any(), any(), any()) }
     }
 
     @Test
@@ -238,7 +258,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         // Given
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
         orderSummaryPageViewModel._orderShipment = helper.orderShipment
-        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = ButtonBayarState.NORMAL)
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
 
         // When
         orderSummaryPageViewModel.updateProduct(OrderProduct(quantity = QuantityUiModel(orderQuantity = 10, isStateError = true)))
@@ -246,7 +266,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
 
         // Then
         verify(inverse = true) { ratesUseCase.execute(any()) }
-        verify(inverse = true) { updateCartOccUseCase.execute(any(), any(), any()) }
+        verify(inverse = true) { updateCartOccUseCase.execute(any(), any(), any(), any()) }
     }
 
     @Test
@@ -254,7 +274,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         // Given
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
         orderSummaryPageViewModel._orderShipment = helper.orderShipment
-        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = ButtonBayarState.NORMAL)
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
 
         // When
         orderSummaryPageViewModel.updateProduct(OrderProduct(quantity = QuantityUiModel(orderQuantity = 10)))
@@ -264,7 +284,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
 
         // Then
         verify(exactly = 1) { ratesUseCase.execute(any()) }
-        verify(exactly = 1) { updateCartOccUseCase.execute(match { it.cart.first().quantity == 20 }, any(), any()) }
+        verify(exactly = 1) { updateCartOccUseCase.execute(match { it.cart.first().quantity == 20 }, any(), any(), any()) }
     }
 
     @Test
@@ -297,7 +317,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
         orderSummaryPageViewModel._orderShipment = helper.orderShipment
-        every { updateCartOccUseCase.execute(any(), any(), any()) } answers {
+        every { updateCartOccUseCase.execute(any(), any(), any(), any()) } answers {
             (secondArg() as ((UpdateCartOccGqlResponse) -> Unit)).invoke(UpdateCartOccGqlResponse(UpdateCartOccResponse(data = UpdateCartDataOcc())))
         }
 
@@ -305,7 +325,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel.updateCart()
 
         // Then
-        verify { updateCartOccUseCase.execute(withArg { assertEquals(UpdateCartOccRequest(arrayListOf(UpdateCartOccCartRequest(cartId = "0", quantity = 1, productId = "1", spId = 1, shippingId = 1)), UpdateCartOccProfileRequest(profileId = "1", serviceId = 1, addressId = "0")), it) }, any(), any()) }
+        verify { updateCartOccUseCase.execute(withArg { assertEquals(UpdateCartOccRequest(arrayListOf(UpdateCartOccCartRequest(cartId = "0", quantity = 1, productId = "1", spId = 1, shippingId = 1)), UpdateCartOccProfileRequest(profileId = "1", serviceId = 1, addressId = "0")), it) }, any(), any(), any()) }
     }
 
     @Test
@@ -319,7 +339,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel.updateCart()
 
         // Then
-        verify(inverse = true) { updateCartOccUseCase.execute(any(), any(), any()) }
+        verify(inverse = true) { updateCartOccUseCase.execute(any(), any(), any(), any()) }
     }
 
     @Test
@@ -333,7 +353,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel.updateCart()
 
         // Then
-        verify(inverse = true) { updateCartOccUseCase.execute(any(), any(), any()) }
+        verify(inverse = true) { updateCartOccUseCase.execute(any(), any(), any(), any()) }
     }
 
     @Test
@@ -341,7 +361,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         // Given
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
         orderSummaryPageViewModel._orderShipment = helper.orderShipment
-        every { updateCartOccUseCase.execute(any(), any(), any()) } answers {
+        every { updateCartOccUseCase.execute(any(), any(), any(), any()) } answers {
             (secondArg() as ((UpdateCartOccGqlResponse) -> Unit)).invoke(UpdateCartOccGqlResponse(UpdateCartOccResponse(data = UpdateCartDataOcc())))
         }
 
@@ -353,14 +373,31 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
     }
 
     @Test
+    fun `Update Preference Got Prompt`() {
+        // Given
+        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
+        orderSummaryPageViewModel._orderShipment = helper.orderShipment
+        val occPrompt = OccPrompt()
+        every { updateCartOccUseCase.execute(any(), any(), any(),any()) } answers {
+            (thirdArg() as ((OccPrompt) -> Unit)).invoke(occPrompt)
+        }
+
+        // When
+        orderSummaryPageViewModel.updatePreference(ProfilesItemModel())
+
+        // Then
+        assertEquals(OccGlobalEvent.Prompt(occPrompt), orderSummaryPageViewModel.globalEvent.value)
+    }
+
+    @Test
     fun `Update Preference Failed`() {
         // Given
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
         orderSummaryPageViewModel._orderShipment = helper.orderShipment
         val responseMessage = "message"
         val response = MessageErrorException(responseMessage)
-        every { updateCartOccUseCase.execute(any(), any(), any()) } answers {
-            (thirdArg() as ((Throwable) -> Unit)).invoke(response)
+        every { updateCartOccUseCase.execute(any(), any(), any(),any()) } answers {
+            (arg(3) as ((Throwable) -> Unit)).invoke(response)
         }
 
         // When
@@ -376,8 +413,8 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
         orderSummaryPageViewModel._orderShipment = helper.orderShipment
         val response = Throwable()
-        every { updateCartOccUseCase.execute(any(), any(), any()) } answers {
-            (thirdArg() as ((Throwable) -> Unit)).invoke(response)
+        every { updateCartOccUseCase.execute(any(), any(), any(), any()) } answers {
+            (arg(3) as ((Throwable) -> Unit)).invoke(response)
         }
 
         // When
@@ -393,8 +430,8 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = false)
         orderSummaryPageViewModel._orderShipment = helper.orderShipment
         val response = Throwable()
-        every { updateCartOccUseCase.execute(any(), any(), any()) } answers {
-            (thirdArg() as ((Throwable) -> Unit)).invoke(response)
+        every { updateCartOccUseCase.execute(any(), any(), any(), any()) } answers {
+            (arg(3) as ((Throwable) -> Unit)).invoke(response)
         }
 
         // When
@@ -418,7 +455,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         val term1 = OrderPaymentInstallmentTerm(term = 1, isEnable = true, isSelected = true)
         val term2 = OrderPaymentInstallmentTerm(term = 2, isEnable = true, isSelected = false)
         orderSummaryPageViewModel._orderPayment = OrderPayment(isEnable = true, creditCard = OrderPaymentCreditCard(availableTerms = listOf(term1, term2), selectedTerm = term1))
-        every { updateCartOccUseCase.execute(any(), any(), any()) } answers {
+        every { updateCartOccUseCase.execute(any(), any(), any(), any()) } answers {
             (secondArg() as ((UpdateCartOccGqlResponse) -> Unit)).invoke(UpdateCartOccGqlResponse(UpdateCartOccResponse(data = UpdateCartDataOcc())))
         }
 
@@ -428,6 +465,32 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         // Then
         assertEquals(term2.copy(isSelected = true), orderSummaryPageViewModel.orderPayment.value.creditCard.selectedTerm)
         assertEquals(listOf(term1.copy(isSelected = false), term2.copy(isSelected = true)), orderSummaryPageViewModel.orderPayment.value.creditCard.availableTerms)
+    }
+
+    @Test
+    fun `Choose Installment Got Prompt`() {
+        // Given
+        var preference = helper.preference
+        preference = preference.copy(payment = preference.payment.copy(metadata = """
+            {
+                "express_checkout_param" : {"installment_term": "1"}
+            }
+        """.trimIndent()))
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
+        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = preference, isValid = true)
+        val term1 = OrderPaymentInstallmentTerm(term = 1, isEnable = true, isSelected = true)
+        val term2 = OrderPaymentInstallmentTerm(term = 2, isEnable = true, isSelected = false)
+        orderSummaryPageViewModel._orderPayment = OrderPayment(isEnable = true, creditCard = OrderPaymentCreditCard(availableTerms = listOf(term1, term2), selectedTerm = term1))
+        val occPrompt = OccPrompt()
+        every { updateCartOccUseCase.execute(any(), any(), any(), any()) } answers {
+            (thirdArg() as ((OccPrompt) -> Unit)).invoke(occPrompt)
+        }
+
+        // When
+        orderSummaryPageViewModel.chooseInstallment(term2)
+
+        // Then
+        assertEquals(OccGlobalEvent.Prompt(occPrompt), orderSummaryPageViewModel.globalEvent.value)
     }
 
     @Test
@@ -446,8 +509,8 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel._orderPayment = OrderPayment(isEnable = true, creditCard = OrderPaymentCreditCard(availableTerms = listOf(term1, term2), selectedTerm = term1))
         val responseMessage = "message"
         val response = MessageErrorException(responseMessage)
-        every { updateCartOccUseCase.execute(any(), any(), any()) } answers {
-            (thirdArg() as ((Throwable) -> Unit)).invoke(response)
+        every { updateCartOccUseCase.execute(any(), any(), any(), any()) } answers {
+            (arg(3) as ((Throwable) -> Unit)).invoke(response)
         }
 
         // When
@@ -472,8 +535,8 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         val term2 = OrderPaymentInstallmentTerm(term = 2, isEnable = true, isSelected = false)
         orderSummaryPageViewModel._orderPayment = OrderPayment(isEnable = true, creditCard = OrderPaymentCreditCard(availableTerms = listOf(term1, term2), selectedTerm = term1))
         val response = Throwable()
-        every { updateCartOccUseCase.execute(any(), any(), any()) } answers {
-            (thirdArg() as ((Throwable) -> Unit)).invoke(response)
+        every { updateCartOccUseCase.execute(any(), any(), any(), any()) } answers {
+            (arg(3) as ((Throwable) -> Unit)).invoke(response)
         }
 
         // When
@@ -510,7 +573,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         // Given
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
         val metadata = "metadata"
-        every { updateCartOccUseCase.execute(match { it.profile.metadata == metadata }, any(), any()) } answers {
+        every { updateCartOccUseCase.execute(match { it.profile.metadata == metadata }, any(), any(), any()) } answers {
             (secondArg() as ((UpdateCartOccGqlResponse) -> Unit)).invoke(UpdateCartOccGqlResponse(UpdateCartOccResponse(data = UpdateCartDataOcc())))
         }
 
@@ -528,8 +591,8 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         val metadata = "metadata"
         val responseMessage = "message"
         val response = MessageErrorException(responseMessage)
-        every { updateCartOccUseCase.execute(match { it.profile.metadata == metadata }, any(), any()) } answers {
-            (thirdArg() as ((Throwable) -> Unit)).invoke(response)
+        every { updateCartOccUseCase.execute(match { it.profile.metadata == metadata }, any(), any(), any()) } answers {
+            (arg(3) as ((Throwable) -> Unit)).invoke(response)
         }
 
         // When
@@ -545,8 +608,8 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
         val metadata = "metadata"
         val response = Exception()
-        every { updateCartOccUseCase.execute(match { it.profile.metadata == metadata }, any(), any()) } answers {
-            (thirdArg() as ((Throwable) -> Unit)).invoke(response)
+        every { updateCartOccUseCase.execute(match { it.profile.metadata == metadata }, any(), any(), any()) } answers {
+            (arg(3) as ((Throwable) -> Unit)).invoke(response)
         }
 
         // When
@@ -565,6 +628,45 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel.updateCreditCard("")
 
         // Then
-        verify(inverse = true) { updateCartOccUseCase.execute(any(), any(), any()) }
+        verify(inverse = true) { updateCartOccUseCase.execute(any(), any(), any(), any()) }
+    }
+
+    @Test
+    fun `Update Credit Card Got Prompt`() {
+        // Given
+        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
+        val metadata = "metadata"
+        val occPrompt = OccPrompt()
+        every { updateCartOccUseCase.execute(match { it.profile.metadata == metadata }, any(), any(), any()) } answers {
+            (thirdArg() as ((OccPrompt) -> Unit)).invoke(occPrompt)
+        }
+
+        // When
+        orderSummaryPageViewModel.updateCreditCard(metadata)
+
+        // Then
+        assertEquals(OccGlobalEvent.Prompt(occPrompt), orderSummaryPageViewModel.globalEvent.value)
+    }
+
+    @Test
+    fun `Final Update Got Prompt`() {
+        // Given
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
+        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
+        orderSummaryPageViewModel._orderShipment = helper.orderShipment
+        val occPrompt = OccPrompt()
+        every { updateCartOccUseCase.execute(any(), any(), any(), any()) } answers {
+            (thirdArg() as ((OccPrompt) -> Unit)).invoke(occPrompt)
+        }
+
+        // When
+        var isSuccess = false
+        orderSummaryPageViewModel.finalUpdate({
+            isSuccess = true
+        }, false)
+
+        // Then
+        assertEquals(OccGlobalEvent.Prompt(occPrompt), orderSummaryPageViewModel.globalEvent.value)
+        assertEquals(false, isSuccess)
     }
 }

@@ -359,7 +359,18 @@
     <string name="button_direct_login">Masuk</string>
     <string name="button_use_another_acc">Gunakan Akun Lain</string>
     <string name="seamless_footer_text">Akun toko ini adalah akun yang terhubung di aplikasi Tokopedia mu</string>
-  
+
     <!-- TERM & CONDITION | PRIVACY-->
     <string name="title_activity_term_and_privacy">Kebijakan Privasi</string>
+
+    <!--  CONTENT DESCRIPTION  -->
+    <string name="content_desc_input_email_phone">input email phone</string>
+    <string name="content_desc_password">input password</string>
+    <string name="content_desc_register_btn">button submit</string>
+    <string name="content_desc_socmed_btn">button akun media sosial</string>
+    <string name="content_desc_register_button">text daftar</string>
+    <string name="content_desc_login_button">text masuk</string>
+    <string name="content_desc_forgot_pass">text lupa password</string>
+    <string name="content_desc_provider_name">button sosial media</string>
+
 </resources>

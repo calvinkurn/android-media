@@ -1,0 +1,17 @@
+query topAdsGetShopStatus($shopID :String!,$adTypes:String){
+  topAdsGetShopStatus(shopID: $shopID, adTypes: $adTypes) {
+    data {
+      status
+      statusDesc
+      statusDetail
+    }
+    errors {
+      code
+      detail
+      title
+      object{
+        type
+      }
+    }
+  }
+}

@@ -40,6 +40,7 @@
                 app:layout_constraintTop_toBottomOf="@id/ovoPointsTicker" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/create_review_product_info_container"
                 android:layout_width="@dimen/layout_lvl0"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/layout_lvl2"
@@ -74,12 +75,19 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
+            <androidx.constraintlayout.widget.Barrier
+                android:id="@+id/create_review_product_info_barrier"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:constraint_referenced_ids="createReviewProductImage, create_review_product_info_container"
+                app:barrierDirection="bottom"/>
+
             <com.tokopedia.unifycomponents.ContainerUnify
                 android:id="@+id/createReviewContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingBottom="@dimen/layout_lvl2"
-                app:layout_constraintTop_toBottomOf="@id/createReviewProductImage">
+                app:layout_constraintTop_toBottomOf="@id/create_review_product_info_barrier">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"

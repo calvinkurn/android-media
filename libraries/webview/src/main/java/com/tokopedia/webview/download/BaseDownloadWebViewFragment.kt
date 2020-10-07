@@ -6,7 +6,7 @@ import android.os.Bundle
 import android.webkit.WebView
 import com.google.gson.Gson
 import com.tokopedia.kotlin.util.DownloadHelper
-import com.tokopedia.permissionchecker.PermissionCheckerHelper
+import com.tokopedia.utils.permission.PermissionCheckerHelper
 import com.tokopedia.webview.BaseSessionWebViewFragment
 import com.tokopedia.webview.KEY_URL
 

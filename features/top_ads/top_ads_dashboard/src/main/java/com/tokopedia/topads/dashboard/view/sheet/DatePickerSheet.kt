@@ -97,7 +97,7 @@ class DatePickerSheet {
 
         fun newInstance(context: Context, index: Int, range: String): DatePickerSheet {
             val fragment = DatePickerSheet()
-            fragment.dialog = BottomSheetDialog(context, R.style.CreateAdsBottomSheetDialogTheme)
+            fragment.dialog = BottomSheetDialog(context, com.tokopedia.topads.common.R.style.CreateAdsBottomSheetDialogTheme)
             fragment.dialog?.setContentView(R.layout.topads_dash_datepicker_bottomsheet_layout)
             fragment.setupView(context, index,range)
             return fragment

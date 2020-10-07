@@ -5,9 +5,9 @@ import com.tokopedia.play.broadcaster.data.model.ProductData
 import com.tokopedia.play.broadcaster.data.type.OverwriteMode
 import com.tokopedia.play.broadcaster.ui.model.CoverSource
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
-import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
-import com.tokopedia.play.broadcaster.ui.model.result.map
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
+import com.tokopedia.play_common.model.result.NetworkResult
+import com.tokopedia.play_common.model.result.map
 import javax.inject.Inject
 
 class PlayBroadcastSetupDataStoreImpl @Inject constructor(

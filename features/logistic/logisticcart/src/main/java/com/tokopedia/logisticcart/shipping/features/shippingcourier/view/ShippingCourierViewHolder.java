@@ -13,6 +13,7 @@ import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.OntimeDeliveryGuarantee;
 import com.tokopedia.unifycomponents.Label;
+import com.tokopedia.utils.contentdescription.TextAndContentDescriptionUtil;
 
 /**
  * Created by Irfan Khoirul on 06/08/18.
@@ -65,6 +66,7 @@ public class ShippingCourierViewHolder extends RecyclerView.ViewHolder {
 
         if (shippingCourierUiModel.getProductData().getCodProductData() != null) {
             /*cod label*/
+            codLabel.setText(shippingCourierUiModel.getProductData().getCodProductData().getCodText());
             codLabel.setVisibility(shippingCourierUiModel.getProductData().getCodProductData().
                     getIsCodAvailable() == COD_ENABLE_VALUE? View.VISIBLE : View.GONE );
         }
@@ -76,7 +78,7 @@ public class ShippingCourierViewHolder extends RecyclerView.ViewHolder {
             otdLabel.setVisibility(otd.getAvailable()? View.VISIBLE : View.GONE);
         }
 
-        tvCourier.setText(shippingCourierUiModel.getProductData().getShipperName());
+        TextAndContentDescriptionUtil.setTextAndContentDescription(tvCourier, shippingCourierUiModel.getProductData().getShipperName(), tvCourier.getContext().getString(R.string.content_desc_tv_courier));
         if (shippingCourierUiModel.getProductData().getError() != null &&
                 shippingCourierUiModel.getProductData().getError().getErrorMessage().length() > 0) {
             if (shippingCourierUiModel.getProductData().getError().getErrorId().equals(ErrorProductData.ERROR_PINPOINT_NEEDED)) {

@@ -43,11 +43,15 @@ import com.tokopedia.play.view.measurement.bounds.manager.videobounds.PlayVideoB
 import com.tokopedia.play.view.measurement.bounds.manager.videobounds.VideoBoundsManager
 import com.tokopedia.play.view.measurement.scaling.PlayVideoScalingManager
 import com.tokopedia.play.view.measurement.scaling.VideoScalingManager
-import com.tokopedia.play.view.type.*
+import com.tokopedia.play.view.type.BottomInsetsState
+import com.tokopedia.play.view.type.BottomInsetsType
+import com.tokopedia.play.view.type.ScreenOrientation
+import com.tokopedia.play.view.type.VideoOrientation
 import com.tokopedia.play.view.uimodel.VideoPlayerUiModel
 import com.tokopedia.play.view.viewcomponent.*
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play_common.model.result.NetworkResult
+import com.tokopedia.play_common.util.event.EventObserver
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.play_common.view.updateMargins
@@ -340,6 +344,7 @@ class PlayFragment @Inject constructor(
 
     private fun setupObserve() {
         observeGetChannelInfo()
+        observeChannelErrorEvent()
         observeSocketInfo()
         observeEventUserInfo()
         observeVideoMeta()
@@ -370,6 +375,13 @@ class PlayFragment @Inject constructor(
                     if (!hasFetchedChannelInfo) fragmentErrorViewOnStateChanged(shouldShow = true)
                 }
             }
+        })
+    }
+
+    private fun observeChannelErrorEvent() {
+        playViewModel.observableChannelErrorEvent.observe(viewLifecycleOwner, EventObserver {
+            startRenderMonitoring()
+            stopRenderMonitoring()
         })
     }
 
@@ -465,6 +477,10 @@ class PlayFragment @Inject constructor(
     fun stopRenderMonitoring() {
         pageMonitoring.stopRenderPerformanceMonitoring()
         stopPageMonitoring()
+    }
+
+    private fun resetMonitoring() {
+        pageMonitoring.invalidate()
     }
 
     private fun stopPageMonitoring() {
