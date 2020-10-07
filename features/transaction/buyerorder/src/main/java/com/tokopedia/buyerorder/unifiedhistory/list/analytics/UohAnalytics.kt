@@ -1,7 +1,6 @@
 package com.tokopedia.buyerorder.unifiedhistory.list.analytics
 
 import android.app.Activity
-import android.bluetooth.le.AdvertiseData
 import android.os.Bundle
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.BUSINESS_UNIT_REPLACEE
