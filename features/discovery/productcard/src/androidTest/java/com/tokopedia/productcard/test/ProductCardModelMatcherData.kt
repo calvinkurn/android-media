@@ -976,6 +976,7 @@ private fun testHasRatingSales(): ProductCardModelMatcher {
         it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
         it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
         it[R.id.salesRatingFloat] = isDisplayed()
+        it[R.id.textViewSales] = isDisplayed()
         it[R.id.imageFreeOngkirPromo] = isDisplayed()
         it[R.id.imageThreeDots] = isDisplayed()
     }
