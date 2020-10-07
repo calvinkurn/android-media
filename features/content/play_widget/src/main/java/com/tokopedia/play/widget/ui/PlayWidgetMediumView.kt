@@ -13,14 +13,9 @@ import com.elyeproj.loaderviewlibrary.LoaderImageView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.play.widget.PlayWidgetUiModel
-import com.tokopedia.play.widget.R
+import com.tokopedia.play.widget.*
 import com.tokopedia.play.widget.ui.adapter.PlayWidgetCardMediumAdapter
-import com.tokopedia.play.widget.ui.contract.IPlayWidgetView
-import com.tokopedia.play.widget.ui.model.PlayWidgetBackgroundUiModel
-import com.tokopedia.play.widget.ui.model.PlayWidgetCardItemUiModel
-import com.tokopedia.play.widget.ui.model.PlayWidgetCardUiModel
-import com.tokopedia.play.widget.ui.type.PlayWidgetCardType
+import com.tokopedia.play.widget.ui.model.*
 import com.tokopedia.play_common.widget.playBannerCarousel.extension.loadImage
 import com.tokopedia.play_common.widget.playBannerCarousel.extension.setGradientBackground
 import com.tokopedia.unifyprinciples.Typography
@@ -30,7 +25,7 @@ import kotlin.math.abs
 /**
  * Created by mzennis on 06/10/20.
  */
-class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
+class PlayWidgetMediumView : ConstraintLayout {
 
     constructor(context: Context?) : super(context)
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
@@ -69,7 +64,7 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
         recyclerViewItem = view.findViewById(R.id.play_widget_recycler_view)
     }
 
-    override fun setData(data: PlayWidgetUiModel) {
+    fun setData(data: PlayWidgetMediumUiModel) {
         title.text = data.title
         actionTitle.text = data.actionTitle
 
@@ -124,9 +119,9 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
         }
     }
 
-    private fun addItemOverlay(items: List<PlayWidgetCardUiModel>): List<PlayWidgetCardUiModel> {
+    private fun addItemOverlay(items: List<PlayWidgetItemUiModel>): List<PlayWidgetItemUiModel> {
         return items.toMutableList().apply {
-            add(0, PlayWidgetCardUiModel(type = PlayWidgetCardType.Overlay, card = PlayWidgetCardItemUiModel.default()))
+            add(0, PlayWidgetMediumOverlayUiModel)
         }
     }
 

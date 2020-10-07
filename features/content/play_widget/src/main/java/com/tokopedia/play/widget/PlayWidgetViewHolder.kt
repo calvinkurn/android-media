@@ -2,7 +2,6 @@ package com.tokopedia.play.widget
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.play.widget.ui.contract.IPlayWidgetView
 
 
 /**
@@ -10,9 +9,4 @@ import com.tokopedia.play.widget.ui.contract.IPlayWidgetView
  */
 open class PlayWidgetViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-    private val playWidgetView = itemView as IPlayWidgetView
-
-    fun bind(item: PlayWidgetUiModel) {
-        playWidgetView.setData(item)
-    }
 }

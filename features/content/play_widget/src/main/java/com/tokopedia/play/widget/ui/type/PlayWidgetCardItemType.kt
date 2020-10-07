@@ -4,7 +4,7 @@ package com.tokopedia.play.widget.ui.type
 /**
  * Created by mzennis on 05/10/20.
  */
-enum class PlayWidgetCardItemType(val value: String) {
+enum class PlayWidgetChannelType(val value: String) {
     Live("LIVE"),
     Vod("WATCH_AGAIN"),
     Upcoming("COMING_SOON"),
@@ -14,7 +14,7 @@ enum class PlayWidgetCardItemType(val value: String) {
 
         private val values = values()
 
-        fun getByValue(value: String): PlayWidgetCardItemType {
+        fun getByValue(value: String): PlayWidgetChannelType {
             values.forEach {
                 if (it.value.equals(value, true)) return it
             }

@@ -1,49 +1,24 @@
 package com.tokopedia.play.widget.sample
 
-import android.view.ViewGroup
-import android.widget.LinearLayout
-import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.play.widget.PlayWidgetUiModel
-import com.tokopedia.play.widget.PlayWidgetViewHolder
-import com.tokopedia.play.widget.ui.PlayWidgetMediumView
-import com.tokopedia.play.widget.ui.PlayWidgetSmallView
-import com.tokopedia.play.widget.ui.type.PlayWidgetCardSize
+import com.tokopedia.adapterdelegate.BaseDiffUtilAdapter
+import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 
 /**
  * Created by jegul on 07/10/20
  */
-class PlayWidgetSampleAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class PlayWidgetSampleAdapter : BaseDiffUtilAdapter<PlayWidgetUiModel>() {
 
-    private val widgetList: MutableList<PlayWidgetUiModel> = mutableListOf()
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return PlayWidgetViewHolder(
-                when (viewType) {
-                    PlayWidgetCardSize.Small.ordinal -> PlayWidgetSmallView(parent.context).apply {
-                        layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-                    }
-                    PlayWidgetCardSize.Medium.ordinal -> PlayWidgetMediumView(parent.context).apply {
-                        layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-                    }
-                    else -> throw IllegalArgumentException("Not Supported")
-                }
-        )
+    init {
+        delegatesManager
+                .addDelegate(PlayWidgetSmallAdapterDelegate())
+                .addDelegate(PlayWidgetMediumAdapterDelegate())
     }
 
-    override fun getItemCount(): Int {
-        return widgetList.size
+    override fun areItemsTheSame(oldItem: PlayWidgetUiModel, newItem: PlayWidgetUiModel): Boolean {
+        return oldItem == newItem
     }
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        (holder as PlayWidgetViewHolder).bind(widgetList[position])
-    }
-
-    override fun getItemViewType(position: Int): Int {
-        return widgetList[position].size.ordinal
-    }
-
-    fun setWidgets(widgets: List<PlayWidgetUiModel>) {
-        widgetList.clear()
-        widgetList.addAll(widgets)
+    override fun areContentsTheSame(oldItem: PlayWidgetUiModel, newItem: PlayWidgetUiModel): Boolean {
+        return oldItem == newItem
     }
 }

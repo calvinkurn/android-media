@@ -4,13 +4,9 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
-import com.tokopedia.play.widget.PlayWidgetUiModel
 import com.tokopedia.play.widget.R
-import com.tokopedia.play.widget.data.PlayWidget
 import com.tokopedia.play.widget.ui.model.*
-import com.tokopedia.play.widget.ui.type.PlayWidgetCardItemType
-import com.tokopedia.play.widget.ui.type.PlayWidgetCardSize
-import com.tokopedia.play.widget.ui.type.PlayWidgetCardType
+import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
 import kotlin.random.Random
 
 /**
@@ -36,19 +32,36 @@ class PlayWidgetSampleActivity : BaseSimpleActivity() {
 
     private fun setupView() {
         rvWidgetSample.adapter = adapter
-        adapter.setWidgets(getSampleData())
-        adapter.notifyDataSetChanged()
+        adapter.setItemsAndAnimateChanges(getSampleData())
     }
 
     private fun getSampleData(): List<PlayWidgetUiModel> {
         return listOf(
-                getSamplePlayWidgetUiModel(PlayWidgetCardSize.Small),
-                getSamplePlayWidgetUiModel(PlayWidgetCardSize.Medium)
+                getSamplePlaySmallWidget(),
+                getSamplePlayMediumWidget()
         )
     }
 
-    private fun getSamplePlayWidgetUiModel(size: PlayWidgetCardSize): PlayWidgetUiModel {
-        return PlayWidgetUiModel(
+    private fun getSamplePlaySmallWidget(): PlayWidgetSmallUiModel {
+        return PlayWidgetSmallUiModel(
+                title = "Yuk Nonton Sekarang!",
+                actionTitle = "Lihat semua",
+                actionAppLink = "",
+                actionWebLink = "",
+                config = PlayWidgetConfigUiModel(
+                        autoRefresh = false,
+                        autoRefreshTimer = 0L,
+                        autoPlay = true,
+                        autoPlayAmount = 2000L,
+                        maxAutoPlayCard = 2
+                ),
+                items = getSampleSmallCardData(),
+                useHeader = true
+        )
+    }
+
+    private fun getSamplePlayMediumWidget(): PlayWidgetMediumUiModel {
+        return PlayWidgetMediumUiModel(
                 title = "Yuk Nonton Sekarang!",
                 actionTitle = "Lihat semua",
                 actionAppLink = "",
@@ -67,48 +80,82 @@ class PlayWidgetSampleActivity : BaseSimpleActivity() {
                         autoPlayAmount = 2000L,
                         maxAutoPlayCard = 2
                 ),
-                items = getSampleCardData(),
-                size = size
+                items = getSampleMediumCardData()
         )
     }
 
-    private fun getSampleCardData(): List<PlayWidgetCardUiModel> {
-        return List(5) { getSamplePlayWidgetCardUiModel() }
+    private fun getSampleSmallCardData(): List<PlayWidgetSmallItemUiModel> {
+        return List(5) {
+            if (it == 0) getSampleSmallCardBanner()
+            else {
+                val channelType = when (cardItemTypeRandom.nextInt(0, 4)) {
+                    0 -> PlayWidgetChannelType.Upcoming
+                    1 -> PlayWidgetChannelType.Vod
+                    else -> PlayWidgetChannelType.Live
+                }
+                getSampleSmallChannelCardBanner(channelType)
+            }
+        }
     }
 
-    private fun getSamplePlayWidgetCardUiModel(): PlayWidgetCardUiModel {
-        return PlayWidgetCardUiModel(
-                type = PlayWidgetCardType.Channel,
-                card = getSamplePlayWidgetCardItemUiModel(
-                        when (cardItemTypeRandom.nextInt(0, 3)) {
-                            0 -> PlayWidgetCardItemType.Upcoming
-                            1 -> PlayWidgetCardItemType.Vod
-                            else -> PlayWidgetCardItemType.Live
-                        }
-                )
-        )
+    private fun getSampleMediumCardData(): List<PlayWidgetMediumItemUiModel> {
+        return List(5) {
+            if (it == 0) getSampleMediumCardBanner()
+            else {
+                val channelType = when (cardItemTypeRandom.nextInt(0, 4)) {
+                    0 -> PlayWidgetChannelType.Upcoming
+                    1 -> PlayWidgetChannelType.Vod
+                    else -> PlayWidgetChannelType.Live
+                }
+                getSampleMediumChannelCardBanner(channelType)
+            }
+        }
     }
 
-    private fun getSamplePlayWidgetCardItemUiModel(cardItemType: PlayWidgetCardItemType): PlayWidgetCardItemUiModel {
-        return PlayWidgetCardItemUiModel(
-                channelId = "123",
-                title = "Google Assistant review with me",
-                cardType = cardItemType,
-                backgroundUrl = "https://cdn.jpegmini.com/user/images/slider_puffin_before_mobile.jpg",
-                appLink = "",
-                webLink = "",
-                startTime = "",
-                totalView = "10,0 rb",
-                totalViewVisible = true,
-                hasPromo = true,
-                activeReminder = true,
-                isLive = cardItemType == PlayWidgetCardItemType.Live,
-                partner = PlayWidgetPartnerUiModel("123", "Google"),
-                video = PlayWidgetCardVideoUiModel(
-                        id = "123",
-                        coverUrl = "https://cdn.jpegmini.com/user/images/slider_puffin_before_mobile.jpg",
-                        videoUrl = "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
-                )
-        )
-    }
+    private fun getSampleSmallCardBanner() = PlayWidgetSmallBannerUiModel(
+            imageUrl = "https://cdn.jpegmini.com/user/images/slider_puffin_before_mobile.jpg",
+            appLink = "",
+            webLink = ""
+    )
+
+    private fun getSampleSmallChannelCardBanner(channelType: PlayWidgetChannelType) = PlayWidgetSmallChannelUiModel(
+            channelId = "123",
+            title = "Google Assistant review with me",
+            channelType = channelType,
+            appLink = "",
+            webLink = "",
+            startTime = "",
+            totalView = "10,0 rb",
+            totalViewVisible = true,
+            hasPromo = cardItemTypeRandom.nextBoolean(),
+            video = getVideoUiModel(channelType)
+    )
+
+    private fun getSampleMediumCardBanner() = PlayWidgetMediumBannerUiModel(
+            imageUrl = "https://cdn.jpegmini.com/user/images/slider_puffin_before_mobile.jpg",
+            appLink = "",
+            webLink = ""
+    )
+
+    private fun getSampleMediumChannelCardBanner(channelType: PlayWidgetChannelType) = PlayWidgetMediumChannelUiModel(
+            channelId = "123",
+            title = "Google Assistant review with me",
+            channelType = channelType,
+            appLink = "",
+            webLink = "",
+            startTime = "",
+            totalView = "10,0 rb",
+            totalViewVisible = true,
+            hasPromo = cardItemTypeRandom.nextBoolean(),
+            activeReminder = cardItemTypeRandom.nextBoolean(),
+            partner = PlayWidgetPartnerUiModel("123", "Google"),
+            video = getVideoUiModel(channelType)
+    )
+
+    private fun getVideoUiModel(channelType: PlayWidgetChannelType) = PlayWidgetVideoUiModel(
+            id = "123",
+            coverUrl = "https://cdn.jpegmini.com/user/images/slider_puffin_before_mobile.jpg",
+            videoUrl = "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+            isLive = channelType == PlayWidgetChannelType.Live
+    )
 }

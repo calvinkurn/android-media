@@ -1,34 +1,28 @@
 package com.tokopedia.play.widget.ui.adapter
 
-import android.view.LayoutInflater
-import android.view.ViewGroup
-import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.play.widget.ui.adapter.viewholder.PlayWidgetCardSmallViewHolder
-import com.tokopedia.play.widget.ui.model.PlayWidgetCardUiModel
+import com.tokopedia.adapterdelegate.BaseDiffUtilAdapter
+import com.tokopedia.play.widget.ui.adapter.delegate.small.PlayWidgetCardSmallBannerAdapterDelegate
+import com.tokopedia.play.widget.ui.adapter.delegate.small.PlayWidgetCardSmallChannelAdapterDelegate
+import com.tokopedia.play.widget.ui.model.PlayWidgetSmallChannelUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetSmallItemUiModel
 
 /**
  * Created by jegul on 07/10/20
  */
-class PlayWidgetCardSmallAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class PlayWidgetCardSmallAdapter : BaseDiffUtilAdapter<PlayWidgetSmallItemUiModel>() {
 
-    private val mCardList: MutableList<PlayWidgetCardUiModel> = mutableListOf()
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return PlayWidgetCardSmallViewHolder(
-                LayoutInflater.from(parent.context).inflate(PlayWidgetCardSmallViewHolder.LAYOUT, parent, false)
-        )
+    init {
+        delegatesManager
+                .addDelegate(PlayWidgetCardSmallBannerAdapterDelegate())
+                .addDelegate(PlayWidgetCardSmallChannelAdapterDelegate())
     }
 
-    override fun getItemCount(): Int {
-        return mCardList.size
+    override fun areItemsTheSame(oldItem: PlayWidgetSmallItemUiModel, newItem: PlayWidgetSmallItemUiModel): Boolean {
+        return if (oldItem is PlayWidgetSmallChannelUiModel && newItem is PlayWidgetSmallChannelUiModel) oldItem.channelId == newItem.channelId
+        else oldItem == newItem
     }
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        (holder as PlayWidgetCardSmallViewHolder).bind(mCardList[position])
-    }
-
-    fun setList(itemList: List<PlayWidgetCardUiModel>) {
-        mCardList.clear()
-        mCardList.addAll(itemList)
+    override fun areContentsTheSame(oldItem: PlayWidgetSmallItemUiModel, newItem: PlayWidgetSmallItemUiModel): Boolean {
+        return oldItem == newItem
     }
 }

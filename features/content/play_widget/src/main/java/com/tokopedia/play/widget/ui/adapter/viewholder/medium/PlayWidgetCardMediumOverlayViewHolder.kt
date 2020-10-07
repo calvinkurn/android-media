@@ -1,8 +1,7 @@
-package com.tokopedia.play.widget.ui.adapter.viewholder
+package com.tokopedia.play.widget.ui.adapter.viewholder.medium
 
 import android.view.View
-import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.play.widget.ui.model.PlayWidgetCardUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetItemUiModel
 
 
 /**
@@ -10,7 +9,7 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetCardUiModel
  */
 class PlayWidgetCardMediumOverlayViewHolder(itemView: View) : PlayWidgetCardMediumViewHolder(itemView) {
 
-    override fun bind(item: PlayWidgetCardUiModel) {
+    override fun bind(item: PlayWidgetItemUiModel) {
         // TODO add item click listener & impress listener
     }
 }

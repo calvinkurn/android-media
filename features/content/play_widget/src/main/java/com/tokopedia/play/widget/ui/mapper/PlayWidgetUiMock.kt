@@ -4,7 +4,7 @@ import android.content.Context
 import com.google.gson.Gson
 import com.google.gson.JsonIOException
 import com.google.gson.JsonSyntaxException
-import com.tokopedia.play.widget.PlayWidgetUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 import com.tokopedia.play.widget.R
 import com.tokopedia.play.widget.data.PlayWidgetResponse
 import java.io.BufferedReader

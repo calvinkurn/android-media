@@ -4,15 +4,16 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.play.widget.R
-import com.tokopedia.play.widget.ui.adapter.viewholder.PlayWidgetCardMediumBannerViewHolder
-import com.tokopedia.play.widget.ui.adapter.viewholder.PlayWidgetCardMediumChannelViewHolder
-import com.tokopedia.play.widget.ui.adapter.viewholder.PlayWidgetCardMediumOverlayViewHolder
-import com.tokopedia.play.widget.ui.adapter.viewholder.PlayWidgetCardMediumViewHolder
-import com.tokopedia.play.widget.ui.model.PlayWidgetCardItemUiModel
-import com.tokopedia.play.widget.ui.model.PlayWidgetCardUiModel
-import com.tokopedia.play.widget.ui.type.PlayWidgetCardItemType
-import com.tokopedia.play.widget.ui.type.PlayWidgetCardType
+import com.tokopedia.play.widget.*
+import com.tokopedia.play.widget.ui.adapter.viewholder.medium.PlayWidgetCardMediumBannerViewHolder
+import com.tokopedia.play.widget.ui.adapter.viewholder.medium.PlayWidgetCardMediumChannelViewHolder
+import com.tokopedia.play.widget.ui.adapter.viewholder.medium.PlayWidgetCardMediumOverlayViewHolder
+import com.tokopedia.play.widget.ui.adapter.viewholder.medium.PlayWidgetCardMediumViewHolder
+import com.tokopedia.play.widget.ui.model.PlayWidgetItemUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetMediumBannerUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetMediumChannelUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetMediumOverlayUiModel
+import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
 
 
 /**
@@ -20,17 +21,17 @@ import com.tokopedia.play.widget.ui.type.PlayWidgetCardType
  */
 class PlayWidgetCardMediumAdapter : RecyclerView.Adapter<PlayWidgetCardMediumViewHolder>() {
 
-    private var mItemList: MutableList<PlayWidgetCardUiModel> = mutableListOf()
+    private var mItemList: MutableList<PlayWidgetItemUiModel> = mutableListOf()
     private var mItemListener: PlayWidgetCardMediumListener? = null
 
     private var mViewHolder: MutableList<PlayWidgetCardMediumViewHolder> = mutableListOf()
 
-    fun setItems(itemList: List<PlayWidgetCardUiModel>) {
+    fun setItems(itemList: List<PlayWidgetItemUiModel>) {
         this.mItemList.addAll(itemList)
         this.notifyItemRangeInserted(mItemList.size, itemList.size)
     }
 
-    fun updateItems(itemList: List<PlayWidgetCardUiModel>) {
+    fun updateItems(itemList: List<PlayWidgetItemUiModel>) {
         this.mItemList = itemList.toMutableList()
         this.notifyDataSetChanged()
     }
@@ -55,10 +56,10 @@ class PlayWidgetCardMediumAdapter : RecyclerView.Adapter<PlayWidgetCardMediumVie
     }
 
     override fun getItemViewType(position: Int): Int {
-        return when(mItemList[position].type) {
-            PlayWidgetCardType.Overlay -> CARD_TYPE_OVERLAY
-            PlayWidgetCardType.Channel -> CARD_TYPE_CHANNEL
-            PlayWidgetCardType.Banner -> CARD_TYPE_BANNER
+        return when(mItemList[position]) {
+            is PlayWidgetMediumOverlayUiModel -> CARD_TYPE_OVERLAY
+            is PlayWidgetMediumChannelUiModel -> CARD_TYPE_CHANNEL
+            is PlayWidgetMediumBannerUiModel -> CARD_TYPE_BANNER
             else -> super.getItemViewType(position)
         }
     }
@@ -79,8 +80,8 @@ class PlayWidgetCardMediumAdapter : RecyclerView.Adapter<PlayWidgetCardMediumVie
 
     private fun safePlayVideo(holder: PlayWidgetCardMediumViewHolder) {
         if (holder !is PlayWidgetCardMediumChannelViewHolder) return
-        if (holder.getCardItemType() == PlayWidgetCardItemType.Upcoming ||
-                holder.getCardItemType() == PlayWidgetCardItemType.Unknown) return
+        if (holder.getChannelType() == PlayWidgetChannelType.Upcoming ||
+                holder.getChannelType() == PlayWidgetChannelType.Unknown) return
 
         // TODO start timer to delay
         holder.playVideo()
@@ -88,8 +89,8 @@ class PlayWidgetCardMediumAdapter : RecyclerView.Adapter<PlayWidgetCardMediumVie
 
     private fun safeStopVideo(holder: PlayWidgetCardMediumViewHolder) {
         if (holder !is PlayWidgetCardMediumChannelViewHolder) return
-        if (holder.getCardItemType() == PlayWidgetCardItemType.Upcoming ||
-                holder.getCardItemType() == PlayWidgetCardItemType.Unknown) return
+        if (holder.getChannelType() == PlayWidgetChannelType.Upcoming ||
+                holder.getChannelType() == PlayWidgetChannelType.Unknown) return
 
         holder.stopVideo()
     }
@@ -98,8 +99,8 @@ class PlayWidgetCardMediumAdapter : RecyclerView.Adapter<PlayWidgetCardMediumVie
             LayoutInflater.from(parent.context).inflate(layoutRes, parent, false)
 
     interface PlayWidgetCardMediumListener {
-        fun onItemClickListener(item: PlayWidgetCardItemUiModel)
-        fun onItemImpressListener(item: PlayWidgetCardItemUiModel)
+        fun onItemClickListener(item: PlayWidgetMediumChannelUiModel)
+        fun onItemImpressListener(item: PlayWidgetMediumChannelUiModel)
     }
 
     companion object {

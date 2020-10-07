@@ -1,12 +1,10 @@
 package com.tokopedia.play.widget.ui.mapper
 
-import com.tokopedia.play.widget.PlayWidgetUiModel
 import com.tokopedia.play.widget.data.PlayWidget
 import com.tokopedia.play.widget.data.PlayWidgetItem
 import com.tokopedia.play.widget.data.PlayWidgetItemVideo
 import com.tokopedia.play.widget.ui.model.*
-import com.tokopedia.play.widget.ui.type.PlayWidgetCardItemType
-import com.tokopedia.play.widget.ui.type.PlayWidgetCardType
+import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
 
 
 /**
@@ -14,7 +12,7 @@ import com.tokopedia.play.widget.ui.type.PlayWidgetCardType
  */
 object PlayWidgetUiMapper {
 
-    fun mapWidget(data: PlayWidget): PlayWidgetUiModel = PlayWidgetUiModel(
+    fun mapWidget(data: PlayWidget): PlayWidgetMediumUiModel = PlayWidgetMediumUiModel(
             title = data.meta.widgetTitle,
             actionTitle = data.meta.buttonText,
             actionAppLink = data.meta.buttonApplink,
@@ -40,17 +38,24 @@ object PlayWidgetUiMapper {
             maxAutoPlayCard = data.meta.maxAutoplayCell
     )
 
-    private fun mapWidgetItem(items: List<PlayWidgetItem>): List<PlayWidgetCardUiModel> = items.map { mapWidgetItem(it) }
+    private fun mapWidgetItem(items: List<PlayWidgetItem>): List<PlayWidgetMediumItemUiModel> = items.mapNotNull {
+        when (it.typename) {
+            "PlayWidgetBanner" -> mapWidgetItemBanner(it)
+            "PlayWidgetChannel" -> mapWidgetItemChannel(it)
+            else -> null
+        }
+    }
 
-    private fun mapWidgetItem(item: PlayWidgetItem): PlayWidgetCardUiModel = PlayWidgetCardUiModel(
-            type = PlayWidgetCardType.getByValue(item.typename),
-            card = mapWidgetCardItem(item)
+    private fun mapWidgetItemBanner(item: PlayWidgetItem): PlayWidgetMediumBannerUiModel = PlayWidgetMediumBannerUiModel(
+            appLink = item.appLink,
+            webLink = item.webLink,
+            imageUrl = item.backgroundUrl
     )
 
-    private fun mapWidgetCardItem(item: PlayWidgetItem): PlayWidgetCardItemUiModel = PlayWidgetCardItemUiModel(
+    private fun mapWidgetItemChannel(item: PlayWidgetItem): PlayWidgetMediumChannelUiModel = PlayWidgetMediumChannelUiModel(
             channelId = item.id,
             title = item.title,
-            cardType = PlayWidgetCardItemType.getByValue(item.widgetType),
+            channelType = PlayWidgetChannelType.getByValue(item.widgetType),
             appLink = item.appLink,
             webLink = item.webLink,
             startTime = item.startTime,
@@ -58,15 +63,14 @@ object PlayWidgetUiMapper {
             totalViewVisible = item.video.isShowTotalView,
             hasPromo = item.config.hasPromo,
             activeReminder = item.config.isReminderSet,
-            isLive = item.video.isLive,
             partner = PlayWidgetPartnerUiModel(item.partner.id, item.partner.name),
-            video = mapWidgetItemVideo(item.video),
-            backgroundUrl = item.backgroundUrl
+            video = mapWidgetItemVideo(item.video)
     )
 
-    private fun mapWidgetItemVideo(item: PlayWidgetItemVideo): PlayWidgetCardVideoUiModel = PlayWidgetCardVideoUiModel(
+    private fun mapWidgetItemVideo(item: PlayWidgetItemVideo): PlayWidgetVideoUiModel = PlayWidgetVideoUiModel(
             id = item.id,
             coverUrl = item.coverUrl,
+            isLive = item.isLive,
             videoUrl = item.streamSource
     )
 }

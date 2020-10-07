@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.play.widget.ui.custom.PlayWidgetCardChannelSmallView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/play_widget_card_small"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    />

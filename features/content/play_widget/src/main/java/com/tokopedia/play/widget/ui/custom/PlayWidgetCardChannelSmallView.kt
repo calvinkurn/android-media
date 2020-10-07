@@ -10,15 +10,14 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.widget.R
-import com.tokopedia.play.widget.ui.model.PlayWidgetCardUiModel
-import com.tokopedia.play.widget.ui.type.PlayWidgetCardItemType
-import com.tokopedia.play.widget.ui.type.PlayWidgetCardType
+import com.tokopedia.play.widget.ui.model.PlayWidgetSmallChannelUiModel
+import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
 import com.tokopedia.play_common.widget.playBannerCarousel.extension.loadImage
 
 /**
  * Created by jegul on 06/10/20
  */
-class PlayWidgetCardSmallView : ConstraintLayout {
+class PlayWidgetCardChannelSmallView : ConstraintLayout {
 
     constructor(context: Context?) : super(context)
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
@@ -35,7 +34,7 @@ class PlayWidgetCardSmallView : ConstraintLayout {
     private val ivLiveBadge: ImageView
 
     init {
-        val view = View.inflate(context, R.layout.view_play_widget_card_small, this)
+        val view = View.inflate(context, R.layout.view_play_widget_card_channel_small, this)
         flBorder = view.findViewById(R.id.fl_border)
         ivCover = view.findViewById(R.id.iv_cover)
         ivDiscount = view.findViewById(R.id.iv_discount)
@@ -46,33 +45,33 @@ class PlayWidgetCardSmallView : ConstraintLayout {
         ivLiveBadge = view.findViewById(R.id.iv_live_badge)
     }
 
-    fun setModel(model: PlayWidgetCardUiModel) {
-        ivCover.loadImage(model.card.video.coverUrl)
+    fun setModel(model: PlayWidgetSmallChannelUiModel) {
+        ivCover.loadImage(model.video.coverUrl)
 
-        handleType(model.card.cardType)
-        handlePromo(model.card.cardType, model.card.hasPromo)
-        handleTotalView(model.card.cardType, model.card.totalViewVisible, model.card.totalView)
+        handleType(model.channelType)
+        handlePromo(model.channelType, model.hasPromo)
+        handleTotalView(model.channelType, model.totalViewVisible, model.totalView)
 
-        tvTitle.text = "Kuliner Lokal Lezatnya Total Lezatnya"
+        tvTitle.text = model.title
         tvUpcoming.text = "10 Jan - 17.00"
 
         flBorder.setBackgroundResource(
-                if (model.card.isLive) R.drawable.bg_play_widget_small_live_border
+                if (model.video.isLive) R.drawable.bg_play_widget_small_live_border
                 else R.drawable.bg_play_widget_small_default_border
         )
     }
 
-    private fun handleType(type: PlayWidgetCardItemType) {
+    private fun handleType(type: PlayWidgetChannelType) {
         when (type) {
-            PlayWidgetCardItemType.Live -> {
+            PlayWidgetChannelType.Live -> {
                 tvUpcoming.gone()
                 ivLiveBadge.visible()
             }
-            PlayWidgetCardItemType.Vod -> {
+            PlayWidgetChannelType.Vod -> {
                 tvUpcoming.gone()
                 ivLiveBadge.gone()
             }
-            PlayWidgetCardItemType.Upcoming -> {
+            PlayWidgetChannelType.Upcoming -> {
                 tvUpcoming.visible()
                 ivLiveBadge.gone()
                 ivDiscount.gone()
@@ -80,14 +79,14 @@ class PlayWidgetCardSmallView : ConstraintLayout {
         }
     }
 
-    private fun handlePromo(type: PlayWidgetCardItemType, hasPromo: Boolean) {
-        if (type == PlayWidgetCardItemType.Upcoming || type == PlayWidgetCardItemType.Unknown) ivDiscount.gone()
+    private fun handlePromo(type: PlayWidgetChannelType, hasPromo: Boolean) {
+        if (type == PlayWidgetChannelType.Upcoming || type == PlayWidgetChannelType.Unknown) ivDiscount.gone()
         else if (hasPromo) ivDiscount.visible()
         else ivDiscount.gone()
     }
 
-    private fun handleTotalView(type: PlayWidgetCardItemType, isVisible: Boolean, totalViewString: String) {
-        if (type == PlayWidgetCardItemType.Upcoming || type == PlayWidgetCardItemType.Unknown) clTotalView.gone()
+    private fun handleTotalView(type: PlayWidgetChannelType, isVisible: Boolean, totalViewString: String) {
+        if (type == PlayWidgetChannelType.Upcoming || type == PlayWidgetChannelType.Unknown) clTotalView.gone()
         else if (isVisible) {
             clTotalView.visible()
             tvTotalView.text = totalViewString

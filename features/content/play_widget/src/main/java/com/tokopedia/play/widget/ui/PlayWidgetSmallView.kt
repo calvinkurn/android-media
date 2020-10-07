@@ -6,16 +6,15 @@ import android.view.View
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.play.widget.PlayWidgetUiModel
 import com.tokopedia.play.widget.R
 import com.tokopedia.play.widget.ui.adapter.PlayWidgetCardSmallAdapter
-import com.tokopedia.play.widget.ui.contract.IPlayWidgetView
 import com.tokopedia.play.widget.ui.itemdecoration.PlayWidgetCardSmallItemDecoration
+import com.tokopedia.play.widget.ui.model.PlayWidgetSmallUiModel
 
 /**
  * Created by jegul on 07/10/20
  */
-class PlayWidgetSmallView : ConstraintLayout, IPlayWidgetView {
+class PlayWidgetSmallView : ConstraintLayout {
 
     constructor(context: Context?) : super(context)
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
@@ -37,12 +36,11 @@ class PlayWidgetSmallView : ConstraintLayout, IPlayWidgetView {
         setupView(view)
     }
 
-    override fun setData(data: PlayWidgetUiModel) {
+    fun setData(data: PlayWidgetSmallUiModel) {
         tvTitle.text = data.title
         tvSeeAll.text = data.actionTitle
 
-        adapter.setList(data.items)
-        adapter.notifyDataSetChanged()
+        adapter.setItemsAndAnimateChanges(data.items)
     }
 
     private fun setupView(view: View) {
