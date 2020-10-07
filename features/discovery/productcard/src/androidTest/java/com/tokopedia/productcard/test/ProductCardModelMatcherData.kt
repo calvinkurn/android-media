@@ -54,7 +54,7 @@ internal val productCardModelMatcherData: List<ProductCardModelMatcher> = mutabl
     it.add(testShopRatingBlue5())
     it.add(testShopRatingYellow())
     it.add(testHasRatingSales())
-    it.add(testHasRatingFloat())
+    it.add(testNoLabelIntegrityAndHasRatingFloat())
 }
 
 private fun testOneLineProductName(): ProductCardModelMatcher {
@@ -984,7 +984,7 @@ private fun testHasRatingSales(): ProductCardModelMatcher {
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
 }
 
-private fun testHasRatingFloat(): ProductCardModelMatcher {
+private fun testNoLabelIntegrityAndHasRatingFloat(): ProductCardModelMatcher {
     val productCardModel = ProductCardModel(
             productName = "Product with rating float",
             productImageUrl = productImageUrl,
@@ -1000,7 +1000,6 @@ private fun testHasRatingFloat(): ProductCardModelMatcher {
         it[R.id.textTopAds] = isDisplayed()
         it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
         it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
-        it[R.id.salesRatingFloat] = isDisplayed()
         it[R.id.imageFreeOngkirPromo] = isDisplayed()
         it[R.id.imageThreeDots] = isDisplayed()
     }
