@@ -29,7 +29,7 @@
     }, {
       "event" : "view_item_list",
       "eventCategory" : "digital - deals",
-      "eventAction" : "impression on search results",
+      "eventAction" : "impression on search result",
       "eventLabel" : "{{deals - .+ - .+}}",
       "screenName": "/deals/",
       "category" : "deals",
@@ -50,7 +50,7 @@
           "item_category": "{{.+}}"
         }
       ],
-      "itemlist" : "/deals"
+      "item_list" : "/deals"
     }, {
       "event" : "viewDealsIris",
       "eventCategory" : "digital - deals",
@@ -87,7 +87,7 @@
           "dimension40": "/deals - search result"
         }
       ],
-      "itemlist": "/deals - search result"
+      "item_list": "/deals - search result"
     }, {
       "event" : "select_content",
       "eventCategory" : "digital - deals",
@@ -97,7 +97,7 @@
       "category" : "deals",
       "currentSite":"tokopediadigitaldeals",
       "clientId":"{{.+}}",
-      "sessionIris":"{.+}",
+      "sessionIris":"{{.+}}",
       "userId":"{{.*}}",
       "businessUnit" :"travel & entertainment",
       "items": [
