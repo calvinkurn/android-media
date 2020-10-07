@@ -95,19 +95,11 @@ class ReviewPendingViewHolder(view: View, private val reviewPendingItemListener:
     private fun showOvoIncentive(isEligible: Boolean) {
         if(isEligible) {
             itemView.reviewPendingOvoIncentiveLabel.apply {
-                unlockFeature = UNLOCK_UNIFY_LABEL
-                fontColorByPass = getColorString(com.tokopedia.unifyprinciples.R.color.Purple_P500)
-                setLabelType(getColorString(com.tokopedia.unifyprinciples.R.color.Purple_P100))
                 setLabelImage(R.drawable.ic_ovo_incentive_label)
-                setLabel(getString(R.string.ovo_incentive_review_pending))
                 show()
             }
             return
         }
         itemView.reviewPendingOvoIncentiveLabel.hide()
-    }
-
-    private fun getColorString(color: Int): String {
-        return "#${Integer.toHexString(ContextCompat.getColor(itemView.context, color))}"
     }
 }
