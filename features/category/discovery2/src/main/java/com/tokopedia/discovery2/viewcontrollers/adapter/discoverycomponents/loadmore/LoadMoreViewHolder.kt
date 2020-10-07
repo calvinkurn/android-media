@@ -17,6 +17,10 @@ class LoadMoreViewHolder(itemView: View, private val fragment: Fragment) : Abstr
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         loadMoreViewModel = discoveryBaseViewModel as LoadMoreViewModel
+        setLoaderView()
+    }
+
+    private fun setLoaderView() {
         if(loadMoreViewModel.getViewOrientation()){
             val layoutParams: ViewGroup.LayoutParams = parentLayout.layoutParams
             layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
@@ -31,13 +35,6 @@ class LoadMoreViewHolder(itemView: View, private val fragment: Fragment) : Abstr
             loadMoreViewModel.syncData.observe(lifecycleOwner, Observer {
                 (fragment as DiscoveryFragment).reSync()
             })
-        }
-    }
-
-    override fun removeObservers(lifecycleOwner: LifecycleOwner?) {
-        super.removeObservers(lifecycleOwner)
-        lifecycleOwner?.let {
-
         }
     }
 }
