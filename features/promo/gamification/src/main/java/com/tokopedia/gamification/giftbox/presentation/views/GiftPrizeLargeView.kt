@@ -13,6 +13,8 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.tokopedia.gamification.R
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.utils.image.ImageUtils
 
 class GiftPrizeLargeView : FrameLayout {
@@ -58,6 +60,12 @@ class GiftPrizeLargeView : FrameLayout {
         val tvList = arrayListOf<AppCompatTextView>(tvTitle, tvDescription, tvMessage)
         text?.forEachIndexed { index, s ->
             tvList[index].text = s
+        }
+
+        if(tvDescription.lineCount > 1){
+            tvMessage.hide()
+        }else{
+            tvMessage.show()
         }
     }
 
