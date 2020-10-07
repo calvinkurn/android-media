@@ -31,6 +31,7 @@ import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Du
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.exMessageId
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.exOpponentId
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.exSendMessage
+import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.exShopId
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.exStartTime
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.exSticker
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.imageUploadViewModel
@@ -182,6 +183,7 @@ class TopChatRoomPresenterTest {
 
     object Dummy {
         const val exMessageId = "190378584"
+        const val exShopId = 423785
         const val exImageUploadId = "667056"
         const val exSendMessage = "Hello World"
         const val exStartTime = "123321"
@@ -783,6 +785,21 @@ class TopChatRoomPresenterTest {
         // Then
         verifyOrder {
             onError.invoke(errorDeleteChat)
+        }
+    }
+
+    @Test
+    fun `on get shop following status`() {
+        // Given
+        val onError: (Throwable) -> Unit = mockk(relaxed = true)
+        val onSuccess: (Boolean) -> Unit = mockk(relaxed = true)
+
+        // When
+        presenter.getShopFollowingStatus(exShopId, onError, onSuccess)
+
+        // Then
+        verifyOrder {
+            getShopFollowingUseCase.getStatus(exShopId, onError, onSuccess)
         }
     }
 
