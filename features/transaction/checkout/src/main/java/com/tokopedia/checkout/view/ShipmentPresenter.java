@@ -683,12 +683,31 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         );
 
         if (checkoutRequest != null && checkoutRequest.data != null && checkoutRequest.data.size() > 0) {
+            // Get additional param for trade in analytics
+            String deviceModel = "";
+            int devicePrice = 0;
+            String diagnosticId = "";
+            if (shipmentCartItemModelList != null && shipmentCartItemModelList.size() > 0) {
+                List<CartItemModel> cartItemModels = shipmentCartItemModelList.get(0).getCartItemModels();
+                if (cartItemModels != null && cartItemModels.size() > 0) {
+                    CartItemModel cartItemModel = cartItemModels.get(0);
+                    if (cartItemModel != null) {
+                        deviceModel = cartItemModel.getDeviceModel();
+                        devicePrice = cartItemModel.getOldDevicePrice();
+                        diagnosticId = cartItemModel.getDiagnosticId();
+                    }
+                }
+            }
+
             Map<String, Object> params = generateCheckoutParams(isOneClickShipment, isTradeIn, isTradeInDropOff, deviceId, checkoutRequest);
             RequestParams requestParams = RequestParams.create();
             requestParams.putAll(params);
             compositeSubscription.add(
                     checkoutGqlUseCase.createObservable(requestParams)
-                            .subscribe(getSubscriberCheckoutCart(checkoutRequest, isOneClickShipment, isTradeIn, deviceId, cornerId, leasingId))
+                            .subscribe(getSubscriberCheckoutCart(
+                                    checkoutRequest, isOneClickShipment, isTradeIn, deviceId,
+                                    cornerId, leasingId, deviceModel, devicePrice, diagnosticId)
+                            )
             );
         } else {
             getView().hideLoading();
@@ -890,8 +909,13 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     @NonNull
     private Subscriber<CheckoutData> getSubscriberCheckoutCart(CheckoutRequest checkoutRequest,
                                                                boolean isOneClickShipment,
-                                                               boolean isTradeIn, String deviceId,
-                                                               String cornerId, String leasingId) {
+                                                               boolean isTradeIn,
+                                                               String deviceId,
+                                                               String cornerId,
+                                                               String leasingId,
+                                                               String deviceModel,
+                                                               int devicePrice,
+                                                               String diagnosticId) {
         return new Subscriber<CheckoutData>() {
             @Override
             public void onCompleted() {
@@ -917,7 +941,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 getView().setHasRunningApiCall(false);
                 ShipmentPresenter.this.checkoutData = checkoutData;
                 if (!checkoutData.isError()) {
-                    getView().triggerSendEnhancedEcommerceCheckoutAnalyticAfterCheckoutSuccess(checkoutData.getTransactionId());
+                    getView().triggerSendEnhancedEcommerceCheckoutAnalyticAfterCheckoutSuccess(checkoutData.getTransactionId(), deviceModel, devicePrice, diagnosticId);
                     if (isPurchaseProtectionPage) {
                         mTrackerPurchaseProtection.eventClickOnBuy(
                                 checkoutRequest.isHavingPurchaseProtectionEnabled() ?

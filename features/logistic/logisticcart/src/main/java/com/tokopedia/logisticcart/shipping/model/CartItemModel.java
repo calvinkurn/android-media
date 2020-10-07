@@ -66,6 +66,8 @@ public class CartItemModel implements Parcelable {
     private boolean isValidTradeIn;
     private int newDevicePrice;
     private int oldDevicePrice;
+    private String deviceModel;
+    private String diagnosticId;
 
     private List<String> productInformation;
     private String productAlertMessage;
@@ -377,6 +379,22 @@ public class CartItemModel implements Parcelable {
         this.oldDevicePrice = oldDevicePrice;
     }
 
+    public String getDeviceModel() {
+        return deviceModel;
+    }
+
+    public void setDeviceModel(String deviceModel) {
+        this.deviceModel = deviceModel;
+    }
+
+    public String getDiagnosticId() {
+        return diagnosticId;
+    }
+
+    public void setDiagnosticId(String diagnosticId) {
+        this.diagnosticId = diagnosticId;
+    }
+
     public boolean isProtectionCheckboxDisabled() {
         return protectionCheckboxDisabled;
     }
@@ -564,6 +582,8 @@ public class CartItemModel implements Parcelable {
         dest.writeByte(this.isValidTradeIn ? (byte) 1 : (byte) 0);
         dest.writeInt(this.newDevicePrice);
         dest.writeInt(this.oldDevicePrice);
+        dest.writeString(this.deviceModel);
+        dest.writeString(this.diagnosticId);
         dest.writeByte(this.protectionCheckboxDisabled ? (byte) 1 : (byte) 0);
         dest.writeByte(this.freeShipping ? (byte) 1 : (byte) 0);
         dest.writeString(this.freeShippingBadgeUrl);
@@ -605,6 +625,8 @@ public class CartItemModel implements Parcelable {
         this.isValidTradeIn = in.readByte() != 0;
         this.newDevicePrice = in.readInt();
         this.oldDevicePrice = in.readInt();
+        this.deviceModel = in.readString();
+        this.diagnosticId = in.readString();
         this.protectionCheckboxDisabled = in.readByte() != 0;
         this.freeShipping = in.readByte() != 0;
         this.freeShippingBadgeUrl = in.readString();

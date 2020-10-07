@@ -138,6 +138,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -153,6 +154,7 @@ import rx.schedulers.Schedulers;
 import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.EVENT_ACTION_PILIH_PEMBAYARAN_INDOMARET;
 import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.EVENT_ACTION_PILIH_PEMBAYARAN_NORMAL;
 import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.EVENT_CATEGORY_SELF_PICKUP_ADDRESS_SELECTION_TRADE_IN;
+import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.EVENT_LABEL_TRADE_IN_CHECKOUT_EE;
 import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.KEY_BUSINESS_UNIT;
 import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.KEY_SCREEN_NAME;
 import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.KEY_USER_ID;
@@ -2469,7 +2471,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void triggerSendEnhancedEcommerceCheckoutAnalyticAfterCheckoutSuccess(String transactionId) {
+    public void triggerSendEnhancedEcommerceCheckoutAnalyticAfterCheckoutSuccess(String transactionId, String deviceModel, int devicePrice, String diagnosticId) {
         List<DataCheckoutRequest> dataCheckoutRequests = shipmentPresenter.updateEnhancedEcommerceCheckoutAnalyticsDataLayerPromoData(shipmentAdapter.getShipmentCartItemModelList());
 
         String eventCategory = ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION;
@@ -2478,6 +2480,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         Map<String, String> tradeInCustomDimension = new HashMap<>();
         if (isTradeIn()) {
             eventCategory = EVENT_CATEGORY_SELF_PICKUP_ADDRESS_SELECTION_TRADE_IN;
+            eventLabel = String.format(Locale.getDefault(), EVENT_LABEL_TRADE_IN_CHECKOUT_EE,
+                    deviceModel, devicePrice, diagnosticId);
             tradeInCustomDimension.put(KEY_USER_ID, userSessionInterface.getUserId());
             tradeInCustomDimension.put(KEY_BUSINESS_UNIT, VALUE_TRADE_IN);
             if (isTradeInByDropOff()) {

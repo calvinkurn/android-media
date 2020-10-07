@@ -309,6 +309,8 @@ public class ShipmentDataConverter {
             cartItemModel.setValidTradeIn(true);
             cartItemModel.setOldDevicePrice(product.getTradeInInfoData().getOldDevicePrice());
             cartItemModel.setNewDevicePrice(product.getTradeInInfoData().getNewDevicePrice());
+            cartItemModel.setDeviceModel(product.getTradeInInfoData().getDeviceModel());
+            cartItemModel.setDiagnosticId(product.getTradeInInfoData().getDiagnosticId());
         }
 
         if (product.getPurchaseProtectionPlanData() != null) {

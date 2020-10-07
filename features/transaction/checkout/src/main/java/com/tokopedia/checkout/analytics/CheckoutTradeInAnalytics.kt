@@ -46,6 +46,7 @@ class CheckoutTradeInAnalytics constructor(val userId: String) : TransactionAnal
         const val EVENT_LABEL_OPSI_PENUKARAN = "opsi penukaran"
         const val EVENT_LABEL_INDOMARET = "indomaret"
         const val EVENT_LABEL_OUT_OF_COVERAGE = "out of coverage"
+        const val EVENT_LABEL_TRADE_IN_CHECKOUT_EE = "phone type : %s - phone price : %d - diagnostic id : %s"
     }
 
     // Trade In
