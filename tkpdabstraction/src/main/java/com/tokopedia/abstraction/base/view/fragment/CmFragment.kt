@@ -11,35 +11,13 @@ abstract class CmFragment: TkpdBaseV4Fragment() {
     @FragmentInflater
     open var fragmentInflater: String = DEFAULT
     var fragmentName: String = javaClass.name
-    var hasReadArguments = false
 
-    override fun onStart() {
-        super.onStart()
-        if (!hasReadArguments) {
-            fragmentInflater = arguments?.getString(BUNDLE_ARGS_INFLATER) ?: fragmentInflater
-            if (!arguments?.getString(BUNDLE_ARGS_FRAGMENT_NAME).isNullOrEmpty())
-                fragmentName = fragmentName + "_" + arguments?.getString(BUNDLE_ARGS_FRAGMENT_NAME) ?: fragmentName
-            hasReadArguments = true
-        }
-    }
-
-    //todo back aane pe onResume handle kara h - tell PO - maybe we can put this on onCreate(..)
-    //todo Rahul - check - openscreenname
     override fun onResume() {
         super.onResume()
 
         view?.post {
             if (isVisible && fragmentInflater == ACTIVITY) {
                 FragmentLifecycleObserver.onFragmentResume(this)
-            }
-            else if (isVisible && fragmentInflater == VIEW_PAGER) {
-                //To handle - when this fragment gets onResume event from backstack (when user comes back to this activity)
-                //todo Rahul do not use this, instead call from container fragment
-//                val arr = IntArray(2)
-//                view?.getLocationOnScreen(arr)
-//                if (arr[0] == 0) {
-//                    FragmentLifecycleObserver.onFragmentResumed(this)
-//                }
             }
         }
     }
@@ -57,8 +35,6 @@ abstract class CmFragment: TkpdBaseV4Fragment() {
 
     companion object {
         const val BUNDLE_ARGS_INFLATER = "cm_inflater"
-        const val BUNDLE_ARGS_NAME = "cm_name"
-        const val BUNDLE_ARGS_FRAGMENT_NAME = "cm_fragmentName"
     }
 }
 

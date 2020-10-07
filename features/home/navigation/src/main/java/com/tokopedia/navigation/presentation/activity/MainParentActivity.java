@@ -525,7 +525,7 @@ public class MainParentActivity extends BaseActivity implements
             ft.commitNowAllowingStateLoss();
         });
     }
-    //todo Rahul send fragment lifecycle events
+    
     private void showSelectedFragment(Fragment fragment, FragmentManager manager, FragmentTransaction ft) {
         for (int i = 0; i < manager.getFragments().size(); i++) {
             Fragment frag = manager.getFragments().get(i);
