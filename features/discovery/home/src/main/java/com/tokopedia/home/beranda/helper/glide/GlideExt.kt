@@ -5,6 +5,7 @@ import android.widget.ImageView
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
+import com.bumptech.glide.load.resource.bitmap.FitCenter
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.home.R
@@ -50,10 +51,10 @@ fun ImageView.loadImage(url: String, fpmItemLabel: String = "", listener: Loader
 fun ImageView.loadImageFitCenter(url: String, fpmItemLabel: String = ""){
     val performanceMonitoring = getPerformanceMonitoring(url, fpmItemLabel)
     this.loadImage(url) {
-        //put fitCenter in XML file
         placeHolder = R.drawable.placeholder_grey
         decodeFormat = MediaDecodeFormat.PREFER_ARGB_8888
         cacheStrategy = MediaCacheStrategy.RESOURCE
+        transform = FitCenter()
         loaderListener = object : LoaderStateListener {
             override fun successLoad(resource: Drawable?, dataSource: DataSource?) {
                 handleOnResourceReady(dataSource, resource, performanceMonitoring)
