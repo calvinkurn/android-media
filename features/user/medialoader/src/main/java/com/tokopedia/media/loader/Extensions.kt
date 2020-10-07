@@ -4,6 +4,7 @@ import android.graphics.drawable.Drawable
 import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.model.GlideUrl
+import com.tokopedia.media.loader.GlideBuilder.loadGifImage
 import com.tokopedia.media.loader.common.Properties
 import com.tokopedia.media.loader.common.UrlBuilder
 import com.tokopedia.media.loader.data.Signature.adaptiveSignature
@@ -15,6 +16,8 @@ fun ImageView.loadImage(drawable: Drawable) = this.setImageDrawable(drawable)
 fun ImageView.loadImage(resource: Int) = this.setImageResource(resource)
 
 fun ImageView.loadImage(url: String) = call(url, Properties())
+
+fun ImageView.loadAsGif(url: String) = loadGifImage(this, url)
 
 inline fun ImageView.loadImage(url: String, properties: Properties.() -> Unit) = call(url, Properties().apply(properties))
 

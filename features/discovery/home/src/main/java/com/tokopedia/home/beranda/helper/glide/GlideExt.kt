@@ -1,22 +1,18 @@
 package com.tokopedia.home.beranda.helper.glide
 
-
 import android.graphics.drawable.Drawable
 import android.widget.ImageView
-import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.DecodeFormat
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.bumptech.glide.request.RequestListener
-import com.bumptech.glide.request.target.Target
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.home.R
 import com.tokopedia.media.loader.common.LoaderStateListener
 import com.tokopedia.media.loader.data.Resize
+import com.tokopedia.media.loader.loadAsGif
 import com.tokopedia.media.loader.loadImage
 
 const val FPM_ATTRIBUTE_IMAGE_URL = "image_url"
@@ -30,6 +26,7 @@ const val FPM_SEE_ALL_CARD_BACKGROUND = "home_see_all_card_background_image"
 const val FPM_RECOMMENDATION_LIST_CAROUSEL = "home_recommendation_list_carousel"
 const val TRUNCATED_URL_PREFIX = "https://ecs7.tokopedia.net/img/cache/"
 
+fun ImageView.loadGif(url: String) = loadAsGif(url)
 
 fun ImageView.loadImage(url: String, fpmItemLabel: String = "", listener: LoaderStateListener? = null){
     val performanceMonitoring = getPerformanceMonitoring(url, fpmItemLabel)
@@ -72,29 +69,10 @@ fun ImageView.loadImageFitCenter(url: String, fpmItemLabel: String = ""){
 
 fun ImageView.loadImageRounded(url: String, roundedRadius: Int, fpmItemLabel: String = ""){
     val performanceMonitoring = getPerformanceMonitoring(url, fpmItemLabel)
-    Glide.with(context)
-            .load(url)
-            .format(DecodeFormat.PREFER_ARGB_8888)
-            .centerCrop()
-            .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-            .transform(CenterCrop(), RoundedCorners(roundedRadius))
-            .listener(object : RequestListener<Drawable> {
-                override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
-                    return false
-                }
-
-                override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
-                    handleOnResourceReady(dataSource, resource, performanceMonitoring)
-                    return false
-                }
-            })
-            .into(this)
-    //put centerCrop in XML file
     this.loadImage(url) {
         decodeFormat = DecodeFormat.PREFER_ARGB_8888
         cacheStrategy = DiskCacheStrategy.RESOURCE
-        transform = RoundedCorners(roundedRadius)
-//        need to add transform = CenterCrop() too
+        transforms = listOf(RoundedCorners(roundedRadius), CenterCrop())
         loaderListener = object : LoaderStateListener {
             override fun failedLoad(error: GlideException?) {}
 
@@ -128,8 +106,7 @@ fun ImageView.loadImageCenterCrop(url: String){
     this.loadImage(url) {
         decodeFormat = DecodeFormat.PREFER_ARGB_8888
         placeHolder = R.drawable.placeholder_grey
-        transform = RoundedCorners(15)
-//        need to add transform = CenterCrop() too
+        transforms = listOf(RoundedCorners(15), CenterCrop())
         cacheStrategy = DiskCacheStrategy.RESOURCE
     }
 }
@@ -149,15 +126,6 @@ fun ImageView.loadImageNoRounded(url: String, placeholder: Int = -1){
         transform = CenterCrop()
         placeHolder = placeholder
     }
-}
-
-fun ImageView.loadGif(url: String){
-    Glide.with(context)
-            .asGif()
-            .load(url)
-            .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-            .transform(RoundedCorners(10))
-            .into(this)
 }
 
 fun getPerformanceMonitoring(url: String, fpmItemLabel: String = "") : PerformanceMonitoring? {

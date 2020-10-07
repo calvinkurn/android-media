@@ -112,4 +112,15 @@ object GlideBuilder {
                 .diskCacheStrategy(DiskCacheStrategy.DATA)
     }
 
+    fun loadGifImage(imageView: ImageView, url: String) {
+        with(imageView) {
+            Glide.with(context)
+                    .asGif()
+                    .load(url)
+                    .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                    .transform(RoundedCorners(10))
+                    .into(this)
+        }
+    }
+
 }
