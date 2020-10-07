@@ -428,6 +428,10 @@ data class SomDetailOrder(
                     @Expose
                     val totalReadinessInsuranceQuantity: Int = 0,
 
+                    @SerializedName("cod_fee")
+                    @Expose
+                    val codFee: Int = 0,
+
                     @SerializedName("cod_fee_text")
                     @Expose
                     val codFeeText: String = "",

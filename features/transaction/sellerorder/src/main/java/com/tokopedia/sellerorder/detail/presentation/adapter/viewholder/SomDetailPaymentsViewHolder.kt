@@ -68,12 +68,13 @@ class SomDetailPaymentsViewHolder(itemView: View) : SomDetailAdapter.BaseViewHol
                 itemView.tvReadinessInsuranceFeeValue.gone()
             }
 
-            if (item.dataObject.codFeeText.isNotEmpty()) {
+            if (item.dataObject.codFee > 0) {
                 itemView.tvCodFeeValue.apply {
                     text = item.dataObject.codFeeText
                     show()
                 }
             } else {
+                itemView.tvCodFeeLabel.gone()
                 itemView.tvCodFeeValue.gone()
             }
 

@@ -634,6 +634,7 @@ class SomDetailFragment : BaseDaggerFragment(),
                 detailResponse.paymentSummary.totalReadinessInsuranceFee,
                 detailResponse.paymentSummary.totalReadinessInsuranceFeeText,
                 detailResponse.paymentSummary.totalReadinessInsuranceQuantity,
+                detailResponse.paymentSummary.codFee,
                 detailResponse.paymentSummary.codFeeText,
                 detailResponse.paymentSummary.totalPriceText)
 

@@ -181,7 +181,7 @@
         app:typographyWeight="reguler" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_cod_fee_label"
+        android:id="@+id/tvCodFeeLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/layout_lvl2"
@@ -215,7 +215,7 @@
         android:background="@color/Neutral_N75"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_cod_fee_label" />
+        app:layout_constraintTop_toBottomOf="@id/tvCodFeeLabel" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/total_price_label"

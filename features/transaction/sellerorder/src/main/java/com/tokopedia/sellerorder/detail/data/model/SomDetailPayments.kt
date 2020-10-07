@@ -18,5 +18,6 @@ data class SomDetailPayments (
         val totalReadinessInsuranceFee: Int = 0,
         val totalReadinessInsuranceFeeText: String = "",
         val totalReadinessInsuranceQuantity: Int = 0,
+        val codFee: Int = 0,
         val codFeeText: String = "",
         val totalPriceText: String = "")
