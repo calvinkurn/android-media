@@ -11,6 +11,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.widget.R
 import com.tokopedia.play.widget.ui.model.PlayWidgetCardUiModel
+import com.tokopedia.play.widget.ui.type.PlayWidgetCardItemType
 import com.tokopedia.play.widget.ui.type.PlayWidgetCardType
 import com.tokopedia.play_common.widget.playBannerCarousel.extension.loadImage
 
@@ -46,32 +47,32 @@ class PlayWidgetCardSmallView : ConstraintLayout {
     }
 
     fun setModel(model: PlayWidgetCardUiModel) {
-        ivCover.loadImage(model.video.coverUrl)
+        ivCover.loadImage(model.card.video.coverUrl)
 
-        handleType(model.widgetType)
-        handlePromo(model.widgetType, model.hasPromo)
-        handleTotalView(model.widgetType, model.totalViewVisible, model.totalView)
+        handleType(model.card.cardType)
+        handlePromo(model.card.cardType, model.card.hasPromo)
+        handleTotalView(model.card.cardType, model.card.totalViewVisible, model.card.totalView)
 
         tvTitle.text = "Kuliner Lokal Lezatnya Total Lezatnya"
         tvUpcoming.text = "10 Jan - 17.00"
 
         flBorder.setBackgroundResource(
-                if (model.video.isLive) R.drawable.bg_play_widget_small_live_border
+                if (model.card.isLive) R.drawable.bg_play_widget_small_live_border
                 else R.drawable.bg_play_widget_small_default_border
         )
     }
 
-    private fun handleType(type: PlayWidgetCardType) {
+    private fun handleType(type: PlayWidgetCardItemType) {
         when (type) {
-            PlayWidgetCardType.Live -> {
+            PlayWidgetCardItemType.Live -> {
                 tvUpcoming.gone()
                 ivLiveBadge.visible()
             }
-            PlayWidgetCardType.Vod -> {
+            PlayWidgetCardItemType.Vod -> {
                 tvUpcoming.gone()
                 ivLiveBadge.gone()
             }
-            PlayWidgetCardType.Upcoming -> {
+            PlayWidgetCardItemType.Upcoming -> {
                 tvUpcoming.visible()
                 ivLiveBadge.gone()
                 ivDiscount.gone()
@@ -79,14 +80,14 @@ class PlayWidgetCardSmallView : ConstraintLayout {
         }
     }
 
-    private fun handlePromo(type: PlayWidgetCardType, hasPromo: Boolean) {
-        if (type == PlayWidgetCardType.Upcoming || type == PlayWidgetCardType.Unknown) ivDiscount.gone()
+    private fun handlePromo(type: PlayWidgetCardItemType, hasPromo: Boolean) {
+        if (type == PlayWidgetCardItemType.Upcoming || type == PlayWidgetCardItemType.Unknown) ivDiscount.gone()
         else if (hasPromo) ivDiscount.visible()
         else ivDiscount.gone()
     }
 
-    private fun handleTotalView(type: PlayWidgetCardType, isVisible: Boolean, totalViewString: String) {
-        if (type == PlayWidgetCardType.Upcoming || type == PlayWidgetCardType.Unknown) clTotalView.gone()
+    private fun handleTotalView(type: PlayWidgetCardItemType, isVisible: Boolean, totalViewString: String) {
+        if (type == PlayWidgetCardItemType.Upcoming || type == PlayWidgetCardItemType.Unknown) clTotalView.gone()
         else if (isVisible) {
             clTotalView.visible()
             tvTotalView.text = totalViewString

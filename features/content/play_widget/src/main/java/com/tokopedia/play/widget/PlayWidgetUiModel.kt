@@ -3,6 +3,7 @@ package com.tokopedia.play.widget
 import com.tokopedia.play.widget.ui.model.PlayWidgetBackgroundUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetCardUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetConfigUiModel
+import com.tokopedia.play.widget.ui.type.PlayWidgetCardSize
 
 
 /**
@@ -15,5 +16,6 @@ data class PlayWidgetUiModel(
         val actionWebLink: String,
         val background: PlayWidgetBackgroundUiModel,
         val config: PlayWidgetConfigUiModel,
-        val items: List<PlayWidgetCardUiModel>
+        val items: List<PlayWidgetCardUiModel>,
+        val size: PlayWidgetCardSize = PlayWidgetCardSize.Small
 )

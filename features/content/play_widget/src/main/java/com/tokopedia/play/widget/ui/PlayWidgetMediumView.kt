@@ -16,6 +16,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.widget.PlayWidgetUiModel
 import com.tokopedia.play.widget.R
 import com.tokopedia.play.widget.ui.adapter.PlayWidgetCardMediumAdapter
+import com.tokopedia.play.widget.ui.contract.IPlayWidgetView
 import com.tokopedia.play.widget.ui.model.PlayWidgetBackgroundUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetCardItemUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetCardUiModel
@@ -29,7 +30,12 @@ import kotlin.math.abs
 /**
  * Created by mzennis on 06/10/20.
  */
-class PlayWidgetMediumView(context: Context, attrs: AttributeSet?) : ConstraintLayout(context, attrs) {
+class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
+
+    constructor(context: Context?) : super(context)
+    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
+    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
+    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes)
 
     private val background: LoaderImageView
     private val shimmering: FrameLayout
@@ -63,7 +69,7 @@ class PlayWidgetMediumView(context: Context, attrs: AttributeSet?) : ConstraintL
         recyclerViewItem = view.findViewById(R.id.play_widget_recycler_view)
     }
 
-    fun setData(data: PlayWidgetUiModel) {
+    override fun setData(data: PlayWidgetUiModel) {
         title.text = data.title
         actionTitle.text = data.actionTitle
 
