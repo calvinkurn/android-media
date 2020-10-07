@@ -110,16 +110,20 @@ class MainSliceProvider : SliceProvider() {
                         setAccentColor(ContextCompat.getColor(contextNonNull, R.color.colorAccent))
                         header {
                             title = contextNonNull.resources.getString(R.string.slice_daftar_rekomendasi)
-                            if (recommendationModel.isNullOrEmpty())
+                            if (recommendationModel.isNullOrEmpty() && !alreadyLoadData)
                                 subtitle = contextNonNull.resources.getString(R.string.slice_loading)
-                            else
-                                subtitle = (contextNonNull.resources.getString(R.string.slice_rekomendasi))
-                            primaryAction = SliceAction.create(
-                                    mainPendingIntent,
-                                    createWithResource(contextNonNull, R.drawable.tab_indicator_ab_tokopedia),
-                                    ICON_IMAGE,
-                                    contextNonNull.resources.getString(R.string.slice_search_title)
-                            )
+                            else if (recommendationModel.isNullOrEmpty() && alreadyLoadData) {
+                                title = contextNonNull.resources.getString(R.string.slice_empty_data)
+                                primaryAction = createPendingIntentNoAccess()?.let {
+                                    SliceAction.create(
+                                            it,
+                                            createWithResource(contextNonNull, R.drawable.tab_indicator_ab_tokopedia),
+                                            SMALL_IMAGE,
+                                            ""
+                                    )
+                                }
+                            }
+                            else subtitle = (contextNonNull.resources.getString(R.string.slice_rekomendasi))
                         }
                         recommendationModel?.indices?.let { recomRange ->
                             if (!recommendationModel.isNullOrEmpty()) {
@@ -152,18 +156,6 @@ class MainSliceProvider : SliceProvider() {
                                 if (alreadyLoadData && listProduct.isNotEmpty()) {
                                     val trackingImpression = TrackingData(listProduct)
                                     Timber.w(contextNonNull.resources.getString(R.string.slice_track_timber_impression) + trackingImpression)
-                                } else {}
-                            } else {
-                                header {
-                                    title = contextNonNull.resources.getString(R.string.slice_empty_data)
-                                    primaryAction = createPendingIntentNoAccess()?.let {
-                                        SliceAction.create(
-                                                it,
-                                                createWithResource(contextNonNull, R.drawable.tab_indicator_ab_tokopedia),
-                                                SMALL_IMAGE,
-                                                ""
-                                        )
-                                    }
                                 }
                             }
                         }
