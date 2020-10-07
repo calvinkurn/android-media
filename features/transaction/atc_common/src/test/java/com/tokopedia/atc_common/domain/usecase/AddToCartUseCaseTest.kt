@@ -39,7 +39,7 @@ class AddToCartUseCaseTest : Spek({
         every { AddToCartBaseAnalytics.sendAppsFlyerTracking(any(), any(), any(), any(), any()) } just Runs
         every {
             AddToCartBaseAnalytics.sendBranchIoTracking(any(), any(), any(), any(), any(),
-                    any(), any(), any(), any(), any(), any(), any(), any())
+                    any(), any(), any(), any(), any(), any(), any())
         } just Runs
     }
 
@@ -101,7 +101,7 @@ class AddToCartUseCaseTest : Spek({
                 verify {
                     AddToCartBaseAnalytics.sendAppsFlyerTracking(any(), any(), any(), any(), any())
                     AddToCartBaseAnalytics.sendBranchIoTracking(any(), any(), any(), any(), any(),
-                            any(), any(), any(), any(), any(), any(), any(), any())
+                            any(), any(), any(), any(), any(), any(), any())
                 }
             }
 

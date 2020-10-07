@@ -50,6 +50,5 @@ data class AddToCartOcsRequestParams(
         var categoryLevel2Id: String = "",
         var categoryLevel2Name: String = "",
         var categoryLevel3Id: String = "",
-        var categoryLevel3Name: String = "",
-        var contentType: String = ""
+        var categoryLevel3Name: String = ""
 )

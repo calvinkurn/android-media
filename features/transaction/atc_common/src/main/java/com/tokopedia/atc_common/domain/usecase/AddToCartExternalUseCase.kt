@@ -43,7 +43,7 @@ class AddToCartExternalUseCase @Inject constructor(@Named(MUTATION_ATC_EXTERNAL)
                     AddToCartBaseAnalytics.sendBranchIoTracking(data.productId.toString(), data.productName, data.price.toString(),
                             data.quantity.toString(), data.category, "",
                             "", "", "",
-                            "", "", "", requestParams.getString(PARAM_USER_ID, ""))
+                            "", "", requestParams.getString(PARAM_USER_ID, ""))
                     result
                 } else {
                     val message = response.response.data.message.firstOrNull() ?: ATC_ERROR_GLOBAL

@@ -42,7 +42,7 @@ class AddToCartOccExternalUseCase @Inject constructor(@Named(MUTATION_ATC_OCC_EX
                 AddToCartBaseAnalytics.sendBranchIoTracking(detail.productId.toString(), detail.productName, detail.price.toString(),
                         detail.quantity.toString(), detail.category, "",
                         "", "", "",
-                        "", "", "", requestParams.getString(REQUEST_PARAM_KEY_USER_ID, ""))
+                        "", "", requestParams.getString(REQUEST_PARAM_KEY_USER_ID, ""))
             }
             result
         }

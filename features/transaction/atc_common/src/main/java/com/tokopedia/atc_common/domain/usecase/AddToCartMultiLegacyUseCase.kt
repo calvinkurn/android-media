@@ -33,7 +33,7 @@ class AddToCartMultiLegacyUseCase @Inject constructor(private val graphqlUseCase
                     AddToCartBaseAnalytics.sendBranchIoTracking(product.productId.toString(), "", "",
                             product.quantity.toString(), "", "",
                             "", "", "",
-                            "", "", "", userId)
+                            "", "", userId)
                 }
             }
             result

@@ -38,7 +38,7 @@ class AddToCartOccUseCase @Inject constructor(@Named(MUTATION_ATC_OCC) private v
                 AddToCartBaseAnalytics.sendBranchIoTracking(addToCartRequest.productId, addToCartRequest.productName, addToCartRequest.price,
                         addToCartRequest.quantity, addToCartRequest.category, addToCartRequest.categoryLevel1Id,
                         addToCartRequest.categoryLevel1Name, addToCartRequest.categoryLevel2Id, addToCartRequest.categoryLevel2Name,
-                        addToCartRequest.categoryLevel3Id, addToCartRequest.categoryLevel3Name, addToCartRequest.contentType, addToCartRequest.userId)
+                        addToCartRequest.categoryLevel3Id, addToCartRequest.categoryLevel3Name, addToCartRequest.userId)
             }
             result
         }

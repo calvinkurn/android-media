@@ -18,6 +18,8 @@ object AddToCartBaseAnalytics {
     private const val AF_PARAM_CONTENT_QUANTITY = "quantity"
     private const val AF_VALUE_CONTENT_TYPE = "product"
 
+    private const val BRANCH_VALUE_CONTENT_TYPE = "product"
+
     const val VALUE_CURRENCY = "IDR"
 
     const val VALUE_BEBAS_ONGKIR = "bebas ongkir"
@@ -48,7 +50,7 @@ object AddToCartBaseAnalytics {
 
     fun sendBranchIoTracking(productId: String, productName: String, price: String, quantity: String, catLvl1: String,
                              level1Id: String, level1Name: String, level2Id: String, level2Name: String, level3Id: String, level3Name: String,
-                             contentType: String, userId: String) {
+                             userId: String) {
         try {
             val data = LinkerData().apply {
                 this.id = productId
@@ -56,13 +58,14 @@ object AddToCartBaseAnalytics {
                 this.price = convertPriceToIntString(price)
                 this.quantity = quantity
                 this.catLvl1 = catLvl1
-                this.contentType = contentType
+                this.contentType = BRANCH_VALUE_CONTENT_TYPE
                 this.level1Id = level1Id
                 this.level1Name = level1Name
                 this.level2Id = level2Id
                 this.level2Name = level2Name
                 this.level3Id = level3Id
-                this.level3Name = level3Name
+                // level 3 name should always be the same with catlvl1
+                this.level3Name = catLvl1
                 this.userId = userId
             }
             LinkerManager.getInstance().sendEvent(LinkerUtils.createGenericRequest(LinkerConstants.EVENT_ADD_TO_CART, data))
