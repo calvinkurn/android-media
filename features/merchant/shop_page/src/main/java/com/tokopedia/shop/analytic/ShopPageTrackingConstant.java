@@ -122,6 +122,13 @@ public class ShopPageTrackingConstant {
     public static final String CLICK_UNFOLLOW = "click unfollow";
     public static final String CLICK_ADD_NOTE = "click add note";
     public static final String CLICK_OTHER_CONTENT = "click other content";
+    public static final String CLICK_VIEW_ALL_PLAY = "click view all play";
+    public static final String CLICK_REMOVE_REMIND_ME_PLAY = "click on remove remind me";
+    public static final String CLICK_REMIND_ME_PLAY = "click remind me";
+    public static final String BUSINESS_UNIT = "businessUnit";
+    public static final String ADS_SOLUTION = "ads solution";
+    public static final String CURRENT_SITE = "currentSite";
+    public static final String TOKOPEDIA_MARKETPLACE = "tokopediamarketplace";
     public static final String SEE_ALL = "see all";
     public static final String MVC_DETAIL = "mvc detail";
     public static final String USE_VOUCHER = "use voucher";
