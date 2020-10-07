@@ -288,7 +288,9 @@ class WaitingPaymentOrderFragment : BaseListFragment<Visitable<WaitingPaymentOrd
         val animator = ValueAnimator.ofFloat(from, to)
         animator.duration = BUTTON_ENTER_LEAVE_ANIMATION_DURATION
         animator.addUpdateListener { valueAnimator ->
-            cardCheckAndSetStock?.translationY = valueAnimator.animatedValue as Float
+            context?.let {
+                cardCheckAndSetStock?.translationY = (valueAnimator.animatedValue as? Float).orZero()
+            }
         }
         animator.start()
         return animator

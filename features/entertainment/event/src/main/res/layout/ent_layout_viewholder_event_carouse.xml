@@ -35,7 +35,7 @@
         app:typographyType="body_2" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/ent_recycle_view"
+        android:id="@+id/ent_recycle_view_carousel"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:clipChildren="false"

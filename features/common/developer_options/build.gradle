@@ -37,7 +37,7 @@ dependencies {
         implementation rootProject.ext.libraries.blockCanaryNoOp
     }
     implementation project(rootProject.ext.libraries.pushNotification)
-    implementation project(rootProject.ext.libraries.permissionchecker)
+    implementation project(rootProject.ext.libraries.utils)
 
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components

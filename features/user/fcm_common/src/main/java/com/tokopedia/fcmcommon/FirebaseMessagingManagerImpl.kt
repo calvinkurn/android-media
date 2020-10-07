@@ -120,7 +120,6 @@ class FirebaseMessagingManagerImpl @Inject constructor(
             if (!BuildConfig.DEBUG) {
                 val errorMessage = """ Error update fcm token, 
                     userId: ${userSession.userId},
-                    userEmail: ${userSession.email},
                     deviceId: ${userSession.deviceId},
                     fcmTokenShouldBe: $token
                     errorMessage: ${error.message},
