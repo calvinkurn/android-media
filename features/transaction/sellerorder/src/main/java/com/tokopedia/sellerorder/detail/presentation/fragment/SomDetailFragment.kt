@@ -628,6 +628,13 @@ class SomDetailFragment : BaseDaggerFragment(),
                 detailResponse.paymentSummary.insurancePriceText,
                 detailResponse.paymentSummary.additionalPrice,
                 detailResponse.paymentSummary.additionalPriceText,
+                detailResponse.paymentSummary.totalPurchaseProtectionFee
+                detailResponse.paymentSummary.totalPurchaseProtectionFeeText,
+                detailResponse.paymentSummary.totalPurchaseProtectionQuantity,
+                detailResponse.paymentSummary.totalReadinessInsuranceFee,
+                detailResponse.paymentSummary.totalReadinessInsuranceFeeText,
+                detailResponse.paymentSummary.totalReadinessInsuranceQuantity,
+                detailResponse.paymentSummary.codFeeText,
                 detailResponse.paymentSummary.totalPriceText)
 
         listDetailData.add(SomDetailData(dataPayments, DETAIL_PAYMENT_TYPE))
