@@ -6,7 +6,11 @@ import com.tokopedia.home_component.visitable.HomeComponentVisitable
 
 class HomeVisitableDiffUtil : DiffUtil.ItemCallback<Visitable<*>>() {
     override fun areItemsTheSame(oldItem: Visitable<*>, newItem: Visitable<*>): Boolean {
-        return oldItem::class.java == newItem::class.java
+        return if (oldItem is HomeVisitable && newItem is HomeVisitable) {
+            oldItem.visitableId() == newItem.visitableId()
+        } else if (oldItem is HomeComponentVisitable && newItem is HomeComponentVisitable) {
+            oldItem.visitableId() == newItem.visitableId()
+        } else false
     }
 
     override fun areContentsTheSame(oldItem: Visitable<*>, newItem: Visitable<*>): Boolean {

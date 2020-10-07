@@ -1,0 +1,5 @@
+mutation ResendBookingEmail($input: ResendBookingEmailArgs!) {
+  trainResendBookingEmail(input:$input){
+    Success
+  }
+}

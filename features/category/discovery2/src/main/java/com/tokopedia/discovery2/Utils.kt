@@ -6,6 +6,24 @@ import android.net.Uri
 import kotlin.math.floor
 
 
+const val LIGHT_GREY = "lightGrey"
+const val LIGHT_BLUE = "lightBlue"
+const val LIGHT_GREEN = "lightGreen"
+const val LIGHT_RED = "lightRed"
+const val LIGHT_ORANGE = "lightOrange"
+const val DARK_GREY = "darkGrey"
+const val DARK_BLUE = "darkBlue"
+const val DARK_GREEN = "darkGreen"
+const val DARK_RED = "darkRed"
+const val DARK_ORANGE = "darkOrange"
+const val TRANSPARENT_BLACK = "transparentBlack"
+const val LABEL_PRODUCT_STATUS = "status"
+const val LABEL_PRICE = "price"
+const val LABEL_GIMMICK = "gimmick"
+const val LABEL_INTEGRITY = "integrity"
+const val LABEL_SHIPPING = "shipping"
+const val PDP_APPLINK = "tokopedia://product/"
+
 class Utils {
 
     companion object {
@@ -24,6 +42,11 @@ class Utils {
         private const val SEJUTA_TEXT = "jt orang"
         private const val SEMILIAR_TEXT = "M orang"
         var preSelectedTab = -1
+        private const val IDENTIFIER = "identifier"
+        private const val COMPONENT_ID = "component_id"
+        private const val DEVICE = "device"
+        private const val DEVICE_VALUE = "Android"
+        private const val FILTERS = "filters"
 
 
         fun extractDimension(url: String?, dimension: String = "height"): Int? {
@@ -59,6 +82,27 @@ class Utils {
             } else {
                 "${convertedValue.toInt()} $text $notifyMeText"
             }
+        }
+
+        fun getQueryMap(componentId: String, pageIdentifier: String, rpcDiscoQuery: Map<String, String?>?): Map<String, Any> {
+            val queryParameterMap = mutableMapOf<String, Any>()
+            queryParameterMap[IDENTIFIER] = pageIdentifier
+            queryParameterMap[DEVICE] = DEVICE_VALUE
+            queryParameterMap[COMPONENT_ID] = componentId
+
+            rpcDiscoQuery?.let { map ->
+                val queryString = StringBuilder()
+                map.forEach { (key, value) ->
+                    if (!value.isNullOrEmpty()) {
+                        if (queryString.isNotEmpty()) {
+                            queryString.append('&')
+                        }
+                        queryString.append(key).append('=').append(value)
+                    }
+                }
+                if (queryString.isNotEmpty()) queryParameterMap[FILTERS] = queryString.toString()
+            }
+            return queryParameterMap
         }
     }
 }

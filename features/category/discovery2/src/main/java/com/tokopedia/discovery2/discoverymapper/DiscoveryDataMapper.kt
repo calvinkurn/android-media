@@ -5,12 +5,12 @@ import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.data.Properties
 import com.tokopedia.discovery2.data.categorynavigationresponse.ChildItem
-import com.tokopedia.kotlin.extensions.view.isMoreThanZero
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.filter.common.data.DataValue
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Sort
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 
 private const val CHIPS = "Chips"
 private const val TABS_ITEM = "tabs_item"
@@ -40,37 +40,39 @@ class DiscoveryDataMapper {
             return list
         }
 
-        fun mapTabsListToComponentList(component: ComponentsItem, subComponentName: String = "", position: Int, pinnedTabID: String?): ArrayList<ComponentsItem> {
+        fun mapTabsListToComponentList(component: ComponentsItem, subComponentName: String = ""): ArrayList<ComponentsItem> {
             val list = ArrayList<ComponentsItem>()
             var isSelectedFound = false
             component.data?.forEachIndexed { index, it ->
                 val id = "${TABS_ITEM}_$index"
-                if (!pinnedTabID.isNullOrEmpty()) {
-                    var pinnedActiveIndex = pinnedTabID.toIntOrZero()
-                    if (pinnedActiveIndex.isMoreThanZero()) {
-                        pinnedActiveIndex -= 1
-                        if (index == pinnedActiveIndex) {
-                            it.isSelected = true
-                            isSelectedFound = true
+                if (!it.name.isNullOrEmpty()) {
+                    if (!component.pinnedActiveTabId.isNullOrEmpty()) {
+                        var pinnedActiveIndex = component.pinnedActiveTabId.toIntOrZero()
+                        if (pinnedActiveIndex.isMoreThanZero()) {
+                            pinnedActiveIndex -= 1
+                            if (index == pinnedActiveIndex) {
+                                it.isSelected = true
+                                isSelectedFound = true
+                            }
                         }
+                    } else if (it.isSelected) {
+                        isSelectedFound = true
                     }
-                } else if (it.isSelected) {
-                    isSelectedFound = true
+                    val componentsItem = ComponentsItem()
+                    componentsItem.position = index
+                    componentsItem.name = subComponentName
+                    componentsItem.pageEndPoint = component.pageEndPoint
+                    it.positionForParentItem = component.parentComponentPosition
+                    val dataItem = mutableListOf<DataItem>()
+                    dataItem.add(it)
+                    componentsItem.data = dataItem
+                    componentsItem.id = id
+                    list.add(componentsItem)
                 }
-                val componentsItem = ComponentsItem()
-                componentsItem.position = index
-                componentsItem.name = subComponentName
-                componentsItem.pageEndPoint = component.pageEndPoint
-                it.positionForParentItem = position
-                val dataItem = mutableListOf<DataItem>()
-                dataItem.add(it)
-                componentsItem.data = dataItem
-                componentsItem.id = id
-                list.add(componentsItem)
             }
 
             if (!isSelectedFound) {
-                list[0].data?.get(0)?.isSelected = true
+                list.getOrNull(0)?.data?.getOrNull(0)?.isSelected = true
             }
             return list
         }
@@ -140,7 +142,7 @@ class DiscoveryDataMapper {
     fun mapFiltersToDynamicFilterModel(dataItem: DataItem?): DynamicFilterModel? {
         val filter = dataItem?.filter
         filter?.forEach {
-            if(it.options.isNullOrEmpty())
+            if (it.options.isNullOrEmpty())
                 filter.remove(it)
         }
         return DynamicFilterModel(data = DataValue(filter = filter as List<Filter>, sort = dataItem.sort as List<Sort>))

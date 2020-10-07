@@ -30,6 +30,7 @@
     <string name="action_pick_photo">Pilih Foto</string>
     <string name="action_edit_photo">Ubah Foto</string>
     <string name="error_max_product_photo">Hapus salah satu untuk bisa tambah foto</string>
+    <string name="error_message_invalid_photos">Terdapat foto yang telah dihapus, silakan periksa kembali foto anda</string>
 
     <!-- add edit product name -->
     <string name="add_product_name_header">Isi nama produk yang kamu jual</string>

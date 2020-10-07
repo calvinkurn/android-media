@@ -8,18 +8,17 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
+import com.tokopedia.vouchercreation.common.coroutines.CoroutineDispatchers
 import com.tokopedia.vouchercreation.create.domain.usecase.validation.PeriodValidationUseCase
 import com.tokopedia.vouchercreation.create.view.uimodel.validation.PeriodValidation
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.*
 import javax.inject.Inject
 
 class SetVoucherPeriodViewModel @Inject constructor(
-        dispatcher: CoroutineDispatcher,
+        private val dispatchers: CoroutineDispatchers,
         private val periodValidationUseCase: PeriodValidationUseCase
-) : BaseViewModel(dispatcher) {
+) : BaseViewModel(dispatchers.main) {
 
     companion object {
         private const val DATE_FORMAT = "yyyy-MM-dd"
@@ -69,7 +68,7 @@ class SetVoucherPeriodViewModel @Inject constructor(
                     mHourEndLiveData.value?.let { hourEnd ->
                         launchCatchError(
                                 block = {
-                                    mPeriodValidationLiveData.value = Success(withContext(Dispatchers.IO) {
+                                    mPeriodValidationLiveData.value = Success(withContext(dispatchers.io) {
                                         periodValidationUseCase.params = PeriodValidationUseCase.createRequestParam(dateStart, dateEnd, hourStart, hourEnd)
                                         periodValidationUseCase.executeOnBackground()
                                     })

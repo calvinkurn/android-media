@@ -1,11 +1,16 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/kotlin/core-module.gradle"
+apply plugin: 'kotlin-kapt'
 
 dependencies {
-    implementation project(rootProject.ext.libraries.permissionchecker)
+    implementation rootProject.ext.miscDependencies.dagger
+    kapt rootProject.ext.miscDependencies.daggerCompiler
+    implementation project(rootProject.ext.libraries.utils)
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
 
     implementation rootProject.ext.playServicesDependencies.location
+
+    testImplementation rootProject.ext.supportLibDependencies.constraintLayout
 
 }
 

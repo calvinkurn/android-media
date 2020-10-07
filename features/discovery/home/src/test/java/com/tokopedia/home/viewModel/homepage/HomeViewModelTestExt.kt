@@ -15,6 +15,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelDataModel
 import com.tokopedia.home.beranda.presentation.viewModel.HomeViewModel
 import com.tokopedia.home.rules.TestDispatcherProvider
+import com.tokopedia.home.util.HomeCommandProcessor
 import com.tokopedia.play_common.domain.usecases.GetPlayWidgetUseCase
 import com.tokopedia.play_common.domain.usecases.PlayToggleChannelReminderUseCase
 import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarouselDataModel
@@ -58,7 +59,8 @@ fun createHomeViewModel(
         declineSalamWidgetUseCase: DeclineSalamWIdgetUseCase = mockk{ mockk(relaxed = true)},
         declineRechargeRecommendationUseCase: DeclineRechargeRecommendationUseCase = mockk(relaxed = true),
         topadsImageViewUseCase: TopAdsImageViewUseCase = mockk(relaxed = true),
-        dispatcher: TestDispatcherProvider = TestDispatcherProvider()
+        getDisplayHeadlineAds: GetDisplayHeadlineAds = mockk(relaxed = true),
+        dispatchers: TestDispatcherProvider = TestDispatcherProvider()
 ): HomeViewModel{
 
 
@@ -74,7 +76,7 @@ fun createHomeViewModel(
             getPlayCardHomeUseCase = Lazy{getPlayLiveDynamicUseCase},
             getRecommendationTabUseCase = Lazy{getRecommendationTabUseCase},
             getWalletBalanceUseCase = Lazy{getCoroutineWalletBalanceUseCase},
-            homeDispatcher = Lazy{ dispatcher },
+            homeDispatcher = Lazy{ dispatchers },
             homeUseCase = Lazy{ getHomeUseCase },
             popularKeywordUseCase = Lazy{getPopularKeywordUseCase},
             sendGeolocationInfoUseCase = Lazy{getSendGeolocationInfoUseCase},
@@ -88,8 +90,10 @@ fun createHomeViewModel(
             getSalamWidgetUseCase = Lazy{getSalamWidgetUseCase},
             topAdsImageViewUseCase = Lazy{topadsImageViewUseCase},
             getPlayBannerUseCase = Lazy{getPlayBannerUseCase},
+            getDisplayHeadlineAds = Lazy{ getDisplayHeadlineAds },
             playToggleChannelReminderUseCase = Lazy{playToggleChannelReminderUseCase},
-            getRechargeRecommendationUseCase = Lazy{getRechargeRecommendationUseCase}
+            getRechargeRecommendationUseCase = Lazy{getRechargeRecommendationUseCase},
+            homeProcessor = Lazy{ HomeCommandProcessor(dispatchers.ui()) }
     )
 }
 
@@ -112,9 +116,6 @@ fun GetBusinessWidgetTab.givenGetBusinessWidgetTabUseCaseReturn(homeWidget: Home
     coEvery { executeOnBackground() } returns homeWidget
 }
 
-fun GetDynamicChannelsUseCase.givenGetDynamicChannelsUseCase(dynamicChannelDataModels: List<DynamicChannelDataModel>) {
-    coEvery { executeOnBackground() } returns dynamicChannelDataModels
-}
 fun GetDynamicChannelsUseCase.givenGetDynamicChannelsUseCaseThrowReturn() {
     coEvery { executeOnBackground() } throws TimeoutException()
 }
@@ -161,6 +162,10 @@ fun HomeUseCase.givenGetHomeDataReturn(homeDataModel: HomeDataModel, newHomeData
         emit(homeDataModel)
         emit(newHomeDataModel)
     }
+}
+
+fun HomeUseCase.givenGetDynamicChannelsUseCase(dynamicChannelDataModels: List<DynamicChannelDataModel>) {
+    coEvery { onDynamicChannelExpired(any()) } returns dynamicChannelDataModels
 }
 
 fun InjectCouponTimeBasedUseCase.givenInjectCouponTimeBasedUseCaseReturn(setInjectCouponTimeBased: SetInjectCouponTimeBased) {

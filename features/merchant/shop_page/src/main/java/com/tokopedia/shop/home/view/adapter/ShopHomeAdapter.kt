@@ -20,6 +20,9 @@ import com.tokopedia.shop.product.view.widget.OnStickySingleHeaderListener
 import com.tokopedia.shop.product.view.widget.StickySingleHeaderView
 import com.tokopedia.youtube_common.data.model.YoutubeVideoDetailModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingMoreViewHolder
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeProductItemBigGridViewHolder
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeProductItemListViewHolder
+import com.tokopedia.shop.common.util.ShopProductViewGridType
 
 /**
  * Created by rizqiaryansa on 2020-02-21.
@@ -38,7 +41,7 @@ class ShopHomeAdapter(
     private var onStickySingleHeaderViewListener: OnStickySingleHeaderListener? = null
     var isOwner: Boolean = false
     private var recyclerView: RecyclerView? = null
-    private var productListViewModel: MutableList<ShopHomeProductViewModel> = mutableListOf()
+    var productListViewModel: MutableList<ShopHomeProductViewModel> = mutableListOf()
     val shopHomeEtalaseTitlePosition: Int
         get() = visitables.indexOfFirst {
             it.javaClass == ShopHomeProductEtalaseTitleUiModel::class.java
@@ -66,6 +69,8 @@ class ShopHomeAdapter(
         val layoutParams = holder.itemView.layoutParams
         if (layoutParams is StaggeredGridLayoutManager.LayoutParams) {
             layoutParams.isFullSpan = !(getItemViewType(position) == ShopHomeProductViewHolder.LAYOUT ||
+                    getItemViewType(position) == ShopHomeProductItemBigGridViewHolder.LAYOUT ||
+                    getItemViewType(position) == ShopHomeProductItemListViewHolder.LAYOUT ||
                     getItemViewType(position) == LoadingMoreViewHolder.LAYOUT)
         }
         super.onBindViewHolder(holder, position)
@@ -237,6 +242,16 @@ class ShopHomeAdapter(
         notifyChangedItem(visitables.indexOf(shopProductSortFilterUiViewModel))
     }
 
+
+    fun changeSortFilterIndicatorCounter(filterIndicatorCounter: Int) {
+        val shopProductSortFilterUiViewModel = visitables
+                .filterIsInstance<ShopProductSortFilterUiModel>().firstOrNull()
+        shopProductSortFilterUiViewModel?.apply {
+            this.filterIndicatorCounter = filterIndicatorCounter
+        }
+        notifyChangedItem(visitables.indexOf(shopProductSortFilterUiViewModel))
+    }
+
     fun removeProductList() {
         val firstProductViewModelIndex = visitables.indexOfFirst {
             it::class.java == ShopHomeProductViewModel::class.java
@@ -309,6 +324,20 @@ class ShopHomeAdapter(
         return !isComputingLayout && position >= 0
     }
 
+    private fun setLayoutManagerSpanCount() {
+        (recyclerView?.layoutManager as? StaggeredGridLayoutManager)?.spanCount = when (shopHomeAdapterTypeFactory.productCardType) {
+            ShopProductViewGridType.BIG_GRID -> {
+                1
+            }
+            ShopProductViewGridType.SMALL_GRID -> {
+                2
+            }
+            ShopProductViewGridType.LIST -> {
+                1
+            }
+        }
+    }
+
     fun pausePlayCarousel(){
         val indexPlay = getPositionPlayCarousel()
         if(indexPlay == -1) return
@@ -379,6 +408,41 @@ class ShopHomeAdapter(
     fun getNplCampaignUiModel(campaignId: String): ShopHomeNewProductLaunchCampaignUiModel? {
         return visitables.filterIsInstance<ShopHomeNewProductLaunchCampaignUiModel>().firstOrNull {
             it.data?.firstOrNull()?.campaignId == campaignId
+        }
+    }
+
+    fun changeProductCardGridType(gridType: ShopProductViewGridType) {
+        shopHomeAdapterTypeFactory.productCardType = gridType
+        setLayoutManagerSpanCount()
+        recyclerView?.requestLayout()
+    }
+
+    fun updateShopPageProductChangeGridSection(totalProductData: Int) {
+        val gridSectionModel = visitables.filterIsInstance<ShopHomeProductChangeGridSectionUiModel>().firstOrNull()
+        if (gridSectionModel == null) {
+            if(totalProductData != 0) {
+                visitables.add(ShopHomeProductChangeGridSectionUiModel(totalProductData))
+                notifyChangedDataSet()
+            }
+        } else {
+            gridSectionModel.apply {
+                val index = visitables.indexOf(this)
+                if(totalProductData == 0){
+                    visitables.remove(this)
+                    notifyRemovedItem(index)
+                }else{
+                    this.totalProduct = totalProductData
+                    notifyChangedItem(index)
+                }
+            }
+        }
+    }
+
+
+    fun updateShopPageProductChangeGridSection(gridType: ShopProductViewGridType) {
+        visitables.filterIsInstance<ShopHomeProductChangeGridSectionUiModel>().firstOrNull()?.apply {
+            this.gridType = gridType
+            notifyChangedItem(visitables.indexOf(this))
         }
     }
 

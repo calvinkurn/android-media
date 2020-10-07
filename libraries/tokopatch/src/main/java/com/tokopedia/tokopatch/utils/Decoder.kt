@@ -17,19 +17,22 @@ class Decoder {
                 "AES/GCM/NoPadding"
         )
 
-        @Throws(Exception::class)
-        fun decrypt(signature: String, encryptedText: String): ByteArray {
-            var fingerprint  = md5(signature.toByteArray())
-            val encryptedTextByte = Base64.decode(encryptedText, Base64.DEFAULT)
-            val secretKey: Key = SecretKeySpec(fingerprint.toByteArray(), "AES")
-            val iv = ByteArray(12)
-            val ivParameterSpec = IvParameterSpec(iv)
-            cipher.init(
-                    Cipher.DECRYPT_MODE,
-                    secretKey,
-                    ivParameterSpec
-            )
-            return cipher.doFinal(encryptedTextByte)
+        fun decrypt(signature: String, encryptedText: String): ByteArray? {
+            try {
+                var fingerprint = md5(signature.toByteArray())
+                val encryptedTextByte = Base64.decode(encryptedText, Base64.DEFAULT)
+                val secretKey: Key = SecretKeySpec(fingerprint.toByteArray(), "AES")
+                val iv = ByteArray(12)
+                val ivParameterSpec = IvParameterSpec(iv)
+                cipher.init(
+                        Cipher.DECRYPT_MODE,
+                        secretKey,
+                        ivParameterSpec
+                )
+                return cipher.doFinal(encryptedTextByte)
+            } catch (e: Exception){
+                return null
+            }
         }
 
         fun md5(byteArray: ByteArray): String {

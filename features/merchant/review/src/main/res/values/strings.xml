@@ -1,5 +1,4 @@
 <resources>
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_review_rating_product">Rating Produk</string>
     <string name="title_review_inbox">Inbox Ulasan</string>
     <string name="title_reputation_history">Penalti dan Reward</string>
@@ -55,17 +54,12 @@
     <string name="total_product_review">1.234 Ulasan</string>
     <string name="product_rating_bar_value">5</string>
     <string name="default_total_star_review">(1200)</string>
-    <string name="default_filter_detail">30 Hari Terakhir</string>
     <string name="topic_review_detail_label">Topik Populer</string>
     <string name="count_review_label">Menampilkan <![CDATA[<b>%1d</b>]]> ulasan dari pembeli</string>
-    <string name="label_by">Oleh</string>
     <string name="variant_feedback_label">Varian:</string>
     <string name="otomatis_reply">Balasan Otomatis</string>
     <string name="user_reply">Balasan Kamu</string>
     <string name="review_not_found">Ulasan tidak tersedia.</string>
-    <string name="user_reply_feedback">Balasan %s</string>
-    <string name="label_read_more">Selengkapnya</string>
-    <string name="label_ellipsis_read_more">...</string>
     <string name="edit_review_label">Ubah Balasan</string>
     <string name="review_reply_label">Balas Ulasan</string>
     <string name="report_label">Laporkan</string>
@@ -85,10 +79,7 @@
     <string name="add_template_reply_label">Tambah template balasan</string>
     <string name="empty_title_add_template_label">Oops, judul harus diisi.</string>
     <string name="empty_desc_add_template_label">Oops, isi template harus diisi.</string>
-    <string name="error_message_maximum_template_reply">Maksimum 5 template balas ulasan</string>
     <string name="title_inbox_review">Inbox Review</string>
-    <string name="title_filter_rating">Filter Rating</string>
-    <string name="reset_filter">Reset</string>
     <string name="ticker_inbox_review">Ulasan yang sudah dibalas hanya tersimpan 30 hari dalam Inbox Ulasan</string>
 
     <string name="app_name">Review</string>
@@ -128,13 +119,11 @@
     <string name="review_toaster_page_error">Oops, halaman bermasalah. Cek koneksimu dan coba refresh, ya.</string>
     <string name="review_oke">Oke</string>
 
-    <string name="review_pending_search_error_toaster">Ketik min. 3 karakter agar menemukan barang yang dicari.</string>
     <string name="review_pending_network_error_title">Koneksi internetmu terganggu!</string>
     <string name="review_pending_network_error_content">Yuk, pastikan internetmu lancar dengan cek ulang paket data, WiFi, atau jaringan di tempatmu.</string>
     <string name="review_pending_tab_title">Menunggu Diulas (%s)</string>
     <string name="review_pending_tab_title_no_count">Menunggu Diulas</string>
     <string name="review_pending_network_error_retry_button">Coba Lagi</string>
-    <string name="review_pending_network_error_go_to_settings_button">Ke Pengaturan</string>
     <string name="review_pending_no_product_empty_title">Belum ada barang untuk kamu ulas</string>
     <string name="review_pending_no_product_empty_content">Saatnya kamu belanja dan kasih ulasanmu ke jutaan orang!</string>
     <string name="review_pending_variant">Varian: %s</string>
@@ -163,13 +152,13 @@
     <string name="review_history_details_score_empty">Gimana layanan toko ini?</string>
     <string name="review_detail_score_expired">Batas waktu penilaian toko sudah habis</string>
     <string name="review_history_detail_toaster_edit_success">Ulasan berhasil diubah</string>
-    <string name="review_reputation_deadline">Kamu masih bisa ubah penilaian sebelum</string>
+    <string name="review_reputation_deadline">Kamu masih bisa ubah penilaianmu tentang toko ini.</string>
 
     <string name="review_edit_dialog_title">Yakin keluar halaman ini?</string>
     <string name="review_edit_dialog_subtitle">Ulasan yang kamu ubah tidak akan tersimpan jika keluar dari halaman ini.</string>
     <string name="review_edit_dialog_continue_writing">Lanjut Tulis Ulasan</string>
     <string name="review_edit_dialog_exit">Ya, Keluar</string>
-    <string name="review_edit_fail">Ulasan tidak tersiimpan. Cek koneksi internetmu dan coba lagi, ya</string>
+    <string name="review_edit_fail">Ulasan tidak tersimpan. Cek koneksi internetmu dan coba lagi, ya</string>
 
     <string name="review_seller_tab_title">Ulasan Pembeli</string>
 
@@ -183,7 +172,6 @@
     <string name="reputation_history_label_change_date">Ubah Tanggal</string>
     <string name="reputation_history_label_congrats_no_penalty">Anda tidak memiliki Penalti</string>
     <string name="reputation_history_label_improve_selling_get_badge">Tingkatkan terus penjualan &amp; pelayanan toko Anda untuk mendapatkan badge &amp; poin reputasi</string>
-    <string name="best_deal">BEST DEAL!</string>
     <string name="message_exception_description">Terjadi kesalahan koneksi.\nSilahkan coba kembali"</string>
     <string name="try_again">COBA KEMBALI</string>
     <string name="set_date">Atur Tanggal</string>

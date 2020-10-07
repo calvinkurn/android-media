@@ -77,7 +77,7 @@
     <string name="ent_event_checkout_summary_tnc_click">syarat dan ketentuan</string>
     <string name="ent_event_checkout_summary_tnc_bottom_sheet">Syarat dan Ketentuan</string>
     <string name="ent_event_checkout_footer_button">Pilih Pembayaran</string>
-    <string name="ent_event_checkout_submit_name">Isi data pemesan dulu ya, biar kamu bisa lanjut pesan tiket ini.</string>
+    <string name="ent_event_checkout_submit_name">Isi %s dulu ya, biar kamu bisa lanjut pesan tiket ini.</string>
     <string name="ent_event_checkout_submit_login">Anda Belum Login</string>
     <string name="ent_event_checkout_passenger_new_title">Rincian Kontak</string>
 
@@ -103,4 +103,16 @@
 
     <string name="ent_home_coachmark_title">Beli tiket kini lebih mudah!</string>
     <string name="ent_home_coachmark_subtitle">Cobain yuk, sekarang kamu dapat membeli paket lain bersamaan!</string>
+
+    <string name="ent_checkout_data_tambahan_package">Lengkapi data tambahan</string>
+    <string name="ent_checkout_data_pengunjung_title">Data Pengunjung</string>
+    <string name="ent_checkout_data_tambahan_title">Data Tambahan</string>
+    <string name="ent_checkout_data_tambahan_fill_data">Isi Data</string>
+    <string name="ent_checkout_data_tambahan_filled_data">Ubah</string>
+    <string name="ent_checkout_data_tambahan_item_title">%s |</string>
+    <string name="ent_checkout_data_tambahan_item_value">&#160; %s</string>
+    <string name="ent_form_data_bottomsheet">Pilih %s</string>
+    <string name="ent_checkout_data_nullable_form">Data belum diisi</string>
+    <string name="ent_bottomsheet_placeholder">Cari %s</string>
+    <string name="ent_pdp_form_error_all_msg">%s yang Anda isi belum lengkap</string>
 </resources>
