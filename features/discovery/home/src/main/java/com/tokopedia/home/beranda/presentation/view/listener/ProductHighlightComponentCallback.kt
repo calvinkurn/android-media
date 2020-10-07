@@ -22,6 +22,7 @@ class ProductHighlightComponentCallback(val homeCategoryListener: HomeCategoryLi
                 gridPrice = channelGrid.price,
                 position = adapterPosition,
                 isTopAds = channelGrid.isTopads,
+                pageName = channel.pageName,
                 recommendationType = channelGrid.recommendationType
         )
     }

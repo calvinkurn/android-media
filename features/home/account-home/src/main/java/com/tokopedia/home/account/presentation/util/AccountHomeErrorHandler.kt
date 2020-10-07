@@ -25,9 +25,8 @@ object AccountHomeErrorHandler {
     @JvmStatic
     fun logExceptionToCrashlytics(t: Throwable, userId: String, email:String, errorCode:String) {
         val errorMessage = String.format(
-                "userId='%s';email='%s';error_msg='%s';error_code='%s'",
+                "userId='%s';error_msg='%s';error_code='%s'",
                 userId,
-                email,
                 getExceptionMessage(t),
                 errorCode)
         val exception = AccountHomeException(errorMessage, t)
