@@ -5,6 +5,7 @@ import com.tokopedia.play.widget.data.PlayWidget
 import com.tokopedia.play.widget.data.PlayWidgetItem
 import com.tokopedia.play.widget.data.PlayWidgetItemVideo
 import com.tokopedia.play.widget.ui.model.*
+import com.tokopedia.play.widget.ui.type.PlayWidgetCardItemType
 import com.tokopedia.play.widget.ui.type.PlayWidgetCardType
 
 
@@ -42,9 +43,14 @@ object PlayWidgetUiMapper {
     private fun mapWidgetItem(items: List<PlayWidgetItem>): List<PlayWidgetCardUiModel> = items.map { mapWidgetItem(it) }
 
     private fun mapWidgetItem(item: PlayWidgetItem): PlayWidgetCardUiModel = PlayWidgetCardUiModel(
+            type = PlayWidgetCardType.getByValue(item.typename),
+            card = mapWidgetCardItem(item)
+    )
+
+    private fun mapWidgetCardItem(item: PlayWidgetItem): PlayWidgetCardItemUiModel = PlayWidgetCardItemUiModel(
             channelId = item.id,
             title = item.title,
-            widgetType = PlayWidgetCardType.getByValue(item.widgetType),
+            cardType = PlayWidgetCardItemType.getByValue(item.widgetType),
             appLink = item.appLink,
             webLink = item.webLink,
             startTime = item.startTime,
@@ -54,7 +60,8 @@ object PlayWidgetUiMapper {
             activeReminder = item.config.isReminderSet,
             isLive = item.video.isLive,
             partner = PlayWidgetPartnerUiModel(item.partner.id, item.partner.name),
-            video = mapWidgetItemVideo(item.video)
+            video = mapWidgetItemVideo(item.video),
+            backgroundUrl = item.backgroundUrl
     )
 
     private fun mapWidgetItemVideo(item: PlayWidgetItemVideo): PlayWidgetCardVideoUiModel = PlayWidgetCardVideoUiModel(

@@ -17,9 +17,13 @@ import com.tokopedia.play.widget.PlayWidgetUiModel
 import com.tokopedia.play.widget.R
 import com.tokopedia.play.widget.ui.adapter.PlayWidgetCardMediumAdapter
 import com.tokopedia.play.widget.ui.model.PlayWidgetBackgroundUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetCardItemUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetCardUiModel
+import com.tokopedia.play.widget.ui.type.PlayWidgetCardType
 import com.tokopedia.play_common.widget.playBannerCarousel.extension.loadImage
 import com.tokopedia.play_common.widget.playBannerCarousel.extension.setGradientBackground
 import com.tokopedia.unifyprinciples.Typography
+import kotlin.math.abs
 
 
 /**
@@ -41,6 +45,7 @@ class PlayWidgetMediumView(context: Context, attrs: AttributeSet?) : ConstraintL
     private val recyclerViewItem: RecyclerView
 
     private val adapter = PlayWidgetCardMediumAdapter()
+    private val layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
 
     init {
         val view = LayoutInflater.from(context).inflate(R.layout.play_widget_medium, this)
@@ -62,39 +67,13 @@ class PlayWidgetMediumView(context: Context, attrs: AttributeSet?) : ConstraintL
         title.text = data.title
         actionTitle.text = data.actionTitle
 
-        configureBackground(data.background)
+        configureBackgroundOverlay(data.background)
 
-        recyclerViewItem.layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
+        recyclerViewItem.layoutManager = layoutManager
         recyclerViewItem.adapter = adapter
+        recyclerViewItem.addOnScrollListener(configureParallax())
 
-        adapter.setItems(data.items)
-    }
-
-    private fun configureBackground(data: PlayWidgetBackgroundUiModel) {
-        if(data.overlayImageUrl.isNotEmpty()) {
-            background.show()
-            overlayImage.loadImage(data.overlayImageUrl, object : ImageHandler.ImageLoaderStateListener {
-                override fun successLoad() {
-                    if (data.gradientColors.isNotEmpty()) {
-                        overlayBackground.setGradientBackground(data.gradientColors)
-                    } else if (data.backgroundUrl.isNotBlank()) {
-                        overlayBackground.loadImage(data.backgroundUrl)
-                    }
-                    background.hide()
-                }
-
-                override fun failedLoad() {
-                    if (data.gradientColors.isNotEmpty()) {
-                        overlayBackground.setGradientBackground(data.gradientColors)
-                    } else if (data.backgroundUrl.isNotBlank()) {
-                        overlayBackground.loadImage(data.backgroundUrl)
-                    }
-                    background.hide()
-                }
-            })
-        } else{
-            background.hide()
-        }
+        adapter.setItems(addItemOverlay(data.items))
     }
 
     fun showLoading() {
@@ -108,5 +87,63 @@ class PlayWidgetMediumView(context: Context, attrs: AttributeSet?) : ConstraintL
     override fun onDetachedFromWindow() {
         adapter.safeReleaseVideo()
         super.onDetachedFromWindow()
+    }
+
+    /**
+     * Setup view
+     */
+    private fun configureBackgroundOverlay(data: PlayWidgetBackgroundUiModel) {
+        if (data.overlayImageUrl.isEmpty() || data.overlayImageUrl.isBlank()) background.hide()
+        else {
+            background.show()
+            overlayImage.loadImage(data.overlayImageUrl, object : ImageHandler.ImageLoaderStateListener {
+                override fun successLoad() {
+                    configureBackground(data)
+                    background.hide()
+                }
+
+                override fun failedLoad() {
+                    configureBackground(data)
+                    background.hide()
+                }
+            })
+        }
+    }
+
+    private fun configureBackground(data: PlayWidgetBackgroundUiModel) {
+        if (data.gradientColors.isNotEmpty()) {
+            overlayBackground.setGradientBackground(data.gradientColors)
+        } else if (data.backgroundUrl.isNotBlank() && data.backgroundUrl.isNotEmpty()) {
+            overlayBackground.loadImage(data.backgroundUrl)
+        }
+    }
+
+    private fun addItemOverlay(items: List<PlayWidgetCardUiModel>): List<PlayWidgetCardUiModel> {
+        return items.toMutableList().apply {
+            add(0, PlayWidgetCardUiModel(type = PlayWidgetCardType.Overlay, card = PlayWidgetCardItemUiModel.default()))
+        }
+    }
+
+    private fun configureParallax(): RecyclerView.OnScrollListener {
+        return object : RecyclerView.OnScrollListener() {
+
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                if (layoutManager.findFirstVisibleItemPosition() != 0) return
+
+                val firstView = layoutManager.findViewByPosition(layoutManager.findFirstVisibleItemPosition())
+                firstView?.let {
+                    val distanceFromLeft = it.left
+                    val translateX = distanceFromLeft * 0.2f
+                    overlay.translationX = translateX
+
+                    if (distanceFromLeft <= 0) {
+                        val itemSize = it.width.toFloat()
+                        val alpha = (abs(distanceFromLeft).toFloat() / itemSize * 0.80f)
+                        overlay.alpha = 1 - alpha
+                    }
+                }
+            }
+        }
     }
 }

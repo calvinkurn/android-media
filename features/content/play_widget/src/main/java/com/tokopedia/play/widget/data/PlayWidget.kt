@@ -1,5 +1,6 @@
 package com.tokopedia.play.widget.data
 
+import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 
@@ -16,6 +17,7 @@ data class PlayWidgetResponse(
 )
 
 data class PlayWidgetItem(
+        @SerializedName("__typename") val typename: String = "",
         @SerializedName("ID") val id: String = "",
         @SerializedName("title") val title: String = "",
         @SerializedName("widgetType") val widgetType: String = "",
@@ -25,7 +27,8 @@ data class PlayWidgetItem(
         @SerializedName("config") val config: PlayWidgetItemConfig = PlayWidgetItemConfig(),
         @SerializedName("partner") val partner: PlayWidgetItemPartner = PlayWidgetItemPartner(),
         @SerializedName("video") val video: PlayWidgetItemVideo = PlayWidgetItemVideo(),
-        @SerializedName("stats") val stats: PlayWidgetItemStat = PlayWidgetItemStat()
+        @SerializedName("stats") val stats: PlayWidgetItemStat = PlayWidgetItemStat(),
+        @SerializedName("backgroundURL") val backgroundUrl : String = ""
 )
 
 data class PlayWidgetItemConfig(
