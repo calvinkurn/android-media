@@ -78,6 +78,12 @@ class WaitingPaymentOrderFragment : BaseListFragment<Visitable<WaitingPaymentOrd
         observeWaitingPaymentOrderResult()
     }
 
+    override fun onPause() {
+        super.onPause()
+        buttonEnterAnimation?.end()
+        buttonLeaveAnimation?.end()
+    }
+
     override fun createAdapterInstance(): BaseListAdapter<Visitable<WaitingPaymentOrderAdapterTypeFactory>, WaitingPaymentOrderAdapterTypeFactory> {
         return WaitingPaymentOrderAdapter(adapterTypeFactory)
     }
@@ -282,7 +288,7 @@ class WaitingPaymentOrderFragment : BaseListFragment<Visitable<WaitingPaymentOrd
         val animator = ValueAnimator.ofFloat(from, to)
         animator.duration = BUTTON_ENTER_LEAVE_ANIMATION_DURATION
         animator.addUpdateListener { valueAnimator ->
-            cardCheckAndSetStock.translationY = valueAnimator.animatedValue as Float
+            cardCheckAndSetStock?.translationY = valueAnimator.animatedValue as Float
         }
         animator.start()
         return animator
@@ -290,8 +296,8 @@ class WaitingPaymentOrderFragment : BaseListFragment<Visitable<WaitingPaymentOrd
 
     private fun animateCheckAndSetStockButtonEnter() {
         if (buttonLeaveAnimation?.isRunning == true) buttonLeaveAnimation?.end()
-        cardCheckAndSetStock.visible()
-        buttonEnterAnimation = animateCheckAndSetStockButton(cardCheckAndSetStock.height.toFloat(), 0f)
+        cardCheckAndSetStock?.visible()
+        buttonEnterAnimation = animateCheckAndSetStockButton(cardCheckAndSetStock?.height?.toFloat() ?: 0f, 0f)
         buttonEnterAnimation?.addListener(object : Animator.AnimatorListener {
             override fun onAnimationRepeat(animation: Animator?) {}
 
@@ -313,12 +319,12 @@ class WaitingPaymentOrderFragment : BaseListFragment<Visitable<WaitingPaymentOrd
 
     private fun animateCheckAndSetStockButtonLeave() {
         if (buttonEnterAnimation?.isRunning == true) buttonEnterAnimation?.end()
-        buttonLeaveAnimation = animateCheckAndSetStockButton(0f, cardCheckAndSetStock.height.toFloat())
+        buttonLeaveAnimation = animateCheckAndSetStockButton(0f, cardCheckAndSetStock?.height?.toFloat() ?: 0f)
         buttonLeaveAnimation?.addListener(object : Animator.AnimatorListener {
             override fun onAnimationRepeat(animation: Animator?) {}
 
             override fun onAnimationEnd(animation: Animator?) {
-                cardCheckAndSetStock.gone()
+                cardCheckAndSetStock?.gone()
             }
 
             override fun onAnimationCancel(animation: Animator?) {}
