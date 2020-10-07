@@ -142,13 +142,9 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     val moveToEtalaseResult: LiveData<Result<Boolean>>
         get() = _moveToEtalaseResult
 
-    private val _toggleFavoriteResult = MutableLiveData<Result<Boolean>>()
-    val toggleFavoriteResult: LiveData<Result<Boolean>>
+    private val _toggleFavoriteResult = MutableLiveData<Result<Pair<Boolean, Boolean>>>()
+    val toggleFavoriteResult: LiveData<Result<Pair<Boolean, Boolean>>>
         get() = _toggleFavoriteResult
-
-    private val _toggleFavoriteNplResult = MutableLiveData<Result<Boolean>>()
-    val toggleFavoriteNplResult: LiveData<Result<Boolean>>
-        get() = _toggleFavoriteNplResult
 
     private val _updatedImageVariant = MutableLiveData<Pair<List<VariantCategory>?, List<Media>>>()
     val updatedImageVariant: LiveData<Pair<List<VariantCategory>?, List<Media>>>
@@ -496,22 +492,17 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
             initialLayoutData.removeAll(removedData)
     }
 
-    fun toggleFavorite(shopID: String) {
-        launchCatchError(block = {
+    fun toggleFavorite(shopID: String, isNplFollowerType: Boolean = false) {
+        launchCatchError(dispatcher.io(), block = {
             toggleFavoriteUseCase.get().createRequestParam(shopID)
-            _toggleFavoriteResult.value = toggleFavoriteUseCase.get().executeOnBackground().followShop.isSuccess.asSuccess()
+            val favoriteData = toggleFavoriteUseCase.get().executeOnBackground().followShop
+            if (favoriteData.isSuccess) {
+                _toggleFavoriteResult.postValue((favoriteData.isSuccess to isNplFollowerType).asSuccess())
+            } else {
+                _toggleFavoriteResult.postValue(Throwable(favoriteData.message).asFail())
+            }
         }) {
-            _toggleFavoriteResult.value = it.asFail()
-        }
-    }
-
-    fun toggleFavoriteShopFollowers() {
-        launchCatchError(dispatcher.io(), {
-            val shopId = getDynamicProductInfoP1?.basic?.shopID.toString()
-            toggleFavoriteUseCase.get().createRequestParam(shopId)
-            _toggleFavoriteNplResult.postValue(toggleFavoriteUseCase.get().executeOnBackground().followShop.isSuccess.asSuccess())
-        }) {
-            _toggleFavoriteNplResult.postValue(it.asFail())
+            _toggleFavoriteResult.postValue(it.asFail())
         }
     }
 
