@@ -22,7 +22,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:search_bar_placeholder="@string/topads_edit_cari_produk"
-        app:search_bar_show_icon="true" />
+        app:search_bar_show_icon="false" />
 
     <com.tokopedia.unifycomponents.UnifyImageButton
         android:id="@+id/btn_sort"
