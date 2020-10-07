@@ -28,6 +28,8 @@ import com.tokopedia.topchat.chatlist.domain.usecase.DeleteMessageListUseCase
 import com.tokopedia.topchat.chatlist.viewmodel.DeleteChatListUiModel
 import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.OrderProgressResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.Sticker
+import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.ChatListGroupStickerResponse
+import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.StickerGroup
 import com.tokopedia.topchat.chatroom.domain.usecase.*
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
 import com.tokopedia.topchat.chatroom.view.listener.TopChatContract
@@ -45,6 +47,7 @@ import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Du
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.readParam
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.replyChatViewModelApiSuccess
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.source
+import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.successGetChatListGroupSticker
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.successGetOrderProgressResponse
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.toShopId
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.toUserId
@@ -216,6 +219,10 @@ class TopChatRoomPresenterTest {
         val successGetOrderProgressResponse: OrderProgressResponse = FileUtil.parse(
                 "/success_get_order_progress.json",
                 OrderProgressResponse::class.java
+        )
+        val successGetChatListGroupSticker: ChatListGroupStickerResponse = FileUtil.parse(
+                "/success_chat_list_group_sticker.json",
+                ChatListGroupStickerResponse::class.java
         )
 
         private fun generateImageUploadViewModel(): ImageUploadViewModel {
@@ -1058,6 +1065,36 @@ class TopChatRoomPresenterTest {
         // Then
         verify(exactly = 1) {
             view.renderOrderProgress(successGetOrderProgressResponse.chatOrderProgress)
+        }
+    }
+
+    @Test
+    fun `on success get sticker group list`() {
+        // Given
+        val roomModel = ChatroomViewModel()
+        val needTopUpdateCache = emptyList<StickerGroup>()
+        val onLoadingSlot = slot<(ChatListGroupStickerResponse) -> Unit>()
+        val onSuccessSlot = slot<(ChatListGroupStickerResponse, List<StickerGroup>) -> Unit>()
+        every {
+            groupStickerUseCase.getStickerGroup(
+                    roomModel.isSeller(),
+                    capture(onLoadingSlot),
+                    capture(onSuccessSlot),
+                    any()
+            )
+        } answers {
+            val onLoading = onLoadingSlot.captured
+            onLoading.invoke(successGetChatListGroupSticker)
+            val onSuccess = onSuccessSlot.captured
+            onSuccess.invoke(successGetChatListGroupSticker, needTopUpdateCache)
+        }
+
+        // When
+        presenter.getStickerGroupList(roomModel)
+
+        // Then
+        verify(exactly = 2) {
+            view.getChatMenuView()
         }
     }
 
