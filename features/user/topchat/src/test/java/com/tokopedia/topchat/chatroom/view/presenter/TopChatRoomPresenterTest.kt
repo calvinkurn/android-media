@@ -803,6 +803,25 @@ class TopChatRoomPresenterTest {
         }
     }
 
+    @Test
+    fun `on detachView`() {
+        // When
+        presenter.detachView()
+
+        // Then
+        verify {
+            presenter.destroyWebSocket()
+            getChatUseCase.unsubscribe()
+            getTemplateChatRoomUseCase.unsubscribe()
+            replyChatUseCase.unsubscribe()
+            deleteMessageListUseCase.unsubscribe()
+            getShopFollowingUseCase.safeCancel()
+            addToCartUseCase.unsubscribe()
+            groupStickerUseCase.safeCancel()
+            chatAttachmentUseCase.safeCancel()
+        }
+    }
+
     private fun mockkParseResponse(wsInfo: WebSocketInfo, isOpposite: Boolean = true): ChatSocketPojo {
         val wsChatPojo = topChatRoomWebSocketMessageMapper.parseResponse(wsInfo.response).apply {
             this.isOpposite = isOpposite
