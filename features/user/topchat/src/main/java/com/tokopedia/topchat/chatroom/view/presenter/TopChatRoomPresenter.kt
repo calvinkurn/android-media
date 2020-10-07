@@ -112,7 +112,6 @@ class TopChatRoomPresenter @Inject constructor(
     val attachments: ArrayMap<String, Attachment> = ArrayMap()
 
     private lateinit var webSocketUrl: String
-    private lateinit var addToCardSubscriber: Subscriber<AddToCartDataModel>
     private var attachmentsPreview: ArrayList<SendablePreview> = arrayListOf()
     private var mSubscription: CompositeSubscription
     private var compressImageSubscription: CompositeSubscription
@@ -527,9 +526,6 @@ class TopChatRoomPresenter @Inject constructor(
         deleteMessageListUseCase.unsubscribe()
         getShopFollowingUseCase.safeCancel()
         addToCartUseCase.unsubscribe()
-        if (::addToCardSubscriber.isInitialized) {
-            addToCardSubscriber.unsubscribe()
-        }
         compressImageSubscription.unsubscribe()
         groupStickerUseCase.safeCancel()
         chatAttachmentUseCase.safeCancel()
