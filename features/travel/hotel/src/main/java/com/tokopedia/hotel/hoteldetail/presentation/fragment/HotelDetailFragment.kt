@@ -31,6 +31,7 @@ import com.tokopedia.hotel.globalsearch.presentation.widget.HotelGlobalSearchWid
 import com.tokopedia.hotel.homepage.presentation.model.HotelHomepageModel
 import com.tokopedia.hotel.hoteldetail.data.entity.PropertyDetailData
 import com.tokopedia.hotel.hoteldetail.data.entity.PropertyImageItem
+import com.tokopedia.hotel.hoteldetail.data.entity.PropertySafetyBadge
 import com.tokopedia.hotel.hoteldetail.di.HotelDetailComponent
 import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelDetailActivity
 import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelDetailActivity.Companion.PDP_SCREEN_NAME
@@ -308,6 +309,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
 
         iv_hotel_detail_location.loadImage(data.property.locationImageStatic)
 
+        setupSafetyBadgeLayout(data.safetyBadge)
         setupPolicySwitcher(data)
         setupImportantInfo(data)
         setupDescription(data)
@@ -327,6 +329,14 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
         }
     }
 
+    private fun setupSafetyBadgeLayout(propertySafetyBadge: PropertySafetyBadge) {
+        if (propertySafetyBadge.isShow) {
+            hotel_safety_information_layout.show()
+            tv_hotel_safety_information_title.text = propertySafetyBadge.title
+            tv_hotel_safety_information_content.text = propertySafetyBadge.content
+            iv_hotel_safety_badge_icon.loadImage(propertySafetyBadge.icon.light)
+        } else hotel_safety_information_layout.hide()
+    }
     private fun showLoadingLayout() {
         app_bar_layout.visibility = View.GONE
         container_hotel_detail.visibility = View.GONE

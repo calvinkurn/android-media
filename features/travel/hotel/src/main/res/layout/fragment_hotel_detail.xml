@@ -205,7 +205,7 @@
                             android:layout_marginLeft="@dimen/layout_lvl2"
                             android:layout_marginTop="@dimen/layout_lvl1"
                             android:layout_marginRight="@dimen/layout_lvl2"
-                            android:layout_marginBottom="@dimen/layout_lvl2"
+                            android:layout_marginBottom="@dimen/dp_12"
                             android:orientation="horizontal">
 
                             <com.tokopedia.unifyprinciples.Typography
@@ -226,10 +226,56 @@
 
                         </LinearLayout>
 
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/hotel_safety_information_layout"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/spacing_lvl4"
+                            android:layout_marginRight="@dimen/spacing_lvl4"
+                            android:layout_marginBottom="@dimen/dp_12"
+                            android:orientation="vertical"
+                            android:visibility="gone"
+                            tools:visibility="visible">
+
+                            <androidx.appcompat.widget.AppCompatImageView
+                                android:id="@+id/iv_hotel_safety_badge_icon"
+                                android:layout_width="@dimen/dp_12"
+                                android:layout_height="@dimen/dp_12"
+                                app:layout_constraintTop_toTopOf="@id/tv_hotel_safety_information_title"
+                                app:layout_constraintBottom_toBottomOf="@id/tv_hotel_safety_information_title"
+                                app:layout_constraintLeft_toLeftOf="parent"
+                                tools:background="@color/Blue_B500"
+                                android:scaleType="fitCenter"
+                                />
+                            <com.tokopedia.unifyprinciples.Typography
+                                android:id="@+id/tv_hotel_safety_information_title"
+                                android:layout_width="@dimen/layout_lvl0"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="@dimen/spacing_lvl2"
+                                android:textColor="@color/Blue_B500"
+                                app:typographyType="body_3"
+                                app:typographyWeight="bold"
+                                tools:text="Hygine Verified"
+                                app:layout_constraintTop_toTopOf="parent"
+                                app:layout_constraintLeft_toRightOf="@+id/iv_hotel_safety_badge_icon"
+                                app:layout_constraintRight_toRightOf="parent"
+                                />
+
+                            <com.tokopedia.unifyprinciples.Typography
+                                android:id="@+id/tv_hotel_safety_information_content"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/Neutral_N700_68"
+                                app:typographyType="body_3"
+                                app:layout_constraintTop_toBottomOf="@+id/tv_hotel_safety_information_title"
+                                tools:text="Akomodasi ini telah menerapkan standar protokol kesehatan." />
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
                         <View
                             android:id="@+id/top_divider"
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/hotel_1dp"
+                            android:layout_marginTop="@dimen/spacing_lvl2"
                             android:background="@color/hotel_grey_200" />
 
                         <LinearLayout
