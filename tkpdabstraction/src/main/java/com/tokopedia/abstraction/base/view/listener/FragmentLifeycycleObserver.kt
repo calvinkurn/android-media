@@ -43,32 +43,4 @@ object FragmentLifecycleObserver {
         callbacks.remove(fragmentLifecycleCallback)
     }
 
-
-    //==============USELESS CODE BELOW NEED TO REMOVE==========
-//    var weakFragment: WeakReference<CmFragment>? = null
-//
-//    fun onFragmentSelected(fragment: CmFragment) {
-//        checkNotifications(fragment)
-//    }
-//
-//    fun onFragmentResumed(fragment: CmFragment) {
-//        checkNotifications(fragment)
-//    }
-//
-//    fun onFragmentStop(fragment: CmFragment) {
-//
-//    }
-//
-//    fun onFragmentDestroyed(fragment: CmFragment) {
-//
-//    }
-//
-//    private fun checkNotifications(fragment: CmFragment) {
-//
-//
-//    }
-
-//    fun createAlertDialog(context: Context, title: String) {
-//
-//    }
 }

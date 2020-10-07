@@ -3,6 +3,7 @@ package com.tokopedia.notifications
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.listener.FragmentLifecycleCallback
 import com.tokopedia.notifications.inApp.CMInAppManager
+import timber.log.Timber
 
 class FragmentObserver(private val cmInAppManager: CMInAppManager) : FragmentLifecycleCallback {
 
@@ -10,6 +11,7 @@ class FragmentObserver(private val cmInAppManager: CMInAppManager) : FragmentLif
         try {
             cmInAppManager.onFragmentStart(fragment)
         } catch (e: Exception) {
+            Timber.e(e)
         }
     }
 
@@ -17,6 +19,7 @@ class FragmentObserver(private val cmInAppManager: CMInAppManager) : FragmentLif
         try {
             cmInAppManager.onFragmentResume(fragment)
         } catch (e: Exception) {
+            Timber.e(e)
         }
     }
 
@@ -24,6 +27,7 @@ class FragmentObserver(private val cmInAppManager: CMInAppManager) : FragmentLif
         try {
             cmInAppManager.onFragmentStop(fragment)
         } catch (e: Exception) {
+            Timber.e(e)
         }
     }
 
@@ -31,6 +35,7 @@ class FragmentObserver(private val cmInAppManager: CMInAppManager) : FragmentLif
         try {
             cmInAppManager.onFragmentSelected(fragment)
         } catch (e: Exception) {
+            Timber.e(e)
         }
     }
 
@@ -38,6 +43,7 @@ class FragmentObserver(private val cmInAppManager: CMInAppManager) : FragmentLif
         try {
             cmInAppManager.onFragmentUnSelected(fragment)
         } catch (e: Exception) {
+            Timber.e(e)
         }
     }
 
@@ -45,6 +51,7 @@ class FragmentObserver(private val cmInAppManager: CMInAppManager) : FragmentLif
         try {
             cmInAppManager.onFragmentDestroyed(fragment)
         } catch (e: Exception) {
+            Timber.e(e)
         }
     }
 }
