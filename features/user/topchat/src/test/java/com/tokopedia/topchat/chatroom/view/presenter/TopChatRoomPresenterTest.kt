@@ -919,6 +919,17 @@ class TopChatRoomPresenterTest {
         }
     }
 
+    @Test
+    fun `on clearAttachmentPreview`() {
+        // When
+        presenter.addAttachmentPreview(sendAbleProductPreview)
+        presenter.clearAttachmentPreview()
+        val isEmptyAttachmentPreview = presenter.hasEmptyAttachmentPreview()
+
+        // Then
+        assert(isEmptyAttachmentPreview)
+    }
+
     private fun mockkParseResponse(
             wsInfo: WebSocketInfo, isOpposite: Boolean = true
     ): ChatSocketPojo {
