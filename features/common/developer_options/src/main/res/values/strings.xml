@@ -36,6 +36,8 @@
     <string name="pie">PIE</string>
     <string name="android10">ANDROID 10</string>
     <string name="copy_success">Text telah tersalin</string>
+    
+    <string name="draw_on_picture_label">Edit Images</string>
 
     <string-array name="bug_type_array">
         <item>Others</item>

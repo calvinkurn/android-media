@@ -59,8 +59,9 @@
         <activity
             android:name=".drawonpicture.presentation.activity.DrawOnPictureActivity"
             android:hardwareAccelerated="true"
+            android:label="@string/draw_on_picture_label"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+            android:theme="@style/Theme.White" />
 
     </application>
 
