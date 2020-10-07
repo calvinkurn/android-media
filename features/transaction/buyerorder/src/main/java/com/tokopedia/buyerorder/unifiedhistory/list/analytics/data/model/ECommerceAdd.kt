@@ -22,7 +22,7 @@ data class ECommerceAdd (
                 var products: ArrayList<Products> = arrayListOf()) : Parcelable {
 
                 @Parcelize
-                class Products (
+                data class Products (
                         @SerializedName("name")
                         var name: String = "",
 

@@ -22,7 +22,7 @@ data class ECommerceAddRecommendation (
                 var actionField: ActionField = ActionField()
         ): Parcelable {
                 @Parcelize
-                class ActionField(
+                data class ActionField(
                         @SerializedName("list")
                         var list: String = "",
 
@@ -30,7 +30,7 @@ data class ECommerceAddRecommendation (
                         var products: ArrayList<Product> = arrayListOf()) : Parcelable {
 
                         @Parcelize
-                        class Product (
+                        data class Product (
                                 @SerializedName("name")
                                 var name: String = "",
 
