@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/shop_settings_navigation"
+    app:startDestination="@id/shopSettingsInfoFragment">
+
+    <fragment
+        android:id="@+id/shopSettingsInfoFragment"
+        android:name="com.tokopedia.shop.settings.basicinfo.view.fragment.ShopSettingsInfoFragment"
+        tools:layout="@layout/fragment_shop_settings_info" >
+        <argument
+            android:name="cacheManagerId"
+            app:argType="string"
+            android:defaultValue='"0"' />
+        <action
+            android:id="@+id/action_shopSettingsInfoFragment_to_shopEditBasicInfoFragment"
+            app:destination="@id/shopEditBasicInfoFragment" />
+        <action
+            android:id="@+id/action_shopSettingsInfoFragment_to_shopEditScheduleActivity"
+            app:destination="@id/shopEditScheduleActivity" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/shopEditBasicInfoFragment"
+        android:name="com.tokopedia.shop.settings.basicinfo.view.fragment.ShopEditBasicInfoFragment"
+        tools:layout="@layout/fragment_shop_edit_basic_info" />
+    <activity
+        android:id="@+id/shopEditScheduleActivity"
+        android:name="com.tokopedia.shop.settings.basicinfo.view.activity.ShopEditScheduleActivity"
+        tools:layout="@layout/activity_shop_edit_schedule"/>
+</navigation>
