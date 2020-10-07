@@ -1,5 +1,6 @@
 package com.tokopedia.shop.common.widget
 
+import android.animation.Animator
 import android.view.Gravity
 import android.view.View
 import android.widget.ImageView
@@ -12,18 +13,25 @@ import kotlinx.android.synthetic.main.layout_button_npl_follow.view.*
 
 /**
  * Created by Yehezkiel on 06/10/20
+ *
+ * After get the data simply call renderView()
+ * if want to hide the view, set setupVisibility to false
  */
 class PartialButtonShopFollowersView private constructor(val view: View, private val listener: PartialButtonShopFollowersListener) {
 
     companion object {
+        const val SHOP_FOLLOWERS_IMG_ASSET = "https://ecs7.tokopedia.net/android/other/il_pdp%20bts_follower.png"
+        const val GONE_ANIMATION_DURATION = 300L
         fun build(_view: View, _buttonListener: PartialButtonShopFollowersListener) = PartialButtonShopFollowersView(_view, _buttonListener)
     }
 
     var setupVisibility: Boolean = false
         set(value) {
             field = value
-            with(view) {
-                if (value) base_btn_follow.visibility = View.VISIBLE else base_btn_follow.visibility = View.GONE
+            if (value) {
+                animateSlideUp()
+            } else {
+                animateSlideDown()
             }
         }
 
@@ -41,28 +49,64 @@ class PartialButtonShopFollowersView private constructor(val view: View, private
         }
     }
 
-    fun renderView(title: String, desc: String, isElligible: Boolean = false) = with(view) {
-        if (!isElligible) {
+    fun renderView(title: String, desc: String, alreadyFollowShop: Boolean = true) = with(view) {
+        if (alreadyFollowShop) {
             setupVisibility = false
             return@with
         }
+
+        shop_followers_title.text = title
+        shop_followers_desc.text = desc
 
         setupRoundedTopShadow()
         setupButtonFollowers()
 
         followersImageAsset?.run {
-            ImageHandler.loadImageWithoutPlaceholderAndError(this, "https://ecs7.tokopedia.net/android/other/il_pdp%20bts_follower.png")
+            ImageHandler.loadImageWithoutPlaceholderAndError(this, SHOP_FOLLOWERS_IMG_ASSET)
         }
 
         setupVisibility = true
     }
 
-    fun stopButtonLoading() {
+    fun stopLoading() {
         followersBtn?.run {
             if (isLoading) {
-                followersBtn?.isLoading = false
+                isLoading = false
             }
         }
+    }
+
+    fun startLoading() {
+        followersBtn?.run {
+            if (!isLoading) {
+                isLoading = true
+            }
+        }
+    }
+
+    private fun animateSlideUp() = with(view) {
+        base_btn_follow?.visibility = View.VISIBLE
+        animate().translationY(0F).setDuration(GONE_ANIMATION_DURATION).setListener(null)
+    }
+
+    private fun animateSlideDown() = with(view) {
+        animate().translationY(view.height.toFloat()).setDuration(GONE_ANIMATION_DURATION).setListener(object : Animator.AnimatorListener {
+            override fun onAnimationStart(animation: Animator?) {
+            }
+
+            override fun onAnimationEnd(animation: Animator?) {
+                followersBtn?.run {
+                    stopLoading()
+                    base_btn_follow?.visibility = View.GONE
+                }
+            }
+
+            override fun onAnimationCancel(animation: Animator?) {
+            }
+
+            override fun onAnimationRepeat(animation: Animator?) {
+            }
+        })
     }
 
     private fun setupButtonFollowers() {
