@@ -9,10 +9,7 @@ import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
-import com.tokopedia.oneclickcheckout.common.interceptor.CHECKOUT_BOTTOM_SHEET_PROMPT_RESPONSE_PATH
-import com.tokopedia.oneclickcheckout.common.interceptor.CHECKOUT_DIALOG_PROMPT_RESPONSE_PATH
-import com.tokopedia.oneclickcheckout.common.interceptor.GET_OCC_CART_PAGE_SLASH_PRICE_RESPONSE_PATH
-import com.tokopedia.oneclickcheckout.common.interceptor.OneClickCheckoutInterceptor
+import com.tokopedia.oneclickcheckout.common.interceptor.*
 import com.tokopedia.oneclickcheckout.common.robot.orderSummaryPage
 import com.tokopedia.oneclickcheckout.common.rule.FreshIdlingResourceTestRule
 import org.junit.After
@@ -113,6 +110,48 @@ class OrderSummaryPageActivityCampaignTest {
 
             pay()
             assertPromptDialogVisible("title prompt", "description prompt", "button", "second button")
+        }
+    }
+
+    @Test
+    fun errorFlow_OvoWalletInsufficientButtonContinue() {
+        cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_CAMPAIGN_OVO_ONLY_LOW_WALLET_RESPONSE_PATH
+
+        activityRule.launchActivity(null)
+        Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
+
+        orderSummaryPage {
+            assertPayment("Rp115.000", "Bayar")
+
+            clickAddProductQuantity()
+
+            assertPayment("Rp215.000", "Lanjutkan")
+            assertPaymentErrorTicker(OrderSummaryPageViewModel.OVO_INSUFFICIENT_CONTINUE_MESSAGE)
+        } pay {
+            assertGoToPayment(
+                    redirectUrl = "https://www.tokopedia.com/payment",
+                    queryString = "transaction_id=123",
+                    method = "POST"
+            )
+        }
+    }
+
+    @Test
+    fun errorFlow_ErrorTickerButtonContinue() {
+        cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_CAMPAIGN_OVO_ONLY_ERROR_TICKER_RESPONSE_PATH
+
+        activityRule.launchActivity(null)
+        Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
+
+        orderSummaryPage {
+            assertPayment("Rp115.000", "Lanjutkan")
+            assertPaymentErrorTicker("OVO Error Ticker")
+        } pay {
+            assertGoToPayment(
+                    redirectUrl = "https://www.tokopedia.com/payment",
+                    queryString = "transaction_id=123",
+                    method = "POST"
+            )
         }
     }
 }

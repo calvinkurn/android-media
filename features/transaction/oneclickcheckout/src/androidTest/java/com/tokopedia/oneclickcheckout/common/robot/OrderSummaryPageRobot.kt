@@ -1,6 +1,7 @@
 package com.tokopedia.oneclickcheckout.common.robot
 
 import android.view.View
+import android.widget.TextView
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
@@ -198,6 +199,13 @@ class OrderSummaryPageRobot {
     fun assertPayment(total: String, buttonText: String) {
         onView(withId(R.id.btn_pay)).perform(scrollTo()).check(matches(withText(buttonText)))
         onView(withId(R.id.tv_total_payment_value)).check(matches(withText(total)))
+    }
+
+    fun assertPaymentErrorTicker(message: String) {
+        onView(withId(R.id.ticker_payment_error)).perform(scrollTo()).check(matches(isDisplayed())).check { view, noViewFoundException ->
+            noViewFoundException?.printStackTrace()
+            assertEquals(message, view.findViewById<TextView>(com.tokopedia.unifycomponents.R.id.ticker_description).text)
+        }
     }
 
     fun assertGlobalErrorVisible() {
