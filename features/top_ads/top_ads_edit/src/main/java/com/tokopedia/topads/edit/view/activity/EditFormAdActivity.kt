@@ -5,7 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.fragment.app.Fragment
-import com.google.android.material.tabs.TabLayout.TabLayoutOnPageChangeListener
+import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
@@ -86,12 +86,25 @@ class EditFormAdActivity : BaseActivity(), HasComponent<TopAdsEditComponent>, Sa
         val bundle = intent.extras
         view_pager.adapter = getViewPagerAdapter()
         view_pager.offscreenPageLimit = 3
+        tab_layout?.addNewTab(PRODUK_NAME)
+        tab_layout?.addNewTab(KATA_KUNCI)
+        tab_layout?.addNewTab(ATUR_NAME)
+        tab_layout?.getUnifyTabLayout()?.getTabAt(bundle?.getInt(TAB_POSITION, 2) ?: 2)?.select()
         view_pager.currentItem = bundle?.getInt(TAB_POSITION, 2) ?: 2
-        tab_layout.addNewTab(PRODUK_NAME)
-        tab_layout.addNewTab(KATA_KUNCI)
-        tab_layout.addNewTab(ATUR_NAME)
-        view_pager.addOnPageChangeListener(TabLayoutOnPageChangeListener(tab_layout.tabLayout))
-        tab_layout.setupWithViewPager(view_pager)
+        tab_layout?.getUnifyTabLayout()?.addOnTabSelectedListener(object: TabLayout.OnTabSelectedListener{
+            override fun onTabReselected(p0: TabLayout.Tab?) {
+                //do nothing
+            }
+
+            override fun onTabUnselected(p0: TabLayout.Tab?) {
+                //do nothing
+            }
+
+            override fun onTabSelected(p0: TabLayout.Tab) {
+                view_pager.setCurrentItem(p0.position, true)
+            }
+
+        })
     }
 
     private fun getViewPagerAdapter(): TopAdsEditPagerAdapter {

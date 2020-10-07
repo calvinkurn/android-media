@@ -89,13 +89,10 @@ class ProductAdsListFragment : BaseDaggerFragment() {
             selectedPrevPro.forEach {
                 list.add(it.productID)
             }
-            promoted.chipType = ChipsUnify.TYPE_NORMAL
         } else {
             selectedPrevNonPro.forEach {
                 list.add(it.productID)
             }
-            not_promoted.chipType = ChipsUnify.TYPE_NORMAL
-            promoted.chipType = ChipsUnify.TYPE_SELECTED
         }
         return list
     }
@@ -273,7 +270,7 @@ class ProductAdsListFragment : BaseDaggerFragment() {
 
     private fun getSelectedSortId() = sortProductList.getSelectedSortId()
 
-    private fun getKeyword() = searchInputView.searchBarTextField.toString()
+    private fun getKeyword() = searchInputView.searchBarTextField.text.toString()
 
     private fun getPromoted(): String {
         return ALL
@@ -281,19 +278,13 @@ class ProductAdsListFragment : BaseDaggerFragment() {
 
     private fun onProductListSelected() {
         if (not_promoted.chipType == ChipsUnify.TYPE_SELECTED) {
-            promoted.chipType = ChipsUnify.TYPE_NORMAL
             selectedPrevNonPro = productListAdapter.getSelectedItems()
         } else {
-            not_promoted.chipType = ChipsUnify.TYPE_NORMAL
-            promoted.chipType = ChipsUnify.TYPE_SELECTED
             selectedPrevPro = productListAdapter.getSelectedItems()
         }
         val count: Int = if (not_promoted.chipType == ChipsUnify.TYPE_SELECTED) {
-            promoted.chipType = ChipsUnify.TYPE_NORMAL
             getSelectedProduct().size + selectedPrevPro.size
         } else {
-            promoted.chipType = ChipsUnify.TYPE_SELECTED
-            not_promoted.chipType = ChipsUnify.TYPE_NORMAL
             getSelectedProduct().size + selectedPrevNonPro.size
         }
 
