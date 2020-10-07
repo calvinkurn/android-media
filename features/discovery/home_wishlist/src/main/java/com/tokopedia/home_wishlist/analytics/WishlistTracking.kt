@@ -65,6 +65,7 @@ object WishlistTracking {
     private const val PROMO_CLICK = "promoClick"
     private const val EVENT_PRODUCT_CLICK = "productClick"
     private const val EVENT_CLICK_WISHLIST = "clickWishlist"
+    private const val EVENT_OPEN_SCREEN = "clickWishlist"
     private const val EVENT_CLICK_ADD_TO_CART = "addToCart"
     private const val SCREEN_NAME = "screenName"
     private const val BUSINESS_UNIT = "businessUnit"
@@ -431,6 +432,16 @@ object WishlistTracking {
         getTracker().sendEnhanceEcommerceEvent(map as HashMap<String, Any>)
     }
 
+    fun openWishlistPage(userId: String){
+        getTracker().sendGeneralEvent(
+                DataLayer.mapOf(
+                        EVENT, EVENT_OPEN_SCREEN,
+                        SCREEN_NAME, VALUE_SCREEN_NAME,
+                        BUSINESS_UNIT, VALUE_BUSINESS_UNIT,
+                        USER_ID, userId
+                )
+        )
+    }
 
     fun clickWishlistIconRecommendation(productId: String, isTopAds: Boolean, recomTitle: String, isAdd: Boolean){
         getTracker().sendGeneralEvent(
@@ -442,6 +453,7 @@ object WishlistTracking {
                 )
         )
     }
+
 
     fun clickEmptyWishlistIconRecommendation(productId: String, isTopAds: Boolean, recomTitle: String, isAdd: Boolean){
         getTracker().sendGeneralEvent(
