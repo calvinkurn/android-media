@@ -88,7 +88,7 @@ dependencies {
         exclude group: "com.android.support"
     }
     implementation rootProject.ext.miscDependencies.chips
-    testImplementation "org.robolectric:robolectric:3.8"
+    testImplementation rootProject.ext.testDependencies.robolectric
     testImplementation "org.robolectric:multidex:3.4.2"
 
     testImplementation rootProject.ext.testDependencies.assertJ

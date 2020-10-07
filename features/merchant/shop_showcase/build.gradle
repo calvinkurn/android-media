@@ -65,6 +65,9 @@ dependencies {
     }
     implementation rootProject.ext.debugToolsDependencies.chuck
 
+    implementation (rootProject.ext.serviceDependencies.crashlytics) {
+        transitive = true
+    }
 }
 
 project.ext {

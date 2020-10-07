@@ -8,6 +8,7 @@ public class ShopPageConstant {
     public static final int ETALASE_TO_SHOW = 5;
     public static final int MAXIMUM_SELECTED_ETALASE_LIST = 4;
 
+    public static final int START_PAGE = 1;
     public static final int DEFAULT_PER_PAGE = 10;
     public static final int SHOP_PRODUCT_EMPTY_STATE_LIMIT = 20;
     public static final int ETALASE_HIGHLIGHT_COUNT = 5;
