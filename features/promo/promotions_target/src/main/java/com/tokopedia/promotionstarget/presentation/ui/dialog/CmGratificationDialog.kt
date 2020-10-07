@@ -304,7 +304,7 @@ class CmGratificationDialog {
     private fun updateGratifNotification(gratifNotification: GratifNotification, view: View, @NotificationEntryType notificationEntryType: Int) {
         view.post {
             if (view.context is AppCompatActivity && !(view.context as AppCompatActivity).isFinishing) {
-                viewModel.updateGratification(gratifNotification.notificationID ?: "", notificationEntryType)
+                viewModel.updateGratification(gratifNotification.notificationID, notificationEntryType)
             }
         }
     }

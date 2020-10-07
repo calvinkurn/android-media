@@ -40,11 +40,13 @@ class CmGratificationViewModel @Inject constructor(@Named(MAIN)
         })
     }
 
-    fun updateGratification(notificationID: String, notificationEntryType: Int){
+    fun updateGratification(notificationID: String?, notificationEntryType: Int){
         launchCatchError(block = {
             withContext(workerDispatcher) {
-                val map = updateGratifNotificationUsecase.getQueryParams(notificationID,notificationEntryType.toString())
-                updateGratifNotificationUsecase.getResponse(map)
+                if(!notificationID.isNullOrEmpty()) {
+                    val map = updateGratifNotificationUsecase.getQueryParams(notificationID.toInt(), notificationEntryType)
+                    updateGratifNotificationUsecase.getResponse(map)
+                }
             }
         }, onError = {})
     }
