@@ -24,7 +24,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_10"
-        android:text="Eksklusif untuk Followers"
+        tools:text="Eksklusif untuk Followers"
         app:layout_constraintStart_toEndOf="@+id/shop_followers_image"
         app:layout_constraintTop_toTopOf="@+id/shop_followers_image"
         app:typographyType="heading_5" />
@@ -36,7 +36,7 @@
         android:layout_marginEnd="@dimen/dp_6"
         android:ellipsize="end"
         android:maxLines="1"
-        android:text="Yuk, follow untuk beli barang ini! asdasdasdasdasdasd"
+        tools:text="Yuk, follow untuk beli barang ini! asdasdasdasdasdasd"
         app:layout_constraintEnd_toStartOf="@+id/shop_followers_btn"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toStartOf="@+id/shop_followers_title"
