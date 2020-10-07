@@ -9,6 +9,7 @@ import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.ImageUploadViewModel
 import com.tokopedia.chat_common.domain.pojo.ChatReplies
 import com.tokopedia.chat_common.view.listener.BaseChatContract
+import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.Attachment
 import com.tokopedia.topchat.chatroom.domain.pojo.chatroomsettings.ChatSettingsResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.ChatOrderProgress
@@ -116,9 +117,12 @@ interface TopChatContract {
 
         fun copyVoucherCode(fromUid: String?, replyId: String, blastId: String, attachmentId: String, replyTime: String?)
 
-        fun followUnfollowShop(shopId: String,
-                               onError: (Throwable) -> Unit,
-                               onSuccess: (Boolean) -> Unit)
+        fun followUnfollowShop(
+                shopId: String,
+                onError: (Throwable) -> Unit,
+                onSuccess: (Boolean) -> Unit,
+                action: ToggleFavouriteShopUseCase.Action? = null
+        )
 
         fun sendAttachmentsAndMessage(messageId: String, sendMessage: String,
                                       startTime: String, opponentId: String,
@@ -167,8 +171,6 @@ interface TopChatContract {
         fun resetChatUseCase()
 
         fun resetUnreadMessage()
-
-        fun requestFollowShop(shopId: Int, onSuccess: () -> Unit, onErrorFollowShop: (Throwable) -> Unit)
 
         fun requestBlockPromo(messageId: String, onSuccess: (ChatSettingsResponse) -> Unit, onError: (Throwable) -> Unit)
 

@@ -544,11 +544,19 @@ class TopChatRoomPresenter @Inject constructor(
         sendMessageWebSocket(TopChatWebSocketParam.generateParamCopyVoucherCode(thisMessageId, replyId, blastId, attachmentId, replyTime, fromUid))
     }
 
-    override fun followUnfollowShop(shopId: String,
-                                    onError: (Throwable) -> Unit,
-                                    onSuccess: (isSuccess: Boolean) -> Unit) {
+    override fun followUnfollowShop(
+            shopId: String,
+            onError: (Throwable) -> Unit,
+            onSuccess: (isSuccess: Boolean) -> Unit,
+            action: ToggleFavouriteShopUseCase.Action?
+    ) {
+        val param = if (action != null) {
+            ToggleFavouriteShopUseCase.createRequestParam(shopId, action)
+        } else {
+            ToggleFavouriteShopUseCase.createRequestParam(shopId)
+        }
         toggleFavouriteShopUseCase.execute(
-                ToggleFavouriteShopUseCase.createRequestParam(shopId),
+                param,
                 object : Subscriber<Boolean>() {
                     override fun onCompleted() {}
 
@@ -682,27 +690,6 @@ class TopChatRoomPresenter @Inject constructor(
 
     override fun resetUnreadMessage() {
         newUnreadMessage = 0
-    }
-
-    override fun requestFollowShop(
-            shopId: Int,
-            onSuccess: () -> Unit,
-            onErrorFollowShop: (Throwable) -> Unit
-    ) {
-        val followShopParam = ToggleFavouriteShopUseCase.createRequestParam(
-                shopId.toString(), ToggleFavouriteShopUseCase.Action.FOLLOW
-        )
-        toggleFavouriteShopUseCase.execute(followShopParam, object : Subscriber<Boolean>() {
-            override fun onCompleted() {}
-
-            override fun onError(e: Throwable) {
-                onErrorFollowShop(e)
-            }
-
-            override fun onNext(success: Boolean) {
-                onSuccess()
-            }
-        })
     }
 
     override fun requestBlockPromo(messageId: String, onSuccess: (ChatSettingsResponse) -> Unit, onError: (Throwable) -> Unit) {

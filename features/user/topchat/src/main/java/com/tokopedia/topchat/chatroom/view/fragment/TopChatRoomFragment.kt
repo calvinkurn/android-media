@@ -69,6 +69,7 @@ import com.tokopedia.purchase_platform.common.constant.ATC_ONLY
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.di.ChatRoomContextModule
 import com.tokopedia.topchat.chatroom.di.DaggerChatComponent
@@ -1484,15 +1485,20 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
     }
 
     override fun requestFollowShop(element: BroadcastSpamHandlerUiModel) {
-        presenter.requestFollowShop(shopId, {
-            element.stopFollowShop()
-            onSuccessFollowShopFromBcHandler()
-            adapter.removeBroadcastHandler(element)
-        }, {
-            element.stopFollowShop()
-            onErrorFollowShopFromBcHandler(it)
-            adapter.updateBroadcastHandlerState(element)
-        })
+        presenter.followUnfollowShop(
+                action = ToggleFavouriteShopUseCase.Action.FOLLOW,
+                shopId = shopId.toString(),
+                onSuccess = {
+                    element.stopFollowShop()
+                    onSuccessFollowShopFromBcHandler()
+                    adapter.removeBroadcastHandler(element)
+                },
+                onError = {
+                    element.stopFollowShop()
+                    onErrorFollowShopFromBcHandler(it)
+                    adapter.updateBroadcastHandlerState(element)
+                }
+        )
     }
 
     override fun requestBlockPromo(element: BroadcastSpamHandlerUiModel?) {
