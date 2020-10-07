@@ -38,6 +38,7 @@
     <string name="copy_success">Text telah tersalin</string>
     
     <string name="draw_on_picture_label">Edit Images</string>
+    <string name="developer_options_feedback_next_label">Next</string>
 
     <string-array name="bug_type_array">
         <item>Others</item>

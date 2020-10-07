@@ -10,7 +10,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.SeekBar
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -19,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.developer_options.R
 import com.tokopedia.developer_options.drawonpicture.di.DrawOnPictureComponent
+import com.tokopedia.developer_options.drawonpicture.presentation.Utils
 import com.tokopedia.developer_options.drawonpicture.presentation.activity.DrawOnPictureActivity.Companion.EXTRA_IMAGE_URI
 import com.tokopedia.developer_options.drawonpicture.presentation.adapter.BrushColorAdapter
 import com.tokopedia.developer_options.drawonpicture.presentation.adapter.viewholder.BrushColorViewHolder
@@ -76,6 +76,7 @@ class DrawOnPictureFragment : BaseDaggerFragment(),
     }
 
     override fun onItemClicked(color: String) {
+        Utils.changeShapeColor(bgDoPencil.background, color)
         dopFeedbackForm.changeBrushColor(color)
         adapter.setSelectedColor(dopFeedbackForm.getCurrentBrushColor())
     }
@@ -86,81 +87,7 @@ class DrawOnPictureFragment : BaseDaggerFragment(),
         getComponent(DrawOnPictureComponent::class.java).inject(this)
     }
 
-    private fun observeViewModel() {
-        viewModel.showPencilOptions.observe(viewLifecycleOwner, Observer {
-            if (it) {
-                showPencilOptions()
-            } else {
-                hidePencilOptions()
-            }
-        })
-    }
-
-    private fun initViews() {
-        setupUndoButton()
-        setupBrushColor()
-        updateStrokeSizeText()
-
-        seekbarDopBrushSize.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(p0: SeekBar, p1: Int, p2: Boolean) {
-                // minimum size is 5
-                dopFeedbackForm.changeStrokeWidth(p0.progress + 5F)
-                updateStrokeSizeText()
-            }
-
-            override fun onStartTrackingTouch(p0: SeekBar?) {}
-
-            override fun onStopTrackingTouch(p0: SeekBar?) {}
-        })
-
-        dopFeedbackForm.listener = this
-        if (::imageUri.isInitialized) {
-            dopFeedbackForm.setImageURI(imageUri)
-        }
-
-        btnSaveImage.setOnClickListener {
-            saveNewImage()
-        }
-        btnDoPBack.setOnClickListener {
-            activity?.finish()
-        }
-        btnDoPUndo.setOnClickListener {
-            dopFeedbackForm.undoChange()
-            setupUndoButton()
-        }
-    }
-
-    private fun setupUndoButton() {
-        if (dopFeedbackForm.canUndo()) {
-            btnDoPUndo.visibility = View.VISIBLE
-        } else {
-            btnDoPUndo.visibility = View.GONE
-        }
-    }
-
-    private fun updateStrokeSizeText() {
-        tvBrushSize.text = dopFeedbackForm.getStrokeWidth().toInt().toString()
-    }
-
-    private fun setupBrushColor() {
-        adapter = BrushColorAdapter(this, dopFeedbackForm.getCurrentBrushColor(),
-                resources.getStringArray(R.array.brush_color_options).toList())
-        rvBrushColors.setHasFixedSize(true)
-        rvBrushColors.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
-        rvBrushColors.adapter = adapter
-    }
-
-    private fun showPencilOptions() {
-        seekbarDopBrushSize.visibility = View.VISIBLE
-        rvBrushColors.visibility = View.VISIBLE
-    }
-
-    private fun hidePencilOptions() {
-        seekbarDopBrushSize.visibility = View.GONE
-        rvBrushColors.visibility = View.GONE
-    }
-
-    private fun saveNewImage() {
+    fun saveNewImage() {
         showLoadingDialog()
 
         val options = BitmapFactory.Options()
@@ -176,6 +103,78 @@ class DrawOnPictureFragment : BaseDaggerFragment(),
         newPath?.let {
             sendNewPathResult(newPath)
         }
+    }
+
+
+    private fun observeViewModel() {
+        viewModel.showPencilOptions.observe(viewLifecycleOwner, Observer {
+            if (it) {
+                showPencilOptions()
+            } else {
+                hidePencilOptions()
+            }
+        })
+    }
+
+    private fun initViews() {
+        setupUndoButton()
+        setupBrushColor()
+//        updateStrokeSizeText()
+
+        dopFeedbackForm.listener = this
+        if (::imageUri.isInitialized) {
+            dopFeedbackForm.setImageURI(imageUri)
+        }
+        Utils.changeShapeColor(bgDoPencil.background, dopFeedbackForm.getCurrentBrushColor())
+
+        btnDoPUndo.setOnClickListener {
+            dopFeedbackForm.undoChange()
+            setupUndoButton()
+        }
+    }
+
+    private fun setupUndoButton() {
+        if (dopFeedbackForm.canUndo()) {
+            btnDoPUndo.visibility = View.VISIBLE
+        } else {
+            btnDoPUndo.visibility = View.GONE
+        }
+    }
+
+/*    private fun updateStrokeSizeText() {
+        tvBrushSize.text = dopFeedbackForm.getStrokeWidth().toInt().toString()
+    }*/
+
+    private fun setupBrushColor() {
+        adapter = BrushColorAdapter(this, dopFeedbackForm.getCurrentBrushColor(),
+                resources.getStringArray(R.array.brush_color_options).toList())
+        rvBrushColors.setHasFixedSize(true)
+        rvBrushColors.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
+        rvBrushColors.adapter = adapter
+    }
+
+/*    private fun setupBrushSize() {
+        seekbarDopBrushSize.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(p0: SeekBar, p1: Int, p2: Boolean) {
+                // minimum size is 5
+                dopFeedbackForm.changeStrokeWidth(p0.progress + 5F)
+                updateStrokeSizeText()
+            }
+
+            override fun onStartTrackingTouch(p0: SeekBar?) {}
+
+            override fun onStopTrackingTouch(p0: SeekBar?) {}
+        })
+    }*/
+
+    private fun showPencilOptions() {
+//        seekbarDopBrushSize.visibility = View.VISIBLE
+        rvBrushColors.visibility = View.VISIBLE
+    }
+
+    private fun hidePencilOptions() {
+//        seekbarDopBrushSize.visibility = View.GONE
+        rvBrushColors.visibility = View.GONE
     }
 
     private fun showLoadingDialog() {

@@ -3,6 +3,7 @@ package com.tokopedia.developer_options.drawonpicture.presentation.activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
@@ -11,11 +12,17 @@ import com.tokopedia.developer_options.R
 import com.tokopedia.developer_options.drawonpicture.di.DaggerDrawOnPictureComponent
 import com.tokopedia.developer_options.drawonpicture.di.DrawOnPictureComponent
 import com.tokopedia.developer_options.drawonpicture.presentation.fragment.DrawOnPictureFragment
+import kotlinx.android.synthetic.main.activity_draw_on_picture.*
 
 class DrawOnPictureActivity : BaseSimpleActivity(), HasComponent<DrawOnPictureComponent> {
 
-    override fun getNewFragment(): Fragment = DrawOnPictureFragment
-            .getInstance(intent.getParcelableExtra(EXTRA_IMAGE_URI))
+    private lateinit var mFragment: DrawOnPictureFragment
+
+    override fun getNewFragment(): Fragment {
+        mFragment = DrawOnPictureFragment
+                .getInstance(intent.getParcelableExtra(EXTRA_IMAGE_URI))
+        return mFragment
+    }
 
     override fun getComponent(): DrawOnPictureComponent =
             DaggerDrawOnPictureComponent.builder()
@@ -27,6 +34,15 @@ class DrawOnPictureActivity : BaseSimpleActivity(), HasComponent<DrawOnPictureCo
     override fun getToolbarResourceID(): Int = R.id.dopHeaderUnify
 
     override fun getParentViewResourceID(): Int = R.id.dopFrameLayout
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        dopHeaderUnify.actionText = getString(R.string.developer_options_feedback_next_label)
+        dopHeaderUnify.actionTextView?.setOnClickListener {
+            mFragment.saveNewImage()
+        }
+    }
 
     companion object {
         const val EXTRA_IMAGE_URI = "EXTRA_IMAGE_URI"
