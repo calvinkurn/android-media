@@ -4,13 +4,16 @@ import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
+import com.tokopedia.discovery2.datamapper.discoveryPageData
 import com.tokopedia.discovery2.di.DaggerDiscoveryComponent
 import com.tokopedia.discovery2.usecase.productCardCarouselUseCase.ProductCardsUseCase
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.factory.ComponentsList
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.user.session.UserSession
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -22,6 +25,7 @@ import kotlin.coroutines.CoroutineContext
 class ProductCardCarouselViewModel(val application: Application, val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
     private val productCarouselHeaderData: MutableLiveData<ComponentsItem> = MutableLiveData()
     private val productCarouselList: MutableLiveData<ArrayList<ComponentsItem>> = MutableLiveData()
+    private var isLoading = false
 
     @Inject
     lateinit var productCardsUseCase: ProductCardsUseCase
@@ -62,7 +66,7 @@ class ProductCardCarouselViewModel(val application: Application, val components:
         launchCatchError(block = {
             if (productCardsUseCase.loadFirstPageComponents(components.id, components.pageEndPoint, components.rpc_PinnedProduct)) {
                 getProductList()?.let {
-                    productCarouselList.value = it
+                    productCarouselList.value = addLoadMore(it)
                     syncData.value = true
                 }
             }
@@ -71,9 +75,50 @@ class ProductCardCarouselViewModel(val application: Application, val components:
         })
     }
 
-    fun isUserLoggedIn(): Boolean {
-        return UserSession(application).isLoggedIn
+    fun fetchPaginatedProducts() {
+        isLoading = true
+        launchCatchError(block = {
+            if (productCardsUseCase.getCarouselPaginatedData(components.id, components.pageEndPoint)) {
+                getProductList()?.let {
+                    isLoading = false
+                    productCarouselList.value = addLoadMore(it)
+                    syncData.value = true
+                }
+            }
+        }, onError = {
+            getProductList()?.let {
+                isLoading = false
+                productCarouselList.value = it
+                syncData.value = true
+            }
+        })
     }
+
+    private fun addLoadMore(productDataList: ArrayList<ComponentsItem>): ArrayList<ComponentsItem> {
+        val productLoadState: ArrayList<ComponentsItem> = ArrayList()
+        productLoadState.addAll(productDataList)
+        if (productDataList.size.isMoreThanZero() && productDataList.size.rem(components.componentsPerPage) == 0) {
+            productLoadState.add(ComponentsItem(name = ComponentNames.LoadMore.componentName).apply {
+                pageEndPoint = components.pageEndPoint
+                parentComponentId = components.id
+                id = ComponentNames.LoadMore.componentName
+                loadForHorizontal = true
+                discoveryPageData[this.pageEndPoint]?.componentMap?.set(this.id, this)
+            })
+        }
+        return productLoadState
+    }
+
+    fun isUserLoggedIn() = UserSession(application).isLoggedIn
+
+    fun isLastPage(): Boolean {
+        getProductList()?.let {
+            if (it.size.isMoreThanZero() && it.size.rem(components.componentsPerPage) == 0) return false
+        }
+        return true
+    }
+
+    fun isLoadingData() = isLoading
 
 
     private fun getProductList(): ArrayList<ComponentsItem>? {

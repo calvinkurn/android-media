@@ -6,7 +6,7 @@ import com.tokopedia.discovery2.datamapper.discoveryPageData
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.newdynamicfilter.controller.FilterController
 import com.tokopedia.topads.sdk.domain.model.CpmModel
-import java.util.HashMap
+import java.util.*
 import kotlin.collections.ArrayList
 
 data class ComponentsItem(
@@ -67,7 +67,8 @@ data class ComponentsItem(
         val filterController: FilterController = FilterController(),
         var searchParameter: SearchParameter = SearchParameter(),
         var filters: ArrayList<Filter> = ArrayList(),
-        var rpc_PinnedProduct: String? = "") {
+        var rpc_PinnedProduct: String? = "",
+        var loadForHorizontal: Boolean = false) {
 
     private var componentsItem: List<ComponentsItem>? = null
 

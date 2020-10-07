@@ -45,6 +45,20 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
         return false
     }
 
+
+    suspend fun getCarouselPaginatedData(componentId: String, pageEndPoint: String): Boolean {
+        val component = getComponent(componentId, pageEndPoint)
+        component?.let { item ->
+            val parentComponentsItem = getComponent(item.parentComponentId, pageEndPoint)
+            val size = item.getComponentsItem()?.size
+            (item.getComponentsItem() as ArrayList<ComponentsItem>).addAll(productCardsRepository.getProducts(item.id, getQueryParameterMap(size
+                    ?: 0, item.properties, parentComponentsItem?.chipSelectionData, item.selectedFilters, item.selectedSort), pageEndPoint, item.name))
+            return true
+        }
+
+        return false
+    }
+
     private fun getQueryParameterMap(pageStart: Int, properties: Properties?, chipSelectionData: DataItem?, selectedFilters: HashMap<String, String>?, selectedSort: HashMap<String, String>?, rpcPinnedProduct: String? = null): MutableMap<String, Any> {
         val productsPerPage:String = properties?.run {
             limitNumber.takeIf { limitProduct }
