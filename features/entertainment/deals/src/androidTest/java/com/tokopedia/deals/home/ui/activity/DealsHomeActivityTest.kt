@@ -20,10 +20,12 @@ import com.tokopedia.cassavatest.getAnalyticsWithQuery
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.deals.R
 import com.tokopedia.deals.home.ui.activity.mock.DealsHomeMockResponse
-import com.tokopedia.deals.home.ui.adapter.viewholder.DealsFavouriteCategoriesViewHolder
+import com.tokopedia.deals.location_picker.model.response.Location
 import com.tokopedia.test.application.espresso_component.CommonActions
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
-import kotlinx.android.synthetic.main.item_deals_voucher_popular_place.view.*
+import org.hamcrest.BaseMatcher
+import org.hamcrest.Description
+import org.hamcrest.Matcher
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
@@ -79,6 +81,9 @@ class DealsHomeActivityTest {
 
     private fun changeLocation() {
         Thread.sleep(2000)
+        activityRule.activity.setCurrentLocation(Location())
+
+        Thread.sleep(2000)
     }
 
     private fun actionOnPopularLandmarkViewHolder() {
@@ -104,9 +109,29 @@ class DealsHomeActivityTest {
         val recyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.recycler_view)
         val viewHolder = recyclerView.findViewHolderForAdapterPosition(FAVOURITE_CATEGORY_POSITION)
         viewHolder?.let {
-            CommonActions.clickOnEachItemRecyclerView(it.itemView, R.id.lst_voucher_popular_place_card, 2)
+            onView(secondView(withId(R.id.lst_voucher_popular_place_card)))
+                    .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(1, click()))
         }
         Thread.sleep(2000)
+    }
+
+    private fun <T> secondView(matcher: Matcher<T>): Matcher<T> {
+        return object : BaseMatcher<T>() {
+            var counter = 0
+            override fun matches(item: Any): Boolean {
+                if (matcher.matches(item)) {
+                    if (counter == 1) return true
+                    else counter++
+
+                    return false
+                }
+                return false
+            }
+
+            override fun describeTo(description: Description) {
+                description.appendText("should return second matching item")
+            }
+        }
     }
 
     private fun actionOnProductViewHolder() {
