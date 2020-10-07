@@ -67,12 +67,6 @@ class ImpresionTask {
                     val token = object : TypeToken<DataResponse<String>>() {}.type
                     val restRequest = RestRequest.Builder(url, token).build()
                     val result = restRepository.getResponse(restRequest).getData<String>()
-//                    val request = HttpRequestBuilder()
-//                            .setBaseUrl(url)
-//                            .addHeader(KEY_SESSION_ID, if (userSession != null) userSession!!.deviceId else "")
-//                            .setMethod(HttpMethod.GET)
-//                            .build()
-//                    var result = RawHttpRequestExecutor.newInstance(request).executeAsGetRequest()
                     if (impressionListener != null) {
                         if (result != null) {
                             impressionListener!!.onSuccess()
