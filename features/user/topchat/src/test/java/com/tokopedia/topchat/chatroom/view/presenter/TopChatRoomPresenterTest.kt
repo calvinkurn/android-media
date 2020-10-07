@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.atc_common.domain.usecase.AddToCartOccUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
+import com.tokopedia.attachproduct.resultmodel.ResultProduct
 import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.ImageUploadViewModel
 import com.tokopedia.chat_common.data.MessageViewModel
@@ -30,6 +31,7 @@ import com.tokopedia.topchat.chatroom.view.listener.TopChatContract
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.exImageUploadId
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.exMessageId
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.exOpponentId
+import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.exResultProduct
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.exSendMessage
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.exShopId
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.exStartTime
@@ -196,6 +198,7 @@ class TopChatRoomPresenterTest {
         val imageUploadViewModel = generateImageUploadViewModel()
         val replyChatViewModelApiSuccess = generateReplyChatViewModelApi()
         val exSticker = generateSticker()
+        val exResultProduct = generateResultProduct()
         val wsResponseReplyString = FileUtil.readFileContent("/ws_response_reply_text_is_opposite.json")
         val wsResponseTypingString = FileUtil.readFileContent("/ws_response_typing.json")
         val wsResponseEndTypingString = FileUtil.readFileContent("/ws_response_end_typing.json")
@@ -228,6 +231,16 @@ class TopChatRoomPresenterTest {
 
         private fun generateSticker(): Sticker {
             return Sticker()
+        }
+
+        private fun generateResultProduct(): ResultProduct {
+            return ResultProduct(
+                    123123,
+                    "https://tokopedia.com/product/url",
+                    exImageUrl,
+                    "Rp12000",
+                    "Foo product"
+            )
         }
     }
 
@@ -928,6 +941,22 @@ class TopChatRoomPresenterTest {
 
         // Then
         assert(isEmptyAttachmentPreview)
+    }
+
+    @Test
+    fun `on initProductPreviewFromAttachProduct`() {
+        // Given
+        val productPreview = arrayListOf(exResultProduct)
+
+        // When
+        presenter.initProductPreviewFromAttachProduct(productPreview)
+        val isEmptyAttachmentPreview = presenter.hasEmptyAttachmentPreview()
+
+        // Then
+        assert(!isEmptyAttachmentPreview)
+        verify(exactly = 1) {
+            presenter.initAttachmentPreview()
+        }
     }
 
     private fun mockkParseResponse(
