@@ -23,6 +23,7 @@ import com.tokopedia.topchat.FileUtil
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.TopchatTestCoroutineContextDispatcher
 import com.tokopedia.topchat.chatlist.domain.usecase.DeleteMessageListUseCase
+import com.tokopedia.topchat.chatlist.viewmodel.DeleteChatListUiModel
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.Sticker
 import com.tokopedia.topchat.chatroom.domain.usecase.*
 import com.tokopedia.topchat.chatroom.view.listener.TopChatContract
@@ -742,6 +743,47 @@ class TopChatRoomPresenterTest {
         verify(exactly = 1) { mockOnSendingMessage.invoke() }
         verify(exactly = 1) { RxWebSocket.send(stickerContract, listInterceptor) }
         verify(exactly = 1) { view.clearAttachmentPreviews() }
+    }
+
+    @Test
+    fun `on success delete chat`() {
+        // Given
+        val slot = slot<Subscriber<DeleteChatListUiModel>>()
+        val onError: (Throwable) -> Unit = mockk(relaxed = true)
+        val onSuccessDeleteConversation: () -> Unit = mockk(relaxed = true)
+        every { deleteMessageListUseCase.execute(any(), capture(slot)) } answers {
+            val subs = slot.captured
+            subs.onNext(DeleteChatListUiModel())
+        }
+
+        // When
+        presenter.deleteChat(exMessageId, onError, onSuccessDeleteConversation)
+
+        // Then
+        verifyOrder {
+            onSuccessDeleteConversation.invoke()
+        }
+    }
+
+    @Test
+    fun `on error delete chat`() {
+        // Given
+        val slot = slot<Subscriber<DeleteChatListUiModel>>()
+        val onError: (Throwable) -> Unit = mockk(relaxed = true)
+        val onSuccessDeleteConversation: () -> Unit = mockk(relaxed = true)
+        val errorDeleteChat = Throwable()
+        every { deleteMessageListUseCase.execute(any(), capture(slot)) } answers {
+            val subs = slot.captured
+            subs.onError(errorDeleteChat)
+        }
+
+        // When
+        presenter.deleteChat(exMessageId, onError, onSuccessDeleteConversation)
+
+        // Then
+        verifyOrder {
+            onError.invoke(errorDeleteChat)
+        }
     }
 
     private fun mockkParseResponse(wsInfo: WebSocketInfo, isOpposite: Boolean = true): ChatSocketPojo {
