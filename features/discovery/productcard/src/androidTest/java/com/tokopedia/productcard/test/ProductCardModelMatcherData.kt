@@ -52,7 +52,7 @@ internal val productCardModelMatcherData: List<ProductCardModelMatcher> = mutabl
     it.add(testShopRatingBlue3())
     it.add(testShopRatingBlue4())
     it.add(testShopRatingBlue5())
-    it.add(testShopRatingYellow())ProductCardGridTestData.kt
+    it.add(testShopRatingYellow())
     it.add(testHasRatingSales())
     it.add(testHasRatingFloat())
 }
