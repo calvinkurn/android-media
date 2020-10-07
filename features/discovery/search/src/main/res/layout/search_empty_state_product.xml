@@ -30,6 +30,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:typographyType="heading_4"
+            android:text="@string/msg_empty_search_product_title"
             android:textColor="@color/font_black_primary_70"
             android:layout_toRightOf="@id/no_result_image"
             android:layout_marginLeft="@dimen/dp_16"/>
@@ -62,6 +63,7 @@
             android:layout_below="@id/no_result_image"
             android:background="@drawable/search_button_green_rounded_background"
             app:typographyType="heading_6"
+            android:text="@string/msg_empty_search_product_button"
             android:textColor="#ffffff"
             android:layout_marginTop="16dp"
             android:paddingTop="8dp"

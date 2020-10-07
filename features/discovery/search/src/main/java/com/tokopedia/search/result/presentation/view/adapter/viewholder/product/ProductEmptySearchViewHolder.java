@@ -48,7 +48,6 @@ public class ProductEmptySearchViewHolder extends AbstractViewHolder<EmptySearch
     private TopAdsParams topAdsParams;
     private Context context;
     private ImageView noResultImage;
-    private TextView emptyTitleTextView;
     private TextView emptyContentTextView;
     private TextView emptyButtonItemButton;
     protected final EmptyStateListener emptyStateListener;
@@ -61,7 +60,6 @@ public class ProductEmptySearchViewHolder extends AbstractViewHolder<EmptySearch
     public ProductEmptySearchViewHolder(View view, EmptyStateListener emptyStateListener, BannerAdsListener bannerAdsListener, Config topAdsConfig) {
         super(view);
         noResultImage = view.findViewById(R.id.no_result_image);
-        emptyTitleTextView = view.findViewById(R.id.text_view_empty_title_text);
         emptyContentTextView = view.findViewById(R.id.text_view_empty_content_text);
         emptyButtonItemButton = view.findViewById(R.id.button_add_promo);
         this.emptyStateListener = emptyStateListener;
@@ -143,7 +141,6 @@ public class ProductEmptySearchViewHolder extends AbstractViewHolder<EmptySearch
         boundedEmptySearchModel = model;
 
         bindNoResultImage();
-        bindTitleTextView();
         bindContentTextView();
         bindNewSearchButton();
         bindRecylerView();
@@ -151,27 +148,20 @@ public class ProductEmptySearchViewHolder extends AbstractViewHolder<EmptySearch
     }
 
     private void bindNoResultImage() {
-        noResultImage.setImageResource(boundedEmptySearchModel.getImageRes());
-    }
-
-    private void bindTitleTextView() {
-        emptyTitleTextView.setText(boundedEmptySearchModel.getTitle());
+        noResultImage.setImageResource(com.tokopedia.resources.common.R.drawable.ic_product_search_not_found);
     }
 
     private void bindContentTextView() {
-        if (!TextUtils.isEmpty(boundedEmptySearchModel.getContent())) {
-            emptyContentTextView.setText(boldTextBetweenQuotes(boundedEmptySearchModel.getContent()));
-            emptyContentTextView.setVisibility(View.VISIBLE);
-        } else {
-            emptyContentTextView.setVisibility(View.GONE);
-        }
+        if (boundedEmptySearchModel.getIsFilterActive())
+            emptyContentTextView.setText(getString(R.string.msg_empty_search_product_content_with_filter));
+        else
+            emptyContentTextView.setText(getString(R.string.msg_empty_search_product_content));
     }
 
     private void bindNewSearchButton() {
-        if (TextUtils.isEmpty(boundedEmptySearchModel.getButtonText())) {
+        if (boundedEmptySearchModel.getIsFilterActive()) {
             emptyButtonItemButton.setVisibility(View.GONE);
         } else {
-            emptyButtonItemButton.setText(boundedEmptySearchModel.getButtonText());
             emptyButtonItemButton.setOnClickListener(this::newSearchButtonOnClick);
             emptyButtonItemButton.setVisibility(View.VISIBLE);
         }
@@ -202,20 +192,6 @@ public class ProductEmptySearchViewHolder extends AbstractViewHolder<EmptySearch
         if (topAdsParams != null) {
             loadBannerAds();
         }
-    }
-
-    private CharSequence boldTextBetweenQuotes(String text) {
-        String quoteSymbol = "\"";
-        int firstQuotePos = text.indexOf(quoteSymbol);
-        int lastQuotePos = text.lastIndexOf(quoteSymbol);
-
-        if (firstQuotePos < 0) {
-            return text;
-        }
-
-        SpannableStringBuilder str = new SpannableStringBuilder(text);
-        str.setSpan(new StyleSpan(Typeface.BOLD), firstQuotePos, lastQuotePos + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        return str;
     }
 
     private static class ProductSelectedFilterAdapter extends RecyclerView.Adapter<ProductSelectedFilterItemViewHolder> {

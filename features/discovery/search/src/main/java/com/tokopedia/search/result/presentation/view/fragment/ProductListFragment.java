@@ -62,6 +62,7 @@ import com.tokopedia.search.di.module.SearchContextModule;
 import com.tokopedia.search.result.presentation.ProductListSectionContract;
 import com.tokopedia.search.result.presentation.model.BroadMatchItemViewModel;
 import com.tokopedia.search.result.presentation.model.BroadMatchViewModel;
+import com.tokopedia.search.result.presentation.model.EmptySearchProductViewModel;
 import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
 import com.tokopedia.search.result.presentation.model.InspirationCardOptionViewModel;
 import com.tokopedia.search.result.presentation.model.InspirationCarouselViewModel;
@@ -1016,16 +1017,9 @@ public class ProductListFragment
     }
 
     @Override
-    public void setEmptyProduct(GlobalNavViewModel globalNavViewModel) {
-        adapter.setGlobalNavViewModel(globalNavViewModel);
+    public void setEmptyProduct(GlobalNavViewModel globalNavViewModel, EmptySearchProductViewModel emptySearchProductViewModel) {
         presenter.clearData();
-        adapter.showEmptyState(getActivity(), isFilterActive());
-    }
-
-    private boolean isFilterActive() {
-        if (filterController == null) return false;
-
-        return filterController.isFilterActive();
+        adapter.showEmptyState(globalNavViewModel, emptySearchProductViewModel);
     }
 
     private void setSortFilterIndicatorCounter() {
@@ -1174,7 +1168,9 @@ public class ProductListFragment
 
     @Override
     public boolean isAnyFilterActive() {
-        return isFilterActive();
+        if (filterController == null) return false;
+
+        return filterController.isFilterActive();
     }
 
     @Override

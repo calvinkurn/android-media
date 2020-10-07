@@ -37,7 +37,6 @@ public final class ProductListAdapter extends RecyclerView.Adapter<AbstractViewH
     private List<Visitable> list = new ArrayList<>();
     private ProductListTypeFactory typeFactory;
     private LoadingMoreModel loadingMoreModel = new LoadingMoreModel();
-    private GlobalNavViewModel globalNavViewModel;
     private OnItemChangeView itemChangeView;
 
     public ProductListAdapter(OnItemChangeView itemChangeView, ProductListTypeFactory typeFactory) {
@@ -230,13 +229,16 @@ public final class ProductListAdapter extends RecyclerView.Adapter<AbstractViewH
         }
     }
 
-    public void showEmptyState(Context context, boolean isFilterActive) {
+    public void showEmptyState(GlobalNavViewModel globalNavViewModel, EmptySearchProductViewModel emptySearchProductViewModel) {
         clearData();
+
         if (globalNavViewModel != null) {
             list.add(globalNavViewModel);
         }
-        list.add(mapEmptySearch(context, isFilterActive, globalNavViewModel == null));
-        notifyDataSetChanged();
+
+        list.add(emptySearchProductViewModel);
+
+        notifyItemRangeInserted(0, list.size());
     }
 
     public void clearData() {
@@ -245,27 +247,6 @@ public final class ProductListAdapter extends RecyclerView.Adapter<AbstractViewH
         list.clear();
 
         notifyItemRangeRemoved(0, itemSizeBeforeCleared);
-    }
-
-    private EmptySearchProductViewModel mapEmptySearch(Context context,
-                                                boolean isFilterActive,
-                                                boolean isBannerAdsAllowed) {
-        EmptySearchProductViewModel emptySearchViewModel = new EmptySearchProductViewModel();
-        emptySearchViewModel.setImageRes(com.tokopedia.resources.common.R.drawable.ic_product_search_not_found);
-        emptySearchViewModel.setBannerAdsAllowed(isBannerAdsAllowed);
-        if (isFilterActive) {
-            emptySearchViewModel.setTitle(context.getString(R.string.msg_empty_search_product_title));
-            emptySearchViewModel.setContent(context.getString(R.string.msg_empty_search_product_content_with_filter));
-        } else {
-            emptySearchViewModel.setTitle(context.getString(R.string.msg_empty_search_product_title));
-            emptySearchViewModel.setContent(context.getString(R.string.msg_empty_search_product_content));
-            emptySearchViewModel.setButtonText(context.getString(R.string.msg_empty_search_product_button));
-        }
-        return emptySearchViewModel;
-    }
-
-    public void setGlobalNavViewModel(GlobalNavViewModel globalNavViewModel) {
-        this.globalNavViewModel = globalNavViewModel;
     }
 
     public boolean isListEmpty() {

@@ -13,6 +13,7 @@ import com.tokopedia.filter.common.data.Option;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.search.analytics.GeneralSearchTrackingModel;
 import com.tokopedia.search.result.presentation.model.BroadMatchItemViewModel;
+import com.tokopedia.search.result.presentation.model.EmptySearchProductViewModel;
 import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
 import com.tokopedia.search.result.presentation.model.InspirationCarouselViewModel;
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
@@ -41,7 +42,7 @@ public interface ProductListSectionContract {
 
         String getQueryKey();
 
-        void setEmptyProduct(GlobalNavViewModel globalNavViewModel);
+        void setEmptyProduct(GlobalNavViewModel globalNavViewModel, EmptySearchProductViewModel emptySearchProductViewModel);
 
         void setBannedProductsErrorMessage(List<Visitable> bannedProductsErrorMessageAsList);
 

@@ -36,6 +36,7 @@ import com.tokopedia.search.result.presentation.model.BannedProductsTickerViewMo
 import com.tokopedia.search.result.presentation.model.BroadMatchItemViewModel;
 import com.tokopedia.search.result.presentation.model.BroadMatchViewModel;
 import com.tokopedia.search.result.presentation.model.CpmViewModel;
+import com.tokopedia.search.result.presentation.model.EmptySearchProductViewModel;
 import com.tokopedia.search.result.presentation.model.FreeOngkirViewModel;
 import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
 import com.tokopedia.search.result.presentation.model.InspirationCardViewModel;
@@ -898,10 +899,28 @@ final class ProductListPresenter
     }
 
     private void getViewToShowEmptySearch(ProductViewModel productViewModel) {
+        getView().removeLoading();
+
+        GlobalNavViewModel globalNavViewModel = getGlobalNavViewModel(productViewModel);
+        boolean isBannerAdsAllowed = globalNavViewModel == null;
+
+        getView().setEmptyProduct(globalNavViewModel, createEmptySearchViewModel(isBannerAdsAllowed));
+    }
+
+    private GlobalNavViewModel getGlobalNavViewModel(ProductViewModel productViewModel) {
         boolean isGlobalNavWidgetAvailable
                 = productViewModel.getGlobalNavViewModel() != null && enableGlobalNavWidget;
-        getView().removeLoading();
-        getView().setEmptyProduct(isGlobalNavWidgetAvailable ? productViewModel.getGlobalNavViewModel() : null);
+
+        return isGlobalNavWidgetAvailable ? productViewModel.getGlobalNavViewModel() : null;
+    }
+
+    private EmptySearchProductViewModel createEmptySearchViewModel(boolean isBannerAdsAllowed) {
+        EmptySearchProductViewModel emptySearchViewModel = new EmptySearchProductViewModel();
+
+        emptySearchViewModel.setBannerAdsAllowed(isBannerAdsAllowed);
+        emptySearchViewModel.setIsFilterActive(getView().isAnyFilterActive());
+
+        return emptySearchViewModel;
     }
 
     private void getViewToShowRecommendationItem() {
