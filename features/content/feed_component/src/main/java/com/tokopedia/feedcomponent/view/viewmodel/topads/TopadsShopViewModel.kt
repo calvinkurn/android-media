@@ -18,7 +18,7 @@ data class TopadsShopViewModel(
         val template: Template = Template(),
         val trackingList: List<TrackingRecommendationModel> = ArrayList(),
         val tracking: MutableList<TrackingViewModel> = ArrayList(),
-        val PlayWidgetCardMediumChannelViewHolder: ImpressHolder = ImpressHolder()
+        val impressHolder: ImpressHolder = ImpressHolder()
 ): Visitable<DynamicFeedTypeFactory> {
     override fun type(typeFactory: DynamicFeedTypeFactory?): Int {
         return typeFactory!!.type(this)
