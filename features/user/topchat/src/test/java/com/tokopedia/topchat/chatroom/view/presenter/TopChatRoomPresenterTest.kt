@@ -26,6 +26,7 @@ import com.tokopedia.topchat.R
 import com.tokopedia.topchat.TopchatTestCoroutineContextDispatcher
 import com.tokopedia.topchat.chatlist.domain.usecase.DeleteMessageListUseCase
 import com.tokopedia.topchat.chatlist.viewmodel.DeleteChatListUiModel
+import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.OrderProgressResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.Sticker
 import com.tokopedia.topchat.chatroom.domain.usecase.*
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
@@ -44,6 +45,7 @@ import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Du
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.readParam
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.replyChatViewModelApiSuccess
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.source
+import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.successGetOrderProgressResponse
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.toShopId
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.toUserId
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.wsResponseEndTypingString
@@ -211,6 +213,10 @@ class TopChatRoomPresenterTest {
         val wsResponseEndTypingString = FileUtil.readFileContent("/ws_response_end_typing.json")
         val wsResponseReadMessageString = FileUtil.readFileContent("/ws_response_read_message.json")
         val wsResponseImageAttachmentString = FileUtil.readFileContent("/ws_response_image_attachment.json")
+        val successGetOrderProgressResponse: OrderProgressResponse = FileUtil.parse(
+                "/success_get_order_progress.json",
+                OrderProgressResponse::class.java
+        )
 
         private fun generateImageUploadViewModel(): ImageUploadViewModel {
             return ImageUploadViewModel(
@@ -1035,6 +1041,23 @@ class TopChatRoomPresenterTest {
         verify(exactly = 1) {
             addWishListUseCase.createObservable(exProductId, exUserId, wishlistActionListener)
             removeWishListUseCase.createObservable(exProductId, exUserId, wishlistActionListener)
+        }
+    }
+
+    @Test
+    fun `on success get order progress`() {
+        // Given
+        every { orderProgressUseCase.getOrderProgress(any(), captureLambda(), any()) } answers {
+            val onSuccess = lambda<(OrderProgressResponse) -> Unit>()
+            onSuccess.invoke(successGetOrderProgressResponse)
+        }
+
+        // When
+        presenter.getOrderProgress(exMessageId)
+
+        // Then
+        verify(exactly = 1) {
+            view.renderOrderProgress(successGetOrderProgressResponse.chatOrderProgress)
         }
     }
 
