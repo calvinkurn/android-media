@@ -12,11 +12,11 @@ import com.tokopedia.product.manage.feature.quickedit.common.constant.EditProduc
 import com.tokopedia.product.manage.feature.quickedit.common.constant.EditProductConstant.MINIMUM_PRICE
 import com.tokopedia.product.manage.feature.quickedit.variant.adapter.model.ProductVariant
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
-import com.tokopedia.utils.text.currency.CurrencyIdrTextWatcher
 import kotlinx.android.synthetic.main.item_product_manage_variant.view.*
 
 class ProductVariantPriceViewHolder(
     itemView: View,
+    private val priceMap: MutableMap<String, Int>,
     private val listener: ProductVariantListener
 ): AbstractViewHolder<ProductVariant>(itemView) {
 
@@ -25,19 +25,26 @@ class ProductVariantPriceViewHolder(
         val LAYOUT = R.layout.item_product_manage_variant
     }
 
-    private val priceMap: MutableMap<String, Int> = mutableMapOf()
+    private var priceTextWatcher: TextWatcher? = null
 
     override fun bind(variant: ProductVariant) {
         itemView.textProductName.text = variant.name
         setupEditTextFieldPrice(variant)
     }
 
+    override fun onViewRecycled() {
+        removeTextFieldPriceListeners()
+        super.onViewRecycled()
+    }
+
     private fun setupEditTextFieldPrice(variant: ProductVariant) {
         setInputType()
         setupClearIcon()
+        setPriceTextWatcher(variant)
         setTextFieldPriceMaxLength()
+        removeTextFieldPriceListeners()
         setTextFieldPriceValue(variant)
-        setTextFieldPriceListeners(variant.id)
+        setTextFieldPriceListeners()
     }
 
     private fun setupClearIcon() {
@@ -58,47 +65,23 @@ class ProductVariantPriceViewHolder(
 
     private fun setTextFieldPriceValue(variant: ProductVariant) {
        itemView.textFieldPrice.apply {
-           priceMap.getOrElse(variant.id, { variant.price }).toString().let { price ->
-               val priceRupiah = CurrencyFormatHelper.convertToRupiah(price)
-               val priceTxt = CurrencyFormatHelper.removeCurrencyPrefix(priceRupiah)
-               val prefixTxt = itemView.context.getString(R.string.product_manage_quick_edit_currency)
+           val price = priceMap.getOrElse(variant.id, { variant.price }).toString()
+           val priceRupiah = CurrencyFormatHelper.convertToRupiah(price)
+           val priceTxt = CurrencyFormatHelper.removeCurrencyPrefix(priceRupiah)
+           val prefixTxt = itemView.context.getString(R.string.product_manage_quick_edit_currency)
 
-               prependText(prefixTxt)
-               textFieldInput.setText(priceTxt)
+           prependText(prefixTxt)
+           textFieldInput.setText(priceTxt)
 
-               val length = textFieldInput.length()
-               textFieldInput.setSelection(length)
-           }
+           val length = textFieldInput.length()
+           textFieldInput.setSelection(length)
        }
     }
 
-    private fun setTextFieldPriceListeners(productId: String) {
+    private fun setTextFieldPriceListeners() {
         itemView.textFieldPrice.apply {
-            val idrTextWatcher = CurrencyIdrTextWatcher(textFieldInput)
-            textFieldInput.addTextChangedListener(idrTextWatcher)
-            textFieldInput.addTextChangedListener(object: TextWatcher {
-                override fun afterTextChanged(s: Editable?) {
-                    val input = textFieldInput.text.toString()
-                    val price = CurrencyFormatHelper.convertRupiahToInt(input)
-                    listener.onPriceChanged(productId, price)
-                }
+            textFieldInput.addTextChangedListener(priceTextWatcher)
 
-                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                }
-
-                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                    val input = textFieldInput.text.toString()
-                    val price = CurrencyFormatHelper.convertRupiahToInt(input)
-
-                    if(price < MINIMUM_PRICE) {
-                        showMinPriceError()
-                    } else {
-                        hidePriceError()
-                    }
-
-                    priceMap[productId] = price
-                }
-            })
             setOnFocusChangeListener { _, hasFocus ->
                if(hasFocus) {
                    val length = textFieldInput.length()
@@ -126,6 +109,44 @@ class ProductVariantPriceViewHolder(
         itemView.textFieldPrice.apply {
             setMessage("")
             setError(false)
+        }
+    }
+
+    private fun setPriceTextWatcher(variant: ProductVariant) {
+        itemView.textFieldPrice.run {
+            priceTextWatcher = object: TextWatcher {
+                override fun afterTextChanged(input: Editable) {
+                    val price = CurrencyFormatHelper.convertRupiahToInt(input.toString())
+                    priceMap[variant.id] = price
+
+                    removeTextFieldPriceListeners()
+                    CurrencyFormatHelper.setToRupiahCheckPrefix(textFieldInput)
+                    setTextFieldPriceListeners()
+                    showHidePriceError(price)
+
+                    listener.onPriceChanged(variant.id, price)
+                }
+
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                }
+
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                }
+            }
+        }
+    }
+
+    private fun removeTextFieldPriceListeners() {
+        itemView.textFieldPrice.apply {
+            textFieldInput.removeTextChangedListener(priceTextWatcher)
+        }
+    }
+
+    private fun showHidePriceError(price: Int) {
+        if (price < MINIMUM_PRICE) {
+            showMinPriceError()
+        } else {
+            hidePriceError()
         }
     }
 
