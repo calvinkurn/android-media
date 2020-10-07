@@ -1,5 +1,8 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardcarousel
 
+import android.app.Activity
+import android.content.Context
+import android.util.DisplayMetrics
 import android.view.View
 import android.widget.FrameLayout
 import androidx.fragment.app.Fragment
@@ -24,6 +27,7 @@ class ProductCardCarouselViewHolder(itemView: View, val fragment: Fragment) : Ab
     private var mDiscoveryRecycleAdapter: DiscoveryRecycleAdapter
     private lateinit var mProductCarouselComponentViewModel: ProductCardCarouselViewModel
     private val carouselRecyclerViewDecorator = CarouselProductCardItemDecorator()
+    private var componentName: String = ""
 
     init {
         linearLayoutManager.initialPrefetchItemCount = 4
@@ -37,6 +41,10 @@ class ProductCardCarouselViewHolder(itemView: View, val fragment: Fragment) : Ab
         mProductCarouselComponentViewModel = discoveryBaseViewModel as ProductCardCarouselViewModel
         addShimmer()
         addDefaultItemDecorator()
+        handleCarouselPagination()
+    }
+
+    private fun handleCarouselPagination() {
         mProductCarouselRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
@@ -44,7 +52,7 @@ class ProductCardCarouselViewHolder(itemView: View, val fragment: Fragment) : Ab
                 val totalItemCount: Int = linearLayoutManager.itemCount
                 val firstVisibleItemPosition: Int = linearLayoutManager.findFirstVisibleItemPosition()
                 if (!mProductCarouselComponentViewModel.isLoadingData() && !mProductCarouselComponentViewModel.isLastPage()) {
-                    if ((visibleItemCount + firstVisibleItemPosition >= totalItemCount) && firstVisibleItemPosition >= 0 && totalItemCount >= 20) {
+                    if ((visibleItemCount + firstVisibleItemPosition >= totalItemCount) && firstVisibleItemPosition >= 0 && totalItemCount >= mProductCarouselComponentViewModel.getPageSize()) {
                         mProductCarouselComponentViewModel.fetchPaginatedProducts()
                     }
                 }
@@ -67,9 +75,14 @@ class ProductCardCarouselViewHolder(itemView: View, val fragment: Fragment) : Ab
         super.setUpObservers(lifecycleOwner)
         lifecycleOwner?.let {
             mProductCarouselComponentViewModel.getProductCardHeaderData().observe(it, Observer { component ->
+                componentName = component.name ?: ""
                 addCardHeader(component)
             })
             mProductCarouselComponentViewModel.getProductCarouselItemsListData().observe(it, Observer { item ->
+                if (mProductCarouselComponentViewModel.getComponentName() == ComponentsList.ProductCardCarousel.componentName) {
+                    val productCardWidth = getDisplayMetric(fragment.context).widthPixels / 2.3.toInt()
+                    mProductCarouselComponentViewModel.getMaxHeightProductCard(item, productCardWidth)
+                }
                 mDiscoveryRecycleAdapter.setDataList(item)
             })
             mProductCarouselComponentViewModel.syncData.observe(it, Observer { sync ->
@@ -77,7 +90,22 @@ class ProductCardCarouselViewHolder(itemView: View, val fragment: Fragment) : Ab
                     mDiscoveryRecycleAdapter.notifyDataSetChanged()
                 }
             })
+            mProductCarouselComponentViewModel.getProductCardMaxHeight().observe(it, Observer { height ->
+                setMaxHeight(height)
+            })
         }
+    }
+
+    private fun setMaxHeight(height: Int) {
+        val carouselLayoutParams = mProductCarouselRecyclerView.layoutParams
+        carouselLayoutParams?.height = height
+        mProductCarouselRecyclerView.layoutParams = carouselLayoutParams
+    }
+
+    private fun getDisplayMetric(context: Context?): DisplayMetrics {
+        val displayMetrics = DisplayMetrics()
+        (context as Activity).windowManager.defaultDisplay.getMetrics(displayMetrics)
+        return displayMetrics
     }
 
     override fun removeObservers(lifecycleOwner: LifecycleOwner?) {

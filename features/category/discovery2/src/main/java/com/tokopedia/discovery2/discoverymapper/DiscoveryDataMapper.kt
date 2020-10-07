@@ -11,6 +11,7 @@ import com.tokopedia.filter.common.data.DataValue
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Sort
+import com.tokopedia.productcard.ProductCardModel
 
 private const val CHIPS = "Chips"
 private const val TABS_ITEM = "tabs_item"
@@ -145,4 +146,54 @@ class DiscoveryDataMapper {
         }
         return DynamicFilterModel(data = DataValue(filter = filter as List<Filter>, sort = dataItem.sort as List<Sort>))
     }
+
+    fun mapDataItemToProductCardModel(dataItem: DataItem): ProductCardModel {
+        return ProductCardModel(
+                productName = dataItem.name ?: "",
+                slashedPrice = dataItem.discountedPrice ?: "",
+                formattedPrice = dataItem.price ?: "",
+                discountPercentage = if (dataItem.discountPercentage?.toIntOrZero() != 0) {
+                    "${dataItem.discountPercentage}%"
+                } else {
+                    ""
+                },
+                ratingCount = dataItem.rating?.toIntOrZero() ?: 0,
+                reviewCount = dataItem.countReview?.toIntOrZero() ?: 0,
+                productImageUrl = dataItem.imageUrlMobile ?: "",
+                isTopAds = dataItem.isTopads ?: false,
+                freeOngkir = ProductCardModel.FreeOngkir(imageUrl = dataItem.freeOngkir?.freeOngkirImageUrl
+                        ?: "", isActive = dataItem.freeOngkir?.isActive ?: false),
+                pdpViewCount = dataItem.pdpView.takeIf { it.toIntOrZero() != 0 } ?: "",
+                labelGroupList = ArrayList<ProductCardModel.LabelGroup>().apply {
+                    dataItem.labelsGroupList?.forEach { add(ProductCardModel.LabelGroup(it.position, it.title, it.type)) }
+                },
+                shopLocation = getShopLocation(dataItem),
+                shopBadgeList = getShopBadgeList(dataItem)
+        )
+    }
+
+    private fun getShopBadgeList(dataItem: DataItem): List<ProductCardModel.ShopBadge> {
+        return ArrayList<ProductCardModel.ShopBadge>().apply {
+            if (dataItem.goldMerchant == true && dataItem.officialStore == true) {
+                add(ProductCardModel.ShopBadge(isShown = true, imageUrl = "https://ecs7.tokopedia.net/img/official_store_badge.png"))
+            } else if (dataItem.goldMerchant == true) {
+                add(ProductCardModel.ShopBadge(isShown = true, imageUrl = "https://ecs7.tokopedia.net/img/power_merchant_badge.png"))
+            } else if (dataItem.officialStore == true) {
+                add(ProductCardModel.ShopBadge(isShown = true, imageUrl = "https://ecs7.tokopedia.net/img/official_store_badge.png"))
+            } else {
+                add(ProductCardModel.ShopBadge(isShown = false, imageUrl = ""))
+            }
+        }
+    }
+
+    private fun getShopLocation(dataItem: DataItem): String {
+        return if (!dataItem.shopLocation.isNullOrEmpty()) {
+            dataItem.shopLocation
+        } else if (!dataItem.shopName.isNullOrEmpty()) {
+            dataItem.shopName
+        } else {
+            ""
+        }
+    }
+
 }

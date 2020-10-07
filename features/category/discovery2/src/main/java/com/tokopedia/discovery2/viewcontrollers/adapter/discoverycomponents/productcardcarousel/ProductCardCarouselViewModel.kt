@@ -9,11 +9,14 @@ import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.datamapper.discoveryPageData
 import com.tokopedia.discovery2.di.DaggerDiscoveryComponent
+import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
 import com.tokopedia.discovery2.usecase.productCardCarouselUseCase.ProductCardsUseCase
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.factory.ComponentsList
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.productcard.utils.getMaxHeightForGridView
 import com.tokopedia.user.session.UserSession
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -25,11 +28,15 @@ import kotlin.coroutines.CoroutineContext
 class ProductCardCarouselViewModel(val application: Application, val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
     private val productCarouselHeaderData: MutableLiveData<ComponentsItem> = MutableLiveData()
     private val productCarouselList: MutableLiveData<ArrayList<ComponentsItem>> = MutableLiveData()
+    private val maxHeightProductCard: MutableLiveData<Int> = MutableLiveData()
     private var isLoading = false
 
     @Inject
     lateinit var productCardsUseCase: ProductCardsUseCase
 
+    fun getProductCarouselItemsListData(): LiveData<ArrayList<ComponentsItem>> = productCarouselList
+    fun getProductCardMaxHeight(): LiveData<Int> = maxHeightProductCard
+    fun getProductCardHeaderData(): LiveData<ComponentsItem> = productCarouselHeaderData
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + SupervisorJob()
@@ -60,8 +67,6 @@ class ProductCardCarouselViewModel(val application: Application, val components:
         fetchProductCarouselData()
     }
 
-    fun getProductCarouselItemsListData(): LiveData<ArrayList<ComponentsItem>> = productCarouselList
-
     private fun fetchProductCarouselData() {
         launchCatchError(block = {
             if (productCardsUseCase.loadFirstPageComponents(components.id, components.pageEndPoint, components.rpc_PinnedProduct)) {
@@ -70,6 +75,20 @@ class ProductCardCarouselViewModel(val application: Application, val components:
                     syncData.value = true
                 }
             }
+        }, onError = {
+            it.printStackTrace()
+        })
+    }
+
+    fun getMaxHeightProductCard(list: java.util.ArrayList<ComponentsItem>, productImageWidth: Int) {
+        launchCatchError(block = {
+            val productCardModelArray = ArrayList<ProductCardModel>()
+            list.forEach {
+                it.data?.firstOrNull()?.let { dataItem ->
+                    productCardModelArray.add(DiscoveryDataMapper().mapDataItemToProductCardModel(dataItem))
+                }
+            }
+            maxHeightProductCard.value = productCardModelArray.getMaxHeightForGridView(application.applicationContext, Dispatchers.Default, productImageWidth)
         }, onError = {
             it.printStackTrace()
         })
@@ -128,6 +147,6 @@ class ProductCardCarouselViewModel(val application: Application, val components:
         return null
     }
 
-    fun getProductCardHeaderData(): LiveData<ComponentsItem> = productCarouselHeaderData
-
+    fun getComponentName() = components.name
+    fun getPageSize() = components.componentsPerPage
 }
