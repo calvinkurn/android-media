@@ -2,6 +2,7 @@ package com.tokopedia.topchat.chatroom.view.presenter
 
 import android.content.SharedPreferences
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.collection.ArrayMap
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.atc_common.domain.usecase.AddToCartOccUseCase
@@ -26,6 +27,7 @@ import com.tokopedia.topchat.R
 import com.tokopedia.topchat.TopchatTestCoroutineContextDispatcher
 import com.tokopedia.topchat.chatlist.domain.usecase.DeleteMessageListUseCase
 import com.tokopedia.topchat.chatlist.viewmodel.DeleteChatListUiModel
+import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.Attachment
 import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.OrderProgressResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.Sticker
 import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.ChatListGroupStickerResponse
@@ -1096,6 +1098,31 @@ class TopChatRoomPresenterTest {
         verify(exactly = 2) {
             view.getChatMenuView()
         }
+    }
+
+    @Test
+    fun `on success loadAttachmentData`() {
+        // Given
+        val roomModel = ChatroomViewModel(attachmentIds = "3213, 3123")
+        val mapSuccessAttachment = ArrayMap<String, Attachment>().apply {
+            put("test_attachment", Attachment())
+        }
+        every {
+            chatAttachmentUseCase.getAttachments(
+                    exMessageId.toInt(), roomModel.attachmentIds, captureLambda(), any()
+            )
+        } answers {
+            val onSuccess = lambda<(ArrayMap<String, Attachment>) -> Unit>()
+            onSuccess.invoke(mapSuccessAttachment)
+        }
+
+        // When
+        presenter.loadAttachmentData(exMessageId.toInt(), roomModel)
+
+        // Then
+        val attachments = presenter.attachments
+        verify(exactly = 1) { view.updateAttachmentsView(attachments) }
+        assertTrue(presenter.attachments.size == 1)
     }
 
     private fun mockkParseResponse(
