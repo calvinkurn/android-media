@@ -129,7 +129,7 @@
       "event" : "clickDeals",
       "eventCategory" : "digital - deals",
       "eventAction" : "click view all brand popular - category page",
-      "eventLabel" : "-",
+      "eventLabel" : "{{.*}}",
       "screenName" : "/deals/",
       "category" : "deals",
       "currentSite" : "tokopediadigitaldeals",
@@ -209,7 +209,7 @@
       "currentSite" : "tokopediadigitaldeals",
       "clientId" : "{{.+}}",
       "sessionIris" : "{{.+}}",
-      "userId" : "{{*}}",
+      "userId" : "{{.*}}",
       "businessUnit" : "travel & entertainment"
     }
   ]
