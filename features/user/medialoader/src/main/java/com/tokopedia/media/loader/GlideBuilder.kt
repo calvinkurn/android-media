@@ -20,6 +20,8 @@ import com.tokopedia.media.loader.data.Resize
 import com.tokopedia.media.loader.module.GlideApp
 import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
 import com.tokopedia.media.loader.wrapper.MediaCacheStrategy.Companion.mapToDiskCacheStrategy
+import com.tokopedia.media.loader.wrapper.MediaDecodeFormat
+import com.tokopedia.media.loader.wrapper.MediaDecodeFormat.Companion.mapToDecodeFormat
 import timber.log.Timber
 
 object GlideBuilder {
@@ -50,7 +52,7 @@ object GlideBuilder {
             isAnimate: Boolean = false,
             isCircular: Boolean = false,
             overrideSize: Resize? = null,
-            decodeFormat: DecodeFormat? = null,
+            decodeFormat: MediaDecodeFormat? = null,
             listener: LoaderStateListener? = null,
             transform: Transformation<Bitmap>? = null,
             transforms: List<Transformation<Bitmap>>? = null
@@ -70,11 +72,11 @@ object GlideBuilder {
             GlideApp.with(imageView).load(url).apply {
                 if (thumbnailUrl.isNotEmpty()) thumbnail(imageView.thumbnailLoader(thumbnailUrl))
                 if (overrideSize != null) override(overrideSize.width, overrideSize.height)
+                if (decodeFormat != null) format(mapToDecodeFormat(decodeFormat))
                 if (radius != 0f) transform(RoundedCorners(radius.toInt()))
                 if (transform != null) localTransform.add(transform)
                 if (signatureKey != null) signature(signatureKey)
                 if (placeHolder != 0) placeholder(placeHolder)
-                if (decodeFormat != null) format(decodeFormat)
                 if (isCircular) localTransform.add(CircleCrop())
                 if (!isAnimate) dontAnimate()
 

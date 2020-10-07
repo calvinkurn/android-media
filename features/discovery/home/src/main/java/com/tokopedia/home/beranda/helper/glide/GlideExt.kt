@@ -3,7 +3,6 @@ package com.tokopedia.home.beranda.helper.glide
 import android.graphics.drawable.Drawable
 import android.widget.ImageView
 import com.bumptech.glide.load.DataSource
-import com.bumptech.glide.load.DecodeFormat
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
@@ -14,6 +13,7 @@ import com.tokopedia.media.loader.data.Resize
 import com.tokopedia.media.loader.loadAsGif
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
+import com.tokopedia.media.loader.wrapper.MediaDecodeFormat
 
 const val FPM_ATTRIBUTE_IMAGE_URL = "image_url"
 const val FPM_PRODUCT_ORGANIC_CHANNEL = "home_product_organic"
@@ -52,7 +52,7 @@ fun ImageView.loadImageFitCenter(url: String, fpmItemLabel: String = ""){
     this.loadImage(url) {
         //put fitCenter in XML file
         placeHolder = R.drawable.placeholder_grey
-        decodeFormat = DecodeFormat.PREFER_ARGB_8888
+        decodeFormat = MediaDecodeFormat.PREFER_ARGB_8888
         cacheStrategy = MediaCacheStrategy.RESOURCE
         loaderListener = object : LoaderStateListener {
             override fun successLoad(resource: Drawable?, dataSource: DataSource?) {
@@ -70,7 +70,7 @@ fun ImageView.loadImageFitCenter(url: String, fpmItemLabel: String = ""){
 fun ImageView.loadImageRounded(url: String, roundedRadius: Int, fpmItemLabel: String = ""){
     val performanceMonitoring = getPerformanceMonitoring(url, fpmItemLabel)
     this.loadImage(url) {
-        decodeFormat = DecodeFormat.PREFER_ARGB_8888
+        decodeFormat = MediaDecodeFormat.PREFER_ARGB_8888
         cacheStrategy = MediaCacheStrategy.RESOURCE
         transforms = listOf(RoundedCorners(roundedRadius), CenterCrop())
         loaderListener = object : LoaderStateListener {
@@ -87,7 +87,7 @@ fun ImageView.loadMiniImage(url: String, width: Int, height: Int, fpmItemLabel: 
     val performanceMonitoring = getPerformanceMonitoring(url, fpmItemLabel)
     this.loadImage(url) {
         placeHolder = R.drawable.placeholder_grey
-        decodeFormat = DecodeFormat.PREFER_ARGB_8888
+        decodeFormat = MediaDecodeFormat.PREFER_ARGB_8888
         overrideSize = Resize(width, height)
         loaderListener = object : LoaderStateListener {
             override fun failedLoad(error: GlideException?) {
@@ -104,7 +104,7 @@ fun ImageView.loadMiniImage(url: String, width: Int, height: Int, fpmItemLabel: 
 
 fun ImageView.loadImageCenterCrop(url: String){
     this.loadImage(url) {
-        decodeFormat = DecodeFormat.PREFER_ARGB_8888
+        decodeFormat = MediaDecodeFormat.PREFER_ARGB_8888
         placeHolder = R.drawable.placeholder_grey
         transforms = listOf(RoundedCorners(15), CenterCrop())
         cacheStrategy = MediaCacheStrategy.RESOURCE
@@ -113,7 +113,7 @@ fun ImageView.loadImageCenterCrop(url: String){
 
 fun ImageView.loadImageWithoutPlaceholder(url: String){
     this.loadImage(url) {
-        decodeFormat = DecodeFormat.PREFER_ARGB_8888
+        decodeFormat = MediaDecodeFormat.PREFER_ARGB_8888
         cacheStrategy = MediaCacheStrategy.RESOURCE
         placeHolder = -1
     }
@@ -121,7 +121,7 @@ fun ImageView.loadImageWithoutPlaceholder(url: String){
 
 fun ImageView.loadImageNoRounded(url: String, placeholder: Int = -1){
     this.loadImage(url) {
-        decodeFormat = DecodeFormat.PREFER_ARGB_8888
+        decodeFormat = MediaDecodeFormat.PREFER_ARGB_8888
         cacheStrategy = MediaCacheStrategy.RESOURCE
         transform = CenterCrop()
         placeHolder = placeholder
