@@ -84,6 +84,7 @@ class OrderSummaryPageRobot {
 
     fun assertProductCard(shopName: String,
                           shopLocation: String,
+                          hasShopBadge: Boolean,
                           productName: String,
                           productPrice: String,
                           productSlashPrice: String?,
@@ -91,6 +92,14 @@ class OrderSummaryPageRobot {
                           productQty: Int) {
         onView(withId(R.id.tv_shop_name)).perform(scrollTo()).check(matches(withText(shopName)))
         onView(withId(R.id.tv_shop_location)).check(matches(withText(shopLocation)))
+        onView(withId(R.id.iv_shop)).check { view, noViewFoundException ->
+            noViewFoundException?.printStackTrace()
+            if (hasShopBadge) {
+                assertEquals(View.VISIBLE, view.visibility)
+            } else {
+                assertEquals(View.GONE, view.visibility)
+            }
+        }
         onView(withId(R.id.tv_product_name)).check(matches(withText(productName)))
         onView(withId(R.id.tv_product_price)).check(matches(withText(productPrice)))
         onView(withId(R.id.tv_product_slash_price)).check { view, noViewFoundException ->

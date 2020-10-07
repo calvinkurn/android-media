@@ -62,6 +62,7 @@ class OrderSummaryPageActivityCampaignTest {
             assertProductCard(
                     shopName = "tokocgk",
                     shopLocation = "Kota Yogyakarta",
+                    hasShopBadge = true,
                     productName = "Product1",
                     productPrice = "Rp100.000",
                     productSlashPrice = "Rp200.000",
