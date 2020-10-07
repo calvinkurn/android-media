@@ -2184,7 +2184,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         DynamicProductDetailTracking.Click.eventTopAdsButtonClicked(
                 viewModel.userId,
                 btn_top_ads.text.toString(),
-                ComponentTrackDataModel(),
                 viewModel.getDynamicProductInfoP1)
         val firstAppLink = UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId)
         val secondAppLink = when (viewModel.p2Login.value?.topAdsGetShopInfo?.category) {
@@ -2222,7 +2221,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         DynamicProductDetailTracking.Click.eventTopAdsButtonClicked(
                 viewModel.userId,
                 btn_top_ads.text.toString(),
-                ComponentTrackDataModel(),
                 viewModel.getDynamicProductInfoP1)
         if (GlobalConfig.isSellerApp()) {
             showTopAdsBottomSheet()

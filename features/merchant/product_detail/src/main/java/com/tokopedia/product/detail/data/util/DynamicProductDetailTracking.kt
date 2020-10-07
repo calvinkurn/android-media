@@ -915,7 +915,7 @@ object DynamicProductDetailTracking {
             trackingQueue.putEETracking(mapEvent)
         }
 
-        fun eventTopAdsButtonClicked(userId: String, buttonName: String, componentTrackDataModel: ComponentTrackDataModel, productInfo: DynamicProductInfoP1?) {
+        fun eventTopAdsButtonClicked(userId: String, buttonName: String, productInfo: DynamicProductInfoP1?) {
             val data = mapOf(
                 ProductTrackingConstant.Tracking.KEY_EVENT to ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
                 ProductTrackingConstant.Tracking.KEY_CATEGORY to ProductTrackingConstant.Category.PDP,
@@ -923,7 +923,6 @@ object DynamicProductDetailTracking {
                 ProductTrackingConstant.Tracking.KEY_LABEL to "",
                 ProductTrackingConstant.Tracking.KEY_PRODUCT_ID to (productInfo?.basic?.productID ?: "0"),
                 ProductTrackingConstant.Tracking.KEY_LAYOUT to "layout:${productInfo?.layoutName};catName:${productInfo?.basic?.category?.name};catId:${productInfo?.basic?.category?.id};",
-                ProductTrackingConstant.Tracking.KEY_COMPONENT to "comp:${componentTrackDataModel.componentType};temp:${componentTrackDataModel.componentName};elem:${ProductTrackingConstant.Action.CLICK} - $buttonName;cpos:${componentTrackDataModel.adapterPosition};",
                 ProductTrackingConstant.Tracking.KEY_USER_ID_VARIANT to userId,
                 ProductTrackingConstant.Tracking.KEY_SHOP_ID_SELLER to (productInfo?.basic?.shopID ?: "0"),
                 ProductTrackingConstant.Tracking.KEY_SHOP_TYPE to productInfo?.shopTypeString.orEmpty(),
