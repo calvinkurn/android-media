@@ -15,7 +15,13 @@ data class ResultContainer(
 )
 
 data class UpdateGratificationNotificationResponse(
-        @SerializedName("updateNotification")
-        val result: ResultContainer? = null
+        @SerializedName("reason")
+        val reason: String? = null,
+
+        @SerializedName("code")
+        val code: String? = null,
+
+        @SerializedName("message")
+        val message: List<String?>? = null
 )
 

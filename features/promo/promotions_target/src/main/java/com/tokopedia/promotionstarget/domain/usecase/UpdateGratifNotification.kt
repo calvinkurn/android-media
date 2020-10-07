@@ -1,7 +1,7 @@
 package com.tokopedia.promotionstarget.domain.usecase
 
 import com.tokopedia.promotionstarget.data.UpdataGratifNotificationParams
-import com.tokopedia.promotionstarget.data.autoApply.AutoApplyResponse
+import com.tokopedia.promotionstarget.data.autoApply.UpdateGratificationNotificationResponse
 import com.tokopedia.promotionstarget.data.di.UPDATE_GRATIF
 import com.tokopedia.promotionstarget.data.gql.GqlUseCaseWrapper
 import javax.inject.Inject
@@ -10,8 +10,8 @@ import javax.inject.Named
 class UpdateGratifNotification @Inject constructor(@Named(UPDATE_GRATIF) val queryString: String, val gqlWrapper: GqlUseCaseWrapper) {
     private val PARAMS = UpdataGratifNotificationParams
 
-    suspend fun getResponse(map: HashMap<String, Any>): AutoApplyResponse {
-        return gqlWrapper.getResponse(AutoApplyResponse::class.java, queryString, map)
+    suspend fun getResponse(map: HashMap<String, Any>): UpdateGratificationNotificationResponse{
+        return gqlWrapper.getResponse(UpdateGratificationNotificationResponse::class.java, queryString, map)
     }
 
     fun getQueryParams(notificationId: String, notificationEntryType:String): HashMap<String, Any> {
