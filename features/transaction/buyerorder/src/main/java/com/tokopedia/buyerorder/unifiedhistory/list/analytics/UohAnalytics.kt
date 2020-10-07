@@ -1,6 +1,7 @@
 package com.tokopedia.buyerorder.unifiedhistory.list.analytics
 
 import android.app.Activity
+import android.bluetooth.le.AdvertiseData
 import android.os.Bundle
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.BUSINESS_UNIT_REPLACEE
@@ -41,8 +42,9 @@ object UohAnalytics {
     private const val VARIANT = "variant"
     private const val LIST = "list"
     private const val POSITION = "position"
+    private const val ADD = "add"
     private const val CLICK = "click"
-    private const val ACTION_FIELD = "action_field"
+    private const val ACTION_FIELD = "actionField"
     private const val PRODUCTS = "products"
     private const val ATTRIBUTION = "attribution"
     private const val QUANTITY = "quantity"
@@ -192,9 +194,23 @@ object UohAnalytics {
     }
 
     fun viewOrderCard(verticalLabel: String, userId: String, arrayImpressions: ArrayList<ECommerceImpressions.Impressions>) {
-        val eCommerce = ECommerceImpressions(
-                impressions = arrayImpressions
-        )
+        val arrayListBundleImpressions = arrayListOf<Bundle>()
+        arrayImpressions.forEach { impression ->
+            val bundleImpressions = Bundle().apply {
+                putString(NAME, impression.name)
+                putString(ID, impression.id)
+                putString(PRICE, impression.price)
+                putString(LIST, impression.list)
+                putString(POSITION, impression.position)
+            }
+            arrayListBundleImpressions.add(bundleImpressions)
+        }
+
+        val bundleEcommerceImpressions = Bundle().apply {
+            putString(CURRENCY_CODE, IDR)
+            putParcelableArrayList(IMPRESSIONS, arrayListBundleImpressions)
+        }
+
         val bundle = Bundle().apply {
             putString(EVENT, PRODUCT_VIEW)
             putString(EVENT_CATEGORY, ORDER_LIST_EVENT_CATEGORY)
@@ -203,17 +219,33 @@ object UohAnalytics {
             putString(CURRENT_SITE, TOKOPEDIA_MARKETPLACE)
             putString(USER_ID, userId)
             putString(BUSINESS_UNIT, ORDER_MANAGEMENT)
-            classLoader = ECommerceImpressions::class.java.classLoader
-            putParcelable(ECOMMERCE, eCommerce)
+            putParcelable(ECOMMERCE, bundleEcommerceImpressions)
         }
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(PRODUCT_VIEW, bundle)
     }
 
     fun clickOrderCard(verticalLabel: String, userId: String, arrayListProducts: ArrayList<ECommerceClick.Products>) {
-        val eCommerceClick = ECommerceClick(actionField = ECommerceClick.ActionField(
-                                            list = ACTION_FIELD_CLICK_ECOMMERCE.replace(BUSINESS_UNIT_REPLACEE, verticalLabel)
-        ),
-        products = arrayListProducts)
+        val bundleActionField = Bundle().apply {
+            putString(LIST, ACTION_FIELD_CLICK_ECOMMERCE.replace(BUSINESS_UNIT_REPLACEE, verticalLabel))
+        }
+
+        val arrayListBundleProducts = arrayListOf<Bundle>()
+        arrayListProducts.forEach { product ->
+            val bundleProduct = Bundle().apply {
+                putString(NAME, product.name)
+                putString(ID, product.id)
+                putString(PRICE, product.price)
+                putString(LIST, product.list)
+                putString(POSITION, product.position)
+            }
+            arrayListBundleProducts.add(bundleProduct)
+        }
+
+        val bundleECommerceClick = Bundle().apply {
+            putParcelable(ACTION_FIELD, bundleActionField)
+            putParcelableArrayList(PRODUCTS, arrayListBundleProducts)
+        }
+
         val bundle = Bundle().apply {
             putString(EVENT, PRODUCT_CLICK)
             putString(EVENT_CATEGORY, ORDER_LIST_EVENT_CATEGORY)
@@ -222,8 +254,7 @@ object UohAnalytics {
             putString(CURRENT_SITE, TOKOPEDIA_MARKETPLACE)
             putString(USER_ID, userId)
             putString(BUSINESS_UNIT, ORDER_MANAGEMENT)
-            classLoader = ECommerceClick::class.java.classLoader
-            putParcelable(ECOMMERCE, eCommerceClick)
+            putParcelable(ECOMMERCE, bundleECommerceClick)
         }
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(PRODUCT_CLICK, bundle)
     }
@@ -292,6 +323,28 @@ object UohAnalytics {
         val eCommerceAdd = ECommerceAdd(
                 add = ECommerceAdd.Add(products = arrayListProducts)
         )
+
+        val arrayListBundleProduct = arrayListOf<Bundle>()
+        arrayListProducts.forEach { product ->
+            val bundleProduct = Bundle().apply {
+                putString(NAME, product.name)
+                putString(ID, product.id)
+                putString(PRICE, product.price)
+                putString(QUANTITY, product.quantity)
+                putString(DIMENSION79, product.dimension79)
+            }
+            arrayListBundleProduct.add(bundleProduct)
+        }
+
+        val bundleProductList = Bundle().apply {
+            putParcelableArrayList(PRODUCTS, arrayListBundleProduct)
+        }
+
+        val bundleECommerceAdd = Bundle().apply {
+            putString(CURRENCY_CODE, IDR)
+            putParcelable(ADD, bundleProductList)
+        }
+
         val bundle = Bundle().apply {
             putString(EVENT, ADD_TO_CART)
             putString(EVENT_CATEGORY, ORDER_LIST_EVENT_CATEGORY)
@@ -301,8 +354,7 @@ object UohAnalytics {
             putString(CURRENT_SITE, TOKOPEDIA_MARKETPLACE)
             putString(USER_ID, userId)
             putString(BUSINESS_UNIT, ORDER_MANAGEMENT)
-            classLoader = ECommerceAdd::class.java.classLoader
-            putParcelable(ECOMMERCE, eCommerceAdd)
+            putParcelable(ECOMMERCE, bundleECommerceAdd)
         }
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(PRODUCT_CLICK, bundle)
     }
@@ -338,40 +390,61 @@ object UohAnalytics {
     }
 
     fun productViewRecommendation(impressions: ECommerceImpressions.Impressions) {
-        val arrayListImpressions: ArrayList<ECommerceImpressions.Impressions> = arrayListOf()
-        arrayListImpressions.add(impressions)
-        val eCommerce = ECommerceImpressions(
-                impressions = arrayListImpressions
-        )
+        val arrayListBundleImpressions = arrayListOf<Bundle>()
+        val bundleImpression = Bundle().apply {
+            putString(NAME, impressions.name)
+            putString(ID, impressions.id)
+            putString(PRICE, impressions.price)
+            putString(CATEGORY, impressions.category)
+            putString(POSITION, impressions.position)
+            putString(LIST, impressions.list)
+        }
+        arrayListBundleImpressions.add(bundleImpression)
+
+        val bundleECommerceImpressions = Bundle().apply {
+            putString(CURRENCY_CODE, IDR)
+            putParcelableArrayList(IMPRESSIONS, arrayListBundleImpressions)
+        }
+
         val bundle = Bundle().apply {
             putString(EVENT, PRODUCT_VIEW)
             putString(EVENT_CATEGORY, PURCHASE_LIST_EVENT_CATEGORY)
             putString(EVENT_ACTION, VIEW_RECOMMENDATION)
             putString(EVENT_LABEL, EVENT_LABEL_RECOMMENDATION)
-            classLoader = ECommerceImpressions::class.java.classLoader
-            putParcelable(ECOMMERCE, eCommerce)
+            putParcelable(ECOMMERCE, bundleECommerceImpressions)
         }
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(PRODUCT_VIEW, bundle)
     }
 
     fun productClickRecommendation(click: ECommerceClick.Products, isTopads: Boolean) {
-        val arrayListClick: ArrayList<ECommerceClick.Products> = arrayListOf()
-        arrayListClick.add(click)
-
         var list = RECOMMENDATION_LIST_TRACK
         if (isTopads) list += RECOMMENDATION_LIST_TOPADS_TRACK
 
-        val eCommerce = ECommerceClick(
-                actionField = ECommerceClick.ActionField(list = list),
-                products = arrayListClick
-        )
+        val bundleActionField = Bundle().apply {
+            putString(LIST, list)
+        }
+
+        val arrayListBundleProducts = arrayListOf<Bundle>()
+        val bundleClick = Bundle().apply {
+            putString(NAME, click.name)
+            putString(ID, click.id)
+            putString(PRICE, click.price)
+            putString(CATEGORY, click.category)
+            putString(POSITION, click.position)
+        }
+        arrayListBundleProducts.add(bundleClick)
+
+        val bundleECommerceClick = Bundle().apply {
+            putParcelable(ACTION_FIELD, bundleActionField)
+            putParcelableArrayList(PRODUCTS, arrayListBundleProducts)
+        }
+
         val bundle = Bundle().apply {
             putString(EVENT, PRODUCT_CLICK)
             putString(EVENT_CATEGORY, PURCHASE_LIST_EVENT_CATEGORY)
             putString(EVENT_ACTION, CLICK_RECOMMENDATION)
             putString(EVENT_LABEL, EVENT_LABEL_RECOMMENDATION)
-            classLoader = ECommerceClick::class.java.classLoader
-            putParcelable(ECOMMERCE, eCommerce)
+            putParcelable(ECOMMERCE, bundleECommerceClick)
         }
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(PRODUCT_CLICK, bundle)
     }
@@ -380,17 +453,39 @@ object UohAnalytics {
         var list = RECOMMENDATION_LIST_TRACK
         if (isTopads) list += RECOMMENDATION_LIST_TOPADS_TRACK
 
-        val eCommerce = ECommerceAddRecommendation.Add(actionField = ECommerceAddRecommendation.Add.ActionField(
-                        list = list,
-                        products = listProduct
-        ))
+        val arrayListBundleProducts = arrayListOf<Bundle>()
+        listProduct.forEach { product ->
+            val bundleProduct = Bundle().apply {
+                putString(NAME, product.name)
+                putString(ID, product.id)
+                putString(PRICE, product.price)
+                putString(CATEGORY, product.category)
+                putString(QUANTITY, product.quantity)
+                putString(DIMENSION45, product.dimension45)
+            }
+            arrayListBundleProducts.add(bundleProduct)
+        }
+
+        val bundleActionField = Bundle().apply {
+            putString(LIST, list)
+            putParcelableArrayList(PRODUCTS, arrayListBundleProducts)
+        }
+
+        val bundleAdd = Bundle().apply {
+            putParcelable(ACTION_FIELD, bundleActionField)
+        }
+
+        val bundleECommerceAddRecommendation = Bundle().apply {
+            putString(CURRENCY_CODE, IDR)
+            putParcelable(ADD, bundleAdd)
+        }
+
         val bundle = Bundle().apply {
             putString(EVENT, ADD_TO_CART)
             putString(EVENT_CATEGORY, PURCHASE_LIST_EVENT_CATEGORY)
             putString(EVENT_ACTION, CLICK_ATC_RECOMMENDATION)
             putString(EVENT_LABEL, EVENT_LABEL_RECOMMENDATION)
-            classLoader = ECommerceAddRecommendation::class.java.classLoader
-            putParcelable(ECOMMERCE, eCommerce)
+            putParcelable(ECOMMERCE, bundleECommerceAddRecommendation)
         }
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(ADD_TO_CART, bundle)
     }
