@@ -1,8 +1,8 @@
 package com.tokopedia.play.util.video.buffer
 
-import com.tokopedia.play.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play_common.player.PlayVideoManager
 import com.tokopedia.play_common.state.PlayVideoState
+import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest

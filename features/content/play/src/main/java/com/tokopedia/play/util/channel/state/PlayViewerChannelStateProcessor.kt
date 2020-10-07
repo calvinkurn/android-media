@@ -2,11 +2,11 @@ package com.tokopedia.play.util.channel.state
 
 import com.google.android.exoplayer2.ExoPlaybackException
 import com.tokopedia.play.di.PlayScope
-import com.tokopedia.play.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play_common.player.PlayVideoManager
 import com.tokopedia.play_common.state.PlayVideoState
 import com.tokopedia.play_common.util.ExoPlaybackExceptionParser
+import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.flowOn
