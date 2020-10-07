@@ -1,18 +1,21 @@
 package com.tokopedia.autocomplete.suggestion
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.autocomplete.jsonToObject
 import com.tokopedia.autocomplete.shouldBe
 import com.tokopedia.autocomplete.shouldBeInstanceOf
+import com.tokopedia.autocomplete.suggestion.domain.model.SuggestionItem
+import com.tokopedia.autocomplete.suggestion.domain.model.SuggestionTopShop
 import com.tokopedia.autocomplete.suggestion.domain.model.SuggestionUniverse
 import com.tokopedia.autocomplete.suggestion.doubleline.SuggestionDoubleLineViewModel
 import com.tokopedia.autocomplete.suggestion.doubleline.SuggestionDoubleLineWithoutImageViewModel
 import com.tokopedia.autocomplete.suggestion.singleline.SuggestionSingleLineViewModel
 import com.tokopedia.autocomplete.suggestion.title.SuggestionTitleViewModel
+import com.tokopedia.autocomplete.suggestion.topshop.SuggestionTopShopCardViewModel
 import com.tokopedia.autocomplete.suggestion.topshop.SuggestionTopShopWidgetViewModel
 import io.mockk.confirmVerified
 import io.mockk.every
 import io.mockk.verify
-import org.junit.Assert
 import org.junit.Test
 import rx.Subscriber
 
@@ -30,7 +33,7 @@ internal class SuggestionPresenterTest: SuggestionPresenterTestFixtures() {
 
         `then verify suggestion API is called`()
         `then verify suggestion view will call showInitialStateResult behavior`()
-        `then verify visitable list`()
+        `then verify visitable list`(suggestionUniverse)
     }
 
     private fun `given suggestion use case capture request params`(suggestionUniverse: SuggestionUniverse) {
@@ -54,7 +57,7 @@ internal class SuggestionPresenterTest: SuggestionPresenterTestFixtures() {
         }
     }
 
-    private fun `then verify visitable list`() {
+    private fun `then verify visitable list`(suggestionUniverse: SuggestionUniverse) {
         val visitableList = slotVisitableList.captured
 
         visitableList[0].shouldBeInstanceOf<SuggestionSingleLineViewModel>()
@@ -67,7 +70,75 @@ internal class SuggestionPresenterTest: SuggestionPresenterTestFixtures() {
         visitableList[7].shouldBeInstanceOf<SuggestionDoubleLineViewModel>()
         visitableList[8].shouldBeInstanceOf<SuggestionDoubleLineWithoutImageViewModel>()
         visitableList[9].shouldBeInstanceOf<SuggestionDoubleLineWithoutImageViewModel>()
-        visitableList.size shouldBe 10
+        visitableList.size shouldBe suggestionUniverse.data.items.size
+
+        assertVisitableListData(visitableList, suggestionUniverse)
+    }
+
+    private fun assertVisitableListData(visitableList: List<Visitable<*>>, suggestionUniverse: SuggestionUniverse) {
+        suggestionUniverse.data.items.forEachIndexed { index, item ->
+            when (val visitable = visitableList[index]) {
+                is SuggestionTitleViewModel -> {
+                    visitable.assertSuggestionTitleViewModel(item)
+                }
+                is SuggestionTopShopWidgetViewModel -> {
+                    visitable.assertTopShopWidgetViewModel(
+                            suggestionUniverse.data.items[9], suggestionUniverse.topShop
+                    )
+                }
+                else -> {
+                    (visitable as BaseSuggestionViewModel).assertBaseSuggestionViewModel(item)
+                }
+            }
+        }
+    }
+
+    private fun SuggestionTitleViewModel.assertSuggestionTitleViewModel(item: SuggestionItem) {
+        title shouldBe item.title
+    }
+
+    private fun SuggestionTopShopWidgetViewModel.assertTopShopWidgetViewModel(item: SuggestionItem, listExpectedData: List<SuggestionTopShop>) {
+        template shouldBe item.template
+        title shouldBe item.title
+
+        listSuggestionTopShopCard.forEachIndexed { index, suggestionTopShopCardViewModel ->
+            suggestionTopShopCardViewModel.assertSuggestionTopShopCardViewModel(listExpectedData[index])
+        }
+    }
+
+    private fun SuggestionTopShopCardViewModel.assertSuggestionTopShopCardViewModel(suggestionTopShop: SuggestionTopShop) {
+        type shouldBe suggestionTopShop.type
+        id shouldBe suggestionTopShop.id
+        applink shouldBe suggestionTopShop.applink
+        url shouldBe suggestionTopShop.url
+        title shouldBe suggestionTopShop.title
+        subtitle shouldBe suggestionTopShop.subtitle
+        iconTitle shouldBe suggestionTopShop.iconTitle
+        iconSubtitle shouldBe suggestionTopShop.iconSubtitle
+        urlTracker shouldBe suggestionTopShop.urlTracker
+        imageUrl shouldBe suggestionTopShop.imageUrl
+
+        products.forEachIndexed { index, suggestionTopShopProductViewModel ->
+            suggestionTopShopProductViewModel.imageUrl shouldBe suggestionTopShop.topShopProducts[index].imageUrl
+        }
+    }
+
+    private fun BaseSuggestionViewModel.assertBaseSuggestionViewModel(item: SuggestionItem) {
+        template shouldBe item.template
+        type shouldBe item.type
+        applink shouldBe item.applink
+        url shouldBe item.url
+        title shouldBe item.title
+        subtitle shouldBe item.subtitle
+        iconTitle shouldBe item.iconTitle
+        iconSubtitle shouldBe item.iconSubtitle
+        shortcutUrl shouldBe item.shortcutUrl
+        shortcutImage shouldBe item.shortcutImage
+        imageUrl shouldBe item.imageUrl
+        label shouldBe item.label
+        labelType shouldBe item.labelType
+        urlTracker shouldBe item.urlTracker
+        trackingCode shouldBe item.tracking.code
     }
 
     @Test
@@ -98,7 +169,7 @@ internal class SuggestionPresenterTest: SuggestionPresenterTestFixtures() {
 
         `then verify suggestion API is called`()
         `then verify suggestion view will call showInitialStateResult behavior`()
-        `then verify visitable list with top shop`()
+        `then verify visitable list with top shop`(suggestionUniverse)
     }
 
     private fun `given suggestion use case capture request params with top shop`(suggestionUniverse: SuggestionUniverse) {
@@ -108,7 +179,7 @@ internal class SuggestionPresenterTest: SuggestionPresenterTestFixtures() {
         }
     }
 
-    private fun `then verify visitable list with top shop`() {
+    private fun `then verify visitable list with top shop`(suggestionUniverse: SuggestionUniverse) {
         val visitableList = slotVisitableList.captured
 
         visitableList[0].shouldBeInstanceOf<SuggestionSingleLineViewModel>()
@@ -121,6 +192,8 @@ internal class SuggestionPresenterTest: SuggestionPresenterTestFixtures() {
         visitableList[7].shouldBeInstanceOf<SuggestionDoubleLineViewModel>()
         visitableList[8].shouldBeInstanceOf<SuggestionDoubleLineViewModel>()
         visitableList[9].shouldBeInstanceOf<SuggestionTopShopWidgetViewModel>()
-        visitableList.size shouldBe 10
+        visitableList.size shouldBe suggestionUniverse.data.items.size
+
+        assertVisitableListData(visitableList, suggestionUniverse)
     }
 }
