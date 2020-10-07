@@ -1,8 +1,11 @@
 package com.tokopedia.autocomplete.suggestion
 
 import com.tokopedia.autocomplete.jsonToObject
+import com.tokopedia.autocomplete.shouldBe
+import com.tokopedia.autocomplete.shouldBeInstanceOf
 import com.tokopedia.autocomplete.suggestion.domain.model.SuggestionUniverse
 import com.tokopedia.autocomplete.suggestion.doubleline.SuggestionDoubleLineViewModel
+import com.tokopedia.autocomplete.suggestion.doubleline.SuggestionDoubleLineWithoutImageViewModel
 import com.tokopedia.autocomplete.suggestion.singleline.SuggestionSingleLineViewModel
 import com.tokopedia.autocomplete.suggestion.title.SuggestionTitleViewModel
 import com.tokopedia.autocomplete.suggestion.topshop.SuggestionTopShopWidgetViewModel
@@ -54,15 +57,17 @@ internal class SuggestionPresenterTest: SuggestionPresenterTestFixtures() {
     private fun `then verify visitable list`() {
         val visitableList = slotVisitableList.captured
 
-        Assert.assertTrue(visitableList[0] is SuggestionSingleLineViewModel)
-        Assert.assertTrue(visitableList[1] is SuggestionSingleLineViewModel)
-        Assert.assertTrue(visitableList[2] is SuggestionTitleViewModel)
-        Assert.assertTrue(visitableList[3] is SuggestionDoubleLineViewModel)
-        Assert.assertTrue(visitableList[4] is SuggestionDoubleLineViewModel)
-        Assert.assertTrue(visitableList[5] is SuggestionTitleViewModel)
-        Assert.assertTrue(visitableList[6] is SuggestionDoubleLineViewModel)
-        Assert.assertTrue(visitableList[7] is SuggestionDoubleLineViewModel)
-        Assert.assertTrue(visitableList.size == 8)
+        visitableList[0].shouldBeInstanceOf<SuggestionSingleLineViewModel>()
+        visitableList[1].shouldBeInstanceOf<SuggestionSingleLineViewModel>()
+        visitableList[2].shouldBeInstanceOf<SuggestionTitleViewModel>()
+        visitableList[3].shouldBeInstanceOf<SuggestionDoubleLineViewModel>()
+        visitableList[4].shouldBeInstanceOf<SuggestionDoubleLineViewModel>()
+        visitableList[5].shouldBeInstanceOf<SuggestionTitleViewModel>()
+        visitableList[6].shouldBeInstanceOf<SuggestionDoubleLineViewModel>()
+        visitableList[7].shouldBeInstanceOf<SuggestionDoubleLineViewModel>()
+        visitableList[8].shouldBeInstanceOf<SuggestionDoubleLineWithoutImageViewModel>()
+        visitableList[9].shouldBeInstanceOf<SuggestionDoubleLineWithoutImageViewModel>()
+        visitableList.size shouldBe 10
     }
 
     @Test
@@ -103,20 +108,19 @@ internal class SuggestionPresenterTest: SuggestionPresenterTestFixtures() {
         }
     }
 
-
     private fun `then verify visitable list with top shop`() {
         val visitableList = slotVisitableList.captured
 
-        Assert.assertTrue(visitableList[0] is SuggestionSingleLineViewModel)
-        Assert.assertTrue(visitableList[1] is SuggestionSingleLineViewModel)
-        Assert.assertTrue(visitableList[2] is SuggestionSingleLineViewModel)
-        Assert.assertTrue(visitableList[3] is SuggestionSingleLineViewModel)
-        Assert.assertTrue(visitableList[4] is SuggestionSingleLineViewModel)
-        Assert.assertTrue(visitableList[5] is SuggestionTitleViewModel)
-        Assert.assertTrue(visitableList[6] is SuggestionDoubleLineViewModel)
-        Assert.assertTrue(visitableList[7] is SuggestionDoubleLineViewModel)
-        Assert.assertTrue(visitableList[8] is SuggestionDoubleLineViewModel)
-        Assert.assertTrue(visitableList[9] is SuggestionTopShopWidgetViewModel)
-        Assert.assertTrue(visitableList.size == 10)
+        visitableList[0].shouldBeInstanceOf<SuggestionSingleLineViewModel>()
+        visitableList[1].shouldBeInstanceOf<SuggestionSingleLineViewModel>()
+        visitableList[2].shouldBeInstanceOf<SuggestionSingleLineViewModel>()
+        visitableList[3].shouldBeInstanceOf<SuggestionSingleLineViewModel>()
+        visitableList[4].shouldBeInstanceOf<SuggestionSingleLineViewModel>()
+        visitableList[5].shouldBeInstanceOf<SuggestionTitleViewModel>()
+        visitableList[6].shouldBeInstanceOf<SuggestionDoubleLineViewModel>()
+        visitableList[7].shouldBeInstanceOf<SuggestionDoubleLineViewModel>()
+        visitableList[8].shouldBeInstanceOf<SuggestionDoubleLineViewModel>()
+        visitableList[9].shouldBeInstanceOf<SuggestionTopShopWidgetViewModel>()
+        visitableList.size shouldBe 10
     }
 }

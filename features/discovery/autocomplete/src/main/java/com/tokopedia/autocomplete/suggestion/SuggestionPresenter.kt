@@ -7,8 +7,9 @@ import com.tokopedia.autocomplete.suggestion.domain.model.SuggestionTopShop
 import com.tokopedia.autocomplete.suggestion.domain.model.SuggestionUniverse
 import com.tokopedia.autocomplete.suggestion.domain.usecase.SuggestionTrackerUseCase
 import com.tokopedia.autocomplete.suggestion.domain.usecase.SuggestionUseCase
-import com.tokopedia.autocomplete.suggestion.doubleline.convertSuggestionItemToDoubleLineVisitableList
-import com.tokopedia.autocomplete.suggestion.singleline.convertSuggestionItemToSingleLineVisitableList
+import com.tokopedia.autocomplete.suggestion.doubleline.convertToDoubleLineVisitableList
+import com.tokopedia.autocomplete.suggestion.doubleline.convertToDoubleLineWithoutImageVisitableList
+import com.tokopedia.autocomplete.suggestion.singleline.convertToSingleLineVisitableList
 import com.tokopedia.autocomplete.suggestion.title.convertToTitleHeader
 import com.tokopedia.autocomplete.suggestion.topshop.SuggestionTopShopCardViewModel
 import com.tokopedia.autocomplete.suggestion.topshop.convertToTopShopWidgetVisitableList
@@ -98,6 +99,7 @@ class SuggestionPresenter @Inject constructor() : BaseDaggerPresenter<Suggestion
                     SUGGESTION_SINGLE_LINE -> addSingleLineToVisitable(typePosition, item)
                     SUGGESTION_DOUBLE_LINE -> addDoubleLineToVisitable(typePosition, item)
                     SUGGESTION_TOP_SHOP_WIDGET -> addTopShopWidgetToVisitable(typePosition, item, suggestionUniverse.topShop)
+                    SUGGESTION_DOUBLE_LINE_WITHOUT_IMAGE -> addDoubleLineWithoutImageToVisitable(typePosition, item)
                     else -> addSingleLineToVisitable(typePosition, item)
                 }
             }
@@ -111,7 +113,7 @@ class SuggestionPresenter @Inject constructor() : BaseDaggerPresenter<Suggestion
     private fun addSingleLineToVisitable(typePosition: HashMap<String, Int?>, item: SuggestionItem) {
         typePosition.incrementPosition(item.type)
         typePosition[item.type]?.let {
-            item.convertSuggestionItemToSingleLineVisitableList(getQueryKey(), position = it)
+            item.convertToSingleLineVisitableList(getQueryKey(), position = it)
         }?.let {
             listVisitable.add(
                     it
@@ -121,7 +123,7 @@ class SuggestionPresenter @Inject constructor() : BaseDaggerPresenter<Suggestion
 
     private fun addDoubleLineToVisitable(typePosition: HashMap<String, Int?>, item: SuggestionItem) {
         typePosition.incrementPosition(item.type)
-        typePosition[item.type]?.let { item.convertSuggestionItemToDoubleLineVisitableList(getQueryKey(), position = it) }?.let {
+        typePosition[item.type]?.let { item.convertToDoubleLineVisitableList(getQueryKey(), position = it) }?.let {
             listVisitable.add(
                     it
             )
@@ -138,6 +140,15 @@ class SuggestionPresenter @Inject constructor() : BaseDaggerPresenter<Suggestion
                         it
                 )
             }
+        }
+    }
+
+    private fun addDoubleLineWithoutImageToVisitable(typePosition: HashMap<String, Int?>, item: SuggestionItem) {
+        typePosition.incrementPosition(item.type)
+        typePosition[item.type]?.let { item.convertToDoubleLineWithoutImageVisitableList(getQueryKey(), position = it) }?.let {
+            listVisitable.add(
+                    it
+            )
         }
     }
 
