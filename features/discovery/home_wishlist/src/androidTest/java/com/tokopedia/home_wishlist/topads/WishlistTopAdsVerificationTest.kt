@@ -18,6 +18,7 @@ import com.tokopedia.test.application.assertion.topads.TopAdsAssertion
 import com.tokopedia.test.application.environment.callback.TopAdsVerificatorInterface
 import com.tokopedia.test.application.espresso_component.CommonActions.clickOnEachItemRecyclerView
 import androidx.test.espresso.intent.rule.IntentsTestRule
+import com.tokopedia.home_wishlist.view.viewholder.BannerTopAdsViewHolder
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import org.junit.After
 import org.junit.Before
@@ -83,6 +84,9 @@ class WishlistTopAdsVerificationTest {
             }
             is DynamicCarouselRecommendationViewHolder -> {
                 clickOnEachItemRecyclerView(viewHolder.itemView, R.id.carouselProductCardRecyclerView, 0)
+            }
+            is BannerTopAdsViewHolder -> {
+                activityRule.runOnUiThread { viewHolder.itemView.findViewById<View>(R.id.wishlist_topads_image_view).performClick() }
             }
         }
     }
