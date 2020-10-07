@@ -1,9 +1,18 @@
 package com.tokopedia.home_recom.topads
 
+import android.app.Activity
+import android.app.Instrumentation
+import android.view.View
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.test.rule.ActivityTestRule
+import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.matcher.IntentMatchers
+import androidx.test.espresso.intent.rule.IntentsTestRule
 import com.tokopedia.home_recom.R
 import com.tokopedia.home_recom.activity.HomeRecommendationActivityTest
+import com.tokopedia.home_recom.view.viewholder.RecommendationCarouselViewHolder
+import com.tokopedia.home_recom.view.viewholder.RecommendationItemViewHolder
 import com.tokopedia.test.application.assertion.topads.TopAdsAssertion
 import com.tokopedia.test.application.environment.callback.TopAdsVerificatorInterface
 import com.tokopedia.test.application.espresso_component.CommonActions.clickOnEachItemRecyclerView
@@ -21,10 +30,12 @@ class HomeRecomTopAdsVerificationTest {
     private var topAdsAssertion: TopAdsAssertion? = null
 
     @get:Rule
-    var activityRule: ActivityTestRule<HomeRecommendationActivityTest> = ActivityTestRule(HomeRecommendationActivityTest::class.java)
+    var activityRule: IntentsTestRule<HomeRecommendationActivityTest> = IntentsTestRule(HomeRecommendationActivityTest::class.java)
 
     @Before
     fun setTopAdsAssertion() {
+        Intents.intending(IntentMatchers.isInternal()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
+
         topAdsAssertion = TopAdsAssertion(
                 activityRule.activity,
                 activityRule.activity.application as TopAdsVerificatorInterface
@@ -44,14 +55,35 @@ class HomeRecomTopAdsVerificationTest {
         waitForData()
 
         val recyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.recycler_view)
+        val itemCount = recyclerView.adapter?.itemCount?:0
 
-        clickOnEachItemRecyclerView(activityRule.activity.findViewById(com.tokopedia.home_recom.test.R.id.container_home), recyclerView.id, 0)
+        for (i in 0 until itemCount) {
+            scrollHomeRecyclerViewToPosition(recyclerView, i)
+            checkProductOnDynamicChannel(recyclerView, i)
+        }
         topAdsAssertion?.assert()
     }
 
     private fun waitForData() {
         Thread.sleep(5000)
     }
+
+    private fun scrollHomeRecyclerViewToPosition(homeRecyclerView: RecyclerView, position: Int) {
+        val layoutManager = homeRecyclerView.layoutManager as StaggeredGridLayoutManager
+        activityRule.runOnUiThread { layoutManager.scrollToPositionWithOffset(position, 0) }
+    }
+
+    private fun checkProductOnDynamicChannel(homeRecyclerView: RecyclerView, i: Int) {
+        when (val viewHolder = homeRecyclerView.findViewHolderForAdapterPosition(i)) {
+            is RecommendationItemViewHolder -> {
+                activityRule.runOnUiThread { viewHolder.itemView.findViewById<View>(R.id.product_item).performClick() }
+            }
+            is RecommendationCarouselViewHolder -> {
+                clickOnEachItemRecyclerView(viewHolder.itemView, R.id.carouselProductCardRecyclerView, 0)
+            }
+        }
+    }
+
 
     private fun login() {
         InstrumentationAuthHelper.loginInstrumentationTestTopAdsUser()

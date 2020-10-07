@@ -28,7 +28,7 @@ class WishlistTopAdsVerificationTest {
     private var topAdsAssertion: TopAdsAssertion? = null
 
     @get:Rule
-    var activityRule: IntentsTestRule<InstrumentationWishlistTestActivity> = ActivityTestRule(InstrumentationWishlistTestActivity::class.java)
+    var activityRule: IntentsTestRule<InstrumentationWishlistTestActivity> = IntentsTestRule(InstrumentationWishlistTestActivity::class.java)
 
     @Before
     fun setTopAdsAssertion() {
