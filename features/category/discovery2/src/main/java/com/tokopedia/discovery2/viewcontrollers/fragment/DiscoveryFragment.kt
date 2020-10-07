@@ -10,7 +10,6 @@ import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.widget.ImageView
 import android.widget.ProgressBar
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
@@ -30,12 +29,15 @@ import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.data.PageInfo
 import com.tokopedia.discovery2.di.DaggerDiscoveryComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.ACTIVE_TAB
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.CATEGORY_ID
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.COMPONENT_ID
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.EMBED_CATEGORY
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.END_POINT
-import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.PINNED_ACTIVE_TAB
-import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.PINNED_COMPONENT_ID
-import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.PINNED_COMP_ID
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.PIN_PRODUCT
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.PRODUCT_ID
-import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.SOURCE_QUERY
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.SOURCE
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.TARGET_COMP_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.lihatsemua.LihatSemuaViewHolder
@@ -78,7 +80,7 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
     private lateinit var discoveryAdapter: DiscoveryRecycleAdapter
     private val analytics: DiscoveryAnalytics by lazy {
         DiscoveryAnalytics(trackingQueue = trackingQueue, pagePath = discoveryViewModel.pagePath, pageType = discoveryViewModel.pageType,
-                pageIdentifier = discoveryViewModel.pageIdentifier, campaignCode = discoveryViewModel.campaignCode, sourceIdentifier = arguments?.getString(SOURCE_QUERY, "")
+                pageIdentifier = discoveryViewModel.pageIdentifier, campaignCode = discoveryViewModel.campaignCode, sourceIdentifier = arguments?.getString(SOURCE, "")
                 ?: "")
     }
     private lateinit var mSwipeRefreshLayout: SwipeRefreshLayout
@@ -100,15 +102,22 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
             if (!endPoint.isNullOrEmpty()) {
                 bundle.putString(END_POINT, endPoint)
             }
-            queryParameterMap?.let {
-                bundle.putString(SOURCE_QUERY, queryParameterMap[SOURCE_QUERY])
-                bundle.putString(PINNED_COMPONENT_ID, queryParameterMap[PINNED_COMPONENT_ID])
-                bundle.putString(PINNED_ACTIVE_TAB, queryParameterMap[PINNED_ACTIVE_TAB])
-                bundle.putString(PINNED_COMP_ID, queryParameterMap[PINNED_COMP_ID])
-                bundle.putString(PRODUCT_ID, queryParameterMap[PRODUCT_ID])
-            }
+            getQueryParams(bundle, queryParameterMap)
             fragment.arguments = bundle
             return fragment
+        }
+
+        private fun getQueryParams(bundle: Bundle, queryParameterMap: Map<String, String?>?) {
+            queryParameterMap?.let {
+                bundle.putString(SOURCE, queryParameterMap[SOURCE])
+                bundle.putString(COMPONENT_ID, queryParameterMap[COMPONENT_ID])
+                bundle.putString(ACTIVE_TAB, queryParameterMap[ACTIVE_TAB])
+                bundle.putString(TARGET_COMP_ID, queryParameterMap[TARGET_COMP_ID])
+                bundle.putString(PRODUCT_ID, queryParameterMap[PRODUCT_ID])
+                bundle.putString(PIN_PRODUCT, queryParameterMap[PIN_PRODUCT])
+                bundle.putString(CATEGORY_ID, queryParameterMap[CATEGORY_ID])
+                bundle.putString(EMBED_CATEGORY, queryParameterMap[EMBED_CATEGORY])
+            }
         }
     }
 
@@ -171,7 +180,6 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
         })
     }
 
-
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         discoveryViewModel = (activity as DiscoveryActivity).getViewModel()
@@ -210,6 +218,9 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
                     mProgressBar.hide()
                     stopDiscoveryPagePerformanceMonitoring()
                 }
+                is Fail -> {
+                    mProgressBar.hide()
+                }
             }
             mSwipeRefreshLayout.isRefreshing = false
         })
@@ -241,22 +252,25 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
                     ivShare.hide()
                     mProgressBar.hide()
                     mSwipeRefreshLayout.isRefreshing = false
-
-                    if (it.throwable is UnknownHostException
-                            || it.throwable is SocketTimeoutException) {
-                        globalError.setType(GlobalError.NO_CONNECTION)
-                    } else {
-                        globalError.setType(GlobalError.SERVER_ERROR)
-                        Timber.w("P2#DISCOVERY_PAGE_ERROR#'${discoveryViewModel.pageIdentifier}';path='${discoveryViewModel.pagePath}';type='${discoveryViewModel.pageType}';err='${Log.getStackTraceString(it.throwable)}'")
-                    }
-                    globalError.show()
-                    globalError.setOnClickListener {
-                        globalError.hide()
-                        fetchDiscoveryPageData()
-                    }
+                    setPageErrorState(it)
                 }
             }
         })
+    }
+
+    private fun setPageErrorState(it: Fail) {
+        if (it.throwable is UnknownHostException
+                || it.throwable is SocketTimeoutException) {
+            globalError.setType(GlobalError.NO_CONNECTION)
+        } else {
+            globalError.setType(GlobalError.SERVER_ERROR)
+            Timber.w("P2#DISCOVERY_PAGE_ERROR#'${discoveryViewModel.pageIdentifier}';path='${discoveryViewModel.pagePath}';type='${discoveryViewModel.pageType}';err='${Log.getStackTraceString(it.throwable)}'")
+        }
+        globalError.show()
+        globalError.setActionClickListener {
+            globalError.hide()
+            showLoadingWithRefresh()
+        }
     }
 
     private fun fetchDiscoveryPageData() {
@@ -265,7 +279,7 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
 
     private fun scrollToPinnedComponent(listComponent: List<ComponentsItem>) {
         if (!pinnedAlreadyScrolled) {
-            val pinnedComponentId = arguments?.getString(PINNED_COMPONENT_ID, "")
+            val pinnedComponentId = arguments?.getString(COMPONENT_ID, "")
             if (!pinnedComponentId.isNullOrEmpty()) {
                 val position = discoveryViewModel.scrollToPinnedComponent(listComponent, pinnedComponentId)
                 if (position >= 0) {
@@ -322,6 +336,11 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
 
     fun getDiscoveryAnalytics(): DiscoveryAnalytics {
         return analytics
+    }
+
+    private fun showLoadingWithRefresh() {
+        mProgressBar.show()
+        refreshPage()
     }
 
     override fun onPause() {

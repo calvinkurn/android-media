@@ -53,7 +53,8 @@ class MixTopComponentCallback(val homeCategoryListener: HomeCategoryListener)
     }
 
     override fun onProductCardClicked(channel: ChannelModel, channelGrid: ChannelGrid, adapterPosition: Int, position: Int, applink: String) {
-        val product = MixTopTracking.mapGridToProductTrackerComponent(channelGrid, channel.id, position+1, channel.trackingAttributionModel.persoType, channel.trackingAttributionModel.categoryId, channel.channelHeader.name, channel.pageName)
+        val product = MixTopTracking.mapGridToProductTrackerComponent(
+                channelGrid, channel.id, position+1, channel.trackingAttributionModel.persoType, channel.trackingAttributionModel.categoryId, channel.channelHeader.name, channel.pageName)
         homeCategoryListener.sendEETracking(MixTopTracking.getMixTopClick(
                 listOf(product),
                 channel.channelHeader.name,
