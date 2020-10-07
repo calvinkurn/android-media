@@ -18,7 +18,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.crashlytics.android.Crashlytics;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.config.GlobalConfig;
@@ -36,6 +35,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.SpacingItemDecoration;
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils;
 import com.tokopedia.media.loader.Loader;
+import com.tokopedia.media.loader.wrapper.MediaCacheStrategy;
 import com.tokopedia.unifyprinciples.Typography;
 
 import java.util.Date;
@@ -192,7 +192,7 @@ public class SprintSaleCarouselViewHolder extends AbstractViewHolder<DynamicChan
             try {
                 final DynamicHomeChannel.Grid grid = list[position];
                 Loader.loadImage(holder.imageView, grid.getImageUrl(), properties -> {
-                    properties.setCacheStrategy(DiskCacheStrategy.RESOURCE);
+                    properties.setCacheStrategy(MediaCacheStrategy.RESOURCE);
                     return null;
                 });
                 holder.price1.setText(grid.getSlashedPrice());

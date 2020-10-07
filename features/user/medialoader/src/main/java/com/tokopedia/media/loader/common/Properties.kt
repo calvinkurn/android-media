@@ -4,10 +4,9 @@ import android.graphics.Bitmap
 import com.bumptech.glide.load.DecodeFormat
 import com.bumptech.glide.load.Key
 import com.bumptech.glide.load.Transformation
-import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.signature.ObjectKey
 import com.tokopedia.media.loader.R
 import com.tokopedia.media.loader.data.Resize
+import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
 
 open class Properties(
         var thumbnailUrl: String = "",
@@ -17,7 +16,7 @@ open class Properties(
         var signature: Key? = null,
         var error: Int = R.drawable.ic_media_default_error,
         var placeHolder: Int = R.drawable.ic_media_default_placeholder,
-        var cacheStrategy: DiskCacheStrategy? = DiskCacheStrategy.DATA,
+        var cacheStrategy: MediaCacheStrategy? = MediaCacheStrategy.DATA,
         var overrideSize: Resize? = null,
         var decodeFormat: DecodeFormat? = DecodeFormat.DEFAULT,
         var loaderListener: LoaderStateListener? = null,

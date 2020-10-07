@@ -4,6 +4,7 @@ import android.graphics.drawable.Drawable
 import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.model.GlideUrl
+import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.media.loader.GlideBuilder.loadGifImage
 import com.tokopedia.media.loader.common.Properties
 import com.tokopedia.media.loader.common.UrlBuilder
@@ -48,6 +49,7 @@ fun ImageView?.clearImage() {
 
 @PublishedApi
 internal fun ImageView.call(url: String?, properties: Properties) {
+    if (url.toEmptyStringIfNull().isEmpty()) return
     builder(UrlBuilder.urlBuilder(context, url), properties)
 }
 

@@ -1,9 +1,6 @@
 package com.tokopedia.home.explore.view.adapter.viewholder;
 
 import android.content.Context;
-import androidx.annotation.LayoutRes;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,16 +9,20 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.tokopedia.home.R;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.home.R;
 import com.tokopedia.home.explore.domain.model.LayoutRows;
 import com.tokopedia.home.explore.listener.CategoryAdapterListener;
 import com.tokopedia.home.explore.view.adapter.viewmodel.CategoryGridListViewModel;
 import com.tokopedia.media.loader.Loader;
+import com.tokopedia.media.loader.wrapper.MediaCacheStrategy;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import androidx.annotation.LayoutRes;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * Created by errysuprayogi on 1/26/18.
@@ -90,7 +91,7 @@ public class CategoryGridListViewHolder extends AbstractViewHolder<CategoryGridL
                 }
                 if (rowModel.getImageUrl() != null) {
                     Loader.loadImage(holder.icon, rowModel.getImageUrl(), properties -> {
-                        properties.setCacheStrategy(DiskCacheStrategy.RESOURCE);
+                        properties.setCacheStrategy(MediaCacheStrategy.RESOURCE);
                         return null;
                     });
                 }

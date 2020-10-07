@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.home.R;
 import com.tokopedia.home.analytics.HomePageTracking;
@@ -17,6 +16,7 @@ import com.tokopedia.home.beranda.listener.HomeCategoryListener;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.UseCaseIconSectionDataModel;
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils;
 import com.tokopedia.media.loader.Loader;
+import com.tokopedia.media.loader.wrapper.MediaCacheStrategy;
 
 import androidx.annotation.LayoutRes;
 import androidx.appcompat.widget.AppCompatImageView;
@@ -80,7 +80,7 @@ public class UseCaseIconSectionViewHolder extends AbstractViewHolder<UseCaseIcon
         public void onBindViewHolder(UseCaseIconViewHolder holder, final int position) {
             holder.title.setText(sectionViewModel.getItemList().get(position).getName());
             Loader.loadImage(holder.icon, sectionViewModel.getItemList().get(position).getImageUrl(), properties -> {
-                properties.setCacheStrategy(DiskCacheStrategy.RESOURCE);
+                properties.setCacheStrategy(MediaCacheStrategy.RESOURCE);
                 return null;
             });
             holder.container.setOnClickListener(new View.OnClickListener() {

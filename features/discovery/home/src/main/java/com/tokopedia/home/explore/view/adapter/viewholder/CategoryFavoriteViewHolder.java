@@ -1,10 +1,6 @@
 package com.tokopedia.home.explore.view.adapter.viewholder;
 
 import android.content.Context;
-import androidx.annotation.LayoutRes;
-import androidx.cardview.widget.CardView;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,17 +8,22 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.home.analytics.HomePageTracking;
 import com.tokopedia.home.R;
+import com.tokopedia.home.analytics.HomePageTracking;
 import com.tokopedia.home.explore.domain.model.LayoutRows;
 import com.tokopedia.home.explore.listener.CategoryAdapterListener;
 import com.tokopedia.home.explore.view.adapter.viewmodel.CategoryFavoriteViewModel;
 import com.tokopedia.media.loader.Loader;
+import com.tokopedia.media.loader.wrapper.MediaCacheStrategy;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import androidx.annotation.LayoutRes;
+import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * Created by errysuprayogi on 1/31/18.
@@ -106,7 +107,7 @@ public class CategoryFavoriteViewHolder extends AbstractViewHolder<CategoryFavor
             final LayoutRows rowModel = data.get(position);
             holder.title.setText(rowModel.getName());
             Loader.loadImage(holder.icon, rowModel.getImageUrl(), properties -> {
-                properties.setCacheStrategy(DiskCacheStrategy.RESOURCE);
+                properties.setCacheStrategy(MediaCacheStrategy.RESOURCE);
                 return null;
             });
             holder.container.setOnClickListener(new View.OnClickListener() {

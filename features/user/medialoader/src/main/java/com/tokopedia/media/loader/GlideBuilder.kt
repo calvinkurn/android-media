@@ -18,6 +18,8 @@ import com.bumptech.glide.request.target.Target
 import com.tokopedia.media.loader.common.LoaderStateListener
 import com.tokopedia.media.loader.data.Resize
 import com.tokopedia.media.loader.module.GlideApp
+import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
+import com.tokopedia.media.loader.wrapper.MediaCacheStrategy.Companion.mapToDiskCacheStrategy
 import timber.log.Timber
 
 object GlideBuilder {
@@ -42,7 +44,7 @@ object GlideBuilder {
             url: GlideUrl?,
             radius: Float = 0f,
             signatureKey: Key?,
-            cacheStrategy: DiskCacheStrategy?,
+            cacheStrategy: MediaCacheStrategy?,
             @DrawableRes placeHolder: Int = 0,
             @DrawableRes resOnError: Int,
             isAnimate: Boolean = false,
@@ -77,7 +79,7 @@ object GlideBuilder {
                 if (!isAnimate) dontAnimate()
 
                 drawableError?.let { drawable -> error(drawable) }
-                cacheStrategy?.let { diskCacheStrategy(it) }
+                cacheStrategy?.let { diskCacheStrategy(mapToDiskCacheStrategy(it)) }
                 transforms?.let { localTransform.addAll(it) }
 
                 if (localTransform.isNotEmpty()) {
