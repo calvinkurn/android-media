@@ -3,6 +3,7 @@ package com.tokopedia.home.account.presentation.view.buyercardview;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -12,6 +13,7 @@ import androidx.appcompat.widget.AppCompatImageView;
 import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
+import androidx.core.content.ContextCompat;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
@@ -255,7 +257,9 @@ public class BuyerCardView extends BaseCustomView implements BuyerCardContract.V
     @Override
     public void showSellerAccountCard(String shopName) {
         Typography shopNameTxt = sellerAccountCard.findViewById(R.id.shopName);
+        FrameLayout iconContainer = sellerAccountCard.findViewById(R.id.iconContainer);
         shopNameTxt.setText(MethodChecker.fromHtml(getContext().getString(R.string.account_home_shop_name_card, shopName)));
+        iconContainer.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.ic_open_shop_ellipse));
 
         sellerAccountCard.setOnClickListener(v -> {
             RouteManager.route(getContext(), ApplinkConstInternalSellerapp.SELLER_MENU);

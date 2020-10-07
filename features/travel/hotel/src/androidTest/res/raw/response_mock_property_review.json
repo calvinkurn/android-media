@@ -1,0 +1,75 @@
+[
+  {
+    "data": {
+      "propertyReview": {
+        "item": [
+          {
+            "id": "1076729205",
+            "propertyId": 488573,
+            "reviewerId": 0,
+            "name": "Georeen",
+            "score": 10,
+            "headline": "Exceptional",
+            "pros": "I Super love the privacy we had in our Villa! The whole place wS lovely. It was so magical and I wish to go back to this place.",
+            "cons": "",
+            "createTime": "2019-02-13T22:19:40+0000",
+            "country": "Singapore"
+          },
+          {
+            "id": "1331829614",
+            "propertyId": 488573,
+            "reviewerId": 0,
+            "name": "Genevieve",
+            "score": 10,
+            "headline": "Great vacation",
+            "pros": "Excellent. Will definitely come back",
+            "cons": "",
+            "createTime": "2018-11-05T15:10:31+0000",
+            "country": "Uni Emirat Arab"
+          },
+          {
+            "id": "1440110947",
+            "propertyId": 488573,
+            "reviewerId": 0,
+            "name": "Jacqueline",
+            "score": 10,
+            "headline": "A place of peace.",
+            "pros": "The property has been set up so elegantly and serenely, with beautiful areas to sit in and enjoy the views.",
+            "cons": "",
+            "createTime": "2020-02-03T20:16:53+0000",
+            "country": "Australia"
+          },
+          {
+            "id": "1483340875",
+            "propertyId": 488573,
+            "reviewerId": 0,
+            "name": "Mélanie",
+            "score": 10,
+            "headline": "Stunning ",
+            "pros": "I was really impressed with the hotel and will definitely come back. Everything was perfect, every inch of this property is beautiful and perfectly maintained, the pool villa is the most beautiful room we had so far in all the hotels we stayed at and the personal was attentive and very friendly. The decoration is absolutely stunning and all the furniture were a very good quality. Food was also good and reasonable prices. \n\nI enjoyed the peaceful and quiet atmosphere and the privacy of the villa. This hotel constitutes the ultimate luxury for the best value of money.\n\n\n\n",
+            "cons": "The beach is not a one to swim but this black sand is gorgeous! ",
+            "createTime": "2018-10-06T00:57:48+0000",
+            "country": "Swiss"
+          },
+          {
+            "id": "1562938274",
+            "propertyId": 488573,
+            "reviewerId": 0,
+            "name": "Zixi",
+            "score": 10,
+            "headline": "Exceptional",
+            "pros": "Everything was perfect with this place! It is quiet, beautiful, clean. Staff was very attentive. Loved the morning yoga. ",
+            "cons": "Sometimes the open space bathroom is not very sound proof. We could hear everything from neighbors. Which can be awkward in the bathroom.",
+            "createTime": "2019-05-07T10:48:02+0000",
+            "country": "Taiwan"
+          }
+        ],
+        "totalReview": 213,
+        "totalReviewByCountry": 0,
+        "averageScoreReview": 9.1,
+        "hasNext": true,
+        "headline": "Luar Biasa"
+      }
+    }
+  }
+]
