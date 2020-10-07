@@ -6,11 +6,7 @@ import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.SearchProductModel
-import com.tokopedia.search.result.presentation.model.CpmViewModel
-import com.tokopedia.search.result.presentation.model.ProductItemViewModel
-import com.tokopedia.search.result.presentation.model.SearchInTokopediaViewModel
-import com.tokopedia.search.result.presentation.model.SearchProductTitleViewModel
-import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
+import com.tokopedia.search.result.presentation.model.*
 import com.tokopedia.search.shouldBe
 import com.tokopedia.search.shouldBeInstanceOf
 import io.mockk.*
@@ -133,7 +129,7 @@ internal class SearchProductLocalSearchTest: ProductListPresenterTestFixtures() 
     }
 
     @Test
-    fun `Empty search should not get Recommendation`() {
+    fun `Empty search during local search`() {
         val searchProductModel = searchProductLocalSearchEmptyJSON.jsonToObject<SearchProductModel>()
 
         `Given Search Product API will return SearchProductModel`(searchProductModel)
@@ -142,12 +138,25 @@ internal class SearchProductLocalSearchTest: ProductListPresenterTestFixtures() 
         `When Load Data`(searchParameter)
 
         `Then verify recommendation use case not called`()
+        `Then verify empty search view model for local search`()
     }
 
     private fun `Then verify recommendation use case not called`() {
         verify(exactly = 0) {
             recommendationUseCase.execute(any(), any())
         }
+    }
+
+    private fun `Then verify empty search view model for local search`() {
+        val emptySearchViewModelSlot = slot<EmptySearchProductViewModel>()
+        verify {
+            productListView.setEmptyProduct(null, capture(emptySearchViewModelSlot))
+        }
+
+        val emptySearchViewModel = emptySearchViewModelSlot.captured
+        emptySearchViewModel.isFilterActive shouldBe false
+        emptySearchViewModel.isLocalSearch shouldBe true
+        emptySearchViewModel.globalSearchApplink shouldBe "${ApplinkConstInternalDiscovery.SEARCH_RESULT}?q=asus"
     }
 
     @Test

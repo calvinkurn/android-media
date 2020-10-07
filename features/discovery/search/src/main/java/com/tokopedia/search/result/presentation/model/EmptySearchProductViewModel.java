@@ -6,7 +6,9 @@ import com.tokopedia.search.result.presentation.view.typefactory.ProductListType
 public class EmptySearchProductViewModel implements Visitable<ProductListTypeFactory> {
 
     private boolean bannerAdsAllowed = true;
-    private boolean isFilterActive;
+    private boolean isFilterActive = false;
+    private boolean isLocalSearch = false;
+    private String globalSearchApplink = "";
 
     public boolean isBannerAdsAllowed() {
         return bannerAdsAllowed;
@@ -22,6 +24,22 @@ public class EmptySearchProductViewModel implements Visitable<ProductListTypeFac
 
     public boolean getIsFilterActive() {
         return isFilterActive;
+    }
+
+    public boolean isLocalSearch() {
+        return isLocalSearch;
+    }
+
+    public void setLocalSearch(boolean localSearch) {
+        isLocalSearch = localSearch;
+    }
+
+    public String getGlobalSearchApplink() {
+        return globalSearchApplink;
+    }
+
+    public void setGlobalSearchApplink(String globalSearchApplink) {
+        this.globalSearchApplink = globalSearchApplink;
     }
 
     @Override
