@@ -2,18 +2,13 @@ package com.tokopedia.entertainment.pdp.fragment
 
 import android.app.Activity
 import android.content.Intent
-import android.graphics.Typeface
 import android.os.Bundle
-import android.text.Spannable
-import android.text.SpannableStringBuilder
-import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
@@ -29,22 +24,21 @@ import com.tokopedia.entertainment.common.util.EventQuery
 import com.tokopedia.entertainment.common.util.EventQuery.eventContentById
 import com.tokopedia.entertainment.common.util.EventQuery.mutationVerifyV2
 import com.tokopedia.entertainment.pdp.activity.EventCheckoutActivity
-import com.tokopedia.entertainment.pdp.adapter.factory.PackageTypeFactory
-import com.tokopedia.entertainment.pdp.data.EventPDPTicketModel
-import com.tokopedia.entertainment.pdp.di.EventPDPComponent
-import com.tokopedia.entertainment.pdp.viewmodel.EventPDPTicketViewModel
-import kotlinx.android.synthetic.main.ent_ticket_listing_fragment.*
-import com.tokopedia.entertainment.pdp.activity.EventPDPTicketActivity.Companion.EXTRA_URL_PDP
-import com.tokopedia.entertainment.pdp.activity.EventPDPTicketActivity.Companion.START_DATE
-import com.tokopedia.entertainment.pdp.activity.EventPDPTicketActivity.Companion.SELECTED_DATE
 import com.tokopedia.entertainment.pdp.activity.EventPDPTicketActivity.Companion.END_DATE
+import com.tokopedia.entertainment.pdp.activity.EventPDPTicketActivity.Companion.EXTRA_URL_PDP
+import com.tokopedia.entertainment.pdp.activity.EventPDPTicketActivity.Companion.SELECTED_DATE
+import com.tokopedia.entertainment.pdp.activity.EventPDPTicketActivity.Companion.START_DATE
 import com.tokopedia.entertainment.pdp.adapter.EventPDPParentPackageAdapter
+import com.tokopedia.entertainment.pdp.adapter.factory.PackageTypeFactory
 import com.tokopedia.entertainment.pdp.adapter.factory.PackageTypeFactoryImpl
 import com.tokopedia.entertainment.pdp.analytic.EventPDPTracking
 import com.tokopedia.entertainment.pdp.common.util.CurrencyFormatter.getRupiahFormat
+import com.tokopedia.entertainment.pdp.data.EventPDPTicketModel
 import com.tokopedia.entertainment.pdp.data.PackageItem
 import com.tokopedia.entertainment.pdp.data.ProductDetailData
-import com.tokopedia.entertainment.pdp.data.pdp.*
+import com.tokopedia.entertainment.pdp.data.pdp.ItemMap
+import com.tokopedia.entertainment.pdp.data.pdp.MetaDataResponse
+import com.tokopedia.entertainment.pdp.data.pdp.VerifyRequest
 import com.tokopedia.entertainment.pdp.data.pdp.mapper.EventDateMapper.getActiveDate
 import com.tokopedia.entertainment.pdp.data.pdp.mapper.EventVerifyMapper.getInitialVerify
 import com.tokopedia.entertainment.pdp.data.pdp.mapper.EventVerifyMapper.getItemIds
@@ -52,21 +46,20 @@ import com.tokopedia.entertainment.pdp.data.pdp.mapper.EventVerifyMapper.getItem
 import com.tokopedia.entertainment.pdp.data.pdp.mapper.EventVerifyMapper.getListItemMap
 import com.tokopedia.entertainment.pdp.data.pdp.mapper.EventVerifyMapper.getTotalPrice
 import com.tokopedia.entertainment.pdp.data.pdp.mapper.EventVerifyMapper.getTotalQuantity
+import com.tokopedia.entertainment.pdp.di.EventPDPComponent
 import com.tokopedia.entertainment.pdp.listener.OnBindItemTicketListener
 import com.tokopedia.entertainment.pdp.listener.OnCoachmarkListener
+import com.tokopedia.entertainment.pdp.viewmodel.EventPDPTicketViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.unifycomponents.toDp
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.custom_event_expandable_parent.view.*
 import kotlinx.android.synthetic.main.ent_ticket_listing_activity.*
-import kotlinx.android.synthetic.main.item_event_pdp_parent_ticket.view.*
+import kotlinx.android.synthetic.main.ent_ticket_listing_fragment.*
 import kotlinx.android.synthetic.main.widget_event_pdp_calendar.view.*
 import java.util.*
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 
 class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageTypeFactory>(),
-        OnBindItemTicketListener, OnCoachmarkListener{
+        OnBindItemTicketListener, OnCoachmarkListener {
 
     private var urlPDP = ""
     private var startDate = ""
@@ -84,7 +77,7 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageType
     private var eventVerifyRequest: VerifyRequest = VerifyRequest()
     private var hashItemMap: HashMap<String, ItemMap> = hashMapOf()
     private var pdpData: ProductDetailData = ProductDetailData()
-    private var packageTypeFactoryImp = PackageTypeFactoryImpl(this,this)
+    private var packageTypeFactoryImp = PackageTypeFactoryImpl(this, this)
 
     @Inject
     lateinit var viewModel: EventPDPTicketViewModel
@@ -111,7 +104,7 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageType
     override fun getSwipeRefreshLayoutResourceId(): Int = R.id.swipe_refresh_layout
 
     override fun loadData(p0: Int) {
-        viewModel.getData(urlPDP, selectedDate, swipe_refresh_layout.isRefreshing, EventQuery.eventPDPV3(),
+        viewModel.getData(urlPDP, selectedDate, true, EventQuery.eventPDPV3(),
                 eventContentById())
     }
 
@@ -142,13 +135,13 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageType
 
     override fun quantityEditorValueButtonClicked(idPackages: String, idPackagesItem: String, packageItem: PackageItem, totalPrice: Int,
                                                   qty: String, isError: Boolean, product_name: String,
-                                                  product_id: String, price: String, selectedDate: String, packageName:String) {
+                                                  product_id: String, price: String, selectedDate: String, packageName: String) {
         if (!idPackageActive.equals(idPackages)) {
             hashItemMap.clear()
             idPackageActive = idPackages
         }
 
-        if(qty.toInt() > EMPTY_QTY) {
+        if (qty.toInt() > EMPTY_QTY) {
             hashItemMap.put(idPackagesItem, getItemMap(packageItem, pdpData, qty.toInt(), totalPrice, selectedDate, idPackageActive, packageName))
         } else {
             hashItemMap.remove(idPackagesItem)
@@ -241,7 +234,7 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageType
             eventVerifyRequest.cartdata.metadata.itemIds = getItemIds(hashItemMap)
             eventVerifyRequest.cartdata.metadata.itemMaps = getListItemMap(hashItemMap)
             eventVerifyRequest.cartdata.metadata.quantity = getTotalQuantity(hashItemMap)
-            eventPDPTracking.onClickPesanTiket(viewModel.categoryData,PACKAGES_ID,getListItemMap(hashItemMap))
+            eventPDPTracking.onClickPesanTiket(viewModel.categoryData, PACKAGES_ID, getListItemMap(hashItemMap))
             viewModel.verify(mutationVerifyV2(), eventVerifyRequest)
         }
     }
@@ -272,27 +265,27 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageType
     }
 
     private fun observeData() {
-        viewModel.ticketModel.observe(this, Observer {
+        viewModel.ticketModel.observe(viewLifecycleOwner, Observer {
             clearAllData()
             swipe_refresh_layout.isRefreshing = false
             it?.run { renderList(this) }
             showUbah(true)
         })
 
-        viewModel.error.observe(this, Observer {
+        viewModel.error.observe(viewLifecycleOwner, Observer {
             NetworkErrorHelper.createSnackbarRedWithAction(activity, String.format(it)) {
                 showViewBottom(false)
                 loadInitialData()
             }.showRetrySnackbar()
         })
 
-        viewModel.productDetailEntity.observe(this, Observer {
+        viewModel.productDetailEntity.observe(viewLifecycleOwner, Observer {
             pdpData = it.eventProductDetail.productDetailData
             eventVerifyRequest = getInitialVerify(pdpData)
 
         })
 
-        viewModel.verifyResponse.observe(this, Observer {
+        viewModel.verifyResponse.observe(viewLifecycleOwner, Observer {
             metaDataResponse = it.eventVerify.metadata
             if (userSession.isLoggedIn) {
                 startActivity(EventCheckoutActivity.createIntent(context!!, urlPDP, metaDataResponse, idPackageActive))
@@ -302,7 +295,7 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageType
             }
         })
 
-        viewModel.eventHoliday.observe(this, Observer {
+        viewModel.eventHoliday.observe(viewLifecycleOwner, Observer {
             listHoliday = it
             setupBottomSheet()
         })
@@ -336,7 +329,7 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageType
         return localCacheHandler.getBoolean(SHOW_COACH_MARK_KEY, true)
     }
 
-    override fun showCoachMark(view: View, height:Int) {
+    override fun showCoachMark(view: View, height: Int) {
         val coachMark = CoachMarkBuilder().build().apply {
             enableSkip = true
         }
@@ -352,7 +345,7 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageType
         }
     }
 
-    private fun getCoachMarkItems(view: View):ArrayList<CoachMarkItem>{
+    private fun getCoachMarkItems(view: View): ArrayList<CoachMarkItem> {
         return arrayListOf(CoachMarkItem(
                 view,
                 getString(R.string.ent_home_coachmark_title),

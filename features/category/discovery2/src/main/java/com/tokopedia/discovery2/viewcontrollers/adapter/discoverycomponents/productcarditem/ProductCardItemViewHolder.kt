@@ -129,15 +129,14 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
             setSlashedPrice(dataItem.discountedPrice)
             textViewPrice.setTextAndCheckShow(dataItem.price)
             showOutOfStockLabel(dataItem.stock, PRODUCT_STOCK)
-            carouselProductWidth()
         } else {
             productName.setTextAndCheckShow(dataItem.title)
             setSlashedPrice(dataItem.price)
             textViewPrice.setTextAndCheckShow(dataItem.discountedPrice)
             setStockProgress(dataItem.stockSoldPercentage)
             showOutOfStockLabel(dataItem.stockSoldPercentage, SALE_PRODUCT_STOCK)
-            carouselProductWidth()
         }
+        carouselProductWidth()
         setLabelDiscount(dataItem.discountPercentage.toString())
         dataItem.rating?.let { setRating(it, dataItem.countReview) }
         setProductImage(dataItem.imageUrlMobile)
@@ -151,7 +150,6 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
         showStatusLabel(dataItem)
     }
 
-
     private fun carouselProductWidth() {
         if(productCardName == ComponentNames.ProductCardCarouselItem.componentName || productCardName == ComponentNames.ProductCardSprintSaleCarouselItem.componentName){
             val displayMetrics = getDisplayMetric(context)
@@ -160,7 +158,7 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
     }
 
     private fun showStatusLabel(dataItem: DataItem) {
-        if(statusLabel.visibility == View.GONE){
+        if (statusLabel.visibility == View.GONE) {
             statusLabel.initLabelGroup(dataItem.getLabelProductStatus())
         }
     }
@@ -171,9 +169,9 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
         return displayMetrics
     }
 
-    private fun showOutOfStockLabel(productStock: String?, saleStockValidation : Int = 0) {
-        when(saleStockValidation) {
-            productStock?.toIntOrNull()-> {
+    private fun showOutOfStockLabel(productStock: String?, saleStockValidation: Int = 0) {
+        when (saleStockValidation) {
+            productStock?.toIntOrNull() -> {
                 statusLabel.apply {
                     unlockFeature = true
                     val colorHexString = "#${Integer.toHexString(ContextCompat.getColor(context, R.color.clr_AD31353B))}"
@@ -367,10 +365,14 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
     }
 
     private fun showNotifyResultToast(toastData: Triple<Boolean, String?, Int?>) {
-        if (!toastData.first && !toastData.second.isNullOrEmpty()) {
-            Toaster.make(itemView.rootView, toastData.second!!, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL)
-        } else if (!toastData.second.isNullOrEmpty()) {
-            Toaster.make(itemView.rootView, toastData.second!!, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR)
+        try {
+            if (!toastData.first && !toastData.second.isNullOrEmpty()) {
+                Toaster.make(itemView.rootView, toastData.second!!, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL)
+            } else if (!toastData.second.isNullOrEmpty()) {
+                Toaster.make(itemView.rootView, toastData.second!!, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR)
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 
