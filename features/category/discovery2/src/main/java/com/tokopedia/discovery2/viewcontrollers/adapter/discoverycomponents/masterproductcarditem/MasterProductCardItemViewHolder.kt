@@ -59,6 +59,7 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) : 
         if (productCardName == ComponentNames.ProductCardCarouselItem.componentName) {
             val displayMetrics = getDisplayMetric(fragment.context)
             productCardView.layoutParams.width = (displayMetrics.widthPixels / 2.3).toInt()
+            masterProductCard.applyCarousel()
             masterProductCard.layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
             masterProductCard.layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
         } else {
