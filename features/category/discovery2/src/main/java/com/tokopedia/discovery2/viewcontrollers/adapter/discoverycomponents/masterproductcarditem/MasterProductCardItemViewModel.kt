@@ -65,9 +65,35 @@ class MasterProductCardItemViewModel(val application: Application, val component
                 pdpViewCount = dataItem.pdpView.takeIf { it.toIntOrZero() != 0 } ?: "",
                 labelGroupList = ArrayList<ProductCardModel.LabelGroup>().apply {
                     dataItem.labelsGroupList?.forEach { add(ProductCardModel.LabelGroup(it.position, it.title, it.type)) }
-                }
+                },
+                shopLocation = getShopLocation(dataItem),
+                shopBadgeList = getShopBadgeList(dataItem)
         )
         productCardModelLiveData.value = productCardModel
+    }
+
+    private fun getShopBadgeList(dataItem: DataItem): List<ProductCardModel.ShopBadge> {
+        return ArrayList<ProductCardModel.ShopBadge>().apply {
+            if (dataItem.goldMerchant == true && dataItem.officialStore == true) {
+                add(ProductCardModel.ShopBadge(isShown = true, imageUrl = "https://ecs7.tokopedia.net/img/official_store_badge.png"))
+            } else if (dataItem.goldMerchant == true) {
+                add(ProductCardModel.ShopBadge(isShown = true, imageUrl = "https://ecs7.tokopedia.net/img/power_merchant_badge.png"))
+            } else if (dataItem.officialStore == true) {
+                add(ProductCardModel.ShopBadge(isShown = true, imageUrl = "https://ecs7.tokopedia.net/img/official_store_badge.png"))
+            } else {
+                add(ProductCardModel.ShopBadge(isShown = false, imageUrl = ""))
+            }
+        }
+    }
+
+    private fun getShopLocation(dataItem: DataItem): String {
+        return if (!dataItem.shopLocation.isNullOrEmpty()) {
+            dataItem.shopLocation
+        } else if (!dataItem.shopName.isNullOrEmpty()) {
+            dataItem.shopName
+        } else {
+            ""
+        }
     }
 
     fun getComponentPosition() = componentPosition
@@ -101,7 +127,8 @@ class MasterProductCardItemViewModel(val application: Application, val component
         dataItem.value?.let {
             val topAdsClickUrl = it.topadsClickUrl
             if (it.isTopads == true && topAdsClickUrl != null) {
-                discoveryTopAdsTrackingUseCase.hitClick(this::class.qualifiedName, topAdsClickUrl, it.productId ?: "", it.name ?: "", it.imageUrl ?: "")
+                discoveryTopAdsTrackingUseCase.hitClick(this::class.qualifiedName, topAdsClickUrl, it.productId
+                        ?: "", it.name ?: "", it.imageUrl ?: "")
             }
         }
     }
@@ -110,7 +137,8 @@ class MasterProductCardItemViewModel(val application: Application, val component
         dataItem.value?.let {
             val topAdsViewUrl = it.topadsViewUrl
             if (it.isTopads == true && topAdsViewUrl != null && !components.topAdsTrackingStatus) {
-                discoveryTopAdsTrackingUseCase.hitImpressions(this::class.qualifiedName, topAdsViewUrl, it.productId ?: "", it.name ?: "", it.imageUrl ?: "")
+                discoveryTopAdsTrackingUseCase.hitImpressions(this::class.qualifiedName, topAdsViewUrl, it.productId
+                        ?: "", it.name ?: "", it.imageUrl ?: "")
                 components.topAdsTrackingStatus = true
             }
         }
