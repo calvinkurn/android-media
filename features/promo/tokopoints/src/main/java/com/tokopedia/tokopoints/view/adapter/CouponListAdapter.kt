@@ -86,7 +86,7 @@ class CouponListAdapter(private val mItems: MutableList<CouponValueEntity>) : Re
 
     override fun onBindViewHolder(pHolder: RecyclerView.ViewHolder, position: Int) {
 
-        if (position > 0) {
+        if (position > 0 && mItems.size > position - 1) {
             val item = mItems[position - 1]
             if (pHolder is ViewHolder) {
                 val holder = pHolder
