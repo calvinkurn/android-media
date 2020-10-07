@@ -1,8 +1,8 @@
-package com.tokopedia.play.widget.ui.adapter.viewholder
+package com.tokopedia.play.widget.ui.adapter.viewholder.medium
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.play.widget.PlayWidgetItemUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetItemUiModel
 
 
 /**

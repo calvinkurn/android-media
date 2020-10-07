@@ -1,9 +1,9 @@
-package com.tokopedia.play.widget.ui.adapter.viewholder
+package com.tokopedia.play.widget.ui.adapter.viewholder.medium
 
 import android.view.View
 import androidx.appcompat.widget.AppCompatImageView
-import com.tokopedia.play.widget.PlayWidgetItemUiModel
-import com.tokopedia.play.widget.PlayWidgetMediumBannerUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetItemUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetMediumBannerUiModel
 import com.tokopedia.play.widget.R
 import com.tokopedia.play_common.widget.playBannerCarousel.extension.loadImage
 

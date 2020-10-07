@@ -1,16 +1,16 @@
-package com.tokopedia.play.widget.ui.adapter.viewholder
+package com.tokopedia.play.widget.ui.adapter.viewholder.medium
 
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.content.ContextCompat
 import com.tokopedia.kotlin.extensions.view.loadImage
-import com.tokopedia.play.widget.PlayWidgetItemUiModel
-import com.tokopedia.play.widget.PlayWidgetMediumChannelUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetItemUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetMediumChannelUiModel
 import com.tokopedia.play.widget.R
 import com.tokopedia.play.widget.ui.adapter.PlayWidgetCardMediumAdapter
 import com.tokopedia.play.widget.ui.custom.PlayWidgetVideoView
-import com.tokopedia.play.widget.ui.type.PlayWidgetMediumChannelType
+import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
 
 /**
  * Created by mzennis on 05/10/20.
@@ -31,7 +31,7 @@ class PlayWidgetCardMediumChannelViewHolder(itemView: View, private val listener
     private val author: TextView = itemView.findViewById(R.id.play_widget_channel_name)
     private val totalView: TextView = itemView.findViewById(R.id.viewer)
 
-    private var channelType: PlayWidgetMediumChannelType = PlayWidgetMediumChannelType.Unknown
+    private var channelType: PlayWidgetChannelType = PlayWidgetChannelType.Unknown
 
     private val videoListener = object : PlayWidgetVideoView.PlayWidgetVideoListener {
         override fun onPlayerStateChanged(state: PlayWidgetVideoView.PlayWidgetVideoState) {
@@ -55,7 +55,7 @@ class PlayWidgetCardMediumChannelViewHolder(itemView: View, private val listener
         videoView.release()
     }
 
-    fun getChannelType(): PlayWidgetMediumChannelType = channelType
+    fun getChannelType(): PlayWidgetChannelType = channelType
 
     private fun safeBind(item: PlayWidgetMediumChannelUiModel) {
         thumbnail.loadImage(item.video.coverUrl)
@@ -63,7 +63,7 @@ class PlayWidgetCardMediumChannelViewHolder(itemView: View, private val listener
         promoBadge.visibility = if (item.hasPromo) View.VISIBLE else View.GONE
         totalViewBadge.visibility = if (item.totalViewVisible) View.VISIBLE else View.GONE
         liveBadge.visibility = if (item.video.isLive) View.VISIBLE else View.GONE
-        reminderBadge.visibility = if (item.channelType == PlayWidgetMediumChannelType.Upcoming) View.VISIBLE else View.GONE
+        reminderBadge.visibility = if (item.channelType == PlayWidgetChannelType.Upcoming) View.VISIBLE else View.GONE
 
         val iconReminder = if (item.activeReminder) com.tokopedia.play_common.R.drawable.ic_play_reminder else com.tokopedia.play_common.R.drawable.ic_play_reminder_non_active
         reminderBadge.setImageDrawable(
@@ -77,7 +77,7 @@ class PlayWidgetCardMediumChannelViewHolder(itemView: View, private val listener
 
         title.visibility = if (item.title.isNotEmpty()) View.VISIBLE else View.GONE
         author.visibility = if (item.partner.name.isNotEmpty()) View.VISIBLE else View.GONE
-        startTime.visibility = if (item.startTime.isNotEmpty() && item.channelType == PlayWidgetMediumChannelType.Upcoming) View.VISIBLE else View.GONE
+        startTime.visibility = if (item.startTime.isNotEmpty() && item.channelType == PlayWidgetChannelType.Upcoming) View.VISIBLE else View.GONE
 
         setupListener(item)
 

@@ -1,17 +1,10 @@
 package com.tokopedia.play.widget.ui.mapper
 
-import com.tokopedia.play.widget.PlayWidgetItemUiModel
-import com.tokopedia.play.widget.PlayWidgetMediumBannerUiModel
-import com.tokopedia.play.widget.PlayWidgetMediumChannelUiModel
-import com.tokopedia.play.widget.PlayWidgetMediumUiModel
 import com.tokopedia.play.widget.data.PlayWidget
 import com.tokopedia.play.widget.data.PlayWidgetItem
 import com.tokopedia.play.widget.data.PlayWidgetItemVideo
-import com.tokopedia.play.widget.ui.model.PlayWidgetBackgroundUiModel
-import com.tokopedia.play.widget.ui.model.PlayWidgetConfigUiModel
-import com.tokopedia.play.widget.ui.model.PlayWidgetPartnerUiModel
-import com.tokopedia.play.widget.ui.model.PlayWidgetVideoUiModel
-import com.tokopedia.play.widget.ui.type.PlayWidgetMediumChannelType
+import com.tokopedia.play.widget.ui.model.*
+import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
 
 
 /**
@@ -45,7 +38,7 @@ object PlayWidgetUiMapper {
             maxAutoPlayCard = data.meta.maxAutoplayCell
     )
 
-    private fun mapWidgetItem(items: List<PlayWidgetItem>): List<PlayWidgetItemUiModel> = items.mapNotNull {
+    private fun mapWidgetItem(items: List<PlayWidgetItem>): List<PlayWidgetMediumItemUiModel> = items.mapNotNull {
         when (it.typename) {
             "PlayWidgetBanner" -> mapWidgetItemBanner(it)
             "PlayWidgetChannel" -> mapWidgetItemChannel(it)
@@ -62,7 +55,7 @@ object PlayWidgetUiMapper {
     private fun mapWidgetItemChannel(item: PlayWidgetItem): PlayWidgetMediumChannelUiModel = PlayWidgetMediumChannelUiModel(
             channelId = item.id,
             title = item.title,
-            channelType = PlayWidgetMediumChannelType.getByValue(item.widgetType),
+            channelType = PlayWidgetChannelType.getByValue(item.widgetType),
             appLink = item.appLink,
             webLink = item.webLink,
             startTime = item.startTime,

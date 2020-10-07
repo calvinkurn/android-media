@@ -5,11 +5,15 @@ import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.play.widget.*
-import com.tokopedia.play.widget.ui.adapter.viewholder.PlayWidgetCardMediumBannerViewHolder
-import com.tokopedia.play.widget.ui.adapter.viewholder.PlayWidgetCardMediumChannelViewHolder
-import com.tokopedia.play.widget.ui.adapter.viewholder.PlayWidgetCardMediumOverlayViewHolder
-import com.tokopedia.play.widget.ui.adapter.viewholder.PlayWidgetCardMediumViewHolder
-import com.tokopedia.play.widget.ui.type.PlayWidgetMediumChannelType
+import com.tokopedia.play.widget.ui.adapter.viewholder.medium.PlayWidgetCardMediumBannerViewHolder
+import com.tokopedia.play.widget.ui.adapter.viewholder.medium.PlayWidgetCardMediumChannelViewHolder
+import com.tokopedia.play.widget.ui.adapter.viewholder.medium.PlayWidgetCardMediumOverlayViewHolder
+import com.tokopedia.play.widget.ui.adapter.viewholder.medium.PlayWidgetCardMediumViewHolder
+import com.tokopedia.play.widget.ui.model.PlayWidgetItemUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetMediumBannerUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetMediumChannelUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetMediumOverlayUiModel
+import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
 
 
 /**
@@ -76,8 +80,8 @@ class PlayWidgetCardMediumAdapter : RecyclerView.Adapter<PlayWidgetCardMediumVie
 
     private fun safePlayVideo(holder: PlayWidgetCardMediumViewHolder) {
         if (holder !is PlayWidgetCardMediumChannelViewHolder) return
-        if (holder.getChannelType() == PlayWidgetMediumChannelType.Upcoming ||
-                holder.getChannelType() == PlayWidgetMediumChannelType.Unknown) return
+        if (holder.getChannelType() == PlayWidgetChannelType.Upcoming ||
+                holder.getChannelType() == PlayWidgetChannelType.Unknown) return
 
         // TODO start timer to delay
         holder.playVideo()
@@ -85,8 +89,8 @@ class PlayWidgetCardMediumAdapter : RecyclerView.Adapter<PlayWidgetCardMediumVie
 
     private fun safeStopVideo(holder: PlayWidgetCardMediumViewHolder) {
         if (holder !is PlayWidgetCardMediumChannelViewHolder) return
-        if (holder.getChannelType() == PlayWidgetMediumChannelType.Upcoming ||
-                holder.getChannelType() == PlayWidgetMediumChannelType.Unknown) return
+        if (holder.getChannelType() == PlayWidgetChannelType.Upcoming ||
+                holder.getChannelType() == PlayWidgetChannelType.Unknown) return
 
         holder.stopVideo()
     }

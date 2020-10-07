@@ -15,7 +15,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.widget.*
 import com.tokopedia.play.widget.ui.adapter.PlayWidgetCardMediumAdapter
-import com.tokopedia.play.widget.ui.model.PlayWidgetBackgroundUiModel
+import com.tokopedia.play.widget.ui.model.*
 import com.tokopedia.play_common.widget.playBannerCarousel.extension.loadImage
 import com.tokopedia.play_common.widget.playBannerCarousel.extension.setGradientBackground
 import com.tokopedia.unifyprinciples.Typography
@@ -25,7 +25,12 @@ import kotlin.math.abs
 /**
  * Created by mzennis on 06/10/20.
  */
-class PlayWidgetMediumView(context: Context, attrs: AttributeSet?) : ConstraintLayout(context, attrs) {
+class PlayWidgetMediumView : ConstraintLayout {
+
+    constructor(context: Context?) : super(context)
+    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
+    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
+    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes)
 
     private val background: LoaderImageView
     private val shimmering: FrameLayout
@@ -59,9 +64,7 @@ class PlayWidgetMediumView(context: Context, attrs: AttributeSet?) : ConstraintL
         recyclerViewItem = view.findViewById(R.id.play_widget_recycler_view)
     }
 
-    fun setData(data: PlayWidgetUiModel) {
-        if (data !is PlayWidgetMediumUiModel) return
-        
+    fun setData(data: PlayWidgetMediumUiModel) {
         title.text = data.title
         actionTitle.text = data.actionTitle
 
