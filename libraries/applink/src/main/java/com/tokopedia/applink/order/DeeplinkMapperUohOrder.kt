@@ -117,6 +117,9 @@ object DeeplinkMapperUohOrder {
             deeplink.equals(DIGITAL_ORDER, true) || deeplink.equals(Transaction.ORDER_HISTORY, true) -> {
                 return DIGITAL_ORDER_LIST_INTERNAL
             }
+            deeplink.equals(MARKETPLACE_ORDER, true) -> {
+                return ORDER_LIST_INTERNAL
+            }
             deeplink.startsWith(MARKETPLACE_ORDER) || (deeplink.startsWith(DIGITAL_ORDER) && !deeplink.equals(DIGITAL_ORDER, true)) -> {
                 return getMarketplaceDigitalOrderDetailInternalAppLink(deeplink)
             }
