@@ -48,6 +48,7 @@ import com.tokopedia.checkout.view.adapter.ShipmentAdapter;
 import com.tokopedia.checkout.view.converter.RatesDataConverter;
 import com.tokopedia.checkout.view.di.CheckoutModule;
 import com.tokopedia.checkout.view.di.DaggerCheckoutComponent;
+import com.tokopedia.checkout.view.dialog.ExpireTimeDialogListener;
 import com.tokopedia.checkout.view.dialog.ExpiredTimeDialog;
 import com.tokopedia.checkout.view.uimodel.EgoldAttributeModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentButtonPaymentModel;
@@ -164,7 +165,8 @@ import static com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_INSURANCE_RE
 public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentContract.View,
         ShipmentContract.AnalyticsActionListener, ShipmentAdapterActionListener,
         ShippingDurationBottomsheetListener, ShippingCourierBottomsheetListener,
-        PromoNotEligibleActionListener, InsuranceItemActionListener, SellerCashbackListener {
+        PromoNotEligibleActionListener, InsuranceItemActionListener, SellerCashbackListener,
+        ExpireTimeDialogListener {
 
     private static final int REQUEST_CODE_EDIT_ADDRESS = 11;
     private static final int REQUEST_CODE_COURIER_PINPOINT = 13;
@@ -2653,7 +2655,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             long diff = TimeHelper.timeSinceNow(timer.getTimerExpired());
 
             if (diff <= 0 && getFragmentManager() != null) {
-                ExpiredTimeDialog dialog = ExpiredTimeDialog.newInstance(timer, checkoutAnalyticsCourierSelection);
+                ExpiredTimeDialog dialog = ExpiredTimeDialog.newInstance(timer, checkoutAnalyticsCourierSelection, this);
                 dialog.show(getFragmentManager(), "expired dialog");
             }
         }
@@ -2671,7 +2673,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 // need to check with resumed to avoid crash when time is expired in background
                 // time needs to be running in background
                 if (getFragmentManager() != null && isResumed()) {
-                    ExpiredTimeDialog dialog = ExpiredTimeDialog.newInstance(timer, checkoutAnalyticsCourierSelection);
+                    ExpiredTimeDialog dialog = ExpiredTimeDialog.newInstance(timer, checkoutAnalyticsCourierSelection, this);
                     dialog.show(getFragmentManager(), "expired dialog");
                 }
             });
@@ -2895,5 +2897,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void onCashbackUpdated(int amount) {
         // No-op
+    }
+
+    @Override
+    public void onPrimaryCTAClicked() {
+        releaseBookingIfAny();
     }
 }

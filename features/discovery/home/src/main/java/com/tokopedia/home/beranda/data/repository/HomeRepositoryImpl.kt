@@ -73,6 +73,8 @@ class HomeRepositoryImpl @Inject constructor(
                 }
             }
 
+            homeDataResponseValue?.banner?.timestamp = currentTimeMillisString
+
             /**
              * Proceed to pagination mechanism if cache is not exist
              */

@@ -191,4 +191,5 @@ yang ditemukan</string>
     <string name="title_success_unpin_chat">Chat telah dilepas.</string>
     <string name="title_topchat_as_buyer">Sebagai Pembeli</string>
     <string name="title_topchat_as_seller">Sebagai Penjual</string>
+    <string name="title_topchat_see_detail">Lihat Selengkapnya</string>
 </resources>

@@ -152,8 +152,8 @@
 
             <ImageView
                 android:id="@+id/iv_payment"
-                android:layout_width="@dimen/dp_45"
-                android:layout_height="@dimen/dp_45"
+                android:layout_width="@dimen/dp_30"
+                android:layout_height="@dimen/dp_30"
                 android:layout_marginStart="@dimen/dp_16"
                 android:layout_marginTop="@dimen/dp_14"
                 android:scaleType="fitCenter"
@@ -182,7 +182,7 @@
                 android:id="@+id/tv_payment_detail"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_4"
+                android:layout_marginTop="@dimen/dp_2"
                 android:ellipsize="end"
                 android:lines="1"
                 android:textColor="@color/Neutral_N700_68"
@@ -191,6 +191,13 @@
                 app:layout_constraintTop_toBottomOf="@+id/tv_payment_name"
                 app:typographyType="body_2"
                 app:typographyWeight="reguler" />
+
+            <androidx.constraintlayout.widget.Barrier
+                android:id="@+id/barrier_payment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:barrierDirection="bottom"
+                app:constraint_referenced_ids="iv_payment,tv_payment_detail" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_payment_info"
@@ -202,7 +209,7 @@
                 android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_payment_detail"
+                app:layout_constraintTop_toBottomOf="@+id/barrier_payment"
                 app:typographyType="body_2"
                 app:typographyWeight="reguler" />
 

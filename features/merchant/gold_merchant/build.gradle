@@ -25,7 +25,6 @@ dependencies {
     implementation project(rootProject.ext.libraries.remoteConfig)
     implementation project(rootProject.ext.features.tkpdcore)
     implementation project(rootProject.ext.features.tkpdseller)
-    implementation project(rootProject.ext.features.productManageItem)
     implementation project(rootProject.ext.features.payment)
     implementation project(rootProject.ext.features.commonPayment)
     implementation project(rootProject.ext.features.categoryCommon)
