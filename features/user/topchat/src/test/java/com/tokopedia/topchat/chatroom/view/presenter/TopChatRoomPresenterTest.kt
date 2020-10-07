@@ -19,6 +19,7 @@ import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.seamless_login.domain.usecase.SeamlessLoginUsecase
+import com.tokopedia.seamless_login.subscriber.SeamlessLoginSubscriber
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.topchat.FileUtil
 import com.tokopedia.topchat.R
@@ -956,6 +957,48 @@ class TopChatRoomPresenterTest {
         assert(!isEmptyAttachmentPreview)
         verify(exactly = 1) {
             presenter.initAttachmentPreview()
+        }
+    }
+
+    @Test
+    fun `on success click banned product seamless`() {
+        // Given
+        val liteUrl = "https://tokopedia/lite/url"
+        val slot = slot<SeamlessLoginSubscriber>()
+        every {
+            seamlessLoginUsecase.generateSeamlessUrl(liteUrl, capture(slot))
+        } answers {
+            val subs = slot.captured
+            subs.onUrlGenerated(liteUrl)
+        }
+
+        // When
+        presenter.onClickBannedProduct(liteUrl)
+
+        // Then
+        verify(exactly = 1) {
+            view.redirectToBrowser(liteUrl)
+        }
+    }
+
+    @Test
+    fun `on error click banned product seamless`() {
+        // Given
+        val liteUrl = "https://tokopedia/lite/url"
+        val slot = slot<SeamlessLoginSubscriber>()
+        every {
+            seamlessLoginUsecase.generateSeamlessUrl(liteUrl, capture(slot))
+        } answers {
+            val subs = slot.captured
+            subs.onError(liteUrl)
+        }
+
+        // When
+        presenter.onClickBannedProduct(liteUrl)
+
+        // Then
+        verify(exactly = 1) {
+            view.redirectToBrowser(liteUrl)
         }
     }
 
