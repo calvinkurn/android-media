@@ -70,6 +70,8 @@ object GlideBuilder {
             imageView.setImageDrawable(drawableError)
         } else {
             GlideApp.with(imageView).load(url).apply {
+                if (!isAnimate) dontAnimate()
+
                 if (thumbnailUrl.isNotEmpty()) thumbnail(imageView.thumbnailLoader(thumbnailUrl))
                 if (overrideSize != null) override(overrideSize.width, overrideSize.height)
                 if (decodeFormat != null) format(mapToDecodeFormat(decodeFormat))
@@ -78,7 +80,6 @@ object GlideBuilder {
                 if (signatureKey != null) signature(signatureKey)
                 if (placeHolder != 0) placeholder(placeHolder)
                 if (isCircular) localTransform.add(CircleCrop())
-                if (!isAnimate) dontAnimate()
 
                 drawableError?.let { drawable -> error(drawable) }
                 cacheStrategy?.let { diskCacheStrategy(mapToDiskCacheStrategy(it)) }
