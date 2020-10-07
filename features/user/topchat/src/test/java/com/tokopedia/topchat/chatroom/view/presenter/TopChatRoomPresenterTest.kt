@@ -829,7 +829,6 @@ class TopChatRoomPresenterTest {
         every { webSocketUtil.getWebSocketInfo(any(), any()) } returns websocketServer
         every { getChatUseCase.isInTheMiddleOfThePage() } returns false
 
-
         // When
         presenter.connectWebSocket(exMessageId)
         presenter.startTyping()
@@ -845,13 +844,32 @@ class TopChatRoomPresenterTest {
         every { webSocketUtil.getWebSocketInfo(any(), any()) } returns websocketServer
         every { getChatUseCase.isInTheMiddleOfThePage() } returns false
 
-
         // When
         presenter.connectWebSocket(exMessageId)
         presenter.stopTyping()
 
         // Then
         verify { RxWebSocket.send(stopTypingParam, listInterceptor) }
+    }
+
+    @Test
+    fun `on success request follow and unfollow shop`() {
+        //Given
+        val onError: (Throwable) -> Unit = mockk(relaxed = true)
+        val onSuccess: (Boolean) -> Unit = mockk(relaxed = true)
+        val slot = slot<Subscriber<Boolean>>()
+        every {
+            toggleFavouriteShopUseCase.execute(any(), capture(slot))
+        } answers {
+            val subs = slot.captured
+            subs.onNext(true)
+        }
+
+        // When
+        presenter.followUnfollowShop(exShopId.toString(), onError, onSuccess)
+
+        // Then
+        verify { onSuccess.invoke(true) }
     }
 
     private fun mockkParseResponse(

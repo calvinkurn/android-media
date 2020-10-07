@@ -548,17 +548,18 @@ class TopChatRoomPresenter @Inject constructor(
                                     onError: (Throwable) -> Unit,
                                     onSuccess: (isSuccess: Boolean) -> Unit) {
         toggleFavouriteShopUseCase.execute(
-                ToggleFavouriteShopUseCase.createRequestParam(shopId), object : Subscriber<Boolean>() {
-            override fun onCompleted() {}
+                ToggleFavouriteShopUseCase.createRequestParam(shopId),
+                object : Subscriber<Boolean>() {
+                    override fun onCompleted() {}
 
-            override fun onError(e: Throwable) {
-                onError(e)
-            }
+                    override fun onError(e: Throwable) {
+                        onError(e)
+                    }
 
-            override fun onNext(success: Boolean) {
-                onSuccess(success)
-            }
-        })
+                    override fun onNext(success: Boolean) {
+                        onSuccess(success)
+                    }
+                })
     }
 
     override fun addAttachmentPreview(sendablePreview: SendablePreview) {
