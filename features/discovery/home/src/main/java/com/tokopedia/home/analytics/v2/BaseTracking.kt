@@ -71,6 +71,7 @@ abstract class BaseTracking {
     protected object BusinessUnit{
         const val KEY = "businessUnit"
         const val DEFAULT = "home & browse"
+        const val ADS_SOLUTION = "ads solution"
     }
 
     protected object ChannelId{

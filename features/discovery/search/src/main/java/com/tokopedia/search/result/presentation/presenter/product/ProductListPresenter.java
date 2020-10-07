@@ -1349,7 +1349,7 @@ final class ProductListPresenter
         return String.format(
                 SearchEventTracking.Label.GENERAL_SEARCH_EVENT_LABEL,
                 query,
-                productViewModel.getKeywordProcess(),
+                getKeywordProcess(productViewModel),
                 productViewModel.getResponseCode(),
                 source,
                 getNavSourceForGeneralSearchTracking(),
@@ -1361,6 +1361,12 @@ final class ProductListPresenter
         if (globalNavViewModel == null) return SearchEventTracking.NONE;
         if (globalNavViewModel.getSource().isEmpty()) return SearchEventTracking.OTHER;
         return globalNavViewModel.getSource();
+    }
+
+    private String getKeywordProcess(ProductViewModel productViewModel) {
+        String keywordProcess = productViewModel.getKeywordProcess();
+
+        return textIsEmpty(keywordProcess) ? "0" : keywordProcess;
     }
 
     private String getNavSourceForGeneralSearchTracking() {

@@ -25,6 +25,7 @@ private const val responseCode4NoRelatedKeyword = "${generalSearchTrackingDirect
 private const val responseCode5RelatedSearch = "${generalSearchTrackingDirectory}response-code-5-related-search.json"
 private const val responseCode6RelatedSearch = "${generalSearchTrackingDirectory}response-code-6-related-search.json"
 private const val responseCode7SuggestedSearch = "${generalSearchTrackingDirectory}response-code-7-suggested-search.json"
+private const val responseCode8BannedProducts = "${generalSearchTrackingDirectory}response-code-8-banned-products.json"
 private const val withRedirection = "${generalSearchTrackingDirectory}with-redirection.json"
 private const val withGlobalNav = "${generalSearchTrackingDirectory}with-global-nav.json"
 private const val withGlobalNavEmptySource = "${generalSearchTrackingDirectory}with-global-nav-empty-source.json"
@@ -355,6 +356,30 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
         )
 
         `Test General Search Tracking`(searchProductModel, previousKeyword, expectedGeneralSearchTrackingModel)
+    }
+
+    @Test
+    fun `General search tracking with response code 8`() {
+        val searchProductModel = responseCode8BannedProducts.jsonToObject<SearchProductModel>()
+        val expectedGeneralSearchTrackingModel = GeneralSearchTrackingModel(
+                eventCategory = SearchEventTracking.Category.EVENT_TOP_NAV,
+                eventLabel = String.format(
+                        SearchEventTracking.Label.GENERAL_SEARCH_EVENT_LABEL,
+                        keyword,
+                        "0",
+                        searchProductModel.searchProduct.header.responseCode,
+                        NONE,
+                        NONE,
+                        NONE
+                ),
+                userId = userId,
+                isResultFound = true.toString(),
+                categoryIdMapping = "1759,1758",
+                categoryNameMapping = "Fashion Pria,Fashion Wanita",
+                relatedKeyword = "$NONE - $NONE"
+        )
+
+        `Test General Search Tracking`(searchProductModel, "", expectedGeneralSearchTrackingModel)
     }
 
     @Test
