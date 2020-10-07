@@ -28,15 +28,18 @@ import com.tokopedia.topchat.chatlist.domain.usecase.DeleteMessageListUseCase
 import com.tokopedia.topchat.chatlist.viewmodel.DeleteChatListUiModel
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.Sticker
 import com.tokopedia.topchat.chatroom.domain.usecase.*
+import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
 import com.tokopedia.topchat.chatroom.view.listener.TopChatContract
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.exImageUploadId
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.exMessageId
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.exOpponentId
+import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.exProductId
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.exResultProduct
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.exSendMessage
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.exShopId
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.exStartTime
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.exSticker
+import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.exUserId
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.imageUploadViewModel
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.readParam
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.replyChatViewModelApiSuccess
@@ -60,6 +63,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.websocket.RxWebSocket
 import com.tokopedia.websocket.RxWebSocketUtil
 import com.tokopedia.websocket.WebSocketInfo
+import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import io.mockk.*
@@ -188,6 +192,8 @@ class TopChatRoomPresenterTest {
         const val exMessageId = "190378584"
         const val exShopId = 423785
         const val exImageUploadId = "667056"
+        const val exProductId = "123123"
+        const val exUserId = "321321"
         const val exSendMessage = "Hello World"
         const val exStartTime = "123321"
         const val exOpponentId = "39467501"
@@ -236,7 +242,7 @@ class TopChatRoomPresenterTest {
 
         private fun generateResultProduct(): ResultProduct {
             return ResultProduct(
-                    123123,
+                    exProductId.toInt(),
                     "https://tokopedia.com/product/url",
                     exImageUrl,
                     "Rp12000",
@@ -999,6 +1005,36 @@ class TopChatRoomPresenterTest {
         // Then
         verify(exactly = 1) {
             view.redirectToBrowser(liteUrl)
+        }
+    }
+
+    @Test
+    fun `on loadChatRoomSettings`() {
+        // Given
+        val onSuccess: (List<Visitable<TopChatTypeFactory>>) -> Unit = mockk(relaxed = true)
+
+        // When
+        presenter.loadChatRoomSettings(exMessageId, onSuccess)
+
+        // Then
+        verify(exactly = 1) {
+            getChatRoomSettingUseCase.execute(exMessageId, onSuccess)
+        }
+    }
+
+    @Test
+    fun `on toggle add and remove WishList`() {
+        // Given
+        val wishlistActionListener: WishListActionListener = mockk(relaxed = true)
+
+        // When
+        presenter.addToWishList(exProductId, exUserId, wishlistActionListener)
+        presenter.removeFromWishList(exProductId, exUserId, wishlistActionListener)
+
+        // Then
+        verify(exactly = 1) {
+            addWishListUseCase.createObservable(exProductId, exUserId, wishlistActionListener)
+            removeWishListUseCase.createObservable(exProductId, exUserId, wishlistActionListener)
         }
     }
 

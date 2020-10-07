@@ -629,7 +629,9 @@ class TopChatRoomPresenter @Inject constructor(
         addWishListUseCase.createObservable(productId, userId, wishlistActionListener)
     }
 
-    override fun removeFromWishList(productId: String, userId: String, wishListActionListener: WishListActionListener) {
+    override fun removeFromWishList(
+            productId: String, userId: String, wishListActionListener: WishListActionListener
+    ) {
         removeWishListUseCase.createObservable(productId, userId, wishListActionListener)
     }
 
