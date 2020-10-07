@@ -2,7 +2,7 @@ package com.tokopedia.play.widget.ui.adapter.viewholder
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.play.widget.ui.model.PlayWidgetCardUiModel
+import com.tokopedia.play.widget.PlayWidgetItemUiModel
 
 
 /**
@@ -10,6 +10,6 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetCardUiModel
  */
 abstract class PlayWidgetCardMediumViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-    abstract fun bind(item: PlayWidgetCardUiModel)
+    abstract fun bind(item: PlayWidgetItemUiModel)
 
 }

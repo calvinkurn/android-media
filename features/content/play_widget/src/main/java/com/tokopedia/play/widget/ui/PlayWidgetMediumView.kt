@@ -13,13 +13,9 @@ import com.elyeproj.loaderviewlibrary.LoaderImageView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.play.widget.PlayWidgetUiModel
-import com.tokopedia.play.widget.R
+import com.tokopedia.play.widget.*
 import com.tokopedia.play.widget.ui.adapter.PlayWidgetCardMediumAdapter
 import com.tokopedia.play.widget.ui.model.PlayWidgetBackgroundUiModel
-import com.tokopedia.play.widget.ui.model.PlayWidgetCardItemUiModel
-import com.tokopedia.play.widget.ui.model.PlayWidgetCardUiModel
-import com.tokopedia.play.widget.ui.type.PlayWidgetCardType
 import com.tokopedia.play_common.widget.playBannerCarousel.extension.loadImage
 import com.tokopedia.play_common.widget.playBannerCarousel.extension.setGradientBackground
 import com.tokopedia.unifyprinciples.Typography
@@ -64,6 +60,8 @@ class PlayWidgetMediumView(context: Context, attrs: AttributeSet?) : ConstraintL
     }
 
     fun setData(data: PlayWidgetUiModel) {
+        if (data !is PlayWidgetMediumUiModel) return
+        
         title.text = data.title
         actionTitle.text = data.actionTitle
 
@@ -118,9 +116,9 @@ class PlayWidgetMediumView(context: Context, attrs: AttributeSet?) : ConstraintL
         }
     }
 
-    private fun addItemOverlay(items: List<PlayWidgetCardUiModel>): List<PlayWidgetCardUiModel> {
+    private fun addItemOverlay(items: List<PlayWidgetItemUiModel>): List<PlayWidgetItemUiModel> {
         return items.toMutableList().apply {
-            add(0, PlayWidgetCardUiModel(type = PlayWidgetCardType.Overlay, card = PlayWidgetCardItemUiModel.default()))
+            add(0, PlayWidgetMediumOverlayUiModel)
         }
     }
 
