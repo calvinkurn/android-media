@@ -21,9 +21,10 @@ data class RestrictionData(
         @Expose
         val productId: String = "",
 
+        //If true the button follow npl will not be shown
         @SerializedName("isEligible")
         @Expose
-        val isEligible: Boolean = false,
+        val alreadyFollowShop: Boolean = true,
 
         @SerializedName("action")
         @Expose
