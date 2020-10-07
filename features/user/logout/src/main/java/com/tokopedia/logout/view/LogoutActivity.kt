@@ -40,7 +40,7 @@ import com.tokopedia.logout.di.module.LogoutModule
 import com.tokopedia.logout.viewmodel.LogoutViewModel
 import com.tokopedia.notifications.CMPushNotificationManager.Companion.instance
 import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.sessioncommon.data.Token.Companion.GOOGLE_API_KEY
+import com.tokopedia.sessioncommon.data.Token.Companion.getGoogleClientId
 import com.tokopedia.track.TrackApp
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -117,7 +117,7 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
 
     private fun initGoogleClient() {
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).apply {
-            requestIdToken(GOOGLE_API_KEY)
+            requestIdToken(getGoogleClientId())
             requestEmail()
             requestProfile()
         }.build()
