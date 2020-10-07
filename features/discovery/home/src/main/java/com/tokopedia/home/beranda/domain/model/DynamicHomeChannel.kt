@@ -48,6 +48,9 @@ data class DynamicHomeChannel(
             @Expose
             @SerializedName("type")
             val type: String = "",
+            @SerializedName("pageName")
+            @Expose
+            val pageName: String = "",
             @SerializedName("showPromoBadge")
             val showPromoBadge: Boolean = false,
             @Expose
@@ -73,6 +76,10 @@ data class DynamicHomeChannel(
             val hasCloseButton: Boolean = false,
             @SerializedName("isAutoRefreshAfterExpired")
             val isAutoRefreshAfterExpired: Boolean = false,
+            @SerializedName("contextualInfo")
+            val contextualInfo: Int = 0,
+            @SerializedName("widgetParam")
+            val widgetParam: String = "",
             @SerializedName("token")
             var token: String = "",
             var timestamp: String = ""
@@ -250,7 +257,7 @@ data class DynamicHomeChannel(
                             ).toString(),
                                     "brand", "none / other",
                                     "variant", "none / other",
-                                    "list", "/ - p1 - lego product - product - ${grid.recommendationType}" + header.name,
+                                    "list", "/ - p1 - lego product - product - ${grid.recommendationType} - $pageName - " + header.name,
                                     "position", (i + 1).toString(),
                                     "dimension83", if (grid.freeOngkir.isActive) "bebas ongkir" else "none/other",
                                     "dimension84", id,
@@ -322,6 +329,7 @@ data class DynamicHomeChannel(
             const val LAYOUT_RECHARGE_RECOMMENDATION: String = "dg_bills"
             const val LAYOUT_SALAM_WIDGET: String = "salam_todo"
             const val LAYOUT_CATEGORY_WIDGET: String = "category_widget"
+            const val LAYOUT_FEATURED_SHOP: String = "shop_widget"
             const val LAYOUT_BANNER_ADS: String = "banner_ads"
             const val channelId: String = "channelId"
             const val campaignCodeLabel: String = "campaignCode"

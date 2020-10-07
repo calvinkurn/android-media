@@ -43,11 +43,14 @@ class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
 
     companion object {
         const val END_POINT = "end_point"
-        const val SOURCE_QUERY = "source"
-        const val PINNED_COMPONENT_ID = "componentID"
-        const val PINNED_ACTIVE_TAB = "activeTab"
-        const val PINNED_COMP_ID = "pinnedcompID"
+        const val SOURCE = "source"
+        const val COMPONENT_ID = "componentID"
+        const val ACTIVE_TAB = "activeTab"
+        const val TARGET_COMP_ID = "targetcompID"
         const val PRODUCT_ID = "product_id"
+        const val PIN_PRODUCT = "pinProduct"
+        const val CATEGORY_ID = "category_id"
+        const val EMBED_CATEGORY = "embedCategory"
 
         @JvmField
         var config: String = ""

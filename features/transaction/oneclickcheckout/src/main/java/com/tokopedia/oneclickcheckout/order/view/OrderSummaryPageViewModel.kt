@@ -1659,6 +1659,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                 setShippingPrice(_orderShipment.getRealShippingPrice().toString())
             }
             setShippingDuration(_orderShipment.serviceDuration)
+            setCampaignId(orderProduct.campaignId.toString())
         }.build(step, option)
     }
 

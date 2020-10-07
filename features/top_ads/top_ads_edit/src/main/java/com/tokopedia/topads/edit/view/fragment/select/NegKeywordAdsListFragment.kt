@@ -172,7 +172,9 @@ class NegKeywordAdsListFragment : BaseDaggerFragment() {
     }
 
     private fun keywordValidation(key: String): Boolean {
-        if (key.isNotEmpty()) {
+        if (key.isEmpty()) {
+            return false
+        } else {
             adapter.items.forEach {
                 if (it.tag == key) {
                     makeToast(getString(R.string.keyword_already_exists))
