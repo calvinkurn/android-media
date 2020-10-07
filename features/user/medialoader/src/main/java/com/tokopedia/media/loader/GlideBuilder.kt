@@ -80,7 +80,9 @@ object GlideBuilder {
                 cacheStrategy?.let { diskCacheStrategy(it) }
                 transforms?.let { localTransform.addAll(it) }
 
-                transform(MultiTransformation(localTransform))
+                if (localTransform.isNotEmpty()) {
+                    transform(MultiTransformation(localTransform))
+                }
 
                 when (imageView.scaleType) {
                     ImageView.ScaleType.FIT_CENTER -> fitCenter()
