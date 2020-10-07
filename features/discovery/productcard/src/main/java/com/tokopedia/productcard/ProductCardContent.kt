@@ -184,8 +184,10 @@ private fun View.renderSalesAndRating(productCardModel: ProductCardModel){
     salesRatingFloat.shouldShowWithAction(productCardModel.willShowSalesAndRating()){
         val ssb = SpannableStringBuilder("( ${productCardModel.countSoldRating})")
         val drawableStar = ContextCompat.getDrawable(context, R.drawable.ic_rating_apps_active)
-        drawableStar?.setBounds(0, 0, 25, 25)
-        ssb.setSpan(ImageSpan(drawableStar!!, ImageSpan.ALIGN_BASELINE), 1, 2, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
+        drawableStar?.let {
+            drawableStar.setBounds(0, 0, 25, 25)
+            ssb.setSpan(ImageSpan(drawableStar, ImageSpan.ALIGN_BASELINE), 1, 2, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
+        }
         salesRatingFloat?.setText(ssb, TextView.BufferType.SPANNABLE)
     }
 }

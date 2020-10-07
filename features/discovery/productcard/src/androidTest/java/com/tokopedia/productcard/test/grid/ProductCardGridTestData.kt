@@ -8,7 +8,6 @@ import com.tokopedia.productcard.test.R
 import com.tokopedia.productcard.test.productCardModelMatcherData
 import com.tokopedia.productcard.test.utils.isDisplayedWithText
 import com.tokopedia.productcard.test.utils.productImageUrl
-import com.tokopedia.productcard.utils.LABEL_INTEGRITY
 import com.tokopedia.productcard.utils.LABEL_PRODUCT_STATUS
 import com.tokopedia.productcard.utils.TRANSPARENT_BLACK
 import org.hamcrest.Matcher
