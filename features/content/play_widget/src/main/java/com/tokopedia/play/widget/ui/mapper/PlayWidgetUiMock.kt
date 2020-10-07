@@ -24,4 +24,12 @@ object PlayWidgetUiMock {
         val response = gson.fromJson(reader, PlayWidgetResponse::class.java)
         return PlayWidgetUiMapper.mapWidget(response.playWidget)
     }
+
+    @Throws(JsonSyntaxException::class, JsonIOException::class)
+    fun getPlayWidgetSmall(context: Context): PlayWidgetUiModel {
+        val reader: Reader = BufferedReader(InputStreamReader(context.resources.openRawResource(R.raw.play_widget_v2_medium)))
+        val gson = Gson()
+        val response = gson.fromJson(reader, PlayWidgetResponse::class.java)
+        return PlayWidgetSmallUiMapper(PlayWidgetConfigMapper(), PlayWidgetVideoMapper()).mapWidget(response.playWidget)
+    }
 }

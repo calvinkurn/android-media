@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.play.widget.R
+import com.tokopedia.play.widget.ui.mapper.PlayWidgetUiMock
 import com.tokopedia.play.widget.ui.model.*
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
 import kotlin.random.Random
@@ -37,8 +38,8 @@ class PlayWidgetSampleActivity : BaseSimpleActivity() {
 
     private fun getSampleData(): List<PlayWidgetUiModel> {
         return listOf(
-                getSamplePlaySmallWidget(),
-                getSamplePlayMediumWidget()
+                PlayWidgetUiMock.getPlayWidgetSmall(this),
+                PlayWidgetUiMock.getPlayWidgetMedium(this)
         )
     }
 

@@ -55,25 +55,25 @@ class PlayWidgetCardChannelSmallView : ConstraintLayout {
         tvTitle.text = model.title
         tvUpcoming.text = "10 Jan - 17.00"
 
-        flBorder.setBackgroundResource(
-                if (model.video.isLive) R.drawable.bg_play_widget_small_live_border
-                else R.drawable.bg_play_widget_small_default_border
-        )
+        if (model.video.isLive) {
+            flBorder.setBackgroundResource(R.drawable.bg_play_widget_small_live_border)
+            ivLiveBadge.visible()
+        } else {
+            flBorder.setBackgroundResource(R.drawable.bg_play_widget_small_default_border)
+            ivLiveBadge.gone()
+        }
     }
 
     private fun handleType(type: PlayWidgetChannelType) {
         when (type) {
             PlayWidgetChannelType.Live -> {
                 tvUpcoming.gone()
-                ivLiveBadge.visible()
             }
             PlayWidgetChannelType.Vod -> {
                 tvUpcoming.gone()
-                ivLiveBadge.gone()
             }
             PlayWidgetChannelType.Upcoming -> {
                 tvUpcoming.visible()
-                ivLiveBadge.gone()
                 ivDiscount.gone()
             }
         }
