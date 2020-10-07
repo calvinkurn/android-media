@@ -1,4 +1,4 @@
-package tokopedia.applink.deeplink
+package tokopedia.applink.deeplinkmatcher
 
 import com.tokopedia.applink.DeepLinkChecker.BLOG
 import com.tokopedia.applink.DeepLinkChecker.BROWSE
@@ -35,6 +35,56 @@ import com.tokopedia.applink.DeepLinkChecker.WALLET_OVO
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
+import tokopedia.applink.util.DeepLinkUrlConstant.ABOUT_URL_LINK
+import tokopedia.applink.util.DeepLinkUrlConstant.ACTIVATION_URL_LINK
+import tokopedia.applink.util.DeepLinkUrlConstant.AKTIVASI_POWER_MERCHANT_URL_LINK
+import tokopedia.applink.util.DeepLinkUrlConstant.BLOG_URL_LINK
+import tokopedia.applink.util.DeepLinkUrlConstant.CAMPAIGN_URL_LINK
+import tokopedia.applink.util.DeepLinkUrlConstant.CATALOG_URL_INK
+import tokopedia.applink.util.DeepLinkUrlConstant.CONTACT_US_URL_LINK
+import tokopedia.applink.util.DeepLinkUrlConstant.CONTENT_URL_LINK
+import tokopedia.applink.util.DeepLinkUrlConstant.CREDIT_MOTOR_URL_LINK
+import tokopedia.applink.util.DeepLinkUrlConstant.DEALS_URL_LINK
+import tokopedia.applink.util.DeepLinkUrlConstant.DISCOVERY_B_URL_LINK
+import tokopedia.applink.util.DeepLinkUrlConstant.DISCOVERY_PAGE_URL_LINK
+import tokopedia.applink.util.DeepLinkUrlConstant.ETALASE_URL_LINK
+import tokopedia.applink.util.DeepLinkUrlConstant.EVENTS_URL_LINK
+import tokopedia.applink.util.DeepLinkUrlConstant.FIND_URL_LINK
+import tokopedia.applink.util.DeepLinkUrlConstant.FLIGHT_URL_LINK
+import tokopedia.applink.util.DeepLinkUrlConstant.GOLD_URL_LINK
+import tokopedia.applink.util.DeepLinkUrlConstant.GROUP_CHAT_URL_LINK
+import tokopedia.applink.util.DeepLinkUrlConstant.HELP_URL_LINK
+import tokopedia.applink.util.DeepLinkUrlConstant.HOTEL_URL_LINK
+import tokopedia.applink.util.DeepLinkUrlConstant.HOT_LIST_URL_LINK
+import tokopedia.applink.util.DeepLinkUrlConstant.HOT_URL_LINK
+import tokopedia.applink.util.DeepLinkUrlConstant.INVOICE_URL_LINK
+import tokopedia.applink.util.DeepLinkUrlConstant.KUPON_THR_URL_LINK
+import tokopedia.applink.util.DeepLinkUrlConstant.MERCHANT_KYC_URL_LINK
+import tokopedia.applink.util.DeepLinkUrlConstant.MODAL_TOKO_URL_LINK
+import tokopedia.applink.util.DeepLinkUrlConstant.MYSHOP_URL_LINK
+import tokopedia.applink.util.DeepLinkUrlConstant.MY_SHOP_URL_LINK
+import tokopedia.applink.util.DeepLinkUrlConstant.NEW_CATEGORY_URL_LINK
+import tokopedia.applink.util.DeepLinkUrlConstant.OLD_CATEGORY_URL_LINK
+import tokopedia.applink.util.DeepLinkUrlConstant.ORDER_LIST_URL_LINK
+import tokopedia.applink.util.DeepLinkUrlConstant.OVO_URL_LINK
+import tokopedia.applink.util.DeepLinkUrlConstant.PEOPLE_URL_LINK
+import tokopedia.applink.util.DeepLinkUrlConstant.PLAY_URL_LINK
+import tokopedia.applink.util.DeepLinkUrlConstant.PRODUCT_REVIEW_URL_LINK
+import tokopedia.applink.util.DeepLinkUrlConstant.PRODUCT_URL_LINK
+import tokopedia.applink.util.DeepLinkUrlConstant.PROMO_DETAIL_URL_LINK
+import tokopedia.applink.util.DeepLinkUrlConstant.PROMO_LIST_URL_LINK
+import tokopedia.applink.util.DeepLinkUrlConstant.PULSA_URL_LINK
+import tokopedia.applink.util.DeepLinkUrlConstant.RECOMMENDATION_URL_LINK
+import tokopedia.applink.util.DeepLinkUrlConstant.REFERALL_URL_LINK
+import tokopedia.applink.util.DeepLinkUrlConstant.REKSA_DANA_URL_LINK
+import tokopedia.applink.util.DeepLinkUrlConstant.RESET_LINK
+import tokopedia.applink.util.DeepLinkUrlConstant.SALE_URL_LINK
+import tokopedia.applink.util.DeepLinkUrlConstant.SEARCH_URL_LINK
+import tokopedia.applink.util.DeepLinkUrlConstant.SERU_URL_LINK
+import tokopedia.applink.util.DeepLinkUrlConstant.SHOP_URL_LINK
+import tokopedia.applink.util.DeepLinkUrlConstant.TOKO_POINTS_URL_LINK
+import tokopedia.applink.util.DeepLinkUrlConstant.TRAVEL_ENTERTAINMENT_URL_LINK
+import tokopedia.applink.util.DeepLinkUrlConstant.TRAVEL_ENTERTAINTMENT_DETAIL_URL_LINK
 
 @RunWith(RobolectricTestRunner::class)
 class DeepLinkMatcherTest: DeepLinkMatcherTestFixture() {
