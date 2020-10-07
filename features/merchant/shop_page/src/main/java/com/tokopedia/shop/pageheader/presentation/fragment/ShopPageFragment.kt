@@ -797,8 +797,10 @@ class ShopPageFragment :
     }
 
     private fun onSuccessGetShopPageTabData(shopPageP1Data: ShopPageP1HeaderData) {
+        Log.i("SHOP_TEST", "{${System.currentTimeMillis()}} first hit onSuccessGetShopPageTabData")
         isShowFeed = shopPageP1Data.isWhitelist
         createPostUrl = shopPageP1Data.url
+        Log.i("SHOP_TEST", "{${System.currentTimeMillis()}} before assign shopPageHeaderDataModel")
         shopPageHeaderDataModel = ShopPageHeaderDataModel().apply {
             shopId = this@ShopPageFragment.shopId
             isOfficial = shopPageP1Data.isOfficial
@@ -809,24 +811,32 @@ class ShopPageFragment :
             shopDomain = shopPageP1Data.shopDomain
             avatar = shopPageP1Data.shopAvatar
         }
+        Log.i("SHOP_TEST", "{${System.currentTimeMillis()}} before updateCustomDimensionData")
         customDimensionShopPage.updateCustomDimensionData(
                 shopId,
                 shopPageHeaderDataModel?.isOfficial ?: false,
                 shopPageHeaderDataModel?.isGoldMerchant ?: false
         )
+        Log.i("SHOP_TEST", "{${System.currentTimeMillis()}} after updateCustomDimensionData")
         val shopType = when {
             shopPageHeaderDataModel?.isOfficial ?: false -> TrackShopTypeDef.OFFICIAL_STORE
             shopPageHeaderDataModel?.isGoldMerchant ?: false -> TrackShopTypeDef.GOLD_MERCHANT
             else -> TrackShopTypeDef.REGULAR_MERCHANT
         }
+        Log.i("SHOP_TEST", "{${System.currentTimeMillis()}} before sendScreenShopPage")
         shopPageTracking?.sendScreenShopPage(shopId, shopType)
+        Log.i("SHOP_TEST", "{${System.currentTimeMillis()}} before getShopPageHeaderContentData")
         getShopPageHeaderContentData()
+        Log.i("SHOP_TEST", "{${System.currentTimeMillis()}} before setupTabs")
         setupTabs()
+        Log.i("SHOP_TEST", "{${System.currentTimeMillis()}} before setViewState")
         setViewState(VIEW_CONTENT)
         swipeToRefresh.isRefreshing = false
+        Log.i("SHOP_TEST", "{${System.currentTimeMillis()}} before shopPageFragmentHeaderViewHolder bind")
         shopPageHeaderDataModel?.let {
             shopPageFragmentHeaderViewHolder.bind(it, isMyShop, remoteConfig)
         }
+        Log.i("SHOP_TEST", "{${System.currentTimeMillis()}} after shopPageFragmentHeaderViewHolder bind")
     }
 
     protected fun stopPreparePltShopPage() {
