@@ -96,6 +96,18 @@
             app:layout_constraintEnd_toEndOf="parent"
             tools:visibility="visible"/>
 
+        <com.tokopedia.unifycomponents.Label
+            android:id="@+id/reviewPendingOvoIncentiveLabel"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:layout_marginTop="@dimen/layout_lvl1"
+            android:layout_marginEnd="@dimen/layout_lvl2"
+            app:layout_constraintTop_toBottomOf="@id/reviewPendingStars"
+            app:layout_constraintStart_toStartOf="@id/reviewPendingProductName"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:visibility="visible" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 

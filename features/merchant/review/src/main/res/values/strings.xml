@@ -175,4 +175,12 @@
     <string name="message_exception_description">Terjadi kesalahan koneksi.\nSilahkan coba kembali"</string>
     <string name="try_again">COBA KEMBALI</string>
     <string name="set_date">Atur Tanggal</string>
+
+    <!-- ovo incentive -->
+    <string name="ovo_incentive_review_pending">Kasih ulasan sekarang, dapat OVO Points</string>
+    <string name="review_create_incomplete_title">Ulasanmu belum lengkap, nih</string>
+    <string name="review_create_incomplete_subtitle">Dengan ulasan lengkap kamu bisa bantu penjual &amp; dapat OVO Points, lho.</string>
+    <string name="review_create_incomplete_cancel">Lengkapi Ulasan Dulu</string>
+    <string name="review_create_incomplete_send_anyways">Kirim Sekarang Aja</string>
+
 </resources>

@@ -2,6 +2,7 @@ package com.tokopedia.review.feature.inbox.pending.presentation.adapter.viewhold
 
 import android.os.Handler
 import android.view.View
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.reputation.common.view.AnimatedRatingPickerReviewPendingView
@@ -14,6 +15,7 @@ class ReviewPendingViewHolder(view: View, private val reviewPendingItemListener:
 
     companion object {
         val LAYOUT = R.layout.item_review_pending
+        const val UNLOCK_UNIFY_LABEL = true
     }
 
     override fun bind(element: ReviewPendingUiModel) {
@@ -27,6 +29,7 @@ class ReviewPendingViewHolder(view: View, private val reviewPendingItemListener:
             }
             showDate(timestamp.createTimeFormatted)
             showNew(status.seen)
+            showOvoIncentive(status.isEligible)
         }
     }
 
@@ -87,5 +90,24 @@ class ReviewPendingViewHolder(view: View, private val reviewPendingItemListener:
 
     private fun showNew(seen: Boolean) {
         itemView.reviewPendingNewIcon.showWithCondition(!seen)
+    }
+
+    private fun showOvoIncentive(isEligible: Boolean) {
+        if(isEligible) {
+            itemView.reviewPendingOvoIncentiveLabel.apply {
+                unlockFeature = UNLOCK_UNIFY_LABEL
+                fontColorByPass = getColorString(com.tokopedia.unifyprinciples.R.color.Purple_P500)
+                setLabelType(getColorString(com.tokopedia.unifyprinciples.R.color.Purple_P100))
+                setLabelImage(R.drawable.ic_ovo_incentive_label)
+                setLabel(getString(R.string.ovo_incentive_review_pending))
+                show()
+            }
+            return
+        }
+        itemView.reviewPendingOvoIncentiveLabel.hide()
+    }
+
+    private fun getColorString(color: Int): String {
+        return "#${Integer.toHexString(ContextCompat.getColor(itemView.context, color))}"
     }
 }
