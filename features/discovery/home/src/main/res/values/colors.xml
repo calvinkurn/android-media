@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="black_70">@color/Unify_N700_68</color>
-    <color name="tab_indicator_beli">@color/Unify_G400</color>
+    <color name="tab_indicator_beli">@color/Unify_G500</color>
     <color name="tab_indicator_bayar">@color/Unify_Y300</color>
     <color name="tab_indicator_pesan">@color/Unify_Y500</color>
     <color name="tab_indicator_ajukan">@color/Unify_T400</color>
-    <color name="tab_indicator_jual">@color/Unify_G400</color>
+    <color name="tab_indicator_jual">@color/Unify_G500</color>
     <color name="tab_text_unselected">@color/Unify_N700_44</color>
     <color name="green_80">@color/Unify_G600</color>
     <color name="grey_hint">@color/Unify_N100</color>
-    <color name="medium_green">@color/Unify_G400</color>
+    <color name="medium_green">@color/Unify_G500</color>
     <color name="black_54">@color/Unify_N700_44</color>
     <color name="tkpd_dark_gray">@color/Unify_N200</color>
     <color name="fab_background_tint">@color/Unify_N50</color>
