@@ -1,9 +1,14 @@
 package com.tokopedia.home_wishlist.topads
 
 import android.util.Log
+import android.app.Activity
+import android.app.Instrumentation
+import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.test.rule.ActivityTestRule
+import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.matcher.IntentMatchers
 import com.tokopedia.home_wishlist.R
 import com.tokopedia.home_wishlist.activity.InstrumentationWishlistTestActivity
 import com.tokopedia.home_wishlist.topads.TopAdsVerificationTestReportUtil.writeTopAdsVerificatorLog
@@ -12,6 +17,7 @@ import com.tokopedia.home_wishlist.view.viewholder.RecommendationItemViewHolder
 import com.tokopedia.test.application.assertion.topads.TopAdsAssertion
 import com.tokopedia.test.application.environment.callback.TopAdsVerificatorInterface
 import com.tokopedia.test.application.espresso_component.CommonActions.clickOnEachItemRecyclerView
+import androidx.test.espresso.intent.rule.IntentsTestRule
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import org.junit.After
 import org.junit.Before
@@ -22,10 +28,12 @@ class WishlistTopAdsVerificationTest {
     private var topAdsAssertion: TopAdsAssertion? = null
 
     @get:Rule
-    var activityRule: ActivityTestRule<InstrumentationWishlistTestActivity> = ActivityTestRule(InstrumentationWishlistTestActivity::class.java)
+    var activityRule: IntentsTestRule<InstrumentationWishlistTestActivity> = ActivityTestRule(InstrumentationWishlistTestActivity::class.java)
 
     @Before
     fun setTopAdsAssertion() {
+        Intents.intending(IntentMatchers.isInternal()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
+
         topAdsAssertion = TopAdsAssertion(
                 activityRule.activity,
                 activityRule.activity.application as TopAdsVerificatorInterface
@@ -71,7 +79,7 @@ class WishlistTopAdsVerificationTest {
     private fun checkProductOnDynamicChannel(homeRecyclerView: RecyclerView, i: Int) {
         when (val viewHolder = homeRecyclerView.findViewHolderForAdapterPosition(i)) {
             is RecommendationItemViewHolder -> {
-                //direct click
+                activityRule.runOnUiThread { viewHolder.itemView.findViewById<View>(R.id.product_item).performClick() }
             }
             is DynamicCarouselRecommendationViewHolder -> {
                 clickOnEachItemRecyclerView(viewHolder.itemView, R.id.carouselProductCardRecyclerView, 0)
