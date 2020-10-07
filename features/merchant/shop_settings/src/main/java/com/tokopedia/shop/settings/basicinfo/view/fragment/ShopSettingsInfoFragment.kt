@@ -310,12 +310,9 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
     }
 
     private fun setupToolbar() {
-        val toolbar: Toolbar? = activity?.findViewById(R.id.toolbar)
-        toolbar?.title = getString(R.string.shop_settings_basic_info_title)
         val tvSave: TextView? = activity?.findViewById(R.id.tvSave)
         tvSave?.hide()
     }
-
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)

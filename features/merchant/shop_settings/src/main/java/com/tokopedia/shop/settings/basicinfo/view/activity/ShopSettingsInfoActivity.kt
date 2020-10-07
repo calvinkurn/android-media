@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
@@ -12,6 +13,7 @@ import androidx.navigation.ui.NavigationUI
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.shop.settings.R
 import com.tokopedia.shop.settings.basicinfo.oldview.activity.OldShopSettingsInfoActivity
 
 /**
@@ -27,7 +29,7 @@ class ShopSettingsInfoActivity : BaseSimpleActivity() {
 
     override fun getNewFragment(): Fragment? = null
 
-    override fun getLayoutRes(): Int = com.tokopedia.shop.settings.R.layout.activity_shop_settings_info
+    override fun getLayoutRes(): Int = R.layout.activity_shop_settings_info
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,17 +49,21 @@ class ShopSettingsInfoActivity : BaseSimpleActivity() {
 
     private fun setupUI() {
         window.decorView.setBackgroundColor(Color.WHITE)
-        toolbar.background = ContextCompat.getDrawable(this, android.R.color.transparent)
+        findViewById<Toolbar>(R.id.toolbar)?.let {
+            setSupportActionBar(it)
+            supportActionBar?.setBackgroundDrawable(ContextCompat.getDrawable(this, android.R.color.transparent))
+            supportActionBar?.title = getString(R.string.shop_settings_basic_info_title)
+        }
     }
 
     private fun setupNavController() {
-        val navController = findNavController(com.tokopedia.shop.settings.R.id.parent_view)
+        val navController = findNavController(R.id.parent_view)
         val listener = AppBarConfiguration.OnNavigateUpListener {
             navController.navigateUp()
         }
 
         val appBarConfiguration = AppBarConfiguration.Builder().setFallbackOnNavigateUpListener(listener).build()
-        navController.setGraph(com.tokopedia.shop.settings.R.navigation.shop_settings_navigation)
+        navController.setGraph(R.navigation.shop_settings_navigation)
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration)
     }
 }
