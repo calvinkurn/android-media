@@ -17,10 +17,6 @@ abstract class SellerSlice(val context: Context, protected val sliceUri: Uri) {
 
     abstract fun getSlice(): Slice
 
-    protected fun refresh() {
-        context.contentResolver.notifyChange(sliceUri, null)
-    }
-
     @RequiresApi(Build.VERSION_CODES.KITKAT)
     protected fun createActivityAction(): SliceAction {
         val intent = RouteManager.getIntent(context, ApplinkConst.SELLER_ORDER_DETAIL)

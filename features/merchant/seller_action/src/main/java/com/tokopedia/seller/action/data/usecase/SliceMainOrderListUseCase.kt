@@ -1,28 +1,28 @@
-package com.tokopedia.seller.action.domain.usecase
+package com.tokopedia.seller.action.data.usecase
 
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.seller.action.common.const.SellerActionConst
-import com.tokopedia.seller.action.domain.model.SellerActionOrderList
-import com.tokopedia.seller.action.domain.param.SellerActionOrderListParam
+import com.tokopedia.seller.action.data.model.SellerActionOrderList
+import com.tokopedia.seller.action.data.param.SellerActionOrderListParam
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
 class SliceMainOrderListUseCase @Inject constructor(private val gqlRepository: GraphqlRepository)
-    : UseCase<SellerActionOrderList.Data.OrderList>() {
+    : UseCase<List<SellerActionOrderList.Data.OrderList.Order>>() {
 
-    val params: RequestParams = RequestParams.EMPTY
+    var params: RequestParams = RequestParams.EMPTY
 
-    override suspend fun executeOnBackground(): SellerActionOrderList.Data.OrderList {
+    override suspend fun executeOnBackground(): List<SellerActionOrderList.Data.OrderList.Order> {
         val request = GraphqlRequest(QUERY, SellerActionOrderList::class.java, params.parameters)
         val response = gqlRepository.getReseponse(listOf(request))
 
         val errors = response.getError(SellerActionOrderList::class.java)
         if (errors.isNullOrEmpty()) {
             val data = response.getData<SellerActionOrderList>(SellerActionOrderList::class.java)
-            return data.data.orderList
+            return data.data.orderList.orders
         } else {
             throw MessageErrorException(errors.joinToString(", ") { it.message })
         }

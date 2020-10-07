@@ -1,5 +1,20 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.tokopedia.seller.action">
+    <uses-sdk tools:overrideLibrary="androidx.slice.builders.ktx"/>
+
+    <application>
+        <provider
+            android:authorities="com.tokopedia.seller.action.slices"
+            android:name="com.tokopedia.seller.action.slices.SellerActionSliceProvider"
+            android:exported="true"
+            android:grantUriPermissions="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.app.slice.category.SLICE" />
+            </intent-filter>
+        </provider>
+    </application>
 
 
 </manifest>
