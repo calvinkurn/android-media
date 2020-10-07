@@ -822,6 +822,22 @@ class TopChatRoomPresenterTest {
         }
     }
 
+    @Test
+    fun `send ws event on start typing`() {
+        //Given
+        val typingParam = TopChatWebSocketParam.generateParamStartTyping(exMessageId)
+        every { webSocketUtil.getWebSocketInfo(any(), any()) } returns websocketServer
+        every { getChatUseCase.isInTheMiddleOfThePage() } returns false
+
+
+        // When
+        presenter.connectWebSocket(exMessageId)
+        presenter.startTyping()
+
+        // Then
+        verify { RxWebSocket.send(typingParam, listInterceptor) }
+    }
+
     private fun mockkParseResponse(wsInfo: WebSocketInfo, isOpposite: Boolean = true): ChatSocketPojo {
         val wsChatPojo = topChatRoomWebSocketMessageMapper.parseResponse(wsInfo.response).apply {
             this.isOpposite = isOpposite
