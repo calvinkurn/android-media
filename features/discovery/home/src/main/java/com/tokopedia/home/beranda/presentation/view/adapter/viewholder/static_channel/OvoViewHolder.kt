@@ -119,7 +119,7 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener?) : Abstr
             }
             tvTitleTokocash.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
             tvTitleTokocash.setText(R.string.home_header_tokocash_unable_to_load_label)
-            tvActionTokocash.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_G400))
+            tvActionTokocash.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
             tvActionTokocash.setText(R.string.home_header_tokocash_refresh_label)
             tvTitleTokocash.visibility = View.VISIBLE
             tvActionTokocash.visibility = View.VISIBLE
@@ -149,7 +149,7 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener?) : Abstr
                         tvActionTokocash.visibility = if (homeHeaderWalletAction.isVisibleActionButton) View.VISIBLE else View.GONE
                         tvTitleTokocash.visibility = if (homeHeaderWalletAction.isVisibleActionButton) View.GONE else View.VISIBLE
                         if (homeHeaderWalletAction.isShowTopup) {
-                            tvBalanceTokocash.setTextColor(itemView.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_G400))
+                            tvBalanceTokocash.setTextColor(itemView.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_G500))
                             tvBalanceTokocash.text = itemView.resources.getString(R.string.home_header_topup_ovo)
                             tvBalanceTokocash.setTypeface(tvBalanceTokocash.getTypeface(), Typeface.BOLD)
                             tokoCashHolder.setOnClickListener { gotToTopupOvo(homeHeaderWalletAction.topupUrl) }
@@ -239,7 +239,7 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener?) : Abstr
             tvActionTokopoint.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
             mTextCouponCount.setText(R.string.home_header_tokopoint_refresh_label)
             mTextCouponCount.visibility = View.VISIBLE
-            mTextCouponCount.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_G400))
+            mTextCouponCount.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
             tokopointProgressBarLayout.visibility = View.GONE
             tokopointActionContainer.visibility = View.VISIBLE
             ivLogoTokoPoint.setImageResource(R.drawable.ic_product_fintech_tokopoint_normal_24)
@@ -268,7 +268,7 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener?) : Abstr
                     tvBalanceTokoPoint.setText(R.string.home_header_tokopoint_no_tokopoints)
                     mTextCouponCount.setText(R.string.home_header_tokopoint_no_coupons)
                     tvBalanceTokoPoint.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
-                    mTextCouponCount.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_G400))
+                    mTextCouponCount.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
                 }
             }
 

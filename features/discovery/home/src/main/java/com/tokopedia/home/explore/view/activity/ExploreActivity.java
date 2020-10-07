@@ -165,7 +165,7 @@ public class ExploreActivity extends BaseTabActivity implements HasComponent<Exp
             public void onPageSelected(int position) {
                 switch (position) {
                     case 0:
-                        tabLayout.setSelectedTabIndicatorColor(ContextCompat.getColor(ExploreActivity.this, com.tokopedia.unifyprinciples.R.color.Unify_G400));
+                        tabLayout.setSelectedTabIndicatorColor(ContextCompat.getColor(ExploreActivity.this, com.tokopedia.unifyprinciples.R.color.Unify_G500));
                         break;
                     case 1:
                         tabLayout.setSelectedTabIndicatorColor(ContextCompat.getColor(ExploreActivity.this, com.tokopedia.unifyprinciples.R.color.Unify_Y300));
@@ -177,7 +177,7 @@ public class ExploreActivity extends BaseTabActivity implements HasComponent<Exp
                         tabLayout.setSelectedTabIndicatorColor(ContextCompat.getColor(ExploreActivity.this, com.tokopedia.unifyprinciples.R.color.Unify_T400));
                         break;
                     case 4:
-                        tabLayout.setSelectedTabIndicatorColor(ContextCompat.getColor(ExploreActivity.this, com.tokopedia.unifyprinciples.R.color.Unify_G400));
+                        tabLayout.setSelectedTabIndicatorColor(ContextCompat.getColor(ExploreActivity.this, com.tokopedia.unifyprinciples.R.color.Unify_G500));
                         break;
                 }
             }
