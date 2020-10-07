@@ -4,7 +4,7 @@ import android.content.Context
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.seller.menu.R
+import com.tokopedia.seller.menu.common.R
 import com.tokopedia.seller.menu.common.analytics.SettingTrackingConstant
 import com.tokopedia.seller.menu.common.constant.MenuItemType
 import com.tokopedia.seller.menu.common.view.uimodel.DividerUiModel
@@ -56,7 +56,7 @@ object SellerSettingsList {
                 type = MenuItemType.SHIPPING),
             DividerUiModel(DividerType.THICK),
             SellerMenuItemUiModel(
-                context.getString(R.string.seller_menu_notification_setting),
+                context.getString(com.tokopedia.seller.menu.R.string.seller_menu_notification_setting),
                 R.drawable.ic_app_setting,
                 eventActionSuffix = SettingTrackingConstant.SETTINGS,
                 type = MenuItemType.NOTIFICATION) {

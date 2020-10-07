@@ -17,6 +17,7 @@ import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.tokopedia.core.BuildConfig;
 import com.tokopedia.core.TkpdCoreRouter;
 import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.appsflyer.AppsflyerEventValidation;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.track.interfaces.AFAdsIDCallback;
 import com.tokopedia.track.interfaces.ContextAnalytics;
@@ -194,6 +195,7 @@ public class AppsflyerAnalytics extends ContextAnalytics {
 
     public void sendEvent(String eventName, Map<String, Object> eventValue) {
         AppsFlyerLib.getInstance().trackEvent(getContext(), eventName, eventValue);
+        new AppsflyerEventValidation().validateAppsflyerData(eventName,eventValue);
     }
 
     //aliasing
@@ -205,6 +207,7 @@ public class AppsflyerAnalytics extends ContextAnalytics {
     @Override
     public void sendTrackEvent(String eventName, Map<String, Object> eventValue) {
         AppsFlyerLib.getInstance().trackEvent(getContext(), eventName, eventValue);
+        new AppsflyerEventValidation().validateAppsflyerData(eventName,eventValue);
     }
 
     public void sendDeeplinkData(Activity activity) {

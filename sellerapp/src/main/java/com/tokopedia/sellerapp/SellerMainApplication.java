@@ -21,6 +21,7 @@ import com.moengage.inapp.InAppMessage;
 import com.moengage.inapp.InAppTracker;
 import com.moengage.pushbase.push.MoEPushCallBacks;
 import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
+import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiWhiteListUseCase;
 import com.tokopedia.cacheapi.util.CacheApiLoggingUtils;
 import com.tokopedia.cachemanager.PersistentCacheManager;
@@ -33,6 +34,7 @@ import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.device.info.DeviceInfo;
 import com.tokopedia.graphql.data.GraphqlClient;
+import com.tokopedia.prereleaseinspector.ViewInspectorSubscriber;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform;
 import com.tokopedia.sellerapp.deeplink.DeepLinkActivity;
@@ -43,19 +45,15 @@ import com.tokopedia.sellerapp.utils.SessionActivityLifecycleCallbacks;
 import com.tokopedia.sellerapp.utils.timber.LoggerActivityLifecycleCallbacks;
 import com.tokopedia.sellerapp.utils.timber.TimberWrapper;
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity;
-import com.tokopedia.prereleaseinspector.ViewInspectorSubscriber;
+import com.tokopedia.tokopatch.TokoPatch;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.url.TokopediaUrl;
-import com.tokopedia.user.session.UserSession;
-import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
-import timber.log.Timber;
-import com.tokopedia.tokopatch.TokoPatch;
 import kotlin.Pair;
-import com.tokopedia.authentication.AuthHelper;
+import timber.log.Timber;
 
 /**
  * Created by ricoharisin on 11/11/16.
@@ -68,6 +66,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
 
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
     }
 
     @Override

@@ -3,6 +3,7 @@ package com.tokopedia.product.addedit.variant.presentation.fragment
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.view.*
 import android.widget.TextView
@@ -34,6 +35,7 @@ import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitori
 import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringConstants.ADD_EDIT_PRODUCT_VARIANT_TRACE
 import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringListener
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.EXTRA_CACHE_MANAGER_ID
+import com.tokopedia.product.addedit.common.util.AddEditProductUploadErrorHandler
 import com.tokopedia.product.addedit.common.util.HorizontalItemDecoration
 import com.tokopedia.product.addedit.common.util.RecyclerViewItemDecoration
 import com.tokopedia.product.addedit.imagepicker.view.activity.SizechartPickerAddProductActivity
@@ -167,6 +169,9 @@ class AddEditProductVariantFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        // set bg color programatically, to reduce overdraw
+        activity?.window?.decorView?.setBackgroundColor(Color.WHITE)
 
         variantTypeAdapter = VariantTypeAdapter(this)
         variantValueAdapterLevel1 = VariantValueAdapter(this, VARIANT_VALUE_LEVEL_ONE_POSITION)
@@ -706,13 +711,6 @@ class AddEditProductVariantFragment :
         variantDataValuePicker?.setShowListener {
             // set the bottom sheet to full screen
             variantDataValuePicker?.bottomSheet?.state = BottomSheetBehavior.STATE_EXPANDED
-            // enable the back button despite of overlayClickDismiss = false
-            variantDataValuePicker?.dialog?.setOnKeyListener { dialog, keyCode, event ->
-                if (keyCode == KeyEvent.KEYCODE_BACK) {
-                    variantDataValuePicker?.dismiss()
-                }
-                true
-            }
         }
         val variantDataValuePickerLayout = VariantDataValuePicker(requireContext(), layoutPosition, variantData, this, this, this, this)
         variantDataValuePickerLayout.setupVariantDataValuePicker(selectedVariantUnit, selectedVariantUnitValues, addedCustomVariantUnitValue, unConfirmedSelection)
@@ -739,16 +737,6 @@ class AddEditProductVariantFragment :
             variantUnitPicker?.dismiss()
             variantDataValuePicker?.dialog?.show()
         }
-        // enable the back button despite of overlayClickDismiss = false
-        variantUnitPicker?.setShowListener {
-            variantUnitPicker?.dialog?.setOnKeyListener { dialog, keyCode, event ->
-                if(keyCode == KeyEvent.KEYCODE_BACK){
-                    variantUnitPicker?.dismiss()
-                    variantDataValuePicker?.dialog?.show()
-                }
-                true
-            }
-        }
         variantUnitPicker?.setChild(variantUnitPickerLayout)
         variantUnitPicker?.show(this@AddEditProductVariantFragment.childFragmentManager, TAG_VARIANT_UNIT_PICKER)
     }
@@ -762,15 +750,6 @@ class AddEditProductVariantFragment :
         customVariantValueInputForm?.setTitle(getString(R.string.action_variant_add) + " " + variantData.name)
         customVariantValueInputForm?.overlayClickDismiss = false
         customVariantValueInputForm?.isKeyboardOverlap = false
-        // enable the back button despite of overlayClickDismiss = false
-        customVariantValueInputForm?.setShowListener {
-            customVariantValueInputForm?.dialog?.setOnKeyListener { dialog, keyCode, event ->
-                if(keyCode == KeyEvent.KEYCODE_BACK){
-                    customVariantValueInputForm?.dismiss()
-                }
-                true
-            }
-        }
         val customVariantValueInputLayout = CustomVariantUnitValueForm(requireContext(), layoutPosition, variantUnitValues, this)
         customVariantValueInputLayout.setupVariantCustomInputLayout(selectedVariantUnit, selectedVariantUnitValues)
         customVariantValueInputForm?.setChild(customVariantValueInputLayout)
@@ -909,7 +888,7 @@ class AddEditProductVariantFragment :
 
     private fun observeisRemovingVariant() {
         viewModel.isRemovingVariant.observe(viewLifecycleOwner, Observer {
-            buttonSave.text =  if (it) {
+            buttonSave.text = if (it) {
                 getString(com.tokopedia.product.addedit.R.string.action_variant_save)
             } else {
                 getString(com.tokopedia.product.addedit.R.string.action_variant_next)
@@ -1188,17 +1167,17 @@ class AddEditProductVariantFragment :
 
     private fun trackOopsConnectionPageScreen(isEditMode: Boolean, throwable: Throwable, context: Context) {
         val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
-        val errorThrowable = throwable.message ?: ""
+        val errorName = AddEditProductUploadErrorHandler.getErrorName(throwable)
         if (isEditMode) {
             ProductEditStepperTracking.oopsConnectionPageScreen(
                     userId,
                     errorMessage,
-                    errorThrowable)
+                    errorName)
         } else {
             ProductAddStepperTracking.oopsConnectionPageScreen(
                     userId,
                     errorMessage,
-                    errorThrowable)
+                    errorName)
         }
     }
 

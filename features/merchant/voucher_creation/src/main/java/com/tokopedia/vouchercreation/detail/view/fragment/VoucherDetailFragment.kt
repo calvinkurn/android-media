@@ -655,8 +655,16 @@ class VoucherDetailFragment : BaseDetailFragment() {
         val missingPermissions = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE)
         activity?.let {
             ActivityCompat.requestPermissions(it, missingPermissions, DOWNLOAD_REQUEST_CODE)
-            val helper = DownloadHelper(it, uri, System.currentTimeMillis().toString(), null)
-            helper.downloadFile { true }
+            try {
+                val helper = DownloadHelper(it, uri, System.currentTimeMillis().toString(), null)
+                helper.downloadFile { true }
+            } catch (iae: IllegalArgumentException) {
+                iae.printStackTrace()
+            } catch (se: SecurityException) {
+                se.printStackTrace()
+            } catch (ex: Exception) {
+                ex.printStackTrace()
+            }
         }
     }
 

@@ -8,12 +8,9 @@ import com.tokopedia.play.broadcaster.data.config.ChannelConfigStore
 import com.tokopedia.play.broadcaster.domain.usecase.GetLiveStatisticsUseCase
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastUiMapper
 import com.tokopedia.play.broadcaster.ui.model.TrafficMetricUiModel
-import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
-import com.tokopedia.play.broadcaster.util.coroutine.CoroutineDispatcherProvider
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.withContext
+import com.tokopedia.play_common.model.result.NetworkResult
+import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
+import kotlinx.coroutines.*
 import javax.inject.Inject
 
 /**
@@ -48,5 +45,10 @@ class PlayBroadcastSummaryViewModel @Inject constructor(
             _observableTrafficMetrics.value = NetworkResult.Fail(it) { fetchLiveTraffic() }
         }
 
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        scope.cancel()
     }
 }

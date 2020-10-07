@@ -51,6 +51,7 @@ abstract class BaseWidgetUiTest{
     open val remoteConfig = mockk<RemoteConfig>(relaxed = true)
     open val playToggleChannelReminderUseCase = mockk<Lazy<PlayToggleChannelReminderUseCase>> (relaxed = true)
     open val getPlayBannerUseCase = mockk<Lazy<GetPlayWidgetUseCase>> (relaxed = true)
+    open val getDisplayHeadlineAds = mockk<Lazy<GetDisplayHeadlineAds>>(relaxed = true)
 
     open val homeVisitableFactory = HomeVisitableFactoryImpl(userSessionInterface.get(), remoteConfig, HomeDefaultDataSource())
     open val homeDynamicChannelVisitableFactory = HomeDynamicChannelVisitableFactoryImpl(userSessionInterface.get(), remoteConfig, HomeDefaultDataSource())
@@ -86,6 +87,7 @@ abstract class BaseWidgetUiTest{
             topAdsImageViewUseCase = topAdsImageViewUseCase,
             playToggleChannelReminderUseCase = playToggleChannelReminderUseCase,
             getPlayBannerUseCase = getPlayBannerUseCase,
+            getDisplayHeadlineAds = getDisplayHeadlineAds,
             homeProcessor = mockk(relaxed = true)
     )
 
