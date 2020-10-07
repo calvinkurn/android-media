@@ -40,7 +40,7 @@ class DrawOnPictureActivity : BaseSimpleActivity(), HasComponent<DrawOnPictureCo
 
         dopHeaderUnify.actionText = getString(R.string.developer_options_feedback_next_label)
         dopHeaderUnify.actionTextView?.setOnClickListener {
-            mFragment.saveNewImage()
+            if (::mFragment.isInitialized) mFragment.saveNewImage()
         }
     }
 
