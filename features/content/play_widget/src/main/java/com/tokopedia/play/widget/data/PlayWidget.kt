@@ -1,5 +1,6 @@
 package com.tokopedia.play.widget.data
 
+import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 
@@ -16,6 +17,7 @@ data class PlayWidgetResponse(
 )
 
 data class PlayWidgetItem(
+        @SerializedName("__typename") val typename: String = "",
         @SerializedName("ID") val id: String = "",
         @SerializedName("title") val title: String = "",
         @SerializedName("widgetType") val widgetType: String = "",
@@ -25,7 +27,8 @@ data class PlayWidgetItem(
         @SerializedName("config") val config: PlayWidgetItemConfig = PlayWidgetItemConfig(),
         @SerializedName("partner") val partner: PlayWidgetItemPartner = PlayWidgetItemPartner(),
         @SerializedName("video") val video: PlayWidgetItemVideo = PlayWidgetItemVideo(),
-        @SerializedName("stats") val stats: PlayWidgetItemStat = PlayWidgetItemStat()
+        @SerializedName("stats") val stats: PlayWidgetItemStat = PlayWidgetItemStat(),
+        @SerializedName("backgroundURL") val backgroundUrl : String = ""
 )
 
 data class PlayWidgetItemConfig(
@@ -66,8 +69,8 @@ data class PlayWidgetMeta(
     @SerializedName("overlayImageWebLink") val overlayImageWebLink: String = "",
     @SerializedName("gradient") val gradient: List<String> = emptyList(),
     @SerializedName("isAutoRefresh") val autoRefresh: Boolean = false,
-    @SerializedName("autoRefreshTimer") val autoRefreshTimer: Int = 0,
-    @SerializedName("autoplayAmount") val autoplayAmount: Int = 0,
+    @SerializedName("autoRefreshTimer") val autoRefreshTimer: Long = 0,
+    @SerializedName("autoplayAmount") val autoplayAmount: Long = 0,
     @SerializedName("autoplay") val autoplay: Boolean = false,
-    @SerializedName("maxAutoplayCell") val maxAutoplayCell: Int = 0
+    @SerializedName("maxAutoplayCell") val maxAutoplayCell: Long = 0
 )

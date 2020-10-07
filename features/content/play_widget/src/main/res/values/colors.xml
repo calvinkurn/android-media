@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="play_widget_small_gradient_top">#FFD15C</color>
+    <color name="play_widget_light_gray">#e0e0e0</color>
+    <color name="play_widget_container_white">#CCFFFFFF</color>
 </resources>

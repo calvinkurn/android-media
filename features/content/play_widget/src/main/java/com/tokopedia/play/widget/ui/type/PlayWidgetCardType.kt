@@ -2,12 +2,12 @@ package com.tokopedia.play.widget.ui.type
 
 
 /**
- * Created by mzennis on 05/10/20.
+ * Created by mzennis on 07/10/20.
  */
 enum class PlayWidgetCardType(val value: String) {
-    Live("LIVE"),
-    Vod("WATCH_AGAIN"),
-    Upcoming("COMING_SOON"),
+    Banner("PlayWidgetBanner"),
+    Channel("PlayWidgetChannel"),
+    Overlay("Overlay"),
     Unknown("");
 
     companion object {
@@ -18,7 +18,7 @@ enum class PlayWidgetCardType(val value: String) {
             values.forEach {
                 if (it.value.equals(value, true)) return it
             }
-            return Unknown
+            return PlayWidgetCardType.Unknown
         }
     }
 }

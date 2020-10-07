@@ -1,7 +1,11 @@
 package com.tokopedia.play.widget.domain
 
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.model.CacheType
+import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
+import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.play.widget.data.PlayWidget
+import com.tokopedia.play.widget.data.PlayWidgetResponse
 import com.tokopedia.usecase.coroutines.UseCase
 
 
@@ -13,7 +17,17 @@ class PlayWidgetUseCase(private val repository: GraphqlRepository) : UseCase<Pla
     var params: Map<String, Any> = emptyMap()
 
     override suspend fun executeOnBackground(): PlayWidget {
-        throw Throwable()
+        val gqlRequest = GraphqlRequest(query, PlayWidgetResponse::class.java, params)
+        val gqlResponse = repository.getReseponse(
+                listOf(gqlRequest),
+                GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
+        )
+        val errors = gqlResponse.getError(PlayWidgetResponse::class.java)
+        if (!errors.isNullOrEmpty()) {
+            throw Throwable(errors.firstOrNull()?.message)
+        }
+        val response = gqlResponse.getData<PlayWidgetResponse>(PlayWidgetResponse::class.java)
+        return response.playWidget
     }
 
     companion object {
