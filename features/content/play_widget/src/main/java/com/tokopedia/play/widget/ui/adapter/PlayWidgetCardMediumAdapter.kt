@@ -11,13 +11,15 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetMediumItemUiModel
 /**
  * Created by mzennis on 07/10/20.
  */
-class PlayWidgetCardMediumAdapter : BaseDiffUtilAdapter<PlayWidgetMediumItemUiModel>() {
+class PlayWidgetCardMediumAdapter(
+        cardMediumListener: CardMediumListener
+) : BaseDiffUtilAdapter<PlayWidgetMediumItemUiModel>() {
 
     init {
         delegatesManager
-                .addDelegate(PlayWidgetCardMediumOverlayAdapterDelegate())
-                .addDelegate(PlayWidgetCardMediumChannelAdapterDelegate())
-                .addDelegate(PlayWidgetCardMediumBannerAdapterDelegate())
+                .addDelegate(PlayWidgetCardMediumOverlayAdapterDelegate(cardMediumListener))
+                .addDelegate(PlayWidgetCardMediumChannelAdapterDelegate(cardMediumListener))
+                .addDelegate(PlayWidgetCardMediumBannerAdapterDelegate(cardMediumListener))
     }
 
     override fun areItemsTheSame(oldItem: PlayWidgetMediumItemUiModel, newItem: PlayWidgetMediumItemUiModel): Boolean {
@@ -29,4 +31,8 @@ class PlayWidgetCardMediumAdapter : BaseDiffUtilAdapter<PlayWidgetMediumItemUiMo
         return oldItem == newItem
     }
 
+    interface CardMediumListener {
+        fun onCardMediumClicked(item: PlayWidgetMediumItemUiModel, position: Int)
+        fun onCardMediumVisible(item: PlayWidgetMediumItemUiModel, position: Int)
+    }
 }

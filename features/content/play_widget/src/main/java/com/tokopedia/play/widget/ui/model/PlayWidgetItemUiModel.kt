@@ -1,5 +1,6 @@
 package com.tokopedia.play.widget.ui.model
 
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
 
 /**
@@ -34,7 +35,9 @@ data class PlayWidgetSmallChannelUiModel(
 /**
  * Medium
  */
-sealed class PlayWidgetMediumItemUiModel : PlayWidgetItemUiModel()
+sealed class PlayWidgetMediumItemUiModel(
+        val impress: ImpressHolder = ImpressHolder()
+) : PlayWidgetItemUiModel()
 
 object PlayWidgetMediumOverlayUiModel : PlayWidgetMediumItemUiModel()
 

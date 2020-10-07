@@ -4,7 +4,9 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.play.widget.R
+import com.tokopedia.play.widget.ui.adapter.PlayWidgetCardMediumAdapter
 import com.tokopedia.play.widget.ui.model.PlayWidgetMediumBannerUiModel
 import com.tokopedia.play_common.widget.playBannerCarousel.extension.loadImage
 
@@ -12,13 +14,25 @@ import com.tokopedia.play_common.widget.playBannerCarousel.extension.loadImage
 /**
  * Created by mzennis on 07/10/20.
  */
-class PlayWidgetCardMediumBannerViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+class PlayWidgetCardMediumBannerViewHolder(
+        itemView: View,
+        private val cardMediumListener: PlayWidgetCardMediumAdapter.CardMediumListener
+) : RecyclerView.ViewHolder(itemView) {
 
     private var background: AppCompatImageView = itemView.findViewById(R.id.play_widget_banner)
 
     fun bind(item: PlayWidgetMediumBannerUiModel) {
         background.loadImage(item.imageUrl)
-        // TODO add on click listener
+        setupListener(item)
+    }
+
+    private fun setupListener(item: PlayWidgetMediumBannerUiModel) {
+        itemView.setOnClickListener {
+            cardMediumListener.onCardMediumClicked(item, adapterPosition)
+        }
+        itemView.addOnImpressionListener(item.impress) {
+            cardMediumListener.onCardMediumVisible(item, adapterPosition)
+        }
     }
 
     companion object {

@@ -48,7 +48,18 @@ class PlayWidgetMediumView : ConstraintLayout {
 
     private val recyclerViewItem: RecyclerView
 
-    private val adapter = PlayWidgetCardMediumAdapter()
+    private val adapter = PlayWidgetCardMediumAdapter(
+            cardMediumListener = object : PlayWidgetCardMediumAdapter.CardMediumListener {
+                override fun onCardMediumClicked(item: PlayWidgetMediumItemUiModel, position: Int) {
+
+                }
+
+                override fun onCardMediumVisible(item: PlayWidgetMediumItemUiModel, position: Int) {
+
+                }
+            }
+    )
+
     private val layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
 
     init {

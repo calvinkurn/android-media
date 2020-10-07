@@ -6,8 +6,10 @@ import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.play.widget.R
+import com.tokopedia.play.widget.ui.adapter.PlayWidgetCardMediumAdapter
 import com.tokopedia.play.widget.ui.custom.PlayWidgetVideoView
 import com.tokopedia.play.widget.ui.model.PlayWidgetMediumChannelUiModel
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
@@ -15,7 +17,10 @@ import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
 /**
  * Created by mzennis on 05/10/20.
  */
-class PlayWidgetCardMediumChannelViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+class PlayWidgetCardMediumChannelViewHolder(
+        itemView: View,
+        private val cardMediumListener: PlayWidgetCardMediumAdapter.CardMediumListener
+) : RecyclerView.ViewHolder(itemView) {
 
     private val thumbnail: AppCompatImageView = itemView.findViewById(R.id.play_widget_thumbnail)
 
@@ -65,6 +70,8 @@ class PlayWidgetCardMediumChannelViewHolder(itemView: View) : RecyclerView.ViewH
         videoView.listener = videoListener
 
         channelType = item.channelType
+
+        setupListener(item)
     }
 
     fun playVideo() {
@@ -80,6 +87,15 @@ class PlayWidgetCardMediumChannelViewHolder(itemView: View) : RecyclerView.ViewH
     }
 
     fun getChannelType(): PlayWidgetChannelType = channelType
+
+    private fun setupListener(item: PlayWidgetMediumChannelUiModel) {
+        itemView.setOnClickListener {
+            cardMediumListener.onCardMediumClicked(item, adapterPosition)
+        }
+        itemView.addOnImpressionListener(item.impress) {
+            cardMediumListener.onCardMediumVisible(item, adapterPosition)
+        }
+    }
 
     companion object {
         @LayoutRes val layoutRes = R.layout.item_play_widget_card_channel_medium
