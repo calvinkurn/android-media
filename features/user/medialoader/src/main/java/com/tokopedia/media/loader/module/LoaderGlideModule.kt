@@ -18,6 +18,8 @@ import java.io.InputStream
 @GlideModule
 class LoaderGlideModule: AppGlideModule() {
 
+    private val interceptor by lazy { okHttpInterceptor() }
+
     override fun applyOptions(context: Context, builder: GlideBuilder) {
         super.applyOptions(context, builder)
         // showing glide log in debug app
@@ -30,7 +32,7 @@ class LoaderGlideModule: AppGlideModule() {
         registry.replace(
                 GlideUrl::class.java,
                 InputStream::class.java,
-                OkHttpUrlLoader.Factory(okHttpInterceptor())
+                OkHttpUrlLoader.Factory(interceptor)
         )
     }
 

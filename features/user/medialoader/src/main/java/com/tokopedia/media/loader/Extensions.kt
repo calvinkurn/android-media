@@ -33,7 +33,7 @@ fun ImageView.loadImageRounded(resource: Int, rounded: Float) = this.setImageRes
 inline fun ImageView.loadImageRounded(
         url: String?,
         rounded: Float = DEFAULT_ROUNDED,
-        configuration: Properties.() -> Unit = {
+        crossinline configuration: Properties.() -> Unit = {
             Properties().apply {
                 roundedRadius = rounded
             }
@@ -49,23 +49,24 @@ fun ImageView?.clearImage() {
 
 @PublishedApi
 internal fun ImageView.call(url: String?, properties: Properties) {
-    if (url.toEmptyStringIfNull().isEmpty()) return
-    builder(UrlBuilder.urlBuilder(context, url), properties)
-}
-
-@PublishedApi
-internal fun ImageView.builder(url: GlideUrl, properties: Properties) {
     val imageView = this
+
+    if (url.toEmptyStringIfNull().isEmpty()) {
+        // if there's no url found, then show the placeholder
+        imageView.loadImage(properties.placeHolder)
+        return
+    }
+
     with(properties) {
+        val glideUrl = UrlBuilder.urlBuilder(context, url)
+
         val adaptiveSignature = if (signature == null) {
-            adaptiveSignature(url.toStringUrl(), url.headers[HEADER_ECT].toString())
-        } else {
-            signature
-        }
+            adaptiveSignature(glideUrl.toStringUrl(), glideUrl.headers[HEADER_ECT].toString())
+        } else signature
 
         GlideBuilder.loadImage(
                 imageView = imageView,
-                url = url,
+                url = glideUrl,
                 thumbnailUrl = thumbnailUrl,
                 radius = roundedRadius,
                 signatureKey = adaptiveSignature,
