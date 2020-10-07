@@ -1,6 +1,7 @@
 package com.tokopedia.shop.common.widget
 
 import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
 import android.view.Gravity
 import android.view.View
 import android.widget.ImageView
@@ -55,6 +56,10 @@ class PartialButtonShopFollowersView private constructor(val view: View, private
             return@with
         }
 
+        setOnClickListener {
+
+        }
+
         shop_followers_title.text = title
         shop_followers_desc.text = desc
 
@@ -90,21 +95,11 @@ class PartialButtonShopFollowersView private constructor(val view: View, private
     }
 
     private fun animateSlideDown() = with(view) {
-        animate().translationY(view.height.toFloat()).setDuration(GONE_ANIMATION_DURATION).setListener(object : Animator.AnimatorListener {
-            override fun onAnimationStart(animation: Animator?) {
-            }
-
+        animate().translationY(view.height.toFloat()).setDuration(GONE_ANIMATION_DURATION).setListener(object : AnimatorListenerAdapter() {
             override fun onAnimationEnd(animation: Animator?) {
-                followersBtn?.run {
-                    stopLoading()
-                    base_btn_follow?.visibility = View.GONE
-                }
-            }
-
-            override fun onAnimationCancel(animation: Animator?) {
-            }
-
-            override fun onAnimationRepeat(animation: Animator?) {
+                super.onAnimationEnd(animation)
+                base_btn_follow?.visibility = View.GONE
+                stopLoading()
             }
         })
     }
