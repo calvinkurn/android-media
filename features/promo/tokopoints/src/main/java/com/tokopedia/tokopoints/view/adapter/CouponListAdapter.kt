@@ -115,7 +115,7 @@ class CouponListAdapter(private val mItems: MutableList<CouponValueEntity>) : Re
                 }
                 holder.imgBanner.setOnClickListener { v: View? ->
                     val bundle = Bundle()
-                    bundle.putString(CommonConstant.EXTRA_COUPON_CODE, mItems[position].code)
+                    bundle.putString(CommonConstant.EXTRA_COUPON_CODE, mItems[position - 1].code)
                     holder.imgBanner.context.startActivity(getCouponDetail(holder.imgBanner.context, bundle), bundle)
                 }
                 /*This section is exclusively for handling flash-sale timer*/if (holder.timer != null) {
