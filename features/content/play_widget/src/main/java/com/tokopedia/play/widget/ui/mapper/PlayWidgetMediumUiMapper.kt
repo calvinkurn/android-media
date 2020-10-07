@@ -2,23 +2,25 @@ package com.tokopedia.play.widget.ui.mapper
 
 import com.tokopedia.play.widget.data.PlayWidget
 import com.tokopedia.play.widget.data.PlayWidgetItem
-import com.tokopedia.play.widget.data.PlayWidgetItemVideo
 import com.tokopedia.play.widget.ui.model.*
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
 
 
 /**
- * Created by mzennis on 06/10/20.
+ * Created by mzennis on 07/10/20.
  */
-object PlayWidgetUiMapper {
+class PlayWidgetMediumUiMapper (
+        private val configMapper: PlayWidgetConfigMapper,
+        private val videoMapper: PlayWidgetVideoMapper
+) : PlayWidgetMapper {
 
-    fun mapWidget(data: PlayWidget): PlayWidgetMediumUiModel = PlayWidgetMediumUiModel(
+    override fun mapWidget(data: PlayWidget): PlayWidgetUiModel = PlayWidgetMediumUiModel(
             title = data.meta.widgetTitle,
             actionTitle = data.meta.buttonText,
             actionAppLink = data.meta.buttonApplink,
             actionWebLink = data.meta.overlayImageWebLink,
             background = mapWidgetBackground(data),
-            config = mapWidgetConfig(data),
+            config = configMapper.mapWidgetConfig(data),
             items = mapWidgetItem(data.data)
     )
 
@@ -28,14 +30,6 @@ object PlayWidgetUiMapper {
             overlayImageWebLink = data.meta.overlayImageWebLink,
             gradientColors = data.meta.gradient,
             backgroundUrl = data.meta.widgetBackground
-    )
-
-    private fun mapWidgetConfig(data: PlayWidget): PlayWidgetConfigUiModel = PlayWidgetConfigUiModel(
-            autoPlay = data.meta.autoplay,
-            autoPlayAmount = data.meta.autoplayAmount,
-            autoRefresh = data.meta.autoRefresh,
-            autoRefreshTimer = data.meta.autoRefreshTimer,
-            maxAutoPlayCard = data.meta.maxAutoplayCell
     )
 
     private fun mapWidgetItem(items: List<PlayWidgetItem>): List<PlayWidgetMediumItemUiModel> = items.mapNotNull {
@@ -64,13 +58,6 @@ object PlayWidgetUiMapper {
             hasPromo = item.config.hasPromo,
             activeReminder = item.config.isReminderSet,
             partner = PlayWidgetPartnerUiModel(item.partner.id, item.partner.name),
-            video = mapWidgetItemVideo(item.video)
-    )
-
-    private fun mapWidgetItemVideo(item: PlayWidgetItemVideo): PlayWidgetVideoUiModel = PlayWidgetVideoUiModel(
-            id = item.id,
-            coverUrl = item.coverUrl,
-            isLive = item.isLive,
-            videoUrl = item.streamSource
+            video = videoMapper.mapWidgetItemVideo(item.video)
     )
 }

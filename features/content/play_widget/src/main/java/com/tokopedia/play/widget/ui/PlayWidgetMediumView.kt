@@ -13,9 +13,12 @@ import com.elyeproj.loaderviewlibrary.LoaderImageView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.play.widget.*
+import com.tokopedia.play.widget.R
 import com.tokopedia.play.widget.ui.adapter.PlayWidgetCardMediumAdapter
-import com.tokopedia.play.widget.ui.model.*
+import com.tokopedia.play.widget.ui.model.PlayWidgetBackgroundUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetMediumItemUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetMediumOverlayUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetMediumUiModel
 import com.tokopedia.play_common.widget.playBannerCarousel.extension.loadImage
 import com.tokopedia.play_common.widget.playBannerCarousel.extension.setGradientBackground
 import com.tokopedia.unifyprinciples.Typography
@@ -49,7 +52,7 @@ class PlayWidgetMediumView : ConstraintLayout {
     private val layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
 
     init {
-        val view = LayoutInflater.from(context).inflate(R.layout.play_widget_medium, this)
+        val view = LayoutInflater.from(context).inflate(R.layout.view_play_widget_medium, this)
         background = view.findViewById(R.id.play_widget_medium_bg_loader)
         shimmering = view.findViewById(R.id.play_widget_medium_shimmering)
 
@@ -86,7 +89,6 @@ class PlayWidgetMediumView : ConstraintLayout {
     }
 
     override fun onDetachedFromWindow() {
-        adapter.safeReleaseVideo()
         super.onDetachedFromWindow()
     }
 
@@ -119,7 +121,7 @@ class PlayWidgetMediumView : ConstraintLayout {
         }
     }
 
-    private fun addItemOverlay(items: List<PlayWidgetItemUiModel>): List<PlayWidgetItemUiModel> {
+    private fun addItemOverlay(items: List<PlayWidgetMediumItemUiModel>): List<PlayWidgetMediumItemUiModel> {
         return items.toMutableList().apply {
             add(0, PlayWidgetMediumOverlayUiModel)
         }

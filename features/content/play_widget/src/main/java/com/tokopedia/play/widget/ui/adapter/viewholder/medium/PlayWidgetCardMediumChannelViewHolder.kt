@@ -2,20 +2,20 @@ package com.tokopedia.play.widget.ui.adapter.viewholder.medium
 
 import android.view.View
 import android.widget.TextView
+import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.loadImage
-import com.tokopedia.play.widget.ui.model.PlayWidgetItemUiModel
-import com.tokopedia.play.widget.ui.model.PlayWidgetMediumChannelUiModel
 import com.tokopedia.play.widget.R
-import com.tokopedia.play.widget.ui.adapter.PlayWidgetCardMediumAdapter
 import com.tokopedia.play.widget.ui.custom.PlayWidgetVideoView
+import com.tokopedia.play.widget.ui.model.PlayWidgetMediumChannelUiModel
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
 
 /**
  * Created by mzennis on 05/10/20.
  */
-class PlayWidgetCardMediumChannelViewHolder(itemView: View, private val listener: PlayWidgetCardMediumAdapter.PlayWidgetCardMediumListener?) : PlayWidgetCardMediumViewHolder(itemView) {
+class PlayWidgetCardMediumChannelViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
     private val thumbnail: AppCompatImageView = itemView.findViewById(R.id.play_widget_thumbnail)
 
@@ -39,25 +39,7 @@ class PlayWidgetCardMediumChannelViewHolder(itemView: View, private val listener
         }
     }
 
-    override fun bind(item: PlayWidgetItemUiModel) {
-        if (item is PlayWidgetMediumChannelUiModel) safeBind(item)
-    }
-
-    fun playVideo() {
-        videoView.start()
-    }
-
-    fun stopVideo() {
-        videoView.stop()
-    }
-
-    fun release() {
-        videoView.release()
-    }
-
-    fun getChannelType(): PlayWidgetChannelType = channelType
-
-    private fun safeBind(item: PlayWidgetMediumChannelUiModel) {
+    fun bind(item: PlayWidgetMediumChannelUiModel) {
         thumbnail.loadImage(item.video.coverUrl)
 
         promoBadge.visibility = if (item.hasPromo) View.VISIBLE else View.GONE
@@ -79,22 +61,27 @@ class PlayWidgetCardMediumChannelViewHolder(itemView: View, private val listener
         author.visibility = if (item.partner.name.isNotEmpty()) View.VISIBLE else View.GONE
         startTime.visibility = if (item.startTime.isNotEmpty() && item.channelType == PlayWidgetChannelType.Upcoming) View.VISIBLE else View.GONE
 
-        setupListener(item)
-
         videoView.videoUrl = item.video.videoUrl
         videoView.listener = videoListener
 
         channelType = item.channelType
     }
 
-    private fun setupListener(item: PlayWidgetMediumChannelUiModel) {
-        if (listener == null) return
+    fun playVideo() {
+        videoView.start()
+    }
 
-        itemView.setOnClickListener {
-            listener.onItemClickListener(item)
-        }
-//        itemView.addOnImpressionListener(item) {
-//            listener.onItemImpressListener(item)
-//        }
+    fun stopVideo() {
+        videoView.stop()
+    }
+
+    fun release() {
+        videoView.release()
+    }
+
+    fun getChannelType(): PlayWidgetChannelType = channelType
+
+    companion object {
+        @LayoutRes val layoutRes = R.layout.item_play_widget_card_channel_medium
     }
 }
