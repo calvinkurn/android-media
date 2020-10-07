@@ -5,6 +5,8 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.collection.ArrayMap
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
+import com.tokopedia.atc_common.data.model.request.AddToCartOccRequestParams
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartOccUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.attachproduct.resultmodel.ResultProduct
@@ -1123,6 +1125,86 @@ class TopChatRoomPresenterTest {
         val attachments = presenter.attachments
         verify(exactly = 1) { view.updateAttachmentsView(attachments) }
         assertTrue(presenter.attachments.size == 1)
+    }
+
+    @Test
+    fun `on success addToCart OCC`() {
+        // Given
+        val successAtcModel = AddToCartDataModel().apply {
+            data.success = 1
+            status = "OK"
+        }
+        val onSuccess: (AddToCartDataModel) -> Unit = mockk(relaxed = true)
+        val onError: (Throwable) -> Unit = mockk(relaxed = true)
+        val response = Observable.just(successAtcModel)
+        val result = response.toBlocking().single()
+        every {
+            addToCartOccUseCase.createObservable(any())
+        } returns response
+
+        // When
+        presenter.addToCart(
+                AddToCartOccRequestParams(exProductId, exShopId.toString(), "1"),
+                onSuccess,
+                onError
+        )
+
+        // Then
+        verify(exactly = 1) { onSuccess.invoke(result) }
+    }
+
+    @Test
+    fun `on error addToCart OCC`() {
+        // Given
+        val errorAtcModel = AddToCartDataModel().apply {
+            data.message = arrayListOf("Error")
+            errorMessage = arrayListOf("Error")
+        }
+        val onSuccess: (AddToCartDataModel) -> Unit = mockk(relaxed = true)
+        val onError: (Throwable) -> Unit = mockk(relaxed = true)
+        val response = Observable.just(errorAtcModel)
+        val throwableSlot = slot<Throwable>()
+        var throwable: Throwable = Throwable()
+        every {
+            addToCartOccUseCase.createObservable(any())
+        } returns response
+        every {
+            onError.invoke(capture(throwableSlot))
+        } answers {
+            throwable = throwableSlot.captured
+        }
+
+        // When
+        presenter.addToCart(
+                AddToCartOccRequestParams(exProductId, exShopId.toString(), "1"),
+                onSuccess,
+                onError
+        )
+
+        // Then
+        verify(exactly = 1) { onError.invoke(throwable) }
+    }
+
+
+    @Test
+    fun `on throw exeception when addToCart OCC`() {
+        // Given
+        val onSuccess: (AddToCartDataModel) -> Unit = mockk(relaxed = true)
+        val onError: (Throwable) -> Unit = mockk(relaxed = true)
+        var throwable: Throwable = Throwable()
+        every {
+            addToCartOccUseCase.createObservable(any())
+        } throws throwable
+
+        // When
+        presenter.addToCart(
+                AddToCartOccRequestParams(exProductId, exShopId.toString(), "1"),
+                onSuccess,
+                onError
+        )
+
+        // Then
+        verify(exactly = 1) { onError.invoke(throwable) }
     }
 
     private fun mockkParseResponse(
