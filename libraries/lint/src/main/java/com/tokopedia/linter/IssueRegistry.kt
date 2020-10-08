@@ -21,7 +21,8 @@ class IssueRegistry : IssueRegistry() {
                 TypographyDetector.ISSUE,
                 UnifyButtonDetector.ISSUE,
                 UnifyImageButtonDetector.ISSUE,
-                GradleDetector.DEPRECATED
+                GradleDetector.DEPRECATED,
+                GradleDetector.BANNED
         )
 
     override val minApi: Int
