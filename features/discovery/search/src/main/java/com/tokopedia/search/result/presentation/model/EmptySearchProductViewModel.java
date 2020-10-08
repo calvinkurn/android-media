@@ -9,6 +9,8 @@ public class EmptySearchProductViewModel implements Visitable<ProductListTypeFac
     private boolean isFilterActive = false;
     private boolean isLocalSearch = false;
     private String globalSearchApplink = "";
+    private String keyword = "";
+    private String pageTitle = "";
 
     public boolean isBannerAdsAllowed() {
         return bannerAdsAllowed;
@@ -40,6 +42,22 @@ public class EmptySearchProductViewModel implements Visitable<ProductListTypeFac
 
     public void setGlobalSearchApplink(String globalSearchApplink) {
         this.globalSearchApplink = globalSearchApplink;
+    }
+
+    public String getKeyword() {
+        return keyword;
+    }
+
+    public void setKeyword(String keyword) {
+        this.keyword = keyword;
+    }
+
+    public String getPageTitle() {
+        return pageTitle;
+    }
+
+    public void setPageTitle(String pageTitle) {
+        this.pageTitle = pageTitle;
     }
 
     @Override

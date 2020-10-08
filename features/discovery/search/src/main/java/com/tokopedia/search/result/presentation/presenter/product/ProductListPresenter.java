@@ -921,6 +921,8 @@ final class ProductListPresenter
         emptySearchViewModel.setIsFilterActive(getView().isAnyFilterActive());
         emptySearchViewModel.setLocalSearch(isLocalSearch());
         emptySearchViewModel.setGlobalSearchApplink(constructGlobalSearchApplink());
+        emptySearchViewModel.setKeyword(getView().getQueryKey());
+        emptySearchViewModel.setPageTitle(pageTitle);
 
         return emptySearchViewModel;
     }

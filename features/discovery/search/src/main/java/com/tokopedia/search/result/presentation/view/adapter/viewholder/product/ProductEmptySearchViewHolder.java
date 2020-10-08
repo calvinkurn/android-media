@@ -156,10 +156,24 @@ public class ProductEmptySearchViewHolder extends AbstractViewHolder<EmptySearch
     }
 
     private void bindContentTextView() {
-        if (boundedEmptySearchModel.getIsFilterActive())
+        if (emptyContentTextView == null) return;
+
+        if (boundedEmptySearchModel.isLocalSearch())
+            emptyContentTextView.setText(getLocalSearchEmptyMessage());
+        else if (boundedEmptySearchModel.getIsFilterActive())
             emptyContentTextView.setText(getString(R.string.msg_empty_search_product_content_with_filter));
         else
             emptyContentTextView.setText(getString(R.string.msg_empty_search_product_content));
+    }
+
+    private String getLocalSearchEmptyMessage() {
+        if (itemView.getContext() == null) return "";
+
+        return itemView.getContext().getString(
+                R.string.msg_empty_search_product_content_local,
+                boundedEmptySearchModel.getKeyword(),
+                boundedEmptySearchModel.getPageTitle()
+        );
     }
 
     private void bindNewSearchButton() {

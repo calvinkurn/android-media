@@ -26,8 +26,9 @@ internal class SearchProductLocalSearchTest: ProductListPresenterTestFixtures() 
     private val visitableListSlot = slot<List<Visitable<*>>>()
     private val visitableList by lazy { visitableListSlot.captured }
     private val searchProductPageTitle = "Waktu Indonesia Belanja"
+    private val keyword = "asus"
     private val searchParameter = mapOf(
-        SearchApiConst.Q to "samsung",
+        SearchApiConst.Q to keyword,
         SearchApiConst.NAVSOURCE to "campaign",
         SearchApiConst.SRP_PAGE_TITLE to searchProductPageTitle,
         SearchApiConst.SRP_PAGE_ID to "1234"
@@ -134,11 +135,16 @@ internal class SearchProductLocalSearchTest: ProductListPresenterTestFixtures() 
 
         `Given Search Product API will return SearchProductModel`(searchProductModel)
         `Given visitable list will be captured`()
+        `Given getQueryKey will return keyword`()
 
         `When Load Data`(searchParameter)
 
         `Then verify recommendation use case not called`()
         `Then verify empty search view model for local search`()
+    }
+
+    private fun `Given getQueryKey will return keyword`() {
+        every { productListView.queryKey } returns searchParameter[SearchApiConst.Q]
     }
 
     private fun `Then verify recommendation use case not called`() {
@@ -157,6 +163,8 @@ internal class SearchProductLocalSearchTest: ProductListPresenterTestFixtures() 
         emptySearchViewModel.isFilterActive shouldBe false
         emptySearchViewModel.isLocalSearch shouldBe true
         emptySearchViewModel.globalSearchApplink shouldBe "${ApplinkConstInternalDiscovery.SEARCH_RESULT}?q=asus"
+        emptySearchViewModel.keyword shouldBe keyword
+        emptySearchViewModel.pageTitle shouldBe searchProductPageTitle
     }
 
     @Test
