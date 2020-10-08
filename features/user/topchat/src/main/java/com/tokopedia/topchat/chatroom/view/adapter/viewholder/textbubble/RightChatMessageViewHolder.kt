@@ -11,6 +11,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.AdapterListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.CommonViewHolderListener
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.binder.ChatMessageViewHolderBinder
 import com.tokopedia.topchat.common.util.ViewUtil
 import com.tokopedia.unifyprinciples.Typography
 
@@ -25,7 +26,7 @@ open class RightChatMessageViewHolder constructor(
     var headerRole: Typography? = itemView?.findViewById(R.id.tvRole)
     var smartReplyBlueDot: ImageView? = itemView?.findViewById(R.id.img_sr_blue_dot)
     private val bg = ViewUtil.generateBackgroundWithShadow(
-            itemView,
+            fxChat,
             R.color.bg_topchat_right_message,
             R.dimen.dp_topchat_20,
             R.dimen.dp_topchat_0,
@@ -39,7 +40,7 @@ open class RightChatMessageViewHolder constructor(
 
     override fun bind(message: MessageViewModel) {
         super.bind(message)
-        bindChatReadStatus(message)
+        ChatMessageViewHolderBinder.bindChatReadStatus(message, fxChat)
         bindHeader(message)
         bindBackground(message)
     }

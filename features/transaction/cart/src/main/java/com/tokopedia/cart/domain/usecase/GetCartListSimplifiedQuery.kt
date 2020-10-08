@@ -643,6 +643,27 @@ fun getQueryCartRevamp(): String {
                         }
                       }
                     }
+                    additional_info {
+                      message_info {
+                        message
+                        detail
+                      }
+                      error_detail {
+                        message
+                      }
+                      empty_cart_info {
+                        image_url
+                        message
+                        detail
+                      }
+                      usage_summaries {
+                        description
+                        type
+                        amount_str
+                        amount
+                      }
+                      sp_ids
+                    }
                   }
                   code
                 }

@@ -34,6 +34,7 @@ include "features:discovery:topadssdk"
 include "features:discovery:wishlist_common"
 include "features:discovery:carousel_productcard"
 include "features:discovery:productcard_options"
+include "features:discovery:filter"
 
 include "features:fintech:home_credit"
 include "features:fintech:saldo_details"
@@ -114,7 +115,6 @@ include "features:top_ads:top_ads_management_sourcetagging"
 include "features:top_ads:top_ads_detail_sheet"
 
 include "features:transaction:atc_common"
-include "features:transaction:express_checkout_common"
 include "features:transaction:purchase_platform_common"
 include "features:transaction:sellerorder"
 

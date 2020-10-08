@@ -50,7 +50,9 @@ private fun View.renderPdpCountView(productCardModel: ProductCardModel) {
 
 private fun View.renderTextProductName(productCardModel: ProductCardModel) {
     textViewProductName?.shouldShowWithAction(productCardModel.productName.isNotEmpty()) {
-        it.text = MethodChecker.fromHtml(productCardModel.productName)
+        val productNameFromHtml = MethodChecker.fromHtml(productCardModel.productName)
+        it.contentDescription = context.getString(R.string.content_desc_textViewProductName, productNameFromHtml)
+        it.text = productNameFromHtml
     }
 }
 
@@ -60,6 +62,7 @@ private fun View.renderDiscount(productCardModel: ProductCardModel) {
     }
 
     textViewSlashedPrice?.shouldShowWithAction(productCardModel.slashedPrice.isNotEmpty()) {
+        it.contentDescription = context.getString(R.string.content_desc_textViewSlashedPrice, productCardModel.slashedPrice)
         it.text = productCardModel.slashedPrice
         it.paintFlags = it.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
     }
@@ -76,6 +79,7 @@ private fun View.renderTextPrice(productCardModel: ProductCardModel) {
     val priceToRender = productCardModel.getPriceToRender()
 
     textViewPrice?.shouldShowWithAction(priceToRender.isNotEmpty()) {
+        it.contentDescription  = context.getString(R.string.content_desc_textViewPrice, priceToRender)
         it.text = priceToRender
     }
 }
@@ -93,6 +97,7 @@ private fun View.renderShopBadge(productCardModel: ProductCardModel) {
 
 private fun View.renderTextShopLocation(productCardModel: ProductCardModel) {
     textViewShopLocation?.shouldShowWithAction(productCardModel.shopLocation.isNotEmpty()) {
+        it.contentDescription = context.getString(R.string.content_desc_textViewShopLocation, productCardModel.shopLocation)
         it.text = productCardModel.shopLocation
     }
 }

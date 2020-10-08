@@ -718,6 +718,8 @@ class InboxDetailPresenterImpl(private val postMessageUseCase: PostMessageUseCas
                 mView?.ticketID)
     }
 
+    override fun getUserId(): String = userSession.userId
+
     companion object {
         const val KEY_LIKED = 101
         const val KEY_DISLIKED = 102
