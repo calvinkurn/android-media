@@ -26,10 +26,7 @@ import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.hamcrest.BaseMatcher
 import org.hamcrest.Description
 import org.hamcrest.Matcher
-import org.junit.Assert
-import org.junit.Before
-import org.junit.Rule
-import org.junit.Test
+import org.junit.*
 
 /**
  * @author by jessica on 28/09/20
@@ -211,6 +208,11 @@ class DealsHomeActivityTest {
     private fun clickOnOrderList() {
         Thread.sleep(2000)
         onView(withId(R.id.imgDealsOrderListMenu)).check(matches(isDisplayed())).perform(click())
+    }
+
+    @After
+    fun tearDown() {
+        gtmLogDBSource.deleteAll().subscribe()
     }
 
     companion object {
