@@ -25,8 +25,8 @@ open class DeepLinkMatcherTestFixture {
 
     protected fun assertEqualsDeepLinkMatcher(idDeepLinkChecker: Int, url: String) {
         val uri = parseToUri(url)
-        val expectedResult = deepLinkMatcher.match(uri)
-        assertEquals(idDeepLinkChecker, expectedResult)
+        val actualResult = deepLinkMatcher.match(uri)
+        assertEquals(idDeepLinkChecker, actualResult)
     }
 
     private fun parseToUri(url: String): Uri {

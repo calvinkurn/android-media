@@ -28,8 +28,8 @@ open class DeepLinkMapperTestFixture {
         unmockkAll()
     }
 
-    protected fun assertEqualsDeepLinkMapper(deepLink: String, actualDeepLink: String) {
-        val expectedResult = DeeplinkMapper.getRegisteredNavigation(context, deepLink)
-        assertEquals(expectedResult, actualDeepLink)
+    protected fun assertEqualsDeepLinkMapper(deepLink: String, expectedDeepLink: String) {
+        val actualResult = DeeplinkMapper.getRegisteredNavigation(context, deepLink)
+        assertEquals(expectedDeepLink, actualResult)
     }
 }

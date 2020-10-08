@@ -20,16 +20,16 @@ open class DeepLinkDFMapperTestFixture {
     }
 
     protected fun assertEqualDeepLinkCustomerApp(appLink: String, moduleId: String) {
-        val expectedResult = DeeplinkDFMapper.deeplinkDFPatternListCustomerApp.firstOrNull {
+        val actualResult = DeeplinkDFMapper.deeplinkDFPatternListCustomerApp.firstOrNull {
             it.logic(appLink)
         }
-        assertEquals(expectedResult?.moduleId, moduleId)
+        assertEquals(actualResult?.moduleId, moduleId)
     }
 
     protected fun assertEqualDeepLinkSellerApp(appLink: String, moduleId: String) {
-        val expectedResult = DeeplinkDFMapper.deeplinkDFPatternListSellerApp.firstOrNull {
+        val actualResult = DeeplinkDFMapper.deeplinkDFPatternListSellerApp.firstOrNull {
             it.logic(appLink)
         }
-        assertEquals(expectedResult?.moduleId, moduleId)
+        assertEquals(actualResult?.moduleId, moduleId)
     }
 }
