@@ -119,11 +119,15 @@
     <string name="label_sku">SKU (Stock Keeping Unit)</string>
     <string name="product_sku_description">SKU (Stock Keeping Unit)</string>
     <string name="label_add_product_sku_tips">Gunakan kode unik SKU jika kamu ingin bisa melacak produk dengan mudah</string>
-
     <string name="label_asterisk">&#160;*</string>
     <string name="action_continue">Lanjut</string>
     <string name="product_label_catalog">Katalog</string>
     <string name="primary">Utama</string>
+
+    <!-- add edit product showcase -->
+    <string name="label_product_showcase">Etalase</string>
+    <string name="label_product_showcase_tips">Gunakan etalase agar pembeli mudah\nmencari produk di tokomu.</string>
+    <string name="action_add_product_showcase">Tambah</string>
 
     <!--Description-->
     <string name="label_add_product_photo_tips">Tips Memilih foto produk yang benar</string>

@@ -11,7 +11,6 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewTreeObserver
 import android.widget.ImageView
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.widget.AppCompatTextView
@@ -27,6 +26,7 @@ import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.imagepicker.editor.main.view.ImageEditorActivity
@@ -38,7 +38,6 @@ import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.addedit.R
-import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringConstants
 import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringConstants.ADD_EDIT_PRODUCT_DETAIL_PLT_NETWORK_METRICS
 import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringConstants.ADD_EDIT_PRODUCT_DETAIL_PLT_PREPARE_METRICS
 import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringConstants.ADD_EDIT_PRODUCT_DETAIL_PLT_RENDER_METRICS
@@ -90,12 +89,19 @@ import com.tokopedia.product.addedit.tracking.ProductEditMainTracking
 import com.tokopedia.product_photo_adapter.PhotoItemTouchHelperCallback
 import com.tokopedia.product_photo_adapter.ProductPhotoAdapter
 import com.tokopedia.product_photo_adapter.ProductPhotoViewHolder
+import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
+import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant.EXTRA_BUNDLE
+import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant.EXTRA_PICKER_SELECTED_SHOWCASE
+import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant.SHOWCASE_PICKER_RESULT_REQUEST_CODE
+import com.tokopedia.shop.common.constant.ShowcasePickerType
+import com.tokopedia.shop.common.data.model.ShowcaseItemPicker
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.list.ListItemUnify
 import com.tokopedia.unifycomponents.list.ListUnify
 import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
@@ -107,8 +113,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         NameRecommendationAdapter.ProductNameItemClickListener,
         WholeSaleInputViewHolder.TextChangedListener,
         WholeSaleInputViewHolder.OnAddButtonClickListener,
-        AddEditProductPerformanceMonitoringListener
-{
+        AddEditProductPerformanceMonitoringListener {
 
     companion object {
         private fun getDurationUnit(type: Int) =
@@ -121,6 +126,9 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
 
     @Inject
     lateinit var viewModel: AddEditProductDetailViewModel
+
+    private lateinit var userSession: UserSessionInterface
+    private lateinit var shopId: String
 
     private var selectedDurationPosition: Int = UNIT_DAY
     private var isPreOrderFirstTime = true
@@ -176,11 +184,12 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     private val productConditions = ArrayList<ListItemUnify>()
     private var isProductConditionNew = true
 
-    private lateinit var userSession: UserSessionInterface
-    private lateinit var shopId: String
-
     // product sku
     private var productSkuField: TextFieldUnify? = null
+
+    // product show case
+    private var productShowCasesView: Typography? = null
+    private var addProductShowCaseButton: Typography? = null
 
     // button continue
     private var submitButton: ViewGroup? = null
@@ -410,6 +419,10 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         // add edit product sku views
         productSkuField = view.findViewById(R.id.tfu_sku)
 
+        // add product showcase button
+        productShowCasesView = view.findViewById(R.id.tv_product_showcase)
+        addProductShowCaseButton = view.findViewById(R.id.tv_add_product_showcase)
+
         // submit button
         submitButton = view.findViewById(R.id.btn_submit)
         submitTextView = view.findViewById(R.id.tv_submit_text)
@@ -427,6 +440,16 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
 
         productNameField?.textFieldInput?.setOnFocusChangeListener { _, hasFocus ->
             if (!hasFocus) productNameRecView?.hide()
+        }
+
+        // product showcase
+        addProductShowCaseButton?.setOnClickListener {
+            val bundle = Bundle()
+            bundle.putString(ShopShowcaseParamConstant.EXTRA_IS_NEED_TO_OPEN_SHOWCASE_PICKER, ShowcasePickerType.CHECKBOX)
+            bundle.putParcelableArrayList(ShopShowcaseParamConstant.EXTRA_PRE_SELECTED_SHOWCASE_PICKER, ArrayList(viewModel.productShowCases))
+            val intent = RouteManager.getIntent(requireContext(), ApplinkConstInternalMechant.MERCHANT_SHOP_SHOWCASE_LIST)
+            intent.putExtra(EXTRA_BUNDLE, bundle)
+            startActivityForResult(intent, SHOWCASE_PICKER_RESULT_REQUEST_CODE)
         }
 
         // product name text change listener
@@ -763,6 +786,17 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                     selectedCategory.add(selectedCategoryItemUnify)
                     productCategoryRecListView?.setData(selectedCategory)
                 }
+                SHOWCASE_PICKER_RESULT_REQUEST_CODE -> {
+                    val selectedShowcaseList: ArrayList<ShowcaseItemPicker> = data.getParcelableArrayListExtra(EXTRA_PICKER_SELECTED_SHOWCASE)
+                            ?: ArrayList()
+                    // update the view model state
+                    viewModel.updateProductShowCases(selectedShowcaseList)
+                    val showCases = mutableListOf<String>()
+                    selectedShowcaseList.forEach {
+                        showCases.add(it.showcaseName)
+                    }
+                    productShowCasesView?.text = showCases.joinToString()
+                }
             }
         }
     }
@@ -914,10 +948,11 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                 isActive = preOrderSwitch?.isChecked ?: false
             }
             wholesaleList = getWholesaleInput()
+            productShowCases = viewModel.productShowCases
         }
     }
 
-    private fun validateWholeSaleInput(viewModel: AddEditProductDetailViewModel, wholesaleInputForms: RecyclerView?, itemCount: Int?, specialIndex: Int = -1, isAddingWholeSale : Boolean = false) {
+    private fun validateWholeSaleInput(viewModel: AddEditProductDetailViewModel, wholesaleInputForms: RecyclerView?, itemCount: Int?, specialIndex: Int = -1, isAddingWholeSale: Boolean = false) {
         itemCount?.let {
             var wholeSaleErrorCounter = 0
             for (index in 0 until it) {
@@ -1080,6 +1115,10 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         // product sku
         productSkuField?.textFieldInput?.setText(detailInputModel.sku)
 
+        // product showcases
+        viewModel.updateProductShowCases(ArrayList(detailInputModel.productShowCases))
+        val productShowCases = viewModel.productShowCases.map { it.showcaseName }
+        if (productShowCases.isNotEmpty()) productShowCasesView?.text = productShowCases.joinToString()
     }
 
     private fun subscribeToProductNameInputStatus() {

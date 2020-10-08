@@ -22,6 +22,7 @@ object ShopShowcaseParamConstant {
     const val EXTRA_PICKER_PRODUCT = "EXTRA_PICKER_PRODUCT"
     const val EXTRA_PICKER_PRODUCT_ID = "EXTRA_PICKER_PRODUCT_ID"
     const val EXTRA_PICKER_PRODUCT_NAME = "EXTRA_PICKER_PRODUCT_NAME"
+    const val EXTRA_BUNDLE = "EXTRA_BUNDLE"
 }
 
 object ShowcasePickerType {

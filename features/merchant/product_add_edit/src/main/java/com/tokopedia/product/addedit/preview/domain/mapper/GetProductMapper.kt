@@ -12,6 +12,7 @@ import com.tokopedia.product.addedit.preview.presentation.model.ProductInputMode
 import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.*
 import com.tokopedia.product.addedit.variant.presentation.model.ProductVariantInputModel
+import com.tokopedia.shop.common.data.model.ShowcaseItemPicker
 import javax.inject.Inject
 
 /**
@@ -124,7 +125,8 @@ class GetProductMapper @Inject constructor() {
                     imageUrlOrPathList = mapImageUrlOrPathList(product),
                     preorder = mapPreorderInputModel(product.preorder),
                     wholesaleList = mapWholeSaleInputModel(product.wholesales),
-                    pictureList = mapPictureInputModel(product.pictures)
+                    pictureList = mapPictureInputModel(product.pictures),
+                    productShowCases = mapProductShowCaseInputModel(product.menus)
             )
 
     private fun mapImageUrlOrPathList(product: Product): MutableList<String> {
@@ -150,6 +152,11 @@ class GetProductMapper @Inject constructor() {
                         it.url300,
                         it.status
                 )
+            }
+
+    private fun mapProductShowCaseInputModel(showCases: List<String>): List<ShowcaseItemPicker> =
+            showCases.map {
+                ShowcaseItemPicker(showcaseId = it)
             }
 
     private fun mapPreorderInputModel(preorder: Preorder): PreorderInputModel {
