@@ -19,10 +19,6 @@ import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.DeeplinkMapper;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.TkpdApplinkDelegate;
-import com.tokopedia.browse.common.applink.DigitalBrowseApplinkModule;
-import com.tokopedia.browse.common.applink.DigitalBrowseApplinkModuleLoader;
-import com.tokopedia.buyerorder.common.applink.TransactionApplinkModule;
-import com.tokopedia.buyerorder.common.applink.TransactionApplinkModuleLoader;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.analytics.AppEventTracking;
@@ -86,10 +82,8 @@ import timber.log.Timber;
 @DeepLinkHandler({
         ConsumerDeeplinkModule.class,
         SellerApplinkModule.class,
-        TransactionApplinkModule.class,
         ProductDetailApplinkModule.class,
         FeedDeeplinkModule.class,
-        DigitalBrowseApplinkModule.class,
         OvoUpgradeDeeplinkModule.class,
         LoyaltyAppLinkModule.class,
         ExploreApplinkModule.class,
@@ -111,13 +105,10 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
     public static ApplinkDelegate getApplinkDelegateInstance() {
         if (applinkDelegate == null) {
             applinkDelegate = new TkpdApplinkDelegate(
-                    new ConsumerDeeplinkModuleLoader(),
                     new OvoUpgradeDeeplinkModuleLoader(),
                     new SellerApplinkModuleLoader(),
-                    new TransactionApplinkModuleLoader(),
                     new ProductDetailApplinkModuleLoader(),
                     new FeedDeeplinkModuleLoader(),
-                    new DigitalBrowseApplinkModuleLoader(),
                     new LoyaltyAppLinkModuleLoader(),
                     new ExploreApplinkModuleLoader(),
                     new LoginRegisterApplinkModuleLoader(),
