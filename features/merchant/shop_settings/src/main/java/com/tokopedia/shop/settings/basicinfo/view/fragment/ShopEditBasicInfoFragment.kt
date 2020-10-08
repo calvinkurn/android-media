@@ -121,10 +121,16 @@ class ShopEditBasicInfoFragment: Fragment() {
         }
     }
 
+    override fun onStop() {
+        super.onStop()
+        if (Toaster.snackBar.isShown) {
+            Toaster.snackBar.dismiss()
+        }
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         viewModel.detachView()
-        Toaster.snackBar.dismiss()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

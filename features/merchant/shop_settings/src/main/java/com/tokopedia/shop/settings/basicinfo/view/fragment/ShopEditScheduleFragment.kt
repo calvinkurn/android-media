@@ -2,12 +2,14 @@ package com.tokopedia.shop.settings.basicinfo.view.fragment
 
 import android.app.DatePickerDialog
 import android.app.ProgressDialog
+import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
@@ -85,10 +87,16 @@ class ShopEditScheduleFragment : Fragment() {
         observeLiveData()
     }
 
+    override fun onStop() {
+        super.onStop()
+        if (Toaster.snackBar.isShown) {
+            Toaster.snackBar.dismiss()
+        }
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         viewModel.detachView()
-        Toaster.snackBar.dismiss()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -259,6 +267,7 @@ class ShopEditScheduleFragment : Fragment() {
     }
 
     private fun onSaveButtonClicked() {
+        hideKeyboard()
         val closeNote = etShopCloseNote.text.toString()
         if (closeNote.isEmpty()) {
             tilShopCloseNote.error = getString(R.string.note_must_be_filled)
@@ -278,6 +287,14 @@ class ShopEditScheduleFragment : Fragment() {
                 if (closeStart == 0L) null else closeStart.toString(),
                 if (closeEnd == 0L) null else closeEnd.toString(),
                 closeNote)
+    }
+
+    private fun hideKeyboard() {
+        val view = activity?.currentFocus
+        view?.let { v ->
+            val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+            imm?.hideSoftInputFromWindow(v.windowToken, 0)
+        }
     }
 
     private fun showSubmitLoading(message: String) {
