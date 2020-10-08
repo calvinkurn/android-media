@@ -12,17 +12,17 @@
         <action
             android:id="@+id/action_shopSettingsInfoFragment_to_shopEditBasicInfoFragment"
             app:destination="@id/shopEditBasicInfoFragment"
-            app:enterAnim="@android:anim/slide_in_left"
-            app:exitAnim="@android:anim/slide_out_right"
-            app:popEnterAnim="@android:anim/fade_in"
-            app:popExitAnim="@android:anim/fade_out" />
+            app:enterAnim="@anim/shopsettings_slide_in_right"
+            app:exitAnim="@anim/shopsettings_slide_out_left"
+            app:popEnterAnim="@anim/shopsettings_fade_in"
+            app:popExitAnim="@anim/shopsettings_fade_out" />
         <action
             android:id="@+id/action_shopSettingsInfoFragment_to_shopEditScheduleFragment"
             app:destination="@id/shopEditScheduleFragment"
-            app:enterAnim="@anim/fragment_fade_enter"
-            app:exitAnim="@anim/fragment_fade_exit"
-            app:popEnterAnim="@android:anim/fade_in"
-            app:popExitAnim="@android:anim/fade_out" />
+            app:enterAnim="@anim/shopsettings_slide_in_right"
+            app:exitAnim="@anim/shopsettings_slide_out_left"
+            app:popEnterAnim="@anim/shopsettings_fade_in"
+            app:popExitAnim="@anim/shopsettings_fade_out" />
         <deepLink
             app:uri="tokopedia-android-internal://marketplace/shop-settings-info" />
     </fragment>
