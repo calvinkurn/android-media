@@ -63,6 +63,7 @@ class LoaderFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         observeViewModel()
         showLoaderView()
+        idlingResourceProvider?.increment()
         handler.postDelayed(delayLoadingRunnable, DELAY_MILLIS)
     }
 
@@ -76,7 +77,7 @@ class LoaderFragment : BaseDaggerFragment() {
     }
 
     private fun loadThankPageData() {
-        idlingResourceProvider?.increment()
+
         globalError.gone()
         arguments?.let {
             if (it.containsKey(ThankYouPageActivity.ARG_PAYMENT_ID) && it.containsKey(ThankYouPageActivity.ARG_MERCHANT)) {

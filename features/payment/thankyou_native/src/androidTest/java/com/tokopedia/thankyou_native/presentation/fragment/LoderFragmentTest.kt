@@ -1,16 +1,15 @@
 package com.tokopedia.thankyou_native.presentation.fragment
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.filters.LargeTest
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.analyticsdebugger.validator.core.getAnalyticsWithQuery
 import com.tokopedia.analyticsdebugger.validator.core.hasAllSuccess
-import com.tokopedia.test.application.annotations.UiAnalyticsTest
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.thankyou_native.TkpdIdlingResource
 import com.tokopedia.thankyou_native.TkpdIdlingResourceProvider
@@ -22,9 +21,8 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
+
 @RunWith(AndroidJUnit4::class)
-@LargeTest
-@UiAnalyticsTest
 class LoaderFragmentTest {
     @get:Rule
     val activityRule = IntentsTestRule(ThankYouPageActivity::class.java, false, false)
@@ -36,8 +34,8 @@ class LoaderFragmentTest {
     @Before
     fun setup() {
         clearData()
-        setupIdlingResource()
         launchActivity()
+        setupIdlingResource()
         login()
     }
 

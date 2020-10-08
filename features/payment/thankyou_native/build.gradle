@@ -1,36 +1,12 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
+apply from: "../../../compile-instrument-test.gradle"
 
-android{
-    sourceSets.each {
-        it.java.srcDirs += "src/$it.name/kotlin"
-    }
 
+android {
     defaultConfig {
-        testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
         multiDexEnabled true
-    }
-
-    testOptions {
-        unitTests {
-            includeAndroidResources = true
-        }
-        junitPlatform {
-            filters {
-                engines {
-                    include 'spek2'
-                }
-            }
-            jacocoOptions {
-                html.enabled = true
-                xml.enabled = false
-                csv.enabled = false
-            }
-        }
-        unitTests.all {
-            testLogging.events = ["passed", "skipped", "failed"]
-        }
     }
 }
 
@@ -41,6 +17,7 @@ buildscript {
     repositories {
         mavenCentral()
         maven { url 'https://hansel.io/maven' }
+
     }
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
