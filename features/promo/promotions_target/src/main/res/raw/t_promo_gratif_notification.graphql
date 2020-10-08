@@ -2,6 +2,7 @@ query GetNotification($notificationID: Int!, $notificationEntryType: Int!, $paym
   getNotification(notificationID: $notificationID, notificationEntryType: $notificationEntryType, paymentID: $paymentID) {
      notificationID
     promoCode
+    eventID
     notificationStatus
     wordingActive {
       titleId
