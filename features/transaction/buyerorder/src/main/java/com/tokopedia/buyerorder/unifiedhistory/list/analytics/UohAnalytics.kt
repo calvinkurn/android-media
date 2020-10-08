@@ -199,6 +199,9 @@ object UohAnalytics {
                 putString(NAME, impression.name)
                 putString(ID, impression.id)
                 putString(PRICE, impression.price)
+                putString(BRAND, "")
+                putString(CATEGORY, "")
+                putString(VARIANT, "")
                 putString(LIST, impression.list)
                 putString(POSITION, impression.position)
             }
@@ -234,8 +237,12 @@ object UohAnalytics {
                 putString(NAME, product.name)
                 putString(ID, product.id)
                 putString(PRICE, product.price)
+                putString(BRAND, "")
+                putString(CATEGORY, "")
+                putString(VARIANT, "")
                 putString(LIST, product.list)
                 putString(POSITION, product.position)
+                putString(ATTRIBUTION, "")
             }
             arrayListBundleProducts.add(bundleProduct)
         }
@@ -319,18 +326,21 @@ object UohAnalytics {
     }
 
     fun clickBeliLagiOnOrderCardMP(screenName: String, userId: String, arrayListProducts: ArrayList<ECommerceAdd.Add.Products>) {
-        val eCommerceAdd = ECommerceAdd(
-                add = ECommerceAdd.Add(products = arrayListProducts)
-        )
-
         val arrayListBundleProduct = arrayListOf<Bundle>()
         arrayListProducts.forEach { product ->
             val bundleProduct = Bundle().apply {
                 putString(NAME, product.name)
                 putString(ID, product.id)
                 putString(PRICE, product.price)
+                putString(BRAND, "")
+                putString(CATEGORY, "")
+                putString(VARIANT, "")
                 putString(QUANTITY, product.quantity)
                 putString(DIMENSION79, product.dimension79)
+                putString(DIMENSION81, "")
+                putString(DIMENSION80, "")
+                putString(DIMENSION45, "")
+                putString(DIMENSION40, "")
             }
             arrayListBundleProduct.add(bundleProduct)
         }
