@@ -26,12 +26,21 @@ object ApplinkConstInternalOrder {
     const val PARAM_MODALTOKO = "modaltoko"
     const val PARAM_HOTEL = "hotel"
     const val PARAM_ORDER_ID = "order_id"
+    const val PARAM_HISTORY = "history"
+    const val PARAM_FILTER_ID = "filter_id"
+    const val PARAM_ORDER_LIST = "order_list"
 
     @JvmField
     val HOST_SELLER = "seller"
 
     @JvmField
+    val HOST_BUYER = "buyer"
+
+    @JvmField
     val HOST_ORDER = "order"
+
+    @JvmField
+    val HOST_ORDERLIST = "orderlist"
 
     @JvmField
     val INTERNAL_SELLER = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_SELLER"
@@ -52,7 +61,7 @@ object ApplinkConstInternalOrder {
     val DELIVERED = "$INTERNAL_SELLER/delivered"
 
     @JvmField
-    val HISTORY = "$INTERNAL_SELLER/history"
+    val HISTORY = "$INTERNAL_SELLER/$PARAM_HISTORY"
 
     @JvmField
     val TRACK = "$INTERNAL_ORDER/track"
@@ -119,4 +128,33 @@ object ApplinkConstInternalOrder {
 
     @JvmField
     val UNIFY_ORDER_HOTEL = "$INTERNAL_ORDER/$UNIFIED?$FILTER=$PARAM_HOTEL"
+
+    @JvmField
+    val MARKETPLACE_ORDER = "${DeeplinkConstant.SCHEME_INTERNAL}://$PARAM_MARKETPLACE/$HOST_ORDER"
+
+    @JvmField
+    val DIGITAL_ORDER = "${DeeplinkConstant.SCHEME_INTERNAL}://$PARAM_DIGITAL/$HOST_ORDER"
+
+    @JvmField
+    val DIGITAL_ORDER_LIST_INTERNAL = "${DeeplinkConstant.SCHEME_INTERNAL}://$PARAM_DIGITAL/$HOST_ORDERLIST"
+
+    @JvmField
+    val OMS_INTERNAL_ORDER = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_ORDER"
+
+    @JvmField
+    val ORDER_LIST_INTERNAL = "${DeeplinkConstant.SCHEME_INTERNAL}://$PARAM_ORDER_LIST"
+
+    @JvmField
+    val MP_INTERNAL_CONFIRMED = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_BUYER/$PARAM_HISTORY?$PARAM_FILTER_ID=5"
+
+    @JvmField
+    val MP_INTERNAL_PROCESSED = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_BUYER/$PARAM_HISTORY?$PARAM_FILTER_ID=12"
+
+    @JvmField
+    val MP_INTERNAL_SHIPPED = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_BUYER/$PARAM_HISTORY?$PARAM_FILTER_ID=13"
+
+    @JvmField
+    val MP_INTERNAL_DELIVERED = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_BUYER/$PARAM_HISTORY?$PARAM_FILTER_ID=14"
+
+
 }

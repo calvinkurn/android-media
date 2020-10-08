@@ -11,10 +11,6 @@
         android:id="@+id/containerProductAttachment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        tools:layout_gravity="end">
-
-        <include layout="@layout/item_topchat_product_card" />
-    </com.tokopedia.topchat.chatroom.view.custom.SingleProductAttachmentContainer>
+        tools:layout_gravity="end"/>
 
 </LinearLayout>

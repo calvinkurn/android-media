@@ -14,7 +14,7 @@ import dagger.Component
 
 
 @TokoPointScope
-@Component(dependencies = [BaseAppComponent::class], modules = [BundleModule::class, ViewModelModule::class, TokopointsQueryModule::class])
+@Component(dependencies = [BaseAppComponent::class], modules = [BundleModule::class, ViewModelModule::class, TokopointsQueryModule::class ])
 interface TokopointBundleComponent {
     fun inject(fragment: CouponDetailFragment)
 
@@ -31,7 +31,6 @@ interface TokopointBundleComponent {
     fun inject(fragment: CatalogListItemFragment)
 
     fun inject(fragment: TokoPointsHomeFragmentNew)
-
 
     fun inject(fragment: ValidateMerchantPinFragment)
 }
