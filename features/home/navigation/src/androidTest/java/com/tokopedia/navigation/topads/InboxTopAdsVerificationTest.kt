@@ -16,6 +16,7 @@ import com.tokopedia.navigation.presentation.adapter.viewholder.RecommendationVi
 import com.tokopedia.test.application.assertion.topads.TopAdsAssertion
 import com.tokopedia.test.application.environment.callback.TopAdsVerificatorInterface
 import androidx.test.espresso.intent.rule.IntentsTestRule
+import com.tokopedia.navigation.presentation.adapter.viewholder.InboxTopAdsBannerViewHolder
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupTopAdsDetector
 import org.junit.After
@@ -82,6 +83,9 @@ class InboxTopAdsVerificationTest {
         when (val viewHolder = inboxRecyclerView.findViewHolderForAdapterPosition(i)) {
             is RecommendationViewHolder -> {
                 activityRule.runOnUiThread { viewHolder.itemView.findViewById<View>(R.id.productCardView).performClick() }
+            }
+            is InboxTopAdsBannerViewHolder -> {
+                activityRule.runOnUiThread { viewHolder.itemView.findViewById<View>(R.id.topads_banner).performClick() }
             }
         }
     }
