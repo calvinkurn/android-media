@@ -19,7 +19,6 @@ import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.ApplinkUnsupported;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp;
-import com.tokopedia.applink.internal.ApplinkConstInternalTopAds;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.MaintenancePage;
@@ -60,8 +59,8 @@ import com.tokopedia.sellerorder.common.util.SomConsts;
 import com.tokopedia.sellerorder.list.presentation.fragment.SomListFragment;
 import com.tokopedia.talk_old.inboxtalk.view.activity.InboxTalkActivity;
 import com.tokopedia.topads.TopAdsComponentInstance;
-import com.tokopedia.topads.TopAdsManagementRouter;
 import com.tokopedia.topads.TopAdsModuleRouter;
+import com.tokopedia.topads.dashboard.data.model.DataDeposit;
 import com.tokopedia.topads.dashboard.di.component.TopAdsComponent;
 import com.tokopedia.topchat.chatlist.fragment.ChatTabListFragment;
 import com.tokopedia.track.TrackApp;
@@ -89,7 +88,6 @@ public abstract class SellerRouterApplication extends MainApplication
         ApplinkRouter,
         NetworkRouter,
         PhoneVerificationRouter,
-        TopAdsManagementRouter,
         CoreNetworkRouter,
         LinkerRouter,
         SellerHomeRouter,
@@ -354,18 +352,6 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public boolean isAllowLogOnChuckInterceptorNotification() {
         return DevOptConfig.isChuckNotifEnabled(this);
-    }
-
-    @Override
-    @NonNull
-    public Intent getTopAdsDashboardIntent(@NonNull Context context) {
-        return RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_DASHBOARD_INTERNAL);
-    }
-
-    @Override
-    @NonNull
-    public Intent getTopAdsAddCreditIntent(@NonNull Context context) {
-        return RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_BUY_CREDIT);
     }
 
     @Override
