@@ -82,7 +82,8 @@ class PlayViewModelTest {
                 mockGetProductTagItemsUseCase,
                 mockPlaySocket,
                 userSession,
-                dispatchers
+                dispatchers,
+                mockk(relaxed = true)
         )
 
         coEvery { mockGetChannelInfoUseCase.executeOnBackground() } returns mockChannel
