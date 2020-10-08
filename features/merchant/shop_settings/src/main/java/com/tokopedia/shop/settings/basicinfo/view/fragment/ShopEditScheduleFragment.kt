@@ -12,11 +12,11 @@ import android.widget.TextView
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.design.text.watcher.AfterTextWatcher
 import com.tokopedia.design.utils.StringUtils
 import com.tokopedia.kotlin.extensions.view.observe
-import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.shop.common.constant.ShopScheduleActionDef
 import com.tokopedia.shop.common.graphql.data.shopbasicdata.ShopBasicDataModel
 import com.tokopedia.shop.settings.R
@@ -87,6 +87,7 @@ class ShopEditScheduleFragment : Fragment() {
     override fun onDestroy() {
         super.onDestroy()
         viewModel.detachView()
+        Toaster.snackBar.dismiss()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
