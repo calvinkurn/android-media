@@ -66,6 +66,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
 
     private var needReload: Boolean = false
     private var shopBasicDataModel: ShopBasicDataModel? = null
+    private var snackbar: Snackbar? = null
     private var shopId: String = "0"     // 67726 for testing
 
     private var progressDialog: ProgressDialog? = null
@@ -199,10 +200,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
     }
 
     private fun dismissToaster() {
-        view?.let {
-            Toaster.snackBar = Snackbar.make(it, "", Snackbar.LENGTH_SHORT)
-            Toaster.snackBar.dismiss()
-        }
+        snackbar?.dismiss()
     }
 
     private fun moveToShopEditBasicInfoFragment() {
@@ -253,7 +251,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
                 }
                 is Fail -> {
                     view?.let { view ->
-                        Toaster.make(view, getString(R.string.error_get_shop_status), Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL)
+                        snackbar = Toaster.build(view, getString(R.string.error_get_shop_status), Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL)
                     }
                     ShopSettingsErrorHandler.logMessage(it.throwable.message ?: "")
                     ShopSettingsErrorHandler.logExceptionToCrashlytics(it.throwable)
@@ -306,7 +304,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
                 }
                 is Fail -> {
                     view?.let { view ->
-                        Toaster.make(view, getString(R.string.error_get_os_merchant), Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL)
+                        snackbar = Toaster.build(view, getString(R.string.error_get_os_merchant), Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL)
                     }
                     ShopSettingsErrorHandler.logMessage(it.throwable.message ?: "")
                     ShopSettingsErrorHandler.logExceptionToCrashlytics(it.throwable)
@@ -346,7 +344,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
                 data.getString(EXTRA_MESSAGE)?.apply {
                     if (this.isNotBlank()) {
                         view?.let {
-                            Toaster.make(it, this, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL)
+                            snackbar = Toaster.build(it, this, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL)
                         }
                     }
                 }
@@ -359,7 +357,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
                 data.getString(EXTRA_MESSAGE)?.apply {
                     if (this.isNotBlank()) {
                         view?.let {
-                            Toaster.make(it, this, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL)
+                            snackbar = Toaster.build(it, this, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL)
                         }
                     }
                 }
@@ -455,7 +453,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
         hideSubmitLoading()
         activity?.setResult(Activity.RESULT_OK)
         view?.let {
-            Toaster.make(it, successMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL)
+            snackbar = Toaster.build(it, successMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL)
         }
         loadShopBasicData()
     }
@@ -470,7 +468,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
     private fun showSnackbarErrorSubmitEdit(throwable: Throwable) {
         val message = ErrorHandler.getErrorMessage(context, throwable)
         view?.let {
-            Toaster.make(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
+            snackbar = Toaster.build(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
         }
     }
 

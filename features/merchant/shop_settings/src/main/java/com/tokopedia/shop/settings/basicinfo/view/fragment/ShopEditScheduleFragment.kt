@@ -50,6 +50,7 @@ class ShopEditScheduleFragment : Fragment() {
 
     private var progressDialog: ProgressDialog? = null
     private var shopBasicDataModel: ShopBasicDataModel? = null
+    private var snackbar: Snackbar? = null
     private var isClosedNow: Boolean = false
     private var selectedStartCloseUnixTimeMs: Long = 0
     private var selectedEndCloseUnixTimeMs: Long = 0
@@ -105,10 +106,7 @@ class ShopEditScheduleFragment : Fragment() {
     }
 
     private fun dismissToaster() {
-        view?.let {
-            Toaster.snackBar = Snackbar.make(it, "", Snackbar.LENGTH_SHORT)
-            Toaster.snackBar.dismiss()
-        }
+        snackbar?.dismiss()
     }
 
     private fun initInjector() {
@@ -338,13 +336,13 @@ class ShopEditScheduleFragment : Fragment() {
 
     private fun showSnackbarErrorSubmitEdit(throwable: Throwable) {
         val message = ErrorHandler.getErrorMessage(requireContext(), throwable.cause)
-        Toaster.make(layout, message, Snackbar.LENGTH_INDEFINITE, Toaster.TYPE_ERROR, getString(com.tokopedia.abstraction.R.string.title_try_again), View.OnClickListener {
+        snackbar = Toaster.build(layout, message, Snackbar.LENGTH_INDEFINITE, Toaster.TYPE_ERROR, getString(com.tokopedia.abstraction.R.string.title_try_again), View.OnClickListener {
             onSaveButtonClicked()
         })
     }
 
     private fun showErrorMessage(throwable: Throwable, retryHandler: View.OnClickListener) {
         val message = ErrorHandler.getErrorMessage(requireContext(), throwable.cause)
-        Toaster.make(layout, message, Snackbar.LENGTH_INDEFINITE, Toaster.TYPE_ERROR, getString(com.tokopedia.abstraction.R.string.title_try_again), retryHandler)
+        snackbar = Toaster.build(layout, message, Snackbar.LENGTH_INDEFINITE, Toaster.TYPE_ERROR, getString(com.tokopedia.abstraction.R.string.title_try_again), retryHandler)
     }
 }

@@ -72,6 +72,7 @@ class ShopEditBasicInfoFragment: Fragment() {
 
     private var shopDomainTextWatcher: TextWatcher? = null
     private var shopBasicDataModel: ShopBasicDataModel? = null
+    private var snackbar: Snackbar? = null
     private var tvSave: TextView? = null
     private var savedLocalImageUrl: String? = null
     private var needUpdatePhotoUI: Boolean = false
@@ -145,10 +146,7 @@ class ShopEditBasicInfoFragment: Fragment() {
     }
 
     private fun dismissToaster() {
-        view?.let {
-            Toaster.snackBar = Snackbar.make(it, "", Snackbar.LENGTH_SHORT)
-            Toaster.snackBar.dismiss()
-        }
+        snackbar?.dismiss()
     }
 
     private fun initGqlClient() {
@@ -684,7 +682,7 @@ class ShopEditBasicInfoFragment: Fragment() {
 
     private fun showSnackBarErrorShopInfo(throwable: Throwable) {
         val message = ErrorHandler.getErrorMessage(context, throwable)
-        Toaster.make(container, message, Snackbar.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
+        snackbar = Toaster.build(container, message, Snackbar.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
             getString(com.tokopedia.abstraction.R.string.title_try_again), View.OnClickListener {
             loadShopBasicData()
         })
@@ -699,7 +697,7 @@ class ShopEditBasicInfoFragment: Fragment() {
     private fun showSnackBarErrorSubmitEdit(throwable: Throwable) {
         val message = ShopSettingsErrorHandler.getErrorMessage(context, throwable)
         message?.apply {
-            Toaster.make(container, this, Snackbar.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
+            snackbar = Toaster.build(container, this, Snackbar.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
                     getString(com.tokopedia.abstraction.R.string.title_try_again), View.OnClickListener {
                 onSaveButtonClicked()
             })
@@ -707,7 +705,7 @@ class ShopEditBasicInfoFragment: Fragment() {
     }
 
     private fun showSnackBarErrorSubmitEdit(message: String) {
-        Toaster.make(container, message, Snackbar.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
+        snackbar = Toaster.build(container, message, Snackbar.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
                 getString(com.tokopedia.abstraction.R.string.title_try_again), View.OnClickListener {
             onSaveButtonClicked()
         })
@@ -715,7 +713,7 @@ class ShopEditBasicInfoFragment: Fragment() {
 
     private fun showAllowShopNameDomainChangesError(throwable: Throwable) {
         val message = ErrorHandler.getErrorMessage(context, throwable)
-        Toaster.make(container, message, Snackbar.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
+        snackbar = Toaster.build(container, message, Snackbar.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
             getString(com.tokopedia.abstraction.R.string.title_try_again), View.OnClickListener {
             viewModel.getAllowShopNameDomainChanges()
         })
