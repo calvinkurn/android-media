@@ -5,7 +5,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import tokopedia.applink.util.DeepLinkUrlConstant
-import tokopedia.applink.util.DeepLinkUrlConstant.PULSA_LINK_URL
 
 @RunWith(RobolectricTestRunner::class)
 class DeepLinkMapperFromHttpTest: DeepLinkMapperTestFixture() {
@@ -13,7 +12,7 @@ class DeepLinkMapperFromHttpTest: DeepLinkMapperTestFixture() {
     @Test
     fun `check link url of pulsa then should be equal to the actual`() {
         val actualDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=1&menu_id=2"
-        assertEqualsDeepLinkMapper(PULSA_LINK_URL, actualDeepLink)
+        assertEqualsDeepLinkMapper(DeepLinkUrlConstant.PULSA_LINK_URL, actualDeepLink)
     }
 
     @Test
