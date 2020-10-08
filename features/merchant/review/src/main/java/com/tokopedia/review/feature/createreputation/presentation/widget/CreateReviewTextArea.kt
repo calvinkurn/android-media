@@ -1,6 +1,8 @@
 package com.tokopedia.review.feature.createreputation.presentation.widget
 
 import android.content.Context
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
@@ -58,8 +60,23 @@ class CreateReviewTextArea : BaseCustomView {
                     }
                 } else {
                     this@CreateReviewTextArea.createReviewTextAreaContainer.background = ContextCompat.getDrawable(context, R.drawable.bg_review_create_text_area_default)
+                    textAreaListener.hideText()
                 }
             }
+            addTextChangedListener(object : TextWatcher {
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                    // No Op
+                }
+
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                    // No Op
+                }
+
+                override fun afterTextChanged(s: Editable?) {
+                    textAreaListener.onTextChanged(s?.length ?: 0)
+                }
+
+            })
         }
     }
 

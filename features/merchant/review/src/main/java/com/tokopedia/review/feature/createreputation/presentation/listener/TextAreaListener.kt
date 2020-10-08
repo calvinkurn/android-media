@@ -6,4 +6,6 @@ interface TextAreaListener {
     fun onDismissBottomSheet(text: String)
     fun scrollToShowTextArea()
     fun trackWhenHasFocus(isEmpty: Boolean)
+    fun onTextChanged(textLength: Int)
+    fun hideText()
 }

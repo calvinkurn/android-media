@@ -182,10 +182,10 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
         }
     }
 
-    fun getProductIncentiveOvo() {
+    fun getProductIncentiveOvo(reputationId: Int) {
         launchCatchError(block = {
             val data = withContext(coroutineDispatcherProvider.io()) {
-                getProductIncentiveOvo.getIncentiveOvo()
+                getProductIncentiveOvo.getIncentiveOvo(reputationId)
             }
             _incentiveOvo.postValue(CoroutineSuccess(data))
         }) {

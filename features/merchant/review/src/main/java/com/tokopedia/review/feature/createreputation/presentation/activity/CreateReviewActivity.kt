@@ -31,6 +31,7 @@ class CreateReviewActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent
 
     companion object {
         const val PARAM_RATING = "rating"
+        const val PARAM_IS_ELIGIBLE = "isEligible"
         const val DEFAULT_PRODUCT_RATING = 5
     }
 

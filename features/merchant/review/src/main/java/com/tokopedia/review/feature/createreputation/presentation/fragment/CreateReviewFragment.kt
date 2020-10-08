@@ -96,6 +96,8 @@ class CreateReviewFragment : BaseDaggerFragment(),
         private const val RATING_5 = 5
         private const val SAME_ARGS_ERROR = 3
 
+        private const val REVIEW_INCENTIVE_MINIMUM_THRESHOLD = 40
+
         fun createInstance(productId: String, reviewId: String, reviewClickAt: Int = 0, isEditMode: Boolean, feedbackId: Int) = CreateReviewFragment().also {
             it.arguments = Bundle().apply {
                 putString(PRODUCT_ID_REVIEW, productId)
@@ -401,6 +403,15 @@ class CreateReviewFragment : BaseDaggerFragment(),
 
     override fun trackWhenHasFocus(isEmpty: Boolean) {
         CreateReviewTracking.reviewOnMessageChangedTracker(getOrderId(), productId.toString(), isEmpty, isEditMode, feedbackId.toString())
+        setHelperText(0)
+    }
+
+    override fun onTextChanged(textLength: Int) {
+        setHelperText(textLength)
+    }
+
+    override fun hideText() {
+        hideIncentiveText()
     }
 
     override fun onReviewScoreClicked(score: Int): Boolean {
@@ -451,7 +462,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
     }
 
     private fun getIncentiveOvoData() {
-        createReviewViewModel.getProductIncentiveOvo()
+        createReviewViewModel.getProductIncentiveOvo(reputationId)
     }
 
     private fun submitReview() {
@@ -839,6 +850,29 @@ class CreateReviewFragment : BaseDaggerFragment(),
             Crashlytics.logException(throwable)
         } else {
             throwable.printStackTrace()
+        }
+    }
+
+    private fun hideIncentiveText() {
+        incentiveHelperText.hide()
+    }
+
+    private fun setHelperText(textLength: Int) {
+        with(incentiveHelperText) {
+            when {
+                textLength >= REVIEW_INCENTIVE_MINIMUM_THRESHOLD -> {
+                    text = context?.getString(R.string.review_create_text_area_eligible)
+                    show()
+                }
+                textLength < REVIEW_INCENTIVE_MINIMUM_THRESHOLD && textLength != 0 -> {
+                    text = context?.getString(R.string.review_create_text_area_partial)
+                    show()
+                }
+                else -> {
+                    text = context?.getString(R.string.review_create_text_area_empty)
+                    show()
+                }
+            }
         }
     }
 

@@ -27,8 +27,11 @@ class GetProductIncentiveOvo @Inject constructor(private val graphqlRepository: 
         """.trimIndent()
     }
 
-    suspend fun getIncentiveOvo(): ProductRevIncentiveOvoDomain {
+    suspend fun getIncentiveOvo(reputationId: Int = 0): ProductRevIncentiveOvoDomain {
         val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
+        if (reputationId != 0) {
+
+        }
         val graphqlRequest = GraphqlRequest(query, ProductRevIncentiveOvoDomain::class.java)
 
         val response = graphqlRepository.getReseponse(listOf(graphqlRequest), cacheStrategy)
