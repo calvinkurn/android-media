@@ -194,11 +194,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         ViewModelProvider(this, viewModelFactory).get(DynamicProductDetailViewModel::class.java)
     }
 
-    private val nplFollowersButton by lazy {
-        base_btn_follow?.run {
-            PartialButtonShopFollowersView.build(this, this@DynamicProductDetailFragment)
-        }
-    }
+    private var nplFollowersButton: PartialButtonShopFollowersView? = null
 
     //Listener function
     private lateinit var initToolBarMethod: () -> Unit
@@ -1539,10 +1535,18 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     private fun updateNplButtonFollowers(restrictionInfo: RestrictionInfoResponse) {
-        val title = restrictionInfo.restrictionData.firstOrNull()?.action?.firstOrNull()?.title ?: ""
-        val desc = restrictionInfo.restrictionData.firstOrNull()?.action?.firstOrNull()?.description ?: ""
         val alreadyFollowShop = restrictionInfo.restrictionData.firstOrNull()?.alreadyFollowShop ?: true
-        nplFollowersButton?.renderView(title, desc, alreadyFollowShop)
+
+        if (alreadyFollowShop.not()) {
+            base_btn_follow?.run {
+                if (nplFollowersButton == null) {
+                    nplFollowersButton = PartialButtonShopFollowersView.build(this, this@DynamicProductDetailFragment)
+                }
+            }
+            val title = restrictionInfo.restrictionData.firstOrNull()?.action?.firstOrNull()?.title ?: ""
+            val desc = restrictionInfo.restrictionData.firstOrNull()?.action?.firstOrNull()?.description ?: ""
+            nplFollowersButton?.renderView(title, desc, alreadyFollowShop)
+        }
     }
 
     override fun onButtonFollowNplClick() {
