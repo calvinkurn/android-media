@@ -39,12 +39,17 @@ sealed class PlayWidgetMediumItemUiModel(
         val impress: ImpressHolder = ImpressHolder()
 ) : PlayWidgetItemUiModel()
 
-object PlayWidgetMediumOverlayUiModel : PlayWidgetMediumItemUiModel()
+data class PlayWidgetMediumOverlayUiModel(
+        val imageUrl: String,
+        val appLink: String,
+        val webLink: String
+) : PlayWidgetMediumItemUiModel()
 
 data class PlayWidgetMediumBannerUiModel(
         val imageUrl: String,
         val appLink: String,
-        val webLink: String
+        val webLink: String,
+        val partner: PlayWidgetPartnerUiModel
 ) : PlayWidgetMediumItemUiModel()
 
 data class PlayWidgetMediumChannelUiModel(

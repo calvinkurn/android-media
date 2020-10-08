@@ -35,6 +35,8 @@ class PlayWidgetMediumView : ConstraintLayout {
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes)
 
+    var widgetMediumListener: PlayWidgetMediumListener? = null
+
     private val background: LoaderImageView
     private val shimmering: FrameLayout
 
@@ -51,11 +53,11 @@ class PlayWidgetMediumView : ConstraintLayout {
     private val adapter = PlayWidgetCardMediumAdapter(
             cardMediumListener = object : PlayWidgetCardMediumAdapter.CardMediumListener {
                 override fun onCardMediumClicked(item: PlayWidgetMediumItemUiModel, position: Int) {
-
+                    widgetMediumListener?.onCardClicked(item, position)
                 }
 
                 override fun onCardMediumVisible(item: PlayWidgetMediumItemUiModel, position: Int) {
-
+                    widgetMediumListener?.onCardVisible(item, position)
                 }
             }
     )
@@ -82,13 +84,17 @@ class PlayWidgetMediumView : ConstraintLayout {
         title.text = data.title
         actionTitle.text = data.actionTitle
 
+        actionTitle.setOnClickListener {
+            widgetMediumListener?.onSeeMoreClicked(data.actionAppLink, data.actionWebLink)
+        }
+
         configureBackgroundOverlay(data.background)
 
         recyclerViewItem.layoutManager = layoutManager
         recyclerViewItem.adapter = adapter
         recyclerViewItem.addOnScrollListener(configureParallax())
 
-        adapter.setItems(addItemOverlay(data.items))
+        adapter.setItems(data.items)
     }
 
     fun showLoading() {
@@ -132,12 +138,6 @@ class PlayWidgetMediumView : ConstraintLayout {
         }
     }
 
-    private fun addItemOverlay(items: List<PlayWidgetMediumItemUiModel>): List<PlayWidgetMediumItemUiModel> {
-        return items.toMutableList().apply {
-            add(0, PlayWidgetMediumOverlayUiModel)
-        }
-    }
-
     private fun configureParallax(): RecyclerView.OnScrollListener {
         return object : RecyclerView.OnScrollListener() {
 
@@ -159,5 +159,11 @@ class PlayWidgetMediumView : ConstraintLayout {
                 }
             }
         }
+    }
+
+    interface PlayWidgetMediumListener {
+        fun onCardClicked(item: PlayWidgetMediumItemUiModel, position: Int)
+        fun onCardVisible(item: PlayWidgetMediumItemUiModel, position: Int)
+        fun onSeeMoreClicked(appLink: String, webLink: String)
     }
 }

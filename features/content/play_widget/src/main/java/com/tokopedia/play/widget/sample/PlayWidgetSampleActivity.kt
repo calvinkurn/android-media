@@ -135,7 +135,8 @@ class PlayWidgetSampleActivity : BaseSimpleActivity() {
     private fun getSampleMediumCardBanner() = PlayWidgetMediumBannerUiModel(
             imageUrl = "https://cdn.jpegmini.com/user/images/slider_puffin_before_mobile.jpg",
             appLink = "",
-            webLink = ""
+            webLink = "",
+            partner = PlayWidgetPartnerUiModel("123", "Google")
     )
 
     private fun getSampleMediumChannelCardBanner(channelType: PlayWidgetChannelType) = PlayWidgetMediumChannelUiModel(

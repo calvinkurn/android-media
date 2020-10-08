@@ -14,15 +14,20 @@ class PlayWidgetMediumUiMapper (
         private val videoMapper: PlayWidgetVideoMapper
 ) : PlayWidgetMapper {
 
-    override fun mapWidget(data: PlayWidget): PlayWidgetUiModel = PlayWidgetMediumUiModel(
-            title = data.meta.widgetTitle,
-            actionTitle = data.meta.buttonText,
-            actionAppLink = data.meta.buttonApplink,
-            actionWebLink = data.meta.overlayImageWebLink,
-            background = mapWidgetBackground(data),
-            config = configMapper.mapWidgetConfig(data),
-            items = mapWidgetItem(data.data)
-    )
+    override fun mapWidget(data: PlayWidget): PlayWidgetUiModel {
+        val widgetBackground = mapWidgetBackground(data)
+        return PlayWidgetMediumUiModel(
+                title = data.meta.widgetTitle,
+                actionTitle = data.meta.buttonText,
+                actionAppLink = data.meta.buttonApplink,
+                actionWebLink = data.meta.overlayImageWebLink,
+                background = widgetBackground,
+                config = configMapper.mapWidgetConfig(data),
+                items = mapWidgetItem(data.data).toMutableList().apply {
+                    add(0, mapWidgetItemOverlay(widgetBackground))
+                }
+        )
+    }
 
     private fun mapWidgetBackground(data: PlayWidget): PlayWidgetBackgroundUiModel = PlayWidgetBackgroundUiModel(
             overlayImageUrl = data.meta.overlayImage,
@@ -40,10 +45,17 @@ class PlayWidgetMediumUiMapper (
         }
     }
 
+    private fun mapWidgetItemOverlay(item: PlayWidgetBackgroundUiModel): PlayWidgetMediumOverlayUiModel = PlayWidgetMediumOverlayUiModel(
+            appLink = item.overlayImageAppLink,
+            webLink = item.overlayImageWebLink,
+            imageUrl = item.overlayImageUrl
+    )
+
     private fun mapWidgetItemBanner(item: PlayWidgetItem): PlayWidgetMediumBannerUiModel = PlayWidgetMediumBannerUiModel(
             appLink = item.appLink,
             webLink = item.webLink,
-            imageUrl = item.backgroundUrl
+            imageUrl = item.backgroundUrl,
+            partner = PlayWidgetPartnerUiModel(item.partner.id, item.partner.name)
     )
 
     private fun mapWidgetItemChannel(item: PlayWidgetItem): PlayWidgetMediumChannelUiModel = PlayWidgetMediumChannelUiModel(
