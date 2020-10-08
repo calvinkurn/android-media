@@ -90,252 +90,252 @@ import tokopedia.applink.util.DeepLinkUrlConstant.TRAVEL_ENTERTAINTMENT_DETAIL_U
 class DeepLinkMatcherTest: DeepLinkMatcherTestFixture() {
 
     @Test
-    fun `check url link of play then should return PLAY`() {
+    fun `check link url of play then should return PLAY`() {
         assertEqualsDeepLinkMatcher(PLAY, PLAY_URL_LINK)
     }
 
     @Test
-    fun `check url link of group chat then should return GROUPCHAT`() {
+    fun `check link url of group chat then should return GROUPCHAT`() {
         assertEqualsDeepLinkMatcher(GROUPCHAT, GROUP_CHAT_URL_LINK)
     }
 
     @Test
-    fun `check url link of flight then should return FLIGHT`() {
+    fun `check link url of flight then should return FLIGHT`() {
         assertEqualsDeepLinkMatcher(FLIGHT, FLIGHT_URL_LINK)
     }
 
     @Test
-    fun `check url link of promo detail then should return PROMO_DETAIL`() {
+    fun `check link url of promo detail then should return PROMO_DETAIL`() {
         assertEqualsDeepLinkMatcher(PROMO_DETAIL, PROMO_DETAIL_URL_LINK)
     }
 
     @Test
-    fun `check url link of promo list then should return PROMO_LIST`() {
+    fun `check link url of promo list then should return PROMO_LIST`() {
         assertEqualsDeepLinkMatcher(PROMO_LIST, PROMO_LIST_URL_LINK)
     }
 
     @Test
-    fun `check url link of sale then should return SALE`() {
+    fun `check link url of sale then should return SALE`() {
         assertEqualsDeepLinkMatcher(SALE, SALE_URL_LINK)
     }
 
     @Test
-    fun `check url link of invoice then should return INVOICE`() {
+    fun `check link url of invoice then should return INVOICE`() {
         assertEqualsDeepLinkMatcher(INVOICE, INVOICE_URL_LINK)
     }
 
     @Test
-    fun `check url link of blog then should return BLOG`() {
+    fun `check link url of blog then should return BLOG`() {
         assertEqualsDeepLinkMatcher(BLOG, BLOG_URL_LINK)
     }
 
     @Test
-    fun `check url link of new category then should return CATEGORY`() {
+    fun `check link url of new category then should return CATEGORY`() {
         assertEqualsDeepLinkMatcher(CATEGORY, NEW_CATEGORY_URL_LINK)
     }
 
     @Test
-    fun `check url link of old category then should return CATEGORY`() {
+    fun `check link url of old category then should return CATEGORY`() {
         assertEqualsDeepLinkMatcher(CATEGORY, OLD_CATEGORY_URL_LINK)
     }
 
     @Test
-    fun `check url link of search then should return BROWSE`() {
+    fun `check link url of search then should return BROWSE`() {
         assertEqualsDeepLinkMatcher(BROWSE, SEARCH_URL_LINK)
     }
 
     @Test
-    fun `check url link of hot list then should return HOT_LIST`() {
+    fun `check link url of hot list then should return HOT_LIST`() {
         assertEqualsDeepLinkMatcher(HOT_LIST, HOT_LIST_URL_LINK)
     }
 
     @Test
-    fun `check url link of hot then should return BROWSE`() {
+    fun `check link url of hot then should return BROWSE`() {
         assertEqualsDeepLinkMatcher(HOT, HOT_URL_LINK)
     }
 
     @Test
-    fun `check url link of find then should return FIND`() {
+    fun `check link url of find then should return FIND`() {
         assertEqualsDeepLinkMatcher(FIND, FIND_URL_LINK)
     }
 
     @Test
-    fun `check url link of catalog then should return CATALOG`() {
+    fun `check link url of catalog then should return CATALOG`() {
         assertEqualsDeepLinkMatcher(CATALOG, CATALOG_URL_INK)
     }
 
     @Test
-    fun `check url link of b page then should return DISCOVERY_PAGE`() {
+    fun `check link url of b page then should return DISCOVERY_PAGE`() {
         assertEqualsDeepLinkMatcher(DISCOVERY_PAGE, DISCOVERY_B_URL_LINK)
     }
 
     @Test
-    fun `check url link of discovery page then should return DISCOVERY_PAGE`() {
+    fun `check link url of discovery page then should return DISCOVERY_PAGE`() {
         assertEqualsDeepLinkMatcher(DISCOVERY_PAGE, DISCOVERY_PAGE_URL_LINK)
     }
 
     @Test
-    fun `check url link of pulsa then should return RECHARGE`() {
+    fun `check link url of pulsa then should return RECHARGE`() {
         assertEqualsDeepLinkMatcher(RECHARGE, PULSA_URL_LINK)
     }
 
     @Test
-    fun `check url link of etalase then should return CATALOG`() {
+    fun `check link url of etalase then should return CATALOG`() {
         assertEqualsDeepLinkMatcher(ETALASE, ETALASE_URL_LINK)
     }
 
     @Test
-    fun `check url link of referall then should return REFERRAL`() {
+    fun `check link url of referall then should return REFERRAL`() {
         assertEqualsDeepLinkMatcher(REFERRAL, REFERALL_URL_LINK)
     }
 
     @Test
-    fun `check url link of tokopoints then should return TOKOPOINT`() {
+    fun `check link url of tokopoints then should return TOKOPOINT`() {
         assertEqualsDeepLinkMatcher(TOKOPOINT, TOKO_POINTS_URL_LINK)
     }
 
     @Test
-    fun `check url link of ovo then should return WALLET_OVO`() {
+    fun `check link url of ovo then should return WALLET_OVO`() {
         assertEqualsDeepLinkMatcher(WALLET_OVO, OVO_URL_LINK)
     }
 
     @Test
-    fun `check url link of people then should return PROFILE`() {
+    fun `check link url of people then should return PROFILE`() {
         assertEqualsDeepLinkMatcher(PROFILE, PEOPLE_URL_LINK)
     }
 
     @Test
-    fun `check url link of content then should return CONTENT`() {
+    fun `check link url of content then should return CONTENT`() {
         assertEqualsDeepLinkMatcher(CONTENT, CONTENT_URL_LINK)
     }
 
     @Test
-    fun `check url link of kupon thr then should return SMCREFERRAL`() {
+    fun `check link url of kupon thr then should return SMCREFERRAL`() {
         assertEqualsDeepLinkMatcher(SMCREFERRAL, KUPON_THR_URL_LINK)
     }
 
     @Test
-    fun `check url link of seru then should return SMCREFERRAL`() {
+    fun `check link url of seru then should return SMCREFERRAL`() {
         assertEqualsDeepLinkMatcher(SMCREFERRAL, SERU_URL_LINK)
     }
 
     @Test
-    fun `check url link of gold then should return OTHER`() {
+    fun `check link url of gold then should return OTHER`() {
         assertEqualsDeepLinkMatcher(OTHER, GOLD_URL_LINK)
     }
 
     @Test
-    fun `check url link of reksa dana then should return OTHER`() {
+    fun `check link url of reksa dana then should return OTHER`() {
         assertEqualsDeepLinkMatcher(OTHER, REKSA_DANA_URL_LINK)
     }
 
     @Test
-    fun `check url link of help then should return OTHER`() {
+    fun `check link url of help then should return OTHER`() {
         assertEqualsDeepLinkMatcher(OTHER, HELP_URL_LINK)
     }
 
     @Test
-    fun `check url link of events then should return OTHER`() {
+    fun `check link url of events then should return OTHER`() {
         assertEqualsDeepLinkMatcher(OTHER, EVENTS_URL_LINK)
     }
 
     @Test
-    fun `check url link of merchant kyc then should return OTHER`() {
+    fun `check link url of merchant kyc then should return OTHER`() {
         assertEqualsDeepLinkMatcher(OTHER, MERCHANT_KYC_URL_LINK)
     }
 
     @Test
-    fun `check url link of contact us then should return OTHER`() {
+    fun `check link url of contact us then should return OTHER`() {
         assertEqualsDeepLinkMatcher(OTHER, CONTACT_US_URL_LINK)
     }
 
     @Test
-    fun `check url link of about then should return OTHER`() {
+    fun `check link url of about then should return OTHER`() {
         assertEqualsDeepLinkMatcher(OTHER, ABOUT_URL_LINK)
     }
 
     @Test
-    fun `check url link of reset then should return OTHER`() {
+    fun `check link url of reset then should return OTHER`() {
         assertEqualsDeepLinkMatcher(OTHER, RESET_LINK)
     }
 
     @Test
-    fun `check url link of order list then should return ORDER_LIST`() {
+    fun `check link url of order list then should return ORDER_LIST`() {
         assertEqualsDeepLinkMatcher(ORDER_LIST, ORDER_LIST_URL_LINK)
     }
 
     @Test
-    fun `check url link of activation then should return OTHER`() {
+    fun `check link url of activation then should return OTHER`() {
         assertEqualsDeepLinkMatcher(OTHER, ACTIVATION_URL_LINK)
     }
 
     @Test
-    fun `check url link of credit motor then should return OTHER`() {
+    fun `check link url of credit motor then should return OTHER`() {
         assertEqualsDeepLinkMatcher(OTHER, CREDIT_MOTOR_URL_LINK)
     }
 
     @Test
-    fun `check url link of modal toko then should return OTHER`() {
+    fun `check link url of modal toko then should return OTHER`() {
         assertEqualsDeepLinkMatcher(OTHER, MODAL_TOKO_URL_LINK)
     }
 
     @Test
-    fun `check url link of hotel then should return HOTEL`() {
+    fun `check link url of hotel then should return HOTEL`() {
         assertEqualsDeepLinkMatcher(HOTEL, HOTEL_URL_LINK)
     }
 
     @Test
-    fun `check url link of travel entertainment then should return TRAVEL_HOMEPAGE`() {
+    fun `check link url of travel entertainment then should return TRAVEL_HOMEPAGE`() {
         assertEqualsDeepLinkMatcher(TRAVEL_HOMEPAGE, TRAVEL_ENTERTAINMENT_URL_LINK)
     }
 
     @Test
-    fun `check url link of travel entertainment detail then should return TRAVEL_HOMEPAGE`() {
+    fun `check link url of travel entertainment detail then should return TRAVEL_HOMEPAGE`() {
         assertEqualsDeepLinkMatcher(TRAVEL_HOMEPAGE, TRAVEL_ENTERTAINTMENT_DETAIL_URL_LINK)
     }
 
     @Test
-    fun `check url link of recommendation then should return RECOMMENDATION`() {
+    fun `check link url of recommendation then should return RECOMMENDATION`() {
         assertEqualsDeepLinkMatcher(RECOMMENDATION, RECOMMENDATION_URL_LINK)
     }
 
     @Test
-    fun `check url link of product review then should return PRODUCT_REVIEW`() {
+    fun `check link url of product review then should return PRODUCT_REVIEW`() {
         assertEqualsDeepLinkMatcher(PRODUCT_REVIEW,  PRODUCT_REVIEW_URL_LINK)
     }
 
     @Test
-    fun `check url link of MYSHOP then should return OTHER`() {
+    fun `check link url of MYSHOP then should return OTHER`() {
         assertEqualsDeepLinkMatcher(OTHER, MYSHOP_URL_LINK)
     }
 
     @Test
-    fun `check url link of MY-SHOP then should return OTHER`() {
+    fun `check link url of MY-SHOP then should return OTHER`() {
         assertEqualsDeepLinkMatcher(OTHER, MY_SHOP_URL_LINK)
     }
 
     @Test
-    fun `check url link of deals then should return DEALS`() {
+    fun `check link url of deals then should return DEALS`() {
         assertEqualsDeepLinkMatcher(DEALS, DEALS_URL_LINK)
     }
 
     @Test
-    fun `check url link of activation power merchant then should return OTHER`() {
+    fun `check link url of activation power merchant then should return OTHER`() {
         assertEqualsDeepLinkMatcher(OTHER, AKTIVASI_POWER_MERCHANT_URL_LINK)
     }
 
     @Test
-    fun `check url link of shop then should return SHOP`() {
+    fun `check link url of shop then should return SHOP`() {
         assertEqualsDeepLinkMatcher(SHOP, SHOP_URL_LINK)
     }
 
     @Test
-    fun `check url link of product then should return PRODUCT`() {
+    fun `check link url of product then should return PRODUCT`() {
         assertEqualsDeepLinkMatcher(PRODUCT, PRODUCT_URL_LINK)
     }
 
     @Test
-    fun `check url link of campaign then should return ETALASE`() {
+    fun `check link url of campaign then should return ETALASE`() {
         assertEqualsDeepLinkMatcher(ETALASE, CAMPAIGN_URL_LINK)
     }
 
