@@ -53,6 +53,7 @@ import com.tokopedia.shop.common.constant.ShopPageConstant.EMPTY_PRODUCT_SEARCH_
 import com.tokopedia.shop.common.constant.ShopParamConstant
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
 import com.tokopedia.shop.common.di.component.ShopComponent
+import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseRules
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.common.util.ShopPageProductChangeGridRemoteConfig
 import com.tokopedia.shop.common.view.listener.ShopProductChangeGridSectionListener
@@ -121,6 +122,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     private var selectedEtalaseName: String = ""
     private var defaultEtalaseName = ""
     private var selectedEtalaseType: Int = SELECTED_ETALASE_TYPE_DEFAULT_VALUE
+    private var selectedEtalaseRules: List<ShopEtalaseRules>? = null
     private var onShopProductListFragmentListener: OnShopProductListFragmentListener? = null
     private var shopPageProductListResultFragmentListener: ShopPageProductListResultFragmentListener? = null
     private var needReloadData: Boolean = false
@@ -635,6 +637,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                 ?: ""
         selectedEtalaseType = etalaseList.firstOrNull { it.etalaseId == selectedEtalaseId }?.type
                 ?: -1
+        selectedEtalaseRules = etalaseList.firstOrNull { it.etalaseId == selectedEtalaseId }?.etalaseRules
         val selectedSortName = shopStickySortFilter.sortList.firstOrNull { it.value == sortId }?.name
                 ?: ""
         shopProductSortFilterUiModel = ShopProductSortFilterUiModel(
