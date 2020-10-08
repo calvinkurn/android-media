@@ -9,6 +9,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -20,7 +22,6 @@ import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.shop.common.constant.ShopScheduleActionDef
 import com.tokopedia.shop.common.graphql.data.shopbasicdata.ShopBasicDataModel
 import com.tokopedia.shop.settings.R
-import com.tokopedia.shop.settings.basicinfo.view.activity.ShopEditScheduleActivity
 import com.tokopedia.shop.settings.basicinfo.view.fragment.ShopSettingsInfoFragment.Companion.EXTRA_IS_CLOSED_NOW
 import com.tokopedia.shop.settings.basicinfo.view.fragment.ShopSettingsInfoFragment.Companion.EXTRA_MESSAGE
 import com.tokopedia.shop.settings.basicinfo.view.fragment.ShopSettingsInfoFragment.Companion.EXTRA_SHOP_BASIC_DATA_MODEL
@@ -55,8 +56,8 @@ class ShopEditScheduleFragment : Fragment() {
         initInjector()
         super.onCreate(savedInstanceState)
         if (savedInstanceState != null) {
-            selectedStartCloseUnixTimeMs = savedInstanceState.getLong(ShopEditScheduleActivity.SAVED_SELECTED_START_DATE)
-            selectedEndCloseUnixTimeMs = savedInstanceState.getLong(ShopEditScheduleActivity.SAVED_SELECTED_END_DATE)
+            selectedStartCloseUnixTimeMs = savedInstanceState.getLong(SAVED_SELECTED_START_DATE)
+            selectedEndCloseUnixTimeMs = savedInstanceState.getLong(SAVED_SELECTED_END_DATE)
         }
 
         arguments?.let {
@@ -152,9 +153,18 @@ class ShopEditScheduleFragment : Fragment() {
             }
         })
 
+        setupToolbar()
+    }
+
+    private fun setupToolbar() {
+        val toolbar: Toolbar? = activity?.findViewById(R.id.toolbar)
+        toolbar?.title = getString(R.string.shop_settings_shop_status)
+
         val tvSave: TextView? = activity?.findViewById(R.id.tvSave)
         tvSave?.apply {
             visibility = View.VISIBLE
+            isEnabled = true
+            setTextColor(ContextCompat.getColor(requireContext(), R.color.merchant_green))
             setOnClickListener { onSaveButtonClicked() }
         }
     }
