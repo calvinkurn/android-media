@@ -19,7 +19,6 @@ class IncentiveOvoBottomSheet(private val productRevIncentiveOvoDomain: ProductR
     companion object {
         val TAG = IncentiveOvoBottomSheet::class.qualifiedName
         val layout = R.layout.incentive_ovo_bottom_sheet_dialog
-        const val url = "https://ecs7.tokopedia.net/android/others/ovo_incentive_bottom_sheet_image.png"
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

@@ -57,6 +57,7 @@ import com.tokopedia.review.feature.createreputation.presentation.viewmodel.Crea
 import com.tokopedia.review.feature.inbox.common.ReviewInboxConstants
 import com.tokopedia.review.feature.ovoincentive.data.ProductRevIncentiveOvoDomain
 import com.tokopedia.review.feature.ovoincentive.presentation.bottomsheet.IncentiveOvoBottomSheet
+import com.tokopedia.review.feature.ovoincentive.presentation.bottomsheet.IncentiveOvoSubmittedBottomSheet
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ContainerUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -98,13 +99,14 @@ class CreateReviewFragment : BaseDaggerFragment(),
 
         private const val REVIEW_INCENTIVE_MINIMUM_THRESHOLD = 40
 
-        fun createInstance(productId: String, reviewId: String, reviewClickAt: Int = 0, isEditMode: Boolean, feedbackId: Int) = CreateReviewFragment().also {
+        fun createInstance(productId: String, reviewId: String, reviewClickAt: Int = 0, isEditMode: Boolean, feedbackId: Int, inboxReviewId: String) = CreateReviewFragment().also {
             it.arguments = Bundle().apply {
                 putString(PRODUCT_ID_REVIEW, productId)
                 putString(REPUTATION_ID, reviewId)
                 putInt(REVIEW_CLICK_AT, reviewClickAt)
                 putBoolean(ReviewConstants.PARAM_IS_EDIT_MODE, isEditMode)
                 putInt(ReviewConstants.PARAM_FEEDBACK_ID, feedbackId)
+                putString(CreateReviewActivity.PARAM_INBOX_ID, inboxReviewId)
             }
         }
     }
@@ -126,6 +128,9 @@ class CreateReviewFragment : BaseDaggerFragment(),
     private var shopId: String = ""
     private var isEditMode: Boolean = false
     private var feedbackId: Int = 0
+    private var inboxReviewId: String = ""
+    private var shouldShowThankYouBottomSheet = false
+    private var ovoIncentiveAmount = 0F
 
     lateinit var imgAnimationView: LottieAnimationView
     private var textAreaBottomSheet: CreateReviewTextAreaBottomSheet? = null
@@ -462,7 +467,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
     }
 
     private fun getIncentiveOvoData() {
-        createReviewViewModel.getProductIncentiveOvo(reputationId)
+        createReviewViewModel.getProductIncentiveOvo(inboxReviewId)
     }
 
     private fun submitReview() {
@@ -481,12 +486,16 @@ class CreateReviewFragment : BaseDaggerFragment(),
             createReviewViewModel.editReview(feedbackId, reputationId, productId, shopId.toIntOrZero(),
                     createReviewScore.getScore(), reviewClickAt, reviewMessage, createReviewAnonymousCheckbox.isChecked)
         } else {
-            if(isReviewComplete()) {
+            if(isReviewComplete() && isUserEligible()) {
                 submitNewReview()
                 return
             }
             showReviewIncompleteDialog()
         }
+    }
+
+    private fun isUserEligible(): Boolean {
+        return createReviewViewModel.isUserEligible()
     }
 
     private fun submitNewReview() {
@@ -562,7 +571,13 @@ class CreateReviewFragment : BaseDaggerFragment(),
     }
 
     private fun onSuccessGetIncentiveOvo(data: ProductRevIncentiveOvoDomain) {
+        if(shouldShowThankYouBottomSheet) {
+            showThankYouBottomSheet()
+        }
         data.productrevIncentiveOvo?.let {
+            if(ovoIncentiveAmount != 0F) {
+                ovoIncentiveAmount = it.amount
+            }
             it.ticker.let {
                 ovoPointsTicker.apply {
                     visibility = View.VISIBLE
@@ -591,6 +606,12 @@ class CreateReviewFragment : BaseDaggerFragment(),
 
     private fun onErrorGetIncentiveOvo() {
         ovoPointsTicker.visibility = View.GONE
+    }
+
+    private fun showThankYouBottomSheet() {
+        (createReviewViewModel.incentiveOvo.value as? CoroutineSuccess)?.data?.let {
+            IncentiveOvoSubmittedBottomSheet(it, ovoIncentiveAmount)
+        }
     }
 
     private fun onSuccessGetReviewDetail(productrevGetReviewDetail: ProductrevGetReviewDetail) {
@@ -737,6 +758,11 @@ class CreateReviewFragment : BaseDaggerFragment(),
     private fun onSuccessSubmitReview() {
         stopLoading()
         showLayout()
+        if(isUserEligible()) {
+            getIncentiveOvoData()
+            shouldShowThankYouBottomSheet = true
+            return
+        }
         finishIfRoot(true)
     }
 

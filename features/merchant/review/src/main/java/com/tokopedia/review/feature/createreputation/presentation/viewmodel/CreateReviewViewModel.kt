@@ -186,10 +186,10 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
         }
     }
 
-    fun getProductIncentiveOvo(reputationId: Int) {
+    fun getProductIncentiveOvo(inboxReviewId: String) {
         launchCatchError(block = {
             val data = withContext(coroutineDispatcherProvider.io()) {
-                getProductIncentiveOvo.getIncentiveOvo(reputationId)
+                getProductIncentiveOvo.getIncentiveOvo(inboxReviewId)
             }
             _incentiveOvo.postValue(CoroutineSuccess(data))
         }) {
@@ -199,6 +199,10 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
 
     fun getUserName(): String {
         return userSessionInterface.name
+    }
+
+    fun isUserEligible(): Boolean {
+        return (incentiveOvo.value as? com.tokopedia.usecase.coroutines.Success)?.data?.productrevIncentiveOvo != null
     }
 
     private fun sendReviewWithoutImage(reputationId: Int, productId: Int, shopId: Int, reputationScore: Int, rating: Int,

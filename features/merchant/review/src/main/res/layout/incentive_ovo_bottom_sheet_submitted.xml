@@ -42,4 +42,22 @@
         app:layout_constraintEnd_toEndOf="@id/incentiveOvoSubmittedTitle"
         tools:text="Bantu penjual dengan kasih ulasan lengkap dan dapatkan OVO Points!" />
 
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/incentiveOvoSendAnother"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/review_create_send_another"
+        app:unifyButtonSize="medium"
+        app:layout_constraintTop_toBottomOf="@id/incentiveOvoSubmittedSubtitle"/>
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/incentiveOvoLater"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/review_create_later"
+        android:layout_marginTop="@dimen/layout_lvl1"
+        app:unifyButtonVariant="text"
+        app:unifyButtonSize="medium"
+        app:layout_constraintTop_toBottomOf="@id/incentiveOvoSendAnother"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

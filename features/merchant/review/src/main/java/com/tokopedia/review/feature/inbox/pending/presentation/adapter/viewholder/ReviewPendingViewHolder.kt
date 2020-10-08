@@ -15,7 +15,6 @@ class ReviewPendingViewHolder(view: View, private val reviewPendingItemListener:
 
     companion object {
         val LAYOUT = R.layout.item_review_pending
-        const val UNLOCK_UNIFY_LABEL = true
     }
 
     override fun bind(element: ReviewPendingUiModel) {

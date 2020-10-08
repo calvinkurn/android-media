@@ -100,7 +100,7 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
         if (!seen) {
             viewModel.markAsSeen(inboxReviewId)
         }
-        goToCreateReviewActivity(reputationId, productId, rating)
+        goToCreateReviewActivity(reputationId, productId, rating, inboxReviewId.toString())
     }
 
     override fun getComponent(): ReviewPendingComponent? {
@@ -382,11 +382,12 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
         renderList(reviewData, hasNextPage)
     }
 
-    private fun goToCreateReviewActivity(reputationId: Int, productId: Int, rating: Int) {
+    private fun goToCreateReviewActivity(reputationId: Int, productId: Int, rating: Int, inboxId: String) {
         val intent = RouteManager.getIntent(context,
                 Uri.parse(UriUtil.buildUri(ApplinkConstInternalMarketplace.CREATE_REVIEW, reputationId.toString(), productId.toString()))
                         .buildUpon()
                         .appendQueryParameter(CreateReviewActivity.PARAM_RATING, rating.toString())
+                        .appendQueryParameter(CreateReviewActivity.PARAM_INBOX_ID, inboxId)
                         .build()
                         .toString())
         startActivityForResult(intent, CREATE_REVIEW_REQUEST_CODE)
