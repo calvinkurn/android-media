@@ -45,7 +45,6 @@ class ShipmentButtonPaymentViewHolder(val view: View, val actionListener: Shipme
             itemView.btn_select_cod.visibility = View.GONE
         }
         TextAndContentDescriptionUtil.setTextAndContentDescription(itemView.tv_total_payment, model.totalPrice, itemView.tv_total_payment.context.getString(R.string.content_desc_tv_total_payment))
-        itemView.tv_total_payment.text = model.totalPrice
         itemView.btn_select_payment_method.buttonType = model.abTestButton.getUnifyButtonType()
         itemView.btn_select_payment_method.setOnClickListener {
             actionListener.onProcessToPayment()
