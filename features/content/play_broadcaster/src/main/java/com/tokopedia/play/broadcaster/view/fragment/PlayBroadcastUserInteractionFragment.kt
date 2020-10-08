@@ -82,6 +82,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
     private lateinit var exitDialog: DialogUnify
     private lateinit var forceStopDialog: DialogUnify
+    private lateinit var pauseLiveDialog: DialogUnify
 
     private var toasterBottomMargin = 0
 
@@ -296,6 +297,27 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         if (!forceStopDialog.isShowing) forceStopDialog.show()
     }
 
+    private fun showDialogContinueLiveStreaming() {
+        if (!::pauseLiveDialog.isInitialized) {
+            pauseLiveDialog = requireContext().getDialog(
+                    actionType = DialogUnify.HORIZONTAL_ACTION,
+                    title = getString(R.string.play_dialog_continue_live_title),
+                    desc = getString(R.string.play_dialog_continue_live_desc),
+                    primaryCta = getString(R.string.play_next),
+                    primaryListener = { dialog ->
+                        dialog.dismiss()
+                        parentViewModel.resumePushStream()
+                    },
+                    secondaryCta = getString(R.string.play_broadcast_end),
+                    secondaryListener = { dialog ->
+                        dialog.dismiss()
+                        parentViewModel.stopPushStream(shouldNavigate = true)
+                    }
+            )
+        }
+        if (!pauseLiveDialog.isShowing) pauseLiveDialog.show()
+    }
+
     private fun showToaster(
             message: String,
             type: Int = Toaster.TYPE_NORMAL,
@@ -340,7 +362,12 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         when (state) {
             is LivePusherState.Connecting -> showLoading(true)
             is LivePusherState.Started -> showLoading(false)
+            is LivePusherState.Paused -> {
+                showLoading(false)
+                showDialogContinueLiveStreaming()
+            }
             is LivePusherState.Recovered -> {
+                showLoading(false)
                 showToaster(
                         message = getString(R.string.play_live_broadcast_network_recover),
                         type = Toaster.TYPE_NORMAL)

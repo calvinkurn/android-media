@@ -271,7 +271,7 @@ class PlayBroadcastViewModel @Inject constructor(
             }
 
             override fun onRecovered() {
-                _observableLivePusherState.value = LivePusherState.Recovered
+                autoReconnectPushStream()
             }
 
             override fun onError(errorStatus: ApsaraLivePusherErrorStatus) {
@@ -350,6 +350,29 @@ class PlayBroadcastViewModel @Inject constructor(
         }
     }
 
+    private fun autoReconnectPushStream() {
+        _observableLivePusherState.value = LivePusherState.Connecting
+        scope.launch {
+            val err = getChannelDetail()
+            if (err == null && _observableChannelInfo.value is NetworkResult.Success) {
+                val channelInfo = (_observableChannelInfo.value as NetworkResult.Success).data
+                when (channelInfo.status) {
+                    PlayChannelStatus.Pause -> {
+                        pausePushStream()
+                        playPusher.pauseTimer()
+                        _observableLivePusherState.value = LivePusherState.Paused
+                    }
+                    PlayChannelStatus.Live ->  _observableLivePusherState.value = LivePusherState.Recovered
+                    else -> stopPushStream(shouldNavigate = true)
+                }
+            } else {
+                _observableLivePusherState.value = LivePusherState.Error(LivePusherErrorStatus.ConnectFailed {
+                    autoReconnectPushStream()
+                })
+            }
+        }
+    }
+
     fun startTimer() {
         scope.launch {
             delay(1000)
@@ -366,17 +389,15 @@ class PlayBroadcastViewModel @Inject constructor(
     }
 
     fun stopPushStream(shouldNavigate: Boolean = false) {
-        scope.launchCatchError(block = {
-            updateChannelStatus(PlayChannelStatus.Stop)
-            playPusher.stopPush()
-            playPusher.stopTimer()
-            playPusher.stopPreview()
-            destroyPushStream()
+        scope.launch {
+            withContext(dispatcher.io) {
+                playPusher.stopPush()
+                playPusher.stopTimer()
+                playPusher.stopPreview()
+                destroyPushStream()
+                updateChannelStatus(PlayChannelStatus.Stop)
+            }
             _observableLivePusherState.value = LivePusherState.Stopped(shouldNavigate)
-        }) {
-            _observableLivePusherState.value = LivePusherState.Error(LivePusherErrorStatus.UnRecoverable {
-                stopPushStream(shouldNavigate)
-            })
         }
     }
 
