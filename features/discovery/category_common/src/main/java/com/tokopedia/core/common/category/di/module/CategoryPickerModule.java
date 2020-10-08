@@ -107,8 +107,8 @@ public class CategoryPickerModule {
     }
 
     @Provides
-    TopAdsAuthInterceptor provideTopAdsAuthInterceptor(@ApplicationContext Context context, AbstractionRouter abstractionRouter) {
-        return new TopAdsAuthInterceptor(context, abstractionRouter);
+    TopAdsAuthInterceptor provideTopAdsAuthInterceptor(@ApplicationContext Context context, NetworkRouter abstractionRouter, UserSessionInterface userSession) {
+        return new TopAdsAuthInterceptor(context, abstractionRouter, userSession);
     }
 
     @Provides
