@@ -167,16 +167,17 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo, private val queryP
     private fun checkSaleTimer(tab: ComponentsItem): Boolean {
         tab.apply {
             if (!data.isNullOrEmpty()) {
-                val tabData = data!![0]
-                val targetComponentIdList = tabData.targetComponentId?.split(",")?.map { it.trim() }
-                if (!targetComponentIdList.isNullOrEmpty()) {
-                    targetComponentIdList.forEach { componentId ->
-                        getComponent(componentId, pageInfo.identifier!!)?.let { componentItem ->
-                            if (componentItem.name == ComponentNames.TimerSprintSale.componentName) {
-                                if (!componentItem.data.isNullOrEmpty() && Utils.isSaleOver(componentItem.data!![0].endDate
-                                                ?: "")) {
-                                    data!![0].targetComponentId = componentId
-                                    return true
+                data?.get(0)?.let { tabData ->
+                    val targetComponentIdList = tabData.targetComponentId?.split(",")?.map { it.trim() }
+                    if (!targetComponentIdList.isNullOrEmpty()) {
+                        targetComponentIdList.forEach { componentId ->
+                            getComponent(componentId, pageInfo.identifier!!)?.let { componentItem ->
+                                if (componentItem.name == ComponentNames.TimerSprintSale.componentName) {
+                                    if (!componentItem.data.isNullOrEmpty() && Utils.isSaleOver(componentItem.data!![0].endDate
+                                                    ?: "")) {
+                                        data!![0].targetComponentId = componentId
+                                        return true
+                                    }
                                 }
                             }
                         }
