@@ -1053,7 +1053,8 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         viewModel?.onRefreshPlayBanner(shopId)
     }
 
-    override fun onReminderClick(playBannerCarouselItemDataModel: PlayBannerCarouselItemDataModel, position: Int) {
+    override fun onReminderClick(playBannerCarouselItemDataModel: PlayBannerCarouselItemDataModel, widgetPosition: Int, position: Int) {
+        shopPageHomeTracking.clickRemindMePlayCarousel(playBannerCarouselItemDataModel.channelId, viewModel?.userId ?: "", playBannerCarouselItemDataModel.remindMe, widgetPosition, position)
         if(isLogin) {
             viewModel?.setToggleReminderPlayBanner(playBannerCarouselItemDataModel.channelId, playBannerCarouselItemDataModel.remindMe, position)
         } else {
@@ -1066,8 +1067,13 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         }
     }
 
-    override fun onPlayBannerSeeMoreClick(appLink: String) {
-        shopPageHomeTracking.clickSeeMorePlayCarouselBanner(shopId, viewModel?.userId ?: "")
+    override fun onPlayBannerSeeMoreClick(appLink: String, widgetPosition: Int) {
+        shopPageHomeTracking.clickSeeMorePlayCarousel(shopId, viewModel?.userId ?: "", widgetPosition)
+        RouteManager.route(context, appLink)
+    }
+
+    override fun onPlayBannerSeeMoreBanner(appLink: String, widgetPosition: Int) {
+        shopPageHomeTracking.clickSeeMorePlayCarouselBanner(shopId, viewModel?.userId ?: "", widgetPosition)
         RouteManager.route(context, appLink)
     }
 
