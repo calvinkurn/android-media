@@ -8,16 +8,6 @@
             android:label="@string/shop_settings_manage_shop_info"
             android:theme="@style/Theme.White"
             android:screenOrientation="portrait" >
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data
-                    android:scheme="@string/internal_scheme"
-                    android:host="@string/host_marketplace"
-                    android:pathPattern="@string/path_shop_settings_info"/>
-            </intent-filter>
             <nav-graph android:value="@navigation/shop_settings_navigation" />
         </activity>
 
