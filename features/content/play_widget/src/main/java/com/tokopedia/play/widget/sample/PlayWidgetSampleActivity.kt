@@ -43,8 +43,8 @@ class PlayWidgetSampleActivity : BaseSimpleActivity() {
         )
     }
 
-    private fun getSamplePlaySmallWidget(): PlayWidgetSmallUiModel {
-        return PlayWidgetSmallUiModel(
+    private fun getSamplePlaySmallWidget(): PlayWidgetUiModel {
+        return PlayWidgetUiModel.Small.Widget(
                 title = "Yuk Nonton Sekarang!",
                 actionTitle = "Lihat semua",
                 actionAppLink = "",
@@ -61,8 +61,8 @@ class PlayWidgetSampleActivity : BaseSimpleActivity() {
         )
     }
 
-    private fun getSamplePlayMediumWidget(): PlayWidgetMediumUiModel {
-        return PlayWidgetMediumUiModel(
+    private fun getSamplePlayMediumWidget(): PlayWidgetUiModel {
+        return PlayWidgetUiModel.Medium.Widget(
                 title = "Yuk Nonton Sekarang!",
                 actionTitle = "Lihat semua",
                 actionAppLink = "",

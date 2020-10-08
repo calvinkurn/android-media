@@ -6,7 +6,7 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 /**
  * Created by jegul on 07/10/20
  */
-class PlayWidgetSampleAdapter : BaseDiffUtilAdapter<PlayWidgetUiModel>() {
+class PlayWidgetSampleAdapter : BaseDiffUtilAdapter<PlayWidgetUiModel>(isFlexibleType = true) {
 
     init {
         delegatesManager
