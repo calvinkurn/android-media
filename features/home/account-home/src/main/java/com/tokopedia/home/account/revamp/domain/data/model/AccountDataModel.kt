@@ -26,10 +26,6 @@ data class AccountDataModel(
         @Expose
         var userProfileCompletion: UserProfileCompletion = UserProfileCompletion(),
 
-        @SerializedName("userShopInfo")
-        @Expose
-        var shopInfo: UserShopInfoDataModel = UserShopInfoDataModel(),
-
         @SerializedName("tokopoints")
         @Expose
         var tokopoints: TokopointsModel = TokopointsModel(),

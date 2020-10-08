@@ -113,4 +113,6 @@
     <string name="ent_checkout_data_tambahan_item_value">&#160; %s</string>
     <string name="ent_form_data_bottomsheet">Pilih %s</string>
     <string name="ent_checkout_data_nullable_form">Data belum diisi</string>
+    <string name="ent_bottomsheet_placeholder">Cari %s</string>
+    <string name="ent_pdp_form_error_all_msg">%s yang Anda isi belum lengkap</string>
 </resources>

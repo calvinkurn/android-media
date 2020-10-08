@@ -57,6 +57,7 @@ object UohAnalytics {
     private const val PRODUCT_CLICK = "productClick"
     private const val ADD_TO_CART = "addToCart"
     private const val VIEW_ORDER_CARD = "view order card {business_unit}"
+    private const val EVENT_LABEL_RECOMMENDATION = "Rekomendasi Untuk Anda"
     private const val VIEW_RECOMMENDATION = "impression - product recommendation"
     private const val CLICK_RECOMMENDATION = "click - product recommendation"
     private const val CLICK_ATC_RECOMMENDATION = "click add to cart on my purchase list page"
@@ -80,6 +81,8 @@ object UohAnalytics {
     private const val CLICK_RESET_FILTER_ON_EMPTY_FILTER_RESULT = "click reset filter on empty filter result"
     private const val CLICK_LIHAT_BUTTON_ON_ATC_SUCCESS_TOASTER = "click lihat button on atc success toaster"
     private const val CLICK_SELESAI_ON_BOTTOM_SHEET_FINISH_TRANSACTION = "click selesai on bottom sheet finish transaction"
+    private const val CLICK_AJUKAN_KOMPLAIN_ON_BOTTOM_SHEET_FINISH_TRANSACTION = "click ajukan komplain on bottom sheet finish transaction"
+    private const val CLICK_KIRIM_ON_BOTTOM_SHEET_SEND_EMAIL = "click kirim on bottom sheet send email "
 
     @JvmStatic
     fun sendScreenName(activity: Activity, screenName: String) {
@@ -108,7 +111,8 @@ object UohAnalytics {
     }
 
     fun submitSearch(keyword: String, userId: String) {
-        val event = TrackAppUtils.gtmData(CLICK_ORDER_LIST, ORDER_LIST_EVENT_CATEGORY, SUBMIT_SEARCH, keyword)
+        val event = TrackAppUtils.gtmData(CLICK_ORDER_LIST,
+                ORDER_LIST_EVENT_CATEGORY, SUBMIT_SEARCH, keyword)
         event[CURRENT_SITE] = TOKOPEDIA_MARKETPLACE
         event[USER_ID] = userId
         event[BUSINESS_UNIT] = ORDER_MANAGEMENT
@@ -117,7 +121,8 @@ object UohAnalytics {
     }
 
     fun clickDateFilterChips(userId: String) {
-        val event = TrackAppUtils.gtmData(CLICK_ORDER_LIST, ORDER_LIST_EVENT_CATEGORY, CLICK_DATE_FILTER_CHIPS, "")
+        val event = TrackAppUtils.gtmData(CLICK_ORDER_LIST,
+                ORDER_LIST_EVENT_CATEGORY, CLICK_DATE_FILTER_CHIPS, "")
         event[CURRENT_SITE] = TOKOPEDIA_MARKETPLACE
         event[USER_ID] = userId
         event[BUSINESS_UNIT] = ORDER_MANAGEMENT
@@ -127,7 +132,8 @@ object UohAnalytics {
     }
 
     fun clickTerapkanOnDateFilterChips(dateOption: String, userId: String) {
-        val event = TrackAppUtils.gtmData(CLICK_ORDER_LIST, ORDER_LIST_EVENT_CATEGORY, CLICK_TERAPKAN_ON_DATE_FILTER_CHIPS, dateOption)
+        val event = TrackAppUtils.gtmData(CLICK_ORDER_LIST,
+                ORDER_LIST_EVENT_CATEGORY, CLICK_TERAPKAN_ON_DATE_FILTER_CHIPS, dateOption)
         event[CURRENT_SITE] = TOKOPEDIA_MARKETPLACE
         event[USER_ID] = userId
         event[BUSINESS_UNIT] = ORDER_MANAGEMENT
@@ -136,7 +142,8 @@ object UohAnalytics {
     }
 
     fun clickStatusFilterChips(userId: String) {
-        val event = TrackAppUtils.gtmData(CLICK_ORDER_LIST, ORDER_LIST_EVENT_CATEGORY, CLICK_STATUS_FILTER_CHIPS, "")
+        val event = TrackAppUtils.gtmData(CLICK_ORDER_LIST,
+                ORDER_LIST_EVENT_CATEGORY, CLICK_STATUS_FILTER_CHIPS, "")
         event[CURRENT_SITE] = TOKOPEDIA_MARKETPLACE
         event[USER_ID] = userId
         event[BUSINESS_UNIT] = ORDER_MANAGEMENT
@@ -145,7 +152,8 @@ object UohAnalytics {
     }
 
     fun clickTerapkanOnStatusFilterChips(statusOption: String, userId: String) {
-        val event = TrackAppUtils.gtmData(CLICK_ORDER_LIST, ORDER_LIST_EVENT_CATEGORY, CLICK_TERAPKAN_ON_STATUS_FILTER_CHIPS, statusOption)
+        val event = TrackAppUtils.gtmData(CLICK_ORDER_LIST, ORDER_LIST_EVENT_CATEGORY,
+                CLICK_TERAPKAN_ON_STATUS_FILTER_CHIPS, statusOption)
         event[CURRENT_SITE] = TOKOPEDIA_MARKETPLACE
         event[USER_ID] = userId
         event[BUSINESS_UNIT] = ORDER_MANAGEMENT
@@ -154,7 +162,8 @@ object UohAnalytics {
     }
 
     fun clickCategoryFilterChips(userId: String) {
-        val event = TrackAppUtils.gtmData(CLICK_ORDER_LIST, ORDER_LIST_EVENT_CATEGORY, CLICK_CATEGORY_FILTER_CHIPS, "")
+        val event = TrackAppUtils.gtmData(CLICK_ORDER_LIST, ORDER_LIST_EVENT_CATEGORY,
+                CLICK_CATEGORY_FILTER_CHIPS, "")
         event[CURRENT_SITE] = TOKOPEDIA_MARKETPLACE
         event[USER_ID] = userId
         event[BUSINESS_UNIT] = ORDER_MANAGEMENT
@@ -163,7 +172,8 @@ object UohAnalytics {
     }
 
     fun clickTerapkanOnCategoryFilterChips(categoryOption: String, userId: String) {
-        val event = TrackAppUtils.gtmData(CLICK_ORDER_LIST, ORDER_LIST_EVENT_CATEGORY, CLICK_TERAPKAN_ON_CATEGORY_FILTER_CHIPS, categoryOption)
+        val event = TrackAppUtils.gtmData(CLICK_ORDER_LIST, ORDER_LIST_EVENT_CATEGORY,
+                CLICK_TERAPKAN_ON_CATEGORY_FILTER_CHIPS, categoryOption)
         event[CURRENT_SITE] = TOKOPEDIA_MARKETPLACE
         event[USER_ID] = userId
         event[BUSINESS_UNIT] = ORDER_MANAGEMENT
@@ -172,7 +182,8 @@ object UohAnalytics {
     }
 
     fun clickXChipsToClearFilter(userId: String) {
-        val event = TrackAppUtils.gtmData(CLICK_ORDER_LIST, ORDER_LIST_EVENT_CATEGORY, CLICK_X_CHIPS_TO_CLEAR_FILTER, "")
+        val event = TrackAppUtils.gtmData(CLICK_ORDER_LIST,
+                ORDER_LIST_EVENT_CATEGORY, CLICK_X_CHIPS_TO_CLEAR_FILTER, "")
         event[CURRENT_SITE] = TOKOPEDIA_MARKETPLACE
         event[USER_ID] = userId
         event[BUSINESS_UNIT] = ORDER_MANAGEMENT
@@ -216,7 +227,8 @@ object UohAnalytics {
     }
 
     fun clickPrimaryButtonOnOrderCard(verticalLabel: String, primaryButton:String, userId: String) {
-        val event = TrackAppUtils.gtmData(CLICK_ORDER_LIST, ORDER_LIST_EVENT_CATEGORY, CLICK_PRIMARY_BUTTON_ON_ORDER_CARD + verticalLabel, primaryButton)
+        val event = TrackAppUtils.gtmData(CLICK_ORDER_LIST, ORDER_LIST_EVENT_CATEGORY,
+                CLICK_PRIMARY_BUTTON_ON_ORDER_CARD + verticalLabel, primaryButton)
         event[CURRENT_SITE] = TOKOPEDIA_MARKETPLACE
         event[USER_ID] = userId
         event[BUSINESS_UNIT] = ORDER_MANAGEMENT
@@ -225,7 +237,8 @@ object UohAnalytics {
     }
 
     fun clickThreeDotsMenu(verticalLabel: String, userId: String) {
-        val event = TrackAppUtils.gtmData(CLICK_ORDER_LIST, ORDER_LIST_EVENT_CATEGORY, CLICK_THREE_DOTS_MENU + verticalLabel, "")
+        val event = TrackAppUtils.gtmData(CLICK_ORDER_LIST, ORDER_LIST_EVENT_CATEGORY,
+                CLICK_THREE_DOTS_MENU + verticalLabel, "")
         event[CURRENT_SITE] = TOKOPEDIA_MARKETPLACE
         event[USER_ID] = userId
         event[BUSINESS_UNIT] = ORDER_MANAGEMENT
@@ -234,7 +247,8 @@ object UohAnalytics {
     }
 
     fun clickSecondaryOptionOnThreeDotsMenu(verticalLabel: String, secondaryOption: String, userId: String) {
-        val event = TrackAppUtils.gtmData(CLICK_ORDER_LIST, ORDER_LIST_EVENT_CATEGORY, CLICK_SECONDARY_OPTION_ON_THREE_DOT_MENU + verticalLabel, secondaryOption)
+        val event = TrackAppUtils.gtmData(CLICK_ORDER_LIST, ORDER_LIST_EVENT_CATEGORY,
+                CLICK_SECONDARY_OPTION_ON_THREE_DOT_MENU + verticalLabel, secondaryOption)
         event[CURRENT_SITE] = TOKOPEDIA_MARKETPLACE
         event[USER_ID] = userId
         event[BUSINESS_UNIT] = ORDER_MANAGEMENT
@@ -243,7 +257,8 @@ object UohAnalytics {
     }
 
     fun clickMulaiBelanjaOnEmptyOrderList(userId: String) {
-        val event = TrackAppUtils.gtmData(CLICK_ORDER_LIST, ORDER_LIST_EVENT_CATEGORY, CLICK_MULAI_BELANJA_ON_EMPTY_ORDER_LIST, "")
+        val event = TrackAppUtils.gtmData(CLICK_ORDER_LIST, ORDER_LIST_EVENT_CATEGORY,
+                CLICK_MULAI_BELANJA_ON_EMPTY_ORDER_LIST, "")
         event[CURRENT_SITE] = TOKOPEDIA_MARKETPLACE
         event[USER_ID] = userId
         event[BUSINESS_UNIT] = ORDER_MANAGEMENT
@@ -252,7 +267,8 @@ object UohAnalytics {
     }
 
     fun clickResetFilterOnEmptyFilterResult(userId: String) {
-        val event = TrackAppUtils.gtmData(CLICK_ORDER_LIST, ORDER_LIST_EVENT_CATEGORY, CLICK_RESET_FILTER_ON_EMPTY_FILTER_RESULT, "")
+        val event = TrackAppUtils.gtmData(CLICK_ORDER_LIST, ORDER_LIST_EVENT_CATEGORY,
+                CLICK_RESET_FILTER_ON_EMPTY_FILTER_RESULT, "")
         event[CURRENT_SITE] = TOKOPEDIA_MARKETPLACE
         event[USER_ID] = userId
         event[BUSINESS_UNIT] = ORDER_MANAGEMENT
@@ -261,7 +277,8 @@ object UohAnalytics {
     }
 
     fun clickLihatButtonOnAtcSuccessToaster(userId: String) {
-        val event = TrackAppUtils.gtmData(CLICK_ORDER_LIST, ORDER_LIST_EVENT_CATEGORY, CLICK_LIHAT_BUTTON_ON_ATC_SUCCESS_TOASTER, "")
+        val event = TrackAppUtils.gtmData(CLICK_ORDER_LIST, ORDER_LIST_EVENT_CATEGORY,
+                CLICK_LIHAT_BUTTON_ON_ATC_SUCCESS_TOASTER, "")
         event[CURRENT_SITE] = TOKOPEDIA_MARKETPLACE
         event[USER_ID] = userId
         event[BUSINESS_UNIT] = ORDER_MANAGEMENT
@@ -288,7 +305,28 @@ object UohAnalytics {
     }
 
     fun clickSelesaiOnBottomSheetFinishTransaction(userId: String) {
-        val event = TrackAppUtils.gtmData(CLICK_ORDER_LIST, ORDER_LIST_EVENT_CATEGORY, CLICK_SELESAI_ON_BOTTOM_SHEET_FINISH_TRANSACTION, "")
+        val event = TrackAppUtils.gtmData(CLICK_ORDER_LIST, ORDER_LIST_EVENT_CATEGORY,
+                CLICK_SELESAI_ON_BOTTOM_SHEET_FINISH_TRANSACTION, "")
+        event[CURRENT_SITE] = TOKOPEDIA_MARKETPLACE
+        event[USER_ID] = userId
+        event[BUSINESS_UNIT] = ORDER_MANAGEMENT
+
+        TrackApp.getInstance().gtm.sendGeneralEvent(event)
+    }
+
+    fun clickAjukanKomplainOnBottomSheetFinishTransaction(userId: String) {
+        val event = TrackAppUtils.gtmData(CLICK_ORDER_LIST, ORDER_LIST_EVENT_CATEGORY,
+                CLICK_AJUKAN_KOMPLAIN_ON_BOTTOM_SHEET_FINISH_TRANSACTION, "")
+        event[CURRENT_SITE] = TOKOPEDIA_MARKETPLACE
+        event[USER_ID] = userId
+        event[BUSINESS_UNIT] = ORDER_MANAGEMENT
+
+        TrackApp.getInstance().gtm.sendGeneralEvent(event)
+    }
+
+    fun clickKirimOnBottomSheetSendEmail(userId: String, verticalCategory: String) {
+        val event = TrackAppUtils.gtmData(CLICK_ORDER_LIST, ORDER_LIST_EVENT_CATEGORY,
+                CLICK_KIRIM_ON_BOTTOM_SHEET_SEND_EMAIL+verticalCategory, "")
         event[CURRENT_SITE] = TOKOPEDIA_MARKETPLACE
         event[USER_ID] = userId
         event[BUSINESS_UNIT] = ORDER_MANAGEMENT
@@ -306,7 +344,7 @@ object UohAnalytics {
             putString(EVENT, PRODUCT_VIEW)
             putString(EVENT_CATEGORY, PURCHASE_LIST_EVENT_CATEGORY)
             putString(EVENT_ACTION, VIEW_RECOMMENDATION)
-            putString(EVENT_LABEL, "")
+            putString(EVENT_LABEL, EVENT_LABEL_RECOMMENDATION)
             putParcelable(ECOMMERCE, eCommerce)
         }
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(PRODUCT_VIEW, bundle)
@@ -327,7 +365,7 @@ object UohAnalytics {
             putString(EVENT, PRODUCT_CLICK)
             putString(EVENT_CATEGORY, PURCHASE_LIST_EVENT_CATEGORY)
             putString(EVENT_ACTION, CLICK_RECOMMENDATION)
-            putString(EVENT_LABEL, "")
+            putString(EVENT_LABEL, EVENT_LABEL_RECOMMENDATION)
             putParcelable(ECOMMERCE, eCommerce)
         }
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(PRODUCT_CLICK, bundle)
@@ -345,7 +383,7 @@ object UohAnalytics {
             putString(EVENT, ADD_TO_CART)
             putString(EVENT_CATEGORY, PURCHASE_LIST_EVENT_CATEGORY)
             putString(EVENT_ACTION, CLICK_ATC_RECOMMENDATION)
-            putString(EVENT_LABEL, "")
+            putString(EVENT_LABEL, EVENT_LABEL_RECOMMENDATION)
             putParcelable(ECOMMERCE, eCommerce)
         }
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(ADD_TO_CART, bundle)

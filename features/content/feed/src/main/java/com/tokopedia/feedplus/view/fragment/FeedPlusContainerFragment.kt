@@ -25,6 +25,9 @@ import com.tokopedia.affiliatecommon.DISCOVERY_BY_ME
 import com.tokopedia.affiliatecommon.data.util.AffiliatePreference
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
+import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
 import com.tokopedia.coachmark.CoachMark
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
@@ -34,12 +37,17 @@ import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.data.pojo.FeedTabs
 import com.tokopedia.feedplus.domain.model.feed.WhitelistDomain
 import com.tokopedia.feedplus.view.adapter.FeedPlusTabAdapter
+import com.tokopedia.feedplus.view.analytics.FeedToolBarAnalytics
+import com.tokopedia.feedplus.view.customview.FeedMainToolbar
 import com.tokopedia.feedplus.view.di.DaggerFeedContainerComponent
 import com.tokopedia.feedplus.view.presenter.FeedPlusContainerViewModel
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.navigation_common.listener.AllNotificationListener
 import com.tokopedia.navigation_common.listener.FragmentListener
 import com.tokopedia.navigation_common.listener.MainParentStatusBarListener
+import com.tokopedia.seller_migration_common.isSellerMigrationEnabled
+import com.tokopedia.seller_migration_common.presentation.activity.SellerMigrationActivity
+import com.tokopedia.seller_migration_common.presentation.util.setupBottomSheetFeedSellerMigration
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -52,11 +60,12 @@ import javax.inject.Inject
  * @author by milhamj on 25/07/18.
  */
 
-class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNotificationListener {
+class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNotificationListener, FeedMainToolbar.OnToolBarClickListener {
 
     companion object {
         const val TOOLBAR_GRADIENT = 1
         const val TOOLBAR_WHITE = 2
+
         @JvmStatic
         fun newInstance(bundle: Bundle?) = FeedPlusContainerFragment().apply { arguments = bundle }
     }
@@ -69,6 +78,9 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
 
     @Inject
     internal lateinit var affiliatePreference: AffiliatePreference
+
+    @Inject
+    lateinit var toolBarAnalytics: FeedToolBarAnalytics
 
     val KEY_IS_LIGHT_THEME_STATUS_BAR = "is_light_theme_status_bar"
     private var mainParentStatusBarListener: MainParentStatusBarListener? = null
@@ -95,7 +107,6 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     private var searchBarTransitionRange = 0
     private var isLightThemeStatusBar = false
 
-
     private lateinit var coachMarkItem: CoachMarkItem
     private lateinit var feedBackgroundCrossfader: TransitionDrawable
 
@@ -107,13 +118,13 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel.tabResp.observe(this, Observer {
+        viewModel.tabResp.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> onSuccessGetTab(it.data)
                 is Fail -> onErrorGetTab(it.throwable)
             }
         })
-        viewModel.whitelistResp.observe(this, Observer {
+        viewModel.whitelistResp.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> renderFab(it.data)
                 is Fail -> onErrorGetWhitelist(it.throwable)
@@ -235,14 +246,13 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
             fab_feed.setOnClickListener { onGoToLogin() }
         }
         setAdapter()
+        toolbar?.setToolBarClickListener(this)
         onNotificationChanged(badgeNumberNotification, badgeNumberInbox) // notify badge after toolbar created
-        feed_appbar.addOnOffsetChangedListener(object : AppBarLayout.OnOffsetChangedListener {
-            override fun onOffsetChanged(appBarLayout: AppBarLayout?, verticalOffset: Int) {
-                if (verticalOffset + (toolbar?.height ?: 0) < 0) {
-                    showNormalTextWhiteToolbar()
-                } else {
-                    showWhiteTextTransparentToolbar()
-                }
+        feed_appbar.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
+            if (verticalOffset + (toolbar?.height ?: 0) < 0) {
+                showNormalTextWhiteToolbar()
+            } else {
+                showWhiteTextTransparentToolbar()
             }
         })
 
@@ -367,11 +377,27 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     private fun showFeedFab(whitelistDomain: WhitelistDomain) {
         fab_feed.show()
         isFabExpanded = true
-        if (whitelistDomain.authors.size > 1) {
-            fab_feed.setOnClickListener(fabClickListener(whitelistDomain))
-        } else if (whitelistDomain.authors.size == 1) {
-            val author = whitelistDomain.authors.first()
-            fab_feed.setOnClickListener { onGoToLink(author.link) }
+        when {
+            isSellerMigrationEnabled(context) -> {
+                val shopAppLink = UriUtil.buildUri(ApplinkConst.SHOP, userSession.shopId)
+                val createPostAppLink = ApplinkConst.CONTENT_CREATE_POST
+                fab_feed.setOnClickListener {
+                    val intent = SellerMigrationActivity.createIntent(
+                            context = requireContext(),
+                            featureName = SellerMigrationFeatureName.FEATURE_POST_FEED,
+                            screenName = FeedPlusContainerFragment::class.simpleName.orEmpty(),
+                            appLinks = arrayListOf(ApplinkConstInternalSellerapp.SELLER_HOME, shopAppLink, createPostAppLink))
+                    setupBottomSheetFeedSellerMigration(::goToCreateAffiliate, intent)
+                }
+            }
+            else -> {
+                if (whitelistDomain.authors.size > 1) {
+                    fab_feed.setOnClickListener(fabClickListener(whitelistDomain))
+                } else if (whitelistDomain.authors.size == 1) {
+                    val author = whitelistDomain.authors.first()
+                    fab_feed.setOnClickListener { onGoToLink(author.link) }
+                }
+            }
         }
     }
 
@@ -483,5 +509,17 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         super.onViewStateRestored(savedInstanceState)
         isLightThemeStatusBar = savedInstanceState?.getBoolean(KEY_IS_LIGHT_THEME_STATUS_BAR)
                 ?: false
+    }
+
+    override fun onImageSearchClick() {
+        toolBarAnalytics.eventClickSearch()
+    }
+
+    override fun onInboxButtonClick() {
+        toolBarAnalytics.eventClickInbox()
+    }
+
+    override fun onNotificationClick() {
+        toolBarAnalytics.eventClickNotification()
     }
 }
