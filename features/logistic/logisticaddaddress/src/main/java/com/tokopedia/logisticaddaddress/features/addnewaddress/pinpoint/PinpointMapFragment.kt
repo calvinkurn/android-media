@@ -8,7 +8,6 @@ import android.os.Bundle
 import android.os.Handler
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -90,6 +89,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
     private var isFullFlow: Boolean = true
     private var isLogisticLabel: Boolean = true
     private var isCircuitBreaker: Boolean = false
+    private var isFirstPermissionGranted: Boolean = true
 
     private var composite = CompositeSubscription()
 
@@ -320,14 +320,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
     override fun onResume() {
         super.onResume()
         map_view?.onResume()
-        if ((currentLat == 0.0 && currentLong == 0.0) || currentLat == DEFAULT_LAT && currentLong == DEFAULT_LONG) {
-            fusedLocationClient?.lastLocation
-                    ?.addOnSuccessListener {
-                        if (it != null) {
-                            moveMap(getLatLng(it.latitude, it.longitude), ZOOM_LEVEL)
-                        }
-                    }
-        }
+        getLastLocationClient()
         if (AddNewAddressUtils.isGpsEnabled(context)) {
             ic_current_location.setImageResource(R.drawable.ic_gps_enable)
         } else {
@@ -749,12 +742,6 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
-        Log.d("RESULT_SIZE", grantResults.size.toString())
-        Log.d("permission_size", getPermissions().size.toString())
-        if (grantResults.size == getPermissions().size) {
-            getLastLocationClient()
-        }
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             context?.let {
                 permissionCheckerHelper?.onRequestPermissionsResult(it,
@@ -838,7 +825,6 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
                     }
 
                     override fun onPermissionGranted() {
-                        getLastLocationClient()
                         googleMap?.isMyLocationEnabled = true
                     }
 
