@@ -1001,7 +1001,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             subTotalPrice = totalItemPrice;
         }
         TextAndContentDescriptionUtil.setTextAndContentDescription(tvSubTotalPrice, subTotalPrice == 0 ? "-" : Utils.removeDecimalSuffix(CurrencyFormatUtil.convertPriceValueToIdrFormat(subTotalPrice, false)), tvSubTotalPrice.getContext().getString(R.string.content_desc_tv_total_item_price_subtotal));
-        tvTotalItemPrice.setText(totalItemPrice == 0 ? "-" : getPriceFormat(tvTotalItem, tvTotalItemPrice, totalItemPrice));
+        TextAndContentDescriptionUtil.setTextAndContentDescription(tvTotalItemPrice, totalItemPrice == 0 ? "-" : getPriceFormat(tvTotalItem, tvTotalItemPrice, totalItemPrice), tvTotalItemPrice.getContext().getString(R.string.content_desc_tv_total_item_price_subtotal));
         tvTotalItem.setText(totalItemLabel);
         tvShippingFee.setText(shippingFeeLabel);
         TextAndContentDescriptionUtil.setTextAndContentDescription(tvShippingFeePrice, getPriceFormat(tvShippingFee, tvShippingFeePrice, shippingPrice), tvShippingFeePrice.getContext().getString(R.string.content_desc_tv_shipping_fee_price_subtotal));
@@ -1011,9 +1011,10 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             if (shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getDiscountedRate() == 0) {
                 tvShippingFeePrice.setText(tvShippingFeePrice.getContext().getString(com.tokopedia.purchase_platform.common.R.string.label_free_shipping));
             } else {
-                tvShippingFeePrice.setText(getPriceFormat(tvShippingFee, tvShippingFeePrice, shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getDiscountedRate()));
+                TextAndContentDescriptionUtil.setTextAndContentDescription(tvShippingFeePrice, getPriceFormat(tvShippingFee, tvShippingFeePrice, shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getDiscountedRate()), tvShippingFeePrice.getContext().getString(R.string.content_desc_tv_shipping_fee_price_subtotal));
             }
         }
+        TextAndContentDescriptionUtil.setTextAndContentDescription(tvInsuranceFeePrice, getPriceFormat(tvInsuranceFee, tvInsuranceFeePrice, insurancePrice), tvInsuranceFee.getContext().getString(R.string.content_desc_tv_insurance_fee_price_subtotal));
         tvInsuranceFeePrice.setText(getPriceFormat(tvInsuranceFee, tvInsuranceFeePrice, insurancePrice));
         tvPrioritasFeePrice.setText(getPriceFormat(tvPrioritasFee, tvPrioritasFeePrice, priorityPrice));
         tvProtectionLabel.setText(totalPPPItemLabel);
