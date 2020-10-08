@@ -10,6 +10,7 @@ class InboxTopAdsBannerUiModel constructor(
 ) : Visitable<InboxTypeFactory> {
 
     val impressHolder: ImpressHolder = ImpressHolder()
+    var requested = false
 
     override fun type(typeFactory: InboxTypeFactory): Int {
         return typeFactory.type(this)

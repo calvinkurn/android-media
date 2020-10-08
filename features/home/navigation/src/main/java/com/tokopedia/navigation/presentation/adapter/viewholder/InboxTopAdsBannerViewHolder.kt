@@ -49,8 +49,11 @@ class InboxTopAdsBannerViewHolder constructor(
             })
             topAdsBanner?.setTopAdsImageViewClick(topAdsClickListener)
         } else {
-            topAdsBanner?.setApiResponseListener(topAdsResponseListener)
-            topAdsBanner?.getImageData(SOURCE, ADS_COUNT, DIMEN_ID)
+            if (!element.requested) {
+                topAdsBanner?.setApiResponseListener(topAdsResponseListener)
+                topAdsBanner?.getImageData(SOURCE, ADS_COUNT, DIMEN_ID)
+                element.requested= true
+            }
         }
     }
 
