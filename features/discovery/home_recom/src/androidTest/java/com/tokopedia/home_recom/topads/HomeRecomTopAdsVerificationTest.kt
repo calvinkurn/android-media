@@ -58,7 +58,7 @@ class HomeRecomTopAdsVerificationTest {
         val recyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.recycler_view)
         val itemCount = recyclerView.adapter?.itemCount?:0
 
-        val nestedScrollView = activityRule.activity.findViewById<RecyclerView>(R.id.recomNestedScrollView)
+        val nestedScrollView = activityRule.activity.findViewById<NestedScrollView>(R.id.recomNestedScrollView)
 
         for (i in 0 until itemCount) {
             scrollNestedToPosition(recyclerView, nestedScrollView, i)
