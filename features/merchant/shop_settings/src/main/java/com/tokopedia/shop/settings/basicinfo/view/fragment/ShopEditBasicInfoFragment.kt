@@ -686,6 +686,7 @@ class ShopEditBasicInfoFragment: Fragment() {
             getString(com.tokopedia.abstraction.R.string.title_try_again), View.OnClickListener {
             loadShopBasicData()
         })
+        snackbar?.show()
     }
 
     private fun onErrorUploadShopImage(throwable: Throwable) {
@@ -701,6 +702,7 @@ class ShopEditBasicInfoFragment: Fragment() {
                     getString(com.tokopedia.abstraction.R.string.title_try_again), View.OnClickListener {
                 onSaveButtonClicked()
             })
+            snackbar?.show()
         }
     }
 
@@ -709,6 +711,7 @@ class ShopEditBasicInfoFragment: Fragment() {
                 getString(com.tokopedia.abstraction.R.string.title_try_again), View.OnClickListener {
             onSaveButtonClicked()
         })
+        snackbar?.show()
     }
 
     private fun showAllowShopNameDomainChangesError(throwable: Throwable) {
@@ -717,6 +720,7 @@ class ShopEditBasicInfoFragment: Fragment() {
             getString(com.tokopedia.abstraction.R.string.title_try_again), View.OnClickListener {
             viewModel.getAllowShopNameDomainChanges()
         })
+        snackbar?.show()
         ShopSettingsErrorHandler.logMessage(throwable.message ?: "")
         ShopSettingsErrorHandler.logExceptionToCrashlytics(throwable)
     }

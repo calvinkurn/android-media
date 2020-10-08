@@ -252,6 +252,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
                 is Fail -> {
                     view?.let { view ->
                         snackbar = Toaster.build(view, getString(R.string.error_get_shop_status), Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL)
+                        snackbar?.show()
                     }
                     ShopSettingsErrorHandler.logMessage(it.throwable.message ?: "")
                     ShopSettingsErrorHandler.logExceptionToCrashlytics(it.throwable)
@@ -305,6 +306,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
                 is Fail -> {
                     view?.let { view ->
                         snackbar = Toaster.build(view, getString(R.string.error_get_os_merchant), Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL)
+                        snackbar?.show()
                     }
                     ShopSettingsErrorHandler.logMessage(it.throwable.message ?: "")
                     ShopSettingsErrorHandler.logExceptionToCrashlytics(it.throwable)
@@ -345,6 +347,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
                     if (this.isNotBlank()) {
                         view?.let {
                             snackbar = Toaster.build(it, this, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL)
+                            snackbar?.show()
                         }
                     }
                 }
@@ -358,6 +361,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
                     if (this.isNotBlank()) {
                         view?.let {
                             snackbar = Toaster.build(it, this, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL)
+                            snackbar?.show()
                         }
                     }
                 }
@@ -454,6 +458,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
         activity?.setResult(Activity.RESULT_OK)
         view?.let {
             snackbar = Toaster.build(it, successMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL)
+            snackbar?.show()
         }
         loadShopBasicData()
     }
@@ -469,6 +474,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
         val message = ErrorHandler.getErrorMessage(context, throwable)
         view?.let {
             snackbar = Toaster.build(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
+            snackbar?.show()
         }
     }
 

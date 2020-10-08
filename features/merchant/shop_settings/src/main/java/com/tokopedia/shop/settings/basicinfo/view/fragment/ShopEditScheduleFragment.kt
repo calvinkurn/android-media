@@ -339,10 +339,12 @@ class ShopEditScheduleFragment : Fragment() {
         snackbar = Toaster.build(layout, message, Snackbar.LENGTH_INDEFINITE, Toaster.TYPE_ERROR, getString(com.tokopedia.abstraction.R.string.title_try_again), View.OnClickListener {
             onSaveButtonClicked()
         })
+        snackbar?.show()
     }
 
     private fun showErrorMessage(throwable: Throwable, retryHandler: View.OnClickListener) {
         val message = ErrorHandler.getErrorMessage(requireContext(), throwable.cause)
         snackbar = Toaster.build(layout, message, Snackbar.LENGTH_INDEFINITE, Toaster.TYPE_ERROR, getString(com.tokopedia.abstraction.R.string.title_try_again), retryHandler)
+        snackbar?.show()
     }
 }
