@@ -97,33 +97,34 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo, private val queryP
         component.getComponentsItem()?.forEachIndexed { index, it ->
             it.apply {
                 if (!data.isNullOrEmpty()) {
-                    val tabData = data!![0]
-                    if (tabData.isSelected) {
-                        val saleTabStatus = checkSaleTimer(this)
-                        val targetComponentIdList = tabData.targetComponentId?.split(",")?.map {
-                            if (isDynamicTabs) DYNAMIC_COMPONENT_IDENTIFIER + index + it.trim() else it.trim()
-                        }
-                        if (!targetComponentIdList.isNullOrEmpty()) {
-                            val tabsChildComponentsItemList: ArrayList<ComponentsItem> = ArrayList()
-                            targetComponentIdList.forEach { componentId ->
-                                if (isDynamicTabs) {
-                                    handleDynamicTabsComponents(componentId, index, component)?.let {
-                                        tabsChildComponentsItemList.add(it)
-                                        listComponents.addAll(parseComponent(it, position))
-                                    }
-                                } else {
-                                    handleAvailableComponents(componentId, component)?.let {
-                                        tabsChildComponentsItemList.add(it)
-                                        listComponents.addAll(parseComponent(it, position))
+                    data?.get(0)?.let { tabData ->
+                        if (tabData.isSelected) {
+                            val saleTabStatus = checkSaleTimer(this)
+                            val targetComponentIdList = tabData.targetComponentId?.split(",")?.map {
+                                if (isDynamicTabs) DYNAMIC_COMPONENT_IDENTIFIER + index + it.trim() else it.trim()
+                            }
+                            if (!targetComponentIdList.isNullOrEmpty()) {
+                                val tabsChildComponentsItemList: ArrayList<ComponentsItem> = ArrayList()
+                                targetComponentIdList.forEach { componentId ->
+                                    if (isDynamicTabs) {
+                                        handleDynamicTabsComponents(componentId, index, component)?.let {
+                                            tabsChildComponentsItemList.add(it)
+                                            listComponents.addAll(parseComponent(it, position))
+                                        }
+                                    } else {
+                                        handleAvailableComponents(componentId, component)?.let {
+                                            tabsChildComponentsItemList.add(it)
+                                            listComponents.addAll(parseComponent(it, position))
+                                        }
                                     }
                                 }
+                                if (saleTabStatus) {
+                                    val componentList = handleProductState(this, ComponentNames.SaleEndState.componentName)
+                                    tabsChildComponentsItemList.addAll(componentList)
+                                    listComponents.addAll(componentList)
+                                }
+                                this.setComponentsItem(tabsChildComponentsItemList)
                             }
-                            if (saleTabStatus) {
-                                val componentList = handleProductState(this, ComponentNames.SaleEndState.componentName)
-                                tabsChildComponentsItemList.addAll(componentList)
-                                listComponents.addAll(componentList)
-                            }
-                            this.setComponentsItem(tabsChildComponentsItemList)
                         }
                     }
                 }
