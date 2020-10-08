@@ -1,13 +1,11 @@
 package com.tokopedia.cart.journey.simple
 
 import android.content.Intent
+import android.util.Log
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.test.espresso.Espresso
 import androidx.test.espresso.IdlingRegistry
-import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.intent.rule.IntentsTestRule
-import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.cart.InstrumentTestCartActivity
 import com.tokopedia.cart.robot.CartPageRobot
@@ -47,12 +45,17 @@ class CartHappyFlowTest {
 
     @Test
     fun happyFlowTest() {
+        Thread.sleep(10000)
+
         val cartRecyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.rv_cart)
         val itemCount = cartRecyclerView.adapter?.itemCount ?: 0
+        Log.d("CartHappyFlowTest", "Item Count : " + itemCount)
 
         cartPage {
             assertMainContent()
+
             for (i in 0 until itemCount) {
+                Log.d("CartHappyFlowTest", "Check position : " + i)
                 scrollCartRecyclerViewToPosition(cartRecyclerView, i)
                 checkItemType(cartRecyclerView, i, this)
             }
@@ -60,51 +63,71 @@ class CartHappyFlowTest {
 
         }
 
+        Thread.sleep(60000)
+
     }
 
     private fun checkItemType(cartRecyclerView: RecyclerView, position: Int, cartPageRobot: CartPageRobot) {
         when (cartRecyclerView.findViewHolderForAdapterPosition(position)) {
             is TickerAnnouncementViewHolder -> {
-                cartPageRobot.assertTickerAnnouncement(position)
+                Log.d("CartHappyFlowTest", "TickerAnnouncementViewHolder")
+                cartPageRobot.assertTickerAnnouncementViewHolder(position)
             }
             is CartTickerErrorViewHolder -> {
-//                cartPageRobot.assertTickerError()
+                Log.d("CartHappyFlowTest", "CartTickerErrorViewHolder")
+                val message = String.format(context.getString(com.tokopedia.cart.R.string.cart_error_message), 2)
+                cartPageRobot.assertCartTickerErrorViewHolder(position, message)
             }
             is CartShopViewHolder -> {
-
+                Log.d("CartHappyFlowTest", "CartShopViewHolder")
+                when (position) {
+                    POSITION_FIRST_CART_SHOP_VIEW_HOLDER -> {
+                        cartPageRobot.assertFirstCartShopViewHolder(
+                                position = position,
+                                shopName = "Miniso Indonesia",
+                                shopLocation = "Kota Surabaya"
+                        )
+                    }
+                    POSITION_SECOND_CART_SHOP_VIEW_HOLDER -> {
+                        cartPageRobot.assertSecondCartShopViewHolder()
+                    }
+                    POSITION_THIRD_CART_SHOP_VIEW_HOLDER -> {
+                        cartPageRobot.assertThirdCartShopViewHolder()
+                    }
+                }
             }
             is ShipmentSellerCashbackViewHolder -> {
-
+                Log.d("CartHappyFlowTest", "ShipmentSellerCashbackViewHolder")
             }
             is CartSectionHeaderViewHolder -> {
-
+                Log.d("CartHappyFlowTest", "CartSectionHeaderViewHolder")
             }
             is CartEmptyViewHolder -> {
-
+                Log.d("CartHappyFlowTest", "CartEmptyViewHolder")
             }
             is CartRecentViewViewHolder -> {
-
+                Log.d("CartHappyFlowTest", "CartRecentViewViewHolder")
             }
             is CartWishlistViewHolder -> {
-
+                Log.d("CartHappyFlowTest", "CartWishlistViewHolder")
             }
             is CartRecommendationViewHolder -> {
-
+                Log.d("CartHappyFlowTest", "CartRecommendationViewHolder")
             }
             is DisabledItemHeaderViewHolder -> {
-
+                Log.d("CartHappyFlowTest", "DisabledItemHeaderViewHolder")
             }
             is DisabledReasonViewHolder -> {
-
+                Log.d("CartHappyFlowTest", "DisabledReasonViewHolder")
             }
             is DisabledShopViewHolder -> {
-
+                Log.d("CartHappyFlowTest", "DisabledShopViewHolder")
             }
             is DisabledCartItemViewHolder -> {
-
+                Log.d("CartHappyFlowTest", "DisabledCartItemViewHolder")
             }
             is DisabledAccordionViewHolder -> {
-
+                Log.d("CartHappyFlowTest", "DisabledAccordionViewHolder")
             }
         }
     }
@@ -121,5 +144,9 @@ class CartHappyFlowTest {
 
     companion object {
         const val GET_CART_LIST_KEY = "cart_revamp"
+
+        const val POSITION_FIRST_CART_SHOP_VIEW_HOLDER = 3
+        const val POSITION_SECOND_CART_SHOP_VIEW_HOLDER = 4
+        const val POSITION_THIRD_CART_SHOP_VIEW_HOLDER = 5
     }
 }
