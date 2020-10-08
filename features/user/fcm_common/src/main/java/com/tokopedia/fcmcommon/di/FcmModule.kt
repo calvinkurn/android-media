@@ -4,8 +4,6 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.fcmcommon.CoroutineContextProviders
 import com.tokopedia.fcmcommon.FirebaseMessagingManager
 import com.tokopedia.fcmcommon.FirebaseMessagingManagerImpl
 import com.tokopedia.fcmcommon.R
@@ -18,14 +16,13 @@ import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
-import kotlinx.coroutines.Dispatchers
 import com.tokopedia.abstraction.common.utils.GraphqlHelper.loadRawString as loadRaw
 
 @Module
-class FcmModule(@FcmContext private val context: Context) {
+class FcmModule(@ApplicationContext private val context: Context) {
 
     @Provides
-    @FcmContext
+    @ApplicationContext
     fun provideApplicationContext(): Context = context.applicationContext
 
     @Provides
