@@ -11,35 +11,16 @@ import com.tokopedia.core.common.category.data.source.FetchCategoryDataSource;
 import com.tokopedia.core.common.category.data.source.db.CategoryDB;
 import com.tokopedia.core.common.category.data.source.db.CategoryDao;
 import com.tokopedia.core.common.category.domain.CategoryRepository;
-import com.tokopedia.core.network.di.qualifier.AceQualifier;
-import com.tokopedia.core.network.di.qualifier.MerlinQualifier;
-import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor;
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase;
-import com.tokopedia.seller.manageitem.common.listener.ProductAddView;
-import com.tokopedia.seller.manageitem.common.mapper.SimpleDataResponseMapper;
-import com.tokopedia.seller.manageitem.view.presenter.ProductAddPresenterImpl;
-import com.tokopedia.seller.manageitem.data.cloud.api.MerlinApi;
-import com.tokopedia.seller.manageitem.data.cloud.api.SearchApi;
-import com.tokopedia.seller.manageitem.data.source.CatalogDataSource;
-import com.tokopedia.seller.manageitem.data.source.CategoryRecommDataSource;
-import com.tokopedia.seller.manageitem.data.source.ProductVariantDataSource;
 import com.tokopedia.seller.manageitem.di.scope.ProductAddScope;
-import com.tokopedia.seller.manageitem.domain.repository.CatalogRepository;
-import com.tokopedia.seller.manageitem.domain.repository.CatalogRepositoryImpl;
-import com.tokopedia.seller.manageitem.domain.repository.CategoryRecommRepository;
-import com.tokopedia.seller.manageitem.domain.repository.CategoryRecommRepositoryImpl;
-import com.tokopedia.seller.manageitem.domain.repository.ProductVariantRepository;
-import com.tokopedia.seller.manageitem.domain.repository.ProductVariantRepositoryImpl;
 import com.tokopedia.shop.common.di.ShopCommonModule;
-import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import dagger.Module;
 import dagger.Provides;
 import okhttp3.logging.HttpLoggingInterceptor;
-import retrofit2.Retrofit;
 
 /**
  * @author sebastianuskh on 4/13/17.
@@ -47,13 +28,6 @@ import retrofit2.Retrofit;
 @ProductAddScope
 @Module(includes = ShopCommonModule.class)
 public class ProductAddModule {
-
-    @ProductAddScope
-    @Provides
-    ProductAddPresenterImpl<ProductAddView> provideProductAddPresenter(GQLGetShopInfoUseCase gqlGetShopInfoUseCase,
-                                                                       UserSessionInterface userSession){
-        return new ProductAddPresenterImpl<>(gqlGetShopInfoUseCase, userSession);
-    }
 
     @ProductAddScope
     @Provides
@@ -93,45 +67,6 @@ public class ProductAddModule {
     CategoryRepository provideCategoryRepository(CategoryDataSource categoryDataSource,
                                                  FetchCategoryDataSource fetchCategoryDataSource){
         return new CategoryRepositoryImpl(categoryDataSource, fetchCategoryDataSource);
-    }
-
-    // FOR SEARCH CATALOG
-    @ProductAddScope
-    @Provides
-    CatalogRepository provideCatalogRepository(CatalogDataSource catalogDataSource) {
-        return new CatalogRepositoryImpl(catalogDataSource);
-    }
-
-    @ProductAddScope
-    @Provides
-    SearchApi provideSearchApi(@AceQualifier Retrofit retrofit) {
-        return retrofit.create(SearchApi.class);
-    }
-
-    // FOR CATEGORY RECOMMENDATION
-    @ProductAddScope
-    @Provides
-    CategoryRecommRepository provideCategoryRecommRepository(CategoryRecommDataSource categoryRecommDataSource) {
-        return new CategoryRecommRepositoryImpl(categoryRecommDataSource);
-    }
-
-    @ProductAddScope
-    @Provides
-    MerlinApi provideMerlinApi(@MerlinQualifier Retrofit retrofit) {
-        return retrofit.create(MerlinApi.class);
-    }
-
-    // FOR SHOP_INFO
-    @ProductAddScope
-    @Provides
-    SimpleDataResponseMapper<ShopModel> provideShopModelMapper(){
-        return new SimpleDataResponseMapper<>();
-    }
-
-    @ProductAddScope
-    @Provides
-    ProductVariantRepository productVariantRepository(ProductVariantDataSource productVariantDataSource){
-        return new ProductVariantRepositoryImpl(productVariantDataSource);
     }
 
     @ProductAddScope

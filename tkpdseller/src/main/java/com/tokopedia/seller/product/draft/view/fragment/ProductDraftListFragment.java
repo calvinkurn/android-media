@@ -2,6 +2,7 @@ package com.tokopedia.seller.product.draft.view.fragment;
 
 import android.app.Activity;
 import android.app.ActivityManager;
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -19,7 +20,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
-import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.abstraction.constant.TkpdState;
 import com.tokopedia.applink.ApplinkConst;
@@ -77,7 +77,7 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
     ProductDraftListTracker tracker;
 
     private BroadcastReceiver draftBroadCastReceiver;
-    private TkpdProgressDialog progressDialog;
+    private ProgressDialog progressDialog;
     private MenuItem menuDelete;
     private String shopId;
 
@@ -118,7 +118,7 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
                 }
                 AlertDialog dialog = new AlertDialog.Builder(getActivity(), R.style.AppCompatAlertDialogStyle)
                         .setMessage(MethodChecker.fromHtml(message))
-                        .setPositiveButton(getString(R.string.action_delete), new DialogInterface.OnClickListener() {
+                        .setPositiveButton(getString(R.string.label_delete), new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 adapter.confirmDelete(position);
@@ -247,16 +247,16 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
 
     private void showProgressDialog() {
         if (progressDialog == null) {
-            progressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
+            progressDialog = new ProgressDialog(getActivity());
             progressDialog.setCancelable(false);
         }
-        if (!progressDialog.isProgress()) {
-            progressDialog.showDialog();
+        if (!progressDialog.isShowing()) {
+            progressDialog.show();
         }
     }
 
     private void hideProgressDialog() {
-        if (progressDialog != null && progressDialog.isProgress()) {
+        if (progressDialog != null && progressDialog.isShowing()) {
             progressDialog.dismiss();
         }
     }

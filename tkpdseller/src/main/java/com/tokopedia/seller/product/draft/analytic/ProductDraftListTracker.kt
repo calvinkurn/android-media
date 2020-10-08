@@ -1,6 +1,5 @@
 package com.tokopedia.seller.product.draft.analytic
 
-import com.tokopedia.core.analytics.AppEventTracking
 import com.tokopedia.track.TrackApp
 import javax.inject.Inject
 
@@ -21,7 +20,7 @@ class ProductDraftListTracker @Inject constructor() {
     }
 
     fun sendEventDraftProductClicked(label: String) {
-        sendGeneralEvent(AppEventTracking.Event.CLICK_DRAFT_PRODUCT, AppEventTracking.Category.DRAFT_PRODUCT, AppEventTracking.Action.CLICK, label)
+        sendGeneralEvent(CLICK_DRAFT_PRODUCT, DRAFT_PRODUCT, CLICK, label)
     }
 
     private fun sendGeneralEvent(event: String, eventCategory: String, eventAction: String, eventLabel: String) {
