@@ -11,10 +11,18 @@
         tools:layout="@layout/fragment_shop_settings_info" >
         <action
             android:id="@+id/action_shopSettingsInfoFragment_to_shopEditBasicInfoFragment"
-            app:destination="@id/shopEditBasicInfoFragment" />
+            app:destination="@id/shopEditBasicInfoFragment"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right"
+            app:popEnterAnim="@android:anim/fade_in"
+            app:popExitAnim="@android:anim/fade_out" />
         <action
             android:id="@+id/action_shopSettingsInfoFragment_to_shopEditScheduleFragment"
-            app:destination="@id/shopEditScheduleFragment" />
+            app:destination="@id/shopEditScheduleFragment"
+            app:enterAnim="@anim/fragment_fade_enter"
+            app:exitAnim="@anim/fragment_fade_exit"
+            app:popEnterAnim="@android:anim/fade_in"
+            app:popExitAnim="@android:anim/fade_out" />
         <deepLink
             app:uri="tokopedia-android-internal://marketplace/shop-settings-info" />
     </fragment>
