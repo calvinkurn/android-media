@@ -29,7 +29,7 @@ class LoadMoreViewModel(val application: Application, private val components: Co
     override fun onAttachToViewHolder() {
         super.onAttachToViewHolder()
         launchCatchError(block = {
-            if(!getViewOrientation()) syncData.value = productCardUseCase.getProductCardsUseCase(components.id, components.pageEndPoint)
+            if(!getViewOrientation()) syncData.value = productCardUseCase.getProductCardsUseCase(components.id, components.pageEndPoint, components.rpc_discoQuery)
         }, onError = {
             it.printStackTrace()
         })

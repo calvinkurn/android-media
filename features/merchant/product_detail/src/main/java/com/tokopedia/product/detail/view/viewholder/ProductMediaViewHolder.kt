@@ -36,10 +36,6 @@ class ProductMediaViewHolder(private val view: View,
                 element.shouldRenderImageVariant = false
             }
 
-            view.viewMediaPager?.showImageReview(element.shouldShowImageReview) {
-                listener.onImageReviewMediaClicked(getComponentTrackData(element))
-            }
-
             viewMediaPager?.isVisibleOnTheScreen({},{
                 viewMediaPager?.stopVideo()
             })
@@ -56,11 +52,6 @@ class ProductMediaViewHolder(private val view: View,
             ProductDetailConstant.PAYLOAD_UPDATE_IMAGE -> {
                 view.viewMediaPager.updateImage(element.listOfMedia)
                 element.shouldRenderImageVariant = false
-            }
-            ProductDetailConstant.PAYLOAD_MEDIA_UPDATE_IMAGE_REVIEW -> {
-                view.viewMediaPager?.showImageReview(element.shouldShowImageReview) {
-                    listener.onImageReviewMediaClicked(getComponentTrackData(element))
-                }
             }
         }
     }

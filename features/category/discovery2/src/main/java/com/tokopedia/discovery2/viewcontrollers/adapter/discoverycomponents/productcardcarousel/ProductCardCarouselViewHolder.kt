@@ -27,7 +27,6 @@ class ProductCardCarouselViewHolder(itemView: View, val fragment: Fragment) : Ab
     private var mDiscoveryRecycleAdapter: DiscoveryRecycleAdapter
     private lateinit var mProductCarouselComponentViewModel: ProductCardCarouselViewModel
     private val carouselRecyclerViewDecorator = CarouselProductCardItemDecorator()
-    private var componentName: String = ""
 
     init {
         linearLayoutManager.initialPrefetchItemCount = 4
@@ -53,7 +52,7 @@ class ProductCardCarouselViewHolder(itemView: View, val fragment: Fragment) : Ab
                 val firstVisibleItemPosition: Int = linearLayoutManager.findFirstVisibleItemPosition()
                 if (!mProductCarouselComponentViewModel.isLoadingData() && !mProductCarouselComponentViewModel.isLastPage()) {
                     if ((visibleItemCount + firstVisibleItemPosition >= totalItemCount) && firstVisibleItemPosition >= 0 && totalItemCount >= mProductCarouselComponentViewModel.getPageSize()) {
-                        mProductCarouselComponentViewModel.fetchPaginatedProducts()
+                        mProductCarouselComponentViewModel.fetchCarouselPaginatedProducts()
                     }
                 }
             }
@@ -73,25 +72,27 @@ class ProductCardCarouselViewHolder(itemView: View, val fragment: Fragment) : Ab
 
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
         super.setUpObservers(lifecycleOwner)
-        lifecycleOwner?.let {
-            mProductCarouselComponentViewModel.getProductCardHeaderData().observe(it, Observer { component ->
-                componentName = component.name ?: ""
+        lifecycleOwner?.let { lifecycle ->
+            mProductCarouselComponentViewModel.getProductCardHeaderData().observe(lifecycle, Observer { component ->
                 addCardHeader(component)
             })
-            mProductCarouselComponentViewModel.getProductCarouselItemsListData().observe(it, Observer { item ->
+            mProductCarouselComponentViewModel.getProductCarouselItemsListData().observe(lifecycle, Observer { item ->
                 if (mProductCarouselComponentViewModel.getComponentName() == ComponentsList.ProductCardCarousel.componentName) {
                     val productCardWidth = getDisplayMetric(fragment.context).widthPixels / 2.3.toInt()
                     mProductCarouselComponentViewModel.getMaxHeightProductCard(item, productCardWidth)
                 }
                 mDiscoveryRecycleAdapter.setDataList(item)
             })
-            mProductCarouselComponentViewModel.syncData.observe(it, Observer { sync ->
+            mProductCarouselComponentViewModel.syncData.observe(lifecycle, Observer { sync ->
                 if (sync) {
                     mDiscoveryRecycleAdapter.notifyDataSetChanged()
                 }
             })
-            mProductCarouselComponentViewModel.getProductCardMaxHeight().observe(it, Observer { height ->
+            mProductCarouselComponentViewModel.getProductCardMaxHeight().observe(lifecycle, Observer { height ->
                 setMaxHeight(height)
+            })
+            mProductCarouselComponentViewModel.getProductLoadState().observe(lifecycle, Observer {
+                if (it == true) handleErrorState()
             })
         }
     }
@@ -111,7 +112,11 @@ class ProductCardCarouselViewHolder(itemView: View, val fragment: Fragment) : Ab
     override fun removeObservers(lifecycleOwner: LifecycleOwner?) {
         super.removeObservers(lifecycleOwner)
         if (mProductCarouselComponentViewModel.getProductCarouselItemsListData().hasObservers()) {
-            lifecycleOwner?.let { mProductCarouselComponentViewModel.getProductCarouselItemsListData().removeObservers(it) }
+            lifecycleOwner?.let {
+                mProductCarouselComponentViewModel.getProductCarouselItemsListData().removeObservers(it)
+                mProductCarouselComponentViewModel.getProductCardMaxHeight().removeObservers(it)
+                mProductCarouselComponentViewModel.getProductLoadState().removeObservers(it)
+            }
         }
     }
 
@@ -119,6 +124,12 @@ class ProductCardCarouselViewHolder(itemView: View, val fragment: Fragment) : Ab
         val list: ArrayList<ComponentsItem> = ArrayList()
         list.add(ComponentsItem(name = ComponentNames.ShimmerProductCard.componentName))
         list.add(ComponentsItem(name = ComponentNames.ShimmerProductCard.componentName))
+        mDiscoveryRecycleAdapter.setDataList(list)
+    }
+
+
+    private fun handleErrorState() {
+        val list: ArrayList<ComponentsItem> = ArrayList()
         mDiscoveryRecycleAdapter.setDataList(list)
     }
 

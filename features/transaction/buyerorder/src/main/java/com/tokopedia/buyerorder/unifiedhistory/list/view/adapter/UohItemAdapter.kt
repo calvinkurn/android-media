@@ -43,7 +43,7 @@ class UohItemAdapter : RecyclerView.Adapter<UohItemAdapter.BaseViewHolder<*>>() 
         fun onMulaiBelanjaBtnClicked()
         fun trackProductViewRecommendation(recommendationItem: RecommendationItem, index: Int)
         fun trackProductClickRecommendation(recommendationItem: RecommendationItem, index: Int)
-        fun trackAddToCartRecommendation(recommendationItem: RecommendationItem)
+        fun atcRecommendationItem(recommendationItem: RecommendationItem)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder<*> {

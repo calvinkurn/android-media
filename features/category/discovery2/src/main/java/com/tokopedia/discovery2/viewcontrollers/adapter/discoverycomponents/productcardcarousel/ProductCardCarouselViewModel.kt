@@ -29,6 +29,7 @@ class ProductCardCarouselViewModel(val application: Application, val components:
     private val productCarouselHeaderData: MutableLiveData<ComponentsItem> = MutableLiveData()
     private val productCarouselList: MutableLiveData<ArrayList<ComponentsItem>> = MutableLiveData()
     private val maxHeightProductCard: MutableLiveData<Int> = MutableLiveData()
+    private val productLoadError: MutableLiveData<Boolean> = MutableLiveData()
     private var isLoading = false
 
     @Inject
@@ -37,6 +38,7 @@ class ProductCardCarouselViewModel(val application: Application, val components:
     fun getProductCarouselItemsListData(): LiveData<ArrayList<ComponentsItem>> = productCarouselList
     fun getProductCardMaxHeight(): LiveData<Int> = maxHeightProductCard
     fun getProductCardHeaderData(): LiveData<ComponentsItem> = productCarouselHeaderData
+    fun getProductLoadState(): LiveData<Boolean> = productLoadError
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + SupervisorJob()
@@ -69,13 +71,17 @@ class ProductCardCarouselViewModel(val application: Application, val components:
 
     private fun fetchProductCarouselData() {
         launchCatchError(block = {
-            if (productCardsUseCase.loadFirstPageComponents(components.id, components.pageEndPoint, components.rpc_PinnedProduct)) {
+            if (productCardsUseCase.loadFirstPageComponents(components.id, components.pageEndPoint, components.rpc_discoQuery)) {
+                productLoadError.value = false
                 getProductList()?.let {
                     productCarouselList.value = addLoadMore(it)
                     syncData.value = true
                 }
+            } else {
+                productLoadError.value = true
             }
         }, onError = {
+            productLoadError.value = true
             it.printStackTrace()
         })
     }
@@ -94,23 +100,29 @@ class ProductCardCarouselViewModel(val application: Application, val components:
         })
     }
 
-    fun fetchPaginatedProducts() {
+    fun fetchCarouselPaginatedProducts() {
         isLoading = true
         launchCatchError(block = {
-            if (productCardsUseCase.getCarouselPaginatedData(components.id, components.pageEndPoint)) {
+            if (productCardsUseCase.getCarouselPaginatedData(components.id, components.pageEndPoint, components.rpc_discoQuery)) {
                 getProductList()?.let {
                     isLoading = false
                     productCarouselList.value = addLoadMore(it)
                     syncData.value = true
                 }
+            } else {
+                paginatedErrorData()
             }
         }, onError = {
-            getProductList()?.let {
-                isLoading = false
-                productCarouselList.value = it
-                syncData.value = true
-            }
+            paginatedErrorData()
         })
+    }
+
+    private fun paginatedErrorData() {
+        getProductList()?.let {
+            isLoading = false
+            productCarouselList.value = it
+            syncData.value = true
+        }
     }
 
     private fun addLoadMore(productDataList: ArrayList<ComponentsItem>): ArrayList<ComponentsItem> {
