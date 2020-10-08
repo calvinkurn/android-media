@@ -15,6 +15,11 @@ class DeepLinkMapperSellerAppTest: DeepLinkMapperTestFixture() {
         GlobalConfig.APPLICATION_TYPE = GlobalConfig.SELLER_APPLICATION
     }
 
+    override fun finish() {
+        super.finish()
+        GlobalConfig.APPLICATION_TYPE = GlobalConfig.CONSUMER_APPLICATION
+    }
+
     @Test
     fun `check home appLink then should return tokopedia internal seller home in sellerapp`() {
         val actualDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://sellerapp/sellerhome"

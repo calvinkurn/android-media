@@ -26,7 +26,7 @@ open class DeepLinkMapperTestFixture {
     }
 
     @After
-    fun finish() {
+    open fun finish() {
         unmockkAll()
     }
 
