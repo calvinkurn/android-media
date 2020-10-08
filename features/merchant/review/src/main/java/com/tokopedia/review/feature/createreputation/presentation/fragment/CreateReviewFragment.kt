@@ -197,6 +197,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
             reputationId = it.getString(REPUTATION_ID, "").toIntOrNull() ?: 0
             isEditMode = it.getBoolean(ReviewConstants.PARAM_IS_EDIT_MODE, false)
             feedbackId = it.getInt(ReviewConstants.PARAM_FEEDBACK_ID, 0)
+            inboxReviewId = it.getString(CreateReviewActivity.PARAM_INBOX_ID) ?: ""
         }
 
         if (reviewClickAt > CreateReviewActivity.DEFAULT_PRODUCT_RATING || reviewClickAt < 0) {
@@ -581,7 +582,6 @@ class CreateReviewFragment : BaseDaggerFragment(),
             it.ticker.let {
                 ovoPointsTicker.apply {
                     visibility = View.VISIBLE
-                    tickerTitle = it.title
                     setHtmlDescription(it.subtitle)
                     setDescriptionClickEvent(object : TickerCallback {
                         override fun onDescriptionViewClick(linkUrl: CharSequence) {

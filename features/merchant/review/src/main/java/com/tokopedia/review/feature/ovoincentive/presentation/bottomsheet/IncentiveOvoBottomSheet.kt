@@ -31,7 +31,7 @@ class IncentiveOvoBottomSheet(private val productRevIncentiveOvoDomain: ProductR
     private fun initView(view: View) {
         view.apply {
             tgIncentiveOvoTitle.text = productRevIncentiveOvoDomain.productrevIncentiveOvo?.title
-            tgIncentiveOvoSubtitle.text = productRevIncentiveOvoDomain.productrevIncentiveOvo?.subtitle
+            tgIncentiveOvoSubtitle.text = HtmlLinkHelper(context, productRevIncentiveOvoDomain.productrevIncentiveOvo?.subtitle ?: "").spannedString
             incentiveOvoBtnContinueReview.apply {
                 setOnClickListener {
                     dismiss()
