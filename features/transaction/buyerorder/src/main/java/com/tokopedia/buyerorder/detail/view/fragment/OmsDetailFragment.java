@@ -72,6 +72,8 @@ import com.tokopedia.buyerorder.detail.view.presenter.OrderListDetailPresenter;
 import com.tokopedia.buyerorder.list.data.ConditionalInfo;
 import com.tokopedia.buyerorder.list.data.OrderCategory;
 import com.tokopedia.buyerorder.list.data.PaymentData;
+import com.tokopedia.imagepicker.picker.instagram.data.model.User;
+import com.tokopedia.user.session.UserSession;
 import com.tokopedia.utils.permission.PermissionCheckerHelper;
 import com.tokopedia.unifycomponents.BottomSheetUnify;
 import com.tokopedia.unifycomponents.Toaster;
@@ -140,6 +142,9 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
     View dividerUserInfo, dividerActionBtn, dividerInfoLabel;
     private CardView policy;
     private CardView claim;
+    private View bannerDeals;
+    private Typography bannerMainTitle;
+    private Typography bannerSubTitle;
 
 
     @Override
@@ -195,6 +200,10 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
         recyclerView.setNestedScrollingEnabled(false);
         policy = view.findViewById(R.id.policy);
         claim = view.findViewById(R.id.claim);
+        bannerDeals = view.findViewById(R.id.banner_deals_order_detail);
+        bannerMainTitle = view.findViewById(R.id.tg_deal_banner_title);
+        bannerSubTitle = view.findViewById(R.id.tg_deal_banner_sub_title);
+
 
 
         initInjector();
@@ -622,6 +631,19 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
                 }
             });
 
+        }
+
+        if(item.getCategory().equalsIgnoreCase(OrderCategory.DEAL) && metaDataInfo.getCustomLinkType().equalsIgnoreCase(KEY_REDIRECT)){
+            UserSession userSession = new UserSession(getContext());
+            bannerDeals.setVisibility(View.VISIBLE);
+            bannerMainTitle.setText(getResources().getString(R.string.banner_deals_main_title, userSession.getName()));
+            bannerSubTitle.setText(metaDataInfo.getCustomLinkLabel());
+            bannerDeals.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    RouteManager.route(getAppContext(), metaDataInfo.getCustomLinkAppUrl());
+                }
+            });
         }
 
         if (!item.getCategory().equalsIgnoreCase(OrderCategory.EVENT)){

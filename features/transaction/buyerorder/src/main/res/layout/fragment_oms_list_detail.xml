@@ -129,6 +129,12 @@
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     tools:listitem="@layout/voucher_item_card_events" />
 
+                <include
+                    android:id="@+id/banner_deals_order_detail"
+                    layout="@layout/partial_order_detail_banner_deals"
+                    android:visibility="gone"
+                    />
+
             </LinearLayout>
 
             <androidx.cardview.widget.CardView
