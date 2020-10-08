@@ -3,6 +3,7 @@ package com.tokopedia.home_recom.topads
 import android.app.Activity
 import android.app.Instrumentation
 import android.view.View
+import androidx.core.widget.NestedScrollView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.test.rule.ActivityTestRule
@@ -57,8 +58,11 @@ class HomeRecomTopAdsVerificationTest {
         val recyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.recycler_view)
         val itemCount = recyclerView.adapter?.itemCount?:0
 
+        val nestedScrollView = activityRule.activity.findViewById<RecyclerView>(R.id.recomNestedScrollView)
+
         for (i in 0 until itemCount) {
-            scrollHomeRecyclerViewToPosition(recyclerView, i)
+            scrollNestedToPosition(recyclerView, nestedScrollView, i)
+            //scrollHomeRecyclerViewToPosition(recyclerView, i)
             checkProductOnDynamicChannel(recyclerView, i)
         }
         topAdsAssertion?.assert()
@@ -71,6 +75,11 @@ class HomeRecomTopAdsVerificationTest {
     private fun scrollHomeRecyclerViewToPosition(homeRecyclerView: RecyclerView, position: Int) {
         val layoutManager = homeRecyclerView.layoutManager as StaggeredGridLayoutManager
         activityRule.runOnUiThread { layoutManager.scrollToPositionWithOffset(position, 0) }
+    }
+
+    private fun scrollNestedToPosition(recyclerView: RecyclerView, nestedScrollView: NestedScrollView, position: Int) {
+        val targetItem = recyclerView.findViewHolderForAdapterPosition(position)?.itemView
+        nestedScrollView.requestChildFocus(targetItem, targetItem)
     }
 
     private fun checkProductOnDynamicChannel(homeRecyclerView: RecyclerView, i: Int) {
