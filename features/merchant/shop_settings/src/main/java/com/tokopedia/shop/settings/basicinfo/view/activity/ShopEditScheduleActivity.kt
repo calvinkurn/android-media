@@ -28,10 +28,11 @@ import kotlinx.android.synthetic.main.fragment_shop_edit_schedule.*
 import java.util.*
 import javax.inject.Inject
 
-class ShopEditScheduleActivity : BaseSimpleActivity(), UpdateShopSchedulePresenter.View {
+class ShopEditScheduleActivity : BaseSimpleActivity() {
+        //, UpdateShopSchedulePresenter.View {
 
-    @Inject
-    lateinit var updateShopSchedulePresenter: UpdateShopSchedulePresenter
+//    @Inject
+//    lateinit var updateShopSchedulePresenter: UpdateShopSchedulePresenter
 
     private var progressDialog: ProgressDialog? = null
 
@@ -54,7 +55,7 @@ class ShopEditScheduleActivity : BaseSimpleActivity(), UpdateShopSchedulePresent
                 .baseAppComponent((application as BaseMainApplication).baseAppComponent)
                 .build()
                 .inject(this)
-        updateShopSchedulePresenter.attachView(this)
+  //      updateShopSchedulePresenter.attachView(this)
 
         title = intent.getStringExtra(EXTRA_TITLE) ?: ""
         isClosedNow = intent.getBooleanExtra(EXTRA_IS_CLOSED_NOW, false)
@@ -69,7 +70,7 @@ class ShopEditScheduleActivity : BaseSimpleActivity(), UpdateShopSchedulePresent
         } else {
             // execute get shop basic data use case
             showSubmitLoading(getString(com.tokopedia.abstraction.R.string.title_loading))
-            updateShopSchedulePresenter.getShopBasicData()
+  //          updateShopSchedulePresenter.getShopBasicData()
         }
     }
 
@@ -179,12 +180,12 @@ class ShopEditScheduleActivity : BaseSimpleActivity(), UpdateShopSchedulePresent
             ShopScheduleActionDef.OPEN
         val closeStart = selectedStartCloseUnixTimeMs
         val closeEnd = selectedEndCloseUnixTimeMs
-        updateShopSchedulePresenter.updateShopSchedule(
-                shopAction,
-                isClosedNow,
-                if (closeStart == 0L) null else closeStart.toString(),
-                if (closeEnd == 0L) null else closeEnd.toString(),
-                closeNote)
+// //       updateShopSchedulePresenter.updateShopSchedule(
+//                shopAction,
+//                isClosedNow,
+//                if (closeStart == 0L) null else closeStart.toString(),
+//                if (closeEnd == 0L) null else closeEnd.toString(),
+//                closeNote)
     }
 
     private fun showSubmitLoading(message: String) {
@@ -212,30 +213,30 @@ class ShopEditScheduleActivity : BaseSimpleActivity(), UpdateShopSchedulePresent
 
     public override fun onDestroy() {
         super.onDestroy()
-        updateShopSchedulePresenter.detachView()
+ //       updateShopSchedulePresenter.detachView()
     }
 
-    override fun onSuccessUpdateShopSchedule(successMessage: String) {
-        hideSubmitLoading()
-        setResult(Activity.RESULT_OK, Intent().apply { putExtra(EXTRA_MESSAGE, successMessage) })
-        finish()
-    }
-
-    override fun onErrorUpdateShopSchedule(throwable: Throwable) {
-        hideSubmitLoading()
-        showSnackbarErrorSubmitEdit(throwable)
-    }
-
-    override fun onSuccessGetShopBasicData(shopBasicDataModel: ShopBasicDataModel) {
-        this.shopBasicDataModel = shopBasicDataModel
-        setupView(shopBasicDataModel)
-        hideSubmitLoading()
-    }
-
-    override fun onErrorGetShopBasicData(throwable: Throwable) {
-        hideSubmitLoading()
-        showErrorMessage(throwable, View.OnClickListener { updateShopSchedulePresenter.getShopBasicData() })
-    }
+//    override fun onSuccessUpdateShopSchedule(successMessage: String) {
+//        hideSubmitLoading()
+//        setResult(Activity.RESULT_OK, Intent().apply { putExtra(EXTRA_MESSAGE, successMessage) })
+//        finish()
+//    }
+//
+//    override fun onErrorUpdateShopSchedule(throwable: Throwable) {
+//        hideSubmitLoading()
+//        showSnackbarErrorSubmitEdit(throwable)
+//    }
+//
+//    override fun onSuccessGetShopBasicData(shopBasicDataModel: ShopBasicDataModel) {
+//        this.shopBasicDataModel = shopBasicDataModel
+//        setupView(shopBasicDataModel)
+//        hideSubmitLoading()
+//    }
+//
+//    override fun onErrorGetShopBasicData(throwable: Throwable) {
+//        hideSubmitLoading()
+//        showErrorMessage(throwable, View.OnClickListener { updateShopSchedulePresenter.getShopBasicData() })
+//    }
 
     private fun setUIShopSchedule(shopBasicDataModel: ShopBasicDataModel) {
         //set close schedule
