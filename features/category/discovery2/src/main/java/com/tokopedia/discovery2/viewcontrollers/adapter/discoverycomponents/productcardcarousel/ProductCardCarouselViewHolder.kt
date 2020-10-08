@@ -1,8 +1,5 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardcarousel
 
-import android.app.Activity
-import android.content.Context
-import android.util.DisplayMetrics
 import android.view.View
 import android.widget.FrameLayout
 import androidx.fragment.app.Fragment
@@ -73,8 +70,8 @@ class ProductCardCarouselViewHolder(itemView: View, val fragment: Fragment) : Ab
         }
     }
 
-    private fun setMaxHeight(height: Int) {
-        height.let {
+    private fun setMaxHeight(height: Int?) {
+        height?.let {
             val carouselLayoutParams = mProductCarouselRecyclerView.layoutParams
             carouselLayoutParams?.height = it
             mProductCarouselRecyclerView.layoutParams = carouselLayoutParams

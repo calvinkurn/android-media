@@ -55,9 +55,6 @@ class ProductCardCarouselViewModel(val application: Application, val components:
                     creativeName = components.creativeName)
             productCarouselHeaderData.value = lihatSemuaComponentData
         }
-        getProductList()?.let {
-            productCarouselList.value = it
-        }
         fetchProductCarouselData()
     }
 
@@ -68,17 +65,23 @@ class ProductCardCarouselViewModel(val application: Application, val components:
     private fun fetchProductCarouselData() {
         launchCatchError(block = {
             if (productCardsUseCase.loadFirstPageComponents(components.id, components.pageEndPoint, components.rpc_PinnedProduct)) {
-                getProductList()?.let {
-                    if (components.name == ComponentsList.ProductCardCarousel.componentName) {
-                        getMaxHeightProductCard(it)
-                    }
-                    productCarouselList.value = it
-                    syncData.value = true
-                }
+                setData()
+            } else {
+                setData()
             }
         }, onError = {
             it.printStackTrace()
         })
+    }
+
+    private suspend fun setData() {
+        getProductList()?.let {
+            if (components.name == ComponentsList.ProductCardCarousel.componentName) {
+                getMaxHeightProductCard(it)
+            }
+            productCarouselList.value = it
+            syncData.value = true
+        }
     }
 
     private suspend fun getMaxHeightProductCard(list: java.util.ArrayList<ComponentsItem>) {

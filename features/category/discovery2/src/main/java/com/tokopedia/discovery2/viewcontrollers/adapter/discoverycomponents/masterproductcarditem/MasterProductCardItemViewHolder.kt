@@ -1,8 +1,5 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.masterproductcarditem
 
-import android.app.Activity
-import android.content.Context
-import android.util.DisplayMetrics
 import android.view.View
 import android.view.ViewGroup
 import androidx.cardview.widget.CardView
@@ -66,12 +63,6 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) : 
             masterProductCard.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
         }
         masterProductCard.setProductModel(productCardModel)
-    }
-
-    private fun getDisplayMetric(context: Context?): DisplayMetrics {
-        val displayMetrics = DisplayMetrics()
-        (context as Activity).windowManager.defaultDisplay.getMetrics(displayMetrics)
-        return displayMetrics
     }
 
     private fun handleUIClick(view: View) {
