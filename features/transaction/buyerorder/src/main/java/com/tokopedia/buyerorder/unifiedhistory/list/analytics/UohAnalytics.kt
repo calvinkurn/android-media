@@ -59,6 +59,8 @@ object UohAnalytics {
     private const val DIMENSION80 = "dimension80"
     private const val DIMENSION45 = "dimension45"
     private const val DIMENSION40 = "dimension40"
+    private const val DIMENSION87 = "dimension87"
+    private const val DIMENSION88 = "dimension88"
     private const val ORDER_MANAGEMENT = "ordermanagement"
     private const val CLICK_ORDER_LIST = "clickOrderList"
     private const val PRODUCT_VIEW = "productView"
@@ -67,6 +69,7 @@ object UohAnalytics {
     private const val PRODUCT_CLICK = "productClick"
     private const val SELECT_CONTENT = "select_content"
     private const val ADD_TO_CART = "addToCart"
+    private const val ADD_TO_CART_V5 = "add_to_cart"
     private const val VIEW_ORDER_CARD = "view order card {business_unit}"
     private const val EVENT_LABEL_RECOMMENDATION = "Rekomendasi Untuk Anda"
     private const val VIEW_RECOMMENDATION = "impression - product recommendation"
@@ -345,7 +348,7 @@ object UohAnalytics {
         }
 
         val bundle = Bundle().apply {
-            putString(EVENT, ADD_TO_CART)
+            putString(EVENT, ADD_TO_CART_V5)
             putString(EVENT_CATEGORY, ORDER_LIST_EVENT_CATEGORY)
             putString(EVENT_ACTION, CLICK_BELI_LAGI)
             putString(EVENT_LABEL, "success")
@@ -355,7 +358,7 @@ object UohAnalytics {
             putString(BUSINESS_UNIT, ORDER_MANAGEMENT)
             putParcelableArrayList(ITEMS, arrayListBundleItems)
         }
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(ADD_TO_CART, bundle)
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(ADD_TO_CART_V5, bundle)
     }
 
     fun clickSelesaiOnBottomSheetFinishTransaction(userId: String) {
@@ -388,104 +391,101 @@ object UohAnalytics {
         TrackApp.getInstance().gtm.sendGeneralEvent(event)
     }
 
-    fun productViewRecommendation(impressions: ECommerceImpressions.Impressions) {
-        val arrayListBundleImpressions = arrayListOf<Bundle>()
+    fun productViewRecommendation(userId: String, impressions: ECommerceImpressions.Impressions, isTopads: Boolean) {
+        val arrayListBundleItems = arrayListOf<Bundle>()
         val bundleImpression = Bundle().apply {
-            putString(NAME, impressions.name)
-            putString(ID, impressions.id)
+            putString(ITEM_NAME, impressions.name)
+            putString(ITEM_ID, impressions.id)
             putString(PRICE, impressions.price)
-            putString(CATEGORY, impressions.category)
-            putString(POSITION, impressions.position)
-            putString(LIST, impressions.list)
+            putString(ITEM_BRAND, "")
+            putString(ITEM_CATEGORY, impressions.category)
+            putString(ITEM_VARIANT, "")
+            putString(INDEX, impressions.position)
+            putString(DIMENSION87, "")
+            putString(DIMENSION88, "")
         }
-        arrayListBundleImpressions.add(bundleImpression)
+        arrayListBundleItems.add(bundleImpression)
 
-        val bundleECommerceImpressions = Bundle().apply {
-            putString(CURRENCY_CODE, IDR)
-            putParcelableArrayList(IMPRESSIONS, arrayListBundleImpressions)
-        }
+        var list = RECOMMENDATION_LIST_TRACK
+        if (isTopads) list += RECOMMENDATION_LIST_TOPADS_TRACK
 
         val bundle = Bundle().apply {
-            putString(EVENT, PRODUCT_VIEW)
+            putString(EVENT, VIEW_ITEM_LIST)
             putString(EVENT_CATEGORY, PURCHASE_LIST_EVENT_CATEGORY)
             putString(EVENT_ACTION, VIEW_RECOMMENDATION)
             putString(EVENT_LABEL, EVENT_LABEL_RECOMMENDATION)
-            putParcelable(ECOMMERCE, bundleECommerceImpressions)
+            putString(CURRENT_SITE, TOKOPEDIA_MARKETPLACE)
+            putString(USER_ID, userId)
+            putString(BUSINESS_UNIT, ORDER_MANAGEMENT)
+            putString(ITEM_LIST, list)
+            putParcelableArrayList(ITEMS, arrayListBundleItems)
         }
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(PRODUCT_VIEW, bundle)
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(VIEW_ITEM_LIST, bundle)
     }
 
-    fun productClickRecommendation(click: ECommerceClick.Products, isTopads: Boolean) {
+    fun productClickRecommendation(click: ECommerceClick.Products, isTopads: Boolean, userId: String) {
         var list = RECOMMENDATION_LIST_TRACK
         if (isTopads) list += RECOMMENDATION_LIST_TOPADS_TRACK
 
-        val bundleActionField = Bundle().apply {
-            putString(LIST, list)
-        }
-
-        val arrayListBundleProducts = arrayListOf<Bundle>()
+        val arrayListBundleItems = arrayListOf<Bundle>()
         val bundleClick = Bundle().apply {
-            putString(NAME, click.name)
-            putString(ID, click.id)
+            putString(ITEM_NAME, click.name)
+            putString(ITEM_ID, click.id)
             putString(PRICE, click.price)
-            putString(CATEGORY, click.category)
-            putString(POSITION, click.position)
+            putString(ITEM_BRAND, "")
+            putString(ITEM_CATEGORY, click.category)
+            putString(ITEM_VARIANT, "")
+            putString(INDEX, click.position)
+            putString(DIMENSION87, "")
+            putString(DIMENSION88, "")
         }
-        arrayListBundleProducts.add(bundleClick)
-
-        val bundleECommerceClick = Bundle().apply {
-            putParcelable(ACTION_FIELD, bundleActionField)
-            putParcelableArrayList(PRODUCTS, arrayListBundleProducts)
-        }
+        arrayListBundleItems.add(bundleClick)
 
         val bundle = Bundle().apply {
-            putString(EVENT, PRODUCT_CLICK)
+            putString(EVENT, SELECT_CONTENT)
             putString(EVENT_CATEGORY, PURCHASE_LIST_EVENT_CATEGORY)
             putString(EVENT_ACTION, CLICK_RECOMMENDATION)
             putString(EVENT_LABEL, EVENT_LABEL_RECOMMENDATION)
-            putParcelable(ECOMMERCE, bundleECommerceClick)
+            putString(SCREEN_NAME, ORDER_LIST_SCREEN_NAME)
+            putString(CURRENT_SITE, TOKOPEDIA_MARKETPLACE)
+            putString(USER_ID, userId)
+            putString(BUSINESS_UNIT, ORDER_MANAGEMENT)
+            putString(ITEM_LIST, list)
+            putParcelableArrayList(ITEMS, arrayListBundleItems)
         }
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(PRODUCT_CLICK, bundle)
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(SELECT_CONTENT, bundle)
     }
 
-    fun productAtcRecommendation(listProduct: ArrayList<ECommerceAddRecommendation.Add.ActionField.Product>, isTopads: Boolean) {
+    fun productAtcRecommendation(userId: String, listProduct: ArrayList<ECommerceAddRecommendation.Add.ActionField.Product>, isTopads: Boolean) {
         var list = RECOMMENDATION_LIST_TRACK
         if (isTopads) list += RECOMMENDATION_LIST_TOPADS_TRACK
 
-        val arrayListBundleProducts = arrayListOf<Bundle>()
+        val arrayListBundleItems = arrayListOf<Bundle>()
         listProduct.forEach { product ->
             val bundleProduct = Bundle().apply {
-                putString(NAME, product.name)
-                putString(ID, product.id)
+                putString(ITEM_NAME, product.name)
+                putString(ITEM_ID, product.id)
                 putString(PRICE, product.price)
-                putString(CATEGORY, product.category)
+                putString(ITEM_BRAND, "")
+                putString(ITEM_CATEGORY, product.category)
+                putString(ITEM_VARIANT, "")
                 putString(QUANTITY, product.quantity)
                 putString(DIMENSION45, product.dimension45)
+                putString(DIMENSION40, list)
             }
-            arrayListBundleProducts.add(bundleProduct)
-        }
-
-        val bundleActionField = Bundle().apply {
-            putString(LIST, list)
-            putParcelableArrayList(PRODUCTS, arrayListBundleProducts)
-        }
-
-        val bundleAdd = Bundle().apply {
-            putParcelable(ACTION_FIELD, bundleActionField)
-        }
-
-        val bundleECommerceAddRecommendation = Bundle().apply {
-            putString(CURRENCY_CODE, IDR)
-            putParcelable(ADD, bundleAdd)
+            arrayListBundleItems.add(bundleProduct)
         }
 
         val bundle = Bundle().apply {
-            putString(EVENT, ADD_TO_CART)
+            putString(EVENT, ADD_TO_CART_V5)
             putString(EVENT_CATEGORY, PURCHASE_LIST_EVENT_CATEGORY)
             putString(EVENT_ACTION, CLICK_ATC_RECOMMENDATION)
             putString(EVENT_LABEL, EVENT_LABEL_RECOMMENDATION)
-            putParcelable(ECOMMERCE, bundleECommerceAddRecommendation)
+            putString(CURRENT_SITE, TOKOPEDIA_MARKETPLACE)
+            putString(USER_ID, userId)
+            putString(BUSINESS_UNIT, ORDER_MANAGEMENT)
+            putParcelableArrayList(ITEMS, arrayListBundleItems)
         }
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(ADD_TO_CART, bundle)
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(ADD_TO_CART_V5, bundle)
     }
 }

@@ -1538,14 +1538,16 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             activity?.let { TopAdsUrlHitter(it).hitImpressionUrl(UohListFragment::class.qualifiedName, url, productId, productName, imageUrl) }
         }
 
-        UohAnalytics.productViewRecommendation(ECommerceImpressions.Impressions(
+        userSession?.userId?.let {
+            UohAnalytics.productViewRecommendation(it, ECommerceImpressions.Impressions(
                 name = productName,
                 id = recommendationItem.productId.toString(),
                 price = recommendationItem.price,
                 category = recommendationItem.categoryBreadcrumbs,
                 position = index.toString(),
                 list = list
-        ))
+        ), topAds)
+        }
     }
 
     override fun trackProductClickRecommendation(recommendationItem: RecommendationItem, index: Int) {
@@ -1555,12 +1557,14 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         val productName = recommendationItem.name
         val imageUrl = recommendationItem.imageUrl
 
-        UohAnalytics.productClickRecommendation(ECommerceClick.Products(
+        userSession?.userId?.let {
+            UohAnalytics.productClickRecommendation(ECommerceClick.Products(
                 name = productName,
                 id = recommendationItem.productId.toString(),
                 price = recommendationItem.price,
                 category = recommendationItem.categoryBreadcrumbs,
-                position = index.toString()), topAds)
+                position = index.toString()), topAds, it)
+        }
 
         if (topAds) activity?.let { TopAdsUrlHitter(it).hitClickUrl(UohListFragment::class.qualifiedName, clickUrl, productId, productName, imageUrl) }
         onProductClicked(productId)
@@ -1608,7 +1612,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         val arrayListProduct = arrayListOf<ECommerceAddRecommendation.Add.ActionField.Product>()
         arrayListProduct.add(product)
 
-        UohAnalytics.productAtcRecommendation(listProduct = arrayListProduct, isTopads = isTopAds)
+        userSession?.userId?.let { UohAnalytics.productAtcRecommendation(userId = it,listProduct = arrayListProduct, isTopads = isTopAds) }
         if (isTopAds) activity?.let { TopAdsUrlHitter(it).hitClickUrl(UohListFragment::class.qualifiedName, url, productId, productName, imageUrl) }
     }
 
