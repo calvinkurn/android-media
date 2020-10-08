@@ -7,12 +7,13 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.play.widget.data.PlayWidget
 import com.tokopedia.play.widget.data.PlayWidgetResponse
 import com.tokopedia.usecase.coroutines.UseCase
+import javax.inject.Inject
 
 
 /**
  * Created by mzennis on 05/10/20.
  */
-class PlayWidgetUseCase(private val repository: GraphqlRepository) : UseCase<PlayWidget>() {
+class PlayWidgetUseCase @Inject constructor(private val repository: GraphqlRepository) : UseCase<PlayWidget>() {
 
     var params: Map<String, Any> = emptyMap()
 
