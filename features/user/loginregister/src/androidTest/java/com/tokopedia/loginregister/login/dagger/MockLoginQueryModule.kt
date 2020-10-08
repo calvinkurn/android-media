@@ -28,7 +28,9 @@ class MockLoginQueryModule {
     @Provides
     @IntoMap
     @StringKey(LoginQueryConstant.MUTATION_REGISTER_CHECK)
-    fun provideRawMutationRegisterCheck(@ApplicationContext context: Context): String = ""
+    fun provideRawMutationRegisterCheck(@ApplicationContext context: Context): String =
+            GraphqlHelper.loadRawString(context.resources, R.raw.mutation_register_check)
+
 
     @LoginScope
     @Provides

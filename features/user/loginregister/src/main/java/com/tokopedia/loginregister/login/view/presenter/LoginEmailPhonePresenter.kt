@@ -11,6 +11,7 @@ import com.tokopedia.loginfingerprint.utils.crypto.Cryptography
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.domain.usecase.DynamicBannerUseCase
 import com.tokopedia.loginregister.discover.usecase.DiscoverUseCase
+import com.tokopedia.loginregister.login.LoginIdlingResource
 import com.tokopedia.loginregister.login.domain.RegisterCheckUseCase
 import com.tokopedia.loginregister.login.domain.StatusFingerprint
 import com.tokopedia.loginregister.login.domain.StatusFingerprintUseCase
@@ -295,6 +296,7 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
     }
 
     override fun registerCheck(id: String, onSuccess: (RegisterCheckData) -> kotlin.Unit, onError: (kotlin.Throwable) -> kotlin.Unit) {
+        LoginIdlingResource.increment()
         registerCheckUseCase.apply {
             setRequestParams(this.getRequestParams(id))
             execute({
@@ -303,7 +305,11 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
                 else if (it.data.errors.isNotEmpty() && it.data.errors[0].isNotEmpty())
                     onError(com.tokopedia.network.exception.MessageErrorException(it.data.errors[0]))
                 else onError(RuntimeException())
-            }, onError)
+                LoginIdlingResource.decrement()
+            }, {
+                LoginIdlingResource.decrement()
+                onError(it)
+            })
         }
     }
 
