@@ -305,14 +305,14 @@ class ShopEditScheduleFragment : Fragment() {
     }
 
     private fun showSnackbarErrorSubmitEdit(throwable: Throwable) {
-        val message = ErrorHandler.getErrorMessage(requireContext(), throwable)
+        val message = ErrorHandler.getErrorMessage(requireContext(), throwable.cause)
         Toaster.make(layout, message, Snackbar.LENGTH_INDEFINITE, Toaster.TYPE_ERROR, getString(com.tokopedia.abstraction.R.string.title_try_again), View.OnClickListener {
             onSaveButtonClicked()
         })
     }
 
     private fun showErrorMessage(throwable: Throwable, retryHandler: View.OnClickListener) {
-        val message = ErrorHandler.getErrorMessage(requireContext(), throwable)
+        val message = ErrorHandler.getErrorMessage(requireContext(), throwable.cause)
         Toaster.make(layout, message, Snackbar.LENGTH_INDEFINITE, Toaster.TYPE_ERROR, getString(com.tokopedia.abstraction.R.string.title_try_again), retryHandler)
     }
 }
