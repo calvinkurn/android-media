@@ -29,11 +29,8 @@ class SellerOrderSlice(context: Context,
                 }
                 orderList.forEach {
                     row {
-                        // Todo: Create applink for som detail
                         val pendingIntent =
-                                RouteManager.getIntent(context, ApplinkConstInternalOrder.ORDER_DETAIL).apply {
-                                    putExtra("order_id", it.orderId)
-                                }.let { intent ->
+                                RouteManager.getIntent(context, ApplinkConstInternalOrder.ORDER_DETAIL, it.orderId)?.let { intent ->
                                     PendingIntent.getActivity(
                                             context,
                                             0,
@@ -41,11 +38,13 @@ class SellerOrderSlice(context: Context,
                                             0
                                     )
                                 }
+                        pendingIntent?.let { intent ->
+                            primaryAction = createPrimaryAction(
+                                    intent,
+                                    it.listOrderProduct.firstOrNull()?.pictureUrl.orEmpty(),
+                                    it.buyerName)
+                        }
                         setTitleItem(IconCompat.createWithBitmap(it.listOrderProduct.firstOrNull()?.pictureUrl.orEmpty().getBitmap()), SMALL_IMAGE)
-                        primaryAction = createPrimaryAction(
-                                pendingIntent,
-                                it.listOrderProduct.firstOrNull()?.pictureUrl.orEmpty(),
-                                it.buyerName)
                         title = it.buyerName
                         subtitle = it.status
                     }
