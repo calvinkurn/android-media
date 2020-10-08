@@ -3,18 +3,16 @@ package com.tokopedia.cart.robot
 import android.view.View
 import android.widget.CheckBox
 import android.widget.ImageView
-import androidx.recyclerview.widget.RecyclerView
-import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
-import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import com.tokopedia.cart.R
+import com.tokopedia.cart.view.viewholder.CartItemViewHolder
 import com.tokopedia.cart.view.viewholder.CartShopViewHolder
 import com.tokopedia.cart.view.viewholder.CartTickerErrorViewHolder
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementViewHolder
@@ -22,9 +20,7 @@ import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifyprinciples.Typography
-import kotlinx.android.synthetic.main.holder_item_cart_ticker_error.view.*
 import org.hamcrest.Matcher
-import org.hamcrest.Matchers.not
 import org.junit.Assert
 
 fun cartPage(func: CartPageRobot.() -> Unit) = CartPageRobot().apply(func)
@@ -65,7 +61,11 @@ class CartPageRobot {
         }))
     }
 
-    fun assertFirstCartShopViewHolder(position: Int, shopName: String, shopLocation: String) {
+    fun assertFirstCartShopViewHolder(position: Int,
+                                      shopName: String,
+                                      shopLocation: String,
+                                      productName: String,
+                                      productVariant: String) {
         onView(withId(R.id.rv_cart)).perform(RecyclerViewActions.actionOnItemAtPosition<CartShopViewHolder>(position, object : ViewAction {
             override fun getDescription(): String = "performing assertion action on first CartShopViewHolder"
 
@@ -79,6 +79,29 @@ class CartPageRobot {
                 Assert.assertEquals(View.VISIBLE, view.findViewById<ImageUnify>(R.id.img_free_shipping))
                 Assert.assertEquals(View.VISIBLE, view.findViewById<ImageUnify>(R.id.rv_cart_item))
                 Assert.assertTrue(view.findViewById<CheckBox>(R.id.cb_select_shop).isChecked)
+
+                assertFirstShopFirstCartItemViewHolder(
+                        position = position,
+                        productName = productName,
+                        productVariant = productVariant
+                )
+            }
+        }))
+    }
+
+    private fun assertFirstShopFirstCartItemViewHolder(position: Int,
+                                                       productName: String,
+                                                       productVariant: String) {
+        onView(withId(R.id.rv_cart_item)).perform(RecyclerViewActions.actionOnItemAtPosition<CartItemViewHolder>(position, object : ViewAction {
+            override fun getDescription(): String = "performing assertion action on first CartItemViewHolder"
+
+            override fun getConstraints(): Matcher<View>? = null
+
+            override fun perform(uiController: UiController?, view: View) {
+                Assert.assertEquals(productName, view.findViewById<Typography>(R.id.text_product_name).text)
+                Assert.assertEquals(productVariant, view.findViewById<Typography>(R.id.text_product_variant).text)
+                Assert.assertEquals(View.VISIBLE, view.findViewById<ImageView>(R.id.iv_image_product))
+                Assert.assertTrue(view.findViewById<CheckBox>(R.id.cb_select_item).isChecked)
             }
         }))
     }

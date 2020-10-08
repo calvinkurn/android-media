@@ -85,7 +85,9 @@ class CartHappyFlowTest {
                         cartPageRobot.assertFirstCartShopViewHolder(
                                 position = position,
                                 shopName = "Miniso Indonesia",
-                                shopLocation = "Kota Surabaya"
+                                shopLocation = "Kota Surabaya",
+                                productName = "MINISO Kotak Penyimpanan Storage Box Container Organizer Tempat Baju - Merah Muda, L",
+                                productVariant = "Merah Muda, L"
                         )
                     }
                     POSITION_SECOND_CART_SHOP_VIEW_HOLDER -> {
