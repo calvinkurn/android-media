@@ -89,7 +89,6 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
     private var isFullFlow: Boolean = true
     private var isLogisticLabel: Boolean = true
     private var isCircuitBreaker: Boolean = false
-    private var isFirstPermissionGranted: Boolean = true
 
     private var composite = CompositeSubscription()
 
@@ -817,6 +816,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
             permissionCheckerHelper?.checkPermissions(it, getPermissions(),
                 object : PermissionCheckerHelper.PermissionCheckListener {
                     override fun onPermissionDenied(permissionText: String) {
+                        fusedLocationClient?.lastLocation?.addOnFailureListener { showAutoComplete(DEFAULT_LAT, DEFAULT_LONG)  }
                         permissionCheckerHelper?.onPermissionDenied(it, permissionText)
                     }
 
