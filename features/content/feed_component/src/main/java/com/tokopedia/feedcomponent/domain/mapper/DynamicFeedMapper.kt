@@ -15,6 +15,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerItemViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.banner.TopAdsBannerViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.banner.TrackingBannerModel
+import com.tokopedia.feedcomponent.view.viewmodel.carousel.CarouselPlayCardViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightCardViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.BasePostViewModel
@@ -47,6 +48,7 @@ private const val TYPE_CARDRECOM = "cardrecom"
 private const val TYPE_CARDPOST = "cardpost"
 private const val TYPE_CARDBANNER = "cardbanner"
 private const val TYPE_CARDHIGHLIGHT = "cardhighlight"
+private const val TYPE_CARDPLAYCAROUSEL = "cardplaycarousel"
 
 private const val CONTENT_IMAGE = "image"
 private const val CONTENT_YOUTUBE = "youtube"
@@ -102,6 +104,11 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
                     TYPE_CARDHIGHLIGHT -> {
                         if (feed.activity != ACTIVITY_TOPADS) {
                             mapCardHighlight(posts, feed, templateData.template)
+                        }
+                    }
+                    TYPE_CARDPLAYCAROUSEL -> {
+                        if (feed.activity != ACTIVITY_TOPADS) {
+                            mapCardCarousel(posts)
                         }
                     }
                 }
@@ -517,5 +524,9 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
         val list: MutableList<Tracking> = ArrayList()
         list.add(tracking)
         return list
+    }
+
+    private fun mapCardCarousel(posts: MutableList<Visitable<*>>) {
+        posts.add(CarouselPlayCardViewModel())
     }
 }

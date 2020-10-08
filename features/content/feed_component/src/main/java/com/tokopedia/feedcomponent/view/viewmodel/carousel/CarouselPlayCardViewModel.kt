@@ -1,0 +1,18 @@
+package com.tokopedia.feedcomponent.view.viewmodel.carousel
+
+import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.feedcomponent.view.adapter.post.DynamicFeedTypeFactory
+import com.tokopedia.play.widget.ui.model.PlayWidgetModelProvider
+import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
+
+/**
+ * Created by jegul on 08/10/20
+ */
+data class CarouselPlayCardViewModel(
+        override val playWidgetUiModel: PlayWidgetUiModel = PlayWidgetUiModel.Small.Empty
+) : Visitable<DynamicFeedTypeFactory>, PlayWidgetModelProvider {
+
+    override fun type(typeFactory: DynamicFeedTypeFactory?): Int {
+        return typeFactory!!.type(this)
+    }
+}

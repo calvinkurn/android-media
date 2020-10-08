@@ -10,6 +10,7 @@ import com.tokopedia.feedcomponent.analytics.topadstracker.SendTopAdsUseCase
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
 import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
 import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase
+import com.tokopedia.feedcomponent.view.viewmodel.carousel.CarouselPlayCardViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.AtcViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.DeletePostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.FavoriteShopViewModel
@@ -44,6 +45,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.vote.domain.usecase.SendVoteUseCase
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
+import com.tokopedia.play.widget.util.PlayWidgetTools
 
 /**
  * @author by yoasfs on 2019-09-18
@@ -67,7 +69,8 @@ class FeedViewModel @Inject constructor(private val baseDispatcher: FeedDispatch
                                         private val atcUseCase: AddToCartUseCase,
                                         private val trackAffiliateClickUseCase: TrackAffiliateClickUseCase,
                                         private val deletePostUseCase: DeletePostUseCase,
-                                        private val sendTopAdsUseCase: SendTopAdsUseCase)
+                                        private val sendTopAdsUseCase: SendTopAdsUseCase,
+                                        private val playWidgetTools: PlayWidgetTools)
     : BaseViewModel(baseDispatcher.ui()) {
 
     companion object {
@@ -133,6 +136,14 @@ class FeedViewModel @Inject constructor(private val baseDispatcher: FeedDispatch
             }
             currentCursor = results.dynamicFeedDomainModel.cursor
             getFeedFirstPageResp.value = Success(results)
+
+            if (shouldGetPlayWidget(results.dynamicFeedDomainModel)) {
+                val newFeedDomainModel = processPlayWidget(results.dynamicFeedDomainModel)
+                getFeedFirstPageResp.value = Success(results.copy(
+                        dynamicFeedDomainModel = newFeedDomainModel,
+                        shouldOverwrite = false
+                ))
+            }
         }) {
             getFeedFirstPageResp.value = Fail(it)
         }
@@ -561,5 +572,25 @@ class FeedViewModel @Inject constructor(private val baseDispatcher: FeedDispatch
         } catch (e: Throwable) {
             throw e
         }
+    }
+
+    /**
+     * Play Widget
+     */
+    private fun shouldGetPlayWidget(model: DynamicFeedDomainModel): Boolean {
+        return model.postList.any { it is CarouselPlayCardViewModel }
+    }
+
+    private suspend fun processPlayWidget(model: DynamicFeedDomainModel): DynamicFeedDomainModel {
+        try {
+            val response = playWidgetTools.getWidgetFromNetwork(baseDispatcher.io())
+            val uiModel = playWidgetTools.mapWidgetToModel(response)
+            model.postList = model.postList.map {
+                if (it is CarouselPlayCardViewModel) it.copy(playWidgetUiModel = uiModel)
+                else it
+            }.toMutableList()
+        } catch (e: Exception) {
+        }
+        return model
     }
 }

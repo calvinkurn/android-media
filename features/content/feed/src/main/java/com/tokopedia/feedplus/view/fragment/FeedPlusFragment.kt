@@ -1451,6 +1451,11 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     private fun onSuccessGetFirstFeed(firstPageDomainModel: DynamicFeedFirstPageDomainModel) {
+        if (!firstPageDomainModel.shouldOverwrite) {
+            adapter.updateList(firstPageDomainModel.dynamicFeedDomainModel.postList)
+            return
+        }
+
         clearData()
         val model = firstPageDomainModel.dynamicFeedDomainModel
         if (model.postList.isNotEmpty()) {
