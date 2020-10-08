@@ -712,7 +712,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                 );
 
                 TextAndContentDescriptionUtil.setTextAndContentDescription(labelSelectedShippingCourier, selectedCourierItemData.getName(), labelSelectedShippingCourier.getContext().getString(R.string.content_desc_label_selected_shipping_courier));
-                labelSelectedShippingCourier.setText(selectedCourierItemData.getName());
                 labelSelectedShippingPrice.setText(Utils.removeDecimalSuffix(CurrencyFormatUtil.convertPriceValueToIdrFormat(
                         selectedCourierItemData.getShipperPrice(), false
                 )));
@@ -1016,7 +1015,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             }
         }
         TextAndContentDescriptionUtil.setTextAndContentDescription(tvInsuranceFeePrice, getPriceFormat(tvInsuranceFee, tvInsuranceFeePrice, insurancePrice), tvInsuranceFee.getContext().getString(R.string.content_desc_tv_insurance_fee_price_subtotal));
-        tvInsuranceFeePrice.setText(getPriceFormat(tvInsuranceFee, tvInsuranceFeePrice, insurancePrice));
         tvPrioritasFeePrice.setText(getPriceFormat(tvPrioritasFee, tvPrioritasFeePrice, priorityPrice));
         tvProtectionLabel.setText(totalPPPItemLabel);
         tvProtectionFee.setText(getPriceFormat(tvProtectionLabel, tvProtectionFee, totalPurchaseProtectionPrice));
