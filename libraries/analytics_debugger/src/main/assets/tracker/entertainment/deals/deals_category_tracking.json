@@ -203,7 +203,7 @@
       "event" : "clickDeals",
       "eventCategory" : "digital - deals",
       "eventAction" : "apply filter - category page",
-      "eventLabel" : "{{deals - filter - .+}}",
+      "eventLabel" : "{{deals - filter  - .+}}",
       "screenName" : "/deals/",
       "category" : "deals",
       "currentSite" : "tokopediadigitaldeals",
