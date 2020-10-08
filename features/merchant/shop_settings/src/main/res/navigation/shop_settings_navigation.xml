@@ -29,7 +29,7 @@
     <fragment
         android:id="@+id/shopEditScheduleFragment"
         android:name="com.tokopedia.shop.settings.basicinfo.view.fragment.ShopEditScheduleFragment"
-        tools:layout="@layout/activity_shop_edit_schedule">
+        tools:layout="@layout/fragment_shop_edit_schedule">
         <argument
             android:name="cacheManagerId"
             app:argType="string"

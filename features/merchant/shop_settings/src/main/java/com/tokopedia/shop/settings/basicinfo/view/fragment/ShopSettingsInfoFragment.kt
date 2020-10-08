@@ -4,7 +4,6 @@ package com.tokopedia.shop.settings.basicinfo.view.fragment
 
 import android.app.Activity
 import android.app.ProgressDialog
-import android.content.Intent
 import android.os.Bundle
 import android.text.*
 import android.view.LayoutInflater
@@ -12,7 +11,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.webkit.URLUtil
 import android.widget.TextView
-import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
@@ -34,7 +32,6 @@ import com.tokopedia.shop.common.constant.ShopScheduleActionDef
 import com.tokopedia.shop.common.graphql.data.shopbasicdata.ShopBasicDataModel
 import com.tokopedia.shop.settings.R
 import com.tokopedia.shop.settings.analytics.ShopSettingsTracking
-import com.tokopedia.shop.settings.basicinfo.view.activity.ShopEditScheduleActivity
 import com.tokopedia.shop.settings.basicinfo.view.viewmodel.ShopSettingsInfoViewModel
 import com.tokopedia.shop.settings.common.di.DaggerShopSettingsComponent
 import com.tokopedia.shop.settings.common.util.*
@@ -50,12 +47,11 @@ import javax.inject.Inject
 class ShopSettingsInfoFragment : BaseDaggerFragment() {
 
     companion object {
-        const val EXTRA_TITLE = "extra_title"
         const val EXTRA_MESSAGE = "extra_message"
         const val EXTRA_IS_CLOSED_NOW = "extra_is_closed_now"
         const val EXTRA_SHOP_BASIC_DATA_MODEL = "extra_shop_basic_data_model"
         const val REQUEST_EDIT_BASIC_INFO = "request_edit_basic_info"
-        private const val REQUEST_EDIT_SCHEDULE = 782
+        const val REQUEST_EDIT_SCHEDULE = "request_edit_schedule"
     }
 
     @Inject
@@ -117,17 +113,11 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
     }
 
     private fun onItemMenuClicked(itemMenuTitle: String) {
-        when {
-            itemMenuTitle.equals(getString(R.string.schedule_your_shop_close), ignoreCase = true) -> {
-                shopBasicDataModel?.let { moveToShopEditScheduleFragment(it, getString(R.string.schedule_your_shop_close), false) }
+        when(itemMenuTitle) {
+            getString(R.string.label_close_shop_now) -> {
+                shopBasicDataModel?.let { moveToShopEditScheduleFragment(it, true) }
             }
-            itemMenuTitle.equals(getString(R.string.label_close_shop_now), ignoreCase = true) -> {
-                shopBasicDataModel?.let { moveToShopEditScheduleFragment(it, getString(R.string.label_close_shop_now), true) }
-            }
-            itemMenuTitle.equals(getString(R.string.change_schedule), ignoreCase = true) -> {
-                shopBasicDataModel?.let { moveToShopEditScheduleFragment(it, getString(R.string.change_schedule), false) }
-            }
-            itemMenuTitle.equals(getString(R.string.remove_schedule), ignoreCase = true) -> {
+            getString(R.string.remove_schedule) -> {
                 activity?.let { it ->
                     Dialog(it, Dialog.Type.PROMINANCE).apply {
                         setTitle(getString(R.string.remove_schedule))
@@ -151,7 +141,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
                     }
                 }
             }
-            itemMenuTitle.equals(getString(R.string.label_open_shop_now), ignoreCase = true) -> {
+            getString(R.string.label_open_shop_now) -> {
                 // open now
                 showSubmitLoading(getString(com.tokopedia.abstraction.R.string.title_loading))
                 shopSettingsInfoViewModel.updateShopSchedule(
@@ -161,6 +151,9 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
                         closeEnd = "",
                         closeNote = ""
                 )
+            }
+            else -> {
+                shopBasicDataModel?.let { moveToShopEditScheduleFragment(it, false) }
             }
         }
     }
@@ -207,10 +200,9 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
         findNavController().navigate(destination)
     }
 
-    private fun moveToShopEditScheduleFragment(shopBasicDataModel: ShopBasicDataModel, title: String, isClosedNow: Boolean) {
+    private fun moveToShopEditScheduleFragment(shopBasicDataModel: ShopBasicDataModel, isClosedNow: Boolean) {
         val cacheManager = SaveInstanceCacheManager(requireContext(), true).apply {
             put(EXTRA_SHOP_BASIC_DATA_MODEL, shopBasicDataModel)
-            put(EXTRA_TITLE, title)
             put(EXTRA_IS_CLOSED_NOW, isClosedNow)
         }
         val destination = ShopSettingsInfoFragmentDirections.actionShopSettingsInfoFragmentToShopEditScheduleFragment()
@@ -314,24 +306,6 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
         tvSave?.hide()
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        when (requestCode) {
-            REQUEST_EDIT_SCHEDULE -> if (resultCode == Activity.RESULT_OK) {
-                needReload = true
-                if (requestCode == REQUEST_EDIT_SCHEDULE && data != null) {
-                    data.getStringExtra(ShopEditScheduleActivity.EXTRA_MESSAGE)?.apply {
-                        if (this.isNotBlank()) {
-                            view?.let {
-                                Toaster.make(it, this, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL)
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-
     override fun onResume() {
         super.onResume()
         if (needReload) {
@@ -361,6 +335,19 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
                 }
             }
             removeNavigationResult(REQUEST_EDIT_BASIC_INFO)
+        })
+        getNavigationResult(REQUEST_EDIT_SCHEDULE)?.observe(viewLifecycleOwner, Observer { bundle ->
+            bundle?.let { data ->
+                needReload = true
+                data.getString(EXTRA_MESSAGE)?.apply {
+                    if (this.isNotBlank()) {
+                        view?.let {
+                            Toaster.make(it, this, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL)
+                        }
+                    }
+                }
+            }
+            removeNavigationResult(REQUEST_EDIT_SCHEDULE)
         })
     }
 

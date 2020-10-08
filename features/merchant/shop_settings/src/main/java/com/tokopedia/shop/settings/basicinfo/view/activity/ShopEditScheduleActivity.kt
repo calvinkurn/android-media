@@ -25,7 +25,7 @@ import com.tokopedia.shop.settings.basicinfo.view.presenter.UpdateShopSchedulePr
 import com.tokopedia.shop.settings.common.di.DaggerShopSettingsComponent
 import com.tokopedia.shop.settings.common.util.*
 import com.tokopedia.unifycomponents.Toaster
-import kotlinx.android.synthetic.main.activity_shop_edit_schedule.*
+import kotlinx.android.synthetic.main.fragment_shop_edit_schedule.*
 import java.util.*
 import javax.inject.Inject
 
@@ -122,8 +122,8 @@ class ShopEditScheduleActivity : BaseSimpleActivity(), UpdateShopSchedulePresent
             }
         })
 
-        tvSave.visibility = View.VISIBLE
-        tvSave.setOnClickListener { onSaveButtonClicked() }
+   //     tvSave.visibility = View.VISIBLE
+    //    tvSave.setOnClickListener { onSaveButtonClicked() }
     }
 
     override fun getToolbarResourceID(): Int {
@@ -279,7 +279,7 @@ class ShopEditScheduleActivity : BaseSimpleActivity(), UpdateShopSchedulePresent
     }
 
     override fun getLayoutRes(): Int {
-        return R.layout.activity_shop_edit_schedule
+        return R.layout.fragment_shop_edit_schedule
     }
 
     companion object {

@@ -10,7 +10,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -62,13 +61,6 @@ class ShopEditBasicInfoFragment: Fragment() {
         private const val MAX_FILE_SIZE_IN_KB = 10240
         private const val REQUEST_CODE_IMAGE = 846
         private const val MIN_INPUT_LENGTH = 3
-
-        @JvmStatic
-        fun newInstance(bundle: Bundle?): ShopEditBasicInfoFragment {
-            return ShopEditBasicInfoFragment().apply {
-                arguments = bundle
-            }
-        }
     }
 
     @Inject
