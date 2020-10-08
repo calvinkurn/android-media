@@ -12,6 +12,7 @@ import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.shop.common.constant.ShowcasePickerType
 import com.tokopedia.shop.common.data.model.ShowcaseItemPicker
+import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 import com.tokopedia.shop_showcase.R
 import com.tokopedia.shop_showcase.shop_showcase_management.data.model.ShowcaseList.ShowcaseItem
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
@@ -25,7 +26,7 @@ class ShopShowcasePickerAdapter(
 
     private var totalCheckedItem = 0
     private var lastSelectedRadioPosition = -1
-    private var showcaseList: List<ShowcaseItem> = listOf()
+    private var showcaseList: List<ShopEtalaseModel> = listOf()
     private var preSelectedShowcaseList: List<ShowcaseItemPicker> = listOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShopShowcasePickerViewHolder {
@@ -44,7 +45,7 @@ class ShopShowcasePickerAdapter(
             holder.btnRadioPicker?.isChecked = (lastSelectedRadioPosition == position)
     }
 
-    fun updateDataSet(newList: List<ShowcaseItem> = listOf(), preSelectedShowcase: List<ShowcaseItemPicker>? = listOf(), totalChecked: Int = 0) {
+    fun updateDataSet(newList: List<ShopEtalaseModel> = listOf(), preSelectedShowcase: List<ShowcaseItemPicker>? = listOf(), totalChecked: Int = 0) {
         if(preSelectedShowcase?.size.isMoreThanZero()) {
             preSelectedShowcase?.let {
                 preSelectedShowcaseList = it
@@ -81,7 +82,7 @@ class ShopShowcasePickerAdapter(
             itemView.tv_showcase_name
         }
 
-        fun bind(item: ShowcaseItem) {
+        fun bind(item: ShopEtalaseModel) {
             tvShowcaseName?.text = item.name
 
             if(pickerType == ShowcasePickerType.RADIO) {
@@ -137,7 +138,7 @@ class ShopShowcasePickerAdapter(
     }
 
     interface PickerClickListener {
-        fun onPickerItemClicked(item: ShowcaseItem, totalCheckedItem: Int)
+        fun onPickerItemClicked(item: ShopEtalaseModel, totalCheckedItem: Int)
         fun onPickerMaxSelectedShowcase()
     }
 }
