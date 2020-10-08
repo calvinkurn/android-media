@@ -23,6 +23,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.play.core.splitcompat.SplitCompat
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.webview.CommonWebViewClient
 import com.tokopedia.abstraction.base.view.webview.FilePickerInterface
@@ -125,7 +126,6 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
                 window?.statusBarColor = resources.getColor(R.color.tkpd_status_green_payment_module)
             }
         }
-
         initInjector()
         intent.extras?.let {
             setupBundlePass(it)
@@ -134,6 +134,11 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
         initVar()
         setViewListener()
         setActionVar()
+    }
+
+    override fun attachBaseContext(newBase: Context?) {
+        super.attachBaseContext(newBase)
+        SplitCompat.installActivity(this)
     }
 
     private fun initInjector() {

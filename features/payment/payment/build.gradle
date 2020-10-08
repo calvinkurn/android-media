@@ -35,6 +35,7 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
 
+    implementation rootProject.ext.playServicesDependencies.core
     implementation rootProject.ext.miscDependencies.multiDex
 }
 
