@@ -232,4 +232,6 @@ public class RemoteConfigKey {
 
     public static final String HOME_ENABLE_PAGINATION = "android_customer_home_enable_pagination";
     public static final String HOME_ENABLE_SHARED_PREF_CACHE = "android_customer_home_enable_shared_pref_cache";
+
+    public static final String GOOGLE_NEW_CLIENT_ID = "android_main_app_enabled_new_google_client_id";
 }

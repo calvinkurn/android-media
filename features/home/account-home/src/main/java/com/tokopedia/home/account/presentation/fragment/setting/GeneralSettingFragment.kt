@@ -95,7 +95,7 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
         }
 
         val googleSignInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getGoogleClientId())
+                .requestIdToken(getGoogleClientId(context))
                 .requestEmail()
                 .requestProfile()
                 .build()

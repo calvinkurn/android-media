@@ -178,7 +178,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
 
         activity?.run {
             val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                    .requestIdToken(getGoogleClientId())
+                    .requestIdToken(getGoogleClientId(context))
                     .requestEmail()
                     .requestProfile()
                     .build()

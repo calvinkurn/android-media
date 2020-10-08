@@ -117,7 +117,7 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
 
     private fun initGoogleClient() {
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).apply {
-            requestIdToken(getGoogleClientId())
+            requestIdToken(getGoogleClientId(this@LogoutActivity))
             requestEmail()
             requestProfile()
         }.build()
