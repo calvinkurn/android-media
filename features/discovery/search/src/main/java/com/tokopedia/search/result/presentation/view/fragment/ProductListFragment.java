@@ -985,6 +985,13 @@ public class ProductListFragment
         return getOptionListFromFilterController();
     }
 
+    @Override
+    public void onEmptySearchToGlobalSearchClicked(String applink) {
+        if (redirectionListener == null) return;
+
+        redirectionListener.startActivityWithApplink(applink);
+    }
+
     private List<Option> getOptionListFromFilterController() {
         if (filterController == null) return new ArrayList<>();
 

@@ -35,6 +35,7 @@ import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
 import com.tokopedia.topads.sdk.widget.TopAdsBannerView;
+import com.tokopedia.unifycomponents.UnifyButton;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,6 +54,7 @@ public class ProductEmptySearchViewHolder extends AbstractViewHolder<EmptySearch
     protected final EmptyStateListener emptyStateListener;
     private final BannerAdsListener bannerAdsListener;
     private TopAdsBannerView topAdsBannerView;
+    private UnifyButton buttonEmptySearchToGlobalSearch;
     protected RecyclerView selectedFilterRecyclerView;
     private ProductSelectedFilterAdapter productSelectedFilterAdapter;
     private EmptySearchProductViewModel boundedEmptySearchModel;
@@ -62,6 +64,7 @@ public class ProductEmptySearchViewHolder extends AbstractViewHolder<EmptySearch
         noResultImage = view.findViewById(R.id.no_result_image);
         emptyContentTextView = view.findViewById(R.id.text_view_empty_content_text);
         emptyButtonItemButton = view.findViewById(R.id.button_add_promo);
+        buttonEmptySearchToGlobalSearch = view.findViewById(R.id.buttonEmptySearchToGlobalSearch);
         this.emptyStateListener = emptyStateListener;
         this.bannerAdsListener = bannerAdsListener;
         context = itemView.getContext();
@@ -145,6 +148,7 @@ public class ProductEmptySearchViewHolder extends AbstractViewHolder<EmptySearch
         bindNewSearchButton();
         bindRecylerView();
         bindBannerAds();
+        bindGlobalSearchButton();
     }
 
     private void bindNoResultImage() {
@@ -192,6 +196,24 @@ public class ProductEmptySearchViewHolder extends AbstractViewHolder<EmptySearch
         if (topAdsParams != null) {
             loadBannerAds();
         }
+    }
+
+    private void bindGlobalSearchButton() {
+        if (buttonEmptySearchToGlobalSearch == null) return;
+
+        if (boundedEmptySearchModel.isLocalSearch()) {
+            buttonEmptySearchToGlobalSearch.setVisibility(View.VISIBLE);
+            buttonEmptySearchToGlobalSearch.setOnClickListener(this::onEmptySearchToGlobalSearchClicked);
+        }
+        else {
+            buttonEmptySearchToGlobalSearch.setVisibility(View.GONE);
+        }
+    }
+
+    private void onEmptySearchToGlobalSearchClicked(View view) {
+        if (emptyStateListener == null) return;
+
+        emptyStateListener.onEmptySearchToGlobalSearchClicked(boundedEmptySearchModel.getGlobalSearchApplink());
     }
 
     private static class ProductSelectedFilterAdapter extends RecyclerView.Adapter<ProductSelectedFilterItemViewHolder> {
