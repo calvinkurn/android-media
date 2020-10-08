@@ -1,7 +1,5 @@
 package com.tokopedia.flight.airportv2.di
 
-import android.content.Context
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.flight.airportv2.data.FlightAirportQuery
 import com.tokopedia.flight.airportv2.domain.FlightAirportPopularCityUseCase
 import com.tokopedia.flight.airportv2.domain.FlightAirportSuggestionUseCase
@@ -20,13 +18,13 @@ class FlightAirportModule {
     @Provides
     @FlightAirportScope
     @Named(FlightAirportPopularCityUseCase.NAMED_FLIGHT_AIRPORT_POPULAR_CITY_QUERY)
-    fun provideFlightAirportPopularCityQuery(@ApplicationContext context: Context) =
+    fun provideFlightAirportPopularCityQuery() =
             FlightAirportQuery.QUERY_AIRPORT_POPULAR_CITY
 
     @Provides
     @FlightAirportScope
     @Named(FlightAirportSuggestionUseCase.NAMED_FLIGHT_AIRPORT_SUGGESTION_QUERY)
-    fun provideFlightAirportSuggestionQuery(@ApplicationContext context: Context) =
+    fun provideFlightAirportSuggestionQuery() =
             FlightAirportQuery.QUERY_AIRPORT_SUGGESTION
 
 }
