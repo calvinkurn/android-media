@@ -71,6 +71,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import rx.subscriptions.CompositeSubscription;
+
 import static com.tokopedia.purchase_platform.common.feature.insurance.TransactionalInsuranceUtilsKt.PAGE_TYPE_CHECKOUT;
 
 
@@ -106,6 +108,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     private ShipmentDataRequestConverter shipmentDataRequestConverter;
     private RatesDataConverter ratesDataConverter;
+    private CompositeSubscription compositeSubscription;
 
     private boolean isShowOnboarding;
     private boolean hasShownShowCase;
@@ -198,7 +201,10 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         } else if (viewType == ShipmentEmasViewHolder.ITEM_VIEW_EMAS) {
             return new ShipmentEmasViewHolder(view, shipmentAdapterActionListener);
         } else if (viewType == ShipmentButtonPaymentViewHolder.getITEM_VIEW_PAYMENT_BUTTON()) {
-            return new ShipmentButtonPaymentViewHolder(view, shipmentAdapterActionListener);
+            if (compositeSubscription == null || compositeSubscription.isUnsubscribed()) {
+                compositeSubscription = new CompositeSubscription();
+            }
+            return new ShipmentButtonPaymentViewHolder(view, shipmentAdapterActionListener, compositeSubscription);
         } else if (viewType == InsuranceCartShopViewHolder.TYPE_VIEW_INSURANCE_CART_SHOP) {
             return new InsuranceCartShopViewHolder(view, insuranceItemActionlistener);
         } else if (viewType == TickerAnnouncementViewHolder.Companion.getLAYOUT()) {
@@ -274,6 +280,11 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             insuranceItemActionlistener.sendEventInsuranceImpressionForShipment(((InsuranceCartShopViewHolder) holder).getProductTitle());
         }
     }
+
+    public void clearCompositeSubscription() {
+        compositeSubscription.clear();
+    }
+
 
     private void setShowCase(Context context) {
         if (!hasShownShowCase && isShowOnboarding) {

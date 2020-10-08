@@ -730,11 +730,19 @@ class CreateReviewFragment : BaseDaggerFragment(),
     }
 
     private fun showLoading() {
-        createReviewSubmitButton.isLoading = true
+        createReviewSubmitButton.apply {
+            isLoading = true
+            setOnClickListener(null)
+        }
     }
 
     private fun stopLoading() {
-        createReviewSubmitButton.isLoading = false
+        createReviewSubmitButton.apply {
+            isLoading = false
+            setOnClickListener {
+                submitReview()
+            }
+        }
     }
 
     private fun showLayout() {
