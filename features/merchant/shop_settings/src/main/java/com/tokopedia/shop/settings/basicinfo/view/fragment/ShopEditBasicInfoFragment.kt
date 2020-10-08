@@ -127,6 +127,11 @@ class ShopEditBasicInfoFragment: Fragment() {
         viewModel.detachView()
     }
 
+    override fun onPause() {
+        super.onPause()
+        dismissToaster()
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_CODE_IMAGE && resultCode == Activity.RESULT_OK && data != null) {
@@ -136,6 +141,13 @@ class ShopEditBasicInfoFragment: Fragment() {
             }
             needUpdatePhotoUI = true
             determineSubmitButton()
+        }
+    }
+
+    private fun dismissToaster() {
+        view?.let {
+            Toaster.snackBar = Snackbar.make(it, "", Snackbar.LENGTH_SHORT)
+            Toaster.snackBar.dismiss()
         }
     }
 

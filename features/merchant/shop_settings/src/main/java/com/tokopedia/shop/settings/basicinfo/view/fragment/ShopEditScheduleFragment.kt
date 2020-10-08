@@ -93,10 +93,22 @@ class ShopEditScheduleFragment : Fragment() {
         viewModel.detachView()
     }
 
+    override fun onPause() {
+        super.onPause()
+        dismissToaster()
+    }
+
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putLong(SAVED_SELECTED_START_DATE, selectedStartCloseUnixTimeMs)
         outState.putLong(SAVED_SELECTED_END_DATE, selectedEndCloseUnixTimeMs)
+    }
+
+    private fun dismissToaster() {
+        view?.let {
+            Toaster.snackBar = Snackbar.make(it, "", Snackbar.LENGTH_SHORT)
+            Toaster.snackBar.dismiss()
+        }
     }
 
     private fun initInjector() {

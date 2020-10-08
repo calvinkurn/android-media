@@ -18,6 +18,7 @@
                     android:host="@string/host_marketplace"
                     android:pathPattern="@string/path_shop_settings_info"/>
             </intent-filter>
+            <nav-graph android:value="@navigation/shop_settings_navigation" />
         </activity>
 
         <activity

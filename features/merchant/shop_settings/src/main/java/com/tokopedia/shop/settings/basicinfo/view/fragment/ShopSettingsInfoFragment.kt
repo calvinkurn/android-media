@@ -185,7 +185,6 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
         loadShopBasicData()
         shopSettingsInfoViewModel.validateOsMerchantType(shopId.toInt())
 
-        initializeToaster()
         onFragmentResult()
 
         observeShopBasicData()
@@ -194,7 +193,12 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
         observeUpdateScheduleData()
     }
 
-    private fun initializeToaster() {
+    override fun onPause() {
+        super.onPause()
+        dismissToaster()
+    }
+
+    private fun dismissToaster() {
         view?.let {
             Toaster.snackBar = Snackbar.make(it, "", Snackbar.LENGTH_SHORT)
             Toaster.snackBar.dismiss()
