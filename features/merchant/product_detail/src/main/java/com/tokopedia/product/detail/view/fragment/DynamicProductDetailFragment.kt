@@ -194,9 +194,13 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         ViewModelProvider(this, viewModelFactory).get(DynamicProductDetailViewModel::class.java)
     }
 
-    private val nplFollowersButton by lazy{
+    private val nplFollowersButton by lazy {
         base_btn_follow?.run {
-            PartialButtonShopFollowersView.build(this, this@DynamicProductDetailFragment)
+            if (viewModel.p2Data.value?.restrictionInfo?.restrictionData?.firstOrNull()?.alreadyFollowShop == false) {
+                PartialButtonShopFollowersView.build(this, this@DynamicProductDetailFragment)
+            } else {
+                null
+            }
         }
     }
 

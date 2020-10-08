@@ -47,6 +47,8 @@ class PartialButtonShopFollowersView private constructor(val view: View, private
             followersTitle = findViewById(R.id.shop_followers_title)
             followersDesc = findViewById(R.id.shop_followers_desc)
             followersBtn = findViewById(R.id.shop_followers_btn)
+
+            setupRoundedTopShadow()
         }
     }
 
@@ -56,20 +58,15 @@ class PartialButtonShopFollowersView private constructor(val view: View, private
             return@with
         }
 
-        setOnClickListener {
-
-        }
-
         shop_followers_title.text = title
         shop_followers_desc.text = desc
 
-        setupRoundedTopShadow()
         setupButtonFollowers()
+        setOnClickListener {}
 
         followersImageAsset?.run {
             ImageHandler.loadImageWithoutPlaceholderAndError(this, SHOP_FOLLOWERS_IMG_ASSET)
         }
-
         setupVisibility = true
     }
 
