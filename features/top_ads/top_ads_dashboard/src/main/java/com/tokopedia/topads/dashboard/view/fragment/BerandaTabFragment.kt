@@ -45,6 +45,7 @@ import com.tokopedia.topads.dashboard.view.sheet.CustomDatePicker
 import com.tokopedia.topads.dashboard.view.sheet.DatePickerSheet
 import com.tokopedia.topads.debit.autotopup.data.model.AutoTopUpStatus
 import com.tokopedia.topads.debit.autotopup.view.activity.TopAdsAddCreditActivity
+import com.tokopedia.topads.debit.autotopup.view.activity.TopAdsEditAutoTopUpActivity
 import kotlinx.android.synthetic.main.partial_top_ads_dashboard_statistics.*
 import kotlinx.android.synthetic.main.topads_dash_fragment_beranda_base.*
 import kotlinx.android.synthetic.main.topads_dash_layout_hari_ini.*
@@ -138,6 +139,9 @@ open class BerandaTabFragment : BaseDaggerFragment(), CustomDatePicker.ActionLis
         }
         goToInsights.setOnClickListener {
             insightCallBack?.gotToInsights()
+        }
+        autoTopUp?.setOnClickListener {
+            startActivity(Intent(context, TopAdsEditAutoTopUpActivity::class.java))
         }
 
         setDateRangeText(SEVEN_DAYS_RANGE_INDEX)

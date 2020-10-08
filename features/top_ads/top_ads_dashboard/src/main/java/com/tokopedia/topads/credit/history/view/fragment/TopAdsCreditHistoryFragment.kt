@@ -29,7 +29,6 @@ import com.tokopedia.topads.dashboard.view.sheet.DatePickerSheet
 import com.tokopedia.topads.debit.autotopup.data.model.AutoTopUpStatus
 import com.tokopedia.topads.debit.autotopup.view.activity.TopAdsAddCreditActivity
 import com.tokopedia.topads.debit.autotopup.view.activity.TopAdsEditAutoTopUpActivity
-import com.tokopedia.unifycomponents.Label
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_topads_credit_history.*
@@ -96,9 +95,9 @@ class TopAdsCreditHistoryFragment : BaseListFragment<CreditHistory, TopAdsCredit
         card_auto_topup_status.visibility = View.VISIBLE
         auto_topup_status.text = data.statusDesc
         if (data.status == ACTIVE_STATUS) {
-            auto_topup_status.setLabelType(Label.GENERAL_DARK_GREEN)
+            auto_topup_status.setTextColor(resources.getColor(com.tokopedia.topads.common.R.color.topads_common_select_color_checked))
         } else {
-            auto_topup_status.setLabelType(Label.GENERAL_LIGHT_GREY)
+            auto_topup_status.setTextColor(resources.getColor(com.tokopedia.topads.common.R.color.topads_common_text_disabled))
         }
     }
 
@@ -248,13 +247,11 @@ class TopAdsCreditHistoryFragment : BaseListFragment<CreditHistory, TopAdsCredit
     private fun onSuccessGetCredit(creditHistory: TopAdsCreditHistory) {
         topads_credit_addition.text = creditHistory.totalAdditionFmt
         topads_credit_used.text = creditHistory.totalUsedFmt
-        card_credit_summary.visibility = View.VISIBLE
         super.renderList(creditHistory.creditHistory)
     }
 
     private fun onErrorGetCredit(t: Throwable?) {
         super.showGetListError(t)
-        card_credit_summary.visibility = View.GONE
     }
 
     override fun onDestroy() {

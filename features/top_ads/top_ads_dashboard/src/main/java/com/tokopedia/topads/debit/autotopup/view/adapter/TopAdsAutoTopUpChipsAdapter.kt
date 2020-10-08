@@ -5,8 +5,8 @@ import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.topads.dashboard.R
-import com.tokopedia.topads.dashboard.data.model.CreditResponse
-import com.tokopedia.topads.dashboard.data.model.DataCredit
+import com.tokopedia.topads.debit.autotopup.data.model.AutoTopUpItem
+import com.tokopedia.topads.debit.autotopup.data.model.AutoTopUpStatus
 import com.tokopedia.topads.debit.autotopup.view.adapter.viewholder.TopAdsAutoTopUPCreditOptionViewHolder
 
 
@@ -16,7 +16,7 @@ class TopAdsAutoTopUpChipsAdapter : RecyclerView.Adapter<TopAdsAutoTopUPCreditOp
     private var itemLayout = R.layout.topads_dash_credit_option_chip
     private var selectedTabPosition = 0
     private var listener: OnCreditOptionItemClicked? = null
-    private val chipsList: MutableList<DataCredit> = mutableListOf()
+    private val chipsList: MutableList<AutoTopUpItem> = mutableListOf()
 
     fun setListener(listener: OnCreditOptionItemClicked) {
         this.listener = listener
@@ -36,9 +36,9 @@ class TopAdsAutoTopUpChipsAdapter : RecyclerView.Adapter<TopAdsAutoTopUPCreditOp
         holder.toggleActivate(position == selectedTabPosition)
     }
 
-    fun setChipData(data: CreditResponse) {
+    fun setChipData(data: AutoTopUpStatus?) {
         chipsList.clear()
-        data.credit.forEach {
+        data?.availableNominals?.forEach {
             chipsList.add(it)
         }
         notifyDataSetChanged()
@@ -50,11 +50,6 @@ class TopAdsAutoTopUpChipsAdapter : RecyclerView.Adapter<TopAdsAutoTopUPCreditOp
     }
 
     override fun getItemCount() = chipsList.size
-
-    fun setSelected(pos: Int) {
-        selectedTabPosition = pos
-        notifyDataSetChanged()
-    }
 
     interface OnCreditOptionItemClicked {
         fun onItemClicked(position: Int)

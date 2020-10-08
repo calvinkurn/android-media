@@ -6,12 +6,10 @@ import android.view.View
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.GridLayoutManager
 import com.tokopedia.topads.common.data.util.Utils
-import com.tokopedia.topads.common.data.util.Utils.removeCommaRawString
 import com.tokopedia.topads.dashboard.R
-import com.tokopedia.topads.dashboard.data.model.CreditResponse
+import com.tokopedia.topads.dashboard.data.utils.Utils.calculatePercentage
+import com.tokopedia.topads.debit.autotopup.data.model.AutoTopUpStatus
 import com.tokopedia.topads.debit.autotopup.view.adapter.TopAdsAutoTopUpChipsAdapter
-import com.tokopedia.topads.debit.autotopup.view.fragment.TopAdsEditAutoTopUpFragment.Companion.CREDIT_AMOUNT
-import com.tokopedia.topads.debit.autotopup.view.fragment.TopAdsEditAutoTopUpFragment.Companion.MIN_CREDIT_25
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.main.topads_dash_choose_auto_topup_sheet_layout.*
 import kotlinx.android.synthetic.main.topads_dash_choose_topup_layout.*
@@ -22,7 +20,7 @@ import kotlinx.android.synthetic.main.topads_dash_choose_topup_layout.*
 
 class TopAdsChooseTopUpAmountSheet : BottomSheetUnify() {
 
-    private lateinit var data: CreditResponse
+    private var data: AutoTopUpStatus? = null
     var onCancel: (() -> Unit)? = null
     var onSaved: ((positionSelected: Int) -> Unit)? = null
     var bonus: Int = 0
@@ -45,34 +43,17 @@ class TopAdsChooseTopUpAmountSheet : BottomSheetUnify() {
     }
 
     fun show(fragmentManager: FragmentManager,
-             data: CreditResponse, bonus: Int) {
+             data: AutoTopUpStatus?, bonus: Int) {
         this.data = data
         this.bonus = bonus
         show(fragmentManager, TOPADS_BOTTOM_SHEET_TAG)
     }
 
-
-    private fun setinitialState() {
-        dedAmount?.text = MIN_CREDIT_25
-        deductionDesc?.visibility = View.GONE
-    }
-
-    private fun calculateBonus(productPrice: String): Int {
-        val price = productPrice.removeCommaRawString()
-        var result = 0
-        if (price.isNotEmpty())
-            result = (price.toInt() * bonus) / 100
-        return result
-
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        if (data.credit.firstOrNull()?.productPrice == CREDIT_AMOUNT) {
-            setinitialState()
-        }
-        bonusTxt.text = Html.fromHtml(String.format(getString(R.string.topads_dash_auto_topup_bonus_amount), Utils.convertToCurrency(calculateBonus(data.credit.firstOrNull()?.productPrice
-                ?: "1").toLong())))
+        bonusTxt.text = Html.fromHtml(String.format(getString(R.string.topads_dash_auto_topup_bonus_amount), Utils.convertToCurrency(calculatePercentage(data?.availableNominals?.firstOrNull()?.priceFmt
+                ?: "1", bonus)
+                .toLong())))
 
         adapter?.setChipData(data)
         creditOptionsRV?.adapter = adapter
@@ -85,16 +66,12 @@ class TopAdsChooseTopUpAmountSheet : BottomSheetUnify() {
         saveBtn?.setOnClickListener {
             dismiss()
             onSaved?.invoke(adapter?.getSelected() ?: 0)
-
         }
         adapter?.setListener(object : TopAdsAutoTopUpChipsAdapter.OnCreditOptionItemClicked {
             override fun onItemClicked(position: Int) {
-                bonusTxt.text = Html.fromHtml(String.format(getString(R.string.topads_dash_auto_topup_bonus_amount), Utils.convertToCurrency(calculateBonus(data.credit[position].productPrice).toLong())))
-                if (position == 0 && data.credit[position].productPrice == CREDIT_AMOUNT) {
-                    setinitialState()
-                } else {
-                    dedAmount?.text = data.credit[position].minCredit
-                    deductionDesc?.visibility = View.VISIBLE
+                data?.let {
+                    bonusTxt.text = Html.fromHtml(String.format(getString(R.string.topads_dash_auto_topup_bonus_amount), Utils.convertToCurrency(calculatePercentage(it?.availableNominals[position].priceFmt, bonus).toLong())))
+                    dedAmount?.text = it.availableNominals[position].minCreditFmt
                 }
             }
         })

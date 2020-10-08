@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.common.utils.view.DateFormatUtils.DEFAULT_LOCAL
 import com.tokopedia.datepicker.range.view.constant.DatePickerConstant
 import com.tokopedia.datepicker.range.view.model.PeriodRangeModel
 import com.tokopedia.topads.auto.view.fragment.AutoAdsBaseBudgetFragment
+import com.tokopedia.topads.common.data.util.Utils.removeCommaRawString
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.unifycomponents.SearchBarUnify
 import java.text.DateFormat
@@ -110,5 +111,13 @@ object Utils {
         return price.replace("Rp", "").
         replace(".", "").
         replace(",","").trim().toInt()
+    }
+
+    fun calculatePercentage(number: String, percent:Int): Int {
+        val price = number.removeCommaRawString()
+        var result = 0
+        if (price.isNotEmpty())
+            result = (price.toInt() * percent) / 100
+        return result
     }
 }

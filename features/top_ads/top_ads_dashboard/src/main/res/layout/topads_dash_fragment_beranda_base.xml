@@ -83,13 +83,12 @@
                                 app:typographyWeight="bold"
                                 tools:text="Rp 10.000.0000" />
 
-
                         </RelativeLayout>
 
                         <com.tokopedia.unifycomponents.ImageUnify
                             android:id="@+id/img_auto_debit"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+                            android:layout_width="@dimen/dp_12"
+                            android:layout_height="@dimen/dp_12"
                             android:layout_marginEnd="@dimen/dp_2"
                             android:visibility="gone"
                             app:layout_constraintBottom_toBottomOf="@id/autoTopUp"
@@ -108,7 +107,7 @@
                             app:layout_constraintBottom_toBottomOf="@id/creditLayout"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
-                            app:typographyType="heading_6"
+                            app:typographyType="body_3"
                             app:typographyWeight="bold"
                             tools:text="Rp 10.000.0000"
                             tools:visibility="visible" />
@@ -124,7 +123,7 @@
                             app:layout_constraintTop_toTopOf="parent"
                             app:unifyButtonSize="small"
                             app:unifyButtonType="transaction"
-                            app:unifyButtonVariant="filled" />
+                            app:unifyButtonVariant="ghost" />
                     </androidx.constraintlayout.widget.ConstraintLayout>
                 </com.tokopedia.unifycomponents.CardUnify>
 
