@@ -185,6 +185,9 @@
     <string name="review_create_text_area_empty">Bingung nulis apa? Ceritain aja pengalamanmu. &#128521;</string>
     <string name="review_create_text_area_partial">Ayo, tinggal dikit lagi kamu bisa dapat OVO Points. &#128588;&#127995;</string>
     <string name="review_create_text_area_eligible">Yay, ulasanmu udah lengkap! &#127881;</string>
+    <string name="review_create_rating_condition">Kasih ratingnya</string>
+    <string name="review_create_photo_condition">Lanjut foto barang, min. 1</string>
+    <string name="review_create_review_condition">Tulis ulasan min. 40 karakter</string>
 
 
 </resources>

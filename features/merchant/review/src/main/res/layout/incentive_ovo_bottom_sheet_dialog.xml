@@ -3,6 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:paddingBottom="@dimen/dp_12"
     android:id="@+id/layout_incentive_ovo"
     android:fillViewport="true"
     android:layout_width="match_parent"
@@ -56,6 +57,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/layout_lvl1"
+            android:text="@string/review_create_rating_condition"
             app:layout_constraintStart_toStartOf="@id/incentive_ovo_add_rating"
             app:layout_constraintEnd_toEndOf="@id/incentive_ovo_add_rating"
             app:layout_constraintTop_toBottomOf="@id/incentive_ovo_add_rating"
@@ -73,9 +75,11 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/incentive_ovo_add_image_text"
-            android:layout_width="wrap_content"
+            android:layout_width="@dimen/layout_lvl8"
+            android:gravity="center"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/layout_lvl1"
+            android:text="@string/review_create_photo_condition"
             app:layout_constraintStart_toStartOf="@id/incentive_ovo_add_image"
             app:layout_constraintEnd_toEndOf="@id/incentive_ovo_add_image"
             app:layout_constraintTop_toBottomOf="@id/incentive_ovo_add_image"
@@ -93,9 +97,11 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/incentive_ovo_add_review_text"
-            android:layout_width="wrap_content"
+            android:layout_width="@dimen/layout_lvl8"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/layout_lvl1"
+            android:gravity="center"
+            android:text="@string/review_create_review_condition"
             app:layout_constraintStart_toStartOf="@id/incentive_ovo_add_review"
             app:layout_constraintEnd_toEndOf="@id/incentive_ovo_add_review"
             app:layout_constraintTop_toBottomOf="@id/incentive_ovo_add_review"
@@ -113,6 +119,7 @@
             android:id="@+id/incentiveOvoDivider"
             android:layout_width="match_parent"
             android:layout_height="@dimen/layout_lvl1"
+            android:layout_marginTop="@dimen/layout_lvl3"
             app:layout_constraintTop_toBottomOf="@id/review_tnc_barrier"/>
 
         <com.tokopedia.unifyprinciples.Typography
@@ -136,7 +143,6 @@
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/incentiveOvoBtnContinueReview"
             android:layout_marginTop="@dimen/layout_lvl2"
-            android:layout_marginBottom="@dimen/dp_12"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@id/rvIncentiveOvoExplain"/>

@@ -481,8 +481,40 @@ class CreateReviewFragment : BaseDaggerFragment(),
             createReviewViewModel.editReview(feedbackId, reputationId, productId, shopId.toIntOrZero(),
                     createReviewScore.getScore(), reviewClickAt, reviewMessage, createReviewAnonymousCheckbox.isChecked)
         } else {
-            createReviewViewModel.submitReview(reputationId, productId, shopId.toIntOrZero(),
-                    createReviewScore.getScore(), reviewClickAt, reviewMessage, createReviewAnonymousCheckbox.isChecked)
+            if(isReviewComplete()) {
+                submitNewReview()
+                return
+            }
+            showReviewIncompleteDialog()
+        }
+    }
+
+    private fun submitNewReview() {
+        val reviewMessage = createReviewExpandableTextArea.getText()
+        createReviewViewModel.submitReview(reputationId, productId, shopId.toIntOrZero(),
+                createReviewScore.getScore(), reviewClickAt, reviewMessage, createReviewAnonymousCheckbox.isChecked)
+    }
+
+    private fun isReviewComplete(): Boolean {
+        val reviewMessage = createReviewExpandableTextArea.getText()
+        return (reviewMessage.length >= REVIEW_INCENTIVE_MINIMUM_THRESHOLD && reviewClickAt != 0 && createReviewViewModel.isImageNotEmpty())
+    }
+
+    private fun showReviewIncompleteDialog() {
+        context?.let {
+            DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
+                setTitle(getString(R.string.review_create_incomplete_title))
+                setDescription(getString(R.string.review_create_incomplete_subtitle))
+                setPrimaryCTAText(getString(R.string.review_create_incomplete_cancel))
+                setPrimaryCTAClickListener {
+                    dismiss()
+                }
+                setSecondaryCTAText(getString(R.string.review_create_incomplete_send_anyways))
+                setSecondaryCTAClickListener {
+                    submitNewReview()
+                }
+                show()
+            }
         }
     }
 

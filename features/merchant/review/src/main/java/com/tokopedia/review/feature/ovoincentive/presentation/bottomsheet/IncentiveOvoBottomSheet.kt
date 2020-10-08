@@ -4,14 +4,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.text.HtmlCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.review.R
 import com.tokopedia.review.common.analytics.ReviewTracking
 import com.tokopedia.review.feature.ovoincentive.data.ProductRevIncentiveOvoDomain
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.HtmlLinkHelper
 import kotlinx.android.synthetic.main.incentive_ovo_bottom_sheet_dialog.view.*
 import kotlinx.android.synthetic.main.item_incentive_ovo.view.*
 
@@ -51,7 +50,8 @@ class IncentiveOvoBottomSheet(private val productRevIncentiveOvoDomain: ProductR
             adapter = adapterIncentiveOvo
         }
         isFullpage = false
-        isDragable = true
+        showKnob = true
+        showCloseIcon = false
     }
 
     private inner class ProductRevIncentiveOvoAdapter(private val list: List<String>)
@@ -71,7 +71,7 @@ class IncentiveOvoBottomSheet(private val productRevIncentiveOvoDomain: ProductR
             fun bindHero(explanation: String) {
                 itemView.apply {
                     tgIncentiveOvoNumber.text = "${adapterPosition+1}."
-                    tgIncentiveOvoExplanation.text = HtmlCompat.fromHtml(explanation, HtmlCompat.FROM_HTML_MODE_LEGACY);
+                    tgIncentiveOvoExplanation.text = HtmlLinkHelper(context, explanation).spannedString
                 }
             }
         }
