@@ -1,0 +1,24 @@
+{
+  "readme": "Review Detail - click dot then click edit product",
+  "mode": "exact",
+  "query": [
+    {
+      "event" : "clickReview",
+      "eventCategory" : "review detail page",
+      "eventAction" : "click - three dots on review detail page",
+      "eventLabel" : "{{.*}}",
+      "shopId": "{{\\d{1,}}}",
+      "productId" : "{{\\d{1,}}}",
+      "screenName" : "review detail page"
+    },
+    {
+      "event" : "clickReview",
+      "eventCategory" : "review detail page",
+      "eventAction" : "click - three dots options on bottomsheet",
+      "eventLabel" : "{{options:.*}}",
+      "shopId": "{{\\d{1,}}}",
+      "productId" : "{{\\d{1,}}}",
+      "screenName" : "review detail page"
+    }
+  ]
+}
