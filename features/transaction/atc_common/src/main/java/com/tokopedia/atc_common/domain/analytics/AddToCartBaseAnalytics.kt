@@ -14,11 +14,11 @@ import timber.log.Timber
 object AddToCartBaseAnalytics {
 
     private const val AF_PARAM_CATEGORY = "category"
-    private const val AF_PARAM_CONTENT_ID = "id"
-    private const val AF_PARAM_CONTENT_QUANTITY = "quantity"
-    private const val AF_VALUE_CONTENT_TYPE = "product"
 
-    private const val BRANCH_VALUE_CONTENT_TYPE = "product"
+    private const val CONTENT_PARAM_PRODUCT_ID = "id"
+    private const val CONTENT_PARAM_QUANTITY = "quantity"
+
+    private const val CONTENT_TYPE = "product"
 
     const val VALUE_CURRENCY = "IDR"
 
@@ -31,11 +31,11 @@ object AddToCartBaseAnalytics {
 
     fun sendAppsFlyerTracking(productId: String, productName: String, price: String, quantity: String, category: String) {
         try {
-            val content = JSONArray().put(JSONObject().put(AF_PARAM_CONTENT_ID, productId).put(AF_PARAM_CONTENT_QUANTITY, quantity))
+            val content = JSONArray().put(JSONObject().put(CONTENT_PARAM_PRODUCT_ID, productId).put(CONTENT_PARAM_QUANTITY, quantity))
             TrackApp.getInstance().appsFlyer.sendEvent(AFInAppEventType.ADD_TO_CART,
                     mutableMapOf<String, Any>(
                             AFInAppEventParameterName.CONTENT_ID to productId,
-                            AFInAppEventParameterName.CONTENT_TYPE to AF_VALUE_CONTENT_TYPE,
+                            AFInAppEventParameterName.CONTENT_TYPE to CONTENT_TYPE,
                             AFInAppEventParameterName.DESCRIPTION to productName,
                             AFInAppEventParameterName.CURRENCY to VALUE_CURRENCY,
                             AFInAppEventParameterName.QUANTITY to quantity,
@@ -58,7 +58,7 @@ object AddToCartBaseAnalytics {
                 this.price = convertPriceToIntString(price)
                 this.quantity = quantity
                 this.catLvl1 = catLvl1
-                this.contentType = BRANCH_VALUE_CONTENT_TYPE
+                this.contentType = CONTENT_TYPE
                 this.level1Id = level1Id
                 this.level1Name = level1Name
                 this.level2Id = level2Id
@@ -67,6 +67,7 @@ object AddToCartBaseAnalytics {
                 // level 3 name should always be the same with catlvl1
                 this.level3Name = catLvl1
                 this.userId = userId
+                this.content = JSONArray().put(JSONObject().put(CONTENT_PARAM_PRODUCT_ID, productId).put(CONTENT_PARAM_QUANTITY, quantity)).toString()
             }
             LinkerManager.getInstance().sendEvent(LinkerUtils.createGenericRequest(LinkerConstants.EVENT_ADD_TO_CART, data))
         } catch (t: Throwable) {
