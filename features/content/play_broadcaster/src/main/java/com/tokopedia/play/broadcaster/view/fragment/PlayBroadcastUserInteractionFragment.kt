@@ -434,7 +434,10 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     private fun observeEvent() {
         parentViewModel.observableEvent.observe(viewLifecycleOwner, Observer {
             when {
-                it.freeze -> showDialogWhenTimeout()
+                it.freeze -> {
+                    showDialogWhenTimeout()
+                    analytic.viewDialogSeeReportOnLivePage(parentViewModel.channelId, parentViewModel.title)
+                }
                 it.banned -> {
                     showForceStopDialog(
                             title = it.title,
