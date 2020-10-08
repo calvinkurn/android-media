@@ -10,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -79,6 +80,7 @@ class ShopEditBasicInfoFragment: Fragment() {
         initInjector()
         initGqlClient()
         super.onCreate(savedInstanceState)
+        setupToolbar()
 
         savedLocalImageUrl = savedInstanceState?.getString(SAVED_IMAGE_PATH).orEmpty()
         arguments?.let {
@@ -95,7 +97,6 @@ class ShopEditBasicInfoFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setupToolbar()
         setupTextField()
         setupDomainSuggestion()
         setupShopAvatar()
@@ -121,13 +122,6 @@ class ShopEditBasicInfoFragment: Fragment() {
         }
     }
 
-    override fun onStop() {
-        super.onStop()
-        if (Toaster.snackBar.isShown) {
-            Toaster.snackBar.dismiss()
-        }
-    }
-
     override fun onDestroy() {
         super.onDestroy()
         viewModel.detachView()
@@ -150,6 +144,9 @@ class ShopEditBasicInfoFragment: Fragment() {
     }
 
     private fun setupToolbar() {
+        val toolbar: Toolbar? = activity?.findViewById(R.id.toolbar)
+        toolbar?.title = getString(R.string.shop_settings_basic_info)
+
         tvSave = activity?.findViewById(R.id.tvSave)
         tvSave?.show()
     }

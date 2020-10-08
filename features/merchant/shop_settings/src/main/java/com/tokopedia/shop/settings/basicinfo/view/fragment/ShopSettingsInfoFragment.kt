@@ -77,6 +77,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         GraphqlClient.init(requireContext())
         super.onCreate(savedInstanceState)
+        setupToolbar()
         shopId = userSession.shopId
     }
 
@@ -172,7 +173,6 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setupToolbar()
         btnChangeShopInfo.setOnClickListener {
             moveToShopEditBasicInfoFragment()
         }
@@ -184,12 +184,21 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
 
         loadShopBasicData()
         shopSettingsInfoViewModel.validateOsMerchantType(shopId.toInt())
+
+        initializeToaster()
         onFragmentResult()
 
         observeShopBasicData()
         observeShopStatus()
         observeOsMerchantData()
         observeUpdateScheduleData()
+    }
+
+    private fun initializeToaster() {
+        view?.let {
+            Toaster.snackBar = Snackbar.make(it, "", Snackbar.LENGTH_SHORT)
+            Toaster.snackBar.dismiss()
+        }
     }
 
     private fun moveToShopEditBasicInfoFragment() {
@@ -304,7 +313,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
 
     private fun setupToolbar() {
         val toolbar: Toolbar? = activity?.findViewById(R.id.toolbar)
-        toolbar?.title = getString(R.string.shop_settings_basic_info_title)
+        toolbar?.title = getString(R.string.shop_settings_manage_shop_info)
 
         val tvSave: TextView? = activity?.findViewById(R.id.tvSave)
         tvSave?.hide()

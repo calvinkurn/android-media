@@ -57,6 +57,7 @@ class ShopEditScheduleFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         initInjector()
         super.onCreate(savedInstanceState)
+        setupToolbar()
         if (savedInstanceState != null) {
             selectedStartCloseUnixTimeMs = savedInstanceState.getLong(SAVED_SELECTED_START_DATE)
             selectedEndCloseUnixTimeMs = savedInstanceState.getLong(SAVED_SELECTED_END_DATE)
@@ -85,13 +86,6 @@ class ShopEditScheduleFragment : Fragment() {
         }
 
         observeLiveData()
-    }
-
-    override fun onStop() {
-        super.onStop()
-        if (Toaster.snackBar.isShown) {
-            Toaster.snackBar.dismiss()
-        }
     }
 
     override fun onDestroy() {
@@ -160,8 +154,6 @@ class ShopEditScheduleFragment : Fragment() {
                 tilShopCloseNote.error = null
             }
         })
-
-        setupToolbar()
     }
 
     private fun setupToolbar() {

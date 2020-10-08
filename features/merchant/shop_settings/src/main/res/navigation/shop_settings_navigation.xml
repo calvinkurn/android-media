@@ -34,5 +34,7 @@
             android:name="cacheManagerId"
             app:argType="string"
             android:defaultValue='"0"' />
+        <deepLink
+            app:uri="tokopedia-android-internal://marketplace/shop-settings-edit-schedule"/>
     </fragment>
 </navigation>
