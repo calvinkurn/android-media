@@ -4,6 +4,7 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.flight.R
+import com.tokopedia.flight.airportv2.data.FlightAirportQuery
 import com.tokopedia.flight.airportv2.domain.FlightAirportPopularCityUseCase
 import com.tokopedia.flight.airportv2.domain.FlightAirportSuggestionUseCase
 import dagger.Module
@@ -22,7 +23,7 @@ class FlightAirportModule {
     @FlightAirportScope
     @Named(FlightAirportPopularCityUseCase.NAMED_FLIGHT_AIRPORT_POPULAR_CITY_QUERY)
     fun provideFlightAirportPopularCityQuery(@ApplicationContext context: Context) =
-            GraphqlHelper.loadRawString(context.resources, R.raw.flight_airport_popular_city)
+            FlightAirportQuery.QUERY_AIRPORT_POPULAR_CITY
 
     @Provides
     @FlightAirportScope
