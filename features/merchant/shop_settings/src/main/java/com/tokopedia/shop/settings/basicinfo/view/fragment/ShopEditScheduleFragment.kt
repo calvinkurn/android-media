@@ -15,6 +15,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.design.text.watcher.AfterTextWatcher
 import com.tokopedia.design.utils.StringUtils
+import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.shop.common.constant.ShopScheduleActionDef
 import com.tokopedia.shop.common.graphql.data.shopbasicdata.ShopBasicDataModel
@@ -24,15 +25,17 @@ import com.tokopedia.shop.settings.basicinfo.view.fragment.ShopSettingsInfoFragm
 import com.tokopedia.shop.settings.basicinfo.view.fragment.ShopSettingsInfoFragment.Companion.EXTRA_MESSAGE
 import com.tokopedia.shop.settings.basicinfo.view.fragment.ShopSettingsInfoFragment.Companion.EXTRA_SHOP_BASIC_DATA_MODEL
 import com.tokopedia.shop.settings.basicinfo.view.fragment.ShopSettingsInfoFragment.Companion.REQUEST_EDIT_SCHEDULE
-import com.tokopedia.shop.settings.basicinfo.view.presenter.UpdateShopSchedulePresenter
+import com.tokopedia.shop.settings.basicinfo.view.viewmodel.ShopScheduleViewModel
 import com.tokopedia.shop.settings.common.di.DaggerShopSettingsComponent
 import com.tokopedia.shop.settings.common.util.*
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_shop_edit_schedule.*
 import java.util.*
 import javax.inject.Inject
 
-class ShopEditScheduleFragment : Fragment(), UpdateShopSchedulePresenter.View {
+class ShopEditScheduleFragment : Fragment() {
 
     companion object {
         private const val SAVED_SELECTED_START_DATE = "svd_selected_start_date"
@@ -40,7 +43,7 @@ class ShopEditScheduleFragment : Fragment(), UpdateShopSchedulePresenter.View {
     }
 
     @Inject
-    lateinit var updateShopSchedulePresenter: UpdateShopSchedulePresenter
+    lateinit var viewModel: ShopScheduleViewModel
 
     private var progressDialog: ProgressDialog? = null
     private var shopBasicDataModel: ShopBasicDataModel? = null
@@ -75,39 +78,15 @@ class ShopEditScheduleFragment : Fragment(), UpdateShopSchedulePresenter.View {
         } else {
             // execute get shop basic data use case
             showSubmitLoading(getString(com.tokopedia.abstraction.R.string.title_loading))
-            updateShopSchedulePresenter.getShopBasicData()
+            viewModel.getShopBasicData()
         }
+
+        observeLiveData()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        updateShopSchedulePresenter.detachView()
-    }
-
-    override fun onSuccessUpdateShopSchedule(successMessage: String) {
-        hideSubmitLoading()
-
-        val bundle = Bundle().apply {
-            putString(EXTRA_MESSAGE, successMessage)
-        }
-        setNavigationResult(bundle, REQUEST_EDIT_SCHEDULE)
-        findNavController().navigateUp()
-    }
-
-    override fun onErrorUpdateShopSchedule(throwable: Throwable) {
-        hideSubmitLoading()
-        showSnackbarErrorSubmitEdit(throwable)
-    }
-
-    override fun onSuccessGetShopBasicData(shopBasicDataModel: ShopBasicDataModel) {
-        this.shopBasicDataModel = shopBasicDataModel
-        setupView(shopBasicDataModel)
-        hideSubmitLoading()
-    }
-
-    override fun onErrorGetShopBasicData(throwable: Throwable) {
-        hideSubmitLoading()
-        showErrorMessage(throwable, View.OnClickListener { updateShopSchedulePresenter.getShopBasicData() })
+        viewModel.detachView()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -179,6 +158,59 @@ class ShopEditScheduleFragment : Fragment(), UpdateShopSchedulePresenter.View {
         }
     }
 
+    private fun observeLiveData() {
+        observeGetShopBasicData()
+        observeUpdateShopSchedule()
+    }
+
+    private fun observeGetShopBasicData() {
+        observe(viewModel.shopBasicData) { result ->
+            result?.let {
+                when(it) {
+                    is Success -> onSuccessGetShopBasicData(it.data)
+                    is Fail -> onFailGetShopBasicData(it.throwable)
+                }
+            }
+        }
+    }
+
+    private fun observeUpdateShopSchedule() {
+        observe(viewModel.message) { result ->
+            result?.let {
+                when(it) {
+                    is Success -> onSuccessUpdateShopSchedule(it.data)
+                    is Fail -> onFailUpdateShopSchedule(it.throwable)
+                }
+            }
+        }
+    }
+
+    private fun onSuccessGetShopBasicData(shopBasicDataModel: ShopBasicDataModel) {
+        this.shopBasicDataModel = shopBasicDataModel
+        setupView(shopBasicDataModel)
+        hideSubmitLoading()
+    }
+
+    private fun onFailGetShopBasicData(throwable: Throwable) {
+        hideSubmitLoading()
+        showErrorMessage(throwable, View.OnClickListener { viewModel.getShopBasicData() })
+    }
+
+    private fun onSuccessUpdateShopSchedule(message: String) {
+        hideSubmitLoading()
+
+        val bundle = Bundle().apply {
+            putString(EXTRA_MESSAGE, message)
+        }
+        setNavigationResult(bundle, REQUEST_EDIT_SCHEDULE)
+        findNavController().navigateUp()
+    }
+
+    private fun onFailUpdateShopSchedule(throwable: Throwable) {
+        hideSubmitLoading()
+        showSnackbarErrorSubmitEdit(throwable)
+    }
+
     private fun showStartDatePickerDialog(selectedDate: Date, minDate: Date) {
         val calendar = Calendar.getInstance()
         calendar.time = selectedDate
@@ -229,7 +261,7 @@ class ShopEditScheduleFragment : Fragment(), UpdateShopSchedulePresenter.View {
             ShopScheduleActionDef.OPEN
         val closeStart = selectedStartCloseUnixTimeMs
         val closeEnd = selectedEndCloseUnixTimeMs
-        updateShopSchedulePresenter.updateShopSchedule(
+        viewModel.updateShopSchedule(
                 shopAction,
                 isClosedNow,
                 if (closeStart == 0L) null else closeStart.toString(),
