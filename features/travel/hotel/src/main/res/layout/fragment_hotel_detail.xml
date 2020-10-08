@@ -239,8 +239,8 @@
 
                             <androidx.appcompat.widget.AppCompatImageView
                                 android:id="@+id/iv_hotel_safety_badge_icon"
-                                android:layout_width="@dimen/dp_12"
-                                android:layout_height="@dimen/dp_12"
+                                android:layout_width="@dimen/layout_lvl2"
+                                android:layout_height="@dimen/layout_lvl2"
                                 app:layout_constraintTop_toTopOf="@id/tv_hotel_safety_information_title"
                                 app:layout_constraintBottom_toBottomOf="@id/tv_hotel_safety_information_title"
                                 app:layout_constraintLeft_toLeftOf="parent"
