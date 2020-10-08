@@ -11,12 +11,15 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/layout_lvl2"
         android:layout_marginLeft="@dimen/layout_lvl2"
+        android:layout_marginTop="@dimen/spacing_lvl1"
         android:layout_marginEnd="@dimen/layout_lvl2"
         android:layout_marginRight="@dimen/layout_lvl2"
+        android:layout_marginBottom="@dimen/spacing_lvl1"
         app:cardBackgroundColor="@color/cardview_light_background"
         app:cardCornerRadius="@dimen/layout_lvl1"
-        app:cardElevation="@dimen/hotel_3dp"
+        app:cardElevation="@dimen/spacing_lvl1"
         app:cardPreventCornerOverlap="false"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -348,11 +351,12 @@
         android:id="@+id/ic_tag_hotel_badge_outline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/layout_lvl1"
+        android:layout_marginTop="@dimen/hotel_10dp"
+        android:elevation="@dimen/spacing_lvl1"
+        android:visibility="gone"
         app:layout_constraintRight_toLeftOf="@id/cardView"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_tag_hotel_badge_outline"
-        android:visibility="gone"
-        tools:visibility="visible"/>
+        tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

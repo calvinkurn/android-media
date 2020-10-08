@@ -332,9 +332,18 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
     private fun setupSafetyBadgeLayout(propertySafetyBadge: PropertySafetyBadge) {
         if (propertySafetyBadge.isShow) {
             hotel_safety_information_layout.show()
-            tv_hotel_safety_information_title.text = propertySafetyBadge.title
-            tv_hotel_safety_information_content.text = propertySafetyBadge.content
-            iv_hotel_safety_badge_icon.loadImage(propertySafetyBadge.icon.light)
+            if (propertySafetyBadge.title.isNotEmpty()) {
+                tv_hotel_safety_information_title.text = propertySafetyBadge.title
+                iv_hotel_safety_badge_icon.loadImage(propertySafetyBadge.icon.light)
+            } else {
+                tv_hotel_safety_information_title.hide()
+                iv_hotel_safety_badge_icon.hide()
+            }
+
+            if (propertySafetyBadge.content.isNotEmpty()) {
+                tv_hotel_safety_information_content.text = propertySafetyBadge.content
+            } else tv_hotel_safety_information_content.hide()
+
         } else hotel_safety_information_layout.hide()
     }
     private fun showLoadingLayout() {
