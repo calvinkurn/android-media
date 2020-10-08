@@ -19,6 +19,8 @@ import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import rx.Subscriber
+import rx.android.schedulers.AndroidSchedulers
+import rx.schedulers.Schedulers
 import javax.inject.Inject
 
 /**
