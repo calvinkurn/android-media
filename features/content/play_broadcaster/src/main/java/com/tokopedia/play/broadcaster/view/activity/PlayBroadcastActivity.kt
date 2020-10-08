@@ -474,9 +474,11 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, PlayBroadcast
     }
 
     private fun showLoading(isLoading: Boolean) {
-        if (!getLoadingFragment().isAdded) return
-        if (isLoading && !getLoadingFragment().isVisible)  getLoadingFragment().show(supportFragmentManager)
-        else getLoadingFragment().dismiss()
+        if (isLoading && !getLoadingFragment().isVisible) {
+            getLoadingFragment().show(supportFragmentManager)
+        } else if (getLoadingFragment().isVisible) {
+            getLoadingFragment().dismiss()
+        }
     }
 
     private fun doWhenResume(block: () -> Unit) {
