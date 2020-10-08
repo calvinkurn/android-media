@@ -1,8 +1,5 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardcarousel
 
-import android.app.Activity
-import android.content.Context
-import android.util.DisplayMetrics
 import android.view.View
 import android.widget.FrameLayout
 import androidx.fragment.app.Fragment
@@ -77,10 +74,6 @@ class ProductCardCarouselViewHolder(itemView: View, val fragment: Fragment) : Ab
                 addCardHeader(component)
             })
             mProductCarouselComponentViewModel.getProductCarouselItemsListData().observe(lifecycle, Observer { item ->
-                if (mProductCarouselComponentViewModel.getComponentName() == ComponentsList.ProductCardCarousel.componentName) {
-                    val productCardWidth = getDisplayMetric(fragment.context).widthPixels / 2.3.toInt()
-                    mProductCarouselComponentViewModel.getMaxHeightProductCard(item, productCardWidth)
-                }
                 mDiscoveryRecycleAdapter.setDataList(item)
             })
             mProductCarouselComponentViewModel.syncData.observe(lifecycle, Observer { sync ->
@@ -92,21 +85,17 @@ class ProductCardCarouselViewHolder(itemView: View, val fragment: Fragment) : Ab
                 setMaxHeight(height)
             })
             mProductCarouselComponentViewModel.getProductLoadState().observe(lifecycle, Observer {
-                if (it == true) handleErrorState()
+                if (it) handleErrorState()
             })
         }
     }
 
     private fun setMaxHeight(height: Int) {
-        val carouselLayoutParams = mProductCarouselRecyclerView.layoutParams
-        carouselLayoutParams?.height = height
-        mProductCarouselRecyclerView.layoutParams = carouselLayoutParams
-    }
-
-    private fun getDisplayMetric(context: Context?): DisplayMetrics {
-        val displayMetrics = DisplayMetrics()
-        (context as Activity).windowManager.defaultDisplay.getMetrics(displayMetrics)
-        return displayMetrics
+        if (height > 0) {
+            val carouselLayoutParams = mProductCarouselRecyclerView.layoutParams
+            carouselLayoutParams?.height = height
+            mProductCarouselRecyclerView.layoutParams = carouselLayoutParams
+        }
     }
 
     override fun removeObservers(lifecycleOwner: LifecycleOwner?) {
@@ -127,12 +116,11 @@ class ProductCardCarouselViewHolder(itemView: View, val fragment: Fragment) : Ab
         mDiscoveryRecycleAdapter.setDataList(list)
     }
 
-
     private fun handleErrorState() {
         val list: ArrayList<ComponentsItem> = ArrayList()
         mDiscoveryRecycleAdapter.setDataList(list)
+        mDiscoveryRecycleAdapter.notifyDataSetChanged()
     }
-
 
     override fun getInnerRecycleView(): RecyclerView? {
         return mProductCarouselRecyclerView
