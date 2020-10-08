@@ -29,6 +29,7 @@ class UploaderUseCase @Inject constructor(
 
     private var progressCallback: ProgressCallback? = null
     private val ERROR_MAX_LENGTH = 1500
+    private val ERROR_SOURCE_NOT_FOUND = "Required: source (-1)"
 
     override suspend fun execute(params: RequestParams): UploadResult {
         if (params.parameters.isEmpty()) throw Exception("Not param found")
@@ -53,7 +54,13 @@ class UploaderUseCase @Inject constructor(
                     e !is CancellationException) {
                 Timber.w("P1#MEDIA_UPLOADER_ERROR#$sourceId;err='${Log.getStackTraceString(e).take(ERROR_MAX_LENGTH).trim()}'")
             }
-            UploadResult.Error(NETWORK_ERROR)
+
+            // check whether media source is valid
+            if (isSourceMediaNotFound(e)) {
+                UploadResult.Error(SOURCE_NOT_FOUND)
+            } else {
+                UploadResult.Error(NETWORK_ERROR)
+            }
         }
     }
 
@@ -104,6 +111,11 @@ class UploaderUseCase @Inject constructor(
         }
     }
 
+    private fun isSourceMediaNotFound(exception: Exception): Boolean {
+        val exceptionMessage = exception.message.orEmpty()
+        return exceptionMessage.startsWith(ERROR_SOURCE_NOT_FOUND)
+    }
+
     /**
      * track progress of uploader
      */
@@ -131,5 +143,6 @@ class UploaderUseCase @Inject constructor(
         const val TIMEOUT_ERROR = "Request timeout, silakan coba kembali beberapa saat lagi"
         const val NETWORK_ERROR = "Oops, ada gangguan yang perlu kami bereskan. Refresh atau balik lagi nanti."
         const val FILE_NOT_FOUND = "Oops, file tidak ditemukan."
+        const val SOURCE_NOT_FOUND = "Oops, source tidak ditemukan."
     }
 }
