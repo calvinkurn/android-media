@@ -17,4 +17,35 @@ object FlightAirportQuery {
             }
         }
     """.trimIndent()
+
+    val QUERY_AIRPORT_SUGGESTION = """
+        query flightSuggestion(${'$'}input:String!) {
+            flightSuggestion(input:${'$'}input) {
+                suggestions {
+                    airports {
+                        id
+                        name {
+                          key
+                          value
+                        }
+                    }
+                    cityName {
+                        key
+                        value
+                    }
+                    cityID
+                    code
+                    countryID
+                    countryName {
+                        key
+                        value
+                    }
+                    name {
+                        key
+                        value
+                    }
+                }
+        	}
+        }
+    """.trimIndent()
 }

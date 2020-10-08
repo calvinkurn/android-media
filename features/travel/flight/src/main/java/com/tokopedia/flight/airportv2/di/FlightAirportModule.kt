@@ -2,8 +2,6 @@ package com.tokopedia.flight.airportv2.di
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.flight.R
 import com.tokopedia.flight.airportv2.data.FlightAirportQuery
 import com.tokopedia.flight.airportv2.domain.FlightAirportPopularCityUseCase
 import com.tokopedia.flight.airportv2.domain.FlightAirportSuggestionUseCase
@@ -29,6 +27,6 @@ class FlightAirportModule {
     @FlightAirportScope
     @Named(FlightAirportSuggestionUseCase.NAMED_FLIGHT_AIRPORT_SUGGESTION_QUERY)
     fun provideFlightAirportSuggestionQuery(@ApplicationContext context: Context) =
-            GraphqlHelper.loadRawString(context.resources, R.raw.flight_airport_suggestion)
+            FlightAirportQuery.QUERY_AIRPORT_SUGGESTION
 
 }
