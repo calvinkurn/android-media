@@ -23,10 +23,10 @@ open class DeepLinkMatcherTestFixture {
         unmockkStatic(Uri::class)
     }
 
-    protected fun assertEqualsDeepLinkMatcher(idDeepLinkChecker: Int, url: String) {
+    protected fun assertEqualsDeepLinkMatcher(expectedIdDeepLinkChecker: Int, url: String) {
         val uri = parseToUri(url)
         val actualResult = deepLinkMatcher.match(uri)
-        assertEquals(idDeepLinkChecker, actualResult)
+        assertEquals(expectedIdDeepLinkChecker, actualResult)
     }
 
     private fun parseToUri(url: String): Uri {
