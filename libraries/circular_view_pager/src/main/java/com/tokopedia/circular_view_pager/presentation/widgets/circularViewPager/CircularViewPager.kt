@@ -274,6 +274,11 @@ open class CircularViewPager : FrameLayout, CoroutineScope{
             viewPager.setCurrentItem(0, false)
             0
         }
+        /**
+         * Position is reset to currentPagePosition, therefore impression in curentPagePosition
+         * should be called
+         */
+        setImpression(currentPagePosition)
         resetAutoScroll()
     }
 
