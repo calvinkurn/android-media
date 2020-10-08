@@ -40,6 +40,13 @@ dependencies {
     kapt rootProject.ext.miscDependencies.daggerCompiler
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
+
+    //-------------------------------------------------------------------//
+    //--------------------- Testing Library Section ---------------------//
+    //-------------------------------------------------------------------//
+    testImplementation rootProject.ext.testDependencies.mockk
+    testImplementation rootProject.ext.testDependencies.archCoreTesting
+    //-------------------------------------------------------------------//
 }
 
 project.ext {
@@ -50,6 +57,6 @@ project.ext {
 }
 
 apply from: '../../../publish_local.gradle'
-//apply from: '../../../jacoco_task.gradle'
-//apply from: '../../../sonar_config.gradle'
+apply from: '../../../jacoco_task.gradle'
+apply from: '../../../sonar_config.gradle'
 
