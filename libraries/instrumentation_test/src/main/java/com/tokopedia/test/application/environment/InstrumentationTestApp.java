@@ -48,6 +48,7 @@ import com.tokopedia.track.interfaces.ContextAnalytics;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -87,13 +88,14 @@ public class InstrumentationTestApp extends BaseMainApplication
         initAkamaiBotManager();
         LinkerManager.initLinkerManager(getApplicationContext()).setGAClientId(TrackingUtils.getClientID(getApplicationContext()));
         TrackApp.getInstance().initializeAllApis();
-        NetworkClient.init(this);
+
         GlobalConfig.DEBUG = true;
         GlobalConfig.VERSION_NAME = "3.90";
-        GraphqlClient.init(this);
         com.tokopedia.config.GlobalConfig.DEBUG = true;
         RemoteConfigInstance.initAbTestPlatform(this);
         PersistentCacheManager.init(this);
+        NetworkClient.init(this);
+        GraphqlClient.init(this);
 
         super.onCreate();
 
@@ -137,6 +139,10 @@ public class InstrumentationTestApp extends BaseMainApplication
             ArrayList<Interceptor> interceptorList = new ArrayList<Interceptor>(testInterceptors.values());
             GraphqlClient.reInitRetrofitWithInterceptors(interceptorList, this);
         }
+    }
+
+    public void setInterceptor(Interceptor interceptor) {
+        GraphqlClient.reInitRetrofitWithInterceptors(Collections.singletonList(interceptor), this);
     }
 
     @Override

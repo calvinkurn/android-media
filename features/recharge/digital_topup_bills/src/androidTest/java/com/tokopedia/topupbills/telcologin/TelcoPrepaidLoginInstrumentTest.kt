@@ -1,4 +1,4 @@
-package com.tokopedia.topupbills.prepaid
+package com.tokopedia.topupbills.telcologin
 
 import android.Manifest
 import android.app.Activity
@@ -12,9 +12,9 @@ import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.ComponentNameMatchers
 import androidx.test.espresso.intent.matcher.IntentMatchers
-import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.platform.app.InstrumentationRegistry
+import androidx.test.rule.ActivityTestRule
 import androidx.test.rule.GrantPermissionRule
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
@@ -24,10 +24,13 @@ import com.tokopedia.common.topupbills.data.TopupBillsFavNumberItem
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity
 import com.tokopedia.common.topupbills.view.adapter.TopupBillsRecentNumbersAdapter
 import com.tokopedia.common.topupbills.view.fragment.TopupBillsSearchNumberFragment
+import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.espresso_component.CommonActions
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
-import com.tokopedia.test.application.util.setupGraphqlMockResponseWithCheck
+import com.tokopedia.test.application.util.InstrumentationMockHelper
+import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import com.tokopedia.topupbills.R
+import com.tokopedia.topupbills.prepaid.TelcoPrepaidLoginMockResponseConfig
 import com.tokopedia.topupbills.telco.common.activity.BaseTelcoActivity
 import com.tokopedia.topupbills.telco.data.constant.TelcoCategoryType
 import com.tokopedia.topupbills.telco.data.constant.TelcoComponentType
@@ -36,6 +39,7 @@ import com.tokopedia.topupbills.telco.prepaid.adapter.viewholder.TelcoProductVie
 import com.tokopedia.topupbills.telco.prepaid.fragment.DigitalTelcoPrepaidFragment
 import org.hamcrest.core.AllOf
 import org.hamcrest.core.IsNot
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -49,28 +53,59 @@ class TelcoPrepaidLoginInstrumentTest {
     var mRuntimePermissionRule: GrantPermissionRule = GrantPermissionRule.grant(Manifest.permission.READ_CONTACTS)
 
     @get:Rule
-    var mActivityRule: IntentsTestRule<TelcoPrepaidActivity> = object : IntentsTestRule<TelcoPrepaidActivity>(TelcoPrepaidActivity::class.java) {
-        override fun getActivityIntent(): Intent {
-            val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
-            return Intent(targetContext, TelcoPrepaidActivity::class.java).apply {
-                putExtra(BaseTelcoActivity.PARAM_MENU_ID, TelcoComponentType.TELCO_PREPAID.toString())
-                putExtra(BaseTelcoActivity.PARAM_CATEGORY_ID, TelcoCategoryType.CATEGORY_PULSA.toString())
-                putExtra(BaseTelcoActivity.PARAM_PRODUCT_ID, "")
-                putExtra(BaseTelcoActivity.PARAM_CLIENT_NUMBER, "")
-            }
-        }
-
-        override fun beforeActivityLaunched() {
-            super.beforeActivityLaunched()
-            gtmLogDBSource.deleteAll().toBlocking().first()
-
-            setupGraphqlMockResponseWithCheck(TelcoPrepaidLoginMockResponseConfig())
-            Thread.sleep(4000)
-        }
-    }
+    var mActivityRule = ActivityTestRule<TelcoPrepaidActivity>(TelcoPrepaidActivity::class.java)
+//    {
+//        override fun getActivityIntent(): Intent {
+//            val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
+//            return Intent(targetContext, TelcoPrepaidActivity::class.java).apply {
+//                putExtra(BaseTelcoActivity.PARAM_MENU_ID, TelcoComponentType.TELCO_PREPAID.toString())
+//                putExtra(BaseTelcoActivity.PARAM_CATEGORY_ID, TelcoCategoryType.CATEGORY_PULSA.toString())
+//                putExtra(BaseTelcoActivity.PARAM_PRODUCT_ID, "")
+//                putExtra(BaseTelcoActivity.PARAM_CLIENT_NUMBER, "")
+//            }
+//        }
+//
+//        override fun beforeActivityLaunched() {
+//            super.beforeActivityLaunched()
+//            gtmLogDBSource.deleteAll().toBlocking().first()
+//
+//            setupGraphqlMockResponseWithCheck(TelcoPrepaidLoginMockResponseConfig())
+//            Thread.sleep(4000)
+//        }
+//    }
 
     @Before
     fun stubAllExternalIntents() {
+        Intents.init()
+        gtmLogDBSource.deleteAll().toBlocking().first()
+        setupGraphqlMockResponse {
+            addMockResponse(
+                    TelcoPrepaidLoginMockResponseConfig.KEY_QUERY_MENU_DETAIL,
+                    InstrumentationMockHelper.getRawString(context, com.tokopedia.topupbills.test.R.raw.response_mock_data_prepaid_menu_detail_login),
+                    MockModelConfig.FIND_BY_CONTAINS)
+            addMockResponse(
+                    TelcoPrepaidLoginMockResponseConfig.KEY_QUERY_FAV_NUMBER,
+                    InstrumentationMockHelper.getRawString(context, com.tokopedia.topupbills.test.R.raw.response_mock_data_prepaid_fav_number_login),
+                    MockModelConfig.FIND_BY_CONTAINS)
+            addMockResponse(
+                    TelcoPrepaidLoginMockResponseConfig.KEY_QUERY_PREFIX_SELECT,
+                    InstrumentationMockHelper.getRawString(context, com.tokopedia.topupbills.test.R.raw.response_mock_data_prepaid_prefix_select),
+                    MockModelConfig.FIND_BY_CONTAINS)
+            addMockResponse(
+                    TelcoPrepaidLoginMockResponseConfig.KEY_QUERY_PRODUCT_MULTI_TAB,
+                    InstrumentationMockHelper.getRawString(context, com.tokopedia.topupbills.test.R.raw.response_mock_data_prepaid_product_multitab),
+                    MockModelConfig.FIND_BY_CONTAINS)
+        }
+
+        val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
+        val intent = Intent(targetContext, TelcoPrepaidActivity::class.java).apply {
+            putExtra(BaseTelcoActivity.PARAM_MENU_ID, TelcoComponentType.TELCO_PREPAID.toString())
+            putExtra(BaseTelcoActivity.PARAM_CATEGORY_ID, TelcoCategoryType.CATEGORY_PULSA.toString())
+            putExtra(BaseTelcoActivity.PARAM_PRODUCT_ID, "")
+            putExtra(BaseTelcoActivity.PARAM_CLIENT_NUMBER, "")
+        }
+        mActivityRule.launchActivity(intent)
+
         Intents.intending(IsNot.not(IntentMatchers.isInternal())).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
     }
 
@@ -209,6 +244,11 @@ class TelcoPrepaidLoginInstrumentTest {
         viewInteraction.perform(RecyclerViewActions
                 .actionOnItemAtPosition<TopupBillsRecentNumbersAdapter.RecentNumbersItemViewHolder>(0, click()))
         Thread.sleep(3000)
+    }
+
+    @After
+    fun cleanUp() {
+        Intents.release()
     }
 
     companion object {
