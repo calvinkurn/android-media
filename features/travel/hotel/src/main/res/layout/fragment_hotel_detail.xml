@@ -268,7 +268,8 @@
                                 android:textColor="@color/Neutral_N700_68"
                                 app:typographyType="body_3"
                                 app:layout_constraintTop_toBottomOf="@+id/tv_hotel_safety_information_title"
-                                tools:text="Akomodasi ini telah menerapkan standar protokol kesehatan." />
+                                tools:text="Akomodasi ini telah menerapkan standar protokol kesehatan."
+                                android:layout_marginTop="@dimen/spacing_lvl2"/>
                         </androidx.constraintlayout.widget.ConstraintLayout>
 
                         <View
