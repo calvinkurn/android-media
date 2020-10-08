@@ -2,6 +2,7 @@ package com.tokopedia.navigation.presentation.adapter.viewholder
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.navigation.R
 import com.tokopedia.navigation.domain.model.InboxTopAdsBannerUiModel
 import com.tokopedia.topads.sdk.listener.TopAdsImageVieWApiResponseListener
@@ -14,7 +15,7 @@ class InboxTopAdsBannerViewHolder constructor(
         itemView: View?,
         private val topAdsResponseListener: TopAdsImageVieWApiResponseListener,
         private val topAdsClickListener: TopAdsImageViewClickListener
-) : AbstractViewHolder<InboxTopAdsBannerUiModel>(itemView), TopAdsImageViewImpressionListener {
+) : AbstractViewHolder<InboxTopAdsBannerUiModel>(itemView) {
 
     private val topAdsBanner: TopAdsImageView? = itemView?.findViewById(R.id.topads_banner)
 
@@ -38,14 +39,22 @@ class InboxTopAdsBannerViewHolder constructor(
     }
 
     private fun bindTopAds(element: InboxTopAdsBannerUiModel) {
-        if (element.hasAd()) return
-        topAdsBanner?.setTopAdsImageViewImpression(this)
-        topAdsBanner?.setApiResponseListener(topAdsResponseListener)
-        topAdsBanner?.setTopAdsImageViewClick(topAdsClickListener)
-        topAdsBanner?.getImageData(SOURCE, ADS_COUNT, DIMEN_ID)
+        if (element.hasAd()) {
+            topAdsBanner?.setTopAdsImageViewImpression(object : TopAdsImageViewImpressionListener {
+                override fun onTopAdsImageViewImpression(viewUrl: String) {
+                    itemView.addOnImpressionListener(element.impressHolder) {
+                        hitTopAdsImpression(viewUrl)
+                    }
+                }
+            })
+            topAdsBanner?.setTopAdsImageViewClick(topAdsClickListener)
+        } else {
+            topAdsBanner?.setApiResponseListener(topAdsResponseListener)
+            topAdsBanner?.getImageData(SOURCE, ADS_COUNT, DIMEN_ID)
+        }
     }
 
-    override fun onTopAdsImageViewImpression(viewUrl: String) {
+    private fun hitTopAdsImpression(viewUrl: String) {
         itemView.context.let {
             TopAdsUrlHitter(it).hitImpressionUrl(
                     this::class.java.simpleName,
