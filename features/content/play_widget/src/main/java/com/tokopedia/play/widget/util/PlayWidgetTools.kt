@@ -17,7 +17,7 @@ import kotlin.coroutines.CoroutineContext
  */
 class PlayWidgetTools @Inject constructor(
         private val useCase: PlayWidgetUseCase,
-        private val mapperProviders: Map<PlayWidgetSize, @JvmSuppressWildcards Lazy<PlayWidgetMapper>>
+        private val mapperProviders: Map<PlayWidgetSize, @JvmSuppressWildcards PlayWidgetMapper>
 ) {
 
     suspend fun getWidgetFromNetwork(coroutineContext: CoroutineContext = Dispatchers.IO): PlayWidget {
@@ -28,7 +28,7 @@ class PlayWidgetTools @Inject constructor(
 
     suspend fun mapWidgetToModel(widgetResponse: PlayWidget, coroutineContext: CoroutineContext = Dispatchers.Default): PlayWidgetUiModel {
         return withContext(coroutineContext) {
-            val mapper = mapperProviders[PlayWidgetSize.getByTypeString(widgetResponse.meta.template)]?.get() ?: throw IllegalStateException("Mapper cannot be null")
+            val mapper = mapperProviders[PlayWidgetSize.getByTypeString(widgetResponse.meta.template)] ?: throw IllegalStateException("Mapper cannot be null")
             mapper.mapWidget(widgetResponse)
         }
     }
