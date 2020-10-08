@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.di.DaggerDiscoveryComponent
@@ -68,6 +69,9 @@ class ProductCardCarouselViewModel(val application: Application, val components:
         launchCatchError(block = {
             if (productCardsUseCase.loadFirstPageComponents(components.id, components.pageEndPoint, components.rpc_PinnedProduct)) {
                 getProductList()?.let {
+                    if (components.name == ComponentsList.ProductCardCarousel.componentName) {
+                        getMaxHeightProductCard(it)
+                    }
                     productCarouselList.value = it
                     syncData.value = true
                 }
@@ -77,18 +81,15 @@ class ProductCardCarouselViewModel(val application: Application, val components:
         })
     }
 
-    fun getMaxHeightProductCard(list: java.util.ArrayList<ComponentsItem>, productImageWidth: Int) {
-        launchCatchError(block = {
-            val productCardModelArray = ArrayList<ProductCardModel>()
-            list.forEach {
-                it.data?.firstOrNull()?.let { dataItem ->
-                    productCardModelArray.add(DiscoveryDataMapper().mapDataItemToProductCardModel(dataItem))
-                }
+    private suspend fun getMaxHeightProductCard(list: java.util.ArrayList<ComponentsItem>) {
+        val productCardModelArray = ArrayList<ProductCardModel>()
+        list.forEach {
+            it.data?.firstOrNull()?.let { dataItem ->
+                productCardModelArray.add(DiscoveryDataMapper().mapDataItemToProductCardModel(dataItem))
             }
-            maxHeightProductCard.value = productCardModelArray.getMaxHeightForGridView(application.applicationContext, Dispatchers.Default, productImageWidth)
-        }, onError = {
-            it.printStackTrace()
-        })
+        }
+        val productImageWidth = application.applicationContext.resources.getDimensionPixelSize(R.dimen.disco_product_card_width)
+        maxHeightProductCard.value = productCardModelArray.getMaxHeightForGridView(application.applicationContext, Dispatchers.Default, productImageWidth)
     }
 
     fun isUserLoggedIn(): Boolean {
