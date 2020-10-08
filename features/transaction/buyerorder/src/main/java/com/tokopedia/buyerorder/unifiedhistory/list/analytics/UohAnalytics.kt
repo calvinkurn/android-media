@@ -65,7 +65,7 @@ object UohAnalytics {
     private const val CLICK_ORDER_LIST = "clickOrderList"
     private const val PRODUCT_VIEW = "productView"
     private const val ITEM_LIST = "item_list"
-    private const val VIEW_ITEM_LIST = "view_item_list/view_search_results"
+    private const val VIEW_ITEM_LIST = "view_item_list"
     private const val PRODUCT_CLICK = "productClick"
     private const val SELECT_CONTENT = "select_content"
     private const val ADD_TO_CART = "addToCart"
@@ -235,10 +235,6 @@ object UohAnalytics {
     }
 
     fun clickOrderCard(verticalLabel: String, userId: String, arrayListProducts: ArrayList<ECommerceClick.Products>) {
-        val bundleActionField = Bundle().apply {
-            putString(LIST, ACTION_FIELD_CLICK_ECOMMERCE.replace(BUSINESS_UNIT_REPLACEE, verticalLabel))
-        }
-
         val arrayListBundleItems = arrayListOf<Bundle>()
         arrayListProducts.forEach { product ->
             val bundleProduct = Bundle().apply {

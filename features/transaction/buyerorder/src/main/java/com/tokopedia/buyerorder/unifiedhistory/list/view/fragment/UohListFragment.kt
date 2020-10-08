@@ -1446,6 +1446,22 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                         val listOfStrings = Gson().fromJson(order.metadata.listProducts, mutableListOf<String>().javaClass)
                         val jsonArray: JsonArray = Gson().toJsonTree(listOfStrings).asJsonArray
                         uohListViewModel.doAtc(GraphqlHelper.loadRawString(resources, R.raw.buy_again), jsonArray)
+
+                        // analytics
+                        val arrayListProducts = arrayListOf<ECommerceAdd.Add.Products>()
+                        var i = 0
+                        order.metadata.products.forEach {
+                            val objProduct = jsonArray.get(i).asJsonObject
+                            arrayListProducts.add(ECommerceAdd.Add.Products(
+                                    name = it.title,
+                                    id = objProduct.get(EE_PRODUCT_ID).asString,
+                                    price = objProduct.get(EE_PRODUCT_PRICE).asString,
+                                    quantity = objProduct.get(EE_QUANTITY).asString,
+                                    dimension79 = objProduct.get(EE_SHOP_ID).asString
+                            ))
+                            i++
+                        }
+                        userSession?.userId?.let { UohAnalytics.clickBeliLagiOnOrderCardMP("", it, arrayListProducts, order.verticalCategory) }
                     }
                 }
                 button.actionType.equals(GQL_TRACK, true) -> {
