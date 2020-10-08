@@ -2520,6 +2520,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     private fun onShopFavoriteClick(componentTrackDataModel: ComponentTrackDataModel? = null, isNplFollowType: Boolean = false) {
         if (viewModel.getShopInfo().isShopInfoNotEmpty()) {
             doActionOrLogin({
+                nplFollowersButton?.startLoading()
                 trackToggleFavoriteShop(componentTrackDataModel)
                 pdpUiUpdater?.getShopInfo?.enableButtonFavorite = false
                 pdpUiUpdater?.shopCredibility?.enableButtonFavorite = false
@@ -2553,7 +2554,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     private fun onFailFavoriteShop(t: Throwable) {
         context?.let {
             view?.showToasterError(ProductDetailErrorHandler.getErrorMessage(it, t), ctaText = getString(R.string.retry_label)) {
-                nplFollowersButton?.startLoading()
                 onShopFavoriteClick()
             }
         }
