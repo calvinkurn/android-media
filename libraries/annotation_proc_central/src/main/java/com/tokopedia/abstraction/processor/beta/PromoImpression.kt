@@ -6,11 +6,11 @@ import com.tokopedia.analytic_constant.Event
 import com.tokopedia.analytic_constant.Param
 import com.tokopedia.annotation.AnalyticEvent
 import com.tokopedia.annotation.BundleThis
-import com.tokopedia.annotation.defaultvalues.DefaultValueDouble
 import com.tokopedia.annotation.defaultvalues.DefaultValueLong
 import com.tokopedia.annotation.defaultvalues.DefaultValueString
 import com.tokopedia.checkers.ProductListImpressionProductChecker
-import com.tokopedia.firebase.analytic.rules.TransactionRules
+import com.tokopedia.firebase.analytic.rules.AddToCartRules
+import com.tokopedia.firebase.analytic.rules.PromoImpressionRules
 import com.tokopedia.util.GTMErrorHandlerImpl
 import com.tokopedia.util.logger.GTMLoggerImpl
 import timber.log.Timber
@@ -20,32 +20,16 @@ import timber.log.Timber
  */
 @ErrorHandler(GTMErrorHandlerImpl::class)
 @Logger(GTMLoggerImpl::class)
-@AnalyticEvent(true, Event.ECOMMERCE_PURCHASE, TransactionRules::class)
-data class Transaction(
-        val items: List<TransactionProduct>,
-        @DefaultValueString("")
-        val eventAction: String?,
-        @CustomChecker(TransactionChecker::class, Level.IGNORE, functionName = ["isEventValid"])
+@AnalyticEvent(true, Event.VIEW_ITEM, PromoImpressionRules::class)
+data class PromoImpression(
+        @CustomChecker(PromoImpressionChecker::class, Level.IGNORE, functionName = ["isOnlyOneProduct"])
+        val promotions: List<PromoImpressionProduct>,
+        @CustomChecker(PromoImpressionChecker::class, Level.IGNORE, functionName = ["isEventValid"])
         @DefaultValueString("")
         val event: String?,
+        @CustomChecker(PromoImpressionChecker::class, Level.IGNORE, functionName = ["isEventActionValid"])
         @DefaultValueString("")
-        val transaction_id: String?,
-        @DefaultValueString("")
-        val affiliation: String?,
-        @CustomChecker(TransactionChecker::class, Level.IGNORE, functionName = ["isNotZero"])
-        @DefaultValueDouble(1.0)
-        val value: Double,
-        @DefaultValueDouble(1.0)
-        val tax: Double,
-        @DefaultValueString("")
-        val shipping: String?,
-        @DefaultValueString("")
-        val currency: String?,
-        @DefaultValueString("")
-        val coupon: String?,
-        @DefaultValueString("")
-        val paymentId: String?,
-        @DefaultValueString("")
+        val eventAction: String?,
         val currentSite: String?,
         @DefaultValueString("")
         val eventCategory: String?,
@@ -53,7 +37,7 @@ data class Transaction(
         val businessUnit: String?,
         @DefaultValueString("")
         val screenName: String?,
-        @CustomChecker(TransactionChecker::class, Level.ERROR, functionName = ["checkMap"])
+        @CustomChecker(PromoImpressionChecker::class, Level.ERROR, functionName = ["checkMap"])
         @DefinedInCollections
         val stringCollection: HashMap<String, String>
 
@@ -66,34 +50,21 @@ private const val KEY_DIMENSION_40 = "dimension40"
 @ErrorHandler(GTMErrorHandlerImpl::class)
 @Logger(GTMLoggerImpl::class)
 @BundleThis(false, true)
-data class TransactionProduct(
+data class PromoImpressionProduct(
         @Key(Param.ITEM_ID)
         val id: String,
         @Key(Param.ITEM_NAME)
         val name: String,
-        @DefaultValueString("none")
-        @Key(Param.ITEM_BRAND)
-        val brand: String?,
-        @Key(Param.ITEM_CATEGORY)
-        val category: String,
-        @Key(Param.ITEM_VARIANT)
-        val variant: String,
-        @CustomChecker(ProductListImpressionProductChecker::class, Level.IGNORE, functionName = ["isPriceNotZero"])
-        @Key(Param.PRICE)
-        val price: Double,
-        @DefaultValueString("IDR")
-        @Key(Param.CURRENCY)
-        val currency: String?,
-
-        @DefaultValueLong(1)
-        @Key(Param.QUANTITY)
-        val quantity: Long,
-        @CustomChecker(TransactionChecker::class, Level.ERROR, functionName = ["checkMap"])
+        @Key(Param.CREATIVE_NAME)
+        val creative_name: String,
+        @Key(Param.CREATIVE_SLOT)
+        val creative_slot: String,
+        @CustomChecker(PromoImpressionChecker::class, Level.ERROR, functionName = ["checkMap"])
         @DefinedInCollections
         val stringCollection: HashMap<String, String>
 )
 
-object TransactionChecker {
+object PromoImpressionChecker {
     /**
      * @value should exactly match "ecommerce_purchase"
      */
@@ -119,6 +90,33 @@ object TransactionChecker {
     }
 
     fun checkMap(map: Map<String, String>) = map.isNotEmpty()
+
+    fun isOnlyOneProduct(products: List<PromoImpressionProduct>): Boolean {
+        try {
+            return products.size > 0
+        } catch (e: Exception) {
+            Timber.w("P2#CHECKER_CLICK_CHECK#event Action ${products} get exception ${e.toString()}")
+            return true;
+        }
+    }
+
+    fun isCheckoutStepValid(products: Long): Boolean {
+        try {
+            return products == 1L
+        } catch (e: Exception) {
+            Timber.w("P2#CHECKER_CLICK_CHECK#event Action ${products} get exception ${e.toString()}")
+            return true;
+        }
+    }
+
+    fun isEventActionValid(eventAction: String): Boolean {
+        try {
+            return !(eventAction.contains("click")||eventAction.contains("klik"))
+        } catch (e: Exception) {
+            Timber.w("P2#CHECKER_CLICK_CHECK#event Action ${eventAction} get exception ${e.toString()}")
+            return true;
+        }
+    }
 
 
 }

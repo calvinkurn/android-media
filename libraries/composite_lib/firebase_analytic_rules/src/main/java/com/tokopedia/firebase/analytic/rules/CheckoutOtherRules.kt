@@ -34,24 +34,17 @@ class CheckoutOtherRules {
                                 "quantity" to AnalyticParameter(Long::class.java)
                         )
                 ),
-                "eventAction" to AnalyticParameter(
-                        String::class.java
-                ),
                 "event" to AnalyticParameter(
                         String::class.java
                 ),
+                "eventAction" to AnalyticParameter(
+                        String::class.java
+                ),
+
                 "checkout_option" to AnalyticParameter(
                         String::class.java
                 ),
-                "affiliation" to AnalyticParameter(
-                        String::class.java
-                ),
-                "checkout_step" to AnalyticParameter(Long::class.java),
-                "tax" to AnalyticParameter(Double::class.java),
-                "shipping" to AnalyticParameter(String::class.java),
-                "currency" to AnalyticParameter(String::class.java),
-                "coupon" to AnalyticParameter(String::class.java),
-                "paymentId" to AnalyticParameter(String::class.java)
+                "checkout_step" to AnalyticParameter(Long::class.java)
         )
     }
 }

@@ -1,4 +1,4 @@
-package com.tokopedia.abstraction.processor
+package com.tokopedia.abstraction.processor.beta
 
 
 import com.tokopedia.analytic.annotation.*
@@ -18,7 +18,6 @@ import com.tokopedia.util.logger.GTMLoggerImpl
 /**
  * Product Detail
  */
-@Deprecated("use in beta package", replaceWith = ReplaceWith("use in beta package", imports = ["com.tokopedia.abstraction.processor.beta.ProductDetail"]))
 @ErrorHandler(GTMErrorHandlerImpl::class)
 @Logger(GTMLoggerImpl::class)
 @AnalyticEvent(false, Event.VIEW_ITEM, ProductDetailRules::class)
@@ -53,7 +52,10 @@ data class ProductDetailViews(
         val businessUnit: String?,
         @DefaultValueString("")
         @Key("screenName")
-        val screenName: String?
+        val screenName: String?,
+        @CustomChecker(ProductDetailViewsChecker::class, Level.ERROR, functionName = ["checkMap"])
+        @DefinedInCollections
+        val stringCollection: HashMap<String, String>
 
 )
 
@@ -101,6 +103,7 @@ data class ProductDetailProduct(
         val dimension37: String,
         @Key(KEY_DIMENSION_98)
         val dimension98: String,
-
-        val map: HashMap<String, String>
+        @CustomChecker(ProductDetailViewsChecker::class, Level.ERROR, functionName = ["checkMap"])
+        @DefinedInCollections
+        val stringCollection: HashMap<String, String>
 )

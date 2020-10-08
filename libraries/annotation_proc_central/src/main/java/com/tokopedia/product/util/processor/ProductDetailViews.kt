@@ -6,7 +6,7 @@ import com.tokopedia.analytic_constant.Event
 import com.tokopedia.annotation.AnalyticEvent
 import com.tokopedia.annotation.defaultvalues.DefaultValueString
 import com.tokopedia.checkers.ProductDetailViewsChecker
-import com.tokopedia.firebase.analytic.rules.ProductDetailViewsRules
+import com.tokopedia.firebase.analytic.rules.ProductDetailRules
 import com.tokopedia.util.GTMErrorHandlerImpl
 import com.tokopedia.util.logger.GTMLoggerImpl
 
@@ -14,7 +14,7 @@ const val KEY_SESSION_IRIS = "sessionIris"
 
 @ErrorHandler(GTMErrorHandlerImpl::class)
 @Logger(GTMLoggerImpl::class)
-@AnalyticEvent(false, Event.VIEW_ITEM, ProductDetailViewsRules::class)
+@AnalyticEvent(false, Event.VIEW_ITEM, ProductDetailRules::class)
 data class ProductDetailViews(
         @Key(com.tokopedia.analytic_constant.Param.ITEM_LIST)
         val itemList: String,
