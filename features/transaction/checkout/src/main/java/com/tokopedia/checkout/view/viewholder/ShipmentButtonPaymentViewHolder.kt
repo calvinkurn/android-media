@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.checkout.R
 import com.tokopedia.checkout.view.ShipmentAdapterActionListener
 import com.tokopedia.checkout.view.uimodel.ShipmentButtonPaymentModel
+import com.tokopedia.utils.contentdescription.TextAndContentDescriptionUtil
 import kotlinx.android.synthetic.main.item_shipment_button_payment.view.*
 
 /**
@@ -43,6 +44,7 @@ class ShipmentButtonPaymentViewHolder(val view: View, val actionListener: Shipme
         } else {
             itemView.btn_select_cod.visibility = View.GONE
         }
+        TextAndContentDescriptionUtil.setTextAndContentDescription(itemView.tv_total_payment, model.totalPrice, itemView.tv_total_payment.context.getString(R.string.content_desc_tv_total_payment))
         itemView.tv_total_payment.text = model.totalPrice
         itemView.btn_select_payment_method.buttonType = model.abTestButton.getUnifyButtonType()
         itemView.btn_select_payment_method.setOnClickListener {

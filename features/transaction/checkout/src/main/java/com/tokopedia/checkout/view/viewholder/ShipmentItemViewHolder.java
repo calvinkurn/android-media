@@ -703,7 +703,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                 layoutStateHasSelectedFreeShipping.setVisibility(View.GONE);
                 layoutStateHasSelectedNormalShipping.setVisibility(View.VISIBLE);
 
-                labelSelectedShippingDuration.setText(selectedCourierItemData.getEstimatedTimeDelivery());
+                TextAndContentDescriptionUtil.setTextAndContentDescription(labelSelectedShippingDuration, selectedCourierItemData.getEstimatedTimeDelivery(), labelSelectedShippingDuration.getContext().getString(R.string.content_desc_label_selected_shipping_duration));
                 labelSelectedShippingDuration.setOnClickListener(
                         getOnChangeDurationClickListener(shipmentCartItemModel, currentAddress)
                 );
@@ -711,6 +711,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                         getOnChangeDurationClickListener(shipmentCartItemModel, currentAddress)
                 );
 
+                TextAndContentDescriptionUtil.setTextAndContentDescription(labelSelectedShippingCourier, selectedCourierItemData.getName(), labelSelectedShippingCourier.getContext().getString(R.string.content_desc_label_selected_shipping_courier));
                 labelSelectedShippingCourier.setText(selectedCourierItemData.getName());
                 labelSelectedShippingPrice.setText(Utils.removeDecimalSuffix(CurrencyFormatUtil.convertPriceValueToIdrFormat(
                         selectedCourierItemData.getShipperPrice(), false
@@ -1000,7 +1001,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         } else {
             subTotalPrice = totalItemPrice;
         }
-        TextAndContentDescriptionUtil.setTextAndContentDescription(tvSubTotalPrice, subTotalPrice == 0 ? "-" : Utils.removeDecimalSuffix(CurrencyFormatUtil.convertPriceValueToIdrFormat(subTotalPrice, false)), tvSubTotalPrice.getContext().getString(R.string.content_desc_tv_total_item_price_subtotal));
+        TextAndContentDescriptionUtil.setTextAndContentDescription(tvSubTotalPrice, subTotalPrice == 0 ? "-" : Utils.removeDecimalSuffix(CurrencyFormatUtil.convertPriceValueToIdrFormat(subTotalPrice, false)), tvSubTotalPrice.getContext().getString(R.string.content_desc_tv_sub_total_price));
         TextAndContentDescriptionUtil.setTextAndContentDescription(tvTotalItemPrice, totalItemPrice == 0 ? "-" : getPriceFormat(tvTotalItem, tvTotalItemPrice, totalItemPrice), tvTotalItemPrice.getContext().getString(R.string.content_desc_tv_total_item_price_subtotal));
         tvTotalItem.setText(totalItemLabel);
         tvShippingFee.setText(shippingFeeLabel);
