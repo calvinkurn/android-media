@@ -1,6 +1,7 @@
 package com.tokopedia.thankyou_native.presentation.adapter.viewholder.feature
 
 import android.view.View
+import android.widget.ImageView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.thankyou_native.R
 import com.tokopedia.thankyou_native.presentation.adapter.FeatureListingAdapterListener
@@ -16,6 +17,7 @@ class FeatureListViewModel(val view: View, val listener : FeatureListingAdapterL
 
     override fun bind(element: FeatureListItem?) {
         element?.apply {
+            ivFeatureItem.scaleType =  ImageView.ScaleType.CENTER_INSIDE
             ivFeatureItem.setImageUrl(image)
             tvFeatureItemTitle.text = title
             tvFeatureItemDescription.text = description

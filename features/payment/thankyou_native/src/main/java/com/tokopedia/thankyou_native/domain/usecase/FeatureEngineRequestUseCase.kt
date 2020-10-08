@@ -35,10 +35,16 @@ class FeatureEngineRequestUseCase @Inject constructor(
     }
 
     private fun getRequestParams(thanksPageData: ThanksPageData): Map<String, Any> {
+        var mainGatewayCode : String = ""
+        thanksPageData.paymentDetails?.forEach {
+            if(it.gatewayName.equals(thanksPageData.gatewayName, true)){
+                mainGatewayCode = it.gatewayCode
+            }
+        }
         return mapOf(PARAM_REQUEST to Gson().toJson(FeatureEngineRequest(
-                thanksPageData.merchantCode, thanksPageData.profileCode, 1, 2,
+                thanksPageData.merchantCode, thanksPageData.profileCode, 1, 5,
                 FeatureEngineRequestParameters(true.toString(), thanksPageData.amount.toString(),
-                        thanksPageData.gatewayName, isEGoldPurchased(thanksPageData).toString(),
+                        mainGatewayCode, isEGoldPurchased(thanksPageData).toString(),
                         isDonation(thanksPageData).toString()),
                 FeatureEngineRequestOperators(),
                 FeatureEngineRequestThresholds())))
