@@ -1,5 +1,6 @@
 package com.tokopedia.applink.order
 
+import android.content.Context
 import android.net.Uri
 import com.tokopedia.applink.ApplinkConst.*
 import com.tokopedia.applink.constant.DeeplinkConstant
@@ -11,66 +12,68 @@ import com.tokopedia.applink.internal.ApplinkConstInternalOrder.MP_INTERNAL_PROC
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.MP_INTERNAL_SHIPPED
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.OMS_INTERNAL_ORDER
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.ORDER_LIST_INTERNAL
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RemoteConfigKey
 
 /**
  * Created by fwidjaja on 27/08/20.
  */
 object DeeplinkMapperUohOrder {
-    const val UOH_AB_TEST_KEY = "uoh_android"
-    const val UOH_AB_TEST_VALUE = "uoh_android"
+    const val UOH_AB_TEST_KEY = "uoh_android_v2"
+    const val UOH_AB_TEST_VALUE = "uoh_android_v2"
 
     private const val PATH_ORDER = "order"
     const val PATH_ORDER_ID = "order_id"
 
-    fun getRegisteredNavigationUohOrder(deeplink: String): String {
+    fun getRegisteredNavigationUohOrder(context: Context, deeplink: String): String {
         var returnedDeeplink = ""
         if (deeplink.equals(ORDER_LIST, true) || deeplink.equals(ORDER_LIST_WEBVIEW, true)
                 || deeplink.equals(PURCHASE_ORDER, true) || deeplink.equals(PURCHASE_HISTORY, true) ) {
-            returnedDeeplink = if (useUoh()) ApplinkConstInternalOrder.UNIFY_ORDER
+            returnedDeeplink = if (useUoh(context)) ApplinkConstInternalOrder.UNIFY_ORDER
             else getInternalDeeplink(deeplink)
 
         } else if (deeplink.startsWith(MARKETPLACE_ORDER_SUB) || deeplink.equals(PURCHASE_CONFIRMED, true)
                 || deeplink.startsWith(PURCHASE_HISTORY) || deeplink.equals(PURCHASE_PROCESSED, true)
                 || deeplink.equals(PURCHASE_SHIPPING_CONFIRM, true) || deeplink.equals(PURCHASE_SHIPPED, true)
                 || deeplink.equals(PURCHASE_DELIVERED, true)) {
-            returnedDeeplink = if (useUoh()) ApplinkConstInternalOrder.UNIFY_ORDER_MARKETPLACE_IN_PROCESS
+            returnedDeeplink = if (useUoh(context)) ApplinkConstInternalOrder.UNIFY_ORDER_MARKETPLACE_IN_PROCESS
             else getInternalDeeplink(deeplink)
 
         } else if (deeplink.equals(BELANJA_ORDER, true) || deeplink.equals(MARKETPLACE_ORDER, true)) {
-            returnedDeeplink = if (useUoh()) ApplinkConstInternalOrder.UNIFY_ORDER_MARKETPLACE
+            returnedDeeplink = if (useUoh(context)) ApplinkConstInternalOrder.UNIFY_ORDER_MARKETPLACE
             else getInternalDeeplink(deeplink)
 
         } else if (deeplink.equals(DIGITAL_ORDER, true) || deeplink.equals(Transaction.ORDER_HISTORY, true)) {
-            returnedDeeplink = if (useUoh()) ApplinkConstInternalOrder.UNIFY_ORDER_DIGITAL
+            returnedDeeplink = if (useUoh(context)) ApplinkConstInternalOrder.UNIFY_ORDER_DIGITAL
             else getInternalDeeplink(deeplink)
 
         } else if (deeplink.equals(EVENTS_ORDER, true)) {
-            returnedDeeplink = if (useUoh()) ApplinkConstInternalOrder.UNIFY_ORDER_EVENTS
+            returnedDeeplink = if (useUoh(context)) ApplinkConstInternalOrder.UNIFY_ORDER_EVENTS
             else getInternalDeeplink(deeplink)
 
         } else if (deeplink.equals(DEALS_ORDER, true)) {
-            returnedDeeplink = if (useUoh()) ApplinkConstInternalOrder.UNIFY_ORDER_DEALS
+            returnedDeeplink = if (useUoh(context)) ApplinkConstInternalOrder.UNIFY_ORDER_DEALS
             else getInternalDeeplink(deeplink)
 
         } else if (deeplink.equals(FLIGHT_ORDER, true)) {
-            returnedDeeplink = if (useUoh()) ApplinkConstInternalOrder.UNIFY_ORDER_PESAWAT
+            returnedDeeplink = if (useUoh(context)) ApplinkConstInternalOrder.UNIFY_ORDER_PESAWAT
             else getInternalDeeplink(deeplink)
 
         } else if (deeplink.equals(GIFT_CARDS_ORDER, true)) {
-            returnedDeeplink = if (useUoh()) ApplinkConstInternalOrder.UNIFY_ORDER_GIFTCARDS
+            returnedDeeplink = if (useUoh(context)) ApplinkConstInternalOrder.UNIFY_ORDER_GIFTCARDS
             else getInternalDeeplink(deeplink)
 
         } else if (deeplink.equals(INSURANCE_ORDER, true)) {
-            returnedDeeplink = if (useUoh()) ApplinkConstInternalOrder.UNIFY_ORDER_INSURANCE
+            returnedDeeplink = if (useUoh(context)) ApplinkConstInternalOrder.UNIFY_ORDER_INSURANCE
             else getInternalDeeplink(deeplink)
 
         } else if (deeplink.equals(MODAL_TOKO_ORDER, true)) {
-            returnedDeeplink = if (useUoh()) ApplinkConstInternalOrder.UNIFY_ORDER_MODALTOKO
+            returnedDeeplink = if (useUoh(context)) ApplinkConstInternalOrder.UNIFY_ORDER_MODALTOKO
             else getInternalDeeplink(deeplink)
 
         } else if (deeplink.equals(HOTEL_ORDER, true)) {
-            returnedDeeplink = if (useUoh()) ApplinkConstInternalOrder.UNIFY_ORDER_HOTEL
+            returnedDeeplink = if (useUoh(context)) ApplinkConstInternalOrder.UNIFY_ORDER_HOTEL
             else getInternalDeeplink(deeplink)
 
         } else if (deeplink.startsWith(MARKETPLACE_ORDER) || deeplink.startsWith(DIGITAL_ORDER)
@@ -81,9 +84,13 @@ object DeeplinkMapperUohOrder {
         return returnedDeeplink
     }
 
-    private fun useUoh(): Boolean {
-        val remoteConfigValue = RemoteConfigInstance.getInstance().abTestPlatform.getString(UOH_AB_TEST_KEY, "")
-        return remoteConfigValue == UOH_AB_TEST_VALUE
+    private fun useUoh(context: Context): Boolean {
+        val remoteConfigRollenceValue = RemoteConfigInstance.getInstance().abTestPlatform.getString(UOH_AB_TEST_KEY, "")
+        val rollence = remoteConfigRollenceValue.equals(UOH_AB_TEST_VALUE, ignoreCase = true)
+
+        val remoteConfig = FirebaseRemoteConfigImpl(context)
+        val remoteConfigFirebase: Boolean = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_UOH)
+        return (rollence && remoteConfigFirebase)
     }
 
     private fun getInternalDeeplink(deeplink: String): String {
@@ -116,6 +123,9 @@ object DeeplinkMapperUohOrder {
             }
             deeplink.equals(DIGITAL_ORDER, true) || deeplink.equals(Transaction.ORDER_HISTORY, true) -> {
                 return DIGITAL_ORDER_LIST_INTERNAL
+            }
+            deeplink.equals(MARKETPLACE_ORDER, true) -> {
+                return ORDER_LIST_INTERNAL
             }
             deeplink.startsWith(MARKETPLACE_ORDER) || (deeplink.startsWith(DIGITAL_ORDER) && !deeplink.equals(DIGITAL_ORDER, true)) -> {
                 return getMarketplaceDigitalOrderDetailInternalAppLink(deeplink)
