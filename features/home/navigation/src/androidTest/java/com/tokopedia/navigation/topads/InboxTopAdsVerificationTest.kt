@@ -31,6 +31,7 @@ class InboxTopAdsVerificationTest {
     var activityRule = object : IntentsTestRule<InstrumentationInboxTestActivity>(InstrumentationInboxTestActivity::class.java) {
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
+            login()
             setupTopAdsDetector()
         }
     }
@@ -50,9 +51,6 @@ class InboxTopAdsVerificationTest {
                 activityRule.activity,
                 activityRule.activity.application as TopAdsVerificatorInterface
         )
-
-        login()
-        waitForData()
     }
 
     @After
