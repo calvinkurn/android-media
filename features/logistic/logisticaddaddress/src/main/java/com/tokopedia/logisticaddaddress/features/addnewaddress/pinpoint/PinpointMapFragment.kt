@@ -333,7 +333,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
         fusedLocationClient?.lastLocation
                 ?.addOnSuccessListener {
                     if (it != null) {
-                        moveMap(getLatLng(it.latitude, it.longitude), ZOOM_LEVEL)
+                        showAutoComplete(it.latitude, it.longitude)
                     }
                 }
     }
