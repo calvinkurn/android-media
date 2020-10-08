@@ -4,11 +4,12 @@ import com.tokopedia.play.widget.data.PlayWidget
 import com.tokopedia.play.widget.data.PlayWidgetItem
 import com.tokopedia.play.widget.ui.model.*
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
+import javax.inject.Inject
 
 /**
  * Created by jegul on 07/10/20
  */
-class PlayWidgetSmallUiMapper(
+class PlayWidgetSmallUiMapper @Inject constructor(
         private val configMapper: PlayWidgetConfigMapper,
         private val videoMapper: PlayWidgetVideoMapper
 ) : PlayWidgetMapper {

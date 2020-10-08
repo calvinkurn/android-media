@@ -4,7 +4,7 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.play.widget.R
 import com.tokopedia.play.widget.ui.PlayWidgetMediumView
-import com.tokopedia.play.widget.ui.model.PlayWidgetMediumUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 
 /**
  * Created by jegul on 07/10/20
@@ -13,7 +13,7 @@ class PlayWidgetMediumViewHolder(itemView: View) : RecyclerView.ViewHolder(itemV
 
     private val widgetMediumView = itemView as PlayWidgetMediumView
 
-    fun bind(item: PlayWidgetMediumUiModel) {
+    fun bind(item: PlayWidgetUiModel.Medium) {
         widgetMediumView.setData(item)
     }
 

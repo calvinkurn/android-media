@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.play.widget.R
 import com.tokopedia.play.widget.ui.adapter.PlayWidgetCardSmallAdapter
 import com.tokopedia.play.widget.ui.itemdecoration.PlayWidgetCardSmallItemDecoration
-import com.tokopedia.play.widget.ui.model.PlayWidgetSmallUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 
 /**
  * Created by jegul on 07/10/20
@@ -36,11 +36,16 @@ class PlayWidgetSmallView : ConstraintLayout {
         setupView(view)
     }
 
-    fun setData(data: PlayWidgetSmallUiModel) {
-        tvTitle.text = data.title
-        tvSeeAll.text = data.actionTitle
+    fun setData(data: PlayWidgetUiModel.Small) {
+        when (data) {
+            PlayWidgetUiModel.Small.Empty -> {}
+            is PlayWidgetUiModel.Small.Widget -> {
+                tvTitle.text = data.title
+                tvSeeAll.text = data.actionTitle
 
-        adapter.setItemsAndAnimateChanges(data.items)
+                adapter.setItemsAndAnimateChanges(data.items)
+            }
+        }
     }
 
     private fun setupView(view: View) {

@@ -15,10 +15,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.widget.R
 import com.tokopedia.play.widget.ui.adapter.PlayWidgetCardMediumAdapter
-import com.tokopedia.play.widget.ui.model.PlayWidgetBackgroundUiModel
-import com.tokopedia.play.widget.ui.model.PlayWidgetMediumItemUiModel
-import com.tokopedia.play.widget.ui.model.PlayWidgetMediumOverlayUiModel
-import com.tokopedia.play.widget.ui.model.PlayWidgetMediumUiModel
+import com.tokopedia.play.widget.ui.model.*
 import com.tokopedia.play_common.widget.playBannerCarousel.extension.loadImage
 import com.tokopedia.play_common.widget.playBannerCarousel.extension.setGradientBackground
 import com.tokopedia.unifyprinciples.Typography
@@ -80,21 +77,26 @@ class PlayWidgetMediumView : ConstraintLayout {
         recyclerViewItem = view.findViewById(R.id.play_widget_recycler_view)
     }
 
-    fun setData(data: PlayWidgetMediumUiModel) {
-        title.text = data.title
-        actionTitle.text = data.actionTitle
+    fun setData(data: PlayWidgetUiModel.Medium) {
+        when (data) {
+            PlayWidgetUiModel.Medium.Empty -> {}
+            is PlayWidgetUiModel.Medium.Widget -> {
+                title.text = data.title
+                actionTitle.text = data.actionTitle
 
-        actionTitle.setOnClickListener {
-            widgetMediumListener?.onSeeMoreClicked(data.actionAppLink, data.actionWebLink)
+                actionTitle.setOnClickListener {
+                    widgetMediumListener?.onSeeMoreClicked(data.actionAppLink, data.actionWebLink)
+                }
+
+                configureBackgroundOverlay(data.background)
+
+                recyclerViewItem.layoutManager = layoutManager
+                recyclerViewItem.adapter = adapter
+                recyclerViewItem.addOnScrollListener(configureParallax())
+
+                adapter.setItems(data.items)
+            }
         }
-
-        configureBackgroundOverlay(data.background)
-
-        recyclerViewItem.layoutManager = layoutManager
-        recyclerViewItem.adapter = adapter
-        recyclerViewItem.addOnScrollListener(configureParallax())
-
-        adapter.setItems(data.items)
     }
 
     fun showLoading() {

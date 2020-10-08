@@ -98,11 +98,10 @@ class PlayWidgetUseCase(private val repository: GraphqlRepository) : UseCase<Pla
         }
         """
 
-        private const val PARAM_WIDGET_TYPE = "shopId"
-        private const val PARAM_AUTHOR_ID = "shopId"
-        private const val PARAM_AUTHOR_TYPE = "shopId"
+        private const val PARAM_WIDGET_TYPE = "widgetType"
+        private const val PARAM_AUTHOR_ID = "authorId"
+        private const val PARAM_AUTHOR_TYPE = "authorType"
 
-        const val VALUE_WIDGET_TYPE = "SHOP_PAGE"
         const val VALUE_AUTHOR_TYPE = "shop"
 
         @JvmStatic
@@ -115,5 +114,12 @@ class PlayWidgetUseCase(private val repository: GraphqlRepository) : UseCase<Pla
                 PARAM_AUTHOR_TYPE to authorType,
                 PARAM_WIDGET_TYPE to widgetType
         )
+    }
+
+    enum class WidgetType(val typeString: String) {
+
+        ShopPage("SHOP_PAGE"),
+        Home("HOME"),
+        Feeds("FEEDS")
     }
 }

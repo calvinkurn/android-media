@@ -4,7 +4,7 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.play.widget.R
 import com.tokopedia.play.widget.ui.PlayWidgetSmallView
-import com.tokopedia.play.widget.ui.model.PlayWidgetSmallUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 
 /**
  * Created by jegul on 07/10/20
@@ -13,7 +13,7 @@ class PlayWidgetSmallViewHolder(itemView: View) : RecyclerView.ViewHolder(itemVi
 
     private val widgetSmallView = itemView as PlayWidgetSmallView
 
-    fun bind(item: PlayWidgetSmallUiModel) {
+    fun bind(item: PlayWidgetUiModel.Small) {
         widgetSmallView.setData(item)
     }
 

@@ -2,11 +2,12 @@ package com.tokopedia.play.widget.ui.mapper
 
 import com.tokopedia.play.widget.data.PlayWidget
 import com.tokopedia.play.widget.ui.model.PlayWidgetConfigUiModel
+import javax.inject.Inject
 
 /**
  * Created by jegul on 07/10/20
  */
-class PlayWidgetConfigMapper {
+class PlayWidgetConfigMapper @Inject constructor() {
 
     fun mapWidgetConfig(data: PlayWidget): PlayWidgetConfigUiModel = PlayWidgetConfigUiModel(
             autoPlay = data.meta.autoplay,

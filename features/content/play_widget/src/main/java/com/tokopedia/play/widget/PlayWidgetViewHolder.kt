@@ -2,11 +2,21 @@ package com.tokopedia.play.widget
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-
+import com.tokopedia.play.widget.ui.PlayWidgetView
+import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 
 /**
  * Created by mzennis on 05/10/20.
  */
-open class PlayWidgetViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+class PlayWidgetViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
+    private val playWidgetView = itemView as PlayWidgetView
+
+    fun bind(item: PlayWidgetUiModel) {
+        playWidgetView.setModel(item)
+    }
+
+    companion object {
+        val layout = R.layout.item_play_widget
+    }
 }
