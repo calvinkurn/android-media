@@ -9,6 +9,7 @@ import android.view.MenuItem
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.setStatusBarColor
 import com.tokopedia.sellerorder.R
@@ -35,7 +36,7 @@ class SomDetailActivity: BaseSimpleActivity(), HasComponent<SomDetailComponent> 
         if (intent.extras != null) {
             bundle = intent.extras ?: Bundle()
         } else {
-            val orderId = intent?.data?.lastPathSegment.orEmpty()
+            val orderId = intent?.data?.getQueryParameter(ApplinkConstInternalOrder.PARAM_ORDER_ID).orEmpty()
             bundle.putString(PARAM_ORDER_ID, orderId)
         }
         return SomDetailFragment.newInstance(bundle)

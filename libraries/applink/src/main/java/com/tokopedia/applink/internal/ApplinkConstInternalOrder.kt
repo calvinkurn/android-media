@@ -1,7 +1,6 @@
 package com.tokopedia.applink.internal
 
 import com.tokopedia.applink.constant.DeeplinkConstant
-import java.io.FilterReader
 
 /**
  * Created by fwidjaja on 2019-09-05.
@@ -26,6 +25,7 @@ object ApplinkConstInternalOrder {
     const val PARAM_INSURANCE = "insurance"
     const val PARAM_MODALTOKO = "modaltoko"
     const val PARAM_HOTEL = "hotel"
+    const val PARAM_ORDER_ID = "order_id"
 
     @JvmField
     val HOST_SELLER = "seller"
@@ -82,7 +82,7 @@ object ApplinkConstInternalOrder {
     val FINISHED = "$INTERNAL_SELLER/finished"
 
     @JvmField
-    val ORDER_DETAIL = "$INTERNAL_SELLER/order/{order_id}"
+    val ORDER_DETAIL = "$INTERNAL_SELLER/order?order_id={order_id}"
 
     @JvmField
     val INVOICE = "$INTERNAL_ORDER/invoice"
