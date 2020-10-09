@@ -139,7 +139,7 @@ public class GraphqlClient {
         if (GlobalConfig.isAllowDebuggingTools()) {
             tkpdOkHttpBuilder.addInterceptor(new DeprecatedApiInterceptor(context.getApplicationContext()));
             FakeResponseInterceptorProvider provider = new FakeResponseInterceptorProvider();
-            Interceptor interceptor = provider.getInterceptor(context.getApplicationContext());
+            Interceptor interceptor = provider.getGqlInterceptor(context.getApplicationContext());
             if (interceptor != null) {
                 tkpdOkHttpBuilder.addInterceptor(interceptor);
             }
