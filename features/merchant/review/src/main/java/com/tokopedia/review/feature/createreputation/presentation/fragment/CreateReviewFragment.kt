@@ -59,6 +59,7 @@ import com.tokopedia.review.feature.createreputation.presentation.viewmodel.Crea
 import com.tokopedia.review.feature.inbox.common.ReviewInboxConstants
 import com.tokopedia.review.feature.inbox.common.analytics.ReviewInboxTrackingConstants
 import com.tokopedia.review.feature.ovoincentive.data.ProductRevIncentiveOvoDomain
+import com.tokopedia.review.feature.ovoincentive.presentation.adapter.IncentiveOvoAdapter
 import com.tokopedia.review.feature.ovoincentive.presentation.bottomsheet.IncentiveOvoBottomSheet
 import com.tokopedia.review.feature.ovoincentive.presentation.bottomsheet.IncentiveOvoSubmittedBottomSheet
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -625,29 +626,6 @@ class CreateReviewFragment : BaseDaggerFragment(),
         }
     }
 
-    private inner class ProductRevIncentiveOvoAdapter(private val list: List<String>)
-        : RecyclerView.Adapter<ProductRevIncentiveOvoAdapter.ViewHolder>() {
-
-        override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-            holder.bindHero(list[position])
-        }
-
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-            return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_incentive_ovo, parent, false))
-        }
-
-        override fun getItemCount(): Int = list.size
-
-        inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-            fun bindHero(explanation: String) {
-                itemView.apply {
-                    tgIncentiveOvoNumber.text = "${adapterPosition+1}."
-                    tgIncentiveOvoExplanation.text = HtmlLinkHelper(context, explanation).spannedString
-                }
-            }
-        }
-    }
-
     private fun initView(view: View, productRevIncentiveOvoDomain: ProductRevIncentiveOvoDomain, bottomSheet: BottomSheetUnify) {
         with(bottomSheet) {
             view.apply {
@@ -664,7 +642,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
 
             view.tgIncentiveOvoDescription.text = productRevIncentiveOvoDomain.productrevIncentiveOvo?.description
 
-            val adapterIncentiveOvo = ProductRevIncentiveOvoAdapter(productRevIncentiveOvoDomain.productrevIncentiveOvo?.numberedList ?: emptyList())
+            val adapterIncentiveOvo = IncentiveOvoAdapter(productRevIncentiveOvoDomain.productrevIncentiveOvo?.numberedList ?: emptyList())
             view.rvIncentiveOvoExplain.apply {
                 layoutManager = LinearLayoutManager(context)
                 adapter = adapterIncentiveOvo

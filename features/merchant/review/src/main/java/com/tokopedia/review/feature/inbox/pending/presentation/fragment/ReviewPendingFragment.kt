@@ -43,6 +43,7 @@ import com.tokopedia.review.feature.inbox.pending.presentation.adapter.uimodel.R
 import com.tokopedia.review.feature.inbox.pending.presentation.util.ReviewPendingItemListener
 import com.tokopedia.review.feature.inbox.pending.presentation.viewmodel.ReviewPendingViewModel
 import com.tokopedia.review.feature.ovoincentive.data.ProductRevIncentiveOvoDomain
+import com.tokopedia.review.feature.ovoincentive.presentation.adapter.IncentiveOvoAdapter
 import com.tokopedia.review.feature.ovoincentive.presentation.bottomsheet.IncentiveOvoBottomSheet
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
@@ -387,7 +388,7 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
 
             view.tgIncentiveOvoDescription.text = productRevIncentiveOvoDomain.productrevIncentiveOvo?.description
 
-            val adapterIncentiveOvo = ProductRevIncentiveOvoAdapter(productRevIncentiveOvoDomain.productrevIncentiveOvo?.numberedList ?: emptyList())
+            val adapterIncentiveOvo = IncentiveOvoAdapter(productRevIncentiveOvoDomain.productrevIncentiveOvo?.numberedList ?: emptyList())
             view.rvIncentiveOvoExplain.apply {
                 layoutManager = LinearLayoutManager(context)
                 adapter = adapterIncentiveOvo
@@ -425,29 +426,6 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
                         .build()
                         .toString())
         startActivityForResult(intent, CREATE_REVIEW_REQUEST_CODE)
-    }
-
-    private inner class ProductRevIncentiveOvoAdapter(private val list: List<String>)
-        : RecyclerView.Adapter<ProductRevIncentiveOvoAdapter.ViewHolder>() {
-
-        override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-            holder.bindHero(list[position])
-        }
-
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-            return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_incentive_ovo, parent, false))
-        }
-
-        override fun getItemCount(): Int = list.size
-
-        inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-            fun bindHero(explanation: String) {
-                itemView.apply {
-                    tgIncentiveOvoNumber.text = "${adapterPosition+1}."
-                    tgIncentiveOvoExplanation.text = HtmlLinkHelper(context, explanation).spannedString
-                }
-            }
-        }
     }
 
 }
