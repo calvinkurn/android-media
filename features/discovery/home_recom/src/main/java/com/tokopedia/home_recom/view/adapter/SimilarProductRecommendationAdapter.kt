@@ -1,16 +1,20 @@
 package com.tokopedia.home_recom.view.adapter
 
-import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
-import com.tokopedia.abstraction.base.view.adapter.viewholders.*
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.base.view.adapter.viewholders.EmptyViewHolder
+import com.tokopedia.abstraction.base.view.adapter.viewholders.ErrorNetworkViewHolder
+import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingShimmeringGridViewHolder
 import com.tokopedia.home_recom.R
-import com.tokopedia.home_recom.model.datamodel.SimilarProductRecommendationDataModel
+import com.tokopedia.home_recom.model.datamodel.HomeRecommendationDataModel
+import com.tokopedia.home_recom.model.datamodel.RecommendationErrorDataModel
 import com.tokopedia.home_recom.view.viewholder.SimilarProductLoadMoreViewHolder
 import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
 import com.tokopedia.unifycomponents.ChipsUnify
@@ -27,7 +31,7 @@ import kotlinx.android.synthetic.main.recommendation_filter_chip.view.*
  */
 class SimilarProductRecommendationAdapter(
         private val adapterTypeFactory: SimilarProductRecommendationTypeFactoryImpl
-) : BaseListAdapter<SimilarProductRecommendationDataModel, SimilarProductRecommendationTypeFactoryImpl>(adapterTypeFactory) {
+) : BaseListAdapter<HomeRecommendationDataModel, SimilarProductRecommendationTypeFactoryImpl>(adapterTypeFactory) {
 
     /**
      * This override function from [BaseListAdapter]
@@ -68,6 +72,12 @@ class SimilarProductRecommendationAdapter(
      * It return viewType of the viewHolder
      */
     override fun getItemViewType(position: Int): Int = visitables[position].type(adapterTypeFactory)
+
+    fun showRecommendationError(recommendationErrorDataModel: RecommendationErrorDataModel){
+        visitables.clear()
+        visitables.add(recommendationErrorDataModel)
+        notifyDataSetChanged()
+    }
 }
 
 class SimilarRecommendationFilterAdapter(private val listener: FilterChipListener): RecyclerView.Adapter<SimilarRecommendationFilterAdapter.SimilarRecommendationFilterViewHolder>(){

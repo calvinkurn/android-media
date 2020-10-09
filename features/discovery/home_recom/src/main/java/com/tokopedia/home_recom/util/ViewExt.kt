@@ -31,7 +31,7 @@ fun FragmentActivity.showToastSuccess(message: String){
     Toaster.make(findViewById(android.R.id.content), message, Snackbar.LENGTH_LONG)
 }
 
-fun FragmentActivity.showToastError(throwable: Throwable){
+fun FragmentActivity.showToastError(throwable: Throwable?){
     Toaster.make(
             findViewById(android.R.id.content),
             RecommendationPageErrorHandler.getErrorMessage(this, throwable),

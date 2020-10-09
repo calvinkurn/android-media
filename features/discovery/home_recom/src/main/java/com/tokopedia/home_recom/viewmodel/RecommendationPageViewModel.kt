@@ -209,14 +209,14 @@ open class RecommendationPageViewModel @Inject constructor(
 
                         override fun onError(e: Throwable) {
                             e.printStackTrace()
-                            _addToCartLiveData.postValue(Response.error(e.message))
+                            _addToCartLiveData.postValue(Response.error(e))
                         }
 
                         override fun onNext(addToCartResult: AddToCartDataModel) {
                             if (addToCartResult.status.equals(AddToCartDataModel.STATUS_OK, true) && addToCartResult.data.success == 1) {
                                 _addToCartLiveData.postValue(Response.success(productInfoDataModel))
                             } else {
-                                _addToCartLiveData.postValue(Response.error(addToCartResult.errorMessage.firstOrNull()))
+                                _addToCartLiveData.postValue(Response.error(Throwable(addToCartResult.errorMessage.firstOrNull())))
                             }
                         }
                     })
@@ -244,14 +244,14 @@ open class RecommendationPageViewModel @Inject constructor(
 
                         override fun onError(e: Throwable) {
                             e.printStackTrace()
-                            _buyNowLiveData.postValue(Response.error(e.message))
+                            _buyNowLiveData.postValue(Response.error(e))
                         }
 
                         override fun onNext(addToCartResult: AddToCartDataModel) {
                             if (addToCartResult.status.equals(AddToCartDataModel.STATUS_OK, true) && addToCartResult.data.success == 1) {
                                 _buyNowLiveData.postValue(Response.success(productInfoDataModel))
                             } else {
-                                _buyNowLiveData.postValue(Response.error(addToCartResult.errorMessage.firstOrNull()))
+                                _buyNowLiveData.postValue(Response.error(Throwable(addToCartResult.errorMessage.firstOrNull())))
                             }
                         }
                     })

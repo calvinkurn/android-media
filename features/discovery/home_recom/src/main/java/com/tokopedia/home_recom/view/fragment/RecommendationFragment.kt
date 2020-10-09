@@ -345,16 +345,20 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
                 Status.SUCCESS -> {
                     response.data?.let {
                         RecommendationPageTracking.eventUserClickAddToCartWithProductId(it.mapToRecommendationTracking(), ref, internalRef)
-                        activity?.showToastSuccessWithAction(response.message ?: "", getString(R.string.recom_see_cart)){
-                            RecommendationPageTracking.eventUserClickSeeToCartWithProductId()
-                            RouteManager.route(context, ApplinkConst.CART)
+                        activity?.run {
+                            showToastSuccessWithAction(RecommendationPageErrorHandler.getErrorMessage(this, response.exception), getString(R.string.recom_see_cart)){
+                                RecommendationPageTracking.eventUserClickSeeToCartWithProductId()
+                                RouteManager.route(context, ApplinkConst.CART)
+                            }
                         }
 
                     }
                 }
                 else -> {
                     add_to_cart?.isEnabled = true
-                    activity?.showToastError(MessageErrorException(response.message ?: ""))
+                    activity?.run {
+                        showToastError(response.exception)
+                    }
                 }
             }
         })
@@ -375,7 +379,9 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
                 }
                 else -> {
                     buy_now?.isEnabled = true
-                    activity?.showToastError(MessageErrorException(response.message ?: ""))
+                    activity?.run {
+                        showToastError(response.exception)
+                    }
                 }
             }
         })
