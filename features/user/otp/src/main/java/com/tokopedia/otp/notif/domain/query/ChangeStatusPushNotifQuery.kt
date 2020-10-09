@@ -4,7 +4,7 @@ package com.tokopedia.otp.notif.domain.query
  * Created by Ade Fulki on 22/09/20.
  */
 
-object ChangeOtpPushNotifQuery {
+object ChangeStatusPushNotifQuery {
 
     private const val status = "\$status"
 

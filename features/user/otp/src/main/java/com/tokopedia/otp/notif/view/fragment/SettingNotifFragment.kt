@@ -1,28 +1,23 @@
 package com.tokopedia.otp.notif.view.fragment
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.util.LetUtil
-import com.tokopedia.otp.R
 import com.tokopedia.otp.common.IOnBackPressed
 import com.tokopedia.otp.common.LoadingDialog
 import com.tokopedia.otp.common.abstraction.BaseOtpFragment
 import com.tokopedia.otp.common.analytics.TrackingOtpConstant
 import com.tokopedia.otp.common.analytics.TrackingOtpUtil
 import com.tokopedia.otp.common.di.OtpComponent
-import com.tokopedia.otp.notif.domain.pojo.ChangeOtpPushNotifData
+import com.tokopedia.otp.notif.domain.pojo.ChangeStatusPushNotifData
 import com.tokopedia.otp.notif.domain.pojo.DeviceStatusPushNotifData
 import com.tokopedia.otp.notif.view.viewbinding.SettingNotifViewBinding
 import com.tokopedia.otp.notif.viewmodel.NotifViewModel
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
@@ -72,7 +67,7 @@ class SettingNotifFragment : BaseOtpFragment(), IOnBackPressed {
                 is Fail -> onFailedDeviceStatusPushNotif().invoke(it.throwable)
             }
         })
-        viewModel.changeOtpPushNotifResult.observe(viewLifecycleOwner, Observer {
+        viewModel.changeStatusPushNotifResult.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> onSuccessChangeOtpPushNotif().invoke(it.data)
                 is Fail -> onFailedChangeOtpPushNotif().invoke(it.throwable)
@@ -95,7 +90,7 @@ class SettingNotifFragment : BaseOtpFragment(), IOnBackPressed {
         }
     }
 
-    private fun onSuccessChangeOtpPushNotif(): (ChangeOtpPushNotifData) -> Unit {
+    private fun onSuccessChangeOtpPushNotif(): (ChangeStatusPushNotifData) -> Unit {
         return {
             viewModel.deviceStatusPushNotif()
         }
@@ -126,7 +121,7 @@ class SettingNotifFragment : BaseOtpFragment(), IOnBackPressed {
         viewBound.switch?.setOnCheckedChangeListener { _, isChecked ->
             analytics.trackClickSignInFromNotifSettingButton(if (isChecked) TrackingOtpConstant.Label.LABEL_ON else TrackingOtpConstant.Label.LABEL_OFF)
             showLoading()
-            viewModel.changeOtpPushNotif(isChecked)
+            viewModel.changeStatusPushNotif(isChecked)
         }
     }
 

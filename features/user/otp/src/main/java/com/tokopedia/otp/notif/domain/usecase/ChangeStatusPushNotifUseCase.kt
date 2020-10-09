@@ -7,8 +7,8 @@ import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.otp.common.DispatcherProvider
 import com.tokopedia.otp.common.abstraction.BaseOtpUseCase
-import com.tokopedia.otp.notif.domain.pojo.ChangeOtpPushNotifPojo
-import com.tokopedia.otp.notif.domain.query.ChangeOtpPushNotifQuery
+import com.tokopedia.otp.notif.domain.pojo.ChangeStatusPushNotifPojo
+import com.tokopedia.otp.notif.domain.query.ChangeStatusPushNotifQuery
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -16,10 +16,10 @@ import javax.inject.Inject
  * Created by Ade Fulki on 22/09/20.
  */
 
-class ChangeOtpPushNotifUseCase @Inject constructor(
+class ChangeStatusPushNotifUseCase @Inject constructor(
         private val graphqlRepository: GraphqlRepository,
         dispatcher: DispatcherProvider
-) : BaseOtpUseCase<ChangeOtpPushNotifPojo>(dispatcher) {
+) : BaseOtpUseCase<ChangeStatusPushNotifPojo>(dispatcher) {
 
     fun getParams(
             status: Int
@@ -27,12 +27,12 @@ class ChangeOtpPushNotifUseCase @Inject constructor(
             PARAM_STATUS to status
     )
 
-    override suspend fun getData(parameter: Map<String, Any>): ChangeOtpPushNotifPojo = withContext(coroutineContext) {
+    override suspend fun getData(parameter: Map<String, Any>): ChangeStatusPushNotifPojo = withContext(coroutineContext) {
         val cacheStrategy =
                 GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
         val request = GraphqlRequest(
-                ChangeOtpPushNotifQuery.query,
-                ChangeOtpPushNotifPojo::class.java,
+                ChangeStatusPushNotifQuery.query,
+                ChangeStatusPushNotifPojo::class.java,
                 parameter
         )
         return@withContext graphqlRepository.getReseponse(listOf(request), cacheStrategy)

@@ -6,10 +6,10 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.otp.common.DispatcherProvider
-import com.tokopedia.otp.notif.domain.pojo.ChangeOtpPushNotifData
+import com.tokopedia.otp.notif.domain.pojo.ChangeStatusPushNotifData
 import com.tokopedia.otp.notif.domain.pojo.DeviceStatusPushNotifData
 import com.tokopedia.otp.notif.domain.pojo.VerifyPushNotifData
-import com.tokopedia.otp.notif.domain.usecase.ChangeOtpPushNotifUseCase
+import com.tokopedia.otp.notif.domain.usecase.ChangeStatusPushNotifUseCase
 import com.tokopedia.otp.notif.domain.usecase.DeviceStatusPushNotifUseCase
 import com.tokopedia.otp.notif.domain.usecase.VerifyPushNotifUseCase
 import com.tokopedia.usecase.coroutines.Fail
@@ -18,15 +18,15 @@ import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
 class NotifViewModel @Inject constructor(
-        private val changeOtpPushNotifUseCase: ChangeOtpPushNotifUseCase,
+        private val changeStatusPushNotifUseCase: ChangeStatusPushNotifUseCase,
         private val deviceStatusPushNotifUseCase: DeviceStatusPushNotifUseCase,
         private val verifyPushNotifUseCase: VerifyPushNotifUseCase,
         dispatcherProvider: DispatcherProvider
 ) : BaseViewModel(dispatcherProvider.ui()) {
 
-    private val _changeOtpPushNotifResult = MutableLiveData<Result<ChangeOtpPushNotifData>>()
-    val changeOtpPushNotifResult: LiveData<Result<ChangeOtpPushNotifData>>
-        get() = _changeOtpPushNotifResult
+    private val _changeStatusPushNotifResult = MutableLiveData<Result<ChangeStatusPushNotifData>>()
+    val changeStatusPushNotifResult: LiveData<Result<ChangeStatusPushNotifData>>
+        get() = _changeStatusPushNotifResult
 
     private val _deviceStatusPushNotifResult = MutableLiveData<Result<DeviceStatusPushNotifData>>()
     val deviceStatusPushNotifResult: LiveData<Result<DeviceStatusPushNotifData>>
@@ -36,24 +36,24 @@ class NotifViewModel @Inject constructor(
     val verifyPushNotifResult: LiveData<Result<VerifyPushNotifData>>
         get() = _verifyPushNotifResult
 
-    fun changeOtpPushNotif(status: Boolean) {
+    fun changeStatusPushNotif(status: Boolean) {
         launchCatchError(coroutineContext, {
-            val params = changeOtpPushNotifUseCase.getParams(if (status) 1 else 0)
-            val data = changeOtpPushNotifUseCase.getData(params).data
+            val params = changeStatusPushNotifUseCase.getParams(if (status) 1 else 0)
+            val data = changeStatusPushNotifUseCase.getData(params).data
             when {
                 data.success -> {
                     data.isChecked = status
-                    _changeOtpPushNotifResult.value = Success(data)
+                    _changeStatusPushNotifResult.value = Success(data)
                 }
                 data.errorMessage.isNotEmpty() -> {
-                    _changeOtpPushNotifResult.postValue(Fail(MessageErrorException(data.errorMessage)))
+                    _changeStatusPushNotifResult.postValue(Fail(MessageErrorException(data.errorMessage)))
                 }
                 else -> {
-                    _changeOtpPushNotifResult.postValue(Fail(Throwable()))
+                    _changeStatusPushNotifResult.postValue(Fail(Throwable()))
                 }
             }
         }, {
-            _changeOtpPushNotifResult.postValue(Fail(it))
+            _changeStatusPushNotifResult.postValue(Fail(it))
         })
     }
 

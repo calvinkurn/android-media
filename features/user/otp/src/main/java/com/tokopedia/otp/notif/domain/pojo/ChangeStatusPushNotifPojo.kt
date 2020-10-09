@@ -2,19 +2,18 @@ package com.tokopedia.otp.notif.domain.pojo
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.otp.verification.domain.data.ModeListData
 
 /**
  * Created by Ade Fulki on 22/09/20.
  */
 
-data class ChangeOtpPushNotifPojo(
+data class ChangeStatusPushNotifPojo(
         @SerializedName("ChangeStatusPushNotif")
         @Expose
-        var data: ChangeOtpPushNotifData = ChangeOtpPushNotifData()
+        var data: ChangeStatusPushNotifData = ChangeStatusPushNotifData()
 )
 
-data class ChangeOtpPushNotifData(
+data class ChangeStatusPushNotifData(
         @SerializedName("success")
         @Expose
         var success: Boolean = false,
