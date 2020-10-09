@@ -30,6 +30,7 @@ import com.tokopedia.topchat.TopchatTestCoroutineContextDispatcher
 import com.tokopedia.topchat.chatlist.domain.usecase.DeleteMessageListUseCase
 import com.tokopedia.topchat.chatlist.viewmodel.DeleteChatListUiModel
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.Attachment
+import com.tokopedia.topchat.chatroom.domain.pojo.chatroomsettings.ChatSettingsResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.OrderProgressResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.Sticker
 import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.ChatListGroupStickerResponse
@@ -46,6 +47,7 @@ import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Du
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.exShopId
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.exStartTime
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.exSticker
+import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.exUrl
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.exUserId
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.imageUploadViewModel
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.readParam
@@ -207,6 +209,7 @@ class TopChatRoomPresenterTest {
         const val exStartTime = "123321"
         const val exOpponentId = "39467501"
         const val exImageUrl = "https://ecs.tokopedia.com/image.jpg"
+        const val exUrl = "https://tokopedia.com/url"
         const val toUserId = "12345"
         const val toShopId = "54321"
         const val source = "askseller"
@@ -1242,6 +1245,127 @@ class TopChatRoomPresenterTest {
         // Then
         verify(exactly = 1) { getChatUseCase.minReplyTime = exCreateTime }
     }
+
+    @Test
+    fun `check resetChatUseCase`() {
+        // When
+        presenter.resetChatUseCase()
+
+        // Then
+        verify(exactly = 1) { getChatUseCase.reset() }
+    }
+
+    @Test
+    fun `check resetUnreadMessage`() {
+        // When
+        presenter.resetUnreadMessage()
+
+        // Then
+        assertTrue(presenter.newUnreadMessage == 0)
+    }
+
+    @Test
+    fun `check requestBlockPromo`() {
+        // Given
+        val onSuccess: (ChatSettingsResponse) -> Unit = mockk()
+        val onError: (Throwable) -> Unit = mockk()
+
+        // When
+        presenter.requestBlockPromo(exMessageId, onSuccess, onError)
+
+        // Then
+        verify(exactly = 1) {
+            chatToggleBlockChat.blockPromo(exMessageId, onSuccess, onError)
+        }
+    }
+
+    @Test
+    fun `check requestAllowPromo`() {
+        // Given
+        val onSuccess: (ChatSettingsResponse) -> Unit = mockk()
+        val onError: (Throwable) -> Unit = mockk()
+
+        // When
+        presenter.requestAllowPromo(exMessageId, onSuccess, onError)
+
+        // Then
+        verify(exactly = 1) {
+            chatToggleBlockChat.allowPromo(exMessageId, onSuccess, onError)
+        }
+    }
+
+    @Test
+    fun `check blockChat`() {
+        // Given
+        val onSuccess: (ChatSettingsResponse) -> Unit = mockk()
+        val onError: (Throwable) -> Unit = mockk()
+
+        // When
+        presenter.blockChat(exMessageId, onSuccess, onError)
+
+        // Then
+        verify(exactly = 1) {
+            chatToggleBlockChat.blockChat(exMessageId, onSuccess, onError)
+        }
+    }
+
+    @Test
+    fun `check unBlockChat`() {
+        // Given
+        val onSuccess: (ChatSettingsResponse) -> Unit = mockk()
+        val onError: (Throwable) -> Unit = mockk()
+
+        // When
+        presenter.unBlockChat(exMessageId, onSuccess, onError)
+
+        // Then
+        verify(exactly = 1) {
+            chatToggleBlockChat.unBlockChat(exMessageId, onSuccess, onError)
+        }
+    }
+
+    @Test
+    fun `on load background from cache`() {
+        // Given
+        every {
+            chatBackgroundUseCase.getBackground(
+                    captureLambda(), any(), any()
+            )
+        } answers {
+            val onCache = lambda<(String) -> Unit>()
+            onCache.invoke(exUrl)
+        }
+
+        // When
+        presenter.getBackground()
+
+        // Then
+        verify(exactly = 1) {
+            view.renderBackground(exUrl)
+        }
+    }
+
+    @Test
+    fun `on load background from success response and need to update`() {
+        // Given
+        every {
+            chatBackgroundUseCase.getBackground(
+                    any(), captureLambda(), any()
+            )
+        } answers {
+            val onSuccess = lambda<(String, Boolean) -> Unit>()
+            onSuccess.invoke(exUrl, true)
+        }
+
+        // When
+        presenter.getBackground()
+
+        // Then
+        verify(exactly = 1) {
+            view.renderBackground(exUrl)
+        }
+    }
+
 
     private fun mockkParseResponse(
             wsInfo: WebSocketInfo, isOpposite: Boolean = true

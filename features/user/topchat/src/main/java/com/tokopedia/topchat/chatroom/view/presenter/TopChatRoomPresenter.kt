@@ -737,7 +737,9 @@ class TopChatRoomPresenter @Inject constructor(
     }
 
     override fun getBackground() {
-        chatBackgroundUseCase.getBackground(::onLoadBackgroundFromCache, ::onSuccessLoadBackground, ::onErrorLoadBackground)
+        chatBackgroundUseCase.getBackground(
+                ::onLoadBackgroundFromCache, ::onSuccessLoadBackground, ::onErrorLoadBackground
+        )
     }
 
     private fun onLoadBackgroundFromCache(url: String) {
