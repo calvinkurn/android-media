@@ -11,8 +11,8 @@ import org.junit.Test
  * Created by Lukas on 2019-07-15
  */
 class RecommendationItemDataModelTest{
-    private val visitor = HomeRecommendationTypeFactoryImpl()
-    private fun recommendationItemDataModelFactory(recommendationItem: RecommendationItem, listener: RecommendationListener) = RecommendationItemDataModel(recommendationItem, listener)
+    private val visitor = HomeRecommendationTypeFactoryImpl(mockk(), mockk(), mockk(), mockk())
+    private fun recommendationItemDataModelFactory(recommendationItem: RecommendationItem, listener: RecommendationListener) = RecommendationItemDataModel(recommendationItem)
 
     @Test
     fun test(){

@@ -14,8 +14,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
  * @param listener the default listener for recommendation widget, it will handling on impression, click, wishlist tracker
  */
 data class RecommendationItemDataModel(
-        val productItem: RecommendationItem,
-        val listener: RecommendationListener
+        val productItem: RecommendationItem
 ) : HomeRecommendationDataModel {
 
     companion object{
