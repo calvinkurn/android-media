@@ -18,7 +18,6 @@ open class DeepLinkMapperTestFixture {
 
     @Before
     open fun setup() {
-        mockkObject(DeeplinkMapper)
         mockkObject(DeeplinkMapperUohOrder)
         mockkClass(GlobalConfig::class)
     }
