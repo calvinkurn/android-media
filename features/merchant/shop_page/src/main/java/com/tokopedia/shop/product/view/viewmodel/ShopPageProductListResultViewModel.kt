@@ -11,6 +11,7 @@ import com.tokopedia.shop.common.constant.ShopPageConstant
 import com.tokopedia.shop.common.domain.GetShopFilterBottomSheetDataUseCase
 import com.tokopedia.shop.common.domain.GetShopFilterProductCountUseCase
 import com.tokopedia.shop.common.domain.GqlGetShopSortUseCase
+import com.tokopedia.shop.common.domain.RestrictionEngineNplUseCase
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase.Companion.SHOP_PRODUCT_LIST_RESULT_SOURCE
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
@@ -44,7 +45,8 @@ class ShopPageProductListResultViewModel @Inject constructor(private val userSes
                                                              private val shopProductSortMapper: ShopProductSortMapper,
                                                              private val dispatcherProvider: CoroutineDispatcherProvider,
                                                              private val getShopFilterBottomSheetDataUseCase: GetShopFilterBottomSheetDataUseCase,
-                                                             private val getShopFilterProductCountUseCase: GetShopFilterProductCountUseCase
+                                                             private val getShopFilterProductCountUseCase: GetShopFilterProductCountUseCase,
+                                                             private val restrictionEngineNplUseCase: RestrictionEngineNplUseCase
 ) : BaseViewModel(dispatcherProvider.main()) {
 
     fun isMyShop(shopId: String) = userSession.shopId == shopId

@@ -39,7 +39,8 @@ object ShopPageProductListMapper {
                 shopEtalaseModel.type,
                 shopEtalaseModel.badge,
                 shopEtalaseModel.count.toLong(),
-                shopEtalaseModel.highlighted
+                shopEtalaseModel.highlighted,
+                shopEtalaseModel.rules
         )
     }
 

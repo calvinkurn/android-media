@@ -10,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -38,6 +39,7 @@ import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.kotlin.extensions.view.thousandFormatted
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.exception.UserNotLoginException
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -63,6 +65,8 @@ import com.tokopedia.shop.common.util.ShopProductViewGridType
 import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.util.getIndicatorCount
 import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
+import com.tokopedia.shop.common.widget.PartialButtonShopFollowersListener
+import com.tokopedia.shop.common.widget.PartialButtonShopFollowersView
 import com.tokopedia.shop.product.view.adapter.ShopProductAdapter
 import com.tokopedia.shop.product.view.adapter.ShopProductAdapterTypeFactory
 import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener
@@ -136,6 +140,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     private var remoteConfig: RemoteConfig? = null
     private var shopProductFilterParameter: ShopProductFilterParameter? = ShopProductFilterParameter()
     private var sortFilterBottomSheet: SortFilterBottomSheet? = null
+    private var partialShopNplFollowersView: View? = null
 
     private val staggeredGridLayoutManager: StaggeredGridLayoutManager by lazy {
         StaggeredGridLayoutManager(GRID_SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL)
@@ -359,6 +364,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                     val hasNextPage = it.data.hasNextPage
                     val totalProductData =  it.data.totalProductData
                     renderProductList(productList, hasNextPage, totalProductData)
+                    renderShopFollowersView()
                     isNeedToReloadData = false
                 }
                 is Fail -> showGetListError(it.throwable)
@@ -430,6 +436,23 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
             shopProductAdapter.setProductListDataModel(productList)
             updateScrollListenerState(hasNextPage)
             isLoadingInitialData = false
+        }
+    }
+    
+    private fun renderShopFollowersView() {
+        partialShopNplFollowersView = view?.findViewById(R.id.npl_follow_view)
+        partialShopNplFollowersView?.visible()
+        partialShopNplFollowersView?.let { view ->
+            selectedEtalaseRules?.let { rules ->
+                if((!isEmptyState) && (selectedEtalaseType == -2 && rules.contains(ShopEtalaseRules(name = ShowcaseRulesName.FOLLOWERS_ONLY)))) {
+                    val partialView = PartialButtonShopFollowersView.build(view, object: PartialButtonShopFollowersListener {
+                        override fun onButtonFollowNplClick() {
+                            // not yet implemented
+                        }
+                    })
+                    partialView.renderView("Eksklusif untuk Followers", "Yuk, follow untuk beli barang ini!", false)
+                }
+            }
         }
     }
 
