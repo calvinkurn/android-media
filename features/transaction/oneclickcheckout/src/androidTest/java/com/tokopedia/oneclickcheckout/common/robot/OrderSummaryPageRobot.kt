@@ -1,6 +1,7 @@
 package com.tokopedia.oneclickcheckout.common.robot
 
 import android.view.View
+import android.view.ViewGroup
 import android.widget.TextView
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
@@ -13,6 +14,7 @@ import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.common.action.scrollTo
 import com.tokopedia.oneclickcheckout.common.action.swipeUpTop
+import com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
 import com.tokopedia.unifyprinciples.Typography
 import org.junit.Assert.assertEquals
 
@@ -63,6 +65,12 @@ class OrderSummaryPageRobot {
     fun clickBboTicker() {
         onView(withId(R.id.ticker_shipping_promo)).perform(scrollTo())
         onView(withId(R.id.ticker_action)).perform(click())
+    }
+
+    fun clickChangeInstallment(func: InstallmentDetailBottomSheetRobot.() -> Unit) {
+        onView(withId(R.id.tv_installment_detail)).perform(scrollTo()).perform(click())
+        onView(withId(com.tokopedia.unifycomponents.R.id.bottom_sheet_header)).perform(swipeUpTop())
+        InstallmentDetailBottomSheetRobot().apply(func)
     }
 
     fun clickButtonPromo() {
@@ -196,6 +204,11 @@ class OrderSummaryPageRobot {
         onView(withId(R.id.tv_payment_name)).perform(scrollTo()).check(matches(withText(paymentName)))
     }
 
+    fun assertInstallment(detail: String) {
+        onView(withId(R.id.tv_installment_type)).perform(scrollTo()).check(matches(isDisplayed()))
+        onView(withId(R.id.tv_installment_detail)).check(matches(isDisplayed())).check(matches(withText(detail)))
+    }
+
     fun assertPayment(total: String, buttonText: String) {
         onView(withId(R.id.btn_pay)).perform(scrollTo()).check(matches(withText(buttonText)))
         onView(withId(R.id.tv_total_payment_value)).check(matches(withText(total)))
@@ -318,5 +331,18 @@ class OrderPriceSummaryBottomSheetRobot {
 
     fun closeBottomSheet() {
         Espresso.pressBack()
+    }
+}
+
+class InstallmentDetailBottomSheetRobot {
+
+    fun chooseInstallment(term: Int) {
+        val installmentName = if (term == 0) "Bayar Penuh" else "${term}x Cicilan 0%"
+        onView(withText(installmentName)).perform(scrollTo()).check { view, noViewFoundException ->
+            noViewFoundException?.printStackTrace()
+            val parent = view.parent as ViewGroup
+            val radioButtonUnify = parent.findViewById<RadioButtonUnify>(R.id.rb_installment_detail)
+            radioButtonUnify.performClick()
+        }
     }
 }

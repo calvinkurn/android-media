@@ -46,13 +46,46 @@ class OrderSummaryPageActivityCreditCardTest {
     }
 
     @Test
-    fun happyFlow_DirectCheckout() {
+    fun happyFlow_ZeroMonthDirectCheckout() {
         cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_CREDIT_CARD_RESPONSE_PATH
 
         activityRule.launchActivity(null)
 
         orderSummaryPage {
 
+            assertInstallment("Bayar Penuh")
+
+            assertPayment("Rp116.000", "Bayar")
+        } pay {
+            assertGoToPayment(
+                    redirectUrl = "https://www.tokopedia.com/payment",
+                    queryString = "transaction_id=123",
+                    method = "POST"
+            )
+        }
+    }
+
+    @Test
+    fun happyFlow_ChangeInstallment() {
+        cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_CREDIT_CARD_RESPONSE_PATH
+
+        activityRule.launchActivity(null)
+
+        orderSummaryPage {
+
+            assertInstallment("Bayar Penuh")
+
+            for (i in 1..4) {
+                clickAddProductQuantity()
+            }
+
+            clickChangeInstallment {
+                chooseInstallment(3)
+            }
+
+            assertInstallment("3 Bulan x Rp")
+
+            assertPayment("Rp516.000", "Bayar")
         } pay {
             assertGoToPayment(
                     redirectUrl = "https://www.tokopedia.com/payment",
