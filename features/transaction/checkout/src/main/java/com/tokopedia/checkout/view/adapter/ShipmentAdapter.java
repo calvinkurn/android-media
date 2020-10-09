@@ -282,7 +282,9 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     public void clearCompositeSubscription() {
-        compositeSubscription.clear();
+        if (compositeSubscription != null) {
+            compositeSubscription.clear();
+        }
     }
 
 
