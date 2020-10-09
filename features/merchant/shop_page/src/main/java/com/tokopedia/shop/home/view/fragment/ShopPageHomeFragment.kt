@@ -1378,17 +1378,18 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     override fun onClickTncCampaignNplWidget(model: ShopHomeNewProductLaunchCampaignUiModel) {
         model.data?.firstOrNull()?.let {
             shopPageHomeTracking.clickTncButton(isOwner, it.statusCampaign, customDimensionShopPage)
-            showNplCampaignTncBottomSheet(it.campaignId, it.statusCampaign)
+            showNplCampaignTncBottomSheet(it.campaignId, it.statusCampaign, it.dynamicRule.dynamicRoleData.ruleID)
         }
     }
 
-    private fun showNplCampaignTncBottomSheet(campaignId: String, statusCampaign: String) {
+    private fun showNplCampaignTncBottomSheet(campaignId: String, statusCampaign: String, ruleID: String) {
         val bottomSheet = ShopHomeNplCampaignTncBottomSheet.createInstance(
                 campaignId,
                 statusCampaign,
                 shopId,
                 isOfficialStore,
-                isGoldMerchant
+                isGoldMerchant,
+                ruleID
         )
         bottomSheet.show(childFragmentManager, "")
     }

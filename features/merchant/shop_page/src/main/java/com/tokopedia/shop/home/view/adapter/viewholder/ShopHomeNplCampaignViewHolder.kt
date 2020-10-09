@@ -1,11 +1,9 @@
 package com.tokopedia.shop.home.view.adapter.viewholder
 
-import android.content.res.Resources
 import android.view.View
 import android.view.ViewGroup
 
 import androidx.annotation.LayoutRes
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.*
@@ -24,7 +22,6 @@ import com.tokopedia.shop.home.view.model.StatusCampaign
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.shop.home.view.model.ShopHomeNewProductLaunchCampaignUiModel.Companion.TOTAL_NOTIFY_WORDING_FORMAT_FOR_REPLACED
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.item_shop_home_new_product_launch_campaign.view.*
@@ -174,17 +171,31 @@ class ShopHomeNplCampaignViewHolder(
                         R.drawable.ic_npl_remind_me_false
                 ))
                 if(isHideRemindMeTextAfterXSeconds){
-                    itemView.text_remind_me?.hide()
+                    hideRemindMeText(model)
                 }else{
                     itemView.text_remind_me?.show()
                     launchCatchError(block = {
                         delay(DURATION_TO_HIDE_REMIND_ME_WORDING)
+                        hideRemindMeText(model)
                         model.data.firstOrNull()?.isHideRemindMeTextAfterXSeconds = true
-                        itemView.text_remind_me?.hide()
                     }) {}
                 }
             }
             checkRemindMeLoading(model)
+        }
+    }
+
+    private fun hideRemindMeText(model: ShopHomeNewProductLaunchCampaignUiModel) {
+        val totalNotifyWording = model.data?.firstOrNull()?.totalNotifyWording.orEmpty()
+        itemView.text_remind_me?.apply {
+            if(totalNotifyWording.isEmpty()) {
+                hide()
+            } else {
+                val totalNotify = model.data?.firstOrNull()?.totalNotify ?: 0
+                val totalNotifyFormatted = totalNotify.thousandFormatted(1, RoundingMode.DOWN)
+                show()
+                text = totalNotifyFormatted
+            }
         }
     }
 
@@ -258,20 +269,30 @@ class ShopHomeNplCampaignViewHolder(
         }
     }
 
-    private fun setCampaignInterest(
-            totalNotify: Int,
-            totalNotifyWording: String,
-            statusCampaign: String
-    ) {
-        if (totalNotifyWording.isEmpty() || isStatusCampaignFinished(statusCampaign)) {
+//    private fun setCampaignInterest(
+//            totalNotify: Int,
+//            totalNotifyWording: String,
+//            statusCampaign: String
+//    ) {
+//        if (totalNotifyWording.isEmpty() || isStatusCampaignFinished(statusCampaign)) {
+//            itemView.text_description?.text = ""
+//            itemView.text_description?.hide()
+//        } else {
+//            val totalCampaignInterestString = totalNotifyWording.replace(
+//                    TOTAL_NOTIFY_WORDING_FORMAT_FOR_REPLACED,
+//                    totalNotify.thousandFormatted(1, RoundingMode.DOWN)
+//            )
+//            itemView.text_description?.text = totalCampaignInterestString
+//            itemView.text_description?.show()
+//        }
+//    }
+
+    private fun setCampaignDescription(description: String, statusCampaign: String) {
+        if (description.isEmpty() || isStatusCampaignFinished(statusCampaign)) {
             itemView.text_description?.text = ""
             itemView.text_description?.hide()
         } else {
-            val totalCampaignInterestString = totalNotifyWording.replace(
-                    TOTAL_NOTIFY_WORDING_FORMAT_FOR_REPLACED,
-                    totalNotify.thousandFormatted(1, RoundingMode.DOWN)
-            )
-            itemView.text_description?.text = totalCampaignInterestString
+            itemView.text_description?.text = MethodChecker.fromHtml(description)
             itemView.text_description?.show()
         }
     }
@@ -295,13 +316,12 @@ class ShopHomeNplCampaignViewHolder(
 
     private fun setHeader(model: ShopHomeNewProductLaunchCampaignUiModel) {
         val title = model.header.title
-        val totalNotify = model.data?.firstOrNull()?.totalNotify ?: 0
-        val totalNotifyWording = model.data?.firstOrNull()?.totalNotifyWording.orEmpty()
+        val dynamicRuleDescription = model.data?.firstOrNull()?.dynamicRule?.descriptionHeader.orEmpty()
         val statusCampaign = model.data?.firstOrNull()?.statusCampaign.orEmpty()
         setTitle(title)
         setTnc(title, model)
         setCta(model)
-        setCampaignInterest(totalNotify, totalNotifyWording, statusCampaign)
+        setCampaignDescription(dynamicRuleDescription, statusCampaign)
     }
 
     private fun setTnc(title: String, model: ShopHomeNewProductLaunchCampaignUiModel) {
