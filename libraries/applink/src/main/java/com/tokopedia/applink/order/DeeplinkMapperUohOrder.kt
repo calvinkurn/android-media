@@ -85,12 +85,17 @@ object DeeplinkMapperUohOrder {
     }
 
     private fun useUoh(context: Context): Boolean {
-        val remoteConfigRollenceValue = RemoteConfigInstance.getInstance().abTestPlatform.getString(UOH_AB_TEST_KEY, "")
-        val rollence = remoteConfigRollenceValue.equals(UOH_AB_TEST_VALUE, ignoreCase = true)
+        return try {
+            val remoteConfigRollenceValue = RemoteConfigInstance.getInstance().abTestPlatform.getString(UOH_AB_TEST_KEY, "")
+            val rollence = remoteConfigRollenceValue.equals(UOH_AB_TEST_VALUE, ignoreCase = true)
 
-        val remoteConfig = FirebaseRemoteConfigImpl(context)
-        val remoteConfigFirebase: Boolean = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_UOH)
-        return (rollence && remoteConfigFirebase)
+            val remoteConfig = FirebaseRemoteConfigImpl(context)
+            val remoteConfigFirebase: Boolean = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_UOH)
+            return (rollence && remoteConfigFirebase)
+
+        } catch (e: Exception) {
+            false
+        }
     }
 
     private fun getInternalDeeplink(deeplink: String): String {
