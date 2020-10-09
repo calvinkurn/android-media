@@ -83,7 +83,7 @@ class OfficialHomeAdapterTypeFactory(
             OfficialFeaturedShopViewHolder.LAYOUT -> OfficialFeaturedShopViewHolder(parent, featuredShopListener)
             DynamicChannelThematicViewHolder.LAYOUT -> DynamicChannelThematicViewHolder(parent, dcEventHandler)
             DynamicChannelSprintSaleViewHolder.LAYOUT -> DynamicChannelSprintSaleViewHolder(parent, dcEventHandler)
-            DynamicChannelMixLeftViewHolder.LAYOUT -> MixLeftComponentViewHolder(
+            MixLeftComponentViewHolder.LAYOUT -> MixLeftComponentViewHolder(
                     itemView = parent,
                     mixLeftComponentListener = mixLeftComponentListener,
                     homeComponentListener = homeComponentListener)
