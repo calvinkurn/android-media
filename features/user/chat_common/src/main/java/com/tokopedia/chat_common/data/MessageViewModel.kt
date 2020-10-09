@@ -6,7 +6,7 @@ import com.tokopedia.chat_common.view.adapter.BaseChatTypeFactory
 /**
  * @author by nisie on 5/16/18.
  */
-class MessageViewModel : SendableViewModel, Visitable<BaseChatTypeFactory> {
+open class MessageViewModel : SendableViewModel, Visitable<BaseChatTypeFactory> {
 
     var blastId = 0
 

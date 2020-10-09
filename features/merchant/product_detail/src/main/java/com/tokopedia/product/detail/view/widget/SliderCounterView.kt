@@ -7,7 +7,6 @@ import android.widget.FrameLayout
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.detail.R
-import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.widget_slider_counter_view.view.*
 
 /**

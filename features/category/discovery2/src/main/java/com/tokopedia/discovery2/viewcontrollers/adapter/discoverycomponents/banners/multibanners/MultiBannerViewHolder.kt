@@ -10,7 +10,6 @@ import androidx.lifecycle.Observer
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalTestApp
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.DataItem
@@ -60,13 +59,17 @@ class MultiBannerViewHolder(private val customItemView: View, val fragment: Frag
         })
 
         multiBannerViewModel.checkApplink().observe(fragment.viewLifecycleOwner, Observer { applink ->
-            if (applink.isNotEmpty()) {
-                Toaster.make(customItemView, fragment.getString(R.string.coupon_code_successfully_copied), Toast.LENGTH_SHORT, Toaster.TYPE_NORMAL,
-                        customItemView.context.getString(R.string.coupon_code_btn_text), View.OnClickListener {
-                    multiBannerViewModel.navigate(customItemView.context, applink)
-                })
-            } else {
-                Toaster.make(customItemView, fragment.getString(R.string.coupon_code_successfully_copied), Toast.LENGTH_SHORT, Toaster.TYPE_NORMAL)
+            try {
+                if (applink.isNotEmpty()) {
+                    Toaster.make(customItemView, fragment.getString(R.string.coupon_code_successfully_copied), Toast.LENGTH_SHORT, Toaster.TYPE_NORMAL,
+                            customItemView.context.getString(R.string.coupon_code_btn_text), View.OnClickListener {
+                        multiBannerViewModel.navigate(customItemView.context, applink)
+                    })
+                } else {
+                    Toaster.make(customItemView, fragment.getString(R.string.coupon_code_successfully_copied), Toast.LENGTH_SHORT, Toaster.TYPE_NORMAL)
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
         })
 
@@ -112,7 +115,7 @@ class MultiBannerViewHolder(private val customItemView: View, val fragment: Frag
 
     private fun setClickOnBanners(itemData: DataItem, index: Int) {
         bannersItemList[index].bannerImageView.setOnClickListener {
-            multiBannerViewModel.onBannerClicked(index)
+            multiBannerViewModel.onBannerClicked(index, context)
             (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackBannerClick(itemData, index)
         }
     }

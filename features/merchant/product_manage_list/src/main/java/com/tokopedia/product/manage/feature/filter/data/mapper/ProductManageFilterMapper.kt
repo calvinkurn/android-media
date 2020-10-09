@@ -3,7 +3,7 @@ package com.tokopedia.product.manage.feature.filter.data.mapper
 import com.tokopedia.core.common.category.domain.model.CategoriesResponse
 import com.tokopedia.product.manage.feature.filter.data.model.FilterOptionWrapper
 import com.tokopedia.product.manage.feature.filter.data.model.FilterOptionsResponse
-import com.tokopedia.product.manage.feature.filter.data.model.ProductListMetaData
+import com.tokopedia.product.manage.common.list.data.model.filter.ProductListMetaData
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.ChecklistUiModel
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.FilterDataUiModel
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.FilterUiModel

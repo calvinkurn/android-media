@@ -17,6 +17,7 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/title_tv"
+            android:contentDescription="@string/content_desc_title_tv"
             style="@style/WrapContent"
             android:maxLines="1"
             android:textColor="@color/clr_f531353b"

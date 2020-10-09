@@ -12,20 +12,23 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
  * Created By @ilhamsuaib on 16/06/20
  */
 
-class TooltipBottomSheet(
-        mContext: Context,
-        tooltip: TooltipUiModel
-) : BottomSheetUnify() {
+class TooltipBottomSheet : BottomSheetUnify() {
 
-    init {
-        setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
+    companion object {
+        fun createInstance(): TooltipBottomSheet {
+            return TooltipBottomSheet().apply {
+                setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
+                showCloseIcon = false
+                isDragable = true
+                showKnob = true
+                isHideable = true
+            }
+        }
+    }
+
+    fun init(context: Context, tooltip: TooltipUiModel) {
         setTitle(tooltip.title)
-        showCloseIcon = false
-        isDragable = true
-        showKnob = true
-        isHideable = true
-
-        val child = SellerHomeBottomSheetContent(mContext)
+        val child = SellerHomeBottomSheetContent(context)
         child.setTooltipData(tooltip)
         setChild(child)
         child.measure(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)

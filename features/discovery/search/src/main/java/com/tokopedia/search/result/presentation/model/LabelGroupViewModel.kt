@@ -2,12 +2,15 @@ package com.tokopedia.search.result.presentation.model
 
 import android.os.Parcel
 import android.os.Parcelable
+import com.tokopedia.discovery.common.constants.SearchConstant.ProductCardLabel.LABEL_INTEGRITY
 
 data class LabelGroupViewModel(
     val position: String,
     val type: String,
     val title: String
 ) : Parcelable {
+
+    fun isLabelIntegrity() = position == LABEL_INTEGRITY
 
     constructor(parcel: Parcel) : this(
         parcel.readString() ?: "",
