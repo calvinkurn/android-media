@@ -319,9 +319,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
     override fun onResume() {
         super.onResume()
         map_view?.onResume()
-        if ((currentLat == 0.0 && currentLong == 0.0) || currentLat == DEFAULT_LAT && currentLong == DEFAULT_LONG) {
-            getLastLocationClient()
-        }
+        getLastLocationClient()
         if (AddNewAddressUtils.isGpsEnabled(context)) {
             ic_current_location.setImageResource(R.drawable.ic_gps_enable)
         } else {
@@ -333,7 +331,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
         fusedLocationClient?.lastLocation
                 ?.addOnSuccessListener {
                     if (it != null) {
-                        moveMap(getLatLng(it.latitude, it.longitude), ZOOM_LEVEL)
+                        showAutoComplete(it.latitude, it.longitude)
                     }
                 }
     }
@@ -818,6 +816,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
             permissionCheckerHelper?.checkPermissions(it, getPermissions(),
                 object : PermissionCheckerHelper.PermissionCheckListener {
                     override fun onPermissionDenied(permissionText: String) {
+                        fusedLocationClient?.lastLocation?.addOnFailureListener { showAutoComplete(DEFAULT_LAT, DEFAULT_LONG)  }
                         permissionCheckerHelper?.onPermissionDenied(it, permissionText)
                     }
 
@@ -826,7 +825,6 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
                     }
 
                     override fun onPermissionGranted() {
-                        getLastLocationClient()
                         googleMap?.isMyLocationEnabled = true
                     }
 
