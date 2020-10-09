@@ -52,7 +52,7 @@ class RechargeGeneralAnalytics {
 
     fun eventClickProductListDropdown(categoryName: String, operatorName: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
-                Event.CLICK_CATEGORY,
+                Event.CLICK_HOMEPAGE,
                 Category.DIGITAL_HOMEPAGE,
                 Action.CLICK_PRODUCT_LIST_DROPDOWN,
                 "$categoryName - $operatorName"
