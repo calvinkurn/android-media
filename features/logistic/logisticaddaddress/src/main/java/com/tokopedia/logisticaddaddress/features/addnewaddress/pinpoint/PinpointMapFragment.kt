@@ -15,6 +15,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapsInitializer
@@ -83,6 +84,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
     private var addNewAddressComponent: AddNewAddressComponent? = null
     private var isChangesRequested: Boolean = false
     private var permissionCheckerHelper: PermissionCheckerHelper? = null
+    private var fusedLocationClient: FusedLocationProviderClient? = null
     private var continueWithLocation: Boolean? = false
     private var isFullFlow: Boolean = true
     private var isLogisticLabel: Boolean = true
@@ -108,7 +110,6 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
                     .build()
                     .inject(this@PinpointMapFragment)
             presenter.attachView(this@PinpointMapFragment)
-            presenter.setPermissionChecker(permissionCheckerHelper)
         }
     }
 
@@ -137,6 +138,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
         private const val ADDRESS_KONSLET = "tokopedia_konslet.png"
         private const val ADDRESS_OUT_OF_INDONESIA = "tokopedia_out_of_indonesia.png"
         private const val ADDRESS_INVALID = "ic_invalid_location.png"
+        private const val ZOOM_LEVEL = 16f
 
     }
 
@@ -172,6 +174,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
 
         val zoom = googleMap?.cameraPosition?.zoom ?: 0f
         presenter.autoFill(currentLat, currentLong, zoom)
+        fusedLocationClient = FusedLocationProviderClient(requireActivity())
     }
 
     private fun prepareMap(savedInstanceState: Bundle?) {
@@ -231,29 +234,14 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
 
         activity?.let {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                permissionCheckerHelper?.checkPermissions(it, getPermissions(),
-                        object : PermissionCheckerHelper.PermissionCheckListener {
-                            override fun onPermissionDenied(permissionText: String) {
-                                permissionCheckerHelper?.onPermissionDenied(it, permissionText)
-                            }
-
-                            override fun onNeverAskAgain(permissionText: String) {
-                                permissionCheckerHelper?.onNeverAskAgain(it, permissionText)
-                            }
-
-                            override fun onPermissionGranted() {
-                                googleMap?.isMyLocationEnabled = true
-                            }
-
-                        },
-                        it.getString(R.string.rationale_need_location))
+                requestLocation()
             } else {
                 googleMap?.isMyLocationEnabled = true
             }
         }
         activity?.let { MapsInitializer.initialize(activity) }
 
-        moveMap(getLatLng(currentLat, currentLong))
+        moveMap(getLatLng(currentLat, currentLong), ZOOM_LEVEL)
 
         if (this.isPolygon) {
             districtId?.let { districtId ->
@@ -308,7 +296,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
             }, 500)
         }
 
-        var zoomLevel = 16f
+        var zoomLevel = ZOOM_LEVEL
         if (lat == 0.0 && long == 0.0) {
             currentLat = DEFAULT_LAT
             currentLong = DEFAULT_LONG
@@ -319,7 +307,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
         moveMap(getLatLng(currentLat, currentLong), zoomLevel)
     }
 
-    private fun moveMap(latLng: LatLng, zoomLevel: Float = 16f) {
+    private fun moveMap(latLng: LatLng, zoomLevel: Float) {
         val cameraPosition = CameraPosition.Builder()
                 .target(latLng)
                 .zoom(zoomLevel)
@@ -331,9 +319,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
     override fun onResume() {
         super.onResume()
         map_view?.onResume()
-        if ((currentLat == 0.0 && currentLong == 0.0) || currentLat == DEFAULT_LAT && currentLong == DEFAULT_LONG) {
-            presenter.requestLocation(requireActivity())
-        }
+        getLastLocationClient()
         if (AddNewAddressUtils.isGpsEnabled(context)) {
             ic_current_location.setImageResource(R.drawable.ic_gps_enable)
         } else {
@@ -341,9 +327,18 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
         }
     }
 
+    private fun getLastLocationClient() {
+        fusedLocationClient?.lastLocation
+                ?.addOnSuccessListener {
+                    if (it != null) {
+                        showAutoComplete(it.latitude, it.longitude)
+                    }
+                }
+    }
+
     private fun doUseCurrentLocation(isFullFlow: Boolean) {
         if (AddNewAddressUtils.isGpsEnabled(context)) {
-            activity?.let { presenter.requestLocation(it) }
+            requestLocation()
         } else {
             showLocationInfoBottomSheet(isFullFlow)
         }
@@ -391,7 +386,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
                 if (getDistrictDataUiModel.postalCode.isEmpty() || getDistrictDataUiModel.districtId == 0) {
                     currentLat = getDistrictDataUiModel.latitude.toDouble()
                     currentLong = getDistrictDataUiModel.longitude.toDouble()
-                    moveMap(getLatLng(currentLat, currentLong))
+                    moveMap(getLatLng(currentLat, currentLong), ZOOM_LEVEL)
                     showNotFoundLocation()
                 } else {
                     doAfterSuccessPlaceGetDistrict(getDistrictDataUiModel)
@@ -406,7 +401,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
         currentLat = getDistrictDataUiModel.latitude.toDouble()
         currentLong = getDistrictDataUiModel.longitude.toDouble()
         isGetDistrict = true
-        moveMap(getLatLng(currentLat, currentLong))
+        moveMap(getLatLng(currentLat, currentLong), ZOOM_LEVEL)
 
         whole_loading_container?.visibility = View.GONE
         getdistrict_container?.visibility = View.VISIBLE
@@ -813,6 +808,27 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
 
             override fun afterTextChanged(text: Editable) {
             }
+        }
+    }
+
+    private fun requestLocation() {
+        activity?.let {
+            permissionCheckerHelper?.checkPermissions(it, getPermissions(),
+                object : PermissionCheckerHelper.PermissionCheckListener {
+                    override fun onPermissionDenied(permissionText: String) {
+                        fusedLocationClient?.lastLocation?.addOnFailureListener { showAutoComplete(DEFAULT_LAT, DEFAULT_LONG)  }
+                        permissionCheckerHelper?.onPermissionDenied(it, permissionText)
+                    }
+
+                    override fun onNeverAskAgain(permissionText: String) {
+                        permissionCheckerHelper?.onNeverAskAgain(it, permissionText)
+                    }
+
+                    override fun onPermissionGranted() {
+                        googleMap?.isMyLocationEnabled = true
+                    }
+
+                }, it.getString(R.string.rationale_need_location))
         }
     }
 

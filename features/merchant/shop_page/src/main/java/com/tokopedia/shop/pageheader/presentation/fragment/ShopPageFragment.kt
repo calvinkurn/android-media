@@ -288,11 +288,15 @@ class ShopPageFragment :
                     )
                 }
                 if (isSellerMigrationEnabled(context)) {
-                    val tabFeedPosition = viewPagerAdapter.getFragmentPosition(FeedShopFragment::class.java)
-                    if (tab.position == tabFeedPosition) {
-                        (activity as? ShopPageActivity)?.bottomSheetSellerMigration?.state = BottomSheetBehavior.STATE_EXPANDED
-                    } else {
-                        (activity as? ShopPageActivity)?.bottomSheetSellerMigration?.state = BottomSheetBehavior.STATE_HIDDEN
+                    if(isMyShop && viewPagerAdapter.isFragmentObjectExists(FeedShopFragment::class.java)){
+                        val tabFeedPosition = viewPagerAdapter.getFragmentPosition(FeedShopFragment::class.java)
+                        if (tab.position == tabFeedPosition) {
+                            showBottomSheetSellerMigration()
+                        } else {
+                            hideBottomSheetSellerMigration()
+                        }
+                    }else{
+                        hideBottomSheetSellerMigration()
                     }
                 }
             }
@@ -309,7 +313,7 @@ class ShopPageFragment :
     private fun setupBottomSheetSellerMigration(view: View) {
         val viewTarget: LinearLayout = view.findViewById(bottom_sheet_wrapper)
         (activity as? ShopPageActivity)?.bottomSheetSellerMigration = BottomSheetBehavior.from(viewTarget)
-        (activity as? ShopPageActivity)?.bottomSheetSellerMigration?.state = BottomSheetBehavior.STATE_HIDDEN
+        hideBottomSheetSellerMigration()
 
         if (isSellerMigrationEnabled(context)) {
             BottomSheetUnify.bottomSheetBehaviorKnob(viewTarget, false)
@@ -624,6 +628,7 @@ class ShopPageFragment :
         super.onResume()
         removeTemporaryShopImage(shopImageFilePath)
         updateStickyState()
+        setShopName()
     }
 
     private fun setViewState(viewState: Int) {
@@ -805,6 +810,7 @@ class ShopPageFragment :
             shopDomain = shopPageP1Data.shopDomain
             avatar = shopPageP1Data.shopAvatar
         }
+        setShopName()
         customDimensionShopPage.updateCustomDimensionData(
                 shopId,
                 shopPageHeaderDataModel?.isOfficial ?: false,
@@ -870,6 +876,7 @@ class ShopPageFragment :
                     shopPageHeaderContentData.shopOperationalHourStatus,
                     isMyShop
             )
+            setShopName()
             view?.let { onToasterNoUploadProduct(it, getString(R.string.shop_page_product_no_upload_product), isFirstCreateShop) }
         }
     }
@@ -1340,4 +1347,18 @@ class ShopPageFragment :
         }
     }
 
+    private fun showBottomSheetSellerMigration(){
+        (activity as? ShopPageActivity)?.bottomSheetSellerMigration?.state = BottomSheetBehavior.STATE_EXPANDED
+    }
+
+    private fun hideBottomSheetSellerMigration(){
+        (activity as? ShopPageActivity)?.bottomSheetSellerMigration?.state = BottomSheetBehavior.STATE_HIDDEN
+    }
+
+    private fun setShopName() {
+        if(isMyShop) {
+            shopPageHeaderDataModel?.shopName = shopViewModel.ownerShopName
+            shopPageFragmentHeaderViewHolder.setShopName(shopViewModel.ownerShopName)
+        }
+    }
 }
