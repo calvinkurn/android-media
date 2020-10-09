@@ -89,7 +89,7 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
 
     private val remoteConfig: RemoteConfig by lazy { FirebaseRemoteConfigImpl(this.applicationContext) }
 
-    private var scroogeWebView: WebView? = null
+    private var scroogeWebView: TopPayWebview? = null
     private var progressBar: ProgressBar? = null
     private var btnBack: View? = null
     private var btnClose: View? = null
