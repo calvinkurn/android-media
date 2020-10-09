@@ -144,27 +144,6 @@ class SuggestionPresenter @Inject constructor() : BaseDaggerPresenter<Suggestion
     }
 
     private fun addDoubleLineWithoutImageToVisitable(typePosition: HashMap<String, Int?>, item: SuggestionItem) {
-        if (typePosition.isEmpty()) {
-            processDoubleLineWithoutImageAtTop(typePosition, item)
-        } else {
-            processDoubleLineWithoutImageAtTopBottom(typePosition, item)
-        }
-    }
-
-    private fun processDoubleLineWithoutImageAtTop(typePosition: HashMap<String, Int?>, item: SuggestionItem) {
-        processDoubleLineWithoutImageToVisitable(typePosition, item)
-    }
-
-    private fun processDoubleLineWithoutImageAtTopBottom(typePosition: HashMap<String, Int?>, item: SuggestionItem) {
-        addSuggestionSeparator(typePosition, item)
-        processDoubleLineWithoutImageToVisitable(typePosition, item)
-    }
-
-    private fun addSuggestionSeparator(typePosition: HashMap<String, Int?>, item: SuggestionItem) {
-        if (typePosition[item.type] == null) listVisitable.add(SuggestionSeparatorViewModel())
-    }
-
-    private fun processDoubleLineWithoutImageToVisitable(typePosition: HashMap<String, Int?>, item: SuggestionItem) {
         typePosition.incrementPosition(item.type)
         typePosition[item.type]?.let { item.convertToDoubleLineWithoutImageVisitableList(getQueryKey(), position = it) }?.let {
             listVisitable.add(

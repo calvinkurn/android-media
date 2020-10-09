@@ -40,10 +40,6 @@ class SuggestionAdapterTypeFactory(
         return SuggestionDoubleLineWithoutImageViewHolder.LAYOUT
     }
 
-    override fun type(viewModel: SuggestionSeparatorViewModel): Int {
-        return SuggestionSeparatorViewHolder.LAYOUT
-    }
-
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
             SuggestionTitleViewHolder.LAYOUT -> SuggestionTitleViewHolder(parent)
@@ -51,7 +47,6 @@ class SuggestionAdapterTypeFactory(
             SuggestionDoubleLineViewHolder.LAYOUT -> SuggestionDoubleLineViewHolder(parent, suggestionClickListener)
             SuggestionTopShopWidgetViewHolder.LAYOUT -> SuggestionTopShopWidgetViewHolder(parent, suggestionTopShopListener)
             SuggestionDoubleLineWithoutImageViewHolder.LAYOUT -> SuggestionDoubleLineWithoutImageViewHolder(parent, suggestionClickListener)
-            SuggestionSeparatorViewHolder.LAYOUT -> SuggestionSeparatorViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }
     }
