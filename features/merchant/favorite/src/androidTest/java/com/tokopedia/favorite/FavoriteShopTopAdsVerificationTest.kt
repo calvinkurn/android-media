@@ -34,6 +34,7 @@ class FavoriteShopTopAdsVerificationTest {
     ) {
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
+            login()
             setupTopAdsDetector()
         }
     }
@@ -55,7 +56,6 @@ class FavoriteShopTopAdsVerificationTest {
 
     @Test
     fun testTopAds() {
-        login()
         waitForData(5)
 
         val outerRecyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.index_favorite_recycler_view)
@@ -82,7 +82,7 @@ class FavoriteShopTopAdsVerificationTest {
     }
 
     private fun login() {
-        InstrumentationAuthHelper.loginToAnUser(activityRule.activity.application)
+        InstrumentationAuthHelper.loginInstrumentationTestTopAdsUser()
     }
 
     private fun waitForData(delayInSeconds: Int) {
