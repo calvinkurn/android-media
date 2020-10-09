@@ -12,16 +12,15 @@ import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.seller.action.common.const.SellerActionConst
 import com.tokopedia.seller.action.common.di.DaggerSellerActionComponent
+import com.tokopedia.seller.action.common.di.SellerActionModule
 import com.tokopedia.seller.action.data.model.Order
 import com.tokopedia.seller.action.data.model.exception.SellerActionException
 import com.tokopedia.seller.action.data.repository.SliceMainOrderListRepository
-import com.tokopedia.seller.action.slices.item.SellerLoadingSlice
-import com.tokopedia.seller.action.slices.item.SellerOrderSlice
-import com.tokopedia.seller.action.slices.item.SellerSlice
-import com.tokopedia.seller.action.slices.item.SellerUnknownSlice
+import com.tokopedia.seller.action.slices.item.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class SellerActionSliceProvider: SliceProvider(){
@@ -35,6 +34,9 @@ class SellerActionSliceProvider: SliceProvider(){
 
     @Inject
     lateinit var handler: Handler
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     private val observer = Observer<Result<Pair<Uri, List<Order>>>> { result ->
         if (result != null) {
@@ -61,7 +63,7 @@ class SellerActionSliceProvider: SliceProvider(){
 
     override fun onBindSlice(sliceUri: Uri): Slice? {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            if (!isHasLoaded) {
+            if (!isHasLoaded && userSession.isLoggedIn) {
                 orderListLiveData = getOrderListLiveData(sliceUri)
             }
             isHasLoaded = false
@@ -71,9 +73,9 @@ class SellerActionSliceProvider: SliceProvider(){
         }
     }
 
-
     private fun injectDependencies() {
         DaggerSellerActionComponent.builder()
+                .sellerActionModule(SellerActionModule(requireNotNull(context)))
                 .build()
                 .inject(this)
     }
@@ -91,27 +93,31 @@ class SellerActionSliceProvider: SliceProvider(){
         val orderList = orderListLiveData?.value
         return when (sliceUri.path) {
             SellerActionConst.Deeplink.ORDER -> {
-                if (orderList != null) {
-                    handler.post {
-                        orderListLiveData?.removeObserver(observer)
-                    }
-                    when(orderList) {
-                        is Success -> {
-                            orderList.data.second.let { list ->
-                                SellerOrderSlice(
-                                        notNullContext,
-                                        sliceUri,
-                                        list
-                                )
-                            }
+                if (userSession.isLoggedIn) {
+                    if (orderList != null) {
+                        handler.post {
+                            orderListLiveData?.removeObserver(observer)
                         }
-                        is Fail -> SellerUnknownSlice(notNullContext, sliceUri)
+                        when(orderList) {
+                            is Success -> {
+                                orderList.data.second.let { list ->
+                                    SellerOrderSlice(
+                                            notNullContext,
+                                            sliceUri,
+                                            list
+                                    )
+                                }
+                            }
+                            is Fail -> SellerFailureSlice(notNullContext, sliceUri)
+                        }
+                    } else {
+                        SellerLoadingSlice(notNullContext, sliceUri)
                     }
                 } else {
-                    SellerLoadingSlice(notNullContext, sliceUri)
+                    SellerNotLoginSlice(notNullContext, sliceUri)
                 }
             }
-            else -> SellerUnknownSlice(
+            else -> SellerFailureSlice(
                     notNullContext,
                     sliceUri
             )

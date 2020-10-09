@@ -10,7 +10,7 @@ import androidx.slice.builders.list
 import androidx.slice.builders.row
 import com.tokopedia.seller.action.R
 
-class SellerUnknownSlice(context: Context,
+class SellerFailureSlice(context: Context,
                          sliceUri: Uri): SellerSlice(context, sliceUri) {
 
     @RequiresApi(Build.VERSION_CODES.KITKAT)

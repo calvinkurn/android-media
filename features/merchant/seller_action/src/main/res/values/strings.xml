@@ -3,6 +3,8 @@
     <string name="seller_action_open_app">Buka App Tokopedia Seller</string>
     <string name="seller_action_not_found">Data tidak dapat ditampilkan</string>
     <string name="seller_action_loading">Mohon tunggu</string>
+    <string name="seller_action_not_login">Anda belum login.</string>
+    <string name="seller_action_not_login_desc">Login terlebih dahulu ke Tokopedia Seller</string>
 
     //Order Slice
     <string name="seller_action_order_title">Order Anda</string>

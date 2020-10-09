@@ -9,17 +9,28 @@ import androidx.core.graphics.drawable.IconCompat
 import androidx.slice.Slice
 import androidx.slice.builders.ListBuilder
 import androidx.slice.builders.SliceAction
+import androidx.slice.builders.list
+import androidx.slice.builders.row
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.seller.action.R
 
-abstract class SellerSlice(val context: Context, protected val sliceUri: Uri) {
-
-    abstract fun getSlice(): Slice
+class SellerNotLoginSlice(context: Context,
+                          sliceUri: Uri): SellerSlice(context, sliceUri) {
 
     @RequiresApi(Build.VERSION_CODES.KITKAT)
-    protected fun createActivityAction(): SliceAction {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalSellerapp.SELLER_HOME_SOM_ALL)
+    override fun getSlice(): Slice =
+            list(context, sliceUri, ListBuilder.INFINITY) {
+                row {
+                    title = context.getString(R.string.seller_action_not_login)
+                    primaryAction = createLoginAction()
+                }
+                setIsError(true)
+            }
+
+    @RequiresApi(Build.VERSION_CODES.KITKAT)
+    private fun createLoginAction(): SliceAction {
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.SEAMLESS_LOGIN)
         return SliceAction.create(
                 PendingIntent.getActivity(context, 0, intent, 0),
                 IconCompat.createWithResource(context, R.drawable.ic_sellerapp_launcher),
