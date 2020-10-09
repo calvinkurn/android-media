@@ -2,27 +2,14 @@ package com.tokopedia.linter
 
 import com.android.tools.lint.client.api.IssueRegistry
 import com.android.tools.lint.detector.api.CURRENT_API
-import com.tokopedia.linter.detectors.*
 import com.tokopedia.linter.detectors.gradle.DEPENDENCY_BANNED
 import com.tokopedia.linter.detectors.gradle.DEPENDENCY_DEPRECATED
+import com.tokopedia.linter.unify.UnifyDetector
 
 class IssueRegistry : IssueRegistry() {
     override val issues
         get() = listOf(
-                BottomSheetUnifyDetector.ISSUE,
-                CoreResourcesDetector.ISSUE,
-                DatePickerUnifyDetector.ISSUE,
-                DialogUnifyDetector.ISSUE,
-                FloatingButtonUnifyDetector.ISSUE,
-                LoaderUnifyDetector.ISSUE,
-                SearchBarUnifyDetector.ISSUE,
-                SetColourDetector.ISSUE,
-                TabsUnifyDetector.ISSUE,
-                TabsUnifyDetector.TAB_LAYOUT_ISSUE,
-                ToasterDetector.ISSUE,
-                TypographyDetector.ISSUE,
-                UnifyButtonDetector.ISSUE,
-                UnifyImageButtonDetector.ISSUE,
+                UnifyDetector.ISSUE,
                 DEPENDENCY_BANNED,
                 DEPENDENCY_DEPRECATED
         )

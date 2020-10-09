@@ -6,6 +6,7 @@ class GradleDetector : Detector(), Detector.GradleScanner {
     companion object {
         val interstingBlocks = listOf("dependencies")
         fun getStringDependency(value: String) = "\":" + value + "\""
+
         val IMPLEMENTATION = Implementation(
                 GradleDetector::class.java,
                 Scope.GRADLE_SCOPE

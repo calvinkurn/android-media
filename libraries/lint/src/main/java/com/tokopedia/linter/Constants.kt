@@ -1,6 +1,5 @@
 package com.tokopedia.linter
 
-
 const val FORBIDDEN_IMPORT = "Forbidden import"
 const val FIX_NAME_FORMAT = "Use %s instead!"
 const val WARNING_DESCRIPTION_FORMAT = "%s should probably be %s"
