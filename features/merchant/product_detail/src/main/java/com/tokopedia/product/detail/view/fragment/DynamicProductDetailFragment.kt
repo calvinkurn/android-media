@@ -475,13 +475,26 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 if (data != null) {
                     val isFavoriteFromShopPage = data.getBooleanExtra(ProductDetailConstant.SHOP_STATUS_FAVOURITE, false)
                     val isUserLoginFromShopPage = data.getBooleanExtra(ProductDetailConstant.SHOP_STICKY_LOGIN, false)
-                    val wasFavorite = pdpUiUpdater?.shopInfoMap?.isFavorite ?: pdpUiUpdater?.shopCredibility?.isFavorite ?: return
+                    val wasFavorite = pdpUiUpdater?.shopInfoMap?.isFavorite
+                            ?: pdpUiUpdater?.shopCredibility?.isFavorite ?: return
 
                     if (isUserLoginFromShopPage) {
                         updateStickyState()
                         updateActionButtonShadow()
                     }
                     if (isFavoriteFromShopPage != wasFavorite) onSuccessFavoriteShop(true)
+                }
+            }
+            ProductDetailConstant.REQUEST_CODE_TOP_CHAT -> {
+                if (resultCode == Activity.RESULT_OK && data != null) {
+                    val favoriteData = data.getStringExtra(ApplinkConst.Chat.SHOP_FOLLOWERS_CHAT_KEY)
+                    if (favoriteData != null) {
+                        val isFavoriteFromTopChat = favoriteData == "true"
+                        val wasFavorite = pdpUiUpdater?.shopInfoMap?.isFavorite
+                                ?: pdpUiUpdater?.shopCredibility?.isFavorite ?: return
+
+                        if (isFavoriteFromTopChat != wasFavorite) onSuccessFavoriteShop(true)
+                    }
                 }
             }
             else ->
@@ -1247,7 +1260,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         viewLifecycleOwner.observe(viewModel.toggleFavoriteResult) { data ->
             data.doSuccessOrFail({
                 viewModel.clearCacheP2Data()
-                onSuccessFavoriteShop(it.data.first)
+                onSuccessFavoriteShop(it.data.first, it.data.second)
                 setupShopFavoriteToaster(it.data.second)
             }, {
                 nplFollowersButton?.stopLoading()
@@ -2545,10 +2558,10 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             DynamicProductDetailTracking.Click.eventFollowShop(viewModel.getDynamicProductInfoP1, componentTrackDataModel, shopName)
     }
 
-    private fun onSuccessFavoriteShop(isSuccess: Boolean) {
+    private fun onSuccessFavoriteShop(isSuccess: Boolean, isNplFollowerType: Boolean = false) {
         val isFavorite = pdpUiUpdater?.shopInfoMap?.isFavorite ?: pdpUiUpdater?.shopCredibility?.isFavorite ?: return
         if (isSuccess) {
-            pdpUiUpdater?.successUpdateShopFollow(isFavorite)
+            pdpUiUpdater?.successUpdateShopFollow(if (isNplFollowerType) false else isFavorite)
             dynamicAdapter.notifyWithPayload(pdpUiUpdater?.shopInfoMap, ProductDetailConstant.PAYLOAD_TOOGLE_AND_FAVORITE_SHOP)
             dynamicAdapter.notifyWithPayload(pdpUiUpdater?.shopCredibility, ProductDetailConstant.PAYLOAD_TOOGLE_AND_FAVORITE_SHOP)
         }
@@ -2577,7 +2590,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                             product.basic.shopID, "",
                             "product", shop.shopCore.name, shop.shopAssets.avatar)
                     VariantMapper.putChatProductInfoTo(intent, product.basic.productID, product, viewModel.variantData)
-                    startActivity(intent)
+                    startActivityForResult(intent, ProductDetailConstant.REQUEST_CODE_TOP_CHAT)
                 }
             })
         }
