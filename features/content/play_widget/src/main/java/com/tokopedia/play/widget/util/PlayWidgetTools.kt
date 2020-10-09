@@ -20,8 +20,11 @@ class PlayWidgetTools @Inject constructor(
         private val mapperProviders: Map<PlayWidgetSize, @JvmSuppressWildcards PlayWidgetMapper>
 ) {
 
-    suspend fun getWidgetFromNetwork(coroutineContext: CoroutineContext = Dispatchers.IO): PlayWidget {
+    suspend fun getWidgetFromNetwork(
+            widgetType: PlayWidgetUseCase.WidgetType,
+            coroutineContext: CoroutineContext = Dispatchers.IO): PlayWidget {
         return withContext(coroutineContext) {
+            useCase.params = PlayWidgetUseCase.createParams(widgetType)
             useCase.executeOnBackground()
         }
     }
