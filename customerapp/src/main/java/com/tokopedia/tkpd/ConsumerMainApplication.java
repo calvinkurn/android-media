@@ -23,7 +23,6 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import com.chuckerteam.chucker.api.Chucker;
 import com.chuckerteam.chucker.api.ChuckerCollector;
 import com.facebook.FacebookSdk;
-import com.facebook.soloader.SoLoader;
 import com.google.firebase.FirebaseApp;
 import com.moengage.inapp.InAppManager;
 import com.moengage.inapp.InAppMessage;
@@ -209,7 +208,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
     @NotNull
     private Boolean executePreCreateSequence() {
-        initReact();
         com.tokopedia.akamai_bot_lib.UtilsKt.initAkamaiBotManager(ConsumerMainApplication.this);
         Chucker.registerDefaultCrashHandler(new ChuckerCollector(ConsumerMainApplication.this, false));
         FpmLogger.init(ConsumerMainApplication.this);
@@ -472,10 +470,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         } else {
             return false;
         }
-    }
-
-    private void initReact() {
-        SoLoader.init(ConsumerMainApplication.this, false);
     }
 
     private void initCacheApi() {
