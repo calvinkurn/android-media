@@ -8,6 +8,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.widget.R
 import com.tokopedia.play.widget.ui.model.PlayWidgetSmallChannelUiModel
@@ -60,7 +61,7 @@ class PlayWidgetCardChannelSmallView : ConstraintLayout {
             ivLiveBadge.visible()
         } else {
             flBorder.setBackgroundResource(R.drawable.bg_play_widget_small_default_border)
-            ivLiveBadge.gone()
+            ivLiveBadge.invisible()
         }
     }
 
