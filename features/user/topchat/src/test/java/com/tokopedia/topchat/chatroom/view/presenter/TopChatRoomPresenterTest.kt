@@ -1185,7 +1185,6 @@ class TopChatRoomPresenterTest {
         verify(exactly = 1) { onError.invoke(throwable) }
     }
 
-
     @Test
     fun `on throw exeception when addToCart OCC`() {
         // Given
@@ -1205,6 +1204,43 @@ class TopChatRoomPresenterTest {
 
         // Then
         verify(exactly = 1) { onError.invoke(throwable) }
+    }
+
+    @Test
+    fun `check isStickerTooltipAlreadyShow`() {
+        // Given
+        every {
+            sharedPref.getBoolean(TopChatRoomPresenter.STICKER_TOOLTIP_ONBOARDING, false)
+        } returns false
+
+        // When
+        presenter.isStickerTooltipAlreadyShow()
+
+        // Then
+        verify(exactly = 1) { sharedPref.getBoolean(TopChatRoomPresenter.STICKER_TOOLTIP_ONBOARDING, false) }
+    }
+
+    @Test
+    fun `check toolTipOnBoardingShown`() {
+        // When
+        presenter.toolTipOnBoardingShown()
+
+        // Then
+        verify(exactly = 1) {
+            sharedPref.edit().putBoolean(TopChatRoomPresenter.STICKER_TOOLTIP_ONBOARDING, true).apply()
+        }
+    }
+
+    @Test
+    fun `check setBeforeReplyTime`() {
+        //Given
+        val exCreateTime = "1234532"
+
+        // When
+        presenter.setBeforeReplyTime(exCreateTime)
+
+        // Then
+        verify(exactly = 1) { getChatUseCase.minReplyTime = exCreateTime }
     }
 
     private fun mockkParseResponse(
