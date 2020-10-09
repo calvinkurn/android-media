@@ -12,7 +12,6 @@ import com.tokopedia.otp.notif.domain.pojo.VerifyPushNotifData
 import com.tokopedia.otp.notif.domain.usecase.ChangeOtpPushNotifUseCase
 import com.tokopedia.otp.notif.domain.usecase.DeviceStatusPushNotifUseCase
 import com.tokopedia.otp.notif.domain.usecase.VerifyPushNotifUseCase
-import com.tokopedia.otp.notif.view.fragment.RecieverNotifFragment
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -94,6 +93,9 @@ class NotifViewModel @Inject constructor(
                 }
                 data.errorMessage.isNotEmpty() -> {
                     _verifyPushNotifResult.postValue(Fail(MessageErrorException(data.errorMessage)))
+                }
+                data.message.isNotEmpty() -> {
+                    _verifyPushNotifResult.postValue(Fail(MessageErrorException(data.message)))
                 }
                 else -> {
                     _verifyPushNotifResult.postValue(Fail(Throwable()))

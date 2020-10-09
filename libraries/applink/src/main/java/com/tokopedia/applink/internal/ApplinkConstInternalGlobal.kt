@@ -292,10 +292,10 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val COTP = "$INTERNAL_GLOBAL/cotp"
 
-    // RecieverNotifActivity
-    // tokopedia-android-internal://global/otp-push-notif-reciever
+    // ReceiverNotifActivity
+    // tokopedia-android-internal://global/otp-push-notif-receiver
     @JvmField
-    val OTP_PUSH_NOTIF_RECIEVER = "$INTERNAL_GLOBAL/otp-push-notif-reciever"
+    val OTP_PUSH_NOTIF_RECEIVER = "$INTERNAL_GLOBAL/otp-push-notif-receiver"
 
     // SettingNotifActivity
     // tokopedia-android-internal://global/otp-push-notif-setting

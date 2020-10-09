@@ -8,17 +8,22 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.otp.R
 import com.tokopedia.otp.common.abstraction.BaseOtpFragment
+import com.tokopedia.otp.common.analytics.TrackingOtpUtil
 import com.tokopedia.otp.common.di.OtpComponent
 import com.tokopedia.otp.notif.domain.pojo.DeviceStatusPushNotifData
 import com.tokopedia.otp.notif.view.adapter.ActiveDevicesAdapter
 import com.tokopedia.otp.notif.view.viewbinding.ActivePushNotifViewBinding
 import com.tokopedia.unifycomponents.ticker.TickerCallback
+import javax.inject.Inject
 
 /**
  * Created by Ade Fulki on 25/09/20.
  */
 
 class ActivePushNotifFragment : BaseOtpFragment() {
+
+    @Inject
+    lateinit var analytics: TrackingOtpUtil
 
     private lateinit var deviceStatus: DeviceStatusPushNotifData
 
@@ -46,7 +51,7 @@ class ActivePushNotifFragment : BaseOtpFragment() {
     }
 
     private fun initView() {
-        if(deviceStatus.isTrusted) {
+        if (deviceStatus.isTrusted) {
             viewBound.ticker?.setHtmlDescription(getString(R.string.remove_device_ticker))
             viewBound.ticker?.setDescriptionClickEvent(object : TickerCallback {
                 override fun onDescriptionViewClick(linkUrl: CharSequence) {
@@ -66,6 +71,7 @@ class ActivePushNotifFragment : BaseOtpFragment() {
             viewBound.ticker?.setHtmlDescription(getString(R.string.activate_push_notif_ticker))
             viewBound.ticker?.setDescriptionClickEvent(object : TickerCallback {
                 override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                    analytics.trackClickPushNotifSettingButton()
                     val intent = RouteManager.getIntent(
                             activity,
                             ApplinkConstInternalMarketplace.USER_NOTIFICATION_SETTING + PUSH_NOTIFICATION_NS_QUERY

@@ -1,29 +1,10 @@
 package com.tokopedia.otp.common.analytics
 
 import android.os.Build
-import com.tokopedia.otp.common.analytics.TrackingOtpConstant.Action.ACTION_CLICK_BACK_BUTTON
-import com.tokopedia.otp.common.analytics.TrackingOtpConstant.Action.ACTION_CLICK_KIRIM_ULANG
-import com.tokopedia.otp.common.analytics.TrackingOtpConstant.Action.ACTION_CLICK_ON_BUTTON_AKTIVASI
-import com.tokopedia.otp.common.analytics.TrackingOtpConstant.Action.ACTION_CLICK_ON_BUTTON_BACK
-import com.tokopedia.otp.common.analytics.TrackingOtpConstant.Action.ACTION_CLICK_ON_BUTTON_INACTIVE_PHONE_NUMBER
-import com.tokopedia.otp.common.analytics.TrackingOtpConstant.Action.ACTION_CLICK_ON_BUTTON_VERIFIKASI
-import com.tokopedia.otp.common.analytics.TrackingOtpConstant.Action.ACTION_CLICK_ON_GUNAKAN_METODE_LAIN
-import com.tokopedia.otp.common.analytics.TrackingOtpConstant.Action.ACTION_CLICK_ON_KIRIM_ULANG
-import com.tokopedia.otp.common.analytics.TrackingOtpConstant.Action.ACTION_CLICK_ON_OTP_METHOD
-import com.tokopedia.otp.common.analytics.TrackingOtpConstant.Action.ACTION_CLICK_ON_VERIFIKASI
-import com.tokopedia.otp.common.analytics.TrackingOtpConstant.Category.CATEGORY_ACTIVATION_PAGE
-import com.tokopedia.otp.common.analytics.TrackingOtpConstant.Category.CATEGORY_CHOOSE_OTP_PAGE
-import com.tokopedia.otp.common.analytics.TrackingOtpConstant.Category.CATEGORY_INPUT_OTP_PAGE
-import com.tokopedia.otp.common.analytics.TrackingOtpConstant.Category.CATEGORY_REGISTER_WITH_PHONE_NUMBER_OTP
-import com.tokopedia.otp.common.analytics.TrackingOtpConstant.Event.EVENT_CLICK_ACTIVATION
-import com.tokopedia.otp.common.analytics.TrackingOtpConstant.Event.EVENT_CLICK_BACK
-import com.tokopedia.otp.common.analytics.TrackingOtpConstant.Event.EVENT_CLICK_CONFIRM
-import com.tokopedia.otp.common.analytics.TrackingOtpConstant.Event.EVENT_CLICK_OTP
-import com.tokopedia.otp.common.analytics.TrackingOtpConstant.Event.EVENT_CLICK_REGISTER
-import com.tokopedia.otp.common.analytics.TrackingOtpConstant.Label.LABEL_CLICK
-import com.tokopedia.otp.common.analytics.TrackingOtpConstant.Label.LABEL_EMPTY
-import com.tokopedia.otp.common.analytics.TrackingOtpConstant.Label.LABEL_FAILED
-import com.tokopedia.otp.common.analytics.TrackingOtpConstant.Label.LABEL_SUCCESS
+import com.tokopedia.otp.common.analytics.TrackingOtpConstant.Action
+import com.tokopedia.otp.common.analytics.TrackingOtpConstant.Category
+import com.tokopedia.otp.common.analytics.TrackingOtpConstant.Event
+import com.tokopedia.otp.common.analytics.TrackingOtpConstant.Label
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import timber.log.Timber
@@ -34,7 +15,7 @@ import javax.inject.Inject
  * ade.hadian@tokopedia.com
  */
 
-class TrackingOtpUtil @Inject constructor(){
+class TrackingOtpUtil @Inject constructor() {
 
     fun trackScreen(screenName: String) {
         Timber.w("""P2screenName = $screenName | ${Build.FINGERPRINT} | ${Build.MANUFACTURER} | ${Build.BRAND} | ${Build.DEVICE} | ${Build.PRODUCT} | ${Build.MODEL} | ${Build.TAGS}""")
@@ -43,168 +24,384 @@ class TrackingOtpUtil @Inject constructor(){
 
     fun trackClickMethodOtpButton(otpType: Int, modeName: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
-                EVENT_CLICK_OTP,
-                CATEGORY_CHOOSE_OTP_PAGE,
-                ACTION_CLICK_ON_OTP_METHOD,
+                Event.EVENT_CLICK_OTP,
+                Category.CATEGORY_CHOOSE_OTP_PAGE,
+                Action.ACTION_CLICK_ON_OTP_METHOD,
                 String.format("%s - %s", otpType.toString(), modeName)))
     }
 
     fun trackClickInactivePhoneNumber(otpType: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
-                EVENT_CLICK_OTP,
+                Event.EVENT_CLICK_OTP,
                 otpType,
-                ACTION_CLICK_ON_BUTTON_INACTIVE_PHONE_NUMBER,
-                LABEL_EMPTY
+                Action.ACTION_CLICK_ON_BUTTON_INACTIVE_PHONE_NUMBER,
+                Label.LABEL_EMPTY
         ))
     }
 
     fun trackClickVerificationButton(otpType: Int) {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
-                EVENT_CLICK_CONFIRM,
-                CATEGORY_INPUT_OTP_PAGE,
-                ACTION_CLICK_ON_VERIFIKASI,
+                Event.EVENT_CLICK_CONFIRM,
+                Category.CATEGORY_INPUT_OTP_PAGE,
+                Action.ACTION_CLICK_ON_VERIFIKASI,
                 otpType.toString()))
     }
 
     fun trackClickVerificationRegisterPhoneButton() {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
-                EVENT_CLICK_REGISTER,
-                CATEGORY_REGISTER_WITH_PHONE_NUMBER_OTP,
-                ACTION_CLICK_ON_BUTTON_VERIFIKASI,
-                LABEL_CLICK
+                Event.EVENT_CLICK_REGISTER,
+                Category.CATEGORY_REGISTER_WITH_PHONE_NUMBER_OTP,
+                Action.ACTION_CLICK_ON_BUTTON_VERIFIKASI,
+                Label.LABEL_CLICK
         ))
     }
 
     fun trackSuccessClickVerificationRegisterPhoneButton() {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
-                EVENT_CLICK_REGISTER,
-                CATEGORY_REGISTER_WITH_PHONE_NUMBER_OTP,
-                ACTION_CLICK_ON_BUTTON_VERIFIKASI,
-                LABEL_SUCCESS
+                Event.EVENT_CLICK_REGISTER,
+                Category.CATEGORY_REGISTER_WITH_PHONE_NUMBER_OTP,
+                Action.ACTION_CLICK_ON_BUTTON_VERIFIKASI,
+                Label.LABEL_SUCCESS
         ))
     }
 
     fun trackFailedClickVerificationRegisterPhoneButton(failedMessage: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
-                EVENT_CLICK_REGISTER,
-                CATEGORY_REGISTER_WITH_PHONE_NUMBER_OTP,
-                ACTION_CLICK_ON_BUTTON_VERIFIKASI,
-                LABEL_FAILED + failedMessage
+                Event.EVENT_CLICK_REGISTER,
+                Category.CATEGORY_REGISTER_WITH_PHONE_NUMBER_OTP,
+                Action.ACTION_CLICK_ON_BUTTON_VERIFIKASI,
+                Label.LABEL_FAILED + failedMessage
         ))
     }
 
     fun trackClickVerificationRegisterEmailButton() {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
-                EVENT_CLICK_ACTIVATION,
-                CATEGORY_ACTIVATION_PAGE,
-                ACTION_CLICK_ON_BUTTON_AKTIVASI,
-                LABEL_CLICK
+                Event.EVENT_CLICK_ACTIVATION,
+                Category.CATEGORY_ACTIVATION_PAGE,
+                Action.ACTION_CLICK_ON_BUTTON_AKTIVASI,
+                Label.LABEL_CLICK
         ))
     }
 
     fun trackSuccessClickVerificationRegisterEmailButton() {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
-                EVENT_CLICK_ACTIVATION,
-                CATEGORY_ACTIVATION_PAGE,
-                ACTION_CLICK_ON_BUTTON_AKTIVASI,
-                LABEL_SUCCESS
+                Event.EVENT_CLICK_ACTIVATION,
+                Category.CATEGORY_ACTIVATION_PAGE,
+                Action.ACTION_CLICK_ON_BUTTON_AKTIVASI,
+                Label.LABEL_SUCCESS
         ))
     }
 
     fun trackFailedClickVerificationRegisterEmailButton(failedMessage: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
-                EVENT_CLICK_ACTIVATION,
-                CATEGORY_ACTIVATION_PAGE,
-                ACTION_CLICK_ON_BUTTON_AKTIVASI,
-                LABEL_FAILED + failedMessage
+                Event.EVENT_CLICK_ACTIVATION,
+                Category.CATEGORY_ACTIVATION_PAGE,
+                Action.ACTION_CLICK_ON_BUTTON_AKTIVASI,
+                Label.LABEL_FAILED + failedMessage
         ))
     }
 
     fun trackClickUseOtherMethod(otpType: Int) {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
-                EVENT_CLICK_OTP,
-                CATEGORY_INPUT_OTP_PAGE,
-                ACTION_CLICK_ON_GUNAKAN_METODE_LAIN,
+                Event.EVENT_CLICK_OTP,
+                Category.CATEGORY_INPUT_OTP_PAGE,
+                Action.ACTION_CLICK_ON_GUNAKAN_METODE_LAIN,
                 otpType.toString()
         ))
     }
 
     fun trackClickResendOtpButton(otpType: Int) {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
-                EVENT_CLICK_OTP,
-                CATEGORY_INPUT_OTP_PAGE,
-                ACTION_CLICK_ON_KIRIM_ULANG,
+                Event.EVENT_CLICK_OTP,
+                Category.CATEGORY_INPUT_OTP_PAGE,
+                Action.ACTION_CLICK_ON_KIRIM_ULANG,
                 otpType.toString()))
     }
 
     fun trackClickResendRegisterPhoneOtpButton() {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
-                EVENT_CLICK_REGISTER,
-                CATEGORY_REGISTER_WITH_PHONE_NUMBER_OTP,
-                ACTION_CLICK_KIRIM_ULANG,
-                LABEL_CLICK
+                Event.EVENT_CLICK_REGISTER,
+                Category.CATEGORY_REGISTER_WITH_PHONE_NUMBER_OTP,
+                Action.ACTION_CLICK_KIRIM_ULANG,
+                Label.LABEL_CLICK
         ))
     }
 
     fun trackSuccessClickResendRegisterPhoneOtpButton() {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
-                EVENT_CLICK_REGISTER,
-                CATEGORY_REGISTER_WITH_PHONE_NUMBER_OTP,
-                ACTION_CLICK_KIRIM_ULANG,
-                LABEL_SUCCESS
+                Event.EVENT_CLICK_REGISTER,
+                Category.CATEGORY_REGISTER_WITH_PHONE_NUMBER_OTP,
+                Action.ACTION_CLICK_KIRIM_ULANG,
+                Label.LABEL_SUCCESS
         ))
     }
 
     fun trackFailedClickResendRegisterPhoneOtpButton(failedMessage: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
-                EVENT_CLICK_REGISTER,
-                CATEGORY_REGISTER_WITH_PHONE_NUMBER_OTP,
-                ACTION_CLICK_KIRIM_ULANG,
-                LABEL_FAILED + failedMessage
+                Event.EVENT_CLICK_REGISTER,
+                Category.CATEGORY_REGISTER_WITH_PHONE_NUMBER_OTP,
+                Action.ACTION_CLICK_KIRIM_ULANG,
+                Label.LABEL_FAILED + failedMessage
         ))
     }
 
     fun trackClickResendRegisterEmailOtpButton() {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
-                EVENT_CLICK_ACTIVATION,
-                CATEGORY_ACTIVATION_PAGE,
-                ACTION_CLICK_KIRIM_ULANG,
-                LABEL_CLICK
+                Event.EVENT_CLICK_ACTIVATION,
+                Category.CATEGORY_ACTIVATION_PAGE,
+                Action.ACTION_CLICK_KIRIM_ULANG,
+                Label.LABEL_CLICK
         ))
     }
 
     fun trackSuccessClickResendRegisterEmailOtpButton() {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
-                EVENT_CLICK_ACTIVATION,
-                CATEGORY_ACTIVATION_PAGE,
-                ACTION_CLICK_KIRIM_ULANG,
-                LABEL_SUCCESS
+                Event.EVENT_CLICK_ACTIVATION,
+                Category.CATEGORY_ACTIVATION_PAGE,
+                Action.ACTION_CLICK_KIRIM_ULANG,
+                Label.LABEL_SUCCESS
         ))
     }
 
     fun trackFailedClickResendRegisterEmailOtpButton(failedMessage: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
-                EVENT_CLICK_ACTIVATION,
-                CATEGORY_ACTIVATION_PAGE,
-                ACTION_CLICK_KIRIM_ULANG,
-                LABEL_FAILED + failedMessage
+                Event.EVENT_CLICK_ACTIVATION,
+                Category.CATEGORY_ACTIVATION_PAGE,
+                Action.ACTION_CLICK_KIRIM_ULANG,
+                Label.LABEL_FAILED + failedMessage
         ))
     }
 
     fun trackClickBackOtpPage(otpType: Int) {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
-                EVENT_CLICK_BACK,
-                CATEGORY_INPUT_OTP_PAGE,
-                ACTION_CLICK_BACK_BUTTON,
+                Event.EVENT_CLICK_BACK,
+                Category.CATEGORY_INPUT_OTP_PAGE,
+                Action.ACTION_CLICK_BACK_BUTTON,
                 otpType.toString()))
     }
 
     fun trackClickBackRegisterPhoneOtp() {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
-                EVENT_CLICK_REGISTER,
-                CATEGORY_REGISTER_WITH_PHONE_NUMBER_OTP,
-                ACTION_CLICK_ON_BUTTON_BACK,
-                LABEL_EMPTY
+                Event.EVENT_CLICK_REGISTER,
+                Category.CATEGORY_REGISTER_WITH_PHONE_NUMBER_OTP,
+                Action.ACTION_CLICK_ON_BUTTON_BACK,
+                Label.LABEL_EMPTY
+        ))
+    }
+
+    fun trackViewOtpPushNotifReceivePage() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                Event.EVENT_VIEW_PUSH_NOTIF_IRIS,
+                Category.CATEGORY_PUSH_NOTIF_RECEIVE_PAGE,
+                Action.ACTION_VIEW_OTP_PUSH_NOTIF_RECEIVE_PAGE,
+                Label.LABEL_EMPTY
+        ))
+    }
+
+    fun trackClickBackReceiver() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                Event.EVENT_CLICK_OTP,
+                Category.CATEGORY_PUSH_NOTIF_RECEIVE_PAGE,
+                Action.ACTION_CLICK_ON_BUTTON_BACK,
+                Label.LABEL_EMPTY
+        ))
+    }
+
+    fun trackClickRejectAccesssButton() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                Event.EVENT_CLICK_OTP,
+                Category.CATEGORY_PUSH_NOTIF_RECEIVE_PAGE,
+                Action.ACTION_CLICK_ON_BUTTON_TOLAK_AKSES,
+                Label.LABEL_EMPTY
+        ))
+    }
+
+    fun trackClickAcceptAccesssButton() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                Event.EVENT_CLICK_OTP,
+                Category.CATEGORY_PUSH_NOTIF_RECEIVE_PAGE,
+                Action.ACTION_CLICK_ON_BUTTON_TERIMA_AKSES,
+                Label.LABEL_EMPTY
+        ))
+    }
+
+    fun trackViewOtpPushNotifSuccessPage() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                Event.EVENT_VIEW_PUSH_NOTIF_IRIS,
+                Category.CATEGORY_PUSH_NOTIF_RECEIVE_SUCCESS_PAGE,
+                Action.ACTION_VIEW_OTP_PUSH_NOTIF_RECEIVE_SUCCESS_PAGE,
+                Label.LABEL_EMPTY
+        ))
+    }
+
+    fun trackClickCloseReceiveSuccess() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                Event.EVENT_CLICK_OTP,
+                Category.CATEGORY_PUSH_NOTIF_RECEIVE_SUCCESS_PAGE,
+                Action.ACTION_CLICK_ON_BUTTON_TUTUP,
+                Label.LABEL_EMPTY
+        ))
+    }
+
+    fun trackViewOtpPushNotifFailedNoPinPage() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                Event.EVENT_VIEW_PUSH_NOTIF_IRIS,
+                Category.CATEGORY_PUSH_NOTIF_RECEIVE_FAILED_NO_PIN_PAGE,
+                Action.ACTION_VIEW_OTP_PUSH_NOTIF_RECEIVE_FAILED_NO_PIN_PAGE,
+                Label.LABEL_EMPTY
+        ))
+    }
+
+    fun trackClickBackReceiveFailedNoPinButton() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                Event.EVENT_CLICK_OTP,
+                Category.CATEGORY_PUSH_NOTIF_RECEIVE_FAILED_NO_PIN_PAGE,
+                Action.ACTION_CLICK_ON_BUTTON_CLOSE,
+                Label.LABEL_EMPTY
+        ))
+    }
+
+    fun trackClickCloseReceiveFailedNoPinButton() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                Event.EVENT_CLICK_OTP,
+                Category.CATEGORY_PUSH_NOTIF_RECEIVE_FAILED_NO_PIN_PAGE,
+                Action.ACTION_CLICK_ON_BUTTON_TUTUP,
+                Label.LABEL_EMPTY
+        ))
+    }
+
+    fun trackViewOtpPushNotifFailedWithPinPage() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                Event.EVENT_VIEW_PUSH_NOTIF_IRIS,
+                Category.CATEGORY_PUSH_NOTIF_RECEIVE_FAILED_WITH_PIN_PAGE,
+                Action.ACTION_VIEW_OTP_PUSH_NOTIF_RECEIVE_FAILED_WITH_PIN_PAGE,
+                Label.LABEL_EMPTY
+        ))
+    }
+
+    fun trackClickCloseReceiveFailedWithPinButton() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                Event.EVENT_CLICK_OTP,
+                Category.CATEGORY_PUSH_NOTIF_RECEIVE_FAILED_WITH_PIN_PAGE,
+                Action.ACTION_CLICK_ON_BUTTON_CLOSE,
+                Label.LABEL_EMPTY
+        ))
+    }
+
+    fun trackClickChangePinReceiveFailedWithPinButton() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                Event.EVENT_CLICK_OTP,
+                Category.CATEGORY_PUSH_NOTIF_RECEIVE_FAILED_WITH_PIN_PAGE,
+                Action.ACTION_CLICK_ON_BUTTON_UBAH_PIN,
+                Label.LABEL_EMPTY
+        ))
+    }
+
+    fun trackViewOtpPushNotifFailedWithPasswordPage() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                Event.EVENT_VIEW_PUSH_NOTIF_IRIS,
+                Category.CATEGORY_PUSH_NOTIF_RECEIVE_FAILED_WITH_PASSWORD_PAGE,
+                Action.ACTION_VIEW_OTP_PUSH_NOTIF_RECEIVE_FAILED_WITH_PASSWORD_PAGE,
+                Label.LABEL_EMPTY
+        ))
+    }
+
+    fun trackClickCloseReceiveFailedWithPasswordButton() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                Event.EVENT_CLICK_OTP,
+                Category.CATEGORY_PUSH_NOTIF_RECEIVE_FAILED_WITH_PASSWORD_PAGE,
+                Action.ACTION_CLICK_ON_BUTTON_CLOSE,
+                Label.LABEL_EMPTY
+        ))
+    }
+
+    fun trackClickChangePasswordReceiveFailedWithPasswordButton() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                Event.EVENT_CLICK_OTP,
+                Category.CATEGORY_PUSH_NOTIF_RECEIVE_FAILED_WITH_PASSWORD_PAGE,
+                Action.ACTION_CLICK_ON_BUTTON_UBAH_KATA_SANDI,
+                Label.LABEL_EMPTY
+        ))
+    }
+
+    fun trackViewOtpPushNotifFailedFromOtherDevicePage() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                Event.EVENT_VIEW_PUSH_NOTIF_IRIS,
+                Category.CATEGORY_PUSH_NOTIF_RECEIVE_FAILED_FROM_OTHER_DEVICE_PAGE,
+                Action.ACTION_VIEW_OTP_PUSH_NOTIF_RECEIVE_FAILED_FROM_OTHER_DEVICE_PAGE,
+                Label.LABEL_EMPTY
+        ))
+    }
+
+    fun trackClickCloseReceiveFailedFromOtherDeviceButton() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                Event.EVENT_CLICK_OTP,
+                Category.CATEGORY_PUSH_NOTIF_RECEIVE_FAILED_FROM_OTHER_DEVICE_PAGE,
+                Action.ACTION_CLICK_ON_BUTTON_CLOSE,
+                Label.LABEL_EMPTY
+        ))
+    }
+
+    fun trackClickBottomCloseReceiveFailedFromOtherDeviceButton() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                Event.EVENT_CLICK_OTP,
+                Category.CATEGORY_PUSH_NOTIF_RECEIVE_FAILED_FROM_OTHER_DEVICE_PAGE,
+                Action.ACTION_CLICK_ON_BUTTON_TUTUP,
+                Label.LABEL_EMPTY
+        ))
+    }
+
+    fun trackViewOtpPushNotifFailedOtpExpiredPage() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                Event.EVENT_VIEW_PUSH_NOTIF_IRIS,
+                Category.CATEGORY_PUSH_NOTIF_RECEIVE_FAILED_OTP_EXPIRED_PAGE,
+                Action.ACTION_VIEW_OTP_PUSH_NOTIF_RECEIVE_FAILED_OTP_EXPIRED_PAGE,
+                Label.LABEL_EMPTY
+        ))
+    }
+
+    fun trackClickCloseReceiveFailedOtpExpiredButton() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                Event.EVENT_CLICK_OTP,
+                Category.CATEGORY_PUSH_NOTIF_RECEIVE_FAILED_OTP_EXPIRED_PAGE,
+                Action.ACTION_CLICK_ON_BUTTON_CLOSE,
+                Label.LABEL_EMPTY
+        ))
+    }
+
+    fun trackClickBottomCloseReceiveFailedOtpExpiredButton() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                Event.EVENT_CLICK_OTP,
+                Category.CATEGORY_PUSH_NOTIF_RECEIVE_FAILED_OTP_EXPIRED_PAGE,
+                Action.ACTION_CLICK_ON_BUTTON_TUTUP,
+                Label.LABEL_EMPTY
+        ))
+    }
+
+    fun trackViewOtpPushNotifSettingPage() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                Event.EVENT_VIEW_PUSH_NOTIF_IRIS,
+                Category.CATEGORY_PUSH_NOTIF_SETTING_PAGE,
+                Action.ACTION_VIEW_OTP_PUSH_NOTIF_RECEIVE_SETTING_PAGE,
+                Label.LABEL_EMPTY
+        ))
+    }
+
+    fun trackClickPushNotifSettingButton() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                Event.EVENT_CLICK_OTP,
+                Category.CATEGORY_PUSH_NOTIF_SETTING_PAGE,
+                Action.ACTION_CLICK_PUSH_NOTIF,
+                Label.LABEL_EMPTY
+        ))
+    }
+
+    fun trackClickSignInFromNotifSettingButton(status: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                Event.EVENT_CLICK_OTP,
+                Category.CATEGORY_PUSH_NOTIF_SETTING_PAGE,
+                Action.ACTION_CLICK_ON_BUTTON_AKTIFKAN_MASUK_LEWAT_NOTIF,
+                status
         ))
     }
 }

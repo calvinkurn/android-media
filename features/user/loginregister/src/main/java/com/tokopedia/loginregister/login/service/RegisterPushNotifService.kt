@@ -10,7 +10,6 @@ import androidx.annotation.RequiresApi
 import androidx.core.app.JobIntentService
 import com.crashlytics.android.Crashlytics
 import com.tokopedia.loginregister.BuildConfig
-import com.tokopedia.loginregister.common.SignaturePref
 import com.tokopedia.loginregister.login.data.SignResult
 import com.tokopedia.loginregister.login.di.LoginComponentBuilder
 import com.tokopedia.loginregister.login.domain.RegisterPushNotifUseCase
@@ -33,9 +32,6 @@ class RegisterPushNotifService : JobIntentService() {
     @Inject
     lateinit var registerPushNotifUseCase: RegisterPushNotifUseCase
 
-    @Inject
-    lateinit var signaturePref: SignaturePref
-
     private lateinit var keyPair: KeyPair
 
     override fun onCreate() {
@@ -50,7 +46,6 @@ class RegisterPushNotifService : JobIntentService() {
                 generateKey()
                 if (::keyPair.isInitialized) {
                     signData(userSession.userId, userSession.deviceId).let {
-                        signaturePref.signature = it.signature
                         registerPushNotifUseCase.executeCoroutines(
                                 it.publicKey,
                                 it.signature,
@@ -78,21 +73,16 @@ class RegisterPushNotifService : JobIntentService() {
 
     @RequiresApi(Build.VERSION_CODES.M)
     private fun generateKey() {
-        //We are creating a RSA key pair and store it in the Android Keystore
         val keyPairGenerator: KeyPairGenerator = KeyPairGenerator.getInstance(KeyProperties.KEY_ALGORITHM_RSA, ANDROID_KEY_STORE)
 
-        //We are creating the key pair with sign and verify purposes
         val parameterSpec: KeyGenParameterSpec = KeyGenParameterSpec.Builder(PUSH_NOTIF_ALIAS,
                 KeyProperties.PURPOSE_SIGN or KeyProperties.PURPOSE_VERIFY).run {
-            setDigests(KeyProperties.DIGEST_SHA256)                         //Set of digests algorithms with which the key can be used
-            setSignaturePaddings(KeyProperties.SIGNATURE_PADDING_RSA_PKCS1) //Set of padding schemes with which the key can be used when signing/verifying
+            setDigests(KeyProperties.DIGEST_SHA256)
+            setSignaturePaddings(KeyProperties.SIGNATURE_PADDING_RSA_PKCS1)
             build()
         }
 
-        //Initialization of key generator with the parameters we have specified above
         keyPairGenerator.initialize(parameterSpec)
-
-        //Generates the key pair
         keyPair = keyPairGenerator.genKeyPair()
     }
 
@@ -105,19 +95,15 @@ class RegisterPushNotifService : JobIntentService() {
 
             val data = userId + datetime + deviceId
 
-            //We get the Keystore instance
             val keyStore: KeyStore = KeyStore.getInstance(ANDROID_KEY_STORE).apply {
                 load(null)
             }
 
-            //Retrieves the private key from the keystore
             val privateKey: PrivateKey = keyStore.getKey(PUSH_NOTIF_ALIAS, null) as PrivateKey
 
-            //Retrieves the public key from the keystore
             val publicKey: PublicKey = keyStore.getCertificate(PUSH_NOTIF_ALIAS).publicKey
             signResult.publicKey = publicKeyToString(publicKey.encoded)
 
-            //We sign the data with the private key. We use RSA algorithm along SHA-256 digest algorithm
             val signature: ByteArray? = Signature.getInstance(SHA_256_WITH_RSA).run {
                 initSign(privateKey)
                 update(data.toByteArray())
@@ -125,7 +111,6 @@ class RegisterPushNotifService : JobIntentService() {
             }
 
             if (signature != null) {
-                //We encode and store in a variable the value of the signature
                 signResult.signature = Base64.encodeToString(signature, Base64.DEFAULT)
             }
 

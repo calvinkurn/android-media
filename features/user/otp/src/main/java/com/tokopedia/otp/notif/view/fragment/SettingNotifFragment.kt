@@ -14,6 +14,8 @@ import com.tokopedia.otp.R
 import com.tokopedia.otp.common.IOnBackPressed
 import com.tokopedia.otp.common.LoadingDialog
 import com.tokopedia.otp.common.abstraction.BaseOtpFragment
+import com.tokopedia.otp.common.analytics.TrackingOtpConstant
+import com.tokopedia.otp.common.analytics.TrackingOtpUtil
 import com.tokopedia.otp.common.di.OtpComponent
 import com.tokopedia.otp.notif.domain.pojo.ChangeOtpPushNotifData
 import com.tokopedia.otp.notif.domain.pojo.DeviceStatusPushNotifData
@@ -36,6 +38,8 @@ class SettingNotifFragment : BaseOtpFragment(), IOnBackPressed {
     lateinit var viewModelFactory: ViewModelProvider.Factory
     @Inject
     lateinit var loadingDialog: LoadingDialog
+    @Inject
+    lateinit var analytics: TrackingOtpUtil
 
     private val viewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory).get(NotifViewModel::class.java)
@@ -43,11 +47,17 @@ class SettingNotifFragment : BaseOtpFragment(), IOnBackPressed {
 
     override val viewBound = SettingNotifViewBinding()
 
-    override fun getScreenName(): String = ""
+    override fun getScreenName(): String = TrackingOtpConstant.Screen.SCREEN_PUSH_NOTIF_SETTING
 
     override fun initInjector() = getComponent(OtpComponent::class.java).inject(this)
 
     override fun onBackPressed(): Boolean = true
+
+    override fun onStart() {
+        super.onStart()
+        analytics.trackScreen(screenName)
+        analytics.trackViewOtpPushNotifSettingPage()
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -114,6 +124,7 @@ class SettingNotifFragment : BaseOtpFragment(), IOnBackPressed {
             showInactivePushNotif(deviceStatusPushNotifData)
         }
         viewBound.switch?.setOnCheckedChangeListener { _, isChecked ->
+            analytics.trackClickSignInFromNotifSettingButton(if (isChecked) TrackingOtpConstant.Label.LABEL_ON else TrackingOtpConstant.Label.LABEL_OFF)
             showLoading()
             viewModel.changeOtpPushNotif(isChecked)
         }
@@ -121,14 +132,14 @@ class SettingNotifFragment : BaseOtpFragment(), IOnBackPressed {
 
     private fun showActivePushNotif(deviceStatusPushNotifData: DeviceStatusPushNotifData) {
         val bundle = Bundle()
-        bundle.putSerializable(PARAM_DEVICE_STATUS,deviceStatusPushNotifData)
+        bundle.putSerializable(PARAM_DEVICE_STATUS, deviceStatusPushNotifData)
         val activePushNotifFragment = ActivePushNotifFragment.createInstance(bundle)
         replaceFragment(activePushNotifFragment)
     }
 
     private fun showInactivePushNotif(deviceStatusPushNotifData: DeviceStatusPushNotifData) {
         val bundle = Bundle()
-        bundle.putSerializable(PARAM_DEVICE_STATUS,deviceStatusPushNotifData)
+        bundle.putSerializable(PARAM_DEVICE_STATUS, deviceStatusPushNotifData)
         val inactivePushNotifFragment = InactivePushNotifFragment.createInstance(Bundle(bundle))
         replaceFragment(inactivePushNotifFragment)
     }
@@ -141,20 +152,20 @@ class SettingNotifFragment : BaseOtpFragment(), IOnBackPressed {
     }
 
     private fun showLoading() {
-        if(activity != null){
+        if (activity != null) {
             loadingDialog.show()
         }
     }
 
     private fun dismissLoading() {
-        if(activity != null) {
+        if (activity != null) {
             loadingDialog.dismiss()
         }
     }
 
     private fun showErrorToaster(message: String?) {
         LetUtil.ifLet(message, viewBound.containerView) { (message, containerView) ->
-            Toaster.make(containerView as View, message as String, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL)
+            Toaster.make(containerView as View, message as String, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR)
         }
     }
 

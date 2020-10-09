@@ -5,20 +5,20 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.otp.R
 import com.tokopedia.otp.common.IOnBackPressed
 import com.tokopedia.otp.common.abstraction.BaseOtpActivity
-import com.tokopedia.otp.notif.view.fragment.RecieverNotifFragment
+import com.tokopedia.otp.notif.view.fragment.ReceiverNotifFragment
 
 /**
  * Created by Ade Fulki on 14/09/20.
  */
 
-class RecieverNotifActivity : BaseOtpActivity() {
+class ReceiverNotifActivity : BaseOtpActivity() {
 
     override fun getNewFragment(): Fragment? {
         val bundle = Bundle()
         if (intent.extras != null) {
             bundle.putAll(intent.extras)
         }
-        return RecieverNotifFragment.createInstance(bundle)
+        return ReceiverNotifFragment.createInstance(bundle)
     }
 
     override fun setupLayout(savedInstanceState: Bundle?) {

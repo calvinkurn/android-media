@@ -13,9 +13,9 @@ import javax.inject.Inject
  * Created by Ade Fulki on 14/09/20.
  */
 
-class RecieverNotifViewBinding @Inject constructor() : BaseOtpViewBinding() {
+class ReceiverNotifViewBinding @Inject constructor() : BaseOtpViewBinding() {
 
-    override val layoutResId: Int = R.layout.fragment_notif_reciever
+    override val layoutResId: Int = R.layout.fragment_notif_receiver
 
     var containerView: View? = null
     var btnYes: UnifyButton? = null

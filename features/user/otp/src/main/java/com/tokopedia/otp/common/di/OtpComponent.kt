@@ -22,7 +22,7 @@ interface OtpComponent {
     fun inject(fragment: VerificationFragment)
     fun inject(fragment: OnboardingMiscallFragment)
     fun inject(fragment: VerificationMethodFragment)
-    fun inject(fragment: RecieverNotifFragment)
+    fun inject(fragment: ReceiverNotifFragment)
     fun inject(fragment: SettingNotifFragment)
     fun inject(fragment: ResultNotifFragment)
     fun inject(fragment: ActivePushNotifFragment)
