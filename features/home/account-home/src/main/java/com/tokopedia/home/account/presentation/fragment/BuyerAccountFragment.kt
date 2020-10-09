@@ -491,11 +491,16 @@ class BuyerAccountFragment : BaseAccountFragment(), FragmentListener {
     }
 
     private fun useUoh(): Boolean {
-        val remoteConfigValue = getAbTestingRemoteConfig().getString(UOH_AB_TEST_KEY, "")
-        val rollence = remoteConfigValue.equals(UOH_AB_TEST_VALUE, ignoreCase = true)
+        return try {
+            val remoteConfigValue = getAbTestingRemoteConfig().getString(UOH_AB_TEST_KEY, "")
+            val rollence = remoteConfigValue.equals(UOH_AB_TEST_VALUE, ignoreCase = true)
 
-        val remoteConfigFirebase: Boolean = getRemoteConfig().getBoolean(RemoteConfigKey.ENABLE_UOH)
-        return (rollence && remoteConfigFirebase)
+            val remoteConfigFirebase: Boolean = getRemoteConfig().getBoolean(RemoteConfigKey.ENABLE_UOH)
+            (rollence && remoteConfigFirebase)
+
+        } catch (e: Exception) {
+            false
+        }
     }
 
     companion object {

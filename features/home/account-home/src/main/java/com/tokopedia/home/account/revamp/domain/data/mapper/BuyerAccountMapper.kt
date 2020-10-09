@@ -246,10 +246,15 @@ class BuyerAccountMapper @Inject constructor(
     }
 
     private fun useUoh(): Boolean {
-        val remoteConfigValue = RemoteConfigInstance.getInstance().abTestPlatform.getString(UOH_AB_TEST_KEY, "")
-        val rollence = remoteConfigValue.equals(UOH_AB_TEST_VALUE, ignoreCase = true)
+        return try {
+            val remoteConfigValue = RemoteConfigInstance.getInstance().abTestPlatform.getString(UOH_AB_TEST_KEY, "")
+            val rollence = remoteConfigValue.equals(UOH_AB_TEST_VALUE, ignoreCase = true)
 
-        val remoteConfigFirebase: Boolean = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_UOH)
-        return (rollence && remoteConfigFirebase)
+            val remoteConfigFirebase: Boolean = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_UOH)
+            return (rollence && remoteConfigFirebase)
+
+        } catch (e: Exception) {
+            false
+        }
     }
 }
