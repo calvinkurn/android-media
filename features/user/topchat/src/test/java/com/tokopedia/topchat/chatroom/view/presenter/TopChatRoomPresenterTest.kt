@@ -1131,6 +1131,32 @@ class TopChatRoomPresenterTest {
     }
 
     @Test
+    fun `on error loadAttachmentData`() {
+        // Given
+        val roomModel = ChatroomViewModel(attachmentIds = "3213, 3123")
+        val mapErrorAttachment = ArrayMap<String, Attachment>().apply {
+            put("test_error_attachment", Attachment())
+        }
+        val throwable = Throwable()
+        every {
+            chatAttachmentUseCase.getAttachments(
+                    exMessageId.toInt(), roomModel.attachmentIds, any(), captureLambda()
+            )
+        } answers {
+            val onError = lambda<(Throwable, ArrayMap<String, Attachment>) -> Unit>()
+            onError.invoke(throwable, mapErrorAttachment)
+        }
+
+        // When
+        presenter.loadAttachmentData(exMessageId.toInt(), roomModel)
+
+        // Then
+        val attachments = presenter.attachments
+        verify(exactly = 1) { view.updateAttachmentsView(attachments) }
+        assertTrue(presenter.attachments.size == 1)
+    }
+
+    @Test
     fun `on success addToCart OCC`() {
         // Given
         val successAtcModel = AddToCartDataModel().apply {

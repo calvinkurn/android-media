@@ -761,10 +761,12 @@ class TopChatRoomPresenter @Inject constructor(
         view?.updateAttachmentsView(this.attachments)
     }
 
-    private fun onErrorGetAttachments(throwable: Throwable, errorAttachment: ArrayMap<String, Attachment>) {
+    private fun onErrorGetAttachments(
+            throwable: Throwable, errorAttachment: ArrayMap<String, Attachment>
+    ) {
         this.attachments.putAll(errorAttachment.toMap())
         view?.updateAttachmentsView(this.attachments)
-        println(throwable.message)
+        throwable.printStackTrace()
     }
 
     private fun onLoadingStickerGroup(response: ChatListGroupStickerResponse) {
