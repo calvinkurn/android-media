@@ -1,9 +1,13 @@
 package com.tokopedia.tkpd.category_levels.activity
 
-import androidx.recyclerview.widget.LinearLayoutManager
+import android.Manifest
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.contrib.RecyclerViewActions
+import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.rule.ActivityTestRule
-import com.tokopedia.categorylevels.R
+import androidx.test.rule.GrantPermissionRule
 import com.tokopedia.common_category.viewholders.ProductCardViewHolder
 import com.tokopedia.test.application.assertion.topads.TopAdsAssertion
 import com.tokopedia.test.application.environment.callback.TopAdsVerificatorInterface
@@ -18,6 +22,9 @@ import org.junit.Test
 
 class CategoryLevelsTopAdsVerificationTest {
     private var topAdsAssertion: TopAdsAssertion? = null
+
+    @get:Rule
+    var grantPermissionRule: GrantPermissionRule = GrantPermissionRule.grant(Manifest.permission.WRITE_EXTERNAL_STORAGE)
 
     @get:Rule
     var activityRule = object: ActivityTestRule<InstrumentationProductNavTestActivity>(InstrumentationProductNavTestActivity::class.java) {
@@ -45,7 +52,7 @@ class CategoryLevelsTopAdsVerificationTest {
     fun testTopAdsCategory() {
         waitForData()
 
-        val productsRecyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.product_recyclerview)
+        val productsRecyclerView = activityRule.activity.findViewById<RecyclerView>(com.tokopedia.categorylevels.R.id.product_recyclerview)
         val itemCount = productsRecyclerView.adapter?.itemCount?:0
 
         for (i in 0 until itemCount) {
@@ -58,7 +65,12 @@ class CategoryLevelsTopAdsVerificationTest {
     private fun checkProductOnDynamicChannel(recyclerView: RecyclerView, i: Int) {
         when (recyclerView.findViewHolderForAdapterPosition(i)) {
             is ProductCardViewHolder -> {
-                CommonActions.clickChildViewWithId(R.id.productCardView)
+                try {
+                    onView(withId(com.tokopedia.categorylevels.R.id.product_recyclerview)).perform(RecyclerViewActions.actionOnItemAtPosition<ProductCardViewHolder>(
+                            i,CommonActions.clickChildViewWithId(com.tokopedia.common_category.R.id.productCardView)))
+                } catch (e:Exception){
+                    e.printStackTrace()
+                }
             }
         }
     }
@@ -68,7 +80,7 @@ class CategoryLevelsTopAdsVerificationTest {
     }
 
     private fun scrollRecyclerViewToPosition(recyclerView: RecyclerView, position: Int) {
-        val layoutManager = recyclerView.layoutManager as LinearLayoutManager
+        val layoutManager = recyclerView.layoutManager as StaggeredGridLayoutManager
         activityRule.runOnUiThread { layoutManager.scrollToPositionWithOffset(position, 0) }
     }
 
