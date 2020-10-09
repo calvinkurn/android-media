@@ -94,6 +94,7 @@ class PlayWidgetUseCase @Inject constructor(private val repository: GraphqlRepos
               gradient
               serverTimeOffset
               maxAutoplayCell
+              template
             }
           }
         }
@@ -107,20 +108,49 @@ class PlayWidgetUseCase @Inject constructor(private val repository: GraphqlRepos
 
         @JvmStatic
         fun createParams(
-                authorId: String,
-                authorType: String,
-                widgetType: String
+                widgetType: WidgetType
         ): Map<String, Any> = mapOf(
-                PARAM_AUTHOR_ID to authorId,
-                PARAM_AUTHOR_TYPE to authorType,
-                PARAM_WIDGET_TYPE to widgetType
+                PARAM_AUTHOR_ID to widgetType.authorId,
+                PARAM_AUTHOR_TYPE to widgetType.authorType,
+                PARAM_WIDGET_TYPE to widgetType.typeString
         )
     }
 
-    enum class WidgetType(val typeString: String) {
+    sealed class WidgetType {
 
-        ShopPage("SHOP_PAGE"),
-        Home("HOME"),
-        Feeds("FEEDS")
+        abstract val typeString: String
+        abstract val authorId: String
+        abstract val authorType: String
+
+        data class ShopPage(val shopId: String) : WidgetType() {
+            override val typeString: String
+                get() = "SHOP_PAGE"
+
+            override val authorId: String
+                get() = shopId
+
+            override val authorType: String
+                get() = "shop"
+        }
+        object Home : WidgetType() {
+            override val typeString: String
+                get() = "HOME"
+
+            override val authorId: String
+                get() = ""
+
+            override val authorType: String
+                get() = ""
+        }
+        object Feeds : WidgetType() {
+            override val typeString: String
+                get() = "FEEDS"
+
+            override val authorId: String
+                get() = ""
+
+            override val authorType: String
+                get() = ""
+        }
     }
 }

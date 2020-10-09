@@ -22,25 +22,29 @@ class PlayWidgetView : LinearLayout {
 
     fun setModel(model: PlayWidgetUiModel) {
         when (model) {
-            is PlayWidgetUiModel.Small -> addSmallView()
-            is PlayWidgetUiModel.Medium -> addMediumView()
+            is PlayWidgetUiModel.Small -> addSmallView(model)
+            is PlayWidgetUiModel.Medium -> addMediumView(model)
         }
     }
 
-    private fun addSmallView() {
-        if (getFirstChild() is PlayWidgetSmallView) return
+    private fun addSmallView(model: PlayWidgetUiModel.Small) {
+//        if (getFirstChild() is PlayWidgetSmallView) return
         removeCurrentView()
-        addView(PlayWidgetSmallView(context).apply {
+        val smallWidget = PlayWidgetSmallView(context).apply {
             layoutParams = getChildLayoutParams()
-        })
+        }
+        addView(smallWidget)
+        smallWidget.setData(model)
     }
 
-    private fun addMediumView() {
-        if (getFirstChild() is PlayWidgetMediumView) return
+    private fun addMediumView(model: PlayWidgetUiModel.Medium) {
+//        if (getFirstChild() is PlayWidgetMediumView) return
         removeCurrentView()
-        addView(PlayWidgetMediumView(context).apply {
+        val mediumWidget = PlayWidgetMediumView(context).apply {
             layoutParams = getChildLayoutParams()
-        })
+        }
+        addView(mediumWidget)
+        mediumWidget.setData(model)
     }
 
     private fun getFirstChild() = getChildAt(0)
