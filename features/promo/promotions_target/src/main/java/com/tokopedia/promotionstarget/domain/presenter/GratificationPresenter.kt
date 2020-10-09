@@ -7,6 +7,7 @@ import android.util.Log
 import androidx.annotation.IntDef
 import androidx.annotation.StringDef
 import com.tokopedia.promotionstarget.data.coupon.TokopointsCouponDetailResponse
+import com.tokopedia.promotionstarget.data.di.IO
 import com.tokopedia.promotionstarget.data.di.MAIN
 import com.tokopedia.promotionstarget.data.di.components.DaggerCmGratificationPresenterComponent
 import com.tokopedia.promotionstarget.data.di.modules.AppModule
@@ -30,11 +31,12 @@ import com.tokopedia.promotionstarget.domain.usecase.TokopointsCouponDetailUseCa
 import com.tokopedia.promotionstarget.presentation.ui.dialog.CmGratificationDialog
 import kotlinx.coroutines.*
 import java.lang.ref.WeakReference
+import java.util.*
 import java.util.concurrent.Executors
 import javax.inject.Inject
 import javax.inject.Named
 
-class GratificationPresenter @Inject constructor(val application: Application) {
+class GratificationPresenter @Inject constructor(val application: Application, val weakHashMap: WeakHashMap<Activity,Boolean>) {
     @Inject
     lateinit var notificationUseCase: NotificationUseCase
 
@@ -42,9 +44,9 @@ class GratificationPresenter @Inject constructor(val application: Application) {
     lateinit var tpCouponDetailUseCase: TokopointsCouponDetailUseCase
 
 
-    //    @Inject
-//    @field:Named(IO)
-    var worker: CoroutineDispatcher = Executors.newSingleThreadExecutor().asCoroutineDispatcher()
+    @Inject
+    @field:Named(IO)
+    lateinit var worker: CoroutineDispatcher
 
     @Inject
     @field:Named(MAIN)
@@ -63,7 +65,7 @@ class GratificationPresenter @Inject constructor(val application: Application) {
     }
 
 
-    private fun getNotification(weakActivity: WeakReference<Activity>,
+    private fun getNotification(weakActivity: WeakReference<Activity>?,
                                 notificationID: Int,
                                 @NotificationEntryType notificationEntryType: Int,
                                 paymentID: Int = 0,
@@ -76,18 +78,18 @@ class GratificationPresenter @Inject constructor(val application: Application) {
             val reason = notifResponse.response?.resultStatus?.code
             if (reason == GratifResultStatus.SUCCESS) {
                 //todo Rahul refactor later
-                val code = notifResponse.response.promoCode
-//                val code = "NUPLBDAY5D7RUU5M329"
+//                val code = notifResponse.response.promoCode
+                val code = "NUPLBDAY5D7RUU5M329"
                 if (!code.isNullOrEmpty()) {
                     val couponDetail = tpCouponDetailUseCase.getResponse(tpCouponDetailUseCase.getQueryParams(code))
 //                    val couponDetail = tpCouponDetailUseCase.getFakeResponse(tpCouponDetailUseCase.getQueryParams(code))
                     val couponStatus = couponDetail?.coupon?.realCode ?: ""
                     if (couponStatus.isNotEmpty()) {
                         withContext(uiWorker) {
-                            weakActivity.get()?.let { activity ->
+                            weakActivity?.get()?.let { activity ->
                                 if (notificationEntryType == NotificationEntryType.PUSH) {
                                     performShowDialog(activity, notifResponse.response, couponDetail, notificationEntryType, gratifPopupCallback)
-                                } else if (CmGratificationDialog.weakHashMap[activity] != null) {
+                                } else if (weakHashMap[activity] != null) {
                                     gratifPopupCallback?.onIgnored(GratifPopupIngoreType.DIALOG_ALREADY_ACTIVE)
                                 } else {
                                     performShowDialog(activity, notifResponse.response, couponDetail, notificationEntryType, gratifPopupCallback)
@@ -123,23 +125,23 @@ class GratificationPresenter @Inject constructor(val application: Application) {
                         gratifPopupCallback?.onShow(dialog)
                     }
                 })
-        CmGratificationDialog.weakHashMap[activity] = true
+        weakHashMap[activity] = true
 
         dialog?.setOnDismissListener { dialogInterface ->
-            CmGratificationDialog.weakHashMap.remove(activity)
+            weakHashMap.remove(activity)
             gratifPopupCallback?.onDismiss(dialogInterface)
         }
         dialog?.setOnCancelListener { dialogInterface ->
-            CmGratificationDialog.weakHashMap.remove(activity)
+            weakHashMap.remove(activity)
             gratifPopupCallback?.onDismiss(dialogInterface)
         }
     }
 
 
-    fun showGratificationInApp(weakActivity: WeakReference<Activity>,
+    fun showGratificationInApp(weakActivity: WeakReference<Activity>?,
                                gratificationId: String?,
                                @NotificationEntryType notificationEntryType: Int,
-                               gratifPopupCallback: GratifPopupCallback
+                               gratifPopupCallback: GratifPopupCallback?
     ): Job? {
         Log.d("NOOB", "showGratificationInApp")
         try {
@@ -188,6 +190,25 @@ class GratificationPresenter @Inject constructor(val application: Application) {
         fun onShow(dialog: DialogInterface)
         fun onDismiss(dialog: DialogInterface)
         fun onIgnored(@GratifPopupIngoreType reason: Int)
+        fun onExeption(ex:Exception)
+    }
+
+    abstract class AbstractGratifPopupCallback:GratifPopupCallback{
+        override fun onShow(dialog: DialogInterface) {
+
+        }
+
+        override fun onDismiss(dialog: DialogInterface) {
+
+        }
+
+        override fun onIgnored(reason: Int) {
+
+        }
+
+        override fun onExeption(ex: Exception) {
+
+        }
     }
 
     interface ExceptionCallback {

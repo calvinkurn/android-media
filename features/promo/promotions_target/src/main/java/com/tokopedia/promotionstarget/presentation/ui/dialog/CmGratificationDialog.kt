@@ -69,10 +69,6 @@ class CmGratificationDialog {
     private var couponDetailResponse: TokopointsCouponDetailResponse? = null
     private var buttonText = ""
 
-    companion object {
-        val weakHashMap = WeakHashMap<Activity, Boolean>()
-    }
-
     protected fun getLayout(): Int {
         return R.layout.dialog_gratification
     }

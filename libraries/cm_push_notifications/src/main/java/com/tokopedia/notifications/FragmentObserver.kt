@@ -2,14 +2,14 @@ package com.tokopedia.notifications
 
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.listener.FragmentLifecycleCallback
-import com.tokopedia.notifications.inApp.CMInAppManager
+import com.tokopedia.notifications.inApp.CmFragmentLifecycleHandler
 import timber.log.Timber
 
-class FragmentObserver(private val cmInAppManager: CMInAppManager) : FragmentLifecycleCallback {
+class FragmentObserver(private val cmFragmentLifecycleHandler: CmFragmentLifecycleHandler) : FragmentLifecycleCallback {
 
     override fun onFragmentStart(fragment: Fragment) {
         try {
-            cmInAppManager.onFragmentStart(fragment)
+            cmFragmentLifecycleHandler.onFragmentStart(fragment)
         } catch (e: Exception) {
             Timber.e(e)
         }
@@ -17,7 +17,7 @@ class FragmentObserver(private val cmInAppManager: CMInAppManager) : FragmentLif
 
     override fun onFragmentResume(fragment: Fragment) {
         try {
-            cmInAppManager.onFragmentResume(fragment)
+            cmFragmentLifecycleHandler.onFragmentResume(fragment)
         } catch (e: Exception) {
             Timber.e(e)
         }
@@ -25,7 +25,7 @@ class FragmentObserver(private val cmInAppManager: CMInAppManager) : FragmentLif
 
     override fun onFragmentStop(fragment: Fragment) {
         try {
-            cmInAppManager.onFragmentStop(fragment)
+            cmFragmentLifecycleHandler.onFragmentStop(fragment)
         } catch (e: Exception) {
             Timber.e(e)
         }
@@ -33,7 +33,7 @@ class FragmentObserver(private val cmInAppManager: CMInAppManager) : FragmentLif
 
     override fun onFragmentSelected(fragment: Fragment) {
         try {
-            cmInAppManager.onFragmentSelected(fragment)
+            cmFragmentLifecycleHandler.onFragmentSelected(fragment)
         } catch (e: Exception) {
             Timber.e(e)
         }
@@ -41,7 +41,7 @@ class FragmentObserver(private val cmInAppManager: CMInAppManager) : FragmentLif
 
     override fun onFragmentUnSelected(fragment: Fragment) {
         try {
-            cmInAppManager.onFragmentUnSelected(fragment)
+            cmFragmentLifecycleHandler.onFragmentUnSelected(fragment)
         } catch (e: Exception) {
             Timber.e(e)
         }
@@ -49,7 +49,7 @@ class FragmentObserver(private val cmInAppManager: CMInAppManager) : FragmentLif
 
     override fun onFragmentDestroyed(fragment: Fragment) {
         try {
-            cmInAppManager.onFragmentDestroyed(fragment)
+            cmFragmentLifecycleHandler.onFragmentDestroyed(fragment)
         } catch (e: Exception) {
             Timber.e(e)
         }
