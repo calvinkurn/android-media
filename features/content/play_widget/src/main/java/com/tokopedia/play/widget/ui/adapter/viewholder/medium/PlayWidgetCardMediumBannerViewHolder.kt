@@ -28,10 +28,10 @@ class PlayWidgetCardMediumBannerViewHolder(
 
     private fun setupListener(item: PlayWidgetMediumBannerUiModel) {
         itemView.setOnClickListener {
-            cardMediumListener.onCardMediumClicked(item, adapterPosition)
+            cardMediumListener.onCardClicked(item, adapterPosition)
         }
         itemView.addOnImpressionListener(item.impress) {
-            cardMediumListener.onCardMediumVisible(item, adapterPosition)
+            cardMediumListener.onCardVisible(item, adapterPosition)
         }
     }
 

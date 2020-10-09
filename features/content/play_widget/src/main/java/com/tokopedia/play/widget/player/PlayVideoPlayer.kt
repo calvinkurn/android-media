@@ -1,9 +1,9 @@
-package com.tokopedia.play.widget.ui.custom
+package com.tokopedia.play.widget.player
 
 import android.content.Context
 import android.net.Uri
-import android.util.AttributeSet
 import com.google.android.exoplayer2.C
+import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.source.MediaSource
@@ -11,52 +11,58 @@ import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.source.dash.DashMediaSource
 import com.google.android.exoplayer2.source.hls.HlsMediaSource
 import com.google.android.exoplayer2.source.smoothstreaming.SsMediaSource
-import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
-import com.google.android.exoplayer2.ui.PlayerView
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.util.Util
+import kotlinx.coroutines.*
 
 
 /**
- * Created by mzennis on 06/10/20.
+ * Created by mzennis on 09/10/20.
  */
-class PlayWidgetVideoView(context: Context, attrs: AttributeSet?) : PlayerView(context, attrs) {
+open class PlayVideoPlayer(val context: Context) {
 
-    private val exoPlayer: SimpleExoPlayer
-    private var state: PlayWidgetVideoState = PlayWidgetVideoState.NotReady
+    private val job = SupervisorJob()
+    private val scope = CoroutineScope(job + Dispatchers.Default)
 
-    var listener: PlayWidgetVideoListener? = null
-    var videoUrl: String = ""
+    private val exoPlayer: SimpleExoPlayer = SimpleExoPlayer.Builder(context).build()
+    private var playerState: VideoPlayerState = VideoPlayerState.Idle
+
+    var listener: VideoPlayerListener? = null
+    var videoUrl: String? = null
 
     init {
-        this.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT
-        this.useController = false
-
-        exoPlayer = SimpleExoPlayer.Builder(context).build()
         exoPlayer.volume = 0F
         exoPlayer.addListener(object : Player.EventListener{
             override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
                 when (playbackState) {
                     Player.STATE_ENDED -> exoPlayer.seekTo(0)
-                    Player.STATE_READY -> state = PlayWidgetVideoState.Ready
-                    else -> state = PlayWidgetVideoState.NotReady
+                    Player.STATE_READY -> whenIsPlayingChanged(isPlaying = true)
+                    else -> whenIsPlayingChanged(isPlaying = false)
                 }
-                listener?.onPlayerStateChanged(state)
             }
         })
-        this.player = exoPlayer
+    }
+
+    private fun whenIsPlayingChanged(isPlaying: Boolean) {
+        scope.launch(Dispatchers.Main) {
+            listener?.onIsPlayingChanged(isPlaying)
+        }
     }
 
     fun start() {
-        if (videoUrl.isEmpty() || videoUrl.isBlank()) return
+        if (videoUrl?.isBlank() == true) return
 
-        val mediaSource = getMediaSourceBySource(context, Uri.parse(videoUrl))
-        exoPlayer.playWhenReady = true
-        exoPlayer.prepare(mediaSource,true, false)
+        scope.launch {
+            val mediaSource = getMediaSourceBySource(context, Uri.parse(videoUrl))
+            exoPlayer.playWhenReady = true
+            exoPlayer.prepare(mediaSource,true, false)
+        }
     }
 
     fun stop() {
-        exoPlayer.stop()
+        scope.launch {
+            exoPlayer.stop()
+        }
     }
 
     fun release() {
@@ -64,14 +70,31 @@ class PlayWidgetVideoView(context: Context, attrs: AttributeSet?) : PlayerView(c
             exoPlayer.release()
         } catch (throwable: Throwable) {
         }
+        flush()
     }
 
-    fun isPlaying(): Boolean = state == PlayWidgetVideoState.Ready
+    fun isIdle(): Boolean = playerState == VideoPlayerState.Idle
 
-    enum class PlayWidgetVideoState { Ready, NotReady }
+    fun isBusy(): Boolean = playerState == VideoPlayerState.Busy
 
-    interface PlayWidgetVideoListener {
-        fun onPlayerStateChanged(state: PlayWidgetVideoState)
+    fun setState(state: VideoPlayerState) {
+        this.playerState = state
+    }
+
+    fun getPlayerState(): VideoPlayerState = playerState
+
+    fun getPlayer(): ExoPlayer = exoPlayer
+
+    private fun flush() {
+        if (scope.isActive && !job.isCancelled){
+            job.cancelChildren()
+        }
+    }
+
+    enum class VideoPlayerState { Idle, Busy }
+
+    interface VideoPlayerListener {
+        fun onIsPlayingChanged(isPlaying: Boolean)
     }
 
     private fun getMediaSourceBySource(context: Context, uri: Uri): MediaSource {
@@ -85,4 +108,5 @@ class PlayWidgetVideoView(context: Context, attrs: AttributeSet?) : PlayerView(c
         }
         return mediaSource.createMediaSource(uri)
     }
+
 }

@@ -23,10 +23,10 @@ class PlayWidgetCardMediumOverlayViewHolder(
 
     private fun setupListener(item: PlayWidgetMediumOverlayUiModel) {
         itemView.setOnClickListener {
-            cardMediumListener.onCardMediumClicked(item, adapterPosition)
+            cardMediumListener.onCardClicked(item, adapterPosition)
         }
         itemView.addOnImpressionListener(item.impress) {
-            cardMediumListener.onCardMediumVisible(item, adapterPosition)
+            cardMediumListener.onCardVisible(item, adapterPosition)
         }
     }
 

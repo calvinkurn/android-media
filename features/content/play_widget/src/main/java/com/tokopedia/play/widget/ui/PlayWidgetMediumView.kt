@@ -14,8 +14,13 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.widget.R
+import com.tokopedia.play.widget.player.PlayVideoPlayer
 import com.tokopedia.play.widget.ui.adapter.PlayWidgetCardMediumAdapter
-import com.tokopedia.play.widget.ui.model.*
+import com.tokopedia.play.widget.ui.adapter.viewholder.medium.PlayWidgetCardMediumChannelViewHolder
+import com.tokopedia.play.widget.ui.model.PlayWidgetBackgroundUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetConfigUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetMediumItemUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 import com.tokopedia.play_common.widget.playBannerCarousel.extension.loadImage
 import com.tokopedia.play_common.widget.playBannerCarousel.extension.setGradientBackground
 import com.tokopedia.unifyprinciples.Typography
@@ -25,7 +30,7 @@ import kotlin.math.abs
 /**
  * Created by mzennis on 06/10/20.
  */
-class PlayWidgetMediumView : ConstraintLayout {
+class PlayWidgetMediumView : ConstraintLayout, PlayWidgetCardMediumAdapter.CardMediumListener {
 
     constructor(context: Context?) : super(context)
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
@@ -47,19 +52,10 @@ class PlayWidgetMediumView : ConstraintLayout {
 
     private val recyclerViewItem: RecyclerView
 
-    private val adapter = PlayWidgetCardMediumAdapter(
-            cardMediumListener = object : PlayWidgetCardMediumAdapter.CardMediumListener {
-                override fun onCardMediumClicked(item: PlayWidgetMediumItemUiModel, position: Int) {
-                    widgetMediumListener?.onCardClicked(item, position)
-                }
-
-                override fun onCardMediumVisible(item: PlayWidgetMediumItemUiModel, position: Int) {
-                    widgetMediumListener?.onCardVisible(item, position)
-                }
-            }
-    )
-
+    private val adapter = PlayWidgetCardMediumAdapter(listener = this)
     private val layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
+
+    private var videoPlayers = mutableListOf<PlayVideoPlayer>()
 
     init {
         val view = LayoutInflater.from(context).inflate(R.layout.view_play_widget_medium, this)
@@ -95,20 +91,22 @@ class PlayWidgetMediumView : ConstraintLayout {
                 recyclerViewItem.addOnScrollListener(configureParallax())
 
                 adapter.setItems(data.items)
+
+                configurePlayer(data.config)
             }
         }
     }
 
-    fun showLoading() {
-        shimmering.show()
-    }
-
-    fun hideLoading() {
-        shimmering.hide()
+    private fun configurePlayer(config: PlayWidgetConfigUiModel) {
+        videoPlayers = MutableList(config.maxAutoPlayCard.toInt()) {
+            PlayVideoPlayer(context)
+        }
     }
 
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
+        videoPlayers.forEach { it.release() }
+        videoPlayers.clear()
     }
 
     /**
@@ -161,6 +159,32 @@ class PlayWidgetMediumView : ConstraintLayout {
                 }
             }
         }
+    }
+
+    override fun onCardClicked(item: PlayWidgetMediumItemUiModel, position: Int) {
+        widgetMediumListener?.onCardClicked(item, position)
+    }
+
+    override fun onCardVisible(item: PlayWidgetMediumItemUiModel, position: Int) {
+        widgetMediumListener?.onCardVisible(item, position)
+    }
+
+    override fun onCardAttachedToWindow(card: PlayWidgetCardMediumChannelViewHolder) {
+//        #1 Workaround
+//        val idlePlayer = videoPlayers.find { it.isIdle() }
+//        if (idlePlayer != null) {
+//            card.setPlayer(idlePlayer)
+//            idlePlayer.start()
+//            idlePlayer.setState(PlayVideoPlayer.VideoPlayerState.Busy)
+//        }
+    }
+
+    override fun onCardDetachedFromWindow(card: PlayWidgetCardMediumChannelViewHolder) {
+//        #1 Workaround
+//        card.getPlayer()?.apply {
+//            stop()
+//            setState(PlayVideoPlayer.VideoPlayerState.Idle)
+//        }
     }
 
     interface PlayWidgetMediumListener {

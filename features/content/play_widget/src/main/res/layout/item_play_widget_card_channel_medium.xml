@@ -29,10 +29,12 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <com.tokopedia.play.widget.ui.custom.PlayWidgetVideoView
-            android:id="@+id/play_widget_player"
+        <com.google.android.exoplayer2.ui.PlayerView
+            android:id="@+id/play_widget_player_view"
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="@dimen/layout_lvl0"
+            app:use_controller="false"
+            app:resize_mode="zoom"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
