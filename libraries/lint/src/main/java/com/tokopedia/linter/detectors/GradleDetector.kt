@@ -37,10 +37,6 @@ class GradleDetector : Detector(), Detector.GradleScanner {
                 Severity.ERROR,
                 IMPLEMENTATION
         )
-
-
-
-
     }
 
 
@@ -103,8 +99,6 @@ class GradleDetector : Detector(), Detector.GradleScanner {
             )
         }
     }
-
-
 
 
     private fun isInternalProjectDependency(value: String) =
