@@ -70,6 +70,7 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import java.util.HashMap
 import javax.inject.Inject
 
 class OfficialHomeFragment :
@@ -811,7 +812,8 @@ class OfficialHomeFragment :
 
     override fun onClickMixLeftBannerImage(channel: ChannelModel, position: Int) {
         if (RouteManager.route(context, channel.channelBanner?.applink.orEmpty())) {
-            OSMixLeftTracking.eventClickMixLeftImageBanner(channel, category?.title.orEmpty(), position)
+            tracking?.trackingViewObj?.putEETracking(
+                    OSMixLeftTracking.eventClickMixLeftImageBanner(channel, category?.title.orEmpty(), position) as HashMap<String, Any>)
         }
     }
 
@@ -820,7 +822,8 @@ class OfficialHomeFragment :
     }
 
     override fun onMixLeftBannerImpressed(channel: ChannelModel, position: Int) {
-        OSMixLeftTracking.eventImpressionMixLeftImageBanner(channel, category?.title.orEmpty(), position)
+        tracking?.trackingViewObj?.putEETracking(
+                OSMixLeftTracking.eventImpressionMixLeftImageBanner(channel, category?.title.orEmpty(), position) as HashMap<String, Any>)
     }
 
     override fun onFlashSaleCardImpressedComponent(position: Int, grid: ChannelGrid, channel: ChannelModel) {
