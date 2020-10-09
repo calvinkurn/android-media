@@ -9,11 +9,6 @@ import org.w3c.dom.Element
 object UnifyDetector {
     val unifyMap = getUnifyMapping();
 
-    fun getUnifyMapping(): Map<String, UnifyMapping> {
-        return mapOf(SdkConstants.TEXT_VIEW to UnifyMapping(SdkConstants.TEXT_VIEW, UnifyComponentsList.TYPOGRAPHY))
-    }
-
-
     val ISSUE: Issue = Issue.create(
             UNIFY_USAGE_ISSUE_ID,
             "Widget replaced with UnifyComponent",
