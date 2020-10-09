@@ -30,6 +30,7 @@ import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
 import com.tokopedia.discovery.common.manager.handleProductCardOptionsActivityResult
 import com.tokopedia.discovery.common.manager.showProductCardOptions
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
+import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -57,6 +58,8 @@ import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.Produ
 import com.tokopedia.officialstore.official.presentation.dynamic_channel.DynamicChannelEventHandler
 import com.tokopedia.officialstore.official.presentation.dynamic_channel.DynamicChannelViewModel
 import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
+import com.tokopedia.officialstore.analytics.OSMixLeftTracking
+import com.tokopedia.officialstore.official.presentation.listener.OSMixLeftComponentCallback
 import com.tokopedia.officialstore.official.presentation.listener.OfficialStoreHomeComponentCallback
 import com.tokopedia.officialstore.official.presentation.listener.OfficialStoreLegoBannerComponentCallback
 import com.tokopedia.officialstore.official.presentation.viewmodel.OfficialStoreHomeViewModel
@@ -164,7 +167,8 @@ class OfficialHomeFragment :
                 this,
                 this,
                 OfficialStoreHomeComponentCallback(),
-                OfficialStoreLegoBannerComponentCallback(this))
+                OfficialStoreLegoBannerComponentCallback(this),
+                OSMixLeftComponentCallback(this))
         adapter = OfficialHomeAdapter(adapterTypeFactory)
         recyclerView?.adapter = adapter
 
@@ -805,8 +809,49 @@ class OfficialHomeFragment :
         }
     }
 
+    override fun onClickMixLeftBannerImage(channel: ChannelModel, position: Int) {
+        if (RouteManager.route(context, channel.channelBanner?.applink.orEmpty())) {
+            OSMixLeftTracking.eventClickMixLeftImageBanner(channel, category?.title.orEmpty(), position)
+        }
+    }
+
     override fun onMixLeftBannerImpressed(channel: Channel, position: Int) {
         tracking?.eventImpressionMixLeftImageBanner(channel, category?.title.orEmpty(), position)
+    }
+
+    override fun onMixLeftBannerImpressed(channel: ChannelModel, position: Int) {
+        OSMixLeftTracking.eventImpressionMixLeftImageBanner(channel, category?.title.orEmpty(), position)
+    }
+
+    override fun onFlashSaleCardImpressedComponent(position: Int, grid: ChannelGrid, channel: ChannelModel) {
+        tracking?.flashSaleCardImpressionComponent(
+                viewModel.currentSlug,
+                channel,
+                grid,
+                position.toString(),
+                viewModel.isLoggedIn()
+        )
+    }
+
+    override fun onMixFlashSaleSeeAllClickedComponent(channel: ChannelModel, applink: String) {
+        tracking?.seeAllMixFlashSaleClickedComponent(
+                viewModel.currentSlug,
+                channel
+        )
+        if (!TextUtils.isEmpty(applink)) {
+            RouteManager.route(context, applink)
+        }
+    }
+
+    override fun onFlashSaleCardClickedComponent(position: Int, channel: ChannelModel, grid: ChannelGrid, applink: String) {
+        tracking?.flashSaleCardClickedComponent(
+                viewModel.currentSlug,
+                channel,
+                grid,
+                position.toString(),
+                viewModel.isLoggedIn()
+        )
+        RouteManager.route(context, applink)
     }
 
     private fun removeLoading() {

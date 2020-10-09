@@ -10,6 +10,8 @@ object OfficialStoreDynamicChannelComponentMapper {
                 id = channel.id,
                 groupId = "",
                 type = "",
+                name = channel.name,
+                layout = channel.layout,
                 verticalPosition = verticalPosition,
                 channelHeader = ChannelHeader(
                         channel.header?.id.toString(),

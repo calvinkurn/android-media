@@ -9,6 +9,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.HideViewHolder
 import com.tokopedia.home_component.HomeComponentTypeFactory
 import com.tokopedia.home_component.listener.DynamicLegoBannerListener
 import com.tokopedia.home_component.listener.HomeComponentListener
+import com.tokopedia.home_component.listener.MixLeftComponentListener
 import com.tokopedia.home_component.viewholders.*
 import com.tokopedia.home_component.viewholders.FeaturedShopViewHolder
 import com.tokopedia.home_component.visitable.*
@@ -23,7 +24,8 @@ class OfficialHomeAdapterTypeFactory(
         private val dcEventHandler: DynamicChannelEventHandler,
         private val featuredShopListener: FeaturedShopListener,
         private val homeComponentListener: HomeComponentListener,
-        private val legoBannerListener: DynamicLegoBannerListener
+        private val legoBannerListener: DynamicLegoBannerListener,
+        private val mixLeftComponentListener: MixLeftComponentListener
 ) : BaseAdapterTypeFactory(), OfficialHomeTypeFactory, HomeComponentTypeFactory {
 
     override fun type(officialBannerViewModel: OfficialBannerViewModel): Int {
@@ -81,7 +83,10 @@ class OfficialHomeAdapterTypeFactory(
             OfficialFeaturedShopViewHolder.LAYOUT -> OfficialFeaturedShopViewHolder(parent, featuredShopListener)
             DynamicChannelThematicViewHolder.LAYOUT -> DynamicChannelThematicViewHolder(parent, dcEventHandler)
             DynamicChannelSprintSaleViewHolder.LAYOUT -> DynamicChannelSprintSaleViewHolder(parent, dcEventHandler)
-            DynamicChannelMixLeftViewHolder.LAYOUT -> DynamicChannelMixLeftViewHolder(parent, dcEventHandler)
+            DynamicChannelMixLeftViewHolder.LAYOUT -> MixLeftComponentViewHolder(
+                    itemView = parent,
+                    mixLeftComponentListener = mixLeftComponentListener,
+                    homeComponentListener = homeComponentListener)
             DynamicChannelMixTopViewHolder.LAYOUT -> DynamicChannelMixTopViewHolder(parent, dcEventHandler)
             OfficialProductRecommendationTitleViewHolder.LAYOUT -> OfficialProductRecommendationTitleViewHolder(parent)
             OfficialProductRecommendationViewHolder.LAYOUT -> OfficialProductRecommendationViewHolder(parent, recommendationListener)

@@ -721,8 +721,65 @@ class OfficialStoreTracking(context: Context) {
         trackingQueue.putEETracking(data as HashMap<String, Any>)
     }
 
+    fun flashSaleCardImpressionComponent(
+            categoryName: String,
+            channel: ChannelModel,
+            productItem: ChannelGrid,
+            productPosition: String,
+            isLogin: Boolean
+    ) {
+        val valueDynamicMix = when (channel.layout) {
+            DynamicChannelIdentifiers.LAYOUT_MIX_TOP -> VALUE_DYNAMIC_MIX_TOP_CAROUSEL
+            DynamicChannelIdentifiers.LAYOUT_MIX_LEFT -> VALUE_DYNAMIC_MIX_LEFT_CAROUSEL
+            else -> ""
+        }
+        val eventAction = "$IMPRESSION on product $valueDynamicMix"
+        val data = DataLayer.mapOf(
+                EVENT, EVENT_PRODUCT_VIEW,
+                EVENT_CATEGORY, "$OS_MICROSITE$categoryName",
+                EVENT_ACTION, eventAction,
+                EVENT_LABEL, channel.id,
+                ECOMMERCE, DataLayer.mapOf(
+                ECOMMERCE_CURRENCY_CODE, VALUE_IDR,
+                ECOMMERCE_IMPRESSIONS, DataLayer.listOf(
+                createFlashSaleCardProductItemMapComponent(
+                        productItem,
+                        productPosition,
+                        isLogin,
+                        valueDynamicMix
+                )
+        )
+        )
+        )
+        trackingQueue.putEETracking(data as HashMap<String, Any>)
+    }
+
     private fun createFlashSaleCardProductItemMap(
             gridData: Grid,
+            position: String,
+            isLogin: Boolean,
+            valueDynamicMix: String
+    ): MutableMap<String, Any> {
+        val list = mutableListOf(SLASH_OFFICIAL_STORE)
+        if (!isLogin)
+            list.add(VALUE_NON_LOGIN)
+        if (valueDynamicMix.isNotEmpty())
+            list.add(valueDynamicMix)
+        val listKeyValue = TextUtils.join(" - ", list)
+        return DataLayer.mapOf(
+                FIELD_PRODUCT_NAME, gridData.name,
+                FIELD_PRODUCT_ID, gridData.id.toString(),
+                FIELD_PRODUCT_PRICE, formatPrice(gridData.price),
+                FIELD_PRODUCT_BRAND, VALUE_NONE,
+                FIELD_PRODUCT_CATEGORY, VALUE_NONE,
+                FIELD_PRODUCT_VARIANT, VALUE_NONE,
+                FIELD_PRODUCT_LIST, listKeyValue,
+                FIELD_PRODUCT_POSITION, position
+        )
+    }
+
+    private fun createFlashSaleCardProductItemMapComponent(
+            gridData: ChannelGrid,
             position: String,
             isLogin: Boolean,
             valueDynamicMix: String
@@ -787,7 +844,64 @@ class OfficialStoreTracking(context: Context) {
         trackingQueue.putEETracking(data as HashMap<String, Any>)
     }
 
+    fun flashSaleCardClickedComponent(
+            categoryName: String,
+            channel: ChannelModel,
+            productItem: ChannelGrid,
+            productPosition: String,
+            isLogin: Boolean
+    ) {
+        val valueDynamicMix = when (channel.layout) {
+            DynamicChannelIdentifiers.LAYOUT_MIX_TOP -> VALUE_DYNAMIC_MIX_TOP_CAROUSEL
+            DynamicChannelIdentifiers.LAYOUT_MIX_LEFT -> VALUE_DYNAMIC_MIX_LEFT_CAROUSEL
+            else -> ""
+        }
+        val list = mutableListOf(SLASH_OFFICIAL_STORE)
+        if (!isLogin)
+            list.add(VALUE_NON_LOGIN)
+        if (valueDynamicMix.isNotEmpty())
+            list.add(valueDynamicMix)
+        val listKeyValue = TextUtils.join(" - ", list)
+        val eventAction = "$CLICK on product $valueDynamicMix"
+        val data = DataLayer.mapOf(
+                EVENT, EVENT_PRODUCT_CLICK,
+                EVENT_CATEGORY, "$OS_MICROSITE$categoryName",
+                EVENT_ACTION, eventAction,
+                EVENT_LABEL, channel.id,
+                CAMPAIGN_CODE, channel.trackingAttributionModel.campaignCode,
+                ECOMMERCE, DataLayer.mapOf(
+                CLICK , DataLayer.mapOf(
+                FIELD_ACTION_FIELD , DataLayer.mapOf( FIELD_PRODUCT_LIST , listKeyValue),
+                FIELD_PRODUCTS, DataLayer.listOf(
+                createFlashSaleCardProductItemMapComponent(
+                        productItem,
+                        productPosition,
+                        isLogin,
+                        valueDynamicMix
+                )
+        )
+        )
+        )
+        )
+        trackingQueue.putEETracking(data as HashMap<String, Any>)
+    }
+
     fun seeAllMixFlashSaleClicked(categoryName: String, channel: Channel) {
+        val valueDynamicMix = when (channel.layout) {
+            DynamicChannelIdentifiers.LAYOUT_MIX_TOP -> VALUE_DYNAMIC_MIX_TOP_CAROUSEL
+            DynamicChannelIdentifiers.LAYOUT_MIX_LEFT -> VALUE_DYNAMIC_MIX_LEFT_CAROUSEL
+            else -> ""
+        }
+        val eventActionValue = "click view all on $valueDynamicMix"
+        tracker.sendGeneralEvent(DataLayer.mapOf(
+                EVENT, CLICK_OS_MICROSITE,
+                EVENT_CATEGORY, "$OS_MICROSITE$categoryName",
+                EVENT_ACTION, eventActionValue,
+                EVENT_LABEL, channel.id
+        ))
+    }
+
+    fun seeAllMixFlashSaleClickedComponent(categoryName: String, channel: ChannelModel) {
         val valueDynamicMix = when (channel.layout) {
             DynamicChannelIdentifiers.LAYOUT_MIX_TOP -> VALUE_DYNAMIC_MIX_TOP_CAROUSEL
             DynamicChannelIdentifiers.LAYOUT_MIX_LEFT -> VALUE_DYNAMIC_MIX_LEFT_CAROUSEL
