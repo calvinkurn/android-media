@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 
 import androidx.fragment.app.Fragment;
+
 import com.google.android.gms.tagmanager.DataLayer;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
@@ -52,7 +53,6 @@ import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
 import com.tokopedia.core.util.AccessTokenRefresh;
 import com.tokopedia.core.util.PasswordGenerator;
 import com.tokopedia.core.util.SessionRefresh;
-import com.tokopedia.design.component.BottomSheets;
 import com.tokopedia.developer_options.config.DevOptConfig;
 import com.tokopedia.feedplus.view.fragment.FeedPlusContainerFragment;
 import com.tokopedia.fingerprint.util.FingerprintConstant;
@@ -114,9 +114,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.inject.Inject;
-
-import dagger.Lazy;
 import io.hansel.hanselsdk.Hansel;
 import okhttp3.Interceptor;
 import okhttp3.Response;
@@ -352,11 +349,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 AuthUtil.KEY.KEY_WSV4);
     }
 
-    @Override
-    public boolean getEnableFingerprintPayment() {
-        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(this);
-        return remoteConfig.getBoolean(FingerprintConstant.ENABLE_FINGERPRINT_MAINAPP);
-    }
+//    @Override
+//    public boolean getEnableFingerprintPayment() {
+//        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(this);
+//        return remoteConfig.getBoolean(FingerprintConstant.ENABLE_FINGERPRINT_MAINAPP);
+//    }
 
     @Override
     public void resetAddProductCache(Context context) {

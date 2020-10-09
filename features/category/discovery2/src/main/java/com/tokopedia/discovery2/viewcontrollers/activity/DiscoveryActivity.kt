@@ -74,7 +74,8 @@ class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
     }
 
     override fun initView() {
-        moveToRnIfRequired()
+//        moveToRnIfRequired()
+        inflateFragment()
         toolbar?.hide()
         setObserver()
     }
@@ -84,7 +85,7 @@ class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
             if (config == NATIVE) {
                 inflateFragment()
             } else {
-//                routeToReactNativeDiscovery()
+                routeToReactNativeDiscovery()
             }
         } else {
             discoveryViewModel.getDiscoveryUIConfig()

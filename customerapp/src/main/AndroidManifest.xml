@@ -276,14 +276,6 @@
                     android:path="@string/path_redirect_create_shop"/>
             </intent-filter>
         </activity>
-        <activity
-            android:name=".home.ReactNativeDiscoveryActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".thankyou.view.ReactNativeThankYouPageActivity"
-            android:screenOrientation="portrait" />
-        <activity android:name=".home.ReactNativeSubPromoPageActivity"
-            android:screenOrientation="portrait" />
         <service
             android:name=".thankyou.view.ThanksTrackerService"
             android:permission="android.permission.BIND_JOB_SERVICE"
