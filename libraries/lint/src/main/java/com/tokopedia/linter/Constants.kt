@@ -7,6 +7,8 @@ const val WARNING_DESCRIPTION_FORMAT = "%s should probably be %s"
 const val WARNING_EXPLANATION_FORMAT = "Using a %s is not recommended, you should be using %s instead."
 const val USAGE_ERROR_MESSAGE_FORMAT = "consider using %s."
 
+
+const val UNIFY_USAGE_ISSUE_ID = "UnifyComponentUsage"
 // BottomSheetUnifyDetector
 const val BOTTOM_SHEET_ISSUE_ID = "BottomSheetUnifyUsage"
 const val BOTTOM_SHEET_DIALOG = "com.google.android.material.bottomsheet.BottomSheetDialog"

@@ -3,6 +3,8 @@ package com.tokopedia.linter
 import com.android.tools.lint.client.api.IssueRegistry
 import com.android.tools.lint.detector.api.CURRENT_API
 import com.tokopedia.linter.detectors.*
+import com.tokopedia.linter.detectors.gradle.DEPENDENCY_BANNED
+import com.tokopedia.linter.detectors.gradle.DEPENDENCY_DEPRECATED
 
 class IssueRegistry : IssueRegistry() {
     override val issues
@@ -21,8 +23,8 @@ class IssueRegistry : IssueRegistry() {
                 TypographyDetector.ISSUE,
                 UnifyButtonDetector.ISSUE,
                 UnifyImageButtonDetector.ISSUE,
-                GradleDetector.DEPRECATED,
-                GradleDetector.BANNED
+                DEPENDENCY_BANNED,
+                DEPENDENCY_DEPRECATED
         )
 
     override val minApi: Int
