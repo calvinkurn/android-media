@@ -497,8 +497,11 @@ class ShopShowcasePickerFragment: BaseDaggerFragment(),
                            if(selectedShowcaseList?.size.isMoreThanZero()) {
                                showcaseList.forEach { item ->
                                    selectedShowcaseList?.forEach { selectedItem ->
-                                       if(item.id == selectedItem.showcaseId)
+                                       if(item.id == selectedItem.showcaseId) {
+                                           // assign new showcase name from cloud, to prevent empty showcase from edit product
+                                           selectedItem.showcaseName = item.name
                                            item.isChecked = true
+                                       }
                                    }
                                }
                            }
