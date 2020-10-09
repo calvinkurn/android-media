@@ -914,6 +914,23 @@ object DynamicProductDetailTracking {
 
             trackingQueue.putEETracking(mapEvent)
         }
+
+        fun eventTopAdsButtonClicked(userId: String, buttonName: String, productInfo: DynamicProductInfoP1?) {
+            val data = mapOf(
+                ProductTrackingConstant.Tracking.KEY_EVENT to ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
+                ProductTrackingConstant.Tracking.KEY_CATEGORY to ProductTrackingConstant.Category.PDP,
+                ProductTrackingConstant.Tracking.KEY_ACTION to "${ProductTrackingConstant.Action.CLICK} - $buttonName",
+                ProductTrackingConstant.Tracking.KEY_LABEL to "",
+                ProductTrackingConstant.Tracking.KEY_PRODUCT_ID to (productInfo?.basic?.productID ?: "0"),
+                ProductTrackingConstant.Tracking.KEY_LAYOUT to "layout:${productInfo?.layoutName};catName:${productInfo?.basic?.category?.name};catId:${productInfo?.basic?.category?.id};",
+                ProductTrackingConstant.Tracking.KEY_USER_ID_VARIANT to userId,
+                ProductTrackingConstant.Tracking.KEY_SHOP_ID_SELLER to (productInfo?.basic?.shopID ?: "0"),
+                ProductTrackingConstant.Tracking.KEY_SHOP_TYPE to productInfo?.shopTypeString.orEmpty(),
+                ProductTrackingConstant.Tracking.KEY_ISLOGGIN to (userId.isNotEmpty()).toString()
+            )
+
+            TrackApp.getInstance().gtm.sendGeneralEvent(data)
+        }
     }
 
     object Iris {
@@ -1308,7 +1325,7 @@ object DynamicProductDetailTracking {
             val listValue = ProductTrackingConstant.Tracking.LIST_DEFAULT + pageName +
                     (if (!isSessionActive) " - ${ProductTrackingConstant.Tracking.USER_NON_LOGIN}" else "") +
                     ProductTrackingConstant.Tracking.LIST_RECOMMENDATION + product.recommendationType + (if (product.isTopAds) " - product topads" else "")
-            val topAdsAction = ProductTrackingConstant.Action.TOPADS_CLICK + (if (!isSessionActive) " - ${ProductTrackingConstant.Tracking.USER_NON_LOGIN}" else "")
+            val topAdsAction = ProductTrackingConstant.Action.TOPADS_IMPRESSION + (if (!isSessionActive) " - ${ProductTrackingConstant.Tracking.USER_NON_LOGIN}" else "")
 
             val enhanceEcommerceData = DataLayer.mapOf(
                     ProductTrackingConstant.Tracking.KEY_EVENT, ProductTrackingConstant.Action.PRODUCT_VIEW,
