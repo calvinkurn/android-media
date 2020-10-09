@@ -5,7 +5,14 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
-
+    <View
+        android:layout_width="match parent"
+        android:layout_height="1dp"
+        android:background="@color/Unify_N700_20"
+        android:marginTop="@dimen/dp_4"
+        android:marginStart="@dimen/dp_8"
+        android:marginEnd="@dimen/dp_8"
+        android:marginBottom="@dimen/dp_4"/>
     <com.tokopedia.collapsing.tab.layout.CollapsingTabLayout
         android:id="@+id/tab_layout_home_feeds"
         android:layout_width="match_parent"
