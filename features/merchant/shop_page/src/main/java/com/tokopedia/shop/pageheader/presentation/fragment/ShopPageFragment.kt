@@ -71,6 +71,7 @@ import com.tokopedia.shop.common.view.bottomsheet.ShopShareBottomSheet
 import com.tokopedia.shop.common.view.bottomsheet.listener.ShopShareBottomsheetListener
 import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
 import com.tokopedia.shop.common.view.model.ShopShareModel
+import com.tokopedia.shop.common.view.viewmodel.ShopPageFollowingStatusSharedViewModel
 import com.tokopedia.shop.common.view.viewmodel.ShopProductFilterParameterSharedViewModel
 import com.tokopedia.shop.favourite.view.activity.ShopFavouriteListActivity
 import com.tokopedia.shop.feed.view.fragment.FeedShopFragment
@@ -210,6 +211,7 @@ class ShopPageFragment :
     private var shopShareBottomSheet: ShopShareBottomSheet? = null
     private var shopImageFilePath: String = ""
     private var shopProductFilterParameterSharedViewModel: ShopProductFilterParameterSharedViewModel? = null
+    private var shopPageFollowingStatusSharedViewModel: ShopPageFollowingStatusSharedViewModel? = null
 
     val isMyShop: Boolean
         get() = if (::shopViewModel.isInitialized) {
@@ -239,6 +241,7 @@ class ShopPageFragment :
         shopViewModel.shopPageHeaderContentData.removeObservers(this)
         shopViewModel.shopImagePath.removeObservers(this)
         shopProductFilterParameterSharedViewModel?.sharedShopProductFilterParameter?.removeObservers(this)
+        shopPageFollowingStatusSharedViewModel?.shopPageFollowingStatusLiveData?.removeObservers(this)
         shopViewModel.flush()
         super.onDestroy()
     }
@@ -493,10 +496,12 @@ class ShopPageFragment :
             }
             shopViewModel = ViewModelProviders.of(this, viewModelFactory).get(ShopPageViewModel::class.java)
             shopProductFilterParameterSharedViewModel = ViewModelProviders.of(requireActivity()).get(ShopProductFilterParameterSharedViewModel::class.java)
+            shopPageFollowingStatusSharedViewModel = ViewModelProviders.of(requireActivity()).get(ShopPageFollowingStatusSharedViewModel::class.java)
             initViews(view)
             getSavedInstanceStateData(savedInstanceState)
             observeLiveData(this)
             observeShopProductFilterParameterSharedViewModel()
+            observeShopPageFollowingStatusSharedViewModel()
             startPltNetworkPerformanceMonitoring()
             getInitialData()
         }
@@ -505,6 +510,13 @@ class ShopPageFragment :
     private fun observeShopProductFilterParameterSharedViewModel() {
         shopProductFilterParameterSharedViewModel?.sharedShopProductFilterParameter?.observe(viewLifecycleOwner, Observer {
             initialProductFilterParameter = it
+        })
+    }
+
+    private fun observeShopPageFollowingStatusSharedViewModel() {
+        shopPageFollowingStatusSharedViewModel?.shopPageFollowingStatusLiveData?.observe(viewLifecycleOwner, Observer {
+            shopPageFragmentHeaderViewHolder.setFavoriteValue(it)
+            shopPageFragmentHeaderViewHolder.updateFavoriteButton()
         })
     }
 
