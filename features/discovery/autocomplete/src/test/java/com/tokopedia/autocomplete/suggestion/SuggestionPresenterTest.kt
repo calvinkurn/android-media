@@ -21,6 +21,8 @@ import rx.Subscriber
 
 private const val suggestionCommonResponse = "autocomplete/suggestion/suggestion-common-response.json"
 private const val suggestionTopShopResponse = "autocomplete/suggestion/suggestion-top-shop-response.json"
+private const val suggestionCampaignResponse = "autocomplete/suggestion/local-global-response.json"
+private const val suggestionCampaignAtTopResponse = "autocomplete/suggestion/local-global-at-top-response.json"
 
 internal class SuggestionPresenterTest: SuggestionPresenterTestFixtures() {
 
@@ -68,26 +70,27 @@ internal class SuggestionPresenterTest: SuggestionPresenterTestFixtures() {
         visitableList[5].shouldBeInstanceOf<SuggestionTitleViewModel>()
         visitableList[6].shouldBeInstanceOf<SuggestionDoubleLineViewModel>()
         visitableList[7].shouldBeInstanceOf<SuggestionDoubleLineViewModel>()
-        visitableList[8].shouldBeInstanceOf<SuggestionDoubleLineWithoutImageViewModel>()
-        visitableList[9].shouldBeInstanceOf<SuggestionDoubleLineWithoutImageViewModel>()
         visitableList.size shouldBe suggestionUniverse.data.items.size
 
         assertVisitableListData(visitableList, suggestionUniverse)
     }
 
     private fun assertVisitableListData(visitableList: List<Visitable<*>>, suggestionUniverse: SuggestionUniverse) {
-        suggestionUniverse.data.items.forEachIndexed { index, item ->
-            when (val visitable = visitableList[index]) {
+        var expectedPosition = 0
+        visitableList.forEach { visitable ->
+            val expectedItem = suggestionUniverse.data.items[expectedPosition]
+            when(visitable) {
                 is SuggestionTitleViewModel -> {
-                    visitable.assertSuggestionTitleViewModel(item)
+                    visitable.assertSuggestionTitleViewModel(expectedItem)
+                    expectedPosition++
                 }
                 is SuggestionTopShopWidgetViewModel -> {
-                    visitable.assertTopShopWidgetViewModel(
-                            suggestionUniverse.data.items[9], suggestionUniverse.topShop
-                    )
+                    visitable.assertTopShopWidgetViewModel(expectedItem, suggestionUniverse.topShop)
+                    expectedPosition++
                 }
-                else -> {
-                    (visitable as BaseSuggestionViewModel).assertBaseSuggestionViewModel(item)
+                is BaseSuggestionViewModel -> {
+                    (visitable as BaseSuggestionViewModel).assertBaseSuggestionViewModel(expectedItem)
+                    expectedPosition++
                 }
             }
         }
@@ -192,6 +195,59 @@ internal class SuggestionPresenterTest: SuggestionPresenterTestFixtures() {
         visitableList[7].shouldBeInstanceOf<SuggestionDoubleLineViewModel>()
         visitableList[8].shouldBeInstanceOf<SuggestionDoubleLineViewModel>()
         visitableList[9].shouldBeInstanceOf<SuggestionTopShopWidgetViewModel>()
+        visitableList.size shouldBe suggestionUniverse.data.items.size
+
+        assertVisitableListData(visitableList, suggestionUniverse)
+    }
+
+    @Test
+    fun `test get suggestion data with campaign local global component`() {
+        val suggestionUniverse = suggestionCampaignResponse.jsonToObject<SuggestionUniverse>()
+        `given suggestion use case capture request params`(suggestionUniverse)
+
+        `when presenter get suggestion data (search)`()
+
+        `then verify suggestion API is called`()
+        `then verify suggestion view will call showInitialStateResult behavior`()
+        `then verify visitable list should have SuggestionDoubleLineWithoutImageViewModel`(suggestionUniverse)
+    }
+
+    private fun `then verify visitable list should have SuggestionDoubleLineWithoutImageViewModel`(suggestionUniverse: SuggestionUniverse) {
+        val visitableList = slotVisitableList.captured
+
+        visitableList[0].shouldBeInstanceOf<SuggestionSingleLineViewModel>()
+        visitableList[1].shouldBeInstanceOf<SuggestionSingleLineViewModel>()
+        visitableList[2].shouldBeInstanceOf<SuggestionTitleViewModel>()
+        visitableList[3].shouldBeInstanceOf<SuggestionDoubleLineViewModel>()
+        visitableList[4].shouldBeInstanceOf<SuggestionDoubleLineViewModel>()
+        visitableList[5].shouldBeInstanceOf<SuggestionTitleViewModel>()
+        visitableList[6].shouldBeInstanceOf<SuggestionDoubleLineViewModel>()
+        visitableList[7].shouldBeInstanceOf<SuggestionDoubleLineViewModel>()
+        visitableList[8].shouldBeInstanceOf<SuggestionSeparatorViewModel>()
+        visitableList[9].shouldBeInstanceOf<SuggestionDoubleLineWithoutImageViewModel>()
+        visitableList[10].shouldBeInstanceOf<SuggestionDoubleLineWithoutImageViewModel>()
+        visitableList.size shouldBe suggestionUniverse.data.items.size + 1
+
+        assertVisitableListData(visitableList, suggestionUniverse)
+    }
+
+    @Test
+    fun `test get suggestion data with campaign local global component at the top`() {
+        val suggestionUniverse = suggestionCampaignAtTopResponse.jsonToObject<SuggestionUniverse>()
+        `given suggestion use case capture request params`(suggestionUniverse)
+
+        `when presenter get suggestion data (search)`()
+
+        `then verify suggestion API is called`()
+        `then verify suggestion view will call showInitialStateResult behavior`()
+        `then verify visitable list should only have SuggestionDoubleLineWithoutImageViewModel`(suggestionUniverse)
+    }
+
+    private fun `then verify visitable list should only have SuggestionDoubleLineWithoutImageViewModel`(suggestionUniverse: SuggestionUniverse) {
+        val visitableList = slotVisitableList.captured
+
+        visitableList[0].shouldBeInstanceOf<SuggestionDoubleLineWithoutImageViewModel>()
+        visitableList[1].shouldBeInstanceOf<SuggestionDoubleLineWithoutImageViewModel>()
         visitableList.size shouldBe suggestionUniverse.data.items.size
 
         assertVisitableListData(visitableList, suggestionUniverse)

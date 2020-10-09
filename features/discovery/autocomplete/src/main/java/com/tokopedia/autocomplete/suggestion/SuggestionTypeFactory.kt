@@ -20,5 +20,7 @@ interface SuggestionTypeFactory {
 
     fun type(viewModel: SuggestionDoubleLineWithoutImageViewModel): Int
 
+    fun type(viewModel: SuggestionSeparatorViewModel): Int
+
     fun createViewHolder(view: View, viewType: Int): AbstractViewHolder<*>
 }
