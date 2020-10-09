@@ -2,7 +2,6 @@ package com.tokopedia.navigation.presentation.adapter.viewholder
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.navigation.R
 import com.tokopedia.navigation.domain.model.InboxTopAdsBannerUiModel
 import com.tokopedia.topads.sdk.listener.TopAdsImageVieWApiResponseListener
@@ -42,8 +41,9 @@ class InboxTopAdsBannerViewHolder constructor(
         if (element.hasAd()) {
             topAdsBanner?.setTopAdsImageViewImpression(object : TopAdsImageViewImpressionListener {
                 override fun onTopAdsImageViewImpression(viewUrl: String) {
-                    itemView.addOnImpressionListener(element.impressHolder) {
+                    if (!element.impressHolder.isInvoke) {
                         hitTopAdsImpression(viewUrl)
+                        element.impressHolder.invoke()
                     }
                 }
             })
@@ -52,7 +52,7 @@ class InboxTopAdsBannerViewHolder constructor(
             if (!element.requested) {
                 topAdsBanner?.setApiResponseListener(topAdsResponseListener)
                 topAdsBanner?.getImageData(SOURCE, ADS_COUNT, DIMEN_ID)
-                element.requested= true
+                element.requested = true
             }
         }
     }
