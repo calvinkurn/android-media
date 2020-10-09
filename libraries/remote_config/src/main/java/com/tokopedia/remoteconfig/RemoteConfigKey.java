@@ -228,6 +228,8 @@ public class RemoteConfigKey {
 
     public static final String NOTIFICATION_TRAY_CLEAR = "app_notif_tray_clear";
 
+    public static final String ENABLE_OLD_SHOP_SETTINGS = "app_enable_old_shop_settings";
+
     public static final String KYC_USING_SELFIE = "android_main_app_enabled_kyc_selfie";
 
     public static final String HOME_ENABLE_PAGINATION = "android_customer_home_enable_pagination";
