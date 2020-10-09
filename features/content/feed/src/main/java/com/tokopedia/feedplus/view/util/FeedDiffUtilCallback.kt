@@ -31,12 +31,16 @@ internal class FeedDiffUtilCallback(
     }
 
     private fun isVoteItemChanged(oldItem: DynamicPostViewModel, newItem: DynamicPostViewModel): Boolean {
-        if (oldItem.contentList[0] is PollContentViewModel) {
-            for (pos in 0..oldItem.contentList.size) {
-                if ((oldItem.contentList[pos] as PollContentViewModel).voted != (newItem.contentList[pos] as PollContentViewModel).voted) {
-                    return true
+        try {
+            if (oldItem.contentList[0] is PollContentViewModel) {
+                for (pos in 0..oldItem.contentList.size) {
+                    if ((oldItem.contentList[pos] as PollContentViewModel).voted != (newItem.contentList[pos] as PollContentViewModel).voted) {
+                        return true
+                    }
                 }
             }
+        } catch (e: Throwable) {
+            return oldItem == newItem
         }
         return false
     }

@@ -36,6 +36,7 @@ import com.tokopedia.kolcommon.domain.usecase.LikeKolPostUseCase
 import com.tokopedia.kolcommon.view.viewmodel.FollowKolViewModel
 import com.tokopedia.kolcommon.view.viewmodel.LikeKolViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.play.widget.domain.PlayWidgetUseCase
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.topads.sdk.domain.model.Data
 import com.tokopedia.usecase.coroutines.Fail
@@ -138,11 +139,14 @@ class FeedViewModel @Inject constructor(private val baseDispatcher: FeedDispatch
             getFeedFirstPageResp.value = Success(results)
 
             if (shouldGetPlayWidget(results.dynamicFeedDomainModel)) {
-                val newFeedDomainModel = processPlayWidget(results.dynamicFeedDomainModel)
-                getFeedFirstPageResp.value = Success(results.copy(
-                        dynamicFeedDomainModel = newFeedDomainModel,
-                        shouldOverwrite = false
-                ))
+                try {
+                    val newFeedDomainModel = processPlayWidget(results.dynamicFeedDomainModel)
+                    getFeedFirstPageResp.value = Success(results.copy(
+                            dynamicFeedDomainModel = newFeedDomainModel,
+                            shouldOverwrite = false
+                    ))
+                } catch (e: Throwable) {
+                }
             }
         }) {
             getFeedFirstPageResp.value = Fail(it)
@@ -162,6 +166,14 @@ class FeedViewModel @Inject constructor(private val baseDispatcher: FeedDispatch
                 currentCursor = results.cursor
             }
             getFeedNextPageResp.value = Success(results)
+
+            if (shouldGetPlayWidget(results)) {
+                try {
+                    val newFeedDomainModel = processPlayWidget(results)
+                    getFeedNextPageResp.value = Success(newFeedDomainModel)
+                } catch (e: Throwable) {
+                }
+            }
         }) {
             getFeedNextPageResp.value = Fail(it)
         }
@@ -582,15 +594,12 @@ class FeedViewModel @Inject constructor(private val baseDispatcher: FeedDispatch
     }
 
     private suspend fun processPlayWidget(model: DynamicFeedDomainModel): DynamicFeedDomainModel {
-        try {
-            val response = playWidgetTools.getWidgetFromNetwork(baseDispatcher.io())
-            val uiModel = playWidgetTools.mapWidgetToModel(response)
-            model.postList = model.postList.map {
-                if (it is CarouselPlayCardViewModel) it.copy(playWidgetUiModel = uiModel)
-                else it
-            }.toMutableList()
-        } catch (e: Exception) {
-        }
+        val response = playWidgetTools.getWidgetFromNetwork(widgetType = PlayWidgetUseCase.WidgetType.Feeds, coroutineContext = baseDispatcher.io())
+        val uiModel = playWidgetTools.mapWidgetToModel(response)
+        model.postList = model.postList.map {
+            if (it is CarouselPlayCardViewModel) it.copy(playWidgetUiModel = uiModel)
+            else it
+        }.toMutableList()
         return model
     }
 }
