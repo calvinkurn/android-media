@@ -57,7 +57,7 @@ public class TkpdYoutubeVideoActivity extends YouTubeBaseActivity implements
     private String videoUrl;
     private String videoLand;
     private List<VideoPushBannerModel> bannerModeList;
-    private static final String SCREEN_NAME="video_push";
+    private static final String SCREEN_NAME = "video_push";
 
     @DeepLink(ApplinkConst.PLAY_NOTIFICATION_VIDEO)
     public static Intent getNotifVodeoApplinkCallingIntent(Context context, Bundle bundle) {
@@ -97,7 +97,7 @@ public class TkpdYoutubeVideoActivity extends YouTubeBaseActivity implements
 
         extractValues(getIntent().getExtras());
         HomeGATracking.eventYoutubeVideoImpression(this);
-        ScreenTracking.sendScreen(this,SCREEN_NAME);
+        ScreenTracking.sendScreen(this, SCREEN_NAME);
     }
 
     @Override

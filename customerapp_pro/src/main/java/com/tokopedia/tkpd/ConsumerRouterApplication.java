@@ -186,7 +186,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         super.onCreate();
         initialiseHansel();
         initFirebase();
-        GraphqlClient.init(getApplicationContext(), remoteConfig.getBoolean(ADD_BROTLI_INTERCEPTOR, false));
+        GraphqlClient.init(getApplicationContext());
         NetworkClient.init(getApplicationContext());
         warmUpGQLClient();
         initIris();
@@ -195,31 +195,31 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         initResourceDownloadManager();
     }
 
-    private void warmUpGQLClient(){
-        if(remoteConfig.getBoolean(RemoteConfigKey.EXECUTE_GQL_CONNECTION_WARM_UP, false)) {
-            try{
-            GQLPing gqlPing = GraphqlClient.getRetrofit().create(GQLPing.class);
-            Call<String> gqlPingCall = gqlPing.pingGQL();
-            gqlPingCall.enqueue(new Callback<String>() {
-                @Override
-                public void onResponse(Call<String> call, retrofit2.Response<String> response) {
-                    if(response != null && response.body() != null) {
-                        Timber.d("Success %s", response.body());
+    private void warmUpGQLClient() {
+        if (remoteConfig.getBoolean(RemoteConfigKey.EXECUTE_GQL_CONNECTION_WARM_UP, false)) {
+            try {
+                GQLPing gqlPing = GraphqlClient.getRetrofit().create(GQLPing.class);
+                Call<String> gqlPingCall = gqlPing.pingGQL();
+                gqlPingCall.enqueue(new Callback<String>() {
+                    @Override
+                    public void onResponse(Call<String> call, retrofit2.Response<String> response) {
+                        if (response != null && response.body() != null) {
+                            Timber.d("Success %s", response.body());
+                        }
                     }
-                }
 
-                @Override
-                public void onFailure(Call<String> call, Throwable t) {
-                    Timber.d("Failure");
-                }
-            });
-            } catch (Exception ex){
+                    @Override
+                    public void onFailure(Call<String> call, Throwable t) {
+                        Timber.d("Failure");
+                    }
+                });
+            } catch (Exception ex) {
                 Timber.d("GQL Ping exception %s", ex.getMessage());
             }
         }
     }
 
-    private void performLibraryInitialisation(){
+    private void performLibraryInitialisation() {
         WeaveInterface initWeave = new WeaveInterface() {
             @NotNull
             @Override
@@ -230,13 +230,13 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         Weaver.Companion.executeWeaveCoRoutineWithFirebase(initWeave, ENABLE_ASYNC_CMPUSHNOTIF_INIT, ConsumerRouterApplication.this);
     }
 
-    private boolean initLibraries(){
+    private boolean initLibraries() {
         initCMPushNotification();
         initTetraDebugger();
         return true;
     }
 
-    private void initialiseHansel(){
+    private void initialiseHansel() {
         WeaveInterface hanselWeave = new WeaveInterface() {
             @NotNull
             @Override
@@ -247,7 +247,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         Weaver.Companion.executeWeaveCoRoutineWithFirebase(hanselWeave, RemoteConfigKey.ENABLE_ASYNC_HANSEL_INIT, getApplicationContext());
     }
 
-    private boolean executeHanselInit(){
+    private boolean executeHanselInit() {
         Hansel.init(ConsumerRouterApplication.this);
         return true;
     }
@@ -272,7 +272,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         Weaver.Companion.executeWeaveCoRoutineWithFirebase(irisInitializeWeave, ENABLE_ASYNC_IRIS_INIT, ConsumerRouterApplication.this);
     }
 
-    private boolean executeIrisInitialize(){
+    private boolean executeIrisInitialize() {
         mIris.initialize();
         return true;
     }
@@ -437,7 +437,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     private ReactNativeComponent getReactNativeComponent() {
-        if(daggerReactNativeBuilder == null){
+        if (daggerReactNativeBuilder == null) {
             daggerReactNativeBuilder = DaggerReactNativeComponent.builder()
                     .appComponent(getApplicationComponent())
                     .reactNativeModule(new ReactNativeModule(ConsumerRouterApplication.this));
@@ -531,7 +531,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Observable<TKPDMapParam<String, Object>> verifyDealPromo(com.tokopedia.usecase.RequestParams requestParams) {
-        if(omsComponent == null){
+        if (omsComponent == null) {
             omsComponent = DaggerOmsComponent.builder()
                     .baseAppComponent((ConsumerRouterApplication.this).getBaseAppComponent())
                     .build();
@@ -681,7 +681,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         Weaver.Companion.executeWeaveCoRoutineWithFirebase(appsflyerInitWeave, RemoteConfigKey.ENABLE_ASYNC_APPSFLYER_INIT, getApplicationContext());
     }
 
-    private boolean executeAppflyerInit(){
+    private boolean executeAppflyerInit() {
         TkpdAppsFlyerMapper.getInstance(ConsumerRouterApplication.this).mapAnalytics();
         return true;
     }
@@ -745,7 +745,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent getInboxTalkCallingIntent(Context mContext){
+    public Intent getInboxTalkCallingIntent(Context mContext) {
         return null;
     }
 }

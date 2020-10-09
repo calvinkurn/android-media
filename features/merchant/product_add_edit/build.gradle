@@ -76,7 +76,8 @@ dependencies {
     androidTestApi rootProject.ext.dbDependencies.dbRoomTesting
 
     implementation (rootProject.ext.firebase.crashlytics) {
-        transitive = true	        }
+        transitive = true
+    }
 }
 
 project.ext {

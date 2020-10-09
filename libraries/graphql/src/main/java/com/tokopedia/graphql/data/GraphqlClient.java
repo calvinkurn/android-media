@@ -41,6 +41,7 @@ import retrofit2.Retrofit;
 
 import static com.tokopedia.akamai_bot_lib.UtilsKt.getExpiredTime;
 import static com.tokopedia.akamai_bot_lib.UtilsKt.setExpiredTime;
+import com.tokopedia.fakeresponse.FakeResponseInterceptorProvider;
 
 public class GraphqlClient {
     private static Retrofit sRetrofit = null;
@@ -137,11 +138,11 @@ public class GraphqlClient {
 
         if (GlobalConfig.isAllowDebuggingTools()) {
             tkpdOkHttpBuilder.addInterceptor(new DeprecatedApiInterceptor(context.getApplicationContext()));
-//            FakeResponseInterceptorProvider provider = new FakeResponseInterceptorProvider();
-//            Interceptor interceptor = provider.getInterceptor(context.getApplicationContext());
-//            if (interceptor != null) {
-//                tkpdOkHttpBuilder.addInterceptor(interceptor);
-//            }
+            FakeResponseInterceptorProvider provider = new FakeResponseInterceptorProvider();
+            Interceptor interceptor = provider.getInterceptor(context.getApplicationContext());
+            if (interceptor != null) {
+                tkpdOkHttpBuilder.addInterceptor(interceptor);
+            }
         }
         return tkpdOkHttpBuilder;
     }

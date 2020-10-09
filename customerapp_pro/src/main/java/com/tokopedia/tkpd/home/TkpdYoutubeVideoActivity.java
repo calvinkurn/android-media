@@ -4,15 +4,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import com.google.android.material.snackbar.Snackbar;
-import androidx.viewpager.widget.ViewPager;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.viewpager.widget.ViewPager;
+
 import com.airbnb.deeplinkdispatch.DeepLink;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.youtube.player.YouTubeBaseActivity;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
@@ -56,7 +57,7 @@ public class TkpdYoutubeVideoActivity extends YouTubeBaseActivity implements
     private String videoUrl;
     private String videoLand;
     private List<VideoPushBannerModel> bannerModeList;
-    private static final String SCREEN_NAME="video_push";
+    private static final String SCREEN_NAME = "video_push";
 
     @DeepLink(ApplinkConst.PLAY_NOTIFICATION_VIDEO)
     public static Intent getNotifVodeoApplinkCallingIntent(Context context, Bundle bundle) {
@@ -96,7 +97,7 @@ public class TkpdYoutubeVideoActivity extends YouTubeBaseActivity implements
 
         extractValues(getIntent().getExtras());
         HomeGATracking.eventYoutubeVideoImpression(this);
-        ScreenTracking.sendScreen(this,SCREEN_NAME);
+        ScreenTracking.sendScreen(this, SCREEN_NAME);
     }
 
     @Override

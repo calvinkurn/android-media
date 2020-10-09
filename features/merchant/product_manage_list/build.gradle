@@ -105,7 +105,8 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.archCoreTesting
 
     implementation (rootProject.ext.firebase.crashlytics) {
-        transitive = true	        }
+        transitive = true
+    }
 }
 
 project.ext {

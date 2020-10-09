@@ -6,7 +6,9 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
+
 import com.tokopedia.applink.ApplinkConst;
+
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
@@ -15,6 +17,7 @@ import android.media.AudioAttributes;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+
 import kotlin.Pair;
 
 import androidx.annotation.Nullable;
@@ -230,16 +233,16 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         return true;
     }
 
-    private void setVersionName(){
+    private void setVersionName() {
         Pair<String, String> versions = AuthHelper.getVersionName(BuildConfig.VERSION_NAME);
         String version = versions.getFirst();
         String suffixVersion = versions.getSecond();
 
-        if(!version.equalsIgnoreCase(AuthHelper.ERROR)){
+        if (!version.equalsIgnoreCase(AuthHelper.ERROR)) {
             GlobalConfig.VERSION_NAME = version;
             com.tokopedia.config.GlobalConfig.VERSION_NAME = version;
             com.tokopedia.config.GlobalConfig.VERSION_NAME_SUFFIX = suffixVersion;
-        }else{
+        } else {
             GlobalConfig.VERSION_NAME = BuildConfig.VERSION_NAME;
             com.tokopedia.config.GlobalConfig.VERSION_NAME = BuildConfig.VERSION_NAME;
         }

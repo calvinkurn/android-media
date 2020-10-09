@@ -186,7 +186,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         super.onCreate();
         initialiseHansel();
         initFirebase();
-        GraphqlClient.init(getApplicationContext(), remoteConfig.getBoolean(ADD_BROTLI_INTERCEPTOR, false));
+        GraphqlClient.init(getApplicationContext());
         NetworkClient.init(getApplicationContext());
         warmUpGQLClient();
         initIris();

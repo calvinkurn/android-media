@@ -63,7 +63,8 @@ dependencies {
         exclude group: 'org.jetbrains', module: 'annotations'
     }
     implementation (rootProject.ext.firebase.crashlytics) {
-        transitive = true	        }
+        transitive = true
+    }
 }
 
 project.ext {

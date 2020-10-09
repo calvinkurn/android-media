@@ -111,7 +111,8 @@ dependencies {
         exclude group: "com.android.support"
     }
     implementation (rootProject.ext.firebase.crashlytics) {
-        transitive = true	        }
+        transitive = true
+    }
 
     //video player
     implementation rootProject.ext.miscDependencies.exoPlayerCore
