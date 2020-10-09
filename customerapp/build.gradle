@@ -68,15 +68,7 @@ def isFirebasePerformanceLogEnabled() {
 project.ext {
     defaultVersionCode = 418001101;
     defaultVersionName = "3.80";
-    react = [
-            nodeExecutableAndArgs: ["${nodeExecutableAndArgs}"],
-            enableHermes         : true,
-    ]
 }
-
-//def hermesPath = "../hermes/";
-def jscFlavor = 'org.webkit:android-jsc:+'
-def enableHermes = project.ext.react.get("enableHermes", false);
 
 buildscript {
     repositories {
@@ -533,7 +525,6 @@ dependencies {
     implementation(rootProject.ext.miscDependencies.facebook) {
         exclude group: 'com.android.support'
     }
-    implementation 'com.facebook.soloader:soloader:0.8.0'
     implementation 'com.facebook.infer.annotation:infer-annotation:0.11.2'
     implementation(rootProject.ext.debugToolsDependencies.timber) {
         exclude group: 'org.jetbrains', module: 'annotations'
@@ -586,16 +577,5 @@ dependencies {
     androidTestImplementation rootProject.ext.supportLibDependencies.appCompactV7
     androidTestImplementation rootProject.ext.supportLibDependencies.cardViewV7
     implementation project(rootProject.ext.features.additional_check)
-
-    if (enableHermes) {
-        debugImplementation 'com.facebook.hermes:hermes-debug:0.1.2@aar'
-        releaseImplementation 'com.facebook.hermes:hermes-release:0.1.2@aar'
-    } else {
-        implementation jscFlavor
-    }
     lintChecks project(rootProject.ext.libraries.lint)
 }
-
-
-apply from: "../buildconfig/reactnative/react.gradle"
-apply from: "../buildconfig/reactnative/codepush.gradle"

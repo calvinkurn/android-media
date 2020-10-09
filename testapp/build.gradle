@@ -46,9 +46,7 @@ android {
     project.ext {
         defaultVersionCode = 299800000;
         defaultVersionName = "3.80";
-        react = [
-                nodeExecutableAndArgs: ["${nodeExecutableAndArgs}"]
-        ]
+
     }
     compileSdkVersion rootProject.ext.compileSdkVersion
     useLibrary 'org.apache.http.legacy'

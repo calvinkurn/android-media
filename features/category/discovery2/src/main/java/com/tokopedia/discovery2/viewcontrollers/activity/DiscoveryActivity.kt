@@ -84,7 +84,7 @@ class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
             if (config == NATIVE) {
                 inflateFragment()
             } else {
-                routeToReactNativeDiscovery()
+//                routeToReactNativeDiscovery()
             }
         } else {
             discoveryViewModel.getDiscoveryUIConfig()

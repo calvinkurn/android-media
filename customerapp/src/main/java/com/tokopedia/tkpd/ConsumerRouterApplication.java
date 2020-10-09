@@ -169,11 +169,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     private OmsComponent omsComponent;
     private DaggerShopComponent.Builder daggerShopBuilder;
     private ShopComponent shopComponent;
-    private ReactNativeComponent reactNativeComponent;
     private TokopointComponent tokopointComponent;
-
     private CacheManager cacheManager;
-
     private TetraDebugger tetraDebugger;
     private Iris mIris;
     private static final String ENABLE_ASYNC_CMPUSHNOTIF_INIT = "android_async_cmpushnotif_init";
