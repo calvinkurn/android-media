@@ -440,7 +440,7 @@ object WishlistTracking {
                         SCREEN_NAME, VALUE_SCREEN_NAME,
                         BUSINESS_UNIT, VALUE_BUSINESS_UNIT,
                         USER_ID, userId,
-                        IS_LOGGED_IN_STATUS, if(userId.isNotEmpty()) true else false,
+                        IS_LOGGED_IN_STATUS, if(userId.isNotEmpty()) "true" else "false",
                         CURRENT_SITE, VALUE_CURRENT_SITE
                 )
         )
