@@ -15,7 +15,8 @@ import rx.Subscriber
 
 private const val searchProductLocalSearchFirstPageJSON = "searchproduct/localsearch/first-page.json"
 private const val searchProductLocalSearchSecondPageJSON = "searchproduct/localsearch/second-page.json"
-private const val searchProductLocalSearchEmptyJSON = "searchproduct/localsearch/empty-search.json"
+private const val searchProductLocalSearchEmptyResponseCode1JSON = "searchproduct/localsearch/empty-search-response-code-1.json"
+private const val searchProductLocalSearchEmptyResponseCode11JSON = "searchproduct/localsearch/empty-search-response-code-11.json"
 private const val searchProductLocalSearchFirstPageEndOfPageJSON = "searchproduct/localsearch/first-page-end-of-page.json"
 private const val searchProductLocalSearchFirstPage12ProductsJSON = "searchproduct/localsearch/first-page-12-products.json"
 private const val searchProductLocalSearchSecondPageEndOfPageJSON = "searchproduct/localsearch/second-page-end-of-page.json"
@@ -130,17 +131,17 @@ internal class SearchProductLocalSearchTest: ProductListPresenterTestFixtures() 
     }
 
     @Test
-    fun `Empty search during local search`() {
-        val searchProductModel = searchProductLocalSearchEmptyJSON.jsonToObject<SearchProductModel>()
+    fun `Empty search with response code 11 during local search`() {
+        val searchProductModel = searchProductLocalSearchEmptyResponseCode11JSON.jsonToObject<SearchProductModel>()
 
         `Given Search Product API will return SearchProductModel`(searchProductModel)
-        `Given visitable list will be captured`()
         `Given getQueryKey will return keyword`()
 
         `When Load Data`(searchParameter)
 
         `Then verify recommendation use case not called`()
-        `Then verify empty search view model for local search`()
+        `Then verify empty search view model during local search`()
+        `Then verify local search recommendation use case is called`()
     }
 
     private fun `Given getQueryKey will return keyword`() {
@@ -153,7 +154,7 @@ internal class SearchProductLocalSearchTest: ProductListPresenterTestFixtures() 
         }
     }
 
-    private fun `Then verify empty search view model for local search`() {
+    private fun `Then verify empty search view model during local search`() {
         val emptySearchViewModelSlot = slot<EmptySearchProductViewModel>()
         verify {
             productListView.setEmptyProduct(null, capture(emptySearchViewModelSlot))
@@ -165,6 +166,53 @@ internal class SearchProductLocalSearchTest: ProductListPresenterTestFixtures() 
         emptySearchViewModel.globalSearchApplink shouldBe "${ApplinkConstInternalDiscovery.SEARCH_RESULT}?q=asus"
         emptySearchViewModel.keyword shouldBe keyword
         emptySearchViewModel.pageTitle shouldBe searchProductPageTitle
+    }
+
+    private fun `Then verify local search recommendation use case is called`() {
+        verify {
+            getLocalSearchRecommendationUseCase.execute(any(), any())
+        }
+    }
+
+    @Test
+    fun `Empty search with response code 1 during local search`() {
+        val searchProductModel = searchProductLocalSearchEmptyResponseCode1JSON.jsonToObject<SearchProductModel>()
+
+        `Given Search Product API will return SearchProductModel`(searchProductModel)
+        `Given getQueryKey will return keyword`()
+
+        `When Load Data`(searchParameter)
+
+        `Then verify recommendation use case is called`()
+        `Then verify empty search view model for non local search`()
+        `Then verify get local search recommendation is not called`()
+    }
+
+    private fun `Then verify recommendation use case is called`() {
+        verify {
+            recommendationUseCase.execute(any(), any())
+        }
+    }
+
+    private fun `Then verify empty search view model for non local search`() {
+        val emptySearchViewModelSlot = slot<EmptySearchProductViewModel>()
+
+        verify {
+            productListView.setEmptyProduct(null, capture(emptySearchViewModelSlot))
+        }
+
+        val emptySearchViewModel = emptySearchViewModelSlot.captured
+        emptySearchViewModel.isFilterActive shouldBe false
+        emptySearchViewModel.isLocalSearch shouldBe false
+        emptySearchViewModel.globalSearchApplink shouldBe ""
+        emptySearchViewModel.keyword shouldBe ""
+        emptySearchViewModel.pageTitle shouldBe ""
+    }
+
+    private fun `Then verify get local search recommendation is not called`() {
+        verify(exactly = 0) {
+            getLocalSearchRecommendationUseCase.execute(any(), any())
+        }
     }
 
     @Test

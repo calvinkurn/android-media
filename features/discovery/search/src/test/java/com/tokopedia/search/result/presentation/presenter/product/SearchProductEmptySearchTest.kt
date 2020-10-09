@@ -22,6 +22,7 @@ internal class SearchProductEmptySearchTest: ProductListPresenterTestFixtures() 
         `When load data`()
 
         `Then verify empty search product model`(false)
+        `Then verify empty search recommendation use case is called`()
     }
 
     private fun `Given search product API will return empty product`() {
@@ -49,6 +50,16 @@ internal class SearchProductEmptySearchTest: ProductListPresenterTestFixtures() 
         emptySearchViewModel.isFilterActive shouldBe expectedIsFilterActive
     }
 
+    private fun `Then verify empty search recommendation use case is called`() {
+        verify {
+            recommendationUseCase.execute(any(), any())
+        }
+
+        verify(exactly = 0) {
+            getLocalSearchRecommendationUseCase.execute(any(), any())
+        }
+    }
+
     @Test
     fun `test empty search by filter`() {
         `Given search product API will return empty product`()
@@ -57,6 +68,7 @@ internal class SearchProductEmptySearchTest: ProductListPresenterTestFixtures() 
         `When load data`()
 
         `Then verify empty search product model`(true)
+        `Then verify empty search recommendation use case is called`()
     }
 
     private fun `Given view has filter active`() {

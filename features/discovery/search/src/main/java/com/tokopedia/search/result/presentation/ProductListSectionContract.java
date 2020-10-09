@@ -175,6 +175,8 @@ public interface ProductListSectionContract {
         void trackEventClickBroadMatchItem(BroadMatchItemViewModel broadMatchItemViewModel);
 
         void redirectionStartActivity(String applink, String url);
+
+        void setLocalSearchRecommendation(List<Visitable> visitableList);
     }
 
     interface Presenter extends CustomerPresenter<View> {

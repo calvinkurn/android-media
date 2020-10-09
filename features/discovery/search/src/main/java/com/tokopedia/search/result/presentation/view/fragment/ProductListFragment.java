@@ -1025,7 +1025,6 @@ public class ProductListFragment
 
     @Override
     public void setEmptyProduct(GlobalNavViewModel globalNavViewModel, EmptySearchProductViewModel emptySearchProductViewModel) {
-        presenter.clearData();
         adapter.showEmptyState(globalNavViewModel, emptySearchProductViewModel);
     }
 
@@ -1708,5 +1707,10 @@ public class ProductListFragment
         if (getActivity() == null) return;
 
         RouteManager.route(getActivity(), applink);
+    }
+
+    @Override
+    public void setLocalSearchRecommendation(List<Visitable> visitableList) {
+
     }
 }

@@ -5,6 +5,7 @@ import android.net.Uri;
 import androidx.annotation.Nullable;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
@@ -128,6 +129,7 @@ final class ProductListPresenter
     private LocalCacheHandler searchOnBoardingLocalCache;
     private Lazy<UseCase<DynamicFilterModel>> getDynamicFilterUseCase;
     private Lazy<UseCase<String>> getProductCountUseCase;
+    private Lazy<UseCase<SearchProductModel>> getLocalSearchRecommendationUseCase;
     private TopAdsUrlHitter topAdsUrlHitter;
 
     private boolean enableGlobalNavWidget = true;
@@ -171,6 +173,8 @@ final class ProductListPresenter
             Lazy<UseCase<DynamicFilterModel>> getDynamicFilterUseCase,
             @Named(SearchConstant.SearchProduct.GET_PRODUCT_COUNT_USE_CASE)
             Lazy<UseCase<String>> getProductCountUseCase,
+            @Named(SearchConstant.SearchProduct.GET_LOCAL_SEARCH_RECOMMENDATION_USE_CASE)
+            Lazy<UseCase<SearchProductModel>> getLocalSearchRecommendationUseCase,
             TopAdsUrlHitter topAdsUrlHitter,
             Lazy<RemoteConfig> remoteConfig
     ) {
@@ -183,6 +187,7 @@ final class ProductListPresenter
         this.searchOnBoardingLocalCache = searchOnBoardingLocalCache;
         this.getDynamicFilterUseCase = getDynamicFilterUseCase;
         this.getProductCountUseCase = getProductCountUseCase;
+        this.getLocalSearchRecommendationUseCase = getLocalSearchRecommendationUseCase;
         this.topAdsUrlHitter = topAdsUrlHitter;
     }
 
@@ -312,18 +317,23 @@ final class ProductListPresenter
 
     @Override
     public void loadMoreData(Map<String, Object> searchParameter) {
-        checkViewAttached();
+        if (isLocalSearch() && responseCode.equals("11")) {
+            getLocalSearchRecommendation(searchParameter);
+        }
+        else {
+            checkViewAttached();
 
-        Map<String, String> additionalParams = getAdditionalParamsMap();
-        if (searchParameter == null || additionalParams == null) return;
+            Map<String, String> additionalParams = getAdditionalParamsMap();
+            if (searchParameter == null || additionalParams == null) return;
 
-        RequestParams requestParams = createInitializeSearchParam(searchParameter);
-        enrichWithRelatedSearchParam(requestParams);
-        enrichWithAdditionalParams(requestParams, additionalParams);
+            RequestParams requestParams = createInitializeSearchParam(searchParameter);
+            enrichWithRelatedSearchParam(requestParams);
+            enrichWithAdditionalParams(requestParams, additionalParams);
 
-        // Unsubscribe first in case user has slow connection, and the previous loadMoreUseCase has not finished yet.
-        searchProductLoadMoreUseCase.unsubscribe();
-        searchProductLoadMoreUseCase.execute(requestParams, getLoadMoreDataSubscriber(requestParams.getParameters()));
+            // Unsubscribe first in case user has slow connection, and the previous loadMoreUseCase has not finished yet.
+            searchProductLoadMoreUseCase.unsubscribe();
+            searchProductLoadMoreUseCase.execute(requestParams, getLoadMoreDataSubscriber(requestParams.getParameters()));
+        }
     }
 
     private RequestParams createInitializeSearchParam(Map<String, Object> searchParameter) {
@@ -751,6 +761,7 @@ final class ProductListPresenter
         setSuggestionViewModel(productViewModel.getSuggestionModel());
         setRelatedViewModel(productViewModel.getRelatedViewModel());
         setAutoCompleteApplink(productViewModel.getAutocompleteApplink());
+        setTotalData(productViewModel.getTotalData());
 
         sendTrackingNoSearchResult(productViewModel);
 
@@ -758,14 +769,12 @@ final class ProductListPresenter
         getView().setDefaultLayoutType(productViewModel.getDefaultView());
 
         if (productViewModel.getProductList().isEmpty()) {
-            getViewToHandleEmptyProductList(searchProductModel.getSearchProduct(), productViewModel);
+            getViewToHandleEmptyProductList(searchProductModel.getSearchProduct(), productViewModel, searchParameter);
         } else {
             getViewToShowProductList(searchParameter, searchProductModel, productViewModel);
             processDefaultQuickFilter(searchProductModel);
             processQuickFilter(searchProductModel.getQuickFilterModel());
         }
-
-        setTotalData(productViewModel.getTotalData());
 
         getView().updateScrollListener();
 
@@ -825,7 +834,11 @@ final class ProductListPresenter
         this.autoCompleteApplink = autoCompleteApplink;
     }
 
-    private void getViewToHandleEmptyProductList(SearchProductModel.SearchProduct searchProduct, ProductViewModel productViewModel) {
+    private void getViewToHandleEmptyProductList(
+            SearchProductModel.SearchProduct searchProduct,
+            ProductViewModel productViewModel,
+            Map<String, Object> searchParameter
+    ) {
         getView().hideQuickFilterShimmering();
 
         if (isShowBroadMatch()) {
@@ -837,7 +850,7 @@ final class ProductListPresenter
                 getViewToShowEmptySearch(productViewModel);
             }
 
-            getViewToShowRecommendationItem();
+            getViewToShowRecommendationItem(searchParameter);
         }
     }
 
@@ -904,6 +917,7 @@ final class ProductListPresenter
         GlobalNavViewModel globalNavViewModel = getGlobalNavViewModel(productViewModel);
         boolean isBannerAdsAllowed = globalNavViewModel == null;
 
+        clearData();
         getView().setEmptyProduct(globalNavViewModel, createEmptySearchViewModel(isBannerAdsAllowed));
     }
 
@@ -919,18 +933,95 @@ final class ProductListPresenter
 
         emptySearchViewModel.setBannerAdsAllowed(isBannerAdsAllowed);
         emptySearchViewModel.setIsFilterActive(getView().isAnyFilterActive());
-        emptySearchViewModel.setLocalSearch(isLocalSearch());
-        emptySearchViewModel.setGlobalSearchApplink(constructGlobalSearchApplink());
-        emptySearchViewModel.setKeyword(getView().getQueryKey());
-        emptySearchViewModel.setPageTitle(pageTitle);
+
+        if (responseCode.equals("11")) {
+            emptySearchViewModel.setLocalSearch(isLocalSearch() && responseCode.equals("11"));
+            emptySearchViewModel.setGlobalSearchApplink(constructGlobalSearchApplink());
+            emptySearchViewModel.setKeyword(getView().getQueryKey());
+            emptySearchViewModel.setPageTitle(pageTitle);
+        }
 
         return emptySearchViewModel;
     }
 
-    private void getViewToShowRecommendationItem() {
-        if (isLocalSearch()) return;
-
+    private void getViewToShowRecommendationItem(Map<String, Object> searchParameter) {
         getView().addLoading();
+
+        if (isLocalSearch() && responseCode.equals("11")) getLocalSearchRecommendation(searchParameter);
+        else getGlobalSearchRecommendation();
+    }
+
+    private void getLocalSearchRecommendation(Map<String, Object> searchParameter) {
+        if (searchParameter == null) return;
+        Map<String, String> additionalParams = getAdditionalParamsMap();
+
+        RequestParams requestParams = createInitializeSearchParam(searchParameter);
+        enrichWithRelatedSearchParam(requestParams);
+
+        if (checkShouldEnrichWithAdditionalParams(additionalParams)) {
+            enrichWithAdditionalParams(requestParams, additionalParams);
+        }
+
+        requestParams.clearValue(SearchApiConst.Q);
+
+        getLocalSearchRecommendationUseCase.get().execute(requestParams, createLocalSearchRecommenationSubscriber());
+    }
+
+    @NotNull
+    private Subscriber<SearchProductModel> createLocalSearchRecommenationSubscriber() {
+        return new Subscriber<SearchProductModel>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                if (e != null) e.printStackTrace();
+            }
+
+            @Override
+            public void onNext(SearchProductModel searchProductModel) {
+                getLocalSearchRecommendationSuccess(searchProductModel);
+            }
+        };
+    }
+
+    private void getLocalSearchRecommendationSuccess(SearchProductModel searchProductModel) {
+        if (isViewNotAttached()) return;
+
+        ProductViewModel productViewModel = createProductViewModelMapperLocalSearchRecommendation(searchProductModel);
+
+        List<Visitable> visitableList = new ArrayList<>();
+
+        if (startFrom == 0) visitableList.add(new SearchProductTitleViewModel(pageTitle));
+
+        visitableList.addAll(productViewModel.getProductList());
+
+        incrementStart();
+        setTotalData(searchProductModel.getSearchProduct().getHeader().getTotalData());
+
+        if (hasNextPage()) visitableList.add(new LoadingMoreModel());
+
+        getView().removeLoading();
+        getView().setLocalSearchRecommendation(visitableList);
+    }
+
+    private ProductViewModel createProductViewModelMapperLocalSearchRecommendation(SearchProductModel searchProductModel) {
+        if (startFrom == 0) getView().clearLastProductItemPositionFromCache();
+
+        int lastProductItemPositionFromCache = getView().getLastProductItemPositionFromCache();
+
+        ProductViewModelMapper mapper = new ProductViewModelMapper(shopRatingABTestStrategy);
+        ProductViewModel productViewModel = mapper
+                .convertToProductViewModel(lastProductItemPositionFromCache, searchProductModel, useRatingString, pageTitle);
+
+        saveLastProductItemPositionToCache(lastProductItemPositionFromCache, productViewModel.getProductList());
+
+        return productViewModel;
+    }
+
+    private void getGlobalSearchRecommendation() {
         recommendationUseCase.execute(
                 recommendationUseCase.getRecomParams(1, DEFAULT_VALUE_X_SOURCE, SEARCH_PAGE_NAME_RECOMMENDATION, new ArrayList<>()),
                 new Subscriber<List<? extends RecommendationWidget>>() {
@@ -1842,5 +1933,6 @@ final class ProductListPresenter
         if (searchProductLoadMoreUseCase != null) searchProductLoadMoreUseCase.unsubscribe();
         if (recommendationUseCase != null) recommendationUseCase.unsubscribe();
         if (getProductCountUseCase != null) getProductCountUseCase.get().unsubscribe();
+        if (getLocalSearchRecommendationUseCase != null) getLocalSearchRecommendationUseCase.get().unsubscribe();
     }
 }
