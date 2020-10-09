@@ -14,10 +14,11 @@ import org.junit.Before
 
 open class DeepLinkMapperTestFixture {
 
-    private val context: Context = ApplicationProvider.getApplicationContext()
+    private lateinit var context: Context
 
     @Before
     open fun setup() {
+        context = ApplicationProvider.getApplicationContext()
         mockkObject(DeeplinkMapperUohOrder)
         mockkClass(GlobalConfig::class)
     }
