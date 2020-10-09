@@ -206,7 +206,7 @@ class OrderSummaryPageRobot {
 
     fun assertInstallment(detail: String) {
         onView(withId(R.id.tv_installment_type)).perform(scrollTo()).check(matches(isDisplayed()))
-        onView(withId(R.id.tv_installment_detail)).check(matches(isDisplayed())).check(matches(withText(detail)))
+        onView(withId(R.id.tv_installment_detail)).perform(scrollTo()).check(matches(isDisplayed())).check(matches(withText(detail)))
     }
 
     fun assertPayment(total: String, buttonText: String) {

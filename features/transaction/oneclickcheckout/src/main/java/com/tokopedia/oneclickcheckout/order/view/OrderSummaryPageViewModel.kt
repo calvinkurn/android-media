@@ -1554,6 +1554,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             globalEvent.value = OccGlobalEvent.Error(errorMessage = DEFAULT_LOCAL_ERROR_MESSAGE)
             return
         }
+        OccIdlingResource.increment()
         updateCartOccUseCase.execute(param, {
             val availableTerms = creditCard.availableTerms
             availableTerms.forEach {
@@ -1564,8 +1565,10 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             orderTotal.value = orderTotal.value.copy(buttonState = if (shouldButtonStateEnable(_orderShipment)) OccButtonState.NORMAL else OccButtonState.DISABLE)
             calculateTotal()
             globalEvent.value = OccGlobalEvent.Normal
+            OccIdlingResource.decrement()
         }, {
             globalEvent.value = OccGlobalEvent.Prompt(it)
+            OccIdlingResource.decrement()
         }, {
             if (it is MessageErrorException) {
                 globalEvent.value = OccGlobalEvent.Error(errorMessage = it.message
@@ -1573,6 +1576,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             } else {
                 globalEvent.value = OccGlobalEvent.Error(it)
             }
+            OccIdlingResource.decrement()
         })
     }
 

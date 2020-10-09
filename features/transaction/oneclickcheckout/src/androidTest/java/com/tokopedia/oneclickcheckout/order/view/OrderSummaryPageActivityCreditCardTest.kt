@@ -1,7 +1,11 @@
 package com.tokopedia.oneclickcheckout.order.view
 
+import android.app.Activity
+import android.app.Instrumentation.ActivityResult
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.IdlingResource
+import androidx.test.espresso.intent.Intents.intending
+import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
@@ -50,12 +54,23 @@ class OrderSummaryPageActivityCreditCardTest {
         cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_CREDIT_CARD_RESPONSE_PATH
 
         activityRule.launchActivity(null)
+        intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
 
         orderSummaryPage {
 
             assertInstallment("Bayar Penuh")
 
-            assertPayment("Rp116.000", "Bayar")
+            assertPayment("Rp116.725", "Bayar")
+
+            clickButtonOrderDetail {
+                assertSummary(
+                        productPrice = "Rp100.000",
+                        shippingPrice = "Rp15.000",
+                        paymentFee = "Rp1.725",
+                        totalPrice = "Rp116.725"
+                )
+                closeBottomSheet()
+            }
         } pay {
             assertGoToPayment(
                     redirectUrl = "https://www.tokopedia.com/payment",
@@ -70,6 +85,7 @@ class OrderSummaryPageActivityCreditCardTest {
         cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_CREDIT_CARD_RESPONSE_PATH
 
         activityRule.launchActivity(null)
+        intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
 
         orderSummaryPage {
 
@@ -83,10 +99,21 @@ class OrderSummaryPageActivityCreditCardTest {
                 chooseInstallment(3)
             }
 
-            assertInstallment("3 Bulan x Rp")
+            assertInstallment("3 Bulan x Rp175.959")
 
-            assertPayment("Rp516.000", "Bayar")
+            assertPayment("Rp527.875", "Bayar")
+
+            clickButtonOrderDetail {
+                assertSummary(
+                        productPrice = "Rp500.000",
+                        shippingPrice = "Rp15.000",
+                        paymentFee = "Rp12.875",
+                        totalPrice = "Rp527.875"
+                )
+                closeBottomSheet()
+            }
         } pay {
+            Thread.sleep(5000)
             assertGoToPayment(
                     redirectUrl = "https://www.tokopedia.com/payment",
                     queryString = "transaction_id=123",

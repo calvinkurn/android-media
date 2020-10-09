@@ -1,11 +1,11 @@
 package com.tokopedia.oneclickcheckout.order.view
 
 import android.app.Activity
-import android.app.Instrumentation
+import android.app.Instrumentation.ActivityResult
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.IdlingResource
-import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.intent.matcher.IntentMatchers
+import androidx.test.espresso.intent.Intents.intending
+import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
@@ -53,7 +53,7 @@ class OrderSummaryPageActivityCampaignTest {
         cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_SLASH_PRICE_RESPONSE_PATH
 
         activityRule.launchActivity(null)
-        Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
+        intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
 
         orderSummaryPage {
             assertProductCard(
@@ -90,7 +90,7 @@ class OrderSummaryPageActivityCampaignTest {
     @Test
     fun errorFlow_CheckoutGotBottomSheetPrompt() {
         activityRule.launchActivity(null)
-        Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
+        intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
 
         orderSummaryPage {
             checkoutInterceptor.customCheckoutResponsePath = CHECKOUT_BOTTOM_SHEET_PROMPT_RESPONSE_PATH
@@ -103,7 +103,7 @@ class OrderSummaryPageActivityCampaignTest {
     @Test
     fun errorFlow_CheckoutGotDialogPrompt() {
         activityRule.launchActivity(null)
-        Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
+        intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
 
         orderSummaryPage {
             checkoutInterceptor.customCheckoutResponsePath = CHECKOUT_DIALOG_PROMPT_RESPONSE_PATH
@@ -118,7 +118,7 @@ class OrderSummaryPageActivityCampaignTest {
         cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_CAMPAIGN_OVO_ONLY_LOW_WALLET_RESPONSE_PATH
 
         activityRule.launchActivity(null)
-        Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
+        intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
 
         orderSummaryPage {
             assertPayment("Rp115.000", "Bayar")
@@ -141,7 +141,7 @@ class OrderSummaryPageActivityCampaignTest {
         cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_CAMPAIGN_OVO_ONLY_ERROR_TICKER_RESPONSE_PATH
 
         activityRule.launchActivity(null)
-        Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
+        intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
 
         orderSummaryPage {
             assertPayment("Rp115.000", "Lanjutkan")

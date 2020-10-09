@@ -280,6 +280,7 @@ ext {
             androidAnnotation     : "androidx.annotation:annotation:$supportLibraryVersion",
             espressoCore          : "androidx.test.espresso:espresso-core:$espressoVersion",
             androidTestRunner     : "androidx.test:runner:$runnerVersion",
+            androidTestOrchestrator : "androidx.test:orchestrator:$runnerVersion",
             androidRulesVersion   : "androidx.test:rules:$rulesVersion",
             espressoIntents       : "androidx.test.espresso:espresso-intents:$espressoVersion",
             espressoContrib       : "androidx.test.espresso:espresso-contrib:$espressoVersion",
