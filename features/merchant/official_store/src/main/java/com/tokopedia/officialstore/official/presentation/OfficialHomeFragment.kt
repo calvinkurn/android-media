@@ -810,15 +810,16 @@ class OfficialHomeFragment :
         }
     }
 
-    override fun onClickMixLeftBannerImage(channel: ChannelModel, position: Int) {
-        if (RouteManager.route(context, channel.channelBanner?.applink.orEmpty())) {
-            tracking?.trackingViewObj?.putEETracking(
-                    OSMixLeftTracking.eventClickMixLeftImageBanner(channel, category?.title.orEmpty(), position) as HashMap<String, Any>)
-        }
-    }
+
 
     override fun onMixLeftBannerImpressed(channel: Channel, position: Int) {
         tracking?.eventImpressionMixLeftImageBanner(channel, category?.title.orEmpty(), position)
+    }
+
+    override fun onClickMixLeftBannerImage(channel: ChannelModel, position: Int) {
+        tracking?.trackingViewObj?.putEETracking(
+                OSMixLeftTracking.eventClickMixLeftImageBanner(channel, category?.title.orEmpty(), position) as HashMap<String, Any>)
+        RouteManager.route(context, channel.channelBanner?.applink.orEmpty())
     }
 
     override fun onMixLeftBannerImpressed(channel: ChannelModel, position: Int) {
