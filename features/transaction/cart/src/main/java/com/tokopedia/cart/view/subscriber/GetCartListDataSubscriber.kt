@@ -13,7 +13,9 @@ import rx.Subscriber
 class GetCartListDataSubscriber(val view: ICartListView?,
                                 val presenter: ICartListPresenter?,
                                 val initialLoad: Boolean) : Subscriber<CartListData>() {
-    override fun onCompleted() {}
+    override fun onCompleted() {
+        SimpleIdlingResource.decrement()
+    }
 
     override fun onError(e: Throwable) {
         e.printStackTrace()
@@ -24,7 +26,6 @@ class GetCartListDataSubscriber(val view: ICartListView?,
             it.renderLoadGetCartDataFinish()
             it.renderErrorInitialGetCartListData(e)
             it.stopCartPerformanceTrace()
-            SimpleIdlingResource.decrement()
         }
     }
 
@@ -40,7 +41,6 @@ class GetCartListDataSubscriber(val view: ICartListView?,
             it.renderLoadGetCartDataFinish()
             it.renderInitialGetCartListDataSuccess(cartListData)
             it.stopCartPerformanceTrace()
-            SimpleIdlingResource.decrement()
         }
     }
 }

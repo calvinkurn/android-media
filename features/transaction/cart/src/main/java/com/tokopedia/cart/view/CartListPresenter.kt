@@ -1,6 +1,7 @@
 package com.tokopedia.cart.view
 
 import android.os.Build
+import android.util.Log
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartExternalUseCase
@@ -130,6 +131,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
     }
 
     override fun processInitialGetCartData(cartId: String, initialLoad: Boolean, isLoadingTypeRefresh: Boolean) {
+        Log.d("CartHappyFlowTest", "processInitialGetCartData")
         view?.let {
             if (initialLoad) {
                 it.renderLoadGetCartData()
@@ -140,7 +142,13 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
             val requestParams = RequestParams.create()
             requestParams.putString(GetCartListSimplifiedUseCase.PARAM_SELECTED_CART_ID, cartId)
 
+            Log.d("CartHappyFlowTest", "Start increment")
             SimpleIdlingResource.increment()
+            Log.d("CartHappyFlowTest", "Done increment")
+            SimpleIdlingResource.countingIdlingResource.dumpStateToLogs()
+            val message: StringBuilder = StringBuilder("Resource: ").append(SimpleIdlingResource.countingIdlingResource.name).append(" inflight transaction iddle: ").append(SimpleIdlingResource.countingIdlingResource.isIdleNow)
+            Log.d("CartHappyFlowTest", message.toString())
+
             compositeSubscription.add(getCartListSimplifiedUseCase?.createObservable(requestParams)
                     ?.subscribe(GetCartListDataSubscriber(view, this, initialLoad))
             )

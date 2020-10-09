@@ -4,9 +4,9 @@ import androidx.test.espresso.idling.CountingIdlingResource
 
 object SimpleIdlingResource {
 
-    private const val RESOURCE = "GLOBAL"
+    private const val RESOURCE = "CART"
 
-    @JvmField val countingIdlingResource = CountingIdlingResource(RESOURCE)
+    val countingIdlingResource = CountingIdlingResource(RESOURCE)
 
     fun increment() {
         countingIdlingResource.increment()
