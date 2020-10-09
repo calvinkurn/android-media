@@ -3,6 +3,7 @@ package com.tokopedia.shop_showcase.common
 object ImageAssets {
     const val PRODUCT_EMPTY = "https://ecs7.tokopedia.net/android/others/illustration_product_empty.png"
     const val SEARCH_SHOWCASE_NOT_FOUND = "https://ecs7.tokopedia.net/android/merchant/shop_showcase/search_empty.png"
+    const val PICKER_LIST_EMPTY = "https://ecs7.tokopedia.net/android/shop/showcase_picker_empty_state.png"
 }
 
 object AppScreen {
@@ -62,3 +63,5 @@ object PageType {
 }
 
 const val TOTAL_GENERATED_ID: Int = 10
+const val MAX_TOTAL_SHOWCASE_REGULAR_MERCHANT = 10
+const val MAX_TOTAL_SHOWCASE_PM_AND_OS = 200

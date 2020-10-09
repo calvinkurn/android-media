@@ -24,7 +24,6 @@ class TimerSprintSaleItemViewHolder(itemView: View, private val fragment: Fragme
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         timerSprintSaleItemViewModel = discoveryBaseViewModel as TimerSprintSaleItemViewModel
-//        setTimerType()
     }
 
 
@@ -39,7 +38,6 @@ class TimerSprintSaleItemViewHolder(itemView: View, private val fragment: Fragme
         lifecycleOwner?.let {
             timerSprintSaleItemViewModel.getComponentLiveData().observe(it, Observer { componentItem ->
                 if (!componentItem.data.isNullOrEmpty()) {
-//                    timerSprintSaleItemViewModel.startTimer()
                     sendSprintSaleTimerTrack()
                 }
             })

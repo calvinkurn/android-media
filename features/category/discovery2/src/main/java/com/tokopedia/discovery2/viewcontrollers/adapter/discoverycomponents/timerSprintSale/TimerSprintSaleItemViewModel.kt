@@ -66,43 +66,50 @@ class TimerSprintSaleItemViewModel(val application: Application, val components:
 
     private fun checkForTimerComponent(componentItem: ComponentsItem) {
         if (componentItem.name == ComponentNames.TimerSprintSale.componentName && !componentItem.data.isNullOrEmpty()) {
-            if (Utils.isFutureSale(componentItem.data!![0].startDate
-                            ?: "")) {
-                val currentSystemTime = Calendar.getInstance().time
-                val parsedEndDate = Utils.parseData(componentItem.data!![0].startDate)
-                parsedEndDate?.let {
-                    val saleTimeMillis = parsedEndDate.time - currentSystemTime.time
-                    if (saleTimeMillis > 0) {
-                        timerWithBannerCounter = SaleCountDownTimer(saleTimeMillis, elapsedTime, false) { timerData ->
-                            if (timerData.timeFinish) {
-                                stopTimer()
-                                needPageRefresh.value = true
+            componentItem.data?.get(0)?.startDate?.let { startDate ->
+                when {
+                    Utils.isFutureSale(startDate) -> {
+                        val currentSystemTime = Calendar.getInstance().time
+                        val parsedEndDate = Utils.parseData(startDate)
+                        parsedEndDate?.let {
+                            val saleTimeMillis = parsedEndDate.time - currentSystemTime.time
+                            if (saleTimeMillis > 0) {
+                                timerWithBannerCounter = SaleCountDownTimer(saleTimeMillis, elapsedTime, false) { timerData ->
+                                    if (timerData.timeFinish) {
+                                        stopTimer()
+                                        needPageRefresh.value = true
+                                    }
+                                }
+                                timerWithBannerCounter?.start()
                             }
                         }
-                        timerWithBannerCounter?.start()
+                    }
+                    Utils.isFutureSaleOngoing(startDate, componentItem.data!![0].endDate
+                            ?: "") -> {
+                        needPageRefresh.value = true
+                    }
+                    else -> {
+                        needPageRefresh.value = true
                     }
                 }
-            } else if (Utils.isFutureSaleOngoing(componentItem.data!![0].startDate
-                            ?: "", componentItem.data!![0].endDate ?: "")) {
-                needPageRefresh.value = true
             }
         }
     }
 
     fun startTimer() {
-        val timerData: String? = if (Utils.isFutureSale(getStartDate())) {
-            getStartDate()
-        } else {
-            getEndDate()
-        }
+        val futureSaleTab = Utils.isFutureSale(getStartDate())
+        val timerData: String? = if (futureSaleTab) getStartDate() else getEndDate()
         if (!timerData.isNullOrEmpty()) {
             val currentSystemTime = Calendar.getInstance().time
             val parsedEndDate = Utils.parseData(timerData)
-            if (parsedEndDate != null) {
-                val saleTimeMillis = parsedEndDate.time - currentSystemTime.time
+            parsedEndDate?.let { parsedDate ->
+                val saleTimeMillis = parsedDate.time - currentSystemTime.time
                 if (saleTimeMillis > 0) {
                     timerWithBannerCounter = SaleCountDownTimer(saleTimeMillis, elapsedTime) { timerModel ->
-                        if (timerModel.timeFinish) stopTimer()
+                        if (timerModel.timeFinish) {
+                            stopTimer()
+                            if (futureSaleTab) needPageRefresh.value = true
+                        }
                         mutableTimeDiffModel.value = timerModel
                     }
                     timerWithBannerCounter?.start()

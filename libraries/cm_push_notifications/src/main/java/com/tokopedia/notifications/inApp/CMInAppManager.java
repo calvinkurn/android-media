@@ -247,8 +247,6 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
                 } else {
                     Timber.w("%svalidation;reason='application_null';data=''", CMConstant.TimberTags.TAG);
                 }
-            } else {
-                Timber.w("%ssvalidation;reason='cmInApp_null';data=''", CMConstant.TimberTags.TAG);
             }
         } catch (Exception e) {
             Map<String, String> data = remoteMessage.getData();

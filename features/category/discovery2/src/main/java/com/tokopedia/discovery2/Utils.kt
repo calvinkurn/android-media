@@ -25,6 +25,7 @@ const val LABEL_PRICE = "price"
 const val LABEL_GIMMICK = "gimmick"
 const val LABEL_INTEGRITY = "integrity"
 const val LABEL_SHIPPING = "shipping"
+const val PDP_APPLINK = "tokopedia://product/"
 val TIME_DISPLAY_FORMAT = "%1$02d"
 
 class Utils {
@@ -45,6 +46,11 @@ class Utils {
         private const val SEJUTA_TEXT = "jt orang"
         private const val SEMILIAR_TEXT = "M orang"
         var preSelectedTab = -1
+        private const val IDENTIFIER = "identifier"
+        private const val COMPONENT_ID = "component_id"
+        private const val DEVICE = "device"
+        private const val DEVICE_VALUE = "Android"
+        private const val FILTERS = "filters"
 
 
         fun extractDimension(url: String?, dimension: String = "height"): Int? {
@@ -80,6 +86,27 @@ class Utils {
             } else {
                 "${convertedValue.toInt()} $text $notifyMeText"
             }
+        }
+
+        fun getQueryMap(componentId: String, pageIdentifier: String, rpcDiscoQuery: Map<String, String?>?): Map<String, Any> {
+            val queryParameterMap = mutableMapOf<String, Any>()
+            queryParameterMap[IDENTIFIER] = pageIdentifier
+            queryParameterMap[DEVICE] = DEVICE_VALUE
+            queryParameterMap[COMPONENT_ID] = componentId
+
+            rpcDiscoQuery?.let { map ->
+                val queryString = StringBuilder()
+                map.forEach { (key, value) ->
+                    if (!value.isNullOrEmpty()) {
+                        if (queryString.isNotEmpty()) {
+                            queryString.append('&')
+                        }
+                        queryString.append(key).append('=').append(value)
+                    }
+                }
+                if (queryString.isNotEmpty()) queryParameterMap[FILTERS] = queryString.toString()
+            }
+            return queryParameterMap
         }
 
         fun isFutureSale(saleStartDate: String): Boolean {

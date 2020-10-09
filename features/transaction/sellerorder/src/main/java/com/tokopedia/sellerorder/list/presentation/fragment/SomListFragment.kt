@@ -2,6 +2,7 @@ package com.tokopedia.sellerorder.list.presentation.fragment
 
 import android.animation.Animator
 import android.animation.ObjectAnimator
+import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
@@ -26,6 +27,7 @@ import com.tokopedia.applink.sellerhome.AppLinkMapperSellerHome
 import com.tokopedia.coachmark.CoachMark
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
+import com.tokopedia.coachmark.CoachMarkPreference
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.quickfilter.QuickFilterItem
 import com.tokopedia.design.quickfilter.custom.CustomViewQuickFilterItem
@@ -41,6 +43,7 @@ import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.SomComponentInstance
 import com.tokopedia.sellerorder.analytics.SomAnalytics
 import com.tokopedia.sellerorder.analytics.SomAnalytics.eventClickOrder
+import com.tokopedia.sellerorder.analytics.SomAnalytics.eventClickWaitingPaymentOrderCard
 import com.tokopedia.sellerorder.analytics.SomAnalytics.eventSubmitSearch
 import com.tokopedia.sellerorder.common.errorhandler.SomErrorHandler
 import com.tokopedia.sellerorder.common.presenter.model.Roles
@@ -63,6 +66,7 @@ import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_CODE_ORDER_DELIVER
 import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_CODE_ORDER_DELIVERED_DUE_LIMIT
 import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_DELIVERED
 import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_DONE
+import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_NEW_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_ORDER_CANCELLED
 import com.tokopedia.sellerorder.common.util.SomConsts.TAB_ACTIVE
 import com.tokopedia.sellerorder.common.util.SomConsts.TAB_STATUS
@@ -79,6 +83,7 @@ import com.tokopedia.sellerorder.list.presentation.activity.SomFilterActivity
 import com.tokopedia.sellerorder.list.presentation.adapter.SomListItemAdapter
 import com.tokopedia.sellerorder.list.presentation.viewmodel.SomListViewModel
 import com.tokopedia.sellerorder.requestpickup.data.model.SomProcessReqPickup
+import com.tokopedia.sellerorder.waitingpaymentorder.presentation.activity.WaitingPaymentOrderActivity
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.*
@@ -87,10 +92,12 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.empty_list.*
 import kotlinx.android.synthetic.main.fragment_som_list.*
+import kotlinx.android.synthetic.main.partial_som_list_waiting_payment.*
 import kotlinx.coroutines.*
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
 /**
@@ -121,6 +128,24 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         CoachMarkItem(filter_action_button, getString(R.string.coachmark_filter), getString(R.string.coachmark_filter_info))
     }
 
+
+    private val coachMarkWaitingPaymentButton: List<CoachMarkItem> by lazy {
+        arrayListOf(
+                CoachMarkItem(
+                        somWaitingPaymentButton,
+                        getString(R.string.som_list_coachmark_waiting_payment_order_title),
+                        getString(R.string.som_list_coachmark_waiting_payment_order_description)
+                ),
+                CoachMarkItem(
+                        somWaitingPaymentButton,
+                        getString(R.string.som_list_coachmark_check_and_mange_product_stock_title),
+                        getString(R.string.som_list_coachmark_check_and_mange_product_stock_description)
+                )
+        )
+    }
+
+    private val coachMarkToShow: MutableSet<CoachMarkItem> = mutableSetOf()
+
     private val FLAG_DETAIL = 3333
     private val FLAG_CONFIRM_REQ_PICKUP = 3553
     private val ANIMATION_DURATION_IN_MILIS = 250L
@@ -149,21 +174,29 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     private var _animator: Animator? = null
     private var isFromWidget: Boolean? = false
     private var textChangedJob: Job? = null
+    private var waitingPaymentCounterAnimator: ValueAnimator? = null
+
 
     private val somListViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory)[SomListViewModel::class.java]
     }
-    
+
     private var userNotAllowedDialog: DialogUnify? = null
 
     companion object {
-        private val TAG_COACHMARK = "coachMark"
+        private const val TAG_COACHMARK_FILTER = "coachMarksFilter"
+        private const val TAG_COACHMARK_SEARCH = "coachMarksSearch"
+        private const val TAG_COACHMARK_PRODUCTS = "coachMarksProducts"
+        private const val TAG_COACHMARK_WAITING_PAYMENT = "coachMarksWaitingPayment"
         private const val REQUEST_FILTER = 2888
         private const val ERROR_GET_TICKERS = "Error when get tickers in seller order list page."
         private const val ERROR_GET_FILTER = "Error when get filters in seller order list page."
         private const val ERROR_GET_STATUS_LIST = "Error when get order status list in seller order list page."
         private const val ERROR_GET_ORDER_LIST = "Error when get list of order in seller order list page."
         private const val PAGE_NAME = "seller order list page."
+
+        private const val MAX_WAITING_PAYMENT_ORDER_COUNTER = 99
+        private const val WAITING_PAYMENT_ORDER_COUNTER_ANIMATION_DURATION = 1000L
 
         private val allowedRoles = listOf(Roles.MANAGE_SHOPSTATS, Roles.MANAGE_INBOX, Roles.MANAGE_TA, Roles.MANAGE_TX)
 
@@ -245,7 +278,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     }
 
     private fun showSellerMigrationTicker() {
-        if(isSellerMigrationEnabled(context)) {
+        if (isSellerMigrationEnabled(context)) {
             somListSellerMigrationTicker.apply {
                 tickerTitle = getString(com.tokopedia.seller_migration_common.R.string.seller_migration_generic_ticker_title)
                 setHtmlDescription(getString(com.tokopedia.seller_migration_common.R.string.seller_migration_generic_ticker_content))
@@ -253,6 +286,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                     override fun onDescriptionViewClick(charSequence: CharSequence) {
                         openSellerMigrationBottomSheet()
                     }
+
                     override fun onDismiss() {
                         // No Op
                     }
@@ -407,7 +441,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
 
     private fun loadTicker() {
         activity?.resources?.let {
-            somListViewModel.loadTickerList(GraphqlHelper.loadRawString(it, R.raw.gql_som_ticker))
+            somListViewModel.loadTickerList(userSession.userId.toString())
         }
     }
 
@@ -424,10 +458,10 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     })
 
     private fun observingFilter() {
-        somListViewModel.filterListResult.observe(viewLifecycleOwner, Observer {
+        somListViewModel.filterResult.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
-                    filterList = it.data
+                    filterList = it.data.statusList
                     renderFilter()
                     if (filterStatusId != 0) {
                         loadStatusOrderList()
@@ -527,7 +561,8 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
 
     private fun loadFilterList() {
         activity?.resources?.let {
-            somListViewModel.loadFilterList(GraphqlHelper.loadRawString(it, R.raw.gql_som_filter))
+            waitingPaymentCounterAnimator?.end()
+            somListViewModel.loadFilter()
         }
     }
 
@@ -554,7 +589,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                             SomAnalytics.eventClickSeeMoreOnTicker(itemData.toString())
                         }
                     })
-                    ticker_info?.setDescriptionClickEvent(object: TickerCallback {
+                    ticker_info?.setDescriptionClickEvent(object : TickerCallback {
                         override fun onDescriptionViewClick(linkUrl: CharSequence) {}
 
                         override fun onDismiss() {
@@ -655,14 +690,17 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         somListViewModel.orderListResult.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             when (it) {
                 is Success -> {
+                    if (!onLoadMore) {
+                        renderWaitingForPaymentCard()
+                        showCoachMarkSearch()
+                        showCoachMarkWaitingPayment()
+                    }
                     orderList = it.data
                     nextOrderId = orderList.cursorOrderId
                     if (orderList.orders.isNotEmpty()) {
                         renderOrderList()
                         showCoachMarkProducts()
-                    }
-
-                    else {
+                    } else {
                         if (isFilterApplied) {
                             if (!paramOrder.startDate.equals(defaultStartDate, true) || !paramOrder.endDate.equals(defaultEndDate, true)) {
                                 val inputFormat = SimpleDateFormat("dd/MM/yyyy")
@@ -677,9 +715,10 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                             }
                         } else {
                             renderEmptyOrderList()
-                            showCoachMarkProductsEmpty()
                         }
                     }
+                    showCoachMarkFilter()
+                    renderCoachMark()
                 }
                 is Fail -> {
                     SomErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_GET_ORDER_LIST)
@@ -687,6 +726,13 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                 }
             }
         })
+    }
+
+    private fun renderCoachMark() {
+        coachMark.show(activity, "", ArrayList(coachMarkToShow))
+        coachMark.onFinishListener = {
+            coachMarkToShow.clear()
+        }
     }
 
     private fun renderOrderList() {
@@ -703,15 +749,89 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         }
     }
 
-    private fun showCoachMarkProducts() {
-        if (!coachMark.hasShown(activity, TAG_COACHMARK) && !GlobalConfig.isSellerApp()) {
-            coachMark.show(activity, TAG_COACHMARK, arrayListOf(coachMarkSearch, coachMarkProduct, coachMarkFilter))
+    private fun renderWaitingForPaymentCard() {
+        if (shouldShowWaitingPaymentButton()) {
+            val filterResult = somListViewModel.filterResult.value
+            if (filterResult is Success) {
+                somWaitingPaymentButton.visible()
+                animateWaitingPaymentButtonCounter(filterResult)
+                somWaitingPaymentButton.setOnClickListener {
+                    context?.run {
+                        Intent(this, WaitingPaymentOrderActivity::class.java).apply {
+                            startActivity(this)
+                        }
+                        eventClickWaitingPaymentOrderCard(
+                                tabActive,
+                                filterResult.data.waitingPaymentCounter.amount,
+                                userSession.userId,
+                                userSession.shopId)
+                    }
+                }
+            }
+        } else {
+            somWaitingPaymentButton.gone()
         }
     }
 
-    private fun showCoachMarkProductsEmpty() {
-        if (!coachMark.hasShown(activity, TAG_COACHMARK) && !GlobalConfig.isSellerApp()) {
-            coachMark.show(activity, TAG_COACHMARK, arrayListOf(coachMarkSearch, coachMarkFilter))
+    private fun animateWaitingPaymentButtonCounter(filterResult: Success<SomListFilter.Data.OrderFilterSom>) {
+        val regex = Regex("\\d+")
+        val start = regex.find(tvTitle.text)?.value.toIntOrZero()
+        val end = filterResult.data.waitingPaymentCounter.amount
+        val maxValue = MAX_WAITING_PAYMENT_ORDER_COUNTER
+        val checkedStart = if (start > maxValue) maxValue + 1 else start
+        val checkedEnd = if (end > maxValue) maxValue + 1 else end
+        if (checkedStart == checkedEnd || (checkedStart > maxValue && checkedEnd > maxValue)) return
+        waitingPaymentCounterAnimator = ValueAnimator().apply {
+            setObjectValues(checkedStart, checkedEnd)
+            addUpdateListener { animation ->
+                context?.let {
+                    val newValue = (animation.animatedValue as? Int).orZero()
+                    val newValueString = if (newValue > maxValue) getString(R.string.som_list_waiting_payment_order_max_counter) else newValue.toString()
+                    tvTitle?.text = getString(
+                            R.string.som_list_order_waiting_payment_button_text,
+                            filterResult.data.waitingPaymentCounter.text,
+                            newValueString)
+                }
+            }
+            duration = WAITING_PAYMENT_ORDER_COUNTER_ANIMATION_DURATION
+            start()
+        }
+    }
+
+    private fun showCoachMarkSearch() {
+        context?.let { context ->
+            if (!coachMark.hasShown(activity, TAG_COACHMARK_SEARCH) && !GlobalConfig.isSellerApp()) {
+                CoachMarkPreference.setShown(context, TAG_COACHMARK_SEARCH, true)
+                coachMarkToShow.add(coachMarkSearch)
+            }
+        }
+    }
+
+    private fun showCoachMarkProducts() {
+        context?.let { context ->
+            if (!coachMark.hasShown(activity, TAG_COACHMARK_PRODUCTS) && !GlobalConfig.isSellerApp()) {
+                CoachMarkPreference.setShown(context, TAG_COACHMARK_PRODUCTS, true)
+                coachMarkToShow.add(coachMarkProduct)
+            }
+        }
+    }
+
+    private fun showCoachMarkFilter() {
+        context?.let { context ->
+            if (!coachMark.hasShown(activity, TAG_COACHMARK_FILTER) && !GlobalConfig.isSellerApp()) {
+                CoachMarkPreference.setShown(context, TAG_COACHMARK_FILTER, true)
+                coachMarkToShow.add(coachMarkFilter)
+            }
+        }
+    }
+
+    private fun showCoachMarkWaitingPayment() {
+        context?.let { context ->
+            if (!coachMark.hasShown(activity, TAG_COACHMARK_WAITING_PAYMENT) &&
+                    somWaitingPaymentButton.visibility == View.VISIBLE) {
+                CoachMarkPreference.setShown(context, TAG_COACHMARK_WAITING_PAYMENT, true)
+                coachMarkToShow.addAll(coachMarkWaitingPaymentButton)
+            }
         }
     }
 
@@ -835,7 +955,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                     filterStatusId = 0
                     paramOrder = data.getParcelableExtra(SomConsts.PARAM_LIST_ORDER)
                     isFilterApplied = checkFilterApplied(paramOrder)
-                    tabActive = ""
+                    tabActive = data.getStringExtra(SomConsts.PARAM_TAB_ACTIVE).orEmpty()
                     renderFilter()
                     refreshHandler?.startRefresh()
                 }
@@ -865,7 +985,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                         val msg = data.getStringExtra(RESULT_SET_DELIVERED)
                         refreshThenShowToasterOk(msg)
                     }
-                    data.hasExtra(RESULT_PROCESS_REQ_PICKUP)  ->  {
+                    data.hasExtra(RESULT_PROCESS_REQ_PICKUP) -> {
                         val resultProcessReqPickup = data.getParcelableExtra<SomProcessReqPickup.Data.MpLogisticRequestPickup>(RESULT_PROCESS_REQ_PICKUP)
                         refreshThenShowToasterOk(resultProcessReqPickup.listMessage.first())
                     }
@@ -908,6 +1028,12 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     }
 
     private fun isNewOrderChipSelected(): Boolean {
-        return tabActive == SomConsts.STATUS_NEW_ORDER
+        return tabActive == STATUS_NEW_ORDER
+    }
+
+    private fun shouldShowWaitingPaymentButton(): Boolean {
+        val filterResult = somListViewModel.filterResult.value
+        return filterResult is Success && filterResult.data.waitingPaymentCounter.amount > 0 &&
+                (tabActive == STATUS_ALL_ORDER || tabActive == STATUS_NEW_ORDER)
     }
 }

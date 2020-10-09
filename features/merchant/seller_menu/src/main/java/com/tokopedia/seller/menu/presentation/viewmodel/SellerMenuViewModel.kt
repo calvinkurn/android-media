@@ -98,20 +98,24 @@ class SellerMenuViewModel @Inject constructor(
 
     private fun getAllShopInfoData() {
         launchCatchError(block = {
-            val getShopInfo = async (dispatchers.io) {
-                val response = getAllShopInfoUseCase.executeOnBackground()
+            val getShopInfo = withContext(dispatchers.io) {
+                async {
+                    val response = getAllShopInfoUseCase.executeOnBackground()
 
-                if (response.first is PartialSettingSuccessInfoType || response.second is PartialSettingSuccessInfoType) {
-                    SettingShopInfoUiModel(response.first, response.second, userSession)
-                } else {
-                    throw MessageErrorException(ERROR_EXCEPTION_MESSAGE)
+                    if (response.first is PartialSettingSuccessInfoType || response.second is PartialSettingSuccessInfoType) {
+                        SettingShopInfoUiModel(response.first, response.second, userSession)
+                    } else {
+                        throw MessageErrorException(ERROR_EXCEPTION_MESSAGE)
+                    }
                 }
             }
 
-            val getShopScore = async(dispatchers.io) {
-                val shopId = userSession.shopId
-                val requestParams = GetShopScoreUseCase.createRequestParams(shopId)
-                getShopScoreUseCase.createObservable(requestParams).toBlocking().first()
+            val getShopScore = withContext(dispatchers.io) {
+                async {
+                    val shopId = userSession.shopId
+                    val requestParams = GetShopScoreUseCase.createRequestParams(shopId)
+                    getShopScoreUseCase.getData(requestParams)
+                }
             }
 
             val shopInfoResponse = getShopInfo.await()
