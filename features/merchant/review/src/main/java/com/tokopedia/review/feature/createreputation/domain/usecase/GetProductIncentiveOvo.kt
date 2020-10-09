@@ -11,13 +11,14 @@ import javax.inject.Inject
 class GetProductIncentiveOvo @Inject constructor(private val graphqlRepository: GraphqlRepository) {
 
     companion object {
-        const val PARAM_INBOX_ID = "inboxID"
+        const val PARAM_PRODUCT_ID = "productID"
+        const val PARAM_REPUTATION_ID = "reputationID"
     }
 
     private val query by lazy {
         """
-            query getProductRevIncentiveOvo(${'$'}inboxID: String) {
-              productrevIncentiveOvo(inboxID: ${'$'}inboxID) {
+            query getProductRevIncentiveOvo(${'$'}productID: String, ${'$'}reputationID: String) {
+              productrevIncentiveOvo(productID: ${'$'}productID, reputationID: ${'$'}reputationID) {
                 ticker {
                   title
                   subtitle
@@ -33,11 +34,12 @@ class GetProductIncentiveOvo @Inject constructor(private val graphqlRepository: 
         """.trimIndent()
     }
 
-    suspend fun getIncentiveOvo(inboxReviewId: String = ""): ProductRevIncentiveOvoDomain {
+    suspend fun getIncentiveOvo(productId: Int = 0, reputationId: Int = 0): ProductRevIncentiveOvoDomain {
         val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
-        val graphqlRequest = if (inboxReviewId.isNotBlank()) {
+        val graphqlRequest = if (productId != 0 && reputationId != 0) {
             val requestParams = RequestParams.create().apply {
-                putString(PARAM_INBOX_ID, inboxReviewId)
+                putString(PARAM_PRODUCT_ID, productId.toString())
+                putString(PARAM_REPUTATION_ID, reputationId.toString())
             }.parameters
             GraphqlRequest(query, ProductRevIncentiveOvoDomain::class.java, requestParams)
         } else {

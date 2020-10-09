@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.snackbar.Snackbar
@@ -44,9 +45,12 @@ import com.tokopedia.review.feature.inbox.pending.presentation.viewmodel.ReviewP
 import com.tokopedia.review.feature.ovoincentive.data.ProductRevIncentiveOvoDomain
 import com.tokopedia.review.feature.ovoincentive.presentation.bottomsheet.IncentiveOvoBottomSheet
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import kotlinx.android.synthetic.main.fragment_review_pending.*
+import kotlinx.android.synthetic.main.incentive_ovo_bottom_sheet_dialog.view.*
+import kotlinx.android.synthetic.main.item_incentive_ovo.view.*
 import kotlinx.android.synthetic.main.partial_review_connection_error.*
 import kotlinx.android.synthetic.main.partial_review_empty.*
 import javax.inject.Inject
@@ -355,13 +359,44 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
     }
 
     private fun onClickOvoIncentiveTickerDescription(productRevIncentiveOvoDomain: ProductRevIncentiveOvoDomain) {
-        val bottomSheet: BottomSheetUnify = IncentiveOvoBottomSheet(productRevIncentiveOvoDomain, ReviewInboxTrackingConstants.PENDING_TAB)
-        fragmentManager?.let { bottomSheet.show(it, bottomSheet.tag) }
+        val bottomSheet = BottomSheetUnify()
+        val view = View.inflate(context, R.layout.incentive_ovo_bottom_sheet_dialog, null)
+        bottomSheet.setChild(view)
+        activity?.supportFragmentManager?.let { bottomSheet.show(it, bottomSheet.tag) }
         bottomSheet.setCloseClickListener {
             ReviewTracking.onClickDismissIncentiveOvoBottomSheetTracker(ReviewInboxTrackingConstants.PENDING_TAB)
             bottomSheet.dismiss()
         }
+        initView(view, productRevIncentiveOvoDomain, bottomSheet)
         ReviewTracking.onClickReadSkIncentiveOvoTracker(productRevIncentiveOvoDomain.productrevIncentiveOvo?.ticker?.title, ReviewInboxTrackingConstants.PENDING_TAB)
+    }
+
+    private fun initView(view: View, productRevIncentiveOvoDomain: ProductRevIncentiveOvoDomain, bottomSheet: BottomSheetUnify) {
+        with(bottomSheet) {
+            view.apply {
+                tgIncentiveOvoTitle.text = productRevIncentiveOvoDomain.productrevIncentiveOvo?.title
+                tgIncentiveOvoSubtitle.text = HtmlLinkHelper(context, productRevIncentiveOvoDomain.productrevIncentiveOvo?.subtitle ?: "").spannedString
+                incentiveOvoBtnContinueReview.apply {
+                    setOnClickListener {
+                        dismiss()
+                        ReviewTracking.onClickContinueIncentiveOvoBottomSheetTracker(ReviewInboxTrackingConstants.PENDING_TAB)
+                    }
+                    text = productRevIncentiveOvoDomain.productrevIncentiveOvo?.ctaText
+                }
+            }
+
+            view.tgIncentiveOvoDescription.text = productRevIncentiveOvoDomain.productrevIncentiveOvo?.description
+
+            val adapterIncentiveOvo = ProductRevIncentiveOvoAdapter(productRevIncentiveOvoDomain.productrevIncentiveOvo?.numberedList ?: emptyList())
+            view.rvIncentiveOvoExplain.apply {
+                layoutManager = LinearLayoutManager(context)
+                adapter = adapterIncentiveOvo
+            }
+            isFullpage = false
+            showKnob = true
+            showCloseIcon = false
+            clearContentPadding = true
+        }
     }
 
     private fun onDismissOvoIncentiveTicker(title: String) {
@@ -387,10 +422,32 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
                 Uri.parse(UriUtil.buildUri(ApplinkConstInternalMarketplace.CREATE_REVIEW, reputationId.toString(), productId.toString()))
                         .buildUpon()
                         .appendQueryParameter(CreateReviewActivity.PARAM_RATING, rating.toString())
-                        .appendQueryParameter(CreateReviewActivity.PARAM_INBOX_ID, inboxId)
                         .build()
                         .toString())
         startActivityForResult(intent, CREATE_REVIEW_REQUEST_CODE)
+    }
+
+    private inner class ProductRevIncentiveOvoAdapter(private val list: List<String>)
+        : RecyclerView.Adapter<ProductRevIncentiveOvoAdapter.ViewHolder>() {
+
+        override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+            holder.bindHero(list[position])
+        }
+
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+            return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_incentive_ovo, parent, false))
+        }
+
+        override fun getItemCount(): Int = list.size
+
+        inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+            fun bindHero(explanation: String) {
+                itemView.apply {
+                    tgIncentiveOvoNumber.text = "${adapterPosition+1}."
+                    tgIncentiveOvoExplanation.text = HtmlLinkHelper(context, explanation).spannedString
+                }
+            }
+        }
     }
 
 }

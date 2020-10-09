@@ -24,5 +24,5 @@ data class ProductRevIncentiveOvoResponse(
         var ctaText: String = "",
         @SerializedName("amount")
         @Expose
-        val amount: Float = 0F
+        val amount: Int = 0
 )

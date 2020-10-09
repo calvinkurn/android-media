@@ -179,7 +179,7 @@
     <!-- ovo incentive -->
     <string name="ovo_incentive_review_pending">Kasih ulasan sekarang, dapat OVO Points</string>
     <string name="review_create_incomplete_title">Ulasanmu belum lengkap, nih</string>
-    <string name="review_create_incomplete_subtitle">Dengan ulasan lengkap kamu bisa bantu penjual &amp; dapat OVO Points, lho.</string>
+    <string name="review_create_incomplete_subtitle">Dengan ulasan lengkap kamu bisa bantu calon pembeli lain &amp; dapat OVO Points.</string>
     <string name="review_create_incomplete_cancel">Lengkapi Ulasan Dulu</string>
     <string name="review_create_incomplete_send_anyways">Kirim Sekarang Aja</string>
     <string name="review_create_text_area_empty">Bingung nulis apa? Ceritain aja pengalamanmu. &#128521;</string>

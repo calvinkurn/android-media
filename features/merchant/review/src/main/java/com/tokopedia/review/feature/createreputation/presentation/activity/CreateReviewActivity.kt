@@ -31,7 +31,6 @@ class CreateReviewActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent
 
     companion object {
         const val PARAM_RATING = "rating"
-        const val PARAM_INBOX_ID = "inboxId"
         const val DEFAULT_PRODUCT_RATING = 5
     }
 
@@ -45,7 +44,6 @@ class CreateReviewActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent
     private var isEditMode = false
     private var feedbackId = 0
     private var reputationId: String = ""
-    private var inboxReviewId: String = ""
     private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
 
     override fun getNewFragment(): Fragment? {
@@ -56,8 +54,7 @@ class CreateReviewActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent
                     reputationId,
                     rating,
                     isEditMode,
-                    feedbackId,
-                    inboxReviewId
+                    feedbackId
             )
             return createReviewFragment
         }
@@ -206,12 +203,10 @@ class CreateReviewActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent
             rating = uri.getQueryParameter(PARAM_RATING)?.toIntOrNull() ?: DEFAULT_PRODUCT_RATING
             isEditMode = uri.getQueryParameter(ReviewConstants.PARAM_IS_EDIT_MODE)?.toBoolean() ?: false
             feedbackId = uri.getQueryParameter(ReviewConstants.PARAM_FEEDBACK_ID)?.toIntOrZero() ?: 0
-            inboxReviewId = uri.getQueryParameter(PARAM_INBOX_ID) ?: ""
         } else {
             productId = bundle?.getString(ReviewConstants.ARGS_PRODUCT_ID) ?: ""
             reputationId = bundle?.getString(ReviewConstants.ARGS_REPUTATION_ID) ?: ""
             rating = bundle?.getInt(CreateReviewFragment.REVIEW_CLICK_AT, rating) ?: DEFAULT_PRODUCT_RATING
-            inboxReviewId = bundle?.getString(PARAM_INBOX_ID) ?: ""
         }
     }
 

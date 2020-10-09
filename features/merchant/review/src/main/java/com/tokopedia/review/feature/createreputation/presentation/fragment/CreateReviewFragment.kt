@@ -14,6 +14,8 @@ import android.view.ViewTreeObserver
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.airbnb.lottie.LottieAnimationView
 import com.airbnb.lottie.LottieCompositionFactory
 import com.airbnb.lottie.LottieDrawable
@@ -55,14 +57,19 @@ import com.tokopedia.review.feature.createreputation.analytics.CreateReviewTrack
 import com.tokopedia.review.feature.createreputation.model.Reputation
 import com.tokopedia.review.feature.createreputation.presentation.viewmodel.CreateReviewViewModel
 import com.tokopedia.review.feature.inbox.common.ReviewInboxConstants
+import com.tokopedia.review.feature.inbox.common.analytics.ReviewInboxTrackingConstants
 import com.tokopedia.review.feature.ovoincentive.data.ProductRevIncentiveOvoDomain
 import com.tokopedia.review.feature.ovoincentive.presentation.bottomsheet.IncentiveOvoBottomSheet
 import com.tokopedia.review.feature.ovoincentive.presentation.bottomsheet.IncentiveOvoSubmittedBottomSheet
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ContainerUnify
+import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import kotlinx.android.synthetic.main.fragment_create_review.*
+import kotlinx.android.synthetic.main.incentive_ovo_bottom_sheet_dialog.view.*
+import kotlinx.android.synthetic.main.incentive_ovo_bottom_sheet_submitted.*
+import kotlinx.android.synthetic.main.item_incentive_ovo.view.*
 import kotlinx.android.synthetic.main.widget_create_review_text_area.*
 import javax.inject.Inject
 import com.tokopedia.usecase.coroutines.Fail as CoroutineFail
@@ -99,14 +106,13 @@ class CreateReviewFragment : BaseDaggerFragment(),
 
         private const val REVIEW_INCENTIVE_MINIMUM_THRESHOLD = 40
 
-        fun createInstance(productId: String, reviewId: String, reviewClickAt: Int = 0, isEditMode: Boolean, feedbackId: Int, inboxReviewId: String) = CreateReviewFragment().also {
+        fun createInstance(productId: String, reviewId: String, reviewClickAt: Int = 0, isEditMode: Boolean, feedbackId: Int) = CreateReviewFragment().also {
             it.arguments = Bundle().apply {
                 putString(PRODUCT_ID_REVIEW, productId)
                 putString(REPUTATION_ID, reviewId)
                 putInt(REVIEW_CLICK_AT, reviewClickAt)
                 putBoolean(ReviewConstants.PARAM_IS_EDIT_MODE, isEditMode)
                 putInt(ReviewConstants.PARAM_FEEDBACK_ID, feedbackId)
-                putString(CreateReviewActivity.PARAM_INBOX_ID, inboxReviewId)
             }
         }
     }
@@ -128,9 +134,8 @@ class CreateReviewFragment : BaseDaggerFragment(),
     private var shopId: String = ""
     private var isEditMode: Boolean = false
     private var feedbackId: Int = 0
-    private var inboxReviewId: String = ""
     private var shouldShowThankYouBottomSheet = false
-    private var ovoIncentiveAmount = 0F
+    private var ovoIncentiveAmount = 0
 
     lateinit var imgAnimationView: LottieAnimationView
     private var textAreaBottomSheet: CreateReviewTextAreaBottomSheet? = null
@@ -197,7 +202,6 @@ class CreateReviewFragment : BaseDaggerFragment(),
             reputationId = it.getString(REPUTATION_ID, "").toIntOrNull() ?: 0
             isEditMode = it.getBoolean(ReviewConstants.PARAM_IS_EDIT_MODE, false)
             feedbackId = it.getInt(ReviewConstants.PARAM_FEEDBACK_ID, 0)
-            inboxReviewId = it.getString(CreateReviewActivity.PARAM_INBOX_ID) ?: ""
         }
 
         if (reviewClickAt > CreateReviewActivity.DEFAULT_PRODUCT_RATING || reviewClickAt < 0) {
@@ -468,7 +472,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
     }
 
     private fun getIncentiveOvoData() {
-        createReviewViewModel.getProductIncentiveOvo(inboxReviewId)
+        createReviewViewModel.getProductIncentiveOvo(productId, reputationId)
     }
 
     private fun submitReview() {
@@ -487,11 +491,11 @@ class CreateReviewFragment : BaseDaggerFragment(),
             createReviewViewModel.editReview(feedbackId, reputationId, productId, shopId.toIntOrZero(),
                     createReviewScore.getScore(), reviewClickAt, reviewMessage, createReviewAnonymousCheckbox.isChecked)
         } else {
-            if(isReviewComplete() && isUserEligible()) {
-                submitNewReview()
+            if(!isReviewComplete() && isUserEligible()) {
+                showReviewIncompleteDialog()
                 return
             }
-            showReviewIncompleteDialog()
+            submitNewReview()
         }
     }
 
@@ -576,7 +580,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
             showThankYouBottomSheet()
         }
         data.productrevIncentiveOvo?.let {
-            if(ovoIncentiveAmount != 0F) {
+            if(ovoIncentiveAmount != 0) {
                 ovoIncentiveAmount = it.amount
             }
             it.ticker.let {
@@ -585,8 +589,11 @@ class CreateReviewFragment : BaseDaggerFragment(),
                     setHtmlDescription(it.subtitle)
                     setDescriptionClickEvent(object : TickerCallback {
                         override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                            val bottomSheet: BottomSheetUnify = IncentiveOvoBottomSheet(data, "")
-                            fragmentManager?.let { bottomSheet.show(it, bottomSheet.tag)}
+                            val bottomSheet = BottomSheetUnify()
+                            val view = View.inflate(context, R.layout.incentive_ovo_bottom_sheet_dialog, null)
+                            bottomSheet.setChild(view)
+                            initView(view, data, bottomSheet)
+                            activity?.supportFragmentManager?.let { bottomSheet.show(it, bottomSheet.tag)}
                             bottomSheet.setCloseClickListener {
                                 ReviewTracking.onClickDismissIncentiveOvoBottomSheetTracker("")
                                 bottomSheet.dismiss()
@@ -610,7 +617,84 @@ class CreateReviewFragment : BaseDaggerFragment(),
 
     private fun showThankYouBottomSheet() {
         (createReviewViewModel.incentiveOvo.value as? CoroutineSuccess)?.data?.let {
-            IncentiveOvoSubmittedBottomSheet(it, ovoIncentiveAmount)
+            val bottomSheet = BottomSheetUnify()
+            val child = View.inflate(context, R.layout.incentive_ovo_bottom_sheet_submitted, null)
+            bottomSheet.setChild(child)
+            initThankYouView(child, it, bottomSheet)
+            activity?.supportFragmentManager?.let { bottomSheet.show(it, bottomSheet.tag)}
+        }
+    }
+
+    private inner class ProductRevIncentiveOvoAdapter(private val list: List<String>)
+        : RecyclerView.Adapter<ProductRevIncentiveOvoAdapter.ViewHolder>() {
+
+        override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+            holder.bindHero(list[position])
+        }
+
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+            return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_incentive_ovo, parent, false))
+        }
+
+        override fun getItemCount(): Int = list.size
+
+        inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+            fun bindHero(explanation: String) {
+                itemView.apply {
+                    tgIncentiveOvoNumber.text = "${adapterPosition+1}."
+                    tgIncentiveOvoExplanation.text = HtmlLinkHelper(context, explanation).spannedString
+                }
+            }
+        }
+    }
+
+    private fun initView(view: View, productRevIncentiveOvoDomain: ProductRevIncentiveOvoDomain, bottomSheet: BottomSheetUnify) {
+        with(bottomSheet) {
+            view.apply {
+                tgIncentiveOvoTitle.text = productRevIncentiveOvoDomain.productrevIncentiveOvo?.title
+                tgIncentiveOvoSubtitle.text = HtmlLinkHelper(context, productRevIncentiveOvoDomain.productrevIncentiveOvo?.subtitle ?: "").spannedString
+                incentiveOvoBtnContinueReview.apply {
+                    setOnClickListener {
+                        dismiss()
+                        ReviewTracking.onClickContinueIncentiveOvoBottomSheetTracker(ReviewInboxTrackingConstants.PENDING_TAB)
+                    }
+                    text = productRevIncentiveOvoDomain.productrevIncentiveOvo?.ctaText
+                }
+            }
+
+            view.tgIncentiveOvoDescription.text = productRevIncentiveOvoDomain.productrevIncentiveOvo?.description
+
+            val adapterIncentiveOvo = ProductRevIncentiveOvoAdapter(productRevIncentiveOvoDomain.productrevIncentiveOvo?.numberedList ?: emptyList())
+            view.rvIncentiveOvoExplain.apply {
+                layoutManager = LinearLayoutManager(context)
+                adapter = adapterIncentiveOvo
+            }
+            isFullpage = false
+            showKnob = true
+            showCloseIcon = false
+            clearContentPadding = true
+        }
+    }
+
+    private fun initThankYouView(view: View, productRevIncentiveOvoDomain: ProductRevIncentiveOvoDomain, bottomSheet: BottomSheetUnify) {
+        with(bottomSheet) {
+            view.apply {
+                incentiveOvoSubmittedImage.loadImage(IncentiveOvoSubmittedBottomSheet.url)
+                incentiveOvoSubmittedTitle.text = context.getString(R.string.review_create_thank_you_title)
+                incentiveOvoSubmittedSubtitle.text = context.getString(R.string.review_create_thank_you_subtitle, ovoIncentiveAmount)
+                productRevIncentiveOvoDomain.let {
+                    incentiveOvoSendAnother.apply {
+                        setOnClickListener {
+                            dismiss()
+                        }
+                    }
+                    incentiveOvoLater.setOnClickListener {
+                        dismiss()
+                    }
+                }
+            }
+            isFullpage = false
+            showCloseIcon = false
         }
     }
 

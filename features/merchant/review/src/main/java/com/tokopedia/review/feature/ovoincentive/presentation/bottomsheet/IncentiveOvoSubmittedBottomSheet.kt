@@ -12,7 +12,7 @@ import kotlinx.android.synthetic.main.incentive_ovo_bottom_sheet_submitted.*
 
 class IncentiveOvoSubmittedBottomSheet(
         private val productRevIncentiveOvoDomain: ProductRevIncentiveOvoDomain?,
-        private val amount: Float
+        private val amount: Int
 ): BottomSheetUnify() {
 
     companion object {
