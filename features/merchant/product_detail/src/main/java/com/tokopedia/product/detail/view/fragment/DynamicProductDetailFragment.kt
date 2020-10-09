@@ -1550,7 +1550,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     private fun updateNplButtonFollowers(restrictionInfo: RestrictionInfoResponse) {
         val alreadyFollowShop = restrictionInfo.restrictionData.firstOrNull()?.alreadyFollowShop ?: true
 
-        if (alreadyFollowShop.not()) {
+        if (alreadyFollowShop.not() && !viewModel.isShopOwner()) {
             base_btn_follow?.run {
                 if (nplFollowersButton == null) {
                     nplFollowersButton = PartialButtonShopFollowersView.build(this, this@DynamicProductDetailFragment)
