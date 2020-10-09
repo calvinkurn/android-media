@@ -13,9 +13,9 @@ import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.airbnb.lottie.LottieAnimationView
 import com.airbnb.lottie.LottieCompositionFactory
 import com.airbnb.lottie.LottieDrawable
@@ -45,32 +45,26 @@ import com.tokopedia.review.common.analytics.ReviewTracking
 import com.tokopedia.review.common.data.*
 import com.tokopedia.review.common.presentation.util.ReviewScoreClickListener
 import com.tokopedia.review.common.util.ReviewConstants
+import com.tokopedia.review.feature.createreputation.analytics.CreateReviewTracking
 import com.tokopedia.review.feature.createreputation.di.DaggerCreateReviewComponent
 import com.tokopedia.review.feature.createreputation.model.BaseImageReviewUiModel
 import com.tokopedia.review.feature.createreputation.model.ProductRevGetForm
+import com.tokopedia.review.feature.createreputation.model.Reputation
 import com.tokopedia.review.feature.createreputation.presentation.activity.CreateReviewActivity
 import com.tokopedia.review.feature.createreputation.presentation.adapter.ImageReviewAdapter
 import com.tokopedia.review.feature.createreputation.presentation.listener.ImageClickListener
 import com.tokopedia.review.feature.createreputation.presentation.listener.TextAreaListener
-import com.tokopedia.review.feature.createreputation.presentation.widget.CreateReviewTextAreaBottomSheet
-import com.tokopedia.review.feature.createreputation.analytics.CreateReviewTracking
-import com.tokopedia.review.feature.createreputation.model.Reputation
 import com.tokopedia.review.feature.createreputation.presentation.viewmodel.CreateReviewViewModel
+import com.tokopedia.review.feature.createreputation.presentation.widget.CreateReviewTextAreaBottomSheet
 import com.tokopedia.review.feature.inbox.common.ReviewInboxConstants
 import com.tokopedia.review.feature.inbox.common.analytics.ReviewInboxTrackingConstants
 import com.tokopedia.review.feature.ovoincentive.data.ProductRevIncentiveOvoDomain
 import com.tokopedia.review.feature.ovoincentive.presentation.adapter.IncentiveOvoAdapter
-import com.tokopedia.review.feature.ovoincentive.presentation.bottomsheet.IncentiveOvoBottomSheet
 import com.tokopedia.review.feature.ovoincentive.presentation.bottomsheet.IncentiveOvoSubmittedBottomSheet
-import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.unifycomponents.ContainerUnify
-import com.tokopedia.unifycomponents.HtmlLinkHelper
-import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.*
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import kotlinx.android.synthetic.main.fragment_create_review.*
 import kotlinx.android.synthetic.main.incentive_ovo_bottom_sheet_dialog.view.*
-import kotlinx.android.synthetic.main.incentive_ovo_bottom_sheet_submitted.*
-import kotlinx.android.synthetic.main.item_incentive_ovo.view.*
 import kotlinx.android.synthetic.main.widget_create_review_text_area.*
 import javax.inject.Inject
 import com.tokopedia.usecase.coroutines.Fail as CoroutineFail
@@ -656,23 +650,27 @@ class CreateReviewFragment : BaseDaggerFragment(),
 
     private fun initThankYouView(view: View, productRevIncentiveOvoDomain: ProductRevIncentiveOvoDomain, bottomSheet: BottomSheetUnify) {
         with(bottomSheet) {
+            val incentiveOvoSubmittedImage = view.findViewById<AppCompatImageView>(R.id.incentiveOvoSubmittedImage)
+            val incentiveOvoSubmittedTitle: com.tokopedia.unifyprinciples.Typography? = view.findViewById(R.id.incentiveOvoSubmittedTitle)
+            val incentiveOvoSubmittedSubtitle: com.tokopedia.unifyprinciples.Typography? = view.findViewById(R.id.incentiveOvoSubmittedSubtitle)
+            val incentiveOvoSendAnother: UnifyButton? = view.findViewById(R.id.incentiveOvoSendAnother)
+            val incentiveOvoLater: UnifyButton? = view.findViewById(R.id.incentiveOvoLater)
             view.apply {
-                incentiveOvoSubmittedImage.loadImage(IncentiveOvoSubmittedBottomSheet.url)
-                incentiveOvoSubmittedTitle.text = context.getString(R.string.review_create_thank_you_title)
-                incentiveOvoSubmittedSubtitle.text = context.getString(R.string.review_create_thank_you_subtitle, ovoIncentiveAmount)
+                incentiveOvoSubmittedImage?.loadImage(IncentiveOvoSubmittedBottomSheet.url)
+                incentiveOvoSubmittedTitle?.text = context.getString(R.string.review_create_thank_you_title)
+                incentiveOvoSubmittedSubtitle?.text = context.getString(R.string.review_create_thank_you_subtitle, ovoIncentiveAmount)
                 productRevIncentiveOvoDomain.let {
-                    incentiveOvoSendAnother.apply {
+                    incentiveOvoSendAnother?.apply {
                         setOnClickListener {
                             dismiss()
                         }
                     }
-                    incentiveOvoLater.setOnClickListener {
+                    incentiveOvoLater?.setOnClickListener {
                         dismiss()
                     }
                 }
             }
             isFullpage = false
-            showCloseIcon = false
         }
     }
 
