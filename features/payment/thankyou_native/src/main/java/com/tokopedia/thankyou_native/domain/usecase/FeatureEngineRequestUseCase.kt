@@ -42,7 +42,7 @@ class FeatureEngineRequestUseCase @Inject constructor(
             }
         }
         return mapOf(PARAM_REQUEST to Gson().toJson(FeatureEngineRequest(
-                thanksPageData.merchantCode, thanksPageData.profileCode, 1, 5,
+                thanksPageData.merchantCode, thanksPageData.profileCode, 1, 2,
                 FeatureEngineRequestParameters(true.toString(), thanksPageData.amount.toString(),
                         mainGatewayCode, isEGoldPurchased(thanksPageData).toString(),
                         isDonation(thanksPageData).toString()),
