@@ -65,7 +65,7 @@ object WishlistTracking {
     private const val PROMO_CLICK = "promoClick"
     private const val EVENT_PRODUCT_CLICK = "productClick"
     private const val EVENT_CLICK_WISHLIST = "clickWishlist"
-    private const val EVENT_OPEN_SCREEN = "clickWishlist"
+    private const val EVENT_OPEN_SCREEN = "openScreen"
     private const val EVENT_CLICK_ADD_TO_CART = "addToCart"
     private const val SCREEN_NAME = "screenName"
     private const val BUSINESS_UNIT = "businessUnit"
@@ -100,6 +100,7 @@ object WishlistTracking {
     private const val VALUE_BUSINESS_UNIT = "home & browse"
     private const val VALUE_CURRENT_SITE = "tokopediamarketplace"
     private const val VALUE_BEBAS_ONGKIR = "bebas ongkir"
+    private const val IS_LOGGED_IN_STATUS = "isLoggedInStatus"
 
     private fun getTracker(): ContextAnalytics {
         return TrackApp.getInstance().gtm
@@ -438,7 +439,9 @@ object WishlistTracking {
                         EVENT, EVENT_OPEN_SCREEN,
                         SCREEN_NAME, VALUE_SCREEN_NAME,
                         BUSINESS_UNIT, VALUE_BUSINESS_UNIT,
-                        USER_ID, userId
+                        USER_ID, userId,
+                        IS_LOGGED_IN_STATUS, if(userId.isNotEmpty()) true else false,
+                        CURRENT_SITE, VALUE_CURRENT_SITE
                 )
         )
     }

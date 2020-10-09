@@ -55,7 +55,7 @@ public class RecentViewTracking {
                 DataLayer.mapOf("event", "openScreen",
                         "screenName", "/recent",
                         "eventAction", "impression on product",
-                        "isLoggedInStatus", !getLoginID(context).isEmpty(),
+                        "isLoggedInStatus", getLoginID(context).isEmpty() ? "false" : "true",
                         "businessUnit", "home & browse",
                         "currentSite", "tokopediamarketplace",
                         "userId", getLoginID(context)
