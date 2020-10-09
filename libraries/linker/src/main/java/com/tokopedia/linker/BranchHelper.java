@@ -156,7 +156,7 @@ public class BranchHelper {
                 .addCustomDataProperty(LinkerConstants.LEVEL2_NAME, linkerData.getLevel2Name())
                 .addCustomDataProperty(LinkerConstants.LEVEL2_ID, linkerData.getLevel2Id())
                 .addCustomDataProperty(LinkerConstants.LEVEL3_NAME, linkerData.getLevel3Name())
-                .addCustomDataProperty(LinkerConstants.LEVEL3_ID, linkerData.getLevel3Name())
+                .addCustomDataProperty(LinkerConstants.LEVEL3_ID, linkerData.getLevel3Id())
                 .addContentItems(buo)
                 .logEvent(context);
         new BranchHelperValidation().validateCartQuantity( linkerData.getQuantity());
