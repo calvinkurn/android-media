@@ -1,6 +1,7 @@
 package com.tokopedia.discovery2.datamapper
 
 import com.tokopedia.discovery2.ComponentNames
+import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DiscoveryResponse
 import com.tokopedia.discovery2.data.PageInfo
@@ -96,27 +97,34 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo, private val queryP
         component.getComponentsItem()?.forEachIndexed { index, it ->
             it.apply {
                 if (!data.isNullOrEmpty()) {
-                    val tabData = data!![0]
-                    if (tabData.isSelected) {
-                        val targetComponentIdList = tabData.targetComponentId?.split(",")?.map {
-                            if (isDynamicTabs) DYNAMIC_COMPONENT_IDENTIFIER + index + it.trim() else it.trim()
-                        }
-                        if (!targetComponentIdList.isNullOrEmpty()) {
-                            val tabsChildComponentsItemList: ArrayList<ComponentsItem> = ArrayList()
-                            targetComponentIdList.forEach { componentId ->
-                                if (isDynamicTabs) {
-                                    handleDynamicTabsComponents(componentId, index, component)?.let {
-                                        tabsChildComponentsItemList.add(it)
-                                        listComponents.addAll(parseComponent(it, position))
-                                    }
-                                } else {
-                                    handleAvailableComponents(componentId, component)?.let {
-                                        tabsChildComponentsItemList.add(it)
-                                        listComponents.addAll(parseComponent(it, position))
+                    data?.get(0)?.let { tabData ->
+                        if (tabData.isSelected) {
+                            val saleTabStatus = checkSaleTimer(this)
+                            val targetComponentIdList = tabData.targetComponentId?.split(",")?.map {
+                                if (isDynamicTabs) DYNAMIC_COMPONENT_IDENTIFIER + index + it.trim() else it.trim()
+                            }
+                            if (!targetComponentIdList.isNullOrEmpty()) {
+                                val tabsChildComponentsItemList: ArrayList<ComponentsItem> = ArrayList()
+                                targetComponentIdList.forEach { componentId ->
+                                    if (isDynamicTabs) {
+                                        handleDynamicTabsComponents(componentId, index, component)?.let {
+                                            tabsChildComponentsItemList.add(it)
+                                            listComponents.addAll(parseComponent(it, position))
+                                        }
+                                    } else {
+                                        handleAvailableComponents(componentId, component)?.let {
+                                            tabsChildComponentsItemList.add(it)
+                                            listComponents.addAll(parseComponent(it, position))
+                                        }
                                     }
                                 }
+                                if (saleTabStatus) {
+                                    val componentList = handleProductState(this, ComponentNames.SaleEndState.componentName)
+                                    tabsChildComponentsItemList.addAll(componentList)
+                                    listComponents.addAll(componentList)
+                                }
+                                this.setComponentsItem(tabsChildComponentsItemList)
                             }
-                            this.setComponentsItem(tabsChildComponentsItemList)
                         }
                     }
                 }
@@ -156,6 +164,30 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo, private val queryP
         return tabChildComponentsItem
     }
 
+    private fun checkSaleTimer(tab: ComponentsItem): Boolean {
+        tab.apply {
+            if (!data.isNullOrEmpty()) {
+                data?.get(0)?.let { tabData ->
+                    val targetComponentIdList = tabData.targetComponentId?.split(",")?.map { it.trim() }
+                    if (!targetComponentIdList.isNullOrEmpty()) {
+                        targetComponentIdList.forEach { componentId ->
+                            getComponent(componentId, pageInfo.identifier!!)?.let { componentItem ->
+                                if (componentItem.name == ComponentNames.TimerSprintSale.componentName) {
+                                    if (!componentItem.data.isNullOrEmpty() && Utils.isSaleOver(componentItem.data!![0].endDate
+                                                    ?: "")) {
+                                        data!![0].targetComponentId = componentId
+                                        return true
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return false
+    }
+
     private fun parseProductVerticalList(component: ComponentsItem): List<ComponentsItem> {
         val listComponents: ArrayList<ComponentsItem> = ArrayList()
         if (component.getComponentsItem().isNullOrEmpty() && component.noOfPagesLoaded == 0) {
@@ -178,7 +210,7 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo, private val queryP
         return listComponents
     }
 
-    private fun handleProductState(component: ComponentsItem, componentName: String, queryParameterMap: Map<String, String?>): ArrayList<ComponentsItem> {
+    private fun handleProductState(component: ComponentsItem, componentName: String, queryParameterMap: Map<String, String?>? = null): ArrayList<ComponentsItem> {
         val productState: ArrayList<ComponentsItem> = ArrayList()
         productState.add(ComponentsItem(name = componentName).apply {
             pageEndPoint = component.pageEndPoint
