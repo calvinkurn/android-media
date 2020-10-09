@@ -26,11 +26,14 @@ https://docs.google.com/spreadsheets/d/19l7m_uveuFB6YLVLqSTaclLFf13qmtCB9jQKVwzE
 
 class OfficialStoreTracking(context: Context) {
 
+    val trackerObj
+        get() = tracker
     private val tracker: ContextAnalytics by lazy { TrackApp.getInstance().gtm }
 
-    val trackingViewObj
+    val trackingQueueObj
         get() = trackingQueue
     private val trackingQueue = TrackingQueue(context)
+
     private var trackingIris = IrisAnalytics.getInstance(context)
 
     private val EVENT = "event"

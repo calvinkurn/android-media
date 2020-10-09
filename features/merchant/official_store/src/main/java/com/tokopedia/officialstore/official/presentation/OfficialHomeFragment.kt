@@ -817,13 +817,13 @@ class OfficialHomeFragment :
     }
 
     override fun onClickMixLeftBannerImage(channel: ChannelModel, position: Int) {
-        tracking?.trackingViewObj?.putEETracking(
+        tracking?.trackerObj?.sendEnhanceEcommerceEvent(
                 OSMixLeftTracking.eventClickMixLeftImageBanner(channel, category?.title.orEmpty(), position) as HashMap<String, Any>)
         RouteManager.route(context, channel.channelBanner?.applink.orEmpty())
     }
 
     override fun onMixLeftBannerImpressed(channel: ChannelModel, position: Int) {
-        tracking?.trackingViewObj?.putEETracking(
+        tracking?.trackingQueueObj?.putEETracking(
                 OSMixLeftTracking.eventImpressionMixLeftImageBanner(channel, category?.title.orEmpty(), position) as HashMap<String, Any>)
     }
 
