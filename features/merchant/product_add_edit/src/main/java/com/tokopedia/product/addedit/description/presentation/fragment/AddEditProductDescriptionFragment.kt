@@ -3,6 +3,7 @@ package com.tokopedia.product.addedit.description.presentation.fragment
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
+import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -206,6 +207,9 @@ class AddEditProductDescriptionFragment:
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        // set bg color programatically, to reduce overdraw
+        activity?.window?.decorView?.setBackgroundColor(Color.WHITE)
 
         textFieldDescription.setCounter(MAX_DESCRIPTION_CHAR)
         textFieldDescription.textFieldInput.apply {
@@ -661,7 +665,7 @@ class AddEditProductDescriptionFragment:
                 }
                 val destination = AddEditProductDescriptionFragmentDirections.actionAddEditProductDescriptionFragmentToAddEditProductShipmentFragment()
                 destination.cacheManagerId = cacheManagerId
-                findNavController().navigate(destination)
+                NavigationController.navigate(this@AddEditProductDescriptionFragment, destination)
             }
         }
     }

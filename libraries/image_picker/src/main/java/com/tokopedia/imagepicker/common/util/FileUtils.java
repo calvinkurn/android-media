@@ -1,16 +1,29 @@
 package com.tokopedia.imagepicker.common.util;
 
+import android.content.Context;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Environment;
-import androidx.annotation.NonNull;
+import android.provider.OpenableColumns;
 import android.text.TextUtils;
+import android.util.Log;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.Random;
+
+import timber.log.Timber;
+
 
 public class FileUtils {
     public static final String TOKOPEDIA_DIRECTORY = "Tokopedia/";
@@ -19,6 +32,7 @@ public class FileUtils {
     /**
      * get Tokopedia's public directory
      * it will be create a new directory if doesn't exist
+     *
      * @param: path
      */
     public static File getTokopediaPublicDirectory(String directoryType) {
@@ -90,5 +104,112 @@ public class FileUtils {
             if (inputChannel != null) inputChannel.close();
             if (outputChannel != null) outputChannel.close();
         }
+    }
+
+    private static final int EOF = -1;
+    private static final int DEFAULT_BUFFER_SIZE = 1024 * 4;
+
+    public static @Nullable
+    File from(Context context, Uri uri) {
+        try {
+            InputStream inputStream = context.getContentResolver().openInputStream(uri);
+            File tempFile = createTempFile(context, uri);
+            FileOutputStream out = null;
+            try {
+                out = new FileOutputStream(tempFile);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+            if (inputStream != null) {
+                copy(inputStream, out);
+                inputStream.close();
+            }
+
+            if (out != null) {
+                out.close();
+            }
+            return tempFile;
+        } catch (Exception e) {
+            Timber.w("P1#FILE_UTIL#uri;error='%s'", e.toString());
+            return null;
+        }
+    }
+
+    public static File createTempFile(Context context, Uri uri) {
+        String fileName = getFileName(context, uri);
+        String[] splitName = splitFileName(fileName);
+        File tempFile = null;
+        try {
+            tempFile = File.createTempFile(splitName[0], splitName[1]);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        tempFile = rename(tempFile, fileName);
+        tempFile.deleteOnExit();
+        return tempFile;
+    }
+
+    private static String[] splitFileName(String fileName) {
+        String name = fileName;
+        String extension = "";
+        int i = fileName.lastIndexOf(".");
+        if (i != -1) {
+            name = fileName.substring(0, i);
+            extension = fileName.substring(i);
+        }
+
+        return new String[]{name, extension};
+    }
+
+    private static String getFileName(Context context, Uri uri) {
+        String result = null;
+        if ("content".equals(uri.getScheme())) {
+            Cursor cursor = context.getContentResolver().query(uri, null, null, null, null);
+            try {
+                if (cursor != null && cursor.moveToFirst()) {
+                    result = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                if (cursor != null) {
+                    cursor.close();
+                }
+            }
+        }
+        if (result == null) {
+            result = uri.getPath();
+            if (result != null) {
+                int cut = result.lastIndexOf(File.separator);
+                if (cut != -1) {
+                    result = result.substring(cut + 1);
+                }
+            }
+        }
+        return result;
+    }
+
+    private static File rename(File file, String newName) {
+        File newFile = new File(file.getParent(), newName);
+        if (!newFile.equals(file)) {
+            if (newFile.exists() && newFile.delete()) {
+                Log.d("FileUtil", "Delete old " + newName + " file");
+            }
+            if (file.renameTo(newFile)) {
+                Log.d("FileUtil", "Rename file to " + newName);
+            }
+        }
+        return newFile;
+    }
+
+    private static long copy(InputStream input, OutputStream output) throws IOException {
+        long count = 0;
+        int n;
+        byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
+        while (EOF != (n = input.read(buffer))) {
+            output.write(buffer, 0, n);
+            count += n;
+        }
+        return count;
     }
 }

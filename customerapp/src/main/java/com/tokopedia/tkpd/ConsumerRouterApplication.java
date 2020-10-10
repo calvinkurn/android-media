@@ -101,7 +101,6 @@ import com.tokopedia.tkpd.fcm.appupdate.FirebaseRemoteAppUpdate;
 import com.tokopedia.tkpd.nfc.NFCSubscriber;
 import com.tokopedia.tkpd.react.DaggerReactNativeComponent;
 import com.tokopedia.tkpd.react.ReactNativeComponent;
-import com.tokopedia.tkpd.tkpdreputation.review.shop.view.ReviewShopFragment;
 import com.tokopedia.tkpd.utils.DeferredResourceInitializer;
 import com.tokopedia.tkpd.utils.FingerprintModelGenerator;
 import com.tokopedia.tkpd.utils.GQLPing;
@@ -179,6 +178,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     private Iris mIris;
     private static final String ENABLE_ASYNC_CMPUSHNOTIF_INIT = "android_async_cmpushnotif_init";
     private static final String ENABLE_ASYNC_IRIS_INIT = "android_async_iris_init";
+    private static final String ADD_BROTLI_INTERCEPTOR = "android_add_brotli_interceptor";
 
 
     @Override
