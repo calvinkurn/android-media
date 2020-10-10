@@ -10,8 +10,7 @@ class PlayWidgetSampleAdapter : BaseDiffUtilAdapter<PlayWidgetUiModel>(isFlexibl
 
     init {
         delegatesManager
-                .addDelegate(PlayWidgetSmallAdapterDelegate())
-                .addDelegate(PlayWidgetMediumAdapterDelegate())
+                .addDelegate(PlayWidgetViewAdapterDelegate())
     }
 
     override fun areItemsTheSame(oldItem: PlayWidgetUiModel, newItem: PlayWidgetUiModel): Boolean {
