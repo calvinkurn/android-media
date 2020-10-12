@@ -1,5 +1,6 @@
 package com.tokopedia.cart.view.subscriber
 
+import android.util.Log
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.cart.view.ICartListPresenter
 import com.tokopedia.cart.view.ICartListView
@@ -32,6 +33,7 @@ class AddToCartSubscriber(val view: ICartListView?,
                 view.triggerSendEnhancedEcommerceAddToCartSuccess(addToCartDataModel, productModel)
                 view.resetRecentViewList()
                 presenter.processUpdateCartCounter()
+                Log.d("CartHappyFlowTest", "processInitialGetCartData|0")
                 presenter.processInitialGetCartData("0", false, false)
                 if (addToCartDataModel.data.message.size > 0) {
                     view.showToastMessageGreen(addToCartDataModel.data.message[0])

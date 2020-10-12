@@ -27,7 +27,7 @@ import org.junit.Test
 class CartHappyFlowTest {
 
     @get:Rule
-    val activityRule = ActivityTestRule(InstrumentTestCartActivity::class.java, false, false)
+    val activityRule = IntentsTestRule(InstrumentTestCartActivity::class.java, false, false)
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
 
@@ -36,7 +36,7 @@ class CartHappyFlowTest {
         setupGraphqlMockResponse {
             addMockResponse(GET_CART_LIST_KEY, InstrumentationMockHelper.getRawString(context, R.raw.cart_happy_flow_response), MockModelConfig.FIND_BY_CONTAINS)
         }
-        IdlingRegistry.getInstance().register(SimpleIdlingResource.countingIdlingResource)
+//        IdlingRegistry.getInstance().register(SimpleIdlingResource.countingIdlingResource)
     }
 
     private fun createIntent(): Intent {
@@ -45,9 +45,9 @@ class CartHappyFlowTest {
 
     @Test
     fun happyFlowTest() {
-        SimpleIdlingResource.countingIdlingResource.dumpStateToLogs()
-        val message: StringBuilder = StringBuilder("Resource: ").append(SimpleIdlingResource.countingIdlingResource.name).append(" inflight transaction iddle: ").append(SimpleIdlingResource.countingIdlingResource.isIdleNow)
-        Log.d("CartHappyFlowTest", message.toString())
+//        SimpleIdlingResource.countingIdlingResource.dumpStateToLogs()
+//        val message: StringBuilder = StringBuilder("Resource: ").append(SimpleIdlingResource.countingIdlingResource.name).append(" inflight transaction iddle: ").append(SimpleIdlingResource.countingIdlingResource.isIdleNow)
+//        Log.d("CartHappyFlowTest", message.toString())
 
         activityRule.launchActivity(createIntent())
         Thread.sleep(1000)
@@ -63,6 +63,7 @@ class CartHappyFlowTest {
             for (i in 0 until itemCount) {
                 Log.d("CartHappyFlowTest", "Check position : " + i)
                 scrollCartRecyclerViewToPosition(cartRecyclerView, i)
+//                Thread.sleep(1000)
                 val breakLoop = checkItemType(cartRecyclerView, i, this)
                 if (breakLoop) break
             }
@@ -70,11 +71,14 @@ class CartHappyFlowTest {
 
         }
 
-        Thread.sleep(60000)
+//        Thread.sleep(60000)
     }
 
     private fun checkItemType(cartRecyclerView: RecyclerView, position: Int, cartPageRobot: CartPageRobot): Boolean {
         when (cartRecyclerView.findViewHolderForAdapterPosition(position)) {
+            is CartSectionHeaderViewHolder -> {
+                return true
+            }
             is TickerAnnouncementViewHolder -> {
                 Log.d("CartHappyFlowTest", "TickerAnnouncementViewHolder")
                 cartPageRobot.assertTickerAnnouncementViewHolder(position)
@@ -92,8 +96,8 @@ class CartHappyFlowTest {
                                 position = position,
                                 shopName = "Miniso Indonesia",
                                 shopLocation = "Kota Surabaya",
-                                productName = "MINISO Kotak Penyimpanan Storage Box Container Organizer Tempat Baju - Merah Muda, Lele",
-                                productVariant = "Merah Muda, Lala"
+                                productName = "MINISO Kotak Penyimpanan Storage Box Container Organizer Tempat Baju - Merah Muda, L",
+                                productVariant = "Merah Muda, L"
                         )
                     }
                     POSITION_SECOND_CART_SHOP_VIEW_HOLDER -> {
@@ -107,20 +111,8 @@ class CartHappyFlowTest {
             is ShipmentSellerCashbackViewHolder -> {
                 Log.d("CartHappyFlowTest", "ShipmentSellerCashbackViewHolder")
             }
-            is CartSectionHeaderViewHolder -> {
-                Log.d("CartHappyFlowTest", "CartSectionHeaderViewHolder")
-            }
             is CartEmptyViewHolder -> {
                 Log.d("CartHappyFlowTest", "CartEmptyViewHolder")
-            }
-            is CartRecentViewViewHolder -> {
-                Log.d("CartHappyFlowTest", "CartRecentViewViewHolder")
-            }
-            is CartWishlistViewHolder -> {
-                Log.d("CartHappyFlowTest", "CartWishlistViewHolder")
-            }
-            is CartRecommendationViewHolder -> {
-                Log.d("CartHappyFlowTest", "CartRecommendationViewHolder")
             }
             is DisabledItemHeaderViewHolder -> {
                 Log.d("CartHappyFlowTest", "DisabledItemHeaderViewHolder")
@@ -137,9 +129,6 @@ class CartHappyFlowTest {
             is DisabledAccordionViewHolder -> {
                 Log.d("CartHappyFlowTest", "DisabledAccordionViewHolder")
             }
-            is CartSectionHeaderViewHolder -> {
-                return true
-            }
         }
         return false
     }
@@ -151,15 +140,15 @@ class CartHappyFlowTest {
 
     @After
     fun tearDown() {
-        IdlingRegistry.getInstance().unregister(SimpleIdlingResource.countingIdlingResource)
+//        IdlingRegistry.getInstance().unregister(SimpleIdlingResource.countingIdlingResource)
         activityRule.finishActivity()
     }
 
     companion object {
         const val GET_CART_LIST_KEY = "cart_revamp"
 
-        const val POSITION_FIRST_CART_SHOP_VIEW_HOLDER = 3
-        const val POSITION_SECOND_CART_SHOP_VIEW_HOLDER = 4
-        const val POSITION_THIRD_CART_SHOP_VIEW_HOLDER = 5
+        const val POSITION_FIRST_CART_SHOP_VIEW_HOLDER = 2
+        const val POSITION_SECOND_CART_SHOP_VIEW_HOLDER = 3
+        const val POSITION_THIRD_CART_SHOP_VIEW_HOLDER = 4
     }
 }

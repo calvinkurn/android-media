@@ -2672,7 +2672,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             if (dPresenter.getCartListData()?.shopGroupAvailableDataList?.isNotEmpty() == true) {
                 showMainContainer()
             }
-            dPresenter.processInitialGetCartData(getCartId(), cartListData == null, true)
+            dPresenter.
+            processInitialGetCartData(getCartId(), cartListData == null, true)
         }
     }
 
