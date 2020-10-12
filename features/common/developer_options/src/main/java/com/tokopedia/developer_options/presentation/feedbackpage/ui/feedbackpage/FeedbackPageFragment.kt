@@ -14,6 +14,7 @@ import android.os.Build
 import android.os.Build.VERSION_CODES
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -38,6 +39,7 @@ import com.tokopedia.developer_options.presentation.feedbackpage.domain.request.
 import com.tokopedia.developer_options.presentation.feedbackpage.listener.ImageClickListener
 import com.tokopedia.developer_options.presentation.feedbackpage.ui.dialog.LoadingDialog
 import com.tokopedia.developer_options.presentation.feedbackpage.ui.tickercreated.TicketCreatedActivity
+import com.tokopedia.developer_options.presentation.feedbackpage.utils.EXTRA_IS_CLASS_NAME
 import com.tokopedia.developer_options.presentation.feedbackpage.utils.EXTRA_URI_IMAGE
 import com.tokopedia.developer_options.presentation.preference.Preferences
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
@@ -80,6 +82,7 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
     private var loginState: String = ""
     private var emailTokopedia: String = ""
     private var uriImage: Uri? = null
+    private var className: String? = ""
     private var resizedUriImage: Uri? = null
     private var categoryItem: Int = -1
 
@@ -163,6 +166,8 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
         loadingDialog = context?.let { LoadingDialog(it) }
 
         uriImage = arguments?.getParcelable(EXTRA_URI_IMAGE)
+        className = arguments?.getString(EXTRA_IS_CLASS_NAME, "")
+        Log.d("Class_name", className)
 
         context?.let { ArrayAdapter.createFromResource(it,
                 R.array.bug_type_array,
@@ -425,10 +430,11 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
 
     companion object {
         @JvmStatic
-        fun newInstance(uri: Uri?) : FeedbackPageFragment {
+        fun newInstance(uri: Uri?, className: String?) : FeedbackPageFragment {
             return FeedbackPageFragment().apply {
                 arguments = Bundle().apply {
                     putParcelable(EXTRA_URI_IMAGE, uri)
+                    putString(EXTRA_IS_CLASS_NAME, className)
                 }
             }
         }

@@ -155,7 +155,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         registerActivityLifecycleCallbacks(new Screenshot(getApplicationContext().getContentResolver(), new Screenshot.BottomSheetListener() {
             @Override
             public void onFeedbackClicked(Uri uri) {
-                openFeedbackForm(uri);
+                openFeedbackForm(uri, this.getClass().getSimpleName());
             }
 
         }));
@@ -320,10 +320,11 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         getApplicationContext().startActivity(intent);
     }
 
-    private void openFeedbackForm(Uri uri) {
+    private void openFeedbackForm(Uri uri, String className) {
         Intent intent = RouteManager.getIntent(getApplicationContext(), ApplinkConst.FEEDBACK_FORM);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra("EXTRA_URI_IMAGE", uri);
+        intent.putExtra("EXTRA_IS_CLASS_NAME", className);
         getApplicationContext().startActivity(intent);
     }
 

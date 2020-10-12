@@ -13,7 +13,8 @@ class FeedbackPageActivity : BaseSimpleActivity(), HasComponent<FeedbackPageComp
     override fun getNewFragment(): Fragment? {
         var uriData: Uri?
         val uri = intent.getParcelableExtra<Uri>("EXTRA_URI_IMAGE")?: null
-        return FeedbackPageFragment.newInstance(uri)
+        val classname = intent.getStringExtra("EXTRA_IS_CLASS_NAME")?: ""
+        return FeedbackPageFragment.newInstance(uri, classname)
     }
 
     override fun getComponent(): FeedbackPageComponent {
