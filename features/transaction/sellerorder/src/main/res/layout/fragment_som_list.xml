@@ -128,7 +128,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent">
 
-            <com.tokopedia.sellerorder.list.presentation.customview.FloatingTextButton
+            <com.tokopedia.sellerorder.oldlist.presentation.customview.FloatingTextButton
                 android:id="@+id/filter_action_button"
                 android:contentDescription="@string/content_desc_filter_action_button"
                 android:layout_width="wrap_content"
