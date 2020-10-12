@@ -27,7 +27,7 @@
         app:layout_constraintLeft_toRightOf="@+id/img_deals_banner_icon"
         app:layout_constraintRight_toRightOf="@id/img_chevron_white"
         app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="body_1" />
+        app:typographyType="heading_4" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tg_deal_banner_sub_title"
@@ -42,7 +42,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         android:layout_marginBottom="@dimen/spacing_lvl4"
         android:layout_marginRight="@dimen/spacing_lvl4"
-        app:typographyType="body_2" />
+        app:typographyType="body_3" />
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/img_chevron_white"

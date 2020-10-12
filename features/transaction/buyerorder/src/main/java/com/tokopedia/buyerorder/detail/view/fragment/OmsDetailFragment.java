@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextPaint;
@@ -30,12 +31,14 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
+import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
@@ -72,6 +75,9 @@ import com.tokopedia.buyerorder.detail.view.presenter.OrderListDetailPresenter;
 import com.tokopedia.buyerorder.list.data.ConditionalInfo;
 import com.tokopedia.buyerorder.list.data.OrderCategory;
 import com.tokopedia.buyerorder.list.data.PaymentData;
+import com.tokopedia.coachmark.CoachMark;
+import com.tokopedia.coachmark.CoachMarkBuilder;
+import com.tokopedia.coachmark.CoachMarkItem;
 import com.tokopedia.imagepicker.picker.instagram.data.model.User;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.utils.permission.PermissionCheckerHelper;
@@ -88,7 +94,9 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import io.hansel.core.react.HanselLogsRn;
 import kotlin.Unit;
+import kotlin.jvm.functions.Function0;
 
 /**
  * Created by baghira on 09/05/18.
@@ -108,7 +116,11 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
     private static final String KEY_URI_PARAMETER_EQUAL = "idem_potency_key=";
     public static final String CATEGORY_GIFT_CARD = "Gift-card";
     private static final String INSURANCE_CLAIM = "tokopedia://webview?allow_override=false&url=https://www.tokopedia.com/asuransi/klaim";
+    private static final String PREFERENCES_NAME = "deals_banner_preferences";
+    private static final String SHOW_COACH_MARK_KEY = "show_coach_mark_key_deals_banner";
+
     public static int RETRY_COUNT = 0;
+    private static long DELAY_COACH_MARK_START = 500L;
 
     @Inject
     OrderListDetailPresenter presenter;
@@ -145,7 +157,9 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
     private View bannerDeals;
     private Typography bannerMainTitle;
     private Typography bannerSubTitle;
+    private NestedScrollView parentScroll;
 
+    private LocalCacheHandler localCacheHandler;
 
     @Override
     protected String getScreenName() {
@@ -203,8 +217,9 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
         bannerDeals = view.findViewById(R.id.banner_deals_order_detail);
         bannerMainTitle = view.findViewById(R.id.tg_deal_banner_title);
         bannerSubTitle = view.findViewById(R.id.tg_deal_banner_sub_title);
+        parentScroll = view.findViewById(R.id.parentScroll);
 
-
+        localCacheHandler = new LocalCacheHandler(getContext(),PREFERENCES_NAME);
 
         initInjector();
         setMainViewVisible(View.GONE);
@@ -603,6 +618,37 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
     }
 
     @Override
+    public void setDealsBanner(Items item){
+        MetaDataInfo metaDataInfo = new Gson().fromJson(item.getMetaData(), MetaDataInfo.class);
+        if(metaDataInfo != null){
+            if (metaDataInfo.getCustomLinkType().equalsIgnoreCase(KEY_REDIRECT)) {
+                UserSession userSession = new UserSession(getContext());
+                bannerDeals.setVisibility(View.VISIBLE);
+
+                if(isCoachmarkAlreadyShowed()){
+                    bannerDeals.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            int scrollTo = ((View) bannerDeals.getParent().getParent()).getTop() + bannerDeals.getTop();
+                            parentScroll.smoothScrollTo(0, scrollTo);
+                            addCoachmarkBannerDeals();
+                        }
+                    });
+                }
+
+                bannerMainTitle.setText(getResources().getString(R.string.banner_deals_main_title, userSession.getName()));
+                bannerSubTitle.setText(metaDataInfo.getCustomLinkLabel());
+                bannerDeals.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        RouteManager.route(getAppContext(), metaDataInfo.getCustomLinkAppUrl());
+                    }
+                });
+            }
+        }
+    }
+
+    @Override
     public void setEventDetails(ActionButton actionButton, Items item) {
 
         MetaDataInfo metaDataInfo = new Gson().fromJson(item.getMetaData(), MetaDataInfo.class);
@@ -631,19 +677,6 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
                 }
             });
 
-        }
-
-        if(item.getCategory().equalsIgnoreCase(OrderCategory.DEAL) && metaDataInfo.getCustomLinkType().equalsIgnoreCase(KEY_REDIRECT)){
-            UserSession userSession = new UserSession(getContext());
-            bannerDeals.setVisibility(View.VISIBLE);
-            bannerMainTitle.setText(getResources().getString(R.string.banner_deals_main_title, userSession.getName()));
-            bannerSubTitle.setText(metaDataInfo.getCustomLinkLabel());
-            bannerDeals.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    RouteManager.route(getAppContext(), metaDataInfo.getCustomLinkAppUrl());
-                }
-            });
         }
 
         if (!item.getCategory().equalsIgnoreCase(OrderCategory.EVENT)){
@@ -800,6 +833,32 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
         }
         closeButton.setOnClickListener(v1 -> dialog.dismiss());
         dialog.show();
+    }
+
+    private void addCoachmarkBannerDeals(){
+        CoachMarkItem coachMarkItem = new CoachMarkItem(bannerDeals,
+                getResources().getString(R.string.banner_deals_coachmark_title),
+                getResources().getString(R.string.banner_deals_coachmark_sub_title));
+
+        ArrayList<CoachMarkItem> listCoachMark = new ArrayList<>();
+        listCoachMark.add(coachMarkItem);
+
+        CoachMarkBuilder coachMarkBuilder = new CoachMarkBuilder();
+        CoachMark coachMark =  coachMarkBuilder.build();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                coachMark.show(getActivity(),"",listCoachMark);
+            }
+        }, DELAY_COACH_MARK_START);
+
+        localCacheHandler.putBoolean(SHOW_COACH_MARK_KEY,false);
+        localCacheHandler.applyEditor();
+
+    }
+
+    private Boolean isCoachmarkAlreadyShowed(){
+        return localCacheHandler.getBoolean(SHOW_COACH_MARK_KEY,true);
     }
 
     @Override
