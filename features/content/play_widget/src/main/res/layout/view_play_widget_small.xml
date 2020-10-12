@@ -44,7 +44,7 @@
     
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_widget_card_small"
-        android:layout_width="@dimen/layout_lvl0"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:paddingTop="@dimen/play_widget_dp_12"

@@ -14,7 +14,7 @@ class PlayWidgetSmallUiMapper @Inject constructor(
         private val videoMapper: PlayWidgetVideoMapper
 ) : PlayWidgetMapper {
 
-    override fun mapWidget(data: PlayWidget): PlayWidgetUiModel = PlayWidgetUiModel.Small.Widget(
+    override fun mapWidget(data: PlayWidget): PlayWidgetUiModel = PlayWidgetUiModel.Small(
             title = data.meta.widgetTitle,
             actionTitle = data.meta.buttonText,
             actionAppLink = data.meta.buttonApplink,

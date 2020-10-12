@@ -5,35 +5,27 @@ package com.tokopedia.play.widget.ui.model
  */
 sealed class PlayWidgetUiModel {
 
-    sealed class Small : PlayWidgetUiModel() {
+    data class Small(
+            val title: String,
+            val actionTitle: String,
+            val actionAppLink: String,
+            val actionWebLink: String,
+            val config: PlayWidgetConfigUiModel,
+            val useHeader: Boolean,
+            val items: List<PlayWidgetSmallItemUiModel>
+    ) : PlayWidgetUiModel()
 
-        data class Widget(
-                val title: String,
-                val actionTitle: String,
-                val actionAppLink: String,
-                val actionWebLink: String,
-                val config: PlayWidgetConfigUiModel,
-                val useHeader: Boolean,
-                val items: List<PlayWidgetSmallItemUiModel>
-        ) : Small()
+    data class Medium(
+            val title: String,
+            val actionTitle: String,
+            val actionAppLink: String,
+            val actionWebLink: String,
+            val config: PlayWidgetConfigUiModel,
+            val background: PlayWidgetBackgroundUiModel,
+            val items: List<PlayWidgetMediumItemUiModel>
+    ) : PlayWidgetUiModel()
 
-        object Empty : Small()
-    }
-
-    sealed class Medium : PlayWidgetUiModel() {
-
-        data class Widget(
-                val title: String,
-                val actionTitle: String,
-                val actionAppLink: String,
-                val actionWebLink: String,
-                val config: PlayWidgetConfigUiModel,
-                val background: PlayWidgetBackgroundUiModel,
-                val items: List<PlayWidgetMediumItemUiModel>
-        ) : Medium()
-
-        object Empty : Medium()
-    }
+    object Placeholder : PlayWidgetUiModel()
 }
 
 //data class PlayWidgetSmallUiModel(
