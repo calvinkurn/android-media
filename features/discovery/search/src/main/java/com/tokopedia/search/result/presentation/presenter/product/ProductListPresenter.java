@@ -47,6 +47,7 @@ import com.tokopedia.search.result.presentation.model.RecommendationTitleViewMod
 import com.tokopedia.search.result.presentation.model.RelatedViewModel;
 import com.tokopedia.search.result.presentation.model.SeparatorViewModel;
 import com.tokopedia.search.result.presentation.model.SuggestionViewModel;
+import com.tokopedia.search.utils.SchedulersProvider;
 import com.tokopedia.search.utils.SearchFilterUtilsKt;
 import com.tokopedia.search.utils.UrlParamUtils;
 import com.tokopedia.sortfilter.SortFilterItem;
@@ -83,6 +84,7 @@ import dagger.Lazy;
 import kotlin.Unit;
 import kotlin.collections.CollectionsKt;
 import kotlin.jvm.functions.Function1;
+import rx.Observable;
 import rx.Subscriber;
 
 import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_SHOP_RATING;
@@ -122,6 +124,7 @@ final class ProductListPresenter
     private Lazy<UseCase<DynamicFilterModel>> getDynamicFilterUseCase;
     private Lazy<UseCase<String>> getProductCountUseCase;
     private TopAdsUrlHitter topAdsUrlHitter;
+    private SchedulersProvider schedulersProvider;
 
     private boolean enableGlobalNavWidget = true;
     private String additionalParams = "";
@@ -161,6 +164,7 @@ final class ProductListPresenter
             @Named(SearchConstant.SearchProduct.GET_PRODUCT_COUNT_USE_CASE)
             Lazy<UseCase<String>> getProductCountUseCase,
             TopAdsUrlHitter topAdsUrlHitter,
+            SchedulersProvider schedulersProvider,
             Lazy<RemoteConfig> remoteConfig
     ) {
         this.searchProductFirstPageUseCase = searchProductFirstPageUseCase;
@@ -173,6 +177,7 @@ final class ProductListPresenter
         this.getDynamicFilterUseCase = getDynamicFilterUseCase;
         this.getProductCountUseCase = getProductCountUseCase;
         this.topAdsUrlHitter = topAdsUrlHitter;
+        this.schedulersProvider = schedulersProvider;
     }
 
     @Override
@@ -1203,6 +1208,14 @@ final class ProductListPresenter
     private void getViewToSendTrackingSearchAttempt(ProductViewModel productViewModel) {
         if (getView() == null) return;
 
+        isFirstTimeLoad = false;
+
+        Observable.just(productViewModel)
+                .subscribeOn(schedulersProvider.computation())
+                .subscribe(this::sendGeneralSearchTracking, Throwable::printStackTrace);
+    }
+
+    private void sendGeneralSearchTracking(ProductViewModel productViewModel) {
         JSONArray afProdIds = new JSONArray();
         HashMap<String, String> moengageTrackingCategory = new HashMap<>();
         Set<String> categoryIdMapping = new HashSet<>();
@@ -1226,8 +1239,6 @@ final class ProductListPresenter
         getView().sendTrackingEventAppsFlyerViewListingSearch(afProdIds, query, prodIdArray);
         getView().sendTrackingEventMoEngageSearchAttempt(query, !productViewModel.getProductList().isEmpty(), moengageTrackingCategory);
         getView().sendTrackingGTMEventSearchAttempt(createGeneralSearchTrackingModel(productViewModel, query, categoryIdMapping, categoryNameMapping));
-
-        isFirstTimeLoad = false;
     }
 
     private GeneralSearchTrackingModel createGeneralSearchTrackingModel(ProductViewModel productViewModel, String query, Set<String> categoryIdMapping, Set<String> categoryNameMapping) {
