@@ -398,13 +398,15 @@ open class WishlistFragment: Fragment(), WishlistListener, TopAdsListener {
             }
             is RecommendationCarouselItemDataModel -> {
                 WishlistTracking.clickRecommendation(dataModel.recommendationItem, position)
-                TopAdsUrlHitter(context).hitClickUrl(
-                        className,
-                        dataModel.recommendationItem.clickUrl,
-                        dataModel.recommendationItem.productId.toString(),
-                        dataModel.recommendationItem.name,
-                        dataModel.recommendationItem.imageUrl
-                )
+                if (dataModel.recommendationItem.isTopAds) {
+                    TopAdsUrlHitter(context).hitClickUrl(
+                            className,
+                            dataModel.recommendationItem.clickUrl,
+                            dataModel.recommendationItem.productId.toString(),
+                            dataModel.recommendationItem.name,
+                            dataModel.recommendationItem.imageUrl
+                    )
+                }
                 viewModel.onProductClick(
                         dataModel.recommendationItem.productId,
                         parentPosition,
@@ -413,13 +415,15 @@ open class WishlistFragment: Fragment(), WishlistListener, TopAdsListener {
             }
             is RecommendationItemDataModel -> {
                 WishlistTracking.clickRecommendation(dataModel.recommendationItem, position)
-                TopAdsUrlHitter(context).hitClickUrl(
-                        className,
-                        dataModel.recommendationItem.clickUrl,
-                        dataModel.recommendationItem.productId.toString(),
-                        dataModel.recommendationItem.name,
-                        dataModel.recommendationItem.imageUrl
-                )
+                if (dataModel.recommendationItem.isTopAds) {
+                    TopAdsUrlHitter(context).hitClickUrl(
+                            className,
+                            dataModel.recommendationItem.clickUrl,
+                            dataModel.recommendationItem.productId.toString(),
+                            dataModel.recommendationItem.name,
+                            dataModel.recommendationItem.imageUrl
+                    )
+                }
                 viewModel.onProductClick(
                         dataModel.recommendationItem.productId,
                         parentPosition,
@@ -464,23 +468,27 @@ open class WishlistFragment: Fragment(), WishlistListener, TopAdsListener {
         when (dataModel) {
             is WishlistItemDataModel -> WishlistTracking.impressionProduct(trackingQueue, dataModel.productItem, position.toString())
             is RecommendationItemDataModel -> {
-                TopAdsUrlHitter(context).hitImpressionUrl(
-                        className,
-                        dataModel.recommendationItem.trackerImageUrl,
-                        dataModel.recommendationItem.productId.toString(),
-                        dataModel.recommendationItem.name,
-                        dataModel.recommendationItem.imageUrl
-                )
+                if (dataModel.recommendationItem.isTopAds) {
+                    TopAdsUrlHitter(context).hitImpressionUrl(
+                            className,
+                            dataModel.recommendationItem.trackerImageUrl,
+                            dataModel.recommendationItem.productId.toString(),
+                            dataModel.recommendationItem.name,
+                            dataModel.recommendationItem.imageUrl
+                    )
+                }
                 WishlistTracking.impressionEmptyWishlistRecommendation(trackingQueue, dataModel.recommendationItem, position)
             }
             is RecommendationCarouselItemDataModel -> {
-                TopAdsUrlHitter(context).hitImpressionUrl(
-                        className,
-                        dataModel.recommendationItem.trackerImageUrl,
-                        dataModel.recommendationItem.productId.toString(),
-                        dataModel.recommendationItem.name,
-                        dataModel.recommendationItem.imageUrl
-                )
+                if (dataModel.recommendationItem.isTopAds) {
+                    TopAdsUrlHitter(context).hitImpressionUrl(
+                            className,
+                            dataModel.recommendationItem.trackerImageUrl,
+                            dataModel.recommendationItem.productId.toString(),
+                            dataModel.recommendationItem.name,
+                            dataModel.recommendationItem.imageUrl
+                    )
+                }
                 WishlistTracking.impressionRecommendation(trackingQueue, dataModel.recommendationItem, position)
             }
         }
