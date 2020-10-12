@@ -70,7 +70,7 @@ dependencies {
     implementation project(rootProject.ext.features.tokopointsNotification)
     implementation project(rootProject.ext.features.topAdsSdk)
     implementation project(rootProject.ext.features.wishlistCommon)
-    implementation project(rootProject.ext.features.homeNav)
+//    implementation project(rootProject.ext.features.homeNav)
 
     // Library
     implementation project(rootProject.ext.libraries.analytics)
