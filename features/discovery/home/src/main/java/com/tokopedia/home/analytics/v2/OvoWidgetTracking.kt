@@ -67,7 +67,7 @@ object OvoWidgetTracking: BaseTracking() {
         tracker?.sendGeneralEvent(
                 Event.CLICK_HOMEPAGE,
                 Category.HOMEPAGE,
-                String.format("%s %s - %s", Action.CLICK_ON, LABEL_TOKOPOINTS, NON_LOGIN),
+                String.format(Action.CLICK_ON + " - %s", LABEL_TOKOPOINTS, NON_LOGIN),
                 Label.NONE
         )
     }
@@ -77,7 +77,7 @@ object OvoWidgetTracking: BaseTracking() {
         tracker?.sendGeneralEvent(
                 Event.CLICK_HOMEPAGE,
                 Category.HOMEPAGE,
-                String.format("%s %s %s", Action.CLICK_ON, QR_CODE),
+                String.format(Action.CLICK_ON + " %s", QR_CODE),
                 Label.NONE
         )
     }
@@ -107,7 +107,7 @@ object OvoWidgetTracking: BaseTracking() {
             DataLayer.mapOf(
                 Event.KEY, Event.CLICK_HOMEPAGE,
                 Category.KEY, Category.HOMEPAGE,
-                Action.KEY, Action.CLICK_ON + BEBAS_ONGKIR_KUOTA,
+                Action.KEY, String.format(Action.CLICK_ON, BEBAS_ONGKIR_KUOTA),
                 Label.KEY, Label.NONE,
                 BusinessUnit.KEY, BusinessUnit.DEFAULT,
                 CurrentSite.KEY, CurrentSite.DEFAULT,
