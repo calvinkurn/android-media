@@ -3,7 +3,7 @@ package com.tokopedia.fcmcommon.service
 import android.content.Context
 import android.content.Intent
 import androidx.core.app.JobIntentService
-import com.crashlytics.android.Crashlytics
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.fcmcommon.BuildConfig
 import com.tokopedia.fcmcommon.FirebaseMessagingManager
 import com.tokopedia.fcmcommon.di.DaggerFcmComponent
@@ -12,6 +12,7 @@ import timber.log.Timber
 import javax.inject.Inject
 
 class SyncFcmTokenService : JobIntentService(), FirebaseMessagingManager.SyncListener {
+
 
     @Inject
     lateinit var fcmManager: FirebaseMessagingManager
@@ -56,7 +57,7 @@ class SyncFcmTokenService : JobIntentService(), FirebaseMessagingManager.SyncLis
         private fun logExceptionToCrashlytic(exception: Exception) {
             try {
                 if (!BuildConfig.DEBUG) {
-                    Crashlytics.logException(exception)
+                    FirebaseCrashlytics.getInstance().recordException(exception)
                 }
             } catch (e: Exception) {
                 e.printStackTrace()

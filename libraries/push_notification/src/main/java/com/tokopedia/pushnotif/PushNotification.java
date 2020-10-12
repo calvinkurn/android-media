@@ -8,7 +8,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 
-import com.crashlytics.android.Crashlytics;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.config.GlobalConfig;
@@ -119,7 +119,7 @@ public class PushNotification {
     private static void executeCrashlyticLog(Context context, Bundle data, String message) {
         if (!BuildConfig.DEBUG) {
             String logMessage = generateLogMessage(context, data, message);
-            Crashlytics.logException(new Exception(logMessage));
+            FirebaseCrashlytics.getInstance().recordException(new Exception(logMessage));
             Timber.w(
                     "P2#LOG_PUSH_NOTIF#'%s';data='%s'",
                     "PushNotification::notify(Context context, Bundle data)",
