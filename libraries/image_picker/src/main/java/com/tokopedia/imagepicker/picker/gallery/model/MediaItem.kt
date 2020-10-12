@@ -54,7 +54,7 @@ class MediaItem(val id: Long,
             }
             return MediaItem(cursor.getLong(cursor.getColumnIndex(MediaStore.Files.FileColumns._ID)),
                     cursor.getString(cursor.getColumnIndex(MediaStore.MediaColumns.DATA)),
-                    cursor.getString(cursor.getColumnIndex(MediaStore.MediaColumns.MIME_TYPE)),
+                    cursor.getString(cursor.getColumnIndex(MediaStore.MediaColumns.MIME_TYPE)) ?: "",
                     cursor.getLong(cursor.getColumnIndex(MediaStore.MediaColumns.SIZE)),
                     videoDuration,
                     if (resolution > 0) cursor.getString(resolution) else "",
