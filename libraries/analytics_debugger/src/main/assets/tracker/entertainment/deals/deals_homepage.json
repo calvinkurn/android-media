@@ -307,6 +307,18 @@
       "userId": "{{.*}}",
       "businessUnit": "travel & entertainment",
       "category": "deals"
+    }, {
+      "event": "clickDeals",
+      "eventCategory": "digital - deals",
+      "eventAction": "click search",
+      "eventLabel": "-",
+      "screenName": "/deals/search",
+      "currentSite": "tokopediadigitaldeals",
+      "clientId": "{{.+}}",
+      "sessionIris": "{{.+}}",
+      "userId": "{{.*}}",
+      "businessUnit": "travel & entertainment",
+      "category": "deals"
     }
   ]
 }

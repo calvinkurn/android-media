@@ -11,7 +11,8 @@ data class DealsBrandsDataView(
         val seeAllText: String = "",
         val seeAllUrl: String = "",
         var brands: List<Brand> = listOf(),
-        var oneRow: Boolean = false
+        var oneRow: Boolean = false,
+        val category: String = ""
 ): DealsBaseItemDataView() {
     data class Brand(
             var id: String = "",

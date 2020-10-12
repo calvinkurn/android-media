@@ -63,6 +63,7 @@ class DealsHomeActivityTest {
     @Test
     fun testHomeLayout() {
         impressionOnLayout()
+        clickOnSearchBar()
         clickOnOrderList()
         clickOnHomepageBanner()
         actionOnCategoryViewHolder()
@@ -81,6 +82,13 @@ class DealsHomeActivityTest {
         activityRule.activity.setCurrentLocation(Location())
 
         Thread.sleep(2000)
+    }
+
+    private fun clickOnSearchBar() {
+        Thread.sleep(2000)
+        onView(withId(com.tokopedia.unifycomponents.R.id.searchbar_textfield)).perform(click())
+        Thread.sleep(2000)
+        onView(withId(com.tokopedia.unifycomponents.R.id.searchbar_textfield)).perform(click())
     }
 
     private fun actionOnPopularLandmarkViewHolder() {
