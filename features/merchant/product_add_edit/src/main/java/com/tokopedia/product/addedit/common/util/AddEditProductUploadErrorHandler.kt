@@ -81,6 +81,7 @@ object AddEditProductUploadErrorHandler {
             UploaderUseCase.TIMEOUT_ERROR -> ERROR_UPLOADER_TIMEOUT
             UploaderUseCase.NETWORK_ERROR -> ERROR_UPLOADER_NETWORK_ERROR
             UploaderUseCase.SOURCE_NOT_FOUND -> ERROR_UPLOADER_SOURCE_UNAVAILABLE
+            UploaderUseCase.UNKNOWN_ERROR -> ERROR_UPLOADER_UPLOAD_FAILED
             else -> {
                 if (messageFromUploader.isEmpty()) {
                     ERROR_UPLOADER_UPLOAD_FAILED

@@ -88,7 +88,11 @@ class UploaderUseCase @Inject constructor(
         return upload.data?.let {
             UploadResult.Success(it.uploadId)
         }?: UploadResult.Error(
-                upload.header.messages.first()
+                if (upload.header.messages.isNotEmpty()) {
+                    upload.header.messages.first()
+                } else {
+                    UNKNOWN_ERROR // error handling, when server returned empty error message
+                }
         )
     }
 
@@ -144,5 +148,6 @@ class UploaderUseCase @Inject constructor(
         const val NETWORK_ERROR = "Oops, ada gangguan yang perlu kami bereskan. Refresh atau balik lagi nanti."
         const val FILE_NOT_FOUND = "Oops, file tidak ditemukan."
         const val SOURCE_NOT_FOUND = "Oops, source tidak ditemukan."
+        const val UNKNOWN_ERROR = "Upload gagal, silakan coba kembali beberapa saat lagi"
     }
 }
