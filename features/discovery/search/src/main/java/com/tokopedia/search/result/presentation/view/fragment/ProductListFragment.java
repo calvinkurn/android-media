@@ -541,6 +541,7 @@ public class ProductListFragment
     public void sendProductImpressionTrackingEvent(ProductItemViewModel item) {
         String userId = getUserId();
         String searchRef = getSearchRef();
+        String eventLabel = getSearchProductTrackingEventLabel(item);
         List<Object> dataLayerList = new ArrayList<>();
         List<ProductItemViewModel> productItemViewModels = new ArrayList<>();
 
@@ -550,15 +551,19 @@ public class ProductListFragment
         productItemViewModels.add(item);
 
         if(irisSession != null){
-            SearchTracking.eventImpressionSearchResultProduct(trackingQueue, dataLayerList, getQueryKey(),
+            SearchTracking.eventImpressionSearchResultProduct(trackingQueue, dataLayerList, eventLabel,
                     irisSession.getSessionId());
         }else {
-            SearchTracking.eventImpressionSearchResultProduct(trackingQueue, dataLayerList, getQueryKey(), "");
+            SearchTracking.eventImpressionSearchResultProduct(trackingQueue, dataLayerList, eventLabel, "");
         }
     }
 
     private String getSearchRef() {
         return searchParameter.get(SearchApiConst.SEARCH_REF);
+    }
+
+    private String getSearchProductTrackingEventLabel(ProductItemViewModel item) {
+        return TextUtils.isEmpty(item.getPageTitle()) ? getQueryKey() : item.getPageTitle();
     }
 
     @Override
@@ -718,6 +723,7 @@ public class ProductListFragment
 
     @Override
     public void sendGTMTrackingProductClick(ProductItemViewModel item, String userId) {
+        String eventLabel = getSearchProductTrackingEventLabel(item);
         String filterSortParams = searchParameter == null ? "" :
                 SearchFilterUtilsKt.getSortFilterParamsString(searchParameter.getSearchParameterMap());
 
@@ -725,7 +731,7 @@ public class ProductListFragment
         SearchTracking.trackEventClickSearchResultProduct(
                 item.getProductAsObjectDataLayer(userId, filterSortParams, searchRef),
                 item.isOrganicAds(),
-                getQueryKey(),
+                eventLabel,
                 filterSortParams
         );
     }
