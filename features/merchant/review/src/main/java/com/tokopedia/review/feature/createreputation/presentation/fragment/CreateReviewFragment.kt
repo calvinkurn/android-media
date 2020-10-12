@@ -586,14 +586,19 @@ class CreateReviewFragment : BaseDaggerFragment(),
                         override fun onDescriptionViewClick(linkUrl: CharSequence) {
                             val bottomSheet = BottomSheetUnify()
                             val view = View.inflate(context, R.layout.incentive_ovo_bottom_sheet_dialog, null)
-                            bottomSheet.setChild(view)
-                            initView(view, data, bottomSheet)
-                            activity?.supportFragmentManager?.let { bottomSheet.show(it, bottomSheet.tag) }
-                            bottomSheet.setCloseClickListener {
-                                ReviewTracking.onClickDismissIncentiveOvoBottomSheetTracker("")
-                                bottomSheet.dismiss()
+                            bottomSheet.apply {
+                                setChild(view)
+                                initView(view, data, bottomSheet)
+                                setCloseClickListener {
+                                    ReviewTracking.onClickDismissIncentiveOvoBottomSheetTracker("")
+                                    bottomSheet.dismiss()
+                                }
+                                setShowListener {
+                                    bottomSheetWrapper.setPadding(0, 16.toPx(), 0, 0)
+                                }
+                                activity?.supportFragmentManager?.let { bottomSheet.show(it, bottomSheet.tag) }
+                                ReviewTracking.onClickReadSkIncentiveOvoTracker(tickerTitle, "")
                             }
-                            ReviewTracking.onClickReadSkIncentiveOvoTracker(tickerTitle, "")
                         }
 
                         override fun onDismiss() {

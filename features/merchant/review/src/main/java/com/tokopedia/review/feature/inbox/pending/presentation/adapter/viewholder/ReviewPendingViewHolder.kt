@@ -9,6 +9,7 @@ import com.tokopedia.reputation.common.view.AnimatedRatingPickerReviewPendingVie
 import com.tokopedia.review.R
 import com.tokopedia.review.feature.inbox.pending.presentation.adapter.uimodel.ReviewPendingUiModel
 import com.tokopedia.review.feature.inbox.pending.presentation.util.ReviewPendingItemListener
+import com.tokopedia.unifycomponents.toPx
 import kotlinx.android.synthetic.main.item_review_pending.view.*
 
 class ReviewPendingViewHolder(view: View, private val reviewPendingItemListener: ReviewPendingItemListener) : AbstractViewHolder<ReviewPendingUiModel>(view) {
@@ -33,7 +34,7 @@ class ReviewPendingViewHolder(view: View, private val reviewPendingItemListener:
     }
 
     private fun showProductImage(productImageUrl: String) {
-        if(productImageUrl.isEmpty()) {
+        if (productImageUrl.isEmpty()) {
             showBrokenProductImage()
             return
         }
@@ -52,7 +53,7 @@ class ReviewPendingViewHolder(view: View, private val reviewPendingItemListener:
     }
 
     private fun showProductVariantName(productVariantName: String) {
-        if(productVariantName.isEmpty()) {
+        if (productVariantName.isEmpty()) {
             itemView.reviewPendingProductVariant.hide()
             return
         }
@@ -66,7 +67,7 @@ class ReviewPendingViewHolder(view: View, private val reviewPendingItemListener:
         itemView.setOnClickListener {
             reviewPendingItemListener.trackCardClicked(reputationId, productId)
             itemView.reviewPendingStars.renderInitialReviewWithData(5)
-            Handler().postDelayed({reviewPendingItemListener.onStarsClicked(reputationId, productId, 5, inboxReviewId, seen)}, 200)
+            Handler().postDelayed({ reviewPendingItemListener.onStarsClicked(reputationId, productId, 5, inboxReviewId, seen) }, 200)
         }
     }
 
@@ -76,7 +77,7 @@ class ReviewPendingViewHolder(view: View, private val reviewPendingItemListener:
             setListener(object : AnimatedRatingPickerReviewPendingView.AnimatedReputationListener {
                 override fun onClick(position: Int) {
                     reviewPendingItemListener.trackStarsClicked(reputationId, productId, position)
-                    Handler().postDelayed({reviewPendingItemListener.onStarsClicked(reputationId, productId, position, inboxReviewId, seen)}, 200)
+                    Handler().postDelayed({ reviewPendingItemListener.onStarsClicked(reputationId, productId, position, inboxReviewId, seen) }, 200)
                 }
             })
             show()
@@ -92,9 +93,12 @@ class ReviewPendingViewHolder(view: View, private val reviewPendingItemListener:
     }
 
     private fun showOvoIncentive(isEligible: Boolean) {
-        if(isEligible) {
+        if (isEligible) {
             itemView.reviewPendingOvoIncentiveLabel.apply {
-                setLabelImage(R.drawable.ic_ovo_incentive_label)
+                val ovoIncentiveIcon = ContextCompat.getDrawable(context, R.drawable.ic_ovo_incentive_label)
+                ovoIncentiveIcon?.setBounds(0, 0, 16.toPx(), 16.toPx())
+                setCompoundDrawables(ovoIncentiveIcon, null, null, null)
+                compoundDrawablePadding = 8.toPx()
                 show()
             }
             return

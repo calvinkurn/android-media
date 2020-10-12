@@ -49,6 +49,7 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.TickerCallback
+import com.tokopedia.unifycomponents.toPx
 import kotlinx.android.synthetic.main.fragment_review_pending.*
 import kotlinx.android.synthetic.main.incentive_ovo_bottom_sheet_dialog.view.*
 import kotlinx.android.synthetic.main.item_incentive_ovo.view.*
@@ -362,13 +363,18 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
     private fun onClickOvoIncentiveTickerDescription(productRevIncentiveOvoDomain: ProductRevIncentiveOvoDomain) {
         val bottomSheet = BottomSheetUnify()
         val view = View.inflate(context, R.layout.incentive_ovo_bottom_sheet_dialog, null)
-        bottomSheet.setChild(view)
-        activity?.supportFragmentManager?.let { bottomSheet.show(it, bottomSheet.tag) }
-        bottomSheet.setCloseClickListener {
-            ReviewTracking.onClickDismissIncentiveOvoBottomSheetTracker(ReviewInboxTrackingConstants.PENDING_TAB)
-            bottomSheet.dismiss()
+        bottomSheet.apply {
+            setChild(view)
+            setCloseClickListener {
+                ReviewTracking.onClickDismissIncentiveOvoBottomSheetTracker(ReviewInboxTrackingConstants.PENDING_TAB)
+                bottomSheet.dismiss()
+            }
+            setShowListener {
+                bottomSheetWrapper.setPadding(0, 16.toPx(), 0, 0)
+            }
+            initView(view, productRevIncentiveOvoDomain, bottomSheet)
         }
-        initView(view, productRevIncentiveOvoDomain, bottomSheet)
+        activity?.supportFragmentManager?.let { bottomSheet.show(it, bottomSheet.tag) }
         ReviewTracking.onClickReadSkIncentiveOvoTracker(productRevIncentiveOvoDomain.productrevIncentiveOvo?.ticker?.title, ReviewInboxTrackingConstants.PENDING_TAB)
     }
 
@@ -376,7 +382,8 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
         with(bottomSheet) {
             view.apply {
                 tgIncentiveOvoTitle.text = productRevIncentiveOvoDomain.productrevIncentiveOvo?.title
-                tgIncentiveOvoSubtitle.text = HtmlLinkHelper(context, productRevIncentiveOvoDomain.productrevIncentiveOvo?.subtitle ?: "").spannedString
+                tgIncentiveOvoSubtitle.text = HtmlLinkHelper(context, productRevIncentiveOvoDomain.productrevIncentiveOvo?.subtitle
+                        ?: "").spannedString
                 incentiveOvoBtnContinueReview.apply {
                     setOnClickListener {
                         dismiss()
@@ -388,7 +395,8 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
 
             view.tgIncentiveOvoDescription.text = productRevIncentiveOvoDomain.productrevIncentiveOvo?.description
 
-            val adapterIncentiveOvo = IncentiveOvoAdapter(productRevIncentiveOvoDomain.productrevIncentiveOvo?.numberedList ?: emptyList())
+            val adapterIncentiveOvo = IncentiveOvoAdapter(productRevIncentiveOvoDomain.productrevIncentiveOvo?.numberedList
+                    ?: emptyList())
             view.rvIncentiveOvoExplain.apply {
                 layoutManager = LinearLayoutManager(context)
                 adapter = adapterIncentiveOvo
