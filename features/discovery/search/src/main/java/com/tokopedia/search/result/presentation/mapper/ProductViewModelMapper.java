@@ -15,7 +15,6 @@ import com.tokopedia.search.result.presentation.model.LabelGroupViewModel;
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
 import com.tokopedia.search.result.presentation.model.ProductViewModel;
 import com.tokopedia.search.result.presentation.model.RelatedViewModel;
-import com.tokopedia.search.result.presentation.model.SingleGlobalNavViewModel;
 import com.tokopedia.search.result.presentation.model.SuggestionViewModel;
 import com.tokopedia.search.result.presentation.model.TickerViewModel;
 import com.tokopedia.search.result.presentation.ShopRatingABTestStrategy;
@@ -39,15 +38,8 @@ public class ProductViewModelMapper {
         ProductViewModel productViewModel = new ProductViewModel();
         productViewModel.setAdsModel(searchProductModel.getTopAdsModel());
 
-        SearchProductModel.GlobalNavData globalNavData = searchProductModel.getGlobalSearchNavigation().getData();
-        if (isListContainItems(globalNavData.getGlobalNavItems())) {
-            if (isListContainSingleItem(globalNavData.getGlobalNavItems())) {
-                productViewModel.setSingleGlobalNavViewModel(convertToSingleGlobalNavViewModel(searchProductModel.getGlobalSearchNavigation()));
-                productViewModel.setIsSingleGlobalNav(true);
-            }
-            else {
-                productViewModel.setGlobalNavViewModel(convertToViewModel(searchProductModel.getGlobalSearchNavigation()));
-            }
+        if (isListContainItems(searchProductModel.getGlobalSearchNavigation().getData().getGlobalNavItems())) {
+            productViewModel.setGlobalNavViewModel(convertToViewModel(searchProductModel.getGlobalSearchNavigation()));
         }
         productViewModel.setCpmModel(searchProductModel.getCpmModel());
         productViewModel.setRelatedViewModel(convertToRelatedViewModel(searchProductData.getRelated()));
@@ -76,37 +68,6 @@ public class ProductViewModelMapper {
 
     private boolean isListContainItems(List list) {
         return list != null && !list.isEmpty();
-    }
-
-    private boolean isListContainSingleItem(List list) {
-        return list.size() == 1;
-    }
-
-    private SingleGlobalNavViewModel convertToSingleGlobalNavViewModel(SearchProductModel.GlobalSearchNavigation globalSearchNavigation) {
-        SearchProductModel.GlobalNavItem globalNavItem = globalSearchNavigation.getData().getGlobalNavItems().get(0);
-
-        return new SingleGlobalNavViewModel(
-                globalSearchNavigation.getData().getSource(),
-                globalSearchNavigation.getData().getKeyword(),
-                globalSearchNavigation.getData().getTitle(),
-                globalSearchNavigation.getData().getNavTemplate(),
-                globalSearchNavigation.getData().getBackground(),
-                globalSearchNavigation.getData().isShowTopAds(),
-                convertToSingleGlobalNavViewModel(globalNavItem)
-        );
-    }
-
-    private  SingleGlobalNavViewModel.Item convertToSingleGlobalNavViewModel(SearchProductModel.GlobalNavItem item) {
-        return new SingleGlobalNavViewModel.Item(
-                    item.getCategoryName(),
-                    item.getName(),
-                    item.getInfo(),
-                    item.getImageUrl(),
-                    item.getApplink(),
-                    item.getUrl(),
-                    item.getSubtitle(),
-                    item.getLogoUrl()
-        );
     }
 
     private GlobalNavViewModel convertToViewModel(SearchProductModel.GlobalSearchNavigation globalSearchNavigation) {

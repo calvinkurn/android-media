@@ -15,7 +15,6 @@ import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
 import com.tokopedia.search.result.presentation.model.RecommendationItemViewModel;
 import com.tokopedia.search.result.presentation.model.RecommendationTitleViewModel;
 import com.tokopedia.search.result.presentation.model.SeparatorViewModel;
-import com.tokopedia.search.result.presentation.model.SingleGlobalNavViewModel;
 import com.tokopedia.search.result.presentation.model.SuggestionViewModel;
 import com.tokopedia.search.result.presentation.model.TickerViewModel;
 
@@ -47,8 +46,6 @@ public interface ProductListTypeFactory {
     int type(InspirationCardViewModel inspirationCardViewModel);
 
     int type(SeparatorViewModel separatorViewModel);
-
-    int type(SingleGlobalNavViewModel singleGlobalNavViewModel);
 
     int getRecyclerViewItem();
 

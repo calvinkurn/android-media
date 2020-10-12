@@ -2,12 +2,12 @@
 <com.tokopedia.unifycomponents.ContainerUnify
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/searchSingleGlobalNavContainer"
+    android:id="@+id/singleGlobalNavContainer"
     android:layout_height="wrap_content"
     android:layout_width="match_parent">
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/searchSingleGlobalNavCard"
+        android:id="@+id/singleGlobalNavCard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:cardCornerRadius="@dimen/dp_8"
@@ -23,7 +23,7 @@
             android:layout_height="wrap_content">
 
             <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/searchSingleGlobalNavIcon"
+                android:id="@+id/singleGlobalNavIcon"
                 android:layout_width="@dimen/dp_32"
                 android:layout_height="@dimen/dp_32"
                 android:layout_marginStart="@dimen/dp_8"
@@ -36,7 +36,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/searchSingleGlobalNavImage"
+                android:id="@+id/singleGlobalNavImage"
                 android:layout_width="@dimen/dp_120"
                 android:layout_height="@dimen/dp_60"
                 android:layout_marginStart="@dimen/dp_8"
@@ -49,14 +49,14 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <androidx.constraintlayout.widget.Barrier
-                android:id="@+id/searchSingleGlobalNavVerticalBarrier"
+                android:id="@+id/singleGlobalNavVerticalBarrier"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:barrierDirection="end"
-                app:constraint_referenced_ids="searchSingleGlobalNavIcon, searchSingleGlobalNavImage" />
+                app:constraint_referenced_ids="singleGlobalNavIcon, singleGlobalNavImage" />
 
             <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/searchSingleGlobalNavCategory"
+                android:id="@+id/singleGlobalNavCategory"
                 android:layout_width="@dimen/dp_0"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_8"
@@ -70,12 +70,12 @@
                 app:typographyType="small"
                 app:typographyWeight="reguler"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toTopOf="@id/searchSingleGlobalNavTitle"
-                app:layout_constraintLeft_toRightOf="@id/searchSingleGlobalNavVerticalBarrier"
+                app:layout_constraintBottom_toTopOf="@id/singleGlobalNavTitle"
+                app:layout_constraintLeft_toRightOf="@id/singleGlobalNavVerticalBarrier"
                 app:layout_constraintRight_toRightOf="parent"/>
 
             <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/searchSingleGlobalNavTitle"
+                android:id="@+id/singleGlobalNavTitle"
                 android:layout_width="@dimen/dp_0"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_2"
@@ -89,24 +89,24 @@
                 android:textColor="@color/Neutral_N700_96"
                 app:typographyType="body_3"
                 app:typographyWeight="bold"
-                app:layout_constraintTop_toBottomOf="@id/searchSingleGlobalNavCategory"
-                app:layout_constraintBottom_toTopOf="@id/searchSingleGlobalNavSubtitleInfoLayout"
-                app:layout_constraintLeft_toRightOf="@id/searchSingleGlobalNavVerticalBarrier"
+                app:layout_constraintTop_toBottomOf="@id/singleGlobalNavCategory"
+                app:layout_constraintBottom_toTopOf="@id/singleGlobalNavSubtitleInfoLayout"
+                app:layout_constraintLeft_toRightOf="@id/singleGlobalNavVerticalBarrier"
                 app:layout_constraintRight_toRightOf="parent"/>
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/searchSingleGlobalNavSubtitleInfoLayout"
+                android:id="@+id/singleGlobalNavSubtitleInfoLayout"
                 android:layout_marginStart="@dimen/dp_8"
                 android:layout_marginEnd="@dimen/dp_8"
                 android:layout_width="@dimen/dp_0"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@id/searchSingleGlobalNavTitle"
+                app:layout_constraintTop_toBottomOf="@id/singleGlobalNavTitle"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toRightOf="@id/searchSingleGlobalNavVerticalBarrier"
+                app:layout_constraintLeft_toRightOf="@id/singleGlobalNavVerticalBarrier"
                 app:layout_constraintRight_toRightOf="parent">
 
                 <com.tokopedia.unifyprinciples.Typography
-                    android:id="@+id/searchSingleGlobalNavSubtitle"
+                    android:id="@+id/singleGlobalNavSubtitle"
                     android:layout_width="@dimen/dp_0"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_10"
@@ -121,7 +121,7 @@
                     app:layout_constraintLeft_toLeftOf="parent"/>
 
                 <com.tokopedia.unifyprinciples.Typography
-                    android:id="@+id/searchSingleGlobalNavInfo"
+                    android:id="@+id/singleGlobalNavInfo"
                     android:layout_width="@dimen/dp_0"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_8"
@@ -135,7 +135,7 @@
                     app:typographyWeight="bold"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintLeft_toRightOf="@id/searchSingleGlobalNavSubtitle"
+                    app:layout_constraintLeft_toRightOf="@id/singleGlobalNavSubtitle"
                     app:layout_constraintRight_toRightOf="parent"/>
 
             </androidx.constraintlayout.widget.ConstraintLayout>

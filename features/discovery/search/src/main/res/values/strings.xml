@@ -90,9 +90,4 @@
     <string name="content_desc_search_home_button">button home</string>
     <string name="content_desc_search_cart_button">button keranjang</string>
     <string name="content_desc_search_change_grid_button">button ganti layout</string>
-
-    <string name="single_global_nav_category">Hotel</string>
-    <string name="single_global_nav_title">Temukan tempat nginap di sini!</string>
-    <string name="single_global_nav_subtitle">Mulai dari</string>
-    <string name="single_global_nav_info">Rp 866.100</string>
 </resources>

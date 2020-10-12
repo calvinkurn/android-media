@@ -171,9 +171,4 @@ public interface SearchConstant {
         String TYPE_GUIDED = "guided";
         String TYPE_CURATED = "curated";
     }
-
-    interface GlobalNav {
-        String NAV_TEMPLATE_CARD = "card";
-        String NAV_TEMPLATE_PILL = "pill";
-    }
 }
