@@ -9,15 +9,16 @@ import com.tokopedia.media.loader.utils.MediaSettingPreferences
 object Loader {
 
     private lateinit var context: Context
-    private val networkState by lazy { NetworkManager.state(context) }
-    private val settings by lazy { MediaSettingPreferences(context) }
+    private lateinit var settings: MediaSettingPreferences
 
     @JvmStatic
     fun initialize(context: Context) {
         this.context = context
+        settings = MediaSettingPreferences(context)
     }
 
     fun glideUrl(url: String?): GlideUrl {
+        val networkState = NetworkManager.state(context)
         return UrlBuilder.urlBuilder(networkState, settings, url)
     }
 

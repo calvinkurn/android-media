@@ -37,7 +37,7 @@ class LoaderGlideModule: AppGlideModule() {
     }
 
     override fun isManifestParsingEnabled(): Boolean {
-        return true
+        return false
     }
 
 }
