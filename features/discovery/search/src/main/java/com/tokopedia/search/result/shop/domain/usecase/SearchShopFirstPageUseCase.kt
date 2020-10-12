@@ -69,7 +69,7 @@ internal class SearchShopFirstPageUseCase(
 
     companion object {
         private const val GQL_QUERY = """
-query SearchShop(${'$'}params: String!, ${'$'}headlineParams: String, ${'$'}quickFilterParams: String!) {
+query SearchShop(${'$'}params: String!, ${'$'}headline_params: String, ${'$'}quick_filter_params: String!) {
     aceSearchShop(params: ${'$'}params) {
         source
         total_shop
@@ -162,7 +162,7 @@ query SearchShop(${'$'}params: String!, ${'$'}headlineParams: String, ${'$'}quic
             ga_key
         }
     }
-    headlineAds: displayAdsV3(displayParams: ${'$'}headlineParams) {
+    headlineAds: displayAdsV3(displayParams: ${'$'}headline_params) {
         status {
           error_code
           message
