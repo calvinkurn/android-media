@@ -82,18 +82,24 @@ class LihatFlashSaleTimerViewHolder(itemView: View, val fragment: Fragment) : Ab
         when (timeType) {
             HOURS -> {
                 hoursTextView = itemView.findViewById(R.id.hours_layout)
-                hoursTextView.setTextColor(Color.parseColor(getTimerFontColour(componentItem)))
-                hoursTextView.background.setColorFilter(Color.parseColor(getTimerBoxColour(componentItem)), PorterDuff.Mode.SRC_ATOP)
+                componentItem?.let {
+                    setTextCustomColor(hoursTextView, it)
+                    setBackgroundCustomColor(hoursTextView, it)
+                }
             }
             MINUTES -> {
                 minutesTextView = itemView.findViewById(R.id.minutes_layout)
-                minutesTextView.setTextColor(Color.parseColor(getTimerFontColour(componentItem)))
-                minutesTextView.background.setColorFilter(Color.parseColor(getTimerBoxColour(componentItem)), PorterDuff.Mode.SRC_ATOP)
+                componentItem?.let {
+                    setTextCustomColor(minutesTextView, it)
+                    setBackgroundCustomColor(minutesTextView, it)
+                }
             }
             SECONDS -> {
                 secondsTextView = itemView.findViewById(R.id.seconds_layout)
-                secondsTextView.setTextColor(Color.parseColor(getTimerFontColour(componentItem)))
-                secondsTextView.background.setColorFilter(Color.parseColor(getTimerBoxColour(componentItem)), PorterDuff.Mode.SRC_ATOP)
+                componentItem?.let {
+                    setTextCustomColor(secondsTextView, it)
+                    setBackgroundCustomColor(secondsTextView, it)
+                }
             }
         }
         setSeparatorUI(componentItem)
@@ -102,6 +108,22 @@ class LihatFlashSaleTimerViewHolder(itemView: View, val fragment: Fragment) : Ab
     private fun setSeparatorUI(componentItem: ComponentsItem?) {
         itemView.findViewById<TextView>(R.id.hours_separator_text_view).setTextColor(Color.parseColor(getTimerBoxColour(componentItem)))
         itemView.findViewById<TextView>(R.id.minutes_separator_text_view).setTextColor(Color.parseColor(getTimerBoxColour(componentItem)))
+    }
+
+    private fun setTextCustomColor(textView: TextView, componentItem: ComponentsItem) {
+        try {
+            textView.setTextColor(Color.parseColor(getTimerFontColour(componentItem)))
+        }catch (e : Exception){
+            e.printStackTrace()
+        }
+    }
+
+    private fun setBackgroundCustomColor(textView: TextView, componentItem: ComponentsItem) {
+        try {
+            textView.background.setColorFilter(Color.parseColor(getTimerBoxColour(componentItem)), PorterDuff.Mode.SRC_ATOP)
+        }catch (e : Exception){
+            e.printStackTrace()
+        }
     }
 
 
@@ -115,19 +137,17 @@ class LihatFlashSaleTimerViewHolder(itemView: View, val fragment: Fragment) : Ab
 
     @SuppressLint("ResourceType")
     private fun getTimerFontColour(componentItem: ComponentsItem?): String? {
-        return if (componentItem?.data?.get(0)?.timerFontColor?.isEmpty() == true) {
-//            componentItem.data?.get(0)?.timerFontColor
-            context.resources.getString(R.color.white)
+        return if (componentItem?.data?.firstOrNull()?.timerFontColor?.isEmpty() == true) {
+            componentItem.data!![0].timerFontColor
         } else {
-//            context.resources.getString(R.color.clr_fd412b)
             context.resources.getString(R.color.white)
         }
     }
 
     @SuppressLint("ResourceType")
     private fun getTimerBoxColour(componentItem: ComponentsItem?): String? {
-        return if (componentItem?.data?.get(0)?.timerBoxColor?.isEmpty() == true) {
-            componentItem.data?.get(0)?.timerBoxColor
+        return if (componentItem?.data?.firstOrNull()?.timerBoxColor?.isEmpty() == true) {
+            componentItem.data!![0].timerBoxColor
         } else {
             context.resources.getString(R.color.clr_fd412b)
         }
