@@ -15,5 +15,4 @@ public class OrderCategory {
     public static final String SURVEY_PARAM = "params";
     public static final String EVENTS = "EVENTS";
     public static final String EVENT = "EVENT";
-    public static final String DEAL = "DEAL";
 }
