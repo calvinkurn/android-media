@@ -27,7 +27,6 @@ import com.google.android.material.textfield.TextInputLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.developer_options.R
-import com.tokopedia.developer_options.drawonpicture.presentation.activity.DrawOnPictureActivity
 import com.tokopedia.developer_options.drawonpicture.presentation.fragment.DrawOnPictureFragment.Companion.EXTRA_DRAW_IMAGE_URI
 import com.tokopedia.developer_options.presentation.feedbackpage.adapter.ImageFeedbackAdapter
 import com.tokopedia.developer_options.presentation.feedbackpage.di.FeedbackPageComponent
@@ -118,20 +117,6 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-
-        when (requestCode) {
-            REQUEST_CODE_EDIT_IMAGE -> if (resultCode == RESULT_OK) {
-                data?.let {
-                    val newUri = it.getParcelableExtra<Uri>(EXTRA_DRAW_IMAGE_URI)
-                    uriImage = newUri
-                    imageView.setImageURI(uriImage)
-                }
-            }
-        }
-    }
-
     private fun allPermissionsGranted(): Boolean {
         for (permission in requiredPermissions) {
             if (activity?.let { ContextCompat.checkSelfPermission(it, permission) } != PackageManager.PERMISSION_GRANTED) {
@@ -154,6 +139,15 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
                     }
                 }
             }
+            REQUEST_CODE_EDIT_IMAGE -> if (resultCode == RESULT_OK) {
+                data?.let {
+                    val newUri = it.getParcelableExtra<Uri>(EXTRA_DRAW_IMAGE_URI)
+                    uriImage = newUri
+                   /*set imageuri here*/
+
+//                    imageView.setImageURI(uriImage)
+                }
+            }
            else -> super.onActivityResult(requestCode, resultCode, data)
         }
     }
@@ -167,10 +161,11 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
 
         uriImage = arguments?.getParcelable(EXTRA_URI_IMAGE)
 
-        imageView.setOnClickListener {
+        /*go To intent activity*/
+        /*imageAdapter.setOnClickListener {
             startActivityForResult(DrawOnPictureActivity.getIntent(requireContext(), uriImage),
                     REQUEST_CODE_EDIT_IMAGE)
-        }
+        }*/
 
         context?.let { ArrayAdapter.createFromResource(it,
                 R.array.bug_type_array,
