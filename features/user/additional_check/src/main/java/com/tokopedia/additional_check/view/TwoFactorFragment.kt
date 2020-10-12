@@ -87,16 +87,23 @@ class TwoFactorFragment: BaseDaggerFragment() {
         }
     }
 
-    private fun goToAddPin(){
+    private fun goToAddPin(skipOtp: Boolean = false){
         context?.run {
-            val i = RouteManager.getIntent(this, ApplinkConstInternalGlobal.ADD_PIN).putTwoFactorBundle()
+            val i = RouteManager.getIntent(this, ApplinkConstInternalGlobal.ADD_PIN)
+            i.putExtras(Bundle().apply {
+                putBoolean(ApplinkConstInternalGlobal.PARAM_IS_FROM_2FA, true)
+                putBoolean(ApplinkConstInternalGlobal.PARAM_IS_SKIP_OTP, skipOtp)
+            })
             startActivityForResult(i, ADD_PIN_REQ_CODE)
         }
     }
 
     private fun goToAddPhone(){
         context?.run {
-            val i = RouteManager.getIntent(this, ApplinkConstInternalGlobal.ADD_PHONE).putTwoFactorBundle()
+            val i = RouteManager.getIntent(this, ApplinkConstInternalGlobal.ADD_PHONE)
+            i.putExtras(Bundle().apply {
+                putBoolean(ApplinkConstInternalGlobal.PARAM_IS_FROM_2FA, true)
+            })
             startActivityForResult(i, ADD_PHONE_REQ_CODE)
         }
     }
@@ -110,21 +117,10 @@ class TwoFactorFragment: BaseDaggerFragment() {
             }
             ADD_PHONE_REQ_CODE -> {
                 if(resultCode == Activity.RESULT_OK) {
-                    goToAddPin()
+                    goToAddPin(true)
                 }
             }
         }
-    }
-
-    private fun Intent.putTwoFactorBundle(): Intent {
-        if(extras != null){
-            extras?.putBoolean(ApplinkConstInternalGlobal.PARAM_IS_FROM_2FA, true)
-        }else {
-            putExtras(Bundle().apply {
-                extras?.putBoolean(ApplinkConstInternalGlobal.PARAM_IS_FROM_2FA, true)
-            })
-        }
-        return this
     }
 
     companion object {
