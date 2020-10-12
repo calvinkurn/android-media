@@ -176,7 +176,7 @@ public interface ProductListSectionContract {
 
         void redirectionStartActivity(String applink, String url);
 
-        void setLocalSearchRecommendation(List<Visitable> visitableList);
+        void addLocalSearchRecommendation(List<Visitable> visitableList);
     }
 
     interface Presenter extends CustomerPresenter<View> {

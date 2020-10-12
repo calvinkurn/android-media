@@ -1710,7 +1710,7 @@ public class ProductListFragment
     }
 
     @Override
-    public void setLocalSearchRecommendation(List<Visitable> visitableList) {
-
+    public void addLocalSearchRecommendation(List<Visitable> visitableList) {
+        adapter.appendItems(visitableList);
     }
 }

@@ -119,6 +119,7 @@ final class ProductListPresenter
     private static final int QUICK_FILTER_MINIMUM_SIZE = 2;
     private static final List<String> LOCAL_SEARCH_KEY_PARAMS =
             Arrays.asList(SearchApiConst.NAVSOURCE, SearchApiConst.SRP_PAGE_ID, SearchApiConst.SRP_PAGE_TITLE);
+    public static final String EMPTY_LOCAL_SEARCH_RESPONSE_CODE = "11";
 
     private UseCase<SearchProductModel> searchProductFirstPageUseCase;
     private UseCase<SearchProductModel> searchProductLoadMoreUseCase;
@@ -317,23 +318,23 @@ final class ProductListPresenter
 
     @Override
     public void loadMoreData(Map<String, Object> searchParameter) {
-        if (isLocalSearch() && responseCode.equals("11")) {
-            getLocalSearchRecommendation(searchParameter);
-        }
-        else {
-            checkViewAttached();
+        if (isShowLocalSearchRecommendation()) getLocalSearchRecommendation(searchParameter);
+        else searchProductLoadMore(searchParameter);
+    }
 
-            Map<String, String> additionalParams = getAdditionalParamsMap();
-            if (searchParameter == null || additionalParams == null) return;
+    private void searchProductLoadMore(Map<String, Object> searchParameter) {
+        checkViewAttached();
 
-            RequestParams requestParams = createInitializeSearchParam(searchParameter);
-            enrichWithRelatedSearchParam(requestParams);
-            enrichWithAdditionalParams(requestParams, additionalParams);
+        Map<String, String> additionalParams = getAdditionalParamsMap();
+        if (searchParameter == null || additionalParams == null) return;
 
-            // Unsubscribe first in case user has slow connection, and the previous loadMoreUseCase has not finished yet.
-            searchProductLoadMoreUseCase.unsubscribe();
-            searchProductLoadMoreUseCase.execute(requestParams, getLoadMoreDataSubscriber(requestParams.getParameters()));
-        }
+        RequestParams requestParams = createInitializeSearchParam(searchParameter);
+        enrichWithRelatedSearchParam(requestParams);
+        enrichWithAdditionalParams(requestParams, additionalParams);
+
+        // Unsubscribe first in case user has slow connection, and the previous loadMoreUseCase has not finished yet.
+        searchProductLoadMoreUseCase.unsubscribe();
+        searchProductLoadMoreUseCase.execute(requestParams, getLoadMoreDataSubscriber(requestParams.getParameters()));
     }
 
     private RequestParams createInitializeSearchParam(Map<String, Object> searchParameter) {
@@ -934,8 +935,8 @@ final class ProductListPresenter
         emptySearchViewModel.setBannerAdsAllowed(isBannerAdsAllowed);
         emptySearchViewModel.setIsFilterActive(getView().isAnyFilterActive());
 
-        if (responseCode.equals("11")) {
-            emptySearchViewModel.setLocalSearch(isLocalSearch() && responseCode.equals("11"));
+        if (isShowLocalSearchRecommendation()) {
+            emptySearchViewModel.setLocalSearch(true);
             emptySearchViewModel.setGlobalSearchApplink(constructGlobalSearchApplink());
             emptySearchViewModel.setKeyword(getView().getQueryKey());
             emptySearchViewModel.setPageTitle(pageTitle);
@@ -944,10 +945,14 @@ final class ProductListPresenter
         return emptySearchViewModel;
     }
 
+    private boolean isShowLocalSearchRecommendation() {
+        return isLocalSearch() && responseCode.equals(EMPTY_LOCAL_SEARCH_RESPONSE_CODE);
+    }
+
     private void getViewToShowRecommendationItem(Map<String, Object> searchParameter) {
         getView().addLoading();
 
-        if (isLocalSearch() && responseCode.equals("11")) getLocalSearchRecommendation(searchParameter);
+        if (isShowLocalSearchRecommendation()) getLocalSearchRecommendation(searchParameter);
         else getGlobalSearchRecommendation();
     }
 
@@ -1001,10 +1006,10 @@ final class ProductListPresenter
         incrementStart();
         setTotalData(searchProductModel.getSearchProduct().getHeader().getTotalData());
 
-        if (hasNextPage()) visitableList.add(new LoadingMoreModel());
-
         getView().removeLoading();
-        getView().setLocalSearchRecommendation(visitableList);
+        getView().addLocalSearchRecommendation(visitableList);
+
+        if (hasNextPage()) getView().addLoading();
     }
 
     private ProductViewModel createProductViewModelMapperLocalSearchRecommendation(SearchProductModel searchProductModel) {

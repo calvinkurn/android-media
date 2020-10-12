@@ -32,7 +32,6 @@ internal class SearchProductEmptyLocalSearchRecommendationTest : ProductListPres
 
     private val localSearchRecomRequestParamsSlot = mutableListOf<RequestParams>()
     private val visitableListSlot = slot<List<Visitable<*>>>()
-    private val visitableList by lazy { visitableListSlot.captured }
 
     @Test
     fun `Get empty local search recommendation success during local search - page 1`() {
@@ -95,9 +94,10 @@ internal class SearchProductEmptyLocalSearchRecommendationTest : ProductListPres
     }
 
     private fun `Then verify view interaction for success get local search recommendation`(localSearchRecommendationModel: SearchProductModel) {
-        verify {
+        verifyOrder {
             productListView.removeLoading()
-            productListView.setLocalSearchRecommendation(capture(visitableListSlot))
+            productListView.addLocalSearchRecommendation(capture(visitableListSlot))
+            productListView.addLoading()
         }
 
         `Then verify visitable list for set empty recommendation page 1`(localSearchRecommendationModel)
@@ -112,8 +112,6 @@ internal class SearchProductEmptyLocalSearchRecommendationTest : ProductListPres
         localSearchRecommendationModel.searchProduct.data.productList.forEachIndexed { index, product ->
             visitableList[index + 1].assertOrganicProduct(product, index + 1)
         }
-
-        visitableList.last().shouldBeInstanceOf<LoadingMoreModel>()
     }
 
     private fun Visitable<*>.assertSearchProductTitle() {
@@ -154,7 +152,7 @@ internal class SearchProductEmptyLocalSearchRecommendationTest : ProductListPres
         }
 
         verify(exactly = 0) {
-            productListView.setLocalSearchRecommendation(any())
+            productListView.addLocalSearchRecommendation(any())
         }
     }
 
@@ -196,7 +194,7 @@ internal class SearchProductEmptyLocalSearchRecommendationTest : ProductListPres
     private fun `Then verify visitable list for set empty recommendation page 2`(localSearchRecommendationModel: SearchProductModel) {
         verify {
             productListView.removeLoading()
-            productListView.setLocalSearchRecommendation(capture(visitableListSlot))
+            productListView.addLocalSearchRecommendation(capture(visitableListSlot))
         }
 
         val visitableList = visitableListSlot.captured
