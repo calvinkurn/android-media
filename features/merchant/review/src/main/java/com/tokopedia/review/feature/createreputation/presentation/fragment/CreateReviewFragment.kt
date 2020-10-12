@@ -588,22 +588,22 @@ class CreateReviewFragment : BaseDaggerFragment(),
                         override fun onDescriptionViewClick(linkUrl: CharSequence) {
                             if(ovoIncentiveBottomSheet == null) {
                                 ovoIncentiveBottomSheet = BottomSheetUnify()
-                            }
-                            ovoIncentiveBottomSheet?.let { bottomSheet ->
                                 val view = View.inflate(context, R.layout.incentive_ovo_bottom_sheet_dialog, null)
-                                bottomSheet.apply {
+                                ovoIncentiveBottomSheet?.apply {
                                     setChild(view)
-                                    initView(view, data, bottomSheet)
+                                    initView(view, data, ovoIncentiveBottomSheet)
                                     setCloseClickListener {
                                         ReviewTracking.onClickDismissIncentiveOvoBottomSheetTracker("")
-                                        bottomSheet.dismiss()
+                                        dismiss()
                                     }
                                     setShowListener {
                                         bottomSheetWrapper.setPadding(0, 16.toPx(), 0, 0)
                                     }
-                                    activity?.supportFragmentManager?.let { bottomSheet.show(it, bottomSheet.tag) }
-                                    ReviewTracking.onClickReadSkIncentiveOvoTracker(tickerTitle, "")
                                 }
+                            }
+                            ovoIncentiveBottomSheet?.let { bottomSheet ->
+                                activity?.supportFragmentManager?.let { supportFragmentManager -> bottomSheet.show(supportFragmentManager, bottomSheet.tag) }
+                                ReviewTracking.onClickReadSkIncentiveOvoTracker(tickerTitle, "")
                             }
 
                         }
@@ -626,18 +626,18 @@ class CreateReviewFragment : BaseDaggerFragment(),
         (createReviewViewModel.incentiveOvo.value as? CoroutineSuccess)?.data?.let {
             if(thankYouBottomSheet == null) {
                 thankYouBottomSheet = BottomSheetUnify()
+                val child = View.inflate(context, R.layout.incentive_ovo_bottom_sheet_submitted, null)
+                thankYouBottomSheet?.setChild(child)
+                initThankYouView(child, it, thankYouBottomSheet)
             }
             thankYouBottomSheet?.let { bottomSheet ->
-                val child = View.inflate(context, R.layout.incentive_ovo_bottom_sheet_submitted, null)
-                bottomSheet.setChild(child)
-                initThankYouView(child, it, bottomSheet)
                 activity?.supportFragmentManager?.let { bottomSheet.show(it, bottomSheet.tag) }
             }
         }
     }
 
-    private fun initView(view: View, productRevIncentiveOvoDomain: ProductRevIncentiveOvoDomain, bottomSheet: BottomSheetUnify) {
-        with(bottomSheet) {
+    private fun initView(view: View, productRevIncentiveOvoDomain: ProductRevIncentiveOvoDomain, bottomSheet: BottomSheetUnify?) {
+        bottomSheet?.run {
             view.apply {
                 tgIncentiveOvoTitle.text = productRevIncentiveOvoDomain.productrevIncentiveOvo?.title
                 tgIncentiveOvoSubtitle.text = HtmlLinkHelper(context, productRevIncentiveOvoDomain.productrevIncentiveOvo?.subtitle
@@ -666,8 +666,8 @@ class CreateReviewFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun initThankYouView(view: View, productRevIncentiveOvoDomain: ProductRevIncentiveOvoDomain, bottomSheet: BottomSheetUnify) {
-        with(bottomSheet) {
+    private fun initThankYouView(view: View, productRevIncentiveOvoDomain: ProductRevIncentiveOvoDomain, bottomSheet: BottomSheetUnify?) {
+        bottomSheet?.run {
             val incentiveOvoSubmittedImage = view.findViewById<AppCompatImageView>(R.id.incentiveOvoSubmittedImage)
             val incentiveOvoSubmittedTitle: com.tokopedia.unifyprinciples.Typography? = view.findViewById(R.id.incentiveOvoSubmittedTitle)
             val incentiveOvoSubmittedSubtitle: com.tokopedia.unifyprinciples.Typography? = view.findViewById(R.id.incentiveOvoSubmittedSubtitle)

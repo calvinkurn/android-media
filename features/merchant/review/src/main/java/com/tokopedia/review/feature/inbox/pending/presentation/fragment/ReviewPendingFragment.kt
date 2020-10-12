@@ -364,27 +364,27 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
     private fun onClickOvoIncentiveTickerDescription(productRevIncentiveOvoDomain: ProductRevIncentiveOvoDomain) {
         if(ovoIncentiveBottomSheet == null) {
             ovoIncentiveBottomSheet = BottomSheetUnify()
-        }
-        ovoIncentiveBottomSheet?.let { bottomSheet ->
             val view = View.inflate(context, R.layout.incentive_ovo_bottom_sheet_dialog, null)
-            bottomSheet.apply {
+            ovoIncentiveBottomSheet?.apply {
                 setChild(view)
                 setCloseClickListener {
                     ReviewTracking.onClickDismissIncentiveOvoBottomSheetTracker(ReviewInboxTrackingConstants.PENDING_TAB)
-                    bottomSheet.dismiss()
+                    dismiss()
                 }
                 setShowListener {
                     bottomSheetWrapper.setPadding(0, 16.toPx(), 0, 0)
                 }
-                initView(view, productRevIncentiveOvoDomain, bottomSheet)
+                initView(view, productRevIncentiveOvoDomain, ovoIncentiveBottomSheet)
             }
+        }
+        ovoIncentiveBottomSheet?.let { bottomSheet ->
             activity?.supportFragmentManager?.let { bottomSheet.show(it, bottomSheet.tag) }
             ReviewTracking.onClickReadSkIncentiveOvoTracker(productRevIncentiveOvoDomain.productrevIncentiveOvo?.ticker?.title, ReviewInboxTrackingConstants.PENDING_TAB)
         }
     }
 
-    private fun initView(view: View, productRevIncentiveOvoDomain: ProductRevIncentiveOvoDomain, bottomSheet: BottomSheetUnify) {
-        with(bottomSheet) {
+    private fun initView(view: View, productRevIncentiveOvoDomain: ProductRevIncentiveOvoDomain, bottomSheet: BottomSheetUnify?) {
+        bottomSheet?.run {
             view.apply {
                 tgIncentiveOvoTitle.text = productRevIncentiveOvoDomain.productrevIncentiveOvo?.title
                 tgIncentiveOvoSubtitle.text = HtmlLinkHelper(context, productRevIncentiveOvoDomain.productrevIncentiveOvo?.subtitle
