@@ -134,6 +134,8 @@ class CreateReviewFragment : BaseDaggerFragment(),
 
     lateinit var imgAnimationView: LottieAnimationView
     private var textAreaBottomSheet: CreateReviewTextAreaBottomSheet? = null
+    private var ovoIncentiveBottomSheet: BottomSheetUnify? = null
+    private var thankYouBottomSheet: BottomSheetUnify? = null
 
     override fun stopPreparePerfomancePageMonitoring() {
         reviewPerformanceMonitoringListener?.stopPreparePagePerformanceMonitoring()
@@ -584,21 +586,26 @@ class CreateReviewFragment : BaseDaggerFragment(),
                     setHtmlDescription(it.subtitle)
                     setDescriptionClickEvent(object : TickerCallback {
                         override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                            val bottomSheet = BottomSheetUnify()
-                            val view = View.inflate(context, R.layout.incentive_ovo_bottom_sheet_dialog, null)
-                            bottomSheet.apply {
-                                setChild(view)
-                                initView(view, data, bottomSheet)
-                                setCloseClickListener {
-                                    ReviewTracking.onClickDismissIncentiveOvoBottomSheetTracker("")
-                                    bottomSheet.dismiss()
-                                }
-                                setShowListener {
-                                    bottomSheetWrapper.setPadding(0, 16.toPx(), 0, 0)
-                                }
-                                activity?.supportFragmentManager?.let { bottomSheet.show(it, bottomSheet.tag) }
-                                ReviewTracking.onClickReadSkIncentiveOvoTracker(tickerTitle, "")
+                            if(ovoIncentiveBottomSheet == null) {
+                                ovoIncentiveBottomSheet = BottomSheetUnify()
                             }
+                            ovoIncentiveBottomSheet?.let { bottomSheet ->
+                                val view = View.inflate(context, R.layout.incentive_ovo_bottom_sheet_dialog, null)
+                                bottomSheet.apply {
+                                    setChild(view)
+                                    initView(view, data, bottomSheet)
+                                    setCloseClickListener {
+                                        ReviewTracking.onClickDismissIncentiveOvoBottomSheetTracker("")
+                                        bottomSheet.dismiss()
+                                    }
+                                    setShowListener {
+                                        bottomSheetWrapper.setPadding(0, 16.toPx(), 0, 0)
+                                    }
+                                    activity?.supportFragmentManager?.let { bottomSheet.show(it, bottomSheet.tag) }
+                                    ReviewTracking.onClickReadSkIncentiveOvoTracker(tickerTitle, "")
+                                }
+                            }
+
                         }
 
                         override fun onDismiss() {
@@ -617,11 +624,15 @@ class CreateReviewFragment : BaseDaggerFragment(),
 
     private fun showThankYouBottomSheet() {
         (createReviewViewModel.incentiveOvo.value as? CoroutineSuccess)?.data?.let {
-            val bottomSheet = BottomSheetUnify()
-            val child = View.inflate(context, R.layout.incentive_ovo_bottom_sheet_submitted, null)
-            bottomSheet.setChild(child)
-            initThankYouView(child, it, bottomSheet)
-            activity?.supportFragmentManager?.let { bottomSheet.show(it, bottomSheet.tag) }
+            if(thankYouBottomSheet == null) {
+                thankYouBottomSheet = BottomSheetUnify()
+            }
+            thankYouBottomSheet?.let { bottomSheet ->
+                val child = View.inflate(context, R.layout.incentive_ovo_bottom_sheet_submitted, null)
+                bottomSheet.setChild(child)
+                initThankYouView(child, it, bottomSheet)
+                activity?.supportFragmentManager?.let { bottomSheet.show(it, bottomSheet.tag) }
+            }
         }
     }
 
@@ -651,7 +662,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
             isFullpage = false
             showKnob = true
             showCloseIcon = false
-            clearContentPadding = true
+            showHeader = false
         }
     }
 
