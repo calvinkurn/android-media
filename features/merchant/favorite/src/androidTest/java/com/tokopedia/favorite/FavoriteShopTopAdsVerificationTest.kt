@@ -3,7 +3,6 @@ package com.tokopedia.favorite
 import android.Manifest
 import android.app.Activity
 import android.app.Instrumentation
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions
@@ -12,9 +11,7 @@ import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.rule.ActivityTestRule
 import androidx.test.rule.GrantPermissionRule
-import com.tokopedia.favorite.view.FavoriteShopsActivity
 import com.tokopedia.favorite.view.adapter.TopAdsShopAdapter
 import com.tokopedia.test.application.assertion.topads.TopAdsAssertion
 import com.tokopedia.test.application.environment.callback.TopAdsVerificatorInterface
@@ -31,8 +28,8 @@ class FavoriteShopTopAdsVerificationTest {
     private var topAdsAssertion: TopAdsAssertion? = null
 
     @get:Rule
-    var activityRule = object : IntentsTestRule<FavoriteShopsActivity>(
-            FavoriteShopsActivity::class.java
+    var activityRule = object : IntentsTestRule<InstrumentationFavoriteTestActivity>(
+            InstrumentationFavoriteTestActivity::class.java
     ) {
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
