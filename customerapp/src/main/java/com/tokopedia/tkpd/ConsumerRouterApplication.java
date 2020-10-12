@@ -31,7 +31,6 @@ import com.tokopedia.applink.ApplinkDelegate;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.ApplinkUnsupported;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.buyerorder.common.util.UnifiedOrderListRouter;
 import com.tokopedia.buyerorder.others.CreditCardFingerPrintUseCase;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
 import com.tokopedia.cachemanager.PersistentCacheManager;
@@ -153,7 +152,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         OmsModuleRouter,
         PhoneVerificationRouter,
         TkpdAppsFlyerRouter,
-        UnifiedOrderListRouter,
         LinkerRouter,
         DigitalRouter,
         CMRouter,
@@ -651,11 +649,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 AppEventTracking.MOENGAGE.LOGIN_STATUS, userSession.isLoggedIn()
         );
         TrackApp.getInstance().getMoEngage().sendTrackEvent(value, AppEventTracking.EventMoEngage.OPEN_BERANDA);
-    }
-
-    @Override
-    public Fragment getFlightOrderListFragment() {
-        return FlightOrderListFragment.createInstance();
     }
 
     @Override
