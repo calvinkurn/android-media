@@ -262,7 +262,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         }
     }
 
-
     private void initFirebase() {
         if (com.tokopedia.config.GlobalConfig.DEBUG) {
             try {
@@ -348,12 +347,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 "GET",
                 AuthUtil.KEY.KEY_WSV4);
     }
-
-//    @Override
-//    public boolean getEnableFingerprintPayment() {
-//        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(this);
-//        return remoteConfig.getBoolean(FingerprintConstant.ENABLE_FINGERPRINT_MAINAPP);
-//    }
 
     @Override
     public void resetAddProductCache(Context context) {
