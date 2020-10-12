@@ -56,6 +56,7 @@ class GlobalNavWidget: BaseCustomView {
         setRandomBackground()
 
         val item = globalNavWidgetModel.itemList.firstOrNull() ?: return
+        
         bindTitle(item)
         bindListener(globalNavWidgetModel, globalNavWidgetListener)
 
@@ -140,21 +141,28 @@ class GlobalNavWidget: BaseCustomView {
     }
 
     private fun bindSubtitleInfo(item: GlobalNavWidgetModel.Item) {
-        if (item.subtitle.isNotEmpty() && item.info.isNotEmpty()) {
-            bindSubtitle(item)
-            bindInfo(item)
-        } else hideSubtitleInfoLayout()
+        if (isShowSubtitleAndInfo(item)) showSubtitleInfoLayout(item)
+        else hideSubtitleInfoLayout()
     }
 
-    private fun bindInfo(item: GlobalNavWidgetModel.Item) {
-        singleGlobalNavInfo?.shouldShowWithAction(item.info.isNotEmpty()) {
-            it.text = item.info
-        }
+    private fun isShowSubtitleAndInfo(item: GlobalNavWidgetModel.Item): Boolean {
+        return item.subtitle.isNotEmpty() && item.info.isNotEmpty()
+    }
+
+    private fun showSubtitleInfoLayout(item: GlobalNavWidgetModel.Item) {
+        bindSubtitle(item)
+        bindInfo(item)
     }
 
     private fun bindSubtitle(item: GlobalNavWidgetModel.Item) {
         singleGlobalNavSubtitle?.shouldShowWithAction(item.subtitle.isNotEmpty()) {
             it.text = item.subtitle
+        }
+    }
+
+    private fun bindInfo(item: GlobalNavWidgetModel.Item) {
+        singleGlobalNavInfo?.shouldShowWithAction(item.info.isNotEmpty()) {
+            it.text = item.info
         }
     }
 
