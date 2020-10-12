@@ -28,6 +28,7 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.developer_options.R
 import com.tokopedia.developer_options.drawonpicture.presentation.activity.DrawOnPictureActivity
 import com.tokopedia.developer_options.drawonpicture.presentation.fragment.DrawOnPictureFragment.Companion.EXTRA_DRAW_IMAGE_URI
+import com.tokopedia.developer_options.drawonpicture.presentation.fragment.DrawOnPictureFragment.Companion.EXTRA_DRAW_IMAGE_URI_OLD
 import com.tokopedia.developer_options.presentation.feedbackpage.adapter.ImageFeedbackAdapter
 import com.tokopedia.developer_options.presentation.feedbackpage.di.FeedbackPageComponent
 import com.tokopedia.developer_options.presentation.feedbackpage.domain.model.BaseImageFeedbackUiModel
@@ -143,13 +144,11 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
             }
             REQUEST_CODE_EDIT_IMAGE -> if (resultCode == RESULT_OK) {
                 data?.let {
+                    val oldPath = it.getStringExtra(EXTRA_DRAW_IMAGE_URI_OLD)
                     val newUri = it.getParcelableExtra<Uri>(EXTRA_DRAW_IMAGE_URI)
                     uriImage = newUri
-                    imageAdapter.setImageFeedbackData(feedbackPagePresenter.drawOnPictureResult(uriImage))
+                    imageAdapter.setImageFeedbackData(feedbackPagePresenter.drawOnPictureResult(uriImage, oldPath))
                     selectedImage = arrayListOf(uriImage.toString())
-                   /*set imageuri here*/
-
-//                    imageView.setImageURI(uriImage)
                 }
             }
            else -> super.onActivityResult(requestCode, resultCode, data)

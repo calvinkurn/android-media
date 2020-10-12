@@ -102,7 +102,7 @@ class DrawOnPictureFragment : BaseDaggerFragment(),
 
         val newPath = ImagePreviewUtils.saveImageFromBitmap(requireActivity(), saveBitmap, ImagePreviewUtils.processPictureName(Math.random().toInt()))
         newPath?.let {
-            sendNewPathResult(newPath)
+            sendNewPathResult(newPath, imageUri.path)
         }
     }
 
@@ -177,9 +177,10 @@ class DrawOnPictureFragment : BaseDaggerFragment(),
         ProgressDialog.show(requireContext(), "", "Menyimpan gambar ...", true, true)
     }
 
-    private fun sendNewPathResult(path: String) {
+    private fun sendNewPathResult(path: String, oldPath: String?) {
         val intent = Intent()
         intent.putExtra(EXTRA_DRAW_IMAGE_URI, Uri.parse(path))
+        intent.putExtra(EXTRA_DRAW_IMAGE_URI_OLD, oldPath)
         activity?.setResult(Activity.RESULT_OK, intent)
         activity?.finish()
     }
@@ -187,6 +188,7 @@ class DrawOnPictureFragment : BaseDaggerFragment(),
     companion object {
 
         const val EXTRA_DRAW_IMAGE_URI = "EXTRA_DRAW_IMAGE_URI"
+        const val EXTRA_DRAW_IMAGE_URI_OLD = "EXTRA_DRAW_IMAGE_URI_OLD"
 
         fun getInstance(imageUri: Uri?): DrawOnPictureFragment =
                 DrawOnPictureFragment().also {

@@ -22,7 +22,6 @@ class FeedbackPagePresenter(private val compositeSubscription: CompositeSubscrip
 
     private val feedbackApi: FeedbackApiInterface = ApiClient.getAPIService()
     private var imageData: MutableList<BaseImageFeedbackUiModel> = mutableListOf()
-    private var originalImage: MutableList<String> = mutableListOf()
 
     override fun getCategories() {
         feedbackApi.getCategories()
@@ -154,10 +153,14 @@ class FeedbackPagePresenter(private val compositeSubscription: CompositeSubscrip
         return imageData
     }
 
-    override fun drawOnPictureResult(uri: Uri?): MutableList<BaseImageFeedbackUiModel> {
+    override fun drawOnPictureResult(uri: Uri?, oldPath: String): MutableList<BaseImageFeedbackUiModel> {
+        val oldDopResult = ImageFeedbackUiModel().apply {
+            imageUrl = oldPath
+        }
         val dopResultUri = ImageFeedbackUiModel().apply {
             imageUrl = uri.toString()
         }
+        imageData.remove(oldDopResult)
         imageData.add(dopResultUri)
         return imageData
     }
