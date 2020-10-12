@@ -27,11 +27,10 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.common_wallet.analytics.CommonWalletAnalytics
 import com.tokopedia.home.R
-import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.analytics.v2.OvoWidgetTracking
 import com.tokopedia.home.beranda.data.model.SectionContentItem
-import com.tokopedia.home.beranda.helper.benchmark.TRACE_ON_BIND_OVO_VIEWHOLDER
 import com.tokopedia.home.beranda.helper.benchmark.BenchmarkHelper
+import com.tokopedia.home.beranda.helper.benchmark.TRACE_ON_BIND_OVO_VIEWHOLDER
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderDataModel
 import com.tokopedia.home.util.ViewUtils
@@ -53,6 +52,7 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener?) : Abstr
         private const val TITLE_HEADER_WEBSITE = "Tokopedia"
         private const val TITLE = "OVO"
         private const val WALLET_TYPE = "OVO"
+        private const val BEBAS_ONGKIR_TYPE = "bebas ongkir"
         private const val CDN_URL = "https://ecs7.tokopedia.net/img/android/"
         private const val BG_CONTAINER_URL = CDN_URL + "bg_product_fintech_tokopoint_normal/" +
                 "drawable-xhdpi/bg_product_fintech_tokopoint_normal.png"
@@ -81,7 +81,7 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener?) : Abstr
                 .into(imgNonLogin)
 
         container.setOnClickListener {
-            HomePageTracking.eventTokopointNonLogin(itemView.context)
+            OvoWidgetTracking.eventTokopointNonLogin()
             listener?.onTokopointCheckNowClicked(ApplinkConstInternalPromo.TOKOPOINTS_HOME)
         }
         scanHolder.setOnClickListener { goToScanner() }
@@ -95,7 +95,7 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener?) : Abstr
     }
 
     private fun goToScanner() {
-        HomePageTracking.eventQrCode(itemView.context)
+        OvoWidgetTracking.eventQrCode()
         RouteManager.route(itemView.context, ApplinkConstInternalMarketplace.QR_SCANNEER)
     }
 
@@ -174,7 +174,7 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener?) : Abstr
                     tvActionTokocash.text = homeHeaderWalletAction.labelActionButton
                     tvActionTokocash.setOnClickListener {
                         if (!homeHeaderWalletAction.appLinkActionButton.contains("webview") && !homeHeaderWalletAction.isLinked) {
-                            HomePageTracking.eventTokoCashActivateClick(itemView.context)
+                            OvoWidgetTracking.eventTokoCashActivateClick()
                         }
                         listener?.actionAppLinkWalletHeader(homeHeaderWalletAction.appLinkActionButton)
                     }
@@ -182,7 +182,7 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener?) : Abstr
                         if (homeHeaderWalletAction.appLinkBalance != "" &&
                                 !homeHeaderWalletAction.appLinkBalance.contains("webview") &&
                                 homeHeaderWalletAction.isLinked) {
-                            HomePageTracking.eventTokoCashCheckSaldoClick(itemView.context)
+                            OvoWidgetTracking.eventTokoCashCheckSaldoClick()
                         }
 
                         listener?.actionAppLinkWalletHeader(homeHeaderWalletAction.appLinkBalance)
@@ -273,7 +273,7 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener?) : Abstr
 
             tokoPointHolder.setOnClickListener {
                 if (element.tokopointsDrawerHomeData != null) {
-                    HomePageTracking.eventUserProfileTokopoints(itemView.context)
+                    OvoWidgetTracking.eventUserProfileTokopoints()
                     element.tokopointsDrawerHomeData?.let {tokopointsDrawerHomeData->
                         listener?.actionTokoPointClicked(
                                 tokopointsDrawerHomeData.redirectAppLink,
@@ -283,12 +283,14 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener?) : Abstr
                                 else
                                     tokopointsDrawerHomeData.mainPageTitle
                         )
-
-                        if (tokopointsDrawerHomeData.sectionContent.isNotEmpty() &&
+                        if(tokopointsDrawerHomeData.sectionContent.isNotEmpty() &&
+                                tokopointsDrawerHomeData.sectionContent.first().textAttributes?.text?.contains(BEBAS_ONGKIR_TYPE, ignoreCase = true) == true){
+                            OvoWidgetTracking.sendBebasOngkir(listener?.userId ?: "0")
+                        } else if (tokopointsDrawerHomeData.sectionContent.isNotEmpty() &&
                                 tokopointsDrawerHomeData.sectionContent[0].tagAttributes?.text?.isNotEmpty() == true) {
-                            HomePageTracking.sendClickOnTokopointsNewCouponTracker()
+                            OvoWidgetTracking.sendClickOnTokopointsNewCouponTracker()
                         } else {
-                            HomePageTracking.sendTokopointTrackerClick()
+                            OvoWidgetTracking.sendTokopointTrackerClick()
                         }
                     }
                 }
@@ -352,7 +354,7 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener?) : Abstr
                 }
                 walletAnalytics.eventClickActivationOvoHomepage()
             } else {
-                OvoWidgetTracking.eventOvo(itemView.context)
+                OvoWidgetTracking.eventOvo()
             }
             val intentBalanceWallet = RouteManager.getIntent(context, applinkString)
             context.startActivity(intentBalanceWallet)
@@ -360,7 +362,7 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener?) : Abstr
     }
     private fun gotToTopupOvo(applinkString: String) {
         if (RouteManager.isSupportApplink(context, applinkString)) {
-            OvoWidgetTracking.eventTopupOvo(listener?.userId)
+            OvoWidgetTracking.eventTopUpOvo(listener?.userId)
             val intentBalanceWallet = RouteManager.getIntent(context, applinkString)
             context.startActivity(intentBalanceWallet)
         }
