@@ -1,5 +1,6 @@
 package com.tokopedia.favorite
 
+import android.Manifest
 import android.app.Activity
 import android.app.Instrumentation
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -12,6 +13,7 @@ import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.rule.ActivityTestRule
+import androidx.test.rule.GrantPermissionRule
 import com.tokopedia.favorite.view.FavoriteShopsActivity
 import com.tokopedia.favorite.view.adapter.TopAdsShopAdapter
 import com.tokopedia.test.application.assertion.topads.TopAdsAssertion
@@ -34,18 +36,26 @@ class FavoriteShopTopAdsVerificationTest {
     ) {
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
+            login()
             setupTopAdsDetector()
         }
     }
 
+    @get:Rule
+    var grantPermission: GrantPermissionRule = GrantPermissionRule.grant(
+            Manifest.permission.INTERNET,
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+    )
+
     @Before
     fun doBeforeRun() {
+        Intents.intending(IntentMatchers.isInternal()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
+
         topAdsAssertion = TopAdsAssertion(
                 activityRule.activity,
                 activityRule.activity.application as TopAdsVerificatorInterface
         )
-        Intents.intending(IntentMatchers.anyIntent())
-                .respondWith(Instrumentation.ActivityResult(Activity.RESULT_CANCELED, null))
     }
 
     @After
@@ -55,10 +65,9 @@ class FavoriteShopTopAdsVerificationTest {
 
     @Test
     fun testTopAds() {
-        login()
-        waitForData(20)
+        waitForData(5)
 
-        /*val outerRecyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.index_favorite_recycler_view)
+        val outerRecyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.index_favorite_recycler_view)
         val recyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.rec_shop_recycler_view)
         val itemCount = recyclerView.adapter?.itemCount ?: 0
 
@@ -74,7 +83,7 @@ class FavoriteShopTopAdsVerificationTest {
             )).perform(ViewActions.click())
         }
 
-        topAdsAssertion?.assert()*/
+        topAdsAssertion?.assert()
     }
 
     private fun scrollRecyclerViewToPosition(recyclerView: RecyclerView, pixelToScroll: Int) {
@@ -82,7 +91,7 @@ class FavoriteShopTopAdsVerificationTest {
     }
 
     private fun login() {
-        InstrumentationAuthHelper.loginToAnUser(activityRule.activity.application)
+        InstrumentationAuthHelper.loginInstrumentationTestTopAdsUser()
     }
 
     private fun waitForData(delayInSeconds: Int) {
