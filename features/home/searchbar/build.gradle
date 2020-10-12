@@ -3,6 +3,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
+apply plugin: "androidx.navigation.safeargs"
 
 buildscript {
     repositories {
@@ -34,6 +35,9 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.global_error
     implementation project(rootProject.ext.libraries.iris)
     implementation project(rootProject.ext.libraries.irisSession)
+    implementation project(rootProject.ext.libraries.kotlinExtensions)
+    implementation rootProject.ext.miscDependencies.navigationFragmentKtx
+    implementation rootProject.ext.miscDependencies.navigationUiKtx
 }
 
 project.ext {

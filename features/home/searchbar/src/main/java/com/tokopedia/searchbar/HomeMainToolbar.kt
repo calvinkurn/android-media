@@ -33,7 +33,6 @@ import java.util.concurrent.Callable
 import kotlin.coroutines.CoroutineContext
 import kotlin.text.Charsets.UTF_8
 
-
 class HomeMainToolbar : MainToolbar, CoroutineScope {
 
     private var KEY_BUNDLE_TOOLBAR_TYPE: String = "key_bundle_toolbar_type"

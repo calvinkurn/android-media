@@ -3,4 +3,8 @@
     <declare-styleable name="MainToolbar">
         <attr name="screenName" format="string"/>
     </declare-styleable>
+
+    <declare-styleable name="NavToolbar">
+        <attr name="toolbarScreenName" format="string"/>
+    </declare-styleable>
 </resources>
