@@ -231,4 +231,6 @@ public class RemoteConfigKey {
 
     public static final String NOTIFICATION_TRAY_CLEAR = "app_notif_tray_clear";
 
+    public static final String CUSTOMER_APP_UPDATE = "android_customer_app_update";
+
 }

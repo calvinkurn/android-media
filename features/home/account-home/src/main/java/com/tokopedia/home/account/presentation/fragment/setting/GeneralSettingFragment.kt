@@ -7,6 +7,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.provider.Settings
+import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,7 +18,9 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.material.snackbar.Snackbar
+import com.google.gson.Gson
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.view.appupdate.model.DataUpdateApp
 import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -64,6 +67,7 @@ import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.sessioncommon.data.Token.Companion.GOOGLE_API_KEY
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.url.TokopediaUrl
 import java.util.*
 import javax.inject.Inject
@@ -80,6 +84,7 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
 
     private lateinit var loadingView: View
     private lateinit var baseSettingView: View
+    private lateinit var updateButton: UnifyButton
 
     private lateinit var accountAnalytics: AccountAnalytics
     private lateinit var permissionCheckerHelper: PermissionCheckerHelper
@@ -143,7 +148,9 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
         recyclerView.isNestedScrollingEnabled = false
         recyclerView.addItemDecoration(DividerItemDecoration(activity))
         val appVersion = view.findViewById<TextView>(R.id.text_view_app_version)
+        updateButton = view.findViewById(R.id.force_update_button)
         appVersion.text = getString(R.string.application_version_fmt, GlobalConfig.RAW_VERSION_NAME)
+        showForceUpdate()
     }
 
     override fun getSettingItems(): List<SettingItemViewModel> {
@@ -334,6 +341,26 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
         activity?.let {
             startActivity(RouteManager.getIntent(it, ApplinkConstInternalGlobal.LOGOUT))
         }
+    }
+
+    private fun showForceUpdate() {
+            val dataAppUpdate = remoteConfig.getString(RemoteConfigKey.CUSTOMER_APP_UPDATE)
+            if (!TextUtils.isEmpty(dataAppUpdate)) {
+                val gson = Gson()
+                val dataUpdateApp = gson.fromJson(dataAppUpdate, DataUpdateApp::class.java)
+                if(GlobalConfig.VERSION_CODE < dataUpdateApp.latestVersionForceUpdate) {
+                    updateButton.visibility = View.VISIBLE
+                    updateButton.setOnClickListener {
+                        if (activity != null) {
+                            val intent = RouteManager.getIntent(activity, String.format("%s?titlebar=false&url=%s", ApplinkConst.WEBVIEW, dataUpdateApp.link))
+                            this.startActivity(intent)
+                        }
+                    }
+                } else {
+                    updateButton.visibility = View.GONE
+                }
+
+            }
     }
 
     private fun saveSettingValue(key: String, isChecked: Boolean) {
