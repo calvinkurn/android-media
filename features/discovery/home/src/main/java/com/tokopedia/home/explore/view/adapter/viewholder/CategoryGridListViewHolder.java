@@ -14,7 +14,7 @@ import com.tokopedia.home.R;
 import com.tokopedia.home.explore.domain.model.LayoutRows;
 import com.tokopedia.home.explore.listener.CategoryAdapterListener;
 import com.tokopedia.home.explore.view.adapter.viewmodel.CategoryGridListViewModel;
-import com.tokopedia.media.loader.Loader;
+import com.tokopedia.media.loader.ImageLoader;
 import com.tokopedia.media.loader.wrapper.MediaCacheStrategy;
 
 import java.util.ArrayList;
@@ -90,7 +90,7 @@ public class CategoryGridListViewHolder extends AbstractViewHolder<CategoryGridL
                     holder.title.setText(rowModel.getName());
                 }
                 if (rowModel.getImageUrl() != null) {
-                    Loader.loadImage(holder.icon, rowModel.getImageUrl(), properties -> {
+                    ImageLoader.loadImage(holder.icon, rowModel.getImageUrl(), properties -> {
                         properties.setCacheStrategy(MediaCacheStrategy.RESOURCE);
                         return null;
                     });

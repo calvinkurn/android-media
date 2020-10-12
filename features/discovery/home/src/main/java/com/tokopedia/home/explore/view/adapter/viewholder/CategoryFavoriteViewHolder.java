@@ -14,7 +14,7 @@ import com.tokopedia.home.analytics.HomePageTracking;
 import com.tokopedia.home.explore.domain.model.LayoutRows;
 import com.tokopedia.home.explore.listener.CategoryAdapterListener;
 import com.tokopedia.home.explore.view.adapter.viewmodel.CategoryFavoriteViewModel;
-import com.tokopedia.media.loader.Loader;
+import com.tokopedia.media.loader.ImageLoader;
 import com.tokopedia.media.loader.wrapper.MediaCacheStrategy;
 
 import java.util.ArrayList;
@@ -106,7 +106,7 @@ public class CategoryFavoriteViewHolder extends AbstractViewHolder<CategoryFavor
         public void onBindViewHolder(ItemAdapter.ItemViewHolder holder, final int position) {
             final LayoutRows rowModel = data.get(position);
             holder.title.setText(rowModel.getName());
-            Loader.loadImage(holder.icon, rowModel.getImageUrl(), properties -> {
+            ImageLoader.loadImage(holder.icon, rowModel.getImageUrl(), properties -> {
                 properties.setCacheStrategy(MediaCacheStrategy.RESOURCE);
                 return null;
             });

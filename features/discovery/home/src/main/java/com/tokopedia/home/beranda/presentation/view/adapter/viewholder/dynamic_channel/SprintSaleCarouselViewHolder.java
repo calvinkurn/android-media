@@ -34,7 +34,7 @@ import com.tokopedia.home.beranda.listener.HomeCategoryListener;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelDataModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.SpacingItemDecoration;
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils;
-import com.tokopedia.media.loader.Loader;
+import com.tokopedia.media.loader.ImageLoader;
 import com.tokopedia.media.loader.wrapper.MediaCacheStrategy;
 import com.tokopedia.unifyprinciples.Typography;
 
@@ -191,7 +191,7 @@ public class SprintSaleCarouselViewHolder extends AbstractViewHolder<DynamicChan
         public void onBindViewHolder(ItemViewHolder holder, final int position) {
             try {
                 final DynamicHomeChannel.Grid grid = list[position];
-                Loader.loadImage(holder.imageView, grid.getImageUrl(), properties -> {
+                ImageLoader.loadImage(holder.imageView, grid.getImageUrl(), properties -> {
                     properties.setCacheStrategy(MediaCacheStrategy.RESOURCE);
                     return null;
                 });

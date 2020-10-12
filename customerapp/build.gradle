@@ -375,7 +375,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.coreNetwork)
     implementation project(rootProject.ext.libraries.trackingOptimizer)
     implementation project(rootProject.ext.libraries.locationmanager)
-
+    implementation project(rootProject.ext.features.medialoader)
     implementation project(rootProject.ext.libraries.utils)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.libraries.imagePreviewSlider)

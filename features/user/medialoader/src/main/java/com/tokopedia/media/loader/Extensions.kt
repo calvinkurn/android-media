@@ -58,7 +58,7 @@ internal fun ImageView.call(url: String?, properties: Properties) {
     }
 
     with(properties) {
-        val glideUrl = UrlBuilder.urlBuilder(context, url)
+        val glideUrl = Loader.glideUrl(url)
 
         val adaptiveSignature = if (signature == null) {
             adaptiveSignature(glideUrl.toStringUrl(), glideUrl.headers[HEADER_ECT].toString())
