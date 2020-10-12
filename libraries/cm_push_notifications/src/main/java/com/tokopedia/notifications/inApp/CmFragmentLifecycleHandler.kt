@@ -44,7 +44,7 @@ class CmFragmentLifecycleHandler(private val callback: ShowInAppCallback) {
 }
 
 interface ShowInAppCallback {
-    fun showInAppForScreen(name: String, entityHashCode: Int)
-    fun cancelGratifJob(entityHashCode: Int, @GratifCancellationExceptionType reason: String?)
+    fun showInAppForScreen(name: String, entityHashCode: Int) //check from rules
+    fun cancelGratifJob(entityHashCode: Int, @GratifCancellationExceptionType reason: String?) //todo remane cancel all queued jobs
     fun canShowDialog():Boolean
 }

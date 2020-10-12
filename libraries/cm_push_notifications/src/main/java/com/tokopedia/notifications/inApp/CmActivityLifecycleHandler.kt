@@ -17,6 +17,7 @@ class CmActivityLifecycleHandler(val applicationCallback: CmActivityApplicationC
     var currentWeakActivity: WeakReference<Activity>? = null
     private set
 
+    //todo create arraylist of screens and loop it
     private val DISCO_PAGE_ACTIVITY_NAME = "com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity"
 
     fun onNewIntent(activity: Activity, intent: Intent?) {

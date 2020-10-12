@@ -6,6 +6,7 @@ import android.text.TextUtils
 import com.tokopedia.notifications.common.CMConstant
 import timber.log.Timber
 
+//todo set of rules aaray banke aaenge
 class PushIntentHandler (private val gratificationDialogHandler: GratificationDialogHandler){
 
     fun checkPushIntent(activity: Activity, bundle: Bundle?){

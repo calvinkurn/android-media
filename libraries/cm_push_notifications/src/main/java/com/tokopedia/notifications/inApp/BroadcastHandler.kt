@@ -8,6 +8,7 @@ import android.content.IntentFilter
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import java.lang.ref.WeakReference
 
+//tools - trigger rules yaha se - it will remain insiede cm
 class BroadcastHandler (private val pushIntentHandler: PushIntentHandler){
 
     private val broadcastReceiverMap = java.util.HashMap<WeakReference<Activity>, WeakReference<BroadcastReceiver>>()
