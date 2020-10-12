@@ -1390,7 +1390,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                     shopHomeProductViewModel?.displayedPrice ?: "",
                     shopName,
                     parentPosition + 1,
-                    itemPosition + 1,
+                    itemPosition,
                     isLogin,
                     customDimensionShopPage
             )
@@ -1415,7 +1415,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                     shopHomeProductViewModel?.displayedPrice ?: "",
                     shopName,
                     parentPosition + 1,
-                    itemPosition + 1,
+                    itemPosition,
                     isLogin,
                     customDimensionShopPage
             )
@@ -1474,6 +1474,17 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             )
             context?.let {context ->
                 RouteManager.route(context, model.header.ctaLink)
+            }
+        }
+    }
+
+    override fun onClickCampaignBannerAreaNplWidget(model: ShopHomeNewProductLaunchCampaignUiModel) {
+        model.data?.firstOrNull()?.let {
+            context?.let {context ->
+                val appLink  = model.header.ctaLink
+                if(appLink.isNotEmpty()){
+                    RouteManager.route(context, appLink)
+                }
             }
         }
     }

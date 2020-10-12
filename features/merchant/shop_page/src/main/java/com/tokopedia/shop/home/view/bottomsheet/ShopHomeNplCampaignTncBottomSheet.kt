@@ -153,10 +153,10 @@ class ShopHomeNplCampaignTncBottomSheet : BottomSheetUnify() {
         viewModel?.campaignFollowStatusLiveData?.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
-                    isFollowShop = isAlreadyFollowed(it.data.alreadyFavorited)
-                    if (isFollowShop || !isLoggedIn || !isRuleId33(ruleId)) {
+                    if (!isLoggedIn || !isRuleId33(ruleId)) {
                         hideFollowButton()
                     } else {
+                        isFollowShop = isAlreadyFollowed(it.data.alreadyFavorited)
                         showFollowButton()
                     }
                 }
@@ -184,20 +184,25 @@ class ShopHomeNplCampaignTncBottomSheet : BottomSheetUnify() {
 
     private fun toggleFollowButton() {
         isFollowShop = !isFollowShop
+        shopPageFollowingStatusSharedViewModel?.setShopPageFollowingStatus(isFollowShop)
+        refreshButtonData()
+    }
+
+    private fun refreshButtonData() {
         btn_follow?.apply {
             if (isFollowShop) {
                 text = context.getString(R.string.shop_header_action_following)
                 buttonVariant = UnifyButton.Variant.GHOST
             } else {
-                text = context.getString(R.string.shop_header_action_follow)
+                text = context.getString(R.string.shop_home_npl_campaign_follow)
                 buttonVariant = UnifyButton.Variant.FILLED
             }
         }
-        shopPageFollowingStatusSharedViewModel?.setShopPageFollowingStatus(isFollowShop)
     }
 
     private fun showFollowButton() {
         layout_button_follow_container?.show()
+        refreshButtonData()
         btn_follow?.apply {
             setOnClickListener {
                 isLoading = true
