@@ -8,7 +8,6 @@ import androidx.test.espresso.IdlingRegistry
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.analytics.performance.util.PerformanceDataFileUtils
-import com.tokopedia.instrumentation.test.R
 import com.tokopedia.sellerhome.SellerHomeIdlingResource
 import com.tokopedia.sellerhome.analytic.performance.SellerHomeLoadTimeMonitoringListener
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity
@@ -127,18 +126,18 @@ class PltSellerHomePerformanceTest {
     private fun createMockModelConfig(): MockModelConfig {
         return object : MockModelConfig() {
             override fun createMockModel(context: Context): MockModelConfig {
-                addMockResponse("GoldGetUserShopInfo", InstrumentationMockHelper.getRawString(context, R.raw.response_mock_data_seller_home_get_user_role), FIND_BY_CONTAINS)
-                addMockResponse("shopInfoMoengage", InstrumentationMockHelper.getRawString(context, R.raw.response_mock_data_seller_home_shop_info_moengage), FIND_BY_CONTAINS)
-                addMockResponse("notifications", InstrumentationMockHelper.getRawString(context, R.raw.response_mock_data_seller_home_notification), FIND_BY_CONTAINS)
-                addMockResponse("GetSellerDashboardPageLayout", InstrumentationMockHelper.getRawString(context, R.raw.response_mock_data_seller_home_layout), FIND_BY_CONTAINS)
-                addMockResponse("getTicker", InstrumentationMockHelper.getRawString(context, R.raw.response_mock_data_seller_home_get_ticker), FIND_BY_CONTAINS)
-                addMockResponse("updateShopActive", InstrumentationMockHelper.getRawString(context, R.raw.response_mock_data_seller_home_update_shop_active), FIND_BY_CONTAINS)
-                addMockResponse("shopInfoByID", InstrumentationMockHelper.getRawString(context, R.raw.response_mock_data_seller_home_shop_info_location), FIND_BY_CONTAINS)
-                addMockResponse("fetchCardWidgetData", InstrumentationMockHelper.getRawString(context, R.raw.response_mock_data_seller_home_card_widgets), FIND_BY_CONTAINS)
-                addMockResponse("fetchLineGraphWidgetData", InstrumentationMockHelper.getRawString(context, R.raw.response_mock_data_seller_home_line_graph_widgets), FIND_BY_CONTAINS)
-                addMockResponse("fetchProgressBarWidgetData", InstrumentationMockHelper.getRawString(context, R.raw.response_mock_data_seller_home_progressbar_widgets), FIND_BY_CONTAINS)
-                addMockResponse("fetchPostWidgetData", InstrumentationMockHelper.getRawString(context, R.raw.response_mock_data_seller_home_post_widgets), FIND_BY_CONTAINS)
-                addMockResponse("fetchCarouselWidgetData", InstrumentationMockHelper.getRawString(context, R.raw.response_mock_data_seller_home_carousel_widgets), FIND_BY_CONTAINS)
+                addMockResponse("GoldGetUserShopInfo", InstrumentationMockHelper.getRawString(context, com.tokopedia.instrumentation.test.R.raw.response_mock_data_seller_home_get_user_role), FIND_BY_CONTAINS)
+                addMockResponse("shopInfoMoengage", InstrumentationMockHelper.getRawString(context, com.tokopedia.instrumentation.test.R.raw.response_mock_data_seller_home_shop_info_moengage), FIND_BY_CONTAINS)
+                addMockResponse("notifications", InstrumentationMockHelper.getRawString(context, com.tokopedia.instrumentation.test.R.raw.response_mock_data_seller_home_notification), FIND_BY_CONTAINS)
+                addMockResponse("GetSellerDashboardPageLayout", InstrumentationMockHelper.getRawString(context, com.tokopedia.instrumentation.test.R.raw.response_mock_data_seller_home_layout), FIND_BY_CONTAINS)
+                addMockResponse("getTicker", InstrumentationMockHelper.getRawString(context, com.tokopedia.instrumentation.test.R.raw.response_mock_data_seller_home_get_ticker), FIND_BY_CONTAINS)
+                addMockResponse("updateShopActive", InstrumentationMockHelper.getRawString(context, com.tokopedia.instrumentation.test.R.raw.response_mock_data_seller_home_update_shop_active), FIND_BY_CONTAINS)
+                addMockResponse("shopInfoByID", InstrumentationMockHelper.getRawString(context, com.tokopedia.instrumentation.test.R.raw.response_mock_data_seller_home_shop_info_location), FIND_BY_CONTAINS)
+                addMockResponse("fetchCardWidgetData", InstrumentationMockHelper.getRawString(context, com.tokopedia.instrumentation.test.R.raw.response_mock_data_seller_home_card_widgets), FIND_BY_CONTAINS)
+                addMockResponse("fetchLineGraphWidgetData", InstrumentationMockHelper.getRawString(context, com.tokopedia.instrumentation.test.R.raw.response_mock_data_seller_home_line_graph_widgets), FIND_BY_CONTAINS)
+                addMockResponse("fetchProgressBarWidgetData", InstrumentationMockHelper.getRawString(context, com.tokopedia.instrumentation.test.R.raw.response_mock_data_seller_home_progressbar_widgets), FIND_BY_CONTAINS)
+                addMockResponse("fetchPostWidgetData", InstrumentationMockHelper.getRawString(context, com.tokopedia.instrumentation.test.R.raw.response_mock_data_seller_home_post_widgets), FIND_BY_CONTAINS)
+                addMockResponse("fetchCarouselWidgetData", InstrumentationMockHelper.getRawString(context, com.tokopedia.instrumentation.test.R.raw.response_mock_data_seller_home_carousel_widgets), FIND_BY_CONTAINS)
                 return this
             }
         }
