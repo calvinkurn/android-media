@@ -19,8 +19,8 @@ import com.tokopedia.seller.action.common.presentation.model.SellerSuccessItem
 import com.tokopedia.seller.action.common.presentation.slices.SellerFailureSlice
 import com.tokopedia.seller.action.common.presentation.slices.SellerSlice
 import com.tokopedia.seller.action.order.domain.model.Order
-import com.tokopedia.seller.action.order.domain.repository.SliceMainOrderListRepository
 import com.tokopedia.seller.action.order.presentation.mapper.SellerOrderMapper
+import com.tokopedia.seller.action.order.presentation.presenter.SliceSellerActionPresenter
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -34,7 +34,7 @@ class SellerActionSliceProvider: SliceProvider(){
     }
 
     @Inject
-    lateinit var sliceMainOrderListRepository: SliceMainOrderListRepository
+    lateinit var sliceSellerActionPresenter: SliceSellerActionPresenter
 
     @Inject
     lateinit var handler: Handler
@@ -134,7 +134,7 @@ class SellerActionSliceProvider: SliceProvider(){
     }
 
     private fun getOrderListLiveData(sliceUri: Uri) =
-            sliceMainOrderListRepository.getOrderList(sliceUri).apply {
+            sliceSellerActionPresenter.getOrderList(sliceUri).apply {
                 handler.post {
                     observeForever(sellerOrderObserver)
                 }

@@ -1,4 +1,4 @@
-package com.tokopedia.seller.action.order.domain.repository
+package com.tokopedia.seller.action.order.presentation.presenter
 
 import android.net.Uri
 import androidx.lifecycle.LiveData
@@ -6,9 +6,9 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.kotlin.extensions.getCalculatedFormattedDate
 import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.seller.action.common.dispatcher.SellerActionDispatcherProvider
-import com.tokopedia.seller.action.order.domain.usecase.SliceMainOrderListUseCase
 import com.tokopedia.seller.action.common.exception.SellerActionException
 import com.tokopedia.seller.action.order.domain.model.Order
+import com.tokopedia.seller.action.order.domain.usecase.SliceMainOrderListUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -16,9 +16,9 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.util.*
 
-class SliceMainOrderListRepositoryImpl(
+class SliceSellerActionPresenterImpl(
         private val sliceMainOrderListUseCase: SliceMainOrderListUseCase,
-        private val dispatcher: SellerActionDispatcherProvider): SliceMainOrderListRepository {
+        private val dispatcher: SellerActionDispatcherProvider): SliceSellerActionPresenter {
 
     companion object {
         const val DATE_FORMAT = "dd/MM/yyyy"
