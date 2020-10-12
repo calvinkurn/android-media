@@ -9,6 +9,8 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
 import com.tokopedia.search.R
 import com.tokopedia.search.result.shop.presentation.listener.ShopListener
 import com.tokopedia.search.result.shop.presentation.model.ShopViewModel
@@ -94,9 +96,9 @@ internal class ShopItemViewHolder(
 
     private fun initImageShopReputation(shopViewItem: ShopViewModel.ShopItem) {
         itemView.imageViewShopReputation?.let { imageViewShopReputation ->
-//            imageViewShopReputation.loadImage(shopViewItem.reputationImageUri) {
-//                cacheStrategy = DiskCacheStrategy.RESOURCE
-//            }
+            imageViewShopReputation.loadImage(shopViewItem.reputationImageUri) {
+                cacheStrategy = MediaCacheStrategy.RESOURCE
+            }
         }
     }
 
@@ -172,9 +174,9 @@ internal class ShopItemViewHolder(
             textViewShopItemProductPrice: Typography?
     ) {
         imageViewShopItemProductImage?.let {
-//            it.loadImage(productPreviewItem.imageUrl) {
-//                cacheStrategy = (DiskCacheStrategy.RESOURCE)
-//            }
+            it.loadImage(productPreviewItem.imageUrl) {
+                cacheStrategy = MediaCacheStrategy.RESOURCE
+            }
         }
 
         imageViewShopItemProductImage?.setOnClickListener {
