@@ -54,29 +54,9 @@ class TopAdsAddCreditActivity : BaseSimpleActivity(), HasComponent<TopAdsDashboa
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initInjector()
-        setContentView(R.layout.activity_base_simple)
+        setContentView(R.layout.topads_base_layout)
         populateData()
-        //      viewModel.getAutoTopUpStatusFull()
-//        presenter.autoTopUpStatus.observe(this, Observer {
-//            val isAutoTopUpActive = (it.toIntOrZero()) != TopAdsDashboardConstant.AUTO_TOPUP_INACTIVE
-//            if (isAutoTopUpActive)
-//                sheet?.showAutoAdsOption()
-//        })
-//        viewModel.getAutoTopUpStatus.observe(this, androidx.lifecycle.Observer {
-//            when (it) {
-//                is Success -> onSuccessGetAutoTopUp(it.data)
-//            }
-//        })
     }
-
-//    private fun onSuccessGetAutoTopUp(data: AutoTopUpStatus) {
-//        bonus = data.statusBonus
-//        val isAutoTopUpActive = (data.status.toIntOrZero()) != TopAdsDashboardConstant.AUTO_TOPUP_INACTIVE
-//        if(isAutoTopUpActive && isTopUp){
-//            showAutoAdsOption()
-//        }
-//    }
-
 
     override fun onBackPressed() {
         if (intent.extras?.getBoolean(TopAdsDashboardConstant.EXTRA_APPLINK_FROM_PUSH, false) == true) {

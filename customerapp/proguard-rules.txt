@@ -433,6 +433,8 @@
  -keep public class com.android.installreferrer.** { *; }
  -dontwarn com.squareup.javapoet.**
  -dontwarn com.tokopedia.topads.dashboard.view.sheet.**
+ -dontwarn com.tokopedia.topads.dashboard.data.utils.**
+-dontwarn com.tokopedia.topads.debit.autotopup.view.sheet.**
 
 -keepclassmembers class com.google.android.material.textfield.TextInputLayout {
     final com.google.android.material.internal.CollapsingTextHelper collapsingTextHelper;
