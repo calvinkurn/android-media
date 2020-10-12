@@ -93,7 +93,7 @@ public class AlbumMediaAdapter extends RecyclerViewCursorAdapter<AlbumMediaAdapt
     @Override
     protected void onBindViewHolder(MediaViewHolder holder, Cursor cursor) {
 
-        MediaItem item = MediaItem.valueOf(cursor);
+        final MediaItem item = MediaItem.valueOf(cursor);
         holder.mMediaGrid.preBindMedia(
                 new MediaGrid.PreBindInfo(getImageResize(holder.mMediaGrid.getContext()),
                         0, R.drawable.error_drawable,
