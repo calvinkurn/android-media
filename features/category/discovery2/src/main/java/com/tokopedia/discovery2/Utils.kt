@@ -121,10 +121,10 @@ class Utils {
         fun isFutureSaleOngoing(saleStartDate: String, saleEndDate: String): Boolean {
             if (saleStartDate.isEmpty() || saleEndDate.isEmpty()) return false
             val currentSystemTime = Calendar.getInstance().time
-            val saleStartDate = parseData(saleStartDate)
-            val saleEndDate = parseData(saleEndDate)
-            return if (saleStartDate != null && saleEndDate != null) {
-                (saleStartDate.time <= currentSystemTime.time) && (currentSystemTime.time < saleEndDate.time)
+            val parsedSaleStartDate = parseData(saleStartDate)
+            val parsedSaleEndDate = parseData(saleEndDate)
+            return if (parsedSaleStartDate != null && parsedSaleEndDate != null) {
+                (parsedSaleStartDate.time <= currentSystemTime.time) && (currentSystemTime.time < parsedSaleEndDate.time)
             } else {
                 false
             }
@@ -160,25 +160,7 @@ class Utils {
                     return "${date}T${time}"
                 }
             }
-//
-//            if (!saleWidgetData.value?.data.isNullOrEmpty()) {
-//                saleWidgetData.value?.data?.firstOrNull()?.ongoingCampaignEndTime?.let {
-//                    if (it.length >= 19) {
-//                        val date = it.substring(0, 10)
-//                        val time = it.substring(11, 19)
-//                        return "${date}T${time}"
-//                    }
-//                }
-//            }
             return ""
-
-//        if (!saleWidgetData.value?.data?.get(0)?.ongoingCampaignEndTime.isNullOrEmpty()) {
-//            val serverSaleDateTime = saleWidgetData.value?.data?.get(0)?.ongoingCampaignEndTime
-//            val date = serverSaleDateTime?.substring(0, 10)
-//            val time = serverSaleDateTime?.substring(11, 19)
-//            flashSaleDate = "${date}T${time}"
-//        }
-//        return flashSaleDate
         }
     }
 }
