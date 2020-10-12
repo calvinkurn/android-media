@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.USER_NOTIFICATION_SETTING
 import com.tokopedia.otp.R
 import com.tokopedia.otp.common.abstraction.BaseOtpFragment
 import com.tokopedia.otp.common.analytics.TrackingOtpUtil
@@ -55,8 +56,7 @@ class ActivePushNotifFragment : BaseOtpFragment() {
             viewBound.ticker?.setHtmlDescription(getString(R.string.remove_device_ticker))
             viewBound.ticker?.setDescriptionClickEvent(object : TickerCallback {
                 override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                    val intent = RouteManager.getIntent(activity, ApplinkConstInternalGlobal.HAS_PASSWORD)
-                    startActivity(intent)
+                    context?.startActivity(RouteManager.getIntent(context, ApplinkConstInternalGlobal.HAS_PASSWORD))
                 }
 
                 override fun onDismiss() {}
@@ -72,11 +72,10 @@ class ActivePushNotifFragment : BaseOtpFragment() {
             viewBound.ticker?.setDescriptionClickEvent(object : TickerCallback {
                 override fun onDescriptionViewClick(linkUrl: CharSequence) {
                     analytics.trackClickPushNotifSettingButton()
-                    val intent = RouteManager.getIntent(
-                            activity,
-                            ApplinkConstInternalMarketplace.USER_NOTIFICATION_SETTING + PUSH_NOTIFICATION_NS_QUERY
-                    )
-                    startActivity(intent)
+                    context?.startActivity(RouteManager.getIntent(
+                            context,
+                            "$USER_NOTIFICATION_SETTING$PUSH_NOTIFICATION_NS_QUERY"
+                    ))
                 }
 
                 override fun onDismiss() {}

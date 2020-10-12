@@ -213,6 +213,7 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
                 onPinMenuClicked();
                 break;
             case SettingConstant.SETTING_PUSH_NOTIF:
+                accountAnalytics.eventClickSignInByPushNotifSetting();
                 onPushNotifClicked();
                 break;
             case SettingConstant.SETTING_ACCOUNT_ADDRESS_ID:
