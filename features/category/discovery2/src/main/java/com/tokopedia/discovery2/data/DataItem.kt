@@ -360,6 +360,9 @@ data class DataItem(
         @SerializedName("labels")
         var labelsGroupList: List<LabelsGroup>? = null,
 
+        @SerializedName("carousel_component_id")
+        var flashTimerTargetComponent: String = "",
+
         var shopAdsClickURL: String? = "",
 
         var shopAdsViewURL: String? = "",
