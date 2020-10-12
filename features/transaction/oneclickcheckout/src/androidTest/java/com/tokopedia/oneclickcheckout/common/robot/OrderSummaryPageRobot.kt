@@ -204,14 +204,40 @@ class OrderSummaryPageRobot {
         onView(withId(R.id.tv_payment_name)).perform(scrollTo()).check(matches(withText(paymentName)))
     }
 
-    fun assertInstallment(detail: String) {
-        onView(withId(R.id.tv_installment_type)).perform(scrollTo()).check(matches(isDisplayed()))
-        onView(withId(R.id.tv_installment_detail)).perform(scrollTo()).check(matches(isDisplayed())).check(matches(withText(detail)))
+    fun assertInstallment(detail: String?) {
+        if (detail == null) {
+            onView(withId(R.id.tv_installment_type)).check { view, noViewFoundException ->
+                noViewFoundException?.printStackTrace()
+                assertEquals(View.GONE, view.visibility)
+            }
+            onView(withId(R.id.tv_installment_detail)).check { view, noViewFoundException ->
+                noViewFoundException?.printStackTrace()
+                assertEquals(View.GONE, view.visibility)
+            }
+        } else {
+            onView(withId(R.id.tv_installment_type)).perform(scrollTo()).check(matches(isDisplayed()))
+            onView(withId(R.id.tv_installment_detail)).perform(scrollTo()).check(matches(isDisplayed())).check(matches(withText(detail)))
+        }
+    }
+
+    fun assertProfilePaymentError(message: String, buttonText: String) {
+        onView(withId(R.id.tv_payment_error_message)).perform(scrollTo()).check(matches(isDisplayed())).check(matches(withText(message)))
+        onView(withId(R.id.tv_payment_error_action)).perform(scrollTo()).check(matches(isDisplayed())).check(matches(withText(buttonText)))
     }
 
     fun assertPayment(total: String, buttonText: String) {
-        onView(withId(R.id.btn_pay)).perform(scrollTo()).check(matches(withText(buttonText)))
+        onView(withId(R.id.btn_pay)).perform(scrollTo()).check(matches(withText(buttonText))).check { view, noViewFoundException ->
+            noViewFoundException?.printStackTrace()
+            assertEquals(true, view.isEnabled)
+        }
         onView(withId(R.id.tv_total_payment_value)).check(matches(withText(total)))
+    }
+
+    fun assertPaymentButtonEnable(isEnable: Boolean) {
+        onView(withId(R.id.btn_pay)).perform(scrollTo()).check { view, noViewFoundException ->
+            noViewFoundException?.printStackTrace()
+            assertEquals(isEnable, view.isEnabled)
+        }
     }
 
     fun assertPaymentErrorTicker(message: String) {

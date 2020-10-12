@@ -9,7 +9,9 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
+import com.tokopedia.oneclickcheckout.common.interceptor.GET_OCC_CART_PAGE_CREDIT_CARD_EXPIRED_RESPONSE_PATH
 import com.tokopedia.oneclickcheckout.common.interceptor.GET_OCC_CART_PAGE_CREDIT_CARD_RESPONSE_PATH
+import com.tokopedia.oneclickcheckout.common.interceptor.GET_OCC_CART_PAGE_MULTIPLE_CREDIT_CARD_DELETED_RESPONSE_PATH
 import com.tokopedia.oneclickcheckout.common.interceptor.OneClickCheckoutInterceptor
 import com.tokopedia.oneclickcheckout.common.robot.orderSummaryPage
 import com.tokopedia.oneclickcheckout.common.rule.FreshIdlingResourceTestRule
@@ -113,12 +115,45 @@ class OrderSummaryPageActivityCreditCardTest {
                 closeBottomSheet()
             }
         } pay {
-            Thread.sleep(5000)
             assertGoToPayment(
                     redirectUrl = "https://www.tokopedia.com/payment",
                     queryString = "transaction_id=123",
                     method = "POST"
             )
+        }
+    }
+
+    @Test
+    fun errorFlow_CreditCardExpired() {
+        cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_CREDIT_CARD_EXPIRED_RESPONSE_PATH
+
+        activityRule.launchActivity(null)
+        intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
+
+        orderSummaryPage {
+
+            assertInstallment(null)
+
+            assertProfilePaymentError("Kedaluwarsa", "Ubah")
+
+            assertPaymentButtonEnable(false)
+        }
+    }
+
+    @Test
+    fun errorFlow_CreditCardDeleted() {
+        cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_MULTIPLE_CREDIT_CARD_DELETED_RESPONSE_PATH
+
+        activityRule.launchActivity(null)
+        intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
+
+        orderSummaryPage {
+
+            assertInstallment(null)
+
+            assertProfilePaymentError("Kartu Kredit telah dihapus", "Ubah")
+
+            assertPaymentButtonEnable(false)
         }
     }
 }
