@@ -2,6 +2,7 @@ package com.tokopedia.topads.auto.view.activity
 
 import android.os.Build
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
 import com.tokopedia.topads.auto.base.AutoAdsBaseActivity
 import com.tokopedia.topads.auto.view.fragment.CreateAutoAdsFragment
@@ -13,6 +14,7 @@ class CreateAutoAdsActivity : AutoAdsBaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             toolbar.elevation = 0f
         }
