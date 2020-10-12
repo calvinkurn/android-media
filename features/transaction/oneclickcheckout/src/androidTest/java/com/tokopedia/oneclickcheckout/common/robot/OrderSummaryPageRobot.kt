@@ -38,6 +38,10 @@ class OrderSummaryPageRobot {
         onView(withId(com.tokopedia.unifycomponents.R.id.quantity_editor_add)).perform(scrollTo()).perform(click())
     }
 
+    fun clickMinusProductQuantity() {
+        onView(withId(com.tokopedia.unifycomponents.R.id.quantity_editor_substract)).perform(scrollTo()).perform(click())
+    }
+
     fun clickEditPreference() {
         onView(withId(R.id.iv_edit_preference)).perform(scrollTo()).check(matches(isDisplayed())).perform(click())
     }
@@ -69,6 +73,12 @@ class OrderSummaryPageRobot {
 
     fun clickChangeInstallment(func: InstallmentDetailBottomSheetRobot.() -> Unit) {
         onView(withId(R.id.tv_installment_detail)).perform(scrollTo()).perform(click())
+        onView(withId(com.tokopedia.unifycomponents.R.id.bottom_sheet_header)).perform(swipeUpTop())
+        InstallmentDetailBottomSheetRobot().apply(func)
+    }
+
+    fun clickInstallmentErrorAction(func: InstallmentDetailBottomSheetRobot.() -> Unit) {
+        onView(withId(R.id.tv_installment_error_action)).perform(scrollTo()).perform(click())
         onView(withId(com.tokopedia.unifycomponents.R.id.bottom_sheet_header)).perform(swipeUpTop())
         InstallmentDetailBottomSheetRobot().apply(func)
     }
@@ -218,6 +228,11 @@ class OrderSummaryPageRobot {
             onView(withId(R.id.tv_installment_type)).perform(scrollTo()).check(matches(isDisplayed()))
             onView(withId(R.id.tv_installment_detail)).perform(scrollTo()).check(matches(isDisplayed())).check(matches(withText(detail)))
         }
+    }
+
+    fun assertInstallmentError() {
+        onView(withId(R.id.tv_installment_error_message)).perform(scrollTo()).check(matches(isDisplayed())).check(matches(withText("Cicilan tidak tersedia.")))
+        onView(withId(R.id.tv_installment_error_action)).perform(scrollTo()).check(matches(isDisplayed())).check(matches(withText("Ubah")))
     }
 
     fun assertProfilePaymentError(message: String, buttonText: String) {

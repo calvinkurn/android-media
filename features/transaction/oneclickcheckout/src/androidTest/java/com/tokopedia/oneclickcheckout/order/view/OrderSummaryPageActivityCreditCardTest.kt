@@ -9,10 +9,7 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
-import com.tokopedia.oneclickcheckout.common.interceptor.GET_OCC_CART_PAGE_CREDIT_CARD_EXPIRED_RESPONSE_PATH
-import com.tokopedia.oneclickcheckout.common.interceptor.GET_OCC_CART_PAGE_CREDIT_CARD_RESPONSE_PATH
-import com.tokopedia.oneclickcheckout.common.interceptor.GET_OCC_CART_PAGE_MULTIPLE_CREDIT_CARD_DELETED_RESPONSE_PATH
-import com.tokopedia.oneclickcheckout.common.interceptor.OneClickCheckoutInterceptor
+import com.tokopedia.oneclickcheckout.common.interceptor.*
 import com.tokopedia.oneclickcheckout.common.robot.orderSummaryPage
 import com.tokopedia.oneclickcheckout.common.rule.FreshIdlingResourceTestRule
 import org.junit.After
@@ -154,6 +151,113 @@ class OrderSummaryPageActivityCreditCardTest {
             assertProfilePaymentError("Kartu Kredit telah dihapus", "Ubah")
 
             assertPaymentButtonEnable(false)
+        }
+    }
+
+    @Test
+    fun errorFlow_CreditCardScroogeError() {
+        cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_CREDIT_CARD_ERROR_RESPONSE_PATH
+
+        activityRule.launchActivity(null)
+        intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
+
+        orderSummaryPage {
+
+            assertInstallment(null)
+
+            assertPayment("Rp116.725", "Pilih Pembayaran")
+
+            assertPaymentErrorTicker("Maaf, metode bayar dengan kartu kredit sedang tidak bisa digunakan. Silakan pilih metode pembayaran lain.")
+        }
+    }
+
+    @Test
+    fun errorFlow_InstallmentMinimumAmount() {
+        cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_CREDIT_CARD_RESPONSE_PATH
+
+        activityRule.launchActivity(null)
+        intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
+
+        orderSummaryPage {
+
+            assertInstallment("Bayar Penuh")
+
+            for (i in 1..4) {
+                clickAddProductQuantity()
+            }
+
+            clickChangeInstallment {
+                chooseInstallment(3)
+            }
+
+            assertInstallment("3 Bulan x Rp175.959")
+
+            clickMinusProductQuantity()
+
+            assertInstallment("3 Bulan x Rp141.792")
+
+            assertPayment("Rp425.375", "Bayar")
+
+            clickButtonOrderDetail {
+                assertSummary(
+                        productPrice = "Rp400.000",
+                        shippingPrice = "Rp15.000",
+                        paymentFee = "Rp10.375",
+                        totalPrice = "Rp425.375"
+                )
+                closeBottomSheet()
+            }
+
+            pay()
+
+            assertPaymentButtonEnable(false)
+
+            assertInstallmentError()
+
+            clickInstallmentErrorAction {
+                chooseInstallment(0)
+            }
+
+            assertInstallment("Bayar Penuh")
+
+            assertPaymentButtonEnable(true)
+        } pay {
+            assertGoToPayment(
+                    redirectUrl = "https://www.tokopedia.com/payment",
+                    queryString = "transaction_id=123",
+                    method = "POST"
+            )
+        }
+    }
+
+    @Test
+    fun errorFlow_CreditCardMinimumAmount() {
+        cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_CREDIT_CARD_MIN_AMOUNT_RESPONSE_PATH
+
+        activityRule.launchActivity(null)
+        intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
+
+        orderSummaryPage {
+
+            assertPayment("Rp25.375", "Pilih Pembayaran")
+
+            assertPaymentErrorTicker("Belanjaanmu kurang dari min. transaksi Kartu Kredit (Rp50.000). Silahkan pilih pembayaran lain.")
+
+            clickButtonOrderDetail {
+                assertSummary(
+                        productPrice = "Rp10.000",
+                        shippingPrice = "Rp15.000",
+                        paymentFee = "Rp375",
+                        totalPrice = "Rp25.375"
+                )
+                closeBottomSheet()
+            }
+        } pay {
+            assertGoToPayment(
+                    redirectUrl = "https://www.tokopedia.com/payment",
+                    queryString = "transaction_id=123",
+                    method = "POST"
+            )
         }
     }
 }
