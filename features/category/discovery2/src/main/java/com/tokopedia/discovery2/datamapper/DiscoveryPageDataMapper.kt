@@ -2,6 +2,9 @@ package com.tokopedia.discovery2.datamapper
 
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.Utils
+import com.tokopedia.discovery2.Utils.Companion.TIMER_DATE_FORMAT
+import com.tokopedia.discovery2.Utils.Companion.isSaleOver
+import com.tokopedia.discovery2.Utils.Companion.parseFlashSaleDate
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DiscoveryResponse
 import com.tokopedia.discovery2.data.PageInfo
@@ -37,6 +40,7 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo, private val queryP
     fun getDiscoveryComponentListWithQueryParam(components: List<ComponentsItem>): List<ComponentsItem> {
         val targetCompId = queryParameterMap[TARGET_COMP_ID] ?: ""
         val componentList = getDiscoveryComponentList(components)
+//        val componentList = getDiscoveryComponentList(filterSaleTimer(components))
         if (componentList.isNotEmpty() && targetCompId.isNotEmpty()) {
             componentList.forEach { item ->
                 if (item.id == targetCompId) {
@@ -45,6 +49,29 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo, private val queryP
             }
         }
         return componentList
+    }
+
+    private fun filterSaleTimer(componentList: List<ComponentsItem>): ArrayList<ComponentsItem> {
+        val listComponents: ArrayList<ComponentsItem> = ArrayList()
+        var itemIdTobeRemoved: String? = "0"
+        componentList.forEach {
+            if (it.name == ComponentNames.FlashSaleTimer.componentName || (itemIdTobeRemoved != "0" && it.id == itemIdTobeRemoved)) {
+                when {
+                    isSaleOver(parseFlashSaleDate(it.data?.firstOrNull()?.ongoingCampaignEndTime), TIMER_DATE_FORMAT) -> {
+                        itemIdTobeRemoved = it.data?.firstOrNull()?.flashTimerTargetComponent ?: "0"
+                    }
+                    it.id == itemIdTobeRemoved -> {
+                        itemIdTobeRemoved = "0"
+                    }
+                    else -> {
+                        listComponents.add(it)
+                    }
+                }
+            } else {
+                listComponents.add(it)
+            }
+        }
+        return listComponents
     }
 
     private fun getDiscoveryComponentList(components: List<ComponentsItem>): List<ComponentsItem> {

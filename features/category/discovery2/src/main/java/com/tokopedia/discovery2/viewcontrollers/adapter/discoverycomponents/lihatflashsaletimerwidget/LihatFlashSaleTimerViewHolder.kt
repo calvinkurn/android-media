@@ -15,8 +15,9 @@ import com.tokopedia.discovery2.TIME_DISPLAY_FORMAT
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
+import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 
-class LihatFlashSaleTimerViewHolder(itemView: View, fragment: Fragment) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner), View.OnClickListener {
+class LihatFlashSaleTimerViewHolder(itemView: View, val fragment: Fragment) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner), View.OnClickListener {
 
     private var lihatFlashSaleTimerViewModel: LihatFlashSaleTimerViewModel? = null
     private var constraintLayout: ConstraintLayout = itemView.findViewById(R.id.parent_layout)
@@ -56,10 +57,11 @@ class LihatFlashSaleTimerViewHolder(itemView: View, fragment: Fragment) : Abstra
                     setTimerUI(componentItem, SECONDS)
                 }
             })
-            lihatFlashSaleTimerViewModel?.getTimerData()?.observe(it, Observer { timerMode ->
-                hoursTextView.text = String.format(TIME_DISPLAY_FORMAT, timerMode.hours)
-                minutesTextView.text = String.format(TIME_DISPLAY_FORMAT, timerMode.minutes)
-                secondsTextView.text = String.format(TIME_DISPLAY_FORMAT, timerMode.seconds)
+            lihatFlashSaleTimerViewModel?.getTimerData()?.observe(it, Observer { timerData ->
+                hoursTextView.text = String.format(TIME_DISPLAY_FORMAT, timerData.hours)
+                minutesTextView.text = String.format(TIME_DISPLAY_FORMAT, timerData.minutes)
+                secondsTextView.text = String.format(TIME_DISPLAY_FORMAT, timerData.seconds)
+                if (timerData.timeFinish) (fragment as DiscoveryFragment).reSync()
             })
         }
     }

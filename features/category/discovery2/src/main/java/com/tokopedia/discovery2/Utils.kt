@@ -22,9 +22,6 @@ const val DARK_ORANGE = "darkOrange"
 const val TRANSPARENT_BLACK = "transparentBlack"
 const val LABEL_PRODUCT_STATUS = "status"
 const val LABEL_PRICE = "price"
-const val LABEL_GIMMICK = "gimmick"
-const val LABEL_INTEGRITY = "integrity"
-const val LABEL_SHIPPING = "shipping"
 const val PDP_APPLINK = "tokopedia://product/"
 val TIME_DISPLAY_FORMAT = "%1$02d"
 
@@ -133,10 +130,10 @@ class Utils {
             }
         }
 
-        fun isSaleOver(saleEndDate: String): Boolean {
+        fun isSaleOver(saleEndDate: String, timerFormat : String = TIMER_SPRINT_SALE_DATE_FORMAT): Boolean {
             if (saleEndDate.isEmpty()) return true
             val currentSystemTime = Calendar.getInstance().time
-            val parsedDate = parseData(saleEndDate)
+            val parsedDate = parseData(saleEndDate, timerFormat)
             return if (parsedDate != null) {
                 currentSystemTime.time >= parsedDate.time
             } else {
@@ -144,15 +141,44 @@ class Utils {
             }
         }
 
-        fun parseData(date: String?): Date? {
+        fun parseData(date: String?, timerFormat : String  = TIMER_SPRINT_SALE_DATE_FORMAT): Date? {
             return date?.let {
                 try {
-                    SimpleDateFormat(TIMER_SPRINT_SALE_DATE_FORMAT, Locale.getDefault())
+                    SimpleDateFormat(timerFormat, Locale.getDefault())
                             .parse(date)
                 } catch (parseException: ParseException) {
                     null
                 }
             }
+        }
+
+        fun parseFlashSaleDate(saleTime: String?): String {
+            if (!saleTime.isNullOrEmpty()) {
+                if (saleTime.length >= 19) {
+                    val date = saleTime.substring(0, 10)
+                    val time = saleTime.substring(11, 19)
+                    return "${date}T${time}"
+                }
+            }
+//
+//            if (!saleWidgetData.value?.data.isNullOrEmpty()) {
+//                saleWidgetData.value?.data?.firstOrNull()?.ongoingCampaignEndTime?.let {
+//                    if (it.length >= 19) {
+//                        val date = it.substring(0, 10)
+//                        val time = it.substring(11, 19)
+//                        return "${date}T${time}"
+//                    }
+//                }
+//            }
+            return ""
+
+//        if (!saleWidgetData.value?.data?.get(0)?.ongoingCampaignEndTime.isNullOrEmpty()) {
+//            val serverSaleDateTime = saleWidgetData.value?.data?.get(0)?.ongoingCampaignEndTime
+//            val date = serverSaleDateTime?.substring(0, 10)
+//            val time = serverSaleDateTime?.substring(11, 19)
+//            flashSaleDate = "${date}T${time}"
+//        }
+//        return flashSaleDate
         }
     }
 }
