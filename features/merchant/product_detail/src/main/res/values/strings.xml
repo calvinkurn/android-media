@@ -8,6 +8,7 @@
     <string name="product_detail_courier">Pengiriman</string>
     <string name="label_seen">Dilihat</string>
     <string name="label_product_info">Informasi Produk</string>
+    <string name="merchant_product_detail_label_product_detail">Detail Produk</string>
     <string name="label_pre_order">Waktu Preorder</string>
     <string name="label_read_detail">Baca Selengkapnya</string>
     <string name="label_product_desc">Deskripsi Produk</string>

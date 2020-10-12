@@ -30,6 +30,9 @@ object DynamicProductDetailMapper {
                 ProductDetailConstant.PRODUCT_INFO -> {
                     listOfComponent.add(ProductInfoDataModel(type = component.type, name = component.componentName, data = mapToProductInfoContent(component.componentData)))
                 }
+                ProductDetailConstant.PRODUCT_DETAIL -> {
+                    listOfComponent.add(ProductDetailInfoDataModel(type = component.type, name = component.componentName, dataContent = mapToProductDetailInfoContent(component.componentData.firstOrNull())))
+                }
                 ProductDetailConstant.SHOP_INFO -> {
                     listOfComponent.add(ProductShopInfoDataModel(type = component.type, name = component.componentName))
                 }
@@ -211,6 +214,11 @@ object DynamicProductDetailMapper {
                 ProductInfoContent(it.row, it.content)
             }
         }
+    }
+
+    private fun mapToProductDetailInfoContent(data: ComponentData?): List<ProductDetailInfoContent> {
+        if (data == null) return listOf()
+        return data.content.map { ProductDetailInfoContent(icon = it.icon, title = it.title, subtitle = it.subtitle, applink = it.applink, showAtFront = it.showAtFront) }
     }
 
     private fun mapToCustomInfoUiModel(componentData: ComponentData?, componentName: String, componentType: String): ProductCustomInfoDataModel? {

@@ -11,5 +11,9 @@ data class Content(
         @SerializedName("subtitle")
         var subtitle: String = "",
         @SerializedName("applink")
-        val applink: String = ""
+        val applink: String = "",
+
+        // For new product info only
+        @SerializedName("showAtFront")
+        val showAtFront: Boolean = false
 )

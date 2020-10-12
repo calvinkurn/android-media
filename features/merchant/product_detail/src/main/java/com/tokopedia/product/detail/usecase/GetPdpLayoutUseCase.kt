@@ -185,6 +185,14 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                         applink
                       }
                     }
+                    ... on pdpDataProductDetail {
+                      content {
+                        title
+                        subtitle
+                        applink
+                        showAtFront
+                      }
+                    }
                     ... on pdpDataSocialProof {
                       row
                       content {
