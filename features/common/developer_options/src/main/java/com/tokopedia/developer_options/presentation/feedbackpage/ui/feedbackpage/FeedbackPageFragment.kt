@@ -2,6 +2,7 @@ package com.tokopedia.developer_options.presentation.feedbackpage.ui.feedbackpag
 
 import android.Manifest
 import android.app.Activity
+import android.app.Activity.RESULT_OK
 import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
@@ -26,6 +27,8 @@ import com.google.android.material.textfield.TextInputLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.developer_options.R
+import com.tokopedia.developer_options.drawonpicture.presentation.activity.DrawOnPictureActivity
+import com.tokopedia.developer_options.drawonpicture.presentation.fragment.DrawOnPictureFragment.Companion.EXTRA_DRAW_IMAGE_URI
 import com.tokopedia.developer_options.presentation.feedbackpage.adapter.ImageFeedbackAdapter
 import com.tokopedia.developer_options.presentation.feedbackpage.di.FeedbackPageComponent
 import com.tokopedia.developer_options.presentation.feedbackpage.domain.model.CategoriesModel
@@ -115,6 +118,20 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
         }
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        when (requestCode) {
+            REQUEST_CODE_EDIT_IMAGE -> if (resultCode == RESULT_OK) {
+                data?.let {
+                    val newUri = it.getParcelableExtra<Uri>(EXTRA_DRAW_IMAGE_URI)
+                    uriImage = newUri
+                    imageView.setImageURI(uriImage)
+                }
+            }
+        }
+    }
+
     private fun allPermissionsGranted(): Boolean {
         for (permission in requiredPermissions) {
             if (activity?.let { ContextCompat.checkSelfPermission(it, permission) } != PackageManager.PERMISSION_GRANTED) {
@@ -149,6 +166,11 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
         loadingDialog = context?.let { LoadingDialog(it) }
 
         uriImage = arguments?.getParcelable(EXTRA_URI_IMAGE)
+
+        imageView.setOnClickListener {
+            startActivityForResult(DrawOnPictureActivity.getIntent(requireContext(), uriImage),
+                    REQUEST_CODE_EDIT_IMAGE)
+        }
 
         context?.let { ArrayAdapter.createFromResource(it,
                 R.array.bug_type_array,
@@ -420,6 +442,8 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
         }
 
         private const val REQUEST_CODE_IMAGE = 111
+        private const val REQUEST_CODE_EDIT_IMAGE = 101
+
         private val FILE_NAME_PREFIX = "screenshot"
         private val PATH_SCREENSHOT = "screenshots/"
         private val PROJECTION = arrayOf(
