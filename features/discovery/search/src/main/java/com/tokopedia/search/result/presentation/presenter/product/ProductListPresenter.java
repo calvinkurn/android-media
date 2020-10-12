@@ -86,6 +86,9 @@ import kotlin.collections.CollectionsKt;
 import kotlin.jvm.functions.Function1;
 import rx.Observable;
 import rx.Subscriber;
+import rx.Subscription;
+import rx.functions.Action1;
+import rx.subscriptions.CompositeSubscription;
 
 import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_SHOP_RATING;
 import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_SHOP_RATING_VARIANT_A;
@@ -125,6 +128,7 @@ final class ProductListPresenter
     private Lazy<UseCase<String>> getProductCountUseCase;
     private TopAdsUrlHitter topAdsUrlHitter;
     private SchedulersProvider schedulersProvider;
+    private CompositeSubscription compositeSubscription = new CompositeSubscription();
 
     private boolean enableGlobalNavWidget = true;
     private String additionalParams = "";
@@ -716,7 +720,7 @@ final class ProductListPresenter
         setSuggestionViewModel(productViewModel.getSuggestionModel());
         setRelatedViewModel(productViewModel.getRelatedViewModel());
 
-        sendTrackingNoSearchResult(productViewModel);
+        doInBackground(productViewModel, this::sendTrackingNoSearchResult);
 
         getView().setAutocompleteApplink(productViewModel.getAutocompleteApplink());
         getView().setDefaultLayoutType(productViewModel.getDefaultView());
@@ -1210,9 +1214,16 @@ final class ProductListPresenter
 
         isFirstTimeLoad = false;
 
-        Observable.just(productViewModel)
-                .subscribeOn(schedulersProvider.computation())
-                .subscribe(this::sendGeneralSearchTracking, Throwable::printStackTrace);
+        doInBackground(productViewModel, this::sendGeneralSearchTracking);
+    }
+
+    private <T> void doInBackground(T observable, final Action1<? super T> onNext) {
+        Subscription subscription =
+                Observable.just(observable)
+                        .subscribeOn(schedulersProvider.computation())
+                        .subscribe(onNext, Throwable::printStackTrace);
+
+        compositeSubscription.add(subscription);
     }
 
     private void sendGeneralSearchTracking(ProductViewModel productViewModel) {
@@ -1731,5 +1742,11 @@ final class ProductListPresenter
         if (searchProductLoadMoreUseCase != null) searchProductLoadMoreUseCase.unsubscribe();
         if (recommendationUseCase != null) recommendationUseCase.unsubscribe();
         if (getProductCountUseCase != null) getProductCountUseCase.get().unsubscribe();
+        if (compositeSubscription != null && compositeSubscription.isUnsubscribed()) unsubscribeCompositeSubscription();
+    }
+
+    private void unsubscribeCompositeSubscription() {
+        compositeSubscription.unsubscribe();
+        compositeSubscription = null;
     }
 }
