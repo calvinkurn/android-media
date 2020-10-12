@@ -1,22 +1,24 @@
 package com.tokopedia.media.loader
 
 import android.graphics.drawable.Drawable
+import android.net.Uri
 import android.widget.ImageView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.model.GlideUrl
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.media.loader.GlideBuilder.loadGifImage
+import com.tokopedia.media.loader.common.Loader
 import com.tokopedia.media.loader.common.Properties
-import com.tokopedia.media.loader.common.UrlBuilder
-import com.tokopedia.media.loader.data.Signature.adaptiveSignature
+import com.tokopedia.media.loader.module.GlideApp
 import com.tokopedia.media.loader.utils.DEFAULT_ROUNDED
 import com.tokopedia.media.loader.utils.HEADER_ECT
+import com.tokopedia.media.loader.utils.mediaSignature
 
 fun ImageView.loadImage(drawable: Drawable) = this.setImageDrawable(drawable)
 
 fun ImageView.loadImage(resource: Int) = this.setImageResource(resource)
 
 fun ImageView.loadImage(url: String) = call(url, Properties())
+
+fun ImageView.loadImage(uri: Uri) = this.setImageURI(uri)
 
 fun ImageView.loadAsGif(url: String) = loadGifImage(this, url)
 
@@ -43,7 +45,7 @@ inline fun ImageView.loadImageRounded(
 
 fun ImageView?.clearImage() {
     if (this != null) {
-        Glide.with(this.context).clear(this)
+        GlideApp.with(this.context).clear(this)
     }
 }
 
@@ -60,26 +62,22 @@ internal fun ImageView.call(url: String?, properties: Properties) {
     with(properties) {
         val glideUrl = Loader.glideUrl(url)
 
-        val adaptiveSignature = if (signature == null) {
-            adaptiveSignature(glideUrl.toStringUrl(), glideUrl.headers[HEADER_ECT].toString())
-        } else signature
-
         GlideBuilder.loadImage(
-                imageView = imageView,
-                url = glideUrl,
-                thumbnailUrl = thumbnailUrl,
-                radius = roundedRadius,
-                signatureKey = adaptiveSignature,
+                signatureKey = signature.mediaSignature(glideUrl),
+                stateListener = loaderListener,
                 cacheStrategy = cacheStrategy,
-                placeHolder = placeHolder,
-                resOnError = error,
-                isAnimate = isAnimate,
-                isCircular = isCircular,
+                thumbnailUrl = thumbnailUrl,
                 overrideSize = overrideSize,
                 decodeFormat = decodeFormat,
-                transform = transform,
+                placeHolder = placeHolder,
+                isCircular = isCircular,
                 transforms = transforms,
-                listener = loaderListener
+                radius = roundedRadius,
+                isAnimate = isAnimate,
+                transform = transform,
+                imageView = imageView,
+                resOnError = error,
+                url = glideUrl
         )
     }
 }

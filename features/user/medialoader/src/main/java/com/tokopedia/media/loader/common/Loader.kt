@@ -1,8 +1,7 @@
-package com.tokopedia.media.loader
+package com.tokopedia.media.loader.common
 
 import android.content.Context
 import com.bumptech.glide.load.model.GlideUrl
-import com.tokopedia.media.loader.common.UrlBuilder
 import com.tokopedia.media.loader.network.NetworkManager
 import com.tokopedia.media.loader.utils.MediaSettingPreferences
 
@@ -13,7 +12,7 @@ object Loader {
 
     @JvmStatic
     fun initialize(context: Context) {
-        this.context = context
+        Loader.context = context
         settings = MediaSettingPreferences(context)
     }
 

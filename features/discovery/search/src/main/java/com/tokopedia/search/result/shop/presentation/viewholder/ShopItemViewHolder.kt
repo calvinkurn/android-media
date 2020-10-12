@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
 import com.tokopedia.search.R
 import com.tokopedia.search.result.shop.presentation.listener.ShopListener

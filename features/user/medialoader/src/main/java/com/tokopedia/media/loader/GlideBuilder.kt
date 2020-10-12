@@ -5,7 +5,6 @@ import android.graphics.drawable.Drawable
 import android.widget.ImageView
 import androidx.annotation.DrawableRes
 import androidx.appcompat.content.res.AppCompatResources.getDrawable
-import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestBuilder
 import com.bumptech.glide.load.*
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -53,7 +52,7 @@ object GlideBuilder {
             isCircular: Boolean = false,
             overrideSize: Resize? = null,
             decodeFormat: MediaDecodeFormat? = null,
-            listener: LoaderStateListener? = null,
+            stateListener: LoaderStateListener? = null,
             transform: Transformation<Bitmap>? = null,
             transforms: List<Transformation<Bitmap>>? = null
     ) {
@@ -96,8 +95,8 @@ object GlideBuilder {
                     else -> {}
                 }
 
-                if (listener != null) {
-                    listener(glideListener(listener) {
+                if (stateListener != null) {
+                    listener(glideListener(stateListener) {
                         val endTime = System.currentTimeMillis()
                         val requestTime = endTime - startTime
 
@@ -111,7 +110,7 @@ object GlideBuilder {
     }
 
     private fun ImageView.thumbnailLoader(url: String): RequestBuilder<Drawable> {
-        return Glide.with(this.context)
+        return GlideApp.with(this.context)
                 .load(url)
                 .dontAnimate()
                 .dontTransform()
@@ -121,7 +120,7 @@ object GlideBuilder {
 
     fun loadGifImage(imageView: ImageView, url: String) {
         with(imageView) {
-            Glide.with(context)
+            GlideApp.with(context)
                     .asGif()
                     .load(url)
                     .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
