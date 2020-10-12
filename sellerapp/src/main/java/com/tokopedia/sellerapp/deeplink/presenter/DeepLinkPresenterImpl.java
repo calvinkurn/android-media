@@ -5,8 +5,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.text.TextUtils;
 
-import com.tokopedia.applink.ApplinkConst;
-import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.deeplink.DeeplinkUTMUtils;
@@ -17,7 +15,7 @@ import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.sellerapp.SplashScreenActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkActivity;
 import com.tokopedia.sellerapp.deeplink.listener.DeepLinkView;
-import com.tokopedia.sellerorder.detail.presentation.activity.SomSeeInvoiceActivity;
+import com.tokopedia.sellerorder.old.detail.presentation.activity.SomSeeInvoiceActivity;
 import com.tokopedia.topads.TopAdsManagementInternalRouter;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity;

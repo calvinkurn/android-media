@@ -99,7 +99,7 @@
             android:theme="@style/Theme.White" />
 
         <activity
-            android:name=".detail.presentation.activity.SomDetailActivity"
+            android:name="com.tokopedia.sellerorder.old.detail.presentation.activity.SomDetailActivity"
             android:label="@string/title_som_detail"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White">
@@ -120,7 +120,7 @@
         </activity>
 
         <activity
-            android:name=".detail.presentation.activity.SomSeeInvoiceActivity"
+            android:name="com.tokopedia.sellerorder.old.detail.presentation.activity.SomSeeInvoiceActivity"
             android:configChanges="uiMode"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
@@ -144,7 +144,7 @@
             android:theme="@style/Theme.White" />
 
         <activity
-            android:name=".detail.presentation.activity.SomDetailBookingCodeActivity"
+            android:name="com.tokopedia.sellerorder.old.detail.presentation.activity.SomDetailBookingCodeActivity"
             android:label="@string/title_som_booking_code"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
