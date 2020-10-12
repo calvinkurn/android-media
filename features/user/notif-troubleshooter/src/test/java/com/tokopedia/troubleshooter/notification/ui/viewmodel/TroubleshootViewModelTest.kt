@@ -9,8 +9,8 @@ import com.tokopedia.settingnotif.usersetting.domain.GetUserSettingUseCase
 import com.tokopedia.troubleshooter.notification.data.domain.TroubleshootStatusUseCase
 import com.tokopedia.troubleshooter.notification.data.entity.NotificationSendTroubleshoot
 import com.tokopedia.troubleshooter.notification.data.entity.NotificationTroubleshoot
-import com.tokopedia.troubleshooter.notification.data.service.notification.NotificationChannelManager
 import com.tokopedia.troubleshooter.notification.data.service.fcm.FirebaseInstanceManager
+import com.tokopedia.troubleshooter.notification.data.service.notification.NotificationChannelManager
 import com.tokopedia.troubleshooter.notification.data.service.notification.NotificationCompatManager
 import com.tokopedia.troubleshooter.notification.data.service.ringtone.RingtoneModeService
 import com.tokopedia.troubleshooter.notification.ui.state.DeviceSettingState
@@ -23,14 +23,13 @@ import com.tokopedia.troubleshooter.notification.util.isEqualsTo
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
-import org.hamcrest.core.IsInstanceOf.instanceOf
-import org.junit.Assert.assertThat
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -47,6 +46,7 @@ class TroubleshootViewModelTest {
     private val userSettingUseCase: GetUserSettingUseCase = mockk(relaxed = true)
     private val instanceManager: FirebaseInstanceManager = mockk(relaxed = true)
     private val ringtoneMode: RingtoneModeService = mockk(relaxed = true)
+    private val userSession: UserSessionInterface = mockk(relaxed = true)
 
     private val notificationSetting: Observer<Result<UserSettingUIView>> = mockk(relaxed = true)
     private val deviceSetting: Observer<Result<DeviceSettingState>> = mockk(relaxed = true)
@@ -61,13 +61,15 @@ class TroubleshootViewModelTest {
 
     @Before fun setUp() {
         viewModel = TroubleshootViewModel(
+                userSettingUseCase,
+                userSettingUseCase,
                 troubleshootUseCase,
                 notificationChannel,
                 notificationCompat,
                 messagingManager,
-                userSettingUseCase,
                 instanceManager,
                 ringtoneMode,
+                userSession,
                 dispatcherProvider
         )
 

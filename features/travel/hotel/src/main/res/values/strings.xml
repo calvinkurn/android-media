@@ -40,6 +40,8 @@
     <string name="hotel_search_filter_max_string_format_with_plus">Rp%s+</string>
     <string name="hotel_search_filter_max_string_format">Rp%s</string>
     <string name="hotel_search_filter_rating_all">Semua</string>
+    <string name="hotel_search_advance_filter_coachmark_title">Mau sesuaikan pencarianmu?</string>
+    <string name="hotel_search_advance_filter_coachmark_desc">Klik filter ini untuk mengurutkan dan memilih penginapan berdasarkan harga, bintang, rating, atau kategori lainnya.</string>
 
     <string name="hotel_check_in_calendar_title">Check-in</string>
     <string name="hotel_check_out_calendar_title">Check-out</string>

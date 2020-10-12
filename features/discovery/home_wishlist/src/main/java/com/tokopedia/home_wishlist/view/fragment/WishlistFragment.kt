@@ -159,6 +159,7 @@ open class WishlistFragment: Fragment(), WishlistListener, TopAdsListener {
         hideSearchView()
         observeData()
         viewModel.getWishlistData(shouldShowInitialPage = true)
+        WishlistTracking.openWishlistPage(viewModel.getUserId())
     }
 
     override fun onPause() {
