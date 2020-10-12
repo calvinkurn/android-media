@@ -153,12 +153,10 @@ class Utils {
         }
 
         fun parseFlashSaleDate(saleTime: String?): String {
-            if (!saleTime.isNullOrEmpty()) {
-                if (saleTime.length >= 19) {
+            if (!saleTime.isNullOrEmpty() && saleTime.length >= 19) {
                     val date = saleTime.substring(0, 10)
                     val time = saleTime.substring(11, 19)
                     return "${date}T${time}"
-                }
             }
             return ""
         }
