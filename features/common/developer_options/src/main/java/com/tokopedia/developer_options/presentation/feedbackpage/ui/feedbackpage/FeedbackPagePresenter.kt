@@ -1,5 +1,6 @@
 package com.tokopedia.developer_options.presentation.feedbackpage.ui.feedbackpage
 
+import android.net.Uri
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.developer_options.api.ApiClient
 import com.tokopedia.developer_options.api.FeedbackApiInterface
@@ -125,7 +126,6 @@ class FeedbackPagePresenter(private val compositeSubscription: CompositeSubscrip
     }
 
     override fun getImageList(selectedImage: ArrayList<String>): MutableList<BaseImageFeedbackUiModel> {
-
         when (selectedImage.size) {
             5 -> {
                 imageData = (selectedImage.map {
@@ -142,6 +142,7 @@ class FeedbackPagePresenter(private val compositeSubscription: CompositeSubscrip
         return imageData
     }
 
+
     override fun initImageData(): MutableList<BaseImageFeedbackUiModel> {
         imageData.clear()
         imageData.add(DefaultFeedbackUiModel())
@@ -153,27 +154,36 @@ class FeedbackPagePresenter(private val compositeSubscription: CompositeSubscrip
         return imageData
     }
 
+    override fun drawOnPictureResult(uri: Uri?): MutableList<BaseImageFeedbackUiModel> {
+        val dopResultUri = ImageFeedbackUiModel().apply {
+            imageUrl = uri.toString()
+        }
+        imageData.add(dopResultUri)
+        return imageData
+    }
+
     override fun removeImage(image: BaseImageFeedbackUiModel): MutableList<BaseImageFeedbackUiModel> {
         imageData.remove(image)
+
         if(imageData.size <  5 && !imageData.contains(DefaultFeedbackUiModel())) {
             imageData.add(DefaultFeedbackUiModel())
         }
         return imageData
     }
 
-/*    override fun getSelectedImageUrl(): ArrayList<String> {
+    override fun getSelectedImageUrl(): ArrayList<String> {
         val result = arrayListOf<String>()
         imageData.forEach {
-            val imageUrl = if((it as? ImageFeedbackUiModel)?.fullImageUrl?.isNotBlank() == true) {
-                (it as? ImageFeedbackUiModel)?.fullImageUrl
-            } else {
-                (it as? ImageFeedbackUiModel)?.imageUrl
+            var imageUrl = ""
+            if((it as? ImageFeedbackUiModel)?.imageUrl?.isNotBlank() == true) {
+               imageUrl =  (it as? ImageFeedbackUiModel)?.imageUrl.toString()
             }
-            if (imageUrl?.isNotEmpty() == true) {
+
+            if (imageUrl.isNotEmpty()) {
                 result.add(imageUrl)
             }
         }
         return result
-    }*/
+    }
 
 }

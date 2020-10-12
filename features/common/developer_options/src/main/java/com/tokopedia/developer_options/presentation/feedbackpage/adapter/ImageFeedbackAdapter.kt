@@ -26,6 +26,10 @@ class ImageFeedbackAdapter(private val imageClickListener: ImageClickListener): 
         notifyDataSetChanged()
     }
 
+    override fun getItemId(position: Int): Long {
+        return (imageFeedbackData[position] as ImageFeedbackUiModel).imageUrl.toLongOrNull()?: RecyclerView.NO_ID
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseImageFeedbackViewHolder<*> {
         return when (viewType) {
             TYPE_DEFAULT -> {

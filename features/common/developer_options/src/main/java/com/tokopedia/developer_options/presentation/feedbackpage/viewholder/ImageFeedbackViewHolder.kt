@@ -10,7 +10,7 @@ class ImageFeedbackViewHolder (val view: View, private val imageClickListener: I
 
     override fun bind(element: ImageFeedbackUiModel) {
         view.setOnClickListener {
-            imageClickListener.onImageClick()
+            imageClickListener.onImageClick(element, adapterPosition)
         }
         view.remove_image.setOnClickListener {
             imageClickListener.onRemoveImageClick(element)

@@ -1,5 +1,6 @@
 package com.tokopedia.developer_options.presentation.feedbackpage.ui.feedbackpage
 
+import android.net.Uri
 import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.developer_options.presentation.feedbackpage.domain.model.BaseImageFeedbackUiModel
 import com.tokopedia.developer_options.presentation.feedbackpage.domain.model.CategoriesModel
@@ -28,6 +29,8 @@ interface FeedbackPageContract {
         fun initImageData(): MutableList<BaseImageFeedbackUiModel>
         fun screenshotImageResult(data: ScreenshotData) : MutableList<BaseImageFeedbackUiModel>
         fun removeImage(image: BaseImageFeedbackUiModel) : MutableList<BaseImageFeedbackUiModel>
+        fun getSelectedImageUrl(): ArrayList<String>
+        fun drawOnPictureResult(uri: Uri?): MutableList<BaseImageFeedbackUiModel>
 //        fun getSelectedImageUrl() : ArrayList<String>
     }
 }

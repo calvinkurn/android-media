@@ -1,7 +1,6 @@
 package com.tokopedia.developer_options.presentation.feedbackpage.ui.feedbackpage
 
 import android.Manifest
-import android.app.Activity
 import android.app.Activity.RESULT_OK
 import android.content.ContentResolver
 import android.content.Context
@@ -27,11 +26,13 @@ import com.google.android.material.textfield.TextInputLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.developer_options.R
+import com.tokopedia.developer_options.drawonpicture.presentation.activity.DrawOnPictureActivity
 import com.tokopedia.developer_options.drawonpicture.presentation.fragment.DrawOnPictureFragment.Companion.EXTRA_DRAW_IMAGE_URI
 import com.tokopedia.developer_options.presentation.feedbackpage.adapter.ImageFeedbackAdapter
 import com.tokopedia.developer_options.presentation.feedbackpage.di.FeedbackPageComponent
 import com.tokopedia.developer_options.presentation.feedbackpage.domain.model.BaseImageFeedbackUiModel
 import com.tokopedia.developer_options.presentation.feedbackpage.domain.model.CategoriesModel
+import com.tokopedia.developer_options.presentation.feedbackpage.domain.model.ImageFeedbackUiModel
 import com.tokopedia.developer_options.presentation.feedbackpage.domain.request.FeedbackFormRequest
 import com.tokopedia.developer_options.presentation.feedbackpage.listener.ImageClickListener
 import com.tokopedia.developer_options.presentation.feedbackpage.ui.dialog.LoadingDialog
@@ -130,7 +131,7 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when (requestCode) {
             REQUEST_CODE_IMAGE -> {
-                if (resultCode == Activity.RESULT_OK && data != null) {
+                if (resultCode == RESULT_OK && data != null) {
                     selectedImage = data.getStringArrayListExtra(ImagePickerActivity.PICKER_RESULT_PATHS)
                     feedbackPagePresenter.initImageData()
 
@@ -144,6 +145,8 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
                 data?.let {
                     val newUri = it.getParcelableExtra<Uri>(EXTRA_DRAW_IMAGE_URI)
                     uriImage = newUri
+                    imageAdapter.setImageFeedbackData(feedbackPagePresenter.drawOnPictureResult(uriImage))
+                    selectedImage = arrayListOf(uriImage.toString())
                    /*set imageuri here*/
 
 //                    imageView.setImageURI(uriImage)
@@ -161,12 +164,6 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
         loadingDialog = context?.let { LoadingDialog(it) }
 
         uriImage = arguments?.getParcelable(EXTRA_URI_IMAGE)
-
-        /*go To intent activity*/
-        /*imageAdapter.setOnClickListener {
-            startActivityForResult(DrawOnPictureActivity.getIntent(requireContext(), uriImage),
-                    REQUEST_CODE_EDIT_IMAGE)
-        }*/
 
         context?.let { ArrayAdapter.createFromResource(it,
                 R.array.bug_type_array,
@@ -457,7 +454,7 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
                     ImagePickerBuilder.DEFAULT_MIN_RESOLUTION, ImageRatioTypeDef.ORIGINAL, true,
                     null,
                     ImagePickerMultipleSelectionBuilder(
-                    selectedImage, null, -1, 5
+                            feedbackPagePresenter.getSelectedImageUrl(), null, -1, 5
             ))
             val intent = ImagePickerActivity.getIntent(it, builder)
             startActivityForResult(intent, REQUEST_CODE_IMAGE)
@@ -466,5 +463,11 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
 
     override fun onRemoveImageClick(item: BaseImageFeedbackUiModel) {
         imageAdapter.setImageFeedbackData(feedbackPagePresenter.removeImage(item))
+    }
+
+    override fun onImageClick(data: ImageFeedbackUiModel, position: Int) {
+        val imageUriClicked = data.imageUrl
+        startActivityForResult(DrawOnPictureActivity.getIntent(requireContext(), Uri.parse(imageUriClicked)),
+                REQUEST_CODE_EDIT_IMAGE)
     }
 }
