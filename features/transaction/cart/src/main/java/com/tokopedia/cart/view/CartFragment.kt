@@ -2713,6 +2713,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     private fun onResultFromRequestCodeCartShipment(resultCode: Int, data: Intent?) {
+        FLAG_BEGIN_SHIPMENT_PROCESS = false
         FLAG_SHOULD_CLEAR_RECYCLERVIEW = false
 
         if (resultCode == PaymentConstant.PAYMENT_CANCELLED) {
