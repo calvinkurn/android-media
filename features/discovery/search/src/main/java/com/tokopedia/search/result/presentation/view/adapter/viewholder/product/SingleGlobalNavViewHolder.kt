@@ -24,10 +24,6 @@ class SingleGlobalNavViewHolder(
         @LayoutRes
         @JvmField
         val LAYOUT = R.layout.search_single_global_nav_view_holder
-
-        const val SINGLE_GLOBAL_NAV_ICON_SIZE = 32
-        const val SINGLE_GLOBAL_NAV_IMAGE_WIDTH = 120
-        const val SINGLE_GLOBAL_NAV_IMAGE_HEIGHT = 60
     }
 
     override fun bind(element: SingleGlobalNavViewModel) {
@@ -35,8 +31,8 @@ class SingleGlobalNavViewHolder(
         bindTitle(element.item)
         bindListener(element)
 
-        if (element.navTemplate == SearchConstant.GlobalNav.NAV_TEMPLATE_PILL) setPillLayout(element)
-        else setCardLayout(element)
+        if (element.navTemplate == SearchConstant.GlobalNav.NAV_TEMPLATE_PILL) setPillContent(element)
+        else setCardContent(element)
     }
 
     private fun setRandomBackground() {
@@ -62,10 +58,10 @@ class SingleGlobalNavViewHolder(
         }
     }
 
-    private fun setPillLayout(element: SingleGlobalNavViewModel) {
+    private fun setPillContent(element: SingleGlobalNavViewModel) {
         setPillTypography()
         bindIconWithLogoUrl(element.item)
-        hideLayoutForPill()
+        hideContentForPill()
     }
 
     private fun setPillTypography() {
@@ -75,16 +71,16 @@ class SingleGlobalNavViewHolder(
     private fun bindIconWithLogoUrl(item: SingleGlobalNavViewModel.Item) {
         itemView.searchSingleGlobalNavIcon?.shouldShowWithAction(item.logoUrl.isNotEmpty()) {
             ImageHandler.loadImageFitCenter(itemView.context, itemView.searchSingleGlobalNavIcon, item.logoUrl)
-            itemView.searchSingleGlobalNavIcon?.setHeightWidth(SINGLE_GLOBAL_NAV_ICON_SIZE, SINGLE_GLOBAL_NAV_ICON_SIZE)
+            itemView.searchSingleGlobalNavImage?.visibility = View.GONE
         }
     }
 
-    private fun hideLayoutForPill() {
+    private fun hideContentForPill() {
         itemView.searchSingleGlobalNavCategory?.visibility = View.GONE
         itemView.searchSingleGlobalNavSubtitleInfoLayout?.visibility = View.GONE
     }
 
-    private fun setCardLayout(element: SingleGlobalNavViewModel) {
+    private fun setCardContent(element: SingleGlobalNavViewModel) {
         setCardTypography()
 
         val item = element.item
@@ -104,9 +100,9 @@ class SingleGlobalNavViewHolder(
     }
 
     private fun bindIconWithImageUrl(item: SingleGlobalNavViewModel.Item) {
-        itemView.searchSingleGlobalNavIcon?.shouldShowWithAction(item.imageUrl.isNotEmpty()) {
-            ImageHandler.loadImageFitCenter(itemView.context, itemView.searchSingleGlobalNavIcon, item.imageUrl)
-            itemView.searchSingleGlobalNavIcon?.setHeightWidth(SINGLE_GLOBAL_NAV_IMAGE_HEIGHT, SINGLE_GLOBAL_NAV_IMAGE_WIDTH)
+        itemView.searchSingleGlobalNavImage?.shouldShowWithAction(item.imageUrl.isNotEmpty()) {
+            ImageHandler.loadImageFitCenter(itemView.context, itemView.searchSingleGlobalNavImage, item.imageUrl)
+            itemView.searchSingleGlobalNavIcon?.visibility = View.GONE
         }
     }
 
