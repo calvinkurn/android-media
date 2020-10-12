@@ -25,7 +25,7 @@ data class DataItem(
         val value: String? = "",
 
         @SerializedName("target_component_id")
-        val targetComponentId: String? = "",
+        var targetComponentId: String? = "",
 
         @SerializedName("background_image")
         val backgroundImage: String? = "",
