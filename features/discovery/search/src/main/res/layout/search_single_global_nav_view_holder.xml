@@ -55,20 +55,6 @@
                 app:barrierDirection="end"
                 app:constraint_referenced_ids="searchSingleGlobalNavIcon, searchSingleGlobalNavImage" />
 
-            <androidx.constraintlayout.widget.Barrier
-                android:id="@+id/searchSingleGlobalNavTopBarrier"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:barrierDirection="top"
-                app:constraint_referenced_ids="searchSingleGlobalNavIcon, searchSingleGlobalNavImage" />
-
-            <androidx.constraintlayout.widget.Barrier
-                android:id="@+id/searchSingleGlobalNavBottomBarrier"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:barrierDirection="bottom"
-                app:constraint_referenced_ids="searchSingleGlobalNavIcon, searchSingleGlobalNavImage" />
-
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/searchSingleGlobalNavCategory"
                 android:layout_width="@dimen/dp_0"
@@ -83,7 +69,7 @@
                 android:textColor="@color/Neutral_N700_68"
                 app:typographyType="small"
                 app:typographyWeight="reguler"
-                app:layout_constraintTop_toTopOf="@id/searchSingleGlobalNavTopBarrier"
+                app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toTopOf="@id/searchSingleGlobalNavTitle"
                 app:layout_constraintLeft_toRightOf="@id/searchSingleGlobalNavVerticalBarrier"
                 app:layout_constraintRight_toRightOf="parent"/>
@@ -115,7 +101,7 @@
                 android:layout_width="@dimen/dp_0"
                 android:layout_height="wrap_content"
                 app:layout_constraintTop_toBottomOf="@id/searchSingleGlobalNavTitle"
-                app:layout_constraintBottom_toBottomOf="@id/searchSingleGlobalNavBottomBarrier"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toRightOf="@id/searchSingleGlobalNavVerticalBarrier"
                 app:layout_constraintRight_toRightOf="parent">
 
