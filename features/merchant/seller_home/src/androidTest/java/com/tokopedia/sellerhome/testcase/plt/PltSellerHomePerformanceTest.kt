@@ -1,4 +1,4 @@
-package com.tokopedia.sellerhome.testcase
+package com.tokopedia.sellerhome.testcase.plt
 
 import android.app.Application
 import android.content.Context
@@ -127,16 +127,18 @@ class PltSellerHomePerformanceTest {
     private fun createMockModelConfig(): MockModelConfig {
         return object : MockModelConfig() {
             override fun createMockModel(context: Context): MockModelConfig {
-                addMockResponse("getNotifications", InstrumentationMockHelper.getRawString(context, R.raw.response_mock_data_seller_home_notifications), FIND_BY_QUERY_NAME)
-                addMockResponse("getShopInfoMoengage", InstrumentationMockHelper.getRawString(context, R.raw.response_mock_data_seller_home_shop_info), FIND_BY_QUERY_NAME)
-                addMockResponse("shopInfoByID", InstrumentationMockHelper.getRawString(context, R.raw.response_mock_data_seller_home_shop_info_location), FIND_BY_QUERY_NAME)
-                addMockResponse("goldGetPMOSStatus", InstrumentationMockHelper.getRawString(context, R.raw.response_mock_data_seller_home_get_status_shop), FIND_BY_QUERY_NAME)
-                addMockResponse("GetSellerDashboardLayout", InstrumentationMockHelper.getRawString(context, R.raw.response_mock_data_seller_home_layout), FIND_BY_QUERY_NAME)
-                addMockResponse("getCardWidgetData", InstrumentationMockHelper.getRawString(context, R.raw.response_mock_data_seller_home_card_widgets), FIND_BY_QUERY_NAME)
-                addMockResponse("getLineGraphData", InstrumentationMockHelper.getRawString(context, R.raw.response_mock_data_seller_home_line_graph_widgets), FIND_BY_QUERY_NAME)
-                addMockResponse("getCarouselWidgetData", InstrumentationMockHelper.getRawString(context, R.raw.response_mock_data_seller_home_carousel_widgets), FIND_BY_QUERY_NAME)
-                addMockResponse("getPostWidgetData", InstrumentationMockHelper.getRawString(context, R.raw.response_mock_data_seller_home_post_widgets), FIND_BY_QUERY_NAME)
-                addMockResponse("getProgressData", InstrumentationMockHelper.getRawString(context, R.raw.response_mock_data_seller_home_progressbar_widgets), FIND_BY_QUERY_NAME)
+                addMockResponse("GoldGetUserShopInfo", InstrumentationMockHelper.getRawString(context, R.raw.response_mock_data_seller_home_get_user_role), FIND_BY_CONTAINS)
+                addMockResponse("shopInfoMoengage", InstrumentationMockHelper.getRawString(context, R.raw.response_mock_data_seller_home_shop_info_moengage), FIND_BY_CONTAINS)
+                addMockResponse("notifications", InstrumentationMockHelper.getRawString(context, R.raw.response_mock_data_seller_home_notification), FIND_BY_CONTAINS)
+                addMockResponse("GetSellerDashboardPageLayout", InstrumentationMockHelper.getRawString(context, R.raw.response_mock_data_seller_home_layout), FIND_BY_CONTAINS)
+                addMockResponse("getTicker", InstrumentationMockHelper.getRawString(context, R.raw.response_mock_data_seller_home_get_ticker), FIND_BY_CONTAINS)
+                addMockResponse("updateShopActive", InstrumentationMockHelper.getRawString(context, R.raw.response_mock_data_seller_home_update_shop_active), FIND_BY_CONTAINS)
+                addMockResponse("shopInfoByID", InstrumentationMockHelper.getRawString(context, R.raw.response_mock_data_seller_home_shop_info_location), FIND_BY_CONTAINS)
+                addMockResponse("fetchCardWidgetData", InstrumentationMockHelper.getRawString(context, R.raw.response_mock_data_seller_home_card_widgets), FIND_BY_CONTAINS)
+                addMockResponse("fetchLineGraphWidgetData", InstrumentationMockHelper.getRawString(context, R.raw.response_mock_data_seller_home_line_graph_widgets), FIND_BY_CONTAINS)
+                addMockResponse("fetchProgressBarWidgetData", InstrumentationMockHelper.getRawString(context, R.raw.response_mock_data_seller_home_progressbar_widgets), FIND_BY_CONTAINS)
+                addMockResponse("fetchPostWidgetData", InstrumentationMockHelper.getRawString(context, R.raw.response_mock_data_seller_home_post_widgets), FIND_BY_CONTAINS)
+                addMockResponse("fetchCarouselWidgetData", InstrumentationMockHelper.getRawString(context, R.raw.response_mock_data_seller_home_carousel_widgets), FIND_BY_CONTAINS)
                 return this
             }
         }
