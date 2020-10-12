@@ -82,7 +82,7 @@ class FavoriteShopTopAdsVerificationTest {
     }
 
     private fun login() {
-        InstrumentationAuthHelper.loginInstrumentationTestTopAdsUser()
+        InstrumentationAuthHelper.loginToAnUser(activityRule.activity.application)
     }
 
     private fun waitForData(delayInSeconds: Int) {
