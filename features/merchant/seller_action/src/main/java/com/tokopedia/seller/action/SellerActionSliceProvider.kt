@@ -1,4 +1,4 @@
-package com.tokopedia.seller.action.slices
+package com.tokopedia.seller.action
 
 import android.net.Uri
 import android.os.Build
@@ -13,10 +13,14 @@ import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.seller.action.common.const.SellerActionConst
 import com.tokopedia.seller.action.common.di.DaggerSellerActionComponent
 import com.tokopedia.seller.action.common.di.SellerActionModule
-import com.tokopedia.seller.action.data.model.Order
-import com.tokopedia.seller.action.data.model.exception.SellerActionException
-import com.tokopedia.seller.action.data.repository.SliceMainOrderListRepository
-import com.tokopedia.seller.action.slices.item.*
+import com.tokopedia.seller.action.common.exception.SellerActionException
+import com.tokopedia.seller.action.common.presentation.model.SellerActionStatus
+import com.tokopedia.seller.action.common.presentation.model.SellerSuccessItem
+import com.tokopedia.seller.action.common.presentation.slices.SellerFailureSlice
+import com.tokopedia.seller.action.common.presentation.slices.SellerSlice
+import com.tokopedia.seller.action.order.domain.model.Order
+import com.tokopedia.seller.action.order.domain.repository.SliceMainOrderListRepository
+import com.tokopedia.seller.action.order.presentation.mapper.SellerOrderMapper
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -38,7 +42,7 @@ class SellerActionSliceProvider: SliceProvider(){
     @Inject
     lateinit var userSession: UserSessionInterface
 
-    private val observer = Observer<Result<Pair<Uri, List<Order>>>> { result ->
+    private val sellerOrderObserver = Observer<Result<Pair<Uri, List<Order>>>> { result ->
         if (result != null) {
             when(result) {
                 is Success -> {
@@ -64,7 +68,11 @@ class SellerActionSliceProvider: SliceProvider(){
     override fun onBindSlice(sliceUri: Uri): Slice? {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             if (!isHasLoaded && userSession.isLoggedIn) {
-                orderListLiveData = getOrderListLiveData(sliceUri)
+                when(sliceUri.path) {
+                    SellerActionConst.Deeplink.ORDER -> {
+                        orderListLiveData = getOrderListLiveData(sliceUri)
+                    }
+                }
             }
             isHasLoaded = false
             createNewSlice(sliceUri).getSlice()
@@ -80,52 +88,56 @@ class SellerActionSliceProvider: SliceProvider(){
                 .inject(this)
     }
 
-    private fun getOrderListLiveData(sliceUri: Uri) =
-            sliceMainOrderListRepository.getOrderList(sliceUri).apply {
-                handler.post {
-                    observeForever(observer)
-                }
-            }
-
     @RequiresApi(Build.VERSION_CODES.KITKAT)
     private fun createNewSlice(sliceUri: Uri): SellerSlice {
         val notNullContext = requireNotNull(context)
-        val orderList = orderListLiveData?.value
+
+        val status =
+                when (sliceUri.path) {
+                    SellerActionConst.Deeplink.ORDER -> getStatus(orderListLiveData, sellerOrderObserver)
+                    else -> SellerActionStatus.Fail
+                }
         return when (sliceUri.path) {
             SellerActionConst.Deeplink.ORDER -> {
-                if (userSession.isLoggedIn) {
-                    if (orderList != null) {
-                        handler.post {
-                            orderListLiveData?.removeObserver(observer)
-                        }
-                        when(orderList) {
-                            is Success -> {
-                                orderList.data.second.let { list ->
-                                    SellerOrderSlice(
-                                            notNullContext,
-                                            sliceUri,
-                                            list
-                                    )
-                                }
-                            }
-                            is Fail -> SellerFailureSlice(notNullContext, sliceUri)
-                        }
-                    } else {
-                        SellerLoadingSlice(notNullContext, sliceUri)
-                    }
-                } else {
-                    SellerNotLoginSlice(notNullContext, sliceUri)
+                SellerOrderMapper(notNullContext, sliceUri).run {
+                    getSlice(status)
                 }
             }
-            else -> SellerFailureSlice(
-                    notNullContext,
-                    sliceUri
-            )
+            else -> SellerFailureSlice(notNullContext, sliceUri)
+        }
+    }
+
+    private fun <T : SellerSuccessItem> getStatus(liveData: LiveData<Result<Pair<Uri, List<T>>>>?,
+                                                  observer: Observer<Result<Pair<Uri, List<T>>>>): SellerActionStatus {
+        val result = liveData?.value
+        return when {
+            !userSession.isLoggedIn -> SellerActionStatus.NotLogin
+            result == null -> SellerActionStatus.Loading
+            result is Success -> {
+                handler.post {
+                    liveData.removeObserver(observer)
+                }
+                SellerActionStatus.Success(result.data.second)
+            }
+            result is Fail -> {
+                handler.post {
+                    liveData.removeObserver(observer)
+                }
+                SellerActionStatus.Fail
+            }
+            else -> SellerActionStatus.Fail
         }
     }
 
     private fun updateSlice(sliceUri: Uri) {
         context?.contentResolver?.notifyChange(sliceUri, null)
     }
+
+    private fun getOrderListLiveData(sliceUri: Uri) =
+            sliceMainOrderListRepository.getOrderList(sliceUri).apply {
+                handler.post {
+                    observeForever(sellerOrderObserver)
+                }
+            }
 
 }

@@ -6,7 +6,7 @@
     <application>
         <provider
             android:authorities="com.tokopedia.seller.action.slices"
-            android:name="com.tokopedia.seller.action.slices.SellerActionSliceProvider"
+            android:name="com.tokopedia.seller.action.SellerActionSliceProvider"
             android:exported="true"
             android:grantUriPermissions="true">
             <intent-filter>

@@ -16,6 +16,9 @@ object ApplinkConstInternalMarketplace {
     @JvmField
     val INTERNAL_MARKETPLACE = "${DeeplinkConstant.SCHEME_INTERNAL}://${HOST_MARKETPLACE}"
 
+    @JvmField
+    val PATH_STARS = "stars"
+
     // StoreSettingActivity
     @JvmField
     val STORE_SETTING = "$INTERNAL_MARKETPLACE/store-setting"
@@ -101,6 +104,7 @@ object ApplinkConstInternalMarketplace {
 
     // InboxReputationActivity
     val INBOX_REPUTATION = "$INTERNAL_MARKETPLACE/review"
+    val INBOX_REPUTATION_STARS = "$INTERNAL_MARKETPLACE/$PATH_STARS"
 
     // InboxReputationDetailActivity
     val INBOX_REPUTATION_DETAIL = "$INTERNAL_MARKETPLACE/review/{feedback_id}/"

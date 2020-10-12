@@ -1,4 +1,4 @@
-package com.tokopedia.seller.action.slices.item
+package com.tokopedia.seller.action.order.presentation.slice
 
 import android.app.PendingIntent
 import android.content.Context
@@ -15,14 +15,15 @@ import com.bumptech.glide.Glide
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder
 import com.tokopedia.seller.action.R
-import com.tokopedia.seller.action.data.model.Order
+import com.tokopedia.seller.action.order.domain.model.Order
+import com.tokopedia.seller.action.common.presentation.slices.SellerSuccessSlice
 
 class SellerOrderSlice(context: Context,
                        sliceUri: Uri,
-                       private val orderList: List<Order>): SellerSlice(context, sliceUri) {
+                       private val orderList: List<Order>): SellerSuccessSlice<Order>(orderList, context, sliceUri) {
 
     @RequiresApi(Build.VERSION_CODES.KITKAT)
-    override fun getSlice(): Slice =
+    override fun getSuccessSlice(): Slice =
             list(context, sliceUri, ListBuilder.INFINITY) {
                 header {
                     title = context.getString(R.string.seller_action_order_title)

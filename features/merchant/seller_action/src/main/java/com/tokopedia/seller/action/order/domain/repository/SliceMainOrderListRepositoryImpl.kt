@@ -1,4 +1,4 @@
-package com.tokopedia.seller.action.data.repository
+package com.tokopedia.seller.action.order.domain.repository
 
 import android.net.Uri
 import androidx.lifecycle.LiveData
@@ -6,9 +6,9 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.kotlin.extensions.getCalculatedFormattedDate
 import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.seller.action.common.dispatcher.SellerActionDispatcherProvider
-import com.tokopedia.seller.action.data.model.Order
-import com.tokopedia.seller.action.data.model.exception.SellerActionException
-import com.tokopedia.seller.action.data.usecase.SliceMainOrderListUseCase
+import com.tokopedia.seller.action.order.domain.usecase.SliceMainOrderListUseCase
+import com.tokopedia.seller.action.common.exception.SellerActionException
+import com.tokopedia.seller.action.order.domain.model.Order
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success

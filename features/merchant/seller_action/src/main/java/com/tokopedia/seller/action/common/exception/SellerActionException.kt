@@ -1,4 +1,4 @@
-package com.tokopedia.seller.action.data.model.exception
+package com.tokopedia.seller.action.common.exception
 
 import android.net.Uri
 

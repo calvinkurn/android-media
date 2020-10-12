@@ -1,4 +1,4 @@
-package com.tokopedia.seller.action.slices.item
+package com.tokopedia.seller.action.common.presentation.slices
 
 import android.content.Context
 import android.net.Uri

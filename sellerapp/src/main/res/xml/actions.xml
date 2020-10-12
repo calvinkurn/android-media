@@ -6,4 +6,17 @@
             urlTemplate="content://com.tokopedia.seller.action.slices/order">
         </fulfillment>
     </action>
+    <action intentName="action.intent.GET_REVIEW">
+        <fulfillment
+            fulfillmentMode="actions.fulfillment.SLICE"
+            urlTemplate="content://com.tokopedia.seller.action.slices/stars{?rating}">
+            <parameter-mapping
+                intentParameter="review.reviewRating.ratingValue"
+                required="true"
+                urlParameter="rating"/>
+        </fulfillment>
+        <fulfillment
+            fulfillmentMode="actions.fulfillment.DEEPLINK"
+            urlTemplate="tokopedia-android-internal://marketplace/stars"/>
+    </action>
 </actions>

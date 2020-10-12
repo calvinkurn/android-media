@@ -1,12 +1,12 @@
-package com.tokopedia.seller.action.data.usecase
+package com.tokopedia.seller.action.order.domain.usecase
 
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.seller.action.common.const.SellerActionConst
-import com.tokopedia.seller.action.data.model.Order
-import com.tokopedia.seller.action.data.model.SellerActionOrder
-import com.tokopedia.seller.action.data.param.SellerActionOrderListParam
+import com.tokopedia.seller.action.order.domain.model.Order
+import com.tokopedia.seller.action.order.domain.model.SellerActionOrder
+import com.tokopedia.seller.action.order.domain.param.SellerActionOrderListParam
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
@@ -23,9 +23,6 @@ class SliceMainOrderListUseCase @Inject constructor(private val gqlRepository: G
         val errors = response.getError(SellerActionOrder::class.java)
         if (errors.isNullOrEmpty()) {
             val data = response.getData<SellerActionOrder>(SellerActionOrder::class.java)
-//            return listOf(
-//                    Order("", "Ini bisa lho", "10/10/2020", "Reivin Oktavianus", listOf(OrderProduct("https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQCfT2lhPa4MLcJ9KozVg6LX5Er10795w0vj9jw-6mjnbP1A3o6d9PrDA7cKg&usqp=CAc")))
-//            )
             return data.orderList.orders
         } else {
             throw MessageErrorException(errors.joinToString(", ") { it.message })

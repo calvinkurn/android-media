@@ -1,8 +1,8 @@
-package com.tokopedia.seller.action.data.repository
+package com.tokopedia.seller.action.order.domain.repository
 
 import android.net.Uri
 import androidx.lifecycle.LiveData
-import com.tokopedia.seller.action.data.model.Order
+import com.tokopedia.seller.action.order.domain.model.Order
 import com.tokopedia.usecase.coroutines.Result
 
 interface SliceMainOrderListRepository {

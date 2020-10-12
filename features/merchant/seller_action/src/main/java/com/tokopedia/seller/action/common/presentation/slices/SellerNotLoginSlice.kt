@@ -1,4 +1,4 @@
-package com.tokopedia.seller.action.slices.item
+package com.tokopedia.seller.action.common.presentation.slices
 
 import android.app.PendingIntent
 import android.content.Context
@@ -33,7 +33,7 @@ class SellerNotLoginSlice(context: Context,
         val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.SEAMLESS_LOGIN)
         return SliceAction.create(
                 PendingIntent.getActivity(context, 0, intent, 0),
-                IconCompat.createWithResource(context, R.drawable.ic_sellerapp_launcher),
+                IconCompat.createWithResource(context, R.drawable.ic_sellerapp_slice),
                 ListBuilder.SMALL_IMAGE,
                 context.getString(R.string.seller_action_open_app)
         )

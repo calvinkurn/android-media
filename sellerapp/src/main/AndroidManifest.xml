@@ -20,8 +20,8 @@
     <application
         android:name=".SellerMainApplication"
         android:allowBackup="false"
-        android:icon="@drawable/ic_sellerapp_launcher"
-        android:roundIcon="@drawable/ic_sellerapp_launcher"
+        android:icon="@drawable/ic_sellerapp_slice"
+        android:roundIcon="@drawable/ic_sellerapp_slice"
         android:label="@string/app_name"
         android:hasCode="true"
         android:supportsRtl="true"

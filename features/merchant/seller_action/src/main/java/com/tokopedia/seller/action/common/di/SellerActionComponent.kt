@@ -1,6 +1,6 @@
 package com.tokopedia.seller.action.common.di
 
-import com.tokopedia.seller.action.slices.SellerActionSliceProvider
+import com.tokopedia.seller.action.SellerActionSliceProvider
 import dagger.Component
 
 @SellerActionScope

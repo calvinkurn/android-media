@@ -1,7 +1,8 @@
-package com.tokopedia.seller.action.data.model
+package com.tokopedia.seller.action.order.domain.model
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.seller.action.common.presentation.model.SellerSuccessItem
 
 data class SellerActionOrder (
         @SerializedName("orderList")
@@ -35,7 +36,7 @@ data class Order (
         @SerializedName("order_product")
         @Expose
         val listOrderProduct: List<OrderProduct> = listOf()
-)
+): SellerSuccessItem
 
 data class OrderProduct (
         @SerializedName("picture")
