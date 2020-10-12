@@ -15,7 +15,7 @@ import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.sellerapp.SplashScreenActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkActivity;
 import com.tokopedia.sellerapp.deeplink.listener.DeepLinkView;
-import com.tokopedia.sellerorder.old.detail.presentation.activity.SomSeeInvoiceActivity;
+import com.tokopedia.sellerorder.detail.presentation.activity.SomSeeInvoiceActivity;
 import com.tokopedia.topads.TopAdsManagementInternalRouter;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity;
