@@ -213,7 +213,11 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
                     it.data.let { listComponent ->
                         if (mSwipeRefreshLayout.isRefreshing) setAdapter()
                         discoveryAdapter.addDataList(listComponent)
-                        scrollToPinnedComponent(listComponent)
+                        if (listComponent.isNullOrEmpty()) {
+                            setPageErrorState(Fail(IllegalStateException()))
+                        } else {
+                            scrollToPinnedComponent(listComponent)
+                        }
                     }
                     mProgressBar.hide()
                     stopDiscoveryPagePerformanceMonitoring()
@@ -245,7 +249,6 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
                     ivSearch.show()
                     setPageInfo(it.data)
                 }
-
                 is Fail -> {
                     typographyHeader.text = ""
                     ivSearch.hide()
@@ -259,12 +262,17 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
     }
 
     private fun setPageErrorState(it: Fail) {
-        if (it.throwable is UnknownHostException
-                || it.throwable is SocketTimeoutException) {
-            globalError.setType(GlobalError.NO_CONNECTION)
-        } else {
-            globalError.setType(GlobalError.SERVER_ERROR)
-            Timber.w("P2#DISCOVERY_PAGE_ERROR#'${discoveryViewModel.pageIdentifier}';path='${discoveryViewModel.pagePath}';type='${discoveryViewModel.pageType}';err='${Log.getStackTraceString(it.throwable)}'")
+        when (it.throwable) {
+            is UnknownHostException, is SocketTimeoutException -> {
+                globalError.setType(GlobalError.NO_CONNECTION)
+            }
+            is IllegalStateException -> {
+                globalError.setType(GlobalError.PAGE_FULL)
+            }
+            else -> {
+                globalError.setType(GlobalError.SERVER_ERROR)
+                Timber.w("P2#DISCOVERY_PAGE_ERROR#'${discoveryViewModel.pageIdentifier}';path='${discoveryViewModel.pagePath}';type='${discoveryViewModel.pageType}';err='${Log.getStackTraceString(it.throwable)}'")
+            }
         }
         globalError.show()
         globalError.setActionClickListener {

@@ -39,8 +39,7 @@ fun mapDiscoveryResponseToPageData(discoveryResponse: DiscoveryResponse, queryPa
 class DiscoveryPageDataMapper(private val pageInfo: PageInfo, private val queryParameterMap: Map<String, String?>) {
     fun getDiscoveryComponentListWithQueryParam(components: List<ComponentsItem>): List<ComponentsItem> {
         val targetCompId = queryParameterMap[TARGET_COMP_ID] ?: ""
-        val componentList = getDiscoveryComponentList(components)
-//        val componentList = getDiscoveryComponentList(filterSaleTimer(components))
+        val componentList = getDiscoveryComponentList(filterSaleTimer(components))
         if (componentList.isNotEmpty() && targetCompId.isNotEmpty()) {
             componentList.forEach { item ->
                 if (item.id == targetCompId) {

@@ -77,9 +77,7 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
                     pageLoadTimePerformanceInterface?.startRenderPerformanceMonitoring()
                     data.let {
                         withContext(Dispatchers.Default) {
-                            if (it.components.isNullOrEmpty())
-                                discoveryPageInfo.postValue(Fail(Throwable()))
-                            else discoveryResponseList.postValue(Success(it.components))
+                            discoveryResponseList.postValue(Success(it.components))
                         }
                         setPageInfo(it)
                     }
