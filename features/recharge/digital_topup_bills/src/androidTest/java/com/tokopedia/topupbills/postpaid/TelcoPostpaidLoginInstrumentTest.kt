@@ -1,4 +1,4 @@
-package com.tokopedia.topupbills.telcologin
+package com.tokopedia.topupbills.postpaid
 
 import android.Manifest
 import android.app.Activity
@@ -25,15 +25,14 @@ import com.tokopedia.common.topupbills.view.adapter.TopupBillsRecentNumbersAdapt
 import com.tokopedia.common.topupbills.view.fragment.TopupBillsSearchNumberFragment
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
-import com.tokopedia.test.application.util.InstrumentationMockHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import com.tokopedia.topupbills.R
-import com.tokopedia.topupbills.postpaid.TelcoPostpaidLoginMockResponseConfig
 import com.tokopedia.topupbills.telco.common.activity.BaseTelcoActivity
 import com.tokopedia.topupbills.telco.data.constant.TelcoCategoryType
 import com.tokopedia.topupbills.telco.data.constant.TelcoComponentType
 import com.tokopedia.topupbills.telco.postpaid.activity.TelcoPostpaidActivity
 import com.tokopedia.topupbills.telco.prepaid.adapter.viewholder.TelcoProductViewHolder
+import com.tokopedia.topupbills.utils.ResourceUtils
 import org.hamcrest.core.AllOf
 import org.hamcrest.core.IsNot
 import org.junit.After
@@ -51,43 +50,19 @@ class TelcoPostpaidLoginInstrumentTest {
 
     @get:Rule
     var mActivityRule = ActivityTestRule(TelcoPostpaidActivity::class.java, false, false)
-//    {
-//        override fun getActivityIntent(): Intent {
-//            val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
-//            return Intent(targetContext, TelcoPostpaidActivity::class.java).apply {
-//                putExtra(BaseTelcoActivity.PARAM_MENU_ID, TelcoComponentType.TELCO_POSTPAID.toString())
-//                putExtra(BaseTelcoActivity.PARAM_CATEGORY_ID, TelcoCategoryType.CATEGORY_PASCABAYAR.toString())
-//                putExtra(BaseTelcoActivity.PARAM_PRODUCT_ID, "")
-//                putExtra(BaseTelcoActivity.PARAM_CLIENT_NUMBER, "")
-//            }
-//        }
-//
-//        override fun beforeActivityLaunched() {
-//            super.beforeActivityLaunched()
-//            Thread.sleep(4000)
-//        }
-//    }
 
     @Before
     fun stubAllExternalIntents() {
         Intents.init()
         gtmLogDBSource.deleteAll().toBlocking().first()
         setupGraphqlMockResponse {
-            addMockResponse(
-                    TelcoPostpaidLoginMockResponseConfig.KEY_QUERY_MENU_DETAIL,
-                    InstrumentationMockHelper.getRawString(context, com.tokopedia.topupbills.test.R.raw.response_mock_data_postpaid_menu_detail_login),
+            addMockResponse(KEY_QUERY_MENU_DETAIL, ResourceUtils.getJsonFromResource(PATH_RESPONSE_POSTPAID_MENU_DETAIL_LOGIN),
                     MockModelConfig.FIND_BY_CONTAINS)
-            addMockResponse(
-                    TelcoPostpaidLoginMockResponseConfig.KEY_QUERY_FAV_NUMBER,
-                    InstrumentationMockHelper.getRawString(context, com.tokopedia.topupbills.test.R.raw.response_mock_data_postpaid_fav_number_login),
+            addMockResponse(KEY_QUERY_FAV_NUMBER, ResourceUtils.getJsonFromResource(PATH_RESPONSE_POSTPAID_FAV_NUMBER),
                     MockModelConfig.FIND_BY_CONTAINS)
-            addMockResponse(
-                    TelcoPostpaidLoginMockResponseConfig.KEY_QUERY_PREFIX_SELECT,
-                    InstrumentationMockHelper.getRawString(context, com.tokopedia.topupbills.test.R.raw.response_mock_data_postpaid_prefix_select),
+            addMockResponse(KEY_QUERY_PREFIX_SELECT, ResourceUtils.getJsonFromResource(PATH_RESPONSE_POSTPAID_PREFIX_SELECT),
                     MockModelConfig.FIND_BY_CONTAINS)
-            addMockResponse(
-                    TelcoPostpaidLoginMockResponseConfig.KEY_QUERY_ENQUIRY,
-                    InstrumentationMockHelper.getRawString(context, com.tokopedia.topupbills.test.R.raw.response_mock_data_postpaid_enquiry),
+            addMockResponse(KEY_QUERY_ENQUIRY, ResourceUtils.getJsonFromResource(PATH_RESPONSE_POSTPAID_ENQUIRY),
                     MockModelConfig.FIND_BY_CONTAINS)
         }
 
@@ -163,8 +138,6 @@ class TelcoPostpaidLoginInstrumentTest {
     }
 
     fun enquiry_phone_number() {
-        Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
-
         Thread.sleep(2000)
         onView(withId(R.id.telco_enquiry_btn)).perform(click())
         Thread.sleep(1000)
@@ -193,6 +166,16 @@ class TelcoPostpaidLoginInstrumentTest {
     }
 
     companion object {
+        private const val KEY_QUERY_MENU_DETAIL = "catalogMenuDetail"
+        private const val KEY_QUERY_FAV_NUMBER = "favouriteNumber"
+        private const val KEY_QUERY_PREFIX_SELECT = "telcoPrefixSelect"
+        private const val KEY_QUERY_ENQUIRY = "enquiry"
+
+        private const val PATH_RESPONSE_POSTPAID_MENU_DETAIL_LOGIN = "postpaid/response_mock_data_postpaid_menu_detail_login.json"
+        private const val PATH_RESPONSE_POSTPAID_FAV_NUMBER = "postpaid/response_mock_data_postpaid_fav_number_login.json"
+        private const val PATH_RESPONSE_POSTPAID_PREFIX_SELECT = "postpaid/response_mock_data_postpaid_prefix_select.json"
+        private const val PATH_RESPONSE_POSTPAID_ENQUIRY = "postpaid/response_mock_data_postpaid_enquiry.json"
+
         private const val VALID_PHONE_NUMBER = "08123232323"
         private const val ANALYTIC_VALIDATOR_QUERY_LOGIN = "tracker/recharge/recharge_telco_postpaid_login.json"
     }
