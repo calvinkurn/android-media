@@ -60,7 +60,7 @@ internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
 
     private fun `Then assert view will only show empty search`() {
         verify {
-            productListView.setEmptyProduct(null)
+            productListView.setEmptyProduct(null, null)
         }
     }
 

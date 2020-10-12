@@ -16,6 +16,7 @@ import com.tokopedia.search.result.presentation.model.BroadMatchItemViewModel;
 import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
 import com.tokopedia.search.result.presentation.model.InspirationCarouselViewModel;
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
+import com.tokopedia.search.result.presentation.model.SingleGlobalNavViewModel;
 import com.tokopedia.sortfilter.SortFilterItem;
 
 import org.jetbrains.annotations.NotNull;
@@ -41,7 +42,7 @@ public interface ProductListSectionContract {
 
         String getQueryKey();
 
-        void setEmptyProduct(GlobalNavViewModel globalNavViewModel);
+        void setEmptyProduct(GlobalNavViewModel globalNavViewModel, SingleGlobalNavViewModel singleGlobalNavViewModel);
 
         void setBannedProductsErrorMessage(List<Visitable> bannedProductsErrorMessageAsList);
 
@@ -66,6 +67,8 @@ public interface ProductListSectionContract {
         void sendTrackingGTMEventSearchAttempt(GeneralSearchTrackingModel generalSearchTrackingModel);
 
         void sendImpressionGlobalNav(GlobalNavViewModel globalNavViewModel);
+
+        void sendImpressionSingleGlobalNav(SingleGlobalNavViewModel singleGlobalNavViewModel);
 
         void clearLastProductItemPositionFromCache();
 

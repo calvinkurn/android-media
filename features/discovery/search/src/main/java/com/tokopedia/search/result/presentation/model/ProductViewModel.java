@@ -31,6 +31,8 @@ public class ProductViewModel implements Parcelable {
     private int defaultView;
     private RelatedViewModel relatedViewModel;
     private String totalDataText = "";
+    private SingleGlobalNavViewModel singleGlobalNavViewModel;
+    private boolean isSingleGlobalNav = false;
 
     public TopAdsModel getAdsModel() {
         return adsModel;
@@ -181,6 +183,22 @@ public class ProductViewModel implements Parcelable {
 
     public RelatedViewModel getRelatedViewModel() {
         return this.relatedViewModel;
+    }
+
+    public SingleGlobalNavViewModel getSingleGlobalNavViewModel() {
+        return singleGlobalNavViewModel;
+    }
+
+    public void setSingleGlobalNavViewModel(SingleGlobalNavViewModel singleGlobalNavViewModel) {
+        this.singleGlobalNavViewModel = singleGlobalNavViewModel;
+    }
+
+    public boolean getIsSingleGlobalNav() {
+        return isSingleGlobalNav;
+    }
+
+    public void setIsSingleGlobalNav(boolean isSingleGlobalNav) {
+        this.isSingleGlobalNav = isSingleGlobalNav;
     }
 
     @Override

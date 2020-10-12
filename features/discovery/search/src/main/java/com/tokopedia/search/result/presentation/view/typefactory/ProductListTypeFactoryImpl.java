@@ -19,6 +19,7 @@ import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
 import com.tokopedia.search.result.presentation.model.RecommendationItemViewModel;
 import com.tokopedia.search.result.presentation.model.RecommendationTitleViewModel;
 import com.tokopedia.search.result.presentation.model.SeparatorViewModel;
+import com.tokopedia.search.result.presentation.model.SingleGlobalNavViewModel;
 import com.tokopedia.search.result.presentation.model.SuggestionViewModel;
 import com.tokopedia.search.result.presentation.model.TickerViewModel;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.common.SearchLoadingMoreViewHolder;
@@ -35,6 +36,7 @@ import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.RecommendationItemViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.RecommendationTitleViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.SeparatorViewHolder;
+import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.SingleGlobalNavViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.SmallGridInspirationCardViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.SmallGridProductItemViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.SuggestionViewHolder;
@@ -195,6 +197,11 @@ public class ProductListTypeFactoryImpl extends BaseAdapterTypeFactory implement
     }
 
     @Override
+    public int type(SingleGlobalNavViewModel singleGlobalNavViewModel) {
+        return SingleGlobalNavViewHolder.LAYOUT;
+    }
+
+    @Override
     public AbstractViewHolder createViewHolder(View view, int type) {
         AbstractViewHolder viewHolder;
 
@@ -234,6 +241,8 @@ public class ProductListTypeFactoryImpl extends BaseAdapterTypeFactory implement
             viewHolder = new BigGridInspirationCardViewHolder(view, inspirationCardListener);
         } else if (type == SeparatorViewHolder.LAYOUT) {
             viewHolder = new SeparatorViewHolder(view);
+        } else if (type == SingleGlobalNavViewHolder.LAYOUT) {
+            viewHolder = new SingleGlobalNavViewHolder(view, globalNavListener);
         } else {
             viewHolder = super.createViewHolder(view, type);
         }

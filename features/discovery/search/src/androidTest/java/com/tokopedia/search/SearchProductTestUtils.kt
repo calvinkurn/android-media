@@ -82,6 +82,7 @@ internal fun createBroadMatchListener(): BroadMatchListener {
 internal fun createGlobalNavListener(): GlobalNavListener {
     return object: GlobalNavListener {
         override fun onGlobalNavWidgetClicked(item: GlobalNavViewModel.Item?, keyword: String?) {}
+        override fun onSingleGlobalNavClicked(item: SingleGlobalNavViewModel.Item?, keyword: String?) {}
         override fun onGlobalNavWidgetClickSeeAll(globalNavViewModel: GlobalNavViewModel?) {}
     }
 }

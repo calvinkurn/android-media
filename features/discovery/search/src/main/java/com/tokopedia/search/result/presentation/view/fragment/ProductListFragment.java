@@ -66,6 +66,7 @@ import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
 import com.tokopedia.search.result.presentation.model.InspirationCardOptionViewModel;
 import com.tokopedia.search.result.presentation.model.InspirationCarouselViewModel;
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
+import com.tokopedia.search.result.presentation.model.SingleGlobalNavViewModel;
 import com.tokopedia.search.result.presentation.model.SuggestionViewModel;
 import com.tokopedia.search.result.presentation.model.TickerViewModel;
 import com.tokopedia.search.result.presentation.view.adapter.ProductListAdapter;
@@ -680,6 +681,14 @@ public class ProductListFragment
     }
 
     @Override
+    public void onSingleGlobalNavClicked(SingleGlobalNavViewModel.Item item, String keyword) {
+        redirectionStartActivity(item.getClickItemApplink(), item.getClickItemUrl());
+
+        SearchTracking.trackEventClickGlobalNavWidgetItem(item.getGlobalNavItemAsObjectDataLayer(item.getName()),
+                keyword, item.getName(), item.getClickItemApplink());
+    }
+
+    @Override
     public void onGlobalNavWidgetClickSeeAll(GlobalNavViewModel model) {
         redirectionStartActivity(model.getSeeAllApplink(), model.getSeeAllUrl());
 
@@ -1013,8 +1022,9 @@ public class ProductListFragment
     }
 
     @Override
-    public void setEmptyProduct(GlobalNavViewModel globalNavViewModel) {
+    public void setEmptyProduct(GlobalNavViewModel globalNavViewModel, SingleGlobalNavViewModel singleGlobalNavViewModel) {
         adapter.setGlobalNavViewModel(globalNavViewModel);
+        adapter.setSingleGlobalNavViewModel(singleGlobalNavViewModel);
         presenter.clearData();
         adapter.showEmptyState(getActivity(), isFilterActive());
     }
@@ -1167,6 +1177,16 @@ public class ProductListFragment
             dataLayerList.add(item.getGlobalNavItemAsObjectDataLayer(item.getApplink()));
         }
         SearchTracking.trackEventImpressionGlobalNavWidgetItem(trackingQueue, dataLayerList, globalNavViewModel.getKeyword());
+    }
+
+    @Override
+    public void sendImpressionSingleGlobalNav(SingleGlobalNavViewModel singleGlobalNavViewModel) {
+        List<Object> dataLayerList = new ArrayList<>();
+
+        SingleGlobalNavViewModel.Item item = singleGlobalNavViewModel.getItem();
+        dataLayerList.add(item.getGlobalNavItemAsObjectDataLayer(item.getClickItemApplink()));
+
+        SearchTracking.trackEventImpressionGlobalNavWidgetItem(trackingQueue, dataLayerList, singleGlobalNavViewModel.getKeyword());
     }
 
     @Override

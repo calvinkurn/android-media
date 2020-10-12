@@ -46,6 +46,7 @@ import com.tokopedia.search.result.presentation.model.RecommendationItemViewMode
 import com.tokopedia.search.result.presentation.model.RecommendationTitleViewModel;
 import com.tokopedia.search.result.presentation.model.RelatedViewModel;
 import com.tokopedia.search.result.presentation.model.SeparatorViewModel;
+import com.tokopedia.search.result.presentation.model.SingleGlobalNavViewModel;
 import com.tokopedia.search.result.presentation.model.SuggestionViewModel;
 import com.tokopedia.search.utils.SearchFilterUtilsKt;
 import com.tokopedia.search.utils.UrlParamUtils;
@@ -739,6 +740,11 @@ final class ProductListPresenter
         }
     }
 
+    private boolean isGlobalNavWidgetAvailable(ProductViewModel productViewModel) {
+        return (productViewModel.getGlobalNavViewModel() != null || productViewModel.getSingleGlobalNavViewModel() != null)
+                && enableGlobalNavWidget;
+    }
+
     private void sendTrackingNoSearchResult(ProductViewModel productViewModel) {
         try {
             String alternativeKeyword = "";
@@ -854,10 +860,12 @@ final class ProductListPresenter
     }
 
     private void getViewToShowEmptySearch(ProductViewModel productViewModel) {
-        boolean isGlobalNavWidgetAvailable
-                = productViewModel.getGlobalNavViewModel() != null && enableGlobalNavWidget;
+        boolean isGlobalNavWidgetAvailable = isGlobalNavWidgetAvailable(productViewModel);
         getView().removeLoading();
-        getView().setEmptyProduct(isGlobalNavWidgetAvailable ? productViewModel.getGlobalNavViewModel() : null);
+        getView().setEmptyProduct(
+            isGlobalNavWidgetAvailable ? productViewModel.getGlobalNavViewModel() : null,
+            isGlobalNavWidgetAvailable ? productViewModel.getSingleGlobalNavViewModel() : null
+        );
     }
 
     private void getViewToShowRecommendationItem() {
@@ -899,12 +907,14 @@ final class ProductListPresenter
             getView().showAdultRestriction();
         }
 
-        boolean isGlobalNavWidgetAvailable
-                = productViewModel.getGlobalNavViewModel() != null && enableGlobalNavWidget;
-
-        if (isGlobalNavWidgetAvailable) {
-            list.add(productViewModel.getGlobalNavViewModel());
-            getView().sendImpressionGlobalNav(productViewModel.getGlobalNavViewModel());
+        if (isGlobalNavWidgetAvailable(productViewModel)) {
+            if (productViewModel.getIsSingleGlobalNav()) {
+                list.add(productViewModel.getSingleGlobalNavViewModel());
+                getView().sendImpressionSingleGlobalNav(productViewModel.getSingleGlobalNavViewModel());
+            } else {
+                list.add(productViewModel.getGlobalNavViewModel());
+                getView().sendImpressionGlobalNav(productViewModel.getGlobalNavViewModel());
+            }
         }
 
         if (!isTickerHasDismissed
@@ -924,7 +934,12 @@ final class ProductListPresenter
         }
 
         if (productViewModel.getCpmModel() != null && shouldShowCpmShop(productViewModel)) {
-            if (!isGlobalNavWidgetAvailable || productViewModel.getGlobalNavViewModel().getIsShowTopAds()) {
+            boolean isShowTopAds = false;
+
+            if (productViewModel.getIsSingleGlobalNav() && productViewModel.getSingleGlobalNavViewModel() != null) isShowTopAds = productViewModel.getSingleGlobalNavViewModel().isShowTopAds();
+            else if(productViewModel.getGlobalNavViewModel() != null) isShowTopAds = productViewModel.getGlobalNavViewModel().getIsShowTopAds();
+
+            if (!isGlobalNavWidgetAvailable(productViewModel) || isShowTopAds) {
                 CpmViewModel cpmViewModel = new CpmViewModel();
                 cpmViewModel.setCpmModel(productViewModel.getCpmModel());
                 list.add(cpmViewModel);
@@ -1241,7 +1256,10 @@ final class ProductListPresenter
     }
 
     private String createGeneralSearchTrackingEventLabel(ProductViewModel productViewModel, String query) {
-        String source = getTopNavSource(productViewModel.getGlobalNavViewModel());
+        String source;
+        if (productViewModel.getIsSingleGlobalNav()) source = getTopNavSource(productViewModel.getSingleGlobalNavViewModel());
+        else source = getTopNavSource(productViewModel.getGlobalNavViewModel());
+
         return String.format(
                 SearchEventTracking.Label.KEYWORD_TREATMENT_RESPONSE,
                 query,
@@ -1249,6 +1267,12 @@ final class ProductListPresenter
                 productViewModel.getResponseCode(),
                 source
         );
+    }
+
+    private String getTopNavSource(SingleGlobalNavViewModel singleGlobalNavViewModel) {
+        if (singleGlobalNavViewModel == null) return "none";
+        if (singleGlobalNavViewModel.getSource().isEmpty()) return "other";
+        return singleGlobalNavViewModel.getSource();
     }
 
     private String getTopNavSource(GlobalNavViewModel globalNavViewModel) {

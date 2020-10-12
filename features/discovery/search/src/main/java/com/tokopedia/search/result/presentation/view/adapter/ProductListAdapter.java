@@ -20,6 +20,7 @@ import com.tokopedia.search.result.presentation.model.EmptySearchProductViewMode
 import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
 import com.tokopedia.search.result.presentation.model.RecommendationItemViewModel;
+import com.tokopedia.search.result.presentation.model.SingleGlobalNavViewModel;
 import com.tokopedia.search.result.presentation.model.TickerViewModel;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.RecommendationItemViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.SmallGridInspirationCardViewHolder;
@@ -38,6 +39,7 @@ public final class ProductListAdapter extends RecyclerView.Adapter<AbstractViewH
     private ProductListTypeFactory typeFactory;
     private LoadingMoreModel loadingMoreModel = new LoadingMoreModel();
     private GlobalNavViewModel globalNavViewModel;
+    private SingleGlobalNavViewModel singleGlobalNavViewModel;
     private OnItemChangeView itemChangeView;
 
     public ProductListAdapter(OnItemChangeView itemChangeView, ProductListTypeFactory typeFactory) {
@@ -235,7 +237,10 @@ public final class ProductListAdapter extends RecyclerView.Adapter<AbstractViewH
         if (globalNavViewModel != null) {
             list.add(globalNavViewModel);
         }
-        list.add(mapEmptySearch(context, isFilterActive, globalNavViewModel == null));
+        if (singleGlobalNavViewModel != null) {
+            list.add(singleGlobalNavViewModel);
+        }
+        list.add(mapEmptySearch(context, isFilterActive, (globalNavViewModel == null || singleGlobalNavViewModel == null)));
         notifyDataSetChanged();
     }
 
@@ -266,6 +271,10 @@ public final class ProductListAdapter extends RecyclerView.Adapter<AbstractViewH
 
     public void setGlobalNavViewModel(GlobalNavViewModel globalNavViewModel) {
         this.globalNavViewModel = globalNavViewModel;
+    }
+
+    public void setSingleGlobalNavViewModel(SingleGlobalNavViewModel singleGlobalNavViewModel) {
+        this.singleGlobalNavViewModel = singleGlobalNavViewModel;
     }
 
     public boolean isListEmpty() {
