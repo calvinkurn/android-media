@@ -10,7 +10,10 @@ class ImageFeedbackViewHolder (val view: View, private val imageClickListener: I
 
     override fun bind(element: ImageFeedbackUiModel) {
         view.setOnClickListener {
-            imageClickListener.addImageClick()
+            imageClickListener.onImageClick()
+        }
+        view.remove_image.setOnClickListener {
+            imageClickListener.onRemoveImageClick(element)
         }
 
         ImageHandler.loadImageRounded(view.context, view.image_review, element.imageUrl, 10f)

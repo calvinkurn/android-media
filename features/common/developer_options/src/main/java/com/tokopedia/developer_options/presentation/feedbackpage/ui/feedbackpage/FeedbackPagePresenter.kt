@@ -153,6 +153,14 @@ class FeedbackPagePresenter(private val compositeSubscription: CompositeSubscrip
         return imageData
     }
 
+    override fun removeImage(image: BaseImageFeedbackUiModel): MutableList<BaseImageFeedbackUiModel> {
+        imageData.remove(image)
+        if(imageData.size <  5 && !imageData.contains(DefaultFeedbackUiModel())) {
+            imageData.add(DefaultFeedbackUiModel())
+        }
+        return imageData
+    }
+
 /*    override fun getSelectedImageUrl(): ArrayList<String> {
         val result = arrayListOf<String>()
         imageData.forEach {

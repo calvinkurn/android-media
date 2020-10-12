@@ -30,6 +30,7 @@ import com.tokopedia.developer_options.R
 import com.tokopedia.developer_options.drawonpicture.presentation.fragment.DrawOnPictureFragment.Companion.EXTRA_DRAW_IMAGE_URI
 import com.tokopedia.developer_options.presentation.feedbackpage.adapter.ImageFeedbackAdapter
 import com.tokopedia.developer_options.presentation.feedbackpage.di.FeedbackPageComponent
+import com.tokopedia.developer_options.presentation.feedbackpage.domain.model.BaseImageFeedbackUiModel
 import com.tokopedia.developer_options.presentation.feedbackpage.domain.model.CategoriesModel
 import com.tokopedia.developer_options.presentation.feedbackpage.domain.request.FeedbackFormRequest
 import com.tokopedia.developer_options.presentation.feedbackpage.listener.ImageClickListener
@@ -461,5 +462,9 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
             val intent = ImagePickerActivity.getIntent(it, builder)
             startActivityForResult(intent, REQUEST_CODE_IMAGE)
         }
+    }
+
+    override fun onRemoveImageClick(item: BaseImageFeedbackUiModel) {
+        imageAdapter.setImageFeedbackData(feedbackPagePresenter.removeImage(item))
     }
 }

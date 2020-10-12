@@ -27,6 +27,7 @@ interface FeedbackPageContract {
         fun getImageList(selectedImage: ArrayList<String>): MutableList<BaseImageFeedbackUiModel>
         fun initImageData(): MutableList<BaseImageFeedbackUiModel>
         fun screenshotImageResult(data: ScreenshotData) : MutableList<BaseImageFeedbackUiModel>
+        fun removeImage(image: BaseImageFeedbackUiModel) : MutableList<BaseImageFeedbackUiModel>
 //        fun getSelectedImageUrl() : ArrayList<String>
     }
 }
