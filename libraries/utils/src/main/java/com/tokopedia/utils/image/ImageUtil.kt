@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.Point
+import android.net.Uri
 import android.view.Display
 import android.view.WindowManager
 import java.io.File

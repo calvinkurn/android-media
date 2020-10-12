@@ -665,7 +665,7 @@ class AddEditProductDescriptionFragment:
                 }
                 val destination = AddEditProductDescriptionFragmentDirections.actionAddEditProductDescriptionFragmentToAddEditProductShipmentFragment()
                 destination.cacheManagerId = cacheManagerId
-                findNavController().navigate(destination)
+                NavigationController.navigate(this@AddEditProductDescriptionFragment, destination)
             }
         }
     }

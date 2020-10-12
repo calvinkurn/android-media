@@ -48,6 +48,8 @@ import com.tokopedia.track.interfaces.ContextAnalytics;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -78,7 +80,6 @@ public class InstrumentationTestApp extends BaseMainApplication
         GlobalConfig.DEBUG = true;
         GlobalConfig.VERSION_NAME = "3.66";
         SplitCompat.install(this);
-        FirebaseApp.initializeApp(this);
         FpmLogger.init(this);
         TrackApp.initTrackApp(this);
         TrackApp.getInstance().registerImplementation(TrackApp.GTM, GTMAnalytics.class);
@@ -140,6 +141,10 @@ public class InstrumentationTestApp extends BaseMainApplication
             ArrayList<Interceptor> interceptorList = new ArrayList<Interceptor>(testInterceptors.values());
             GraphqlClient.reInitRetrofitWithInterceptors(interceptorList, this);
         }
+    }
+
+    public void setInterceptor(Interceptor interceptor) {
+        GraphqlClient.reInitRetrofitWithInterceptors(Collections.singletonList(interceptor), this);
     }
 
     @Override
