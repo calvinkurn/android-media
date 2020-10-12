@@ -49,6 +49,7 @@ class ChatSettingFragment : BaseListFragment<Visitable<*>, ChatSettingTypeFactor
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        viewModel.getChatSetting()
         shouldMoveToChatTemplate = checkForMoveToChatTemplateAppLink()
     }
 
@@ -58,9 +59,13 @@ class ChatSettingFragment : BaseListFragment<Visitable<*>, ChatSettingTypeFactor
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.initArguments(arguments)
+        initArguments()
         setupObserver()
         setupRecyclerView(view)
+    }
+
+    private fun initArguments() {
+        viewModel.isSeller = arguments?.getBoolean(PARAM_IS_SELLER, false) ?: false
     }
 
     override fun onStart() {
