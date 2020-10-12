@@ -1,6 +1,6 @@
 package com.tokopedia.seller.menu.common.errorhandler
 
-import com.crashlytics.android.Crashlytics
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.seller.menu.common.BuildConfig
 import com.tokopedia.seller.menu.common.exception.SellerMenuException
 
@@ -12,7 +12,7 @@ object SellerMenuErrorHandler {
         try {
             if (!BuildConfig.DEBUG) {
                 val exceptionMessage = "$message - ${throwable.localizedMessage}"
-                Crashlytics.logException(SellerMenuException(
+                FirebaseCrashlytics.getInstance().recordException(SellerMenuException(
                         message = exceptionMessage,
                         cause = throwable
                 ))

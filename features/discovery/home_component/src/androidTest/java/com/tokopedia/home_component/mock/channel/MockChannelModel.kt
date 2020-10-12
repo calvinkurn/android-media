@@ -1,6 +1,5 @@
 package com.tokopedia.home_component.mock.channel
 
-import com.tokopedia.home_component.mock.channel.*
 import com.tokopedia.home_component.model.ChannelModel
 
 object MockChannelModel {
@@ -11,6 +10,7 @@ object MockChannelModel {
                 "type",
                 0,
                 0,
+                "",
                 "",
                 MockChannelHeader.get(),
                 MockChannelBanner.get(),

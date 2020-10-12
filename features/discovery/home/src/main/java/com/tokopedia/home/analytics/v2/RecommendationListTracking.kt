@@ -52,6 +52,9 @@ object RecommendationListTracking: BaseTrackerConst(){
                 ))
                 .appendChannelId(channel.id)
                 .appendUserId(userId)
+                .appendScreen(Screen.DEFAULT)
+                .appendCurrentSite(CurrentSite.DEFAULT)
+                .appendBusinessUnit(BusinessUnit.DEFAULT)
                 .build()
     }
 
@@ -87,6 +90,9 @@ object RecommendationListTracking: BaseTrackerConst(){
                 ))
                 .appendChannelId(channel.id)
                 .appendUserId(userId)
+                .appendScreen(Screen.DEFAULT)
+                .appendCurrentSite(CurrentSite.DEFAULT)
+                .appendBusinessUnit(BusinessUnit.DEFAULT)
                 .build()
     }
 
@@ -123,6 +129,9 @@ object RecommendationListTracking: BaseTrackerConst(){
                 .appendChannelId(channel.id)
                 .appendCampaignCode(channel.campaignCode)
                 .appendUserId(userId)
+                .appendScreen(Screen.DEFAULT)
+                .appendCurrentSite(CurrentSite.DEFAULT)
+                .appendBusinessUnit(BusinessUnit.DEFAULT)
                 .build()
     }
 
@@ -158,6 +167,9 @@ object RecommendationListTracking: BaseTrackerConst(){
                 .appendChannelId(channel.id)
                 .appendCampaignCode(channel.trackingAttributionModel.campaignCode)
                 .appendUserId(userId)
+                .appendScreen(Screen.DEFAULT)
+                .appendCurrentSite(CurrentSite.DEFAULT)
+                .appendBusinessUnit(BusinessUnit.DEFAULT)
                 .build()
     }
 
@@ -175,7 +187,11 @@ object RecommendationListTracking: BaseTrackerConst(){
                 Category.KEY, Category.HOMEPAGE,
                 Action.KEY, RECOMMENDATION_LIST_SEE_ALL_EVENT_ACTION,
                 Label.KEY, Label.FORMAT_2_ITEMS.format(channelId, headerName),
-                UserId.KEY, userId
+                Screen.KEY, Screen.DEFAULT,
+                UserId.KEY, userId,
+                CurrentSite.KEY, CurrentSite.DEFAULT,
+                BusinessUnit.KEY, BusinessUnit.DEFAULT,
+                ChannelId.KEY, channelId
         ) as HashMap<String, Any>
     }
 
@@ -185,7 +201,11 @@ object RecommendationListTracking: BaseTrackerConst(){
                 Category.KEY, Category.HOMEPAGE,
                 Action.KEY, RECOMMENDATION_LIST_SEE_ALL_CARD_EVENT_ACTION,
                 Label.KEY, Label.FORMAT_2_ITEMS.format(channelId, headerName),
-                UserId.KEY, userId
+                Screen.KEY, Screen.DEFAULT,
+                UserId.KEY, userId,
+                CurrentSite.KEY, CurrentSite.DEFAULT,
+                BusinessUnit.KEY, BusinessUnit.DEFAULT,
+                ChannelId.KEY, channelId
         ) as HashMap<String, Any>
     }
 
@@ -197,16 +217,6 @@ object RecommendationListTracking: BaseTrackerConst(){
         getTracker().sendGeneralEvent(getRecommendationListSeeAllCardClick(channelId, headerName, userId))
     }
 
-    fun getCloseClickOnDynamicListCarousel(channel: DynamicHomeChannel.Channels, userId: String = "") = DataLayer.mapOf(
-            Event.KEY, Event.CLICK_HOMEPAGE,
-            Category.KEY, Category.HOMEPAGE,
-            Action.KEY, RECOMMENDATION_LIST_CLOSE_EVENT_ACTION,
-            Label.KEY, Label.FORMAT_2_ITEMS.format(channel.id, channel.header.name),
-            Screen.KEY, Screen.DEFAULT,
-            UserId.KEY, userId,
-            CurrentSite.KEY, CurrentSite.DEFAULT
-    )
-
     fun getCloseClickOnDynamicListCarouselHomeComponent(channel: ChannelModel, userId: String = "") = DataLayer.mapOf(
             Event.KEY, Event.CLICK_HOMEPAGE,
             Category.KEY, Category.HOMEPAGE,
@@ -214,7 +224,9 @@ object RecommendationListTracking: BaseTrackerConst(){
             Label.KEY, Label.FORMAT_2_ITEMS.format(channel.id, channel.channelHeader.name),
             Screen.KEY, Screen.DEFAULT,
             UserId.KEY, userId,
-            CurrentSite.KEY, CurrentSite.DEFAULT
+            CurrentSite.KEY, CurrentSite.DEFAULT,
+            BusinessUnit.KEY, BusinessUnit.DEFAULT,
+            ChannelId.KEY,channel.id
     )
 
     fun getAddToCartOnDynamicListCarousel(channel: DynamicHomeChannel.Channels, grid: DynamicHomeChannel.Grid, position: Int, cartId: String, quantity: String = "0", userId: String = "") = DataLayer.mapOf(
@@ -227,6 +239,7 @@ object RecommendationListTracking: BaseTrackerConst(){
             CurrentSite.KEY, CurrentSite.DEFAULT,
             UserId.KEY, userId,
             Label.CHANNEL_LABEL, channel.id,
+            BusinessUnit.KEY, BusinessUnit.DEFAULT,
             Ecommerce.KEY, Ecommerce.getEcommerceProductAddToCart(
             products = listOf(
                     Product(
@@ -243,7 +256,8 @@ object RecommendationListTracking: BaseTrackerConst(){
                             categoryId = channel.categoryID,
                             isTopAds = grid.isTopads,
                             quantity = quantity,
-                            cartId = cartId
+                            cartId = cartId,
+                            shopId = channel.brandId
                     )
             ),
             list = String.format(
@@ -263,6 +277,7 @@ object RecommendationListTracking: BaseTrackerConst(){
             CurrentSite.KEY, CurrentSite.DEFAULT,
             UserId.KEY, userId,
             Label.CHANNEL_LABEL, channel.id,
+            BusinessUnit.KEY, BusinessUnit.DEFAULT,
             Ecommerce.KEY, Ecommerce.getEcommerceProductAddToCart(
             products = listOf(
                     Product(
@@ -282,6 +297,7 @@ object RecommendationListTracking: BaseTrackerConst(){
                             isTopAds = grid.isTopads,
                             quantity = quantity,
                             cartId = cartId,
+                            shopId = channel.trackingAttributionModel.brandId,
                             headerName = channel.channelHeader.name
                     )
             ),
