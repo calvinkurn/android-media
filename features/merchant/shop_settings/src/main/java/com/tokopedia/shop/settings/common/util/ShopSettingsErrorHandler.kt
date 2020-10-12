@@ -28,7 +28,7 @@ object ShopSettingsErrorHandler {
 
     fun logExceptionToCrashlytics(t: Throwable) {
         try {
-            Crashlytics.logException(t)
+            FirebaseCrashlytics.getInstance().recordException(t)
         } catch (e: IllegalStateException) {
             e.printStackTrace()
         }
