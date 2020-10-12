@@ -28,7 +28,6 @@ class NavSearchbarController(val view: View,
     val searchBarAnalytics = SearchBarAnalytics(view.context)
 
     fun setHint(
-            hint: HintData,
             hints: ArrayList<HintData>,
             isFirstInstall: Boolean,
             isShowTransition: Boolean,
@@ -40,7 +39,7 @@ class NavSearchbarController(val view: View,
         if (hints.size > 1 && isShowTransition) {
             setHintAnimation(hints, isFirstInstall, durationAutoTransition)
         } else {
-            setHintSingle(hint, isFirstInstall)
+            setHintSingle(hints[0], isFirstInstall)
         }
         etSearch.setSingleLine()
         etSearch.ellipsize = TextUtils.TruncateAt.END

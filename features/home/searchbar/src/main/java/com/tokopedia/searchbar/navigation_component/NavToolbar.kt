@@ -58,12 +58,19 @@ class NavToolbar: Toolbar, LifecycleObserver {
         toolbar!!.background = ColorDrawable(ContextCompat.getColor(context, R.color.white))
         navSearchBarController = NavSearchbarController(this,
                 SearchBarTrackingParam(screenName, HOME_SOURCE, PARAM_APPLINK_AUTOCOMPLETE))
+        showShadow()
+    }
 
+    /**
+     * Set icon config. For available icon
+     * @see
+     * IconList.kt
+     */
+    fun setIcon(iconConfig: IconConfig) {
+        navIconAdapter = NavToolbarIconAdapter(iconConfig)
         val navIconRecyclerView = rv_icon_list
-        navIconAdapter = NavToolbarIconAdapter(DefaultIconConfig.get())
         navIconRecyclerView.adapter = navIconAdapter
         navIconRecyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-        showShadow()
     }
 
     /**
@@ -123,12 +130,11 @@ class NavToolbar: Toolbar, LifecycleObserver {
         }
     }
 
-    fun setSearchBarHint(hint: HintData,
-                         hints: ArrayList<HintData>,
+    fun setSearchBarHint(hints: ArrayList<HintData>,
                          isFirstInstall: Boolean = false,
                          isShowTransition: Boolean = true,
                          durationAutoTransition: Long = 0) {
-        navSearchBarController.setHint(hint, hints, isFirstInstall, isShowTransition, durationAutoTransition)
+        navSearchBarController.setHint(hints, isFirstInstall, isShowTransition, durationAutoTransition)
     }
 
     fun setBadgeCounter(iconId: Int, counter: Int) {

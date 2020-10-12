@@ -7,14 +7,14 @@ import com.tokopedia.searchbar.navigation_component.NavToolbar
 class NavRecyclerViewScrollListener(
         val navToolbar: NavToolbar,
         var startTransitionPixel: Int = 0,
-        var toolbarTransitionRange: Int = 0,
+        var toolbarTransitionRangePixel: Int = 0,
         val navScrollCallback: NavScrollCallback? = null
 ): RecyclerView.OnScrollListener() {
     private val statusBarUtil = navToolbar.statusBarUtil
     override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
         super.onScrolled(recyclerView, dx, dy)
         if (startTransitionPixel == 0) startTransitionPixel = navToolbar.resources.getDimensionPixelSize(R.dimen.default_nav_toolbar_start_transition)
-        if (toolbarTransitionRange == 0) toolbarTransitionRange = navToolbar.resources.getDimensionPixelSize(R.dimen.default_nav_toolbar_transition_range)
+        if (toolbarTransitionRangePixel == 0) toolbarTransitionRangePixel = navToolbar.resources.getDimensionPixelSize(R.dimen.default_nav_toolbar_transition_range)
 
         calculateNavToolbarTransparency(recyclerView.computeVerticalScrollOffset())
     }

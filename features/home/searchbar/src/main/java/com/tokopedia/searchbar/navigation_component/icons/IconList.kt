@@ -15,48 +15,48 @@ object IconList {
     const val ID_NOTIFICATION = 1
     const val ID_CART = 2
     const val ID_NAV_GLOBAL = 3
-}
 
-object MessageIcon: IconConfigItem {
-    override fun get(): IconToolbar {
-        return IconToolbar(
-                id = ID_MESSAGE,
-                imageResLight = R.drawable.ic_home_nav_message_light,
-                imageResDark = R.drawable.ic_home_nav_message_dark,
-                applink = ApplinkConst.INBOX
-        )
+    object MessageIcon: IconConfigItem {
+        override fun get(): IconToolbar {
+            return IconToolbar(
+                    id = ID_MESSAGE,
+                    imageResLight = R.drawable.ic_home_nav_message_light,
+                    imageResDark = R.drawable.ic_home_nav_message_dark,
+                    applink = ApplinkConst.INBOX
+            )
+        }
     }
-}
 
-object NotificationIcon: IconConfigItem {
-    override fun get(): IconToolbar {
-        return IconToolbar(
-                id = ID_NOTIFICATION,
-                imageResLight = R.drawable.ic_home_nav_notification_light,
-                imageResDark = R.drawable.ic_home_nav_notification_dark,
-                applink = ApplinkConst.NOTIFICATION
-        )
+    object NotificationIcon: IconConfigItem {
+        override fun get(): IconToolbar {
+            return IconToolbar(
+                    id = ID_NOTIFICATION,
+                    imageResLight = R.drawable.ic_home_nav_notification_light,
+                    imageResDark = R.drawable.ic_home_nav_notification_dark,
+                    applink = ApplinkConst.NOTIFICATION
+            )
+        }
     }
-}
 
-object CartIcon: IconConfigItem {
-    override fun get(): IconToolbar {
-        return IconToolbar(
-                id = ID_CART,
-                imageResLight = R.drawable.ic_home_nav_cart_light,
-                imageResDark = R.drawable.ic_home_nav_cart_dark,
-                applink = ApplinkConst.CART
-        )
+    object CartIcon: IconConfigItem {
+        override fun get(): IconToolbar {
+            return IconToolbar(
+                    id = ID_CART,
+                    imageResLight = R.drawable.ic_home_nav_cart_light,
+                    imageResDark = R.drawable.ic_home_nav_cart_dark,
+                    applink = ApplinkConst.CART
+            )
+        }
     }
-}
 
-object NavGlobalIcon: IconConfigItem {
-    override fun get(): IconToolbar {
-        return IconToolbar(
-                id = ID_NAV_GLOBAL,
-                imageResLight = R.drawable.ic_home_nav_global_light,
-                imageResDark = R.drawable.ic_home_nav_global_dark,
-                applink = ""
-        )
+    object NavGlobalIcon: IconConfigItem {
+        override fun get(): IconToolbar {
+            return IconToolbar(
+                    id = ID_NAV_GLOBAL,
+                    imageResLight = R.drawable.ic_home_nav_global_light,
+                    imageResDark = R.drawable.ic_home_nav_global_dark,
+                    applink = ""
+            )
+        }
     }
 }
