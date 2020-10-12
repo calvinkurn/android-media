@@ -60,7 +60,6 @@ import com.tokopedia.review.feature.inbox.common.ReviewInboxConstants
 import com.tokopedia.review.feature.inbox.common.analytics.ReviewInboxTrackingConstants
 import com.tokopedia.review.feature.ovoincentive.data.ProductRevIncentiveOvoDomain
 import com.tokopedia.review.feature.ovoincentive.presentation.adapter.IncentiveOvoAdapter
-import com.tokopedia.review.feature.ovoincentive.presentation.bottomsheet.IncentiveOvoSubmittedBottomSheet
 import com.tokopedia.unifycomponents.*
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import kotlinx.android.synthetic.main.fragment_create_review.*
@@ -100,6 +99,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
         private const val SAME_ARGS_ERROR = 3
 
         private const val REVIEW_INCENTIVE_MINIMUM_THRESHOLD = 40
+        private const val THANK_YOU_BOTTOMSHEET_IMAGE_URL = "https://ecs7.tokopedia.net/android/others/ovo_incentive_bottom_sheet_image.png"
 
         fun createInstance(productId: String, reviewId: String, reviewClickAt: Int = 0, isEditMode: Boolean, feedbackId: Int) = CreateReviewFragment().also {
             it.arguments = Bundle().apply {
@@ -136,6 +136,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
     private var textAreaBottomSheet: CreateReviewTextAreaBottomSheet? = null
     private var ovoIncentiveBottomSheet: BottomSheetUnify? = null
     private var thankYouBottomSheet: BottomSheetUnify? = null
+    private var incentiveHelper = ""
 
     override fun stopPreparePerfomancePageMonitoring() {
         reviewPerformanceMonitoringListener?.stopPreparePagePerformanceMonitoring()
@@ -389,7 +390,8 @@ class CreateReviewFragment : BaseDaggerFragment(),
 
     override fun onExpandButtonClicked(text: String) {
         CreateReviewTracking.onExpandTextBoxClicked(getOrderId(), productId.toString())
-        textAreaBottomSheet = CreateReviewTextAreaBottomSheet.createNewInstance(this, text)
+        if(incentiveHelper.isBlank()) incentiveHelper = context?.getString(R.string.review_create_text_area_eligible) ?: ""
+        textAreaBottomSheet = CreateReviewTextAreaBottomSheet.createNewInstance(this, text, incentiveHelper)
         (textAreaBottomSheet as BottomSheetUnify).setTitle(createReviewTextAreaTitle.text.toString())
         fragmentManager?.let { textAreaBottomSheet?.show(it, "") }
     }
@@ -586,7 +588,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
                     setHtmlDescription(it.subtitle)
                     setDescriptionClickEvent(object : TickerCallback {
                         override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                            if(ovoIncentiveBottomSheet == null) {
+                            if (ovoIncentiveBottomSheet == null) {
                                 ovoIncentiveBottomSheet = BottomSheetUnify()
                                 val view = View.inflate(context, R.layout.incentive_ovo_bottom_sheet_dialog, null)
                                 ovoIncentiveBottomSheet?.apply {
@@ -624,7 +626,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
 
     private fun showThankYouBottomSheet() {
         (createReviewViewModel.incentiveOvo.value as? CoroutineSuccess)?.data?.let {
-            if(thankYouBottomSheet == null) {
+            if (thankYouBottomSheet == null) {
                 thankYouBottomSheet = BottomSheetUnify()
                 val child = View.inflate(context, R.layout.incentive_ovo_bottom_sheet_submitted, null)
                 thankYouBottomSheet?.setChild(child)
@@ -674,7 +676,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
             val incentiveOvoSendAnother: UnifyButton? = view.findViewById(R.id.incentiveOvoSendAnother)
             val incentiveOvoLater: UnifyButton? = view.findViewById(R.id.incentiveOvoLater)
             view.apply {
-                incentiveOvoSubmittedImage?.loadImage(IncentiveOvoSubmittedBottomSheet.url)
+                incentiveOvoSubmittedImage?.loadImage(THANK_YOU_BOTTOMSHEET_IMAGE_URL)
                 incentiveOvoSubmittedTitle?.text = context.getString(R.string.review_create_thank_you_title)
                 incentiveOvoSubmittedSubtitle?.text = context.getString(R.string.review_create_thank_you_subtitle, ovoIncentiveAmount)
                 productRevIncentiveOvoDomain.let {
@@ -1002,20 +1004,19 @@ class CreateReviewFragment : BaseDaggerFragment(),
 
     private fun setHelperText(textLength: Int) {
         with(incentiveHelperText) {
-            when {
+            incentiveHelper = when {
                 textLength >= REVIEW_INCENTIVE_MINIMUM_THRESHOLD -> {
-                    text = context?.getString(R.string.review_create_text_area_eligible)
-                    show()
+                    context?.getString(R.string.review_create_text_area_eligible) ?: ""
                 }
                 textLength < REVIEW_INCENTIVE_MINIMUM_THRESHOLD && textLength != 0 -> {
-                    text = context?.getString(R.string.review_create_text_area_partial)
-                    show()
+                    context?.getString(R.string.review_create_text_area_partial) ?: ""
                 }
                 else -> {
-                    text = context?.getString(R.string.review_create_text_area_empty)
-                    show()
+                    context?.getString(R.string.review_create_text_area_empty) ?: ""
                 }
             }
+            text = incentiveHelper
+            show()
         }
     }
 

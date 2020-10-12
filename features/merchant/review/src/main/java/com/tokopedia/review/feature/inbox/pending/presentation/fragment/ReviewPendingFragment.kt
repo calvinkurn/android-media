@@ -44,7 +44,6 @@ import com.tokopedia.review.feature.inbox.pending.presentation.util.ReviewPendin
 import com.tokopedia.review.feature.inbox.pending.presentation.viewmodel.ReviewPendingViewModel
 import com.tokopedia.review.feature.ovoincentive.data.ProductRevIncentiveOvoDomain
 import com.tokopedia.review.feature.ovoincentive.presentation.adapter.IncentiveOvoAdapter
-import com.tokopedia.review.feature.ovoincentive.presentation.bottomsheet.IncentiveOvoBottomSheet
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Toaster
@@ -52,7 +51,6 @@ import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifycomponents.toPx
 import kotlinx.android.synthetic.main.fragment_review_pending.*
 import kotlinx.android.synthetic.main.incentive_ovo_bottom_sheet_dialog.view.*
-import kotlinx.android.synthetic.main.item_incentive_ovo.view.*
 import kotlinx.android.synthetic.main.partial_review_connection_error.*
 import kotlinx.android.synthetic.main.partial_review_empty.*
 import javax.inject.Inject

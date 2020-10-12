@@ -6,23 +6,24 @@ import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
 import android.view.View
-import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
-import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.review.R
 import com.tokopedia.review.feature.createreputation.presentation.listener.TextAreaListener
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.toPx
+import com.tokopedia.unifyprinciples.Typography
 
 class CreateReviewTextAreaBottomSheet : BottomSheetUnify() {
 
     companion object {
-        fun createNewInstance(textAreaListener: TextAreaListener, text: String): CreateReviewTextAreaBottomSheet {
+        fun createNewInstance(textAreaListener: TextAreaListener, text: String, incentiveHelper: String): CreateReviewTextAreaBottomSheet {
             return CreateReviewTextAreaBottomSheet().apply {
                 this.text = text
                 this.textAreaListener = textAreaListener
+                this.incentiveHelper = incentiveHelper
             }
         }
         const val ORIGINAL_UNIFY_MARGIN = 16
@@ -31,10 +32,13 @@ class CreateReviewTextAreaBottomSheet : BottomSheetUnify() {
 
     private var text: String = ""
     private var textAreaListener: TextAreaListener? = null
+    private var incentiveHelper = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        clearContentPadding = true
         context?.let {
-            val editText = EditText(it)
+            val view = View.inflate(context, R.layout.widget_create_review_text_area_bottom_sheet, null)
+            val editText: EditText = view.findViewById(R.id.createReviewBottomSheetEditText)
             editText.apply {
                 setOnFocusChangeListener { _, hasFocus ->
                     activity?.run {
@@ -47,7 +51,9 @@ class CreateReviewTextAreaBottomSheet : BottomSheetUnify() {
                 }
                 setBackgroundColor(Color.TRANSPARENT)
             }
-            setChild(editText)
+            val incentiveHelper: Typography = view.findViewById(R.id.incentiveHelperTypography)
+            incentiveHelper.text = this.incentiveHelper
+            setChild(view)
             showCloseIcon = false
             isFullpage = true
             setAction(ContextCompat.getDrawable(it, R.drawable.ic_collapse)) {
