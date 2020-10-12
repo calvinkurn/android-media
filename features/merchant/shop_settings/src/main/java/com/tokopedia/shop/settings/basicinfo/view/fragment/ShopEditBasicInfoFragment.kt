@@ -251,8 +251,8 @@ class ShopEditBasicInfoFragment: Fragment() {
             override fun afterTextChanged(s: Editable) {
                 if (!isNameStillSame()) {
                     val input = s.toString()
-                    if (input.length < MIN_INPUT_LENGTH) {
-                        val message = context?.getString(R.string.shop_edit_name_too_short).orEmpty()
+                    if (input.isBlank()) {
+                        val message = context?.getString(R.string.error_validation_shop_name_empty).orEmpty()
                         showShopNameInputError(message)
                         viewModel.cancelValidateShopName()
                     } else {
@@ -275,8 +275,8 @@ class ShopEditBasicInfoFragment: Fragment() {
             override fun afterTextChanged(s: Editable) {
                 if (!isDomainStillSame()) {
                     val input = s.toString()
-                    if (input.length < MIN_INPUT_LENGTH) {
-                        val message = context?.getString(R.string.shop_edit_domain_too_short).orEmpty()
+                    if (input.isBlank()) {
+                        val message = context?.getString(R.string.error_validation_shop_domain_empty).orEmpty()
                         showShopDomainInputError(message)
                         viewModel.cancelValidateShopDomain()
                     } else {
@@ -448,7 +448,7 @@ class ShopEditBasicInfoFragment: Fragment() {
                     }
                 }
                 is Fail -> {
-                    val message = (it as Success).data.validateDomainShopName.error.message
+                    val message = context?.getString(R.string.error_validation_shop_name_domain).orEmpty()
                     showShopNameInputError(message)
                     shopDomainSuggestions.hide()
                     ShopSettingsErrorHandler.logMessage(it.throwable.message ?: "")
@@ -469,8 +469,8 @@ class ShopEditBasicInfoFragment: Fragment() {
                     }
                 }
                 is Fail -> {
-                    val message = (it as Success).data.validateDomainShopName.error.message
-                    showShopNameInputError(message)
+                    val message = context?.getString(R.string.error_validation_shop_name_domain).orEmpty()
+                    showShopDomainInputError(message)
                     shopDomainSuggestions.hide()
                     ShopSettingsErrorHandler.logMessage(it.throwable.message ?: "")
                     ShopSettingsErrorHandler.logExceptionToCrashlytics(it.throwable)
