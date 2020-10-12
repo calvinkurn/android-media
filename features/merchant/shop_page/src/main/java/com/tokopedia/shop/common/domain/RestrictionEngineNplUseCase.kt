@@ -8,6 +8,8 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.shop.common.data.model.RestrictionEngineRequestParams
 import com.tokopedia.shop.common.data.response.GqlRestrictionEngineNplResponse
+import com.tokopedia.shop.common.data.response.RestrictValidateRestriction
+import com.tokopedia.shop.common.data.response.RestrictionEngineData
 import com.tokopedia.shop.common.data.response.RestrictionEngineDataResponse
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
@@ -17,19 +19,19 @@ import javax.inject.Inject
  */
 class RestrictionEngineNplUseCase @Inject constructor(
         private val graphqlRepository: GraphqlRepository
-): GraphqlUseCase<List<RestrictionEngineDataResponse>>(graphqlRepository) {
+): GraphqlUseCase<RestrictValidateRestriction>(graphqlRepository) {
 
     var params: RequestParams = RequestParams.EMPTY
 
-    override suspend fun executeOnBackground(): List<RestrictionEngineDataResponse> {
-        val request = GraphqlRequest(QUERY, GqlRestrictionEngineNplResponse::class.java, params.parameters)
+    override suspend fun executeOnBackground(): RestrictValidateRestriction {
+        val request = GraphqlRequest(QUERY, RestrictionEngineData::class.java, params.parameters)
         val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
         val gqlResponse = graphqlRepository.getReseponse(listOf(request), cacheStrategy)
         val gqlResponseError = gqlResponse.getError(GqlRestrictionEngineNplResponse::class.java)
         if(gqlResponseError == null || gqlResponseError.isEmpty()) {
-            return gqlResponse.getData<GqlRestrictionEngineNplResponse>(
-                    GqlRestrictionEngineNplResponse::class.java
-            ).data.restrictValidateRestriction.dataResponse
+            return gqlResponse.getData<RestrictionEngineData>(
+                    RestrictionEngineData::class.java
+            ).restrictValidateRestriction
         } else {
             throw MessageErrorException(gqlResponseError.joinToString(", ") { it.message })
         }
@@ -37,11 +39,8 @@ class RestrictionEngineNplUseCase @Inject constructor(
 
     companion object {
 
-        /**
-         * Request params key
-         */
         private const val INPUT = "input"
-
+        private const val ANDROID_SOURCE = "android_shop_page_npl"
 
         /**
          * Create request parameters for restriction engine gql query
@@ -49,6 +48,7 @@ class RestrictionEngineNplUseCase @Inject constructor(
         fun createRequestParams(
                 restrictionEngineRequestParams: RestrictionEngineRequestParams
         ): RequestParams = RequestParams.create().apply {
+            restrictionEngineRequestParams.source = ANDROID_SOURCE
             putObject(INPUT, restrictionEngineRequestParams)
         }
 

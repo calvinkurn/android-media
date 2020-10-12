@@ -11,7 +11,7 @@ data class RestrictionEngineRequestParams(
         @SerializedName("userID")
         var userId: Int = 0,
         @Expose
-        @SerializedName("source")
+        @SerializedName("dataRequest")
         var dataRequest: MutableList<RestrictionEngineDataRequest> = mutableListOf()
 )
 

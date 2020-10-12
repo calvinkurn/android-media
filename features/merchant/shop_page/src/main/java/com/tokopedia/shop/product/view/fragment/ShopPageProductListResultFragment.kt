@@ -10,7 +10,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -18,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
@@ -54,6 +54,7 @@ import com.tokopedia.shop.common.constant.*
 import com.tokopedia.shop.common.constant.ShopPageConstant.EMPTY_PRODUCT_SEARCH_IMAGE_URL
 import com.tokopedia.shop.common.constant.ShopParamConstant
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
+import com.tokopedia.shop.common.data.model.*
 import com.tokopedia.shop.common.di.component.ShopComponent
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseRules
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
@@ -140,7 +141,8 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     private var remoteConfig: RemoteConfig? = null
     private var shopProductFilterParameter: ShopProductFilterParameter? = ShopProductFilterParameter()
     private var sortFilterBottomSheet: SortFilterBottomSheet? = null
-    private var partialShopNplFollowersView: View? = null
+    private var partialShopNplFollowersViewLayout: View? = null
+    private var partialShopNplFollowersView: PartialButtonShopFollowersView? = null
 
     private val staggeredGridLayoutManager: StaggeredGridLayoutManager by lazy {
         StaggeredGridLayoutManager(GRID_SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL)
@@ -152,10 +154,16 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         get() = if (::viewModel.isInitialized) {
             shopId?.let { viewModel.isMyShop(it) } ?: false
         } else false
+
     private val isLogin: Boolean
         get() = if (::viewModel.isInitialized) {
             viewModel.isLogin
         } else false
+
+    private val userId: String
+        get() = if (::viewModel.isInitialized) {
+            viewModel.userId
+        } else "0"
 
     override fun getAdapterTypeFactory(): ShopProductAdapterTypeFactory {
         return ShopProductAdapterTypeFactory(
@@ -254,6 +262,10 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
 
     override fun onSwipeRefresh() {
         viewModel.clearCache()
+        isNeedToReloadData = true
+        // set shop info to null so we can load all new fresh data
+        // when performing swipe refresh
+        shopInfo = null
         super.onSwipeRefresh()
     }
 
@@ -274,7 +286,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                     it,
                     isMyShop
             )
-        } ?: viewModel.getShop(shopId)
+        } ?: viewModel.getShop(shopId, isRefresh = isNeedToReloadData)
     }
 
     override fun createEndlessRecyclerViewListener(): EndlessRecyclerViewScrollListener {
@@ -284,6 +296,30 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                 shopInfo?.let {
                     loadProductData(it, page)
                 }
+            }
+        }
+    }
+
+    private fun loadShopRestrictionInfo() {
+        // hit restriction engine when showcase type is -2 and rules name "followers_only"
+        selectedEtalaseRules?.let { rules ->
+            if(selectedEtalaseType == -2 && rules.contains(ShopEtalaseRules(name = ShowcaseRulesName.FOLLOWERS_ONLY))) {
+                val userIdFromSession = userId.toIntOrZero()
+                val campaignId = if(selectedEtalaseId.contains("_")) {
+                    // get campaign id from showcaseId cmp_****
+                    selectedEtalaseId.split("_").let { it[1].toIntOrZero() }
+                } else 0
+                val restrictionParam = RestrictionEngineRequestParams().apply {
+                    userId = userIdFromSession
+                    dataRequest = mutableListOf(
+                        RestrictionEngineDataRequest(
+                                product = RestrictionEngineDataRequestProduct(productID = 0),
+                                shop = RestrictionEngineDataRequestShop(shopID = shopId.toIntOrZero()),
+                                campaign = RestrictionEngineDataRequestCampaign(campaignID = campaignId)
+                        )
+                    )
+                }
+                viewModel.getShopRestrictionInfo(restrictionParam)
             }
         }
     }
@@ -299,6 +335,29 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                 selectedEtalaseType,
                 shopProductFilterParameter ?: ShopProductFilterParameter()
         )
+    }
+
+    private fun toggleFavoriteShop(shopId: String) {
+        viewModel.toggleFavorite(shopId, this::onSuccessToggleFavoriteShop, this::onErrorToggleFavoriteShop)
+    }
+
+    private fun onSuccessToggleFavoriteShop(successVal: Boolean) {
+        if(successVal) {
+            // get new shop info to sync already favorited data
+            hideShopFollowersView()
+            showToastSuccess(
+                    getString(R.string.text_success_follow_shop),
+                    ctaText = getString(R.string.shop_page_product_action_no_upload_product)
+            )
+        }
+    }
+
+    private fun onErrorToggleFavoriteShop(error: Throwable) {
+        activity?.run {
+            NetworkErrorHelper.showCloseSnackbar(this,
+                    com.tokopedia.network.utils.ErrorHandler.getErrorMessage(this, error)
+            )
+        }
     }
 
     private fun loadProductDataEmptyState(shopInfo: ShopInfo, page: Int) {
@@ -364,7 +423,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                     val hasNextPage = it.data.hasNextPage
                     val totalProductData =  it.data.totalProductData
                     renderProductList(productList, hasNextPage, totalProductData)
-                    renderShopFollowersView()
+                    loadShopRestrictionInfo()
                     isNeedToReloadData = false
                 }
                 is Fail -> showGetListError(it.throwable)
@@ -393,6 +452,21 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
             }
         })
 
+        viewModel.restrictionEngineData.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> {
+                    val shopRestrictionData = it.data.dataResponse[0]
+                    // handle view to follow shop for campaign type showcase
+                    val isFollowShop = shopInfo?.favoriteData?.alreadyFavorited == ALREADY_FOLLOW_SHOP
+                    if(!isMyShop && shopRestrictionData.status == PRODUCT_INELIGIBLE && !isFollowShop) {
+                        val title = shopRestrictionData.actions[0].title
+                        val description = shopRestrictionData.actions[0].description
+                        showShopFollowersView(title, description, isFollowShop)
+                    }
+                }
+                is Fail -> { }
+            }
+        })
     }
 
     private fun onSuccessGetShopProductFilterCount(count: Int) {
@@ -438,22 +512,30 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
             isLoadingInitialData = false
         }
     }
-    
-    private fun renderShopFollowersView() {
-        partialShopNplFollowersView = view?.findViewById(R.id.npl_follow_view)
-        partialShopNplFollowersView?.visible()
-        partialShopNplFollowersView?.let { view ->
-            selectedEtalaseRules?.let { rules ->
-                if((!isEmptyState) && (selectedEtalaseType == -2 && rules.contains(ShopEtalaseRules(name = ShowcaseRulesName.FOLLOWERS_ONLY)))) {
-                    val partialView = PartialButtonShopFollowersView.build(view, object: PartialButtonShopFollowersListener {
-                        override fun onButtonFollowNplClick() {
-                            // not yet implemented
+
+    private fun showShopFollowersView(title: String, desc: String, isFollowShop: Boolean) {
+        partialShopNplFollowersViewLayout = view?.findViewById(R.id.npl_follow_view)
+        partialShopNplFollowersViewLayout?.visible()
+        partialShopNplFollowersViewLayout?.let {
+            partialShopNplFollowersView = PartialButtonShopFollowersView.build(it, object: PartialButtonShopFollowersListener {
+                override fun onButtonFollowNplClick() {
+                    if(isLogin) {
+                        shopId?.let { shopId -> toggleFavoriteShop(shopId) }
+                    } else {
+                        context?.let { ctx ->
+                            RouteManager.getIntent(ctx, ApplinkConst.LOGIN).apply {
+                                startActivityForResult(this, REQUEST_CODE_USER_LOGIN)
+                            }
                         }
-                    })
-                    partialView.renderView("Eksklusif untuk Followers", "Yuk, follow untuk beli barang ini!", false)
+                    }
                 }
-            }
+            })
+            partialShopNplFollowersView?.renderView(title, desc, isFollowShop)
         }
+    }
+
+    private fun hideShopFollowersView() {
+        partialShopNplFollowersView?.setupVisibility = false
     }
 
     private fun renderProductListEmptyState(productList: List<ShopProductViewModel>) {
@@ -617,9 +699,9 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         )
     }
 
-    private fun showToastSuccess(message: String) {
+    private fun showToastSuccess(message: String, ctaText: String = "") {
         activity?.run {
-            Toaster.make(findViewById(android.R.id.content), message)
+            Toaster.make(findViewById(android.R.id.content), message, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, ctaText)
         }
     }
 
@@ -900,6 +982,8 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
 
         private val GRID_SPAN_COUNT = 2
         private const val SORT_NEWEST = "1"
+        private const val ALREADY_FOLLOW_SHOP = 1
+        private const val PRODUCT_INELIGIBLE = "ineligible"
 
         val SAVED_SELECTED_ETALASE_LIST = "saved_etalase_list"
         val SAVED_SELECTED_ETALASE_ID = "saved_etalase_id"

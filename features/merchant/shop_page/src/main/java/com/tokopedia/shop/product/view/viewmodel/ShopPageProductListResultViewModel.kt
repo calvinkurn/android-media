@@ -8,12 +8,15 @@ import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.shop.common.constant.ShopPageConstant
+import com.tokopedia.shop.common.data.model.RestrictionEngineRequestParams
+import com.tokopedia.shop.common.data.response.RestrictValidateRestriction
 import com.tokopedia.shop.common.domain.GetShopFilterBottomSheetDataUseCase
 import com.tokopedia.shop.common.domain.GetShopFilterProductCountUseCase
 import com.tokopedia.shop.common.domain.GqlGetShopSortUseCase
 import com.tokopedia.shop.common.domain.RestrictionEngineNplUseCase
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase.Companion.SHOP_PRODUCT_LIST_RESULT_SOURCE
+import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtalaseByShopUseCase
 import com.tokopedia.shop.common.util.ShopUtil
@@ -33,8 +36,10 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import dagger.Lazy
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import rx.Subscriber
 import javax.inject.Inject
 
 class ShopPageProductListResultViewModel @Inject constructor(private val userSession: UserSessionInterface,
@@ -46,7 +51,8 @@ class ShopPageProductListResultViewModel @Inject constructor(private val userSes
                                                              private val dispatcherProvider: CoroutineDispatcherProvider,
                                                              private val getShopFilterBottomSheetDataUseCase: GetShopFilterBottomSheetDataUseCase,
                                                              private val getShopFilterProductCountUseCase: GetShopFilterProductCountUseCase,
-                                                             private val restrictionEngineNplUseCase: RestrictionEngineNplUseCase
+                                                             private val restrictionEngineNplUseCase: RestrictionEngineNplUseCase,
+                                                             private val toggleFavouriteShopUseCase: Lazy<ToggleFavouriteShopUseCase>
 ) : BaseViewModel(dispatcherProvider.main()) {
 
     fun isMyShop(shopId: String) = userSession.shopId == shopId
@@ -54,14 +60,22 @@ class ShopPageProductListResultViewModel @Inject constructor(private val userSes
     val isLogin: Boolean
         get() = userSession.isLoggedIn
 
+    val userId: String
+        get() = userSession.userId
+
     val shopInfoResp = MutableLiveData<Result<ShopInfo>>()
     val productData = MutableLiveData<Result<GetShopProductUiModel>>()
     val shopSortFilterData = MutableLiveData<Result<ShopStickySortFilter>>()
     val bottomSheetFilterLiveData = MutableLiveData<Result<DynamicFilterModel>>()
     val shopProductFilterCountLiveData = MutableLiveData<Result<Int>>()
+
     private val _productDataEmpty = MutableLiveData<Result<List<ShopProductViewModel>>>()
     val productDataEmpty: LiveData<Result<List<ShopProductViewModel>>>
         get() = _productDataEmpty
+
+    private val _restrictionEngineData = MutableLiveData<Result<RestrictValidateRestriction>>()
+    val restrictionEngineData: LiveData<Result<RestrictValidateRestriction>>
+        get() = _restrictionEngineData
 
     fun getShop(shopId: String? = null, shopDomain: String? = null, isRefresh: Boolean = false) {
         val id = shopId?.toIntOrNull() ?: 0
@@ -75,6 +89,33 @@ class ShopPageProductListResultViewModel @Inject constructor(private val userSes
         }) {
             shopInfoResp.value = Fail(it)
         }
+    }
+
+    fun getShopRestrictionInfo(input: RestrictionEngineRequestParams) {
+        launchCatchError(block = {
+            restrictionEngineNplUseCase.params = RestrictionEngineNplUseCase.createRequestParams(input)
+            val restrictionEngineResponse = withContext(dispatcherProvider.io()) {
+                restrictionEngineNplUseCase.executeOnBackground()
+            }
+            _restrictionEngineData.value = Success(restrictionEngineResponse)
+        }) {
+            _restrictionEngineData.value = Fail(it)
+        }
+    }
+
+    fun toggleFavorite(shopId: String, onSuccess: (Boolean) -> Unit, onError: (Throwable) -> Unit) {
+        toggleFavouriteShopUseCase.get().execute(ToggleFavouriteShopUseCase.createRequestParam(shopId),
+                object : Subscriber<Boolean>() {
+                    override fun onCompleted() {}
+
+                    override fun onError(e: Throwable) {
+                        onError(e)
+                    }
+
+                    override fun onNext(success: Boolean) {
+                        onSuccess(success)
+                    }
+                })
     }
 
     fun getShopProduct(
@@ -137,6 +178,7 @@ class ShopPageProductListResultViewModel @Inject constructor(private val userSes
 
     fun clearCache() {
         getShopEtalaseByShopUseCase.clearCache()
+        getShopInfoUseCase
         clearGetShopProductUseCase()
 
     }
