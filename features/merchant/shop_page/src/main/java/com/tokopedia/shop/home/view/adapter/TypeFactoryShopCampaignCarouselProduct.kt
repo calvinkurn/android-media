@@ -1,7 +1,6 @@
 package com.tokopedia.shop.home.view.adapter
 
-import com.tokopedia.shop.home.view.model.BaseShopHomeWidgetUiModel
-import com.tokopedia.shop.home.view.model.ShopHomeProductEtalaseTitleUiModel
+import com.tokopedia.shop.home.view.model.ShopHomeCampaignCarouselClickableBannerAreaUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeProductViewModel
 
 /**
@@ -10,4 +9,5 @@ import com.tokopedia.shop.home.view.model.ShopHomeProductViewModel
 
 interface TypeFactoryShopCampaignCarouselProduct {
     fun type(shopHomeProductViewModel: ShopHomeProductViewModel): Int
+    fun type(uiModel: ShopHomeCampaignCarouselClickableBannerAreaUiModel): Int
 }

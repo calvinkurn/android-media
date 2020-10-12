@@ -53,10 +53,10 @@
             android:layout_marginRight="@dimen/dp_16"
             android:layout_marginBottom="@dimen/dp_8"
             android:gravity="center"
-            android:text="@string/shop_header_action_follow"
+            android:text="@string/shop_home_npl_campaign_follow"
             app:unifyButtonSize="medium"
             app:unifyButtonType="main"
             app:unifyButtonVariant="filled"
-            tools:text="@string/shop_header_action_follow" />
+            tools:text="@string/shop_home_npl_campaign_follow" />
     </FrameLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
