@@ -9,7 +9,7 @@
       "eventLabel": "{{.* - keyword: .*}}",
       "screenName": "/",
       "currentSite": "tokopediamarketplace",
-      "userId": "{{.*}}",
+      "userId": "{{.+}}",
       "businessUnit": "search",
       "sessionIris": "{{.*}}"
     },
@@ -20,7 +20,7 @@
       "eventLabel": "",
       "businessUnit": "search",
       "currentSite": "tokopediamarketplace",
-      "userId": "{{.*}}",
+      "userId": "{{.+}}",
       "sessionIris": "{{.*}}"
     },
     {
@@ -64,7 +64,7 @@
       "eventLabel": "{{.* - keyword: .*}}",
       "screenName": "/",
       "currentSite": "tokopediamarketplace",
-      "userId": "{{.*}}",
+      "userId": "{{.+}}",
       "businessUnit": "search",
       "sessionIris": "{{.*}}"
     },
@@ -75,7 +75,7 @@
       "eventLabel": "{{value: .* - title: .* - po: .*}}",
       "businessUnit": "search",
       "currentSite": "tokopediamarketplace",
-      "userId": "{{.*}}",
+      "userId": "{{.+}}",
       "sessionIris": "{{.*}}"
     }
   ]
