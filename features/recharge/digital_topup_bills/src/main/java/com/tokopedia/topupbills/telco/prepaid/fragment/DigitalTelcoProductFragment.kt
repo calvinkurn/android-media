@@ -107,7 +107,7 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
             selectedOperatorName = it.getString(OPERATOR_NAME) ?: ""
             categoryId = it.getInt(CATEGORY_ID)
 
-            sharedModelPrepaid.productList.observe(this, Observer {
+            sharedModelPrepaid.productList.observe(viewLifecycleOwner, Observer {
                 if (telcoFilterData.isFilterSelected()) titleFilterResult.show() else titleFilterResult.hide()
                 when (it) {
                     is Success -> onSuccessProductList()
@@ -115,13 +115,13 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
                 }
             })
 
-            sharedModelPrepaid.productCatalogItem.observe(this, Observer {
+            sharedModelPrepaid.productCatalogItem.observe(viewLifecycleOwner, Observer {
                 if (it.id == DigitalTelcoPrepaidFragment.ID_PRODUCT_EMPTY) {
                     telcoTelcoProductView.resetSelectedProductItem()
                 }
             })
 
-            sharedModelPrepaid.loadingProductList.observe(this, Observer {
+            sharedModelPrepaid.loadingProductList.observe(viewLifecycleOwner, Observer {
                 if (it) {
                     showShimmering()
                     titleFilterResult.hide()
@@ -130,17 +130,21 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
                 }
             })
 
-            sharedModelPrepaid.positionScrollItem.observe(this, Observer {
+            sharedModelPrepaid.positionScrollItem.observe(viewLifecycleOwner, Observer {
                 telcoTelcoProductView.scrollToPosition(it)
             })
 
-            sharedModelPrepaid.selectedCategoryViewPager.observe(this, Observer {
-                if (sharedModelPrepaid.productList.value != null) {
+            sharedModelPrepaid.selectedCategoryViewPager.observe(viewLifecycleOwner, Observer {
+                if (sharedModelPrepaid.productList.value is Success) {
                     val productList = (sharedModelPrepaid.productList.value as Success).data
                     productList.map { list ->
                         if (list.label == titleProduct && it == titleProduct &&
                                 list.product.dataCollections.isNotEmpty()) {
-                            telcoTelcoProductView.getVisibleProductItemsToUsersTracking(list.product.dataCollections[0].products)
+                            telcoTelcoProductView.calculateProductItemVisibleItemTracking(list.product.dataCollections[0].products)
+
+                            if (list.filterTagComponents.isNotEmpty()) {
+                                topupAnalytics.impressionFilterCluster(categoryId, userSession.userId)
+                            }
                         }
                     }
                 }
@@ -167,7 +171,8 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
                 val seeMoreBottomSheet = DigitalProductBottomSheet.newInstance(
                         itemProduct.attributes.desc,
                         MethodChecker.fromHtml(itemProduct.attributes.detail).toString(),
-                        itemProduct.attributes.price)
+                        itemProduct.attributes.price,
+                        itemProduct.attributes.productPromo?.newPrice)
                 seeMoreBottomSheet.setOnDismissListener {
                     topupAnalytics.eventCloseDetailProduct(itemProduct.attributes.categoryId)
                 }
@@ -217,6 +222,8 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
                 sharedModelPrepaid.setSelectedFilter(telcoFilterData.getAllFilter())
                 topupAnalytics.eventClickResetFilterCluster(categoryId, userSession.userId)
             }
+
+            topupAnalytics.impressionFilterCluster(categoryId, userSession.userId)
         }
     }
 
@@ -267,7 +274,6 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
 
                     renderSortFilter(it.product.id, it.filterTagComponents)
                     telcoTelcoProductView.renderProductList(productType, showTitle, it.product.dataCollections)
-
                 } else {
                     onErrorProductList()
                 }
@@ -276,7 +282,7 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
             }
         }
 
-        sharedModelPrepaid.favNumberSelected.observe(this, Observer { favNumber ->
+        sharedModelPrepaid.favNumberSelected.observe(viewLifecycleOwner, Observer { favNumber ->
             val activeCategory = sharedModelPrepaid.selectedCategoryViewPager.value
             if (activeCategory == titleProduct) {
                 telcoTelcoProductView.selectProductFromFavNumber(favNumber.productId)

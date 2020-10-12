@@ -1,6 +1,4 @@
 apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
 apply plugin: 'io.hansel.preprocessor.module'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 
@@ -28,6 +26,8 @@ dependencies {
     implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.libraries.logger)
     implementation project(rootProject.ext.libraries.screenRecorder)
+    implementation project(rootProject.ext.libraries.screenshot_observer)
+    implementation project(rootProject.ext.libraries.remoteResourceRequest)
     if (rootProject.ext.debugToolsEnabled) {
         implementation project(rootProject.ext.libraries.analyticsDebugger)
     } else {
@@ -39,7 +39,7 @@ dependencies {
         implementation rootProject.ext.libraries.blockCanaryNoOp
     }
     implementation project(rootProject.ext.libraries.pushNotification)
-    implementation project(rootProject.ext.libraries.permissionchecker)
+    implementation project(rootProject.ext.libraries.utils)
 
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
@@ -61,6 +61,9 @@ dependencies {
 
     implementation(rootProject.ext.debugToolsDependencies.timber) {
         exclude group: 'org.jetbrains', module: 'annotations'
+    }
+    implementation (rootProject.ext.firebase.crashlytics) {
+        transitive = true
     }
 }
 

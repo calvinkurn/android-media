@@ -242,6 +242,16 @@ class ShopHomeAdapter(
         notifyChangedItem(visitables.indexOf(shopProductSortFilterUiViewModel))
     }
 
+
+    fun changeSortFilterIndicatorCounter(filterIndicatorCounter: Int) {
+        val shopProductSortFilterUiViewModel = visitables
+                .filterIsInstance<ShopProductSortFilterUiModel>().firstOrNull()
+        shopProductSortFilterUiViewModel?.apply {
+            this.filterIndicatorCounter = filterIndicatorCounter
+        }
+        notifyChangedItem(visitables.indexOf(shopProductSortFilterUiViewModel))
+    }
+
     fun removeProductList() {
         val firstProductViewModelIndex = visitables.indexOfFirst {
             it::class.java == ShopHomeProductViewModel::class.java
@@ -407,11 +417,27 @@ class ShopHomeAdapter(
         recyclerView?.requestLayout()
     }
 
-    fun addShopPageProductChangeGridSection(
-            changeProductGridUiModel: ShopHomeProductChangeGridSectionUiModel
-    ) {
-        visitables.add(changeProductGridUiModel)
+    fun updateShopPageProductChangeGridSection(totalProductData: Int) {
+        val gridSectionModel = visitables.filterIsInstance<ShopHomeProductChangeGridSectionUiModel>().firstOrNull()
+        if (gridSectionModel == null) {
+            if(totalProductData != 0) {
+                visitables.add(ShopHomeProductChangeGridSectionUiModel(totalProductData))
+                notifyChangedDataSet()
+            }
+        } else {
+            gridSectionModel.apply {
+                val index = visitables.indexOf(this)
+                if(totalProductData == 0){
+                    visitables.remove(this)
+                    notifyRemovedItem(index)
+                }else{
+                    this.totalProduct = totalProductData
+                    notifyChangedItem(index)
+                }
+            }
+        }
     }
+
 
     fun updateShopPageProductChangeGridSection(gridType: ShopProductViewGridType) {
         visitables.filterIsInstance<ShopHomeProductChangeGridSectionUiModel>().firstOrNull()?.apply {

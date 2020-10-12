@@ -1,7 +1,9 @@
-    <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.tokopedia.entertainment">
 
     <application
+        tools:replace="android:allowBackup"
         android:allowBackup="true"
         android:supportsRtl="true">
         <activity android:name=".home.activity.HomeEventActivity"
@@ -132,7 +134,6 @@
             android:name=".pdp.activity.EventPDPFormActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
-            android:label="@string/ent_pdp_title_form"
             >
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />

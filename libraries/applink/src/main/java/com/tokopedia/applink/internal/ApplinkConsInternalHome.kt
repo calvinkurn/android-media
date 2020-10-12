@@ -4,7 +4,7 @@ import com.tokopedia.applink.constant.DeeplinkConstant
 
 object ApplinkConsInternalHome {
     private const val HOST_HOME = "home"
-    private const val INTERNAL_HOME = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_HOME"
+    const val INTERNAL_HOME = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_HOME"
 
     const val DEFAULT_HOME_RECOMMENDATION = "$INTERNAL_HOME/rekomendasi"
 

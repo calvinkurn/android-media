@@ -2,11 +2,6 @@ package com.tokopedia.product.detail.data.model.financing
 
 import com.google.gson.annotations.SerializedName
 
-data class PDPInstallmentRecommendationResponse(
-        @SerializedName("ft_installment_recommendation")
-        val response: PDPInstallmentRecommendationData = PDPInstallmentRecommendationData()
-)
-
 data class PDPInstallmentRecommendationData(
         @SerializedName("data")
         val data: PDPInstallmentRecommendation = PDPInstallmentRecommendation(),

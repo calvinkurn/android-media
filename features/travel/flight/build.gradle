@@ -80,6 +80,8 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.header
     implementation project(rootProject.ext.libraries.webview)
 
+    implementation rootProject.ext.playServicesDependencies.core
+
     implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk7
 
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
@@ -137,7 +139,7 @@ dependencies {
     }
     androidTestAnnotationProcessor rootProject.ext.miscDependencies.daggerCompiler
     androidTestImplementation rootProject.ext.testDependencies.archCoreTesting
-    androidTestImplementation project(rootProject.ext.libraries.analyticsDebugger)
+    androidTestImplementation project(rootProject.ext.libraries.cassavaTest)
 }
 
 project.ext {

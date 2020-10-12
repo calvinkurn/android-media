@@ -232,7 +232,7 @@ class MerchantVoucherTargetFragment : BaseListFragment<Visitable<VoucherTargetTy
     private fun observeLiveData() {
         viewModel.run {
             voucherTargetListData.observe(viewLifecycleOwner, Observer { voucherTargetList ->
-                (childFragmentManager.findFragmentByTag(CreateVoucherBottomSheetType.CREATE_PROMO_CODE.tag) as? BottomSheetUnify)?.dismiss()
+                (childFragmentManager.findFragmentByTag(CreateVoucherBottomSheetType.CREATE_PROMO_CODE.tag) as? BottomSheetUnify)?.dismissAllowingStateLoss()
                 voucherTargetWidget = VoucherTargetUiModel(::openBottomSheet, ::onSetActiveVoucherTargetType, voucherTargetList, ::onRadioButtonClicked, ::onChangePromoCodeButtonClicked, isEdit)
                 refreshWidget()
             })

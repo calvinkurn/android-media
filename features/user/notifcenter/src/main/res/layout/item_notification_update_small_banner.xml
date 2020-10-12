@@ -34,7 +34,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/notif_dp_2"
         android:ellipsize="end"
-        android:lineSpacingExtra="@dimen/notif_sp_14"
+        android:lineSpacingExtra="@dimen/notif_sp_4"
         android:textColor="@color/charcoal_grey_40"
         android:textSize="@dimen/notif_sp_14"
         app:layout_constraintEnd_toEndOf="@+id/title"

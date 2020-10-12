@@ -7,7 +7,6 @@ import android.os.Build;
 
 import androidx.multidex.MultiDex;
 
-import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.security.ProviderInstaller;
@@ -31,8 +30,8 @@ import com.tokopedia.weaver.WeaveInterface;
 import com.tokopedia.weaver.Weaver;
 
 import org.jetbrains.annotations.NotNull;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 
-import io.fabric.sdk.android.Fabric;
 
 public abstract class MainApplication extends MainRouterApplication{
 
@@ -46,6 +45,8 @@ public abstract class MainApplication extends MainRouterApplication{
     protected RemoteConfig remoteConfig;
     private String MAINAPP_ADDGAIDTO_BRANCH = "android_addgaid_to_branch";
     private static final String ENABLE_ASYNC_REMOTECONFIG_MAINAPP_INIT = "android_async_remoteconfig_mainapp_init";
+    private final String ENABLE_ASYNC_CRASHLYTICS_USER_INFO = "android_async_crashlytics_user_info";
+    private final String ENABLE_ASYNC_BRANCH_USER_INFO = "android_async_branch_user_info";
 
 
     public static MainApplication getInstance() {
@@ -148,10 +149,16 @@ public abstract class MainApplication extends MainRouterApplication{
 
     public void initCrashlytics() {
         if (!BuildConfig.DEBUG) {
-            Fabric.with(this, new Crashlytics());
-            Crashlytics.setUserIdentifier(userSession.getUserId());
-            Crashlytics.setUserEmail(userSession.getEmail());
-            Crashlytics.setUserName(userSession.getName());
+            WeaveInterface crashlyticsUserInfoWeave = new WeaveInterface() {
+                @NotNull
+                @Override
+                public Object execute() {
+                    FirebaseCrashlytics crashlytics = FirebaseCrashlytics.getInstance();
+                    crashlytics.setUserId(userSession.getUserId());
+                    return true;
+                }
+            };
+            Weaver.Companion.executeWeaveCoRoutineWithFirebase(crashlyticsUserInfoWeave, ENABLE_ASYNC_CRASHLYTICS_USER_INFO, getApplicationContext());
         }
     }
 
@@ -177,13 +184,20 @@ public abstract class MainApplication extends MainRouterApplication{
         if(remoteConfig.getBoolean(MAINAPP_ADDGAIDTO_BRANCH, false)){
             LinkerManager.getInstance().setGAClientId(TrackingUtils.getClientID(getApplicationContext()));
         }
-        if(userSession.isLoggedIn()) {
-            UserData userData = new UserData();
-            userData.setUserId(userSession.getUserId());
-
-            LinkerManager.getInstance().sendEvent(LinkerUtils.createGenericRequest(LinkerConstants.EVENT_USER_IDENTITY,
-                    userData));
-        }
+        WeaveInterface branchUserIdentityWeave = new WeaveInterface() {
+            @NotNull
+            @Override
+            public Object execute() {
+                if(userSession.isLoggedIn()) {
+                    UserData userData = new UserData();
+                    userData.setUserId(userSession.getUserId());
+                    LinkerManager.getInstance().sendEvent(LinkerUtils.createGenericRequest(LinkerConstants.EVENT_USER_IDENTITY,
+                            userData));
+                }
+                return true;
+            }
+        };
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(branchUserIdentityWeave, ENABLE_ASYNC_BRANCH_USER_INFO, getApplicationContext());
         return true;
     }
 
