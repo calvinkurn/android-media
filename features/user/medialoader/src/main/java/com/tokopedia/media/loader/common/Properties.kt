@@ -18,7 +18,7 @@ open class Properties(
         var placeHolder: Int = R.drawable.ic_media_default_placeholder,
         var cacheStrategy: MediaCacheStrategy? = MediaCacheStrategy.ALL,
         var overrideSize: Resize? = null,
-        var decodeFormat: MediaDecodeFormat? = MediaDecodeFormat.PREFER_RGB_565,
+        var decodeFormat: MediaDecodeFormat? = MediaDecodeFormat.DEFAULT,
         var loaderListener: LoaderStateListener? = null,
         var transform: Transformation<Bitmap>? = null,
         var transforms: List<Transformation<Bitmap>>? = null
