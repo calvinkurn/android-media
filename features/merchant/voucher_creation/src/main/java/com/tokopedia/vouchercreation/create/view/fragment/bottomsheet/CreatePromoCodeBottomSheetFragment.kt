@@ -113,6 +113,11 @@ class CreatePromoCodeBottomSheetFragment : BottomSheetUnify(), VoucherBottomView
         }
     }
 
+    override fun onPause() {
+        context?.hideKeyboard()
+        super.onPause()
+    }
+
     private fun initInjector() {
         DaggerVoucherCreationComponent.builder()
                 .baseAppComponent((activity?.applicationContext as? BaseMainApplication)?.baseAppComponent)
