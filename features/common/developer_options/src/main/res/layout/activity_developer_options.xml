@@ -75,6 +75,31 @@
             android:text="Force Crash"
             android:textColor="@color/white" />
 
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/et_firebase_crash"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl4"
+            android:textSize="@dimen/fontSize_lvl4"
+            android:lines="1"
+            android:gravity="center_vertical"
+            android:inputType="text"
+            android:hint="crash message"
+            app:backgroundTint="@color/Green_G500" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/btn_send_firebase_crash"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/spacing_lvl2"
+            android:layout_marginBottom="@dimen/spacing_lvl4"
+            android:background="@drawable/btn_share"
+            android:gravity="center"
+            android:padding="@dimen/spacing_lvl3"
+            android:text="Send Firebase Exception"
+            android:textColor="@color/Neutral_N0" />
+
         <TextView
             android:id="@+id/goto_screen_recorder"
             android:layout_width="match_parent"
