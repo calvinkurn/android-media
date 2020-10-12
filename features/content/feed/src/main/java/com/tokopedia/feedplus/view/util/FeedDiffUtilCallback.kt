@@ -2,6 +2,7 @@ package com.tokopedia.feedplus.view.util
 
 import androidx.recyclerview.widget.DiffUtil
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.feedcomponent.view.viewmodel.carousel.CarouselPlayCardViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.poll.PollContentViewModel
 
@@ -17,10 +18,11 @@ internal class FeedDiffUtilCallback(
         val oldItem = oldList[oldPosition]
         val newItem = newList[newPosition]
 
-        return if (oldItem is DynamicPostViewModel && newItem is DynamicPostViewModel)
+        return if (oldItem is DynamicPostViewModel && newItem is DynamicPostViewModel) {
             areFeedItemsTheSame(oldItem, newItem)
-        else
-            oldItem::class == newItem::class
+        } else if (oldItem is CarouselPlayCardViewModel && newItem is CarouselPlayCardViewModel) {
+            oldItem.playWidgetUiModel == newItem.playWidgetUiModel
+        } else oldItem::class == newItem::class
     }
 
     private fun areFeedItemsTheSame(oldItem: DynamicPostViewModel, newItem: DynamicPostViewModel): Boolean {
