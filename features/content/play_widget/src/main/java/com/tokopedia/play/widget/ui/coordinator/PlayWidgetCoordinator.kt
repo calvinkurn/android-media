@@ -13,7 +13,7 @@ import kotlinx.coroutines.*
  * Created by jegul on 13/10/20
  */
 class PlayWidgetCoordinator(
-        lifecycleOwner: LifecycleOwner,
+        lifecycleOwner: LifecycleOwner? = null,
         mainCoroutineDispatcher: CoroutineDispatcher = Dispatchers.Main.immediate,
         private val timerCoroutineDispatcher: CoroutineDispatcher = Dispatchers.Default
 ) : LifecycleObserver {
@@ -27,13 +27,7 @@ class PlayWidgetCoordinator(
     private var mListener: PlayWidgetListener? = null
 
     init {
-        if (lifecycleOwner is Fragment) {
-            lifecycleOwner.viewLifecycleOwnerLiveData.observe(lifecycleOwner, Observer {
-                it.lifecycle.addObserver(this)
-            })
-        } else {
-            lifecycleOwner.lifecycle.addObserver(this)
-        }
+        lifecycleOwner?.let { configureLifecycle(it) }
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
@@ -86,5 +80,15 @@ class PlayWidgetCoordinator(
             delay(durationInSecs * 1000L)
         }
         handler()
+    }
+
+    private fun configureLifecycle(lifecycleOwner: LifecycleOwner) {
+        if (lifecycleOwner is Fragment) {
+            lifecycleOwner.viewLifecycleOwnerLiveData.observe(lifecycleOwner, Observer {
+                it.lifecycle.addObserver(this)
+            })
+        } else {
+            lifecycleOwner.lifecycle.addObserver(this)
+        }
     }
 }
