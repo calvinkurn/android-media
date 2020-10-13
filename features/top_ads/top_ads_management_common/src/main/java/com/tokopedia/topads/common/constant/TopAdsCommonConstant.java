@@ -11,7 +11,6 @@ import com.tokopedia.url.TokopediaUrl;
 public class TopAdsCommonConstant {
     public static String BASE_DOMAIN_URL = TokopediaUrl.getInstance().getTA();
 
-    public static final String PATH_TOPADS_SHOP_DEPOSIT = "/v1.1/dashboard/deposit";
     public static final String PATH_TOPADS_TOTAL_ADS = "/v1.1/dashboard/total_ad";
     public static final String PATH_CHECK_PROMO = "v1/promo/check";
     public static final String TOPADS_FREE_CLAIM_URL = "https://ta.tokopedia.com/v1/credits/claim";

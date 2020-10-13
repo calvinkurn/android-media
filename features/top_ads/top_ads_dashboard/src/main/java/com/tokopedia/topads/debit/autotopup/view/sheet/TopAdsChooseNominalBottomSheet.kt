@@ -82,7 +82,6 @@ class TopAdsChooseNominalBottomSheet : BottomSheetUnify() {
         view.run {
             if (isTopUp)
                 setList()
-
         }
         bottomSheetBehaviorKnob(view, true)
         saveButton?.setOnClickListener {
@@ -145,7 +144,7 @@ class TopAdsChooseNominalBottomSheet : BottomSheetUnify() {
         autoTopUpData = data
         bonus = data.statusBonus
         val isAutoTopUpActive = (data.status.toIntOrZero()) != TopAdsDashboardConstant.AUTO_TOPUP_INACTIVE
-        if (isAutoTopUpActive && isTopUp) {
+        if (!isAutoTopUpActive && isTopUp) {
             showAutoAdsOption()
         }
         if (!isTopUp)

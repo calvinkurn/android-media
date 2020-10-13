@@ -164,10 +164,17 @@ class TopAdsEditAutoTopUpFragment : BaseDaggerFragment() {
 
     private fun showToastSuccess(type: Int) {
         view?.let {
-            val toast = if (type == TYPE_BOTTOMSHEET) {
-                getString(R.string.topads_dash_auto_topup_activated_toast)
-            } else {
-                getString(R.string.topads_dash_auto_topup_setting_is_saved_toast)
+            var toast = ""
+            when (type) {
+                TYPE_BOTTOMSHEET -> {
+                    toast = getString(R.string.topads_dash_auto_topup_activated_toast)
+                }
+                TYPE_AUTOTOPUP_DISABLED -> {
+                    toast = getString(R.string.topads_dash_auto_topup_disabled_toast)
+                }
+                else -> {
+                    getString(R.string.topads_dash_auto_topup_setting_is_saved_toast)
+                }
             }
             Toaster.make(it, toast, Snackbar.LENGTH_SHORT,
                     Toaster.TYPE_NORMAL)
@@ -214,6 +221,7 @@ class TopAdsEditAutoTopUpFragment : BaseDaggerFragment() {
                         .loadRawString(resources, R.raw.gql_topads_save_auto_topup_selection),
                         auto_topup_status.isChecked, selectedItem)
                 setLayoutOnToggle(false)
+                showToastSuccess(TYPE_AUTOTOPUP_DISABLED)
             }
             dialog.show()
         }
@@ -221,6 +229,7 @@ class TopAdsEditAutoTopUpFragment : BaseDaggerFragment() {
 
     companion object {
         private const val TYPE_BOTTOMSHEET = 1
+        private const val TYPE_AUTOTOPUP_DISABLED = 2
         private const val TYPE_NOMINAL = 0
 
         @JvmStatic

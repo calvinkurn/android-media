@@ -4,6 +4,7 @@ import android.content.res.Resources
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.data.model.CacheType
@@ -14,6 +15,7 @@ import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
 import com.tokopedia.topads.common.data.exception.ResponseErrorException
+import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.model.DataDeposit
 import com.tokopedia.topads.common.data.response.groupitem.GetTopadsDashboardGroupStatistics
 import com.tokopedia.topads.common.data.response.groupitem.GroupItemResponse
@@ -29,6 +31,7 @@ import com.tokopedia.topads.dashboard.domain.interactor.*
 import com.tokopedia.topads.dashboard.view.listener.TopAdsDashboardView
 import com.tokopedia.topads.debit.autotopup.data.model.AutoTopUpData
 import com.tokopedia.topads.debit.autotopup.data.model.AutoTopUpStatus
+import com.tokopedia.topads.debit.autotopup.view.viewmodel.TopAdsAutoTopUpViewModel
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption
 import com.tokopedia.topads.sourcetagging.domain.interactor.TopAdsAddSourceTaggingUseCase
 import com.tokopedia.user.session.UserSessionInterface
@@ -42,9 +45,8 @@ import javax.inject.Inject
  */
 
 class TopAdsDashboardPresenter @Inject
-constructor(private val topAdsGetShopDepositUseCase: TopAdsGetShopDepositUseCase,
+constructor(private val topAdsGetShopDepositUseCase: com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<Deposit>,
             private val gqlGetShopInfoUseCase: GQLGetShopInfoUseCase,
-            private val topAdsDatePickerInteractor: TopAdsDatePickerInteractor,
             private val topAdsGetStatisticsUseCase: TopAdsGetStatisticsUseCase,
             private val topAdsAddSourceTaggingUseCase: TopAdsAddSourceTaggingUseCase,
             private val deleteTopAdsStatisticsUseCase: DeleteTopAdsStatisticsUseCase,
@@ -61,36 +63,39 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetShopDepositUseCase
 
     var isShopWhiteListed: MutableLiveData<Boolean> = MutableLiveData()
     var expiryDateHiddenTrial: MutableLiveData<String> = MutableLiveData()
-    val HIDDEN_TRIAL_FEATURE = 21
-    private var SELECTION_TYPE_DEF = 0
-    private var SELECTION_IND_DEF = 2
-    private var GROUP_ID_FOR_STATISTICS = "-1"
 
-    fun getShopDeposit(onSuccess: ((dataDeposit: DataDeposit) -> Unit)) {
-        topAdsGetShopDepositUseCase.execute(TopAdsGetShopDepositUseCase.createParams(userSession.shopId),
-                object : Subscriber<DataDeposit>() {
-                    override fun onCompleted() {}
 
-                    override fun onError(e: Throwable) {
-                        view?.onLoadTopAdsShopDepositError(e)
-                    }
-
-                    override fun onNext(dataDeposit: DataDeposit) {
-                        onSuccess(dataDeposit)
-                    }
-                })
+    companion object {
+        const val HIDDEN_TRIAL_FEATURE = 21
+        private const val SELECTION_TYPE_DEF = 0
+        private const val SELECTION_IND_DEF = 2
+        private const val GROUP_ID_FOR_STATISTICS = "-1"
+        const val DEPOSIT = """query topadsDashboardDeposits(${'$'}shop_id: Int!) {
+  topadsDashboardDeposits(shop_id: ${'$'}shop_id) {
+    data {
+      amount
+      amount_fmt
+    }
+  }
+}
+"""
     }
 
-    fun saveSourceTagging(@TopAdsSourceOption source: String) {
-        topAdsAddSourceTaggingUseCase.execute(TopAdsAddSourceTaggingUseCase.createRequestParams(source),
-                object : Subscriber<Void>() {
-                    override fun onCompleted() {}
-
-                    override fun onError(e: Throwable) {}
-
-                    override fun onNext(aVoid: Void) {}
-                })
+    @GqlQuery("DepositQuery", DEPOSIT)
+    fun getShopDeposit(onSuccess: ((dataDeposit: DepositAmount) -> Unit)) {
+        val params = mapOf(ParamObject.SHOP_id to userSession.shopId.toIntOrZero(),
+                ParamObject.SOURCE to TopAdsDashboardConstant.SOURCE_DASH)
+        topAdsGetShopDepositUseCase.setTypeClass(Deposit::class.java)
+        topAdsGetShopDepositUseCase.setRequestParams(params)
+        topAdsGetShopDepositUseCase.setGraphqlQuery(DepositQuery.GQL_QUERY)
+        topAdsGetShopDepositUseCase.execute({
+            onSuccess(it.topadsDashboardDeposits.data)
+        }
+                , {
+            it.printStackTrace()
+        })
     }
+
 
     fun getGroupData(resources: Resources, page: Int, search: String, sort: String, status: Int?,
                      startDate: String, endDate: String, onSuccess: ((GroupItemResponse.GetTopadsDashboardGroups) -> Unit)) {
@@ -145,14 +150,6 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetShopDepositUseCase
                 {
                     it.printStackTrace()
                 })
-    }
-
-    fun saveDate(startDate: Date, endDate: Date) {
-        topAdsDatePickerInteractor.saveDate(startDate, endDate)
-    }
-
-    fun saveSelectionDatePicker() {
-        topAdsDatePickerInteractor.saveSelectionDatePicker(SELECTION_TYPE_DEF, SELECTION_IND_DEF)
     }
 
     fun getGroupList(resources: Resources, search: String, onSuccess: ((List<GroupListDataItem>) -> Unit)) {
@@ -386,7 +383,7 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetShopDepositUseCase
 
     override fun detachView() {
         super.detachView()
-        topAdsGetShopDepositUseCase.unsubscribe()
+        topAdsGetShopDepositUseCase.cancelJobs()
         gqlGetShopInfoUseCase.cancelJobs()
         topAdsGetStatisticsUseCase.unsubscribe()
         topAdsAddSourceTaggingUseCase.unsubscribe()

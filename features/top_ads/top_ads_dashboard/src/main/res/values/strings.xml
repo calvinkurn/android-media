@@ -14,6 +14,7 @@
     <string name="topads_dash_select_topup_amount">Top-up kredit sebesar</string>
     <string name="topads_dash_when_credit_is_down">Saat kredit saya di bawah</string>
     <string name="topads_dash_auto_topup_setting_is_saved_toast">Pengaturan berhasil diperbarui</string>
+    <string name="topads_dash_auto_topup_disabled_toast">Tambah kredit otomatis telah dinonaktifkan</string>
     <string name="topads_dash_auto_topup_activated_toast">Tambah kredit otomatis berhasil diaktifkan</string>
     <string name="topads_dash_auto_topup_title">Pengaturan Kredit Otomatis</string>
     <string name="topads_dash_pengaturan">Pengaturan</string>

@@ -18,7 +18,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.topads.common.data.model.DataDeposit
 import com.tokopedia.topads.credit.history.view.activity.TopAdsCreditHistoryActivity
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
@@ -30,6 +29,7 @@ import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.REQU
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.START_DATE_BERANDA
 import com.tokopedia.topads.dashboard.data.constant.TopAdsStatisticsType
 import com.tokopedia.topads.dashboard.data.model.DataStatistic
+import com.tokopedia.topads.dashboard.data.model.DepositAmount
 import com.tokopedia.topads.dashboard.data.model.insightkey.InsightKeyData
 import com.tokopedia.topads.dashboard.data.model.insightkey.KeywordInsightDataMain
 import com.tokopedia.topads.dashboard.data.utils.Utils
@@ -257,7 +257,7 @@ open class BerandaTabFragment : BaseDaggerFragment(), CustomDatePicker.ActionLis
         sheet.show(childFragmentManager, "datepicker")
     }
 
-    private fun onLoadTopAdsShopDepositSuccess(dataDeposit: DataDeposit) {
+    private fun onLoadTopAdsShopDepositSuccess(dataDeposit: DepositAmount) {
         swipe_refresh_layout.isRefreshing = false
         credits.text = dataDeposit.amountFmt
     }

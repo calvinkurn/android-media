@@ -2,16 +2,20 @@ package com.tokopedia.topads.credit.history.view.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
+import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant
 import com.tokopedia.topads.common.data.exception.ResponseErrorException
-import com.tokopedia.topads.common.data.model.DataDeposit
-import com.tokopedia.topads.common.domain.interactor.TopAdsGetShopDepositUseCase
+import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.credit.history.data.model.TopAdsCreditHistory
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
+import com.tokopedia.topads.dashboard.data.model.Deposit
+import com.tokopedia.topads.dashboard.view.presenter.TopAdsDashboardPresenter
 import com.tokopedia.topads.debit.autotopup.data.model.AutoTopUpData
 import com.tokopedia.topads.debit.autotopup.data.model.AutoTopUpStatus
 import com.tokopedia.usecase.coroutines.Fail
@@ -21,7 +25,6 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import rx.Subscriber
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
@@ -29,7 +32,7 @@ import javax.inject.Named
 
 class TopAdsCreditHistoryViewModel @Inject constructor(private val graphqlRepository: GraphqlRepository,
                                                        private val userSessionInterface: UserSessionInterface,
-                                                       private val topAdsGetShopDepositUseCase: TopAdsGetShopDepositUseCase,
+                                                       private val topAdsGetShopDepositUseCase: GraphqlUseCase<Deposit>,
                                                        @Named("Main")
                                                        val dispatcher: CoroutineDispatcher)
     : BaseViewModel(dispatcher) {
@@ -80,21 +83,21 @@ class TopAdsCreditHistoryViewModel @Inject constructor(private val graphqlReposi
         }
     }
 
+
+    @GqlQuery("DepositQuery", TopAdsDashboardPresenter.DEPOSIT)
     fun getShopDeposit() {
-        topAdsGetShopDepositUseCase.execute(TopAdsGetShopDepositUseCase.createParams(userSessionInterface.shopId),
-                object : Subscriber<DataDeposit>() {
-                    override fun onCompleted() {}
-
-                    override fun onError(e: Throwable) {
-                        e.printStackTrace()
-                    }
-
-                    override fun onNext(dataDeposit: DataDeposit) {
-                        creditAmount.value = dataDeposit.amountFmt
-                    }
-                })
+        val params = mapOf(ParamObject.SHOP_id to userSessionInterface.shopId.toIntOrZero(),
+                ParamObject.SOURCE to TopAdsDashboardConstant.SOURCE_DASH)
+        topAdsGetShopDepositUseCase.setTypeClass(Deposit::class.java)
+        topAdsGetShopDepositUseCase.setRequestParams(params)
+        topAdsGetShopDepositUseCase.setGraphqlQuery(DepositQuery.GQL_QUERY)
+        topAdsGetShopDepositUseCase.execute({
+            creditAmount.value = it.topadsDashboardDeposits.data.amountFmt
+        }
+                , {
+            it.printStackTrace()
+        })
     }
-
 
     companion object {
         private const val PARAM_SHOP_ID = "shopId"
