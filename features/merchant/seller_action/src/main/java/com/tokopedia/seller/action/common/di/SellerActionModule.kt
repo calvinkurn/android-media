@@ -4,6 +4,8 @@ import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.seller.action.common.dispatcher.SellerActionDispatcher
 import com.tokopedia.seller.action.common.dispatcher.SellerActionDispatcherProvider
 import com.tokopedia.seller.action.common.presentation.presenter.SliceSellerActionPresenter
@@ -21,7 +23,10 @@ class SellerActionModule(private val context: Context) {
 
     @SellerActionScope
     @Provides
-    fun provideGraphqlRepository() = GraphqlInteractor.getInstance().graphqlRepository
+    fun provideGraphqlRepository(): GraphqlRepository {
+        GraphqlClient.init(context.applicationContext)
+        return GraphqlInteractor.getInstance().graphqlRepository
+    }
 
     @SellerActionScope
     @Provides

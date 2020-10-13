@@ -9,7 +9,6 @@ import androidx.lifecycle.Observer
 import androidx.slice.Slice
 import androidx.slice.SliceProvider
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
-import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.seller.action.common.const.SellerActionConst
 import com.tokopedia.seller.action.common.di.DaggerSellerActionComponent
@@ -80,9 +79,6 @@ class SellerActionSliceProvider: SliceProvider(){
     private var reviewStarsListLiveData: LiveData<Result<Pair<Uri, List<InboxReviewList>>>>? = null
 
     override fun onCreateSliceProvider(): Boolean {
-        context?.let {
-            GraphqlClient.init(it)
-        }
         injectDependencies()
         LocalCacheHandler(context, APPLINK_DEBUGGER)
         return context != null
