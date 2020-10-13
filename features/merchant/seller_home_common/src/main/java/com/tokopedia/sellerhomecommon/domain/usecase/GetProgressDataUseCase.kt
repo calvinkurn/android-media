@@ -5,8 +5,8 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.sellerhomecommon.domain.mapper.ProgressMapper
 import com.tokopedia.sellerhomecommon.domain.model.DataKeyModel
-import com.tokopedia.sellerhomecommon.domain.model.GetProgressDataResponse
 import com.tokopedia.sellerhomecommon.domain.model.DynamicParameterModel
+import com.tokopedia.sellerhomecommon.domain.model.GetProgressDataResponse
 import com.tokopedia.sellerhomecommon.presentation.model.ProgressDataUiModel
 import com.tokopedia.usecase.RequestParams
 
@@ -50,7 +50,7 @@ class GetProgressDataUseCase constructor(
         }
 
         private val QUERY = """
-            query (${'$'}dataKeys: [dataKey!]!) {
+            query getProgressData(${'$'}dataKeys: [dataKey!]!) {
               fetchProgressBarWidgetData(dataKeys: ${'$'}dataKeys) {
                 data {
                   dataKey

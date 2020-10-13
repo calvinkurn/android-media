@@ -7,7 +7,6 @@ import android.os.Build;
 
 import androidx.multidex.MultiDex;
 
-import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.security.ProviderInstaller;
@@ -32,8 +31,8 @@ import com.tokopedia.weaver.WeaveInterface;
 import com.tokopedia.weaver.Weaver;
 
 import org.jetbrains.annotations.NotNull;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 
-import io.fabric.sdk.android.Fabric;
 
 public abstract class MainApplication extends CoreNetworkApplication implements TkpdCoreRouter {
 
@@ -151,14 +150,12 @@ public abstract class MainApplication extends CoreNetworkApplication implements 
 
     public void initCrashlytics() {
         if (!BuildConfig.DEBUG) {
-            Fabric.with(this, new Crashlytics());
             WeaveInterface crashlyticsUserInfoWeave = new WeaveInterface() {
                 @NotNull
                 @Override
                 public Object execute() {
-                    Crashlytics.setUserIdentifier(userSession.getUserId());
-                    Crashlytics.setUserEmail(null);
-                    Crashlytics.setUserName(null);
+                    FirebaseCrashlytics crashlytics = FirebaseCrashlytics.getInstance();
+                    crashlytics.setUserId(userSession.getUserId());
                     return true;
                 }
             };

@@ -35,6 +35,7 @@ class TokoPointsHomeViewModel @Inject constructor(private val repository: Tokopo
                 if (data.tokopediaRewardTopSection?.isShowIntroActivity == true) getRewardIntroData()
             }
             val dataSection = graphqlResponse.getData<TokopointsSectionOuter>(TokopointsSectionOuter::class.java)
+
             if (data != null && dataSection != null && dataSection.sectionContent != null) {
                 tokopointDetailLiveData.value = Success(TokopointSuccess(data.tokopediaRewardTopSection, dataSection.sectionContent.sectionContent))
             } else {
