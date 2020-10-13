@@ -1,8 +1,10 @@
 package com.tokopedia.play.widget
 
 import android.view.View
+import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.play.widget.ui.PlayWidgetView
+import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
 import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 
@@ -11,14 +13,17 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
  */
 class PlayWidgetViewHolder(
         itemView: View,
-        private val widgetListener: PlayWidgetListener? = null
+        private val coordinator: PlayWidgetCoordinator
 ) : RecyclerView.ViewHolder(itemView) {
 
     private val playWidgetView = itemView as PlayWidgetView
 
-    fun bind(item: PlayWidgetUiModel, isFromAutoRefresh: Boolean = false) {
-        playWidgetView.setListener(widgetListener)
-        playWidgetView.setModel(item, isFromAutoRefresh)
+    init {
+        coordinator.controlWidget(playWidgetView)
+    }
+
+    fun bind(item: PlayWidgetUiModel) {
+        coordinator.connect(playWidgetView, item)
     }
 
     companion object {
