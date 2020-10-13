@@ -6,12 +6,14 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.thankyou_native.GQL_FEATURE_ENGINE_REQUEST
 import com.tokopedia.thankyou_native.data.mapper.PaymentItemKey
 import com.tokopedia.thankyou_native.domain.model.*
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 import javax.inject.Named
 
 class FeatureEngineRequestUseCase @Inject constructor(
         @Named(GQL_FEATURE_ENGINE_REQUEST) val query: String,
-        graphqlRepository: GraphqlRepository)
+        graphqlRepository: GraphqlRepository,val userSession: UserSessionInterface)
     : GraphqlUseCase<FeatureEngineResponse>(graphqlRepository) {
 
     fun getFeatureEngineData(thanksPageData: ThanksPageData,
@@ -45,7 +47,7 @@ class FeatureEngineRequestUseCase @Inject constructor(
                 thanksPageData.merchantCode, thanksPageData.profileCode, 1, 2,
                 FeatureEngineRequestParameters(true.toString(), thanksPageData.amount.toString(),
                         mainGatewayCode, isEGoldPurchased(thanksPageData).toString(),
-                        isDonation(thanksPageData).toString()),
+                        isDonation(thanksPageData).toString(), userSession.userId),
                 FeatureEngineRequestOperators(),
                 FeatureEngineRequestThresholds())))
     }

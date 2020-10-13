@@ -29,7 +29,9 @@ data class FeatureEngineRequestParameters(
         @SerializedName("egold")
         val eGold : String,
         @SerializedName("donation")
-        val donation : String
+        val donation : String,
+        @SerializedName("user_id")
+        val userId : String
 )
 
 class FeatureEngineRequestOperators
