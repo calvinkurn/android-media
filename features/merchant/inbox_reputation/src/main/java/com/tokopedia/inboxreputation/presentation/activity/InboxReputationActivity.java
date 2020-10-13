@@ -3,6 +3,7 @@ package com.tokopedia.inboxreputation.presentation.activity;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -25,6 +26,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.inbox_reputation.R;
@@ -59,6 +61,7 @@ import java.util.List;
 public class InboxReputationActivity extends BaseActivity implements HasComponent, InboxReputationListener {
 
     public static final String GO_TO_REPUTATION_HISTORY = "GO_TO_REPUTATION_HISTORY";
+    public static final String GO_TO_MY_REVIEW = "GO_TO_MY_REVIEW";
     public static final String GO_TO_BUYER_REVIEW = "GO_TO_BUYER_REVIEW";
     public static final String IS_DIRECTLY_GO_TO_RATING = "is_directly_go_to_rating";
 
@@ -83,6 +86,7 @@ public class InboxReputationActivity extends BaseActivity implements HasComponen
     private UserSessionInterface userSession;
 
     private boolean goToReputationHistory;
+    private boolean goToMyReview = false;
     private boolean goToBuyerReview;
     private boolean canFireTracking;
     private ReputationTracking reputationTracking;
@@ -95,6 +99,11 @@ public class InboxReputationActivity extends BaseActivity implements HasComponen
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         goToReputationHistory = getIntent().getBooleanExtra(GO_TO_REPUTATION_HISTORY, false);
+        Uri data = getIntent().getData();
+        if (data != null) {
+            String isMyReview = getIntent().getData().getQueryParameter(ApplinkConstInternalMarketplace.QUERY_KEY_MY_REVIEW);
+            goToMyReview = Boolean.parseBoolean(isMyReview);
+        }
         goToBuyerReview = getIntent().getBooleanExtra(GO_TO_BUYER_REVIEW, false);
         canFireTracking = !goToReputationHistory;
         userSession = new UserSession(this);
@@ -177,6 +186,10 @@ public class InboxReputationActivity extends BaseActivity implements HasComponen
 
         if (goToReputationHistory) {
             viewPager.setCurrentItem(TAB_SELLER_REPUTATION_HISTORY);
+        }
+
+        if (goToMyReview) {
+            viewPager.setCurrentItem(TAB_MY_REVIEW);
         }
 
         if(goToBuyerReview) {

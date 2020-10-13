@@ -21,6 +21,6 @@
         </fulfillment>
         <fulfillment
             fulfillmentMode="actions.fulfillment.DEEPLINK"
-            urlTemplate="tokopedia-android-internal://marketplace/stars"/>
+            urlTemplate="tokopedia-android-internal://marketplace/review?is_my_review=true"/>
     </action>
 </actions>
