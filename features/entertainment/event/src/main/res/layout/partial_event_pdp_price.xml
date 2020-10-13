@@ -42,6 +42,17 @@
             app:typographyWeight="bold"
             tools:text="Rp.5.000.200" />
 
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/qr_redeem_pdp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/ic_product_fintech_qr_normal_24"
+            app:layout_constraintRight_toLeftOf="@+id/btn_event_pdp_cek_tiket"
+            android:layout_marginRight="@dimen/spacing_lvl4"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="@dimen/spacing_lvl5"
+            />
+
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/btn_event_pdp_cek_tiket"
             android:layout_width="wrap_content"

@@ -25,6 +25,7 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalEntertainment
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.calendar.CalendarPickerView
 import com.tokopedia.calendar.Legend
 import com.tokopedia.entertainment.R
@@ -214,6 +215,9 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
 
     private fun loadPrice(productDetailData: ProductDetailData) {
         tg_event_pdp_price.text = CurrencyFormatter.getRupiahFormat(productDetailData.salesPrice.toInt())
+        qr_redeem_pdp.setOnClickListener {
+            RouteManager.route(context, ApplinkConstInternalMarketplace.QR_SCANNEER)
+        }
     }
 
     private fun loadCalendar(context: Context, productDetailData: ProductDetailData) {
