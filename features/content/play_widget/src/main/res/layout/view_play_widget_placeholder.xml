@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:elevation="4dp"
+    android:background="@color/Neutral_N0"
     >
 
     <com.tokopedia.unifycomponents.LoaderUnify
@@ -13,7 +13,7 @@
         android:layout_width="@dimen/play_widget_placeholder_title_width"
         android:layout_height="@dimen/layout_lvl1"
         android:layout_marginStart="@dimen/spacing_lvl4"
-        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:layout_marginTop="@dimen/spacing_lvl4"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:loader_type="line"

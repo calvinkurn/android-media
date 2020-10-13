@@ -6,6 +6,7 @@ import android.view.View
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.play.widget.R
 import com.tokopedia.play.widget.ui.adapter.PlayWidgetCardSmallAdapter
 import com.tokopedia.play.widget.ui.itemdecoration.PlayWidgetCardSmallItemDecoration
@@ -38,7 +39,9 @@ class PlayWidgetSmallView : ConstraintLayout {
 
     fun setData(data: PlayWidgetUiModel.Small) {
         tvTitle.text = data.title
+
         tvSeeAll.text = data.actionTitle
+        tvSeeAll.setOnClickListener { RouteManager.route(context, data.actionAppLink) }
 
         adapter.setItemsAndAnimateChanges(data.items)
     }
