@@ -179,6 +179,7 @@
 /features/user/sessioncommon/                   		@tokopedia/android-minionkevin-dev
 /features/user/loginphone/                      		@tokopedia/android-minionkevin-dev
 /features/user/managename/                      		@tokopedia/android-minionkevin-dev
+/features/user/managepassword/                          @tokopedia/android-minionkevin-dev
 /features/user/notif-troubleshooter/                    @tokopedia/android-minionkevin-dev
 /features/user/notifcenter/                     		@tokopedia/android-minionkevin-dev
 /features/user/attachproduct/                   		@tokopedia/android-minionkevin-dev
@@ -189,7 +190,7 @@
 /features/user/user_identification/             		@tokopedia/android-minionkevin-dev
 /features/user/user_identification_common/      		@tokopedia/android-minionkevin-dev
 /features/user/user_identification_no_op/       		@tokopedia/android-minionkevin-dev
-/features/fcm_common/                                   @tokopedia/android-minionkevin-dev
+/features/user/fcm_common/                              @tokopedia/android-minionkevin-dev
 /features/user/seamless_login/                          @tokopedia/android-minionkevin-dev
 /features/user/kyc_centralized/                         @tokopedia/android-minionkevin-dev
 /features/user/attachinvoice/                           @tokopedia/android-minionkevin-dev
@@ -220,6 +221,8 @@
 /features/promo/promo_gamification_common               @tokopedia/android-minionsolo-dev
 /features/promo/loyalty                                 @tokopedia/android-minionsolo-dev
 /features/promo/loyalty_common                          @tokopedia/android-minionsolo-dev
+/features/promo/promotions_target					    @tokopedia/android-minionsolo-dev
+/features/promo/promotions_ui_common					@tokopedia/android-minionsolo-dev
 /features/fintech/merchant_lending_widget               @tokopedia/android-minionsolo-dev
 
 
@@ -248,6 +251,7 @@
 /libraries/base_list/							        @tokopedia/android-core-dev
 /libraries/base_list_seller/							@tokopedia/android-core-dev
 /libraries/bottom_sheet_builder/						@tokopedia/android-core-dev
+/libraries/cassavatest/						            @tokopedia/android-core-dev
 /libraries/cache_api/									@tokopedia/android-core-dev
 /libraries/cameraview/									@tokopedia/android-core-dev
 /libraries/charts/				    		            @tokopedia/android-core-dev
@@ -285,7 +289,6 @@
 /libraries/pre_release_inspector/			            @tokopedia/android-core-dev
 /libraries/pre_release_inspector_no_op/					@tokopedia/android-core-dev
 /libraries/product_photo_adapter/                       @tokopedia/android-minionken-dev
-/libraries/promotions_target/							@tokopedia/android-core-dev
 /libraries/push_notification/							@tokopedia/android-core-dev
 /libraries/react_native/								@tokopedia/android-core-dev
 /libraries/remote_config/								@tokopedia/android-core-dev
