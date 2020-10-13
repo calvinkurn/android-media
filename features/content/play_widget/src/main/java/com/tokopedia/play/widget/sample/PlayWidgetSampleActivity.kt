@@ -39,13 +39,14 @@ class PlayWidgetSampleActivity : BaseSimpleActivity() {
 
     private fun getSampleData(): List<PlayWidgetUiModel> {
         return listOf(
+                PlayWidgetUiModel.Placeholder,
                 PlayWidgetUiMock.getPlayWidgetSmall(this),
                 PlayWidgetUiMock.getPlayWidgetMedium(this)
         )
     }
 
     private fun getSamplePlaySmallWidget(): PlayWidgetUiModel {
-        return PlayWidgetUiModel.Small.Widget(
+        return PlayWidgetUiModel.Small(
                 title = "Yuk Nonton Sekarang!",
                 actionTitle = "Lihat semua",
                 actionAppLink = "",
@@ -63,7 +64,7 @@ class PlayWidgetSampleActivity : BaseSimpleActivity() {
     }
 
     private fun getSamplePlayMediumWidget(): PlayWidgetUiModel {
-        return PlayWidgetUiModel.Medium.Widget(
+        return PlayWidgetUiModel.Medium(
                 title = "Yuk Nonton Sekarang!",
                 actionTitle = "Lihat semua",
                 actionAppLink = "",

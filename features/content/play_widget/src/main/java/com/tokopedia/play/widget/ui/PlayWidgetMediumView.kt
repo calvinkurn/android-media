@@ -78,25 +78,20 @@ class PlayWidgetMediumView : ConstraintLayout {
     }
 
     fun setData(data: PlayWidgetUiModel.Medium) {
-        when (data) {
-            PlayWidgetUiModel.Medium.Empty -> {}
-            is PlayWidgetUiModel.Medium.Widget -> {
-                title.text = data.title
-                actionTitle.text = data.actionTitle
+        title.text = data.title
+        actionTitle.text = data.actionTitle
 
-                actionTitle.setOnClickListener {
-                    widgetMediumListener?.onSeeMoreClicked(data.actionAppLink, data.actionWebLink)
-                }
-
-                configureBackgroundOverlay(data.background)
-
-                recyclerViewItem.layoutManager = layoutManager
-                recyclerViewItem.adapter = adapter
-                recyclerViewItem.addOnScrollListener(configureParallax())
-
-                adapter.setItems(data.items)
-            }
+        actionTitle.setOnClickListener {
+            widgetMediumListener?.onSeeMoreClicked(data.actionAppLink, data.actionWebLink)
         }
+
+        configureBackgroundOverlay(data.background)
+
+        recyclerViewItem.layoutManager = layoutManager
+        recyclerViewItem.adapter = adapter
+        recyclerViewItem.addOnScrollListener(configureParallax())
+
+        adapter.setItems(data.items)
     }
 
     fun showLoading() {

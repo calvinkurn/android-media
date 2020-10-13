@@ -17,7 +17,7 @@ class PlayWidgetMediumUiMapper @Inject constructor(
 
     override fun mapWidget(data: PlayWidget): PlayWidgetUiModel {
         val widgetBackground = mapWidgetBackground(data)
-        return PlayWidgetUiModel.Medium.Widget(
+        return PlayWidgetUiModel.Medium(
                 title = data.meta.widgetTitle,
                 actionTitle = data.meta.buttonText,
                 actionAppLink = data.meta.buttonApplink,

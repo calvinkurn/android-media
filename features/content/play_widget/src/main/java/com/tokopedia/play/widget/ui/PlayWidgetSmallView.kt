@@ -37,15 +37,10 @@ class PlayWidgetSmallView : ConstraintLayout {
     }
 
     fun setData(data: PlayWidgetUiModel.Small) {
-        when (data) {
-            PlayWidgetUiModel.Small.Empty -> {}
-            is PlayWidgetUiModel.Small.Widget -> {
-                tvTitle.text = data.title
-                tvSeeAll.text = data.actionTitle
+        tvTitle.text = data.title
+        tvSeeAll.text = data.actionTitle
 
-                adapter.setItemsAndAnimateChanges(data.items)
-            }
-        }
+        adapter.setItemsAndAnimateChanges(data.items)
     }
 
     private fun setupView(view: View) {
