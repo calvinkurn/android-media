@@ -39,7 +39,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
     @Test
     fun `Atc Occ External Success`() {
         // Given
-        every { addToCartOccExternalUseCase.createObservable(any()) } returns Observable.just(AddToCartDataModel(data = DataModel(success = 1)))
+        every { addToCartOccExternalUseCase.get().createObservable(any()) } returns Observable.just(AddToCartDataModel(data = DataModel(success = 1)))
 
         // When
         orderSummaryPageViewModel.atcOcc("1")
@@ -52,7 +52,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
     fun `Atc Occ External Error`() {
         // Given
         val errorMessage = "error"
-        every { addToCartOccExternalUseCase.createObservable(any()) } returns Observable.just(AddToCartDataModel(errorMessage = arrayListOf(errorMessage), data = DataModel(success = 0)))
+        every { addToCartOccExternalUseCase.get().createObservable(any()) } returns Observable.just(AddToCartDataModel(errorMessage = arrayListOf(errorMessage), data = DataModel(success = 0)))
 
         // When
         orderSummaryPageViewModel.atcOcc("1")
@@ -65,7 +65,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
     fun `Atc Occ External Failed`() {
         // Given
         val response = Throwable()
-        every { addToCartOccExternalUseCase.createObservable(any()) } returns Observable.error(response)
+        every { addToCartOccExternalUseCase.get().createObservable(any()) } returns Observable.error(response)
 
         // When
         orderSummaryPageViewModel.atcOcc("1")
@@ -202,7 +202,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
             )
         }
         every { ratesUseCase.execute(any()) } returns Observable.just(shippingRecommendationData)
-        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(ValidateUsePromoRevampUiModel())
+        every { validateUsePromoRevampUseCase.get().createObservable(any()) } returns Observable.just(ValidateUsePromoRevampUiModel())
 
         // When
         orderSummaryPageViewModel.getOccCart(true, "")
@@ -222,7 +222,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         assertEquals(1, orderSummaryPageViewModel.getCurrentShipperId())
         assertEquals(1, orderSummaryPageViewModel.getCurrentProfileId())
         verify(exactly = 1) { ratesUseCase.execute(any()) }
-        verify(exactly = 1) { validateUsePromoRevampUseCase.createObservable(any()) }
+        verify(exactly = 1) { validateUsePromoRevampUseCase.get().createObservable(any()) }
     }
 
     @Test

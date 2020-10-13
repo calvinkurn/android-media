@@ -15,6 +15,7 @@ import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.feature.editaddress.domain.usecase.EditAddressUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
 import com.tokopedia.user.session.UserSessionInterface
+import dagger.Lazy
 import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.MockK
 import org.junit.Before
@@ -26,7 +27,7 @@ open class BaseOrderSummaryPageViewModelTest {
     val rule = InstantTaskExecutorRule()
 
     @MockK
-    lateinit var addToCartOccExternalUseCase: AddToCartOccExternalUseCase
+    lateinit var addToCartOccExternalUseCase: Lazy<AddToCartOccExternalUseCase>
 
     @MockK
     lateinit var getOccCartUseCase: GetOccCartUseCase
@@ -35,7 +36,7 @@ open class BaseOrderSummaryPageViewModelTest {
     lateinit var ratesUseCase: GetRatesUseCase
 
     @MockK
-    lateinit var getPreferenceListUseCase: GetPreferenceListUseCase
+    lateinit var getPreferenceListUseCase: Lazy<GetPreferenceListUseCase>
 
     @MockK(relaxed = true)
     lateinit var updateCartOccUseCase: UpdateCartOccUseCase
@@ -43,16 +44,16 @@ open class BaseOrderSummaryPageViewModelTest {
     private val ratesResponseStateConverter: RatesResponseStateConverter = RatesResponseStateConverter()
 
     @MockK
-    lateinit var editAddressUseCase: EditAddressUseCase
+    lateinit var editAddressUseCase: Lazy<EditAddressUseCase>
 
     @MockK(relaxed = true)
     lateinit var checkoutOccUseCase: CheckoutOccUseCase
 
     @MockK
-    lateinit var clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase
+    lateinit var clearCacheAutoApplyStackUseCase: Lazy<ClearCacheAutoApplyStackUseCase>
 
     @MockK(relaxed = true)
-    lateinit var validateUsePromoRevampUseCase: ValidateUsePromoRevampUseCase
+    lateinit var validateUsePromoRevampUseCase: Lazy<ValidateUsePromoRevampUseCase>
 
     @MockK(relaxed = true)
     lateinit var userSessionInterface: UserSessionInterface
@@ -72,7 +73,7 @@ open class BaseOrderSummaryPageViewModelTest {
         helper = OrderSummaryPageViewModelTestHelper()
         orderSummaryPageViewModel = OrderSummaryPageViewModel(testDispatchers, getPreferenceListUseCase,
                 OrderSummaryPageCartProcessor(addToCartOccExternalUseCase, getOccCartUseCase, updateCartOccUseCase, testDispatchers),
-                OrderSummaryPageLogisticProcessor(ratesUseCase, ratesResponseStateConverter, editAddressUseCase, userSessionInterface, orderSummaryAnalytics, testDispatchers),
+                OrderSummaryPageLogisticProcessor(ratesUseCase, ratesResponseStateConverter, editAddressUseCase, orderSummaryAnalytics, testDispatchers),
                 OrderSummaryPageCheckoutProcessor(checkoutOccUseCase, orderSummaryAnalytics, testDispatchers),
                 OrderSummaryPagePromoProcessor(validateUsePromoRevampUseCase, clearCacheAutoApplyStackUseCase, orderSummaryAnalytics, testDispatchers),
                 OrderSummaryPageCalculator(orderSummaryAnalytics, testDispatchers),

@@ -129,8 +129,9 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             if (!product.quantity.isStateError) {
                 orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.LOADING)
                 debounce()
+            } else {
+                calculateTotal()
             }
-            calculateTotal()
         }
     }
 
@@ -484,10 +485,12 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     }
 
     fun calculateTotal() {
-        val (newOrderPayment, newOrderTotal) = calculator.calculateTotal(orderCart, _orderPreference, _orderShipment, validateUsePromoRevampUiModel, _orderPayment, orderTotal.value)
-        _orderPayment = newOrderPayment
-        orderPayment.value = _orderPayment
-        orderTotal.value = newOrderTotal
+        launch(executorDispatchers.main) {
+            val (newOrderPayment, newOrderTotal) = calculator.calculateTotal(orderCart, _orderPreference, _orderShipment, validateUsePromoRevampUiModel, _orderPayment, orderTotal.value)
+            _orderPayment = newOrderPayment
+            orderPayment.value = _orderPayment
+            orderTotal.value = newOrderTotal
+        }
     }
 
     fun chooseInstallment(selectedInstallmentTerm: OrderPaymentInstallmentTerm) {

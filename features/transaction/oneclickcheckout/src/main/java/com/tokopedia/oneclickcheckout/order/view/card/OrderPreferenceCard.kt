@@ -186,6 +186,7 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
                 }
             } else {
                 tvShippingDuration?.text = generateServiceDuration(shipping.serviceDuration)
+                tickerShippingPromo?.gone()
                 tvShippingCourierLbl?.gone()
                 tvShippingCourier?.gone()
                 tvShippingDuration?.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
