@@ -169,6 +169,7 @@ class GratificationPresenter @Inject constructor(val application: Application) {
             }
 
         } catch (ex: Exception) {
+            Timber.d("$TAG unexpected error for gratifId=$gratificationId")
             exceptionCallback?.onError(ex)
             ex.printStackTrace()
         }

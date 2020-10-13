@@ -8,31 +8,24 @@ import java.util.List;
 
 public class LogcatManager {
 
-    /**
-     * 日志捕捉监听对象
-     */
     private static volatile Listener sListener;
     /**
-     * 日志捕捉标记
+     * Log capture Mark
      */
     private static volatile boolean FLAG_WORK;
     /**
-     * 备用存放集合
+     * Alternate storage collection
      */
     private static final List<LogcatInfo> LOG_BACKUP = new ArrayList<>();
 
-    /**
-     * 开始捕捉
-     */
+    // Start Capturing
     static void start(Listener listener) {
         FLAG_WORK = true;
         new Thread(new LogRunnable()).start();
         sListener = listener;
     }
 
-    /**
-     * 继续捕捉
-     */
+    //Keep capturing
     static void resume() {
         FLAG_WORK = true;
         final Listener listener = sListener;
@@ -46,25 +39,18 @@ public class LogcatManager {
         LOG_BACKUP.clear();
     }
 
-    /**
-     * 暂停捕捉
-     */
+    //Pause capture
     static void pause() {
         FLAG_WORK = false;
     }
 
-    /**
-     * 停止捕捉
-     */
+    //StopCapture
     static void destroy() {
         FLAG_WORK = false;
-        // 把监听对象置空，不然会导致内存泄漏
         sListener = null;
     }
 
-    /**
-     * 清空日志
-     */
+    //clear logcat
     static void clear() {
         try {
             new ProcessBuilder("logcat", "-c").start();
@@ -98,7 +84,6 @@ public class LogcatManager {
                                 listener.onReceiveLog(info);
                             }
                         } else {
-                            // 这里可能会出现下标异常
                             LOG_BACKUP.add(info);
                         }
                     }
