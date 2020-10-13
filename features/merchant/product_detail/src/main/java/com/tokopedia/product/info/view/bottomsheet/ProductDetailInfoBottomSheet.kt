@@ -1,0 +1,70 @@
+package com.tokopedia.product.info.view.bottomsheet
+
+import android.os.Bundle
+import android.view.View
+import androidx.recyclerview.widget.AsyncDifferConfig
+import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.di.ProductDetailComponent
+import com.tokopedia.product.info.model.productdetail.ProductDetailInfoHeaderDataModel
+import com.tokopedia.product.info.model.productdetail.ProductDetailInfoLoadingDataModel
+import com.tokopedia.product.info.view.ProductDetailInfoListener
+import com.tokopedia.product.info.view.adapter.BsProductDetailInfoAdapter
+import com.tokopedia.product.info.view.adapter.ProductDetailInfoAdapterFactoryImpl
+import com.tokopedia.product.info.view.adapter.diffutil.ProductDetailInfoDiffUtil
+import com.tokopedia.unifycomponents.BottomSheetUnify
+import java.util.concurrent.Executors
+
+/**
+ * Created by Yehezkiel on 12/10/20
+ */
+class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListener {
+
+    private var productDetailComponent: ProductDetailComponent? = null
+    private var rvBsProductDetail: RecyclerView? = null
+
+    private val productDetailInfoAdapter by lazy {
+        BsProductDetailInfoAdapter(AsyncDifferConfig.Builder(ProductDetailInfoDiffUtil())
+                .setBackgroundThreadExecutor(Executors.newSingleThreadExecutor())
+                .build(), adapterTypeFactory)
+    }
+    private val adapterTypeFactory by lazy {
+        ProductDetailInfoAdapterFactoryImpl(this)
+    }
+
+    init {
+        setTitle(getString(R.string.merchant_product_detail_label_product_detail))
+    }
+
+    fun setDaggerComponent(daggerProductDetailComponent: ProductDetailComponent?) {
+        this.productDetailComponent = daggerProductDetailComponent
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        productDetailComponent?.inject(this)
+        super.onCreate(savedInstanceState)
+        initView()
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        productDetailInfoAdapter.submitList(listOf(ProductDetailInfoLoadingDataModel()))
+    }
+
+    override fun onLoadingClick() {
+        productDetailInfoAdapter.submitList(listOf(ProductDetailInfoHeaderDataModel(), ProductDetailInfoHeaderDataModel(), ProductDetailInfoHeaderDataModel()))
+    }
+
+    private fun initView() {
+        val childView = View.inflate(requireContext(), R.layout.bottom_sheet_product_detail_info, null)
+
+        setupRecyclerView(childView)
+        setChild(childView)
+    }
+
+    private fun setupRecyclerView(childView: View) {
+        rvBsProductDetail = childView.findViewById(R.id.bs_product_info_rv)
+        rvBsProductDetail?.adapter = productDetailInfoAdapter
+    }
+
+}

@@ -134,4 +134,9 @@ interface DynamicProductDetailListener {
      */
     fun onTopAdsImageViewClicked(model: TopAdsImageDataModel, applink: String?, bannerId: String, bannerName: String)
     fun onTopAdsImageViewImpression(model: TopAdsImageDataModel, bannerId: String, bannerName: String)
+
+    /**
+     * ProductDetailInfoViewHolder
+     */
+    fun onSeeMoreDescriptionClicked()
 }

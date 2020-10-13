@@ -26,6 +26,10 @@ class ProductDetailInfoViewHolder(private val view: View, private val listener: 
     override fun bind(element: ProductDetailInfoDataModel) {
         renderListInfo(element)
         renderDescription(element)
+
+        view.product_detail_info_seemore?.setOnClickListener {
+            listener.onSeeMoreDescriptionClicked()
+        }
     }
 
     private fun renderListInfo(element: ProductDetailInfoDataModel) = with(view) {

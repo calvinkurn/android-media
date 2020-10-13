@@ -110,6 +110,7 @@ import com.tokopedia.product.detail.view.util.*
 import com.tokopedia.product.detail.view.viewmodel.DynamicProductDetailViewModel
 import com.tokopedia.product.detail.view.widget.*
 import com.tokopedia.product.info.view.ProductFullDescriptionTabActivity
+import com.tokopedia.product.info.view.bottomsheet.ProductDetailInfoBottomSheet
 import com.tokopedia.product.share.ProductData
 import com.tokopedia.product.share.ProductShare
 import com.tokopedia.purchase_platform.common.constant.CartConstant
@@ -231,15 +232,26 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     private val adapterFactory by lazy { DynamicProductDetailAdapterFactoryImpl(this, this) }
     private val dynamicAdapter by lazy { DynamicProductDetailAdapter(adapterFactory, this) }
     private var menu: Menu? = null
-
     private val BUNDLE = "bundle"
+
+    val productDaggerComponent by lazy {
+        activity?.let {
+            DaggerProductDetailComponent.builder()
+                    .baseAppComponent((it.application as BaseMainApplication).baseAppComponent)
+                    .build()
+        }
+    }
 
     private val tradeinDialog: ProductAccessRequestDialogFragment? by lazy {
         setupTradeinDialog()
     }
 
     private val topAdsDetailSheet: TopAdsDetailSheet? by lazy {
-            TopAdsDetailSheet.newInstance()
+        TopAdsDetailSheet.newInstance()
+    }
+
+    private val productDetailInfoSheet by lazy {
+        ProductDetailInfoBottomSheet()
     }
 
     private val recommendationCarouselPositionSavedState = SparseIntArray()
@@ -364,6 +376,13 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         }
     }
 
+    override fun onSeeMoreDescriptionClicked() {
+        activity?.let {
+            productDetailInfoSheet.setDaggerComponent(productDaggerComponent)
+            productDetailInfoSheet.show(it.supportFragmentManager, "bs product detail")
+        }
+    }
+
     override fun createAdapterInstance(): BaseListAdapter<DynamicPdpDataModel, DynamicProductDetailAdapterFactoryImpl> {
         return dynamicAdapter
     }
@@ -386,9 +405,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     override fun initInjector() {
         activity?.let {
-            DaggerProductDetailComponent.builder()
-                    .baseAppComponent((it.application as BaseMainApplication).baseAppComponent)
-                    .build().inject(this)
+            productDaggerComponent?.inject(this)
         }
     }
 
@@ -474,7 +491,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 if (data != null) {
                     val isFavoriteFromShopPage = data.getBooleanExtra(ProductDetailConstant.SHOP_STATUS_FAVOURITE, false)
                     val isUserLoginFromShopPage = data.getBooleanExtra(ProductDetailConstant.SHOP_STICKY_LOGIN, false)
-                    val wasFavorite = pdpUiUpdater?.shopInfoMap?.isFavorite ?: pdpUiUpdater?.shopCredibility?.isFavorite ?: return
+                    val wasFavorite = pdpUiUpdater?.shopInfoMap?.isFavorite
+                            ?: pdpUiUpdater?.shopCredibility?.isFavorite ?: return
 
                     if (isUserLoginFromShopPage) {
                         updateStickyState()
@@ -1278,17 +1296,18 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             data.doSuccessOrFail({
                 dynamicAdapter.notifyRecomAdapter(pdpUiUpdater?.updateRecommendationData(it.data))
             }, {
-                dynamicAdapter.removeRecommendation(pdpUiUpdater?.getRecommendationData(it.message ?: ""))
+                dynamicAdapter.removeRecommendation(pdpUiUpdater?.getRecommendationData(it.message
+                        ?: ""))
             })
         }
 
-        viewLifecycleOwner.observe(viewModel.statusFilterTopAdsProduct){
-            if(it is Fail){
+        viewLifecycleOwner.observe(viewModel.statusFilterTopAdsProduct) {
+            if (it is Fail) {
                 showToastError(Throwable(context?.getString(R.string.recom_filter_chip_click_error_network)))
             }
         }
 
-        viewLifecycleOwner.observe(viewModel.filterTopAdsProduct){ data ->
+        viewLifecycleOwner.observe(viewModel.filterTopAdsProduct) { data ->
             val recommendation = pdpUiUpdater?.updateFilterRecommendationData(data)
             recommendation?.let { dynamicAdapter.notifyFilterRecommendation(it) }
         }
@@ -1363,8 +1382,10 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             activity?.let {
                 when (result.data.ovoValidationDataModel.status) {
                     ProductDetailConstant.OVO_INACTIVE_STATUS -> {
-                        val applink = "${result.data.ovoValidationDataModel.applink}&product_id=${viewModel.getDynamicProductInfoP1?.parentProductId
-                                ?: ""}"
+                        val applink = "${result.data.ovoValidationDataModel.applink}&product_id=${
+                            viewModel.getDynamicProductInfoP1?.parentProductId
+                                    ?: ""
+                        }"
                         DynamicProductDetailTracking.Click.eventActivationOvo(
                                 viewModel.getDynamicProductInfoP1?.parentProductId ?: "",
                                 viewModel.userSessionInterface.userId)
@@ -2172,7 +2193,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         }
     }
 
-    private fun goToPdpSellerApp(){
+    private fun goToPdpSellerApp() {
         val appLink = UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId)
         val parameterizedAppLink = Uri.parse(appLink).buildUpon()
                 .appendQueryParameter(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME, SellerMigrationFeatureName.FEATURE_ADS_DETAIL)
@@ -2292,8 +2313,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         context?.let {
             context?.let {
                 topAdsDetailSheet?.show(childFragmentManager,
-                topAdsGetProductManage.data.adType,
-                topAdsGetProductManage.data.adId,
+                        topAdsGetProductManage.data.adType,
+                        topAdsGetProductManage.data.adId,
                         viewModel.p2Login.value?.topAdsGetShopInfo?.category ?: 0)
             }
         }
@@ -2516,7 +2537,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     private fun onSuccessFavoriteShop(isSuccess: Boolean) {
-        val isFavorite = pdpUiUpdater?.shopInfoMap?.isFavorite ?: pdpUiUpdater?.shopCredibility?.isFavorite ?: return
+        val isFavorite = pdpUiUpdater?.shopInfoMap?.isFavorite
+                ?: pdpUiUpdater?.shopCredibility?.isFavorite ?: return
         if (isSuccess) {
             pdpUiUpdater?.successUpdateShopFollow(isFavorite)
             dynamicAdapter.notifyWithPayload(pdpUiUpdater?.shopInfoMap, ProductDetailConstant.PAYLOAD_TOOGLE_AND_FAVORITE_SHOP)
@@ -2982,7 +3004,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         }
     }
 
-    private fun renderInitialAffiliate(){
+    private fun renderInitialAffiliate() {
         if (isAffiliate) {
             actionButtonView.gone()
             ticker_occ_layout.gone()
