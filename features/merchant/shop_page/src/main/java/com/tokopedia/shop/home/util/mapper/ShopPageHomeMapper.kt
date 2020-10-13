@@ -6,9 +6,7 @@ import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherTypeDef
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.shop.common.data.source.cloud.model.LabelGroup
-import com.tokopedia.shop.home.WidgetName
 import com.tokopedia.shop.home.WidgetName.PRODUCT
-import com.tokopedia.shop.home.WidgetType
 import com.tokopedia.shop.home.WidgetType.CAMPAIGN
 import com.tokopedia.shop.home.WidgetType.DISPLAY
 import com.tokopedia.shop.home.WidgetType.DYNAMIC
@@ -19,6 +17,7 @@ import com.tokopedia.shop.home.data.model.ShopLayoutWidget
 import com.tokopedia.shop.home.view.model.*
 import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.view.datamodel.LabelGroupViewModel
+import java.util.*
 import kotlin.math.roundToInt
 
 object ShopPageHomeMapper {
@@ -182,12 +181,10 @@ object ShopPageHomeMapper {
             VOUCHER.toLowerCase() -> {
                 mapToVoucherUiModel(widgetResponse)
             }
-            DYNAMIC.toLowerCase()-> {
-                mapToPlayWidgetUiModel(widgetResponse, isMyOwnProduct)
-            }
             CAMPAIGN.toLowerCase() -> {
                 mapToNewProductLaunchCampaignUiModel(widgetResponse, isLoggedIn)
             }
+            DYNAMIC.toLowerCase(Locale.getDefault()) -> if (isMyOwnProduct) mapCarouselPlayWidget(widgetResponse) else null
             else -> {
                 null
             }
@@ -352,17 +349,6 @@ object ShopPageHomeMapper {
         )
     }
 
-    private fun mapToPlayWidgetUiModel(widgetModel: ShopLayoutWidget.Widget, isMyOwnProduct: Boolean): ShopHomePlayCarouselUiModel? {
-        if(isMyOwnProduct) return null
-        return ShopHomePlayCarouselUiModel(
-                widgetId = widgetModel.widgetID,
-                layoutOrder = widgetModel.layoutOrder,
-                name = widgetModel.name,
-                type = widgetModel.type,
-                header = mapToHeaderModel(widgetModel.header)
-        )
-    }
-
     private fun mapToHeaderModel(header: ShopLayoutWidget.Widget.Header): BaseShopHomeWidgetUiModel.Header {
         return BaseShopHomeWidgetUiModel.Header(
                 header.title,
@@ -417,4 +403,15 @@ object ShopPageHomeMapper {
                 model.isAvailable
         )
     }
+
+    /*
+     * Play widget
+     */
+    private fun mapCarouselPlayWidget(model: ShopLayoutWidget.Widget) = CarouselPlayWidgetUiModel(
+            widgetId = model.widgetID,
+            layoutOrder = model.layoutOrder,
+            name = model.name,
+            type = model.type,
+            header = mapToHeaderModel(model.header)
+    )
 }

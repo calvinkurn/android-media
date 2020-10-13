@@ -75,7 +75,9 @@ class PlayWidgetMediumView : ConstraintLayout, PlayWidgetCardMediumAdapter.CardM
 
     fun setData(data: PlayWidgetUiModel.Medium) {
         when (data) {
-            PlayWidgetUiModel.Medium.Empty -> {}
+            PlayWidgetUiModel.Medium.Empty -> {
+                title.text = "SHOW WIDGET PLAY"
+            }
             is PlayWidgetUiModel.Medium.Widget -> {
                 title.text = data.title
                 actionTitle.text = data.actionTitle
