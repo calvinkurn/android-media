@@ -208,20 +208,12 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
     }
 
     override fun loadData(page: Int) {
-        if(page == defaultInitialPage){
-            //load initial data when press retry
-            loadData()
-        }
+        loadData()
     }
 
     override fun onPause() {
         super.onPause()
         trackingQueue?.sendAll()
-    }
-
-    override fun disableLoadMore() {
-        super.disableLoadMore()
-        getRecyclerView(view).isNestedScrollingEnabled = false
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -324,6 +316,7 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
             it?.let { response ->
                 clearAllData()
                 renderList(response)
+                hideLoading()
                 (response.firstOrNull() as? ProductInfoDataModel)?.productDetailData?.let { productDetailData ->
                     menu?.findItem(R.id.action_share)?.isVisible = true
                     menu?.findItem(R.id.action_share)?.setOnMenuItemClickListener {
