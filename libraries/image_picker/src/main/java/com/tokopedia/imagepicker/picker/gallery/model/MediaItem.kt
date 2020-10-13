@@ -48,13 +48,14 @@ class MediaItem(val id: Long,
         @JvmStatic
         fun valueOf(cursor: Cursor): MediaItem {
             val resolution = cursor.getColumnIndex(MediaStore.Video.VideoColumns.RESOLUTION)
+            val mimeType = cursor.getString(cursor.getColumnIndex(MediaStore.MediaColumns.MIME_TYPE))
             var videoDuration: Long = 0
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 videoDuration = cursor.getLong(cursor.getColumnIndex(MediaStore.Video.VideoColumns.DURATION))
             }
             return MediaItem(cursor.getLong(cursor.getColumnIndex(MediaStore.Files.FileColumns._ID)),
                     cursor.getString(cursor.getColumnIndex(MediaStore.MediaColumns.DATA)),
-                    cursor.getString(cursor.getColumnIndex(MediaStore.MediaColumns.MIME_TYPE)),
+                    mimeType ?: "",
                     cursor.getLong(cursor.getColumnIndex(MediaStore.MediaColumns.SIZE)),
                     videoDuration,
                     if (resolution > 0) cursor.getString(resolution) else "",
