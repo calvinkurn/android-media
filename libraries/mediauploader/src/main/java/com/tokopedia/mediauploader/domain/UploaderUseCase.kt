@@ -29,7 +29,6 @@ class UploaderUseCase @Inject constructor(
 
     private var progressCallback: ProgressCallback? = null
     private val ERROR_MAX_LENGTH = 1500
-    private val ERROR_SOURCE_NOT_FOUND = "Required: source (-1)"
 
     override suspend fun execute(params: RequestParams): UploadResult {
         if (params.parameters.isEmpty()) throw Exception("Not param found")
@@ -38,8 +37,7 @@ class UploaderUseCase @Inject constructor(
         val fileToUpload = params.getObject(PARAM_FILE_PATH) as File
 
         return try {
-            val sourcePolicy = mediaPolicy(sourceId)
-            preValidation(fileToUpload, sourcePolicy) {
+            preValidation(fileToUpload, sourceId) { sourcePolicy ->
                 postMedia(fileToUpload, sourcePolicy, sourceId)
             }
         } catch (e: SocketTimeoutException) {
@@ -54,13 +52,7 @@ class UploaderUseCase @Inject constructor(
                     e !is CancellationException) {
                 Timber.w("P1#MEDIA_UPLOADER_ERROR#$sourceId;err='${Log.getStackTraceString(e).take(ERROR_MAX_LENGTH).trim()}'")
             }
-
-            // check whether media source is valid
-            if (isSourceMediaNotFound(e)) {
-                UploadResult.Error(SOURCE_NOT_FOUND)
-            } else {
-                UploadResult.Error(NETWORK_ERROR)
-            }
+            UploadResult.Error(NETWORK_ERROR)
         }
     }
 
@@ -98,20 +90,42 @@ class UploaderUseCase @Inject constructor(
 
     private suspend fun preValidation(
             fileToUpload: File,
-            sourcePolicy: SourcePolicy,
-            onUpload: suspend () -> UploadResult
+            sourceId: String,
+            onUpload: suspend (sourcePolicy: SourcePolicy) -> UploadResult
     ): UploadResult {
-        val filePath = fileToUpload.path // file full path
-        val extensions = sourcePolicy.imagePolicy
-                .extension
-                .split(",")
+        try {
+            // sourceId empty validation
+            if (sourceId.isEmpty()) return UploadResult.Error(SOURCE_NOT_FOUND)
 
-        return when {
-            !fileToUpload.exists() -> UploadResult.Error(FILE_NOT_FOUND)
-            !extensions.contains(getFileExtension(filePath)) -> UploadResult.Error(
-                    "Format file: ${sourcePolicy.imagePolicy.extension}"
-            )
-            else -> onUpload()
+            val sourcePolicy = mediaPolicy(sourceId)
+            val filePath = fileToUpload.path // file full path
+            val extensions = sourcePolicy.imagePolicy
+                    .extension
+                    .split(",")
+
+            return when {
+                !fileToUpload.exists() -> UploadResult.Error(FILE_NOT_FOUND)
+                !extensions.contains(getFileExtension(filePath)) -> UploadResult.Error(
+                        "Format file: ${sourcePolicy.imagePolicy.extension}"
+                )
+                else -> onUpload(sourcePolicy)
+            }
+        } catch (e: Exception) {
+            // Log error
+            if (e !is UnknownHostException &&
+                    e !is SocketException &&
+                    e !is InterruptedIOException &&
+                    e !is ConnectionShutdownException &&
+                    e !is CancellationException) {
+                Timber.w("P1#MEDIA_UPLOADER_ERROR#$sourceId;err='${Log.getStackTraceString(e).take(ERROR_MAX_LENGTH).trim()}'")
+            }
+
+            // check whether media source is valid
+            return if (isSourceMediaNotFound(e)) {
+                UploadResult.Error(SOURCE_NOT_FOUND)
+            } else {
+                UploadResult.Error(NETWORK_ERROR)
+            }
         }
     }
 
@@ -142,6 +156,9 @@ class UploaderUseCase @Inject constructor(
         // key of params
         const val PARAM_SOURCE_ID = "source_id"
         const val PARAM_FILE_PATH = "file_path"
+
+        // const error validation
+        const val ERROR_SOURCE_NOT_FOUND = "Required: source (-1)"
 
         // const local error message
         const val TIMEOUT_ERROR = "Request timeout, silakan coba kembali beberapa saat lagi"
