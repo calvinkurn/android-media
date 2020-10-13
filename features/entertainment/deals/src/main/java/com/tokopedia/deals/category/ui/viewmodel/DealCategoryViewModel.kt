@@ -11,13 +11,10 @@ import com.tokopedia.deals.common.model.response.SearchData
 import com.tokopedia.deals.common.ui.dataview.ChipDataView
 import com.tokopedia.deals.common.ui.dataview.DealsBaseItemDataView
 import com.tokopedia.deals.common.ui.dataview.DealsBrandsDataView
-import com.tokopedia.deals.common.ui.dataview.DealsChipsDataView
 import com.tokopedia.deals.common.utils.DealsDispatcherProvider
 import com.tokopedia.deals.location_picker.model.response.Location
 import com.tokopedia.deals.search.model.response.CuratedData
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -58,19 +55,19 @@ class DealCategoryViewModel @Inject constructor(
         launchCatchError(block = {
             val curatedData = getChipCategory()
             privateObservableChips.value = mapCategoryLayout.mapCategoryToChips(curatedData.eventChildCategory.categories)
-        }){
+        }) {
             privateErrorMessage.value = it
         }
     }
 
-    fun getCategoryBrandData(category: String, coordinates: String, location: String, page: Int = 1, isFilter:Boolean) {
+    fun getCategoryBrandData(category: String, coordinates: String, location: String, page: Int = 1, isFilter: Boolean) {
         launch {
             try {
                 val brandProduct = getBrandProductCategory(category, coordinates, location, page)
                 if (page == 1) {
                     val categoryLayout: List<DealsBaseItemDataView>
                     if (brandProduct.eventSearch.brands.isNotEmpty() && brandProduct.eventSearch.products.isNotEmpty()) {
-                        categoryLayout = mapCategoryLayout.mapCategoryLayout(brandProduct, page)
+                        categoryLayout = mapCategoryLayout.mapCategoryLayout(brandProduct, page, category)
                     } else {
                         categoryLayout = mapCategoryLayout.getEmptyLayout(isFilter)
                     }
