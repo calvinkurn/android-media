@@ -2,6 +2,8 @@ package com.tokopedia.entertainment.pdp.network_api
 
 import com.tokopedia.entertainment.pdp.data.checkout.EventCheckoutBody
 import com.tokopedia.entertainment.pdp.data.checkout.EventCheckoutResponse
+import com.tokopedia.entertainment.pdp.data.redeem.validate.EventValidateResponse
+import com.tokopedia.entertainment.pdp.data.redeem.validate.EventValidateUser
 import com.tokopedia.promocheckout.common.domain.model.event.Cart
 import com.tokopedia.promocheckout.common.domain.model.event.EventVerifyBody
 import com.tokopedia.promocheckout.common.domain.model.event.EventVerifyResponse
@@ -26,6 +28,14 @@ class EventCheckoutRepositoryImpl @Inject constructor(private val eventCheckoutA
             }
         }
 
+        throw IOException(ERROR_DEFAULT)
+    }
+
+    override suspend fun validateRedeem(eventValidateUser: EventValidateUser): EventValidateResponse? {
+        val response = eventCheckoutApi.validateRedeem(eventValidateUser)
+        if (response.isSuccessful){
+            return response.body()
+        }
         throw IOException(ERROR_DEFAULT)
     }
 

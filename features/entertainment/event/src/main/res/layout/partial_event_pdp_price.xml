@@ -43,6 +43,7 @@
             tools:text="Rp.5.000.200" />
 
         <androidx.appcompat.widget.AppCompatImageView
+            android:visibility="invisible"
             android:id="@+id/qr_redeem_pdp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

@@ -138,6 +138,10 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
             }
         })
 
+        eventPDPViewModel.validateScanner.observe(this, Observer {
+            renderScanner(it)
+        })
+
         eventPDPViewModel.isError.observe(this, Observer {
             it?.let {
                 if (it.error) {
@@ -160,8 +164,9 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
 
     private fun requestData() {
         urlPDP?.let {
+            val userId = if(!userSession.userId.isNullOrEmpty()) userSession.userId.toInt() else 0
             eventPDPViewModel.getDataProductDetail(EventQuery.eventPDPV3(),
-                    eventContentById(), it)
+                    eventContentById(), it, userId, userSession.email)
         }
 
     }
@@ -215,8 +220,14 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
 
     private fun loadPrice(productDetailData: ProductDetailData) {
         tg_event_pdp_price.text = CurrencyFormatter.getRupiahFormat(productDetailData.salesPrice.toInt())
-        qr_redeem_pdp.setOnClickListener {
-            RouteManager.route(context, ApplinkConstInternalMarketplace.QR_SCANNEER)
+    }
+
+    private fun renderScanner(isValidated: Boolean){
+        if (isValidated && userSession.isLoggedIn){
+            qr_redeem_pdp.show()
+            qr_redeem_pdp.setOnClickListener {
+                RouteManager.route(context, ApplinkConstInternalMarketplace.QR_SCANNEER)
+            }
         }
     }
 

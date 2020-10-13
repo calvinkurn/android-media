@@ -1,7 +1,8 @@
 package com.tokopedia.entertainment.pdp.network_api
 
-import com.tokopedia.entertainment.pdp.data.checkout.EventCheckoutBody
 import com.tokopedia.entertainment.pdp.data.checkout.EventCheckoutResponse
+import com.tokopedia.entertainment.pdp.data.redeem.validate.EventValidateResponse
+import com.tokopedia.entertainment.pdp.data.redeem.validate.EventValidateUser
 import com.tokopedia.promocheckout.common.domain.model.event.Cart
 import com.tokopedia.promocheckout.common.domain.model.event.EventVerifyBody
 import com.tokopedia.promocheckout.common.domain.model.event.EventVerifyResponse
@@ -18,8 +19,11 @@ interface EventCheckoutApi {
     @POST(PATH_CHECKOUT)
     suspend fun postCheckout(@Body cart: Cart?): Response<EventCheckoutResponse>
 
+    @POST(PATH_VALIDATE_REDEEM)
+    suspend fun validateRedeem(@Body eventValidateUser: EventValidateUser): Response<EventValidateResponse>
+
     companion object{
-        val BASE_URL = if(TokopediaUrl.getInstance().TYPE == Env.LIVE) "https://omscart.tokopedia.com/"
-        else "https://omscart-staging.tokopedia.com/"
+        val BASE_URL = if(TokopediaUrl.getInstance().TYPE == Env.LIVE) "https://booking.tokopedia.com/"
+        else "https://booking-staging.tokopedia.com/"
     }
 }

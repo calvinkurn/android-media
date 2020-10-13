@@ -7,6 +7,8 @@ import com.tokopedia.calendar.Legend
 import com.tokopedia.entertainment.pdp.common.util.EventDateUtil
 import com.tokopedia.entertainment.pdp.data.*
 import com.tokopedia.entertainment.pdp.data.pdp.*
+import com.tokopedia.entertainment.pdp.data.redeem.validate.EventValidateUser
+import com.tokopedia.entertainment.pdp.network_api.EventCheckoutRepository
 import com.tokopedia.entertainment.pdp.usecase.EventProductDetailUseCase
 import com.tokopedia.travelcalendar.data.entity.TravelCalendarHoliday
 import com.tokopedia.travelcalendar.domain.TravelCalendarHolidayUseCase
@@ -14,11 +16,13 @@ import com.tokopedia.usecase.coroutines.Fail
 import kotlinx.coroutines.CoroutineDispatcher
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class EventPDPViewModel @Inject constructor(private val dispatcher: CoroutineDispatcher,
                                             private val usecase: EventProductDetailUseCase,
-                                            private val useCaseHoliday: TravelCalendarHolidayUseCase
+                                            private val useCaseHoliday: TravelCalendarHolidayUseCase,
+                                            private val repository: EventCheckoutRepository
 ) : BaseViewModel(dispatcher) {
 
     private val eventProductDetaiListlMutable = MutableLiveData<List<EventPDPModel>>()
@@ -37,12 +41,17 @@ class EventPDPViewModel @Inject constructor(private val dispatcher: CoroutineDis
     val isError: LiveData<EventPDPErrorEntity>
         get() = isErrorMutable
 
+    private val validateScannerMutable = MutableLiveData<Boolean>()
+    val validateScanner: LiveData<Boolean>
+        get() = validateScannerMutable
+
     fun getIntialList() {
         val list: List<EventPDPModel> = requestEmptyViewModels()
         eventProductDetaiListlMutable.value = list
     }
 
-    fun getDataProductDetail(rawQueryPDP: String, rawQueryContent: String, urlPdp: String) {
+    fun getDataProductDetail(rawQueryPDP: String, rawQueryContent: String, urlPdp: String,
+                             userId: Int = 0, email: String = "") {
         launch {
             val result = usecase.executeUseCase(rawQueryPDP, rawQueryContent, true, urlPdp)
             val resultHoliday = useCaseHoliday.execute()
@@ -54,6 +63,19 @@ class EventPDPViewModel @Inject constructor(private val dispatcher: CoroutineDis
                     getDataFacilities(mapperFacilities(result.data))
                     getDataLocationDetail(mapperLocationDetail(result.data))
                     getDataInformation(mapperInformation(result.data))
+
+                    val userValidated = EventValidateUser(result.data.eventProductDetailEntity.eventProductDetail.productDetailData.id.toInt(),
+                            userId, email)
+
+                    val validate = withContext(dispatcher){
+                        repository.validateRedeem(userValidated)
+                    }
+
+                    if(validate?.data?.success?.equals(SUCCESS_VALIDATE) ?: false){
+                        validateScannerMutable.postValue(true)
+                    } else {
+                        validateScannerMutable.postValue(false)
+                    }
                 }
 
                 is Fail -> {
@@ -216,6 +238,7 @@ class EventPDPViewModel @Inject constructor(private val dispatcher: CoroutineDis
         const val SECTION_ABOUT = "Tentang Kegiatan Ini"
         const val SECTION_LOCATION = "Gimana cara ke sana?"
         const val SECTION_INFORMATION = "Informasi Penting"
+        const val SUCCESS_VALIDATE = "OK"
 
     }
 }
