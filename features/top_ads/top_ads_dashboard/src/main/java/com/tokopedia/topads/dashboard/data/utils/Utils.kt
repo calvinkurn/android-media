@@ -9,8 +9,8 @@ import android.widget.TextView
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils.DEFAULT_LOCALE
 import com.tokopedia.datepicker.range.view.constant.DatePickerConstant
 import com.tokopedia.datepicker.range.view.model.PeriodRangeModel
-import com.tokopedia.topads.auto.view.fragment.AutoAdsBaseBudgetFragment
 import com.tokopedia.topads.common.data.util.Utils.removeCommaRawString
+import com.tokopedia.topads.common.data.util.Utils.locale
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.unifycomponents.SearchBarUnify
 import java.text.DateFormat
@@ -104,7 +104,7 @@ object Utils {
 
 
     fun convertToCurrencyString(value: Long): String {
-        return (NumberFormat.getNumberInstance(AutoAdsBaseBudgetFragment.locale).format(value))
+        return (NumberFormat.getNumberInstance(locale).format(value))
     }
 
     fun convertMoneyToValue(price: String):Int {
