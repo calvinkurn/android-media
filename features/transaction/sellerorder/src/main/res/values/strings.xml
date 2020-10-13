@@ -58,6 +58,7 @@
     <string name="som_deadline">Batas Respons</string>
     <string name="som_deadline_done">Selesai Otomatis</string>
     <string name="lihat_caps">LIHAT</string>
+    <string name="lihat_detail">Lihat Detail</string>
     <string name="lihat">Lihat</string>
     <string name="placeholder_kode_booking">Terima pesanan terlebih dahulu</string>
     <string name="salin_caps">SALIN</string>

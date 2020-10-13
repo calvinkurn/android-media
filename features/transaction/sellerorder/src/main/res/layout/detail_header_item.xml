@@ -25,13 +25,13 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
-        android:text="@string/lihat_caps"
+        android:text="@string/lihat_detail"
         app:typographyType="body_2"
-        android:textColor="@color/g_500"
+        android:textColor="@color/Unify_G500"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="LIHAT" />
+        tools:text="Lihat Detail" />
 
     <com.tokopedia.unifycomponents.ticker.Ticker
         android:id="@+id/ticker_detail_buyer_request_cancel"
@@ -62,6 +62,44 @@
         app:layout_constraintTop_toBottomOf="@id/ticker_detail_buyer_request_cancel" />
 
     <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/header_invoice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_14"
+        android:textColor="@color/Neutral_N700_68"
+        android:textIsSelectable="true"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/header_divider_1"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler"
+        tools:text="INV/20161025/XVI/X/55069657" />
+
+    <ImageView
+        android:id="@+id/header_invoice_copy"
+        android:layout_width="@dimen/dp_16"
+        android:layout_height="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_5"
+        app:layout_constraintStart_toEndOf="@+id/header_invoice"
+        app:layout_constraintTop_toTopOf="@+id/header_invoice"
+        app:srcCompat="@drawable/ic_copy" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/header_see_invoice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:text="@string/lihat_caps"
+        app:typographyType="body_2"
+        android:textColor="@color/g_500"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/header_invoice"
+        tools:text="@string/lihat_caps" />
+
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/header_buyer_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -71,7 +109,7 @@
         android:text="@string/buyer"
         android:textColor="@color/Neutral_N700_68"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/header_divider_1"
+        app:layout_constraintTop_toBottomOf="@id/header_invoice"
         app:typographyType="body_3"
         app:typographyWeight="reguler"
         tools:text="@string/buyer" />
@@ -86,7 +124,7 @@
         android:textIsSelectable="true"
         android:textColor="@color/Neutral_N700_96"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/header_divider_1"
+        app:layout_constraintTop_toBottomOf="@id/header_see_invoice"
         app:typographyType="heading_6"
         tools:text="Mesut Ozil" />
 
@@ -130,7 +168,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/header_date_label"
         app:typographyType="body_3"
-        app:typographyWeight="reguler" />
+        app:typographyWeight="reguler"
+        tools:text="Batas Respons"/>
 
     <androidx.cardview.widget.CardView
         android:id="@+id/due_label"
@@ -203,46 +242,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/rv_detail_order_label" />
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/header_invoice"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_14"
-        android:textColor="@color/Neutral_N700_68"
-        android:textIsSelectable="true"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/header_divider_2"
-        app:typographyType="body_3"
-        app:typographyWeight="reguler"
-        tools:text="INV/20161025/XVI/X/55069657" />
-
-    <ImageView
-        android:id="@+id/header_invoice_copy"
-        android:layout_width="@dimen/dp_16"
-        android:layout_height="@dimen/dp_16"
-        android:layout_marginLeft="@dimen/dp_5"
-        app:layout_constraintBottom_toBottomOf="@+id/header_invoice"
-        app:layout_constraintStart_toEndOf="@+id/header_invoice"
-        app:layout_constraintTop_toTopOf="@+id/header_invoice"
-        app:srcCompat="@drawable/ic_copy" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/header_see_invoice"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
-        android:text="@string/lihat_caps"
-        app:typographyType="body_2"
-        android:textColor="@color/g_500"
-        app:layout_constraintBottom_toBottomOf="@id/header_invoice"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="@id/header_invoice"
-        tools:text="@string/lihat_caps" />
-
     <include
         android:id="@+id/layout_resi"
         layout="@layout/detail_header_resi_item"
@@ -254,7 +253,7 @@
         android:layout_marginEnd="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
         android:layout_marginBottom="@dimen/dp_16"
-        app:layout_constraintTop_toBottomOf="@+id/header_invoice" />
+        app:layout_constraintTop_toBottomOf="@+id/header_deadline_label" />
 
     <com.tokopedia.unifycomponents.ticker.Ticker
         android:id="@+id/ticker_invalid_resi"
