@@ -19,16 +19,16 @@ class PlayWidgetView : LinearLayout {
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes)
 
-
     fun setModel(model: PlayWidgetUiModel) {
         when (model) {
             is PlayWidgetUiModel.Small -> addSmallView(model)
             is PlayWidgetUiModel.Medium -> addMediumView(model)
+            PlayWidgetUiModel.Placeholder -> addPlaceholderView()
         }
     }
 
     private fun addSmallView(model: PlayWidgetUiModel.Small) {
-//        if (getFirstChild() is PlayWidgetSmallView) return
+        if (getFirstChild() is PlayWidgetSmallView) return
         removeCurrentView()
         val smallWidget = PlayWidgetSmallView(context).apply {
             layoutParams = getChildLayoutParams()
@@ -38,13 +38,23 @@ class PlayWidgetView : LinearLayout {
     }
 
     private fun addMediumView(model: PlayWidgetUiModel.Medium) {
-//        if (getFirstChild() is PlayWidgetMediumView) return
+        if (getFirstChild() is PlayWidgetMediumView) return
         removeCurrentView()
         val mediumWidget = PlayWidgetMediumView(context).apply {
             layoutParams = getChildLayoutParams()
         }
         addView(mediumWidget)
         mediumWidget.setData(model)
+    }
+
+    private fun addPlaceholderView() {
+        if (getFirstChild() is PlayWidgetPlaceholderView) return
+        removeCurrentView()
+        val placeholderWidget = PlayWidgetPlaceholderView(context).apply {
+            layoutParams = getChildLayoutParams()
+        }
+        addView(placeholderWidget)
+        placeholderWidget.setData()
     }
 
     private fun getFirstChild() = getChildAt(0)

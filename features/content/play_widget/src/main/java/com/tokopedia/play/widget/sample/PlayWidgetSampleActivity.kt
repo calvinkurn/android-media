@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.play.widget.R
+import com.tokopedia.play.widget.ui.PlayWidgetView
 import com.tokopedia.play.widget.ui.mapper.PlayWidgetUiMock
 import com.tokopedia.play.widget.ui.model.*
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
@@ -38,13 +39,14 @@ class PlayWidgetSampleActivity : BaseSimpleActivity() {
 
     private fun getSampleData(): List<PlayWidgetUiModel> {
         return listOf(
+                PlayWidgetUiModel.Placeholder,
                 PlayWidgetUiMock.getPlayWidgetSmall(this),
                 PlayWidgetUiMock.getPlayWidgetMedium(this)
         )
     }
 
     private fun getSamplePlaySmallWidget(): PlayWidgetUiModel {
-        return PlayWidgetUiModel.Small.Widget(
+        return PlayWidgetUiModel.Small(
                 title = "Yuk Nonton Sekarang!",
                 actionTitle = "Lihat semua",
                 actionAppLink = "",
@@ -62,7 +64,7 @@ class PlayWidgetSampleActivity : BaseSimpleActivity() {
     }
 
     private fun getSamplePlayMediumWidget(): PlayWidgetUiModel {
-        return PlayWidgetUiModel.Medium.Widget(
+        return PlayWidgetUiModel.Medium(
                 title = "Yuk Nonton Sekarang!",
                 actionTitle = "Lihat semua",
                 actionAppLink = "",

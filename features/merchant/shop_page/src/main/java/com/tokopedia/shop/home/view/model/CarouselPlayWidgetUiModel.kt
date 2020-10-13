@@ -13,7 +13,7 @@ data class CarouselPlayWidgetUiModel(
         override val name: String,
         override val type: String,
         override val header: BaseShopHomeWidgetUiModel.Header,
-        val widgetUiModel: PlayWidgetUiModel = PlayWidgetUiModel.Medium.Empty
+        val widgetUiModel: PlayWidgetUiModel = PlayWidgetUiModel.Placeholder
 ) : BaseShopHomeWidgetUiModel {
 
     override fun type(typeFactory: ShopHomeAdapterTypeFactory): Int {

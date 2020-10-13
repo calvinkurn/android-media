@@ -14,11 +14,9 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.widget.R
-import com.tokopedia.play.widget.player.PlayVideoPlayer
 import com.tokopedia.play.widget.ui.adapter.PlayWidgetCardMediumAdapter
 import com.tokopedia.play.widget.ui.adapter.viewholder.medium.PlayWidgetCardMediumChannelViewHolder
 import com.tokopedia.play.widget.ui.model.PlayWidgetBackgroundUiModel
-import com.tokopedia.play.widget.ui.model.PlayWidgetConfigUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetMediumItemUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 import com.tokopedia.play_common.widget.playBannerCarousel.extension.loadImage
@@ -40,7 +38,6 @@ class PlayWidgetMediumView : ConstraintLayout, PlayWidgetCardMediumAdapter.CardM
     var widgetMediumListener: PlayWidgetMediumListener? = null
 
     private val background: LoaderImageView
-    private val shimmering: FrameLayout
 
     private val title: Typography
     private val actionTitle: TextView
@@ -55,12 +52,11 @@ class PlayWidgetMediumView : ConstraintLayout, PlayWidgetCardMediumAdapter.CardM
     private val adapter = PlayWidgetCardMediumAdapter(listener = this)
     private val layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
 
-    private var videoPlayers = mutableListOf<PlayVideoPlayer>()
+//    private var videoPlayers = mutableListOf<PlayVideoPlayer>()
 
     init {
         val view = LayoutInflater.from(context).inflate(R.layout.view_play_widget_medium, this)
         background = view.findViewById(R.id.play_widget_medium_bg_loader)
-        shimmering = view.findViewById(R.id.play_widget_medium_shimmering)
 
         title = view.findViewById(R.id.play_widget_medium_title)
         actionTitle = view.findViewById(R.id.play_widget_medium_action)
@@ -74,41 +70,37 @@ class PlayWidgetMediumView : ConstraintLayout, PlayWidgetCardMediumAdapter.CardM
     }
 
     fun setData(data: PlayWidgetUiModel.Medium) {
-        when (data) {
-            PlayWidgetUiModel.Medium.Empty -> {
-                title.text = "SHOW WIDGET PLAY"
-            }
-            is PlayWidgetUiModel.Medium.Widget -> {
-                title.text = data.title
-                actionTitle.text = data.actionTitle
+        title.text = data.title
+        actionTitle.text = data.actionTitle
 
-                actionTitle.setOnClickListener {
-                    widgetMediumListener?.onSeeMoreClicked(data.actionAppLink, data.actionWebLink)
-                }
-
-                configureBackgroundOverlay(data.background)
-
-                recyclerViewItem.layoutManager = layoutManager
-                recyclerViewItem.adapter = adapter
-                recyclerViewItem.addOnScrollListener(configureParallax())
-
-                adapter.setItems(data.items)
-
-                configurePlayer(data.config)
-            }
+        actionTitle.setOnClickListener {
+            widgetMediumListener?.onSeeMoreClicked(data.actionAppLink, data.actionWebLink)
         }
+
+        configureBackgroundOverlay(data.background)
+
+        recyclerViewItem.layoutManager = layoutManager
+        recyclerViewItem.adapter = adapter
+        recyclerViewItem.addOnScrollListener(configureParallax())
+
+        adapter.setItems(data.items)
+
+//        #1 Workaround
+//        configurePlayer(data.config)
     }
 
-    private fun configurePlayer(config: PlayWidgetConfigUiModel) {
-        videoPlayers = MutableList(config.maxAutoPlayCard.toInt()) {
-            PlayVideoPlayer(context)
-        }
-    }
+//    #1 Workaround
+//    private fun configurePlayer(config: PlayWidgetConfigUiModel) {
+//        videoPlayers = MutableList(config.maxAutoPlayCard.toInt()) {
+//            PlayVideoPlayer(context)
+//        }
+//    }
 
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
-        videoPlayers.forEach { it.release() }
-        videoPlayers.clear()
+//        #1 Workaround
+//        videoPlayers.forEach { it.release() }
+//        videoPlayers.clear()
     }
 
     /**

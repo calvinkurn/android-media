@@ -184,7 +184,7 @@ object ShopPageHomeMapper {
             CAMPAIGN.toLowerCase() -> {
                 mapToNewProductLaunchCampaignUiModel(widgetResponse, isLoggedIn)
             }
-            DYNAMIC.toLowerCase(Locale.getDefault()) -> if (isMyOwnProduct) mapCarouselPlayWidget(widgetResponse) else null
+            DYNAMIC.toLowerCase(Locale.getDefault()) -> if (isMyOwnProduct) null else mapCarouselPlayWidget(widgetResponse)
             else -> {
                 null
             }
