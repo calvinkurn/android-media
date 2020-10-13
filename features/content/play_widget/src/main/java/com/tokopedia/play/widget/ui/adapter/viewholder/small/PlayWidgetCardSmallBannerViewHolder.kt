@@ -3,6 +3,7 @@ package com.tokopedia.play.widget.ui.adapter.viewholder.small
 import android.view.View
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.play.widget.R
 import com.tokopedia.play.widget.ui.model.PlayWidgetSmallBannerUiModel
 import com.tokopedia.play_common.widget.playBannerCarousel.extension.loadImage
@@ -18,6 +19,9 @@ class PlayWidgetCardSmallBannerViewHolder(
 
     fun bind(item: PlayWidgetSmallBannerUiModel) {
         ivBanner.loadImage(item.imageUrl)
+        itemView.setOnClickListener {
+            RouteManager.route(it.context, item.appLink)
+        }
     }
 
     companion object {
