@@ -112,6 +112,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showLoadingTransparent
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
 import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.topads.sdk.domain.model.Data
@@ -166,6 +167,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
     private lateinit var adapter: FeedPlusAdapter
     private lateinit var performanceMonitoring: PerformanceMonitoring
     private lateinit var infoBottomSheet: TopAdsInfoBottomSheet
+
+    private lateinit var playWidgetCoordinator: PlayWidgetCoordinator
 
     private var layoutManager: LinearLayoutManager? = null
     private var loginIdInt: Int = 0
@@ -471,11 +474,21 @@ class FeedPlusFragment : BaseDaggerFragment(),
                     }
                 }
             })
+
+            playWidgetModel.observe(lifecycleOwner, Observer {
+                when (it) {
+                    is Fail -> adapter.removePlayWidget()
+                    is Success -> adapter.updatePlayWidget(it.data)
+                }
+            })
         }
     }
 
     private fun initVar() {
-        val typeFactory = FeedPlusTypeFactoryImpl(this, userSession, this, this)
+        playWidgetCoordinator = PlayWidgetCoordinator(this).apply {
+            setListener(this@FeedPlusFragment)
+        }
+        val typeFactory = FeedPlusTypeFactoryImpl(this, userSession, this, playWidgetCoordinator)
         adapter = FeedPlusAdapter(typeFactory, this)
 
         val loginIdString = userSession.userId

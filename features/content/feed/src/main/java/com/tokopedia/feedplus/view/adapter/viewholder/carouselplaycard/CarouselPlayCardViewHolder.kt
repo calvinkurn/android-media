@@ -12,7 +12,7 @@ class CarouselPlayCardViewHolder(
 ) : AbstractViewHolder<CarouselPlayCardViewModel>(playWidgetViewHolder.itemView) {
 
     override fun bind(element: CarouselPlayCardViewModel) {
-        playWidgetViewHolder.bind(element.playWidgetUiModel, element.isFromAutoRefresh)
+        playWidgetViewHolder.bind(element.playWidgetUiModel)
     }
 
     companion object {

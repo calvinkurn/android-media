@@ -40,7 +40,7 @@ import com.tokopedia.feedplus.view.viewmodel.onboarding.OnboardingViewModel
 import com.tokopedia.interest_pick_common.view.adapter.InterestPickAdapter
 import com.tokopedia.kolcommon.view.listener.KolPostViewHolderListener
 import com.tokopedia.play.widget.PlayWidgetViewHolder
-import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
+import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
 import com.tokopedia.user.session.UserSessionInterface
 
 /**
@@ -51,7 +51,7 @@ class FeedPlusTypeFactoryImpl(
         context: FeedPlusFragment,
         private val userSession: UserSessionInterface,
         private val interestPickItemListener: InterestPickAdapter.InterestPickItemListener,
-        private val playWidgetListener: PlayWidgetListener
+        private val playWidgetCoordinator: PlayWidgetCoordinator
 ) : BaseAdapterTypeFactory(), FeedPlusTypeFactory, DynamicFeedTypeFactory {
 
     private val kolPostListener: KolPostViewHolderListener
@@ -170,7 +170,12 @@ class FeedPlusTypeFactoryImpl(
         } else if (type == TopAdsBannerViewHolder.LAYOUT){
             viewHolder = TopAdsBannerViewHolder(view, topAdsBannerListener, cardTitleListener)
         } else if (type == CarouselPlayCardViewHolder.LAYOUT){
-            viewHolder = CarouselPlayCardViewHolder(PlayWidgetViewHolder(view, playWidgetListener))
+            viewHolder = CarouselPlayCardViewHolder(
+                    PlayWidgetViewHolder(
+                            itemView = view,
+                            coordinator = playWidgetCoordinator
+                    )
+            )
         } else
             viewHolder = super.createViewHolder(view, type)
         return viewHolder
