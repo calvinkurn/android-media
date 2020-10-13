@@ -39,7 +39,8 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
         return message
     }
 
-    suspend fun calculateTotal(orderCart: OrderCart, _orderPreference: OrderPreference, shipping: OrderShipment, validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel?, _orderPayment: OrderPayment, orderTotal: OrderTotal): Pair<OrderPayment, OrderTotal> {
+    suspend fun calculateTotal(orderCart: OrderCart, _orderPreference: OrderPreference, shipping: OrderShipment, validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel?, _orderPayment: OrderPayment,
+                               orderTotal: OrderTotal, forceButtonState: OccButtonState?): Pair<OrderPayment, OrderTotal> {
         val quantity = orderCart.product.quantity
         var payment = _orderPayment
         if (quantity.orderQuantity <= 0 || !_orderPreference.isValid) {
@@ -59,7 +60,7 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
             subtotal -= shippingDiscount
             val orderCost = OrderCost(subtotal, totalProductPrice, totalShippingPrice, insurancePrice, fee, shippingDiscount, productDiscount, cashbacks)
 
-            var currentState = orderTotal.buttonState
+            var currentState = forceButtonState ?: orderTotal.buttonState
             if (currentState == OccButtonState.NORMAL && (!shouldButtonStateEnable(shipping, orderCart))) {
                 currentState = OccButtonState.DISABLE
             }

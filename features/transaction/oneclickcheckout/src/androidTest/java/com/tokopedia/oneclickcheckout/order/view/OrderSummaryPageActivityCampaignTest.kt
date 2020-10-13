@@ -2,6 +2,7 @@ package com.tokopedia.oneclickcheckout.order.view
 
 import android.app.Activity
 import android.app.Instrumentation.ActivityResult
+import android.util.Log
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.IdlingResource
 import androidx.test.espresso.intent.Intents.intending
@@ -144,6 +145,8 @@ class OrderSummaryPageActivityCampaignTest {
         intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
 
         orderSummaryPage {
+            Thread.sleep(7000)
+            Log.i("qwerty", "start assert")
             assertPayment("Rp115.000", "Lanjutkan")
             assertPaymentErrorTicker("OVO Error Ticker")
         } pay {
