@@ -3,6 +3,7 @@ package com.tokopedia.linter.detectors
 import com.android.SdkConstants.*
 import com.android.tools.lint.detector.api.*
 import com.android.utils.XmlUtils
+import com.google.common.collect.Sets
 import org.w3c.dom.Attr
 import java.io.File
 
@@ -17,7 +18,11 @@ class VectorDrawableDetector : LayoutDetector() {
             category = Category.CORRECTNESS,
             priority = 5,
             severity = Severity.FATAL,
-            implementation = Implementation(VectorDrawableDetector::class.java, Scope.RESOURCE_FILE_SCOPE)
+            implementation = Implementation(
+                VectorDrawableDetector::class.java,
+                Scope.ALL_RESOURCES_SCOPE,
+                Scope.RESOURCE_FILE_SCOPE
+            )
         )
 
         private const val ATTR_ANDROID_BACKGROUND = "${PREFIX_ANDROID}${ATTR_BACKGROUND}"
@@ -29,20 +34,7 @@ class VectorDrawableDetector : LayoutDetector() {
         private const val ATTR_ANDROID_DRAWABLE_END = "${PREFIX_ANDROID}${ATTR_DRAWABLE_END}"
     }
 
-    private val vectorResources = mutableListOf<String>()
-
-    override fun beforeCheckRootProject(context: Context) {
-        val libFolders = context.project.directLibraries.filter { it.dir.isDirectory }
-        val resourceFolders = context.project.resourceFolders
-        val fileNames = resourceFolders.findFileNames()
-
-        libFolders.forEach { project ->
-            val libFileNames = project.resourceFolders.findFileNames()
-            vectorResources.addAll(libFileNames)
-        }
-
-        vectorResources.addAll(fileNames)
-    }
+    private val vectorResources = Sets.newHashSet<String>()
 
     override fun getApplicableAttributes(): Collection<String>? {
         return listOf(
@@ -57,6 +49,17 @@ class VectorDrawableDetector : LayoutDetector() {
     }
 
     override fun visitAttribute(context: XmlContext, attribute: Attr) {
+        val libFolders = context.project.directLibraries.filter { it.dir.isDirectory }
+        val resourceFolders = context.project.resourceFolders
+        val fileNames = resourceFolders.findFileNames()
+
+        libFolders.forEach { project ->
+            val libFileNames = project.resourceFolders.findFileNames()
+            vectorResources.addAll(libFileNames)
+        }
+
+        vectorResources.addAll(fileNames)
+
         if (attribute.hasVector()) {
             when (attribute.name) {
                 ATTR_ANDROID_DRAWABLE_LEFT,
@@ -85,8 +88,8 @@ class VectorDrawableDetector : LayoutDetector() {
 
     private fun reportBackgroundError(context: XmlContext, attribute: Attr) {
         val attrName = attribute.name
-        val message =
-            "Unsafe vector as $attrName. Consider using setBackgroundResource() programmatically."
+        val message = "Unsafe vector as $attrName. " +
+            "Consider using setBackgroundResource() programmatically."
 
         val lintFix = LintFix.create()
             .unset()
@@ -112,10 +115,17 @@ class VectorDrawableDetector : LayoutDetector() {
     }
 
     private fun List<File>.findFileNames(): List<String> {
+        val fileNames = mutableListOf<String>()
         val resDir = firstOrNull { it.name.contains(RES_FOLDER) }
-        val drawableDir = resDir?.listFiles()?.firstOrNull { it.name.contains(DRAWABLE_FOLDER) }
-        val vectorFiles = drawableDir?.listFiles()?.filter { it.isVector() }.orEmpty()
-        return vectorFiles.map { getBaseName(it.name) }
+        val drawableDirs = resDir?.listFiles()?.filter { it.name.contains(DRAWABLE_FOLDER) }
+
+        drawableDirs?.forEach { file ->
+            val files = file.listFiles()?.filter { it.isVector() }.orEmpty()
+            val vectorNames = files.map { getBaseName(it.name) }
+            fileNames.addAll(vectorNames)
+        }
+
+        return fileNames
     }
 
     private fun File.isVector(): Boolean {
