@@ -182,9 +182,8 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
         if (allPermissionsGranted() && uriImage != null) {
             val screenshotData = uriImage?.let { handleItem(it) }
             if (screenshotData != null) {
-//                feedbackPagePresenter.getImageList(listOf(screenshotData.path))
                 imageAdapter.setImageFeedbackData(feedbackPagePresenter.screenshotImageResult(screenshotData))
-                selectedImage.add(arrayListOf(screenshotData.path).toString())
+                selectedImage = arrayListOf(screenshotData.path)
             }
         }
     }
@@ -372,12 +371,7 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
         if (selectedImage.isNotEmpty()) {
             val totalImage = selectedImage.size
             var initCountImage = imageCount
-/*
-            val screenshotData = uriImage?.let { handleItem(it) }
-            val originalFile = File(screenshotData?.path)
-            val imageSize = originalFile.length()/1000*/
-
-            selectedImage.forEach { image ->
+            for (image in selectedImage) {
                 initCountImage++
                 val originalFile = File(image)
                 val imageSize = originalFile.length()/1000
@@ -390,17 +384,7 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
                 } else {
                     sendAttachment(feedbackId, originalFile, totalImage, initCountImage)
                 }
-
             }
-
-            /*if (uriImage != null && imageSize > 250) {
-                screenshotData?.let { resizeImage(it) }
-                val resizedData = resizedUriImage?.let { handleItem(it) }
-                val resizedFile = File(resizedData?.path)
-                sendAttachment(feedbackId, resizedFile)
-            } else if (uriImage != null && imageSize < 250) {
-                sendAttachment(feedbackId, originalFile)
-            }*/
         } else {
             feedbackPagePresenter.commitData(feedbackId)
         }
