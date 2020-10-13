@@ -5,6 +5,7 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.tkpd.tkpdreputation.R;
+import com.tokopedia.utils.contentdescription.TextAndContentDescriptionUtil;
 
 /**
  * Created by zulfikarrahman on 1/16/18.
@@ -22,6 +23,6 @@ public class ReviewProductTitleHeaderViewHolder extends AbstractViewHolder<Revie
 
     @Override
     public void bind(ReviewProductModelTitleHeader element) {
-        title.setText(element.getTitle());
+        TextAndContentDescriptionUtil.setTextAndContentDescription(title, element.getTitle(), title.getContext().getString(R.string.content_desc_product_name_shop_review));
     }
 }
