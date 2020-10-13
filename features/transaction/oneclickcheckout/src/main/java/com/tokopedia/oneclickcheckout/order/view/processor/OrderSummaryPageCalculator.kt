@@ -46,7 +46,7 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
             return _orderPayment to orderTotal.copy(orderCost = OrderCost(), buttonState = OccButtonState.DISABLE)
         }
         OccIdlingResource.increment()
-        val result = withContext(executorDispatchers.default) {
+        val result = withContext(executorDispatchers.main) {
             val totalProductPrice = quantity.orderQuantity * orderCart.product.getPrice().toDouble()
             val totalShippingPrice = shipping.getRealOriginalPrice().toDouble()
             val insurancePrice = shipping.getRealInsurancePrice().toDouble()
