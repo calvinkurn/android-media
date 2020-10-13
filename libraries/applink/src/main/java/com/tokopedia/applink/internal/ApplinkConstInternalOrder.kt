@@ -21,6 +21,7 @@ object ApplinkConstInternalOrder {
     const val PARAM_EVENTS = "events"
     const val PARAM_DEALS = "deals"
     const val PARAM_PESAWAT = "pesawat"
+    const val PARAM_BELANJA = "belanja"
     const val PARAM_GIFTCARDS = "giftcards"
     const val PARAM_INSURANCE = "insurance"
     const val PARAM_MODALTOKO = "modaltoko"
@@ -55,6 +56,9 @@ object ApplinkConstInternalOrder {
     val HOST_BUYER = "buyer"
 
     @JvmField
+    val HOST_TRANSACTION = "transaction"
+
+    @JvmField
     val HOST_ORDER = "order"
 
     @JvmField
@@ -65,6 +69,12 @@ object ApplinkConstInternalOrder {
 
     @JvmField
     val INTERNAL_ORDER = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_ORDER"
+
+    @JvmField
+    val INTERNAL_BUYER = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_BUYER"
+
+    @JvmField
+    val INTERNAL_TRANSACTION_ORDERLIST = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_TRANSACTION/$PARAM_ORDER_LIST"
 
     @JvmField
     val NEW_ORDER = "$INTERNAL_SELLER/new-order"
@@ -157,7 +167,37 @@ object ApplinkConstInternalOrder {
     val DIGITAL_ORDER_LIST_INTERNAL = "${DeeplinkConstant.SCHEME_INTERNAL}://$PARAM_DIGITAL/$HOST_ORDERLIST"
 
     @JvmField
+    val ORDERLIST_DIGITAL_INTERNAL = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_ORDERLIST/$PARAM_DIGITAL"
+
+    @JvmField
     val OMS_INTERNAL_ORDER = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_ORDER"
+
+    @JvmField
+    val DEALS_INTERNAL_ORDER = "${DeeplinkConstant.SCHEME_INTERNAL}://$PARAM_DEALS/$HOST_ORDER"
+
+    @JvmField
+    val EVENTS_INTERNAL_ORDER = "${DeeplinkConstant.SCHEME_INTERNAL}://$PARAM_EVENTS/$HOST_ORDER"
+
+    @JvmField
+    val GIFTCARDS_INTERNAL_ORDER = "${DeeplinkConstant.SCHEME_INTERNAL}://$PARAM_GIFTCARDS/$HOST_ORDER"
+
+    @JvmField
+    val INSURANCE_INTERNAL_ORDER = "${DeeplinkConstant.SCHEME_INTERNAL}://$PARAM_INSURANCE/$HOST_ORDER"
+
+    @JvmField
+    val MODALTOKO_INTERNAL_ORDER = "${DeeplinkConstant.SCHEME_INTERNAL}://$PARAM_MODALTOKO/$HOST_ORDER"
+
+    @JvmField
+    val HOTEL_INTERNAL_ORDER = "${DeeplinkConstant.SCHEME_INTERNAL}://$PARAM_HOTEL/$HOST_ORDER"
+
+    @JvmField
+    val PESAWAT_INTERNAL_ORDER = "${DeeplinkConstant.SCHEME_INTERNAL}://$PARAM_PESAWAT/$HOST_ORDER"
+
+    @JvmField
+    val BELANJA_INTERNAL_ORDER = "${DeeplinkConstant.SCHEME_INTERNAL}://$PARAM_BELANJA/$HOST_ORDER"
+
+    @JvmField
+    val MARKETPLACE_INTERNAL_ORDER = "${DeeplinkConstant.SCHEME_INTERNAL}://$PARAM_MARKETPLACE/$HOST_ORDER"
 
     @JvmField
     val ORDER_LIST_INTERNAL = "${DeeplinkConstant.SCHEME_INTERNAL}://$PARAM_ORDER_LIST"

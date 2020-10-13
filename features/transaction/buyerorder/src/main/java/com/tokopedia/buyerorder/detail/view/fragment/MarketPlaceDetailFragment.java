@@ -53,7 +53,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder;
 import com.tokopedia.buyerorder.R;
 import com.tokopedia.buyerorder.common.util.BuyerConsts;
-import com.tokopedia.buyerorder.common.util.UnifiedOrderListRouter;
 import com.tokopedia.buyerorder.common.util.Utils;
 import com.tokopedia.buyerorder.detail.data.ActionButton;
 import com.tokopedia.buyerorder.detail.data.AdditionalInfo;
