@@ -880,14 +880,18 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
             dialog.setOnOkClickListener { v ->
                 analytics.eventClickYesSmartLoginDialogButton()
                 dialog.dismiss()
-                val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.INIT_REGISTER)
-                intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, email)
-                intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, source)
-                intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_SMART_LOGIN, true)
-                intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_PENDING, isPending)
-                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                it.startActivity(intent)
-                it.finish()
+                if(GlobalConfig.isSellerApp()) {
+                    goToRegisterInitial(source)
+                }else {
+                    val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.INIT_REGISTER)
+                    intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, email)
+                    intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, source)
+                    intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_SMART_LOGIN, true)
+                    intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_PENDING, isPending)
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    it.startActivity(intent)
+                    it.finish()
+                }
             }
             dialog.setBtnCancel(getString(R.string.already_registered_no))
             dialog.setOnCancelClickListener { v ->
