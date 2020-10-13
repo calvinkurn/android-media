@@ -30,6 +30,8 @@ dependencies {
     implementation project(rootProject.ext.libraries.devMonitoringTools)
 
     testImplementation rootProject.ext.testDependencies.mockk
+    testImplementation rootProject.ext.testDependencies.robolectric
+    testImplementation rootProject.ext.testDependencies.testCore
     implementation (rootProject.ext.firebase.crashlytics) {
         transitive = true
     }
