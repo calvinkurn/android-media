@@ -11,6 +11,7 @@ import androidx.annotation.LayoutRes
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -20,6 +21,7 @@ import com.tokopedia.thankyou_native.R
 import com.tokopedia.thankyou_native.analytics.ThankYouPageAnalytics
 import com.tokopedia.thankyou_native.data.mapper.*
 import com.tokopedia.thankyou_native.di.component.ThankYouPageComponent
+import com.tokopedia.thankyou_native.domain.model.ConfigFlag
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
 import com.tokopedia.thankyou_native.presentation.activity.ThankYouPageActivity
 import com.tokopedia.thankyou_native.presentation.helper.DialogHelper
@@ -102,9 +104,20 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
         else {
             bindThanksPageDataToUI(thanksPageData)
             observeViewModel()
-            thanksPageDataViewModel.getFeatureEngine(thanksPageData)
+            getFeatureRecommendationData()
             addRecommendation()
         }
+    }
+
+    private fun getFeatureRecommendationData() {
+        val configFlag: ConfigFlag? = thanksPageData.ConfigFlag?.let {
+            Gson().fromJson(it, ConfigFlag::class.java)
+        }
+        configFlag?.apply {
+            if (isThanksWidgetEnabled)
+                thanksPageDataViewModel.getFeatureEngine(thanksPageData)
+        }
+
     }
 
     private fun addRecommendation() {
