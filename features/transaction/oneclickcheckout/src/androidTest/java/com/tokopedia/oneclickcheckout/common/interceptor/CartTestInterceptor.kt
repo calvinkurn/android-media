@@ -59,5 +59,7 @@ const val GET_OCC_CART_PAGE_CREDIT_CARD_MIN_AMOUNT_RESPONSE_PATH = "cart/get_occ
 const val GET_OCC_CART_PAGE_SLASH_PRICE_RESPONSE_PATH = "cart/get_occ_cart_page_slash_price_response.json"
 const val GET_OCC_CART_PAGE_CAMPAIGN_OVO_ONLY_LOW_WALLET_RESPONSE_PATH = "cart/get_occ_cart_page_campaign_ovo_only_low_wallet_response.json"
 const val GET_OCC_CART_PAGE_CAMPAIGN_OVO_ONLY_ERROR_TICKER_RESPONSE_PATH = "cart/get_occ_cart_page_campaign_ovo_only_error_ticker_response.json"
+const val GET_OCC_CART_PAGE_CAMPAIGN_OVO_ONLY_ERROR_TICKER_DISABLE_BUTTON_RESPONSE_PATH = "cart/get_occ_cart_page_campaign_ovo_only_error_ticker_disable_button_response.json"
 
 const val UPDATE_CART_OCC_SUCCESS_RESPONSE_PATH = "cart/update_cart_occ_success_response.json"
+const val UPDATE_CART_OCC_DIALOG_PROMPT_RESPONSE_PATH = "cart/update_cart_occ_dialog_prompt_response.json"
