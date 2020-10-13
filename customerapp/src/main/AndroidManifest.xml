@@ -48,6 +48,7 @@
         android:supportsRtl="true"
         android:fullBackupContent="@xml/backup_descriptor"
         android:theme="@style/Theme.Tokopedia3"
+        android:requestLegacyExternalStorage="true"
         tools:replace="name,android:label,android:hasCode,android:fullBackupContent,android:allowBackup">
         <meta-data android:name="com.facebook.sdk.AutoLogAppEventsEnabled"
            android:value="false"/>
@@ -56,10 +57,6 @@
         <meta-data
             android:name="com.google.android.gms.ads.AD_MANAGER_APP"
             android:value="true"/>
-        <meta-data
-            android:name="com.crashlytics.ApiKey"
-            android:value="d02324f74e70ffcd2dc00ab722d32baecf1884b4"
-            tools:replace="android:value"/>
         <meta-data
             android:name="APP_ID"
             android:value="@string/key_moengage"

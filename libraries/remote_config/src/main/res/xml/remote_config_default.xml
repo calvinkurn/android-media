@@ -483,6 +483,10 @@
         <value>false</value>
     </entry>
     <entry>
+        <key>android_add_brotli_interceptor</key>
+        <value>false</value>
+    </entry>
+    <entry>
         <key>android_async_user_based_timber_session</key>
         <value>false</value>
     </entry>
