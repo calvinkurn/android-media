@@ -197,6 +197,7 @@ public interface ApplinkConst {
     String TOKOPEDIA_REWARD = "tokopedia://rewards";
     String COUPON_LISTING = "tokopedia://tokopoints/kupon-saya";
 
+    String FEEDBACK_FORM = "tokopedia://internal-feedback";
     String DEVELOPER_OPTIONS = "tokopedia://setting/dev-opts";
     String SETTING_DEVELOPER_OPTIONS = "tokopedia://setting/dev-opts/{type}";
     String SETTING_PAYMENT = "tokopedia://setting/payment";

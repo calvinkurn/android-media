@@ -6,13 +6,13 @@ import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
+import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant;
 import com.tokopedia.topads.common.data.api.TopAdsManagementApi;
 import com.tokopedia.topads.common.data.interceptor.TopAdsAuthInterceptor;
 import com.tokopedia.topads.common.data.interceptor.TopAdsResponseError;
 import com.tokopedia.topads.common.data.util.CacheApiTKPDResponseValidator;
-
 import com.tokopedia.topads.dashboard.data.repository.GetDepositTopAdsRepositoryImpl;
 import com.tokopedia.topads.dashboard.data.source.GetDepositTopadsDataSource;
 import com.tokopedia.topads.dashboard.data.source.cloud.apiservice.api.TopAdsOldManagementApi;
@@ -40,8 +40,15 @@ public class TopAdsModule {
     @TopAdsScope
     @Provides
     public TopAdsAuthInterceptor provideTopAdsAuthTempInterceptor(@ApplicationContext Context context,
-                                                                  AbstractionRouter abstractionRouter){
-        return new TopAdsAuthInterceptor(context, abstractionRouter);
+                                                                  UserSession userSession,
+                                                                  NetworkRouter abstractionRouter){
+        return new TopAdsAuthInterceptor(context, userSession, abstractionRouter);
+    }
+
+    @TopAdsScope
+    @Provides
+    public UserSession provideUserSession(@ApplicationContext Context context){
+        return new UserSession(context);
     }
 
     @TopAdsScope
