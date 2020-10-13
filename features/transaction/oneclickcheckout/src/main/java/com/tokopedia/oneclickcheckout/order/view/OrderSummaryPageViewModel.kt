@@ -1,6 +1,5 @@
 package com.tokopedia.oneclickcheckout.order.view
 
-import android.util.Log
 import com.google.gson.JsonParser
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
@@ -473,25 +472,20 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                 updatePromoState(resultValidateUse.promoUiModel)
             } else {
                 orderPromo.value = orderPromo.value.copy(state = OccButtonState.NORMAL)
-//                orderTotal.value = orderTotal.value.copy(buttonState = if (calculator.shouldButtonStateEnable(_orderShipment, orderCart)) OccButtonState.NORMAL else OccButtonState.DISABLE)
-                calculateTotal()
+                calculateTotal(forceButtonState = OccButtonState.NORMAL)
             }
         }
     }
 
     fun updatePromoState(promoUiModel: PromoUiModel) {
         orderPromo.value = orderPromo.value.copy(lastApply = LastApplyUiMapper.mapValidateUsePromoUiModelToLastApplyUiModel(promoUiModel), state = OccButtonState.NORMAL)
-//        orderTotal.value = orderTotal.value.copy(buttonState = if (calculator.shouldButtonStateEnable(_orderShipment, orderCart)) OccButtonState.NORMAL else OccButtonState.DISABLE)
-        calculateTotal()
+        calculateTotal(forceButtonState = OccButtonState.NORMAL)
     }
 
-    fun calculateTotal(forceButtonState: OccButtonState? = OccButtonState.NORMAL) {
+    fun calculateTotal(forceButtonState: OccButtonState? = null) {
         launch(executorDispatchers.main) {
             val orderTotal1 = orderTotal.value
-            Log.i("qwertyuiop", "start calculate ${orderTotal1.buttonType} - ${orderTotal1.buttonState}")
-            Log.i("qwertyuiop", "force $forceButtonState")
             val (newOrderPayment, newOrderTotal) = calculator.calculateTotal(orderCart, _orderPreference, _orderShipment, validateUsePromoRevampUiModel, _orderPayment, orderTotal1, forceButtonState)
-            Log.i("qwertyuiop", "done calculate ${newOrderTotal.buttonType} - ${newOrderTotal.buttonState}")
             _orderPayment = newOrderPayment
             orderPayment.value = _orderPayment
             orderTotal.value = newOrderTotal
@@ -528,8 +522,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                     it.isError = false
                 }
                 _orderPayment = _orderPayment.copy(creditCard = creditCard.copy(selectedTerm = selectedInstallmentTerm, availableTerms = availableTerms))
-//                orderTotal.value = orderTotal.value.copy(buttonState = if (calculator.shouldButtonStateEnable(_orderShipment, orderCart)) OccButtonState.NORMAL else OccButtonState.DISABLE)
-                calculateTotal()
+                calculateTotal(forceButtonState = OccButtonState.NORMAL)
                 globalEvent.value = OccGlobalEvent.Normal
                 return@launch
             }
