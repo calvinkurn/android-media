@@ -1,7 +1,9 @@
 package com.tokopedia.shop.home.view.adapter.viewholder
 
+import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.play.widget.PlayWidgetViewHolder
+import com.tokopedia.play.widget.ui.PlayWidgetView
+import com.tokopedia.shop.R
 import com.tokopedia.shop.home.view.model.CarouselPlayWidgetUiModel
 
 
@@ -9,14 +11,16 @@ import com.tokopedia.shop.home.view.model.CarouselPlayWidgetUiModel
  * Created by mzennis on 13/10/20.
  */
 class CarouselPlayWidgetViewHolder(
-        private val playWidgetViewHolder: PlayWidgetViewHolder
-) : AbstractViewHolder<CarouselPlayWidgetUiModel>(playWidgetViewHolder.itemView) {
+        itemView: View
+) : AbstractViewHolder<CarouselPlayWidgetUiModel>(itemView) {
+
+    private val playWidgetView = itemView as PlayWidgetView
 
     override fun bind(element: CarouselPlayWidgetUiModel) {
-        playWidgetViewHolder.bind(element.widgetUiModel)
+        playWidgetView.setModel(element.widgetUiModel)
     }
 
     companion object {
-        val LAYOUT = PlayWidgetViewHolder.layout
+        val LAYOUT = R.layout.item_shop_home_play_widget
     }
 }

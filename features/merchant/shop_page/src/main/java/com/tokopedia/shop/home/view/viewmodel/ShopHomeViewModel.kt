@@ -12,6 +12,7 @@ import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.play.widget.domain.PlayWidgetUseCase
 import com.tokopedia.play.widget.util.PlayWidgetTools
 import com.tokopedia.shop.common.constant.ShopPageConstant
 import com.tokopedia.shop.common.domain.GetShopFilterBottomSheetDataUseCase
@@ -159,22 +160,28 @@ class ShopHomeViewModel @Inject constructor(
 
             shopLayoutWidget.await()?.let {
 
-//                val newShopPageHomeLayoutUiModel = asyncCatchError(
-//                        dispatcherProvider.io(),
-////                        block = { getPlayWidgetCarousel(shopId, it) },
-//                        onError = {null}
-//                )
+                _shopHomeLayoutData.postValue(Success(it))
 
-//                newShopPageHomeLayoutUiModel.await()?.let { newShopPageHomeLayoutUiModelData ->
-                    _shopHomeLayoutData.postValue(Success(it))
-//                }
                 productList.await()?.let { productListData ->
                     _initialProductListData.postValue(Success(productListData))
                 }
                 sortResponse.await()?.let{  sortResponse ->
                     sortListData  = sortResponse
                 }
+
+                if (shouldGetPlayWidget(it)) {
+                    val layoutWithPlayWidget = asyncCatchError(
+                            dispatcherProvider.io(),
+                            block = { getPlayWidget(shopId, it) },
+                            onError = { null })
+
+                    layoutWithPlayWidget.await()?.let { uiModel ->
+                        _shopHomeLayoutData.value = Success(uiModel)
+                    }
+                }
             }
+
+
         }) {
             it.printStackTrace()
         }
@@ -489,5 +496,25 @@ class ShopHomeViewModel @Inject constructor(
         return sortListData.firstOrNull {
             it.value == sortId
         }?.name.orEmpty()
+    }
+
+    /**
+     * Play widget
+     */
+    private fun shouldGetPlayWidget(model: ShopPageHomeLayoutUiModel): Boolean {
+        return model.listWidget.any { it is CarouselPlayWidgetUiModel }
+    }
+
+    private suspend fun getPlayWidget(shopId: String, layoutUiModel: ShopPageHomeLayoutUiModel): ShopPageHomeLayoutUiModel {
+        val response = playWidgetTools.getWidgetFromNetwork(
+                PlayWidgetUseCase.WidgetType.ShopPage(shopId),
+                dispatcherProvider.io()
+        )
+        val uiModel = playWidgetTools.mapWidgetToModel(response)
+        val newLayoutUiModel = layoutUiModel.listWidget.map {
+            if (it is CarouselPlayWidgetUiModel) it.copy(widgetUiModel = uiModel)
+            else it
+        }
+        return layoutUiModel.copy(listWidget = newLayoutUiModel)
     }
 }
