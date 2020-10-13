@@ -6,13 +6,13 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.LinearLayout
 import androidx.annotation.RequiresApi
-import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
+import androidx.lifecycle.LifecycleObserver
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 
 /**
  * Created by jegul on 08/10/20
  */
-class PlayWidgetView : LinearLayout {
+class PlayWidgetView : LinearLayout, LifecycleObserver {
 
     constructor(context: Context?) : super(context)
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
@@ -21,8 +21,6 @@ class PlayWidgetView : LinearLayout {
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes)
 
-    private var mListener: PlayWidgetListener? = null
-
     override fun onViewRemoved(child: View?) {
         when (child) {
             is PlayWidgetSmallView -> child.setListener(null)
@@ -30,32 +28,27 @@ class PlayWidgetView : LinearLayout {
         super.onViewRemoved(child)
     }
 
-    fun setModel(model: PlayWidgetUiModel, isFromAutoRefresh: Boolean = false) {
+    fun setModel(model: PlayWidgetUiModel) {
         when (model) {
-            is PlayWidgetUiModel.Small -> addSmallView(model, isFromAutoRefresh)
+            is PlayWidgetUiModel.Small -> addSmallView(model)
             is PlayWidgetUiModel.Medium -> addMediumView(model)
             PlayWidgetUiModel.Placeholder -> addPlaceholderView()
         }
     }
 
-    fun setListener(listener: PlayWidgetListener?) {
-        mListener = listener
-    }
-
-    private fun addSmallView(model: PlayWidgetUiModel.Small, isFromAutoRefresh: Boolean) {
+    private fun addSmallView(model: PlayWidgetUiModel.Small) {
         val firstChild = getFirstChild()
-        if (firstChild is PlayWidgetSmallView) {
-            if (isFromAutoRefresh) firstChild.setData(model)
-            return
-        }
+        val widgetView = if (firstChild !is PlayWidgetSmallView) {
+            removeCurrentView()
+            val smallWidget = PlayWidgetSmallView(context).apply {
+                layoutParams = getChildLayoutParams()
+            }
+            addView(smallWidget)
 
-        removeCurrentView()
-        val smallWidget = PlayWidgetSmallView(context).apply {
-            layoutParams = getChildLayoutParams()
-        }
-        smallWidget.setListener(mListener)
-        addView(smallWidget)
-        smallWidget.setData(model)
+            smallWidget
+        } else firstChild
+
+        widgetView.setData(model)
     }
 
     private fun addMediumView(model: PlayWidgetUiModel.Medium) {
@@ -69,16 +62,21 @@ class PlayWidgetView : LinearLayout {
     }
 
     private fun addPlaceholderView() {
-        if (getFirstChild() is PlayWidgetPlaceholderView) return
-        removeCurrentView()
-        val placeholderWidget = PlayWidgetPlaceholderView(context).apply {
-            layoutParams = getChildLayoutParams()
-        }
-        addView(placeholderWidget)
-        placeholderWidget.setData()
+        val firstChild = getFirstChild()
+        val widgetView = if (firstChild !is PlayWidgetPlaceholderView) {
+            removeCurrentView()
+            val placeholderWidget = PlayWidgetPlaceholderView(context).apply {
+                layoutParams = getChildLayoutParams()
+            }
+            addView(placeholderWidget)
+
+            placeholderWidget
+        } else firstChild
+
+        widgetView.setData()
     }
 
-    private fun getFirstChild() = getChildAt(0)
+    private fun getFirstChild(): View? = getChildAt(0)
 
     private fun removeCurrentView() {
         if (childCount > 0) removeViewAt(0)

@@ -10,20 +10,20 @@ sealed class PlayWidgetUiModel {
             val actionTitle: String,
             val actionAppLink: String,
             val actionWebLink: String,
-            val config: PlayWidgetConfigUiModel,
+            override val config: PlayWidgetConfigUiModel,
             val useHeader: Boolean,
             val items: List<PlayWidgetSmallItemUiModel>
-    ) : PlayWidgetUiModel()
+    ) : PlayWidgetUiModel(), PlayWidgetConfigProvider
 
     data class Medium(
             val title: String,
             val actionTitle: String,
             val actionAppLink: String,
             val actionWebLink: String,
-            val config: PlayWidgetConfigUiModel,
+            override val config: PlayWidgetConfigUiModel,
             val background: PlayWidgetBackgroundUiModel,
             val items: List<PlayWidgetMediumItemUiModel>
-    ) : PlayWidgetUiModel()
+    ) : PlayWidgetUiModel(), PlayWidgetConfigProvider
 
     object Placeholder : PlayWidgetUiModel()
 }
