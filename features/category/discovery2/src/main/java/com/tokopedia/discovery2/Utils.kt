@@ -3,6 +3,9 @@ package com.tokopedia.discovery2
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import java.text.ParseException
+import java.text.SimpleDateFormat
+import java.util.*
 import kotlin.math.floor
 
 
@@ -103,6 +106,52 @@ class Utils {
                 if (queryString.isNotEmpty()) queryParameterMap[FILTERS] = queryString.toString()
             }
             return queryParameterMap
+        }
+
+        fun isFutureSale(saleStartDate: String): Boolean {
+            if (saleStartDate.isEmpty()) return false
+            val currentSystemTime = Calendar.getInstance().time
+            val parsedDate = parseData(saleStartDate)
+            return if (parsedDate != null) {
+                currentSystemTime.time < parsedDate.time
+            } else {
+                false
+            }
+        }
+
+
+        fun isFutureSaleOngoing(saleStartDate: String, saleEndDate: String): Boolean {
+            if (saleStartDate.isEmpty() || saleEndDate.isEmpty()) return false
+            val currentSystemTime = Calendar.getInstance().time
+            val saleStartDate = parseData(saleStartDate)
+            val saleEndDate = parseData(saleEndDate)
+            return if (saleStartDate != null && saleEndDate != null) {
+                (saleStartDate.time <= currentSystemTime.time) && (currentSystemTime.time < saleEndDate.time)
+            } else {
+                false
+            }
+        }
+
+        fun isSaleOver(saleEndDate: String): Boolean {
+            if (saleEndDate.isEmpty()) return true
+            val currentSystemTime = Calendar.getInstance().time
+            val parsedDate = parseData(saleEndDate)
+            return if (parsedDate != null) {
+                currentSystemTime.time >= parsedDate.time
+            } else {
+                false
+            }
+        }
+
+        fun parseData(date: String?): Date? {
+            return date?.let {
+                try {
+                    SimpleDateFormat(TIMER_SPRINT_SALE_DATE_FORMAT, Locale.getDefault())
+                            .parse(date)
+                } catch (parseException: ParseException) {
+                    null
+                }
+            }
         }
     }
 }

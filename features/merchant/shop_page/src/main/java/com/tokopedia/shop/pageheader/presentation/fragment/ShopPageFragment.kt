@@ -628,6 +628,7 @@ class ShopPageFragment :
         super.onResume()
         removeTemporaryShopImage(shopImageFilePath)
         updateStickyState()
+        setShopName()
     }
 
     private fun setViewState(viewState: Int) {
@@ -809,6 +810,7 @@ class ShopPageFragment :
             shopDomain = shopPageP1Data.shopDomain
             avatar = shopPageP1Data.shopAvatar
         }
+        setShopName()
         customDimensionShopPage.updateCustomDimensionData(
                 shopId,
                 shopPageHeaderDataModel?.isOfficial ?: false,
@@ -874,6 +876,7 @@ class ShopPageFragment :
                     shopPageHeaderContentData.shopOperationalHourStatus,
                     isMyShop
             )
+            setShopName()
             view?.let { onToasterNoUploadProduct(it, getString(R.string.shop_page_product_no_upload_product), isFirstCreateShop) }
         }
     }
@@ -1350,5 +1353,12 @@ class ShopPageFragment :
 
     private fun hideBottomSheetSellerMigration(){
         (activity as? ShopPageActivity)?.bottomSheetSellerMigration?.state = BottomSheetBehavior.STATE_HIDDEN
+    }
+
+    private fun setShopName() {
+        if(isMyShop) {
+            shopPageHeaderDataModel?.shopName = shopViewModel.ownerShopName
+            shopPageFragmentHeaderViewHolder.setShopName(shopViewModel.ownerShopName)
+        }
     }
 }

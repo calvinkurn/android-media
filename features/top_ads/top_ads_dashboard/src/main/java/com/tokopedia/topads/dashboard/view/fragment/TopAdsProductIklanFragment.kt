@@ -221,23 +221,23 @@ class TopAdsProductIklanFragment : BaseDaggerFragment(), TopAdsDashboardView, Cu
         snackbarRetry = NetworkErrorHelper.createSnackbarWithAction(activity) { loadData() }
         snackbarRetry?.setColorActionRetry(ContextCompat.getColor(activity!!, com.tokopedia.design.R.color.green_400))
 
-        app_bar_layout_2.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout, offset ->
+        app_bar_layout_2?.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout, offset ->
             when {
                 offset == 0 -> {
                     if (mCurrentState != State.EXPANDED) {
-                        onStateChanged(app_bar_layout_2, State.EXPANDED);
+                        onStateChanged(State.EXPANDED);
                     }
                     mCurrentState = State.EXPANDED;
                 }
-                abs(offset) >= app_bar_layout_2.totalScrollRange -> {
+                abs(offset) >= appBarLayout.totalScrollRange -> {
                     if (mCurrentState != State.COLLAPSED) {
-                        onStateChanged(app_bar_layout_2, State.COLLAPSED);
+                        onStateChanged(State.COLLAPSED);
                     }
                     mCurrentState = State.COLLAPSED;
                 }
                 else -> {
                     if (mCurrentState != State.IDLE) {
-                        onStateChanged(app_bar_layout_2, State.IDLE);
+                        onStateChanged(State.IDLE);
                     }
                     mCurrentState = State.IDLE;
                 }
@@ -693,7 +693,7 @@ class TopAdsProductIklanFragment : BaseDaggerFragment(), TopAdsDashboardView, Cu
         collapseStateCallBack = null
     }
 
-    private fun onStateChanged(appBarLayout: AppBarLayout?, state: State?) {
+    private fun onStateChanged(state: State?) {
         collapseStateCallBack?.setAppBarState(state)
         swipe_refresh_layout.isEnabled = state == State.EXPANDED
     }
