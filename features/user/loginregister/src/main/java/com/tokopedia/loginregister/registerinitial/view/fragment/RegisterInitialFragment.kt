@@ -51,6 +51,7 @@ import com.tokopedia.loginregister.common.data.model.DynamicBannerDataModel
 import com.tokopedia.loginregister.common.di.LoginRegisterComponent
 import com.tokopedia.loginregister.common.view.LoginTextView
 import com.tokopedia.loginregister.discover.data.DiscoverItemViewModel
+import com.tokopedia.loginregister.login.service.RegisterPushNotifService
 import com.tokopedia.loginregister.login.view.activity.LoginActivity
 import com.tokopedia.loginregister.loginthirdparty.facebook.data.FacebookCredentialData
 import com.tokopedia.loginregister.registerinitial.di.DaggerRegisterInitialComponent
@@ -1105,6 +1106,9 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
 
     private fun onSuccessRegister() {
         activityShouldEnd = true
+
+        registerPushNotif()
+
         activity?.let {
             if (isFromAccount() || isFromOnboarding()) {
                 val intent = RouteManager.getIntent(context, ApplinkConst.DISCOVERY_NEW_USER)
@@ -1300,6 +1304,12 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
             }
         } else {
             showTicker()
+        }
+    }
+
+    private fun registerPushNotif() {
+        activity?.let {
+            RegisterPushNotifService.startService(it.applicationContext)
         }
     }
 
