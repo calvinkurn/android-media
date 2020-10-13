@@ -60,11 +60,9 @@ class FlightCalendarOneWayWidget : RoundedBottomSheetDialogFragment() {
 
         initInjector()
 
-        activity?.let {
-            val viewModelProvider = ViewModelProviders.of(it, viewModelFactory)
-            holidayCalendarViewModel = viewModelProvider.get(FlightHolidayCalendarViewModel::class.java)
-            fareCalendarViewModel = viewModelProvider.get(FlightFareCalendarViewModel::class.java)
-        }
+        val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
+        holidayCalendarViewModel = viewModelProvider.get(FlightHolidayCalendarViewModel::class.java)
+        fareCalendarViewModel = viewModelProvider.get(FlightFareCalendarViewModel::class.java)
 
         arguments?.run {
             this.getString(ARG_MIN_DATE)?.let {
@@ -117,7 +115,7 @@ class FlightCalendarOneWayWidget : RoundedBottomSheetDialogFragment() {
 
         loadingProgressBar.visibility = View.VISIBLE
         holidayCalendarViewModel.getCalendarHoliday()
-        holidayCalendarViewModel.holidayCalendarData.observe(this, androidx.lifecycle.Observer {
+        holidayCalendarViewModel.holidayCalendarData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             loadingProgressBar.visibility = View.GONE
             it?.let {
                 if (isFirstTime) {
@@ -156,7 +154,7 @@ class FlightCalendarOneWayWidget : RoundedBottomSheetDialogFragment() {
             }
 
 
-            fareCalendarViewModel.fareFlightCalendarData.observe(this, androidx.lifecycle.Observer {
+            fareCalendarViewModel.fareFlightCalendarData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
                 it?.let {
                     calendar?.setSubTitles(mapFareFlightToSubtitleCalendar(it))
                 }
