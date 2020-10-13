@@ -44,7 +44,7 @@ object ImageUtil {
 
     // This will handle OOM for too large Bitmap
     @JvmStatic
-    fun getBitmapFromFile(context: Context, imagePath: String): Bitmap {
+    fun getBitmapFromFile(context: Context, imagePath: String): Bitmap? {
         val options = BitmapFactory.Options()
         options.inPreferredConfig = Bitmap.Config.ARGB_8888
         options.inJustDecodeBounds = true
@@ -62,7 +62,7 @@ object ImageUtil {
                 options.inSampleSize *= 2
             }
         }
-        return tempPic!!
+        return tempPic
     }
 
     private fun calculateInSampleSize(options: BitmapFactory.Options, reqWidth: Int, reqHeight: Int): Int { // Raw height and width of image
