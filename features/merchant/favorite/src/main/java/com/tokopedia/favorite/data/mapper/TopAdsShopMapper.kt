@@ -1,6 +1,7 @@
 package com.tokopedia.favorite.data.mapper
 
 import android.content.Context
+import android.util.Log
 import com.google.gson.Gson
 import com.tokopedia.favorite.R
 import com.tokopedia.favorite.domain.model.TopAdsHome
@@ -30,6 +31,7 @@ class TopAdsShopMapper(
     }
 
     private fun validateResponse(responseBody: String?): TopAdsShop {
+        Log.d("FavoriteTopAdsLog", "responseBody: " + responseBody)
         val topAdsResponse = gson.fromJson(responseBody, TopAdsHome::class.java)
         return if (topAdsResponse != null) {
             if (topAdsResponse.data != null) {
@@ -78,6 +80,7 @@ class TopAdsShopMapper(
     }
 
     private fun invalidResponse(defaultErrorMessage: String): TopAdsShop {
+        Log.d("FavoriteTopAdsLog", "invalidResponse")
         val topAdsShop = TopAdsShop()
         topAdsShop.isDataValid = false
         topAdsShop.message = defaultErrorMessage
