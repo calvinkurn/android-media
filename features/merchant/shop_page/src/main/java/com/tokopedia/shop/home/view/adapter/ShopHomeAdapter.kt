@@ -2,6 +2,7 @@ package com.tokopedia.shop.home.view.adapter
 
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
@@ -92,6 +93,7 @@ class ShopHomeAdapter(
     }
 
     fun updatePlayWidget(playCarouselUiModel: ShopHomePlayCarouselUiModel){
+        Log.i("SHOP_HOME_TEST", "{${System.currentTimeMillis()}} before visitables.indexOfFirst")
         visitables.indexOfFirst { it is ShopHomePlayCarouselUiModel }.let { index ->
             if(playCarouselUiModel.playBannerCarouselDataModel.channelList.isEmpty()){
                 visitables.removeAt(index)
@@ -101,6 +103,7 @@ class ShopHomeAdapter(
                 notifyItemChanged(index)
             }
         }
+        Log.i("SHOP_HOME_TEST", "{${System.currentTimeMillis()}} after visitables.indexOfFirst")
     }
 
     fun setEtalaseTitleData() {

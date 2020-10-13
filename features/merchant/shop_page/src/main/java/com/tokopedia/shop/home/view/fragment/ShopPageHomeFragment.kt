@@ -345,6 +345,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             hideLoading()
             when (it) {
                 is Success -> {
+                    Log.i("SHOP_HOME_TEST", "{${System.currentTimeMillis()}} shopHomeLayoutData - before onSuccessGetShopHomeLayoutData")
                     onSuccessGetShopHomeLayoutData(it.data)
                 }
                 is Fail -> {
@@ -366,7 +367,9 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             hideLoading()
             when (it) {
                 is Success -> {
+                    Log.i("SHOP_HOME_TEST", "{${System.currentTimeMillis()}} initialProductListData - before addProductListHeader")
                     addProductListHeader()
+                    Log.i("SHOP_HOME_TEST", "{${System.currentTimeMillis()}} initialProductListData - before updateProductListData")
                     updateProductListData(it.data.hasNextPage, it.data.listShopProductUiModel, it.data.totalProductData, true)
                 }
             }
@@ -377,6 +380,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             hideLoading()
             when (it) {
                 is Success -> {
+                    Log.i("SHOP_HOME_TEST", "{${System.currentTimeMillis()}} newProductListData - before updateProductListData")
                     updateProductListData(it.data.hasNextPage, it.data.listShopProductUiModel, it.data.totalProductData, false)
                 }
             }
@@ -385,6 +389,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         viewModel?.checkWishlistData?.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
+                    Log.i("SHOP_HOME_TEST", "{${System.currentTimeMillis()}} checkWishlistData - before onSuccessCheckWishlist")
                     onSuccessCheckWishlist(it.data)
                 }
             }
@@ -393,6 +398,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         viewModel?.reminderPlayLiveData?.observe(viewLifecycleOwner, Observer {
             when(it.second){
                 is Success -> {
+                    Log.i("SHOP_HOME_TEST", "{${System.currentTimeMillis()}} reminderPlayLiveData - before showToastSuccess")
                     showToastSuccess(
                             if((it.second as Success<Boolean>).data) getString(R.string.shop_page_play_card_success_add_reminder)
                             else getString(R.string.shop_page_play_card_success_remove_reminder)
@@ -406,6 +412,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         })
 
         viewModel?.updatePlayWidgetData?.observe(viewLifecycleOwner, Observer {
+            Log.i("SHOP_HOME_TEST", "{${System.currentTimeMillis()}} updatePlayWidgetData - before shopHomeAdapter.updatePlayWidget")
             shopHomeAdapter.updatePlayWidget(it)
         })
 
@@ -413,6 +420,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             val result = it.second
             when (result) {
                 is Success -> {
+                    Log.i("SHOP_HOME_TEST", "{${System.currentTimeMillis()}} videoYoutube - before onSuccessGetYouTubeData")
                     onSuccessGetYouTubeData(it.first, result.data)
                 }
                 is Fail -> {
@@ -424,6 +432,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         viewModel?.campaignNplRemindMeStatusData?.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
+                    Log.i("SHOP_HOME_TEST", "{${System.currentTimeMillis()}} campaignNplRemindMeStatusData - before onSuccessGetCampaignNplRemindMeStatusData")
                     onSuccessGetCampaignNplRemindMeStatusData(it.data)
                 }
             }
@@ -433,6 +442,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             when (it) {
                 is Success -> {
                     if (it.data.success) {
+                        Log.i("SHOP_HOME_TEST", "{${System.currentTimeMillis()}} checkCampaignNplRemindMeStatusData - before onSuccessCheckCampaignNplNotifyMe")
                         onSuccessCheckCampaignNplNotifyMe(it.data)
                     } else {
                         onFailCheckCampaignNplNotifyMe(it.data.campaignId, it.data.errorMessage)
@@ -451,6 +461,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         viewModel?.bottomSheetFilterLiveData?.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
+                    Log.i("SHOP_HOME_TEST", "{${System.currentTimeMillis()}} bottomSheetFilterLiveData - before onSuccessGetBottomSheetFilterData")
                     onSuccessGetBottomSheetFilterData(it.data)
                 }
             }
@@ -459,6 +470,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         viewModel?.shopProductFilterCountLiveData?.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
+                    Log.i("SHOP_HOME_TEST", "{${System.currentTimeMillis()}} shopProductFilterCountLiveData - before onSuccessGetShopProductFilterCount")
                     onSuccessGetShopProductFilterCount(it.data)
                 }
             }
@@ -468,16 +480,21 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
 
 
     private fun onSuccessGetShopProductFilterCount(count: Int) {
+        Log.i("SHOP_HOME_TEST", "{${System.currentTimeMillis()}} before countText")
         val countText = String.format(
                 getString(com.tokopedia.filter.R.string.bottom_sheet_filter_finish_button_template_text),
                 count.thousandFormatted()
         )
+        Log.i("SHOP_HOME_TEST", "{${System.currentTimeMillis()}} after countText")
         sortFilterBottomSheet?.setResultCountText(countText)
+        Log.i("SHOP_HOME_TEST", "{${System.currentTimeMillis()}} after sortFilterBottomSheet?.setResultCountText")
     }
 
     private fun onSuccessGetBottomSheetFilterData(model: DynamicFilterModel) {
         model.defaultSortValue = DEFAULT_SORT_ID
+        Log.i("SHOP_HOME_TEST", "{${System.currentTimeMillis()}} before sortFilterBottomSheet?.setDynamicFilterModel")
         sortFilterBottomSheet?.setDynamicFilterModel(model)
+        Log.i("SHOP_HOME_TEST", "{${System.currentTimeMillis()}} after sortFilterBottomSheet?.setDynamicFilterModel")
     }
 
     private fun addChangeProductGridSection(totalProductData: Int) {
@@ -499,16 +516,19 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
 
     private fun onSuccessCheckCampaignNplNotifyMe(data: CheckCampaignNotifyMeUiModel) {
         val isRegisterCampaign = data.action.toLowerCase() == NotifyMeAction.REGISTER.action.toLowerCase()
+        Log.i("SHOP_HOME_TEST", "{${System.currentTimeMillis()}} after isRegisterCampaign")
         shopHomeAdapter.updateRemindMeStatusCampaignNplWidgetData(
                 data.campaignId,
                 isRegisterCampaign,
                 true
         )
+        Log.i("SHOP_HOME_TEST", "{${System.currentTimeMillis()}} after if shopHomeAdapter.updateRemindMeStatusCampaignNplWidgetData")
         shopPageHomeTracking.clickNotifyMeButton(
                 isOwner,
                 data.action,
                 customDimensionShopPage
         )
+        Log.i("SHOP_HOME_TEST", "{${System.currentTimeMillis()}} after shopPageHomeTracking.clickNotifyMeButton")
         view?.let {
             Toaster.make(
                     it,
@@ -522,10 +542,12 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             )
             shopPageHomeTracking.impressionToasterActivation(isOwner, customDimensionShopPage)
         }
+        Log.i("SHOP_HOME_TEST", "{${System.currentTimeMillis()}} after view?.let {")
     }
 
     private fun onSuccessGetCampaignNplRemindMeStatusData(data: GetCampaignNotifyMeUiModel) {
         shopHomeAdapter.updateRemindMeStatusCampaignNplWidgetData(data.campaignId, data.isAvailable)
+        Log.i("SHOP_HOME_TEST", "{${System.currentTimeMillis()}} after shopHomeAdapter.updateRemindMeStatusCampaignNplWidgetData")
         if (getNplRemindMeClickedCampaignId() == data.campaignId && !data.isAvailable) {
             val nplCampaignModel = shopHomeAdapter.getNplCampaignUiModel(data.campaignId)
             nplCampaignModel?.let{
@@ -534,6 +556,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 setNplRemindMeClickedCampaignId("")
             }
         }
+        Log.i("SHOP_HOME_TEST", "{${System.currentTimeMillis()}} after if (getNplRemindMeClickedCampaignId() ")
     }
 
     private fun addProductListHeader() {
@@ -561,13 +584,16 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                         shopHomeProductViewModel.isWishList = checkWishlistResult.isWishlist
                     }
                 }
+                Log.i("SHOP_HOME_TEST", "{${System.currentTimeMillis()}} before shopHomeAdapter.updateProductWidgetData")
                 shopHomeAdapter.updateProductWidgetData(it.first)
+                Log.i("SHOP_HOME_TEST", "{${System.currentTimeMillis()}} after shopHomeAdapter.updateProductWidgetData")
             }
         }
     }
 
     private fun onSuccessGetYouTubeData(widgetId: String, data: YoutubeVideoDetailModel) {
         shopHomeAdapter.setHomeYouTubeData(widgetId, data)
+        Log.i("SHOP_HOME_TEST", "{${System.currentTimeMillis()}} after shopHomeAdapter.setHomeYouTubeData")
     }
 
     private fun onFailedGetYouTubeData(widgetId: String, throwable: Throwable) {
@@ -646,15 +672,21 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         if(ShopPageProductChangeGridRemoteConfig.isFeatureEnabled(remoteConfig)) {
             addChangeProductGridSection(totalProductData)
         }
+        Log.i("SHOP_HOME_TEST", "{${System.currentTimeMillis()}} before shopHomeAdapter.setProductListData")
         shopHomeAdapter.setProductListData(productList, isInitialData)
         updateScrollListenerState(hasNextPage)
+        Log.i("SHOP_HOME_TEST", "{${System.currentTimeMillis()}} after updateScrollListenerState")
     }
 
     private fun onSuccessGetShopHomeLayoutData(data: ShopPageHomeLayoutUiModel) {
         shopHomeAdapter.hideLoading()
+        Log.i("SHOP_HOME_TEST", "{${System.currentTimeMillis()}} after shopHomeAdapter.hideLoading")
         shopHomeAdapter.setHomeLayoutData(data.listWidget)
+        Log.i("SHOP_HOME_TEST", "{${System.currentTimeMillis()}} after shopHomeAdapter.setHomeLayoutData")
         checkProductWidgetWishListStatus(data)
+        Log.i("SHOP_HOME_TEST", "{${System.currentTimeMillis()}} after checkProductWidgetWishListStatus")
         checkCampaignNplWidgetRemindMeStatus(data)
+        Log.i("SHOP_HOME_TEST", "{${System.currentTimeMillis()}} after checkCampaignNplWidgetRemindMeStatus")
     }
 
     private fun checkCampaignNplWidgetRemindMeStatus(data: ShopPageHomeLayoutUiModel) {
