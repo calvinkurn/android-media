@@ -33,7 +33,6 @@ import com.tokopedia.developer_options.drawonpicture.presentation.fragment.DrawO
 import com.tokopedia.developer_options.presentation.feedbackpage.adapter.ImageFeedbackAdapter
 import com.tokopedia.developer_options.presentation.feedbackpage.di.FeedbackPageComponent
 import com.tokopedia.developer_options.presentation.feedbackpage.domain.model.BaseImageFeedbackUiModel
-import com.tokopedia.developer_options.presentation.feedbackpage.domain.model.CategoriesModel
 import com.tokopedia.developer_options.presentation.feedbackpage.domain.model.ImageFeedbackUiModel
 import com.tokopedia.developer_options.presentation.feedbackpage.domain.request.FeedbackFormRequest
 import com.tokopedia.developer_options.presentation.feedbackpage.listener.ImageClickListener
@@ -149,9 +148,8 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
                 data?.let {
                     val oldPath = it.getStringExtra(EXTRA_DRAW_IMAGE_URI_OLD)
                     val newUri = it.getParcelableExtra<Uri>(EXTRA_DRAW_IMAGE_URI)
-                    uriImage = newUri
-                    imageAdapter.setImageFeedbackData(feedbackPagePresenter.drawOnPictureResult(uriImage, oldPath))
-                    selectedImage = arrayListOf(uriImage.toString())
+                    imageAdapter.setImageFeedbackData(feedbackPagePresenter.drawOnPictureResult(newUri, oldPath))
+                    selectedImage.add(arrayListOf(uriImage).toString())
                 }
             }
            else -> super.onActivityResult(requestCode, resultCode, data)
@@ -186,7 +184,7 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
             if (screenshotData != null) {
 //                feedbackPagePresenter.getImageList(listOf(screenshotData.path))
                 imageAdapter.setImageFeedbackData(feedbackPagePresenter.screenshotImageResult(screenshotData))
-                selectedImage = arrayListOf(screenshotData.path)
+                selectedImage.add(arrayListOf(screenshotData.path).toString())
             }
         }
     }
@@ -207,8 +205,6 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
             codeName.startsWith("P") -> { codeName = getString(R.string.pie) }
             codeName.startsWith("Q") -> { codeName = getString(R.string.android10) }
         }
-
-//        feedbackPagePresenter.getCategories()
 
         deviceInfo = (StringBuilder().append(Build.MANUFACTURER).append(" ").append(Build.MODEL).toString())
         androidVersion = codeName
@@ -372,32 +368,53 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
         myPreferences?.setSubmitFlag(emailTokopedia, userSession?.userId.toString())
     }
 
-    override fun checkUriImage(feedbackId: Int) {
-        val screenshotData = uriImage?.let { handleItem(it) }
-        val originalFile = File(screenshotData?.path)
-        val imageSize = originalFile.length()/1000
+    override fun checkUriImage(feedbackId: Int, imageCount: Int) {
+        if (selectedImage.isNotEmpty()) {
+            val totalImage = selectedImage.size
+            var initCountImage = imageCount
+/*
+            val screenshotData = uriImage?.let { handleItem(it) }
+            val originalFile = File(screenshotData?.path)
+            val imageSize = originalFile.length()/1000*/
 
-        if (uriImage != null && imageSize > 250) {
-            screenshotData?.let { resizeImage(it) }
-            val resizedData = resizedUriImage?.let { handleItem(it) }
-            val resizedFile = File(resizedData?.path)
-            sendAttachment(feedbackId, resizedFile)
-        } else if (imageSize < 250) {
-            sendAttachment(feedbackId, originalFile)
-        }
-        else {
+            selectedImage.forEach { image ->
+                initCountImage++
+                val originalFile = File(image)
+                val imageSize = originalFile.length()/1000
+
+                if (imageSize > 250) {
+                    resizeImage(image)
+                    val resizedData = resizedUriImage?.let { handleItem(it) }
+                    val resizedFile = File(resizedData?.path)
+                    sendAttachment(feedbackId, resizedFile, totalImage, initCountImage)
+                } else {
+                    sendAttachment(feedbackId, originalFile, totalImage, initCountImage)
+                }
+
+            }
+
+            /*if (uriImage != null && imageSize > 250) {
+                screenshotData?.let { resizeImage(it) }
+                val resizedData = resizedUriImage?.let { handleItem(it) }
+                val resizedFile = File(resizedData?.path)
+                sendAttachment(feedbackId, resizedFile)
+            } else if (uriImage != null && imageSize < 250) {
+                sendAttachment(feedbackId, originalFile)
+            }*/
+        } else {
             feedbackPagePresenter.commitData(feedbackId)
         }
+
     }
 
-    private fun sendAttachment(feedbackId: Int, file: File) {
+    private fun sendAttachment(feedbackId: Int, file: File, totalImage: Int, countImage: Int) {
         val requestFile: RequestBody = RequestBody.create(MediaType.parse("image/*"), file)
         val fileData = MultipartBody.Part.createFormData("file", file.name, requestFile)
-        feedbackPagePresenter.sendAttachment(feedbackId, fileData)
+        feedbackPagePresenter.sendAttachment(feedbackId, fileData, totalImage, countImage)
     }
 
-    private fun resizeImage(data: ScreenshotData) {
-        val b = BitmapFactory.decodeFile(data.path)
+    private fun resizeImage(data: String) {
+        val b = BitmapFactory.decodeFile(data)
         val origWidth = b.width
         val origHeight = b.height
         val destHeight = 2480
@@ -424,8 +441,29 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
         Toast.makeText(activity, throwable.toString(), Toast.LENGTH_SHORT).show()
     }
 
-    override fun categoriesMapper(data: CategoriesModel) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun addImageClick() {
+        context?.let {
+            val builder = ImagePickerBuilder(getString(R.string.image_picker_title),
+                    intArrayOf(ImagePickerTabTypeDef.TYPE_GALLERY),
+                    GalleryType.ALL, ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB,
+                    ImagePickerBuilder.DEFAULT_MIN_RESOLUTION, ImageRatioTypeDef.ORIGINAL, true,
+                    null,
+                    ImagePickerMultipleSelectionBuilder(
+                            feedbackPagePresenter.getSelectedImageUrl(), null, -1, 5
+                    ))
+            val intent = ImagePickerActivity.getIntent(it, builder)
+            startActivityForResult(intent, REQUEST_CODE_IMAGE)
+        }
+    }
+
+    override fun onRemoveImageClick(item: BaseImageFeedbackUiModel) {
+        imageAdapter.setImageFeedbackData(feedbackPagePresenter.removeImage(item))
+    }
+
+    override fun onImageClick(data: ImageFeedbackUiModel, position: Int) {
+        val imageUriClicked = data.imageUrl
+        startActivityForResult(DrawOnPictureActivity.getIntent(requireContext(), Uri.parse(imageUriClicked)),
+                REQUEST_CODE_EDIT_IMAGE)
     }
 
     companion object {
@@ -449,30 +487,5 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
                 MediaStore.Images.Media.DISPLAY_NAME,
                 MediaStore.Images.Media.DATA
         )
-    }
-
-    override fun addImageClick() {
-        context?.let {
-            val builder = ImagePickerBuilder(getString(R.string.image_picker_title),
-                    intArrayOf(ImagePickerTabTypeDef.TYPE_GALLERY),
-                    GalleryType.ALL, ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB,
-                    ImagePickerBuilder.DEFAULT_MIN_RESOLUTION, ImageRatioTypeDef.ORIGINAL, true,
-                    null,
-                    ImagePickerMultipleSelectionBuilder(
-                            feedbackPagePresenter.getSelectedImageUrl(), null, -1, 5
-            ))
-            val intent = ImagePickerActivity.getIntent(it, builder)
-            startActivityForResult(intent, REQUEST_CODE_IMAGE)
-        }
-    }
-
-    override fun onRemoveImageClick(item: BaseImageFeedbackUiModel) {
-        imageAdapter.setImageFeedbackData(feedbackPagePresenter.removeImage(item))
-    }
-
-    override fun onImageClick(data: ImageFeedbackUiModel, position: Int) {
-        val imageUriClicked = data.imageUrl
-        startActivityForResult(DrawOnPictureActivity.getIntent(requireContext(), Uri.parse(imageUriClicked)),
-                REQUEST_CODE_EDIT_IMAGE)
     }
 }

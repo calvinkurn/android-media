@@ -1,12 +1,12 @@
 package com.tokopedia.developer_options.presentation.feedbackpage.ui.feedbackpage
 
 import android.net.Uri
+import android.util.Log
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.developer_options.api.ApiClient
 import com.tokopedia.developer_options.api.FeedbackApiInterface
 import com.tokopedia.developer_options.presentation.feedbackpage.domain.model.*
 import com.tokopedia.developer_options.presentation.feedbackpage.domain.request.FeedbackFormRequest
-import com.tokopedia.developer_options.presentation.feedbackpage.domain.response.CategoriesResponse
 import com.tokopedia.developer_options.presentation.feedbackpage.domain.response.FeedbackFormResponse
 import com.tokopedia.developer_options.presentation.feedbackpage.domain.response.ImageResponse
 import com.tokopedia.screenshot_observer.ScreenshotData
@@ -23,7 +23,7 @@ class FeedbackPagePresenter(private val compositeSubscription: CompositeSubscrip
     private val feedbackApi: FeedbackApiInterface = ApiClient.getAPIService()
     private var imageData: MutableList<BaseImageFeedbackUiModel> = mutableListOf()
 
-    override fun getCategories() {
+    /*override fun getCategories() {
         feedbackApi.getCategories()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -45,7 +45,7 @@ class FeedbackPagePresenter(private val compositeSubscription: CompositeSubscrip
                     }
 
                 })
-    }
+    }*/
 
     override fun sendFeedbackForm(feedbackFormRequest: FeedbackFormRequest) {
         view.showLoadingDialog()
@@ -57,7 +57,7 @@ class FeedbackPagePresenter(private val compositeSubscription: CompositeSubscrip
                             override fun onNext(t: FeedbackFormResponse?) {
                                 view.setSubmitFlag()
                                 if (t != null) {
-                                    view.checkUriImage(t.data.feedbackID)
+                                    view.checkUriImage(t.data.feedbackID, 0)
                                 }
                             }
 
@@ -76,14 +76,18 @@ class FeedbackPagePresenter(private val compositeSubscription: CompositeSubscrip
 
     }
 
-    override fun sendAttachment(feedbackId: Int, filedata: MultipartBody.Part) {
+    override fun sendAttachment(feedbackId: Int, filedata: MultipartBody.Part, totalImage: Int, imageCount: Int) {
         feedbackApi.uploadAttachment("/api/v1/feedback/$feedbackId/upload-attachment", filedata)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(object : Subscriber<ImageResponse>() {
                     override fun onNext(t: ImageResponse?) {
-                        view.hideLoadingDialog()
-                        commitData(feedbackId)
+                        if (totalImage == imageCount) {
+                            Log.d("TOTAL_IMAGE", totalImage.toString())
+                            Log.d("TOTAL_IMAGE_COUNT", imageCount.toString())
+                            view.hideLoadingDialog()
+                            commitData(feedbackId)
+                        }
                     }
 
                     override fun onCompleted() {
