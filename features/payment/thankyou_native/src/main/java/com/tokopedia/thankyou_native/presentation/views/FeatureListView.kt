@@ -37,8 +37,10 @@ class FeatureListView @JvmOverloads constructor(
     }
 
     fun addData(featureEngineData: FeatureEngineData) {
-        findViewById<TextView>(R.id.tvFeatureTitle).text = featureEngineData.title
-        findViewById<TextView>(R.id.tvFeatureDescription).text = featureEngineData.description
+        findViewById<TextView>(R.id.tvFeatureTitle).text = if (featureEngineData.title.isNotEmpty())
+            featureEngineData.title else context.getString(R.string.thank_special_feature_for_you)
+        findViewById<TextView>(R.id.tvFeatureDescription).text = if (featureEngineData.description.isNotEmpty())
+            featureEngineData.description else context.getString(R.string.thank_lets_try_feature)
         recyclerView = findViewById(R.id.recyclerView)
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.adapter = adapter
