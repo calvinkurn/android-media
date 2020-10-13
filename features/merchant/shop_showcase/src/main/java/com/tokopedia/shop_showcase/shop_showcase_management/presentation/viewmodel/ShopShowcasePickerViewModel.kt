@@ -39,6 +39,10 @@ class ShopShowcasePickerViewModel @Inject constructor(
     fun getShopShowcaseListAsSeller() {
         launchCatchError(block = {
             withContext(dispatchers.io()) {
+                getShopShowcaseListSellerUseCase.params = GetShopShowcaseListSellerUseCase.createRequestParams(
+                        // set withDefault to false to avoid get default generated showcase
+                        withDefault = false
+                )
                 val shopShowcaseData = getShopShowcaseListSellerUseCase.executeOnBackground()
                 shopShowcaseData.let {
                     _getListSellerShopShowcaseResponse.postValue(Success(it))
