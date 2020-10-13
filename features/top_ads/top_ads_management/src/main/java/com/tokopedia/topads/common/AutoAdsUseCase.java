@@ -1,4 +1,4 @@
-package com.tokopedia.topads.auto.data;
+package com.tokopedia.topads.common;
 
 import android.content.Context;
 
@@ -7,7 +7,6 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
-import com.tokopedia.topads.auto.R;
 import com.tokopedia.topads.common.data.response.TopAdsAutoAdsData;
 import com.tokopedia.topads.common.data.response.TopAdsAutoAds;
 import com.tokopedia.usecase.RequestParams;
@@ -54,7 +53,7 @@ public class AutoAdsUseCase extends UseCase<TopAdsAutoAdsData> {
         RequestParams params = RequestParams.create();
         params.putInt(SHOP_ID, Integer.parseInt(session.getShopId()));
         return new GraphqlRequest(
-                GraphqlHelper.loadRawString(context.getResources(), R.raw.query_get_autoads),
+                GraphqlHelper.loadRawString(context.getResources(), R.raw.query_auto_ads_status),
                 TopAdsAutoAds.Response.class, params.getParameters()
         );
     }
