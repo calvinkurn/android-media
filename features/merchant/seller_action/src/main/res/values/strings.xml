@@ -9,4 +9,9 @@
 
     //Order Slice
     <string name="seller_action_order_title">Order Anda</string>
+
+    //Review Slice
+    <string name="seller_action_review_title">Review Anda</string>
+    <string name="seller_action_review_item_title">From: %s | %s</string>
+    <string name="seller_action_review_item_desc">(%s stars) | %s</string>
 </resources>

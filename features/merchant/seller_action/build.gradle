@@ -27,9 +27,6 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.miscDependencies.slice
     implementation rootProject.ext.networkDependencies.glide
-    implementation (rootProject.ext.serviceDependencies.crashlytics) {
-        transitive = true
-    }
 }
 
 project.ext {

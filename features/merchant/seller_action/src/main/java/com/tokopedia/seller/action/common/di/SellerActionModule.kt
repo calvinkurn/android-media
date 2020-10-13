@@ -6,9 +6,10 @@ import android.os.Looper
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.seller.action.common.dispatcher.SellerActionDispatcher
 import com.tokopedia.seller.action.common.dispatcher.SellerActionDispatcherProvider
+import com.tokopedia.seller.action.common.presentation.presenter.SliceSellerActionPresenter
+import com.tokopedia.seller.action.common.presentation.presenter.SliceSellerActionPresenterImpl
 import com.tokopedia.seller.action.order.domain.usecase.SliceMainOrderListUseCase
-import com.tokopedia.seller.action.order.presentation.presenter.SliceSellerActionPresenter
-import com.tokopedia.seller.action.order.presentation.presenter.SliceSellerActionPresenterImpl
+import com.tokopedia.seller.action.review.domain.usecase.SliceReviewStarsUseCase
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -38,8 +39,9 @@ class SellerActionModule(private val context: Context) {
     @Provides
     fun provideSellerActionPresenter(
             sliceMainOrderListUseCase: SliceMainOrderListUseCase,
+            sliceReviewStarsUseCase: SliceReviewStarsUseCase,
             dispatcher: SellerActionDispatcherProvider): SliceSellerActionPresenter {
-        return SliceSellerActionPresenterImpl(sliceMainOrderListUseCase, dispatcher)
+        return SliceSellerActionPresenterImpl(sliceMainOrderListUseCase, sliceReviewStarsUseCase, dispatcher)
     }
 
 }

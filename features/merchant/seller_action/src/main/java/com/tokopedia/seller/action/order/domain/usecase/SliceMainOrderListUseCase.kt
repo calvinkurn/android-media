@@ -14,21 +14,6 @@ import javax.inject.Inject
 class SliceMainOrderListUseCase @Inject constructor(private val gqlRepository: GraphqlRepository)
     : UseCase<List<Order>>() {
 
-    var params: RequestParams = RequestParams.EMPTY
-
-    override suspend fun executeOnBackground(): List<Order> {
-        val request = GraphqlRequest(QUERY, SellerActionOrder::class.java, params.parameters)
-        val response = gqlRepository.getReseponse(listOf(request))
-
-        val errors = response.getError(SellerActionOrder::class.java)
-        if (errors.isNullOrEmpty()) {
-            val data = response.getData<SellerActionOrder>(SellerActionOrder::class.java)
-            return data.orderList.orders
-        } else {
-            throw MessageErrorException(errors.joinToString(", ") { it.message })
-        }
-    }
-
     companion object {
         private const val QUERY = "query OrderList(\$input: OrderListArgs!) {\n" +
                 "              orderList(input: \$input) {\n" +
@@ -59,7 +44,21 @@ class SliceMainOrderListUseCase @Inject constructor(private val gqlRepository: G
                         )}
                     )
                 }
+    }
 
+    var params: RequestParams = RequestParams.EMPTY
+
+    override suspend fun executeOnBackground(): List<Order> {
+        val request = GraphqlRequest(QUERY, SellerActionOrder::class.java, params.parameters)
+        val response = gqlRepository.getReseponse(listOf(request))
+
+        val errors = response.getError(SellerActionOrder::class.java)
+        if (errors.isNullOrEmpty()) {
+            val data = response.getData<SellerActionOrder>(SellerActionOrder::class.java)
+            return data.orderList.orders
+        } else {
+            throw MessageErrorException(errors.joinToString(", ") { it.message })
+        }
     }
 
 }
