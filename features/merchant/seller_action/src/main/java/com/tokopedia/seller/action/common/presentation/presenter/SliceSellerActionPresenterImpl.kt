@@ -7,7 +7,9 @@ import com.tokopedia.kotlin.extensions.getCalculatedFormattedDate
 import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.seller.action.common.dispatcher.SellerActionDispatcherProvider
 import com.tokopedia.seller.action.common.exception.SellerActionException
+import com.tokopedia.seller.action.order.domain.mapper.SellerActionOrderCodeMapper
 import com.tokopedia.seller.action.order.domain.model.Order
+import com.tokopedia.seller.action.order.domain.model.SellerActionOrderType
 import com.tokopedia.seller.action.order.domain.usecase.SliceMainOrderListUseCase
 import com.tokopedia.seller.action.review.domain.model.InboxReviewList
 import com.tokopedia.seller.action.review.domain.usecase.SliceReviewStarsUseCase
@@ -31,8 +33,8 @@ class SliceSellerActionPresenterImpl(
     private val mOrderListLiveData = MutableLiveData<Result<Pair<Uri, List<Order>>>>()
     private val mReviewStarsListLiveData = MutableLiveData<Result<Pair<Uri, List<InboxReviewList>>>>()
 
-    override fun getOrderList(sliceUri: Uri): LiveData<Result<Pair<Uri, List<Order>>>> {
-        loadMainOrderList(sliceUri)
+    override fun getOrderList(sliceUri: Uri, @SellerActionOrderType orderType: String): LiveData<Result<Pair<Uri, List<Order>>>> {
+        loadMainOrderList(sliceUri, orderType)
         return mOrderListLiveData
     }
 
@@ -41,10 +43,10 @@ class SliceSellerActionPresenterImpl(
         return mReviewStarsListLiveData
     }
 
-    private fun loadMainOrderList(sliceUri: Uri) {
+    private fun loadMainOrderList(sliceUri: Uri, @SellerActionOrderType orderType: String) {
         GlobalScope.launch(dispatcher.io()) {
             try {
-                getSliceMainOrderList(sliceUri)
+                getSliceMainOrderList(sliceUri, orderType)
             } catch (ex: Exception) {
                 mOrderListLiveData.postValue(Fail(SellerActionException(sliceUri, ex.message.orEmpty())))
             }
@@ -61,14 +63,15 @@ class SliceSellerActionPresenterImpl(
         }
     }
 
-    private suspend fun getSliceMainOrderList(sliceUri: Uri) {
+    private suspend fun getSliceMainOrderList(sliceUri: Uri, @SellerActionOrderType orderType: String) {
         val startDate = getCalculatedFormattedDate(DATE_FORMAT, DAYS_BEFORE)
         val endDate = Date().toFormattedString(DATE_FORMAT)
         with(sliceMainOrderListUseCase) {
-            params = SliceMainOrderListUseCase.createRequestParam(startDate, endDate)
+            params = SliceMainOrderListUseCase.createRequestParam(startDate, endDate, SellerActionOrderCodeMapper.mapOrderCodeByType(orderType))
             mOrderListLiveData.postValue(Success(Pair(sliceUri, executeOnBackground())))
         }
     }
+
 
     private suspend fun getSliceReviewStarsList(sliceUri: Uri, stars: Int) {
         with(sliceReviewStarsUseCase) {

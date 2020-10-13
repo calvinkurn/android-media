@@ -21,6 +21,7 @@ import com.tokopedia.seller.action.common.presentation.presenter.SliceSellerActi
 import com.tokopedia.seller.action.common.presentation.slices.SellerFailureSlice
 import com.tokopedia.seller.action.common.presentation.slices.SellerSlice
 import com.tokopedia.seller.action.order.domain.model.Order
+import com.tokopedia.seller.action.order.domain.model.SellerActionOrderType
 import com.tokopedia.seller.action.order.presentation.mapper.SellerOrderMapper
 import com.tokopedia.seller.action.review.domain.model.InboxReviewList
 import com.tokopedia.seller.action.review.presentation.mapper.SellerReviewStarsMapper
@@ -79,7 +80,9 @@ class SellerActionSliceProvider: SliceProvider(){
     private var reviewStarsListLiveData: LiveData<Result<Pair<Uri, List<InboxReviewList>>>>? = null
 
     override fun onCreateSliceProvider(): Boolean {
-        context?.let { GraphqlClient.init(it) }
+        context?.let {
+            GraphqlClient.init(it)
+        }
         injectDependencies()
         LocalCacheHandler(context, APPLINK_DEBUGGER)
         return context != null
@@ -91,8 +94,10 @@ class SellerActionSliceProvider: SliceProvider(){
                 when(sliceUri.path) {
                     SellerActionConst.Deeplink.ORDER -> {
                         if (!isOrderListHasLoaded) {
-                            orderListLiveData = getOrderListLiveData(sliceUri)
-                            isOrderListHasLoaded = false
+                            (sliceUri.getQueryParameter(SellerActionConst.Params.ORDER_TYPE) ?: SellerActionOrderType.ORDER_DEFAULT).let { orderType ->
+                                orderListLiveData = getOrderListLiveData(sliceUri, orderType)
+                                isOrderListHasLoaded = false
+                            }
                         }
                     }
                     SellerActionConst.Deeplink.STARS -> {
@@ -121,7 +126,6 @@ class SellerActionSliceProvider: SliceProvider(){
     @RequiresApi(Build.VERSION_CODES.KITKAT)
     private fun createNewSlice(sliceUri: Uri): SellerSlice {
         val notNullContext = requireNotNull(context)
-
         val status =
                 when (sliceUri.path) {
                     SellerActionConst.Deeplink.ORDER -> getStatus(orderListLiveData, sellerOrderObserver)
@@ -174,8 +178,8 @@ class SellerActionSliceProvider: SliceProvider(){
         context?.contentResolver?.notifyChange(sliceUri, null)
     }
 
-    private fun getOrderListLiveData(sliceUri: Uri) =
-            sliceSellerActionPresenter.getOrderList(sliceUri).apply {
+    private fun getOrderListLiveData(sliceUri: Uri, @SellerActionOrderType orderType: String) =
+            sliceSellerActionPresenter.getOrderList(sliceUri, orderType).apply {
                 handler.post {
                     observeForever(sellerOrderObserver)
                 }

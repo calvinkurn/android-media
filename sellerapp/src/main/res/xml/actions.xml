@@ -3,7 +3,11 @@
     <action intentName="actions.intent.GET_ORDER">
         <fulfillment
             fulfillmentMode="actions.fulfillment.SLICE"
-            urlTemplate="content://com.tokopedia.seller.action.slices/order">
+            urlTemplate="content://com.tokopedia.seller.action.slices/order{?orderType}">
+            <parameter-mapping
+                intentParameter="order.type"
+                required="false"
+                urlParameter="orderType"/>
         </fulfillment>
     </action>
     <action intentName="action.intent.GET_REVIEW">

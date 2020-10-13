@@ -9,11 +9,7 @@ object SellerActionConst {
 
     object Params {
         internal const val RATING = "rating"
-    }
-
-    object Som {
-        internal const val STATUS_CODE_ORDER_CREATED = 220
-        internal const val STATUS_CODE_ORDER_ORDER_CONFIRMED = 400
+        internal const val ORDER_TYPE = "orderType"
     }
 
 }

@@ -3,7 +3,6 @@ package com.tokopedia.seller.action.order.domain.usecase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.seller.action.common.const.SellerActionConst
 import com.tokopedia.seller.action.order.domain.model.Order
 import com.tokopedia.seller.action.order.domain.model.SellerActionOrder
 import com.tokopedia.seller.action.order.domain.param.SellerActionOrderListParam
@@ -33,16 +32,14 @@ class SliceMainOrderListUseCase @Inject constructor(private val gqlRepository: G
 
         @JvmStatic
         fun createRequestParam(startDate: String,
-                               endDate: String): RequestParams =
+                               endDate: String,
+                               statusList: List<Int>): RequestParams =
                 RequestParams.create().apply {
                     putObject(INPUT_KEY, SellerActionOrderListParam().also {
                         it.startDate = startDate
                         it.endDate = endDate
-                        it.statusList = listOf(
-                                SellerActionConst.Som.STATUS_CODE_ORDER_CREATED,
-                                SellerActionConst.Som.STATUS_CODE_ORDER_ORDER_CONFIRMED
-                        )}
-                    )
+                        it.statusList = statusList
+                    })
                 }
     }
 
