@@ -34,8 +34,8 @@ class ReviewPendingViewModel @Inject constructor(
     val reviewList: LiveData<ReviewViewState<ProductrevWaitForFeedbackResponse>>
         get() = _reviewList
 
-    private var _incentiveOvo = MutableLiveData<Result<ProductRevIncentiveOvoDomain>>()
-    val incentiveOvo: LiveData<Result<ProductRevIncentiveOvoDomain>>
+    private var _incentiveOvo = MutableLiveData<Result<ProductRevIncentiveOvoDomain>?>()
+    val incentiveOvo: LiveData<Result<ProductRevIncentiveOvoDomain>?>
         get() = _incentiveOvo
 
     fun getReviewData(page: Int, isRefresh: Boolean = false) {
@@ -55,8 +55,14 @@ class ReviewPendingViewModel @Inject constructor(
 
     fun getProductIncentiveOvo() {
         launchCatchError(block = {
-            val data = withContext(Dispatchers.IO) { getProductIncentiveOvo.getIncentiveOvo() }
-            _incentiveOvo.postValue(CoroutineSuccess(data))
+            val data = withContext(Dispatchers.IO) {
+                getProductIncentiveOvo.getIncentiveOvo()
+            }
+            if(data == null) {
+                _incentiveOvo.postValue(null)
+            } else {
+                _incentiveOvo.postValue(CoroutineSuccess(data))
+            }
         }) {
             _incentiveOvo.postValue(CoroutineFail(it))
         }

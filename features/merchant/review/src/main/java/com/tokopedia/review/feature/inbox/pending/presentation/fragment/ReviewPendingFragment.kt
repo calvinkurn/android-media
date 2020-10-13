@@ -13,16 +13,14 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.loadImage
-import com.tokopedia.kotlin.extensions.view.removeObservers
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.review.R
 import com.tokopedia.review.ReviewInstance
 import com.tokopedia.review.common.analytics.ReviewPerformanceMonitoringContract
@@ -294,6 +292,7 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
             when (it) {
                 is CoroutineSucess -> onSuccessGetIncentiveOvo(it.data)
                 is CoroutineFail -> onErrorGetIncentiveOvo()
+                else -> onSuccessGetIncentiveOvo(null)
             }
         })
     }
@@ -334,8 +333,8 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
         })
     }
 
-    private fun onSuccessGetIncentiveOvo(data: ProductRevIncentiveOvoDomain) {
-        data.productrevIncentiveOvo?.ticker?.let {
+    private fun onSuccessGetIncentiveOvo(data: ProductRevIncentiveOvoDomain?) {
+        data?.productrevIncentiveOvo?.ticker?.let {
             ReviewTracking.onSuccessGetIncentiveOvoTracker(it.title, ReviewInboxTrackingConstants.PENDING_TAB)
             it.let {
                 ovoPointsTicker.apply {
@@ -371,6 +370,7 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
                 }
                 setShowListener {
                     bottomSheetWrapper.setPadding(0, 16.toPx(), 0, 0)
+                    bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED
                 }
                 initView(view, productRevIncentiveOvoDomain, ovoIncentiveBottomSheet)
             }
@@ -404,10 +404,11 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
                 layoutManager = LinearLayoutManager(context)
                 adapter = adapterIncentiveOvo
             }
-            isFullpage = false
             showKnob = true
             showCloseIcon = false
             showHeader = false
+            isHideable = true
+            isDragable = true
         }
     }
 

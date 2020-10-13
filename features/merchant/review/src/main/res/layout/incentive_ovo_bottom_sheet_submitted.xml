@@ -59,6 +59,7 @@
         android:layout_height="wrap_content"
         android:text="@string/review_create_later"
         android:layout_marginTop="@dimen/layout_lvl1"
+        android:visibility="gone"
         app:unifyButtonVariant="text"
         app:unifyButtonSize="medium"
         app:layout_constraintTop_toBottomOf="@id/incentiveOvoSendAnother"/>

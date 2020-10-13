@@ -20,6 +20,7 @@ import com.airbnb.lottie.LottieAnimationView
 import com.airbnb.lottie.LottieCompositionFactory
 import com.airbnb.lottie.LottieDrawable
 import com.crashlytics.android.Crashlytics
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
@@ -221,6 +222,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
             when (it) {
                 is CoroutineSuccess -> onSuccessGetIncentiveOvo(it.data)
                 is CoroutineFail -> onErrorGetIncentiveOvo()
+                else -> onSuccessGetIncentiveOvo(null)
             }
         })
 
@@ -574,11 +576,11 @@ class CreateReviewFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun onSuccessGetIncentiveOvo(data: ProductRevIncentiveOvoDomain) {
+    private fun onSuccessGetIncentiveOvo(data: ProductRevIncentiveOvoDomain?) {
         if (shouldShowThankYouBottomSheet) {
             showThankYouBottomSheet()
         }
-        data.productrevIncentiveOvo?.let {
+        data?.productrevIncentiveOvo?.let {
             if (ovoIncentiveAmount != 0) {
                 ovoIncentiveAmount = it.amount
             }
@@ -600,6 +602,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
                                     }
                                     setShowListener {
                                         bottomSheetWrapper.setPadding(0, 16.toPx(), 0, 0)
+                                        bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED
                                     }
                                 }
                             }
@@ -661,14 +664,15 @@ class CreateReviewFragment : BaseDaggerFragment(),
                 layoutManager = LinearLayoutManager(context)
                 adapter = adapterIncentiveOvo
             }
-            isFullpage = false
             showKnob = true
             showCloseIcon = false
             showHeader = false
+            isHideable = true
+            isDragable = true
         }
     }
 
-    private fun initThankYouView(view: View, productRevIncentiveOvoDomain: ProductRevIncentiveOvoDomain, bottomSheet: BottomSheetUnify?) {
+    private fun initThankYouView(view: View, productRevIncentiveOvoDomain: ProductRevIncentiveOvoDomain?, bottomSheet: BottomSheetUnify?) {
         bottomSheet?.run {
             val incentiveOvoSubmittedImage = view.findViewById<AppCompatImageView>(R.id.incentiveOvoSubmittedImage)
             val incentiveOvoSubmittedTitle: com.tokopedia.unifyprinciples.Typography? = view.findViewById(R.id.incentiveOvoSubmittedTitle)
@@ -679,20 +683,30 @@ class CreateReviewFragment : BaseDaggerFragment(),
                 incentiveOvoSubmittedImage?.loadImage(THANK_YOU_BOTTOMSHEET_IMAGE_URL)
                 incentiveOvoSubmittedTitle?.text = context.getString(R.string.review_create_thank_you_title)
                 incentiveOvoSubmittedSubtitle?.text = context.getString(R.string.review_create_thank_you_subtitle, ovoIncentiveAmount)
-                productRevIncentiveOvoDomain.let {
+                productRevIncentiveOvoDomain?.let {
                     incentiveOvoSendAnother?.apply {
                         setOnClickListener {
                             dismiss()
                             goToReviewPending()
                         }
                     }
-                    incentiveOvoLater?.setOnClickListener {
+                    incentiveOvoLater?.apply {
+                        setOnClickListener {
+                            dismiss()
+                            finishIfRoot(true)
+                        }
+                        show()
+                    }
+                    return
+                }
+                incentiveOvoSendAnother?.apply {
+                    text = context.getString(R.string.review_create_thank_you_default_button)
+                    setOnClickListener {
                         dismiss()
                         finishIfRoot(true)
                     }
                 }
             }
-            isFullpage = false
         }
     }
 

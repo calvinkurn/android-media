@@ -45,8 +45,8 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
     val getReputationDataForm: LiveData<Result<ProductRevGetForm>>
             get() = reputationDataForm
 
-    private var _incentiveOvo = MutableLiveData<Result<ProductRevIncentiveOvoDomain>>()
-    val incentiveOvo: LiveData<Result<ProductRevIncentiveOvoDomain>> = _incentiveOvo
+    private var _incentiveOvo = MutableLiveData<Result<ProductRevIncentiveOvoDomain>?>()
+    val incentiveOvo: LiveData<Result<ProductRevIncentiveOvoDomain>?> = _incentiveOvo
 
     private val _reviewDetails = MutableLiveData<ReviewViewState<ProductrevGetReviewDetail>>()
     val reviewDetails: LiveData<ReviewViewState<ProductrevGetReviewDetail>>
@@ -191,7 +191,12 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
             val data = withContext(coroutineDispatcherProvider.io()) {
                 getProductIncentiveOvo.getIncentiveOvo(productId, reputationId)
             }
-            _incentiveOvo.postValue(CoroutineSuccess(data))
+            if(data == null) {
+                _incentiveOvo.postValue(null)
+            } else {
+                _incentiveOvo.postValue(CoroutineSuccess(data))
+            }
+
         }) {
             _incentiveOvo.postValue(CoroutineFail(it))
         }
