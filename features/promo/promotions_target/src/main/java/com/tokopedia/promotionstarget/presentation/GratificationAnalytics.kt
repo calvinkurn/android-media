@@ -33,41 +33,38 @@ object GratificationAnalytics {
         return TrackApp.getInstance().gtm
     }
 
-    //3
-    fun userClickMainCtaThankYou() {}
+    //3 thank you
+    fun userClickMainCtaThankYou() {
 
-    //4
+    }
+
+    //4 thank you
     fun userDismissPopUpThankYou() {}
 
     //5,7,10,12,14
     fun userClickMainCtaPush(userId: String,
                              entryPoint: Int,
                              popupType: String,
-                             baseCode: String,
-                             eventId: String,
-                             screenName:String,
-                             isUsedOrExpired:Boolean
+                             baseCode: String?,
+                             eventId: String?,
+                             screenName: String,
+                             action: String
     ) {
         val map = mutableMapOf<String, Any>()
 
         map[KEY_EVENT] = GratifEvents.CLICK_GRATIF
         map[KEY_EVENT_CATEGORY] = GratifCategory.BOTTOM_SHEET_GRATIFICATION
-
-        if(isUsedOrExpired){
-            map[KEY_EVENT_ACTION] = GratifActions.CLICK_LANJUT_BERBELANJA
-        }else{
-            map[KEY_EVENT_ACTION] = GratifActions.CLICK_YUK_BELANJA_HEMAT
-        }
-
+        map[KEY_EVENT_ACTION] = action
         map[KEY_EVENT_LABEL] = "$entryPoint - $popupType - $baseCode - $eventId"
         map[KEY_CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
         map[KEY_SCREEN_NAME] = screenName
         map[KEY_USER_ID] = userId
         map[KEY_BUSINESS_UNIT] = PROMO
+        getTracker().sendGeneralEvent(map)
     }
 
-    //6,9,11,15
-    fun userDismissPopup(userId: String, entryPoint: Int, popupType: String, baseCode: String, eventId: String, screenName:String) {
+    //6,9,11,13,15
+    fun userDismissPopup(userId: String, entryPoint: Int, popupType: String?, baseCode: String?, eventId: String?, screenName: String) {
         val map = mutableMapOf<String, Any>()
 
         map[KEY_EVENT] = GratifEvents.CLICK_GRATIF
@@ -78,10 +75,11 @@ object GratificationAnalytics {
         map[KEY_SCREEN_NAME] = screenName
         map[KEY_USER_ID] = userId
         map[KEY_BUSINESS_UNIT] = PROMO
+        getTracker().sendGeneralEvent(map)
     }
 
     //8
-    fun userClickSecondaryCtaPush(userId: String, entryPoint: Int, popupType: String, baseCode: String, eventId: String, screenName:String) {
+    fun userClickSecondaryCtaPush(userId: String, entryPoint: Int, popupType: String, baseCode: String?, eventId: String?, screenName: String) {
         val map = mutableMapOf<String, Any>()
 
         map[KEY_EVENT] = GratifEvents.CLICK_GRATIF
@@ -92,5 +90,6 @@ object GratificationAnalytics {
         map[KEY_SCREEN_NAME] = screenName
         map[KEY_USER_ID] = userId
         map[KEY_BUSINESS_UNIT] = PROMO
+        getTracker().sendGeneralEvent(map)
     }
 }

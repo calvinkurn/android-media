@@ -3,7 +3,6 @@ package com.tokopedia.promotionstarget.domain.presenter
 import android.app.Activity
 import android.app.Application
 import android.content.DialogInterface
-import android.util.Log
 import androidx.annotation.IntDef
 import androidx.annotation.StringDef
 import com.tokopedia.promotionstarget.data.coupon.TokopointsCouponDetailResponse
@@ -27,7 +26,9 @@ import com.tokopedia.promotionstarget.domain.presenter.GratifPopupIngoreType.Com
 import com.tokopedia.promotionstarget.domain.presenter.GratifPopupIngoreType.Companion.UNKOWN_ERROR
 import com.tokopedia.promotionstarget.domain.usecase.NotificationUseCase
 import com.tokopedia.promotionstarget.domain.usecase.TokopointsCouponDetailUseCase
+import com.tokopedia.promotionstarget.presentation.GratificationAnalyticsHelper
 import com.tokopedia.promotionstarget.presentation.ui.dialog.CmGratificationDialog
+import com.tokopedia.user.session.UserSession
 import kotlinx.coroutines.*
 import timber.log.Timber
 import java.lang.ref.WeakReference
@@ -37,6 +38,7 @@ import javax.inject.Named
 
 class GratificationPresenter @Inject constructor(val application: Application) {
     val TAG = "GratifTag"
+
     @Inject
     lateinit var notificationUseCase: NotificationUseCase
 
@@ -69,7 +71,8 @@ class GratificationPresenter @Inject constructor(val application: Application) {
                                 notificationID: Int,
                                 @NotificationEntryType notificationEntryType: Int,
                                 paymentID: Int = 0,
-                                gratifPopupCallback: GratifPopupCallback? = null): Job? {
+                                gratifPopupCallback: GratifPopupCallback? = null,
+                                screenName: String): Job? {
         return scope?.launch(worker + ceh) {
 
             val map = notificationUseCase.getQueryParams(notificationID, notificationEntryType, paymentID)
@@ -91,13 +94,13 @@ class GratificationPresenter @Inject constructor(val application: Application) {
                         withContext(uiWorker) {
                             weakActivity.get()?.let { activity ->
                                 if (notificationEntryType == NotificationEntryType.PUSH) {
-                                    performShowDialog(activity, notifResponse.response, couponDetail, notificationEntryType, gratifPopupCallback)
+                                    performShowDialog(activity, notifResponse.response, couponDetail, notificationEntryType, gratifPopupCallback, screenName)
                                 } else if (CmGratificationDialog.weakHashMap[activity] != null) {
-                                    Timber.d("$TAG Android Side ERROR pop-up is already visible for screen name = ${activity::class.java.name}")
+                                    Timber.d("$TAG Android Side ERROR pop-up is already visible for screen name = $screenName")
                                     gratifPopupCallback?.onIgnored(GratifPopupIngoreType.DIALOG_ALREADY_ACTIVE)
                                 } else {
                                     Timber.d("$TAG ALL GOOD show dialog, notifId=$notificationID")
-                                    performShowDialog(activity, notifResponse.response, couponDetail, notificationEntryType, gratifPopupCallback)
+                                    performShowDialog(activity, notifResponse.response, couponDetail, notificationEntryType, gratifPopupCallback, screenName)
                                 }
                             }
                         }
@@ -121,7 +124,8 @@ class GratificationPresenter @Inject constructor(val application: Application) {
                                   gratifNotification: GratifNotification,
                                   couponDetail: TokopointsCouponDetailResponse,
                                   @NotificationEntryType notificationEntryType: Int,
-                                  gratifPopupCallback: GratifPopupCallback? = null
+                                  gratifPopupCallback: GratifPopupCallback? = null,
+                                  screenName: String
     ) {
 
         val dialog = CmGratificationDialog().show(activity,
@@ -132,12 +136,14 @@ class GratificationPresenter @Inject constructor(val application: Application) {
                     if (dialog != null) {
                         gratifPopupCallback?.onShow(dialog)
                     }
-                })
+                }, screenName)
         CmGratificationDialog.weakHashMap[activity] = true
 
         dialog?.setOnDismissListener { dialogInterface ->
             CmGratificationDialog.weakHashMap.remove(activity)
             gratifPopupCallback?.onDismiss(dialogInterface)
+            val userId = UserSession(activity).userId
+            GratificationAnalyticsHelper.handleDismiss(userId, notificationEntryType, gratifNotification, couponDetail, screenName)
         }
         dialog?.setOnCancelListener { dialogInterface ->
             CmGratificationDialog.weakHashMap.remove(activity)
@@ -149,7 +155,8 @@ class GratificationPresenter @Inject constructor(val application: Application) {
     fun showGratificationInApp(weakActivity: WeakReference<Activity>,
                                gratificationId: String?,
                                @NotificationEntryType notificationEntryType: Int,
-                               gratifPopupCallback: GratifPopupCallback
+                               gratifPopupCallback: GratifPopupCallback,
+                               screenName: String
     ): Job? {
         try {
 
@@ -158,7 +165,7 @@ class GratificationPresenter @Inject constructor(val application: Application) {
                 initSafeScope()
             }
             if (!gratificationId.isNullOrEmpty()) {
-                return getNotification(weakActivity, gratificationId.toInt(), notificationEntryType, gratifPopupCallback = gratifPopupCallback)
+                return getNotification(weakActivity, gratificationId.toInt(), notificationEntryType, gratifPopupCallback = gratifPopupCallback, screenName = screenName)
             }
 
         } catch (ex: Exception) {

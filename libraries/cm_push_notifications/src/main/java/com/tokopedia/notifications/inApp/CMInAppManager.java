@@ -157,7 +157,7 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
             public void onIgnored(@GratifPopupIngoreType int reason) {
                 Log.d("NOOB", "Gratif Dialog - push - ignore - reason" + String.valueOf(reason));
             }
-        });
+        }, name);
     }
 
     private void showIgnoreToast(String type, @GratifPopupIngoreType int reason) {
@@ -183,13 +183,13 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
             if (canShowInApp(inAppDataList)) {
                 CMInApp cmInApp = inAppDataList.get(0);
                 sendEventInAppPrepared(cmInApp);
-                Timber.d( TEMP_TAG+" in-app found for screen name=" + screenName + ",type=" + cmInApp.type);
-                showDialog(cmInApp, entityHashCode);
+                Timber.d(TEMP_TAG + " in-app found for screen name=" + screenName + ",type=" + cmInApp.type);
+                showDialog(cmInApp, entityHashCode, screenName);
                 if (!cmInApp.getType().equals(TYPE_GRATIF)) {
                     dataConsumed(cmInApp);
                 }
             } else {
-                Timber.d( TEMP_TAG+" NO in-app found for screen name=" + screenName);
+                Timber.d(TEMP_TAG + " NO in-app found for screen name=" + screenName);
             }
         }
     }
@@ -247,7 +247,7 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
         }
     }
 
-    private void showGratifDialog(CMInApp data, int entityHashCode) {
+    private void showGratifDialog(CMInApp data, int entityHashCode, String screenName) {
         if (getCurrentActivity() == null) return;
 
         try {
@@ -258,12 +258,12 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
                 @Override
                 public void onShow(@NonNull DialogInterface dialogInterface) {
                     dataConsumed(data);
-                    Timber.d( TEMP_TAG+" Dialog - organic - show");
+                    Timber.d(TEMP_TAG + " Dialog - organic - show");
                 }
 
                 @Override
                 public void onDismiss(@NonNull DialogInterface dialogInterface) {
-                    Timber.d(  TEMP_TAG+" Dialog - organic - dismiss");
+                    Timber.d(TEMP_TAG + " Dialog - organic - dismiss");
                 }
 
                 @Override
@@ -272,9 +272,9 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
                         dataConsumed(data);
                     }
                     showIgnoreToast("organic", reason);
-                    Timber.d(  TEMP_TAG+" Dialog - organic - ignored- reason - " + String.valueOf(reason));
+                    Timber.d(TEMP_TAG + " Dialog - organic - ignored- reason - " + String.valueOf(reason));
                 }
-            });
+            }, screenName);
 
             mapOfGratifJobs.put(entityHashCode, job);
 
@@ -284,14 +284,14 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
         }
     }
 
-    private void showDialog(CMInApp data, int entityHashCode) {
+    private void showDialog(CMInApp data, int entityHashCode, String screenName) {
         switch (data.getType()) {
             case TYPE_INTERSTITIAL_IMAGE_ONLY:
             case TYPE_INTERSTITIAL:
                 interstitialDialog(data);
                 break;
             case TYPE_GRATIF:
-                showGratifDialog(data, entityHashCode);
+                showGratifDialog(data, entityHashCode, screenName);
                 break;
             default:
                 showLegacyDialog(data);
