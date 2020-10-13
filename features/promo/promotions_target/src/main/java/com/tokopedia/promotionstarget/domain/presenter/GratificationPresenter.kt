@@ -29,12 +29,14 @@ import com.tokopedia.promotionstarget.domain.usecase.NotificationUseCase
 import com.tokopedia.promotionstarget.domain.usecase.TokopointsCouponDetailUseCase
 import com.tokopedia.promotionstarget.presentation.ui.dialog.CmGratificationDialog
 import kotlinx.coroutines.*
+import timber.log.Timber
 import java.lang.ref.WeakReference
 import java.util.concurrent.Executors
 import javax.inject.Inject
 import javax.inject.Named
 
 class GratificationPresenter @Inject constructor(val application: Application) {
+    val TAG = "GratifTag"
     @Inject
     lateinit var notificationUseCase: NotificationUseCase
 
@@ -69,9 +71,12 @@ class GratificationPresenter @Inject constructor(val application: Application) {
                                 paymentID: Int = 0,
                                 gratifPopupCallback: GratifPopupCallback? = null): Job? {
         return scope?.launch(worker + ceh) {
+
             val map = notificationUseCase.getQueryParams(notificationID, notificationEntryType, paymentID)
+            Timber.d("$TAG GRATIF ENGINE API START with=$map")
             val notifResponse = notificationUseCase.getResponse(map)
 //            val notifResponse = notificationUseCase.getFakeResponse(map)
+            Timber.d("$TAG GRATIF ENGINE API END with=$notifResponse")
             //todo Rahul verify key later
             val reason = notifResponse.response?.resultStatus?.code
             if (reason == GratifResultStatus.SUCCESS) {
@@ -88,20 +93,25 @@ class GratificationPresenter @Inject constructor(val application: Application) {
                                 if (notificationEntryType == NotificationEntryType.PUSH) {
                                     performShowDialog(activity, notifResponse.response, couponDetail, notificationEntryType, gratifPopupCallback)
                                 } else if (CmGratificationDialog.weakHashMap[activity] != null) {
+                                    Timber.d("$TAG Android Side ERROR pop-up is already visible for screen name = ${activity::class.java.name}")
                                     gratifPopupCallback?.onIgnored(GratifPopupIngoreType.DIALOG_ALREADY_ACTIVE)
                                 } else {
+                                    Timber.d("$TAG ALL GOOD show dialog, notifId=$notificationID")
                                     performShowDialog(activity, notifResponse.response, couponDetail, notificationEntryType, gratifPopupCallback)
                                 }
                             }
                         }
                     } else {
+                        Timber.d("$TAG COUPON ENGINE INVALID COUPON, notifId = $notificationID, couponCode=$code")
                         gratifPopupCallback?.onIgnored(GratifPopupIngoreType.INVALID_COUPON)
                     }
 
                 } else {
+                    Timber.d("$TAG GRATIF ENGINE COUPON CODE EMPTY, notifId = $notificationID")
                     gratifPopupCallback?.onIgnored(GratifPopupIngoreType.COUPON_CODE_EMPTY)
                 }
             } else {
+                Timber.d("$TAG GRATIF ENGINE FAIL, notifId = $notificationID, resultStatus=$reason")
                 gratifPopupCallback?.onIgnored(GratifPopupIngoreType.NO_SUCCESS)
             }
         }
@@ -141,7 +151,6 @@ class GratificationPresenter @Inject constructor(val application: Application) {
                                @NotificationEntryType notificationEntryType: Int,
                                gratifPopupCallback: GratifPopupCallback
     ): Job? {
-        Log.d("NOOB", "showGratificationInApp")
         try {
 
             synchronized(this) {

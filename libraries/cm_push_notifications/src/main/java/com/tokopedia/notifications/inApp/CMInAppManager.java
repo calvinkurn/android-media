@@ -57,6 +57,7 @@ import java.util.concurrent.CancellationException;
 import java.util.concurrent.ConcurrentHashMap;
 
 import kotlinx.coroutines.Job;
+import timber.log.Timber;
 
 import static com.tokopedia.notifications.common.CMConstant.EXTRA_BASE_MODEL;
 import static com.tokopedia.notifications.inApp.ruleEngine.RulesUtil.Constants.RemoteConfig.KEY_CM_INAPP_END_TIME_INTERVAL;
@@ -86,7 +87,7 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
      * This flag is used for validation of the dialog to be displayed.
      * This is useful for avoiding InApp dialog appearing more than once.
      * */
-
+    String TEMP_TAG = "GratifTag";
     static {
         inAppManager = new CMInAppManager();
     }
@@ -177,15 +178,18 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
     }
 
     @Override
-    public void notificationsDataResult(List<CMInApp> inAppDataList, int entityHashCode) {
+    public void notificationsDataResult(List<CMInApp> inAppDataList, int entityHashCode, String screenName) {
         synchronized (lock) {
             if (canShowInApp(inAppDataList)) {
                 CMInApp cmInApp = inAppDataList.get(0);
                 sendEventInAppPrepared(cmInApp);
+                Timber.d( TEMP_TAG+" in-app found for screen name=" + screenName + ",type=" + cmInApp.type);
                 showDialog(cmInApp, entityHashCode);
                 if (!cmInApp.getType().equals(TYPE_GRATIF)) {
                     dataConsumed(cmInApp);
                 }
+            } else {
+                Timber.d( TEMP_TAG+" NO in-app found for screen name=" + screenName);
             }
         }
     }
@@ -254,12 +258,12 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
                 @Override
                 public void onShow(@NonNull DialogInterface dialogInterface) {
                     dataConsumed(data);
-                    Log.d("NOOB", "Gratif Dialog - organic - show");
+                    Timber.d( TEMP_TAG+" Dialog - organic - show");
                 }
 
                 @Override
                 public void onDismiss(@NonNull DialogInterface dialogInterface) {
-                    Log.d("NOOB", "Gratif Dialog - organic - dismiss");
+                    Timber.d(  TEMP_TAG+" Dialog - organic - dismiss");
                 }
 
                 @Override
@@ -268,7 +272,7 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
                         dataConsumed(data);
                     }
                     showIgnoreToast("organic", reason);
-                    Log.d("NOOB", "Gratif Dialog - organic - ignored- reason - " + String.valueOf(reason));
+                    Timber.d(  TEMP_TAG+" Dialog - organic - ignored- reason - " + String.valueOf(reason));
                 }
             });
 

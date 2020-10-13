@@ -12,7 +12,7 @@ import java.util.List;
 @Dao
 public interface InAppDataDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    void insert(CMInApp inAppData);
+    long insert(CMInApp inAppData);
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     void insert(List<CMInApp> inAppDataList);

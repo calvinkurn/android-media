@@ -24,5 +24,6 @@ interface BaseApplicationLifecycleCallbacks : Application.ActivityLifecycleCallb
     }
 
     override fun onActivityCreated(activity: Activity?, savedInstanceState: Bundle?) {
+
     }
 }

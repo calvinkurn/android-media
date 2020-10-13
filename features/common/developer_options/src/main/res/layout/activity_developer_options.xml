@@ -534,6 +534,7 @@
             android:textColor="@color/Neutral_N0" />
 
         <CheckBox
+            android:visibility="gone"
             android:id="@+id/cb_gratif_debug_toast"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -543,5 +544,19 @@
             android:gravity="center"
             android:padding="@dimen/spacing_lvl3"
             android:text="Show debug toast" />
+
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/btn_log_viewer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/spacing_lvl2"
+            android:layout_marginBottom="@dimen/spacing_lvl4"
+            android:background="@drawable/btn_share"
+            android:gravity="center"
+            android:padding="@dimen/spacing_lvl3"
+            android:text="View Logs"
+            android:textColor="@color/Neutral_N0" />
     </LinearLayout>
 </ScrollView>

@@ -28,6 +28,8 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.junit
     testImplementation rootProject.ext.testDependencies.mockitorCore
     testImplementation rootProject.ext.testDependencies.kotlinMockito
+    implementation 'com.hjq:xtoast:6.0'
+    implementation 'com.hjq:xxpermissions:8.8'
 }
 
 project.ext {
