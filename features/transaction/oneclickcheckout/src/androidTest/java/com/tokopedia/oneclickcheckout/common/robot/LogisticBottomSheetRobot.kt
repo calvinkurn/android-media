@@ -10,3 +10,10 @@ class CourierBottomSheetRobot {
         onView(withText(text)).perform(click())
     }
 }
+
+class DurationBottomSheetRobot {
+
+    fun chooseDurationWithText(text: String) {
+        onView(withText(text)).perform(click())
+    }
+}
