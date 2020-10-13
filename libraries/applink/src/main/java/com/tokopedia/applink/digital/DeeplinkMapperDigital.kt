@@ -35,7 +35,7 @@ object DeeplinkMapperDigital {
         return whiteList?.data ?: listOf()
     }
 
-    fun getRegisteredNavigationFromHttpDigital(context: Context, deeplink: String): String {
+    fun getRegisteredNavigationFromHttpDigital(deeplink: String): String {
         val path = Uri.parse(deeplink).pathSegments.joinToString("/")
         return readWhitelistFromFile().firstOrNull { it.path.equals(path, false) }?.applink
                 ?: ""
@@ -90,8 +90,8 @@ object DeeplinkMapperDigital {
 
     private fun getDigitalSmartcardNavigation(deeplink: String): String {
         val uri = Uri.parse(deeplink)
-        var paramValue = uri.getQueryParameter(ApplinkConsInternalDigital.PARAM_SMARTCARD) ?: ""
-        var statusBrizzi = uri.getQueryParameter(ApplinkConsInternalDigital.PARAM_BRIZZI)?: "false"
+        val paramValue = uri.getQueryParameter(ApplinkConsInternalDigital.PARAM_SMARTCARD) ?: ""
+        val statusBrizzi = uri.getQueryParameter(ApplinkConsInternalDigital.PARAM_BRIZZI)?: "false"
 
         return if (statusBrizzi == "true")
             UriUtil.buildUri(ApplinkConsInternalDigital.INTERNAL_SMARTCARD_BRIZZI, paramValue)
