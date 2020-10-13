@@ -40,16 +40,19 @@ import com.tokopedia.feedplus.view.viewmodel.onboarding.OnboardingViewModel
 import com.tokopedia.interest_pick_common.view.adapter.InterestPickAdapter
 import com.tokopedia.kolcommon.view.listener.KolPostViewHolderListener
 import com.tokopedia.play.widget.PlayWidgetViewHolder
+import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
 import com.tokopedia.user.session.UserSessionInterface
 
 /**
  * @author by nisie on 5/15/17.
  */
 
-class FeedPlusTypeFactoryImpl(context: FeedPlusFragment,
-                              private val userSession: UserSessionInterface,
-                              private val interestPickItemListener: InterestPickAdapter.InterestPickItemListener) :
-        BaseAdapterTypeFactory(), FeedPlusTypeFactory, DynamicFeedTypeFactory {
+class FeedPlusTypeFactoryImpl(
+        context: FeedPlusFragment,
+        private val userSession: UserSessionInterface,
+        private val interestPickItemListener: InterestPickAdapter.InterestPickItemListener,
+        private val playWidgetListener: PlayWidgetListener
+) : BaseAdapterTypeFactory(), FeedPlusTypeFactory, DynamicFeedTypeFactory {
 
     private val kolPostListener: KolPostViewHolderListener
     private val dynamicPostListener: DynamicPostViewHolder.DynamicPostListener
@@ -167,7 +170,7 @@ class FeedPlusTypeFactoryImpl(context: FeedPlusFragment,
         } else if (type == TopAdsBannerViewHolder.LAYOUT){
             viewHolder = TopAdsBannerViewHolder(view, topAdsBannerListener, cardTitleListener)
         } else if (type == CarouselPlayCardViewHolder.LAYOUT){
-            viewHolder = CarouselPlayCardViewHolder(PlayWidgetViewHolder(view))
+            viewHolder = CarouselPlayCardViewHolder(PlayWidgetViewHolder(view, playWidgetListener))
         } else
             viewHolder = super.createViewHolder(view, type)
         return viewHolder

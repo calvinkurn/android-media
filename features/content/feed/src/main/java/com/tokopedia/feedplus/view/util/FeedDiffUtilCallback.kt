@@ -61,7 +61,7 @@ internal class FeedDiffUtilCallback(
         val newItem = newList[newPosition]
 
         return if (oldItem is DynamicPostViewModel && newItem is DynamicPostViewModel) oldItem == newItem
-        else if (oldItem is CarouselPlayCardViewModel && newItem is CarouselPlayCardViewModel) oldItem == newItem
+        else if (oldItem is CarouselPlayCardViewModel && newItem is CarouselPlayCardViewModel) (oldItem == newItem) && !newItem.isFromAutoRefresh
         else true
     }
 }

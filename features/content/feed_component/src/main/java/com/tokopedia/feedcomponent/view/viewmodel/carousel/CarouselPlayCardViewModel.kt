@@ -8,7 +8,8 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
  * Created by jegul on 08/10/20
  */
 data class CarouselPlayCardViewModel(
-        val playWidgetUiModel: PlayWidgetUiModel = PlayWidgetUiModel.Placeholder
+        val playWidgetUiModel: PlayWidgetUiModel = PlayWidgetUiModel.Placeholder,
+        val isFromAutoRefresh: Boolean = false
 ) : Visitable<DynamicFeedTypeFactory> {
 
     override fun type(typeFactory: DynamicFeedTypeFactory?): Int {

@@ -112,6 +112,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showLoadingTransparent
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.topads.sdk.domain.model.Data
 import com.tokopedia.topads.sdk.domain.model.Product
@@ -153,7 +154,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
         EmptyFeedBeforeLoginViewHolder.EmptyFeedBeforeLoginListener,
         RetryViewHolder.RetryViewHolderListener,
         EmptyFeedViewHolder.EmptyFeedListener,
-        FeedPlusAdapter.OnLoadListener, TopAdsBannerViewHolder.TopAdsBannerListener {
+        FeedPlusAdapter.OnLoadListener, TopAdsBannerViewHolder.TopAdsBannerListener,
+        PlayWidgetListener {
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var swipeToRefresh: SwipeToRefresh
@@ -473,7 +475,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     private fun initVar() {
-        val typeFactory = FeedPlusTypeFactoryImpl(this, userSession, this)
+        val typeFactory = FeedPlusTypeFactoryImpl(this, userSession, this, this)
         adapter = FeedPlusAdapter(typeFactory, this)
 
         val loginIdString = userSession.userId
@@ -892,6 +894,11 @@ class FeedPlusFragment : BaseDaggerFragment(),
     override fun onEditClicked(hasMultipleContent: Boolean, activityId: String,
                                activityType: String) {
 
+    }
+
+    override fun onWidgetShouldRefresh(view: View) {
+        Toast.makeText(requireContext(), "Refreshing Widget", Toast.LENGTH_SHORT).show()
+        feedViewModel.doAutoRefreshPlayWidget()
     }
 
     private fun createDeleteDialog(rowNumber: Int, id: Int): Dialog {

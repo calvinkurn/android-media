@@ -140,7 +140,7 @@ class FeedViewModel @Inject constructor(private val baseDispatcher: FeedDispatch
 
             if (shouldGetPlayWidget(results.dynamicFeedDomainModel)) {
                 try {
-                    val newFeedDomainModel = processPlayWidget(results.dynamicFeedDomainModel)
+                    val newFeedDomainModel = processPlayWidget(results.dynamicFeedDomainModel, isAutoRefresh = false)
                     getFeedFirstPageResp.value = Success(results.copy(
                             dynamicFeedDomainModel = newFeedDomainModel,
                             shouldOverwrite = false
@@ -169,7 +169,7 @@ class FeedViewModel @Inject constructor(private val baseDispatcher: FeedDispatch
 
             if (shouldGetPlayWidget(results)) {
                 try {
-                    val newFeedDomainModel = processPlayWidget(results)
+                    val newFeedDomainModel = processPlayWidget(results, isAutoRefresh = false)
                     getFeedNextPageResp.value = Success(newFeedDomainModel)
                 } catch (e: Throwable) {
                 }
@@ -317,6 +317,34 @@ class FeedViewModel @Inject constructor(private val baseDispatcher: FeedDispatch
         } else {
             sendTopAdsUseCase.hitImpressions(url, shopId, shopName, imageUrl)
         }
+    }
+
+    fun doAutoRefreshPlayWidget() {
+
+        suspend fun doGetRefreshedDomainModel(model: DynamicFeedDomainModel): DynamicFeedDomainModel {
+            return processPlayWidget(model, isAutoRefresh = true)
+        }
+
+        launchCatchError(block = {
+            val firstPageResponse = getFeedFirstPageResp.value
+            val nextPageResponse = getFeedNextPageResp.value
+            if (firstPageResponse is Success && shouldGetPlayWidget(firstPageResponse.data.dynamicFeedDomainModel)) {
+                val currentModel = firstPageResponse.data.dynamicFeedDomainModel
+                getFeedFirstPageResp.value = Success(
+                        firstPageResponse.data.copy(
+                                dynamicFeedDomainModel = doGetRefreshedDomainModel(currentModel),
+                                shouldOverwrite = false
+                        )
+                )
+            } else if (nextPageResponse is Success && shouldGetPlayWidget(nextPageResponse.data)) {
+                val currentModel = nextPageResponse.data
+                getFeedNextPageResp.value = Success(
+                        doGetRefreshedDomainModel(currentModel)
+                )
+            }
+        }, onError = {
+
+        })
     }
 
     private fun OnboardingData.convertToViewModel(): OnboardingViewModel = mappingOnboardingData(feedUserOnboardingInterests)
@@ -593,11 +621,11 @@ class FeedViewModel @Inject constructor(private val baseDispatcher: FeedDispatch
         return model.postList.any { it is CarouselPlayCardViewModel }
     }
 
-    private suspend fun processPlayWidget(model: DynamicFeedDomainModel): DynamicFeedDomainModel {
+    private suspend fun processPlayWidget(model: DynamicFeedDomainModel, isAutoRefresh: Boolean): DynamicFeedDomainModel {
         val response = playWidgetTools.getWidgetFromNetwork(widgetType = PlayWidgetUseCase.WidgetType.Feeds, coroutineContext = baseDispatcher.io())
         val uiModel = playWidgetTools.mapWidgetToModel(response)
         model.postList = model.postList.map {
-            if (it is CarouselPlayCardViewModel) it.copy(playWidgetUiModel = uiModel)
+            if (it is CarouselPlayCardViewModel) it.copy(playWidgetUiModel = uiModel, isFromAutoRefresh = isAutoRefresh)
             else it
         }.toMutableList()
         return model
