@@ -154,8 +154,8 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
         registerActivityLifecycleCallbacks(new Screenshot(getApplicationContext().getContentResolver(), new Screenshot.BottomSheetListener() {
             @Override
-            public void onFeedbackClicked(Uri uri) {
-                openFeedbackForm(uri, this.getClass().getSimpleName());
+            public void onFeedbackClicked(Uri uri, String className) {
+                openFeedbackForm(uri, className);
             }
 
         }));

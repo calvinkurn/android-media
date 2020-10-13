@@ -11,19 +11,22 @@ import android.os.HandlerThread
 import android.provider.MediaStore
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import com.example.screenshot_observer.R
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.main.bottomsheet_action_screenshot.view.*
 
 
-open class Screenshot(contentResolver: ContentResolver, listener: BottomSheetListener) : Application.ActivityLifecycleCallbacks, ScreenshotObserver.Listener {
+open class Screenshot(contentResolver: ContentResolver, listener: BottomSheetListener) : BaseSimpleActivity() ,Application.ActivityLifecycleCallbacks, ScreenshotObserver.Listener {
     private val mHandlerThread: HandlerThread = HandlerThread("ScreenshotObserver")
     private val mHandler: Handler
     private val mContentResolver: ContentResolver
     private val mContentObserver: ContentObserver
     private val mListener: BottomSheetListener
     private var currentActivity: Activity? = null
+    private var className: String = ""
 
     init {
         mHandlerThread.start()
@@ -41,11 +44,12 @@ open class Screenshot(contentResolver: ContentResolver, listener: BottomSheetLis
         )
     }
 
-    fun openBottomSheetFeedback(activity: Activity, uri: Uri) {
+
+    fun openBottomSheetFeedback(activity: Activity, uri: Uri, className: String) {
         val bottomSheetFeedback = BottomSheetUnify()
         val viewBottomSheet = View.inflate(activity, R.layout.bottomsheet_action_screenshot, null).apply {
             btn_add_feedback.setOnClickListener {
-                mListener.onFeedbackClicked(uri)
+                mListener.onFeedbackClicked(uri, className)
                 bottomSheetFeedback.dismiss()
             }
             btn_dismiss.setOnClickListener {
@@ -69,13 +73,14 @@ open class Screenshot(contentResolver: ContentResolver, listener: BottomSheetLis
     }
 
     interface BottomSheetListener {
-        fun onFeedbackClicked(uri: Uri?)
+        fun onFeedbackClicked(uri: Uri?, className: String)
     }
 
     override fun onActivityPaused(activity: Activity) {
         if (!GlobalConfig.isSellerApp()) {
             unregister()
             currentActivity = null
+            className = ""
         }
     }
 
@@ -98,11 +103,16 @@ open class Screenshot(contentResolver: ContentResolver, listener: BottomSheetLis
         if (!GlobalConfig.isSellerApp()) {
             register()
             currentActivity = activity
+            className = activity.localClassName
         }
     }
 
     override fun onScreenShotTaken(uri: Uri) {
-        currentActivity?.let { openBottomSheetFeedback(it, uri) }
+        currentActivity?.let { openBottomSheetFeedback(it, uri, className) }
+    }
+
+    override fun getNewFragment(): Fragment? {
+        return null
     }
 
 }
