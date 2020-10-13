@@ -52,6 +52,6 @@ class GetTopAdsShopUseCaseWithCoroutine(private val favoriteRepository: Favorite
     private fun isForceRefresh(requestParams: RequestParams): Boolean {
         val isForceRefresh = requestParams.getBoolean(GetTopAdsShopUseCase.KEY_IS_FORCE_REFRESH, false)
         requestParams.clearValue(GetTopAdsShopUseCase.KEY_IS_FORCE_REFRESH)
-        return true
+        return isForceRefresh
     }
 }

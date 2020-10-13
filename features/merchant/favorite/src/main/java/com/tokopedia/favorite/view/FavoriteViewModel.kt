@@ -1,6 +1,5 @@
 package com.tokopedia.favorite.view
 
-import android.util.Log
 import android.view.View
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
@@ -23,8 +22,6 @@ import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import kotlinx.coroutines.withContext
 import timber.log.Timber
-import java.io.PrintWriter
-import java.io.StringWriter
 import javax.inject.Inject
 
 class FavoriteViewModel
@@ -143,16 +140,10 @@ class FavoriteViewModel
             val dataFavorite = withContext(dispatcherProvider.io()) {
                 getInitialDataPageUseCase.executeOnBackground()
             }
-            Log.d("FavoriteTopAdsLog", "finish get Initial Data")
             _refresh.value = false
             _initialData.value = getDataFavoriteViewModel(dataFavorite)
         }, onError = {
             Timber.e(it, "onError: ")
-            val sw = StringWriter()
-            val pw = PrintWriter(sw)
-            it.printStackTrace(pw)
-            val sStackTrace: String = sw.toString() // stack trace as a string
-            Log.d("FavoriteTopAdsLog", sStackTrace)
             _refresh.value = false
             _isTopAdsShopNetworkFailed.value = true
             _isErrorLoad.value = true
