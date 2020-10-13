@@ -6,8 +6,8 @@ import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.di.ProductDetailComponent
-import com.tokopedia.product.info.model.productdetail.ProductDetailInfoHeaderDataModel
-import com.tokopedia.product.info.model.productdetail.ProductDetailInfoLoadingDataModel
+import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoHeaderDataModel
+import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoLoadingDataModel
 import com.tokopedia.product.info.view.ProductDetailInfoListener
 import com.tokopedia.product.info.view.adapter.BsProductDetailInfoAdapter
 import com.tokopedia.product.info.view.adapter.ProductDetailInfoAdapterFactoryImpl

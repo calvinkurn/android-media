@@ -1,4 +1,4 @@
-package com.tokopedia.product.info.model.productdetail
+package com.tokopedia.product.info.model.productdetail.uidata
 
 import com.tokopedia.product.info.view.adapter.ProductDetailInfoAdapterFactory
 
@@ -7,7 +7,15 @@ import com.tokopedia.product.info.view.adapter.ProductDetailInfoAdapterFactory
  */
 data class ProductDetailInfoLoadingDataModel(
         val isLoading: Boolean = false
-): ProductDetailInfoVisitable {
+) : ProductDetailInfoVisitable {
+
+    companion object {
+        const val LOADING_ID = 999
+    }
+
+    override fun uniqueIdentifier(): Int = LOADING_ID
+
+    override fun setIsShowable(isShowable: Boolean) {}
 
     override fun equalsWith(newData: ProductDetailInfoVisitable): Boolean {
         return false
