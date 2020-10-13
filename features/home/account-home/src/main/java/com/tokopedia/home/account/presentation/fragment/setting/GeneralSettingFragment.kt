@@ -60,7 +60,7 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.seller_migration_common.presentation.util.initializeSellerMigrationAccountSettingTicker
 import com.tokopedia.sessioncommon.ErrorHandlerSession
-import com.tokopedia.sessioncommon.data.Token.Companion.GOOGLE_API_KEY
+import com.tokopedia.sessioncommon.data.Token.Companion.getGoogleClientId
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.url.TokopediaUrl
 import kotlinx.android.synthetic.main.fragment_general_setting.*
@@ -94,13 +94,15 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
             notifPreference = NotifPreference(it)
         }
 
-        val googleSignInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(GOOGLE_API_KEY)
-                .requestEmail()
-                .requestProfile()
-                .build()
+        activity?.run {
+            val googleSignInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                    .requestIdToken(getGoogleClientId(this))
+                    .requestEmail()
+                    .requestProfile()
+                    .build()
 
-        googleSignInClient = activity?.let { GoogleSignIn.getClient(it, googleSignInOptions) } as GoogleSignInClient
+            googleSignInClient = GoogleSignIn.getClient(this, googleSignInOptions)
+        }
     }
 
     override fun onResume() {
@@ -201,6 +203,9 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
         if (GlobalConfig.isAllowDebuggingTools()) {
             settingItems.add(SettingItemViewModel(SettingConstant.SETTING_DEV_OPTIONS,
                     getString(R.string.title_dev_options)))
+
+            settingItems.add(SettingItemViewModel(SettingConstant.SETTING_FEEDBACK_FORM,
+                    getString(R.string.feedback_form)))
         }
 
         val itemOut = SettingItemViewModel(SettingConstant.SETTING_OUT_ID, getString(R.string.account_home_button_logout))
@@ -268,6 +273,9 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
             SettingConstant.SETTING_DEV_OPTIONS -> if (GlobalConfig.isAllowDebuggingTools()) {
                 accountAnalytics.eventClickSetting(DEVELOPER_OPTIONS)
                 RouteManager.route(activity, ApplinkConst.DEVELOPER_OPTIONS)
+            }
+            SettingConstant.SETTING_FEEDBACK_FORM -> if (GlobalConfig.isAllowDebuggingTools()) {
+                RouteManager.route(activity, ApplinkConst.FEEDBACK_FORM)
             }
             SettingConstant.SETTING_OCC_PREFERENCE_ID -> {
                 RouteManager.route(context, ApplinkConstInternalMarketplace.PREFERENCE_LIST)

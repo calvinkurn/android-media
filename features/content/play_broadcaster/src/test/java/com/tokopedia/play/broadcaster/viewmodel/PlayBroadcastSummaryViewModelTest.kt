@@ -29,6 +29,8 @@ class PlayBroadcastSummaryViewModelTest {
     private val testDispatcher = TestCoroutineDispatcher()
     private val dispatcherProvider = TestCoroutineDispatcherProvider(testDispatcher)
 
+    private val playBroadcastMapper = PlayBroadcastUiMapper()
+
     private lateinit var channelConfigStore: ChannelConfigStore
 
     private val liveStatisticsUseCase: GetLiveStatisticsUseCase = mockk(relaxed = true)
@@ -45,7 +47,8 @@ class PlayBroadcastSummaryViewModelTest {
         viewModel = PlayBroadcastSummaryViewModel(
                 channelConfigStore,
                 dispatcherProvider,
-                liveStatisticsUseCase
+                liveStatisticsUseCase,
+                playBroadcastMapper
         )
         channelConfigStore.setChannelId("12345")
     }
@@ -62,7 +65,7 @@ class PlayBroadcastSummaryViewModelTest {
                 .assertThat(result)
                 .isEqualTo(
                         NetworkResult.Success(
-                                PlayBroadcastUiMapper.mapToLiveTrafficUiMetrics(mockLiveStats)
+                                playBroadcastMapper.mapToLiveTrafficUiMetrics(mockLiveStats)
                         )
                 )
     }

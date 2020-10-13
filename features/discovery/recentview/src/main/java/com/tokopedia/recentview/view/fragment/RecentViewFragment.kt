@@ -134,6 +134,7 @@ class RecentViewFragment : BaseDaggerFragment(), RecentView.View, WishListAction
         super.onViewCreated(view, savedInstanceState)
         showLoading()
         viewModel?.getRecentView()
+        RecentViewTracking.trackEventOpenScreen(getContext());
     }
 
     override fun onWishlistClicked(adapterPosition: Int, productId: Int, isWishlist: Boolean) {

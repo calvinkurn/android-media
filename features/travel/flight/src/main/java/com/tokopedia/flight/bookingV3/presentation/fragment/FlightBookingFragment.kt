@@ -54,6 +54,7 @@ import com.tokopedia.flight.searchV4.presentation.model.FlightSearchPassDataMode
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.promocheckout.common.data.PromoCheckoutCommonQueryConst
 import com.tokopedia.promocheckout.common.data.REQUEST_CODE_PROMO_DETAIL
 import com.tokopedia.promocheckout.common.data.REQUEST_CODE_PROMO_LIST
 import com.tokopedia.promocheckout.common.util.EXTRA_PROMO_DATA
@@ -1066,13 +1067,13 @@ class FlightBookingFragment : BaseDaggerFragment() {
 
     private fun getDepartureId(): String = bookingViewModel.getDepartureId()
     private fun getReturnId(): String = bookingViewModel.getReturnId()
-    private fun getAtcQuery(): String = GraphqlHelper.loadRawString(resources, com.tokopedia.flight.R.raw.flight_gql_query_add_to_cart)
-    private fun getGetCartQuery(): String = GraphqlHelper.loadRawString(resources, com.tokopedia.flight.R.raw.flight_gql_query_get_cart)
-    private fun getCheckVoucherQuery(): String = GraphqlHelper.loadRawString(resources, com.tokopedia.flight.R.raw.flight_gql_query_check_voucher)
-    private fun getVerifyCartQuery(): String = GraphqlHelper.loadRawString(resources, com.tokopedia.flight.R.raw.flight_gql_query_verify_cart)
-    private fun getCheckoutQuery(): String = GraphqlHelper.loadRawString(resources, com.tokopedia.flight.R.raw.flight_gql_query_checkout_cart)
+    private fun getAtcQuery(): String = FlightBookingQuery.QUERY_ADD_TO_CART
+    private fun getGetCartQuery(): String = FlightBookingQuery.QUERY_GET_CART
+    private fun getCheckVoucherQuery(): String = FlightBookingQuery.QUERY_CHECK_VOUCHER
+    private fun getVerifyCartQuery(): String = FlightBookingQuery.QUERY_VERIFY_CART
+    private fun getCheckoutQuery(): String = FlightBookingQuery.QUERY_CHECKOUT_CART
     private fun getProfileQuery(): String = GraphqlHelper.loadRawString(resources, com.tokopedia.sessioncommon.R.raw.query_profile)
-    private fun getCancelVoucherQuery(): String = GraphqlHelper.loadRawString(resources, com.tokopedia.promocheckout.common.R.raw.promo_checkout_flight_cancel_voucher)
+    private fun getCancelVoucherQuery(): String = PromoCheckoutCommonQueryConst.QUERY_FLIGHT_CANCEL_VOUCHER
 
     private fun renderTickerView(travelTickerModel: TravelTickerModel) {
         TravelTickerUtils.buildUnifyTravelTicker(travelTickerModel, flightBookingTicker)

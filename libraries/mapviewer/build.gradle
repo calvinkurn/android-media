@@ -23,6 +23,7 @@ dependencies {
     implementation rootProject.ext.playServicesDependencies.location
     implementation rootProject.ext.playServicesDependencies.maps
 
+    implementation project(rootProject.ext.libraries.tkpddesign)
 }
 
 project.ext {
