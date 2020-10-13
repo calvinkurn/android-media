@@ -621,29 +621,35 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
     public void setDealsBanner(Items item){
         MetaDataInfo metaDataInfo = new Gson().fromJson(item.getMetaData(), MetaDataInfo.class);
         if(metaDataInfo != null){
-            if (metaDataInfo.getCustomLinkType().equalsIgnoreCase(KEY_REDIRECT)) {
-                UserSession userSession = new UserSession(getContext());
-                bannerDeals.setVisibility(View.VISIBLE);
+            if (metaDataInfo.getCustomLinkType() != null) {
+                if (metaDataInfo.getCustomLinkType().equalsIgnoreCase(KEY_REDIRECT)) {
+                    UserSession userSession = new UserSession(getContext());
+                    bannerDeals.setVisibility(View.VISIBLE);
 
-                if(isCoachmarkAlreadyShowed()){
-                    bannerDeals.post(new Runnable() {
+                    if (isCoachmarkAlreadyShowed()) {
+                        bannerDeals.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                int scrollTo = ((View) bannerDeals.getParent().getParent()).getTop() + bannerDeals.getTop();
+                                parentScroll.smoothScrollTo(0, scrollTo);
+                                addCoachmarkBannerDeals();
+                            }
+                        });
+                    }
+
+                    bannerMainTitle.setText(getResources().getString(R.string.banner_deals_main_title, userSession.getName()));
+                    if (!metaDataInfo.getCustomLinkLabel().isEmpty()) {
+                        bannerSubTitle.setText(metaDataInfo.getCustomLinkLabel());
+                    }
+                    bannerDeals.setOnClickListener(new View.OnClickListener() {
                         @Override
-                        public void run() {
-                            int scrollTo = ((View) bannerDeals.getParent().getParent()).getTop() + bannerDeals.getTop();
-                            parentScroll.smoothScrollTo(0, scrollTo);
-                            addCoachmarkBannerDeals();
+                        public void onClick(View v) {
+                            if (!metaDataInfo.getCustomLinkAppUrl().isEmpty()) {
+                                RouteManager.route(getAppContext(), metaDataInfo.getCustomLinkAppUrl());
+                            }
                         }
                     });
                 }
-
-                bannerMainTitle.setText(getResources().getString(R.string.banner_deals_main_title, userSession.getName()));
-                bannerSubTitle.setText(metaDataInfo.getCustomLinkLabel());
-                bannerDeals.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        RouteManager.route(getAppContext(), metaDataInfo.getCustomLinkAppUrl());
-                    }
-                });
             }
         }
     }
