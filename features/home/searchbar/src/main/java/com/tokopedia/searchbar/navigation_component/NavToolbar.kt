@@ -17,7 +17,6 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.searchbar.R
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.helper.ViewHelper
-import com.tokopedia.searchbar.navigation_component.util.StatusBarUtil
 import kotlinx.android.synthetic.main.nav_main_toolbar.view.*
 import java.lang.ref.WeakReference
 
