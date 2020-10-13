@@ -29,13 +29,13 @@ class NavRecyclerViewScrollListener(
             offsetAlpha = 0f
         }
         if (offsetAlpha >= 150) {
-            navToolbar.switchToDarkToolbar()
-            statusBarUtil?.requestStatusBarDark()
-            navScrollCallback?.onSwitchToDarkToolbar()
-        } else {
             navToolbar.switchToLightToolbar()
             statusBarUtil?.requestStatusBarLight()
             navScrollCallback?.onSwitchToLightToolbar()
+        } else {
+            navToolbar.switchToDarkToolbar()
+            statusBarUtil?.requestStatusBarDark()
+            navScrollCallback?.onSwitchToDarkToolbar()
         }
         if (offsetAlpha >= 255) {
             offsetAlpha = 255f

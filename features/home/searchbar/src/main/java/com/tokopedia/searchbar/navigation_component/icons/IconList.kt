@@ -20,8 +20,7 @@ object IconList {
         override fun get(): IconToolbar {
             return IconToolbar(
                     id = ID_MESSAGE,
-                    imageResLight = R.drawable.ic_home_nav_message_light,
-                    imageResDark = R.drawable.ic_home_nav_message_dark,
+                    imageRes = R.drawable.ic_home_nav_message_light,
                     applink = ApplinkConst.INBOX
             )
         }
@@ -31,8 +30,7 @@ object IconList {
         override fun get(): IconToolbar {
             return IconToolbar(
                     id = ID_NOTIFICATION,
-                    imageResLight = R.drawable.ic_home_nav_notification_light,
-                    imageResDark = R.drawable.ic_home_nav_notification_dark,
+                    imageRes = R.drawable.ic_home_nav_notification_light,
                     applink = ApplinkConst.NOTIFICATION
             )
         }
@@ -42,8 +40,7 @@ object IconList {
         override fun get(): IconToolbar {
             return IconToolbar(
                     id = ID_CART,
-                    imageResLight = R.drawable.ic_home_nav_cart_light,
-                    imageResDark = R.drawable.ic_home_nav_cart_dark,
+                    imageRes = R.drawable.ic_home_nav_cart_light,
                     applink = ApplinkConst.CART
             )
         }
@@ -53,8 +50,7 @@ object IconList {
         override fun get(): IconToolbar {
             return IconToolbar(
                     id = ID_NAV_GLOBAL,
-                    imageResLight = R.drawable.ic_home_nav_global_light,
-                    imageResDark = R.drawable.ic_home_nav_global_dark,
+                    imageRes = R.drawable.ic_home_nav_global_light,
                     applink = ""
             )
         }

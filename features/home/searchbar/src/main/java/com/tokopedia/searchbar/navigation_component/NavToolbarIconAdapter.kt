@@ -1,18 +1,23 @@
 package com.tokopedia.searchbar.navigation_component
 
+import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.content.res.AppCompatResources
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.DrawableCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.searchbar.R
 import kotlinx.android.synthetic.main.toolbar_viewholder_icon.view.*
 
+
 class NavToolbarIconAdapter(private var iconConfig: IconConfig): RecyclerView.Adapter<IconHolder>() {
     companion object {
-        const val STATE_THEME_LIGHT = 0
-        const val STATE_THEME_DARK = 1
+        const val STATE_THEME_DARK = 0
+        const val STATE_THEME_LIGHT = 1
     }
     private var themeState = STATE_THEME_LIGHT
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): IconHolder {
@@ -25,12 +30,16 @@ class NavToolbarIconAdapter(private var iconConfig: IconConfig): RecyclerView.Ad
         val icon = iconConfig.iconList[position]
         val context = holder.itemView.context
 
-        if (themeState == STATE_THEME_LIGHT) {
-            holder.iconImage.setImageResource(icon.imageResLight)
-        } else if (themeState == STATE_THEME_DARK) {
-            holder.iconImage.setImageResource(icon.imageResDark)
+        val unwrappedDrawable: Drawable? = ContextCompat.getDrawable(context, icon.imageRes)
+        unwrappedDrawable?.let {
+            val wrappedDrawable: Drawable = DrawableCompat.wrap(unwrappedDrawable)
+            if (themeState == STATE_THEME_DARK) {
+                DrawableCompat.setTint(wrappedDrawable, ContextCompat.getColor(context, R.color.white))
+            } else if (themeState == STATE_THEME_LIGHT) {
+                DrawableCompat.setTint(wrappedDrawable, ContextCompat.getColor(context, R.color.Neutral_N700))
+            }
+            holder.iconImage.setImageDrawable(wrappedDrawable)
         }
-
         holder.iconImage.setOnClickListener {
             RouteManager.route(context, icon.applink)
         }
