@@ -19,9 +19,25 @@ fun ShopShipmentData.transformToVisitable(): ShopInfoLogisticViewModel {
 }
 
 fun Double.formatToSimpleNumber():String {
-    return when(this) {
-        in THOUSAND until MILLION -> "${df.format(this/THOUSAND)}rb"
-        in MILLION..Long.MAX_VALUE -> "${df.format(this/ MILLION)}jt"
-        else -> df.format(this)
+    return when {
+        containsIn(this, THOUSAND, MILLION) -> {
+            "${df.format(this/THOUSAND)}rb"
+        }
+        containsIn(this, MILLION, Int.MAX_VALUE) -> {
+            "${df.format(this/ MILLION)}jt"
+        }
+        else -> {
+            df.format(this)
+        }
     }.replace(".",",")
 }
+
+private fun containsIn(value: Double, start: Int, end: Int): Boolean {
+    return value.toIntExactOrNull().let { if (it != null) contains(it, start, end) else false }
+}
+
+private fun Double.toIntExactOrNull(): Int? {
+    return if (this in Int.MIN_VALUE.toDouble()..Int.MAX_VALUE.toDouble()) this.toInt() else null
+}
+
+private fun contains(value: Int, start: Int, end: Int): Boolean = value in start..end

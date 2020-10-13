@@ -358,7 +358,7 @@ class NormalCheckoutTracking {
                     jsonObject.put("quantity", quantity)
                     jsonArray.put(jsonObject)
                     it[AFInAppEventParameterName.CONTENT] = jsonArray.toString()
-                })
+                } as Map<String, Any>?)
     }
 
     private fun addComponentTracker(mapEvent: MutableMap<String, Any>,
