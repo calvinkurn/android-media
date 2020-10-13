@@ -3,10 +3,12 @@ package com.tokopedia.searchbar.navigation_component
 import android.app.Activity
 import android.content.Context
 import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.Drawable
 import android.os.Build
 import android.util.AttributeSet
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.DrawableCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
@@ -14,10 +16,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.searchbar.R
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.helper.ViewHelper
-import com.tokopedia.searchbar.navigation_component.icons.DefaultIconConfig
 import com.tokopedia.searchbar.navigation_component.util.StatusBarUtil
 import kotlinx.android.synthetic.main.nav_main_toolbar.view.*
-import kotlinx.android.synthetic.main.nav_main_toolbar.view.toolbar
 import java.lang.ref.WeakReference
 
 class NavToolbar: Toolbar, LifecycleObserver {
@@ -26,8 +26,12 @@ class NavToolbar: Toolbar, LifecycleObserver {
         const val TOOLBAR_DARK_TYPE = 1
         private const val HOME_SOURCE = "home"
 
-        private const val PARAM_APPLINK_AUTOCOMPLETE = "?navsource={source}&hint={hint}&first_install={first_install}"
+        private const val BACK_TYPE_NONE = 0
+        private const val BACK_TYPE_CLOSE = 1
+        private const val BACK_TYPE_BACK = 2
     }
+
+    //public variable
     var toolbarType: Int = 0
     private set
 
@@ -48,8 +52,11 @@ class NavToolbar: Toolbar, LifecycleObserver {
 
         if (attrs != null) {
             val ta = context.obtainStyledAttributes(attrs, R.styleable.NavToolbar, 0, 0)
-            screenName = try {
-                ta.getString(R.styleable.NavToolbar_toolbarScreenName)!!
+            try {
+                backType = ta.getInt(R.styleable.NavToolbar_toolbarBackButton, BACK_TYPE_NONE)
+                showSearchbar = ta.getBoolean(R.styleable.NavToolbar_toolbarShowSearchbar, false)
+                initialTheme = ta.getInt(R.styleable.NavToolbar_toolbarInitialTheme, TOOLBAR_DARK_TYPE)
+                toolbarAlwaysShowShadow = ta.getBoolean(R.styleable.NavToolbar_toolbarAlwaysShowShadow, false)
             } finally {
                 ta.recycle()
             }
@@ -78,7 +85,6 @@ class NavToolbar: Toolbar, LifecycleObserver {
      */
     fun setupToolbarWithStatusBar(activity: Activity) {
         statusBarUtil = StatusBarUtil(WeakReference(activity))
-        statusBarUtil?.requestStatusBarLight()
         applyStatusBarPadding()
     }
 
@@ -130,15 +136,29 @@ class NavToolbar: Toolbar, LifecycleObserver {
         }
     }
 
-    fun setSearchBarHint(hints: ArrayList<HintData>,
-                         isFirstInstall: Boolean = false,
-                         isShowTransition: Boolean = true,
-                         durationAutoTransition: Long = 0) {
-        navSearchBarController.setHint(hints, isFirstInstall, isShowTransition, durationAutoTransition)
+    /**
+     * Show and setup searchbar
+     * @durationAutoTransition is delay for each hint in ms
+     */
+    fun setupSearchbar(hints: List<HintData>,
+                       paramAutoComplete: String = "",
+                       searchbarClickCallback: ((hint: String) -> Unit)? = null,
+                       searchbarImpressionCallback: ((hint: String) -> Unit)? = null,
+                       durationAutoTransition: Long = 0,
+                       shouldShowTransition: Boolean = true) {
+        navSearchBarController = NavSearchbarController(
+                this,
+                paramAutoComplete,
+                searchbarClickCallback = searchbarClickCallback, searchbarImpressionCallback = searchbarImpressionCallback)
+        navSearchBarController.setHint(hints, shouldShowTransition, durationAutoTransition)
     }
 
     fun setBadgeCounter(iconId: Int, counter: Int) {
         navIconAdapter.setIconCounter(iconId, counter)
+    }
+
+    fun setOnBackButtonClickListener(backButtonClickListener: ()-> Unit) {
+        nav_icon_back.setOnClickListener { backButtonClickListener }
     }
 
     internal fun setBackgroundAlpha(alpha: Float) {

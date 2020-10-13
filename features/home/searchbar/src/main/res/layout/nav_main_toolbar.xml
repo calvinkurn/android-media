@@ -11,16 +11,33 @@
     app:contentInsetStartWithNavigation="0dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/nav_toolbar_constraintlayout"
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
         tools:layout_height="100dp"
         android:orientation="horizontal"
         android:padding="@dimen/dp_8">
 
+        <ImageView
+            android:id="@+id/nav_icon_back"
+            android:layout_marginStart="4dp"
+            android:visibility="gone"
+            tools:visibility="gone"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="@id/layout_search"
+            app:layout_constraintBottom_toBottomOf="@id/layout_search"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_goneMarginStart="@dimen/dp_12"
+            android:layout_marginEnd="@dimen/dp_20"/>
+
         <LinearLayout
             android:id="@+id/layout_search"
-            app:layout_constraintStart_toStartOf="parent"
+            tools:visibility="visible"
+            android:visibility="gone"
             app:layout_constraintEnd_toStartOf="@id/rv_icon_list"
+            app:layout_constraintStart_toEndOf="@id/nav_icon_back"
             android:layout_marginStart="@dimen/dp_8"
             android:layout_marginEnd="@dimen/dp_8"
             android:layout_width="0dp"
@@ -33,6 +50,7 @@
             <ImageView
                 android:id="@+id/search_magnify_icon"
                 android:layout_marginStart="4dp"
+                app:srcCompat="@drawable/ic_search_bar"
                 android:layout_gravity="center"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />

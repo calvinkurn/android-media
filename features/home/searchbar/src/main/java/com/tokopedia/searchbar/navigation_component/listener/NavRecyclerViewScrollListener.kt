@@ -20,7 +20,7 @@ class NavRecyclerViewScrollListener(
     }
 
     private fun calculateNavToolbarTransparency(offset: Int) {
-        val endTransitionOffset = startTransitionPixel + toolbarTransitionRange
+        val endTransitionOffset = startTransitionPixel + toolbarTransitionRangePixel
         val maxTransitionOffset = endTransitionOffset - startTransitionPixel
         //mapping alpha to be rendered per pixel for x height
         var offsetAlpha = 255f / maxTransitionOffset * (offset - startTransitionPixel)

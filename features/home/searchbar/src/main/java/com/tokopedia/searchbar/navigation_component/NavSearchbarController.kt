@@ -2,12 +2,14 @@ package com.tokopedia.searchbar.navigation_component
 
 import android.text.TextUtils
 import android.view.View
+import android.view.View.VISIBLE
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.searchbar.R
-import com.tokopedia.searchbar.SearchBarAnalytics
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.helper.Ease
 import com.tokopedia.searchbar.helper.EasingInterpolator
@@ -17,7 +19,12 @@ import java.net.URLEncoder
 import kotlin.coroutines.CoroutineContext
 
 class NavSearchbarController(val view: View,
-                             val searchBarTrackingParam: SearchBarTrackingParam): CoroutineScope {
+                             val applinkParam: String = "",
+                             val searchbarClickCallback: ((hint: String)-> Unit)?,
+                             val searchbarImpressionCallback: ((hint: String)-> Unit)?) : CoroutineScope {
+    init {
+        view.layout_search.visibility = VISIBLE
+    }
     private lateinit var animationJob: Job
 
     override val coroutineContext: CoroutineContext
@@ -25,11 +32,9 @@ class NavSearchbarController(val view: View,
 
     val context = view.context
     val etSearch = view.et_search
-    val searchBarAnalytics = SearchBarAnalytics(view.context)
 
     fun setHint(
-            hints: ArrayList<HintData>,
-            isFirstInstall: Boolean,
+            hints: List<HintData>,
             isShowTransition: Boolean,
             durationAutoTransition: Long
     ) {
@@ -37,24 +42,23 @@ class NavSearchbarController(val view: View,
             animationJob.cancel()
         }
         if (hints.size > 1 && isShowTransition) {
-            setHintAnimation(hints, isFirstInstall, durationAutoTransition)
+            setHintAnimation(hints, durationAutoTransition)
         } else {
-            setHintSingle(hints[0], isFirstInstall)
+            setHintSingle(hints[0])
         }
         etSearch.setSingleLine()
         etSearch.ellipsize = TextUtils.TruncateAt.END
     }
 
-    private fun setHintSingle(hint: HintData, isFirstInstall: Boolean) {
+    private fun setHintSingle(hint: HintData) {
         etSearch.hint = if (hint.placeholder.isEmpty()) context.getString(R.string.search_tokopedia) else hint.placeholder
         etSearch.setOnClickListener {
-            onClickHint(hint.keyword, isFirstInstall)
+            onClickHint(hint.keyword)
         }
     }
 
     private fun setHintAnimation(
-            hints: ArrayList<HintData>,
-            isFirstInstall: Boolean,
+            hints: List<HintData>,
             durationAutoTransition: Long
     ) {
         var iterator = hints.iterator()
@@ -82,29 +86,30 @@ class NavSearchbarController(val view: View,
                         }
                         etSearch.hint = hint
                         etSearch.startAnimation(slideUpIn)
+                        searchbarImpressionCallback?.invoke(hint)
                     }
 
                     override fun onAnimationStart(animation: Animation?) {}
                 })
                 etSearch.startAnimation(slideOutUp)
                 etSearch.setOnClickListener {
-                    onClickHint(keyword, isFirstInstall)
+                    onClickHint(keyword)
                 }
                 delay(durationAutoTransition)
             }
         }
     }
 
-    private fun onClickHint(keyword: String, isFirstInstall: Boolean) {
-        searchBarAnalytics.eventTrackingSearchBar(searchBarTrackingParam.screenName, keyword)
+    private fun onClickHint(keyword: String) {
+        searchbarClickCallback?.invoke(keyword)
         if (keyword.isEmpty()) {
             RouteManager.route(context, ApplinkConstInternalDiscovery.AUTOCOMPLETE)
         } else {
-            RouteManager.route(context,
-                    ApplinkConstInternalDiscovery.AUTOCOMPLETE + searchBarTrackingParam.source,
-                    searchBarTrackingParam.applinkParam,
-                    safeEncodeUTF8(keyword),
-                    isFirstInstall.toString())
+            RouteManager.route(
+                    context,
+                    ApplinkConstInternalDiscovery.AUTOCOMPLETE + applinkParam,
+                    applinkParam,
+                    safeEncodeUTF8(keyword))
         }
     }
 
@@ -129,9 +134,3 @@ class NavSearchbarController(val view: View,
         }
     }
 }
-
-data class SearchBarTrackingParam(
-        val screenName: String,
-        val source: String,
-        val applinkParam: String
-)
