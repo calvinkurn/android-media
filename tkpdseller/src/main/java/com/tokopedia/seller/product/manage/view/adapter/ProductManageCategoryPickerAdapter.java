@@ -5,8 +5,8 @@ import android.view.ViewGroup;
 
 import com.tokopedia.base.list.seller.view.adapter.BaseListAdapter;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.manageitem.data.cloud.model.category.ProductManageCategoryViewModel;
 import com.tokopedia.seller.product.manage.constant.ProductManageConstant;
-import com.tokopedia.product.manage.item.category.view.model.ProductManageCategoryViewModel;
 
 /**
  * Created by zulfikarrahman on 9/26/17.

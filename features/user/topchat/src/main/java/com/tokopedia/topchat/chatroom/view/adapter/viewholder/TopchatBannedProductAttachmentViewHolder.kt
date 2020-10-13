@@ -26,7 +26,7 @@ class TopchatBannedProductAttachmentViewHolder(
     override var image: ImageView? = itemView?.findViewById(R.id.product_image)
 
     private val bgOpposite = ViewUtil.generateBackgroundWithShadow(
-            itemView,
+            container,
             com.tokopedia.unifyprinciples.R.color.Neutral_N0,
             com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
             com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
@@ -38,7 +38,7 @@ class TopchatBannedProductAttachmentViewHolder(
             Gravity.CENTER
     )
     private val bgSender = ViewUtil.generateBackgroundWithShadow(
-            itemView,
+            container,
             com.tokopedia.unifyprinciples.R.color.Neutral_N0,
             com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
             com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,

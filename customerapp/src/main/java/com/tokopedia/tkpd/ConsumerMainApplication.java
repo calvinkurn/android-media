@@ -14,7 +14,6 @@ import android.media.AudioAttributes;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import kotlin.Pair;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDelegate;
@@ -33,8 +32,10 @@ import com.moengage.push.PushManager;
 import com.moengage.pushbase.push.MoEPushCallBacks;
 import com.tokopedia.additional_check.subscriber.TwoFactorCheckerSubscriber;
 import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo;
+import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiWhiteListUseCase;
 import com.tokopedia.cacheapi.util.CacheApiLoggingUtils;
 import com.tokopedia.cachemanager.PersistentCacheManager;
@@ -61,6 +62,7 @@ import com.tokopedia.remoteconfig.abtest.AbTestPlatform;
 import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.shakedetect.ShakeDetectManager;
 import com.tokopedia.shakedetect.ShakeSubscriber;
+import com.tokopedia.tkpd.BuildConfig;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
 import com.tokopedia.tkpd.fcm.ApplinkResetReceiver;
@@ -86,6 +88,7 @@ import java.security.cert.X509Certificate;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
+import kotlin.Pair;
 import timber.log.Timber;
 
 import static com.tokopedia.unifyprinciples.GetTypefaceKt.getTypeface;
@@ -114,6 +117,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
         System.loadLibrary("native-lib");
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
     }
 
     @Override
@@ -215,22 +219,22 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         return true;
     }
 
-    private void setVersionName(){
+    private void setVersionName() {
         Pair<String, String> versions = AuthHelper.getVersionName(BuildConfig.VERSION_NAME);
         String version = versions.getFirst();
         String suffixVersion = versions.getSecond();
 
-        if(!version.equalsIgnoreCase(AuthHelper.ERROR)){
+        if (!version.equalsIgnoreCase(AuthHelper.ERROR)) {
             GlobalConfig.VERSION_NAME = version;
             com.tokopedia.config.GlobalConfig.VERSION_NAME = version;
             com.tokopedia.config.GlobalConfig.VERSION_NAME_SUFFIX = suffixVersion;
-        }else{
+        } else {
             GlobalConfig.VERSION_NAME = BuildConfig.VERSION_NAME;
             com.tokopedia.config.GlobalConfig.VERSION_NAME = BuildConfig.VERSION_NAME;
         }
         com.tokopedia.config.GlobalConfig.RAW_VERSION_NAME = BuildConfig.VERSION_NAME;// save raw version name
     }
-          
+
     private void initConfigValues() {
         setVersionCode();
         setVersionName();
@@ -251,7 +255,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         if (com.tokopedia.config.GlobalConfig.DEBUG) {
             com.tokopedia.config.GlobalConfig.DEVICE_ID = DeviceInfo.getAndroidId(this);
         }
-        if(BuildConfig.DEBUG_TRACE_NAME != null) {
+        if (BuildConfig.DEBUG_TRACE_NAME != null) {
             com.tokopedia.config.GlobalConfig.DEBUG_TRACE_NAME = BuildConfig.DEBUG_TRACE_NAME.split(",");
         }
         generateConsumerAppNetworkKeys();

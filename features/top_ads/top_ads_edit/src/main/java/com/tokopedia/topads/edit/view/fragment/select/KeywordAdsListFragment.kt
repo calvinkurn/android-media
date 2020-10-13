@@ -113,7 +113,9 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
     }
 
     private fun sortListSelected() {
-        keywordSelectedAdapter.items.sortWith(Comparator { lhs, rhs -> lhs?.totalSearch?.toInt()!!.compareTo(rhs?.totalSearch?.toInt()!!) })
+        keywordSelectedAdapter.items.sortWith(Comparator { lhs, rhs ->
+            lhs?.totalSearch?.toInt() ?: 0.compareTo(rhs?.totalSearch?.toInt() ?: 0)
+        })
         keywordSelectedAdapter.items.reverse()
         keywordSelectedAdapter.notifyDataSetChanged()
     }
@@ -129,9 +131,9 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
     private fun onItemUnchecked(pos: Int) {
         if (!keywordSelectedAdapter.items[pos].fromSearch) {
             keywordListAdapter.items.add(KeywordItemViewModel(
-            KeywordDataItem(keywordSelectedAdapter.items[pos].bidSuggest, keywordSelectedAdapter.items[pos].totalSearch,
-             keywordSelectedAdapter.items[pos].keyword,
-              keywordSelectedAdapter.items[pos].source,keywordSelectedAdapter.items[pos].competition)))
+                    KeywordDataItem(keywordSelectedAdapter.items[pos].bidSuggest, keywordSelectedAdapter.items[pos].totalSearch,
+                            keywordSelectedAdapter.items[pos].keyword,
+                            keywordSelectedAdapter.items[pos].source, keywordSelectedAdapter.items[pos].competition)))
 
         } else {
             removeSearchedItem(pos)
@@ -148,14 +150,13 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
     }
 
     private fun removeSearchedItem(pos: Int) {
-        var id = -1
-        selectedKeyFromSearch?.forEachIndexed { index, it ->
-            if (it.keyword == keywordSelectedAdapter.items[pos].keyword) {
-                id = index
+        val iterator = selectedKeyFromSearch?.iterator()
+        while (iterator?.hasNext() == true) {
+            val key = iterator.next()
+            if (key.keyword == keywordSelectedAdapter.items[pos].keyword) {
+                iterator.remove()
             }
         }
-        if (id != -1 && selectedKeyFromSearch?.size ?: 0 > id)
-            selectedKeyFromSearch?.removeAt(id)
     }
 
 
@@ -189,7 +190,7 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
             selectedKeyFromSearch?.clear()
             if (resultCode == Activity.RESULT_OK) {
                 val dataFromSearch: ArrayList<SearchData>? = data?.getParcelableArrayListExtra(SELECTED_KEYWORDS)
-                for (item in dataFromSearch!!) {
+                dataFromSearch?.forEach { item ->
                     selectedKeyFromSearch?.add(item)
                 }
                 if (selectedKeyFromSearch?.isNotEmpty() != false)
@@ -249,7 +250,7 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
         if (keywords.isEmpty()) {
             setEmptyView()
         }
-        if (selected?.isNotEmpty()!!) {
+        if (selected?.isNotEmpty() != false) {
             restoreStage()
         } else {
             setStepLayout(View.GONE)
@@ -299,7 +300,7 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
             }
         }
         tip_btn.setOnClickListener {
-            TipSheetKeywordList().show(fragmentManager!!, KeywordAdsListFragment::class.java.name)
+            TipSheetKeywordList().show(childFragmentManager, KeywordAdsListFragment::class.java.name)
             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEventEdit(CLICK_TIPS_KEYWORD, groupId.toString(), userID)
 
         }
@@ -382,10 +383,10 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
 
     private fun mapSearchDataToModel(): MutableList<KeywordDataItem> {
         val list: MutableList<KeywordDataItem> = mutableListOf()
-        for (item in selectedKeyFromSearch!!) {
+        selectedKeyFromSearch?.forEach { item ->
             if (keywordSelectedAdapter.items.find { selected -> selected.keyword == item.keyword } == null) {
                 list.add(KeywordDataItem(item.bidSuggest, item.totalSearch.toString(), item.keyword
-                        ?: "", item.source ?: "", item.competition ?: ""))
+                        ?: "", item.source ?: "", item.competition ?: "",true, fromSearch = true))
             }
         }
         return list

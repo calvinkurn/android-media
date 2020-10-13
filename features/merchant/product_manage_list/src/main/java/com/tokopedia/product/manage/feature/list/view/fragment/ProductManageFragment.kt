@@ -35,10 +35,10 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
+import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.applink.productmanage.DeepLinkMapperProductManage
 import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
 import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
-import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.text.SearchInputView
@@ -68,6 +68,7 @@ import com.tokopedia.product.manage.feature.filter.presentation.fragment.Product
 import com.tokopedia.product.manage.feature.list.analytics.ProductManageTracking
 import com.tokopedia.product.manage.feature.list.constant.ProductManageAnalytics.MP_PRODUCT_MANAGE
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant
+import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.EXTRA_IS_NEED_TO_RELOAD_DATA_SHOP_PRODUCT_LIST
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.EXTRA_PRODUCT_ID
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.EXTRA_PRODUCT_NAME
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.EXTRA_THRESHOLD
@@ -78,6 +79,7 @@ import com.tokopedia.product.manage.feature.list.constant.ProductManageListConst
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.REQUEST_CODE_ADD_PRODUCT
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.REQUEST_CODE_CAMPAIGN_STOCK
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.REQUEST_CODE_EDIT_PRODUCT
+import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.REQUEST_CODE_ETALASE
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.REQUEST_CODE_STOCK_REMINDER
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.SET_CASHBACK_REQUEST_CODE
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.URL_TIPS_TRICK
@@ -118,6 +120,7 @@ import com.tokopedia.seller.active.common.service.UpdateShopActiveService
 import com.tokopedia.seller_migration_common.presentation.activity.SellerMigrationActivity
 import com.tokopedia.seller_migration_common.presentation.model.SellerFeatureUiModel
 import com.tokopedia.seller_migration_common.presentation.widget.SellerFeatureCarousel
+import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus.*
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOption
@@ -170,8 +173,8 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
 
     private var shouldEnableMultiEdit: Boolean = false
     private var shouldAddAsFeatured: Boolean = false
-    private var shouldOpenAppLink: Boolean = false
-    private var shouldOpenTopAdsFromPdp: Boolean = false
+    private var extraCacheManagerId: String = ""
+    private var sellerMigrationFeatureName: String = ""
     private var sellerFeatureCarouselClickListener: SellerFeatureCarousel.SellerFeatureClickListener = object: SellerFeatureCarousel.SellerFeatureClickListener {
         override fun onSellerFeatureClicked(item: SellerFeatureUiModel) {
             when (item) {
@@ -182,12 +185,11 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
                 is SellerFeatureUiModel.StockReminderFeatureWithDataUiModel -> goToSellerAppSetStockReminder(item.data as ProductViewModel)
                 is SellerFeatureUiModel.ProductManageSetVariantFeatureWithDataUiModel -> goToSellerAppAddProduct()
             }
-            productManageAddEditMenuBottomSheet.dismiss()
-            productManageBottomSheet?.dismiss()
         }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        setHasOptionsMenu(true)
         return inflater.inflate(getLayoutRes(), container, false)
     }
 
@@ -197,10 +199,9 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         activity?.intent?.data?.run {
             shouldEnableMultiEdit = this.getBooleanQueryParameter(DeepLinkMapperProductManage.QUERY_PARAM_ENABLE_MULTI_EDIT, false)
             shouldAddAsFeatured = this.getBooleanQueryParameter(DeepLinkMapperProductManage.QUERY_PARAM_ADD_AS_FEATURED, false)
-            shouldOpenAppLink = activity?.intent?.getStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA).orEmpty().isNotEmpty()
-            shouldOpenTopAdsFromPdp = activity?.intent?.getStringExtra(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME).orEmpty() == SellerMigrationFeatureName.FEATURE_ADS
+            extraCacheManagerId = this.getQueryParameter(ApplinkConstInternalMarketplace.ARGS_CACHE_MANAGER_ID).orEmpty()
+            sellerMigrationFeatureName = this.getQueryParameter(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME).orEmpty()
         }
-        setHasOptionsMenu(true)
     }
 
     override fun onViewStateRestored(savedInstanceState: Bundle?) {
@@ -310,7 +311,15 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     override fun onMoreMenuClicked(menu: ProductMoreMenuModel) {
         if(menu.title == getString(R.string.product_manage_shop_showcase_more_menu_text)) {
             // goto showcase list
-            RouteManager.route(requireContext(), ApplinkConstInternalMechant.MERCHANT_SHOP_SHOWCASE_LIST)
+            val showcaseListIntent = RouteManager.getIntent(context, ApplinkConstInternalMechant.MERCHANT_SHOP_SHOWCASE_LIST)
+            val showcaseListBundle = Bundle().apply {
+                putString(ShopShowcaseParamConstant.EXTRA_SHOP_ID, userSession.shopId)
+                putString(ShopShowcaseParamConstant.EXTRA_SELECTED_ETALASE_ID, "")
+                putBoolean(ShopShowcaseParamConstant.EXTRA_IS_SHOW_DEFAULT, true)
+                putBoolean(ShopShowcaseParamConstant.EXTRA_IS_SHOW_ZERO_PRODUCT, false)
+            }
+            showcaseListIntent.putExtra(ShopShowcaseParamConstant.SHOWCASE_LIST_BUNDLE, showcaseListBundle)
+            startActivityForResult(showcaseListIntent, REQUEST_CODE_ETALASE)
             productManageMoreMenuBottomSheet?.dismiss()
             ProductManageTracking.eventClickMoreMenuShopShowcase()
         }
@@ -403,8 +412,10 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     }
 
     private fun goToSellerAppProductManageThenSetCashback(product: ProductViewModel) {
+        val cacheManagerId = UUID.randomUUID().toString()
         val firstAppLink = Uri.parse(ApplinkConst.PRODUCT_MANAGE)
                 .buildUpon()
+                .appendQueryParameter(ApplinkConstInternalMarketplace.ARGS_CACHE_MANAGER_ID, cacheManagerId)
                 .build()
                 .toString()
         val secondAppLink = Uri.parse(UriUtil.buildUri(ApplinkConstInternalMarketplace.SET_CASHBACK, product.id))
@@ -413,6 +424,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
                 .appendQueryParameter(PARAM_SET_CASHBACK_VALUE, product.cashBack.toString())
                 .appendQueryParameter(PARAM_SET_CASHBACK_PRODUCT_PRICE, product.minPrice?.price.toIntOrZero().toString())
                 .appendQueryParameter(EXTRA_CASHBACK_SHOP_ID, userSession.shopId)
+                .appendQueryParameter(ApplinkConstInternalMarketplace.ARGS_CACHE_MANAGER_ID, cacheManagerId)
                 .build()
                 .toString()
         goToSellerMigrationPage(SellerMigrationFeatureName.FEATURE_SET_CASHBACK, arrayListOf(firstAppLink, secondAppLink))
@@ -431,8 +443,15 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     }
 
     private fun goToSellerAppSetStockReminder(product: ProductViewModel) {
+        val cacheManagerId = UUID.randomUUID().toString()
+        val firstAppLink = Uri.parse(ApplinkConst.PRODUCT_MANAGE)
+                .buildUpon()
+                .appendQueryParameter(ApplinkConstInternalMarketplace.ARGS_CACHE_MANAGER_ID, cacheManagerId)
+                .build()
+                .toString()
         val secondAppLink = UriUtil.buildUri(ApplinkConstInternalMarketplace.STOCK_REMINDER, product.id, product.title, product.stock.toString())
-        goToSellerMigrationPage(SellerMigrationFeatureName.FEATURE_STOCK_REMINDER, arrayListOf(ApplinkConst.PRODUCT_MANAGE, secondAppLink))
+                .plus("?${ApplinkConstInternalMarketplace.ARGS_CACHE_MANAGER_ID}=$cacheManagerId")
+        goToSellerMigrationPage(SellerMigrationFeatureName.FEATURE_STOCK_REMINDER, arrayListOf(firstAppLink, secondAppLink))
     }
 
     private fun goToSellerAppAddProduct() {
@@ -662,6 +681,29 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     private fun renderProductList(list: List<ProductViewModel>, hasNextPage: Boolean) {
         renderList(list, hasNextPage)
         renderCheckedView()
+        showAddAsFeaturedProduct()
+        if (!extraCacheManagerId.isBlank()) {
+            val cacheManager = context?.let { context -> SaveInstanceCacheManager(context, extraCacheManagerId) }
+            val resultStatus = cacheManager?.get(ProductManageListConstant.EXTRA_RESULT_STATUS, Int::class.java) ?: 0
+            if (resultStatus == Activity.RESULT_OK) {
+                if (sellerMigrationFeatureName == SellerMigrationFeatureName.FEATURE_SET_CASHBACK) {
+                    onSetCashbackResult(cacheManager)
+                } else if (sellerMigrationFeatureName == SellerMigrationFeatureName.FEATURE_STOCK_REMINDER) {
+                    val productName: String = cacheManager?.getString(EXTRA_PRODUCT_NAME).orEmpty()
+                    val threshold = cacheManager?.get(EXTRA_THRESHOLD, Int::class.java) ?: 0
+                    onSetStockReminderResult(threshold, productName)
+                }
+            }
+        }
+    }
+
+    private fun showAddAsFeaturedProduct() {
+        if (shouldAddAsFeatured) {
+            shouldAddAsFeatured = false
+            val isFeatured = activity?.intent?.data?.getBooleanQueryParameter(DeepLinkMapperProductManage.QUERY_PARAM_IS_PRODUCT_FEATURED, false) ?: false
+            val productId = activity?.intent?.data?.getQueryParameter(DeepLinkMapperProductManage.QUERY_PARAM_SELECTED_PRODUCT_ID).orEmpty()
+            onSetFeaturedProductClicked(isFeatured, productId)
+        }
     }
 
     private fun getProductList(page: Int = 1, isRefresh: Boolean = false, withDelay: Boolean = false) {
@@ -1420,41 +1462,11 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         context?.let {
             LocalBroadcastManager.getInstance(it).unregisterReceiver(addProductReceiver)
         }
-    }
-
-    override fun onStart() {
-        super.onStart()
-        if (shouldAddAsFeatured) {
-            shouldAddAsFeatured = false
-            val isFeatured = activity?.intent?.data?.getBooleanQueryParameter(DeepLinkMapperProductManage.QUERY_PARAM_IS_PRODUCT_FEATURED, false) ?: false
-            val productId = activity?.intent?.data?.getQueryParameter(DeepLinkMapperProductManage.QUERY_PARAM_SELECTED_PRODUCT_ID).orEmpty()
-            onSetFeaturedProductClicked(isFeatured, productId)
+        if (productManageAddEditMenuBottomSheet.isVisible) {
+            productManageAddEditMenuBottomSheet.dismiss()
         }
-        if (shouldOpenAppLink) {
-            shouldOpenAppLink = false
-            val appLinks = ArrayList(activity?.intent?.getStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA).orEmpty())
-            if (appLinks.isNotEmpty()) {
-                val appLinkToOpen = if (!shouldOpenTopAdsFromPdp) {
-                    appLinks.firstOrNull().orEmpty()
-                    appLinks.removeAt(0)
-                } else {
-                    appLinks.lastOrNull().orEmpty()
-                }
-                if (appLinkToOpen.isNotBlank()) {
-                    val intent = RouteManager.getIntent(context, appLinkToOpen).apply {
-                        putStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA, appLinks)
-                        putExtra(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME, activity?.intent?.getStringExtra(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME).orEmpty())
-                        addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
-                    }
-                    when (activity?.intent?.getStringExtra(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME)) {
-                        SellerMigrationFeatureName.FEATURE_SET_CASHBACK -> startActivityForResult(intent, SET_CASHBACK_REQUEST_CODE)
-                        SellerMigrationFeatureName.FEATURE_STOCK_REMINDER -> startActivityForResult(intent, REQUEST_CODE_STOCK_REMINDER)
-                        SellerMigrationFeatureName.FEATURE_SET_VARIANT, SellerMigrationFeatureName.FEATURE_EDIT_PRODUCT_CASHBACK -> startActivityForResult(intent, REQUEST_CODE_ADD_PRODUCT)
-                        SellerMigrationFeatureName.FEATURE_ADS, SellerMigrationFeatureName.FEATURE_ADS_DETAIL -> startActivity(intent)
-                        SellerMigrationFeatureName.FEATURE_TOPADS -> startActivity(intent)
-                    }
-                }
-            }
+        if (productManageBottomSheet?.isVisible == true) {
+            productManageBottomSheet?.dismiss()
         }
     }
 
@@ -1509,27 +1521,23 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
 
                     viewModel.editProductsEtalase(productIds, etalaseId, etalaseName)
                 }
+                REQUEST_CODE_ETALASE -> if(resultCode == Activity.RESULT_OK) {
+                    val shopId = userSession.shopId
+                    val showcaseId = it.getStringExtra(ShopShowcaseParamConstant.EXTRA_ETALASE_ID)
+                    val isNeedToReloadData = it.getBooleanExtra(ShopShowcaseParamConstant.EXTRA_IS_NEED_TO_RELOAD_DATA, false)
+                    val shopShowcaseIntent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.SHOP_PAGE_PRODUCT_LIST, shopId, showcaseId)
+                    shopShowcaseIntent.putExtra(EXTRA_IS_NEED_TO_RELOAD_DATA_SHOP_PRODUCT_LIST, isNeedToReloadData)
+                    startActivity(shopShowcaseIntent)
+                }
                 REQUEST_CODE_STOCK_REMINDER -> if(resultCode == Activity.RESULT_OK) {
-                    val productName = it.getStringExtra(EXTRA_PRODUCT_NAME)
+                    val productName = it.getStringExtra(EXTRA_PRODUCT_NAME).orEmpty()
                     val threshold = it.getIntExtra(EXTRA_THRESHOLD, 0)
-                    if(threshold > 0) {
-                        Toaster.make(coordinatorLayout, getString(R.string.product_stock_reminder_toaster_success_desc, productName), Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL)
-                    }
-                    else {
-                        Toaster.make(coordinatorLayout, getString(R.string.product_stock_reminder_toaster_success_remove_desc, productName), Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL)
-                    }
+                    onSetStockReminderResult(threshold, productName)
                 }
                 SET_CASHBACK_REQUEST_CODE -> if(resultCode == Activity.RESULT_OK) {
                     val cacheManagerId = it.getStringExtra(SET_CASHBACK_CACHE_MANAGER_KEY)
                     val cacheManager = context?.let { context -> SaveInstanceCacheManager(context, cacheManagerId) }
-                    val setCashbackResult: SetCashbackResult? = cacheManager?.get(SET_CASHBACK_RESULT, SetCashbackResult::class.java)
-                    setCashbackResult?.let { cashbackResult ->
-                        if(cashbackResult.limitExceeded) {
-                            onSetCashbackLimitExceeded()
-                        } else {
-                            onSuccessSetCashback(cashbackResult)
-                        }
-                    }
+                    onSetCashbackResult(cacheManager)
                 }
                 REQUEST_CODE_CAMPAIGN_STOCK ->
                     when(resultCode) {
@@ -1569,6 +1577,26 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
                     }
                 else -> super.onActivityResult(requestCode, resultCode, it)
             }
+        }
+    }
+
+    @Suppress("NAME_SHADOWING")
+    private fun onSetCashbackResult(cacheManager: SaveInstanceCacheManager?) {
+        val setCashbackResult: SetCashbackResult? = cacheManager?.get(SET_CASHBACK_RESULT, SetCashbackResult::class.java)
+        setCashbackResult?.let { cashbackResult ->
+            if (cashbackResult.limitExceeded) {
+                onSetCashbackLimitExceeded()
+            } else {
+                onSuccessSetCashback(cashbackResult)
+            }
+        }
+    }
+
+    private fun onSetStockReminderResult(threshold: Int, productName: String) {
+        if(threshold > 0) {
+            Toaster.make(coordinatorLayout, getString(R.string.product_stock_reminder_toaster_success_desc, productName), Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL)
+        } else {
+            Toaster.make(coordinatorLayout, getString(R.string.product_stock_reminder_toaster_success_remove_desc, productName), Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL)
         }
     }
 

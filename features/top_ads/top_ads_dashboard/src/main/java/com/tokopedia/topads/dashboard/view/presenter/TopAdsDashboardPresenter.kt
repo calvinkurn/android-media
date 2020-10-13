@@ -64,6 +64,7 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetShopDepositUseCase
     val HIDDEN_TRIAL_FEATURE = 21
     private var SELECTION_TYPE_DEF = 0
     private var SELECTION_IND_DEF = 2
+    private var GROUP_ID_FOR_STATISTICS = "-1"
 
     fun getShopDeposit(onSuccess: ((dataDeposit: DataDeposit) -> Unit)) {
         topAdsGetShopDepositUseCase.execute(TopAdsGetShopDepositUseCase.createParams(userSession.shopId),
@@ -231,7 +232,7 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetShopDepositUseCase
 
     fun getTopAdsStatistic(startDate: Date, endDate: Date, @TopAdsStatisticsType selectedStatisticType: Int, onSuccesGetStatisticsInfo: ((dataStatistic: DataStatistic) -> Unit)) {
         topAdsGetStatisticsUseCase.execute(TopAdsGetStatisticsUseCase.createRequestParams(startDate, endDate,
-                selectedStatisticType, userSession.shopId, null), object : Subscriber<DataStatistic>() {
+                selectedStatisticType, userSession.shopId, GROUP_ID_FOR_STATISTICS), object : Subscriber<DataStatistic>() {
             override fun onCompleted() {}
 
             override fun onError(e: Throwable) {
