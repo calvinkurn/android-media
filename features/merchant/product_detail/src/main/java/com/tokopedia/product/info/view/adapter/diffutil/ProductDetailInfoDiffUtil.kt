@@ -1,6 +1,8 @@
 package com.tokopedia.product.info.view.adapter.diffutil
 
+import android.os.Bundle
 import androidx.recyclerview.widget.DiffUtil
+import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoExpandableDataModel
 import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoVisitable
 
 /**
@@ -12,8 +14,15 @@ class ProductDetailInfoDiffUtil : DiffUtil.ItemCallback<ProductDetailInfoVisitab
     }
 
     override fun areContentsTheSame(oldItem: ProductDetailInfoVisitable, newItem: ProductDetailInfoVisitable): Boolean {
-        return oldItem.equalsWith(newItem)
+        return oldItem.equalsWith(newItem) && oldItem.isExpand() == newItem.isExpand()
     }
 
+    override fun getChangePayload(oldItem: ProductDetailInfoVisitable, newItem: ProductDetailInfoVisitable): Any? {
+        val bundle = Bundle()
+        if (oldItem is ProductDetailInfoExpandableDataModel && newItem is ProductDetailInfoExpandableDataModel) {
+            bundle.putBoolean("toggle", newItem.isShowable)
+        }
 
+        return bundle
+    }
 }

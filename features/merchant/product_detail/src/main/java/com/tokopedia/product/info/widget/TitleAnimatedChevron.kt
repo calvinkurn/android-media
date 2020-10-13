@@ -4,36 +4,63 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.detail.R
-import kotlinx.android.synthetic.main.widget_slider_counter_view.view.*
+import kotlinx.android.synthetic.main.layout_title_animated_chevron.view.*
 
 /**
  * Created by Yehezkiel on 13/10/20
  */
-class TitleAnimatedChevron  @JvmOverloads constructor(
+class TitleAnimatedChevron @JvmOverloads constructor(
         context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : FrameLayout(context, attrs, defStyleAttr) {
-
-    private var count: Int = 0
 
     init {
         View.inflate(context, R.layout.layout_title_animated_chevron, this)
     }
 
-    fun setView(startCounter: Int = 1, count: Int) {
-        this.count = count
+    var isExpand: Boolean = false
+        set(value) {
+            field = value
+            if (value) {
+                rotateTop()
+            } else {
+                if (product_detail_toggle?.rotation != 0F) {
+                    rotateDown()
+                }
+            }
+        }
 
-        if (count == 0) {
-            sliderText.hide()
-        } else {
-            sliderText.show()
-            sliderText?.text = context.getString(R.string.slider_counter_builder, startCounter, count)
+    var titleText: String = ""
+        set(value) {
+            field = value
+            product_detail_title?.text = value
+        }
+
+    fun toggleChevron(listener: TitleAnimatedChevronListener) {
+        product_detail_toggle?.run {
+            if (isExpand) {
+                listener.onClose()
+            } else {
+                listener.onExpand()
+            }
+            isExpand = !isExpand
         }
     }
 
-    fun setCurrentCounter(startCounter: Int) {
-        sliderText?.text = context.getString(R.string.slider_counter_builder, startCounter, count)
+    private fun rotateTop() {
+        product_detail_toggle?.run {
+            animate().rotation(180F).duration = 300
+        }
     }
+
+    private fun rotateDown() {
+        product_detail_toggle?.run {
+            animate().rotation(0F).duration = 300
+        }
+    }
+}
+
+interface TitleAnimatedChevronListener {
+    fun onExpand()
+    fun onClose()
 }

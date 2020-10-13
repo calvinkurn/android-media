@@ -6,14 +6,16 @@ import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.di.ProductDetailComponent
-import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoHeaderDataModel
+import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoExpandableDataModel
 import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoLoadingDataModel
+import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoVisitable
 import com.tokopedia.product.info.view.ProductDetailInfoListener
 import com.tokopedia.product.info.view.adapter.BsProductDetailInfoAdapter
 import com.tokopedia.product.info.view.adapter.ProductDetailInfoAdapterFactoryImpl
 import com.tokopedia.product.info.view.adapter.diffutil.ProductDetailInfoDiffUtil
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import java.util.concurrent.Executors
+
 
 /**
  * Created by Yehezkiel on 12/10/20
@@ -22,6 +24,7 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
 
     private var productDetailComponent: ProductDetailComponent? = null
     private var rvBsProductDetail: RecyclerView? = null
+    private var currentList: List<ProductDetailInfoVisitable>? = null
 
     private val productDetailInfoAdapter by lazy {
         BsProductDetailInfoAdapter(AsyncDifferConfig.Builder(ProductDetailInfoDiffUtil())
@@ -48,7 +51,12 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
     }
 
     override fun onLoadingClick() {
-        productDetailInfoAdapter.submitList(listOf(ProductDetailInfoHeaderDataModel(), ProductDetailInfoHeaderDataModel(), ProductDetailInfoHeaderDataModel()))
+        currentList = listOf(ProductDetailInfoExpandableDataModel(componentName = 1,isShowable = true), ProductDetailInfoExpandableDataModel(componentName = 2), ProductDetailInfoExpandableDataModel(componentName = 3))
+        productDetailInfoAdapter.submitList(currentList)
+    }
+
+    override fun closeAllExpand(uniqueIdentifier: Int, toggle: Boolean) {
+        productDetailInfoAdapter.closeAllExpanded(uniqueIdentifier, toggle, currentList ?: listOf())
     }
 
     private fun initView() {
@@ -61,6 +69,7 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
 
     private fun setupRecyclerView(childView: View) {
         rvBsProductDetail = childView.findViewById(R.id.bs_product_info_rv)
+        rvBsProductDetail?.itemAnimator = null
         rvBsProductDetail?.adapter = productDetailInfoAdapter
     }
 

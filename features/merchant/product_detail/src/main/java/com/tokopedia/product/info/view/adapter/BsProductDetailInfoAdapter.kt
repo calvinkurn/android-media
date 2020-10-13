@@ -1,59 +1,31 @@
 package com.tokopedia.product.info.view.adapter
 
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.recyclerview.widget.AsyncDifferConfig
-import androidx.recyclerview.widget.ListAdapter
-import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.base.view.adapter.viewholders.HideViewHolder
-import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoLoadingDataModel
 import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoVisitable
 
 /**
- * Created by Yehezkiel on 12/10/20
+ * Created by Yehezkiel on 13/10/20
  */
-class BsProductDetailInfoAdapter(asyncDifferConfig: AsyncDifferConfig<ProductDetailInfoVisitable>, private val adapterTypeFactory: ProductDetailInfoAdapterFactory) :
-        ListAdapter<ProductDetailInfoVisitable, AbstractViewHolder<*>>(asyncDifferConfig) {
+class BsProductDetailInfoAdapter(differ: AsyncDifferConfig<ProductDetailInfoVisitable>,
+                                 adapterTypeFactory: ProductDetailInfoAdapterFactoryImpl) : BsProductDetailInfoBaseAdapter(differ, adapterTypeFactory) {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder<*> {
-        val view = onCreateViewItem(parent, viewType)
-        return adapterTypeFactory.createViewHolder(view, viewType)
-    }
 
-    override fun onBindViewHolder(holder: AbstractViewHolder<*>, position: Int) {
-        bind(holder as AbstractViewHolder<ProductDetailInfoVisitable>, getItem(position))
-    }
-
-    override fun onBindViewHolder(holder: AbstractViewHolder<*>, position: Int, payloads: MutableList<Any>) {
-        if (payloads.isNotEmpty()) {
-            bind(holder as AbstractViewHolder<ProductDetailInfoVisitable>, getItem(position), payloads)
-        } else {
-            super.onBindViewHolder(holder, position, payloads)
+    fun closeAllExpanded(uniqueIdentifier: Int, toggle: Boolean, currentData: List<ProductDetailInfoVisitable>) {
+        val data = currentData.map {
+            if (it.uniqueIdentifier() == uniqueIdentifier) {
+                val newInstance = it.newInstance()
+                newInstance.setIsShowable(toggle)
+                newInstance
+            } else {
+                if (it.isExpand()) {
+                    val newInstance = it.newInstance()
+                    newInstance.setIsShowable(false)
+                    newInstance
+                } else {
+                    it
+                }
+            }
         }
-    }
-
-    private fun onCreateViewItem(parent: ViewGroup, viewType: Int): View {
-        return LayoutInflater.from(parent.context).inflate(viewType, parent, false)
-    }
-
-    override fun getItemViewType(position: Int): Int {
-        return if (position < 0 || position >= currentList.size) {
-            HideViewHolder.LAYOUT
-        } else currentList[position].type(adapterTypeFactory)
-    }
-
-    fun bind(holder: AbstractViewHolder<ProductDetailInfoVisitable>, item: ProductDetailInfoVisitable) {
-        holder.bind(item)
-    }
-
-    fun bind(holder: AbstractViewHolder<ProductDetailInfoVisitable>, item: ProductDetailInfoVisitable, payloads: MutableList<Any>) {
-        if (payloads.isNotEmpty()) {
-            holder.bind(item, payloads)
-        }
-    }
-
-    fun showLoading() {
-        submitList(listOf(ProductDetailInfoLoadingDataModel()))
+        submitList(data)
     }
 }

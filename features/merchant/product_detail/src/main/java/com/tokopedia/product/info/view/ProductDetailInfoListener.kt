@@ -5,4 +5,5 @@ package com.tokopedia.product.info.view
  */
 interface ProductDetailInfoListener {
     fun onLoadingClick()
+    fun closeAllExpand(uniqueIdentifier: Int, toggle:Boolean)
 }

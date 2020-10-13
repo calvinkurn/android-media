@@ -14,9 +14,17 @@ data class ProductDetailInfoHeaderDataModel(
         var isShowable: Boolean = false
 ) : ProductDetailInfoVisitable {
 
+    override fun newInstance(): ProductDetailInfoVisitable {
+        return this.copy()
+    }
+
     override fun uniqueIdentifier(): Int = componentId
 
     override fun setIsShowable(isShowable: Boolean) {}
+
+    override fun isExpand(): Boolean {
+        return isShowable
+    }
 
     override fun equalsWith(newData: ProductDetailInfoVisitable): Boolean {
         return if (newData is ProductDetailInfoHeaderDataModel) {

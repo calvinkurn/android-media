@@ -13,6 +13,10 @@ data class ProductDetailInfoExpandableDataModel(
         var isShowable: Boolean = false
 ) : ProductDetailInfoVisitable {
 
+    override fun newInstance(): ProductDetailInfoVisitable {
+        return this.copy()
+    }
+
     override fun uniqueIdentifier(): Int = componentName
 
     override fun equalsWith(newData: ProductDetailInfoVisitable): Boolean {
@@ -23,6 +27,10 @@ data class ProductDetailInfoExpandableDataModel(
 
     override fun setIsShowable(isShowable: Boolean) {
         this.isShowable = isShowable
+    }
+
+    override fun isExpand(): Boolean {
+        return isShowable
     }
 
     override fun type(typeFactory: ProductDetailInfoAdapterFactory): Int {

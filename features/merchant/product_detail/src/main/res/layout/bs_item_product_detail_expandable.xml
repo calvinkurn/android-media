@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical">
+
+    <com.tokopedia.product.info.widget.TitleAnimatedChevron
+        android:id="@+id/product_detail_title_chevron"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dp_12"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/product_detail_value"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:text="@string/lorem"
+        android:visibility="gone"
+        app:typographyType="body_2" />
+
+    <View
+        android:id="@+id/expandable_divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="@dimen/dp_8"
+        android:background="@color/Neutral_N75"
+        app:layout_constraintTop_toBottomOf="@+id/loader_detail_item_title_1" />
+
+</LinearLayout>

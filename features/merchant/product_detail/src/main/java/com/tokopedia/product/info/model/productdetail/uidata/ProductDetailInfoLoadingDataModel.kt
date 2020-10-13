@@ -13,9 +13,17 @@ data class ProductDetailInfoLoadingDataModel(
         const val LOADING_ID = 999
     }
 
+    override fun newInstance(): ProductDetailInfoVisitable {
+        return this.copy()
+    }
+
     override fun uniqueIdentifier(): Int = LOADING_ID
 
     override fun setIsShowable(isShowable: Boolean) {}
+
+    override fun isExpand(): Boolean {
+        return false
+    }
 
     override fun equalsWith(newData: ProductDetailInfoVisitable): Boolean {
         return false
