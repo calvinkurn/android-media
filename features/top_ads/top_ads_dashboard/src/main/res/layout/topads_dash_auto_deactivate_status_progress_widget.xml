@@ -20,7 +20,7 @@
                 android:id="@+id/iklan_otomatis"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/iklan_otomatis"
+                android:text="@string/topads_common_iklan_otomatis"
                 android:textColor="@color/black"
                 android:typeface="normal"
                 app:layout_constraintStart_toEndOf="@id/progressImg"
@@ -33,7 +33,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_4"
-                android:text="@string/ads_inprogress"
+                android:text="@string/topads_common_ads_inprogress"
                 app:labelType="general_light_blue"
                 app:layout_constraintStart_toStartOf="@id/iklan_otomatis"
                 app:layout_constraintTop_toBottomOf="@id/iklan_otomatis" />
