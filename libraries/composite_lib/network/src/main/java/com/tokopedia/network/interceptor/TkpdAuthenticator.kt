@@ -4,10 +4,9 @@ import android.content.Context
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.refreshtoken.AccessTokenRefresh
 import com.tokopedia.user.session.UserSession
-import okhttp3.Authenticator
-import okhttp3.Request
-import okhttp3.Response
-import okhttp3.Route
+import okhttp3.*
+import org.json.JSONException
+import org.json.JSONObject
 import timber.log.Timber
 
 /**
@@ -24,7 +23,8 @@ class TkpdAuthenticator(
 
     override fun authenticate(route: Route?, response: Response): Request? {
         if(isNeedRefresh()) {
-                return try {
+            return if(responseCount(response) == 0)
+                try {
                     val originalRequest = response.request()
                     val accessTokenRefresh = AccessTokenRefresh()
                     val newAccessToken = accessTokenRefresh.refreshToken(context, userSession, networkRouter)
@@ -33,16 +33,32 @@ class TkpdAuthenticator(
                 } catch (ex: Exception) {
                     response.request()
                 }
+            else {
+                networkRouter.showForceLogoutTokenDialog("/")
+                return response.request()
+            }
         }
-
         return response.request()
     }
 
+    private fun createNewForceLogoutBody(response: Response): Response? {
+        val jsonObject = JSONObject()
+        return try {
+            jsonObject.put("message", FORCE_LOGOUT_AUTHENTICATOR)
+            val contentType = response.body()!!.contentType()
+            val body: ResponseBody = ResponseBody.create(contentType, jsonObject.toString())
+            return response.newBuilder().body(body).build()
+        } catch (e: JSONException) {
+            null
+        }
+    }
+
     private fun responseCount(response: Response): Int {
-        var response = response
-        var result = 1
-        while (response.priorResponse().also { response = it!! } != null) {
+        var result = 0
+        var curResponse: Response? = response
+        while (curResponse?.priorResponse() != null) {
             result++
+            curResponse = curResponse.priorResponse()
         }
         return result
     }
@@ -70,6 +86,8 @@ class TkpdAuthenticator(
         private const val AUTHORIZATION = "authorization"
         private const val BEARER = "Bearer"
         private const val HEADER_PARAM_AUTHORIZATION = "authorization"
+
+        const val FORCE_LOGOUT_AUTHENTICATOR = "FORCED_LOGOUT_AUTHENTICATOR"
         const val BYTE_COUNT = 512L
 
         const val AUTHENTICATOR_REMOTE_CONFIG_KEY: String = "android_enable_authenticator"
