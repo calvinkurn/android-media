@@ -12,10 +12,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.annotation.RestrictTo
-import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.*
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -485,7 +483,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     private fun initVar() {
-        playWidgetCoordinator = PlayWidgetCoordinator(this).apply {
+        playWidgetCoordinator = PlayWidgetCoordinator().apply {
             setListener(this@FeedPlusFragment)
         }
         val typeFactory = FeedPlusTypeFactoryImpl(this, userSession, this, playWidgetCoordinator)
@@ -737,6 +735,12 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     }
 
+    fun onParentFragmentHiddenChanged(hidden: Boolean) {
+        playWidgetOnVisibilityChanged(
+                isParentHidden = hidden
+        )
+    }
+
     fun scrollToTop() {
         if (::recyclerView.isInitialized) {
             recyclerView.scrollToPosition(0)
@@ -760,6 +764,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     override fun onResume() {
+        playWidgetOnVisibilityChanged(isViewResumed = true)
         super.onResume()
         registerNewFeedReceiver()
         if (userVisibleHint) {
@@ -768,6 +773,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     override fun onPause() {
+        playWidgetOnVisibilityChanged(isViewResumed = false)
         super.onPause()
         unRegisterNewFeedReceiver()
         analytics.sendPendingAnalytics()
@@ -812,6 +818,9 @@ class FeedPlusFragment : BaseDaggerFragment(),
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         super.setUserVisibleHint(isVisibleToUser)
         loadData(isVisibleToUser)
+        playWidgetOnVisibilityChanged(
+                isUserVisibleHint = isVisibleToUser
+        )
     }
 
     override fun onSearchShopButtonClicked() {
@@ -912,6 +921,19 @@ class FeedPlusFragment : BaseDaggerFragment(),
     override fun onWidgetShouldRefresh(view: View) {
         Toast.makeText(requireContext(), "Refreshing Widget", Toast.LENGTH_SHORT).show()
         feedViewModel.doAutoRefreshPlayWidget()
+    }
+
+    private fun playWidgetOnVisibilityChanged(
+            isViewResumed: Boolean = if (view == null) false else viewLifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED),
+            isUserVisibleHint: Boolean = userVisibleHint,
+            isParentHidden: Boolean = parentFragment?.isHidden ?: true
+    ) {
+        if (::playWidgetCoordinator.isInitialized) {
+            val isViewVisible = isViewResumed && isUserVisibleHint && !isParentHidden
+
+            if (isViewVisible) playWidgetCoordinator.onResume()
+            else playWidgetCoordinator.onPause()
+        }
     }
 
     private fun createDeleteDialog(rowNumber: Int, id: Int): Dialog {

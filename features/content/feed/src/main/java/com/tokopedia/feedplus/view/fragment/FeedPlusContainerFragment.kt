@@ -212,6 +212,13 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         }
     }
 
+    override fun onHiddenChanged(hidden: Boolean) {
+        super.onHiddenChanged(hidden)
+        childFragmentManager.fragments
+                .filterIsInstance<FeedPlusFragment>()
+                .forEach { it.onParentFragmentHiddenChanged(hidden) }
+    }
+
     @JvmOverloads
     fun goToExplore(shouldResetCategory: Boolean = false) {
         if (canGoToExplore()) {
