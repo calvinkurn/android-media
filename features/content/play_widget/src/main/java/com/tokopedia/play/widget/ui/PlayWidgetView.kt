@@ -3,8 +3,10 @@ package com.tokopedia.play.widget.ui
 import android.content.Context
 import android.os.Build
 import android.util.AttributeSet
+import android.view.View
 import android.widget.LinearLayout
 import androidx.annotation.RequiresApi
+import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 
 /**
@@ -19,20 +21,39 @@ class PlayWidgetView : LinearLayout {
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes)
 
-    fun setModel(model: PlayWidgetUiModel) {
+    private var mListener: PlayWidgetListener? = null
+
+    override fun onViewRemoved(child: View?) {
+        when (child) {
+            is PlayWidgetSmallView -> child.setListener(null)
+        }
+        super.onViewRemoved(child)
+    }
+
+    fun setModel(model: PlayWidgetUiModel, isFromAutoRefresh: Boolean = false) {
         when (model) {
-            is PlayWidgetUiModel.Small -> addSmallView(model)
+            is PlayWidgetUiModel.Small -> addSmallView(model, isFromAutoRefresh)
             is PlayWidgetUiModel.Medium -> addMediumView(model)
             PlayWidgetUiModel.Placeholder -> addPlaceholderView()
         }
     }
 
-    private fun addSmallView(model: PlayWidgetUiModel.Small) {
-        if (getFirstChild() is PlayWidgetSmallView) return
+    fun setListener(listener: PlayWidgetListener?) {
+        mListener = listener
+    }
+
+    private fun addSmallView(model: PlayWidgetUiModel.Small, isFromAutoRefresh: Boolean) {
+        val firstChild = getFirstChild()
+        if (firstChild is PlayWidgetSmallView) {
+            if (isFromAutoRefresh) firstChild.setData(model)
+            return
+        }
+
         removeCurrentView()
         val smallWidget = PlayWidgetSmallView(context).apply {
             layoutParams = getChildLayoutParams()
         }
+        smallWidget.setListener(mListener)
         addView(smallWidget)
         smallWidget.setData(model)
     }

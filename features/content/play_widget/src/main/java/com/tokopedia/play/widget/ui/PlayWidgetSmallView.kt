@@ -10,12 +10,18 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.play.widget.R
 import com.tokopedia.play.widget.ui.adapter.PlayWidgetCardSmallAdapter
 import com.tokopedia.play.widget.ui.itemdecoration.PlayWidgetCardSmallItemDecoration
+import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
+import com.tokopedia.play.widget.ui.model.PlayWidgetConfigUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
+import kotlinx.coroutines.*
 
 /**
  * Created by jegul on 07/10/20
  */
 class PlayWidgetSmallView : ConstraintLayout {
+
+    private val scope = CoroutineScope(Dispatchers.Main.immediate)
+    private var timerJob: Job? = null
 
     constructor(context: Context?) : super(context)
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
@@ -28,6 +34,8 @@ class PlayWidgetSmallView : ConstraintLayout {
 
     private val adapter = PlayWidgetCardSmallAdapter()
 
+    private var mListener: PlayWidgetListener? = null
+
     init {
         val view = View.inflate(context, R.layout.view_play_widget_small, this)
         tvTitle = view.findViewById(R.id.tv_title)
@@ -37,6 +45,10 @@ class PlayWidgetSmallView : ConstraintLayout {
         setupView(view)
     }
 
+    fun setListener(listener: PlayWidgetListener?) {
+        mListener = listener
+    }
+
     fun setData(data: PlayWidgetUiModel.Small) {
         tvTitle.text = data.title
 
@@ -44,10 +56,37 @@ class PlayWidgetSmallView : ConstraintLayout {
         tvSeeAll.setOnClickListener { RouteManager.route(context, data.actionAppLink) }
 
         adapter.setItemsAndAnimateChanges(data.items)
+
+        configureAutoRefresh(data.config)
+    }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        scope.coroutineContext.cancelChildren()
     }
 
     private fun setupView(view: View) {
         rvWidgetCardSmall.adapter = adapter
         rvWidgetCardSmall.addItemDecoration(PlayWidgetCardSmallItemDecoration(context))
+    }
+
+    private fun configureAutoRefresh(config: PlayWidgetConfigUiModel) {
+        stopTimer()
+        if (config.autoRefresh) {
+            timerJob = scope.launch {
+                initTimer(10) { mListener?.onWidgetShouldRefresh(this@PlayWidgetSmallView) }
+            }
+        }
+    }
+
+    private fun stopTimer() {
+        timerJob?.cancel()
+    }
+
+    private suspend fun initTimer(durationInSecs: Long, handler: () -> Unit) {
+        withContext(Dispatchers.Default) {
+            delay(durationInSecs * 1000L)
+        }
+        handler()
     }
 }
