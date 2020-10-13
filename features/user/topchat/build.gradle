@@ -118,11 +118,6 @@ dependencies {
 
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.archCoreTesting
-    if(rootProject.ext.debugToolsEnabled) {
-        implementation project(rootProject.ext.libraries.analyticsDebugger)
-    } else {
-        implementation project(rootProject.ext.libraries.analyticsDebuggerNoop)
-    }
 }
 
 project.ext {
