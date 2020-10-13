@@ -55,7 +55,7 @@ class PlayWidgetCardChannelSmallView : ConstraintLayout {
         handleTotalView(model.channelType, model.totalViewVisible, model.totalView)
 
         tvTitle.text = model.title
-        tvUpcoming.text = "10 Jan - 17.00"
+        tvUpcoming.text = model.startTime
 
         setOnClickListener { RouteManager.route(context, model.appLink) }
 
