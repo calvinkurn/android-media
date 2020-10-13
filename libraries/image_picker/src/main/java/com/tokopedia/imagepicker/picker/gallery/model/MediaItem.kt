@@ -1,10 +1,12 @@
 package com.tokopedia.imagepicker.picker.gallery.model
 
 import android.content.ContentUris
+import android.content.Context
 import android.database.Cursor
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
+import com.tokopedia.utils.image.ImageUtil
 
 class MediaItem(val id: Long,
                 @Deprecated("should use content Uri instead")
@@ -13,9 +15,27 @@ class MediaItem(val id: Long,
                 val size: Long,
                 val duration: Long,
                 val videoResolution: String?,
-                var width: Long = 0,
-                var height: Long = 0) {
+                var _width: Long = 0,
+                var _height: Long = 0) {
     val contentUri: Uri
+
+    fun getWidth(context: Context):Long{
+        calculateWidthAndHeight(context);
+        return _width;
+    }
+
+    fun getHeight(context: Context):Long{
+        calculateWidthAndHeight(context);
+        return _height;
+    }
+
+    private fun calculateWidthAndHeight(context: Context) {
+        if (_width == 0L || _height == 0L) {
+            val widthHeight: Pair<Int, Int> = ImageUtil.getWidthAndHeight(context, contentUri)
+            _width = widthHeight.first.toLong()
+            _height = widthHeight.second.toLong()
+        }
+    }
 
     val minimumVideoResolution: Int
         get() {

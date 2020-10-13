@@ -108,4 +108,18 @@ object ImageUtil {
         }
         return min != 0 && max / min > 2
     }
+
+    @JvmStatic
+    fun getWidthAndHeight(context: Context, uri: Uri): Pair<Int, Int> {
+        return try {
+            val options = BitmapFactory.Options()
+            options.inJustDecodeBounds = true
+            val input = context.contentResolver.openInputStream(uri)
+            BitmapFactory.decodeStream(input, null, options)
+            input?.close()
+            options.outWidth to options.outHeight
+        } catch (ignored: Exception) {
+            0 to 0
+        }
+    }
 }
