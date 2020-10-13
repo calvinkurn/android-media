@@ -1,0 +1,518 @@
+[{
+  "data": {
+    "GetShopProduct": {
+      "status": "",
+      "errors": "",
+      "data": [{
+        "product_id": "1214715521",
+        "name": "Dettol Sabun Cuci Tangan Sensitive 245ml [ BUY 2 GET 1 ]",
+        "product_url": "https://www.tokopedia.com/dettolstore/dettol-sabun-cuci-tangan-sensitive-245ml-buy-2-get-1",
+        "stock": 0,
+        "status": 0,
+        "price": {
+          "text_idr": "Rp 44.400"
+        },
+        "flags": {
+          "isFeatured": false,
+          "isPreorder": false,
+          "isFreereturn": false,
+          "isVariant": false,
+          "isWholesale": false,
+          "isWishlist": false,
+          "isSold": false,
+          "supportFreereturn": false,
+          "mustInsurance": false,
+          "withStock": false
+        },
+        "stats": {
+          "reviewCount": 18,
+          "rating": 100,
+          "viewCount": 0
+        },
+        "campaign": {
+          "hide_gimmick": false,
+          "original_price": "0",
+          "original_price_fmt": "Rp 66.600",
+          "discounted_price_fmt": "",
+          "discounted_percentage": "33",
+          "discounted_price": "0",
+          "is_upcoming": false,
+          "stock_sold_percentage": 0
+        },
+        "primary_image": {
+          "original": "https://ecs7-p.tokopedia.net/img/cache/300/VqbcmM/2020/9/25/0d81e5b6-40ac-42e5-ad80-28287a1168ff.jpg",
+          "thumbnail": "https://ecs7-p.tokopedia.net/img/cache/200-square/VqbcmM/2020/9/25/0d81e5b6-40ac-42e5-ad80-28287a1168ff.jpg",
+          "resize300": "https://ecs7-p.tokopedia.net/img/cache/300/VqbcmM/2020/9/25/0d81e5b6-40ac-42e5-ad80-28287a1168ff.jpg"
+        },
+        "cashback": {
+          "cashback": 0,
+          "cashback_amount": 0
+        },
+        "freeOngkir": {
+          "isActive": true,
+          "imgURL": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+        },
+        "label_groups": []
+      }, {
+        "product_id": "1214710041",
+        "name": "Dettol Sabun Cuci Tangan Original 400ml Pouch x 4 Pcs",
+        "product_url": "https://www.tokopedia.com/dettolstore/dettol-sabun-cuci-tangan-original-400ml-pouch-x-4-pcs",
+        "stock": 0,
+        "status": 0,
+        "price": {
+          "text_idr": "Rp 69.000"
+        },
+        "flags": {
+          "isFeatured": false,
+          "isPreorder": false,
+          "isFreereturn": false,
+          "isVariant": false,
+          "isWholesale": false,
+          "isWishlist": false,
+          "isSold": false,
+          "supportFreereturn": false,
+          "mustInsurance": false,
+          "withStock": false
+        },
+        "stats": {
+          "reviewCount": 17,
+          "rating": 100,
+          "viewCount": 0
+        },
+        "campaign": {
+          "hide_gimmick": false,
+          "original_price": "0",
+          "original_price_fmt": "Rp 77.200",
+          "discounted_price_fmt": "",
+          "discounted_percentage": "11",
+          "discounted_price": "0",
+          "is_upcoming": false,
+          "stock_sold_percentage": 0
+        },
+        "primary_image": {
+          "original": "https://ecs7-p.tokopedia.net/img/cache/300/product-1/2020/9/30/29402544/29402544_1136aeb9-68c2-4391-b24e-c139885934f0_1000_1000",
+          "thumbnail": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2020/9/30/29402544/29402544_1136aeb9-68c2-4391-b24e-c139885934f0_1000_1000",
+          "resize300": "https://ecs7-p.tokopedia.net/img/cache/300/product-1/2020/9/30/29402544/29402544_1136aeb9-68c2-4391-b24e-c139885934f0_1000_1000"
+        },
+        "cashback": {
+          "cashback": 0,
+          "cashback_amount": 0
+        },
+        "freeOngkir": {
+          "isActive": true,
+          "imgURL": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+        },
+        "label_groups": []
+      }, {
+        "product_id": "1122815517",
+        "name": "Dettol Antiseptic+Body Wash Honey 950gx2 FREE Melekat Sejiwa Lahap Set",
+        "product_url": "https://www.tokopedia.com/dettolstore/dettol-antiseptic-body-wash-honey-950gx2-free-melekat-sejiwa-lahap-set",
+        "stock": 0,
+        "status": 0,
+        "price": {
+          "text_idr": "Rp 259.000"
+        },
+        "flags": {
+          "isFeatured": false,
+          "isPreorder": false,
+          "isFreereturn": false,
+          "isVariant": false,
+          "isWholesale": false,
+          "isWishlist": false,
+          "isSold": false,
+          "supportFreereturn": false,
+          "mustInsurance": false,
+          "withStock": false
+        },
+        "stats": {
+          "reviewCount": 41,
+          "rating": 99,
+          "viewCount": 0
+        },
+        "campaign": {
+          "hide_gimmick": false,
+          "original_price": "0",
+          "original_price_fmt": "Rp 457.000",
+          "discounted_price_fmt": "",
+          "discounted_percentage": "43",
+          "discounted_price": "0",
+          "is_upcoming": false,
+          "stock_sold_percentage": 0
+        },
+        "primary_image": {
+          "original": "https://ecs7-p.tokopedia.net/img/cache/300/product-1/2020/8/28/29402544/29402544_fb5a5ef9-0f5f-4cdb-b42a-11154806e75b_1000_1000",
+          "thumbnail": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2020/8/28/29402544/29402544_fb5a5ef9-0f5f-4cdb-b42a-11154806e75b_1000_1000",
+          "resize300": "https://ecs7-p.tokopedia.net/img/cache/300/product-1/2020/8/28/29402544/29402544_fb5a5ef9-0f5f-4cdb-b42a-11154806e75b_1000_1000"
+        },
+        "cashback": {
+          "cashback": 0,
+          "cashback_amount": 0
+        },
+        "freeOngkir": {
+          "isActive": true,
+          "imgURL": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+        },
+        "label_groups": []
+      }, {
+        "product_id": "1122808838",
+        "name": "Paket Dettol Cool FREE Exclusive New Normal Kit Melekat Sejiwa",
+        "product_url": "https://www.tokopedia.com/dettolstore/paket-dettol-cool-free-exclusive-new-normal-kit-melekat-sejiwa",
+        "stock": 0,
+        "status": 0,
+        "price": {
+          "text_idr": "Rp 209.000"
+        },
+        "flags": {
+          "isFeatured": false,
+          "isPreorder": false,
+          "isFreereturn": false,
+          "isVariant": false,
+          "isWholesale": false,
+          "isWishlist": false,
+          "isSold": false,
+          "supportFreereturn": false,
+          "mustInsurance": false,
+          "withStock": false
+        },
+        "stats": {
+          "reviewCount": 66,
+          "rating": 98,
+          "viewCount": 0
+        },
+        "campaign": {
+          "hide_gimmick": false,
+          "original_price": "0",
+          "original_price_fmt": "Rp 345.600",
+          "discounted_price_fmt": "",
+          "discounted_percentage": "40",
+          "discounted_price": "0",
+          "is_upcoming": false,
+          "stock_sold_percentage": 0
+        },
+        "primary_image": {
+          "original": "https://ecs7-p.tokopedia.net/img/cache/300/product-1/2020/8/28/29402544/29402544_318c0fd2-f0ca-4ebf-9355-868f84716e1c_1000_1000",
+          "thumbnail": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2020/8/28/29402544/29402544_318c0fd2-f0ca-4ebf-9355-868f84716e1c_1000_1000",
+          "resize300": "https://ecs7-p.tokopedia.net/img/cache/300/product-1/2020/8/28/29402544/29402544_318c0fd2-f0ca-4ebf-9355-868f84716e1c_1000_1000"
+        },
+        "cashback": {
+          "cashback": 0,
+          "cashback_amount": 0
+        },
+        "freeOngkir": {
+          "isActive": true,
+          "imgURL": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+        },
+        "label_groups": []
+      }, {
+        "product_id": "1058865949",
+        "name": "Dettol Cairan Antiseptik 5 Liter FREE Sanitizer 200ml",
+        "product_url": "https://www.tokopedia.com/dettolstore/dettol-cairan-antiseptik-5-liter-free-sanitizer-200ml",
+        "stock": 0,
+        "status": 0,
+        "price": {
+          "text_idr": "Rp 427.900"
+        },
+        "flags": {
+          "isFeatured": false,
+          "isPreorder": false,
+          "isFreereturn": false,
+          "isVariant": false,
+          "isWholesale": false,
+          "isWishlist": false,
+          "isSold": false,
+          "supportFreereturn": false,
+          "mustInsurance": false,
+          "withStock": false
+        },
+        "stats": {
+          "reviewCount": 214,
+          "rating": 97,
+          "viewCount": 0
+        },
+        "campaign": {
+          "hide_gimmick": false,
+          "original_price": "0",
+          "original_price_fmt": "Rp 568.500",
+          "discounted_price_fmt": "",
+          "discounted_percentage": "25",
+          "discounted_price": "0",
+          "is_upcoming": false,
+          "stock_sold_percentage": 0
+        },
+        "primary_image": {
+          "original": "https://ecs7-p.tokopedia.net/img/cache/300/product-1/2020/7/29/29402544/29402544_0b2d1e01-eac3-4262-9889-4d9078676ac0_1000_1000",
+          "thumbnail": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2020/7/29/29402544/29402544_0b2d1e01-eac3-4262-9889-4d9078676ac0_1000_1000",
+          "resize300": "https://ecs7-p.tokopedia.net/img/cache/300/product-1/2020/7/29/29402544/29402544_0b2d1e01-eac3-4262-9889-4d9078676ac0_1000_1000"
+        },
+        "cashback": {
+          "cashback": 0,
+          "cashback_amount": 0
+        },
+        "freeOngkir": {
+          "isActive": true,
+          "imgURL": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+        },
+        "label_groups": []
+      }, {
+        "product_id": "1058753804",
+        "name": "Dettol Hand Wash Pump Sensitive 245ml (3pcs) FREE Sanitizer 50ml",
+        "product_url": "https://www.tokopedia.com/dettolstore/dettol-hand-wash-pump-sensitive-245ml-3pcs-free-sanitizer-50ml",
+        "stock": 0,
+        "status": 0,
+        "price": {
+          "text_idr": "Rp 78.600"
+        },
+        "flags": {
+          "isFeatured": false,
+          "isPreorder": false,
+          "isFreereturn": false,
+          "isVariant": false,
+          "isWholesale": false,
+          "isWishlist": false,
+          "isSold": false,
+          "supportFreereturn": false,
+          "mustInsurance": false,
+          "withStock": false
+        },
+        "stats": {
+          "reviewCount": 206,
+          "rating": 99,
+          "viewCount": 0
+        },
+        "campaign": {
+          "hide_gimmick": false,
+          "original_price": "0",
+          "original_price_fmt": "",
+          "discounted_price_fmt": "",
+          "discounted_percentage": "0",
+          "discounted_price": "0",
+          "is_upcoming": false,
+          "stock_sold_percentage": 0
+        },
+        "primary_image": {
+          "original": "https://ecs7-p.tokopedia.net/img/cache/300/product-1/2020/7/29/29402544/29402544_7516ea9d-76a5-47c8-a3c8-46846bdba037_1000_1000",
+          "thumbnail": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2020/7/29/29402544/29402544_7516ea9d-76a5-47c8-a3c8-46846bdba037_1000_1000",
+          "resize300": "https://ecs7-p.tokopedia.net/img/cache/300/product-1/2020/7/29/29402544/29402544_7516ea9d-76a5-47c8-a3c8-46846bdba037_1000_1000"
+        },
+        "cashback": {
+          "cashback": 0,
+          "cashback_amount": 0
+        },
+        "freeOngkir": {
+          "isActive": true,
+          "imgURL": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+        },
+        "label_groups": [{
+          "position": "gimmick",
+          "type": "textDarkRed",
+          "title": "Sisa 2"
+        }, {
+          "position": "price",
+          "type": "lightGreen",
+          "title": "Cashback"
+        }]
+      }, {
+        "product_id": "1058746113",
+        "name": "Dettol Hand Wash Pump Original 245ml (3pcs) FREE Sanitizer 50ml",
+        "product_url": "https://www.tokopedia.com/dettolstore/dettol-hand-wash-pump-original-245ml-3pcs-free-sanitizer-50ml",
+        "stock": 0,
+        "status": 0,
+        "price": {
+          "text_idr": "Rp 66.000"
+        },
+        "flags": {
+          "isFeatured": false,
+          "isPreorder": false,
+          "isFreereturn": false,
+          "isVariant": false,
+          "isWholesale": false,
+          "isWishlist": false,
+          "isSold": false,
+          "supportFreereturn": false,
+          "mustInsurance": false,
+          "withStock": false
+        },
+        "stats": {
+          "reviewCount": 201,
+          "rating": 99,
+          "viewCount": 0
+        },
+        "campaign": {
+          "hide_gimmick": false,
+          "original_price": "0",
+          "original_price_fmt": "Rp 78.600",
+          "discounted_price_fmt": "",
+          "discounted_percentage": "16",
+          "discounted_price": "0",
+          "is_upcoming": false,
+          "stock_sold_percentage": 0
+        },
+        "primary_image": {
+          "original": "https://ecs7-p.tokopedia.net/img/cache/300/product-1/2020/8/11/29402544/29402544_1ed66795-7bc6-4bb1-a384-411a087a3cb7_1000_1000",
+          "thumbnail": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2020/8/11/29402544/29402544_1ed66795-7bc6-4bb1-a384-411a087a3cb7_1000_1000",
+          "resize300": "https://ecs7-p.tokopedia.net/img/cache/300/product-1/2020/8/11/29402544/29402544_1ed66795-7bc6-4bb1-a384-411a087a3cb7_1000_1000"
+        },
+        "cashback": {
+          "cashback": 0,
+          "cashback_amount": 0
+        },
+        "freeOngkir": {
+          "isActive": true,
+          "imgURL": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+        },
+        "label_groups": []
+      }, {
+        "product_id": "886529339",
+        "name": "Dettol Sabun Cuci Tangan Original 200ml Pouch",
+        "product_url": "https://www.tokopedia.com/dettolstore/dettol-sabun-cuci-tangan-original-200ml-pouch",
+        "stock": 0,
+        "status": 0,
+        "price": {
+          "text_idr": "Rp 13.300"
+        },
+        "flags": {
+          "isFeatured": false,
+          "isPreorder": false,
+          "isFreereturn": false,
+          "isVariant": false,
+          "isWholesale": false,
+          "isWishlist": false,
+          "isSold": false,
+          "supportFreereturn": false,
+          "mustInsurance": false,
+          "withStock": false
+        },
+        "stats": {
+          "reviewCount": 238,
+          "rating": 98,
+          "viewCount": 0
+        },
+        "campaign": {
+          "hide_gimmick": false,
+          "original_price": "0",
+          "original_price_fmt": "Rp 13.900",
+          "discounted_price_fmt": "",
+          "discounted_percentage": "4",
+          "discounted_price": "0",
+          "is_upcoming": false,
+          "stock_sold_percentage": 0
+        },
+        "primary_image": {
+          "original": "https://ecs7-p.tokopedia.net/img/cache/300/product-1/2020/2/27/29402544/29402544_8a72205d-e6ac-4733-9aaa-56b055d5a973_1000_1000",
+          "thumbnail": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2020/2/27/29402544/29402544_8a72205d-e6ac-4733-9aaa-56b055d5a973_1000_1000",
+          "resize300": "https://ecs7-p.tokopedia.net/img/cache/300/product-1/2020/2/27/29402544/29402544_8a72205d-e6ac-4733-9aaa-56b055d5a973_1000_1000"
+        },
+        "cashback": {
+          "cashback": 0,
+          "cashback_amount": 0
+        },
+        "freeOngkir": {
+          "isActive": true,
+          "imgURL": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+        },
+        "label_groups": []
+      }, {
+        "product_id": "745484685",
+        "name": "Dettol Antiseptic Liquid 245ml x 5pcs",
+        "product_url": "https://www.tokopedia.com/dettolstore/dettol-antiseptic-liquid-245ml-x-5pcs",
+        "stock": 0,
+        "status": 0,
+        "price": {
+          "text_idr": "Rp 169.900"
+        },
+        "flags": {
+          "isFeatured": false,
+          "isPreorder": false,
+          "isFreereturn": false,
+          "isVariant": false,
+          "isWholesale": false,
+          "isWishlist": false,
+          "isSold": false,
+          "supportFreereturn": false,
+          "mustInsurance": false,
+          "withStock": false
+        },
+        "stats": {
+          "reviewCount": 782,
+          "rating": 98,
+          "viewCount": 0
+        },
+        "campaign": {
+          "hide_gimmick": false,
+          "original_price": "0",
+          "original_price_fmt": "Rp 200.500",
+          "discounted_price_fmt": "",
+          "discounted_percentage": "15",
+          "discounted_price": "0",
+          "is_upcoming": false,
+          "stock_sold_percentage": 0
+        },
+        "primary_image": {
+          "original": "https://ecs7-p.tokopedia.net/img/cache/300/product-1/2020/10/6/29402544/29402544_669605cf-220e-460d-80e0-62cbb1501e17_1000_1000",
+          "thumbnail": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2020/10/6/29402544/29402544_669605cf-220e-460d-80e0-62cbb1501e17_1000_1000",
+          "resize300": "https://ecs7-p.tokopedia.net/img/cache/300/product-1/2020/10/6/29402544/29402544_669605cf-220e-460d-80e0-62cbb1501e17_1000_1000"
+        },
+        "cashback": {
+          "cashback": 0,
+          "cashback_amount": 0
+        },
+        "freeOngkir": {
+          "isActive": true,
+          "imgURL": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+        },
+        "label_groups": []
+      }, {
+        "product_id": "737763146",
+        "name": "Eksklusif Hijab Alur Cerita Sumba x Dettol Onzen Peach Antiseptik",
+        "product_url": "https://www.tokopedia.com/dettolstore/eksklusif-hijab-alur-cerita-sumba-x-dettol-onzen-peach-antiseptik",
+        "stock": 0,
+        "status": 0,
+        "price": {
+          "text_idr": "Rp 339.000"
+        },
+        "flags": {
+          "isFeatured": false,
+          "isPreorder": false,
+          "isFreereturn": false,
+          "isVariant": false,
+          "isWholesale": false,
+          "isWishlist": false,
+          "isSold": false,
+          "supportFreereturn": false,
+          "mustInsurance": false,
+          "withStock": false
+        },
+        "stats": {
+          "reviewCount": 214,
+          "rating": 89,
+          "viewCount": 0
+        },
+        "campaign": {
+          "hide_gimmick": false,
+          "original_price": "0",
+          "original_price_fmt": "Rp 556.600",
+          "discounted_price_fmt": "",
+          "discounted_percentage": "39",
+          "discounted_price": "0",
+          "is_upcoming": false,
+          "stock_sold_percentage": 0
+        },
+        "primary_image": {
+          "original": "https://ecs7-p.tokopedia.net/img/cache/300/product-1/2020/4/16/29402544/29402544_133381e6-bdbd-4afa-b50a-bcbfd32caed8_1000_1000",
+          "thumbnail": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2020/4/16/29402544/29402544_133381e6-bdbd-4afa-b50a-bcbfd32caed8_1000_1000",
+          "resize300": "https://ecs7-p.tokopedia.net/img/cache/300/product-1/2020/4/16/29402544/29402544_133381e6-bdbd-4afa-b50a-bcbfd32caed8_1000_1000"
+        },
+        "cashback": {
+          "cashback": 0,
+          "cashback_amount": 0
+        },
+        "freeOngkir": {
+          "isActive": true,
+          "imgURL": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+        },
+        "label_groups": []
+      }],
+      "totalData": 56
+    }
+  }
+}]

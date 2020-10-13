@@ -1,0 +1,206 @@
+[{
+  "data": {
+    "shopInfoByID": {
+      "result": [{
+        "shopCore": {
+          "shopID": "3418893",
+          "description": "Dettol Official Store adalah akun resmi dari Reckitt Benckiser Indonesia di platform Tokopedia.",
+          "domain": "dettolstore",
+          "name": "Dettol Official Store",
+          "tagLine": "",
+          "url": "https://www.tokopedia.com/dettolstore"
+        },
+        "freeOngkir": {
+          "isActive": true,
+          "imgURL": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+        },
+        "closedInfo": {
+          "closedNote": "",
+          "reason": "Mohon maaf atas ketidaknyamanan yang Anda alami. Dengan berat hati toko Anda harus kami tutup atau moderasi permanen karena adanya indikasi pelanggaran Syarat dan Ketentuan Tokopedia. Pelanggaran yang dimaksud mengacu pada transaksi manipulasi (pemanfaatan promo, transaksi untuk meningkatkan reputasi toko dan/atau penggunaan resi yang tidak valid).\u003cbr\u003e\u003cbr\u003eDemi kenyamanan dan keamanan bertransaksi di Tokopedia, kami himbau agar Anda dapat memperhatikan dan memahami dengan baik seluruh Syarat dan Ketentuan Transaksi Penjualan (Poin E) di \u003ca href='https://www.tokopedia.com/terms.pl#sell'\u003ehttps://www.tokopedia.com/terms.pl#sell\u003c/a\u003e.",
+          "until": ""
+        },
+        "createInfo": {
+          "openSince": "May 2018"
+        },
+        "shopAssets": {
+          "avatar": "https://ecs7-p.tokopedia.net/img/cache/215-square/shops-1/2020/4/9/3418893/3418893_d26c2fbe-cc43-459f-bd10-b67829a45e51.png",
+          "cover": "https://ecs7-p.tokopedia.net/img/cache/1190/attachment/2020/4/20/29402544/29402544_d7d80f86-21e6-40d1-9cc5-0624fbb75f50.png"
+        },
+        "shipmentInfo": [{
+          "isAvailable": 1,
+          "code": "wahana",
+          "shipmentID": "6",
+          "image": "https://ecs7.tokopedia.net/img/kurir-wahana.png",
+          "name": "Wahana",
+          "product": [{
+            "isAvailable": 1,
+            "productName": "Service Normal",
+            "shipProdID": "8",
+            "uiHidden": false
+          }],
+          "isPickup": 0,
+          "maxAddFee": 0,
+          "awbStatus": 0
+        }, {
+          "isAvailable": 1,
+          "code": "gojek",
+          "shipmentID": "10",
+          "image": "https://ecs7.tokopedia.net/img/kurir-gosend.png",
+          "name": "Gojek",
+          "product": [{
+            "isAvailable": 1,
+            "productName": "Instant Courier",
+            "shipProdID": "28",
+            "uiHidden": false
+          }],
+          "isPickup": 0,
+          "maxAddFee": 0,
+          "awbStatus": 0
+        }, {
+          "isAvailable": 1,
+          "code": "sicepat",
+          "shipmentID": "11",
+          "image": "https://ecs7.tokopedia.net/img/kurir-sicepat.png",
+          "name": "SiCepat",
+          "product": [{
+            "isAvailable": 1,
+            "productName": "Regular Package",
+            "shipProdID": "18",
+            "uiHidden": false
+          }, {
+            "isAvailable": 1,
+            "productName": "BEST",
+            "shipProdID": "33",
+            "uiHidden": false
+          }, {
+            "isAvailable": 1,
+            "productName": "GOKIL",
+            "shipProdID": "43",
+            "uiHidden": false
+          }, {
+            "isAvailable": 1,
+            "productName": "Regular Package",
+            "shipProdID": "44",
+            "uiHidden": true
+          }],
+          "isPickup": 0,
+          "maxAddFee": 0,
+          "awbStatus": 0
+        }, {
+          "isAvailable": 1,
+          "code": "grab",
+          "shipmentID": "13",
+          "image": "https://ecs7.tokopedia.net/img/kurir-grab.png",
+          "name": "GrabExpress",
+          "product": [{
+            "isAvailable": 1,
+            "productName": "Same Day",
+            "shipProdID": "24",
+            "uiHidden": false
+          }, {
+            "isAvailable": 1,
+            "productName": "Instant",
+            "shipProdID": "37",
+            "uiHidden": false
+          }],
+          "isPickup": 0,
+          "maxAddFee": 0,
+          "awbStatus": 0
+        }, {
+          "isAvailable": 1,
+          "code": "jnt",
+          "shipmentID": "14",
+          "image": "https://ecs7.tokopedia.net/img/kurir-jnt.png",
+          "name": "J\u0026T",
+          "product": [{
+            "isAvailable": 1,
+            "productName": "Reguler",
+            "shipProdID": "27",
+            "uiHidden": false
+          }],
+          "isPickup": 0,
+          "maxAddFee": 0,
+          "awbStatus": 1
+        }, {
+          "isAvailable": 1,
+          "code": "anteraja",
+          "shipmentID": "23",
+          "image": "https://ecs7.tokopedia.net/img/kurir-anteraja.png",
+          "name": "AnterAja",
+          "product": [{
+            "isAvailable": 1,
+            "productName": "Reguler",
+            "shipProdID": "45",
+            "uiHidden": false
+          }],
+          "isPickup": 0,
+          "maxAddFee": 0,
+          "awbStatus": 0
+        }, {
+          "isAvailable": 1,
+          "code": "jne",
+          "shipmentID": "1",
+          "image": "https://ecs7.tokopedia.net/img/kurir-jne.png",
+          "name": "JNE",
+          "product": [{
+            "isAvailable": 1,
+            "productName": "Reguler",
+            "shipProdID": "1",
+            "uiHidden": false
+          }, {
+            "isAvailable": 1,
+            "productName": "JNE Trucking",
+            "shipProdID": "22",
+            "uiHidden": false
+          }],
+          "isPickup": 0,
+          "maxAddFee": 0,
+          "awbStatus": 1
+        }, {
+          "isAvailable": 1,
+          "code": "tiki",
+          "shipmentID": "2",
+          "image": "https://ecs7.tokopedia.net/img/kurir-tiki.png",
+          "name": "TIKI",
+          "product": [{
+            "isAvailable": 1,
+            "productName": "Reguler",
+            "shipProdID": "3",
+            "uiHidden": false
+          }, {
+            "isAvailable": 1,
+            "productName": "Over Night Service",
+            "shipProdID": "16",
+            "uiHidden": false
+          }],
+          "isPickup": 0,
+          "maxAddFee": 0,
+          "awbStatus": 0
+        }],
+        "shopLastActive": "1602492222",
+        "location": "Kota Tangerang Selatan",
+        "isAllowManage": 0,
+        "goldOS": {
+          "isGold": 1,
+          "isGoldBadge": 1,
+          "isOfficial": 1
+        },
+        "favoriteData": {
+          "totalFavorite": 56050,
+          "alreadyFavorited": 0
+        },
+        "statusInfo": {
+          "shopStatus": 1,
+          "statusMessage": "",
+          "statusTitle": ""
+        },
+        "bbInfo": [],
+        "topContent": {
+          "topURL": "https://ws.tokopedia.com/ssi/shop-static/dettolstore/_apps/top"
+        },
+        "address": [],
+        "shopHomeType": "native"
+      }]
+    }
+  }
+}]

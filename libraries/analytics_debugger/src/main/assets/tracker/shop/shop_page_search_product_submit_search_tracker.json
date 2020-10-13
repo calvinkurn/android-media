@@ -8,9 +8,9 @@
       "shopId": "{{.+}}",
       "shopType": "{{.+}}",
       "event": "clickShopPage",
-      "eventAction": "click search",
+      "eventAction": "{{search( - no result|$)}}",
       "sessionIris": "{{.+}}",
-      "eventLabel":""
+      "eventLabel":"{{.+}}"
     }
   ]
 }

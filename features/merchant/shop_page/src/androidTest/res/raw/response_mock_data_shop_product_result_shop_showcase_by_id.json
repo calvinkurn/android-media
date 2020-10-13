@@ -1,0 +1,154 @@
+[{
+  "data": {
+    "shopShowcasesByShopID": {
+      "result": [{
+        "id": "2",
+        "name": "Semua Produk",
+        "count": 747,
+        "type": -1,
+        "highlighted": false,
+        "alias": "etalase",
+        "useAce": true,
+        "badge": ""
+      }, {
+        "id": "8",
+        "name": "Diskon",
+        "count": 69,
+        "type": -1,
+        "highlighted": true,
+        "alias": "discount",
+        "useAce": true,
+        "badge": "https://ecs7.tokopedia.net/img/official_store/diskon-badge.png"
+      }, {
+        "id": "3",
+        "name": "Produk Terjual",
+        "count": 78,
+        "type": -1,
+        "highlighted": true,
+        "alias": "sold",
+        "useAce": true,
+        "badge": ""
+      }, {
+        "id": "26157453",
+        "name": "FLASH DEALS",
+        "count": 73,
+        "type": 1,
+        "highlighted": false,
+        "alias": "flash-deals",
+        "useAce": true,
+        "badge": ""
+      }, {
+        "id": "25935601",
+        "name": "Hand Hygiene",
+        "count": 245,
+        "type": 1,
+        "highlighted": false,
+        "alias": "hand-hygiene",
+        "useAce": true,
+        "badge": ""
+      }, {
+        "id": "12604687",
+        "name": "Dettol Antiseptic Liquid",
+        "count": 73,
+        "type": 1,
+        "highlighted": false,
+        "alias": "dettol-antiseptic-liquid",
+        "useAce": true,
+        "badge": ""
+      }, {
+        "id": "12604683",
+        "name": "Dettol Bodywash",
+        "count": 163,
+        "type": 1,
+        "highlighted": false,
+        "alias": "dettol-bodywash",
+        "useAce": true,
+        "badge": ""
+      }, {
+        "id": "25664646",
+        "name": "Dettol Disinfectant Spray",
+        "count": 22,
+        "type": 1,
+        "highlighted": false,
+        "alias": "dettol-disinfectant-spray",
+        "useAce": true,
+        "badge": ""
+      }, {
+        "id": "26019833",
+        "name": "Dettol Melekat Sejiwa",
+        "count": 26,
+        "type": 1,
+        "highlighted": false,
+        "alias": "dettol-melekat-sejiwa",
+        "useAce": true,
+        "badge": ""
+      }, {
+        "id": "12604696",
+        "name": "Best Deals!",
+        "count": 3,
+        "type": 1,
+        "highlighted": false,
+        "alias": "best-deals",
+        "useAce": true,
+        "badge": ""
+      }, {
+        "id": "16587526",
+        "name": "Dettol Antibacterial Soap",
+        "count": 32,
+        "type": 1,
+        "highlighted": false,
+        "alias": "dettol-antibacterial-soap",
+        "useAce": true,
+        "badge": ""
+      }, {
+        "id": "12604695",
+        "name": "Dettol Floor Cleaner",
+        "count": 18,
+        "type": 1,
+        "highlighted": false,
+        "alias": "dettol-floor-cleaner",
+        "useAce": true,
+        "badge": ""
+      }, {
+        "id": "15416912",
+        "name": "Flash Sale",
+        "count": 6,
+        "type": 1,
+        "highlighted": false,
+        "alias": "flash-sale",
+        "useAce": true,
+        "badge": ""
+      }, {
+        "id": "23672910",
+        "name": "Bebas Keringat dan Bau Badan",
+        "count": 21,
+        "type": 1,
+        "highlighted": false,
+        "alias": "bebas-keringat-dan-bau-badan",
+        "useAce": true,
+        "badge": ""
+      }, {
+        "id": "23673102",
+        "name": "Kulit Sehat dan Cantik",
+        "count": 6,
+        "type": 1,
+        "highlighted": false,
+        "alias": "kulit-sehat-dan-cantik",
+        "useAce": true,
+        "badge": ""
+      }, {
+        "id": "26255120",
+        "name": "WIB",
+        "count": 59,
+        "type": 1,
+        "highlighted": false,
+        "alias": "wib",
+        "useAce": true,
+        "badge": ""
+      }],
+      "error": {
+        "message": ""
+      }
+    }
+  }
+}]

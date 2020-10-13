@@ -8,8 +8,8 @@ import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.matcher.ComponentNameMatchers
 import androidx.test.espresso.intent.matcher.IntentMatchers
-import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.platform.app.InstrumentationRegistry
@@ -20,7 +20,6 @@ import com.tokopedia.shop.R
 import com.tokopedia.shop.mock.ShopPageWithHomeTabMockResponseConfig
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity.Companion.SHOP_ID
-import com.tokopedia.shop.search.view.activity.ShopSearchProductActivity
 import com.tokopedia.shop.sort.view.activity.ShopProductSortActivity
 import com.tokopedia.test.application.espresso_component.CommonActions
 import com.tokopedia.test.application.espresso_component.CommonMatcher.firstView
@@ -39,11 +38,9 @@ import org.junit.Test
  */
 class ShopPageBuyerAnalyticTest {
 
-    companion object{
-        private const val SHOP_CLICK_SEARCH_TRACKER_MATCHER_PATH = "tracker/shop/shop_page_click_search_button_tracker.json"
-        private const val SHOP_SELECT_SORT_TRACKER_MATCHER_PATH = "tracker/shop/shop_page_select_sort_tracker.json"
-
-
+    companion object {
+        private const val SHOP_PAGE_JOURNEY_TRACKER_MATCHER_PATH = "tracker/shop/shop_page_journey_tracker.json"
+        private const val SHOP_PAGE_CLICK_TABS_TRACKER_MATCHER_PATH = "tracker/shop/shop_page_click_tabs_tracker.json"
     }
 
     @get:Rule
@@ -66,34 +63,39 @@ class ShopPageBuyerAnalyticTest {
     }
 
     @Test
-    fun testClickSearchButton() {
-        waitForData()
-//        Intents.init()
-        Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(0, null));
-        clickSearchBar()
-//        Intents.intended(IntentMatchers.anyIntent())
-//        Intents.release()
-        doAnalyticDebuggerTest(SHOP_CLICK_SEARCH_TRACKER_MATCHER_PATH)
+    fun testShopPageJourney() {
+        waitForData(2000)
+        testClickSearchBar()
+        testClickTabs()
+        testSelectSortOption()
+        doAnalyticDebuggerTest(SHOP_PAGE_JOURNEY_TRACKER_MATCHER_PATH)
     }
 
-    @Test
-    fun testSelectSortOption() {
-        waitForData()
-        val mockIntentData = Intent().apply{
+    private fun testClickTabs() {
+        Espresso.onView(firstView(withId(R.id.tabLayout)))
+                .perform(CommonActions.selectTabLayoutPosition(0))
+        Espresso.onView(firstView(withId(R.id.tabLayout)))
+                .perform(CommonActions.selectTabLayoutPosition(1))
+        Espresso.onView(firstView(withId(R.id.tabLayout)))
+                .perform(CommonActions.selectTabLayoutPosition(2))
+        Espresso.onView(firstView(withId(R.id.tabLayout)))
+                .perform(CommonActions.selectTabLayoutPosition(3))
+        doAnalyticDebuggerTest(SHOP_PAGE_CLICK_TABS_TRACKER_MATCHER_PATH)
+    }
+
+    private fun testSelectSortOption() {
+        val mockIntentData = Intent().apply {
             putExtra(ShopProductSortActivity.SORT_ID, "1")
             putExtra(ShopProductSortActivity.SORT_NAME, "Terbaru")
         }
-        Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, mockIntentData))
-        selectSortOption()
-        doAnalyticDebuggerTest(SHOP_SELECT_SORT_TRACKER_MATCHER_PATH)
-    }
-
-    private fun selectSortOption() {
+        Intents.intending(IntentMatchers.hasComponent(
+                ComponentNameMatchers.hasClassName("com.tokopedia.shop.sort.view.activity.ShopProductSortActivity"))
+        ).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, mockIntentData))
         Espresso.onView(firstView(withId(R.id.tabLayout)))
                 .perform(CommonActions.selectTabLayoutPosition(1))
+        waitForData(2000)
         Espresso.onView(AllOf.allOf(withText("Urutkan"), isDescendantOfA(withId(R.id.sort_filter_items_wrapper))))
                 .check(matches(isDisplayed())).perform(click())
-        activityRule.activity.finish()
     }
 
     @After
@@ -101,356 +103,22 @@ class ShopPageBuyerAnalyticTest {
         gtmLogDBSource.deleteAll().toBlocking().first()
     }
 
-    private fun waitForData() {
-        Thread.sleep(2000)
+    private fun waitForData(ms: Long) {
+        Thread.sleep(ms)
     }
 
-    private fun clickSearchBar() {
+    private fun testClickSearchBar() {
+        Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(0, null));
         Espresso.onView(firstView(withId(R.id.searchBarText)))
                 .perform(ViewActions.click())
-        activityRule.activity.finish()
     }
 
     private fun doAnalyticDebuggerTest(fileName: String) {
-        waitForData()
+        waitForData(100)
         assertThat(
                 getAnalyticsWithQuery(gtmLogDBSource, context, fileName),
                 hasAllSuccess()
         )
     }
-
-//
-//    private fun scrollHomeRecyclerViewToPosition(homeRecyclerView: RecyclerView, position: Int) {
-//        val layoutManager = homeRecyclerView.layoutManager as LinearLayoutManager
-//        activityRule.runOnUiThread { layoutManager.scrollToPositionWithOffset   (position, 400) }
-//    }
-//
-//    private fun checkProductOnDynamicChannel(homeRecyclerView: RecyclerView, i: Int) {
-//        val viewholder = homeRecyclerView.findViewHolderForAdapterPosition(i)
-//        when (viewholder) {
-//            is TickerViewHolder -> {
-//                val holderName = "TickerViewHolder"
-//                logTestMessage("VH $holderName")
-//                clickTickerItem(viewholder.itemView, i)
-//            }
-//            is BannerViewHolder -> {
-//                val holderName = "BannerViewHolder"
-//                logTestMessage("VH $holderName")
-//                clickHomeBannerItemAndViewAll(viewholder.itemView, i)
-//            }
-//            is MixLeftComponentViewHolder -> {
-//                val holderName = "MixLeftComponentViewHolder"
-//                logTestMessage("VH $holderName")
-//                clickLihatSemuaButtonIfAvailable(viewholder.itemView, holderName, i)
-//                clickOnEachItemRecyclerView(viewholder.itemView, R.id.rv_product, holderName)
-//            }
-//            is MixTopComponentViewHolder -> {
-//                val holderName = "MixTopComponentViewHolder"
-//                logTestMessage("VH $holderName")
-//                clickLihatSemuaButtonIfAvailable(viewholder.itemView, holderName, i)
-//                clickOnEachItemRecyclerView(viewholder.itemView, R.id.dc_banner_rv, holderName)
-//                clickOnMixTopCTA(viewholder.itemView)
-//            }
-//            is PopularKeywordViewHolder -> {
-//                val holderName = "PopularKeywordViewHolder"
-//                logTestMessage("VH $holderName")
-//                clickLihatSemuaPopularKeyword(viewholder.itemView, holderName, i)
-//                clickOnEachItemRecyclerView(viewholder.itemView, R.id.rv_popular_keyword, holderName)
-//            }
-//            is RecommendationListCarouselViewHolder -> {
-//                val holderName = "RecommendationListCarouselViewHolder"
-//                logTestMessage("VH $holderName")
-//                clickItemAddToCartListCarousel(viewholder.itemView, R.id.recycleList, holderName)
-//                clickOnEachItemRecyclerView(viewholder.itemView, R.id.recycleList, holderName)
-//                clickCloseOnListCarousel(viewholder.itemView, holderName, i)
-//            }
-//            is ProductHighlightComponentViewHolder -> {
-//                val holderName = "ProductHighlightComponentViewHolder"
-//                logTestMessage("VH $holderName")
-//                clickOnProductHighlightItem(viewholder.itemView, holderName, i)
-//            }
-//            is DynamicLegoBannerViewHolder -> {
-//                val holderName = "DynamicLegoBannerViewHolder"
-//                logTestMessage("VH $holderName")
-//                clickLihatSemuaButtonIfAvailable(viewholder.itemView, holderName, i)
-//                clickSingleItemOnRecyclerView(viewholder.itemView, R.id.recycleList, holderName)
-//            }
-//            is Lego4AutoBannerViewHolder -> {
-//                val holderName = "Lego4AutoBannerViewHolder"
-//                logTestMessage("VH $holderName")
-//                clickLihatSemuaButtonIfAvailable(viewholder.itemView, holderName, i)
-//                clickSingleItemOnRecyclerView(viewholder.itemView, R.id.recycleList, holderName)
-//            }
-//            is CategoryWidgetViewHolder -> {
-//                val holderName = "CategoryWidgetViewHolder"
-//                logTestMessage("VH $holderName")
-//                clickLihatSemuaButtonIfAvailable(viewholder.itemView, holderName, i)
-//                clickSingleItemOnRecyclerView(viewholder.itemView, R.id.recycleList, holderName)
-//            }
-//            is NewBusinessViewHolder -> {
-//                val holderName = "NewBusinessViewHolder"
-//                logTestMessage("VH $holderName")
-//                clickBUWidgetTab(viewholder.itemView)
-//                clickSingleItemOnRecyclerView(viewholder.itemView, R.id.recycler_view, holderName)
-//            }
-//            is HomeRecommendationFeedViewHolder -> {
-//                val holderName = "HomeRecommendationFeedViewHolder"
-//                logTestMessage("VH $holderName")
-//                clickRecommendationFeedTab(viewholder.itemView)
-//            }
-//        }
-//    }
-//
-//    private fun clickTickerItem(view: View, itemPos: Int) {
-//        val childView = view
-//        val textApplink = childView.findViewById<View>(R.id.ticker_description)
-//        val closeButton = childView.findViewById<View>(R.id.ticker_close_icon)
-//        if (textApplink.visibility == View.VISIBLE) {
-//            try {
-//                Espresso.onView(allOf(ViewMatchers.withId(R.id.ticker_description), isDisplayed())).perform(ViewActions.click())
-//                logTestMessage("Click SUCCESS ticker text")
-//            } catch (e: PerformException) {
-//                e.printStackTrace()
-//                logTestMessage("Click FAILED ticker text")
-//            }
-//        }
-//        if (closeButton.visibility == View.VISIBLE) {
-//            try {
-//                Espresso.onView(firstView(ViewMatchers.withId(R.id.ticker_close_icon)))
-//                        .perform(ViewActions.click())
-//                logTestMessage("Click SUCCESS ticker close")
-//            } catch (e: PerformException) {
-//                e.printStackTrace()
-//                logTestMessage("Click FAILED ticker close")
-//            }
-//        }
-//    }
-//
-//    private fun clickHomeBannerItemAndViewAll(view: View, itemPos: Int) {
-//        val childView = view
-//        val seeAllButton = childView.findViewById<View>(R.id.see_more_label)
-//
-//        //banner item click
-//        val bannerViewPager = childView.findViewById<CircularViewPager>(R.id.circular_view_pager)
-//        val itemCount = bannerViewPager.getViewPager().adapter?.itemCount ?: 0
-//        try {
-//            Espresso.onView(firstView(ViewMatchers.withId(R.id.circular_view_pager)))
-//                    .perform(ViewActions.click())
-//            logTestMessage("Click SUCCESS banner item "  + 0)
-//        } catch (e: PerformException) {
-//            e.printStackTrace()
-//            logTestMessage("Click FAILED banner item "  + 0)
-//        }
-//        //see all promo button click
-//        if (seeAllButton.visibility == View.VISIBLE) {
-//            try {
-//                Espresso.onView(firstView(ViewMatchers.withId(R.id.see_all_button)))
-//                        .perform(ViewActions.click())
-//                logTestMessage("Click SUCCESS See All Button BannerViewHolder")
-//            } catch (e: PerformException) {
-//                e.printStackTrace()
-//                logTestMessage("Click FAILED See All Button BannerViewHolder")
-//            }
-//        }
-//    }
-//
-//    private fun clickOnMixTopCTA(view: View) {
-//        val childView = view
-//        val bannerButton = childView.findViewById<View>(R.id.banner_button)
-//        if (bannerButton.visibility == View.VISIBLE) {
-//            try {
-//                Espresso.onView(firstView(ViewMatchers.withId(R.id.banner_button)))
-//                        .perform(ViewActions.click())
-//                logTestMessage("Click SUCCESS mixtop banner Button")
-//            } catch (e: PerformException) {
-//                e.printStackTrace()
-//                logTestMessage("Click FAILED mixtop banner Button")
-//            }
-//        }
-//    }
-//
-//    private fun clickLihatSemuaButtonIfAvailable(view: View, viewComponent: String, itemPos: Int) {
-//        val childView = view
-//        val seeAllButton = childView.findViewById<View>(R.id.see_all_button)
-//        if (seeAllButton.visibility == View.VISIBLE) {
-//            try {
-//                Espresso.onView(ViewMatchers.withId(R.id.home_fragment_recycler_view))
-//                        .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(itemPos, clickOnViewChild(R.id.see_all_button)))
-//                logTestMessage("Click SUCCESS See All Button $viewComponent")
-//            } catch (e: PerformException) {
-//                e.printStackTrace()
-//                logTestMessage("Click FAILED See All Button $viewComponent")
-//            }
-//        }
-//    }
-//
-//    private fun clickLihatSemuaPopularKeyword(view: View, viewComponent: String, itemPos: Int) {
-//        try {
-//            Espresso.onView(firstView(ViewMatchers.withId(R.id.tv_reload)))
-//                    .perform(ViewActions.click())
-//            logTestMessage("Click SUCCESS See All Button $viewComponent")
-//        } catch (e: PerformException) {
-//            e.printStackTrace()
-//            logTestMessage("Click FAILED See All Button $viewComponent")
-//        }
-//    }
-//
-//    private fun clickOnViewChild(viewId: Int) = object: ViewAction {
-//        override fun getDescription(): String  = ""
-//
-//        override fun getConstraints() = null
-//
-//        override fun perform(uiController: UiController, view: View)
-//                = ViewActions.click().perform(uiController, view.findViewById<View>(viewId))
-//    }
-//
-//    private fun clickOnEachItemRecyclerView(view: View, recyclerViewId: Int, viewComponent: String) {
-//        val childView = view
-//        val childRecyclerView = childView.findViewById<RecyclerView>(recyclerViewId)
-//        val childItemCount = childRecyclerView.adapter?.itemCount ?: 0
-//        logTestMessage("ChildCount $viewComponent: " + childItemCount + " item")
-//
-//        for (j in 0 until childItemCount) {
-//            try {
-//                Espresso.onView(firstView(ViewMatchers.withId(recyclerViewId)))
-//                        .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(j, ViewActions.click()))
-//                logTestMessage("Click SUCCESS $viewComponent child pos: " + j)
-//            } catch (e: PerformException) {
-//                e.printStackTrace()
-//                logTestMessage("Click FAILED $viewComponent child pos: " + j)
-//            }
-//        }
-//    }
-//
-//    private fun clickSingleItemOnRecyclerView(view: View, recyclerViewId: Int, viewComponent: String) {
-//        try {
-//            Espresso.onView(firstView(ViewMatchers.withId(recyclerViewId)))
-//                    .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(0, ViewActions.click()))
-//            logTestMessage("Click SUCCESS $viewComponent child pos: " + 0)
-//        } catch (e: PerformException) {
-//            e.printStackTrace()
-//            logTestMessage("Click FAILED $viewComponent child pos: " + 0)
-//        }
-//    }
-//
-//    private fun clickItemAddToCartListCarousel(view: View, recyclerViewId: Int, viewComponent: String) {
-//        try {
-//            Espresso.onView(firstView(ViewMatchers.withId(recyclerViewId)))
-//                    .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(0, clickOnViewChild(R.id.buttonAddToCart)))
-//            logTestMessage("Click SUCCESS atc $viewComponent")
-//        } catch (e: PerformException) {
-//            e.printStackTrace()
-//            logTestMessage("Click FAILED atc $viewComponent")
-//        }
-//    }
-//
-//    private fun clickCloseOnListCarousel(view: View, viewComponent: String, itemPos: Int)  {
-//        val childView = view
-//        val closeButton = childView.findViewById<View>(R.id.buy_again_close_image_view)
-//        if (closeButton.visibility == View.VISIBLE) {
-//            try {
-//                Espresso.onView(ViewMatchers.withId(R.id.home_fragment_recycler_view))
-//                        .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(itemPos, clickOnViewChild(R.id.buy_again_close_image_view)))
-//                logTestMessage("Click SUCCESS close $viewComponent")
-//            } catch (e: PerformException) {
-//                e.printStackTrace()
-//                logTestMessage("Click FAILED close $viewComponent")
-//            }
-//        }
-//    }
-//
-//    private fun clickOnProductHighlightItem(view: View, viewComponent: String, itemPos: Int) {
-//        try {
-//            Espresso.onView(firstView(ViewMatchers.withId(R.id.deals_product_card)))
-//                    .perform(ViewActions.click())
-//            logTestMessage("Click SUCCESS item $viewComponent")
-//        } catch (e: PerformException) {
-//            e.printStackTrace()
-//            logTestMessage("Click FAILED item $viewComponent")
-//        }
-//    }
-//
-//    private fun clickBUWidgetTab(view: View) {
-//        val childView = view
-//        //banner item click
-//        val tabPager = childView.findViewById<ViewPager2>(R.id.view_pager)
-//        try {
-//            Espresso.onView(withId(R.id.tab_layout)).perform(selectTabAtPosition(1))
-//            logTestMessage("Click SUCCESS BU tab pos "  + 1)
-//        } catch (e: PerformException) {
-//            e.printStackTrace()
-//            logTestMessage("Click FAILED BU tab pos "  + 1)
-//        }
-//    }
-
-//    private fun clickRecommendationFeedTab(view: View) {
-//        val childView = view
-//        val tabPager = childView.findViewById<ViewPager>(R.id.view_pager_home_feeds)
-//        try {
-//            Espresso.onView(withId(R.id.tab_layout_home_feeds)).perform(selectTabAtPosition(1))
-//            logTestMessage("Click SUCCESS recom tab pos "  + 1)
-//        } catch (e: PerformException) {
-//            e.printStackTrace()
-//            logTestMessage("Click FAILED recom tab pos "  + 1)
-//        }
-//    }
-//
-//    private fun logTestMessage(message: String) {
-//        TopAdsVerificationTestReportUtil.writeTopAdsVerificatorLog(activityRule.activity, message)
-//        Log.d(TAG, message)
-//    }
-//
-//    private fun <T> firstView(matcher: Matcher<T>): Matcher<T>? {
-//        return object : BaseMatcher<T>() {
-//            var isFirst = true
-//            override fun matches(item: Any?): Boolean {
-//                if (isFirst && matcher.matches(item)) {
-//                    isFirst = false
-//                    return true
-//                }
-//                return false
-//            }
-//
-//            override fun describeTo(description: Description) {
-//                description.appendText("should return first matching item")
-//            }
-//        }
-//    }
-//
-//    fun selectTabAtPosition(tabIndex: Int): ViewAction {
-//        return object : ViewAction {
-//            override fun getDescription() = "with tab at index $tabIndex"
-//
-//            override fun getConstraints() = allOf(isDisplayed(), ViewMatchers.isAssignableFrom(TabLayout::class.java))
-//
-//            override fun perform(uiController: UiController, view: View) {
-//                val tabLayout = view as TabLayout
-//                val tabAtIndex: TabLayout.Tab = tabLayout.getTabAt(tabIndex)
-//                        ?: throw PerformException.Builder()
-//                                .withCause(Throwable("No tab at index $tabIndex"))
-//                                .build()
-//
-//                tabAtIndex.select()
-//            }
-//        }
-//    }
-//
-//    fun selectCollapsingTabAtPosition(tabIndex: Int): ViewAction {
-//        return object : ViewAction {
-//            override fun getDescription() = "with tab at index $tabIndex"
-//
-//            override fun getConstraints() = allOf(isDisplayed(), ViewMatchers.isAssignableFrom(TabLayout::class.java))
-//
-//            override fun perform(uiController: UiController, view: View) {
-//                val tabLayout = view as CollapsingTabLayout
-//                val tabAtIndex: TabLayout.Tab = tabLayout.getTabAt(tabIndex)
-//                        ?: throw PerformException.Builder()
-//                                .withCause(Throwable("No tab at index $tabIndex"))
-//                                .build()
-//
-//                tabAtIndex.select()
-//            }
-//        }
-//    }
 
 }
