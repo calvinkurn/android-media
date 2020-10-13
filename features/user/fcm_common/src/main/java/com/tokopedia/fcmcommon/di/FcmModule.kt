@@ -4,16 +4,19 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.fcmcommon.CoroutineContextProviders
 import com.tokopedia.fcmcommon.FirebaseMessagingManager
 import com.tokopedia.fcmcommon.FirebaseMessagingManagerImpl
+import com.tokopedia.fcmcommon.R
+import com.tokopedia.fcmcommon.data.UpdateFcmTokenResponse
+import com.tokopedia.fcmcommon.domain.UpdateFcmTokenUseCase
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
+import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
-import kotlinx.coroutines.Dispatchers
+import com.tokopedia.abstraction.common.utils.GraphqlHelper.loadRawString as loadRaw
 
 @Module
 class FcmModule(@ApplicationContext private val context: Context) {
@@ -25,21 +28,14 @@ class FcmModule(@ApplicationContext private val context: Context) {
     @Provides
     @FcmScope
     fun provideFcmManager(
-            @ApplicationContext
-            context: Context,
+            updateFcmTokenUseCase: UpdateFcmTokenUseCase,
             sharedPreferences: SharedPreferences,
-            repository: GraphqlRepository,
-            userSession: UserSessionInterface,
-            coroutineContextProviders: CoroutineContextProviders,
-            queries: Map<String, String>
+            userSession: UserSessionInterface
     ): FirebaseMessagingManager {
         return FirebaseMessagingManagerImpl(
-                context,
+                updateFcmTokenUseCase,
                 sharedPreferences,
-                repository,
-                userSession,
-                coroutineContextProviders,
-                queries
+                userSession
         )
     }
 
@@ -55,10 +51,18 @@ class FcmModule(@ApplicationContext private val context: Context) {
 
     @Provides
     @FcmScope
-    fun provideCoroutineContextProviders(): CoroutineContextProviders = CoroutineContextProviders(
-            Dispatchers.Main,
-            Dispatchers.IO
-    )
+    fun provideGraphqlUseCase(repository: GraphqlRepository): GraphqlUseCase<UpdateFcmTokenResponse> {
+        return GraphqlUseCase(repository)
+    }
+
+    @Provides
+    @FcmScope
+    fun provideFcmTokenUseCase(
+            useCase: GraphqlUseCase<UpdateFcmTokenResponse>
+    ): UpdateFcmTokenUseCase {
+        val query = loadRaw(context.resources, R.raw.query_update_fcm_token)
+        return UpdateFcmTokenUseCase(useCase, query)
+    }
 
     @Provides
     @FcmScope

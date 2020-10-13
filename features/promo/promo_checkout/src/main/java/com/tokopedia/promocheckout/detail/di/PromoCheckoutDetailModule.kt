@@ -58,14 +58,14 @@ class PromoCheckoutDetailModule {
 
     @PromoCheckoutDetailScope
     @Provides
-    fun provideFlightCheckVoucherUseCase(@ApplicationContext context: Context): FlightCheckVoucherUseCase {
-        return FlightCheckVoucherUseCase(context, GraphqlUseCase())
+    fun provideFlightCheckVoucherUseCase(): FlightCheckVoucherUseCase {
+        return FlightCheckVoucherUseCase(GraphqlUseCase())
     }
 
     @PromoCheckoutDetailScope
     @Provides
-    fun provideFlightCancelVoucherUseCase(@ApplicationContext context: Context): FlightCancelVoucherUseCase {
-        return FlightCancelVoucherUseCase(context, GraphqlUseCase())
+    fun provideFlightCancelVoucherUseCase(): FlightCancelVoucherUseCase {
+        return FlightCancelVoucherUseCase(GraphqlUseCase())
     }
 
     @PromoCheckoutDetailScope

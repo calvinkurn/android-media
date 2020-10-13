@@ -3,13 +3,13 @@ package com.tokopedia.shop_showcase.shop_showcase_management.presentation.viewmo
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
+import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtalaseByShopUseCase
 import com.tokopedia.shop_showcase.common.ShopShowcaseDispatchProvider
 import com.tokopedia.shop_showcase.shop_showcase_add.data.model.AddShopShowcaseParam
 import com.tokopedia.shop_showcase.shop_showcase_add.data.model.AddShopShowcaseResponse
 import com.tokopedia.shop_showcase.shop_showcase_add.domain.usecase.CreateShopShowcaseUseCase
 import com.tokopedia.shop_showcase.shop_showcase_management.data.model.GetShopProductsResponse
-import com.tokopedia.shop_showcase.shop_showcase_management.data.model.ShowcaseList.ShowcaseListBuyer.ShopShowcaseListBuyerResponse
-import com.tokopedia.shop_showcase.shop_showcase_management.domain.GetShopShowcaseListBuyerUseCase
 import com.tokopedia.shop_showcase.shop_showcase_management.domain.GetShopShowcaseTotalProductUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -19,14 +19,15 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class ShopShowcasePickerViewModel @Inject constructor(
-        private val getShopShowcaseListBuyerUseCase: GetShopShowcaseListBuyerUseCase,
+        private val getShopShowcaseListBuyerUseCase: GetShopEtalaseByShopUseCase,
         private val getShopShowcaseTotalProductUseCase: GetShopShowcaseTotalProductUseCase,
         private val createShopShowcaseUseCase: CreateShopShowcaseUseCase,
         private val dispatchers: ShopShowcaseDispatchProvider
 ): BaseViewModel(dispatchers.ui()) {
 
-    private val _getListBuyerShopShowcaseResponse = MutableLiveData<Result<ShopShowcaseListBuyerResponse>>()
-    val getListBuyerShopShowcaseResponse: LiveData<Result<ShopShowcaseListBuyerResponse>>
+
+    private val _getListBuyerShopShowcaseResponse = MutableLiveData<Result<List<ShopEtalaseModel>>>()
+    val getListBuyerShopShowcaseResponse: LiveData<Result<List<ShopEtalaseModel>>>
         get() = _getListBuyerShopShowcaseResponse
 
     private val _getShopProductResponse = MutableLiveData<Result<GetShopProductsResponse>>()
@@ -38,14 +39,20 @@ class ShopShowcasePickerViewModel @Inject constructor(
 
     fun getShopShowcaseListAsBuyer(shopId: String, isOwner: Boolean) {
         launchCatchError(block = {
-            withContext(dispatchers.io()) {
-                getShopShowcaseListBuyerUseCase.params = GetShopShowcaseListBuyerUseCase
-                        .createRequestParam(shopId, isOwner)
-                val shopShowcaseData = getShopShowcaseListBuyerUseCase.executeOnBackground()
-                shopShowcaseData.let {
-                    _getListBuyerShopShowcaseResponse.postValue(Success(it))
-                }
+            val showcaseList = withContext(dispatchers.io()) {
+                clearGetShowcaseCache()
+                val requestParam = GetShopEtalaseByShopUseCase.createRequestParams(
+                        shopId = shopId,
+                        hideNoCount = GetShopEtalaseByShopUseCase.Companion.SellerQueryParam.HIDE_NO_COUNT_VALUE,
+                        hideShowCaseGroup = GetShopEtalaseByShopUseCase.Companion.SellerQueryParam.HIDE_SHOWCASE_GROUP_VALUE,
+                        isOwner = isOwner
+                )
+
+                getShopShowcaseListBuyerUseCase.createObservable(requestParam)
+                        .toBlocking().first()
             }
+
+            _getListBuyerShopShowcaseResponse.postValue(Success(showcaseList))
         }) {
             _getListBuyerShopShowcaseResponse.value = Fail(it)
         }
@@ -83,6 +90,10 @@ class ShopShowcasePickerViewModel @Inject constructor(
         }, onError = {
             _createShopShowcase.value = Fail(it)
         })
+    }
+
+    fun clearGetShowcaseCache() {
+        getShopShowcaseListBuyerUseCase.clearCache()
     }
 
 }
