@@ -161,10 +161,11 @@ class NavToolbar: Toolbar, LifecycleObserver {
                        searchbarImpressionCallback: ((hint: String) -> Unit)? = null,
                        durationAutoTransition: Long = 0,
                        shouldShowTransition: Boolean = true) {
-        if (applink.isEmpty()) applink = ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE
+        var applinkForController = applink
+        if (applink.isEmpty()) applinkForController = ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE
         navSearchBarController = NavSearchbarController(
                 this,
-                applink,
+                applinkForController,
                 searchbarClickCallback = searchbarClickCallback, searchbarImpressionCallback = searchbarImpressionCallback)
         navSearchBarController.setHint(hints, shouldShowTransition, durationAutoTransition)
     }
