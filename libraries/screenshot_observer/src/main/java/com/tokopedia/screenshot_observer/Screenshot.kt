@@ -32,7 +32,7 @@ open class Screenshot(contentResolver: ContentResolver, listener: BottomSheetLis
         mHandlerThread.start()
         mHandler = Handler(mHandlerThread.looper)
         mContentResolver = contentResolver
-        mContentObserver = ScreenshotObserver(mHandler, this)
+        mContentObserver = ScreenshotObserver(mHandler, contentResolver, this)
         mListener = listener
     }
 
