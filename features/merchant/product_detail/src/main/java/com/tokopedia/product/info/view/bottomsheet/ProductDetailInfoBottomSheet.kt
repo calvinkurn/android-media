@@ -32,10 +32,6 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
         ProductDetailInfoAdapterFactoryImpl(this)
     }
 
-    init {
-        setTitle(getString(R.string.merchant_product_detail_label_product_detail))
-    }
-
     fun setDaggerComponent(daggerProductDetailComponent: ProductDetailComponent?) {
         this.productDetailComponent = daggerProductDetailComponent
     }
@@ -56,6 +52,7 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
     }
 
     private fun initView() {
+        setTitle(getString(R.string.merchant_product_detail_label_product_detail))
         val childView = View.inflate(requireContext(), R.layout.bottom_sheet_product_detail_info, null)
 
         setupRecyclerView(childView)

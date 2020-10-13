@@ -1,11 +1,9 @@
 package com.tokopedia.product.detail.view.adapter
 
-import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductDetailInfoContent
@@ -43,26 +41,6 @@ class ProductDetailInfoAdapter(private val listener: DynamicProductDetailListene
         fun bind(data: ProductDetailInfoContent) = with(view) {
             info_detail_title.text = data.title
             info_detail_value.text = data.subtitle
-
-            if (data.applink.isNotEmpty()) {
-                info_detail_value.setTextColor(MethodChecker.getColor(view.context, R.color.tkpd_main_green))
-                info_detail_value.setOnClickListener {
-                    when {
-                        data.applink.startsWith(categoryApplink) -> {
-                            listener.onCategoryClicked(data.applink, componentTrackDataModel)
-                        }
-                        else -> {
-                            val uriLink = Uri.parse(data.applink).pathSegments
-
-                            if (uriLink.size >= 2 && uriLink[1] == "etalase") {
-                                listener.onEtalaseClicked(data.applink, componentTrackDataModel)
-                            } else {
-                                listener.goToApplink(data.applink)
-                            }
-                        }
-                    }
-                }
-            }
         }
     }
 }
