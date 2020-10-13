@@ -24,6 +24,7 @@ data class GratifNotificationResponse(
 
 data class GratifNotification(
         @SerializedName("notificationID") val notificationID: String? = null,
+        @SerializedName("eventID") val eventID: String? = null,
         @SerializedName("promoCode") val promoCode: String? = null,
         @SerializedName("resultStatus") val resultStatus: ResultStatus?,
         @SerializedName("wordingActive") val wordingActive: Wording?,
