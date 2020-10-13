@@ -1,16 +1,22 @@
 package com.tokopedia.navigation.topads
 
 import android.Manifest
+import android.app.Activity
+import android.app.Instrumentation
+import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.rule.ActivityTestRule
 import androidx.test.rule.GrantPermissionRule
-import com.tokopedia.home.account.presentation.viewholder.RecommendationProductViewHolder
 import com.tokopedia.navigation.R
 import com.tokopedia.navigation.environment.InstrumentationInboxTestActivity
+import com.tokopedia.navigation.presentation.adapter.viewholder.RecommendationViewHolder
 import com.tokopedia.test.application.assertion.topads.TopAdsAssertion
 import com.tokopedia.test.application.environment.callback.TopAdsVerificatorInterface
-import com.tokopedia.test.application.espresso_component.CommonActions.clickOnEachItemRecyclerView
+import androidx.test.espresso.intent.rule.IntentsTestRule
+import com.tokopedia.navigation.presentation.adapter.viewholder.InboxTopAdsBannerViewHolder
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupTopAdsDetector
 import org.junit.After
@@ -22,9 +28,10 @@ class InboxTopAdsVerificationTest {
     private var topAdsAssertion: TopAdsAssertion? = null
 
     @get:Rule
-    var activityRule = object : ActivityTestRule<InstrumentationInboxTestActivity>(InstrumentationInboxTestActivity::class.java) {
+    var activityRule = object : IntentsTestRule<InstrumentationInboxTestActivity>(InstrumentationInboxTestActivity::class.java) {
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
+            login()
             setupTopAdsDetector()
         }
     }
@@ -38,13 +45,12 @@ class InboxTopAdsVerificationTest {
 
     @Before
     fun setTopAdsAssertion() {
+        Intents.intending(IntentMatchers.isInternal()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
+
         topAdsAssertion = TopAdsAssertion(
                 activityRule.activity,
                 activityRule.activity.application as TopAdsVerificatorInterface
         )
-
-        login()
-        waitForData()
     }
 
     @After
@@ -53,7 +59,7 @@ class InboxTopAdsVerificationTest {
     }
 
     private fun waitForData() {
-        Thread.sleep(5000)
+        Thread.sleep(10000)
     }
 
     @Test
@@ -70,16 +76,14 @@ class InboxTopAdsVerificationTest {
 
         topAdsAssertion?.assert()
     }
-    
+
     private fun checkProductOnDynamicChannel(inboxRecyclerView: RecyclerView, i: Int) {
-        when (inboxRecyclerView.findViewHolderForAdapterPosition(i)) {
-            is RecommendationProductViewHolder -> {
-                waitForData()
-                clickOnEachItemRecyclerView(
-                        activityRule.activity.findViewById(com.tokopedia.navigation.test.R.id.container_inbox),
-                        inboxRecyclerView.id,
-                        0
-                )
+        when (val viewHolder = inboxRecyclerView.findViewHolderForAdapterPosition(i)) {
+            is RecommendationViewHolder -> {
+                activityRule.runOnUiThread { viewHolder.itemView.findViewById<View>(R.id.productCardView).performClick() }
+            }
+            is InboxTopAdsBannerViewHolder -> {
+                activityRule.runOnUiThread { viewHolder.itemView.findViewById<View>(R.id.topads_banner).performClick() }
             }
         }
     }
@@ -88,7 +92,7 @@ class InboxTopAdsVerificationTest {
         val layoutManager = inboxRecyclerView.layoutManager as StaggeredGridLayoutManager
         activityRule.runOnUiThread { layoutManager.scrollToPositionWithOffset(position, 0) }
     }
-    
+
     private fun login() {
         InstrumentationAuthHelper.loginInstrumentationTestTopAdsUser()
     }

@@ -11,8 +11,8 @@ import com.tokopedia.product.detail.common.data.model.product.Video
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductNotifyMeDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
-import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
 import com.tokopedia.product.detail.data.model.datamodel.TopAdsImageDataModel
+import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 
 interface DynamicProductDetailListener {
@@ -122,11 +122,6 @@ interface DynamicProductDetailListener {
      * ProductMiniShopInfoViewHolder
      */
     fun onMiniShopInfoClicked(componentTrackDataModel: ComponentTrackDataModel)
-
-    /**
-     * ProductMediaViewHolder
-     */
-    fun onImageReviewMediaClicked(componentTrackDataModel: ComponentTrackDataModel)
 
     /**
      * ProductTickerViewHolder

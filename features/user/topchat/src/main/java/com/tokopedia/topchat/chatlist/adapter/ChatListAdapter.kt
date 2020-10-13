@@ -61,11 +61,14 @@ class ChatListAdapter constructor(
         diff.dispatchUpdatesTo(this)
     }
 
-    fun deleteItem(position: Int) {
+    fun deleteItem(position: Int, emptyModel: Visitable<*>?) {
         if (position == -1) return
-
         data.removeAt(position)
-        notifyItemRemoved(position)
+        if (visitables.isNotEmpty()) {
+            notifyItemRemoved(position)
+        } else {
+            emptyModel?.let { addElement(emptyModel) }
+        }
     }
 
     fun pinChatItem(element: ItemChatListPojo, position: Int) {
@@ -119,7 +122,7 @@ class ChatListAdapter constructor(
     }
 
     private fun getLastChatItem(): ItemChatListPojo? {
-        for (i in (visitables.size - 1) downTo 0)  {
+        for (i in (visitables.size - 1) downTo 0) {
             val item = visitables[i]
             if (item is ItemChatListPojo) {
                 return item
@@ -219,6 +222,7 @@ class ChatListAdapter constructor(
                 attributes?.readStatus = readStatus
                 attributes?.lastReplyTimeStr = newChat.time
                 attributes?.isReplyByTopbot = newChat.contact?.isAutoReply ?: false
+                attributes?.label = ""
             }
         }
     }

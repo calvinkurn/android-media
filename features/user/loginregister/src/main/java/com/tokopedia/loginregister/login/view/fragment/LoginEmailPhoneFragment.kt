@@ -21,7 +21,7 @@ import android.view.inputmethod.EditorInfo
 import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
-import com.crashlytics.android.Crashlytics
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.facebook.AccessToken
 import com.facebook.CallbackManager
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -46,6 +46,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.text.TextDrawable
+import com.tokopedia.devicefingerprint.service.SubmitDeviceInfoService
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -86,7 +87,7 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.sessioncommon.data.LoginTokenPojo
-import com.tokopedia.sessioncommon.data.Token.Companion.GOOGLE_API_KEY
+import com.tokopedia.sessioncommon.data.Token.Companion.getGoogleClientId
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import com.tokopedia.sessioncommon.di.SessionModule
 import com.tokopedia.sessioncommon.network.TokenErrorException
@@ -240,7 +241,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
 
         activity?.run {
             val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                    .requestIdToken(GOOGLE_API_KEY)
+                    .requestIdToken(getGoogleClientId(this))
                     .requestEmail()
                     .requestProfile()
                     .build()
@@ -712,6 +713,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
 
             setTrackingUserId(userSession.userId)
             setFCM()
+            SubmitDeviceInfoService.startService(this)
         }
 
         RemoteConfigInstance.getInstance().abTestPlatform.fetchByType(null)
@@ -744,8 +746,9 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
         try {
             TkpdAppsFlyerMapper.getInstance(activity?.applicationContext).mapAnalytics()
             TrackApp.getInstance().gtm.pushUserId(userId)
-            if (!GlobalConfig.DEBUG && Crashlytics.getInstance() != null)
-                Crashlytics.setUserIdentifier(userId)
+            val crashlytics: FirebaseCrashlytics = FirebaseCrashlytics.getInstance()
+            if (!GlobalConfig.DEBUG && crashlytics != null)
+                crashlytics.setUserId(userId)
 
             if (userSession.isLoggedIn) {
                 val userData = UserData()
@@ -1159,8 +1162,8 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
                 isAutoLogin = true
                 isFromRegister = true
                 showLoading(true)
-                presenter.getUserInfo()
-                onGoToWelcomeNewUserPage()
+                activityShouldEnd = false
+                processAfterAddNameRegisterPhone(data?.extras)
             } else if (requestCode == REQUEST_LOGIN_PHONE
                     && resultCode == Activity.RESULT_OK
                     && data != null
@@ -1195,6 +1198,8 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
                 onSuccessLogin()
             } else if (requestCode == REQUEST_COTP_PHONE_VERIFICATION && resultCode == Activity.RESULT_OK) {
                 onSuccessLogin()
+            } else if (requestCode == REQUEST_ADD_PIN_AFTER_REGISTER_PHONE && resultCode == Activity.RESULT_OK) {
+                presenter.getUserInfo()
             } else {
                 dismissLoadingLogin()
                 super.onActivityResult(requestCode, resultCode, data)
@@ -1207,6 +1212,26 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
             val intent = RouteManager.getIntent(context, ApplinkConst.DISCOVERY_NEW_USER)
             startActivity(intent)
         }
+    }
+
+    private fun processAfterAddNameRegisterPhone(data: Bundle?){
+        val enable2FA = data?.getBoolean(ApplinkConstInternalGlobal.PARAM_ENABLE_2FA) ?: false
+        val enableSkip2FA = data?.getBoolean(ApplinkConstInternalGlobal.PARAM_ENABLE_SKIP_2FA) ?: false
+        if(enable2FA){
+            goToAddPin2FA(enableSkip2FA)
+        } else {
+            presenter.getUserInfo()
+        }
+    }
+
+    private fun goToAddPin2FA(enableSkip2FA: Boolean){
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PIN)
+        intent.putExtras(Bundle().apply {
+            putBoolean(ApplinkConstInternalGlobal.PARAM_ENABLE_SKIP_2FA, enableSkip2FA)
+            putBoolean(ApplinkConstInternalGlobal.PARAM_IS_FROM_2FA, true)
+            putBoolean(ApplinkConstInternalGlobal.PARAM_IS_SKIP_OTP, true)
+        })
+        startActivityForResult(intent, REQUEST_ADD_PIN_AFTER_REGISTER_PHONE)
     }
 
     private fun isFromAccountPage(): Boolean = source == SOURCE_ACCOUNT
@@ -1501,6 +1526,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
         const val REQUEST_ADD_PIN_AFTER_SQ = 119
         private val REQUEST_OTP_VALIDATE = 120
         private val REQUEST_PENDING_OTP_VALIDATE = 121
+        const val REQUEST_ADD_PIN_AFTER_REGISTER_PHONE = 122
 
         private const val PHONE_TYPE = "phone"
         private const val EMAIL_TYPE = "email"

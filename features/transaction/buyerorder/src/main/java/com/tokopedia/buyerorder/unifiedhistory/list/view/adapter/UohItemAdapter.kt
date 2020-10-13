@@ -43,7 +43,7 @@ class UohItemAdapter : RecyclerView.Adapter<UohItemAdapter.BaseViewHolder<*>>() 
         fun onMulaiBelanjaBtnClicked()
         fun trackProductViewRecommendation(recommendationItem: RecommendationItem, index: Int)
         fun trackProductClickRecommendation(recommendationItem: RecommendationItem, index: Int)
-        fun trackAddToCartRecommendation(recommendationItem: RecommendationItem)
+        fun atcRecommendationItem(recommendationItem: RecommendationItem)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder<*> {
@@ -126,7 +126,13 @@ class UohItemAdapter : RecyclerView.Adapter<UohItemAdapter.BaseViewHolder<*>>() 
     }
 
     fun getDataAtIndex(index: Int): UohListOrder.Data.UohOrders.Order {
-        return listTypeData[index].dataObject as UohListOrder.Data.UohOrders.Order
+        // prevent crash
+        // Fatal Exception: java.lang.IndexOutOfBoundsException
+        // Index: 1, Size: 1
+
+        var actualIndex = index
+        if (index == listTypeData.size) actualIndex = index - 1
+        return listTypeData[actualIndex].dataObject as UohListOrder.Data.UohOrders.Order
     }
 
     fun showLoaderAtIndex(index: Int) {
