@@ -197,7 +197,6 @@ class SomDetailFragment : BaseDaggerFragment(),
     private val FLAG_CONFIRM_REQ_PICKUP = 3535
     private val FLAG_CONFIRM_SHIPPING = 3553
     private var reasonCourierProblemText: String = ""
-    private val tagConfirm = "tag_confirm"
     private var refreshHandler: RefreshHandler? = null
     private var bottomSheetCourierProblems: BottomSheetUnify? = null
 
