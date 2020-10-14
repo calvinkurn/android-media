@@ -20,7 +20,7 @@ public class GMAuthInterceptor extends TkpdAuthInterceptor {
     private static final String BEARER = "Bearer ";
 
     public GMAuthInterceptor(@Nullable Context context, @NotNull UserSessionInterface userSession, @NotNull NetworkRouter abstractionRouter) {
-        super(context, abstractionRouter, userSession, AuthUtil.KEY.KEY_WSV4);
+        super(context, abstractionRouter, userSession);
     }
 
     @Override

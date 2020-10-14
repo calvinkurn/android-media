@@ -29,7 +29,7 @@ public class FeedAuthInterceptor extends TkpdAuthInterceptor {
     public FeedAuthInterceptor(@ApplicationContext Context context
                     , UserSessionInterface userSession,
                                NetworkRouter abstractionRouter) {
-        super(context, abstractionRouter, userSession, AuthUtil.KEY.KEY_WSV4);
+        super(context, abstractionRouter, userSession);
     }
 
 
