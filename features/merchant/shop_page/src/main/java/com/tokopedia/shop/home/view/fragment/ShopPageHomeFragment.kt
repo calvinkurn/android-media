@@ -49,7 +49,6 @@ import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPageAttribution
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPageProduct
 import com.tokopedia.shop.common.constant.DEFAULT_SORT_ID
-import com.tokopedia.shop.common.constant.SORT_PARAM_KEY
 import com.tokopedia.shop.common.constant.ShopParamConstant
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
 import com.tokopedia.shop.common.graphql.data.checkwishlist.CheckWishlistResult
@@ -1395,7 +1394,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                     shopHomeProductViewModel?.displayedPrice ?: "",
                     shopName,
                     parentPosition + 1,
-                    itemPosition + 1,
+                    itemPosition,
                     isLogin,
                     customDimensionShopPage
             )
@@ -1420,7 +1419,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                     shopHomeProductViewModel?.displayedPrice ?: "",
                     shopName,
                     parentPosition + 1,
-                    itemPosition + 1,
+                    itemPosition,
                     isLogin,
                     customDimensionShopPage
             )
@@ -1430,17 +1429,18 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     override fun onClickTncCampaignNplWidget(model: ShopHomeNewProductLaunchCampaignUiModel) {
         model.data?.firstOrNull()?.let {
             shopPageHomeTracking.clickTncButton(isOwner, it.statusCampaign, customDimensionShopPage)
-            showNplCampaignTncBottomSheet(it.campaignId, it.statusCampaign)
+            showNplCampaignTncBottomSheet(it.campaignId, it.statusCampaign, it.dynamicRule.dynamicRoleData.ruleID)
         }
     }
 
-    private fun showNplCampaignTncBottomSheet(campaignId: String, statusCampaign: String) {
+    private fun showNplCampaignTncBottomSheet(campaignId: String, statusCampaign: String, ruleID: String) {
         val bottomSheet = ShopHomeNplCampaignTncBottomSheet.createInstance(
                 campaignId,
                 statusCampaign,
                 shopId,
                 isOfficialStore,
-                isGoldMerchant
+                isGoldMerchant,
+                ruleID
         )
         bottomSheet.show(childFragmentManager, "")
     }
@@ -1483,6 +1483,17 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                     putExtra(ShopParamConstant.EXTRA_IS_NEED_TO_RELOAD_DATA, true)
                 }
                 startActivity(showcaseIntent)
+            }
+        }
+    }
+
+    override fun onClickCampaignBannerAreaNplWidget(model: ShopHomeNewProductLaunchCampaignUiModel) {
+        model.data?.firstOrNull()?.let {
+            context?.let {context ->
+                val appLink  = model.header.ctaLink
+                if(appLink.isNotEmpty()){
+                    RouteManager.route(context, appLink)
+                }
             }
         }
     }

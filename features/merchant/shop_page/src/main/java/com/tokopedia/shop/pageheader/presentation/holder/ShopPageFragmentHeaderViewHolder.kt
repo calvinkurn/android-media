@@ -291,6 +291,10 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
         }
     }
 
+    fun setFavoriteValue(isShopFavorite: Boolean) {
+        this.isShopFavorite = isShopFavorite
+    }
+
     fun toggleFavourite() {
         isShopFavorite = !isShopFavorite
     }

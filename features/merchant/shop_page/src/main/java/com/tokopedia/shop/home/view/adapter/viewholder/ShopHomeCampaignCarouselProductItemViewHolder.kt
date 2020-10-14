@@ -51,11 +51,10 @@ open class ShopHomeCampaignCarouselProductItemViewHolder(
     }
 
     protected open fun setListener() {
-        val totalProduct = shopHomeNewProductLaunchCampaignUiModel.data?.firstOrNull()?.productList?.size?.minus(1) ?: 0
         productCard.setOnClickListener {
             shopHomeCampaignNplWidgetListener.onCampaignCarouselProductItemClicked(
                     parentPosition,
-                    totalProduct - adapterPosition,
+                    adapterPosition,
                     shopHomeNewProductLaunchCampaignUiModel,
                     shopHomeProductViewModel
             )
@@ -65,7 +64,7 @@ open class ShopHomeCampaignCarouselProductItemViewHolder(
                 override fun onViewHint() {
                     shopHomeCampaignNplWidgetListener.onCampaignCarouselProductItemImpression(
                             parentPosition,
-                            totalProduct - adapterPosition,
+                            adapterPosition,
                             shopHomeNewProductLaunchCampaignUiModel,
                             shopHomeProductViewModel
                     )

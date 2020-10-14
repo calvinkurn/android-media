@@ -261,6 +261,7 @@
     <string name="menu_report">Laporkan</string>
 
     <string name="shop_home_npl_remind_me">Ingatkan</string>
+    <string name="shop_home_npl_campaign_follow">Follow Toko</string>
     <string name="shop_string_ok">OK</string>
     <string name="shop_change_grid_section_total_product">%s Produk</string>
     <string name="shop_sort_filter_chips_name">Filter</string>

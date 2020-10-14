@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.*
 import com.tokopedia.shop.home.view.listener.ShopHomeCampaignNplWidgetListener
+import com.tokopedia.shop.home.view.model.ShopHomeCampaignCarouselClickableBannerAreaUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeNewProductLaunchCampaignUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeProductViewModel
 
@@ -21,12 +22,23 @@ class ShopCampaignCarouselProductAdapterTypeFactory(
         return ShopHomeCampaignCarouselProductItemViewHolder.LAYOUT
     }
 
+    override fun type(uiModel: ShopHomeCampaignCarouselClickableBannerAreaUiModel): Int {
+        return ShopHomeCampaignCarouselClickableBannerAreaViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
             ShopHomeCampaignCarouselProductItemViewHolder.LAYOUT -> {
                 ShopHomeCampaignCarouselProductItemViewHolder(
                         parent,
                         parentPosition,
+                        shopHomeNewProductLaunchCampaignUiModel,
+                        shopHomeCampaignNplWidgetListener
+                )
+            }
+            ShopHomeCampaignCarouselClickableBannerAreaViewHolder.LAYOUT -> {
+                ShopHomeCampaignCarouselClickableBannerAreaViewHolder(
+                        parent,
                         shopHomeNewProductLaunchCampaignUiModel,
                         shopHomeCampaignNplWidgetListener
                 )
