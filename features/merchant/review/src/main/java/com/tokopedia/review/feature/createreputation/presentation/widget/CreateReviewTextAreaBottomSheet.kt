@@ -17,9 +17,7 @@ import com.tokopedia.review.R
 import com.tokopedia.review.feature.createreputation.presentation.fragment.CreateReviewFragment
 import com.tokopedia.review.feature.createreputation.presentation.listener.TextAreaListener
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
-import kotlinx.android.synthetic.main.fragment_create_review.*
 
 class CreateReviewTextAreaBottomSheet : BottomSheetUnify() {
 
@@ -31,6 +29,7 @@ class CreateReviewTextAreaBottomSheet : BottomSheetUnify() {
                 this.incentiveHelper = incentiveHelper
             }
         }
+
         const val ORIGINAL_UNIFY_MARGIN = 16
         const val HEADER_BOTTOM_MARGIN = 8
     }
@@ -100,7 +99,7 @@ class CreateReviewTextAreaBottomSheet : BottomSheetUnify() {
             isKeyboardOverlap = false
             setShowListener {
                 (bottomSheetHeader.layoutParams as LinearLayout.LayoutParams).setMargins(ORIGINAL_UNIFY_MARGIN, ORIGINAL_UNIFY_MARGIN, ORIGINAL_UNIFY_MARGIN, HEADER_BOTTOM_MARGIN)
-                Handler().postDelayed( {
+                Handler().postDelayed({
                     editText.requestFocus()
                 }, 100)
                 editText.setText(this@CreateReviewTextAreaBottomSheet.text)

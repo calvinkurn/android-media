@@ -12,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.view.inputmethod.InputMethodManager
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.lifecycle.Observer
@@ -1042,8 +1043,13 @@ class CreateReviewFragment : BaseDaggerFragment(),
     fun showCancelDialog() {
         context?.let {
             DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
-                setTitle(getString(R.string.review_edit_dialog_title))
-                setDescription(getString(R.string.review_edit_dialog_subtitle))
+                if (isEditMode) {
+                    setTitle(getString(R.string.review_edit_dialog_title))
+                    setDescription(getString(R.string.review_edit_dialog_subtitle))
+                } else {
+                    setTitle(getString(R.string.review_create_dialog_title))
+                    setDescription(getString(R.string.review_create_dialog_body))
+                }
                 setPrimaryCTAText(getString(R.string.review_edit_dialog_continue_writing))
                 setPrimaryCTAClickListener {
                     dismiss()
