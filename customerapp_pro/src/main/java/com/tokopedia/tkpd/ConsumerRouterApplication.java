@@ -463,8 +463,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void onForceLogout(Activity activity) {
-        SessionHandler sessionHandler = new SessionHandler(activity);
-        sessionHandler.forceLogout();
+        forceLogout();
         Intent intent = ((TkpdCoreRouter) getBaseContext().getApplicationContext()).getSplashScreenIntent(getBaseContext());
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
