@@ -15,6 +15,7 @@ abstract class SellerSuccessSlice<T : SellerSuccessItem>(private val itemList: L
                                                          context: Context,
                                                          sliceUri: Uri): SellerSlice(context, sliceUri) {
 
+    @RequiresApi(Build.VERSION_CODES.KITKAT)
     abstract fun getSuccessSlice(): Slice
 
     @RequiresApi(Build.VERSION_CODES.KITKAT)

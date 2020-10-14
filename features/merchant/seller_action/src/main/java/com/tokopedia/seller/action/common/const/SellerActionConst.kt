@@ -5,6 +5,7 @@ object SellerActionConst {
     object Deeplink {
         internal const val ORDER = "/order"
         internal const val STARS = "/stars"
+        internal const val BALANCE = "/balance"
     }
 
     object Params {

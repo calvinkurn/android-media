@@ -50,7 +50,7 @@ class SliceReviewStarsUseCase @Inject constructor(private val gqlRepository: Gra
             val data = response.getData<SliceReviewResponse>(SliceReviewResponse::class.java)
             return data.productrevGetInboxReviewByShop.list
         } else {
-            throw MessageErrorException(errors.joinToString(", ") { it.message })
+            throw MessageErrorException(errors.joinToString { it.message })
         }
     }
 }

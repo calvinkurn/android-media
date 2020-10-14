@@ -14,4 +14,10 @@
     <string name="seller_action_review_title">Review Anda</string>
     <string name="seller_action_review_item_title">From: %s | %s</string>
     <string name="seller_action_review_item_desc">(%s stars) | %s</string>
+    
+    //Balance Slice
+    <string name="seller_action_balance_title">Saldo Anda</string>
+    <string name="seller_action_balance_general">Saldo</string>
+    <string name="seller_action_balance_topads">Kredit TopAds</string>
+    <string name="seller_action_balance_error_message">Tidak dapat menarik data</string>
 </resources>

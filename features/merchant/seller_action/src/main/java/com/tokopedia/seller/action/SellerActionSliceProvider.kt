@@ -8,11 +8,14 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.slice.Slice
 import androidx.slice.SliceProvider
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.seller.action.balance.presentation.mapper.SellerBalanceMapper
+import com.tokopedia.seller.action.balance.presentation.model.SellerActionBalance
 import com.tokopedia.seller.action.common.const.SellerActionConst
 import com.tokopedia.seller.action.common.di.DaggerSellerActionComponent
-import com.tokopedia.seller.action.common.di.SellerActionModule
 import com.tokopedia.seller.action.common.exception.SellerActionException
 import com.tokopedia.seller.action.common.presentation.model.SellerActionStatus
 import com.tokopedia.seller.action.common.presentation.model.SellerSuccessItem
@@ -45,38 +48,34 @@ class SellerActionSliceProvider: SliceProvider(){
     @Inject
     lateinit var userSession: UserSessionInterface
 
+    @Inject
+    lateinit var remoteConfig: FirebaseRemoteConfigImpl
+
     private var isOrderListHasLoaded = false
     private var isReviewStarsListHasLoaded = false
+    private var isSellerBalanceHasLoaded = false
 
     private val sellerOrderObserver = Observer<Result<Pair<Uri, List<Order>>>> { result ->
-        if (result != null) {
+        result.observeResult {
             isOrderListHasLoaded = true
-            when(result) {
-                is Success -> {
-                    updateSlice(result.data.first)
-                }
-                is Fail -> (result.throwable as? SellerActionException)?.sliceUri?.let { updateSlice(it) }
-            }
         }
     }
 
     private val sellerReviewStarsObserver = Observer<Result<Pair<Uri, List<InboxReviewList>>>> { result ->
-        if (result != null) {
+        result.observeResult {
             isReviewStarsListHasLoaded = true
-            when(result) {
-                is Success -> {
-                    val sliceUri = result.data.first
-                    updateSlice(sliceUri)
-                }
-                is Fail -> (result.throwable as? SellerActionException)?.sliceUri?.let {
-                    updateSlice(it)
-                }
-            }
+        }
+    }
+
+    private val sellerBalanceObserver = Observer<Result<Pair<Uri, List<SellerActionBalance>>>> { result ->
+        result.observeResult {
+            isSellerBalanceHasLoaded = true
         }
     }
 
     private var orderListLiveData: LiveData<Result<Pair<Uri, List<Order>>>>? = null
     private var reviewStarsListLiveData: LiveData<Result<Pair<Uri, List<InboxReviewList>>>>? = null
+    private var sellerBalanceLiveData: LiveData<Result<Pair<Uri, List<SellerActionBalance>>>>? = null
 
     override fun onCreateSliceProvider(): Boolean {
         injectDependencies()
@@ -104,6 +103,12 @@ class SellerActionSliceProvider: SliceProvider(){
                             }
                         }
                     }
+                    SellerActionConst.Deeplink.BALANCE -> {
+                        if (!isSellerBalanceHasLoaded) {
+                            sellerBalanceLiveData = getSellerBalanceLiveData(sliceUri)
+                            isSellerBalanceHasLoaded = false
+                        }
+                    }
                 }
             }
             createNewSlice(sliceUri).getSlice()
@@ -114,7 +119,7 @@ class SellerActionSliceProvider: SliceProvider(){
 
     private fun injectDependencies() {
         DaggerSellerActionComponent.builder()
-                .sellerActionModule(SellerActionModule(requireNotNull(context)))
+                .baseAppComponent((requireNotNull(context).applicationContext as BaseMainApplication).baseAppComponent)
                 .build()
                 .inject(this)
     }
@@ -126,6 +131,7 @@ class SellerActionSliceProvider: SliceProvider(){
                 when (sliceUri.path) {
                     SellerActionConst.Deeplink.ORDER -> getStatus(orderListLiveData, sellerOrderObserver)
                     SellerActionConst.Deeplink.STARS -> getStatus(reviewStarsListLiveData, sellerReviewStarsObserver)
+                    SellerActionConst.Deeplink.BALANCE -> getStatus(sellerBalanceLiveData, sellerBalanceObserver)
                     else -> SellerActionStatus.Fail
                 }
         return when (sliceUri.path) {
@@ -139,7 +145,24 @@ class SellerActionSliceProvider: SliceProvider(){
                     getSlice(status)
                 }
             }
+            SellerActionConst.Deeplink.BALANCE -> {
+                SellerBalanceMapper(notNullContext, sliceUri, remoteConfig).run {
+                    getSlice(status)
+                }
+            }
             else -> SellerFailureSlice(notNullContext, sliceUri)
+        }
+    }
+
+    private fun Result<Pair<Uri, Any>>?.observeResult(updateValue: () -> Unit) {
+        updateValue()
+        when(this) {
+            is Success -> {
+                updateSlice(data.first)
+            }
+            is Fail -> (throwable as? SellerActionException)?.sliceUri?.let {
+                updateSlice(it)
+            }
         }
     }
 
@@ -185,6 +208,13 @@ class SellerActionSliceProvider: SliceProvider(){
             sliceSellerActionPresenter.getShopReviewList(sliceUri, stars).apply {
                 handler.post {
                     observeForever(sellerReviewStarsObserver)
+                }
+            }
+
+    private fun getSellerBalanceLiveData(sliceUri: Uri) =
+            sliceSellerActionPresenter.getBalance(sliceUri, userSession.shopId.toIntOrZero()).apply {
+                handler.post {
+                    observeForever(sellerBalanceObserver)
                 }
             }
 

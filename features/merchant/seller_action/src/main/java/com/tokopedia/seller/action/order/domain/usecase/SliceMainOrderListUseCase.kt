@@ -54,7 +54,7 @@ class SliceMainOrderListUseCase @Inject constructor(private val gqlRepository: G
             val data = response.getData<SellerActionOrder>(SellerActionOrder::class.java)
             return data.orderList.orders
         } else {
-            throw MessageErrorException(errors.joinToString(", ") { it.message })
+            throw MessageErrorException(errors.joinToString { it.message })
         }
     }
 

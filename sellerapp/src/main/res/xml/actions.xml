@@ -23,4 +23,9 @@
             fulfillmentMode="actions.fulfillment.DEEPLINK"
             urlTemplate="tokopedia-android-internal://marketplace/review?is_my_review=true"/>
     </action>
+    <action intentName="actions.intent.GET_ACCOUNT">
+        <fulfillment
+            fulfillmentMode="actions.fulfillment.SLICE"
+            urlTemplate="content://com.tokopedia.seller.action.slices/balance"/>
+    </action>
 </actions>
