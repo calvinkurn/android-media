@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.globalnavwidget.GlobalNavWidgetConstant.GLOBAL_NAV_SPAN_COUNT
 import com.tokopedia.globalnavwidget.GlobalNavWidgetConstant.NAV_TEMPLATE_PILL
+import com.tokopedia.unifycomponents.toDp
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.global_nav_widget_layout.view.*
 
@@ -143,7 +144,7 @@ class GlobalNavWidget: BaseCustomView {
 
     private fun setSingleGlobalNavImageWithImageUrl(item: GlobalNavWidgetModel.Item) {
         singleGlobalNavImage?.shouldShowWithAction(item.imageUrl.isNotEmpty()) {
-            ImageHandler.loadImageFitCenter(context, it, item.imageUrl)
+            ImageHandler.loadImageRounded(context, it, item.imageUrl, 8.toDp().toFloat())
             singleGlobalNavIcon?.visibility = View.GONE
         }
     }
