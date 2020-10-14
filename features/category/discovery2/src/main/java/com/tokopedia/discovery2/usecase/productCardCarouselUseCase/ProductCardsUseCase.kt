@@ -65,13 +65,12 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
                             parentComponentsItem?.data),
                     pageEndPoint,
                     component1.name)
-            if(productsList.size == 0) {
+            if(productsList.isEmpty()) {
                 component1.showVerticalLoader = false
             }else{
                 component1.showVerticalLoader = true
                 (component1.getComponentsItem() as ArrayList<ComponentsItem>).addAll(productsList)
             }
-
             return true
         }
         return false
