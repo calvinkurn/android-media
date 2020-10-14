@@ -25,7 +25,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
-        android:text="@string/lihat_detail"
+        android:text="@string/see_detail"
         app:typographyType="body_2"
         android:textColor="@color/Unify_G500"
         app:layout_constraintEnd_toEndOf="parent"
@@ -91,13 +91,13 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
-        android:text="@string/lihat_caps"
+        android:text="@string/see_invoice"
         app:typographyType="body_2"
-        android:textColor="@color/g_500"
+        android:textColor="@color/Unify_G500"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@id/header_invoice"
-        tools:text="@string/lihat_caps" />
+        tools:text="@string/see_invoice" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/header_buyer_label"
@@ -216,51 +216,14 @@
 
     </androidx.cardview.widget.CardView>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_detail_order_label"
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/dividerHeader"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_12"
-        android:layout_marginEnd="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
+        android:layout_height="@dimen/spacing_lvl3"
+        android:layout_marginTop="@dimen/spacing_lvl3"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/header_deadline_label" />
-
-    <View
-        android:id="@+id/header_divider_2"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_1"
-        android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginTop="@dimen/layout_lvl2"
-        android:layout_marginEnd="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
-        android:background="@color/grey_divider"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/rv_detail_order_label" />
-
-    <include
-        android:id="@+id/layout_resi"
-        layout="@layout/detail_header_resi_item"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_12"
-        android:layout_marginEnd="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
-        android:layout_marginBottom="@dimen/dp_16"
-        app:layout_constraintTop_toBottomOf="@+id/header_deadline_label" />
-
-    <com.tokopedia.unifycomponents.ticker.Ticker
-        android:id="@+id/ticker_invalid_resi"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/layout_resi" />
+        app:layout_constraintTop_toBottomOf="@id/header_deadline_label"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

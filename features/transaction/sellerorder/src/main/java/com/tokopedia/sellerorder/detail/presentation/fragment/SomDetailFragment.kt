@@ -573,8 +573,6 @@ class SomDetailFragment : BaseDaggerFragment(),
                 detailResponse.deadline.color,
                 detailResponse.listLabelInfo,
                 detailResponse.orderId.toString(),
-                detailResponse.shipment.awb,
-                detailResponse.shipment.awbTextColor,
                 detailResponse.shipment.awbUploadUrl,
                 detailResponse.shipment.awbUploadProofText,
                 detailResponse.bookingInfo.onlineBooking.bookingCode,
@@ -613,7 +611,9 @@ class SomDetailFragment : BaseDaggerFragment(),
                 detailResponse.bookingInfo.onlineBooking.message,
                 detailResponse.bookingInfo.onlineBooking.messageArray,
                 detailResponse.bookingInfo.onlineBooking.barcodeType,
-                isRemoveAwb = detailResponse.onlineBooking.isRemoveInputAwb)
+                isRemoveAwb = detailResponse.onlineBooking.isRemoveInputAwb,
+                awb = detailResponse.shipment.awb,
+                awbTextColor = detailResponse.shipment.awbTextColor)
 
         listDetailData.add(SomDetailData(dataShipping, DETAIL_SHIPPING_TYPE))
     }

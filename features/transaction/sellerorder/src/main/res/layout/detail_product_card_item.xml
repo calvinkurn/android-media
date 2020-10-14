@@ -68,8 +68,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_8"
-            android:layout_marginLeft="@dimen/dp_8"
-            android:textColor="@color/Neutral_N700_96"
+            android:textColor="@color/Unify_N700_96"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/cv_product_img"
             app:layout_constraintTop_toTopOf="parent"
@@ -86,24 +85,9 @@
             app:layout_constraintBottom_toTopOf="@id/divider_product"
             app:typographyType="body_3"
             app:typographyWeight="bold"
-            android:textColor="@color/Neutral_N700_68"
-            tools:text="1 Barang (3kg)"
-            android:layout_marginStart="@dimen/dp_8"
-            android:layout_marginLeft="@dimen/dp_8"/>
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tv_product_price"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/Neutral_N700_44"
-            app:typographyWeight="reguler"
-            app:typographyType="body_3"
-            app:layout_constraintTop_toBottomOf="@id/tv_product_name"
-            app:layout_constraintStart_toEndOf="@id/tv_product_desc"
-            app:layout_constraintBottom_toTopOf="@id/divider_product"
-            tools:text="Rp2.913.000"
-            android:layout_marginStart="@dimen/dp_8"
-            android:layout_marginLeft="@dimen/dp_8"/>
+            android:textColor="@color/Unify_N700_96"
+            tools:text="1 x Rp 2.913.000"
+            android:layout_marginStart="@dimen/dp_8" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

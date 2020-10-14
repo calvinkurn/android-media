@@ -8,7 +8,6 @@ import android.text.SpannableStringBuilder
 import android.text.style.ForegroundColorSpan
 import android.view.View
 import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
@@ -37,7 +36,6 @@ import com.tokopedia.unifycomponents.UrlSpanNoUnderline
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import kotlinx.android.synthetic.main.detail_header_item.view.*
-import kotlinx.android.synthetic.main.detail_header_resi_item.view.*
 
 /**
  * Created by fwidjaja on 2019-10-03.
@@ -56,7 +54,7 @@ class SomDetailHeaderViewHolder(itemView: View, private val actionListener: SomD
                         .putExtra(EXTRA_USER_MODE, 2))
             }
 
-            if (item.dataObject.tickerInfo.text.isNotEmpty()) {
+            if (item.dataObject.tickerInfo.text.isNotEmpty() || item.dataObject.awbUploadProofText.isNotEmpty()) {
                 setupTicker(itemView.ticker_detail_buyer_request_cancel, item.dataObject.tickerInfo)
                 itemView.ticker_detail_buyer_request_cancel?.show()
             } else {
@@ -86,17 +84,17 @@ class SomDetailHeaderViewHolder(itemView: View, private val actionListener: SomD
                 itemView.due_label?.visibility = View.GONE
             }
 
-            if (item.dataObject.listLabelOrder.isNotEmpty()) {
-                itemView.rv_detail_order_label?.visibility = View.VISIBLE
-                itemView.rv_detail_order_label?.apply {
-                    layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.HORIZONTAL, false)
-                    adapter = somDetailLabelInfoAdapter
-                    setRecycledViewPool(viewPool)
-                }
-                somDetailLabelInfoAdapter.listLabelInfo = item.dataObject.listLabelOrder.toMutableList()
-            } else {
-                itemView.rv_detail_order_label?.visibility = View.GONE
-            }
+//            if (item.dataObject.listLabelOrder.isNotEmpty()) {
+//                itemView.rv_detail_order_label?.visibility = View.VISIBLE
+//                itemView.rv_detail_order_label?.apply {
+//                    layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.HORIZONTAL, false)
+//                    adapter = somDetailLabelInfoAdapter
+//                    setRecycledViewPool(viewPool)
+//                }
+//                somDetailLabelInfoAdapter.listLabelInfo = item.dataObject.listLabelOrder.toMutableList()
+//            } else {
+//                itemView.rv_detail_order_label?.visibility = View.GONE
+//            }
 
             itemView.header_invoice?.text = item.dataObject.invoice
 
@@ -108,39 +106,27 @@ class SomDetailHeaderViewHolder(itemView: View, private val actionListener: SomD
                 actionListener?.onSeeInvoice(item.dataObject.invoiceUrl)
             }
 
-            if (item.dataObject.awb.isNotEmpty()) {
-                itemView.layout_resi?.visibility = View.VISIBLE
-                itemView.header_resi_value?.text = item.dataObject.awb
-                if (item.dataObject.awbTextColor.isNotEmpty()) {
-                    itemView.header_resi_value?.setTextColor(Color.parseColor(item.dataObject.awbTextColor))
-                }
-                itemView.header_copy_resi?.setOnClickListener {
-                    actionListener?.onTextCopied(itemView.context.getString(R.string.awb_label), item.dataObject.awb)
-                }
-            } else {
-                itemView.layout_resi?.visibility = View.GONE
-            }
 
-            if (item.dataObject.awbUploadProofText.isNotEmpty()) {
-                val completeDesc = item.dataObject.awbUploadProofText + " " + itemView.context.getString(R.string.additional_invalid_resi)
-                itemView.ticker_invalid_resi?.apply {
-                    visibility = View.VISIBLE
-                    setHtmlDescription(completeDesc)
-                    tickerShape = Ticker.SHAPE_FULL
-                    tickerType = Ticker.TYPE_ERROR
-                    closeButtonVisibility = View.GONE
-                    post {
-                        measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
-                                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED))
-                        requestLayout()
-                    }
-                    if (item.dataObject.awbUploadUrl.isNotEmpty()) {
-                        setOnClickListener { actionListener?.onInvalidResiUpload(item.dataObject.awbUploadUrl) }
-                    }
-                }
-            } else {
-                itemView.ticker_invalid_resi?.visibility = View.GONE
-            }
+//            if (item.dataObject.awbUploadProofText.isNotEmpty()) {
+//                val completeDesc = item.dataObject.awbUploadProofText + " " + itemView.context.getString(R.string.additional_invalid_resi)
+//                itemView.ticker_invalid_resi?.apply {
+//                    visibility = View.VISIBLE
+//                    setHtmlDescription(completeDesc)
+//                    tickerShape = Ticker.SHAPE_FULL
+//                    tickerType = Ticker.TYPE_ERROR
+//                    closeButtonVisibility = View.GONE
+//                    post {
+//                        measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+//                                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED))
+//                        requestLayout()
+//                    }
+//                    if (item.dataObject.awbUploadUrl.isNotEmpty()) {
+//                        setOnClickListener { actionListener?.onInvalidResiUpload(item.dataObject.awbUploadUrl) }
+//                    }
+//                }
+//            } else {
+//                itemView.ticker_invalid_resi?.visibility = View.GONE
+//            }
         }
 
         val coachmarkHeader = CoachMarkItem(itemView,
@@ -166,6 +152,7 @@ class SomDetailHeaderViewHolder(itemView: View, private val actionListener: SomD
         tickerBuyerRequestCancel?.apply {
             val tickerDescription = makeTickerDescription(context, tickerInfo)
             setTextDescription(tickerDescription)
+
             setDescriptionClickEvent(object : TickerCallback {
                 override fun onDescriptionViewClick(linkUrl: CharSequence) {
                     if (tickerInfo.actionUrl.isNotBlank()) {
