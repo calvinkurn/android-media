@@ -5,11 +5,14 @@ import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.google.gson.Gson
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.common.network.coroutines.RestRequestInteractor
+import com.tokopedia.common.network.coroutines.repository.RestRepository
 import com.tokopedia.entertainment.pdp.analytic.EventPDPTracking
 import com.tokopedia.entertainment.pdp.network_api.EventCheckoutApi
 import com.tokopedia.entertainment.pdp.network_api.EventCheckoutApi.Companion.BASE_URL
 import com.tokopedia.entertainment.pdp.network_api.EventCheckoutRepository
 import com.tokopedia.entertainment.pdp.network_api.EventCheckoutRepositoryImpl
+import com.tokopedia.entertainment.pdp.network_api.GetWhiteListValidationUseCase
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.user.session.UserSession
@@ -19,12 +22,14 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.converter.StringResponseConverter
+import com.tokopedia.network.interceptor.CommonErrorResponseInterceptor
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.utils.OkHttpRetryPolicy
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -137,6 +142,28 @@ class EventPDPModule {
     @EventPDPScope
     fun provideChuckerInterceptor(@ApplicationContext context: Context): ChuckerInterceptor {
         return ChuckerInterceptor(context)
+    }
+
+    @Provides
+    @EventPDPScope
+    fun provideInterceptors(fingerprintInterceptor: FingerprintInterceptor,
+                            httpLoggingInterceptor: HttpLoggingInterceptor,
+                            chuckerInterceptor: ChuckerInterceptor): MutableList<Interceptor> {
+        return mutableListOf(fingerprintInterceptor, httpLoggingInterceptor, chuckerInterceptor)
+    }
+
+    @Provides
+    fun provideRestRepository(interceptors: MutableList<Interceptor>,
+            @ApplicationContext context: Context): RestRepository {
+        return RestRequestInteractor.getInstance().restRepository.apply {
+            updateInterceptors(interceptors,context)
+        }
+    }
+
+    @Provides
+    @EventPDPScope
+    fun provideGetWhiteListValidationUseCase(repository: RestRepository): GetWhiteListValidationUseCase {
+        return GetWhiteListValidationUseCase(repository)
     }
 
 }

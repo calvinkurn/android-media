@@ -4,25 +4,31 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.calendar.Legend
+import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.entertainment.pdp.common.util.EventDateUtil
 import com.tokopedia.entertainment.pdp.data.*
 import com.tokopedia.entertainment.pdp.data.pdp.*
+import com.tokopedia.entertainment.pdp.data.redeem.validate.EventValidateResponse
 import com.tokopedia.entertainment.pdp.data.redeem.validate.EventValidateUser
 import com.tokopedia.entertainment.pdp.network_api.EventCheckoutRepository
+import com.tokopedia.entertainment.pdp.network_api.GetWhiteListValidationUseCase
 import com.tokopedia.entertainment.pdp.usecase.EventProductDetailUseCase
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.travelcalendar.data.entity.TravelCalendarHoliday
 import com.tokopedia.travelcalendar.domain.TravelCalendarHolidayUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import kotlinx.coroutines.CoroutineDispatcher
 import com.tokopedia.usecase.coroutines.Success
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.lang.reflect.Type
 import javax.inject.Inject
 
 class EventPDPViewModel @Inject constructor(private val dispatcher: CoroutineDispatcher,
                                             private val usecase: EventProductDetailUseCase,
                                             private val useCaseHoliday: TravelCalendarHolidayUseCase,
-                                            private val repository: EventCheckoutRepository
+                                            private val useCaseWhiteListValidation: GetWhiteListValidationUseCase
 ) : BaseViewModel(dispatcher) {
 
     private val eventProductDetaiListlMutable = MutableLiveData<List<EventPDPModel>>()
@@ -52,7 +58,7 @@ class EventPDPViewModel @Inject constructor(private val dispatcher: CoroutineDis
 
     fun getDataProductDetail(rawQueryPDP: String, rawQueryContent: String, urlPdp: String,
                              userId: Int = 0, email: String = "") {
-        launch {
+        launchCatchError(block = {
             val result = usecase.executeUseCase(rawQueryPDP, rawQueryContent, true, urlPdp)
             val resultHoliday = useCaseHoliday.execute()
             when (result) {
@@ -66,24 +72,18 @@ class EventPDPViewModel @Inject constructor(private val dispatcher: CoroutineDis
 
                     val userValidated = EventValidateUser(result.data.eventProductDetailEntity.eventProductDetail.productDetailData.id.toInt(),
                             userId, email)
-
-                    val validate = withContext(dispatcher){
-                        repository.validateRedeem(userValidated)
-                    }
-
-                    if(validate?.data?.success?.equals(SUCCESS_VALIDATE) ?: false){
-                        validateScannerMutable.postValue(true)
-                    } else {
-                        validateScannerMutable.postValue(false)
-                    }
+                    useCaseWhiteListValidation.setValidateUser(userValidated)
+                    val result = convertToValidateResponse(useCaseWhiteListValidation.executeOnBackground())
+                    validateScannerMutable.value = result.data.success
                 }
 
                 is Fail -> {
                     isErrorMutable.value = EventPDPErrorEntity(true, result.throwable.message)
+                    validateScannerMutable.value = false
                 }
             }
 
-            when(resultHoliday){
+            when (resultHoliday) {
                 is Success -> {
                     eventHolidayMutable.value = mappingHolidayData(resultHoliday.data)
                 }
@@ -92,9 +92,14 @@ class EventPDPViewModel @Inject constructor(private val dispatcher: CoroutineDis
                     eventHolidayMutable.value = arrayListOf()
                 }
             }
-        }
+        }, onError = {
+           validateScannerMutable.value = false
+        })
     }
 
+    private fun convertToValidateResponse(typeRestResponseMap: Map<Type, RestResponse>): EventValidateResponse {
+        return typeRestResponseMap[EventValidateResponse::class.java]?.getData() as EventValidateResponse
+    }
 
     fun getDataHighlight(eventPDPHighlightEntity: EventPDPHighlightEntity) {
         eventProductDetailList.value?.let {
@@ -194,7 +199,7 @@ class EventPDPViewModel @Inject constructor(private val dispatcher: CoroutineDis
         var section = SectionData()
         var outlet = Outlet()
         val sectionsData = result.eventContentByIds.eventContentById.data.sectionData
-        if(result.eventProductDetailEntity.eventProductDetail.productDetailData.outlets.isNotEmpty()) {
+        if (result.eventProductDetailEntity.eventProductDetail.productDetailData.outlets.isNotEmpty()) {
             outlet = result.eventProductDetailEntity.eventProductDetail.productDetailData.outlets[0]
             for (i in sectionsData.indices) {
                 if (sectionsData[i].section.equals(SECTION_LOCATION))
