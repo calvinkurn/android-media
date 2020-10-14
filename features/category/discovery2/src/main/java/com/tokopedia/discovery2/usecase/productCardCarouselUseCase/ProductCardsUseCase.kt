@@ -24,7 +24,7 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
         val component = getComponent(componentId, pageEndPoint)
         if (component?.noOfPagesLoaded == 1)
             return false
-        component?.let { it ->
+        component?.let {
             val parentComponentsItem = getComponent(it.parentComponentId, pageEndPoint)
             val isDynamic = it.properties?.dynamic ?: false
             val productsList = productCardsRepository.getProducts(
