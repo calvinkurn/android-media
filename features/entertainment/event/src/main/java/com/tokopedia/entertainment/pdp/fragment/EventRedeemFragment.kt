@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.entertainment.R
-import com.tokopedia.entertainment.pdp.activity.EventPDPActivity
 import com.tokopedia.entertainment.pdp.activity.EventRedeemActivity.Companion.EXTRA_URL_REDEEM
 import com.tokopedia.entertainment.pdp.di.EventPDPComponent
 import kotlinx.android.synthetic.main.fragment_event_redeem.*
@@ -28,7 +27,6 @@ class EventRedeemFragment : BaseDaggerFragment(){
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        tg_url_redeem.text = urlRedeem
     }
     override fun initInjector() {
         getComponent(EventPDPComponent::class.java).inject(this)
