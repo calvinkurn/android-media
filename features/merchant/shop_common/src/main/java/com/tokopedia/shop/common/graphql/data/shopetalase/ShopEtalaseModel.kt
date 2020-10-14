@@ -28,7 +28,24 @@ data class ShopEtalaseModel(@SerializedName("id")
                             @SerializedName("useAce")
                             @Expose
                             val useAce: Boolean = true,
+                            @SerializedName("aceDefaultSort")
+                            @Expose
+                            var aceDefaultSort: Int = 0,
+                            @SerializedName("uri")
+                            @Expose
+                            var uri: String = "",
                             @SerializedName("badge")
                             @Expose
-                            val badge: String = "") : Parcelable {
-}
+                            val badge: String = "",
+                            @SerializedName("rules")
+                            @Expose
+                            val rules: List<ShopEtalaseRules> = listOf(),
+                            var isChecked: Boolean = false
+) : Parcelable
+
+@Parcelize
+data class ShopEtalaseRules(
+        @SerializedName("name")
+        @Expose
+        val name: String = ""
+): Parcelable

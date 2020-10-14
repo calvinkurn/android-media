@@ -8,7 +8,7 @@ object ProductHighlightTracking : BaseTrackerConst() {
     private const val EVENT_ACTION_IMPRESSION_PRODUCT_DYNAMIC_CHANNEL_HERO = "impression on product dynamic channel hero"
     private const val EVENT_ACTION_CLICK_PRODUCT_DYNAMIC_CHANNEL_HERO = "click on product dynamic channel hero"
 
-    private const val PRODUCT_DYNAMIC_CHANNEL_HERO = "dynamic channel hero"
+    private const val PRODUCT_DYNAMIC_CHANNEL_HERO = "dynamic channel hero - product"
 
     fun sendRecommendationListClick(
             channelId: String,
@@ -73,6 +73,9 @@ object ProductHighlightTracking : BaseTrackerConst() {
                 })
                 .appendChannelId(channel.id)
                 .appendUserId(userId)
+                .appendScreen(Screen.DEFAULT)
+                .appendBusinessUnit(BusinessUnit.DEFAULT)
+                .appendCurrentSite(CurrentSite.DEFAULT)
                 .build()
     }
 
@@ -121,6 +124,9 @@ object ProductHighlightTracking : BaseTrackerConst() {
                 ))
                 .appendChannelId(channelId)
                 .appendCampaignCode(campaignCode)
+                .appendScreen(Screen.DEFAULT)
+                .appendBusinessUnit(BusinessUnit.DEFAULT)
+                .appendCurrentSite(CurrentSite.DEFAULT)
                 .build()
     }
 

@@ -32,9 +32,7 @@ import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.globalerror.GlobalError
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.thousandFormatted
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity
 import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListActivity
@@ -1051,7 +1049,8 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         viewModel?.onRefreshPlayBanner(shopId)
     }
 
-    override fun onReminderClick(playBannerCarouselItemDataModel: PlayBannerCarouselItemDataModel, position: Int) {
+    override fun onReminderClick(playBannerCarouselItemDataModel: PlayBannerCarouselItemDataModel, widgetPosition: Int, position: Int) {
+        shopPageHomeTracking.clickRemindMePlayCarousel(playBannerCarouselItemDataModel.channelId, viewModel?.userId ?: "", playBannerCarouselItemDataModel.remindMe, widgetPosition, position)
         if(isLogin) {
             viewModel?.setToggleReminderPlayBanner(playBannerCarouselItemDataModel.channelId, playBannerCarouselItemDataModel.remindMe, position)
         } else {
@@ -1064,8 +1063,13 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         }
     }
 
-    override fun onPlayBannerSeeMoreClick(appLink: String) {
-        shopPageHomeTracking.clickSeeMorePlayCarouselBanner(shopId, viewModel?.userId ?: "")
+    override fun onPlayBannerSeeMoreClick(appLink: String, widgetPosition: Int) {
+        shopPageHomeTracking.clickSeeMorePlayCarousel(shopId, viewModel?.userId ?: "", widgetPosition)
+        RouteManager.route(context, appLink)
+    }
+
+    override fun onPlayBannerSeeMoreBanner(appLink: String, widgetPosition: Int) {
+        shopPageHomeTracking.clickSeeMorePlayCarouselBanner(shopId, viewModel?.userId ?: "", widgetPosition)
         RouteManager.route(context, appLink)
     }
 
@@ -1473,7 +1477,12 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                     customDimensionShopPage
             )
             context?.let {context ->
-                RouteManager.route(context, model.header.ctaLink)
+                // expected ctaLink produce ApplinkConstInternalMarketplace.SHOP_PAGE_PRODUCT_LIST
+                val showcaseIntent = RouteManager.getIntent(context, model.header.ctaLink).apply {
+                    // set isNeedToReload data to true for sync shop info data in product result fragment
+                    putExtra(ShopParamConstant.EXTRA_IS_NEED_TO_RELOAD_DATA, true)
+                }
+                startActivity(showcaseIntent)
             }
         }
     }
@@ -1552,10 +1561,11 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
 
 
     override fun onApplySortFilter(applySortFilterModel: SortFilterBottomSheet.ApplySortFilterModel) {
+        val isResetButtonVisible = sortFilterBottomSheet?.bottomSheetAction?.isVisible
         sortFilterBottomSheet = null
         shopProductFilterParameter?.clearParameter()
         shopProductFilterParameter?.setMapData(applySortFilterModel.mapParameter)
-        if(applySortFilterModel.selectedSortName.isEmpty()){
+        if(isResetButtonVisible == false){
             sortId = ""
         }
         changeSortData(shopProductFilterParameter?.getSortId().orEmpty())
