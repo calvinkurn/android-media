@@ -1,7 +1,7 @@
 package com.tokopedia.tkpdreactnative.react.creditcard.data.creditcardauthentication;
 
 
-import com.tokopedia.abstraction.common.utils.TKPDMapParam;
+import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 
 import rx.Observable;
 

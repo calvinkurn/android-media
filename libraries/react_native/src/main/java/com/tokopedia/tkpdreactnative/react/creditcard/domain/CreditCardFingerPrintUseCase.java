@@ -7,7 +7,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.tokopedia.abstraction.common.utils.TKPDMapParam;
+import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.network.constant.ErrorNetMessage;
 import com.tokopedia.tkpdreactnative.react.creditcard.data.CreditCardListRepository;
