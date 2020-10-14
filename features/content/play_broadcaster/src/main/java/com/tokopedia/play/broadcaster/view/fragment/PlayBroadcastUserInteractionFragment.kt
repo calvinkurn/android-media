@@ -445,8 +445,8 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                 is LivePusherTimerState.Active -> showCounterDuration(it.remainingTime)
                 is LivePusherTimerState.AlmostFinish -> showTimeRemaining(it.minutesLeft)
                 is LivePusherTimerState.Finish -> {
-                    showDialogWhenTimeout()
                     analytic.viewDialogSeeReportOnLivePage(parentViewModel.channelId, parentViewModel.title)
+                    showDialogWhenTimeout()
                 }
             }
         })
@@ -470,7 +470,13 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     private fun observeEvent() {
         parentViewModel.observableEvent.observe(viewLifecycleOwner, Observer {
             when {
-                it.freeze -> showDialogWhenTimeout()
+                it.freeze -> {
+                    showForceStopDialog(
+                            title = getString(R.string.play_live_broadcast_dialog_end_timeout_title),
+                            message = getString(R.string.play_live_broadcast_dialog_end_timeout_desc),
+                            buttonTitle = getString(R.string.play_live_broadcast_dialog_end_timeout_primary)
+                    )
+                }
                 it.banned -> {
                     showForceStopDialog(
                             title = it.title,

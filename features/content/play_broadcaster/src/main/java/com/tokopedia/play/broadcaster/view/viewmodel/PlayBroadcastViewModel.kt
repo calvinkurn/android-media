@@ -301,7 +301,7 @@ class PlayBroadcastViewModel @Inject constructor(
 
             override fun onCountDownFinish() {
                 val event = _observableEvent.value
-                if (event?.freeze == false && !event.banned) {
+                if (event == null || (!event.freeze && !event.banned)) {
                     _observableLiveDurationState.value = LivePusherTimerState.Finish
                     stopPushStream()
                 }

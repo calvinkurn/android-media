@@ -72,7 +72,7 @@ dependencies {
 
     implementation rootProject.ext.networkDependencies.glide
 
-    implementation (rootProject.ext.serviceDependencies.crashlytics) {
+    implementation (rootProject.ext.firebase.crashlytics) {
         transitive = true
     }
 
