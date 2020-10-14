@@ -50,5 +50,4 @@ dependencies {
     implementation project(rootProject.ext.app.customerapp_pro)
 
     implementation project(rootProject.ext.features.tokopoints)
-    implementation project(rootProject.ext.features.attachinvoice)
 }
