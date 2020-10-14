@@ -49,9 +49,7 @@ dependencies {
     implementation project(rootProject.ext.features.filter)
     implementation project(rootProject.ext.features.discoveryCommon)
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
-    implementation(rootProject.ext.serviceDependencies.crashlytics) {
-        transitive = true
-    }
+    implementation rootProject.ext.firebase.crashlytics
     implementation project(rootProject.ext.features.resourcesCommon)
 
 }

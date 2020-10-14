@@ -38,6 +38,7 @@ public interface AutocompleteEventTracking {
         String CLICK_TOP_SHOP = "click - shop - carousel";
         String CLICK_TOP_SHOP_SEE_MORE = "click - lihat toko lainnya - carousel";
         String CLICK_RECENT_VIEW_PRODUCT = "click - recent view product";
+        String CLICK_DYNAMIC_SECTION = "click - popular search";
         String CLICK_LOCAL_KEYWORD = "click - autocomplete local";
         String CLICK_GLOBAL_KEYWORD = "click - autocomplete global";
         String IMPRESSION_RECENT_VIEW = "impression - recent view product";

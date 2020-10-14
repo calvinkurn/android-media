@@ -30,6 +30,7 @@ import com.tokopedia.topads.common.activity.NoCreditActivity
 import com.tokopedia.topads.common.activity.SuccessActivity
 import com.tokopedia.topads.common.data.internal.AutoAdsStatus
 import com.tokopedia.topads.common.data.model.AutoAdsParam
+import com.tokopedia.topads.common.data.util.Utils.locale
 import com.tokopedia.topads.common.getSellerMigrationFeatureName
 import com.tokopedia.topads.common.getSellerMigrationRedirectionApplinks
 import com.tokopedia.topads.common.isFromPdpSellerMigration
@@ -239,7 +240,6 @@ abstract class AutoAdsBaseBudgetFragment : BaseDaggerFragment() {
 
 
     companion object {
-        var locale = Locale("in", "ID")
         val KEY_DAILY_BUDGET = "BUDGET"
         val KEY_AUTOADS_STATUS = "AUTOADS_STATUS"
         val TOGGLE_ON = "toggle_on"
