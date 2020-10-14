@@ -285,9 +285,7 @@
     <string name="content_desc_shop_page_main_profile_follower">text follower toko</string>
     <string name="content_desc_shop_page_main_profile_free_ongkir">text toko bebas ongkir</string>
     <string name="content_desc_image_view_shop_reputation_badge">image reputasi toko</string>
-    <string name="content_desc_shop_page_follow_unfollow_button">button follow unfollow</string>
     <string name="content_desc_tvSeeAll">text lihat semua</string>
-    <string name="content_desc_shopInfoDescription">text deskripsi toko</string>
     <string name="content_desc_button_chat">button chat</string>
 
 </resources>

@@ -42,8 +42,6 @@ import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity.Comp
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.utils.contentdescription.TextAndContentDescriptionUtil
-import kotlinx.android.synthetic.main.partial_new_shop_page_header.view.*
 import kotlinx.android.synthetic.main.partial_shop_info_delivery.*
 import kotlinx.android.synthetic.main.partial_shop_info_description.*
 import kotlinx.android.synthetic.main.partial_shop_info_note.*
@@ -266,8 +264,8 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback, Sho
             shopInfoDescription.hide()
         } else {
             shopInfoDescription.show()
-            TextAndContentDescriptionUtil.setTextAndContentDescription(shopInfoDescription, MethodChecker
-                    .fromHtmlPreserveLineBreak("${shopInfo.tagLine}<br/><br/>${shopInfo.description}").toString(), shopInfoDescription.context.getString(R.string.content_desc_shopInfoDescription));
+            shopInfoDescription.text = MethodChecker
+                    .fromHtmlPreserveLineBreak("${shopInfo.tagLine}<br/><br/>${shopInfo.description}")
         }
         shopInfoLocation.text = shopInfo.location
         shopInfoOpenSince.text = getString(R.string.shop_info_label_open_since_v3, shopInfo.openSince)

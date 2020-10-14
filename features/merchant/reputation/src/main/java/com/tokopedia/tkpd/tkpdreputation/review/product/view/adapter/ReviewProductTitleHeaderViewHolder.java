@@ -23,6 +23,6 @@ public class ReviewProductTitleHeaderViewHolder extends AbstractViewHolder<Revie
 
     @Override
     public void bind(ReviewProductModelTitleHeader element) {
-        TextAndContentDescriptionUtil.setTextAndContentDescription(title, element.getTitle(), title.getContext().getString(R.string.content_desc_product_name_shop_review));
+        TextAndContentDescriptionUtil.setTextAndContentDescription(title, "test", title.getContext().getString(R.string.content_desc_product_name_shop_review));
     }
 }
