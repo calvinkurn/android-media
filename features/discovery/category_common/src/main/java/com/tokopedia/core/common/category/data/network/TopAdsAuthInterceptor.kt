@@ -2,12 +2,12 @@ package com.tokopedia.core.common.category.data.network
 
 import android.content.Context
 import android.text.TextUtils
+import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.user.session.UserSessionInterface
 
-class TopAdsAuthInterceptor constructor(context: Context, abstractionRouter: NetworkRouter, userSession : UserSessionInterface)
-    : TkpdAuthInterceptor(context, abstractionRouter, userSession) {
+class TopAdsAuthInterceptor(context: Context, abstractionRouter: NetworkRouter, userSession : UserSessionInterface) : TkpdAuthInterceptor(context, abstractionRouter, userSession) {
 
     override fun getHeaderMap(path: String, strParam: String, method: String, authKey: String, contentTypeHeader: String): Map<String, String> {
         val headerMap = super.getHeaderMap(path, strParam, method, authKey, contentTypeHeader)
