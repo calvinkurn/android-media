@@ -176,6 +176,13 @@ mutation validate_use_promo_revamp($params: PromoStackRequest) {
            amount
          }
          sp_ids
+         promo_sp_ids {
+           unique_id
+           mvc_shipping_benefits {
+             benefit_amount
+             sp_id
+           }
+         }
        }
      }
     }
