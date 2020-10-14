@@ -1,20 +1,24 @@
 package com.tokopedia.product.info.view.bottomsheet
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.di.ProductDetailComponent
-import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoExpandableDataModel
-import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoLoadingDataModel
-import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoVisitable
+import com.tokopedia.product.detail.view.util.doSuccessOrFail
+import com.tokopedia.product.info.model.productdetail.uidata.*
+import com.tokopedia.product.info.view.BsProductDetailInfoViewModel
 import com.tokopedia.product.info.view.ProductDetailInfoListener
 import com.tokopedia.product.info.view.adapter.BsProductDetailInfoAdapter
 import com.tokopedia.product.info.view.adapter.ProductDetailInfoAdapterFactoryImpl
 import com.tokopedia.product.info.view.adapter.diffutil.ProductDetailInfoDiffUtil
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import java.util.concurrent.Executors
+import javax.inject.Inject
 
 
 /**
@@ -22,9 +26,19 @@ import java.util.concurrent.Executors
  */
 class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListener {
 
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    private val viewModel by lazy {
+        ViewModelProvider(this, viewModelFactory).get(BsProductDetailInfoViewModel::class.java)
+    }
+
     private var productDetailComponent: ProductDetailComponent? = null
     private var rvBsProductDetail: RecyclerView? = null
     private var currentList: List<ProductDetailInfoVisitable>? = null
+
+    private var productId: String = ""
+    private var shopId: String = ""
 
     private val productDetailInfoAdapter by lazy {
         BsProductDetailInfoAdapter(AsyncDifferConfig.Builder(ProductDetailInfoDiffUtil())
@@ -35,13 +49,27 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
         ProductDetailInfoAdapterFactoryImpl(this)
     }
 
-    fun setDaggerComponent(daggerProductDetailComponent: ProductDetailComponent?) {
+    fun setDaggerComponent(productId: String, shopId: String, daggerProductDetailComponent: ProductDetailComponent?) {
         this.productDetailComponent = daggerProductDetailComponent
+        this.productId = productId
+        this.shopId = shopId
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        viewLifecycleOwner.observe(viewModel.bottomSheetDetailData) { data ->
+            data.doSuccessOrFail({
+                Log.e("successs", "value " + it.data)
+            }) {
+                Log.e("successs", "fail " + it.message)
+            }
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         productDetailComponent?.inject(this)
         super.onCreate(savedInstanceState)
+        viewModel.setParams(productId, shopId)
         initView()
     }
 
@@ -51,7 +79,7 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
     }
 
     override fun onLoadingClick() {
-        currentList = listOf(ProductDetailInfoExpandableDataModel(componentName = 1,isShowable = true), ProductDetailInfoExpandableDataModel(componentName = 2), ProductDetailInfoExpandableDataModel(componentName = 3))
+        currentList = listOf(ProductDetailInfoExpandableDataModel(componentName = 1, isShowable = true), ProductDetailInfoExpandableListDataModel(componentName = 2), ProductDetailInfoExpandableImageDataModel(componentName = 3))
         productDetailInfoAdapter.submitList(currentList)
     }
 

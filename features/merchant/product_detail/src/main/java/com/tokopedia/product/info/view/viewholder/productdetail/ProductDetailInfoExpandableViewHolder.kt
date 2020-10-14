@@ -3,8 +3,6 @@ package com.tokopedia.product.info.view.viewholder.productdetail
 import android.os.Bundle
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoExpandableDataModel
@@ -21,24 +19,19 @@ class ProductDetailInfoExpandableViewHolder(private val view: View, private val 
     }
 
     override fun bind(element: ProductDetailInfoExpandableDataModel) {
-        view.product_detail_value?.text = view.context.getString(R.string.lorem)
-        if (element.isShowable) {
-            view.product_detail_title_chevron?.isExpand = true
-            view.product_detail_value?.show()
-        } else {
-            view.product_detail_title_chevron?.isExpand = false
-            view.product_detail_value?.hide()
-        }
+        view.expandable_title_chevron?.titleText = "Deskripsi Produk"
+        setupExpandableItem(element)
+    }
 
-        view.product_detail_title_chevron?.titleText = "Deskripsi Produk"
-        view.product_detail_title_chevron?.setOnClickListener {
-            if (view.product_detail_title_chevron?.isExpand == true) {
-                view.product_detail_title_chevron?.isExpand = false
-                listener.closeAllExpand(element.uniqueIdentifier(), false)
-            } else {
-                listener.closeAllExpand(element.uniqueIdentifier(), true)
-                view.product_detail_title_chevron?.isExpand = true
-            }
+    private fun setupExpandableItem(element: ProductDetailInfoExpandableDataModel) = with(view) {
+        product_detail_value?.text = view.context.getString(R.string.lorem)
+        product_detail_value?.showWithCondition(element.isShowable)
+        expandable_title_chevron?.isExpand = element.isShowable
+
+        setOnClickListener {
+            expandable_title_chevron?.isExpand = expandable_title_chevron?.isExpand != true
+            listener.closeAllExpand(element.uniqueIdentifier(), expandable_title_chevron?.isExpand
+                    ?: false)
         }
     }
 
@@ -49,7 +42,7 @@ class ProductDetailInfoExpandableViewHolder(private val view: View, private val 
             if (bundle.containsKey("toggle")) {
                 val toggle = bundle.getBoolean("toggle")
                 view.product_detail_value?.showWithCondition(toggle)
-                view.product_detail_title_chevron?.isExpand = toggle
+                view.expandable_title_chevron?.isExpand = toggle
             }
         }
     }

@@ -21,8 +21,8 @@ class GetProductDetailBottomSheetUseCase @Inject constructor(private val graphql
 
     companion object {
         fun createParams(productId: String, shopId: String) = RequestParams.create().apply {
-            putString(ProductDetailCommonConstant.PARAM_PRODUCT_ID, productId)
-            putString(ProductDetailCommonConstant.PARAM_SHOP_ID, shopId)
+            putString(ProductDetailCommonConstant.PRODUCT_ID_PARAM, productId)
+            putString(ProductDetailCommonConstant.SHOP_ID_PARAM, shopId)
         }
 
         val QUERY = """
@@ -72,7 +72,7 @@ class GetProductDetailBottomSheetUseCase @Inject constructor(private val graphql
     override suspend fun executeOnBackground(): PdpGetDetailBottomSheet {
         val request = GraphqlRequest(QUERY,
                 BottomSheetProductDetailInfoResponse::class.java, requestParams.parameters)
-        val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
+        val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD)
                 .setSessionIncluded(false)
                 .build()
 

@@ -35,7 +35,7 @@ data class DataShopNotes(
         @SerializedName("error")
         val error: String = "",
         @SerializedName("shopNotesData")
-        val shopNotesData: List<Any> = listOf()
+        val shopNotesData: List<ShopNotesData> = listOf()
 )
 
 data class ShopNotesData(

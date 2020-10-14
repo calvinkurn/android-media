@@ -36,17 +36,6 @@ class TitleAnimatedChevron @JvmOverloads constructor(
             product_detail_title?.text = value
         }
 
-    fun toggleChevron(listener: TitleAnimatedChevronListener) {
-        product_detail_toggle?.run {
-            if (isExpand) {
-                listener.onClose()
-            } else {
-                listener.onExpand()
-            }
-            isExpand = !isExpand
-        }
-    }
-
     private fun rotateTop() {
         product_detail_toggle?.run {
             animate().rotation(180F).duration = 300
@@ -58,9 +47,4 @@ class TitleAnimatedChevron @JvmOverloads constructor(
             animate().rotation(0F).duration = 300
         }
     }
-}
-
-interface TitleAnimatedChevronListener {
-    fun onExpand()
-    fun onClose()
 }

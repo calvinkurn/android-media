@@ -1,28 +1,24 @@
 package com.tokopedia.product.info.model.productdetail.uidata
 
-import com.tokopedia.product.detail.common.data.model.product.Video
+import com.tokopedia.product.info.model.productdetail.response.ShopNotesData
 import com.tokopedia.product.info.view.adapter.ProductDetailInfoAdapterFactory
 
 /**
- * Created by Yehezkiel on 13/10/20
+ * Created by Yehezkiel on 14/10/20
  */
-data class ProductDetailInfoExpandableDataModel(
+data class ProductDetailInfoExpandableListDataModel(
         var componentName: Int = 0,
         var title: String = "",
-        var textValue: String = "",
-        var video: List<Video> = listOf(),
+        var shopNotes: List<ShopNotesData> = listOf(),
         var isShowable: Boolean = false
 ) : ProductDetailInfoVisitable {
-
-    override fun newInstance(): ProductDetailInfoVisitable {
-        return this.copy()
-    }
-
     override fun uniqueIdentifier(): Int = componentName
 
+    override fun newInstance(): ProductDetailInfoVisitable = this.copy()
+
     override fun equalsWith(newData: ProductDetailInfoVisitable): Boolean {
-        return if (newData is ProductDetailInfoExpandableDataModel) {
-            textValue == newData.textValue
+        return if (newData is ProductDetailInfoExpandableListDataModel) {
+            title == newData.title && shopNotes.size == newData.shopNotes.size
         } else false
     }
 

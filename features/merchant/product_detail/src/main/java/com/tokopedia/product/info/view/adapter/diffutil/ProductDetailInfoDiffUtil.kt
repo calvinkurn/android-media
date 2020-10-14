@@ -3,6 +3,8 @@ package com.tokopedia.product.info.view.adapter.diffutil
 import android.os.Bundle
 import androidx.recyclerview.widget.DiffUtil
 import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoExpandableDataModel
+import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoExpandableImageDataModel
+import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoExpandableListDataModel
 import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoVisitable
 
 /**
@@ -19,8 +21,12 @@ class ProductDetailInfoDiffUtil : DiffUtil.ItemCallback<ProductDetailInfoVisitab
 
     override fun getChangePayload(oldItem: ProductDetailInfoVisitable, newItem: ProductDetailInfoVisitable): Any? {
         val bundle = Bundle()
-        if (oldItem is ProductDetailInfoExpandableDataModel && newItem is ProductDetailInfoExpandableDataModel) {
-            bundle.putBoolean("toggle", newItem.isShowable)
+        if ((oldItem is ProductDetailInfoExpandableDataModel && newItem is ProductDetailInfoExpandableDataModel) ||
+                (oldItem is ProductDetailInfoExpandableImageDataModel && newItem is ProductDetailInfoExpandableImageDataModel) ||
+                (oldItem is ProductDetailInfoExpandableListDataModel && newItem is ProductDetailInfoExpandableListDataModel)) {
+            if (oldItem.isExpand() != newItem.isExpand()) {
+                bundle.putBoolean("toggle", newItem.isExpand())
+            }
         }
 
         return bundle
