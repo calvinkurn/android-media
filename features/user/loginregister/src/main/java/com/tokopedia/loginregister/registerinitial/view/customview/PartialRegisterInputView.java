@@ -309,7 +309,7 @@ public class PartialRegisterInputView extends BaseCustomView {
 
         tvMessage.setText("");
         wrapperEmailPhone.setLabel(wrapperEmailPhone.getContext().getString(R.string.title_email));
-        TextAndContentDescriptionUtil.setTextAndContentDescription(btnAction, btnAction.getContext().getString(R.string.login), btnAction.getContext().getString(R.string.content_desc_register_btn))
+        TextAndContentDescriptionUtil.setTextAndContentDescription(btnAction, btnAction.getContext().getString(R.string.login), btnAction.getContext().getString(R.string.content_desc_register_btn));
 
         etInputEmailPhone.setText(email);
         etInputEmailPhone.setEnabled(false);
