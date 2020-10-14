@@ -2,6 +2,7 @@ package com.tokopedia.shop.common.widget
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
+import android.graphics.drawable.Drawable
 import android.view.Gravity
 import android.view.View
 import android.widget.ImageView
@@ -26,6 +27,15 @@ class PartialButtonShopFollowersView private constructor(val view: View, private
         fun build(_view: View, _buttonListener: PartialButtonShopFollowersListener) = PartialButtonShopFollowersView(_view, _buttonListener)
     }
 
+    val shadowDrawable: Drawable by lazy {
+        RoundedShadowUtill.generateBackgroundWithShadow(view,
+                com.tokopedia.unifyprinciples.R.color.Unify_N0,
+                R.dimen.dp_12,
+                com.tokopedia.unifyprinciples.R.color.Neutral_N700_20,
+                R.dimen.dp_2,
+                Gravity.TOP)
+    }
+
     var setupVisibility: Boolean = false
         set(value) {
             field = value
@@ -47,8 +57,6 @@ class PartialButtonShopFollowersView private constructor(val view: View, private
             followersTitle = findViewById(R.id.shop_followers_title)
             followersDesc = findViewById(R.id.shop_followers_desc)
             followersBtn = findViewById(R.id.shop_followers_btn)
-
-            setupRoundedTopShadow()
         }
     }
 
@@ -63,6 +71,8 @@ class PartialButtonShopFollowersView private constructor(val view: View, private
 
         setupButtonFollowers()
         setOnClickListener {}
+        setupRoundedTopShadow()
+
         followersImageAsset?.run {
             ImageHandler.loadImageWithoutPlaceholderAndError(this, SHOP_FOLLOWERS_IMG_ASSET)
         }
@@ -112,12 +122,7 @@ class PartialButtonShopFollowersView private constructor(val view: View, private
     }
 
     private fun setupRoundedTopShadow() = with(view) {
-        background = RoundedShadowUtill.generateBackgroundWithShadow(this,
-                com.tokopedia.unifyprinciples.R.color.Unify_N0,
-                R.dimen.dp_12,
-                com.tokopedia.unifyprinciples.R.color.Neutral_N700_20,
-                R.dimen.dp_2,
-                Gravity.TOP)
+        background = shadowDrawable
     }
 
 }
