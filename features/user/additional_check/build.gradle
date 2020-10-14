@@ -21,7 +21,6 @@ dependencies {
 
     implementation rootProject.ext.firebase.crashlytics
 
-    implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
