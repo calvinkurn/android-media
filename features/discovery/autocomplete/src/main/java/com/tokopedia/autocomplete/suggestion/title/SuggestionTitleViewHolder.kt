@@ -10,7 +10,7 @@ import kotlinx.android.synthetic.main.layout_title_suggestion.view.*
 class SuggestionTitleViewHolder(itemView: View) : AbstractViewHolder<SuggestionTitleViewModel>(itemView) {
 
     override fun bind(element: SuggestionTitleViewModel) {
-        TextAndContentDescriptionUtil.setTextAndContentDescription(itemView.suggestionTitleTextView, element.title, itemView.suggestionTitleTextView.context.getString(R.string.content_desc_suggestionTitleTextView))
+        itemView.suggestionTitleTextView?.let {TextAndContentDescriptionUtil.setTextAndContentDescription(it, element.title, getString(R.string.content_desc_suggestionTitleTextView))}
     }
 
     companion object {

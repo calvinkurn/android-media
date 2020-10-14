@@ -17,7 +17,7 @@ class PopularSearchTitleViewHolder(itemView: View, private val clickListener: In
     }
 
     private fun bindTitle(item: PopularSearchTitleViewModel) {
-        TextAndContentDescriptionUtil.setTextAndContentDescription(itemView.titleTextView, item.title, itemView.titleTextView.context.getString(R.string.content_desc_titleTextView))
+        itemView.titleTextView?.let { TextAndContentDescriptionUtil.setTextAndContentDescription(it, item.title, getString(R.string.content_desc_titleTextView)) }
     }
 
     private fun bindActionRefreshButton(item: PopularSearchTitleViewModel) {

@@ -55,7 +55,7 @@ internal class FilterViewHolder(
     }
 
     private fun bindTitle(element: FilterViewModel) {
-        TextAndContentDescriptionUtil.setTextAndContentDescription(itemView.filterTitleTextView, element.filter.title, itemView.filterTitleTextView.context.getString(R.string.content_desc_filterTitleTextView))
+        itemView.filterTitleTextView?.let { TextAndContentDescriptionUtil.setTextAndContentDescription(it, element.filter.title, getString(R.string.content_desc_filterTitleTextView)) }
     }
 
     private fun bindOptionList(element: FilterViewModel) {

@@ -17,7 +17,7 @@ class RecentSearchTitleViewHolder(itemView: View, private val clickListener: Ini
     }
 
     private fun bindTitle(item: RecentSearchTitleViewModel) {
-        TextAndContentDescriptionUtil.setTextAndContentDescription(itemView.titleTextView, item.title, itemView.titleTextView.context.getString(R.string.content_desc_titleTextView))
+        itemView.titleTextView?.let {TextAndContentDescriptionUtil.setTextAndContentDescription(it, item.title, getString(R.string.content_desc_titleTextView)) }
     }
 
     private fun bindActionDeleteButton(item: RecentSearchTitleViewModel) {

@@ -10,7 +10,7 @@ import kotlinx.android.synthetic.main.layout_title_auto_complete.view.*
 class RecentViewTitleViewHolder(itemView: View) : AbstractViewHolder<RecentViewTitleViewModel>(itemView) {
 
     override fun bind(element: RecentViewTitleViewModel) {
-        TextAndContentDescriptionUtil.setTextAndContentDescription(itemView.titleTextView, element.title, itemView.titleTextView.context.getString(R.string.content_desc_titleTextView))
+        itemView.titleTextView?.let { TextAndContentDescriptionUtil.setTextAndContentDescription(it, element.title, getString(R.string.content_desc_titleTextView)) }
     }
 
     companion object {
