@@ -33,7 +33,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.libraries.trackingOptimizer)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
-    implementation project(rootProject.ext.libraries.permissionchecker)
+    implementation project(rootProject.ext.libraries.utils)
     implementation project(rootProject.ext.libraries.webview)
     implementation project(rootProject.ext.libraries.remoteConfig)
     implementation project(rootProject.ext.libraries.imagePicker)
@@ -102,6 +102,9 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.archCoreTesting
+    implementation (rootProject.ext.firebase.crashlytics) {
+        transitive = true
+    }
 
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
@@ -111,6 +114,7 @@ dependencies {
     implementation project(rootProject.ext.features.productCard)
     implementation project(rootProject.ext.libraries.imagePreview)
     implementation rootProject.ext.networkDependencies.glide
+    implementation project(rootProject.ext.features.filter)
 
     // UI Test
     androidTestImplementation rootProject.ext.testDependencies.androidTestRunner
