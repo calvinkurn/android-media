@@ -58,6 +58,7 @@ public class LinkerData implements Parcelable {
     private String journeyId;
     private String invoiceId;
     private String paymentId;
+    private boolean throwOnError;
     private String content;
     private String contentType;
     private String level1Name;
@@ -107,6 +108,7 @@ public class LinkerData implements Parcelable {
         journeyId = in.readString();
         invoiceId = in.readString();
         paymentId = in.readString();
+        throwOnError = in.readBoolean();
         content = in.readString();
         contentType = in.readString();
         level1Name = in.readString();
@@ -147,6 +149,7 @@ public class LinkerData implements Parcelable {
         dest.writeString(journeyId);
         dest.writeString(invoiceId);
         dest.writeString(paymentId);
+        dest.writeBoolean(throwOnError);
         dest.writeString(content);
         dest.writeString(contentType);
         dest.writeString(level1Name);
@@ -454,6 +457,15 @@ public class LinkerData implements Parcelable {
         this.paymentId = paymentId;
     }
 
+
+    public boolean isThrowOnError() {
+        return throwOnError;
+    }
+
+    public void setThrowOnError(boolean throwOnError) {
+        this.throwOnError = throwOnError;
+    }
+
     public String getContent() {
         return content;
     }
@@ -548,6 +560,7 @@ public class LinkerData implements Parcelable {
         private String journeyId;
         private String invoiceId;
         private String paymentId;
+        private boolean throwOnError;
         private String content;
         private String contentType;
         private String level1Name;
@@ -708,6 +721,11 @@ public class LinkerData implements Parcelable {
             return this;
         }
 
+        public Builder setThrowOnError(boolean throwOnError){
+            this.throwOnError = throwOnError;
+            return this;
+        }
+
         public Builder setContent(String content) {
             this.content = content;
             return this;
@@ -777,6 +795,12 @@ public class LinkerData implements Parcelable {
             linkerData.setCatLvl1(catLvl1);
             linkerData.setUserId(userId);
             linkerData.setQuantity(quantity);
+            linkerData.setProductCategory(productCategory);
+            linkerData.setProductName(productName);
+            linkerData.setJourneyId(journeyId);
+            linkerData.setInvoiceId(invoiceId);
+            linkerData.setPaymentId(paymentId);
+            linkerData.setThrowOnError(throwOnError);
             linkerData.setQuantity(productCategory);
             linkerData.setQuantity(productName);
             linkerData.setQuantity(journeyId);

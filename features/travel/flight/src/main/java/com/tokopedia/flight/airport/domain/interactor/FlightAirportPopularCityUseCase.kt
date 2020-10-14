@@ -1,10 +1,8 @@
 package com.tokopedia.flight.airport.domain.interactor
 
-import android.content.Context
 import android.text.TextUtils
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.flight.airportv2.data.FlightAirportQuery
 import com.tokopedia.flight.airportv2.data.source.entity.ResponseFlightPopularCity
 import com.tokopedia.flight.airportv2.domain.FlightAirportMapper
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -19,15 +17,15 @@ import javax.inject.Inject
 /**
  * Created by nabillasabbaha on 05/03/19.
  */
-class FlightAirportPopularCityUseCase @Inject constructor(@ApplicationContext val context: Context,
-                                                          val graphqlUseCase: GraphqlUseCase,
-                                                          val flightAirportMapper: FlightAirportMapper)
+class FlightAirportPopularCityUseCase @Inject constructor(
+        val graphqlUseCase: GraphqlUseCase,
+        val flightAirportMapper: FlightAirportMapper)
     : UseCase<@JvmSuppressWildcards List<Visitable<*>>>() {
 
     override fun createObservable(requestParams: RequestParams): Observable<List<Visitable<*>>> {
         return Observable.just(requestParams)
                 .flatMap(Func1<RequestParams, Observable<GraphqlResponse>> {
-                    val query = GraphqlHelper.loadRawString(context.resources, com.tokopedia.flight.R.raw.flight_airport_popular_city)
+                    val query = FlightAirportQuery.QUERY_AIRPORT_POPULAR_CITY
                     if (!TextUtils.isEmpty(query)) {
                         graphqlUseCase.clearRequest()
                         graphqlUseCase.addRequest(GraphqlRequest(query, ResponseFlightPopularCity::class.java))

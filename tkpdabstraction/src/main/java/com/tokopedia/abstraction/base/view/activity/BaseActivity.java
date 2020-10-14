@@ -14,9 +14,9 @@ import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
-import com.crashlytics.android.Crashlytics;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.play.core.splitcompat.SplitCompat;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.R;
 import com.tokopedia.abstraction.common.utils.receiver.ErrorNetworkReceiver;
@@ -180,7 +180,12 @@ public abstract class BaseActivity extends AppCompatActivity implements
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
-        return super.dispatchTouchEvent(ev);
+        try {
+            return super.dispatchTouchEvent(ev);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        return false;
     }
 
     @Override
@@ -191,7 +196,7 @@ public abstract class BaseActivity extends AppCompatActivity implements
 
     public void setLogCrash() {
         if (!GlobalConfig.DEBUG) {
-            Crashlytics.log(this.getClass().getCanonicalName());
+            FirebaseCrashlytics.getInstance().log(this.getClass().getCanonicalName());
         }
     }
 

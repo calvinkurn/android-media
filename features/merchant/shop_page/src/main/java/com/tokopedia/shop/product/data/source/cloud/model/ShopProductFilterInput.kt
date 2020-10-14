@@ -22,5 +22,17 @@ data class ShopProductFilterInput (
 
         @SerializedName("sort")
         @Expose
-        var sort: Int = 0
+        var sort: Int = 0,
+
+        @SerializedName("rating")
+        @Expose
+        var rating: String = "",
+
+        @SerializedName("pmax")
+        @Expose
+        var pmax: Int = 0,
+
+        @SerializedName("pmin")
+        @Expose
+        var pmin: Int = 0
 )

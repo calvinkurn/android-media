@@ -62,8 +62,8 @@ class PromoCheckoutListModule {
 
     @PromoCheckoutListScope
     @Provides
-    fun provideFlightCheckVoucherUseCase(@ApplicationContext context: Context): FlightCheckVoucherUseCase {
-        return FlightCheckVoucherUseCase(context, GraphqlUseCase())
+    fun provideFlightCheckVoucherUseCase(): FlightCheckVoucherUseCase {
+        return FlightCheckVoucherUseCase(GraphqlUseCase())
     }
 
     @PromoCheckoutListScope

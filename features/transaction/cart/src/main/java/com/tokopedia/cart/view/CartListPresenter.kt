@@ -1018,6 +1018,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
                         EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
                     }
             )
+            setCampaignId(cartItemData.originData?.campaignId?.toString() ?: "0")
         }
         return enhancedECommerceProductCartMapData
     }

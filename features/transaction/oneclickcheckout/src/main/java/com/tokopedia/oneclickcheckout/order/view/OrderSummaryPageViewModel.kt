@@ -1603,7 +1603,8 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     private fun validateSelectedTerm(): Boolean {
         val creditCard = _orderPayment.creditCard
         val selectedTerm = creditCard.selectedTerm
-        if (selectedTerm != null && !selectedTerm.isEnable) {
+        val hasEnableTerm = creditCard.availableTerms.indexOfFirst { it.isEnable } > -1
+        if (selectedTerm != null && !selectedTerm.isEnable && hasEnableTerm) {
             val availableTerms = creditCard.availableTerms
             availableTerms.forEach { it.isError = true }
             selectedTerm.isError = true
@@ -1660,6 +1661,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                 setShippingPrice(_orderShipment.getRealShippingPrice().toString())
             }
             setShippingDuration(_orderShipment.serviceDuration)
+            setCampaignId(orderProduct.campaignId.toString())
         }.build(step, option)
     }
 

@@ -5,6 +5,8 @@ def isDebuggable() {
     return "false";
 }
 
+
+
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
 
@@ -22,6 +24,14 @@ android {
         main.java.srcDirs += 'src/main/kotlin'
         test.java.srcDirs += 'src/test/kotlin'
         androidTest.java.srcDirs += 'src/androidTest/kotlin'
+    }
+
+    lintOptions {
+        checkReleaseBuilds false
+        checkDependencies true
+        htmlReport false
+        warningsAsErrors false
+        abortOnError false
     }
 
     buildTypes {
@@ -66,6 +76,7 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.design
     implementation rootProject.ext.supportLibDependencies.cardViewV7
     implementation rootProject.ext.supportLibDependencies.kotlinSupport
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation (rootProject.ext.debugToolsDependencies.timber){
         exclude group: 'org.jetbrains', module: 'annotations'
     }
@@ -97,4 +108,6 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.mockitorCore,     { exclude group: 'net.bytebuddy' } // DexMaker has it"s own MockMaker
     androidTestImplementation rootProject.ext.testDependencies.mockitorAndroid
     androidTestImplementation rootProject.ext.testDependencies.androidRulesVersion
+
+    lintChecks rootProject.ext.tkpdInternalLibDependencies.lint
 }

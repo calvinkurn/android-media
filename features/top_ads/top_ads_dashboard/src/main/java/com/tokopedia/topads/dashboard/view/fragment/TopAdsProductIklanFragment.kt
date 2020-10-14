@@ -31,16 +31,18 @@ import com.tokopedia.datepicker.range.view.constant.DatePickerConstant
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.kotlin.extensions.view.isZero
-import com.tokopedia.topads.auto.view.activity.AutoAdsOnboardingActivity
-import com.tokopedia.topads.auto.view.widget.AutoAdsWidget
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.data.internal.AutoAdsStatus.*
+import com.tokopedia.topads.common.data.response.nongroupItem.GetDashboardProductStatistics
+import com.tokopedia.topads.common.data.response.nongroupItem.NonGroupResponse
+import com.tokopedia.topads.common.view.widget.AutoAdsWidgetCommon
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.TopAdsDashboardTracking
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CUSTOM_DATE
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.DATE_RANGE_PRODUK
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.END_DATE_PRODUCT
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.SELLER_ONBOARDING_PATH
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.SELLER_PACKAGENAME
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.START_DATE_PRODUCT
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardTrackerConstant
@@ -48,8 +50,6 @@ import com.tokopedia.topads.dashboard.data.constant.TopAdsStatisticsType
 import com.tokopedia.topads.dashboard.data.model.AdStatusResponse
 import com.tokopedia.topads.dashboard.data.model.AutoAdsResponse
 import com.tokopedia.topads.dashboard.data.model.DataStatistic
-import com.tokopedia.topads.common.data.response.nongroupItem.GetDashboardProductStatistics
-import com.tokopedia.topads.common.data.response.nongroupItem.NonGroupResponse
 import com.tokopedia.topads.dashboard.data.utils.Utils
 import com.tokopedia.topads.dashboard.data.utils.Utils.format
 import com.tokopedia.topads.dashboard.data.utils.Utils.outputFormat
@@ -68,14 +68,7 @@ import com.tokopedia.topads.dashboard.view.sheet.DatePickerSheet
 import com.tokopedia.topads.dashboard.view.sheet.TopadsGroupFilterSheet
 import kotlinx.android.synthetic.main.partial_top_ads_dashboard_statistics.*
 import kotlinx.android.synthetic.main.topads_dash_auto_ads_onboarding_widget.*
-import kotlinx.android.synthetic.main.topads_dash_fragment_beranda_base.*
-import kotlinx.android.synthetic.main.topads_dash_fragment_group_detail_view_layout.*
 import kotlinx.android.synthetic.main.topads_dash_fragment_product_iklan.*
-import kotlinx.android.synthetic.main.topads_dash_fragment_product_iklan.app_bar_layout_2
-import kotlinx.android.synthetic.main.topads_dash_fragment_product_iklan.hari_ini
-import kotlinx.android.synthetic.main.topads_dash_fragment_product_iklan.swipe_refresh_layout
-import kotlinx.android.synthetic.main.topads_dash_fragment_product_iklan.tab_layout
-import kotlinx.android.synthetic.main.topads_dash_fragment_product_iklan.view_pager_frag
 import kotlinx.android.synthetic.main.topads_dash_layout_common_searchbar_layout.*
 import kotlinx.android.synthetic.main.topads_dash_layout_hari_ini.*
 import kotlinx.android.synthetic.main.topads_dash_layout_hari_ini.view.*
@@ -107,7 +100,7 @@ class TopAdsProductIklanFragment : BaseDaggerFragment(), TopAdsDashboardView, Cu
     private var totalPage = 0
 
 
-    val autoAdsWidget: AutoAdsWidget?
+    val autoAdsWidget: AutoAdsWidgetCommon?
         get() = autoads_edit_widget
 
     private val pagerAdapter: TopAdsStatisticPagerAdapter? by lazy {
@@ -192,7 +185,7 @@ class TopAdsProductIklanFragment : BaseDaggerFragment(), TopAdsDashboardView, Cu
             else {
                 if (AppUtil.isSellerInstalled(context)) {
                     val intent = RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_AUTOADS_ONBOARDING)
-                    intent.component = ComponentName(SELLER_PACKAGENAME, AutoAdsOnboardingActivity::class.java.name)
+                    intent.component = ComponentName(SELLER_PACKAGENAME, SELLER_ONBOARDING_PATH)
                     startActivity(intent)
                 } else {
                     RouteManager.route(context, ApplinkConstInternalMechant.MERCHANT_REDIRECT_CREATE_SHOP)
@@ -221,23 +214,23 @@ class TopAdsProductIklanFragment : BaseDaggerFragment(), TopAdsDashboardView, Cu
         snackbarRetry = NetworkErrorHelper.createSnackbarWithAction(activity) { loadData() }
         snackbarRetry?.setColorActionRetry(ContextCompat.getColor(activity!!, com.tokopedia.design.R.color.green_400))
 
-        app_bar_layout_2.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout, offset ->
+        app_bar_layout_2?.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout, offset ->
             when {
                 offset == 0 -> {
                     if (mCurrentState != State.EXPANDED) {
-                        onStateChanged(app_bar_layout_2, State.EXPANDED);
+                        onStateChanged(State.EXPANDED);
                     }
                     mCurrentState = State.EXPANDED;
                 }
-                abs(offset) >= app_bar_layout_2.totalScrollRange -> {
+                abs(offset) >= appBarLayout.totalScrollRange -> {
                     if (mCurrentState != State.COLLAPSED) {
-                        onStateChanged(app_bar_layout_2, State.COLLAPSED);
+                        onStateChanged(State.COLLAPSED);
                     }
                     mCurrentState = State.COLLAPSED;
                 }
                 else -> {
                     if (mCurrentState != State.IDLE) {
-                        onStateChanged(app_bar_layout_2, State.IDLE);
+                        onStateChanged(State.IDLE);
                     }
                     mCurrentState = State.IDLE;
                 }
@@ -368,7 +361,7 @@ class TopAdsProductIklanFragment : BaseDaggerFragment(), TopAdsDashboardView, Cu
         autoads_layout.visibility = View.GONE
         autoAdsWidget?.visibility = View.GONE
         if (adCurrentState == STATUS_IN_PROGRESS_INACTIVE) {
-            imgBg.background = AppCompatResources.getDrawable(context!!, com.tokopedia.topads.auto.R.drawable.topads_blue_bg)
+            imgBg.background = AppCompatResources.getDrawable(context!!, com.tokopedia.topads.common.R.drawable.topads_common_blue_bg)
             autoadsDeactivationProgress?.visibility = View.VISIBLE
             autoadsOnboarding.visibility = View.GONE
         } else {
@@ -693,7 +686,7 @@ class TopAdsProductIklanFragment : BaseDaggerFragment(), TopAdsDashboardView, Cu
         collapseStateCallBack = null
     }
 
-    private fun onStateChanged(appBarLayout: AppBarLayout?, state: State?) {
+    private fun onStateChanged(state: State?) {
         collapseStateCallBack?.setAppBarState(state)
         swipe_refresh_layout.isEnabled = state == State.EXPANDED
     }
