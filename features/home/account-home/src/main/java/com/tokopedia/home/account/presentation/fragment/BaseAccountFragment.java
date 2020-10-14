@@ -81,8 +81,6 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
     private TrackingQueue trackingQueue;
     private RemoteConfig remoteConfig;
 
-    private static final String URL_ACCOUNT_PAGE = "https://m.tokopedia.com/user/settings/account";
-
     abstract void notifyItemChanged(int position);
 
     @Override
