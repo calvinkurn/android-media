@@ -72,6 +72,7 @@
             android:id="@+id/booking_code_value"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="@color/Unify_G500"
             android:layout_marginStart="@dimen/spacing_lvl5"
             android:layout_toEndOf="@id/booking_code_title"
             android:inputType="none"

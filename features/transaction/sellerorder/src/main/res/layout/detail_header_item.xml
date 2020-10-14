@@ -7,12 +7,19 @@
     android:layout_marginTop="@dimen/dp_16"
     android:layout_marginBottom="@dimen/dp_16">
 
+    <View
+        android:id="@+id/statusIndicator"
+        android:layout_width="@dimen/spacing_lvl2"
+        android:layout_height="@dimen/dp_20"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:background="@drawable/status_color" />
+
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/header_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginStart="@dimen/spacing_lvl4"
         android:textColor="@color/Neutral_N700_96"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"

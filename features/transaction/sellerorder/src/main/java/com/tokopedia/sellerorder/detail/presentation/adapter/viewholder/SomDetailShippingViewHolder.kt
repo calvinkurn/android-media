@@ -1,15 +1,15 @@
 package com.tokopedia.sellerorder.detail.presentation.adapter.viewholder
 
 import android.graphics.Color
-import android.graphics.Typeface
 import android.view.View
 import com.tokopedia.coachmark.CoachMarkItem
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImageCircle
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.detail.data.model.SomDetailData
 import com.tokopedia.sellerorder.detail.data.model.SomDetailShipping
 import com.tokopedia.sellerorder.detail.presentation.adapter.SomDetailAdapter
-import kotlinx.android.synthetic.main.detail_header_resi_item.view.*
 import kotlinx.android.synthetic.main.detail_shipping_item.view.*
 
 /**
@@ -59,7 +59,7 @@ class SomDetailShippingViewHolder(itemView: View, private val actionListener: So
                 if (item.dataObject.awbTextColor.isNotEmpty()) {
                     itemView.no_resi_value?.setTextColor(Color.parseColor(item.dataObject.awbTextColor))
                 }
-                itemView.header_copy_resi?.setOnClickListener {
+                itemView.no_resi_copy?.setOnClickListener {
                     actionListener?.onTextCopied(itemView.context.getString(R.string.awb_label), item.dataObject.awb)
                 }
             } else {
@@ -113,15 +113,24 @@ class SomDetailShippingViewHolder(itemView: View, private val actionListener: So
 
                     if (item.dataObject.onlineBookingCode.isEmpty()) {
 //                        itemView.booking_code_see_btn.visibility = View.GONE
-                        itemView.booking_code_value.apply {
-                            text = itemView.context.getString(R.string.placeholder_kode_booking)
-                            setTypeface(this.typeface, Typeface.ITALIC)
-                        }
+//                        itemView.booking_code_value.apply {
+//                            text = itemView.context.getString(R.string.placeholder_kode_booking)
+//                            setTypeface(this.typeface, Typeface.ITALIC)
+//                        }
+                        itemView.booking_code_value?.hide()
                     } else {
+                        itemView.booking_code_value?.show()
+
                         itemView.booking_code_value.apply {
-                            text = item.dataObject.onlineBookingCode
-                            setTypeface(this.typeface, Typeface.BOLD)
+                            text = StringBuilder("${item.dataObject.onlineBookingCode} >")
+                            setOnClickListener {
+                                actionListener?.onShowBookingCode(
+                                        item.dataObject.onlineBookingCode,
+                                        item.dataObject.onlineBookingType)
+                            }
                         }
+
+                        //temporary comment
 //                        itemView.booking_code_see_btn.apply {
 //                            visibility = View.VISIBLE
 //                            setOnClickListener {
