@@ -8,10 +8,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PlayCardDataModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PlayCarouselCardDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterFactory
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.BannerViewHolder
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.PlayBannerCardViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.PlayCardViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.EmptyBlankViewHolder
 import com.tokopedia.home.beranda.presentation.view.helper.HomePlayWidgetHelper
@@ -54,9 +52,11 @@ class HomeRecycleAdapter(asyncDifferConfig: AsyncDifferConfig<Visitable<*>>, pri
         super.onViewAttachedToWindow(holder)
         if(holder is PlayCardViewHolder) {
             holder.onViewAttach()
-        } else if(holder is PlayBannerCardViewHolder){
-            holder.onResume()
         }
+
+//        else if(holder is PlayBannerCardViewHolder){
+//            holder.onResume()
+//        }
     }
 
     override fun onViewDetachedFromWindow(holder: AbstractViewHolder<out Visitable<*>>) {
@@ -65,9 +65,11 @@ class HomeRecycleAdapter(asyncDifferConfig: AsyncDifferConfig<Visitable<*>>, pri
             holder.onViewDetach()
         } else if(holder is BannerViewHolder){
             holder.onPause()
-        } else if(holder is PlayBannerCardViewHolder){
-            holder.onPause()
         }
+
+//        else if(holder is PlayBannerCardViewHolder){
+//            holder.onPause()
+//        }
     }
 
     private fun getViewHolder(position: Int): AbstractViewHolder<out Visitable<*>>? {
@@ -82,12 +84,12 @@ class HomeRecycleAdapter(asyncDifferConfig: AsyncDifferConfig<Visitable<*>>, pri
         return list
     }
 
-    private fun getPositionPlayCarousel(): Int{
-        for (i in currentList.indices) {
-            if(getItem(i) is PlayCarouselCardDataModel) return i
-        }
-        return -1
-    }
+//    private fun getPositionPlayCarousel(): Int{
+//        for (i in currentList.indices) {
+//            if(getItem(i) is PlayCarouselCardDataModel) return i
+//        }
+//        return -1
+//    }
 
     private fun getAllExoPlayers(): ArrayList<HomePlayWidgetHelper> {
         val list: ArrayList<HomePlayWidgetHelper> = ArrayList()
@@ -113,10 +115,10 @@ class HomeRecycleAdapter(asyncDifferConfig: AsyncDifferConfig<Visitable<*>>, pri
             (getViewHolder(currentSelected) as? PlayCardViewHolder)?.resume()
         }
 
-        val playCarouselIndex = getPositionPlayCarousel()
-        if(playCarouselIndex != -1){
-            (getViewHolder(playCarouselIndex) as? PlayBannerCardViewHolder)?.onResume()
-        }
+//        val playCarouselIndex = getPositionPlayCarousel()
+//        if(playCarouselIndex != -1){
+//            (getViewHolder(playCarouselIndex) as? PlayBannerCardViewHolder)?.onResume()
+//        }
     }
 
     fun onPauseBanner() {
@@ -132,22 +134,22 @@ class HomeRecycleAdapter(asyncDifferConfig: AsyncDifferConfig<Visitable<*>>, pri
             (getViewHolder(currentSelected) as? PlayCardViewHolder)?.pause(shouldPausePlay)
         }
 
-        val playCarouselIndex = getPositionPlayCarousel()
-        if(playCarouselIndex != -1){
-            (getViewHolder(playCarouselIndex) as? PlayBannerCardViewHolder)?.onPause()
-        }
+//        val playCarouselIndex = getPositionPlayCarousel()
+//        if(playCarouselIndex != -1){
+//            (getViewHolder(playCarouselIndex) as? PlayBannerCardViewHolder)?.onPause()
+//        }
     }
 
     fun onDestroy() {
         for (exoPlayerHelper in getAllExoPlayers()) {
             exoPlayerHelper.onActivityDestroy()
         }
-        for (i in 0 until itemCount){
-            val viewHolder = getViewHolder(i)
-            if(viewHolder is PlayBannerCardViewHolder){
-                viewHolder.onDestroy()
-            }
-        }
+//        for (i in 0 until itemCount){
+//            val viewHolder = getViewHolder(i)
+//            if(viewHolder is PlayBannerCardViewHolder){
+//                viewHolder.onDestroy()
+//            }
+//        }
     }
 
     fun resetImpressionHomeBanner() {
