@@ -8,6 +8,8 @@ import com.tokopedia.abstraction.processor.ProductListClickBundler;
 import com.tokopedia.abstraction.processor.ProductListClickProduct;
 import com.tokopedia.abstraction.processor.ProductListImpressionBundler;
 import com.tokopedia.abstraction.processor.ProductListImpressionProduct;
+import com.tokopedia.abstraction.processor.beta.AddToCartBundler;
+import com.tokopedia.abstraction.processor.beta.AddToCartProduct;
 import com.tokopedia.analyticconstant.DataLayer;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.attachproduct.analytics.AttachProductAnalytics;
@@ -25,6 +27,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -636,33 +639,36 @@ public class TopChatAnalytics {
             @NotNull String shopName,
             @NotNull String cartId
     ) {
+        List<AddToCartProduct> addToCartProducts
+                = new ArrayList<AddToCartProduct>() {{
+            add(new AddToCartProduct(
+                    product.getIdString(),
+                    product.getProductName(),
+                    "",
+                    product.getCategory(),
+                    product.getVariants().toString(),
+                    product.getPriceInt(),
+                    product.getMinOrder(),
+                    cartId,
+                    DataLayer.mapStringsOf(
+                            "dimension79", product.getShopId() + "",
+                            "dimension81", shopType,
+                            "dimension80", shopName,
+                            "dimension40", getFrom(product))
+            ));
+        }};
+
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
-                DataLayer.mapOf(
-                        EVENT_NAME, Name.EVENT_NAME_ATC,
-                        EVENT_CATEGORY, Category.CHAT_DETAIL,
-                        EVENT_ACTION, Action.CLICK_OCC_PRODUCT_THUMBNAIL,
-                        EVENT_LABEL, "",
-                        ECOMMERCE, DataLayer.mapOf(
-                                "currencyCode", "IDR",
-                                "add", DataLayer.mapOf(
-                                        "products", DataLayer.listOf(
-                                                DataLayer.mapOf(
-                                                        "name", product.getProductName(),
-                                                        "id", product.getIdString(),
-                                                        "price", product.getPriceInt(),
-                                                        "brand", "",
-                                                        "category", product.getCategory(),
-                                                        "variant", product.getVariants().toString(),
-                                                        "quantity", product.getMinOrder(),
-                                                        "dimension79", product.getShopId(),
-                                                        "dimension81", shopType,
-                                                        "dimension80", shopName,
-                                                        "dimension45", cartId,
-                                                        "dimension40", getFrom(product)
-                                                )
-                                        )
-                                )
-                        )
+                AddToCartBundler.KEY,
+                AddToCartBundler.getBundle(
+                        addToCartProducts,
+                        AddToCartBundler.KEY,
+                        Action.CLICK_OCC_PRODUCT_THUMBNAIL,
+                        null,
+                        Category.CHAT_DETAIL,
+                        null,
+                        null,
+                        new HashMap<>()
                 )
         );
     }
