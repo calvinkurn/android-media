@@ -578,6 +578,7 @@ class SomDetailFragment : BaseDaggerFragment(),
                 detailResponse.bookingInfo.onlineBooking.bookingCode,
                 detailResponse.bookingInfo.onlineBooking.state,
                 detailResponse.bookingInfo.onlineBooking.barcodeType,
+                detailResponse.warehouse.fullFillBy,
                 detailResponse.tickerInfo)
 
         listDetailData.add(SomDetailData(dataHeader, DETAIL_HEADER_TYPE))

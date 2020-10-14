@@ -82,6 +82,10 @@ data class SomDetailOrder(
                 @Expose
                 val insurance: Insurance = Insurance(),
 
+                @SerializedName("warehouse")
+                @Expose
+                val warehouse: Warehouse = Warehouse(),
+
                 @SerializedName("label_info")
                 @Expose
                 val listLabelInfo: List<LabelInfo> = listOf(),
@@ -334,6 +338,15 @@ data class SomDetailOrder(
                     @SerializedName("note")
                     @Expose
                     val note: String = "")
+
+            data class Warehouse(
+                    @SerializedName("warehouse_id")
+                    @Expose
+                    val warehouseId: Int = 0,
+
+                    @SerializedName("fulfill_by")
+                    @Expose
+                    val fullFillBy: Int = 0)
 
             data class LabelInfo(
                     @SerializedName("flag_name")

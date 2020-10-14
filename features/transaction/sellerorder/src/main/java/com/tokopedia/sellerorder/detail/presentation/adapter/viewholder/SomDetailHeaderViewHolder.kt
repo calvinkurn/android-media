@@ -15,12 +15,14 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder
 import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImageDrawable
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.domain.model.TickerInfo
 import com.tokopedia.sellerorder.common.util.SomConsts.EXTRA_ORDER_ID
 import com.tokopedia.sellerorder.common.util.SomConsts.EXTRA_USER_MODE
+import com.tokopedia.sellerorder.common.util.SomConsts.IS_WAREHOUSE
 import com.tokopedia.sellerorder.common.util.SomConsts.LABEL_EMPTY
 import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_CODE_ORDER_AUTO_CANCELLED
 import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_CODE_ORDER_CANCELLED
@@ -48,6 +50,12 @@ class SomDetailHeaderViewHolder(itemView: View, private val actionListener: SomD
     override fun bind(item: SomDetailData, position: Int) {
         if (item.dataObject is SomDetailHeader) {
             setupOrderStatus(item.dataObject.statusText, item.dataObject.statusCode)
+            if(item.dataObject.fullFillBy == IS_WAREHOUSE) {
+                itemView.warehouseLabel.show()
+            } else {
+                itemView.warehouseLabel.hide()
+            }
+
             itemView.header_see_history?.setOnClickListener {
                 itemView.context.startActivity(RouteManager.getIntent(it.context, ApplinkConstInternalOrder.TRACK, "")
                         .putExtra(EXTRA_ORDER_ID, item.dataObject.orderId)

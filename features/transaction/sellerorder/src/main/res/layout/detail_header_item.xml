@@ -26,6 +26,17 @@
         app:typographyType="heading_5"
         tools:text="Pesanan Baru" />
 
+    <com.tokopedia.unifycomponents.Label
+        android:id="@+id/warehouseLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl3"
+        android:textColor="@color/Neutral_N700"
+        app:layout_constraintStart_toEndOf="@id/header_title"
+        app:layout_constraintTop_toTopOf="parent"
+        app:labelTitle="@string/warehouse_label"
+        app:labelType="general_light_grey" />
+
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/header_see_history"
         android:layout_width="wrap_content"

@@ -22,4 +22,5 @@ data class SomDetailHeader (
         val onlineBookingCode: String = "",
         val onlineBookingState: Int = -1,
         val onlineBookingType: String = "",
+        val fullFillBy: Int = 0,
         val tickerInfo: TickerInfo = TickerInfo())
