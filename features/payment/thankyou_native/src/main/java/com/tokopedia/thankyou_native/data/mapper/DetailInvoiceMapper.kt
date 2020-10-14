@@ -16,23 +16,69 @@ class DetailInvoiceMapper(val thanksPageData: ThanksPageData) {
     }
 
     private fun createInvoiceSummary(thanksPageData: ThanksPageData) {
+       // var totalServiceFeeStr: String? = null
+        val benefitMapList = arrayListOf<BenefitMap>()
 
+        thanksPageData.paymentItems?.forEach {
+            when (it.itemName) {
+                PaymentItemKey.SERVICE_FEE -> totalServiceFeeStr = it.amountStr
+            }
+        }
+
+        thanksPageData.paymentDeductions?.forEach {
+            when (it.itemName) {
+                PaymentDeductionKey.CASH_BACK_OVO_POINT -> benefitMapList.add(BenefitMap(it.itemDesc, it.amountStr))
+                PaymentDeductionKey.POTENTIAL_CASH_BACK -> benefitMapList.add(BenefitMap(it.itemDesc, it.amountStr, true))
+            }
+        }
+
+        visitableList.add(getInvoiceSummary())
+
+        totalServiceFeeStr?.let {
+            val billDetail = TotalFee(thanksPageData.orderAmountStr, null, totalServiceFeeStr)
+            visitableList.add(billDetail)
+        }
+
+        visitableList.add(getPaymentInfo())
+
+        if (benefitMapList.isNotEmpty()) {
+            val obtainedAfterTransaction = ObtainedAfterTransaction(benefitMapList)
+            visitableList.add(obtainedAfterTransaction)
+        }
+
+    }
+
+    private fun getTotalFee(){
+        thanksPageData.paymentItems?.filter {
+            it.itemName == PaymentItemKey.SERVICE_FEE
+        }?.forEach {
+            invoiceSummaryMapList.add(InvoiceSummaryMap(it.itemDesc, it.amountStr))
+        }
+
+
+    }
+
+    private fun getPaymentInfo(): PaymentInfo {
+        val paymentModeMapList = arrayListOf<PaymentModeMap>()
+        thanksPageData.paymentDeductions?.filter {
+            it.itemName == PaymentDeductionKey.REWARDS_POINT
+        }?.forEach {
+            when (it.itemName) {
+                PaymentDeductionKey.REWARDS_POINT -> paymentModeMapList.add(PaymentModeMap(it.itemDesc, it.amountStr, null))
+            }
+        }
+        thanksPageData.paymentDetails?.forEach { paymentDetail ->
+            paymentModeMapList.add(PaymentModeMap(paymentDetail.gatewayName,
+                    paymentDetail.amountStr, paymentDetail.gatewayCode))
+        }
+
+        return PaymentInfo(thanksPageData.amountStr, paymentModeList = paymentModeMapList)
+    }
+
+    private fun getInvoiceSummary(): InvoiceSummery {
         var totalPrice = 0F
         var totalItemCount = 0
-
-        var totalProductProtectionStr: String? = null
-        var totalDiscountStr: String? = null
-        var totalShippingStr: String? = null
-        var totalShippingDiscountStr: String? = null
-        var totalShippingInsurance: String? = null
-        var donationStr: String? = null
-        var eGold: String? = null
-
-        var totalServiceFeeStr: String? = null
-
-
-        val paymentModeMapList = arrayListOf<PaymentModeMap>()
-        val benefitMapList = arrayListOf<BenefitMap>()
+        var invoiceSummaryMapList = arrayListOf<InvoiceSummaryMap>()
 
         thanksPageData.shopOrder.forEach { shopOrder ->
             shopOrder.purchaseItemList.forEach {
@@ -41,55 +87,21 @@ class DetailInvoiceMapper(val thanksPageData: ThanksPageData) {
             }
         }
 
-        thanksPageData.paymentItems?.forEach {
-            when (it.itemName) {
-                PaymentItemKey.PROTECTION_PLAN -> totalProductProtectionStr = it.amountStr
-                PaymentItemKey.E_GOLD -> eGold = it.amountStr
-                PaymentItemKey.DONATION -> donationStr = it.amountStr
-                PaymentItemKey.SERVICE_FEE -> totalServiceFeeStr = it.amountStr
-                PaymentItemKey.TOTAL_SHIPPING -> totalShippingStr = it.amountStr
-                PaymentItemKey.TOTAL_SHIPPING_INSURANCE -> totalShippingInsurance = it.amountStr
-            }
+        thanksPageData.paymentItems?.filter {
+            it.itemName != PaymentItemKey.SERVICE_FEE
+        }?.forEach {
+            invoiceSummaryMapList.add(InvoiceSummaryMap(it.itemDesc, it.amountStr))
         }
 
-        thanksPageData.paymentDeductions?.forEach {
-            when (it.itemName) {
-                PaymentDeductionKey.TOTAL_SHIPPING_DISCOUNT -> totalShippingDiscountStr = it.amountStr
-                PaymentDeductionKey.TOTAL_DISCOUNT -> totalDiscountStr = it.amountStr
-                PaymentDeductionKey.REWARDS_POINT -> paymentModeMapList.add(PaymentModeMap(it.itemDesc, it.amountStr, null))
-                PaymentDeductionKey.CASH_BACK_OVO_POINT -> benefitMapList.add(BenefitMap(it.itemDesc, it.amountStr))
-                PaymentDeductionKey.POTENTIAL_CASH_BACK -> benefitMapList.add(BenefitMap(it.itemDesc, it.amountStr, true))
-            }
-        }
-        val invoiceSummery = InvoiceSummery(
-                totalItemCount = totalItemCount.toString(),
-                totalPriceStr = CurrencyFormatUtil.convertPriceValue(totalPrice.toDouble(), false),
-                totalItemDiscountStr = totalDiscountStr,
-                totalProductProtectionStr = totalProductProtectionStr,
-                totalShippingChargeStr = totalShippingStr,
-                totalShippingDiscountStr = totalShippingDiscountStr,
-                totalShippingInsuranceStr = totalShippingInsurance,
-                donationAmountStr = donationStr,
-                eGoldPriceStr = eGold)
+        thanksPageData.paymentDeductions?.filter {
+            (it.itemName == PaymentDeductionKey.TOTAL_SHIPPING_DISCOUNT) ||
+                    (it.itemName == PaymentDeductionKey.TOTAL_DISCOUNT)
 
-        visitableList.add(invoiceSummery)
-
-        totalServiceFeeStr?.let {
-            val billDetail = BillDetail(thanksPageData.orderAmountStr, null, totalServiceFeeStr)
-            visitableList.add(billDetail)
+        }?.forEach {
+            invoiceSummaryMapList.add(InvoiceSummaryMap(it.itemDesc, it.amountStr))
         }
 
-        thanksPageData.paymentDetails?.forEach { paymentDetail ->
-            paymentModeMapList.add(PaymentModeMap(paymentDetail.gatewayName, paymentDetail.amountStr, paymentDetail.gatewayCode))
-        }
-
-        val paymentInfo = PaymentInfo(thanksPageData.amountStr, paymentModeList = paymentModeMapList)
-        visitableList.add(paymentInfo)
-
-        if (benefitMapList.isNotEmpty()) {
-            val obtainedAfterTransaction = ObtainedAfterTransaction(benefitMapList)
-            visitableList.add(obtainedAfterTransaction)
-        }
+        return InvoiceSummery(totalPrice.toString(), totalItemCount, invoiceSummaryMapList)
 
     }
 
@@ -145,12 +157,7 @@ object PromoDataKey {
 }
 
 object PaymentItemKey {
-    const val PROTECTION_PLAN = "purchase_plan_protection"
-    const val E_GOLD = "egold"
-    const val DONATION = "donation"
     const val SERVICE_FEE = "total_fee"
-    const val TOTAL_SHIPPING_INSURANCE = "total_insurance_fee"
-    const val TOTAL_SHIPPING = "total_shipping"
 }
 
 object PaymentDeductionKey {
@@ -160,3 +167,38 @@ object PaymentDeductionKey {
     const val CASH_BACK_OVO_POINT = "cashback"
     const val POTENTIAL_CASH_BACK = "potential_cashback"
 }
+/*
+
+--- Total Harga --- PREV
+
+---- Item Paymetn iTem - except Total Fee
+
+---- Payment Deduction ---
+PaymentDeductionKey.TOTAL_SHIPPING_DISCOUNT -> totalShippingDiscountStr = it.amountStr
+PaymentDeductionKey.TOTAL_DISCOUNT -> totalDiscountStr = it.amountStr
+*/
+
+
+/*
+* Total Tagihan
+*
+* -- Payment ITEM ---- Total Fee
+*
+*
+* */
+
+/*
+* Total Bayar
+*
+*
+                PaymentDeductionKey.REWARDS_POINT -> paymentModeMapList.add(PaymentModeMap(it.itemDesc, it.amountStr, null))
+                *
+                * thanksPageData.paymentDetails?.forEach { paymentDetail ->
+            paymentModeMapList.add(PaymentModeMap(paymentDetail.gatewayName, paymentDetail.amountStr, paymentDetail.gatewayCode))
+        }
+
+*
+* */
+
+
+//total_fee

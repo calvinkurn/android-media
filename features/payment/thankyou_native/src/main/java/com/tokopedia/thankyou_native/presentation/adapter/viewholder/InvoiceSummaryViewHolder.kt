@@ -11,33 +11,46 @@ import kotlinx.android.synthetic.main.thank_widget_invoice_summary.view.*
 
 class InvoiceSummaryViewHolder(val view: View) : AbstractViewHolder<InvoiceSummery>(view) {
 
-    private val tvInvoiceSummaryTotalPrice: TextView = view.tvInvoiceSummaryTotalPrice
-    private val tvInvoiceSummaryTotalPriceValue: TextView = view.tvInvoiceSummaryTotalPriceValue
-
-    private val tvInvoiceSummaryTotalDiscountValue: TextView = view.tvInvoiceSummaryTotalDiscountValue
-    private val tvInvoiceSummaryTotalDiscount: TextView = view.tvInvoiceSummaryTotalDiscount
-
-    private val tvInvoiceSummaryTotalProductProtectionValue: TextView = view.tvInvoiceSummaryTotalProductProtectionValue
-    private val tvInvoiceSummaryTotalProductProtection: TextView = view.tvInvoiceSummaryTotalProductProtection
-
-    private val tvInvoiceSummaryTotalShippingCostValue: TextView = view.tvInvoiceSummaryTotalShippingCostValue
-    private val tvInvoiceSummaryTotalShippingCost: TextView = view.tvInvoiceSummaryTotalShippingCost
-
-    private val tvInvoiceSummaryTotalShippingCostDiscountValue: TextView = view.tvInvoiceSummaryTotalShippingCostDiscountValue
-    private val tvInvoiceSummaryTotalShippingDiscount: TextView = view.tvInvoiceSummaryTotalShippingDiscount
-
-    private val tvInvoiceSummaryTotalShippingInsuranceValue: TextView = view.tvInvoiceSummaryTotalShippingInsuranceValue
-    private val tvInvoiceSummaryTotalShippingInsurance: TextView = view.tvInvoiceSummaryTotalShippingInsurance
-
-    private val tvInvoiceSummaryTotalDonationValue: TextView = view.tvInvoiceSummaryTotalDonationValue
-    private val tvInvoiceSummaryTotalDonation: TextView = view.tvInvoiceSummaryTotalDonation
-
-    private val tvInvoiceSummaryTotalEGoldValue: TextView = view.tvInvoiceSummaryTotalEGoldValue
-    private val tvInvoiceSummaryTotalEGold: TextView = view.tvInvoiceSummaryTotalEGold
-
 
     override fun bind(element: InvoiceSummery?) {
-        element?.let {
+        element?.invoiceSummaryMapList?.forEach {
+
+        }
+    }
+
+    companion object {
+        val LAYOUT_ID = R.layout.thank_widget_invoice_summary
+    }
+}
+
+
+
+/*private val tvInvoiceSummaryTotalPrice: TextView = view.tvInvoiceSummaryTotalPrice
+private val tvInvoiceSummaryTotalPriceValue: TextView = view.tvInvoiceSummaryTotalPriceValue
+
+private val tvInvoiceSummaryTotalDiscountValue: TextView = view.tvInvoiceSummaryTotalDiscountValue
+private val tvInvoiceSummaryTotalDiscount: TextView = view.tvInvoiceSummaryTotalDiscount
+
+private val tvInvoiceSummaryTotalProductProtectionValue: TextView = view.tvInvoiceSummaryTotalProductProtectionValue
+private val tvInvoiceSummaryTotalProductProtection: TextView = view.tvInvoiceSummaryTotalProductProtection
+
+private val tvInvoiceSummaryTotalShippingCostValue: TextView = view.tvInvoiceSummaryTotalShippingCostValue
+private val tvInvoiceSummaryTotalShippingCost: TextView = view.tvInvoiceSummaryTotalShippingCost
+
+private val tvInvoiceSummaryTotalShippingCostDiscountValue: TextView = view.tvInvoiceSummaryTotalShippingCostDiscountValue
+private val tvInvoiceSummaryTotalShippingDiscount: TextView = view.tvInvoiceSummaryTotalShippingDiscount
+
+private val tvInvoiceSummaryTotalShippingInsuranceValue: TextView = view.tvInvoiceSummaryTotalShippingInsuranceValue
+private val tvInvoiceSummaryTotalShippingInsurance: TextView = view.tvInvoiceSummaryTotalShippingInsurance
+
+private val tvInvoiceSummaryTotalDonationValue: TextView = view.tvInvoiceSummaryTotalDonationValue
+private val tvInvoiceSummaryTotalDonation: TextView = view.tvInvoiceSummaryTotalDonation
+
+private val tvInvoiceSummaryTotalEGoldValue: TextView = view.tvInvoiceSummaryTotalEGoldValue
+private val tvInvoiceSummaryTotalEGold: TextView = view.tvInvoiceSummaryTotalEGold*/
+
+
+/* element?.let {
             tvInvoiceSummaryTotalPrice.text = getString(R.string.thank_invoice_total_price, element.totalItemCount)
 
             tvInvoiceSummaryTotalPriceValue.text = getString(R.string.thankyou_rp_without_space, element.totalPriceStr)
@@ -113,10 +126,4 @@ class InvoiceSummaryViewHolder(val view: View) : AbstractViewHolder<InvoiceSumme
                 tvInvoiceSummaryTotalEGoldValue.gone()
                 tvInvoiceSummaryTotalEGold.gone()
             }
-        }
-    }
-
-    companion object {
-        val LAYOUT_ID = R.layout.thank_widget_invoice_summary
-    }
-}
+        }*/
