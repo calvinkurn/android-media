@@ -22,9 +22,6 @@ import com.tokopedia.cassavatest.getAnalyticsWithQuery
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.deals.R
 import com.tokopedia.deals.brand.ui.activity.mock.DealsBrandsMockResponse
-import com.tokopedia.deals.brand.ui.fragment.DealsBrandFragment.Companion.TAB_NAME
-import com.tokopedia.test.application.espresso_component.CommonActions
-import com.tokopedia.test.application.espresso_component.CommonMatcher
 import com.tokopedia.test.application.espresso_component.CommonMatcher.withTagStringValue
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.hamcrest.core.AllOf
@@ -39,7 +36,7 @@ class DealsBrandsActivityTest {
     private val gtmLogDbSource = GtmLogDBSource(context)
 
     private val TAB_NAME = "Fashion"
-    private val TYPE = "sadjgh"
+    private val QUERY_BY_USER = "sadjgh"
 
     @get: Rule
     var activtyRule: IntentsTestRule<DealsBrandActivity> = object : IntentsTestRule<DealsBrandActivity>(DealsBrandActivity::class.java) {
@@ -61,8 +58,9 @@ class DealsBrandsActivityTest {
 
     @Test
     fun testSearchLayout() {
-        impressionDealsEmptyViewHolder()
+        clickOnSearchBar()
         actionOnDealsBrandViewHolder()
+        impressionDealsEmptyViewHolder()
         eventClickSearchBrandPage()
         clickOnRelaksasiTab()
         eventClickCategoryTabBrandPage()
@@ -73,24 +71,24 @@ class DealsBrandsActivityTest {
 
     private fun impressionDealsEmptyViewHolder() {
         Thread.sleep(3000)
-        onView(withId(com.tokopedia.unifycomponents.R.id.searchbar_textfield)).perform(typeText(TYPE))
+        onView(withId(com.tokopedia.unifycomponents.R.id.searchbar_textfield)).perform(typeText(QUERY_BY_USER))
 
         Thread.sleep(3000)
         onData(withId(R.id.deals_brand_recycler_view)).check(matches(isDisplayed())).perform(RecyclerViewActions
                 .scrollToPosition<RecyclerView.ViewHolder>(EMPTY_POSITION)).perform(click())
     }
 
-    private fun actionOnDealsBrandViewHolder() {
-        Thread.sleep(3000)
-        onView(withId(R.id.recycler_view)).perform(RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(BRAND_POSITION))
-
-        Thread.sleep(3000)
-        val recyclerView = activtyRule.activity.findViewById<RecyclerView>(R.id.recycler_view)
-        val viewHolder = recyclerView.findViewHolderForAdapterPosition(BRAND_POSITION)
-        viewHolder?.let {
-            CommonActions.clickOnEachItemRecyclerView(it.itemView, R.id.recycler_view, 0)
-        }
+    private fun clickOnSearchBar() {
         Thread.sleep(2000)
+        onView(withId(com.tokopedia.unifycomponents.R.id.searchbar_textfield)).perform(click())
+        Thread.sleep(2000)
+        onView(withId(com.tokopedia.unifycomponents.R.id.searchbar_textfield)).perform(click())
+    }
+
+    private fun actionOnDealsBrandViewHolder() {
+        Thread.sleep(1000)
+        val recyclerView = onView(AllOf.allOf(withId(R.id.deals_brand_recycler_view), withTagStringValue(TAB_NAME)))
+        recyclerView.perform(RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(0))
     }
 
     private fun eventClickSearchBrandPage() {
