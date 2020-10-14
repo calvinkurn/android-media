@@ -102,7 +102,7 @@ dependencies {
     debugImplementation rootProject.ext.debugToolsDependencies.stetho
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
-    implementation (rootProject.ext.serviceDependencies.crashlytics) {
+    implementation (rootProject.ext.firebase.crashlytics) {
         transitive = true
     }
     

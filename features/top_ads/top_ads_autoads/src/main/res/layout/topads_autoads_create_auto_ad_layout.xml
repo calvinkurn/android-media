@@ -185,7 +185,7 @@
         android:textAllCaps="false"
         android:visibility="visible"
         app:buttonCompatSize="medium"
-        app:buttonDrawableLeftCompat="@drawable/topads_create_ic_tips"
+        app:buttonDrawableLeftCompat="@drawable/topads_ic_tips"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/btn_submit"
         app:layout_constraintEnd_toEndOf="parent"
