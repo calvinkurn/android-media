@@ -41,7 +41,7 @@ class ApsaraLivePusher(@ApplicationContext private val mContext: Context) {
         setFps(AlivcFpsEnum.FPS_30)
 
         // configure mirroring
-        setPushMirror(true)
+        setPushMirror(this.getCameraTypeEnum() == AlivcLivePushCameraTypeEnum.CAMERA_TYPE_FRONT)
 
         // the custom mode in which the stream ingest SDK sets the bitrate based on the custom bitrate settings
         qualityMode = AlivcQualityModeEnum.QM_CUSTOM
