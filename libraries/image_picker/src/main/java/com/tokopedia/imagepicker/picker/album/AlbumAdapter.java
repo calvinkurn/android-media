@@ -2,20 +2,19 @@ package com.tokopedia.imagepicker.picker.album;
 
 import android.content.Context;
 import android.database.Cursor;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.imagepicker.R;
 import com.tokopedia.imagepicker.picker.gallery.model.AlbumItem;
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
 import com.tokopedia.imagepicker.picker.main.adapter.RecyclerViewCursorAdapter;
-
-import java.io.File;
 
 /**
  * Created by hangnadi on 5/29/17.
@@ -81,10 +80,10 @@ public class AlbumAdapter extends RecyclerViewCursorAdapter<AlbumAdapter.AlbumVi
         holder.tvAlbumCount.setText(context.getString(resourseString, albumItem.getCount()));
 
         // do not need to load animated Gif
-        ImageHandler.loadImageFromFileFitCenter(
+        ImageHandler.loadImageFromUriFitCenter(
                 context,
                 holder.ivAlbumCover,
-                new File(albumItem.getCoverPath())
+                albumItem.getCoverPath()
         );
     }
 

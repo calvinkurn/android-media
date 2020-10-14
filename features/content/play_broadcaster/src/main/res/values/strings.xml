@@ -143,4 +143,6 @@
     <string name="play_storage_permission_denied_error">Kamu harus mengaktifkan akses foto, media, &amp; file untuk dapat melanjutkan proses</string>
 
     <string name="play_error_image_edit_text">Gambar/GIF tidak diperbolehkan</string>
+
+    <string name="mock_super_long_text">Aku bergabung loh wau kok gabung keren abis wooo allala gabung terus dong</string>
 </resources>

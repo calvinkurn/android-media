@@ -76,8 +76,6 @@ object ApplinkConstInternalGlobal {
     val PARAM_IS_SKIP_OTP = "is_skip_otp"
     @JvmField
     val PARAM_TWO_FACTOR_TYPE = "two_factor_type"
-    @JvmField
-    val KEY_REDIRECT_SEAMLESS_APPLINK = "redirect_seamless"
 
     @JvmField
     val PARAM_ENABLE_2FA = "enable_2fa"

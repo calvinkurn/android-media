@@ -123,7 +123,9 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, ImageUploadAda
                     commentsItems,
                     ticketDetail.isNeedAttachment,
                     (mPresenter as InboxDetailPresenter),
-                    this)
+                    this,
+                    (mPresenter as? InboxDetailPresenter)?.getUserId() ?: "",
+                    (mPresenter as? InboxDetailPresenter)?.getTicketId() ?: "")
             rvMessageList.adapter = detailAdapter
             rvMessageList.show()
             scrollTo(detailAdapter.itemCount - 1)

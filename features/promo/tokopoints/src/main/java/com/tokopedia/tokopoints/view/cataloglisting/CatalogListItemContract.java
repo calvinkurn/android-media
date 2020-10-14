@@ -42,8 +42,6 @@ public interface CatalogListItemContract {
 
         void refreshCatalog(List<CatalogStatusItem> items);
 
-        void showRedeemFullError(CatalogsValueEntity item, String title, String desc);
-
         void onPreValidateError(String title, String message);
 
         void gotoSendGiftPage(int id, String title, String pointStr);
