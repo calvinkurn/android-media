@@ -1242,7 +1242,6 @@ final class ProductListPresenter
 
     private String createGeneralSearchTrackingEventLabel(ProductViewModel productViewModel, String query) {
         String source = getTopNavSource(productViewModel.getGlobalNavViewModel());
-
         return String.format(
                 SearchEventTracking.Label.KEYWORD_TREATMENT_RESPONSE,
                 query,
