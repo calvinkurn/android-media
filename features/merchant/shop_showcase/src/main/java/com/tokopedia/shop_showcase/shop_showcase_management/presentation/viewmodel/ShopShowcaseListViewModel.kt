@@ -65,6 +65,10 @@ class ShopShowcaseListViewModel @Inject constructor(
     fun getShopShowcaseListAsSeller() {
         launchCatchError(block = {
             withContext(dispatchers.io()) {
+                getShopShowcaseListSellerUseCase.params = GetShopShowcaseListSellerUseCase.createRequestParams(
+                        // set withDefault to true for managing etalase purpose
+                        withDefault = true
+                )
                 val shopShowcaseData = getShopShowcaseListSellerUseCase.executeOnBackground()
                 shopShowcaseData.let {
                     _getListSellerShopShowcaseResponse.postValue(Success(it))
