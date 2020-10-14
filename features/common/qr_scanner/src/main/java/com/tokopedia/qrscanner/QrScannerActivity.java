@@ -288,7 +288,9 @@ public class QrScannerActivity extends BaseScannerQRActivity implements QrScanne
 
     @Override
     public void goToEventRedeemPage(String url){
-        RouteManager.route(this, ApplinkConstInternalEntertainment.EVENT_HOME);
+        Intent intent = RouteManager.getIntent(this, ApplinkConstInternalEntertainment.EVENT_REDEEM);
+        intent.putExtra("EXTRA_URL_REDEEM", url);
+        startActivity(intent);
     }
 
     @Override
