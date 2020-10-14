@@ -7,6 +7,37 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/Green_G500"
+        >
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            >
+        <androidx.appcompat.widget.AppCompatImageView
+            android:layout_marginTop="@dimen/spacing_lvl4"
+            android:layout_width="@dimen/spacing_lvl8"
+            android:layout_height="@dimen/spacing_lvl8"
+            app:srcCompat="@drawable/ic_event_redeem"
+            android:layout_gravity="center"
+            />
+        <com.tokopedia.unifyprinciples.Typography
+            android:layout_marginTop="@dimen/spacing_lvl4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:typographyWeight="bold"
+            app:typographyType="heading_2"
+            android:layout_marginBottom="@dimen/spacing_lvl4"
+            android:text="@string/ent_redeem_data_redeemed"
+            android:gravity="center"
+            android:textColor="@color/Neutral_N0"
+            />
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tg_event_redeem_title"
         android:layout_marginLeft="@dimen/spacing_lvl4"

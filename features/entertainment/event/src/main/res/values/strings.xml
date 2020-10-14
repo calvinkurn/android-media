@@ -121,5 +121,5 @@
     <string name="ent_redeem_title_total">Jumlah Tiket</string>
     <string name="ent_redeem_title_btn_redeem">Redeem Tiket</string>
     <string name="ent_redeem_title_btn_back">Kembali</string>
-
+    <string name="ent_redeem_data_redeemed">Tiket Berhasil diRedeem</string>
 </resources>
