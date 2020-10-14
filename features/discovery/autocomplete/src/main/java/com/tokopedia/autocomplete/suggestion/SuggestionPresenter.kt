@@ -98,7 +98,7 @@ class SuggestionPresenter @Inject constructor() : BaseDaggerPresenter<Suggestion
 
     private fun updateListVisitable(suggestionUniverse: SuggestionUniverse) {
         val typePosition = HashMap<String, Int?>()
-        for (item in dummyResponse.data.items) {
+        for (item in suggestionUniverse.data.items) {
             if (suggestionUniverse.data.items.isNotEmpty()) {
                 when (item.template) {
                     SUGGESTION_HEADER -> addTitleToVisitable(item)
@@ -153,7 +153,7 @@ class SuggestionPresenter @Inject constructor() : BaseDaggerPresenter<Suggestion
         if (typePosition.isEmpty()) {
             processDoubleLineWithoutImageAtTop(typePosition, item)
         } else {
-            processDoubleLineWithoutImageAtTopBottom(typePosition, item)
+            processDoubleLineWithoutImageAtBottom(typePosition, item)
         }
     }
 
@@ -161,7 +161,7 @@ class SuggestionPresenter @Inject constructor() : BaseDaggerPresenter<Suggestion
         processDoubleLineWithoutImageToVisitable(typePosition, item)
     }
 
-    private fun processDoubleLineWithoutImageAtTopBottom(typePosition: HashMap<String, Int?>, item: SuggestionItem) {
+    private fun processDoubleLineWithoutImageAtBottom(typePosition: HashMap<String, Int?>, item: SuggestionItem) {
         addSuggestionSeparator()
         processDoubleLineWithoutImageToVisitable(typePosition, item)
     }
