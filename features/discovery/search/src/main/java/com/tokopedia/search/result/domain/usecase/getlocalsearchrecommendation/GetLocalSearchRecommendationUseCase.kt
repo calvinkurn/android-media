@@ -37,7 +37,7 @@ class GetLocalSearchRecommendationUseCase(
     }
 
     companion object {
-        private val LOCAL_SEARCH_QUERY = """
+        private const val LOCAL_SEARCH_QUERY = """
 query SearchProduct(${'$'}params: String!) {
     ace_search_product_v4(params: ${'$'}params) {
         header {
@@ -91,6 +91,6 @@ query SearchProduct(${'$'}params: String!) {
         }
     }
 }
-        """.trimIndent()
+        """
     }
 }
