@@ -132,9 +132,9 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
         return PlayCardViewHolder.LAYOUT
     }
 
-    override fun type(playCard: PlayCarouselCardDataModel): Int {
-        return PlayBannerCardViewHolder.LAYOUT
-    }
+//    override fun type(playCard: PlayCarouselCardDataModel): Int {
+//        return PlayBannerCardViewHolder.LAYOUT
+//    }
 
     override fun type(homeLoadingMoreModel: HomeLoadingMoreModel): Int {
         return HomeLoadingMoreViewHolder.LAYOUT
@@ -269,7 +269,7 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
             BannerImageViewHolder.LAYOUT -> viewHolder = BannerImageViewHolder(view, listener)
             ReviewViewHolder.LAYOUT -> viewHolder = ReviewViewHolder(view, homeReviewListener, listener)
             PlayCardViewHolder.LAYOUT -> viewHolder = PlayCardViewHolder(view, listener)
-            PlayBannerCardViewHolder.LAYOUT -> viewHolder = PlayBannerCardViewHolder(view, listener)
+//            PlayBannerCardViewHolder.LAYOUT -> viewHolder = PlayBannerCardViewHolder(view, listener)
             HomeLoadingMoreViewHolder.LAYOUT -> viewHolder = HomeLoadingMoreViewHolder(view)
             ErrorPromptViewHolder.LAYOUT -> viewHolder = ErrorPromptViewHolder(view, listener)
             PopularKeywordViewHolder.LAYOUT -> viewHolder = PopularKeywordViewHolder(view, listener, popularKeywordListener)

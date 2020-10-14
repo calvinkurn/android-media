@@ -45,7 +45,7 @@ data class PlayCarouselCardDataModel(
     }
 
     override fun type(typeFactory: HomeTypeFactory): Int {
-        return typeFactory.type(this)
+        return 0
     }
 
     override fun setTrackingData(trackingData: MutableMap<String, Any>) {
