@@ -17,7 +17,7 @@ internal class CarouselProductCardGridActivityTest: AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.carousel_product_card_activity_test_layout)
 
-        val recyclerView = findViewById<RecyclerView>(R.id.carouselProductCardRecyclerViewTest)
+        val recyclerView = findViewById<RecyclerView>(R.id.carouselProductCardRecyclerView)
         recyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         recyclerView.adapter = Adapter()
     }
