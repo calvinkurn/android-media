@@ -7,7 +7,7 @@ import com.google.common.collect.Sets
 import org.w3c.dom.Attr
 import java.io.File
 
-class VectorDrawableDetector : LayoutDetector() {
+class VectorDrawableDetector : Detector(), XmlScanner {
 
     companion object {
         val ISSUE = Issue.create(
@@ -18,11 +18,7 @@ class VectorDrawableDetector : LayoutDetector() {
             category = Category.CORRECTNESS,
             priority = 5,
             severity = Severity.FATAL,
-            implementation = Implementation(
-                VectorDrawableDetector::class.java,
-                Scope.ALL_RESOURCES_SCOPE,
-                Scope.RESOURCE_FILE_SCOPE
-            )
+            implementation = Implementation(VectorDrawableDetector::class.java, Scope.RESOURCE_FILE_SCOPE)
         )
 
         private const val ATTR_ANDROID_BACKGROUND = "${PREFIX_ANDROID}${ATTR_BACKGROUND}"
